@@ -25,6 +25,7 @@ class LogLineWidget extends StatelessWidget {
       fontSize: settings.fontSize,
       fontFamily: 'monospace',
       color: textColor,
+      height: settings.lineHeight,
     );
 
     final spans = <InlineSpan>[];
@@ -58,18 +59,25 @@ class LogLineWidget extends StatelessWidget {
 
     final richText = RichText(
       text: TextSpan(children: spans),
-      softWrap: settings.isWrap,
-      overflow: settings.isWrap ? TextOverflow.visible : TextOverflow.clip,
+      softWrap: settings.viewMode == LogViewMode.wrap,
+      overflow: settings.viewMode == LogViewMode.wrap ? TextOverflow.visible : TextOverflow.clip,
     );
 
-    if (settings.isWrap) {
+    if (settings.viewMode == LogViewMode.wrap) {
       return richText;
     }
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: richText,
-    );
+    if (settings.viewMode == LogViewMode.scrollLine) {
+      return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: richText,
+      );
+    }
+
+    // LogViewMode.scrollPage
+    // The parent container (LogViewer) handles the horizontal scrolling.
+    // We just render the text without wrapping.
+    return richText;
   }
 
   String _formatDuration(Duration d) {
@@ -120,7 +128,6 @@ class LogLineWidget extends StatelessWidget {
     // 3. Flatten ranges (Handling overlaps is complex, let's simplify: highest priority wins)
     // We will build a list of non-overlapping spans.
     final spans = <InlineSpan>[];
-    int currentPos = 0;
 
     // A simple way to handle overlaps is to use a "mask" array, but for text it's better to iterate.
     // Let's use a "stack" approach or just split by boundaries.

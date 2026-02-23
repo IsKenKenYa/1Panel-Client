@@ -110,11 +110,11 @@ Log line 3
     });
 
     test('updateSettings updates settings', () {
-      final newSettings = LogSettings(fontSize: 16.0, isWrap: true);
+      final newSettings = LogSettings(fontSize: 16.0, viewMode: LogViewMode.wrap);
       controller.updateSettings(newSettings);
 
       expect(controller.settings.fontSize, 16.0);
-      expect(controller.settings.isWrap, true);
+      expect(controller.settings.viewMode, LogViewMode.wrap);
     });
   });
 }

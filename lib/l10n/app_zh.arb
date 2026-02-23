@@ -966,5 +966,10 @@
   "logImportTheme": "导入主题",
   "logExportTheme": "导出主题",
   "logImportSuccess": "主题导入成功",
-  "logInvalidJson": "无效的JSON格式"
+  "logInvalidJson": "无效的JSON格式",
+  "logLineHeight": "行高",
+  "logViewMode": "显示模式",
+  "logModeWrap": "自动换行",
+  "logModeScrollLine": "单行滑动",
+  "logModeScrollPage": "整页滑动"
 }

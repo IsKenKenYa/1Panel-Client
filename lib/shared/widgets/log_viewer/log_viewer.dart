@@ -114,7 +114,7 @@ class _LogViewerState extends State<LogViewer> {
                   );
                 }
 
-                return ListView.builder(
+                Widget listView = ListView.builder(
                   controller: _scrollController,
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   itemCount: controller.filteredLogs.length,
@@ -128,6 +128,22 @@ class _LogViewerState extends State<LogViewer> {
                     );
                   },
                 );
+
+                if (controller.settings.viewMode == LogViewMode.scrollPage) {
+                  return Scrollbar(
+                    thumbVisibility: true,
+                    trackVisibility: true,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 3,
+                        child: listView,
+                      ),
+                    ),
+                  );
+                }
+
+                return listView;
               },
             ),
           ),

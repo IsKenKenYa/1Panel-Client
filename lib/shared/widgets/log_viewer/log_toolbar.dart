@@ -181,13 +181,48 @@ class _LogSettingsSheet extends StatelessWidget {
               
               const Divider(),
 
-              // Wrap
-              SwitchListTile(
-                title: Text(l10n.logWrap),
-                value: settings.isWrap,
+              // Line Height
+              Text('${l10n.logLineHeight}: ${settings.lineHeight.toStringAsFixed(1)}'),
+              Slider(
+                value: settings.lineHeight,
+                min: 1.0,
+                max: 2.0,
+                divisions: 10,
+                label: settings.lineHeight.toStringAsFixed(1),
                 onChanged: (value) {
-                  controller.updateSettings(settings.copyWith(isWrap: value));
+                  controller.updateSettings(settings.copyWith(lineHeight: value));
                 },
+              ),
+
+              const Divider(),
+
+              // View Mode
+              Text(l10n.logViewMode),
+              const SizedBox(height: 8),
+              Center(
+                child: SegmentedButton<LogViewMode>(
+                  segments: [
+                    ButtonSegment(
+                      value: LogViewMode.wrap,
+                      label: Text(l10n.logModeWrap),
+                      icon: const Icon(Icons.wrap_text),
+                    ),
+                    ButtonSegment(
+                      value: LogViewMode.scrollLine,
+                      label: Text(l10n.logModeScrollLine),
+                      icon: const Icon(Icons.arrow_right_alt),
+                    ),
+                    ButtonSegment(
+                      value: LogViewMode.scrollPage,
+                      label: Text(l10n.logModeScrollPage),
+                      icon: const Icon(Icons.compare_arrows),
+                    ),
+                  ],
+                  selected: {settings.viewMode},
+                  onSelectionChanged: (Set<LogViewMode> newSelection) {
+                    controller.updateSettings(settings.copyWith(viewMode: newSelection.first));
+                  },
+                ),
               ),
 
               const Divider(),

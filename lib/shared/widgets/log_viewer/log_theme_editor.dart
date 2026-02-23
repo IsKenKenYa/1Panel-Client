@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:onepanelapp_app/l10n/generated/app_localizations.dart';
 import 'log_viewer_controller.dart';
-import 'log_theme.dart';
 
 class LogThemeEditor extends StatefulWidget {
   final LogViewerController controller;

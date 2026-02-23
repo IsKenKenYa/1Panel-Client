@@ -1028,5 +1028,10 @@
   "logImportTheme": "Import Theme",
   "logExportTheme": "Export Theme",
   "logImportSuccess": "Theme imported successfully",
-  "logInvalidJson": "Invalid JSON"
+  "logInvalidJson": "Invalid JSON",
+  "logLineHeight": "Line Height",
+  "logViewMode": "View Mode",
+  "logModeWrap": "Wrap",
+  "logModeScrollLine": "Scroll Line",
+  "logModeScrollPage": "Scroll Page"
 }

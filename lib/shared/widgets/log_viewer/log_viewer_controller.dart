@@ -12,26 +12,45 @@ enum LogTimestampFormat {
   relative,
 }
 
+enum LogViewMode {
+  wrap,
+  scrollLine,
+  scrollPage,
+}
+
 class LogSettings {
   final double fontSize;
-  final bool isWrap;
+  final double lineHeight;
+  final LogViewMode? _viewMode;
   final bool showTimestamp;
-  final LogTimestampFormat timestampFormat;
-  final ThemeMode themeMode;
+  final LogTimestampFormat? _timestampFormat;
+  final ThemeMode? _themeMode;
   final LogTheme theme;
+
+  LogViewMode get viewMode => _viewMode ?? LogViewMode.scrollLine;
+  LogTimestampFormat get timestampFormat => _timestampFormat ?? LogTimestampFormat.absolute;
+  ThemeMode get themeMode => _themeMode ?? ThemeMode.system;
 
   LogSettings({
     this.fontSize = 14.0,
-    this.isWrap = false,
+    this.lineHeight = 1.2,
+    LogViewMode? viewMode,
     this.showTimestamp = true,
-    this.timestampFormat = LogTimestampFormat.absolute,
-    this.themeMode = ThemeMode.system,
+    LogTimestampFormat? timestampFormat,
+    ThemeMode? themeMode,
     LogTheme? theme,
-  }) : theme = theme ?? LogTheme.defaultTheme;
+  }) : _viewMode = viewMode ?? LogViewMode.scrollLine,
+       _timestampFormat = timestampFormat ?? LogTimestampFormat.absolute,
+       _themeMode = themeMode ?? ThemeMode.system,
+       theme = theme ?? LogTheme.defaultTheme;
+
+  // Backward compatibility for isWrap
+  bool get isWrap => viewMode == LogViewMode.wrap;
 
   LogSettings copyWith({
     double? fontSize,
-    bool? isWrap,
+    double? lineHeight,
+    LogViewMode? viewMode,
     bool? showTimestamp,
     LogTimestampFormat? timestampFormat,
     ThemeMode? themeMode,
@@ -39,7 +58,8 @@ class LogSettings {
   }) {
     return LogSettings(
       fontSize: fontSize ?? this.fontSize,
-      isWrap: isWrap ?? this.isWrap,
+      lineHeight: lineHeight ?? this.lineHeight,
+      viewMode: viewMode ?? this.viewMode,
       showTimestamp: showTimestamp ?? this.showTimestamp,
       timestampFormat: timestampFormat ?? this.timestampFormat,
       themeMode: themeMode ?? this.themeMode,
@@ -50,7 +70,8 @@ class LogSettings {
   Map<String, dynamic> toJson() {
     return {
       'fontSize': fontSize,
-      'isWrap': isWrap,
+      'lineHeight': lineHeight,
+      'viewMode': viewMode.index,
       'showTimestamp': showTimestamp,
       'timestampFormat': timestampFormat.index,
       'themeMode': themeMode.index,
@@ -59,12 +80,40 @@ class LogSettings {
   }
 
   factory LogSettings.fromJson(Map<String, dynamic> json) {
+    // Handle migration from isWrap
+    LogViewMode mode = LogViewMode.scrollLine;
+    if (json.containsKey('viewMode')) {
+      final idx = json['viewMode'] as int?;
+      if (idx != null && idx >= 0 && idx < LogViewMode.values.length) {
+        mode = LogViewMode.values[idx];
+      }
+    } else if (json.containsKey('isWrap')) {
+      mode = (json['isWrap'] as bool? ?? false) ? LogViewMode.wrap : LogViewMode.scrollLine;
+    }
+
+    LogTimestampFormat timestampFormat = LogTimestampFormat.absolute;
+    if (json.containsKey('timestampFormat')) {
+      final idx = json['timestampFormat'] as int?;
+      if (idx != null && idx >= 0 && idx < LogTimestampFormat.values.length) {
+        timestampFormat = LogTimestampFormat.values[idx];
+      }
+    }
+
+    ThemeMode themeMode = ThemeMode.system;
+    if (json.containsKey('themeMode')) {
+      final idx = json['themeMode'] as int?;
+      if (idx != null && idx >= 0 && idx < ThemeMode.values.length) {
+        themeMode = ThemeMode.values[idx];
+      }
+    }
+
     return LogSettings(
       fontSize: (json['fontSize'] as num?)?.toDouble() ?? 14.0,
-      isWrap: json['isWrap'] as bool? ?? false,
+      lineHeight: (json['lineHeight'] as num?)?.toDouble() ?? 1.2,
+      viewMode: mode,
       showTimestamp: json['showTimestamp'] as bool? ?? true,
-      timestampFormat: LogTimestampFormat.values[json['timestampFormat'] as int? ?? 0],
-      themeMode: ThemeMode.values[json['themeMode'] as int? ?? 0],
+      timestampFormat: timestampFormat,
+      themeMode: themeMode,
       theme: json['theme'] != null ? LogTheme.fromJson(json['theme']) : null,
     );
   }

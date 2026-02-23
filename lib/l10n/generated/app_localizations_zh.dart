@@ -2463,4 +2463,19 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get logInvalidJson => '无效的JSON格式';
+
+  @override
+  String get logLineHeight => '行高';
+
+  @override
+  String get logViewMode => '显示模式';
+
+  @override
+  String get logModeWrap => '自动换行';
+
+  @override
+  String get logModeScrollLine => '单行滑动';
+
+  @override
+  String get logModeScrollPage => '整页滑动';
 }

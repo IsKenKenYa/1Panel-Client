@@ -4861,6 +4861,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Invalid JSON'**
   String get logInvalidJson;
+
+  /// No description provided for @logLineHeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Line Height'**
+  String get logLineHeight;
+
+  /// No description provided for @logViewMode.
+  ///
+  /// In en, this message translates to:
+  /// **'View Mode'**
+  String get logViewMode;
+
+  /// No description provided for @logModeWrap.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrap'**
+  String get logModeWrap;
+
+  /// No description provided for @logModeScrollLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Scroll Line'**
+  String get logModeScrollLine;
+
+  /// No description provided for @logModeScrollPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Scroll Page'**
+  String get logModeScrollPage;
 }
 
 class _AppLocalizationsDelegate

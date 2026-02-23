@@ -2507,4 +2507,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logInvalidJson => 'Invalid JSON';
+
+  @override
+  String get logLineHeight => 'Line Height';
+
+  @override
+  String get logViewMode => 'View Mode';
+
+  @override
+  String get logModeWrap => 'Wrap';
+
+  @override
+  String get logModeScrollLine => 'Scroll Line';
+
+  @override
+  String get logModeScrollPage => 'Scroll Page';
 }
