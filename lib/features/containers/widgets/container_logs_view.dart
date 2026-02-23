@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
 import 'package:onepanelapp_app/features/containers/container_service.dart';
+import 'package:onepanelapp_app/features/containers/widgets/log_viewer_controller.dart';
+import 'package:onepanelapp_app/features/containers/widgets/log_toolbar.dart';
+import 'package:onepanelapp_app/features/containers/widgets/log_line_widget.dart';
+import 'package:provider/provider.dart';
 
 class ContainerLogsView extends StatefulWidget {
   final String containerName;
@@ -16,15 +20,52 @@ class ContainerLogsView extends StatefulWidget {
 
 class _ContainerLogsViewState extends State<ContainerLogsView> {
   final _service = ContainerService();
-  String _logs = '';
+  final _controller = LogViewerController();
+  final _scrollController = ScrollController();
+  
   bool _isLoading = true;
   String? _error;
-  final ScrollController _scrollController = ScrollController();
+  bool _isAutoScrolling = true;
 
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
     _loadLogs();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    
+    // If user scrolls up significantly (more than 50 pixels from bottom), disable auto-scroll
+    if (maxScroll - currentScroll > 50) {
+      if (_isAutoScrolling) {
+        setState(() => _isAutoScrolling = false);
+      }
+    } else {
+      if (!_isAutoScrolling) {
+        setState(() => _isAutoScrolling = true);
+      }
+    }
+  }
+
+  void _scrollToBottom() {
+    if (!_scrollController.hasClients) return;
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+    setState(() => _isAutoScrolling = true);
   }
 
   Future<void> _loadLogs() async {
@@ -37,16 +78,19 @@ class _ContainerLogsViewState extends State<ContainerLogsView> {
     try {
       final logs = await _service.getContainerLogs(widget.containerName, tail: '1000');
       if (!mounted) return;
+      
+      _controller.setLogs(logs);
+      
       setState(() {
-        _logs = logs;
         _isLoading = false;
       });
-      // Scroll to bottom after loading
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (_scrollController.hasClients) {
-          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-        }
-      });
+      
+      // Auto-scroll to bottom if enabled
+      if (_isAutoScrolling) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _scrollToBottom();
+        });
+      }
     } catch (e) {
       if (!mounted) return;
       setState(() {
@@ -61,11 +105,11 @@ class _ContainerLogsViewState extends State<ContainerLogsView> {
     final l10n = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
 
-    if (_isLoading) {
+    if (_isLoading && _controller.logs.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (_error != null) {
+    if (_error != null && _controller.logs.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -86,64 +130,52 @@ class _ContainerLogsViewState extends State<ContainerLogsView> {
       );
     }
 
-    if (_logs.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.description_outlined, size: 48, color: colorScheme.outline),
-            const SizedBox(height: 16),
-            Text(l10n.containerNoLogs),
-            const SizedBox(height: 16),
-            FilledButton.icon(
-              onPressed: _loadLogs,
-              icon: const Icon(Icons.refresh),
-              label: Text(l10n.commonRefresh),
-            ),
-          ],
-        ),
-      );
-    }
+    return ChangeNotifierProvider.value(
+      value: _controller,
+      child: Column(
+        children: [
+          Consumer<LogViewerController>(
+            builder: (context, controller, _) {
+              return LogToolbar(
+                controller: controller,
+                isAutoScrolling: _isAutoScrolling,
+                onScrollToBottom: _scrollToBottom,
+                onRefresh: _loadLogs,
+              );
+            },
+          ),
+          Expanded(
+            child: Consumer<LogViewerController>(
+              builder: (context, controller, _) {
+                if (controller.filteredLogs.isEmpty) {
+                  return Center(
+                    child: Text(
+                      controller.searchQuery.isEmpty 
+                          ? l10n.containerNoLogs 
+                          : 'No matches found',
+                      style: TextStyle(color: colorScheme.onSurfaceVariant),
+                    ),
+                  );
+                }
 
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              IconButton(
-                onPressed: _loadLogs,
-                icon: const Icon(Icons.refresh),
-                tooltip: l10n.commonRefresh,
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          child: Container(
-            margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: SelectionArea(
-              child: SingleChildScrollView(
-                controller: _scrollController,
-                child: Text(
-                  _logs,
-                  style: TextStyle(
-                    fontFamily: 'Monospace',
-                    fontSize: 12,
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ),
+                return ListView.builder(
+                  controller: _scrollController,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  itemCount: controller.filteredLogs.length,
+                  itemBuilder: (context, index) {
+                    return LogLineWidget(
+                      index: index + 1,
+                      line: controller.filteredLogs[index],
+                      settings: controller.settings,
+                      query: controller.searchQuery,
+                    );
+                  },
+                );
+              },
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

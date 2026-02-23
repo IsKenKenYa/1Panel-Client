@@ -1,0 +1,6 @@
+- [x] Log viewer uses `ListView.builder` for rendering.
+- [x] Font size can be adjusted via settings.
+- [x] Line wrapping can be toggled.
+- [x] Keywords (ERROR, WARN) are highlighted in different colors.
+- [x] Search functionality works (highlights matches).
+- [x] "Scroll to Bottom" button works.
