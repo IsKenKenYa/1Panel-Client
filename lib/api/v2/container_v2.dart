@@ -303,23 +303,23 @@ class ContainerV2Api {
     bool? follow,
     String? tail,
   }) async {
-    final queryParams = <String, dynamic>{};
+    final queryParams = <String, dynamic>{
+      'container': container,
+    };
     if (since != null) queryParams['since'] = since;
     if (follow != null) queryParams['follow'] = follow.toString();
     if (tail != null) queryParams['tail'] = tail;
 
-    final response = await _client.post<Map<String, dynamic>>(
+    // Use ResponseType.plain to handle SSE/text response without JSON parsing error
+    final response = await _client.get<dynamic>(
       ApiConstants.buildApiPath('/containers/search/log'),
       queryParameters: queryParams,
+      options: Options(responseType: ResponseType.plain),
     );
     
     // Return the raw 'data' field which might be String, List, or Map
-    return Response(
-      data: response.data?['data'],
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
-    );
+    // For SSE/plain text, response.data will be the string content
+    return response;
   }
 
   /// 更新容器

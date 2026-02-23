@@ -3,11 +3,11 @@ import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
 import 'package:onepanelapp_app/features/containers/container_service.dart';
 
 class ContainerLogsView extends StatefulWidget {
-  final String containerId;
+  final String containerName;
 
   const ContainerLogsView({
     super.key,
-    required this.containerId,
+    required this.containerName,
   });
 
   @override
@@ -35,7 +35,7 @@ class _ContainerLogsViewState extends State<ContainerLogsView> {
     });
 
     try {
-      final logs = await _service.getContainerLogs(widget.containerId, tail: '1000');
+      final logs = await _service.getContainerLogs(widget.containerName, tail: '1000');
       if (!mounted) return;
       setState(() {
         _logs = logs;

@@ -94,11 +94,11 @@ class ContainerService extends BaseComponent {
     });
   }
 
-  Future<String> getContainerLogs(String containerId, {String? since, String? tail}) {
+  Future<String> getContainerLogs(String containerName, {String? since, String? tail}) {
     return runGuarded(() async {
       final api = await _ensureApi();
       final response = await api.getContainerLogs(
-        container: containerId,
+        container: containerName,
         since: since,
         tail: tail,
       );
@@ -106,7 +106,28 @@ class ContainerService extends BaseComponent {
       final data = response.data;
       if (data == null) return '';
       
-      if (data is String) return data;
+      if (data is String) {
+        // Handle SSE format: "data: log content"
+        if (data.contains('data:')) {
+          final lines = data.split('\n');
+          final logs = <String>[];
+          for (final line in lines) {
+            if (line.trim().isEmpty) continue;
+            if (line.startsWith('data:')) {
+              var content = line.substring(5);
+              if (content.startsWith(' ')) {
+                content = content.substring(1);
+              }
+              logs.add(content);
+            } else {
+              logs.add(line);
+            }
+          }
+          return logs.join('\n');
+        }
+        return data;
+      }
+      
       if (data is Map) {
         // If it's a map, try to find 'data' or return toString
         if (data.containsKey('data')) return data['data'].toString();

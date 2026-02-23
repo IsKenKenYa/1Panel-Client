@@ -60,7 +60,7 @@ class _ContainerDetailPageState extends State<ContainerDetailPage>
         controller: _tabController,
         children: [
           _InfoTab(container: _container, service: _service),
-          ContainerLogsView(containerId: _container.id),
+          ContainerLogsView(containerName: _container.name),
           ContainerStatsView(containerId: _container.id),
           _TerminalTab(),
         ],
