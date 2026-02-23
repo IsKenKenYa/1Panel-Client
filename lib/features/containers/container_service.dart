@@ -97,17 +97,34 @@ class ContainerService extends BaseComponent {
   Future<String> getContainerLogs(String containerId, {String? since, String? tail}) {
     return runGuarded(() async {
       final api = await _ensureApi();
-      // Using downloadContainerLog for now as it returns string content
-      // Or we can use getContainerLogs if we want structured logs
-      final response = await api.downloadContainerLog(containerId);
-      return response.data ?? '';
+      final response = await api.getContainerLogs(
+        container: containerId,
+        since: since,
+        tail: tail,
+      );
+      
+      final data = response.data;
+      if (data == null) return '';
+      
+      if (data is String) return data;
+      if (data is Map) {
+        // If it's a map, try to find 'data' or return toString
+        if (data.containsKey('data')) return data['data'].toString();
+        return data.toString();
+      }
+      if (data is List) return data.join('\n');
+      
+      return data.toString();
     });
   }
 
-  Future<String> inspectContainer(String containerName) {
+  Future<String> inspectContainer(String containerId) {
     return runGuarded(() async {
       final api = await _ensureApi();
-      final response = await api.inspectContainer(InspectReq(name: containerName));
+      final response = await api.inspectContainer(InspectReq(
+        id: containerId,
+        type: 'container',
+      ));
       return response.data ?? '';
     });
   }

@@ -95,7 +95,7 @@ class _InfoTabState extends State<_InfoTab> {
 
   Future<void> _loadInspectData() async {
     try {
-      final data = await widget.service.inspectContainer(widget.container.name);
+      final data = await widget.service.inspectContainer(widget.container.id);
       if (!mounted) return;
       setState(() {
         _inspectData = data;

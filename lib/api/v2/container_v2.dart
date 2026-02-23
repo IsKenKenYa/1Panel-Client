@@ -297,7 +297,7 @@ class ContainerV2Api {
   }
 
   /// 获取容器日志
-  Future<Response<Map<String, dynamic>>> getContainerLogs({
+  Future<Response<dynamic>> getContainerLogs({
     required String container,
     String? since,
     bool? follow,
@@ -312,8 +312,10 @@ class ContainerV2Api {
       ApiConstants.buildApiPath('/containers/search/log'),
       queryParameters: queryParams,
     );
+    
+    // Return the raw 'data' field which might be String, List, or Map
     return Response(
-      data: _Parser.extractMapData(response),
+      data: response.data?['data'],
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,

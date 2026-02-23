@@ -200,13 +200,13 @@ class ContainerOperation extends Equatable {
 
 /// 容器统计信息模型
 class ContainerStats extends Equatable {
-  final int cache;
+  final num cache;
   final double cpuPercent;
-  final int ioRead;
-  final int ioWrite;
-  final int memory;
-  final int networkRX;
-  final int networkTX;
+  final num ioRead;
+  final num ioWrite;
+  final num memory;
+  final num networkRX;
+  final num networkTX;
   final String? shotTime;
 
   const ContainerStats({
@@ -222,13 +222,13 @@ class ContainerStats extends Equatable {
 
   factory ContainerStats.fromJson(Map<String, dynamic> json) {
     return ContainerStats(
-      cache: json['cache'] as int? ?? 0,
+      cache: json['cache'] as num? ?? 0,
       cpuPercent: (json['cpuPercent'] as num?)?.toDouble() ?? 0.0,
-      ioRead: json['ioRead'] as int? ?? 0,
-      ioWrite: json['ioWrite'] as int? ?? 0,
-      memory: json['memory'] as int? ?? 0,
-      networkRX: json['networkRX'] as int? ?? 0,
-      networkTX: json['networkTX'] as int? ?? 0,
+      ioRead: json['ioRead'] as num? ?? 0,
+      ioWrite: json['ioWrite'] as num? ?? 0,
+      memory: json['memory'] as num? ?? 0,
+      networkRX: json['networkRX'] as num? ?? 0,
+      networkTX: json['networkTX'] as num? ?? 0,
       shotTime: json['shotTime'] as String?,
     );
   }
@@ -1285,26 +1285,30 @@ class ContainerCreateByCommand extends Equatable {
 
 /// 容器检查请求模型
 class InspectReq extends Equatable {
-  final String name;
+  final String id;
+  final String type;
 
   const InspectReq({
-    required this.name,
+    required this.id,
+    required this.type,
   });
 
   factory InspectReq.fromJson(Map<String, dynamic> json) {
     return InspectReq(
-      name: json['name'] as String,
+      id: json['id'] as String,
+      type: json['type'] as String,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'name': name,
+      'id': id,
+      'type': type,
     };
   }
 
   @override
-  List<Object?> get props => [name];
+  List<Object?> get props => [id, type];
 }
 
 /// 镜像构建模型
