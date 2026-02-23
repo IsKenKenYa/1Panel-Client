@@ -1036,5 +1036,6 @@
   "logModeScrollPage": "Scroll Page",
   "themeDynamicColor": "Dynamic Color",
   "themeDynamicColorDesc": "Use wallpaper color as theme color",
-  "themeSeedColor": "Theme Color"
+  "themeSeedColor": "Custom Color",
+  "themeSeedColorFallbackDesc": "Used when dynamic color is unavailable"
 }

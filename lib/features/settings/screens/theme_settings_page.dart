@@ -82,60 +82,70 @@ class ThemeSettingsPage extends StatelessWidget {
               themeController.updateUseDynamicColor(value);
             },
           ),
-          if (!themeController.useDynamicColor) ...[
-            const Divider(),
-            _buildSectionHeader(context, l10n.themeSeedColor),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppDesignTokens.spacingLg,
-                vertical: AppDesignTokens.spacingSm,
-              ),
-              child: Wrap(
-                spacing: AppDesignTokens.spacingMd,
-                runSpacing: AppDesignTokens.spacingMd,
-                children: _presetColors.map((color) {
-                  final isSelected = themeController.seedColor.value == color.value;
-                  return GestureDetector(
-                    onTap: () {
-                      themeController.updateSeedColor(color);
-                    },
-                    child: Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: color,
-                        shape: BoxShape.circle,
-                        border: isSelected
-                            ? Border.all(
-                                color: theme.colorScheme.onSurface,
-                                width: 3,
-                              )
-                            : null,
-                        boxShadow: [
-                          if (isSelected)
-                            BoxShadow(
-                              color: theme.colorScheme.shadow.withOpacity(0.2),
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                        ],
-                      ),
-                      child: isSelected
-                          ? Icon(
-                              Icons.check,
-                              color:
-                                  ThemeData.estimateBrightnessForColor(color) ==
-                                          Brightness.dark
-                                      ? Colors.white
-                                      : Colors.black,
+          const Divider(),
+          _buildSectionHeader(context, l10n.themeSeedColor),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppDesignTokens.spacingLg,
+              vertical: AppDesignTokens.spacingSm,
+            ),
+            child: Text(
+              l10n.themeSeedColorFallbackDesc,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppDesignTokens.spacingLg,
+              vertical: AppDesignTokens.spacingSm,
+            ),
+            child: Wrap(
+              spacing: AppDesignTokens.spacingMd,
+              runSpacing: AppDesignTokens.spacingMd,
+              children: _presetColors.map((color) {
+                final isSelected = themeController.seedColor.value == color.value;
+                return GestureDetector(
+                  onTap: () {
+                    themeController.updateSeedColor(color);
+                  },
+                  child: Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: color,
+                      shape: BoxShape.circle,
+                      border: isSelected
+                          ? Border.all(
+                              color: theme.colorScheme.onSurface,
+                              width: 3,
                             )
                           : null,
+                      boxShadow: [
+                        if (isSelected)
+                          BoxShadow(
+                            color: theme.colorScheme.shadow.withOpacity(0.2),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                      ],
                     ),
-                  );
-                }).toList(),
-              ),
+                    child: isSelected
+                        ? Icon(
+                            Icons.check,
+                            color:
+                                ThemeData.estimateBrightnessForColor(color) ==
+                                        Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                          )
+                        : null,
+                  ),
+                );
+              }).toList(),
             ),
-          ],
+          ),
         ],
       ),
     );

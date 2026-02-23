@@ -974,5 +974,6 @@
   "logModeScrollPage": "整页滑动",
   "themeDynamicColor": "动态取色",
   "themeDynamicColorDesc": "使用壁纸颜色作为主题色",
-  "themeSeedColor": "主题色"
+  "themeSeedColor": "自定义颜色",
+  "themeSeedColorFallbackDesc": "当动态取色不可用时使用"
 }

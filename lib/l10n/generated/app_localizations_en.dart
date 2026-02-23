@@ -2530,5 +2530,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeDynamicColorDesc => 'Use wallpaper color as theme color';
 
   @override
-  String get themeSeedColor => 'Theme Color';
+  String get themeSeedColor => 'Custom Color';
+
+  @override
+  String get themeSeedColorFallbackDesc =>
+      'Used when dynamic color is unavailable';
 }

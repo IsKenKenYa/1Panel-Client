@@ -4907,8 +4907,14 @@ abstract class AppLocalizations {
   /// No description provided for @themeSeedColor.
   ///
   /// In en, this message translates to:
-  /// **'Theme Color'**
+  /// **'Custom Color'**
   String get themeSeedColor;
+
+  /// No description provided for @themeSeedColorFallbackDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Used when dynamic color is unavailable'**
+  String get themeSeedColorFallbackDesc;
 }
 
 class _AppLocalizationsDelegate

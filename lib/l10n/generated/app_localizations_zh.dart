@@ -2486,5 +2486,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get themeDynamicColorDesc => '使用壁纸颜色作为主题色';
 
   @override
-  String get themeSeedColor => '主题色';
+  String get themeSeedColor => '自定义颜色';
+
+  @override
+  String get themeSeedColorFallbackDesc => '当动态取色不可用时使用';
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:onepanelapp_app/core/theme/app_theme.dart';
 import 'package:onepanelapp_app/l10n/generated/app_localizations.dart';
 import 'log_viewer_controller.dart';
 import 'log_toolbar.dart';
@@ -87,72 +88,103 @@ class _LogViewerState extends State<LogViewer> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return ChangeNotifierProvider.value(
       value: widget.controller,
-      child: Column(
-        children: [
-          Consumer<LogViewerController>(
-            builder: (context, controller, _) {
-              return LogToolbar(
-                controller: controller,
-                isAutoScrolling: _isAutoScrolling,
-                onScrollToBottom: _scrollToBottom,
-                onRefresh: widget.onRefresh,
+      child: Consumer<LogViewerController>(
+        builder: (context, controller, child) {
+          // Determine the effective theme for the LogViewer
+          final appTheme = Theme.of(context);
+          ThemeData effectiveTheme = appTheme;
+
+          if (controller.settings.themeMode != ThemeMode.system) {
+            final targetBrightness = controller.settings.themeMode == ThemeMode.dark
+                ? Brightness.dark
+                : Brightness.light;
+
+            if (appTheme.brightness != targetBrightness) {
+              // We need to generate a new theme with the target brightness
+              // preserving the seed color if possible
+              final seedColor = appTheme.colorScheme.primary;
+              final scheme = ColorScheme.fromSeed(
+                seedColor: seedColor,
+                brightness: targetBrightness,
               );
-            },
-          ),
-          Expanded(
-            child: Consumer<LogViewerController>(
-              builder: (context, controller, _) {
-                if (controller.filteredLogs.isEmpty) {
-                  return Center(
-                    child: Text(
-                      controller.searchQuery.isEmpty 
-                          ? (widget.emptyMessage ?? AppLocalizations.of(context)!.logNoLogs) 
-                          : AppLocalizations.of(context)!.logNoMatches,
-                      style: TextStyle(color: colorScheme.onSurfaceVariant),
-                    ),
-                  );
-                }
+              effectiveTheme = AppTheme.create(scheme);
+            }
+          }
 
-                Widget listView = ListView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  itemCount: controller.filteredLogs.length,
-                  itemBuilder: (context, index) {
-                    return LogLineWidget(
-                      index: index + 1,
-                      line: controller.filteredLogs[index],
-                      settings: controller.settings,
-                      query: controller.searchQuery,
-                      firstLogTimestamp: controller.firstLogTimestamp,
-                    );
-                  },
-                );
+          // Apply the effective theme to the subtree
+          return Theme(
+            data: effectiveTheme,
+            child: Builder(
+              builder: (context) {
+                final colorScheme = Theme.of(context).colorScheme;
+                return Container(
+                  color: colorScheme.surface,
+                  child: Column(
+                    children: [
+                      LogToolbar(
+                        controller: controller,
+                        isAutoScrolling: _isAutoScrolling,
+                        onScrollToBottom: _scrollToBottom,
+                        onRefresh: widget.onRefresh,
+                      ),
+                      Expanded(
+                        child: Builder(
+                          builder: (context) {
+                            if (controller.filteredLogs.isEmpty) {
+                              return Center(
+                                child: Text(
+                                  controller.searchQuery.isEmpty 
+                                      ? (widget.emptyMessage ?? AppLocalizations.of(context)!.logNoLogs) 
+                                      : AppLocalizations.of(context)!.logNoMatches,
+                                  style: TextStyle(color: colorScheme.onSurfaceVariant),
+                                ),
+                              );
+                            }
 
-                if (controller.settings.viewMode == LogViewMode.scrollPage) {
-                  return Scrollbar(
-                    controller: _horizontalScrollController,
-                    thumbVisibility: true,
-                    trackVisibility: true,
-                    child: SingleChildScrollView(
-                      controller: _horizontalScrollController,
-                      scrollDirection: Axis.horizontal,
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 3,
-                        child: listView,
+                          Widget listView = ListView.builder(
+                            controller: _scrollController,
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            itemCount: controller.filteredLogs.length,
+                            itemBuilder: (context, index) {
+                              return LogLineWidget(
+                                index: index + 1,
+                                line: controller.filteredLogs[index],
+                                settings: controller.settings,
+                                query: controller.searchQuery,
+                                firstLogTimestamp: controller.firstLogTimestamp,
+                              );
+                            },
+                          );
+
+                          if (controller.settings.viewMode == LogViewMode.scrollPage) {
+                            return Scrollbar(
+                              controller: _horizontalScrollController,
+                              thumbVisibility: true,
+                              trackVisibility: true,
+                              child: SingleChildScrollView(
+                                controller: _horizontalScrollController,
+                                scrollDirection: Axis.horizontal,
+                                child: SizedBox(
+                                  width: MediaQuery.of(context).size.width * 3,
+                                  child: listView,
+                                ),
+                              ),
+                            );
+                          }
+
+                          return listView;
+                        },
                       ),
                     ),
-                  );
-                }
-
-                return listView;
+                  ],
+                  ),
+                );
               },
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
