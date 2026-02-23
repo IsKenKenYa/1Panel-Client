@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanelapp_app/features/containers/widgets/log_viewer_controller.dart';
+import 'package:onepanelapp_app/shared/widgets/log_viewer/log_viewer_controller.dart';
 
 void main() {
   group('LogViewerController', () {
