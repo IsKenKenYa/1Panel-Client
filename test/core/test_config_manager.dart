@@ -117,7 +117,7 @@ class TestEnvironment {
   }
 
   static String get baseUrl => config.getString('PANEL_BASE_URL', defaultValue: 'http://localhost:9999');
-  static String get apiKey => config.getString('PANEL_API_KEY');
+  static String get apiKey => runIntegrationTests ? config.getString('PANEL_API_KEY') : '';
   static String get apiVersion => config.getString('API_VERSION', defaultValue: 'v2');
   static int get tokenValidityMinutes => config.getInt('TOKEN_VALIDITY_MINUTES', defaultValue: 0);
 

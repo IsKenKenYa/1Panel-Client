@@ -76,12 +76,12 @@ class WebsitesProvider extends ChangeNotifier {
       await _ensureApiClient();
 
       // 获取网站列表
-      final response = await _websiteApi!.getWebsites(
+      final result = await _websiteApi!.getWebsites(
         page: 1,
         pageSize: 100,
       );
 
-      final websites = response.data?.items ?? [];
+      final websites = result.items;
 
       // 计算统计
       int running = 0, stopped = 0;
@@ -116,7 +116,7 @@ class WebsitesProvider extends ChangeNotifier {
   Future<bool> startWebsite(int websiteId) async {
     try {
       await _ensureApiClient();
-      await _websiteApi!.startWebsite([websiteId]);
+      await _websiteApi!.startWebsite(websiteId);
       await loadWebsites(); // 刷新列表
       return true;
     } catch (e) {
@@ -130,7 +130,7 @@ class WebsitesProvider extends ChangeNotifier {
   Future<bool> stopWebsite(int websiteId) async {
     try {
       await _ensureApiClient();
-      await _websiteApi!.stopWebsite([websiteId]);
+      await _websiteApi!.stopWebsite(websiteId);
       await loadWebsites(); // 刷新列表
       return true;
     } catch (e) {
@@ -144,7 +144,7 @@ class WebsitesProvider extends ChangeNotifier {
   Future<bool> restartWebsite(int websiteId) async {
     try {
       await _ensureApiClient();
-      await _websiteApi!.restartWebsite([websiteId]);
+      await _websiteApi!.restartWebsite(websiteId);
       await loadWebsites(); // 刷新列表
       return true;
     } catch (e) {
@@ -158,7 +158,7 @@ class WebsitesProvider extends ChangeNotifier {
   Future<bool> deleteWebsite(int websiteId) async {
     try {
       await _ensureApiClient();
-      await _websiteApi!.deleteWebsite([websiteId]);
+      await _websiteApi!.deleteWebsite(websiteId);
       await loadWebsites(); // 刷新列表
       return true;
     } catch (e) {

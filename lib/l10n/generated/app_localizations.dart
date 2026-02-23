@@ -146,6 +146,18 @@ abstract class AppLocalizations {
   /// **'More'**
   String get commonMore;
 
+  /// No description provided for @commonAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get commonAdd;
+
+  /// No description provided for @commonLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Load'**
+  String get commonLoad;
+
   /// No description provided for @commonSave.
   ///
   /// In en, this message translates to:
@@ -193,6 +205,264 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to load'**
   String get commonLoadFailedTitle;
+
+  /// No description provided for @websitesPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Websites'**
+  String get websitesPageTitle;
+
+  /// No description provided for @websitesStatsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Statistics'**
+  String get websitesStatsTitle;
+
+  /// No description provided for @websitesStatsTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get websitesStatsTotal;
+
+  /// No description provided for @websitesStatsRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Running'**
+  String get websitesStatsRunning;
+
+  /// No description provided for @websitesStatsStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped'**
+  String get websitesStatsStopped;
+
+  /// No description provided for @websitesEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No websites'**
+  String get websitesEmptyTitle;
+
+  /// No description provided for @websitesEmptySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a website in 1Panel first.'**
+  String get websitesEmptySubtitle;
+
+  /// No description provided for @websitesUnknownDomain.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown website'**
+  String get websitesUnknownDomain;
+
+  /// No description provided for @websitesStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get websitesStatusLabel;
+
+  /// No description provided for @websitesTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get websitesTypeLabel;
+
+  /// No description provided for @websitesStatusRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Running'**
+  String get websitesStatusRunning;
+
+  /// No description provided for @websitesStatusStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped'**
+  String get websitesStatusStopped;
+
+  /// No description provided for @websitesActionStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get websitesActionStart;
+
+  /// No description provided for @websitesActionStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get websitesActionStop;
+
+  /// No description provided for @websitesActionRestart.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart'**
+  String get websitesActionRestart;
+
+  /// No description provided for @websitesActionDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get websitesActionDelete;
+
+  /// No description provided for @websitesOperateSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Operation successful'**
+  String get websitesOperateSuccess;
+
+  /// No description provided for @websitesOperateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Operation failed'**
+  String get websitesOperateFailed;
+
+  /// No description provided for @websitesDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete website'**
+  String get websitesDeleteTitle;
+
+  /// No description provided for @websitesDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete {domain}? This action cannot be undone.'**
+  String websitesDeleteMessage(String domain);
+
+  /// No description provided for @websitesDeleteSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Website deleted'**
+  String get websitesDeleteSuccess;
+
+  /// No description provided for @websitesDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Website'**
+  String get websitesDetailTitle;
+
+  /// No description provided for @websitesTabOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get websitesTabOverview;
+
+  /// No description provided for @websitesTabConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Config'**
+  String get websitesTabConfig;
+
+  /// No description provided for @websitesTabDomains.
+  ///
+  /// In en, this message translates to:
+  /// **'Domains'**
+  String get websitesTabDomains;
+
+  /// No description provided for @websitesTabSsl.
+  ///
+  /// In en, this message translates to:
+  /// **'SSL'**
+  String get websitesTabSsl;
+
+  /// No description provided for @websitesTabRewrite.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewrite'**
+  String get websitesTabRewrite;
+
+  /// No description provided for @websitesTabProxy.
+  ///
+  /// In en, this message translates to:
+  /// **'Proxy'**
+  String get websitesTabProxy;
+
+  /// No description provided for @websitesConfigHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Nginx config content'**
+  String get websitesConfigHint;
+
+  /// No description provided for @websitesJsonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'JSON content'**
+  String get websitesJsonHint;
+
+  /// No description provided for @websitesDomainAddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add domain'**
+  String get websitesDomainAddTitle;
+
+  /// No description provided for @websitesDomainLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Domain'**
+  String get websitesDomainLabel;
+
+  /// No description provided for @websitesDomainEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No domains'**
+  String get websitesDomainEmpty;
+
+  /// No description provided for @websitesDomainDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get websitesDomainDefault;
+
+  /// No description provided for @websitesRewriteNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewrite name'**
+  String get websitesRewriteNameLabel;
+
+  /// No description provided for @websitesRewriteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewrite content'**
+  String get websitesRewriteHint;
+
+  /// No description provided for @websitesProxyNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Proxy name'**
+  String get websitesProxyNameLabel;
+
+  /// No description provided for @websitesProxyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Proxy content'**
+  String get websitesProxyHint;
+
+  /// No description provided for @openrestyPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'OpenResty'**
+  String get openrestyPageTitle;
+
+  /// No description provided for @openrestyTabStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get openrestyTabStatus;
+
+  /// No description provided for @openrestyTabHttps.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTPS'**
+  String get openrestyTabHttps;
+
+  /// No description provided for @openrestyTabModules.
+  ///
+  /// In en, this message translates to:
+  /// **'Modules'**
+  String get openrestyTabModules;
+
+  /// No description provided for @openrestyTabConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Config'**
+  String get openrestyTabConfig;
 
   /// No description provided for @monitorNetworkLabel.
   ///

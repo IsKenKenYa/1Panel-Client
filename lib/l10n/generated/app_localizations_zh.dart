@@ -33,6 +33,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get commonMore => '更多';
 
   @override
+  String get commonAdd => '添加';
+
+  @override
+  String get commonLoad => '加载';
+
+  @override
   String get commonSave => '保存';
 
   @override
@@ -55,6 +61,137 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get commonLoadFailedTitle => '加载失败';
+
+  @override
+  String get websitesPageTitle => '网站管理';
+
+  @override
+  String get websitesStatsTitle => '网站统计';
+
+  @override
+  String get websitesStatsTotal => '总数';
+
+  @override
+  String get websitesStatsRunning => '运行中';
+
+  @override
+  String get websitesStatsStopped => '已停止';
+
+  @override
+  String get websitesEmptyTitle => '暂无网站';
+
+  @override
+  String get websitesEmptySubtitle => '请先在 1Panel 中创建网站。';
+
+  @override
+  String get websitesUnknownDomain => '未知网站';
+
+  @override
+  String get websitesStatusLabel => '状态';
+
+  @override
+  String get websitesTypeLabel => '类型';
+
+  @override
+  String get websitesStatusRunning => '运行中';
+
+  @override
+  String get websitesStatusStopped => '已停止';
+
+  @override
+  String get websitesActionStart => '启动';
+
+  @override
+  String get websitesActionStop => '停止';
+
+  @override
+  String get websitesActionRestart => '重启';
+
+  @override
+  String get websitesActionDelete => '删除';
+
+  @override
+  String get websitesOperateSuccess => '操作成功';
+
+  @override
+  String get websitesOperateFailed => '操作失败';
+
+  @override
+  String get websitesDeleteTitle => '删除网站';
+
+  @override
+  String websitesDeleteMessage(String domain) {
+    return '确定要删除 $domain 吗？此操作不可撤销。';
+  }
+
+  @override
+  String get websitesDeleteSuccess => '网站已删除';
+
+  @override
+  String get websitesDetailTitle => '网站';
+
+  @override
+  String get websitesTabOverview => '概览';
+
+  @override
+  String get websitesTabConfig => '配置';
+
+  @override
+  String get websitesTabDomains => '域名';
+
+  @override
+  String get websitesTabSsl => 'SSL';
+
+  @override
+  String get websitesTabRewrite => '伪静态';
+
+  @override
+  String get websitesTabProxy => '反向代理';
+
+  @override
+  String get websitesConfigHint => 'Nginx 配置内容';
+
+  @override
+  String get websitesJsonHint => 'JSON 内容';
+
+  @override
+  String get websitesDomainAddTitle => '添加域名';
+
+  @override
+  String get websitesDomainLabel => '域名';
+
+  @override
+  String get websitesDomainEmpty => '暂无域名';
+
+  @override
+  String get websitesDomainDefault => '默认';
+
+  @override
+  String get websitesRewriteNameLabel => '规则名称';
+
+  @override
+  String get websitesRewriteHint => '伪静态内容';
+
+  @override
+  String get websitesProxyNameLabel => '代理名称';
+
+  @override
+  String get websitesProxyHint => '代理内容';
+
+  @override
+  String get openrestyPageTitle => 'OpenResty';
+
+  @override
+  String get openrestyTabStatus => '状态';
+
+  @override
+  String get openrestyTabHttps => 'HTTPS';
+
+  @override
+  String get openrestyTabModules => '模块';
+
+  @override
+  String get openrestyTabConfig => '配置';
 
   @override
   String get monitorNetworkLabel => '网络';

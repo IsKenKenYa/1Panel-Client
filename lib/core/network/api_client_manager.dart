@@ -14,6 +14,7 @@ import '../../api/v2/setting_v2.dart';
 import '../../api/v2/terminal_v2.dart';
 import '../../api/v2/update_v2.dart';
 import '../../api/v2/website_v2.dart';
+import '../../api/v2/openresty_v2.dart';
 import '../../api/v2/docker_v2.dart';
 import '../../api/v2/compose_v2.dart';
 
@@ -76,6 +77,11 @@ class ApiClientManager {
   Future<WebsiteV2Api> getWebsiteApi() async {
     final client = await getCurrentClient();
     return WebsiteV2Api(client);
+  }
+
+  Future<OpenRestyV2Api> getOpenRestyApi() async {
+    final client = await getCurrentClient();
+    return OpenRestyV2Api(client);
   }
 
   Future<DashboardV2Api> getDashboardApi() async {

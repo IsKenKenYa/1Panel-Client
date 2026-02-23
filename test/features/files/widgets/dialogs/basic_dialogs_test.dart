@@ -15,6 +15,7 @@ import 'package:onepanelapp_app/features/files/widgets/dialogs/search_dialog.dar
 import 'package:onepanelapp_app/features/files/widgets/dialogs/sort_options_dialog.dart';
 import 'package:onepanelapp_app/features/files/models/models.dart';
 import 'package:onepanelapp_app/features/files/files_provider.dart';
+import 'package:onepanelapp_app/l10n/generated/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 class _MockFilesProvider extends FilesProvider {
@@ -88,6 +89,8 @@ void main() {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         ),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: ChangeNotifierProvider<_MockFilesProvider>(
           create: (_) => _MockFilesProvider(),
           child: Scaffold(
@@ -116,6 +119,8 @@ void main() {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         ),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: ChangeNotifierProvider<_MockFilesProvider>(
           create: (_) => _MockFilesProvider(),
           child: Scaffold(
@@ -150,6 +155,8 @@ void main() {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         ),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: Builder(
             builder: (context) => TextButton(
@@ -157,7 +164,7 @@ void main() {
                 context,
                 _MockFilesProvider(),
                 file,
-                MaterialLocalizations.of(context),
+                AppLocalizations.of(context),
               ),
               child: const Text('Show Dialog'),
             ),
@@ -186,6 +193,8 @@ void main() {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         ),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: Builder(
             builder: (context) => TextButton(
@@ -193,7 +202,7 @@ void main() {
                 context,
                 _MockFilesProvider(),
                 file,
-                MaterialLocalizations.of(context),
+                AppLocalizations.of(context),
               ),
               child: const Text('Show Dialog'),
             ),
@@ -222,6 +231,8 @@ void main() {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         ),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: Builder(
             builder: (context) => TextButton(
@@ -229,7 +240,7 @@ void main() {
                 context,
                 _MockFilesProvider(),
                 file,
-                MaterialLocalizations.of(context),
+                AppLocalizations.of(context),
               ),
               child: const Text('Show Dialog'),
             ),
@@ -258,6 +269,8 @@ void main() {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         ),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: Builder(
             builder: (context) => TextButton(
@@ -265,7 +278,7 @@ void main() {
                 context,
                 _MockFilesProvider(),
                 file,
-                MaterialLocalizations.of(context),
+                AppLocalizations.of(context),
               ),
               child: const Text('Show Dialog'),
             ),
@@ -287,6 +300,8 @@ void main() {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         ),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: Builder(
             builder: (context) => TextButton(
@@ -294,7 +309,7 @@ void main() {
                 context,
                 _MockFilesProvider(),
                 ['/home/test.txt'],
-                MaterialLocalizations.of(context),
+                AppLocalizations.of(context),
               ),
               child: const Text('Show Dialog'),
             ),
@@ -316,13 +331,15 @@ void main() {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         ),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: Builder(
             builder: (context) => TextButton(
               onPressed: () => showDeleteConfirmDialog(
                 context,
                 _MockFilesProvider(),
-                MaterialLocalizations.of(context),
+                AppLocalizations.of(context),
               ),
               child: const Text('Show Dialog'),
             ),
@@ -344,13 +361,15 @@ void main() {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         ),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: Builder(
             builder: (context) => TextButton(
               onPressed: () => showBatchMoveDialog(
                 context,
                 _MockFilesProvider(),
-                MaterialLocalizations.of(context),
+                AppLocalizations.of(context),
               ),
               child: const Text('Show Dialog'),
             ),
@@ -372,13 +391,15 @@ void main() {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         ),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: Builder(
             builder: (context) => TextButton(
               onPressed: () => showBatchCopyDialog(
                 context,
                 _MockFilesProvider(),
-                MaterialLocalizations.of(context),
+                AppLocalizations.of(context),
               ),
               child: const Text('Show Dialog'),
             ),
@@ -400,6 +421,8 @@ void main() {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         ),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: ChangeNotifierProvider<_MockFilesProvider>(
           create: (_) => _MockFilesProvider(),
           child: Scaffold(
@@ -427,6 +450,8 @@ void main() {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         ),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: ChangeNotifierProvider<_MockFilesProvider>(
           create: (_) => _MockFilesProvider(),
           child: Scaffold(

@@ -20,6 +20,8 @@ import 'package:onepanelapp_app/features/apps/apps_page.dart';
 import 'package:onepanelapp_app/features/apps/app_detail_page.dart';
 import 'package:onepanelapp_app/features/apps/installed_app_detail_page.dart';
 import 'package:onepanelapp_app/data/models/app_models.dart';
+import 'package:onepanelapp_app/features/websites/websites_page.dart';
+import 'package:onepanelapp_app/features/openresty/openresty_page.dart';
 
 import 'package:onepanelapp_app/features/containers/container_detail_page.dart';
 import 'package:onepanelapp_app/data/models/container_models.dart';
@@ -143,8 +145,9 @@ class AppRouter {
 
       // Legacy routes redirect to the new shell.
       case '/websites':
-        return MaterialPageRoute(
-            builder: (_) => const AppShellPage(initialIndex: 0));
+        return MaterialPageRoute(builder: (_) => const WebsitesPage());
+      case '/openresty':
+        return MaterialPageRoute(builder: (_) => const OpenRestyPage());
       case '/backups':
       case '/help':
       case '/website-create':

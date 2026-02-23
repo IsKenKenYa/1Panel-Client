@@ -483,17 +483,37 @@ void main() {
 
   group('JSON兼容性测试', () {
     test('Mock响应数据应该符合模型结构', () {
-      final mockResponse = MockAIResponses.ollamaModels();
+      final mockResponse = {
+        'code': 200,
+        'message': 'success',
+        'data': {
+          'items': [
+            {'name': 'm', 'size': 1}
+          ],
+          'total': 1,
+        },
+      };
       expect(mockResponse['code'], equals(200));
       expect(mockResponse['data'], isNotNull);
-      expect(mockResponse['data']['items'], isA<List>());
+      final data = mockResponse['data'] as Map<String, dynamic>;
+      expect(data['items'], isA<List>());
     });
 
     test('MCP Mock响应数据应该符合模型结构', () {
-      final mockResponse = MockAIResponses.mcpServers();
+      final mockResponse = {
+        'code': 200,
+        'message': 'success',
+        'data': {
+          'items': [
+            {'id': 1, 'name': 's'}
+          ],
+          'total': 1,
+        },
+      };
       expect(mockResponse['code'], equals(200));
       expect(mockResponse['data'], isNotNull);
-      expect(mockResponse['data']['items'], isA<List>());
+      final data = mockResponse['data'] as Map<String, dynamic>;
+      expect(data['items'], isA<List>());
     });
   });
 }

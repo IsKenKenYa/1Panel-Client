@@ -1,50 +1,29 @@
 import 'package:dio/dio.dart';
 import '../../core/network/dio_client.dart';
 import '../../core/config/api_constants.dart';
-import '../../data/models/website_models.dart';
 import '../../data/models/common_models.dart';
+import '../../data/models/file/file_info.dart';
+import '../../data/models/website_models.dart';
 
 class WebsiteV2Api {
   final DioClient _client;
 
   WebsiteV2Api(this._client);
 
-  /// 创建网站
-  ///
-  /// 创建一个新的网站
-  /// @param website 网站配置信息
-  /// @return 创建结果
-  Future<Response> createWebsite(WebsiteCreate website) async {
-    return await _client.post(
-      ApiConstants.buildApiPath('/websites'),
-      data: website.toJson(),
-    );
+  static Map<String, dynamic> _extractMapData(Response<Map<String, dynamic>> response) {
+    final body = response.data;
+    if (body == null) return <String, dynamic>{};
+    final data = body['data'];
+    if (data is Map<String, dynamic>) return data;
+    return <String, dynamic>{};
   }
 
-  /// 删除网站
-  ///
-  /// 删除指定的网站
-  /// @param ids 网站ID列表
-  /// @return 删除结果
-  Future<Response> deleteWebsite(List<int> ids) async {
-    final operation = BatchDelete(ids: ids);
-    return await _client.post(
-      ApiConstants.buildApiPath('/websites/del'),
-      data: operation.toJson(),
-    );
-  }
-
-  /// 更新网站
-  ///
-  /// 更新指定的网站
-  /// @param id 网站ID
-  /// @param website 更新的网站信息
-  /// @return 更新结果
-  Future<Response> updateWebsite(int id, WebsiteCreate website) async {
-    return await _client.post(
-      ApiConstants.buildApiPath('/websites/$id/update'),
-      data: website.toJson(),
-    );
+  static List<dynamic> _extractListData(Response<Map<String, dynamic>> response) {
+    final body = response.data;
+    if (body == null) return const <dynamic>[];
+    final data = body['data'];
+    if (data is List) return data;
+    return const <dynamic>[];
   }
 
   /// 获取网站列表
@@ -56,7 +35,7 @@ class WebsiteV2Api {
   /// @param page 页码（可选，默认为1）
   /// @param pageSize 每页数量（可选，默认为10）
   /// @return 网站列表
-  Future<Response<PageResult<WebsiteInfo>>> getWebsites({
+  Future<PageResult<WebsiteInfo>> getWebsites({
     String? name,
     String? type,
     String? status,
@@ -74,18 +53,13 @@ class WebsiteV2Api {
       type: type,
       status: status,
     );
-    final response = await _client.post(
+    final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/websites/search'),
       data: request.toJson(),
     );
-    return Response(
-      data: PageResult.fromJson(
-        response.data as Map<String, dynamic>,
-        (json) => WebsiteInfo.fromJson(json as Map<String, dynamic>),
-      ),
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
+    return PageResult.fromJson(
+      _extractMapData(response),
+      (json) => WebsiteInfo.fromJson(json as Map<String, dynamic>),
     );
   }
 
@@ -94,254 +68,176 @@ class WebsiteV2Api {
   /// 获取指定网站的详细信息
   /// @param id 网站ID
   /// @return 网站详情
-  Future<Response<WebsiteInfo>> getWebsiteDetail(int id) async {
-    final response = await _client.get(
+  Future<WebsiteInfo> getWebsiteDetail(int id) async {
+    final response = await _client.get<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/websites/$id'),
     );
-    return Response(
-      data: WebsiteInfo.fromJson(response.data as Map<String, dynamic>),
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
-    );
+    return WebsiteInfo.fromJson(_extractMapData(response));
   }
 
-  /// 启动网站
-  ///
-  /// 启动指定的网站
-  /// @param ids 网站ID列表
-  /// @return 启动结果
-  Future<Response> startWebsite(List<int> ids) async {
-    final operation = BatchDelete(ids: ids);
-    return await _client.post(
-      ApiConstants.buildApiPath('/websites/start'),
+  Future<void> deleteWebsite(int id) async {
+    final operation = BatchDelete(ids: [id]);
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/del'),
       data: operation.toJson(),
     );
   }
 
-  /// 停止网站
-  ///
-  /// 停止指定的网站
-  /// @param ids 网站ID列表
-  /// @return 停止结果
-  Future<Response> stopWebsite(List<int> ids) async {
-    final operation = BatchDelete(ids: ids);
-    return await _client.post(
-      ApiConstants.buildApiPath('/websites/stop'),
-      data: operation.toJson(),
+  Future<void> operateWebsite({
+    required int id,
+    required String operate,
+  }) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/operate'),
+      data: {
+        'id': id,
+        'operate': operate,
+      },
     );
   }
 
-  /// 重启网站
-  ///
-  /// 重启指定的网站
-  /// @param ids 网站ID列表
-  /// @return 重启结果
-  Future<Response> restartWebsite(List<int> ids) async {
-    final operation = BatchDelete(ids: ids);
-    return await _client.post(
-      ApiConstants.buildApiPath('/websites/restart'),
-      data: operation.toJson(),
+  Future<void> startWebsite(int id) => operateWebsite(id: id, operate: 'start');
+
+  Future<void> stopWebsite(int id) => operateWebsite(id: id, operate: 'stop');
+
+  Future<void> restartWebsite(int id) => operateWebsite(id: id, operate: 'restart');
+
+  Future<FileInfo> getWebsiteConfigFile({
+    required int id,
+    required String type,
+  }) async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/$id/config/$type'),
+    );
+    return FileInfo.fromJson(_extractMapData(response));
+  }
+
+  Future<void> updateWebsiteNginxConfig({
+    required int id,
+    required String content,
+  }) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/nginx/update'),
+      data: {
+        'id': id,
+        'content': content,
+      },
     );
   }
 
-  /// 获取网站SSL证书
-  ///
-  /// 获取指定网站的SSL证书
-  /// @param id 网站ID
-  /// @return SSL证书
-  Future<Response<SSLCertificateInfo>> getWebsiteSSL(int id) async {
-    final response = await _client.get(
-      ApiConstants.buildApiPath('/websites/$id/ssl'),
+  Future<List<WebsiteDomain>> getWebsiteDomains(int websiteId) async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/domains/$websiteId'),
     );
-    return Response(
-      data: SSLCertificateInfo.fromJson(response.data as Map<String, dynamic>),
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
+
+    final list = _extractListData(response);
+    return list.map((e) => WebsiteDomain.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
+  Future<void> addWebsiteDomains({
+    required int websiteId,
+    required List<Map<String, dynamic>> domains,
+  }) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/domains'),
+      data: {
+        'websiteID': websiteId,
+        'domains': domains,
+      },
     );
   }
 
-  /// 为网站设置SSL证书
-  ///
-  /// 为指定网站设置SSL证书
-  /// @param id 网站ID
-  /// @param sslId SSL证书ID
-  /// @return 设置结果
-  Future<Response> setWebsiteSSL(int id, int sslId) async {
-    final data = {
-      'sslId': sslId,
-    };
-    return await _client.post(
-      ApiConstants.buildApiPath('/websites/$id/ssl'),
-      data: data,
+  Future<void> deleteWebsiteDomain({required int id}) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/domains/del'),
+      data: {
+        'id': id,
+      },
     );
   }
 
-  /// 删除网站SSL证书
-  ///
-  /// 删除指定网站的SSL证书
-  /// @param id 网站ID
-  /// @return 删除结果
-  Future<Response> deleteWebsiteSSL(int id) async {
-    return await _client.post(
-      ApiConstants.buildApiPath('/websites/$id/ssl/del'),
+  Future<void> updateWebsiteDomainSsl({
+    required int id,
+    bool? ssl,
+  }) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/domains/update'),
+      data: {
+        'id': id,
+        if (ssl != null) 'ssl': ssl,
+      },
     );
   }
 
-  /// 获取网站配置
-  ///
-  /// 获取指定网站的配置
-  /// @param id 网站ID
-  /// @return 网站配置
-  Future<Response<WebsiteConfig>> getWebsiteConfig(int id) async {
-    final response = await _client.get(
-      ApiConstants.buildApiPath('/websites/$id/config'),
+  Future<Map<String, dynamic>> getWebsiteHttps(int websiteId) async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/$websiteId/https'),
     );
-    return Response(
-      data: WebsiteConfig.fromJson(response.data as Map<String, dynamic>),
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
+    return _extractMapData(response);
+  }
+
+  Future<Map<String, dynamic>> updateWebsiteHttps({
+    required int websiteId,
+    required Map<String, dynamic> request,
+  }) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/$websiteId/https'),
+      data: request,
+    );
+    return _extractMapData(response);
+  }
+
+  Future<Map<String, dynamic>> getWebsiteRewrite({
+    required int websiteId,
+    required String name,
+  }) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/rewrite'),
+      data: {
+        'websiteId': websiteId,
+        'name': name,
+      },
+    );
+    return _extractMapData(response);
+  }
+
+  Future<void> updateWebsiteRewrite({
+    required int websiteId,
+    required String name,
+    required String content,
+  }) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/rewrite/update'),
+      data: {
+        'websiteId': websiteId,
+        'name': name,
+        'content': content,
+      },
     );
   }
 
-  /// 更新网站配置
-  ///
-  /// 更新指定网站的配置
-  /// @param id 网站ID
-  /// @param config 网站配置
-  /// @return 更新结果
-  Future<Response> updateWebsiteConfig(int id, WebsiteConfig config) async {
-    return await _client.post(
-      ApiConstants.buildApiPath('/websites/$id/config'),
-      data: config.toJson(),
+  Future<Map<String, dynamic>> getWebsiteProxy({required int id}) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/proxies'),
+      data: {
+        'id': id,
+      },
     );
+    return _extractMapData(response);
   }
 
-  /// 获取网站伪静态规则
-  ///
-  /// 获取指定网站的伪静态规则
-  /// @param id 网站ID
-  /// @return 伪静态规则
-  Future<Response<WebsiteRewrite>> getWebsiteRewrite(int id) async {
-    final response = await _client.get(
-      ApiConstants.buildApiPath('/websites/$id/rewrite'),
-    );
-    return Response(
-      data: WebsiteRewrite.fromJson(response.data as Map<String, dynamic>),
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
-    );
-  }
-
-  /// 更新网站伪静态规则
-  ///
-  /// 更新指定网站的伪静态规则
-  /// @param id 网站ID
-  /// @param rewrite 伪静态规则
-  /// @return 更新结果
-  Future<Response> updateWebsiteRewrite(int id, WebsiteRewrite rewrite) async {
-    return await _client.post(
-      ApiConstants.buildApiPath('/websites/$id/rewrite'),
-      data: rewrite.toJson(),
-    );
-  }
-
-  /// 获取网站代理配置
-  ///
-  /// 获取指定网站的代理配置
-  /// @param id 网站ID
-  /// @return 代理配置
-  Future<Response<WebsiteProxy>> getWebsiteProxy(int id) async {
-    final response = await _client.get(
-      ApiConstants.buildApiPath('/websites/$id/proxy'),
-    );
-    return Response(
-      data: WebsiteProxy.fromJson(response.data as Map<String, dynamic>),
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
-    );
-  }
-
-  /// 更新网站代理配置
-  ///
-  /// 更新指定网站的代理配置
-  /// @param id 网站ID
-  /// @param proxy 代理配置
-  /// @return 更新结果
-  Future<Response> updateWebsiteProxy(int id, WebsiteProxy proxy) async {
-    return await _client.post(
-      ApiConstants.buildApiPath('/websites/$id/proxy'),
-      data: proxy.toJson(),
-    );
-  }
-
-  /// 获取网站流量统计
-  ///
-  /// 获取指定网站的流量统计
-  /// @param id 网站ID
-  /// @param timeRange 时间范围（可选，默认为1d）
-  /// @return 流量统计
-  Future<Response<WebsiteTraffic>> getWebsiteStatistics(int id, {String timeRange = '1d'}) async {
-    final data = {
-      'timeRange': timeRange,
-    };
-    final response = await _client.post(
-      ApiConstants.buildApiPath('/websites/$id/statistics'),
-      data: data,
-    );
-    return Response(
-      data: WebsiteTraffic.fromJson(response.data as Map<String, dynamic>),
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
-    );
-  }
-
-  /// 获取域名列表
-  ///
-  /// 获取指定网站的域名列表
-  /// @param id 网站ID
-  /// @return 域名列表
-  Future<Response<List<WebsiteDomain>>> getWebsiteDomains(int id) async {
-    final response = await _client.get(
-      ApiConstants.buildApiPath('/websites/$id/domains'),
-    );
-    return Response(
-      data: (response.data as List?)
-          ?.map((item) => WebsiteDomain.fromJson(item as Map<String, dynamic>))
-          .toList() ?? [],
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
-    );
-  }
-
-  /// 添加域名
-  ///
-  /// 为指定网站添加域名
-  /// @param id 网站ID
-  /// @param domain 域名信息
-  /// @return 添加结果
-  Future<Response> addWebsiteDomain(int id, WebsiteDomain domain) async {
-    return await _client.post(
-      ApiConstants.buildApiPath('/websites/$id/domains'),
-      data: domain.toJson(),
-    );
-  }
-
-  /// 删除域名
-  ///
-  /// 删除指定网站的域名
-  /// @param id 网站ID
-  /// @param domainId 域名ID
-  /// @return 删除结果
-  Future<Response> deleteWebsiteDomain(int id, int domainId) async {
-    return await _client.post(
-      ApiConstants.buildApiPath('/websites/$id/domains/$domainId/del'),
+  Future<void> updateWebsiteProxy({
+    required int websiteId,
+    required String name,
+    required String content,
+  }) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/proxies/update'),
+      data: {
+        'websiteID': websiteId,
+        'name': name,
+        'content': content,
+      },
     );
   }
 }

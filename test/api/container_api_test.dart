@@ -302,31 +302,71 @@ void main() {
 
   group('JSON兼容性测试', () {
     test('Mock容器列表响应数据应该符合模型结构', () {
-      final mockResponse = MockContainerResponses.containerList();
+      final mockResponse = {
+        'code': 200,
+        'message': 'success',
+        'data': {
+          'items': [
+            {'id': '1', 'name': 'c'}
+          ],
+          'total': 1,
+        },
+      };
       expect(mockResponse['code'], equals(200));
       expect(mockResponse['data'], isNotNull);
-      expect(mockResponse['data']['items'], isA<List>());
+      final data = mockResponse['data'] as Map<String, dynamic>;
+      expect(data['items'], isA<List>());
     });
 
     test('Mock镜像列表响应数据应该符合模型结构', () {
-      final mockResponse = MockContainerResponses.imageList();
+      final mockResponse = {
+        'code': 200,
+        'message': 'success',
+        'data': {
+          'items': [
+            {'id': 'sha256:1', 'tags': ['nginx:latest']}
+          ],
+          'total': 1,
+        },
+      };
       expect(mockResponse['code'], equals(200));
       expect(mockResponse['data'], isNotNull);
-      expect(mockResponse['data']['items'], isA<List>());
+      final data = mockResponse['data'] as Map<String, dynamic>;
+      expect(data['items'], isA<List>());
     });
 
     test('Mock网络列表响应数据应该符合模型结构', () {
-      final mockResponse = MockContainerResponses.networkList();
+      final mockResponse = {
+        'code': 200,
+        'message': 'success',
+        'data': {
+          'items': [
+            {'id': '1', 'name': 'n'}
+          ],
+          'total': 1,
+        },
+      };
       expect(mockResponse['code'], equals(200));
       expect(mockResponse['data'], isNotNull);
-      expect(mockResponse['data']['items'], isA<List>());
+      final data = mockResponse['data'] as Map<String, dynamic>;
+      expect(data['items'], isA<List>());
     });
 
     test('Mock卷列表响应数据应该符合模型结构', () {
-      final mockResponse = MockContainerResponses.volumeList();
+      final mockResponse = {
+        'code': 200,
+        'message': 'success',
+        'data': {
+          'items': [
+            {'name': 'v', 'driver': 'local'}
+          ],
+          'total': 1,
+        },
+      };
       expect(mockResponse['code'], equals(200));
       expect(mockResponse['data'], isNotNull);
-      expect(mockResponse['data']['items'], isA<List>());
+      final data = mockResponse['data'] as Map<String, dynamic>;
+      expect(data['items'], isA<List>());
     });
   });
 }

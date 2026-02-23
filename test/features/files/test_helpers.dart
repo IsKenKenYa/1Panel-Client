@@ -94,10 +94,10 @@ class MockFilesProvider extends FilesProvider {
   }
 
   @override
-  Future<void> changeFileMode(String path, String mode, {bool? recursive}) async {}
+  Future<void> changeFileMode(String path, int mode, {bool? sub}) async {}
 
   @override
-  Future<void> changeFileOwner(String path, {String? user, String? group, bool? recursive}) async {}
+  Future<void> changeFileOwner(String path, String user, String group, {bool? sub}) async {}
 
   @override
   Future<void> addToFavorites(FileInfo file) async {}

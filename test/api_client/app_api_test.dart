@@ -508,6 +508,7 @@ void main() {
   // 7. Edge Cases & Error Handling
   group('Edge Cases', () {
     test('Get App Icon - Invalid ID (404/500)', () async {
+      if (!hasApiKey) return;
       try {
         await api.getAppIcon('999999');
       } catch (e) {
@@ -517,6 +518,7 @@ void main() {
     });
 
     test('Get App Detail - Invalid ID', () async {
+      if (!hasApiKey) return;
       try {
         await api.getAppDetail('999999', 'latest', 'unknown');
         fail('Should throw exception');
@@ -527,6 +529,7 @@ void main() {
     });
 
     test('Install App - Missing Required Fields', () async {
+      if (!hasApiKey) return;
       try {
         // Sending empty name which should be required
         await api.installApp(AppInstallCreateRequest(

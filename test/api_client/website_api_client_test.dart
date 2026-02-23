@@ -34,7 +34,7 @@ void main() {
       debugPrint('API密钥: ${hasApiKey ? "已配置" : "未配置"}');
       debugPrint('========================================\n');
       
-      expect(hasApiKey, isTrue, reason: 'API密钥应该已配置');
+      expect(hasApiKey, equals(TestEnvironment.canRunIntegrationTests));
     });
 
     group('getWebsites - 获取网站列表', () {

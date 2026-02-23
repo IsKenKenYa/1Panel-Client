@@ -33,6 +33,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonMore => 'More';
 
   @override
+  String get commonAdd => 'Add';
+
+  @override
+  String get commonLoad => 'Load';
+
+  @override
   String get commonSave => 'Save';
 
   @override
@@ -55,6 +61,137 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonLoadFailedTitle => 'Failed to load';
+
+  @override
+  String get websitesPageTitle => 'Websites';
+
+  @override
+  String get websitesStatsTitle => 'Statistics';
+
+  @override
+  String get websitesStatsTotal => 'Total';
+
+  @override
+  String get websitesStatsRunning => 'Running';
+
+  @override
+  String get websitesStatsStopped => 'Stopped';
+
+  @override
+  String get websitesEmptyTitle => 'No websites';
+
+  @override
+  String get websitesEmptySubtitle => 'Create a website in 1Panel first.';
+
+  @override
+  String get websitesUnknownDomain => 'Unknown website';
+
+  @override
+  String get websitesStatusLabel => 'Status';
+
+  @override
+  String get websitesTypeLabel => 'Type';
+
+  @override
+  String get websitesStatusRunning => 'Running';
+
+  @override
+  String get websitesStatusStopped => 'Stopped';
+
+  @override
+  String get websitesActionStart => 'Start';
+
+  @override
+  String get websitesActionStop => 'Stop';
+
+  @override
+  String get websitesActionRestart => 'Restart';
+
+  @override
+  String get websitesActionDelete => 'Delete';
+
+  @override
+  String get websitesOperateSuccess => 'Operation successful';
+
+  @override
+  String get websitesOperateFailed => 'Operation failed';
+
+  @override
+  String get websitesDeleteTitle => 'Delete website';
+
+  @override
+  String websitesDeleteMessage(String domain) {
+    return 'Are you sure you want to delete $domain? This action cannot be undone.';
+  }
+
+  @override
+  String get websitesDeleteSuccess => 'Website deleted';
+
+  @override
+  String get websitesDetailTitle => 'Website';
+
+  @override
+  String get websitesTabOverview => 'Overview';
+
+  @override
+  String get websitesTabConfig => 'Config';
+
+  @override
+  String get websitesTabDomains => 'Domains';
+
+  @override
+  String get websitesTabSsl => 'SSL';
+
+  @override
+  String get websitesTabRewrite => 'Rewrite';
+
+  @override
+  String get websitesTabProxy => 'Proxy';
+
+  @override
+  String get websitesConfigHint => 'Nginx config content';
+
+  @override
+  String get websitesJsonHint => 'JSON content';
+
+  @override
+  String get websitesDomainAddTitle => 'Add domain';
+
+  @override
+  String get websitesDomainLabel => 'Domain';
+
+  @override
+  String get websitesDomainEmpty => 'No domains';
+
+  @override
+  String get websitesDomainDefault => 'Default';
+
+  @override
+  String get websitesRewriteNameLabel => 'Rewrite name';
+
+  @override
+  String get websitesRewriteHint => 'Rewrite content';
+
+  @override
+  String get websitesProxyNameLabel => 'Proxy name';
+
+  @override
+  String get websitesProxyHint => 'Proxy content';
+
+  @override
+  String get openrestyPageTitle => 'OpenResty';
+
+  @override
+  String get openrestyTabStatus => 'Status';
+
+  @override
+  String get openrestyTabHttps => 'HTTPS';
+
+  @override
+  String get openrestyTabModules => 'Modules';
+
+  @override
+  String get openrestyTabConfig => 'Config';
 
   @override
   String get monitorNetworkLabel => 'Network';
