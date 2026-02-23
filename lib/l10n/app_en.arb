@@ -986,5 +986,47 @@
   "actionStart": "Start",
   "actionStop": "Stop",
   "actionRestart": "Restart",
-  "actionUninstall": "Uninstall"
+  "actionUninstall": "Uninstall",
+  "logSearchHint": "Search logs...",
+  "logRefresh": "Refresh Logs",
+  "logScrollToBottom": "Scroll to Bottom",
+  "logSettings": "Settings",
+  "logSettingsTitle": "Log Settings",
+  "logFontSize": "Font Size",
+  "logWrap": "Wrap Text",
+  "logShowTimestamp": "Show Timestamp",
+  "logTheme": "Theme",
+  "logNoLogs": "No logs available",
+  "logNoMatches": "No matches found",
+  "logTimestampFormat": "Timestamp Format",
+  "logTimestampAbsolute": "Absolute",
+  "logTimestampRelative": "Relative",
+  "logMatchCount": "{current}/{total} matches",
+  "@logMatchCount": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "logPreviousMatch": "Previous match",
+  "logNextMatch": "Next match",
+  "logEditTheme": "Edit Theme Rules",
+  "logThemeEditor": "Theme Editor",
+  "logRulePattern": "Pattern",
+  "logRuleType": "Type",
+  "logRuleCaseSensitive": "Case Sensitive",
+  "logRuleCaseInsensitive": "Case Insensitive",
+  "logRuleColor": "Text Color",
+  "logRuleBackgroundColor": "Background Color",
+  "logRuleBold": "Bold",
+  "logRuleItalic": "Italic",
+  "logRuleUnderline": "Underline",
+  "logImportTheme": "Import Theme",
+  "logExportTheme": "Export Theme",
+  "logImportSuccess": "Theme imported successfully",
+  "logInvalidJson": "Invalid JSON"
 }

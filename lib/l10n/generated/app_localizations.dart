@@ -4669,6 +4669,198 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Uninstall'**
   String get actionUninstall;
+
+  /// No description provided for @logSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search logs...'**
+  String get logSearchHint;
+
+  /// No description provided for @logRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh Logs'**
+  String get logRefresh;
+
+  /// No description provided for @logScrollToBottom.
+  ///
+  /// In en, this message translates to:
+  /// **'Scroll to Bottom'**
+  String get logScrollToBottom;
+
+  /// No description provided for @logSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get logSettings;
+
+  /// No description provided for @logSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Settings'**
+  String get logSettingsTitle;
+
+  /// No description provided for @logFontSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Font Size'**
+  String get logFontSize;
+
+  /// No description provided for @logWrap.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrap Text'**
+  String get logWrap;
+
+  /// No description provided for @logShowTimestamp.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Timestamp'**
+  String get logShowTimestamp;
+
+  /// No description provided for @logTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get logTheme;
+
+  /// No description provided for @logNoLogs.
+  ///
+  /// In en, this message translates to:
+  /// **'No logs available'**
+  String get logNoLogs;
+
+  /// No description provided for @logNoMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'No matches found'**
+  String get logNoMatches;
+
+  /// No description provided for @logTimestampFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Timestamp Format'**
+  String get logTimestampFormat;
+
+  /// No description provided for @logTimestampAbsolute.
+  ///
+  /// In en, this message translates to:
+  /// **'Absolute'**
+  String get logTimestampAbsolute;
+
+  /// No description provided for @logTimestampRelative.
+  ///
+  /// In en, this message translates to:
+  /// **'Relative'**
+  String get logTimestampRelative;
+
+  /// No description provided for @logMatchCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{current}/{total} matches'**
+  String logMatchCount(int current, int total);
+
+  /// No description provided for @logPreviousMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous match'**
+  String get logPreviousMatch;
+
+  /// No description provided for @logNextMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Next match'**
+  String get logNextMatch;
+
+  /// No description provided for @logEditTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Theme Rules'**
+  String get logEditTheme;
+
+  /// No description provided for @logThemeEditor.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme Editor'**
+  String get logThemeEditor;
+
+  /// No description provided for @logRulePattern.
+  ///
+  /// In en, this message translates to:
+  /// **'Pattern'**
+  String get logRulePattern;
+
+  /// No description provided for @logRuleType.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get logRuleType;
+
+  /// No description provided for @logRuleCaseSensitive.
+  ///
+  /// In en, this message translates to:
+  /// **'Case Sensitive'**
+  String get logRuleCaseSensitive;
+
+  /// No description provided for @logRuleCaseInsensitive.
+  ///
+  /// In en, this message translates to:
+  /// **'Case Insensitive'**
+  String get logRuleCaseInsensitive;
+
+  /// No description provided for @logRuleColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Text Color'**
+  String get logRuleColor;
+
+  /// No description provided for @logRuleBackgroundColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Background Color'**
+  String get logRuleBackgroundColor;
+
+  /// No description provided for @logRuleBold.
+  ///
+  /// In en, this message translates to:
+  /// **'Bold'**
+  String get logRuleBold;
+
+  /// No description provided for @logRuleItalic.
+  ///
+  /// In en, this message translates to:
+  /// **'Italic'**
+  String get logRuleItalic;
+
+  /// No description provided for @logRuleUnderline.
+  ///
+  /// In en, this message translates to:
+  /// **'Underline'**
+  String get logRuleUnderline;
+
+  /// No description provided for @logImportTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Import Theme'**
+  String get logImportTheme;
+
+  /// No description provided for @logExportTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Export Theme'**
+  String get logExportTheme;
+
+  /// No description provided for @logImportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme imported successfully'**
+  String get logImportSuccess;
+
+  /// No description provided for @logInvalidJson.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid JSON'**
+  String get logInvalidJson;
 }
 
 class _AppLocalizationsDelegate

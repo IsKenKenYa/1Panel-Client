@@ -1,196 +1,196 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'log_parser.dart';
+import 'log_theme.dart';
+
+export 'log_parser.dart';
+export 'log_theme.dart';
+
+enum LogTimestampFormat {
+  absolute,
+  relative,
+}
 
 class LogSettings {
   final double fontSize;
   final bool isWrap;
   final bool showTimestamp;
+  final LogTimestampFormat timestampFormat;
   final ThemeMode themeMode;
+  final LogTheme theme;
 
   LogSettings({
     this.fontSize = 14.0,
     this.isWrap = false,
     this.showTimestamp = true,
+    this.timestampFormat = LogTimestampFormat.absolute,
     this.themeMode = ThemeMode.system,
-  });
+    LogTheme? theme,
+  }) : theme = theme ?? LogTheme.defaultTheme;
 
   LogSettings copyWith({
     double? fontSize,
     bool? isWrap,
     bool? showTimestamp,
+    LogTimestampFormat? timestampFormat,
     ThemeMode? themeMode,
+    LogTheme? theme,
   }) {
     return LogSettings(
       fontSize: fontSize ?? this.fontSize,
       isWrap: isWrap ?? this.isWrap,
       showTimestamp: showTimestamp ?? this.showTimestamp,
+      timestampFormat: timestampFormat ?? this.timestampFormat,
       themeMode: themeMode ?? this.themeMode,
+      theme: theme ?? this.theme,
     );
   }
-}
 
-enum LogLevel {
-  error,
-  warn,
-  info,
-  debug,
-  unknown;
-
-  static LogLevel fromString(String level) {
-    switch (level.toUpperCase()) {
-      case 'ERROR':
-      case 'ERR':
-        return LogLevel.error;
-      case 'WARN':
-      case 'WARNING':
-        return LogLevel.warn;
-      case 'INFO':
-        return LogLevel.info;
-      case 'DEBUG':
-        return LogLevel.debug;
-      default:
-        return LogLevel.unknown;
-    }
+  Map<String, dynamic> toJson() {
+    return {
+      'fontSize': fontSize,
+      'isWrap': isWrap,
+      'showTimestamp': showTimestamp,
+      'timestampFormat': timestampFormat.index,
+      'themeMode': themeMode.index,
+      'theme': theme.toJson(),
+    };
   }
-}
 
-class LogLine {
-  final String originalContent;
-  final String displayContent;
-  final LogLevel level;
-  final DateTime? timestamp;
-  final bool isMatch;
-
-  LogLine({
-    required this.originalContent,
-    required this.displayContent,
-    required this.level,
-    this.timestamp,
-    this.isMatch = false,
-  });
-
-  LogLine copyWith({
-    String? originalContent,
-    String? displayContent,
-    LogLevel? level,
-    DateTime? timestamp,
-    bool? isMatch,
-  }) {
-    return LogLine(
-      originalContent: originalContent ?? this.originalContent,
-      displayContent: displayContent ?? this.displayContent,
-      level: level ?? this.level,
-      timestamp: timestamp ?? this.timestamp,
-      isMatch: isMatch ?? this.isMatch,
+  factory LogSettings.fromJson(Map<String, dynamic> json) {
+    return LogSettings(
+      fontSize: (json['fontSize'] as num?)?.toDouble() ?? 14.0,
+      isWrap: json['isWrap'] as bool? ?? false,
+      showTimestamp: json['showTimestamp'] as bool? ?? true,
+      timestampFormat: LogTimestampFormat.values[json['timestampFormat'] as int? ?? 0],
+      themeMode: ThemeMode.values[json['themeMode'] as int? ?? 0],
+      theme: json['theme'] != null ? LogTheme.fromJson(json['theme']) : null,
     );
   }
 }
 
 class LogViewerController extends ChangeNotifier {
+  static const _storageKey = 'log_viewer_settings';
+  
   List<LogLine> _logs = [];
   List<LogLine> _filteredLogs = [];
   LogSettings _settings = LogSettings();
   String _searchQuery = '';
   int _currentMatchIndex = -1;
+  final List<int> _matchIndices = [];
+  DateTime? _firstLogTimestamp;
+
+  LogViewerController() {
+    _loadSettings();
+  }
+
+  Future<void> _loadSettings() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final jsonStr = prefs.getString(_storageKey);
+      if (jsonStr != null) {
+        final json = jsonDecode(jsonStr);
+        _settings = LogSettings.fromJson(json);
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('Failed to load log settings: $e');
+    }
+  }
+
+  Future<void> _saveSettings() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final jsonStr = jsonEncode(_settings.toJson());
+      await prefs.setString(_storageKey, jsonStr);
+    } catch (e) {
+      debugPrint('Failed to save log settings: $e');
+    }
+  }
 
   List<LogLine> get logs => _logs;
   List<LogLine> get filteredLogs => _filteredLogs;
   LogSettings get settings => _settings;
   String get searchQuery => _searchQuery;
   int get currentMatchIndex => _currentMatchIndex;
+  int get totalMatches => _matchIndices.length;
+  int get currentMatchCount => _currentMatchIndex + 1;
+  DateTime? get firstLogTimestamp => _firstLogTimestamp;
 
-  // Typical log format: "2023-01-01 12:00:00 [INFO] Message"
-  static final RegExp _logPattern = RegExp(
-    r'^(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}(?:\.\d+)?)\s*(?:\[?(\w+)\]?)?\s*(.*)$',
-  );
-
-  void setLogs(String rawLogs) {
+  Future<void> setLogs(String rawLogs) async {
     if (rawLogs.isEmpty) {
       _logs = [];
       _filteredLogs = [];
+      _firstLogTimestamp = null;
       notifyListeners();
       return;
     }
-    _logs = rawLogs.trimRight().split('\n').map((line) => parseLogLine(line)).toList();
+    _logs = await LogParser.parse(rawLogs);
+    
+    // Find first timestamp
+    _firstLogTimestamp = null;
+    for (final log in _logs) {
+      if (log.timestamp != null) {
+        _firstLogTimestamp = log.timestamp;
+        break;
+      }
+    }
+    
     _applyFilters();
   }
 
   void search(String query) {
     _searchQuery = query;
-    _currentMatchIndex = -1;
     _applyFilters();
   }
 
   void updateSettings(LogSettings newSettings) {
     _settings = newSettings;
     notifyListeners();
-  }
-
-  LogLine parseLogLine(String line) {
-    final match = _logPattern.firstMatch(line);
-    DateTime? timestamp;
-    LogLevel level = LogLevel.unknown;
-
-    if (match != null) {
-      final timeStr = match.group(1);
-      final levelStr = match.group(2);
-
-      if (timeStr != null) {
-        try {
-          timestamp = DateTime.parse(timeStr);
-        } catch (_) {
-          // Ignore parsing errors
-        }
-      }
-
-      if (levelStr != null) {
-        level = LogLevel.fromString(levelStr);
-      }
-    }
-
-    // Fallback level detection if regex didn't catch it or for lines that don't match typical format
-    if (level == LogLevel.unknown) {
-      if (line.contains('ERROR') || line.contains('ERR')) {
-        level = LogLevel.error;
-      } else if (line.contains('WARN') || line.contains('WARNING')) {
-        level = LogLevel.warn;
-      } else if (line.contains('INFO')) {
-        level = LogLevel.info;
-      } else if (line.contains('DEBUG')) {
-        level = LogLevel.debug;
-      }
-    }
-
-    return LogLine(
-      originalContent: line,
-      displayContent: line,
-      level: level,
-      timestamp: timestamp,
-    );
+    _saveSettings();
   }
 
   void _applyFilters() {
+    _matchIndices.clear();
+    _currentMatchIndex = -1;
+
     if (_searchQuery.isEmpty) {
       _filteredLogs = List.from(_logs);
     } else {
-      // Start simple: just mark matches. 
-      // If we want to filter the list to only show matches, we would do that here.
-      // But typically a log viewer shows all logs and highlights matches.
-      // The requirement says "filteredLogs", which implies a subset or processed list.
-      // Let's assume for now it returns all logs but with isMatch set.
-      
       _filteredLogs = _logs.map((log) {
         final isMatch = log.originalContent.toLowerCase().contains(_searchQuery.toLowerCase());
         return log.copyWith(isMatch: isMatch);
       }).toList();
-      
-      // If we strictly want "filtered" to mean "only showing matching lines", we would use where().
-      // However, usually log viewers highlight. 
-      // Given the properties `currentMatchIndex`, it implies navigation through matches, 
-      // which usually happens in the full list. 
-      // But let's check if the user meant "search results".
-      // "filteredLogs" name suggests filtering.
-      // Let's implement highlighting in _filteredLogs (which is the list being displayed).
+
+      for (int i = 0; i < _filteredLogs.length; i++) {
+        if (_filteredLogs[i].isMatch) {
+          _matchIndices.add(i);
+        }
+      }
     }
     notifyListeners();
+  }
+
+  int? nextMatch() {
+    if (_matchIndices.isEmpty) return null;
+    if (_currentMatchIndex < _matchIndices.length - 1) {
+      _currentMatchIndex++;
+    } else {
+      _currentMatchIndex = 0; // Wrap around
+    }
+    notifyListeners();
+    return _matchIndices[_currentMatchIndex];
+  }
+
+  int? previousMatch() {
+    if (_matchIndices.isEmpty) return null;
+    if (_currentMatchIndex > 0) {
+      _currentMatchIndex--;
+    } else {
+      _currentMatchIndex = _matchIndices.length - 1; // Wrap around
+    }
+    notifyListeners();
+    return _matchIndices[_currentMatchIndex];
   }
 }

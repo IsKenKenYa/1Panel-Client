@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:onepanelapp_app/l10n/generated/app_localizations.dart';
 import 'log_viewer_controller.dart';
 import 'log_toolbar.dart';
 import 'log_line_widget.dart';
@@ -106,8 +107,8 @@ class _LogViewerState extends State<LogViewer> {
                   return Center(
                     child: Text(
                       controller.searchQuery.isEmpty 
-                          ? (widget.emptyMessage ?? 'No logs available') 
-                          : 'No matches found',
+                          ? (widget.emptyMessage ?? AppLocalizations.of(context)!.logNoLogs) 
+                          : AppLocalizations.of(context)!.logNoMatches,
                       style: TextStyle(color: colorScheme.onSurfaceVariant),
                     ),
                   );
@@ -123,6 +124,7 @@ class _LogViewerState extends State<LogViewer> {
                       line: controller.filteredLogs[index],
                       settings: controller.settings,
                       query: controller.searchQuery,
+                      firstLogTimestamp: controller.firstLogTimestamp,
                     );
                   },
                 );

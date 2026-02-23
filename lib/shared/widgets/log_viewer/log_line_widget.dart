@@ -6,6 +6,7 @@ class LogLineWidget extends StatelessWidget {
   final LogLine line;
   final LogSettings settings;
   final String query;
+  final DateTime? firstLogTimestamp;
 
   const LogLineWidget({
     super.key,
@@ -13,26 +14,8 @@ class LogLineWidget extends StatelessWidget {
     required this.line,
     required this.settings,
     this.query = '',
+    this.firstLogTimestamp,
   });
-
-  static final RegExp _logPattern = RegExp(
-    r'^(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}(?:\.\d+)?)\s*(?:\[?(\w+)\]?)?\s*(.*)$',
-  );
-
-  Color _getLevelColor(LogLevel level) {
-    switch (level) {
-      case LogLevel.error:
-        return Colors.red;
-      case LogLevel.warn:
-        return Colors.orange;
-      case LogLevel.info:
-        return Colors.blue;
-      case LogLevel.debug:
-        return Colors.grey;
-      default:
-        return Colors.black; // Fallback, will be overridden by theme usually
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,83 +29,181 @@ class LogLineWidget extends StatelessWidget {
 
     final spans = <InlineSpan>[];
 
-    if (settings.showTimestamp) {
-      spans.add(TextSpan(
-        text: '$index  ',
-        style: defaultStyle.copyWith(color: Colors.grey[600]),
-      ));
-    }
-    
-    final match = _logPattern.firstMatch(line.originalContent);
-    
-    if (match != null && match.groupCount >= 3) {
-      final timestampStr = match.group(1);
-      final levelStr = match.group(2); 
-      final messageStr = match.group(3);
+    // Line Number
+    spans.add(TextSpan(
+      text: '$index  ',
+      style: defaultStyle.copyWith(color: Colors.grey[600]),
+    ));
 
-      if (settings.showTimestamp && timestampStr != null) {
-        spans.add(_buildSpan(timestampStr, Colors.grey, defaultStyle));
-        spans.add(TextSpan(text: ' ', style: defaultStyle));
+    // Content with highlighting
+    String content = line.originalContent;
+    if (line.timestamp != null && line.timestampEndIndex != null) {
+      if (!settings.showTimestamp) {
+        if (line.timestampEndIndex! < content.length) {
+          content = content.substring(line.timestampEndIndex!).trimLeft();
+        } else {
+          content = '';
+        }
+      } else if (settings.timestampFormat == LogTimestampFormat.relative && firstLogTimestamp != null) {
+        final duration = line.timestamp!.difference(firstLogTimestamp!);
+        final relativeTime = _formatDuration(duration);
+        final message = line.timestampEndIndex! < content.length 
+            ? content.substring(line.timestampEndIndex!).trimLeft() 
+            : '';
+        content = '$relativeTime $message';
       }
-
-      if (levelStr != null) {
-        final levelColor = _getLevelColor(line.level);
-        spans.add(TextSpan(text: '[', style: defaultStyle.copyWith(color: Colors.grey)));
-        spans.add(_buildSpan(levelStr, levelColor, defaultStyle));
-        spans.add(TextSpan(text: '] ', style: defaultStyle.copyWith(color: Colors.grey)));
-      }
-
-      if (messageStr != null) {
-        spans.add(_buildSpan(messageStr, null, defaultStyle));
-      }
-    } else {
-      spans.add(_buildSpan(line.displayContent, null, defaultStyle));
     }
 
-    return RichText(
+    spans.addAll(_buildContentSpans(content, defaultStyle));
+
+    final richText = RichText(
       text: TextSpan(children: spans),
       softWrap: settings.isWrap,
       overflow: settings.isWrap ? TextOverflow.visible : TextOverflow.clip,
     );
-  }
 
-  TextSpan _buildSpan(String text, Color? color, TextStyle style) {
-    final effectiveStyle = color != null ? style.copyWith(color: color) : style;
-    
-    if (query.isEmpty) {
-      return TextSpan(text: text, style: effectiveStyle);
+    if (settings.isWrap) {
+      return richText;
     }
 
-    final children = <InlineSpan>[];
-    final lowerText = text.toLowerCase();
-    final lowerQuery = query.toLowerCase();
-    int start = 0;
-    int indexOfMatch;
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: richText,
+    );
+  }
 
-    while ((indexOfMatch = lowerText.indexOf(lowerQuery, start)) != -1) {
-      if (indexOfMatch > start) {
-        children.add(TextSpan(
-          text: text.substring(start, indexOfMatch),
-          style: effectiveStyle,
+  String _formatDuration(Duration d) {
+    final minutes = d.inMinutes;
+    final seconds = d.inSeconds % 60;
+    final millis = d.inMilliseconds % 1000;
+    return '+${minutes}m${seconds}s.${millis}ms';
+  }
+
+  List<InlineSpan> _buildContentSpans(String text, TextStyle baseStyle) {
+    // 1. Identify all ranges that need styling
+    final ranges = <_StyleRange>[];
+
+    // Search query highlight (Highest Priority)
+    if (query.isNotEmpty) {
+      final lowerText = text.toLowerCase();
+      final lowerQuery = query.toLowerCase();
+      int start = 0;
+      while (true) {
+        final idx = lowerText.indexOf(lowerQuery, start);
+        if (idx == -1) break;
+        ranges.add(_StyleRange(
+          start: idx,
+          end: idx + query.length,
+          style: baseStyle.copyWith(backgroundColor: Colors.yellow.withOpacity(0.5)),
+          priority: 100,
+        ));
+        start = idx + query.length;
+      }
+    }
+
+    // Theme rules highlight
+    for (final rule in settings.theme.rules) {
+      final matches = _findMatches(text, rule);
+      for (final match in matches) {
+        ranges.add(_StyleRange(
+          start: match.start,
+          end: match.end,
+          style: _getRuleStyle(baseStyle, rule),
+          priority: 10, // Lower priority than search
         ));
       }
-      
-      children.add(TextSpan(
-        text: text.substring(indexOfMatch, indexOfMatch + query.length),
-        style: effectiveStyle.copyWith(backgroundColor: Colors.yellow.withOpacity(0.5)),
-      ));
-      
-      start = indexOfMatch + query.length;
     }
 
-    if (start < text.length) {
-      children.add(TextSpan(
-        text: text.substring(start),
-        style: effectiveStyle,
+    // 2. Sort ranges
+    ranges.sort((a, b) => a.start.compareTo(b.start));
+
+    // 3. Flatten ranges (Handling overlaps is complex, let's simplify: highest priority wins)
+    // We will build a list of non-overlapping spans.
+    final spans = <InlineSpan>[];
+    int currentPos = 0;
+
+    // A simple way to handle overlaps is to use a "mask" array, but for text it's better to iterate.
+    // Let's use a "stack" approach or just split by boundaries.
+    
+    // Collect all boundaries
+    final boundaries = <int>{0, text.length};
+    for (final range in ranges) {
+      boundaries.add(range.start);
+      boundaries.add(range.end);
+    }
+    final sortedBoundaries = boundaries.toList()..sort();
+
+    for (int i = 0; i < sortedBoundaries.length - 1; i++) {
+      final start = sortedBoundaries[i];
+      final end = sortedBoundaries[i+1];
+      if (start >= end) continue;
+
+      // Find the highest priority rule that covers this segment
+      _StyleRange? bestRange;
+      for (final range in ranges) {
+        if (range.start <= start && range.end >= end) {
+          if (bestRange == null || range.priority > bestRange.priority) {
+            bestRange = range;
+          }
+        }
+      }
+
+      spans.add(TextSpan(
+        text: text.substring(start, end),
+        style: bestRange?.style ?? baseStyle,
       ));
     }
 
-    return TextSpan(children: children, style: effectiveStyle);
+    return spans;
   }
+
+  TextStyle _getRuleStyle(TextStyle base, LogHighlightRule rule) {
+    return base.copyWith(
+      color: rule.color,
+      backgroundColor: rule.backgroundColor,
+      fontWeight: rule.isBold ? FontWeight.bold : null,
+      fontStyle: rule.isItalic ? FontStyle.italic : null,
+      decoration: rule.isUnderline ? TextDecoration.underline : null,
+    );
+  }
+
+  List<({int start, int end})> _findMatches(String text, LogHighlightRule rule) {
+    final matches = <({int start, int end})>[];
+    if (rule.type == HighlightType.regex) {
+      try {
+        final regex = RegExp(rule.pattern, caseSensitive: rule.caseSensitive);
+        for (final match in regex.allMatches(text)) {
+          matches.add((start: match.start, end: match.end));
+        }
+      } catch (_) {
+        // Ignore invalid regex
+      }
+    } else {
+      final pattern = rule.caseSensitive ? rule.pattern : rule.pattern.toLowerCase();
+      final target = rule.caseSensitive ? text : text.toLowerCase();
+      int start = 0;
+      while (true) {
+        final idx = target.indexOf(pattern, start);
+        if (idx == -1) break;
+        matches.add((start: idx, end: idx + pattern.length));
+        start = idx + pattern.length;
+      }
+    }
+    return matches;
+  }
+}
+
+class _StyleRange {
+  final int start;
+  final int end;
+  final TextStyle style;
+  final int priority;
+
+  _StyleRange({
+    required this.start,
+    required this.end,
+    required this.style,
+    required this.priority,
+  });
 }
 

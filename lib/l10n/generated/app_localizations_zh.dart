@@ -2365,4 +2365,102 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get actionUninstall => '卸载';
+
+  @override
+  String get logSearchHint => '搜索日志...';
+
+  @override
+  String get logRefresh => '刷新日志';
+
+  @override
+  String get logScrollToBottom => '滚动到底部';
+
+  @override
+  String get logSettings => '设置';
+
+  @override
+  String get logSettingsTitle => '日志设置';
+
+  @override
+  String get logFontSize => '字体大小';
+
+  @override
+  String get logWrap => '自动换行';
+
+  @override
+  String get logShowTimestamp => '显示时间戳';
+
+  @override
+  String get logTheme => '配色主题';
+
+  @override
+  String get logNoLogs => '暂无日志';
+
+  @override
+  String get logNoMatches => '未找到匹配项';
+
+  @override
+  String get logTimestampFormat => '时间戳格式';
+
+  @override
+  String get logTimestampAbsolute => '绝对时间';
+
+  @override
+  String get logTimestampRelative => '相对时间';
+
+  @override
+  String logMatchCount(int current, int total) {
+    return '$current/$total 匹配';
+  }
+
+  @override
+  String get logPreviousMatch => '上一个匹配';
+
+  @override
+  String get logNextMatch => '下一个匹配';
+
+  @override
+  String get logEditTheme => '编辑配色规则';
+
+  @override
+  String get logThemeEditor => '配色编辑器';
+
+  @override
+  String get logRulePattern => '匹配模式';
+
+  @override
+  String get logRuleType => '类型';
+
+  @override
+  String get logRuleCaseSensitive => '区分大小写';
+
+  @override
+  String get logRuleCaseInsensitive => '不区分大小写';
+
+  @override
+  String get logRuleColor => '文字颜色';
+
+  @override
+  String get logRuleBackgroundColor => '背景颜色';
+
+  @override
+  String get logRuleBold => '粗体';
+
+  @override
+  String get logRuleItalic => '斜体';
+
+  @override
+  String get logRuleUnderline => '下划线';
+
+  @override
+  String get logImportTheme => '导入主题';
+
+  @override
+  String get logExportTheme => '导出主题';
+
+  @override
+  String get logImportSuccess => '主题导入成功';
+
+  @override
+  String get logInvalidJson => '无效的JSON格式';
 }

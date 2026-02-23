@@ -1,0 +1,8 @@
+- [ ] User can define custom regex rules for log highlighting.
+- [ ] Log levels (ERROR, WARN, INFO) have distinct styles by default.
+- [ ] User can export/import themes as JSON.
+- [ ] Log parsing happens in a background isolate (compute).
+- [ ] Navigation buttons (Next/Previous) work for search results.
+- [ ] "Relative Time" display is supported.
+- [ ] Settings (font size, wrap, theme) are persisted.
+- [ ] All UI text is localized (English/Chinese) and accessible.

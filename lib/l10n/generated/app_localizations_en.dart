@@ -2409,4 +2409,102 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get actionUninstall => 'Uninstall';
+
+  @override
+  String get logSearchHint => 'Search logs...';
+
+  @override
+  String get logRefresh => 'Refresh Logs';
+
+  @override
+  String get logScrollToBottom => 'Scroll to Bottom';
+
+  @override
+  String get logSettings => 'Settings';
+
+  @override
+  String get logSettingsTitle => 'Log Settings';
+
+  @override
+  String get logFontSize => 'Font Size';
+
+  @override
+  String get logWrap => 'Wrap Text';
+
+  @override
+  String get logShowTimestamp => 'Show Timestamp';
+
+  @override
+  String get logTheme => 'Theme';
+
+  @override
+  String get logNoLogs => 'No logs available';
+
+  @override
+  String get logNoMatches => 'No matches found';
+
+  @override
+  String get logTimestampFormat => 'Timestamp Format';
+
+  @override
+  String get logTimestampAbsolute => 'Absolute';
+
+  @override
+  String get logTimestampRelative => 'Relative';
+
+  @override
+  String logMatchCount(int current, int total) {
+    return '$current/$total matches';
+  }
+
+  @override
+  String get logPreviousMatch => 'Previous match';
+
+  @override
+  String get logNextMatch => 'Next match';
+
+  @override
+  String get logEditTheme => 'Edit Theme Rules';
+
+  @override
+  String get logThemeEditor => 'Theme Editor';
+
+  @override
+  String get logRulePattern => 'Pattern';
+
+  @override
+  String get logRuleType => 'Type';
+
+  @override
+  String get logRuleCaseSensitive => 'Case Sensitive';
+
+  @override
+  String get logRuleCaseInsensitive => 'Case Insensitive';
+
+  @override
+  String get logRuleColor => 'Text Color';
+
+  @override
+  String get logRuleBackgroundColor => 'Background Color';
+
+  @override
+  String get logRuleBold => 'Bold';
+
+  @override
+  String get logRuleItalic => 'Italic';
+
+  @override
+  String get logRuleUnderline => 'Underline';
+
+  @override
+  String get logImportTheme => 'Import Theme';
+
+  @override
+  String get logExportTheme => 'Export Theme';
+
+  @override
+  String get logImportSuccess => 'Theme imported successfully';
+
+  @override
+  String get logInvalidJson => 'Invalid JSON';
 }

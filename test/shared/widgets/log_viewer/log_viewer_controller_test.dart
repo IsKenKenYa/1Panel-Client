@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:onepanelapp_app/shared/widgets/log_viewer/log_viewer_controller.dart';
 
 void main() {
@@ -7,6 +8,7 @@ void main() {
     late LogViewerController controller;
 
     setUp(() {
+      SharedPreferences.setMockInitialValues({});
       controller = LogViewerController();
     });
 
@@ -18,7 +20,7 @@ void main() {
       expect(controller.currentMatchIndex, -1);
     });
 
-    test('setLogs parses logs correctly', () {
+    test('setLogs parses logs correctly', () async {
       const rawLogs = '''
 2023-01-01 12:00:00 [INFO] Info message
 2023-01-01 12:00:01 [ERROR] Error message
@@ -26,7 +28,7 @@ void main() {
 2023-01-01 12:00:03 [DEBUG] Debug message
 Simple log line
 ''';
-      controller.setLogs(rawLogs);
+      await controller.setLogs(rawLogs);
 
       expect(controller.logs.length, 5);
       expect(controller.logs[0].level, LogLevel.info);
@@ -35,39 +37,62 @@ Simple log line
       expect(controller.logs[4].level, LogLevel.unknown);
     });
 
-    test('parseLogLine handles various formats', () {
+    test('setLogs calculates firstLogTimestamp', () async {
+      const rawLogs = '''
+Log line without timestamp
+2023-01-01 12:00:00 [INFO] Info message
+2023-01-01 12:00:01 [ERROR] Error message
+''';
+      await controller.setLogs(rawLogs);
+      expect(controller.firstLogTimestamp, DateTime(2023, 1, 1, 12, 0, 0));
+    });
+
+    test('LogParser extracts timestampEndIndex', () async {
+       var lines = await LogParser.parse('2023-01-01 12:00:00 [INFO] Message');
+       expect(lines.first.timestampEndIndex, 19);
+    });
+
+    test('LogParser handles various formats', () async {
+      // ISO 8601 with T and Z
+      var lines = await LogParser.parse('2023-01-01T12:00:00Z [INFO] Message');
+      expect(lines.first.timestamp, DateTime.utc(2023, 1, 1, 12, 0, 0));
+      expect(lines.first.level, LogLevel.info);
+
       // Standard format
-      var line = controller.parseLogLine('2023-01-01 12:00:00 [INFO] Message');
+      lines = await LogParser.parse('2023-01-01 12:00:00 [INFO] Message');
+      var line = lines.first;
       expect(line.level, LogLevel.info);
       expect(line.timestamp, DateTime(2023, 1, 1, 12, 0, 0));
 
       // With milliseconds
-      line = controller.parseLogLine('2023-01-01 12:00:00.123 [ERROR] Message');
+      lines = await LogParser.parse('2023-01-01 12:00:00.123 [ERROR] Message');
+      line = lines.first;
       expect(line.level, LogLevel.error);
       expect(line.timestamp, DateTime(2023, 1, 1, 12, 0, 0, 123));
 
       // Fallback level detection
-      line = controller.parseLogLine('Some random text containing ERROR');
+      lines = await LogParser.parse('Some random text containing ERROR');
+      line = lines.first;
       expect(line.level, LogLevel.error);
       expect(line.timestamp, isNull);
 
-      line = controller.parseLogLine('Some random text containing WARN');
-      expect(line.level, LogLevel.warn);
+      lines = await LogParser.parse('Some random text containing WARN');
+      expect(lines.first.level, LogLevel.warn);
 
-      line = controller.parseLogLine('Some random text containing INFO');
-      expect(line.level, LogLevel.info);
+      lines = await LogParser.parse('Some random text containing INFO');
+      expect(lines.first.level, LogLevel.info);
       
-      line = controller.parseLogLine('Some random text containing DEBUG');
-      expect(line.level, LogLevel.debug);
+      lines = await LogParser.parse('Some random text containing DEBUG');
+      expect(lines.first.level, LogLevel.debug);
     });
 
-    test('search filters logs correctly', () {
+    test('search filters logs correctly', () async {
       const rawLogs = '''
 Log line 1
 Log line 2 matches
 Log line 3
 ''';
-      controller.setLogs(rawLogs);
+      await controller.setLogs(rawLogs);
       controller.search('matches');
 
       expect(controller.filteredLogs.length, 3);
@@ -76,9 +101,9 @@ Log line 3
       expect(controller.filteredLogs[2].isMatch, false);
     });
     
-    test('search is case insensitive', () {
+    test('search is case insensitive', () async {
       const rawLogs = 'Log Line Matches';
-      controller.setLogs(rawLogs);
+      await controller.setLogs(rawLogs);
       controller.search('matches');
       
       expect(controller.filteredLogs[0].isMatch, true);
