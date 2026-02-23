@@ -34,14 +34,14 @@ class VolumeProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> createVolume(String name, {String? driver}) async {
+  Future<bool> createVolume(VolumeCreate request) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
       final api = await _getApi();
-      await api.createVolume(VolumeCreate(name: name, driver: driver));
+      await api.createVolume(request);
       await loadVolumes();
       return true;
     } catch (e) {

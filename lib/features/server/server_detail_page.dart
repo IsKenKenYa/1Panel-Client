@@ -193,7 +193,7 @@ class ServerDetailPage extends StatelessWidget {
         Navigator.pushNamed(context, '/apps');
         break;
       case '/containers':
-        Navigator.pushNamed(context, AppRoutes.orchestration);
+        Navigator.pushNamed(context, '/containers');
         break;
       case '/websites':
         Navigator.pushNamed(context, '/websites');

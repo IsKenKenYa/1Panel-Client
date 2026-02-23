@@ -6,10 +6,12 @@ part 'app_models.g.dart';
 @JsonSerializable()
 class AppSearchRequest {
   final int page;
+  @JsonKey(name: 'pageSize')
   final int pageSize;
   final String? name;
   final bool? recommend;
   final String? resource;
+  @JsonKey(name: 'showCurrentArch')
   final bool? showCurrentArch;
   final List<String>? tags;
   final String? type;

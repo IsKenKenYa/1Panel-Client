@@ -890,6 +890,84 @@ abstract class AppLocalizations {
   /// **'Create'**
   String get commonCreate;
 
+  /// No description provided for @commonEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get commonEdit;
+
+  /// No description provided for @commonName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get commonName;
+
+  /// No description provided for @commonUsername.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get commonUsername;
+
+  /// No description provided for @commonPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get commonPassword;
+
+  /// No description provided for @commonUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'URL'**
+  String get commonUrl;
+
+  /// No description provided for @commonDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get commonDescription;
+
+  /// No description provided for @commonContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Content'**
+  String get commonContent;
+
+  /// No description provided for @commonRepo.
+  ///
+  /// In en, this message translates to:
+  /// **'Repository'**
+  String get commonRepo;
+
+  /// No description provided for @commonTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Template'**
+  String get commonTemplate;
+
+  /// No description provided for @commonEditRepo.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Repository'**
+  String get commonEditRepo;
+
+  /// No description provided for @commonEditTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Template'**
+  String get commonEditTemplate;
+
+  /// No description provided for @commonDeleteRepoConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this repository?'**
+  String get commonDeleteRepoConfirm;
+
+  /// No description provided for @commonDeleteTemplateConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this template?'**
+  String get commonDeleteTemplateConfirm;
+
   /// No description provided for @commonSearch.
   ///
   /// In en, this message translates to:
@@ -4915,6 +4993,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Used when dynamic color is unavailable'**
   String get themeSeedColorFallbackDesc;
+
+  /// No description provided for @containerTabOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get containerTabOverview;
+
+  /// No description provided for @containerTabContainers.
+  ///
+  /// In en, this message translates to:
+  /// **'Containers'**
+  String get containerTabContainers;
+
+  /// No description provided for @containerTabOrchestration.
+  ///
+  /// In en, this message translates to:
+  /// **'Orchestration'**
+  String get containerTabOrchestration;
+
+  /// No description provided for @containerTabImages.
+  ///
+  /// In en, this message translates to:
+  /// **'Images'**
+  String get containerTabImages;
+
+  /// No description provided for @containerTabNetworks.
+  ///
+  /// In en, this message translates to:
+  /// **'Networks'**
+  String get containerTabNetworks;
+
+  /// No description provided for @containerTabVolumes.
+  ///
+  /// In en, this message translates to:
+  /// **'Volumes'**
+  String get containerTabVolumes;
+
+  /// No description provided for @containerTabRepositories.
+  ///
+  /// In en, this message translates to:
+  /// **'Repositories'**
+  String get containerTabRepositories;
+
+  /// No description provided for @containerTabTemplates.
+  ///
+  /// In en, this message translates to:
+  /// **'Templates'**
+  String get containerTabTemplates;
+
+  /// No description provided for @containerTabConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Config'**
+  String get containerTabConfig;
+
+  /// No description provided for @containerSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search containers'**
+  String get containerSearch;
+
+  /// No description provided for @containerFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter containers'**
+  String get containerFilter;
+
+  /// No description provided for @containerCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Container'**
+  String get containerCreate;
+
+  /// No description provided for @containerEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No containers'**
+  String get containerEmptyTitle;
+
+  /// No description provided for @containerEmptyDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the button below to create a container'**
+  String get containerEmptyDesc;
+
+  /// No description provided for @containerStatsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Container Stats'**
+  String get containerStatsTitle;
+
+  /// No description provided for @containerStatsTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get containerStatsTotal;
+
+  /// No description provided for @containerStatsRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Running'**
+  String get containerStatsRunning;
+
+  /// No description provided for @containerStatsStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped'**
+  String get containerStatsStopped;
+
+  /// No description provided for @containerFeatureDeveloping.
+  ///
+  /// In en, this message translates to:
+  /// **'{feature} is under development'**
+  String containerFeatureDeveloping(Object feature);
+
+  /// No description provided for @orchestrationCreateProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Project'**
+  String get orchestrationCreateProject;
+
+  /// No description provided for @orchestrationCreateNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Network'**
+  String get orchestrationCreateNetwork;
+
+  /// No description provided for @orchestrationCreateVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Volume'**
+  String get orchestrationCreateVolume;
+
+  /// No description provided for @orchestrationCreateRepo.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Repository'**
+  String get orchestrationCreateRepo;
+
+  /// No description provided for @orchestrationCreateTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Template'**
+  String get orchestrationCreateTemplate;
 }
 
 class _AppLocalizationsDelegate

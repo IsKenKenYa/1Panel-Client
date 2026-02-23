@@ -29,10 +29,10 @@ class AppDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.layers_outlined),
-            title: Text(l10n.orchestrationTitle),
+            title: Text(l10n.containerManagement),
             onTap: () {
               Navigator.pop(context);
-              Navigator.pushNamed(context, '/orchestration');
+              Navigator.pushNamed(context, '/containers');
             },
           ),
           ListTile(

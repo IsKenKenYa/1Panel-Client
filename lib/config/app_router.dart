@@ -22,6 +22,7 @@ import 'package:onepanelapp_app/features/apps/installed_app_detail_page.dart';
 import 'package:onepanelapp_app/data/models/app_models.dart';
 
 import 'package:onepanelapp_app/features/containers/container_detail_page.dart';
+import 'package:onepanelapp_app/features/containers/containers_page.dart';
 import 'package:onepanelapp_app/data/models/container_models.dart';
 import 'package:onepanelapp_app/features/orchestration/orchestration_page.dart';
 
@@ -135,8 +136,10 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const NotFoundPage());
 
       case AppRoutes.orchestration:
-      case '/containers':
         return MaterialPageRoute(builder: (_) => const OrchestrationPage());
+
+      case '/containers':
+        return MaterialPageRoute(builder: (_) => const ContainersPage());
 
       case '/apps':
         return MaterialPageRoute(builder: (_) => const AppsPage());

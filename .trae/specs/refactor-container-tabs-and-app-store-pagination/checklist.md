@@ -1,4 +1,6 @@
-- [x] Container Management page has 9 scrollable tabs
-- [x] "Orchestration", "Images", "Networks", "Volumes" tabs load correctly in Container Management
-- [x] App Store loads more apps when scrolling to the bottom
-- [x] App Store handles empty/malformed API responses without crashing
+- [x] Route `/containers` navigates to `ContainersPage`
+- [x] `ContainersPage` displays 9 tabs: Overview, Containers, Orchestration, Images, Networks, Volumes, Repositories, Templates, Configuration
+- [x] Orchestration tab shows Compose list
+- [x] App Store list loads more items when scrolling (Pagination works)
+- [x] App Detail page does not crash with "unexpected end of JSON input"
+- [x] App Install failure shows a readable error message (SnackBar) instead of crashing

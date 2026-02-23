@@ -35,6 +35,10 @@ class ImageStats {
 class ContainersData {
   final List<ContainerInfo> containers;
   final List<ContainerImage> images;
+  final List<ContainerRepo> repos;
+  final List<ContainerTemplate> templates;
+  final String daemonJson;
+  final ContainerStatus? status;
   final ContainerStats containerStats;
   final ImageStats imageStats;
   final bool isLoading;
@@ -44,6 +48,10 @@ class ContainersData {
   const ContainersData({
     this.containers = const [],
     this.images = const [],
+    this.repos = const [],
+    this.templates = const [],
+    this.daemonJson = '',
+    this.status,
     this.containerStats = const ContainerStats(),
     this.imageStats = const ImageStats(),
     this.isLoading = false,
@@ -54,6 +62,10 @@ class ContainersData {
   ContainersData copyWith({
     List<ContainerInfo>? containers,
     List<ContainerImage>? images,
+    List<ContainerRepo>? repos,
+    List<ContainerTemplate>? templates,
+    String? daemonJson,
+    ContainerStatus? status,
     ContainerStats? containerStats,
     ImageStats? imageStats,
     bool? isLoading,
@@ -63,6 +75,10 @@ class ContainersData {
     return ContainersData(
       containers: containers ?? this.containers,
       images: images ?? this.images,
+      repos: repos ?? this.repos,
+      templates: templates ?? this.templates,
+      daemonJson: daemonJson ?? this.daemonJson,
+      status: status ?? this.status,
       containerStats: containerStats ?? this.containerStats,
       imageStats: imageStats ?? this.imageStats,
       isLoading: isLoading ?? this.isLoading,
@@ -171,17 +187,80 @@ class ContainersProvider extends ChangeNotifier {
     try {
       await _ensureService();
 
-      // 并行加载容器和镜像
-      await Future.wait([
-        loadContainers(),
-        loadImages(),
+      // 并行加载所有数据
+      final results = await Future.wait([
+        _service!.listContainers(),
+        _service!.listImages(),
+        _service!.listRepos(),
+        _service!.listTemplates(),
+        _service!.getContainerStatus(),
+        _service!.getDaemonJson(),
       ]);
+
+      final containers = results[0] as List<ContainerInfo>;
+      final images = results[1] as List<ContainerImage>;
+      final repos = results[2] as List<ContainerRepo>;
+      final templates = results[3] as List<ContainerTemplate>;
+      final status = results[4] as ContainerStatus;
+      final daemonJson = results[5] as String;
+
+      // 计算统计
+      int running = 0, stopped = 0, paused = 0;
+      for (final container in containers) {
+        switch (container.state.toLowerCase()) {
+          case 'running':
+            running++;
+            break;
+          case 'exited':
+          case 'stopped':
+            stopped++;
+            break;
+          case 'paused':
+            paused++;
+            break;
+        }
+      }
+
+      _data = _data.copyWith(
+        containers: containers,
+        images: images,
+        repos: repos,
+        templates: templates,
+        daemonJson: daemonJson,
+        status: status,
+        containerStats: ContainerStats(
+          total: containers.length,
+          running: running,
+          stopped: stopped,
+          paused: paused,
+        ),
+        imageStats: ImageStats(
+          total: images.length,
+          used: images.length,
+          unused: 0,
+        ),
+        isLoading: false,
+        lastUpdated: DateTime.now(),
+      );
     } catch (e) {
       _data = _data.copyWith(
         isLoading: false,
         error: '加载数据失败: $e',
       );
+    }
+    notifyListeners();
+  }
+
+  /// 加载配置
+  Future<void> loadConfig() async {
+    try {
+      await _ensureService();
+      final config = await _service!.getDaemonJson();
+      _data = _data.copyWith(daemonJson: config);
       notifyListeners();
+    } catch (e) {
+      // 忽略配置加载错误，避免阻断其他功能
+      print('Load config failed: $e');
     }
   }
 
@@ -278,6 +357,130 @@ class ContainersProvider extends ChangeNotifier {
   /// 刷新数据
   Future<void> refresh() async {
     await loadAll();
+  }
+
+  /// 加载仓库列表
+  Future<void> loadRepos() async {
+    try {
+      await _ensureService();
+      final repos = await _service!.listRepos();
+      _data = _data.copyWith(repos: repos);
+      notifyListeners();
+    } catch (e) {
+      _data = _data.copyWith(error: 'Load repos failed: $e');
+      notifyListeners();
+    }
+  }
+
+  /// 创建仓库
+  Future<bool> createRepo(ContainerRepoOperate request) async {
+    try {
+      await _ensureService();
+      await _service!.createRepo(request);
+      await loadRepos();
+      return true;
+    } catch (e) {
+      _data = _data.copyWith(error: 'Create repo failed: $e');
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// 更新仓库
+  Future<bool> updateRepo(ContainerRepoOperate request) async {
+    try {
+      await _ensureService();
+      await _service!.updateRepo(request);
+      await loadRepos();
+      return true;
+    } catch (e) {
+      _data = _data.copyWith(error: 'Update repo failed: $e');
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// 删除仓库
+  Future<bool> deleteRepo(List<int> ids) async {
+    try {
+      await _ensureService();
+      await _service!.deleteRepo(ids);
+      await loadRepos();
+      return true;
+    } catch (e) {
+      _data = _data.copyWith(error: 'Delete repo failed: $e');
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// 加载模板列表
+  Future<void> loadTemplates() async {
+    try {
+      await _ensureService();
+      final templates = await _service!.listTemplates();
+      _data = _data.copyWith(templates: templates);
+      notifyListeners();
+    } catch (e) {
+      _data = _data.copyWith(error: 'Load templates failed: $e');
+      notifyListeners();
+    }
+  }
+
+  /// 创建模板
+  Future<bool> createTemplate(ContainerTemplateOperate request) async {
+    try {
+      await _ensureService();
+      await _service!.createTemplate(request);
+      await loadTemplates();
+      return true;
+    } catch (e) {
+      _data = _data.copyWith(error: 'Create template failed: $e');
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// 更新模板
+  Future<bool> updateTemplate(ContainerTemplateOperate request) async {
+    try {
+      await _ensureService();
+      await _service!.updateTemplate(request);
+      await loadTemplates();
+      return true;
+    } catch (e) {
+      _data = _data.copyWith(error: 'Update template failed: $e');
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// 删除模板
+  Future<bool> deleteTemplate(List<int> ids) async {
+    try {
+      await _ensureService();
+      await _service!.deleteTemplate(ids);
+      await loadTemplates();
+      return true;
+    } catch (e) {
+      _data = _data.copyWith(error: 'Delete template failed: $e');
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// 更新Daemon配置
+  Future<bool> updateDaemonJson(String content) async {
+    try {
+      await _ensureService();
+      await _service!.updateDaemonJson(content);
+      await loadConfig();
+      return true;
+    } catch (e) {
+      _data = _data.copyWith(error: 'Update daemon config failed: $e');
+      notifyListeners();
+      return false;
+    }
   }
 
   /// 清除错误

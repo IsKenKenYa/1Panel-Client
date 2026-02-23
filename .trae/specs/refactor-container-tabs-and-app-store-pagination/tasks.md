@@ -1,25 +1,19 @@
 # Tasks
 
-- [x] Task 1: Refactor `ContainersPage` Tabs
-  - [x] Modify `lib/features/containers/containers_page.dart` to use `DefaultTabController` (or update `TabController`) with `length: 9`.
-  - [x] Set `isScrollable: true` for `TabBar`.
-  - [x] Import and use `ComposePage`, `ImagePage`, `NetworkPage`, `VolumePage` from `features/orchestration`.
-  - [x] Create placeholder widgets for Overview, Repository, Templates, Configuration.
-  - [x] Ensure `ContainersTab` (existing) is preserved as the "Containers" tab.
-- [x] Task 2: Implement App Store Pagination in Provider
-  - [x] Modify `lib/features/apps/providers/app_store_provider.dart`.
-  - [x] Add `page`, `pageSize` (default 20), `total` state.
-  - [x] Update `loadApps` to handle `refresh` (reset list) and `loadMore` (append list).
-  - [x] Update `searchApps` call to use current page index.
-- [x] Task 3: Implement App Store Infinite Scroll
-  - [x] Modify `lib/features/apps/widgets/app_store_view.dart`.
-  - [x] Add `ScrollController` and listener for bottom detection.
-  - [x] Trigger `provider.loadMore()` when reaching bottom.
-  - [x] Show loading indicator at the bottom when loading more.
-- [x] Task 4: Fix App Store API JSON Errors
-  - [x] Modify `lib/api/v2/app_v2.dart`.
-  - [x] Wrap `response.data` access in `try-catch` blocks specifically for `searchApps` and `getAppDetail` to catch `TypeError` or `FormatException`.
-  - [x] Check for empty response body before parsing.
-- [x] Task 5: Verify Changes
-  - [x] Run `test/api_client/app_api_test.dart` to ensure API changes don't break existing tests.
-  - [x] (Manual Verification Step) Check `ContainersPage` tab structure.
+- [x] Task 1: Fix App Navigation & Container Tabs
+  - [x] SubTask 1.1: Modify `lib/config/app_router.dart` to route `/containers` to `ContainersPage`.
+  - [x] SubTask 1.2: Update `lib/features/containers/containers_page.dart` to implement the 9 required tabs (Overview, Containers, Orchestration, Images, Networks, Volumes, Repositories, Templates, Configuration).
+  - [x] SubTask 1.3: Ensure `ComposePage` (Orchestration) is correctly embedded as a tab.
+
+- [x] Task 2: Fix App Store API & Pagination
+  - [x] SubTask 2.1: Modify `lib/api/v2/app_v2.dart` to handle empty/null response bodies safely in `getAppDetail` and `installApp`.
+  - [x] SubTask 2.2: Verify `AppSearchResponse` parsing in `AppV2Api` to ensure `total` is correctly captured.
+  - [x] SubTask 2.3: Update `AppStoreProvider` if necessary to ensure `hasMore` is calculated correctly.
+
+- [x] Task 3: Improve App Store Error Handling
+  - [x] SubTask 3.1: Update `AppStoreProvider.installApp` to catch errors and set a user-friendly error message.
+  - [x] SubTask 3.2: Update `AppStoreView` to show `SnackBar` on install failure instead of just setting error state (or alongside it).
+
+# Task Dependencies
+- Task 1 is independent.
+- Task 3 depends on Task 2 (API fixes).

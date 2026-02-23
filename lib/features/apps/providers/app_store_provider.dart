@@ -84,7 +84,7 @@ class AppStoreProvider extends ChangeNotifier {
     try {
       await _appService.installApp(request);
     } catch (e) {
-      _error = e.toString();
+      _error = 'Installation failed: ${e.toString()}';
       rethrow;
     } finally {
       _isLoading = false;

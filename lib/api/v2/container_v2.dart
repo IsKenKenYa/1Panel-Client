@@ -555,4 +555,152 @@ class ContainerV2Api {
       requestOptions: response.requestOptions,
     );
   }
+
+  // 仓库管理
+  /// 获取仓库列表
+  Future<Response<List<ContainerRepo>>> getRepos() async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/repo'),
+    );
+    return Response(
+      data: _Parser.extractListDataFromMap(response, ContainerRepo.fromJson),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 创建仓库
+  Future<Response> createRepo(ContainerRepoOperate request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/repo'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 更新仓库
+  Future<Response> updateRepo(ContainerRepoOperate request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/repo/update'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 删除仓库
+  Future<Response> deleteRepo(BatchDelete request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/repo/del'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 搜索仓库
+  Future<Response<PageResult<ContainerRepo>>> searchRepos(SearchWithPage request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/repo/search'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: _Parser.extractPageData(response, ContainerRepo.fromJson),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  // 编排模版
+  /// 获取模版列表
+  Future<Response<List<ContainerTemplate>>> getTemplates() async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/template'),
+    );
+    return Response(
+      data: _Parser.extractListDataFromMap(response, ContainerTemplate.fromJson),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 创建模版
+  Future<Response> createTemplate(ContainerTemplateOperate request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/template'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 更新模版
+  Future<Response> updateTemplate(ContainerTemplateOperate request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/template/update'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 删除模版
+  Future<Response> deleteTemplate(BatchDelete request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/template/del'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 搜索模版
+  Future<Response<PageResult<ContainerTemplate>>> searchTemplates(SearchWithPage request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/template/search'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: _Parser.extractPageData(response, ContainerTemplate.fromJson),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  // Compose 管理
+  /// 创建 Compose 项目
+  Future<Response> createCompose(ContainerComposeCreate request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/compose'),
+      data: request.toJson(),
+    );
+  }
+
+  // 配置
+  /// 获取Daemon配置
+  Future<Response<Map<String, dynamic>>> getDaemonJson() async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/daemonjson'),
+    );
+    return Response(
+      data: _Parser.extractMapData(response),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+  
+  /// 获取Daemon配置内容 (File content)
+  Future<Response<String>> getDaemonJsonFile() async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/daemonjson/file'),
+    );
+    return Response(
+      data: response.data?['data']?.toString() ?? '',
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 更新Daemon配置
+  Future<Response> updateDaemonJson(DaemonJsonUpdate request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/daemonjson'),
+      data: request.toJson(),
+    );
+  }
 }

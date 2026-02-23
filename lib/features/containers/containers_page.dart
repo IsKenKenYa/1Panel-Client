@@ -1,15 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanelapp_app/config/app_router.dart';
+import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
 import 'package:onepanelapp_app/data/models/container_models.dart' hide Container, ContainerStats;
+import 'package:onepanelapp_app/features/containers/tabs/overview_tab.dart';
+import 'package:onepanelapp_app/features/containers/tabs/repos_tab.dart';
+import 'package:onepanelapp_app/features/containers/tabs/templates_tab.dart';
+import 'package:onepanelapp_app/features/containers/tabs/config_tab.dart';
 import 'package:onepanelapp_app/features/containers/widgets/container_card.dart';
-import '../../shared/widgets/app_card.dart';
-import '../../widgets/main_layout.dart';
-import 'containers_provider.dart';
 import 'package:onepanelapp_app/features/orchestration/compose_page.dart';
 import 'package:onepanelapp_app/features/orchestration/image_page.dart';
 import 'package:onepanelapp_app/features/orchestration/network_page.dart';
 import 'package:onepanelapp_app/features/orchestration/volume_page.dart';
+import 'package:onepanelapp_app/features/orchestration/providers/image_provider.dart';
+import 'package:onepanelapp_app/features/containers/containers_provider.dart';
+import 'package:onepanelapp_app/features/orchestration/providers/compose_provider.dart';
+import 'package:onepanelapp_app/features/orchestration/providers/network_provider.dart';
+import 'package:onepanelapp_app/features/orchestration/providers/volume_provider.dart';
+import 'package:onepanelapp_app/features/containers/dialogs/compose_create_dialog.dart';
+import 'package:onepanelapp_app/features/containers/dialogs/network_create_dialog.dart';
+import 'package:onepanelapp_app/features/containers/dialogs/volume_create_dialog.dart';
+import 'package:onepanelapp_app/features/containers/dialogs/repo_create_dialog.dart';
+import 'package:onepanelapp_app/features/containers/dialogs/template_create_dialog.dart';
+import 'package:onepanelapp_app/widgets/main_layout.dart';
+import 'package:onepanelapp_app/shared/widgets/app_card.dart';
 
 class ContainersPage extends StatefulWidget {
   const ContainersPage({super.key});
@@ -18,14 +32,17 @@ class ContainersPage extends StatefulWidget {
   State<ContainersPage> createState() => _ContainersPageState();
 }
 
-class _ContainersPageState extends State<ContainersPage>
-    with SingleTickerProviderStateMixin {
+class _ContainersPageState extends State<ContainersPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 9, vsync: this);
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging) return;
+      setState(() {});
+    });
     // 页面加载时获取数据
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ContainersProvider>().loadAll();
@@ -38,42 +55,98 @@ class _ContainersPageState extends State<ContainersPage>
     super.dispose();
   }
 
+  Future<void> _showPullDialog(BuildContext context) async {
+    final l10n = context.l10n;
+    final controller = TextEditingController();
+    
+    final result = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.orchestrationPullImage),
+        content: TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            hintText: l10n.orchestrationPullImageHint,
+            border: const OutlineInputBorder(),
+          ),
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(l10n.commonCancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, controller.text),
+            child: Text(l10n.commonConfirm),
+          ),
+        ],
+      ),
+    );
+
+    if (result != null && result.isNotEmpty && context.mounted) {
+      final provider = context.read<DockerImageProvider>();
+      
+      String image = result;
+      String? tag;
+      if (result.contains(':')) {
+        final parts = result.split(':');
+        image = parts[0];
+        tag = parts.sublist(1).join(':');
+      }
+      
+      final success = await provider.pullImage(image, tag: tag);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(success 
+              ? l10n.orchestrationPullSuccess 
+              : l10n.orchestrationPullFailed),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
     
     return MainLayout(
       currentIndex: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('容器管理'),
+          title: Text(l10n.containerManagement),
           actions: [
             IconButton(
               icon: const Icon(Icons.search),
               onPressed: () {
                 // TODO: 搜索容器
               },
+              tooltip: l10n.containerSearch,
             ),
             IconButton(
               icon: const Icon(Icons.filter_list),
               onPressed: () {
                 // TODO: 筛选容器
               },
+              tooltip: l10n.containerFilter,
             ),
           ],
           bottom: TabBar(
             controller: _tabController,
             isScrollable: true,
-            tabs: const [
-              Tab(text: '概览'),
-              Tab(text: '容器'),
-              Tab(text: '编排'),
-              Tab(text: '镜像'),
-              Tab(text: '网络'),
-              Tab(text: '存储卷'),
-              Tab(text: '仓库'),
-              Tab(text: '编排模板'),
-              Tab(text: '配置'),
+            tabs: [
+              Tab(text: l10n.containerTabOverview),
+              Tab(text: l10n.containerTabContainers),
+              Tab(text: l10n.containerTabOrchestration),
+              Tab(text: l10n.containerTabImages),
+              Tab(text: l10n.containerTabNetworks),
+              Tab(text: l10n.containerTabVolumes),
+              Tab(text: l10n.containerTabRepositories),
+              Tab(text: l10n.containerTabTemplates),
+              Tab(text: l10n.containerTabConfig),
             ],
             indicatorColor: colorScheme.primary,
             labelColor: colorScheme.primary,
@@ -84,7 +157,7 @@ class _ContainersPageState extends State<ContainersPage>
           controller: _tabController,
           children: [
             // 概览
-            const _PlaceholderTab(title: '概览', icon: Icons.dashboard),
+            const OverviewTab(),
             // 容器标签页 (保留原有实现)
             Consumer<ContainersProvider>(
               builder: (context, provider, child) {
@@ -119,22 +192,176 @@ class _ContainersPageState extends State<ContainersPage>
             // 存储卷
             const VolumePage(),
             // 仓库
-            const _PlaceholderTab(title: '仓库', icon: Icons.store),
+            const ReposTab(),
             // 编排模板
-            const _PlaceholderTab(title: '编排模板', icon: Icons.description),
+            const TemplatesTab(),
             // 配置
-            const _PlaceholderTab(title: '配置', icon: Icons.settings),
+            const ConfigTab(),
           ],
         ),
-        floatingActionButton: FloatingActionButton.extended(
+        floatingActionButton: _buildFloatingActionButton(context, l10n),
+      ),
+    );
+  }
+
+  Future<void> _showCreateComposeDialog(BuildContext context) async {
+    final l10n = context.l10n;
+    final result = await showDialog<ContainerComposeCreate>(
+      context: context,
+      builder: (context) => const ComposeCreateDialog(),
+    );
+
+    if (result != null && context.mounted) {
+      final provider = context.read<ComposeProvider>();
+      final success = await provider.createCompose(result);
+      if (context.mounted) {
+        if (success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.containerOperateSuccess)),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.containerOperateFailed(provider.error ?? 'Unknown error'))),
+          );
+        }
+      }
+    }
+  }
+
+  Future<void> _showCreateNetworkDialog(BuildContext context) async {
+    final l10n = context.l10n;
+    final result = await showDialog<Map<String, dynamic>>(
+      context: context,
+      builder: (context) => const NetworkCreateDialog(),
+    );
+
+    if (result != null && context.mounted) {
+      final provider = context.read<NetworkProvider>();
+      final request = NetworkCreate(
+        name: result['name'],
+        driver: result['driver'],
+        subnet: result['subnet'],
+        gateway: result['gateway'],
+        ipv4: true, // Defaulting to true as per dialog
+      );
+      final success = await provider.createNetwork(request);
+      if (context.mounted) {
+        if (success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.containerOperateSuccess)),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.containerOperateFailed(provider.error ?? 'Unknown error'))),
+          );
+        }
+      }
+    }
+  }
+
+  Future<void> _showCreateVolumeDialog(BuildContext context) async {
+    final l10n = context.l10n;
+    final result = await showDialog<Map<String, dynamic>>(
+      context: context,
+      builder: (context) => const VolumeCreateDialog(),
+    );
+
+    if (result != null && context.mounted) {
+      final provider = context.read<VolumeProvider>();
+      final request = VolumeCreate(
+        name: result['name'],
+        driver: result['driver'],
+      );
+      final success = await provider.createVolume(request);
+      if (context.mounted) {
+        if (success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.containerOperateSuccess)),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.containerOperateFailed(provider.error ?? 'Unknown error'))),
+          );
+        }
+      }
+    }
+  }
+
+  Future<void> _showCreateRepoDialog(BuildContext context) async {
+    final l10n = context.l10n;
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => const RepoCreateDialog(),
+    );
+    if (result == true && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.containerOperateSuccess)),
+      );
+    }
+  }
+
+  Future<void> _showCreateTemplateDialog(BuildContext context) async {
+    final l10n = context.l10n;
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => const TemplateCreateDialog(),
+    );
+    if (result == true && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.containerOperateSuccess)),
+      );
+    }
+  }
+
+  Widget? _buildFloatingActionButton(BuildContext context, dynamic l10n) {
+    switch (_tabController.index) {
+      case 1: // Containers
+        return FloatingActionButton.extended(
           onPressed: () {
             Navigator.pushNamed(context, '/container-create');
           },
           icon: const Icon(Icons.add),
-          label: const Text('创建容器'),
-        ),
-      ),
-    );
+          label: Text(l10n.containerCreate),
+        );
+      case 2: // Orchestration
+        return FloatingActionButton.extended(
+          onPressed: () => _showCreateComposeDialog(context),
+          icon: const Icon(Icons.add),
+          label: Text(l10n.orchestrationCreateProject),
+        );
+      case 3: // Images
+        return FloatingActionButton.extended(
+          onPressed: () => _showPullDialog(context),
+          icon: const Icon(Icons.download),
+          label: Text(l10n.orchestrationPullImage),
+        );
+      case 4: // Networks
+        return FloatingActionButton.extended(
+          onPressed: () => _showCreateNetworkDialog(context),
+          icon: const Icon(Icons.add),
+          label: Text(l10n.orchestrationCreateNetwork),
+        );
+      case 5: // Volumes
+        return FloatingActionButton.extended(
+          onPressed: () => _showCreateVolumeDialog(context),
+          icon: const Icon(Icons.add),
+          label: Text(l10n.orchestrationCreateVolume),
+        );
+      case 6: // Repositories
+        return FloatingActionButton.extended(
+          onPressed: () => _showCreateRepoDialog(context),
+          icon: const Icon(Icons.add),
+          label: Text(l10n.orchestrationCreateRepo),
+        );
+      case 7: // Templates
+        return FloatingActionButton.extended(
+          onPressed: () => _showCreateTemplateDialog(context),
+          icon: const Icon(Icons.add),
+          label: Text(l10n.orchestrationCreateTemplate),
+        );
+      default:
+        return null;
+    }
   }
 
   void _showDeleteContainerDialog(
@@ -143,16 +370,17 @@ class _ContainersPageState extends State<ContainersPage>
     ContainersProvider provider,
   ) {
     final parentContext = context;
+    final l10n = context.l10n;
     showDialog(
       context: parentContext,
       builder: (dialogContext) => AlertDialog(
         icon: const Icon(Icons.delete_outline, color: Colors.red),
-        title: const Text('删除容器'),
-        content: const Text('确定要删除这个容器吗？此操作不可撤销。'),
+        title: Text(l10n.commonDelete),
+        content: Text(l10n.containerDeleteConfirm(containerId)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('取消'),
+            child: Text(l10n.commonCancel),
           ),
           FilledButton(
             onPressed: () async {
@@ -161,14 +389,14 @@ class _ContainersPageState extends State<ContainersPage>
               if (!parentContext.mounted) return;
               if (success) {
                 ScaffoldMessenger.of(parentContext).showSnackBar(
-                  const SnackBar(content: Text('容器已删除')),
+                  SnackBar(content: Text(l10n.containerOperateSuccess)),
                 );
               }
             },
             style: FilledButton.styleFrom(
               backgroundColor: Colors.red,
             ),
-            child: const Text('删除'),
+            child: Text(l10n.commonDelete),
           ),
         ],
       ),
@@ -176,50 +404,20 @@ class _ContainersPageState extends State<ContainersPage>
   }
 }
 
-/// 占位标签页
-class _PlaceholderTab extends StatelessWidget {
-  final String title;
-  final IconData icon;
-
-  const _PlaceholderTab({
-    required this.title,
-    required this.icon,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 64, color: colorScheme.outline),
-          const SizedBox(height: 16),
-          Text(
-            '$title 功能开发中',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// 加载中视图
+// _PlaceholderTab class removed as it is no longer used
 class _LoadingView extends StatelessWidget {
   const _LoadingView();
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    final l10n = context.l10n;
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircularProgressIndicator(),
-          SizedBox(height: 16),
-          Text('加载中...'),
+          const CircularProgressIndicator(),
+          const SizedBox(height: 16),
+          Text(l10n.commonLoading),
         ],
       ),
     );
@@ -239,6 +437,7 @@ class _ErrorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
     
     return Center(
       child: Padding(
@@ -253,7 +452,7 @@ class _ErrorView extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              '加载失败',
+              l10n.commonLoadFailedTitle,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
@@ -268,7 +467,7 @@ class _ErrorView extends StatelessWidget {
             FilledButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh),
-              label: const Text('重试'),
+              label: Text(l10n.commonRetry),
             ),
           ],
         ),
@@ -302,6 +501,7 @@ class _ContainersTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
     
     return RefreshIndicator(
       onRefresh: onRefresh,
@@ -313,22 +513,22 @@ class _ContainersTab extends StatelessWidget {
           children: [
             // 容器统计卡片
             _StatsCard(
-              title: '容器统计',
+              title: l10n.containerStatsTitle,
               stats: [
                 _StatItem(
-                  title: '总数',
+                  title: l10n.containerStatsTotal,
                   value: stats.total.toString(),
                   color: colorScheme.primary,
                   icon: Icons.inventory_2,
                 ),
                 _StatItem(
-                  title: '运行中',
+                  title: l10n.containerStatsRunning,
                   value: stats.running.toString(),
                   color: Colors.green,
                   icon: Icons.play_circle,
                 ),
                 _StatItem(
-                  title: '已停止',
+                  title: l10n.containerStatsStopped,
                   value: stats.stopped.toString(),
                   color: Colors.orange,
                   icon: Icons.stop_circle,
@@ -339,10 +539,10 @@ class _ContainersTab extends StatelessWidget {
             
             // 容器列表
             if (containers.isEmpty && !isLoading)
-              const _EmptyView(
+              _EmptyView(
                 icon: Icons.inventory_2_outlined,
-                title: '暂无容器',
-                subtitle: '点击右下角按钮创建容器',
+                title: l10n.containerEmptyTitle,
+                subtitle: l10n.containerEmptyDesc,
               )
             else
               ...containers.map((container) {
@@ -474,7 +674,7 @@ class _EmptyView extends StatelessWidget {
               icon,
               size: 64,
               color: colorScheme.outline,
-            ),
+              ),
             const SizedBox(height: 16),
             Text(
               title,

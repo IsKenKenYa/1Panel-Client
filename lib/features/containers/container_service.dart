@@ -149,4 +149,106 @@ class ContainerService extends BaseComponent {
       return response.data ?? '';
     });
   }
+
+  Future<List<ContainerRepo>> listRepos() {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      final response = await api.getRepos();
+      return response.data ?? [];
+    });
+  }
+
+  Future<void> createRepo(ContainerRepoOperate request) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.createRepo(request);
+    });
+  }
+
+  Future<void> updateRepo(ContainerRepoOperate request) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.updateRepo(request);
+    });
+  }
+
+  Future<void> deleteRepo(List<int> ids) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.deleteRepo(BatchDelete(ids: ids));
+    });
+  }
+
+  Future<List<ContainerTemplate>> listTemplates() {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      final response = await api.getTemplates();
+      return response.data ?? [];
+    });
+  }
+
+  Future<void> createTemplate(ContainerTemplateOperate request) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.createTemplate(request);
+    });
+  }
+
+  Future<void> updateTemplate(ContainerTemplateOperate request) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.updateTemplate(request);
+    });
+  }
+
+  Future<void> deleteTemplate(List<int> ids) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.deleteTemplate(BatchDelete(ids: ids));
+    });
+  }
+
+  Future<void> createCompose(ContainerComposeCreate request) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.createCompose(request);
+    });
+  }
+
+  Future<void> createNetwork(NetworkCreate request) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.createNetwork(request);
+    });
+  }
+
+  Future<void> createVolume(VolumeCreate request) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.createVolume(request);
+    });
+  }
+
+  Future<String> getDaemonJson() {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      final response = await api.getDaemonJsonFile();
+      return response.data ?? '';
+    });
+  }
+
+  Future<void> updateDaemonJson(String content) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.updateDaemonJson(DaemonJsonUpdate(content: content));
+    });
+  }
+
+  Future<ContainerStatus> getContainerStatus() {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      final response = await api.getContainerStatus();
+      return response.data!;
+    });
+  }
 }

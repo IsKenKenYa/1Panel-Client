@@ -416,6 +416,47 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonCreate => 'Create';
 
   @override
+  String get commonEdit => 'Edit';
+
+  @override
+  String get commonName => 'Name';
+
+  @override
+  String get commonUsername => 'Username';
+
+  @override
+  String get commonPassword => 'Password';
+
+  @override
+  String get commonUrl => 'URL';
+
+  @override
+  String get commonDescription => 'Description';
+
+  @override
+  String get commonContent => 'Content';
+
+  @override
+  String get commonRepo => 'Repository';
+
+  @override
+  String get commonTemplate => 'Template';
+
+  @override
+  String get commonEditRepo => 'Edit Repository';
+
+  @override
+  String get commonEditTemplate => 'Edit Template';
+
+  @override
+  String get commonDeleteRepoConfirm =>
+      'Are you sure you want to delete this repository?';
+
+  @override
+  String get commonDeleteTemplateConfirm =>
+      'Are you sure you want to delete this template?';
+
+  @override
   String get commonSearch => 'Search';
 
   @override
@@ -2535,4 +2576,78 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get themeSeedColorFallbackDesc =>
       'Used when dynamic color is unavailable';
+
+  @override
+  String get containerTabOverview => 'Overview';
+
+  @override
+  String get containerTabContainers => 'Containers';
+
+  @override
+  String get containerTabOrchestration => 'Orchestration';
+
+  @override
+  String get containerTabImages => 'Images';
+
+  @override
+  String get containerTabNetworks => 'Networks';
+
+  @override
+  String get containerTabVolumes => 'Volumes';
+
+  @override
+  String get containerTabRepositories => 'Repositories';
+
+  @override
+  String get containerTabTemplates => 'Templates';
+
+  @override
+  String get containerTabConfig => 'Config';
+
+  @override
+  String get containerSearch => 'Search containers';
+
+  @override
+  String get containerFilter => 'Filter containers';
+
+  @override
+  String get containerCreate => 'Create Container';
+
+  @override
+  String get containerEmptyTitle => 'No containers';
+
+  @override
+  String get containerEmptyDesc => 'Tap the button below to create a container';
+
+  @override
+  String get containerStatsTitle => 'Container Stats';
+
+  @override
+  String get containerStatsTotal => 'Total';
+
+  @override
+  String get containerStatsRunning => 'Running';
+
+  @override
+  String get containerStatsStopped => 'Stopped';
+
+  @override
+  String containerFeatureDeveloping(Object feature) {
+    return '$feature is under development';
+  }
+
+  @override
+  String get orchestrationCreateProject => 'Create Project';
+
+  @override
+  String get orchestrationCreateNetwork => 'Create Network';
+
+  @override
+  String get orchestrationCreateVolume => 'Create Volume';
+
+  @override
+  String get orchestrationCreateRepo => 'Create Repository';
+
+  @override
+  String get orchestrationCreateTemplate => 'Create Template';
 }

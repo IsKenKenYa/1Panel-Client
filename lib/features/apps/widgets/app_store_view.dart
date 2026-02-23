@@ -266,7 +266,20 @@ class _AppStoreViewState extends State<AppStoreView> {
       builder: (context) => AppInstallDialog(app: app),
     );
 
-    if (result == true && mounted) {
+    if (!mounted) return;
+
+    // Check if provider has error (e.g. from failed install attempt in dialog)
+    final provider = context.read<AppStoreProvider>();
+    if (provider.error != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(provider.error!),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+    }
+
+    if (result == true) {
       _loadApps(refresh: true);
     }
   }

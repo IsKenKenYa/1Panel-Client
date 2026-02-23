@@ -1,0 +1,11 @@
+- [x] `ContainersPage` FAB shows "Create Project" on Orchestration tab
+- [x] `ContainersPage` FAB shows "Create Network" on Network tab
+- [x] `ContainersPage` FAB shows "Create Volume" on Volume tab
+- [x] `ContainersPage` FAB shows "Create Repository" on Repositories tab
+- [x] `ContainersPage` FAB shows "Create Template" on Templates tab
+- [x] Can create a Compose Project
+- [x] Can create a Network
+- [x] Can create a Volume
+- [x] Can create, edit, and delete a Repository
+- [x] Can create, edit, and delete a Template
+- [x] Can edit and save `daemon.json` in Configuration tab

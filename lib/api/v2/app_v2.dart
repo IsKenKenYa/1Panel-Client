@@ -32,6 +32,33 @@ class AppV2Api {
 
   AppSearchResponse _parseAppSearchResponse(dynamic dataField) {
     if (dataField is Map<String, dynamic>) {
+      // Ensure we extract total correctly
+      if (dataField.containsKey('items') || dataField.containsKey('total')) {
+        final itemsData = dataField['items'];
+        final List<AppItem> items = (itemsData is List) 
+            ? itemsData.map((e) => AppItem.fromJson(e as Map<String, dynamic>)).toList()
+            : [];
+        
+        final totalData = dataField['total'];
+        final int total = (totalData is int) ? totalData : items.length;
+        
+        return AppSearchResponse(items: items, total: total);
+      }
+      // Try nested 'data' structure if present
+      if (dataField.containsKey('data')) {
+        return _parseAppSearchResponse(dataField['data']);
+      }
+      // Try 'apps' key instead of 'items'
+      if (dataField.containsKey('apps')) {
+        final itemsData = dataField['apps'];
+        final List<AppItem> items = (itemsData is List) 
+            ? itemsData.map((e) => AppItem.fromJson(e as Map<String, dynamic>)).toList()
+            : [];
+        final totalData = dataField['total'];
+        final int total = (totalData is int) ? totalData : items.length;
+        return AppSearchResponse(items: items, total: total);
+      }
+      
       return AppSearchResponse.fromJson(dataField);
     }
     if (dataField is List) {
@@ -40,7 +67,6 @@ class AppV2Api {
     }
     return AppSearchResponse(items: [], total: 0);
   }
-
 
   AppUpdateResponse _parseAppUpdateResponse(dynamic dataField) {
     if (dataField is Map<String, dynamic>) {
@@ -66,24 +92,23 @@ class AppV2Api {
         data: request.toJson(),
       );
       
-      // Check for empty response
-      if (response.data == null || response.data.toString().isEmpty) {
-         // Assuming success if 200 OK but empty (though unlikely for install)
-         return AppInstallInfo(
-           name: request.name,
-           status: 'Installing',
-           message: 'Installation started',
-           id: 0, // Unknown ID
-           createdAt: DateTime.now().toIso8601String(),
-           version: 'latest',
-           appDetailId: request.appDetailId,
-           appId: 0,
-           appKey: request.name, // Assuming name is key or close enough for placeholder
-           appType: request.type ?? 'unknown',
-         );
+      final data = response.data;
+      if (data == null || (data is String && data.isEmpty)) {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          error: 'Install failed: Empty response from server',
+          type: DioExceptionType.badResponse,
+        );
       }
 
-      final data = response.data as Map<String, dynamic>;
+      if (data is! Map<String, dynamic>) {
+         throw DioException(
+          requestOptions: response.requestOptions,
+          error: 'Install failed: Invalid response format',
+          type: DioExceptionType.badResponse,
+        );
+      }
+
       final innerData = data['data'];
       
       if (innerData is Map<String, dynamic>) {
@@ -105,24 +130,15 @@ class AppV2Api {
         );
       }
 
-      return AppInstallInfo(
-        id: 0,
-        name: request.name,
-        status: 'Installing',
-        message: 'Installation response format unexpected: $innerData',
-        createdAt: DateTime.now().toIso8601String(),
-        version: 'latest',
-        appDetailId: request.appDetailId,
-        appId: 0,
-        appKey: request.name,
-        appType: request.type ?? 'unknown',
+      throw DioException(
+        requestOptions: response.requestOptions,
+        error: 'Install failed: Unexpected response data format: $innerData',
+        type: DioExceptionType.badResponse,
       );
     } catch (e) {
-      if (e is DioException && e.type == DioExceptionType.badResponse) {
-         // Handle 500 or 404
+      if (e is DioException) {
          rethrow;
       }
-      // For parsing errors (unexpected end of JSON), wrap or rethrow
       throw DioException(
         requestOptions: RequestOptions(path: '/apps/install'),
         error: 'Install failed: $e',
@@ -172,6 +188,15 @@ class AppV2Api {
       ApiConstants.buildApiPath('/apps/detail/$appId/$version/$type'),
     );
     final data = response.data;
+    
+    if (data == null) {
+       throw DioException(
+         requestOptions: response.requestOptions, 
+         error: 'App detail response is empty',
+         type: DioExceptionType.badResponse,
+       );
+    }
+
     if (data is! Map<String, dynamic>) {
        throw DioException(
          requestOptions: response.requestOptions, 

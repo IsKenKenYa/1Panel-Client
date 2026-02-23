@@ -938,7 +938,8 @@ class ContainerCompose extends Equatable {
 /// Container Compose 创建请求模型
 class ContainerComposeCreate extends Equatable {
   final String name;
-  final String path;
+  final String? path;
+  final String? file;
   final String? version;
   final List<String>? networks;
   final List<String>? volumes;
@@ -946,7 +947,8 @@ class ContainerComposeCreate extends Equatable {
 
   const ContainerComposeCreate({
     required this.name,
-    required this.path,
+    this.path,
+    this.file,
     this.version,
     this.networks,
     this.volumes,
@@ -956,7 +958,8 @@ class ContainerComposeCreate extends Equatable {
   factory ContainerComposeCreate.fromJson(Map<String, dynamic> json) {
     return ContainerComposeCreate(
       name: json['name'] as String,
-      path: json['path'] as String,
+      path: json['path'] as String?,
+      file: json['file'] as String?,
       version: json['version'] as String?,
       networks: (json['networks'] as List?)?.cast<String>(),
       volumes: (json['volumes'] as List?)?.cast<String>(),
@@ -967,11 +970,12 @@ class ContainerComposeCreate extends Equatable {
   Map<String, dynamic> toJson() {
     return {
       'name': name,
-      'path': path,
-      'version': version,
-      'networks': networks,
-      'volumes': volumes,
-      'services': services,
+      if (path != null) 'path': path,
+      if (file != null) 'file': file,
+      if (version != null) 'version': version,
+      if (networks != null) 'networks': networks,
+      if (volumes != null) 'volumes': volumes,
+      if (services != null) 'services': services,
     };
   }
 
@@ -979,6 +983,7 @@ class ContainerComposeCreate extends Equatable {
   List<Object?> get props => [
         name,
         path,
+        file,
         version,
         networks,
         volumes,
@@ -1537,6 +1542,11 @@ class NetworkCreate extends Equatable {
   final List<String>? ipam;
   final Map<String, String>? labels;
   final bool? enableIPv6;
+  final bool? ipv4;
+  final String? subnet;
+  final String? gateway;
+  final String? ipRange;
+  final List<String>? options;
 
   const NetworkCreate({
     required this.name,
@@ -1546,6 +1556,11 @@ class NetworkCreate extends Equatable {
     this.ipam,
     this.labels,
     this.enableIPv6,
+    this.ipv4,
+    this.subnet,
+    this.gateway,
+    this.ipRange,
+    this.options,
   });
 
   factory NetworkCreate.fromJson(Map<String, dynamic> json) {
@@ -1557,18 +1572,28 @@ class NetworkCreate extends Equatable {
       ipam: (json['ipam'] as List?)?.cast<String>(),
       labels: (json['labels'] as Map<String, dynamic>?)?.cast<String, String>(),
       enableIPv6: json['enableIPv6'] as bool?,
+      ipv4: json['ipv4'] as bool?,
+      subnet: json['subnet'] as String?,
+      gateway: json['gateway'] as String?,
+      ipRange: json['ipRange'] as String?,
+      options: (json['options'] as List?)?.cast<String>(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'name': name,
-      'driver': driver,
-      'internal': internal,
-      'attachable': attachable,
-      'ipam': ipam,
-      'labels': labels,
-      'enableIPv6': enableIPv6,
+      if (driver != null) 'driver': driver,
+      if (internal != null) 'internal': internal,
+      if (attachable != null) 'attachable': attachable,
+      if (ipam != null) 'ipam': ipam,
+      if (labels != null) 'labels': labels,
+      if (enableIPv6 != null) 'enableIPv6': enableIPv6,
+      if (ipv4 != null) 'ipv4': ipv4,
+      if (subnet != null) 'subnet': subnet,
+      if (gateway != null) 'gateway': gateway,
+      if (ipRange != null) 'ipRange': ipRange,
+      if (options != null) 'options': options,
     };
   }
 
@@ -1581,6 +1606,11 @@ class NetworkCreate extends Equatable {
         ipam,
         labels,
         enableIPv6,
+        ipv4,
+        subnet,
+        gateway,
+        ipRange,
+        options,
       ];
 }
 
@@ -1654,4 +1684,175 @@ class ContainerPruneReport extends Equatable {
 
   @override
   List<Object?> get props => [deletedCount, spaceReclaimed, deletedItems, message];
+}
+
+/// 容器仓库模型
+class ContainerRepo extends Equatable {
+  final int id;
+  final String name;
+  final String downloadUrl;
+  final String? username;
+  final String? password;
+  final String status;
+  final String createdAt;
+  final String updatedAt;
+
+  const ContainerRepo({
+    required this.id,
+    required this.name,
+    required this.downloadUrl,
+    this.username,
+    this.password,
+    this.status = 'Success',
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  factory ContainerRepo.fromJson(Map<String, dynamic> json) {
+    return ContainerRepo(
+      id: json['id'] as int,
+      name: json['name'] as String,
+      downloadUrl: json['downloadUrl'] as String,
+      username: json['username'] as String?,
+      password: json['password'] as String?,
+      status: json['status'] as String? ?? 'Success',
+      createdAt: json['createdAt'] as String? ?? '',
+      updatedAt: json['updatedAt'] as String? ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'downloadUrl': downloadUrl,
+      'username': username,
+      'password': password,
+      'status': status,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+    };
+  }
+
+  @override
+  List<Object?> get props => [id, name, downloadUrl, username, password, status, createdAt, updatedAt];
+}
+
+/// 容器仓库创建/更新模型
+class ContainerRepoOperate extends Equatable {
+  final int? id;
+  final String name;
+  final String downloadUrl;
+  final String? username;
+  final String? password;
+
+  const ContainerRepoOperate({
+    this.id,
+    required this.name,
+    required this.downloadUrl,
+    this.username,
+    this.password,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (id != null) 'id': id,
+      'name': name,
+      'downloadUrl': downloadUrl,
+      if (username != null) 'username': username,
+      if (password != null) 'password': password,
+    };
+  }
+
+  @override
+  List<Object?> get props => [id, name, downloadUrl, username, password];
+}
+
+/// 容器模板模型
+class ContainerTemplate extends Equatable {
+  final int id;
+  final String name;
+  final String description;
+  final String content;
+  final String createdAt;
+  final String updatedAt;
+
+  const ContainerTemplate({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.content,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  factory ContainerTemplate.fromJson(Map<String, dynamic> json) {
+    return ContainerTemplate(
+      id: json['id'] as int,
+      name: json['name'] as String,
+      description: json['description'] as String? ?? '',
+      content: json['content'] as String? ?? '',
+      createdAt: json['createdAt'] as String? ?? '',
+      updatedAt: json['updatedAt'] as String? ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'content': content,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+    };
+  }
+
+  @override
+  List<Object?> get props => [id, name, description, content, createdAt, updatedAt];
+}
+
+/// 容器模板创建/更新模型
+class ContainerTemplateOperate extends Equatable {
+  final int? id;
+  final String name;
+  final String description;
+  final String content;
+
+  const ContainerTemplateOperate({
+    this.id,
+    required this.name,
+    required this.description,
+    required this.content,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (id != null) 'id': id,
+      'name': name,
+      'description': description,
+      'content': content,
+    };
+  }
+
+  @override
+  List<Object?> get props => [id, name, description, content];
+}
+
+/// Daemon配置更新模型
+class DaemonJsonUpdate extends Equatable {
+  final String content;
+
+  const DaemonJsonUpdate({
+    required this.content,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'content': content,
+    };
+  }
+
+  @override
+  List<Object?> get props => [content];
 }

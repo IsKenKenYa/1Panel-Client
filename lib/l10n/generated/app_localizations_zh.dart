@@ -413,6 +413,45 @@ class AppLocalizationsZh extends AppLocalizations {
   String get commonCreate => '创建';
 
   @override
+  String get commonEdit => '编辑';
+
+  @override
+  String get commonName => '名称';
+
+  @override
+  String get commonUsername => '用户名';
+
+  @override
+  String get commonPassword => '密码';
+
+  @override
+  String get commonUrl => 'URL';
+
+  @override
+  String get commonDescription => '描述';
+
+  @override
+  String get commonContent => '内容';
+
+  @override
+  String get commonRepo => '仓库';
+
+  @override
+  String get commonTemplate => '模版';
+
+  @override
+  String get commonEditRepo => '编辑仓库';
+
+  @override
+  String get commonEditTemplate => '编辑模版';
+
+  @override
+  String get commonDeleteRepoConfirm => '确定要删除此仓库吗？';
+
+  @override
+  String get commonDeleteTemplateConfirm => '确定要删除此模版吗？';
+
+  @override
   String get commonSearch => '搜索';
 
   @override
@@ -2490,4 +2529,78 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get themeSeedColorFallbackDesc => '当动态取色不可用时使用';
+
+  @override
+  String get containerTabOverview => '概览';
+
+  @override
+  String get containerTabContainers => '容器';
+
+  @override
+  String get containerTabOrchestration => '编排';
+
+  @override
+  String get containerTabImages => '镜像';
+
+  @override
+  String get containerTabNetworks => '网络';
+
+  @override
+  String get containerTabVolumes => '存储卷';
+
+  @override
+  String get containerTabRepositories => '仓库';
+
+  @override
+  String get containerTabTemplates => '编排模版';
+
+  @override
+  String get containerTabConfig => '配置';
+
+  @override
+  String get containerSearch => '搜索容器';
+
+  @override
+  String get containerFilter => '筛选容器';
+
+  @override
+  String get containerCreate => '创建容器';
+
+  @override
+  String get containerEmptyTitle => '暂无容器';
+
+  @override
+  String get containerEmptyDesc => '点击右下角按钮创建容器';
+
+  @override
+  String get containerStatsTitle => '容器统计';
+
+  @override
+  String get containerStatsTotal => '总数';
+
+  @override
+  String get containerStatsRunning => '运行中';
+
+  @override
+  String get containerStatsStopped => '已停止';
+
+  @override
+  String containerFeatureDeveloping(Object feature) {
+    return '$feature 功能开发中';
+  }
+
+  @override
+  String get orchestrationCreateProject => '创建项目';
+
+  @override
+  String get orchestrationCreateNetwork => '创建网络';
+
+  @override
+  String get orchestrationCreateVolume => '创建存储卷';
+
+  @override
+  String get orchestrationCreateRepo => '创建仓库';
+
+  @override
+  String get orchestrationCreateTemplate => '创建模版';
 }

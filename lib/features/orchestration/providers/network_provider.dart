@@ -34,14 +34,14 @@ class NetworkProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> createNetwork(String name, {String? driver}) async {
+  Future<bool> createNetwork(NetworkCreate request) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
       final api = await _getApi();
-      await api.createNetwork(NetworkCreate(name: name, driver: driver));
+      await api.createNetwork(request);
       await loadNetworks();
       return true;
     } catch (e) {
