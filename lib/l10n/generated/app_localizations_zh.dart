@@ -2478,4 +2478,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get logModeScrollPage => '整页滑动';
+
+  @override
+  String get themeDynamicColor => '动态取色';
+
+  @override
+  String get themeDynamicColorDesc => '使用壁纸颜色作为主题色';
+
+  @override
+  String get themeSeedColor => '主题色';
 }

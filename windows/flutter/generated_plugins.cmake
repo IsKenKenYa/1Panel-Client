@@ -6,6 +6,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_windows
   battery_plus
   connectivity_plus
+  dynamic_color
   flutter_secure_storage_windows
   permission_handler_windows
   syncfusion_pdfviewer_windows

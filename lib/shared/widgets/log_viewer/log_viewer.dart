@@ -25,12 +25,14 @@ class LogViewer extends StatefulWidget {
 
 class _LogViewerState extends State<LogViewer> {
   final _scrollController = ScrollController();
+  late final ScrollController _horizontalScrollController;
   bool _isAutoScrolling = true;
   List<LogLine> _prevLogs = [];
 
   @override
   void initState() {
     super.initState();
+    _horizontalScrollController = ScrollController();
     _scrollController.addListener(_onScroll);
     widget.controller.addListener(_onControllerChanged);
     _prevLogs = widget.controller.logs;
@@ -38,6 +40,7 @@ class _LogViewerState extends State<LogViewer> {
 
   @override
   void dispose() {
+    _horizontalScrollController.dispose();
     _scrollController.dispose();
     widget.controller.removeListener(_onControllerChanged);
     super.dispose();
@@ -131,9 +134,11 @@ class _LogViewerState extends State<LogViewer> {
 
                 if (controller.settings.viewMode == LogViewMode.scrollPage) {
                   return Scrollbar(
+                    controller: _horizontalScrollController,
                     thumbVisibility: true,
                     trackVisibility: true,
                     child: SingleChildScrollView(
+                      controller: _horizontalScrollController,
                       scrollDirection: Axis.horizontal,
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * 3,

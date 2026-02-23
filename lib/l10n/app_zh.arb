@@ -971,5 +971,8 @@
   "logViewMode": "显示模式",
   "logModeWrap": "自动换行",
   "logModeScrollLine": "单行滑动",
-  "logModeScrollPage": "整页滑动"
+  "logModeScrollPage": "整页滑动",
+  "themeDynamicColor": "动态取色",
+  "themeDynamicColorDesc": "使用壁纸颜色作为主题色",
+  "themeSeedColor": "主题色"
 }

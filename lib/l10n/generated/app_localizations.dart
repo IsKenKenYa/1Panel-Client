@@ -4891,6 +4891,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scroll Page'**
   String get logModeScrollPage;
+
+  /// No description provided for @themeDynamicColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Dynamic Color'**
+  String get themeDynamicColor;
+
+  /// No description provided for @themeDynamicColorDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Use wallpaper color as theme color'**
+  String get themeDynamicColorDesc;
+
+  /// No description provided for @themeSeedColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme Color'**
+  String get themeSeedColor;
 }
 
 class _AppLocalizationsDelegate

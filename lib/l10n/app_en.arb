@@ -1033,5 +1033,8 @@
   "logViewMode": "View Mode",
   "logModeWrap": "Wrap",
   "logModeScrollLine": "Scroll Line",
-  "logModeScrollPage": "Scroll Page"
+  "logModeScrollPage": "Scroll Page",
+  "themeDynamicColor": "Dynamic Color",
+  "themeDynamicColorDesc": "Use wallpaper color as theme color",
+  "themeSeedColor": "Theme Color"
 }

@@ -2522,4 +2522,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logModeScrollPage => 'Scroll Page';
+
+  @override
+  String get themeDynamicColor => 'Dynamic Color';
+
+  @override
+  String get themeDynamicColorDesc => 'Use wallpaper color as theme color';
+
+  @override
+  String get themeSeedColor => 'Theme Color';
 }

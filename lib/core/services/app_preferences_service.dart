@@ -12,6 +12,8 @@ class AppPreferencesService {
   static const String _localeKey = 'app_locale';
   static const String _cacheStrategyKey = 'cache_strategy';
   static const String _cacheMaxSizeKey = 'cache_max_size_mb';
+  static const String _useDynamicColorKey = 'app_use_dynamic_color';
+  static const String _seedColorKey = 'app_seed_color';
 
   Future<ThemeMode> loadThemeMode() async {
     final prefs = await SharedPreferences.getInstance();
@@ -93,5 +95,26 @@ class AppPreferencesService {
   Future<void> saveCacheMaxSizeMB(int sizeMB) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_cacheMaxSizeKey, sizeMB);
+  }
+
+  Future<bool> loadUseDynamicColor() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_useDynamicColorKey) ?? true;
+  }
+
+  Future<void> saveUseDynamicColor(bool useDynamicColor) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_useDynamicColorKey, useDynamicColor);
+  }
+
+  Future<Color?> loadSeedColor() async {
+    final prefs = await SharedPreferences.getInstance();
+    final value = prefs.getInt(_seedColorKey);
+    return value != null ? Color(value) : null;
+  }
+
+  Future<void> saveSeedColor(Color color) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_seedColorKey, color.toARGB32());
   }
 }

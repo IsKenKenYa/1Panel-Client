@@ -55,7 +55,7 @@ class LogLineWidget extends StatelessWidget {
       }
     }
 
-    spans.addAll(_buildContentSpans(content, defaultStyle));
+    spans.addAll(_buildContentSpans(content, defaultStyle, theme.colorScheme));
 
     final richText = RichText(
       text: TextSpan(children: spans),
@@ -87,7 +87,7 @@ class LogLineWidget extends StatelessWidget {
     return '+${minutes}m${seconds}s.${millis}ms';
   }
 
-  List<InlineSpan> _buildContentSpans(String text, TextStyle baseStyle) {
+  List<InlineSpan> _buildContentSpans(String text, TextStyle baseStyle, ColorScheme scheme) {
     // 1. Identify all ranges that need styling
     final ranges = <_StyleRange>[];
 
@@ -116,7 +116,7 @@ class LogLineWidget extends StatelessWidget {
         ranges.add(_StyleRange(
           start: match.start,
           end: match.end,
-          style: _getRuleStyle(baseStyle, rule),
+          style: _getRuleStyle(baseStyle, rule, scheme),
           priority: 10, // Lower priority than search
         ));
       }
@@ -164,14 +164,52 @@ class LogLineWidget extends StatelessWidget {
     return spans;
   }
 
-  TextStyle _getRuleStyle(TextStyle base, LogHighlightRule rule) {
+  TextStyle _getRuleStyle(TextStyle base, LogHighlightRule rule, ColorScheme scheme) {
     return base.copyWith(
-      color: rule.color,
-      backgroundColor: rule.backgroundColor,
+      color: _resolveColor(rule.color, rule.colorName, scheme),
+      backgroundColor: _resolveColor(rule.backgroundColor, rule.backgroundColorName, scheme),
       fontWeight: rule.isBold ? FontWeight.bold : null,
       fontStyle: rule.isItalic ? FontStyle.italic : null,
       decoration: rule.isUnderline ? TextDecoration.underline : null,
     );
+  }
+
+  Color? _resolveColor(Color? color, String? colorName, ColorScheme scheme) {
+    if (colorName != null) {
+      switch (colorName) {
+        case 'primary': return scheme.primary;
+        case 'onPrimary': return scheme.onPrimary;
+        case 'primaryContainer': return scheme.primaryContainer;
+        case 'onPrimaryContainer': return scheme.onPrimaryContainer;
+        case 'secondary': return scheme.secondary;
+        case 'onSecondary': return scheme.onSecondary;
+        case 'secondaryContainer': return scheme.secondaryContainer;
+        case 'onSecondaryContainer': return scheme.onSecondaryContainer;
+        case 'tertiary': return scheme.tertiary;
+        case 'onTertiary': return scheme.onTertiary;
+        case 'tertiaryContainer': return scheme.tertiaryContainer;
+        case 'onTertiaryContainer': return scheme.onTertiaryContainer;
+        case 'error': return scheme.error;
+        case 'onError': return scheme.onError;
+        case 'errorContainer': return scheme.errorContainer;
+        case 'onErrorContainer': return scheme.onErrorContainer;
+        case 'background': return scheme.surface; // Material 3 uses surface
+        case 'onBackground': return scheme.onSurface;
+        case 'surface': return scheme.surface;
+        case 'onSurface': return scheme.onSurface;
+        case 'surfaceVariant': return scheme.surfaceContainerHighest;
+        case 'onSurfaceVariant': return scheme.onSurfaceVariant;
+        case 'outline': return scheme.outline;
+        case 'outlineVariant': return scheme.outlineVariant;
+        case 'shadow': return scheme.shadow;
+        case 'scrim': return scheme.scrim;
+        case 'inverseSurface': return scheme.inverseSurface;
+        case 'onInverseSurface': return scheme.onInverseSurface;
+        case 'inversePrimary': return scheme.inversePrimary;
+        case 'surfaceTint': return scheme.surfaceTint;
+      }
+    }
+    return color;
   }
 
   List<({int start, int end})> _findMatches(String text, LogHighlightRule rule) {

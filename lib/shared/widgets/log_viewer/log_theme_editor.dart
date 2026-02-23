@@ -142,6 +142,8 @@ class _LogThemeEditorState extends State<LogThemeEditor> {
     );
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -229,7 +231,9 @@ class _RuleEditorDialogState extends State<_RuleEditorDialog> {
   late HighlightType _type;
   late bool _caseSensitive;
   late Color _color;
+  String? _colorName;
   late Color _backgroundColor;
+  String? _backgroundColorName;
   late bool _isBold;
   late bool _isItalic;
   late bool _isUnderline;
@@ -241,7 +245,9 @@ class _RuleEditorDialogState extends State<_RuleEditorDialog> {
     _type = widget.rule.type;
     _caseSensitive = widget.rule.caseSensitive;
     _color = widget.rule.color ?? Colors.black;
+    _colorName = widget.rule.colorName;
     _backgroundColor = widget.rule.backgroundColor ?? Colors.transparent;
+    _backgroundColorName = widget.rule.backgroundColorName;
     _isBold = widget.rule.isBold;
     _isItalic = widget.rule.isItalic;
     _isUnderline = widget.rule.isUnderline;
@@ -258,14 +264,129 @@ class _RuleEditorDialogState extends State<_RuleEditorDialog> {
       pattern: _patternController.text,
       type: _type,
       caseSensitive: _caseSensitive,
-      color: _color == Colors.black ? null : _color, // Simplification
-      backgroundColor: _backgroundColor == Colors.transparent ? null : _backgroundColor,
+      color: _colorName == null && _color != Colors.black ? _color : null,
+      colorName: _colorName,
+      backgroundColor: _backgroundColorName == null && _backgroundColor != Colors.transparent ? _backgroundColor : null,
+      backgroundColorName: _backgroundColorName,
       isBold: _isBold,
       isItalic: _isItalic,
       isUnderline: _isUnderline,
     );
     widget.onSave(updatedRule);
     Navigator.pop(context);
+  }
+
+  Widget _buildColorSelector({
+    required String label,
+    required Color currentColor,
+    required String? currentColorName,
+    required ValueChanged<Color> onColorChanged,
+    required ValueChanged<String?> onColorNameChanged,
+  }) {
+    final scheme = Theme.of(context).colorScheme;
+    final colorMap = {
+      'primary': scheme.primary,
+      'onPrimary': scheme.onPrimary,
+      'primaryContainer': scheme.primaryContainer,
+      'onPrimaryContainer': scheme.onPrimaryContainer,
+      'secondary': scheme.secondary,
+      'onSecondary': scheme.onSecondary,
+      'secondaryContainer': scheme.secondaryContainer,
+      'onSecondaryContainer': scheme.onSecondaryContainer,
+      'tertiary': scheme.tertiary,
+      'onTertiary': scheme.onTertiary,
+      'tertiaryContainer': scheme.tertiaryContainer,
+      'onTertiaryContainer': scheme.onTertiaryContainer,
+      'error': scheme.error,
+      'onError': scheme.onError,
+      'errorContainer': scheme.errorContainer,
+      'onErrorContainer': scheme.onErrorContainer,
+      'outline': scheme.outline,
+      'outlineVariant': scheme.outlineVariant,
+      'surface': scheme.surface,
+      'onSurface': scheme.onSurface,
+      'surfaceVariant': scheme.surfaceContainerHighest,
+      'onSurfaceVariant': scheme.onSurfaceVariant,
+      'inverseSurface': scheme.inverseSurface,
+      'onInverseSurface': scheme.onInverseSurface,
+      'inversePrimary': scheme.inversePrimary,
+      'shadow': scheme.shadow,
+      'scrim': scheme.scrim,
+      'surfaceTint': scheme.surfaceTint,
+    };
+
+    final displayColor = currentColorName != null
+        ? (colorMap[currentColorName] ?? currentColor)
+        : currentColor;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: Theme.of(context).textTheme.bodyMedium),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: DropdownButtonFormField<String?>(
+                value: currentColorName,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                ),
+                items: [
+                  const DropdownMenuItem(value: null, child: Text('Custom Color')),
+                  ...colorMap.keys.map((name) => DropdownMenuItem(
+                    value: name,
+                    child: Row(
+                      children: [
+                        Container(width: 12, height: 12, color: colorMap[name]),
+                        const SizedBox(width: 8),
+                        Text(name),
+                      ],
+                    ),
+                  )),
+                ],
+                onChanged: onColorNameChanged,
+              ),
+            ),
+            const SizedBox(width: 16),
+            InkWell(
+              onTap: currentColorName == null
+                  ? () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Pick a color'),
+                          content: SingleChildScrollView(
+                            child: ColorPicker(
+                              pickerColor: currentColor,
+                              onColorChanged: onColorChanged,
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              child: const Text('Done'),
+                              onPressed: () => Navigator.of(context).pop(),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  : null,
+              child: Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: displayColor,
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   @override
@@ -301,61 +422,20 @@ class _RuleEditorDialogState extends State<_RuleEditorDialog> {
               onChanged: (value) => setState(() => _caseSensitive = value),
             ),
             const Divider(),
-            ListTile(
-              title: Text(l10n.logRuleColor),
-              trailing: Container(
-                width: 24,
-                height: 24,
-                color: _color,
-              ),
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Pick a color'),
-                    content: SingleChildScrollView(
-                      child: ColorPicker(
-                        pickerColor: _color,
-                        onColorChanged: (color) => setState(() => _color = color),
-                      ),
-                    ),
-                    actions: [
-                      TextButton(
-                        child: const Text('Done'),
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                    ],
-                  ),
-                );
-              },
+            _buildColorSelector(
+              label: l10n.logRuleColor,
+              currentColor: _color,
+              currentColorName: _colorName,
+              onColorChanged: (c) => setState(() => _color = c),
+              onColorNameChanged: (n) => setState(() => _colorName = n),
             ),
-            ListTile(
-              title: Text(l10n.logRuleBackgroundColor),
-              trailing: Container(
-                width: 24,
-                height: 24,
-                color: _backgroundColor,
-              ),
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Pick a background color'),
-                    content: SingleChildScrollView(
-                      child: ColorPicker(
-                        pickerColor: _backgroundColor,
-                        onColorChanged: (color) => setState(() => _backgroundColor = color),
-                      ),
-                    ),
-                    actions: [
-                      TextButton(
-                        child: const Text('Done'),
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                    ],
-                  ),
-                );
-              },
+            const SizedBox(height: 16),
+            _buildColorSelector(
+              label: l10n.logRuleBackgroundColor,
+              currentColor: _backgroundColor,
+              currentColorName: _backgroundColorName,
+              onColorChanged: (c) => setState(() => _backgroundColor = c),
+              onColorNameChanged: (n) => setState(() => _backgroundColorName = n),
             ),
             const Divider(),
             Row(

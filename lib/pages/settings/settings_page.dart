@@ -4,6 +4,7 @@ import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
 import 'package:onepanelapp_app/core/services/app_settings_controller.dart';
 import 'package:onepanelapp_app/core/services/onboarding_service.dart';
 import 'package:onepanelapp_app/core/theme/app_design_tokens.dart';
+import 'package:onepanelapp_app/features/settings/screens/theme_settings_page.dart';
 import 'package:onepanelapp_app/pages/settings/cache_settings_page.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -22,23 +23,31 @@ class SettingsPage extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: AppDesignTokens.spacingSm),
           Card(
-            child: Column(
-              children: [
-                Padding(
-                  padding: AppDesignTokens.pagePadding,
-                  child: Consumer<AppSettingsController>(
-                    builder: (context, settings, _) {
-                      return Column(
-                        children: [
-                          _ThemeSelector(settings: settings),
-                          const Divider(height: 24),
-                          _LanguageSelector(settings: settings),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-              ],
+            child: Consumer<AppSettingsController>(
+              builder: (context, settings, _) {
+                return Column(
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.color_lens_outlined),
+                      title: Text(l10n.settingsTheme),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ThemeSettingsPage(),
+                          ),
+                        );
+                      },
+                    ),
+                    const Divider(height: 1),
+                    Padding(
+                      padding: AppDesignTokens.pagePadding,
+                      child: _LanguageSelector(settings: settings),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
           const SizedBox(height: AppDesignTokens.spacingLg),
@@ -110,37 +119,7 @@ class SettingsPage extends StatelessWidget {
   }
 }
 
-class _ThemeSelector extends StatelessWidget {
-  const _ThemeSelector({required this.settings});
 
-  final AppSettingsController settings;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    return Row(
-      children: [
-        Expanded(child: Text(l10n.settingsTheme)),
-        DropdownButton<ThemeMode>(
-          value: settings.themeMode,
-          onChanged: (value) {
-            if (value != null) {
-              settings.updateThemeMode(value);
-            }
-          },
-          items: [
-            DropdownMenuItem(
-                value: ThemeMode.system, child: Text(l10n.themeSystem)),
-            DropdownMenuItem(
-                value: ThemeMode.light, child: Text(l10n.themeLight)),
-            DropdownMenuItem(
-                value: ThemeMode.dark, child: Text(l10n.themeDark)),
-          ],
-        ),
-      ],
-    );
-  }
-}
 
 class _LanguageSelector extends StatelessWidget {
   const _LanguageSelector({required this.settings});

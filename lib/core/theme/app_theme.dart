@@ -22,6 +22,10 @@ class AppTheme {
     return _buildTheme(scheme);
   }
 
+  static ThemeData create(ColorScheme scheme) {
+    return _buildTheme(scheme);
+  }
+
   static ThemeData _buildTheme(ColorScheme scheme) {
     return ThemeData(
       useMaterial3: true,

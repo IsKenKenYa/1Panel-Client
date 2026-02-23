@@ -10,7 +10,9 @@ class LogHighlightRule {
   final String pattern;
   final HighlightType type;
   final Color? color;
+  final String? colorName;
   final Color? backgroundColor;
+  final String? backgroundColorName;
   final bool isBold;
   final bool isItalic;
   final bool isUnderline;
@@ -21,7 +23,9 @@ class LogHighlightRule {
     required this.pattern,
     this.type = HighlightType.keyword,
     this.color,
+    this.colorName,
     this.backgroundColor,
+    this.backgroundColorName,
     this.isBold = false,
     this.isItalic = false,
     this.isUnderline = false,
@@ -34,7 +38,9 @@ class LogHighlightRule {
       'pattern': pattern,
       'type': type.index,
       'color': color?.value,
+      'colorName': colorName,
       'backgroundColor': backgroundColor?.value,
+      'backgroundColorName': backgroundColorName,
       'isBold': isBold,
       'isItalic': isItalic,
       'isUnderline': isUnderline,
@@ -48,7 +54,9 @@ class LogHighlightRule {
       pattern: json['pattern'] as String,
       type: HighlightType.values[json['type'] as int],
       color: json['color'] != null ? Color(json['color'] as int) : null,
+      colorName: json['colorName'] as String?,
       backgroundColor: json['backgroundColor'] != null ? Color(json['backgroundColor'] as int) : null,
+      backgroundColorName: json['backgroundColorName'] as String?,
       isBold: json['isBold'] as bool? ?? false,
       isItalic: json['isItalic'] as bool? ?? false,
       isUnderline: json['isUnderline'] as bool? ?? false,
@@ -60,7 +68,9 @@ class LogHighlightRule {
     String? pattern,
     HighlightType? type,
     Color? color,
+    String? colorName,
     Color? backgroundColor,
+    String? backgroundColorName,
     bool? isBold,
     bool? isItalic,
     bool? isUnderline,
@@ -71,7 +81,9 @@ class LogHighlightRule {
       pattern: pattern ?? this.pattern,
       type: type ?? this.type,
       color: color ?? this.color,
+      colorName: colorName ?? this.colorName,
       backgroundColor: backgroundColor ?? this.backgroundColor,
+      backgroundColorName: backgroundColorName ?? this.backgroundColorName,
       isBold: isBold ?? this.isBold,
       isItalic: isItalic ?? this.isItalic,
       isUnderline: isUnderline ?? this.isUnderline,
@@ -101,33 +113,33 @@ class LogTheme {
           id: 'error',
           pattern: 'ERROR|ERR|EXCEPTION|FATAL',
           type: HighlightType.regex,
-          color: Colors.red,
+          colorName: 'error',
           isBold: true,
         ),
         LogHighlightRule(
           id: 'warn',
           pattern: 'WARN|WARNING',
           type: HighlightType.regex,
-          color: Colors.orange,
+          colorName: 'tertiary',
         ),
         LogHighlightRule(
           id: 'info',
           pattern: 'INFO',
           type: HighlightType.keyword,
-          color: Colors.blue,
+          colorName: 'primary',
         ),
         LogHighlightRule(
           id: 'debug',
           pattern: 'DEBUG',
           type: HighlightType.keyword,
-          color: Colors.grey,
+          colorName: 'outline',
         ),
         // Timestamp regex
         LogHighlightRule(
           id: 'timestamp',
           pattern: r'^\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}(?:\.\d+)?',
           type: HighlightType.regex,
-          color: Colors.grey,
+          colorName: 'outline',
         ),
       ],
     );

@@ -1,0 +1,9 @@
+- [x] `Scrollbar` in Log Viewer has a valid `ScrollController` attached
+- [x] Log Viewer no longer throws "no ScrollPosition" error
+- [x] Application uses `dynamic_color` package
+- [x] Application supports Android 12+ dynamic colors (Monet)
+- [x] Application supports custom seed color selection
+- [x] Application supports explicit Light/Dark/System theme mode
+- [x] Theme settings are persisted and restored
+- [x] Log Viewer background and text colors adapt to Light/Dark mode automatically
+- [x] Log Viewer uses `ColorScheme` derived colors by default
