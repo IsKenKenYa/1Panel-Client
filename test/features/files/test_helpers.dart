@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:onepanelapp_app/data/models/file_models.dart';
 import 'package:onepanelapp_app/features/files/models/models.dart';
 import 'package:onepanelapp_app/features/files/files_provider.dart';
@@ -72,7 +71,6 @@ class MockFilesProvider extends FilesProvider {
   @override
   Future<void> uploadFiles(List<String> filePaths) async {}
 
-  @override
   Future<FilePermission> getFilePermission(String path) async {
     return FilePermission(
       path: path,

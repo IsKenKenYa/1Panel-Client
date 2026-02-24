@@ -588,10 +588,7 @@ class FileV2Api {
     if (data is List) {
       files = data.map((item) => FileInfo.fromJson(item as Map<String, dynamic>)).toList();
     } else if (data is Map<String, dynamic>) {
-      var itemsRaw = data['items'];
-      if (itemsRaw == null) {
-        itemsRaw = data['data'];
-      }
+      var itemsRaw = data['items'] ?? data['data'];
       
       if (itemsRaw is List) {
         files = itemsRaw.map((item) => FileInfo.fromJson(item as Map<String, dynamic>)).toList();

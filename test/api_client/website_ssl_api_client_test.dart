@@ -29,11 +29,11 @@ void main() {
 
   group('网站SSL证书 API客户端测试', () {
     test('analyze_module_api 输出文件存在', () {
-      final file = File('docs/development/modules/网站SSL证书/ssl_api_analysis.json');
+      final file = File('docs/development/modules/网站SSL证书/website_ssl_api_analysis.json');
       expect(file.existsSync(), isTrue);
       final jsonStr = file.readAsStringSync();
       final obj = jsonDecode(jsonStr) as Map<String, dynamic>;
-      expect(obj['module'], equals('ssl'));
+      expect(obj['module'], equals('website_ssl'));
     });
 
     test(

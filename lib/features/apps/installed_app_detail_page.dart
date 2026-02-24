@@ -462,18 +462,23 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
             Card(
               child: Padding(
                  padding: const EdgeInsets.all(16),
-                 child: MarkdownBody(
-                   data: _storeDetail!.readMe!,
-                   imageBuilder: (uri, title, alt) {
-                     if (uri.scheme == 'http' || uri.scheme == 'https') {
-                       return Image.network(uri.toString());
-                     }
-                     return Tooltip(
-                       message: 'Image not supported: $uri',
-                       child: const Icon(Icons.broken_image, size: 16, color: Colors.grey),
-                     );
-                   },
-                 ),
+                child: MarkdownBody(
+                  data: _storeDetail!.readMe!,
+                  sizedImageBuilder: (config) {
+                    final uri = config.uri;
+                    if (uri.scheme == 'http' || uri.scheme == 'https') {
+                      return Image.network(
+                        uri.toString(),
+                        width: config.width,
+                        height: config.height,
+                      );
+                    }
+                    return Tooltip(
+                      message: 'Image not supported: $uri',
+                      child: const Icon(Icons.broken_image, size: 16, color: Colors.grey),
+                    );
+                  },
+                ),
               ),
             ),
             const SizedBox(height: 24),

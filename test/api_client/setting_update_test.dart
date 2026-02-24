@@ -2,13 +2,10 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../core/test_config_manager.dart';
-import 'package:onepanelapp_app/api/v2/setting_v2.dart';
 import 'package:onepanelapp_app/core/network/dio_client.dart';
-import 'package:onepanelapp_app/data/models/setting_models.dart';
 
 void main() {
   late DioClient client;
-  late SettingV2Api api;
   bool hasApiKey = false;
 
   setUpAll(() async {
@@ -20,7 +17,6 @@ void main() {
         baseUrl: TestEnvironment.baseUrl,
         apiKey: TestEnvironment.apiKey,
       );
-      api = SettingV2Api(client);
     }
   });
 

@@ -83,8 +83,8 @@
 
 ## 与现有实现的差距
 
-- OpenResty API客户端尚缺少 POST /openresty/build、POST /openresty/file、POST /openresty/https、POST /openresty/scope 的实现
-- API客户端使用GET /openresty/build 与GET /openresty/scope 与OpenAPI不一致
+- OpenResty 页面未提供构建任务触发入口
+- OpenResty 页面未提供局部配置（scope）读取与展示入口
 
 ## 评审记录
 

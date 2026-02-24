@@ -41,21 +41,20 @@ class _InstalledAppsViewState extends State<InstalledAppsView> {
             FilledButton(
               onPressed: () async {
                 Navigator.pop(context);
+                final messenger = ScaffoldMessenger.of(context);
                 try {
                   await context
                       .read<InstalledAppsProvider>()
                       .uninstallApp(app.id.toString());
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('卸载成功')),
-                    );
-                  }
+                  if (!mounted) return;
+                  messenger.showSnackBar(
+                    const SnackBar(content: Text('卸载成功')),
+                  );
                 } catch (e) {
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('卸载失败: $e')),
-                    );
-                  }
+                  if (!mounted) return;
+                  messenger.showSnackBar(
+                    SnackBar(content: Text('卸载失败: $e')),
+                  );
                 }
               },
               style: FilledButton.styleFrom(
@@ -85,8 +84,9 @@ class _InstalledAppsViewState extends State<InstalledAppsView> {
         opName = '操作';
     }
 
+    final messenger = ScaffoldMessenger.of(context);
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(
           content: Text('正在$opName...'),
           duration: const Duration(seconds: 1),
@@ -96,17 +96,15 @@ class _InstalledAppsViewState extends State<InstalledAppsView> {
 
     try {
       await context.read<InstalledAppsProvider>().operateApp(id, operation);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$opName成功')),
-        );
-      }
+      if (!mounted) return;
+      messenger.showSnackBar(
+        SnackBar(content: Text('$opName成功')),
+      );
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$opName失败: $e')),
-        );
-      }
+      if (!mounted) return;
+      messenger.showSnackBar(
+        SnackBar(content: Text('$opName失败: $e')),
+      );
     }
   }
 

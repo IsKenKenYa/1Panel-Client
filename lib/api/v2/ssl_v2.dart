@@ -144,6 +144,13 @@ class SSLV2Api {
     );
   }
 
+  Future<Response> uploadSSLFile(FormData formData) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/websites/ssl/upload/file'),
+      data: formData,
+    );
+  }
+
   /// 根据网站ID搜索SSL证书
   ///
   /// 获取指定网站的SSL证书信息

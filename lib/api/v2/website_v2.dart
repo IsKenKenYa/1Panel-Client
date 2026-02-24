@@ -112,6 +112,21 @@ class WebsiteV2Api {
     return FileInfo.fromJson(_extractMapData(response));
   }
 
+  Future<Map<String, dynamic>> loadWebsiteNginxConfig(Map<String, dynamic> request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/config'),
+      data: request,
+    );
+    return _extractMapData(response);
+  }
+
+  Future<void> updateWebsiteNginxConfigByRequest(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/config/update'),
+      data: request,
+    );
+  }
+
   Future<void> updateWebsiteNginxConfig({
     required int id,
     required String content,

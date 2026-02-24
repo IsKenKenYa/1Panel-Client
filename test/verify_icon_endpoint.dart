@@ -1,8 +1,7 @@
-import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanelapp_app/core/network/dio_client.dart';
 import 'package:onepanelapp_app/api/v2/app_v2.dart';
-import 'package:onepanelapp_app/core/config/api_constants.dart';
 import 'package:onepanelapp_app/data/models/app_models.dart';
 import 'core/test_config_manager.dart';
 
@@ -20,48 +19,48 @@ void main() {
     // 1. Search for OpenResty to get ID and Key
     final search = await api.searchApps(AppSearchRequest(page: 1, pageSize: 1, name: 'openresty'));
     if (search.items.isEmpty) {
-      print('OpenResty not found');
+      debugPrint('OpenResty not found');
       return;
     }
     final app = search.items.first;
-    print('App: ${app.name}, ID: ${app.id}, Key: ${app.key}');
+    debugPrint('App: ${app.name}, ID: ${app.id}, Key: ${app.key}');
 
     // 2. Try getting icon by ID
     try {
-      print('Trying icon by ID: ${app.id}');
+      debugPrint('Trying icon by ID: ${app.id}');
       final res1 = await api.getAppIcon(app.id.toString());
-      print('Icon by ID status: ${res1.statusCode}, Data length: ${res1.data?.length}');
+      debugPrint('Icon by ID status: ${res1.statusCode}, Data length: ${res1.data?.length}');
     } catch (e) {
-      print('Icon by ID failed: $e');
+      debugPrint('Icon by ID failed: $e');
     }
 
     // 3. Try getting icon by Key
     try {
-      print('Trying icon by Key: ${app.key}');
+      debugPrint('Trying icon by Key: ${app.key}');
       final res2 = await api.getAppIcon(app.key!);
-      print('Icon by Key status: ${res2.statusCode}, Data length: ${res2.data?.length}');
+      debugPrint('Icon by Key status: ${res2.statusCode}, Data length: ${res2.data?.length}');
     } catch (e) {
-      print('Icon by Key failed: $e');
+      debugPrint('Icon by Key failed: $e');
     }
     // 4. Edge Cases
-    print('\n--- Edge Cases ---');
+    debugPrint('\n--- Edge Cases ---');
     
     // 4.1 Empty/Invalid ID
     try {
-      print('Trying icon by Invalid ID: 999999');
+      debugPrint('Trying icon by Invalid ID: 999999');
       await api.getAppIcon('999999');
-      print('WARNING: Invalid ID did not throw (might be 200 OK empty?)');
+      debugPrint('WARNING: Invalid ID did not throw (might be 200 OK empty?)');
     } catch (e) {
-      print('Invalid ID failed as expected: $e');
+      debugPrint('Invalid ID failed as expected: $e');
     }
 
     // 4.2 Empty Key (if applicable)
     try {
-      print('Trying icon by Empty Key');
+      debugPrint('Trying icon by Empty Key');
       await api.getAppIcon('');
-      print('WARNING: Empty Key did not throw');
+      debugPrint('WARNING: Empty Key did not throw');
     } catch (e) {
-      print('Empty Key failed as expected: $e');
+      debugPrint('Empty Key failed as expected: $e');
     }
   });
 }

@@ -4,25 +4,18 @@
 
 - 适配 Open1PanelApp 作为 1Panel Linux 运维面板社区版的定位
 - 提供完整的域名绑定和管理能力
-- 支持DNS记录配置和解析状态监控
-- 提供域名与网站的关联管理
+- 支持域名与网站的关联管理
 - 统一域名管理与错误反馈
 
 ## 功能完整性清单
 
-基于 1PanelV2OpenAPI.json，网站域名管理模块共包含 8 个端点:
+基于 1PanelV2OpenAPI.json，网站域名管理模块共包含 4 个端点:
 
 ### 域名绑定 (4端点)
-1. GET /website/domains - 获取域名列表
-2. POST /website/domain - 添加域名绑定
-3. POST /website/domain/update - 更新域名配置
-4. POST /website/domain/del - 删除域名绑定
-
-### DNS管理 (4端点)
-1. GET /website/dns - 获取DNS记录列表
-2. POST /website/dns - 添加DNS记录
-3. POST /website/dns/update - 更新DNS记录
-4. POST /website/dns/del - 删除DNS记录
+1. POST /websites/domains - 添加域名绑定
+2. GET /websites/domains/:websiteId - 获取域名列表
+3. POST /websites/domains/update - 更新域名配置
+4. POST /websites/domains/del - 删除域名绑定
 
 ## 业务流程与交互验证
 
@@ -33,14 +26,6 @@
 - 配置域名参数
 - 验证域名解析
 - 完成绑定
-
-### DNS配置流程
-- 进入DNS管理页面
-- 添加DNS记录
-- 选择记录类型（A/CNAME/MX等）
-- 配置记录值
-- 保存配置
-- 验证解析生效
 
 ### 域名解绑流程
 - 从域名列表选择域名
@@ -56,16 +41,11 @@
 - DNS解析失败的处理
 - 权限不足的处理
 
-### DNS配置异常
-- DNS记录格式错误
-- DNS记录冲突
-- DNS服务商连接失败
-
 ## 模块分层与职责
 
 ### 前端
-- UI页面: 域名列表、域名绑定表单、DNS记录管理
-- 状态管理: 域名列表缓存、解析状态
+- UI页面: 域名列表、域名绑定表单
+- 状态管理: 域名列表缓存、绑定/解绑结果
 
 ### 服务层
 - API适配: WebsiteV2Api
@@ -76,13 +56,9 @@
 1. 用户操作 -> 参数验证 -> API请求
 2. API响应 -> 模型映射 -> 状态更新
 3. 状态更新 -> UI刷新 -> 用户反馈
-4. DNS配置 -> 解析验证 -> 状态确认
-
 ## 与现有实现的差距
 
-- 域名绑定页面缺失
-- DNS管理页面缺失
-- 解析状态监控缺失
+- 域名更新与SSL开关未在域名列表提供入口
 
 ## 评审记录
 

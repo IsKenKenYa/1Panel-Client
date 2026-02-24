@@ -54,7 +54,7 @@ void main() {
                context,
                mockProvider,
                '/',
-               AppLocalizations.of(context)!,
+              AppLocalizations.of(context),
              );
           },
           child: const Text('Open Dialog'),
