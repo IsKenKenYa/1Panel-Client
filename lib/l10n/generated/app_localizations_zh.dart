@@ -2130,6 +2130,31 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appOperateSuccess => '操作成功';
 
   @override
+  String get commonPort => '端口';
+
+  @override
+  String get commonParams => '参数';
+
+  @override
+  String get appUpdate => '更新';
+
+  @override
+  String get appUpdateTitle => '更新应用';
+
+  @override
+  String appUpdateConfirm(String app, String version) {
+    return '确定要将 $app 更新到 $version 吗？';
+  }
+
+  @override
+  String get appUpdateSuccess => '更新任务已启动';
+
+  @override
+  String appUpdateFailed(String error) {
+    return '更新失败: $error';
+  }
+
+  @override
   String appOperateFailed(String error) {
     return '操作失败：$error';
   }

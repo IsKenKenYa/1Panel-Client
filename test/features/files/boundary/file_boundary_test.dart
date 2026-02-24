@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanelapp_app/data/models/file/file_info.dart';
-import 'package:onepanelapp_app/data/models/file/file_permission.dart';
+import 'package:onepanelapp_app/data/models/file_models.dart';
 import 'package:onepanelapp_app/core/services/transfer/transfer_task.dart';
 
 void main() {

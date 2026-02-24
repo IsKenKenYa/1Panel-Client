@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:onepanelapp_app/data/models/file_models.dart';
 import 'package:onepanelapp_app/features/files/models/models.dart';
 import 'package:onepanelapp_app/features/files/files_provider.dart';
@@ -73,31 +72,10 @@ class MockFilesProvider extends FilesProvider {
   Future<void> uploadFiles(List<String> filePaths) async {}
 
   @override
-  Future<FilePermission> getFilePermission(String path) async {
-    return FilePermission(
-      path: path,
-      permission: '755',
-      user: 'root',
-      group: 'root',
-    );
-  }
+  Future<void> changeFileMode(String path, int mode, {bool? sub}) async {}
 
   @override
-  Future<FileUserGroupResponse> getUserGroup() async {
-    return const FileUserGroupResponse(
-      users: [
-        FileUserGroup(user: 'root', group: 'root'),
-        FileUserGroup(user: 'www-data', group: 'www-data'),
-      ],
-      groups: ['root', 'www-data', 'users'],
-    );
-  }
-
-  @override
-  Future<void> changeFileMode(String path, String mode, {bool? recursive}) async {}
-
-  @override
-  Future<void> changeFileOwner(String path, {String? user, String? group, bool? recursive}) async {}
+  Future<void> changeFileOwner(String path, String user, String group, {bool? sub}) async {}
 
   @override
   Future<void> addToFavorites(FileInfo file) async {}

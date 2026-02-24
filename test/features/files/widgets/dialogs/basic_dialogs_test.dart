@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
 import 'package:onepanelapp_app/data/models/file_models.dart';
 import 'package:onepanelapp_app/features/files/widgets/dialogs/create_directory_dialog.dart';
 import 'package:onepanelapp_app/features/files/widgets/dialogs/create_file_dialog.dart';
@@ -84,6 +85,8 @@ void main() {
   group('Create Directory Dialog Tests', () {
     testWidgets('shows dialog with title', (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
@@ -112,6 +115,8 @@ void main() {
   group('Create File Dialog Tests', () {
     testWidgets('shows dialog with title', (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
@@ -146,6 +151,8 @@ void main() {
       );
 
       await tester.pumpWidget(MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
@@ -157,7 +164,7 @@ void main() {
                 context,
                 _MockFilesProvider(),
                 file,
-                MaterialLocalizations.of(context),
+                AppLocalizations.of(context),
               ),
               child: const Text('Show Dialog'),
             ),
@@ -182,6 +189,8 @@ void main() {
       );
 
       await tester.pumpWidget(MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
@@ -193,7 +202,7 @@ void main() {
                 context,
                 _MockFilesProvider(),
                 file,
-                MaterialLocalizations.of(context),
+                AppLocalizations.of(context),
               ),
               child: const Text('Show Dialog'),
             ),
@@ -218,6 +227,8 @@ void main() {
       );
 
       await tester.pumpWidget(MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
@@ -229,7 +240,7 @@ void main() {
                 context,
                 _MockFilesProvider(),
                 file,
-                MaterialLocalizations.of(context),
+                AppLocalizations.of(context),
               ),
               child: const Text('Show Dialog'),
             ),
@@ -254,6 +265,8 @@ void main() {
       );
 
       await tester.pumpWidget(MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
@@ -265,7 +278,7 @@ void main() {
                 context,
                 _MockFilesProvider(),
                 file,
-                MaterialLocalizations.of(context),
+                AppLocalizations.of(context),
               ),
               child: const Text('Show Dialog'),
             ),
@@ -283,6 +296,8 @@ void main() {
   group('Compress Dialog Tests', () {
     testWidgets('shows dialog with name and type fields', (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
@@ -294,7 +309,7 @@ void main() {
                 context,
                 _MockFilesProvider(),
                 ['/home/test.txt'],
-                MaterialLocalizations.of(context),
+                AppLocalizations.of(context),
               ),
               child: const Text('Show Dialog'),
             ),
@@ -312,6 +327,8 @@ void main() {
   group('Delete Confirm Dialog Tests', () {
     testWidgets('shows dialog with selection count', (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
@@ -322,7 +339,7 @@ void main() {
               onPressed: () => showDeleteConfirmDialog(
                 context,
                 _MockFilesProvider(),
-                MaterialLocalizations.of(context),
+                AppLocalizations.of(context),
               ),
               child: const Text('Show Dialog'),
             ),
@@ -340,6 +357,8 @@ void main() {
   group('Batch Move Dialog Tests', () {
     testWidgets('shows dialog with selection count', (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
@@ -350,7 +369,7 @@ void main() {
               onPressed: () => showBatchMoveDialog(
                 context,
                 _MockFilesProvider(),
-                MaterialLocalizations.of(context),
+                AppLocalizations.of(context),
               ),
               child: const Text('Show Dialog'),
             ),
@@ -368,6 +387,8 @@ void main() {
   group('Batch Copy Dialog Tests', () {
     testWidgets('shows dialog with selection count', (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
@@ -378,7 +399,7 @@ void main() {
               onPressed: () => showBatchCopyDialog(
                 context,
                 _MockFilesProvider(),
-                MaterialLocalizations.of(context),
+                AppLocalizations.of(context),
               ),
               child: const Text('Show Dialog'),
             ),
@@ -396,6 +417,8 @@ void main() {
   group('Search Dialog Tests', () {
     testWidgets('shows dialog with search field', (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
@@ -423,6 +446,8 @@ void main() {
   group('Sort Options Dialog Tests', () {
     testWidgets('shows dialog with sort options', (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),

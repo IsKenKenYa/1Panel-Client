@@ -6,6 +6,7 @@ import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
 import 'package:onepanelapp_app/data/models/app_config_models.dart';
 import 'package:onepanelapp_app/data/models/app_models.dart';
 import 'package:onepanelapp_app/features/apps/app_service.dart';
+import 'package:onepanelapp_app/features/apps/dialogs/edit_app_config_dialog.dart';
 import 'package:onepanelapp_app/features/apps/providers/installed_apps_provider.dart';
 import 'package:onepanelapp_app/features/apps/widgets/app_icon.dart';
 import 'package:onepanelapp_app/features/containers/container_service.dart';
@@ -34,6 +35,7 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
   AppItem? _storeDetail;
   List<AppServiceResponse>? _services;
   AppConfig? _appConfig;
+  List<AppVersion>? _updateVersions;
   bool _loading = true;
   String? _error;
 
@@ -110,10 +112,21 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
         }
       }
 
+      // 5. Check Updates
+      List<AppVersion>? updateVersions;
+      if (_appInfo!.canUpdate == true && _appInfo!.id != null) {
+        try {
+          updateVersions = await _appService.getAppUpdateVersions(_appInfo!.id.toString());
+        } catch (e) {
+          debugPrint('Failed to load update versions: $e');
+        }
+      }
+
       if (mounted) {
         setState(() {
           _services = services;
           _appConfig = config;
+          _updateVersions = updateVersions;
           _loading = false;
         });
       }
@@ -124,6 +137,75 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
           _loading = false;
         });
       }
+    }
+  }
+
+  Future<void> _handleUpgrade() async {
+    if (_appInfo?.id == null) return;
+    
+    final l10n = context.l10n;
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final provider = context.read<InstalledAppsProvider>();
+
+    // If multiple versions, we could show a selection dialog.
+    // For now, assume update to latest or the one provided by API implicitly.
+    final targetVersion = _updateVersions?.isNotEmpty == true 
+        ? _updateVersions!.first.version 
+        : 'latest';
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.appUpdateTitle),
+        content: Text(l10n.appUpdateConfirm(_appInfo!.name ?? '', targetVersion)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l10n.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.appUpdate),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    try {
+      await provider.updateApp(_appInfo!.id.toString());
+      if (mounted) {
+        scaffoldMessenger.showSnackBar(
+          SnackBar(content: Text(l10n.appUpdateSuccess)),
+        );
+        // Refresh
+        _loadData();
+      }
+    } catch (e) {
+      if (mounted) {
+        scaffoldMessenger.showSnackBar(
+          SnackBar(content: Text(l10n.appUpdateFailed(e.toString()))),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleEditConfig() async {
+    if (_appConfig == null || _appInfo?.id == null) return;
+
+    final changed = await showDialog<bool>(
+      context: context,
+      builder: (context) => EditAppConfigDialog(
+        appInstallId: _appInfo!.id!,
+        appConfig: _appConfig!,
+        httpPort: _appInfo!.httpPort,
+        httpsPort: _appInfo!.httpsPort,
+      ),
+    );
+
+    if (changed == true) {
+      _loadData();
     }
   }
 
@@ -335,7 +417,19 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionTitle('Ports'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(l10n.appTabConfig, style: Theme.of(context).textTheme.titleLarge),
+              FilledButton.icon(
+                onPressed: _handleEditConfig,
+                icon: const Icon(Icons.edit),
+                label: Text(l10n.commonEdit),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          _buildSectionTitle(l10n.commonPort),
           if (_appInfo?.httpPort != null || _appInfo?.httpsPort != null)
             Card(
               child: ListTile(
@@ -539,6 +633,19 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
                   style: TextStyle(color: statusColor, fontWeight: FontWeight.bold),
                 ),
               ),
+              if (_updateVersions != null && _updateVersions!.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: FilledButton.icon(
+                    onPressed: _handleUpgrade,
+                    icon: const Icon(Icons.upgrade, size: 16),
+                    label: Text(l10n.appUpdate),
+                    style: FilledButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                      backgroundColor: Colors.orange,
+                    ),
+                  ),
+                ),
             ],
           ),
         ),

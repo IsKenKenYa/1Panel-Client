@@ -37,15 +37,9 @@ class _AppStoreViewState extends State<AppStoreView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadApps(refresh: true);
     });
-    _scrollController.addListener(_onScroll);
   }
 
-  void _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
-      _loadApps(refresh: false);
-    }
-  }
+  // _onScroll removed as NotificationListener is used
 
   Future<void> _loadApps({bool refresh = false}) async {
     if (!mounted) return;
@@ -167,32 +161,42 @@ class _AppStoreViewState extends State<AppStoreView> {
                 return Center(child: Text(l10n.commonEmpty));
               }
 
-              return RefreshIndicator(
-                onRefresh: () async {
-                  await _loadApps(refresh: true);
+              return NotificationListener<ScrollNotification>(
+                onNotification: (ScrollNotification scrollInfo) {
+                  if (scrollInfo.metrics.pixels >=
+                          scrollInfo.metrics.maxScrollExtent - 200 &&
+                      !provider.isLoading &&
+                      provider.hasMore) {
+                    _loadApps(refresh: false);
+                  }
+                  return false;
                 },
-                child: GridView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 400,
-                    mainAxisExtent: 200,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                  ),
-                  itemCount: provider.apps.length + (provider.hasMore ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    if (index == provider.apps.length) {
-                      return const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    }
-                    final app = provider.apps[index];
-                    return _buildAppCard(context, app, l10n);
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    await _loadApps(refresh: true);
                   },
+                  child: GridView.builder(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 400,
+                      mainAxisExtent: 200,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                    ),
+                    itemCount: provider.apps.length + (provider.hasMore ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index == provider.apps.length) {
+                        return const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      }
+                      final app = provider.apps[index];
+                      return _buildAppCard(context, app, l10n);
+                    },
+                  ),
                 ),
               );
             },

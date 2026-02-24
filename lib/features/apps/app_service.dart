@@ -153,6 +153,27 @@ class AppService extends BaseComponent {
     });
   }
 
+  Future<void> updateApp(String appInstallId) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.updateApp(appInstallId);
+    });
+  }
+
+  Future<void> updateAppParams(Map<String, dynamic> request) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.updateAppParams(request);
+    });
+  }
+
+  Future<void> changeAppPort(Map<String, dynamic> request) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.changeAppPort(request);
+    });
+  }
+
   Future<Map<String, dynamic>> getAppConnInfo(String name, String key) {
     return runGuarded(() async {
       final api = await _ensureApi();

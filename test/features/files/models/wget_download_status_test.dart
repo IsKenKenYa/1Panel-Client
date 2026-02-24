@@ -200,12 +200,6 @@ void main() {
       });
 
       test('can reset to idle state', () {
-        const status = WgetDownloadStatus(
-          state: WgetDownloadState.success,
-          message: 'Done',
-          filePath: '/file.zip',
-        );
-
         const reset = WgetDownloadStatus(
           state: WgetDownloadState.idle,
         );

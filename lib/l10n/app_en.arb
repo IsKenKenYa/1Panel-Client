@@ -896,6 +896,24 @@
   "appInfoCreated": "Created At",
   "appUninstallConfirm": "Are you sure you want to uninstall this app? This action cannot be undone.",
   "appOperateSuccess": "Operation successful",
+  "commonPort": "Port",
+  "commonParams": "Parameters",
+  "appUpdate": "Update",
+  "appUpdateTitle": "Update App",
+  "appUpdateConfirm": "Are you sure to update {app} to {version}?",
+  "@appUpdateConfirm": {
+    "placeholders": {
+      "app": { "type": "String" },
+      "version": { "type": "String" }
+    }
+  },
+  "appUpdateSuccess": "Update started successfully",
+  "appUpdateFailed": "Update failed: {error}",
+  "@appUpdateFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
   "appOperateFailed": "Operation failed: {error}",
   "@appOperateFailed": {
     "placeholders": {

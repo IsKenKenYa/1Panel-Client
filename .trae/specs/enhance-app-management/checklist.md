@@ -1,0 +1,4 @@
+- [ ] App Store pagination works smoothly
+- [ ] Installed App Detail shows "Upgrade" button when update is available
+- [ ] Can upgrade an installed app
+- [ ] Can edit and save installed app configuration (ports, envs)

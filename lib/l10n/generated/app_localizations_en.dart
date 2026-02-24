@@ -2174,6 +2174,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appOperateSuccess => 'Operation successful';
 
   @override
+  String get commonPort => 'Port';
+
+  @override
+  String get commonParams => 'Parameters';
+
+  @override
+  String get appUpdate => 'Update';
+
+  @override
+  String get appUpdateTitle => 'Update App';
+
+  @override
+  String appUpdateConfirm(String app, String version) {
+    return 'Are you sure to update $app to $version?';
+  }
+
+  @override
+  String get appUpdateSuccess => 'Update started successfully';
+
+  @override
+  String appUpdateFailed(String error) {
+    return 'Update failed: $error';
+  }
+
+  @override
   String appOperateFailed(String error) {
     return 'Operation failed: $error';
   }

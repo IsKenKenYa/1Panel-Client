@@ -4208,6 +4208,48 @@ abstract class AppLocalizations {
   /// **'Operation successful'**
   String get appOperateSuccess;
 
+  /// No description provided for @commonPort.
+  ///
+  /// In en, this message translates to:
+  /// **'Port'**
+  String get commonPort;
+
+  /// No description provided for @commonParams.
+  ///
+  /// In en, this message translates to:
+  /// **'Parameters'**
+  String get commonParams;
+
+  /// No description provided for @appUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get appUpdate;
+
+  /// No description provided for @appUpdateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update App'**
+  String get appUpdateTitle;
+
+  /// No description provided for @appUpdateConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure to update {app} to {version}?'**
+  String appUpdateConfirm(String app, String version);
+
+  /// No description provided for @appUpdateSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Update started successfully'**
+  String get appUpdateSuccess;
+
+  /// No description provided for @appUpdateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Update failed: {error}'**
+  String appUpdateFailed(String error);
+
   /// No description provided for @appOperateFailed.
   ///
   /// In en, this message translates to:

@@ -844,6 +844,24 @@
   "appInfoCreated": "创建时间",
   "appUninstallConfirm": "确定要卸载该应用吗？此操作不可恢复。",
   "appOperateSuccess": "操作成功",
+  "commonPort": "端口",
+  "commonParams": "参数",
+  "appUpdate": "更新",
+  "appUpdateTitle": "更新应用",
+  "appUpdateConfirm": "确定要将 {app} 更新到 {version} 吗？",
+  "@appUpdateConfirm": {
+    "placeholders": {
+      "app": { "type": "String" },
+      "version": { "type": "String" }
+    }
+  },
+  "appUpdateSuccess": "更新任务已启动",
+  "appUpdateFailed": "更新失败: {error}",
+  "@appUpdateFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
   "appOperateFailed": "操作失败：{error}",
   "@appOperateFailed": {
     "placeholders": {

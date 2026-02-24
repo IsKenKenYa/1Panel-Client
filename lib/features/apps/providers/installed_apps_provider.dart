@@ -114,6 +114,51 @@ class InstalledAppsProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> updateAppParams(int appInstallId, Map<String, dynamic> params) async {
+    try {
+      await _appService.updateAppParams({
+        'appInstallId': appInstallId,
+        'params': params,
+      });
+      // Refresh after update
+      await loadInstalledApps(silent: true);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> updateAppInstallConfig(Map<String, dynamic> config) async {
+    try {
+      await _appService.updateAppInstallConfig(config);
+      await loadInstalledApps(silent: true);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> changeAppPort(int appInstallId, int httpPort, int httpsPort) async {
+    try {
+      await _appService.changeAppPort({
+        'appInstallId': appInstallId,
+        'httpPort': httpPort,
+        'httpsPort': httpsPort,
+      });
+      await loadInstalledApps(silent: true);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> updateApp(String installId) async {
+    try {
+      await _appService.updateApp(installId);
+      // 更新后立即刷新状态
+      await loadInstalledApps(silent: true);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> uninstallApp(String installId) async {
     try {
       await _appService.uninstallApp(installId);
