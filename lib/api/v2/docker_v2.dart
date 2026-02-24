@@ -3,6 +3,7 @@ import '../../core/network/dio_client.dart';
 import '../../core/config/api_constants.dart';
 import '../../data/models/docker_models.dart';
 import '../../data/models/container_models.dart';
+import '../../data/models/common_models.dart';
 
 class DockerV2Api {
   final DioClient _client;
@@ -48,6 +49,66 @@ class DockerV2Api {
     return await _client.post(
       ApiConstants.buildApiPath('/containers/image/pull'),
       data: request.toJson(),
+    );
+  }
+
+  /// Build image
+  Future<Response<String>> buildImage(ImageBuild request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/image/build'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: response.data?['data']?.toString() ?? '',
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// Load image
+  Future<Response> loadImage(ImageLoad request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/image/load'),
+      data: request.toJson(),
+    );
+  }
+
+  /// Save image
+  Future<Response> saveImage(ImageSave request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/image/save'),
+      data: request.toJson(),
+    );
+  }
+
+  /// Tag image
+  Future<Response> tagImage(ImageTag request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/image/tag'),
+      data: request.toJson(),
+    );
+  }
+
+  /// Push image
+  Future<Response> pushImage(ImagePush request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/image/push'),
+      data: request.toJson(),
+    );
+  }
+
+  /// Search images
+  Future<Response<PageResult<Map<String, dynamic>>>> searchImages(SearchWithPage request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/image/search'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: PageResult.fromJson(response.data?['data'] ?? {}, (json) => json as Map<String, dynamic>),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
     );
   }
 

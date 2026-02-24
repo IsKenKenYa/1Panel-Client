@@ -79,6 +79,57 @@ class ContainerService extends BaseComponent {
     });
   }
 
+  Future<void> renameContainer(ContainerRename request) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.renameContainer(request);
+    });
+  }
+
+  Future<void> upgradeContainer(ContainerUpgrade request) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.upgradeContainer(request);
+    });
+  }
+
+  Future<void> commitContainer(ContainerCommit request) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.commitContainer(request);
+    });
+  }
+
+  Future<ContainerPruneReport> pruneContainers(ContainerPrune request) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      final response = await api.pruneContainers(request);
+      return response.data ?? const ContainerPruneReport();
+    });
+  }
+
+  Future<void> updateContainer(ContainerOperate request) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.updateContainer(request);
+    });
+  }
+
+  Future<void> cleanContainerLog(String name) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.cleanContainerLog(OperationWithName(name: name));
+    });
+  }
+
+  Future<String> downloadContainerLog(String name) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      final response = await api.downloadContainerLog(name);
+      return response.data ?? '';
+    });
+  }
+
   Future<void> removeImage(int imageId) {
     return runGuarded(() async {
       final api = await _ensureApi();

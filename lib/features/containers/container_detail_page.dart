@@ -138,14 +138,14 @@ class _InfoTabState extends State<_InfoTab> {
                 _InfoItem(label: l10n.containerInfoStatus, value: widget.container.status),
                 _InfoItem(label: l10n.containerInfoCreated, value: widget.container.createTime ?? '-'),
                 _InfoItem(
-                    label: 'IP', value: widget.container.ipAddress ?? '-'),
+                    label: l10n.serverIpLabel, value: widget.container.ipAddress ?? '-'),
               ],
             ),
           ),
           const SizedBox(height: 16),
           if (_inspectData != null)
             AppCard(
-              title: 'JSON',
+              title: l10n.containerInspectJson,
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),

@@ -31,6 +31,27 @@ class _AppStoreViewState extends State<AppStoreView> {
     'Monitoring'
   ];
 
+  String _tagLabel(String key, AppLocalizations l10n) {
+    switch (key) {
+      case 'WebSite':
+        return l10n.appStoreTagWebsite;
+      case 'Database':
+        return l10n.appStoreTagDatabase;
+      case 'Runtime':
+        return l10n.appStoreTagRuntime;
+      case 'Tool':
+        return l10n.appStoreTagTool;
+      case 'Docker':
+        return l10n.appStoreTagDocker;
+      case 'CI/CD':
+        return l10n.appStoreTagCICD;
+      case 'Monitoring':
+        return l10n.appStoreTagMonitoring;
+      default:
+        return key;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -110,7 +131,7 @@ class _AppStoreViewState extends State<AppStoreView> {
                     return Padding(
                       padding: const EdgeInsets.only(right: 8.0),
                       child: FilterChip(
-                        label: Text(tag),
+                        label: Text(_tagLabel(tag, l10n)),
                         selected: isSelected,
                         onSelected: (selected) {
                           setState(() {

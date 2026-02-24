@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
 
 class VolumeCreateDialog extends StatefulWidget {
   const VolumeCreateDialog({super.key});
@@ -22,8 +23,9 @@ class _VolumeCreateDialogState extends State<VolumeCreateDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return AlertDialog(
-      title: const Text('Create Volume'),
+      title: Text(l10n.orchestrationCreateVolume),
       content: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -32,13 +34,13 @@ class _VolumeCreateDialogState extends State<VolumeCreateDialog> {
             children: [
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l10n.commonName,
+                  border: const OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a name';
+                    return l10n.serverFormRequired;
                   }
                   return null;
                 },
@@ -46,9 +48,9 @@ class _VolumeCreateDialogState extends State<VolumeCreateDialog> {
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
                 value: _selectedDriver,
-                decoration: const InputDecoration(
-                  labelText: 'Driver',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l10n.commonDriver,
+                  border: const OutlineInputBorder(),
                 ),
                 items: _drivers.map((driver) {
                   return DropdownMenuItem(
@@ -69,7 +71,7 @@ class _VolumeCreateDialogState extends State<VolumeCreateDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(l10n.commonCancel),
         ),
         FilledButton(
           onPressed: () {
@@ -80,7 +82,7 @@ class _VolumeCreateDialogState extends State<VolumeCreateDialog> {
               });
             }
           },
-          child: const Text('Create'),
+          child: Text(l10n.commonCreate),
         ),
       ],
     );

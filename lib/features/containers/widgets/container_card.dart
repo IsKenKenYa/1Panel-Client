@@ -12,6 +12,12 @@ class ContainerCard extends StatelessWidget {
   final VoidCallback? onLogs;
   final VoidCallback? onTerminal;
   final VoidCallback? onTap;
+  final VoidCallback? onRename;
+  final VoidCallback? onUpgrade;
+  final VoidCallback? onCommit;
+  final VoidCallback? onEdit;
+  final VoidCallback? onCleanLog;
+  final VoidCallback? onDownloadLog;
 
   const ContainerCard({
     super.key,
@@ -23,6 +29,12 @@ class ContainerCard extends StatelessWidget {
     this.onLogs,
     this.onTerminal,
     this.onTap,
+    this.onRename,
+    this.onUpgrade,
+    this.onCommit,
+    this.onEdit,
+    this.onCleanLog,
+    this.onDownloadLog,
   });
 
   @override
@@ -35,9 +47,51 @@ class ContainerCard extends StatelessWidget {
     return AppCard(
       title: container.name,
       subtitle: Text(container.image),
-      trailing: _StatusChip(
-        status: isRunning ? l10n.containerStatusRunning : l10n.containerStatusStopped,
-        color: statusColor,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _StatusChip(
+            status: isRunning ? l10n.containerStatusRunning : l10n.containerStatusStopped,
+            color: statusColor,
+          ),
+          PopupMenuButton<String>(
+            tooltip: l10n.commonMore,
+            onSelected: (value) {
+              if (value == 'rename') onRename?.call();
+              if (value == 'upgrade') onUpgrade?.call();
+              if (value == 'edit') onEdit?.call();
+              if (value == 'commit') onCommit?.call();
+              if (value == 'cleanLog') onCleanLog?.call();
+              if (value == 'downloadLog') onDownloadLog?.call();
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'rename',
+                child: Text(l10n.containerActionRename),
+              ),
+              PopupMenuItem(
+                value: 'upgrade',
+                child: Text(l10n.containerActionUpgrade),
+              ),
+              PopupMenuItem(
+                value: 'edit',
+                child: Text(l10n.containerActionEdit),
+              ),
+              PopupMenuItem(
+                value: 'commit',
+                child: Text(l10n.containerActionCommit),
+              ),
+              PopupMenuItem(
+                value: 'cleanLog',
+                child: Text(l10n.containerActionCleanLog),
+              ),
+              PopupMenuItem(
+                value: 'downloadLog',
+                child: Text(l10n.containerActionDownloadLog),
+              ),
+            ],
+          ),
+        ],
       ),
       onTap: onTap,
       child: Column(

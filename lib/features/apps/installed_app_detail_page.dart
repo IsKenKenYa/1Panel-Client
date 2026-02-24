@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
@@ -153,25 +154,34 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
         ? _updateVersions!.first.version 
         : 'latest';
 
-    final confirmed = await showDialog<bool>(
+    final action = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(l10n.appUpdateTitle),
         content: Text(l10n.appUpdateConfirm(_appInfo!.name ?? '', targetVersion)),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false),
+            onPressed: () => Navigator.pop(context, 'ignore'),
+            child: Text(l10n.appIgnoreUpdate),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'cancel'),
             child: Text(l10n.commonCancel),
           ),
           FilledButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => Navigator.pop(context, 'upgrade'),
             child: Text(l10n.appUpdate),
           ),
         ],
       ),
     );
 
-    if (confirmed != true) return;
+    if (action == 'ignore') {
+      await _handleIgnoreUpdate();
+      return;
+    }
+
+    if (action != 'upgrade') return;
 
     try {
       await provider.updateApp(_appInfo!.id.toString());
@@ -186,6 +196,55 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
       if (mounted) {
         scaffoldMessenger.showSnackBar(
           SnackBar(content: Text(l10n.appUpdateFailed(e.toString()))),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleIgnoreUpdate() async {
+    if (_appInfo?.id == null) return;
+    final l10n = context.l10n;
+    final provider = context.read<InstalledAppsProvider>();
+    final controller = TextEditingController();
+
+    final reason = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.appIgnoreUpdate),
+        content: TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            labelText: l10n.appIgnoreUpdateReason,
+            border: const OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(l10n.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, controller.text),
+            child: Text(l10n.commonConfirm),
+          ),
+        ],
+      ),
+    );
+
+    if (reason == null || reason.isEmpty) return;
+
+    try {
+      await provider.ignoreUpdate(_appInfo!.id!, reason);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.appIgnoreUpdateSuccess)),
+        );
+        _loadData();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.appIgnoreUpdateFailed(e.toString()))),
         );
       }
     }
@@ -206,6 +265,40 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
 
     if (changed == true) {
       _loadData();
+    }
+  }
+
+  Future<void> _showConnectionInfo() async {
+    if (_appInfo?.name == null || _appInfo?.appKey == null) return;
+    final l10n = context.l10n;
+    try {
+      final info = await _appService.getAppConnInfo(_appInfo!.name!, _appInfo!.appKey!);
+      if (!mounted) return;
+      final jsonText = const JsonEncoder.withIndent('  ').convert(info);
+      await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(l10n.appConnInfo),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: SingleChildScrollView(
+              child: SelectableText(jsonText),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(l10n.commonClose),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${l10n.appConnInfoFailed}: $e')),
+        );
+      }
     }
   }
 
@@ -435,19 +528,19 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
               child: ListTile(
                 title: Text(
                   [
-                    if (_appInfo?.httpPort != null) '${_appInfo!.httpPort} (HTTP)',
-                    if (_appInfo?.httpsPort != null) '${_appInfo!.httpsPort} (HTTPS)',
+                    if (_appInfo?.httpPort != null) '${_appInfo!.httpPort} (${l10n.commonHttp})',
+                    if (_appInfo?.httpsPort != null) '${_appInfo!.httpsPort} (${l10n.commonHttps})',
                   ].join(', '),
                 ),
                 leading: const Icon(Icons.router),
               ),
             )
           else
-             const Text('No port info'),
+             Text(l10n.appNoPortInfo),
           
           const SizedBox(height: 16),
           if (containerName.isNotEmpty) ...[
-            _buildSectionTitle('Container Name'),
+            _buildSectionTitle(l10n.appInstallContainerName),
             Card(
               child: ListTile(
                 title: Text(containerName, style: const TextStyle(fontFamily: 'monospace')),
@@ -457,7 +550,7 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
             const SizedBox(height: 16),
           ],
           
-          _buildSectionTitle('Environment'),
+          _buildSectionTitle(l10n.env),
           if (envs != null && envs.isNotEmpty)
             Card(
               child: ListView.separated(
@@ -479,7 +572,7 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
             Text(l10n.commonEmpty),
 
           const SizedBox(height: 16),
-          _buildSectionTitle('Compose'),
+          _buildSectionTitle(l10n.orchestrationCompose),
           if (compose.isNotEmpty)
             Card(
               color: Theme.of(context).colorScheme.surfaceContainerHighest,
@@ -549,7 +642,7 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
           const SizedBox(height: 24),
           if (_storeDetail?.readMe != null && _storeDetail!.readMe!.isNotEmpty) ...[
              Text(
-              'README', 
+              l10n.readme,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
@@ -563,7 +656,7 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
                        return Image.network(uri.toString());
                      }
                      return Tooltip(
-                       message: 'Image not supported: $uri',
+                       message: l10n.appReadmeImageUnsupported(uri.toString()),
                        child: const Icon(Icons.broken_image, size: 16, color: Colors.grey),
                      );
                    },
@@ -672,12 +765,20 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
                 _buildInfoRow(l10n.appInfoCreated, _appInfo!.createdAt ?? '-'),
                 if (_appInfo!.description != null) ...[
                   const Divider(),
-                  _buildInfoRow('Description', _appInfo!.description!),
+                  _buildInfoRow(l10n.appDescription, _appInfo!.description!),
                 ],
               ],
             ),
           ),
         ),
+        if (_appInfo!.name != null && _appInfo!.appKey != null) ...[
+          const SizedBox(height: 12),
+          FilledButton.icon(
+            onPressed: _showConnectionInfo,
+            icon: const Icon(Icons.link),
+            label: Text(l10n.appConnInfo),
+          ),
+        ],
       ],
     );
   }
@@ -774,7 +875,7 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
                       child: OutlinedButton.icon(
                         onPressed: _openWeb,
                         icon: const Icon(Icons.web),
-                        label: const Text('Web'),
+                        label: Text(l10n.appActionWeb),
                       ),
                     ),
                   ),
@@ -786,7 +887,7 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
                        child: OutlinedButton.icon(
                         onPressed: _openContainer,
                         icon: const Icon(Icons.layers),
-                        label: const Text('Container'),
+                        label: Text(l10n.viewContainer),
                       ),
                     ),
                   ),

@@ -107,4 +107,20 @@ class AppStoreProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> syncLocalApps() async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _appService.syncLocalApps();
+    } catch (e) {
+      _error = e.toString();
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }

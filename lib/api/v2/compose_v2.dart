@@ -87,23 +87,27 @@ class ComposeV2Api {
     return _operateCompose([id], 'restart');
   }
 
-  /// Get Compose logs
-  Future<Response<List<ContainerComposeLog>>> getComposeLogs(int id,
-      {int lines = 100}) async {
-    final request = ContainerComposeLogSearch(composeId: id, lines: lines);
-    // Placeholder path, assuming implementation similar to container logs or specific endpoint
-    final response = await _client.post(
-      ApiConstants.buildApiPath('/containers/compose/logs'), 
+  /// Update Compose project
+  Future<Response> updateCompose(ContainerComposeUpdateRequest request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/compose/update'),
       data: request.toJson(),
     );
-    return Response(
-      data: (response.data as List?)
-              ?.map((e) => ContainerComposeLog.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          [],
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
+  }
+
+  /// Test Compose project
+  Future<Response> testCompose(ContainerComposeUpdateRequest request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/compose/test'),
+      data: request.toJson(),
+    );
+  }
+
+  /// Clean Compose logs
+  Future<Response> cleanComposeLog(ContainerComposeLogCleanRequest request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/compose/clean/log'),
+      data: request.toJson(),
     );
   }
 }

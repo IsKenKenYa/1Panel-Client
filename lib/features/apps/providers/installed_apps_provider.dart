@@ -159,6 +159,50 @@ class InstalledAppsProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> ignoreUpdate(int appInstallId, String reason) async {
+    try {
+      await _appService.ignoreAppUpdate(
+        AppInstalledIgnoreUpgradeRequest(
+          appInstallId: appInstallId,
+          reason: reason,
+        ),
+      );
+      await loadInstalledApps(silent: true);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> cancelIgnoreUpdate(int appInstallId) async {
+    try {
+      await _appService.cancelIgnoreAppUpdate(
+        AppInstalledIgnoreUpgradeRequest(
+          appInstallId: appInstallId,
+          reason: '',
+        ),
+      );
+      await loadInstalledApps(silent: true);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> checkUninstall(String installId) async {
+    try {
+      return await _appService.checkAppUninstall(installId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<int> loadAppPort(Map<String, dynamic> request) async {
+    try {
+      return await _appService.loadAppPort(request);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> uninstallApp(String installId) async {
     try {
       await _appService.uninstallApp(installId);

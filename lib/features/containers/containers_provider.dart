@@ -334,6 +334,94 @@ class ContainersProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> renameContainer(String name, String newName) async {
+    try {
+      await _ensureService();
+      await _service!.renameContainer(ContainerRename(name: name, newName: newName));
+      await loadContainers();
+      return true;
+    } catch (e) {
+      _data = _data.copyWith(error: e.toString());
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> upgradeContainer(ContainerUpgrade request) async {
+    try {
+      await _ensureService();
+      await _service!.upgradeContainer(request);
+      await loadContainers();
+      return true;
+    } catch (e) {
+      _data = _data.copyWith(error: e.toString());
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> commitContainer(ContainerCommit request) async {
+    try {
+      await _ensureService();
+      await _service!.commitContainer(request);
+      await loadImages();
+      return true;
+    } catch (e) {
+      _data = _data.copyWith(error: e.toString());
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<ContainerPruneReport?> pruneContainers(ContainerPrune request) async {
+    try {
+      await _ensureService();
+      final result = await _service!.pruneContainers(request);
+      await loadAll();
+      return result;
+    } catch (e) {
+      _data = _data.copyWith(error: e.toString());
+      notifyListeners();
+      return null;
+    }
+  }
+
+  Future<bool> updateContainer(ContainerOperate request) async {
+    try {
+      await _ensureService();
+      await _service!.updateContainer(request);
+      await loadContainers();
+      return true;
+    } catch (e) {
+      _data = _data.copyWith(error: e.toString());
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> cleanContainerLog(String name) async {
+    try {
+      await _ensureService();
+      await _service!.cleanContainerLog(name);
+      return true;
+    } catch (e) {
+      _data = _data.copyWith(error: e.toString());
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<String?> downloadContainerLog(String name) async {
+    try {
+      await _ensureService();
+      return await _service!.downloadContainerLog(name);
+    } catch (e) {
+      _data = _data.copyWith(error: e.toString());
+      notifyListeners();
+      return null;
+    }
+  }
+
   /// 删除镜像
   Future<bool> deleteImage(String imageId) async {
     try {

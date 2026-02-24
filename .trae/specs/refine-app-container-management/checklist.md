@@ -1,8 +1,10 @@
-- [x] Navigation: Server Detail "Containers" button opens Orchestration Page
-- [x] Navigation: Installed App click opens Installed App Detail Page
-- [x] Installed App Detail: Shows README
-- [x] Installed App Detail: Shows "Container" button and it works
-- [x] Installed App Detail: Shows "Web UI" button (if applicable)
-- [x] Installed App Card: Shows Ports and Container Name
-- [x] Localization: New terms are translated
-- [x] Stability: No `unsupported protocol scheme` crashes
+# Checklist
+
+- [ ] Container Rename works.
+- [ ] Container Commit works.
+- [ ] Container Upgrade works.
+- [ ] Container Prune works.
+- [ ] Image Tag works.
+- [ ] Image Push works.
+- [ ] App Store Sync works.
+- [ ] App Ignore Update works.

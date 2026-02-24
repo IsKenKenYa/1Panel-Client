@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanelapp_app/config/app_router.dart';
@@ -118,22 +119,7 @@ class _ContainersPageState extends State<ContainersPage> with SingleTickerProvid
       child: Scaffold(
         appBar: AppBar(
           title: Text(l10n.containerManagement),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.search),
-              onPressed: () {
-                // TODO: 搜索容器
-              },
-              tooltip: l10n.containerSearch,
-            ),
-            IconButton(
-              icon: const Icon(Icons.filter_list),
-              onPressed: () {
-                // TODO: 筛选容器
-              },
-              tooltip: l10n.containerFilter,
-            ),
-          ],
+          actions: _buildAppBarActions(context, l10n),
           bottom: TabBar(
             controller: _tabController,
             isScrollable: true,
@@ -180,6 +166,12 @@ class _ContainersPageState extends State<ContainersPage> with SingleTickerProvid
                   onStop: (id) => provider.stopContainer(id),
                   onRestart: (id) => provider.restartContainer(id),
                   onDelete: (id) => _showDeleteContainerDialog(context, id, provider),
+                  onRename: (name) => _showRenameContainerDialog(context, name, provider),
+                  onUpgrade: (container) => _showUpgradeContainerDialog(context, container, provider),
+                  onCommit: (container) => _showCommitContainerDialog(context, container, provider),
+                  onEdit: (container) => _showEditContainerDialog(context, container, provider),
+                  onCleanLog: (name) => _showCleanLogDialog(context, name, provider),
+                  onDownloadLog: (name) => _showDownloadLogDialog(context, name, provider),
                 );
               },
             ),
@@ -221,7 +213,7 @@ class _ContainersPageState extends State<ContainersPage> with SingleTickerProvid
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.containerOperateFailed(provider.error ?? 'Unknown error'))),
+            SnackBar(content: Text(l10n.containerOperateFailed(provider.error ?? l10n.commonUnknownError))),
           );
         }
       }
@@ -252,7 +244,7 @@ class _ContainersPageState extends State<ContainersPage> with SingleTickerProvid
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.containerOperateFailed(provider.error ?? 'Unknown error'))),
+            SnackBar(content: Text(l10n.containerOperateFailed(provider.error ?? l10n.commonUnknownError))),
           );
         }
       }
@@ -280,7 +272,7 @@ class _ContainersPageState extends State<ContainersPage> with SingleTickerProvid
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.containerOperateFailed(provider.error ?? 'Unknown error'))),
+            SnackBar(content: Text(l10n.containerOperateFailed(provider.error ?? l10n.commonUnknownError))),
           );
         }
       }
@@ -311,6 +303,662 @@ class _ContainersPageState extends State<ContainersPage> with SingleTickerProvid
         SnackBar(content: Text(l10n.containerOperateSuccess)),
       );
     }
+  }
+
+  List<Widget> _buildAppBarActions(BuildContext context, dynamic l10n) {
+    final actions = <Widget>[];
+    if (_tabController.index == 1) {
+      actions.addAll([
+        IconButton(
+          icon: const Icon(Icons.search),
+          onPressed: () {},
+          tooltip: l10n.containerSearch,
+        ),
+        IconButton(
+          icon: const Icon(Icons.filter_list),
+          onPressed: () {},
+          tooltip: l10n.containerFilter,
+        ),
+        IconButton(
+          icon: const Icon(Icons.delete_sweep_outlined),
+          onPressed: () => _showPruneDialog(context),
+          tooltip: l10n.containerActionPrune,
+        ),
+      ]);
+    }
+
+    if (_tabController.index == 3) {
+      actions.addAll([
+        IconButton(
+          icon: const Icon(Icons.search),
+          onPressed: () => _showSearchImageDialog(context),
+          tooltip: l10n.orchestrationImageSearch,
+        ),
+        PopupMenuButton<String>(
+          icon: const Icon(Icons.more_vert),
+          tooltip: l10n.commonMore,
+          onSelected: (value) {
+            if (value == 'build') _showBuildImageDialog(context);
+            if (value == 'load') _showLoadImageDialog(context);
+          },
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              value: 'build',
+              child: Text(l10n.orchestrationImageBuild),
+            ),
+            PopupMenuItem(
+              value: 'load',
+              child: Text(l10n.orchestrationImageLoad),
+            ),
+          ],
+        ),
+      ]);
+    }
+    return actions;
+  }
+
+  Future<void> _showRenameContainerDialog(
+    BuildContext context,
+    String name,
+    ContainersProvider provider,
+  ) async {
+    final l10n = context.l10n;
+    final controller = TextEditingController(text: name);
+    final result = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.containerActionRename),
+        content: TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            labelText: l10n.commonName,
+            border: const OutlineInputBorder(),
+          ),
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(l10n.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, controller.text),
+            child: Text(l10n.commonConfirm),
+          ),
+        ],
+      ),
+    );
+
+    if (result != null && result.isNotEmpty && result != name && context.mounted) {
+      final success = await provider.renameContainer(name, result);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              success ? l10n.containerOperateSuccess : l10n.containerOperateFailed(provider.data.error ?? l10n.commonUnknownError),
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _showUpgradeContainerDialog(
+    BuildContext context,
+    ContainerInfo container,
+    ContainersProvider provider,
+  ) async {
+    final l10n = context.l10n;
+    final controller = TextEditingController(text: container.image);
+    bool forcePull = false;
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: Text(l10n.containerActionUpgrade),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: controller,
+                decoration: InputDecoration(
+                  labelText: l10n.containerImage,
+                  border: const OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
+              SwitchListTile(
+                value: forcePull,
+                onChanged: (value) => setState(() => forcePull = value),
+                title: Text(l10n.containerUpgradeForcePull),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(l10n.commonCancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(l10n.commonConfirm),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (result == true && context.mounted) {
+      final request = ContainerUpgrade(
+        name: container.name,
+        image: controller.text,
+        forcePull: forcePull,
+      );
+      final success = await provider.upgradeContainer(request);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              success ? l10n.containerOperateSuccess : l10n.containerOperateFailed(provider.data.error ?? l10n.commonUnknownError),
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _showCommitContainerDialog(
+    BuildContext context,
+    ContainerInfo container,
+    ContainersProvider provider,
+  ) async {
+    final l10n = context.l10n;
+    final imageController = TextEditingController();
+    final authorController = TextEditingController();
+    final commentController = TextEditingController();
+    bool pause = false;
+
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: Text(l10n.containerActionCommit),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: imageController,
+                  decoration: InputDecoration(
+                    labelText: l10n.containerCommitImage,
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: authorController,
+                  decoration: InputDecoration(
+                    labelText: l10n.containerCommitAuthor,
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: commentController,
+                  decoration: InputDecoration(
+                    labelText: l10n.containerCommitComment,
+                    border: const OutlineInputBorder(),
+                  ),
+                  maxLines: 3,
+                ),
+                SwitchListTile(
+                  value: pause,
+                  onChanged: (value) => setState(() => pause = value),
+                  title: Text(l10n.containerCommitPause),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(l10n.commonCancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(l10n.commonConfirm),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (result == true && context.mounted) {
+      final request = ContainerCommit(
+        containerID: container.id,
+        containerName: container.name,
+        newImageName: imageController.text,
+        author: authorController.text.isEmpty ? null : authorController.text,
+        comment: commentController.text.isEmpty ? null : commentController.text,
+        pause: pause,
+      );
+      final success = await provider.commitContainer(request);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              success ? l10n.containerOperateSuccess : l10n.containerOperateFailed(provider.data.error ?? l10n.commonUnknownError),
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _showEditContainerDialog(
+    BuildContext context,
+    ContainerInfo container,
+    ContainersProvider provider,
+  ) async {
+    final l10n = context.l10n;
+    final cpuController = TextEditingController();
+    final memoryController = TextEditingController();
+
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.containerActionEdit),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: cpuController,
+                decoration: InputDecoration(
+                  labelText: l10n.containerCpuShares,
+                  border: const OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: memoryController,
+                decoration: InputDecoration(
+                  labelText: l10n.containerMemory,
+                  border: const OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.number,
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l10n.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.commonConfirm),
+          ),
+        ],
+      ),
+    );
+
+    if (result == true && context.mounted) {
+      final cpuShares = int.tryParse(cpuController.text);
+      final memory = int.tryParse(memoryController.text);
+      final request = ContainerOperate(
+        name: container.name,
+        image: container.image,
+        cpuShares: cpuShares,
+        memory: memory,
+      );
+      final success = await provider.updateContainer(request);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              success ? l10n.containerOperateSuccess : l10n.containerOperateFailed(provider.data.error ?? l10n.commonUnknownError),
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _showCleanLogDialog(
+    BuildContext context,
+    String name,
+    ContainersProvider provider,
+  ) async {
+    final l10n = context.l10n;
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.containerActionCleanLog),
+        content: Text(l10n.containerCleanLogConfirm(name)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l10n.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.commonConfirm),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true && context.mounted) {
+      final success = await provider.cleanContainerLog(name);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              success ? l10n.containerOperateSuccess : l10n.containerOperateFailed(provider.data.error ?? l10n.commonUnknownError),
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _showDownloadLogDialog(
+    BuildContext context,
+    String name,
+    ContainersProvider provider,
+  ) async {
+    final l10n = context.l10n;
+    final logs = await provider.downloadContainerLog(name);
+    if (!context.mounted) return;
+
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.containerActionDownloadLog),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: SingleChildScrollView(
+            child: SelectableText(logs ?? l10n.containerNoLogs),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(l10n.commonClose),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _showPruneDialog(BuildContext context) async {
+    final l10n = context.l10n;
+    ContainerPruneType type = ContainerPruneType.container;
+    bool withTagAll = false;
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: Text(l10n.containerActionPrune),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DropdownButtonFormField<ContainerPruneType>(
+                value: type,
+                decoration: InputDecoration(
+                  labelText: l10n.containerPruneType,
+                  border: const OutlineInputBorder(),
+                ),
+                items: [
+                  DropdownMenuItem(
+                    value: ContainerPruneType.container,
+                    child: Text(l10n.containerPruneTypeContainer),
+                  ),
+                  DropdownMenuItem(
+                    value: ContainerPruneType.image,
+                    child: Text(l10n.containerPruneTypeImage),
+                  ),
+                  DropdownMenuItem(
+                    value: ContainerPruneType.volume,
+                    child: Text(l10n.containerPruneTypeVolume),
+                  ),
+                  DropdownMenuItem(
+                    value: ContainerPruneType.network,
+                    child: Text(l10n.containerPruneTypeNetwork),
+                  ),
+                  DropdownMenuItem(
+                    value: ContainerPruneType.buildcache,
+                    child: Text(l10n.containerPruneTypeBuildCache),
+                  ),
+                ],
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() => type = value);
+                  }
+                },
+              ),
+              const SizedBox(height: 12),
+              SwitchListTile(
+                value: withTagAll,
+                onChanged: (value) => setState(() => withTagAll = value),
+                title: Text(l10n.containerPruneWithTagAll),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(l10n.commonCancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(l10n.commonConfirm),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (result == true && context.mounted) {
+      final provider = context.read<ContainersProvider>();
+      final report = await provider.pruneContainers(
+        ContainerPrune(
+          pruneType: type.value,
+          withTagAll: withTagAll,
+        ),
+      );
+      if (!context.mounted) return;
+      final message = report?.message ?? l10n.containerOperateSuccess;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    }
+  }
+
+  Future<void> _showBuildImageDialog(BuildContext context) async {
+    final l10n = context.l10n;
+    final contextController = TextEditingController();
+    final dockerfileController = TextEditingController();
+    final tagsController = TextEditingController();
+    final buildArgsController = TextEditingController();
+
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.orchestrationImageBuild),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: contextController,
+                decoration: InputDecoration(
+                  labelText: l10n.containerBuildContext,
+                  border: const OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: dockerfileController,
+                decoration: InputDecoration(
+                  labelText: l10n.containerBuildDockerfile,
+                  border: const OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: tagsController,
+                decoration: InputDecoration(
+                  labelText: l10n.containerBuildTags,
+                  border: const OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: buildArgsController,
+                decoration: InputDecoration(
+                  labelText: l10n.containerBuildArgs,
+                  border: const OutlineInputBorder(),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l10n.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.commonConfirm),
+          ),
+        ],
+      ),
+    );
+
+    if (result == true && context.mounted) {
+      final provider = context.read<DockerImageProvider>();
+      final tags = tagsController.text
+          .split(',')
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
+      final request = ImageBuild(
+        contextDir: contextController.text,
+        dockerfile: dockerfileController.text.isEmpty ? null : dockerfileController.text,
+        tags: tags.isEmpty ? null : tags,
+        buildArgs: buildArgsController.text.isEmpty ? null : buildArgsController.text,
+      );
+      final success = await provider.buildImage(request);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              success ? l10n.containerOperateSuccess : l10n.containerOperateFailed(provider.error ?? l10n.commonUnknownError),
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _showLoadImageDialog(BuildContext context) async {
+    final l10n = context.l10n;
+    final controller = TextEditingController();
+    final result = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.orchestrationImageLoad),
+        content: TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            labelText: l10n.containerImageLoadPath,
+            border: const OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(l10n.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, controller.text),
+            child: Text(l10n.commonConfirm),
+          ),
+        ],
+      ),
+    );
+
+    if (result != null && result.isNotEmpty && context.mounted) {
+      final provider = context.read<DockerImageProvider>();
+      final success = await provider.loadImage(ImageLoad(filePath: result));
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              success ? l10n.containerOperateSuccess : l10n.containerOperateFailed(provider.error ?? l10n.commonUnknownError),
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _showSearchImageDialog(BuildContext context) async {
+    final l10n = context.l10n;
+    final controller = TextEditingController();
+    final keyword = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.orchestrationImageSearch),
+        content: TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            labelText: l10n.commonSearch,
+            border: const OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(l10n.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, controller.text),
+            child: Text(l10n.commonConfirm),
+          ),
+        ],
+      ),
+    );
+
+    if (keyword == null || keyword.isEmpty || !context.mounted) return;
+    final provider = context.read<DockerImageProvider>();
+    final result = await provider.searchImages(keyword);
+    if (!context.mounted) return;
+    final jsonText = const JsonEncoder.withIndent('  ').convert(result.items);
+
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.orchestrationImageSearchResult),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: SingleChildScrollView(
+            child: SelectableText(jsonText),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(l10n.commonClose),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget? _buildFloatingActionButton(BuildContext context, dynamic l10n) {
@@ -486,6 +1134,12 @@ class _ContainersTab extends StatelessWidget {
   final Future<bool> Function(String) onStop;
   final Future<bool> Function(String) onRestart;
   final void Function(String) onDelete;
+  final void Function(String) onRename;
+  final void Function(ContainerInfo) onUpgrade;
+  final void Function(ContainerInfo) onCommit;
+  final void Function(ContainerInfo) onEdit;
+  final void Function(String) onCleanLog;
+  final void Function(String) onDownloadLog;
 
   const _ContainersTab({
     required this.containers,
@@ -496,6 +1150,12 @@ class _ContainersTab extends StatelessWidget {
     required this.onStop,
     required this.onRestart,
     required this.onDelete,
+    required this.onRename,
+    required this.onUpgrade,
+    required this.onCommit,
+    required this.onEdit,
+    required this.onCleanLog,
+    required this.onDownloadLog,
   });
 
   @override
@@ -555,6 +1215,12 @@ class _ContainersTab extends StatelessWidget {
                     onStop: () => onStop(containerInfo.name),
                     onRestart: () => onRestart(containerInfo.name),
                     onDelete: () => onDelete(containerInfo.name),
+                    onRename: () => onRename(containerInfo.name),
+                    onUpgrade: () => onUpgrade(containerInfo),
+                    onCommit: () => onCommit(containerInfo),
+                    onEdit: () => onEdit(containerInfo),
+                    onCleanLog: () => onCleanLog(containerInfo.name),
+                    onDownloadLog: () => onDownloadLog(containerInfo.name),
                     onTap: () {
                       Navigator.pushNamed(
                         context,

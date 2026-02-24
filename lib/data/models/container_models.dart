@@ -937,18 +937,26 @@ class ContainerCompose extends Equatable {
 
 /// Container Compose 创建请求模型
 class ContainerComposeCreate extends Equatable {
+  final String from;
   final String name;
   final String? path;
   final String? file;
+  final String? env;
+  final int? template;
+  final String? taskID;
   final String? version;
   final List<String>? networks;
   final List<String>? volumes;
   final List<String>? services;
 
   const ContainerComposeCreate({
+    required this.from,
     required this.name,
     this.path,
     this.file,
+    this.env,
+    this.template,
+    this.taskID,
     this.version,
     this.networks,
     this.volumes,
@@ -957,9 +965,13 @@ class ContainerComposeCreate extends Equatable {
 
   factory ContainerComposeCreate.fromJson(Map<String, dynamic> json) {
     return ContainerComposeCreate(
+      from: json['from'] as String? ?? 'edit',
       name: json['name'] as String,
       path: json['path'] as String?,
       file: json['file'] as String?,
+      env: json['env'] as String?,
+      template: json['template'] as int?,
+      taskID: json['taskID'] as String?,
       version: json['version'] as String?,
       networks: (json['networks'] as List?)?.cast<String>(),
       volumes: (json['volumes'] as List?)?.cast<String>(),
@@ -969,9 +981,13 @@ class ContainerComposeCreate extends Equatable {
 
   Map<String, dynamic> toJson() {
     return {
+      'from': from,
       'name': name,
       if (path != null) 'path': path,
       if (file != null) 'file': file,
+      if (env != null) 'env': env,
+      if (template != null) 'template': template,
+      if (taskID != null) 'taskID': taskID,
       if (version != null) 'version': version,
       if (networks != null) 'networks': networks,
       if (volumes != null) 'volumes': volumes,
@@ -981,14 +997,70 @@ class ContainerComposeCreate extends Equatable {
 
   @override
   List<Object?> get props => [
+        from,
         name,
         path,
         file,
+        env,
+        template,
+        taskID,
         version,
         networks,
         volumes,
         services,
       ];
+}
+
+class ContainerComposeUpdateRequest extends Equatable {
+  final String name;
+  final String path;
+  final String content;
+  final String? env;
+  final String? detailPath;
+
+  const ContainerComposeUpdateRequest({
+    required this.name,
+    required this.path,
+    required this.content,
+    this.env,
+    this.detailPath,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'path': path,
+      'content': content,
+      if (env != null) 'env': env,
+      if (detailPath != null) 'detailPath': detailPath,
+    };
+  }
+
+  @override
+  List<Object?> get props => [name, path, content, env, detailPath];
+}
+
+class ContainerComposeLogCleanRequest extends Equatable {
+  final String name;
+  final String path;
+  final String? detailPath;
+
+  const ContainerComposeLogCleanRequest({
+    required this.name,
+    required this.path,
+    this.detailPath,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'path': path,
+      if (detailPath != null) 'detailPath': detailPath,
+    };
+  }
+
+  @override
+  List<Object?> get props => [name, path, detailPath];
 }
 
 /// Container Compose 更新请求模型

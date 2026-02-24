@@ -132,6 +132,55 @@ class AppService extends BaseComponent {
     });
   }
 
+  Future<List<AppInstallInfo>> getIgnoredApps() {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      return api.getIgnoredApps();
+    });
+  }
+
+  Future<List<AppInstallInfo>> getIgnoredAppDetails() {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      return api.getIgnoredAppDetails();
+    });
+  }
+
+  Future<void> ignoreAppUpdate(AppInstalledIgnoreUpgradeRequest request) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.ignoreAppUpdate(request);
+    });
+  }
+
+  Future<void> cancelIgnoreAppUpdate(AppInstalledIgnoreUpgradeRequest request) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.cancelIgnoreAppUpdate(request);
+    });
+  }
+
+  Future<AppInstalledCheckResponse> checkAppInstall(AppInstalledCheckRequest request) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      return api.checkAppInstall(request);
+    });
+  }
+
+  Future<Map<String, dynamic>> checkAppUninstall(String appInstallId) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      return api.checkAppUninstall(appInstallId);
+    });
+  }
+
+  Future<int> loadAppPort(Map<String, dynamic> request) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      return api.loadAppPort(request);
+    });
+  }
+
   Future<AppUpdateResponse> checkAppUpdate() {
     return runGuarded(() async {
       final api = await _ensureApi();

@@ -95,15 +95,40 @@ class ComposeProvider extends ChangeNotifier {
     }
   }
 
-  Future<List<ContainerComposeLog>> getLogs(int id, {int lines = 100}) async {
+  Future<bool> updateCompose(ContainerComposeUpdateRequest request) async {
     try {
       final api = await _getApi();
-      final response = await api.getComposeLogs(id, lines: lines);
-      return response.data ?? [];
+      await api.updateCompose(request);
+      await loadComposes();
+      return true;
     } catch (e) {
       _error = e.toString();
       notifyListeners();
-      return [];
+      return false;
+    }
+  }
+
+  Future<bool> testCompose(ContainerComposeUpdateRequest request) async {
+    try {
+      final api = await _getApi();
+      await api.testCompose(request);
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> cleanComposeLog(ContainerComposeLogCleanRequest request) async {
+    try {
+      final api = await _getApi();
+      await api.cleanComposeLog(request);
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      return false;
     }
   }
 }
