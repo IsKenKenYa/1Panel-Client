@@ -175,6 +175,7 @@ class WebsiteDomain extends Equatable {
   final int? websiteId;
   final String? websiteName;
   final bool? isDefault;
+  final bool? ssl;
   final String? createTime;
 
   const WebsiteDomain({
@@ -183,6 +184,7 @@ class WebsiteDomain extends Equatable {
     this.websiteId,
     this.websiteName,
     this.isDefault,
+    this.ssl,
     this.createTime,
   });
 
@@ -193,6 +195,7 @@ class WebsiteDomain extends Equatable {
       websiteId: json['websiteId'] as int?,
       websiteName: json['websiteName'] as String?,
       isDefault: json['isDefault'] as bool?,
+      ssl: json['ssl'] as bool?,
       createTime: json['createTime'] as String?,
     );
   }
@@ -204,12 +207,13 @@ class WebsiteDomain extends Equatable {
       'websiteId': websiteId,
       'websiteName': websiteName,
       'isDefault': isDefault,
+      'ssl': ssl,
       'createTime': createTime,
     };
   }
 
   @override
-  List<Object?> get props => [id, domain, websiteId, websiteName, isDefault, createTime];
+  List<Object?> get props => [id, domain, websiteId, websiteName, isDefault, ssl, createTime];
 }
 
 /// SSL certificate model

@@ -8,6 +8,7 @@ import '../../api/v2/ssl_v2.dart';
 import '../../api/v2/website_v2.dart';
 import '../../core/network/api_client_manager.dart';
 import '../../data/models/file/file_info.dart';
+import '../../data/models/openresty_models.dart';
 import '../../data/models/ssl_models.dart' as ssl_models;
 import '../../data/models/website_models.dart';
 import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
@@ -93,6 +94,16 @@ class WebsiteDetailProvider extends ChangeNotifier {
     await loadConfig();
   }
 
+  Future<Map<String, dynamic>> loadWebsiteNginxConfig(Map<String, dynamic> request) async {
+    await _ensureApi();
+    return await _api!.loadWebsiteNginxConfig(request);
+  }
+
+  Future<void> updateWebsiteNginxConfigByRequest(Map<String, dynamic> request) async {
+    await _ensureApi();
+    await _api!.updateWebsiteNginxConfigByRequest(request);
+  }
+
   Future<void> loadDomains() async {
     await _ensureApi();
     domains = await _api!.getWebsiteDomains(websiteId);
@@ -113,6 +124,15 @@ class WebsiteDetailProvider extends ChangeNotifier {
   Future<void> deleteDomain(int domainId) async {
     await _ensureApi();
     await _api!.deleteWebsiteDomain(id: domainId);
+    await loadDomains();
+  }
+
+  Future<void> updateDomainSsl({
+    required int domainId,
+    required bool ssl,
+  }) async {
+    await _ensureApi();
+    await _api!.updateWebsiteDomainSsl(id: domainId, ssl: ssl);
     await loadDomains();
   }
 
@@ -201,6 +221,14 @@ class _WebsiteDetailBodyState extends State<_WebsiteDetailBody> with SingleTicke
   final TextEditingController _proxyNameController = TextEditingController();
   final TextEditingController _proxyContentController = TextEditingController();
   final TextEditingController _httpsController = TextEditingController();
+  final TextEditingController _nginxScopeWebsiteIdController = TextEditingController();
+  final TextEditingController _nginxScopeResultController = TextEditingController();
+  final TextEditingController _nginxUpdateWebsiteIdController = TextEditingController();
+  final TextEditingController _nginxUpdateParamsController = TextEditingController();
+
+  NginxKey _nginxScopeKey = NginxKey.indexKey;
+  NginxKey _nginxUpdateScopeKey = NginxKey.indexKey;
+  String _nginxUpdateOperate = 'update';
 
   @override
   void initState() {
@@ -226,6 +254,10 @@ class _WebsiteDetailBodyState extends State<_WebsiteDetailBody> with SingleTicke
     _proxyNameController.dispose();
     _proxyContentController.dispose();
     _httpsController.dispose();
+    _nginxScopeWebsiteIdController.dispose();
+    _nginxScopeResultController.dispose();
+    _nginxUpdateWebsiteIdController.dispose();
+    _nginxUpdateParamsController.dispose();
     super.dispose();
   }
 
@@ -288,12 +320,14 @@ class _WebsiteDetailBodyState extends State<_WebsiteDetailBody> with SingleTicke
                 controller: _configController,
                 onReload: provider.loadConfig,
                 onSave: () async => provider.saveConfig(_configController.text),
+                onAdvanced: () => _showNginxAdvancedDialog(context, provider),
               ),
               _DomainsTab(
                 domains: provider.domains,
                 onReload: provider.loadDomains,
                 onAdd: () => _showAddDomainDialog(context, provider),
                 onDelete: (id) => provider.deleteDomain(id),
+                onToggleSsl: (id, value) => provider.updateDomainSsl(domainId: id, ssl: value),
               ),
               _SslTab(
                 ssl: provider.ssl,
@@ -333,6 +367,193 @@ class _WebsiteDetailBodyState extends State<_WebsiteDetailBody> with SingleTicke
       },
     );
   }
+
+  Future<void> _showNginxAdvancedDialog(
+    BuildContext context,
+    WebsiteDetailProvider provider,
+  ) async {
+    final l10n = context.l10n;
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(l10n.websitesNginxAdvancedTitle),
+          content: SizedBox(
+            width: 520,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(l10n.websitesNginxScopeTitle, style: Theme.of(context).textTheme.titleMedium),
+                  ),
+                  const SizedBox(height: 12),
+                  DropdownButtonFormField<NginxKey>(
+                    value: _nginxScopeKey,
+                    decoration: InputDecoration(
+                      labelText: l10n.websitesNginxScopeLabel,
+                      border: const OutlineInputBorder(),
+                    ),
+                    items: NginxKey.values
+                        .map((key) => DropdownMenuItem(value: key, child: Text(key.value)))
+                        .toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() => _nginxScopeKey = value);
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _nginxScopeWebsiteIdController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: l10n.websitesNginxScopeWebsiteIdLabel,
+                      border: const OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      FilledButton.icon(
+                        onPressed: () async {
+                          try {
+                            final websiteId = int.tryParse(_nginxScopeWebsiteIdController.text.trim());
+                            final response = await provider.loadWebsiteNginxConfig({
+                              'scope': _nginxScopeKey.value,
+                              if (websiteId != null) 'websiteId': websiteId,
+                            });
+                            _nginxScopeResultController.text = const JsonEncoder.withIndent('  ').convert(response);
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(l10n.commonSaveSuccess)),
+                            );
+                          } catch (_) {
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(l10n.commonSaveFailed)),
+                            );
+                          }
+                        },
+                        icon: const Icon(Icons.search),
+                        label: Text(l10n.websitesNginxScopeLoad),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _nginxScopeResultController,
+                    readOnly: true,
+                    maxLines: 6,
+                    decoration: InputDecoration(
+                      labelText: l10n.websitesNginxScopeResultLabel,
+                      border: const OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(l10n.websitesNginxUpdateTitle, style: Theme.of(context).textTheme.titleMedium),
+                  ),
+                  const SizedBox(height: 12),
+                  DropdownButtonFormField<String>(
+                    value: _nginxUpdateOperate,
+                    decoration: InputDecoration(
+                      labelText: l10n.websitesNginxUpdateOperateLabel,
+                      border: const OutlineInputBorder(),
+                    ),
+                    items: const [
+                      DropdownMenuItem(value: 'add', child: Text('add')),
+                      DropdownMenuItem(value: 'update', child: Text('update')),
+                      DropdownMenuItem(value: 'delete', child: Text('delete')),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() => _nginxUpdateOperate = value);
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  DropdownButtonFormField<NginxKey>(
+                    value: _nginxUpdateScopeKey,
+                    decoration: InputDecoration(
+                      labelText: l10n.websitesNginxUpdateScopeLabel,
+                      border: const OutlineInputBorder(),
+                    ),
+                    items: NginxKey.values
+                        .map((key) => DropdownMenuItem(value: key, child: Text(key.value)))
+                        .toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() => _nginxUpdateScopeKey = value);
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _nginxUpdateWebsiteIdController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: l10n.websitesNginxUpdateWebsiteIdLabel,
+                      border: const OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _nginxUpdateParamsController,
+                    maxLines: 6,
+                    decoration: InputDecoration(
+                      labelText: l10n.websitesNginxUpdateParamsLabel,
+                      border: const OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      FilledButton.icon(
+                        onPressed: () async {
+                          try {
+                            final paramsText = _nginxUpdateParamsController.text.trim();
+                            final websiteId = int.tryParse(_nginxUpdateWebsiteIdController.text.trim());
+                            final request = <String, dynamic>{
+                              'operate': _nginxUpdateOperate,
+                              'scope': _nginxUpdateScopeKey.value,
+                              if (websiteId != null) 'websiteId': websiteId,
+                              if (paramsText.isNotEmpty) 'params': jsonDecode(paramsText),
+                            };
+                            await provider.updateWebsiteNginxConfigByRequest(request);
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(l10n.commonSaveSuccess)),
+                            );
+                          } catch (_) {
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(l10n.commonSaveFailed)),
+                            );
+                          }
+                        },
+                        icon: const Icon(Icons.save),
+                        label: Text(l10n.websitesNginxUpdateAction),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(l10n.commonClose),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 
   Future<void> _showAddDomainDialog(BuildContext context, WebsiteDetailProvider provider) async {
     final l10n = context.l10n;
@@ -412,11 +633,13 @@ class _ConfigTab extends StatelessWidget {
   final TextEditingController controller;
   final Future<void> Function() onReload;
   final Future<void> Function() onSave;
+  final VoidCallback onAdvanced;
 
   const _ConfigTab({
     required this.controller,
     required this.onReload,
     required this.onSave,
+    required this.onAdvanced,
   });
 
   @override
@@ -438,6 +661,12 @@ class _ConfigTab extends StatelessWidget {
                 onPressed: onSave,
                 icon: const Icon(Icons.save),
                 label: Text(l10n.commonSave),
+              ),
+              const SizedBox(width: 12),
+              FilledButton.icon(
+                onPressed: onAdvanced,
+                icon: const Icon(Icons.tune),
+                label: Text(l10n.websitesNginxAdvancedAction),
               ),
             ],
           ),
@@ -466,12 +695,14 @@ class _DomainsTab extends StatelessWidget {
   final Future<void> Function() onReload;
   final VoidCallback onAdd;
   final Future<void> Function(int id) onDelete;
+  final Future<void> Function(int id, bool value) onToggleSsl;
 
   const _DomainsTab({
     required this.domains,
     required this.onReload,
     required this.onAdd,
     required this.onDelete,
+    required this.onToggleSsl,
   });
 
   @override
@@ -504,13 +735,34 @@ class _DomainsTab extends StatelessWidget {
         else
           ...domains.map((d) {
             final title = d.domain ?? '-';
+            final subtitleItems = <Widget>[];
+            if (d.isDefault == true) {
+              subtitleItems.add(Text(l10n.websitesDomainDefault));
+            }
+            subtitleItems.add(
+              Text(
+                '${l10n.websitesDomainSslLabel}: ${d.ssl == true ? l10n.systemSettingsEnabled : l10n.systemSettingsDisabled}',
+              ),
+            );
             return Card(
               child: ListTile(
                 title: Text(title),
-                subtitle: d.isDefault == true ? Text(l10n.websitesDomainDefault) : null,
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete_outline),
-                  onPressed: d.id == null ? null : () => onDelete(d.id!),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: subtitleItems,
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Switch(
+                      value: d.ssl ?? false,
+                      onChanged: d.id == null ? null : (value) => onToggleSsl(d.id!, value),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete_outline),
+                      onPressed: d.id == null ? null : () => onDelete(d.id!),
+                    ),
+                  ],
                 ),
               ),
             );

@@ -29,6 +29,7 @@ class OpenRestyProvider extends ChangeNotifier {
   Map<String, dynamic>? modules;
   Map<String, dynamic>? https;
   Map<String, dynamic>? config;
+  List<OpenrestyParam> scopeParams = const [];
 
   Future<void> _ensureApi() async {
     if (_api != null) return;
@@ -78,6 +79,24 @@ class OpenRestyProvider extends ChangeNotifier {
     await _api!.updateOpenRestyConfigByFile(OpenrestyConfigFileUpdateRequest(content: content));
     await loadAll();
   }
+
+  Future<void> buildOpenResty({
+    required String mirror,
+    required String taskId,
+  }) async {
+    await _ensureApi();
+    await _api!.buildOpenResty(OpenrestyBuildRequest(mirror: mirror, taskId: taskId));
+  }
+
+  Future<void> loadScope({
+    required NginxKey scope,
+    int? websiteId,
+  }) async {
+    await _ensureApi();
+    final response = await _api!.getOpenRestyScope(OpenrestyScopeRequest(scope: scope, websiteId: websiteId));
+    scopeParams = response.data ?? const [];
+    notifyListeners();
+  }
 }
 
 class _OpenRestyBody extends StatefulWidget {
@@ -93,11 +112,17 @@ class _OpenRestyBodyState extends State<_OpenRestyBody> with SingleTickerProvide
   final TextEditingController _httpsController = TextEditingController();
   final TextEditingController _modulesController = TextEditingController();
   final TextEditingController _configController = TextEditingController();
+  final TextEditingController _buildMirrorController = TextEditingController();
+  final TextEditingController _buildTaskIdController = TextEditingController();
+  final TextEditingController _scopeWebsiteIdController = TextEditingController();
+  final TextEditingController _scopeResultController = TextEditingController();
+
+  NginxKey _scopeKey = NginxKey.indexKey;
 
   @override
   void initState() {
     super.initState();
-    _controller = TabController(length: 4, vsync: this);
+    _controller = TabController(length: 6, vsync: this);
   }
 
   @override
@@ -106,6 +131,10 @@ class _OpenRestyBodyState extends State<_OpenRestyBody> with SingleTickerProvide
     _httpsController.dispose();
     _modulesController.dispose();
     _configController.dispose();
+    _buildMirrorController.dispose();
+    _buildTaskIdController.dispose();
+    _scopeWebsiteIdController.dispose();
+    _scopeResultController.dispose();
     super.dispose();
   }
 
@@ -135,6 +164,14 @@ class _OpenRestyBodyState extends State<_OpenRestyBody> with SingleTickerProvide
         _modulesController.text =
             provider.modules == null ? '' : const JsonEncoder.withIndent('  ').convert(provider.modules);
         _configController.text = provider.config == null ? '' : const JsonEncoder.withIndent('  ').convert(provider.config);
+        _scopeResultController.text =
+            provider.scopeParams.isEmpty ? '' : const JsonEncoder.withIndent('  ').convert(provider.scopeParams.map((e) => e.toJson()).toList());
+        if (_buildMirrorController.text.isEmpty && provider.modules != null) {
+          final mirror = provider.modules?['mirror']?.toString();
+          if (mirror != null && mirror.isNotEmpty) {
+            _buildMirrorController.text = mirror;
+          }
+        }
 
         return Scaffold(
           appBar: AppBar(
@@ -153,6 +190,8 @@ class _OpenRestyBodyState extends State<_OpenRestyBody> with SingleTickerProvide
                 Tab(text: l10n.openrestyTabHttps),
                 Tab(text: l10n.openrestyTabModules),
                 Tab(text: l10n.openrestyTabConfig),
+                Tab(text: l10n.openrestyTabBuild),
+                Tab(text: l10n.openrestyTabScope),
               ],
             ),
           ),
@@ -181,6 +220,34 @@ class _OpenRestyBodyState extends State<_OpenRestyBody> with SingleTickerProvide
                 onSave: () async {
                   final map = jsonDecode(_configController.text) as Map<String, dynamic>;
                   await provider.updateConfig(jsonEncode(map));
+                },
+              ),
+              _BuildTab(
+                mirrorController: _buildMirrorController,
+                taskIdController: _buildTaskIdController,
+                onBuild: () async {
+                  await provider.buildOpenResty(
+                    mirror: _buildMirrorController.text.trim(),
+                    taskId: _buildTaskIdController.text.trim(),
+                  );
+                  if (!context.mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(l10n.commonSaveSuccess)),
+                  );
+                },
+              ),
+              _ScopeTab(
+                scopeKey: _scopeKey,
+                onScopeChanged: (value) => setState(() => _scopeKey = value),
+                websiteIdController: _scopeWebsiteIdController,
+                resultController: _scopeResultController,
+                onLoad: () async {
+                  final websiteId = int.tryParse(_scopeWebsiteIdController.text.trim());
+                  await provider.loadScope(scope: _scopeKey, websiteId: websiteId);
+                  if (!context.mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(l10n.commonSaveSuccess)),
+                  );
                 },
               ),
             ],
@@ -241,6 +308,132 @@ class _JsonEditTab extends StatelessWidget {
               textAlignVertical: TextAlignVertical.top,
               decoration: InputDecoration(
                 hintText: l10n.websitesJsonHint,
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BuildTab extends StatelessWidget {
+  final TextEditingController mirrorController;
+  final TextEditingController taskIdController;
+  final Future<void> Function() onBuild;
+
+  const _BuildTab({
+    required this.mirrorController,
+    required this.taskIdController,
+    required this.onBuild,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          TextField(
+            controller: mirrorController,
+            decoration: InputDecoration(
+              labelText: l10n.openrestyBuildMirrorLabel,
+              border: const OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: taskIdController,
+            decoration: InputDecoration(
+              labelText: l10n.openrestyBuildTaskIdLabel,
+              border: const OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              FilledButton.icon(
+                onPressed: onBuild,
+                icon: const Icon(Icons.play_arrow),
+                label: Text(l10n.openrestyBuildAction),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ScopeTab extends StatelessWidget {
+  final NginxKey scopeKey;
+  final ValueChanged<NginxKey> onScopeChanged;
+  final TextEditingController websiteIdController;
+  final TextEditingController resultController;
+  final Future<void> Function() onLoad;
+
+  const _ScopeTab({
+    required this.scopeKey,
+    required this.onScopeChanged,
+    required this.websiteIdController,
+    required this.resultController,
+    required this.onLoad,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          DropdownButtonFormField<NginxKey>(
+            value: scopeKey,
+            decoration: InputDecoration(
+              labelText: l10n.openrestyScopeLabel,
+              border: const OutlineInputBorder(),
+            ),
+            items: NginxKey.values
+                .map((key) => DropdownMenuItem(value: key, child: Text(key.value)))
+                .toList(),
+            onChanged: (value) {
+              if (value != null) {
+                onScopeChanged(value);
+              }
+            },
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: websiteIdController,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              labelText: l10n.openrestyScopeWebsiteIdLabel,
+              border: const OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              FilledButton.icon(
+                onPressed: onLoad,
+                icon: const Icon(Icons.search),
+                label: Text(l10n.openrestyScopeLoad),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Expanded(
+            child: TextField(
+              controller: resultController,
+              readOnly: true,
+              expands: true,
+              maxLines: null,
+              minLines: null,
+              textAlignVertical: TextAlignVertical.top,
+              decoration: InputDecoration(
+                hintText: l10n.openrestyScopeResultHint,
                 border: const OutlineInputBorder(),
               ),
             ),
