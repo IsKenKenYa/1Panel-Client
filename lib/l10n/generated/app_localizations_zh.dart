@@ -117,6 +117,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get websitesOperateFailed => '操作失败';
 
   @override
+  String websitesLoadFailedMessage(String error) {
+    return '$error';
+  }
+
+  @override
+  String get websitesDefaultName => 'default';
+
+  @override
   String get websitesDeleteTitle => '删除网站';
 
   @override
@@ -147,6 +155,27 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get websitesTabProxy => '反向代理';
+
+  @override
+  String get websitesSslInfoTitle => '证书';
+
+  @override
+  String get websitesSslNoCert => '未绑定证书';
+
+  @override
+  String get websitesSslPrimaryDomain => '主域名';
+
+  @override
+  String get websitesSslExpireDate => '到期时间';
+
+  @override
+  String get websitesSslStatus => '状态';
+
+  @override
+  String get websitesSslAutoRenew => '自动续期';
+
+  @override
+  String get websitesSslDownload => '下载';
 
   @override
   String get websitesConfigHint => 'Nginx 配置内容';

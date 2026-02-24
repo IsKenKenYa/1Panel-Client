@@ -138,12 +138,13 @@ class _WebsitesPageState extends State<WebsitesPage> {
     WebsitesProvider provider,
   ) async {
     final l10n = context.l10n;
+    final colorScheme = Theme.of(context).colorScheme;
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        icon: const Icon(Icons.delete_outline, color: Colors.red),
+        icon: Icon(Icons.delete_outline, color: colorScheme.error),
         title: Text(l10n.websitesDeleteTitle),
-        content: Text(l10n.websitesDeleteMessage(website.primaryDomain ?? l10n.websitesUnknownDomain)),
+        content: Text(l10n.websitesDeleteMessage(website.domain ?? l10n.websitesUnknownDomain)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
@@ -160,7 +161,10 @@ class _WebsitesPageState extends State<WebsitesPage> {
                 );
               }
             },
-            style: FilledButton.styleFrom(backgroundColor: Colors.red),
+            style: FilledButton.styleFrom(
+              backgroundColor: colorScheme.error,
+              foregroundColor: colorScheme.onError,
+            ),
             child: Text(l10n.commonDelete),
           ),
         ],
@@ -191,7 +195,7 @@ class _ErrorView extends StatelessWidget {
             Text(l10n.commonLoadFailedTitle, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 8),
             Text(
-              error,
+              l10n.websitesLoadFailedMessage(error),
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurfaceVariant,
@@ -240,13 +244,13 @@ class _StatsCard extends StatelessWidget {
                 _StatItem(
                   title: l10n.websitesStatsRunning,
                   value: stats.running.toString(),
-                  color: Colors.green,
+                  color: colorScheme.tertiary,
                   icon: Icons.play_circle,
                 ),
                 _StatItem(
                   title: l10n.websitesStatsStopped,
                   value: stats.stopped.toString(),
-                  color: Colors.orange,
+                  color: colorScheme.secondary,
                   icon: Icons.stop_circle,
                 ),
               ],
@@ -273,18 +277,19 @@ class _StatItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return Column(
       children: [
         Icon(icon, color: color, size: 28),
         const SizedBox(height: 8),
         Text(
           value,
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: color),
+          style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: color),
         ),
         const SizedBox(height: 4),
         Text(
           title,
-          style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+          style: textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
         ),
       ],
     );
@@ -345,14 +350,15 @@ class _WebsiteTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final colorScheme = Theme.of(context).colorScheme;
     final isRunning = website.status?.toLowerCase() == 'running';
     final statusText = isRunning ? l10n.websitesStatusRunning : l10n.websitesStatusStopped;
-    final statusColor = isRunning ? Colors.green : Colors.orange;
+    final statusColor = isRunning ? colorScheme.tertiary : colorScheme.secondary;
 
     return Card(
       child: ListTile(
         onTap: onTap,
-        title: Text(website.primaryDomain ?? l10n.websitesUnknownDomain),
+        title: Text(website.domain ?? l10n.websitesUnknownDomain),
         subtitle: Text('${l10n.websitesStatusLabel}: $statusText'),
         leading: Container(
           width: 10,

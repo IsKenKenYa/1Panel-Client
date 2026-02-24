@@ -314,6 +314,18 @@ abstract class AppLocalizations {
   /// **'Operation failed'**
   String get websitesOperateFailed;
 
+  /// No description provided for @websitesLoadFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'{error}'**
+  String websitesLoadFailedMessage(String error);
+
+  /// No description provided for @websitesDefaultName.
+  ///
+  /// In en, this message translates to:
+  /// **'default'**
+  String get websitesDefaultName;
+
   /// No description provided for @websitesDeleteTitle.
   ///
   /// In en, this message translates to:
@@ -373,6 +385,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Proxy'**
   String get websitesTabProxy;
+
+  /// No description provided for @websitesSslInfoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate'**
+  String get websitesSslInfoTitle;
+
+  /// No description provided for @websitesSslNoCert.
+  ///
+  /// In en, this message translates to:
+  /// **'No certificate bound'**
+  String get websitesSslNoCert;
+
+  /// No description provided for @websitesSslPrimaryDomain.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary domain'**
+  String get websitesSslPrimaryDomain;
+
+  /// No description provided for @websitesSslExpireDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires'**
+  String get websitesSslExpireDate;
+
+  /// No description provided for @websitesSslStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get websitesSslStatus;
+
+  /// No description provided for @websitesSslAutoRenew.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto renew'**
+  String get websitesSslAutoRenew;
+
+  /// No description provided for @websitesSslDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get websitesSslDownload;
 
   /// No description provided for @websitesConfigHint.
   ///

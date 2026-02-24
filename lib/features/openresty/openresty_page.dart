@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../api/v2/openresty_v2.dart';
 import '../../core/network/api_client_manager.dart';
+import '../../data/models/openresty_models.dart';
 import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
 
 class OpenRestyPage extends StatelessWidget {
@@ -48,10 +49,10 @@ class OpenRestyProvider extends ChangeNotifier {
         _api!.getOpenRestyConfig(),
       ]);
 
-      status = (results[0].data?.toJson() ?? <String, dynamic>{});
-      modules = (results[1].data?.toJson() ?? <String, dynamic>{});
-      https = (results[2].data?.toJson() ?? <String, dynamic>{});
-      config = (results[3].data?.toJson() ?? <String, dynamic>{});
+      status = (results[0].data as OpenrestyStatus?)?.toJson() ?? <String, dynamic>{};
+      modules = (results[1].data as OpenrestyBuildConfig?)?.toJson() ?? <String, dynamic>{};
+      https = (results[2].data as OpenrestyHttpsConfig?)?.toJson() ?? <String, dynamic>{};
+      config = (results[3].data as OpenrestyFile?)?.toJson() ?? <String, dynamic>{};
     } catch (e) {
       error = e.toString();
     } finally {
@@ -62,19 +63,19 @@ class OpenRestyProvider extends ChangeNotifier {
 
   Future<void> updateHttps(Map<String, dynamic> request) async {
     await _ensureApi();
-    await _api!.updateOpenRestyHttps(request);
+    await _api!.updateOpenRestyHttps(OpenrestyDefaultHttpsUpdateRequest.fromJson(request));
     await loadAll();
   }
 
   Future<void> updateModules(Map<String, dynamic> request) async {
     await _ensureApi();
-    await _api!.updateOpenRestyModules(request);
+    await _api!.updateOpenRestyModules(OpenrestyModuleUpdateRequest.fromJson(request));
     await loadAll();
   }
 
   Future<void> updateConfig(String content) async {
     await _ensureApi();
-    await _api!.updateOpenRestyConfig({'content': content});
+    await _api!.updateOpenRestyConfigByFile(OpenrestyConfigFileUpdateRequest(content: content));
     await loadAll();
   }
 }

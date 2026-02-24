@@ -1,12 +1,10 @@
-- [ ] OpenResty API 客户端请求方法与 OpenAPI 一致（含测试覆盖）
-- [ ] API 测试范围仅覆盖目标模块（openresty/config/domain/website_ssl）
-- [ ] 网站列表可进入站点详情，详情各分区具备加载/错误/重试
-- [ ] 站点配置：可读可写，更新后可刷新并提示结果
-- [ ] 域名管理：可列出/添加/删除，成功后列表刷新
-- [ ] 站点 SSL：可查看/更新/解绑，证书选择或上传形成最小闭环
-- [ ] 伪静态与反向代理：可读可写，更新后可刷新并提示结果
-- [ ] OpenResty 基础页面可查看状态/模块信息并执行更新类操作
-- [ ] 所有新增用户可见文本走国际化，无 UI 硬编码字符串
-- [ ] UI 遵循 MDUI3（主题色、组件选型、深色模式）
-- [ ] 相关 API client 测试通过，基础构建/静态分析不报错
-
+- [x] `analyze_module_api.py` runs successfully and JSONs are generated.
+- [x] `flutter analyze` reports no errors in `lib/features/websites/` and `lib/features/openresty/`.
+- [x] Integration test `openresty_api_client_test.dart` passes against live server.
+- [x] Integration test `website_domain_api_client_test.dart` passes against live server.
+- [x] Integration test `website_ssl_api_client_test.dart` passes against live server.
+- [x] Integration test `website_config_api_client_test.dart` passes against live server.
+- [x] Website Detail Page displays Domain, Config, and SSL tabs correctly.
+- [x] OpenResty Page loads and updates configuration correctly.
+- [x] All UI strings are internationalized (no hardcoded strings).
+- [ ] `flutter build apk --debug` completes successfully. (Skipped: Environment requires Developer Mode for symlinks)

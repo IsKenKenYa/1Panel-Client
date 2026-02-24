@@ -10,6 +10,9 @@
     python analyze_module_api.py dashboard
     python analyze_module_api.py container 仪表盘
     python analyze_module_api.py website 网站管理-OpenResty
+    python analyze_module_api.py domains 网站域名管理
+    python analyze_module_api.py website_ssl 网站SSL证书
+    python analyze_module_api.py system_ssl SSL证书管理
 """
 import json
 import sys
@@ -24,6 +27,7 @@ MODULE_PATH_MAPPING = {
     'dashboard': '仪表盘',
     'container': '容器管理',
     'website': '网站管理-OpenResty',
+    'domains': '网站域名管理',
     'app': '应用管理',
     'database': '数据库管理',
     'file': '文件管理',
@@ -35,6 +39,8 @@ MODULE_PATH_MAPPING = {
     'firewall': '防火墙管理',
     'cronjob': '计划任务管理',
     'ssl': 'SSL证书管理',
+    'system_ssl': 'SSL证书管理',
+    'website_ssl': '网站SSL证书',
     'log': '日志管理',
     'ai': 'AI管理',
     'host': '主机管理',
@@ -46,6 +52,15 @@ MODULE_PATH_MAPPING = {
     'group': '系统分组',
 }
 
+KEYWORD_MATCHERS = {
+    'openresty': ['/openresty'],
+    'website': ['/websites'],
+    'domains': ['/websites/domains'],
+    'website_ssl': ['/websites/ssl'],
+    'system_ssl': ['/core/settings/ssl'],
+    'ssl': ['/core/settings/ssl', '/websites/ssl'],
+}
+
 def load_openapi():
     with open(OPENAPI_FILE, 'r', encoding='utf-8') as f:
         return json.load(f)
@@ -55,62 +70,66 @@ def extract_module_apis(openapi_data, keyword):
     tags_info = openapi_data.get('tags', [])
     module_apis = []
     keyword_lower = keyword.lower()
+    matchers = KEYWORD_MATCHERS.get(keyword_lower, [f'/{keyword_lower}'])
     
     for path, methods in paths.items():
-        if f'/{keyword_lower}' in path.lower():
-            api_info = {
-                'path': path,
-                'methods': []
-            }
-            
-            for method, details in methods.items():
-                if method in ['get', 'post', 'put', 'delete', 'patch']:
-                    method_info = {
-                        'method': method.upper(),
-                        'summary': details.get('summary', ''),
-                        'description': details.get('description', ''),
-                        'tags': details.get('tags', []),
-                        'parameters': [],
-                        'requestBody': None,
-                        'responses': {},
-                        'deprecated': details.get('deprecated', False)
+        path_lower = path.lower()
+        if not any(m in path_lower for m in matchers):
+            continue
+
+        api_info = {
+            'path': path,
+            'methods': []
+        }
+        
+        for method, details in methods.items():
+            if method in ['get', 'post', 'put', 'delete', 'patch']:
+                method_info = {
+                    'method': method.upper(),
+                    'summary': details.get('summary', ''),
+                    'description': details.get('description', ''),
+                    'tags': details.get('tags', []),
+                    'parameters': [],
+                    'requestBody': None,
+                    'responses': {},
+                    'deprecated': details.get('deprecated', False)
+                }
+                
+                for param in details.get('parameters', []):
+                    param_info = {
+                        'name': param.get('name'),
+                        'in': param.get('in'),
+                        'required': param.get('required', False),
+                        'type': param.get('schema', {}).get('type', 'unknown'),
+                        'description': param.get('description', '')
                     }
-                    
-                    for param in details.get('parameters', []):
-                        param_info = {
-                            'name': param.get('name'),
-                            'in': param.get('in'),
-                            'required': param.get('required', False),
-                            'type': param.get('schema', {}).get('type', 'unknown'),
-                            'description': param.get('description', '')
-                        }
-                        method_info['parameters'].append(param_info)
-                    
-                    if 'requestBody' in details:
-                        rb = details['requestBody']
-                        content = rb.get('content', {})
-                        schema_ref = None
-                        if content:
-                            for content_type, content_schema in content.items():
-                                if 'schema' in content_schema:
-                                    schema_ref = content_schema['schema'].get('$ref', '')
-                                    break
-                        method_info['requestBody'] = {
-                            'required': rb.get('required', False),
-                            'description': rb.get('description', ''),
-                            'contentTypes': list(content.keys()),
-                            'schemaRef': schema_ref
-                        }
-                    
-                    for code, resp in details.get('responses', {}).items():
-                        method_info['responses'][code] = {
-                            'description': resp.get('description', '')
-                        }
-                    
-                    api_info['methods'].append(method_info)
-            
-            if api_info['methods']:
-                module_apis.append(api_info)
+                    method_info['parameters'].append(param_info)
+                
+                if 'requestBody' in details:
+                    rb = details['requestBody']
+                    content = rb.get('content', {})
+                    schema_ref = None
+                    if content:
+                        for content_type, content_schema in content.items():
+                            if 'schema' in content_schema:
+                                schema_ref = content_schema['schema'].get('$ref', '')
+                                break
+                    method_info['requestBody'] = {
+                        'required': rb.get('required', False),
+                        'description': rb.get('description', ''),
+                        'contentTypes': list(content.keys()),
+                        'schemaRef': schema_ref
+                    }
+                
+                for code, resp in details.get('responses', {}).items():
+                    method_info['responses'][code] = {
+                        'description': resp.get('description', '')
+                    }
+                
+                api_info['methods'].append(method_info)
+        
+        if api_info['methods']:
+            module_apis.append(api_info)
     
     return module_apis
 
@@ -224,9 +243,12 @@ def main():
     python analyze_module_api.py dashboard
     python analyze_module_api.py container
     python analyze_module_api.py website 网站管理-OpenResty
+    python analyze_module_api.py domains 网站域名管理
+    python analyze_module_api.py website_ssl 网站SSL证书
+    python analyze_module_api.py system_ssl SSL证书管理
         """
     )
-    parser.add_argument('keyword', help='模块关键词 (如: dashboard, container, website)')
+    parser.add_argument('keyword', help='模块关键词 (如: dashboard, container, website, domains, website_ssl, system_ssl)')
     parser.add_argument('output_dir', nargs='?', help='输出目录名称 (可选，默认自动匹配)')
     parser.add_argument('--json-only', action='store_true', help='只生成JSON文件')
     

@@ -36,6 +36,15 @@
   "websitesActionDelete": "删除",
   "websitesOperateSuccess": "操作成功",
   "websitesOperateFailed": "操作失败",
+  "websitesLoadFailedMessage": "{error}",
+  "@websitesLoadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "websitesDefaultName": "default",
   "websitesDeleteTitle": "删除网站",
   "websitesDeleteMessage": "确定要删除 {domain} 吗？此操作不可撤销。",
   "@websitesDeleteMessage": {
@@ -53,6 +62,13 @@
   "websitesTabSsl": "SSL",
   "websitesTabRewrite": "伪静态",
   "websitesTabProxy": "反向代理",
+  "websitesSslInfoTitle": "证书",
+  "websitesSslNoCert": "未绑定证书",
+  "websitesSslPrimaryDomain": "主域名",
+  "websitesSslExpireDate": "到期时间",
+  "websitesSslStatus": "状态",
+  "websitesSslAutoRenew": "自动续期",
+  "websitesSslDownload": "下载",
   "websitesConfigHint": "Nginx 配置内容",
   "websitesJsonHint": "JSON 内容",
   "websitesDomainAddTitle": "添加域名",

@@ -36,6 +36,15 @@
   "websitesActionDelete": "Delete",
   "websitesOperateSuccess": "Operation successful",
   "websitesOperateFailed": "Operation failed",
+  "websitesLoadFailedMessage": "{error}",
+  "@websitesLoadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "websitesDefaultName": "default",
   "websitesDeleteTitle": "Delete website",
   "websitesDeleteMessage": "Are you sure you want to delete {domain}? This action cannot be undone.",
   "@websitesDeleteMessage": {
@@ -53,6 +62,13 @@
   "websitesTabSsl": "SSL",
   "websitesTabRewrite": "Rewrite",
   "websitesTabProxy": "Proxy",
+  "websitesSslInfoTitle": "Certificate",
+  "websitesSslNoCert": "No certificate bound",
+  "websitesSslPrimaryDomain": "Primary domain",
+  "websitesSslExpireDate": "Expires",
+  "websitesSslStatus": "Status",
+  "websitesSslAutoRenew": "Auto renew",
+  "websitesSslDownload": "Download",
   "websitesConfigHint": "Nginx config content",
   "websitesJsonHint": "JSON content",
   "websitesDomainAddTitle": "Add domain",

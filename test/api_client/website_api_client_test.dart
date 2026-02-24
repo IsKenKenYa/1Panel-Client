@@ -44,13 +44,8 @@ void main() {
           return;
         }
 
-        final response = await api.getWebsites(page: 1, pageSize: 10);
-
-        expect(response.statusCode, equals(200));
-        expect(response.data, isNotNull);
-        expect(response.data, isA<PageResult<WebsiteInfo>>());
-
-        final result = response.data!;
+        final result = await api.getWebsites(page: 1, pageSize: 10);
+        expect(result, isA<PageResult<WebsiteInfo>>());
         debugPrint('\n========================================');
         debugPrint('✅ 网站列表测试成功');
         debugPrint('========================================');

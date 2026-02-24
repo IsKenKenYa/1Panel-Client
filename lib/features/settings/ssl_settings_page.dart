@@ -99,7 +99,7 @@ class SslSettingsPage extends StatelessWidget {
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
-      trailing: Text(value, style: const TextStyle(color: Colors.grey)),
+      trailing: Text(value),
     );
   }
 

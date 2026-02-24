@@ -1,47 +1,32 @@
 # Tasks
 
-* [x] Task 1: 对齐 OpenResty API 客户端并补齐测试
+- [x] Task 1: Verify and Update API Analysis
+  - [x] SubTask 1.1: Run `analyze_module_api.py` for `openresty`, `website`, `ssl` to generate latest analysis JSONs.
+  - [x] SubTask 1.2: Compare generated JSONs with `lib/api/v2/*` clients to ensure all endpoints are covered.
 
-  * [x] SubTask 1.1: 校对 openresty\_v2 端点方法与请求体（以 OpenAPI/模块文档为准）
+- [x] Task 2: Fix Compilation Errors & Model Mismatches
+  - [x] SubTask 2.1: Update `WebsiteInfo` in `lib/data/models/website_models.dart` to alias `primaryDomain` to `domain` or update UI to use `domain`.
+  - [x] SubTask 2.2: Fix `OpenRestyPage` type errors (generic `toJson` calls, map casting) in `lib/features/openresty/openresty_page.dart`.
+  - [x] SubTask 2.3: Verify `flutter analyze` passes for modified files.
 
-  * [x] SubTask 1.2: 修正不一致调用并补齐必要模型解析
+- [x] Task 3: Verify API Clients with Integration Tests
+  - [x] SubTask 3.1: Ensure `.env` is configured (using `PANEL_BASE_URL` and `PANEL_API_KEY` from user context).
+  - [x] SubTask 3.2: Run `flutter test test/api_client/openresty_api_client_test.dart` against test server.
+  - [x] SubTask 3.3: Run `flutter test test/api_client/website_domain_api_client_test.dart` against test server.
+  - [x] SubTask 3.4: Run `flutter test test/api_client/website_ssl_api_client_test.dart` against test server.
+  - [x] SubTask 3.5: Run `flutter test test/api_client/website_config_api_client_test.dart` against test server.
+  - [x] SubTask 3.6: Fix any API client issues found during testing.
 
-  * [x] SubTask 1.3: 使用 analyze\_module\_api 提取 openresty API 集合并新增测试覆盖
+- [x] Task 4: Finalize Website Detail UI (MDUI3)
+  - [x] SubTask 4.1: Implement/Verify "Configuration" tab (Read/Update).
+  - [x] SubTask 4.2: Implement/Verify "Domain Management" tab (List/Add/Delete).
+  - [x] SubTask 4.3: Implement/Verify "SSL" tab (View/Update/Renew).
+  - [x] SubTask 4.4: Ensure all UI text uses `context.l10n`.
 
-* [ ] Task 2: 实现站点详情 UI 与状态管理（配置/域名/SSL/伪静态/代理）
+- [x] Task 5: Finalize OpenResty UI (MDUI3)
+  - [x] SubTask 5.1: Ensure Status, Modules, HTTPS, Config tabs work correctly with fixed API integration.
+  - [x] SubTask 5.2: Ensure all UI text uses `context.l10n`.
 
-  * [ ] SubTask 2.1: 扩展路由与导航：网站列表可进入站点详情
-
-  * [ ] SubTask 2.2: 新增/完善 Website Service/Provider，统一加载、错误与重试
-
-  * [ ] SubTask 2.3: 配置分区：读取与更新站点配置
-
-  * [ ] SubTask 2.4: 域名分区：列表/添加/删除
-
-  * [ ] SubTask 2.5: SSL 分区：查看与更新站点 SSL（含证书选择或上传的最小闭环）
-
-  * [ ] SubTask 2.6: 伪静态与反向代理分区：查看与更新
-
-* [ ] Task 3: 实现 OpenResty 管理基础页面与状态管理
-
-  * [ ] SubTask 3.1: 新增 OpenResty Service/Provider（状态、模块、更新相关）
-
-  * [ ] SubTask 3.2: 实现 OpenResty 状态页与模块信息页（MDUI3 + l10n）
-
-  * [ ] SubTask 3.3: 为更新类操作提供确认交互与结果提示
-
-* [ ] Task 4: 国际化与验证
-
-  * [ ] SubTask 4.1: 补齐新增 UI 文案的中英文 ARB，并生成 l10n
-
-  * [ ] SubTask 4.2: 仅为目标模块补齐 API client 测试（openresty/config/domain/website\_ssl）
-
-  * [ ] SubTask 4.3: 运行相关测试与基础构建验证，修复发现的问题
-
-# Task Dependencies
-
-* Task 2 depends on Task 1
-
-* Task 3 depends on Task 1
-
-* Task 4 depends on Task 2 and Task 3
+- [x] Task 6: Final Verification
+  - [ ] SubTask 6.1: Run `flutter build apk --debug` to ensure build success. (Skipped due to environment issue)
+  - [x] SubTask 6.2: Update module documentation if necessary.

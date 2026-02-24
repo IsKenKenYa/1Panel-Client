@@ -117,6 +117,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get websitesOperateFailed => 'Operation failed';
 
   @override
+  String websitesLoadFailedMessage(String error) {
+    return '$error';
+  }
+
+  @override
+  String get websitesDefaultName => 'default';
+
+  @override
   String get websitesDeleteTitle => 'Delete website';
 
   @override
@@ -147,6 +155,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get websitesTabProxy => 'Proxy';
+
+  @override
+  String get websitesSslInfoTitle => 'Certificate';
+
+  @override
+  String get websitesSslNoCert => 'No certificate bound';
+
+  @override
+  String get websitesSslPrimaryDomain => 'Primary domain';
+
+  @override
+  String get websitesSslExpireDate => 'Expires';
+
+  @override
+  String get websitesSslStatus => 'Status';
+
+  @override
+  String get websitesSslAutoRenew => 'Auto renew';
+
+  @override
+  String get websitesSslDownload => 'Download';
 
   @override
   String get websitesConfigHint => 'Nginx config content';

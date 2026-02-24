@@ -1,11 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../../api/v2/ssl_v2.dart';
 import '../../api/v2/website_v2.dart';
 import '../../core/network/api_client_manager.dart';
 import '../../data/models/file/file_info.dart';
+import '../../data/models/ssl_models.dart' as ssl_models;
 import '../../data/models/website_models.dart';
 import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
 
@@ -27,6 +30,7 @@ class WebsiteDetailProvider extends ChangeNotifier {
   final int websiteId;
 
   WebsiteV2Api? _api;
+  SSLV2Api? _sslApi;
 
   bool isLoading = false;
   String? error;
@@ -34,6 +38,8 @@ class WebsiteDetailProvider extends ChangeNotifier {
   WebsiteInfo? website;
   FileInfo? nginxConfigFile;
   List<WebsiteDomain> domains = const [];
+  ssl_models.WebsiteSSL? ssl;
+  String? sslError;
   Map<String, dynamic>? https;
   Map<String, dynamic>? rewrite;
   Map<String, dynamic>? proxy;
@@ -48,6 +54,11 @@ class WebsiteDetailProvider extends ChangeNotifier {
     _api = await ApiClientManager.instance.getWebsiteApi();
   }
 
+  Future<void> _ensureSslApi() async {
+    if (_sslApi != null) return;
+    _sslApi = await ApiClientManager.instance.getSslApi();
+  }
+
   Future<void> loadAll() async {
     isLoading = true;
     error = null;
@@ -60,6 +71,7 @@ class WebsiteDetailProvider extends ChangeNotifier {
         loadConfig(),
         loadDomains(),
         loadHttps(),
+        loadWebsiteSsl(),
       ]);
     } catch (e) {
       error = e.toString();
@@ -117,6 +129,36 @@ class WebsiteDetailProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> loadWebsiteSsl() async {
+    try {
+      await _ensureSslApi();
+      final response = await _sslApi!.getWebsiteSSLByWebsiteId(websiteId);
+      ssl = response.data;
+      sslError = null;
+    } catch (e) {
+      ssl = null;
+      sslError = e.toString();
+    }
+    notifyListeners();
+  }
+
+  Future<String?> downloadWebsiteSsl() async {
+    final id = ssl?.id;
+    if (id == null) return null;
+    await _ensureSslApi();
+    final response = await _sslApi!.downloadSSLFile(id);
+    return response.data;
+  }
+
+  Future<bool> setWebsiteSslAutoRenew(bool value) async {
+    final id = ssl?.id;
+    if (id == null) return false;
+    await _ensureSslApi();
+    await _sslApi!.updateWebsiteSSL(ssl_models.WebsiteSSLUpdate(id: id, autoRenew: value));
+    await loadWebsiteSsl();
+    return true;
+  }
+
   Future<void> loadRewrite(String name) async {
     await _ensureApi();
     rewriteName = name;
@@ -154,9 +196,9 @@ class _WebsiteDetailBodyState extends State<_WebsiteDetailBody> with SingleTicke
   late final TabController _tabController;
 
   final TextEditingController _configController = TextEditingController();
-  final TextEditingController _rewriteNameController = TextEditingController(text: 'default');
+  final TextEditingController _rewriteNameController = TextEditingController();
   final TextEditingController _rewriteContentController = TextEditingController();
-  final TextEditingController _proxyNameController = TextEditingController(text: 'default');
+  final TextEditingController _proxyNameController = TextEditingController();
   final TextEditingController _proxyContentController = TextEditingController();
   final TextEditingController _httpsController = TextEditingController();
 
@@ -164,6 +206,15 @@ class _WebsiteDetailBodyState extends State<_WebsiteDetailBody> with SingleTicke
   void initState() {
     super.initState();
     _tabController = TabController(length: 6, vsync: this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final l10n = context.l10n;
+      if (_rewriteNameController.text.isEmpty) {
+        _rewriteNameController.text = l10n.websitesDefaultName;
+      }
+      if (_proxyNameController.text.isEmpty) {
+        _proxyNameController.text = l10n.websitesDefaultName;
+      }
+    });
   }
 
   @override
@@ -183,7 +234,7 @@ class _WebsiteDetailBodyState extends State<_WebsiteDetailBody> with SingleTicke
     final l10n = context.l10n;
     return Consumer<WebsiteDetailProvider>(
       builder: (context, provider, _) {
-        final title = provider.website?.primaryDomain ?? '${l10n.websitesDetailTitle} #${provider.websiteId}';
+        final title = provider.website?.domain ?? '${l10n.websitesDetailTitle} #${provider.websiteId}';
 
         if (provider.error != null) {
           return Scaffold(
@@ -244,10 +295,15 @@ class _WebsiteDetailBodyState extends State<_WebsiteDetailBody> with SingleTicke
                 onAdd: () => _showAddDomainDialog(context, provider),
                 onDelete: (id) => provider.deleteDomain(id),
               ),
-              _JsonEditTab(
-                controller: _httpsController,
-                onReload: provider.loadHttps,
-                onSave: () async {
+              _SslTab(
+                ssl: provider.ssl,
+                sslError: provider.sslError,
+                onReloadSsl: provider.loadWebsiteSsl,
+                onToggleAutoRenew: provider.setWebsiteSslAutoRenew,
+                onDownload: provider.downloadWebsiteSsl,
+                httpsController: _httpsController,
+                onReloadHttps: provider.loadHttps,
+                onSaveHttps: () async {
                   final map = jsonDecode(_httpsController.text) as Map<String, dynamic>;
                   map['websiteId'] = provider.websiteId;
                   await provider.updateHttps(map);
@@ -337,7 +393,7 @@ class _OverviewTab extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  w.primaryDomain ?? l10n.websitesUnknownDomain,
+                  w.domain ?? l10n.websitesUnknownDomain,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 8),
@@ -639,6 +695,133 @@ class _ProxyTab extends StatelessWidget {
                 hintText: l10n.websitesProxyHint,
                 border: const OutlineInputBorder(),
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SslTab extends StatelessWidget {
+  final ssl_models.WebsiteSSL? ssl;
+  final String? sslError;
+  final Future<void> Function() onReloadSsl;
+  final Future<bool> Function(bool value) onToggleAutoRenew;
+  final Future<String?> Function() onDownload;
+  final TextEditingController httpsController;
+  final Future<void> Function() onReloadHttps;
+  final Future<void> Function() onSaveHttps;
+
+  const _SslTab({
+    required this.ssl,
+    required this.sslError,
+    required this.onReloadSsl,
+    required this.onToggleAutoRenew,
+    required this.onDownload,
+    required this.httpsController,
+    required this.onReloadHttps,
+    required this.onSaveHttps,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          Card(
+            child: Column(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.verified_outlined),
+                  title: Text(l10n.websitesSslInfoTitle),
+                  trailing: IconButton(
+                    onPressed: onReloadSsl,
+                    icon: const Icon(Icons.refresh),
+                    tooltip: l10n.commonRefresh,
+                  ),
+                ),
+                if (ssl == null && (sslError == null || sslError!.isEmpty))
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(l10n.websitesSslNoCert),
+                    ),
+                  )
+                else if (ssl == null)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(sslError ?? ''),
+                    ),
+                  )
+                else
+                  Column(
+                    children: [
+                      ListTile(
+                        leading: const Icon(Icons.domain_outlined),
+                        title: Text(l10n.websitesSslPrimaryDomain),
+                        trailing: Text(ssl!.primaryDomain ?? '-'),
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.event_outlined),
+                        title: Text(l10n.websitesSslExpireDate),
+                        trailing: Text(ssl!.expireDate ?? '-'),
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.info_outline),
+                        title: Text(l10n.websitesSslStatus),
+                        trailing: Text(ssl!.status ?? '-'),
+                      ),
+                      SwitchListTile(
+                        secondary: const Icon(Icons.autorenew_outlined),
+                        title: Text(l10n.websitesSslAutoRenew),
+                        value: ssl!.autoRenew ?? false,
+                        onChanged: (value) async {
+                          final ok = await onToggleAutoRenew(value);
+                          if (!context.mounted) return;
+                          if (!ok) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(l10n.commonSaveSuccess)),
+                          );
+                        },
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                        child: Row(
+                          children: [
+                            FilledButton.icon(
+                              onPressed: () async {
+                                final link = await onDownload();
+                                if (!context.mounted) return;
+                                if (link == null || link.isEmpty) return;
+                                await Clipboard.setData(ClipboardData(text: link));
+                                if (!context.mounted) return;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(l10n.commonCopied)),
+                                );
+                              },
+                              icon: const Icon(Icons.download_outlined),
+                              label: Text(l10n.websitesSslDownload),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          Expanded(
+            child: _JsonEditTab(
+              controller: httpsController,
+              onReload: onReloadHttps,
+              onSave: onSaveHttps,
             ),
           ),
         ],

@@ -106,7 +106,7 @@ class WebsitesProvider extends ChangeNotifier {
     } catch (e) {
       _data = _data.copyWith(
         isLoading: false,
-        error: '加载网站列表失败: $e',
+        error: e.toString(),
       );
     }
     notifyListeners();
@@ -120,7 +120,7 @@ class WebsitesProvider extends ChangeNotifier {
       await loadWebsites(); // 刷新列表
       return true;
     } catch (e) {
-      _data = _data.copyWith(error: '启动网站失败: $e');
+      _data = _data.copyWith(error: e.toString());
       notifyListeners();
       return false;
     }
@@ -134,7 +134,7 @@ class WebsitesProvider extends ChangeNotifier {
       await loadWebsites(); // 刷新列表
       return true;
     } catch (e) {
-      _data = _data.copyWith(error: '停止网站失败: $e');
+      _data = _data.copyWith(error: e.toString());
       notifyListeners();
       return false;
     }
@@ -148,7 +148,7 @@ class WebsitesProvider extends ChangeNotifier {
       await loadWebsites(); // 刷新列表
       return true;
     } catch (e) {
-      _data = _data.copyWith(error: '重启网站失败: $e');
+      _data = _data.copyWith(error: e.toString());
       notifyListeners();
       return false;
     }
@@ -162,7 +162,7 @@ class WebsitesProvider extends ChangeNotifier {
       await loadWebsites(); // 刷新列表
       return true;
     } catch (e) {
-      _data = _data.copyWith(error: '删除网站失败: $e');
+      _data = _data.copyWith(error: e.toString());
       notifyListeners();
       return false;
     }
