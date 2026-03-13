@@ -684,12 +684,16 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
                      if (uri.scheme == 'http' || uri.scheme == 'https') {
                        return Image.network(uri.toString());
                      }
-                     return Tooltip(
-                       message: l10n.appReadmeImageUnsupported(uri.toString()),
-                       child: const Icon(Icons.broken_image, size: 16, color: Colors.grey),
-                     );
-                   },
-                 ),
+                    return Tooltip(
+                      message: l10n.appReadmeImageUnsupported(uri.toString()),
+                      child: Icon(
+                        Icons.broken_image,
+                        size: 16,
+                        color: Theme.of(context).colorScheme.outline,
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
             const SizedBox(height: 24),
@@ -702,17 +706,18 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
 
   Widget _buildHeader(AppLocalizations l10n) {
     final status = _appInfo!.status?.toLowerCase() ?? '';
+    final colorScheme = Theme.of(context).colorScheme;
     Color statusColor;
     String statusText;
 
     if (status == 'running') {
-      statusColor = Colors.green;
+      statusColor = colorScheme.tertiary;
       statusText = l10n.appStatusRunning;
     } else if (status == 'stopped') {
-      statusColor = Colors.orange;
+      statusColor = colorScheme.secondary;
       statusText = l10n.appStatusStopped;
     } else {
-      statusColor = Colors.grey;
+      statusColor = colorScheme.outline;
       statusText = status;
     }
 
@@ -764,7 +769,8 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
                     label: Text(l10n.appUpdate),
                     style: FilledButton.styleFrom(
                       visualDensity: VisualDensity.compact,
-                      backgroundColor: Colors.orange,
+                      backgroundColor: colorScheme.tertiaryContainer,
+                      foregroundColor: colorScheme.onTertiaryContainer,
                     ),
                   ),
                 ),
@@ -862,7 +868,9 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
                   height: 10,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: service.status == 'running' ? Colors.green : Colors.grey,
+                    color: service.status == 'running'
+                        ? Theme.of(context).colorScheme.tertiary
+                        : Theme.of(context).colorScheme.outline,
                   ),
                 ),
               );
@@ -878,6 +886,7 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
 
     final status = _appInfo!.status?.toLowerCase();
     final isRunning = status == 'running';
+    final colorScheme = Theme.of(context).colorScheme;
 
     return SafeArea(
       child: Container(
@@ -886,7 +895,7 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
           color: Theme.of(context).scaffoldBackgroundColor,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: colorScheme.shadow.withValues(alpha: 0.08),
               offset: const Offset(0, -2),
               blurRadius: 8,
             ),

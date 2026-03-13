@@ -55,6 +55,10 @@ class _ContainerStatsViewState extends State<ContainerStatsView> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
+    final cpuColor = colorScheme.primary;
+    final memoryColor = colorScheme.tertiary;
+    final networkColor = colorScheme.secondary;
+    final blockColor = colorScheme.error;
 
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
@@ -82,7 +86,7 @@ class _ContainerStatsViewState extends State<ContainerStatsView> {
     }
 
     if (_stats == null) {
-      return const Center(child: Text('No data'));
+      return Center(child: Text(l10n.commonEmpty));
     }
 
     final stats = _stats!;
@@ -98,7 +102,7 @@ class _ContainerStatsViewState extends State<ContainerStatsView> {
                   title: l10n.containerStatsCpu,
                   value: '${stats.cpuPercent.toStringAsFixed(2)}%',
                   progress: stats.cpuPercent / 100,
-                  color: Colors.blue,
+                  color: cpuColor,
                   icon: Icons.memory,
                 ),
               ),
@@ -108,7 +112,7 @@ class _ContainerStatsViewState extends State<ContainerStatsView> {
                   title: l10n.containerStatsMemory,
                   value: _formatBytes(stats.memory),
                   subtitle: '${l10n.monitorMetricCurrent}: ${_formatBytes(stats.memory)}',
-                  color: Colors.green,
+                  color: memoryColor,
                   icon: Icons.sd_storage,
                 ),
               ),
@@ -122,7 +126,7 @@ class _ContainerStatsViewState extends State<ContainerStatsView> {
                   title: l10n.containerStatsNetwork,
                   value: 'RX: ${_formatBytes(stats.networkRX)}',
                   subtitle: 'TX: ${_formatBytes(stats.networkTX)}',
-                  color: Colors.orange,
+                  color: networkColor,
                   icon: Icons.network_check,
                 ),
               ),
@@ -132,7 +136,7 @@ class _ContainerStatsViewState extends State<ContainerStatsView> {
                   title: l10n.containerStatsBlock,
                   value: 'Read: ${_formatBytes(stats.ioRead)}',
                   subtitle: 'Write: ${_formatBytes(stats.ioWrite)}',
-                  color: Colors.purple,
+                  color: blockColor,
                   icon: Icons.storage,
                 ),
               ),

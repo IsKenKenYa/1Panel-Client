@@ -27,7 +27,7 @@ class AppCard extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     
     return Card(
-      color: backgroundColor ?? colorScheme.surface,
+      color: backgroundColor ?? colorScheme.surfaceContainerLow,
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),

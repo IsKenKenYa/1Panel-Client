@@ -98,11 +98,12 @@ class _InstalledAppsViewState extends State<InstalledAppsView> {
         }
 
         if (provider.error != null && provider.installedApps.isEmpty) {
+          final colorScheme = Theme.of(context).colorScheme;
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                Icon(Icons.error_outline, size: 48, color: colorScheme.error),
                 const SizedBox(height: 16),
                 Text('${context.l10n.commonLoadFailedTitle}: ${provider.error}'),
                 const SizedBox(height: 16),

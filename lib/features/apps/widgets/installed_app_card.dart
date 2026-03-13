@@ -28,7 +28,7 @@ class InstalledAppCard extends StatelessWidget {
     final l10n = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
     final isRunning = app.status?.toLowerCase() == 'running';
-    final statusColor = isRunning ? Colors.green : Colors.orange;
+    final statusColor = isRunning ? colorScheme.tertiary : colorScheme.secondary;
     final unknownLabel = l10n.systemSettingsUnknown;
 
     final List<String> ports = [];
@@ -112,7 +112,7 @@ class InstalledAppCard extends StatelessWidget {
                 _ActionButton(
                   icon: Icons.web,
                   label: l10n.appActionWeb,
-                  color: colorScheme.primary,
+                  color: colorScheme.secondary,
                   onTap: () => _openWeb(context, app.webUI!),
                 ),
                 const SizedBox(width: 8),
@@ -121,7 +121,7 @@ class InstalledAppCard extends StatelessWidget {
                 _ActionButton(
                   icon: Icons.stop,
                   label: l10n.appActionStop,
-                  color: Colors.orange,
+                  color: colorScheme.error,
                   onTap: onStop,
                 ),
                 const SizedBox(width: 8),
@@ -135,7 +135,7 @@ class InstalledAppCard extends StatelessWidget {
                 _ActionButton(
                   icon: Icons.play_arrow,
                   label: l10n.appActionStart,
-                  color: Colors.green,
+                  color: colorScheme.tertiary,
                   onTap: onStart,
                 ),
               ],
@@ -143,7 +143,7 @@ class InstalledAppCard extends StatelessWidget {
               _ActionButton(
                 icon: Icons.delete_outline,
                 label: l10n.appActionUninstall,
-                color: Colors.red,
+                color: colorScheme.error,
                 onTap: onUninstall,
               ),
             ],

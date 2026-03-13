@@ -225,11 +225,12 @@ class _TerminalTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final colorScheme = Theme.of(context).colorScheme;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.terminal, size: 64, color: Colors.grey),
+          Icon(Icons.terminal, size: 64, color: colorScheme.outline),
           const SizedBox(height: 16),
           Text(l10n.commonComingSoon),
         ],

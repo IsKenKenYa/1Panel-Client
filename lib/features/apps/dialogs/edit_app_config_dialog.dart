@@ -134,6 +134,7 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final colorScheme = Theme.of(context).colorScheme;
 
     // Filter editable params
     final editableParams = widget.appConfig.params.where((p) => p.edit).toList();
@@ -157,9 +158,9 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
                       Expanded(
                         child: TextFormField(
                           controller: _httpPortController,
-                          decoration: const InputDecoration(
-                            labelText: 'HTTP',
-                            border: OutlineInputBorder(),
+                          decoration: InputDecoration(
+                            labelText: l10n.commonHttp,
+                            border: const OutlineInputBorder(),
                             isDense: true,
                           ),
                           keyboardType: TextInputType.number,
@@ -170,9 +171,9 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
                       Expanded(
                         child: TextFormField(
                           controller: _httpsPortController,
-                          decoration: const InputDecoration(
-                            labelText: 'HTTPS',
-                            border: OutlineInputBorder(),
+                          decoration: InputDecoration(
+                            labelText: l10n.commonHttps,
+                            border: const OutlineInputBorder(),
                             isDense: true,
                           ),
                           keyboardType: TextInputType.number,
@@ -280,7 +281,14 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
         FilledButton(
           onPressed: _isLoading ? null : _submit,
           child: _isLoading 
-            ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+            ? SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: colorScheme.onPrimary,
+                ),
+              )
             : Text(l10n.commonSave),
         ),
       ],

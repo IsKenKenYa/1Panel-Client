@@ -40,7 +40,7 @@ class ContainerCard extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
     final isRunning = container.state.toLowerCase() == 'running';
-    final statusColor = isRunning ? Colors.green : Colors.orange;
+    final statusColor = isRunning ? colorScheme.tertiary : colorScheme.secondary;
 
     return AppCard(
       title: container.name,
@@ -108,7 +108,7 @@ class ContainerCard extends StatelessWidget {
                 _ActionButton(
                   icon: Icons.stop,
                   label: l10n.containerActionStop,
-                  color: Colors.orange,
+                  color: colorScheme.error,
                   onTap: onStop,
                 ),
                 const SizedBox(width: 8),
@@ -122,7 +122,7 @@ class ContainerCard extends StatelessWidget {
                 _ActionButton(
                   icon: Icons.play_arrow,
                   label: l10n.containerActionStart,
-                  color: Colors.green,
+                  color: colorScheme.tertiary,
                   onTap: onStart,
                 ),
               ],
