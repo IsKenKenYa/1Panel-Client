@@ -4,6 +4,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanelapp_app/config/app_router.dart';
 import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
+import 'package:onepanelapp_app/core/services/logger/logger_service.dart';
 import 'package:onepanelapp_app/data/models/app_config_models.dart';
 import 'package:onepanelapp_app/data/models/app_models.dart';
 import 'package:onepanelapp_app/features/apps/app_service.dart';
@@ -50,6 +51,7 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
   }
 
   Future<void> _loadData() async {
+    final l10n = context.l10n;
     setState(() {
       _loading = true;
       _error = null;
@@ -62,7 +64,13 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
       }
 
       if (_appInfo == null) {
-        throw Exception('Failed to load app info');
+        if (mounted) {
+          setState(() {
+            _error = l10n.commonLoadFailedTitle;
+            _loading = false;
+          });
+        }
+        return;
       }
 
       // 2. Fetch Store Detail (for README)
@@ -89,7 +97,11 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
             );
           }
         } catch (e) {
-          debugPrint('Failed to load store detail: $e');
+          appLogger.wWithPackage(
+            'features.apps.installed_app_detail_page',
+            'Failed to load store detail',
+            error: e,
+          );
         }
       }
 
@@ -99,7 +111,11 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
         try {
           services = await _appService.getAppServices(appKey);
         } catch (e) {
-          debugPrint('Failed to load services: $e');
+          appLogger.wWithPackage(
+            'features.apps.installed_app_detail_page',
+            'Failed to load services',
+            error: e,
+          );
         }
       }
 
@@ -109,7 +125,11 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
         try {
           config = await _appService.getAppInstallParams(_appInfo!.id.toString());
         } catch (e) {
-          debugPrint('Failed to load config: $e');
+          appLogger.wWithPackage(
+            'features.apps.installed_app_detail_page',
+            'Failed to load config',
+            error: e,
+          );
         }
       }
 
@@ -119,7 +139,11 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
         try {
           updateVersions = await _appService.getAppUpdateVersions(_appInfo!.id.toString());
         } catch (e) {
-          debugPrint('Failed to load update versions: $e');
+          appLogger.wWithPackage(
+            'features.apps.installed_app_detail_page',
+            'Failed to load update versions',
+            error: e,
+          );
         }
       }
 
@@ -366,6 +390,7 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
 
   Future<void> _openWeb() async {
     if (_appInfo?.webUI == null) return;
+    final l10n = context.l10n;
     // webUI might be just "http://IP:PORT" or just port?
     // Usually it's a full URL or we need to construct it.
     // Assuming it's a full URL or at least has http prefix.
@@ -381,12 +406,16 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
     if (url != null) {
        try {
          if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
-            throw 'Could not launch $url';
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(l10n.appOperateFailed(l10n.commonUnknownError))),
+              );
+            }
          }
        } catch (e) {
          if (mounted) {
            ScaffoldMessenger.of(context).showSnackBar(
-             SnackBar(content: Text('Failed to open web: $e')),
+             SnackBar(content: Text(l10n.appOperateFailed(e.toString()))),
            );
          }
        }

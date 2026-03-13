@@ -6,6 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **1Panel Open** is a cross-platform Flutter mobile application that provides mobile access to the 1Panel Linux server management panel. The app serves as a mobile interface for managing server applications, containers, websites, files, and AI features through a modern, responsive UI.
 
+## Authoritative Standards
+
+CN: 权威规范以 `AGENTS.md`（硬性规则）与 `CLAUDE.md`（流程与细则）为准。EN: Authoritative standards live in `AGENTS.md` (hard rules) and `CLAUDE.md` (process/details).
+
 ### Current Implementation Status
 - ✅ **AI Management Module**: Complete (Ollama models, GPU monitoring, domain binding)
 - ✅ **Server Configuration**: Multi-server support with API key authentication
@@ -38,6 +42,10 @@ flutter packages pub run build_runner watch  # Watch for changes and auto-genera
 flutter test                  # Run all tests
 flutter test test/specific_test.dart  # Run specific test file
 flutter test --coverage       # Run tests with coverage report
+dart run test_runner.dart unit         # Unit tests
+dart run test_runner.dart integration  # Integration tests
+dart run test_runner.dart ui           # UI/Widget tests
+dart run test_runner.dart all          # Full regression
 ```
 
 ## Architecture Overview
@@ -94,6 +102,19 @@ lib/
 - **Repositories**: `_repository.dart` suffix (e.g., `user_repository.dart`)
 - **All files**: lowercase with underscores (e.g., `server_config_page.dart`)
 
+## Layering & Dependency Rules (Mandatory)
+- CN: 依赖方向仅允许 `Presentation -> State -> Service/Repository -> API/Infra`。EN: One-way dependencies only: `Presentation -> State -> Service/Repository -> API/Infra`.
+- CN: UI 层禁止直接调用 `lib/api/v2/`。EN: UI must not call `lib/api/v2/` directly.
+- CN: 业务逻辑不得写在 Widget `build()` 内。EN: No business logic inside Widget `build()`.
+
+## File Size Thresholds (Strict)
+- CN: 页面文件 ≤ 300 LOC；组件 ≤ 200 LOC；Provider/ViewModel ≤ 300 LOC；Service/Repository ≤ 400 LOC；Model ≤ 200 LOC。EN: Page ≤ 300 LOC; Widget ≤ 200 LOC; Provider/ViewModel ≤ 300 LOC; Service/Repository ≤ 400 LOC; Model ≤ 200 LOC.
+- CN: 统计口径为非空非注释行；生成文件 (`*.g.dart`, `*.freezed.dart`) 不计。EN: LOC counts non-empty non-comment lines; generated files are excluded.
+- CN: 超出阈值必须拆分为子组件或子模块并调整目录。EN: If over limit, split into sub-widgets/modules and adjust directories.
+
+## State Management Policy
+- CN: 默认 Provider；Bloc 或其他方案需评审通过且在 feature 内隔离使用。EN: Provider by default; Bloc or others require review and must stay isolated within the feature module.
+
 ### Current Directory Structure
 ```
 lib/
@@ -146,6 +167,17 @@ appLogger.d('[auth.service] 这是一条调试信息');
 - **Analysis**: Run `flutter analyze` before committing
 - **Lint rules**: Enabled in `analysis_options.yaml` with `avoid_print: true`
 - **Code generation**: Use `build_runner` for JSON serialization and API clients
+
+## Testing Matrix & CLI Gate
+- CN: 提交前必须可运行 `flutter analyze`。EN: Must be runnable before commit: `flutter analyze`.
+- CN: 必须可运行 `dart run test_runner.dart unit`；涉及 API/网络或数据写入时必须跑 `integration`。EN: Must run `dart run test_runner.dart unit`; for API/network or data writes, must run `integration`.
+- CN: UI 改动必须跑 `dart run test_runner.dart ui` 或说明原因。EN: UI changes must run `dart run test_runner.dart ui` or document why not.
+- CN: 回归基线使用 `dart run test_runner.dart all`。EN: Regression baseline uses `dart run test_runner.dart all`.
+
+## Skills & MCP (agent-memory-mcp)
+- CN: 重大架构/约定/踩坑需要 `memory_write` 写入知识库（type: `decision`/`pattern`）。EN: Record key architecture decisions/patterns via `memory_write` (type: `decision`/`pattern`).
+- CN: 实施前先 `memory_search` 检索已有决策。EN: Use `memory_search` before implementation.
+- CN: 规范变更同步 `AGENTS.md` 与 `CLAUDE.md`。EN: Standards changes must update `AGENTS.md` and `CLAUDE.md`.
 
 ### API Integration Pattern
 ```dart
@@ -299,6 +331,13 @@ void main() {
 - Implement proper image caching with `cached_network_image`
 - Use `shimmer` for loading states
 - Avoid expensive operations in build methods
+
+## Code Review Checklist
+- CN: 分层依赖是否正确，UI 是否直接调用 API。EN: Dependency direction correct; UI not calling API directly.
+- CN: 文件是否超出 LOC 阈值，是否需要拆分。EN: File size within LOC thresholds or split appropriately.
+- CN: 错误处理与日志是否完整且使用 `appLogger`。EN: Error handling and logging complete using `appLogger`.
+- CN: 测试是否满足门禁要求（unit/integration/ui）。EN: Test gate satisfied (unit/integration/ui).
+- CN: 新增/变更规范是否同步更新 `AGENTS.md` 与 `CLAUDE.md`。EN: Standards changes synchronized to `AGENTS.md` and `CLAUDE.md`.
 
 ## Build and Deployment
 

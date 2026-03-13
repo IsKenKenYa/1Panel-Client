@@ -17,7 +17,6 @@ class ContainerCard extends StatelessWidget {
   final VoidCallback? onCommit;
   final VoidCallback? onEdit;
   final VoidCallback? onCleanLog;
-  final VoidCallback? onDownloadLog;
 
   const ContainerCard({
     super.key,
@@ -34,7 +33,6 @@ class ContainerCard extends StatelessWidget {
     this.onCommit,
     this.onEdit,
     this.onCleanLog,
-    this.onDownloadLog,
   });
 
   @override
@@ -62,7 +60,6 @@ class ContainerCard extends StatelessWidget {
               if (value == 'edit') onEdit?.call();
               if (value == 'commit') onCommit?.call();
               if (value == 'cleanLog') onCleanLog?.call();
-              if (value == 'downloadLog') onDownloadLog?.call();
             },
             itemBuilder: (context) => [
               PopupMenuItem(
@@ -84,10 +81,6 @@ class ContainerCard extends StatelessWidget {
               PopupMenuItem(
                 value: 'cleanLog',
                 child: Text(l10n.containerActionCleanLog),
-              ),
-              PopupMenuItem(
-                value: 'downloadLog',
-                child: Text(l10n.containerActionDownloadLog),
               ),
             ],
           ),

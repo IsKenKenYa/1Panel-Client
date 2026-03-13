@@ -23,42 +23,22 @@ class InstalledAppCard extends StatelessWidget {
     required this.onUninstall,
   });
 
-  String _getAge(String? createdAt) {
-    if (createdAt == null || createdAt.isEmpty) return '';
-    try {
-      final created = DateTime.parse(createdAt);
-      final now = DateTime.now();
-      final difference = now.difference(created);
-      
-      if (difference.inDays > 365) {
-        return '${(difference.inDays / 365).floor()} years';
-      } else if (difference.inDays > 30) {
-        return '${(difference.inDays / 30).floor()} months';
-      } else if (difference.inDays > 0) {
-        return '${difference.inDays} days';
-      } else if (difference.inHours > 0) {
-        return '${difference.inHours} hours';
-      } else {
-        return '${difference.inMinutes} minutes';
-      }
-    } catch (e) {
-      return '';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
     final isRunning = app.status?.toLowerCase() == 'running';
     final statusColor = isRunning ? Colors.green : Colors.orange;
+    final unknownLabel = l10n.systemSettingsUnknown;
 
     final List<String> ports = [];
-    if (app.httpPort != null && app.httpPort != 0) ports.add('${app.httpPort} (HTTP)');
-    if (app.httpsPort != null && app.httpsPort != 0) ports.add('${app.httpsPort} (HTTPS)');
+    if (app.httpPort != null && app.httpPort != 0) {
+      ports.add('${app.httpPort} (${l10n.commonHttp})');
+    }
+    if (app.httpsPort != null && app.httpsPort != 0) {
+      ports.add('${app.httpsPort} (${l10n.commonHttps})');
+    }
     final portsString = ports.join(', ');
-
-    final age = _getAge(app.createdAt);
 
     return AppCard(
       leading: AppIcon(
@@ -67,7 +47,7 @@ class InstalledAppCard extends StatelessWidget {
         iconUrl: app.icon,
         size: 56,
       ),
-      title: app.appName ?? app.name ?? '未命名应用',
+      title: app.appName ?? app.name ?? unknownLabel,
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -85,16 +65,10 @@ class InstalledAppCard extends StatelessWidget {
             runSpacing: 4,
             children: [
               _InfoTag(
-                label: app.version ?? 'Unknown',
+                label: app.version ?? unknownLabel,
                 icon: Icons.info_outline,
                 colorScheme: colorScheme,
               ),
-              if (age.isNotEmpty)
-                _InfoTag(
-                  label: age,
-                  icon: Icons.access_time,
-                  colorScheme: colorScheme,
-                ),
             ],
           ),
         ],
@@ -180,20 +154,21 @@ class InstalledAppCard extends StatelessWidget {
   }
 
   Future<void> _openWeb(BuildContext context, String urlString) async {
+    final l10n = context.l10n;
     final Uri? url = Uri.tryParse(urlString);
     if (url != null) {
       try {
         if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
           if (context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Could not launch $url')),
+              SnackBar(content: Text(l10n.appOperateFailed(l10n.commonUnknownError))),
             );
           }
         }
       } catch (e) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to open web: $e')),
+            SnackBar(content: Text(l10n.appOperateFailed(e.toString()))),
           );
         }
       }

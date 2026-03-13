@@ -455,6 +455,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get commonSearch => '搜索';
 
   @override
+  String get commonPath => '路径';
+
+  @override
+  String get commonDriver => '驱动';
+
+  @override
+  String get commonUnknownError => '未知错误';
+
+  @override
+  String get commonMegabyte => 'MB';
+
+  @override
+  String get commonHttp => 'HTTP';
+
+  @override
+  String get commonHttps => 'HTTPS';
+
+  @override
   String get securityPageTitle => '动态验证';
 
   @override
@@ -1771,9 +1789,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get filesEncodingLogEmpty => '暂无日志';
 
   @override
-  String get commonUnknownError => '未知错误';
-
-  @override
   String get filesPreviewImage => '图片预览';
 
   @override
@@ -2061,6 +2076,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appStoreTitle => '应用商店';
 
   @override
+  String get appsPageTitle => '应用管理';
+
+  @override
   String get appStoreInstall => '安装';
 
   @override
@@ -2080,6 +2098,62 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get appStoreSyncFailed => '同步应用列表失败';
+
+  @override
+  String get appStoreSyncLocal => '同步本地应用';
+
+  @override
+  String get appStoreSyncLocalSuccess => '同步本地应用成功';
+
+  @override
+  String get appStoreSyncLocalFailed => '同步本地应用失败';
+
+  @override
+  String get appIgnoredUpdatesTitle => '忽略更新';
+
+  @override
+  String get appIgnoredUpdatesLoadFailed => '加载忽略列表失败';
+
+  @override
+  String get appIgnoredUpdatesEmpty => '暂无忽略更新';
+
+  @override
+  String get appIgnoreUpdate => '忽略更新';
+
+  @override
+  String get appIgnoreUpdateReason => '原因';
+
+  @override
+  String get appIgnoreUpdateSuccess => '已忽略更新';
+
+  @override
+  String appIgnoreUpdateFailed(String error) {
+    return '忽略更新失败：$error';
+  }
+
+  @override
+  String get appIgnoreUpdateCancel => '取消忽略';
+
+  @override
+  String get appStoreTagWebsite => '网站';
+
+  @override
+  String get appStoreTagDatabase => '数据库';
+
+  @override
+  String get appStoreTagRuntime => '运行环境';
+
+  @override
+  String get appStoreTagTool => '工具';
+
+  @override
+  String get appStoreTagDocker => 'Docker';
+
+  @override
+  String get appStoreTagCICD => 'CI/CD';
+
+  @override
+  String get appStoreTagMonitoring => '监控';
 
   @override
   String get appDetailTitle => '应用详情';
@@ -2125,6 +2199,20 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get appUninstallConfirm => '确定要卸载该应用吗？此操作不可恢复。';
+
+  @override
+  String get appNoPortInfo => '暂无端口信息';
+
+  @override
+  String get appConnInfo => '连接信息';
+
+  @override
+  String get appConnInfoFailed => '获取连接信息失败';
+
+  @override
+  String appReadmeImageUnsupported(String url) {
+    return '图片不支持：$url';
+  }
 
   @override
   String get appOperateSuccess => '操作成功';
@@ -2244,6 +2332,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get containerActionInspect => '详情';
 
   @override
+  String get containerInspectJson => '查看 JSON';
+
+  @override
   String get containerTabInfo => '信息';
 
   @override
@@ -2317,6 +2408,110 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get containerActionRename => '重命名';
+
+  @override
+  String get containerActionUpgrade => '升级';
+
+  @override
+  String get containerActionEdit => '编辑';
+
+  @override
+  String get containerActionCommit => '提交镜像';
+
+  @override
+  String get containerActionCleanLog => '清理日志';
+
+  @override
+  String get containerActionDownloadLog => '查看日志';
+
+  @override
+  String get containerActionPrune => '清理';
+
+  @override
+  String get containerActionTag => '标记';
+
+  @override
+  String get containerActionPush => '推送';
+
+  @override
+  String get containerActionSave => '保存';
+
+  @override
+  String get containerImage => '镜像';
+
+  @override
+  String get containerUpgradeForcePull => '强制拉取';
+
+  @override
+  String get containerCommitImage => '新镜像名';
+
+  @override
+  String get containerCommitAuthor => '作者';
+
+  @override
+  String get containerCommitComment => '备注';
+
+  @override
+  String get containerCommitPause => '暂停容器';
+
+  @override
+  String get containerCpuShares => 'CPU 配额';
+
+  @override
+  String get containerMemory => '内存';
+
+  @override
+  String containerCleanLogConfirm(String name) {
+    return '确定清理 $name 的日志吗？';
+  }
+
+  @override
+  String get containerPruneType => '清理类型';
+
+  @override
+  String get containerPruneTypeContainer => '容器';
+
+  @override
+  String get containerPruneTypeImage => '镜像';
+
+  @override
+  String get containerPruneTypeVolume => '存储卷';
+
+  @override
+  String get containerPruneTypeNetwork => '网络';
+
+  @override
+  String get containerPruneTypeBuildCache => '构建缓存';
+
+  @override
+  String get containerPruneWithTagAll => '包含所有标签';
+
+  @override
+  String get containerBuildContext => '构建上下文目录';
+
+  @override
+  String get containerBuildDockerfile => 'Dockerfile 路径';
+
+  @override
+  String get containerBuildTags => '标签（逗号分隔）';
+
+  @override
+  String get containerBuildArgs => '构建参数';
+
+  @override
+  String get containerImageLoadPath => '镜像文件路径';
+
+  @override
+  String get containerTagLabel => '目标镜像';
+
+  @override
+  String get containerPushConfirm => '确定推送此镜像吗？';
+
+  @override
+  String get containerSavePath => '保存路径';
+
+  @override
   String get containerNoLogs => '暂无日志';
 
   @override
@@ -2369,6 +2564,53 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get orchestrationPullFailed => '拉取镜像失败';
+
+  @override
+  String get orchestrationComposeCreateTitle => '创建 Compose 项目';
+
+  @override
+  String get orchestrationComposeContentLabel => 'Compose 内容';
+
+  @override
+  String get orchestrationComposeContentHint => '粘贴 docker-compose.yml 内容';
+
+  @override
+  String get orchestrationComposeUpdate => '更新 Compose';
+
+  @override
+  String get orchestrationComposeTest => '测试 Compose';
+
+  @override
+  String get orchestrationComposeCleanLog => '清理 Compose 日志';
+
+  @override
+  String orchestrationComposeCleanLogConfirm(String name) {
+    return '确定清理 $name 的日志吗？';
+  }
+
+  @override
+  String get orchestrationStatusUnknown => '未知';
+
+  @override
+  String get orchestrationServicesLabel => '服务';
+
+  @override
+  String get orchestrationImageBuild => '构建镜像';
+
+  @override
+  String get orchestrationImageLoad => '加载镜像';
+
+  @override
+  String get orchestrationImageSearch => '搜索镜像';
+
+  @override
+  String get orchestrationImageSearchResult => '搜索结果';
+
+  @override
+  String get orchestrationImageSizeLabel => '大小';
+
+  @override
+  String get orchestrationImageCreatedLabel => '创建时间';
 
   @override
   String get appActionWeb => 'Web';
@@ -2599,6 +2841,21 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get containerStatsTitle => '容器统计';
+
+  @override
+  String get containerStatsDetailTitle => '详细状态';
+
+  @override
+  String get containerStatsImages => '镜像';
+
+  @override
+  String get containerStatsNetworks => '网络';
+
+  @override
+  String get containerStatsVolumes => '卷';
+
+  @override
+  String get containerStatsRepos => '仓库';
 
   @override
   String get containerStatsTotal => '总数';

@@ -500,6 +500,159 @@ class PHPRuntime extends Equatable {
   List<Object?> get props => [id, name, version, phpHome, phpIniPath, extensionDir, environmentVariables, status];
 }
 
+/// PHP 容器配置模型（runtime/php/container）
+class PHPContainerConfig extends Equatable {
+  final int id;
+  final String? containerName;
+  final List<PhpContainerEnvironment>? environments;
+  final List<PhpContainerExposedPort>? exposedPorts;
+  final List<PhpContainerExtraHost>? extraHosts;
+  final List<PhpContainerVolume>? volumes;
+
+  const PHPContainerConfig({
+    required this.id,
+    this.containerName,
+    this.environments,
+    this.exposedPorts,
+    this.extraHosts,
+    this.volumes,
+  });
+
+  factory PHPContainerConfig.fromJson(Map<String, dynamic> json) {
+    return PHPContainerConfig(
+      id: json['id'] as int? ?? 0,
+      containerName: json['containerName'] as String?,
+      environments: (json['environments'] as List?)
+          ?.map((e) => PhpContainerEnvironment.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      exposedPorts: (json['exposedPorts'] as List?)
+          ?.map((e) => PhpContainerExposedPort.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      extraHosts: (json['extraHosts'] as List?)
+          ?.map((e) => PhpContainerExtraHost.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      volumes: (json['volumes'] as List?)
+          ?.map((e) => PhpContainerVolume.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      if (containerName != null) 'containerName': containerName,
+      if (environments != null) 'environments': environments!.map((e) => e.toJson()).toList(),
+      if (exposedPorts != null) 'exposedPorts': exposedPorts!.map((e) => e.toJson()).toList(),
+      if (extraHosts != null) 'extraHosts': extraHosts!.map((e) => e.toJson()).toList(),
+      if (volumes != null) 'volumes': volumes!.map((e) => e.toJson()).toList(),
+    };
+  }
+
+  @override
+  List<Object?> get props => [id, containerName, environments, exposedPorts, extraHosts, volumes];
+}
+
+class PhpContainerEnvironment extends Equatable {
+  final String? key;
+  final String? value;
+
+  const PhpContainerEnvironment({this.key, this.value});
+
+  factory PhpContainerEnvironment.fromJson(Map<String, dynamic> json) {
+    return PhpContainerEnvironment(
+      key: json['key'] as String?,
+      value: json['value'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        if (key != null) 'key': key,
+        if (value != null) 'value': value,
+      };
+
+  @override
+  List<Object?> get props => [key, value];
+}
+
+class PhpContainerExposedPort extends Equatable {
+  final int? containerPort;
+  final String? hostIP;
+  final int? hostPort;
+
+  const PhpContainerExposedPort({
+    this.containerPort,
+    this.hostIP,
+    this.hostPort,
+  });
+
+  factory PhpContainerExposedPort.fromJson(Map<String, dynamic> json) {
+    return PhpContainerExposedPort(
+      containerPort: json['containerPort'] as int?,
+      hostIP: json['hostIP'] as String?,
+      hostPort: json['hostPort'] as int?,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        if (containerPort != null) 'containerPort': containerPort,
+        if (hostIP != null) 'hostIP': hostIP,
+        if (hostPort != null) 'hostPort': hostPort,
+      };
+
+  @override
+  List<Object?> get props => [containerPort, hostIP, hostPort];
+}
+
+class PhpContainerExtraHost extends Equatable {
+  final String? hostname;
+  final String? ip;
+
+  const PhpContainerExtraHost({
+    this.hostname,
+    this.ip,
+  });
+
+  factory PhpContainerExtraHost.fromJson(Map<String, dynamic> json) {
+    return PhpContainerExtraHost(
+      hostname: json['hostname'] as String?,
+      ip: json['ip'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        if (hostname != null) 'hostname': hostname,
+        if (ip != null) 'ip': ip,
+      };
+
+  @override
+  List<Object?> get props => [hostname, ip];
+}
+
+class PhpContainerVolume extends Equatable {
+  final String? source;
+  final String? target;
+
+  const PhpContainerVolume({
+    this.source,
+    this.target,
+  });
+
+  factory PhpContainerVolume.fromJson(Map<String, dynamic> json) {
+    return PhpContainerVolume(
+      source: json['source'] as String?,
+      target: json['target'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        if (source != null) 'source': source,
+        if (target != null) 'target': target,
+      };
+
+  @override
+  List<Object?> get props => [source, target];
+}
+
 /// Runtime package model
 class RuntimePackage extends Equatable {
   final int? id;

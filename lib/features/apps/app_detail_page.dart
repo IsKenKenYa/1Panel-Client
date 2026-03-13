@@ -133,7 +133,7 @@ class _AppDetailPageState extends State<AppDetailPage> {
           _buildHeader(context, theme),
           const SizedBox(height: 24),
           Text(
-            'Description', // TODO: Use l10n
+            l10n.appDescription,
             style: theme.textTheme.titleLarge,
           ),
           const SizedBox(height: 8),

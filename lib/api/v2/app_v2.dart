@@ -162,8 +162,11 @@ class AppV2Api {
 
   /// 更新应用
   Future<void> updateApp(String appInstallId) async {
-    await _client.put(
-      ApiConstants.buildApiPath('/apps/update/$appInstallId'),
+    await operateApp(
+      AppInstalledOperateRequest(
+        installId: int.tryParse(appInstallId) ?? 0,
+        operate: 'upgrade',
+      ),
     );
   }
 
@@ -233,10 +236,19 @@ class AppV2Api {
     return AppItem.fromJson(data['data'] as Map<String, dynamic>);
   }
 
+  /// 获取应用详情（节点专用）
+  Future<AppDetailSimple> getAppDetailNode(String appKey, String version) async {
+    final response = await _client.get<dynamic>(
+      ApiConstants.buildApiPath('/apps/detail/node/$appKey/$version'),
+    );
+    final data = response.data as Map<String, dynamic>;
+    return AppDetailSimple.fromJson(data['data'] as Map<String, dynamic>);
+  }
+
   /// 获取应用图标
-  Future<Response<List<int>>> getAppIcon(String appId) async {
+  Future<Response<List<int>>> getAppIcon(String appKey) async {
     return _client.get<List<int>>(
-      ApiConstants.buildApiPath('/apps/icon/$appId'),
+      ApiConstants.buildApiPath('/apps/icon/$appKey'),
       options: Options(responseType: ResponseType.bytes),
     );
   }
@@ -248,15 +260,6 @@ class AppV2Api {
     );
     final data = response.data as Map<String, dynamic>;
     return _parseAppUpdateResponse(data['data']);
-  }
-
-  /// 获取忽略更新的应用列表
-  Future<List<AppInstallInfo>> getIgnoredApps() async {
-    final response = await _client.get<dynamic>(
-      ApiConstants.buildApiPath('/apps/ignored'),
-    );
-    final data = response.data as Map<String, dynamic>;
-    return _parseListData(data['data'], AppInstallInfo.fromJson);
   }
 
   /// 获取忽略更新的应用详情列表
@@ -370,9 +373,9 @@ class AppV2Api {
   }
 
   /// 获取应用安装配置（通过ID）
-  Future<AppConfig> getAppInstallParams(int id) async {
+  Future<AppConfig> getAppInstallParams(int appInstallId) async {
     final response = await _client.get<dynamic>(
-      ApiConstants.buildApiPath('/apps/installed/params/$id'),
+      ApiConstants.buildApiPath('/apps/installed/params/$appInstallId'),
     );
     final data = response.data as Map<String, dynamic>;
     return AppConfig.fromJson(data['data'] as Map<String, dynamic>);
@@ -478,7 +481,7 @@ class AppV2Api {
   /// 更新应用商店配置
   Future<void> updateAppstoreConfig(AppstoreUpdateRequest request) async {
     await _client.post(
-      ApiConstants.buildApiPath('/apps/store/update'),
+      ApiConstants.buildApiPath('/core/settings/apps/store/update'),
       data: request.toJson(),
     );
   }

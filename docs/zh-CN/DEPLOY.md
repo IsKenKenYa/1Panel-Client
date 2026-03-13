@@ -6,6 +6,11 @@
 - Dart 3.6+
 - 具有API访问权限的1Panel服务器
 
+## 开发规范
+
+- 权威规范：`AGENTS.md`（硬性规则）与 `CLAUDE.md`（流程细则）。
+- 提交前基线：`flutter analyze`、`dart run test_runner.dart unit`；涉及 API/网络或 UI 时分别运行 `integration`、`ui`。
+
 ## 认证配置
 
 1Panel API 使用 **API密钥 + 时间戳** 认证方式（无需用户名密码）：

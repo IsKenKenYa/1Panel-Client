@@ -460,6 +460,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonSearch => 'Search';
 
   @override
+  String get commonPath => 'Path';
+
+  @override
+  String get commonDriver => 'Driver';
+
+  @override
+  String get commonUnknownError => 'Unknown error';
+
+  @override
+  String get commonMegabyte => 'MB';
+
+  @override
+  String get commonHttp => 'HTTP';
+
+  @override
+  String get commonHttps => 'HTTPS';
+
+  @override
   String get securityPageTitle => 'Dynamic Verification';
 
   @override
@@ -1808,9 +1826,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filesEncodingLogEmpty => 'No logs';
 
   @override
-  String get commonUnknownError => 'Unknown error';
-
-  @override
   String get filesPreviewImage => 'Image Preview';
 
   @override
@@ -2104,6 +2119,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appStoreTitle => 'App Store';
 
   @override
+  String get appsPageTitle => 'App Management';
+
+  @override
   String get appStoreInstall => 'Install';
 
   @override
@@ -2123,6 +2141,62 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appStoreSyncFailed => 'Failed to sync apps';
+
+  @override
+  String get appStoreSyncLocal => 'Sync Local Apps';
+
+  @override
+  String get appStoreSyncLocalSuccess => 'Local apps synced successfully';
+
+  @override
+  String get appStoreSyncLocalFailed => 'Failed to sync local apps';
+
+  @override
+  String get appIgnoredUpdatesTitle => 'Ignored Updates';
+
+  @override
+  String get appIgnoredUpdatesLoadFailed => 'Failed to load ignored apps';
+
+  @override
+  String get appIgnoredUpdatesEmpty => 'No ignored updates';
+
+  @override
+  String get appIgnoreUpdate => 'Ignore Update';
+
+  @override
+  String get appIgnoreUpdateReason => 'Reason';
+
+  @override
+  String get appIgnoreUpdateSuccess => 'Update ignored';
+
+  @override
+  String appIgnoreUpdateFailed(String error) {
+    return 'Failed to ignore update: $error';
+  }
+
+  @override
+  String get appIgnoreUpdateCancel => 'Cancel Ignore';
+
+  @override
+  String get appStoreTagWebsite => 'Website';
+
+  @override
+  String get appStoreTagDatabase => 'Database';
+
+  @override
+  String get appStoreTagRuntime => 'Runtime';
+
+  @override
+  String get appStoreTagTool => 'Tool';
+
+  @override
+  String get appStoreTagDocker => 'Docker';
+
+  @override
+  String get appStoreTagCICD => 'CI/CD';
+
+  @override
+  String get appStoreTagMonitoring => 'Monitoring';
 
   @override
   String get appDetailTitle => 'App Details';
@@ -2169,6 +2243,20 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get appUninstallConfirm =>
       'Are you sure you want to uninstall this app? This action cannot be undone.';
+
+  @override
+  String get appNoPortInfo => 'No port info';
+
+  @override
+  String get appConnInfo => 'Connection Info';
+
+  @override
+  String get appConnInfoFailed => 'Failed to load connection info';
+
+  @override
+  String appReadmeImageUnsupported(String url) {
+    return 'Image not supported: $url';
+  }
 
   @override
   String get appOperateSuccess => 'Operation successful';
@@ -2288,6 +2376,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get containerActionInspect => 'Inspect';
 
   @override
+  String get containerInspectJson => 'Inspect JSON';
+
+  @override
   String get containerTabInfo => 'Info';
 
   @override
@@ -2361,6 +2452,110 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get containerActionRename => 'Rename';
+
+  @override
+  String get containerActionUpgrade => 'Upgrade';
+
+  @override
+  String get containerActionEdit => 'Edit';
+
+  @override
+  String get containerActionCommit => 'Commit';
+
+  @override
+  String get containerActionCleanLog => 'Clean Logs';
+
+  @override
+  String get containerActionDownloadLog => 'View Logs';
+
+  @override
+  String get containerActionPrune => 'Prune';
+
+  @override
+  String get containerActionTag => 'Tag';
+
+  @override
+  String get containerActionPush => 'Push';
+
+  @override
+  String get containerActionSave => 'Save';
+
+  @override
+  String get containerImage => 'Image';
+
+  @override
+  String get containerUpgradeForcePull => 'Force Pull';
+
+  @override
+  String get containerCommitImage => 'New Image';
+
+  @override
+  String get containerCommitAuthor => 'Author';
+
+  @override
+  String get containerCommitComment => 'Comment';
+
+  @override
+  String get containerCommitPause => 'Pause Container';
+
+  @override
+  String get containerCpuShares => 'CPU Shares';
+
+  @override
+  String get containerMemory => 'Memory';
+
+  @override
+  String containerCleanLogConfirm(String name) {
+    return 'Clean logs for $name?';
+  }
+
+  @override
+  String get containerPruneType => 'Prune Type';
+
+  @override
+  String get containerPruneTypeContainer => 'Container';
+
+  @override
+  String get containerPruneTypeImage => 'Image';
+
+  @override
+  String get containerPruneTypeVolume => 'Volume';
+
+  @override
+  String get containerPruneTypeNetwork => 'Network';
+
+  @override
+  String get containerPruneTypeBuildCache => 'Build Cache';
+
+  @override
+  String get containerPruneWithTagAll => 'Include All Tags';
+
+  @override
+  String get containerBuildContext => 'Context Directory';
+
+  @override
+  String get containerBuildDockerfile => 'Dockerfile Path';
+
+  @override
+  String get containerBuildTags => 'Tags (comma separated)';
+
+  @override
+  String get containerBuildArgs => 'Build Args';
+
+  @override
+  String get containerImageLoadPath => 'Image File Path';
+
+  @override
+  String get containerTagLabel => 'Target Image';
+
+  @override
+  String get containerPushConfirm => 'Push this image?';
+
+  @override
+  String get containerSavePath => 'Save Path';
+
+  @override
   String get containerNoLogs => 'No logs';
 
   @override
@@ -2415,6 +2610,54 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get orchestrationPullFailed => 'Failed to pull image';
+
+  @override
+  String get orchestrationComposeCreateTitle => 'Create Compose Project';
+
+  @override
+  String get orchestrationComposeContentLabel => 'Compose Content';
+
+  @override
+  String get orchestrationComposeContentHint =>
+      'Paste docker-compose.yml content';
+
+  @override
+  String get orchestrationComposeUpdate => 'Update Compose';
+
+  @override
+  String get orchestrationComposeTest => 'Test Compose';
+
+  @override
+  String get orchestrationComposeCleanLog => 'Clean Compose Logs';
+
+  @override
+  String orchestrationComposeCleanLogConfirm(String name) {
+    return 'Clean logs for $name?';
+  }
+
+  @override
+  String get orchestrationStatusUnknown => 'Unknown';
+
+  @override
+  String get orchestrationServicesLabel => 'Services';
+
+  @override
+  String get orchestrationImageBuild => 'Build Image';
+
+  @override
+  String get orchestrationImageLoad => 'Load Image';
+
+  @override
+  String get orchestrationImageSearch => 'Search Images';
+
+  @override
+  String get orchestrationImageSearchResult => 'Search Results';
+
+  @override
+  String get orchestrationImageSizeLabel => 'Size';
+
+  @override
+  String get orchestrationImageCreatedLabel => 'Created';
 
   @override
   String get appActionWeb => 'Web';
@@ -2646,6 +2889,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get containerStatsTitle => 'Container Stats';
+
+  @override
+  String get containerStatsDetailTitle => 'Detailed Status';
+
+  @override
+  String get containerStatsImages => 'Images';
+
+  @override
+  String get containerStatsNetworks => 'Networks';
+
+  @override
+  String get containerStatsVolumes => 'Volumes';
+
+  @override
+  String get containerStatsRepos => 'Repos';
 
   @override
   String get containerStatsTotal => 'Total';

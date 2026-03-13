@@ -94,16 +94,15 @@ class _AppIconState extends State<AppIcon> with AutomaticKeepAliveClientMixin {
         // If key fetch fails, we will try ID below if available
       }
 
-      if (bytes == null && id != null && id != key) {
-         if (!mounted) return;
-         try {
+      try {
+        if ((bytes == null || bytes.isEmpty) && id != null) {
           final response = await context.read<AppService>().getAppIcon(id);
           if (response.data != null && response.data!.isNotEmpty) {
             bytes = Uint8List.fromList(response.data!);
           }
-         } catch (e) {
-           // Both failed
-         }
+        }
+      } catch (e) {
+        // Ignore and fallback to default icon
       }
 
       if (bytes != null && bytes.isNotEmpty) {

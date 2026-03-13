@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanelapp_app/core/services/logger/logger_service.dart';
 import '../../data/models/container_models.dart';
 import '../../data/models/container_extension_models.dart';
 import 'container_service.dart';
@@ -260,7 +261,11 @@ class ContainersProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       // 忽略配置加载错误，避免阻断其他功能
-      print('Load config failed: $e');
+      appLogger.wWithPackage(
+        'features.containers.containers_provider',
+        'Load config failed',
+        error: e,
+      );
     }
   }
 
@@ -408,17 +413,6 @@ class ContainersProvider extends ChangeNotifier {
       _data = _data.copyWith(error: e.toString());
       notifyListeners();
       return false;
-    }
-  }
-
-  Future<String?> downloadContainerLog(String name) async {
-    try {
-      await _ensureService();
-      return await _service!.downloadContainerLog(name);
-    } catch (e) {
-      _data = _data.copyWith(error: e.toString());
-      notifyListeners();
-      return null;
     }
   }
 

@@ -942,6 +942,7 @@ class ContainerComposeCreate extends Equatable {
   final String? path;
   final String? file;
   final String? env;
+  final bool? forcePull;
   final int? template;
   final String? taskID;
   final String? version;
@@ -955,6 +956,7 @@ class ContainerComposeCreate extends Equatable {
     this.path,
     this.file,
     this.env,
+    this.forcePull,
     this.template,
     this.taskID,
     this.version,
@@ -970,6 +972,7 @@ class ContainerComposeCreate extends Equatable {
       path: json['path'] as String?,
       file: json['file'] as String?,
       env: json['env'] as String?,
+      forcePull: json['forcePull'] as bool?,
       template: json['template'] as int?,
       taskID: json['taskID'] as String?,
       version: json['version'] as String?,
@@ -986,6 +989,7 @@ class ContainerComposeCreate extends Equatable {
       if (path != null) 'path': path,
       if (file != null) 'file': file,
       if (env != null) 'env': env,
+      if (forcePull != null) 'forcePull': forcePull,
       if (template != null) 'template': template,
       if (taskID != null) 'taskID': taskID,
       if (version != null) 'version': version,
@@ -1002,6 +1006,7 @@ class ContainerComposeCreate extends Equatable {
         path,
         file,
         env,
+        forcePull,
         template,
         taskID,
         version,
@@ -1017,6 +1022,8 @@ class ContainerComposeUpdateRequest extends Equatable {
   final String content;
   final String? env;
   final String? detailPath;
+  final bool? forcePull;
+  final String? taskID;
 
   const ContainerComposeUpdateRequest({
     required this.name,
@@ -1024,6 +1031,8 @@ class ContainerComposeUpdateRequest extends Equatable {
     required this.content,
     this.env,
     this.detailPath,
+    this.forcePull,
+    this.taskID,
   });
 
   Map<String, dynamic> toJson() {
@@ -1033,11 +1042,13 @@ class ContainerComposeUpdateRequest extends Equatable {
       'content': content,
       if (env != null) 'env': env,
       if (detailPath != null) 'detailPath': detailPath,
+      if (forcePull != null) 'forcePull': forcePull,
+      if (taskID != null) 'taskID': taskID,
     };
   }
 
   @override
-  List<Object?> get props => [name, path, content, env, detailPath];
+  List<Object?> get props => [name, path, content, env, detailPath, forcePull, taskID];
 }
 
 class ContainerComposeLogCleanRequest extends Equatable {
@@ -1166,41 +1177,46 @@ class ContainerComposeSearch extends Equatable {
 
 /// Container Compose 操作请求模型
 class ContainerComposeOperate extends Equatable {
-  final List<int>? ids;
-  final String? id;
+  final String name;
   final String operation;
+  final String? path;
+  final bool? withFile;
   final bool? force;
 
   const ContainerComposeOperate({
-    this.ids,
-    this.id,
+    required this.name,
     required this.operation,
+    this.path,
+    this.withFile,
     this.force,
   });
 
   factory ContainerComposeOperate.fromJson(Map<String, dynamic> json) {
     return ContainerComposeOperate(
-      ids: (json['ids'] as List?)?.cast<int>(),
-      id: json['id'] as String?,
+      name: json['name'] as String? ?? '',
       operation: json['operation'] as String,
+      path: json['path'] as String?,
+      withFile: json['withFile'] as bool?,
       force: json['force'] as bool?,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'ids': ids,
-      'id': id,
+      'name': name,
       'operation': operation,
-      'force': force,
+      if (path != null) 'path': path,
+      if (withFile != null) 'withFile': withFile,
+      if (force != null) 'force': force,
     };
   }
 
   @override
   List<Object?> get props => [
-        ids,
-        id,
+        name,
         operation,
+        path,
+        withFile,
         force,
       ];
 }
@@ -1911,20 +1927,363 @@ class ContainerTemplateOperate extends Equatable {
   List<Object?> get props => [id, name, description, content];
 }
 
-/// Daemon配置更新模型
-class DaemonJsonUpdate extends Equatable {
-  final String content;
+/// 容器模板批量导入模型
+class ContainerTemplateBatch extends Equatable {
+  final List<ContainerTemplateOperate> templates;
 
-  const DaemonJsonUpdate({
-    required this.content,
+  const ContainerTemplateBatch({
+    required this.templates,
   });
 
   Map<String, dynamic> toJson() {
     return {
-      'content': content,
+      'templates': templates.map((item) => item.toJson()).toList(),
     };
   }
 
   @override
-  List<Object?> get props => [content];
+  List<Object?> get props => [templates];
+}
+
+/// 文件路径请求模型
+class FilePath extends Equatable {
+  final String path;
+
+  const FilePath({required this.path});
+
+  Map<String, dynamic> toJson() => {'path': path};
+
+  factory FilePath.fromJson(Map<String, dynamic> json) {
+    return FilePath(path: json['path'] as String? ?? '');
+  }
+
+  @override
+  List<Object?> get props => [path];
+}
+
+/// 容器文件请求模型
+class ContainerFileRequest extends Equatable {
+  final String containerId;
+  final String path;
+
+  const ContainerFileRequest({
+    required this.containerId,
+    required this.path,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'containerID': containerId,
+      'path': path,
+    };
+  }
+
+  factory ContainerFileRequest.fromJson(Map<String, dynamic> json) {
+    return ContainerFileRequest(
+      containerId: json['containerID'] as String? ?? '',
+      path: json['path'] as String? ?? '',
+    );
+  }
+
+  @override
+  List<Object?> get props => [containerId, path];
+}
+
+/// 容器文件批量删除请求模型
+class ContainerFileBatchDeleteRequest extends Equatable {
+  final String containerId;
+  final List<String> paths;
+
+  const ContainerFileBatchDeleteRequest({
+    required this.containerId,
+    required this.paths,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'containerID': containerId,
+      'paths': paths,
+    };
+  }
+
+  factory ContainerFileBatchDeleteRequest.fromJson(Map<String, dynamic> json) {
+    return ContainerFileBatchDeleteRequest(
+      containerId: json['containerID'] as String? ?? '',
+      paths: (json['paths'] as List?)?.cast<String>() ?? const [],
+    );
+  }
+
+  @override
+  List<Object?> get props => [containerId, paths];
+}
+
+/// 容器文件信息模型
+class ContainerFileInfo extends Equatable {
+  final String name;
+  final String path;
+  final bool isDir;
+  final bool isLink;
+  final String? linkTo;
+  final String? modTime;
+  final String? mode;
+  final int? size;
+
+  const ContainerFileInfo({
+    required this.name,
+    required this.path,
+    required this.isDir,
+    required this.isLink,
+    this.linkTo,
+    this.modTime,
+    this.mode,
+    this.size,
+  });
+
+  factory ContainerFileInfo.fromJson(Map<String, dynamic> json) {
+    return ContainerFileInfo(
+      name: json['name'] as String? ?? '',
+      path: json['path'] as String? ?? '',
+      isDir: json['isDir'] as bool? ?? false,
+      isLink: json['isLink'] as bool? ?? false,
+      linkTo: json['linkTo'] as String?,
+      modTime: json['modTime'] as String?,
+      mode: json['mode'] as String?,
+      size: json['size'] as int?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'path': path,
+      'isDir': isDir,
+      'isLink': isLink,
+      'linkTo': linkTo,
+      'modTime': modTime,
+      'mode': mode,
+      'size': size,
+    };
+  }
+
+  @override
+  List<Object?> get props => [name, path, isDir, isLink, linkTo, modTime, mode, size];
+}
+
+/// 容器文件内容模型
+class ContainerFileContent extends Equatable {
+  final String content;
+  final bool isBinary;
+  final int size;
+  final bool truncated;
+
+  const ContainerFileContent({
+    required this.content,
+    required this.isBinary,
+    required this.size,
+    required this.truncated,
+  });
+
+  factory ContainerFileContent.fromJson(Map<String, dynamic> json) {
+    return ContainerFileContent(
+      content: json['content'] as String? ?? '',
+      isBinary: json['isBinary'] as bool? ?? false,
+      size: json['size'] as int? ?? 0,
+      truncated: json['truncated'] as bool? ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'content': content,
+      'isBinary': isBinary,
+      'size': size,
+      'truncated': truncated,
+    };
+  }
+
+  @override
+  List<Object?> get props => [content, isBinary, size, truncated];
+}
+
+/// 容器资源占用统计
+class ContainerItemStats extends Equatable {
+  final int? buildCacheReclaimable;
+  final int? buildCacheUsage;
+  final int? containerReclaimable;
+  final int? containerUsage;
+  final int? imageReclaimable;
+  final int? imageUsage;
+  final int? sizeRootFs;
+  final int? sizeRw;
+  final int? volumeReclaimable;
+  final int? volumeUsage;
+
+  const ContainerItemStats({
+    this.buildCacheReclaimable,
+    this.buildCacheUsage,
+    this.containerReclaimable,
+    this.containerUsage,
+    this.imageReclaimable,
+    this.imageUsage,
+    this.sizeRootFs,
+    this.sizeRw,
+    this.volumeReclaimable,
+    this.volumeUsage,
+  });
+
+  factory ContainerItemStats.fromJson(Map<String, dynamic> json) {
+    return ContainerItemStats(
+      buildCacheReclaimable: json['buildCacheReclaimable'] as int?,
+      buildCacheUsage: json['buildCacheUsage'] as int?,
+      containerReclaimable: json['containerReclaimable'] as int?,
+      containerUsage: json['containerUsage'] as int?,
+      imageReclaimable: json['imageReclaimable'] as int?,
+      imageUsage: json['imageUsage'] as int?,
+      sizeRootFs: json['sizeRootFs'] as int?,
+      sizeRw: json['sizeRw'] as int?,
+      volumeReclaimable: json['volumeReclaimable'] as int?,
+      volumeUsage: json['volumeUsage'] as int?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'buildCacheReclaimable': buildCacheReclaimable,
+      'buildCacheUsage': buildCacheUsage,
+      'containerReclaimable': containerReclaimable,
+      'containerUsage': containerUsage,
+      'imageReclaimable': imageReclaimable,
+      'imageUsage': imageUsage,
+      'sizeRootFs': sizeRootFs,
+      'sizeRw': sizeRw,
+      'volumeReclaimable': volumeReclaimable,
+      'volumeUsage': volumeUsage,
+    };
+  }
+
+  @override
+  List<Object?> get props => [
+        buildCacheReclaimable,
+        buildCacheUsage,
+        containerReclaimable,
+        containerUsage,
+        imageReclaimable,
+        imageUsage,
+        sizeRootFs,
+        sizeRw,
+        volumeReclaimable,
+        volumeUsage,
+      ];
+}
+
+/// 容器列表选项
+class ContainerOption extends Equatable {
+  final String name;
+  final String? state;
+
+  const ContainerOption({
+    required this.name,
+    this.state,
+  });
+
+  factory ContainerOption.fromJson(Map<String, dynamic> json) {
+    return ContainerOption(
+      name: json['name'] as String? ?? '',
+      state: json['state'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'state': state,
+      };
+
+  @override
+  List<Object?> get props => [name, state];
+}
+
+/// Docker状态模型
+class DockerStatus extends Equatable {
+  final bool isActive;
+  final bool isExist;
+
+  const DockerStatus({
+    required this.isActive,
+    required this.isExist,
+  });
+
+  factory DockerStatus.fromJson(Map<String, dynamic> json) {
+    return DockerStatus(
+      isActive: json['isActive'] as bool? ?? false,
+      isExist: json['isExist'] as bool? ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'isActive': isActive,
+        'isExist': isExist,
+      };
+
+  @override
+  List<Object?> get props => [isActive, isExist];
+}
+
+/// Docker操作请求模型
+class DockerOperation extends Equatable {
+  final String operation;
+
+  const DockerOperation({required this.operation});
+
+  Map<String, dynamic> toJson() => {'operation': operation};
+
+  factory DockerOperation.fromJson(Map<String, dynamic> json) {
+    return DockerOperation(operation: json['operation'] as String? ?? '');
+  }
+
+  @override
+  List<Object?> get props => [operation];
+}
+
+/// Docker日志/IPv6配置选项
+class LogOption extends Equatable {
+  final String? logMaxFile;
+  final String? logMaxSize;
+
+  const LogOption({
+    this.logMaxFile,
+    this.logMaxSize,
+  });
+
+  Map<String, dynamic> toJson() => {
+        if (logMaxFile != null) 'logMaxFile': logMaxFile,
+        if (logMaxSize != null) 'logMaxSize': logMaxSize,
+      };
+
+  factory LogOption.fromJson(Map<String, dynamic> json) {
+    return LogOption(
+      logMaxFile: json['logMaxFile'] as String?,
+      logMaxSize: json['logMaxSize'] as String?,
+    );
+  }
+
+  @override
+  List<Object?> get props => [logMaxFile, logMaxSize];
+}
+
+/// Daemon配置更新（通过文件内容）
+class DaemonJsonUpdateByFile extends Equatable {
+  final String file;
+
+  const DaemonJsonUpdateByFile({
+    required this.file,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'file': file,
+    };
+  }
+
+  @override
+  List<Object?> get props => [file];
 }

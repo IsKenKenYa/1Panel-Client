@@ -58,8 +58,8 @@ class TestRunner {
   }
 
   static Future<void> runAllTests() async {
-    printHeader('运行所有测试');
-    await runCommand('flutter', ['test', 'test/all_api_tests.dart', '--reporter=expanded']);
+    printHeader('运行全量回归测试');
+    await runCommand('flutter', ['test', '--reporter=expanded']);
   }
 
   static Future<void> runUnitTests() async {
@@ -71,6 +71,24 @@ class TestRunner {
   static Future<void> runIntegrationTests() async {
     printHeader('运行集成测试');
     await runTests('test/integration/', description: 'API集成测试');
+  }
+
+  static Future<void> runUiTests() async {
+    printHeader('运行UI/Widget测试');
+    var hasTests = false;
+    final widgetDir = Directory('test/widget_test');
+    if (await widgetDir.exists()) {
+      hasTests = true;
+      await runTests('test/widget_test/', description: 'Widget目录测试');
+    }
+    final widgetFile = File('test/widget_test.dart');
+    if (await widgetFile.exists()) {
+      hasTests = true;
+      await runTests('test/widget_test.dart', description: 'Widget单文件测试');
+    }
+    if (!hasTests) {
+      printWarning('Widget测试不存在');
+    }
   }
 
   static Future<void> runAuthTests() async {
@@ -146,9 +164,10 @@ class TestRunner {
 用法: dart run test_runner.dart [选项]
 
 选项:
-  all           运行所有测试
+  all           运行全量回归测试
   unit          仅运行单元测试
   integration   仅运行集成测试
+  ui            仅运行UI/Widget测试
   auth          运行认证测试
   ai            运行AI API测试
   app           运行App API测试
@@ -160,9 +179,10 @@ class TestRunner {
   help          显示此帮助信息
 
 示例:
-  dart run test_runner.dart all          # 运行所有测试
+  dart run test_runner.dart all          # 运行全量回归测试
   dart run test_runner.dart unit         # 仅运行单元测试
   dart run test_runner.dart ai           # 运行AI API测试
+  dart run test_runner.dart ui           # 运行UI/Widget测试
 
 环境变量配置:
   复制 .env.example 为 .env 并填写以下配置:
@@ -215,6 +235,9 @@ Future<void> main(List<String> args) async {
       break;
     case 'integration':
       await TestRunner.runIntegrationTests();
+      break;
+    case 'ui':
+      await TestRunner.runUiTests();
       break;
     case 'auth':
       await TestRunner.runAuthTests();

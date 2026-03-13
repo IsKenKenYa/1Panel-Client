@@ -16,7 +16,7 @@ class AppInstallDialog extends StatefulWidget {
 
 class _AppInstallDialogState extends State<AppInstallDialog> {
   final _formKey = GlobalKey<FormState>();
-  final _appService = AppService();
+  late final AppService _appService;
 
   late TextEditingController _nameController;
   late TextEditingController _containerNameController;
@@ -40,6 +40,7 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
   @override
   void initState() {
     super.initState();
+    _appService = context.read<AppService>();
     _nameController = TextEditingController(text: widget.app.name);
     _containerNameController = TextEditingController(text: widget.app.name);
     _cpuQuotaController = TextEditingController();
@@ -51,6 +52,9 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
       // If the passed app object doesn't correspond to the first version (unlikely but possible),
       // we might need to fetch. But usually search results return the default version info.
     }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _resolveDetailId(showError: false);
+    });
   }
 
   @override
@@ -70,28 +74,51 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
 
   Future<void> _handleVersionChanged(String? newValue) async {
     if (newValue == null || newValue == _selectedVersion) return;
-
     setState(() {
       _selectedVersion = newValue;
+    });
+    await _resolveDetailId();
+  }
+
+  Future<void> _resolveDetailId({bool showError = true}) async {
+    final appKey = widget.app.key;
+    final version = _selectedVersion;
+    if (appKey == null || version == null) return;
+
+    setState(() {
       _isCheckingVersion = true;
     });
 
     try {
-      // Fetch detail for the selected version to get the correct ID
-      final detail = await _appService.getAppDetail(
-        widget.app.key ?? '',
-        newValue,
-        widget.app.type ?? '',
-      );
+      final detail = await _appService.getAppDetailNode(appKey, version);
       if (mounted) {
         setState(() {
           _currentDetailId = detail.id;
         });
       }
     } catch (e) {
-      if (mounted) {
+      try {
+        final appId = widget.app.id;
+        if (appId != null) {
+          final detail = await _appService.getAppDetail(
+            appId.toString(),
+            version,
+            widget.app.type ?? 'app',
+          );
+          if (mounted) {
+            setState(() {
+              _currentDetailId = detail.id;
+            });
+          }
+          return;
+        }
+      } catch (_) {
+        // Ignore and surface the original error below.
+      }
+      if (mounted && showError) {
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to load version info: $e')),
+          SnackBar(content: Text(l10n.appOperateFailed(e.toString()))),
         );
       }
     } finally {
@@ -106,8 +133,9 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
   Future<void> _handleSubmit() async {
     if (!_formKey.currentState!.validate()) return;
     if (_currentDetailId == null) {
+      final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('App ID is missing')),
+        SnackBar(content: Text(l10n.appOperateFailed(l10n.commonUnknownError))),
       );
       return;
     }
@@ -217,7 +245,7 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
                   items: widget.app.versions!.map((v) {
                     return DropdownMenuItem(value: v, child: Text(v));
                   }).toList(),
-                  onChanged: _isLoading ? null : _handleVersionChanged,
+                  onChanged: (_isLoading || _isCheckingVersion) ? null : _handleVersionChanged,
                 ),
               const SizedBox(height: 16),
               SwitchListTile(

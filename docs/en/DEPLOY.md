@@ -6,6 +6,11 @@
 - Dart 3.6+
 - Access to a 1Panel server with API access enabled
 
+## Developer Standards
+
+- Authoritative standards: `AGENTS.md` (hard rules) and `CLAUDE.md` (process/details).
+- Pre-commit baseline: `flutter analyze` and `dart run test_runner.dart unit`; run `integration` and `ui` when changes touch API/network or UI.
+
 ## Authentication Setup
 
 1Panel API uses **API Key + Timestamp** authentication (No username/password required):

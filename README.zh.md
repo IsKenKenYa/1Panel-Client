@@ -23,6 +23,11 @@
 - **存储**: Flutter Secure Storage + SharedPreferences
 - **国际化**: 内置Flutter i18n (中文/英文)
 
+## 开发规范
+
+- 权威规范：`AGENTS.md`（硬性规则）与 `CLAUDE.md`（流程细则）。
+- 提交前基线：`flutter analyze`、`dart run test_runner.dart unit`；涉及 API/网络或 UI 时分别运行 `integration`、`ui`。
+
 ## 🌐 网络架构
 
 本项目采用**基于Dio的全面网络架构**，经过全面验证完成1Panel V2 API集成：

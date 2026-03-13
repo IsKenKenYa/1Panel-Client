@@ -12,10 +12,10 @@ class AppService extends BaseComponent {
     super.permissionResolver,
   }) : _api = api;
 
-  Future<Response<List<int>>> getAppIcon(String appId) {
+  Future<Response<List<int>>> getAppIcon(String appKey) {
     return runGuarded(() async {
       final api = await _ensureApi();
-      return api.getAppIcon(appId);
+      return api.getAppIcon(appKey);
     });
   }
 
@@ -90,6 +90,13 @@ class AppService extends BaseComponent {
     });
   }
 
+  Future<AppDetailSimple> getAppDetailNode(String appKey, String version) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      return api.getAppDetailNode(appKey, version);
+    });
+  }
+
   Future<AppInstallInfo> getAppInstallInfo(String appInstallId) {
     return runGuarded(() async {
       final api = await _ensureApi();
@@ -111,6 +118,20 @@ class AppService extends BaseComponent {
     });
   }
 
+  Future<AppstoreConfigResponse> getAppstoreConfig() {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      return api.getAppstoreConfig();
+    });
+  }
+
+  Future<void> updateAppstoreConfig(AppstoreUpdateRequest request) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.updateAppstoreConfig(request);
+    });
+  }
+
   Future<void> updateAppInstallConfig(Map<String, dynamic> config) {
     return runGuarded(() async {
       final api = await _ensureApi();
@@ -129,13 +150,6 @@ class AppService extends BaseComponent {
     return runGuarded(() async {
       final api = await _ensureApi();
       await api.syncLocalApps();
-    });
-  }
-
-  Future<List<AppInstallInfo>> getIgnoredApps() {
-    return runGuarded(() async {
-      final api = await _ensureApi();
-      return api.getIgnoredApps();
     });
   }
 

@@ -392,25 +392,31 @@ Map<String, dynamic> _$AppServiceResponseToJson(AppServiceResponse instance) =>
 AppstoreConfigResponse _$AppstoreConfigResponseFromJson(
         Map<String, dynamic> json) =>
     AppstoreConfigResponse(
-      defaultDomain: json['defaultDomain'] as String?,
+      uninstallDeleteBackup: json['uninstallDeleteBackup'] as String?,
+      uninstallDeleteImage: json['uninstallDeleteImage'] as String?,
+      upgradeBackup: json['upgradeBackup'] as String?,
     );
 
 Map<String, dynamic> _$AppstoreConfigResponseToJson(
         AppstoreConfigResponse instance) =>
     <String, dynamic>{
-      'defaultDomain': instance.defaultDomain,
+      'uninstallDeleteBackup': instance.uninstallDeleteBackup,
+      'uninstallDeleteImage': instance.uninstallDeleteImage,
+      'upgradeBackup': instance.upgradeBackup,
     };
 
 AppstoreUpdateRequest _$AppstoreUpdateRequestFromJson(
         Map<String, dynamic> json) =>
     AppstoreUpdateRequest(
-      defaultDomain: json['defaultDomain'] as String?,
+      scope: json['scope'] as String? ?? '',
+      status: json['status'] as String? ?? '',
     );
 
 Map<String, dynamic> _$AppstoreUpdateRequestToJson(
         AppstoreUpdateRequest instance) =>
     <String, dynamic>{
-      'defaultDomain': instance.defaultDomain,
+      'scope': instance.scope,
+      'status': instance.status,
     };
 
 AppListResponse _$AppListResponseFromJson(Map<String, dynamic> json) =>

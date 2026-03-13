@@ -56,35 +56,37 @@ class ComposeProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> upCompose(int id) async {
-    return _operateCompose(id, (api) => api.upCompose(id));
+  Future<bool> upCompose(ComposeProject compose) async {
+    return _operateCompose(compose, (api, target) => api.upCompose(target));
   }
 
-  Future<bool> downCompose(int id) async {
-    return _operateCompose(id, (api) => api.downCompose(id));
+  Future<bool> downCompose(ComposeProject compose) async {
+    return _operateCompose(compose, (api, target) => api.downCompose(target));
   }
 
-  Future<bool> startCompose(int id) async {
-    return _operateCompose(id, (api) => api.startCompose(id));
+  Future<bool> startCompose(ComposeProject compose) async {
+    return _operateCompose(compose, (api, target) => api.startCompose(target));
   }
 
-  Future<bool> stopCompose(int id) async {
-    return _operateCompose(id, (api) => api.stopCompose(id));
+  Future<bool> stopCompose(ComposeProject compose) async {
+    return _operateCompose(compose, (api, target) => api.stopCompose(target));
   }
 
-  Future<bool> restartCompose(int id) async {
-    return _operateCompose(id, (api) => api.restartCompose(id));
+  Future<bool> restartCompose(ComposeProject compose) async {
+    return _operateCompose(compose, (api, target) => api.restartCompose(target));
   }
 
   Future<bool> _operateCompose(
-      int id, Future<void> Function(ComposeV2Api api) operation) async {
+    ComposeProject compose,
+    Future<void> Function(ComposeV2Api api, ComposeProject compose) operation,
+  ) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
       final api = await _getApi();
-      await operation(api);
+      await operation(api, compose);
       await loadComposes();
       return true;
     } catch (e) {
@@ -108,7 +110,7 @@ class ComposeProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> testCompose(ContainerComposeUpdateRequest request) async {
+  Future<bool> testCompose(ContainerComposeCreate request) async {
     try {
       final api = await _getApi();
       await api.testCompose(request);

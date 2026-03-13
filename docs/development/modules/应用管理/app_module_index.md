@@ -15,6 +15,26 @@ Open1PanelApp 的应用管理模块负责应用商店浏览、应用安装、配
 - 用户手册: docs/development/modules/应用管理/app_user_manual.md
 - FAQ: docs/development/modules/应用管理/app_faq.md
 
+## 适配检查结果（基于 1Panel V2 swagger.json，2026-03-13）
+
+**OpenAPI 缺失（swagger 有）**
+- `GET` /apps/detail/node/{appKey}/{version}
+
+**客户端缺失（swagger 有）**
+- （无）
+
+**客户端多余（swagger 无）**
+- （无）
+
+**参数命名差异（路径一致）**
+- `/apps/icon/{key}`（swagger） vs `/apps/icon/{appId}`（OpenAPI 与客户端）
+- `/apps/installed/params/{appInstallId}`（swagger） vs `/apps/installed/params/{id}`（客户端）
+
+说明:
+- `/apps/detail/node/{appKey}/{version}` 已在客户端实现，但 OpenAPI 未覆盖。
+- `/core/settings/apps/store/update` 已在客户端实现。
+- `/dashboard/app/launcher*` 由仪表盘模块的 `DashboardV2Api` 提供，不在 App 模块重复实现。
+
 ## 后续规划
 - 应用商店搜索与分类功能增强
 - 应用依赖管理

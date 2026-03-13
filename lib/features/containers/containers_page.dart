@@ -171,7 +171,6 @@ class _ContainersPageState extends State<ContainersPage> with SingleTickerProvid
                   onCommit: (container) => _showCommitContainerDialog(context, container, provider),
                   onEdit: (container) => _showEditContainerDialog(context, container, provider),
                   onCleanLog: (name) => _showCleanLogDialog(context, name, provider),
-                  onDownloadLog: (name) => _showDownloadLogDialog(context, name, provider),
                 );
               },
             ),
@@ -665,35 +664,6 @@ class _ContainersPageState extends State<ContainersPage> with SingleTickerProvid
     }
   }
 
-  Future<void> _showDownloadLogDialog(
-    BuildContext context,
-    String name,
-    ContainersProvider provider,
-  ) async {
-    final l10n = context.l10n;
-    final logs = await provider.downloadContainerLog(name);
-    if (!context.mounted) return;
-
-    await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.containerActionDownloadLog),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: SingleChildScrollView(
-            child: SelectableText(logs ?? l10n.containerNoLogs),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.commonClose),
-          ),
-        ],
-      ),
-    );
-  }
-
   Future<void> _showPruneDialog(BuildContext context) async {
     final l10n = context.l10n;
     ContainerPruneType type = ContainerPruneType.container;
@@ -1139,7 +1109,6 @@ class _ContainersTab extends StatelessWidget {
   final void Function(ContainerInfo) onCommit;
   final void Function(ContainerInfo) onEdit;
   final void Function(String) onCleanLog;
-  final void Function(String) onDownloadLog;
 
   const _ContainersTab({
     required this.containers,
@@ -1155,7 +1124,6 @@ class _ContainersTab extends StatelessWidget {
     required this.onCommit,
     required this.onEdit,
     required this.onCleanLog,
-    required this.onDownloadLog,
   });
 
   @override
@@ -1220,7 +1188,6 @@ class _ContainersTab extends StatelessWidget {
                     onCommit: () => onCommit(containerInfo),
                     onEdit: () => onEdit(containerInfo),
                     onCleanLog: () => onCleanLog(containerInfo.name),
-                    onDownloadLog: () => onDownloadLog(containerInfo.name),
                     onTap: () {
                       Navigator.pushNamed(
                         context,

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import '../../api/v2/container_v2.dart';
 import '../../core/services/base_component.dart';
 import '../../data/models/common_models.dart';
@@ -122,14 +123,6 @@ class ContainerService extends BaseComponent {
     });
   }
 
-  Future<String> downloadContainerLog(String name) {
-    return runGuarded(() async {
-      final api = await _ensureApi();
-      final response = await api.downloadContainerLog(name);
-      return response.data ?? '';
-    });
-  }
-
   Future<void> removeImage(int imageId) {
     return runGuarded(() async {
       final api = await _ensureApi();
@@ -142,6 +135,138 @@ class ContainerService extends BaseComponent {
       final api = await _ensureApi();
       final response = await api.getContainerStats(containerId);
       return response.data!;
+    });
+  }
+
+  Future<DockerStatus> getDockerStatus() {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      final response = await api.getDockerStatus();
+      return response.data!;
+    });
+  }
+
+  Future<void> operateDocker(DockerOperation request) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.operateDocker(request);
+    });
+  }
+
+  Future<void> updateDockerLogOption(LogOption request) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.updateDockerLogOption(request);
+    });
+  }
+
+  Future<void> updateDockerIpv6Option(LogOption request) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.updateDockerIpv6Option(request);
+    });
+  }
+
+  Future<List<ContainerOption>> listContainersByImage() {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      final response = await api.listContainersByImage();
+      return response.data ?? [];
+    });
+  }
+
+  Future<ContainerItemStats> getContainerItemStats(String name) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      final response = await api.getContainerItemStats(OperationWithName(name: name));
+      return response.data!;
+    });
+  }
+
+  Future<List<String>> getContainerUsers(String name) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      final response = await api.getContainerUsers(OperationWithName(name: name));
+      return response.data ?? [];
+    });
+  }
+
+  Future<List<ContainerFileInfo>> searchContainerFiles({
+    required String containerId,
+    required String path,
+  }) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      final response = await api.searchContainerFiles(
+        ContainerFileRequest(containerId: containerId, path: path),
+      );
+      return response.data ?? [];
+    });
+  }
+
+  Future<ContainerFileContent> getContainerFileContent({
+    required String containerId,
+    required String path,
+  }) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      final response = await api.getContainerFileContent(
+        ContainerFileRequest(containerId: containerId, path: path),
+      );
+      return response.data!;
+    });
+  }
+
+  Future<int> getContainerFileSize({
+    required String containerId,
+    required String path,
+  }) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      final response = await api.getContainerFileSize(
+        ContainerFileRequest(containerId: containerId, path: path),
+      );
+      return response.data ?? 0;
+    });
+  }
+
+  Future<void> deleteContainerFiles({
+    required String containerId,
+    required List<String> paths,
+  }) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.deleteContainerFiles(
+        ContainerFileBatchDeleteRequest(containerId: containerId, paths: paths),
+      );
+    });
+  }
+
+  Future<List<int>> downloadContainerFile({
+    required String containerId,
+    required String path,
+  }) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      final response = await api.downloadContainerFile(
+        ContainerFileRequest(containerId: containerId, path: path),
+      );
+      return response.data ?? [];
+    });
+  }
+
+  Future<void> uploadContainerFile({
+    required String containerId,
+    required String path,
+    required MultipartFile file,
+  }) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.uploadContainerFile(
+        containerId: containerId,
+        path: path,
+        file: file,
+      );
     });
   }
 
@@ -291,7 +416,7 @@ class ContainerService extends BaseComponent {
   Future<void> updateDaemonJson(String content) {
     return runGuarded(() async {
       final api = await _ensureApi();
-      await api.updateDaemonJson(DaemonJsonUpdate(content: content));
+      await api.updateDaemonJsonByFile(DaemonJsonUpdateByFile(file: content));
     });
   }
 

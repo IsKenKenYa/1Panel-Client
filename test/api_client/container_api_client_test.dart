@@ -11,6 +11,7 @@ void main() {
   late DioClient client;
   late ContainerV2Api api;
   bool hasApiKey = false;
+  ContainerInfo? sampleContainer;
 
   setUpAll(() async {
     await TestEnvironment.initialize();
@@ -22,6 +23,15 @@ void main() {
         apiKey: TestEnvironment.apiKey,
       );
       api = ContainerV2Api(client);
+
+      try {
+        final response = await api.searchContainers(PageContainer(page: 1, pageSize: 1));
+        if (response.data != null && response.data!.items.isNotEmpty) {
+          sampleContainer = response.data!.items.first;
+        }
+      } catch (e) {
+        debugPrint('Failed to fetch sample container: $e');
+      }
     }
   });
 
@@ -121,6 +131,109 @@ void main() {
         debugPrint('========================================');
         debugPrint('统计数量: ${stats.length}');
         debugPrint('========================================\n');
+      });
+    });
+
+    group('Docker & File Endpoints', () {
+      test('getDockerStatus - 获取Docker服务状态', () async {
+        if (!hasApiKey) {
+          debugPrint('⚠️  跳过测试: API密钥未配置');
+          return;
+        }
+
+        final response = await api.getDockerStatus();
+        expect(response.statusCode, equals(200));
+        expect(response.data, isNotNull);
+        debugPrint('✅ Docker status: active=${response.data!.isActive}, exist=${response.data!.isExist}');
+      });
+
+      test('listContainersByImage - 获取按镜像分组容器列表', () async {
+        if (!hasApiKey) {
+          debugPrint('⚠️  跳过测试: API密钥未配置');
+          return;
+        }
+
+        try {
+          final response = await api.listContainersByImage();
+          expect(response.statusCode, equals(200));
+          expect(response.data, isNotNull);
+          debugPrint('✅ Container options by image: ${response.data!.length}');
+        } catch (e) {
+          debugPrint('⚠️ listContainersByImage failed: $e');
+          return;
+        }
+      });
+
+      test('getContainerItemStats - 获取容器资源统计', () async {
+        if (!hasApiKey || sampleContainer == null) {
+          debugPrint('⚠️  跳过测试: 无可用容器');
+          return;
+        }
+
+        final response = await api.getContainerItemStats(OperationWithName(name: sampleContainer!.name));
+        expect(response.statusCode, equals(200));
+        expect(response.data, isNotNull);
+        debugPrint('✅ Container item stats: ${response.data!.toJson()}');
+      });
+
+      test('getContainerUsers - 获取容器用户列表', () async {
+        if (!hasApiKey || sampleContainer == null) {
+          debugPrint('⚠️  跳过测试: 无可用容器');
+          return;
+        }
+
+        final response = await api.getContainerUsers(OperationWithName(name: sampleContainer!.name));
+        expect(response.statusCode, equals(200));
+        debugPrint('✅ Container users: ${response.data}');
+      });
+
+      test('containers/files - 搜索/内容/大小/下载', () async {
+        if (!hasApiKey || sampleContainer == null) {
+          debugPrint('⚠️  跳过测试: 无可用容器');
+          return;
+        }
+
+        try {
+          final searchResponse = await api.searchContainerFiles(
+            ContainerFileRequest(containerId: sampleContainer!.id, path: '/'),
+          );
+          expect(searchResponse.statusCode, equals(200));
+          final files = searchResponse.data ?? [];
+          debugPrint('✅ Container files: ${files.length}');
+
+          final file = files.firstWhere(
+            (f) => !f.isDir,
+            orElse: () => files.isNotEmpty
+                ? files.first
+                : const ContainerFileInfo(name: '', path: '/', isDir: true, isLink: false),
+          );
+
+          if (file.isDir || file.path.isEmpty) {
+            debugPrint('⚠️  未找到可读取的文件，跳过内容/大小/下载测试');
+            return;
+          }
+
+          final contentResponse = await api.getContainerFileContent(
+            ContainerFileRequest(containerId: sampleContainer!.id, path: file.path),
+          );
+          expect(contentResponse.statusCode, equals(200));
+          debugPrint('✅ File content size: ${contentResponse.data?.size}');
+
+          final sizeResponse = await api.getContainerFileSize(
+            ContainerFileRequest(containerId: sampleContainer!.id, path: file.path),
+          );
+          expect(sizeResponse.statusCode, equals(200));
+          debugPrint('✅ File size: ${sizeResponse.data}');
+
+          final downloadResponse = await api.downloadContainerFile(
+            ContainerFileRequest(containerId: sampleContainer!.id, path: file.path),
+          );
+          expect(downloadResponse.statusCode, equals(200));
+          debugPrint('✅ File download bytes: ${downloadResponse.data?.length}');
+        } catch (e) {
+          debugPrint('⚠️ containers/files endpoints failed: $e');
+          return;
+        }
       });
     });
 

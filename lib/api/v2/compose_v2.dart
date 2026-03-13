@@ -53,9 +53,19 @@ class ComposeV2Api {
 
   /// Operate Compose project (up, down, start, stop, restart)
   Future<Response> _operateCompose(
-      List<int> ids, String operation, {bool force = false}) async {
+    String name,
+    String operation, {
+    String? path,
+    bool? withFile,
+    bool force = false,
+  }) async {
     final op = ContainerComposeOperate(
-        ids: ids, operation: operation, force: force);
+      name: name,
+      operation: operation,
+      path: path,
+      withFile: withFile,
+      force: force,
+    );
     return await _client.post(
       ApiConstants.buildApiPath('/containers/compose/operate'),
       data: op.toJson(),
@@ -63,28 +73,47 @@ class ComposeV2Api {
   }
 
   /// Up Compose project
-  Future<Response> upCompose(int id) async {
-    return _operateCompose([id], 'up');
+  Future<Response> upCompose(ComposeProject compose) async {
+    return _operateCompose(compose.name, 'up', path: compose.path);
   }
 
   /// Down Compose project
-  Future<Response> downCompose(int id) async {
-    return _operateCompose([id], 'down');
+  Future<Response> downCompose(ComposeProject compose) async {
+    return _operateCompose(compose.name, 'down', path: compose.path);
   }
 
   /// Start Compose project
-  Future<Response> startCompose(int id) async {
-    return _operateCompose([id], 'start');
+  Future<Response> startCompose(ComposeProject compose) async {
+    return _operateCompose(compose.name, 'start', path: compose.path);
   }
 
   /// Stop Compose project
-  Future<Response> stopCompose(int id) async {
-    return _operateCompose([id], 'stop');
+  Future<Response> stopCompose(ComposeProject compose) async {
+    return _operateCompose(compose.name, 'stop', path: compose.path);
   }
 
   /// Restart Compose project
-  Future<Response> restartCompose(int id) async {
-    return _operateCompose([id], 'restart');
+  Future<Response> restartCompose(ComposeProject compose) async {
+    return _operateCompose(compose.name, 'restart', path: compose.path);
+  }
+
+  /// Load Compose environment variables
+  Future<Response<List<String>>> loadComposeEnv(FilePath request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/compose/env'),
+      data: request.toJson(),
+    );
+    final data = response.data?['data'];
+    final envs = <String>[];
+    if (data is List) {
+      envs.addAll(data.map((e) => e.toString()));
+    }
+    return Response(
+      data: envs,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
   }
 
   /// Update Compose project
@@ -96,7 +125,7 @@ class ComposeV2Api {
   }
 
   /// Test Compose project
-  Future<Response> testCompose(ContainerComposeUpdateRequest request) async {
+  Future<Response> testCompose(ContainerComposeCreate request) async {
     return await _client.post(
       ApiConstants.buildApiPath('/containers/compose/test'),
       data: request.toJson(),

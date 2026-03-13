@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:onepanelapp_app/config/app_router.dart';
 import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
 import '../../../data/models/app_models.dart';
 import '../providers/installed_apps_provider.dart';
@@ -27,16 +28,17 @@ class _InstalledAppsViewState extends State<InstalledAppsView> {
   }
 
   void _showUninstallDialog(AppInstallInfo app) {
+    final l10n = context.l10n;
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('卸载应用'),
-          content: Text('确定要卸载 ${app.appName} 吗？此操作不可撤销。'),
+          title: Text(l10n.appActionUninstall),
+          content: Text(l10n.appUninstallConfirm),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text(context.l10n.commonCancel),
+              child: Text(l10n.commonCancel),
             ),
             FilledButton(
               onPressed: () async {
@@ -47,13 +49,13 @@ class _InstalledAppsViewState extends State<InstalledAppsView> {
                       .uninstallApp(app.id.toString());
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('卸载成功')),
+                      SnackBar(content: Text(l10n.appOperateSuccess)),
                     );
                   }
                 } catch (e) {
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('卸载失败: $e')),
+                      SnackBar(content: Text(l10n.appOperateFailed(e.toString()))),
                     );
                   }
                 }
@@ -61,7 +63,7 @@ class _InstalledAppsViewState extends State<InstalledAppsView> {
               style: FilledButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.error,
               ),
-              child: const Text('卸载'),
+              child: Text(l10n.appActionUninstall),
             ),
           ],
         );
@@ -70,41 +72,18 @@ class _InstalledAppsViewState extends State<InstalledAppsView> {
   }
 
   Future<void> _handleOperate(String id, String operation) async {
-    String opName;
-    switch (operation) {
-      case 'start':
-        opName = '启动';
-        break;
-      case 'stop':
-        opName = '停止';
-        break;
-      case 'restart':
-        opName = '重启';
-        break;
-      default:
-        opName = '操作';
-    }
-
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('正在$opName...'),
-          duration: const Duration(seconds: 1),
-        ),
-      );
-    }
-
+    final l10n = context.l10n;
     try {
       await context.read<InstalledAppsProvider>().operateApp(id, operation);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$opName成功')),
+          SnackBar(content: Text(l10n.appOperateSuccess)),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$opName失败: $e')),
+          SnackBar(content: Text(l10n.appOperateFailed(e.toString()))),
         );
       }
     }
@@ -163,6 +142,7 @@ class _InstalledAppsViewState extends State<InstalledAppsView> {
   }
 
   Widget _buildEmptyState() {
+    final l10n = context.l10n;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -174,14 +154,14 @@ class _InstalledAppsViewState extends State<InstalledAppsView> {
           ),
           const SizedBox(height: 16),
           Text(
-            '暂无已安装应用',
+            l10n.commonEmpty,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
           ),
           const SizedBox(height: 8),
           Text(
-            '前往应用商店安装应用',
+            l10n.appStoreTitle,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).colorScheme.outline,
                 ),
@@ -189,16 +169,16 @@ class _InstalledAppsViewState extends State<InstalledAppsView> {
           const SizedBox(height: 24),
           FilledButton.icon(
             onPressed: () {
-              Navigator.pushNamed(context, '/app-store');
+              Navigator.pushNamed(context, AppRoutes.appStore);
             },
             icon: const Icon(Icons.add),
-            label: const Text('安装应用'),
+            label: Text(l10n.appStoreInstall),
           ),
           const SizedBox(height: 16),
           TextButton.icon(
             onPressed: _handleRefresh,
             icon: const Icon(Icons.refresh),
-            label: Text(context.l10n.commonRefresh),
+            label: Text(l10n.commonRefresh),
           ),
         ],
       ),

@@ -153,10 +153,11 @@ class ComposeCard extends StatelessWidget {
       );
 
       if (result == true) {
-        await provider.testCompose(ContainerComposeUpdateRequest(
+        await provider.testCompose(ContainerComposeCreate(
+          from: 'edit',
           name: nameController.text,
           path: pathController.text,
-          content: contentController.text,
+          file: contentController.text,
           env: envController.text.isEmpty ? null : envController.text,
         ));
       }
@@ -239,17 +240,17 @@ class ComposeCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton.icon(
-                  onPressed: () => provider.upCompose(int.parse(compose.id)),
+                  onPressed: () => provider.upCompose(compose),
                   icon: const Icon(Icons.arrow_upward, size: 18),
                   label: Text(l10n.commonStart),
                 ),
                 TextButton.icon(
-                  onPressed: () => provider.downCompose(int.parse(compose.id)),
+                  onPressed: () => provider.downCompose(compose),
                   icon: const Icon(Icons.arrow_downward, size: 18),
                   label: Text(l10n.commonStop),
                 ),
                 TextButton.icon(
-                  onPressed: () => provider.restartCompose(int.parse(compose.id)),
+                  onPressed: () => provider.restartCompose(compose),
                   icon: const Icon(Icons.refresh, size: 18),
                   label: Text(l10n.commonRestart),
                 ),

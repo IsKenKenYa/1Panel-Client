@@ -6,6 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:onepanelapp_app/config/app_router.dart';
 import 'package:onepanelapp_app/core/services/app_settings_controller.dart';
+import 'package:onepanelapp_app/core/services/logger/logger_service.dart';
 import 'package:onepanelapp_app/core/theme/theme_controller.dart';
 import 'package:onepanelapp_app/core/services/transfer/transfer_manager.dart';
 import 'package:onepanelapp_app/core/theme/app_theme.dart';
@@ -27,6 +28,26 @@ import 'features/orchestration/providers/volume_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  appLogger.init();
+
+  FlutterError.onError = (details) {
+    appLogger.eWithPackage(
+      'main',
+      'Flutter Error',
+      error: details.exception,
+      stackTrace: details.stack,
+    );
+  };
+
+  WidgetsBinding.instance.platformDispatcher.onError = (error, stack) {
+    appLogger.eWithPackage(
+      'main',
+      'Unhandled Error',
+      error: error,
+      stackTrace: stack,
+    );
+    return true;
+  };
   
   // Initialize Hive
   await Hive.initFlutter();

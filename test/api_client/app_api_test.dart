@@ -187,16 +187,14 @@ void main() {
       }
     });
 
-    test('GET /apps/icon/:id - Get App Icon (ID)', () async {
-      if (!hasApiKey || targetApp == null) return;
+    test('GET /apps/detail/node/:appKey/:version - Get Detail Node', () async {
+      if (!hasApiKey || appKey == null || appVersion == null) return;
       try {
-        final response = await api.getAppIcon(targetApp!.id.toString());
-        debugPrint('✅ Icon size: ${response.data?.length} bytes');
-        expect(response.data, isNotNull);
-        resultCollector.addSuccess('Get App Icon (ID)', Duration.zero);
+        final detail = await api.getAppDetailNode(appKey!, appVersion!);
+        logResponse('/apps/detail/node/:appKey/:version', detail.toJson());
+        resultCollector.addSuccess('Get Detail Node', Duration.zero);
       } catch (e) {
-        debugPrint('⚠️ Icon by ID failed (expected if backend requires key): $e');
-        resultCollector.addSuccess('Get App Icon (ID) - Skipped/Failed', Duration.zero);
+        resultCollector.addFailure('Get Detail Node', e.toString(), Duration.zero);
       }
     });
   });
@@ -400,6 +398,23 @@ void main() {
         resultCollector.addSuccess('Get Store Config', Duration.zero);
       } catch (e) {
         resultCollector.addFailure('Get Store Config', e.toString(), Duration.zero);
+      }
+    });
+
+    test('POST /core/settings/apps/store/update - Update Store Config', () async {
+      if (!hasApiKey) return;
+      try {
+        final config = await api.getAppstoreConfig();
+        final current = config.upgradeBackup ?? 'Enable';
+        await api.updateAppstoreConfig(
+          AppstoreUpdateRequest(
+            scope: 'UpgradeBackup',
+            status: current,
+          ),
+        );
+        resultCollector.addSuccess('Update Store Config', Duration.zero);
+      } catch (e) {
+        resultCollector.addFailure('Update Store Config', e.toString(), Duration.zero);
       }
     });
 

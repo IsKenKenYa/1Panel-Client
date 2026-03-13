@@ -3,6 +3,8 @@ import '../../core/network/dio_client.dart';
 import '../../core/config/api_constants.dart';
 import '../../data/models/container_models.dart';
 import '../../data/models/common_models.dart';
+import '../../data/models/setting_models.dart';
+import '../../data/models/runtime_models.dart';
 
 /// API响应解析帮助类
 class _Parser {
@@ -168,19 +170,6 @@ class ContainerV2Api {
     );
   }
 
-  /// 获取容器详情
-  Future<Response<ContainerInfo>> getContainerDetail(String id) async {
-    final response = await _client.get<Map<String, dynamic>>(
-      ApiConstants.buildApiPath('/containers/$id'),
-    );
-    return Response(
-      data: _Parser.extractData(response, ContainerInfo.fromJson),
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
-    );
-  }
-
   /// 获取容器统计信息
   Future<Response<ContainerStats>> getContainerStats(String id) async {
     final response = await _client.get<Map<String, dynamic>>(
@@ -207,6 +196,53 @@ class ContainerV2Api {
     );
   }
 
+  /// 获取容器列表（按镜像分组）
+  Future<Response<List<ContainerOption>>> listContainersByImage() async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/list/byimage'),
+      data: {},
+    );
+    return Response(
+      data: _Parser.extractListDataFromMap(response, ContainerOption.fromJson),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 获取容器资源占用统计
+  Future<Response<ContainerItemStats>> getContainerItemStats(OperationWithName request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/item/stats'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: _Parser.extractData(response, ContainerItemStats.fromJson),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 获取容器用户列表
+  Future<Response<List<String>>> getContainerUsers(OperationWithName request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/users'),
+      data: request.toJson(),
+    );
+    final data = response.data?['data'];
+    final users = <String>[];
+    if (data is List) {
+      users.addAll(data.map((item) => item.toString()));
+    }
+    return Response(
+      data: users,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
   /// 获取容器状态统计
   Future<Response<ContainerStatus>> getContainerStatus() async {
     final response = await _client.get<Map<String, dynamic>>(
@@ -217,6 +253,43 @@ class ContainerV2Api {
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 获取Docker服务状态
+  Future<Response<DockerStatus>> getDockerStatus() async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/docker/status'),
+    );
+    return Response(
+      data: _Parser.extractData(response, DockerStatus.fromJson),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 操作Docker服务
+  Future<Response> operateDocker(DockerOperation request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/docker/operate'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 更新Docker日志配置
+  Future<Response> updateDockerLogOption(LogOption request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/logoption/update'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 更新Docker IPv6配置
+  Future<Response> updateDockerIpv6Option(LogOption request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/ipv6option/update'),
+      data: request.toJson(),
     );
   }
 
@@ -256,14 +329,6 @@ class ContainerV2Api {
   Future<Response> cleanContainerLog(OperationWithName request) async {
     return await _client.post(
       ApiConstants.buildApiPath('/containers/clean/log'),
-      data: request.toJson(),
-    );
-  }
-
-  /// 通过命令创建容器
-  Future<Response> createContainerByCommand(ContainerCreateByCommand request) async {
-    return await _client.post(
-      ApiConstants.buildApiPath('/containers/command'),
       data: request.toJson(),
     );
   }
@@ -322,25 +387,96 @@ class ContainerV2Api {
     return response;
   }
 
+  /// 获取容器文件列表
+  Future<Response<List<ContainerFileInfo>>> searchContainerFiles(ContainerFileRequest request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/files/search'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: _Parser.extractListDataFromMap(response, ContainerFileInfo.fromJson),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 获取容器文件内容
+  Future<Response<ContainerFileContent>> getContainerFileContent(ContainerFileRequest request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/files/content'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: _Parser.extractData(response, ContainerFileContent.fromJson),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 获取容器文件大小
+  Future<Response<int>> getContainerFileSize(ContainerFileRequest request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/files/size'),
+      data: request.toJson(),
+    );
+    final data = response.data?['data'];
+    final size = (data is num) ? data.toInt() : 0;
+    return Response(
+      data: size,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 删除容器文件
+  Future<Response> deleteContainerFiles(ContainerFileBatchDeleteRequest request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/files/del'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 下载容器文件
+  Future<Response<List<int>>> downloadContainerFile(ContainerFileRequest request) async {
+    final response = await _client.post<List<int>>(
+      ApiConstants.buildApiPath('/containers/files/download'),
+      data: request.toJson(),
+      options: Options(responseType: ResponseType.bytes),
+    );
+    return Response(
+      data: response.data ?? const [],
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 上传容器文件
+  Future<Response> uploadContainerFile({
+    required String containerId,
+    required String path,
+    required MultipartFile file,
+  }) async {
+    final formData = FormData.fromMap({
+      'containerID': containerId,
+      'path': path,
+      'file': file,
+    });
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/files/upload'),
+      data: formData,
+      options: Options(contentType: 'multipart/form-data'),
+    );
+  }
+
   /// 更新容器
   Future<Response> updateContainer(ContainerOperate request) async {
     return await _client.post(
       ApiConstants.buildApiPath('/containers/update'),
       data: request.toJson(),
-    );
-  }
-
-  /// 下载容器日志
-  Future<Response<String>> downloadContainerLog(String container) async {
-    final response = await _client.get<Map<String, dynamic>>(
-      ApiConstants.buildApiPath('/containers/download/log'),
-      queryParameters: {'container': container},
-    );
-    return Response(
-      data: response.data?['data']?.toString() ?? '',
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
     );
   }
 
@@ -586,6 +722,20 @@ class ContainerV2Api {
     );
   }
 
+  /// 获取仓库状态
+  Future<Response<dynamic>> getRepoStatus(OperateByID request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/repo/status'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: response.data?['data'],
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
   /// 删除仓库
   Future<Response> deleteRepo(BatchDelete request) async {
     return await _client.post(
@@ -626,6 +776,14 @@ class ContainerV2Api {
   Future<Response> createTemplate(ContainerTemplateOperate request) async {
     return await _client.post(
       ApiConstants.buildApiPath('/containers/template'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 批量创建模版
+  Future<Response> createTemplateBatch(ContainerTemplateBatch request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/template/batch'),
       data: request.toJson(),
     );
   }
@@ -696,10 +854,18 @@ class ContainerV2Api {
     );
   }
 
-  /// 更新Daemon配置
-  Future<Response> updateDaemonJson(DaemonJsonUpdate request) async {
+  /// 更新Daemon配置（按键值）
+  Future<Response> updateDaemonJsonSetting(SettingUpdate request) async {
     return await _client.post(
-      ApiConstants.buildApiPath('/containers/daemonjson'),
+      ApiConstants.buildApiPath('/containers/daemonjson/update'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 更新Daemon配置（通过文件内容）
+  Future<Response> updateDaemonJsonByFile(DaemonJsonUpdateByFile request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/daemonjson/update/byfile'),
       data: request.toJson(),
     );
   }

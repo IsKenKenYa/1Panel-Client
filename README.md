@@ -23,6 +23,11 @@
 - **Storage**: Flutter Secure Storage + SharedPreferences
 - **Internationalization**: Built-in Flutter i18n (English/Chinese)
 
+## Development Standards
+
+- Authoritative standards: `AGENTS.md` (hard rules) and `CLAUDE.md` (process/details).
+- Pre-commit baseline: `flutter analyze` and `dart run test_runner.dart unit`; run `integration` and `ui` when changes touch API/network or UI.
+
 ## 🌐 Network Architecture
 
 This project uses a **comprehensive Dio-based networking architecture** with complete 1Panel V2 API integration after extensive verification:

@@ -974,6 +974,42 @@ abstract class AppLocalizations {
   /// **'Search'**
   String get commonSearch;
 
+  /// No description provided for @commonPath.
+  ///
+  /// In en, this message translates to:
+  /// **'Path'**
+  String get commonPath;
+
+  /// No description provided for @commonDriver.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver'**
+  String get commonDriver;
+
+  /// No description provided for @commonUnknownError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown error'**
+  String get commonUnknownError;
+
+  /// No description provided for @commonMegabyte.
+  ///
+  /// In en, this message translates to:
+  /// **'MB'**
+  String get commonMegabyte;
+
+  /// No description provided for @commonHttp.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTP'**
+  String get commonHttp;
+
+  /// No description provided for @commonHttps.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTPS'**
+  String get commonHttps;
+
   /// No description provided for @securityPageTitle.
   ///
   /// In en, this message translates to:
@@ -3518,12 +3554,6 @@ abstract class AppLocalizations {
   /// **'No logs'**
   String get filesEncodingLogEmpty;
 
-  /// No description provided for @commonUnknownError.
-  ///
-  /// In en, this message translates to:
-  /// **'Unknown error'**
-  String get commonUnknownError;
-
   /// No description provided for @filesPreviewImage.
   ///
   /// In en, this message translates to:
@@ -4070,6 +4100,12 @@ abstract class AppLocalizations {
   /// **'App Store'**
   String get appStoreTitle;
 
+  /// No description provided for @appsPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'App Management'**
+  String get appsPageTitle;
+
   /// No description provided for @appStoreInstall.
   ///
   /// In en, this message translates to:
@@ -4111,6 +4147,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to sync apps'**
   String get appStoreSyncFailed;
+
+  /// No description provided for @appStoreSyncLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Local Apps'**
+  String get appStoreSyncLocal;
+
+  /// No description provided for @appStoreSyncLocalSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Local apps synced successfully'**
+  String get appStoreSyncLocalSuccess;
+
+  /// No description provided for @appStoreSyncLocalFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to sync local apps'**
+  String get appStoreSyncLocalFailed;
+
+  /// No description provided for @appIgnoredUpdatesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ignored Updates'**
+  String get appIgnoredUpdatesTitle;
+
+  /// No description provided for @appIgnoredUpdatesLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load ignored apps'**
+  String get appIgnoredUpdatesLoadFailed;
+
+  /// No description provided for @appIgnoredUpdatesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No ignored updates'**
+  String get appIgnoredUpdatesEmpty;
+
+  /// No description provided for @appIgnoreUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Ignore Update'**
+  String get appIgnoreUpdate;
+
+  /// No description provided for @appIgnoreUpdateReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason'**
+  String get appIgnoreUpdateReason;
+
+  /// No description provided for @appIgnoreUpdateSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Update ignored'**
+  String get appIgnoreUpdateSuccess;
+
+  /// No description provided for @appIgnoreUpdateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to ignore update: {error}'**
+  String appIgnoreUpdateFailed(String error);
+
+  /// No description provided for @appIgnoreUpdateCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Ignore'**
+  String get appIgnoreUpdateCancel;
+
+  /// No description provided for @appStoreTagWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'Website'**
+  String get appStoreTagWebsite;
+
+  /// No description provided for @appStoreTagDatabase.
+  ///
+  /// In en, this message translates to:
+  /// **'Database'**
+  String get appStoreTagDatabase;
+
+  /// No description provided for @appStoreTagRuntime.
+  ///
+  /// In en, this message translates to:
+  /// **'Runtime'**
+  String get appStoreTagRuntime;
+
+  /// No description provided for @appStoreTagTool.
+  ///
+  /// In en, this message translates to:
+  /// **'Tool'**
+  String get appStoreTagTool;
+
+  /// No description provided for @appStoreTagDocker.
+  ///
+  /// In en, this message translates to:
+  /// **'Docker'**
+  String get appStoreTagDocker;
+
+  /// No description provided for @appStoreTagCICD.
+  ///
+  /// In en, this message translates to:
+  /// **'CI/CD'**
+  String get appStoreTagCICD;
+
+  /// No description provided for @appStoreTagMonitoring.
+  ///
+  /// In en, this message translates to:
+  /// **'Monitoring'**
+  String get appStoreTagMonitoring;
 
   /// No description provided for @appDetailTitle.
   ///
@@ -4201,6 +4345,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure you want to uninstall this app? This action cannot be undone.'**
   String get appUninstallConfirm;
+
+  /// No description provided for @appNoPortInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'No port info'**
+  String get appNoPortInfo;
+
+  /// No description provided for @appConnInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection Info'**
+  String get appConnInfo;
+
+  /// No description provided for @appConnInfoFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load connection info'**
+  String get appConnInfoFailed;
+
+  /// No description provided for @appReadmeImageUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Image not supported: {url}'**
+  String appReadmeImageUnsupported(String url);
 
   /// No description provided for @appOperateSuccess.
   ///
@@ -4424,6 +4592,12 @@ abstract class AppLocalizations {
   /// **'Inspect'**
   String get containerActionInspect;
 
+  /// No description provided for @containerInspectJson.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspect JSON'**
+  String get containerInspectJson;
+
   /// No description provided for @containerTabInfo.
   ///
   /// In en, this message translates to:
@@ -4562,6 +4736,210 @@ abstract class AppLocalizations {
   /// **'Operation failed: {error}'**
   String containerOperateFailed(String error);
 
+  /// No description provided for @containerActionRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get containerActionRename;
+
+  /// No description provided for @containerActionUpgrade.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade'**
+  String get containerActionUpgrade;
+
+  /// No description provided for @containerActionEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get containerActionEdit;
+
+  /// No description provided for @containerActionCommit.
+  ///
+  /// In en, this message translates to:
+  /// **'Commit'**
+  String get containerActionCommit;
+
+  /// No description provided for @containerActionCleanLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean Logs'**
+  String get containerActionCleanLog;
+
+  /// No description provided for @containerActionDownloadLog.
+  ///
+  /// In en, this message translates to:
+  /// **'View Logs'**
+  String get containerActionDownloadLog;
+
+  /// No description provided for @containerActionPrune.
+  ///
+  /// In en, this message translates to:
+  /// **'Prune'**
+  String get containerActionPrune;
+
+  /// No description provided for @containerActionTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Tag'**
+  String get containerActionTag;
+
+  /// No description provided for @containerActionPush.
+  ///
+  /// In en, this message translates to:
+  /// **'Push'**
+  String get containerActionPush;
+
+  /// No description provided for @containerActionSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get containerActionSave;
+
+  /// No description provided for @containerImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Image'**
+  String get containerImage;
+
+  /// No description provided for @containerUpgradeForcePull.
+  ///
+  /// In en, this message translates to:
+  /// **'Force Pull'**
+  String get containerUpgradeForcePull;
+
+  /// No description provided for @containerCommitImage.
+  ///
+  /// In en, this message translates to:
+  /// **'New Image'**
+  String get containerCommitImage;
+
+  /// No description provided for @containerCommitAuthor.
+  ///
+  /// In en, this message translates to:
+  /// **'Author'**
+  String get containerCommitAuthor;
+
+  /// No description provided for @containerCommitComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Comment'**
+  String get containerCommitComment;
+
+  /// No description provided for @containerCommitPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause Container'**
+  String get containerCommitPause;
+
+  /// No description provided for @containerCpuShares.
+  ///
+  /// In en, this message translates to:
+  /// **'CPU Shares'**
+  String get containerCpuShares;
+
+  /// No description provided for @containerMemory.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory'**
+  String get containerMemory;
+
+  /// No description provided for @containerCleanLogConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean logs for {name}?'**
+  String containerCleanLogConfirm(String name);
+
+  /// No description provided for @containerPruneType.
+  ///
+  /// In en, this message translates to:
+  /// **'Prune Type'**
+  String get containerPruneType;
+
+  /// No description provided for @containerPruneTypeContainer.
+  ///
+  /// In en, this message translates to:
+  /// **'Container'**
+  String get containerPruneTypeContainer;
+
+  /// No description provided for @containerPruneTypeImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Image'**
+  String get containerPruneTypeImage;
+
+  /// No description provided for @containerPruneTypeVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume'**
+  String get containerPruneTypeVolume;
+
+  /// No description provided for @containerPruneTypeNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Network'**
+  String get containerPruneTypeNetwork;
+
+  /// No description provided for @containerPruneTypeBuildCache.
+  ///
+  /// In en, this message translates to:
+  /// **'Build Cache'**
+  String get containerPruneTypeBuildCache;
+
+  /// No description provided for @containerPruneWithTagAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Include All Tags'**
+  String get containerPruneWithTagAll;
+
+  /// No description provided for @containerBuildContext.
+  ///
+  /// In en, this message translates to:
+  /// **'Context Directory'**
+  String get containerBuildContext;
+
+  /// No description provided for @containerBuildDockerfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Dockerfile Path'**
+  String get containerBuildDockerfile;
+
+  /// No description provided for @containerBuildTags.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags (comma separated)'**
+  String get containerBuildTags;
+
+  /// No description provided for @containerBuildArgs.
+  ///
+  /// In en, this message translates to:
+  /// **'Build Args'**
+  String get containerBuildArgs;
+
+  /// No description provided for @containerImageLoadPath.
+  ///
+  /// In en, this message translates to:
+  /// **'Image File Path'**
+  String get containerImageLoadPath;
+
+  /// No description provided for @containerTagLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Image'**
+  String get containerTagLabel;
+
+  /// No description provided for @containerPushConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Push this image?'**
+  String get containerPushConfirm;
+
+  /// No description provided for @containerSavePath.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Path'**
+  String get containerSavePath;
+
   /// No description provided for @containerNoLogs.
   ///
   /// In en, this message translates to:
@@ -4669,6 +5047,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to pull image'**
   String get orchestrationPullFailed;
+
+  /// No description provided for @orchestrationComposeCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Compose Project'**
+  String get orchestrationComposeCreateTitle;
+
+  /// No description provided for @orchestrationComposeContentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Compose Content'**
+  String get orchestrationComposeContentLabel;
+
+  /// No description provided for @orchestrationComposeContentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste docker-compose.yml content'**
+  String get orchestrationComposeContentHint;
+
+  /// No description provided for @orchestrationComposeUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Compose'**
+  String get orchestrationComposeUpdate;
+
+  /// No description provided for @orchestrationComposeTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Test Compose'**
+  String get orchestrationComposeTest;
+
+  /// No description provided for @orchestrationComposeCleanLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean Compose Logs'**
+  String get orchestrationComposeCleanLog;
+
+  /// No description provided for @orchestrationComposeCleanLogConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean logs for {name}?'**
+  String orchestrationComposeCleanLogConfirm(String name);
+
+  /// No description provided for @orchestrationStatusUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get orchestrationStatusUnknown;
+
+  /// No description provided for @orchestrationServicesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Services'**
+  String get orchestrationServicesLabel;
+
+  /// No description provided for @orchestrationImageBuild.
+  ///
+  /// In en, this message translates to:
+  /// **'Build Image'**
+  String get orchestrationImageBuild;
+
+  /// No description provided for @orchestrationImageLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Load Image'**
+  String get orchestrationImageLoad;
+
+  /// No description provided for @orchestrationImageSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search Images'**
+  String get orchestrationImageSearch;
+
+  /// No description provided for @orchestrationImageSearchResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Search Results'**
+  String get orchestrationImageSearchResult;
+
+  /// No description provided for @orchestrationImageSizeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get orchestrationImageSizeLabel;
+
+  /// No description provided for @orchestrationImageCreatedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Created'**
+  String get orchestrationImageCreatedLabel;
 
   /// No description provided for @appActionWeb.
   ///
@@ -5125,6 +5593,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Container Stats'**
   String get containerStatsTitle;
+
+  /// No description provided for @containerStatsDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed Status'**
+  String get containerStatsDetailTitle;
+
+  /// No description provided for @containerStatsImages.
+  ///
+  /// In en, this message translates to:
+  /// **'Images'**
+  String get containerStatsImages;
+
+  /// No description provided for @containerStatsNetworks.
+  ///
+  /// In en, this message translates to:
+  /// **'Networks'**
+  String get containerStatsNetworks;
+
+  /// No description provided for @containerStatsVolumes.
+  ///
+  /// In en, this message translates to:
+  /// **'Volumes'**
+  String get containerStatsVolumes;
+
+  /// No description provided for @containerStatsRepos.
+  ///
+  /// In en, this message translates to:
+  /// **'Repos'**
+  String get containerStatsRepos;
 
   /// No description provided for @containerStatsTotal.
   ///

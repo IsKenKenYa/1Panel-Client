@@ -102,7 +102,7 @@ class OverviewTab extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Detailed Status', // TODO: Add l10n
+              l10n.containerStatsDetailTitle,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 16),
@@ -110,10 +110,10 @@ class OverviewTab extends StatelessWidget {
               spacing: 16,
               runSpacing: 16,
               children: [
-                _buildChip(context, 'Images', status.imageCount.toString(), Icons.image),
-                _buildChip(context, 'Networks', status.networkCount.toString(), Icons.hub),
-                _buildChip(context, 'Volumes', status.volumeCount.toString(), Icons.storage),
-                _buildChip(context, 'Repos', status.repoCount.toString(), Icons.store),
+                _buildChip(context, l10n.containerStatsImages, status.imageCount.toString(), Icons.image),
+                _buildChip(context, l10n.containerStatsNetworks, status.networkCount.toString(), Icons.hub),
+                _buildChip(context, l10n.containerStatsVolumes, status.volumeCount.toString(), Icons.storage),
+                _buildChip(context, l10n.containerStatsRepos, status.repoCount.toString(), Icons.store),
               ],
             ),
           ],

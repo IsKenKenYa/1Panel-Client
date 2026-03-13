@@ -101,6 +101,19 @@ class AppItem {
   }
 }
 
+/// 应用详情简化模型（/apps/detail/node）
+class AppDetailSimple {
+  final int? id;
+
+  AppDetailSimple({this.id});
+
+  factory AppDetailSimple.fromJson(Map<String, dynamic> json) {
+    return AppDetailSimple(id: json['id'] as int?);
+  }
+
+  Map<String, dynamic> toJson() => {'id': id};
+}
+
 /// 标签DTO模型
 @JsonSerializable()
 class TagDTO {
@@ -442,29 +455,57 @@ class AppServiceResponse {
 }
 
 /// 应用商店配置响应模型
-@JsonSerializable()
 class AppstoreConfigResponse {
-  final String? defaultDomain;
+  final String? uninstallDeleteBackup;
+  final String? uninstallDeleteImage;
+  final String? upgradeBackup;
 
   AppstoreConfigResponse({
-    this.defaultDomain,
+    this.uninstallDeleteBackup,
+    this.uninstallDeleteImage,
+    this.upgradeBackup,
   });
 
-  factory AppstoreConfigResponse.fromJson(Map<String, dynamic> json) => _$AppstoreConfigResponseFromJson(json);
-  Map<String, dynamic> toJson() => _$AppstoreConfigResponseToJson(this);
+  factory AppstoreConfigResponse.fromJson(Map<String, dynamic> json) {
+    return AppstoreConfigResponse(
+      uninstallDeleteBackup: json['uninstallDeleteBackup'] as String?,
+      uninstallDeleteImage: json['uninstallDeleteImage'] as String?,
+      upgradeBackup: json['upgradeBackup'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'uninstallDeleteBackup': uninstallDeleteBackup,
+      'uninstallDeleteImage': uninstallDeleteImage,
+      'upgradeBackup': upgradeBackup,
+    };
+  }
 }
 
 /// 应用商店更新请求模型
-@JsonSerializable()
 class AppstoreUpdateRequest {
-  final String? defaultDomain;
+  final String scope;
+  final String status;
 
   AppstoreUpdateRequest({
-    this.defaultDomain,
+    required this.scope,
+    required this.status,
   });
 
-  factory AppstoreUpdateRequest.fromJson(Map<String, dynamic> json) => _$AppstoreUpdateRequestFromJson(json);
-  Map<String, dynamic> toJson() => _$AppstoreUpdateRequestToJson(this);
+  factory AppstoreUpdateRequest.fromJson(Map<String, dynamic> json) {
+    return AppstoreUpdateRequest(
+      scope: json['scope'] as String? ?? '',
+      status: json['status'] as String? ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'scope': scope,
+      'status': status,
+    };
+  }
 }
 
 /// 应用安装信息模型
