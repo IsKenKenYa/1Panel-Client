@@ -11,6 +11,23 @@
 | **Nginx配置** | 4 | website_v2.dart | 网站配置拉取与更新 |
 | **PHP版本** | 1 | website_v2.dart | PHP版本切换管理 |
 
+## UI链路分析
+
+- 入口: `lib/features/websites/websites_page.dart` -> `lib/features/websites/website_detail_page.dart` -> 配置 Tab。
+- 现有 UI 为单一文本编辑器，支持拉取/保存配置与高级对话框（scope/operate）。
+- 配置内容以纯文本或 JSON 编辑，缺少语法校验、差异预览、备份与回滚入口。
+- PHP 版本切换能力未在 UI 中暴露。
+
+## 待改进项
+
+- 增加配置语法校验与保存前确认提示。
+- 提供配置版本与备份管理入口。
+- 补齐 PHP 版本切换 UI，并提示切换风险与重启影响。
+
+## 重复代码检查
+
+- 与 OpenResty/网站详情页共用 JSON 编辑器需求明显，当前 `_JsonEditTab` 重复实现。
+
 ## 后续规划方向
 
 ### 短期目标

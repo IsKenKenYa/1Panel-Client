@@ -563,8 +563,10 @@ class WebsiteSSL extends Equatable {
   final String? provider;
   final int? acmeAccountId;
   final String? certURL;
+  final String? certPath;
   final String? pem;
   final String? privateKey;
+  final String? privateKeyPath;
   final String? startDate;
   final String? expireDate;
   final String? status;
@@ -574,16 +576,20 @@ class WebsiteSSL extends Equatable {
   final int? caId;
   final String? keyType;
   final bool? disableCNAME;
+  final bool? isIP;
+  final int? masterSslId;
   final String? message;
   final String? logPath;
   final int? dnsAccountId;
   final bool? pushDir;
+  final bool? pushNode;
   final bool? execShell;
   final String? shell;
   final String? dir;
   final bool? skipDNS;
   final String? nameserver1;
   final String? nameserver2;
+  final String? nodes;
   final String? organization;
   final String? createdAt;
   final String? updatedAt;
@@ -598,8 +604,10 @@ class WebsiteSSL extends Equatable {
     this.provider,
     this.acmeAccountId,
     this.certURL,
+    this.certPath,
     this.pem,
     this.privateKey,
+    this.privateKeyPath,
     this.startDate,
     this.expireDate,
     this.status,
@@ -609,16 +617,20 @@ class WebsiteSSL extends Equatable {
     this.caId,
     this.keyType,
     this.disableCNAME,
+    this.isIP,
+    this.masterSslId,
     this.message,
     this.logPath,
     this.dnsAccountId,
     this.pushDir,
+    this.pushNode,
     this.execShell,
     this.shell,
     this.dir,
     this.skipDNS,
     this.nameserver1,
     this.nameserver2,
+    this.nodes,
     this.organization,
     this.createdAt,
     this.updatedAt,
@@ -627,16 +639,29 @@ class WebsiteSSL extends Equatable {
     this.websites,
   });
 
+  static List<String>? _parseDomains(dynamic raw) {
+    if (raw is List) {
+      return raw.whereType<String>().toList();
+    }
+    if (raw is String) {
+      final parts = raw.split(RegExp(r'[\\s,]+')).where((e) => e.isNotEmpty).toList();
+      return parts.isEmpty ? null : parts;
+    }
+    return null;
+  }
+
   factory WebsiteSSL.fromJson(Map<String, dynamic> json) {
     return WebsiteSSL(
       id: json['id'] as int?,
       primaryDomain: json['primaryDomain'] as String?,
-      domains: (json['domains'] as List?)?.cast<String>(),
+      domains: _parseDomains(json['domains']),
       provider: json['provider'] as String?,
       acmeAccountId: json['acmeAccountId'] as int?,
       certURL: json['certURL'] as String?,
+      certPath: json['certPath'] as String?,
       pem: json['pem'] as String?,
       privateKey: json['privateKey'] as String?,
+      privateKeyPath: json['privateKeyPath'] as String?,
       startDate: json['startDate'] as String?,
       expireDate: json['expireDate'] as String?,
       status: json['status'] as String?,
@@ -646,16 +671,20 @@ class WebsiteSSL extends Equatable {
       caId: json['caId'] as int?,
       keyType: json['keyType'] as String?,
       disableCNAME: json['disableCNAME'] as bool?,
+      isIP: json['isIP'] as bool? ?? json['isIp'] as bool?,
+      masterSslId: json['masterSslId'] as int?,
       message: json['message'] as String?,
       logPath: json['logPath'] as String?,
       dnsAccountId: json['dnsAccountId'] as int?,
       pushDir: json['pushDir'] as bool?,
+      pushNode: json['pushNode'] as bool?,
       execShell: json['execShell'] as bool?,
       shell: json['shell'] as String?,
       dir: json['dir'] as String?,
       skipDNS: json['skipDNS'] as bool?,
       nameserver1: json['nameserver1'] as String?,
       nameserver2: json['nameserver2'] as String?,
+      nodes: json['nodes'] as String?,
       organization: json['organization'] as String?,
       createdAt: json['createdAt'] as String?,
       updatedAt: json['updatedAt'] as String?,
@@ -679,8 +708,10 @@ class WebsiteSSL extends Equatable {
       'provider': provider,
       'acmeAccountId': acmeAccountId,
       'certURL': certURL,
+      'certPath': certPath,
       'pem': pem,
       'privateKey': privateKey,
+      'privateKeyPath': privateKeyPath,
       'startDate': startDate,
       'expireDate': expireDate,
       'status': status,
@@ -690,16 +721,20 @@ class WebsiteSSL extends Equatable {
       'caId': caId,
       'keyType': keyType,
       'disableCNAME': disableCNAME,
+      'isIP': isIP,
+      'masterSslId': masterSslId,
       'message': message,
       'logPath': logPath,
       'dnsAccountId': dnsAccountId,
       'pushDir': pushDir,
+      'pushNode': pushNode,
       'execShell': execShell,
       'shell': shell,
       'dir': dir,
       'skipDNS': skipDNS,
       'nameserver1': nameserver1,
       'nameserver2': nameserver2,
+      'nodes': nodes,
       'organization': organization,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
@@ -717,8 +752,10 @@ class WebsiteSSL extends Equatable {
         provider,
         acmeAccountId,
         certURL,
+        certPath,
         pem,
         privateKey,
+        privateKeyPath,
         startDate,
         expireDate,
         status,
@@ -728,16 +765,20 @@ class WebsiteSSL extends Equatable {
         caId,
         keyType,
         disableCNAME,
+        isIP,
+        masterSslId,
         message,
         logPath,
         dnsAccountId,
         pushDir,
+        pushNode,
         execShell,
         shell,
         dir,
         skipDNS,
         nameserver1,
         nameserver2,
+        nodes,
         organization,
         createdAt,
         updatedAt,
@@ -747,268 +788,401 @@ class WebsiteSSL extends Equatable {
       ];
 }
 
-/// Website SSL 创建模型
-class WebsiteSSLCreate extends Equatable {
-  final List<String> domains;
-  final String? provider;
-  final int? acmeAccountId;
-  final String? keyType;
-  final String? organization;
-  final String? email;
-  final String? phone;
-  final String? country;
-  final String? state;
-  final String? city;
-  final String? street;
-  final bool? skipDNS;
-  final int? dnsAccountId;
-  final String? nameserver1;
-  final String? nameserver2;
-  final String? description;
-  final bool? autoRenew;
+/// Website HTTPS config response model
+class WebsiteHttpsConfig extends Equatable {
+  final bool? enable;
+  final String? httpConfig;
+  final String? algorithm;
+  final bool? hsts;
+  final bool? hstsIncludeSubDomains;
+  final bool? http3;
+  final String? httpsPort;
+  final List<int> httpsPorts;
+  final List<String> sslProtocol;
+  final WebsiteSSL? ssl;
 
-  const WebsiteSSLCreate({
-    required this.domains,
-    this.provider,
-    this.acmeAccountId,
-    this.keyType,
-    this.organization,
-    this.email,
-    this.phone,
-    this.country,
-    this.state,
-    this.city,
-    this.street,
-    this.skipDNS,
-    this.dnsAccountId,
-    this.nameserver1,
-    this.nameserver2,
-    this.description,
-    this.autoRenew,
+  const WebsiteHttpsConfig({
+    this.enable,
+    this.httpConfig,
+    this.algorithm,
+    this.hsts,
+    this.hstsIncludeSubDomains,
+    this.http3,
+    this.httpsPort,
+    this.httpsPorts = const [],
+    this.sslProtocol = const [],
+    this.ssl,
   });
 
-  factory WebsiteSSLCreate.fromJson(Map<String, dynamic> json) {
-    return WebsiteSSLCreate(
-      domains: (json['domains'] as List?)?.cast<String>() ?? [],
-      provider: json['provider'] as String?,
-      acmeAccountId: json['acmeAccountId'] as int?,
-      keyType: json['keyType'] as String?,
-      organization: json['organization'] as String?,
-      email: json['email'] as String?,
-      phone: json['phone'] as String?,
-      country: json['country'] as String?,
-      state: json['state'] as String?,
-      city: json['city'] as String?,
-      street: json['street'] as String?,
-      skipDNS: json['skipDNS'] as bool?,
-      dnsAccountId: json['dnsAccountId'] as int?,
-      nameserver1: json['nameserver1'] as String?,
-      nameserver2: json['nameserver2'] as String?,
-      description: json['description'] as String?,
-      autoRenew: json['autoRenew'] as bool?,
+  factory WebsiteHttpsConfig.fromJson(Map<String, dynamic> json) {
+    return WebsiteHttpsConfig(
+      enable: json['enable'] as bool?,
+      httpConfig: json['httpConfig'] as String?,
+      algorithm: json['algorithm'] as String?,
+      hsts: json['hsts'] as bool?,
+      hstsIncludeSubDomains: json['hstsIncludeSubDomains'] as bool?,
+      http3: json['http3'] as bool?,
+      httpsPort: json['httpsPort']?.toString(),
+      httpsPorts: (json['httpsPorts'] as List?)
+              ?.whereType<num>()
+              .map((e) => e.toInt())
+              .toList() ??
+          const [],
+      sslProtocol: (json['SSLProtocol'] as List?)?.whereType<String>().toList() ?? const [],
+      ssl: json['SSL'] is Map<String, dynamic> ? WebsiteSSL.fromJson(json['SSL'] as Map<String, dynamic>) : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'domains': domains,
-      'provider': provider,
-      'acmeAccountId': acmeAccountId,
-      'keyType': keyType,
-      'organization': organization,
-      'email': email,
-      'phone': phone,
-      'country': country,
-      'state': state,
-      'city': city,
-      'street': street,
-      'skipDNS': skipDNS,
-      'dnsAccountId': dnsAccountId,
-      'nameserver1': nameserver1,
-      'nameserver2': nameserver2,
-      'description': description,
-      'autoRenew': autoRenew,
+      'enable': enable,
+      'httpConfig': httpConfig,
+      'algorithm': algorithm,
+      'hsts': hsts,
+      'hstsIncludeSubDomains': hstsIncludeSubDomains,
+      'http3': http3,
+      'httpsPort': httpsPort,
+      'httpsPorts': httpsPorts,
+      'SSLProtocol': sslProtocol,
+      'SSL': ssl?.toJson(),
     };
   }
 
   @override
   List<Object?> get props => [
-        domains,
-        provider,
+        enable,
+        httpConfig,
+        algorithm,
+        hsts,
+        hstsIncludeSubDomains,
+        http3,
+        httpsPort,
+        httpsPorts,
+        sslProtocol,
+        ssl,
+      ];
+}
+
+/// Website HTTPS update request model
+class WebsiteHttpsUpdateRequest extends Equatable {
+  final int websiteId;
+  final bool? enable;
+  final String? httpConfig;
+  final String? type;
+  final int? websiteSSLId;
+  final String? certificate;
+  final String? certificatePath;
+  final String? privateKey;
+  final String? privateKeyPath;
+  final List<int>? httpsPorts;
+  final List<String>? sslProtocol;
+  final bool? hsts;
+  final bool? hstsIncludeSubDomains;
+  final bool? http3;
+  final String? algorithm;
+  final String? importType;
+
+  const WebsiteHttpsUpdateRequest({
+    required this.websiteId,
+    this.enable,
+    this.httpConfig,
+    this.type,
+    this.websiteSSLId,
+    this.certificate,
+    this.certificatePath,
+    this.privateKey,
+    this.privateKeyPath,
+    this.httpsPorts,
+    this.sslProtocol,
+    this.hsts,
+    this.hstsIncludeSubDomains,
+    this.http3,
+    this.algorithm,
+    this.importType,
+  });
+
+  factory WebsiteHttpsUpdateRequest.fromJson(Map<String, dynamic> json) {
+    return WebsiteHttpsUpdateRequest(
+      websiteId: json['websiteId'] as int? ?? json['websiteID'] as int? ?? 0,
+      enable: json['enable'] as bool?,
+      httpConfig: json['httpConfig'] as String?,
+      type: json['type'] as String?,
+      websiteSSLId: json['websiteSSLId'] as int? ?? json['websiteSSLID'] as int?,
+      certificate: json['certificate'] as String?,
+      certificatePath: json['certificatePath'] as String?,
+      privateKey: json['privateKey'] as String?,
+      privateKeyPath: json['privateKeyPath'] as String?,
+      httpsPorts: (json['httpsPorts'] as List?)
+          ?.whereType<num>()
+          .map((e) => e.toInt())
+          .toList(),
+      sslProtocol: (json['SSLProtocol'] as List?)?.whereType<String>().toList(),
+      hsts: json['hsts'] as bool?,
+      hstsIncludeSubDomains: json['hstsIncludeSubDomains'] as bool?,
+      http3: json['http3'] as bool?,
+      algorithm: json['algorithm'] as String?,
+      importType: json['importType'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'websiteId': websiteId,
+      if (enable != null) 'enable': enable,
+      if (httpConfig != null) 'httpConfig': httpConfig,
+      if (type != null) 'type': type,
+      if (websiteSSLId != null) 'websiteSSLId': websiteSSLId,
+      if (certificate != null) 'certificate': certificate,
+      if (certificatePath != null) 'certificatePath': certificatePath,
+      if (privateKey != null) 'privateKey': privateKey,
+      if (privateKeyPath != null) 'privateKeyPath': privateKeyPath,
+      if (httpsPorts != null) 'httpsPorts': httpsPorts,
+      if (sslProtocol != null) 'SSLProtocol': sslProtocol,
+      if (hsts != null) 'hsts': hsts,
+      if (hstsIncludeSubDomains != null) 'hstsIncludeSubDomains': hstsIncludeSubDomains,
+      if (http3 != null) 'http3': http3,
+      if (algorithm != null) 'algorithm': algorithm,
+      if (importType != null) 'importType': importType,
+    };
+  }
+
+  @override
+  List<Object?> get props => [
+        websiteId,
+        enable,
+        httpConfig,
+        type,
+        websiteSSLId,
+        certificate,
+        certificatePath,
+        privateKey,
+        privateKeyPath,
+        httpsPorts,
+        sslProtocol,
+        hsts,
+        hstsIncludeSubDomains,
+        http3,
+        algorithm,
+        importType,
+      ];
+}
+
+/// Website SSL 创建模型
+class WebsiteSSLCreate extends Equatable {
+  final int acmeAccountId;
+  final String primaryDomain;
+  final String provider;
+  final int? id;
+  final bool? apply;
+  final bool? autoRenew;
+  final String? description;
+  final String? dir;
+  final bool? disableCNAME;
+  final int? dnsAccountId;
+  final bool? execShell;
+  final bool? isIp;
+  final String? keyType;
+  final String? nameserver1;
+  final String? nameserver2;
+  final String? nodes;
+  final String? otherDomains;
+  final bool? pushDir;
+  final bool? pushNode;
+  final String? shell;
+  final bool? skipDNS;
+
+  const WebsiteSSLCreate({
+    required this.acmeAccountId,
+    required this.primaryDomain,
+    required this.provider,
+    this.id,
+    this.apply,
+    this.autoRenew,
+    this.description,
+    this.dir,
+    this.disableCNAME,
+    this.dnsAccountId,
+    this.execShell,
+    this.isIp,
+    this.keyType,
+    this.nameserver1,
+    this.nameserver2,
+    this.nodes,
+    this.otherDomains,
+    this.pushDir,
+    this.pushNode,
+    this.shell,
+    this.skipDNS,
+  });
+
+  factory WebsiteSSLCreate.fromJson(Map<String, dynamic> json) {
+    return WebsiteSSLCreate(
+      acmeAccountId: json['acmeAccountId'] as int? ?? 0,
+      primaryDomain: json['primaryDomain'] as String? ?? '',
+      provider: json['provider'] as String? ?? '',
+      id: json['id'] as int?,
+      apply: json['apply'] as bool?,
+      autoRenew: json['autoRenew'] as bool?,
+      description: json['description'] as String?,
+      dir: json['dir'] as String?,
+      disableCNAME: json['disableCNAME'] as bool?,
+      dnsAccountId: json['dnsAccountId'] as int?,
+      execShell: json['execShell'] as bool?,
+      isIp: json['isIp'] as bool? ?? json['isIP'] as bool?,
+      keyType: json['keyType'] as String?,
+      nameserver1: json['nameserver1'] as String?,
+      nameserver2: json['nameserver2'] as String?,
+      nodes: json['nodes'] as String?,
+      otherDomains: json['otherDomains'] as String?,
+      pushDir: json['pushDir'] as bool?,
+      pushNode: json['pushNode'] as bool?,
+      shell: json['shell'] as String?,
+      skipDNS: json['skipDNS'] as bool?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'acmeAccountId': acmeAccountId,
+      'primaryDomain': primaryDomain,
+      'provider': provider,
+      if (id != null) 'id': id,
+      if (apply != null) 'apply': apply,
+      if (autoRenew != null) 'autoRenew': autoRenew,
+      if (description != null) 'description': description,
+      if (dir != null) 'dir': dir,
+      if (disableCNAME != null) 'disableCNAME': disableCNAME,
+      if (dnsAccountId != null) 'dnsAccountId': dnsAccountId,
+      if (execShell != null) 'execShell': execShell,
+      if (isIp != null) 'isIp': isIp,
+      if (keyType != null) 'keyType': keyType,
+      if (nameserver1 != null) 'nameserver1': nameserver1,
+      if (nameserver2 != null) 'nameserver2': nameserver2,
+      if (nodes != null) 'nodes': nodes,
+      if (otherDomains != null) 'otherDomains': otherDomains,
+      if (pushDir != null) 'pushDir': pushDir,
+      if (pushNode != null) 'pushNode': pushNode,
+      if (shell != null) 'shell': shell,
+      if (skipDNS != null) 'skipDNS': skipDNS,
+    };
+  }
+
+  @override
+  List<Object?> get props => [
         acmeAccountId,
-        keyType,
-        organization,
-        email,
-        phone,
-        country,
-        state,
-        city,
-        street,
-        skipDNS,
+        primaryDomain,
+        provider,
+        id,
+        apply,
+        autoRenew,
+        description,
+        dir,
+        disableCNAME,
         dnsAccountId,
+        execShell,
+        isIp,
+        keyType,
         nameserver1,
         nameserver2,
-        description,
-        autoRenew,
+        nodes,
+        otherDomains,
+        pushDir,
+        pushNode,
+        shell,
+        skipDNS,
       ];
 }
 
 /// Website SSL 申请模型
 class WebsiteSSLApply extends Equatable {
   final int id;
-  final List<String>? domains;
-  final int? acmeAccountId;
-  final String? provider;
-  final String? keyType;
-  final String? organization;
-  final String? email;
-  final String? phone;
-  final String? country;
-  final String? state;
-  final String? city;
-  final String? street;
-  final bool? skipDNS;
-  final int? dnsAccountId;
-  final String? nameserver1;
-  final String? nameserver2;
+  final bool? disableLog;
+  final List<String>? nameservers;
+  final bool? skipDNSCheck;
 
   const WebsiteSSLApply({
     required this.id,
-    this.domains,
-    this.acmeAccountId,
-    this.provider,
-    this.keyType,
-    this.organization,
-    this.email,
-    this.phone,
-    this.country,
-    this.state,
-    this.city,
-    this.street,
-    this.skipDNS,
-    this.dnsAccountId,
-    this.nameserver1,
-    this.nameserver2,
+    this.disableLog,
+    this.nameservers,
+    this.skipDNSCheck,
   });
 
   factory WebsiteSSLApply.fromJson(Map<String, dynamic> json) {
     return WebsiteSSLApply(
-      id: json['id'] as int,
-      domains: (json['domains'] as List?)?.cast<String>(),
-      acmeAccountId: json['acmeAccountId'] as int?,
-      provider: json['provider'] as String?,
-      keyType: json['keyType'] as String?,
-      organization: json['organization'] as String?,
-      email: json['email'] as String?,
-      phone: json['phone'] as String?,
-      country: json['country'] as String?,
-      state: json['state'] as String?,
-      city: json['city'] as String?,
-      street: json['street'] as String?,
-      skipDNS: json['skipDNS'] as bool?,
-      dnsAccountId: json['dnsAccountId'] as int?,
-      nameserver1: json['nameserver1'] as String?,
-      nameserver2: json['nameserver2'] as String?,
+      id: json['ID'] as int? ?? json['id'] as int? ?? 0,
+      disableLog: json['disableLog'] as bool?,
+      nameservers: (json['nameservers'] as List?)?.whereType<String>().toList(),
+      skipDNSCheck: json['skipDNSCheck'] as bool?,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'domains': domains,
-      'acmeAccountId': acmeAccountId,
-      'provider': provider,
-      'keyType': keyType,
-      'organization': organization,
-      'email': email,
-      'phone': phone,
-      'country': country,
-      'state': state,
-      'city': city,
-      'street': street,
-      'skipDNS': skipDNS,
-      'dnsAccountId': dnsAccountId,
-      'nameserver1': nameserver1,
-      'nameserver2': nameserver2,
+      'ID': id,
+      if (disableLog != null) 'disableLog': disableLog,
+      if (nameservers != null) 'nameservers': nameservers,
+      if (skipDNSCheck != null) 'skipDNSCheck': skipDNSCheck,
     };
   }
 
   @override
-  List<Object?> get props => [
-        id,
-        domains,
-        acmeAccountId,
-        provider,
-        keyType,
-        organization,
-        email,
-        phone,
-        country,
-        state,
-        city,
-        street,
-        skipDNS,
-        dnsAccountId,
-        nameserver1,
-        nameserver2,
-      ];
+  List<Object?> get props => [id, disableLog, nameservers, skipDNSCheck];
 }
 
 /// Website SSL 解析模型
 class WebsiteSSLResolve extends Equatable {
-  final List<String> domains;
-  final String? type;
-  final int? port;
+  final int acmeAccountId;
+  final int websiteSSLId;
 
   const WebsiteSSLResolve({
-    required this.domains,
-    this.type,
-    this.port,
+    required this.acmeAccountId,
+    required this.websiteSSLId,
   });
 
   factory WebsiteSSLResolve.fromJson(Map<String, dynamic> json) {
     return WebsiteSSLResolve(
-      domains: (json['domains'] as List?)?.cast<String>() ?? [],
-      type: json['type'] as String?,
-      port: json['port'] as int?,
+      acmeAccountId: json['acmeAccountId'] as int? ?? 0,
+      websiteSSLId: json['websiteSSLId'] as int? ?? 0,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'domains': domains,
-      'type': type,
-      'port': port,
+      'acmeAccountId': acmeAccountId,
+      'websiteSSLId': websiteSSLId,
     };
   }
 
   @override
-  List<Object?> get props => [domains, type, port];
+  List<Object?> get props => [acmeAccountId, websiteSSLId];
 }
 
 /// Website SSL 搜索模型
 class WebsiteSSLSearch extends Equatable {
   final int page;
   final int pageSize;
-  final String? search;
-  final String? type;
-  final String? status;
+  final String? domain;
+  final String? acmeAccountId;
+  final String order;
+  final String orderBy;
 
   const WebsiteSSLSearch({
     required this.page,
     required this.pageSize,
-    this.search,
-    this.type,
-    this.status,
+    this.domain,
+    this.acmeAccountId,
+    this.order = 'descending',
+    this.orderBy = 'expire_date',
   });
 
   factory WebsiteSSLSearch.fromJson(Map<String, dynamic> json) {
     return WebsiteSSLSearch(
-      page: json['page'] as int,
-      pageSize: json['pageSize'] as int,
-      search: json['search'] as String?,
-      type: json['type'] as String?,
-      status: json['status'] as String?,
+      page: json['page'] as int? ?? 1,
+      pageSize: json['pageSize'] as int? ?? 10,
+      domain: json['domain'] as String?,
+      acmeAccountId: json['acmeAccountID'] as String? ?? json['acmeAccountId'] as String?,
+      order: json['order'] as String? ?? 'descending',
+      orderBy: json['orderBy'] as String? ?? 'expire_date',
     );
   }
 
@@ -1016,58 +1190,136 @@ class WebsiteSSLSearch extends Equatable {
     return {
       'page': page,
       'pageSize': pageSize,
-      'search': search,
-      'type': type,
-      'status': status,
+      if (domain != null) 'domain': domain,
+      if (acmeAccountId != null) 'acmeAccountID': acmeAccountId,
+      'order': order,
+      'orderBy': orderBy,
     };
   }
 
   @override
-  List<Object?> get props => [page, pageSize, search, type, status];
+  List<Object?> get props => [page, pageSize, domain, acmeAccountId, order, orderBy];
 }
 
 /// Website SSL 更新模型
 class WebsiteSSLUpdate extends Equatable {
   final int id;
-  final List<String>? domains;
-  final String? description;
-  final bool? autoRenew;
+  final String primaryDomain;
+  final String provider;
   final int? acmeAccountId;
+  final bool? apply;
+  final bool? autoRenew;
+  final String? description;
+  final String? dir;
+  final bool? disableCNAME;
   final int? dnsAccountId;
+  final bool? execShell;
+  final String? keyType;
+  final String? nameserver1;
+  final String? nameserver2;
+  final String? nodes;
+  final String? otherDomains;
+  final bool? pushDir;
+  final bool? pushNode;
+  final String? shell;
+  final bool? skipDNS;
 
   const WebsiteSSLUpdate({
     required this.id,
-    this.domains,
-    this.description,
-    this.autoRenew,
+    required this.primaryDomain,
+    required this.provider,
     this.acmeAccountId,
+    this.apply,
+    this.autoRenew,
+    this.description,
+    this.dir,
+    this.disableCNAME,
     this.dnsAccountId,
+    this.execShell,
+    this.keyType,
+    this.nameserver1,
+    this.nameserver2,
+    this.nodes,
+    this.otherDomains,
+    this.pushDir,
+    this.pushNode,
+    this.shell,
+    this.skipDNS,
   });
 
   factory WebsiteSSLUpdate.fromJson(Map<String, dynamic> json) {
     return WebsiteSSLUpdate(
-      id: json['id'] as int,
-      domains: (json['domains'] as List?)?.cast<String>(),
-      description: json['description'] as String?,
-      autoRenew: json['autoRenew'] as bool?,
+      id: json['id'] as int? ?? 0,
+      primaryDomain: json['primaryDomain'] as String? ?? '',
+      provider: json['provider'] as String? ?? '',
       acmeAccountId: json['acmeAccountId'] as int?,
+      apply: json['apply'] as bool?,
+      autoRenew: json['autoRenew'] as bool?,
+      description: json['description'] as String?,
+      dir: json['dir'] as String?,
+      disableCNAME: json['disableCNAME'] as bool?,
       dnsAccountId: json['dnsAccountId'] as int?,
+      execShell: json['execShell'] as bool?,
+      keyType: json['keyType'] as String?,
+      nameserver1: json['nameserver1'] as String?,
+      nameserver2: json['nameserver2'] as String?,
+      nodes: json['nodes'] as String?,
+      otherDomains: json['otherDomains'] as String?,
+      pushDir: json['pushDir'] as bool?,
+      pushNode: json['pushNode'] as bool?,
+      shell: json['shell'] as String?,
+      skipDNS: json['skipDNS'] as bool?,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'domains': domains,
-      'description': description,
-      'autoRenew': autoRenew,
-      'acmeAccountId': acmeAccountId,
-      'dnsAccountId': dnsAccountId,
+      'primaryDomain': primaryDomain,
+      'provider': provider,
+      if (acmeAccountId != null) 'acmeAccountId': acmeAccountId,
+      if (apply != null) 'apply': apply,
+      if (autoRenew != null) 'autoRenew': autoRenew,
+      if (description != null) 'description': description,
+      if (dir != null) 'dir': dir,
+      if (disableCNAME != null) 'disableCNAME': disableCNAME,
+      if (dnsAccountId != null) 'dnsAccountId': dnsAccountId,
+      if (execShell != null) 'execShell': execShell,
+      if (keyType != null) 'keyType': keyType,
+      if (nameserver1 != null) 'nameserver1': nameserver1,
+      if (nameserver2 != null) 'nameserver2': nameserver2,
+      if (nodes != null) 'nodes': nodes,
+      if (otherDomains != null) 'otherDomains': otherDomains,
+      if (pushDir != null) 'pushDir': pushDir,
+      if (pushNode != null) 'pushNode': pushNode,
+      if (shell != null) 'shell': shell,
+      if (skipDNS != null) 'skipDNS': skipDNS,
     };
   }
 
   @override
-  List<Object?> get props => [id, domains, description, autoRenew, acmeAccountId, dnsAccountId];
+  List<Object?> get props => [
+        id,
+        primaryDomain,
+        provider,
+        acmeAccountId,
+        apply,
+        autoRenew,
+        description,
+        dir,
+        disableCNAME,
+        dnsAccountId,
+        execShell,
+        keyType,
+        nameserver1,
+        nameserver2,
+        nodes,
+        otherDomains,
+        pushDir,
+        pushNode,
+        shell,
+        skipDNS,
+      ];
 }
 
 /// Website SSL 上传模型
@@ -1077,6 +1329,8 @@ class WebsiteSSLUpload extends Equatable {
   final String? certificate;
   final String? certificatePath;
   final String? privateKeyPath;
+  final String? description;
+  final String type;
 
   const WebsiteSSLUpload({
     this.sslID,
@@ -1084,6 +1338,8 @@ class WebsiteSSLUpload extends Equatable {
     this.certificate,
     this.certificatePath,
     this.privateKeyPath,
+    this.description,
+    required this.type,
   });
 
   factory WebsiteSSLUpload.fromJson(Map<String, dynamic> json) {
@@ -1093,6 +1349,8 @@ class WebsiteSSLUpload extends Equatable {
       certificate: json['certificate'] as String?,
       certificatePath: json['certificatePath'] as String?,
       privateKeyPath: json['privateKeyPath'] as String?,
+      description: json['description'] as String?,
+      type: json['type'] as String? ?? 'paste',
     );
   }
 
@@ -1103,11 +1361,13 @@ class WebsiteSSLUpload extends Equatable {
       'certificate': certificate,
       'certificatePath': certificatePath,
       'privateKeyPath': privateKeyPath,
+      if (description != null) 'description': description,
+      'type': type,
     };
   }
 
   @override
-  List<Object?> get props => [sslID, privateKey, certificate, certificatePath, privateKeyPath];
+  List<Object?> get props => [sslID, privateKey, certificate, certificatePath, privateKeyPath, description, type];
 }
 
 /// DNS 账户模型

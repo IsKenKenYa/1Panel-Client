@@ -10,6 +10,22 @@
 |--------|--------|-----------|------|
 | **网站SSL证书** | 11 | ssl_v2.dart | 证书申请、更新、上传、下载、解析 |
 
+## UI链路分析
+
+- 入口: `lib/features/websites/websites_page.dart` -> `lib/features/websites/website_detail_page.dart` -> SSL Tab。
+- 当前仅展示单站点证书概览、自动续期开关、下载链接与 HTTPS JSON 编辑。
+- 证书列表、申请、上传、解析、更新与删除流程缺失。
+
+## 待改进项
+
+- 增加证书列表与详情页面，支持筛选与状态提示。
+- 补齐证书申请、上传、解析、更新与删除流程。
+- HTTPS 配置建议拆分为结构化表单，避免直接 JSON 编辑。
+
+## 重复代码检查
+
+- `WebsiteSSL` 模型在 `lib/data/models/website_models.dart` 与 `lib/data/models/ssl_models.dart` 重复且字段不一致，需要统一来源。
+
 ## 后续规划方向
 
 ### 短期目标

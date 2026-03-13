@@ -36,6 +36,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get commonAdd => '添加';
 
   @override
+  String get commonEdit => '编辑';
+
+  @override
   String get commonLoad => '加载';
 
   @override
@@ -49,6 +52,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get commonDelete => '删除';
+
+  @override
+  String get commonUpload => '上传';
 
   @override
   String get commonRefresh => '刷新';
@@ -196,6 +202,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get websitesDomainDefault => '默认';
 
   @override
+  String get websitesDomainSslLabel => 'SSL';
+
+  @override
   String get websitesRewriteNameLabel => '规则名称';
 
   @override
@@ -206,6 +215,219 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get websitesProxyHint => '代理内容';
+
+  @override
+  String get websitesNginxAdvancedAction => '高级配置';
+
+  @override
+  String get websitesNginxAdvancedTitle => 'Nginx 高级配置';
+
+  @override
+  String get websitesNginxScopeTitle => '范围读取';
+
+  @override
+  String get websitesNginxScopeLabel => '范围';
+
+  @override
+  String get websitesNginxScopeWebsiteIdLabel => '网站 ID（可选）';
+
+  @override
+  String get websitesNginxScopeLoad => '加载范围配置';
+
+  @override
+  String get websitesNginxScopeResultLabel => '范围结果';
+
+  @override
+  String get websitesNginxUpdateTitle => '范围更新';
+
+  @override
+  String get websitesNginxUpdateOperateLabel => '操作类型';
+
+  @override
+  String get websitesNginxUpdateScopeLabel => '范围';
+
+  @override
+  String get websitesNginxUpdateWebsiteIdLabel => '网站 ID（可选）';
+
+  @override
+  String get websitesNginxUpdateParamsLabel => '参数 JSON';
+
+  @override
+  String get websitesNginxUpdateAction => '提交更新';
+
+  @override
+  String get websitesProtocolLabel => '协议';
+
+  @override
+  String get websitesDetailInfoTitle => '站点信息';
+
+  @override
+  String get websitesSitePathLabel => '站点路径';
+
+  @override
+  String get websitesRuntimeLabel => '运行环境';
+
+  @override
+  String get websitesSslStatusLabel => 'SSL 状态';
+
+  @override
+  String get websitesSslExpireLabel => 'SSL 到期';
+
+  @override
+  String get websitesDetailActionsTitle => '快捷操作';
+
+  @override
+  String get websitesConfigPageTitle => '配置管理';
+
+  @override
+  String get websitesConfigPageSubtitle => 'Nginx 配置与 PHP 版本';
+
+  @override
+  String get websitesDomainsPageTitle => '域名管理';
+
+  @override
+  String get websitesDomainsPageSubtitle => '绑定与维护站点域名';
+
+  @override
+  String get websitesSslPageTitle => 'SSL 证书';
+
+  @override
+  String get websitesSslPageSubtitle => '证书配置与 HTTPS';
+
+  @override
+  String get websitesOpenrestySubtitle => '服务状态与模块管理';
+
+  @override
+  String get websitesConfigEditorTitle => 'Nginx 配置文件';
+
+  @override
+  String get websitesConfigScopeTitle => '高级配置';
+
+  @override
+  String get websitesConfigScopeLabel => '配置范围';
+
+  @override
+  String get websitesConfigScopeEmpty => '暂无范围配置';
+
+  @override
+  String websitesConfigScopeEditTitle(String name) {
+    return '编辑 $name 参数';
+  }
+
+  @override
+  String get websitesConfigScopeValuesLabel => '参数列表';
+
+  @override
+  String get websitesConfigScopeValuesHint => '使用逗号分隔多个参数';
+
+  @override
+  String get websitesPhpVersionTitle => 'PHP 版本切换';
+
+  @override
+  String get websitesPhpRuntimeIdLabel => '运行时 ID';
+
+  @override
+  String get websitesPhpRuntimeIdHint => '请输入要切换的 runtimeID';
+
+  @override
+  String get websitesDomainPortLabel => '端口';
+
+  @override
+  String get websitesDomainPrimary => '主域名';
+
+  @override
+  String get websitesSslCreateAction => '创建证书';
+
+  @override
+  String get websitesSslUploadAction => '上传证书';
+
+  @override
+  String get websitesSslListTitle => '证书列表';
+
+  @override
+  String get websitesSslListEmpty => '暂无证书';
+
+  @override
+  String get websitesSslApplyAction => '申请证书';
+
+  @override
+  String get websitesSslResolveAction => '解析证书';
+
+  @override
+  String get websitesSslUpdateAction => '更新证书';
+
+  @override
+  String get websitesSslDeleteTitle => '删除证书';
+
+  @override
+  String websitesSslDeleteMessage(String domain) {
+    return '确定删除 $domain 的证书吗？';
+  }
+
+  @override
+  String get websitesSslAcmeAccountIdLabel => 'ACME 账户 ID';
+
+  @override
+  String get websitesSslProviderLabel => '证书提供商';
+
+  @override
+  String get websitesSslOtherDomainsLabel => '其他域名（逗号分隔）';
+
+  @override
+  String get websitesSslDisableLogLabel => '禁用日志';
+
+  @override
+  String get websitesSslSkipDnsCheckLabel => '跳过 DNS 校验';
+
+  @override
+  String get websitesSslNameserversLabel => 'Nameserver 列表';
+
+  @override
+  String get websitesSslDescriptionLabel => '描述';
+
+  @override
+  String get websitesSslUploadTypeLabel => '上传方式';
+
+  @override
+  String get websitesSslUploadTypePaste => '粘贴内容';
+
+  @override
+  String get websitesSslUploadTypeLocal => '本地路径';
+
+  @override
+  String get websitesSslCertificateLabel => '证书内容';
+
+  @override
+  String get websitesSslPrivateKeyLabel => '私钥内容';
+
+  @override
+  String get websitesSslCertificatePathLabel => '证书路径';
+
+  @override
+  String get websitesSslPrivateKeyPathLabel => '私钥路径';
+
+  @override
+  String get websitesHttpsConfigTitle => 'HTTPS 配置';
+
+  @override
+  String get websitesHttpsEnableLabel => '启用 HTTPS';
+
+  @override
+  String get websitesHttpsModeLabel => 'HTTP 配置模式';
+
+  @override
+  String get websitesHttpsTypeLabel => '证书类型';
+
+  @override
+  String get websitesHttpsSslIdLabel => '证书 ID';
+
+  @override
+  String get websitesSslAutoRenewMissingFields => '证书缺少主域名或提供商信息，无法更新自动续期。';
+
+  @override
+  String websitesSslDownloadHint(String link) {
+    return '证书下载链接：$link';
+  }
 
   @override
   String get openrestyPageTitle => 'OpenResty';
@@ -221,6 +443,33 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get openrestyTabConfig => '配置';
+
+  @override
+  String get openrestyTabBuild => '构建';
+
+  @override
+  String get openrestyTabScope => '范围';
+
+  @override
+  String get openrestyBuildMirrorLabel => '构建镜像地址';
+
+  @override
+  String get openrestyBuildTaskIdLabel => '任务 ID';
+
+  @override
+  String get openrestyBuildAction => '构建 OpenResty';
+
+  @override
+  String get openrestyScopeLabel => '配置范围';
+
+  @override
+  String get openrestyScopeWebsiteIdLabel => '网站 ID（可选）';
+
+  @override
+  String get openrestyScopeLoad => '加载范围配置';
+
+  @override
+  String get openrestyScopeResultHint => '范围配置结果';
 
   @override
   String get monitorNetworkLabel => '网络';

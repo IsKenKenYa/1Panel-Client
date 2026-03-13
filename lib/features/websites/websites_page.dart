@@ -144,7 +144,7 @@ class _WebsitesPageState extends State<WebsitesPage> {
       builder: (dialogContext) => AlertDialog(
         icon: Icon(Icons.delete_outline, color: colorScheme.error),
         title: Text(l10n.websitesDeleteTitle),
-        content: Text(l10n.websitesDeleteMessage(website.domain ?? l10n.websitesUnknownDomain)),
+        content: Text(l10n.websitesDeleteMessage(website.displayDomain ?? l10n.websitesUnknownDomain)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
@@ -358,7 +358,7 @@ class _WebsiteTile extends StatelessWidget {
     return Card(
       child: ListTile(
         onTap: onTap,
-        title: Text(website.domain ?? l10n.websitesUnknownDomain),
+        title: Text(website.displayDomain ?? l10n.websitesUnknownDomain),
         subtitle: Text('${l10n.websitesStatusLabel}: $statusText'),
         leading: Container(
           width: 10,

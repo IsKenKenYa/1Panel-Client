@@ -9,11 +9,13 @@
   "commonCopy": "Copy",
   "commonMore": "More",
   "commonAdd": "Add",
+  "commonEdit": "Edit",
   "commonLoad": "Load",
   "commonSave": "Save",
   "commonSaveSuccess": "Saved successfully",
   "commonSaveFailed": "Failed to save",
   "commonDelete": "Delete",
+  "commonUpload": "Upload",
   "commonRefresh": "Refresh",
   "commonComingSoon": "Coming soon",
   "commonEmpty": "No data",
@@ -93,6 +95,83 @@
   "websitesNginxUpdateWebsiteIdLabel": "Website ID (optional)",
   "websitesNginxUpdateParamsLabel": "Params JSON",
   "websitesNginxUpdateAction": "Apply update",
+  "websitesProtocolLabel": "Protocol",
+  "websitesDetailInfoTitle": "Website info",
+  "websitesSitePathLabel": "Site path",
+  "websitesRuntimeLabel": "Runtime",
+  "websitesSslStatusLabel": "SSL status",
+  "websitesSslExpireLabel": "SSL expires",
+  "websitesDetailActionsTitle": "Quick actions",
+  "websitesConfigPageTitle": "Config",
+  "websitesConfigPageSubtitle": "Nginx config & PHP version",
+  "websitesDomainsPageTitle": "Domains",
+  "websitesDomainsPageSubtitle": "Bind and manage domains",
+  "websitesSslPageTitle": "SSL certificates",
+  "websitesSslPageSubtitle": "Certificate settings & HTTPS",
+  "websitesOpenrestySubtitle": "Service status & module management",
+  "websitesConfigEditorTitle": "Nginx config file",
+  "websitesConfigScopeTitle": "Advanced config",
+  "websitesConfigScopeLabel": "Scope",
+  "websitesConfigScopeEmpty": "No scope config",
+  "websitesConfigScopeEditTitle": "Edit {name} params",
+  "@websitesConfigScopeEditTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "websitesConfigScopeValuesLabel": "Param list",
+  "websitesConfigScopeValuesHint": "Separate multiple params with commas",
+  "websitesPhpVersionTitle": "PHP version",
+  "websitesPhpRuntimeIdLabel": "Runtime ID",
+  "websitesPhpRuntimeIdHint": "Enter the runtime ID to switch",
+  "websitesDomainPortLabel": "Port",
+  "websitesDomainPrimary": "Primary domain",
+  "websitesSslCreateAction": "Create certificate",
+  "websitesSslUploadAction": "Upload certificate",
+  "websitesSslListTitle": "Certificate list",
+  "websitesSslListEmpty": "No certificates",
+  "websitesSslApplyAction": "Request certificate",
+  "websitesSslResolveAction": "Resolve certificate",
+  "websitesSslUpdateAction": "Update certificate",
+  "websitesSslDeleteTitle": "Delete certificate",
+  "websitesSslDeleteMessage": "Delete certificate for {domain}?",
+  "@websitesSslDeleteMessage": {
+    "placeholders": {
+      "domain": {
+        "type": "String"
+      }
+    }
+  },
+  "websitesSslAcmeAccountIdLabel": "ACME account ID",
+  "websitesSslProviderLabel": "Provider",
+  "websitesSslOtherDomainsLabel": "Other domains (comma-separated)",
+  "websitesSslDisableLogLabel": "Disable logs",
+  "websitesSslSkipDnsCheckLabel": "Skip DNS check",
+  "websitesSslNameserversLabel": "Nameservers",
+  "websitesSslDescriptionLabel": "Description",
+  "websitesSslUploadTypeLabel": "Upload method",
+  "websitesSslUploadTypePaste": "Paste content",
+  "websitesSslUploadTypeLocal": "Local path",
+  "websitesSslCertificateLabel": "Certificate",
+  "websitesSslPrivateKeyLabel": "Private key",
+  "websitesSslCertificatePathLabel": "Certificate path",
+  "websitesSslPrivateKeyPathLabel": "Private key path",
+  "websitesHttpsConfigTitle": "HTTPS config",
+  "websitesHttpsEnableLabel": "Enable HTTPS",
+  "websitesHttpsModeLabel": "HTTP mode",
+  "websitesHttpsTypeLabel": "Certificate type",
+  "websitesHttpsSslIdLabel": "Certificate ID",
+  "websitesSslAutoRenewMissingFields": "Certificate is missing the primary domain or provider; cannot update auto-renew.",
+  "websitesSslDownloadHint": "Certificate download link: {link}",
+  "@websitesSslDownloadHint": {
+    "placeholders": {
+      "link": {
+        "type": "String"
+      }
+    }
+  },
   "openrestyPageTitle": "OpenResty",
   "openrestyTabStatus": "Status",
   "openrestyTabHttps": "HTTPS",
