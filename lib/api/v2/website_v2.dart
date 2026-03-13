@@ -4,6 +4,7 @@ import '../../core/config/api_constants.dart';
 import '../../data/models/common_models.dart';
 import '../../data/models/file/file_info.dart';
 import '../../data/models/website_models.dart';
+import '../../data/models/ssl_models.dart';
 
 class WebsiteV2Api {
   final DioClient _client;
@@ -38,7 +39,6 @@ class WebsiteV2Api {
   Future<PageResult<WebsiteInfo>> getWebsites({
     String? name,
     String? type,
-    String? status,
     int page = 1,
     int pageSize = 10,
     String order = 'descending',
@@ -51,7 +51,6 @@ class WebsiteV2Api {
       orderBy: orderBy,
       name: name,
       type: type,
-      status: status,
     );
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/websites/search'),
@@ -184,22 +183,33 @@ class WebsiteV2Api {
     );
   }
 
-  Future<Map<String, dynamic>> getWebsiteHttps(int websiteId) async {
+  Future<WebsiteHttpsConfig> getWebsiteHttps(int websiteId) async {
     final response = await _client.get<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/websites/$websiteId/https'),
     );
-    return _extractMapData(response);
+    return WebsiteHttpsConfig.fromJson(_extractMapData(response));
   }
 
-  Future<Map<String, dynamic>> updateWebsiteHttps({
+  Future<WebsiteHttpsConfig> updateWebsiteHttps({
     required int websiteId,
-    required Map<String, dynamic> request,
+    required WebsiteHttpsUpdateRequest request,
   }) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/websites/$websiteId/https'),
-      data: request,
+      data: request.toJson(),
     );
-    return _extractMapData(response);
+    return WebsiteHttpsConfig.fromJson(_extractMapData(response));
+  }
+
+  Future<void> updateWebsitePhpVersion({
+    required int websiteId,
+    int? runtimeId,
+  }) async {
+    final request = WebsitePhpVersionRequest(websiteId: websiteId, runtimeId: runtimeId);
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/php/version'),
+      data: request.toJson(),
+    );
   }
 
   Future<Map<String, dynamic>> getWebsiteRewrite({

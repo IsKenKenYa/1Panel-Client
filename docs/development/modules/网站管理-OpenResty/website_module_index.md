@@ -34,6 +34,24 @@ Open1PanelApp 的网站模块负责站点生命周期管理、反向代理、SSL
   - 计划: [website_ssl_plan.md](../网站SSL证书/website_ssl_plan.md)
   - FAQ: [website_ssl_faq.md](../网站SSL证书/website_ssl_faq.md)
 
+## 适配现状与UI链路
+
+- 入口: `lib/features/websites/websites_page.dart` -> `lib/features/websites/website_detail_page.dart`，详情页以 Tab 组织（概览/配置/域名/SSL/重写/代理）。
+- OpenResty 入口: 网站列表页右上角设置按钮跳转 `lib/features/openresty/openresty_page.dart`。
+- 配置/域名/SSL 多以 JSON 或简单表单完成，缺少模块化子页面与分步流程。
+- 关键能力缺口集中在证书申请/上传/解析/列表、域名更新与解析校验、PHP 版本切换、OpenResty 模块管理与构建任务可视化。
+
+## 重复代码检查
+
+- `lib/features/websites/website_detail_page.dart` 与 `lib/features/openresty/openresty_page.dart` 存在 `_JsonEditTab` 重复。
+- `lib/features/websites/website_detail_page.dart` 与 `lib/features/openresty/openresty_page.dart` 存在 `_ErrorSection` 重复。
+- `lib/data/models/website_models.dart` 与 `lib/data/models/ssl_models.dart` 均定义 `WebsiteSSL`，字段不一致且语义重叠。
+
+## API 实测备注 (2026-03-13)
+
+- `POST /websites/search` 在列表为空时 `data.items` 可能为 `null`，解析需兼容空列表。
+- 列表项包含 `primaryDomain/sitePath/sslExpireDate/sslStatus/runtimeType` 等字段，模型需兼容。
+
 ## 后续规划
 
 - 站点管理全量能力接入（日志、跨域、防盗链、重定向、RealIP等）

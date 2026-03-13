@@ -24,6 +24,11 @@
 10. POST /websites/ssl/upload/file - 上传证书文件
 11. GET /websites/ssl/website/:websiteId - 获取网站证书
 
+## 官方文档要点 (2026-03-13)
+
+- 申请证书前需准备 ACME 账户；DNS 验证需配置 DNS 账户，支持 DNS 账户 / DNS 手动 / HTTP 三种验证方式。
+- 上传证书需提供 PEM 格式证书与私钥，支持粘贴或文件路径方式。
+
 ## 业务流程与交互验证
 
 ### 证书申请流程
@@ -75,8 +80,15 @@
 
 ## 与现有实现的差距
 
-- SSL证书列表页面缺失
-- 证书申请流程缺失
+- SSL 证书列表页面缺失，当前仅展示单站点证书概览。
+- 证书申请、上传、解析、更新与删除流程缺失。
+- HTTPS 配置使用 JSON 编辑，缺少结构化表单与校验。
+
+## API 实测备注 (2026-03-13)
+
+- `GET /websites/:id/https` 返回 `{enable,httpConfig,SSL{...}}`，SSL 字段包含 `primaryDomain/pem/privateKey/domains/provider/...` 等。
+- `POST /websites/ssl/search` 返回 `{total, items:null}`（空列表场景需兼容）。
+- `GET /websites/ssl/website/:websiteId` 在未绑定证书时返回 `record not found`。
 
 ## 评审记录
 

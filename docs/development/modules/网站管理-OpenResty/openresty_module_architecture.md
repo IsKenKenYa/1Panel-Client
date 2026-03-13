@@ -22,6 +22,11 @@
 9. GET /openresty/status
 10. POST /openresty/update
 
+## 官方文档要点 (2026-03-13)
+
+- OpenResty 设置支持启动、停止、重启与 reload 操作。
+- 支持配置编辑与模块管理，模块更新需构建并重启 OpenResty 生效。
+
 ## 业务流程与交互验证
 
 ### 状态页流程
@@ -83,8 +88,19 @@
 
 ## 与现有实现的差距
 
-- OpenResty 页面未提供构建任务触发入口
-- OpenResty 页面未提供局部配置（scope）读取与展示入口
+- OpenResty 页面以 JSON 编辑为主，缺少状态概览卡片与模块列表的结构化视图。
+- 构建任务缺少日志追踪与进度反馈。
+- HTTPS 默认配置缺少证书状态与风险提示。
+- 配置编辑缺少语法校验、差异预览与备份回滚入口。
+- Scope 结果仅 JSON 展示，缺少结构化展示与参数校验。
+
+## API 实测摘要 (2026-03-13)
+
+- `GET /openresty/status` 返回 `active/accepts/handled/requests/reading/writing/waiting`。
+- `GET /openresty/modules` 返回 `mirror` 与 `modules[]`（字段: `name/script/packages/params/enable`）。
+- `GET /openresty/https` 返回 `https` 与 `sslRejectHandshake`。
+- `GET /openresty` 返回 `content`（完整 OpenResty 配置文本）。
+- `POST /openresty/scope` 返回数组元素 `{name, params[]}`。
 
 ## 评审记录
 

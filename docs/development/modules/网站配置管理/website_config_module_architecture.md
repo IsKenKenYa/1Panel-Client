@@ -20,6 +20,12 @@
 ### PHP版本 (1端点)
 1. POST /websites/php/version - 切换PHP版本
 
+## 官方文档要点 (2026-03-13)
+
+- HTTPS 配置包含 HTTP 访问策略（重定向到 HTTPS / 保留 HTTP / 禁用 HTTP）。
+- 支持 HSTS 与 HTTP/3 等高级开关。
+- 证书配置支持选择已有证书或手动导入（证书 + 私钥，支持粘贴或文件路径）。
+
 ## 业务流程与交互验证
 
 ### Nginx配置流程
@@ -64,7 +70,15 @@
 3. 重载结果 -> 状态确认 -> 用户反馈
 ## 与现有实现的差距
 
-- 配置验证与版本管理能力缺失
+- 配置编辑缺少语法校验与差异预览，保存失败时缺少回滚入口。
+- 配置版本与备份管理能力缺失。
+- PHP 版本切换未在 UI 中提供入口。
+
+## API 实测备注 (2026-03-13)
+
+- `POST /websites/config` 返回 `enable` 与 `params[]`（包含 `name` 与 `params[]`）。
+- `POST /websites/config/update` 成功返回 `{code:200,message:\"success\",data:null}`。
+- `GET /websites/:id/config/:type` 与 `POST /websites/nginx/update` 在当前静态站点返回 `目标路径不存在`（需站点具备可编辑配置文件后复测）。
 
 ## 评审记录
 
