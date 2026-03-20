@@ -9,7 +9,7 @@
 
 ## 功能完整性清单
 
-基于 1PanelV2OpenAPI.json，网站SSL证书模块共包含 11 个端点:
+基于 `docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json`，网站SSL证书模块共包含 11 个端点:
 
 ### 网站SSL证书 (11端点)
 1. POST /websites/ssl - 申请SSL证书

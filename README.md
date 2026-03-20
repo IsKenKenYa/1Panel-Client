@@ -361,7 +361,7 @@ The app integrates with 1Panel V2 API using:
 - [Testing Guide](docs/en/TESTING.md) - Testing documentation
 
 ### API Documentation
-- [1Panel V2 API Specification](docs/1PanelOpenAPI/1PanelV2OpenAPI.json) - Swagger/OpenAPI specification
+- [1Panel V2 API Specification](docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json) - Swagger/OpenAPI specification from the 1Panel submodule
 
 ### Development Documentation
 - [Development Docs](docs/development/)

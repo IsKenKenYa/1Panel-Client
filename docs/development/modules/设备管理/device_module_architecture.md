@@ -10,7 +10,7 @@
 
 ## 功能完整性清单
 
-基于 1PanelV2OpenAPI.json 的 Device 标签共 12 个端点:
+基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 的 Device 标签共 12 个端点:
 
 ### 设备信息管理
 1. GET /host/devices - 获取设备列表

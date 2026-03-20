@@ -1,5 +1,5 @@
 {
-  "source": "docs/1PanelOpenAPI/1PanelV2OpenAPI.json",
+  "source": "docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json",
   "generatedAt": "2026-02-14",
   "lastUpdated": "2026-02-14",
   "totalEndpoints": 546,

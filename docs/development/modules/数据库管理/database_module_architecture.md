@@ -10,7 +10,7 @@
 
 ## 功能完整性清单
 
-基于 1PanelV2OpenAPI.json 的 Database 相关标签共 42 个端点:
+基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 的 Database 相关标签共 42 个端点:
 
 ### 通用数据库操作 (Database Common - 3个端点)
 1. GET /databases - 获取数据库列表

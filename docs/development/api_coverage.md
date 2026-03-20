@@ -2,7 +2,7 @@
 
 ## 概览
 
-- 来源: docs/1PanelOpenAPI/1PanelV2OpenAPI.json
+- 来源: docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json
 - 端点总数: 546
 - API方法总数: 524
 - API客户端文件: 30

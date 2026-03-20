@@ -12,9 +12,25 @@
 
 ## UI链路分析
 
-- 入口: `lib/features/websites/websites_page.dart` -> `lib/features/websites/website_detail_page.dart` -> SSL Tab。
-- 当前仅展示单站点证书概览、自动续期开关、下载链接与 HTTPS JSON 编辑。
-- 证书列表、申请、上传、解析、更新与删除流程缺失。
+- 入口: `lib/features/websites/websites_page.dart` -> `lib/features/websites/website_detail_page.dart` -> SSL 管理页。
+- 当前已支持证书列表、创建、上传、申请、解析、更新、删除、下载以及网站 HTTPS 配置编辑。
+- 仍缺少 CA、ACME、DNS 账户、详情与日志等上游配套流程。
+
+## 严格审计状态 (2026-03-20)
+
+- 结论: `不完整适配`
+- 当前移动端比旧索引描述更完整，实际上已经具备:
+  - 证书列表
+  - 创建、上传、申请、解析、更新、删除、下载
+  - 网站 HTTPS 配置编辑
+  - 站点 SSL 页与网站证书中心的分离骨架
+- 但与上游对照后仍缺少:
+  - CA 证书管理
+  - ACME 账户管理
+  - DNS 账户管理
+  - 证书详情页与日志追踪
+  - 与上游一致的筛选、排序、批量操作
+- 详情见: `../网站管理-OpenResty/website_strict_audit_2026-03-20.md`
 
 ## 待改进项
 
@@ -24,7 +40,8 @@
 
 ## 重复代码检查
 
-- `WebsiteSSL` 模型在 `lib/data/models/website_models.dart` 与 `lib/data/models/ssl_models.dart` 重复且字段不一致，需要统一来源。
+- 当前代码中 `WebsiteSSL` 已统一来源于 `lib/data/models/ssl_models.dart`。
+- 旧版关于 `website_models.dart` 与 `ssl_models.dart` 双重定义 `WebsiteSSL` 的备注已过期，应视为文档未及时更新。
 
 ## 后续规划方向
 
@@ -50,4 +67,4 @@
 ---
 
 **文档版本**: 1.0
-**最后更新**: 2026-02-14
+**最后更新**: 2026-03-20

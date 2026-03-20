@@ -10,7 +10,7 @@
 
 ## 功能完整性清单
 
-基于 1PanelV2OpenAPI.json 的 Firewall 标签共 15 个端点:
+基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 的 Firewall 标签共 15 个端点:
 
 ### 防火墙服务管理
 1. GET /firewall - 获取防火墙状态

@@ -10,7 +10,7 @@
 
 ## 功能完整性清单
 
-基于 1PanelV2OpenAPI.json 的 Backup Account 标签共 25 个端点:
+基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 的 Backup Account 标签共 25 个端点:
 
 ### 备份账户管理
 1. GET /backup/accounts - 获取备份账户列表

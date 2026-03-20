@@ -10,7 +10,7 @@
 
 ## 功能完整性清单
 
-基于 1PanelV2OpenAPI.json 的 Process 标签共 2 个端点:
+基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 的 Process 标签共 2 个端点:
 
 ### 进程列表 (1端点)
 1. GET /processes - 获取进程列表

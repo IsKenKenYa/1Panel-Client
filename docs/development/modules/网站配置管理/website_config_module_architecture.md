@@ -9,7 +9,7 @@
 
 ## 功能完整性清单
 
-基于 1PanelV2OpenAPI.json，网站配置管理模块共包含 5 个端点:
+基于 `docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json`，网站配置管理模块共包含 5 个端点:
 
 ### Nginx配置 (4端点)
 1. GET /websites/:id/config/:type - 获取站点配置文件

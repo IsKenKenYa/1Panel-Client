@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../api/v2/ssl_v2.dart';
-import '../../api/v2/website_v2.dart';
-import '../../core/network/api_client_manager.dart';
 import '../../data/models/ssl_models.dart';
 import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
+import 'providers/website_ssl_provider.dart';
 
 class WebsiteSslPage extends StatelessWidget {
   final int websiteId;
@@ -19,119 +17,6 @@ class WebsiteSslPage extends StatelessWidget {
       create: (_) => WebsiteSslProvider(websiteId: websiteId)..loadAll(),
       child: _WebsiteSslBody(primaryDomain: primaryDomain),
     );
-  }
-}
-
-class WebsiteSslProvider extends ChangeNotifier {
-  final int websiteId;
-  SSLV2Api? _sslApi;
-  WebsiteV2Api? _websiteApi;
-
-  bool isLoading = false;
-  String? error;
-
-  WebsiteHttpsConfig? httpsConfig;
-  WebsiteSSL? websiteSsl;
-  List<WebsiteSSL> certificates = const [];
-
-  WebsiteSslProvider({required this.websiteId});
-
-  Future<void> _ensureApis() async {
-    _websiteApi ??= await ApiClientManager.instance.getWebsiteApi();
-    _sslApi ??= await ApiClientManager.instance.getSslApi();
-  }
-
-  Future<void> loadAll() async {
-    isLoading = true;
-    error = null;
-    notifyListeners();
-
-    try {
-      await _ensureApis();
-      await Future.wait([
-        loadHttpsConfig(),
-        loadWebsiteSsl(),
-        searchCertificates(),
-      ]);
-    } catch (e) {
-      error = e.toString();
-    } finally {
-      isLoading = false;
-      notifyListeners();
-    }
-  }
-
-  Future<void> loadHttpsConfig() async {
-    await _ensureApis();
-    httpsConfig = await _websiteApi!.getWebsiteHttps(websiteId);
-    notifyListeners();
-  }
-
-  Future<void> updateHttpsConfig(WebsiteHttpsUpdateRequest request) async {
-    await _ensureApis();
-    httpsConfig = await _websiteApi!.updateWebsiteHttps(websiteId: websiteId, request: request);
-    notifyListeners();
-  }
-
-  Future<void> loadWebsiteSsl() async {
-    await _ensureApis();
-    try {
-      final resp = await _sslApi!.getWebsiteSSLByWebsiteId(websiteId);
-      websiteSsl = resp.data;
-    } catch (_) {
-      websiteSsl = null;
-    }
-    notifyListeners();
-  }
-
-  Future<void> searchCertificates() async {
-    await _ensureApis();
-    final resp = await _sslApi!.searchWebsiteSSL(
-      WebsiteSSLSearch(page: 1, pageSize: 20, order: 'descending', orderBy: 'expire_date'),
-    );
-    certificates = resp.data?.items ?? const [];
-    notifyListeners();
-  }
-
-  Future<void> createCertificate(WebsiteSSLCreate request) async {
-    await _ensureApis();
-    await _sslApi!.createWebsiteSSL(request);
-    await searchCertificates();
-  }
-
-  Future<void> applyCertificate(WebsiteSSLApply request) async {
-    await _ensureApis();
-    await _sslApi!.applySSL(request);
-  }
-
-  Future<void> resolveCertificate(WebsiteSSLResolve request) async {
-    await _ensureApis();
-    await _sslApi!.resolveWebsiteSSL(request);
-  }
-
-  Future<void> updateCertificate(WebsiteSSLUpdate request) async {
-    await _ensureApis();
-    await _sslApi!.updateWebsiteSSL(request);
-    await searchCertificates();
-    await loadWebsiteSsl();
-  }
-
-  Future<void> uploadCertificate(WebsiteSSLUpload request) async {
-    await _ensureApis();
-    await _sslApi!.uploadSSL(request);
-    await searchCertificates();
-  }
-
-  Future<void> deleteCertificate(int id) async {
-    await _ensureApis();
-    await _sslApi!.deleteWebsiteSSL([id]);
-    await searchCertificates();
-  }
-
-  Future<String?> downloadCertificate(int id) async {
-    await _ensureApis();
-    final resp = await _sslApi!.downloadSSLFile(id);
-    return resp.data;
   }
 }
 

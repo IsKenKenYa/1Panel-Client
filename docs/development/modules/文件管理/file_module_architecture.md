@@ -10,7 +10,7 @@
 
 ## 功能完整性清单
 
-基于 1PanelV2OpenAPI.json 的 File 标签共 37 个端点:
+基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 的 File 标签共 37 个端点:
 
 ### 文件浏览与搜索
 1. POST /files/search - 搜索文件

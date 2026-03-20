@@ -13,10 +13,24 @@
 
 ## UI链路分析
 
-- 入口: `lib/features/websites/websites_page.dart` -> `lib/features/websites/website_detail_page.dart` -> 配置 Tab。
+- 入口: `lib/features/websites/websites_page.dart` -> `lib/features/websites/website_detail_page.dart` -> 配置管理页。
 - 现有 UI 为单一文本编辑器，支持拉取/保存配置与高级对话框（scope/operate）。
 - 配置内容以纯文本或 JSON 编辑，缺少语法校验、差异预览、备份与回滚入口。
-- PHP 版本切换能力未在 UI 中暴露。
+- PHP 版本切换已通过 runtime ID 文本输入暴露，但缺少可选列表、当前版本提示与切换风险说明。
+
+## 严格审计状态 (2026-03-20)
+
+- 结论: `不完整适配`
+- 上游对照显示 `frontend/src/views/website/website/config/basic` 下已有 30 个结构化子页面。
+- 当前移动端已新增 `WebsiteConfigCenterPage` 作为配置中心首页，并保留高级源码页。
+- 当前已覆盖:
+  - 配置中心导航骨架
+  - Nginx 配置文件读取与保存
+  - scope 参数加载与更新
+  - 手工输入 runtime ID 的 PHP 版本切换
+- 主要缺口:
+  - 域名/HTTPS/PHP/默认文档/目录/认证/重写/代理/缓存/CORS/重定向/负载均衡/防盗链/Real IP/流配置等结构化页面均未接入
+- 详情见: `../网站管理-OpenResty/website_strict_audit_2026-03-20.md`
 
 ## 待改进项
 
@@ -53,4 +67,4 @@
 ---
 
 **文档版本**: 1.0
-**最后更新**: 2026-02-14
+**最后更新**: 2026-03-20

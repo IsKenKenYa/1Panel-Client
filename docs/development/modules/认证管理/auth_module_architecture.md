@@ -9,7 +9,7 @@
 
 ## 功能完整性清单
 
-基于1PanelV2OpenAPI.json的8个端点：
+基于docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json的8个端点：
 
 ### 1. 用户登录模块 (2端点)
 
@@ -207,4 +207,4 @@ lib/data/models/auth_models.dart
 
 **文档版本**: 2.0
 **最后更新**: 2026-02-15
-**数据来源**: 1PanelV2OpenAPI.json
+**数据来源**: docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json

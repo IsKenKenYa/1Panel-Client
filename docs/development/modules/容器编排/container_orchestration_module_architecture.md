@@ -10,7 +10,7 @@
 
 ## 功能完整性清单
 
-基于 1PanelV2OpenAPI.json，容器编排模块共包含 33 个端点:
+基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json，容器编排模块共包含 33 个端点:
 
 ### Docker管理 (8端点)
 1. GET /docker/info - 获取Docker信息

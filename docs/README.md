@@ -19,7 +19,9 @@ docs/
 │   ├── GUIDE.md          # 用户指南
 │   └── TESTING.md        # 测试指南
 ├── 1PanelOpenAPI/        # API Documentation
-│   └── 1PanelV2OpenAPI.json  # Swagger/OpenAPI Spec
+│   └── 1PanelV1OpenAPI.json  # Legacy V1 OpenAPI Spec
+├── OpenSource/           # Upstream source submodules
+│   └── 1Panel/core/cmd/server/docs/swagger.json  # V2 Swagger/OpenAPI Spec
 ├── development/          # Development Documentation
 └── README.md            # This file
 ```
@@ -36,7 +38,7 @@ docs/
 
 ### For Developers
 
-- [API Documentation](1PanelOpenAPI/1PanelV2OpenAPI.json) - 1Panel V2 API Swagger specification
+- [API Documentation](OpenSource/1Panel/core/cmd/server/docs/swagger.json) - 1Panel V2 API Swagger specification from the 1Panel submodule
 - [Development Documentation](development/) - Technical architecture and development guides
 
 ### 中文文档

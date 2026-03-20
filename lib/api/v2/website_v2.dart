@@ -27,6 +27,12 @@ class WebsiteV2Api {
     return const <dynamic>[];
   }
 
+  static dynamic _extractRawData(Response<Map<String, dynamic>> response) {
+    final body = response.data;
+    if (body == null) return null;
+    return body['data'];
+  }
+
   /// 获取网站列表
   ///
   /// 获取所有网站列表
@@ -62,6 +68,14 @@ class WebsiteV2Api {
     );
   }
 
+  Future<List<WebsiteInfo>> listWebsites() async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/list'),
+    );
+    final list = _extractListData(response);
+    return list.map((e) => WebsiteInfo.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
   /// 获取网站详情
   ///
   /// 获取指定网站的详细信息
@@ -74,11 +88,111 @@ class WebsiteV2Api {
     return WebsiteInfo.fromJson(_extractMapData(response));
   }
 
+  Future<void> createWebsite(WebsiteCreate request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<void> updateWebsite(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/update'),
+      data: request,
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> getWebsiteOptions(Map<String, dynamic> request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/options'),
+      data: request,
+    );
+    final list = _extractListData(response);
+    return list.whereType<Map<String, dynamic>>().toList();
+  }
+
+  Future<List<Map<String, dynamic>>> preCheckWebsite(Map<String, dynamic> request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/check'),
+      data: request,
+    );
+    final list = _extractListData(response);
+    return list.whereType<Map<String, dynamic>>().toList();
+  }
+
   Future<void> deleteWebsite(int id) async {
     final operation = BatchDelete(ids: [id]);
     await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/websites/del'),
       data: operation.toJson(),
+    );
+  }
+
+  Future<void> batchOperateWebsites({
+    required List<int> ids,
+    required String operate,
+  }) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/batch/operate'),
+      data: {
+        'ids': ids,
+        'operate': operate,
+      },
+    );
+  }
+
+  Future<void> batchSetWebsiteGroup({
+    required List<int> ids,
+    required int groupId,
+  }) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/batch/group'),
+      data: {
+        'ids': ids,
+        'groupId': groupId,
+      },
+    );
+  }
+
+  Future<void> batchSetWebsiteHttps({
+    required List<int> ids,
+    required bool https,
+  }) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/batch/https'),
+      data: {
+        'ids': ids,
+        'https': https,
+      },
+    );
+  }
+
+  Future<void> changeDefaultServer({
+    required int id,
+  }) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/default/server'),
+      data: {'id': id},
+    );
+  }
+
+  Future<Map<String, dynamic>> getDefaultHtml(String type) async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/default/html/$type'),
+    );
+    return _extractMapData(response);
+  }
+
+  Future<void> updateDefaultHtml({
+    required String type,
+    required String content,
+  }) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/default/html/update'),
+      data: {
+        'type': type,
+        'content': content,
+      },
     );
   }
 
@@ -173,12 +287,16 @@ class WebsiteV2Api {
   Future<void> updateWebsiteDomainSsl({
     required int id,
     bool? ssl,
+    String? domain,
+    int? port,
   }) async {
     await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/websites/domains/update'),
       data: {
         'id': id,
         if (ssl != null) 'ssl': ssl,
+        if (domain != null) 'domain': domain,
+        if (port != null) 'port': port,
       },
     );
   }
@@ -188,6 +306,28 @@ class WebsiteV2Api {
       ApiConstants.buildApiPath('/websites/$websiteId/https'),
     );
     return WebsiteHttpsConfig.fromJson(_extractMapData(response));
+  }
+
+  Future<Map<String, dynamic>> getWebsiteResource(int websiteId) async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/resource/$websiteId'),
+    );
+    return _extractMapData(response);
+  }
+
+  Future<List<Map<String, dynamic>>> getWebsiteDatabases() async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/databases'),
+    );
+    final list = _extractListData(response);
+    return list.whereType<Map<String, dynamic>>().toList();
+  }
+
+  Future<void> changeWebsiteDatabase(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/databases'),
+      data: request,
+    );
   }
 
   Future<WebsiteHttpsConfig> updateWebsiteHttps({
@@ -212,6 +352,28 @@ class WebsiteV2Api {
     );
   }
 
+  Future<Map<String, dynamic>> getWebsiteDirectory(Map<String, dynamic> request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/dir'),
+      data: request,
+    );
+    return _extractMapData(response);
+  }
+
+  Future<void> updateWebsiteDirectory(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/dir/update'),
+      data: request,
+    );
+  }
+
+  Future<void> updateWebsiteDirectoryPermission(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/dir/permission'),
+      data: request,
+    );
+  }
+
   Future<Map<String, dynamic>> getWebsiteRewrite({
     required int websiteId,
     required String name,
@@ -224,6 +386,21 @@ class WebsiteV2Api {
       },
     );
     return _extractMapData(response);
+  }
+
+  Future<List<Map<String, dynamic>>> listCustomRewrite() async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/rewrite/custom'),
+    );
+    final list = _extractListData(response);
+    return list.whereType<Map<String, dynamic>>().toList();
+  }
+
+  Future<void> operateCustomRewrite(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/rewrite/custom'),
+      data: request,
+    );
   }
 
   Future<void> updateWebsiteRewrite({
@@ -249,6 +426,217 @@ class WebsiteV2Api {
       },
     );
     return _extractMapData(response);
+  }
+
+  Future<Map<String, dynamic>> getWebsiteAuthConfig(Map<String, dynamic> request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/auths'),
+      data: request,
+    );
+    return _extractMapData(response);
+  }
+
+  Future<List<Map<String, dynamic>>> getWebsitePathAuthConfig(Map<String, dynamic> request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/auths/path'),
+      data: request,
+    );
+    final list = _extractListData(response);
+    return list.whereType<Map<String, dynamic>>().toList();
+  }
+
+  Future<void> updateWebsiteAuthConfig(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/auths/update'),
+      data: request,
+    );
+  }
+
+  Future<void> updateWebsitePathAuthConfig(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/auths/path/update'),
+      data: request,
+    );
+  }
+
+  Future<Map<String, dynamic>> getWebsiteCorsConfig(int websiteId) async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/cors/$websiteId'),
+    );
+    return _extractMapData(response);
+  }
+
+  Future<void> updateWebsiteCorsConfig(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/cors/update'),
+      data: request,
+    );
+  }
+
+  Future<void> operateCrossSiteAccess(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/crosssite'),
+      data: request,
+    );
+  }
+
+  Future<Map<String, dynamic>> getWebsiteRealIpConfig(int websiteId) async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/realip/config/$websiteId'),
+    );
+    return _extractMapData(response);
+  }
+
+  Future<void> updateWebsiteRealIpConfig(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/realip/config'),
+      data: request,
+    );
+  }
+
+  Future<Map<String, dynamic>> getWebsiteLeechConfig(Map<String, dynamic> request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/leech'),
+      data: request,
+    );
+    return _extractMapData(response);
+  }
+
+  Future<void> updateWebsiteLeechConfig(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/leech/update'),
+      data: request,
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> getWebsiteRedirectConfig(Map<String, dynamic> request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/redirect'),
+      data: request,
+    );
+    final list = _extractListData(response);
+    return list.whereType<Map<String, dynamic>>().toList();
+  }
+
+  Future<void> updateWebsiteRedirectConfig(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/redirect/update'),
+      data: request,
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> getWebsiteLoadBalancers(int websiteId) async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/lbs'),
+      queryParameters: {'id': websiteId},
+    );
+    final list = _extractListData(response);
+    return list.whereType<Map<String, dynamic>>().toList();
+  }
+
+  Future<void> createWebsiteLoadBalancer(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/lbs/create'),
+      data: request,
+    );
+  }
+
+  Future<void> updateWebsiteLoadBalancer(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/lbs/update'),
+      data: request,
+    );
+  }
+
+  Future<void> deleteWebsiteLoadBalancer(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/lbs/del'),
+      data: request,
+    );
+  }
+
+  Future<Map<String, dynamic>> getWebsiteProxyCacheConfig(int websiteId) async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/proxy/config/$websiteId'),
+    );
+    return _extractMapData(response);
+  }
+
+  Future<void> updateWebsiteProxyCacheConfig(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/proxy/config'),
+      data: request,
+    );
+  }
+
+  Future<void> clearWebsiteProxyCache(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/proxy/clear'),
+      data: request,
+    );
+  }
+
+  Future<void> updateWebsiteStreamConfig(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/stream/update'),
+      data: request,
+    );
+  }
+
+  Future<void> execWebsiteComposer(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/exec/composer'),
+      data: request,
+    );
+  }
+
+  Future<Map<String, dynamic>> operateWebsiteLog(Map<String, dynamic> request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/log'),
+      data: request,
+    );
+    final raw = _extractRawData(response);
+    if (raw is Map<String, dynamic>) return raw;
+    return <String, dynamic>{};
+  }
+
+  Future<List<Map<String, dynamic>>> searchDnsAccounts(Map<String, dynamic> request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/dns/search'),
+      data: request,
+    );
+    final data = _extractMapData(response);
+    final items = data['items'];
+    if (items is List) {
+      return items.whereType<Map<String, dynamic>>().toList();
+    }
+    return const <Map<String, dynamic>>[];
+  }
+
+  Future<List<Map<String, dynamic>>> searchAcmeAccounts(Map<String, dynamic> request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/acme/search'),
+      data: request,
+    );
+    final data = _extractMapData(response);
+    final items = data['items'];
+    if (items is List) {
+      return items.whereType<Map<String, dynamic>>().toList();
+    }
+    return const <Map<String, dynamic>>[];
+  }
+
+  Future<List<Map<String, dynamic>>> searchCertificateAuthorities(Map<String, dynamic> request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/ca/search'),
+      data: request,
+    );
+    final data = _extractMapData(response);
+    final items = data['items'];
+    if (items is List) {
+      return items.whereType<Map<String, dynamic>>().toList();
+    }
+    return const <Map<String, dynamic>>[];
   }
 
   Future<void> updateWebsiteProxy({

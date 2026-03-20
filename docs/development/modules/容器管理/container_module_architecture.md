@@ -11,7 +11,7 @@
 
 ## 功能完整性清单
 
-基于 1PanelV2OpenAPI.json 的 Container 相关标签共 50+ 个端点:
+基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 的 Container 相关标签共 50+ 个端点:
 
 ### 容器管理 (Container - 19个端点)
 1. POST /containers - 创建容器

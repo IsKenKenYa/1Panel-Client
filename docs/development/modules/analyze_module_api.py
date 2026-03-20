@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 模块API端点分析脚本
-从1PanelV2OpenAPI.json提取指定模块的API端点详细信息
+从 1Panel 子模块中的 swagger.json 提取指定模块的API端点详细信息
 
 用法:
     python analyze_module_api.py <模块关键词> [输出目录]
@@ -21,7 +21,7 @@ from pathlib import Path
 from datetime import datetime
 
 SCRIPT_DIR = Path(__file__).parent
-OPENAPI_FILE = SCRIPT_DIR.parent.parent / "1PanelOpenAPI" / "1PanelV2OpenAPI.json"
+OPENAPI_FILE = SCRIPT_DIR.parent.parent / "OpenSource" / "1Panel" / "core" / "cmd" / "server" / "docs" / "swagger.json"
 
 MODULE_PATH_MAPPING = {
     'dashboard': '仪表盘',
@@ -62,6 +62,11 @@ KEYWORD_MATCHERS = {
 }
 
 def load_openapi():
+    if not OPENAPI_FILE.exists():
+        raise FileNotFoundError(
+            "未找到 1Panel Swagger 文档，请先初始化子模块: "
+            "git submodule update --init --recursive docs/OpenSource/1Panel"
+        )
     with open(OPENAPI_FILE, 'r', encoding='utf-8') as f:
         return json.load(f)
 
@@ -139,7 +144,7 @@ def generate_markdown_report(keyword, apis):
     lines = [
         f"# {keyword.upper()} 模块API端点详细分析",
         "",
-        f"> 基于 1PanelV2OpenAPI.json 自动生成",
+        f"> 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成",
         f"> 生成时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
         "",
         "## API端点总览",
@@ -236,7 +241,7 @@ def generate_json_report(keyword, apis):
 
 def main():
     parser = argparse.ArgumentParser(
-        description='从1PanelV2OpenAPI.json提取指定模块的API端点信息',
+        description='从 1Panel 子模块 swagger.json 提取指定模块的API端点信息',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 示例:
@@ -256,8 +261,12 @@ def main():
     
     keyword = args.keyword.lower()
     
-    print(f"正在加载OpenAPI规范文件: {OPENAPI_FILE}")
-    openapi_data = load_openapi()
+    print(f"正在加载 OpenAPI 规范文件: {OPENAPI_FILE}")
+    try:
+        openapi_data = load_openapi()
+    except FileNotFoundError as e:
+        print(f"错误: {e}", file=sys.stderr)
+        sys.exit(1)
     
     print(f"正在提取 '{keyword}' 相关API端点...")
     module_apis = extract_module_apis(openapi_data, keyword)

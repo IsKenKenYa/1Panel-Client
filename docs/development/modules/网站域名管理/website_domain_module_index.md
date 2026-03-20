@@ -12,9 +12,20 @@
 
 ## UI链路分析
 
-- 入口: `lib/features/websites/websites_page.dart` -> `lib/features/websites/website_detail_page.dart` -> 域名 Tab。
+- 入口: `lib/features/websites/websites_page.dart` -> `lib/features/websites/website_detail_page.dart` -> 域名管理页。
 - 当前支持域名列表、添加域名、删除域名、SSL 开关。
 - 域名更新、默认域名设置、DNS 解析校验与批量管理能力缺失。
+
+## 严格审计状态 (2026-03-20)
+
+- 结论: `不完整适配`
+- 当前移动端已形成独立 `WebsiteDomainManagementPage` MVP，并覆盖 4 个域名基础接口中的列表、添加、删除、SSL 开关。
+- 主要缺口:
+  - 域名更新入口缺失
+  - 批量域名录入与格式校验缺失
+  - 默认域名与解析状态提示未形成完整流程
+  - 缺少与上游一致的风险提示和域名编辑体验
+- 详情见: `../网站管理-OpenResty/website_strict_audit_2026-03-20.md`
 
 ## 待改进项
 
@@ -50,4 +61,4 @@
 ---
 
 **文档版本**: 1.0
-**最后更新**: 2026-02-14
+**最后更新**: 2026-03-20

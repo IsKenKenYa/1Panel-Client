@@ -6,7 +6,7 @@
 
 ## 子模块结构
 
-基于1PanelV2OpenAPI.json，Dashboard标签共12个端点：
+基于docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json，Dashboard标签共12个端点：
 
 | 子模块 | 端点数 | API方法 | 说明 |
 |--------|--------|---------|------|
@@ -86,4 +86,4 @@
 
 **文档版本**: 2.0
 **最后更新**: 2026-02-15
-**数据来源**: 1PanelV2OpenAPI.json
+**数据来源**: docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json
