@@ -2831,6 +2831,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get containerFilter => '筛选容器';
 
   @override
+  String get containerNetworkSubnetLabel => '子网';
+
+  @override
+  String get containerNetworkSubnetHint => '例如 172.20.0.0/16';
+
+  @override
+  String get containerNetworkGatewayLabel => '网关';
+
+  @override
+  String get containerNetworkGatewayHint => '例如 172.20.0.1';
+
+  @override
+  String get containerRepoUrlExample => '例如 https://github.com/user/repo';
+
+  @override
+  String get containerTemplateContentHint => 'YAML 内容';
+
+  @override
   String get containerCreate => '创建容器';
 
   @override

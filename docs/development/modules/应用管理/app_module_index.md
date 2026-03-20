@@ -15,29 +15,36 @@ Open1PanelApp 的应用管理模块负责应用商店浏览、应用安装、配
 - 用户手册: docs/development/modules/应用管理/app_user_manual.md
 - FAQ: docs/development/modules/应用管理/app_faq.md
 
-## 适配检查结果（基于 1Panel V2 swagger.json，2026-03-13）
+## 适配检查结果（基于 1Panel V2 OpenAPI.json，2026-03-20）
 
-**OpenAPI 缺失（swagger 有）**
+**OpenAPI 缺失（swagger 有，客户端已兼容）**
 - `GET` /apps/detail/node/{appKey}/{version}
 
-**客户端缺失（swagger 有）**
+**客户端缺失（OpenAPI 有）**
 - （无）
 
-**客户端多余（swagger 无）**
+**客户端多余（OpenAPI 无）**
 - （无）
 
-**参数命名差异（路径一致）**
-- `/apps/icon/{key}`（swagger） vs `/apps/icon/{appId}`（OpenAPI 与客户端）
-- `/apps/installed/params/{appInstallId}`（swagger） vs `/apps/installed/params/{id}`（客户端）
+**契约说明（已按 OpenAPI 收口）**
+- `/apps/installed/config/update` 仅发送 `installID` 与可选 `webUI`
+- `/apps/installed/params/update` 承载高级配置、容器名、CPU/内存与 `params`
+- `/apps/installed/port/change` 使用单端口请求体 `{key,name,port}`
+- `/apps/installed/ignore` 的 `scope` 仅允许 `all | version`
+
+**前端未接入（客户端已有能力）**
+- `/core/settings/apps/store/config`
+- `/core/settings/apps/store/update`
 
 说明:
 - `/apps/detail/node/{appKey}/{version}` 已在客户端实现，但 OpenAPI 未覆盖。
-- `/core/settings/apps/store/update` 已在客户端实现。
+- 卸载前检查 `/apps/installed/delete/check/:appInstallId` 已接入列表页和详情页卸载确认。
+- 已安装应用列表已改为分页拉全，不再默认截断前 100 条。
+- `InstalledAppDetailPage` 已改为通过 `InstalledAppDetailProvider` 编排多接口加载与局部失败。
 - `/dashboard/app/launcher*` 由仪表盘模块的 `DashboardV2Api` 提供，不在 App 模块重复实现。
 
 ## 后续规划
-- 应用商店搜索与分类功能增强
-- 应用依赖管理
+- 应用商店配置页接入
 - 应用版本回滚功能
 - 应用日志查看
 - 应用性能监控

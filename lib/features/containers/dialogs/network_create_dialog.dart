@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
 
 class NetworkCreateDialog extends StatefulWidget {
   const NetworkCreateDialog({super.key});
@@ -28,8 +29,9 @@ class _NetworkCreateDialogState extends State<NetworkCreateDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return AlertDialog(
-      title: const Text('Create Network'),
+      title: Text(l10n.orchestrationCreateNetwork),
       content: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -38,23 +40,23 @@ class _NetworkCreateDialogState extends State<NetworkCreateDialog> {
             children: [
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l10n.commonName,
+                  border: const OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a name';
+                    return l10n.serverFormRequired;
                   }
                   return null;
                 },
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: _selectedDriver,
-                decoration: const InputDecoration(
-                  labelText: 'Driver',
-                  border: OutlineInputBorder(),
+                initialValue: _selectedDriver,
+                decoration: InputDecoration(
+                  labelText: l10n.commonDriver,
+                  border: const OutlineInputBorder(),
                 ),
                 items: _drivers.map((driver) {
                   return DropdownMenuItem(
@@ -71,17 +73,19 @@ class _NetworkCreateDialogState extends State<NetworkCreateDialog> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _subnetController,
-                decoration: const InputDecoration(
-                  labelText: 'Subnet (e.g., 172.20.0.0/16)',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l10n.containerNetworkSubnetLabel,
+                  hintText: l10n.containerNetworkSubnetHint,
+                  border: const OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _gatewayController,
-                decoration: const InputDecoration(
-                  labelText: 'Gateway (e.g., 172.20.0.1)',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l10n.containerNetworkGatewayLabel,
+                  hintText: l10n.containerNetworkGatewayHint,
+                  border: const OutlineInputBorder(),
                 ),
               ),
             ],
@@ -91,7 +95,7 @@ class _NetworkCreateDialogState extends State<NetworkCreateDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(l10n.commonCancel),
         ),
         FilledButton(
           onPressed: () {
@@ -104,7 +108,7 @@ class _NetworkCreateDialogState extends State<NetworkCreateDialog> {
               });
             }
           },
-          child: const Text('Create'),
+          child: Text(l10n.commonCreate),
         ),
       ],
     );

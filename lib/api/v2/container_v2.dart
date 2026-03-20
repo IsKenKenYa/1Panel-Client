@@ -4,7 +4,6 @@ import '../../core/config/api_constants.dart';
 import '../../data/models/container_models.dart';
 import '../../data/models/common_models.dart';
 import '../../data/models/setting_models.dart';
-import '../../data/models/runtime_models.dart';
 
 /// API响应解析帮助类
 class _Parser {
@@ -78,6 +77,14 @@ class ContainerV2Api {
   Future<Response> createContainer(ContainerOperate request) async {
     return await _client.post(
       ApiConstants.buildApiPath('/containers'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 通过命令创建容器
+  Future<Response> createContainerByCommand(ContainerCreateByCommand request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/command'),
       data: request.toJson(),
     );
   }

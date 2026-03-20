@@ -132,7 +132,7 @@ class AppService extends BaseComponent {
     });
   }
 
-  Future<void> updateAppInstallConfig(Map<String, dynamic> config) {
+  Future<void> updateAppInstallConfig(AppConfigUpdateRequest config) {
     return runGuarded(() async {
       final api = await _ensureApi();
       await api.updateAppInstallConfig(config);
@@ -223,14 +223,14 @@ class AppService extends BaseComponent {
     });
   }
 
-  Future<void> updateAppParams(Map<String, dynamic> request) {
+  Future<void> updateAppParams(AppInstalledParamsUpdateRequest request) {
     return runGuarded(() async {
       final api = await _ensureApi();
       await api.updateAppParams(request);
     });
   }
 
-  Future<void> changeAppPort(Map<String, dynamic> request) {
+  Future<void> changeAppPort(AppPortUpdateRequest request) {
     return runGuarded(() async {
       final api = await _ensureApi();
       await api.changeAppPort(request);

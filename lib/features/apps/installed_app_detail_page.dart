@@ -1,20 +1,20 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:provider/provider.dart';
 import 'package:onepanelapp_app/config/app_router.dart';
 import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/core/services/logger/logger_service.dart';
 import 'package:onepanelapp_app/data/models/app_config_models.dart';
 import 'package:onepanelapp_app/data/models/app_models.dart';
 import 'package:onepanelapp_app/features/apps/app_service.dart';
 import 'package:onepanelapp_app/features/apps/dialogs/edit_app_config_dialog.dart';
+import 'package:onepanelapp_app/features/apps/providers/installed_app_detail_provider.dart';
 import 'package:onepanelapp_app/features/apps/providers/installed_apps_provider.dart';
 import 'package:onepanelapp_app/features/apps/widgets/app_icon.dart';
-import 'package:onepanelapp_app/features/containers/container_service.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class InstalledAppDetailPage extends StatefulWidget {
+class InstalledAppDetailPage extends StatelessWidget {
   final AppInstallInfo? appInfo;
   final String? appId;
 
@@ -22,167 +22,47 @@ class InstalledAppDetailPage extends StatefulWidget {
     super.key,
     this.appInfo,
     this.appId,
-  }) : assert(appInfo != null || appId != null,
-            'Either appInfo or appId must be provided');
+  }) : assert(appInfo != null || appId != null);
 
   @override
-  State<InstalledAppDetailPage> createState() => _InstalledAppDetailPageState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => InstalledAppDetailProvider(
+        appService: context.read<AppService>(),
+      )..initialize(appInfo: appInfo, appId: appId),
+      child: const _InstalledAppDetailView(),
+    );
+  }
 }
 
-class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
-  final AppService _appService = AppService();
-  final ContainerService _containerService = ContainerService();
-
-  AppInstallInfo? _appInfo;
-  AppItem? _storeDetail;
-  List<AppServiceResponse>? _services;
-  AppConfig? _appConfig;
-  List<AppVersion>? _updateVersions;
-  bool _loading = true;
-  String? _error;
+class _InstalledAppDetailView extends StatefulWidget {
+  const _InstalledAppDetailView();
 
   @override
-  void initState() {
-    super.initState();
-    if (widget.appInfo != null) {
-      _appInfo = widget.appInfo;
-    }
-    _loadData();
-  }
+  State<_InstalledAppDetailView> createState() => _InstalledAppDetailViewState();
+}
 
-  Future<void> _loadData() async {
-    final l10n = context.l10n;
-    setState(() {
-      _loading = true;
-      _error = null;
-    });
-
-    try {
-      // 1. Ensure we have AppInstallInfo
-      if (_appInfo == null && widget.appId != null) {
-        _appInfo = await _appService.getAppInstallInfo(widget.appId!);
-      }
-
-      if (_appInfo == null) {
-        if (mounted) {
-          setState(() {
-            _error = l10n.commonLoadFailedTitle;
-            _loading = false;
-          });
-        }
-        return;
-      }
-
-      // 2. Fetch Store Detail (for README)
-      // Use appKey (or key) and version. If version is missing, use 'latest'.
-      // Also need 'type' which might be in appType.
-      final appKey = _appInfo!.appKey;
-      final version = _appInfo!.version ?? 'latest';
-      // Default to 'app' type if unknown, but usually it's passed or can be inferred?
-      // AppInstallInfo has appType.
-      final type = _appInfo!.appType ?? 'app';
-
-      if (appKey != null) {
-        try {
-          // getAppDetail requires appId (string), version, type.
-          // Wait, getAppDetail first argument is 'appId'. Is it the store ID or the key?
-          // Looking at AppService.getAppDetail signature: (String appId, String version, String type).
-          // In AppDetailPage it uses app.id.toString().
-          // AppInstallInfo has appId (int).
-          if (_appInfo!.appId != null) {
-             _storeDetail = await _appService.getAppDetail(
-              _appInfo!.appId!.toString(),
-              version,
-              type,
-            );
-          }
-        } catch (e) {
-          appLogger.wWithPackage(
-            'features.apps.installed_app_detail_page',
-            'Failed to load store detail',
-            error: e,
-          );
-        }
-      }
-
-      // 3. Fetch Services
-      List<AppServiceResponse> services = [];
-      if (appKey != null) {
-        try {
-          services = await _appService.getAppServices(appKey);
-        } catch (e) {
-          appLogger.wWithPackage(
-            'features.apps.installed_app_detail_page',
-            'Failed to load services',
-            error: e,
-          );
-        }
-      }
-
-      // 4. Fetch Config
-      AppConfig? config;
-      if (_appInfo!.id != null) {
-        try {
-          config = await _appService.getAppInstallParams(_appInfo!.id.toString());
-        } catch (e) {
-          appLogger.wWithPackage(
-            'features.apps.installed_app_detail_page',
-            'Failed to load config',
-            error: e,
-          );
-        }
-      }
-
-      // 5. Check Updates
-      List<AppVersion>? updateVersions;
-      if (_appInfo!.canUpdate == true && _appInfo!.id != null) {
-        try {
-          updateVersions = await _appService.getAppUpdateVersions(_appInfo!.id.toString());
-        } catch (e) {
-          appLogger.wWithPackage(
-            'features.apps.installed_app_detail_page',
-            'Failed to load update versions',
-            error: e,
-          );
-        }
-      }
-
-      if (mounted) {
-        setState(() {
-          _services = services;
-          _appConfig = config;
-          _updateVersions = updateVersions;
-          _loading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _error = e.toString();
-          _loading = false;
-        });
-      }
-    }
+class _InstalledAppDetailViewState extends State<_InstalledAppDetailView> {
+  Future<void> _refresh() {
+    return context.read<InstalledAppDetailProvider>().refresh();
   }
 
   Future<void> _handleUpgrade() async {
-    if (_appInfo?.id == null) return;
-    
     final l10n = context.l10n;
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final provider = context.read<InstalledAppsProvider>();
+    final detailProvider = context.read<InstalledAppDetailProvider>();
+    final installedProvider = context.read<InstalledAppsProvider>();
+    final app = detailProvider.appInfo;
+    if (app?.id == null) return;
 
-    // If multiple versions, we could show a selection dialog.
-    // For now, assume update to latest or the one provided by API implicitly.
-    final targetVersion = _updateVersions?.isNotEmpty == true 
-        ? _updateVersions!.first.version 
+    final targetVersion = detailProvider.updateVersions.isNotEmpty
+        ? detailProvider.updateVersions.first.version
         : 'latest';
 
     final action = await showDialog<String>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (_) => AlertDialog(
         title: Text(l10n.appUpdateTitle),
-        content: Text(l10n.appUpdateConfirm(_appInfo!.name ?? '', targetVersion)),
+        content: Text(l10n.appUpdateConfirm(app?.name ?? '', targetVersion)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, 'ignore'),
@@ -204,21 +84,19 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
       await _handleIgnoreUpdate();
       return;
     }
-
     if (action != 'upgrade') return;
 
     try {
-      await provider.updateApp(_appInfo!.id.toString());
+      await installedProvider.updateApp(app!.id.toString());
       if (mounted) {
-        scaffoldMessenger.showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.appUpdateSuccess)),
         );
-        // Refresh
-        _loadData();
       }
+      await detailProvider.refresh();
     } catch (e) {
       if (mounted) {
-        scaffoldMessenger.showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.appUpdateFailed(e.toString()))),
         );
       }
@@ -226,14 +104,16 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
   }
 
   Future<void> _handleIgnoreUpdate() async {
-    if (_appInfo?.id == null) return;
     final l10n = context.l10n;
-    final provider = context.read<InstalledAppsProvider>();
-    final controller = TextEditingController();
+    final detailProvider = context.read<InstalledAppDetailProvider>();
+    final installedProvider = context.read<InstalledAppsProvider>();
+    final app = detailProvider.appInfo;
+    if (app?.id == null) return;
 
+    final controller = TextEditingController();
     final reason = await showDialog<String>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (_) => AlertDialog(
         title: Text(l10n.appIgnoreUpdate),
         content: TextField(
           controller: controller,
@@ -258,13 +138,13 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
     if (reason == null || reason.isEmpty) return;
 
     try {
-      await provider.ignoreUpdate(_appInfo!.id!, reason);
+      await installedProvider.ignoreUpdate(app!.id!, reason);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.appIgnoreUpdateSuccess)),
         );
-        _loadData();
       }
+      await detailProvider.refresh();
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -274,40 +154,37 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
     }
   }
 
-  Future<void> _handleEditConfig() async {
-    if (_appConfig == null || _appInfo?.id == null) return;
-
+  Future<void> _handleEditConfig(AppConfig config, AppInstallInfo appInfo) async {
     final changed = await showDialog<bool>(
       context: context,
-      builder: (context) => EditAppConfigDialog(
-        appInstallId: _appInfo!.id!,
-        appConfig: _appConfig!,
-        httpPort: _appInfo!.httpPort,
-        httpsPort: _appInfo!.httpsPort,
+      builder: (_) => EditAppConfigDialog(
+        appInstallId: appInfo.id!,
+        appConfig: config,
+        appKey: appInfo.appKey ?? '',
+        appName: appInfo.name ?? appInfo.appName ?? '',
+        httpPort: appInfo.httpPort,
+        httpsPort: appInfo.httpsPort,
       ),
     );
 
     if (changed == true) {
-      _loadData();
+      await _refresh();
     }
   }
 
   Future<void> _showConnectionInfo() async {
-    if (_appInfo?.name == null || _appInfo?.appKey == null) return;
     final l10n = context.l10n;
     try {
-      final info = await _appService.getAppConnInfo(_appInfo!.name!, _appInfo!.appKey!);
+      final info = await context.read<InstalledAppDetailProvider>().getConnectionInfo();
       if (!mounted) return;
       final jsonText = const JsonEncoder.withIndent('  ').convert(info);
       await showDialog(
         context: context,
-        builder: (context) => AlertDialog(
+        builder: (_) => AlertDialog(
           title: Text(l10n.appConnInfo),
           content: SizedBox(
             width: double.maxFinite,
-            child: SingleChildScrollView(
-              child: SelectableText(jsonText),
-            ),
+            child: SingleChildScrollView(child: SelectableText(jsonText)),
           ),
           actions: [
             TextButton(
@@ -326,145 +203,136 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
     }
   }
 
-  Future<void> _handleAction(String operation) async {
-    if (_appInfo == null || _appInfo!.id == null) return;
-
+  Future<void> _openWeb(String urlString) async {
     final l10n = context.l10n;
-    final provider = context.read<InstalledAppsProvider>();
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final navigator = Navigator.of(context);
+    final url = Uri.tryParse(urlString);
+    if (url == null) return;
 
     try {
-      if (operation == 'uninstall') {
-        final confirmed = await showDialog<bool>(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text(l10n.appActionUninstall),
-            content: Text(l10n.appUninstallConfirm),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: Text(l10n.commonCancel),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: Text(l10n.commonConfirm),
-              ),
-            ],
-          ),
+      final ok = await launchUrl(url, mode: LaunchMode.externalApplication);
+      if (!ok && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.appOperateFailed(l10n.commonUnknownError))),
         );
-
-        if (confirmed != true) return;
-
-        await provider.uninstallApp(_appInfo!.id.toString());
-        if (mounted) {
-          navigator.pop(); // Close detail page
-          scaffoldMessenger.showSnackBar(
-            SnackBar(content: Text(l10n.appOperateSuccess)),
-          );
-        }
-      } else {
-        await provider.operateApp(_appInfo!.id.toString(), operation);
-        scaffoldMessenger.showSnackBar(
-          SnackBar(content: Text(l10n.appOperateSuccess)),
-        );
-        // Refresh data (status might change)
-        // We can just re-fetch app info
-        if (_appInfo?.id != null) {
-           final newInfo = await _appService.getAppInstallInfo(_appInfo!.id.toString());
-           if(mounted) {
-             setState(() {
-               _appInfo = newInfo;
-             });
-           }
-        }
       }
     } catch (e) {
       if (mounted) {
-        scaffoldMessenger.showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.appOperateFailed(e.toString()))),
         );
       }
     }
   }
 
-  Future<void> _openWeb() async {
-    if (_appInfo?.webUI == null) return;
-    final l10n = context.l10n;
-    // webUI might be just "http://IP:PORT" or just port?
-    // Usually it's a full URL or we need to construct it.
-    // Assuming it's a full URL or at least has http prefix.
-    // If not, we might need to prepend http://<server_ip>
-    // But for now let's assume it's usable.
-    
-    // Note: The backend usually returns a partial URL or template.
-    // But let's try to launch it.
-    
-    final urlString = _appInfo!.webUI!;
-    final Uri? url = Uri.tryParse(urlString);
-    
-    if (url != null) {
-       try {
-         if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
-            if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(l10n.appOperateFailed(l10n.commonUnknownError))),
-              );
-            }
-         }
-       } catch (e) {
-         if (mounted) {
-           ScaffoldMessenger.of(context).showSnackBar(
-             SnackBar(content: Text(l10n.appOperateFailed(e.toString()))),
-           );
-         }
-       }
-    }
-  }
-
   Future<void> _openContainer() async {
-    if (_appInfo?.container == null) return;
-    
     final l10n = context.l10n;
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-
-    // Show loading indicator
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (ctx) => const Center(child: CircularProgressIndicator()),
+      builder: (_) => const Center(child: CircularProgressIndicator()),
     );
 
     try {
-      final containers = await _containerService.listContainers();
-      // Filter by name. _appInfo.container is the name.
-      final containerName = _appInfo!.container!;
-      
-      try {
-        final container = containers.firstWhere((c) => c.name == containerName || c.name == '/$containerName'); // Sometimes names have leading slash
-        
-        if (mounted) {
-          Navigator.pop(context); // Close loading
-          Navigator.pushNamed(
-            context,
-            AppRoutes.containerDetail,
-            arguments: container,
-          );
-        }
-      } catch (e) {
-         if (mounted) {
-          Navigator.pop(context); // Close loading
-          scaffoldMessenger.showSnackBar(
-            SnackBar(content: Text(l10n.notFoundDesc)), // Or "Container not found"
-          );
-        }
+      final container = await context.read<InstalledAppDetailProvider>().findInstalledContainer();
+      if (!mounted) return;
+      Navigator.pop(context);
+      if (container == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.notFoundDesc)),
+        );
+        return;
       }
 
+      Navigator.pushNamed(
+        context,
+        AppRoutes.containerDetail,
+        arguments: container,
+      );
+    } catch (e) {
+      if (!mounted) return;
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${l10n.commonLoadFailedTitle}: $e')),
+      );
+    }
+  }
+
+  Future<void> _handleOperate(String operation) async {
+    final l10n = context.l10n;
+    final detailProvider = context.read<InstalledAppDetailProvider>();
+    final installedProvider = context.read<InstalledAppsProvider>();
+    final app = detailProvider.appInfo;
+    if (app?.id == null) return;
+
+    try {
+      await installedProvider.operateApp(app!.id.toString(), operation);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.appOperateSuccess)),
+        );
+      }
+      await detailProvider.syncInstallInfo();
     } catch (e) {
       if (mounted) {
-        Navigator.pop(context); // Close loading
-        scaffoldMessenger.showSnackBar(
-          SnackBar(content: Text('${l10n.commonLoadFailedTitle}: $e')),
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.appOperateFailed(e.toString()))),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleUninstall() async {
+    final l10n = context.l10n;
+    final detailProvider = context.read<InstalledAppDetailProvider>();
+    final installedProvider = context.read<InstalledAppsProvider>();
+    final app = detailProvider.appInfo;
+    if (app?.id == null) return;
+
+    Map<String, dynamic> uninstallCheck = const {};
+    try {
+      uninstallCheck = await installedProvider.checkUninstall(app!.id.toString());
+    } catch (_) {
+      uninstallCheck = const {};
+    }
+
+    final String checkText = uninstallCheck.isEmpty
+        ? ''
+        : '\n\n${const JsonEncoder.withIndent('  ').convert(uninstallCheck)}';
+
+    if (!mounted) return;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(l10n.appActionUninstall),
+        content: SingleChildScrollView(
+          child: SelectableText('${l10n.appUninstallConfirm}$checkText'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l10n.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.commonConfirm),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    try {
+      await installedProvider.uninstallApp(app!.id.toString());
+      if (!mounted) return;
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.appOperateSuccess)),
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.appOperateFailed(e.toString()))),
         );
       }
     }
@@ -474,65 +342,201 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(l10n.appDetailTitle),
-          bottom: TabBar(
-            tabs: [
-              Tab(text: l10n.appTabInfo), // "概览"
-              Tab(text: l10n.appTabConfig), // "配置"
-            ],
-          ),
-          actions: [
-            IconButton(
-              onPressed: _loadData,
-              icon: const Icon(Icons.refresh),
+    return Consumer<InstalledAppDetailProvider>(
+      builder: (context, provider, _) {
+        final appInfo = provider.appInfo;
+        final config = provider.appConfig;
+
+        return DefaultTabController(
+          length: 2,
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text(l10n.appDetailTitle),
+              bottom: TabBar(
+                tabs: [
+                  Tab(text: l10n.appTabInfo),
+                  Tab(text: l10n.appTabConfig),
+                ],
+              ),
+              actions: [
+                IconButton(
+                  onPressed: _refresh,
+                  icon: const Icon(Icons.refresh),
+                  tooltip: l10n.commonRefresh,
+                ),
+              ],
             ),
-          ],
-        ),
-        body: TabBarView(
-          children: [
-            _buildBody(l10n),
-            _buildConfigTab(l10n),
-          ],
-        ),
-        bottomNavigationBar: _buildBottomBar(l10n),
-      ),
+            body: TabBarView(
+              children: [
+                _InfoTab(
+                  appInfo: appInfo,
+                  loading: provider.loading,
+                  error: provider.error,
+                  storeDetail: provider.storeDetail,
+                  storeDetailError: provider.storeDetailError,
+                  services: provider.services,
+                  servicesError: provider.servicesError,
+                  updateVersions: provider.updateVersions,
+                  onShowConnInfo: _showConnectionInfo,
+                  onUpgrade: _handleUpgrade,
+                ),
+                _ConfigTab(
+                  appInfo: appInfo,
+                  appConfig: config,
+                  loading: provider.loading,
+                  error: provider.error,
+                  configError: provider.configError,
+                  onEdit: (cfg, info) => _handleEditConfig(cfg, info),
+                ),
+              ],
+            ),
+            bottomNavigationBar: _BottomBar(
+              appInfo: appInfo,
+              loading: provider.loading,
+              onOpenWeb: _openWeb,
+              onOpenContainer: _openContainer,
+              onStart: () => _handleOperate('start'),
+              onStop: () => _handleOperate('stop'),
+              onRestart: () => _handleOperate('restart'),
+              onUninstall: _handleUninstall,
+            ),
+          ),
+        );
+      },
     );
   }
+}
 
-  Widget _buildConfigTab(AppLocalizations l10n) {
-    if (_loading && _appConfig == null) {
+class _InfoTab extends StatelessWidget {
+  final AppInstallInfo? appInfo;
+  final bool loading;
+  final String? error;
+  final AppItem? storeDetail;
+  final String? storeDetailError;
+  final List<AppServiceResponse> services;
+  final String? servicesError;
+  final List<AppVersion> updateVersions;
+  final VoidCallback onShowConnInfo;
+  final VoidCallback onUpgrade;
+
+  const _InfoTab({
+    required this.appInfo,
+    required this.loading,
+    required this.error,
+    required this.storeDetail,
+    required this.storeDetailError,
+    required this.services,
+    required this.servicesError,
+    required this.updateVersions,
+    required this.onShowConnInfo,
+    required this.onUpgrade,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
+    if (loading && appInfo == null) {
       return const Center(child: CircularProgressIndicator());
     }
-
-    if (_error != null && _appConfig == null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(l10n.commonLoadFailedTitle),
-            const SizedBox(height: 8),
-            Text(_error!),
-            const SizedBox(height: 16),
-            FilledButton(
-              onPressed: _loadData,
-              child: Text(l10n.commonRetry),
-            ),
-          ],
-        ),
-      );
+    if (error != null && appInfo == null) {
+      return Center(child: Text('${l10n.commonLoadFailedTitle}: $error'));
     }
-
-    if (_appConfig == null) {
+    if (appInfo == null) {
       return Center(child: Text(l10n.commonEmpty));
     }
 
-    final envs = _appInfo?.env;
-    final compose = _appConfig!.dockerCompose;
-    final containerName = _appConfig!.containerName;
+    final isRunning = appInfo!.status?.toLowerCase() == 'running';
+    final statusText = isRunning ? l10n.appStatusRunning : l10n.appStatusStopped;
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              AppIcon(appKey: appInfo!.appKey, appId: appInfo!.appId, size: 64),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(appInfo!.appName ?? appInfo!.name ?? '-', style: Theme.of(context).textTheme.headlineSmall),
+                    const SizedBox(height: 8),
+                    Text(statusText),
+                  ],
+                ),
+              ),
+              if (updateVersions.isNotEmpty)
+                FilledButton.icon(
+                  onPressed: onUpgrade,
+                  icon: const Icon(Icons.upgrade, size: 16),
+                  label: Text(l10n.appUpdate),
+                ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          FilledButton.icon(
+            onPressed: onShowConnInfo,
+            icon: const Icon(Icons.link),
+            label: Text(l10n.appConnInfo),
+          ),
+          if (storeDetailError != null) ...[
+            const SizedBox(height: 16),
+            Text('${l10n.commonLoadFailedTitle}: $storeDetailError'),
+          ],
+          if (storeDetail?.readMe != null && storeDetail!.readMe!.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            MarkdownBody(data: storeDetail!.readMe!),
+          ],
+          if (servicesError != null) ...[
+            const SizedBox(height: 16),
+            Text('${l10n.commonLoadFailedTitle}: $servicesError'),
+          ],
+          if (services.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            ...services.map((s) => ListTile(title: Text(s.label), subtitle: Text(s.value))),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ConfigTab extends StatelessWidget {
+  final AppInstallInfo? appInfo;
+  final AppConfig? appConfig;
+  final bool loading;
+  final String? error;
+  final String? configError;
+  final Future<void> Function(AppConfig config, AppInstallInfo appInfo) onEdit;
+
+  const _ConfigTab({
+    required this.appInfo,
+    required this.appConfig,
+    required this.loading,
+    required this.error,
+    required this.configError,
+    required this.onEdit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
+    if (loading && appConfig == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (error != null && appConfig == null) {
+      return Center(child: Text('${l10n.commonLoadFailedTitle}: $error'));
+    }
+    if (configError != null && appConfig == null) {
+      return Center(child: Text('${l10n.commonLoadFailedTitle}: $configError'));
+    }
+    if (appInfo == null || appConfig == null) {
+      return Center(child: Text(l10n.commonEmpty));
+    }
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -544,391 +548,80 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
             children: [
               Text(l10n.appTabConfig, style: Theme.of(context).textTheme.titleLarge),
               FilledButton.icon(
-                onPressed: _handleEditConfig,
+                onPressed: () => onEdit(appConfig!, appInfo!),
                 icon: const Icon(Icons.edit),
                 label: Text(l10n.commonEdit),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          _buildSectionTitle(l10n.commonPort),
-          if (_appInfo?.httpPort != null || _appInfo?.httpsPort != null)
-            Card(
-              child: ListTile(
-                title: Text(
-                  [
-                    if (_appInfo?.httpPort != null) '${_appInfo!.httpPort} (${l10n.commonHttp})',
-                    if (_appInfo?.httpsPort != null) '${_appInfo!.httpsPort} (${l10n.commonHttps})',
-                  ].join(', '),
-                ),
-                leading: const Icon(Icons.router),
-              ),
-            )
-          else
-             Text(l10n.appNoPortInfo),
-          
-          const SizedBox(height: 16),
-          if (containerName.isNotEmpty) ...[
-            _buildSectionTitle(l10n.appInstallContainerName),
-            Card(
-              child: ListTile(
-                title: Text(containerName, style: const TextStyle(fontFamily: 'monospace')),
-                leading: const Icon(Icons.layers),
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
-          
-          _buildSectionTitle(l10n.env),
-          if (envs != null && envs.isNotEmpty)
-            Card(
-              child: ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: envs.length,
-                separatorBuilder: (_, __) => const Divider(height: 1),
-                itemBuilder: (context, index) {
-                  final key = envs.keys.elementAt(index);
-                  final value = envs[key];
-                  return ListTile(
-                    title: Text(key, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                    subtitle: Text(value?.toString() ?? '', style: const TextStyle(fontFamily: 'monospace')),
-                  );
-                },
-              ),
-            )
-          else
-            Text(l10n.commonEmpty),
-
-          const SizedBox(height: 16),
-          _buildSectionTitle(l10n.orchestrationCompose),
-          if (compose.isNotEmpty)
-            Card(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: SelectableText(
-                  compose,
-                  style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
-                ),
-              ),
-            )
-          else
-            Text(l10n.commonEmpty),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Text(
-        title,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-      ),
-    );
-  }
-
-  Widget _buildBody(AppLocalizations l10n) {
-    if (_loading && _appInfo == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (_error != null && _appInfo == null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(l10n.commonLoadFailedTitle),
-            const SizedBox(height: 8),
-            Text(_error!),
-            const SizedBox(height: 16),
-            FilledButton(
-              onPressed: _loadData,
-              child: Text(l10n.commonRetry),
-            ),
-          ],
-        ),
-      );
-    }
-
-    if (_appInfo == null) {
-      return Center(child: Text(l10n.commonEmpty));
-    }
-
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeader(l10n),
-          const SizedBox(height: 24),
-          _buildBasicInfo(l10n),
-          const SizedBox(height: 24),
-          if (_storeDetail?.readMe != null && _storeDetail!.readMe!.isNotEmpty) ...[
-             Text(
-              l10n.readme,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            Card(
-              child: Padding(
-                 padding: const EdgeInsets.all(16),
-                 child: MarkdownBody(
-                   data: _storeDetail!.readMe!,
-                   imageBuilder: (uri, title, alt) {
-                     if (uri.scheme == 'http' || uri.scheme == 'https') {
-                       return Image.network(uri.toString());
-                     }
-                    return Tooltip(
-                      message: l10n.appReadmeImageUnsupported(uri.toString()),
-                      child: Icon(
-                        Icons.broken_image,
-                        size: 16,
-                        color: Theme.of(context).colorScheme.outline,
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-          ],
-          _buildServicesList(l10n),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeader(AppLocalizations l10n) {
-    final status = _appInfo!.status?.toLowerCase() ?? '';
-    final colorScheme = Theme.of(context).colorScheme;
-    Color statusColor;
-    String statusText;
-
-    if (status == 'running') {
-      statusColor = colorScheme.tertiary;
-      statusText = l10n.appStatusRunning;
-    } else if (status == 'stopped') {
-      statusColor = colorScheme.secondary;
-      statusText = l10n.appStatusStopped;
-    } else {
-      statusColor = colorScheme.outline;
-      statusText = status;
-    }
-
-    return Row(
-      children: [
-        AppIcon(
-          appKey: _appInfo!.appKey,
-          appId: _appInfo!.appId,
-          size: 64,
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                _appInfo!.appName ?? _appInfo!.name ?? '-',
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              if (_appInfo!.name != null && _appInfo!.name != _appInfo!.appName)
-                Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Text(
-                    _appInfo!.name!,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                  ),
-                ),
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: statusColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(4),
-                  border: Border.all(color: statusColor),
-                ),
-                child: Text(
-                  statusText,
-                  style: TextStyle(color: statusColor, fontWeight: FontWeight.bold),
-                ),
-              ),
-              if (_updateVersions != null && _updateVersions!.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: FilledButton.icon(
-                    onPressed: _handleUpgrade,
-                    icon: const Icon(Icons.upgrade, size: 16),
-                    label: Text(l10n.appUpdate),
-                    style: FilledButton.styleFrom(
-                      visualDensity: VisualDensity.compact,
-                      backgroundColor: colorScheme.tertiaryContainer,
-                      foregroundColor: colorScheme.onTertiaryContainer,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildBasicInfo(AppLocalizations l10n) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          l10n.appBaseInfo,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        const SizedBox(height: 8),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                _buildInfoRow(l10n.appInfoVersion, _appInfo!.version ?? '-'),
-                const Divider(),
-                _buildInfoRow(l10n.appInfoCreated, _appInfo!.createdAt ?? '-'),
-                if (_appInfo!.description != null) ...[
-                  const Divider(),
-                  _buildInfoRow(l10n.appDescription, _appInfo!.description!),
-                ],
-              ],
-            ),
-          ),
-        ),
-        if (_appInfo!.name != null && _appInfo!.appKey != null) ...[
           const SizedBox(height: 12),
-          FilledButton.icon(
-            onPressed: _showConnectionInfo,
-            icon: const Icon(Icons.link),
-            label: Text(l10n.appConnInfo),
-          ),
-        ],
-      ],
-    );
-  }
-
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 100,
-            child: Text(
-              label,
-              style: TextStyle(color: Theme.of(context).colorScheme.outline),
-            ),
-          ),
-          Expanded(
-            child: SelectableText(value),
-          ),
+          Text('${l10n.commonPort}: ${appInfo!.httpPort ?? '-'} / ${appInfo!.httpsPort ?? '-'}'),
+          const SizedBox(height: 8),
+          Text('${l10n.appInstallContainerName}: ${appConfig!.containerName}'),
+          const SizedBox(height: 8),
+          Text('${l10n.env}: ${appInfo!.env?.length ?? 0}'),
         ],
       ),
     );
   }
+}
 
-  Widget _buildServicesList(AppLocalizations l10n) {
-    if (_services == null || _services!.isEmpty) {
+class _BottomBar extends StatelessWidget {
+  final AppInstallInfo? appInfo;
+  final bool loading;
+  final Future<void> Function(String url) onOpenWeb;
+  final Future<void> Function() onOpenContainer;
+  final VoidCallback onStart;
+  final VoidCallback onStop;
+  final VoidCallback onRestart;
+  final VoidCallback onUninstall;
+
+  const _BottomBar({
+    required this.appInfo,
+    required this.loading,
+    required this.onOpenWeb,
+    required this.onOpenContainer,
+    required this.onStart,
+    required this.onStop,
+    required this.onRestart,
+    required this.onUninstall,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    if (loading || appInfo == null) {
       return const SizedBox.shrink();
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          l10n.appServiceList,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        const SizedBox(height: 8),
-        Card(
-          child: ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: _services!.length,
-            separatorBuilder: (_, __) => const Divider(height: 1),
-            itemBuilder: (context, index) {
-              final service = _services![index];
-              return ListTile(
-                title: Text(service.label),
-                subtitle: Text(service.value),
-                trailing: Container(
-                  width: 10,
-                  height: 10,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: service.status == 'running'
-                        ? Theme.of(context).colorScheme.tertiary
-                        : Theme.of(context).colorScheme.outline,
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildBottomBar(AppLocalizations l10n) {
-    if (_loading || _appInfo == null) return const SizedBox.shrink();
-
-    final status = _appInfo!.status?.toLowerCase();
-    final isRunning = status == 'running';
-    final colorScheme = Theme.of(context).colorScheme;
+    final isRunning = appInfo!.status?.toLowerCase() == 'running';
 
     return SafeArea(
-      child: Container(
+      child: Padding(
         padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          boxShadow: [
-            BoxShadow(
-              color: colorScheme.shadow.withValues(alpha: 0.08),
-              offset: const Offset(0, -2),
-              blurRadius: 8,
-            ),
-          ],
-        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Row(
               children: [
-                 if (_appInfo!.webUI != null && _appInfo!.webUI!.isNotEmpty)
+                if (appInfo!.webUI != null && appInfo!.webUI!.isNotEmpty)
                   Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: OutlinedButton.icon(
-                        onPressed: _openWeb,
-                        icon: const Icon(Icons.web),
-                        label: Text(l10n.appActionWeb),
-                      ),
+                    child: OutlinedButton.icon(
+                      onPressed: () => onOpenWeb(appInfo!.webUI!),
+                      icon: const Icon(Icons.web),
+                      label: Text(l10n.appActionWeb),
                     ),
                   ),
-                  
-                if (_appInfo!.container != null && _appInfo!.container!.isNotEmpty)
+                if (appInfo!.container != null && appInfo!.container!.isNotEmpty) ...[
+                  const SizedBox(width: 12),
                   Expanded(
-                    child: Padding(
-                       padding: const EdgeInsets.only(left: 8),
-                       child: OutlinedButton.icon(
-                        onPressed: _openContainer,
-                        icon: const Icon(Icons.layers),
-                        label: Text(l10n.viewContainer),
-                      ),
+                    child: OutlinedButton.icon(
+                      onPressed: onOpenContainer,
+                      icon: const Icon(Icons.layers),
+                      label: Text(l10n.viewContainer),
                     ),
                   ),
+                ],
               ],
             ),
             const SizedBox(height: 12),
@@ -937,12 +630,12 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
                 Expanded(
                   child: isRunning
                       ? OutlinedButton.icon(
-                          onPressed: () => _handleAction('stop'),
+                          onPressed: onStop,
                           icon: const Icon(Icons.stop),
                           label: Text(l10n.appActionStop),
                         )
                       : FilledButton.icon(
-                          onPressed: () => _handleAction('start'),
+                          onPressed: onStart,
                           icon: const Icon(Icons.play_arrow),
                           label: Text(l10n.appActionStart),
                         ),
@@ -950,18 +643,17 @@ class _InstalledAppDetailPageState extends State<InstalledAppDetailPage> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: OutlinedButton.icon(
-                    onPressed: () => _handleAction('restart'),
+                    onPressed: onRestart,
                     icon: const Icon(Icons.refresh),
                     label: Text(l10n.appActionRestart),
                   ),
                 ),
                 const SizedBox(width: 12),
-                IconButton.filledTonal(
-                  onPressed: () => _handleAction('uninstall'),
-                  icon: const Icon(Icons.delete),
-                  tooltip: l10n.appActionUninstall,
-                  style: IconButton.styleFrom(
-                    foregroundColor: Theme.of(context).colorScheme.error,
+                Tooltip(
+                  message: l10n.appActionUninstall,
+                  child: IconButton.filledTonal(
+                    onPressed: onUninstall,
+                    icon: const Icon(Icons.delete),
                   ),
                 ),
               ],

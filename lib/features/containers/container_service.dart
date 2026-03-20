@@ -45,6 +45,20 @@ class ContainerService extends BaseComponent {
     });
   }
 
+  Future<void> createContainer(ContainerOperate request) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.createContainer(request);
+    });
+  }
+
+  Future<void> createContainerByCommand(ContainerCreateByCommand request) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      await api.createContainerByCommand(request);
+    });
+  }
+
   Future<void> startContainer(String containerId) {
     return runGuarded(() async {
       final api = await _ensureApi();

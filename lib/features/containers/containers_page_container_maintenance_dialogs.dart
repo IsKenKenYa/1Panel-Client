@@ -18,7 +18,7 @@ class ContainersPageContainerMaintenanceDialogs {
             mainAxisSize: MainAxisSize.min,
             children: [
               DropdownButtonFormField<ContainerPruneType>(
-                value: type,
+                initialValue: type,
                 decoration: InputDecoration(
                   labelText: l10n.containerPruneType,
                   border: const OutlineInputBorder(),

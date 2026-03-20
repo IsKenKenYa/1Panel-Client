@@ -89,6 +89,7 @@ class _AppDetailPageState extends State<AppDetailPage> {
   }
 
   Widget _buildBody(BuildContext context, ThemeData theme) {
+    final l10n = context.l10n;
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }

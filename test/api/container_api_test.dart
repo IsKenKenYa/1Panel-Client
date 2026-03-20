@@ -96,6 +96,21 @@ void main() {
       });
     });
 
+    group('ContainerCreateByCommand模型测试', () {
+      test('应该正确序列化和反序列化', () {
+        final model = ContainerCreateByCommand(
+          command: 'docker run -d nginx:latest',
+          name: 'nginx-demo',
+        );
+
+        final json = model.toJson();
+        final restored = ContainerCreateByCommand.fromJson(json);
+
+        expect(restored.command, equals('docker run -d nginx:latest'));
+        expect(restored.name, equals('nginx-demo'));
+      });
+    });
+
     group('ContainerInfo模型测试', () {
       test('应该正确创建实例', () {
         final model = ContainerInfo(
@@ -303,30 +318,26 @@ void main() {
   group('JSON兼容性测试', () {
     test('Mock容器列表响应数据应该符合模型结构', () {
       final mockResponse = MockContainerResponses.containerList();
-      expect(mockResponse['code'], equals(200));
       expect(mockResponse['data'], isNotNull);
-      expect(mockResponse['data']['items'], isA<List>());
+      expect(mockResponse['data'], isA<List>());
     });
 
     test('Mock镜像列表响应数据应该符合模型结构', () {
       final mockResponse = MockContainerResponses.imageList();
-      expect(mockResponse['code'], equals(200));
       expect(mockResponse['data'], isNotNull);
-      expect(mockResponse['data']['items'], isA<List>());
+      expect(mockResponse['data'], isA<List>());
     });
 
     test('Mock网络列表响应数据应该符合模型结构', () {
       final mockResponse = MockContainerResponses.networkList();
-      expect(mockResponse['code'], equals(200));
       expect(mockResponse['data'], isNotNull);
-      expect(mockResponse['data']['items'], isA<List>());
+      expect(mockResponse['data'], isA<List>());
     });
 
     test('Mock卷列表响应数据应该符合模型结构', () {
       final mockResponse = MockContainerResponses.volumeList();
-      expect(mockResponse['code'], equals(200));
       expect(mockResponse['data'], isNotNull);
-      expect(mockResponse['data']['items'], isA<List>());
+      expect(mockResponse['data'], isA<List>());
     });
   });
 }

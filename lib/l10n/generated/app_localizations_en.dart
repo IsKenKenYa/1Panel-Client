@@ -2879,6 +2879,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get containerFilter => 'Filter containers';
 
   @override
+  String get containerNetworkSubnetLabel => 'Subnet';
+
+  @override
+  String get containerNetworkSubnetHint => 'e.g. 172.20.0.0/16';
+
+  @override
+  String get containerNetworkGatewayLabel => 'Gateway';
+
+  @override
+  String get containerNetworkGatewayHint => 'e.g. 172.20.0.1';
+
+  @override
+  String get containerRepoUrlExample => 'e.g. https://github.com/user/repo';
+
+  @override
+  String get containerTemplateContentHint => 'YAML content';
+
+  @override
   String get containerCreate => 'Create Container';
 
   @override

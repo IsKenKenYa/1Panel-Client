@@ -43,86 +43,84 @@ class ContainersTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
+    final showEmpty = containers.isEmpty && !isLoading;
+    final itemCount = showEmpty ? 2 : containers.length + 1;
 
     return RefreshIndicator(
       onRefresh: onRefresh,
-      child: SingleChildScrollView(
+      child: ListView.builder(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ContainersStatsCard(
-              title: l10n.containerStatsTitle,
-              items: [
-                ContainersStatItem(
-                  title: l10n.containerStatsTotal,
-                  value: stats.total.toString(),
-                  color: colorScheme.primary,
-                  icon: Icons.inventory_2,
-                ),
-                ContainersStatItem(
-                  title: l10n.containerStatsRunning,
-                  value: stats.running.toString(),
-                  color: colorScheme.tertiary,
-                  icon: Icons.play_circle,
-                ),
-                ContainersStatItem(
-                  title: l10n.containerStatsStopped,
-                  value: stats.stopped.toString(),
-                  color: colorScheme.secondary,
-                  icon: Icons.stop_circle,
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            if (containers.isEmpty && !isLoading)
-              ContainersEmptyView(
-                icon: Icons.inventory_2_outlined,
-                title: l10n.containerEmptyTitle,
-                subtitle: l10n.containerEmptyDesc,
-              )
-            else
-              ...containers.map((containerInfo) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: ContainerCard(
-                    container: containerInfo,
-                    onStart: () => onStart(containerInfo.name),
-                    onStop: () => onStop(containerInfo.name),
-                    onRestart: () => onRestart(containerInfo.name),
-                    onDelete: () => onDelete(containerInfo.name),
-                    onRename: () => onRename(containerInfo.name),
-                    onUpgrade: () => onUpgrade(containerInfo),
-                    onCommit: () => onCommit(containerInfo),
-                    onEdit: () => onEdit(containerInfo),
-                    onCleanLog: () => onCleanLog(containerInfo.name),
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        AppRoutes.containerDetail,
-                        arguments: containerInfo,
-                      );
-                    },
-                    onLogs: () {
-                      Navigator.pushNamed(
-                        context,
-                        AppRoutes.containerDetail,
-                        arguments: containerInfo,
-                      );
-                    },
-                    onTerminal: () {
-                      Navigator.pushNamed(
-                        context,
-                        AppRoutes.containerDetail,
-                        arguments: containerInfo,
-                      );
-                    },
+        itemCount: itemCount,
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: ContainersStatsCard(
+                title: l10n.containerStatsTitle,
+                items: [
+                  ContainersStatItem(
+                    title: l10n.containerStatsTotal,
+                    value: stats.total.toString(),
+                    color: colorScheme.primary,
+                    icon: Icons.inventory_2,
                   ),
+                  ContainersStatItem(
+                    title: l10n.containerStatsRunning,
+                    value: stats.running.toString(),
+                    color: colorScheme.tertiary,
+                    icon: Icons.play_circle,
+                  ),
+                  ContainersStatItem(
+                    title: l10n.containerStatsStopped,
+                    value: stats.stopped.toString(),
+                    color: colorScheme.secondary,
+                    icon: Icons.stop_circle,
+                  ),
+                ],
+              ),
+            );
+          }
+
+          if (showEmpty) {
+            return ContainersEmptyView(
+              icon: Icons.inventory_2_outlined,
+              title: l10n.containerEmptyTitle,
+              subtitle: l10n.containerEmptyDesc,
+            );
+          }
+
+          final containerInfo = containers[index - 1];
+          return Padding(
+            padding: EdgeInsets.only(bottom: index == itemCount - 1 ? 0 : 12),
+            child: ContainerCard(
+              container: containerInfo,
+              onStart: () => onStart(containerInfo.name),
+              onStop: () => onStop(containerInfo.name),
+              onRestart: () => onRestart(containerInfo.name),
+              onDelete: () => onDelete(containerInfo.name),
+              onRename: () => onRename(containerInfo.name),
+              onUpgrade: () => onUpgrade(containerInfo),
+              onCommit: () => onCommit(containerInfo),
+              onEdit: () => onEdit(containerInfo),
+              onCleanLog: () => onCleanLog(containerInfo.name),
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.containerDetail,
+                  arguments: containerInfo,
                 );
-              }),
-          ],
-        ),
+              },
+              onLogs: () {
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.containerDetail,
+                  arguments: containerInfo,
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }

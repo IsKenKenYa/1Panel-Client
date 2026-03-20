@@ -1,13 +1,15 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
 import 'package:onepanelapp_app/data/models/container_models.dart' hide Container;
-import 'package:onepanelapp_app/features/containers/container_service.dart';
+import 'package:onepanelapp_app/features/containers/providers/container_detail_provider.dart';
 import 'package:onepanelapp_app/features/containers/widgets/container_logs_view.dart';
 import 'package:onepanelapp_app/features/containers/widgets/container_stats_view.dart';
+import 'package:provider/provider.dart';
 import 'package:onepanelapp_app/shared/widgets/app_card.dart';
 
-class ContainerDetailPage extends StatefulWidget {
+class ContainerDetailPage extends StatelessWidget {
   final ContainerInfo container;
 
   const ContainerDetailPage({
@@ -16,20 +18,33 @@ class ContainerDetailPage extends StatefulWidget {
   });
 
   @override
-  State<ContainerDetailPage> createState() => _ContainerDetailPageState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => ContainerDetailProvider(container: container)..loadAll(),
+      child: _ContainerDetailView(container: container),
+    );
+  }
 }
 
-class _ContainerDetailPageState extends State<ContainerDetailPage>
+class _ContainerDetailView extends StatefulWidget {
+  final ContainerInfo container;
+
+  const _ContainerDetailView({
+    required this.container,
+  });
+
+  @override
+  State<_ContainerDetailView> createState() => _ContainerDetailViewState();
+}
+
+class _ContainerDetailViewState extends State<_ContainerDetailView>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final _service = ContainerService();
-  late ContainerInfo _container;
 
   @override
   void initState() {
     super.initState();
-    _container = widget.container;
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -44,83 +59,60 @@ class _ContainerDetailPageState extends State<ContainerDetailPage>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_container.name),
+        title: Text(widget.container.name),
         bottom: TabBar(
           controller: _tabController,
-          isScrollable: true,
           tabs: [
             Tab(text: l10n.containerTabInfo),
             Tab(text: l10n.containerTabLogs),
             Tab(text: l10n.containerTabStats),
-            Tab(text: l10n.containerTabTerminal),
           ],
         ),
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
-          _InfoTab(container: _container, service: _service),
-          ContainerLogsView(containerName: _container.name),
-          ContainerStatsView(containerId: _container.id),
-          _TerminalTab(),
+          _InfoTab(container: widget.container),
+          const ContainerLogsView(),
+          const ContainerStatsView(),
         ],
       ),
     );
   }
 }
 
-class _InfoTab extends StatefulWidget {
+class _InfoTab extends StatelessWidget {
   final ContainerInfo container;
-  final ContainerService service;
 
   const _InfoTab({
     required this.container,
-    required this.service,
   });
-
-  @override
-  State<_InfoTab> createState() => _InfoTabState();
-}
-
-class _InfoTabState extends State<_InfoTab> {
-  String? _inspectData;
-  bool _isLoading = true;
-  String? _error;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadInspectData();
-  }
-
-  Future<void> _loadInspectData() async {
-    try {
-      final data = await widget.service.inspectContainer(widget.container.id);
-      if (!mounted) return;
-      setState(() {
-        _inspectData = data;
-        _isLoading = false;
-      });
-    } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        _error = e.toString();
-        _isLoading = false;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
+    final provider = context.watch<ContainerDetailProvider>();
 
-    if (_isLoading) {
+    if (provider.inspectLoading && provider.inspectData == null) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (_error != null) {
-      return Center(child: Text(l10n.containerOperateFailed(_error!)));
+    if (provider.inspectError != null && provider.inspectData == null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(l10n.containerOperateFailed(provider.inspectError!)),
+            const SizedBox(height: 16),
+            FilledButton.icon(
+              onPressed: provider.loadInspect,
+              icon: const Icon(Icons.refresh),
+              label: Text(l10n.commonRetry),
+            ),
+          ],
+        ),
+      );
     }
 
     return SingleChildScrollView(
@@ -132,18 +124,20 @@ class _InfoTabState extends State<_InfoTab> {
             title: l10n.appBaseInfo,
             child: Column(
               children: [
-                _InfoItem(label: l10n.containerInfoId, value: widget.container.id),
-                _InfoItem(label: l10n.containerInfoName, value: widget.container.name),
-                _InfoItem(label: l10n.containerInfoImage, value: widget.container.image),
-                _InfoItem(label: l10n.containerInfoStatus, value: widget.container.status),
-                _InfoItem(label: l10n.containerInfoCreated, value: widget.container.createTime ?? '-'),
+                _InfoItem(label: l10n.containerInfoId, value: container.id),
+                _InfoItem(label: l10n.containerInfoName, value: container.name),
+                _InfoItem(label: l10n.containerInfoImage, value: container.image),
+                _InfoItem(label: l10n.containerInfoStatus, value: container.status),
+                _InfoItem(label: l10n.containerInfoCreated, value: container.createTime ?? '-'),
                 _InfoItem(
-                    label: l10n.serverIpLabel, value: widget.container.ipAddress ?? '-'),
+                  label: l10n.serverIpLabel,
+                  value: container.ipAddress ?? '-',
+                ),
               ],
             ),
           ),
           const SizedBox(height: 16),
-          if (_inspectData != null)
+          if (provider.inspectData != null)
             AppCard(
               title: l10n.containerInspectJson,
               child: Container(
@@ -154,9 +148,9 @@ class _InfoTabState extends State<_InfoTab> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: SelectableText(
-                  _formatJson(_inspectData!),
+                  _formatJson(provider.inspectData!),
                   style: TextStyle(
-                    fontFamily: 'Monospace',
+                    fontFamily: 'monospace',
                     fontSize: 12,
                     color: colorScheme.onSurfaceVariant,
                   ),
@@ -215,24 +209,6 @@ class _InfoItem extends StatelessWidget {
               ),
             ),
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class _TerminalTab extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final colorScheme = Theme.of(context).colorScheme;
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.terminal, size: 64, color: colorScheme.outline),
-          const SizedBox(height: 16),
-          Text(l10n.commonComingSoon),
         ],
       ),
     );

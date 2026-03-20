@@ -22,6 +22,7 @@ import 'package:onepanelapp_app/features/apps/installed_app_detail_page.dart';
 import 'package:onepanelapp_app/data/models/app_models.dart';
 
 import 'package:onepanelapp_app/features/containers/container_detail_page.dart';
+import 'package:onepanelapp_app/features/containers/container_create_page.dart';
 import 'package:onepanelapp_app/features/containers/containers_page.dart';
 import 'package:onepanelapp_app/data/models/container_models.dart';
 import 'package:onepanelapp_app/features/orchestration/orchestration_page.dart';
@@ -144,6 +145,9 @@ class AppRouter {
       case '/apps':
         return MaterialPageRoute(builder: (_) => const AppsPage());
 
+      case '/container-create':
+        return MaterialPageRoute(builder: (_) => const ContainerCreatePage());
+
       // Legacy routes redirect to the new shell.
       case '/websites':
         return MaterialPageRoute(
@@ -151,7 +155,6 @@ class AppRouter {
       case '/backups':
       case '/help':
       case '/website-create':
-      case '/container-create':
         return MaterialPageRoute(builder: (_) => const LegacyRedirectPage());
       default:
         return MaterialPageRoute(builder: (_) => const NotFoundPage());

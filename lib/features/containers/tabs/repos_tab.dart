@@ -15,8 +15,24 @@ class ReposTab extends StatelessWidget {
     return Consumer<ContainersProvider>(
       builder: (context, provider, _) {
         final repos = provider.data.repos;
-        if (provider.data.isLoading && repos.isEmpty) {
+        if (provider.reposState.isLoading && repos.isEmpty) {
           return const Center(child: CircularProgressIndicator());
+        }
+
+        if (provider.reposState.error != null && repos.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(provider.reposState.error!),
+                const SizedBox(height: 12),
+                FilledButton(
+                  onPressed: provider.loadRepos,
+                  child: Text(l10n.commonRetry),
+                ),
+              ],
+            ),
+          );
         }
 
         if (repos.isEmpty) {
@@ -32,6 +48,7 @@ class ReposTab extends StatelessWidget {
             itemBuilder: (context, index) {
               final repo = repos[index];
               return AppCard(
+                title: repo.name,
                 child: ListTile(
                   leading: const Icon(Icons.store),
                   title: Text(repo.name),

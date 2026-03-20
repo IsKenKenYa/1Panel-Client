@@ -41,8 +41,24 @@ class _ConfigTabState extends State<ConfigTab> {
           _isLoaded = true;
         }
 
-        if (provider.data.isLoading && config.isEmpty) {
+        if (provider.configState.isLoading && config.isEmpty) {
           return const Center(child: CircularProgressIndicator());
+        }
+
+        if (provider.configState.error != null && config.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(provider.configState.error!),
+                const SizedBox(height: 12),
+                FilledButton(
+                  onPressed: provider.loadConfig,
+                  child: Text(l10n.commonRetry),
+                ),
+              ],
+            ),
+          );
         }
 
         return SingleChildScrollView(
@@ -53,9 +69,9 @@ class _ConfigTabState extends State<ConfigTab> {
               TextField(
                 controller: _controller,
                 maxLines: null,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'daemon.json',
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  labelText: l10n.containerTabConfig,
                   alignLabelWithHint: true,
                 ),
                 style: const TextStyle(fontFamily: 'monospace'),
@@ -63,9 +79,11 @@ class _ConfigTabState extends State<ConfigTab> {
               const SizedBox(height: 16),
               FilledButton.icon(
                 onPressed: () async {
+                  final scaffoldMessenger = ScaffoldMessenger.of(context);
                   final success = await provider.updateDaemonJson(_controller.text);
-                  if (success && mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                  if (!mounted) return;
+                  if (success) {
+                    scaffoldMessenger.showSnackBar(
                       SnackBar(content: Text(l10n.commonSaveSuccess)),
                     );
                   }

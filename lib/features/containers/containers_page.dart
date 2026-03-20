@@ -87,19 +87,21 @@ class _ContainersPageState extends State<ContainersPage>
             Consumer<ContainersProvider>(
               builder: (context, provider, child) {
                 final data = provider.data;
-                if (data.error != null) {
+                if (provider.containersState.error != null &&
+                    data.containers.isEmpty) {
                   return ContainersErrorView(
-                    error: data.error!,
-                    onRetry: () => provider.loadAll(),
+                    error: provider.containersState.error!,
+                    onRetry: () => provider.loadContainers(),
                   );
                 }
-                if (data.isLoading && data.containers.isEmpty) {
+                if (provider.containersState.isLoading &&
+                    data.containers.isEmpty) {
                   return const ContainersLoadingView();
                 }
                 return ContainersTab(
                   containers: data.containers,
                   stats: data.containerStats,
-                  isLoading: data.isLoading,
+                  isLoading: provider.containersState.isLoading,
                   onRefresh: () => provider.refresh(),
                   onStart: (id) => provider.startContainer(id),
                   onStop: (id) => provider.stopContainer(id),
@@ -160,16 +162,6 @@ class _ContainersPageState extends State<ContainersPage>
     if (_tabController.index == 1) {
       actions.addAll([
         IconButton(
-          icon: const Icon(Icons.search),
-          onPressed: () {},
-          tooltip: l10n.containerSearch,
-        ),
-        IconButton(
-          icon: const Icon(Icons.filter_list),
-          onPressed: () {},
-          tooltip: l10n.containerFilter,
-        ),
-        IconButton(
           icon: const Icon(Icons.delete_sweep_outlined),
           onPressed: () =>
               ContainersPageContainerMaintenanceDialogs.showPruneDialog(context),
@@ -217,8 +209,11 @@ class _ContainersPageState extends State<ContainersPage>
     switch (_tabController.index) {
       case 1:
         return FloatingActionButton.extended(
-          onPressed: () {
-            Navigator.pushNamed(context, '/container-create');
+          onPressed: () async {
+            final created = await Navigator.pushNamed(context, '/container-create');
+            if (created == true && context.mounted) {
+              await context.read<ContainersProvider>().loadContainers();
+            }
           },
           icon: const Icon(Icons.add),
           label: Text(l10n.containerCreate),

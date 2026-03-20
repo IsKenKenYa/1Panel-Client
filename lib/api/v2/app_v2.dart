@@ -307,10 +307,10 @@ class AppV2Api {
   }
 
   /// 更新应用安装配置
-  Future<void> updateAppInstallConfig(Map<String, dynamic> request) async {
+  Future<void> updateAppInstallConfig(AppConfigUpdateRequest request) async {
     await _client.post(
       ApiConstants.buildApiPath('/apps/installed/config/update'),
-      data: request,
+      data: request.toJson(),
     );
   }
 
@@ -419,18 +419,18 @@ class AppV2Api {
   }
 
   /// 更新应用安装参数
-  Future<void> updateAppParams(Map<String, dynamic> request) async {
+  Future<void> updateAppParams(AppInstalledParamsUpdateRequest request) async {
     await _client.post(
       ApiConstants.buildApiPath('/apps/installed/params/update'),
-      data: request,
+      data: request.toJson(),
     );
   }
 
   /// 修改应用端口
-  Future<void> changeAppPort(Map<String, dynamic> request) async {
+  Future<void> changeAppPort(AppPortUpdateRequest request) async {
     await _client.post(
       ApiConstants.buildApiPath('/apps/installed/port/change'),
-      data: request,
+      data: request.toJson(),
     );
   }
 

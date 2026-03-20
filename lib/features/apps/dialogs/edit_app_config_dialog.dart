@@ -3,11 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
 import 'package:onepanelapp_app/data/models/app_config_models.dart';
+import 'package:onepanelapp_app/data/models/app_models.dart';
 import 'package:onepanelapp_app/features/apps/providers/installed_apps_provider.dart';
 
 class EditAppConfigDialog extends StatefulWidget {
   final int appInstallId;
   final AppConfig appConfig;
+  final String appKey;
+  final String appName;
   final int? httpPort;
   final int? httpsPort;
 
@@ -15,6 +18,8 @@ class EditAppConfigDialog extends StatefulWidget {
     super.key,
     required this.appInstallId,
     required this.appConfig,
+    required this.appKey,
+    required this.appName,
     this.httpPort,
     this.httpsPort,
   });
@@ -76,41 +81,60 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
     try {
       // 1. Update Params
       if (_params.isNotEmpty) {
-        await provider.updateAppParams(widget.appInstallId, _params);
+        await provider.updateAppParams(
+          AppInstalledParamsUpdateRequest(
+            installId: widget.appInstallId,
+            params: _params,
+            advanced: true,
+            allowPort: widget.appConfig.allowPort,
+            containerName: _containerNameController.text,
+            cpuQuota: double.tryParse(_cpuQuotaController.text),
+            memoryLimit: double.tryParse(_memoryLimitController.text),
+            memoryUnit: _memoryUnit,
+            dockerCompose: widget.appConfig.dockerCompose,
+            hostMode: widget.appConfig.hostMode,
+            type: widget.appConfig.type,
+            webUI: widget.appConfig.webUI,
+            specifyIP: widget.appConfig.specifyIP,
+            restartPolicy: widget.appConfig.restartPolicy,
+          ),
+        );
       }
 
       // 2. Update Ports
       if (widget.appConfig.allowPort) {
         final newHttp = int.tryParse(_httpPortController.text);
         final newHttps = int.tryParse(_httpsPortController.text);
-        
-        if (newHttp != widget.httpPort || newHttps != widget.httpsPort) {
-           await provider.changeAppPort(
-             widget.appInstallId, 
-             newHttp ?? 0, 
-             newHttps ?? 0,
-           );
+        final canUpdatePort = widget.appKey.isNotEmpty && widget.appName.isNotEmpty;
+
+        if (canUpdatePort && newHttp != widget.httpPort && newHttp != null) {
+          await provider.changeAppPort(
+            AppPortUpdateRequest(
+              key: widget.appKey,
+              name: widget.appName,
+              port: newHttp,
+            ),
+          );
+        }
+        if (canUpdatePort && newHttps != widget.httpsPort && newHttps != null) {
+          await provider.changeAppPort(
+            AppPortUpdateRequest(
+              key: widget.appKey,
+              name: widget.appName,
+              port: newHttps,
+            ),
+          );
         }
       }
 
       // 3. Update Container Config
-      final containerName = _containerNameController.text;
-      final cpuQuota = double.tryParse(_cpuQuotaController.text) ?? 0;
-      final memoryLimit = double.tryParse(_memoryLimitController.text) ?? 0;
-
-      if (containerName != widget.appConfig.containerName ||
-          cpuQuota != widget.appConfig.cpuQuota ||
-          memoryLimit != widget.appConfig.memoryLimit ||
-          _memoryUnit != widget.appConfig.memoryUnit) {
-        
-        await provider.updateAppInstallConfig({
-          'installId': widget.appInstallId,
-          'containerName': containerName,
-          'cpuQuota': cpuQuota,
-          'memoryLimit': memoryLimit,
-          'memoryUnit': _memoryUnit,
-          'dockerCompose': widget.appConfig.dockerCompose, // Required?
-        });
+      if (widget.appConfig.webUI.isNotEmpty) {
+        await provider.updateAppInstallConfig(
+          AppConfigUpdateRequest(
+            installId: widget.appInstallId,
+            webUI: widget.appConfig.webUI,
+          ),
+        );
       }
 
       if (mounted) {
@@ -191,9 +215,9 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _containerNameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Container Name',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n.appInstallContainerName,
+                    border: const OutlineInputBorder(),
                     isDense: true,
                   ),
                 ),
@@ -203,9 +227,9 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
                     Expanded(
                       child: TextFormField(
                         controller: _cpuQuotaController,
-                        decoration: const InputDecoration(
-                          labelText: 'CPU Quota',
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText: l10n.appInstallCpuLimit,
+                          border: const OutlineInputBorder(),
                           isDense: true,
                         ),
                         keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -218,9 +242,9 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
                           Expanded(
                             child: TextFormField(
                               controller: _memoryLimitController,
-                              decoration: const InputDecoration(
-                                labelText: 'Memory',
-                                border: OutlineInputBorder(),
+                              decoration: InputDecoration(
+                                labelText: l10n.appInstallMemoryLimit,
+                                border: const OutlineInputBorder(),
                                 isDense: true,
                               ),
                               keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -230,7 +254,7 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
                           SizedBox(
                             width: 80,
                             child: DropdownButtonFormField<String>(
-                              value: _memoryUnit,
+                              initialValue: _memoryUnit,
                               items: const [
                                 DropdownMenuItem(value: 'MB', child: Text('MB')),
                                 DropdownMenuItem(value: 'GB', child: Text('GB')),
@@ -296,6 +320,7 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
   }
 
   Widget _buildParamField(InstallParams param) {
+    final l10n = context.l10n;
     // Determine label (use current locale if possible, or fallback)
     // Here simplified
     final label = param.labelZh; 
@@ -327,7 +352,7 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
        }
 
        return DropdownButtonFormField<dynamic>(
-         value: currentValue,
+         initialValue: currentValue,
          decoration: InputDecoration(
            labelText: label,
            border: const OutlineInputBorder(),
@@ -359,7 +384,7 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
       },
       validator: (val) {
         if (param.required == true && (val == null || val.isEmpty)) {
-          return 'Required';
+          return l10n.serverFormRequired;
         }
         return null;
       },

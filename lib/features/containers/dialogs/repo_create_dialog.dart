@@ -71,7 +71,7 @@ class _RepoCreateDialogState extends State<RepoCreateDialog> {
                 decoration: InputDecoration(
                   labelText: l10n.commonUrl,
                   border: const OutlineInputBorder(),
-                  helperText: 'https://github.com/user/repo',
+                  helperText: l10n.containerRepoUrlExample,
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -117,6 +117,7 @@ class _RepoCreateDialogState extends State<RepoCreateDialog> {
         FilledButton(
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
+              final navigator = Navigator.of(context);
               final request = ContainerRepoOperate(
                 id: widget.repo?.id,
                 name: _nameController.text,
@@ -130,8 +131,9 @@ class _RepoCreateDialogState extends State<RepoCreateDialog> {
                   ? await provider.updateRepo(request)
                   : await provider.createRepo(request);
 
-              if (success && mounted) {
-                Navigator.pop(context, true);
+              if (!context.mounted) return;
+              if (success) {
+                navigator.pop(true);
               }
             }
           },

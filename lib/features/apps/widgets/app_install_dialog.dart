@@ -237,7 +237,7 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
               const SizedBox(height: 16),
               if (widget.app.versions != null && widget.app.versions!.isNotEmpty)
                 DropdownButtonFormField<String>(
-                  value: _selectedVersion,
+                  initialValue: _selectedVersion,
                   decoration: InputDecoration(
                     labelText: l10n.appInfoVersion,
                     border: const OutlineInputBorder(),

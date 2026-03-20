@@ -17,8 +17,24 @@ class OverviewTab extends StatelessWidget {
         final stats = provider.data.containerStats;
         final status = provider.data.status;
 
-        if (provider.data.isLoading && status == null) {
+        if (provider.overviewState.isLoading && status == null) {
           return const Center(child: CircularProgressIndicator());
+        }
+
+        if (provider.overviewState.error != null && status == null) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(provider.overviewState.error!),
+                const SizedBox(height: 12),
+                FilledButton(
+                  onPressed: provider.loadStatus,
+                  child: Text(l10n.commonRetry),
+                ),
+              ],
+            ),
+          );
         }
 
         return RefreshIndicator(

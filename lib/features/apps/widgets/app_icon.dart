@@ -78,6 +78,7 @@ class _AppIconState extends State<AppIcon> with AutomaticKeepAliveClientMixin {
     });
 
     try {
+      final appService = context.read<AppService>();
       // 2. Fetch from service
       // Use key first, then id
       
@@ -85,7 +86,7 @@ class _AppIconState extends State<AppIcon> with AutomaticKeepAliveClientMixin {
       
       try {
         if (key != null) {
-          final response = await context.read<AppService>().getAppIcon(key);
+          final response = await appService.getAppIcon(key);
           if (response.data != null && response.data!.isNotEmpty) {
             bytes = Uint8List.fromList(response.data!);
           }
@@ -96,7 +97,7 @@ class _AppIconState extends State<AppIcon> with AutomaticKeepAliveClientMixin {
 
       try {
         if ((bytes == null || bytes.isEmpty) && id != null) {
-          final response = await context.read<AppService>().getAppIcon(id);
+          final response = await appService.getAppIcon(id);
           if (response.data != null && response.data!.isNotEmpty) {
             bytes = Uint8List.fromList(response.data!);
           }

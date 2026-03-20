@@ -15,8 +15,24 @@ class TemplatesTab extends StatelessWidget {
     return Consumer<ContainersProvider>(
       builder: (context, provider, _) {
         final templates = provider.data.templates;
-        if (provider.data.isLoading && templates.isEmpty) {
+        if (provider.templatesState.isLoading && templates.isEmpty) {
           return const Center(child: CircularProgressIndicator());
+        }
+
+        if (provider.templatesState.error != null && templates.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(provider.templatesState.error!),
+                const SizedBox(height: 12),
+                FilledButton(
+                  onPressed: provider.loadTemplates,
+                  child: Text(l10n.commonRetry),
+                ),
+              ],
+            ),
+          );
         }
 
         if (templates.isEmpty) {
@@ -32,6 +48,7 @@ class TemplatesTab extends StatelessWidget {
             itemBuilder: (context, index) {
               final template = templates[index];
               return AppCard(
+                title: template.name,
                 child: ListTile(
                   leading: const Icon(Icons.description),
                   title: Text(template.name),

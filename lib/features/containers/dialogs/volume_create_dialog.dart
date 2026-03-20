@@ -47,7 +47,7 @@ class _VolumeCreateDialogState extends State<VolumeCreateDialog> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: _selectedDriver,
+                initialValue: _selectedDriver,
                 decoration: InputDecoration(
                   labelText: l10n.commonDriver,
                   border: const OutlineInputBorder(),

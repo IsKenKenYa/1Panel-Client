@@ -32,6 +32,27 @@ class ImageStats {
   });
 }
 
+class SectionLoadState {
+  final bool isLoading;
+  final String? error;
+
+  const SectionLoadState({
+    this.isLoading = false,
+    this.error,
+  });
+
+  SectionLoadState copyWith({
+    bool? isLoading,
+    String? error,
+    bool clearError = false,
+  }) {
+    return SectionLoadState(
+      isLoading: isLoading ?? this.isLoading,
+      error: clearError ? null : (error ?? this.error),
+    );
+  }
+}
+
 /// 容器数据状态
 class ContainersData {
   final List<ContainerInfo> containers;
@@ -96,8 +117,20 @@ class ContainersProvider extends ChangeNotifier {
   ContainerService? _service;
 
   ContainersData _data = const ContainersData();
+  SectionLoadState _overviewState = const SectionLoadState();
+  SectionLoadState _containersState = const SectionLoadState();
+  SectionLoadState _reposState = const SectionLoadState();
+  SectionLoadState _templatesState = const SectionLoadState();
+  SectionLoadState _configState = const SectionLoadState();
+  SectionLoadState _imagesState = const SectionLoadState();
 
   ContainersData get data => _data;
+  SectionLoadState get overviewState => _overviewState;
+  SectionLoadState get containersState => _containersState;
+  SectionLoadState get reposState => _reposState;
+  SectionLoadState get templatesState => _templatesState;
+  SectionLoadState get configState => _configState;
+  SectionLoadState get imagesState => _imagesState;
 
   Future<void> _ensureService() async {
     _service ??= ContainerService();
@@ -105,7 +138,10 @@ class ContainersProvider extends ChangeNotifier {
 
   /// 加载容器数据
   Future<void> loadContainers() async {
-    _data = _data.copyWith(isLoading: true, error: null);
+    _containersState = _containersState.copyWith(
+      isLoading: true,
+      clearError: true,
+    );
     notifyListeners();
 
     try {
@@ -138,11 +174,14 @@ class ContainersProvider extends ChangeNotifier {
           stopped: stopped,
           paused: paused,
         ),
-        isLoading: false,
         lastUpdated: DateTime.now(),
       );
+      _containersState = _containersState.copyWith(
+        isLoading: false,
+        clearError: true,
+      );
     } catch (e) {
-      _data = _data.copyWith(
+      _containersState = _containersState.copyWith(
         isLoading: false,
         error: '加载容器失败: $e',
       );
@@ -152,7 +191,10 @@ class ContainersProvider extends ChangeNotifier {
 
   /// 加载镜像数据
   Future<void> loadImages() async {
-    _data = _data.copyWith(isLoading: true, error: null);
+    _imagesState = _imagesState.copyWith(
+      isLoading: true,
+      clearError: true,
+    );
     notifyListeners();
 
     try {
@@ -168,11 +210,14 @@ class ContainersProvider extends ChangeNotifier {
           used: images.length, // 简化处理
           unused: 0,
         ),
-        isLoading: false,
         lastUpdated: DateTime.now(),
       );
+      _imagesState = _imagesState.copyWith(
+        isLoading: false,
+        clearError: true,
+      );
     } catch (e) {
-      _data = _data.copyWith(
+      _imagesState = _imagesState.copyWith(
         isLoading: false,
         error: '加载镜像失败: $e',
       );
@@ -183,27 +228,100 @@ class ContainersProvider extends ChangeNotifier {
   /// 加载所有数据
   Future<void> loadAll() async {
     _data = _data.copyWith(isLoading: true, error: null);
+    _containersState = _containersState.copyWith(isLoading: true, clearError: true);
+    _imagesState = _imagesState.copyWith(isLoading: true, clearError: true);
+    _reposState = _reposState.copyWith(isLoading: true, clearError: true);
+    _templatesState = _templatesState.copyWith(isLoading: true, clearError: true);
+    _configState = _configState.copyWith(isLoading: true, clearError: true);
+    _overviewState = _overviewState.copyWith(isLoading: true, clearError: true);
     notifyListeners();
 
     try {
       await _ensureService();
+      var containers = _data.containers;
+      var images = _data.images;
+      var repos = _data.repos;
+      var templates = _data.templates;
+      var status = _data.status;
+      var daemonJson = _data.daemonJson;
 
-      // 并行加载所有数据
-      final results = await Future.wait([
-        _service!.listContainers(),
-        _service!.listImages(),
-        _service!.listRepos(),
-        _service!.listTemplates(),
-        _service!.getContainerStatus(),
-        _service!.getDaemonJson(),
-      ]);
+      try {
+        containers = await _service!.listContainers();
+        _containersState = _containersState.copyWith(
+          isLoading: false,
+          clearError: true,
+        );
+      } catch (e) {
+        _containersState = _containersState.copyWith(
+          isLoading: false,
+          error: '加载容器失败: $e',
+        );
+      }
 
-      final containers = results[0] as List<ContainerInfo>;
-      final images = results[1] as List<ContainerImage>;
-      final repos = results[2] as List<ContainerRepo>;
-      final templates = results[3] as List<ContainerTemplate>;
-      final status = results[4] as ContainerStatus;
-      final daemonJson = results[5] as String;
+      try {
+        images = await _service!.listImages();
+        _imagesState = _imagesState.copyWith(
+          isLoading: false,
+          clearError: true,
+        );
+      } catch (e) {
+        _imagesState = _imagesState.copyWith(
+          isLoading: false,
+          error: '加载镜像失败: $e',
+        );
+      }
+
+      try {
+        repos = await _service!.listRepos();
+        _reposState = _reposState.copyWith(
+          isLoading: false,
+          clearError: true,
+        );
+      } catch (e) {
+        _reposState = _reposState.copyWith(
+          isLoading: false,
+          error: 'Load repos failed: $e',
+        );
+      }
+
+      try {
+        templates = await _service!.listTemplates();
+        _templatesState = _templatesState.copyWith(
+          isLoading: false,
+          clearError: true,
+        );
+      } catch (e) {
+        _templatesState = _templatesState.copyWith(
+          isLoading: false,
+          error: 'Load templates failed: $e',
+        );
+      }
+
+      try {
+        status = await _service!.getContainerStatus();
+        _overviewState = _overviewState.copyWith(
+          isLoading: false,
+          clearError: true,
+        );
+      } catch (e) {
+        _overviewState = _overviewState.copyWith(
+          isLoading: false,
+          error: 'Load status failed: $e',
+        );
+      }
+
+      try {
+        daemonJson = await _service!.getDaemonJson();
+        _configState = _configState.copyWith(
+          isLoading: false,
+          clearError: true,
+        );
+      } catch (e) {
+        _configState = _configState.copyWith(
+          isLoading: false,
+          error: 'Load daemon config failed: $e',
+        );
+      }
 
       // 计算统计
       int running = 0, stopped = 0, paused = 0;
@@ -248,18 +366,40 @@ class ContainersProvider extends ChangeNotifier {
         isLoading: false,
         error: '加载数据失败: $e',
       );
+
+      _containersState = _containersState.copyWith(isLoading: false);
+      _imagesState = _imagesState.copyWith(isLoading: false);
+      _reposState = _reposState.copyWith(isLoading: false);
+      _templatesState = _templatesState.copyWith(isLoading: false);
+      _configState = _configState.copyWith(isLoading: false);
+      _overviewState = _overviewState.copyWith(isLoading: false);
     }
     notifyListeners();
   }
 
   /// 加载配置
   Future<void> loadConfig() async {
+    _configState = _configState.copyWith(
+      isLoading: true,
+      clearError: true,
+    );
+    notifyListeners();
+
     try {
       await _ensureService();
       final config = await _service!.getDaemonJson();
       _data = _data.copyWith(daemonJson: config);
+      _configState = _configState.copyWith(
+        isLoading: false,
+        clearError: true,
+      );
       notifyListeners();
     } catch (e) {
+      _configState = _configState.copyWith(
+        isLoading: false,
+        error: 'Load daemon config failed: $e',
+      );
+      notifyListeners();
       // 忽略配置加载错误，避免阻断其他功能
       appLogger.wWithPackage(
         'features.containers.containers_provider',
@@ -267,6 +407,30 @@ class ContainersProvider extends ChangeNotifier {
         error: e,
       );
     }
+  }
+
+  Future<void> loadStatus() async {
+    _overviewState = _overviewState.copyWith(
+      isLoading: true,
+      clearError: true,
+    );
+    notifyListeners();
+
+    try {
+      await _ensureService();
+      final status = await _service!.getContainerStatus();
+      _data = _data.copyWith(status: status, lastUpdated: DateTime.now());
+      _overviewState = _overviewState.copyWith(
+        isLoading: false,
+        clearError: true,
+      );
+    } catch (e) {
+      _overviewState = _overviewState.copyWith(
+        isLoading: false,
+        error: 'Load status failed: $e',
+      );
+    }
+    notifyListeners();
   }
 
   /// 启动容器
@@ -334,6 +498,32 @@ class ContainersProvider extends ChangeNotifier {
       return true;
     } catch (e) {
       _data = _data.copyWith(error: '删除容器失败: $e');
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> createContainer(ContainerOperate request) async {
+    try {
+      await _ensureService();
+      await _service!.createContainer(request);
+      await loadContainers();
+      return true;
+    } catch (e) {
+      _data = _data.copyWith(error: '创建容器失败: $e');
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> createContainerByCommand(ContainerCreateByCommand request) async {
+    try {
+      await _ensureService();
+      await _service!.createContainerByCommand(request);
+      await loadContainers();
+      return true;
+    } catch (e) {
+      _data = _data.copyWith(error: '创建容器失败: $e');
       notifyListeners();
       return false;
     }
@@ -443,13 +633,26 @@ class ContainersProvider extends ChangeNotifier {
 
   /// 加载仓库列表
   Future<void> loadRepos() async {
+    _reposState = _reposState.copyWith(
+      isLoading: true,
+      clearError: true,
+    );
+    notifyListeners();
+
     try {
       await _ensureService();
       final repos = await _service!.listRepos();
       _data = _data.copyWith(repos: repos);
+      _reposState = _reposState.copyWith(
+        isLoading: false,
+        clearError: true,
+      );
       notifyListeners();
     } catch (e) {
-      _data = _data.copyWith(error: 'Load repos failed: $e');
+      _reposState = _reposState.copyWith(
+        isLoading: false,
+        error: 'Load repos failed: $e',
+      );
       notifyListeners();
     }
   }
@@ -498,13 +701,26 @@ class ContainersProvider extends ChangeNotifier {
 
   /// 加载模板列表
   Future<void> loadTemplates() async {
+    _templatesState = _templatesState.copyWith(
+      isLoading: true,
+      clearError: true,
+    );
+    notifyListeners();
+
     try {
       await _ensureService();
       final templates = await _service!.listTemplates();
       _data = _data.copyWith(templates: templates);
+      _templatesState = _templatesState.copyWith(
+        isLoading: false,
+        clearError: true,
+      );
       notifyListeners();
     } catch (e) {
-      _data = _data.copyWith(error: 'Load templates failed: $e');
+      _templatesState = _templatesState.copyWith(
+        isLoading: false,
+        error: 'Load templates failed: $e',
+      );
       notifyListeners();
     }
   }
@@ -568,6 +784,12 @@ class ContainersProvider extends ChangeNotifier {
   /// 清除错误
   void clearError() {
     _data = _data.copyWith(error: null);
+    _overviewState = _overviewState.copyWith(clearError: true);
+    _containersState = _containersState.copyWith(clearError: true);
+    _reposState = _reposState.copyWith(clearError: true);
+    _templatesState = _templatesState.copyWith(clearError: true);
+    _configState = _configState.copyWith(clearError: true);
+    _imagesState = _imagesState.copyWith(clearError: true);
     notifyListeners();
   }
 }

@@ -79,7 +79,7 @@ class _TemplateCreateDialogState extends State<TemplateCreateDialog> {
                     labelText: l10n.commonContent,
                     border: const OutlineInputBorder(),
                     alignLabelWithHint: true,
-                    hintText: 'YAML content',
+                    hintText: l10n.containerTemplateContentHint,
                   ),
                   maxLines: 15,
                   style: const TextStyle(fontFamily: 'monospace'),
@@ -103,6 +103,7 @@ class _TemplateCreateDialogState extends State<TemplateCreateDialog> {
         FilledButton(
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
+              final navigator = Navigator.of(context);
               final request = ContainerTemplateOperate(
                 id: widget.template?.id,
                 name: _nameController.text,
@@ -115,8 +116,9 @@ class _TemplateCreateDialogState extends State<TemplateCreateDialog> {
                   ? await provider.updateTemplate(request)
                   : await provider.createTemplate(request);
 
-              if (success && mounted) {
-                Navigator.pop(context, true);
+              if (!context.mounted) return;
+              if (success) {
+                navigator.pop(true);
               }
             }
           },

@@ -1,55 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/features/containers/container_service.dart';
-import 'package:onepanelapp_app/data/models/container_models.dart';
+import 'package:onepanelapp_app/features/containers/providers/container_detail_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:onepanelapp_app/shared/widgets/app_card.dart';
 
-class ContainerStatsView extends StatefulWidget {
-  final String containerId;
-
-  const ContainerStatsView({
-    super.key,
-    required this.containerId,
-  });
-
-  @override
-  State<ContainerStatsView> createState() => _ContainerStatsViewState();
-}
-
-class _ContainerStatsViewState extends State<ContainerStatsView> {
-  final _service = ContainerService();
-  ContainerStats? _stats;
-  bool _isLoading = true;
-  String? _error;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadStats();
-  }
-
-  Future<void> _loadStats() async {
-    if (!mounted) return;
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
-    try {
-      final stats = await _service.getContainerStats(widget.containerId);
-      if (!mounted) return;
-      setState(() {
-        _stats = stats;
-        _isLoading = false;
-      });
-    } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        _error = e.toString();
-        _isLoading = false;
-      });
-    }
-  }
+class ContainerStatsView extends StatelessWidget {
+  const ContainerStatsView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -59,24 +15,25 @@ class _ContainerStatsViewState extends State<ContainerStatsView> {
     final memoryColor = colorScheme.tertiary;
     final networkColor = colorScheme.secondary;
     final blockColor = colorScheme.error;
+    final provider = context.watch<ContainerDetailProvider>();
 
-    if (_isLoading) {
+    if (provider.statsLoading && provider.stats == null) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (_error != null) {
+    if (provider.statsError != null && provider.stats == null) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              l10n.containerOperateFailed(_error!),
+              l10n.containerOperateFailed(provider.statsError!),
               style: TextStyle(color: colorScheme.error),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
             FilledButton.icon(
-              onPressed: _loadStats,
+              onPressed: provider.loadStats,
               icon: const Icon(Icons.refresh),
               label: Text(l10n.commonRetry),
             ),
@@ -85,11 +42,11 @@ class _ContainerStatsViewState extends State<ContainerStatsView> {
       );
     }
 
-    if (_stats == null) {
+    if (provider.stats == null) {
       return Center(child: Text(l10n.commonEmpty));
     }
 
-    final stats = _stats!;
+    final stats = provider.stats!;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -144,7 +101,7 @@ class _ContainerStatsViewState extends State<ContainerStatsView> {
           ),
           const SizedBox(height: 16),
           FilledButton.icon(
-            onPressed: _loadStats,
+            onPressed: provider.loadStats,
             icon: const Icon(Icons.refresh),
             label: Text(l10n.commonRefresh),
           ),

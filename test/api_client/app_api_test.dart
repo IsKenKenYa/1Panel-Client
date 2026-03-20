@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -356,24 +355,67 @@ void main() {
            paramsMap[p.key] = p.value;
          }
 
-         final updateReq = <String, dynamic>{
-           'installId': installedAppId,
-           'cpuQuota': config.cpuQuota,
-           'memoryLimit': config.memoryLimit,
-           'memoryUnit': config.memoryUnit,
-           'containerName': config.containerName,
-           'allowPort': config.allowPort,
-           'dockerCompose': config.dockerCompose,
-           'hostMode': config.hostMode,
-           'type': config.type,
-           'webUI': config.webUI,
-           'params': paramsMap,
-         };
+         final updateReq = AppInstalledParamsUpdateRequest(
+           installId: installedAppId!,
+           cpuQuota: config.cpuQuota,
+           memoryLimit: config.memoryLimit,
+           memoryUnit: config.memoryUnit,
+           containerName: config.containerName,
+           allowPort: config.allowPort,
+           dockerCompose: config.dockerCompose,
+           hostMode: config.hostMode,
+           type: config.type,
+           webUI: config.webUI,
+           params: paramsMap,
+         );
 
          await api.updateAppParams(updateReq);
          resultCollector.addSuccess('Update Params', Duration.zero);
       } catch (e) {
         resultCollector.addFailure('Update Params', e.toString(), Duration.zero);
+      }
+    });
+
+    test('POST /apps/installed/config/update - Update Config', () async {
+      if (!hasApiKey || installedAppId == null) return;
+      try {
+        final info = await api.getAppInstallInfo(installedAppId.toString());
+        await api.updateAppInstallConfig(
+          AppConfigUpdateRequest(
+            installId: installedAppId!,
+            webUI: info.webUI,
+          ),
+        );
+        resultCollector.addSuccess('Update Config', Duration.zero);
+      } catch (e) {
+        resultCollector.addFailure('Update Config', e.toString(), Duration.zero);
+      }
+    });
+
+    test('POST /apps/installed/port/change - Change Port', () async {
+      if (!hasApiKey || installedAppId == null) return;
+      try {
+        final info = await api.getAppInstallInfo(installedAppId.toString());
+        if (info.appKey == null || info.name == null) {
+          resultCollector.addSkipped('Change Port', 'Missing app key or install name');
+          return;
+        }
+        final int currentPort = info.httpPort ?? info.httpsPort ?? 0;
+        if (currentPort <= 0) {
+          resultCollector.addSkipped('Change Port', 'No valid port available');
+          return;
+        }
+
+        await api.changeAppPort(
+          AppPortUpdateRequest(
+            key: info.appKey!,
+            name: info.name!,
+            port: currentPort,
+          ),
+        );
+        resultCollector.addSuccess('Change Port', Duration.zero);
+      } catch (e) {
+        resultCollector.addFailure('Change Port', e.toString(), Duration.zero);
       }
     });
   });
@@ -455,28 +497,29 @@ void main() {
       }
     });
     
-    // TODO: Fix Scope validation error (oneof tag) - API documentation needed for valid Scope values
-    // test('Ignore & Cancel Ignore Update', () async {
-    //   if (!hasApiKey || installedAppId == null) return;
-    //   try {
-    //     await api.ignoreAppUpdate(AppInstalledIgnoreUpgradeRequest(
-    //       appInstallId: installedAppId!,
-    //       reason: 'Test ignore',
-    //     ));
-        
-    //     final ignored = await api.getIgnoredApps();
-    //     logResponse('/apps/ignored', ignored.length);
-        
-    //     await api.cancelIgnoreAppUpdate(AppInstalledIgnoreUpgradeRequest(
-    //       appInstallId: installedAppId!,
-    //       reason: '',
-    //     ));
-        
-    //     resultCollector.addSuccess('Ignore/Cancel Update', Duration.zero);
-    //   } catch (e) {
-    //     resultCollector.addFailure('Ignore/Cancel Update', e.toString(), Duration.zero);
-    //   }
-    // });
+    test('Ignore & Cancel Ignore Update', () async {
+      if (!hasApiKey || installedAppId == null) return;
+      try {
+        await api.ignoreAppUpdate(AppInstalledIgnoreUpgradeRequest(
+          appInstallId: installedAppId!,
+          reason: 'Test ignore',
+          scope: AppIgnoreUpgradeScope.version,
+        ));
+
+        final ignored = await api.getIgnoredAppDetails();
+        logResponse('/apps/ignored/detail', ignored.length);
+
+        await api.cancelIgnoreAppUpdate(AppInstalledIgnoreUpgradeRequest(
+          appInstallId: installedAppId!,
+          reason: '',
+          scope: AppIgnoreUpgradeScope.version,
+        ));
+
+        resultCollector.addSuccess('Ignore/Cancel Update', Duration.zero);
+      } catch (e) {
+        resultCollector.addFailure('Ignore/Cancel Update', e.toString(), Duration.zero);
+      }
+    });
     
     test('Get Update Versions', () async {
       if (!hasApiKey || installedAppId == null) return;
@@ -523,6 +566,10 @@ void main() {
   // 7. Edge Cases & Error Handling
   group('Edge Cases', () {
     test('Get App Icon - Invalid ID (404/500)', () async {
+      if (!hasApiKey) {
+        resultCollector.addSkipped('Get App Icon - Invalid ID (404/500)', 'API key not configured');
+        return;
+      }
       try {
         await api.getAppIcon('999999');
       } catch (e) {
@@ -532,6 +579,10 @@ void main() {
     });
 
     test('Get App Detail - Invalid ID', () async {
+      if (!hasApiKey) {
+        resultCollector.addSkipped('Get App Detail - Invalid ID', 'API key not configured');
+        return;
+      }
       try {
         await api.getAppDetail('999999', 'latest', 'unknown');
         fail('Should throw exception');
@@ -542,6 +593,10 @@ void main() {
     });
 
     test('Install App - Missing Required Fields', () async {
+      if (!hasApiKey) {
+        resultCollector.addSkipped('Install App - Missing Required Fields', 'API key not configured');
+        return;
+      }
       try {
         // Sending empty name which should be required
         await api.installApp(AppInstallCreateRequest(

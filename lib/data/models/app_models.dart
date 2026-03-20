@@ -358,8 +358,12 @@ class AppInstalledIgnoreUpgradeRequest {
   AppInstalledIgnoreUpgradeRequest({
     required this.appInstallId,
     required this.reason,
-    this.scope = 'project',
-  });
+    this.scope = AppIgnoreUpgradeScope.version,
+  }) : assert(
+          scope == AppIgnoreUpgradeScope.all ||
+              scope == AppIgnoreUpgradeScope.version,
+          'scope must be one of: all, version',
+        );
 
   factory AppInstalledIgnoreUpgradeRequest.fromJson(Map<String, dynamic> json) => _$AppInstalledIgnoreUpgradeRequestFromJson(json);
   Map<String, dynamic> toJson() => {
@@ -367,6 +371,110 @@ class AppInstalledIgnoreUpgradeRequest {
     'reason': reason,
     'scope': scope,
   };
+}
+
+class AppIgnoreUpgradeScope {
+  static const String all = 'all';
+  static const String version = 'version';
+}
+
+class AppConfigUpdateRequest {
+  final int installId;
+  final String? webUI;
+
+  const AppConfigUpdateRequest({
+    required this.installId,
+    this.webUI,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'installID': installId,
+      if (webUI != null) 'webUI': webUI,
+    };
+  }
+}
+
+class AppInstalledParamsUpdateRequest {
+  final int installId;
+  final Map<String, dynamic> params;
+  final bool? advanced;
+  final bool? allowPort;
+  final String? containerName;
+  final double? cpuQuota;
+  final String? dockerCompose;
+  final bool? editCompose;
+  final bool? gpuConfig;
+  final bool? hostMode;
+  final double? memoryLimit;
+  final String? memoryUnit;
+  final bool? pullImage;
+  final String? restartPolicy;
+  final String? specifyIP;
+  final String? type;
+  final String? webUI;
+
+  const AppInstalledParamsUpdateRequest({
+    required this.installId,
+    required this.params,
+    this.advanced,
+    this.allowPort,
+    this.containerName,
+    this.cpuQuota,
+    this.dockerCompose,
+    this.editCompose,
+    this.gpuConfig,
+    this.hostMode,
+    this.memoryLimit,
+    this.memoryUnit,
+    this.pullImage,
+    this.restartPolicy,
+    this.specifyIP,
+    this.type,
+    this.webUI,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'installId': installId,
+      'params': params,
+      if (advanced != null) 'advanced': advanced,
+      if (allowPort != null) 'allowPort': allowPort,
+      if (containerName != null) 'containerName': containerName,
+      if (cpuQuota != null) 'cpuQuota': cpuQuota,
+      if (dockerCompose != null) 'dockerCompose': dockerCompose,
+      if (editCompose != null) 'editCompose': editCompose,
+      if (gpuConfig != null) 'gpuConfig': gpuConfig,
+      if (hostMode != null) 'hostMode': hostMode,
+      if (memoryLimit != null) 'memoryLimit': memoryLimit,
+      if (memoryUnit != null) 'memoryUnit': memoryUnit,
+      if (pullImage != null) 'pullImage': pullImage,
+      if (restartPolicy != null) 'restartPolicy': restartPolicy,
+      if (specifyIP != null) 'specifyIP': specifyIP,
+      if (type != null) 'type': type,
+      if (webUI != null) 'webUI': webUI,
+    };
+  }
+}
+
+class AppPortUpdateRequest {
+  final String key;
+  final String name;
+  final int port;
+
+  const AppPortUpdateRequest({
+    required this.key,
+    required this.name,
+    required this.port,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'key': key,
+      'name': name,
+      'port': port,
+    };
+  }
 }
 
 /// 应用安装操作请求模型

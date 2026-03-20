@@ -5570,6 +5570,42 @@ abstract class AppLocalizations {
   /// **'Filter containers'**
   String get containerFilter;
 
+  /// No description provided for @containerNetworkSubnetLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Subnet'**
+  String get containerNetworkSubnetLabel;
+
+  /// No description provided for @containerNetworkSubnetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 172.20.0.0/16'**
+  String get containerNetworkSubnetHint;
+
+  /// No description provided for @containerNetworkGatewayLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Gateway'**
+  String get containerNetworkGatewayLabel;
+
+  /// No description provided for @containerNetworkGatewayHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 172.20.0.1'**
+  String get containerNetworkGatewayHint;
+
+  /// No description provided for @containerRepoUrlExample.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. https://github.com/user/repo'**
+  String get containerRepoUrlExample;
+
+  /// No description provided for @containerTemplateContentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'YAML content'**
+  String get containerTemplateContentHint;
+
   /// No description provided for @containerCreate.
   ///
   /// In en, this message translates to:

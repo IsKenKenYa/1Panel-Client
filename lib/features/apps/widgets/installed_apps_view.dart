@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanelapp_app/config/app_router.dart';
@@ -27,14 +29,30 @@ class _InstalledAppsViewState extends State<InstalledAppsView> {
     await context.read<InstalledAppsProvider>().loadInstalledApps();
   }
 
-  void _showUninstallDialog(AppInstallInfo app) {
+  Future<void> _showUninstallDialog(AppInstallInfo app) async {
     final l10n = context.l10n;
+    final provider = context.read<InstalledAppsProvider>();
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    Map<String, dynamic> checkResult = const {};
+    try {
+      checkResult = await provider.checkUninstall(app.id.toString());
+    } catch (_) {
+      checkResult = const {};
+    }
+
+    final String checkText = checkResult.isEmpty
+        ? ''
+        : '\n\n${const JsonEncoder.withIndent('  ').convert(checkResult)}';
+
+    if (!mounted) return;
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Text(l10n.appActionUninstall),
-          content: Text(l10n.appUninstallConfirm),
+          content: SingleChildScrollView(
+            child: SelectableText('${l10n.appUninstallConfirm}$checkText'),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -44,17 +62,15 @@ class _InstalledAppsViewState extends State<InstalledAppsView> {
               onPressed: () async {
                 Navigator.pop(context);
                 try {
-                  await context
-                      .read<InstalledAppsProvider>()
-                      .uninstallApp(app.id.toString());
+                  await provider.uninstallApp(app.id.toString());
                   if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    scaffoldMessenger.showSnackBar(
                       SnackBar(content: Text(l10n.appOperateSuccess)),
                     );
                   }
                 } catch (e) {
                   if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    scaffoldMessenger.showSnackBar(
                       SnackBar(content: Text(l10n.appOperateFailed(e.toString()))),
                     );
                   }

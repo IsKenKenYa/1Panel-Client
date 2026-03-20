@@ -286,6 +286,9 @@ class _AppStoreViewState extends State<AppStoreView> {
   }
 
   Future<void> _showInstallDialog(BuildContext context, AppItem app) async {
+    final provider = this.context.read<AppStoreProvider>();
+    final scaffoldMessenger = ScaffoldMessenger.of(this.context);
+    final colorScheme = Theme.of(this.context).colorScheme;
     final result = await showDialog<bool>(
       context: context,
       builder: (context) => AppInstallDialog(app: app),
@@ -293,13 +296,11 @@ class _AppStoreViewState extends State<AppStoreView> {
 
     if (!mounted) return;
 
-    // Check if provider has error (e.g. from failed install attempt in dialog)
-    final provider = context.read<AppStoreProvider>();
     if (provider.error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      scaffoldMessenger.showSnackBar(
         SnackBar(
           content: Text(provider.error!),
-          backgroundColor: Theme.of(context).colorScheme.error,
+          backgroundColor: colorScheme.error,
         ),
       );
     }

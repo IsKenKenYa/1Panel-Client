@@ -56,6 +56,39 @@ class InstalledAppsProvider extends ChangeNotifier {
     _pollingTimer = null;
   }
 
+  Future<List<AppInstallInfo>> _loadAllInstalledApps() async {
+    const int pageSize = 100;
+    final List<AppInstallInfo> allItems = [];
+    int page = 1;
+    int total = 0;
+
+    while (true) {
+      final result = await _appService.searchInstalledApps(
+        AppInstalledSearchRequest(
+          page: page,
+          pageSize: pageSize,
+        ),
+      );
+      allItems.addAll(result.items);
+      total = result.total;
+
+      if (result.items.isEmpty) {
+        break;
+      }
+      if (total > 0 && allItems.length >= total) {
+        break;
+      }
+      page++;
+    }
+
+    // Some backends return total=0 with valid list items; keep collected list.
+    if (allItems.isNotEmpty) {
+      return allItems;
+    }
+    // Fallback for environments where search endpoint is restricted.
+    return _appService.getInstalledApps();
+  }
+
   Future<void> loadInstalledApps({bool silent = false}) async {
     if (!silent) {
       _isLoading = true;
@@ -64,13 +97,7 @@ class InstalledAppsProvider extends ChangeNotifier {
     }
 
     try {
-      final result = await _appService.searchInstalledApps(
-        AppInstalledSearchRequest(
-          page: 1,
-          pageSize: 100,
-        ),
-      );
-      _installedApps = result.items;
+      _installedApps = await _loadAllInstalledApps();
       _calculateStats();
     } catch (e) {
       if (!silent) {
@@ -114,12 +141,9 @@ class InstalledAppsProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> updateAppParams(int appInstallId, Map<String, dynamic> params) async {
+  Future<void> updateAppParams(AppInstalledParamsUpdateRequest request) async {
     try {
-      await _appService.updateAppParams({
-        'appInstallId': appInstallId,
-        'params': params,
-      });
+      await _appService.updateAppParams(request);
       // Refresh after update
       await loadInstalledApps(silent: true);
     } catch (e) {
@@ -127,7 +151,7 @@ class InstalledAppsProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> updateAppInstallConfig(Map<String, dynamic> config) async {
+  Future<void> updateAppInstallConfig(AppConfigUpdateRequest config) async {
     try {
       await _appService.updateAppInstallConfig(config);
       await loadInstalledApps(silent: true);
@@ -136,13 +160,9 @@ class InstalledAppsProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> changeAppPort(int appInstallId, int httpPort, int httpsPort) async {
+  Future<void> changeAppPort(AppPortUpdateRequest request) async {
     try {
-      await _appService.changeAppPort({
-        'appInstallId': appInstallId,
-        'httpPort': httpPort,
-        'httpsPort': httpsPort,
-      });
+      await _appService.changeAppPort(request);
       await loadInstalledApps(silent: true);
     } catch (e) {
       rethrow;
@@ -165,6 +185,7 @@ class InstalledAppsProvider extends ChangeNotifier {
         AppInstalledIgnoreUpgradeRequest(
           appInstallId: appInstallId,
           reason: reason,
+          scope: AppIgnoreUpgradeScope.version,
         ),
       );
       await loadInstalledApps(silent: true);

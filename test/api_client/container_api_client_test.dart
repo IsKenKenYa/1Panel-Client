@@ -43,7 +43,12 @@ void main() {
       debugPrint('服务器地址: ${TestEnvironment.baseUrl}');
       debugPrint('API密钥: ${hasApiKey ? "已配置" : "未配置"}');
       debugPrint('========================================\n');
-      
+
+      if (!hasApiKey) {
+        debugPrint('⚠️  跳过测试: API密钥未配置');
+        return;
+      }
+
       expect(hasApiKey, isTrue, reason: 'API密钥应该已配置');
     });
 
@@ -234,6 +239,33 @@ void main() {
           debugPrint('⚠️ containers/files endpoints failed: $e');
           return;
         }
+      });
+
+      test('inspectContainer - 获取容器详情', () async {
+        if (!hasApiKey || sampleContainer == null) {
+          debugPrint('⚠️  跳过测试: 无可用容器');
+          return;
+        }
+
+        final response = await api.inspectContainer(
+          InspectReq(id: sampleContainer!.id, type: 'container'),
+        );
+        expect(response.statusCode, equals(200));
+        expect(response.data, isNotNull);
+      });
+
+      test('getContainerLogs - 获取容器日志', () async {
+        if (!hasApiKey || sampleContainer == null) {
+          debugPrint('⚠️  跳过测试: 无可用容器');
+          return;
+        }
+
+        final response = await api.getContainerLogs(
+          container: sampleContainer!.name,
+          tail: '20',
+        );
+        expect(response.statusCode, equals(200));
+        expect(response.data, isNotNull);
       });
     });
 

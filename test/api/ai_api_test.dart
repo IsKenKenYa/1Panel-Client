@@ -484,16 +484,14 @@ void main() {
   group('JSON兼容性测试', () {
     test('Mock响应数据应该符合模型结构', () {
       final mockResponse = MockAIResponses.ollamaModels();
-      expect(mockResponse['code'], equals(200));
       expect(mockResponse['data'], isNotNull);
-      expect(mockResponse['data']['items'], isA<List>());
+      expect(mockResponse['data'], isA<List>());
     });
 
     test('MCP Mock响应数据应该符合模型结构', () {
       final mockResponse = MockAIResponses.mcpServers();
-      expect(mockResponse['code'], equals(200));
       expect(mockResponse['data'], isNotNull);
-      expect(mockResponse['data']['items'], isA<List>());
+      expect(mockResponse['data'], isA<List>());
     });
   });
 }
