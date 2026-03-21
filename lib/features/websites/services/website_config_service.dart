@@ -171,48 +171,4 @@ class WebsiteConfigService {
     final api = await _ensureApi();
     return api.updateWebsiteHttps(websiteId: websiteId, request: request);
   }
-
-  Future<String> loadRewrite({
-    required int websiteId,
-    required String name,
-  }) async {
-    final api = await _ensureApi();
-    final data = await api.getWebsiteRewrite(websiteId: websiteId, name: name);
-    return (data['content'] ?? data['value'] ?? '').toString();
-  }
-
-  Future<void> updateRewrite({
-    required int websiteId,
-    required String name,
-    required String content,
-  }) async {
-    final api = await _ensureApi();
-    await api.updateWebsiteRewrite(websiteId: websiteId, name: name, content: content);
-  }
-
-  Future<String> loadProxy({
-    required int websiteId,
-    required String name,
-  }) async {
-    final api = await _ensureApi();
-    final data = await api.getWebsiteProxy(id: websiteId);
-    final list = data['items'];
-    if (list is List) {
-      final match = list.whereType<Map>().firstWhere(
-            (item) => item['name']?.toString() == name,
-            orElse: () => const <String, dynamic>{},
-          );
-      return (match['content'] ?? '').toString();
-    }
-    return (data['content'] ?? '').toString();
-  }
-
-  Future<void> updateProxy({
-    required int websiteId,
-    required String name,
-    required String content,
-  }) async {
-    final api = await _ensureApi();
-    await api.updateWebsiteProxy(websiteId: websiteId, name: name, content: content);
-  }
 }

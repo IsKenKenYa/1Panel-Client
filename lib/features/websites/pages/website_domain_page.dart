@@ -1,5 +1,3 @@
-import 'package:flutter/widgets.dart';
-
 import 'website_domain_management_page.dart';
 
 class WebsiteDomainPage extends WebsiteDomainManagementPage {

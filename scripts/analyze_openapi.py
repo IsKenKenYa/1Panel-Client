@@ -23,13 +23,13 @@ DEFAULT_SWAGGER_PATH = (
 
 def analyze_openapi(json_path: str):
     """分析OpenAPI JSON文件"""
-    path = Path(json_path)
-    if not path.exists():
+    source_path = Path(json_path)
+    if not source_path.exists():
         raise FileNotFoundError(
-            f"未找到 Swagger 文档: {path}\n"
+            f"未找到 Swagger 文档: {source_path}\n"
             "请先初始化子模块: git submodule update --init --recursive docs/OpenSource/1Panel"
         )
-    with open(path, 'r', encoding='utf-8') as f:
+    with open(source_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
     
     paths = data.get('paths', {})
@@ -42,7 +42,7 @@ def analyze_openapi(json_path: str):
     # 提取所有端点
     all_endpoints = []
     
-    for path, methods in paths.items():
+    for endpoint_path, methods in paths.items():
         for method, details in methods.items():
             if method in ['get', 'post', 'put', 'delete', 'patch']:
                 tags = details.get('tags', ['untagged'])
@@ -50,7 +50,7 @@ def analyze_openapi(json_path: str):
                 operation_id = details.get('operationId', '')
                 
                 endpoint_info = {
-                    'path': path,
+                    'path': endpoint_path,
                     'method': method.upper(),
                     'tags': tags,
                     'summary': summary,
@@ -133,7 +133,7 @@ def analyze_openapi(json_path: str):
         output['endpoints_by_priority'][priority].extend(tag_endpoints[tag])
     
     # 保存详细分析结果
-    output_path = path.parent / 'openapi_analysis.json'
+    output_path = Path.cwd() / 'openapi_analysis.json'
     with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(output, f, indent=2, ensure_ascii=False)
     

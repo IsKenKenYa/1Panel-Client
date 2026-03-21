@@ -200,7 +200,7 @@ class _ScopeCard extends StatelessWidget {
             Text(l10n.websitesConfigScopeTitle, style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 12),
             DropdownButtonFormField<NginxKey>(
-              value: scope,
+              initialValue: scope,
               decoration: InputDecoration(
                 labelText: l10n.websitesConfigScopeLabel,
                 border: const OutlineInputBorder(),

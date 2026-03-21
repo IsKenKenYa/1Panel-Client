@@ -52,10 +52,4 @@ class WebsiteSslCenterProvider extends ChangeNotifier {
     await _service!.uploadCertificate(request);
     await load();
   }
-
-  Future<void> deleteCertificate(int id) async {
-    await _ensureService();
-    await _service!.deleteCertificate(id);
-    await load();
-  }
 }

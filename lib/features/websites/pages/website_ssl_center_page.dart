@@ -5,7 +5,6 @@ import '../../../data/models/ssl_models.dart';
 
 import '../providers/website_ssl_center_provider.dart';
 import '../widgets/website_async_state_view.dart';
-import '../widgets/website_common_widgets.dart';
 import 'website_certificate_detail_page.dart';
 import 'website_ssl_accounts_page.dart';
 
@@ -219,7 +218,7 @@ class _WebsiteSslCenterBody extends StatelessWidget {
             child: Column(
               children: [
                 DropdownButtonFormField<String>(
-                  value: type,
+                  initialValue: type,
                   decoration: InputDecoration(labelText: l10n.websitesSslUploadTypeLabel),
                   items: [
                     DropdownMenuItem(value: 'paste', child: Text(l10n.websitesSslUploadTypePaste)),

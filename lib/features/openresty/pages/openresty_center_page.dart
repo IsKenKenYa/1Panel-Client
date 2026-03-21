@@ -306,7 +306,7 @@ class _ScopeTab extends StatelessWidget {
       child: Column(
         children: [
           DropdownButtonFormField<NginxKey>(
-            value: scopeKey,
+            initialValue: scopeKey,
             decoration: InputDecoration(
               labelText: l10n.openrestyScopeLabel,
               border: const OutlineInputBorder(),
