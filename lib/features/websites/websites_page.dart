@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../core/i18n/l10n_x.dart';
 import '../../shared/widgets/app_card.dart';
-import '../../widgets/main_layout.dart';
+import '../shell/widgets/server_aware_page_scaffold.dart';
 import 'websites_provider.dart';
 
 class WebsitesPage extends StatefulWidget {
@@ -24,94 +25,77 @@ class _WebsitesPageState extends State<WebsitesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MainLayout(
-      currentIndex: 3,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('网站管理'),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.search),
-              onPressed: () {
-                // TODO: 搜索网站
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.filter_list),
-              onPressed: () {
-                // TODO: 筛选网站
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: () {
-                context.read<WebsitesProvider>().refresh();
-              },
-            ),
-          ],
-        ),
-        body: Consumer<WebsitesProvider>(
-          builder: (context, provider, child) {
-            final data = provider.data;
+    final l10n = context.l10n;
+    return ServerAwarePageScaffold(
+      title: l10n.serverModuleWebsites,
+      body: Consumer<WebsitesProvider>(
+        builder: (context, provider, child) {
+          final data = provider.data;
 
-            // 显示错误
-            if (data.error != null) {
-              return _ErrorView(
-                error: data.error!,
-                onRetry: () => provider.loadWebsites(),
-              );
-            }
-
-            // 显示加载状态
-            if (data.isLoading && data.websites.isEmpty) {
-              return const _LoadingView();
-            }
-
-            return RefreshIndicator(
-              onRefresh: () => provider.refresh(),
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // 网站统计卡片
-                    _StatsCard(stats: data.stats),
-                    const SizedBox(height: 16),
-                    
-                    // 网站列表
-                    if (data.websites.isEmpty && !data.isLoading)
-                      const _EmptyView(
-                        icon: Icons.language_outlined,
-                        title: '暂无网站',
-                        subtitle: '点击右下角按钮创建网站',
-                      )
-                    else
-                      ...data.websites.map((website) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: _WebsiteCard(
-                            website: website,
-                            onStart: () => provider.startWebsite(website.id ?? 0),
-                            onStop: () => provider.stopWebsite(website.id ?? 0),
-                            onRestart: () => provider.restartWebsite(website.id ?? 0),
-                            onDelete: () => _showDeleteDialog(context, website, provider),
-                          ),
-                        );
-                      }),
-                  ],
-                ),
-              ),
+          if (data.error != null) {
+            return _ErrorView(
+              error: data.error!,
+              onRetry: () => provider.loadWebsites(),
             );
-          },
+          }
+
+          if (data.isLoading && data.websites.isEmpty) {
+            return const _LoadingView();
+          }
+
+          return RefreshIndicator(
+            onRefresh: provider.refresh,
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _StatsCard(stats: data.stats),
+                  const SizedBox(height: 16),
+                  if (data.websites.isEmpty && !data.isLoading)
+                    const _EmptyView(
+                      icon: Icons.language_outlined,
+                      title: '暂无网站',
+                      subtitle: '点击右下角按钮创建网站',
+                    )
+                  else
+                    ...data.websites.map((website) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: _WebsiteCard(
+                          website: website,
+                          onStart: () => provider.startWebsite(website.id ?? 0),
+                          onStop: () => provider.stopWebsite(website.id ?? 0),
+                          onRestart: () => provider.restartWebsite(website.id ?? 0),
+                          onDelete: () => _showDeleteDialog(context, website, provider),
+                        ),
+                      );
+                    }),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.search),
+          onPressed: () {},
         ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {
-            Navigator.pushNamed(context, '/website-create');
-          },
-          icon: const Icon(Icons.add),
-          label: const Text('创建网站'),
+        IconButton(
+          icon: const Icon(Icons.filter_list),
+          onPressed: () {},
         ),
+        IconButton(
+          icon: const Icon(Icons.refresh),
+          onPressed: () => context.read<WebsitesProvider>().refresh(),
+        ),
+      ],
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => Navigator.pushNamed(context, '/website-create'),
+        icon: const Icon(Icons.add),
+        label: const Text('创建网站'),
       ),
     );
   }

@@ -11,6 +11,7 @@ class ContainersTab extends StatelessWidget {
   final List<ContainerInfo> containers;
   final ContainerStats stats;
   final bool isLoading;
+  final bool showStatsHeader;
   final Future<void> Function() onRefresh;
   final Future<bool> Function(String) onStart;
   final Future<bool> Function(String) onStop;
@@ -27,6 +28,7 @@ class ContainersTab extends StatelessWidget {
     required this.containers,
     required this.stats,
     required this.isLoading,
+    this.showStatsHeader = true,
     required this.onRefresh,
     required this.onStart,
     required this.onStop,
@@ -44,7 +46,10 @@ class ContainersTab extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
     final showEmpty = containers.isEmpty && !isLoading;
-    final itemCount = showEmpty ? 2 : containers.length + 1;
+    final headerCount = showStatsHeader ? 1 : 0;
+    final itemCount = showEmpty
+        ? headerCount + 1
+        : containers.length + headerCount;
 
     return RefreshIndicator(
       onRefresh: onRefresh,
@@ -53,7 +58,7 @@ class ContainersTab extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         itemCount: itemCount,
         itemBuilder: (context, index) {
-          if (index == 0) {
+          if (showStatsHeader && index == 0) {
             return Padding(
               padding: const EdgeInsets.only(bottom: 16),
               child: ContainersStatsCard(
@@ -90,7 +95,8 @@ class ContainersTab extends StatelessWidget {
             );
           }
 
-          final containerInfo = containers[index - 1];
+          final containerIndex = index - headerCount;
+          final containerInfo = containers[containerIndex];
           return Padding(
             padding: EdgeInsets.only(bottom: index == itemCount - 1 ? 0 : 12),
             child: ContainerCard(

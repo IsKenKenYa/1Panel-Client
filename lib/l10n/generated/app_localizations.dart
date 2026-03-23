@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
-  /// **'1Panel Open'**
+  /// **'1Panel-Client'**
   String get appName;
 
   /// No description provided for @commonLoading.
@@ -176,6 +176,12 @@ abstract class AppLocalizations {
   /// **'Refresh'**
   String get commonRefresh;
 
+  /// No description provided for @commonReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get commonReset;
+
   /// No description provided for @commonComingSoon.
   ///
   /// In en, this message translates to:
@@ -230,6 +236,12 @@ abstract class AppLocalizations {
   /// **'Servers'**
   String get navServer;
 
+  /// No description provided for @navWorkbench.
+  ///
+  /// In en, this message translates to:
+  /// **'Workbench'**
+  String get navWorkbench;
+
   /// No description provided for @navFiles.
   ///
   /// In en, this message translates to:
@@ -247,6 +259,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settings'**
   String get navSettings;
+
+  /// No description provided for @noServerSelectedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{module} needs a server first'**
+  String noServerSelectedTitle(String module);
+
+  /// No description provided for @noServerSelectedDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a current server before opening this module.'**
+  String get noServerSelectedDescription;
+
+  /// No description provided for @workbenchQuickAccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick access'**
+  String get workbenchQuickAccessTitle;
+
+  /// No description provided for @workbenchRecentModulesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent modules'**
+  String get workbenchRecentModulesTitle;
+
+  /// No description provided for @workbenchRecentModulesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Modules you open from the client shell will appear here.'**
+  String get workbenchRecentModulesEmpty;
+
+  /// No description provided for @workbenchToolsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tools'**
+  String get workbenchToolsTitle;
+
+  /// No description provided for @shellPinnedModulesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary shortcuts'**
+  String get shellPinnedModulesTitle;
+
+  /// No description provided for @shellPinnedModulesDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin two server modules to the main navigation. You can change them any time.'**
+  String get shellPinnedModulesDescription;
+
+  /// No description provided for @shellPinnedModulesCustomize.
+  ///
+  /// In en, this message translates to:
+  /// **'Customize shortcuts'**
+  String get shellPinnedModulesCustomize;
+
+  /// No description provided for @shellPinnedModulesPrimary.
+  ///
+  /// In en, this message translates to:
+  /// **'Shortcut slot 1'**
+  String get shellPinnedModulesPrimary;
+
+  /// No description provided for @shellPinnedModulesSecondary.
+  ///
+  /// In en, this message translates to:
+  /// **'Shortcut slot 2'**
+  String get shellPinnedModulesSecondary;
+
+  /// No description provided for @moduleSubnavCustomize.
+  ///
+  /// In en, this message translates to:
+  /// **'Customize sections'**
+  String get moduleSubnavCustomize;
+
+  /// No description provided for @moduleSubnavHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The first {count} items stay visible. Others move into More.'**
+  String moduleSubnavHint(int count);
+
+  /// No description provided for @moduleSubnavVisible.
+  ///
+  /// In en, this message translates to:
+  /// **'Visible'**
+  String get moduleSubnavVisible;
+
+  /// No description provided for @moduleSubnavHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'In More'**
+  String get moduleSubnavHidden;
 
   /// No description provided for @serverPageTitle.
   ///

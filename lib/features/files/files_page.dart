@@ -14,9 +14,9 @@ import 'package:onepanelapp_app/features/files/upload_history_page.dart';
 import 'package:onepanelapp_app/features/files/mounts_page.dart';
 import 'package:onepanelapp_app/features/files/transfer_manager_page.dart';
 import 'package:onepanelapp_app/core/utils/debug_error_dialog.dart';
-import 'package:onepanelapp_app/core/config/api_config.dart';
 import 'package:onepanelapp_app/core/services/logger/logger_service.dart';
 import 'package:onepanelapp_app/core/services/transfer/transfer_manager.dart';
+import 'package:onepanelapp_app/features/shell/widgets/server_switcher_action.dart';
 import 'package:onepanelapp_app/features/files/widgets/dialogs/permission_dialog.dart';
 import 'package:onepanelapp_app/features/files/widgets/dialogs/create_directory_dialog.dart';
 import 'package:onepanelapp_app/features/files/widgets/dialogs/create_file_dialog.dart';
@@ -1032,53 +1032,9 @@ class _FilesViewState extends State<FilesView> {
   Widget _buildServerSelector(BuildContext context) {
     return Consumer<FilesProvider>(
       builder: (context, provider, _) {
-        final server = provider.data.currentServer;
-        return FutureBuilder<List<ApiConfig>>(
-          future: ApiConfigManager.getConfigs(),
-          builder: (context, snapshot) {
-            final servers = snapshot.data ?? [];
-            return PopupMenuButton<String>(
-              icon: Icon(
-                Icons.dns_outlined,
-                color: server != null ? null : Theme.of(context).colorScheme.error,
-              ),
-              tooltip: context.l10n.serverPageTitle,
-              onSelected: (serverId) async {
-                await ApiConfigManager.setCurrentConfig(serverId);
-                provider.onServerChanged();
-              },
-              itemBuilder: (context) {
-                if (servers.isEmpty) {
-                  return [
-                    PopupMenuItem(
-                      enabled: false,
-                      child: Text(
-                        context.l10n.serverListEmptyTitle,
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    ),
-                  ];
-                }
-                return servers.map((s) => PopupMenuItem<String>(
-                  value: s.id,
-                  child: Row(
-                    children: [
-                      Icon(
-                        s.id == server?.id 
-                            ? Icons.check_circle 
-                            : Icons.circle_outlined,
-                        size: 18,
-                        color: s.id == server?.id 
-                            ? Theme.of(context).colorScheme.primary 
-                            : null,
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(child: Text(s.name)),
-                    ],
-                  ),
-                )).toList();
-              },
-            );
+        return ServerSwitcherAction(
+          onChanged: () async {
+            provider.onServerChanged();
           },
         );
       },

@@ -1,47 +1,59 @@
 import 'package:flutter/material.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
+
+class AppNavigationBarItem {
+  const AppNavigationBarItem({
+    required this.icon,
+    required this.selectedIcon,
+    required this.label,
+    this.enabled = true,
+  });
+
+  final IconData icon;
+  final IconData selectedIcon;
+  final String label;
+  final bool enabled;
+}
 
 class AppBottomNavigationBar extends StatelessWidget {
   const AppBottomNavigationBar({
     super.key,
     required this.currentIndex,
     required this.onTap,
+    required this.items,
     this.destinationKeys,
   });
 
   final int currentIndex;
   final ValueChanged<int> onTap;
+  final List<AppNavigationBarItem> items;
   final List<GlobalKey>? destinationKeys;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final safeIndex = currentIndex.clamp(0, 3);
+    final safeIndex = currentIndex.clamp(0, items.length - 1);
+    final disabledColor = Theme.of(context)
+        .colorScheme
+        .onSurfaceVariant
+        .withValues(alpha: 0.42);
 
     return NavigationBar(
       selectedIndex: safeIndex,
       onDestinationSelected: onTap,
       destinations: [
-        NavigationDestination(
-          icon: Icon(Icons.dns_outlined, key: _destinationKey(0)),
-          selectedIcon: Icon(Icons.dns, key: _destinationKey(0)),
-          label: l10n.navServer,
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.folder_outlined, key: _destinationKey(1)),
-          selectedIcon: Icon(Icons.folder, key: _destinationKey(1)),
-          label: l10n.navFiles,
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.verified_user_outlined, key: _destinationKey(2)),
-          selectedIcon: Icon(Icons.verified_user, key: _destinationKey(2)),
-          label: l10n.navSecurity,
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.settings_outlined, key: _destinationKey(3)),
-          selectedIcon: Icon(Icons.settings, key: _destinationKey(3)),
-          label: l10n.navSettings,
-        ),
+        for (var index = 0; index < items.length; index++)
+          NavigationDestination(
+            icon: Icon(
+              items[index].icon,
+              key: _destinationKey(index),
+              color: items[index].enabled ? null : disabledColor,
+            ),
+            selectedIcon: Icon(
+              items[index].selectedIcon,
+              key: _destinationKey(index),
+              color: items[index].enabled ? null : disabledColor,
+            ),
+            label: items[index].label,
+          ),
       ],
     );
   }

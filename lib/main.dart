@@ -20,6 +20,9 @@ import 'features/apps/app_service.dart';
 import 'features/apps/providers/app_store_provider.dart';
 import 'features/websites/websites_provider.dart';
 import 'features/server/server_provider.dart';
+import 'features/shell/controllers/current_server_controller.dart';
+import 'features/shell/controllers/pinned_modules_controller.dart';
+import 'features/shell/controllers/recent_modules_controller.dart';
 import 'features/monitoring/monitoring_provider.dart';
 import 'features/orchestration/providers/compose_provider.dart';
 import 'features/orchestration/providers/image_provider.dart';
@@ -70,7 +73,16 @@ void main() async {
         ),
         // Server Management
         ChangeNotifierProvider(
-          create: (_) => ServerProvider(),
+          create: (_) => ServerProvider()..load(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => CurrentServerController()..load(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => PinnedModulesController()..load(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => RecentModulesController()..load(),
         ),
         // Dashboard
         ChangeNotifierProvider(
@@ -145,7 +157,7 @@ class MyApp extends StatelessWidget {
             }
 
             return MaterialApp(
-              title: '1Panel Open',
+              title: '1Panel-Client',
               debugShowCheckedModeBanner: false,
               theme: lightTheme,
               darkTheme: darkTheme,

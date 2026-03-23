@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import '../widgets/navigation/app_bottom_navigation_bar.dart';
 import '../widgets/navigation/app_drawer.dart';
 
-class MainLayout extends StatefulWidget {
+class MainLayout extends StatelessWidget {
   final Widget child;
   final int currentIndex;
 
@@ -13,51 +12,10 @@ class MainLayout extends StatefulWidget {
   });
 
   @override
-  State<MainLayout> createState() => _MainLayoutState();
-}
-
-class _MainLayoutState extends State<MainLayout> {
-  late int _currentIndex;
-
-  @override
-  void initState() {
-    super.initState();
-    _currentIndex = widget.currentIndex;
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-
-    switch (index) {
-      case 0:
-        Navigator.pushReplacementNamed(context, '/dashboard');
-        break;
-      case 1:
-        Navigator.pushReplacementNamed(context, '/apps');
-        break;
-      case 2:
-        Navigator.pushReplacementNamed(context, '/containers');
-        break;
-      case 3:
-        Navigator.pushReplacementNamed(context, '/websites');
-        break;
-      case 4:
-        Navigator.pushReplacementNamed(context, '/files');
-        break;
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: const AppDrawer(),
-      body: widget.child,
-      bottomNavigationBar: AppBottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: _onItemTapped,
-      ),
+      body: child,
     );
   }
 }

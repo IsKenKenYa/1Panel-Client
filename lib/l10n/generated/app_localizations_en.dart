@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => '1Panel Open';
+  String get appName => '1Panel-Client';
 
   @override
   String get commonLoading => 'Loading...';
@@ -48,6 +48,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonRefresh => 'Refresh';
 
   @override
+  String get commonReset => 'Reset';
+
+  @override
   String get commonComingSoon => 'Coming soon';
 
   @override
@@ -75,6 +78,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navServer => 'Servers';
 
   @override
+  String get navWorkbench => 'Workbench';
+
+  @override
   String get navFiles => 'Files';
 
   @override
@@ -82,6 +88,58 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get navSettings => 'Settings';
+
+  @override
+  String noServerSelectedTitle(String module) {
+    return '$module needs a server first';
+  }
+
+  @override
+  String get noServerSelectedDescription =>
+      'Choose a current server before opening this module.';
+
+  @override
+  String get workbenchQuickAccessTitle => 'Quick access';
+
+  @override
+  String get workbenchRecentModulesTitle => 'Recent modules';
+
+  @override
+  String get workbenchRecentModulesEmpty =>
+      'Modules you open from the client shell will appear here.';
+
+  @override
+  String get workbenchToolsTitle => 'Tools';
+
+  @override
+  String get shellPinnedModulesTitle => 'Primary shortcuts';
+
+  @override
+  String get shellPinnedModulesDescription =>
+      'Pin two server modules to the main navigation. You can change them any time.';
+
+  @override
+  String get shellPinnedModulesCustomize => 'Customize shortcuts';
+
+  @override
+  String get shellPinnedModulesPrimary => 'Shortcut slot 1';
+
+  @override
+  String get shellPinnedModulesSecondary => 'Shortcut slot 2';
+
+  @override
+  String get moduleSubnavCustomize => 'Customize sections';
+
+  @override
+  String moduleSubnavHint(int count) {
+    return 'The first $count items stay visible. Others move into More.';
+  }
+
+  @override
+  String get moduleSubnavVisible => 'Visible';
+
+  @override
+  String get moduleSubnavHidden => 'In More';
 
   @override
   String get serverPageTitle => 'Servers';

@@ -9,7 +9,7 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
-  String get appName => '1Panel Open';
+  String get appName => '1Panel-Client';
 
   @override
   String get commonLoading => '加载中...';
@@ -48,6 +48,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get commonRefresh => '刷新';
 
   @override
+  String get commonReset => '重置';
+
+  @override
   String get commonComingSoon => '即将支持';
 
   @override
@@ -75,6 +78,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get navServer => '服务器';
 
   @override
+  String get navWorkbench => '工作台';
+
+  @override
   String get navFiles => '文件';
 
   @override
@@ -82,6 +88,55 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get navSettings => '设置';
+
+  @override
+  String noServerSelectedTitle(String module) {
+    return '$module 需要先选择服务器';
+  }
+
+  @override
+  String get noServerSelectedDescription => '请先选择当前服务器，再进入该模块。';
+
+  @override
+  String get workbenchQuickAccessTitle => '快捷入口';
+
+  @override
+  String get workbenchRecentModulesTitle => '最近使用模块';
+
+  @override
+  String get workbenchRecentModulesEmpty => '你最近从客户端壳层打开的模块会显示在这里。';
+
+  @override
+  String get workbenchToolsTitle => '工具';
+
+  @override
+  String get shellPinnedModulesTitle => '主导航快捷位';
+
+  @override
+  String get shellPinnedModulesDescription => '为底部主导航固定两个常用服务器模块，后续可以随时调整。';
+
+  @override
+  String get shellPinnedModulesCustomize => '自定义快捷位';
+
+  @override
+  String get shellPinnedModulesPrimary => '快捷位 1';
+
+  @override
+  String get shellPinnedModulesSecondary => '快捷位 2';
+
+  @override
+  String get moduleSubnavCustomize => '自定义分区';
+
+  @override
+  String moduleSubnavHint(int count) {
+    return '前 $count 项固定显示，其余进入“更多”。';
+  }
+
+  @override
+  String get moduleSubnavVisible => '直接显示';
+
+  @override
+  String get moduleSubnavHidden => '收纳到更多';
 
   @override
   String get serverPageTitle => '服务器';

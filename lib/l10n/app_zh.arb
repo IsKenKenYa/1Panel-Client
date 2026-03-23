@@ -1,6 +1,6 @@
 {
   "@@locale": "zh",
-  "appName": "1Panel Open",
+  "appName": "1Panel-Client",
   "commonLoading": "加载中...",
   "commonRetry": "重试",
   "commonCancel": "取消",
@@ -13,6 +13,7 @@
   "commonSaveFailed": "保存失败",
   "commonDelete": "删除",
   "commonRefresh": "刷新",
+  "commonReset": "重置",
   "commonComingSoon": "即将支持",
   "commonEmpty": "暂无数据",
   "commonLoadFailedTitle": "加载失败",
@@ -22,9 +23,39 @@
   "monitorMetricAvg": "平均",
   "monitorMetricMax": "最大",
   "navServer": "服务器",
+  "navWorkbench": "工作台",
   "navFiles": "文件",
   "navSecurity": "动态验证",
   "navSettings": "设置",
+  "noServerSelectedTitle": "{module} 需要先选择服务器",
+  "@noServerSelectedTitle": {
+    "placeholders": {
+      "module": {
+        "type": "String"
+      }
+    }
+  },
+  "noServerSelectedDescription": "请先选择当前服务器，再进入该模块。",
+  "workbenchQuickAccessTitle": "快捷入口",
+  "workbenchRecentModulesTitle": "最近使用模块",
+  "workbenchRecentModulesEmpty": "你最近从客户端壳层打开的模块会显示在这里。",
+  "workbenchToolsTitle": "工具",
+  "shellPinnedModulesTitle": "主导航快捷位",
+  "shellPinnedModulesDescription": "为底部主导航固定两个常用服务器模块，后续可以随时调整。",
+  "shellPinnedModulesCustomize": "自定义快捷位",
+  "shellPinnedModulesPrimary": "快捷位 1",
+  "shellPinnedModulesSecondary": "快捷位 2",
+  "moduleSubnavCustomize": "自定义分区",
+  "moduleSubnavHint": "前 {count} 项固定显示，其余进入“更多”。",
+  "@moduleSubnavHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "moduleSubnavVisible": "直接显示",
+  "moduleSubnavHidden": "收纳到更多",
   "serverPageTitle": "服务器",
   "serverSearchHint": "请输入服务器名称或 IP",
   "serverAdd": "添加",

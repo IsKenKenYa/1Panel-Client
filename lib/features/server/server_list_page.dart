@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
 import 'package:onepanelapp_app/core/services/onboarding_service.dart';
 import 'package:onepanelapp_app/core/theme/app_design_tokens.dart';
@@ -7,6 +8,7 @@ import 'package:onepanelapp_app/features/server/server_detail_page.dart';
 import 'package:onepanelapp_app/features/server/server_form_page.dart';
 import 'package:onepanelapp_app/features/server/server_models.dart';
 import 'package:onepanelapp_app/features/server/server_provider.dart';
+import 'package:onepanelapp_app/features/shell/controllers/current_server_controller.dart';
 
 class ServerListPage extends StatefulWidget {
   const ServerListPage({
@@ -21,9 +23,9 @@ class ServerListPage extends StatefulWidget {
 }
 
 class _ServerListPageState extends State<ServerListPage> {
-  final ServerProvider _provider = ServerProvider();
   final TextEditingController _searchController = TextEditingController();
   final OnboardingService _onboardingService = OnboardingService();
+  late final ServerProvider _serverProvider;
 
   final GlobalKey _addKey = GlobalKey();
   final GlobalKey _firstCardKey = GlobalKey();
@@ -32,24 +34,26 @@ class _ServerListPageState extends State<ServerListPage> {
   @override
   void initState() {
     super.initState();
-    _provider.load().then((_) {
-      if (_provider.servers.isNotEmpty) {
-        _provider.loadMetrics();
-      }
+    _serverProvider = context.read<ServerProvider>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _serverProvider.load().then((_) {
+        if (_serverProvider.servers.isNotEmpty) {
+          _serverProvider.loadMetrics();
+        }
+      });
     });
-    _provider.addListener(_onProviderUpdated);
+    _serverProvider.addListener(_onProviderUpdated);
   }
 
   @override
   void dispose() {
-    _provider.removeListener(_onProviderUpdated);
-    _provider.dispose();
+    _serverProvider.removeListener(_onProviderUpdated);
     _searchController.dispose();
     super.dispose();
   }
 
   Future<void> _onProviderUpdated() async {
-    if (!widget.enableCoach || _provider.servers.isEmpty) {
+    if (!widget.enableCoach || _serverProvider.servers.isEmpty) {
       return;
     }
 
@@ -98,19 +102,25 @@ class _ServerListPageState extends State<ServerListPage> {
   }
 
   Future<void> _openAddServer() async {
+    final serverProvider = context.read<ServerProvider>();
+    final currentServer = context.read<CurrentServerController>();
     final result = await Navigator.push<bool>(
       context,
       MaterialPageRoute(builder: (_) => const ServerFormPage()),
     );
 
     if (result == true) {
-      await _provider.load();
+      await serverProvider.load();
+      if (mounted) {
+        await currentServer.refresh();
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final provider = context.watch<ServerProvider>();
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.serverPageTitle),
@@ -123,15 +133,14 @@ class _ServerListPageState extends State<ServerListPage> {
           ),
         ],
       ),
-      body: AnimatedBuilder(
-        animation: _provider,
-        builder: (context, _) {
-          if (_provider.isLoading) {
+      body: Builder(
+        builder: (context) {
+          if (provider.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
 
           final query = _searchController.text.trim().toLowerCase();
-          final data = _provider.servers.where((item) {
+          final data = provider.servers.where((item) {
             if (query.isEmpty) {
               return true;
             }
@@ -143,9 +152,9 @@ class _ServerListPageState extends State<ServerListPage> {
             children: [
               RefreshIndicator(
                 onRefresh: () async {
-                  await _provider.load();
-                  if (_provider.servers.isNotEmpty) {
-                    await _provider.loadMetrics();
+                  await provider.load();
+                  if (provider.servers.isNotEmpty) {
+                    await provider.loadMetrics();
                   }
                 },
                 child: CustomScrollView(
@@ -241,7 +250,10 @@ class _ServerListPageState extends State<ServerListPage> {
 
   Future<void> _openDetail(ServerCardViewModel item) async {
     if (!item.isCurrent) {
-      await _provider.setCurrent(item.config.id);
+      await context.read<ServerProvider>().setCurrent(item.config.id);
+      if (mounted) {
+        await context.read<CurrentServerController>().selectServer(item.config.id);
+      }
     }
     if (!mounted) {
       return;

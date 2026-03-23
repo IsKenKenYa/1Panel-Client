@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appName": "1Panel Open",
+  "appName": "1Panel-Client",
   "commonLoading": "Loading...",
   "commonRetry": "Retry",
   "commonCancel": "Cancel",
@@ -13,6 +13,7 @@
   "commonSaveFailed": "Failed to save",
   "commonDelete": "Delete",
   "commonRefresh": "Refresh",
+  "commonReset": "Reset",
   "commonComingSoon": "Coming soon",
   "commonEmpty": "No data",
   "commonLoadFailedTitle": "Failed to load",
@@ -22,9 +23,39 @@
   "monitorMetricAvg": "Avg",
   "monitorMetricMax": "Max",
   "navServer": "Servers",
+  "navWorkbench": "Workbench",
   "navFiles": "Files",
   "navSecurity": "Verification",
   "navSettings": "Settings",
+  "noServerSelectedTitle": "{module} needs a server first",
+  "@noServerSelectedTitle": {
+    "placeholders": {
+      "module": {
+        "type": "String"
+      }
+    }
+  },
+  "noServerSelectedDescription": "Choose a current server before opening this module.",
+  "workbenchQuickAccessTitle": "Quick access",
+  "workbenchRecentModulesTitle": "Recent modules",
+  "workbenchRecentModulesEmpty": "Modules you open from the client shell will appear here.",
+  "workbenchToolsTitle": "Tools",
+  "shellPinnedModulesTitle": "Primary shortcuts",
+  "shellPinnedModulesDescription": "Pin two server modules to the main navigation. You can change them any time.",
+  "shellPinnedModulesCustomize": "Customize shortcuts",
+  "shellPinnedModulesPrimary": "Shortcut slot 1",
+  "shellPinnedModulesSecondary": "Shortcut slot 2",
+  "moduleSubnavCustomize": "Customize sections",
+  "moduleSubnavHint": "The first {count} items stay visible. Others move into More.",
+  "@moduleSubnavHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "moduleSubnavVisible": "Visible",
+  "moduleSubnavHidden": "In More",
   "serverPageTitle": "Servers",
   "serverSearchHint": "Search server name or IP",
   "serverAdd": "Add",

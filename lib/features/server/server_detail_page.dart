@@ -19,7 +19,7 @@ class ServerDetailPage extends StatelessWidget {
       _ModuleItem(
         title: l10n.serverModuleDashboard,
         icon: Icons.dashboard_outlined,
-        route: '/dashboard',
+        route: AppRoutes.workbench,
       ),
       _ModuleItem(
         title: l10n.serverModuleApps,
@@ -187,7 +187,7 @@ class ServerDetailPage extends StatelessWidget {
   void _navigateToModule(BuildContext context, _ModuleItem module) {
     switch (module.route) {
       case '/dashboard':
-        Navigator.pushNamed(context, '/dashboard');
+        Navigator.pushNamed(context, AppRoutes.workbench);
         break;
       case '/apps':
         Navigator.pushNamed(context, '/apps');

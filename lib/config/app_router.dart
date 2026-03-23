@@ -23,9 +23,9 @@ import 'package:onepanelapp_app/data/models/app_models.dart';
 
 import 'package:onepanelapp_app/features/containers/container_detail_page.dart';
 import 'package:onepanelapp_app/features/containers/container_create_page.dart';
-import 'package:onepanelapp_app/features/containers/containers_page.dart';
 import 'package:onepanelapp_app/data/models/container_models.dart';
 import 'package:onepanelapp_app/features/orchestration/orchestration_page.dart';
+import 'package:onepanelapp_app/features/websites/websites_page.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -35,6 +35,7 @@ class AppRoutes {
   static const String serverConfig = '/server-config';
   static const String serverSelection = '/server-selection';
   static const String serverDetail = '/server-detail';
+  static const String workbench = '/workbench';
   static const String dashboard = '/dashboard';
   static const String files = '/files';
   static const String databases = '/databases';
@@ -61,7 +62,17 @@ class AppRouter {
       case AppRoutes.home:
         return MaterialPageRoute(
           builder: (_) =>
-              AppShellPage(initialIndex: _readInitialIndex(settings.arguments)),
+              AppShellPage(
+                initialIndex: _readInitialIndex(settings.arguments),
+                initialModuleId: _readInitialModuleId(settings.arguments),
+              ),
+        );
+      case AppRoutes.workbench:
+        return MaterialPageRoute(
+          builder: (_) => const AppShellPage(
+            initialIndex: 1,
+            initialModuleId: 'workbench',
+          ),
         );
       case AppRoutes.server:
       case AppRoutes.serverSelection:
@@ -78,7 +89,10 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const NotFoundPage());
       case AppRoutes.files:
         return MaterialPageRoute(
-            builder: (_) => const AppShellPage(initialIndex: 1));
+            builder: (_) => const AppShellPage(
+                  initialIndex: 2,
+                  initialModuleId: 'files',
+                ));
       case AppRoutes.databases:
         return MaterialPageRoute(builder: (_) => const DatabasesPage());
       case AppRoutes.firewall:
@@ -140,7 +154,12 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const OrchestrationPage());
 
       case '/containers':
-        return MaterialPageRoute(builder: (_) => const ContainersPage());
+        return MaterialPageRoute(
+          builder: (_) => const AppShellPage(
+            initialIndex: 3,
+            initialModuleId: 'containers',
+          ),
+        );
 
       case '/apps':
         return MaterialPageRoute(builder: (_) => const AppsPage());
@@ -150,8 +169,7 @@ class AppRouter {
 
       // Legacy routes redirect to the new shell.
       case '/websites':
-        return MaterialPageRoute(
-            builder: (_) => const AppShellPage(initialIndex: 0));
+        return MaterialPageRoute(builder: (_) => const WebsitesPage());
       case '/backups':
       case '/help':
       case '/website-create':
@@ -171,6 +189,18 @@ class AppRouter {
     }
 
     return 0;
+  }
+
+  static String? _readInitialModuleId(Object? arguments) {
+    if (arguments is String) {
+      return arguments;
+    }
+
+    if (arguments is Map<String, dynamic>) {
+      return arguments['module'] as String?;
+    }
+
+    return null;
   }
 }
 
