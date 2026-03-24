@@ -17,6 +17,16 @@ class VolumeProvider extends ChangeNotifier {
     return await ApiClientManager.instance.getDockerApi();
   }
 
+  Future<void> onServerChanged({bool reload = false}) async {
+    _volumes = [];
+    _isLoading = false;
+    _error = null;
+    notifyListeners();
+    if (reload) {
+      await loadVolumes();
+    }
+  }
+
   Future<void> loadVolumes() async {
     _isLoading = true;
     _error = null;

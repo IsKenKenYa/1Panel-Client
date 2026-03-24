@@ -14,20 +14,12 @@ import 'package:onepanelapp_app/l10n/generated/app_localizations.dart';
 
 // Feature Providers
 import 'features/dashboard/dashboard_provider.dart';
-import 'features/containers/containers_provider.dart';
-import 'features/apps/providers/installed_apps_provider.dart';
 import 'features/apps/app_service.dart';
-import 'features/apps/providers/app_store_provider.dart';
 import 'features/websites/websites_provider.dart';
 import 'features/server/server_provider.dart';
 import 'features/shell/controllers/current_server_controller.dart';
 import 'features/shell/controllers/pinned_modules_controller.dart';
-import 'features/shell/controllers/recent_modules_controller.dart';
 import 'features/monitoring/monitoring_provider.dart';
-import 'features/orchestration/providers/compose_provider.dart';
-import 'features/orchestration/providers/image_provider.dart';
-import 'features/orchestration/providers/network_provider.dart';
-import 'features/orchestration/providers/volume_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -66,41 +58,28 @@ void main() async {
       providers: [
         // App Settings
         ChangeNotifierProvider(
-          create: (_) => AppSettingsController()..load(),
+          create: (_) => AppSettingsController(),
         ),
         ChangeNotifierProvider(
-          create: (_) => ThemeController()..load(),
+          create: (_) => ThemeController(),
         ),
         // Server Management
         ChangeNotifierProvider(
-          create: (_) => ServerProvider()..load(),
+          create: (_) => ServerProvider(),
         ),
         ChangeNotifierProvider(
-          create: (_) => CurrentServerController()..load(),
+          create: (_) => CurrentServerController(),
         ),
         ChangeNotifierProvider(
-          create: (_) => PinnedModulesController()..load(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => RecentModulesController()..load(),
+          create: (_) => PinnedModulesController(),
         ),
         // Dashboard
         ChangeNotifierProvider(
           create: (_) => DashboardProvider(),
         ),
-        // Containers
-        ChangeNotifierProvider(
-          create: (_) => ContainersProvider(),
-        ),
         // Apps
         Provider<AppService>(
           create: (_) => AppService(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => InstalledAppsProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => AppStoreProvider(),
         ),
         // Websites
         ChangeNotifierProvider(
@@ -109,19 +88,48 @@ void main() async {
         ChangeNotifierProvider(
           create: (_) => MonitoringProvider(),
         ),
-        // Orchestration
-        ChangeNotifierProvider(create: (_) => ComposeProvider()),
-        ChangeNotifierProvider(create: (_) => DockerImageProvider()),
-        ChangeNotifierProvider(create: (_) => NetworkProvider()),
-        ChangeNotifierProvider(create: (_) => VolumeProvider()),
         // Transfer Manager
         ChangeNotifierProvider(
-          create: (_) => TransferManager()..init(),
+          create: (_) => TransferManager(),
         ),
       ],
-      child: const MyApp(),
+      child: const AppBootstrap(child: MyApp()),
     ),
   );
+}
+
+class AppBootstrap extends StatefulWidget {
+  const AppBootstrap({
+    super.key,
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  State<AppBootstrap> createState() => _AppBootstrapState();
+}
+
+class _AppBootstrapState extends State<AppBootstrap> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      await context.read<AppSettingsController>().load();
+      if (!mounted) return;
+      await context.read<ThemeController>().load();
+      if (!mounted) return;
+      await context.read<CurrentServerController>().load();
+      if (!mounted) return;
+      await context.read<PinnedModulesController>().load();
+      if (!mounted) return;
+      context.read<TransferManager>().init();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
 
 class MyApp extends StatelessWidget {

@@ -9,6 +9,10 @@ import 'package:onepanelapp_app/core/config/api_config.dart';
 import 'package:onepanelapp_app/features/containers/container_service.dart';
 import 'package:onepanelapp_app/features/containers/containers_page.dart';
 import 'package:onepanelapp_app/features/containers/containers_provider.dart';
+import 'package:onepanelapp_app/features/orchestration/providers/compose_provider.dart';
+import 'package:onepanelapp_app/features/orchestration/providers/image_provider.dart';
+import 'package:onepanelapp_app/features/orchestration/providers/network_provider.dart';
+import 'package:onepanelapp_app/features/orchestration/providers/volume_provider.dart';
 import 'package:onepanelapp_app/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanelapp_app/l10n/generated/app_localizations.dart';
 import 'package:onepanelapp_app/data/models/container_models.dart';
@@ -68,14 +72,17 @@ void main() {
       MultiProvider(
         providers: [
           ChangeNotifierProvider<CurrentServerController>.value(value: currentServer),
-          ChangeNotifierProvider(
-            create: (_) => ContainersProvider(service: service),
-          ),
         ],
         child: MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: const ContainersPage(),
+          home: ContainersPage(
+            containersProvider: ContainersProvider(service: service),
+            composeProvider: ComposeProvider(),
+            imageProvider: DockerImageProvider(),
+            networkProvider: NetworkProvider(),
+            volumeProvider: VolumeProvider(),
+          ),
         ),
       ),
     );

@@ -10,7 +10,7 @@ class AppService extends BaseComponent {
     AppV2Api? api,
     super.clientManager,
     super.permissionResolver,
-  }) : _api = api;
+  }) : _overrideApi = api;
 
   Future<Response<List<int>>> getAppIcon(String appKey) {
     return runGuarded(() async {
@@ -19,15 +19,16 @@ class AppService extends BaseComponent {
     });
   }
 
-  AppV2Api? _api;
+  final AppV2Api? _overrideApi;
 
   Future<AppV2Api> _ensureApi() async {
-    if (_api != null) {
-      return _api!;
+    if (_overrideApi != null) {
+      return _overrideApi;
     }
-    _api = await clientManager.getAppApi();
-    return _api!;
+    return clientManager.getAppApi();
   }
+
+  void resetForServerChange() {}
 
   Future<AppSearchResponse> searchApps(AppSearchRequest request) {
     return runGuarded(() async {

@@ -136,6 +136,20 @@ class ContainersProvider extends ChangeNotifier {
     _service ??= ContainerService();
   }
 
+  Future<void> onServerChanged() async {
+    await _ensureService();
+    _service!.resetForServerChange();
+    _data = const ContainersData();
+    _overviewState = const SectionLoadState();
+    _containersState = const SectionLoadState();
+    _reposState = const SectionLoadState();
+    _templatesState = const SectionLoadState();
+    _configState = const SectionLoadState();
+    _imagesState = const SectionLoadState();
+    notifyListeners();
+    await loadAll();
+  }
+
   /// 加载容器数据
   Future<void> loadContainers() async {
     _containersState = _containersState.copyWith(
@@ -181,6 +195,10 @@ class ContainersProvider extends ChangeNotifier {
         clearError: true,
       );
     } catch (e) {
+      _data = _data.copyWith(
+        containers: const [],
+        containerStats: const ContainerStats(),
+      );
       _containersState = _containersState.copyWith(
         isLoading: false,
         error: '加载容器失败: $e',
@@ -228,22 +246,24 @@ class ContainersProvider extends ChangeNotifier {
   /// 加载所有数据
   Future<void> loadAll() async {
     _data = _data.copyWith(isLoading: true, error: null);
-    _containersState = _containersState.copyWith(isLoading: true, clearError: true);
+    _containersState =
+        _containersState.copyWith(isLoading: true, clearError: true);
     _imagesState = _imagesState.copyWith(isLoading: true, clearError: true);
     _reposState = _reposState.copyWith(isLoading: true, clearError: true);
-    _templatesState = _templatesState.copyWith(isLoading: true, clearError: true);
+    _templatesState =
+        _templatesState.copyWith(isLoading: true, clearError: true);
     _configState = _configState.copyWith(isLoading: true, clearError: true);
     _overviewState = _overviewState.copyWith(isLoading: true, clearError: true);
     notifyListeners();
 
     try {
       await _ensureService();
-      var containers = _data.containers;
-      var images = _data.images;
-      var repos = _data.repos;
-      var templates = _data.templates;
-      var status = _data.status;
-      var daemonJson = _data.daemonJson;
+      var containers = const <ContainerInfo>[];
+      var images = const <ContainerImage>[];
+      var repos = const <ContainerRepo>[];
+      var templates = const <ContainerTemplate>[];
+      ContainerStatus? status;
+      var daemonJson = '';
 
       try {
         containers = await _service!.listContainers();
@@ -362,7 +382,7 @@ class ContainersProvider extends ChangeNotifier {
         lastUpdated: DateTime.now(),
       );
     } catch (e) {
-      _data = _data.copyWith(
+      _data = ContainersData(
         isLoading: false,
         error: '加载数据失败: $e',
       );
@@ -516,7 +536,8 @@ class ContainersProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> createContainerByCommand(ContainerCreateByCommand request) async {
+  Future<bool> createContainerByCommand(
+      ContainerCreateByCommand request) async {
     try {
       await _ensureService();
       await _service!.createContainerByCommand(request);
@@ -532,7 +553,8 @@ class ContainersProvider extends ChangeNotifier {
   Future<bool> renameContainer(String name, String newName) async {
     try {
       await _ensureService();
-      await _service!.renameContainer(ContainerRename(name: name, newName: newName));
+      await _service!
+          .renameContainer(ContainerRename(name: name, newName: newName));
       await loadContainers();
       return true;
     } catch (e) {

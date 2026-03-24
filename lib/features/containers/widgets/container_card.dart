@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/data/models/container_models.dart' hide Container;
+import 'package:onepanelapp_app/data/models/container_models.dart'
+    hide Container;
 import 'package:onepanelapp_app/shared/widgets/app_card.dart';
 
 class ContainerCard extends StatelessWidget {
@@ -39,17 +40,26 @@ class ContainerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
-    final isRunning = container.state.toLowerCase() == 'running';
-    final statusColor = isRunning ? colorScheme.tertiary : colorScheme.secondary;
+    final containerState = container.state.toLowerCase();
+    final isRunning = containerState == 'running';
+    final statusColor = _statusColor(colorScheme, containerState);
+    final statusLabel = _statusLabel(l10n, containerState);
 
     return AppCard(
       title: container.name,
+      leading: CircleAvatar(
+        backgroundColor: colorScheme.surfaceContainerHighest,
+        child: Icon(
+          Icons.layers_outlined,
+          color: colorScheme.primary,
+        ),
+      ),
       subtitle: Text(container.image),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           _StatusChip(
-            status: isRunning ? l10n.containerStatusRunning : l10n.containerStatusStopped,
+            status: statusLabel,
             color: statusColor,
           ),
           PopupMenuButton<String>(
@@ -90,7 +100,9 @@ class ContainerCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (container.ports != null || (container.portBindings != null && container.portBindings!.isNotEmpty))
+          if (container.ports != null ||
+              (container.portBindings != null &&
+                  container.portBindings!.isNotEmpty))
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: Text(
@@ -152,6 +164,42 @@ class ContainerCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Color _statusColor(ColorScheme colorScheme, String state) {
+    switch (state) {
+      case 'running':
+        return colorScheme.tertiary;
+      case 'restarting':
+      case 'paused':
+        return colorScheme.primary;
+      case 'dead':
+      case 'removing':
+        return colorScheme.error;
+      default:
+        return colorScheme.secondary;
+    }
+  }
+
+  String _statusLabel(dynamic l10n, String state) {
+    switch (state) {
+      case 'running':
+        return l10n.containerStatusRunning;
+      case 'paused':
+        return l10n.containerStatusPaused;
+      case 'exited':
+        return l10n.containerStatusExited;
+      case 'restarting':
+        return l10n.containerStatusRestarting;
+      case 'removing':
+        return l10n.containerStatusRemoving;
+      case 'dead':
+        return l10n.containerStatusDead;
+      case 'created':
+        return l10n.containerStatusCreated;
+      default:
+        return l10n.containerStatusStopped;
+    }
   }
 
   String _formatPorts(ContainerInfo container) {

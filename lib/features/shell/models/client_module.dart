@@ -5,11 +5,11 @@ const List<ClientModule> kPinnableClientModules = [
   ClientModule.files,
   ClientModule.containers,
   ClientModule.apps,
+  ClientModule.verification,
 ];
 
 enum ClientModule {
   servers,
-  workbench,
   files,
   containers,
   apps,
@@ -32,8 +32,6 @@ extension ClientModuleX on ClientModule {
     switch (this) {
       case ClientModule.servers:
         return 'servers';
-      case ClientModule.workbench:
-        return 'workbench';
       case ClientModule.files:
         return 'files';
       case ClientModule.containers:
@@ -52,7 +50,6 @@ extension ClientModuleX on ClientModule {
       case ClientModule.servers:
       case ClientModule.settings:
         return false;
-      case ClientModule.workbench:
       case ClientModule.files:
       case ClientModule.containers:
       case ClientModule.apps:
@@ -67,12 +64,10 @@ extension ClientModuleX on ClientModule {
     switch (this) {
       case ClientModule.servers:
         return Icons.dns_outlined;
-      case ClientModule.workbench:
-        return Icons.space_dashboard_outlined;
       case ClientModule.files:
         return Icons.folder_outlined;
       case ClientModule.containers:
-        return Icons.inventory_2_outlined;
+        return Icons.layers_outlined;
       case ClientModule.apps:
         return Icons.apps_outlined;
       case ClientModule.settings:
@@ -86,12 +81,10 @@ extension ClientModuleX on ClientModule {
     switch (this) {
       case ClientModule.servers:
         return Icons.dns;
-      case ClientModule.workbench:
-        return Icons.space_dashboard;
       case ClientModule.files:
         return Icons.folder;
       case ClientModule.containers:
-        return Icons.inventory_2;
+        return Icons.layers;
       case ClientModule.apps:
         return Icons.apps;
       case ClientModule.settings:
@@ -105,8 +98,6 @@ extension ClientModuleX on ClientModule {
     switch (this) {
       case ClientModule.servers:
         return l10n.navServer;
-      case ClientModule.workbench:
-        return l10n.navWorkbench;
       case ClientModule.files:
         return l10n.navFiles;
       case ClientModule.containers:

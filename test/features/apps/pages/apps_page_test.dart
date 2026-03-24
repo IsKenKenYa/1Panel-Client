@@ -8,8 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:onepanelapp_app/core/config/api_config.dart';
 import 'package:onepanelapp_app/features/apps/app_service.dart';
 import 'package:onepanelapp_app/features/apps/apps_page.dart';
-import 'package:onepanelapp_app/features/apps/providers/app_store_provider.dart';
-import 'package:onepanelapp_app/features/apps/providers/installed_apps_provider.dart';
 import 'package:onepanelapp_app/data/models/app_models.dart';
 import 'package:onepanelapp_app/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanelapp_app/l10n/generated/app_localizations.dart';
@@ -50,12 +48,6 @@ void main() {
             value: currentServer,
           ),
           Provider<AppService>.value(value: appService),
-          ChangeNotifierProvider(
-            create: (_) => InstalledAppsProvider(appService: appService),
-          ),
-          ChangeNotifierProvider(
-            create: (_) => AppStoreProvider(appService: appService),
-          ),
         ],
         child: MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,

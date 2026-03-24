@@ -78,13 +78,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get navServer => '服务器';
 
   @override
-  String get navWorkbench => '工作台';
-
-  @override
   String get navFiles => '文件';
 
   @override
-  String get navSecurity => '动态验证';
+  String get navSecurity => '安全';
 
   @override
   String get navSettings => '设置';
@@ -98,31 +95,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get noServerSelectedDescription => '请先选择当前服务器，再进入该模块。';
 
   @override
-  String get workbenchQuickAccessTitle => '快捷入口';
+  String get shellPinnedModulesTitle => '快捷入口';
 
   @override
-  String get workbenchRecentModulesTitle => '最近使用模块';
+  String get shellPinnedModulesDescription => '选择两个模块作为客户端主标签，可随时调整。';
 
   @override
-  String get workbenchRecentModulesEmpty => '你最近从客户端壳层打开的模块会显示在这里。';
+  String get shellPinnedModulesCustomize => '自定义标签';
 
   @override
-  String get workbenchToolsTitle => '工具';
+  String get shellPinnedModulesPrimary => '标签位 1';
 
   @override
-  String get shellPinnedModulesTitle => '主导航快捷位';
-
-  @override
-  String get shellPinnedModulesDescription => '为底部主导航固定两个常用服务器模块，后续可以随时调整。';
-
-  @override
-  String get shellPinnedModulesCustomize => '自定义快捷位';
-
-  @override
-  String get shellPinnedModulesPrimary => '快捷位 1';
-
-  @override
-  String get shellPinnedModulesSecondary => '快捷位 2';
+  String get shellPinnedModulesSecondary => '标签位 2';
 
   @override
   String get moduleSubnavCustomize => '自定义分区';
@@ -232,7 +217,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get serverActionSwitch => '切换服务器';
 
   @override
-  String get serverActionSecurity => '动态验证';
+  String get serverActionSecurity => '安全';
 
   @override
   String get serverFormTitle => '添加服务器';
@@ -528,7 +513,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get commonHttps => 'HTTPS';
 
   @override
-  String get securityPageTitle => '动态验证';
+  String get securityPageTitle => '安全';
 
   @override
   String get securityStatusTitle => 'MFA 状态';

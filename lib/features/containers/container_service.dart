@@ -10,17 +10,18 @@ class ContainerService extends BaseComponent {
     ContainerV2Api? api,
     super.clientManager,
     super.permissionResolver,
-  }) : _api = api;
+  }) : _overrideApi = api;
 
-  ContainerV2Api? _api;
+  final ContainerV2Api? _overrideApi;
 
   Future<ContainerV2Api> _ensureApi() async {
-    if (_api != null) {
-      return _api!;
+    if (_overrideApi != null) {
+      return _overrideApi;
     }
-    _api = await clientManager.getContainerApi();
-    return _api!;
+    return clientManager.getContainerApi();
   }
+
+  void resetForServerChange() {}
 
   Future<List<ContainerInfo>> listContainers() {
     return runGuarded(() async {

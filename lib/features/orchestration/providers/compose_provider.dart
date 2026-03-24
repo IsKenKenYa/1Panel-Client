@@ -17,6 +17,16 @@ class ComposeProvider extends ChangeNotifier {
     return await ApiClientManager.instance.getComposeApi();
   }
 
+  Future<void> onServerChanged({bool reload = false}) async {
+    _composes = [];
+    _isLoading = false;
+    _error = null;
+    notifyListeners();
+    if (reload) {
+      await loadComposes();
+    }
+  }
+
   Future<void> loadComposes({int page = 1, int pageSize = 10}) async {
     _isLoading = true;
     _error = null;
@@ -73,7 +83,8 @@ class ComposeProvider extends ChangeNotifier {
   }
 
   Future<bool> restartCompose(ComposeProject compose) async {
-    return _operateCompose(compose, (api, target) => api.restartCompose(target));
+    return _operateCompose(
+        compose, (api, target) => api.restartCompose(target));
   }
 
   Future<bool> _operateCompose(

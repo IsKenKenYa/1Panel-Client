@@ -236,12 +236,6 @@ abstract class AppLocalizations {
   /// **'Servers'**
   String get navServer;
 
-  /// No description provided for @navWorkbench.
-  ///
-  /// In en, this message translates to:
-  /// **'Workbench'**
-  String get navWorkbench;
-
   /// No description provided for @navFiles.
   ///
   /// In en, this message translates to:
@@ -251,7 +245,7 @@ abstract class AppLocalizations {
   /// No description provided for @navSecurity.
   ///
   /// In en, this message translates to:
-  /// **'Verification'**
+  /// **'Security'**
   String get navSecurity;
 
   /// No description provided for @navSettings.
@@ -272,58 +266,34 @@ abstract class AppLocalizations {
   /// **'Choose a current server before opening this module.'**
   String get noServerSelectedDescription;
 
-  /// No description provided for @workbenchQuickAccessTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Quick access'**
-  String get workbenchQuickAccessTitle;
-
-  /// No description provided for @workbenchRecentModulesTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Recent modules'**
-  String get workbenchRecentModulesTitle;
-
-  /// No description provided for @workbenchRecentModulesEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'Modules you open from the client shell will appear here.'**
-  String get workbenchRecentModulesEmpty;
-
-  /// No description provided for @workbenchToolsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Tools'**
-  String get workbenchToolsTitle;
-
   /// No description provided for @shellPinnedModulesTitle.
   ///
   /// In en, this message translates to:
-  /// **'Primary shortcuts'**
+  /// **'Quick Access'**
   String get shellPinnedModulesTitle;
 
   /// No description provided for @shellPinnedModulesDescription.
   ///
   /// In en, this message translates to:
-  /// **'Pin two server modules to the main navigation. You can change them any time.'**
+  /// **'Choose two modules for your main client tabs. You can change them any time.'**
   String get shellPinnedModulesDescription;
 
   /// No description provided for @shellPinnedModulesCustomize.
   ///
   /// In en, this message translates to:
-  /// **'Customize shortcuts'**
+  /// **'Customize Tabs'**
   String get shellPinnedModulesCustomize;
 
   /// No description provided for @shellPinnedModulesPrimary.
   ///
   /// In en, this message translates to:
-  /// **'Shortcut slot 1'**
+  /// **'Tab Slot 1'**
   String get shellPinnedModulesPrimary;
 
   /// No description provided for @shellPinnedModulesSecondary.
   ///
   /// In en, this message translates to:
-  /// **'Shortcut slot 2'**
+  /// **'Tab Slot 2'**
   String get shellPinnedModulesSecondary;
 
   /// No description provided for @moduleSubnavCustomize.
@@ -539,7 +509,7 @@ abstract class AppLocalizations {
   /// No description provided for @serverActionSecurity.
   ///
   /// In en, this message translates to:
-  /// **'Verification'**
+  /// **'Security'**
   String get serverActionSecurity;
 
   /// No description provided for @serverFormTitle.
@@ -1115,7 +1085,7 @@ abstract class AppLocalizations {
   /// No description provided for @securityPageTitle.
   ///
   /// In en, this message translates to:
-  /// **'Dynamic Verification'**
+  /// **'Security'**
   String get securityPageTitle;
 
   /// No description provided for @securityStatusTitle.

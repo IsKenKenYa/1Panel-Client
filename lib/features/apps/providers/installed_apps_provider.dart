@@ -35,6 +35,17 @@ class InstalledAppsProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
+  Future<void> onServerChanged() async {
+    stopPolling();
+    _installedApps = [];
+    _stats = const AppStats();
+    _error = null;
+    _isLoading = false;
+    _appService.resetForServerChange();
+    notifyListeners();
+    await loadInstalledApps();
+  }
+
   @override
   void dispose() {
     stopPolling();

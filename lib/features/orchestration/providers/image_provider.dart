@@ -18,6 +18,16 @@ class DockerImageProvider extends ChangeNotifier {
     return await ApiClientManager.instance.getDockerApi();
   }
 
+  Future<void> onServerChanged({bool reload = false}) async {
+    _images = [];
+    _isLoading = false;
+    _error = null;
+    notifyListeners();
+    if (reload) {
+      await loadImages();
+    }
+  }
+
   Future<void> loadImages() async {
     _isLoading = true;
     _error = null;

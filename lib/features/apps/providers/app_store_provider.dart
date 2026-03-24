@@ -21,6 +21,18 @@ class AppStoreProvider extends ChangeNotifier {
   String? get error => _error;
   bool get hasMore => _hasMore;
 
+  Future<void> onServerChanged() async {
+    _appService.resetForServerChange();
+    _apps = [];
+    _page = 1;
+    _total = 0;
+    _hasMore = true;
+    _isLoading = false;
+    _error = null;
+    notifyListeners();
+    await loadApps(refresh: true);
+  }
+
   Future<void> loadApps({
     bool refresh = false,
     int pageSize = 20,
@@ -56,7 +68,7 @@ class AppStoreProvider extends ChangeNotifier {
         tags: tags,
       );
       final response = await _appService.searchApps(request);
-      
+
       if (refresh) {
         _apps = response.items;
       } else {
@@ -64,7 +76,6 @@ class AppStoreProvider extends ChangeNotifier {
       }
       _total = response.total;
       _hasMore = _apps.length < _total;
-      
     } catch (e) {
       _error = e.toString();
       if (!refresh && _page > 1) {

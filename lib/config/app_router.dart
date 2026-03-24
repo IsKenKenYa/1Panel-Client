@@ -3,7 +3,6 @@ import 'package:onepanelapp_app/core/config/api_config.dart';
 import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
 import 'package:onepanelapp_app/core/services/onboarding_service.dart';
 import 'package:onepanelapp_app/features/onboarding/onboarding_page.dart';
-import 'package:onepanelapp_app/features/security/security_verification_page.dart';
 import 'package:onepanelapp_app/features/databases/databases_page.dart';
 import 'package:onepanelapp_app/features/firewall/firewall_page.dart';
 import 'package:onepanelapp_app/features/monitoring/monitoring_page.dart';
@@ -11,9 +10,9 @@ import 'package:onepanelapp_app/features/server/server_detail_page.dart';
 import 'package:onepanelapp_app/features/server/server_form_page.dart';
 import 'package:onepanelapp_app/features/server/server_list_page.dart';
 import 'package:onepanelapp_app/features/server/server_models.dart';
+import 'package:onepanelapp_app/features/security/security_verification_page.dart';
 import 'package:onepanelapp_app/features/shell/app_shell_page.dart';
 import 'package:onepanelapp_app/features/terminal/terminal_page.dart';
-import 'package:onepanelapp_app/features/dashboard/dashboard_page.dart';
 import 'package:onepanelapp_app/pages/settings/settings_page.dart';
 import 'package:onepanelapp_app/features/settings/system_settings_page.dart';
 import 'package:onepanelapp_app/features/apps/apps_page.dart';
@@ -35,7 +34,6 @@ class AppRoutes {
   static const String serverConfig = '/server-config';
   static const String serverSelection = '/server-selection';
   static const String serverDetail = '/server-detail';
-  static const String workbench = '/workbench';
   static const String dashboard = '/dashboard';
   static const String files = '/files';
   static const String databases = '/databases';
@@ -61,17 +59,9 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const OnboardingPage());
       case AppRoutes.home:
         return MaterialPageRoute(
-          builder: (_) =>
-              AppShellPage(
-                initialIndex: _readInitialIndex(settings.arguments),
-                initialModuleId: _readInitialModuleId(settings.arguments),
-              ),
-        );
-      case AppRoutes.workbench:
-        return MaterialPageRoute(
-          builder: (_) => const AppShellPage(
-            initialIndex: 1,
-            initialModuleId: 'workbench',
+          builder: (_) => AppShellPage(
+            initialIndex: _readInitialIndex(settings.arguments),
+            initialModuleId: _readInitialModuleId(settings.arguments),
           ),
         );
       case AppRoutes.server:
@@ -90,7 +80,7 @@ class AppRouter {
       case AppRoutes.files:
         return MaterialPageRoute(
             builder: (_) => const AppShellPage(
-                  initialIndex: 2,
+                  initialIndex: 1,
                   initialModuleId: 'files',
                 ));
       case AppRoutes.databases:
@@ -102,10 +92,16 @@ class AppRouter {
       case AppRoutes.monitoring:
         return MaterialPageRoute(builder: (_) => const MonitoringPage());
       case AppRoutes.dashboard:
-        return MaterialPageRoute(builder: (_) => const DashboardPage());
+        return MaterialPageRoute(
+          builder: (_) => const AppShellPage(
+            initialIndex: 0,
+            initialModuleId: 'servers',
+          ),
+        );
       case AppRoutes.securityVerification:
         return MaterialPageRoute(
-            builder: (_) => const SecurityVerificationPage());
+          builder: (_) => const SecurityVerificationPage(),
+        );
       case AppRoutes.settings:
         return MaterialPageRoute(builder: (_) => const SettingsPage());
       case AppRoutes.systemSettings:
@@ -123,7 +119,8 @@ class AppRouter {
           final appItem = AppItem(
             id: int.tryParse(arg['appId']?.toString() ?? ''),
             key: arg['key'] as String?,
-            versions: arg['version'] != null ? [arg['version'] as String] : null,
+            versions:
+                arg['version'] != null ? [arg['version'] as String] : null,
             type: arg['type'] as String?,
           );
           return MaterialPageRoute(builder: (_) => AppDetailPage(app: appItem));
@@ -156,13 +153,15 @@ class AppRouter {
       case '/containers':
         return MaterialPageRoute(
           builder: (_) => const AppShellPage(
-            initialIndex: 3,
+            initialIndex: 2,
             initialModuleId: 'containers',
           ),
         );
 
       case '/apps':
-        return MaterialPageRoute(builder: (_) => const AppsPage());
+        return MaterialPageRoute(
+          builder: (_) => const AppsPage(),
+        );
 
       case '/container-create':
         return MaterialPageRoute(builder: (_) => const ContainerCreatePage());

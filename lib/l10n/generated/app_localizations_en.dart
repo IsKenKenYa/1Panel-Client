@@ -78,13 +78,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navServer => 'Servers';
 
   @override
-  String get navWorkbench => 'Workbench';
-
-  @override
   String get navFiles => 'Files';
 
   @override
-  String get navSecurity => 'Verification';
+  String get navSecurity => 'Security';
 
   @override
   String get navSettings => 'Settings';
@@ -99,33 +96,20 @@ class AppLocalizationsEn extends AppLocalizations {
       'Choose a current server before opening this module.';
 
   @override
-  String get workbenchQuickAccessTitle => 'Quick access';
-
-  @override
-  String get workbenchRecentModulesTitle => 'Recent modules';
-
-  @override
-  String get workbenchRecentModulesEmpty =>
-      'Modules you open from the client shell will appear here.';
-
-  @override
-  String get workbenchToolsTitle => 'Tools';
-
-  @override
-  String get shellPinnedModulesTitle => 'Primary shortcuts';
+  String get shellPinnedModulesTitle => 'Quick Access';
 
   @override
   String get shellPinnedModulesDescription =>
-      'Pin two server modules to the main navigation. You can change them any time.';
+      'Choose two modules for your main client tabs. You can change them any time.';
 
   @override
-  String get shellPinnedModulesCustomize => 'Customize shortcuts';
+  String get shellPinnedModulesCustomize => 'Customize Tabs';
 
   @override
-  String get shellPinnedModulesPrimary => 'Shortcut slot 1';
+  String get shellPinnedModulesPrimary => 'Tab Slot 1';
 
   @override
-  String get shellPinnedModulesSecondary => 'Shortcut slot 2';
+  String get shellPinnedModulesSecondary => 'Tab Slot 2';
 
   @override
   String get moduleSubnavCustomize => 'Customize sections';
@@ -236,7 +220,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get serverActionSwitch => 'Switch server';
 
   @override
-  String get serverActionSecurity => 'Verification';
+  String get serverActionSecurity => 'Security';
 
   @override
   String get serverFormTitle => 'Add Server';
@@ -536,7 +520,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonHttps => 'HTTPS';
 
   @override
-  String get securityPageTitle => 'Dynamic Verification';
+  String get securityPageTitle => 'Security';
 
   @override
   String get securityStatusTitle => 'MFA status';

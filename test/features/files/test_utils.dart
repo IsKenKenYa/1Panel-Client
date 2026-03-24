@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/features/files/files_provider.dart';
 import 'package:onepanelapp_app/l10n/generated/app_localizations.dart';
 
 Widget wrapWithMaterial(

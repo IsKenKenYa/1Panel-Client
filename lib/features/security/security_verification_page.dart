@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
 import 'package:onepanelapp_app/core/theme/app_design_tokens.dart';
 import 'package:onepanelapp_app/features/security/security_provider.dart';
+import 'package:onepanelapp_app/features/shell/widgets/server_switcher_action.dart';
 
 class SecurityVerificationPage extends StatefulWidget {
   const SecurityVerificationPage({super.key});
@@ -34,7 +35,16 @@ class _SecurityVerificationPageState extends State<SecurityVerificationPage> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.securityPageTitle)),
+      appBar: AppBar(
+        title: Text(l10n.securityPageTitle),
+        actions: [
+          ServerSwitcherAction(
+            onChanged: () async {
+              await _provider.load();
+            },
+          ),
+        ],
+      ),
       body: AnimatedBuilder(
         animation: _provider,
         builder: (context, _) {

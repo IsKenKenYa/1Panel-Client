@@ -17,6 +17,16 @@ class NetworkProvider extends ChangeNotifier {
     return await ApiClientManager.instance.getDockerApi();
   }
 
+  Future<void> onServerChanged({bool reload = false}) async {
+    _networks = [];
+    _isLoading = false;
+    _error = null;
+    notifyListeners();
+    if (reload) {
+      await loadNetworks();
+    }
+  }
+
   Future<void> loadNetworks() async {
     _isLoading = true;
     _error = null;

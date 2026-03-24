@@ -8,7 +8,6 @@ import 'package:onepanelapp_app/features/server/server_provider.dart';
 import 'package:onepanelapp_app/features/shell/app_shell_page.dart';
 import 'package:onepanelapp_app/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanelapp_app/features/shell/controllers/pinned_modules_controller.dart';
-import 'package:onepanelapp_app/features/shell/controllers/recent_modules_controller.dart';
 import 'package:onepanelapp_app/l10n/generated/app_localizations.dart';
 
 void main() {
@@ -19,10 +18,8 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     final currentServer = CurrentServerController();
     final pinned = PinnedModulesController();
-    final recent = RecentModulesController();
     await currentServer.load();
     await pinned.load();
-    await recent.load();
 
     tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1.0;
@@ -37,9 +34,9 @@ void main() {
           ChangeNotifierProvider(create: (_) => AppSettingsController()),
           ChangeNotifierProvider(create: (_) => ThemeController()),
           ChangeNotifierProvider(create: (_) => ServerProvider()),
-          ChangeNotifierProvider<CurrentServerController>.value(value: currentServer),
+          ChangeNotifierProvider<CurrentServerController>.value(
+              value: currentServer),
           ChangeNotifierProvider<PinnedModulesController>.value(value: pinned),
-          ChangeNotifierProvider<RecentModulesController>.value(value: recent),
         ],
         child: MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -51,14 +48,38 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('renders 5-slot primary navigation on compact width', (tester) async {
+  testWidgets('renders 4-slot primary navigation on compact width',
+      (tester) async {
     await pumpShell(tester, size: const Size(390, 844));
 
-    expect(find.text('Workbench'), findsOneWidget);
-    expect(find.text('Files'), findsOneWidget);
-    expect(find.text('Container Management'), findsOneWidget);
-    expect(find.text('Settings'), findsWidgets);
     expect(find.byType(NavigationBar), findsOneWidget);
+    final navBar = find.byType(NavigationBar);
+    expect(find.descendant(of: navBar, matching: find.text('Servers')),
+        findsWidgets);
+    expect(find.descendant(of: navBar, matching: find.text('Files')),
+        findsWidgets);
+    expect(
+        find.descendant(
+            of: navBar, matching: find.text('Container Management')),
+        findsWidgets);
+    expect(find.descendant(of: navBar, matching: find.text('Settings')),
+        findsWidgets);
+  });
+
+  testWidgets('opens left more-modules drawer on compact width',
+      (tester) async {
+    await pumpShell(tester, size: const Size(390, 844));
+
+    final moreHandle = find.byKey(const Key('shell-more-modules-handle'));
+    expect(moreHandle, findsOneWidget);
+
+    await tester.tap(moreHandle);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(Drawer), findsOneWidget);
+    expect(find.text('More'), findsWidgets);
+    expect(find.text('App Management'), findsWidgets);
+    expect(find.text('Security'), findsWidgets);
   });
 
   testWidgets('renders navigation rail on medium width', (tester) async {
@@ -66,5 +87,10 @@ void main() {
 
     expect(find.byType(NavigationRail), findsOneWidget);
     expect(find.byType(NavigationBar), findsNothing);
+    final rail = find.byType(NavigationRail);
+    expect(find.descendant(of: rail, matching: find.text('App Management')),
+        findsWidgets);
+    expect(find.descendant(of: rail, matching: find.text('Security')),
+        findsWidgets);
   });
 }

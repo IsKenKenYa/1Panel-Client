@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanelapp_app/config/app_router.dart';
 import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/features/server/server_provider.dart';
 import 'package:onepanelapp_app/features/shell/controllers/current_server_controller.dart';
 
 class ServerSwitcherAction extends StatelessWidget {
@@ -18,8 +17,8 @@ class ServerSwitcherAction extends StatelessWidget {
     Future<void> Function()? onChanged,
   }) async {
     final controller = context.read<CurrentServerController>();
-    if (!controller.isLoading && controller.servers.isEmpty) {
-      await controller.load();
+    if (!controller.isLoading) {
+      await controller.refresh();
     }
     if (!context.mounted) return;
 
@@ -36,7 +35,6 @@ class ServerSwitcherAction extends StatelessWidget {
     Future<void> Function()? onChanged,
   }) async {
     final controller = context.read<CurrentServerController>();
-    final serverProvider = context.read<ServerProvider>();
     final l10n = context.l10n;
 
     await showModalBottomSheet<void>(
@@ -73,19 +71,25 @@ class ServerSwitcherAction extends StatelessWidget {
                       itemCount: controller.servers.length,
                       itemBuilder: (itemContext, index) {
                         final server = controller.servers[index];
-                        final selected = server.id == controller.currentServerId;
+                        final selected =
+                            server.id == controller.currentServerId;
                         return ListTile(
                           contentPadding: EdgeInsets.zero,
-                          leading: Icon(
-                            selected ? Icons.check_circle : Icons.dns_outlined,
-                          ),
+                          leading: const Icon(Icons.dns_outlined),
                           title: Text(server.name),
-                          subtitle: Text(server.url, maxLines: 1, overflow: TextOverflow.ellipsis),
+                          subtitle: Text(server.url,
+                              maxLines: 1, overflow: TextOverflow.ellipsis),
+                          trailing: selected
+                              ? Icon(
+                                  Icons.check,
+                                  color:
+                                      Theme.of(itemContext).colorScheme.primary,
+                                )
+                              : null,
                           selected: selected,
                           onTap: () async {
                             Navigator.pop(sheetContext);
                             await controller.selectServer(server.id);
-                            await serverProvider.load();
                             if (onChanged != null) {
                               await onChanged();
                             }

@@ -250,9 +250,11 @@ class _ServerListPageState extends State<ServerListPage> {
 
   Future<void> _openDetail(ServerCardViewModel item) async {
     if (!item.isCurrent) {
-      await context.read<ServerProvider>().setCurrent(item.config.id);
+      await context
+          .read<CurrentServerController>()
+          .selectServer(item.config.id);
       if (mounted) {
-        await context.read<CurrentServerController>().selectServer(item.config.id);
+        await context.read<ServerProvider>().load();
       }
     }
     if (!mounted) {
