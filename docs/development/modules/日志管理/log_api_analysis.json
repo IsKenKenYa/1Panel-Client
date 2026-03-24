@@ -1,0 +1,543 @@
+{
+  "module": "log",
+  "generatedAt": "2026-03-23T18:47:56.004519",
+  "summary": {
+    "endpointCount": 18,
+    "methodCount": 18
+  },
+  "endpoints": [
+    {
+      "path": "/containers/clean/log",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Clean container log",
+          "description": "",
+          "tags": [
+            "Container"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/containers/compose/clean/log",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Clean compose log",
+          "description": "",
+          "tags": [
+            "Container"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/containers/logoption/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update docker daemon.json log option",
+          "description": "",
+          "tags": [
+            "Container Docker"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/containers/search/log",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Container logs",
+          "description": "",
+          "tags": [
+            "Container"
+          ],
+          "parameters": [
+            {
+              "name": "container",
+              "in": "query",
+              "required": false,
+              "type": "unknown",
+              "description": "容器名称"
+            },
+            {
+              "name": "since",
+              "in": "query",
+              "required": false,
+              "type": "unknown",
+              "description": "时间筛选"
+            },
+            {
+              "name": "follow",
+              "in": "query",
+              "required": false,
+              "type": "unknown",
+              "description": "是否追踪"
+            },
+            {
+              "name": "tail",
+              "in": "query",
+              "required": false,
+              "type": "unknown",
+              "description": "显示行号"
+            },
+            {
+              "name": "timestamp",
+              "in": "query",
+              "required": false,
+              "type": "unknown",
+              "description": "是否显示时间"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/auth/login",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "User login",
+          "description": "",
+          "tags": [
+            "Auth"
+          ],
+          "parameters": [
+            {
+              "name": "EntranceCode",
+              "in": "header",
+              "required": true,
+              "type": "unknown",
+              "description": "安全入口 base64 加密串"
+            },
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/auth/logout",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "User logout",
+          "description": "",
+          "tags": [
+            "Auth"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/logs/clean",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Clean operation logs",
+          "description": "",
+          "tags": [
+            "Logs"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/logs/login",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page login logs",
+          "description": "",
+          "tags": [
+            "Logs"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/logs/operation",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page operation logs",
+          "description": "",
+          "tags": [
+            "Logs"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/cronjobs/records/log",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load Cronjob record log",
+          "description": "",
+          "tags": [
+            "Cronjob"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/files/convert/log",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Convert file",
+          "description": "",
+          "tags": [
+            "File"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/ssh/log",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load host SSH logs",
+          "description": "",
+          "tags": [
+            "SSH"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/ssh/log/export",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Export host SSH logs",
+          "description": "",
+          "tags": [
+            "SSH"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/logs/system/files",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Load system log files",
+          "description": "",
+          "tags": [
+            "Logs"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/logs/tasks/executing/count",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get the number of executing tasks",
+          "description": "",
+          "tags": [
+            "TaskLog"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/logs/tasks/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page task logs",
+          "description": "",
+          "tags": [
+            "TaskLog"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/ftp/log/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load FTP operation log",
+          "description": "",
+          "tags": [
+            "FTP"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/log",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Operate website log",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    }
+  ]
+}

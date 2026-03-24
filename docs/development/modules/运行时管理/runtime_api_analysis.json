@@ -1,0 +1,893 @@
+{
+  "module": "runtime",
+  "generatedAt": "2026-03-23T18:47:56.324808",
+  "summary": {
+    "endpointCount": 31,
+    "methodCount": 31
+  },
+  "endpoints": [
+    {
+      "path": "/runtimes",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create runtime",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/:id",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get runtime",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete runtime",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/installed/delete/check/:id",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Delete runtime",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/node/modules",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get Node modules",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/node/modules/operate",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Operate Node modules",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/node/package",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get Node package scripts",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/operate",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Operate runtime",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/php/:id/extensions",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get php runtime extension",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/php/config",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update runtime php conf",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/php/config/:id",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Load php runtime conf",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/php/container/:id",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get PHP container config",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/php/container/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update PHP container config",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/php/extensions",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create Extensions",
+          "description": "",
+          "tags": [
+            "PHP Extensions"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/php/extensions/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete Extensions",
+          "description": "",
+          "tags": [
+            "PHP Extensions"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/php/extensions/install",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Install php extension",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/php/extensions/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page Extensions",
+          "description": "",
+          "tags": [
+            "PHP Extensions"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/php/extensions/uninstall",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "UnInstall php extension",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/php/extensions/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update Extensions",
+          "description": "",
+          "tags": [
+            "PHP Extensions"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/php/file",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get php conf file",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/php/fpm/config",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update fpm config",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/php/fpm/config/:id",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get fpm config",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/php/fpm/status/:id",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get PHP runtime status",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/php/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update php conf file",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/remark",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update runtime remark",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "List runtimes",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/supervisor/process",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Operate supervisor process",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/supervisor/process/:id",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get supervisor process",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/supervisor/process/file",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Operate supervisor process file",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/sync",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Sync runtime status",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update runtime",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    }
+  ]
+}

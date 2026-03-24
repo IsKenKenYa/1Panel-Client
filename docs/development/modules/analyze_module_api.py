@@ -27,6 +27,7 @@ MODULE_PATH_MAPPING = {
     'dashboard': '仪表盘',
     'container': '容器管理',
     'website': '网站管理-OpenResty',
+    'openresty': 'openresty',
     'domains': '网站域名管理',
     'app': '应用管理',
     'database': '数据库管理',
@@ -69,6 +70,20 @@ def load_openapi():
         )
     with open(OPENAPI_FILE, 'r', encoding='utf-8') as f:
         return json.load(f)
+
+
+def get_all_supported_keywords():
+    keywords = set(MODULE_PATH_MAPPING.keys()) | set(KEYWORD_MATCHERS.keys())
+    return sorted(keywords)
+
+
+def resolve_output_dir(keyword, output_dir=None):
+    keyword = keyword.lower()
+    if output_dir:
+        return SCRIPT_DIR / output_dir
+    if keyword in MODULE_PATH_MAPPING:
+        return SCRIPT_DIR / MODULE_PATH_MAPPING[keyword]
+    return SCRIPT_DIR / keyword
 
 def extract_module_apis(openapi_data, keyword):
     paths = openapi_data.get('paths', {})
@@ -239,6 +254,15 @@ def generate_json_report(keyword, apis):
         'endpoints': apis
     }, ensure_ascii=False, indent=2)
 
+
+def collect_endpoint_signatures(apis):
+    signatures = set()
+    for api in apis:
+        path = api.get('path')
+        for method in api.get('methods', []):
+            signatures.add((method.get('method', '').upper(), path))
+    return signatures
+
 def main():
     parser = argparse.ArgumentParser(
         description='从 1Panel 子模块 swagger.json 提取指定模块的API端点信息',
@@ -278,12 +302,7 @@ def main():
     total_methods = sum(len(api['methods']) for api in module_apis)
     print(f"找到 {len(module_apis)} 个端点, {total_methods} 个方法")
     
-    if args.output_dir:
-        output_dir = SCRIPT_DIR / args.output_dir
-    elif keyword in MODULE_PATH_MAPPING:
-        output_dir = SCRIPT_DIR / MODULE_PATH_MAPPING[keyword]
-    else:
-        output_dir = SCRIPT_DIR / keyword
+    output_dir = resolve_output_dir(keyword, args.output_dir)
     
     output_dir.mkdir(parents=True, exist_ok=True)
     

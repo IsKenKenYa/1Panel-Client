@@ -1,0 +1,268 @@
+{
+  "module": "device",
+  "generatedAt": "2026-03-23T18:47:55.464684",
+  "summary": {
+    "endpointCount": 10,
+    "methodCount": 10
+  },
+  "endpoints": [
+    {
+      "path": "/toolbox/device/base",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load device base info",
+          "description": "",
+          "tags": [
+            "Device"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/device/check/dns",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Check device DNS conf",
+          "description": "",
+          "tags": [
+            "Device"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/device/conf",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "load conf",
+          "description": "",
+          "tags": [
+            "Device"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/device/update/byconf",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update device conf by file",
+          "description": "",
+          "tags": [
+            "Device"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/device/update/conf",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update device",
+          "description": "",
+          "tags": [
+            "Device"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/device/update/host",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update device hosts",
+          "description": "",
+          "tags": [
+            "Device"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/device/update/passwd",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update device passwd",
+          "description": "",
+          "tags": [
+            "Device"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/device/update/swap",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update device swap",
+          "description": "",
+          "tags": [
+            "Device"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/device/users",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Load user list",
+          "description": "",
+          "tags": [
+            "Device"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/device/zone/options",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "list time zone options",
+          "description": "",
+          "tags": [
+            "Device"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    }
+  ]
+}

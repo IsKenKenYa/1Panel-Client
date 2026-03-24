@@ -1,0 +1,508 @@
+{
+  "module": "ai",
+  "generatedAt": "2026-03-23T18:47:54.638150",
+  "summary": {
+    "endpointCount": 18,
+    "methodCount": 18
+  },
+  "endpoints": [
+    {
+      "path": "/ai/domain/bind",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Bind domain",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/domain/get",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get bind domain",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/gpu/load",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Load gpu / xpu info",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/mcp/domain/bind",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Bind Domain for mcp server",
+          "description": "",
+          "tags": [
+            "McpServer"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/mcp/domain/get",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get bin Domain for mcp server",
+          "description": "",
+          "tags": [
+            "McpServer"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/mcp/domain/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update bind Domain for mcp server",
+          "description": "",
+          "tags": [
+            "McpServer"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/mcp/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "List mcp servers",
+          "description": "",
+          "tags": [
+            "McpServer"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/mcp/server",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create mcp server",
+          "description": "",
+          "tags": [
+            "McpServer"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/mcp/server/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete mcp server",
+          "description": "",
+          "tags": [
+            "McpServer"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/mcp/server/op",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Operate mcp server",
+          "description": "",
+          "tags": [
+            "McpServer"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/mcp/server/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update mcp server",
+          "description": "",
+          "tags": [
+            "McpServer"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/ollama/close",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Close Ollama model conn",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/ollama/model",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create Ollama model",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/ollama/model/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete Ollama model",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/ollama/model/load",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page Ollama models",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/ollama/model/recreate",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Rereate Ollama model",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/ollama/model/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page Ollama models",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/ollama/model/sync",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Sync Ollama model list",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    }
+  ]
+}

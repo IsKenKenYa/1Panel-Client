@@ -1,0 +1,229 @@
+{
+  "module": "process",
+  "generatedAt": "2026-03-23T18:47:56.167184",
+  "summary": {
+    "endpointCount": 7,
+    "methodCount": 8
+  },
+  "endpoints": [
+    {
+      "path": "/hosts/tool/supervisor/process",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get Supervisor process config",
+          "description": "",
+          "tags": [
+            "Host tool"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        },
+        {
+          "method": "POST",
+          "summary": "Create Supervisor process",
+          "description": "",
+          "tags": [
+            "Host tool"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/tool/supervisor/process/file",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get Supervisor process config file",
+          "description": "",
+          "tags": [
+            "Host tool"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/process/stop",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Stop Process",
+          "description": "",
+          "tags": [
+            "Process"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/process/{pid}",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get Process Info By PID",
+          "description": "",
+          "tags": [
+            "Process"
+          ],
+          "parameters": [
+            {
+              "name": "pid",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "PID"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/supervisor/process",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Operate supervisor process",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/supervisor/process/:id",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get supervisor process",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/runtimes/supervisor/process/file",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Operate supervisor process file",
+          "description": "",
+          "tags": [
+            "Runtime"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    }
+  ]
+}

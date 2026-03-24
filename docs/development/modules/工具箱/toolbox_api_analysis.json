@@ -1,0 +1,1069 @@
+{
+  "module": "toolbox",
+  "generatedAt": "2026-03-23T18:47:56.901362",
+  "summary": {
+    "endpointCount": 39,
+    "methodCount": 39
+  },
+  "endpoints": [
+    {
+      "path": "/toolbox/clam",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create clam",
+          "description": "",
+          "tags": [
+            "Clam"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/clam/base",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load clam base info",
+          "description": "",
+          "tags": [
+            "Clam"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/clam/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete clam",
+          "description": "",
+          "tags": [
+            "Clam"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/clam/file/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load clam file",
+          "description": "",
+          "tags": [
+            "Clam"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/clam/file/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update clam file",
+          "description": "",
+          "tags": [
+            "Clam"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/clam/handle",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Handle clam scan",
+          "description": "",
+          "tags": [
+            "Clam"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/clam/operate",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Operate Clam",
+          "description": "",
+          "tags": [
+            "Clam"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/clam/record/clean",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Clean clam record",
+          "description": "",
+          "tags": [
+            "Clam"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/clam/record/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page clam record",
+          "description": "",
+          "tags": [
+            "Clam"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/clam/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page clam",
+          "description": "",
+          "tags": [
+            "Clam"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/clam/status/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update clam status",
+          "description": "",
+          "tags": [
+            "Clam"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/clam/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update clam",
+          "description": "",
+          "tags": [
+            "Clam"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/clean",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Clean system",
+          "description": "",
+          "tags": [
+            "Device"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "array",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/device/base",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load device base info",
+          "description": "",
+          "tags": [
+            "Device"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/device/check/dns",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Check device DNS conf",
+          "description": "",
+          "tags": [
+            "Device"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/device/conf",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "load conf",
+          "description": "",
+          "tags": [
+            "Device"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/device/update/byconf",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update device conf by file",
+          "description": "",
+          "tags": [
+            "Device"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/device/update/conf",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update device",
+          "description": "",
+          "tags": [
+            "Device"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/device/update/host",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update device hosts",
+          "description": "",
+          "tags": [
+            "Device"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/device/update/passwd",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update device passwd",
+          "description": "",
+          "tags": [
+            "Device"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/device/update/swap",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update device swap",
+          "description": "",
+          "tags": [
+            "Device"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/device/users",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Load user list",
+          "description": "",
+          "tags": [
+            "Device"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/device/zone/options",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "list time zone options",
+          "description": "",
+          "tags": [
+            "Device"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/fail2ban/base",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Load fail2ban base info",
+          "description": "",
+          "tags": [
+            "Fail2ban"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/fail2ban/load/conf",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Load fail2ban conf",
+          "description": "",
+          "tags": [
+            "Fail2ban"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/fail2ban/operate",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Operate fail2ban",
+          "description": "",
+          "tags": [
+            "Fail2ban"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/fail2ban/operate/sshd",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Operate sshd of fail2ban",
+          "description": "",
+          "tags": [
+            "Fail2ban"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/fail2ban/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page fail2ban ip list",
+          "description": "",
+          "tags": [
+            "Fail2ban"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/fail2ban/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update fail2ban conf",
+          "description": "",
+          "tags": [
+            "Fail2ban"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/fail2ban/update/byconf",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update fail2ban conf by file",
+          "description": "",
+          "tags": [
+            "Fail2ban"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/ftp",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create FTP user",
+          "description": "",
+          "tags": [
+            "FTP"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/ftp/base",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Load FTP base info",
+          "description": "",
+          "tags": [
+            "FTP"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/ftp/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete FTP user",
+          "description": "",
+          "tags": [
+            "FTP"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/ftp/log/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load FTP operation log",
+          "description": "",
+          "tags": [
+            "FTP"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/ftp/operate",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Operate FTP",
+          "description": "",
+          "tags": [
+            "FTP"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/ftp/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page FTP user",
+          "description": "",
+          "tags": [
+            "FTP"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/ftp/sync",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Sync FTP user",
+          "description": "",
+          "tags": [
+            "FTP"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/ftp/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update FTP user",
+          "description": "",
+          "tags": [
+            "FTP"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/scan",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Scan system",
+          "description": "",
+          "tags": [
+            "Device"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "module": "system_ssl",
+  "generatedAt": "2026-03-23T18:47:56.732868",
+  "summary": {
+    "endpointCount": 3,
+    "methodCount": 3
+  },
+  "endpoints": [
+    {
+      "path": "/core/settings/ssl/download",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Download system cert",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/settings/ssl/info",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Load system cert info",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/settings/ssl/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update system ssl",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    }
+  ]
+}
