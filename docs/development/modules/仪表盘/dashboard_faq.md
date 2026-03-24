@@ -101,7 +101,7 @@ GET /dashboard/current/default/default
 
 ### 10. API端点实现进度如何？
 
-**当前状态** (基于1PanelV2OpenAPI.json):
+**当前状态** (基于docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json):
 
 | 功能模块 | 端点数 | 已实现 | 进度 |
 |----------|--------|--------|------|
@@ -194,4 +194,4 @@ GET /dashboard/current/default/default
 
 **文档版本**: 2.0
 **最后更新**: 2026-02-15
-**数据来源**: 1PanelV2OpenAPI.json
+**数据来源**: docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json

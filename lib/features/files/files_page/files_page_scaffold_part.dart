@@ -14,7 +14,10 @@ extension _FilesViewScaffold on _FilesViewState {
                 onPressed: () => Navigator.of(context).maybePop(),
                 tooltip: MaterialLocalizations.of(context).backButtonTooltip,
               )
-            : null,
+            : buildShellDrawerLeading(
+                context,
+                key: const Key('shell-drawer-menu-button'),
+              ),
         title: Consumer<FilesProvider>(
           builder: (context, provider, _) => Column(
             crossAxisAlignment: CrossAxisAlignment.start,

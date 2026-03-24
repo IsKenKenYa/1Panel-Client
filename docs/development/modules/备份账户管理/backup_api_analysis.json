@@ -1,0 +1,711 @@
+{
+  "module": "backup",
+  "generatedAt": "2026-03-23T18:47:54.791404",
+  "summary": {
+    "endpointCount": 25,
+    "methodCount": 25
+  },
+  "endpoints": [
+    {
+      "path": "/backups",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create backup account",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/backups/backup",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Backup system data",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/backups/buckets",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "List buckets",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/backups/check",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Check backup account",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/backups/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete backup account",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/backups/local",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "get local backup dir",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/backups/options",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Load backup account options",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/backups/record/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete backup record",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/backups/record/description/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update backup record description",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/backups/record/download",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Download backup record",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/backups/record/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page backup records",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/backups/record/search/bycronjob",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page backup records by cronjob",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/backups/record/size",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load backup record size",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/backups/recover",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Recover system data",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/backups/recover/byupload",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Recover system data by upload",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/backups/refresh/token",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Refresh token",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/backups/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Search backup accounts with page",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/backups/search/files",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "List files from backup accounts",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/backups/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update backup account",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/backups/upload",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Upload file for recover",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/backups",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create backup account",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/backups/client/:clientType",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Load backup account base info",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/backups/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete backup account",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/backups/refresh/token",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Refresh token",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/backups/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update backup account",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    }
+  ]
+}

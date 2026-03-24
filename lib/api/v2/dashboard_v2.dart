@@ -42,7 +42,7 @@ class ApiResponseParser {
 
 /// Dashboard V2 API客户端
 /// 
-/// 基于1PanelV2OpenAPI.json规范实现
+/// 基于docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json规范实现
 /// 包含12个端点：8个GET + 4个POST
 class DashboardV2Api {
   final DioClient _client;

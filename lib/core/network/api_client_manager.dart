@@ -11,9 +11,11 @@ import '../../api/v2/host_v2.dart';
 import '../../api/v2/logs_v2.dart';
 import '../../api/v2/monitor_v2.dart';
 import '../../api/v2/setting_v2.dart';
+import '../../api/v2/ssl_v2.dart';
 import '../../api/v2/terminal_v2.dart';
 import '../../api/v2/update_v2.dart';
 import '../../api/v2/website_v2.dart';
+import '../../api/v2/openresty_v2.dart';
 import '../../api/v2/docker_v2.dart';
 import '../../api/v2/compose_v2.dart';
 
@@ -78,6 +80,11 @@ class ApiClientManager {
     return WebsiteV2Api(client);
   }
 
+  Future<OpenRestyV2Api> getOpenRestyApi() async {
+    final client = await getCurrentClient();
+    return OpenRestyV2Api(client);
+  }
+
   Future<DashboardV2Api> getDashboardApi() async {
     final client = await getCurrentClient();
     return DashboardV2Api(client);
@@ -106,6 +113,11 @@ class ApiClientManager {
   Future<SettingV2Api> getSettingApi() async {
     final client = await getCurrentClient();
     return SettingV2Api(client);
+  }
+
+  Future<SSLV2Api> getSslApi() async {
+    final client = await getCurrentClient();
+    return SSLV2Api(client);
   }
 
   Future<TerminalV2Api> getTerminalApi() async {

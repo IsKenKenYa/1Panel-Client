@@ -10,7 +10,7 @@
 
 ## 功能完整性清单
 
-基于 1PanelV2OpenAPI.json，命令管理模块共包含 13 个端点:
+基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json，命令管理模块共包含 13 个端点:
 
 ### 命令执行 (5端点)
 1. POST /commands/execute - 执行命令

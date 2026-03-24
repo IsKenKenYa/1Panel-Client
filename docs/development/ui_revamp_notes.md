@@ -79,5 +79,5 @@
 
 ## Important Constraints Kept
 - Non-UI historical compile problems were not globally fixed in this round.
-- API source-of-truth was constrained to `docs/1PanelOpenAPI/1PanelV2OpenAPI.json`.
+- API source-of-truth was constrained to `docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json`.
 - Missing API integrations are isolated behind UI-side abstractions.

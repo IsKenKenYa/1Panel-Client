@@ -70,15 +70,16 @@ void main() {
       (tester) async {
     await pumpShell(tester, size: const Size(390, 844));
 
-    final moreHandle = find.byKey(const Key('shell-more-modules-handle'));
-    expect(moreHandle, findsOneWidget);
+    final menuButton = find.byKey(const Key('shell-drawer-menu-button'));
+    expect(menuButton, findsOneWidget);
 
-    await tester.tap(moreHandle);
+    await tester.tap(menuButton);
     await tester.pumpAndSettle();
 
     expect(find.byType(Drawer), findsOneWidget);
     expect(find.text('More'), findsWidgets);
     expect(find.text('App Management'), findsWidgets);
+    expect(find.text('Websites'), findsWidgets);
     expect(find.text('Security'), findsWidgets);
   });
 
@@ -89,6 +90,8 @@ void main() {
     expect(find.byType(NavigationBar), findsNothing);
     final rail = find.byType(NavigationRail);
     expect(find.descendant(of: rail, matching: find.text('App Management')),
+        findsWidgets);
+    expect(find.descendant(of: rail, matching: find.text('Websites')),
         findsWidgets);
     expect(find.descendant(of: rail, matching: find.text('Security')),
         findsWidgets);

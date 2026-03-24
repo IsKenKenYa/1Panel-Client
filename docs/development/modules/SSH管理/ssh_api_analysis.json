@@ -1,0 +1,463 @@
+{
+  "module": "ssh",
+  "generatedAt": "2026-03-23T18:47:56.542258",
+  "summary": {
+    "endpointCount": 17,
+    "methodCount": 17
+  },
+  "endpoints": [
+    {
+      "path": "/hosts/ssh/cert",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Generate host SSH secret",
+          "description": "",
+          "tags": [
+            "SSH"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/ssh/cert/delete",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete host SSH secret",
+          "description": "",
+          "tags": [
+            "SSH"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/ssh/cert/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load host SSH secret",
+          "description": "",
+          "tags": [
+            "SSH"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/ssh/cert/sync",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Sycn host SSH secret",
+          "description": "",
+          "tags": [
+            "SSH"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/ssh/cert/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update host SSH secret",
+          "description": "",
+          "tags": [
+            "SSH"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/ssh/file",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load host SSH conf",
+          "description": "",
+          "tags": [
+            "SSH"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/ssh/file/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update host SSH setting by file",
+          "description": "",
+          "tags": [
+            "SSH"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/ssh/log",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load host SSH logs",
+          "description": "",
+          "tags": [
+            "SSH"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/ssh/log/export",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Export host SSH logs",
+          "description": "",
+          "tags": [
+            "SSH"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/ssh/operate",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Operate SSH",
+          "description": "",
+          "tags": [
+            "SSH"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/ssh/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load host SSH setting info",
+          "description": "",
+          "tags": [
+            "SSH"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/ssh/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update host SSH setting",
+          "description": "",
+          "tags": [
+            "SSH"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/settings/ssh",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Save local conn info",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/settings/ssh/check/info",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Check local conn info",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/settings/ssh/conn",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Load local conn",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/settings/ssh/conn/default",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update local is conn",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/toolbox/fail2ban/operate/sshd",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Operate sshd of fail2ban",
+          "description": "",
+          "tags": [
+            "Fail2ban"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    }
+  ]
+}

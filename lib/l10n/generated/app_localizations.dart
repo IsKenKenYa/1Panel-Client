@@ -146,6 +146,24 @@ abstract class AppLocalizations {
   /// **'More'**
   String get commonMore;
 
+  /// No description provided for @commonAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get commonAdd;
+
+  /// No description provided for @commonEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get commonEdit;
+
+  /// No description provided for @commonLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Load'**
+  String get commonLoad;
+
   /// No description provided for @commonSave.
   ///
   /// In en, this message translates to:
@@ -169,6 +187,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete'**
   String get commonDelete;
+
+  /// No description provided for @commonUpload.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
+  String get commonUpload;
 
   /// No description provided for @commonRefresh.
   ///
@@ -199,6 +223,792 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to load'**
   String get commonLoadFailedTitle;
+
+  /// No description provided for @websitesPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Websites'**
+  String get websitesPageTitle;
+
+  /// No description provided for @websitesStatsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Statistics'**
+  String get websitesStatsTitle;
+
+  /// No description provided for @websitesStatsTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get websitesStatsTotal;
+
+  /// No description provided for @websitesStatsRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Running'**
+  String get websitesStatsRunning;
+
+  /// No description provided for @websitesStatsStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped'**
+  String get websitesStatsStopped;
+
+  /// No description provided for @websitesEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No websites'**
+  String get websitesEmptyTitle;
+
+  /// No description provided for @websitesEmptySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a website in 1Panel first.'**
+  String get websitesEmptySubtitle;
+
+  /// No description provided for @websitesUnknownDomain.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown website'**
+  String get websitesUnknownDomain;
+
+  /// No description provided for @websitesStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get websitesStatusLabel;
+
+  /// No description provided for @websitesTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get websitesTypeLabel;
+
+  /// No description provided for @websitesStatusRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Running'**
+  String get websitesStatusRunning;
+
+  /// No description provided for @websitesStatusStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped'**
+  String get websitesStatusStopped;
+
+  /// No description provided for @websitesActionStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get websitesActionStart;
+
+  /// No description provided for @websitesActionStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get websitesActionStop;
+
+  /// No description provided for @websitesActionRestart.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart'**
+  String get websitesActionRestart;
+
+  /// No description provided for @websitesActionDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get websitesActionDelete;
+
+  /// No description provided for @websitesOperateSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Operation successful'**
+  String get websitesOperateSuccess;
+
+  /// No description provided for @websitesOperateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Operation failed'**
+  String get websitesOperateFailed;
+
+  /// No description provided for @websitesLoadFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'{error}'**
+  String websitesLoadFailedMessage(String error);
+
+  /// No description provided for @websitesDefaultName.
+  ///
+  /// In en, this message translates to:
+  /// **'default'**
+  String get websitesDefaultName;
+
+  /// No description provided for @websitesDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete website'**
+  String get websitesDeleteTitle;
+
+  /// No description provided for @websitesDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete {domain}? This action cannot be undone.'**
+  String websitesDeleteMessage(String domain);
+
+  /// No description provided for @websitesDeleteSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Website deleted'**
+  String get websitesDeleteSuccess;
+
+  /// No description provided for @websitesDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Website'**
+  String get websitesDetailTitle;
+
+  /// No description provided for @websitesTabOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get websitesTabOverview;
+
+  /// No description provided for @websitesTabConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Config'**
+  String get websitesTabConfig;
+
+  /// No description provided for @websitesTabDomains.
+  ///
+  /// In en, this message translates to:
+  /// **'Domains'**
+  String get websitesTabDomains;
+
+  /// No description provided for @websitesTabSsl.
+  ///
+  /// In en, this message translates to:
+  /// **'SSL'**
+  String get websitesTabSsl;
+
+  /// No description provided for @websitesTabRewrite.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewrite'**
+  String get websitesTabRewrite;
+
+  /// No description provided for @websitesTabProxy.
+  ///
+  /// In en, this message translates to:
+  /// **'Proxy'**
+  String get websitesTabProxy;
+
+  /// No description provided for @websitesSslInfoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate'**
+  String get websitesSslInfoTitle;
+
+  /// No description provided for @websitesSslNoCert.
+  ///
+  /// In en, this message translates to:
+  /// **'No certificate bound'**
+  String get websitesSslNoCert;
+
+  /// No description provided for @websitesSslPrimaryDomain.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary domain'**
+  String get websitesSslPrimaryDomain;
+
+  /// No description provided for @websitesSslExpireDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires'**
+  String get websitesSslExpireDate;
+
+  /// No description provided for @websitesSslStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get websitesSslStatus;
+
+  /// No description provided for @websitesSslAutoRenew.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto renew'**
+  String get websitesSslAutoRenew;
+
+  /// No description provided for @websitesSslDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get websitesSslDownload;
+
+  /// No description provided for @websitesConfigHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Nginx config content'**
+  String get websitesConfigHint;
+
+  /// No description provided for @websitesJsonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'JSON content'**
+  String get websitesJsonHint;
+
+  /// No description provided for @websitesDomainAddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add domain'**
+  String get websitesDomainAddTitle;
+
+  /// No description provided for @websitesDomainLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Domain'**
+  String get websitesDomainLabel;
+
+  /// No description provided for @websitesDomainEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No domains'**
+  String get websitesDomainEmpty;
+
+  /// No description provided for @websitesDomainDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get websitesDomainDefault;
+
+  /// No description provided for @websitesDomainSslLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'SSL'**
+  String get websitesDomainSslLabel;
+
+  /// No description provided for @websitesRewriteNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewrite name'**
+  String get websitesRewriteNameLabel;
+
+  /// No description provided for @websitesRewriteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewrite content'**
+  String get websitesRewriteHint;
+
+  /// No description provided for @websitesProxyNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Proxy name'**
+  String get websitesProxyNameLabel;
+
+  /// No description provided for @websitesProxyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Proxy content'**
+  String get websitesProxyHint;
+
+  /// No description provided for @websitesNginxAdvancedAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get websitesNginxAdvancedAction;
+
+  /// No description provided for @websitesNginxAdvancedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced Nginx Config'**
+  String get websitesNginxAdvancedTitle;
+
+  /// No description provided for @websitesNginxScopeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scope Load'**
+  String get websitesNginxScopeTitle;
+
+  /// No description provided for @websitesNginxScopeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Scope'**
+  String get websitesNginxScopeLabel;
+
+  /// No description provided for @websitesNginxScopeWebsiteIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Website ID (optional)'**
+  String get websitesNginxScopeWebsiteIdLabel;
+
+  /// No description provided for @websitesNginxScopeLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Load scope config'**
+  String get websitesNginxScopeLoad;
+
+  /// No description provided for @websitesNginxScopeResultLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Scope result'**
+  String get websitesNginxScopeResultLabel;
+
+  /// No description provided for @websitesNginxUpdateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scope Update'**
+  String get websitesNginxUpdateTitle;
+
+  /// No description provided for @websitesNginxUpdateOperateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Operate'**
+  String get websitesNginxUpdateOperateLabel;
+
+  /// No description provided for @websitesNginxUpdateScopeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Scope'**
+  String get websitesNginxUpdateScopeLabel;
+
+  /// No description provided for @websitesNginxUpdateWebsiteIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Website ID (optional)'**
+  String get websitesNginxUpdateWebsiteIdLabel;
+
+  /// No description provided for @websitesNginxUpdateParamsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Params JSON'**
+  String get websitesNginxUpdateParamsLabel;
+
+  /// No description provided for @websitesNginxUpdateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply update'**
+  String get websitesNginxUpdateAction;
+
+  /// No description provided for @websitesProtocolLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Protocol'**
+  String get websitesProtocolLabel;
+
+  /// No description provided for @websitesDetailInfoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Website info'**
+  String get websitesDetailInfoTitle;
+
+  /// No description provided for @websitesSitePathLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Site path'**
+  String get websitesSitePathLabel;
+
+  /// No description provided for @websitesRuntimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Runtime'**
+  String get websitesRuntimeLabel;
+
+  /// No description provided for @websitesSslStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'SSL status'**
+  String get websitesSslStatusLabel;
+
+  /// No description provided for @websitesSslExpireLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'SSL expires'**
+  String get websitesSslExpireLabel;
+
+  /// No description provided for @websitesDetailActionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick actions'**
+  String get websitesDetailActionsTitle;
+
+  /// No description provided for @websitesConfigPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Config'**
+  String get websitesConfigPageTitle;
+
+  /// No description provided for @websitesConfigPageSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nginx config & PHP version'**
+  String get websitesConfigPageSubtitle;
+
+  /// No description provided for @websitesDomainsPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Domains'**
+  String get websitesDomainsPageTitle;
+
+  /// No description provided for @websitesDomainsPageSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bind and manage domains'**
+  String get websitesDomainsPageSubtitle;
+
+  /// No description provided for @websitesSslPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'SSL certificates'**
+  String get websitesSslPageTitle;
+
+  /// No description provided for @websitesSslPageSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate settings & HTTPS'**
+  String get websitesSslPageSubtitle;
+
+  /// No description provided for @websitesOpenrestySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Service status & module management'**
+  String get websitesOpenrestySubtitle;
+
+  /// No description provided for @websitesConfigEditorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nginx config file'**
+  String get websitesConfigEditorTitle;
+
+  /// No description provided for @websitesConfigScopeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced config'**
+  String get websitesConfigScopeTitle;
+
+  /// No description provided for @websitesConfigScopeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Scope'**
+  String get websitesConfigScopeLabel;
+
+  /// No description provided for @websitesConfigScopeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No scope config'**
+  String get websitesConfigScopeEmpty;
+
+  /// No description provided for @websitesConfigScopeEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit {name} params'**
+  String websitesConfigScopeEditTitle(String name);
+
+  /// No description provided for @websitesConfigScopeValuesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Param list'**
+  String get websitesConfigScopeValuesLabel;
+
+  /// No description provided for @websitesConfigScopeValuesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Separate multiple params with commas'**
+  String get websitesConfigScopeValuesHint;
+
+  /// No description provided for @websitesPhpVersionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'PHP version'**
+  String get websitesPhpVersionTitle;
+
+  /// No description provided for @websitesPhpRuntimeIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Runtime ID'**
+  String get websitesPhpRuntimeIdLabel;
+
+  /// No description provided for @websitesPhpRuntimeIdHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the runtime ID to switch'**
+  String get websitesPhpRuntimeIdHint;
+
+  /// No description provided for @websitesDomainPortLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Port'**
+  String get websitesDomainPortLabel;
+
+  /// No description provided for @websitesDomainPrimary.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary domain'**
+  String get websitesDomainPrimary;
+
+  /// No description provided for @websitesSslCreateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create certificate'**
+  String get websitesSslCreateAction;
+
+  /// No description provided for @websitesSslUploadAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload certificate'**
+  String get websitesSslUploadAction;
+
+  /// No description provided for @websitesSslListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate list'**
+  String get websitesSslListTitle;
+
+  /// No description provided for @websitesSslListEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No certificates'**
+  String get websitesSslListEmpty;
+
+  /// No description provided for @websitesSslApplyAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Request certificate'**
+  String get websitesSslApplyAction;
+
+  /// No description provided for @websitesSslResolveAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolve certificate'**
+  String get websitesSslResolveAction;
+
+  /// No description provided for @websitesSslUpdateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Update certificate'**
+  String get websitesSslUpdateAction;
+
+  /// No description provided for @websitesSslDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete certificate'**
+  String get websitesSslDeleteTitle;
+
+  /// No description provided for @websitesSslDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete certificate for {domain}?'**
+  String websitesSslDeleteMessage(String domain);
+
+  /// No description provided for @websitesSslAcmeAccountIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ACME account ID'**
+  String get websitesSslAcmeAccountIdLabel;
+
+  /// No description provided for @websitesSslProviderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider'**
+  String get websitesSslProviderLabel;
+
+  /// No description provided for @websitesSslOtherDomainsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Other domains (comma-separated)'**
+  String get websitesSslOtherDomainsLabel;
+
+  /// No description provided for @websitesSslDisableLogLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable logs'**
+  String get websitesSslDisableLogLabel;
+
+  /// No description provided for @websitesSslSkipDnsCheckLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip DNS check'**
+  String get websitesSslSkipDnsCheckLabel;
+
+  /// No description provided for @websitesSslNameserversLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Nameservers'**
+  String get websitesSslNameserversLabel;
+
+  /// No description provided for @websitesSslDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get websitesSslDescriptionLabel;
+
+  /// No description provided for @websitesSslUploadTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload method'**
+  String get websitesSslUploadTypeLabel;
+
+  /// No description provided for @websitesSslUploadTypePaste.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste content'**
+  String get websitesSslUploadTypePaste;
+
+  /// No description provided for @websitesSslUploadTypeLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Local path'**
+  String get websitesSslUploadTypeLocal;
+
+  /// No description provided for @websitesSslCertificateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate'**
+  String get websitesSslCertificateLabel;
+
+  /// No description provided for @websitesSslPrivateKeyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Private key'**
+  String get websitesSslPrivateKeyLabel;
+
+  /// No description provided for @websitesSslCertificatePathLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate path'**
+  String get websitesSslCertificatePathLabel;
+
+  /// No description provided for @websitesSslPrivateKeyPathLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Private key path'**
+  String get websitesSslPrivateKeyPathLabel;
+
+  /// No description provided for @websitesHttpsConfigTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTPS config'**
+  String get websitesHttpsConfigTitle;
+
+  /// No description provided for @websitesHttpsEnableLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable HTTPS'**
+  String get websitesHttpsEnableLabel;
+
+  /// No description provided for @websitesHttpsModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTP mode'**
+  String get websitesHttpsModeLabel;
+
+  /// No description provided for @websitesHttpsTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate type'**
+  String get websitesHttpsTypeLabel;
+
+  /// No description provided for @websitesHttpsSslIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate ID'**
+  String get websitesHttpsSslIdLabel;
+
+  /// No description provided for @websitesSslAutoRenewMissingFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate is missing the primary domain or provider; cannot update auto-renew.'**
+  String get websitesSslAutoRenewMissingFields;
+
+  /// No description provided for @websitesSslDownloadHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate download link: {link}'**
+  String websitesSslDownloadHint(String link);
+
+  /// No description provided for @openrestyPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'OpenResty'**
+  String get openrestyPageTitle;
+
+  /// No description provided for @openrestyTabStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get openrestyTabStatus;
+
+  /// No description provided for @openrestyTabHttps.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTPS'**
+  String get openrestyTabHttps;
+
+  /// No description provided for @openrestyTabModules.
+  ///
+  /// In en, this message translates to:
+  /// **'Modules'**
+  String get openrestyTabModules;
+
+  /// No description provided for @openrestyTabConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Config'**
+  String get openrestyTabConfig;
+
+  /// No description provided for @openrestyTabBuild.
+  ///
+  /// In en, this message translates to:
+  /// **'Build'**
+  String get openrestyTabBuild;
+
+  /// No description provided for @openrestyTabScope.
+  ///
+  /// In en, this message translates to:
+  /// **'Scope'**
+  String get openrestyTabScope;
+
+  /// No description provided for @openrestyBuildMirrorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Build mirror'**
+  String get openrestyBuildMirrorLabel;
+
+  /// No description provided for @openrestyBuildTaskIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Task ID'**
+  String get openrestyBuildTaskIdLabel;
+
+  /// No description provided for @openrestyBuildAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Build OpenResty'**
+  String get openrestyBuildAction;
+
+  /// No description provided for @openrestyScopeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Scope'**
+  String get openrestyScopeLabel;
+
+  /// No description provided for @openrestyScopeWebsiteIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Website ID (optional)'**
+  String get openrestyScopeWebsiteIdLabel;
+
+  /// No description provided for @openrestyScopeLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Load scope'**
+  String get openrestyScopeLoad;
+
+  /// No description provided for @openrestyScopeResultHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Scope config result'**
+  String get openrestyScopeResultHint;
 
   /// No description provided for @monitorNetworkLabel.
   ///
@@ -269,31 +1079,31 @@ abstract class AppLocalizations {
   /// No description provided for @shellPinnedModulesTitle.
   ///
   /// In en, this message translates to:
-  /// **'Quick Access'**
+  /// **'Bottom Tabs'**
   String get shellPinnedModulesTitle;
 
   /// No description provided for @shellPinnedModulesDescription.
   ///
   /// In en, this message translates to:
-  /// **'Choose two modules for your main client tabs. You can change them any time.'**
+  /// **'Choose two modules for the bottom navigation. Everything else stays in More.'**
   String get shellPinnedModulesDescription;
 
   /// No description provided for @shellPinnedModulesCustomize.
   ///
   /// In en, this message translates to:
-  /// **'Customize Tabs'**
+  /// **'Edit Tabs'**
   String get shellPinnedModulesCustomize;
 
   /// No description provided for @shellPinnedModulesPrimary.
   ///
   /// In en, this message translates to:
-  /// **'Tab Slot 1'**
+  /// **'Tab 1'**
   String get shellPinnedModulesPrimary;
 
   /// No description provided for @shellPinnedModulesSecondary.
   ///
   /// In en, this message translates to:
-  /// **'Tab Slot 2'**
+  /// **'Tab 2'**
   String get shellPinnedModulesSecondary;
 
   /// No description provided for @moduleSubnavCustomize.
@@ -961,12 +1771,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create'**
   String get commonCreate;
-
-  /// No description provided for @commonEdit.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit'**
-  String get commonEdit;
 
   /// No description provided for @commonName.
   ///

@@ -271,7 +271,7 @@ flutter packages pub run build_runner build
 - [测试指南](docs/zh-CN/TESTING.md) - 测试文档
 
 ### API 文档
-- [1Panel V2 API 规范](docs/1PanelOpenAPI/1PanelV2OpenAPI.json) - Swagger/OpenAPI 规范
+- [1Panel V2 API 规范](docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json) - 来自 1Panel 子模块的 Swagger/OpenAPI 规范
 
 ### 开发文档
 - [开发文档](docs/development/)

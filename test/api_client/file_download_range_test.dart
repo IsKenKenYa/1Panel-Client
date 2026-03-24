@@ -37,7 +37,7 @@ void main() {
       debugPrint('API密钥: ${hasApiKey ? "已配置" : "未配置"}');
       debugPrint('========================================\n');
 
-      expect(hasApiKey, isTrue, reason: 'API密钥应该已配置');
+      expect(hasApiKey, equals(TestEnvironment.canRunIntegrationTests));
     });
 
     test('获取测试文件列表', () async {

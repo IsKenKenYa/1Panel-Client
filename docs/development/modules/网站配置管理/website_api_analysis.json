@@ -1,0 +1,2583 @@
+{
+  "module": "website",
+  "generatedAt": "2026-03-13T16:42:12.615153",
+  "summary": {
+    "endpointCount": 87,
+    "methodCount": 90
+  },
+  "endpoints": [
+    {
+      "path": "/websites",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create website",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/:id",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Search website by id",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/:id/config/:type",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Search website nginx by id",
+          "description": "",
+          "tags": [
+            "Website Nginx"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/:id/https",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Load https conf",
+          "description": "",
+          "tags": [
+            "Website HTTPS"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        },
+        {
+          "method": "POST",
+          "summary": "Update https conf",
+          "description": "",
+          "tags": [
+            "Website HTTPS"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/acme",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create website acme account",
+          "description": "",
+          "tags": [
+            "Website Acme"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/acme/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete website acme account",
+          "description": "",
+          "tags": [
+            "Website Acme"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/acme/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page website acme accounts",
+          "description": "",
+          "tags": [
+            "Website Acme"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/acme/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update website acme account",
+          "description": "",
+          "tags": [
+            "Website Acme"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/auths",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get AuthBasic conf",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/auths/path",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get AuthBasic conf",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/auths/path/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get AuthBasic conf",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/auths/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get AuthBasic conf",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/batch/group",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Batch set website group",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/batch/https",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Batch set HTTPS for websites",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/batch/operate",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Batch operate websites",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ca",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create website ca",
+          "description": "",
+          "tags": [
+            "Website CA"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ca/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete website ca",
+          "description": "",
+          "tags": [
+            "Website CA"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ca/download",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Download CA file",
+          "description": "",
+          "tags": [
+            "Website CA"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ca/obtain",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Obtain SSL",
+          "description": "",
+          "tags": [
+            "Website CA"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ca/renew",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Obtain SSL",
+          "description": "",
+          "tags": [
+            "Website CA"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ca/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page website ca",
+          "description": "",
+          "tags": [
+            "Website CA"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ca/{id}",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get website ca",
+          "description": "",
+          "tags": [
+            "Website CA"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "id"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/check",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Check before create website",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/config",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load nginx conf",
+          "description": "",
+          "tags": [
+            "Website Nginx"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/config/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update nginx conf",
+          "description": "",
+          "tags": [
+            "Website Nginx"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/cors/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update CORS Config",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/cors/{id}",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get CORS Config",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "id"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/crosssite",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Operate Cross Site Access",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/databases",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get databases",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        },
+        {
+          "method": "POST",
+          "summary": "Change website database",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/default/html/:type",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get default html",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/default/html/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update default html",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/default/server",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Change default server",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete website",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/dir",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get website dir",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/dir/permission",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update Site Dir permission",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/dir/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update Site Dir",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/dns",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create website dns account",
+          "description": "",
+          "tags": [
+            "Website DNS"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/dns/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete website dns account",
+          "description": "",
+          "tags": [
+            "Website DNS"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/dns/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page website dns accounts",
+          "description": "",
+          "tags": [
+            "Website DNS"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/dns/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update website dns account",
+          "description": "",
+          "tags": [
+            "Website DNS"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/domains",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create website domain",
+          "description": "",
+          "tags": [
+            "Website Domain"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/domains/:websiteId",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Search website domains by websiteId",
+          "description": "",
+          "tags": [
+            "Website Domain"
+          ],
+          "parameters": [
+            {
+              "name": "websiteId",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/domains/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete website domain",
+          "description": "",
+          "tags": [
+            "Website Domain"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/domains/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update website domain",
+          "description": "",
+          "tags": [
+            "Website Domain"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/exec/composer",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Exec Composer",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/lbs",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get website upstreams",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/lbs/create",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create website upstream",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/lbs/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete website upstream",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/lbs/file",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update website upstream file",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/lbs/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update website upstream",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/leech",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get AntiLeech conf",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/leech/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update AntiLeech",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/list",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "List websites",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/log",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Operate website log",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/nginx/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update website nginx conf",
+          "description": "",
+          "tags": [
+            "Website Nginx"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/operate",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Operate website",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/options",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "List website names",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/php/version",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update php version",
+          "description": "",
+          "tags": [
+            "Website PHP"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/proxies",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get proxy conf",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/proxies/file",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update proxy file",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/proxies/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update proxy conf",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/proxy/clear",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Clear Website proxy cache",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/proxy/config",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "update website proxy cache config",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/proxy/config/{id}",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get website proxy cache config",
+          "description": "",
+          "tags": [],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "id"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/realip/config",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Set Real IP",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/realip/config/{id}",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get Real IP Config",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "id"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/redirect",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get redirect conf",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/redirect/file",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update redirect file",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/redirect/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update redirect conf",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/resource/{id}",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get website resource",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "id"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/rewrite",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get rewrite conf",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/rewrite/custom",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "List custom rewrite",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        },
+        {
+          "method": "POST",
+          "summary": "Operate custom rewrite",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/rewrite/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update rewrite conf",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page websites",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create website ssl",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl/:id",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Search website ssl by id",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete website ssl",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl/download",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Download SSL  file",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl/obtain",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Apply  ssl",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl/resolve",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Resolve website ssl",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page website ssl",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update ssl",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl/upload",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Upload ssl",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl/upload/file",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Upload SSL file",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "type",
+              "in": "formData",
+              "required": true,
+              "type": "unknown",
+              "description": "type"
+            },
+            {
+              "name": "description",
+              "in": "formData",
+              "required": false,
+              "type": "unknown",
+              "description": "description"
+            },
+            {
+              "name": "sslID",
+              "in": "formData",
+              "required": false,
+              "type": "unknown",
+              "description": "sslID"
+            },
+            {
+              "name": "privateKeyFile",
+              "in": "formData",
+              "required": true,
+              "type": "unknown",
+              "description": "privateKeyFile"
+            },
+            {
+              "name": "certificateFile",
+              "in": "formData",
+              "required": true,
+              "type": "unknown",
+              "description": "certificateFile"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl/website/:websiteId",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Search website ssl by website id",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "websiteId",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/stream/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update Stream Config",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update website",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    }
+  ]
+}

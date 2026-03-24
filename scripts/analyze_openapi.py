@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 OpenAPI V2 分析脚本
-用于提取和分析1Panel V2 OpenAPI规范中的所有API端点
+用于提取和分析 1Panel 子模块 Swagger 规范中的所有API端点
 """
 
 import json
@@ -9,9 +9,27 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
+DEFAULT_SWAGGER_PATH = (
+    Path(__file__).resolve().parent.parent
+    / 'docs'
+    / 'OpenSource'
+    / '1Panel'
+    / 'core'
+    / 'cmd'
+    / 'server'
+    / 'docs'
+    / 'swagger.json'
+)
+
 def analyze_openapi(json_path: str):
     """分析OpenAPI JSON文件"""
-    with open(json_path, 'r', encoding='utf-8') as f:
+    source_path = Path(json_path)
+    if not source_path.exists():
+        raise FileNotFoundError(
+            f"未找到 Swagger 文档: {source_path}\n"
+            "请先初始化子模块: git submodule update --init --recursive docs/OpenSource/1Panel"
+        )
+    with open(source_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
     
     paths = data.get('paths', {})
@@ -24,7 +42,7 @@ def analyze_openapi(json_path: str):
     # 提取所有端点
     all_endpoints = []
     
-    for path, methods in paths.items():
+    for endpoint_path, methods in paths.items():
         for method, details in methods.items():
             if method in ['get', 'post', 'put', 'delete', 'patch']:
                 tags = details.get('tags', ['untagged'])
@@ -32,7 +50,7 @@ def analyze_openapi(json_path: str):
                 operation_id = details.get('operationId', '')
                 
                 endpoint_info = {
-                    'path': path,
+                    'path': endpoint_path,
                     'method': method.upper(),
                     'tags': tags,
                     'summary': summary,
@@ -115,7 +133,7 @@ def analyze_openapi(json_path: str):
         output['endpoints_by_priority'][priority].extend(tag_endpoints[tag])
     
     # 保存详细分析结果
-    output_path = Path(json_path).parent / 'openapi_analysis.json'
+    output_path = Path.cwd() / 'openapi_analysis.json'
     with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(output, f, indent=2, ensure_ascii=False)
     
@@ -124,5 +142,9 @@ def analyze_openapi(json_path: str):
     return output
 
 if __name__ == '__main__':
-    json_path = sys.argv[1] if len(sys.argv) > 1 else '1PanelV2OpenAPI.json'
-    analyze_openapi(json_path)
+    json_path = sys.argv[1] if len(sys.argv) > 1 else str(DEFAULT_SWAGGER_PATH)
+    try:
+        analyze_openapi(json_path)
+    except FileNotFoundError as exc:
+        print(str(exc), file=sys.stderr)
+        sys.exit(1)

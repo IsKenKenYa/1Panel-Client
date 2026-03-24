@@ -10,7 +10,7 @@
 
 ## 功能完整性清单
 
-基于 1PanelV2OpenAPI.json 的 Cronjob 标签共 16 个端点:
+基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 的 Cronjob 标签共 16 个端点:
 
 ### 任务管理
 1. GET /cronjobs - 获取计划任务列表

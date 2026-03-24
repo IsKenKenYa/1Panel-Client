@@ -19,12 +19,26 @@ import 'package:onepanelapp_app/features/apps/apps_page.dart';
 import 'package:onepanelapp_app/features/apps/app_detail_page.dart';
 import 'package:onepanelapp_app/features/apps/installed_app_detail_page.dart';
 import 'package:onepanelapp_app/data/models/app_models.dart';
+import 'package:onepanelapp_app/features/websites/websites_page.dart';
+import 'package:onepanelapp_app/features/websites/website_detail_page.dart';
+import 'package:onepanelapp_app/features/websites/website_domain_page.dart';
+import 'package:onepanelapp_app/features/websites/pages/website_create_flow_page.dart';
+import 'package:onepanelapp_app/features/websites/pages/website_config_center_page.dart';
+import 'package:onepanelapp_app/features/websites/pages/website_routing_rules_page.dart';
+import 'package:onepanelapp_app/features/websites/pages/website_security_access_page.dart';
+import 'package:onepanelapp_app/features/websites/pages/website_site_ssl_page.dart';
+import 'package:onepanelapp_app/features/websites/pages/website_ssl_center_page.dart';
+import 'package:onepanelapp_app/features/websites/pages/website_certificate_detail_page.dart';
+import 'package:onepanelapp_app/features/openresty/openresty_page.dart';
+import 'package:onepanelapp_app/features/openresty/pages/openresty_source_editor_page.dart';
+import 'package:onepanelapp_app/features/openresty/providers/openresty_provider.dart';
+import 'package:onepanelapp_app/features/settings/ssl_settings_page.dart';
+import 'package:provider/provider.dart';
 
 import 'package:onepanelapp_app/features/containers/container_detail_page.dart';
 import 'package:onepanelapp_app/features/containers/container_create_page.dart';
 import 'package:onepanelapp_app/data/models/container_models.dart';
 import 'package:onepanelapp_app/features/orchestration/orchestration_page.dart';
-import 'package:onepanelapp_app/features/websites/websites_page.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -48,6 +62,19 @@ class AppRoutes {
   static const String installedAppDetail = '/installed-app-detail';
   static const String containerDetail = '/container-detail';
   static const String orchestration = '/orchestration';
+  static const String websites = '/websites';
+  static const String websiteDetail = '/website-detail';
+  static const String websiteCreate = '/website-create';
+  static const String websiteConfigCenter = '/website-config-center';
+  static const String websiteRoutingRules = '/website-routing-rules';
+  static const String websiteSecurityAccess = '/website-security-access';
+  static const String websiteDomains = '/website-domains';
+  static const String websiteSiteSsl = '/website-site-ssl';
+  static const String websiteSslCenter = '/website-ssl-center';
+  static const String websiteCertificateDetail = '/website-certificate-detail';
+  static const String openrestyCenter = '/openresty';
+  static const String openrestySourceEditor = '/openresty-source-editor';
+  static const String panelSsl = '/panel-ssl';
 }
 
 class AppRouter {
@@ -149,6 +176,137 @@ class AppRouter {
 
       case AppRoutes.orchestration:
         return MaterialPageRoute(builder: (_) => const OrchestrationPage());
+      case AppRoutes.websites:
+        return MaterialPageRoute(builder: (_) => const WebsitesPage());
+
+      case AppRoutes.websiteCreate:
+        return MaterialPageRoute(builder: (_) => const WebsiteCreateFlowPage());
+
+      case AppRoutes.websiteDetail:
+        {
+          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final websiteId = arg['websiteId'] as int?;
+          if (websiteId == null) {
+            return MaterialPageRoute(builder: (_) => const NotFoundPage());
+          }
+          return MaterialPageRoute(
+            builder: (_) => WebsiteDetailPage(websiteId: websiteId),
+          );
+        }
+
+      case AppRoutes.websiteConfigCenter:
+        {
+          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final websiteId = arg['websiteId'] as int?;
+          if (websiteId == null) {
+            return MaterialPageRoute(builder: (_) => const NotFoundPage());
+          }
+          return MaterialPageRoute(
+            builder: (_) => WebsiteConfigCenterPage(
+              websiteId: websiteId,
+              displayName: arg['displayName'] as String?,
+            ),
+          );
+        }
+
+      case AppRoutes.websiteRoutingRules:
+        {
+          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final websiteId = arg['websiteId'] as int?;
+          if (websiteId == null) {
+            return MaterialPageRoute(builder: (_) => const NotFoundPage());
+          }
+          return MaterialPageRoute(
+            builder: (_) => WebsiteRoutingRulesPage(
+              websiteId: websiteId,
+              displayName: arg['displayName'] as String?,
+            ),
+          );
+        }
+
+      case AppRoutes.websiteSecurityAccess:
+        {
+          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final websiteId = arg['websiteId'] as int?;
+          if (websiteId == null) {
+            return MaterialPageRoute(builder: (_) => const NotFoundPage());
+          }
+          return MaterialPageRoute(
+            builder: (_) => WebsiteSecurityAccessPage(
+              websiteId: websiteId,
+              displayName: arg['displayName'] as String?,
+            ),
+          );
+        }
+
+      case AppRoutes.websiteDomains:
+        {
+          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final websiteId = arg['websiteId'] as int?;
+          if (websiteId == null) {
+            return MaterialPageRoute(builder: (_) => const NotFoundPage());
+          }
+          return MaterialPageRoute(
+            builder: (_) => WebsiteDomainPage(
+              websiteId: websiteId,
+              primaryDomain: arg['primaryDomain'] as String?,
+            ),
+          );
+        }
+
+      case AppRoutes.websiteSiteSsl:
+        {
+          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final websiteId = arg['websiteId'] as int?;
+          if (websiteId == null) {
+            return MaterialPageRoute(builder: (_) => const NotFoundPage());
+          }
+          return MaterialPageRoute(
+            builder: (_) => WebsiteSiteSslPage(
+              websiteId: websiteId,
+              displayName: arg['displayName'] as String?,
+            ),
+          );
+        }
+
+      case AppRoutes.websiteSslCenter:
+        {
+          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          return MaterialPageRoute(
+            builder: (_) => WebsiteSslCenterPage(
+              initialWebsiteId: arg['websiteId'] as int?,
+            ),
+          );
+        }
+
+      case AppRoutes.websiteCertificateDetail:
+        {
+          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final certificateId = arg['certificateId'] as int?;
+          if (certificateId == null) {
+            return MaterialPageRoute(builder: (_) => const NotFoundPage());
+          }
+          return MaterialPageRoute(
+            builder: (_) =>
+                WebsiteCertificateDetailPage(certificateId: certificateId),
+          );
+        }
+
+      case AppRoutes.panelSsl:
+        return MaterialPageRoute(builder: (_) => const SslSettingsPage());
+
+      case AppRoutes.openrestySourceEditor:
+        {
+          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          return MaterialPageRoute(
+            builder: (_) => ChangeNotifierProvider(
+              create: (_) => OpenRestyProvider()..loadAll(),
+              child: OpenRestySourceEditorPage(
+                initialContent: arg['initialContent'] as String?,
+              ),
+            ),
+          );
+        }
 
       case '/containers':
         return MaterialPageRoute(
@@ -166,12 +324,10 @@ class AppRouter {
       case '/container-create':
         return MaterialPageRoute(builder: (_) => const ContainerCreatePage());
 
-      // Legacy routes redirect to the new shell.
-      case '/websites':
-        return MaterialPageRoute(builder: (_) => const WebsitesPage());
+      case AppRoutes.openrestyCenter:
+        return MaterialPageRoute(builder: (_) => const OpenRestyPage());
       case '/backups':
       case '/help':
-      case '/website-create':
         return MaterialPageRoute(builder: (_) => const LegacyRedirectPage());
       default:
         return MaterialPageRoute(builder: (_) => const NotFoundPage());

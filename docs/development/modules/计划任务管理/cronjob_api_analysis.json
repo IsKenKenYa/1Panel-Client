@@ -1,0 +1,466 @@
+{
+  "module": "cronjob",
+  "generatedAt": "2026-03-23T18:47:55.154636",
+  "summary": {
+    "endpointCount": 16,
+    "methodCount": 16
+  },
+  "endpoints": [
+    {
+      "path": "/cronjobs",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create cronjob",
+          "description": "",
+          "tags": [
+            "Cronjob"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/cronjobs/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete cronjob",
+          "description": "",
+          "tags": [
+            "Cronjob"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/cronjobs/export",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Export cronjob list",
+          "description": "",
+          "tags": [
+            "Cronjob"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/cronjobs/group/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update cronjob group",
+          "description": "",
+          "tags": [
+            "Cronjob"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/cronjobs/handle",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Handle cronjob once",
+          "description": "",
+          "tags": [
+            "Cronjob"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/cronjobs/import",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Import cronjob list",
+          "description": "",
+          "tags": [
+            "Cronjob"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/cronjobs/load/info",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load cronjob info",
+          "description": "",
+          "tags": [
+            "Cronjob"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/cronjobs/next",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load cronjob spec time",
+          "description": "",
+          "tags": [
+            "Cronjob"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/cronjobs/records/clean",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Clean job records",
+          "description": "",
+          "tags": [
+            "Cronjob"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/cronjobs/records/log",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load Cronjob record log",
+          "description": "",
+          "tags": [
+            "Cronjob"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/cronjobs/script/options",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Load script options",
+          "description": "",
+          "tags": [
+            "Cronjob"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/cronjobs/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page cronjobs",
+          "description": "",
+          "tags": [
+            "Cronjob"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/cronjobs/search/records",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page job records",
+          "description": "",
+          "tags": [
+            "Cronjob"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/cronjobs/status",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update cronjob status",
+          "description": "",
+          "tags": [
+            "Cronjob"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/cronjobs/stop",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Handle stop job",
+          "description": "",
+          "tags": [
+            "Cronjob"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/cronjobs/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update cronjob",
+          "description": "",
+          "tags": [
+            "Cronjob"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    }
+  ]
+}

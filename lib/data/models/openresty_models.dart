@@ -2,93 +2,447 @@ import 'package:equatable/equatable.dart';
 
 /// OpenResty status model
 class OpenrestyStatus extends Equatable {
-  final bool isRunning;
-  final String? version;
-  final String? nginxVersion;
-  final int? workerProcesses;
-  final int? activeConnections;
   final int? accepts;
+  final int? active;
   final int? handled;
   final int? requests;
   final int? reading;
   final int? writing;
   final int? waiting;
-  final String? configPath;
-  final String? logPath;
-  final String? errorLogPath;
 
   const OpenrestyStatus({
-    required this.isRunning,
-    this.version,
-    this.nginxVersion,
-    this.workerProcesses,
-    this.activeConnections,
     this.accepts,
+    this.active,
     this.handled,
     this.requests,
     this.reading,
     this.writing,
     this.waiting,
-    this.configPath,
-    this.logPath,
-    this.errorLogPath,
   });
 
   factory OpenrestyStatus.fromJson(Map<String, dynamic> json) {
     return OpenrestyStatus(
-      isRunning: json['isRunning'] as bool? ?? false,
-      version: json['version'] as String?,
-      nginxVersion: json['nginxVersion'] as String?,
-      workerProcesses: json['workerProcesses'] as int?,
-      activeConnections: json['activeConnections'] as int?,
       accepts: json['accepts'] as int?,
+      active: json['active'] as int?,
       handled: json['handled'] as int?,
       requests: json['requests'] as int?,
       reading: json['reading'] as int?,
       writing: json['writing'] as int?,
       waiting: json['waiting'] as int?,
-      configPath: json['configPath'] as String?,
-      logPath: json['logPath'] as String?,
-      errorLogPath: json['errorLogPath'] as String?,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'isRunning': isRunning,
-      'version': version,
-      'nginxVersion': nginxVersion,
-      'workerProcesses': workerProcesses,
-      'activeConnections': activeConnections,
       'accepts': accepts,
+      'active': active,
       'handled': handled,
       'requests': requests,
       'reading': reading,
       'writing': writing,
       'waiting': waiting,
-      'configPath': configPath,
-      'logPath': logPath,
-      'errorLogPath': errorLogPath,
     };
   }
 
   @override
   List<Object?> get props => [
-        isRunning,
-        version,
-        nginxVersion,
-        workerProcesses,
-        activeConnections,
         accepts,
+        active,
         handled,
         requests,
         reading,
         writing,
         waiting,
-        configPath,
-        logPath,
-        errorLogPath,
       ];
+}
+
+class OpenrestyFile extends Equatable {
+  final String? content;
+
+  const OpenrestyFile({this.content});
+
+  factory OpenrestyFile.fromJson(Map<String, dynamic> json) {
+    return OpenrestyFile(
+      content: json['content'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'content': content,
+    };
+  }
+
+  @override
+  List<Object?> get props => [content];
+}
+
+class OpenrestyHttpsConfig extends Equatable {
+  final bool? https;
+  final bool? sslRejectHandshake;
+
+  const OpenrestyHttpsConfig({
+    this.https,
+    this.sslRejectHandshake,
+  });
+
+  factory OpenrestyHttpsConfig.fromJson(Map<String, dynamic> json) {
+    return OpenrestyHttpsConfig(
+      https: json['https'] as bool?,
+      sslRejectHandshake: json['sslRejectHandshake'] as bool?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'https': https,
+      'sslRejectHandshake': sslRejectHandshake,
+    };
+  }
+
+  @override
+  List<Object?> get props => [https, sslRejectHandshake];
+}
+
+class OpenrestyModule extends Equatable {
+  final bool? enable;
+  final String? name;
+  final String? packages;
+  final String? params;
+  final String? script;
+
+  const OpenrestyModule({
+    this.enable,
+    this.name,
+    this.packages,
+    this.params,
+    this.script,
+  });
+
+  factory OpenrestyModule.fromJson(Map<String, dynamic> json) {
+    return OpenrestyModule(
+      enable: json['enable'] as bool?,
+      name: json['name'] as String?,
+      packages: json['packages'] as String?,
+      params: json['params'] as String?,
+      script: json['script'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'enable': enable,
+      'name': name,
+      'packages': packages,
+      'params': params,
+      'script': script,
+    };
+  }
+
+  @override
+  List<Object?> get props => [enable, name, packages, params, script];
+}
+
+class OpenrestyBuildConfig extends Equatable {
+  final String? mirror;
+  final List<OpenrestyModule> modules;
+
+  const OpenrestyBuildConfig({
+    this.mirror,
+    this.modules = const [],
+  });
+
+  factory OpenrestyBuildConfig.fromJson(Map<String, dynamic> json) {
+    return OpenrestyBuildConfig(
+      mirror: json['mirror'] as String?,
+      modules: (json['modules'] as List?)
+              ?.whereType<Map<String, dynamic>>()
+              .map(OpenrestyModule.fromJson)
+              .toList() ??
+          const [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'mirror': mirror,
+      'modules': modules.map((e) => e.toJson()).toList(),
+    };
+  }
+
+  @override
+  List<Object?> get props => [mirror, modules];
+}
+
+class OpenrestyParam extends Equatable {
+  final String? name;
+  final List<String> params;
+
+  const OpenrestyParam({
+    this.name,
+    this.params = const [],
+  });
+
+  factory OpenrestyParam.fromJson(Map<String, dynamic> json) {
+    return OpenrestyParam(
+      name: json['name'] as String?,
+      params: (json['params'] as List?)?.whereType<String>().toList() ?? const [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'params': params,
+    };
+  }
+
+  @override
+  List<Object?> get props => [name, params];
+}
+
+enum NginxKey {
+  indexKey('index'),
+  limitConn('limit-conn'),
+  ssl('ssl'),
+  cache('cache'),
+  httpPer('http-per'),
+  proxyCache('proxy-cache');
+
+  const NginxKey(this.value);
+
+  final String value;
+
+  static NginxKey fromString(String value) {
+    return NginxKey.values.firstWhere(
+      (e) => e.value == value,
+      orElse: () => NginxKey.indexKey,
+    );
+  }
+}
+
+class OpenrestyBuildRequest extends Equatable {
+  final String mirror;
+  final String taskId;
+
+  const OpenrestyBuildRequest({
+    required this.mirror,
+    required this.taskId,
+  });
+
+  factory OpenrestyBuildRequest.fromJson(Map<String, dynamic> json) {
+    return OpenrestyBuildRequest(
+      mirror: json['mirror'] as String,
+      taskId: json['taskID'] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'mirror': mirror,
+      'taskID': taskId,
+    };
+  }
+
+  @override
+  List<Object?> get props => [mirror, taskId];
+}
+
+class OpenrestyConfigFileUpdateRequest extends Equatable {
+  final String content;
+  final bool? backup;
+
+  const OpenrestyConfigFileUpdateRequest({
+    required this.content,
+    this.backup,
+  });
+
+  factory OpenrestyConfigFileUpdateRequest.fromJson(Map<String, dynamic> json) {
+    return OpenrestyConfigFileUpdateRequest(
+      content: json['content'] as String,
+      backup: json['backup'] as bool?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'content': content,
+      if (backup != null) 'backup': backup,
+    };
+  }
+
+  @override
+  List<Object?> get props => [content, backup];
+}
+
+enum OpenrestyDefaultHttpsOperate {
+  enable('enable'),
+  disable('disable');
+
+  const OpenrestyDefaultHttpsOperate(this.value);
+
+  final String value;
+}
+
+class OpenrestyDefaultHttpsUpdateRequest extends Equatable {
+  final OpenrestyDefaultHttpsOperate operate;
+  final bool? sslRejectHandshake;
+
+  const OpenrestyDefaultHttpsUpdateRequest({
+    required this.operate,
+    this.sslRejectHandshake,
+  });
+
+  factory OpenrestyDefaultHttpsUpdateRequest.fromJson(Map<String, dynamic> json) {
+    return OpenrestyDefaultHttpsUpdateRequest(
+      operate: OpenrestyDefaultHttpsOperate.values.firstWhere(
+        (e) => e.value == json['operate'],
+        orElse: () => OpenrestyDefaultHttpsOperate.enable,
+      ),
+      sslRejectHandshake: json['sslRejectHandshake'] as bool?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'operate': operate.value,
+      if (sslRejectHandshake != null) 'sslRejectHandshake': sslRejectHandshake,
+    };
+  }
+
+  @override
+  List<Object?> get props => [operate, sslRejectHandshake];
+}
+
+enum OpenrestyModuleOperate {
+  create('create'),
+  delete('delete'),
+  update('update');
+
+  const OpenrestyModuleOperate(this.value);
+
+  final String value;
+}
+
+class OpenrestyModuleUpdateRequest extends Equatable {
+  final String name;
+  final OpenrestyModuleOperate operate;
+  final bool? enable;
+  final String? packages;
+  final String? params;
+  final String? script;
+
+  const OpenrestyModuleUpdateRequest({
+    required this.name,
+    required this.operate,
+    this.enable,
+    this.packages,
+    this.params,
+    this.script,
+  });
+
+  factory OpenrestyModuleUpdateRequest.fromJson(Map<String, dynamic> json) {
+    return OpenrestyModuleUpdateRequest(
+      name: json['name'] as String,
+      operate: OpenrestyModuleOperate.values.firstWhere(
+        (e) => e.value == json['operate'],
+        orElse: () => OpenrestyModuleOperate.update,
+      ),
+      enable: json['enable'] as bool?,
+      packages: json['packages'] as String?,
+      params: json['params'] as String?,
+      script: json['script'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'operate': operate.value,
+      if (enable != null) 'enable': enable,
+      if (packages != null) 'packages': packages,
+      if (params != null) 'params': params,
+      if (script != null) 'script': script,
+    };
+  }
+
+  @override
+  List<Object?> get props => [name, operate, enable, packages, params, script];
+}
+
+class OpenrestyScopeRequest extends Equatable {
+  final NginxKey scope;
+  final int? websiteId;
+
+  const OpenrestyScopeRequest({
+    required this.scope,
+    this.websiteId,
+  });
+
+  factory OpenrestyScopeRequest.fromJson(Map<String, dynamic> json) {
+    return OpenrestyScopeRequest(
+      scope: NginxKey.fromString(json['scope'] as String),
+      websiteId: json['websiteId'] as int?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'scope': scope.value,
+      if (websiteId != null) 'websiteId': websiteId,
+    };
+  }
+
+  @override
+  List<Object?> get props => [scope, websiteId];
+}
+
+enum OpenrestyConfigOperate {
+  add('add'),
+  update('update'),
+  delete('delete');
+
+  const OpenrestyConfigOperate(this.value);
+
+  final String value;
+}
+
+class OpenrestyConfigUpdateRequest extends Equatable {
+  final OpenrestyConfigOperate operate;
+  final dynamic params;
+  final NginxKey? scope;
+  final int? websiteId;
+
+  const OpenrestyConfigUpdateRequest({
+    required this.operate,
+    this.params,
+    this.scope,
+    this.websiteId,
+  });
+
+  factory OpenrestyConfigUpdateRequest.fromJson(Map<String, dynamic> json) {
+    return OpenrestyConfigUpdateRequest(
+      operate: OpenrestyConfigOperate.values.firstWhere(
+        (e) => e.value == json['operate'],
+        orElse: () => OpenrestyConfigOperate.update,
+      ),
+      params: json['params'],
+      scope: json['scope'] is String ? NginxKey.fromString(json['scope'] as String) : null,
+      websiteId: json['websiteId'] as int?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'operate': operate.value,
+      if (params != null) 'params': params,
+      if (scope != null) 'scope': scope!.value,
+      if (websiteId != null) 'websiteId': websiteId,
+    };
+  }
+
+  @override
+  List<Object?> get props => [operate, params, scope, websiteId];
 }
 
 /// OpenResty configuration model

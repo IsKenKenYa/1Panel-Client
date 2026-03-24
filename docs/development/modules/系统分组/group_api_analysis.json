@@ -1,0 +1,350 @@
+{
+  "module": "group",
+  "generatedAt": "2026-03-23T18:47:55.851114",
+  "summary": {
+    "endpointCount": 12,
+    "methodCount": 12
+  },
+  "endpoints": [
+    {
+      "path": "/core/groups",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create group",
+          "description": "",
+          "tags": [
+            "System Group"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/groups/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete group",
+          "description": "",
+          "tags": [
+            "System Group"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/groups/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "List groups",
+          "description": "",
+          "tags": [
+            "System Group"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/groups/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update group",
+          "description": "",
+          "tags": [
+            "System Group"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/hosts/update/group",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update host group",
+          "description": "",
+          "tags": [
+            "Host"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/cronjobs/group/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update cronjob group",
+          "description": "",
+          "tags": [
+            "Cronjob"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/files/user/group",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "system user and group",
+          "description": "",
+          "tags": [
+            "File"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/groups",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create group",
+          "description": "",
+          "tags": [
+            "System Group"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/groups/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete group",
+          "description": "",
+          "tags": [
+            "System Group"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/groups/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "List groups",
+          "description": "",
+          "tags": [
+            "System Group"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/groups/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update group",
+          "description": "",
+          "tags": [
+            "System Group"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/batch/group",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Batch set website group",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    }
+  ]
+}

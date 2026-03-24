@@ -1,0 +1,263 @@
+{
+  "module": "openresty",
+  "generatedAt": "2026-03-13T16:42:21.478513",
+  "summary": {
+    "endpointCount": 9,
+    "methodCount": 10
+  },
+  "endpoints": [
+    {
+      "path": "/openresty",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Load OpenResty conf",
+          "description": "",
+          "tags": [
+            "OpenResty"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/openresty/build",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Build OpenResty",
+          "description": "",
+          "tags": [
+            "OpenResty"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/openresty/file",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update OpenResty conf by upload file",
+          "description": "",
+          "tags": [
+            "OpenResty"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/openresty/https",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get default HTTPs status",
+          "description": "",
+          "tags": [
+            "OpenResty"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        },
+        {
+          "method": "POST",
+          "summary": "Operate default HTTPs",
+          "description": "",
+          "tags": [
+            "OpenResty"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/openresty/modules",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get OpenResty modules",
+          "description": "",
+          "tags": [
+            "OpenResty"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/openresty/modules/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update OpenResty module",
+          "description": "",
+          "tags": [
+            "OpenResty"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/openresty/scope",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load partial OpenResty conf",
+          "description": "",
+          "tags": [
+            "OpenResty"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/openresty/status",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Load OpenResty status info",
+          "description": "",
+          "tags": [
+            "OpenResty"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/openresty/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update OpenResty conf",
+          "description": "",
+          "tags": [
+            "OpenResty"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    }
+  ]
+}

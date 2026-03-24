@@ -10,7 +10,7 @@
 
 ## API端点规范
 
-基于 1PanelV2OpenAPI.json 的 Monitor 标签：
+基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 的 Monitor 标签：
 
 ### POST /hosts/monitor/search
 

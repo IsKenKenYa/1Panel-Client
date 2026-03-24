@@ -40,7 +40,6 @@ class AuthInterceptor extends Interceptor {
     });
 
     _logger.d('[network] 1Panel auth headers added for ${options.path}');
-    _logger.d('[network] Timestamp: $timestamp, Token: $authToken');
     super.onRequest(options, handler);
   }
 
@@ -59,8 +58,6 @@ class AuthInterceptor extends Interceptor {
       final digest = md5.convert(bytes);
 
       final authToken = digest.toString();
-      _logger.d('[network] Generated 1Panel auth token: MD5("$authString") = $authToken');
-
       return authToken;
     } catch (e) {
       _logger.e('[network] Failed to generate 1Panel auth token: $e');

@@ -1,0 +1,428 @@
+{
+  "module": "ssl",
+  "generatedAt": "2026-02-24T01:55:10.165414",
+  "summary": {
+    "endpointCount": 14,
+    "methodCount": 14
+  },
+  "endpoints": [
+    {
+      "path": "/core/settings/ssl/download",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Download system cert",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/settings/ssl/info",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Load system cert info",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/settings/ssl/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update system ssl",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create website ssl",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl/:id",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Search website ssl by id",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete website ssl",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl/download",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Download SSL  file",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl/obtain",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Apply  ssl",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl/resolve",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Resolve website ssl",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page website ssl",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update ssl",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl/upload",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Upload ssl",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl/upload/file",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Upload SSL file",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "type",
+              "in": "formData",
+              "required": true,
+              "type": "unknown",
+              "description": "type"
+            },
+            {
+              "name": "description",
+              "in": "formData",
+              "required": false,
+              "type": "unknown",
+              "description": "description"
+            },
+            {
+              "name": "sslID",
+              "in": "formData",
+              "required": false,
+              "type": "unknown",
+              "description": "sslID"
+            },
+            {
+              "name": "privateKeyFile",
+              "in": "formData",
+              "required": true,
+              "type": "unknown",
+              "description": "privateKeyFile"
+            },
+            {
+              "name": "certificateFile",
+              "in": "formData",
+              "required": true,
+              "type": "unknown",
+              "description": "certificateFile"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl/website/:websiteId",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Search website ssl by website id",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "websiteId",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    }
+  ]
+}

@@ -9,6 +9,7 @@ import 'package:onepanelapp_app/features/server/server_form_page.dart';
 import 'package:onepanelapp_app/features/server/server_models.dart';
 import 'package:onepanelapp_app/features/server/server_provider.dart';
 import 'package:onepanelapp_app/features/shell/controllers/current_server_controller.dart';
+import 'package:onepanelapp_app/features/shell/widgets/shell_drawer_scope.dart';
 
 class ServerListPage extends StatefulWidget {
   const ServerListPage({
@@ -121,8 +122,19 @@ class _ServerListPageState extends State<ServerListPage> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final provider = context.watch<ServerProvider>();
+    final canPop = Navigator.of(context).canPop();
     return Scaffold(
       appBar: AppBar(
+        leading: canPop
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => Navigator.of(context).maybePop(),
+                tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+              )
+            : buildShellDrawerLeading(
+                context,
+                key: const Key('shell-drawer-menu-button'),
+              ),
         title: Text(l10n.serverPageTitle),
         actions: [
           IconButton(

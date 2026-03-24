@@ -33,10 +33,13 @@ class MockFilesProvider extends FilesProvider {
   Future<void> copyFile(String sourcePath, String targetPath) async {}
 
   @override
-  Future<void> extractFile(String path, String dst, String type, {String? secret}) async {}
+  Future<void> extractFile(String path, String dst, String type,
+      {String? secret}) async {}
 
   @override
-  Future<void> compressFiles(List<String> files, String dst, String name, String type, {String? secret}) async {}
+  Future<void> compressFiles(
+      List<String> files, String dst, String name, String type,
+      {String? secret}) async {}
 
   @override
   Future<void> deleteSelected() async {}
@@ -66,16 +69,40 @@ class MockFilesProvider extends FilesProvider {
   Future<void> loadFiles({String? path}) async {}
 
   @override
-  Future<void> wgetDownload({required String url, required String name, bool? ignoreCertificate}) async {}
+  Future<void> wgetDownload(
+      {required String url,
+      required String name,
+      bool? ignoreCertificate}) async {}
 
   @override
   Future<void> uploadFiles(List<String> filePaths) async {}
+
+  Future<FilePermission> getFilePermission(String path) async {
+    return FilePermission(
+      path: path,
+      permission: '755',
+      user: 'root',
+      group: 'root',
+    );
+  }
+
+  @override
+  Future<FileUserGroupResponse> getUserGroup() async {
+    return const FileUserGroupResponse(
+      users: [
+        FileUserGroup(user: 'root', group: 'root'),
+        FileUserGroup(user: 'www-data', group: 'www-data'),
+      ],
+      groups: ['root', 'www-data', 'users'],
+    );
+  }
 
   @override
   Future<void> changeFileMode(String path, int mode, {bool? sub}) async {}
 
   @override
-  Future<void> changeFileOwner(String path, String user, String group, {bool? sub}) async {}
+  Future<void> changeFileOwner(String path, String user, String group,
+      {bool? sub}) async {}
 
   @override
   Future<void> addToFavorites(FileInfo file) async {}

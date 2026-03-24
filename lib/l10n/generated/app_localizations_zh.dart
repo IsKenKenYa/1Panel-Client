@@ -33,6 +33,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get commonMore => '更多';
 
   @override
+  String get commonAdd => '添加';
+
+  @override
+  String get commonEdit => '编辑';
+
+  @override
+  String get commonLoad => '加载';
+
+  @override
   String get commonSave => '保存';
 
   @override
@@ -43,6 +52,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get commonDelete => '删除';
+
+  @override
+  String get commonUpload => '上传';
 
   @override
   String get commonRefresh => '刷新';
@@ -58,6 +70,409 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get commonLoadFailedTitle => '加载失败';
+
+  @override
+  String get websitesPageTitle => '网站管理';
+
+  @override
+  String get websitesStatsTitle => '网站统计';
+
+  @override
+  String get websitesStatsTotal => '总数';
+
+  @override
+  String get websitesStatsRunning => '运行中';
+
+  @override
+  String get websitesStatsStopped => '已停止';
+
+  @override
+  String get websitesEmptyTitle => '暂无网站';
+
+  @override
+  String get websitesEmptySubtitle => '请先在 1Panel 中创建网站。';
+
+  @override
+  String get websitesUnknownDomain => '未知网站';
+
+  @override
+  String get websitesStatusLabel => '状态';
+
+  @override
+  String get websitesTypeLabel => '类型';
+
+  @override
+  String get websitesStatusRunning => '运行中';
+
+  @override
+  String get websitesStatusStopped => '已停止';
+
+  @override
+  String get websitesActionStart => '启动';
+
+  @override
+  String get websitesActionStop => '停止';
+
+  @override
+  String get websitesActionRestart => '重启';
+
+  @override
+  String get websitesActionDelete => '删除';
+
+  @override
+  String get websitesOperateSuccess => '操作成功';
+
+  @override
+  String get websitesOperateFailed => '操作失败';
+
+  @override
+  String websitesLoadFailedMessage(String error) {
+    return '$error';
+  }
+
+  @override
+  String get websitesDefaultName => 'default';
+
+  @override
+  String get websitesDeleteTitle => '删除网站';
+
+  @override
+  String websitesDeleteMessage(String domain) {
+    return '确定要删除 $domain 吗？此操作不可撤销。';
+  }
+
+  @override
+  String get websitesDeleteSuccess => '网站已删除';
+
+  @override
+  String get websitesDetailTitle => '网站';
+
+  @override
+  String get websitesTabOverview => '概览';
+
+  @override
+  String get websitesTabConfig => '配置';
+
+  @override
+  String get websitesTabDomains => '域名';
+
+  @override
+  String get websitesTabSsl => 'SSL';
+
+  @override
+  String get websitesTabRewrite => '伪静态';
+
+  @override
+  String get websitesTabProxy => '反向代理';
+
+  @override
+  String get websitesSslInfoTitle => '证书';
+
+  @override
+  String get websitesSslNoCert => '未绑定证书';
+
+  @override
+  String get websitesSslPrimaryDomain => '主域名';
+
+  @override
+  String get websitesSslExpireDate => '到期时间';
+
+  @override
+  String get websitesSslStatus => '状态';
+
+  @override
+  String get websitesSslAutoRenew => '自动续期';
+
+  @override
+  String get websitesSslDownload => '下载';
+
+  @override
+  String get websitesConfigHint => 'Nginx 配置内容';
+
+  @override
+  String get websitesJsonHint => 'JSON 内容';
+
+  @override
+  String get websitesDomainAddTitle => '添加域名';
+
+  @override
+  String get websitesDomainLabel => '域名';
+
+  @override
+  String get websitesDomainEmpty => '暂无域名';
+
+  @override
+  String get websitesDomainDefault => '默认';
+
+  @override
+  String get websitesDomainSslLabel => 'SSL';
+
+  @override
+  String get websitesRewriteNameLabel => '规则名称';
+
+  @override
+  String get websitesRewriteHint => '伪静态内容';
+
+  @override
+  String get websitesProxyNameLabel => '代理名称';
+
+  @override
+  String get websitesProxyHint => '代理内容';
+
+  @override
+  String get websitesNginxAdvancedAction => '高级配置';
+
+  @override
+  String get websitesNginxAdvancedTitle => 'Nginx 高级配置';
+
+  @override
+  String get websitesNginxScopeTitle => '范围读取';
+
+  @override
+  String get websitesNginxScopeLabel => '范围';
+
+  @override
+  String get websitesNginxScopeWebsiteIdLabel => '网站 ID（可选）';
+
+  @override
+  String get websitesNginxScopeLoad => '加载范围配置';
+
+  @override
+  String get websitesNginxScopeResultLabel => '范围结果';
+
+  @override
+  String get websitesNginxUpdateTitle => '范围更新';
+
+  @override
+  String get websitesNginxUpdateOperateLabel => '操作类型';
+
+  @override
+  String get websitesNginxUpdateScopeLabel => '范围';
+
+  @override
+  String get websitesNginxUpdateWebsiteIdLabel => '网站 ID（可选）';
+
+  @override
+  String get websitesNginxUpdateParamsLabel => '参数 JSON';
+
+  @override
+  String get websitesNginxUpdateAction => '提交更新';
+
+  @override
+  String get websitesProtocolLabel => '协议';
+
+  @override
+  String get websitesDetailInfoTitle => '站点信息';
+
+  @override
+  String get websitesSitePathLabel => '站点路径';
+
+  @override
+  String get websitesRuntimeLabel => '运行环境';
+
+  @override
+  String get websitesSslStatusLabel => 'SSL 状态';
+
+  @override
+  String get websitesSslExpireLabel => 'SSL 到期';
+
+  @override
+  String get websitesDetailActionsTitle => '快捷操作';
+
+  @override
+  String get websitesConfigPageTitle => '配置管理';
+
+  @override
+  String get websitesConfigPageSubtitle => 'Nginx 配置与 PHP 版本';
+
+  @override
+  String get websitesDomainsPageTitle => '域名管理';
+
+  @override
+  String get websitesDomainsPageSubtitle => '绑定与维护站点域名';
+
+  @override
+  String get websitesSslPageTitle => 'SSL 证书';
+
+  @override
+  String get websitesSslPageSubtitle => '证书配置与 HTTPS';
+
+  @override
+  String get websitesOpenrestySubtitle => '服务状态与模块管理';
+
+  @override
+  String get websitesConfigEditorTitle => 'Nginx 配置文件';
+
+  @override
+  String get websitesConfigScopeTitle => '高级配置';
+
+  @override
+  String get websitesConfigScopeLabel => '配置范围';
+
+  @override
+  String get websitesConfigScopeEmpty => '暂无范围配置';
+
+  @override
+  String websitesConfigScopeEditTitle(String name) {
+    return '编辑 $name 参数';
+  }
+
+  @override
+  String get websitesConfigScopeValuesLabel => '参数列表';
+
+  @override
+  String get websitesConfigScopeValuesHint => '使用逗号分隔多个参数';
+
+  @override
+  String get websitesPhpVersionTitle => 'PHP 版本切换';
+
+  @override
+  String get websitesPhpRuntimeIdLabel => '运行时 ID';
+
+  @override
+  String get websitesPhpRuntimeIdHint => '请输入要切换的 runtimeID';
+
+  @override
+  String get websitesDomainPortLabel => '端口';
+
+  @override
+  String get websitesDomainPrimary => '主域名';
+
+  @override
+  String get websitesSslCreateAction => '创建证书';
+
+  @override
+  String get websitesSslUploadAction => '上传证书';
+
+  @override
+  String get websitesSslListTitle => '证书列表';
+
+  @override
+  String get websitesSslListEmpty => '暂无证书';
+
+  @override
+  String get websitesSslApplyAction => '申请证书';
+
+  @override
+  String get websitesSslResolveAction => '解析证书';
+
+  @override
+  String get websitesSslUpdateAction => '更新证书';
+
+  @override
+  String get websitesSslDeleteTitle => '删除证书';
+
+  @override
+  String websitesSslDeleteMessage(String domain) {
+    return '确定删除 $domain 的证书吗？';
+  }
+
+  @override
+  String get websitesSslAcmeAccountIdLabel => 'ACME 账户 ID';
+
+  @override
+  String get websitesSslProviderLabel => '证书提供商';
+
+  @override
+  String get websitesSslOtherDomainsLabel => '其他域名（逗号分隔）';
+
+  @override
+  String get websitesSslDisableLogLabel => '禁用日志';
+
+  @override
+  String get websitesSslSkipDnsCheckLabel => '跳过 DNS 校验';
+
+  @override
+  String get websitesSslNameserversLabel => 'Nameserver 列表';
+
+  @override
+  String get websitesSslDescriptionLabel => '描述';
+
+  @override
+  String get websitesSslUploadTypeLabel => '上传方式';
+
+  @override
+  String get websitesSslUploadTypePaste => '粘贴内容';
+
+  @override
+  String get websitesSslUploadTypeLocal => '本地路径';
+
+  @override
+  String get websitesSslCertificateLabel => '证书内容';
+
+  @override
+  String get websitesSslPrivateKeyLabel => '私钥内容';
+
+  @override
+  String get websitesSslCertificatePathLabel => '证书路径';
+
+  @override
+  String get websitesSslPrivateKeyPathLabel => '私钥路径';
+
+  @override
+  String get websitesHttpsConfigTitle => 'HTTPS 配置';
+
+  @override
+  String get websitesHttpsEnableLabel => '启用 HTTPS';
+
+  @override
+  String get websitesHttpsModeLabel => 'HTTP 配置模式';
+
+  @override
+  String get websitesHttpsTypeLabel => '证书类型';
+
+  @override
+  String get websitesHttpsSslIdLabel => '证书 ID';
+
+  @override
+  String get websitesSslAutoRenewMissingFields => '证书缺少主域名或提供商信息，无法更新自动续期。';
+
+  @override
+  String websitesSslDownloadHint(String link) {
+    return '证书下载链接：$link';
+  }
+
+  @override
+  String get openrestyPageTitle => 'OpenResty';
+
+  @override
+  String get openrestyTabStatus => '状态';
+
+  @override
+  String get openrestyTabHttps => 'HTTPS';
+
+  @override
+  String get openrestyTabModules => '模块';
+
+  @override
+  String get openrestyTabConfig => '配置';
+
+  @override
+  String get openrestyTabBuild => '构建';
+
+  @override
+  String get openrestyTabScope => '范围';
+
+  @override
+  String get openrestyBuildMirrorLabel => '构建镜像地址';
+
+  @override
+  String get openrestyBuildTaskIdLabel => '任务 ID';
+
+  @override
+  String get openrestyBuildAction => '构建 OpenResty';
+
+  @override
+  String get openrestyScopeLabel => '配置范围';
+
+  @override
+  String get openrestyScopeWebsiteIdLabel => '网站 ID（可选）';
+
+  @override
+  String get openrestyScopeLoad => '加载范围配置';
+
+  @override
+  String get openrestyScopeResultHint => '范围配置结果';
 
   @override
   String get monitorNetworkLabel => '网络';
@@ -95,19 +510,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get noServerSelectedDescription => '请先选择当前服务器，再进入该模块。';
 
   @override
-  String get shellPinnedModulesTitle => '快捷入口';
+  String get shellPinnedModulesTitle => '底部标签';
 
   @override
-  String get shellPinnedModulesDescription => '选择两个模块作为客户端主标签，可随时调整。';
+  String get shellPinnedModulesDescription => '选择 2 个模块固定到底部标签栏，其他模块保留在“更多”中。';
 
   @override
-  String get shellPinnedModulesCustomize => '自定义标签';
+  String get shellPinnedModulesCustomize => '调整标签栏';
 
   @override
-  String get shellPinnedModulesPrimary => '标签位 1';
+  String get shellPinnedModulesPrimary => '标签 1';
 
   @override
-  String get shellPinnedModulesSecondary => '标签位 2';
+  String get shellPinnedModulesSecondary => '标签 2';
 
   @override
   String get moduleSubnavCustomize => '自定义分区';
@@ -451,9 +866,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get commonCreate => '创建';
-
-  @override
-  String get commonEdit => '编辑';
 
   @override
   String get commonName => '名称';

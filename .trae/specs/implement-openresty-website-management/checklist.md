@@ -1,0 +1,10 @@
+- [x] `analyze_module_api.py` runs successfully and JSONs are generated.
+- [x] `flutter analyze` reports no errors in `lib/features/websites/` and `lib/features/openresty/`.
+- [x] Integration test `openresty_api_client_test.dart` passes against live server.
+- [x] Integration test `website_domain_api_client_test.dart` passes against live server.
+- [x] Integration test `website_ssl_api_client_test.dart` passes against live server.
+- [x] Integration test `website_config_api_client_test.dart` passes against live server.
+- [x] Website Detail Page displays Domain, Config, and SSL tabs correctly.
+- [x] OpenResty Page loads and updates configuration correctly.
+- [x] All UI strings are internationalized (no hardcoded strings).
+- [ ] `flutter build apk --debug` completes successfully. (Skipped: Environment requires Developer Mode for symlinks)

@@ -10,7 +10,7 @@
 
 ## 功能完整性清单
 
-基于 1PanelV2OpenAPI.json，工具箱模块共包含 38 个端点:
+基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json，工具箱模块共包含 38 个端点:
 
 ### ClamAV病毒扫描 (12端点)
 1. GET /toolbox/clam - 获取ClamAV状态

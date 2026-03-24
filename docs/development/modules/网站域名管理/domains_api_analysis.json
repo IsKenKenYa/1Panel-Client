@@ -1,0 +1,126 @@
+{
+  "module": "domains",
+  "generatedAt": "2026-03-13T16:41:57.267174",
+  "summary": {
+    "endpointCount": 4,
+    "methodCount": 4
+  },
+  "endpoints": [
+    {
+      "path": "/websites/domains",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create website domain",
+          "description": "",
+          "tags": [
+            "Website Domain"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/domains/:websiteId",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Search website domains by websiteId",
+          "description": "",
+          "tags": [
+            "Website Domain"
+          ],
+          "parameters": [
+            {
+              "name": "websiteId",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/domains/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete website domain",
+          "description": "",
+          "tags": [
+            "Website Domain"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/domains/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update website domain",
+          "description": "",
+          "tags": [
+            "Website Domain"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    }
+  ]
+}

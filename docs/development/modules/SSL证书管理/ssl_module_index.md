@@ -2,7 +2,7 @@
 
 ## 模块定位
 
-SSL证书管理模块是Open1PanelApp的**安全通信模块**，负责SSL/TLS证书的申请、管理、部署和续期。该模块支持Let's Encrypt自动申请、自定义证书上传、证书状态监控等功能，为网站提供HTTPS安全保障。
+SSL证书管理模块是Open1PanelApp的**安全通信模块**，当前主要负责**系统级面板 SSL** 的查看、导入、更新与下载，并承接网站证书体系的共享模型与文档说明。
 
 ### 核心职责
 
@@ -55,9 +55,9 @@ SSL证书管理/
 | `/websites/ssl/update` | POST | 更新证书 | ✅ 已实现 |
 | `/websites/ssl/upload` | POST | 上传证书 | ✅ 已实现 |
 | `/websites/ssl/website/{id}` | GET | 获取网站证书 | ✅ 已实现 |
-| `/websites/ssl/options` | GET | 获取SSL选项 | ✅ 已实现 |
-| `/websites/ssl/validate` | POST | 验证证书配置 | ✅ 已实现 |
-| `/websites/ssl/auto-renew` | POST | 自动续期 | ✅ 已实现 |
+| `/websites/ssl/options` | GET | 获取SSL选项 | ⚠️ 不在当前 Swagger，视为漂移接口 |
+| `/websites/ssl/validate` | POST | 验证证书配置 | ⚠️ 不在当前 Swagger，视为漂移接口 |
+| `/websites/ssl/auto-renew` | POST | 自动续期 | ⚠️ 不在当前 Swagger，视为漂移接口 |
 | `/core/settings/ssl/download` | POST | 下载系统证书 | ✅ 已实现 |
 | `/core/settings/ssl/info` | GET | 获取系统证书 | ✅ 已实现 |
 | `/core/settings/ssl/update` | POST | 更新系统证书 | ✅ 已实现 |
@@ -66,6 +66,17 @@ SSL证书管理/
 
 ### API客户端
 - [ssl_v2.dart](../../../lib/api/v2/ssl_v2.dart) - 17个API方法
+
+### Flutter 页面
+- [panel_ssl_page.dart](../../../lib/features/settings/panel_ssl/pages/panel_ssl_page.dart) - 系统级面板 SSL 管理页
+- [ssl_settings_page.dart](../../../lib/features/settings/ssl_settings_page.dart) - 兼容入口薄包装
+
+## 严格审计状态 (2026-03-20)
+
+- V2 单一文档源已切换到 `docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json`
+- 系统 SSL 页面已经从通用设置中拆成独立 `PanelSslService / PanelSslProvider / PanelSslPage`
+- 网站证书中心与系统 SSL 已在 Flutter 端分流，不再混在同一页面心智模型中
+- `/websites/ssl/options`、`/websites/ssl/validate`、`/websites/ssl/auto-renew` 不在当前 Swagger，后续不作为正式能力面继续扩展
 
 ### 数据模型
 - [ssl_models.dart](../../../lib/data/models/ssl_models.dart) - 完整模型定义
@@ -130,5 +141,5 @@ SSL证书管理/
 ---
 
 **文档版本**: 1.0  
-**最后更新**: 2026-02-14  
+**最后更新**: 2026-03-20  
 **维护者**: Open1Panel开发团队

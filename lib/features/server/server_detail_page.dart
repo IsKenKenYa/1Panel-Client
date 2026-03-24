@@ -146,6 +146,8 @@ class ServerDetailPage extends StatelessWidget {
         return '/containers';
       case ClientModule.apps:
         return '/apps';
+      case ClientModule.websites:
+        return AppRoutes.websites;
       case ClientModule.verification:
         return AppRoutes.securityVerification;
       case ClientModule.servers:

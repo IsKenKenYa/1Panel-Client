@@ -34,6 +34,7 @@ import 'package:onepanelapp_app/features/files/widgets/dialogs/sort_options_dial
 import 'package:onepanelapp_app/features/files/widgets/dialogs/upload_dialog.dart';
 import 'package:onepanelapp_app/features/files/widgets/dialogs/wget_dialog.dart';
 import 'package:onepanelapp_app/features/shell/controllers/current_server_controller.dart';
+import 'package:onepanelapp_app/features/shell/widgets/shell_drawer_scope.dart';
 import 'package:onepanelapp_app/features/shell/widgets/server_switcher_action.dart';
 
 export 'models/models.dart' show WgetDownloadState;

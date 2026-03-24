@@ -5,6 +5,7 @@ const List<ClientModule> kPinnableClientModules = [
   ClientModule.files,
   ClientModule.containers,
   ClientModule.apps,
+  ClientModule.websites,
   ClientModule.verification,
 ];
 
@@ -13,6 +14,7 @@ enum ClientModule {
   files,
   containers,
   apps,
+  websites,
   settings,
   verification,
 }
@@ -38,6 +40,8 @@ extension ClientModuleX on ClientModule {
         return 'containers';
       case ClientModule.apps:
         return 'apps';
+      case ClientModule.websites:
+        return 'websites';
       case ClientModule.settings:
         return 'settings';
       case ClientModule.verification:
@@ -53,6 +57,7 @@ extension ClientModuleX on ClientModule {
       case ClientModule.files:
       case ClientModule.containers:
       case ClientModule.apps:
+      case ClientModule.websites:
       case ClientModule.verification:
         return true;
     }
@@ -70,6 +75,8 @@ extension ClientModuleX on ClientModule {
         return Icons.layers_outlined;
       case ClientModule.apps:
         return Icons.apps_outlined;
+      case ClientModule.websites:
+        return Icons.language_outlined;
       case ClientModule.settings:
         return Icons.settings_outlined;
       case ClientModule.verification:
@@ -87,6 +94,8 @@ extension ClientModuleX on ClientModule {
         return Icons.layers;
       case ClientModule.apps:
         return Icons.apps;
+      case ClientModule.websites:
+        return Icons.language;
       case ClientModule.settings:
         return Icons.settings;
       case ClientModule.verification:
@@ -104,6 +113,8 @@ extension ClientModuleX on ClientModule {
         return l10n.containerManagement;
       case ClientModule.apps:
         return l10n.appsPageTitle;
+      case ClientModule.websites:
+        return l10n.websitesPageTitle;
       case ClientModule.settings:
         return l10n.settingsPageTitle;
       case ClientModule.verification:

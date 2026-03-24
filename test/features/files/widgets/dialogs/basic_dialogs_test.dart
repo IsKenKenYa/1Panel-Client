@@ -16,6 +16,7 @@ import 'package:onepanelapp_app/features/files/widgets/dialogs/search_dialog.dar
 import 'package:onepanelapp_app/features/files/widgets/dialogs/sort_options_dialog.dart';
 import 'package:onepanelapp_app/features/files/models/models.dart';
 import 'package:onepanelapp_app/features/files/files_provider.dart';
+import 'package:onepanelapp_app/l10n/generated/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 class _MockFilesProvider extends FilesProvider {
@@ -48,10 +49,13 @@ class _MockFilesProvider extends FilesProvider {
   Future<void> copyFile(String sourcePath, String targetPath) async {}
 
   @override
-  Future<void> extractFile(String path, String dst, String type, {String? secret}) async {}
+  Future<void> extractFile(String path, String dst, String type,
+      {String? secret}) async {}
 
   @override
-  Future<void> compressFiles(List<String> files, String dst, String name, String type, {String? secret}) async {}
+  Future<void> compressFiles(
+      List<String> files, String dst, String name, String type,
+      {String? secret}) async {}
 
   @override
   Future<void> deleteSelected() async {}
@@ -96,7 +100,8 @@ void main() {
           child: Scaffold(
             body: Builder(
               builder: (context) => TextButton(
-                onPressed: () => showCreateDirectoryDialog(context, context.read<_MockFilesProvider>()),
+                onPressed: () => showCreateDirectoryDialog(
+                    context, context.read<_MockFilesProvider>()),
                 child: const Text('Show Dialog'),
               ),
             ),
@@ -126,7 +131,8 @@ void main() {
           child: Scaffold(
             body: Builder(
               builder: (context) => TextButton(
-                onPressed: () => showCreateFileDialog(context, context.read<_MockFilesProvider>()),
+                onPressed: () => showCreateFileDialog(
+                    context, context.read<_MockFilesProvider>()),
                 child: const Text('Show Dialog'),
               ),
             ),
@@ -294,7 +300,8 @@ void main() {
   });
 
   group('Compress Dialog Tests', () {
-    testWidgets('shows dialog with name and type fields', (WidgetTester tester) async {
+    testWidgets('shows dialog with name and type fields',
+        (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
@@ -325,7 +332,8 @@ void main() {
   });
 
   group('Delete Confirm Dialog Tests', () {
-    testWidgets('shows dialog with selection count', (WidgetTester tester) async {
+    testWidgets('shows dialog with selection count',
+        (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
@@ -355,7 +363,8 @@ void main() {
   });
 
   group('Batch Move Dialog Tests', () {
-    testWidgets('shows dialog with selection count', (WidgetTester tester) async {
+    testWidgets('shows dialog with selection count',
+        (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
@@ -385,7 +394,8 @@ void main() {
   });
 
   group('Batch Copy Dialog Tests', () {
-    testWidgets('shows dialog with selection count', (WidgetTester tester) async {
+    testWidgets('shows dialog with selection count',
+        (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,

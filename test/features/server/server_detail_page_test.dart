@@ -79,8 +79,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(GridView), findsNothing);
-    expect(find.text('Quick Access'), findsOneWidget);
-    expect(find.text('Customize Tabs'), findsOneWidget);
+    expect(find.text('Bottom Tabs'), findsOneWidget);
+    expect(find.text('Edit Tabs'), findsOneWidget);
     expect(find.text('Files'), findsWidgets);
   });
 }

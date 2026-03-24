@@ -5,6 +5,7 @@ import 'package:onepanelapp_app/core/services/app_settings_controller.dart';
 import 'package:onepanelapp_app/core/services/onboarding_service.dart';
 import 'package:onepanelapp_app/core/theme/app_design_tokens.dart';
 import 'package:onepanelapp_app/features/settings/screens/theme_settings_page.dart';
+import 'package:onepanelapp_app/features/shell/widgets/shell_drawer_scope.dart';
 import 'package:onepanelapp_app/pages/settings/cache_settings_page.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -13,9 +14,22 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final canPop = Navigator.of(context).canPop();
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.settingsPageTitle)),
+      appBar: AppBar(
+        leading: canPop
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => Navigator.of(context).maybePop(),
+                tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+              )
+            : buildShellDrawerLeading(
+                context,
+                key: const Key('shell-drawer-menu-button'),
+              ),
+        title: Text(l10n.settingsPageTitle),
+      ),
       body: ListView(
         padding: AppDesignTokens.pagePadding,
         children: [
@@ -118,8 +132,6 @@ class SettingsPage extends StatelessWidget {
     );
   }
 }
-
-
 
 class _LanguageSelector extends StatelessWidget {
   const _LanguageSelector({required this.settings});

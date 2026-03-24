@@ -6,12 +6,14 @@ import 'package:onepanelapp_app/features/containers/containers_page.dart';
 import 'package:onepanelapp_app/features/files/files_page.dart';
 import 'package:onepanelapp_app/features/security/security_verification_page.dart';
 import 'package:onepanelapp_app/features/server/server_list_page.dart';
+import 'package:onepanelapp_app/features/websites/websites_page.dart';
 import 'package:onepanelapp_app/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanelapp_app/features/shell/controllers/pinned_modules_controller.dart';
 import 'package:onepanelapp_app/features/shell/models/client_module.dart';
 import 'package:onepanelapp_app/features/shell/widgets/adaptive_shell_navigation_widget.dart';
 import 'package:onepanelapp_app/features/shell/widgets/mobile_more_modules_drawer.dart';
 import 'package:onepanelapp_app/features/shell/widgets/no_server_selected_state.dart';
+import 'package:onepanelapp_app/features/shell/widgets/shell_drawer_scope.dart';
 import 'package:onepanelapp_app/features/shell/widgets/server_switcher_action.dart';
 import 'package:onepanelapp_app/pages/settings/settings_page.dart';
 import 'package:onepanelapp_app/widgets/navigation/app_bottom_navigation_bar.dart';
@@ -158,32 +160,23 @@ class _AppShellPageState extends State<AppShellPage> {
           drawerEnableOpenDragGesture: true,
           drawer: MobileMoreModulesDrawer(
             modules: moreModules,
+            pinnedModules: pinnedModules.pins,
             selectedModule: selectedModule,
             hasServer: currentServer.hasServer,
             onClose: () => Navigator.of(context).maybePop(),
+            onManageServers: () {
+              Navigator.of(context).maybePop();
+              _handleModuleSelection(
+                  ClientModule.servers, currentServer.hasServer);
+            },
             onModuleTap: (module) {
               Navigator.of(context).maybePop();
               _openStandaloneModule(module, currentServer.hasServer);
             },
           ),
-          body: Stack(
-            children: [
-              body,
-              if (moreModules.isNotEmpty)
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: SafeArea(
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 86),
-                      child: MobileMoreModulesHandle(
-                        key: const Key('shell-more-modules-handle'),
-                        onTap: () =>
-                            _mobileScaffoldKey.currentState?.openDrawer(),
-                      ),
-                    ),
-                  ),
-                ),
-            ],
+          body: ShellDrawerScope(
+            openDrawer: () => _mobileScaffoldKey.currentState?.openDrawer(),
+            child: body,
           ),
           bottomNavigationBar: AppBottomNavigationBar(
             currentIndex: selectedIndex,
@@ -224,6 +217,15 @@ class _AppShellPageState extends State<AppShellPage> {
         return KeyedSubtree(
           key: ValueKey('apps:$serverId'),
           child: const AppsPage(),
+        );
+      case ClientModule.websites:
+        if (serverId == null) {
+          return NoServerSelectedState(
+              moduleName: context.l10n.websitesPageTitle);
+        }
+        return KeyedSubtree(
+          key: ValueKey('websites:$serverId'),
+          child: const WebsitesPage(),
         );
       case ClientModule.verification:
         if (serverId == null) {
@@ -266,6 +268,7 @@ class _AppShellPageState extends State<AppShellPage> {
 
     final Widget? page = switch (module) {
       ClientModule.apps => const AppsPage(),
+      ClientModule.websites => const WebsitesPage(),
       ClientModule.verification => const SecurityVerificationPage(),
       _ => null,
     };

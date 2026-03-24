@@ -1,6 +1,6 @@
 # FILE 模块API端点详细分析
 
-> 基于 1PanelV2OpenAPI.json 自动生成
+> 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
 > 生成时间: 2026-02-16 23:11:15
 
 ## API端点总览

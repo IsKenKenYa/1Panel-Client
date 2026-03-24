@@ -1,0 +1,255 @@
+{
+  "module": "command",
+  "generatedAt": "2026-03-23T18:47:54.942513",
+  "summary": {
+    "endpointCount": 9,
+    "methodCount": 9
+  },
+  "endpoints": [
+    {
+      "path": "/containers/command",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create container by command",
+          "description": "",
+          "tags": [
+            "Container"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/commands",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create command",
+          "description": "",
+          "tags": [
+            "Command"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/commands/command",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "List commands",
+          "description": "",
+          "tags": [
+            "Command"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/commands/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete command",
+          "description": "",
+          "tags": [
+            "Command"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/commands/export",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Export command",
+          "description": "",
+          "tags": [
+            "Command"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/commands/import",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Import command",
+          "description": "",
+          "tags": [
+            "Command"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/commands/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page commands",
+          "description": "",
+          "tags": [
+            "Command"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/commands/tree",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Tree commands",
+          "description": "",
+          "tags": [
+            "Command"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/commands/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update command",
+          "description": "",
+          "tags": [
+            "Command"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    }
+  ]
+}

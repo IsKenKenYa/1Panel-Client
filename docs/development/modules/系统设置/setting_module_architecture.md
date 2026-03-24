@@ -10,7 +10,7 @@
 
 ## 功能完整性清单
 
-基于 1PanelV2OpenAPI.json 的 System Setting 标签共 43 个端点:
+基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 的 System Setting 标签共 43 个端点:
 
 ### 面板设置 (12端点)
 1. GET /settings - 获取所有设置

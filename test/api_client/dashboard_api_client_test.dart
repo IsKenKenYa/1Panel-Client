@@ -37,7 +37,7 @@ void main() {
       if (!hasApiKey) {
         debugPrint('⚠️  跳过测试: API密钥未配置');
       }
-      expect(hasApiKey, isTrue, reason: 'API密钥应该已配置');
+      expect(hasApiKey, equals(TestEnvironment.canRunIntegrationTests));
     });
 
     group('getOperatingSystemInfo - 获取操作系统信息', () {

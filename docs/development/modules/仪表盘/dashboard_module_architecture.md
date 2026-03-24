@@ -10,7 +10,7 @@
 
 ## 功能完整性清单
 
-基于 1PanelV2OpenAPI.json 的 Dashboard 标签共 12 个端点：
+基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 的 Dashboard 标签共 12 个端点：
 
 ### 1. 基础信息模块 (2端点)
 
@@ -278,4 +278,4 @@ lib/data/models/
 
 **文档版本**: 2.0
 **最后更新**: 2026-02-15
-**数据来源**: 1PanelV2OpenAPI.json
+**数据来源**: docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json

@@ -1,0 +1,445 @@
+{
+  "module": "firewall",
+  "generatedAt": "2026-03-23T18:47:55.623333",
+  "summary": {
+    "endpointCount": 15,
+    "methodCount": 15
+  },
+  "endpoints": [
+    {
+      "path": "/hosts/firewall/base",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load firewall base info",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/batch",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Batch operate rule",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/filter/chain/status",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "load chain status with name",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/filter/operate",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Apply/Unload/Init iptables filter",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/filter/rule/batch",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Batch operate iptables filter rules",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/filter/rule/operate",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Operate iptables filter rule",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/filter/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "search iptables filter rules",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/forward",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Operate forward rule",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/ip",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Operate Ip rule",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/operate",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Operate firewall",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/port",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create group",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page firewall rules",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/update/addr",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update Ip rule",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/update/description",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update rule description",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/update/port",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update port rule",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    }
+  ]
+}

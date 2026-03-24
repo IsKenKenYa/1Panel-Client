@@ -1,7 +1,7 @@
 # UI API Gap Review (UI-first parallel mode)
 
 ## Scope
-- Source of truth: `docs/1PanelOpenAPI/1PanelV2OpenAPI.json`
+- Source of truth: `docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json`
 - This document only tracks APIs needed by the revamped UI.
 - Non-UI compile/test issues are intentionally out of scope for this review.
 

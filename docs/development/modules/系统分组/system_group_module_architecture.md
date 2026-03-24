@@ -10,7 +10,7 @@
 
 ## 功能完整性清单
 
-基于 1PanelV2OpenAPI.json 的 System Group 标签共 8 个端点:
+基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 的 System Group 标签共 8 个端点:
 
 ### 分组管理
 1. GET /groups - 获取分组列表

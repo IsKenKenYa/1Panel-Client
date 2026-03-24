@@ -8,21 +8,49 @@
 
 | 子模块 | 端点数 | API客户端 | 说明 |
 |--------|--------|-----------|------|
-| **Nginx配置** | 4 | openresty_v2.dart | Nginx服务器配置管理 |
-| **PHP扩展** | 4 | openresty_v2.dart | PHP扩展安装和管理 |
-| **PHP版本** | 1 | openresty_v2.dart | PHP版本切换管理 |
+| **Nginx配置** | 4 | website_v2.dart | 网站配置拉取与更新 |
+| **PHP版本** | 1 | website_v2.dart | PHP版本切换管理 |
+
+## UI链路分析
+
+- 入口: `lib/features/websites/websites_page.dart` -> `lib/features/websites/website_detail_page.dart` -> 配置管理页。
+- 现有 UI 为单一文本编辑器，支持拉取/保存配置与高级对话框（scope/operate）。
+- 配置内容以纯文本或 JSON 编辑，缺少语法校验、差异预览、备份与回滚入口。
+- PHP 版本切换已通过 runtime ID 文本输入暴露，但缺少可选列表、当前版本提示与切换风险说明。
+
+## 严格审计状态 (2026-03-20)
+
+- 结论: `不完整适配`
+- 上游对照显示 `frontend/src/views/website/website/config/basic` 下已有 30 个结构化子页面。
+- 当前移动端已新增 `WebsiteConfigCenterPage` 作为配置中心首页，并保留高级源码页。
+- 当前已覆盖:
+  - 配置中心导航骨架
+  - Nginx 配置文件读取与保存
+  - scope 参数加载与更新
+  - 手工输入 runtime ID 的 PHP 版本切换
+- 主要缺口:
+  - 域名/HTTPS/PHP/默认文档/目录/认证/重写/代理/缓存/CORS/重定向/负载均衡/防盗链/Real IP/流配置等结构化页面均未接入
+- 详情见: `../网站管理-OpenResty/website_strict_audit_2026-03-20.md`
+
+## 待改进项
+
+- 增加配置语法校验与保存前确认提示。
+- 提供配置版本与备份管理入口。
+- 补齐 PHP 版本切换 UI，并提示切换风险与重启影响。
+
+## 重复代码检查
+
+- 与 OpenResty/网站详情页共用 JSON 编辑器需求明显，当前 `_JsonEditTab` 重复实现。
 
 ## 后续规划方向
 
 ### 短期目标
 - 完善Nginx配置管理
-- 实现PHP扩展管理
 - 添加配置备份功能
 
 ### 中期目标
 - 支持配置模板库
 - 实现配置版本管理
-- 添加配置验证功能
 
 ### 长期目标
 - 支持多服务器配置同步
@@ -39,4 +67,4 @@
 ---
 
 **文档版本**: 1.0
-**最后更新**: 2026-02-14
+**最后更新**: 2026-03-20

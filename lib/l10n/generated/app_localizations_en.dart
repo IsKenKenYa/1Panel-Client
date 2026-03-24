@@ -33,6 +33,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonMore => 'More';
 
   @override
+  String get commonAdd => 'Add';
+
+  @override
+  String get commonEdit => 'Edit';
+
+  @override
+  String get commonLoad => 'Load';
+
+  @override
   String get commonSave => 'Save';
 
   @override
@@ -43,6 +52,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonDelete => 'Delete';
+
+  @override
+  String get commonUpload => 'Upload';
 
   @override
   String get commonRefresh => 'Refresh';
@@ -58,6 +70,411 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonLoadFailedTitle => 'Failed to load';
+
+  @override
+  String get websitesPageTitle => 'Websites';
+
+  @override
+  String get websitesStatsTitle => 'Statistics';
+
+  @override
+  String get websitesStatsTotal => 'Total';
+
+  @override
+  String get websitesStatsRunning => 'Running';
+
+  @override
+  String get websitesStatsStopped => 'Stopped';
+
+  @override
+  String get websitesEmptyTitle => 'No websites';
+
+  @override
+  String get websitesEmptySubtitle => 'Create a website in 1Panel first.';
+
+  @override
+  String get websitesUnknownDomain => 'Unknown website';
+
+  @override
+  String get websitesStatusLabel => 'Status';
+
+  @override
+  String get websitesTypeLabel => 'Type';
+
+  @override
+  String get websitesStatusRunning => 'Running';
+
+  @override
+  String get websitesStatusStopped => 'Stopped';
+
+  @override
+  String get websitesActionStart => 'Start';
+
+  @override
+  String get websitesActionStop => 'Stop';
+
+  @override
+  String get websitesActionRestart => 'Restart';
+
+  @override
+  String get websitesActionDelete => 'Delete';
+
+  @override
+  String get websitesOperateSuccess => 'Operation successful';
+
+  @override
+  String get websitesOperateFailed => 'Operation failed';
+
+  @override
+  String websitesLoadFailedMessage(String error) {
+    return '$error';
+  }
+
+  @override
+  String get websitesDefaultName => 'default';
+
+  @override
+  String get websitesDeleteTitle => 'Delete website';
+
+  @override
+  String websitesDeleteMessage(String domain) {
+    return 'Are you sure you want to delete $domain? This action cannot be undone.';
+  }
+
+  @override
+  String get websitesDeleteSuccess => 'Website deleted';
+
+  @override
+  String get websitesDetailTitle => 'Website';
+
+  @override
+  String get websitesTabOverview => 'Overview';
+
+  @override
+  String get websitesTabConfig => 'Config';
+
+  @override
+  String get websitesTabDomains => 'Domains';
+
+  @override
+  String get websitesTabSsl => 'SSL';
+
+  @override
+  String get websitesTabRewrite => 'Rewrite';
+
+  @override
+  String get websitesTabProxy => 'Proxy';
+
+  @override
+  String get websitesSslInfoTitle => 'Certificate';
+
+  @override
+  String get websitesSslNoCert => 'No certificate bound';
+
+  @override
+  String get websitesSslPrimaryDomain => 'Primary domain';
+
+  @override
+  String get websitesSslExpireDate => 'Expires';
+
+  @override
+  String get websitesSslStatus => 'Status';
+
+  @override
+  String get websitesSslAutoRenew => 'Auto renew';
+
+  @override
+  String get websitesSslDownload => 'Download';
+
+  @override
+  String get websitesConfigHint => 'Nginx config content';
+
+  @override
+  String get websitesJsonHint => 'JSON content';
+
+  @override
+  String get websitesDomainAddTitle => 'Add domain';
+
+  @override
+  String get websitesDomainLabel => 'Domain';
+
+  @override
+  String get websitesDomainEmpty => 'No domains';
+
+  @override
+  String get websitesDomainDefault => 'Default';
+
+  @override
+  String get websitesDomainSslLabel => 'SSL';
+
+  @override
+  String get websitesRewriteNameLabel => 'Rewrite name';
+
+  @override
+  String get websitesRewriteHint => 'Rewrite content';
+
+  @override
+  String get websitesProxyNameLabel => 'Proxy name';
+
+  @override
+  String get websitesProxyHint => 'Proxy content';
+
+  @override
+  String get websitesNginxAdvancedAction => 'Advanced';
+
+  @override
+  String get websitesNginxAdvancedTitle => 'Advanced Nginx Config';
+
+  @override
+  String get websitesNginxScopeTitle => 'Scope Load';
+
+  @override
+  String get websitesNginxScopeLabel => 'Scope';
+
+  @override
+  String get websitesNginxScopeWebsiteIdLabel => 'Website ID (optional)';
+
+  @override
+  String get websitesNginxScopeLoad => 'Load scope config';
+
+  @override
+  String get websitesNginxScopeResultLabel => 'Scope result';
+
+  @override
+  String get websitesNginxUpdateTitle => 'Scope Update';
+
+  @override
+  String get websitesNginxUpdateOperateLabel => 'Operate';
+
+  @override
+  String get websitesNginxUpdateScopeLabel => 'Scope';
+
+  @override
+  String get websitesNginxUpdateWebsiteIdLabel => 'Website ID (optional)';
+
+  @override
+  String get websitesNginxUpdateParamsLabel => 'Params JSON';
+
+  @override
+  String get websitesNginxUpdateAction => 'Apply update';
+
+  @override
+  String get websitesProtocolLabel => 'Protocol';
+
+  @override
+  String get websitesDetailInfoTitle => 'Website info';
+
+  @override
+  String get websitesSitePathLabel => 'Site path';
+
+  @override
+  String get websitesRuntimeLabel => 'Runtime';
+
+  @override
+  String get websitesSslStatusLabel => 'SSL status';
+
+  @override
+  String get websitesSslExpireLabel => 'SSL expires';
+
+  @override
+  String get websitesDetailActionsTitle => 'Quick actions';
+
+  @override
+  String get websitesConfigPageTitle => 'Config';
+
+  @override
+  String get websitesConfigPageSubtitle => 'Nginx config & PHP version';
+
+  @override
+  String get websitesDomainsPageTitle => 'Domains';
+
+  @override
+  String get websitesDomainsPageSubtitle => 'Bind and manage domains';
+
+  @override
+  String get websitesSslPageTitle => 'SSL certificates';
+
+  @override
+  String get websitesSslPageSubtitle => 'Certificate settings & HTTPS';
+
+  @override
+  String get websitesOpenrestySubtitle => 'Service status & module management';
+
+  @override
+  String get websitesConfigEditorTitle => 'Nginx config file';
+
+  @override
+  String get websitesConfigScopeTitle => 'Advanced config';
+
+  @override
+  String get websitesConfigScopeLabel => 'Scope';
+
+  @override
+  String get websitesConfigScopeEmpty => 'No scope config';
+
+  @override
+  String websitesConfigScopeEditTitle(String name) {
+    return 'Edit $name params';
+  }
+
+  @override
+  String get websitesConfigScopeValuesLabel => 'Param list';
+
+  @override
+  String get websitesConfigScopeValuesHint =>
+      'Separate multiple params with commas';
+
+  @override
+  String get websitesPhpVersionTitle => 'PHP version';
+
+  @override
+  String get websitesPhpRuntimeIdLabel => 'Runtime ID';
+
+  @override
+  String get websitesPhpRuntimeIdHint => 'Enter the runtime ID to switch';
+
+  @override
+  String get websitesDomainPortLabel => 'Port';
+
+  @override
+  String get websitesDomainPrimary => 'Primary domain';
+
+  @override
+  String get websitesSslCreateAction => 'Create certificate';
+
+  @override
+  String get websitesSslUploadAction => 'Upload certificate';
+
+  @override
+  String get websitesSslListTitle => 'Certificate list';
+
+  @override
+  String get websitesSslListEmpty => 'No certificates';
+
+  @override
+  String get websitesSslApplyAction => 'Request certificate';
+
+  @override
+  String get websitesSslResolveAction => 'Resolve certificate';
+
+  @override
+  String get websitesSslUpdateAction => 'Update certificate';
+
+  @override
+  String get websitesSslDeleteTitle => 'Delete certificate';
+
+  @override
+  String websitesSslDeleteMessage(String domain) {
+    return 'Delete certificate for $domain?';
+  }
+
+  @override
+  String get websitesSslAcmeAccountIdLabel => 'ACME account ID';
+
+  @override
+  String get websitesSslProviderLabel => 'Provider';
+
+  @override
+  String get websitesSslOtherDomainsLabel => 'Other domains (comma-separated)';
+
+  @override
+  String get websitesSslDisableLogLabel => 'Disable logs';
+
+  @override
+  String get websitesSslSkipDnsCheckLabel => 'Skip DNS check';
+
+  @override
+  String get websitesSslNameserversLabel => 'Nameservers';
+
+  @override
+  String get websitesSslDescriptionLabel => 'Description';
+
+  @override
+  String get websitesSslUploadTypeLabel => 'Upload method';
+
+  @override
+  String get websitesSslUploadTypePaste => 'Paste content';
+
+  @override
+  String get websitesSslUploadTypeLocal => 'Local path';
+
+  @override
+  String get websitesSslCertificateLabel => 'Certificate';
+
+  @override
+  String get websitesSslPrivateKeyLabel => 'Private key';
+
+  @override
+  String get websitesSslCertificatePathLabel => 'Certificate path';
+
+  @override
+  String get websitesSslPrivateKeyPathLabel => 'Private key path';
+
+  @override
+  String get websitesHttpsConfigTitle => 'HTTPS config';
+
+  @override
+  String get websitesHttpsEnableLabel => 'Enable HTTPS';
+
+  @override
+  String get websitesHttpsModeLabel => 'HTTP mode';
+
+  @override
+  String get websitesHttpsTypeLabel => 'Certificate type';
+
+  @override
+  String get websitesHttpsSslIdLabel => 'Certificate ID';
+
+  @override
+  String get websitesSslAutoRenewMissingFields =>
+      'Certificate is missing the primary domain or provider; cannot update auto-renew.';
+
+  @override
+  String websitesSslDownloadHint(String link) {
+    return 'Certificate download link: $link';
+  }
+
+  @override
+  String get openrestyPageTitle => 'OpenResty';
+
+  @override
+  String get openrestyTabStatus => 'Status';
+
+  @override
+  String get openrestyTabHttps => 'HTTPS';
+
+  @override
+  String get openrestyTabModules => 'Modules';
+
+  @override
+  String get openrestyTabConfig => 'Config';
+
+  @override
+  String get openrestyTabBuild => 'Build';
+
+  @override
+  String get openrestyTabScope => 'Scope';
+
+  @override
+  String get openrestyBuildMirrorLabel => 'Build mirror';
+
+  @override
+  String get openrestyBuildTaskIdLabel => 'Task ID';
+
+  @override
+  String get openrestyBuildAction => 'Build OpenResty';
+
+  @override
+  String get openrestyScopeLabel => 'Scope';
+
+  @override
+  String get openrestyScopeWebsiteIdLabel => 'Website ID (optional)';
+
+  @override
+  String get openrestyScopeLoad => 'Load scope';
+
+  @override
+  String get openrestyScopeResultHint => 'Scope config result';
 
   @override
   String get monitorNetworkLabel => 'Network';
@@ -96,20 +513,20 @@ class AppLocalizationsEn extends AppLocalizations {
       'Choose a current server before opening this module.';
 
   @override
-  String get shellPinnedModulesTitle => 'Quick Access';
+  String get shellPinnedModulesTitle => 'Bottom Tabs';
 
   @override
   String get shellPinnedModulesDescription =>
-      'Choose two modules for your main client tabs. You can change them any time.';
+      'Choose two modules for the bottom navigation. Everything else stays in More.';
 
   @override
-  String get shellPinnedModulesCustomize => 'Customize Tabs';
+  String get shellPinnedModulesCustomize => 'Edit Tabs';
 
   @override
-  String get shellPinnedModulesPrimary => 'Tab Slot 1';
+  String get shellPinnedModulesPrimary => 'Tab 1';
 
   @override
-  String get shellPinnedModulesSecondary => 'Tab Slot 2';
+  String get shellPinnedModulesSecondary => 'Tab 2';
 
   @override
   String get moduleSubnavCustomize => 'Customize sections';
@@ -456,9 +873,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonCreate => 'Create';
-
-  @override
-  String get commonEdit => 'Edit';
 
   @override
   String get commonName => 'Name';

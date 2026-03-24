@@ -11,7 +11,7 @@
 
 ## 功能完整性清单
 
-基于 1PanelV2OpenAPI.json 的 SSH 标签共 12 个端点:
+基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 的 SSH 标签共 12 个端点:
 
 ### SSH服务配置
 1. GET /ssh - 获取SSH服务状态
