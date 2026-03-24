@@ -4,13 +4,13 @@ import 'package:provider/provider.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:dynamic_color/dynamic_color.dart';
-import 'package:onepanelapp_app/config/app_router.dart';
-import 'package:onepanelapp_app/core/services/app_settings_controller.dart';
-import 'package:onepanelapp_app/core/services/logger/logger_service.dart';
-import 'package:onepanelapp_app/core/theme/theme_controller.dart';
-import 'package:onepanelapp_app/core/services/transfer/transfer_manager.dart';
-import 'package:onepanelapp_app/core/theme/app_theme.dart';
-import 'package:onepanelapp_app/l10n/generated/app_localizations.dart';
+import 'package:onepanel_client/config/app_router.dart';
+import 'package:onepanel_client/core/services/app_settings_controller.dart';
+import 'package:onepanel_client/core/services/logger/logger_service.dart';
+import 'package:onepanel_client/core/theme/theme_controller.dart';
+import 'package:onepanel_client/core/services/transfer/transfer_manager.dart';
+import 'package:onepanel_client/core/theme/app_theme.dart';
+import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 
 // Feature Providers
 import 'features/dashboard/dashboard_provider.dart';
@@ -165,7 +165,7 @@ class MyApp extends StatelessWidget {
             }
 
             return MaterialApp(
-              title: '1Panel-Client',
+              title: '1Panel Client',
               debugShowCheckedModeBanner: false,
               theme: lightTheme,
               darkTheme: darkTheme,

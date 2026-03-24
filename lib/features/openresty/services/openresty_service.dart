@@ -1,6 +1,6 @@
-import 'package:onepanelapp_app/api/v2/openresty_v2.dart';
-import 'package:onepanelapp_app/core/network/api_client_manager.dart';
-import 'package:onepanelapp_app/data/models/openresty_models.dart';
+import 'package:onepanel_client/api/v2/openresty_v2.dart';
+import 'package:onepanel_client/core/network/api_client_manager.dart';
+import 'package:onepanel_client/data/models/openresty_models.dart';
 
 class OpenRestySnapshot {
   final Map<String, dynamic> status;

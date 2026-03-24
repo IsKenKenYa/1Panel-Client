@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import '../test_helper.dart';
-import 'package:onepanelapp_app/data/models/toolbox_models.dart';
+import 'package:onepanel_client/data/models/toolbox_models.dart';
 
 void main() {
   setUpAll(() async {

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanelapp_app/data/models/file/file_favorite.dart';
+import 'package:onepanel_client/data/models/file/file_favorite.dart';
 
 void main() {
   group('FileFavorite 模型测试', () {

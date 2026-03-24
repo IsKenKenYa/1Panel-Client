@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/data/models/container_models.dart' hide ContainerStats;
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/data/models/container_models.dart' hide ContainerStats;
 import '../containers_provider.dart';
 
 class OverviewTab extends StatelessWidget {

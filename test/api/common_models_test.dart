@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanelapp_app/data/models/common_models.dart';
+import 'package:onepanel_client/data/models/common_models.dart';
 
 void main() {
   group('通用模型测试', () {

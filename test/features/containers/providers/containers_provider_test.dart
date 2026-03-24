@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:onepanelapp_app/data/models/container_extension_models.dart';
-import 'package:onepanelapp_app/data/models/container_models.dart';
-import 'package:onepanelapp_app/features/containers/container_service.dart';
-import 'package:onepanelapp_app/features/containers/containers_provider.dart';
+import 'package:onepanel_client/data/models/container_extension_models.dart';
+import 'package:onepanel_client/data/models/container_models.dart';
+import 'package:onepanel_client/features/containers/container_service.dart';
+import 'package:onepanel_client/features/containers/containers_provider.dart';
 
 class MockContainerService extends Mock implements ContainerService {}
 

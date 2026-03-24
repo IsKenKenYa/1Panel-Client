@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:onepanelapp_app/l10n/generated/app_localizations.dart';
+import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 import 'log_viewer_controller.dart';
 import 'log_theme_editor.dart';
 

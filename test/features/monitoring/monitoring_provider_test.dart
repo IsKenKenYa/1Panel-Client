@@ -1,9 +1,9 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanelapp_app/data/repositories/monitor_repository.dart';
-import 'package:onepanelapp_app/features/monitoring/monitoring_provider.dart';
-import 'package:onepanelapp_app/features/monitoring/monitoring_service.dart';
-import 'package:onepanelapp_app/features/monitoring/data/datasources/monitor_local_datasource.dart';
+import 'package:onepanel_client/data/repositories/monitor_repository.dart';
+import 'package:onepanel_client/features/monitoring/monitoring_provider.dart';
+import 'package:onepanel_client/features/monitoring/monitoring_service.dart';
+import 'package:onepanel_client/features/monitoring/data/datasources/monitor_local_datasource.dart';
 
 class MockMonitorLocalDataSource extends MonitorLocalDataSource {
   @override

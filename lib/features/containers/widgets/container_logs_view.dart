@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/features/containers/providers/container_detail_provider.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/features/containers/providers/container_detail_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/shared/widgets/log_viewer/log_viewer.dart';
+import 'package:onepanel_client/shared/widgets/log_viewer/log_viewer.dart';
 
 class ContainerLogsView extends StatefulWidget {
   const ContainerLogsView({super.key});

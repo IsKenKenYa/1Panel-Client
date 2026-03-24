@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/core/theme/app_design_tokens.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/features/settings/settings_provider.dart';
-import 'package:onepanelapp_app/features/settings/panel_settings_page.dart';
-import 'package:onepanelapp_app/features/settings/security_settings_page.dart';
-import 'package:onepanelapp_app/features/settings/snapshot_page.dart';
-import 'package:onepanelapp_app/features/settings/terminal_settings_page.dart';
-import 'package:onepanelapp_app/features/settings/api_key_settings_page.dart';
-import 'package:onepanelapp_app/features/settings/ssl_settings_page.dart';
-import 'package:onepanelapp_app/features/settings/upgrade_page.dart';
-import 'package:onepanelapp_app/features/settings/monitor_settings_page.dart';
-import 'package:onepanelapp_app/features/settings/proxy_settings_page.dart';
-import 'package:onepanelapp_app/features/settings/backup_account_page.dart';
-import 'package:onepanelapp_app/features/monitoring/monitoring_provider.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/features/settings/settings_provider.dart';
+import 'package:onepanel_client/features/settings/panel_settings_page.dart';
+import 'package:onepanel_client/features/settings/security_settings_page.dart';
+import 'package:onepanel_client/features/settings/snapshot_page.dart';
+import 'package:onepanel_client/features/settings/terminal_settings_page.dart';
+import 'package:onepanel_client/features/settings/api_key_settings_page.dart';
+import 'package:onepanel_client/features/settings/ssl_settings_page.dart';
+import 'package:onepanel_client/features/settings/upgrade_page.dart';
+import 'package:onepanel_client/features/settings/monitor_settings_page.dart';
+import 'package:onepanel_client/features/settings/proxy_settings_page.dart';
+import 'package:onepanel_client/features/settings/backup_account_page.dart';
+import 'package:onepanel_client/features/monitoring/monitoring_provider.dart';
 
 class SystemSettingsPage extends StatefulWidget {
   const SystemSettingsPage({super.key});

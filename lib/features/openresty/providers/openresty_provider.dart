@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:onepanelapp_app/data/models/openresty_models.dart';
-import 'package:onepanelapp_app/features/openresty/services/openresty_service.dart';
+import 'package:onepanel_client/data/models/openresty_models.dart';
+import 'package:onepanel_client/features/openresty/services/openresty_service.dart';
 
 class OpenRestyProvider extends ChangeNotifier {
   final OpenRestyService _service;

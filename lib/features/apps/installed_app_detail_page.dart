@@ -2,15 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:onepanelapp_app/config/app_router.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/data/models/app_config_models.dart';
-import 'package:onepanelapp_app/data/models/app_models.dart';
-import 'package:onepanelapp_app/features/apps/app_service.dart';
-import 'package:onepanelapp_app/features/apps/dialogs/edit_app_config_dialog.dart';
-import 'package:onepanelapp_app/features/apps/providers/installed_app_detail_provider.dart';
-import 'package:onepanelapp_app/features/apps/providers/installed_apps_provider.dart';
-import 'package:onepanelapp_app/features/apps/widgets/app_icon.dart';
+import 'package:onepanel_client/config/app_router.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/data/models/app_config_models.dart';
+import 'package:onepanel_client/data/models/app_models.dart';
+import 'package:onepanel_client/features/apps/app_service.dart';
+import 'package:onepanel_client/features/apps/dialogs/edit_app_config_dialog.dart';
+import 'package:onepanel_client/features/apps/providers/installed_app_detail_provider.dart';
+import 'package:onepanel_client/features/apps/providers/installed_apps_provider.dart';
+import 'package:onepanel_client/features/apps/widgets/app_icon.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 

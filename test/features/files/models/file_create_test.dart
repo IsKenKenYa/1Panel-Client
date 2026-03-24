@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanelapp_app/data/models/file/file_create.dart';
+import 'package:onepanel_client/data/models/file/file_create.dart';
 
 void main() {
   group('FileCreate 模型测试', () {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:onepanelapp_app/features/server/server_list_page.dart';
+import 'package:onepanel_client/features/server/server_list_page.dart';
 
 class ServerSelectionPage extends StatelessWidget {
   const ServerSelectionPage({super.key});

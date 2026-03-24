@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanelapp_app/features/orchestration/providers/compose_provider.dart';
-import 'package:onepanelapp_app/features/orchestration/providers/image_provider.dart';
-import 'package:onepanelapp_app/features/orchestration/providers/network_provider.dart';
-import 'package:onepanelapp_app/features/orchestration/providers/volume_provider.dart';
-import 'package:onepanelapp_app/data/models/docker_models.dart';
-import 'package:onepanelapp_app/data/models/container_models.dart';
+import 'package:onepanel_client/features/orchestration/providers/compose_provider.dart';
+import 'package:onepanel_client/features/orchestration/providers/image_provider.dart';
+import 'package:onepanel_client/features/orchestration/providers/network_provider.dart';
+import 'package:onepanel_client/features/orchestration/providers/volume_provider.dart';
+import 'package:onepanel_client/data/models/docker_models.dart';
+import 'package:onepanel_client/data/models/container_models.dart';
 
 void main() {
   group('Orchestration Providers Initialization', () {

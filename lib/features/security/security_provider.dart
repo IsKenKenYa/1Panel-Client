@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:onepanelapp_app/features/security/security_repository.dart';
+import 'package:onepanel_client/features/security/security_repository.dart';
 
 class SecurityProvider extends ChangeNotifier {
   SecurityProvider({SecurityVerificationRepository? repository})

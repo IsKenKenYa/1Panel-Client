@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/features/shell/controllers/module_subnav_controller.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/features/shell/controllers/module_subnav_controller.dart';
 
 class ModuleSubnavItem {
   const ModuleSubnavItem({

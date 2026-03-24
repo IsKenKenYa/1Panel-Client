@@ -5,10 +5,10 @@
 // 'flutter create' template.
 
 // The application's name. By default this is also the title of the Flutter window.
-PRODUCT_NAME = onepanelapp_app
+PRODUCT_NAME = onepanel_client
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.imken.onepanelapp.onepanelappApp
+PRODUCT_BUNDLE_IDENTIFIER = com.iskenkenya.onepanel
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2025 com.imken.onepanelapp. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2026 IsKenKenYa. All rights reserved.

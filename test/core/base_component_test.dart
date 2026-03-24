@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanelapp_app/core/services/base_component.dart';
+import 'package:onepanel_client/core/services/base_component.dart';
 
 void main() {
   test('BaseComponent缓存按TTL过期', () async {

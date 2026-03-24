@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/core/theme/app_design_tokens.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/features/settings/settings_provider.dart';
-import 'package:onepanelapp_app/core/utils/debug_error_dialog.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/features/settings/settings_provider.dart';
+import 'package:onepanel_client/core/utils/debug_error_dialog.dart';
 
 class SnapshotPage extends StatefulWidget {
   const SnapshotPage({super.key});

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
 
 class ShellDrawerScope extends InheritedWidget {
   const ShellDrawerScope({

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:onepanelapp_app/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 
 class ServerDetailSectionItem {
   const ServerDetailSectionItem({

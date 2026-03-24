@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:onepanelapp_app/data/models/app_config_models.dart';
-import 'package:onepanelapp_app/data/models/app_models.dart';
-import 'package:onepanelapp_app/data/models/container_models.dart';
-import 'package:onepanelapp_app/features/apps/app_service.dart';
-import 'package:onepanelapp_app/features/apps/providers/installed_app_detail_provider.dart';
-import 'package:onepanelapp_app/features/containers/container_service.dart';
+import 'package:onepanel_client/data/models/app_config_models.dart';
+import 'package:onepanel_client/data/models/app_models.dart';
+import 'package:onepanel_client/data/models/container_models.dart';
+import 'package:onepanel_client/features/apps/app_service.dart';
+import 'package:onepanel_client/features/apps/providers/installed_app_detail_provider.dart';
+import 'package:onepanel_client/features/containers/container_service.dart';
 
 class MockAppService extends Mock implements AppService {}
 

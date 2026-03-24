@@ -9,7 +9,7 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
-  String get appName => '1Panel-Client';
+  String get appName => '1Panel Client';
 
   @override
   String get commonLoading => '加载中...';

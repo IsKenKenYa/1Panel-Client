@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanelapp_app/features/files/widgets/empty_state.dart';
+import 'package:onepanel_client/features/files/widgets/empty_state.dart';
 
 void main() {
   group('EmptyState Widget Tests', () {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/features/openresty/providers/openresty_provider.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/features/openresty/providers/openresty_provider.dart';
 
 class OpenRestySourceEditorPage extends StatefulWidget {
   final String? initialContent;

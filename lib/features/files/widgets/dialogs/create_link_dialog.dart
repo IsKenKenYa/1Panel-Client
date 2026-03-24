@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/features/files/files_provider.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/features/files/files_provider.dart';
 
 class CreateLinkDialog extends StatefulWidget {
   final FilesProvider provider;

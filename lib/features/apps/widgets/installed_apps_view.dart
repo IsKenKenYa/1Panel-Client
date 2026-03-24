@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/config/app_router.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/config/app_router.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import '../../../data/models/app_models.dart';
 import '../providers/installed_apps_provider.dart';
 import 'installed_app_card.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:onepanelapp_app/core/config/api_config.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/core/theme/app_design_tokens.dart';
-import 'package:onepanelapp_app/features/server/server_repository.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/features/server/server_repository.dart';
 import 'server_connection_service.dart';
 
 class ServerFormPage extends StatefulWidget {

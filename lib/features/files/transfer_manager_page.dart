@@ -5,12 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/core/services/transfer/transfer_task.dart';
-import 'package:onepanelapp_app/core/services/transfer/transfer_manager.dart';
-import 'package:onepanelapp_app/core/services/file_save_service.dart';
-import 'package:onepanelapp_app/features/files/files_provider.dart';
-import 'package:onepanelapp_app/features/files/upload_history_page.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/services/transfer/transfer_task.dart';
+import 'package:onepanel_client/core/services/transfer/transfer_manager.dart';
+import 'package:onepanel_client/core/services/file_save_service.dart';
+import 'package:onepanel_client/features/files/files_provider.dart';
+import 'package:onepanel_client/features/files/upload_history_page.dart';
 
 enum TransferChannel { downloads, uploads }
 

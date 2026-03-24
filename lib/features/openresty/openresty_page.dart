@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/features/openresty/pages/openresty_center_page.dart';
-import 'package:onepanelapp_app/features/openresty/providers/openresty_provider.dart';
+import 'package:onepanel_client/features/openresty/pages/openresty_center_page.dart';
+import 'package:onepanel_client/features/openresty/providers/openresty_provider.dart';
 
 class OpenRestyPage extends StatelessWidget {
   const OpenRestyPage({super.key});

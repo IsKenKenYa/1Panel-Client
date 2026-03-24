@@ -11,15 +11,15 @@ import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/core/services/logger/logger_service.dart';
-import 'package:onepanelapp_app/core/services/cache/file_preview_cache_manager.dart';
-import 'package:onepanelapp_app/core/services/app_settings_controller.dart';
-import 'package:onepanelapp_app/features/files/files_service.dart';
-import 'package:onepanelapp_app/features/files/file_editor_page.dart';
-import 'package:onepanelapp_app/features/files/files_provider.dart';
-import 'package:onepanelapp_app/data/models/file_models.dart';
-import 'package:onepanelapp_app/features/files/widgets/dialogs/file_properties_dialog.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/services/logger/logger_service.dart';
+import 'package:onepanel_client/core/services/cache/file_preview_cache_manager.dart';
+import 'package:onepanel_client/core/services/app_settings_controller.dart';
+import 'package:onepanel_client/features/files/files_service.dart';
+import 'package:onepanel_client/features/files/file_editor_page.dart';
+import 'package:onepanel_client/features/files/files_provider.dart';
+import 'package:onepanel_client/data/models/file_models.dart';
+import 'package:onepanel_client/features/files/widgets/dialogs/file_properties_dialog.dart';
 
 class FilePreviewPage extends StatefulWidget {
   final String filePath;

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:onepanelapp_app/features/orchestration/compose_page.dart';
-import 'package:onepanelapp_app/features/orchestration/image_page.dart';
-import 'package:onepanelapp_app/features/orchestration/network_page.dart';
-import 'package:onepanelapp_app/features/orchestration/volume_page.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/features/orchestration/compose_page.dart';
+import 'package:onepanel_client/features/orchestration/image_page.dart';
+import 'package:onepanel_client/features/orchestration/network_page.dart';
+import 'package:onepanel_client/features/orchestration/volume_page.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
 
 class OrchestrationPage extends StatelessWidget {
   const OrchestrationPage({super.key});

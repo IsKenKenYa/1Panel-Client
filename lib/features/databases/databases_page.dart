@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/core/network/api_client_manager.dart';
-import 'package:onepanelapp_app/core/theme/app_design_tokens.dart';
-import 'package:onepanelapp_app/data/models/database_models.dart';
-import 'package:onepanelapp_app/shared/widgets/app_card.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/network/api_client_manager.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/data/models/database_models.dart';
+import 'package:onepanel_client/shared/widgets/app_card.dart';
 
 class DatabasesPage extends StatefulWidget {
   const DatabasesPage({super.key});

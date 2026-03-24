@@ -2,9 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:onepanelapp_app/api/v2/docker_v2.dart';
-import 'package:onepanelapp_app/core/network/dio_client.dart';
-import 'package:onepanelapp_app/data/models/docker_models.dart';
+import 'package:onepanel_client/api/v2/docker_v2.dart';
+import 'package:onepanel_client/core/network/dio_client.dart';
+import 'package:onepanel_client/data/models/docker_models.dart';
 
 // Reuse mocks from compose_api_test.mocks.dart if possible, or generate new ones.
 // For simplicity, I'll assume I can import the generated mocks.

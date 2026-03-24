@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:onepanelapp_app/core/services/app_preferences_service.dart';
-import 'package:onepanelapp_app/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/core/services/app_preferences_service.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 
 class ThemeController extends ChangeNotifier {
   ThemeController({AppPreferencesService? preferencesService})

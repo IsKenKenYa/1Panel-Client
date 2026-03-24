@@ -1,4 +1,4 @@
-part of 'package:onepanelapp_app/features/files/files_page.dart';
+part of 'package:onepanel_client/features/files/files_page.dart';
 
 extension _FilesViewSheets on _FilesViewState {
   void _showCreateOptions(BuildContext context) {

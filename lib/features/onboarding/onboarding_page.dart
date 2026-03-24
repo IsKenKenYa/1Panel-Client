@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:onepanelapp_app/config/app_router.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/core/services/onboarding_service.dart';
-import 'package:onepanelapp_app/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/config/app_router.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/services/onboarding_service.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});

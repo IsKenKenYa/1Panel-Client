@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/models/ssl_models.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'providers/website_ssl_provider.dart';
 
 class WebsiteSslPage extends StatelessWidget {

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/core/services/app_settings_controller.dart';
-import 'package:onepanelapp_app/core/services/onboarding_service.dart';
-import 'package:onepanelapp_app/core/theme/app_design_tokens.dart';
-import 'package:onepanelapp_app/features/settings/screens/theme_settings_page.dart';
-import 'package:onepanelapp_app/features/shell/widgets/shell_drawer_scope.dart';
-import 'package:onepanelapp_app/pages/settings/cache_settings_page.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/services/app_settings_controller.dart';
+import 'package:onepanel_client/core/services/onboarding_service.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/features/settings/screens/theme_settings_page.dart';
+import 'package:onepanel_client/features/shell/widgets/shell_drawer_scope.dart';
+import 'package:onepanel_client/pages/settings/cache_settings_page.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});

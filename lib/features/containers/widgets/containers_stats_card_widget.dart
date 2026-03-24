@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:onepanelapp_app/shared/widgets/app_card.dart';
+import 'package:onepanel_client/shared/widgets/app_card.dart';
 
 class ContainersStatsCard extends StatelessWidget {
   final String title;

@@ -3,8 +3,8 @@ import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:onepanelapp_app/core/services/logger/logger_service.dart';
-import 'package:onepanelapp_app/core/services/app_preferences_service.dart';
+import 'package:onepanel_client/core/services/logger/logger_service.dart';
+import 'package:onepanel_client/core/services/app_preferences_service.dart';
 import 'memory_cache_manager.dart';
 
 enum CacheSource {

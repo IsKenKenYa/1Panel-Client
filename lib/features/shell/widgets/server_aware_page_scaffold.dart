@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/features/shell/controllers/current_server_controller.dart';
-import 'package:onepanelapp_app/features/shell/widgets/no_server_selected_state.dart';
-import 'package:onepanelapp_app/features/shell/widgets/shell_drawer_scope.dart';
-import 'package:onepanelapp_app/features/shell/widgets/server_switcher_action.dart';
+import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
+import 'package:onepanel_client/features/shell/widgets/no_server_selected_state.dart';
+import 'package:onepanel_client/features/shell/widgets/shell_drawer_scope.dart';
+import 'package:onepanel_client/features/shell/widgets/server_switcher_action.dart';
 
 class ServerAwarePageScaffold extends StatelessWidget {
   const ServerAwarePageScaffold({

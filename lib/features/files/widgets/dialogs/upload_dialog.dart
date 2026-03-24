@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/core/utils/debug_error_dialog.dart';
-import 'package:onepanelapp_app/core/services/logger/logger_service.dart';
-import 'package:onepanelapp_app/features/files/files_provider.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/utils/debug_error_dialog.dart';
+import 'package:onepanel_client/core/services/logger/logger_service.dart';
+import 'package:onepanel_client/features/files/files_provider.dart';
 
 void showUploadDialog(BuildContext context, FilesProvider provider) {
   appLogger.dWithPackage('upload_dialog', 'showUploadDialog: 打开上传对话框');

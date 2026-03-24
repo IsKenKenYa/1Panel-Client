@@ -1,4 +1,4 @@
-part of 'package:onepanelapp_app/features/containers/containers_page.dart';
+part of 'package:onepanel_client/features/containers/containers_page.dart';
 
 extension _ContainersPageSections on _ContainersPageViewState {
   List<ModuleSubnavItem> _buildSubnavItems(dynamic l10n) {

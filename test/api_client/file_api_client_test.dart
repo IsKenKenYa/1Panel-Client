@@ -2,9 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../api_client_test_base.dart';
 import '../core/test_config_manager.dart';
-import 'package:onepanelapp_app/api/v2/file_v2.dart';
-import 'package:onepanelapp_app/core/network/dio_client.dart';
-import 'package:onepanelapp_app/data/models/file_models.dart';
+import 'package:onepanel_client/api/v2/file_v2.dart';
+import 'package:onepanel_client/core/network/dio_client.dart';
+import 'package:onepanel_client/data/models/file_models.dart';
 
 void main() {
   late DioClient client;

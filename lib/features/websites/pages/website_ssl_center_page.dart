@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import '../../../data/models/ssl_models.dart';
 
 import '../providers/website_ssl_center_provider.dart';

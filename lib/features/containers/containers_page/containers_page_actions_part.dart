@@ -1,4 +1,4 @@
-part of 'package:onepanelapp_app/features/containers/containers_page.dart';
+part of 'package:onepanel_client/features/containers/containers_page.dart';
 
 extension _ContainersPageActions on _ContainersPageViewState {
   List<Widget> _buildAppBarActions(BuildContext context, dynamic l10n) {

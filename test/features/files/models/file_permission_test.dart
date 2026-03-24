@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanelapp_app/data/models/file/file_permission.dart';
-import 'package:onepanelapp_app/data/models/file/file_info.dart';
+import 'package:onepanel_client/data/models/file/file_permission.dart';
+import 'package:onepanel_client/data/models/file/file_info.dart';
 
 void main() {
   group('FilePermission 模型测试', () {

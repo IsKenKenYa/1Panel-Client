@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/config/app_router.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/core/theme/app_design_tokens.dart';
-import 'package:onepanelapp_app/features/server/server_models.dart';
-import 'package:onepanelapp_app/features/server/server_provider.dart';
-import 'package:onepanelapp_app/features/server/widgets/server_detail_header_card.dart';
-import 'package:onepanelapp_app/features/server/widgets/server_detail_section_card.dart';
-import 'package:onepanelapp_app/features/shell/controllers/current_server_controller.dart';
-import 'package:onepanelapp_app/features/shell/controllers/pinned_modules_controller.dart';
-import 'package:onepanelapp_app/features/shell/models/client_module.dart';
-import 'package:onepanelapp_app/features/shell/widgets/mobile_pinned_modules_customizer_sheet.dart';
-import 'package:onepanelapp_app/features/shell/widgets/server_switcher_action.dart';
+import 'package:onepanel_client/config/app_router.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/features/server/server_models.dart';
+import 'package:onepanel_client/features/server/server_provider.dart';
+import 'package:onepanel_client/features/server/widgets/server_detail_header_card.dart';
+import 'package:onepanel_client/features/server/widgets/server_detail_section_card.dart';
+import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
+import 'package:onepanel_client/features/shell/controllers/pinned_modules_controller.dart';
+import 'package:onepanel_client/features/shell/models/client_module.dart';
+import 'package:onepanel_client/features/shell/widgets/mobile_pinned_modules_customizer_sheet.dart';
+import 'package:onepanel_client/features/shell/widgets/server_switcher_action.dart';
 
 class ServerDetailPage extends StatelessWidget {
   const ServerDetailPage({

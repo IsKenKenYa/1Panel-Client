@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/data/models/container_models.dart';
-import 'package:onepanelapp_app/features/containers/dialogs/compose_create_dialog.dart';
-import 'package:onepanelapp_app/features/containers/dialogs/network_create_dialog.dart';
-import 'package:onepanelapp_app/features/containers/dialogs/volume_create_dialog.dart';
-import 'package:onepanelapp_app/features/containers/dialogs/repo_create_dialog.dart';
-import 'package:onepanelapp_app/features/containers/dialogs/template_create_dialog.dart';
-import 'package:onepanelapp_app/features/orchestration/providers/compose_provider.dart';
-import 'package:onepanelapp_app/features/orchestration/providers/network_provider.dart';
-import 'package:onepanelapp_app/features/orchestration/providers/volume_provider.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/data/models/container_models.dart';
+import 'package:onepanel_client/features/containers/dialogs/compose_create_dialog.dart';
+import 'package:onepanel_client/features/containers/dialogs/network_create_dialog.dart';
+import 'package:onepanel_client/features/containers/dialogs/volume_create_dialog.dart';
+import 'package:onepanel_client/features/containers/dialogs/repo_create_dialog.dart';
+import 'package:onepanel_client/features/containers/dialogs/template_create_dialog.dart';
+import 'package:onepanel_client/features/orchestration/providers/compose_provider.dart';
+import 'package:onepanel_client/features/orchestration/providers/network_provider.dart';
+import 'package:onepanel_client/features/orchestration/providers/volume_provider.dart';
 
 class ContainersPageCreateDialogs {
   static Future<void> showCreateComposeDialog(BuildContext context) async {

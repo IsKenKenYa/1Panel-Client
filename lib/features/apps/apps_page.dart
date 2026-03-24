@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/features/apps/app_service.dart';
-import 'package:onepanelapp_app/features/apps/providers/app_store_provider.dart';
-import 'package:onepanelapp_app/features/apps/providers/installed_apps_provider.dart';
-import 'package:onepanelapp_app/features/shell/controllers/module_subnav_controller.dart';
-import 'package:onepanelapp_app/features/shell/controllers/current_server_controller.dart';
-import 'package:onepanelapp_app/features/shell/widgets/module_subnav.dart';
-import 'package:onepanelapp_app/features/shell/widgets/no_server_selected_state.dart';
-import 'package:onepanelapp_app/features/shell/widgets/server_aware_page_scaffold.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/features/apps/app_service.dart';
+import 'package:onepanel_client/features/apps/providers/app_store_provider.dart';
+import 'package:onepanel_client/features/apps/providers/installed_apps_provider.dart';
+import 'package:onepanel_client/features/shell/controllers/module_subnav_controller.dart';
+import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
+import 'package:onepanel_client/features/shell/widgets/module_subnav.dart';
+import 'package:onepanel_client/features/shell/widgets/no_server_selected_state.dart';
+import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'widgets/app_store_view.dart';
 import 'widgets/installed_apps_view.dart';
 

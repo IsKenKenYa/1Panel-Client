@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/core/theme/app_theme.dart';
-import 'package:onepanelapp_app/l10n/generated/app_localizations.dart';
+import 'package:onepanel_client/core/theme/app_theme.dart';
+import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 import 'log_viewer_controller.dart';
 import 'log_toolbar.dart';
 import 'log_line_widget.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/data/models/container_models.dart'
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/data/models/container_models.dart'
     hide Container;
-import 'package:onepanelapp_app/shared/widgets/app_card.dart';
+import 'package:onepanel_client/shared/widgets/app_card.dart';
 
 class ContainerCard extends StatelessWidget {
   final ContainerInfo container;

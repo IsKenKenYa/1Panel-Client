@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => '1Panel-Client';
+  String get appName => '1Panel Client';
 
   @override
   String get commonLoading => 'Loading...';

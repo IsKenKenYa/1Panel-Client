@@ -5,11 +5,11 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:onepanelapp_app/core/config/api_config.dart';
-import 'package:onepanelapp_app/core/services/logger/logger_service.dart';
-import 'package:onepanelapp_app/core/services/transfer/transfer_task.dart';
-import 'package:onepanelapp_app/api/v2/file_v2.dart';
-import 'package:onepanelapp_app/data/models/file/file_transfer.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
+import 'package:onepanel_client/core/services/logger/logger_service.dart';
+import 'package:onepanel_client/core/services/transfer/transfer_task.dart';
+import 'package:onepanel_client/api/v2/file_v2.dart';
+import 'package:onepanel_client/data/models/file/file_transfer.dart';
 
 enum RetryDownloadTaskWithNewAuthResult {
   recreated,

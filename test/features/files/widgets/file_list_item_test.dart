@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:onepanelapp_app/l10n/generated/app_localizations.dart';
-import 'package:onepanelapp_app/data/models/file_models.dart';
-import 'package:onepanelapp_app/features/files/widgets/file_list_item.dart';
+import 'package:onepanel_client/l10n/generated/app_localizations.dart';
+import 'package:onepanel_client/data/models/file_models.dart';
+import 'package:onepanel_client/features/files/widgets/file_list_item.dart';
 
 void main() {
   group('FileListItem Widget Tests', () {

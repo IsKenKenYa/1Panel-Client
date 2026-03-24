@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanelapp_app/core/services/cache/memory_cache_manager.dart';
+import 'package:onepanel_client/core/services/cache/memory_cache_manager.dart';
 
 void main() {
   group('MemoryCacheManager 测试', () {

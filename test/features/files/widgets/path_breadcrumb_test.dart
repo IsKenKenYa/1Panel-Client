@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanelapp_app/features/files/widgets/path_breadcrumb.dart';
+import 'package:onepanel_client/features/files/widgets/path_breadcrumb.dart';
 
 void main() {
   group('PathBreadcrumb Widget Tests', () {

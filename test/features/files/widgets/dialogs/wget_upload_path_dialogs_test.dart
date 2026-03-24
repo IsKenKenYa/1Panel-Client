@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanelapp_app/data/models/file_models.dart';
-import 'package:onepanelapp_app/features/files/widgets/dialogs/wget_dialog.dart';
-import 'package:onepanelapp_app/features/files/widgets/dialogs/upload_dialog.dart';
-import 'package:onepanelapp_app/features/files/widgets/dialogs/path_selector_dialog.dart';
-import 'package:onepanelapp_app/features/files/models/models.dart';
-import 'package:onepanelapp_app/features/files/files_provider.dart';
-import 'package:onepanelapp_app/l10n/generated/app_localizations.dart';
+import 'package:onepanel_client/data/models/file_models.dart';
+import 'package:onepanel_client/features/files/widgets/dialogs/wget_dialog.dart';
+import 'package:onepanel_client/features/files/widgets/dialogs/upload_dialog.dart';
+import 'package:onepanel_client/features/files/widgets/dialogs/path_selector_dialog.dart';
+import 'package:onepanel_client/features/files/models/models.dart';
+import 'package:onepanel_client/features/files/files_provider.dart';
+import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 
 class _MockFilesProvider extends FilesProvider {
   FilesData _mockData = const FilesData(

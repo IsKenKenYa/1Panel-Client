@@ -1,6 +1,6 @@
-import 'package:onepanelapp_app/data/models/file_models.dart';
-import 'package:onepanelapp_app/features/files/models/models.dart';
-import 'package:onepanelapp_app/features/files/files_provider.dart';
+import 'package:onepanel_client/data/models/file_models.dart';
+import 'package:onepanel_client/features/files/models/models.dart';
+import 'package:onepanel_client/features/files/files_provider.dart';
 
 /// Mock FilesProvider for testing
 class MockFilesProvider extends FilesProvider {

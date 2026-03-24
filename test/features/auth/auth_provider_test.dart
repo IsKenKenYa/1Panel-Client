@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:onepanelapp_app/features/auth/auth_provider.dart';
-import 'package:onepanelapp_app/data/models/auth_models.dart';
+import 'package:onepanel_client/features/auth/auth_provider.dart';
+import 'package:onepanel_client/data/models/auth_models.dart';
 
 void main() {
   group('AuthModels', () {

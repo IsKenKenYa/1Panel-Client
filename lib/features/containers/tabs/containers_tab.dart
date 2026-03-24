@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:onepanelapp_app/config/app_router.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/data/models/container_models.dart' hide ContainerStats;
-import 'package:onepanelapp_app/features/containers/containers_provider.dart';
-import 'package:onepanelapp_app/features/containers/widgets/container_card.dart';
-import 'package:onepanelapp_app/features/containers/widgets/containers_empty_widget.dart';
-import 'package:onepanelapp_app/features/containers/widgets/containers_stats_card_widget.dart';
+import 'package:onepanel_client/config/app_router.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/data/models/container_models.dart' hide ContainerStats;
+import 'package:onepanel_client/features/containers/containers_provider.dart';
+import 'package:onepanel_client/features/containers/widgets/container_card.dart';
+import 'package:onepanel_client/features/containers/widgets/containers_empty_widget.dart';
+import 'package:onepanel_client/features/containers/widgets/containers_stats_card_widget.dart';
 
 class ContainersTab extends StatelessWidget {
   final List<ContainerInfo> containers;

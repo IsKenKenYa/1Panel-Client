@@ -3,11 +3,11 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanelapp_app/api/v2/website_v2.dart';
-import 'package:onepanelapp_app/core/config/api_constants.dart';
-import 'package:onepanelapp_app/core/network/dio_client.dart';
-import 'package:onepanelapp_app/core/services/logger/logger_service.dart';
-import 'package:onepanelapp_app/data/models/openresty_models.dart';
+import 'package:onepanel_client/api/v2/website_v2.dart';
+import 'package:onepanel_client/core/config/api_constants.dart';
+import 'package:onepanel_client/core/network/dio_client.dart';
+import 'package:onepanel_client/core/services/logger/logger_service.dart';
+import 'package:onepanel_client/data/models/openresty_models.dart';
 
 import '../core/test_config_manager.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:onepanelapp_app/core/services/logger/logger_service.dart';
+import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import '../../data/models/container_models.dart';
 import '../../data/models/container_extension_models.dart';
 import 'container_service.dart';

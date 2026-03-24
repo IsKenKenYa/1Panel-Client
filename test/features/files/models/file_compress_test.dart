@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanelapp_app/data/models/file/file_compress.dart';
+import 'package:onepanel_client/data/models/file/file_compress.dart';
 
 void main() {
   group('FileCompress 模型测试', () {

@@ -1,5 +1,5 @@
-import 'package:onepanelapp_app/data/models/file_models.dart';
-import 'package:onepanelapp_app/core/config/api_config.dart';
+import 'package:onepanel_client/data/models/file_models.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
 import 'wget_download_status.dart';
 
 class FilesData {

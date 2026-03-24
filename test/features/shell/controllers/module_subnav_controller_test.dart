@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:onepanelapp_app/features/shell/controllers/module_subnav_controller.dart';
+import 'package:onepanel_client/features/shell/controllers/module_subnav_controller.dart';
 
 void main() {
   group('ModuleSubnavController', () {

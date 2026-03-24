@@ -4,7 +4,7 @@ import 'package:android_intent_plus/android_intent.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:onepanelapp_app/core/services/logger/logger_service.dart';
+import 'package:onepanel_client/core/services/logger/logger_service.dart';
 
 enum PermissionStatus {
   granted,

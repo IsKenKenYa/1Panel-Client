@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/core/services/app_settings_controller.dart';
-import 'package:onepanelapp_app/core/services/app_preferences_service.dart';
-import 'package:onepanelapp_app/core/services/cache/file_preview_cache_manager.dart';
-import 'package:onepanelapp_app/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/services/app_settings_controller.dart';
+import 'package:onepanel_client/core/services/app_preferences_service.dart';
+import 'package:onepanel_client/core/services/cache/file_preview_cache_manager.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 
 class CacheSettingsPage extends StatelessWidget {
   const CacheSettingsPage({super.key});

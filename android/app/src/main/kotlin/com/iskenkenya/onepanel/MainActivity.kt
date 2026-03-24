@@ -1,4 +1,4 @@
-package com.imken.onepanelapp.onepanelapp_app
+package com.iskenkenya.onepanel
 
 import io.flutter.embedding.android.FlutterActivity
 

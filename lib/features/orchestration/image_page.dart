@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/features/orchestration/providers/image_provider.dart';
-import 'package:onepanelapp_app/features/orchestration/widgets/image_card.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/features/orchestration/providers/image_provider.dart';
+import 'package:onepanel_client/features/orchestration/widgets/image_card.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
 
 class ImagePage extends StatefulWidget {
   const ImagePage({super.key});

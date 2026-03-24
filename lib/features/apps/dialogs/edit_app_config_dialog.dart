@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/data/models/app_config_models.dart';
-import 'package:onepanelapp_app/data/models/app_models.dart';
-import 'package:onepanelapp_app/features/apps/providers/installed_apps_provider.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/data/models/app_config_models.dart';
+import 'package:onepanel_client/data/models/app_models.dart';
+import 'package:onepanel_client/features/apps/providers/installed_apps_provider.dart';
 
 class EditAppConfigDialog extends StatefulWidget {
   final int appInstallId;

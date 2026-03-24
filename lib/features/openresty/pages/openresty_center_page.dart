@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/data/models/openresty_models.dart';
-import 'package:onepanelapp_app/features/openresty/pages/openresty_source_editor_page.dart';
-import 'package:onepanelapp_app/features/openresty/providers/openresty_provider.dart';
-import 'package:onepanelapp_app/features/openresty/widgets/openresty_error_view.dart';
-import 'package:onepanelapp_app/features/openresty/widgets/openresty_json_editor.dart';
-import 'package:onepanelapp_app/features/openresty/widgets/openresty_json_view.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/data/models/openresty_models.dart';
+import 'package:onepanel_client/features/openresty/pages/openresty_source_editor_page.dart';
+import 'package:onepanel_client/features/openresty/providers/openresty_provider.dart';
+import 'package:onepanel_client/features/openresty/widgets/openresty_error_view.dart';
+import 'package:onepanel_client/features/openresty/widgets/openresty_json_editor.dart';
+import 'package:onepanel_client/features/openresty/widgets/openresty_json_view.dart';
 
 class OpenRestyCenterPage extends StatefulWidget {
   const OpenRestyCenterPage({super.key});

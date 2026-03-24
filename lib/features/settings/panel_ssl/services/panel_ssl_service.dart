@@ -1,5 +1,5 @@
-import 'package:onepanelapp_app/api/v2/setting_v2.dart' as api;
-import 'package:onepanelapp_app/core/network/api_client_manager.dart';
+import 'package:onepanel_client/api/v2/setting_v2.dart' as api;
+import 'package:onepanel_client/core/network/api_client_manager.dart';
 
 class PanelSslService {
   api.SettingV2Api? _api;

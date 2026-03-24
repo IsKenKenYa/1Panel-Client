@@ -1,9 +1,9 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/features/shell/models/client_module.dart';
-import 'package:onepanelapp_app/features/shell/widgets/mobile_pinned_modules_customizer_sheet.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/features/shell/models/client_module.dart';
+import 'package:onepanel_client/features/shell/widgets/mobile_pinned_modules_customizer_sheet.dart';
 
 class MobileMoreModulesDrawer extends StatelessWidget {
   const MobileMoreModulesDrawer({

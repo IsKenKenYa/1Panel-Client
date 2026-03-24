@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../core/test_config_manager.dart';
-import 'package:onepanelapp_app/core/network/dio_client.dart';
+import 'package:onepanel_client/core/network/dio_client.dart';
 
 void main() {
   late DioClient client;

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanelapp_app/features/files/models/wget_download_status.dart';
+import 'package:onepanel_client/features/files/models/wget_download_status.dart';
 
 void main() {
   group('WgetDownloadStatus Model Tests', () {

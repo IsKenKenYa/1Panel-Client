@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
-import 'package:onepanelapp_app/core/services/logger/logger_service.dart';
-import 'package:onepanelapp_app/data/models/app_config_models.dart';
-import 'package:onepanelapp_app/data/models/app_models.dart';
-import 'package:onepanelapp_app/data/models/container_models.dart';
-import 'package:onepanelapp_app/features/apps/app_service.dart';
-import 'package:onepanelapp_app/features/containers/container_service.dart';
+import 'package:onepanel_client/core/services/logger/logger_service.dart';
+import 'package:onepanel_client/data/models/app_config_models.dart';
+import 'package:onepanel_client/data/models/app_models.dart';
+import 'package:onepanel_client/data/models/container_models.dart';
+import 'package:onepanel_client/features/apps/app_service.dart';
+import 'package:onepanel_client/features/containers/container_service.dart';
 
 class InstalledAppDetailProvider extends ChangeNotifier {
   final AppService _appService;

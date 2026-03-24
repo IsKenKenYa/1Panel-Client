@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:onepanelapp_app/data/models/container_models.dart' hide Container;
-import 'package:onepanelapp_app/features/containers/container_service.dart';
+import 'package:onepanel_client/data/models/container_models.dart' hide Container;
+import 'package:onepanel_client/features/containers/container_service.dart';
 
 class ContainerDetailProvider extends ChangeNotifier {
   ContainerDetailProvider({

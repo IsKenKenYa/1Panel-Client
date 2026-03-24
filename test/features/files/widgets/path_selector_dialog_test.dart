@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/data/models/file_models.dart';
-import 'package:onepanelapp_app/features/files/files_provider.dart';
-import 'package:onepanelapp_app/features/files/widgets/dialogs/path_selector_dialog.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/data/models/file_models.dart';
+import 'package:onepanel_client/features/files/files_provider.dart';
+import 'package:onepanel_client/features/files/widgets/dialogs/path_selector_dialog.dart';
 // import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Removed
 
 @GenerateMocks([FilesProvider])

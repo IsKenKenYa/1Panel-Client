@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:onepanelapp_app/features/shell/controllers/pinned_modules_controller.dart';
-import 'package:onepanelapp_app/features/shell/models/client_module.dart';
+import 'package:onepanel_client/features/shell/controllers/pinned_modules_controller.dart';
+import 'package:onepanel_client/features/shell/models/client_module.dart';
 
 void main() {
   group('PinnedModulesController', () {

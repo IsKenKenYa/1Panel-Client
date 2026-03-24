@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanelapp_app/features/server/server_connection_service.dart';
-import 'package:onepanelapp_app/features/server/server_models.dart';
-import 'package:onepanelapp_app/core/config/api_config.dart';
+import 'package:onepanel_client/features/server/server_connection_service.dart';
+import 'package:onepanel_client/features/server/server_models.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
 
 void main() {
   group('ServerConnectionService', () {

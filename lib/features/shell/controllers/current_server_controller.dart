@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:onepanelapp_app/core/config/api_config.dart';
-import 'package:onepanelapp_app/core/network/api_client_manager.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
+import 'package:onepanel_client/core/network/api_client_manager.dart';
 
 class CurrentServerController extends ChangeNotifier {
   bool _isLoading = false;

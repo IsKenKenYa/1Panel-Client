@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:onepanelapp_app/core/config/api_config.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
 import 'server_models.dart';
 import 'server_repository.dart';
 

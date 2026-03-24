@@ -1,4 +1,4 @@
-import 'package:onepanelapp_app/core/config/api_config.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
 
 class ServerMetricsSnapshot {
   const ServerMetricsSnapshot({

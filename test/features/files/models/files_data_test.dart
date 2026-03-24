@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanelapp_app/core/config/api_config.dart';
-import 'package:onepanelapp_app/data/models/file_models.dart';
-import 'package:onepanelapp_app/features/files/models/files_data.dart';
-import 'package:onepanelapp_app/features/files/models/wget_download_status.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
+import 'package:onepanel_client/data/models/file_models.dart';
+import 'package:onepanel_client/features/files/models/files_data.dart';
+import 'package:onepanel_client/features/files/models/wget_download_status.dart';
 
 void main() {
   group('FilesData Tests', () {

@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import '../test_helper.dart';
-import 'package:onepanelapp_app/api/v2/ai_v2.dart';
-import 'package:onepanelapp_app/api/v2/command_v2.dart';
-import 'package:onepanelapp_app/api/v2/toolbox_v2.dart';
-import 'package:onepanelapp_app/data/models/common_models.dart';
-import 'package:onepanelapp_app/data/models/mcp_models.dart';
-import 'package:onepanelapp_app/data/models/toolbox_models.dart';
+import 'package:onepanel_client/api/v2/ai_v2.dart';
+import 'package:onepanel_client/api/v2/command_v2.dart';
+import 'package:onepanel_client/api/v2/toolbox_v2.dart';
+import 'package:onepanel_client/data/models/common_models.dart';
+import 'package:onepanel_client/data/models/mcp_models.dart';
+import 'package:onepanel_client/data/models/toolbox_models.dart';
 
 Future<void> main() async {
   TestWidgetsFlutterBinding.ensureInitialized();

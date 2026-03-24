@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:onepanelapp_app/features/server/server_form_page.dart';
+import 'package:onepanel_client/features/server/server_form_page.dart';
 
 class ServerConfigPage extends StatelessWidget {
   const ServerConfigPage({super.key});

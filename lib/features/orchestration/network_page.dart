@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/features/orchestration/providers/network_provider.dart';
-import 'package:onepanelapp_app/features/orchestration/widgets/network_card.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/features/orchestration/providers/network_provider.dart';
+import 'package:onepanel_client/features/orchestration/widgets/network_card.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
 
 class NetworkPage extends StatefulWidget {
   const NetworkPage({super.key});

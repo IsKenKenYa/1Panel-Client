@@ -5,12 +5,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:onepanelapp_app/core/config/api_config.dart';
-import 'package:onepanelapp_app/features/apps/app_service.dart';
-import 'package:onepanelapp_app/features/apps/apps_page.dart';
-import 'package:onepanelapp_app/data/models/app_models.dart';
-import 'package:onepanelapp_app/features/shell/controllers/current_server_controller.dart';
-import 'package:onepanelapp_app/l10n/generated/app_localizations.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
+import 'package:onepanel_client/features/apps/app_service.dart';
+import 'package:onepanel_client/features/apps/apps_page.dart';
+import 'package:onepanel_client/data/models/app_models.dart';
+import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
+import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 
 class MockAppService extends Mock implements AppService {}
 class FakeAppInstalledSearchRequest extends Fake

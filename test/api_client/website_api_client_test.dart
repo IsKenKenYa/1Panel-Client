@@ -5,12 +5,12 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../api_client_test_base.dart';
 import '../core/test_config_manager.dart';
-import 'package:onepanelapp_app/api/v2/website_v2.dart';
-import 'package:onepanelapp_app/core/config/api_constants.dart';
-import 'package:onepanelapp_app/core/network/dio_client.dart';
-import 'package:onepanelapp_app/core/services/logger/logger_service.dart';
-import 'package:onepanelapp_app/data/models/common_models.dart';
-import 'package:onepanelapp_app/data/models/website_models.dart';
+import 'package:onepanel_client/api/v2/website_v2.dart';
+import 'package:onepanel_client/core/config/api_constants.dart';
+import 'package:onepanel_client/core/network/dio_client.dart';
+import 'package:onepanel_client/core/services/logger/logger_service.dart';
+import 'package:onepanel_client/data/models/common_models.dart';
+import 'package:onepanel_client/data/models/website_models.dart';
 
 String _prettyJson(Object? data) {
   try {

@@ -5,7 +5,7 @@ import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanelapp_app/core/network/dio_client.dart';
+import 'package:onepanel_client/core/network/dio_client.dart';
 
 /// 测试配置类
 class TestConfig {

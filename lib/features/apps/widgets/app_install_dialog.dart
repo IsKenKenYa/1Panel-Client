@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/l10n/generated/app_localizations.dart';
+import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 import '../../../data/models/app_models.dart';
 import '../providers/app_store_provider.dart';
 import '../app_service.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanelapp_app/features/files/widgets/selection_bar.dart';
-import 'package:onepanelapp_app/l10n/generated/app_localizations.dart';
+import 'package:onepanel_client/features/files/widgets/selection_bar.dart';
+import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 
 void main() {
   group('SelectionBar Widget Tests', () {

@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:onepanelapp_app/features/settings/panel_ssl/services/panel_ssl_service.dart';
+import 'package:onepanel_client/features/settings/panel_ssl/services/panel_ssl_service.dart';
 
 class PanelSslProvider extends ChangeNotifier {
   final PanelSslService _service;

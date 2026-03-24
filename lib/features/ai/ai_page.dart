@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/core/i18n/app_localizations.dart';
+import 'package:onepanel_client/core/i18n/app_localizations.dart';
 import 'ai_provider.dart';
 import '../../core/services/logger/logger_service.dart';
 

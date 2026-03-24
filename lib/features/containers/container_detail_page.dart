@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/data/models/container_models.dart' hide Container;
-import 'package:onepanelapp_app/features/containers/providers/container_detail_provider.dart';
-import 'package:onepanelapp_app/features/containers/widgets/container_logs_view.dart';
-import 'package:onepanelapp_app/features/containers/widgets/container_stats_view.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/data/models/container_models.dart' hide Container;
+import 'package:onepanel_client/features/containers/providers/container_detail_provider.dart';
+import 'package:onepanel_client/features/containers/widgets/container_logs_view.dart';
+import 'package:onepanel_client/features/containers/widgets/container_stats_view.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/shared/widgets/app_card.dart';
+import 'package:onepanel_client/shared/widgets/app_card.dart';
 
 class ContainerDetailPage extends StatelessWidget {
   final ContainerInfo container;

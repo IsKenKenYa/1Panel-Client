@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:onepanelapp_app/core/config/api_config.dart';
-import 'package:onepanelapp_app/core/network/api_client_manager.dart';
-import 'package:onepanelapp_app/data/repositories/monitor_repository.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
+import 'package:onepanel_client/core/network/api_client_manager.dart';
+import 'package:onepanel_client/data/repositories/monitor_repository.dart';
 import 'server_models.dart';
 
 /// 服务器仓库

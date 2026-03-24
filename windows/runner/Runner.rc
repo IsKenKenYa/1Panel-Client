@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.imken.onepanelapp" "\0"
-            VALUE "FileDescription", "onepanelapp_app" "\0"
+            VALUE "CompanyName", "IsKenKenYa" "\0"
+            VALUE "FileDescription", "1Panel Client" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "onepanelapp_app" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2025 com.imken.onepanelapp. All rights reserved." "\0"
-            VALUE "OriginalFilename", "onepanelapp_app.exe" "\0"
-            VALUE "ProductName", "onepanelapp_app" "\0"
+            VALUE "InternalName", "onepanel_client" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 IsKenKenYa. All rights reserved." "\0"
+            VALUE "OriginalFilename", "onepanel_client.exe" "\0"
+            VALUE "ProductName", "1Panel Client" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

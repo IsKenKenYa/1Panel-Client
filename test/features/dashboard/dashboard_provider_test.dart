@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanelapp_app/features/dashboard/dashboard_provider.dart';
-import 'package:onepanelapp_app/data/models/common_models.dart';
-import 'package:onepanelapp_app/data/models/dashboard_models.dart';
+import 'package:onepanel_client/features/dashboard/dashboard_provider.dart';
+import 'package:onepanel_client/data/models/common_models.dart';
+import 'package:onepanel_client/data/models/dashboard_models.dart';
 
 void main() {
   group('DashboardProvider - 状态管理测试', () {

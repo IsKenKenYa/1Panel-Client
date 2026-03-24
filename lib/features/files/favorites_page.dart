@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:onepanelapp_app/core/theme/app_design_tokens.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/data/models/file_models.dart';
-import 'package:onepanelapp_app/features/files/files_service.dart';
-import 'package:onepanelapp_app/core/utils/debug_error_dialog.dart';
-import 'package:onepanelapp_app/core/services/logger/logger_service.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/data/models/file_models.dart';
+import 'package:onepanel_client/features/files/files_service.dart';
+import 'package:onepanel_client/core/utils/debug_error_dialog.dart';
+import 'package:onepanel_client/core/services/logger/logger_service.dart';
 
 class FavoritesPage extends StatelessWidget {
   const FavoritesPage({super.key});

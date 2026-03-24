@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:onepanelapp_app/core/config/api_config.dart';
-import 'package:onepanelapp_app/features/server/server_detail_page.dart';
-import 'package:onepanelapp_app/features/server/server_models.dart';
-import 'package:onepanelapp_app/features/server/server_provider.dart';
-import 'package:onepanelapp_app/features/shell/controllers/current_server_controller.dart';
-import 'package:onepanelapp_app/features/shell/controllers/pinned_modules_controller.dart';
-import 'package:onepanelapp_app/l10n/generated/app_localizations.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
+import 'package:onepanel_client/features/server/server_detail_page.dart';
+import 'package:onepanel_client/features/server/server_models.dart';
+import 'package:onepanel_client/features/server/server_provider.dart';
+import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
+import 'package:onepanel_client/features/shell/controllers/pinned_modules_controller.dart';
+import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 
 class TestServerProvider extends ServerProvider {
   TestServerProvider(this._items);

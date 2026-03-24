@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
 
 import '../widgets/website_section_card.dart';
 import '../website_config_page.dart';

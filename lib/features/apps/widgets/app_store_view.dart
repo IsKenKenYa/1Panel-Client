@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/config/app_router.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/data/models/app_models.dart';
-import 'package:onepanelapp_app/features/apps/providers/app_store_provider.dart';
-import 'package:onepanelapp_app/shared/widgets/app_card.dart';
+import 'package:onepanel_client/config/app_router.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/data/models/app_models.dart';
+import 'package:onepanel_client/features/apps/providers/app_store_provider.dart';
+import 'package:onepanel_client/shared/widgets/app_card.dart';
 
-import 'package:onepanelapp_app/features/apps/widgets/app_icon.dart';
+import 'package:onepanel_client/features/apps/widgets/app_icon.dart';
 import 'app_install_dialog.dart';
 
 class AppStoreView extends StatefulWidget {

@@ -2,10 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../api_client_test_base.dart';
 import '../core/test_config_manager.dart';
-import 'package:onepanelapp_app/api/v2/container_v2.dart';
-import 'package:onepanelapp_app/core/network/dio_client.dart';
-import 'package:onepanelapp_app/data/models/common_models.dart';
-import 'package:onepanelapp_app/data/models/container_models.dart';
+import 'package:onepanel_client/api/v2/container_v2.dart';
+import 'package:onepanel_client/core/network/dio_client.dart';
+import 'package:onepanel_client/data/models/common_models.dart';
+import 'package:onepanel_client/data/models/container_models.dart';
 
 void main() {
   late DioClient client;

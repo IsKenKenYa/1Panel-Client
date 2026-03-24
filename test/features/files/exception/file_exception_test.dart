@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanelapp_app/core/network/network_exceptions.dart';
-import 'package:onepanelapp_app/data/models/file/file_info.dart';
-import 'package:onepanelapp_app/core/services/transfer/transfer_task.dart';
+import 'package:onepanel_client/core/network/network_exceptions.dart';
+import 'package:onepanel_client/data/models/file/file_info.dart';
+import 'package:onepanel_client/core/services/transfer/transfer_task.dart';
 
 void main() {
   group('异常处理测试', () {

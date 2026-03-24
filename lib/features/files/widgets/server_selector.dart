@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:onepanelapp_app/core/config/api_config.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
 
 class ServerSelector extends StatelessWidget {
   const ServerSelector({

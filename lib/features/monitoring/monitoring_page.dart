@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/core/theme/app_design_tokens.dart';
-import 'package:onepanelapp_app/shared/widgets/app_card.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/shared/widgets/app_card.dart';
 import 'package:provider/provider.dart';
 import '../../api/v2/monitor_v2.dart';
 import '../../data/repositories/monitor_repository.dart';

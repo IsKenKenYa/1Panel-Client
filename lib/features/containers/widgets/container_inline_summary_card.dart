@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/features/containers/containers_provider.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/features/containers/containers_provider.dart';
 
 class ContainerInlineSummaryCard extends StatelessWidget {
   const ContainerInlineSummaryCard({super.key});

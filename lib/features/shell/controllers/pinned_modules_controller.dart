@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:onepanelapp_app/features/shell/models/client_module.dart';
+import 'package:onepanel_client/features/shell/models/client_module.dart';
 
 class PinnedModulesController extends ChangeNotifier {
   static const _storageKey = 'client_shell_pinned_modules';

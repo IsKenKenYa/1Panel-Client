@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanelapp_app/config/app_router.dart';
-import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
-import 'package:onepanelapp_app/data/models/website_models.dart';
-import 'package:onepanelapp_app/features/shell/controllers/current_server_controller.dart';
-import 'package:onepanelapp_app/features/shell/widgets/server_aware_page_scaffold.dart';
-import 'package:onepanelapp_app/features/websites/providers/websites_provider.dart';
-import 'package:onepanelapp_app/features/websites/widgets/website_async_state_view.dart';
+import 'package:onepanel_client/config/app_router.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/data/models/website_models.dart';
+import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
+import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
+import 'package:onepanel_client/features/websites/providers/websites_provider.dart';
+import 'package:onepanel_client/features/websites/widgets/website_async_state_view.dart';
 
 class WebsitesPage extends StatelessWidget {
   const WebsitesPage({

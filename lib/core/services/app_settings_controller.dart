@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:onepanelapp_app/core/services/app_preferences_service.dart';
+import 'package:onepanel_client/core/services/app_preferences_service.dart';
 
 class AppSettingsController extends ChangeNotifier {
   AppSettingsController({AppPreferencesService? preferencesService})
