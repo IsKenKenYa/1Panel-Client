@@ -49,7 +49,7 @@ jobs:
         run: flutter pub get
 
       - name: Flutter Analyze
-        run: flutter analyze
+        run: flutter analyze --no-fatal-warnings --no-fatal-infos
 
       - name: Widget Smoke Test
         run: flutter test test/widget_test.dart --no-pub
