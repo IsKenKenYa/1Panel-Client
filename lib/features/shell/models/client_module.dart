@@ -65,6 +65,20 @@ extension ClientModuleX on ClientModule {
 
   bool get pinnable => kPinnableClientModules.contains(this);
 
+  bool get experimental {
+    switch (this) {
+      case ClientModule.websites:
+        return true;
+      case ClientModule.servers:
+      case ClientModule.files:
+      case ClientModule.containers:
+      case ClientModule.apps:
+      case ClientModule.settings:
+      case ClientModule.verification:
+        return false;
+    }
+  }
+
   IconData get icon {
     switch (this) {
       case ClientModule.servers:

@@ -82,5 +82,6 @@ void main() {
     expect(find.text('Bottom Tabs'), findsOneWidget);
     expect(find.text('Edit Tabs'), findsOneWidget);
     expect(find.text('Files'), findsWidgets);
+    expect(find.text('Experimental'), findsWidgets);
   });
 }

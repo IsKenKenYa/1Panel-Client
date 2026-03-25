@@ -66,6 +66,8 @@ app.*.map.json
 **/android/**/GeneratedPluginRegistrant.java
 **/android/key.properties
 *.jks
+key/1Panel-Client-upload-keystore.jks
+android/key.properties
 
 # iOS/XCode related
 **/ios/**/*.mode1v3
@@ -118,3 +120,4 @@ coverage/
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 !/dev/ci/**/Gemfile.lock
 test_output.txt
+key/

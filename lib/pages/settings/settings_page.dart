@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/services/app_settings_controller.dart';
 import 'package:onepanel_client/core/services/onboarding_service.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/features/settings/about_page.dart';
 import 'package:onepanel_client/features/settings/screens/theme_settings_page.dart';
 import 'package:onepanel_client/features/shell/widgets/shell_drawer_scope.dart';
 import 'package:onepanel_client/pages/settings/cache_settings_page.dart';
@@ -114,13 +116,21 @@ class SettingsPage extends StatelessWidget {
                   },
                 ),
                 ListTile(
+                  leading: const Icon(Icons.feedback_outlined),
+                  title: Text(l10n.settingsFeedback),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => _openFeedback(context),
+                ),
+                ListTile(
                   leading: const Icon(Icons.info_outline),
                   title: Text(l10n.settingsAbout),
+                  trailing: const Icon(Icons.chevron_right),
                   onTap: () {
-                    showAboutDialog(
-                      context: context,
-                      applicationName: l10n.appName,
-                      applicationVersion: '1.0.0',
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const AboutPage(),
+                      ),
                     );
                   },
                 ),
@@ -129,6 +139,18 @@ class SettingsPage extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+Future<void> _openFeedback(BuildContext context) async {
+  final ok = await launchUrl(
+    Uri.parse(AboutPage.issuesUrl),
+    mode: LaunchMode.externalApplication,
+  );
+  if (!ok && context.mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(context.l10n.settingsFeedbackOpenFailed)),
     );
   }
 }

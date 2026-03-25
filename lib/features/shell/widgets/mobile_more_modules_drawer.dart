@@ -174,15 +174,52 @@ class _ModuleTile extends StatelessWidget {
         color: enabled ? null : disabledColor,
       ),
       title: Text(module.label(l10n)),
-      subtitle: enabled ? null : Text(l10n.noServerSelectedDescription),
+      subtitle: enabled
+          ? (module.experimental ? Text(l10n.commonExperimental) : null)
+          : Text(l10n.noServerSelectedDescription),
       selected: module == selectedModule,
-      trailing: module == selectedModule
-          ? Icon(
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (enabled && module.experimental)
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: _ExperimentalTag(label: l10n.commonExperimental),
+            ),
+          if (module == selectedModule)
+            Icon(
               Icons.chevron_right,
               color: Theme.of(context).colorScheme.primary,
             )
-          : const Icon(Icons.chevron_right),
+          else
+            const Icon(Icons.chevron_right),
+        ],
+      ),
       onTap: () => onTap(module),
+    );
+  }
+}
+
+class _ExperimentalTag extends StatelessWidget {
+  const _ExperimentalTag({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: scheme.secondaryContainer,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        label,
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              color: scheme.onSecondaryContainer,
+            ),
+      ),
     );
   }
 }

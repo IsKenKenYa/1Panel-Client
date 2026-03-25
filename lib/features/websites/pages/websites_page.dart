@@ -88,11 +88,6 @@ class _WebsitesPageViewState extends State<_WebsitesPageView> {
           tooltip: l10n.openrestyPageTitle,
         ),
       ],
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => Navigator.pushNamed(context, AppRoutes.websiteCreate),
-        icon: const Icon(Icons.add),
-        label: Text(l10n.commonCreate),
-      ),
       body: Consumer<WebsitesProvider>(
         builder: (context, provider, _) {
           final data = provider.data;
@@ -115,7 +110,13 @@ class _WebsitesPageViewState extends State<_WebsitesPageView> {
               separatorBuilder: (_, __) => const SizedBox(height: 12),
               itemBuilder: (context, index) {
                 if (index == 0) {
-                  return _StatsCard(stats: data.stats);
+                  return Column(
+                    children: [
+                      const _ExperimentalBanner(),
+                      const SizedBox(height: 12),
+                      _StatsCard(stats: data.stats),
+                    ],
+                  );
                 }
                 if (data.websites.isEmpty) {
                   return _EmptyView(
@@ -276,6 +277,24 @@ class _StatsCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ExperimentalBanner extends StatelessWidget {
+  const _ExperimentalBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final scheme = Theme.of(context).colorScheme;
+    return Card(
+      color: scheme.secondaryContainer,
+      child: ListTile(
+        leading: const Icon(Icons.science_outlined),
+        title: Text(l10n.commonExperimental),
+        subtitle: Text(l10n.aboutExperimentalModulesDescription),
       ),
     );
   }

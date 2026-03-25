@@ -990,6 +990,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsAbout => '关于';
 
   @override
+  String get settingsFeedback => '反馈建议';
+
+  @override
+  String get settingsFeedbackOpenFailed => '无法打开反馈页面。';
+
+  @override
   String get settingsResetOnboardingDone => '已重置新手引导';
 
   @override
@@ -1071,6 +1077,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get languageEn => '英文';
 
   @override
+  String get commonExperimental => '抢先体验';
+
+  @override
   String get onboardingSkip => '跳过';
 
   @override
@@ -1114,6 +1123,76 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get coachServerCardDesc => '添加完成后，点击服务器卡片查看详情，并进入文件、容器、网站等功能。';
+
+  @override
+  String get aboutPageTitle => '关于 1Panel Client';
+
+  @override
+  String get aboutBuildSectionTitle => '版本信息';
+
+  @override
+  String get aboutVersionLabel => '版本号';
+
+  @override
+  String get aboutBuildLabel => '构建号';
+
+  @override
+  String get aboutChannelLabel => '发布渠道';
+
+  @override
+  String get aboutPreviewSectionTitle => '抢先体验版';
+
+  @override
+  String get aboutPreviewSummary => '当前 Android 版本用于抢先体验和收集早期用户反馈。';
+
+  @override
+  String get aboutPreviewNoAutoUpdate =>
+      '当前抢先体验版不支持自动更新，请通过 GitHub Pre-release 获取新版本。';
+
+  @override
+  String get aboutPreviewFeedback => '官方唯一反馈渠道：GitHub Issues。';
+
+  @override
+  String get aboutFeedbackSectionTitle => '反馈渠道';
+
+  @override
+  String get aboutFeedbackAction => '打开 GitHub Issues';
+
+  @override
+  String get aboutFeedbackHint => '欢迎反馈 bug、交互问题和建议，帮助我们继续打磨 1Panel Client。';
+
+  @override
+  String get aboutReleaseNotesSectionTitle => '当前版本说明';
+
+  @override
+  String get aboutReleaseNotesBody => '本次抢先体验版重点开放多服务器管理、欢迎引导优化，以及网站管理的早期流程体验。';
+
+  @override
+  String get aboutRepositorySectionTitle => '项目仓库';
+
+  @override
+  String get aboutRepositoryOpenAction => '打开仓库';
+
+  @override
+  String get aboutRepositoryHttpsLabel => 'HTTPS';
+
+  @override
+  String get aboutRepositorySshLabel => 'SSH';
+
+  @override
+  String get aboutReleaseAction => '查看抢先体验版本';
+
+  @override
+  String get aboutLinkOpenFailed => '无法打开链接。';
+
+  @override
+  String get aboutExperimentalModulesTitle => '实验性模块';
+
+  @override
+  String get aboutExperimentalModulesDescription => '以下模块仍在持续打磨中，可能会根据反馈继续调整。';
+
+  @override
+  String get aboutExperimentalModulesList => '网站、OpenResty、数据库、防火墙、终端、监控';
 
   @override
   String get dashboardTitle => '仪表盘';

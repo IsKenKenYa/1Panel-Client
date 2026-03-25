@@ -5,6 +5,39 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+def resolveSigningValue = { String propertyKey, String envKey ->
+    def envValue = System.getenv(envKey)
+    if (envValue != null && !envValue.trim().isEmpty()) {
+        return envValue.trim()
+    }
+    def propertyValue = keystoreProperties[propertyKey]
+    if (propertyValue == null) {
+        return null
+    }
+    def normalized = propertyValue.toString().trim()
+    if (normalized.isEmpty() || normalized.startsWith("REPLACE_WITH_")) {
+        return null
+    }
+    return normalized
+}
+
+def releaseStoreFilePath = resolveSigningValue("storeFile", "ANDROID_KEYSTORE_PATH")
+def releaseKeyAlias = resolveSigningValue("keyAlias", "ANDROID_KEY_ALIAS")
+def releaseKeyPassword = resolveSigningValue("keyPassword", "ANDROID_KEY_PASSWORD")
+def releaseStorePassword = resolveSigningValue("storePassword", "ANDROID_KEYSTORE_PASSWORD")
+def hasReleaseSigning = [
+    releaseStoreFilePath,
+    releaseKeyAlias,
+    releaseKeyPassword,
+    releaseStorePassword,
+].every { it != null }
+
 android {
     namespace = "com.iskenkenya.onepanel"
     compileSdk = flutter.compileSdkVersion
@@ -30,11 +63,21 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        release {
+            if (hasReleaseSigning) {
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
+                storeFile rootProject.file(releaseStoreFilePath)
+                storePassword releaseStorePassword
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.debug
+            // Use upload keystore when signing data is available; otherwise fallback for local preview.
+            signingConfig = hasReleaseSigning ? signingConfigs.release : signingConfigs.debug
         }
     }
 }

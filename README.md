@@ -32,6 +32,14 @@
 3. Add your first server in the app.
 4. Open the server and start using the modules you need.
 
+## Experimental Preview
+
+- The current Android preview build is for early access and feedback collection.
+- Automatic in-app updates are not available in this channel yet.
+- New preview builds are published through GitHub Pre-release.
+- The official feedback channel is GitHub Issues:
+  - [Issues](https://github.com/IsKenKenYa/1Panel-Client/issues)
+
 ## 🛠️ Technology Stack
 
 - **Framework**: Flutter 3.16+ with Material Design 3

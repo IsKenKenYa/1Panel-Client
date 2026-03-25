@@ -2012,6 +2012,18 @@ abstract class AppLocalizations {
   /// **'About'**
   String get settingsAbout;
 
+  /// No description provided for @settingsFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback'**
+  String get settingsFeedback;
+
+  /// No description provided for @settingsFeedbackOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the feedback page.'**
+  String get settingsFeedbackOpenFailed;
+
   /// No description provided for @settingsResetOnboardingDone.
   ///
   /// In en, this message translates to:
@@ -2174,6 +2186,12 @@ abstract class AppLocalizations {
   /// **'English'**
   String get languageEn;
 
+  /// No description provided for @commonExperimental.
+  ///
+  /// In en, this message translates to:
+  /// **'Experimental'**
+  String get commonExperimental;
+
   /// No description provided for @onboardingSkip.
   ///
   /// In en, this message translates to:
@@ -2263,6 +2281,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'After connecting, tap a server card to open details and jump into files, containers, websites, and more.'**
   String get coachServerCardDesc;
+
+  /// No description provided for @aboutPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'About 1Panel Client'**
+  String get aboutPageTitle;
+
+  /// No description provided for @aboutBuildSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Build information'**
+  String get aboutBuildSectionTitle;
+
+  /// No description provided for @aboutVersionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get aboutVersionLabel;
+
+  /// No description provided for @aboutBuildLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Build'**
+  String get aboutBuildLabel;
+
+  /// No description provided for @aboutChannelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel'**
+  String get aboutChannelLabel;
+
+  /// No description provided for @aboutPreviewSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Experimental Preview'**
+  String get aboutPreviewSectionTitle;
+
+  /// No description provided for @aboutPreviewSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'This Android preview build is for early access and collecting user feedback.'**
+  String get aboutPreviewSummary;
+
+  /// No description provided for @aboutPreviewNoAutoUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic updates are not available in this preview. Download newer builds from GitHub Pre-release.'**
+  String get aboutPreviewNoAutoUpdate;
+
+  /// No description provided for @aboutPreviewFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Official feedback channel: GitHub Issues.'**
+  String get aboutPreviewFeedback;
+
+  /// No description provided for @aboutFeedbackSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback'**
+  String get aboutFeedbackSectionTitle;
+
+  /// No description provided for @aboutFeedbackAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Open GitHub Issues'**
+  String get aboutFeedbackAction;
+
+  /// No description provided for @aboutFeedbackHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Report bugs, usability issues, and suggestions in the official issue tracker.'**
+  String get aboutFeedbackHint;
+
+  /// No description provided for @aboutReleaseNotesSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Current preview notes'**
+  String get aboutReleaseNotesSectionTitle;
+
+  /// No description provided for @aboutReleaseNotesBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This preview focuses on multi-server management, onboarding polish, and early website management workflows.'**
+  String get aboutReleaseNotesBody;
+
+  /// No description provided for @aboutRepositorySectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Repository'**
+  String get aboutRepositorySectionTitle;
+
+  /// No description provided for @aboutRepositoryOpenAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Open repository'**
+  String get aboutRepositoryOpenAction;
+
+  /// No description provided for @aboutRepositoryHttpsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTPS'**
+  String get aboutRepositoryHttpsLabel;
+
+  /// No description provided for @aboutRepositorySshLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'SSH'**
+  String get aboutRepositorySshLabel;
+
+  /// No description provided for @aboutReleaseAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Preview Releases'**
+  String get aboutReleaseAction;
+
+  /// No description provided for @aboutLinkOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the link.'**
+  String get aboutLinkOpenFailed;
+
+  /// No description provided for @aboutExperimentalModulesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Experimental modules'**
+  String get aboutExperimentalModulesTitle;
+
+  /// No description provided for @aboutExperimentalModulesDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Some modules are still being refined for the preview channel and may change based on feedback.'**
+  String get aboutExperimentalModulesDescription;
+
+  /// No description provided for @aboutExperimentalModulesList.
+  ///
+  /// In en, this message translates to:
+  /// **'Websites, OpenResty, Databases, Firewall, Terminal, Monitoring'**
+  String get aboutExperimentalModulesList;
 
   /// No description provided for @dashboardTitle.
   ///

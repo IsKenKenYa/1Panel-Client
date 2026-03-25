@@ -32,6 +32,14 @@
 3. 在应用里添加第一台服务器。
 4. 进入服务器详情，开始使用你需要的模块。
 
+## 抢先体验版说明
+
+- 当前 Android 版本主要用于抢先体验与收集用户反馈。
+- 这个渠道暂不支持应用内自动更新。
+- 后续版本将通过 GitHub Pre-release 持续发布。
+- 当前官方唯一反馈渠道为 GitHub Issues：
+  - [Issues](https://github.com/IsKenKenYa/1Panel-Client/issues)
+
 ## 🛠️ 技术栈
 
 - **框架**: Flutter 3.16+ 配合 Material Design 3

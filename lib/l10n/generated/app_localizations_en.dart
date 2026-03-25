@@ -1000,6 +1000,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsAbout => 'About';
 
   @override
+  String get settingsFeedback => 'Feedback';
+
+  @override
+  String get settingsFeedbackOpenFailed => 'Could not open the feedback page.';
+
+  @override
   String get settingsResetOnboardingDone => 'Welcome guide has been reset';
 
   @override
@@ -1085,6 +1091,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageEn => 'English';
 
   @override
+  String get commonExperimental => 'Experimental';
+
+  @override
   String get onboardingSkip => 'Skip';
 
   @override
@@ -1134,6 +1143,82 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get coachServerCardDesc =>
       'After connecting, tap a server card to open details and jump into files, containers, websites, and more.';
+
+  @override
+  String get aboutPageTitle => 'About 1Panel Client';
+
+  @override
+  String get aboutBuildSectionTitle => 'Build information';
+
+  @override
+  String get aboutVersionLabel => 'Version';
+
+  @override
+  String get aboutBuildLabel => 'Build';
+
+  @override
+  String get aboutChannelLabel => 'Channel';
+
+  @override
+  String get aboutPreviewSectionTitle => 'Experimental Preview';
+
+  @override
+  String get aboutPreviewSummary =>
+      'This Android preview build is for early access and collecting user feedback.';
+
+  @override
+  String get aboutPreviewNoAutoUpdate =>
+      'Automatic updates are not available in this preview. Download newer builds from GitHub Pre-release.';
+
+  @override
+  String get aboutPreviewFeedback =>
+      'Official feedback channel: GitHub Issues.';
+
+  @override
+  String get aboutFeedbackSectionTitle => 'Feedback';
+
+  @override
+  String get aboutFeedbackAction => 'Open GitHub Issues';
+
+  @override
+  String get aboutFeedbackHint =>
+      'Report bugs, usability issues, and suggestions in the official issue tracker.';
+
+  @override
+  String get aboutReleaseNotesSectionTitle => 'Current preview notes';
+
+  @override
+  String get aboutReleaseNotesBody =>
+      'This preview focuses on multi-server management, onboarding polish, and early website management workflows.';
+
+  @override
+  String get aboutRepositorySectionTitle => 'Repository';
+
+  @override
+  String get aboutRepositoryOpenAction => 'Open repository';
+
+  @override
+  String get aboutRepositoryHttpsLabel => 'HTTPS';
+
+  @override
+  String get aboutRepositorySshLabel => 'SSH';
+
+  @override
+  String get aboutReleaseAction => 'Open Preview Releases';
+
+  @override
+  String get aboutLinkOpenFailed => 'Could not open the link.';
+
+  @override
+  String get aboutExperimentalModulesTitle => 'Experimental modules';
+
+  @override
+  String get aboutExperimentalModulesDescription =>
+      'Some modules are still being refined for the preview channel and may change based on feedback.';
+
+  @override
+  String get aboutExperimentalModulesList =>
+      'Websites, OpenResty, Databases, Firewall, Terminal, Monitoring';
 
   @override
   String get dashboardTitle => 'Dashboard';
