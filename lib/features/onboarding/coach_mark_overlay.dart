@@ -55,6 +55,7 @@ class _CoachMarkOverlayState extends State<CoachMarkOverlay> {
                 height: rect.height + 12,
                 child: IgnorePointer(
                   child: DecoratedBox(
+                    key: const Key('coachmark-highlight'),
                     decoration: BoxDecoration(
                       borderRadius:
                           BorderRadius.circular(AppDesignTokens.radiusMd),
@@ -131,18 +132,29 @@ class _CoachMarkOverlayState extends State<CoachMarkOverlay> {
   }
 
   Rect? _getTargetRect(GlobalKey key) {
-    final context = key.currentContext;
-    if (context == null) {
+    final targetContext = key.currentContext;
+    if (targetContext == null) {
       return null;
     }
 
-    final render = context.findRenderObject();
-    if (render is! RenderBox || !render.hasSize) {
+    final overlayRender = context.findAncestorRenderObjectOfType<RenderBox>();
+    final targetRender = targetContext.findRenderObject();
+    if (overlayRender is! RenderBox ||
+        targetRender is! RenderBox ||
+        !overlayRender.hasSize ||
+        !targetRender.hasSize) {
       return null;
     }
 
-    final offset = render.localToGlobal(Offset.zero);
+    final globalOffset = targetRender.localToGlobal(Offset.zero);
+    final offset = overlayRender.globalToLocal(
+      globalOffset,
+    );
     return Rect.fromLTWH(
-        offset.dx, offset.dy, render.size.width, render.size.height);
+      offset.dx,
+      offset.dy,
+      targetRender.size.width,
+      targetRender.size.height,
+    );
   }
 }

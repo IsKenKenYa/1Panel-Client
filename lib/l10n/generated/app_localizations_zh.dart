@@ -984,13 +984,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsServerManagement => '服务器管理';
 
   @override
-  String get settingsResetOnboarding => '重新查看引导';
+  String get settingsResetOnboarding => '重新体验新手引导';
 
   @override
   String get settingsAbout => '关于';
 
   @override
-  String get settingsResetOnboardingDone => '已重置引导状态';
+  String get settingsResetOnboardingDone => '已重置新手引导';
 
   @override
   String get settingsCacheTitle => '缓存设置';
@@ -1080,34 +1080,40 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboardingStart => '开始使用';
 
   @override
-  String get onboardingTitle1 => '统一管理 1Panel 服务器';
+  String get onboardingTitle1 => '把 1Panel 服务器装进一个客户端';
 
   @override
-  String get onboardingDesc1 => '在移动端完成监控、文件与安全相关操作。';
+  String get onboardingDesc1 => '集中连接和管理多台 1Panel 服务器，常用操作不再分散在不同设备里。';
 
   @override
-  String get onboardingTitle2 => '快速切换与清晰状态';
+  String get onboardingTitle2 => '把常用运维入口放到手边';
 
   @override
-  String get onboardingDesc2 => '卡片化信息让你快速判断服务器运行状态。';
+  String get onboardingDesc2 => '查看状态、管理文件、容器、应用和网站，日常操作都能更快完成。';
 
   @override
-  String get onboardingTitle3 => '先稳 UI，再接 API';
+  String get onboardingTitle3 => '切换更快，状态更清楚';
 
   @override
-  String get onboardingDesc3 => '缺失接口会记录在评审文档，便于后续并行适配。';
+  String get onboardingDesc3 => '通过清晰的状态卡片和快捷入口，快速判断服务器情况并切换到目标机器。';
 
   @override
-  String get coachServerAddTitle => '先添加一个服务器';
+  String get onboardingTitle4 => '先连接第一台服务器';
 
   @override
-  String get coachServerAddDesc => '点击这里创建服务器配置。';
+  String get onboardingDesc4 => '准备好服务器地址和 API Key，连接后就可以开始使用 1Panel Client。';
 
   @override
-  String get coachServerCardTitle => '点击卡片进入详情';
+  String get coachServerAddTitle => '先添加第一台服务器';
 
   @override
-  String get coachServerCardDesc => '在详情页中访问各个功能模块与快捷操作。';
+  String get coachServerAddDesc => '点击右上角添加按钮，填写服务器地址和 API Key 开始连接。';
+
+  @override
+  String get coachServerCardTitle => '从服务器卡片进入功能';
+
+  @override
+  String get coachServerCardDesc => '添加完成后，点击服务器卡片查看详情，并进入文件、容器、网站等功能。';
 
   @override
   String get dashboardTitle => '仪表盘';

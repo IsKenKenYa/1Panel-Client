@@ -1,0 +1,17 @@
+# Conventional Commit 双语模板（请按此格式填写）
+# 规则：中文为主，英文为辅；英文内容需与中文内容完全相同（可以直接复制中文）。
+# 保持 Conventional Commits 规范：`type` 为英文关键字（feat, fix, docs, style, refactor, perf, test, chore, build, ci），`scope` 可选。
+
+# Header（必须，示例）：
+# <type>(<scope>): 中文简短描述
+#
+# 示例：
+# feat(auth): 添加用户登录
+#
+# 详细描述（可选）：
+# 中文详细描述，分行书写
+#
+# EN: <请保留与上面 Header 完全相同的内容，或手动粘贴相同中文>
+# EN-BODY:
+# <请保留与上面详细描述完全相同的内容，或手动粘贴相同中文>
+

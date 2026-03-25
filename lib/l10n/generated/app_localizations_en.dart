@@ -994,13 +994,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsServerManagement => 'Server management';
 
   @override
-  String get settingsResetOnboarding => 'Replay onboarding';
+  String get settingsResetOnboarding => 'Replay welcome guide';
 
   @override
   String get settingsAbout => 'About';
 
   @override
-  String get settingsResetOnboardingDone => 'Onboarding state has been reset';
+  String get settingsResetOnboardingDone => 'Welcome guide has been reset';
 
   @override
   String get settingsCacheTitle => 'Cache Settings';
@@ -1094,38 +1094,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingStart => 'Start';
 
   @override
-  String get onboardingTitle1 => 'Manage your 1Panel servers';
+  String get onboardingTitle1 => 'Bring your 1Panel servers into one client';
 
   @override
   String get onboardingDesc1 =>
-      'Unified mobile operations for monitoring, files, and security.';
+      'Connect and manage multiple 1Panel servers from one place, with your common tasks always within reach.';
 
   @override
-  String get onboardingTitle2 => 'Fast switching and clear status';
+  String get onboardingTitle2 => 'Keep everyday operations close';
 
   @override
   String get onboardingDesc2 =>
-      'View key metrics and switch servers quickly with a card-based layout.';
+      'Check status, manage files, containers, apps, and websites without bouncing between devices.';
 
   @override
-  String get onboardingTitle3 => 'Built for progressive API integration';
+  String get onboardingTitle3 => 'Switch faster and read status clearly';
 
   @override
   String get onboardingDesc3 =>
-      'UI is stable first. Missing APIs are tracked in review docs for follow-up.';
+      'Use clear server cards and quick entry points to understand each machine and jump to the right one quickly.';
+
+  @override
+  String get onboardingTitle4 => 'Connect your first server';
+
+  @override
+  String get onboardingDesc4 =>
+      'Prepare your server address and API Key, then connect your first machine to start using 1Panel Client.';
 
   @override
   String get coachServerAddTitle => 'Add your first server';
 
   @override
-  String get coachServerAddDesc => 'Tap here to create a server profile.';
+  String get coachServerAddDesc =>
+      'Use the add button in the top-right corner to enter your server address and API Key.';
 
   @override
-  String get coachServerCardTitle => 'Open server details';
+  String get coachServerCardTitle => 'Open a server to continue';
 
   @override
   String get coachServerCardDesc =>
-      'Tap a server card to see modules and quick actions.';
+      'After connecting, tap a server card to open details and jump into files, containers, websites, and more.';
 
   @override
   String get dashboardTitle => 'Dashboard';

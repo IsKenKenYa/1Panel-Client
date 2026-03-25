@@ -16,19 +16,26 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final OnboardingService _service = OnboardingService();
   int _index = 0;
 
+  Future<void> _skip() async {
+    await _service.completeOnboarding();
+    if (!mounted) {
+      return;
+    }
+    Navigator.pushReplacementNamed(context, AppRoutes.home);
+  }
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
 
-  Future<void> _finish() async {
+  Future<void> _start() async {
     await _service.completeOnboarding();
     if (!mounted) {
       return;
     }
-
-    Navigator.pushReplacementNamed(context, AppRoutes.home);
+    Navigator.pushReplacementNamed(context, AppRoutes.serverConfig);
   }
 
   @override
@@ -36,12 +43,17 @@ class _OnboardingPageState extends State<OnboardingPage> {
     final l10n = context.l10n;
     final pages = [
       (l10n.onboardingTitle1, l10n.onboardingDesc1, Icons.dns_rounded),
-      (l10n.onboardingTitle2, l10n.onboardingDesc2, Icons.speed_rounded),
+      (
+        l10n.onboardingTitle2,
+        l10n.onboardingDesc2,
+        Icons.dashboard_customize_rounded,
+      ),
       (
         l10n.onboardingTitle3,
         l10n.onboardingDesc3,
-        Icons.integration_instructions_rounded
+        Icons.speed_rounded,
       ),
+      (l10n.onboardingTitle4, l10n.onboardingDesc4, Icons.key_rounded),
     ];
 
     return Scaffold(
@@ -54,7 +66,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed: _finish,
+                    onPressed: _skip,
                     child: Text(l10n.onboardingSkip),
                   ),
                 ],
@@ -115,7 +127,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 child: FilledButton(
                   onPressed: () async {
                     if (_index == pages.length - 1) {
-                      await _finish();
+                      await _start();
                       return;
                     }
 

@@ -54,7 +54,7 @@ class _ServerListPageState extends State<ServerListPage> {
   }
 
   Future<void> _onProviderUpdated() async {
-    if (!widget.enableCoach || _serverProvider.servers.isEmpty) {
+    if (!widget.enableCoach) {
       return;
     }
 
@@ -86,7 +86,7 @@ class _ServerListPageState extends State<ServerListPage> {
           ),
         );
       }
-      if (showCard) {
+      if (showCard && _serverProvider.servers.isNotEmpty) {
         steps.add(
           CoachMarkStep(
             targetKey: _firstCardKey,

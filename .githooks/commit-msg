@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+set -e
+# Enhanced commit-msg hook:
+# - 验证 Conventional Commits header
+# - 确保提交消息包含 CN / EN 两个段（CN/EN-BODY），且两者内容完全相同。
+# - 如果缺少任一段或已有段内容不一致，钩子会把两段都替换为相同内容（默认把中文放在前面）。
+
+MSG_FILE="$1"
+if [ -z "$MSG_FILE" ] || [ ! -f "$MSG_FILE" ]; then
+  echo "[commit-msg] missing commit message file"
+  exit 1
+fi
+
+# Get header (first non-empty line)
+header="$(awk 'NF{print; exit}' "$MSG_FILE" | sed -e 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+
+if ! echo "$header" | grep -E -q '^(feat|fix|docs|style|refactor|perf|test|chore|build|ci)(\([^\)]+\))?: .+'; then
+  echo "ERROR: 提交头不符合 Conventional Commits 规则。格式示例：feat(auth): 添加登录功能"
+  exit 1
+fi
+
+# Extract body: content after the first blank line
+body="$(awk 'BEGIN{inbody=0} { if(NR==1) next; if(inbody){print} else if($0==""){inbody=1} }' "$MSG_FILE" | sed -e 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+
+
+# Build bilingual block: CN then EN, both identical
+SEP="\n---\n"
+BILINGUAL_BLOCK="$SEP"
+BILINGUAL_BLOCK+="CN: $header\n\nCN-BODY:\n"
+if [ -n "$body" ]; then
+  # add body preserving newlines
+  while IFS= read -r line; do
+    BILINGUAL_BLOCK+="$line\n"
+  done <<< "$body"
+else
+  BILINGUAL_BLOCK+="(无详细描述)\n"
+fi
+BILINGUAL_BLOCK+="\nEN: $header\n\nEN-BODY:\n"
+if [ -n "$body" ]; then
+  while IFS= read -r line; do
+    BILINGUAL_BLOCK+="$line\n"
+  done <<< "$body"
+else
+  BILINGUAL_BLOCK+="(无详细描述)\n"
+fi
+
+# If there's already a '---' marker, replace everything from the first '---' onward
+if grep -q $'^---$' "$MSG_FILE"; then
+  prefix=$(awk ' { if($0=="---"){exit} print $0 }' "$MSG_FILE")
+  printf "%s%s" "$prefix" "$BILINGUAL_BLOCK" > "$MSG_FILE"
+else
+  printf "%s%s" "$(cat "$MSG_FILE")" "$BILINGUAL_BLOCK" > "$MSG_FILE"
+fi
+
+exit 0

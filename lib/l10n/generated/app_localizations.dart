@@ -2003,7 +2003,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsResetOnboarding.
   ///
   /// In en, this message translates to:
-  /// **'Replay onboarding'**
+  /// **'Replay welcome guide'**
   String get settingsResetOnboarding;
 
   /// No description provided for @settingsAbout.
@@ -2015,7 +2015,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsResetOnboardingDone.
   ///
   /// In en, this message translates to:
-  /// **'Onboarding state has been reset'**
+  /// **'Welcome guide has been reset'**
   String get settingsResetOnboardingDone;
 
   /// No description provided for @settingsCacheTitle.
@@ -2195,38 +2195,50 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingTitle1.
   ///
   /// In en, this message translates to:
-  /// **'Manage your 1Panel servers'**
+  /// **'Bring your 1Panel servers into one client'**
   String get onboardingTitle1;
 
   /// No description provided for @onboardingDesc1.
   ///
   /// In en, this message translates to:
-  /// **'Unified mobile operations for monitoring, files, and security.'**
+  /// **'Connect and manage multiple 1Panel servers from one place, with your common tasks always within reach.'**
   String get onboardingDesc1;
 
   /// No description provided for @onboardingTitle2.
   ///
   /// In en, this message translates to:
-  /// **'Fast switching and clear status'**
+  /// **'Keep everyday operations close'**
   String get onboardingTitle2;
 
   /// No description provided for @onboardingDesc2.
   ///
   /// In en, this message translates to:
-  /// **'View key metrics and switch servers quickly with a card-based layout.'**
+  /// **'Check status, manage files, containers, apps, and websites without bouncing between devices.'**
   String get onboardingDesc2;
 
   /// No description provided for @onboardingTitle3.
   ///
   /// In en, this message translates to:
-  /// **'Built for progressive API integration'**
+  /// **'Switch faster and read status clearly'**
   String get onboardingTitle3;
 
   /// No description provided for @onboardingDesc3.
   ///
   /// In en, this message translates to:
-  /// **'UI is stable first. Missing APIs are tracked in review docs for follow-up.'**
+  /// **'Use clear server cards and quick entry points to understand each machine and jump to the right one quickly.'**
   String get onboardingDesc3;
+
+  /// No description provided for @onboardingTitle4.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect your first server'**
+  String get onboardingTitle4;
+
+  /// No description provided for @onboardingDesc4.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepare your server address and API Key, then connect your first machine to start using 1Panel Client.'**
+  String get onboardingDesc4;
 
   /// No description provided for @coachServerAddTitle.
   ///
@@ -2237,19 +2249,19 @@ abstract class AppLocalizations {
   /// No description provided for @coachServerAddDesc.
   ///
   /// In en, this message translates to:
-  /// **'Tap here to create a server profile.'**
+  /// **'Use the add button in the top-right corner to enter your server address and API Key.'**
   String get coachServerAddDesc;
 
   /// No description provided for @coachServerCardTitle.
   ///
   /// In en, this message translates to:
-  /// **'Open server details'**
+  /// **'Open a server to continue'**
   String get coachServerCardTitle;
 
   /// No description provided for @coachServerCardDesc.
   ///
   /// In en, this message translates to:
-  /// **'Tap a server card to see modules and quick actions.'**
+  /// **'After connecting, tap a server card to open details and jump into files, containers, websites, and more.'**
   String get coachServerCardDesc;
 
   /// No description provided for @dashboardTitle.

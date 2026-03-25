@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/server/server_repository.dart';
+import 'package:provider/provider.dart';
+import 'package:onepanel_client/config/app_router.dart';
 import 'server_connection_service.dart';
 
 class ServerFormPage extends StatefulWidget {
@@ -72,7 +75,8 @@ class _ServerFormPageState extends State<ServerFormPage> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${context.l10n.serverTestFailed}: ${result.errorMessage}'),
+            content: Text(
+                '${context.l10n.serverTestFailed}: ${result.errorMessage}'),
             backgroundColor: Colors.red,
           ),
         );
@@ -92,6 +96,7 @@ class _ServerFormPageState extends State<ServerFormPage> {
     }
 
     final l10n = context.l10n;
+    final currentServerController = context.read<CurrentServerController>();
     setState(() {
       _saving = true;
     });
@@ -107,6 +112,7 @@ class _ServerFormPageState extends State<ServerFormPage> {
       );
 
       await _repository.saveConfig(config);
+      await currentServerController.refresh();
       if (!mounted) {
         return;
       }
@@ -114,7 +120,11 @@ class _ServerFormPageState extends State<ServerFormPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.serverFormSaveSuccess)),
       );
-      Navigator.pop(context, true);
+      if (Navigator.of(context).canPop()) {
+        Navigator.pop(context, true);
+        return;
+      }
+      Navigator.pushReplacementNamed(context, AppRoutes.home);
     } catch (e) {
       if (!mounted) {
         return;

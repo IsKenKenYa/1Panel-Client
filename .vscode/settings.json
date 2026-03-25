@@ -1,3 +1,16 @@
 {
-    "chatgpt.openOnStartup": true
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "Codegeex.RepoIndex": true,
+  "Codegeex.CommitMessageStyle": "ConventionalCommits",
+  "Codegeex.CommitMessage.LanguagePreference": "中文",
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+      "file": ".github/git-commit-instructions.md"
+    },
+    {
+        "text": "请始终以中文为主生成 commit message，并遵循 Conventional Commits 规范（type 使用英文关键字如 feat、fix、docs 等；scope 仅在必要时使用）。要求：1) subject 请用中文，简洁、准确；2) 如果需要英文副本，请在消息末尾添加\n\nEN: <与 Header 完全相同的内容，可以直接复制中文>\n\nEN-BODY:\n<与中文详细描述完全相同的内容，直接复制中文>\n\n即英文副本必须与中文完全相同（仓库可接受直接复制中文为 EN 段），不要进行自动翻译；3) 对于 API、命令、路径、库名、产品名等专有名词，请保留官方写法，不要生硬翻译。示例：\nfeat(auth): 添加用户登录\n\n添加基于 OAuth2 的用户登录流程。\n\nEN: feat(auth): 添加用户登录\n\nEN-BODY:\n添加基于 OAuth2 的用户登录流程。"
+    }
+  ],
+  "chatgpt.openOnStartup": true
 }

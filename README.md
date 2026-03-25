@@ -1,18 +1,36 @@
-# 1Panel Open Mobile App
+# 1Panel Client
 
-📱 A cross-platform Flutter mobile application for managing 1Panel Linux servers.
+1Panel Client is a cross-platform client for connecting to and managing one or more 1Panel servers.
 
 ---
 
 **中文文档**: [README.zh.md](README.zh.md) | **English**: [README.md](README.md)
 
-## 🚀 Features
+## What It Is
 
-- **Server Management**: Mobile access to 1Panel server administration
-- **AI Management**: Ollama model management, GPU monitoring, and domain binding
-- **Application Management**: Browse, install, and manage server applications
-- **Multi-server Support**: Manage multiple 1Panel server configurations
-- **Modern UI**: Material Design 3 with responsive layout
+- A client for users who manage 1Panel servers from mobile or desktop
+- Built around multi-server switching, quick status reading, and common operations in one place
+- Designed for daily tasks such as checking server state, browsing files, managing containers, apps, and websites
+
+## Who It Is For
+
+- 1Panel users who need to manage more than one server
+- Operators who want fast access to status and common actions away from the browser
+- Early adopters who want to try new client workflows and share feedback
+
+## What You Can Do
+
+- Switch between multiple 1Panel servers
+- View server status and key runtime information
+- Work with files, containers, apps, websites, and other common modules
+- Use a mobile-friendly interface instead of relying on a browser session
+
+## First-Time Setup
+
+1. Install the client on your device.
+2. Prepare your 1Panel server URL and API Key.
+3. Add your first server in the app.
+4. Open the server and start using the modules you need.
 
 ## 🛠️ Technology Stack
 
@@ -176,7 +194,7 @@ After comprehensive analysis and implementation of the 1Panel V2 API, this proje
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd onepanelapp_app
+   cd 1Panel-Client
    ```
 
 2. **Install dependencies**
