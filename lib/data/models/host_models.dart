@@ -149,10 +149,16 @@ class HostSearch extends Equatable {
 class HostInfo extends Equatable {
   final int id;
   final String name;
-  final String? address;
+  final String? addr;
   final int? port;
-  final String? username;
-  final String? groupID;
+  final String? user;
+  final int? groupID;
+  final String? groupBelong;
+  final String? authMode;
+  final String? password;
+  final String? privateKey;
+  final String? passPhrase;
+  final bool? rememberPassword;
   final String? description;
   final String status;
   final String? version;
@@ -172,10 +178,16 @@ class HostInfo extends Equatable {
   const HostInfo({
     required this.id,
     required this.name,
-    this.address,
+    this.addr,
     this.port,
-    this.username,
+    this.user,
     this.groupID,
+    this.groupBelong,
+    this.authMode,
+    this.password,
+    this.privateKey,
+    this.passPhrase,
+    this.rememberPassword,
     this.description,
     required this.status,
     this.version,
@@ -197,12 +209,19 @@ class HostInfo extends Equatable {
     return HostInfo(
       id: json['id'] as int,
       name: json['name'] as String,
-      address: json['address'] as String?,
+      addr: json['addr'] as String? ?? json['address'] as String?,
       port: json['port'] as int?,
-      username: json['username'] as String?,
-      groupID: json['groupID'] as String?,
+      user: json['user'] as String? ?? json['username'] as String?,
+      groupID: json['groupID'] as int? ??
+          int.tryParse(json['groupID']?.toString() ?? ''),
+      groupBelong: json['groupBelong'] as String?,
+      authMode: json['authMode'] as String?,
+      password: json['password'] as String?,
+      privateKey: json['privateKey'] as String?,
+      passPhrase: json['passPhrase'] as String?,
+      rememberPassword: json['rememberPassword'] as bool?,
       description: json['description'] as String?,
-      status: json['status'] as String,
+      status: json['status'] as String? ?? 'unknown',
       version: json['version'] as String?,
       osType: json['osType'] as String?,
       osArch: json['osArch'] as String?,
@@ -229,10 +248,16 @@ class HostInfo extends Equatable {
     return {
       'id': id,
       'name': name,
-      'address': address,
+      'addr': addr,
       'port': port,
-      'username': username,
+      'user': user,
       'groupID': groupID,
+      'groupBelong': groupBelong,
+      'authMode': authMode,
+      'password': password,
+      'privateKey': privateKey,
+      'passPhrase': passPhrase,
+      'rememberPassword': rememberPassword,
       'description': description,
       'status': status,
       'version': version,
@@ -255,10 +280,16 @@ class HostInfo extends Equatable {
   List<Object?> get props => [
         id,
         name,
-        address,
+        addr,
         port,
-        username,
+        user,
         groupID,
+        groupBelong,
+        authMode,
+        password,
+        privateKey,
+        passPhrase,
+        rememberPassword,
         description,
         status,
         version,
@@ -275,6 +306,9 @@ class HostInfo extends Equatable {
         isActive,
         lastHeartbeat,
       ];
+
+  String? get address => addr;
+  String? get username => user;
 }
 
 /// 主机监控数据模型

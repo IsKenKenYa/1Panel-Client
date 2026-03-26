@@ -140,6 +140,18 @@ abstract class AppLocalizations {
   /// **'Copy'**
   String get commonCopy;
 
+  /// No description provided for @commonImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get commonImport;
+
+  /// No description provided for @commonExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get commonExport;
+
   /// No description provided for @commonMore.
   ///
   /// In en, this message translates to:
@@ -6979,6 +6991,294 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Node Scripts'**
   String get operationsNodeScriptsTitle;
+
+  /// No description provided for @commandsCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Command'**
+  String get commandsCreateTitle;
+
+  /// No description provided for @commandsEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Command'**
+  String get commandsEditTitle;
+
+  /// No description provided for @commandsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search commands'**
+  String get commandsSearchHint;
+
+  /// No description provided for @commandsFilterAllGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'All groups'**
+  String get commandsFilterAllGroups;
+
+  /// No description provided for @commandsGroupFilterAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by group'**
+  String get commandsGroupFilterAction;
+
+  /// No description provided for @commandsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No commands'**
+  String get commandsEmptyTitle;
+
+  /// No description provided for @commandsEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a quick command or import a CSV to start building your command library.'**
+  String get commandsEmptyDescription;
+
+  /// No description provided for @commandsGroupFieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Group'**
+  String get commandsGroupFieldLabel;
+
+  /// No description provided for @commandsCommandFieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Command'**
+  String get commandsCommandFieldLabel;
+
+  /// No description provided for @commandsPreviewLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Command Preview'**
+  String get commandsPreviewLabel;
+
+  /// No description provided for @commandsImportPreviewEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to import'**
+  String get commandsImportPreviewEmptyTitle;
+
+  /// No description provided for @commandsImportPreviewEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'The CSV preview returned no commands.'**
+  String get commandsImportPreviewEmpty;
+
+  /// No description provided for @commandsImportingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Import preview ready'**
+  String get commandsImportingLabel;
+
+  /// No description provided for @commandsSelectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Select all'**
+  String get commandsSelectAll;
+
+  /// No description provided for @commandsApplyGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply group'**
+  String get commandsApplyGroup;
+
+  /// No description provided for @commandsExportSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Command export saved to {path}'**
+  String commandsExportSaved(String path);
+
+  /// No description provided for @commandsDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete command {name}?'**
+  String commandsDeleteConfirm(String name);
+
+  /// No description provided for @commandsDeleteSelectedConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {count} selected commands?'**
+  String commandsDeleteSelectedConfirm(int count);
+
+  /// No description provided for @hostAssetsCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Host Asset'**
+  String get hostAssetsCreateTitle;
+
+  /// No description provided for @hostAssetsEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Host Asset'**
+  String get hostAssetsEditTitle;
+
+  /// No description provided for @hostAssetsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search hosts'**
+  String get hostAssetsSearchHint;
+
+  /// No description provided for @hostAssetsFilterAllGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'All groups'**
+  String get hostAssetsFilterAllGroups;
+
+  /// No description provided for @hostAssetsGroupFilterAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by group'**
+  String get hostAssetsGroupFilterAction;
+
+  /// No description provided for @hostAssetsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No hosts'**
+  String get hostAssetsEmptyTitle;
+
+  /// No description provided for @hostAssetsEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a host asset to manage SSH targets and grouped connections from your phone.'**
+  String get hostAssetsEmptyDescription;
+
+  /// No description provided for @hostAssetsDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete host {name}?'**
+  String hostAssetsDeleteConfirm(String name);
+
+  /// No description provided for @hostAssetsDeleteSelectedConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {count} selected hosts?'**
+  String hostAssetsDeleteSelectedConfirm(int count);
+
+  /// No description provided for @hostAssetsBasicSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic Info'**
+  String get hostAssetsBasicSectionTitle;
+
+  /// No description provided for @hostAssetsAuthSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication'**
+  String get hostAssetsAuthSectionTitle;
+
+  /// No description provided for @hostAssetsConnectionSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection Check'**
+  String get hostAssetsConnectionSectionTitle;
+
+  /// No description provided for @hostAssetsAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get hostAssetsAddressLabel;
+
+  /// No description provided for @hostAssetsPortLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Port'**
+  String get hostAssetsPortLabel;
+
+  /// No description provided for @hostAssetsGroupLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Group'**
+  String get hostAssetsGroupLabel;
+
+  /// No description provided for @hostAssetsUserLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get hostAssetsUserLabel;
+
+  /// No description provided for @hostAssetsPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get hostAssetsPasswordLabel;
+
+  /// No description provided for @hostAssetsPrivateKeyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Private Key'**
+  String get hostAssetsPrivateKeyLabel;
+
+  /// No description provided for @hostAssetsPassPhraseLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Passphrase'**
+  String get hostAssetsPassPhraseLabel;
+
+  /// No description provided for @hostAssetsRememberPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember Password'**
+  String get hostAssetsRememberPasswordLabel;
+
+  /// No description provided for @hostAssetsPasswordMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get hostAssetsPasswordMode;
+
+  /// No description provided for @hostAssetsKeyMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Private Key'**
+  String get hostAssetsKeyMode;
+
+  /// No description provided for @hostAssetsTestAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Test Connection'**
+  String get hostAssetsTestAction;
+
+  /// No description provided for @hostAssetsMoveGroupAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Move Group'**
+  String get hostAssetsMoveGroupAction;
+
+  /// No description provided for @hostAssetsStatusNotTested.
+  ///
+  /// In en, this message translates to:
+  /// **'Not tested'**
+  String get hostAssetsStatusNotTested;
+
+  /// No description provided for @hostAssetsStatusSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Success'**
+  String get hostAssetsStatusSuccess;
+
+  /// No description provided for @hostAssetsStatusFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get hostAssetsStatusFailed;
+
+  /// No description provided for @hostAssetsConnectionVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection verified'**
+  String get hostAssetsConnectionVerified;
+
+  /// No description provided for @hostAssetsConnectionNeedsTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Run a connection test before saving'**
+  String get hostAssetsConnectionNeedsTest;
+
+  /// No description provided for @hostAssetsTestFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection test failed'**
+  String get hostAssetsTestFailed;
 
   /// No description provided for @operationsPlaceholderBackAction.
   ///

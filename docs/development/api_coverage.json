@@ -1,67 +1,483 @@
 {
   "source": "docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json",
   "generatedAt": "2026-02-14",
-  "lastUpdated": "2026-03-25",
+  "lastUpdated": "2026-03-26",
   "totalEndpoints": 546,
   "totalApiMethods": 524,
   "apiClientFiles": 30,
   "testFiles": {
     "unit": 7,
-    "integration": 8
+    "integration": 10
   },
   "tags": {
-    "Website": { "endpoints": 54, "priority": "P0", "implemented": 1, "tested": 1, "docs": 0, "clientFile": "website_v2.dart", "methods": 20 },
-    "System Setting": { "endpoints": 43, "priority": "P0", "implemented": 1, "tested": 1, "docs": 0, "clientFile": "setting_v2.dart", "methods": 27 },
-    "File": { "endpoints": 37, "priority": "P0", "implemented": 1, "tested": 1, "docs": 1, "clientFile": "file_v2.dart", "methods": 40 },
-    "App": { "endpoints": 30, "priority": "P0", "implemented": 1, "tested": 1, "docs": 1, "clientFile": "app_v2.dart", "methods": 27 },
-    "Backup Account": { "endpoints": 25, "priority": "P0", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "backup_account_v2.dart", "methods": 26 },
-    "Runtime": { "endpoints": 25, "priority": "P0", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "runtime_v2.dart", "methods": 12 },
-    "Container": { "endpoints": 19, "priority": "P0", "implemented": 1, "tested": 1, "docs": 1, "clientFile": "container_v2.dart", "methods": 43 },
-    "Cronjob": { "endpoints": 16, "priority": "P1", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "cronjob_v2.dart", "methods": 12 },
-    "Firewall": { "endpoints": 15, "priority": "P1", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "firewall_v2.dart", "methods": 12 },
-    "Database Mysql": { "endpoints": 14, "priority": "P0", "implemented": 1, "tested": 1, "docs": 0, "clientFile": "database_v2.dart", "methods": 17 },
-    "Clam": { "endpoints": 12, "priority": "P2", "implemented": 1, "tested": 1, "docs": 0, "clientFile": "toolbox_v2.dart", "methods": 42 },
-    "Dashboard": { "endpoints": 12, "priority": "P0", "implemented": 1, "tested": 1, "docs": 0, "clientFile": "dashboard_v2.dart", "methods": 16 },
-    "Device": { "endpoints": 12, "priority": "P2", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "host_v2.dart", "methods": 9 },
-    "SSH": { "endpoints": 12, "priority": "P1", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "terminal_v2.dart", "methods": 18 },
-    "Website SSL": { "endpoints": 11, "priority": "P1", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "ssl_v2.dart", "methods": 17 },
-    "AI": { "endpoints": 10, "priority": "P1", "implemented": 1, "tested": 1, "docs": 0, "clientFile": "ai_v2.dart", "methods": 18 },
-    "Container Image": { "endpoints": 10, "priority": "P1", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "container_v2.dart", "methods": 43 },
-    "Host": { "endpoints": 10, "priority": "P1", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "host_v2.dart", "methods": 9 },
-    "OpenResty": { "endpoints": 10, "priority": "P1", "implemented": 1, "tested": 0, "docs": 1, "clientFile": "openresty_v2.dart", "methods": 9 },
-    "Database": { "endpoints": 9, "priority": "P0", "implemented": 1, "tested": 1, "docs": 0, "clientFile": "database_v2.dart", "methods": 17 },
-    "Database PostgreSQL": { "endpoints": 9, "priority": "P0", "implemented": 1, "tested": 1, "docs": 0, "clientFile": "database_v2.dart", "methods": 17 },
-    "Command": { "endpoints": 8, "priority": "P1", "implemented": 1, "tested": 1, "docs": 0, "clientFile": "command_v2.dart", "methods": 14 },
-    "Container Docker": { "endpoints": 8, "priority": "P1", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "docker_v2.dart", "methods": 60 },
-    "FTP": { "endpoints": 8, "priority": "P2", "implemented": 1, "tested": 1, "docs": 0, "clientFile": "toolbox_v2.dart", "methods": 42 },
-    "McpServer": { "endpoints": 8, "priority": "P2", "implemented": 1, "tested": 1, "docs": 0, "clientFile": "ai_v2.dart", "methods": 18 },
-    "System Group": { "endpoints": 8, "priority": "P2", "implemented": 1, "tested": 1, "docs": 1, "clientFile": "system_group_v2.dart", "methods": 8 },
-    "Database Redis": { "endpoints": 7, "priority": "P0", "implemented": 1, "tested": 1, "docs": 0, "clientFile": "database_v2.dart", "methods": 17 },
-    "Fail2ban": { "endpoints": 7, "priority": "P2", "implemented": 1, "tested": 1, "docs": 0, "clientFile": "toolbox_v2.dart", "methods": 42 },
-    "Host tool": { "endpoints": 7, "priority": "P2", "implemented": 1, "tested": 1, "docs": 0, "clientFile": "toolbox_v2.dart", "methods": 42 },
-    "Website CA": { "endpoints": 7, "priority": "P1", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "ssl_v2.dart", "methods": 17 },
-    "Container Compose-template": { "endpoints": 6, "priority": "P1", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "container_compose_v2.dart", "methods": 14 },
-    "Container Image-repo": { "endpoints": 6, "priority": "P1", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "docker_v2.dart", "methods": 60 },
-    "Auth": { "endpoints": 5, "priority": "P0", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "auth_v2.dart", "methods": 8 },
-    "Container Compose": { "endpoints": 5, "priority": "P1", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "container_compose_v2.dart", "methods": 14 },
-    "Monitor": { "endpoints": 5, "priority": "P0", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "monitor_v2.dart", "methods": 7 },
-    "ScriptLibrary": { "endpoints": 5, "priority": "P1", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "command_v2.dart", "methods": 14 },
-    "Container Network": { "endpoints": 4, "priority": "P1", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "container_v2.dart", "methods": 43 },
-    "Container Volume": { "endpoints": 4, "priority": "P1", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "container_v2.dart", "methods": 43 },
-    "Disk Management": { "endpoints": 4, "priority": "P2", "implemented": 1, "tested": 1, "docs": 0, "clientFile": "toolbox_v2.dart", "methods": 42 },
-    "Logs": { "endpoints": 4, "priority": "P1", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "logs_v2.dart", "methods": 12 },
-    "PHP Extensions": { "endpoints": 4, "priority": "P2", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "openresty_v2.dart", "methods": 9 },
-    "Website Acme": { "endpoints": 4, "priority": "P1", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "ssl_v2.dart", "methods": 17 },
-    "Website DNS": { "endpoints": 4, "priority": "P1", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "website_v2.dart", "methods": 20 },
-    "Website Domain": { "endpoints": 4, "priority": "P1", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "website_v2.dart", "methods": 20 },
-    "Website Nginx": { "endpoints": 4, "priority": "P1", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "openresty_v2.dart", "methods": 9 },
-    "untagged": { "endpoints": 4, "priority": "P2", "implemented": 0, "tested": 0, "docs": 0, "clientFile": null, "methods": 0 },
-    "Database Common": { "endpoints": 3, "priority": "P0", "implemented": 1, "tested": 1, "docs": 0, "clientFile": "database_v2.dart", "methods": 17 },
-    "Process": { "endpoints": 2, "priority": "P1", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "process_v2.dart", "methods": 6 },
-    "TaskLog": { "endpoints": 2, "priority": "P1", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "task_log_v2.dart", "methods": 2 },
-    "Website HTTPS": { "endpoints": 2, "priority": "P1", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "ssl_v2.dart", "methods": 17 },
-    "Menu Setting": { "endpoints": 1, "priority": "P2", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "setting_v2.dart", "methods": 27 },
-    "Website PHP": { "endpoints": 1, "priority": "P1", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "openresty_v2.dart", "methods": 9 }
+    "Website": {
+      "endpoints": 54,
+      "priority": "P0",
+      "implemented": 1,
+      "tested": 1,
+      "docs": 0,
+      "clientFile": "website_v2.dart",
+      "methods": 20
+    },
+    "System Setting": {
+      "endpoints": 43,
+      "priority": "P0",
+      "implemented": 1,
+      "tested": 1,
+      "docs": 0,
+      "clientFile": "setting_v2.dart",
+      "methods": 27
+    },
+    "File": {
+      "endpoints": 37,
+      "priority": "P0",
+      "implemented": 1,
+      "tested": 1,
+      "docs": 1,
+      "clientFile": "file_v2.dart",
+      "methods": 40
+    },
+    "App": {
+      "endpoints": 30,
+      "priority": "P0",
+      "implemented": 1,
+      "tested": 1,
+      "docs": 1,
+      "clientFile": "app_v2.dart",
+      "methods": 27
+    },
+    "Backup Account": {
+      "endpoints": 25,
+      "priority": "P0",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "backup_account_v2.dart",
+      "methods": 26
+    },
+    "Runtime": {
+      "endpoints": 25,
+      "priority": "P0",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "runtime_v2.dart",
+      "methods": 12
+    },
+    "Container": {
+      "endpoints": 19,
+      "priority": "P0",
+      "implemented": 1,
+      "tested": 1,
+      "docs": 1,
+      "clientFile": "container_v2.dart",
+      "methods": 43
+    },
+    "Cronjob": {
+      "endpoints": 16,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "cronjob_v2.dart",
+      "methods": 12
+    },
+    "Firewall": {
+      "endpoints": 15,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "firewall_v2.dart",
+      "methods": 12
+    },
+    "Database Mysql": {
+      "endpoints": 14,
+      "priority": "P0",
+      "implemented": 1,
+      "tested": 1,
+      "docs": 0,
+      "clientFile": "database_v2.dart",
+      "methods": 17
+    },
+    "Clam": {
+      "endpoints": 12,
+      "priority": "P2",
+      "implemented": 1,
+      "tested": 1,
+      "docs": 0,
+      "clientFile": "toolbox_v2.dart",
+      "methods": 42
+    },
+    "Dashboard": {
+      "endpoints": 12,
+      "priority": "P0",
+      "implemented": 1,
+      "tested": 1,
+      "docs": 0,
+      "clientFile": "dashboard_v2.dart",
+      "methods": 16
+    },
+    "Device": {
+      "endpoints": 12,
+      "priority": "P2",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "host_v2.dart",
+      "methods": 9
+    },
+    "SSH": {
+      "endpoints": 12,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "terminal_v2.dart",
+      "methods": 18
+    },
+    "Website SSL": {
+      "endpoints": 11,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "ssl_v2.dart",
+      "methods": 17
+    },
+    "AI": {
+      "endpoints": 10,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 1,
+      "docs": 0,
+      "clientFile": "ai_v2.dart",
+      "methods": 18
+    },
+    "Container Image": {
+      "endpoints": 10,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "container_v2.dart",
+      "methods": 43
+    },
+    "Host": {
+      "endpoints": 10,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 1,
+      "docs": 1,
+      "clientFile": "host_v2.dart",
+      "methods": 9
+    },
+    "OpenResty": {
+      "endpoints": 10,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 1,
+      "clientFile": "openresty_v2.dart",
+      "methods": 9
+    },
+    "Database": {
+      "endpoints": 9,
+      "priority": "P0",
+      "implemented": 1,
+      "tested": 1,
+      "docs": 0,
+      "clientFile": "database_v2.dart",
+      "methods": 17
+    },
+    "Database PostgreSQL": {
+      "endpoints": 9,
+      "priority": "P0",
+      "implemented": 1,
+      "tested": 1,
+      "docs": 0,
+      "clientFile": "database_v2.dart",
+      "methods": 17
+    },
+    "Command": {
+      "endpoints": 8,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 1,
+      "docs": 1,
+      "clientFile": "command_v2.dart",
+      "methods": 14
+    },
+    "Container Docker": {
+      "endpoints": 8,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "docker_v2.dart",
+      "methods": 60
+    },
+    "FTP": {
+      "endpoints": 8,
+      "priority": "P2",
+      "implemented": 1,
+      "tested": 1,
+      "docs": 0,
+      "clientFile": "toolbox_v2.dart",
+      "methods": 42
+    },
+    "McpServer": {
+      "endpoints": 8,
+      "priority": "P2",
+      "implemented": 1,
+      "tested": 1,
+      "docs": 0,
+      "clientFile": "ai_v2.dart",
+      "methods": 18
+    },
+    "System Group": {
+      "endpoints": 8,
+      "priority": "P2",
+      "implemented": 1,
+      "tested": 1,
+      "docs": 1,
+      "clientFile": "system_group_v2.dart",
+      "methods": 8
+    },
+    "Database Redis": {
+      "endpoints": 7,
+      "priority": "P0",
+      "implemented": 1,
+      "tested": 1,
+      "docs": 0,
+      "clientFile": "database_v2.dart",
+      "methods": 17
+    },
+    "Fail2ban": {
+      "endpoints": 7,
+      "priority": "P2",
+      "implemented": 1,
+      "tested": 1,
+      "docs": 0,
+      "clientFile": "toolbox_v2.dart",
+      "methods": 42
+    },
+    "Host tool": {
+      "endpoints": 7,
+      "priority": "P2",
+      "implemented": 1,
+      "tested": 1,
+      "docs": 0,
+      "clientFile": "toolbox_v2.dart",
+      "methods": 42
+    },
+    "Website CA": {
+      "endpoints": 7,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "ssl_v2.dart",
+      "methods": 17
+    },
+    "Container Compose-template": {
+      "endpoints": 6,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "container_compose_v2.dart",
+      "methods": 14
+    },
+    "Container Image-repo": {
+      "endpoints": 6,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "docker_v2.dart",
+      "methods": 60
+    },
+    "Auth": {
+      "endpoints": 5,
+      "priority": "P0",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "auth_v2.dart",
+      "methods": 8
+    },
+    "Container Compose": {
+      "endpoints": 5,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "container_compose_v2.dart",
+      "methods": 14
+    },
+    "Monitor": {
+      "endpoints": 5,
+      "priority": "P0",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "monitor_v2.dart",
+      "methods": 7
+    },
+    "ScriptLibrary": {
+      "endpoints": 5,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "command_v2.dart",
+      "methods": 14
+    },
+    "Container Network": {
+      "endpoints": 4,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "container_v2.dart",
+      "methods": 43
+    },
+    "Container Volume": {
+      "endpoints": 4,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "container_v2.dart",
+      "methods": 43
+    },
+    "Disk Management": {
+      "endpoints": 4,
+      "priority": "P2",
+      "implemented": 1,
+      "tested": 1,
+      "docs": 0,
+      "clientFile": "toolbox_v2.dart",
+      "methods": 42
+    },
+    "Logs": {
+      "endpoints": 4,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "logs_v2.dart",
+      "methods": 12
+    },
+    "PHP Extensions": {
+      "endpoints": 4,
+      "priority": "P2",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "openresty_v2.dart",
+      "methods": 9
+    },
+    "Website Acme": {
+      "endpoints": 4,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "ssl_v2.dart",
+      "methods": 17
+    },
+    "Website DNS": {
+      "endpoints": 4,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "website_v2.dart",
+      "methods": 20
+    },
+    "Website Domain": {
+      "endpoints": 4,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "website_v2.dart",
+      "methods": 20
+    },
+    "Website Nginx": {
+      "endpoints": 4,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "openresty_v2.dart",
+      "methods": 9
+    },
+    "untagged": {
+      "endpoints": 4,
+      "priority": "P2",
+      "implemented": 0,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": null,
+      "methods": 0
+    },
+    "Database Common": {
+      "endpoints": 3,
+      "priority": "P0",
+      "implemented": 1,
+      "tested": 1,
+      "docs": 0,
+      "clientFile": "database_v2.dart",
+      "methods": 17
+    },
+    "Process": {
+      "endpoints": 2,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "process_v2.dart",
+      "methods": 6
+    },
+    "TaskLog": {
+      "endpoints": 2,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "task_log_v2.dart",
+      "methods": 2
+    },
+    "Website HTTPS": {
+      "endpoints": 2,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "ssl_v2.dart",
+      "methods": 17
+    },
+    "Menu Setting": {
+      "endpoints": 1,
+      "priority": "P2",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "setting_v2.dart",
+      "methods": 27
+    },
+    "Website PHP": {
+      "endpoints": 1,
+      "priority": "P1",
+      "implemented": 1,
+      "tested": 0,
+      "docs": 0,
+      "clientFile": "openresty_v2.dart",
+      "methods": 9
+    }
   },
   "summary": {
     "implemented": {
@@ -69,12 +485,12 @@
       "percentage": 98
     },
     "tested": {
-      "total": 20,
-      "percentage": 38
+      "total": 21,
+      "percentage": 40
     },
     "docs": {
-      "total": 6,
-      "percentage": 12
+      "total": 8,
+      "percentage": 15
     }
   },
   "prioritySummary": {
@@ -87,8 +503,8 @@
     "P1": {
       "modules": 26,
       "implemented": 26,
-      "tested": 5,
-      "docs": 1
+      "tested": 6,
+      "docs": 3
     },
     "P2": {
       "modules": 11,

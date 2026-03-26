@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../../core/config/api_constants.dart';
 import '../../core/network/dio_client.dart';
 import '../../data/models/common_models.dart';
+import '../../data/models/command_models.dart';
 
 class CommandV2Api {
   CommandV2Api(this._client);
@@ -17,16 +18,31 @@ class CommandV2Api {
   }
 
   Future<Response<CommandInfo>> getCommand(OperateByType request) async {
+    final response = await listCommands(type: request.type);
+    final firstItem = response.data?.isEmpty ?? true
+        ? const CommandInfo()
+        : response.data!.first;
+    return Response<CommandInfo>(
+      data: firstItem,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<List<CommandInfo>>> listCommands({
+    String type = 'command',
+  }) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/core/commands/list'),
-      data: request.toJson(),
+      data: <String, dynamic>{'type': type},
     );
     final rawItems = response.data?['data'] as List<dynamic>? ?? const [];
-    final firstItem = rawItems.isEmpty
-        ? const <String, dynamic>{}
-        : rawItems.first as Map<String, dynamic>;
-    return Response<CommandInfo>(
-      data: CommandInfo.fromJson(firstItem),
+    return Response<List<CommandInfo>>(
+      data: rawItems
+          .whereType<Map<String, dynamic>>()
+          .map(CommandInfo.fromJson)
+          .toList(growable: false),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -62,8 +78,25 @@ class CommandV2Api {
     );
   }
 
-  Future<Response<PageResult<CommandInfo>>> searchCommand(
-    PageRequest request,
+  Future<Response<List<CommandInfo>>> uploadCommands(FormData formData) async {
+    final response = await _client.upload<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/core/commands/upload'),
+      formData,
+    );
+    final rawItems = response.data?['data'] as List<dynamic>? ?? const [];
+    return Response<List<CommandInfo>>(
+      data: rawItems
+          .whereType<Map<String, dynamic>>()
+          .map(CommandInfo.fromJson)
+          .toList(growable: false),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<PageResult<CommandInfo>>> searchCommands(
+    CommandSearchRequest request,
   ) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/core/commands/search'),
@@ -77,6 +110,17 @@ class CommandV2Api {
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<PageResult<CommandInfo>>> searchCommand(
+    PageRequest request,
+  ) async {
+    return searchCommands(
+      CommandSearchRequest(
+        page: request.page,
+        pageSize: request.pageSize,
+      ),
     );
   }
 

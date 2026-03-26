@@ -2,40 +2,49 @@
 
 ## 模块定位
 
-命令管理模块是 Open1PanelApp 的 P1 高价值扩展模块，Week 1 已完成 API 真值澄清，Week 2 将落地命令库与脚本库主链路。
+命令管理是 Phase 1 Week 2 的运维中心主链路之一。Week 1 已完成入口、Group 底座与 API 口径收敛，Week 2 将 `/commands` 与 `/commands/form` 从占位页替换为可评审 MVP。
 
 ## 子模块结构
 
-| 子模块 | 端点数 | API客户端 | 说明 |
-|--------|--------|-----------|------|
-| **命令库** | 8 | command_v2.dart | `/core/commands/*` 创建、列表、树、更新、删除、导入导出 |
-| **脚本库** | 6 | command_v2.dart | `/core/script/*` 与 `/cronjobs/script/options` |
+| 子模块 | 端点数 | API 客户端 | 数据模型 | 说明 |
+|--------|--------|------------|----------|------|
+| 命令库 | 9 | `command_v2.dart` | `command_models.dart` + `tool_models.dart` | 覆盖 `create/list/search/tree/update/del/export/upload/import` |
+| 脚本库 | 0 | Week 2 不接入 | - | 留到 Week 4 与 Cronjob/Script Library 主链路再做 |
 
-## 后续规划方向
+## 已有落地
 
-### 短期目标
-- 完成 CommandsPage / CommandFormPage
-- 复用 Week 1 Group 底座接入命令分组
-- 用移动端卡片页替代 Web 弹窗式交互
+- `CommandsPage`
+  - 搜索框、分组筛选、刷新、导入、导出
+  - 卡片式列表，支持拷贝、编辑、删除、批量删除
+- `CommandFormPage`
+  - 单页表单
+  - 命令内容等宽预览
+  - 底部固定保存栏
+- `CommandsProvider`
+  - 维护 `CommandSearchRequest`
+  - 维护导入预览、选择态与删除流
+- `CommandService`
+  - 封装 `searchCommands`
+  - 封装 `exportCommandsCsv`
+  - 封装导入预览分组改写与 `toOperate`
 
-### 中期目标
-- 支持命令收藏功能
-- 实现脚本版本管理
-- 添加命令模板库
+## 接口对齐说明
 
-### 长期目标
-- 支持批量命令执行
-- 实现命令编排功能
-- 提供命令审计日志
+1. `POST /core/commands`：创建命令
+2. `POST /core/commands/list`：返回 `type=command` 的列表数据，当前 UI 不直接渲染
+3. `POST /core/commands/search`：Week 2 主列表真值
+4. `POST /core/commands/tree`：保留 client 能力，当前 UI 不依赖 tree
+5. `POST /core/commands/update`：更新命令
+6. `POST /core/commands/del`：接收 `ids`
+7. `POST /core/commands/export`：返回文件路径，随后走下载与本地保存
+8. `POST /core/commands/upload`：返回导入预览
+9. `POST /core/commands/import`：提交最终导入
 
-## 与其他模块的关系
+## 后续计划
 
-- **终端管理**: 命令执行联动
-- **计划任务**: 脚本调度执行
-- **日志管理**: 命令执行日志
-- **主机管理**: 多主机命令执行
+1. 后续周再评估“发送到终端”交接能力
+2. Week 4 再衔接 Script Library 与 Cronjob 复用链路
 
 ---
-
-**文档版本**: 1.1
+**文档版本**: 2.0
 **最后更新**: 2026-03-26

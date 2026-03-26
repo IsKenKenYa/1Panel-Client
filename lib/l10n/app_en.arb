@@ -7,6 +7,8 @@
   "commonConfirm": "Confirm",
   "commonClose": "Close",
   "commonCopy": "Copy",
+  "commonImport": "Import",
+  "commonExport": "Export",
   "commonMore": "More",
   "commonAdd": "Add",
   "commonEdit": "Edit",
@@ -1464,6 +1466,89 @@
   "operationsPhpConfigTitle": "PHP Config",
   "operationsNodeModulesTitle": "Node Modules",
   "operationsNodeScriptsTitle": "Node Scripts",
+  "commandsCreateTitle": "Create Command",
+  "commandsEditTitle": "Edit Command",
+  "commandsSearchHint": "Search commands",
+  "commandsFilterAllGroups": "All groups",
+  "commandsGroupFilterAction": "Filter by group",
+  "commandsEmptyTitle": "No commands",
+  "commandsEmptyDescription": "Create a quick command or import a CSV to start building your command library.",
+  "commandsGroupFieldLabel": "Group",
+  "commandsCommandFieldLabel": "Command",
+  "commandsPreviewLabel": "Command Preview",
+  "commandsImportPreviewEmptyTitle": "Nothing to import",
+  "commandsImportPreviewEmpty": "The CSV preview returned no commands.",
+  "commandsImportingLabel": "Import preview ready",
+  "commandsSelectAll": "Select all",
+  "commandsApplyGroup": "Apply group",
+  "commandsExportSaved": "Command export saved to {path}",
+  "@commandsExportSaved": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "commandsDeleteConfirm": "Delete command {name}?",
+  "@commandsDeleteConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "commandsDeleteSelectedConfirm": "Delete {count} selected commands?",
+  "@commandsDeleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hostAssetsCreateTitle": "Create Host Asset",
+  "hostAssetsEditTitle": "Edit Host Asset",
+  "hostAssetsSearchHint": "Search hosts",
+  "hostAssetsFilterAllGroups": "All groups",
+  "hostAssetsGroupFilterAction": "Filter by group",
+  "hostAssetsEmptyTitle": "No hosts",
+  "hostAssetsEmptyDescription": "Add a host asset to manage SSH targets and grouped connections from your phone.",
+  "hostAssetsDeleteConfirm": "Delete host {name}?",
+  "@hostAssetsDeleteConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "hostAssetsDeleteSelectedConfirm": "Delete {count} selected hosts?",
+  "@hostAssetsDeleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hostAssetsBasicSectionTitle": "Basic Info",
+  "hostAssetsAuthSectionTitle": "Authentication",
+  "hostAssetsConnectionSectionTitle": "Connection Check",
+  "hostAssetsAddressLabel": "Address",
+  "hostAssetsPortLabel": "Port",
+  "hostAssetsGroupLabel": "Group",
+  "hostAssetsUserLabel": "User",
+  "hostAssetsPasswordLabel": "Password",
+  "hostAssetsPrivateKeyLabel": "Private Key",
+  "hostAssetsPassPhraseLabel": "Passphrase",
+  "hostAssetsRememberPasswordLabel": "Remember Password",
+  "hostAssetsPasswordMode": "Password",
+  "hostAssetsKeyMode": "Private Key",
+  "hostAssetsTestAction": "Test Connection",
+  "hostAssetsMoveGroupAction": "Move Group",
+  "hostAssetsStatusNotTested": "Not tested",
+  "hostAssetsStatusSuccess": "Success",
+  "hostAssetsStatusFailed": "Failed",
+  "hostAssetsConnectionVerified": "Connection verified",
+  "hostAssetsConnectionNeedsTest": "Run a connection test before saving",
+  "hostAssetsTestFailed": "Connection test failed",
   "operationsPlaceholderBackAction": "Back to Operations Center",
   "operationsPlaceholderDescription": "{moduleName} is scheduled for Week {week}. Week 1 only wires the route, shared infrastructure, and reviewable skeleton.",
   "@operationsPlaceholderDescription": {

@@ -3,7 +3,9 @@ import 'package:dio/dio.dart';
 import '../../core/config/api_constants.dart';
 import '../../core/network/dio_client.dart';
 import '../../data/models/common_models.dart';
+import '../../data/models/host_asset_models.dart';
 import '../../data/models/host_models.dart';
+import '../../data/models/host_tree_models.dart';
 
 class HostV2Api {
   HostV2Api(this._client);
@@ -14,6 +16,13 @@ class HostV2Api {
     return _client.post<void>(
       ApiConstants.buildApiPath('/core/hosts'),
       data: _mapHostPayload(request),
+    );
+  }
+
+  Future<Response<void>> createHostAsset(HostOperate request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/core/hosts'),
+      data: request.toJson(),
     );
   }
 
@@ -39,7 +48,40 @@ class HostV2Api {
     );
   }
 
+  Future<Response<HostInfo>> updateHostAsset(HostOperate request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/core/hosts/update'),
+      data: request.toJson(),
+    );
+    return Response<HostInfo>(
+      data: HostInfo.fromJson(
+        response.data?['data'] as Map<String, dynamic>? ?? const {},
+      ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
   Future<Response<PageResult<HostInfo>>> searchHosts(HostSearch request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/core/hosts/search'),
+      data: request.toJson(),
+    );
+    return Response<PageResult<HostInfo>>(
+      data: PageResult.fromJson(
+        response.data?['data'] as Map<String, dynamic>? ?? const {},
+        (dynamic item) => HostInfo.fromJson(item as Map<String, dynamic>),
+      ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<PageResult<HostInfo>>> searchHostAssets(
+    HostSearchRequest request,
+  ) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/core/hosts/search'),
       data: request.toJson(),
@@ -86,10 +128,42 @@ class HostV2Api {
     );
   }
 
+  Future<Response<List<HostTreeNode>>> getHostAssetTree({
+    String? info,
+  }) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/core/hosts/tree'),
+      data: <String, dynamic>{'info': info ?? ''},
+    );
+    final rawItems = response.data?['data'] as List<dynamic>? ?? const [];
+    return Response<List<HostTreeNode>>(
+      data: rawItems
+          .whereType<Map<String, dynamic>>()
+          .map(HostTreeNode.fromJson)
+          .toList(growable: false),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
   Future<Response<bool>> testHostByInfo(HostCreate request) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/core/hosts/test/byinfo'),
       data: _mapHostPayload(request),
+    );
+    return Response<bool>(
+      data: response.data?['data'] as bool? ?? false,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<bool>> testHostAssetByInfo(HostConnTest request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/core/hosts/test/byinfo'),
+      data: request.toJson(),
     );
     return Response<bool>(
       data: response.data?['data'] as bool? ?? false,
@@ -121,6 +195,13 @@ class HostV2Api {
         'id': id,
         'groupID': groupId,
       },
+    );
+  }
+
+  Future<Response<void>> updateHostAssetGroup(HostGroupChange request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/core/hosts/update/group'),
+      data: request.toJson(),
     );
   }
 

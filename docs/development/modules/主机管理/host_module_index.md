@@ -2,107 +2,51 @@
 
 ## 模块定位
 
-主机管理模块在 Phase 1 中拆成主机资产、SSH、进程三段推进。Week 1 已完成主机资产 API 口径澄清与分组底座接入准备，Week 2 落地主机资产主链路。
-
-### 核心职责
-
-1. **主机接入** - 添加、编辑、删除主机
-2. **连接验证** - 按信息测试与按 ID 测试
-3. **分组管理** - 统一接入共享 group 底座
-4. **树形选择** - 为后续多模块复用提供 host tree
+主机管理在 Phase 1 被拆成主机资产、SSH、Process 三段推进。Week 2 仅交付主机资产主链路，SSH 与 Process 保留到后续周。
 
 ## 子模块结构
 
-```
-主机管理/
-├── 主机列表
-│   ├── 列表展示
-│   ├── 搜索过滤
-│   └── 状态监控
-├── 主机详情
-│   ├── 基本信息
-│   ├── 监控图表
-│   └── 资源使用
-├── 主机操作
-│   ├── 添加主机
-│   ├── 编辑主机
-│   └── 删除主机
-└── 监控设置
-    ├── 阈值配置
-    ├── 告警规则
-    └── 通知设置
-```
+| 子模块 | 端点 | 数据结构 | 说明 |
+|--------|------|----------|------|
+| 主机列表 | `POST /core/hosts/search` | `HostSearchRequest` / `HostInfo[]` | `HostAssetsProvider` 维护搜索、分组、选择态、四态 |
+| 主机详情 | `POST /core/hosts/info` | `HostInfo` | `HostAssetService.fromHostInfo` 回填表单 |
+| 主机操作 | `POST /core/hosts`, `POST /core/hosts/update`, `POST /core/hosts/del` | `HostOperate` / `ids` | 创建、编辑、删除 |
+| 连接测试 | `POST /core/hosts/test/byinfo`, `POST /core/hosts/test/byid/:id` | `HostConnTest` / `bool` | 表单即时测试与保存后测试 |
+| 分组移动 | `POST /core/hosts/update/group` | `HostGroupChange` | 列表卡片移动分组 |
+| 树形数据 | `POST /core/hosts/tree` | `HostTreeNode[]` | 为后续联动链路保留 |
 
-## API端点映射
+## 已有落地
 
-| API端点 | 方法 | 功能描述 | 实现状态 |
-|---------|------|---------|---------|
-| `/core/hosts` | POST | 创建主机 | ✅ 已实现 |
-| `/core/hosts/del` | POST | 删除主机 | ✅ 已实现 |
-| `/core/hosts/update` | POST | 更新主机 | ✅ 已实现 |
-| `/core/hosts/search` | POST | 搜索主机 | ✅ 已实现 |
-| `/core/hosts/info` | POST | 获取主机详情 | ✅ 已实现 |
-| `/core/hosts/tree` | POST | 加载主机树 | ✅ 已实现 |
-| `/core/hosts/test/byid/:id` | POST | 按 ID 测试连接 | ✅ 已实现 |
-| `/core/hosts/test/byinfo` | POST | 按信息测试连接 | ✅ 已实现 |
-| `/core/hosts/update/group` | POST | 更新主机分组 | ✅ 已实现 |
+- `HostAssetsPage`
+  - 搜索框、分组筛选、刷新
+  - 卡片式列表，支持 `edit / test / delete / move group`
+  - 批量删除与二次确认
+- `HostAssetFormPage`
+  - 基础信息、认证方式、连接验证三段结构
+  - 测试成功后才允许保存
+- `HostAssetsProvider`
+  - 维护 `HostSearchRequest`
+  - 维护会话内 `last test status`
+- `HostAssetService`
+  - 封装 Base64 编码前的业务调用与 `HostInfo -> HostOperate` 映射
 
-## 现有实现
+## 接口对齐说明
 
-### API客户端
-- [host_v2.dart](../../../lib/api/v2/host_v2.dart) - 9个API方法
+1. `POST /core/hosts`：创建主机
+2. `POST /core/hosts/update`：更新主机
+3. `POST /core/hosts/del`：删除主机
+4. `POST /core/hosts/search`：Week 2 主列表真值
+5. `POST /core/hosts/info`：详情回填
+6. `POST /core/hosts/tree`：保留能力，当前 UI 不依赖其渲染列表
+7. `POST /core/hosts/test/byid/:id`：按 ID 测试连接
+8. `POST /core/hosts/test/byinfo`：按表单信息测试连接
+9. `POST /core/hosts/update/group`：更新分组
 
-### 数据模型
-- [host_models.dart](../../../lib/data/models/host_models.dart) - 主机模型定义
+## 后续计划
 
-## 主机状态
-
-| 状态 | 说明 |
-|------|------|
-| **online** | 在线 |
-| **offline** | 离线 |
-| **warning** | 告警 |
-| **error** | 错误 |
-
-## Week 2 重点
-
-- 主机资产列表卡片
-- 表单分段创建/编辑
-- 分组选择与移动
-- 连接测试结果回显
-
-## 后续规划
-
-### 短期目标（1-2周）
-1. 创建主机列表页面
-2. 实现主机详情页面
-3. 添加监控图表展示
-4. 添加单元测试覆盖
-
-### 中期目标（1个月）
-1. 完善监控告警功能
-2. 实现主机分组管理
-3. 添加批量操作功能
-4. 实现监控数据导出
-
-### 长期目标
-1. 支持主机自动发现
-2. 实现主机拓扑图
-3. 支持主机标签管理
-4. 集成运维自动化
-
-## 质量指标
-
-| 指标 | 当前状态 | 目标 |
-|------|---------|------|
-| API实现 | 100% | 100% |
-| 数据模型 | 100% | 100% |
-| 单元测试 | 0% | ≥80% |
-| 文档覆盖 | 0% | 100% |
-| UI实现 | 0% | 100% |
+1. Week 3 在当前主机资产基座上继续补 SSH 与 Process
+2. 后续再评估是否复用 `/core/hosts/tree` 承接更多 host 选择场景
 
 ---
-
-**文档版本**: 1.1  
-**最后更新**: 2026-03-26  
-**维护者**: Open1Panel开发团队
+**文档版本**: 2.0
+**最后更新**: 2026-03-26

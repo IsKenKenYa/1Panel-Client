@@ -7,6 +7,8 @@
   "commonConfirm": "确认",
   "commonClose": "关闭",
   "commonCopy": "复制",
+  "commonImport": "导入",
+  "commonExport": "导出",
   "commonMore": "更多",
   "commonAdd": "添加",
   "commonEdit": "编辑",
@@ -1402,6 +1404,89 @@
   "operationsPhpConfigTitle": "PHP 配置",
   "operationsNodeModulesTitle": "Node 模块",
   "operationsNodeScriptsTitle": "Node 脚本",
+  "commandsCreateTitle": "创建命令",
+  "commandsEditTitle": "编辑命令",
+  "commandsSearchHint": "搜索命令",
+  "commandsFilterAllGroups": "全部分组",
+  "commandsGroupFilterAction": "按分组筛选",
+  "commandsEmptyTitle": "暂无命令",
+  "commandsEmptyDescription": "先创建快捷命令，或导入 CSV 建立你的命令库。",
+  "commandsGroupFieldLabel": "分组",
+  "commandsCommandFieldLabel": "命令",
+  "commandsPreviewLabel": "命令预览",
+  "commandsImportPreviewEmptyTitle": "没有可导入内容",
+  "commandsImportPreviewEmpty": "CSV 预览没有返回任何命令。",
+  "commandsImportingLabel": "导入预览已就绪",
+  "commandsSelectAll": "全选",
+  "commandsApplyGroup": "统一改组",
+  "commandsExportSaved": "命令导出已保存到 {path}",
+  "@commandsExportSaved": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "commandsDeleteConfirm": "确认删除命令 {name} 吗？",
+  "@commandsDeleteConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "commandsDeleteSelectedConfirm": "确认删除已选中的 {count} 条命令吗？",
+  "@commandsDeleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hostAssetsCreateTitle": "创建主机资产",
+  "hostAssetsEditTitle": "编辑主机资产",
+  "hostAssetsSearchHint": "搜索主机",
+  "hostAssetsFilterAllGroups": "全部分组",
+  "hostAssetsGroupFilterAction": "按分组筛选",
+  "hostAssetsEmptyTitle": "暂无主机",
+  "hostAssetsEmptyDescription": "先添加一个主机资产，在手机端统一管理 SSH 目标和连接配置。",
+  "hostAssetsDeleteConfirm": "确认删除主机 {name} 吗？",
+  "@hostAssetsDeleteConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "hostAssetsDeleteSelectedConfirm": "确认删除已选中的 {count} 台主机吗？",
+  "@hostAssetsDeleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hostAssetsBasicSectionTitle": "基础信息",
+  "hostAssetsAuthSectionTitle": "认证方式",
+  "hostAssetsConnectionSectionTitle": "连接验证",
+  "hostAssetsAddressLabel": "地址",
+  "hostAssetsPortLabel": "端口",
+  "hostAssetsGroupLabel": "分组",
+  "hostAssetsUserLabel": "用户",
+  "hostAssetsPasswordLabel": "密码",
+  "hostAssetsPrivateKeyLabel": "私钥",
+  "hostAssetsPassPhraseLabel": "密钥口令",
+  "hostAssetsRememberPasswordLabel": "记住密码",
+  "hostAssetsPasswordMode": "密码",
+  "hostAssetsKeyMode": "私钥",
+  "hostAssetsTestAction": "测试连接",
+  "hostAssetsMoveGroupAction": "移动分组",
+  "hostAssetsStatusNotTested": "未测试",
+  "hostAssetsStatusSuccess": "成功",
+  "hostAssetsStatusFailed": "失败",
+  "hostAssetsConnectionVerified": "连接验证通过",
+  "hostAssetsConnectionNeedsTest": "保存前请先完成连接测试",
+  "hostAssetsTestFailed": "连接测试失败",
   "operationsPlaceholderBackAction": "返回运维中心",
   "operationsPlaceholderDescription": "{moduleName} 计划在第 {week} 周交付。Week 1 仅先打通路由、共享基础设施与可评审骨架。",
   "@operationsPlaceholderDescription": {

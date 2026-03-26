@@ -14,6 +14,7 @@ class ServerAwarePageScaffold extends StatelessWidget {
     this.actions = const [],
     this.floatingActionButton,
     this.bottom,
+    this.bottomNavigationBar,
     this.onServerChanged,
   });
 
@@ -23,6 +24,7 @@ class ServerAwarePageScaffold extends StatelessWidget {
   final List<Widget> actions;
   final Widget? floatingActionButton;
   final PreferredSizeWidget? bottom;
+  final Widget? bottomNavigationBar;
   final Future<void> Function()? onServerChanged;
 
   @override
@@ -56,6 +58,8 @@ class ServerAwarePageScaffold extends StatelessWidget {
               ? NoServerSelectedState(moduleName: title)
               : body,
           floatingActionButton: showMissingServer ? null : floatingActionButton,
+          bottomNavigationBar:
+              showMissingServer ? null : bottomNavigationBar,
         );
       },
     );

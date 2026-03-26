@@ -19,6 +19,7 @@ import 'package:onepanel_client/features/apps/apps_page.dart';
 import 'package:onepanel_client/features/apps/app_detail_page.dart';
 import 'package:onepanel_client/features/apps/installed_app_detail_page.dart';
 import 'package:onepanel_client/data/models/app_models.dart';
+import 'package:onepanel_client/data/models/common_models.dart';
 import 'package:onepanel_client/features/websites/websites_page.dart';
 import 'package:onepanel_client/features/websites/website_detail_page.dart';
 import 'package:onepanel_client/features/websites/website_domain_page.dart';
@@ -33,6 +34,16 @@ import 'package:onepanel_client/features/openresty/openresty_page.dart';
 import 'package:onepanel_client/features/openresty/pages/openresty_source_editor_page.dart';
 import 'package:onepanel_client/features/openresty/providers/openresty_provider.dart';
 import 'package:onepanel_client/features/settings/ssl_settings_page.dart';
+import 'package:onepanel_client/features/commands/models/command_form_args.dart';
+import 'package:onepanel_client/features/commands/pages/command_form_page.dart';
+import 'package:onepanel_client/features/commands/pages/commands_page.dart';
+import 'package:onepanel_client/features/commands/providers/command_form_provider.dart';
+import 'package:onepanel_client/features/commands/providers/commands_provider.dart';
+import 'package:onepanel_client/features/host_assets/models/host_asset_form_args.dart';
+import 'package:onepanel_client/features/host_assets/pages/host_asset_form_page.dart';
+import 'package:onepanel_client/features/host_assets/pages/host_assets_page.dart';
+import 'package:onepanel_client/features/host_assets/providers/host_asset_form_provider.dart';
+import 'package:onepanel_client/features/host_assets/providers/host_assets_provider.dart';
 import 'package:onepanel_client/features/operations_center/pages/operations_center_page.dart';
 import 'package:onepanel_client/features/operations_center/pages/stage_one_module_placeholder_page.dart';
 import 'package:provider/provider.dart';
@@ -41,6 +52,7 @@ import 'package:onepanel_client/features/containers/container_detail_page.dart';
 import 'package:onepanel_client/features/containers/container_create_page.dart';
 import 'package:onepanel_client/data/models/container_models.dart';
 import 'package:onepanel_client/features/orchestration/orchestration_page.dart';
+import 'package:onepanel_client/data/models/host_models.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -329,24 +341,50 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const OperationsCenterPage());
 
       case AppRoutes.commands:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsCommandsTitle,
-          availableInWeek: 2,
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<CommandsProvider>(
+            create: (_) => CommandsProvider(),
+            child: const CommandsPage(),
+          ),
         );
       case AppRoutes.commandForm:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsCommandFormTitle,
-          availableInWeek: 2,
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<CommandFormProvider>(
+            create: (_) => CommandFormProvider()
+              ..initialize(
+                CommandFormArgs(
+                  initialValue: settings.arguments as CommandInfo?,
+                ),
+              ),
+            child: CommandFormPage(
+              args: CommandFormArgs(
+                initialValue: settings.arguments as CommandInfo?,
+              ),
+            ),
+          ),
         );
       case AppRoutes.hostAssets:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsHostAssetsTitle,
-          availableInWeek: 2,
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<HostAssetsProvider>(
+            create: (_) => HostAssetsProvider(),
+            child: const HostAssetsPage(),
+          ),
         );
       case AppRoutes.hostAssetForm:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsHostAssetFormTitle,
-          availableInWeek: 2,
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<HostAssetFormProvider>(
+            create: (_) => HostAssetFormProvider()
+              ..initialize(
+                HostAssetFormArgs(
+                  initialValue: settings.arguments as HostInfo?,
+                ),
+              ),
+            child: HostAssetFormPage(
+              args: HostAssetFormArgs(
+                initialValue: settings.arguments as HostInfo?,
+              ),
+            ),
+          ),
         );
       case AppRoutes.ssh:
         return _buildStageOnePlaceholderRoute(

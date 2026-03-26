@@ -2,55 +2,54 @@
 
 ## 模块目标
 
-- 提供快捷命令库与脚本库能力
-- 服务于 Phase 1 Week 2 的 `CommandsPage` 与 `CommandFormPage`
-- 严格遵循 `Presentation -> State -> Service/Repository -> API/Infra`
+- Week 2 交付命令管理 MVP，入口固定为 `ServerDetailPage -> OperationsCenterPage -> Commands`。
+- 严格遵循 `Presentation -> State -> Service/Repository -> API/Infra`，页面与 Provider 都不直连 `lib/api/v2/`。
+- 复用 Week 1 的 `AsyncStatePageBodyWidget`、`GroupSelectorSheetWidget`、`ConfirmActionSheetWidget` 与 `ServerAwarePageScaffold`。
 
-## 当前 API 真值
+## API 真值
 
-### 命令库
-1. `POST /core/commands`
-2. `POST /core/commands/list`
-3. `POST /core/commands/search`
-4. `POST /core/commands/tree`
-5. `POST /core/commands/update`
-6. `POST /core/commands/del`
-7. `POST /core/commands/export`
-8. `POST /core/commands/import`
+1. `POST /core/commands`：创建命令，body 为 `CommandOperate`
+2. `POST /core/commands/list`：返回 `type=command` 的列表/选项数据，Week 2 UI 主列表不直接依赖它
+3. `POST /core/commands/search`：主列表搜索接口，使用 `CommandSearchRequest`
+4. `POST /core/commands/tree`：保留 client 能力，Week 2 UI 不依赖 tree 渲染主列表
+5. `POST /core/commands/update`：更新命令，body 为 `CommandOperate`
+6. `POST /core/commands/del`：单条/批量删除，body 为 `ids`
+7. `POST /core/commands/export`：返回服务端导出文件路径
+8. `POST /core/commands/upload`：上传 CSV，返回导入预览列表
+9. `POST /core/commands/import`：最终导入，body 为 `List<CommandOperate>`
 
-### 脚本库
-1. `POST /core/script`
-2. `POST /core/script/search`
-3. `POST /core/script/update`
-4. `POST /core/script/del`
-5. `POST /core/script/sync`
-6. `GET /cronjobs/script/options`
-
-## 已知漂移说明
-
-- Swagger 中 `command` 仍存在旧注解，尤其是列表与树接口的 GET/路径描述不可靠。
-- Week 1 以运行中的上游前端与路由为准，命令列表使用 `POST /core/commands/list`，命令树使用 `POST /core/commands/tree`。
-
-## 分层设计
+## 分层职责
 
 - `CommandRepository`
-  - 封装命令/脚本 API client
-  - 负责请求体组装与响应映射
+  - 直接对接 `CommandV2Api`
+  - 负责 `CommandSearchRequest`、导入预览、导出路径、删除与创建/编辑调用
 - `CommandService`
-  - 负责命令列表、树、导入导出等流程编排
-- `CommandsProvider` / `CommandFormProvider`
-  - 负责列表态与表单态
+  - 封装搜索、导入预览分组改写、导出下载保存、`CommandInfo -> CommandOperate` 映射
+- `CommandsProvider`
+  - 管理搜索词、分组筛选、列表四态、批量删除、导入预览与选择态
+- `CommandFormProvider`
+  - 管理表单初始化、字段校验、默认分组与保存状态
 - 页面层
-  - `CommandsPage`
-  - `CommandFormPage`
+  - `CommandsPage`：卡片列表、搜索、分组、导入/导出、批量删除
+  - `CommandFormPage`：单页表单、等宽命令预览、底部固定保存栏
 
-## Week 2 落地重点
+## Week 2 主链路
 
-- 命令列表：搜索、分组、复制、发送到终端
-- 命令表单：名称、分组、命令预览
-- 脚本库：先完成主列表与基础同步入口，不扩历史执行体系
+| 场景 | 说明 |
+|------|------|
+| 列表 | 搜索框 + 分组筛选 + 刷新，卡片字段为 `name / group / command preview` |
+| 操作 | 卡片支持 `copy / edit / delete`，列表支持批量删除 |
+| 导入 | `upload -> preview -> select/apply group -> import` |
+| 导出 | `export path -> file download -> FileSaveService` |
+| 表单 | 单页输入 `name / group / command`，保存前只校验必填 |
+
+## 约束与取舍
+
+- Week 2 不实现“发送到终端”
+- Week 2 不实现 Script Library 页面
+- `POST /core/commands/list` 与 `POST /core/commands/tree` 仅保留 API 能力，不作为当前列表渲染真值
+- CSV 解析为空或格式异常时直接进入错误/提示态，不进入导入确认流
 
 ---
-
-**文档版本**: 1.1
+**文档版本**: 2.0
 **最后更新**: 2026-03-26

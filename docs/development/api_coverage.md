@@ -14,15 +14,15 @@
 | 维度 | 完成数 | 完成率 |
 | --- | --- | --- |
 | **API客户端实现** | 51/52 | 98% |
-| **单元测试覆盖** | 20/52 | 38% |
-| **文档覆盖** | 6/52 | 12% |
+| **单元测试覆盖** | 21/52 | 40% |
+| **文档覆盖** | 8/52 | 15% |
 
 ### 按优先级统计
 
 | 优先级 | 模块数 | 已实现 | 已测试 | 已文档 |
 | --- | --- | --- | --- | --- |
 | **P0** | 15 | 15 (100%) | 11 (73%) | 3 (20%) |
-| **P1** | 26 | 26 (100%) | 5 (19%) | 1 (4%) |
+| **P1** | 26 | 26 (100%) | 6 (23%) | 3 (12%) |
 | **P2** | 11 | 10 (91%) | 4 (36%) | 2 (18%) |
 
 ## 优先级规则
@@ -63,9 +63,9 @@
 | Website SSL | 11 | ssl_v2.dart | 17 | ❌ | ❌ |
 | AI | 10 | ai_v2.dart | 18 | ✅ | ❌ |
 | Container Image | 10 | container_v2.dart | 43 | ❌ | ❌ |
-| Host | 10 | host_v2.dart | 9 | ❌ | ❌ |
+| Host | 10 | host_v2.dart | 9 | ✅ | ✅ |
 | OpenResty | 10 | openresty_v2.dart | 9 | ❌ | ✅ |
-| Command | 8 | command_v2.dart | 14 | ✅ | ❌ |
+| Command | 8 | command_v2.dart | 14 | ✅ | ✅ |
 | Container Docker | 8 | docker_v2.dart | 60 | ❌ | ❌ |
 | Website CA | 7 | ssl_v2.dart | 17 | ❌ | ❌ |
 | Container Compose-template | 6 | container_compose_v2.dart | 14 | ❌ | ❌ |
@@ -102,7 +102,7 @@
 
 ## 测试文件清单
 
-> Week 1 同步说明：`System Group` 已新增 API 对齐、repository、service、provider 与 widget 测试；由于本表的聚合统计依赖全量人工/脚本复核，当前仅先更新模块行状态与测试清单。
+> Week 2 同步说明：`Command` / `Host` 已补充真实环境 API client 验证与 Provider / Widget 测试；聚合统计以当前模块级更新为准。
 
 ### 单元测试 (test/api/)
 - ai_api_test.dart
@@ -115,22 +115,24 @@
 
 ### 集成测试 (test/api_client/)
 - app_api_client_test.dart
+- command_api_client_test.dart
 - phase1_api_alignment_test.dart
 - container_api_client_test.dart
 - dashboard_api_client_test.dart
 - database_api_client_test.dart
 - file_api_client_test.dart
+- host_api_client_test.dart
 - setting_api_client_test.dart
 - website_api_client_test.dart
 
 ## 关键差距
 
 ### 测试覆盖不足
-- P1模块测试率仅19%，需要重点补充
+- P1模块测试率为23%，仍需继续补充
 - P0核心模块中Auth、Monitor、Backup Account、Runtime缺少测试
 
 ### 文档覆盖不足
-- 仅12%的模块有文档
+- 目前 15% 的模块有文档
 - 大部分模块缺少使用说明和已知限制
 
 ### UI集成缺失
@@ -146,4 +148,4 @@
 
 ---
 
-**最后更新**: 2026-02-14
+**最后更新**: 2026-03-26

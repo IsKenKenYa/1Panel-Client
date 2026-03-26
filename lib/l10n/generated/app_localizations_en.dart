@@ -30,6 +30,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonCopy => 'Copy';
 
   @override
+  String get commonImport => 'Import';
+
+  @override
+  String get commonExport => 'Export';
+
+  @override
   String get commonMore => 'More';
 
   @override
@@ -3616,6 +3622,164 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get operationsNodeScriptsTitle => 'Node Scripts';
+
+  @override
+  String get commandsCreateTitle => 'Create Command';
+
+  @override
+  String get commandsEditTitle => 'Edit Command';
+
+  @override
+  String get commandsSearchHint => 'Search commands';
+
+  @override
+  String get commandsFilterAllGroups => 'All groups';
+
+  @override
+  String get commandsGroupFilterAction => 'Filter by group';
+
+  @override
+  String get commandsEmptyTitle => 'No commands';
+
+  @override
+  String get commandsEmptyDescription =>
+      'Create a quick command or import a CSV to start building your command library.';
+
+  @override
+  String get commandsGroupFieldLabel => 'Group';
+
+  @override
+  String get commandsCommandFieldLabel => 'Command';
+
+  @override
+  String get commandsPreviewLabel => 'Command Preview';
+
+  @override
+  String get commandsImportPreviewEmptyTitle => 'Nothing to import';
+
+  @override
+  String get commandsImportPreviewEmpty =>
+      'The CSV preview returned no commands.';
+
+  @override
+  String get commandsImportingLabel => 'Import preview ready';
+
+  @override
+  String get commandsSelectAll => 'Select all';
+
+  @override
+  String get commandsApplyGroup => 'Apply group';
+
+  @override
+  String commandsExportSaved(String path) {
+    return 'Command export saved to $path';
+  }
+
+  @override
+  String commandsDeleteConfirm(String name) {
+    return 'Delete command $name?';
+  }
+
+  @override
+  String commandsDeleteSelectedConfirm(int count) {
+    return 'Delete $count selected commands?';
+  }
+
+  @override
+  String get hostAssetsCreateTitle => 'Create Host Asset';
+
+  @override
+  String get hostAssetsEditTitle => 'Edit Host Asset';
+
+  @override
+  String get hostAssetsSearchHint => 'Search hosts';
+
+  @override
+  String get hostAssetsFilterAllGroups => 'All groups';
+
+  @override
+  String get hostAssetsGroupFilterAction => 'Filter by group';
+
+  @override
+  String get hostAssetsEmptyTitle => 'No hosts';
+
+  @override
+  String get hostAssetsEmptyDescription =>
+      'Add a host asset to manage SSH targets and grouped connections from your phone.';
+
+  @override
+  String hostAssetsDeleteConfirm(String name) {
+    return 'Delete host $name?';
+  }
+
+  @override
+  String hostAssetsDeleteSelectedConfirm(int count) {
+    return 'Delete $count selected hosts?';
+  }
+
+  @override
+  String get hostAssetsBasicSectionTitle => 'Basic Info';
+
+  @override
+  String get hostAssetsAuthSectionTitle => 'Authentication';
+
+  @override
+  String get hostAssetsConnectionSectionTitle => 'Connection Check';
+
+  @override
+  String get hostAssetsAddressLabel => 'Address';
+
+  @override
+  String get hostAssetsPortLabel => 'Port';
+
+  @override
+  String get hostAssetsGroupLabel => 'Group';
+
+  @override
+  String get hostAssetsUserLabel => 'User';
+
+  @override
+  String get hostAssetsPasswordLabel => 'Password';
+
+  @override
+  String get hostAssetsPrivateKeyLabel => 'Private Key';
+
+  @override
+  String get hostAssetsPassPhraseLabel => 'Passphrase';
+
+  @override
+  String get hostAssetsRememberPasswordLabel => 'Remember Password';
+
+  @override
+  String get hostAssetsPasswordMode => 'Password';
+
+  @override
+  String get hostAssetsKeyMode => 'Private Key';
+
+  @override
+  String get hostAssetsTestAction => 'Test Connection';
+
+  @override
+  String get hostAssetsMoveGroupAction => 'Move Group';
+
+  @override
+  String get hostAssetsStatusNotTested => 'Not tested';
+
+  @override
+  String get hostAssetsStatusSuccess => 'Success';
+
+  @override
+  String get hostAssetsStatusFailed => 'Failed';
+
+  @override
+  String get hostAssetsConnectionVerified => 'Connection verified';
+
+  @override
+  String get hostAssetsConnectionNeedsTest =>
+      'Run a connection test before saving';
+
+  @override
+  String get hostAssetsTestFailed => 'Connection test failed';
 
   @override
   String get operationsPlaceholderBackAction => 'Back to Operations Center';

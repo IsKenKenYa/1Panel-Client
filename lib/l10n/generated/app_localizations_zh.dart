@@ -30,6 +30,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get commonCopy => '复制';
 
   @override
+  String get commonImport => '导入';
+
+  @override
+  String get commonExport => '导出';
+
+  @override
   String get commonMore => '更多';
 
   @override
@@ -3553,6 +3559,160 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get operationsNodeScriptsTitle => 'Node 脚本';
+
+  @override
+  String get commandsCreateTitle => '创建命令';
+
+  @override
+  String get commandsEditTitle => '编辑命令';
+
+  @override
+  String get commandsSearchHint => '搜索命令';
+
+  @override
+  String get commandsFilterAllGroups => '全部分组';
+
+  @override
+  String get commandsGroupFilterAction => '按分组筛选';
+
+  @override
+  String get commandsEmptyTitle => '暂无命令';
+
+  @override
+  String get commandsEmptyDescription => '先创建快捷命令，或导入 CSV 建立你的命令库。';
+
+  @override
+  String get commandsGroupFieldLabel => '分组';
+
+  @override
+  String get commandsCommandFieldLabel => '命令';
+
+  @override
+  String get commandsPreviewLabel => '命令预览';
+
+  @override
+  String get commandsImportPreviewEmptyTitle => '没有可导入内容';
+
+  @override
+  String get commandsImportPreviewEmpty => 'CSV 预览没有返回任何命令。';
+
+  @override
+  String get commandsImportingLabel => '导入预览已就绪';
+
+  @override
+  String get commandsSelectAll => '全选';
+
+  @override
+  String get commandsApplyGroup => '统一改组';
+
+  @override
+  String commandsExportSaved(String path) {
+    return '命令导出已保存到 $path';
+  }
+
+  @override
+  String commandsDeleteConfirm(String name) {
+    return '确认删除命令 $name 吗？';
+  }
+
+  @override
+  String commandsDeleteSelectedConfirm(int count) {
+    return '确认删除已选中的 $count 条命令吗？';
+  }
+
+  @override
+  String get hostAssetsCreateTitle => '创建主机资产';
+
+  @override
+  String get hostAssetsEditTitle => '编辑主机资产';
+
+  @override
+  String get hostAssetsSearchHint => '搜索主机';
+
+  @override
+  String get hostAssetsFilterAllGroups => '全部分组';
+
+  @override
+  String get hostAssetsGroupFilterAction => '按分组筛选';
+
+  @override
+  String get hostAssetsEmptyTitle => '暂无主机';
+
+  @override
+  String get hostAssetsEmptyDescription => '先添加一个主机资产，在手机端统一管理 SSH 目标和连接配置。';
+
+  @override
+  String hostAssetsDeleteConfirm(String name) {
+    return '确认删除主机 $name 吗？';
+  }
+
+  @override
+  String hostAssetsDeleteSelectedConfirm(int count) {
+    return '确认删除已选中的 $count 台主机吗？';
+  }
+
+  @override
+  String get hostAssetsBasicSectionTitle => '基础信息';
+
+  @override
+  String get hostAssetsAuthSectionTitle => '认证方式';
+
+  @override
+  String get hostAssetsConnectionSectionTitle => '连接验证';
+
+  @override
+  String get hostAssetsAddressLabel => '地址';
+
+  @override
+  String get hostAssetsPortLabel => '端口';
+
+  @override
+  String get hostAssetsGroupLabel => '分组';
+
+  @override
+  String get hostAssetsUserLabel => '用户';
+
+  @override
+  String get hostAssetsPasswordLabel => '密码';
+
+  @override
+  String get hostAssetsPrivateKeyLabel => '私钥';
+
+  @override
+  String get hostAssetsPassPhraseLabel => '密钥口令';
+
+  @override
+  String get hostAssetsRememberPasswordLabel => '记住密码';
+
+  @override
+  String get hostAssetsPasswordMode => '密码';
+
+  @override
+  String get hostAssetsKeyMode => '私钥';
+
+  @override
+  String get hostAssetsTestAction => '测试连接';
+
+  @override
+  String get hostAssetsMoveGroupAction => '移动分组';
+
+  @override
+  String get hostAssetsStatusNotTested => '未测试';
+
+  @override
+  String get hostAssetsStatusSuccess => '成功';
+
+  @override
+  String get hostAssetsStatusFailed => '失败';
+
+  @override
+  String get hostAssetsConnectionVerified => '连接验证通过';
+
+  @override
+  String get hostAssetsConnectionNeedsTest => '保存前请先完成连接测试';
+
+  @override
+  String get hostAssetsTestFailed => '连接测试失败';
 
   @override
   String get operationsPlaceholderBackAction => '返回运维中心';

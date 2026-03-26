@@ -1,6 +1,8 @@
 import 'dart:io';
 
 class TestRunner {
+  static const String flutterFallbackPath =
+      '/Volumes/FanXiangMac/DevTools/Flutter/flutter/bin/flutter';
   static const String reset = '\x1B[0m';
   static const String red = '\x1B[31m';
   static const String green = '\x1B[32m';
@@ -43,13 +45,26 @@ class TestRunner {
     return result.exitCode;
   }
 
+  static Future<String> resolveFlutterCommand() async {
+    final configured = Platform.environment['FLUTTER_BIN'];
+    if (configured != null && configured.isNotEmpty) {
+      return configured;
+    }
+    final fallback = File(flutterFallbackPath);
+    if (await fallback.exists()) {
+      return fallback.path;
+    }
+    return 'flutter';
+  }
+
   static Future<void> runTests(String testPath, {String? description}) async {
     if (description != null) {
       printHeader(description);
     }
 
+    final flutter = await resolveFlutterCommand();
     final exitCode =
-        await runCommand('flutter', ['test', testPath, '--reporter=expanded']);
+        await runCommand(flutter, ['test', testPath, '--reporter=expanded']);
 
     if (exitCode == 0) {
       printSuccess('测试通过');
@@ -60,7 +75,8 @@ class TestRunner {
 
   static Future<void> runAllTests() async {
     printHeader('运行全量回归测试');
-    await runCommand('flutter', ['test', '--reporter=expanded']);
+    final flutter = await resolveFlutterCommand();
+    await runCommand(flutter, ['test', '--reporter=expanded']);
   }
 
   static Future<void> runUnitTests() async {
@@ -87,6 +103,36 @@ class TestRunner {
       await runTests(
         'test/features/group/providers/',
         description: 'Group Provider测试',
+      );
+    }
+    final commandsProviderDir = Directory('test/features/commands/providers');
+    if (await commandsProviderDir.exists()) {
+      await runTests(
+        'test/features/commands/providers/',
+        description: 'Commands Provider测试',
+      );
+    }
+    final hostAssetsProviderDir =
+        Directory('test/features/host_assets/providers');
+    if (await hostAssetsProviderDir.exists()) {
+      await runTests(
+        'test/features/host_assets/providers/',
+        description: 'Host Assets Provider测试',
+      );
+    }
+    final commandApiClientFile =
+        File('test/api_client/command_api_client_test.dart');
+    if (await commandApiClientFile.exists()) {
+      await runTests(
+        'test/api_client/command_api_client_test.dart',
+        description: 'Command API真实环境测试',
+      );
+    }
+    final hostApiClientFile = File('test/api_client/host_api_client_test.dart');
+    if (await hostApiClientFile.exists()) {
+      await runTests(
+        'test/api_client/host_api_client_test.dart',
+        description: 'Host API真实环境测试',
       );
     }
   }
@@ -132,6 +178,22 @@ class TestRunner {
       await runTests(
         'test/features/operations_center/',
         description: 'Operations Center Widget测试',
+      );
+    }
+    final commandsPagesDir = Directory('test/features/commands/pages');
+    if (await commandsPagesDir.exists()) {
+      hasTests = true;
+      await runTests(
+        'test/features/commands/pages/',
+        description: 'Commands Widget测试',
+      );
+    }
+    final hostAssetsPagesDir = Directory('test/features/host_assets/pages');
+    if (await hostAssetsPagesDir.exists()) {
+      hasTests = true;
+      await runTests(
+        'test/features/host_assets/pages/',
+        description: 'Host Assets Widget测试',
       );
     }
     if (!hasTests) {
@@ -194,8 +256,9 @@ class TestRunner {
     printHeader('运行测试并生成覆盖率报告');
 
     printInfo('运行测试并收集覆盖率数据...');
+    final flutter = await resolveFlutterCommand();
     final exitCode = await runCommand(
-        'flutter', ['test', '--coverage', '--reporter=expanded']);
+        flutter, ['test', '--coverage', '--reporter=expanded']);
 
     if (exitCode == 0) {
       final coverageFile = File('coverage/lcov.info');
