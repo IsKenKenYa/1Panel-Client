@@ -37,9 +37,9 @@ class LogHighlightRule {
       'id': id,
       'pattern': pattern,
       'type': type.index,
-      'color': color?.value,
+      'color': color?.toARGB32(),
       'colorName': colorName,
-      'backgroundColor': backgroundColor?.value,
+      'backgroundColor': backgroundColor?.toARGB32(),
       'backgroundColorName': backgroundColorName,
       'isBold': isBold,
       'isItalic': isItalic,
@@ -149,8 +149,8 @@ class LogTheme {
     return {
       'name': name,
       'rules': rules.map((r) => r.toJson()).toList(),
-      'defaultColor': defaultColor?.value,
-      'defaultBackgroundColor': defaultBackgroundColor?.value,
+      'defaultColor': defaultColor?.toARGB32(),
+      'defaultBackgroundColor': defaultBackgroundColor?.toARGB32(),
     };
   }
 

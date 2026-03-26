@@ -102,7 +102,9 @@ class LogLineWidget extends StatelessWidget {
         ranges.add(_StyleRange(
           start: idx,
           end: idx + query.length,
-          style: baseStyle.copyWith(backgroundColor: Colors.yellow.withOpacity(0.5)),
+          style: baseStyle.copyWith(
+            backgroundColor: Colors.yellow.withValues(alpha: 0.5),
+          ),
           priority: 100,
         ));
         start = idx + query.length;
@@ -251,4 +253,3 @@ class _StyleRange {
     required this.priority,
   });
 }
-

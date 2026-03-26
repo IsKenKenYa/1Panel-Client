@@ -11,7 +11,7 @@ class BackupOperate extends Equatable {
   final String? bucket;
   final String? backupPath;
   final bool? rememberAuth;
-  final Map<String, dynamic>? vars;
+  final String? vars;
 
   const BackupOperate({
     this.id,
@@ -37,7 +37,7 @@ class BackupOperate extends Equatable {
       bucket: json['bucket'] as String?,
       backupPath: json['backupPath'] as String?,
       rememberAuth: json['rememberAuth'] as bool?,
-      vars: json['vars'] as Map<String, dynamic>?,
+      vars: json['vars'] as String?,
     );
   }
 
@@ -107,26 +107,93 @@ class BackupOption extends Equatable {
   List<Object?> get props => [id, isPublic, name, type];
 }
 
+/// 备份连通性检查结果
+class BackupCheckResult extends Equatable {
+  final bool isOk;
+  final String? msg;
+  final String? token;
+
+  const BackupCheckResult({
+    required this.isOk,
+    this.msg,
+    this.token,
+  });
+
+  factory BackupCheckResult.fromJson(Map<String, dynamic> json) {
+    return BackupCheckResult(
+      isOk: json['isOk'] as bool? ?? false,
+      msg: json['msg'] as String?,
+      token: json['token'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'isOk': isOk,
+      'msg': msg,
+      'token': token,
+    };
+  }
+
+  @override
+  List<Object?> get props => [isOk, msg, token];
+}
+
+/// 核心备份客户端基础信息
+class BackupClientInfo extends Equatable {
+  final String? clientId;
+  final String? clientSecret;
+  final String? redirectUri;
+
+  const BackupClientInfo({
+    this.clientId,
+    this.clientSecret,
+    this.redirectUri,
+  });
+
+  factory BackupClientInfo.fromJson(Map<String, dynamic> json) {
+    return BackupClientInfo(
+      clientId: json['client_id'] as String?,
+      clientSecret: json['client_secret'] as String?,
+      redirectUri: json['redirect_uri'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'client_id': clientId,
+      'client_secret': clientSecret,
+      'redirect_uri': redirectUri,
+    };
+  }
+
+  @override
+  List<Object?> get props => [clientId, clientSecret, redirectUri];
+}
+
 /// 备份记录搜索模型
 class RecordSearch extends Equatable {
-  final String? name;
-  final String? type;
   final int page;
   final int pageSize;
+  final String type;
+  final String? name;
+  final String? detailName;
 
   const RecordSearch({
-    this.name,
-    this.type,
     this.page = 1,
     this.pageSize = 20,
+    required this.type,
+    this.name,
+    this.detailName,
   });
 
   factory RecordSearch.fromJson(Map<String, dynamic> json) {
     return RecordSearch(
-      name: json['name'] as String?,
-      type: json['type'] as String?,
       page: json['page'] as int? ?? 1,
       pageSize: json['pageSize'] as int? ?? 20,
+      type: json['type'] as String? ?? '',
+      name: json['name'] as String?,
+      detailName: json['detailName'] as String?,
     );
   }
 
@@ -134,30 +201,32 @@ class RecordSearch extends Equatable {
     return {
       'name': name,
       'type': type,
+      'detailName': detailName,
       'page': page,
       'pageSize': pageSize,
     };
   }
 
   @override
-  List<Object?> get props => [name, type, page, pageSize];
+  List<Object?> get props => [type, name, detailName, page, pageSize];
 }
 
 /// 按定时任务搜索备份记录模型
 class RecordSearchByCronjob extends Equatable {
-  final int cronjobId;
+  final int cronjobID;
   final int page;
   final int pageSize;
 
   const RecordSearchByCronjob({
-    required this.cronjobId,
+    required this.cronjobID,
     this.page = 1,
     this.pageSize = 20,
   });
 
   factory RecordSearchByCronjob.fromJson(Map<String, dynamic> json) {
     return RecordSearchByCronjob(
-      cronjobId: json['cronjobId'] as int,
+      cronjobID:
+          json['cronjobID'] as int? ?? json['cronjobId'] as int? ?? 0,
       page: json['page'] as int? ?? 1,
       pageSize: json['pageSize'] as int? ?? 20,
     );
@@ -165,64 +234,67 @@ class RecordSearchByCronjob extends Equatable {
 
   Map<String, dynamic> toJson() {
     return {
-      'cronjobId': cronjobId,
+      'cronjobID': cronjobID,
       'page': page,
       'pageSize': pageSize,
     };
   }
 
   @override
-  List<Object?> get props => [cronjobId, page, pageSize];
+  List<Object?> get props => [cronjobID, page, pageSize];
 }
 
 /// 文件大小搜索模型
 class SearchForSize extends RecordSearch {
-  final String? detailName;
   final String? info;
   final String? order;
   final String? orderBy;
+  final int? cronjobID;
 
   const SearchForSize({
-    super.name,
-    super.type,
     super.page,
     super.pageSize,
-    this.detailName,
+    required super.type,
+    super.name,
+    super.detailName,
     this.info,
     this.order,
     this.orderBy,
+    this.cronjobID,
   });
 
   factory SearchForSize.fromJson(Map<String, dynamic> json) {
     return SearchForSize(
-      name: json['name'] as String?,
-      type: json['type'] as String?,
       page: json['page'] as int? ?? 1,
       pageSize: json['pageSize'] as int? ?? 20,
+      type: json['type'] as String? ?? '',
+      name: json['name'] as String?,
       detailName: json['detailName'] as String?,
       info: json['info'] as String?,
       order: json['order'] as String?,
       orderBy: json['orderBy'] as String?,
+      cronjobID:
+          json['cronjobID'] as int? ?? json['cronjobId'] as int?,
     );
   }
 
   @override
   Map<String, dynamic> toJson() {
     final json = super.toJson();
-    if (detailName != null) json['detailName'] = detailName;
     if (info != null) json['info'] = info;
     if (order != null) json['order'] = order;
     if (orderBy != null) json['orderBy'] = orderBy;
+    if (cronjobID != null) json['cronjobID'] = cronjobID;
     return json;
   }
 
   @override
   List<Object?> get props => [
         ...super.props,
-        detailName,
         info,
         order,
         orderBy,
+        cronjobID,
       ];
 }
 
@@ -297,6 +369,8 @@ class CommonBackup extends Equatable {
   final String? name;
   final String? secret;
   final String? taskID;
+  final List<String>? args;
+  final String? description;
   final String type;
 
   const CommonBackup({
@@ -305,6 +379,8 @@ class CommonBackup extends Equatable {
     this.name,
     this.secret,
     this.taskID,
+    this.args,
+    this.description,
     required this.type,
   });
 
@@ -315,6 +391,8 @@ class CommonBackup extends Equatable {
       name: json['name'] as String?,
       secret: json['secret'] as String?,
       taskID: json['taskID'] as String?,
+      args: (json['args'] as List<dynamic>?)?.cast<String>(),
+      description: json['description'] as String?,
       type: json['type'] as String,
     );
   }
@@ -326,6 +404,8 @@ class CommonBackup extends Equatable {
       'name': name,
       'secret': secret,
       'taskID': taskID,
+      'args': args,
+      'description': description,
       'type': type,
     };
   }
@@ -337,6 +417,8 @@ class CommonBackup extends Equatable {
         name,
         secret,
         taskID,
+        args,
+        description,
         type,
       ];
 }
@@ -346,6 +428,7 @@ class CommonRecover extends CommonBackup {
   final int? backupRecordID;
   final String? file;
   final int? downloadAccountID;
+  final int? timeout;
 
   const CommonRecover({
     super.detailName,
@@ -357,6 +440,7 @@ class CommonRecover extends CommonBackup {
     this.backupRecordID,
     this.file,
     this.downloadAccountID,
+    this.timeout,
   });
 
   factory CommonRecover.fromJson(Map<String, dynamic> json) {
@@ -370,6 +454,7 @@ class CommonRecover extends CommonBackup {
       backupRecordID: json['backupRecordID'] as int?,
       file: json['file'] as String?,
       downloadAccountID: json['downloadAccountID'] as int?,
+      timeout: json['timeout'] as int?,
     );
   }
 
@@ -379,6 +464,7 @@ class CommonRecover extends CommonBackup {
     if (backupRecordID != null) json['backupRecordID'] = backupRecordID;
     if (file != null) json['file'] = file;
     if (downloadAccountID != null) json['downloadAccountID'] = downloadAccountID;
+    if (timeout != null) json['timeout'] = timeout;
     return json;
   }
 
@@ -388,6 +474,7 @@ class CommonRecover extends CommonBackup {
         backupRecordID,
         file,
         downloadAccountID,
+        timeout,
       ];
 }
 
@@ -453,7 +540,10 @@ class BackupAccountInfo extends Equatable {
   final String? backupPath;
   final String? createdAt;
   final String? updatedAt;
-  final Map<String, dynamic>? vars;
+  final String? vars;
+  final Map<String, dynamic>? varsJson;
+  final bool? rememberAuth;
+  final String? credential;
 
   const BackupAccountInfo({
     this.id,
@@ -466,6 +556,9 @@ class BackupAccountInfo extends Equatable {
     this.createdAt,
     this.updatedAt,
     this.vars,
+    this.varsJson,
+    this.rememberAuth,
+    this.credential,
   });
 
   factory BackupAccountInfo.fromJson(Map<String, dynamic> json) {
@@ -477,9 +570,12 @@ class BackupAccountInfo extends Equatable {
       accessKey: json['accessKey'] as String?,
       bucket: json['bucket'] as String?,
       backupPath: json['backupPath'] as String?,
-      createdAt: json['createdAt'] as String?,
-      updatedAt: json['updatedAt'] as String?,
-      vars: json['vars'] as Map<String, dynamic>?,
+      createdAt: json['createdAt']?.toString(),
+      updatedAt: json['updatedAt']?.toString(),
+      vars: json['vars'] as String?,
+      varsJson: json['varsJson'] as Map<String, dynamic>?,
+      rememberAuth: json['rememberAuth'] as bool?,
+      credential: json['credential'] as String?,
     );
   }
 
@@ -495,6 +591,9 @@ class BackupAccountInfo extends Equatable {
       'createdAt': createdAt,
       'updatedAt': updatedAt,
       'vars': vars,
+      'varsJson': varsJson,
+      'rememberAuth': rememberAuth,
+      'credential': credential,
     };
   }
 
@@ -510,6 +609,9 @@ class BackupAccountInfo extends Equatable {
         createdAt,
         updatedAt,
         vars,
+        varsJson,
+        rememberAuth,
+        credential,
       ];
 }
 
@@ -517,13 +619,13 @@ class BackupAccountInfo extends Equatable {
 class BackupAccountSearch extends Equatable {
   final int page;
   final int pageSize;
-  final String? search;
+  final String? info;
   final String? type;
 
   const BackupAccountSearch({
     required this.page,
     required this.pageSize,
-    this.search,
+    this.info,
     this.type,
   });
 
@@ -531,7 +633,7 @@ class BackupAccountSearch extends Equatable {
     return BackupAccountSearch(
       page: json['page'] as int,
       pageSize: json['pageSize'] as int,
-      search: json['search'] as String?,
+      info: json['info'] as String? ?? json['search'] as String?,
       type: json['type'] as String?,
     );
   }
@@ -540,13 +642,13 @@ class BackupAccountSearch extends Equatable {
     return {
       'page': page,
       'pageSize': pageSize,
-      'search': search,
+      'info': info,
       'type': type,
     };
   }
 
   @override
-  List<Object?> get props => [page, pageSize, search, type];
+  List<Object?> get props => [page, pageSize, info, type];
 }
 
 /// 备份文件搜索模型
@@ -636,91 +738,76 @@ class BackupFile extends Equatable {
 /// 备份记录模型
 class BackupRecord extends Equatable {
   final int? id;
-  final String name;
-  final String type;
+  final String? accountType;
+  final String? accountName;
+  final int? downloadAccountID;
+  final String? fileDir;
   final String? fileName;
-  final String? detailName;
-  final int? backupAccountId;
-  final String? backupPath;
-  final int size;
+  final String? taskID;
   final String status;
   final String? message;
+  final String? description;
   final String? createdAt;
-  final String? updatedAt;
-  final String? backupTime;
-  final String? recoverTime;
 
   const BackupRecord({
     this.id,
-    required this.name,
-    required this.type,
+    this.accountType,
+    this.accountName,
+    this.downloadAccountID,
+    this.fileDir,
     this.fileName,
-    this.detailName,
-    this.backupAccountId,
-    this.backupPath,
-    required this.size,
+    this.taskID,
+    this.description,
     required this.status,
     this.message,
     this.createdAt,
-    this.updatedAt,
-    this.backupTime,
-    this.recoverTime,
   });
 
   factory BackupRecord.fromJson(Map<String, dynamic> json) {
     return BackupRecord(
       id: json['id'] as int?,
-      name: json['name'] as String,
-      type: json['type'] as String,
+      accountType: json['accountType'] as String?,
+      accountName: json['accountName'] as String?,
+      downloadAccountID: json['downloadAccountID'] as int?,
+      fileDir: json['fileDir'] as String?,
       fileName: json['fileName'] as String?,
-      detailName: json['detailName'] as String?,
-      backupAccountId: json['backupAccountId'] as int?,
-      backupPath: json['backupPath'] as String?,
-      size: json['size'] as int,
+      taskID: json['taskID'] as String?,
       status: json['status'] as String,
       message: json['message'] as String?,
-      createdAt: json['createdAt'] as String?,
-      updatedAt: json['updatedAt'] as String?,
-      backupTime: json['backupTime'] as String?,
-      recoverTime: json['recoverTime'] as String?,
+      description: json['description'] as String?,
+      createdAt: json['createdAt']?.toString(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'name': name,
-      'type': type,
+      'accountType': accountType,
+      'accountName': accountName,
+      'downloadAccountID': downloadAccountID,
+      'fileDir': fileDir,
       'fileName': fileName,
-      'detailName': detailName,
-      'backupAccountId': backupAccountId,
-      'backupPath': backupPath,
-      'size': size,
+      'taskID': taskID,
       'status': status,
       'message': message,
+      'description': description,
       'createdAt': createdAt,
-      'updatedAt': updatedAt,
-      'backupTime': backupTime,
-      'recoverTime': recoverTime,
     };
   }
 
   @override
   List<Object?> get props => [
         id,
-        name,
-        type,
+        accountType,
+        accountName,
+        downloadAccountID,
+        fileDir,
         fileName,
-        detailName,
-        backupAccountId,
-        backupPath,
-        size,
+        taskID,
         status,
         message,
+        description,
         createdAt,
-        updatedAt,
-        backupTime,
-        recoverTime,
       ];
 }
 

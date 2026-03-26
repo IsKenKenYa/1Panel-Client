@@ -2,82 +2,45 @@
 
 ## 模块目标
 
-- 适配 Open1PanelApp 作为 1Panel Linux 运维面板社区版的定位
-- 提供系统进程的完整监控能力
-- 支持进程搜索、查看和终止操作
-- 提供进程资源使用统计
-- 统一进程管理与错误反馈
+- 提供系统进程只读列表、详情与终止能力
+- 信息架构上归属 `host/process`，不做独立顶级导航
+- 对应 Phase 1 Week 3 的 `ProcessesPage` 与 `ProcessDetailPage`
 
-## 功能完整性清单
+## 当前 API 真值
 
-基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 的 Process 标签共 2 个端点:
+1. `POST /process/stop`
+2. `GET /process/{pid}`
+3. `POST /process/listening`
 
-### 进程列表 (1端点)
-1. GET /processes - 获取进程列表
+## 已知漂移说明
 
-### 进程操作 (1端点)
-2. POST /processes/kill - 终止进程
+- Swagger 对 Process 的覆盖不完整，缺少 `process/listening`
+- 上游 agent API 与前端都确认 `POST /process/listening` 存在，因此 Week 1 起以源码与前端为准
+- 旧版本地实现中的 `/process/search`、`/process/stats`、`/process/start`、`/process/restart`、`/process/kill` 不属于当前高置信集合
 
-## 业务流程与交互验证
+## 请求体口径
 
-### 进程查看流程
-- 进入进程管理页面
-- 显示进程列表
-- 支持按CPU/内存排序
-- 支持关键词搜索
-- 查看进程详情
+- 停止进程请求体使用 `{ PID }`
+- 详情通过 path `pid`
+- `listening` 无请求体
 
-### 进程终止流程
-- 从列表选择目标进程
-- 确认进程信息
-- 执行终止操作
-- 验证终止结果
-- 刷新进程列表
+## 分层设计
 
-## 关键边界与异常
+- `ProcessRepository`
+  - 停止、详情、监听端口进程列表
+- `ProcessService`
+  - 详情装配与 ports/连接信息整理
+- `ProcessesProvider`
+  - 列表页状态
+- `ProcessDetailProvider`
+  - 详情页状态
 
-### 进程查看异常
-- 进程信息获取失败
-- 权限不足的提示
-- 进程数量过多的处理
+## Week 3 落地重点
 
-### 进程操作异常
-- 终止系统进程的保护
-- 权限不足的处理
-- 进程已结束的处理
-
-## 模块分层与职责
-
-### 前端
-- UI页面: 进程列表、进程详情、操作确认
-- 状态管理: 进程列表缓存、排序状态
-
-### 服务层
-- API适配: ProcessV2Api
-- 数据模型: Process、ProcessInfo等
-
-## 数据流
-
-1. 页面加载 -> 请求进程列表 -> API响应
-2. 数据解析 -> 排序过滤 -> UI渲染
-3. 用户操作 -> 确认对话框 -> 执行终止
-4. 操作完成 -> 刷新列表 -> 用户反馈
-
-## 与现有实现的差距
-
-- 进程列表页面缺失
-- 进程搜索功能缺失
-- 进程详情展示缺失
-- 进程终止功能缺失
-
-## 评审记录
-
-| 日期 | 评审人 | 结论 | 备注 |
-| --- | --- | --- | --- |
-| 待定 | 评审人A | 待评审 | |
-| 待定 | 评审人B | 待评审 | |
+- 列表页以 `process/listening` 和详情接口组合出移动端信息卡片
+- 危险操作只有 `stop`，统一复用底部确认 Sheet
 
 ---
 
-**文档版本**: 1.0
-**最后更新**: 2026-02-14
+**文档版本**: 1.1
+**最后更新**: 2026-03-26

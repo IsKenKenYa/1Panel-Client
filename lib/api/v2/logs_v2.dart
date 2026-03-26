@@ -1,23 +1,26 @@
 import 'package:dio/dio.dart';
-import '../../core/network/dio_client.dart';
+
 import '../../core/config/api_constants.dart';
-import '../../data/models/logs_models.dart';
+import '../../core/network/dio_client.dart';
 import '../../data/models/common_models.dart';
+import '../../data/models/logs_models.dart';
 
 class LogsV2Api {
-  final DioClient _client;
-
   LogsV2Api(this._client);
 
-  Future<Response> getSystemLogs(LogSearch request) async {
-    final response = await _client.post(
-      ApiConstants.buildApiPath('/logs/system'),
+  final DioClient _client;
+
+  Future<Response<PageResult<LoginLogEntry>>> searchLoginLogs(
+    LoginLogSearchRequest request,
+  ) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/core/logs/login'),
       data: request.toJson(),
     );
-    return Response(
+    return Response<PageResult<LoginLogEntry>>(
       data: PageResult.fromJson(
-        response.data as Map<String, dynamic>,
-        (json) => LogInfo.fromJson(json as Map<String, dynamic>),
+        response.data?['data'] as Map<String, dynamic>? ?? const {},
+        (dynamic item) => LoginLogEntry.fromJson(item as Map<String, dynamic>),
       ),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
@@ -25,93 +28,44 @@ class LogsV2Api {
     );
   }
 
-  Future<Response<List<LogFileInfo>>> getSystemLogFiles() async {
-    final response = await _client.get(
-      ApiConstants.buildApiPath('/logs/system/files'),
-    );
-    return Response(
-      data: (response.data as List?)
-          ?.map((item) => LogFileInfo.fromJson(item as Map<String, dynamic>))
-          .toList() ?? [],
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
-    );
-  }
-
-  Future<Response<String>> getSystemLogFileContent(LogFileContent request) async {
-    final response = await _client.post(
-      ApiConstants.buildApiPath('/logs/system/file'),
+  Future<Response<PageResult<OperationLogEntry>>> searchOperationLogs(
+    OperationLogSearchRequest request,
+  ) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/core/logs/operation'),
       data: request.toJson(),
     );
-    return Response(
-      data: response.data?.toString() ?? '',
+    return Response<PageResult<OperationLogEntry>>(
+      data: PageResult.fromJson(
+        response.data?['data'] as Map<String, dynamic>? ?? const {},
+        (dynamic item) =>
+            OperationLogEntry.fromJson(item as Map<String, dynamic>),
+      ),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
     );
   }
 
-  Future<Response> cleanLogs(Map<String, dynamic> data) async {
-    return await _client.post(
+  Future<Response<void>> cleanLogs(LogsCleanRequest request) {
+    return _client.post<void>(
       ApiConstants.buildApiPath('/core/logs/clean'),
-      data: data,
+      data: request.toJson(),
     );
   }
 
-  Future<Response> searchLoginLogs(Map<String, dynamic> data) async {
-    return await _client.post(
-      ApiConstants.buildApiPath('/core/logs/login'),
-      data: data,
+  Future<Response<List<String>>> getSystemLogFiles() async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/logs/system/files'),
     );
-  }
-
-  Future<Response> searchOperationLogs(Map<String, dynamic> data) async {
-    return await _client.post(
-      ApiConstants.buildApiPath('/core/logs/operation'),
-      data: data,
-    );
-  }
-
-  Future<Response> getAppLogs(Map<String, dynamic> data) async {
-    return await _client.post(
-      ApiConstants.buildApiPath('/logs/app'),
-      data: data,
-    );
-  }
-
-  Future<Response> getSecurityLogs(Map<String, dynamic> data) async {
-    return await _client.post(
-      ApiConstants.buildApiPath('/logs/security'),
-      data: data,
-    );
-  }
-
-  Future<Response> getAccessLogs(Map<String, dynamic> data) async {
-    return await _client.post(
-      ApiConstants.buildApiPath('/logs/access'),
-      data: data,
-    );
-  }
-
-  Future<Response> getErrorLogs(Map<String, dynamic> data) async {
-    return await _client.post(
-      ApiConstants.buildApiPath('/logs/error'),
-      data: data,
-    );
-  }
-
-  Future<Response> getLogStats(Map<String, dynamic> data) async {
-    return await _client.post(
-      ApiConstants.buildApiPath('/logs/stats'),
-      data: data,
-    );
-  }
-
-  Future<Response> exportLogs(Map<String, dynamic> data) async {
-    return await _client.post(
-      ApiConstants.buildApiPath('/logs/export'),
-      data: data,
+    final rawItems = response.data?['data'] as List<dynamic>? ?? const [];
+    return Response<List<String>>(
+      data: rawItems.map((dynamic item) => item.toString()).toList(
+            growable: false,
+          ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
     );
   }
 }

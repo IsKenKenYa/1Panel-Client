@@ -38,7 +38,7 @@ class _LogToolbarState extends State<LogToolbar> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     
     return ListenableBuilder(
       listenable: widget.controller,
@@ -101,7 +101,10 @@ class _LogToolbarState extends State<LogToolbar> {
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       filled: true,
-                      fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                      fillColor: Theme.of(context)
+                          .colorScheme
+                          .surfaceContainerHighest
+                          .withValues(alpha: 0.3),
                     ),
                     style: const TextStyle(fontSize: 14),
                     onChanged: widget.controller.search,
@@ -148,7 +151,7 @@ class _LogSettingsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     
     return ListenableBuilder(
       listenable: controller,

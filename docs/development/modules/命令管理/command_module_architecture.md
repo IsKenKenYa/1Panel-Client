@@ -2,109 +2,55 @@
 
 ## 模块目标
 
-- 适配 Open1PanelApp 作为 1Panel Linux 运维面板社区版的定位
-- 提供便捷的命令执行和管理能力
-- 支持脚本库管理和模板复用
-- 提供命令历史和审计功能
-- 统一命令管理与错误反馈
+- 提供快捷命令库与脚本库能力
+- 服务于 Phase 1 Week 2 的 `CommandsPage` 与 `CommandFormPage`
+- 严格遵循 `Presentation -> State -> Service/Repository -> API/Infra`
 
-## 功能完整性清单
+## 当前 API 真值
 
-基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json，命令管理模块共包含 13 个端点:
+### 命令库
+1. `POST /core/commands`
+2. `POST /core/commands/list`
+3. `POST /core/commands/search`
+4. `POST /core/commands/tree`
+5. `POST /core/commands/update`
+6. `POST /core/commands/del`
+7. `POST /core/commands/export`
+8. `POST /core/commands/import`
 
-### 命令执行 (5端点)
-1. POST /commands/execute - 执行命令
-2. GET /commands/history - 获取命令历史
-3. GET /commands/history/{id} - 获取历史详情
-4. POST /commands/stop - 停止命令执行
-5. GET /commands/status - 获取执行状态
+### 脚本库
+1. `POST /core/script`
+2. `POST /core/script/search`
+3. `POST /core/script/update`
+4. `POST /core/script/del`
+5. `POST /core/script/sync`
+6. `GET /cronjobs/script/options`
 
-### 脚本库管理 (5端点)
-1. GET /scripts - 获取脚本列表
-2. POST /scripts - 创建脚本
-3. POST /scripts/update - 更新脚本
-4. POST /scripts/del - 删除脚本
-5. POST /scripts/execute - 执行脚本
+## 已知漂移说明
 
-### 命令历史 (3端点)
-1. GET /commands/history/search - 搜索历史
-2. POST /commands/history/clean - 清理历史
-3. GET /commands/history/{id}/output - 获取输出
+- Swagger 中 `command` 仍存在旧注解，尤其是列表与树接口的 GET/路径描述不可靠。
+- Week 1 以运行中的上游前端与路由为准，命令列表使用 `POST /core/commands/list`，命令树使用 `POST /core/commands/tree`。
 
-## 业务流程与交互验证
+## 分层设计
 
-### 命令执行流程
-- 进入命令管理页面
-- 输入要执行的命令
-- 选择执行目标（本地/远程）
-- 执行命令
-- 查看实时输出
-- 保存到历史记录
+- `CommandRepository`
+  - 封装命令/脚本 API client
+  - 负责请求体组装与响应映射
+- `CommandService`
+  - 负责命令列表、树、导入导出等流程编排
+- `CommandsProvider` / `CommandFormProvider`
+  - 负责列表态与表单态
+- 页面层
+  - `CommandsPage`
+  - `CommandFormPage`
 
-### 脚本管理流程
-- 进入脚本库页面
-- 创建/编辑脚本
-- 设置脚本参数
-- 测试脚本执行
-- 保存脚本模板
+## Week 2 落地重点
 
-### 历史查看流程
-- 进入命令历史页面
-- 搜索/筛选历史记录
-- 查看执行详情
-- 查看输出结果
-- 重新执行命令
-
-## 关键边界与异常
-
-### 命令执行异常
-- 命令语法错误的处理
-- 权限不足的处理
-- 执行超时的处理
-- 资源不足的处理
-
-### 脚本管理异常
-- 脚本保存失败
-- 脚本执行失败
-- 参数验证失败
-
-### 历史管理异常
-- 历史记录过多
-- 输出内容过大
-- 清理操作失败
-
-## 模块分层与职责
-
-### 前端
-- UI页面: 命令输入、执行输出、脚本列表、历史记录
-- 状态管理: 执行状态、脚本缓存、历史列表
-
-### 服务层
-- API适配: CommandV2Api
-- 数据模型: Command、Script、CommandHistory等
-
-## 数据流
-
-1. 用户输入 -> 命令验证 -> API请求
-2. API响应 -> 实时输出 -> UI展示
-3. 执行完成 -> 保存历史 -> 更新列表
-4. 脚本调用 -> 参数填充 -> 执行命令
-
-## 与现有实现的差距
-
-- 命令执行界面待完善
-- 脚本库管理页面缺失
-- 命令历史页面缺失
-- 实时输出展示待优化
-
-## 评审记录
-
-| 日期 | 评审人 | 结论 | 备注 |
-| --- | --- | --- | --- |
-| 待定 | 评审人A | 待评审 | |
-| 待定 | 评审人B | 待评审 | |
+- 命令列表：搜索、分组、复制、发送到终端
+- 命令表单：名称、分组、命令预览
+- 脚本库：先完成主列表与基础同步入口，不扩历史执行体系
 
 ---
 
-**文档版本**: 1.0
-**最后更新**: 2026-02-14
+**文档版本**: 1.1
+**最后更新**: 2026-03-26

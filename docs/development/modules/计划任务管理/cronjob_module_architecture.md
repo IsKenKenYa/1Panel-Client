@@ -2,121 +2,56 @@
 
 ## 模块目标
 
-- 适配 Open1PanelApp 作为 1Panel Linux 运维面板社区版的定位
-- 提供完整的Cron任务管理能力
-- 支持任务创建、编辑、删除、启用/禁用
-- 提供任务执行历史查看和日志分析
-- 统一任务状态管理与错误反馈
+- 提供调度中心主链路，覆盖任务列表、状态、一次性执行、记录查看
+- 对应 Phase 1 Week 4 与 Week 5 的 `CronjobsPage`、`CronjobFormPage`
+- 与脚本库、备份记录、任务日志形成联动
 
-## 功能完整性清单
-
-基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 的 Cronjob 标签共 16 个端点:
+## 当前 API 真值
 
 ### 任务管理
-1. GET /cronjobs - 获取计划任务列表
-2. POST /cronjobs/search - 搜索计划任务
-3. POST /cronjobs - 创建计划任务
-4. POST /cronjobs/update - 更新计划任务
-5. POST /cronjobs/del - 删除计划任务
-6. GET /cronjobs/{id} - 获取计划任务详情
-7. POST /cronjobs/enable - 启用计划任务
-8. POST /cronjobs/disable - 禁用计划任务
+1. `POST /cronjobs`
+2. `POST /cronjobs/update`
+3. `POST /cronjobs/del`
+4. `POST /cronjobs/search`
+5. `POST /cronjobs/load/info`
+6. `POST /cronjobs/group/update`
+7. `POST /cronjobs/status`
+8. `POST /cronjobs/handle`
+9. `POST /cronjobs/stop`
+10. `POST /cronjobs/next`
 
-### 任务执行
-9. POST /cronjobs/run - 手动执行任务
-10. POST /cronjobs/stop - 停止正在执行的任务
-11. GET /cronjobs/status - 获取任务执行状态
+### 执行记录
+1. `POST /cronjobs/search/records`
+2. `POST /cronjobs/records/log`
+3. `POST /cronjobs/records/clean`
 
-### 执行历史
-12. GET /cronjobs/records - 获取执行记录列表
-13. POST /cronjobs/records/search - 搜索执行记录
-14. GET /cronjobs/records/{id} - 获取执行记录详情
-15. POST /cronjobs/records/clean - 清理执行记录
-16. GET /cronjobs/records/{id}/log - 获取执行日志
+### 脚本联动
+1. `GET /cronjobs/script/options`
 
-## 业务流程与交互验证
+## 已知漂移说明
 
-### 任务创建流程
-- 进入计划任务管理页面
-- 点击创建任务按钮
-- 配置任务基本信息
-- 配置执行时间（Cron表达式）
-- 配置执行命令或脚本
-- 保存任务
+- 旧文档与旧 client 里存在 `GET /cronjobs/{id}`、`POST /cronjobs/run`、`POST /cronjobs/enable`、`POST /cronjobs/disable`、`GET /cronjobs/status` 等过时口径。
+- 当前实现以 `load/info`、`handle`、`status` 为准。
 
-### 任务编辑流程
-- 从任务列表选择任务
-- 进入任务详情页
-- 修改任务配置
-- 保存修改
-- 可选择立即应用或下次执行生效
+## 分层设计
 
-### 任务执行流程
-- 手动触发任务执行
-- 显示执行状态
-- 实时显示执行日志
-- 执行完成后更新历史记录
-- 显示执行结果
+- `CronjobRepository`
+  - 列表、详情、状态、一键执行、记录查询
+- `CronjobService`
+  - 列表和记录页的组合逻辑
+- `CronjobFormService`
+  - 表单装配、下一次执行时间预计算
+- Provider
+  - `CronjobsProvider`
+  - `CronjobFormProvider`
+  - `CronjobRecordsProvider`
 
-### 执行历史查看流程
-- 进入执行历史页面
-- 显示执行记录列表
-- 支持按任务筛选
-- 支持按时间范围筛选
-- 查看执行日志详情
+## Week 4-5 落地重点
 
-## 关键边界与异常
+- Week 4：主列表、状态切换、run once、records 入口、脚本库主链路
+- Week 5：复杂表单、分组复用、任务类型分步配置
 
-### 任务创建异常
-- Cron表达式格式错误的处理
-- 命令语法错误的提示
-- 权限不足的诊断
-- 资源限制的检查
+---
 
-### 任务执行异常
-- 执行超时的处理
-- 执行失败的诊断
-- 资源不足的处理
-- 依赖缺失的提示
-
-### 任务管理异常
-- 任务删除时的依赖检查
-- 任务禁用时的执行中断
-- 任务冲突的处理
-
-### 执行历史异常
-- 日志文件过大的处理
-- 日志文件损坏的诊断
-- 历史记录过多的清理
-
-## 模块分层与职责
-
-### 前端
-- UI页面: 任务列表、任务详情、任务创建/编辑、执行历史、日志查看
-- 状态管理: 任务列表缓存、执行状态、历史记录
-
-### 服务层
-- API适配: CronjobV2Api
-- 数据模型: Cronjob、CronjobRecord、CronjobLog等
-
-## 数据流
-
-1. UI触发 -> Provider/Service -> API客户端请求
-2. API响应解析 -> 模型映射 -> 状态更新
-3. 状态更新 -> UI刷新 -> 用户反馈
-4. 任务执行 -> 状态轮询 -> 日志更新
-
-## 与现有实现的差距
-
-- 任务列表页面缺失
-- 任务创建/编辑页面缺失
-- 执行历史页面缺失
-- 日志查看功能缺失
-- 任务执行状态实时更新缺失
-
-## 评审记录
-
-| 日期 | 评审人 | 结论 | 备注 |
-| --- | --- | --- | --- |
-| 待定 | 评审人A | 待评审 | |
-| 待定 | 评审人B | 待评审 | |
+**文档版本**: 1.1
+**最后更新**: 2026-03-26

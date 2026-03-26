@@ -1,5 +1,236 @@
 import 'package:equatable/equatable.dart';
 
+class OperationLogSearchRequest extends Equatable {
+  final int page;
+  final int pageSize;
+  final String? source;
+  final String? status;
+  final String? node;
+  final String? operation;
+
+  const OperationLogSearchRequest({
+    this.page = 1,
+    this.pageSize = 20,
+    this.source,
+    this.status,
+    this.node,
+    this.operation,
+  });
+
+  factory OperationLogSearchRequest.fromJson(Map<String, dynamic> json) {
+    return OperationLogSearchRequest(
+      page: json['page'] as int? ?? 1,
+      pageSize: json['pageSize'] as int? ?? 20,
+      source: json['source'] as String?,
+      status: json['status'] as String?,
+      node: json['node'] as String?,
+      operation: json['operation'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'page': page,
+      'pageSize': pageSize,
+      'source': source,
+      'status': status,
+      'node': node,
+      'operation': operation,
+    };
+  }
+
+  @override
+  List<Object?> get props => [page, pageSize, source, status, node, operation];
+}
+
+class LoginLogSearchRequest extends Equatable {
+  final int page;
+  final int pageSize;
+  final String? ip;
+  final String? status;
+
+  const LoginLogSearchRequest({
+    this.page = 1,
+    this.pageSize = 20,
+    this.ip,
+    this.status,
+  });
+
+  factory LoginLogSearchRequest.fromJson(Map<String, dynamic> json) {
+    return LoginLogSearchRequest(
+      page: json['page'] as int? ?? 1,
+      pageSize: json['pageSize'] as int? ?? 20,
+      ip: json['ip'] as String?,
+      status: json['status'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'page': page,
+      'pageSize': pageSize,
+      'ip': ip,
+      'status': status,
+    };
+  }
+
+  @override
+  List<Object?> get props => [page, pageSize, ip, status];
+}
+
+class LogsCleanRequest extends Equatable {
+  final String logType;
+
+  const LogsCleanRequest({
+    required this.logType,
+  });
+
+  factory LogsCleanRequest.fromJson(Map<String, dynamic> json) {
+    return LogsCleanRequest(
+      logType: json['logType'] as String? ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'logType': logType,
+      };
+
+  @override
+  List<Object?> get props => [logType];
+}
+
+class OperationLogEntry extends Equatable {
+  final int? id;
+  final String? source;
+  final String? node;
+  final String? ip;
+  final String? path;
+  final String? method;
+  final String? userAgent;
+  final String? status;
+  final String? message;
+  final String? detailZh;
+  final String? detailEn;
+  final String? createdAt;
+  final dynamic latency;
+
+  const OperationLogEntry({
+    this.id,
+    this.source,
+    this.node,
+    this.ip,
+    this.path,
+    this.method,
+    this.userAgent,
+    this.status,
+    this.message,
+    this.detailZh,
+    this.detailEn,
+    this.createdAt,
+    this.latency,
+  });
+
+  factory OperationLogEntry.fromJson(Map<String, dynamic> json) {
+    return OperationLogEntry(
+      id: json['id'] as int?,
+      source: json['source'] as String?,
+      node: json['node'] as String?,
+      ip: json['ip'] as String?,
+      path: json['path'] as String?,
+      method: json['method'] as String?,
+      userAgent: json['userAgent'] as String?,
+      status: json['status']?.toString(),
+      message: json['message'] as String?,
+      detailZh: json['detailZH'] as String?,
+      detailEn: json['detailEN'] as String?,
+      createdAt: json['createdAt']?.toString(),
+      latency: json['latency'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'source': source,
+      'node': node,
+      'ip': ip,
+      'path': path,
+      'method': method,
+      'userAgent': userAgent,
+      'status': status,
+      'message': message,
+      'detailZH': detailZh,
+      'detailEN': detailEn,
+      'createdAt': createdAt,
+      'latency': latency,
+    };
+  }
+
+  @override
+  List<Object?> get props => [
+        id,
+        source,
+        node,
+        ip,
+        path,
+        method,
+        userAgent,
+        status,
+        message,
+        detailZh,
+        detailEn,
+        createdAt,
+        latency,
+      ];
+}
+
+class LoginLogEntry extends Equatable {
+  final int? id;
+  final String? ip;
+  final String? address;
+  final String? agent;
+  final String? status;
+  final String? message;
+  final String? createdAt;
+
+  const LoginLogEntry({
+    this.id,
+    this.ip,
+    this.address,
+    this.agent,
+    this.status,
+    this.message,
+    this.createdAt,
+  });
+
+  factory LoginLogEntry.fromJson(Map<String, dynamic> json) {
+    return LoginLogEntry(
+      id: json['id'] as int?,
+      ip: json['ip'] as String?,
+      address: json['address'] as String?,
+      agent: json['agent'] as String?,
+      status: json['status'] as String?,
+      message: json['message'] as String?,
+      createdAt: json['createdAt']?.toString(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'ip': ip,
+      'address': address,
+      'agent': agent,
+      'status': status,
+      'message': message,
+      'createdAt': createdAt,
+    };
+  }
+
+  @override
+  List<Object?> get props => [id, ip, address, agent, status, message, createdAt];
+}
+
 /// 日志搜索模型
 class LogSearch extends Equatable {
   final String? search;

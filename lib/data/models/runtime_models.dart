@@ -22,89 +22,212 @@ enum RuntimeType {
 
 /// Runtime creation request model
 class RuntimeCreate extends Equatable {
+  final int? id;
+  final int? appDetailId;
   final String name;
+  final String resource;
+  final String image;
   final String type;
   final String? version;
   final String? source;
-  final String? path;
+  final String? codeDir;
+  final String? remark;
   final Map<String, dynamic>? params;
+  final bool? install;
+  final bool? clean;
+  final List<RuntimeExposedPort>? exposedPorts;
+  final List<RuntimeEnvironment>? environments;
+  final List<RuntimeVolume>? volumes;
+  final List<RuntimeExtraHost>? extraHosts;
 
   const RuntimeCreate({
+    this.id,
+    this.appDetailId,
     required this.name,
+    required this.resource,
+    required this.image,
     required this.type,
     this.version,
     this.source,
-    this.path,
+    this.codeDir,
+    this.remark,
     this.params,
+    this.install,
+    this.clean,
+    this.exposedPorts,
+    this.environments,
+    this.volumes,
+    this.extraHosts,
   });
 
   factory RuntimeCreate.fromJson(Map<String, dynamic> json) {
     return RuntimeCreate(
+      id: json['id'] as int?,
+      appDetailId: json['appDetailId'] as int? ?? json['appDetailID'] as int?,
       name: json['name'] as String,
+      resource: json['resource'] as String? ?? '',
+      image: json['image'] as String? ?? '',
       type: json['type'] as String,
       version: json['version'] as String?,
       source: json['source'] as String?,
-      path: json['path'] as String?,
+      codeDir: json['codeDir'] as String?,
+      remark: json['remark'] as String?,
       params: json['params'] as Map<String, dynamic>?,
+      install: json['install'] as bool?,
+      clean: json['clean'] as bool?,
+      exposedPorts: (json['exposedPorts'] as List<dynamic>?)
+          ?.whereType<Map<String, dynamic>>()
+          .map(RuntimeExposedPort.fromJson)
+          .toList(),
+      environments: (json['environments'] as List<dynamic>?)
+          ?.whereType<Map<String, dynamic>>()
+          .map(RuntimeEnvironment.fromJson)
+          .toList(),
+      volumes: (json['volumes'] as List<dynamic>?)
+          ?.whereType<Map<String, dynamic>>()
+          .map(RuntimeVolume.fromJson)
+          .toList(),
+      extraHosts: (json['extraHosts'] as List<dynamic>?)
+          ?.whereType<Map<String, dynamic>>()
+          .map(RuntimeExtraHost.fromJson)
+          .toList(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
+      'appDetailId': appDetailId,
       'name': name,
+      'resource': resource,
+      'image': image,
       'type': type,
       'version': version,
       'source': source,
-      'path': path,
+      'codeDir': codeDir,
+      'remark': remark,
       'params': params,
+      'install': install,
+      'clean': clean,
+      'exposedPorts': exposedPorts?.map((item) => item.toJson()).toList(),
+      'environments': environments?.map((item) => item.toJson()).toList(),
+      'volumes': volumes?.map((item) => item.toJson()).toList(),
+      'extraHosts': extraHosts?.map((item) => item.toJson()).toList(),
     };
   }
 
   @override
-  List<Object?> get props => [name, type, version, source, path, params];
+  List<Object?> get props => [
+        id,
+        appDetailId,
+        name,
+        resource,
+        image,
+        type,
+        version,
+        source,
+        codeDir,
+        remark,
+        params,
+        install,
+        clean,
+        exposedPorts,
+        environments,
+        volumes,
+        extraHosts,
+      ];
 }
 
 /// Runtime information model
 class RuntimeInfo extends Equatable {
   final int? id;
   final String? name;
+  final String? resource;
+  final int? appDetailId;
+  final int? appId;
   final String? type;
+  final String? image;
   final String? version;
   final String? source;
   final String? path;
   final String? status;
   final String? port;
   final Map<String, dynamic>? params;
-  final String? createTime;
-  final String? updateTime;
+  final String? message;
+  final String? createdAt;
+  final String? codeDir;
+  final String? container;
+  final String? containerStatus;
+  final String? remark;
+  final List<RuntimeExposedPort>? exposedPorts;
+  final List<RuntimeEnvironment>? environments;
+  final List<RuntimeVolume>? volumes;
+  final List<RuntimeExtraHost>? extraHosts;
 
   const RuntimeInfo({
     this.id,
     this.name,
+    this.resource,
+    this.appDetailId,
+    this.appId,
     this.type,
+    this.image,
     this.version,
     this.source,
     this.path,
     this.status,
     this.port,
     this.params,
-    this.createTime,
-    this.updateTime,
+    this.message,
+    this.createdAt,
+    this.codeDir,
+    this.container,
+    this.containerStatus,
+    this.remark,
+    this.exposedPorts,
+    this.environments,
+    this.volumes,
+    this.extraHosts,
   });
 
   factory RuntimeInfo.fromJson(Map<String, dynamic> json) {
     return RuntimeInfo(
       id: json['id'] as int?,
       name: json['name'] as String?,
+      resource: json['resource'] as String?,
+      appDetailId:
+          json['appDetailId'] as int? ?? json['appDetailID'] as int?,
+      appId: json['appId'] as int? ?? json['appID'] as int?,
       type: json['type'] as String?,
+      image: json['image'] as String?,
       version: json['version'] as String?,
       source: json['source'] as String?,
       path: json['path'] as String?,
       status: json['status'] as String?,
       port: json['port'] as String?,
       params: json['params'] as Map<String, dynamic>?,
-      createTime: json['createTime'] as String?,
-      updateTime: json['updateTime'] as String?,
+      message: json['message'] as String?,
+      createdAt: json['createdAt']?.toString(),
+      codeDir: json['codeDir'] as String?,
+      container: json['container'] as String?,
+      containerStatus: json['containerStatus'] as String?,
+      remark: json['remark'] as String?,
+      exposedPorts: (json['exposedPorts'] as List<dynamic>?)
+          ?.whereType<Map<String, dynamic>>()
+          .map(RuntimeExposedPort.fromJson)
+          .toList(),
+      environments: (json['environments'] as List<dynamic>?)
+          ?.whereType<Map<String, dynamic>>()
+          .map(RuntimeEnvironment.fromJson)
+          .toList(),
+      volumes: (json['volumes'] as List<dynamic>?)
+          ?.whereType<Map<String, dynamic>>()
+          .map(RuntimeVolume.fromJson)
+          .toList(),
+      extraHosts: (json['extraHosts'] as List<dynamic>?)
+          ?.whereType<Map<String, dynamic>>()
+          .map(RuntimeExtraHost.fromJson)
+          .toList(),
     );
   }
 
@@ -112,44 +235,80 @@ class RuntimeInfo extends Equatable {
     return {
       'id': id,
       'name': name,
+      'resource': resource,
+      'appDetailId': appDetailId,
+      'appId': appId,
       'type': type,
+      'image': image,
       'version': version,
       'source': source,
       'path': path,
       'status': status,
       'port': port,
       'params': params,
-      'createTime': createTime,
-      'updateTime': updateTime,
+      'message': message,
+      'createdAt': createdAt,
+      'codeDir': codeDir,
+      'container': container,
+      'containerStatus': containerStatus,
+      'remark': remark,
+      'exposedPorts': exposedPorts?.map((item) => item.toJson()).toList(),
+      'environments': environments?.map((item) => item.toJson()).toList(),
+      'volumes': volumes?.map((item) => item.toJson()).toList(),
+      'extraHosts': extraHosts?.map((item) => item.toJson()).toList(),
     };
   }
 
   @override
-  List<Object?> get props => [id, name, type, version, source, path, status, port, params, createTime, updateTime];
+  List<Object?> get props => [
+        id,
+        name,
+        resource,
+        appDetailId,
+        appId,
+        type,
+        image,
+        version,
+        source,
+        path,
+        status,
+        port,
+        params,
+        message,
+        createdAt,
+        codeDir,
+        container,
+        containerStatus,
+        remark,
+        exposedPorts,
+        environments,
+        volumes,
+        extraHosts,
+      ];
 }
 
 /// Runtime search request model
 class RuntimeSearch extends Equatable {
-  final int? page;
-  final int? pageSize;
-  final String? search;
+  final int page;
+  final int pageSize;
   final String? type;
+  final String? name;
   final String? status;
 
   const RuntimeSearch({
-    this.page,
-    this.pageSize,
-    this.search,
+    this.page = 1,
+    this.pageSize = 20,
     this.type,
+    this.name,
     this.status,
   });
 
   factory RuntimeSearch.fromJson(Map<String, dynamic> json) {
     return RuntimeSearch(
-      page: json['page'] as int?,
-      pageSize: json['pageSize'] as int?,
-      search: json['search'] as String?,
+      page: json['page'] as int? ?? 1,
+      pageSize: json['pageSize'] as int? ?? 20,
       type: json['type'] as String?,
+      name: json['name'] as String? ?? json['search'] as String?,
       status: json['status'] as String?,
     );
   }
@@ -158,70 +317,134 @@ class RuntimeSearch extends Equatable {
     return {
       'page': page,
       'pageSize': pageSize,
-      'search': search,
       'type': type,
+      'name': name,
       'status': status,
     };
   }
 
   @override
-  List<Object?> get props => [page, pageSize, search, type, status];
+  List<Object?> get props => [page, pageSize, type, name, status];
 }
 
 /// Runtime operation model
 class RuntimeOperate extends Equatable {
-  final List<int> ids;
-  final String operation;
+  final int id;
+  final String operate;
 
   const RuntimeOperate({
-    required this.ids,
-    required this.operation,
+    required this.id,
+    required this.operate,
   });
 
   factory RuntimeOperate.fromJson(Map<String, dynamic> json) {
     return RuntimeOperate(
-      ids: (json['ids'] as List?)?.map((e) => e as int).toList() ?? [],
-      operation: json['operation'] as String,
+      id: json['ID'] as int? ?? json['id'] as int? ?? 0,
+      operate: json['operate'] as String? ?? json['operation'] as String? ?? '',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'ids': ids,
-      'operation': operation,
+      'ID': id,
+      'operate': operate,
     };
   }
 
   @override
-  List<Object?> get props => [ids, operation];
+  List<Object?> get props => [id, operate];
+}
+
+class RuntimeDelete extends Equatable {
+  final int id;
+  final bool forceDelete;
+
+  const RuntimeDelete({
+    required this.id,
+    this.forceDelete = false,
+  });
+
+  factory RuntimeDelete.fromJson(Map<String, dynamic> json) {
+    return RuntimeDelete(
+      id: json['id'] as int? ?? 0,
+      forceDelete: json['forceDelete'] as bool? ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'forceDelete': forceDelete,
+      };
+
+  @override
+  List<Object?> get props => [id, forceDelete];
 }
 
 /// Runtime update request model
 class RuntimeUpdate extends Equatable {
   final int id;
-  final String? name;
+  final String name;
+  final String? image;
   final String? version;
   final String? source;
-  final String? path;
+  final String? codeDir;
+  final String? remark;
+  final bool? rebuild;
   final Map<String, dynamic>? params;
+  final bool? install;
+  final bool? clean;
+  final List<RuntimeExposedPort>? exposedPorts;
+  final List<RuntimeEnvironment>? environments;
+  final List<RuntimeVolume>? volumes;
+  final List<RuntimeExtraHost>? extraHosts;
 
   const RuntimeUpdate({
     required this.id,
-    this.name,
+    required this.name,
+    this.image,
     this.version,
     this.source,
-    this.path,
+    this.codeDir,
+    this.remark,
+    this.rebuild,
     this.params,
+    this.install,
+    this.clean,
+    this.exposedPorts,
+    this.environments,
+    this.volumes,
+    this.extraHosts,
   });
 
   factory RuntimeUpdate.fromJson(Map<String, dynamic> json) {
     return RuntimeUpdate(
       id: json['id'] as int,
-      name: json['name'] as String?,
+      name: json['name'] as String? ?? '',
+      image: json['image'] as String?,
       version: json['version'] as String?,
       source: json['source'] as String?,
-      path: json['path'] as String?,
+      codeDir: json['codeDir'] as String?,
+      remark: json['remark'] as String?,
+      rebuild: json['rebuild'] as bool?,
       params: json['params'] as Map<String, dynamic>?,
+      install: json['install'] as bool?,
+      clean: json['clean'] as bool?,
+      exposedPorts: (json['exposedPorts'] as List<dynamic>?)
+          ?.whereType<Map<String, dynamic>>()
+          .map(RuntimeExposedPort.fromJson)
+          .toList(),
+      environments: (json['environments'] as List<dynamic>?)
+          ?.whereType<Map<String, dynamic>>()
+          .map(RuntimeEnvironment.fromJson)
+          .toList(),
+      volumes: (json['volumes'] as List<dynamic>?)
+          ?.whereType<Map<String, dynamic>>()
+          .map(RuntimeVolume.fromJson)
+          .toList(),
+      extraHosts: (json['extraHosts'] as List<dynamic>?)
+          ?.whereType<Map<String, dynamic>>()
+          .map(RuntimeExtraHost.fromJson)
+          .toList(),
     );
   }
 
@@ -229,15 +452,360 @@ class RuntimeUpdate extends Equatable {
     return {
       'id': id,
       'name': name,
+      'image': image,
       'version': version,
       'source': source,
-      'path': path,
+      'codeDir': codeDir,
+      'remark': remark,
+      'rebuild': rebuild,
       'params': params,
+      'install': install,
+      'clean': clean,
+      'exposedPorts': exposedPorts?.map((item) => item.toJson()).toList(),
+      'environments': environments?.map((item) => item.toJson()).toList(),
+      'volumes': volumes?.map((item) => item.toJson()).toList(),
+      'extraHosts': extraHosts?.map((item) => item.toJson()).toList(),
     };
   }
 
   @override
-  List<Object?> get props => [id, name, version, source, path, params];
+  List<Object?> get props => [
+        id,
+        name,
+        image,
+        version,
+        source,
+        codeDir,
+        remark,
+        rebuild,
+        params,
+        install,
+        clean,
+        exposedPorts,
+        environments,
+        volumes,
+        extraHosts,
+      ];
+}
+
+class RuntimeExposedPort extends Equatable {
+  final int hostPort;
+  final int containerPort;
+  final String? hostIP;
+
+  const RuntimeExposedPort({
+    required this.hostPort,
+    required this.containerPort,
+    this.hostIP,
+  });
+
+  factory RuntimeExposedPort.fromJson(Map<String, dynamic> json) {
+    return RuntimeExposedPort(
+      hostPort: json['hostPort'] as int? ?? 0,
+      containerPort: json['containerPort'] as int? ?? 0,
+      hostIP: json['hostIP'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'hostPort': hostPort,
+        'containerPort': containerPort,
+        'hostIP': hostIP,
+      };
+
+  @override
+  List<Object?> get props => [hostPort, containerPort, hostIP];
+}
+
+class RuntimeEnvironment extends Equatable {
+  final String key;
+  final String value;
+
+  const RuntimeEnvironment({
+    required this.key,
+    required this.value,
+  });
+
+  factory RuntimeEnvironment.fromJson(Map<String, dynamic> json) {
+    return RuntimeEnvironment(
+      key: json['key'] as String? ?? '',
+      value: json['value'] as String? ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'key': key,
+        'value': value,
+      };
+
+  @override
+  List<Object?> get props => [key, value];
+}
+
+class RuntimeVolume extends Equatable {
+  final String source;
+  final String target;
+
+  const RuntimeVolume({
+    required this.source,
+    required this.target,
+  });
+
+  factory RuntimeVolume.fromJson(Map<String, dynamic> json) {
+    return RuntimeVolume(
+      source: json['source'] as String? ?? '',
+      target: json['target'] as String? ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'source': source,
+        'target': target,
+      };
+
+  @override
+  List<Object?> get props => [source, target];
+}
+
+class RuntimeExtraHost extends Equatable {
+  final String hostname;
+  final String ip;
+
+  const RuntimeExtraHost({
+    required this.hostname,
+    required this.ip,
+  });
+
+  factory RuntimeExtraHost.fromJson(Map<String, dynamic> json) {
+    return RuntimeExtraHost(
+      hostname: json['hostname'] as String? ?? '',
+      ip: json['ip'] as String? ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'hostname': hostname,
+        'ip': ip,
+      };
+
+  @override
+  List<Object?> get props => [hostname, ip];
+}
+
+class PHPExtensionSupport extends Equatable {
+  final String name;
+  final String? description;
+  final bool installed;
+  final String? check;
+  final List<String> versions;
+  final String? file;
+
+  const PHPExtensionSupport({
+    required this.name,
+    this.description,
+    this.installed = false,
+    this.check,
+    this.versions = const <String>[],
+    this.file,
+  });
+
+  factory PHPExtensionSupport.fromJson(Map<String, dynamic> json) {
+    return PHPExtensionSupport(
+      name: json['name'] as String? ?? '',
+      description: json['description'] as String?,
+      installed: json['installed'] as bool? ?? false,
+      check: json['check'] as String?,
+      versions: (json['versions'] as List<dynamic>?)?.cast<String>() ??
+          const <String>[],
+      file: json['file'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'description': description,
+        'installed': installed,
+        'check': check,
+        'versions': versions,
+        'file': file,
+      };
+
+  @override
+  List<Object?> get props => [name, description, installed, check, versions, file];
+}
+
+class PHPExtensionsRes extends Equatable {
+  final List<String> extensions;
+  final List<PHPExtensionSupport> supportExtensions;
+
+  const PHPExtensionsRes({
+    this.extensions = const <String>[],
+    this.supportExtensions = const <PHPExtensionSupport>[],
+  });
+
+  factory PHPExtensionsRes.fromJson(Map<String, dynamic> json) {
+    return PHPExtensionsRes(
+      extensions: (json['extensions'] as List<dynamic>?)?.cast<String>() ??
+          const <String>[],
+      supportExtensions: (json['supportExtensions'] as List<dynamic>?)
+              ?.whereType<Map<String, dynamic>>()
+              .map(PHPExtensionSupport.fromJson)
+              .toList() ??
+          const <PHPExtensionSupport>[],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'extensions': extensions,
+        'supportExtensions':
+            supportExtensions.map((item) => item.toJson()).toList(),
+      };
+
+  @override
+  List<Object?> get props => [extensions, supportExtensions];
+}
+
+class PHPConfig extends Equatable {
+  final Map<String, String>? params;
+  final List<String> disableFunctions;
+  final String? uploadMaxSize;
+  final String? maxExecutionTime;
+
+  const PHPConfig({
+    this.params,
+    this.disableFunctions = const <String>[],
+    this.uploadMaxSize,
+    this.maxExecutionTime,
+  });
+
+  factory PHPConfig.fromJson(Map<String, dynamic> json) {
+    return PHPConfig(
+      params: (json['params'] as Map<String, dynamic>?)?.map(
+        (key, value) => MapEntry(key, value.toString()),
+      ),
+      disableFunctions:
+          (json['disableFunctions'] as List<dynamic>?)?.cast<String>() ??
+              const <String>[],
+      uploadMaxSize: json['uploadMaxSize'] as String?,
+      maxExecutionTime: json['maxExecutionTime'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'params': params,
+        'disableFunctions': disableFunctions,
+        'uploadMaxSize': uploadMaxSize,
+        'maxExecutionTime': maxExecutionTime,
+      };
+
+  @override
+  List<Object?> get props => [
+        params,
+        disableFunctions,
+        uploadMaxSize,
+        maxExecutionTime,
+      ];
+}
+
+class PHPConfigUpdate extends Equatable {
+  final int id;
+  final String scope;
+  final Map<String, String>? params;
+  final List<String>? disableFunctions;
+  final String? uploadMaxSize;
+  final String? maxExecutionTime;
+
+  const PHPConfigUpdate({
+    required this.id,
+    required this.scope,
+    this.params,
+    this.disableFunctions,
+    this.uploadMaxSize,
+    this.maxExecutionTime,
+  });
+
+  factory PHPConfigUpdate.fromJson(Map<String, dynamic> json) {
+    return PHPConfigUpdate(
+      id: json['id'] as int? ?? 0,
+      scope: json['scope'] as String? ?? '',
+      params: (json['params'] as Map<String, dynamic>?)?.map(
+        (key, value) => MapEntry(key, value.toString()),
+      ),
+      disableFunctions:
+          (json['disableFunctions'] as List<dynamic>?)?.cast<String>(),
+      uploadMaxSize: json['uploadMaxSize'] as String?,
+      maxExecutionTime: json['maxExecutionTime'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'scope': scope,
+        'params': params,
+        'disableFunctions': disableFunctions,
+        'uploadMaxSize': uploadMaxSize,
+        'maxExecutionTime': maxExecutionTime,
+      };
+
+  @override
+  List<Object?> get props => [
+        id,
+        scope,
+        params,
+        disableFunctions,
+        uploadMaxSize,
+        maxExecutionTime,
+      ];
+}
+
+class RuntimeRemarkUpdate extends Equatable {
+  final int id;
+  final String remark;
+
+  const RuntimeRemarkUpdate({
+    required this.id,
+    required this.remark,
+  });
+
+  factory RuntimeRemarkUpdate.fromJson(Map<String, dynamic> json) {
+    return RuntimeRemarkUpdate(
+      id: json['id'] as int? ?? 0,
+      remark: json['remark'] as String? ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'remark': remark,
+      };
+
+  @override
+  List<Object?> get props => [id, remark];
+}
+
+class FpmStatusItem extends Equatable {
+  final String key;
+  final dynamic value;
+
+  const FpmStatusItem({
+    required this.key,
+    this.value,
+  });
+
+  factory FpmStatusItem.fromJson(Map<String, dynamic> json) {
+    return FpmStatusItem(
+      key: json['key'] as String? ?? '',
+      value: json['value'],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'key': key,
+        'value': value,
+      };
+
+  @override
+  List<Object?> get props => [key, value];
 }
 
 /// Java runtime specific model

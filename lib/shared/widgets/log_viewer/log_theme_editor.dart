@@ -30,7 +30,7 @@ class _LogThemeEditorState extends State<LogThemeEditor> {
   }
 
   void _addRule() {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final newRule = LogHighlightRule(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       pattern: l10n.logRulePattern,
@@ -75,7 +75,7 @@ class _LogThemeEditorState extends State<LogThemeEditor> {
   }
 
   void _importTheme() {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (context) {
@@ -117,7 +117,7 @@ class _LogThemeEditorState extends State<LogThemeEditor> {
   }
 
   void _exportTheme() {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final json = jsonEncode(_theme.toJson());
     showDialog(
       context: context,
@@ -146,7 +146,7 @@ class _LogThemeEditorState extends State<LogThemeEditor> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.logThemeEditor),
@@ -328,7 +328,7 @@ class _RuleEditorDialogState extends State<_RuleEditorDialog> {
           children: [
             Expanded(
               child: DropdownButtonFormField<String?>(
-                value: currentColorName,
+                initialValue: currentColorName,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -391,7 +391,7 @@ class _RuleEditorDialogState extends State<_RuleEditorDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return AlertDialog(
       title: Text(l10n.logEditTheme),
       content: SingleChildScrollView(
@@ -404,7 +404,7 @@ class _RuleEditorDialogState extends State<_RuleEditorDialog> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<HighlightType>(
-              value: _type,
+              initialValue: _type,
               decoration: InputDecoration(labelText: l10n.logRuleType),
               items: HighlightType.values.map((type) {
                 return DropdownMenuItem(

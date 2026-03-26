@@ -136,8 +136,8 @@ class _LogViewerState extends State<LogViewer> {
                               return Center(
                                 child: Text(
                                   controller.searchQuery.isEmpty 
-                                      ? (widget.emptyMessage ?? AppLocalizations.of(context)!.logNoLogs) 
-                                      : AppLocalizations.of(context)!.logNoMatches,
+                                      ? (widget.emptyMessage ?? AppLocalizations.of(context).logNoLogs) 
+                                      : AppLocalizations.of(context).logNoMatches,
                                   style: TextStyle(color: colorScheme.onSurfaceVariant),
                                 ),
                               );
