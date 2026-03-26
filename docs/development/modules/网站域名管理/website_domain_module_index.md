@@ -4,6 +4,15 @@
 
 网站域名管理模块是Open1PanelApp的P1高价值扩展模块，提供网站域名的绑定与管理能力，是网站运行的基础配置模块。
 
+## S2-0 基线（2026-03-26）
+
+- 当前状态：
+  当前仅覆盖 `list / add / delete / ssl toggle`，更新入口、默认域名、批量录入、格式校验、解析提示仍缺失。
+- 阶段 2 hard scope：
+  `domain CRUD + validation`
+- API 基线：
+  `check_module_api_updates.py domains` 当前结果为 `unchanged`
+
 ## 子模块结构
 
 | 子模块 | 端点数 | API客户端 | 说明 |

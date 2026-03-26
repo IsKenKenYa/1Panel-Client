@@ -4,6 +4,15 @@
 
 认证管理模块是Open1PanelApp的P0核心模块，负责用户身份验证、会话管理、MFA双因素认证等功能，是系统安全的第一道防线。
 
+## S2-0 基线（2026-03-26）
+
+- 当前状态：
+  登录主流程可用，但 `AuthProvider` 仍混合 `api / session / token storage`，并依赖 `SharedPreferences + debugPrint`。
+- 阶段 2 hard scope：
+  `session / token / storage / api` 分层与安全收口
+- API 基线：
+  `check_module_api_updates.py auth` 当前结果为 `unchanged`
+
 ## 子模块结构
 
 基于docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json，Auth标签共8个端点：

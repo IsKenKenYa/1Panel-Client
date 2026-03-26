@@ -4,6 +4,21 @@
 
 Open1PanelApp 的网站模块负责站点生命周期管理、反向代理、SSL证书与OpenResty配置能力。
 
+## S2-0 基线（2026-03-26）
+
+- 当前状态：
+  网站家族已具备 `pages / providers / services` 骨架，但严格审计结论仍是 `不完整适配`，后续实现必须以严格审计报告为准，而不是以“已有页面”判断完成度。
+- 阶段 2 hard scope：
+  `website lifecycle / detail / default site / group / remark`
+  `website_domain CRUD + validation`
+  `website_config structured config center entry`
+  `website ssl certificate center + website binding + HTTPS strategy`
+  `openresty status / https / modules / config / build`
+- API 基线：
+  `website / openresty / domains / website_ssl / system_ssl` 当前脚本检查均为 `unchanged`
+- 边界：
+  `proxy cache / load balance / real ip / stream / CA / ACME / DNS account` 不在当前阶段 2 hard scope。
+
 ## 子模块结构
 
 - 网站管理-OpenResty

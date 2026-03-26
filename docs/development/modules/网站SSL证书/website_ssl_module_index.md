@@ -4,6 +4,19 @@
 
 网站SSL证书模块是Open1PanelApp的P1高价值扩展模块，提供网站级SSL证书的申请、更新、上传与绑定能力，是网站安全运行的重要保障。
 
+## S2-0 基线（2026-03-26）
+
+- 当前状态：
+  当前已具备基础证书流，但 `CA / ACME / DNS account / detail / log / filter` 仍缺失，不能视为完整网站证书体系。
+- 阶段 2 hard scope：
+  `certificate center + website binding + HTTPS strategy`
+- 明确不做：
+  `CA / ACME / DNS account`
+- API 基线：
+  `check_module_api_updates.py website_ssl` 当前结果为 `unchanged`
+- 命名风险：
+  当前目录内的 `ssl_api_analysis.json` 与 `SSL证书管理` 下的 `ssl_api_analysis.*` 命名存在重叠。
+
 ## 子模块结构
 
 | 子模块 | 端点数 | API客户端 | 说明 |

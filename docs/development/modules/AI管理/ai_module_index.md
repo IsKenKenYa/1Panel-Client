@@ -4,6 +4,15 @@
 
 AI管理模块是Open1PanelApp的**智能服务模块**，负责Ollama大语言模型服务和MCP（Model Context Protocol）服务器的管理与部署。该模块为用户提供本地AI能力部署和管理，支持GPU加速、模型管理、域名绑定等功能。
 
+## S2-0 基线（2026-03-26）
+
+- 当前状态：
+  `AIPage / AIProvider / AIService / AIRepository` 已存在，但缺 `route / entry / injection`，当前在产品中不可达。
+- 阶段 2 hard scope：
+  `route / injection / entry / domain binding linkage`
+- API 基线：
+  `check_module_api_updates.py ai` 当前结果为 `unchanged`
+
 ### 核心职责
 
 1. **Ollama模型管理** - 模型下载、加载、删除

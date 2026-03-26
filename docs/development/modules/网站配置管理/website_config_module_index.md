@@ -4,6 +4,17 @@
 
 网站配置管理模块是Open1PanelApp的P1高价值扩展模块，提供网站服务器配置的管理能力，包括Nginx配置、PHP扩展管理等，是网站性能优化和功能扩展的重要模块。
 
+## S2-0 基线（2026-03-26）
+
+- 当前状态：
+  当前仍以 `Nginx 原始文本编辑 + scope 参数编辑 + 手工 runtime ID` 为主，与上游结构化配置页差距较大。
+- 阶段 2 hard scope：
+  `structured config center entry`
+- API 基线：
+  `check_module_api_updates.py website` 当前结果为 `unchanged`
+- 命名风险：
+  当前目录下 API 分析文件命名为 `website_api_analysis.*`，与主网站模块目录下同名文件容易混淆。
+
 ## 子模块结构
 
 | 子模块 | 端点数 | API客户端 | 说明 |

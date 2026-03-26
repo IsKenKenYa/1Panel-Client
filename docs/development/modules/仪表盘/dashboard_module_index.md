@@ -4,6 +4,15 @@
 
 仪表盘模块是Open1PanelApp的P0核心模块，作为用户登录后的首页，提供系统运行状态概览、资源监控、应用启动器、快捷跳转等核心功能，是用户了解系统状态的主要入口。
 
+## S2-0 基线（2026-03-26）
+
+- 当前状态：
+  功能主链路可用，但 `DashboardProvider` 仍过大、直接依赖 `DashboardV2Api`，且残留 `debugPrint` 调试输出。
+- 阶段 2 hard scope：
+  仅做 `layering cleanup`，不扩额外功能表面。
+- API 基线：
+  `check_module_api_updates.py dashboard` 当前结果为 `unchanged`
+
 ## 子模块结构
 
 基于docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json，Dashboard标签共12个端点：

@@ -3,6 +3,15 @@
 ## 模块定位
 Open1PanelApp 的文件管理模块负责服务器文件系统的浏览、操作、权限管理与回收站功能，提供移动端友好的文件管理体验。
 
+## S2-0 基线（2026-03-26）
+
+- 当前状态：
+  文件功能覆盖较强，但 `FilesProvider` 仍是超大状态对象，且回收站等子流存在越层调用，不能以“架构改造完成”判定阶段 2 已完成。
+- 阶段 2 hard scope：
+  `browser / recycle / transfer / preview` 分层收口
+- API 基线：
+  `check_module_api_updates.py file` 当前结果为 `unchanged`
+
 ## 架构改造完成状态
 
 ### ✅ 已完成
