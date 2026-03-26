@@ -46,7 +46,19 @@ import 'package:onepanel_client/features/host_assets/providers/host_asset_form_p
 import 'package:onepanel_client/features/host_assets/providers/host_assets_provider.dart';
 import 'package:onepanel_client/features/operations_center/pages/operations_center_page.dart';
 import 'package:onepanel_client/features/operations_center/pages/stage_one_module_placeholder_page.dart';
+import 'package:onepanel_client/features/processes/pages/process_detail_page.dart';
+import 'package:onepanel_client/features/processes/pages/processes_page.dart';
+import 'package:onepanel_client/features/processes/providers/process_detail_provider.dart';
+import 'package:onepanel_client/features/processes/providers/processes_provider.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
+import 'package:onepanel_client/features/ssh/pages/ssh_certs_page.dart';
+import 'package:onepanel_client/features/ssh/pages/ssh_logs_page.dart';
+import 'package:onepanel_client/features/ssh/pages/ssh_sessions_page.dart';
+import 'package:onepanel_client/features/ssh/pages/ssh_settings_page.dart';
+import 'package:onepanel_client/features/ssh/providers/ssh_certs_provider.dart';
+import 'package:onepanel_client/features/ssh/providers/ssh_logs_provider.dart';
+import 'package:onepanel_client/features/ssh/providers/ssh_sessions_provider.dart';
+import 'package:onepanel_client/features/ssh/providers/ssh_settings_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'package:onepanel_client/features/containers/container_detail_page.dart';
@@ -96,6 +108,7 @@ class AppRoutes {
   static const String hostAssets = '/hosts-assets';
   static const String hostAssetForm = '/hosts-assets/form';
   static const String ssh = '/ssh';
+  static const String sshCerts = '/ssh/certs';
   static const String sshLogs = '/ssh/logs';
   static const String sshSessions = '/ssh/sessions';
   static const String processes = '/processes';
@@ -406,30 +419,51 @@ class AppRouter {
           ),
         );
       case AppRoutes.ssh:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsSshTitle,
-          availableInWeek: 3,
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<SshSettingsProvider>(
+            create: (_) => SshSettingsProvider(),
+            child: const SshSettingsPage(),
+          ),
+        );
+      case AppRoutes.sshCerts:
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<SshCertsProvider>(
+            create: (_) => SshCertsProvider(),
+            child: const SshCertsPage(),
+          ),
         );
       case AppRoutes.sshLogs:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsSshLogsTitle,
-          availableInWeek: 3,
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<SshLogsProvider>(
+            create: (_) => SshLogsProvider(),
+            child: const SshLogsPage(),
+          ),
         );
       case AppRoutes.sshSessions:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsSshSessionsTitle,
-          availableInWeek: 3,
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<SshSessionsProvider>(
+            create: (_) => SshSessionsProvider(),
+            child: const SshSessionsPage(),
+          ),
         );
       case AppRoutes.processes:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsProcessesTitle,
-          availableInWeek: 3,
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<ProcessesProvider>(
+            create: (_) => ProcessesProvider(),
+            child: const ProcessesPage(),
+          ),
         );
       case AppRoutes.processDetail:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsProcessDetailTitle,
-          availableInWeek: 3,
-        );
+        final arg = settings.arguments;
+        if (arg is int) {
+          return MaterialPageRoute(
+            builder: (_) => ChangeNotifierProvider<ProcessDetailProvider>(
+              create: (_) => ProcessDetailProvider(),
+              child: ProcessDetailPage(pid: arg),
+            ),
+          );
+        }
+        return MaterialPageRoute(builder: (_) => const NotFoundPage());
       case AppRoutes.cronjobs:
         return _buildStageOnePlaceholderRoute(
           titleBuilder: (l10n) => l10n.operationsCronjobsTitle,

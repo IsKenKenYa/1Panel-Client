@@ -6860,6 +6860,12 @@ abstract class AppLocalizations {
   /// **'SSH'**
   String get operationsSshTitle;
 
+  /// No description provided for @operationsSshCertsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'SSH Certs'**
+  String get operationsSshCertsTitle;
+
   /// No description provided for @operationsSshLogsTitle.
   ///
   /// In en, this message translates to:
@@ -7279,6 +7285,540 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Connection test failed'**
   String get hostAssetsTestFailed;
+
+  /// No description provided for @sshSettingsServiceSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Service'**
+  String get sshSettingsServiceSectionTitle;
+
+  /// No description provided for @sshSettingsAuthenticationSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication'**
+  String get sshSettingsAuthenticationSectionTitle;
+
+  /// No description provided for @sshSettingsNetworkSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Network'**
+  String get sshSettingsNetworkSectionTitle;
+
+  /// No description provided for @sshSettingsRawFileSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Raw File'**
+  String get sshSettingsRawFileSectionTitle;
+
+  /// No description provided for @sshAutoStartLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto start'**
+  String get sshAutoStartLabel;
+
+  /// No description provided for @sshPortLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Port'**
+  String get sshPortLabel;
+
+  /// No description provided for @sshListenAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Listen address'**
+  String get sshListenAddressLabel;
+
+  /// No description provided for @sshPermitRootLoginLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Permit root login'**
+  String get sshPermitRootLoginLabel;
+
+  /// No description provided for @sshPasswordAuthenticationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Password authentication'**
+  String get sshPasswordAuthenticationLabel;
+
+  /// No description provided for @sshPubkeyAuthenticationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Public key authentication'**
+  String get sshPubkeyAuthenticationLabel;
+
+  /// No description provided for @sshUseDnsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Use DNS'**
+  String get sshUseDnsLabel;
+
+  /// No description provided for @sshCurrentUserLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current user'**
+  String get sshCurrentUserLabel;
+
+  /// No description provided for @sshRawFilePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'# The SSH configuration file is empty.'**
+  String get sshRawFilePlaceholder;
+
+  /// No description provided for @sshReloadAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Reload'**
+  String get sshReloadAction;
+
+  /// No description provided for @sshSaveRawFileConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Overwrite the SSH configuration file with the current content?'**
+  String get sshSaveRawFileConfirm;
+
+  /// No description provided for @sshOperateConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Run SSH action {operation}?'**
+  String sshOperateConfirm(String operation);
+
+  /// No description provided for @sshUpdateSettingConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Update {label} to {value}?'**
+  String sshUpdateSettingConfirm(String label, String value);
+
+  /// No description provided for @sshCertsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No SSH certs'**
+  String get sshCertsEmptyTitle;
+
+  /// No description provided for @sshCertsEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Create or sync an SSH certificate to manage key login from the panel.'**
+  String get sshCertsEmptyDescription;
+
+  /// No description provided for @sshCertSyncConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync SSH certs from the current server?'**
+  String get sshCertSyncConfirm;
+
+  /// No description provided for @sshCertDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete SSH cert {name}?'**
+  String sshCertDeleteConfirm(String name);
+
+  /// No description provided for @sshCertCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create SSH Cert'**
+  String get sshCertCreateTitle;
+
+  /// No description provided for @sshCertEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit SSH Cert'**
+  String get sshCertEditTitle;
+
+  /// No description provided for @sshCertEncryptionModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Encryption mode'**
+  String get sshCertEncryptionModeLabel;
+
+  /// No description provided for @sshCertPassPhraseLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Passphrase'**
+  String get sshCertPassPhraseLabel;
+
+  /// No description provided for @sshCertPublicKeyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Public key'**
+  String get sshCertPublicKeyLabel;
+
+  /// No description provided for @sshCertPrivateKeyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Private key'**
+  String get sshCertPrivateKeyLabel;
+
+  /// No description provided for @sshCertModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Create mode'**
+  String get sshCertModeLabel;
+
+  /// No description provided for @sshCertModeGenerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate'**
+  String get sshCertModeGenerate;
+
+  /// No description provided for @sshCertModeInput.
+  ///
+  /// In en, this message translates to:
+  /// **'Input'**
+  String get sshCertModeInput;
+
+  /// No description provided for @sshCertModeImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get sshCertModeImport;
+
+  /// No description provided for @sshCertCreatedAtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Created at'**
+  String get sshCertCreatedAtLabel;
+
+  /// No description provided for @sshAuthModePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get sshAuthModePassword;
+
+  /// No description provided for @sshAuthModeKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Key'**
+  String get sshAuthModeKey;
+
+  /// No description provided for @sshLogsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No SSH logs'**
+  String get sshLogsEmptyTitle;
+
+  /// No description provided for @sshLogsEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'SSH login logs will appear here after the server records activity.'**
+  String get sshLogsEmptyDescription;
+
+  /// No description provided for @sshLogsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search IP, user, or message'**
+  String get sshLogsSearchHint;
+
+  /// No description provided for @sshLogsStatusAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get sshLogsStatusAll;
+
+  /// No description provided for @sshLogsStatusSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Success'**
+  String get sshLogsStatusSuccess;
+
+  /// No description provided for @sshLogsStatusFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get sshLogsStatusFailed;
+
+  /// No description provided for @sshLogsIpLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'IP'**
+  String get sshLogsIpLabel;
+
+  /// No description provided for @sshLogsAreaLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Area'**
+  String get sshLogsAreaLabel;
+
+  /// No description provided for @sshLogsAuthModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Auth mode'**
+  String get sshLogsAuthModeLabel;
+
+  /// No description provided for @sshLogsTimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get sshLogsTimeLabel;
+
+  /// No description provided for @sshLogsMessageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get sshLogsMessageLabel;
+
+  /// No description provided for @sshLogsExportSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'SSH logs exported to {path}'**
+  String sshLogsExportSaved(String path);
+
+  /// No description provided for @sshLogCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'SSH log copied'**
+  String get sshLogCopied;
+
+  /// No description provided for @sshSessionsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No SSH sessions'**
+  String get sshSessionsEmptyTitle;
+
+  /// No description provided for @sshSessionsEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Active SSH sessions will appear here after the websocket feed returns data.'**
+  String get sshSessionsEmptyDescription;
+
+  /// No description provided for @sshSessionsLoginUserLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Login user'**
+  String get sshSessionsLoginUserLabel;
+
+  /// No description provided for @sshSessionsLoginIpLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Login IP'**
+  String get sshSessionsLoginIpLabel;
+
+  /// No description provided for @sshSessionsTerminalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'TTY'**
+  String get sshSessionsTerminalLabel;
+
+  /// No description provided for @sshSessionsHostLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Host'**
+  String get sshSessionsHostLabel;
+
+  /// No description provided for @sshSessionsLoginTimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Login time'**
+  String get sshSessionsLoginTimeLabel;
+
+  /// No description provided for @sshSessionDisconnectConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect SSH session for {username}?'**
+  String sshSessionDisconnectConfirm(String username);
+
+  /// No description provided for @processesSearchPidLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'PID'**
+  String get processesSearchPidLabel;
+
+  /// No description provided for @processesSearchNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get processesSearchNameLabel;
+
+  /// No description provided for @processesSearchUserLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get processesSearchUserLabel;
+
+  /// No description provided for @processesFilterStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get processesFilterStatusLabel;
+
+  /// No description provided for @processesSortCpu.
+  ///
+  /// In en, this message translates to:
+  /// **'CPU'**
+  String get processesSortCpu;
+
+  /// No description provided for @processesSortMemory.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory'**
+  String get processesSortMemory;
+
+  /// No description provided for @processesSortName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get processesSortName;
+
+  /// No description provided for @processesSortPid.
+  ///
+  /// In en, this message translates to:
+  /// **'PID'**
+  String get processesSortPid;
+
+  /// No description provided for @processesEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No processes'**
+  String get processesEmptyTitle;
+
+  /// No description provided for @processesEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Process data will appear here after the websocket feed returns rows.'**
+  String get processesEmptyDescription;
+
+  /// No description provided for @processesListeningPortsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Listening ports'**
+  String get processesListeningPortsLabel;
+
+  /// No description provided for @processesConnectionsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Connections'**
+  String get processesConnectionsLabel;
+
+  /// No description provided for @processesStartTimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Start time'**
+  String get processesStartTimeLabel;
+
+  /// No description provided for @processesThreadsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Threads'**
+  String get processesThreadsLabel;
+
+  /// No description provided for @processesStopConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop process {name}?'**
+  String processesStopConfirm(String name);
+
+  /// No description provided for @processesStatusRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Running'**
+  String get processesStatusRunning;
+
+  /// No description provided for @processesStatusSleep.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleeping'**
+  String get processesStatusSleep;
+
+  /// No description provided for @processesStatusStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped'**
+  String get processesStatusStop;
+
+  /// No description provided for @processesStatusIdle.
+  ///
+  /// In en, this message translates to:
+  /// **'Idle'**
+  String get processesStatusIdle;
+
+  /// No description provided for @processesStatusWait.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting'**
+  String get processesStatusWait;
+
+  /// No description provided for @processesStatusLock.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked'**
+  String get processesStatusLock;
+
+  /// No description provided for @processesStatusZombie.
+  ///
+  /// In en, this message translates to:
+  /// **'Zombie'**
+  String get processesStatusZombie;
+
+  /// No description provided for @processDetailOverviewSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get processDetailOverviewSectionTitle;
+
+  /// No description provided for @processDetailMemorySectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory'**
+  String get processDetailMemorySectionTitle;
+
+  /// No description provided for @processDetailOpenFilesSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Files'**
+  String get processDetailOpenFilesSectionTitle;
+
+  /// No description provided for @processDetailConnectionsSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connections'**
+  String get processDetailConnectionsSectionTitle;
+
+  /// No description provided for @processDetailEnvironmentSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Environment'**
+  String get processDetailEnvironmentSectionTitle;
+
+  /// No description provided for @processDetailParentPidLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Parent PID'**
+  String get processDetailParentPidLabel;
+
+  /// No description provided for @processDetailDiskReadLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Disk read'**
+  String get processDetailDiskReadLabel;
+
+  /// No description provided for @processDetailDiskWriteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Disk write'**
+  String get processDetailDiskWriteLabel;
+
+  /// No description provided for @processDetailCommandLineLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Command line'**
+  String get processDetailCommandLineLabel;
+
+  /// No description provided for @processDetailNoEnvironment.
+  ///
+  /// In en, this message translates to:
+  /// **'No environment variables'**
+  String get processDetailNoEnvironment;
+
+  /// No description provided for @processDetailNoConnections.
+  ///
+  /// In en, this message translates to:
+  /// **'No network connections'**
+  String get processDetailNoConnections;
+
+  /// No description provided for @processDetailNoOpenFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'No open files'**
+  String get processDetailNoOpenFiles;
 
   /// No description provided for @operationsPlaceholderBackAction.
   ///

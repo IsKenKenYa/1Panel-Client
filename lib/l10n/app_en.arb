@@ -1444,6 +1444,7 @@
   "operationsHostAssetsTitle": "Host Assets",
   "operationsHostAssetFormTitle": "Host Asset Form",
   "operationsSshTitle": "SSH",
+  "operationsSshCertsTitle": "SSH Certs",
   "operationsSshLogsTitle": "SSH Logs",
   "operationsSshSessionsTitle": "SSH Sessions",
   "operationsProcessesTitle": "Processes",
@@ -1549,6 +1550,140 @@
   "hostAssetsConnectionVerified": "Connection verified",
   "hostAssetsConnectionNeedsTest": "Run a connection test before saving",
   "hostAssetsTestFailed": "Connection test failed",
+  "sshSettingsServiceSectionTitle": "Service",
+  "sshSettingsAuthenticationSectionTitle": "Authentication",
+  "sshSettingsNetworkSectionTitle": "Network",
+  "sshSettingsRawFileSectionTitle": "Raw File",
+  "sshAutoStartLabel": "Auto start",
+  "sshPortLabel": "Port",
+  "sshListenAddressLabel": "Listen address",
+  "sshPermitRootLoginLabel": "Permit root login",
+  "sshPasswordAuthenticationLabel": "Password authentication",
+  "sshPubkeyAuthenticationLabel": "Public key authentication",
+  "sshUseDnsLabel": "Use DNS",
+  "sshCurrentUserLabel": "Current user",
+  "sshRawFilePlaceholder": "# The SSH configuration file is empty.",
+  "sshReloadAction": "Reload",
+  "sshSaveRawFileConfirm": "Overwrite the SSH configuration file with the current content?",
+  "sshOperateConfirm": "Run SSH action {operation}?",
+  "@sshOperateConfirm": {
+    "placeholders": {
+      "operation": {
+        "type": "String"
+      }
+    }
+  },
+  "sshUpdateSettingConfirm": "Update {label} to {value}?",
+  "@sshUpdateSettingConfirm": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "sshCertsEmptyTitle": "No SSH certs",
+  "sshCertsEmptyDescription": "Create or sync an SSH certificate to manage key login from the panel.",
+  "sshCertSyncConfirm": "Sync SSH certs from the current server?",
+  "sshCertDeleteConfirm": "Delete SSH cert {name}?",
+  "@sshCertDeleteConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sshCertCreateTitle": "Create SSH Cert",
+  "sshCertEditTitle": "Edit SSH Cert",
+  "sshCertEncryptionModeLabel": "Encryption mode",
+  "sshCertPassPhraseLabel": "Passphrase",
+  "sshCertPublicKeyLabel": "Public key",
+  "sshCertPrivateKeyLabel": "Private key",
+  "sshCertModeLabel": "Create mode",
+  "sshCertModeGenerate": "Generate",
+  "sshCertModeInput": "Input",
+  "sshCertModeImport": "Import",
+  "sshCertCreatedAtLabel": "Created at",
+  "sshAuthModePassword": "Password",
+  "sshAuthModeKey": "Key",
+  "sshLogsEmptyTitle": "No SSH logs",
+  "sshLogsEmptyDescription": "SSH login logs will appear here after the server records activity.",
+  "sshLogsSearchHint": "Search IP, user, or message",
+  "sshLogsStatusAll": "All",
+  "sshLogsStatusSuccess": "Success",
+  "sshLogsStatusFailed": "Failed",
+  "sshLogsIpLabel": "IP",
+  "sshLogsAreaLabel": "Area",
+  "sshLogsAuthModeLabel": "Auth mode",
+  "sshLogsTimeLabel": "Time",
+  "sshLogsMessageLabel": "Message",
+  "sshLogsExportSaved": "SSH logs exported to {path}",
+  "@sshLogsExportSaved": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "sshLogCopied": "SSH log copied",
+  "sshSessionsEmptyTitle": "No SSH sessions",
+  "sshSessionsEmptyDescription": "Active SSH sessions will appear here after the websocket feed returns data.",
+  "sshSessionsLoginUserLabel": "Login user",
+  "sshSessionsLoginIpLabel": "Login IP",
+  "sshSessionsTerminalLabel": "TTY",
+  "sshSessionsHostLabel": "Host",
+  "sshSessionsLoginTimeLabel": "Login time",
+  "sshSessionDisconnectConfirm": "Disconnect SSH session for {username}?",
+  "@sshSessionDisconnectConfirm": {
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "processesSearchPidLabel": "PID",
+  "processesSearchNameLabel": "Name",
+  "processesSearchUserLabel": "User",
+  "processesFilterStatusLabel": "Status",
+  "processesSortCpu": "CPU",
+  "processesSortMemory": "Memory",
+  "processesSortName": "Name",
+  "processesSortPid": "PID",
+  "processesEmptyTitle": "No processes",
+  "processesEmptyDescription": "Process data will appear here after the websocket feed returns rows.",
+  "processesListeningPortsLabel": "Listening ports",
+  "processesConnectionsLabel": "Connections",
+  "processesStartTimeLabel": "Start time",
+  "processesThreadsLabel": "Threads",
+  "processesStopConfirm": "Stop process {name}?",
+  "@processesStopConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "processesStatusRunning": "Running",
+  "processesStatusSleep": "Sleeping",
+  "processesStatusStop": "Stopped",
+  "processesStatusIdle": "Idle",
+  "processesStatusWait": "Waiting",
+  "processesStatusLock": "Locked",
+  "processesStatusZombie": "Zombie",
+  "processDetailOverviewSectionTitle": "Overview",
+  "processDetailMemorySectionTitle": "Memory",
+  "processDetailOpenFilesSectionTitle": "Open Files",
+  "processDetailConnectionsSectionTitle": "Connections",
+  "processDetailEnvironmentSectionTitle": "Environment",
+  "processDetailParentPidLabel": "Parent PID",
+  "processDetailDiskReadLabel": "Disk read",
+  "processDetailDiskWriteLabel": "Disk write",
+  "processDetailCommandLineLabel": "Command line",
+  "processDetailNoEnvironment": "No environment variables",
+  "processDetailNoConnections": "No network connections",
+  "processDetailNoOpenFiles": "No open files",
   "operationsPlaceholderBackAction": "Back to Operations Center",
   "operationsPlaceholderDescription": "{moduleName} is scheduled for Week {week}. Week 1 only wires the route, shared infrastructure, and reviewable skeleton.",
   "@operationsPlaceholderDescription": {

@@ -2,111 +2,130 @@
 
 ## 模块目标
 
-- 适配 Open1PanelApp 作为 1Panel Linux 运维面板社区版的定位
-- 提供完整的SSH服务配置和管理能力
-- 支持SSH会话创建、管理、断开
-- 提供SSH密钥管理功能
-- 支持SSH终端访问和命令执行
-- 统一SSH状态管理与错误反馈
+- Phase 1 Week 3 交付系统 SSH 管理 MVP，入口固定为 `ServerDetailPage -> OperationsCenterPage -> SSH`。
+- 覆盖四个可评审页面：`SshSettingsPage`、`SshCertsPage`、`SshLogsPage`、`SshSessionsPage`。
+- 严格遵循 `Presentation -> State -> Service/Repository -> API/Infra`，页面与 Provider 不直连 `lib/api/v2/`。
 
-## 功能完整性清单
+## Source of Truth
 
-基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 的 SSH 标签共 12 个端点:
+- SSH REST 真值：
+  - `docs/OpenSource/1Panel/agent/router/ro_host.go`
+  - `docs/OpenSource/1Panel/agent/app/api/v2/ssh.go`
+  - `docs/OpenSource/1Panel/frontend/src/api/modules/host.ts`
+  - `docs/OpenSource/1Panel/frontend/src/views/host/ssh/`
+- SSH session 实时真值：
+  - `docs/OpenSource/1Panel/agent/router/ro_process.go`
+  - `docs/OpenSource/1Panel/agent/utils/websocket/process_data.go`
+  - `docs/OpenSource/1Panel/frontend/src/views/host/ssh/session/index.vue`
 
-### SSH服务配置
-1. GET /ssh - 获取SSH服务状态
-2. POST /ssh/update - 更新SSH服务配置
-3. POST /ssh/restart - 重启SSH服务
-4. POST /ssh/stop - 停止SSH服务
-5. POST /ssh/start - 启动SSH服务
+## 当前 API 真值
 
-### SSH会话管理
-6. POST /ssh/session - 创建SSH会话
-7. GET /ssh/sessions - 获取SSH会话列表
-8. POST /ssh/session/operate - SSH会话操作
-9. POST /ssh/session/close - 关闭SSH会话
-10. GET /ssh/session/{id} - 获取SSH会话详情
+### SSH 配置 / 文件 / 证书 / 日志
+1. `POST /hosts/ssh/search`
+2. `POST /hosts/ssh/operate`
+3. `POST /hosts/ssh/update`
+4. `POST /hosts/ssh/file`
+5. `POST /hosts/ssh/file/update`
+6. `POST /hosts/ssh/cert`
+7. `POST /hosts/ssh/cert/update`
+8. `POST /hosts/ssh/cert/search`
+9. `POST /hosts/ssh/cert/delete`
+10. `POST /hosts/ssh/cert/sync`
+11. `POST /hosts/ssh/log`
+12. `POST /hosts/ssh/log/export`
 
-### SSH密钥管理
-11. POST /ssh/keys - SSH密钥列表
-12. POST /ssh/keys/create - 创建SSH密钥
-13. POST /ssh/keys/del - 删除SSH密钥
+### SSH 会话
+- `GET /process/ws`
+- `POST /process/stop`
 
-## 业务流程与交互验证
+说明：
+- 上游没有独立 `SSH session REST list`。
+- `SshSessionsPage` 的数据真值来自 `/process/ws`，发送 `type='ssh'`、`loginUser`、`loginIP`。
 
-### SSH服务管理流程
-- 进入SSH管理页面
-- 显示SSH服务状态
-- 支持启动/停止/重启SSH服务
-- 配置SSH服务参数
-- 保存配置并重启服务
+## 数据与分层设计
 
-### SSH会话创建流程
-- 选择目标服务器
-- 配置SSH连接参数
-- 创建SSH会话
-- 进入Web终端
-- 执行命令操作
-- 关闭SSH会话
+- API / Infra
+  - `SshV2Api`：承接 `/hosts/ssh/*`
+  - `ProcessWsClient`：承接 `/process/ws`，统一生成 `1Panel-Token` / `1Panel-Timestamp` 并默认 `operateNode=local`
+- Repository
+  - `SSHRepository`
+  - 负责 SSH 配置、原始文件、证书、日志、会话流，以及通过 `process/stop` 结束会话
+- Service
+  - `SSHService`
+  - 负责导出日志下载、配置值映射、会话流编排、错误归一化
+- Provider
+  - `SshSettingsProvider`
+  - `SshCertsProvider`
+  - `SshLogsProvider`
+  - `SshSessionsProvider`
 
-### SSH密钥管理流程
-- 进入SSH密钥管理页面
-- 显示SSH密钥列表
-- 支持创建新密钥
-- 支持删除密钥
-- 支持密钥导入导出
+## Week 3 页面规划
 
-## 关键边界与异常
+### SshSettingsPage
+- 顶部复用 `SshSectionNavWidget`
+- 分段：
+  - `Service`
+  - `Authentication`
+  - `Network`
+  - `Raw File`
+- 主操作：
+  - `start / stop / restart`
+  - `autoStart enable / disable`
+  - 更新端口、监听地址、root 登录、密码认证、公钥认证、UseDNS
+  - 加载 / 保存原始 `sshdConf`
 
-### SSH服务异常
-- SSH服务启动失败的诊断
-- SSH服务配置错误的处理
-- 端口冲突的提示
-- 权限不足的处理
+### SshCertsPage
+- 卡片字段：
+  - `name`
+  - `encryptionMode`
+  - `description`
+  - `createdAt`
+- 主操作：
+  - `create`
+  - `edit`
+  - `sync`
+  - `delete`
+- 创建 / 编辑通过全屏 bottom sheet 承载，不新增顶级路由
 
-### SSH会话异常
-- 会话创建失败的诊断
-- 连接超时的处理
-- 会话中断的恢复
-- 多会话冲突的处理
+### SshLogsPage
+- 搜索条件：
+  - `info`
+  - `status = All / Success / Failed`
+- 列表字段：
+  - `address`
+  - `port`
+  - `user`
+  - `authMode`
+  - `status`
+  - `date`
+  - `message`
+- 主操作：
+  - `refresh`
+  - `copy`
+  - `export`
 
-### SSH密钥异常
-- 密钥创建失败的诊断
-- 密钥删除的依赖检查
-- 密钥权限不足的提示
+### SshSessionsPage
+- 通过 `process/ws` 获取活跃 SSH 会话
+- 查询体：
+  - `type='ssh'`
+  - `loginUser`
+  - `loginIP`
+- 列表字段：
+  - `username`
+  - `terminal`
+  - `host`
+  - `loginTime`
+  - `pid`
+- 主操作：
+  - `disconnect`，底层调用 `POST /process/stop`
 
-### 终端操作异常
-- 命令执行失败的诊断
-- 终端连接中断的处理
-- 大量输出的性能优化
+## 已知边界与取舍
 
-## 模块分层与职责
+- Week 3 不做 Web terminal 页面，`terminal_page.dart` 不作为本模块功能上限，也不在本周扩展。
+- `operateNode` 当前统一固定为 `local`，因为 App 里还没有节点选择器。
+- SSH session 实时列表与进程实时列表共用 `/process/ws`，这是上游当前设计，不是移动端私有折中。
+- SSH 日志遵循上游请求体，仅支持 `info + status + page + pageSize`，本周不发明额外 time range。
 
-### 前端
-- UI页面: SSH服务管理、SSH会话列表、Web终端、SSH密钥管理
-- 状态管理: SSH服务状态、会话列表、密钥列表、终端状态
-
-### 服务层
-- API适配: TerminalV2Api (SSH相关)
-- 数据模型: SSHService、SSHSession、SSHKey、TerminalConfig等
-
-## 数据流
-
-1. UI触发 -> Provider/Service -> API客户端请求
-2. API响应解析 -> 模型映射 -> 状态更新
-3. 状态更新 -> UI刷新 -> 用户反馈
-4. 终端连接 -> WebSocket -> 实时输出
-
-## 与现有实现的差距
-
-- SSH服务管理页面缺失
-- SSH会话列表页面缺失
-- Web终端功能缺失
-- SSH密钥管理页面缺失
-
-## 评审记录
-
-| 日期 | 评审人 | 结论 | 备注 |
-| --- | --- | --- | --- |
-| 待定 | 评审人A | 待评审 | |
-| 待定 | 评审人B | 待评审 | |
+---
+**文档版本**: 2.0
+**最后更新**: 2026-03-26

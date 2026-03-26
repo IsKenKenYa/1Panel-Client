@@ -4,10 +4,10 @@
   "lastUpdated": "2026-03-26",
   "totalEndpoints": 546,
   "totalApiMethods": 524,
-  "apiClientFiles": 30,
+  "apiClientFiles": 31,
   "testFiles": {
-    "unit": 7,
-    "integration": 10
+    "unit": 8,
+    "integration": 12
   },
   "tags": {
     "Website": {
@@ -131,10 +131,10 @@
       "endpoints": 12,
       "priority": "P1",
       "implemented": 1,
-      "tested": 0,
-      "docs": 0,
-      "clientFile": "terminal_v2.dart",
-      "methods": 18
+      "tested": 1,
+      "docs": 1,
+      "clientFile": "ssh_v2.dart",
+      "methods": 12
     },
     "Website SSL": {
       "endpoints": 11,
@@ -437,10 +437,10 @@
       "endpoints": 2,
       "priority": "P1",
       "implemented": 1,
-      "tested": 0,
-      "docs": 0,
+      "tested": 1,
+      "docs": 1,
       "clientFile": "process_v2.dart",
-      "methods": 6
+      "methods": 4
     },
     "TaskLog": {
       "endpoints": 2,

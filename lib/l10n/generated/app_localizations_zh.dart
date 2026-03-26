@@ -3495,6 +3495,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get operationsSshTitle => 'SSH';
 
   @override
+  String get operationsSshCertsTitle => 'SSH 证书';
+
+  @override
   String get operationsSshLogsTitle => 'SSH 日志';
 
   @override
@@ -3713,6 +3716,285 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get hostAssetsTestFailed => '连接测试失败';
+
+  @override
+  String get sshSettingsServiceSectionTitle => '服务';
+
+  @override
+  String get sshSettingsAuthenticationSectionTitle => '认证';
+
+  @override
+  String get sshSettingsNetworkSectionTitle => '网络';
+
+  @override
+  String get sshSettingsRawFileSectionTitle => '原始配置文件';
+
+  @override
+  String get sshAutoStartLabel => '开机启动';
+
+  @override
+  String get sshPortLabel => '端口';
+
+  @override
+  String get sshListenAddressLabel => '监听地址';
+
+  @override
+  String get sshPermitRootLoginLabel => '允许 root 登录';
+
+  @override
+  String get sshPasswordAuthenticationLabel => '密码认证';
+
+  @override
+  String get sshPubkeyAuthenticationLabel => '公钥认证';
+
+  @override
+  String get sshUseDnsLabel => '使用 DNS';
+
+  @override
+  String get sshCurrentUserLabel => '当前用户';
+
+  @override
+  String get sshRawFilePlaceholder => '# SSH 配置文件为空。';
+
+  @override
+  String get sshReloadAction => '重新加载';
+
+  @override
+  String get sshSaveRawFileConfirm => '确认用当前内容覆盖 SSH 配置文件吗？';
+
+  @override
+  String sshOperateConfirm(String operation) {
+    return '确认执行 SSH 操作：$operation 吗？';
+  }
+
+  @override
+  String sshUpdateSettingConfirm(String label, String value) {
+    return '确认将 $label 更新为 $value 吗？';
+  }
+
+  @override
+  String get sshCertsEmptyTitle => '暂无 SSH 证书';
+
+  @override
+  String get sshCertsEmptyDescription => '先创建或同步一个 SSH 证书，用于面板管理密钥登录。';
+
+  @override
+  String get sshCertSyncConfirm => '确认从当前服务器同步 SSH 证书吗？';
+
+  @override
+  String sshCertDeleteConfirm(String name) {
+    return '确认删除 SSH 证书 $name 吗？';
+  }
+
+  @override
+  String get sshCertCreateTitle => '创建 SSH 证书';
+
+  @override
+  String get sshCertEditTitle => '编辑 SSH 证书';
+
+  @override
+  String get sshCertEncryptionModeLabel => '加密模式';
+
+  @override
+  String get sshCertPassPhraseLabel => '口令';
+
+  @override
+  String get sshCertPublicKeyLabel => '公钥';
+
+  @override
+  String get sshCertPrivateKeyLabel => '私钥';
+
+  @override
+  String get sshCertModeLabel => '创建方式';
+
+  @override
+  String get sshCertModeGenerate => '生成';
+
+  @override
+  String get sshCertModeInput => '手动输入';
+
+  @override
+  String get sshCertModeImport => '导入';
+
+  @override
+  String get sshCertCreatedAtLabel => '创建时间';
+
+  @override
+  String get sshAuthModePassword => '密码';
+
+  @override
+  String get sshAuthModeKey => '密钥';
+
+  @override
+  String get sshLogsEmptyTitle => '暂无 SSH 日志';
+
+  @override
+  String get sshLogsEmptyDescription => '服务器产生 SSH 登录记录后，会在这里展示。';
+
+  @override
+  String get sshLogsSearchHint => '搜索 IP、用户或消息';
+
+  @override
+  String get sshLogsStatusAll => '全部';
+
+  @override
+  String get sshLogsStatusSuccess => '成功';
+
+  @override
+  String get sshLogsStatusFailed => '失败';
+
+  @override
+  String get sshLogsIpLabel => 'IP';
+
+  @override
+  String get sshLogsAreaLabel => '地区';
+
+  @override
+  String get sshLogsAuthModeLabel => '认证方式';
+
+  @override
+  String get sshLogsTimeLabel => '时间';
+
+  @override
+  String get sshLogsMessageLabel => '消息';
+
+  @override
+  String sshLogsExportSaved(String path) {
+    return 'SSH 日志已导出到 $path';
+  }
+
+  @override
+  String get sshLogCopied => 'SSH 日志已复制';
+
+  @override
+  String get sshSessionsEmptyTitle => '暂无 SSH 会话';
+
+  @override
+  String get sshSessionsEmptyDescription => 'websocket 返回活跃 SSH 会话后，会在这里展示。';
+
+  @override
+  String get sshSessionsLoginUserLabel => '登录用户';
+
+  @override
+  String get sshSessionsLoginIpLabel => '登录 IP';
+
+  @override
+  String get sshSessionsTerminalLabel => 'TTY';
+
+  @override
+  String get sshSessionsHostLabel => '主机';
+
+  @override
+  String get sshSessionsLoginTimeLabel => '登录时间';
+
+  @override
+  String sshSessionDisconnectConfirm(String username) {
+    return '确认断开用户 $username 的 SSH 会话吗？';
+  }
+
+  @override
+  String get processesSearchPidLabel => 'PID';
+
+  @override
+  String get processesSearchNameLabel => '名称';
+
+  @override
+  String get processesSearchUserLabel => '用户';
+
+  @override
+  String get processesFilterStatusLabel => '状态';
+
+  @override
+  String get processesSortCpu => 'CPU';
+
+  @override
+  String get processesSortMemory => '内存';
+
+  @override
+  String get processesSortName => '名称';
+
+  @override
+  String get processesSortPid => 'PID';
+
+  @override
+  String get processesEmptyTitle => '暂无进程';
+
+  @override
+  String get processesEmptyDescription => 'websocket 返回进程列表后，会在这里展示。';
+
+  @override
+  String get processesListeningPortsLabel => '监听端口';
+
+  @override
+  String get processesConnectionsLabel => '连接数';
+
+  @override
+  String get processesStartTimeLabel => '启动时间';
+
+  @override
+  String get processesThreadsLabel => '线程数';
+
+  @override
+  String processesStopConfirm(String name) {
+    return '确认停止进程 $name 吗？';
+  }
+
+  @override
+  String get processesStatusRunning => '运行中';
+
+  @override
+  String get processesStatusSleep => '休眠';
+
+  @override
+  String get processesStatusStop => '已停止';
+
+  @override
+  String get processesStatusIdle => '空闲';
+
+  @override
+  String get processesStatusWait => '等待';
+
+  @override
+  String get processesStatusLock => '锁定';
+
+  @override
+  String get processesStatusZombie => '僵尸';
+
+  @override
+  String get processDetailOverviewSectionTitle => '概览';
+
+  @override
+  String get processDetailMemorySectionTitle => '内存';
+
+  @override
+  String get processDetailOpenFilesSectionTitle => '打开文件';
+
+  @override
+  String get processDetailConnectionsSectionTitle => '连接';
+
+  @override
+  String get processDetailEnvironmentSectionTitle => '环境变量';
+
+  @override
+  String get processDetailParentPidLabel => '父进程 PID';
+
+  @override
+  String get processDetailDiskReadLabel => '磁盘读取';
+
+  @override
+  String get processDetailDiskWriteLabel => '磁盘写入';
+
+  @override
+  String get processDetailCommandLineLabel => '命令行';
+
+  @override
+  String get processDetailNoEnvironment => '暂无环境变量';
+
+  @override
+  String get processDetailNoConnections => '暂无网络连接';
+
+  @override
+  String get processDetailNoOpenFiles => '暂无打开文件';
 
   @override
   String get operationsPlaceholderBackAction => '返回运维中心';

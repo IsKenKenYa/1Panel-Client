@@ -5,7 +5,7 @@
 - 来源: docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json
 - 端点总数: 546
 - API方法总数: 524
-- API客户端文件: 30
+- API客户端文件: 31
 - 标签数: 52
 - 覆盖口径: 已实现=存在API调用与数据模型，已测试=具备单元/集成/端到端测试，已文档=包含使用说明与已知限制
 
@@ -14,15 +14,15 @@
 | 维度 | 完成数 | 完成率 |
 | --- | --- | --- |
 | **API客户端实现** | 51/52 | 98% |
-| **单元测试覆盖** | 21/52 | 40% |
-| **文档覆盖** | 8/52 | 15% |
+| **单元测试覆盖** | 23/52 | 44% |
+| **文档覆盖** | 10/52 | 19% |
 
 ### 按优先级统计
 
 | 优先级 | 模块数 | 已实现 | 已测试 | 已文档 |
 | --- | --- | --- | --- | --- |
 | **P0** | 15 | 15 (100%) | 11 (73%) | 3 (20%) |
-| **P1** | 26 | 26 (100%) | 6 (23%) | 3 (12%) |
+| **P1** | 26 | 26 (100%) | 8 (31%) | 5 (19%) |
 | **P2** | 11 | 10 (91%) | 4 (36%) | 2 (18%) |
 
 ## 优先级规则
@@ -59,7 +59,7 @@
 | --- | --- | --- | --- | --- | --- |
 | Cronjob | 16 | cronjob_v2.dart | 12 | ❌ | ❌ |
 | Firewall | 15 | firewall_v2.dart | 12 | ❌ | ❌ |
-| SSH | 12 | terminal_v2.dart | 18 | ❌ | ❌ |
+| SSH | 12 | ssh_v2.dart | 12 | ✅ | ✅ |
 | Website SSL | 11 | ssl_v2.dart | 17 | ❌ | ❌ |
 | AI | 10 | ai_v2.dart | 18 | ✅ | ❌ |
 | Container Image | 10 | container_v2.dart | 43 | ❌ | ❌ |
@@ -79,7 +79,7 @@
 | Website DNS | 4 | website_v2.dart | 20 | ❌ | ❌ |
 | Website Domain | 4 | website_v2.dart | 20 | ❌ | ❌ |
 | Website Nginx | 4 | openresty_v2.dart | 9 | ❌ | ❌ |
-| Process | 2 | process_v2.dart | 6 | ❌ | ❌ |
+| Process | 2 | process_v2.dart | 4 | ✅ | ✅ |
 | TaskLog | 2 | task_log_v2.dart | 2 | ❌ | ❌ |
 | Website HTTPS | 2 | ssl_v2.dart | 17 | ❌ | ❌ |
 | Website PHP | 1 | openresty_v2.dart | 9 | ❌ | ❌ |
@@ -102,7 +102,7 @@
 
 ## 测试文件清单
 
-> Week 2 同步说明：`Command` / `Host` 已补充真实环境 API client 验证与 Provider / Widget 测试；聚合统计以当前模块级更新为准。
+> Week 3 同步说明：`SSH` / `Process` 已补充真实环境 API client、websocket 契约、Provider 与 Widget 测试；聚合统计以当前模块级更新为准。
 
 ### 单元测试 (test/api/)
 - ai_api_test.dart
@@ -122,18 +122,20 @@
 - database_api_client_test.dart
 - file_api_client_test.dart
 - host_api_client_test.dart
+- process_api_client_test.dart
 - setting_api_client_test.dart
+- ssh_api_client_test.dart
 - website_api_client_test.dart
 
 ## 关键差距
 
 ### 测试覆盖不足
-- P1模块测试率为23%，仍需继续补充
-- P0核心模块中Auth、Monitor、Backup Account、Runtime缺少测试
+- P1 模块测试率提升到 31%，但 Cronjob、Firewall、Logs 仍未补齐
+- P0 核心模块中 Auth、Monitor、Backup Account、Runtime 仍缺模块级测试
 
 ### 文档覆盖不足
-- 目前 15% 的模块有文档
-- 大部分模块缺少使用说明和已知限制
+- 目前 19% 的模块有文档
+- 仍有大量模块缺少使用说明和已知限制
 
 ### UI集成缺失
 - api_coverage.json未跟踪UI集成状态

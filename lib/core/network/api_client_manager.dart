@@ -17,6 +17,7 @@ import '../../api/v2/openresty_v2.dart';
 import '../../api/v2/process_v2.dart';
 import '../../api/v2/runtime_v2.dart';
 import '../../api/v2/setting_v2.dart';
+import '../../api/v2/ssh_v2.dart';
 import '../../api/v2/ssl_v2.dart';
 import '../../api/v2/system_group_v2.dart';
 import '../../api/v2/task_log_v2.dart';
@@ -120,6 +121,8 @@ class ApiClientManager {
 
   Future<SettingV2Api> getSettingApi() async =>
       SettingV2Api(await getCurrentClient());
+
+  Future<SshV2Api> getSshApi() async => SshV2Api(await getCurrentClient());
 
   Future<SSLV2Api> getSslApi() async => SSLV2Api(await getCurrentClient());
 

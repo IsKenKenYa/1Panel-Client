@@ -1382,6 +1382,7 @@
   "operationsHostAssetsTitle": "主机资产",
   "operationsHostAssetFormTitle": "主机资产表单",
   "operationsSshTitle": "SSH",
+  "operationsSshCertsTitle": "SSH 证书",
   "operationsSshLogsTitle": "SSH 日志",
   "operationsSshSessionsTitle": "SSH 会话",
   "operationsProcessesTitle": "进程",
@@ -1487,6 +1488,140 @@
   "hostAssetsConnectionVerified": "连接验证通过",
   "hostAssetsConnectionNeedsTest": "保存前请先完成连接测试",
   "hostAssetsTestFailed": "连接测试失败",
+  "sshSettingsServiceSectionTitle": "服务",
+  "sshSettingsAuthenticationSectionTitle": "认证",
+  "sshSettingsNetworkSectionTitle": "网络",
+  "sshSettingsRawFileSectionTitle": "原始配置文件",
+  "sshAutoStartLabel": "开机启动",
+  "sshPortLabel": "端口",
+  "sshListenAddressLabel": "监听地址",
+  "sshPermitRootLoginLabel": "允许 root 登录",
+  "sshPasswordAuthenticationLabel": "密码认证",
+  "sshPubkeyAuthenticationLabel": "公钥认证",
+  "sshUseDnsLabel": "使用 DNS",
+  "sshCurrentUserLabel": "当前用户",
+  "sshRawFilePlaceholder": "# SSH 配置文件为空。",
+  "sshReloadAction": "重新加载",
+  "sshSaveRawFileConfirm": "确认用当前内容覆盖 SSH 配置文件吗？",
+  "sshOperateConfirm": "确认执行 SSH 操作：{operation} 吗？",
+  "@sshOperateConfirm": {
+    "placeholders": {
+      "operation": {
+        "type": "String"
+      }
+    }
+  },
+  "sshUpdateSettingConfirm": "确认将 {label} 更新为 {value} 吗？",
+  "@sshUpdateSettingConfirm": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "sshCertsEmptyTitle": "暂无 SSH 证书",
+  "sshCertsEmptyDescription": "先创建或同步一个 SSH 证书，用于面板管理密钥登录。",
+  "sshCertSyncConfirm": "确认从当前服务器同步 SSH 证书吗？",
+  "sshCertDeleteConfirm": "确认删除 SSH 证书 {name} 吗？",
+  "@sshCertDeleteConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sshCertCreateTitle": "创建 SSH 证书",
+  "sshCertEditTitle": "编辑 SSH 证书",
+  "sshCertEncryptionModeLabel": "加密模式",
+  "sshCertPassPhraseLabel": "口令",
+  "sshCertPublicKeyLabel": "公钥",
+  "sshCertPrivateKeyLabel": "私钥",
+  "sshCertModeLabel": "创建方式",
+  "sshCertModeGenerate": "生成",
+  "sshCertModeInput": "手动输入",
+  "sshCertModeImport": "导入",
+  "sshCertCreatedAtLabel": "创建时间",
+  "sshAuthModePassword": "密码",
+  "sshAuthModeKey": "密钥",
+  "sshLogsEmptyTitle": "暂无 SSH 日志",
+  "sshLogsEmptyDescription": "服务器产生 SSH 登录记录后，会在这里展示。",
+  "sshLogsSearchHint": "搜索 IP、用户或消息",
+  "sshLogsStatusAll": "全部",
+  "sshLogsStatusSuccess": "成功",
+  "sshLogsStatusFailed": "失败",
+  "sshLogsIpLabel": "IP",
+  "sshLogsAreaLabel": "地区",
+  "sshLogsAuthModeLabel": "认证方式",
+  "sshLogsTimeLabel": "时间",
+  "sshLogsMessageLabel": "消息",
+  "sshLogsExportSaved": "SSH 日志已导出到 {path}",
+  "@sshLogsExportSaved": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "sshLogCopied": "SSH 日志已复制",
+  "sshSessionsEmptyTitle": "暂无 SSH 会话",
+  "sshSessionsEmptyDescription": "websocket 返回活跃 SSH 会话后，会在这里展示。",
+  "sshSessionsLoginUserLabel": "登录用户",
+  "sshSessionsLoginIpLabel": "登录 IP",
+  "sshSessionsTerminalLabel": "TTY",
+  "sshSessionsHostLabel": "主机",
+  "sshSessionsLoginTimeLabel": "登录时间",
+  "sshSessionDisconnectConfirm": "确认断开用户 {username} 的 SSH 会话吗？",
+  "@sshSessionDisconnectConfirm": {
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "processesSearchPidLabel": "PID",
+  "processesSearchNameLabel": "名称",
+  "processesSearchUserLabel": "用户",
+  "processesFilterStatusLabel": "状态",
+  "processesSortCpu": "CPU",
+  "processesSortMemory": "内存",
+  "processesSortName": "名称",
+  "processesSortPid": "PID",
+  "processesEmptyTitle": "暂无进程",
+  "processesEmptyDescription": "websocket 返回进程列表后，会在这里展示。",
+  "processesListeningPortsLabel": "监听端口",
+  "processesConnectionsLabel": "连接数",
+  "processesStartTimeLabel": "启动时间",
+  "processesThreadsLabel": "线程数",
+  "processesStopConfirm": "确认停止进程 {name} 吗？",
+  "@processesStopConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "processesStatusRunning": "运行中",
+  "processesStatusSleep": "休眠",
+  "processesStatusStop": "已停止",
+  "processesStatusIdle": "空闲",
+  "processesStatusWait": "等待",
+  "processesStatusLock": "锁定",
+  "processesStatusZombie": "僵尸",
+  "processDetailOverviewSectionTitle": "概览",
+  "processDetailMemorySectionTitle": "内存",
+  "processDetailOpenFilesSectionTitle": "打开文件",
+  "processDetailConnectionsSectionTitle": "连接",
+  "processDetailEnvironmentSectionTitle": "环境变量",
+  "processDetailParentPidLabel": "父进程 PID",
+  "processDetailDiskReadLabel": "磁盘读取",
+  "processDetailDiskWriteLabel": "磁盘写入",
+  "processDetailCommandLineLabel": "命令行",
+  "processDetailNoEnvironment": "暂无环境变量",
+  "processDetailNoConnections": "暂无网络连接",
+  "processDetailNoOpenFiles": "暂无打开文件",
   "operationsPlaceholderBackAction": "返回运维中心",
   "operationsPlaceholderDescription": "{moduleName} 计划在第 {week} 周交付。Week 1 仅先打通路由、共享基础设施与可评审骨架。",
   "@operationsPlaceholderDescription": {

@@ -2,41 +2,37 @@
 
 ## 模块定位
 
-进程管理模块是 Open1PanelApp 的 P1 高价值扩展模块，信息架构上归属 `host/process`。Week 1 已完成 API 真值收敛，Week 3 落地 UI。
+进程管理是 Phase 1 Week 3 的系统控制能力，和主机资产、SSH 一起构成主机侧运维主链路。
 
 ## 子模块结构
 
-| 子模块 | 端点数 | API客户端 | 说明 |
-|--------|--------|-----------|------|
-| **进程详情** | 1 | process_v2.dart | `GET /process/{pid}` |
-| **进程停止** | 1 | process_v2.dart | `POST /process/stop` |
-| **监听进程** | 1 | process_v2.dart | `POST /process/listening` |
+| 子模块 | 真值接口 | 主要类型 | 说明 |
+|--------|----------|----------|------|
+| 进程列表 | `/process/ws` + `/process/listening` | `ProcessListQuery` `ProcessSummary` `ListeningProcess` | 实时列表 + 监听端口补强 |
+| 进程详情 | `GET /process/{pid}` | `ProcessDetail` | 全屏详情页 |
+| 停止进程 | `POST /process/stop` | `ProcessStopRequest` | 危险操作，统一确认 |
 
-## 后续规划方向
+## 当前落地
 
-### 短期目标
-- 基于监听端口进程与详情接口组合移动端列表
-- 补充 stop 二次确认
-- 与主机资产、SSH 统一收入口径
+- 页面：
+  - `ProcessesPage`
+  - `ProcessDetailPage`
+- Provider：
+  - `ProcessesProvider`
+  - `ProcessDetailProvider`
+- Service / Repository：
+  - `ProcessService`
+  - `ProcessRepository`
+- 实时层：
+  - `ProcessWsClient`
 
-### 中期目标
-- 支持进程资源监控
-- 实现进程树展示
-- 添加进程告警功能
+## 关键实现说明
 
-### 长期目标
-- 支持进程自动管理
-- 实现进程守护功能
-- 提供进程性能分析
-
-## 与其他模块的关系
-
-- **监控管理**: 共享系统资源数据
-- **主机管理**: 获取主机信息
-- **命令管理**: 进程操作命令
-- **仪表盘**: 进程状态概览
+1. `ProcessesPage` 主列表不是来自 `/process/listening`，而是来自 `/process/ws`。
+2. `/process/listening` 只用于把监听端口拼回对应 PID 的卡片展示。
+3. 进程详情页使用 `GET /process/{pid}`，不复用 websocket 行数据做伪详情。
+4. 当前模块与 dashboard 的 top-process 数据模型无关，Week 3 采用独立 `ProcessSummary / ProcessDetail` 类型，避免和 `dashboard_models.dart` 混名。
 
 ---
-
-**文档版本**: 1.1
+**文档版本**: 2.0
 **最后更新**: 2026-03-26

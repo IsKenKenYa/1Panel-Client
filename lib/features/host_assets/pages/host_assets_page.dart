@@ -170,6 +170,8 @@ class _HostAssetsPageState extends State<HostAssetsPage> {
       context,
       groupType: 'host',
       initialSelectedGroupId: provider.selectedGroupId,
+      allowClearSelection: true,
+      clearOptionLabel: context.l10n.hostAssetsFilterAllGroups,
     );
     if (!mounted) return;
     provider.updateGroupFilter(groupId);

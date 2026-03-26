@@ -6,6 +6,7 @@ import 'package:onepanel_client/api/v2/command_v2.dart';
 import 'package:onepanel_client/api/v2/cronjob_v2.dart';
 import 'package:onepanel_client/api/v2/host_v2.dart';
 import 'package:onepanel_client/api/v2/process_v2.dart';
+import 'package:onepanel_client/api/v2/ssh_v2.dart';
 import 'package:onepanel_client/api/v2/system_group_v2.dart';
 import 'package:onepanel_client/core/network/dio_client.dart';
 import 'package:onepanel_client/data/models/host_models.dart';
@@ -123,6 +124,32 @@ void main() {
       expect(response.data?.single.label, 'Default');
     });
 
+    test('SshV2Api aligns settings route to POST /hosts/ssh/search', () async {
+      responseBuilder = () => <String, dynamic>{
+            'code': 200,
+            'data': <String, dynamic>{
+              'autoStart': true,
+              'isExist': true,
+              'isActive': true,
+              'message': '',
+              'port': '22',
+              'listenAddress': '',
+              'passwordAuthentication': 'yes',
+              'pubkeyAuthentication': 'yes',
+              'permitRootLogin': 'yes',
+              'useDNS': 'no',
+              'currentUser': 'root',
+            },
+          };
+
+      final api = SshV2Api(client);
+      final response = await api.getSshInfo();
+
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/hosts/ssh/search');
+      expect(response.data?.port, '22');
+    });
+
     test('ProcessV2Api aligns listening route to POST /process/listening',
         () async {
       responseBuilder = () => <String, dynamic>{
@@ -137,7 +164,7 @@ void main() {
 
       expect(requestMethod, 'POST');
       expect(requestPath, '/api/v2/process/listening');
-      expect(response.data?.single['Name'], 'sshd');
+      expect(response.data?.single.name, 'sshd');
     });
 
     test('CronjobV2Api aligns load info route to POST /cronjobs/load/info',

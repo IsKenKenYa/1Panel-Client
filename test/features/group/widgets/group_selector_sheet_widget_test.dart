@@ -46,5 +46,37 @@ void main() {
     expect(find.text('Ops'), findsOneWidget);
   });
 
-  // tidy up
+  testWidgets('shows all groups option when clear selection is enabled',
+      (tester) async {
+    final provider = GroupOptionsProvider(service: service);
+    await provider.initialize(
+      groupType: 'command',
+      allowEmptySelection: true,
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('en'),
+        home: ChangeNotifierProvider<GroupOptionsProvider>.value(
+          value: provider,
+          child: const Scaffold(
+            body: SizedBox(
+              width: 400,
+              height: 520,
+              child: GroupSelectorSheetWidget(
+                allowClearSelection: true,
+                clearOptionLabel: 'All groups',
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('All groups'), findsOneWidget);
+    expect(provider.selectedGroupId, isNull);
+  });
 }

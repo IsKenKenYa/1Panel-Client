@@ -1,238 +1,142 @@
 import 'package:equatable/equatable.dart';
 
-/// Process status enumeration
-enum ProcessStatus {
-  running('running'),
-  sleeping('sleeping'),
-  stopped('stopped'),
-  zombie('zombie'),
-  dead('dead');
+class ProcessStopRequest extends Equatable {
+  const ProcessStopRequest({required this.pid});
 
-  const ProcessStatus(this.value);
-  final String value;
+  final int pid;
 
-  static ProcessStatus fromString(String value) {
-    return ProcessStatus.values.firstWhere(
-      (status) => status.value == value,
-      orElse: () => ProcessStatus.stopped,
-    );
-  }
+  Map<String, dynamic> toJson() => <String, dynamic>{'PID': pid};
+
+  @override
+  List<Object?> get props => <Object?>[pid];
 }
 
-/// Process information model
-class ProcessInfo extends Equatable {
-  final int? pid;
-  final String? name;
-  final String? command;
-  final String? user;
-  final int? cpuUsage;
-  final int? memoryUsage;
-  final ProcessStatus? status;
-  final String? startTime;
-  final String? path;
-  final int? parentId;
-  final List<int>? children;
-
-  const ProcessInfo({
+class ProcessListQuery extends Equatable {
+  const ProcessListQuery({
     this.pid,
-    this.name,
-    this.command,
-    this.user,
-    this.cpuUsage,
-    this.memoryUsage,
-    this.status,
-    this.startTime,
-    this.path,
-    this.parentId,
-    this.children,
+    this.name = '',
+    this.username = '',
+    this.statuses = const <String>[],
   });
 
-  factory ProcessInfo.fromJson(Map<String, dynamic> json) {
-    return ProcessInfo(
-      pid: json['pid'] as int?,
-      name: json['name'] as String?,
-      command: json['command'] as String?,
-      user: json['user'] as String?,
-      cpuUsage: json['cpuUsage'] as int?,
-      memoryUsage: json['memoryUsage'] as int?,
-      status: json['status'] != null ? ProcessStatus.fromString(json['status'] as String) : null,
-      startTime: json['startTime'] as String?,
-      path: json['path'] as String?,
-      parentId: json['parentId'] as int?,
-      children: (json['children'] as List?)?.map((e) => e as int).toList(),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'pid': pid,
-      'name': name,
-      'command': command,
-      'user': user,
-      'cpuUsage': cpuUsage,
-      'memoryUsage': memoryUsage,
-      'status': status?.value,
-      'startTime': startTime,
-      'path': path,
-      'parentId': parentId,
-      'children': children,
-    };
-  }
+  final int? pid;
+  final String name;
+  final String username;
+  final List<String> statuses;
 
   @override
-  List<Object?> get props => [pid, name, command, user, cpuUsage, memoryUsage, status, startTime, path, parentId, children];
+  List<Object?> get props => <Object?>[pid, name, username, statuses];
 }
 
-/// Process search request model
-class ProcessSearch extends Equatable {
-  final int? page;
-  final int? pageSize;
-  final String? search;
-  final String? user;
-  final ProcessStatus? status;
-  final String? sortBy;
-  final String? sortOrder;
-
-  const ProcessSearch({
-    this.page,
-    this.pageSize,
-    this.search,
-    this.user,
-    this.status,
-    this.sortBy,
-    this.sortOrder,
+class ProcessSummary extends Equatable {
+  const ProcessSummary({
+    required this.pid,
+    required this.name,
+    required this.parentPid,
+    required this.username,
+    required this.status,
+    required this.startTime,
+    required this.numThreads,
+    required this.numConnections,
+    required this.cpuPercent,
+    required this.cpuValue,
+    required this.memoryText,
+    required this.memoryValue,
+    this.listeningPorts = const <int>[],
   });
 
-  factory ProcessSearch.fromJson(Map<String, dynamic> json) {
-    return ProcessSearch(
-      page: json['page'] as int?,
-      pageSize: json['pageSize'] as int?,
-      search: json['search'] as String?,
-      user: json['user'] as String?,
-      status: json['status'] != null ? ProcessStatus.fromString(json['status'] as String) : null,
-      sortBy: json['sortBy'] as String?,
-      sortOrder: json['sortOrder'] as String?,
+  final int pid;
+  final String name;
+  final int parentPid;
+  final String username;
+  final String status;
+  final String startTime;
+  final int numThreads;
+  final int numConnections;
+  final String cpuPercent;
+  final double cpuValue;
+  final String memoryText;
+  final int memoryValue;
+  final List<int> listeningPorts;
+
+  factory ProcessSummary.fromJson(Map<String, dynamic> json) {
+    return ProcessSummary(
+      pid: json['PID'] as int? ?? 0,
+      name: json['name'] as String? ?? '',
+      parentPid: json['PPID'] as int? ?? 0,
+      username: json['username'] as String? ?? '',
+      status: json['status'] as String? ?? '',
+      startTime: json['startTime'] as String? ?? '',
+      numThreads: json['numThreads'] as int? ?? 0,
+      numConnections: json['numConnections'] as int? ?? 0,
+      cpuPercent: json['cpuPercent'] as String? ?? '',
+      cpuValue: (json['cpuValue'] as num?)?.toDouble() ?? 0,
+      memoryText: json['rss'] as String? ?? '',
+      memoryValue: json['rssValue'] as int? ?? 0,
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'page': page,
-      'pageSize': pageSize,
-      'search': search,
-      'user': user,
-      'status': status?.value,
-      'sortBy': sortBy,
-      'sortOrder': sortOrder,
-    };
+  ProcessSummary copyWith({
+    List<int>? listeningPorts,
+  }) {
+    return ProcessSummary(
+      pid: pid,
+      name: name,
+      parentPid: parentPid,
+      username: username,
+      status: status,
+      startTime: startTime,
+      numThreads: numThreads,
+      numConnections: numConnections,
+      cpuPercent: cpuPercent,
+      cpuValue: cpuValue,
+      memoryText: memoryText,
+      memoryValue: memoryValue,
+      listeningPorts: listeningPorts ?? this.listeningPorts,
+    );
   }
 
   @override
-  List<Object?> get props => [page, pageSize, search, user, status, sortBy, sortOrder];
+  List<Object?> get props => <Object?>[
+        pid,
+        name,
+        parentPid,
+        username,
+        status,
+        startTime,
+        numThreads,
+        numConnections,
+        cpuPercent,
+        cpuValue,
+        memoryText,
+        memoryValue,
+        listeningPorts,
+      ];
 }
 
-/// Process operation model
-class ProcessOperation extends Equatable {
-  final List<int> pids;
-  final String operation;
-
-  const ProcessOperation({
-    required this.pids,
-    required this.operation,
+class ListeningProcess extends Equatable {
+  const ListeningProcess({
+    required this.pid,
+    required this.protocol,
+    required this.name,
+    required this.ports,
   });
 
-  factory ProcessOperation.fromJson(Map<String, dynamic> json) {
-    return ProcessOperation(
-      pids: (json['pids'] as List?)?.map((e) => e as int).toList() ?? [],
-      operation: json['operation'] as String,
+  final int pid;
+  final int protocol;
+  final String name;
+  final List<int> ports;
+
+  factory ListeningProcess.fromJson(Map<String, dynamic> json) {
+    final rawPorts = json['Port'] as Map<String, dynamic>? ?? const <String, dynamic>{};
+    return ListeningProcess(
+      pid: json['PID'] as int? ?? 0,
+      protocol: json['Protocol'] as int? ?? 0,
+      name: json['Name'] as String? ?? '',
+      ports: rawPorts.keys.map(int.tryParse).whereType<int>().toList()..sort(),
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'pids': pids,
-      'operation': operation,
-    };
-  }
-
   @override
-  List<Object?> get props => [pids, operation];
-}
-
-/// Process monitoring statistics model
-class ProcessStats extends Equatable {
-  final int? totalProcesses;
-  final int? runningProcesses;
-  final int? sleepingProcesses;
-  final int? stoppedProcesses;
-  final int? zombieProcesses;
-  final double? totalCpuUsage;
-  final int? totalMemoryUsage;
-
-  const ProcessStats({
-    this.totalProcesses,
-    this.runningProcesses,
-    this.sleepingProcesses,
-    this.stoppedProcesses,
-    this.zombieProcesses,
-    this.totalCpuUsage,
-    this.totalMemoryUsage,
-  });
-
-  factory ProcessStats.fromJson(Map<String, dynamic> json) {
-    return ProcessStats(
-      totalProcesses: json['totalProcesses'] as int?,
-      runningProcesses: json['runningProcesses'] as int?,
-      sleepingProcesses: json['sleepingProcesses'] as int?,
-      stoppedProcesses: json['stoppedProcesses'] as int?,
-      zombieProcesses: json['zombieProcesses'] as int?,
-      totalCpuUsage: (json['totalCpuUsage'] as num?)?.toDouble(),
-      totalMemoryUsage: json['totalMemoryUsage'] as int?,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'totalProcesses': totalProcesses,
-      'runningProcesses': runningProcesses,
-      'sleepingProcesses': sleepingProcesses,
-      'stoppedProcesses': stoppedProcesses,
-      'zombieProcesses': zombieProcesses,
-      'totalCpuUsage': totalCpuUsage,
-      'totalMemoryUsage': totalMemoryUsage,
-    };
-  }
-
-  @override
-  List<Object?> get props => [totalProcesses, runningProcesses, sleepingProcesses, stoppedProcesses, zombieProcesses, totalCpuUsage, totalMemoryUsage];
-}
-
-/// Process tree node model
-class ProcessTreeNode extends Equatable {
-  final ProcessInfo? process;
-  final List<ProcessTreeNode>? children;
-
-  const ProcessTreeNode({
-    this.process,
-    this.children,
-  });
-
-  factory ProcessTreeNode.fromJson(Map<String, dynamic> json) {
-    return ProcessTreeNode(
-      process: json['process'] != null ? ProcessInfo.fromJson(json['process'] as Map<String, dynamic>) : null,
-      children: (json['children'] as List?)
-          ?.map((item) => ProcessTreeNode.fromJson(item as Map<String, dynamic>))
-          .toList(),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'process': process?.toJson(),
-      'children': children?.map((child) => child.toJson()).toList(),
-    };
-  }
-
-  @override
-  List<Object?> get props => [process, children];
+  List<Object?> get props => <Object?>[pid, protocol, name, ports];
 }

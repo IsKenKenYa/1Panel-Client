@@ -27,6 +27,16 @@ void main() {
     expect(provider.status, isNotNull);
   });
 
+  test('load preserves null selection when empty selection is allowed', () async {
+    await provider.initialize(
+      groupType: 'command',
+      allowEmptySelection: true,
+    );
+
+    expect(provider.groups.first.name, 'Ops');
+    expect(provider.selectedGroupId, isNull);
+  });
+
   test('createGroup refreshes list and selects created group', () async {
     when(() => service.createGroup(type: any(named: 'type'), name: any(named: 'name')))
         .thenAnswer((_) async => [group]);

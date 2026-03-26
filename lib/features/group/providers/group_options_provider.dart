@@ -15,6 +15,7 @@ class GroupOptionsProvider extends ChangeNotifier with AsyncStateNotifier {
   int? _selectedGroupId;
   List<GroupInfo> _groups = const <GroupInfo>[];
   bool _isMutating = false;
+  bool _allowEmptySelection = false;
 
   String? get groupType => _groupType;
   int? get selectedGroupId => _selectedGroupId;
@@ -24,9 +25,11 @@ class GroupOptionsProvider extends ChangeNotifier with AsyncStateNotifier {
   Future<void> initialize({
     required String groupType,
     int? selectedGroupId,
+    bool allowEmptySelection = false,
   }) async {
     _groupType = groupType;
     _selectedGroupId = selectedGroupId;
+    _allowEmptySelection = allowEmptySelection;
     await load();
   }
 
@@ -43,7 +46,9 @@ class GroupOptionsProvider extends ChangeNotifier with AsyncStateNotifier {
     setLoading();
     try {
       _groups = await _service.listGroups(type, forceRefresh: forceRefresh);
-      _selectedGroupId ??= _groups.firstOrNull?.id;
+      if (!_allowEmptySelection) {
+        _selectedGroupId ??= _groups.firstOrNull?.id;
+      }
       setSuccess(isEmpty: _groups.isEmpty);
     } catch (error, stackTrace) {
       appLogger.eWithPackage(

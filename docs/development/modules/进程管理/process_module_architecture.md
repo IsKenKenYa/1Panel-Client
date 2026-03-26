@@ -2,45 +2,83 @@
 
 ## 模块目标
 
-- 提供系统进程只读列表、详情与终止能力
-- 信息架构上归属 `host/process`，不做独立顶级导航
-- 对应 Phase 1 Week 3 的 `ProcessesPage` 与 `ProcessDetailPage`
+- Phase 1 Week 3 交付移动端可评审的进程管理 MVP。
+- 信息架构上归属 `host/process`，统一从运维中心进入。
+- 提供：
+  - 实时进程列表
+  - 进程详情
+  - 停止进程
+
+## Source of Truth
+
+- REST 真值：
+  - `docs/OpenSource/1Panel/agent/router/ro_process.go`
+  - `docs/OpenSource/1Panel/agent/app/api/v2/process.go`
+  - `docs/OpenSource/1Panel/frontend/src/api/modules/process.ts`
+- websocket 真值：
+  - `docs/OpenSource/1Panel/agent/utils/websocket/process_data.go`
+  - `docs/OpenSource/1Panel/frontend/src/store/modules/process.ts`
+  - `docs/OpenSource/1Panel/frontend/src/views/host/process/`
 
 ## 当前 API 真值
 
+### REST
 1. `POST /process/stop`
 2. `GET /process/{pid}`
 3. `POST /process/listening`
 
-## 已知漂移说明
+### Realtime
+4. `GET /process/ws`
 
-- Swagger 对 Process 的覆盖不完整，缺少 `process/listening`
-- 上游 agent API 与前端都确认 `POST /process/listening` 存在，因此 Week 1 起以源码与前端为准
-- 旧版本地实现中的 `/process/search`、`/process/stats`、`/process/start`、`/process/restart`、`/process/kill` 不属于当前高置信集合
-
-## 请求体口径
-
-- 停止进程请求体使用 `{ PID }`
-- 详情通过 path `pid`
-- `listening` 无请求体
+说明：
+- `ProcessesPage` 的主列表真值来自 `/process/ws` 发送 `type='ps'`
+- `/process/listening` 只用于补充监听端口信息
+- `SshSessionsPage` 也共用 `/process/ws`，但发送 `type='ssh'`
 
 ## 分层设计
 
-- `ProcessRepository`
-  - 停止、详情、监听端口进程列表
-- `ProcessService`
-  - 详情装配与 ports/连接信息整理
-- `ProcessesProvider`
-  - 列表页状态
-- `ProcessDetailProvider`
-  - 详情页状态
+- API / Infra
+  - `ProcessV2Api`
+  - `ProcessWsClient`
+- Repository
+  - `ProcessRepository`
+  - 负责详情、停止、监听端口、实时进程流
+- Service
+  - `ProcessService`
+  - 负责把 websocket `ps` 行与 listening 结果按 PID 合并
+- Provider
+  - `ProcessesProvider`
+  - `ProcessDetailProvider`
 
-## Week 3 落地重点
+## Week 3 页面
 
-- 列表页以 `process/listening` 和详情接口组合出移动端信息卡片
-- 危险操作只有 `stop`，统一复用底部确认 Sheet
+### ProcessesPage
+- 来源：
+  - websocket `type='ps'`
+  - REST `/process/listening`
+- 支持：
+  - 筛选 `pid / name / username / status`
+  - 排序 `CPU / Memory / Name / PID`
+  - 卡片展示 `name / pid / user / status / cpu / memory / connections / listening ports`
+  - `stop` 二次确认
+
+### ProcessDetailPage
+- 数据来源：`GET /process/{pid}`
+- 分段：
+  - `Overview`
+  - `Memory`
+  - `Open Files`
+  - `Connections`
+  - `Environment`
+- 危险操作：
+  - `stop`
+
+## 已知边界与取舍
+
+- Week 3 不做独立 `network` 页面；监听与连接信息只在详情页和列表补充展示。
+- websocket 轮询策略与 Web 一致，由移动端定时重新发送查询消息，不依赖服务端主动广播。
+- no-server 下 Provider 不连接 websocket，也不请求 listening/detail。
 
 ---
-
-**文档版本**: 1.1
+**文档版本**: 2.0
 **最后更新**: 2026-03-26

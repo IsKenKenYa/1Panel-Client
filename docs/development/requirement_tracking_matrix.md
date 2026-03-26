@@ -43,7 +43,7 @@
 |-------|---------|-----------|----------|----------|---------|------|------|
 | **Cronjob** | 16 | ✅ cronjob_v2.dart | ✅ cronjob_models.dart | ⚠️ 待测试 | 🔴 待集成 | 计划任务管理 |
 | **Firewall** | 15 | ✅ firewall_v2.dart | ✅ firewall_models.dart | ⚠️ 待测试 | 🔴 待集成 | 规则管理待建设 |
-| **SSH** | 12 | ✅ terminal_v2.dart | ✅ terminal_models.dart | ⚠️ 待测试 | 🔴 待集成 | SSH会话/日志待扩展 |
+| **SSH** | 12 | ✅ ssh_v2.dart | ✅ ssh_*_models.dart | ✅ 已测试 | ✅ 已集成 | Week 3 已交付设置 / 证书 / 日志 / 会话 MVP，session 实时链路复用 `process/ws` |
 | **Website SSL** | 11 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🟡 部分 | 证书与域名细分功能待扩展 |
 | **AI** | 10 | ✅ ai_v2.dart | ✅ ai_models.dart | ✅ 已测试 | 🟡 部分 | GPU/XPU监控与域名绑定 |
 | **Container Image** | 10 | ✅ container_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | 🟡 部分 | 镜像管理功能 |
@@ -66,7 +66,7 @@
 | **Website HTTPS** | 2 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🔴 待集成 | HTTPS配置 |
 | **Website PHP** | 1 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ⚠️ 待测试 | 🔴 待集成 | PHP配置 |
 | **TaskLog** | 2 | ✅ task_log_v2.dart | ✅ task_log_models.dart | ⚠️ 待测试 | 🔴 待集成 | 任务日志 |
-| **Process** | 2 | ✅ process_v2.dart | ✅ process_models.dart | ⚠️ 待测试 | 🔴 待集成 | 进程管理 |
+| **Process** | 2 | ✅ process_v2.dart | ✅ process_models.dart | ✅ 已测试 | ✅ 已集成 | Week 3 已交付实时列表 / 详情 / stop，主列表真值来自 `process/ws` |
 
 ### P2 优先级模块 (工具类)
 
@@ -86,16 +86,16 @@
 
 ## 实现状态统计
 
-> Week 2 同步说明：`Command` / `Host` 已完成 API / Repository / Service / Provider / Page 闭环，并补充真实 API client、Provider、Widget 测试；其中 `Host` 仍按模块级口径保持“部分集成”，因为 SSH / Process 仍在后续周次推进。
+> Week 3 同步说明：`SSH` / `Process` 已完成 API / Repository / Service / Provider / Page 闭环，并补充 websocket / API client / Provider / Widget 测试。
 
 ### 按优先级统计
 
 | 优先级 | 模块数 | 端点数 | API客户端完成 | 测试覆盖 | UI集成完成 |
 |--------|--------|---------|--------------|----------|-------------|
 | **P0** | 15 | 247 | 100% (15/15) | 73% (11/15) | 33% (5/15) |
-| **P1** | 26 | 239 | 100% (26/26) | 23% (6/26) | 12% (3/26) |
+| **P1** | 26 | 239 | 100% (26/26) | 31% (8/26) | 19% (5/26) |
 | **P2** | 11 | 60 | 91% (10/11) | 27% (3/11) | 0% (0/11) |
-| **总计** | 52 | 546 | 98% (51/52) | 40% (21/52) | 15% (8/52) |
+| **总计** | 52 | 546 | 98% (51/52) | 44% (23/52) | 19% (10/52) |
 
 ### 按实现维度统计
 
@@ -103,8 +103,8 @@
 |------|--------|------|
 | **API客户端实现** | 98% | 51/52个模块有API客户端，仅untagged模块缺失 |
 | **数据模型定义** | 100% | 所有模块都有对应的数据模型 |
-| **单元测试覆盖** | 40% | 21/52个模块有测试文件 |
-| **UI页面集成** | 15% | 8/52个模块有完整的UI页面 |
+| **单元测试覆盖** | 44% | 23/52个模块有测试文件 |
+| **UI页面集成** | 19% | 10/52个模块有完整的UI页面 |
 | **端到端测试** | 0% | 尚未建立端到端测试体系 |
 
 ## 关键差距识别

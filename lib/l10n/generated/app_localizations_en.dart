@@ -3558,6 +3558,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get operationsSshTitle => 'SSH';
 
   @override
+  String get operationsSshCertsTitle => 'SSH Certs';
+
+  @override
   String get operationsSshLogsTitle => 'SSH Logs';
 
   @override
@@ -3780,6 +3783,290 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hostAssetsTestFailed => 'Connection test failed';
+
+  @override
+  String get sshSettingsServiceSectionTitle => 'Service';
+
+  @override
+  String get sshSettingsAuthenticationSectionTitle => 'Authentication';
+
+  @override
+  String get sshSettingsNetworkSectionTitle => 'Network';
+
+  @override
+  String get sshSettingsRawFileSectionTitle => 'Raw File';
+
+  @override
+  String get sshAutoStartLabel => 'Auto start';
+
+  @override
+  String get sshPortLabel => 'Port';
+
+  @override
+  String get sshListenAddressLabel => 'Listen address';
+
+  @override
+  String get sshPermitRootLoginLabel => 'Permit root login';
+
+  @override
+  String get sshPasswordAuthenticationLabel => 'Password authentication';
+
+  @override
+  String get sshPubkeyAuthenticationLabel => 'Public key authentication';
+
+  @override
+  String get sshUseDnsLabel => 'Use DNS';
+
+  @override
+  String get sshCurrentUserLabel => 'Current user';
+
+  @override
+  String get sshRawFilePlaceholder => '# The SSH configuration file is empty.';
+
+  @override
+  String get sshReloadAction => 'Reload';
+
+  @override
+  String get sshSaveRawFileConfirm =>
+      'Overwrite the SSH configuration file with the current content?';
+
+  @override
+  String sshOperateConfirm(String operation) {
+    return 'Run SSH action $operation?';
+  }
+
+  @override
+  String sshUpdateSettingConfirm(String label, String value) {
+    return 'Update $label to $value?';
+  }
+
+  @override
+  String get sshCertsEmptyTitle => 'No SSH certs';
+
+  @override
+  String get sshCertsEmptyDescription =>
+      'Create or sync an SSH certificate to manage key login from the panel.';
+
+  @override
+  String get sshCertSyncConfirm => 'Sync SSH certs from the current server?';
+
+  @override
+  String sshCertDeleteConfirm(String name) {
+    return 'Delete SSH cert $name?';
+  }
+
+  @override
+  String get sshCertCreateTitle => 'Create SSH Cert';
+
+  @override
+  String get sshCertEditTitle => 'Edit SSH Cert';
+
+  @override
+  String get sshCertEncryptionModeLabel => 'Encryption mode';
+
+  @override
+  String get sshCertPassPhraseLabel => 'Passphrase';
+
+  @override
+  String get sshCertPublicKeyLabel => 'Public key';
+
+  @override
+  String get sshCertPrivateKeyLabel => 'Private key';
+
+  @override
+  String get sshCertModeLabel => 'Create mode';
+
+  @override
+  String get sshCertModeGenerate => 'Generate';
+
+  @override
+  String get sshCertModeInput => 'Input';
+
+  @override
+  String get sshCertModeImport => 'Import';
+
+  @override
+  String get sshCertCreatedAtLabel => 'Created at';
+
+  @override
+  String get sshAuthModePassword => 'Password';
+
+  @override
+  String get sshAuthModeKey => 'Key';
+
+  @override
+  String get sshLogsEmptyTitle => 'No SSH logs';
+
+  @override
+  String get sshLogsEmptyDescription =>
+      'SSH login logs will appear here after the server records activity.';
+
+  @override
+  String get sshLogsSearchHint => 'Search IP, user, or message';
+
+  @override
+  String get sshLogsStatusAll => 'All';
+
+  @override
+  String get sshLogsStatusSuccess => 'Success';
+
+  @override
+  String get sshLogsStatusFailed => 'Failed';
+
+  @override
+  String get sshLogsIpLabel => 'IP';
+
+  @override
+  String get sshLogsAreaLabel => 'Area';
+
+  @override
+  String get sshLogsAuthModeLabel => 'Auth mode';
+
+  @override
+  String get sshLogsTimeLabel => 'Time';
+
+  @override
+  String get sshLogsMessageLabel => 'Message';
+
+  @override
+  String sshLogsExportSaved(String path) {
+    return 'SSH logs exported to $path';
+  }
+
+  @override
+  String get sshLogCopied => 'SSH log copied';
+
+  @override
+  String get sshSessionsEmptyTitle => 'No SSH sessions';
+
+  @override
+  String get sshSessionsEmptyDescription =>
+      'Active SSH sessions will appear here after the websocket feed returns data.';
+
+  @override
+  String get sshSessionsLoginUserLabel => 'Login user';
+
+  @override
+  String get sshSessionsLoginIpLabel => 'Login IP';
+
+  @override
+  String get sshSessionsTerminalLabel => 'TTY';
+
+  @override
+  String get sshSessionsHostLabel => 'Host';
+
+  @override
+  String get sshSessionsLoginTimeLabel => 'Login time';
+
+  @override
+  String sshSessionDisconnectConfirm(String username) {
+    return 'Disconnect SSH session for $username?';
+  }
+
+  @override
+  String get processesSearchPidLabel => 'PID';
+
+  @override
+  String get processesSearchNameLabel => 'Name';
+
+  @override
+  String get processesSearchUserLabel => 'User';
+
+  @override
+  String get processesFilterStatusLabel => 'Status';
+
+  @override
+  String get processesSortCpu => 'CPU';
+
+  @override
+  String get processesSortMemory => 'Memory';
+
+  @override
+  String get processesSortName => 'Name';
+
+  @override
+  String get processesSortPid => 'PID';
+
+  @override
+  String get processesEmptyTitle => 'No processes';
+
+  @override
+  String get processesEmptyDescription =>
+      'Process data will appear here after the websocket feed returns rows.';
+
+  @override
+  String get processesListeningPortsLabel => 'Listening ports';
+
+  @override
+  String get processesConnectionsLabel => 'Connections';
+
+  @override
+  String get processesStartTimeLabel => 'Start time';
+
+  @override
+  String get processesThreadsLabel => 'Threads';
+
+  @override
+  String processesStopConfirm(String name) {
+    return 'Stop process $name?';
+  }
+
+  @override
+  String get processesStatusRunning => 'Running';
+
+  @override
+  String get processesStatusSleep => 'Sleeping';
+
+  @override
+  String get processesStatusStop => 'Stopped';
+
+  @override
+  String get processesStatusIdle => 'Idle';
+
+  @override
+  String get processesStatusWait => 'Waiting';
+
+  @override
+  String get processesStatusLock => 'Locked';
+
+  @override
+  String get processesStatusZombie => 'Zombie';
+
+  @override
+  String get processDetailOverviewSectionTitle => 'Overview';
+
+  @override
+  String get processDetailMemorySectionTitle => 'Memory';
+
+  @override
+  String get processDetailOpenFilesSectionTitle => 'Open Files';
+
+  @override
+  String get processDetailConnectionsSectionTitle => 'Connections';
+
+  @override
+  String get processDetailEnvironmentSectionTitle => 'Environment';
+
+  @override
+  String get processDetailParentPidLabel => 'Parent PID';
+
+  @override
+  String get processDetailDiskReadLabel => 'Disk read';
+
+  @override
+  String get processDetailDiskWriteLabel => 'Disk write';
+
+  @override
+  String get processDetailCommandLineLabel => 'Command line';
+
+  @override
+  String get processDetailNoEnvironment => 'No environment variables';
+
+  @override
+  String get processDetailNoConnections => 'No network connections';
+
+  @override
+  String get processDetailNoOpenFiles => 'No open files';
 
   @override
   String get operationsPlaceholderBackAction => 'Back to Operations Center';

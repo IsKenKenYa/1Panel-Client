@@ -264,6 +264,8 @@ class _CommandsPageState extends State<CommandsPage> {
       context,
       groupType: 'command',
       initialSelectedGroupId: provider.selectedGroupId,
+      allowClearSelection: true,
+      clearOptionLabel: context.l10n.commandsFilterAllGroups,
     );
     if (!mounted) return;
     provider.updateGroupFilter(groupId);

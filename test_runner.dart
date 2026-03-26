@@ -135,6 +135,43 @@ class TestRunner {
         description: 'Host API真实环境测试',
       );
     }
+    final sshProviderDir = Directory('test/features/ssh/providers');
+    if (await sshProviderDir.exists()) {
+      await runTests(
+        'test/features/ssh/providers/',
+        description: 'SSH Provider测试',
+      );
+    }
+    final processProviderDir = Directory('test/features/processes/providers');
+    if (await processProviderDir.exists()) {
+      await runTests(
+        'test/features/processes/providers/',
+        description: 'Process Provider测试',
+      );
+    }
+    final sshApiClientFile = File('test/api_client/ssh_api_client_test.dart');
+    if (await sshApiClientFile.exists()) {
+      await runTests(
+        'test/api_client/ssh_api_client_test.dart',
+        description: 'SSH API真实环境测试',
+      );
+    }
+    final processApiClientFile =
+        File('test/api_client/process_api_client_test.dart');
+    if (await processApiClientFile.exists()) {
+      await runTests(
+        'test/api_client/process_api_client_test.dart',
+        description: 'Process API真实环境测试',
+      );
+    }
+    final processWsClientTestFile =
+        File('test/core/network/process_ws_client_test.dart');
+    if (await processWsClientTestFile.exists()) {
+      await runTests(
+        'test/core/network/process_ws_client_test.dart',
+        description: 'Process WebSocket契约测试',
+      );
+    }
   }
 
   static Future<void> runIntegrationTests() async {
@@ -194,6 +231,22 @@ class TestRunner {
       await runTests(
         'test/features/host_assets/pages/',
         description: 'Host Assets Widget测试',
+      );
+    }
+    final sshPagesDir = Directory('test/features/ssh/pages');
+    if (await sshPagesDir.exists()) {
+      hasTests = true;
+      await runTests(
+        'test/features/ssh/pages/',
+        description: 'SSH Widget测试',
+      );
+    }
+    final processPagesDir = Directory('test/features/processes/pages');
+    if (await processPagesDir.exists()) {
+      hasTests = true;
+      await runTests(
+        'test/features/processes/pages/',
+        description: 'Process Widget测试',
       );
     }
     if (!hasTests) {
