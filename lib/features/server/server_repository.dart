@@ -38,7 +38,8 @@ class ServerRepository {
       );
 
       final manager = ApiClientManager.instance;
-      final client = manager.getClient(serverId, config.url, config.apiKey);
+      final client = manager.getClient(serverId, config.url, config.apiKey,
+          ignoreTls: config.ignoreTls);
 
       final monitorRepo = const MonitorRepository();
       final metrics = await monitorRepo.getCurrentMetrics(client);

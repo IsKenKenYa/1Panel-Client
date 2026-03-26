@@ -8,6 +8,7 @@ class ApiConfig {
   final String apiKey;
   final int tokenValidity;
   final bool isDefault;
+  final bool ignoreTls;
   final DateTime lastUsed;
 
   ApiConfig({
@@ -17,6 +18,7 @@ class ApiConfig {
     required this.apiKey,
     this.tokenValidity = 0,
     this.isDefault = false,
+    this.ignoreTls = false,
     DateTime? lastUsed,
   }) : lastUsed = lastUsed ?? DateTime.now();
 
@@ -28,6 +30,7 @@ class ApiConfig {
       'apiKey': apiKey,
       'tokenValidity': tokenValidity,
       'isDefault': isDefault,
+      'ignoreTls': ignoreTls,
       'lastUsed': lastUsed.toIso8601String(),
     };
   }
@@ -40,6 +43,7 @@ class ApiConfig {
       apiKey: json['apiKey'],
       tokenValidity: json['tokenValidity'] as int? ?? 0,
       isDefault: json['isDefault'] ?? false,
+      ignoreTls: json['ignoreTls'] as bool? ?? false,
       lastUsed: DateTime.parse(json['lastUsed']),
     );
   }

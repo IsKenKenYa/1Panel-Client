@@ -247,11 +247,18 @@ class _ServerListPageState extends State<ServerListPage> {
       return;
     }
 
-    await Navigator.of(context).push(
+    final result = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
         builder: (_) => ServerDetailPage(server: item),
       ),
     );
+
+    if (result == true) {
+      await _provider.load();
+      if (_provider.servers.isNotEmpty) {
+        await _provider.loadMetrics();
+      }
+    }
   }
 }
 

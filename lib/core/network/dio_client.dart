@@ -7,14 +7,18 @@ import 'interceptors/auth_interceptor.dart';
 import 'interceptors/logging_interceptor.dart';
 import 'interceptors/retry_interceptor.dart';
 import 'interceptors/business_response_interceptor.dart';
+import 'tls_bypass.dart';
 
 /// 基于Dio的HTTP客户端 - 支持1Panel API认证
 class DioClient {
   final Dio _dio;
   late AuthInterceptor _authInterceptor;
 
-  DioClient({String? baseUrl, String? apiKey})
+  DioClient({String? baseUrl, String? apiKey, bool ignoreTls = false})
       : _dio = Dio(_createBaseOptionsStatic(baseUrl)) {
+    if (ignoreTls) {
+      configureTlsBypass(_dio);
+    }
     _authInterceptor = AuthInterceptor(apiKey);
     _addInterceptors();
   }

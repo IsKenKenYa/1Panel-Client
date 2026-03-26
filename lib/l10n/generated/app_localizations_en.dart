@@ -2409,4 +2409,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get actionUninstall => 'Uninstall';
+
+  @override
+  String get serverActionDelete => 'Delete server';
+
+  @override
+  String get serverDeleteConfirmTitle => 'Delete server';
+
+  @override
+  String serverDeleteConfirmMessage(String name) {
+    return 'Are you sure you want to delete server "$name"? This action cannot be undone.';
+  }
+
+  @override
+  String get serverDeleteSuccess => 'Server deleted';
+
+  @override
+  String serverDeleteFailed(String error) {
+    return 'Failed to delete server: $error';
+  }
+
+  @override
+  String get serverFormIgnoreTls => 'Ignore TLS certificate errors';
+
+  @override
+  String get serverFormIgnoreTlsHint =>
+      'Allow connections to servers with self-signed or invalid certificates';
+
+  @override
+  String get serverFormEditTitle => 'Edit Server';
 }

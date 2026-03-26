@@ -58,45 +58,41 @@ class ContainerCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               if (isRunning) ...[
-                _ActionButton(
+                _IconActionButton(
                   icon: Icons.stop,
-                  label: l10n.containerActionStop,
+                  tooltip: l10n.containerActionStop,
                   color: Colors.orange,
                   onTap: onStop,
                 ),
-                const SizedBox(width: 8),
-                _ActionButton(
+                _IconActionButton(
                   icon: Icons.restart_alt,
-                  label: l10n.containerActionRestart,
+                  tooltip: l10n.containerActionRestart,
                   color: colorScheme.primary,
                   onTap: onRestart,
                 ),
               ] else ...[
-                _ActionButton(
+                _IconActionButton(
                   icon: Icons.play_arrow,
-                  label: l10n.containerActionStart,
+                  tooltip: l10n.containerActionStart,
                   color: Colors.green,
                   onTap: onStart,
                 ),
               ],
-              const SizedBox(width: 8),
-              _ActionButton(
+              _IconActionButton(
                 icon: Icons.terminal,
-                label: l10n.containerActionTerminal,
+                tooltip: l10n.containerActionTerminal,
                 color: colorScheme.secondary,
                 onTap: onTerminal,
               ),
-              const SizedBox(width: 8),
-              _ActionButton(
+              _IconActionButton(
                 icon: Icons.description_outlined,
-                label: l10n.containerActionLogs,
+                tooltip: l10n.containerActionLogs,
                 color: colorScheme.tertiary,
                 onTap: onLogs,
               ),
-              const SizedBox(width: 8),
-              _ActionButton(
+              _IconActionButton(
                 icon: Icons.delete_outline,
-                label: l10n.containerActionDelete,
+                tooltip: l10n.containerActionDelete,
                 color: colorScheme.error,
                 onTap: onDelete,
               ),
@@ -150,44 +146,33 @@ class _StatusChip extends StatelessWidget {
   }
 }
 
-class _ActionButton extends StatelessWidget {
+class _IconActionButton extends StatelessWidget {
   final IconData icon;
-  final String label;
+  final String tooltip;
   final Color color;
   final VoidCallback? onTap;
 
-  const _ActionButton({
+  const _IconActionButton({
     required this.icon,
-    required this.label,
+    required this.tooltip,
     required this.color,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: color, size: 18),
-            const SizedBox(width: 4),
-            Text(
-              label,
-              style: TextStyle(
-                color: color,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
+    return Tooltip(
+      message: tooltip,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, color: color, size: 20),
         ),
       ),
     );

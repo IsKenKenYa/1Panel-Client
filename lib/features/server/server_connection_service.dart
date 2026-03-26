@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
+import 'package:onepanelapp_app/core/network/tls_bypass.dart';
 
 class ServerConnectionResult {
   const ServerConnectionResult({
@@ -20,6 +21,7 @@ class ServerConnectionService {
   Future<ServerConnectionResult> testConnection({
     required String serverUrl,
     required String apiKey,
+    bool ignoreTls = false,
   }) async {
     final stopwatch = Stopwatch()..start();
 
@@ -33,6 +35,10 @@ class ServerConnectionService {
           'Accept': 'application/json',
         },
       ));
+
+      if (ignoreTls) {
+        configureTlsBypass(dio);
+      }
 
       final timestamp = (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString();
       final authString = '1panel$apiKey$timestamp';

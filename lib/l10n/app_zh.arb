@@ -934,5 +934,27 @@
   "actionStart": "启动",
   "actionStop": "停止",
   "actionRestart": "重启",
-  "actionUninstall": "卸载"
+  "actionUninstall": "卸载",
+  "serverActionDelete": "删除服务器",
+  "serverDeleteConfirmTitle": "删除服务器",
+  "serverDeleteConfirmMessage": "确定要删除服务器"{name}"吗？此操作不可撤销。",
+  "@serverDeleteConfirmMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "serverDeleteSuccess": "服务器已删除",
+  "serverDeleteFailed": "删除服务器失败：{error}",
+  "@serverDeleteFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "serverFormIgnoreTls": "忽略 TLS 证书错误",
+  "serverFormIgnoreTlsHint": "允许连接使用自签名或无效证书的服务器（HTTPS IP 地址）",
+  "serverFormEditTitle": "编辑服务器"
 }

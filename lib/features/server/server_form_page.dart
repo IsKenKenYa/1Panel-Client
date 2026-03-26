@@ -6,7 +6,10 @@ import 'package:onepanelapp_app/features/server/server_repository.dart';
 import 'server_connection_service.dart';
 
 class ServerFormPage extends StatefulWidget {
-  const ServerFormPage({super.key});
+  const ServerFormPage({super.key, this.existing});
+
+  /// When provided, the form will be in edit mode for this server.
+  final ApiConfig? existing;
 
   @override
   State<ServerFormPage> createState() => _ServerFormPageState();
@@ -23,7 +26,21 @@ class _ServerFormPageState extends State<ServerFormPage> {
 
   bool _saving = false;
   bool _testing = false;
+  bool _ignoreTls = false;
   ServerConnectionResult? _testResult;
+
+  @override
+  void initState() {
+    super.initState();
+    final existing = widget.existing;
+    if (existing != null) {
+      _nameController.text = existing.name;
+      _urlController.text = existing.url;
+      _apiKeyController.text = existing.apiKey;
+      _tokenValidityController.text = existing.tokenValidity.toString();
+      _ignoreTls = existing.ignoreTls;
+    }
+  }
 
   @override
   void dispose() {
@@ -52,6 +69,7 @@ class _ServerFormPageState extends State<ServerFormPage> {
       final result = await _connectionService.testConnection(
         serverUrl: _urlController.text.trim(),
         apiKey: _apiKeyController.text.trim(),
+        ignoreTls: _ignoreTls,
       );
 
       if (!mounted) return;
@@ -97,13 +115,16 @@ class _ServerFormPageState extends State<ServerFormPage> {
     });
 
     try {
+      final existing = widget.existing;
       final config = ApiConfig(
-        id: DateTime.now().microsecondsSinceEpoch.toString(),
+        id: existing?.id ?? DateTime.now().microsecondsSinceEpoch.toString(),
         name: _nameController.text.trim(),
         url: _urlController.text.trim(),
         apiKey: _apiKeyController.text.trim(),
         tokenValidity: int.tryParse(_tokenValidityController.text.trim()) ?? 0,
-        isDefault: true,
+        isDefault: existing?.isDefault ?? true,
+        ignoreTls: _ignoreTls,
+        lastUsed: existing?.lastUsed,
       );
 
       await _repository.saveConfig(config);
@@ -135,9 +156,11 @@ class _ServerFormPageState extends State<ServerFormPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final isEditing = widget.existing != null;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.serverFormTitle)),
+      appBar: AppBar(
+          title: Text(isEditing ? l10n.serverFormEditTitle : l10n.serverFormTitle)),
       body: SingleChildScrollView(
         padding: AppDesignTokens.pagePadding,
         child: Form(
@@ -186,7 +209,15 @@ class _ServerFormPageState extends State<ServerFormPage> {
                 ),
                 keyboardType: TextInputType.number,
               ),
-              const SizedBox(height: AppDesignTokens.spacingLg),
+              const SizedBox(height: AppDesignTokens.spacingMd),
+              SwitchListTile(
+                value: _ignoreTls,
+                onChanged: (value) => setState(() => _ignoreTls = value),
+                title: Text(l10n.serverFormIgnoreTls),
+                subtitle: Text(l10n.serverFormIgnoreTlsHint),
+                contentPadding: EdgeInsets.zero,
+              ),
+              const SizedBox(height: AppDesignTokens.spacingMd),
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(

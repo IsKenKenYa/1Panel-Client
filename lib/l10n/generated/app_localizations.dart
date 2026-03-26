@@ -4669,6 +4669,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Uninstall'**
   String get actionUninstall;
+
+  /// No description provided for @serverActionDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete server'**
+  String get serverActionDelete;
+
+  /// No description provided for @serverDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete server'**
+  String get serverDeleteConfirmTitle;
+
+  /// No description provided for @serverDeleteConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete server "{name}"? This action cannot be undone.'**
+  String serverDeleteConfirmMessage(String name);
+
+  /// No description provided for @serverDeleteSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Server deleted'**
+  String get serverDeleteSuccess;
+
+  /// No description provided for @serverDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete server: {error}'**
+  String serverDeleteFailed(String error);
+
+  /// No description provided for @serverFormIgnoreTls.
+  ///
+  /// In en, this message translates to:
+  /// **'Ignore TLS certificate errors'**
+  String get serverFormIgnoreTls;
+
+  /// No description provided for @serverFormIgnoreTlsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow connections to servers with self-signed or invalid certificates'**
+  String get serverFormIgnoreTlsHint;
+
+  /// No description provided for @serverFormEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Server'**
+  String get serverFormEditTitle;
 }
 
 class _AppLocalizationsDelegate

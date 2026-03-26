@@ -278,7 +278,7 @@ class _ErrorView extends StatelessWidget {
 }
 
 /// 容器标签页
-class _ContainersTab extends StatelessWidget {
+class _ContainersTab extends StatefulWidget {
   final List<dynamic> containers;
   final ContainerStats stats;
   final bool isLoading;
@@ -300,61 +300,104 @@ class _ContainersTab extends StatelessWidget {
   });
 
   @override
+  State<_ContainersTab> createState() => _ContainersTabState();
+}
+
+class _ContainersTabState extends State<_ContainersTab> {
+  bool _statsExpanded = false;
+
+  @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return RefreshIndicator(
-      onRefresh: onRefresh,
+      onRefresh: widget.onRefresh,
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 容器统计卡片
-            _StatsCard(
-              title: '容器统计',
-              stats: [
-                _StatItem(
-                  title: '总数',
-                  value: stats.total.toString(),
-                  color: colorScheme.primary,
-                  icon: Icons.inventory_2,
+            // 容器统计卡片 (可折叠)
+            Card(
+              margin: EdgeInsets.zero,
+              child: Theme(
+                data: Theme.of(context)
+                    .copyWith(dividerColor: Colors.transparent),
+                child: ExpansionTile(
+                  initiallyExpanded: _statsExpanded,
+                  onExpansionChanged: (v) =>
+                      setState(() => _statsExpanded = v),
+                  leading: Icon(Icons.bar_chart,
+                      color: colorScheme.primary),
+                  title: Row(
+                    children: [
+                      Text('容器统计'),
+                      const SizedBox(width: 12),
+                      _StatsBadge(
+                          value: widget.stats.total.toString(),
+                          color: colorScheme.primary),
+                      const SizedBox(width: 6),
+                      _StatsBadge(
+                          value: '▶ ${widget.stats.running}',
+                          color: Colors.green),
+                      const SizedBox(width: 6),
+                      _StatsBadge(
+                          value: '■ ${widget.stats.stopped}',
+                          color: Colors.orange),
+                    ],
+                  ),
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          _StatItem(
+                            title: '总数',
+                            value: widget.stats.total.toString(),
+                            color: colorScheme.primary,
+                            icon: Icons.inventory_2,
+                          ),
+                          _StatItem(
+                            title: '运行中',
+                            value: widget.stats.running.toString(),
+                            color: Colors.green,
+                            icon: Icons.play_circle,
+                          ),
+                          _StatItem(
+                            title: '已停止',
+                            value: widget.stats.stopped.toString(),
+                            color: Colors.orange,
+                            icon: Icons.stop_circle,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                _StatItem(
-                  title: '运行中',
-                  value: stats.running.toString(),
-                  color: Colors.green,
-                  icon: Icons.play_circle,
-                ),
-                _StatItem(
-                  title: '已停止',
-                  value: stats.stopped.toString(),
-                  color: Colors.orange,
-                  icon: Icons.stop_circle,
-                ),
-              ],
+              ),
             ),
             const SizedBox(height: 16),
-            
+
             // 容器列表
-            if (containers.isEmpty && !isLoading)
+            if (widget.containers.isEmpty && !widget.isLoading)
               const _EmptyView(
                 icon: Icons.inventory_2_outlined,
                 title: '暂无容器',
                 subtitle: '点击右下角按钮创建容器',
               )
             else
-              ...containers.map((container) {
+              ...widget.containers.map((container) {
                 final containerInfo = container as ContainerInfo;
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: ContainerCard(
                     container: containerInfo,
-                    onStart: () => onStart(containerInfo.name),
-                    onStop: () => onStop(containerInfo.name),
-                    onRestart: () => onRestart(containerInfo.name),
-                    onDelete: () => onDelete(containerInfo.name),
+                    onStart: () => widget.onStart(containerInfo.name),
+                    onStop: () => widget.onStop(containerInfo.name),
+                    onRestart: () => widget.onRestart(containerInfo.name),
+                    onDelete: () => widget.onDelete(containerInfo.name),
                     onTap: () {
                       Navigator.pushNamed(
                         context,
@@ -386,23 +429,25 @@ class _ContainersTab extends StatelessWidget {
   }
 }
 
-/// 统计卡片
-class _StatsCard extends StatelessWidget {
-  final String title;
-  final List<_StatItem> stats;
+/// 统计徽章（用于折叠时的摘要显示）
+class _StatsBadge extends StatelessWidget {
+  final String value;
+  final Color color;
 
-  const _StatsCard({
-    required this.title,
-    required this.stats,
-  });
+  const _StatsBadge({required this.value, required this.color});
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
-      title: title,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: stats,
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        value,
+        style: TextStyle(
+            fontSize: 12, color: color, fontWeight: FontWeight.w600),
       ),
     );
   }

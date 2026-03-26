@@ -41,8 +41,10 @@ class ApiClientManager {
   }
 
   /// 获取指定服务器的API客户端
-  DioClient getClient(String serverId, String serverUrl, String apiKey) {
-    final nextMeta = _ClientConfigMeta(url: serverUrl, apiKey: apiKey);
+  DioClient getClient(String serverId, String serverUrl, String apiKey,
+      {bool ignoreTls = false}) {
+    final nextMeta =
+        _ClientConfigMeta(url: serverUrl, apiKey: apiKey, ignoreTls: ignoreTls);
     final currentMeta = _clientMeta[serverId];
 
     if (currentMeta == nextMeta && _clients.containsKey(serverId)) {
@@ -52,6 +54,7 @@ class ApiClientManager {
     final client = DioClient(
       baseUrl: serverUrl,
       apiKey: apiKey,
+      ignoreTls: ignoreTls,
     );
     _clients[serverId] = client;
     _clientMeta[serverId] = nextMeta;
@@ -60,7 +63,8 @@ class ApiClientManager {
 
   Future<DioClient> getCurrentClient() async {
     final config = await _getCurrentConfig();
-    return getClient(config.id, config.url, config.apiKey);
+    return getClient(config.id, config.url, config.apiKey,
+        ignoreTls: config.ignoreTls);
   }
 
   Future<AppV2Api> getAppApi() async {
@@ -160,10 +164,12 @@ class _ClientConfigMeta {
   const _ClientConfigMeta({
     required this.url,
     required this.apiKey,
+    this.ignoreTls = false,
   });
 
   final String url;
   final String apiKey;
+  final bool ignoreTls;
 
   @override
   bool operator ==(Object other) {
@@ -172,9 +178,10 @@ class _ClientConfigMeta {
     }
     return other is _ClientConfigMeta &&
         other.url == url &&
-        other.apiKey == apiKey;
+        other.apiKey == apiKey &&
+        other.ignoreTls == ignoreTls;
   }
 
   @override
-  int get hashCode => Object.hash(url, apiKey);
+  int get hashCode => Object.hash(url, apiKey, ignoreTls);
 }

@@ -986,5 +986,27 @@
   "actionStart": "Start",
   "actionStop": "Stop",
   "actionRestart": "Restart",
-  "actionUninstall": "Uninstall"
+  "actionUninstall": "Uninstall",
+  "serverActionDelete": "Delete server",
+  "serverDeleteConfirmTitle": "Delete server",
+  "serverDeleteConfirmMessage": "Are you sure you want to delete server \"{name}\"? This action cannot be undone.",
+  "@serverDeleteConfirmMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "serverDeleteSuccess": "Server deleted",
+  "serverDeleteFailed": "Failed to delete server: {error}",
+  "@serverDeleteFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "serverFormIgnoreTls": "Ignore TLS certificate errors",
+  "serverFormIgnoreTlsHint": "Allow connections to servers with self-signed or invalid certificates",
+  "serverFormEditTitle": "Edit Server"
 }

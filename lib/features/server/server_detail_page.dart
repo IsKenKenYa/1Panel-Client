@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
 import 'package:onepanelapp_app/core/theme/app_design_tokens.dart';
+import 'package:onepanelapp_app/features/server/server_form_page.dart';
 import 'package:onepanelapp_app/features/server/server_models.dart';
+import 'package:onepanelapp_app/features/server/server_provider.dart';
 import 'package:onepanelapp_app/config/app_router.dart';
 
 class ServerDetailPage extends StatelessWidget {
@@ -177,6 +179,21 @@ class ServerDetailPage extends StatelessWidget {
                 icon: const Icon(Icons.verified_user_outlined),
                 label: Text(l10n.serverActionSecurity),
               ),
+              FilledButton.tonalIcon(
+                onPressed: () => _editServer(context),
+                icon: const Icon(Icons.edit_outlined),
+                label: Text(l10n.serverFormEditTitle),
+              ),
+              FilledButton.tonalIcon(
+                onPressed: () => _confirmDeleteServer(context),
+                style: FilledButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.errorContainer,
+                  foregroundColor:
+                      Theme.of(context).colorScheme.onErrorContainer,
+                ),
+                icon: const Icon(Icons.delete_outline),
+                label: Text(l10n.serverActionDelete),
+              ),
             ],
           ),
         ],
@@ -235,6 +252,63 @@ class ServerDetailPage extends StatelessWidget {
       return '--';
     }
     return value.toStringAsFixed(2);
+  }
+
+  Future<void> _editServer(BuildContext context) async {
+    final result = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ServerFormPage(existing: server.config),
+      ),
+    );
+    if (result == true && context.mounted) {
+      Navigator.pop(context, true);
+    }
+  }
+
+  Future<void> _confirmDeleteServer(BuildContext context) async {
+    final l10n = context.l10n;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        final errorColor = Theme.of(dialogContext).colorScheme.error;
+        return AlertDialog(
+          icon: Icon(Icons.delete_outline, color: errorColor),
+          title: Text(l10n.serverDeleteConfirmTitle),
+          content: Text(l10n.serverDeleteConfirmMessage(server.config.name)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: Text(l10n.commonCancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(dialogContext, true),
+              style: FilledButton.styleFrom(
+                backgroundColor: errorColor,
+              ),
+              child: Text(l10n.commonDelete),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed != true || !context.mounted) return;
+
+    try {
+      final provider = ServerProvider();
+      await provider.delete(server.config.id);
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.serverDeleteSuccess)),
+      );
+      Navigator.pop(context, true);
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.serverDeleteFailed(e.toString()))),
+      );
+    }
   }
 }
 

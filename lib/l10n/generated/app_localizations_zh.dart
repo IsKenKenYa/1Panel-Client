@@ -2365,4 +2365,32 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get actionUninstall => '卸载';
+
+  @override
+  String get serverActionDelete => '删除服务器';
+
+  @override
+  String get serverDeleteConfirmTitle => '删除服务器';
+
+  @override
+  String serverDeleteConfirmMessage(String name) {
+    return '确定要删除服务器"$name"吗？此操作不可撤销。';
+  }
+
+  @override
+  String get serverDeleteSuccess => '服务器已删除';
+
+  @override
+  String serverDeleteFailed(String error) {
+    return '删除服务器失败：$error';
+  }
+
+  @override
+  String get serverFormIgnoreTls => '忽略 TLS 证书错误';
+
+  @override
+  String get serverFormIgnoreTlsHint => '允许连接使用自签名或无效证书的服务器（HTTPS IP 地址）';
+
+  @override
+  String get serverFormEditTitle => '编辑服务器';
 }
