@@ -92,7 +92,7 @@
 | Device | 12 | host_v2.dart | 9 | ❌ | ❌ |
 | FTP | 8 | toolbox_v2.dart | 42 | ✅ | ❌ |
 | McpServer | 8 | ai_v2.dart | 18 | ✅ | ❌ |
-| System Group | 8 | system_group_v2.dart | 4 | ❌ | ❌ |
+| System Group | 8 | system_group_v2.dart | 8 | ✅ | ✅ |
 | Fail2ban | 7 | toolbox_v2.dart | 42 | ✅ | ❌ |
 | Host tool | 7 | toolbox_v2.dart | 42 | ✅ | ❌ |
 | Disk Management | 4 | toolbox_v2.dart | 42 | ✅ | ❌ |
@@ -101,6 +101,8 @@
 | Menu Setting | 1 | setting_v2.dart | 27 | ❌ | ❌ |
 
 ## 测试文件清单
+
+> Week 1 同步说明：`System Group` 已新增 API 对齐、repository、service、provider 与 widget 测试；由于本表的聚合统计依赖全量人工/脚本复核，当前仅先更新模块行状态与测试清单。
 
 ### 单元测试 (test/api/)
 - ai_api_test.dart
@@ -113,6 +115,7 @@
 
 ### 集成测试 (test/api_client/)
 - app_api_client_test.dart
+- phase1_api_alignment_test.dart
 - container_api_client_test.dart
 - dashboard_api_client_test.dart
 - database_api_client_test.dart

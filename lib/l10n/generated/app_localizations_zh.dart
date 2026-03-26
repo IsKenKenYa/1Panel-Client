@@ -3440,4 +3440,152 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get orchestrationCreateTemplate => '创建模版';
+
+  @override
+  String get operationsCenterPageTitle => '运维中心';
+
+  @override
+  String get operationsCenterIntro => '第一阶段新增能力会按周统一落在这里，保持服务器运维入口在移动端只有一个主链路。';
+
+  @override
+  String get operationsCenterServerEntryTitle => '运维中心';
+
+  @override
+  String get operationsCenterServerEntrySubtitle => '把自动化、运行时和系统控制放到统一入口';
+
+  @override
+  String get operationsCenterAutomationSectionTitle => '自动化';
+
+  @override
+  String get operationsCenterAutomationSectionDescription =>
+      '命令、计划任务、脚本库和备份主链路';
+
+  @override
+  String get operationsCenterRuntimeSectionTitle => '运行时与交付';
+
+  @override
+  String get operationsCenterRuntimeSectionDescription =>
+      'PHP 与 Node.js 的通用运行时链路';
+
+  @override
+  String get operationsCenterSystemSectionTitle => '系统控制';
+
+  @override
+  String get operationsCenterSystemSectionDescription => '主机资产、SSH、进程与日志入口';
+
+  @override
+  String get operationsCommandsTitle => '命令库';
+
+  @override
+  String get operationsCommandFormTitle => '命令表单';
+
+  @override
+  String get operationsHostAssetsTitle => '主机资产';
+
+  @override
+  String get operationsHostAssetFormTitle => '主机资产表单';
+
+  @override
+  String get operationsSshTitle => 'SSH';
+
+  @override
+  String get operationsSshLogsTitle => 'SSH 日志';
+
+  @override
+  String get operationsSshSessionsTitle => 'SSH 会话';
+
+  @override
+  String get operationsProcessesTitle => '进程';
+
+  @override
+  String get operationsProcessDetailTitle => '进程详情';
+
+  @override
+  String get operationsCronjobsTitle => '计划任务';
+
+  @override
+  String get operationsCronjobFormTitle => '计划任务表单';
+
+  @override
+  String get operationsCronjobRecordsTitle => '计划任务记录';
+
+  @override
+  String get operationsScriptsTitle => '脚本库';
+
+  @override
+  String get operationsBackupsTitle => '备份中心';
+
+  @override
+  String get operationsBackupAccountFormTitle => '备份账户表单';
+
+  @override
+  String get operationsBackupRecordsTitle => '备份记录';
+
+  @override
+  String get operationsBackupRecoverTitle => '备份恢复';
+
+  @override
+  String get operationsLogsTitle => '日志中心';
+
+  @override
+  String get operationsSystemLogViewerTitle => '系统日志查看';
+
+  @override
+  String get operationsTaskLogDetailTitle => '任务日志详情';
+
+  @override
+  String get operationsRuntimesTitle => '运行时';
+
+  @override
+  String get operationsRuntimeDetailTitle => '运行时详情';
+
+  @override
+  String get operationsRuntimeFormTitle => '运行时表单';
+
+  @override
+  String get operationsPhpExtensionsTitle => 'PHP 扩展';
+
+  @override
+  String get operationsPhpConfigTitle => 'PHP 配置';
+
+  @override
+  String get operationsNodeModulesTitle => 'Node 模块';
+
+  @override
+  String get operationsNodeScriptsTitle => 'Node 脚本';
+
+  @override
+  String get operationsPlaceholderBackAction => '返回运维中心';
+
+  @override
+  String operationsPlaceholderDescription(String moduleName, int week) {
+    return '$moduleName 计划在第 $week 周交付。Week 1 仅先打通路由、共享基础设施与可评审骨架。';
+  }
+
+  @override
+  String get operationsGroupSelectorTitle => '选择分组';
+
+  @override
+  String get operationsGroupCreateTitle => '创建分组';
+
+  @override
+  String get operationsGroupRenameTitle => '重命名分组';
+
+  @override
+  String get operationsGroupNameHint => '请输入分组名称';
+
+  @override
+  String get operationsGroupEmptyDescription =>
+      '当前模块还没有可用分组，先创建一个，后续主机、命令或计划任务就能复用。';
+
+  @override
+  String get operationsGroupDefaultLabel => '默认分组';
+
+  @override
+  String get operationsGroupDeleteConfirmTitle => '删除分组';
+
+  @override
+  String operationsGroupDeleteConfirmMessage(String groupName) {
+    return '确认删除分组 $groupName 吗？后续相关模块项需要重新指定分组。';
+  }
 }

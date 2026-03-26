@@ -1426,5 +1426,69 @@
   "orchestrationCreateNetwork": "Create Network",
   "orchestrationCreateVolume": "Create Volume",
   "orchestrationCreateRepo": "Create Repository",
-  "orchestrationCreateTemplate": "Create Template"
+  "orchestrationCreateTemplate": "Create Template",
+  "operationsCenterPageTitle": "Operations Center",
+  "operationsCenterIntro": "Phase 1 capabilities will be delivered here week by week so server operations stay in one mobile-first entry.",
+  "operationsCenterServerEntryTitle": "Operations Center",
+  "operationsCenterServerEntrySubtitle": "Automation, runtime, and system control in one place",
+  "operationsCenterAutomationSectionTitle": "Automation",
+  "operationsCenterAutomationSectionDescription": "Commands, schedules, scripts, and backup flows",
+  "operationsCenterRuntimeSectionTitle": "Runtime & Delivery",
+  "operationsCenterRuntimeSectionDescription": "Shared runtime chains for PHP and Node.js",
+  "operationsCenterSystemSectionTitle": "System Control",
+  "operationsCenterSystemSectionDescription": "Host assets, SSH, processes, and logs",
+  "operationsCommandsTitle": "Commands",
+  "operationsCommandFormTitle": "Command Form",
+  "operationsHostAssetsTitle": "Host Assets",
+  "operationsHostAssetFormTitle": "Host Asset Form",
+  "operationsSshTitle": "SSH",
+  "operationsSshLogsTitle": "SSH Logs",
+  "operationsSshSessionsTitle": "SSH Sessions",
+  "operationsProcessesTitle": "Processes",
+  "operationsProcessDetailTitle": "Process Detail",
+  "operationsCronjobsTitle": "Cronjobs",
+  "operationsCronjobFormTitle": "Cronjob Form",
+  "operationsCronjobRecordsTitle": "Cronjob Records",
+  "operationsScriptsTitle": "Script Library",
+  "operationsBackupsTitle": "Backups",
+  "operationsBackupAccountFormTitle": "Backup Account Form",
+  "operationsBackupRecordsTitle": "Backup Records",
+  "operationsBackupRecoverTitle": "Backup Recover",
+  "operationsLogsTitle": "Logs Center",
+  "operationsSystemLogViewerTitle": "System Log Viewer",
+  "operationsTaskLogDetailTitle": "Task Log Detail",
+  "operationsRuntimesTitle": "Runtimes",
+  "operationsRuntimeDetailTitle": "Runtime Detail",
+  "operationsRuntimeFormTitle": "Runtime Form",
+  "operationsPhpExtensionsTitle": "PHP Extensions",
+  "operationsPhpConfigTitle": "PHP Config",
+  "operationsNodeModulesTitle": "Node Modules",
+  "operationsNodeScriptsTitle": "Node Scripts",
+  "operationsPlaceholderBackAction": "Back to Operations Center",
+  "operationsPlaceholderDescription": "{moduleName} is scheduled for Week {week}. Week 1 only wires the route, shared infrastructure, and reviewable skeleton.",
+  "@operationsPlaceholderDescription": {
+    "placeholders": {
+      "moduleName": {
+        "type": "String"
+      },
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "operationsGroupSelectorTitle": "Select Group",
+  "operationsGroupCreateTitle": "Create Group",
+  "operationsGroupRenameTitle": "Rename Group",
+  "operationsGroupNameHint": "Enter a group name",
+  "operationsGroupEmptyDescription": "No groups are available for this module yet. Create one to keep items organized.",
+  "operationsGroupDefaultLabel": "Default",
+  "operationsGroupDeleteConfirmTitle": "Delete Group",
+  "operationsGroupDeleteConfirmMessage": "Delete group {groupName}? Existing module items will need a new group assignment later.",
+  "@operationsGroupDeleteConfirmMessage": {
+    "placeholders": {
+      "groupName": {
+        "type": "String"
+      }
+    }
+  }
 }

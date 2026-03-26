@@ -107,6 +107,12 @@ class ServerDetailPage extends StatelessWidget {
     final l10n = context.l10n;
     return [
       ServerDetailSectionItem(
+        title: l10n.operationsCenterServerEntryTitle,
+        icon: Icons.space_dashboard_outlined,
+        subtitle: l10n.operationsCenterServerEntrySubtitle,
+        onTap: () => _openRoute(context, AppRoutes.operations),
+      ),
+      ServerDetailSectionItem(
         title: l10n.serverModuleWebsites,
         icon: Icons.language_outlined,
         subtitle: l10n.commonExperimental,

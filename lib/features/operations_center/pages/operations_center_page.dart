@@ -1,0 +1,160 @@
+import 'package:flutter/material.dart';
+import 'package:onepanel_client/config/app_router.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/features/operations_center/widgets/server_operation_entry_card_widget.dart';
+import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
+
+class OperationsCenterPage extends StatelessWidget {
+  const OperationsCenterPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final sections = <_OperationsSection>[
+      _OperationsSection(
+        title: l10n.operationsCenterAutomationSectionTitle,
+        description: l10n.operationsCenterAutomationSectionDescription,
+        entries: [
+          _OperationEntry(
+            title: l10n.operationsCronjobsTitle,
+            route: AppRoutes.cronjobs,
+            icon: Icons.schedule_outlined,
+          ),
+          _OperationEntry(
+            title: l10n.operationsScriptsTitle,
+            route: AppRoutes.scripts,
+            icon: Icons.code_outlined,
+          ),
+          _OperationEntry(
+            title: l10n.operationsCommandsTitle,
+            route: AppRoutes.commands,
+            icon: Icons.terminal_outlined,
+          ),
+          _OperationEntry(
+            title: l10n.operationsBackupsTitle,
+            route: AppRoutes.backups,
+            icon: Icons.backup_outlined,
+          ),
+        ],
+      ),
+      _OperationsSection(
+        title: l10n.operationsCenterRuntimeSectionTitle,
+        description: l10n.operationsCenterRuntimeSectionDescription,
+        entries: [
+          _OperationEntry(
+            title: l10n.operationsRuntimesTitle,
+            route: AppRoutes.runtimes,
+            icon: Icons.memory_outlined,
+          ),
+        ],
+      ),
+      _OperationsSection(
+        title: l10n.operationsCenterSystemSectionTitle,
+        description: l10n.operationsCenterSystemSectionDescription,
+        entries: [
+          _OperationEntry(
+            title: l10n.operationsHostAssetsTitle,
+            route: AppRoutes.hostAssets,
+            icon: Icons.dns_outlined,
+          ),
+          _OperationEntry(
+            title: l10n.operationsSshTitle,
+            route: AppRoutes.ssh,
+            icon: Icons.key_outlined,
+          ),
+          _OperationEntry(
+            title: l10n.operationsProcessesTitle,
+            route: AppRoutes.processes,
+            icon: Icons.monitor_heart_outlined,
+          ),
+          _OperationEntry(
+            title: l10n.operationsLogsTitle,
+            route: AppRoutes.logs,
+            icon: Icons.article_outlined,
+          ),
+        ],
+      ),
+    ];
+
+    return ServerAwarePageScaffold(
+      title: l10n.operationsCenterPageTitle,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isWide = constraints.maxWidth >= 720;
+          final cardWidth =
+              isWide ? (constraints.maxWidth - 12) / 2 : constraints.maxWidth;
+          return ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    l10n.operationsCenterIntro,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              for (final section in sections) ...[
+                Text(
+                  section.title,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  section.description,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                ),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    for (final entry in section.entries)
+                      SizedBox(
+                        width: cardWidth,
+                        child: ServerOperationEntryCardWidget(
+                          title: entry.title,
+                          icon: entry.icon,
+                          onTap: () =>
+                              Navigator.pushNamed(context, entry.route),
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+              ],
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _OperationsSection {
+  const _OperationsSection({
+    required this.title,
+    required this.description,
+    required this.entries,
+  });
+
+  final String title;
+  final String description;
+  final List<_OperationEntry> entries;
+}
+
+class _OperationEntry {
+  const _OperationEntry({
+    required this.title,
+    required this.route,
+    required this.icon,
+  });
+
+  final String title;
+  final String route;
+  final IconData icon;
+}

@@ -1,77 +1,78 @@
 import 'package:dio/dio.dart';
-import '../../core/network/dio_client.dart';
+
 import '../../core/config/api_constants.dart';
+import '../../core/network/dio_client.dart';
 import '../../data/models/common_models.dart';
 
 class CommandV2Api {
-  final DioClient _client;
-
   CommandV2Api(this._client);
 
-  // ==================== Command 命令管理 ====================
+  final DioClient _client;
 
-  /// 创建快捷命令
-  Future<Response> createCommand(CommandOperate request) async {
-    return await _client.post(
+  Future<Response<void>> createCommand(CommandOperate request) {
+    return _client.post<void>(
       ApiConstants.buildApiPath('/core/commands'),
       data: request.toJson(),
     );
   }
 
-  /// 获取命令详情
   Future<Response<CommandInfo>> getCommand(OperateByType request) async {
-    final response = await _client.get(
-      ApiConstants.buildApiPath('/core/commands/command'),
-      queryParameters: request.toJson(),
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/core/commands/list'),
+      data: request.toJson(),
     );
-    return Response(
-      data: CommandInfo.fromJson(response.data),
+    final rawItems = response.data?['data'] as List<dynamic>? ?? const [];
+    final firstItem = rawItems.isEmpty
+        ? const <String, dynamic>{}
+        : rawItems.first as Map<String, dynamic>;
+    return Response<CommandInfo>(
+      data: CommandInfo.fromJson(firstItem),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
     );
   }
 
-  /// 删除命令
-  Future<Response> deleteCommand(OperateByIDs request) async {
-    return await _client.post(
+  Future<Response<void>> deleteCommand(OperateByIDs request) {
+    return _client.post<void>(
       ApiConstants.buildApiPath('/core/commands/del'),
       data: request.toJson(),
     );
   }
 
-  /// 导出命令
-  Future<Response<String>> exportCommand(OperateByIDs request) async {
-    final response = await _client.post(
+  Future<Response<String>> exportCommand([OperateByIDs? request]) async {
+    final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/core/commands/export'),
-      data: request.toJson(),
+      data: request?.toJson(),
     );
-    return Response(
-      data: response.data as String,
+    return Response<String>(
+      data: response.data?['data'] as String? ?? '',
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
     );
   }
 
-  /// 导入命令
-  Future<Response> importCommand(String content) async {
-    return await _client.post(
+  Future<Response<void>> importCommand(List<CommandOperate> items) {
+    return _client.post<void>(
       ApiConstants.buildApiPath('/core/commands/import'),
-      data: {'content': content},
+      data: <String, dynamic>{
+        'items': items.map((CommandOperate item) => item.toJson()).toList(),
+      },
     );
   }
 
-  /// 搜索命令
-  Future<Response<PageResult<CommandInfo>>> searchCommand(PageRequest request) async {
-    final response = await _client.post(
+  Future<Response<PageResult<CommandInfo>>> searchCommand(
+    PageRequest request,
+  ) async {
+    final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/core/commands/search'),
       data: request.toJson(),
     );
-    return Response(
+    return Response<PageResult<CommandInfo>>(
       data: PageResult.fromJson(
-        response.data,
-        (json) => CommandInfo.fromJson(json as Map<String, dynamic>),
+        response.data?['data'] as Map<String, dynamic>? ?? const {},
+        (dynamic item) => CommandInfo.fromJson(item as Map<String, dynamic>),
       ),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
@@ -79,57 +80,57 @@ class CommandV2Api {
     );
   }
 
-  /// 获取命令树
-  Future<Response<List<CommandTree>>> getCommandTree() async {
-    final response = await _client.get(
+  Future<Response<List<CommandTree>>> getCommandTree({
+    String type = 'command',
+  }) async {
+    final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/core/commands/tree'),
+      data: <String, dynamic>{'type': type},
     );
-    return Response(
-      data: (response.data as List<dynamic>)
-          .map((e) => CommandTree.fromJson(e as Map<String, dynamic>))
-          .toList(),
+    final rawItems = response.data?['data'] as List<dynamic>? ?? const [];
+    return Response<List<CommandTree>>(
+      data: rawItems
+          .whereType<Map<String, dynamic>>()
+          .map(CommandTree.fromJson)
+          .toList(growable: false),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
     );
   }
 
-  /// 更新命令
-  Future<Response> updateCommand(CommandOperate request) async {
-    return await _client.post(
+  Future<Response<void>> updateCommand(CommandOperate request) {
+    return _client.post<void>(
       ApiConstants.buildApiPath('/core/commands/update'),
       data: request.toJson(),
     );
   }
 
-  // ==================== Script 脚本库 ====================
-
-  /// 创建脚本
-  Future<Response> createScript(ScriptOperate request) async {
-    return await _client.post(
+  Future<Response<void>> createScript(ScriptOperate request) {
+    return _client.post<void>(
       ApiConstants.buildApiPath('/core/script'),
       data: request.toJson(),
     );
   }
 
-  /// 删除脚本
-  Future<Response> deleteScript(OperateByID request) async {
-    return await _client.post(
+  Future<Response<void>> deleteScript(OperateByIDs request) {
+    return _client.post<void>(
       ApiConstants.buildApiPath('/core/script/del'),
       data: request.toJson(),
     );
   }
 
-  /// 搜索脚本
-  Future<Response<PageResult<ScriptOperate>>> searchScript(PageRequest request) async {
-    final response = await _client.post(
+  Future<Response<PageResult<ScriptOperate>>> searchScript(
+    PageRequest request,
+  ) async {
+    final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/core/script/search'),
       data: request.toJson(),
     );
-    return Response(
+    return Response<PageResult<ScriptOperate>>(
       data: PageResult.fromJson(
-        response.data,
-        (json) => ScriptOperate.fromJson(json as Map<String, dynamic>),
+        response.data?['data'] as Map<String, dynamic>? ?? const {},
+        (dynamic item) => ScriptOperate.fromJson(item as Map<String, dynamic>),
       ),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
@@ -137,30 +138,32 @@ class CommandV2Api {
     );
   }
 
-  /// 同步脚本
-  Future<Response> syncScript() async {
-    return await _client.post(
+  Future<Response<void>> syncScript({String? taskId}) {
+    return _client.post<void>(
       ApiConstants.buildApiPath('/core/script/sync'),
+      data: <String, dynamic>{
+        if (taskId != null && taskId.isNotEmpty) 'taskID': taskId,
+      },
     );
   }
 
-  /// 更新脚本
-  Future<Response> updateScript(ScriptOperate request) async {
-    return await _client.post(
+  Future<Response<void>> updateScript(ScriptOperate request) {
+    return _client.post<void>(
       ApiConstants.buildApiPath('/core/script/update'),
       data: request.toJson(),
     );
   }
 
-  /// 获取脚本选项列表
   Future<Response<List<ScriptOptions>>> getScriptOptions() async {
-    final response = await _client.get(
-      ApiConstants.buildApiPath('/core/script/options'),
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/cronjobs/script/options'),
     );
-    return Response(
-      data: (response.data as List<dynamic>)
-          .map((e) => ScriptOptions.fromJson(e as Map<String, dynamic>))
-          .toList(),
+    final rawItems = response.data?['data'] as List<dynamic>? ?? const [];
+    return Response<List<ScriptOptions>>(
+      data: rawItems
+          .whereType<Map<String, dynamic>>()
+          .map(ScriptOptions.fromJson)
+          .toList(growable: false),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,

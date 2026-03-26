@@ -82,6 +82,9 @@ void main() {
     expect(find.text('Bottom Tabs'), findsOneWidget);
     expect(find.text('Edit Tabs'), findsOneWidget);
     expect(find.text('Files'), findsWidgets);
+    await tester.scrollUntilVisible(find.text('Operations Center'), 200);
+    await tester.pumpAndSettle();
+    expect(find.text('Operations Center'), findsWidgets);
     expect(find.text('Experimental'), findsWidgets);
   });
 }

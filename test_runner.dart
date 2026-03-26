@@ -47,9 +47,10 @@ class TestRunner {
     if (description != null) {
       printHeader(description);
     }
-    
-    final exitCode = await runCommand('flutter', ['test', testPath, '--reporter=expanded']);
-    
+
+    final exitCode =
+        await runCommand('flutter', ['test', testPath, '--reporter=expanded']);
+
     if (exitCode == 0) {
       printSuccess('测试通过');
     } else {
@@ -66,6 +67,28 @@ class TestRunner {
     printHeader('运行单元测试');
     await runTests('test/api/', description: 'API单元测试');
     await runTests('test/auth/', description: '认证单元测试');
+    final phase1ApiFile =
+        File('test/api_client/phase1_api_alignment_test.dart');
+    if (await phase1ApiFile.exists()) {
+      await runTests(
+        'test/api_client/phase1_api_alignment_test.dart',
+        description: 'Phase 1 API对齐测试',
+      );
+    }
+    final groupServiceDir = Directory('test/features/group/services');
+    if (await groupServiceDir.exists()) {
+      await runTests(
+        'test/features/group/services/',
+        description: 'Group Service测试',
+      );
+    }
+    final groupProviderDir = Directory('test/features/group/providers');
+    if (await groupProviderDir.exists()) {
+      await runTests(
+        'test/features/group/providers/',
+        description: 'Group Provider测试',
+      );
+    }
   }
 
   static Future<void> runIntegrationTests() async {
@@ -86,6 +109,31 @@ class TestRunner {
       hasTests = true;
       await runTests('test/widget_test.dart', description: 'Widget单文件测试');
     }
+    final serverDetailFile =
+        File('test/features/server/server_detail_page_test.dart');
+    if (await serverDetailFile.exists()) {
+      hasTests = true;
+      await runTests(
+        'test/features/server/server_detail_page_test.dart',
+        description: 'Server Detail Widget测试',
+      );
+    }
+    final groupWidgetDir = Directory('test/features/group/widgets');
+    if (await groupWidgetDir.exists()) {
+      hasTests = true;
+      await runTests(
+        'test/features/group/widgets/',
+        description: 'Group Widget测试',
+      );
+    }
+    final operationsCenterDir = Directory('test/features/operations_center');
+    if (await operationsCenterDir.exists()) {
+      hasTests = true;
+      await runTests(
+        'test/features/operations_center/',
+        description: 'Operations Center Widget测试',
+      );
+    }
     if (!hasTests) {
       printWarning('Widget测试不存在');
     }
@@ -99,7 +147,8 @@ class TestRunner {
   static Future<void> runAiTests() async {
     printHeader('运行AI API测试');
     await runTests('test/api/ai_api_test.dart', description: 'AI API单元测试');
-    await runTests('test/integration/ai_api_integration_test.dart', description: 'AI API集成测试');
+    await runTests('test/integration/ai_api_integration_test.dart',
+        description: 'AI API集成测试');
   }
 
   static Future<void> runAppTests() async {
@@ -109,19 +158,22 @@ class TestRunner {
 
   static Future<void> runToolboxTests() async {
     printHeader('运行Toolbox API测试');
-    await runTests('test/api/toolbox_api_test.dart', description: 'Toolbox API单元测试');
+    await runTests('test/api/toolbox_api_test.dart',
+        description: 'Toolbox API单元测试');
   }
 
   static Future<void> runContainerTests() async {
     printHeader('运行Container API测试');
-    await runTests('test/api/container_api_test.dart', description: 'Container API单元测试');
+    await runTests('test/api/container_api_test.dart',
+        description: 'Container API单元测试');
   }
 
   static Future<void> runDatabaseTests() async {
     printHeader('运行Database API测试');
     final file = File('test/api/database_api_test.dart');
     if (await file.exists()) {
-      await runTests('test/api/database_api_test.dart', description: 'Database API单元测试');
+      await runTests('test/api/database_api_test.dart',
+          description: 'Database API单元测试');
     } else {
       printWarning('Database API测试文件不存在');
     }
@@ -131,7 +183,8 @@ class TestRunner {
     printHeader('运行Website API测试');
     final file = File('test/api/website_api_test.dart');
     if (await file.exists()) {
-      await runTests('test/api/website_api_test.dart', description: 'Website API单元测试');
+      await runTests('test/api/website_api_test.dart',
+          description: 'Website API单元测试');
     } else {
       printWarning('Website API测试文件不存在');
     }
@@ -139,10 +192,11 @@ class TestRunner {
 
   static Future<void> runCoverageTests() async {
     printHeader('运行测试并生成覆盖率报告');
-    
+
     printInfo('运行测试并收集覆盖率数据...');
-    final exitCode = await runCommand('flutter', ['test', '--coverage', '--reporter=expanded']);
-    
+    final exitCode = await runCommand(
+        'flutter', ['test', '--coverage', '--reporter=expanded']);
+
     if (exitCode == 0) {
       final coverageFile = File('coverage/lcov.info');
       if (await coverageFile.exists()) {
@@ -205,7 +259,7 @@ class TestRunner {
       stdout.writeln('');
       stdout.writeln('  cp .env.example .env');
       stdout.writeln('');
-      
+
       stdout.write('是否继续运行测试? (y/n): ');
       final input = stdin.readLineSync();
       if (input?.toLowerCase() != 'y') {

@@ -6757,6 +6757,288 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create Template'**
   String get orchestrationCreateTemplate;
+
+  /// No description provided for @operationsCenterPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Operations Center'**
+  String get operationsCenterPageTitle;
+
+  /// No description provided for @operationsCenterIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Phase 1 capabilities will be delivered here week by week so server operations stay in one mobile-first entry.'**
+  String get operationsCenterIntro;
+
+  /// No description provided for @operationsCenterServerEntryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Operations Center'**
+  String get operationsCenterServerEntryTitle;
+
+  /// No description provided for @operationsCenterServerEntrySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automation, runtime, and system control in one place'**
+  String get operationsCenterServerEntrySubtitle;
+
+  /// No description provided for @operationsCenterAutomationSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automation'**
+  String get operationsCenterAutomationSectionTitle;
+
+  /// No description provided for @operationsCenterAutomationSectionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Commands, schedules, scripts, and backup flows'**
+  String get operationsCenterAutomationSectionDescription;
+
+  /// No description provided for @operationsCenterRuntimeSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Runtime & Delivery'**
+  String get operationsCenterRuntimeSectionTitle;
+
+  /// No description provided for @operationsCenterRuntimeSectionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared runtime chains for PHP and Node.js'**
+  String get operationsCenterRuntimeSectionDescription;
+
+  /// No description provided for @operationsCenterSystemSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'System Control'**
+  String get operationsCenterSystemSectionTitle;
+
+  /// No description provided for @operationsCenterSystemSectionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Host assets, SSH, processes, and logs'**
+  String get operationsCenterSystemSectionDescription;
+
+  /// No description provided for @operationsCommandsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Commands'**
+  String get operationsCommandsTitle;
+
+  /// No description provided for @operationsCommandFormTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Command Form'**
+  String get operationsCommandFormTitle;
+
+  /// No description provided for @operationsHostAssetsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Host Assets'**
+  String get operationsHostAssetsTitle;
+
+  /// No description provided for @operationsHostAssetFormTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Host Asset Form'**
+  String get operationsHostAssetFormTitle;
+
+  /// No description provided for @operationsSshTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'SSH'**
+  String get operationsSshTitle;
+
+  /// No description provided for @operationsSshLogsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'SSH Logs'**
+  String get operationsSshLogsTitle;
+
+  /// No description provided for @operationsSshSessionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'SSH Sessions'**
+  String get operationsSshSessionsTitle;
+
+  /// No description provided for @operationsProcessesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Processes'**
+  String get operationsProcessesTitle;
+
+  /// No description provided for @operationsProcessDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Process Detail'**
+  String get operationsProcessDetailTitle;
+
+  /// No description provided for @operationsCronjobsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cronjobs'**
+  String get operationsCronjobsTitle;
+
+  /// No description provided for @operationsCronjobFormTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cronjob Form'**
+  String get operationsCronjobFormTitle;
+
+  /// No description provided for @operationsCronjobRecordsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cronjob Records'**
+  String get operationsCronjobRecordsTitle;
+
+  /// No description provided for @operationsScriptsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Script Library'**
+  String get operationsScriptsTitle;
+
+  /// No description provided for @operationsBackupsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups'**
+  String get operationsBackupsTitle;
+
+  /// No description provided for @operationsBackupAccountFormTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup Account Form'**
+  String get operationsBackupAccountFormTitle;
+
+  /// No description provided for @operationsBackupRecordsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup Records'**
+  String get operationsBackupRecordsTitle;
+
+  /// No description provided for @operationsBackupRecoverTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup Recover'**
+  String get operationsBackupRecoverTitle;
+
+  /// No description provided for @operationsLogsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Logs Center'**
+  String get operationsLogsTitle;
+
+  /// No description provided for @operationsSystemLogViewerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'System Log Viewer'**
+  String get operationsSystemLogViewerTitle;
+
+  /// No description provided for @operationsTaskLogDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Task Log Detail'**
+  String get operationsTaskLogDetailTitle;
+
+  /// No description provided for @operationsRuntimesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Runtimes'**
+  String get operationsRuntimesTitle;
+
+  /// No description provided for @operationsRuntimeDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Runtime Detail'**
+  String get operationsRuntimeDetailTitle;
+
+  /// No description provided for @operationsRuntimeFormTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Runtime Form'**
+  String get operationsRuntimeFormTitle;
+
+  /// No description provided for @operationsPhpExtensionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'PHP Extensions'**
+  String get operationsPhpExtensionsTitle;
+
+  /// No description provided for @operationsPhpConfigTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'PHP Config'**
+  String get operationsPhpConfigTitle;
+
+  /// No description provided for @operationsNodeModulesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Node Modules'**
+  String get operationsNodeModulesTitle;
+
+  /// No description provided for @operationsNodeScriptsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Node Scripts'**
+  String get operationsNodeScriptsTitle;
+
+  /// No description provided for @operationsPlaceholderBackAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Operations Center'**
+  String get operationsPlaceholderBackAction;
+
+  /// No description provided for @operationsPlaceholderDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'{moduleName} is scheduled for Week {week}. Week 1 only wires the route, shared infrastructure, and reviewable skeleton.'**
+  String operationsPlaceholderDescription(String moduleName, int week);
+
+  /// No description provided for @operationsGroupSelectorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Group'**
+  String get operationsGroupSelectorTitle;
+
+  /// No description provided for @operationsGroupCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Group'**
+  String get operationsGroupCreateTitle;
+
+  /// No description provided for @operationsGroupRenameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename Group'**
+  String get operationsGroupRenameTitle;
+
+  /// No description provided for @operationsGroupNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a group name'**
+  String get operationsGroupNameHint;
+
+  /// No description provided for @operationsGroupEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'No groups are available for this module yet. Create one to keep items organized.'**
+  String get operationsGroupEmptyDescription;
+
+  /// No description provided for @operationsGroupDefaultLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get operationsGroupDefaultLabel;
+
+  /// No description provided for @operationsGroupDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Group'**
+  String get operationsGroupDeleteConfirmTitle;
+
+  /// No description provided for @operationsGroupDeleteConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete group {groupName}? Existing module items will need a new group assignment later.'**
+  String operationsGroupDeleteConfirmMessage(String groupName);
 }
 
 class _AppLocalizationsDelegate

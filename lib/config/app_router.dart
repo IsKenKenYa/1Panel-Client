@@ -33,6 +33,8 @@ import 'package:onepanel_client/features/openresty/openresty_page.dart';
 import 'package:onepanel_client/features/openresty/pages/openresty_source_editor_page.dart';
 import 'package:onepanel_client/features/openresty/providers/openresty_provider.dart';
 import 'package:onepanel_client/features/settings/ssl_settings_page.dart';
+import 'package:onepanel_client/features/operations_center/pages/operations_center_page.dart';
+import 'package:onepanel_client/features/operations_center/pages/stage_one_module_placeholder_page.dart';
 import 'package:provider/provider.dart';
 
 import 'package:onepanel_client/features/containers/container_detail_page.dart';
@@ -75,6 +77,34 @@ class AppRoutes {
   static const String openrestyCenter = '/openresty';
   static const String openrestySourceEditor = '/openresty-source-editor';
   static const String panelSsl = '/panel-ssl';
+  static const String operations = '/operations';
+  static const String commands = '/commands';
+  static const String commandForm = '/commands/form';
+  static const String hostAssets = '/hosts-assets';
+  static const String hostAssetForm = '/hosts-assets/form';
+  static const String ssh = '/ssh';
+  static const String sshLogs = '/ssh/logs';
+  static const String sshSessions = '/ssh/sessions';
+  static const String processes = '/processes';
+  static const String processDetail = '/processes/detail';
+  static const String cronjobs = '/cronjobs';
+  static const String cronjobForm = '/cronjobs/form';
+  static const String cronjobRecords = '/cronjobs/records';
+  static const String scripts = '/scripts';
+  static const String backups = '/backups';
+  static const String backupAccountForm = '/backups/accounts/form';
+  static const String backupRecords = '/backups/records';
+  static const String backupRecover = '/backups/recover';
+  static const String logs = '/logs';
+  static const String systemLogViewer = '/logs/system';
+  static const String taskLogDetail = '/logs/task/detail';
+  static const String runtimes = '/runtimes';
+  static const String runtimeDetail = '/runtimes/detail';
+  static const String runtimeForm = '/runtimes/form';
+  static const String phpExtensions = '/runtimes/php/extensions';
+  static const String phpConfig = '/runtimes/php/config';
+  static const String nodeModules = '/runtimes/node/modules';
+  static const String nodeScripts = '/runtimes/node/scripts';
 }
 
 class AppRouter {
@@ -295,6 +325,145 @@ class AppRouter {
       case AppRoutes.panelSsl:
         return MaterialPageRoute(builder: (_) => const SslSettingsPage());
 
+      case AppRoutes.operations:
+        return MaterialPageRoute(builder: (_) => const OperationsCenterPage());
+
+      case AppRoutes.commands:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsCommandsTitle,
+          availableInWeek: 2,
+        );
+      case AppRoutes.commandForm:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsCommandFormTitle,
+          availableInWeek: 2,
+        );
+      case AppRoutes.hostAssets:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsHostAssetsTitle,
+          availableInWeek: 2,
+        );
+      case AppRoutes.hostAssetForm:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsHostAssetFormTitle,
+          availableInWeek: 2,
+        );
+      case AppRoutes.ssh:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsSshTitle,
+          availableInWeek: 3,
+        );
+      case AppRoutes.sshLogs:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsSshLogsTitle,
+          availableInWeek: 3,
+        );
+      case AppRoutes.sshSessions:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsSshSessionsTitle,
+          availableInWeek: 3,
+        );
+      case AppRoutes.processes:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsProcessesTitle,
+          availableInWeek: 3,
+        );
+      case AppRoutes.processDetail:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsProcessDetailTitle,
+          availableInWeek: 3,
+        );
+      case AppRoutes.cronjobs:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsCronjobsTitle,
+          availableInWeek: 4,
+        );
+      case AppRoutes.cronjobForm:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsCronjobFormTitle,
+          availableInWeek: 5,
+        );
+      case AppRoutes.cronjobRecords:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsCronjobRecordsTitle,
+          availableInWeek: 4,
+        );
+      case AppRoutes.scripts:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsScriptsTitle,
+          availableInWeek: 4,
+        );
+      case AppRoutes.backups:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsBackupsTitle,
+          availableInWeek: 5,
+        );
+      case AppRoutes.backupAccountForm:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsBackupAccountFormTitle,
+          availableInWeek: 5,
+        );
+      case AppRoutes.backupRecords:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsBackupRecordsTitle,
+          availableInWeek: 6,
+        );
+      case AppRoutes.backupRecover:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsBackupRecoverTitle,
+          availableInWeek: 6,
+        );
+      case AppRoutes.logs:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsLogsTitle,
+          availableInWeek: 6,
+        );
+      case AppRoutes.systemLogViewer:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsSystemLogViewerTitle,
+          availableInWeek: 6,
+        );
+      case AppRoutes.taskLogDetail:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsTaskLogDetailTitle,
+          availableInWeek: 6,
+        );
+      case AppRoutes.runtimes:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsRuntimesTitle,
+          availableInWeek: 7,
+        );
+      case AppRoutes.runtimeDetail:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsRuntimeDetailTitle,
+          availableInWeek: 7,
+        );
+      case AppRoutes.runtimeForm:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsRuntimeFormTitle,
+          availableInWeek: 7,
+        );
+      case AppRoutes.phpExtensions:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsPhpExtensionsTitle,
+          availableInWeek: 8,
+        );
+      case AppRoutes.phpConfig:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsPhpConfigTitle,
+          availableInWeek: 8,
+        );
+      case AppRoutes.nodeModules:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsNodeModulesTitle,
+          availableInWeek: 8,
+        );
+      case AppRoutes.nodeScripts:
+        return _buildStageOnePlaceholderRoute(
+          titleBuilder: (l10n) => l10n.operationsNodeScriptsTitle,
+          availableInWeek: 8,
+        );
+
       case AppRoutes.openrestySourceEditor:
         {
           final arg = settings.arguments as Map<String, dynamic>? ?? const {};
@@ -326,7 +495,6 @@ class AppRouter {
 
       case AppRoutes.openrestyCenter:
         return MaterialPageRoute(builder: (_) => const OpenRestyPage());
-      case '/backups':
       case '/help':
         return MaterialPageRoute(builder: (_) => const LegacyRedirectPage());
       default:
@@ -356,6 +524,18 @@ class AppRouter {
     }
 
     return null;
+  }
+
+  static Route<dynamic> _buildStageOnePlaceholderRoute({
+    required String Function(dynamic l10n) titleBuilder,
+    required int availableInWeek,
+  }) {
+    return MaterialPageRoute(
+      builder: (context) => StageOneModulePlaceholderPage(
+        title: titleBuilder(context.l10n),
+        availableInWeek: availableInWeek,
+      ),
+    );
   }
 }
 

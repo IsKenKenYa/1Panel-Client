@@ -1364,5 +1364,69 @@
   "orchestrationCreateNetwork": "创建网络",
   "orchestrationCreateVolume": "创建存储卷",
   "orchestrationCreateRepo": "创建仓库",
-  "orchestrationCreateTemplate": "创建模版"
+  "orchestrationCreateTemplate": "创建模版",
+  "operationsCenterPageTitle": "运维中心",
+  "operationsCenterIntro": "第一阶段新增能力会按周统一落在这里，保持服务器运维入口在移动端只有一个主链路。",
+  "operationsCenterServerEntryTitle": "运维中心",
+  "operationsCenterServerEntrySubtitle": "把自动化、运行时和系统控制放到统一入口",
+  "operationsCenterAutomationSectionTitle": "自动化",
+  "operationsCenterAutomationSectionDescription": "命令、计划任务、脚本库和备份主链路",
+  "operationsCenterRuntimeSectionTitle": "运行时与交付",
+  "operationsCenterRuntimeSectionDescription": "PHP 与 Node.js 的通用运行时链路",
+  "operationsCenterSystemSectionTitle": "系统控制",
+  "operationsCenterSystemSectionDescription": "主机资产、SSH、进程与日志入口",
+  "operationsCommandsTitle": "命令库",
+  "operationsCommandFormTitle": "命令表单",
+  "operationsHostAssetsTitle": "主机资产",
+  "operationsHostAssetFormTitle": "主机资产表单",
+  "operationsSshTitle": "SSH",
+  "operationsSshLogsTitle": "SSH 日志",
+  "operationsSshSessionsTitle": "SSH 会话",
+  "operationsProcessesTitle": "进程",
+  "operationsProcessDetailTitle": "进程详情",
+  "operationsCronjobsTitle": "计划任务",
+  "operationsCronjobFormTitle": "计划任务表单",
+  "operationsCronjobRecordsTitle": "计划任务记录",
+  "operationsScriptsTitle": "脚本库",
+  "operationsBackupsTitle": "备份中心",
+  "operationsBackupAccountFormTitle": "备份账户表单",
+  "operationsBackupRecordsTitle": "备份记录",
+  "operationsBackupRecoverTitle": "备份恢复",
+  "operationsLogsTitle": "日志中心",
+  "operationsSystemLogViewerTitle": "系统日志查看",
+  "operationsTaskLogDetailTitle": "任务日志详情",
+  "operationsRuntimesTitle": "运行时",
+  "operationsRuntimeDetailTitle": "运行时详情",
+  "operationsRuntimeFormTitle": "运行时表单",
+  "operationsPhpExtensionsTitle": "PHP 扩展",
+  "operationsPhpConfigTitle": "PHP 配置",
+  "operationsNodeModulesTitle": "Node 模块",
+  "operationsNodeScriptsTitle": "Node 脚本",
+  "operationsPlaceholderBackAction": "返回运维中心",
+  "operationsPlaceholderDescription": "{moduleName} 计划在第 {week} 周交付。Week 1 仅先打通路由、共享基础设施与可评审骨架。",
+  "@operationsPlaceholderDescription": {
+    "placeholders": {
+      "moduleName": {
+        "type": "String"
+      },
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "operationsGroupSelectorTitle": "选择分组",
+  "operationsGroupCreateTitle": "创建分组",
+  "operationsGroupRenameTitle": "重命名分组",
+  "operationsGroupNameHint": "请输入分组名称",
+  "operationsGroupEmptyDescription": "当前模块还没有可用分组，先创建一个，后续主机、命令或计划任务就能复用。",
+  "operationsGroupDefaultLabel": "默认分组",
+  "operationsGroupDeleteConfirmTitle": "删除分组",
+  "operationsGroupDeleteConfirmMessage": "确认删除分组 {groupName} 吗？后续相关模块项需要重新指定分组。",
+  "@operationsGroupDeleteConfirmMessage": {
+    "placeholders": {
+      "groupName": {
+        "type": "String"
+      }
+    }
+  }
 }

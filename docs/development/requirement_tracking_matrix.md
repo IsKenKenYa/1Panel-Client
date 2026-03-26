@@ -75,7 +75,7 @@
 | **Clam** | 12 | ✅ toolbox_v2.dart | ✅ toolbox_models.dart | ✅ 已测试 | 🔴 待集成 | 病毒扫描 |
 | **Device** | 12 | ✅ host_v2.dart | ✅ host_models.dart | ⚠️ 待测试 | 🔴 待集成 | 设备管理 |
 | **McpServer** | 8 | ✅ ai_v2.dart | ✅ mcp_models.dart | ✅ 已测试 | 🔴 待集成 | MCP服务器管理 |
-| **System Group** | 8 | ✅ system_group_v2.dart | ✅ system_group_models.dart | ⚠️ 待测试 | 🔴 待集成 | 系统分组 |
+| **System Group** | 8 | ✅ system_group_v2.dart | ✅ system_group_models.dart | ✅ 已测试 | 🟡 部分 | Week 1 已完成共享分组底座，暂不提供独立顶级页面 |
 | **FTP** | 8 | ✅ toolbox_v2.dart | ✅ toolbox_models.dart | ⚠️ 待测试 | 🔴 待集成 | FTP管理 |
 | **Host tool** | 7 | ✅ toolbox_v2.dart | ✅ toolbox_models.dart | ⚠️ 待测试 | 🔴 待集成 | 主机工具 |
 | **Fail2ban** | 7 | ✅ toolbox_v2.dart | ✅ toolbox_models.dart | ⚠️ 待测试 | 🔴 待集成 | 入侵防护 |
@@ -85,6 +85,8 @@
 | **Menu Setting** | 1 | ✅ setting_v2.dart | ✅ setting_models.dart | ⚠️ 待测试 | 🔴 待集成 | 菜单设置 |
 
 ## 实现状态统计
+
+> Week 1 同步说明：`System Group` 已补充 API/Repository/Service/Provider/Widget 测试，并以共享选择器底座形式接入第一阶段；聚合统计表将在下一轮全量文档刷新时统一重算。
 
 ### 按优先级统计
 

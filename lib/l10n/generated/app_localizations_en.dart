@@ -3500,4 +3500,155 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get orchestrationCreateTemplate => 'Create Template';
+
+  @override
+  String get operationsCenterPageTitle => 'Operations Center';
+
+  @override
+  String get operationsCenterIntro =>
+      'Phase 1 capabilities will be delivered here week by week so server operations stay in one mobile-first entry.';
+
+  @override
+  String get operationsCenterServerEntryTitle => 'Operations Center';
+
+  @override
+  String get operationsCenterServerEntrySubtitle =>
+      'Automation, runtime, and system control in one place';
+
+  @override
+  String get operationsCenterAutomationSectionTitle => 'Automation';
+
+  @override
+  String get operationsCenterAutomationSectionDescription =>
+      'Commands, schedules, scripts, and backup flows';
+
+  @override
+  String get operationsCenterRuntimeSectionTitle => 'Runtime & Delivery';
+
+  @override
+  String get operationsCenterRuntimeSectionDescription =>
+      'Shared runtime chains for PHP and Node.js';
+
+  @override
+  String get operationsCenterSystemSectionTitle => 'System Control';
+
+  @override
+  String get operationsCenterSystemSectionDescription =>
+      'Host assets, SSH, processes, and logs';
+
+  @override
+  String get operationsCommandsTitle => 'Commands';
+
+  @override
+  String get operationsCommandFormTitle => 'Command Form';
+
+  @override
+  String get operationsHostAssetsTitle => 'Host Assets';
+
+  @override
+  String get operationsHostAssetFormTitle => 'Host Asset Form';
+
+  @override
+  String get operationsSshTitle => 'SSH';
+
+  @override
+  String get operationsSshLogsTitle => 'SSH Logs';
+
+  @override
+  String get operationsSshSessionsTitle => 'SSH Sessions';
+
+  @override
+  String get operationsProcessesTitle => 'Processes';
+
+  @override
+  String get operationsProcessDetailTitle => 'Process Detail';
+
+  @override
+  String get operationsCronjobsTitle => 'Cronjobs';
+
+  @override
+  String get operationsCronjobFormTitle => 'Cronjob Form';
+
+  @override
+  String get operationsCronjobRecordsTitle => 'Cronjob Records';
+
+  @override
+  String get operationsScriptsTitle => 'Script Library';
+
+  @override
+  String get operationsBackupsTitle => 'Backups';
+
+  @override
+  String get operationsBackupAccountFormTitle => 'Backup Account Form';
+
+  @override
+  String get operationsBackupRecordsTitle => 'Backup Records';
+
+  @override
+  String get operationsBackupRecoverTitle => 'Backup Recover';
+
+  @override
+  String get operationsLogsTitle => 'Logs Center';
+
+  @override
+  String get operationsSystemLogViewerTitle => 'System Log Viewer';
+
+  @override
+  String get operationsTaskLogDetailTitle => 'Task Log Detail';
+
+  @override
+  String get operationsRuntimesTitle => 'Runtimes';
+
+  @override
+  String get operationsRuntimeDetailTitle => 'Runtime Detail';
+
+  @override
+  String get operationsRuntimeFormTitle => 'Runtime Form';
+
+  @override
+  String get operationsPhpExtensionsTitle => 'PHP Extensions';
+
+  @override
+  String get operationsPhpConfigTitle => 'PHP Config';
+
+  @override
+  String get operationsNodeModulesTitle => 'Node Modules';
+
+  @override
+  String get operationsNodeScriptsTitle => 'Node Scripts';
+
+  @override
+  String get operationsPlaceholderBackAction => 'Back to Operations Center';
+
+  @override
+  String operationsPlaceholderDescription(String moduleName, int week) {
+    return '$moduleName is scheduled for Week $week. Week 1 only wires the route, shared infrastructure, and reviewable skeleton.';
+  }
+
+  @override
+  String get operationsGroupSelectorTitle => 'Select Group';
+
+  @override
+  String get operationsGroupCreateTitle => 'Create Group';
+
+  @override
+  String get operationsGroupRenameTitle => 'Rename Group';
+
+  @override
+  String get operationsGroupNameHint => 'Enter a group name';
+
+  @override
+  String get operationsGroupEmptyDescription =>
+      'No groups are available for this module yet. Create one to keep items organized.';
+
+  @override
+  String get operationsGroupDefaultLabel => 'Default';
+
+  @override
+  String get operationsGroupDeleteConfirmTitle => 'Delete Group';
+
+  @override
+  String operationsGroupDeleteConfirmMessage(String groupName) {
+    return 'Delete group $groupName? Existing module items will need a new group assignment later.';
+  }
 }

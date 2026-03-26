@@ -1,13 +1,13 @@
 {
   "source": "docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json",
   "generatedAt": "2026-02-14",
-  "lastUpdated": "2026-02-14",
+  "lastUpdated": "2026-03-25",
   "totalEndpoints": 546,
   "totalApiMethods": 524,
   "apiClientFiles": 30,
   "testFiles": {
     "unit": 7,
-    "integration": 7
+    "integration": 8
   },
   "tags": {
     "Website": { "endpoints": 54, "priority": "P0", "implemented": 1, "tested": 1, "docs": 0, "clientFile": "website_v2.dart", "methods": 20 },
@@ -35,7 +35,7 @@
     "Container Docker": { "endpoints": 8, "priority": "P1", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "docker_v2.dart", "methods": 60 },
     "FTP": { "endpoints": 8, "priority": "P2", "implemented": 1, "tested": 1, "docs": 0, "clientFile": "toolbox_v2.dart", "methods": 42 },
     "McpServer": { "endpoints": 8, "priority": "P2", "implemented": 1, "tested": 1, "docs": 0, "clientFile": "ai_v2.dart", "methods": 18 },
-    "System Group": { "endpoints": 8, "priority": "P2", "implemented": 1, "tested": 0, "docs": 0, "clientFile": "system_group_v2.dart", "methods": 4 },
+    "System Group": { "endpoints": 8, "priority": "P2", "implemented": 1, "tested": 1, "docs": 1, "clientFile": "system_group_v2.dart", "methods": 8 },
     "Database Redis": { "endpoints": 7, "priority": "P0", "implemented": 1, "tested": 1, "docs": 0, "clientFile": "database_v2.dart", "methods": 17 },
     "Fail2ban": { "endpoints": 7, "priority": "P2", "implemented": 1, "tested": 1, "docs": 0, "clientFile": "toolbox_v2.dart", "methods": 42 },
     "Host tool": { "endpoints": 7, "priority": "P2", "implemented": 1, "tested": 1, "docs": 0, "clientFile": "toolbox_v2.dart", "methods": 42 },

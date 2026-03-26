@@ -2,96 +2,88 @@
 
 ## 模块目标
 
-- 适配 Open1PanelApp 作为 1Panel Linux 运维面板社区版的定位
-- 提供灵活的资源分组管理能力
-- 支持多种资源类型分组（应用、网站、数据库等）
-- 提供分组统计和批量操作
-- 统一分组管理与错误反馈
+- 在 Phase 1 Week 1 先完成共享分组底座
+- 保证依赖方向为 `Presentation -> State -> Service -> Repository -> API`
+- 为 Host Asset / Command / Cronjob 提供统一分组选择与编辑能力
+- 在不引入独立顶级页面的前提下，沉淀缓存、默认分组和错误处理规则
 
 ## 功能完整性清单
 
-基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 的 System Group 标签共 8 个端点:
+Week 1 以 `docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json` 与上游源码共同校对，当前高置信分组端点为：
 
 ### 分组管理
-1. GET /groups - 获取分组列表
-2. POST /groups - 创建分组
-3. POST /groups/update - 更新分组
-4. POST /groups/del - 删除分组
-5. GET /groups/{id} - 获取分组详情
+1. `POST /core/groups`
+2. `POST /core/groups/search`
+3. `POST /core/groups/update`
+4. `POST /core/groups/del`
+5. `POST /groups`
+6. `POST /groups/search`
+7. `POST /groups/update`
+8. `POST /groups/del`
 
-### 资源关联
-6. POST /groups/resources - 添加资源到分组
-7. POST /groups/resources/del - 从分组移除资源
-8. GET /groups/{id}/resources - 获取分组内资源列表
+### 关联更新
+9. `POST /core/hosts/update/group`
+10. `POST /cronjobs/group/update`
 
 ## 业务流程与交互验证
 
-### 分组创建流程
-- 进入分组管理页面
-- 点击"创建分组"按钮
-- 输入分组名称和描述
-- 选择分组类型（应用/网站/数据库等）
-- 保存分组
+### 分组选择流程
+- 业务页面打开 `GroupSelectorSheetWidget`
+- `GroupOptionsProvider` 读取指定 `type`
+- `GroupService` 命中缓存则直接返回，否则走 `GroupRepository`
+- 用户选择分组后由页面自身持有 `groupID`
 
-### 资源分组流程
-- 在资源列表页面
-- 选择需要分组的资源
-- 点击"添加到分组"
-- 选择目标分组
-- 确认关联
-
-### 分组查询流程
-- 进入资源列表页面
-- 使用分组筛选器
-- 选择目标分组
-- 显示该分组下的资源
-
-### 分组删除流程
-- 进入分组管理页面
-- 选择需要删除的分组
-- 确认分组内无资源关联
-- 执行删除操作
+### 分组编辑流程
+- 在选择器内打开 `GroupEditSheetWidget`
+- 保存时走 `GroupOptionsProvider -> GroupService -> GroupRepository -> SystemGroupV2Api`
+- 成功后强制刷新当前 `type` 分组缓存
+- 删除统一使用底部确认 Sheet
 
 ## 关键边界与异常
 
-### 分组操作异常
-- 分组名称重复的处理
-- 分组删除时存在资源关联的处理
-- 分组类型不匹配的处理
-
-### 资源关联异常
-- 资源已存在于其他分组的处理
-- 资源类型与分组不匹配的处理
-- 批量关联部分失败的处理
-
 ### 查询异常
-- 分组不存在时的提示
-- 空分组的展示处理
-- 权限不足的处理
+- 指定 `type` 没有任何分组时返回空态
+- API 返回错误时统一走 Provider 错态与重试
+- 默认分组名称缺失时在 UI 层降级展示为“默认分组”
 
 ## 模块分层与职责
 
-### 前端
-- UI页面: 分组列表、分组详情、资源关联、分组筛选
-- 状态管理: 分组列表缓存、关联状态
+### Presentation
+- `GroupSelectorSheetWidget`
+- `GroupEditSheetWidget`
 
-### 服务层
-- API适配: SystemGroupV2Api
-- 数据模型: Group、GroupResource等
+### State
+- `GroupOptionsProvider`
+
+### Service
+- `GroupService`
+  - 分组缓存
+  - 默认分组优先排序
+  - 写操作后的缓存失效
+
+### Repository
+- `GroupRepository`
+  - 核心分组与 agent 分组双命名空间访问
+  - 请求体组装
+  - API 调用聚合
+
+### API
+- `SystemGroupV2Api`
 
 ## 数据流
 
-1. UI触发 -> Provider/Service -> API客户端请求
-2. API响应解析 -> 模型映射 -> 状态更新
-3. 状态更新 -> UI刷新 -> 用户反馈
-4. 资源变更 -> 关联更新 -> 分组统计刷新
+1. UI Sheet 触发动作
+2. Provider 更新可观察状态
+3. Service 处理缓存与刷新策略
+4. Repository 调用 `SystemGroupV2Api`
+5. API 响应映射为 `GroupInfo`
+6. Provider 刷新列表并回写 UI
 
 ## 与现有实现的差距
 
-- 分组管理页面缺失
-- 资源分组功能缺失
-- 分组筛选功能缺失
-- 分组统计功能缺失
+- 独立分组管理页仍未进入 Phase 1
+- Website/Backup 等后续模块还未开始复用共享分组底座
+- 分组资源统计仍待后续阶段补齐
 
 ## 评审记录
 
@@ -102,5 +94,5 @@
 
 ---
 
-**文档版本**: 1.0
-**最后更新**: 2026-02-14
+**文档版本**: 1.1
+**最后更新**: 2026-03-25

@@ -1,38 +1,43 @@
-import 'dio_client.dart';
-import '../config/api_config.dart';
 import '../../api/v2/app_v2.dart';
 import '../../api/v2/auth_v2.dart';
+import '../../api/v2/backup_account_v2.dart';
+import '../../api/v2/command_v2.dart';
+import '../../api/v2/compose_v2.dart';
 import '../../api/v2/container_v2.dart';
+import '../../api/v2/cronjob_v2.dart';
 import '../../api/v2/dashboard_v2.dart';
 import '../../api/v2/database_v2.dart';
+import '../../api/v2/docker_v2.dart';
 import '../../api/v2/file_v2.dart';
 import '../../api/v2/firewall_v2.dart';
 import '../../api/v2/host_v2.dart';
 import '../../api/v2/logs_v2.dart';
 import '../../api/v2/monitor_v2.dart';
+import '../../api/v2/openresty_v2.dart';
+import '../../api/v2/process_v2.dart';
+import '../../api/v2/runtime_v2.dart';
 import '../../api/v2/setting_v2.dart';
 import '../../api/v2/ssl_v2.dart';
+import '../../api/v2/system_group_v2.dart';
+import '../../api/v2/task_log_v2.dart';
 import '../../api/v2/terminal_v2.dart';
 import '../../api/v2/update_v2.dart';
 import '../../api/v2/website_v2.dart';
-import '../../api/v2/openresty_v2.dart';
-import '../../api/v2/docker_v2.dart';
-import '../../api/v2/compose_v2.dart';
+import '../config/api_config.dart';
+import 'dio_client.dart';
 
-/// API客户端管理器
-/// 用于管理多个服务器配置的API客户端实例
 class ApiClientManager {
-  static final ApiClientManager _instance = ApiClientManager._internal();
-  final Map<String, DioClient> _clients = {};
-  final Map<String, _ClientConfigMeta> _clientMeta = {};
+  ApiClientManager._internal();
 
-  factory ApiClientManager() {
-    return _instance;
-  }
+  static final ApiClientManager _instance = ApiClientManager._internal();
+
+  factory ApiClientManager() => _instance;
 
   static ApiClientManager get instance => _instance;
 
-  ApiClientManager._internal();
+  final Map<String, DioClient> _clients = <String, DioClient>{};
+  final Map<String, _ClientConfigMeta> _clientMeta =
+      <String, _ClientConfigMeta>{};
 
   Future<ApiConfig> _getCurrentConfig() async {
     final config = await ApiConfigManager.getCurrentConfig();
@@ -42,7 +47,6 @@ class ApiClientManager {
     return config;
   }
 
-  /// 获取指定服务器的API客户端
   DioClient getClient(String serverId, String serverUrl, String apiKey) {
     final nextMeta = _ClientConfigMeta(url: serverUrl, apiKey: apiKey);
     final currentMeta = _clientMeta[serverId];
@@ -65,103 +69,80 @@ class ApiClientManager {
     return getClient(config.id, config.url, config.apiKey);
   }
 
-  Future<AppV2Api> getAppApi() async {
-    final client = await getCurrentClient();
-    return AppV2Api(client);
-  }
+  Future<AppV2Api> getAppApi() async => AppV2Api(await getCurrentClient());
 
-  Future<ContainerV2Api> getContainerApi() async {
-    final client = await getCurrentClient();
-    return ContainerV2Api(client);
-  }
+  Future<AuthV2Api> getAuthApi() async => AuthV2Api(await getCurrentClient());
 
-  Future<WebsiteV2Api> getWebsiteApi() async {
-    final client = await getCurrentClient();
-    return WebsiteV2Api(client);
-  }
+  Future<BackupAccountV2Api> getBackupAccountApi() async =>
+      BackupAccountV2Api(await getCurrentClient());
 
-  Future<OpenRestyV2Api> getOpenRestyApi() async {
-    final client = await getCurrentClient();
-    return OpenRestyV2Api(client);
-  }
+  Future<CommandV2Api> getCommandApi() async =>
+      CommandV2Api(await getCurrentClient());
 
-  Future<DashboardV2Api> getDashboardApi() async {
-    final client = await getCurrentClient();
-    return DashboardV2Api(client);
-  }
+  Future<ComposeV2Api> getComposeApi() async =>
+      ComposeV2Api(await getCurrentClient());
 
-  Future<HostV2Api> getHostApi() async {
-    final client = await getCurrentClient();
-    return HostV2Api(client);
-  }
+  Future<ContainerV2Api> getContainerApi() async =>
+      ContainerV2Api(await getCurrentClient());
 
-  Future<DatabaseV2Api> getDatabaseApi() async {
-    final client = await getCurrentClient();
-    return DatabaseV2Api(client);
-  }
+  Future<CronjobV2Api> getCronjobApi() async =>
+      CronjobV2Api(await getCurrentClient());
 
-  Future<FirewallV2Api> getFirewallApi() async {
-    final client = await getCurrentClient();
-    return FirewallV2Api(client);
-  }
+  Future<DashboardV2Api> getDashboardApi() async =>
+      DashboardV2Api(await getCurrentClient());
 
-  Future<MonitorV2Api> getMonitorApi() async {
-    final client = await getCurrentClient();
-    return MonitorV2Api(client);
-  }
+  Future<DatabaseV2Api> getDatabaseApi() async =>
+      DatabaseV2Api(await getCurrentClient());
 
-  Future<SettingV2Api> getSettingApi() async {
-    final client = await getCurrentClient();
-    return SettingV2Api(client);
-  }
+  Future<DockerV2Api> getDockerApi() async =>
+      DockerV2Api(await getCurrentClient());
 
-  Future<SSLV2Api> getSslApi() async {
-    final client = await getCurrentClient();
-    return SSLV2Api(client);
-  }
+  Future<FileV2Api> getFileApi() async => FileV2Api(await getCurrentClient());
 
-  Future<TerminalV2Api> getTerminalApi() async {
-    final client = await getCurrentClient();
-    return TerminalV2Api(client);
-  }
+  Future<FirewallV2Api> getFirewallApi() async =>
+      FirewallV2Api(await getCurrentClient());
 
-  Future<LogsV2Api> getLogsApi() async {
-    final client = await getCurrentClient();
-    return LogsV2Api(client);
-  }
+  Future<HostV2Api> getHostApi() async => HostV2Api(await getCurrentClient());
 
-  Future<UpdateV2Api> getUpdateApi() async {
-    final client = await getCurrentClient();
-    return UpdateV2Api(client);
-  }
+  Future<LogsV2Api> getLogsApi() async => LogsV2Api(await getCurrentClient());
 
-  Future<AuthV2Api> getAuthApi() async {
-    final client = await getCurrentClient();
-    return AuthV2Api(client);
-  }
+  Future<MonitorV2Api> getMonitorApi() async =>
+      MonitorV2Api(await getCurrentClient());
 
-  Future<FileV2Api> getFileApi() async {
-    final client = await getCurrentClient();
-    return FileV2Api(client);
-  }
+  Future<OpenRestyV2Api> getOpenRestyApi() async =>
+      OpenRestyV2Api(await getCurrentClient());
 
-  Future<DockerV2Api> getDockerApi() async {
-    final client = await getCurrentClient();
-    return DockerV2Api(client);
-  }
+  Future<ProcessV2Api> getProcessApi() async =>
+      ProcessV2Api(await getCurrentClient());
 
-  Future<ComposeV2Api> getComposeApi() async {
-    final client = await getCurrentClient();
-    return ComposeV2Api(client);
-  }
+  Future<RuntimeV2Api> getRuntimeApi() async =>
+      RuntimeV2Api(await getCurrentClient());
 
-  /// 移除指定服务器的API客户端
+  Future<SettingV2Api> getSettingApi() async =>
+      SettingV2Api(await getCurrentClient());
+
+  Future<SSLV2Api> getSslApi() async => SSLV2Api(await getCurrentClient());
+
+  Future<SystemGroupV2Api> getSystemGroupApi() async =>
+      SystemGroupV2Api(await getCurrentClient());
+
+  Future<TaskLogV2Api> getTaskLogApi() async =>
+      TaskLogV2Api(await getCurrentClient());
+
+  Future<TerminalV2Api> getTerminalApi() async =>
+      TerminalV2Api(await getCurrentClient());
+
+  Future<UpdateV2Api> getUpdateApi() async =>
+      UpdateV2Api(await getCurrentClient());
+
+  Future<WebsiteV2Api> getWebsiteApi() async =>
+      WebsiteV2Api(await getCurrentClient());
+
   void removeClient(String serverId) {
     _clients.remove(serverId);
     _clientMeta.remove(serverId);
   }
 
-  /// 清除所有API客户端
   void clearAllClients() {
     _clients.clear();
     _clientMeta.clear();
