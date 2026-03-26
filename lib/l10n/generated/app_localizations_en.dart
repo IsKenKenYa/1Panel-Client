@@ -63,6 +63,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonReset => 'Reset';
 
   @override
+  String get commonYes => 'Yes';
+
+  @override
+  String get commonNo => 'No';
+
+  @override
   String get commonComingSoon => 'Coming soon';
 
   @override
@@ -614,6 +620,168 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get serverModuleFirewall => 'Firewall';
+
+  @override
+  String get databaseMysqlTab => 'MySQL';
+
+  @override
+  String get databasePostgresqlTab => 'PostgreSQL';
+
+  @override
+  String get databaseRedisTab => 'Redis';
+
+  @override
+  String get databaseRemoteTab => 'Remote';
+
+  @override
+  String get databaseOverviewTitle => 'Overview';
+
+  @override
+  String get databaseConfigTitle => 'Config File';
+
+  @override
+  String get databaseBaseInfoTitle => 'Base Info';
+
+  @override
+  String get databaseStatusTitle => 'Status';
+
+  @override
+  String get databaseVariablesTitle => 'Variables';
+
+  @override
+  String get databaseScopeLabel => 'Database Scope';
+
+  @override
+  String get databaseEngineLabel => 'Engine';
+
+  @override
+  String get databaseSourceLabel => 'Source';
+
+  @override
+  String get databaseAddressLabel => 'Address';
+
+  @override
+  String get databasePortLabel => 'Port';
+
+  @override
+  String get databaseContainerLabel => 'Container';
+
+  @override
+  String get databaseUsernameLabel => 'Username';
+
+  @override
+  String get databasePasswordLabel => 'Password';
+
+  @override
+  String get databaseRemoteAccessLabel => 'Remote Access';
+
+  @override
+  String get databaseChangePasswordAction => 'Change Password';
+
+  @override
+  String get databaseBindUserAction => 'Bind User';
+
+  @override
+  String get databaseTestConnectionAction => 'Test Connection';
+
+  @override
+  String get databaseRedisConfigTitle => 'Redis Config';
+
+  @override
+  String get databaseRedisTimeoutLabel => 'Timeout';
+
+  @override
+  String get databaseRedisMaxClientsLabel => 'Max Clients';
+
+  @override
+  String get databaseRedisPersistenceTitle => 'Redis Persistence';
+
+  @override
+  String get databaseRedisAppendOnlyLabel => 'Append Only';
+
+  @override
+  String get databaseRedisSaveLabel => 'Save Policy';
+
+  @override
+  String get firewallTabStatus => 'Status';
+
+  @override
+  String get firewallTabRules => 'Rules';
+
+  @override
+  String get firewallTabIps => 'IPs';
+
+  @override
+  String get firewallTabPorts => 'Ports';
+
+  @override
+  String get firewallNameLabel => 'Name';
+
+  @override
+  String get firewallVersionLabel => 'Version';
+
+  @override
+  String get firewallPingLabel => 'Ping';
+
+  @override
+  String get firewallActiveLabel => 'Active';
+
+  @override
+  String get firewallInitLabel => 'Initialized';
+
+  @override
+  String get firewallBoundLabel => 'Bound';
+
+  @override
+  String get firewallProtocolLabel => 'Protocol';
+
+  @override
+  String get firewallAddressLabel => 'Address';
+
+  @override
+  String get firewallStrategyLabel => 'Strategy';
+
+  @override
+  String get firewallPortLabel => 'Port';
+
+  @override
+  String get firewallFamilyLabel => 'Family';
+
+  @override
+  String get firewallSourcePortLabel => 'Source Port';
+
+  @override
+  String get firewallDestinationPortLabel => 'Destination Port';
+
+  @override
+  String get firewallRuleDefaultTitle => 'Rule';
+
+  @override
+  String get firewallUnknownStrategy => 'Unknown';
+
+  @override
+  String get firewallSourceLabel => 'Source';
+
+  @override
+  String get firewallSourceAnywhere => 'Anywhere';
+
+  @override
+  String get firewallSourceAddress => 'Address';
+
+  @override
+  String get firewallStrategyAccept => 'Accept';
+
+  @override
+  String get firewallStrategyDrop => 'Drop';
+
+  @override
+  String get firewallCreatePortRuleAction => 'Create Port Rule';
+
+  @override
+  String get firewallCreateIpRuleAction => 'Create IP Rule';
+
+  @override
+  String get firewallToggleStrategyAction => 'Toggle Strategy';
 
   @override
   String get serverModuleTerminal => 'Terminal';

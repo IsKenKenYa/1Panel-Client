@@ -55,24 +55,38 @@ class TestConfigManager {
   }
 
   String getString(String key, {String defaultValue = ''}) {
+    final envOverride = Platform.environment[key];
+    if (envOverride != null && envOverride.isNotEmpty) {
+      return envOverride;
+    }
     return _config[key] ?? defaultValue;
   }
 
   int getInt(String key, {int defaultValue = 0}) {
+    final envOverride = Platform.environment[key];
+    if (envOverride != null && envOverride.isNotEmpty) {
+      return int.tryParse(envOverride) ?? defaultValue;
+    }
     return int.tryParse(_config[key] ?? '') ?? defaultValue;
   }
 
   bool getBool(String key, {bool defaultValue = false}) {
-    final value = _config[key]?.toLowerCase();
+    final envOverride = Platform.environment[key];
+    final value = (envOverride ?? _config[key])?.toLowerCase();
     return value == 'true' || value == '1' || value == 'yes';
   }
 
   double getDouble(String key, {double defaultValue = 0.0}) {
+    final envOverride = Platform.environment[key];
+    if (envOverride != null && envOverride.isNotEmpty) {
+      return double.tryParse(envOverride) ?? defaultValue;
+    }
     return double.tryParse(_config[key] ?? '') ?? defaultValue;
   }
 
-  List<String> getStringList(String key, {List<String> defaultValue = const []}) {
-    final value = _config[key];
+  List<String> getStringList(String key,
+      {List<String> defaultValue = const []}) {
+    final value = Platform.environment[key] ?? _config[key];
     if (value == null || value.isEmpty) return defaultValue;
     return value.split(',').map((e) => e.trim()).toList();
   }
@@ -89,13 +103,16 @@ class TestConfigManager {
 
     final missingKeys = <String>[];
     for (final key in requiredKeys) {
-      if (!_config.containsKey(key) || _config[key]!.isEmpty || _config[key] == 'your_api_key_here') {
+      if (!_config.containsKey(key) ||
+          _config[key]!.isEmpty ||
+          _config[key] == 'your_api_key_here') {
         missingKeys.add(key);
       }
     }
 
     if (missingKeys.isNotEmpty) {
-      debugPrint('Warning: Missing or invalid configuration for: ${missingKeys.join(', ')}');
+      debugPrint(
+          'Warning: Missing or invalid configuration for: ${missingKeys.join(', ')}');
     }
   }
 }
@@ -111,43 +128,64 @@ class TestEnvironment {
 
   static TestConfigManager get config {
     if (_config == null) {
-      throw StateError('TestEnvironment not initialized. Call TestEnvironment.initialize() first.');
+      throw StateError(
+          'TestEnvironment not initialized. Call TestEnvironment.initialize() first.');
     }
     return _config!;
   }
 
-  static String get baseUrl => config.getString('PANEL_BASE_URL', defaultValue: 'http://localhost:9999');
-  static String get apiKey => runIntegrationTests ? config.getString('PANEL_API_KEY') : '';
-  static String get apiVersion => config.getString('API_VERSION', defaultValue: 'v2');
-  static int get tokenValidityMinutes => config.getInt('TOKEN_VALIDITY_MINUTES', defaultValue: 0);
+  static String get baseUrl =>
+      config.getString('PANEL_BASE_URL', defaultValue: 'http://localhost:9999');
+  static String get apiKey =>
+      runIntegrationTests ? config.getString('PANEL_API_KEY') : '';
+  static String get apiVersion =>
+      config.getString('API_VERSION', defaultValue: 'v2');
+  static int get tokenValidityMinutes =>
+      config.getInt('TOKEN_VALIDITY_MINUTES', defaultValue: 0);
 
-  static String get testDomain => config.getString('TEST_DOMAIN', defaultValue: 'test.example.com');
-  static String get testIp => config.getString('TEST_IP', defaultValue: '127.0.0.1');
-  static String get testEmail => config.getString('TEST_EMAIL', defaultValue: 'test@example.com');
+  static String get testDomain =>
+      config.getString('TEST_DOMAIN', defaultValue: 'test.example.com');
+  static String get testIp =>
+      config.getString('TEST_IP', defaultValue: '127.0.0.1');
+  static String get testEmail =>
+      config.getString('TEST_EMAIL', defaultValue: 'test@example.com');
 
-  static bool get runIntegrationTests => config.getBool('RUN_INTEGRATION_TESTS');
-  static bool get runDestructiveTests => config.getBool('RUN_DESTRUCTIVE_TESTS');
-  static bool get runPerformanceTests => config.getBool('RUN_PERFORMANCE_TESTS');
-  static int get testTimeout => config.getInt('TEST_TIMEOUT', defaultValue: 30000);
+  static bool get runIntegrationTests =>
+      config.getBool('RUN_INTEGRATION_TESTS');
+  static bool get runDestructiveTests =>
+      config.getBool('RUN_DESTRUCTIVE_TESTS');
+  static bool get runPerformanceTests =>
+      config.getBool('RUN_PERFORMANCE_TESTS');
+  static int get testTimeout =>
+      config.getInt('TEST_TIMEOUT', defaultValue: 30000);
 
-  static String get testLogLevel => config.getString('TEST_LOG_LEVEL', defaultValue: 'info');
+  static String get testLogLevel =>
+      config.getString('TEST_LOG_LEVEL', defaultValue: 'info');
   static bool get saveTestLogs => config.getBool('SAVE_TEST_LOGS');
-  static String get testLogPath => config.getString('TEST_LOG_PATH', defaultValue: './test_logs');
+  static String get testLogPath =>
+      config.getString('TEST_LOG_PATH', defaultValue: './test_logs');
 
-  static String get testReportPath => config.getString('TEST_REPORT_PATH', defaultValue: './test_reports');
+  static String get testReportPath =>
+      config.getString('TEST_REPORT_PATH', defaultValue: './test_reports');
   static bool get generateHtmlReport => config.getBool('GENERATE_HTML_REPORT');
   static bool get generateJsonReport => config.getBool('GENERATE_JSON_REPORT');
 
   static String? skipIntegration() {
-    return runIntegrationTests ? null : 'Integration tests disabled (set RUN_INTEGRATION_TESTS=true)';
+    return runIntegrationTests
+        ? null
+        : 'Integration tests disabled (set RUN_INTEGRATION_TESTS=true)';
   }
 
   static String? skipDestructive() {
-    return runDestructiveTests ? null : 'Destructive tests disabled (set RUN_DESTRUCTIVE_TESTS=true)';
+    return runDestructiveTests
+        ? null
+        : 'Destructive tests disabled (set RUN_DESTRUCTIVE_TESTS=true)';
   }
 
   static String? skipPerformance() {
-    return runPerformanceTests ? null : 'Performance tests disabled (set RUN_PERFORMANCE_TESTS=true)';
+    return runPerformanceTests
+        ? null
+        : 'Performance tests disabled (set RUN_PERFORMANCE_TESTS=true)';
   }
 
   static String? skipNoApiKey() {

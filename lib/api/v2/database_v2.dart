@@ -1,63 +1,25 @@
 import 'package:dio/dio.dart';
-import '../../core/network/dio_client.dart';
+
 import '../../core/config/api_constants.dart';
-import '../../data/models/database_models.dart';
+import '../../core/network/dio_client.dart';
 import '../../data/models/common_models.dart';
+import '../../data/models/database_models.dart';
 
 class DatabaseV2Api {
-  final DioClient _client;
-
   DatabaseV2Api(this._client);
 
-  /// 创建数据库
-  ///
-  /// 创建一个新的数据库
-  /// @param request 数据库创建请求
-  /// @return 创建结果
-  Future<Response> createDatabase(DatabaseCreate request) async {
-    return await _client.post(
-      ApiConstants.buildApiPath('/databases'),
-      data: request.toJson(),
-    );
-  }
+  final DioClient _client;
 
-  /// 删除数据库
-  ///
-  /// 删除指定的数据库
-  /// @param request 删除请求
-  /// @return 删除结果
-  Future<Response> deleteDatabase(OperateByID request) async {
-    return await _client.post(
-      ApiConstants.buildApiPath('/databases/del'),
-      data: request.toJson(),
-    );
-  }
-
-  /// 更新数据库
-  ///
-  /// 更新指定的数据库
-  /// @param request 更新请求
-  /// @return 更新结果
-  Future<Response> updateDatabase(DatabaseUpdate request) async {
-    return await _client.post(
-      ApiConstants.buildApiPath('/databases/update'),
-      data: request.toJson(),
-    );
-  }
-
-  /// 搜索数据库
-  ///
-  /// 获取数据库列表，支持分页和搜索
-  /// @param request 搜索请求
-  /// @return 数据库列表
-  Future<Response<PageResult<DatabaseInfo>>> searchDatabases(DatabaseSearch request) async {
-    final response = await _client.post(
-      ApiConstants.buildApiPath('/databases/search'),
+  Future<Response<PageResult<DatabaseInfo>>> searchDatabases(
+    DatabaseSearch request,
+  ) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/databases/db/search'),
       data: request.toJson(),
     );
     return Response(
       data: PageResult.fromJson(
-        response.data as Map<String, dynamic>,
+        _unwrapData(response.data),
         (json) => DatabaseInfo.fromJson(json as Map<String, dynamic>),
       ),
       statusCode: response.statusCode,
@@ -66,64 +28,414 @@ class DatabaseV2Api {
     );
   }
 
-  /// 获取数据库详情
-  ///
-  /// 获取指定数据库的详细信息
-  /// @param id 数据库ID
-  /// @return 数据库详情
-  Future<Response<DatabaseInfo>> getDatabaseDetail(int id) async {
-    final response = await _client.get(
-      '${ApiConstants.buildApiPath('/databases')}/$id',
+  Future<Response<PageResult<Map<String, dynamic>>>> searchMysqlDatabases(
+    DatabaseSearch request, {
+    String? operateNode,
+  }) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      _withNode('/databases/search', operateNode),
+      data: request.toJson(),
+    );
+    return _mapPageResult(response);
+  }
+
+  Future<Response<PageResult<Map<String, dynamic>>>> searchPostgresqlDatabases(
+    DatabaseSearch request, {
+    String? operateNode,
+  }) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      _withNode('/databases/pg/search', operateNode),
+      data: request.toJson(),
+    );
+    return _mapPageResult(response);
+  }
+
+  Future<Response<List<Map<String, dynamic>>>> listDatabases(
+    String type, {
+    String? operateNode,
+  }) async {
+    final response = await _client.get<List<dynamic>>(
+      _withNode('/databases/db/list/$type', operateNode),
+    );
+    return _mapListResponse(response);
+  }
+
+  Future<Response<List<Map<String, dynamic>>>> listDatabaseItems(
+    String type,
+  ) async {
+    final response = await _client.get<List<dynamic>>(
+      ApiConstants.buildApiPath('/databases/db/item/$type'),
+    );
+    return _mapListResponse(response);
+  }
+
+  Future<Response<Map<String, dynamic>>> getRemoteDatabase(String name) async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/databases/db/$name'),
+    );
+    return _mapObjectResponse(response);
+  }
+
+  Future<Response<bool>> checkRemoteDatabase(
+    Map<String, dynamic> request,
+  ) async {
+    final response = await _client.post<dynamic>(
+      ApiConstants.buildApiPath('/databases/db/check'),
+      data: request,
     );
     return Response(
-      data: DatabaseInfo.fromJson(response.data as Map<String, dynamic>),
+      data: _unwrapPrimitive<bool>(response.data) ?? false,
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
     );
   }
 
-  /// 备份数据库
-  ///
-  /// 备份指定的数据库
-  /// @param id 数据库ID
-  /// @param request 备份请求
-  /// @return 备份结果
-  Future<Response> backupDatabase(int id, DatabaseBackup request) async {
-    return await _client.post(
-      '${ApiConstants.buildApiPath('/databases')}/$id/backup',
-      data: request.toJson(),
+  Future<Response<void>> createRemoteDatabase(Map<String, dynamic> request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/databases/db'),
+      data: request,
     );
   }
 
-  /// 恢复数据库
-  ///
-  /// 从备份恢复数据库
-  /// @param id 数据库ID
-  /// @param request 恢复请求
-  /// @return 恢复结果
-  Future<Response> restoreDatabase(int id, DatabaseRestore request) async {
-    return await _client.post(
-      '${ApiConstants.buildApiPath('/databases')}/$id/restore',
-      data: request.toJson(),
+  Future<Response<void>> updateRemoteDatabase(Map<String, dynamic> request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/databases/db/update'),
+      data: request,
     );
   }
 
-  /// 获取数据库备份列表
-  ///
-  /// 获取指定数据库的备份列表
-  /// @param id 数据库ID
-  /// @param request 搜索请求
-  /// @return 备份列表
-  Future<Response<PageResult>> searchDatabaseBackups(int id, RecordSearch request) async {
-    final response = await _client.post(
-      '${ApiConstants.buildApiPath('/databases')}/$id/backups',
-      data: request.toJson(),
+  Future<Response<List<Map<String, dynamic>>>> deleteRemoteDatabaseCheck(
+    int id,
+  ) async {
+    final response = await _client.post<List<dynamic>>(
+      ApiConstants.buildApiPath('/databases/db/del/check'),
+      data: {'id': id},
+    );
+    return _mapListResponse(response);
+  }
+
+  Future<Response<void>> deleteRemoteDatabase(Map<String, dynamic> request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/databases/db/del'),
+      data: request,
+    );
+  }
+
+  Future<Response<Map<String, dynamic>>> loadDatabaseBaseInfo({
+    required String type,
+    required String name,
+  }) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/databases/common/info'),
+      data: {'type': type, 'name': name},
+    );
+    return _mapObjectResponse(response);
+  }
+
+  Future<Response<String>> loadDatabaseConfigFile({
+    required String type,
+    required String name,
+  }) async {
+    final response = await _client.post<dynamic>(
+      ApiConstants.buildApiPath('/databases/common/load/file'),
+      data: {'type': type, 'name': name},
     );
     return Response(
+      data: _unwrapPrimitive<String>(response.data) ?? '',
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<void>> updateDatabaseConfigFile(
+      Map<String, dynamic> request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/databases/common/update/conf'),
+      data: request,
+    );
+  }
+
+  Future<Response<void>> createMysqlDatabase(Map<String, dynamic> request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/databases'),
+      data: request,
+    );
+  }
+
+  Future<Response<void>> bindMysqlUser(Map<String, dynamic> request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/databases/bind'),
+      data: request,
+    );
+  }
+
+  Future<Response<void>> loadMysqlDatabaseFromRemote(
+    Map<String, dynamic> request,
+  ) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/databases/load'),
+      data: request,
+    );
+  }
+
+  Future<Response<void>> updateMysqlAccess(Map<String, dynamic> request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/databases/change/access'),
+      data: request,
+    );
+  }
+
+  Future<Response<void>> updateMysqlPassword(Map<String, dynamic> request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/databases/change/password'),
+      data: request,
+    );
+  }
+
+  Future<Response<void>> updateMysqlDescription(Map<String, dynamic> request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/databases/description/update'),
+      data: request,
+    );
+  }
+
+  Future<Response<Map<String, dynamic>>> loadMysqlVariables({
+    required String type,
+    required String name,
+  }) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/databases/variables'),
+      data: {'type': type, 'name': name},
+    );
+    return _mapObjectResponse(response);
+  }
+
+  Future<Response<void>> updateMysqlVariables(Map<String, dynamic> request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/databases/variables/update'),
+      data: request,
+    );
+  }
+
+  Future<Response<Map<String, dynamic>>> loadMysqlStatus({
+    required String type,
+    required String name,
+  }) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/databases/status'),
+      data: {'type': type, 'name': name},
+    );
+    return _mapObjectResponse(response);
+  }
+
+  Future<Response<bool>> loadRemoteAccess({
+    required String type,
+    required String name,
+  }) async {
+    final response = await _client.post<dynamic>(
+      ApiConstants.buildApiPath('/databases/remote'),
+      data: {'type': type, 'name': name},
+    );
+    return Response(
+      data: _unwrapPrimitive<bool>(response.data) ?? false,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<List<Map<String, dynamic>>>> loadFormatCollations(
+    String database,
+  ) async {
+    final response = await _client.post<List<dynamic>>(
+      ApiConstants.buildApiPath('/databases/format/options'),
+      data: {'name': database},
+    );
+    return _mapListResponse(response);
+  }
+
+  Future<Response<List<dynamic>>> deleteMysqlDatabaseCheck(
+    Map<String, dynamic> request,
+  ) async {
+    final response = await _client.post<List<dynamic>>(
+      ApiConstants.buildApiPath('/databases/del/check'),
+      data: request,
+    );
+    return Response(
+      data: response.data ?? const <dynamic>[],
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<void>> deleteMysqlDatabase(Map<String, dynamic> request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/databases/del'),
+      data: request,
+    );
+  }
+
+  Future<Response<void>> createPostgresqlDatabase(
+    Map<String, dynamic> request,
+  ) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/databases/pg'),
+      data: request,
+    );
+  }
+
+  Future<Response<void>> bindPostgresqlUser(Map<String, dynamic> request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/databases/pg/bind'),
+      data: request,
+    );
+  }
+
+  Future<Response<void>> changePostgresqlPrivileges(
+    Map<String, dynamic> request,
+  ) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/databases/pg/privileges'),
+      data: request,
+    );
+  }
+
+  Future<Response<void>> loadPostgresqlDatabaseFromRemote(
+    String database,
+  ) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/databases/pg/$database/load'),
+    );
+  }
+
+  Future<Response<void>> updatePostgresqlDescription(
+    Map<String, dynamic> request,
+  ) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/databases/pg/description'),
+      data: request,
+    );
+  }
+
+  Future<Response<void>> updatePostgresqlPassword(
+    Map<String, dynamic> request,
+  ) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/databases/pg/password'),
+      data: request,
+    );
+  }
+
+  Future<Response<List<Map<String, dynamic>>>> deletePostgresqlDatabaseCheck(
+    Map<String, dynamic> request,
+  ) async {
+    final response = await _client.post<List<dynamic>>(
+      ApiConstants.buildApiPath('/databases/pg/del/check'),
+      data: request,
+    );
+    return _mapListResponse(response);
+  }
+
+  Future<Response<void>> deletePostgresqlDatabase(
+      Map<String, dynamic> request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/databases/pg/del'),
+      data: request,
+    );
+  }
+
+  Future<Response<Map<String, dynamic>>> loadRedisStatus({
+    required String type,
+    required String name,
+  }) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/databases/redis/status'),
+      data: {'type': type, 'name': name},
+    );
+    return _mapObjectResponse(response);
+  }
+
+  Future<Response<Map<String, dynamic>>> loadRedisConf({
+    required String type,
+    required String name,
+  }) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/databases/redis/conf'),
+      data: {'type': type, 'name': name},
+    );
+    return _mapObjectResponse(response);
+  }
+
+  Future<Response<Map<String, dynamic>>> loadRedisPersistenceConf({
+    required String type,
+    required String name,
+  }) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/databases/redis/persistence/conf'),
+      data: {'type': type, 'name': name},
+    );
+    return _mapObjectResponse(response);
+  }
+
+  Future<Response<bool>> checkRedisCli() async {
+    final response = await _client.get<dynamic>(
+      ApiConstants.buildApiPath('/databases/redis/check'),
+    );
+    return Response(
+      data: _unwrapPrimitive<bool>(response.data) ?? false,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<void>> installRedisCli() {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/databases/redis/install/cli'),
+    );
+  }
+
+  Future<Response<void>> changeRedisPassword(Map<String, dynamic> request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/databases/redis/password'),
+      data: request,
+    );
+  }
+
+  Future<Response<void>> updateRedisPersistenceConf(
+    Map<String, dynamic> request,
+  ) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/databases/redis/persistence/update'),
+      data: request,
+    );
+  }
+
+  Future<Response<void>> updateRedisConf(Map<String, dynamic> request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/databases/redis/conf/update'),
+      data: request,
+    );
+  }
+
+  String _withNode(String path, String? operateNode) {
+    final base = ApiConstants.buildApiPath(path);
+    if (operateNode == null || operateNode.isEmpty) {
+      return base;
+    }
+    return '$base?operateNode=$operateNode';
+  }
+
+  Response<PageResult<Map<String, dynamic>>> _mapPageResult(
+    Response<Map<String, dynamic>> response,
+  ) {
+    return Response(
       data: PageResult.fromJson(
-        response.data as Map<String, dynamic>,
-        (json) => json,
+        _unwrapData(response.data),
+        (json) => Map<String, dynamic>.from(json as Map),
       ),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
@@ -131,140 +443,70 @@ class DatabaseV2Api {
     );
   }
 
-  /// 删除数据库备份
-  ///
-  /// 删除指定的数据库备份
-  /// @param id 数据库ID
-  /// @param request 删除请求
-  /// @return 删除结果
-  Future<Response> deleteDatabaseBackups(int id, OperateByID request) async {
-    return await _client.post(
-      '${ApiConstants.buildApiPath('/databases')}/$id/backups/del',
-      data: request.toJson(),
-    );
-  }
-
-  /// 获取数据库连接信息
-  ///
-  /// 获取指定数据库的连接信息
-  /// @param id 数据库ID
-  /// @return 连接信息
-  Future<Response<DatabaseConn>> getDatabaseConnection(int id) async {
-    final response = await _client.get(
-      '${ApiConstants.buildApiPath('/databases')}/$id/connection',
-    );
+  Response<Map<String, dynamic>> _mapObjectResponse(
+    Response<Map<String, dynamic>> response,
+  ) {
     return Response(
-      data: DatabaseConn.fromJson(response.data as Map<String, dynamic>),
+      data: _unwrapMap(response.data),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
     );
   }
 
-  /// 重置数据库密码
-  ///
-  /// 重置指定数据库的密码
-  /// @param request 重置密码请求
-  /// @return 重置结果
-  Future<Response<DatabaseConn>> resetDatabasePassword(DatabaseResetPassword request) async {
-    final response = await _client.post(
-      '${ApiConstants.buildApiPath('/databases')}/${request.id}/password/reset',
-      data: request.toJson(),
-    );
+  Response<List<Map<String, dynamic>>> _mapListResponse(
+    Response<List<dynamic>> response,
+  ) {
+    final data = response.data ?? const <dynamic>[];
     return Response(
-      data: DatabaseConn.fromJson(response.data as Map<String, dynamic>),
+      data: data
+          .whereType<Map>()
+          .map((item) => Map<String, dynamic>.from(item))
+          .toList(growable: false),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
     );
   }
 
-  /// 获取数据库权限列表
-  ///
-  /// 获取指定数据库的权限列表
-  /// @param id 数据库ID
-  /// @return 权限列表
-  Future<Response<List<Map<String, dynamic>>>> getDatabasePrivileges(int id) async {
-    final response = await _client.get(
-      '${ApiConstants.buildApiPath('/databases')}/$id/privileges',
-    );
-    return Response(
-      data: (response.data as List<dynamic>).cast<Map<String, dynamic>>(),
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
-    );
+  Map<String, dynamic> _unwrapData(Map<String, dynamic>? response) {
+    if (response == null) {
+      return const <String, dynamic>{};
+    }
+    final data = response['data'];
+    if (data is Map<String, dynamic>) {
+      return data;
+    }
+    if (data is Map) {
+      return Map<String, dynamic>.from(data);
+    }
+    return response;
   }
 
-  /// 更新数据库权限
-  ///
-  /// 更新指定数据库的权限
-  /// @param id 数据库ID
-  /// @param privileges 权限信息
-  /// @return 更新结果
-  Future<Response> updateDatabasePrivileges(int id, Map<String, dynamic> privileges) async {
-    return await _client.post(
-      '${ApiConstants.buildApiPath('/databases')}/$id/privileges',
-      data: privileges,
-    );
+  Map<String, dynamic> _unwrapMap(Map<String, dynamic>? response) {
+    if (response == null) {
+      return const <String, dynamic>{};
+    }
+    final data = response['data'];
+    if (data is Map<String, dynamic>) {
+      return data;
+    }
+    if (data is Map) {
+      return Map<String, dynamic>.from(data);
+    }
+    return response;
   }
 
-  /// 测试数据库连接
-  ///
-  /// 测试指定数据库的连接
-  /// @param id 数据库ID
-  /// @return 测试结果
-  Future<Response<bool>> testDatabaseConnection(int id) async {
-    final response = await _client.get(
-      '${ApiConstants.buildApiPath('/databases')}/$id/connection/test',
-    );
-    return Response(
-      data: response.statusCode == 200,
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
-    );
-  }
-
-  /// 检查数据库是否存在
-  ///
-  /// 检查指定名称的数据库是否已存在
-  /// @param name 数据库名称
-  /// @param type 数据库类型
-  /// @return 检查结果
-  Future<Response<bool>> checkDatabaseExists(String name, String type) async {
-    final request = DatabaseSearch(
-      name: name,
-      type: type,
-      page: 1,
-      pageSize: 1,
-    );
-    final response = await searchDatabases(request);
-
-    final databases = response.data?.items ?? [];
-    final exists = databases.any((db) => db.name == name && db.type == type);
-
-    return Response(
-      data: exists,
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
-    );
-  }
-
-  /// 获取数据库类型选项
-  ///
-  /// 获取所有支持的数据库类型选项
-  /// @return 数据库类型列表
-  Future<List<DatabaseType>> getDatabaseTypes() async {
-    return DatabaseType.values;
-  }
-
-  /// 获取数据库状态选项
-  ///
-  /// 获取所有数据库状态选项
-  /// @return 数据库状态列表
-  Future<List<DatabaseStatus>> getDatabaseStatuses() async {
-    return DatabaseStatus.values;
+  T? _unwrapPrimitive<T>(dynamic response) {
+    if (response is T) {
+      return response;
+    }
+    if (response is Map<String, dynamic>) {
+      final data = response['data'];
+      if (data is T) {
+        return data;
+      }
+    }
+    return null;
   }
 }

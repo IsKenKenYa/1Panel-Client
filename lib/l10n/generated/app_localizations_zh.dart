@@ -63,6 +63,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get commonReset => '重置';
 
   @override
+  String get commonYes => '是';
+
+  @override
+  String get commonNo => '否';
+
+  @override
   String get commonComingSoon => '即将支持';
 
   @override
@@ -609,6 +615,168 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get serverModuleFirewall => '防火墙';
+
+  @override
+  String get databaseMysqlTab => 'MySQL';
+
+  @override
+  String get databasePostgresqlTab => 'PostgreSQL';
+
+  @override
+  String get databaseRedisTab => 'Redis';
+
+  @override
+  String get databaseRemoteTab => '远程';
+
+  @override
+  String get databaseOverviewTitle => '概览';
+
+  @override
+  String get databaseConfigTitle => '配置文件';
+
+  @override
+  String get databaseBaseInfoTitle => '基础信息';
+
+  @override
+  String get databaseStatusTitle => '状态';
+
+  @override
+  String get databaseVariablesTitle => '变量';
+
+  @override
+  String get databaseScopeLabel => '数据库范围';
+
+  @override
+  String get databaseEngineLabel => '引擎';
+
+  @override
+  String get databaseSourceLabel => '来源';
+
+  @override
+  String get databaseAddressLabel => '地址';
+
+  @override
+  String get databasePortLabel => '端口';
+
+  @override
+  String get databaseContainerLabel => '容器';
+
+  @override
+  String get databaseUsernameLabel => '用户名';
+
+  @override
+  String get databasePasswordLabel => '密码';
+
+  @override
+  String get databaseRemoteAccessLabel => '远程访问';
+
+  @override
+  String get databaseChangePasswordAction => '修改密码';
+
+  @override
+  String get databaseBindUserAction => '绑定用户';
+
+  @override
+  String get databaseTestConnectionAction => '测试连接';
+
+  @override
+  String get databaseRedisConfigTitle => 'Redis 配置';
+
+  @override
+  String get databaseRedisTimeoutLabel => '超时时间';
+
+  @override
+  String get databaseRedisMaxClientsLabel => '最大客户端数';
+
+  @override
+  String get databaseRedisPersistenceTitle => 'Redis 持久化';
+
+  @override
+  String get databaseRedisAppendOnlyLabel => '仅追加模式';
+
+  @override
+  String get databaseRedisSaveLabel => '保存策略';
+
+  @override
+  String get firewallTabStatus => '状态';
+
+  @override
+  String get firewallTabRules => '规则';
+
+  @override
+  String get firewallTabIps => 'IP';
+
+  @override
+  String get firewallTabPorts => '端口';
+
+  @override
+  String get firewallNameLabel => '名称';
+
+  @override
+  String get firewallVersionLabel => '版本';
+
+  @override
+  String get firewallPingLabel => 'Ping';
+
+  @override
+  String get firewallActiveLabel => '启用';
+
+  @override
+  String get firewallInitLabel => '已初始化';
+
+  @override
+  String get firewallBoundLabel => '已绑定';
+
+  @override
+  String get firewallProtocolLabel => '协议';
+
+  @override
+  String get firewallAddressLabel => '地址';
+
+  @override
+  String get firewallStrategyLabel => '策略';
+
+  @override
+  String get firewallPortLabel => '端口';
+
+  @override
+  String get firewallFamilyLabel => '族';
+
+  @override
+  String get firewallSourcePortLabel => '源端口';
+
+  @override
+  String get firewallDestinationPortLabel => '目标端口';
+
+  @override
+  String get firewallRuleDefaultTitle => '规则';
+
+  @override
+  String get firewallUnknownStrategy => '未知';
+
+  @override
+  String get firewallSourceLabel => '来源';
+
+  @override
+  String get firewallSourceAnywhere => '任意位置';
+
+  @override
+  String get firewallSourceAddress => '指定地址';
+
+  @override
+  String get firewallStrategyAccept => '允许';
+
+  @override
+  String get firewallStrategyDrop => '拒绝';
+
+  @override
+  String get firewallCreatePortRuleAction => '创建端口规则';
+
+  @override
+  String get firewallCreateIpRuleAction => '创建 IP 规则';
+
+  @override
+  String get firewallToggleStrategyAction => '切换策略';
 
   @override
   String get serverModuleTerminal => '终端';

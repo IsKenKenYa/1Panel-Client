@@ -206,6 +206,18 @@ abstract class AppLocalizations {
   /// **'Reset'**
   String get commonReset;
 
+  /// No description provided for @commonYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get commonYes;
+
+  /// No description provided for @commonNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get commonNo;
+
   /// No description provided for @commonComingSoon.
   ///
   /// In en, this message translates to:
@@ -1273,6 +1285,330 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Firewall'**
   String get serverModuleFirewall;
+
+  /// No description provided for @databaseMysqlTab.
+  ///
+  /// In en, this message translates to:
+  /// **'MySQL'**
+  String get databaseMysqlTab;
+
+  /// No description provided for @databasePostgresqlTab.
+  ///
+  /// In en, this message translates to:
+  /// **'PostgreSQL'**
+  String get databasePostgresqlTab;
+
+  /// No description provided for @databaseRedisTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Redis'**
+  String get databaseRedisTab;
+
+  /// No description provided for @databaseRemoteTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote'**
+  String get databaseRemoteTab;
+
+  /// No description provided for @databaseOverviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get databaseOverviewTitle;
+
+  /// No description provided for @databaseConfigTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Config File'**
+  String get databaseConfigTitle;
+
+  /// No description provided for @databaseBaseInfoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Base Info'**
+  String get databaseBaseInfoTitle;
+
+  /// No description provided for @databaseStatusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get databaseStatusTitle;
+
+  /// No description provided for @databaseVariablesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Variables'**
+  String get databaseVariablesTitle;
+
+  /// No description provided for @databaseScopeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Database Scope'**
+  String get databaseScopeLabel;
+
+  /// No description provided for @databaseEngineLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Engine'**
+  String get databaseEngineLabel;
+
+  /// No description provided for @databaseSourceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get databaseSourceLabel;
+
+  /// No description provided for @databaseAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get databaseAddressLabel;
+
+  /// No description provided for @databasePortLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Port'**
+  String get databasePortLabel;
+
+  /// No description provided for @databaseContainerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Container'**
+  String get databaseContainerLabel;
+
+  /// No description provided for @databaseUsernameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get databaseUsernameLabel;
+
+  /// No description provided for @databasePasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get databasePasswordLabel;
+
+  /// No description provided for @databaseRemoteAccessLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote Access'**
+  String get databaseRemoteAccessLabel;
+
+  /// No description provided for @databaseChangePasswordAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Password'**
+  String get databaseChangePasswordAction;
+
+  /// No description provided for @databaseBindUserAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Bind User'**
+  String get databaseBindUserAction;
+
+  /// No description provided for @databaseTestConnectionAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Test Connection'**
+  String get databaseTestConnectionAction;
+
+  /// No description provided for @databaseRedisConfigTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Redis Config'**
+  String get databaseRedisConfigTitle;
+
+  /// No description provided for @databaseRedisTimeoutLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Timeout'**
+  String get databaseRedisTimeoutLabel;
+
+  /// No description provided for @databaseRedisMaxClientsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Clients'**
+  String get databaseRedisMaxClientsLabel;
+
+  /// No description provided for @databaseRedisPersistenceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Redis Persistence'**
+  String get databaseRedisPersistenceTitle;
+
+  /// No description provided for @databaseRedisAppendOnlyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Append Only'**
+  String get databaseRedisAppendOnlyLabel;
+
+  /// No description provided for @databaseRedisSaveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Policy'**
+  String get databaseRedisSaveLabel;
+
+  /// No description provided for @firewallTabStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get firewallTabStatus;
+
+  /// No description provided for @firewallTabRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Rules'**
+  String get firewallTabRules;
+
+  /// No description provided for @firewallTabIps.
+  ///
+  /// In en, this message translates to:
+  /// **'IPs'**
+  String get firewallTabIps;
+
+  /// No description provided for @firewallTabPorts.
+  ///
+  /// In en, this message translates to:
+  /// **'Ports'**
+  String get firewallTabPorts;
+
+  /// No description provided for @firewallNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get firewallNameLabel;
+
+  /// No description provided for @firewallVersionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get firewallVersionLabel;
+
+  /// No description provided for @firewallPingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Ping'**
+  String get firewallPingLabel;
+
+  /// No description provided for @firewallActiveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get firewallActiveLabel;
+
+  /// No description provided for @firewallInitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Initialized'**
+  String get firewallInitLabel;
+
+  /// No description provided for @firewallBoundLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Bound'**
+  String get firewallBoundLabel;
+
+  /// No description provided for @firewallProtocolLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Protocol'**
+  String get firewallProtocolLabel;
+
+  /// No description provided for @firewallAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get firewallAddressLabel;
+
+  /// No description provided for @firewallStrategyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Strategy'**
+  String get firewallStrategyLabel;
+
+  /// No description provided for @firewallPortLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Port'**
+  String get firewallPortLabel;
+
+  /// No description provided for @firewallFamilyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Family'**
+  String get firewallFamilyLabel;
+
+  /// No description provided for @firewallSourcePortLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Source Port'**
+  String get firewallSourcePortLabel;
+
+  /// No description provided for @firewallDestinationPortLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Destination Port'**
+  String get firewallDestinationPortLabel;
+
+  /// No description provided for @firewallRuleDefaultTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule'**
+  String get firewallRuleDefaultTitle;
+
+  /// No description provided for @firewallUnknownStrategy.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get firewallUnknownStrategy;
+
+  /// No description provided for @firewallSourceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get firewallSourceLabel;
+
+  /// No description provided for @firewallSourceAnywhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Anywhere'**
+  String get firewallSourceAnywhere;
+
+  /// No description provided for @firewallSourceAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get firewallSourceAddress;
+
+  /// No description provided for @firewallStrategyAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get firewallStrategyAccept;
+
+  /// No description provided for @firewallStrategyDrop.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop'**
+  String get firewallStrategyDrop;
+
+  /// No description provided for @firewallCreatePortRuleAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Port Rule'**
+  String get firewallCreatePortRuleAction;
+
+  /// No description provided for @firewallCreateIpRuleAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create IP Rule'**
+  String get firewallCreateIpRuleAction;
+
+  /// No description provided for @firewallToggleStrategyAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle Strategy'**
+  String get firewallToggleStrategyAction;
 
   /// No description provided for @serverModuleTerminal.
   ///

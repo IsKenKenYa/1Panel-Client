@@ -4,7 +4,13 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/services/onboarding_service.dart';
 import 'package:onepanel_client/features/onboarding/onboarding_page.dart';
 import 'package:onepanel_client/features/databases/databases_page.dart';
+import 'package:onepanel_client/features/databases/databases_detail_page.dart';
+import 'package:onepanel_client/features/databases/databases_form_page.dart';
+import 'package:onepanel_client/features/databases/databases_remote_page.dart';
+import 'package:onepanel_client/features/databases/databases_redis_page.dart';
+import 'package:onepanel_client/data/models/database_models.dart';
 import 'package:onepanel_client/features/firewall/firewall_page.dart';
+import 'package:onepanel_client/features/firewall/firewall_rule_form_page.dart';
 import 'package:onepanel_client/features/monitoring/monitoring_page.dart';
 import 'package:onepanel_client/features/server/server_detail_page.dart';
 import 'package:onepanel_client/features/server/server_form_page.dart';
@@ -51,7 +57,15 @@ class AppRoutes {
   static const String dashboard = '/dashboard';
   static const String files = '/files';
   static const String databases = '/databases';
+  static const String databaseDetail = '/database-detail';
+  static const String databaseForm = '/database-form';
+  static const String databaseRemote = '/database-remote';
+  static const String databaseRedisConfig = '/database-redis-config';
   static const String firewall = '/firewall';
+  static const String firewallRules = '/firewall-rules';
+  static const String firewallIps = '/firewall-ips';
+  static const String firewallPorts = '/firewall-ports';
+  static const String firewallRuleForm = '/firewall-rule-form';
   static const String terminal = '/terminal';
   static const String monitoring = '/monitoring';
   static const String securityVerification = '/security-verification';
@@ -112,8 +126,54 @@ class AppRouter {
                 ));
       case AppRoutes.databases:
         return MaterialPageRoute(builder: (_) => const DatabasesPage());
+      case AppRoutes.databaseDetail:
+        final arg = settings.arguments;
+        if (arg is DatabaseListItem) {
+          return MaterialPageRoute(
+            builder: (_) => DatabaseDetailPage(item: arg),
+          );
+        }
+        return MaterialPageRoute(builder: (_) => const NotFoundPage());
+      case AppRoutes.databaseForm:
+        final arg = settings.arguments;
+        final scope = arg is Map<String, dynamic>
+            ? _readDatabaseScope(arg['scope'])
+            : DatabaseScope.mysql;
+        return MaterialPageRoute(
+          builder: (_) => DatabaseFormPage(initialScope: scope),
+        );
+      case AppRoutes.databaseRemote:
+        return MaterialPageRoute(builder: (_) => const DatabaseRemotePage());
+      case AppRoutes.databaseRedisConfig:
+        final arg = settings.arguments;
+        if (arg is DatabaseListItem) {
+          return MaterialPageRoute(
+            builder: (_) => DatabaseRedisPage(item: arg),
+          );
+        }
+        return MaterialPageRoute(builder: (_) => const NotFoundPage());
       case AppRoutes.firewall:
         return MaterialPageRoute(builder: (_) => const FirewallPage());
+      case AppRoutes.firewallRules:
+        return MaterialPageRoute(
+          builder: (_) => const FirewallPage(initialTab: 1),
+        );
+      case AppRoutes.firewallIps:
+        return MaterialPageRoute(
+          builder: (_) => const FirewallPage(initialTab: 2),
+        );
+      case AppRoutes.firewallPorts:
+        return MaterialPageRoute(
+          builder: (_) => const FirewallPage(initialTab: 3),
+        );
+      case AppRoutes.firewallRuleForm:
+        final arg = settings.arguments;
+        if (arg is FirewallRuleFormArguments) {
+          return MaterialPageRoute(
+            builder: (_) => FirewallRuleFormPage(arguments: arg),
+          );
+        }
+        return MaterialPageRoute(builder: (_) => const NotFoundPage());
       case AppRoutes.terminal:
         return MaterialPageRoute(builder: (_) => const TerminalPage());
       case AppRoutes.monitoring:
@@ -356,6 +416,16 @@ class AppRouter {
     }
 
     return null;
+  }
+
+  static DatabaseScope _readDatabaseScope(Object? value) {
+    if (value is String) {
+      return DatabaseScope.values.firstWhere(
+        (scope) => scope.value == value,
+        orElse: () => DatabaseScope.mysql,
+      );
+    }
+    return DatabaseScope.mysql;
   }
 }
 

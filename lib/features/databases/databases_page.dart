@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
-import 'package:onepanel_client/core/network/api_client_manager.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/data/models/database_models.dart';
+import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
+import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/shared/widgets/app_card.dart';
+
+import 'databases_provider.dart';
 
 class DatabasesPage extends StatefulWidget {
   const DatabasesPage({super.key});
@@ -12,219 +18,215 @@ class DatabasesPage extends StatefulWidget {
   State<DatabasesPage> createState() => _DatabasesPageState();
 }
 
-class _DatabasesPageState extends State<DatabasesPage> {
-  bool _loading = false;
-  String? _error;
-  List<DatabaseInfo> _items = const [];
+class _DatabasesPageState extends State<DatabasesPage>
+    with SingleTickerProviderStateMixin {
+  late final TabController _tabController;
+
+  static const _scopes = <DatabaseScope>[
+    DatabaseScope.mysql,
+    DatabaseScope.postgresql,
+    DatabaseScope.redis,
+    DatabaseScope.remote,
+  ];
 
   @override
   void initState() {
     super.initState();
-    _load();
+    _tabController = TabController(length: _scopes.length, vsync: this);
   }
 
-  Future<void> _load() async {
-    setState(() {
-      _loading = true;
-      _error = null;
-    });
-
-    try {
-      final api = await ApiClientManager.instance.getDatabaseApi();
-      final response = await api.searchDatabases(const DatabaseSearch(page: 1, pageSize: 50));
-      setState(() {
-        _items = response.data?.items ?? [];
-      });
-    } catch (e) {
-      setState(() {
-        _error = e.toString();
-      });
-    } finally {
-      if (mounted) {
-        setState(() {
-          _loading = false;
-        });
-      }
-    }
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.serverModuleDatabases),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loading ? null : _load,
-            tooltip: l10n.commonRefresh,
-          ),
+    final serverId = context.watch<CurrentServerController>().currentServerId;
+    return ServerAwarePageScaffold(
+      title: l10n.serverModuleDatabases,
+      bottom: TabBar(
+        controller: _tabController,
+        isScrollable: true,
+        tabs: [
+          Tab(text: l10n.databaseMysqlTab),
+          Tab(text: l10n.databasePostgresqlTab),
+          Tab(text: l10n.databaseRedisTab),
+          Tab(text: l10n.databaseRemoteTab),
         ],
       ),
-      body: Padding(
-        padding: AppDesignTokens.pagePadding,
-        child: _buildBody(context),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          for (final scope in _scopes)
+            KeyedSubtree(
+              key: ValueKey('${scope.value}:${serverId ?? 'none'}'),
+              child: _DatabaseScopeTab(scope: scope),
+            ),
+        ],
       ),
     );
   }
+}
 
-  Widget _buildBody(BuildContext context) {
+class _DatabaseScopeTab extends StatelessWidget {
+  const _DatabaseScopeTab({required this.scope});
+
+  final DatabaseScope scope;
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => DatabasesProvider(scope: scope)..load(),
+      child: _DatabaseScopeTabView(scope: scope),
+    );
+  }
+}
+
+class _DatabaseScopeTabView extends StatelessWidget {
+  const _DatabaseScopeTabView({required this.scope});
+
+  final DatabaseScope scope;
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = context.watch<DatabasesProvider>();
     final l10n = context.l10n;
 
-    if (_error != null && _items.isEmpty) {
-      return _ErrorView(
-        title: l10n.commonLoadFailedTitle,
-        error: _error!,
-        onRetry: _load,
+    if (provider.state.isLoading && provider.state.items.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (provider.state.error != null && provider.state.items.isEmpty) {
+      return _DatabaseErrorState(
+        error: provider.state.error!,
+        onRetry: provider.refresh,
       );
     }
 
-    if (_loading && _items.isEmpty) {
-      return const _LoadingView();
-    }
-
-    return RefreshIndicator(
-      onRefresh: _load,
-      child: _items.isEmpty
-          ? ListView(
-              children: [
-                const SizedBox(height: AppDesignTokens.spacingXl),
-                _EmptyView(title: l10n.commonEmpty),
-              ],
-            )
-          : ListView.separated(
-              itemCount: _items.length,
-              separatorBuilder: (_, __) => const SizedBox(height: AppDesignTokens.spacingSm),
-              itemBuilder: (context, index) {
-                final item = _items[index];
-                return AppCard(
-                  title: item.name,
-                  subtitle: _buildDatabaseSubtitle(item),
-                  child: _buildDatabaseDetail(item),
-                );
-              },
-            ),
+    return Column(
+      children: [
+        Padding(
+          padding: AppDesignTokens.pagePadding,
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: l10n.commonSearch,
+                    prefixIcon: const Icon(Icons.search),
+                  ),
+                  onSubmitted: (value) => provider.load(query: value),
+                ),
+              ),
+              const SizedBox(width: AppDesignTokens.spacingSm),
+              IconButton(
+                onPressed: provider.refresh,
+                tooltip: l10n.commonRefresh,
+                icon: const Icon(Icons.refresh),
+              ),
+              IconButton(
+                onPressed: () => Navigator.pushNamed(
+                  context,
+                  AppRoutes.databaseForm,
+                  arguments: {'scope': scope.value},
+                ),
+                tooltip: l10n.commonCreate,
+                icon: const Icon(Icons.add),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: RefreshIndicator(
+            onRefresh: provider.refresh,
+            child: provider.state.items.isEmpty
+                ? ListView(
+                    children: [
+                      const SizedBox(height: AppDesignTokens.spacingXl),
+                      Center(child: Text(l10n.commonEmpty)),
+                    ],
+                  )
+                : ListView.separated(
+                    padding: AppDesignTokens.pagePadding,
+                    itemCount: provider.state.items.length,
+                    separatorBuilder: (_, __) =>
+                        const SizedBox(height: AppDesignTokens.spacingSm),
+                    itemBuilder: (context, index) {
+                      final item = provider.state.items[index];
+                      return AppCard(
+                        title: item.name,
+                        subtitle: Text(_subtitle(item)),
+                        child: Text(_detail(item)),
+                        onTap: () => Navigator.pushNamed(
+                          context,
+                          item.scope == DatabaseScope.redis
+                              ? AppRoutes.databaseRedisConfig
+                              : AppRoutes.databaseDetail,
+                          arguments: item,
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ),
+      ],
     );
   }
 
-  Widget? _buildDatabaseSubtitle(DatabaseInfo item) {
+  String _subtitle(DatabaseListItem item) {
+    final parts = <String>[item.engine];
+    if (item.version?.isNotEmpty == true) {
+      parts.add(item.version!);
+    }
+    if (item.status?.isNotEmpty == true) {
+      parts.add(item.status!);
+    }
+    return parts.join(' · ');
+  }
+
+  String _detail(DatabaseListItem item) {
     final parts = <String>[];
-    if (item.type.isNotEmpty) {
-      parts.add(item.type);
+    if (item.address?.isNotEmpty == true) {
+      parts.add(
+          item.port != null ? '${item.address}:${item.port}' : item.address!);
     }
-    if (item.status.isNotEmpty) {
-      parts.add(item.status);
+    if (item.username?.isNotEmpty == true) {
+      parts.add(item.username!);
     }
-    if (item.version.isNotEmpty) {
-      parts.add(item.version);
+    if (item.description?.isNotEmpty == true) {
+      parts.add(item.description!);
     }
-    if (parts.isEmpty) {
-      return null;
-    }
-    return Text(parts.join(' · '));
-  }
-
-  Widget? _buildDatabaseDetail(DatabaseInfo item) {
-    final parts = <String>[];
-    final host = item.host;
-    if (host != null && host.isNotEmpty) {
-      final hostLabel = item.port != null ? '$host:${item.port}' : host;
-      parts.add(hostLabel);
-    }
-    final username = item.username;
-    if (username != null && username.isNotEmpty) {
-      parts.add(username);
-    }
-    final remark = item.remark;
-    if (remark != null && remark.isNotEmpty) {
-      parts.add(remark);
-    }
-    if (parts.isEmpty) {
-      return null;
-    }
-    return Text(parts.join(' · '));
+    return parts.isEmpty ? '-' : parts.join(' · ');
   }
 }
 
-class _LoadingView extends StatelessWidget {
-  const _LoadingView();
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const CircularProgressIndicator(),
-          const SizedBox(height: AppDesignTokens.spacingMd),
-          Text(l10n.commonLoading),
-        ],
-      ),
-    );
-  }
-}
-
-class _EmptyView extends StatelessWidget {
-  const _EmptyView({
-    required this.title,
-  });
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.inbox_outlined, size: 48),
-          const SizedBox(height: AppDesignTokens.spacingMd),
-          Text(title),
-        ],
-      ),
-    );
-  }
-}
-
-class _ErrorView extends StatelessWidget {
-  const _ErrorView({
-    required this.title,
+class _DatabaseErrorState extends StatelessWidget {
+  const _DatabaseErrorState({
     required this.error,
     required this.onRetry,
   });
 
-  final String title;
   final String error;
-  final VoidCallback onRetry;
+  final Future<void> Function() onRetry;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppDesignTokens.spacingXl),
+        padding: const EdgeInsets.all(AppDesignTokens.spacingLg),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, size: 64),
+            const Icon(Icons.error_outline, size: 56),
             const SizedBox(height: AppDesignTokens.spacingMd),
-            Text(
-              title,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: AppDesignTokens.spacingSm),
-            Text(
-              error,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppDesignTokens.spacingLg),
-            FilledButton.icon(
-              onPressed: onRetry,
-              icon: const Icon(Icons.refresh),
-              label: Text(l10n.commonRetry),
+            Text(error, textAlign: TextAlign.center),
+            const SizedBox(height: AppDesignTokens.spacingMd),
+            FilledButton(
+              onPressed: () => onRetry(),
+              child: Text(context.l10n.commonRetry),
             ),
           ],
         ),
