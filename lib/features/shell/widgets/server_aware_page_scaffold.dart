@@ -48,7 +48,7 @@ class ServerAwarePageScaffold extends StatelessWidget {
                   ),
             title: Text(title),
             actions: [
-              ...actions,
+              if (!showMissingServer) ...actions,
               if (requireServer)
                 ServerSwitcherAction(onChanged: onServerChanged),
             ],

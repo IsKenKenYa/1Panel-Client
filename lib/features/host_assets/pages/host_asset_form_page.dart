@@ -73,6 +73,7 @@ class _HostAssetFormPageState extends State<HostAssetFormPage> {
           title: provider.isEditing
               ? l10n.hostAssetsEditTitle
               : l10n.hostAssetsCreateTitle,
+          onServerChanged: () => context.read<HostAssetFormProvider>().initialize(widget.args),
           body: AsyncStatePageBodyWidget(
             isLoading: provider.isLoading,
             errorMessage: provider.errorMessage,

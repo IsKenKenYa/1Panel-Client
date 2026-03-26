@@ -46,6 +46,7 @@ import 'package:onepanel_client/features/host_assets/providers/host_asset_form_p
 import 'package:onepanel_client/features/host_assets/providers/host_assets_provider.dart';
 import 'package:onepanel_client/features/operations_center/pages/operations_center_page.dart';
 import 'package:onepanel_client/features/operations_center/pages/stage_one_module_placeholder_page.dart';
+import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:provider/provider.dart';
 
 import 'package:onepanel_client/features/containers/container_detail_page.dart';
@@ -350,12 +351,21 @@ class AppRouter {
       case AppRoutes.commandForm:
         return MaterialPageRoute(
           builder: (_) => ChangeNotifierProvider<CommandFormProvider>(
-            create: (_) => CommandFormProvider()
-              ..initialize(
-                CommandFormArgs(
-                  initialValue: settings.arguments as CommandInfo?,
-                ),
-              ),
+            create: (context) {
+              final provider = CommandFormProvider();
+              final currentServer = Provider.of<CurrentServerController?>(
+                context,
+                listen: false,
+              );
+              if (currentServer?.hasServer ?? false) {
+                provider.initialize(
+                  CommandFormArgs(
+                    initialValue: settings.arguments as CommandInfo?,
+                  ),
+                );
+              }
+              return provider;
+            },
             child: CommandFormPage(
               args: CommandFormArgs(
                 initialValue: settings.arguments as CommandInfo?,
@@ -373,12 +383,21 @@ class AppRouter {
       case AppRoutes.hostAssetForm:
         return MaterialPageRoute(
           builder: (_) => ChangeNotifierProvider<HostAssetFormProvider>(
-            create: (_) => HostAssetFormProvider()
-              ..initialize(
-                HostAssetFormArgs(
-                  initialValue: settings.arguments as HostInfo?,
-                ),
-              ),
+            create: (context) {
+              final provider = HostAssetFormProvider();
+              final currentServer = Provider.of<CurrentServerController?>(
+                context,
+                listen: false,
+              );
+              if (currentServer?.hasServer ?? false) {
+                provider.initialize(
+                  HostAssetFormArgs(
+                    initialValue: settings.arguments as HostInfo?,
+                  ),
+                );
+              }
+              return provider;
+            },
             child: HostAssetFormPage(
               args: HostAssetFormArgs(
                 initialValue: settings.arguments as HostInfo?,

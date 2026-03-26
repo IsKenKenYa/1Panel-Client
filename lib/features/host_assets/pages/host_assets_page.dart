@@ -5,6 +5,7 @@ import 'package:onepanel_client/data/models/host_models.dart';
 import 'package:onepanel_client/features/group/widgets/group_selector_sheet_widget.dart';
 import 'package:onepanel_client/features/host_assets/providers/host_assets_provider.dart';
 import 'package:onepanel_client/features/host_assets/widgets/host_asset_card_widget.dart';
+import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
@@ -25,6 +26,7 @@ class _HostAssetsPageState extends State<HostAssetsPage> {
     super.initState();
     _searchController = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !context.read<CurrentServerController>().hasServer) return;
       context.read<HostAssetsProvider>().load();
     });
   }
@@ -43,6 +45,7 @@ class _HostAssetsPageState extends State<HostAssetsPage> {
         final selectionMode = provider.selectedIds.isNotEmpty;
         return ServerAwarePageScaffold(
           title: l10n.operationsHostAssetsTitle,
+          onServerChanged: () => context.read<HostAssetsProvider>().load(forceRefresh: true),
           actions: <Widget>[
             if (selectionMode)
               IconButton(

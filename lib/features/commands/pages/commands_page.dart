@@ -11,6 +11,7 @@ import 'package:onepanel_client/features/commands/widgets/command_card_widget.da
 import 'package:onepanel_client/features/commands/widgets/command_import_preview_sheet_widget.dart';
 import 'package:onepanel_client/features/commands/widgets/commands_page_header_widget.dart';
 import 'package:onepanel_client/features/group/widgets/group_selector_sheet_widget.dart';
+import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
@@ -31,6 +32,7 @@ class _CommandsPageState extends State<CommandsPage> {
     super.initState();
     _searchController = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !context.read<CurrentServerController>().hasServer) return;
       context.read<CommandsProvider>().load();
     });
   }
@@ -49,6 +51,7 @@ class _CommandsPageState extends State<CommandsPage> {
         final selectionMode = provider.hasSelection;
         return ServerAwarePageScaffold(
           title: l10n.operationsCommandsTitle,
+          onServerChanged: () => context.read<CommandsProvider>().load(forceRefresh: true),
           actions: <Widget>[
             if (selectionMode)
               IconButton(
@@ -74,9 +77,7 @@ class _CommandsPageState extends State<CommandsPage> {
               tooltip: l10n.commandsGroupFilterAction,
             ),
             IconButton(
-              onPressed: provider.isLoading
-                  ? null
-                  : () => provider.load(forceRefresh: true),
+              onPressed: provider.isLoading ? null : () => provider.load(forceRefresh: true),
               icon: const Icon(Icons.refresh),
               tooltip: l10n.commonRefresh,
             ),
@@ -159,9 +160,7 @@ class _CommandsPageState extends State<CommandsPage> {
       (group) => group.id == provider.selectedGroupId,
       orElse: () => provider.groups.first,
     );
-    return match.name?.trim().isNotEmpty == true
-        ? match.name!
-        : context.l10n.operationsGroupDefaultLabel;
+    return match.name?.trim().isNotEmpty == true ? match.name! : context.l10n.operationsGroupDefaultLabel;
   }
 
   String _commandGroupLabel(CommandInfo item, dynamic l10n) {
@@ -174,9 +173,7 @@ class _CommandsPageState extends State<CommandsPage> {
   Future<void> _copyCommand(CommandInfo item) async {
     await Clipboard.setData(ClipboardData(text: item.command ?? ''));
     if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(context.l10n.commonCopySuccess)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.l10n.commonCopySuccess)));
   }
 
   Future<void> _pickImportFile() async {

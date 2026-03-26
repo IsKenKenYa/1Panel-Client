@@ -23,13 +23,13 @@ class HostAssetFormConnectionSectionWidget extends StatelessWidget {
     final String label;
     if (isVerified) {
       borderColor = colorScheme.primary;
-      label = 'Connection verified';
+      label = l10n.hostAssetsConnectionVerified;
     } else if (testMessage?.isNotEmpty == true) {
       borderColor = colorScheme.error;
       label = testMessage!;
     } else {
       borderColor = colorScheme.outlineVariant;
-      label = 'Run a connection test before saving';
+      label = l10n.hostAssetsConnectionNeedsTest;
     }
 
     return Container(

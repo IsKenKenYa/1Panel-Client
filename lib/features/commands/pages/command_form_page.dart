@@ -49,6 +49,7 @@ class _CommandFormPageState extends State<CommandFormPage> {
           title: provider.isEditing
               ? l10n.commandsEditTitle
               : l10n.commandsCreateTitle,
+          onServerChanged: () => context.read<CommandFormProvider>().initialize(widget.args),
           body: AsyncStatePageBodyWidget(
             isLoading: provider.isLoading,
             errorMessage: provider.errorMessage,

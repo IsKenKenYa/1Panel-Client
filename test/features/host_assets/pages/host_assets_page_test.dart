@@ -33,6 +33,8 @@ class _FakeCurrentServerController extends CurrentServerController {
   String? get currentServerId => _config.id;
 }
 
+class _NoServerCurrentServerController extends CurrentServerController {}
+
 void main() {
   setUpAll(() {
     registerFallbackValue(const HostSearchRequest());
@@ -87,5 +89,33 @@ void main() {
 
     expect(find.text('edge-01'), findsOneWidget);
     expect(find.byType(FloatingActionButton), findsOneWidget);
+  });
+
+  testWidgets('HostAssetsPage does not load when no server is active',
+      (tester) async {
+    final service = _MockHostAssetService();
+
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<CurrentServerController>.value(
+            value: _NoServerCurrentServerController(),
+          ),
+          ChangeNotifierProvider<HostAssetsProvider>(
+            create: (_) => HostAssetsProvider(service: service),
+          ),
+        ],
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('en'),
+          home: const HostAssetsPage(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    verifyNever(() => service.loadGroups(forceRefresh: any(named: 'forceRefresh')));
+    verifyNever(() => service.searchHosts(any()));
   });
 }

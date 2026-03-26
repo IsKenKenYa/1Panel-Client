@@ -32,6 +32,8 @@ class _FakeCurrentServerController extends CurrentServerController {
   String? get currentServerId => _config.id;
 }
 
+class _NoServerCurrentServerController extends CurrentServerController {}
+
 void main() {
   setUpAll(() {
     registerFallbackValue(const CommandSearchRequest());
@@ -92,5 +94,33 @@ void main() {
 
     expect(find.text('Deploy'), findsOneWidget);
     expect(find.byType(FloatingActionButton), findsOneWidget);
+  });
+
+  testWidgets('CommandsPage does not load when no server is active',
+      (tester) async {
+    final service = _MockCommandService();
+
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<CurrentServerController>.value(
+            value: _NoServerCurrentServerController(),
+          ),
+          ChangeNotifierProvider<CommandsProvider>(
+            create: (_) => CommandsProvider(service: service),
+          ),
+        ],
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('en'),
+          home: const CommandsPage(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    verifyNever(() => service.loadGroups(forceRefresh: any(named: 'forceRefresh')));
+    verifyNever(() => service.searchCommands(any()));
   });
 }
