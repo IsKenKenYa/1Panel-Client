@@ -43,35 +43,29 @@ class ThemeSettingsPage extends StatelessWidget {
       body: ListView(
         children: [
           _buildSectionHeader(context, l10n.settingsTheme),
-          RadioListTile<ThemeMode>(
-            title: Text(l10n.themeSystem),
-            value: ThemeMode.system,
+          RadioGroup<ThemeMode>(
             groupValue: themeController.themeMode,
             onChanged: (value) {
               if (value != null) {
                 themeController.updateThemeMode(value);
               }
             },
-          ),
-          RadioListTile<ThemeMode>(
-            title: Text(l10n.themeLight),
-            value: ThemeMode.light,
-            groupValue: themeController.themeMode,
-            onChanged: (value) {
-              if (value != null) {
-                themeController.updateThemeMode(value);
-              }
-            },
-          ),
-          RadioListTile<ThemeMode>(
-            title: Text(l10n.themeDark),
-            value: ThemeMode.dark,
-            groupValue: themeController.themeMode,
-            onChanged: (value) {
-              if (value != null) {
-                themeController.updateThemeMode(value);
-              }
-            },
+            child: Column(
+              children: [
+                RadioListTile<ThemeMode>(
+                  title: Text(l10n.themeSystem),
+                  value: ThemeMode.system,
+                ),
+                RadioListTile<ThemeMode>(
+                  title: Text(l10n.themeLight),
+                  value: ThemeMode.light,
+                ),
+                RadioListTile<ThemeMode>(
+                  title: Text(l10n.themeDark),
+                  value: ThemeMode.dark,
+                ),
+              ],
+            ),
           ),
           const Divider(),
           SwitchListTile(
@@ -105,7 +99,8 @@ class ThemeSettingsPage extends StatelessWidget {
               spacing: AppDesignTokens.spacingMd,
               runSpacing: AppDesignTokens.spacingMd,
               children: _presetColors.map((color) {
-                final isSelected = themeController.seedColor.value == color.value;
+                final isSelected =
+                    themeController.seedColor.toARGB32() == color.toARGB32();
                 return GestureDetector(
                   onTap: () {
                     themeController.updateSeedColor(color);
@@ -125,7 +120,9 @@ class ThemeSettingsPage extends StatelessWidget {
                       boxShadow: [
                         if (isSelected)
                           BoxShadow(
-                            color: theme.colorScheme.shadow.withOpacity(0.2),
+                            color: theme.colorScheme.shadow.withValues(
+                              alpha: 0.2,
+                            ),
                             blurRadius: 4,
                             offset: const Offset(0, 2),
                           ),

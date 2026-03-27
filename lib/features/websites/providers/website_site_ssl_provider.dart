@@ -46,6 +46,7 @@ class WebsiteSiteSslProvider extends ChangeNotifier {
     error = null;
     notifyListeners();
     try {
+      await _snapshotStore.ensureInitialized();
       await _ensureService();
       final results = await Future.wait<dynamic>([
         _service!.getHttpsConfig(websiteId),

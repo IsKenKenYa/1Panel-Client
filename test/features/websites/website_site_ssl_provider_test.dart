@@ -3,6 +3,7 @@ import 'package:onepanel_client/data/models/ssl_models.dart';
 import 'package:onepanel_client/features/websites/providers/website_site_ssl_provider.dart';
 import 'package:onepanel_client/features/websites/services/website_certificate_service.dart';
 import 'package:onepanel_client/shared/security_gateway/security_gateway_snapshot_store.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class _FakeWebsiteCertificateService extends WebsiteCertificateService {
   _FakeWebsiteCertificateService({
@@ -61,7 +62,8 @@ class _FakeWebsiteCertificateService extends WebsiteCertificateService {
 
 void main() {
   setUp(() {
-    SecurityGatewaySnapshotStore.instance.clear();
+    SharedPreferences.setMockInitialValues(<String, Object>{});
+    SecurityGatewaySnapshotStore.instance.resetForTest();
   });
 
   test('WebsiteSiteSslProvider updates strategy and stores rollback snapshot',

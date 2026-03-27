@@ -4,7 +4,9 @@ import 'package:onepanel_client/features/openresty/pages/openresty_center_page.d
 import 'package:onepanel_client/features/openresty/providers/openresty_provider.dart';
 import 'package:onepanel_client/features/openresty/services/openresty_service.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
+import 'package:onepanel_client/shared/security_gateway/security_gateway_snapshot_store.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class _FakeOpenRestyService extends OpenRestyService {
   @override
@@ -27,6 +29,11 @@ Widget _wrapTestApp(Widget child) {
 }
 
 void main() {
+  setUp(() {
+    SharedPreferences.setMockInitialValues(<String, Object>{});
+    SecurityGatewaySnapshotStore.instance.resetForTest();
+  });
+
   testWidgets(
       'OpenResty center renders five cards, risk banner, and diff preview entry',
       (tester) async {

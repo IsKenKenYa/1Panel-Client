@@ -556,6 +556,66 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get websitesSslExpirationViewTitle => '到期视图';
+
+  @override
+  String websitesSslFilterAllCount(int count) {
+    return '全部（$count）';
+  }
+
+  @override
+  String websitesSslFilterExpiredCount(int count) {
+    return '已过期（$count）';
+  }
+
+  @override
+  String websitesSslFilterWithin7DaysCount(int count) {
+    return '7 天内到期（$count）';
+  }
+
+  @override
+  String websitesSslFilterWithin30DaysCount(int count) {
+    return '30 天内到期（$count）';
+  }
+
+  @override
+  String websitesSslAffectedWebsitesCount(int count) {
+    return '受影响网站：$count';
+  }
+
+  @override
+  String websitesSslAffectedWebsitesDomains(String domains) {
+    return '受影响域名：$domains';
+  }
+
+  @override
+  String get websitesSslImpactHintApply => '立即将该证书应用到已绑定网站吗？';
+
+  @override
+  String get websitesSslImpactWarningHigh => '该操作会影响多个网站，请先确认维护窗口。';
+
+  @override
+  String get websitesSslNoAffectedWebsites => '暂无绑定网站。';
+
+  @override
+  String get websitesSslOpenBoundSiteAction => '打开绑定站点';
+
+  @override
+  String get websitesSslGroupAll => '全部证书';
+
+  @override
+  String get websitesSslGroupExpired => '已过期';
+
+  @override
+  String get websitesSslGroupWithin7Days => '7 天内到期';
+
+  @override
+  String get websitesSslGroupWithin30Days => '30 天内到期';
+
+  @override
+  String get websitesSslGroupHealthy => '健康';
+
+  @override
   String get openrestyPageTitle => 'OpenResty';
 
   @override
@@ -2009,6 +2069,140 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get sslSettingsKey => '私钥内容';
+
+  @override
+  String get panelTlsTitle => '面板 TLS';
+
+  @override
+  String get panelTlsOverviewTitle => '概览';
+
+  @override
+  String get panelTlsCertificateTitle => '证书';
+
+  @override
+  String get panelTlsRiskTitle => '风险';
+
+  @override
+  String get panelTlsHistoryTitle => '历史';
+
+  @override
+  String get panelTlsUploadHint => '上传新证书会立即替换当前面板 TLS 证书包。';
+
+  @override
+  String get panelTlsIssuerLabel => '签发者';
+
+  @override
+  String get panelTlsCertificatePathLabel => '证书路径';
+
+  @override
+  String get panelTlsKeyPathLabel => '私钥路径';
+
+  @override
+  String get panelTlsSerialNumberLabel => '序列号';
+
+  @override
+  String get panelTlsLastUpdatedLabel => '最近更新时间';
+
+  @override
+  String get panelTlsNoRecentActions => '暂无最近本地操作。';
+
+  @override
+  String get panelTlsUploadDialogTitle => '上传面板证书';
+
+  @override
+  String get panelTlsCertificatePemLabel => '证书 PEM';
+
+  @override
+  String get panelTlsPrivateKeyPemLabel => '私钥 PEM';
+
+  @override
+  String get panelTlsApplyUpdateTitle => '应用证书更新';
+
+  @override
+  String get panelTlsApplyUpdateMessage =>
+      '该操作会替换当前面板 TLS 证书，并可能在网关重载前短暂影响已连接会话。';
+
+  @override
+  String get panelTlsDownloadDialogTitle => '下载证书包';
+
+  @override
+  String get panelTlsDownloadDialogMessage => '下载仅用于备份或外部校验，请妥善保管导出的私钥。';
+
+  @override
+  String get panelTlsContinueAction => '继续';
+
+  @override
+  String panelTlsDownloadSuccess(int bytes) {
+    return '证书包已下载（$bytes 字节）';
+  }
+
+  @override
+  String get panelTlsHealthHealthy => '健康';
+
+  @override
+  String get panelTlsHealthExpiringSoon => '即将到期';
+
+  @override
+  String get panelTlsHealthExpired => '已过期';
+
+  @override
+  String get panelTlsHealthUnknown => '未知';
+
+  @override
+  String get panelTlsRiskUnknownTitle => '证书到期时间未知';
+
+  @override
+  String get panelTlsRiskUnknownMessage => '无法解析面板证书的到期时间。';
+
+  @override
+  String get panelTlsRiskExpiredTitle => '证书已过期';
+
+  @override
+  String get panelTlsRiskExpiredMessage => '面板 TLS 证书已过期，请立即更换。';
+
+  @override
+  String get panelTlsRiskExpiringSoonTitle => '证书即将到期';
+
+  @override
+  String panelTlsRiskExpiringSoonMessage(int days) {
+    return '面板 TLS 证书将在 $days 天后到期。';
+  }
+
+  @override
+  String get panelTlsRiskSelfSignedTitle => '自签名证书';
+
+  @override
+  String get panelTlsRiskSelfSignedMessage => '自签名证书可能触发浏览器信任告警。';
+
+  @override
+  String get panelTlsValidationDomainRequired => '域名不能为空。';
+
+  @override
+  String get panelTlsValidationCertificateRequired => '证书内容不能为空。';
+
+  @override
+  String get panelTlsValidationCertificatePemRequired => '证书内容必须包含 PEM 证书块。';
+
+  @override
+  String get panelTlsValidationPrivateKeyRequired => '私钥内容不能为空。';
+
+  @override
+  String get panelTlsValidationPrivateKeyPemRequired => '私钥内容必须包含 PEM 私钥块。';
+
+  @override
+  String panelTlsHistoryLoaded(String domain) {
+    return '已加载 $domain 的面板 TLS 状态';
+  }
+
+  @override
+  String panelTlsHistoryUploaded(String domain) {
+    return '已为 $domain 上传新的面板 TLS 证书';
+  }
+
+  @override
+  String panelTlsHistoryDownloaded(int bytes) {
+    return '已下载面板 TLS 证书包（$bytes 字节）';
+  }
 
   @override
   String get upgradeTitle => '系统升级';

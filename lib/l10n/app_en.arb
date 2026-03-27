@@ -226,6 +226,64 @@
   "websitesHttpsSslIdLabel": "Certificate ID",
   "websitesSslAutoRenewMissingFields": "Certificate is missing the primary domain or provider; cannot update auto-renew.",
   "websitesSslDownloadHint": "Certificate download link: {link}",
+  "websitesSslExpirationViewTitle": "Expiration view",
+  "websitesSslFilterAllCount": "All ({count})",
+  "@websitesSslFilterAllCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "websitesSslFilterExpiredCount": "Expired ({count})",
+  "@websitesSslFilterExpiredCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "websitesSslFilterWithin7DaysCount": "Within 7 days ({count})",
+  "@websitesSslFilterWithin7DaysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "websitesSslFilterWithin30DaysCount": "Within 30 days ({count})",
+  "@websitesSslFilterWithin30DaysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "websitesSslAffectedWebsitesCount": "Affected websites: {count}",
+  "@websitesSslAffectedWebsitesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "websitesSslAffectedWebsitesDomains": "Affected domains: {domains}",
+  "@websitesSslAffectedWebsitesDomains": {
+    "placeholders": {
+      "domains": {
+        "type": "String"
+      }
+    }
+  },
+  "websitesSslImpactHintApply": "Apply this certificate to bound websites now?",
+  "websitesSslImpactWarningHigh": "This action affects multiple websites. Confirm maintenance window first.",
+  "websitesSslNoAffectedWebsites": "No bound websites.",
+  "websitesSslOpenBoundSiteAction": "Open bound site",
+  "websitesSslGroupAll": "All certificates",
+  "websitesSslGroupExpired": "Expired",
+  "websitesSslGroupWithin7Days": "Within 7 days",
+  "websitesSslGroupWithin30Days": "Within 30 days",
+  "websitesSslGroupHealthy": "Healthy",
   "@websitesSslDownloadHint": {
     "placeholders": {
       "link": {
@@ -878,6 +936,82 @@
   "sslSettingsDownloadSuccess": "Certificate downloaded successfully",
   "sslSettingsCert": "Certificate Content",
   "sslSettingsKey": "Private Key Content",
+  "panelTlsTitle": "Panel TLS",
+  "panelTlsOverviewTitle": "Overview",
+  "panelTlsCertificateTitle": "Certificate",
+  "panelTlsRiskTitle": "Risk",
+  "panelTlsHistoryTitle": "History",
+  "panelTlsUploadHint": "Uploading a new certificate replaces the current panel TLS bundle immediately.",
+  "panelTlsIssuerLabel": "Issuer",
+  "panelTlsCertificatePathLabel": "Certificate Path",
+  "panelTlsKeyPathLabel": "Key Path",
+  "panelTlsSerialNumberLabel": "Serial Number",
+  "panelTlsLastUpdatedLabel": "Last Updated",
+  "panelTlsNoRecentActions": "No recent local actions yet.",
+  "panelTlsUploadDialogTitle": "Upload panel certificate",
+  "panelTlsCertificatePemLabel": "Certificate PEM",
+  "panelTlsPrivateKeyPemLabel": "Private Key PEM",
+  "panelTlsApplyUpdateTitle": "Apply certificate update",
+  "panelTlsApplyUpdateMessage": "This replaces the current panel TLS certificate and may interrupt active browser sessions until the gateway reload finishes.",
+  "panelTlsDownloadDialogTitle": "Download certificate bundle",
+  "panelTlsDownloadDialogMessage": "Use downloads for backup or external validation only. Handle private keys carefully after export.",
+  "panelTlsContinueAction": "Continue",
+  "panelTlsDownloadSuccess": "Downloaded certificate bundle ({bytes} bytes)",
+  "@panelTlsDownloadSuccess": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      }
+    }
+  },
+  "panelTlsHealthHealthy": "Healthy",
+  "panelTlsHealthExpiringSoon": "Expiring soon",
+  "panelTlsHealthExpired": "Expired",
+  "panelTlsHealthUnknown": "Unknown",
+  "panelTlsRiskUnknownTitle": "Certificate expiry unknown",
+  "panelTlsRiskUnknownMessage": "The panel certificate expiration time could not be parsed.",
+  "panelTlsRiskExpiredTitle": "Certificate expired",
+  "panelTlsRiskExpiredMessage": "The panel TLS certificate has already expired and should be replaced immediately.",
+  "panelTlsRiskExpiringSoonTitle": "Certificate expiring soon",
+  "panelTlsRiskExpiringSoonMessage": "The panel TLS certificate expires in {days} day(s).",
+  "@panelTlsRiskExpiringSoonMessage": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "panelTlsRiskSelfSignedTitle": "Self-signed certificate",
+  "panelTlsRiskSelfSignedMessage": "Self-signed certificates can trigger browser trust warnings.",
+  "panelTlsValidationDomainRequired": "Domain is required.",
+  "panelTlsValidationCertificateRequired": "Certificate content is required.",
+  "panelTlsValidationCertificatePemRequired": "Certificate must contain a PEM certificate block.",
+  "panelTlsValidationPrivateKeyRequired": "Private key content is required.",
+  "panelTlsValidationPrivateKeyPemRequired": "Private key must contain a PEM key block.",
+  "panelTlsHistoryLoaded": "Loaded current panel TLS status for {domain}",
+  "@panelTlsHistoryLoaded": {
+    "placeholders": {
+      "domain": {
+        "type": "String"
+      }
+    }
+  },
+  "panelTlsHistoryUploaded": "Uploaded a new panel TLS certificate for {domain}",
+  "@panelTlsHistoryUploaded": {
+    "placeholders": {
+      "domain": {
+        "type": "String"
+      }
+    }
+  },
+  "panelTlsHistoryDownloaded": "Downloaded panel TLS certificate bundle ({bytes} bytes)",
+  "@panelTlsHistoryDownloaded": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      }
+    }
+  },
   "upgradeTitle": "System Upgrade",
   "upgradeCurrentVersion": "Current Version",
   "upgradeCurrentVersionLabel": "Current System Version",

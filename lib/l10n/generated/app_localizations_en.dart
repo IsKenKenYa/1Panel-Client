@@ -560,6 +560,68 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get websitesSslExpirationViewTitle => 'Expiration view';
+
+  @override
+  String websitesSslFilterAllCount(int count) {
+    return 'All ($count)';
+  }
+
+  @override
+  String websitesSslFilterExpiredCount(int count) {
+    return 'Expired ($count)';
+  }
+
+  @override
+  String websitesSslFilterWithin7DaysCount(int count) {
+    return 'Within 7 days ($count)';
+  }
+
+  @override
+  String websitesSslFilterWithin30DaysCount(int count) {
+    return 'Within 30 days ($count)';
+  }
+
+  @override
+  String websitesSslAffectedWebsitesCount(int count) {
+    return 'Affected websites: $count';
+  }
+
+  @override
+  String websitesSslAffectedWebsitesDomains(String domains) {
+    return 'Affected domains: $domains';
+  }
+
+  @override
+  String get websitesSslImpactHintApply =>
+      'Apply this certificate to bound websites now?';
+
+  @override
+  String get websitesSslImpactWarningHigh =>
+      'This action affects multiple websites. Confirm maintenance window first.';
+
+  @override
+  String get websitesSslNoAffectedWebsites => 'No bound websites.';
+
+  @override
+  String get websitesSslOpenBoundSiteAction => 'Open bound site';
+
+  @override
+  String get websitesSslGroupAll => 'All certificates';
+
+  @override
+  String get websitesSslGroupExpired => 'Expired';
+
+  @override
+  String get websitesSslGroupWithin7Days => 'Within 7 days';
+
+  @override
+  String get websitesSslGroupWithin30Days => 'Within 30 days';
+
+  @override
+  String get websitesSslGroupHealthy => 'Healthy';
+
+  @override
   String get openrestyPageTitle => 'OpenResty';
 
   @override
@@ -2053,6 +2115,149 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sslSettingsKey => 'Private Key Content';
+
+  @override
+  String get panelTlsTitle => 'Panel TLS';
+
+  @override
+  String get panelTlsOverviewTitle => 'Overview';
+
+  @override
+  String get panelTlsCertificateTitle => 'Certificate';
+
+  @override
+  String get panelTlsRiskTitle => 'Risk';
+
+  @override
+  String get panelTlsHistoryTitle => 'History';
+
+  @override
+  String get panelTlsUploadHint =>
+      'Uploading a new certificate replaces the current panel TLS bundle immediately.';
+
+  @override
+  String get panelTlsIssuerLabel => 'Issuer';
+
+  @override
+  String get panelTlsCertificatePathLabel => 'Certificate Path';
+
+  @override
+  String get panelTlsKeyPathLabel => 'Key Path';
+
+  @override
+  String get panelTlsSerialNumberLabel => 'Serial Number';
+
+  @override
+  String get panelTlsLastUpdatedLabel => 'Last Updated';
+
+  @override
+  String get panelTlsNoRecentActions => 'No recent local actions yet.';
+
+  @override
+  String get panelTlsUploadDialogTitle => 'Upload panel certificate';
+
+  @override
+  String get panelTlsCertificatePemLabel => 'Certificate PEM';
+
+  @override
+  String get panelTlsPrivateKeyPemLabel => 'Private Key PEM';
+
+  @override
+  String get panelTlsApplyUpdateTitle => 'Apply certificate update';
+
+  @override
+  String get panelTlsApplyUpdateMessage =>
+      'This replaces the current panel TLS certificate and may interrupt active browser sessions until the gateway reload finishes.';
+
+  @override
+  String get panelTlsDownloadDialogTitle => 'Download certificate bundle';
+
+  @override
+  String get panelTlsDownloadDialogMessage =>
+      'Use downloads for backup or external validation only. Handle private keys carefully after export.';
+
+  @override
+  String get panelTlsContinueAction => 'Continue';
+
+  @override
+  String panelTlsDownloadSuccess(int bytes) {
+    return 'Downloaded certificate bundle ($bytes bytes)';
+  }
+
+  @override
+  String get panelTlsHealthHealthy => 'Healthy';
+
+  @override
+  String get panelTlsHealthExpiringSoon => 'Expiring soon';
+
+  @override
+  String get panelTlsHealthExpired => 'Expired';
+
+  @override
+  String get panelTlsHealthUnknown => 'Unknown';
+
+  @override
+  String get panelTlsRiskUnknownTitle => 'Certificate expiry unknown';
+
+  @override
+  String get panelTlsRiskUnknownMessage =>
+      'The panel certificate expiration time could not be parsed.';
+
+  @override
+  String get panelTlsRiskExpiredTitle => 'Certificate expired';
+
+  @override
+  String get panelTlsRiskExpiredMessage =>
+      'The panel TLS certificate has already expired and should be replaced immediately.';
+
+  @override
+  String get panelTlsRiskExpiringSoonTitle => 'Certificate expiring soon';
+
+  @override
+  String panelTlsRiskExpiringSoonMessage(int days) {
+    return 'The panel TLS certificate expires in $days day(s).';
+  }
+
+  @override
+  String get panelTlsRiskSelfSignedTitle => 'Self-signed certificate';
+
+  @override
+  String get panelTlsRiskSelfSignedMessage =>
+      'Self-signed certificates can trigger browser trust warnings.';
+
+  @override
+  String get panelTlsValidationDomainRequired => 'Domain is required.';
+
+  @override
+  String get panelTlsValidationCertificateRequired =>
+      'Certificate content is required.';
+
+  @override
+  String get panelTlsValidationCertificatePemRequired =>
+      'Certificate must contain a PEM certificate block.';
+
+  @override
+  String get panelTlsValidationPrivateKeyRequired =>
+      'Private key content is required.';
+
+  @override
+  String get panelTlsValidationPrivateKeyPemRequired =>
+      'Private key must contain a PEM key block.';
+
+  @override
+  String panelTlsHistoryLoaded(String domain) {
+    return 'Loaded current panel TLS status for $domain';
+  }
+
+  @override
+  String panelTlsHistoryUploaded(String domain) {
+    return 'Uploaded a new panel TLS certificate for $domain';
+  }
+
+  @override
+  String panelTlsHistoryDownloaded(int bytes) {
+    return 'Downloaded panel TLS certificate bundle ($bytes bytes)';
+  }
 
   @override
   String get upgradeTitle => 'System Upgrade';

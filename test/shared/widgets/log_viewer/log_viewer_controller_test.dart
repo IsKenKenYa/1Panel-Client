@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:onepanel_client/shared/widgets/log_viewer/log_viewer_controller.dart';
@@ -48,8 +47,8 @@ Log line without timestamp
     });
 
     test('LogParser extracts timestampEndIndex', () async {
-       var lines = await LogParser.parse('2023-01-01 12:00:00 [INFO] Message');
-       expect(lines.first.timestampEndIndex, 19);
+      var lines = await LogParser.parse('2023-01-01 12:00:00 [INFO] Message');
+      expect(lines.first.timestampEndIndex, 19);
     });
 
     test('LogParser handles various formats', () async {
@@ -81,7 +80,7 @@ Log line without timestamp
 
       lines = await LogParser.parse('Some random text containing INFO');
       expect(lines.first.level, LogLevel.info);
-      
+
       lines = await LogParser.parse('Some random text containing DEBUG');
       expect(lines.first.level, LogLevel.debug);
     });
@@ -100,17 +99,18 @@ Log line 3
       expect(controller.filteredLogs[1].isMatch, true);
       expect(controller.filteredLogs[2].isMatch, false);
     });
-    
+
     test('search is case insensitive', () async {
       const rawLogs = 'Log Line Matches';
       await controller.setLogs(rawLogs);
       controller.search('matches');
-      
+
       expect(controller.filteredLogs[0].isMatch, true);
     });
 
     test('updateSettings updates settings', () {
-      final newSettings = LogSettings(fontSize: 16.0, viewMode: LogViewMode.wrap);
+      final newSettings =
+          LogSettings(fontSize: 16.0, viewMode: LogViewMode.wrap);
       controller.updateSettings(newSettings);
 
       expect(controller.settings.fontSize, 16.0);

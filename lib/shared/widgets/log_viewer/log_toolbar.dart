@@ -27,7 +27,8 @@ class _LogToolbarState extends State<LogToolbar> {
   @override
   void initState() {
     super.initState();
-    _searchController = TextEditingController(text: widget.controller.searchQuery);
+    _searchController =
+        TextEditingController(text: widget.controller.searchQuery);
   }
 
   @override
@@ -38,8 +39,8 @@ class _LogToolbarState extends State<LogToolbar> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    
+    final l10n = AppLocalizations.of(context);
+
     return ListenableBuilder(
       listenable: widget.controller,
       builder: (context, child) {
@@ -72,16 +73,20 @@ class _LogToolbarState extends State<LogToolbar> {
                                     '${widget.controller.currentMatchCount}/${widget.controller.totalMatches}',
                                     style: TextStyle(
                                       fontSize: 12,
-                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
                                     ),
                                   ),
                                 IconButton(
-                                  icon: const Icon(Icons.keyboard_arrow_up, size: 20),
+                                  icon: const Icon(Icons.keyboard_arrow_up,
+                                      size: 20),
                                   onPressed: widget.controller.previousMatch,
                                   tooltip: l10n.logPreviousMatch,
                                 ),
                                 IconButton(
-                                  icon: const Icon(Icons.keyboard_arrow_down, size: 20),
+                                  icon: const Icon(Icons.keyboard_arrow_down,
+                                      size: 20),
                                   onPressed: widget.controller.nextMatch,
                                   tooltip: l10n.logNextMatch,
                                 ),
@@ -101,7 +106,10 @@ class _LogToolbarState extends State<LogToolbar> {
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       filled: true,
-                      fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                      fillColor: Theme.of(context)
+                          .colorScheme
+                          .surfaceContainerHighest
+                          .withValues(alpha: 0.3),
                     ),
                     style: const TextStyle(fontSize: 14),
                     onChanged: widget.controller.search,
@@ -148,8 +156,8 @@ class _LogSettingsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    
+    final l10n = AppLocalizations.of(context);
+
     return ListenableBuilder(
       listenable: controller,
       builder: (context, child) {
@@ -165,7 +173,7 @@ class _LogSettingsSheet extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 16),
-              
+
               // Font Size
               Text('${l10n.logFontSize}: ${settings.fontSize.toInt()}'),
               Slider(
@@ -178,11 +186,12 @@ class _LogSettingsSheet extends StatelessWidget {
                   controller.updateSettings(settings.copyWith(fontSize: value));
                 },
               ),
-              
+
               const Divider(),
 
               // Line Height
-              Text('${l10n.logLineHeight}: ${settings.lineHeight.toStringAsFixed(1)}'),
+              Text(
+                  '${l10n.logLineHeight}: ${settings.lineHeight.toStringAsFixed(1)}'),
               Slider(
                 value: settings.lineHeight,
                 min: 1.0,
@@ -190,7 +199,8 @@ class _LogSettingsSheet extends StatelessWidget {
                 divisions: 10,
                 label: settings.lineHeight.toStringAsFixed(1),
                 onChanged: (value) {
-                  controller.updateSettings(settings.copyWith(lineHeight: value));
+                  controller
+                      .updateSettings(settings.copyWith(lineHeight: value));
                 },
               ),
 
@@ -220,7 +230,8 @@ class _LogSettingsSheet extends StatelessWidget {
                   ],
                   selected: {settings.viewMode},
                   onSelectionChanged: (Set<LogViewMode> newSelection) {
-                    controller.updateSettings(settings.copyWith(viewMode: newSelection.first));
+                    controller.updateSettings(
+                        settings.copyWith(viewMode: newSelection.first));
                   },
                 ),
               ),
@@ -232,10 +243,11 @@ class _LogSettingsSheet extends StatelessWidget {
                 title: Text(l10n.logShowTimestamp),
                 value: settings.showTimestamp,
                 onChanged: (value) {
-                  controller.updateSettings(settings.copyWith(showTimestamp: value));
+                  controller
+                      .updateSettings(settings.copyWith(showTimestamp: value));
                 },
               ),
-              
+
               if (settings.showTimestamp) ...[
                 const SizedBox(height: 8),
                 Padding(
@@ -256,8 +268,10 @@ class _LogSettingsSheet extends StatelessWidget {
                           ),
                         ],
                         selected: {settings.timestampFormat},
-                        onSelectionChanged: (Set<LogTimestampFormat> newSelection) {
-                          controller.updateSettings(settings.copyWith(timestampFormat: newSelection.first));
+                        onSelectionChanged:
+                            (Set<LogTimestampFormat> newSelection) {
+                          controller.updateSettings(settings.copyWith(
+                              timestampFormat: newSelection.first));
                         },
                       ),
                     ],
@@ -293,12 +307,13 @@ class _LogSettingsSheet extends StatelessWidget {
                   ],
                   selected: {settings.themeMode},
                   onSelectionChanged: (Set<ThemeMode> newSelection) {
-                    controller.updateSettings(settings.copyWith(themeMode: newSelection.first));
+                    controller.updateSettings(
+                        settings.copyWith(themeMode: newSelection.first));
                   },
                 ),
               ),
               const SizedBox(height: 16),
-              
+
               Center(
                 child: OutlinedButton.icon(
                   onPressed: () {
@@ -306,7 +321,8 @@ class _LogSettingsSheet extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => LogThemeEditor(controller: controller),
+                        builder: (context) =>
+                            LogThemeEditor(controller: controller),
                       ),
                     );
                   },

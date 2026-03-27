@@ -26,11 +26,12 @@ class _LogThemeEditorState extends State<LogThemeEditor> {
     setState(() {
       _theme = newTheme;
     });
-    widget.controller.updateSettings(widget.controller.settings.copyWith(theme: newTheme));
+    widget.controller
+        .updateSettings(widget.controller.settings.copyWith(theme: newTheme));
   }
 
   void _addRule() {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final newRule = LogHighlightRule(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       pattern: l10n.logRulePattern,
@@ -75,7 +76,7 @@ class _LogThemeEditorState extends State<LogThemeEditor> {
   }
 
   void _importTheme() {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (context) {
@@ -117,7 +118,7 @@ class _LogThemeEditorState extends State<LogThemeEditor> {
   }
 
   void _exportTheme() {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final json = jsonEncode(_theme.toJson());
     showDialog(
       context: context,
@@ -142,11 +143,9 @@ class _LogThemeEditorState extends State<LogThemeEditor> {
     );
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.logThemeEditor),
@@ -266,7 +265,10 @@ class _RuleEditorDialogState extends State<_RuleEditorDialog> {
       caseSensitive: _caseSensitive,
       color: _colorName == null && _color != Colors.black ? _color : null,
       colorName: _colorName,
-      backgroundColor: _backgroundColorName == null && _backgroundColor != Colors.transparent ? _backgroundColor : null,
+      backgroundColor:
+          _backgroundColorName == null && _backgroundColor != Colors.transparent
+              ? _backgroundColor
+              : null,
       backgroundColorName: _backgroundColorName,
       isBold: _isBold,
       isItalic: _isItalic,
@@ -328,23 +330,26 @@ class _RuleEditorDialogState extends State<_RuleEditorDialog> {
           children: [
             Expanded(
               child: DropdownButtonFormField<String?>(
-                value: currentColorName,
+                initialValue: currentColorName,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 ),
                 items: [
-                  const DropdownMenuItem(value: null, child: Text('Custom Color')),
+                  const DropdownMenuItem(
+                      value: null, child: Text('Custom Color')),
                   ...colorMap.keys.map((name) => DropdownMenuItem(
-                    value: name,
-                    child: Row(
-                      children: [
-                        Container(width: 12, height: 12, color: colorMap[name]),
-                        const SizedBox(width: 8),
-                        Text(name),
-                      ],
-                    ),
-                  )),
+                        value: name,
+                        child: Row(
+                          children: [
+                            Container(
+                                width: 12, height: 12, color: colorMap[name]),
+                            const SizedBox(width: 8),
+                            Text(name),
+                          ],
+                        ),
+                      )),
                 ],
                 onChanged: onColorNameChanged,
               ),
@@ -391,7 +396,7 @@ class _RuleEditorDialogState extends State<_RuleEditorDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return AlertDialog(
       title: Text(l10n.logEditTheme),
       content: SingleChildScrollView(
@@ -404,7 +409,7 @@ class _RuleEditorDialogState extends State<_RuleEditorDialog> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<HighlightType>(
-              value: _type,
+              initialValue: _type,
               decoration: InputDecoration(labelText: l10n.logRuleType),
               items: HighlightType.values.map((type) {
                 return DropdownMenuItem(
@@ -435,7 +440,8 @@ class _RuleEditorDialogState extends State<_RuleEditorDialog> {
               currentColor: _backgroundColor,
               currentColorName: _backgroundColorName,
               onColorChanged: (c) => setState(() => _backgroundColor = c),
-              onColorNameChanged: (n) => setState(() => _backgroundColorName = n),
+              onColorNameChanged: (n) =>
+                  setState(() => _backgroundColorName = n),
             ),
             const Divider(),
             Row(

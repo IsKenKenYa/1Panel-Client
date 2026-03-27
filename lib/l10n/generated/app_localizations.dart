@@ -1160,6 +1160,102 @@ abstract class AppLocalizations {
   /// **'Certificate download link: {link}'**
   String websitesSslDownloadHint(String link);
 
+  /// No description provided for @websitesSslExpirationViewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiration view'**
+  String get websitesSslExpirationViewTitle;
+
+  /// No description provided for @websitesSslFilterAllCount.
+  ///
+  /// In en, this message translates to:
+  /// **'All ({count})'**
+  String websitesSslFilterAllCount(int count);
+
+  /// No description provided for @websitesSslFilterExpiredCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired ({count})'**
+  String websitesSslFilterExpiredCount(int count);
+
+  /// No description provided for @websitesSslFilterWithin7DaysCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Within 7 days ({count})'**
+  String websitesSslFilterWithin7DaysCount(int count);
+
+  /// No description provided for @websitesSslFilterWithin30DaysCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Within 30 days ({count})'**
+  String websitesSslFilterWithin30DaysCount(int count);
+
+  /// No description provided for @websitesSslAffectedWebsitesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Affected websites: {count}'**
+  String websitesSslAffectedWebsitesCount(int count);
+
+  /// No description provided for @websitesSslAffectedWebsitesDomains.
+  ///
+  /// In en, this message translates to:
+  /// **'Affected domains: {domains}'**
+  String websitesSslAffectedWebsitesDomains(String domains);
+
+  /// No description provided for @websitesSslImpactHintApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply this certificate to bound websites now?'**
+  String get websitesSslImpactHintApply;
+
+  /// No description provided for @websitesSslImpactWarningHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'This action affects multiple websites. Confirm maintenance window first.'**
+  String get websitesSslImpactWarningHigh;
+
+  /// No description provided for @websitesSslNoAffectedWebsites.
+  ///
+  /// In en, this message translates to:
+  /// **'No bound websites.'**
+  String get websitesSslNoAffectedWebsites;
+
+  /// No description provided for @websitesSslOpenBoundSiteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Open bound site'**
+  String get websitesSslOpenBoundSiteAction;
+
+  /// No description provided for @websitesSslGroupAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All certificates'**
+  String get websitesSslGroupAll;
+
+  /// No description provided for @websitesSslGroupExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get websitesSslGroupExpired;
+
+  /// No description provided for @websitesSslGroupWithin7Days.
+  ///
+  /// In en, this message translates to:
+  /// **'Within 7 days'**
+  String get websitesSslGroupWithin7Days;
+
+  /// No description provided for @websitesSslGroupWithin30Days.
+  ///
+  /// In en, this message translates to:
+  /// **'Within 30 days'**
+  String get websitesSslGroupWithin30Days;
+
+  /// No description provided for @websitesSslGroupHealthy.
+  ///
+  /// In en, this message translates to:
+  /// **'Healthy'**
+  String get websitesSslGroupHealthy;
+
   /// No description provided for @openrestyPageTitle.
   ///
   /// In en, this message translates to:
@@ -3973,6 +4069,252 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Private Key Content'**
   String get sslSettingsKey;
+
+  /// No description provided for @panelTlsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel TLS'**
+  String get panelTlsTitle;
+
+  /// No description provided for @panelTlsOverviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get panelTlsOverviewTitle;
+
+  /// No description provided for @panelTlsCertificateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate'**
+  String get panelTlsCertificateTitle;
+
+  /// No description provided for @panelTlsRiskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Risk'**
+  String get panelTlsRiskTitle;
+
+  /// No description provided for @panelTlsHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get panelTlsHistoryTitle;
+
+  /// No description provided for @panelTlsUploadHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading a new certificate replaces the current panel TLS bundle immediately.'**
+  String get panelTlsUploadHint;
+
+  /// No description provided for @panelTlsIssuerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Issuer'**
+  String get panelTlsIssuerLabel;
+
+  /// No description provided for @panelTlsCertificatePathLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate Path'**
+  String get panelTlsCertificatePathLabel;
+
+  /// No description provided for @panelTlsKeyPathLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Key Path'**
+  String get panelTlsKeyPathLabel;
+
+  /// No description provided for @panelTlsSerialNumberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Serial Number'**
+  String get panelTlsSerialNumberLabel;
+
+  /// No description provided for @panelTlsLastUpdatedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Updated'**
+  String get panelTlsLastUpdatedLabel;
+
+  /// No description provided for @panelTlsNoRecentActions.
+  ///
+  /// In en, this message translates to:
+  /// **'No recent local actions yet.'**
+  String get panelTlsNoRecentActions;
+
+  /// No description provided for @panelTlsUploadDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload panel certificate'**
+  String get panelTlsUploadDialogTitle;
+
+  /// No description provided for @panelTlsCertificatePemLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate PEM'**
+  String get panelTlsCertificatePemLabel;
+
+  /// No description provided for @panelTlsPrivateKeyPemLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Private Key PEM'**
+  String get panelTlsPrivateKeyPemLabel;
+
+  /// No description provided for @panelTlsApplyUpdateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply certificate update'**
+  String get panelTlsApplyUpdateTitle;
+
+  /// No description provided for @panelTlsApplyUpdateMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This replaces the current panel TLS certificate and may interrupt active browser sessions until the gateway reload finishes.'**
+  String get panelTlsApplyUpdateMessage;
+
+  /// No description provided for @panelTlsDownloadDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Download certificate bundle'**
+  String get panelTlsDownloadDialogTitle;
+
+  /// No description provided for @panelTlsDownloadDialogMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Use downloads for backup or external validation only. Handle private keys carefully after export.'**
+  String get panelTlsDownloadDialogMessage;
+
+  /// No description provided for @panelTlsContinueAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get panelTlsContinueAction;
+
+  /// No description provided for @panelTlsDownloadSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloaded certificate bundle ({bytes} bytes)'**
+  String panelTlsDownloadSuccess(int bytes);
+
+  /// No description provided for @panelTlsHealthHealthy.
+  ///
+  /// In en, this message translates to:
+  /// **'Healthy'**
+  String get panelTlsHealthHealthy;
+
+  /// No description provided for @panelTlsHealthExpiringSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiring soon'**
+  String get panelTlsHealthExpiringSoon;
+
+  /// No description provided for @panelTlsHealthExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get panelTlsHealthExpired;
+
+  /// No description provided for @panelTlsHealthUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get panelTlsHealthUnknown;
+
+  /// No description provided for @panelTlsRiskUnknownTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate expiry unknown'**
+  String get panelTlsRiskUnknownTitle;
+
+  /// No description provided for @panelTlsRiskUnknownMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The panel certificate expiration time could not be parsed.'**
+  String get panelTlsRiskUnknownMessage;
+
+  /// No description provided for @panelTlsRiskExpiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate expired'**
+  String get panelTlsRiskExpiredTitle;
+
+  /// No description provided for @panelTlsRiskExpiredMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The panel TLS certificate has already expired and should be replaced immediately.'**
+  String get panelTlsRiskExpiredMessage;
+
+  /// No description provided for @panelTlsRiskExpiringSoonTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate expiring soon'**
+  String get panelTlsRiskExpiringSoonTitle;
+
+  /// No description provided for @panelTlsRiskExpiringSoonMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The panel TLS certificate expires in {days} day(s).'**
+  String panelTlsRiskExpiringSoonMessage(int days);
+
+  /// No description provided for @panelTlsRiskSelfSignedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Self-signed certificate'**
+  String get panelTlsRiskSelfSignedTitle;
+
+  /// No description provided for @panelTlsRiskSelfSignedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Self-signed certificates can trigger browser trust warnings.'**
+  String get panelTlsRiskSelfSignedMessage;
+
+  /// No description provided for @panelTlsValidationDomainRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Domain is required.'**
+  String get panelTlsValidationDomainRequired;
+
+  /// No description provided for @panelTlsValidationCertificateRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate content is required.'**
+  String get panelTlsValidationCertificateRequired;
+
+  /// No description provided for @panelTlsValidationCertificatePemRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate must contain a PEM certificate block.'**
+  String get panelTlsValidationCertificatePemRequired;
+
+  /// No description provided for @panelTlsValidationPrivateKeyRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Private key content is required.'**
+  String get panelTlsValidationPrivateKeyRequired;
+
+  /// No description provided for @panelTlsValidationPrivateKeyPemRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Private key must contain a PEM key block.'**
+  String get panelTlsValidationPrivateKeyPemRequired;
+
+  /// No description provided for @panelTlsHistoryLoaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Loaded current panel TLS status for {domain}'**
+  String panelTlsHistoryLoaded(String domain);
+
+  /// No description provided for @panelTlsHistoryUploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploaded a new panel TLS certificate for {domain}'**
+  String panelTlsHistoryUploaded(String domain);
+
+  /// No description provided for @panelTlsHistoryDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloaded panel TLS certificate bundle ({bytes} bytes)'**
+  String panelTlsHistoryDownloaded(int bytes);
 
   /// No description provided for @upgradeTitle.
   ///

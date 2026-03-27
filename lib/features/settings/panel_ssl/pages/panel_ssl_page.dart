@@ -4,7 +4,6 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/features/settings/panel_ssl/providers/panel_ssl_provider.dart';
 import 'package:onepanel_client/shared/security_gateway/models/security_gateway_models.dart';
-import 'package:onepanel_client/shared/security_gateway/utils/security_gateway_utils.dart';
 import 'package:onepanel_client/shared/security_gateway/widgets/risk_notice_banner.dart';
 import 'package:onepanel_client/shared/security_gateway/widgets/security_status_chip.dart';
 import 'package:provider/provider.dart';
@@ -38,7 +37,7 @@ class _PanelSslBody extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Panel TLS'),
+        title: Text(l10n.panelTlsTitle),
         actions: [
           IconButton(
             onPressed: provider.loadSslInfo,
@@ -60,7 +59,7 @@ class _PanelSslBody extends StatelessWidget {
               ),
             ),
           _SectionCard(
-            title: 'Overview',
+            title: l10n.panelTlsOverviewTitle,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -74,27 +73,31 @@ class _PanelSslBody extends StatelessWidget {
                     ),
                     const Spacer(),
                     SecurityStatusChip(
-                      label: describeCertificateHealth(provider.healthStatus),
+                      label:
+                          _localizedHealthLabel(context, provider.healthStatus),
                       color: _healthColor(context, provider.healthStatus),
                     ),
                   ],
                 ),
                 const SizedBox(height: AppDesignTokens.spacingMd),
-                _InfoRow(label: 'Status', value: provider.status),
-                _InfoRow(label: 'SSL Type', value: provider.sslType),
-                _InfoRow(label: 'Provider', value: provider.provider),
-                _InfoRow(label: 'Expiration', value: provider.expiration),
+                _InfoRow(label: l10n.sslSettingsStatus, value: provider.status),
+                _InfoRow(label: l10n.sslSettingsType, value: provider.sslType),
+                _InfoRow(
+                    label: l10n.sslSettingsProvider, value: provider.provider),
+                _InfoRow(
+                    label: l10n.sslSettingsExpiration,
+                    value: provider.expiration),
               ],
             ),
           ),
           const SizedBox(height: AppDesignTokens.spacingMd),
           _SectionCard(
-            title: 'Certificate',
+            title: l10n.panelTlsCertificateTitle,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Uploading a new certificate replaces the current panel TLS bundle immediately.',
+                  l10n.panelTlsUploadHint,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(height: AppDesignTokens.spacingMd),
@@ -112,7 +115,7 @@ class _PanelSslBody extends StatelessWidget {
                     OutlinedButton.icon(
                       onPressed: () => _downloadSsl(context, provider),
                       icon: const Icon(Icons.download_outlined),
-                      label: const Text('Download'),
+                      label: Text(l10n.sslSettingsDownload),
                     ),
                     OutlinedButton.icon(
                       onPressed: () => _copySummary(context, provider),
@@ -122,35 +125,43 @@ class _PanelSslBody extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: AppDesignTokens.spacingMd),
-                _InfoRow(label: 'Issuer', value: provider.issuer),
                 _InfoRow(
-                    label: 'Certificate Path', value: provider.certificatePath),
-                _InfoRow(label: 'Key Path', value: provider.keyPath),
-                _InfoRow(label: 'Serial Number', value: provider.serialNumber),
+                    label: l10n.panelTlsIssuerLabel, value: provider.issuer),
+                _InfoRow(
+                    label: l10n.panelTlsCertificatePathLabel,
+                    value: provider.certificatePath),
+                _InfoRow(
+                    label: l10n.panelTlsKeyPathLabel, value: provider.keyPath),
+                _InfoRow(
+                    label: l10n.panelTlsSerialNumberLabel,
+                    value: provider.serialNumber),
               ],
             ),
           ),
           const SizedBox(height: AppDesignTokens.spacingMd),
           RiskNoticeBanner(
-            notices: provider.riskNotices,
-            title: 'Risk',
+            notices: _localizedRiskNotices(context, provider.riskNotices),
+            title: l10n.panelTlsRiskTitle,
           ),
           const SizedBox(height: AppDesignTokens.spacingMd),
           _SectionCard(
-            title: 'History',
+            title: l10n.panelTlsHistoryTitle,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _InfoRow(label: 'Last Updated', value: provider.updatedAt),
+                _InfoRow(
+                  label: l10n.panelTlsLastUpdatedLabel,
+                  value: provider.updatedAt,
+                ),
                 const SizedBox(height: AppDesignTokens.spacingSm),
                 if (provider.history.isEmpty)
-                  const Text('No recent local actions yet.')
+                  Text(l10n.panelTlsNoRecentActions)
                 else
                   for (final entry in provider.history)
                     Padding(
                       padding: const EdgeInsets.only(
                           bottom: AppDesignTokens.spacingSm),
-                      child: Text('• $entry'),
+                      child: Text('• ${_historyEntryText(context, entry)}'),
                     ),
               ],
             ),
@@ -175,7 +186,7 @@ class _PanelSslBody extends StatelessWidget {
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: const Text('Upload panel certificate'),
+          title: Text(l10n.panelTlsUploadDialogTitle),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -187,7 +198,7 @@ class _PanelSslBody extends StatelessWidget {
                       padding: const EdgeInsets.only(
                           bottom: AppDesignTokens.spacingXs),
                       child: Text(
-                        error,
+                        _localizedValidationError(context, error),
                         style: TextStyle(
                             color: Theme.of(context).colorScheme.error),
                       ),
@@ -196,14 +207,15 @@ class _PanelSslBody extends StatelessWidget {
                 ],
                 TextField(
                   controller: domainController,
-                  decoration: const InputDecoration(labelText: 'Domain'),
+                  decoration:
+                      InputDecoration(labelText: l10n.sslSettingsDomain),
                 ),
                 const SizedBox(height: AppDesignTokens.spacingMd),
                 TextField(
                   controller: certController,
                   maxLines: 5,
-                  decoration: const InputDecoration(
-                    labelText: 'Certificate PEM',
+                  decoration: InputDecoration(
+                    labelText: l10n.panelTlsCertificatePemLabel,
                     alignLabelWithHint: true,
                   ),
                 ),
@@ -211,8 +223,8 @@ class _PanelSslBody extends StatelessWidget {
                 TextField(
                   controller: keyController,
                   maxLines: 5,
-                  decoration: const InputDecoration(
-                    labelText: 'Private Key PEM',
+                  decoration: InputDecoration(
+                    labelText: l10n.panelTlsPrivateKeyPemLabel,
                     alignLabelWithHint: true,
                   ),
                 ),
@@ -243,10 +255,8 @@ class _PanelSslBody extends StatelessWidget {
                 final confirmed = await showDialog<bool>(
                       context: dialogContext,
                       builder: (confirmContext) => AlertDialog(
-                        title: const Text('Apply certificate update'),
-                        content: const Text(
-                          'This replaces the current panel TLS certificate and may interrupt active browser sessions until the gateway reload finishes.',
-                        ),
+                        title: Text(l10n.panelTlsApplyUpdateTitle),
+                        content: Text(l10n.panelTlsApplyUpdateMessage),
                         actions: [
                           TextButton(
                             onPressed: () =>
@@ -303,10 +313,8 @@ class _PanelSslBody extends StatelessWidget {
     final confirmed = await showDialog<bool>(
           context: context,
           builder: (dialogContext) => AlertDialog(
-            title: const Text('Download certificate bundle'),
-            content: const Text(
-              'Use downloads for backup or external validation only. Handle private keys carefully after export.',
-            ),
+            title: Text(l10n.panelTlsDownloadDialogTitle),
+            content: Text(l10n.panelTlsDownloadDialogMessage),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(dialogContext, false),
@@ -314,7 +322,7 @@ class _PanelSslBody extends StatelessWidget {
               ),
               FilledButton(
                 onPressed: () => Navigator.pop(dialogContext, true),
-                child: const Text('Continue'),
+                child: Text(l10n.panelTlsContinueAction),
               ),
             ],
           ),
@@ -333,7 +341,7 @@ class _PanelSslBody extends StatelessWidget {
       SnackBar(
         content: Text(
           success
-              ? 'Downloaded certificate bundle${bytes == null ? '' : ' ($bytes bytes)'}'
+              ? l10n.panelTlsDownloadSuccess(bytes ?? 0)
               : (provider.error ?? l10n.commonSaveFailed),
         ),
       ),
@@ -351,6 +359,103 @@ class _PanelSslBody extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(l10n.commonCopySuccess)),
     );
+  }
+
+  String _localizedHealthLabel(
+    BuildContext context,
+    CertificateHealthStatus status,
+  ) {
+    final l10n = context.l10n;
+    switch (status) {
+      case CertificateHealthStatus.healthy:
+        return l10n.panelTlsHealthHealthy;
+      case CertificateHealthStatus.expiringSoon:
+        return l10n.panelTlsHealthExpiringSoon;
+      case CertificateHealthStatus.expired:
+        return l10n.panelTlsHealthExpired;
+      case CertificateHealthStatus.unknown:
+        return l10n.panelTlsHealthUnknown;
+    }
+  }
+
+  List<RiskNotice> _localizedRiskNotices(
+    BuildContext context,
+    List<RiskNotice> notices,
+  ) {
+    final l10n = context.l10n;
+    return notices.map((notice) {
+      switch (notice.title) {
+        case 'Certificate expiry unknown':
+          return RiskNotice(
+            level: notice.level,
+            title: l10n.panelTlsRiskUnknownTitle,
+            message: l10n.panelTlsRiskUnknownMessage,
+          );
+        case 'Certificate expired':
+          return RiskNotice(
+            level: notice.level,
+            title: l10n.panelTlsRiskExpiredTitle,
+            message: l10n.panelTlsRiskExpiredMessage,
+          );
+        case 'Certificate expiring soon':
+          final match = RegExp(r'(\d+)').firstMatch(notice.message);
+          final days = int.tryParse(match?.group(1) ?? '') ?? 0;
+          return RiskNotice(
+            level: notice.level,
+            title: l10n.panelTlsRiskExpiringSoonTitle,
+            message: l10n.panelTlsRiskExpiringSoonMessage(days),
+          );
+        case 'Self-signed certificate':
+          return RiskNotice(
+            level: notice.level,
+            title: l10n.panelTlsRiskSelfSignedTitle,
+            message: l10n.panelTlsRiskSelfSignedMessage,
+          );
+        default:
+          return notice;
+      }
+    }).toList(growable: false);
+  }
+
+  String _localizedValidationError(BuildContext context, String error) {
+    final l10n = context.l10n;
+    switch (error) {
+      case 'Domain is required.':
+        return l10n.panelTlsValidationDomainRequired;
+      case 'Certificate content is required.':
+        return l10n.panelTlsValidationCertificateRequired;
+      case 'Certificate must contain a PEM certificate block.':
+        return l10n.panelTlsValidationCertificatePemRequired;
+      case 'Private key content is required.':
+        return l10n.panelTlsValidationPrivateKeyRequired;
+      case 'Private key must contain a PEM key block.':
+        return l10n.panelTlsValidationPrivateKeyPemRequired;
+      default:
+        return error;
+    }
+  }
+
+  String _historyEntryText(
+    BuildContext context,
+    PanelSslHistoryEntry entry,
+  ) {
+    final l10n = context.l10n;
+    final timeText = _formatTimestamp(entry.createdAt);
+    switch (entry.action) {
+      case PanelSslHistoryAction.loaded:
+        return '$timeText · ${l10n.panelTlsHistoryLoaded(entry.domain ?? '-')}';
+      case PanelSslHistoryAction.uploaded:
+        return '$timeText · ${l10n.panelTlsHistoryUploaded(entry.domain ?? '-')}';
+      case PanelSslHistoryAction.downloaded:
+        return '$timeText · ${l10n.panelTlsHistoryDownloaded(entry.bytes ?? 0)}';
+    }
+  }
+
+  String _formatTimestamp(DateTime value) {
+    final local = value.toLocal();
+    String two(int n) => n.toString().padLeft(2, '0');
+    return '${local.year}-${two(local.month)}-${two(local.day)} '
+        '${two(local.hour)}:${two(local.minute)}:${two(local.second)}';
   }
 
   Color _healthColor(BuildContext context, CertificateHealthStatus status) {

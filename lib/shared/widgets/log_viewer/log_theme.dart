@@ -37,9 +37,9 @@ class LogHighlightRule {
       'id': id,
       'pattern': pattern,
       'type': type.index,
-      'color': color?.value,
+      'color': color?.toARGB32(),
       'colorName': colorName,
-      'backgroundColor': backgroundColor?.value,
+      'backgroundColor': backgroundColor?.toARGB32(),
       'backgroundColorName': backgroundColorName,
       'isBold': isBold,
       'isItalic': isItalic,
@@ -55,7 +55,9 @@ class LogHighlightRule {
       type: HighlightType.values[json['type'] as int],
       color: json['color'] != null ? Color(json['color'] as int) : null,
       colorName: json['colorName'] as String?,
-      backgroundColor: json['backgroundColor'] != null ? Color(json['backgroundColor'] as int) : null,
+      backgroundColor: json['backgroundColor'] != null
+          ? Color(json['backgroundColor'] as int)
+          : null,
       backgroundColorName: json['backgroundColorName'] as String?,
       isBold: json['isBold'] as bool? ?? false,
       isItalic: json['isItalic'] as bool? ?? false,
@@ -149,8 +151,8 @@ class LogTheme {
     return {
       'name': name,
       'rules': rules.map((r) => r.toJson()).toList(),
-      'defaultColor': defaultColor?.value,
-      'defaultBackgroundColor': defaultBackgroundColor?.value,
+      'defaultColor': defaultColor?.toARGB32(),
+      'defaultBackgroundColor': defaultBackgroundColor?.toARGB32(),
     };
   }
 
@@ -160,8 +162,12 @@ class LogTheme {
       rules: (json['rules'] as List)
           .map((r) => LogHighlightRule.fromJson(r as Map<String, dynamic>))
           .toList(),
-      defaultColor: json['defaultColor'] != null ? Color(json['defaultColor'] as int) : null,
-      defaultBackgroundColor: json['defaultBackgroundColor'] != null ? Color(json['defaultBackgroundColor'] as int) : null,
+      defaultColor: json['defaultColor'] != null
+          ? Color(json['defaultColor'] as int)
+          : null,
+      defaultBackgroundColor: json['defaultBackgroundColor'] != null
+          ? Color(json['defaultBackgroundColor'] as int)
+          : null,
     );
   }
 
@@ -175,7 +181,8 @@ class LogTheme {
       name: name ?? this.name,
       rules: rules ?? this.rules,
       defaultColor: defaultColor ?? this.defaultColor,
-      defaultBackgroundColor: defaultBackgroundColor ?? this.defaultBackgroundColor,
+      defaultBackgroundColor:
+          defaultBackgroundColor ?? this.defaultBackgroundColor,
     );
   }
 }

@@ -226,6 +226,64 @@
   "websitesHttpsSslIdLabel": "证书 ID",
   "websitesSslAutoRenewMissingFields": "证书缺少主域名或提供商信息，无法更新自动续期。",
   "websitesSslDownloadHint": "证书下载链接：{link}",
+  "websitesSslExpirationViewTitle": "到期视图",
+  "websitesSslFilterAllCount": "全部（{count}）",
+  "@websitesSslFilterAllCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "websitesSslFilterExpiredCount": "已过期（{count}）",
+  "@websitesSslFilterExpiredCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "websitesSslFilterWithin7DaysCount": "7 天内到期（{count}）",
+  "@websitesSslFilterWithin7DaysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "websitesSslFilterWithin30DaysCount": "30 天内到期（{count}）",
+  "@websitesSslFilterWithin30DaysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "websitesSslAffectedWebsitesCount": "受影响网站：{count}",
+  "@websitesSslAffectedWebsitesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "websitesSslAffectedWebsitesDomains": "受影响域名：{domains}",
+  "@websitesSslAffectedWebsitesDomains": {
+    "placeholders": {
+      "domains": {
+        "type": "String"
+      }
+    }
+  },
+  "websitesSslImpactHintApply": "立即将该证书应用到已绑定网站吗？",
+  "websitesSslImpactWarningHigh": "该操作会影响多个网站，请先确认维护窗口。",
+  "websitesSslNoAffectedWebsites": "暂无绑定网站。",
+  "websitesSslOpenBoundSiteAction": "打开绑定站点",
+  "websitesSslGroupAll": "全部证书",
+  "websitesSslGroupExpired": "已过期",
+  "websitesSslGroupWithin7Days": "7 天内到期",
+  "websitesSslGroupWithin30Days": "30 天内到期",
+  "websitesSslGroupHealthy": "健康",
   "@websitesSslDownloadHint": {
     "placeholders": {
       "link": {
@@ -826,6 +884,82 @@
   "sslSettingsDownloadSuccess": "证书下载成功",
   "sslSettingsCert": "证书内容",
   "sslSettingsKey": "私钥内容",
+  "panelTlsTitle": "面板 TLS",
+  "panelTlsOverviewTitle": "概览",
+  "panelTlsCertificateTitle": "证书",
+  "panelTlsRiskTitle": "风险",
+  "panelTlsHistoryTitle": "历史",
+  "panelTlsUploadHint": "上传新证书会立即替换当前面板 TLS 证书包。",
+  "panelTlsIssuerLabel": "签发者",
+  "panelTlsCertificatePathLabel": "证书路径",
+  "panelTlsKeyPathLabel": "私钥路径",
+  "panelTlsSerialNumberLabel": "序列号",
+  "panelTlsLastUpdatedLabel": "最近更新时间",
+  "panelTlsNoRecentActions": "暂无最近本地操作。",
+  "panelTlsUploadDialogTitle": "上传面板证书",
+  "panelTlsCertificatePemLabel": "证书 PEM",
+  "panelTlsPrivateKeyPemLabel": "私钥 PEM",
+  "panelTlsApplyUpdateTitle": "应用证书更新",
+  "panelTlsApplyUpdateMessage": "该操作会替换当前面板 TLS 证书，并可能在网关重载前短暂影响已连接会话。",
+  "panelTlsDownloadDialogTitle": "下载证书包",
+  "panelTlsDownloadDialogMessage": "下载仅用于备份或外部校验，请妥善保管导出的私钥。",
+  "panelTlsContinueAction": "继续",
+  "panelTlsDownloadSuccess": "证书包已下载（{bytes} 字节）",
+  "@panelTlsDownloadSuccess": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      }
+    }
+  },
+  "panelTlsHealthHealthy": "健康",
+  "panelTlsHealthExpiringSoon": "即将到期",
+  "panelTlsHealthExpired": "已过期",
+  "panelTlsHealthUnknown": "未知",
+  "panelTlsRiskUnknownTitle": "证书到期时间未知",
+  "panelTlsRiskUnknownMessage": "无法解析面板证书的到期时间。",
+  "panelTlsRiskExpiredTitle": "证书已过期",
+  "panelTlsRiskExpiredMessage": "面板 TLS 证书已过期，请立即更换。",
+  "panelTlsRiskExpiringSoonTitle": "证书即将到期",
+  "panelTlsRiskExpiringSoonMessage": "面板 TLS 证书将在 {days} 天后到期。",
+  "@panelTlsRiskExpiringSoonMessage": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "panelTlsRiskSelfSignedTitle": "自签名证书",
+  "panelTlsRiskSelfSignedMessage": "自签名证书可能触发浏览器信任告警。",
+  "panelTlsValidationDomainRequired": "域名不能为空。",
+  "panelTlsValidationCertificateRequired": "证书内容不能为空。",
+  "panelTlsValidationCertificatePemRequired": "证书内容必须包含 PEM 证书块。",
+  "panelTlsValidationPrivateKeyRequired": "私钥内容不能为空。",
+  "panelTlsValidationPrivateKeyPemRequired": "私钥内容必须包含 PEM 私钥块。",
+  "panelTlsHistoryLoaded": "已加载 {domain} 的面板 TLS 状态",
+  "@panelTlsHistoryLoaded": {
+    "placeholders": {
+      "domain": {
+        "type": "String"
+      }
+    }
+  },
+  "panelTlsHistoryUploaded": "已为 {domain} 上传新的面板 TLS 证书",
+  "@panelTlsHistoryUploaded": {
+    "placeholders": {
+      "domain": {
+        "type": "String"
+      }
+    }
+  },
+  "panelTlsHistoryDownloaded": "已下载面板 TLS 证书包（{bytes} 字节）",
+  "@panelTlsHistoryDownloaded": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      }
+    }
+  },
   "upgradeTitle": "系统升级",
   "upgradeCurrentVersion": "当前版本",
   "upgradeCurrentVersionLabel": "当前系统版本",

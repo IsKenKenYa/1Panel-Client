@@ -95,6 +95,7 @@ class SecurityGatewayCenterProvider extends ChangeNotifier {
     error = null;
     notifyListeners();
     try {
+      await _snapshotStore.ensureInitialized();
       final results = await Future.wait<dynamic>([
         _panelSslService.getSslInfo(),
         _websiteCertificateService.searchCertificates(pageSize: 50),
@@ -112,6 +113,7 @@ class SecurityGatewayCenterProvider extends ChangeNotifier {
   }
 
   Future<bool> rollbackLatest() async {
+    await _snapshotStore.ensureInitialized();
     final scopes = <String>[
       if (initialWebsiteId != null) 'website_https:$initialWebsiteId',
       'openresty_https',

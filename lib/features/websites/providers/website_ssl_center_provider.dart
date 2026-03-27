@@ -160,6 +160,26 @@ class WebsiteSslCenterProvider extends ChangeNotifier {
     return certificate.websites?.length ?? 0;
   }
 
+  List<String> affectedWebsiteDomains(
+    WebsiteSSL certificate, {
+    int limit = 3,
+  }) {
+    final websites = certificate.websites ?? const <Website>[];
+    final names = websites
+        .map((website) => website.primaryDomain?.trim())
+        .whereType<String>()
+        .where((value) => value.isNotEmpty)
+        .toList(growable: false);
+    if (limit <= 0 || names.length <= limit) {
+      return names;
+    }
+    return names.take(limit).toList(growable: false);
+  }
+
+  bool hasHighImpact(WebsiteSSL certificate) {
+    return affectedWebsiteCount(certificate) >= 3;
+  }
+
   void _applyFilters() {
     final query = searchQuery.toLowerCase();
     final filtered = _allCertificates.where((certificate) {

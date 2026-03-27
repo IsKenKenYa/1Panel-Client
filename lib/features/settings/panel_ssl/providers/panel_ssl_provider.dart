@@ -3,6 +3,26 @@ import 'package:onepanel_client/features/settings/panel_ssl/services/panel_ssl_s
 import 'package:onepanel_client/shared/security_gateway/models/security_gateway_models.dart';
 import 'package:onepanel_client/shared/security_gateway/utils/security_gateway_utils.dart';
 
+enum PanelSslHistoryAction {
+  loaded,
+  uploaded,
+  downloaded,
+}
+
+class PanelSslHistoryEntry {
+  const PanelSslHistoryEntry({
+    required this.action,
+    required this.createdAt,
+    this.domain,
+    this.bytes,
+  });
+
+  final PanelSslHistoryAction action;
+  final DateTime createdAt;
+  final String? domain;
+  final int? bytes;
+}
+
 class PanelSslProvider extends ChangeNotifier {
   final PanelSslService _service;
 
@@ -13,7 +33,7 @@ class PanelSslProvider extends ChangeNotifier {
   bool _isSubmitting = false;
   String? _error;
   Map<String, dynamic> _sslInfo = const <String, dynamic>{};
-  List<String> _history = const <String>[];
+  List<PanelSslHistoryEntry> _history = const <PanelSslHistoryEntry>[];
   int? _lastDownloadedBytes;
 
   bool get isLoading => _isLoading;
@@ -21,7 +41,7 @@ class PanelSslProvider extends ChangeNotifier {
   String? get error => _error;
   Map<String, dynamic> get sslInfo => _sslInfo;
   bool get hasData => _sslInfo.isNotEmpty;
-  List<String> get history => _history;
+  List<PanelSslHistoryEntry> get history => _history;
   int? get lastDownloadedBytes => _lastDownloadedBytes;
 
   String get domain => _readValue(const ['domain', 'bindDomain']);
@@ -131,7 +151,13 @@ class PanelSslProvider extends ChangeNotifier {
       _sslInfo = await _service.getSslInfo();
       _error = null;
       if (_history.isEmpty && hasData) {
-        _appendHistory('Loaded current panel TLS status.');
+        _appendHistory(
+          PanelSslHistoryEntry(
+            action: PanelSslHistoryAction.loaded,
+            createdAt: DateTime.now(),
+            domain: domain,
+          ),
+        );
       }
     } catch (e) {
       _error = e.toString();
@@ -170,7 +196,13 @@ class PanelSslProvider extends ChangeNotifier {
         key: key,
       );
       await loadSslInfo(silent: true);
-      _appendHistory('Uploaded a new panel TLS certificate for $domain.');
+      _appendHistory(
+        PanelSslHistoryEntry(
+          action: PanelSslHistoryAction.uploaded,
+          createdAt: DateTime.now(),
+          domain: domain,
+        ),
+      );
       return true;
     } catch (e) {
       _error = e.toString();
@@ -187,7 +219,13 @@ class PanelSslProvider extends ChangeNotifier {
       _lastDownloadedBytes = bytes.length;
       _error = null;
       _appendHistory(
-          'Downloaded panel TLS certificate bundle (${bytes.length} bytes).');
+        PanelSslHistoryEntry(
+          action: PanelSslHistoryAction.downloaded,
+          createdAt: DateTime.now(),
+          domain: domain,
+          bytes: bytes.length,
+        ),
+      );
       notifyListeners();
       return true;
     } catch (e) {
@@ -211,8 +249,8 @@ class PanelSslProvider extends ChangeNotifier {
     return '-';
   }
 
-  void _appendHistory(String entry) {
-    _history = <String>[
+  void _appendHistory(PanelSslHistoryEntry entry) {
+    _history = <PanelSslHistoryEntry>[
       entry,
       ..._history,
     ].take(5).toList(growable: false);

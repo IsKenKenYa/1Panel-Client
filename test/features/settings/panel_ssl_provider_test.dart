@@ -6,11 +6,10 @@ import 'package:onepanel_client/shared/security_gateway/models/security_gateway_
 class _FakePanelSslService extends PanelSslService {
   _FakePanelSslService({
     required this.info,
-    this.downloadPayload = const <int>[1, 2, 3],
   });
 
   Map<String, dynamic> info;
-  final List<int> downloadPayload;
+  final List<int> downloadPayload = const <int>[1, 2, 3];
   Map<String, dynamic>? lastUpdateRequest;
 
   @override
@@ -70,13 +69,13 @@ void main() {
 
     expect(uploadSuccess, isTrue);
     expect(service.lastUpdateRequest?['domain'], 'panel.example.com');
-    expect(provider.history.first, contains('Uploaded'));
+    expect(provider.history.first.action, PanelSslHistoryAction.uploaded);
 
     final downloadSuccess = await provider.downloadSsl();
 
     expect(downloadSuccess, isTrue);
     expect(provider.lastDownloadedBytes, 3);
-    expect(provider.history.first, contains('Downloaded'));
+    expect(provider.history.first.action, PanelSslHistoryAction.downloaded);
   });
 
   test('PanelSslProvider rejects invalid upload payload', () async {
