@@ -332,6 +332,174 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get websitesActionDelete;
 
+  /// No description provided for @websitesSetDefaultAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Default'**
+  String get websitesSetDefaultAction;
+
+  /// No description provided for @websitesDefaultServerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Default server'**
+  String get websitesDefaultServerLabel;
+
+  /// No description provided for @websitesGroupLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Group'**
+  String get websitesGroupLabel;
+
+  /// No description provided for @websitesRemarkLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Remark'**
+  String get websitesRemarkLabel;
+
+  /// No description provided for @websitesAliasLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Alias'**
+  String get websitesAliasLabel;
+
+  /// No description provided for @websitesPrimaryDomainLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary domain'**
+  String get websitesPrimaryDomainLabel;
+
+  /// No description provided for @websitesProxyAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Proxy address'**
+  String get websitesProxyAddressLabel;
+
+  /// No description provided for @websitesProxyTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Proxy type'**
+  String get websitesProxyTypeLabel;
+
+  /// No description provided for @websitesParentWebsiteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Parent website'**
+  String get websitesParentWebsiteLabel;
+
+  /// No description provided for @websitesSiteDirLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Site directory'**
+  String get websitesSiteDirLabel;
+
+  /// No description provided for @websitesFilterAllGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'All groups'**
+  String get websitesFilterAllGroups;
+
+  /// No description provided for @websitesFilterAllTypes.
+  ///
+  /// In en, this message translates to:
+  /// **'All types'**
+  String get websitesFilterAllTypes;
+
+  /// No description provided for @websitesSelectionEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get websitesSelectionEnable;
+
+  /// No description provided for @websitesSelectionDisable.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel selection'**
+  String get websitesSelectionDisable;
+
+  /// No description provided for @websitesSetGroupAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Group'**
+  String get websitesSetGroupAction;
+
+  /// No description provided for @websitesLifecycleCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Website'**
+  String get websitesLifecycleCreateTitle;
+
+  /// No description provided for @websitesLifecycleEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Website'**
+  String get websitesLifecycleEditTitle;
+
+  /// No description provided for @websitesLifecycleTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Website type'**
+  String get websitesLifecycleTypeLabel;
+
+  /// No description provided for @websitesLifecycleTypeRuntime.
+  ///
+  /// In en, this message translates to:
+  /// **'Runtime'**
+  String get websitesLifecycleTypeRuntime;
+
+  /// No description provided for @websitesLifecycleTypeProxy.
+  ///
+  /// In en, this message translates to:
+  /// **'Proxy'**
+  String get websitesLifecycleTypeProxy;
+
+  /// No description provided for @websitesLifecycleTypeSubsite.
+  ///
+  /// In en, this message translates to:
+  /// **'Subsite'**
+  String get websitesLifecycleTypeSubsite;
+
+  /// No description provided for @websitesLifecycleTypeStatic.
+  ///
+  /// In en, this message translates to:
+  /// **'Static'**
+  String get websitesLifecycleTypeStatic;
+
+  /// No description provided for @websitesValidationGroupRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a website group.'**
+  String get websitesValidationGroupRequired;
+
+  /// No description provided for @websitesValidationPrimaryDomainRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary domain is required.'**
+  String get websitesValidationPrimaryDomainRequired;
+
+  /// No description provided for @websitesValidationAliasRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Alias is required.'**
+  String get websitesValidationAliasRequired;
+
+  /// No description provided for @websitesValidationRuntimeRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a runtime.'**
+  String get websitesValidationRuntimeRequired;
+
+  /// No description provided for @websitesValidationProxyRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Proxy address is required.'**
+  String get websitesValidationProxyRequired;
+
+  /// No description provided for @websitesValidationParentRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a parent website.'**
+  String get websitesValidationParentRequired;
+
   /// No description provided for @websitesOperateSuccess.
   ///
   /// In en, this message translates to:
@@ -343,6 +511,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Operation failed'**
   String get websitesOperateFailed;
+
+  /// No description provided for @websitesSelectedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} selected'**
+  String websitesSelectedCount(int count);
 
   /// No description provided for @websitesLoadFailedMessage.
   ///
@@ -373,6 +547,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Website deleted'**
   String get websitesDeleteSuccess;
+
+  /// No description provided for @websitesBatchDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {count} websites? This action cannot be undone.'**
+  String websitesBatchDeleteMessage(int count);
 
   /// No description provided for @websitesDetailTitle.
   ///
@@ -476,6 +656,12 @@ abstract class AppLocalizations {
   /// **'Add domain'**
   String get websitesDomainAddTitle;
 
+  /// No description provided for @websitesDomainEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit domain'**
+  String get websitesDomainEditTitle;
+
   /// No description provided for @websitesDomainLabel.
   ///
   /// In en, this message translates to:
@@ -499,6 +685,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'SSL'**
   String get websitesDomainSslLabel;
+
+  /// No description provided for @websitesDomainValidationRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Domain is required.'**
+  String get websitesDomainValidationRequired;
+
+  /// No description provided for @websitesDomainValidationPort.
+  ///
+  /// In en, this message translates to:
+  /// **'Port must be between 1 and 65535.'**
+  String get websitesDomainValidationPort;
+
+  /// No description provided for @websitesDomainValidationDuplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'This domain already exists.'**
+  String get websitesDomainValidationDuplicate;
+
+  /// No description provided for @websitesDomainDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete domain {domain}?'**
+  String websitesDomainDeleteMessage(String domain);
 
   /// No description provided for @websitesRewriteNameLabel.
   ///
@@ -655,6 +865,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Nginx config & PHP version'**
   String get websitesConfigPageSubtitle;
+
+  /// No description provided for @websitesBasicConfigTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic'**
+  String get websitesBasicConfigTitle;
+
+  /// No description provided for @websitesBasicConfigDatabaseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Database binding'**
+  String get websitesBasicConfigDatabaseTitle;
 
   /// No description provided for @websitesDomainsPageTitle.
   ///
@@ -1448,6 +1670,120 @@ abstract class AppLocalizations {
   /// **'Save Policy'**
   String get databaseRedisSaveLabel;
 
+  /// No description provided for @databaseManageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage'**
+  String get databaseManageTitle;
+
+  /// No description provided for @databaseBackupsPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups'**
+  String get databaseBackupsPageTitle;
+
+  /// No description provided for @databaseUsersPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Users'**
+  String get databaseUsersPageTitle;
+
+  /// No description provided for @databaseBackupCreateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Backup'**
+  String get databaseBackupCreateAction;
+
+  /// No description provided for @databaseBackupRestoreAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore Backup'**
+  String get databaseBackupRestoreAction;
+
+  /// No description provided for @databaseBackupDeleteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Backup'**
+  String get databaseBackupDeleteAction;
+
+  /// No description provided for @databaseBackupSecretLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Compression Password'**
+  String get databaseBackupSecretLabel;
+
+  /// No description provided for @databaseBackupEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No backup records yet.'**
+  String get databaseBackupEmpty;
+
+  /// No description provided for @databaseBackupUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups are not supported for this database type.'**
+  String get databaseBackupUnsupported;
+
+  /// No description provided for @databaseBackupRestoreConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore this backup record? Existing data may be overwritten.'**
+  String get databaseBackupRestoreConfirmMessage;
+
+  /// No description provided for @databaseBackupDeleteConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this backup record? This action cannot be undone.'**
+  String get databaseBackupDeleteConfirmMessage;
+
+  /// No description provided for @databaseUserCurrentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current User'**
+  String get databaseUserCurrentLabel;
+
+  /// No description provided for @databaseUserPermissionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission'**
+  String get databaseUserPermissionLabel;
+
+  /// No description provided for @databaseUserSuperUserLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Superuser'**
+  String get databaseUserSuperUserLabel;
+
+  /// No description provided for @databaseUserBindAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Bind User'**
+  String get databaseUserBindAction;
+
+  /// No description provided for @databaseUserPrivilegesAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Privileges'**
+  String get databaseUserPrivilegesAction;
+
+  /// No description provided for @databaseUserNoBinding.
+  ///
+  /// In en, this message translates to:
+  /// **'No bound user information is available yet.'**
+  String get databaseUserNoBinding;
+
+  /// No description provided for @databaseUserUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'User management is not supported for this database type.'**
+  String get databaseUserUnsupported;
+
+  /// No description provided for @databasePrivilegeUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Privileges can be adjusted after a user is bound.'**
+  String get databasePrivilegeUnavailable;
+
   /// No description provided for @firewallTabStatus.
   ///
   /// In en, this message translates to:
@@ -1592,6 +1928,54 @@ abstract class AppLocalizations {
   /// **'Drop'**
   String get firewallStrategyDrop;
 
+  /// No description provided for @firewallStrategyAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get firewallStrategyAll;
+
+  /// No description provided for @firewallSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by description, address, or port'**
+  String get firewallSearchHint;
+
+  /// No description provided for @firewallSelectionModeEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get firewallSelectionModeEnable;
+
+  /// No description provided for @firewallSelectionModeDisable.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get firewallSelectionModeDisable;
+
+  /// No description provided for @firewallBatchDeleteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Batch Delete'**
+  String get firewallBatchDeleteAction;
+
+  /// No description provided for @firewallBatchAcceptAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Batch Accept'**
+  String get firewallBatchAcceptAction;
+
+  /// No description provided for @firewallBatchDropAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Batch Drop'**
+  String get firewallBatchDropAction;
+
+  /// No description provided for @firewallSelectedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} selected'**
+  String firewallSelectedCount(int count);
+
   /// No description provided for @firewallCreatePortRuleAction.
   ///
   /// In en, this message translates to:
@@ -1609,6 +1993,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Toggle Strategy'**
   String get firewallToggleStrategyAction;
+
+  /// No description provided for @firewallOperationConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm firewall change'**
+  String get firewallOperationConfirmTitle;
+
+  /// No description provided for @firewallStartConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Start the firewall service? New rules will begin taking effect immediately.'**
+  String get firewallStartConfirmMessage;
+
+  /// No description provided for @firewallStopConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop the firewall service? This may expose services without packet filtering.'**
+  String get firewallStopConfirmMessage;
+
+  /// No description provided for @firewallRestartConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart the firewall service? Existing connections may be interrupted briefly.'**
+  String get firewallRestartConfirmMessage;
+
+  /// No description provided for @firewallAddressRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Address is required.'**
+  String get firewallAddressRequired;
+
+  /// No description provided for @firewallPortRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Port is required.'**
+  String get firewallPortRequired;
 
   /// No description provided for @serverModuleTerminal.
   ///

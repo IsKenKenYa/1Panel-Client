@@ -19,6 +19,7 @@ class FirewallRuleListProvider extends ChangeNotifier {
   int _currentPage = 1;
   int _pageSize = 20;
   String? _lastSearch;
+  String? _lastStrategy;
   bool _isMutating = false;
 
   List<FirewallRule> get items => _page?.items ?? const [];
@@ -32,6 +33,7 @@ class FirewallRuleListProvider extends ChangeNotifier {
     int page = 1,
     int pageSize = 20,
     String? search,
+    String? strategy,
   }) async {
     _loading = true;
     _error = null;
@@ -39,6 +41,7 @@ class FirewallRuleListProvider extends ChangeNotifier {
     _currentPage = page;
     _pageSize = pageSize;
     _lastSearch = search;
+    _lastStrategy = strategy;
 
     try {
       _page = await _service.searchRules(
@@ -46,6 +49,7 @@ class FirewallRuleListProvider extends ChangeNotifier {
         pageSize: pageSize,
         type: type,
         info: search,
+        strategy: strategy,
       );
     } catch (e) {
       _error = e.toString();
@@ -60,6 +64,7 @@ class FirewallRuleListProvider extends ChangeNotifier {
       page: _currentPage,
       pageSize: _pageSize,
       search: _lastSearch,
+      strategy: _lastStrategy,
     );
   }
 

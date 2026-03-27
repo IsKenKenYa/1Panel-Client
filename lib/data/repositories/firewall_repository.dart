@@ -1,112 +1,81 @@
-import 'package:onepanel_client/core/config/api_constants.dart';
-import 'package:onepanel_client/core/network/dio_client.dart';
+import 'package:onepanel_client/api/v2/firewall_v2.dart';
 import 'package:onepanel_client/data/models/common_models.dart';
 import 'package:onepanel_client/data/models/firewall_models.dart';
 
-/// Firewall repository wrapping raw HTTP requests.
+/// Firewall repository wrapping the typed V2 API client.
 class FirewallRepository {
   const FirewallRepository();
 
   Future<FirewallBaseInfo> loadBaseInfo(
-    DioClient client, {
+    FirewallV2Api api, {
     String tab = 'base',
   }) async {
-    final response = await client.post(
-      ApiConstants.buildApiPath('/hosts/firewall/base'),
-      data: {'name': tab},
-    );
+    final response = await api.loadFirewallBaseInfo(tab: tab);
     final data = response.data;
-    if (data is Map<String, dynamic>) {
-      return FirewallBaseInfo.fromJson(data);
+    if (data != null) {
+      return data;
     }
     throw StateError('Unexpected firewall base response');
   }
 
   Future<PageResult<FirewallRule>> searchRules(
-    DioClient client,
+    FirewallV2Api api,
     FirewallRuleSearch request,
   ) async {
-    final response = await client.post(
-      ApiConstants.buildApiPath('/hosts/firewall/search'),
-      data: request.toJson(),
-    );
+    final response = await api.searchFirewallRules(request);
     final body = response.data;
-    if (body is Map<String, dynamic>) {
-      return PageResult.fromJson(
-        body,
-        (json) => FirewallRule.fromJson(json as Map<String, dynamic>),
-      );
+    if (body != null) {
+      return body;
     }
     throw StateError('Unexpected firewall rules response');
   }
 
   Future<void> operateFirewall(
-    DioClient client,
+    FirewallV2Api api,
     FirewallOperation operation,
   ) async {
-    await client.post(
-      ApiConstants.buildApiPath('/hosts/firewall/operate'),
-      data: operation.toJson(),
-    );
+    await api.operateFirewall(operation);
   }
 
   Future<void> operatePortRule(
-    DioClient client,
+    FirewallV2Api api,
     FirewallPortRulePayload payload,
   ) async {
-    await client.post(
-      ApiConstants.buildApiPath('/hosts/firewall/port'),
-      data: payload.toJson(),
-    );
+    await api.operatePort(payload.toJson());
   }
 
   Future<void> operateIpRule(
-    DioClient client,
+    FirewallV2Api api,
     FirewallIpRulePayload payload,
   ) async {
-    await client.post(
-      ApiConstants.buildApiPath('/hosts/firewall/ip'),
-      data: payload.toJson(),
-    );
+    await api.operateIp(payload.toJson());
   }
 
   Future<void> updatePortRule(
-    DioClient client,
+    FirewallV2Api api,
     FirewallUpdatePortRequest request,
   ) async {
-    await client.post(
-      ApiConstants.buildApiPath('/hosts/firewall/update/port'),
-      data: request.toJson(),
-    );
+    await api.updatePort(request.toJson());
   }
 
   Future<void> updateIpRule(
-    DioClient client,
+    FirewallV2Api api,
     FirewallUpdateIpRequest request,
   ) async {
-    await client.post(
-      ApiConstants.buildApiPath('/hosts/firewall/update/addr'),
-      data: request.toJson(),
-    );
+    await api.updateAddr(request.toJson());
   }
 
   Future<void> updateDescription(
-    DioClient client,
+    FirewallV2Api api,
     FirewallDescriptionUpdate request,
   ) async {
-    await client.post(
-      ApiConstants.buildApiPath('/hosts/firewall/update/description'),
-      data: request.toJson(),
-    );
+    await api.updateDescription(request.toJson());
   }
 
   Future<void> batchOperate(
-    DioClient client,
+    FirewallV2Api api,
     FirewallBatchRuleRequest request,
   ) async {
-    await client.post(
-      ApiConstants.buildApiPath('/hosts/firewall/batch'),
-      data: request.toJson(),
-    );
+    await api.batchOperate(request.toJson());
   }
 }

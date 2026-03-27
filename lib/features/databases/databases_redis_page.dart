@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/data/models/database_models.dart';
+import 'package:onepanel_client/features/databases/widgets/database_detail_error_widget.dart';
 import 'package:onepanel_client/shared/widgets/app_card.dart';
 
 import 'databases_provider.dart';
@@ -62,7 +63,10 @@ class _DatabaseRedisPageViewState extends State<_DatabaseRedisPageView> {
     if (provider.error != null && detail == null) {
       return Scaffold(
         appBar: AppBar(title: Text(item.name)),
-        body: Center(child: Text(provider.error!)),
+        body: DatabaseDetailErrorWidget(
+          error: provider.error!,
+          onRetry: provider.load,
+        ),
       );
     }
 

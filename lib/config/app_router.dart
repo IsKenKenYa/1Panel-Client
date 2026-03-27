@@ -8,6 +8,8 @@ import 'package:onepanel_client/features/databases/databases_detail_page.dart';
 import 'package:onepanel_client/features/databases/databases_form_page.dart';
 import 'package:onepanel_client/features/databases/databases_remote_page.dart';
 import 'package:onepanel_client/features/databases/databases_redis_page.dart';
+import 'package:onepanel_client/features/databases/pages/database_backup_page.dart';
+import 'package:onepanel_client/features/databases/pages/database_users_page.dart';
 import 'package:onepanel_client/data/models/database_models.dart';
 import 'package:onepanel_client/features/firewall/firewall_page.dart';
 import 'package:onepanel_client/features/firewall/firewall_rule_form_page.dart';
@@ -61,6 +63,8 @@ class AppRoutes {
   static const String databaseForm = '/database-form';
   static const String databaseRemote = '/database-remote';
   static const String databaseRedisConfig = '/database-redis-config';
+  static const String databaseBackups = '/database-backups';
+  static const String databaseUsers = '/database-users';
   static const String firewall = '/firewall';
   static const String firewallRules = '/firewall-rules';
   static const String firewallIps = '/firewall-ips';
@@ -79,6 +83,7 @@ class AppRoutes {
   static const String websites = '/websites';
   static const String websiteDetail = '/website-detail';
   static const String websiteCreate = '/website-create';
+  static const String websiteEdit = '/website-edit';
   static const String websiteConfigCenter = '/website-config-center';
   static const String websiteRoutingRules = '/website-routing-rules';
   static const String websiteSecurityAccess = '/website-security-access';
@@ -149,6 +154,22 @@ class AppRouter {
         if (arg is DatabaseListItem) {
           return MaterialPageRoute(
             builder: (_) => DatabaseRedisPage(item: arg),
+          );
+        }
+        return MaterialPageRoute(builder: (_) => const NotFoundPage());
+      case AppRoutes.databaseBackups:
+        final backupArg = settings.arguments;
+        if (backupArg is DatabaseListItem) {
+          return MaterialPageRoute(
+            builder: (_) => DatabaseBackupPage(item: backupArg),
+          );
+        }
+        return MaterialPageRoute(builder: (_) => const NotFoundPage());
+      case AppRoutes.databaseUsers:
+        final userArg = settings.arguments;
+        if (userArg is DatabaseListItem) {
+          return MaterialPageRoute(
+            builder: (_) => DatabaseUsersPage(item: userArg),
           );
         }
         return MaterialPageRoute(builder: (_) => const NotFoundPage());
@@ -241,6 +262,18 @@ class AppRouter {
 
       case AppRoutes.websiteCreate:
         return MaterialPageRoute(builder: (_) => const WebsiteCreateFlowPage());
+
+      case AppRoutes.websiteEdit:
+        {
+          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final websiteId = arg['websiteId'] as int?;
+          if (websiteId == null) {
+            return MaterialPageRoute(builder: (_) => const NotFoundPage());
+          }
+          return MaterialPageRoute(
+            builder: (_) => WebsiteCreateFlowPage.edit(websiteId: websiteId),
+          );
+        }
 
       case AppRoutes.websiteDetail:
         {

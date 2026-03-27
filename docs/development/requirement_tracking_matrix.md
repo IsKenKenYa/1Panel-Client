@@ -21,16 +21,16 @@
 
 | 模块 | 端点数 | API客户端 | 数据模型 | 测试覆盖 | UI集成 | 状态 | 备注 |
 |-------|---------|-----------|----------|----------|---------|------|------|
-| **Website** | 54 | ✅ website_v2.dart | ✅ website_models.dart | ✅ 部分测试 | 🟡 部分 | 需要补充SSL和域名细分功能 |
+| **Website** | 54 | ✅ website_v2.dart | ✅ website_models.dart | ✅ 已测试 | 🟡 部分 | lifecycle/detail/default/group/remark/create-edit 已接入，SSL/OpenResty 深化留给后续 |
 | **System Setting** | 43 | ✅ setting_v2.dart | ✅ setting_models.dart | ✅ 已测试 | 🟡 部分 | MFA功能已实现 |
 | **File** | 37 | ✅ file_v2.dart | ✅ file_models.dart | ✅ 已测试 | 🟡 部分 | 上传/下载/编辑流程待扩展 |
 | **App** | 30 | ✅ app_v2.dart | ✅ app_models.dart | ✅ 已测试 | 🟡 部分 | 应用商店与安装流程待补齐 |
 | **Backup Account** | 25 | ✅ backup_account_v2.dart | ✅ backup_account_models.dart | ⚠️ 待测试 | 🔴 待集成 | 备份策略与恢复流程待扩展 |
 | **Runtime** | 25 | ✅ runtime_v2.dart | ✅ runtime_models.dart | ⚠️ 待测试 | 🔴 待集成 | 运行时管理页面待建设 |
 | **Container** | 19 | ✅ container_v2.dart | ✅ container_models.dart | ✅ 已测试 | 🟡 部分 | 需要补齐网络/卷/镜像管理 |
-| **Database Mysql** | 14 | ✅ database_v2.dart | ✅ database_models.dart | ✅ 已测试 | 🟡 部分 | MySQL特定功能待细化 |
+| **Database Mysql** | 14 | ✅ database_v2.dart | ✅ database_models.dart | ✅ 已测试 | 🟡 部分 | 列表/详情/backup/user 主链路已接入，细分能力待扩展 |
 | **Dashboard** | 12 | ✅ dashboard_v2.dart | ✅ monitoring_models.dart | ✅ 已测试 | ✅ 已集成 | 关注核心指标展示 |
-| **Database** | 9 | ✅ database_v2.dart | ✅ database_models.dart | ✅ 已测试 | 🟡 部分 | 通用数据库功能 |
+| **Database** | 9 | ✅ database_v2.dart | ✅ database_models.dart | ✅ 已测试 | 🟡 部分 | list/detail/form/backup/users 闭环已成型，remote/redis 细节待继续打磨 |
 | **Database PostgreSQL** | 9 | ✅ database_v2.dart | ✅ database_models.dart | ⚠️ 待测试 | 🟡 部分 | PostgreSQL特定功能待细化 |
 | **Database Redis** | 7 | ✅ database_v2.dart | ✅ database_models.dart | ⚠️ 待测试 | 🟡 部分 | Redis特定功能待细化 |
 | **Database Common** | 3 | ✅ database_v2.dart | ✅ database_models.dart | ⚠️ 待测试 | 🟡 部分 | 通用数据库操作 |
@@ -42,7 +42,7 @@
 | 模块 | 端点数 | API客户端 | 数据模型 | 测试覆盖 | UI集成 | 状态 | 备注 |
 |-------|---------|-----------|----------|----------|---------|------|------|
 | **Cronjob** | 16 | ✅ cronjob_v2.dart | ✅ cronjob_models.dart | ⚠️ 待测试 | 🔴 待集成 | 计划任务管理 |
-| **Firewall** | 15 | ✅ firewall_v2.dart | ✅ firewall_models.dart | ⚠️ 待测试 | 🔴 待集成 | 规则管理待建设 |
+| **Firewall** | 15 | ✅ firewall_v2.dart | ✅ firewall_models.dart | ✅ 已测试 | 🟡 部分 | status/rules/ip/ports/search/batch 已接入，advanced chain 待补 |
 | **SSH** | 12 | ✅ terminal_v2.dart | ✅ terminal_models.dart | ⚠️ 待测试 | 🔴 待集成 | SSH会话/日志待扩展 |
 | **Website SSL** | 11 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🟡 部分 | 证书与域名细分功能待扩展 |
 | **AI** | 10 | ✅ ai_v2.dart | ✅ ai_models.dart | ✅ 已测试 | 🟡 部分 | GPU/XPU监控与域名绑定 |
@@ -61,7 +61,7 @@
 | **Website CA** | 7 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🔴 待集成 | CA证书管理 |
 | **Website Acme** | 4 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🔴 待集成 | ACME证书申请 |
 | **Website DNS** | 4 | ✅ website_v2.dart | ✅ website_models.dart | ⚠️ 待测试 | 🔴 待集成 | DNS管理 |
-| **Website Domain** | 4 | ✅ website_v2.dart | ✅ website_models.dart | ⚠️ 待测试 | 🔴 待集成 | 域名管理 |
+| **Website Domain** | 4 | ✅ website_v2.dart | ✅ website_models.dart | ✅ 已测试 | 🟡 部分 | CRUD + 本地校验已接入，默认域名写操作/批量仍缺 |
 | **Website Nginx** | 4 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ⚠️ 待测试 | 🔴 待集成 | Nginx配置 |
 | **Website HTTPS** | 2 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🔴 待集成 | HTTPS配置 |
 | **Website PHP** | 1 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ⚠️ 待测试 | 🔴 待集成 | PHP配置 |
@@ -93,7 +93,7 @@
 | **P0** | 15 | 247 | 100% (15/15) | 73% (11/15) | 33% (5/15) |
 | **P1** | 26 | 239 | 100% (26/26) | 23% (6/26) | 8% (2/26) |
 | **P2** | 11 | 60 | 91% (10/11) | 27% (3/11) | 0% (0/11) |
-| **总计** | 52 | 546 | 98% (51/52) | 38% (20/52) | 13% (7/52) |
+| **总计** | 52 | 546 | 98% (51/52) | 40% (21/52) | 13% (7/52) |
 
 ### 按实现维度统计
 
@@ -101,7 +101,7 @@
 |------|--------|------|
 | **API客户端实现** | 98% | 51/52个模块有API客户端，仅untagged模块缺失 |
 | **数据模型定义** | 100% | 所有模块都有对应的数据模型 |
-| **单元测试覆盖** | 38% | 20/52个模块有测试文件 |
+| **单元测试覆盖** | 40% | 21/52个模块有测试文件 |
 | **UI页面集成** | 13% | 7/52个模块有完整的UI页面 |
 | **端到端测试** | 0% | 尚未建立端到端测试体系 |
 
@@ -113,8 +113,8 @@
 - ⚠️ **待验证**: 所有API客户端需要与OpenAPI规范进行端点级对齐
 
 ### 2. 测试覆盖层面
-- 🔴 **严重不足**: 仅38%的模块有测试文件
-- 🔴 **P1模块测试缺失**: 74%的P1模块缺乏测试
+- 🔴 **严重不足**: 仅40%的模块有测试文件
+- 🔴 **P1模块测试缺失**: 73%的P1模块缺乏测试
 - 🔴 **P2模块测试缺失**: 73%的P2模块缺乏测试
 - 🟡 **P0模块测试较好**: 73%的P0模块有测试
 

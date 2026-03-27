@@ -6,20 +6,25 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import '../providers/website_domain_provider.dart';
 import '../widgets/website_common_widgets.dart';
 
+part 'website_domain_management_actions_part.dart';
+
 class WebsiteDomainManagementPage extends StatelessWidget {
   final int websiteId;
   final String? primaryDomain;
+  final WebsiteDomainProvider? provider;
 
   const WebsiteDomainManagementPage({
     super.key,
     required this.websiteId,
     this.primaryDomain,
+    this.provider,
   });
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => WebsiteDomainProvider(websiteId: websiteId)..loadDomains(),
+      create: (_) =>
+          provider ?? WebsiteDomainProvider(websiteId: websiteId)..loadDomains(),
       child: _WebsiteDomainBody(primaryDomain: primaryDomain),
     );
   }
@@ -64,7 +69,7 @@ class _WebsiteDomainBody extends StatelessWidget {
             ],
           ),
           floatingActionButton: FloatingActionButton.extended(
-            onPressed: () => _showAddDomainDialog(context, provider),
+            onPressed: () => _showDomainDialog(context, provider),
             icon: const Icon(Icons.add),
             label: Text(l10n.commonAdd),
           ),
@@ -80,8 +85,14 @@ class _WebsiteDomainBody extends StatelessWidget {
                     isPrimary: primaryDomain != null && domain.domain != null
                         ? primaryDomain!.startsWith(domain.domain!)
                         : false,
-                    onToggleSsl: (value) => provider.updateDomainSsl(id: domain.id!, ssl: value),
-                    onDelete: () => provider.deleteDomain(domain.id!),
+                    onToggleSsl: (value) =>
+                        provider.updateDomainSsl(id: domain.id!, ssl: value),
+                    onEdit: () => _showDomainDialog(
+                      context,
+                      provider,
+                      existing: domain,
+                    ),
+                    onDelete: () => _confirmDelete(context, provider, domain),
                   ),
                 ),
             ],
@@ -91,80 +102,20 @@ class _WebsiteDomainBody extends StatelessWidget {
     );
   }
 
-  Future<void> _showAddDomainDialog(BuildContext context, WebsiteDomainProvider provider) async {
-    final l10n = context.l10n;
-    final domainController = TextEditingController();
-    final portController = TextEditingController(text: '80');
-    var ssl = false;
-
-    await showDialog<void>(
-      context: context,
-      builder: (ctx) {
-        return StatefulBuilder(
-          builder: (context, setState) => AlertDialog(
-            title: Text(l10n.websitesDomainAddTitle),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: domainController,
-                  decoration: InputDecoration(
-                    labelText: l10n.websitesDomainLabel,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: portController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: l10n.websitesDomainPortLabel,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(l10n.websitesDomainSslLabel),
-                  value: ssl,
-                  onChanged: (value) => setState(() => ssl = value),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop(),
-                child: Text(l10n.commonCancel),
-              ),
-              FilledButton(
-                onPressed: () async {
-                  final domain = domainController.text.trim();
-                  final port = int.tryParse(portController.text.trim()) ?? 80;
-                  Navigator.of(ctx).pop();
-                  if (domain.isEmpty) return;
-                  await provider.addDomain(domain: domain, port: port, ssl: ssl);
-                },
-                child: Text(l10n.commonAdd),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-
-    domainController.dispose();
-    portController.dispose();
-  }
 }
 
 class _DomainCard extends StatelessWidget {
   final WebsiteDomain domain;
   final bool isPrimary;
   final ValueChanged<bool> onToggleSsl;
+  final VoidCallback onEdit;
   final VoidCallback onDelete;
 
   const _DomainCard({
     required this.domain,
     required this.isPrimary,
     required this.onToggleSsl,
+    required this.onEdit,
     required this.onDelete,
   });
 
@@ -187,6 +138,10 @@ class _DomainCard extends StatelessWidget {
             Switch(
               value: domain.ssl ?? false,
               onChanged: onToggleSsl,
+            ),
+            IconButton(
+              icon: const Icon(Icons.edit_outlined),
+              onPressed: onEdit,
             ),
             IconButton(
               icon: const Icon(Icons.delete_outline),

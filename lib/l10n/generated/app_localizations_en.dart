@@ -126,10 +126,100 @@ class AppLocalizationsEn extends AppLocalizations {
   String get websitesActionDelete => 'Delete';
 
   @override
+  String get websitesSetDefaultAction => 'Set Default';
+
+  @override
+  String get websitesDefaultServerLabel => 'Default server';
+
+  @override
+  String get websitesGroupLabel => 'Group';
+
+  @override
+  String get websitesRemarkLabel => 'Remark';
+
+  @override
+  String get websitesAliasLabel => 'Alias';
+
+  @override
+  String get websitesPrimaryDomainLabel => 'Primary domain';
+
+  @override
+  String get websitesProxyAddressLabel => 'Proxy address';
+
+  @override
+  String get websitesProxyTypeLabel => 'Proxy type';
+
+  @override
+  String get websitesParentWebsiteLabel => 'Parent website';
+
+  @override
+  String get websitesSiteDirLabel => 'Site directory';
+
+  @override
+  String get websitesFilterAllGroups => 'All groups';
+
+  @override
+  String get websitesFilterAllTypes => 'All types';
+
+  @override
+  String get websitesSelectionEnable => 'Select';
+
+  @override
+  String get websitesSelectionDisable => 'Cancel selection';
+
+  @override
+  String get websitesSetGroupAction => 'Set Group';
+
+  @override
+  String get websitesLifecycleCreateTitle => 'Create Website';
+
+  @override
+  String get websitesLifecycleEditTitle => 'Edit Website';
+
+  @override
+  String get websitesLifecycleTypeLabel => 'Website type';
+
+  @override
+  String get websitesLifecycleTypeRuntime => 'Runtime';
+
+  @override
+  String get websitesLifecycleTypeProxy => 'Proxy';
+
+  @override
+  String get websitesLifecycleTypeSubsite => 'Subsite';
+
+  @override
+  String get websitesLifecycleTypeStatic => 'Static';
+
+  @override
+  String get websitesValidationGroupRequired => 'Select a website group.';
+
+  @override
+  String get websitesValidationPrimaryDomainRequired =>
+      'Primary domain is required.';
+
+  @override
+  String get websitesValidationAliasRequired => 'Alias is required.';
+
+  @override
+  String get websitesValidationRuntimeRequired => 'Select a runtime.';
+
+  @override
+  String get websitesValidationProxyRequired => 'Proxy address is required.';
+
+  @override
+  String get websitesValidationParentRequired => 'Select a parent website.';
+
+  @override
   String get websitesOperateSuccess => 'Operation successful';
 
   @override
   String get websitesOperateFailed => 'Operation failed';
+
+  @override
+  String websitesSelectedCount(int count) {
+    return '$count selected';
+  }
 
   @override
   String websitesLoadFailedMessage(String error) {
@@ -149,6 +239,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get websitesDeleteSuccess => 'Website deleted';
+
+  @override
+  String websitesBatchDeleteMessage(int count) {
+    return 'Delete $count websites? This action cannot be undone.';
+  }
 
   @override
   String get websitesDetailTitle => 'Website';
@@ -202,6 +297,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get websitesDomainAddTitle => 'Add domain';
 
   @override
+  String get websitesDomainEditTitle => 'Edit domain';
+
+  @override
   String get websitesDomainLabel => 'Domain';
 
   @override
@@ -212,6 +310,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get websitesDomainSslLabel => 'SSL';
+
+  @override
+  String get websitesDomainValidationRequired => 'Domain is required.';
+
+  @override
+  String get websitesDomainValidationPort =>
+      'Port must be between 1 and 65535.';
+
+  @override
+  String get websitesDomainValidationDuplicate => 'This domain already exists.';
+
+  @override
+  String websitesDomainDeleteMessage(String domain) {
+    return 'Delete domain $domain?';
+  }
 
   @override
   String get websitesRewriteNameLabel => 'Rewrite name';
@@ -290,6 +403,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get websitesConfigPageSubtitle => 'Nginx config & PHP version';
+
+  @override
+  String get websitesBasicConfigTitle => 'Basic';
+
+  @override
+  String get websitesBasicConfigDatabaseTitle => 'Database binding';
 
   @override
   String get websitesDomainsPageTitle => 'Domains';
@@ -703,6 +822,69 @@ class AppLocalizationsEn extends AppLocalizations {
   String get databaseRedisSaveLabel => 'Save Policy';
 
   @override
+  String get databaseManageTitle => 'Manage';
+
+  @override
+  String get databaseBackupsPageTitle => 'Backups';
+
+  @override
+  String get databaseUsersPageTitle => 'Users';
+
+  @override
+  String get databaseBackupCreateAction => 'Create Backup';
+
+  @override
+  String get databaseBackupRestoreAction => 'Restore Backup';
+
+  @override
+  String get databaseBackupDeleteAction => 'Delete Backup';
+
+  @override
+  String get databaseBackupSecretLabel => 'Compression Password';
+
+  @override
+  String get databaseBackupEmpty => 'No backup records yet.';
+
+  @override
+  String get databaseBackupUnsupported =>
+      'Backups are not supported for this database type.';
+
+  @override
+  String get databaseBackupRestoreConfirmMessage =>
+      'Restore this backup record? Existing data may be overwritten.';
+
+  @override
+  String get databaseBackupDeleteConfirmMessage =>
+      'Delete this backup record? This action cannot be undone.';
+
+  @override
+  String get databaseUserCurrentLabel => 'Current User';
+
+  @override
+  String get databaseUserPermissionLabel => 'Permission';
+
+  @override
+  String get databaseUserSuperUserLabel => 'Superuser';
+
+  @override
+  String get databaseUserBindAction => 'Bind User';
+
+  @override
+  String get databaseUserPrivilegesAction => 'Update Privileges';
+
+  @override
+  String get databaseUserNoBinding =>
+      'No bound user information is available yet.';
+
+  @override
+  String get databaseUserUnsupported =>
+      'User management is not supported for this database type.';
+
+  @override
+  String get databasePrivilegeUnavailable =>
+      'Privileges can be adjusted after a user is bound.';
+
+  @override
   String get firewallTabStatus => 'Status';
 
   @override
@@ -775,6 +957,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get firewallStrategyDrop => 'Drop';
 
   @override
+  String get firewallStrategyAll => 'All';
+
+  @override
+  String get firewallSearchHint => 'Search by description, address, or port';
+
+  @override
+  String get firewallSelectionModeEnable => 'Select';
+
+  @override
+  String get firewallSelectionModeDisable => 'Done';
+
+  @override
+  String get firewallBatchDeleteAction => 'Batch Delete';
+
+  @override
+  String get firewallBatchAcceptAction => 'Batch Accept';
+
+  @override
+  String get firewallBatchDropAction => 'Batch Drop';
+
+  @override
+  String firewallSelectedCount(int count) {
+    return '$count selected';
+  }
+
+  @override
   String get firewallCreatePortRuleAction => 'Create Port Rule';
 
   @override
@@ -782,6 +990,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get firewallToggleStrategyAction => 'Toggle Strategy';
+
+  @override
+  String get firewallOperationConfirmTitle => 'Confirm firewall change';
+
+  @override
+  String get firewallStartConfirmMessage =>
+      'Start the firewall service? New rules will begin taking effect immediately.';
+
+  @override
+  String get firewallStopConfirmMessage =>
+      'Stop the firewall service? This may expose services without packet filtering.';
+
+  @override
+  String get firewallRestartConfirmMessage =>
+      'Restart the firewall service? Existing connections may be interrupted briefly.';
+
+  @override
+  String get firewallAddressRequired => 'Address is required.';
+
+  @override
+  String get firewallPortRequired => 'Port is required.';
 
   @override
   String get serverModuleTerminal => 'Terminal';

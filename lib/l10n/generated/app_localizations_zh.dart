@@ -126,10 +126,99 @@ class AppLocalizationsZh extends AppLocalizations {
   String get websitesActionDelete => '删除';
 
   @override
+  String get websitesSetDefaultAction => '设为默认站点';
+
+  @override
+  String get websitesDefaultServerLabel => '默认站点';
+
+  @override
+  String get websitesGroupLabel => '分组';
+
+  @override
+  String get websitesRemarkLabel => '备注';
+
+  @override
+  String get websitesAliasLabel => '别名';
+
+  @override
+  String get websitesPrimaryDomainLabel => '主域名';
+
+  @override
+  String get websitesProxyAddressLabel => '代理地址';
+
+  @override
+  String get websitesProxyTypeLabel => '代理类型';
+
+  @override
+  String get websitesParentWebsiteLabel => '父站点';
+
+  @override
+  String get websitesSiteDirLabel => '站点目录';
+
+  @override
+  String get websitesFilterAllGroups => '全部分组';
+
+  @override
+  String get websitesFilterAllTypes => '全部类型';
+
+  @override
+  String get websitesSelectionEnable => '选择';
+
+  @override
+  String get websitesSelectionDisable => '取消选择';
+
+  @override
+  String get websitesSetGroupAction => '设置分组';
+
+  @override
+  String get websitesLifecycleCreateTitle => '创建网站';
+
+  @override
+  String get websitesLifecycleEditTitle => '编辑网站';
+
+  @override
+  String get websitesLifecycleTypeLabel => '网站类型';
+
+  @override
+  String get websitesLifecycleTypeRuntime => '运行时';
+
+  @override
+  String get websitesLifecycleTypeProxy => '反向代理';
+
+  @override
+  String get websitesLifecycleTypeSubsite => '子站点';
+
+  @override
+  String get websitesLifecycleTypeStatic => '静态站点';
+
+  @override
+  String get websitesValidationGroupRequired => '请选择网站分组。';
+
+  @override
+  String get websitesValidationPrimaryDomainRequired => '请输入主域名。';
+
+  @override
+  String get websitesValidationAliasRequired => '请输入别名。';
+
+  @override
+  String get websitesValidationRuntimeRequired => '请选择运行时。';
+
+  @override
+  String get websitesValidationProxyRequired => '请输入代理地址。';
+
+  @override
+  String get websitesValidationParentRequired => '请选择父站点。';
+
+  @override
   String get websitesOperateSuccess => '操作成功';
 
   @override
   String get websitesOperateFailed => '操作失败';
+
+  @override
+  String websitesSelectedCount(int count) {
+    return '已选择 $count 项';
+  }
 
   @override
   String websitesLoadFailedMessage(String error) {
@@ -149,6 +238,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get websitesDeleteSuccess => '网站已删除';
+
+  @override
+  String websitesBatchDeleteMessage(int count) {
+    return '确定删除 $count 个网站吗？此操作不可撤销。';
+  }
 
   @override
   String get websitesDetailTitle => '网站';
@@ -202,6 +296,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get websitesDomainAddTitle => '添加域名';
 
   @override
+  String get websitesDomainEditTitle => '编辑域名';
+
+  @override
   String get websitesDomainLabel => '域名';
 
   @override
@@ -212,6 +309,20 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get websitesDomainSslLabel => 'SSL';
+
+  @override
+  String get websitesDomainValidationRequired => '请输入域名。';
+
+  @override
+  String get websitesDomainValidationPort => '端口必须在 1 到 65535 之间。';
+
+  @override
+  String get websitesDomainValidationDuplicate => '该域名已存在。';
+
+  @override
+  String websitesDomainDeleteMessage(String domain) {
+    return '确定删除域名 $domain 吗？';
+  }
 
   @override
   String get websitesRewriteNameLabel => '规则名称';
@@ -290,6 +401,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get websitesConfigPageSubtitle => 'Nginx 配置与 PHP 版本';
+
+  @override
+  String get websitesBasicConfigTitle => '基础配置';
+
+  @override
+  String get websitesBasicConfigDatabaseTitle => '数据库绑定';
 
   @override
   String get websitesDomainsPageTitle => '域名管理';
@@ -698,6 +815,63 @@ class AppLocalizationsZh extends AppLocalizations {
   String get databaseRedisSaveLabel => '保存策略';
 
   @override
+  String get databaseManageTitle => '管理';
+
+  @override
+  String get databaseBackupsPageTitle => '备份';
+
+  @override
+  String get databaseUsersPageTitle => '用户';
+
+  @override
+  String get databaseBackupCreateAction => '创建备份';
+
+  @override
+  String get databaseBackupRestoreAction => '恢复备份';
+
+  @override
+  String get databaseBackupDeleteAction => '删除备份';
+
+  @override
+  String get databaseBackupSecretLabel => '压缩密码';
+
+  @override
+  String get databaseBackupEmpty => '暂无备份记录。';
+
+  @override
+  String get databaseBackupUnsupported => '当前数据库类型不支持备份。';
+
+  @override
+  String get databaseBackupRestoreConfirmMessage => '确定恢复此备份记录吗？现有数据可能被覆盖。';
+
+  @override
+  String get databaseBackupDeleteConfirmMessage => '确定删除此备份记录吗？此操作不可恢复。';
+
+  @override
+  String get databaseUserCurrentLabel => '当前用户';
+
+  @override
+  String get databaseUserPermissionLabel => '权限';
+
+  @override
+  String get databaseUserSuperUserLabel => '超级用户';
+
+  @override
+  String get databaseUserBindAction => '绑定用户';
+
+  @override
+  String get databaseUserPrivilegesAction => '更新权限';
+
+  @override
+  String get databaseUserNoBinding => '暂无已绑定用户信息。';
+
+  @override
+  String get databaseUserUnsupported => '当前数据库类型不支持用户管理。';
+
+  @override
+  String get databasePrivilegeUnavailable => '绑定用户后才可调整权限。';
+
+  @override
   String get firewallTabStatus => '状态';
 
   @override
@@ -770,6 +944,32 @@ class AppLocalizationsZh extends AppLocalizations {
   String get firewallStrategyDrop => '拒绝';
 
   @override
+  String get firewallStrategyAll => '全部';
+
+  @override
+  String get firewallSearchHint => '按描述、地址或端口搜索';
+
+  @override
+  String get firewallSelectionModeEnable => '选择';
+
+  @override
+  String get firewallSelectionModeDisable => '完成';
+
+  @override
+  String get firewallBatchDeleteAction => '批量删除';
+
+  @override
+  String get firewallBatchAcceptAction => '批量允许';
+
+  @override
+  String get firewallBatchDropAction => '批量拒绝';
+
+  @override
+  String firewallSelectedCount(int count) {
+    return '已选择 $count 项';
+  }
+
+  @override
   String get firewallCreatePortRuleAction => '创建端口规则';
 
   @override
@@ -777,6 +977,24 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get firewallToggleStrategyAction => '切换策略';
+
+  @override
+  String get firewallOperationConfirmTitle => '确认防火墙变更';
+
+  @override
+  String get firewallStartConfirmMessage => '确定启动防火墙服务吗？新规则会立即开始生效。';
+
+  @override
+  String get firewallStopConfirmMessage => '确定停止防火墙服务吗？这可能导致服务暴露在无包过滤状态下。';
+
+  @override
+  String get firewallRestartConfirmMessage => '确定重启防火墙服务吗？现有连接可能会短暂中断。';
+
+  @override
+  String get firewallAddressRequired => '请输入地址。';
+
+  @override
+  String get firewallPortRequired => '请输入端口。';
 
   @override
   String get serverModuleTerminal => '终端';

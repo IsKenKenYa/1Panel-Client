@@ -39,8 +39,44 @@
   "websitesActionStop": "停止",
   "websitesActionRestart": "重启",
   "websitesActionDelete": "删除",
+  "websitesSetDefaultAction": "设为默认站点",
+  "websitesDefaultServerLabel": "默认站点",
+  "websitesGroupLabel": "分组",
+  "websitesRemarkLabel": "备注",
+  "websitesAliasLabel": "别名",
+  "websitesPrimaryDomainLabel": "主域名",
+  "websitesProxyAddressLabel": "代理地址",
+  "websitesProxyTypeLabel": "代理类型",
+  "websitesParentWebsiteLabel": "父站点",
+  "websitesSiteDirLabel": "站点目录",
+  "websitesFilterAllGroups": "全部分组",
+  "websitesFilterAllTypes": "全部类型",
+  "websitesSelectionEnable": "选择",
+  "websitesSelectionDisable": "取消选择",
+  "websitesSetGroupAction": "设置分组",
+  "websitesLifecycleCreateTitle": "创建网站",
+  "websitesLifecycleEditTitle": "编辑网站",
+  "websitesLifecycleTypeLabel": "网站类型",
+  "websitesLifecycleTypeRuntime": "运行时",
+  "websitesLifecycleTypeProxy": "反向代理",
+  "websitesLifecycleTypeSubsite": "子站点",
+  "websitesLifecycleTypeStatic": "静态站点",
+  "websitesValidationGroupRequired": "请选择网站分组。",
+  "websitesValidationPrimaryDomainRequired": "请输入主域名。",
+  "websitesValidationAliasRequired": "请输入别名。",
+  "websitesValidationRuntimeRequired": "请选择运行时。",
+  "websitesValidationProxyRequired": "请输入代理地址。",
+  "websitesValidationParentRequired": "请选择父站点。",
   "websitesOperateSuccess": "操作成功",
   "websitesOperateFailed": "操作失败",
+  "websitesSelectedCount": "已选择 {count} 项",
+  "@websitesSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "websitesLoadFailedMessage": "{error}",
   "@websitesLoadFailedMessage": {
     "placeholders": {
@@ -60,6 +96,14 @@
     }
   },
   "websitesDeleteSuccess": "网站已删除",
+  "websitesBatchDeleteMessage": "确定删除 {count} 个网站吗？此操作不可撤销。",
+  "@websitesBatchDeleteMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "websitesDetailTitle": "网站",
   "websitesTabOverview": "概览",
   "websitesTabConfig": "配置",
@@ -77,10 +121,22 @@
   "websitesConfigHint": "Nginx 配置内容",
   "websitesJsonHint": "JSON 内容",
   "websitesDomainAddTitle": "添加域名",
+  "websitesDomainEditTitle": "编辑域名",
   "websitesDomainLabel": "域名",
   "websitesDomainEmpty": "暂无域名",
   "websitesDomainDefault": "默认",
   "websitesDomainSslLabel": "SSL",
+  "websitesDomainValidationRequired": "请输入域名。",
+  "websitesDomainValidationPort": "端口必须在 1 到 65535 之间。",
+  "websitesDomainValidationDuplicate": "该域名已存在。",
+  "websitesDomainDeleteMessage": "确定删除域名 {domain} 吗？",
+  "@websitesDomainDeleteMessage": {
+    "placeholders": {
+      "domain": {
+        "type": "String"
+      }
+    }
+  },
   "websitesRewriteNameLabel": "规则名称",
   "websitesRewriteHint": "伪静态内容",
   "websitesProxyNameLabel": "代理名称",
@@ -107,6 +163,8 @@
   "websitesDetailActionsTitle": "快捷操作",
   "websitesConfigPageTitle": "配置管理",
   "websitesConfigPageSubtitle": "Nginx 配置与 PHP 版本",
+  "websitesBasicConfigTitle": "基础配置",
+  "websitesBasicConfigDatabaseTitle": "数据库绑定",
   "websitesDomainsPageTitle": "域名管理",
   "websitesDomainsPageSubtitle": "绑定与维护站点域名",
   "websitesSslPageTitle": "SSL 证书",
@@ -274,6 +332,25 @@
   "databaseRedisPersistenceTitle": "Redis 持久化",
   "databaseRedisAppendOnlyLabel": "仅追加模式",
   "databaseRedisSaveLabel": "保存策略",
+  "databaseManageTitle": "管理",
+  "databaseBackupsPageTitle": "备份",
+  "databaseUsersPageTitle": "用户",
+  "databaseBackupCreateAction": "创建备份",
+  "databaseBackupRestoreAction": "恢复备份",
+  "databaseBackupDeleteAction": "删除备份",
+  "databaseBackupSecretLabel": "压缩密码",
+  "databaseBackupEmpty": "暂无备份记录。",
+  "databaseBackupUnsupported": "当前数据库类型不支持备份。",
+  "databaseBackupRestoreConfirmMessage": "确定恢复此备份记录吗？现有数据可能被覆盖。",
+  "databaseBackupDeleteConfirmMessage": "确定删除此备份记录吗？此操作不可恢复。",
+  "databaseUserCurrentLabel": "当前用户",
+  "databaseUserPermissionLabel": "权限",
+  "databaseUserSuperUserLabel": "超级用户",
+  "databaseUserBindAction": "绑定用户",
+  "databaseUserPrivilegesAction": "更新权限",
+  "databaseUserNoBinding": "暂无已绑定用户信息。",
+  "databaseUserUnsupported": "当前数据库类型不支持用户管理。",
+  "databasePrivilegeUnavailable": "绑定用户后才可调整权限。",
   "firewallTabStatus": "状态",
   "firewallTabRules": "规则",
   "firewallTabIps": "IP",
@@ -298,9 +375,30 @@
   "firewallSourceAddress": "指定地址",
   "firewallStrategyAccept": "允许",
   "firewallStrategyDrop": "拒绝",
+  "firewallStrategyAll": "全部",
+  "firewallSearchHint": "按描述、地址或端口搜索",
+  "firewallSelectionModeEnable": "选择",
+  "firewallSelectionModeDisable": "完成",
+  "firewallBatchDeleteAction": "批量删除",
+  "firewallBatchAcceptAction": "批量允许",
+  "firewallBatchDropAction": "批量拒绝",
+  "firewallSelectedCount": "已选择 {count} 项",
+  "@firewallSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "firewallCreatePortRuleAction": "创建端口规则",
   "firewallCreateIpRuleAction": "创建 IP 规则",
   "firewallToggleStrategyAction": "切换策略",
+  "firewallOperationConfirmTitle": "确认防火墙变更",
+  "firewallStartConfirmMessage": "确定启动防火墙服务吗？新规则会立即开始生效。",
+  "firewallStopConfirmMessage": "确定停止防火墙服务吗？这可能导致服务暴露在无包过滤状态下。",
+  "firewallRestartConfirmMessage": "确定重启防火墙服务吗？现有连接可能会短暂中断。",
+  "firewallAddressRequired": "请输入地址。",
+  "firewallPortRequired": "请输入端口。",
   "serverModuleTerminal": "终端",
   "serverModuleMonitoring": "监控",
   "serverModuleFiles": "文件管理",

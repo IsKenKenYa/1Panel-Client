@@ -25,9 +25,13 @@
 ## UI链路分析
 
 - 入口: `lib/features/websites/websites_page.dart` -> `lib/features/websites/website_detail_page.dart` -> 配置管理页。
-- 现有 UI 为单一文本编辑器，支持拉取/保存配置与高级对话框（scope/operate）。
-- 配置内容以纯文本或 JSON 编辑，缺少语法校验、差异预览、备份与回滚入口。
-- PHP 版本切换已通过 runtime ID 文本输入暴露，但缺少可选列表、当前版本提示与切换风险说明。
+- 当前已形成配置中心首页，包含：
+  - `Basic`
+  - `Routing`
+  - `Access`
+  - `Advanced`
+- `Advanced` 仍是原始 Nginx 编辑入口。
+- `Basic` 已作为结构化入口页，展示 siteDir / runtime / database binding / https summary / remark。
 
 ## 严格审计状态 (2026-03-20)
 
@@ -36,6 +40,7 @@
 - 当前移动端已新增 `WebsiteConfigCenterPage` 作为配置中心首页，并保留高级源码页。
 - 当前已覆盖:
   - 配置中心导航骨架
+  - `Basic` 结构化入口
   - Nginx 配置文件读取与保存
   - scope 参数加载与更新
   - 手工输入 runtime ID 的 PHP 版本切换

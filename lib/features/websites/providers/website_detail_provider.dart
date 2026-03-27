@@ -1,16 +1,16 @@
 import 'package:flutter/foundation.dart';
 
 import '../../../data/models/website_models.dart';
-import '../services/website_detail_service.dart';
+import '../services/website_service.dart';
 
 class WebsiteDetailProvider extends ChangeNotifier {
   final int websiteId;
-  final WebsiteDetailService _service;
+  final WebsiteService _service;
 
   WebsiteDetailProvider({
     required this.websiteId,
-    WebsiteDetailService? service,
-  }) : _service = service ?? WebsiteDetailService();
+    WebsiteService? service,
+  }) : _service = service ?? WebsiteService();
 
   bool isLoading = false;
   String? error;
@@ -22,7 +22,7 @@ class WebsiteDetailProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      website = await _service.fetchWebsiteDetail(websiteId);
+      website = await _service.getWebsiteDetail(websiteId);
     } catch (e) {
       error = e.toString();
     } finally {
@@ -34,5 +34,14 @@ class WebsiteDetailProvider extends ChangeNotifier {
   Future<void> operate(String action) async {
     await _service.operateWebsite(websiteId: websiteId, action: action);
     await loadDetail();
+  }
+
+  Future<void> setDefaultServer() async {
+    await _service.changeDefaultServer(websiteId);
+    await loadDetail();
+  }
+
+  Future<void> deleteWebsite() async {
+    await _service.deleteWebsite(websiteId);
   }
 }

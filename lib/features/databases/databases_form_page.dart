@@ -20,6 +20,12 @@ class DatabaseFormPage extends StatefulWidget {
 }
 
 class _DatabaseFormPageState extends State<DatabaseFormPage> {
+  static const _creatableScopes = <DatabaseScope>[
+    DatabaseScope.mysql,
+    DatabaseScope.postgresql,
+    DatabaseScope.remote,
+  ];
+
   late DatabaseScope _scope;
   final _nameController = TextEditingController();
   final _engineController = TextEditingController();
@@ -32,7 +38,7 @@ class _DatabaseFormPageState extends State<DatabaseFormPage> {
   @override
   void initState() {
     super.initState();
-    _scope = widget.initialScope;
+    _scope = _resolveInitialScope(widget.initialScope);
     _engineController.text = _scope.value;
   }
 
@@ -65,7 +71,7 @@ class _DatabaseFormPageState extends State<DatabaseFormPage> {
                     decoration: InputDecoration(
                         labelText: context.l10n.databaseScopeLabel),
                     items: [
-                      for (final scope in DatabaseScope.values)
+                      for (final scope in _creatableScopes)
                         DropdownMenuItem(
                           value: scope,
                           child: Text(scope.value),
@@ -202,5 +208,12 @@ class _DatabaseFormPageState extends State<DatabaseFormPage> {
           ? null
           : _descriptionController.text.trim(),
     );
+  }
+
+  DatabaseScope _resolveInitialScope(DatabaseScope scope) {
+    if (_creatableScopes.contains(scope)) {
+      return scope;
+    }
+    return DatabaseScope.mysql;
   }
 }

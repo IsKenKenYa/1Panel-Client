@@ -128,11 +128,13 @@ class _DatabaseScopeTabView extends StatelessWidget {
                 icon: const Icon(Icons.refresh),
               ),
               IconButton(
-                onPressed: () => Navigator.pushNamed(
-                  context,
-                  AppRoutes.databaseForm,
-                  arguments: {'scope': scope.value},
-                ),
+                onPressed: scope == DatabaseScope.redis
+                    ? null
+                    : () => Navigator.pushNamed(
+                          context,
+                          AppRoutes.databaseForm,
+                          arguments: {'scope': scope.value},
+                        ),
                 tooltip: l10n.commonCreate,
                 icon: const Icon(Icons.add),
               ),

@@ -111,12 +111,14 @@ class BackupOption extends Equatable {
 class RecordSearch extends Equatable {
   final String? name;
   final String? type;
+  final String? detailName;
   final int page;
   final int pageSize;
 
   const RecordSearch({
     this.name,
     this.type,
+    this.detailName,
     this.page = 1,
     this.pageSize = 20,
   });
@@ -125,6 +127,7 @@ class RecordSearch extends Equatable {
     return RecordSearch(
       name: json['name'] as String?,
       type: json['type'] as String?,
+      detailName: json['detailName'] as String?,
       page: json['page'] as int? ?? 1,
       pageSize: json['pageSize'] as int? ?? 20,
     );
@@ -134,13 +137,14 @@ class RecordSearch extends Equatable {
     return {
       'name': name,
       'type': type,
+      'detailName': detailName,
       'page': page,
       'pageSize': pageSize,
     };
   }
 
   @override
-  List<Object?> get props => [name, type, page, pageSize];
+  List<Object?> get props => [name, type, detailName, page, pageSize];
 }
 
 /// 按定时任务搜索备份记录模型
@@ -177,7 +181,6 @@ class RecordSearchByCronjob extends Equatable {
 
 /// 文件大小搜索模型
 class SearchForSize extends RecordSearch {
-  final String? detailName;
   final String? info;
   final String? order;
   final String? orderBy;
@@ -185,9 +188,9 @@ class SearchForSize extends RecordSearch {
   const SearchForSize({
     super.name,
     super.type,
+    super.detailName,
     super.page,
     super.pageSize,
-    this.detailName,
     this.info,
     this.order,
     this.orderBy,
@@ -638,13 +641,19 @@ class BackupRecord extends Equatable {
   final int? id;
   final String name;
   final String type;
+  final String? accountType;
+  final String? accountName;
+  final int? downloadAccountID;
+  final String? fileDir;
   final String? fileName;
   final String? detailName;
   final int? backupAccountId;
   final String? backupPath;
   final int size;
   final String status;
+  final String? taskID;
   final String? message;
+  final String? description;
   final String? createdAt;
   final String? updatedAt;
   final String? backupTime;
@@ -654,13 +663,19 @@ class BackupRecord extends Equatable {
     this.id,
     required this.name,
     required this.type,
+    this.accountType,
+    this.accountName,
+    this.downloadAccountID,
+    this.fileDir,
     this.fileName,
     this.detailName,
     this.backupAccountId,
     this.backupPath,
     required this.size,
     required this.status,
+    this.taskID,
     this.message,
+    this.description,
     this.createdAt,
     this.updatedAt,
     this.backupTime,
@@ -672,13 +687,19 @@ class BackupRecord extends Equatable {
       id: json['id'] as int?,
       name: json['name'] as String,
       type: json['type'] as String,
+      accountType: json['accountType'] as String?,
+      accountName: json['accountName'] as String?,
+      downloadAccountID: json['downloadAccountID'] as int?,
+      fileDir: json['fileDir'] as String?,
       fileName: json['fileName'] as String?,
       detailName: json['detailName'] as String?,
       backupAccountId: json['backupAccountId'] as int?,
       backupPath: json['backupPath'] as String?,
-      size: json['size'] as int,
-      status: json['status'] as String,
+      size: json['size'] as int? ?? 0,
+      status: json['status'] as String? ?? '',
+      taskID: json['taskID'] as String?,
       message: json['message'] as String?,
+      description: json['description'] as String?,
       createdAt: json['createdAt'] as String?,
       updatedAt: json['updatedAt'] as String?,
       backupTime: json['backupTime'] as String?,
@@ -691,13 +712,19 @@ class BackupRecord extends Equatable {
       'id': id,
       'name': name,
       'type': type,
+      'accountType': accountType,
+      'accountName': accountName,
+      'downloadAccountID': downloadAccountID,
+      'fileDir': fileDir,
       'fileName': fileName,
       'detailName': detailName,
       'backupAccountId': backupAccountId,
       'backupPath': backupPath,
       'size': size,
       'status': status,
+      'taskID': taskID,
       'message': message,
+      'description': description,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
       'backupTime': backupTime,
@@ -710,13 +737,19 @@ class BackupRecord extends Equatable {
         id,
         name,
         type,
+        accountType,
+        accountName,
+        downloadAccountID,
+        fileDir,
         fileName,
         detailName,
         backupAccountId,
         backupPath,
         size,
         status,
+        taskID,
         message,
+        description,
         createdAt,
         updatedAt,
         backupTime,

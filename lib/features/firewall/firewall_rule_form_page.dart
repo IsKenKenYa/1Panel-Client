@@ -50,6 +50,7 @@ class _FirewallRuleFormViewState extends State<_FirewallRuleFormView> {
   String _protocol = 'tcp';
   String _strategy = 'accept';
   String _source = 'anyWhere';
+  String? _validationError;
 
   bool get _isPort => widget.arguments.kind == FirewallRuleKind.port;
 
@@ -185,11 +186,24 @@ class _FirewallRuleFormViewState extends State<_FirewallRuleFormView> {
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
             ],
+            if (_validationError != null) ...[
+              const SizedBox(height: AppDesignTokens.spacingMd),
+              Text(
+                _validationError!,
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+            ],
             const SizedBox(height: AppDesignTokens.spacingLg),
             FilledButton(
               onPressed: provider.isSubmitting
                   ? null
                   : () async {
+                      final validationError = _validate(l10n);
+                      if (validationError != null) {
+                        setState(() => _validationError = validationError);
+                        return;
+                      }
+                      setState(() => _validationError = null);
                       final navigator = Navigator.of(context);
                       final ok = _isPort
                           ? await provider.submitPort(
@@ -242,5 +256,16 @@ class _FirewallRuleFormViewState extends State<_FirewallRuleFormView> {
           ? null
           : _descriptionController.text.trim(),
     );
+  }
+
+  String? _validate(AppLocalizations l10n) {
+    if (_isPort && _portController.text.trim().isEmpty) {
+      return l10n.firewallPortRequired;
+    }
+    if ((!_isPort || _source == 'address') &&
+        _addressController.text.trim().isEmpty) {
+      return l10n.firewallAddressRequired;
+    }
+    return null;
   }
 }

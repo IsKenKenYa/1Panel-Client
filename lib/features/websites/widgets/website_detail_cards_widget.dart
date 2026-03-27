@@ -1,0 +1,218 @@
+import 'package:flutter/material.dart';
+
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/data/models/website_models.dart';
+
+import 'website_common_widgets.dart';
+
+class WebsiteOverviewCard extends StatelessWidget {
+  const WebsiteOverviewCard({
+    super.key,
+    required this.website,
+  });
+
+  final WebsiteInfo? website;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final colorScheme = Theme.of(context).colorScheme;
+    final status = website?.status ?? '-';
+    final isRunning = status.toLowerCase() == 'running';
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    website?.displayDomain ?? l10n.websitesUnknownDomain,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: isRunning
+                        ? colorScheme.tertiaryContainer
+                        : colorScheme.errorContainer,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Text(
+                    isRunning
+                        ? l10n.websitesStatusRunning
+                        : l10n.websitesStatusStopped,
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: isRunning
+                              ? colorScheme.onTertiaryContainer
+                              : colorScheme.onErrorContainer,
+                        ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text('${l10n.websitesTypeLabel}: ${website?.type ?? '-'}'),
+            Text('${l10n.websitesProtocolLabel}: ${website?.protocol ?? '-'}'),
+            Text('${l10n.websitesSitePathLabel}: ${website?.sitePath ?? '-'}'),
+            Text('${l10n.websitesGroupLabel}: ${website?.group ?? '-'}'),
+            Text('${l10n.websitesRemarkLabel}: ${website?.remark ?? '-'}'),
+            Text(
+              '${l10n.websitesRuntimeLabel}: ${website?.runtimeName ?? website?.runtimeTypeName ?? '-'}',
+            ),
+            Text(
+              '${l10n.websitesDefaultServerLabel}: ${(website?.defaultServer ?? false) ? l10n.commonYes : l10n.commonNo}',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class WebsiteActionCard extends StatelessWidget {
+  const WebsiteActionCard({
+    super.key,
+    required this.website,
+    required this.onOperate,
+    required this.onEdit,
+    required this.onSetDefault,
+    required this.onDelete,
+  });
+
+  final WebsiteInfo? website;
+  final Future<void> Function(String action) onOperate;
+  final VoidCallback onEdit;
+  final Future<void> Function() onSetDefault;
+  final Future<void> Function() onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final isRunning = website?.status?.toLowerCase() == 'running';
+    final isDefault = website?.defaultServer ?? false;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n.websitesDetailActionsTitle,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 12,
+              runSpacing: 8,
+              children: [
+                FilledButton.icon(
+                  onPressed: isRunning ? null : () => onOperate('start'),
+                  icon: const Icon(Icons.play_arrow),
+                  label: Text(l10n.websitesActionStart),
+                ),
+                FilledButton.icon(
+                  onPressed: isRunning ? () => onOperate('stop') : null,
+                  icon: const Icon(Icons.stop),
+                  label: Text(l10n.websitesActionStop),
+                ),
+                OutlinedButton.icon(
+                  onPressed: isRunning ? () => onOperate('restart') : null,
+                  icon: const Icon(Icons.refresh),
+                  label: Text(l10n.websitesActionRestart),
+                ),
+                OutlinedButton.icon(
+                  onPressed: onEdit,
+                  icon: const Icon(Icons.edit_outlined),
+                  label: Text(l10n.commonEdit),
+                ),
+                OutlinedButton.icon(
+                  onPressed: isDefault ? null : onSetDefault,
+                  icon: const Icon(Icons.star_outline),
+                  label: Text(l10n.websitesSetDefaultAction),
+                ),
+                OutlinedButton.icon(
+                  onPressed: onDelete,
+                  icon: const Icon(Icons.delete_outline),
+                  label: Text(l10n.commonDelete),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class WebsiteWorkbenchCard extends StatelessWidget {
+  const WebsiteWorkbenchCard({
+    super.key,
+    required this.websiteId,
+    required this.website,
+    required this.onOpenConfig,
+    required this.onOpenDomains,
+    required this.onOpenSsl,
+    required this.onOpenRouting,
+    required this.onOpenOpenResty,
+  });
+
+  final int websiteId;
+  final WebsiteInfo? website;
+  final VoidCallback onOpenConfig;
+  final VoidCallback onOpenDomains;
+  final VoidCallback onOpenSsl;
+  final VoidCallback onOpenRouting;
+  final VoidCallback onOpenOpenResty;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return Card(
+      child: Column(
+        children: [
+          WebsiteWorkbenchEntryTile(
+            title: l10n.websitesConfigPageTitle,
+            subtitle: l10n.websitesConfigPageSubtitle,
+            icon: Icons.tune,
+            onTap: onOpenConfig,
+          ),
+          const Divider(height: 1),
+          WebsiteWorkbenchEntryTile(
+            title: l10n.websitesDomainsPageTitle,
+            subtitle: l10n.websitesDomainsPageSubtitle,
+            icon: Icons.language_outlined,
+            onTap: onOpenDomains,
+          ),
+          const Divider(height: 1),
+          WebsiteWorkbenchEntryTile(
+            title: l10n.websitesSslPageTitle,
+            subtitle: l10n.websitesSslPageSubtitle,
+            icon: Icons.verified_user_outlined,
+            onTap: onOpenSsl,
+          ),
+          const Divider(height: 1),
+          WebsiteWorkbenchEntryTile(
+            title: '${l10n.websitesTabProxy} / ${l10n.websitesTabRewrite}',
+            subtitle: l10n.websitesConfigScopeTitle,
+            icon: Icons.route_outlined,
+            onTap: onOpenRouting,
+          ),
+          const Divider(height: 1),
+          WebsiteWorkbenchEntryTile(
+            title: l10n.openrestyPageTitle,
+            subtitle: l10n.websitesOpenrestySubtitle,
+            icon: Icons.settings_suggest_outlined,
+            onTap: onOpenOpenResty,
+          ),
+        ],
+      ),
+    );
+  }
+}

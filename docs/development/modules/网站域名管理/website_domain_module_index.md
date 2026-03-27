@@ -7,7 +7,7 @@
 ## S2-0 基线（2026-03-26）
 
 - 当前状态：
-  当前仅覆盖 `list / add / delete / ssl toggle`，更新入口、默认域名、批量录入、格式校验、解析提示仍缺失。
+  当前已覆盖 `list / add / edit / delete / ssl toggle + local validation`，批量录入、默认域名写操作、解析提示仍缺失。
 - 阶段 2 hard scope：
   `domain CRUD + validation`
 - API 基线：
@@ -23,23 +23,23 @@
 
 - 入口: `lib/features/websites/websites_page.dart` -> `lib/features/websites/website_detail_page.dart` -> 域名管理页。
 - 当前支持域名列表、添加域名、删除域名、SSL 开关。
-- 域名更新、默认域名设置、DNS 解析校验与批量管理能力缺失。
+- 当前已支持域名更新与本地校验。
+- 默认域名设置、DNS 解析校验与批量管理能力缺失。
 
 ## 严格审计状态 (2026-03-20)
 
 - 结论: `不完整适配`
 - 当前移动端已形成独立 `WebsiteDomainManagementPage` MVP，并覆盖 4 个域名基础接口中的列表、添加、删除、SSL 开关。
 - 主要缺口:
-  - 域名更新入口缺失
-  - 批量域名录入与格式校验缺失
+  - 批量域名录入缺失
   - 默认域名与解析状态提示未形成完整流程
   - 缺少与上游一致的风险提示和域名编辑体验
 - 详情见: `../网站管理-OpenResty/website_strict_audit_2026-03-20.md`
 
 ## 待改进项
 
-- 增加域名更新与默认域名设置入口。
-- 增加域名解析状态提示与格式校验。
+- 增加默认域名设置入口。
+- 增加域名解析状态提示。
 - 支持批量域名操作与搜索筛选。
 
 ## 重复代码检查

@@ -1,4 +1,5 @@
 import '../../core/services/base_component.dart';
+import '../../api/v2/firewall_v2.dart';
 import '../../data/models/common_models.dart';
 import '../../data/models/firewall_models.dart';
 import '../../data/repositories/firewall_repository.dart';
@@ -40,11 +41,16 @@ class FirewallService extends BaseComponent
 
   final FirewallRepository _repository;
 
+  Future<FirewallV2Api> _loadApi() async {
+    final client = await clientManager.getCurrentClient();
+    return FirewallV2Api(client);
+  }
+
   @override
   Future<FirewallBaseInfo> loadBaseInfo({String tab = 'base'}) async {
     return runGuarded(() async {
-      final client = await clientManager.getCurrentClient();
-      return _repository.loadBaseInfo(client, tab: tab);
+      final api = await _loadApi();
+      return _repository.loadBaseInfo(api, tab: tab);
     });
   }
 
@@ -57,7 +63,7 @@ class FirewallService extends BaseComponent
     String? strategy,
   }) async {
     return runGuarded(() async {
-      final client = await clientManager.getCurrentClient();
+      final api = await _loadApi();
       final request = FirewallRuleSearch(
         page: page,
         pageSize: pageSize,
@@ -65,63 +71,63 @@ class FirewallService extends BaseComponent
         strategy: strategy,
         info: info,
       );
-      return _repository.searchRules(client, request);
+      return _repository.searchRules(api, request);
     });
   }
 
   @override
   Future<void> operateFirewall({required FirewallOperation operation}) async {
     return runGuarded(() async {
-      final client = await clientManager.getCurrentClient();
-      await _repository.operateFirewall(client, operation);
+      final api = await _loadApi();
+      await _repository.operateFirewall(api, operation);
     });
   }
 
   @override
   Future<void> createPortRule(FirewallPortRulePayload payload) async {
     return runGuarded(() async {
-      final client = await clientManager.getCurrentClient();
-      await _repository.operatePortRule(client, payload);
+      final api = await _loadApi();
+      await _repository.operatePortRule(api, payload);
     });
   }
 
   @override
   Future<void> updatePortRule(FirewallUpdatePortRequest request) async {
     return runGuarded(() async {
-      final client = await clientManager.getCurrentClient();
-      await _repository.updatePortRule(client, request);
+      final api = await _loadApi();
+      await _repository.updatePortRule(api, request);
     });
   }
 
   @override
   Future<void> createIpRule(FirewallIpRulePayload payload) async {
     return runGuarded(() async {
-      final client = await clientManager.getCurrentClient();
-      await _repository.operateIpRule(client, payload);
+      final api = await _loadApi();
+      await _repository.operateIpRule(api, payload);
     });
   }
 
   @override
   Future<void> updateIpRule(FirewallUpdateIpRequest request) async {
     return runGuarded(() async {
-      final client = await clientManager.getCurrentClient();
-      await _repository.updateIpRule(client, request);
+      final api = await _loadApi();
+      await _repository.updateIpRule(api, request);
     });
   }
 
   @override
   Future<void> updateDescription(FirewallDescriptionUpdate request) async {
     return runGuarded(() async {
-      final client = await clientManager.getCurrentClient();
-      await _repository.updateDescription(client, request);
+      final api = await _loadApi();
+      await _repository.updateDescription(api, request);
     });
   }
 
   @override
   Future<void> deleteRules(FirewallBatchRuleRequest request) async {
     return runGuarded(() async {
-      final client = await clientManager.getCurrentClient();
-      await _repository.batchOperate(client, request);
+      final api = await _loadApi();
+      await _repository.batchOperate(api, request);
     });
   }
 }

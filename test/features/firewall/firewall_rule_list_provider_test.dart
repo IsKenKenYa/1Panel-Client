@@ -11,6 +11,7 @@ class _FakeFirewallRuleService implements FirewallServiceInterface {
   int lastPageSize = 0;
   String? lastType;
   String? lastInfo;
+  String? lastStrategy;
   FirewallBatchRuleRequest? lastDeleteRequest;
   FirewallDescriptionUpdate? lastDescriptionUpdate;
   FirewallUpdateIpRequest? lastIpUpdate;
@@ -39,6 +40,7 @@ class _FakeFirewallRuleService implements FirewallServiceInterface {
     lastPageSize = pageSize;
     lastType = type;
     lastInfo = info;
+    lastStrategy = strategy;
     return PageResult(items: [_rule], total: 1);
   }
 
@@ -97,6 +99,20 @@ void main() {
     expect(service.lastPageSize, 5);
     expect(service.lastInfo, 'hello');
     expect(service.lastType, isNull);
+  });
+
+  test('FirewallRulesProvider passes strategy and keeps it on refresh',
+      () async {
+    final service = _FakeFirewallRuleService();
+    final provider = FirewallRulesProvider(service: service);
+    await provider.load(search: 'ssh', strategy: 'drop');
+
+    expect(service.lastInfo, 'ssh');
+    expect(service.lastStrategy, 'drop');
+
+    await provider.refresh();
+    expect(service.lastInfo, 'ssh');
+    expect(service.lastStrategy, 'drop');
   });
 
   test('FirewallIpProvider attaches type filter', () async {

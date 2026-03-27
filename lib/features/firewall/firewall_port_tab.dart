@@ -8,6 +8,7 @@ import 'package:onepanel_client/shared/widgets/app_card.dart';
 
 import 'firewall_rule_form_page.dart';
 import 'providers/firewall_rule_list_provider.dart';
+import 'widgets/firewall_rule_list_controls_widget.dart';
 import 'widgets/firewall_tab_error.dart';
 
 class FirewallPortTab extends StatefulWidget {
@@ -19,6 +20,10 @@ class FirewallPortTab extends StatefulWidget {
 
 class _FirewallPortTabState extends State<FirewallPortTab> {
   bool _initialized = false;
+  final TextEditingController _searchController = TextEditingController();
+  final Set<FirewallRule> _selected = <FirewallRule>{};
+  String _strategyFilter = 'all';
+  bool _selectionMode = false;
 
   @override
   void initState() {
@@ -28,8 +33,14 @@ class _FirewallPortTabState extends State<FirewallPortTab> {
         return;
       }
       _initialized = true;
-      context.read<FirewallPortsProvider>().load();
+      _loadRules();
     });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -58,55 +69,147 @@ class _FirewallPortTabState extends State<FirewallPortTab> {
             const SizedBox(height: AppDesignTokens.spacingSm),
         itemBuilder: (context, index) {
           if (index == 0) {
-            return Align(
-              alignment: Alignment.centerRight,
-              child: OutlinedButton.icon(
-                onPressed: () => Navigator.pushNamed(
-                  context,
-                  AppRoutes.firewallRuleForm,
-                  arguments: FirewallRuleFormArguments(
-                    kind: FirewallRuleKind.port,
-                  ),
+            return FirewallRuleListControls(
+              searchController: _searchController,
+              strategyFilter: _strategyFilter,
+              isSelectionMode: _selectionMode,
+              selectedCount: _selected.length,
+              isMutating: provider.isMutating,
+              onSearch: _loadRules,
+              onStrategyChanged: _onStrategyChanged,
+              onToggleSelectionMode: _toggleSelectionMode,
+              onCreate: () => Navigator.pushNamed(
+                context,
+                AppRoutes.firewallRuleForm,
+                arguments: const FirewallRuleFormArguments(
+                  kind: FirewallRuleKind.port,
                 ),
-                icon: const Icon(Icons.add),
-                label: Text(l10n.commonCreate),
               ),
+              onDeleteSelected: () => _deleteSelected(provider),
+              onAcceptSelected: () => _toggleSelected(provider, 'accept'),
+              onDropSelected: () => _toggleSelected(provider, 'drop'),
             );
           }
           final rule = provider.items[index - 1];
+          final selected = _selected.contains(rule);
           return AppCard(
             title: rule.description ??
                 '${l10n.firewallPortLabel} ${rule.port ?? '—'}',
+            leading: _selectionMode
+                ? Checkbox(
+                    value: selected,
+                    onChanged: provider.isMutating
+                        ? null
+                        : (_) => _toggleRuleSelection(rule),
+                  )
+                : null,
             subtitle: Text(
               '${l10n.firewallProtocolLabel}: ${rule.protocol ?? '-'}',
             ),
-            trailing: PopupMenuButton<String>(
-              onSelected: (value) => _handleAction(
-                context,
-                provider,
-                rule,
-                value,
-              ),
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  value: 'edit',
-                  child: Text(l10n.commonEdit),
-                ),
-                PopupMenuItem(
-                  value: 'toggle',
-                  child: Text(l10n.firewallToggleStrategyAction),
-                ),
-                PopupMenuItem(
-                  value: 'delete',
-                  child: Text(l10n.commonDelete),
-                ),
-              ],
-            ),
+            trailing: _selectionMode
+                ? null
+                : PopupMenuButton<String>(
+                    onSelected: (value) => _handleAction(
+                      context,
+                      provider,
+                      rule,
+                      value,
+                    ),
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        value: 'edit',
+                        child: Text(l10n.commonEdit),
+                      ),
+                      PopupMenuItem(
+                        value: 'toggle',
+                        child: Text(l10n.firewallToggleStrategyAction),
+                      ),
+                      PopupMenuItem(
+                        value: 'delete',
+                        child: Text(l10n.commonDelete),
+                      ),
+                    ],
+                  ),
+            onTap: _selectionMode ? () => _toggleRuleSelection(rule) : null,
             child: Text('${l10n.firewallAddressLabel}: ${rule.address ?? '-'}'),
           );
         },
       ),
     );
+  }
+
+  Future<void> _loadRules() async {
+    if (!mounted) {
+      return;
+    }
+    final provider = context.read<FirewallPortsProvider>();
+    await provider.load(
+      search: _searchController.text.trim().isEmpty
+          ? null
+          : _searchController.text.trim(),
+      strategy: _strategyFilter == 'all' ? null : _strategyFilter,
+    );
+    if (!mounted) {
+      return;
+    }
+    setState(_selected.clear);
+  }
+
+  Future<void> _onStrategyChanged(String value) async {
+    setState(() {
+      _strategyFilter = value;
+    });
+    await _loadRules();
+  }
+
+  void _toggleSelectionMode() {
+    setState(() {
+      _selectionMode = !_selectionMode;
+      if (!_selectionMode) {
+        _selected.clear();
+      }
+    });
+  }
+
+  void _toggleRuleSelection(FirewallRule rule) {
+    setState(() {
+      if (_selected.contains(rule)) {
+        _selected.remove(rule);
+      } else {
+        _selected.add(rule);
+      }
+    });
+  }
+
+  Future<void> _deleteSelected(FirewallPortsProvider provider) async {
+    if (_selected.isEmpty) {
+      return;
+    }
+    await provider.deleteRules(_selected.toList(growable: false));
+    if (!mounted) {
+      return;
+    }
+    setState(_selected.clear);
+  }
+
+  Future<void> _toggleSelected(
+    FirewallPortsProvider provider,
+    String strategy,
+  ) async {
+    if (_selected.isEmpty) {
+      return;
+    }
+    for (final rule in _selected) {
+      final current = (rule.strategy ?? '').toLowerCase();
+      if (current == strategy) {
+        continue;
+      }
+      await provider.toggleStrategy(rule, strategy);
+    }
+    if (!mounted) {
+      return;
+    }
+    setState(_selected.clear);
   }
 
   Future<void> _handleAction(
@@ -138,6 +241,9 @@ class _FirewallPortTabState extends State<FirewallPortTab> {
       case 'delete':
         await provider.deleteRules([rule]);
         break;
+    }
+    if (mounted) {
+      setState(_selected.clear);
     }
   }
 }

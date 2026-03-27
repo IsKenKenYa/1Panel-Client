@@ -142,24 +142,62 @@ class _OperationButtons extends StatelessWidget {
       children: [
         ElevatedButton(
           onPressed: !isActive && !provider.busy
-              ? () => provider.operate(operation: 'start')
+              ? () => _confirmAndOperate(context, operation: 'start')
               : null,
           child: Text(l10n.commonStart),
         ),
         ElevatedButton(
           onPressed: isActive && !provider.busy
-              ? () => provider.operate(operation: 'stop')
+              ? () => _confirmAndOperate(context, operation: 'stop')
               : null,
           child: Text(l10n.commonStop),
         ),
         ElevatedButton(
           onPressed: provider.busy
               ? null
-              : () => provider.operate(operation: 'restart'),
+              : () => _confirmAndOperate(context, operation: 'restart'),
           child: Text(l10n.commonRestart),
         ),
       ],
     );
+  }
+
+  Future<void> _confirmAndOperate(
+    BuildContext context, {
+    required String operation,
+  }) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(context.l10n.firewallOperationConfirmTitle),
+        content: Text(_messageFor(context, operation)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(context.l10n.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(context.l10n.commonConfirm),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true && context.mounted) {
+      await provider.operate(operation: operation);
+    }
+  }
+
+  String _messageFor(BuildContext context, String operation) {
+    switch (operation) {
+      case 'start':
+        return context.l10n.firewallStartConfirmMessage;
+      case 'stop':
+        return context.l10n.firewallStopConfirmMessage;
+      case 'restart':
+      default:
+        return context.l10n.firewallRestartConfirmMessage;
+    }
   }
 }
 

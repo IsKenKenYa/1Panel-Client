@@ -1,5 +1,10 @@
 # 防火墙管理模块架构设计
 
+> 2026-03-26 修正：
+> 本文下方部分路径与页面缺口描述来自早期规划，当前实际实现已切到 `/hosts/firewall/*`。
+> 当前阶段二实施以 `firewall_api_analysis.md/.json`、`阶段2计划.md` 与运行时代码为准。
+> 已落地能力为 `status / rules / ip / ports / rule form`，并已有 provider/widget/integration/api client 测试。
+
 ## 模块目标
 
 - 适配 Open1PanelApp 作为 1Panel Linux 运维面板社区版的定位
@@ -105,11 +110,12 @@
 
 ## 与现有实现的差距
 
-- 防火墙服务管理页面缺失
-- 规则管理页面缺失
-- IP管理页面缺失
-- 端口管理页面缺失
-- 日志查看功能缺失
+- `status / rules / ip / ports` 页面已落地
+- `FirewallPage` 已切到 server-aware 入口模式
+- 危险操作二次确认已补
+- 规则表单最小必填校验已补
+- 列表页搜索 / strategy 筛选 / 选择模式 / 批量删除 / 批量策略切换已补
+- repository 已收口到 `FirewallV2Api`
 
 ## 评审记录
 

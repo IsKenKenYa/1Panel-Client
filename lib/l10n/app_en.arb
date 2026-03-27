@@ -39,8 +39,44 @@
   "websitesActionStop": "Stop",
   "websitesActionRestart": "Restart",
   "websitesActionDelete": "Delete",
+  "websitesSetDefaultAction": "Set Default",
+  "websitesDefaultServerLabel": "Default server",
+  "websitesGroupLabel": "Group",
+  "websitesRemarkLabel": "Remark",
+  "websitesAliasLabel": "Alias",
+  "websitesPrimaryDomainLabel": "Primary domain",
+  "websitesProxyAddressLabel": "Proxy address",
+  "websitesProxyTypeLabel": "Proxy type",
+  "websitesParentWebsiteLabel": "Parent website",
+  "websitesSiteDirLabel": "Site directory",
+  "websitesFilterAllGroups": "All groups",
+  "websitesFilterAllTypes": "All types",
+  "websitesSelectionEnable": "Select",
+  "websitesSelectionDisable": "Cancel selection",
+  "websitesSetGroupAction": "Set Group",
+  "websitesLifecycleCreateTitle": "Create Website",
+  "websitesLifecycleEditTitle": "Edit Website",
+  "websitesLifecycleTypeLabel": "Website type",
+  "websitesLifecycleTypeRuntime": "Runtime",
+  "websitesLifecycleTypeProxy": "Proxy",
+  "websitesLifecycleTypeSubsite": "Subsite",
+  "websitesLifecycleTypeStatic": "Static",
+  "websitesValidationGroupRequired": "Select a website group.",
+  "websitesValidationPrimaryDomainRequired": "Primary domain is required.",
+  "websitesValidationAliasRequired": "Alias is required.",
+  "websitesValidationRuntimeRequired": "Select a runtime.",
+  "websitesValidationProxyRequired": "Proxy address is required.",
+  "websitesValidationParentRequired": "Select a parent website.",
   "websitesOperateSuccess": "Operation successful",
   "websitesOperateFailed": "Operation failed",
+  "websitesSelectedCount": "{count} selected",
+  "@websitesSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "websitesLoadFailedMessage": "{error}",
   "@websitesLoadFailedMessage": {
     "placeholders": {
@@ -60,6 +96,14 @@
     }
   },
   "websitesDeleteSuccess": "Website deleted",
+  "websitesBatchDeleteMessage": "Delete {count} websites? This action cannot be undone.",
+  "@websitesBatchDeleteMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "websitesDetailTitle": "Website",
   "websitesTabOverview": "Overview",
   "websitesTabConfig": "Config",
@@ -77,10 +121,22 @@
   "websitesConfigHint": "Nginx config content",
   "websitesJsonHint": "JSON content",
   "websitesDomainAddTitle": "Add domain",
+  "websitesDomainEditTitle": "Edit domain",
   "websitesDomainLabel": "Domain",
   "websitesDomainEmpty": "No domains",
   "websitesDomainDefault": "Default",
   "websitesDomainSslLabel": "SSL",
+  "websitesDomainValidationRequired": "Domain is required.",
+  "websitesDomainValidationPort": "Port must be between 1 and 65535.",
+  "websitesDomainValidationDuplicate": "This domain already exists.",
+  "websitesDomainDeleteMessage": "Delete domain {domain}?",
+  "@websitesDomainDeleteMessage": {
+    "placeholders": {
+      "domain": {
+        "type": "String"
+      }
+    }
+  },
   "websitesRewriteNameLabel": "Rewrite name",
   "websitesRewriteHint": "Rewrite content",
   "websitesProxyNameLabel": "Proxy name",
@@ -107,6 +163,8 @@
   "websitesDetailActionsTitle": "Quick actions",
   "websitesConfigPageTitle": "Config",
   "websitesConfigPageSubtitle": "Nginx config & PHP version",
+  "websitesBasicConfigTitle": "Basic",
+  "websitesBasicConfigDatabaseTitle": "Database binding",
   "websitesDomainsPageTitle": "Domains",
   "websitesDomainsPageSubtitle": "Bind and manage domains",
   "websitesSslPageTitle": "SSL certificates",
@@ -274,6 +332,25 @@
   "databaseRedisPersistenceTitle": "Redis Persistence",
   "databaseRedisAppendOnlyLabel": "Append Only",
   "databaseRedisSaveLabel": "Save Policy",
+  "databaseManageTitle": "Manage",
+  "databaseBackupsPageTitle": "Backups",
+  "databaseUsersPageTitle": "Users",
+  "databaseBackupCreateAction": "Create Backup",
+  "databaseBackupRestoreAction": "Restore Backup",
+  "databaseBackupDeleteAction": "Delete Backup",
+  "databaseBackupSecretLabel": "Compression Password",
+  "databaseBackupEmpty": "No backup records yet.",
+  "databaseBackupUnsupported": "Backups are not supported for this database type.",
+  "databaseBackupRestoreConfirmMessage": "Restore this backup record? Existing data may be overwritten.",
+  "databaseBackupDeleteConfirmMessage": "Delete this backup record? This action cannot be undone.",
+  "databaseUserCurrentLabel": "Current User",
+  "databaseUserPermissionLabel": "Permission",
+  "databaseUserSuperUserLabel": "Superuser",
+  "databaseUserBindAction": "Bind User",
+  "databaseUserPrivilegesAction": "Update Privileges",
+  "databaseUserNoBinding": "No bound user information is available yet.",
+  "databaseUserUnsupported": "User management is not supported for this database type.",
+  "databasePrivilegeUnavailable": "Privileges can be adjusted after a user is bound.",
   "firewallTabStatus": "Status",
   "firewallTabRules": "Rules",
   "firewallTabIps": "IPs",
@@ -298,9 +375,30 @@
   "firewallSourceAddress": "Address",
   "firewallStrategyAccept": "Accept",
   "firewallStrategyDrop": "Drop",
+  "firewallStrategyAll": "All",
+  "firewallSearchHint": "Search by description, address, or port",
+  "firewallSelectionModeEnable": "Select",
+  "firewallSelectionModeDisable": "Done",
+  "firewallBatchDeleteAction": "Batch Delete",
+  "firewallBatchAcceptAction": "Batch Accept",
+  "firewallBatchDropAction": "Batch Drop",
+  "firewallSelectedCount": "{count} selected",
+  "@firewallSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "firewallCreatePortRuleAction": "Create Port Rule",
   "firewallCreateIpRuleAction": "Create IP Rule",
   "firewallToggleStrategyAction": "Toggle Strategy",
+  "firewallOperationConfirmTitle": "Confirm firewall change",
+  "firewallStartConfirmMessage": "Start the firewall service? New rules will begin taking effect immediately.",
+  "firewallStopConfirmMessage": "Stop the firewall service? This may expose services without packet filtering.",
+  "firewallRestartConfirmMessage": "Restart the firewall service? Existing connections may be interrupted briefly.",
+  "firewallAddressRequired": "Address is required.",
+  "firewallPortRequired": "Port is required.",
   "serverModuleTerminal": "Terminal",
   "serverModuleMonitoring": "Monitoring",
   "serverModuleFiles": "File Manager",
