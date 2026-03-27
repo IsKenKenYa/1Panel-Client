@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanel_client/api/v2/website_v2.dart';
 import 'package:onepanel_client/api/v2/ssl_v2.dart';
+import 'package:onepanel_client/api/v2/website_v2.dart';
 import 'package:onepanel_client/core/config/api_constants.dart';
 import 'package:onepanel_client/core/network/dio_client.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
@@ -159,6 +159,138 @@ void main() {
       } catch (e) {
         appLogger.wWithPackage('test.api_client.website_ssl', '站点未绑定证书或接口返回异常: $e');
       }
+    });
+
+    test('POST /websites/:id/https 更新当前配置应支持 destructive gate', () async {
+      final skipReason = TestEnvironment.skipIntegration();
+      final destructiveSkip = TestEnvironment.skipDestructive();
+      if (skipReason != null || destructiveSkip != null) {
+        appLogger.wWithPackage(
+          'test.api_client.website_ssl',
+          '跳过测试: ${skipReason ?? destructiveSkip}',
+        );
+        return;
+      }
+
+      final websites = await api.getWebsites(page: 1, pageSize: 1);
+      if (websites.items.isEmpty || websites.items.first.id == null) {
+        return;
+      }
+
+      final websiteId = websites.items.first.id!;
+      final https = await api.getWebsiteHttps(websiteId);
+      await api.updateWebsiteHttps(
+        websiteId: websiteId,
+        request: WebsiteHttpsUpdateRequest(
+          websiteId: websiteId,
+          enable: https.enable,
+          httpConfig: https.httpConfig,
+          type: 'existed',
+          websiteSSLId: https.ssl?.id,
+          hsts: https.hsts,
+          hstsIncludeSubDomains: https.hstsIncludeSubDomains,
+          http3: https.http3,
+          algorithm: https.algorithm,
+          sslProtocol: https.sslProtocol,
+        ),
+      );
+    });
+
+    test('POST /websites/ssl/update 回放当前证书应支持 destructive gate', () async {
+      final skipReason = TestEnvironment.skipIntegration();
+      final destructiveSkip = TestEnvironment.skipDestructive();
+      if (skipReason != null || destructiveSkip != null) {
+        appLogger.wWithPackage(
+          'test.api_client.website_ssl',
+          '跳过测试: ${skipReason ?? destructiveSkip}',
+        );
+        return;
+      }
+
+      final resp = await sslApi.searchWebsiteSSL(
+        const WebsiteSSLSearch(page: 1, pageSize: 5),
+      );
+      final cert = resp.data?.items.firstOrNull;
+      if (cert == null || cert.id == null || cert.primaryDomain == null || cert.provider == null) {
+        return;
+      }
+
+      await sslApi.updateWebsiteSSL(
+        WebsiteSSLUpdate(
+          id: cert.id!,
+          primaryDomain: cert.primaryDomain!,
+          provider: cert.provider!,
+          autoRenew: cert.autoRenew,
+          description: cert.description,
+          otherDomains: cert.domains?.skip(1).join(','),
+        ),
+      );
+    });
+
+    test('POST /websites/ssl/create+delete 使用环境变量时应成功', () async {
+      final skipReason = TestEnvironment.skipIntegration();
+      final destructiveSkip = TestEnvironment.skipDestructive();
+      if (skipReason != null || destructiveSkip != null) {
+        appLogger.wWithPackage(
+          'test.api_client.website_ssl',
+          '跳过测试: ${skipReason ?? destructiveSkip}',
+        );
+        return;
+      }
+
+      final acmeId = int.tryParse(Platform.environment['TEST_ACME_ACCOUNT_ID'] ?? '');
+      final domain = Platform.environment['TEST_SSL_DOMAIN'] ?? '';
+      final providerName = Platform.environment['TEST_SSL_PROVIDER'] ?? '';
+      if (acmeId == null || domain.isEmpty || providerName.isEmpty) {
+        appLogger.wWithPackage('test.api_client.website_ssl', '缺少 TEST_ACME_ACCOUNT_ID / TEST_SSL_DOMAIN / TEST_SSL_PROVIDER');
+        return;
+      }
+
+      await sslApi.createWebsiteSSL(
+        WebsiteSSLCreate(
+          acmeAccountId: acmeId,
+          primaryDomain: domain,
+          provider: providerName,
+        ),
+      );
+
+      final search = await sslApi.searchWebsiteSSL(
+        WebsiteSSLSearch(page: 1, pageSize: 10, domain: domain),
+      );
+      final created = search.data?.items.where((item) => item.primaryDomain == domain).toList() ?? const <WebsiteSSL>[];
+      if (created.isEmpty || created.first.id == null) {
+        return;
+      }
+
+      await sslApi.deleteWebsiteSSL([created.first.id!]);
+    });
+
+    test('POST /websites/ssl/upload 使用环境变量证书时应成功', () async {
+      final skipReason = TestEnvironment.skipIntegration();
+      final destructiveSkip = TestEnvironment.skipDestructive();
+      if (skipReason != null || destructiveSkip != null) {
+        appLogger.wWithPackage(
+          'test.api_client.website_ssl',
+          '跳过测试: ${skipReason ?? destructiveSkip}',
+        );
+        return;
+      }
+
+      final cert = Platform.environment['TEST_WEBSITE_SSL_CERT'] ?? '';
+      final key = Platform.environment['TEST_WEBSITE_SSL_KEY'] ?? '';
+      if (cert.isEmpty || key.isEmpty) {
+        appLogger.wWithPackage('test.api_client.website_ssl', '缺少 TEST_WEBSITE_SSL_CERT / TEST_WEBSITE_SSL_KEY');
+        return;
+      }
+
+      await sslApi.uploadSSL(
+        WebsiteSSLUpload(
+          type: 'paste',
+          certificate: cert,
+          privateKey: key,
+          description: 's2-3 upload smoke test',
+        ),
+      );
     });
   });
 }

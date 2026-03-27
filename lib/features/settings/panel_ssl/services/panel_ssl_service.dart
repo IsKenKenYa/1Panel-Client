@@ -35,9 +35,10 @@ class PanelSslService {
     ));
   }
 
-  Future<void> downloadSsl() async {
+  Future<List<int>> downloadSsl() async {
     final apiClient = await _ensureApi();
-    await apiClient.downloadSSL();
+    final response = await apiClient.downloadSSL();
+    return response.data ?? const <int>[];
   }
 
   Map<String, dynamic> _normalizeToMap(dynamic value) {

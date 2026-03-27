@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/features/security_gateway/pages/security_gateway_center_page.dart';
+import 'package:onepanel_client/features/security_gateway/providers/security_gateway_center_provider.dart';
 
 import '../providers/website_detail_provider.dart';
 import '../widgets/website_common_widgets.dart';
@@ -11,7 +13,6 @@ import '../widgets/website_workbench_card_widget.dart';
 import 'website_config_center_page.dart';
 import 'website_domain_management_page.dart';
 import 'website_routing_rules_page.dart';
-import 'website_site_ssl_page.dart';
 
 class WebsiteDetailPage extends StatelessWidget {
   const WebsiteDetailPage({
@@ -39,8 +40,8 @@ class _WebsiteDetailBody extends StatelessWidget {
     return Consumer<WebsiteDetailProvider>(
       builder: (context, provider, _) {
         final website = provider.website;
-        final title =
-            website?.displayDomain ?? '${l10n.websitesDetailTitle} #${provider.websiteId}';
+        final title = website?.displayDomain ??
+            '${l10n.websitesDetailTitle} #${provider.websiteId}';
 
         if (provider.isLoading && website == null) {
           return Scaffold(
@@ -70,8 +71,15 @@ class _WebsiteDetailBody extends StatelessWidget {
               ),
               IconButton(
                 icon: const Icon(Icons.settings_outlined),
-                onPressed: () =>
-                    Navigator.pushNamed(context, AppRoutes.openrestyCenter),
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => SecurityGatewayCenterPage(
+                      initialSection: SecurityGatewaySection.openresty,
+                      initialWebsiteId: provider.websiteId,
+                      displayName: website?.displayDomain,
+                    ),
+                  ),
+                ),
                 tooltip: l10n.openrestyPageTitle,
               ),
             ],
@@ -110,8 +118,10 @@ class _WebsiteDetailBody extends StatelessWidget {
                 ),
                 onOpenSsl: () => Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) => WebsiteSiteSslPage(
-                      websiteId: provider.websiteId,
+                    builder: (_) => SecurityGatewayCenterPage(
+                      initialSection:
+                          SecurityGatewaySection.websiteCertificates,
+                      initialWebsiteId: provider.websiteId,
                       displayName: website?.displayDomain,
                     ),
                   ),
@@ -124,8 +134,15 @@ class _WebsiteDetailBody extends StatelessWidget {
                     ),
                   ),
                 ),
-                onOpenOpenResty: () =>
-                    Navigator.pushNamed(context, AppRoutes.openrestyCenter),
+                onOpenOpenResty: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => SecurityGatewayCenterPage(
+                      initialSection: SecurityGatewaySection.openresty,
+                      initialWebsiteId: provider.websiteId,
+                      displayName: website?.displayDomain,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),

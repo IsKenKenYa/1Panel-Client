@@ -156,5 +156,24 @@ void main() {
       final response = await api.getOpenRestyScope(OpenrestyScopeRequest(scope: NginxKey.indexKey, websiteId: websiteId));
       _logSection('✅ Parsed /openresty/scope', response: response.data?.map((e) => e.toJson()).toList());
     });
+
+    test('POST /openresty/build 应支持 destructive gate', () async {
+      final skipReason = TestEnvironment.skipIntegration();
+      final destructiveSkip = TestEnvironment.skipDestructive();
+      if (skipReason != null || destructiveSkip != null) {
+        appLogger.wWithPackage(
+          'test.api_client.openresty',
+          '跳过测试: ${skipReason ?? destructiveSkip}',
+        );
+        return;
+      }
+
+      await api.buildOpenResty(
+        const OpenrestyBuildRequest(
+          mirror: '',
+          taskId: 's2-3-openresty-build-smoke',
+        ),
+      );
+    });
   });
 }
