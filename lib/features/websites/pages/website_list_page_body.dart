@@ -11,6 +11,7 @@ import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffol
 import '../providers/websites_provider.dart';
 import '../widgets/website_async_state_view.dart';
 import '../widgets/website_list_controls_widget.dart';
+import '../widgets/website_list_helpers.dart';
 import '../widgets/website_list_item_card_widget.dart';
 import '../widgets/website_stats_card_widget.dart';
 
@@ -122,20 +123,50 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
                     selectedType: _typeFilter,
                     selectionMode: _selectionMode,
                     selectedCount: _selectedIds.length,
-                    onSearch: () => _applyFilters(context),
+                    onSearch: () => applyWebsiteFilters(
+                      context.read<WebsitesProvider>(),
+                      query: _searchController.text.trim(),
+                      type: _typeFilter,
+                      websiteGroupId: _groupFilterId,
+                    ),
                     onGroupChanged: (value) {
                       setState(() => _groupFilterId = value);
-                      _applyFilters(context);
+                      applyWebsiteFilters(
+                        context.read<WebsitesProvider>(),
+                        query: _searchController.text.trim(),
+                        type: _typeFilter,
+                        websiteGroupId: _groupFilterId,
+                      );
                     },
                     onTypeChanged: (value) {
                       setState(() => _typeFilter = value);
-                      _applyFilters(context);
+                      applyWebsiteFilters(
+                        context.read<WebsitesProvider>(),
+                        query: _searchController.text.trim(),
+                        type: _typeFilter,
+                        websiteGroupId: _groupFilterId,
+                      );
                     },
-                    onToggleSelectionMode: _toggleSelectionMode,
+                    onToggleSelectionMode: () {
+                      setState(() {
+                        _selectionMode = !_selectionMode;
+                        if (!_selectionMode) {
+                          _selectedIds.clear();
+                        }
+                      });
+                    },
                     onBatchStart: () => _batchOperate(context, 'start'),
                     onBatchStop: () => _batchOperate(context, 'stop'),
                     onBatchRestart: () => _batchOperate(context, 'restart'),
-                    onBatchDelete: () => _batchDelete(context),
+                    onBatchDelete: () async {
+                      if (_selectedIds.isEmpty) return;
+                      await _confirmDelete(
+                        context,
+                        context.read<WebsitesProvider>(),
+                        _selectedIds.toList(growable: false),
+                        null,
+                      );
+                    },
                     onBatchSetGroup: () =>
                         _selectBatchGroup(context, data.groups),
                   );
@@ -154,11 +185,23 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
                   selectionMode: _selectionMode,
                   selected: selected,
                   onTap: () => _selectionMode && id != null
-                      ? _toggleSelected(id)
-                      : _openDetail(context, website),
+                      ? setState(() {
+                          if (_selectedIds.contains(id)) {
+                            _selectedIds.remove(id);
+                          } else {
+                            _selectedIds.add(id);
+                          }
+                        })
+                      : openWebsiteDetail(context, website),
                   onSelectedChanged: (value) {
                     if (id != null) {
-                      _setSelected(id, value);
+                      setState(() {
+                        if (value) {
+                          _selectedIds.add(id);
+                        } else {
+                          _selectedIds.remove(id);
+                        }
+                      });
                     }
                   },
                   onAction: (action) =>
@@ -172,60 +215,12 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
     );
   }
 
-  void _applyFilters(BuildContext context) {
-    context.read<WebsitesProvider>().loadWebsites(
-          query: _searchController.text.trim(),
-          type: _typeFilter,
-          websiteGroupId: _groupFilterId,
-        );
-  }
-
-  void _toggleSelectionMode() {
-    setState(() {
-      _selectionMode = !_selectionMode;
-      if (!_selectionMode) {
-        _selectedIds.clear();
-      }
-    });
-  }
-
-  void _toggleSelected(int id) {
-    setState(() {
-      if (_selectedIds.contains(id)) {
-        _selectedIds.remove(id);
-      } else {
-        _selectedIds.add(id);
-      }
-    });
-  }
-
-  void _setSelected(int id, bool selected) {
-    setState(() {
-      if (selected) {
-        _selectedIds.add(id);
-      } else {
-        _selectedIds.remove(id);
-      }
-    });
-  }
-
-  void _openDetail(BuildContext context, WebsiteInfo website) {
-    final id = website.id;
-    if (id == null) return;
-    Navigator.pushNamed(
-      context,
-      AppRoutes.websiteDetail,
-      arguments: {'websiteId': id},
-    );
-  }
-
   Future<void> _handleAction(
     BuildContext context,
     WebsitesProvider provider,
     WebsiteInfo website,
     WebsiteListAction action,
   ) async {
-    final l10n = context.l10n;
     final id = website.id;
     if (id == null) return;
     if (action == WebsiteListAction.delete) {
@@ -244,8 +239,11 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content:
-            Text(ok ? l10n.websitesOperateSuccess : l10n.websitesOperateFailed),
+        content: Text(
+          ok
+              ? context.l10n.websitesOperateSuccess
+              : context.l10n.websitesOperateFailed,
+        ),
       ),
     );
   }
@@ -271,66 +269,19 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
     }
   }
 
-  Future<void> _batchDelete(BuildContext context) async {
-    if (_selectedIds.isEmpty) return;
-    await _confirmDelete(
-      context,
-      context.read<WebsitesProvider>(),
-      _selectedIds.toList(growable: false),
-      null,
-    );
-  }
-
   Future<void> _confirmDelete(
     BuildContext context,
     WebsitesProvider provider,
     List<int> ids,
     String? domain,
   ) async {
-    final l10n = context.l10n;
-    final colorScheme = Theme.of(context).colorScheme;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        icon: Icon(Icons.delete_outline, color: colorScheme.error),
-        title: Text(l10n.websitesDeleteTitle),
-        content: Text(
-          domain == null
-              ? l10n.websitesBatchDeleteMessage(ids.length)
-              : l10n.websitesDeleteMessage(
-                  domain.isEmpty ? l10n.websitesUnknownDomain : domain,
-                ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(dialogContext, true),
-            style: FilledButton.styleFrom(
-              backgroundColor: colorScheme.error,
-              foregroundColor: colorScheme.onError,
-            ),
-            child: Text(l10n.commonDelete),
-          ),
-        ],
-      ),
+    await runWebsiteBatchDelete(
+      context,
+      provider: provider,
+      ids: ids,
+      domain: domain,
+      clearSelection: () => setState(() => _selectedIds.clear()),
     );
-    if (confirmed == true) {
-      final ok = await provider.batchDelete(ids);
-      if (!context.mounted) return;
-      if (ok) {
-        setState(() => _selectedIds.clear());
-      }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            ok ? l10n.websitesDeleteSuccess : l10n.websitesOperateFailed,
-          ),
-        ),
-      );
-    }
   }
 
   Future<void> _selectBatchGroup(
@@ -338,55 +289,12 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
     List<WebsiteGroup> groups,
   ) async {
     if (_selectedIds.isEmpty || groups.isEmpty) return;
-    final provider = context.read<WebsitesProvider>();
-    int? selectedId = groups.first.id;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Text(context.l10n.websitesSetGroupAction),
-          content: DropdownButtonFormField<int>(
-            initialValue: selectedId,
-            items: [
-              for (final group in groups)
-                DropdownMenuItem<int>(
-                  value: group.id,
-                  child: Text(group.name ?? '${group.id}'),
-                ),
-            ],
-            onChanged: (value) => setState(() => selectedId = value),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext, false),
-              child: Text(context.l10n.commonCancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(dialogContext, true),
-              child: Text(context.l10n.commonConfirm),
-            ),
-          ],
-        ),
-      ),
+    await runWebsiteBatchSetGroup(
+      context,
+      provider: context.read<WebsitesProvider>(),
+      ids: _selectedIds.toList(growable: false),
+      groups: groups,
+      clearSelection: () => setState(() => _selectedIds.clear()),
     );
-    if (confirmed == true && selectedId != null) {
-      final ok = await provider.batchSetGroup(
-        ids: _selectedIds.toList(growable: false),
-        groupId: selectedId!,
-      );
-      if (!context.mounted) return;
-      if (ok) {
-        setState(() => _selectedIds.clear());
-      }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            ok
-                ? context.l10n.websitesOperateSuccess
-                : context.l10n.websitesOperateFailed,
-          ),
-        ),
-      );
-    }
   }
 }

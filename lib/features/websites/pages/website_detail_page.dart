@@ -6,7 +6,8 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 
 import '../providers/website_detail_provider.dart';
 import '../widgets/website_common_widgets.dart';
-import '../widgets/website_detail_cards_widget.dart';
+import '../widgets/website_overview_card_widget.dart';
+import '../widgets/website_workbench_card_widget.dart';
 import 'website_config_center_page.dart';
 import 'website_domain_management_page.dart';
 import 'website_routing_rules_page.dart';

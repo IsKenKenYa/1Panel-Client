@@ -5,7 +5,8 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 
 import '../providers/website_lifecycle_provider.dart';
 import '../widgets/website_async_state_view.dart';
-import '../widgets/website_lifecycle_form_widgets.dart';
+import '../widgets/website_lifecycle_basic_form_widgets.dart';
+import '../widgets/website_lifecycle_type_specific_form_widgets.dart';
 
 class WebsiteCreateFlowPage extends StatelessWidget {
   const WebsiteCreateFlowPage({
