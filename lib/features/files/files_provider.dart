@@ -11,7 +11,6 @@ import 'package:onepanel_client/core/config/api_constants.dart';
 import 'files_service.dart';
 import 'models/models.dart';
 import '../../data/models/file_models.dart';
-import '../../core/network/api_client_manager.dart';
 import '../../core/services/logger/logger_service.dart';
 
 class FilesProvider extends ChangeNotifier {
@@ -150,9 +149,9 @@ class FilesProvider extends ChangeNotifier {
 
   Future<void> loadRecycleBinStatus() async {
     try {
-      final api = await ApiClientManager.instance.getFileApi();
-      final response = await api.getRecycleBinStatus();
-      _data = _data.copyWith(recycleBinStatus: response.data);
+      _data = _data.copyWith(
+        recycleBinStatus: await _service.getRecycleBinStatus(),
+      );
       notifyListeners();
     } catch (e) {
       appLogger.eWithPackage(
@@ -165,13 +164,12 @@ class FilesProvider extends ChangeNotifier {
       {int page = 1, int pageSize = 100}) async {
     appLogger.dWithPackage('files_provider', 'loadRecycleBinFiles: 加载回收站文件列表');
     try {
-      final api = await ApiClientManager.instance.getFileApi();
-      final response = await api.searchRecycleBin(FileSearch(
+      final response = await _service.searchRecycleBin(
         path: '/',
         page: page,
         pageSize: pageSize,
-      ));
-      final files = response.data?.map((f) {
+      );
+      final files = response.map((f) {
             return RecycleBinItem(
               sourcePath: f.path,
               name: f.name,
@@ -181,8 +179,7 @@ class FilesProvider extends ChangeNotifier {
               rName: f.gid ?? f.path.split('/').last,
               from: f.path.substring(0, f.path.lastIndexOf('/')),
             );
-          }).toList() ??
-          [];
+          }).toList();
       appLogger.iWithPackage(
           'files_provider', 'loadRecycleBinFiles: 成功加载${files.length}个回收站文件');
       return files;

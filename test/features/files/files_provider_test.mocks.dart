@@ -569,19 +569,21 @@ class MockFilesService extends _i1.Mock implements _i3.FilesService {
       ) as _i4.Future<List<_i2.FileInfo>>);
 
   @override
-  _i4.Future<String> getRecycleBinStatus() => (super.noSuchMethod(
+  _i4.Future<_i2.FileRecycleStatus> getRecycleBinStatus() =>
+      (super.noSuchMethod(
         Invocation.method(
           #getRecycleBinStatus,
           [],
         ),
-        returnValue: _i4.Future<String>.value(_i6.dummyValue<String>(
+        returnValue:
+            _i4.Future<_i2.FileRecycleStatus>.value(_i6.dummyValue<_i2.FileRecycleStatus>(
           this,
           Invocation.method(
             #getRecycleBinStatus,
             [],
           ),
         )),
-      ) as _i4.Future<String>);
+      ) as _i4.Future<_i2.FileRecycleStatus>);
 
   @override
   _i4.Future<List<_i2.FileInfo>> searchRecycleBin({

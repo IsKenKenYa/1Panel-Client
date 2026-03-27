@@ -21,9 +21,12 @@ class ServerInfoCard extends StatelessWidget {
     return AppCard(
       title: l10n.dashboardServerInfoTitle,
       subtitle: Text(
-        systemInfo != null ? l10n.dashboardServerStatusOk : l10n.dashboardServerStatusConnecting,
+        systemInfo != null
+            ? l10n.dashboardServerStatusOk
+            : l10n.dashboardServerStatusConnecting,
         style: TextStyle(
-          color: systemInfo != null ? colorScheme.primary : colorScheme.tertiary,
+          color:
+              systemInfo != null ? colorScheme.primary : colorScheme.tertiary,
         ),
       ),
       trailing: Icon(
@@ -68,12 +71,12 @@ class ServerInfoCard extends StatelessWidget {
     final platform = info.platform ?? '';
     final platformVersion = info.platformVersion ?? '';
     final kernelVersion = info.kernelVersion ?? '';
-    
+
     // 格式: Linux Ubuntu 24.04 (kernel: 6.8.0-84-generic)
     final parts = <String>[os];
     if (platform.isNotEmpty) parts.add(platform);
     if (platformVersion.isNotEmpty) parts.add(platformVersion);
-    
+
     var result = parts.join(' ');
     if (kernelVersion.isNotEmpty) {
       result += ' ($kernelVersion)';

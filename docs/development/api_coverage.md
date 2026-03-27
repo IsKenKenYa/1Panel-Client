@@ -16,6 +16,11 @@
 	- Website SSL Center：provider 全量筛选项与证书健康状态文案完成国际化映射。
 	- OpenResty Center：风险提示/差异预览/摘要文案维持本地化映射闭环。
 	- Panel TLS：页面文案与风险提示映射维持一致。
+- 范围补充: S2-2 / S2-3 repository 边界收口
+- 收口项补充:
+	- Website Core：新增 `WebsiteRepository / WebsiteDomainRepository / WebsiteConfigRepository`，现有 website services 改为通过 repository 访问 API。
+	- Security & Gateway：新增 `WebsiteSslRepository / OpenRestyRepository / PanelSslRepository`，现有 services 改为通过 repository 访问 API。
+	- 测试补充：新增 `website_ssl_center_provider_test.dart`、`openresty_provider_test.dart`，并扩展 `website_s2_integration_test.dart` 与 `security_gateway_s2_integration_test.dart`。
 - 范围增量: S2-4 Orchestration + AI（主链路收口）
 - 收口项增量:
 	- Orchestration：新增 `orchestration_repository.dart` 与 `orchestration_service.dart`，compose/image/network/volume provider 去 API 直连，并补齐独立页的 create/pull/detail/confirm/retry 主流程。
@@ -25,6 +30,7 @@
 - 收口项增量补充:
 	- S2-4：新增 `test/features/ai/ai_page_test.dart` 与 `test/features/orchestration/orchestration_page_test.dart`，补齐 route/injection 与页面壳 smoke。
 	- S2-5：`AuthProvider` 改为依赖 `AuthService`；新增 `AuthRepository / AuthSessionStore`，会话存储切换到 `flutter_secure_storage`。
+	- S2-5：新增 `DashboardRepository / DashboardService`，`DashboardProvider` 改为依赖 service；`FilesProvider` 的回收站读取已收回 service。
 - 门禁结果:
 	- `flutter analyze`：通过
 	- `dart run test_runner.dart unit`：通过
@@ -37,7 +43,7 @@
 | 维度 | 完成数 | 完成率 |
 | --- | --- | --- |
 | **API客户端实现** | 51/52 | 98% |
-| **单元测试覆盖** | 22/52 | 42% |
+| **单元测试覆盖** | 24/52 | 46% |
 | **文档覆盖** | 6/52 | 12% |
 
 ### 按优先级统计
@@ -45,7 +51,7 @@
 | 优先级 | 模块数 | 已实现 | 已测试 | 已文档 |
 | --- | --- | --- | --- | --- |
 | **P0** | 15 | 15 (100%) | 12 (80%) | 3 (20%) |
-| **P1** | 26 | 26 (100%) | 6 (23%) | 1 (4%) |
+| **P1** | 26 | 26 (100%) | 8 (31%) | 1 (4%) |
 | **P2** | 11 | 10 (91%) | 4 (36%) | 2 (18%) |
 
 ## 优先级规则
@@ -83,11 +89,11 @@
 | Cronjob | 16 | cronjob_v2.dart | 12 | ❌ | ❌ |
 | Firewall | 15 | firewall_v2.dart | 12 | ✅ | ❌ |
 | SSH | 12 | terminal_v2.dart | 18 | ❌ | ❌ |
-| Website SSL | 11 | ssl_v2.dart | 17 | ❌ | ❌ |
+| Website SSL | 11 | ssl_v2.dart | 17 | ✅ | ❌ |
 | AI | 10 | ai_v2.dart | 18 | ✅ | ❌ |
 | Container Image | 10 | container_v2.dart | 43 | ✅ | ❌ |
 | Host | 10 | host_v2.dart | 9 | ❌ | ❌ |
-| OpenResty | 10 | openresty_v2.dart | 9 | ❌ | ✅ |
+| OpenResty | 10 | openresty_v2.dart | 9 | ✅ | ✅ |
 | Command | 8 | command_v2.dart | 14 | ✅ | ❌ |
 | Container Docker | 8 | docker_v2.dart | 60 | ❌ | ❌ |
 | Website CA | 7 | ssl_v2.dart | 17 | ❌ | ❌ |

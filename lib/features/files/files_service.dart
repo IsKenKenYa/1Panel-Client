@@ -332,11 +332,11 @@ class FilesService {
     return response.data!;
   }
 
-  Future<String> getRecycleBinStatus() async {
+  Future<FileRecycleStatus> getRecycleBinStatus() async {
     appLogger.dWithPackage('files', 'getRecycleBinStatus');
     final api = await _getApi();
     final response = await api.getRecycleBinStatus();
-    return response.data!.fileCount.toString();
+    return response.data!;
   }
 
   Future<List<FileInfo>> searchRecycleBin({

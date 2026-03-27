@@ -35,7 +35,7 @@ class DiskData {
 }
 
 /// 监控指标快照
-/// 
+///
 /// 从API响应中提取的最新监控数据
 class MonitorMetricsSnapshot {
   final double? cpuPercent;
@@ -100,7 +100,8 @@ class MonitorTimeSeries {
     this.avg,
   });
 
-  factory MonitorTimeSeries.empty(String name) => MonitorTimeSeries(name: name, data: []);
+  factory MonitorTimeSeries.empty(String name) =>
+      MonitorTimeSeries(name: name, data: []);
 }
 
 /// 监控数据包
@@ -126,10 +127,10 @@ class MonitorDataParseArgs {
 MonitorDataPackage parseMonitorDataPackage(MonitorDataParseArgs args) {
   final data = args.data;
   final now = args.timestamp;
-  
+
   // 解析当前指标
   final current = parseMetricsResponse(data, now);
-  
+
   // 解析各时间序列指标
   final timeSeries = {
     'cpu': parseTimeSeriesResponse(data, 'base', 'cpu'),
@@ -138,7 +139,7 @@ MonitorDataPackage parseMonitorDataPackage(MonitorDataParseArgs args) {
     'io': parseTimeSeriesResponse(data, 'io', 'disk'),
     'network': parseTimeSeriesResponse(data, 'network', 'networkIn'),
   };
-  
+
   return MonitorDataPackage(current: current, timeSeries: timeSeries);
 }
 
@@ -191,7 +192,7 @@ MonitorMetricsSnapshot parseMetricsResponse(dynamic data, DateTime timestamp) {
         memoryUsed = lastValue['memoryUsed'] as int?;
         memoryTotal = lastValue['memoryTotal'] as int?;
         uptime = lastValue['uptime'] as int?;
-        
+
         // 解析磁盘数据
         final diskDataRaw = lastValue['diskData'] as List?;
         if (diskDataRaw != null) {
@@ -304,7 +305,7 @@ MonitorTimeSeries parseTimeSeriesResponse(
     } else {
       time = now;
     }
-    
+
     dataPoints.add(MonitorDataPoint(time: time, value: value));
 
     if (min == null || value < min) min = value;
@@ -323,13 +324,13 @@ MonitorTimeSeries parseTimeSeriesResponse(
 }
 
 /// 统一监控数据仓库
-/// 
+///
 /// 提供监控数据获取的统一入口，避免代码重复
 class MonitorRepository {
   const MonitorRepository();
 
   /// 获取当前监控指标
-  /// 
+  ///
   /// 返回最新的CPU、内存、磁盘、负载数据
   Future<MonitorMetricsSnapshot> getCurrentMetrics(dynamic client) async {
     try {
@@ -355,7 +356,7 @@ class MonitorRepository {
   }
 
   /// 获取时间序列数据
-  /// 
+  ///
   /// [client] API客户端
   /// [param] 参数类型: cpu, memory, load, io, network (注意: base单独使用会返回400)
   /// [valueKey] 值字段名

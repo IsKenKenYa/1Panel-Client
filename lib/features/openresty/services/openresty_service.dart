@@ -1,6 +1,6 @@
 import 'package:onepanel_client/api/v2/openresty_v2.dart';
-import 'package:onepanel_client/core/network/api_client_manager.dart';
 import 'package:onepanel_client/data/models/openresty_models.dart';
+import 'package:onepanel_client/data/repositories/openresty_repository.dart';
 
 class OpenRestySnapshot {
   final Map<String, dynamic> status;
@@ -17,31 +17,28 @@ class OpenRestySnapshot {
 }
 
 class OpenRestyService {
-  OpenRestyV2Api? _api;
+  OpenRestyService({
+    OpenRestyV2Api? api,
+    OpenRestyRepository? repository,
+  }) : _repository = repository ?? OpenRestyRepository(api: api);
 
-  OpenRestyService({OpenRestyV2Api? api}) : _api = api;
-
-  Future<OpenRestyV2Api> _ensureApi() async {
-    if (_api != null) {
-      return _api!;
-    }
-    _api = await ApiClientManager.instance.getOpenRestyApi();
-    return _api!;
-  }
+  final OpenRestyRepository _repository;
 
   Future<OpenRestySnapshot> loadSnapshot() async {
-    final api = await _ensureApi();
     final results = await Future.wait([
-      api.getOpenRestyStatus(),
-      api.getOpenRestyModules(),
-      api.getOpenRestyHttps(),
-      api.getOpenRestyConfig(),
+      _repository.getStatus(),
+      _repository.getModules(),
+      _repository.getHttps(),
+      _repository.getConfig(),
     ]);
 
-    final status = (results[0].data as OpenrestyStatus?)?.toJson() ?? const <String, dynamic>{};
-    final modules = (results[1].data as OpenrestyBuildConfig?)?.toJson() ?? const <String, dynamic>{};
-    final https = (results[2].data as OpenrestyHttpsConfig?)?.toJson() ?? const <String, dynamic>{};
-    final configContent = (results[3].data as OpenrestyFile?)?.content ?? '';
+    final status =
+        (results[0] as OpenrestyStatus?)?.toJson() ?? const <String, dynamic>{};
+    final modules = (results[1] as OpenrestyBuildConfig?)?.toJson() ??
+        const <String, dynamic>{};
+    final https = (results[2] as OpenrestyHttpsConfig?)?.toJson() ??
+        const <String, dynamic>{};
+    final configContent = (results[3] as OpenrestyFile?)?.content ?? '';
 
     return OpenRestySnapshot(
       status: status,
@@ -52,36 +49,38 @@ class OpenRestyService {
   }
 
   Future<void> updateHttps(Map<String, dynamic> request) async {
-    final api = await _ensureApi();
-    await api.updateOpenRestyHttps(OpenrestyDefaultHttpsUpdateRequest.fromJson(request));
+    await _repository.updateHttps(
+      OpenrestyDefaultHttpsUpdateRequest.fromJson(request),
+    );
   }
 
   Future<void> updateModules(Map<String, dynamic> request) async {
-    final api = await _ensureApi();
-    await api.updateOpenRestyModules(OpenrestyModuleUpdateRequest.fromJson(request));
+    await _repository.updateModules(
+      OpenrestyModuleUpdateRequest.fromJson(request),
+    );
   }
 
   Future<void> updateConfigSource(String content) async {
-    final api = await _ensureApi();
-    await api.updateOpenRestyConfigByFile(OpenrestyConfigFileUpdateRequest(content: content));
+    await _repository.updateConfig(
+      OpenrestyConfigFileUpdateRequest(content: content),
+    );
   }
 
   Future<void> buildOpenResty({
     required String mirror,
     required String taskId,
   }) async {
-    final api = await _ensureApi();
-    await api.buildOpenResty(OpenrestyBuildRequest(mirror: mirror, taskId: taskId));
+    await _repository.build(
+      OpenrestyBuildRequest(mirror: mirror, taskId: taskId),
+    );
   }
 
   Future<List<OpenrestyParam>> loadScope({
     required NginxKey scope,
     int? websiteId,
   }) async {
-    final api = await _ensureApi();
-    final response = await api.getOpenRestyScope(
+    return _repository.getScope(
       OpenrestyScopeRequest(scope: scope, websiteId: websiteId),
     );
-    return response.data ?? const [];
   }
 }

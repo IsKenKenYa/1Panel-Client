@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/api/v2/openresty_v2.dart';
 import 'package:onepanel_client/api/v2/setting_v2.dart';
+import 'package:onepanel_client/api/v2/ssl_v2.dart';
 import 'package:onepanel_client/api/v2/website_v2.dart';
 import 'package:onepanel_client/core/network/dio_client.dart';
 import 'package:onepanel_client/data/models/openresty_models.dart';
@@ -10,7 +11,8 @@ import '../core/test_config_manager.dart';
 
 void main() {
   group('S2-3 Security & Gateway integration', () {
-    test('reads current security state and replays idempotent updates only when destructive mode is enabled',
+    test(
+        'reads current security state and replays idempotent updates only when destructive mode is enabled',
         () async {
       await TestEnvironment.initialize();
       if (!TestEnvironment.runIntegrationTests) {
@@ -22,6 +24,7 @@ void main() {
         apiKey: TestEnvironment.apiKey,
       );
       final settingApi = SettingV2Api(client);
+      final sslApi = SSLV2Api(client);
       final websiteApi = WebsiteV2Api(client);
       final openrestyApi = OpenRestyV2Api(client);
 
@@ -39,6 +42,10 @@ void main() {
       final websiteId = websites.items.first.id!;
       final websiteHttps = await websiteApi.getWebsiteHttps(websiteId);
       expect(websiteHttps, isNotNull);
+      final websiteSslList = await sslApi.searchWebsiteSSL(
+        const WebsiteSSLSearch(page: 1, pageSize: 5),
+      );
+      expect(websiteSslList.data, isNotNull);
 
       if (!TestEnvironment.runDestructiveTests) {
         return;

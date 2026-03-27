@@ -1,20 +1,14 @@
-import '../../../api/v2/website_v2.dart';
-import '../../../core/network/api_client_manager.dart';
+import '../../../data/repositories/website_domain_repository.dart';
 import '../../../data/models/website_models.dart';
 
 class WebsiteDomainService {
-  WebsiteDomainService({WebsiteV2Api? api}) : _api = api;
+  WebsiteDomainService({WebsiteDomainRepository? repository})
+      : _repository = repository ?? WebsiteDomainRepository();
 
-  WebsiteV2Api? _api;
-
-  Future<WebsiteV2Api> _ensureApi() async {
-    _api ??= await ApiClientManager.instance.getWebsiteApi();
-    return _api!;
-  }
+  final WebsiteDomainRepository _repository;
 
   Future<List<WebsiteDomain>> getDomains(int websiteId) async {
-    final api = await _ensureApi();
-    return api.getWebsiteDomains(websiteId);
+    return _repository.getDomains(websiteId);
   }
 
   Future<List<WebsiteDomain>> fetchDomains(int websiteId) {
@@ -27,8 +21,7 @@ class WebsiteDomainService {
     required int port,
     bool ssl = false,
   }) async {
-    final api = await _ensureApi();
-    await api.addWebsiteDomains(
+    await _repository.addDomains(
       websiteId: websiteId,
       domains: [
         {
@@ -46,8 +39,7 @@ class WebsiteDomainService {
     int? port,
     bool? ssl,
   }) async {
-    final api = await _ensureApi();
-    await api.updateWebsiteDomainSsl(
+    await _repository.updateDomain(
       id: id,
       domain: domain,
       port: port,
@@ -63,7 +55,6 @@ class WebsiteDomainService {
   }
 
   Future<void> deleteDomain(int id) async {
-    final api = await _ensureApi();
-    await api.deleteWebsiteDomain(id: id);
+    await _repository.deleteDomain(id);
   }
 }

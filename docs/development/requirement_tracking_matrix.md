@@ -13,6 +13,10 @@
 - **S2-2（Website Core）**: 站点生命周期、详情、默认站点、分组、备注与域名主流程维持可用。
 - **S2-3（Security & Gateway）**: `panel ssl + website ssl + openresty` 按统一收口标准推进，风险提示、差异预览、回滚入口与 i18n 一致性继续对齐。
 - **S2-3 本轮收口结果**: Website SSL Center 完成 provider 全量筛选项与健康状态文案国际化对齐；OpenResty/Panel TLS 维持本地化闭环。
+- **S2-2 / S2-3 架构补充**:
+	- Website Core：新增 `WebsiteRepository / WebsiteDomainRepository / WebsiteConfigRepository`，现有 website services 改为依赖 repository。
+	- Security & Gateway：新增 `WebsiteSslRepository / OpenRestyRepository / PanelSslRepository`，现有 services 改为依赖 repository。
+	- 测试补充：新增 `website_ssl_center_provider_test.dart`、`openresty_provider_test.dart`，并扩展 `website_s2_integration_test.dart` 与 `security_gateway_s2_integration_test.dart`。
 - **S2-4（Orchestration + AI）本轮收口结果**:
 	- Orchestration：独立页接入 compose/image/network/volume 四分段，补齐 create/pull 入口、详情抽屉、危险操作确认、失败重试与结果反馈。
 	- AI：`AIPage` 重构为 `Ollama / GPU / Domain` 三标签页，补齐域名绑定联动、操作消息回填与错误恢复提示。
@@ -22,6 +26,8 @@
 	- Orchestration：新增 `test/features/orchestration/orchestration_page_test.dart`，验证 tab shell 与主操作入口切换。
 - **S2-5（Core Refactor）当前进展**:
 	- Auth：新增 `AuthRepository / AuthService / AuthSessionStore`，`AuthProvider` 已移除 `SharedPreferences + debugPrint`，改为安全存储和 `appLogger`。
+	- Dashboard：新增 `DashboardRepository / DashboardService`，`DashboardProvider` 已移除 `DashboardV2Api + ApiClientManager + debugPrint` 直连。
+	- File：`FilesProvider` 的回收站状态/列表读取已收回 `FilesService`，先消除 provider 直调 API。
 	- 回归测试：新增 `test/features/auth/auth_service_test.dart`，并将 `auth_provider_test.dart` 改为依赖注入风格。
 - **门禁执行结果**:
 	- `flutter analyze`：通过（No issues found）
@@ -67,11 +73,11 @@
 | **Cronjob** | 16 | ✅ cronjob_v2.dart | ✅ cronjob_models.dart | ⚠️ 待测试 | 🔴 待集成 | 计划任务管理 |
 | **Firewall** | 15 | ✅ firewall_v2.dart | ✅ firewall_models.dart | ✅ 已测试 | 🟡 部分 | status/rules/ip/ports/search/batch 已接入，advanced chain 待补 |
 | **SSH** | 12 | ✅ terminal_v2.dart | ✅ terminal_models.dart | ⚠️ 待测试 | 🔴 待集成 | SSH会话/日志待扩展 |
-| **Website SSL** | 11 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🟡 部分 | 证书与域名细分功能待扩展 |
+| **Website SSL** | 11 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ✅ 已测试 | 🟡 部分 | center/site ssl 主链路可用，CA/ACME/DNS 账户仍待扩展 |
 | **AI** | 10 | ✅ ai_v2.dart | ✅ ai_models.dart | ✅ 已测试 | 🟡 部分 | Ollama/GPU/Domain 三主流程已接入，长尾能力待补 |
 | **Container Image** | 10 | ✅ container_v2.dart | ✅ container_models.dart | ✅ 已测试 | 🟡 部分 | 独立页已接入拉取、详情、标签/推送/保存/删除主流程 |
 | **Host** | 10 | ✅ host_v2.dart | ✅ host_models.dart | ⚠️ 待测试 | 🔴 待集成 | 主机管理 |
-| **OpenResty** | 10 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ✅ 已文档 | 🟡 部分 | 配置与状态页待建设 |
+| **OpenResty** | 10 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ✅ 已测试 | 🟡 部分 | 结构化中心已可用，长尾高级能力仍待补 |
 | **Command** | 8 | ✅ command_v2.dart | ✅ tool_models.dart | ✅ 已测试 | 🟡 部分 | 快捷命令 |
 | **Container Docker** | 8 | ✅ docker_v2.dart | ✅ docker_models.dart | ✅ 已测试 | 🟡 部分 | Docker守护进程管理 |
 | **Logs** | 4 | ✅ logs_v2.dart | ✅ logs_models.dart | ⚠️ 待测试 | 🟡 部分 | 日志管理、清理、导出 |
