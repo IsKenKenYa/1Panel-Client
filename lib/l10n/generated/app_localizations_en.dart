@@ -622,6 +622,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get websitesSslGroupHealthy => 'Healthy';
 
   @override
+  String get websitesSslProviderFilterAll => 'All providers';
+
+  @override
+  String get websitesSslHealthHealthy => 'Healthy';
+
+  @override
+  String get websitesSslHealthExpiringSoon => 'Expiring soon';
+
+  @override
+  String get websitesSslHealthExpired => 'Expired';
+
+  @override
+  String get websitesSslHealthUnknown => 'Unknown';
+
+  @override
   String get openrestyPageTitle => 'OpenResty';
 
   @override
@@ -662,6 +677,249 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get openrestyScopeResultHint => 'Scope config result';
+
+  @override
+  String get openrestyAdvancedSourceEditorTooltip => 'Advanced source editor';
+
+  @override
+  String get openrestyRiskBannerTitle => 'Gateway risk banner';
+
+  @override
+  String get openrestyRunningStatusLabel => 'Running Status';
+
+  @override
+  String get openrestyBuildVersionLabel => 'Build / Version';
+
+  @override
+  String get openrestyCoreSummaryLabel => 'Core Summary';
+
+  @override
+  String get openrestyHttpsSummaryLabel => 'HTTPS Summary';
+
+  @override
+  String get openrestyModulesSummaryLabel => 'Modules Summary';
+
+  @override
+  String get openrestyCurrentStateLabel => 'Current State';
+
+  @override
+  String get openrestyRejectHandshakeLabel => 'Reject Handshake';
+
+  @override
+  String get openrestyEditHttpsAction => 'Edit HTTPS';
+
+  @override
+  String get openrestyPreviewDiffAction => 'Preview diff';
+
+  @override
+  String get openrestyRollbackAction => 'Rollback';
+
+  @override
+  String get openrestyHttpsDiffPreviewTitle => 'HTTPS diff preview';
+
+  @override
+  String get openrestyUnnamedModule => 'Unnamed module';
+
+  @override
+  String get openrestyNoModulesReturned =>
+      'No modules returned by the gateway.';
+
+  @override
+  String get openrestyModuleDiffPreviewTitle => 'Module diff preview';
+
+  @override
+  String get openrestyCurrentConfigLabel => 'Current Config';
+
+  @override
+  String get openrestyAdvancedAction => 'Advanced';
+
+  @override
+  String get openrestyConfigDiffPreviewTitle => 'Config diff preview';
+
+  @override
+  String get openrestyBuildLastResultLabel => 'Last Result';
+
+  @override
+  String get openrestyBuildNoRecentAction => 'No recent build action';
+
+  @override
+  String get openrestyBuildStartAction => 'Start build';
+
+  @override
+  String get openrestyStatusNotRunningSummary => 'Not running';
+
+  @override
+  String openrestyStatusRunningSummary(int active) {
+    return 'Running · active $active';
+  }
+
+  @override
+  String get openrestyHttpsEnabledSummary => 'HTTPS enabled';
+
+  @override
+  String get openrestyHttpsDisabledSummary => 'HTTPS disabled';
+
+  @override
+  String openrestyModulesEnabledSummary(int enabled, int total) {
+    return '$enabled/$total modules enabled';
+  }
+
+  @override
+  String get openrestyBuildNoMirrorConfigured => 'No mirror configured';
+
+  @override
+  String get openrestyConfigNotLoaded => 'Config not loaded';
+
+  @override
+  String openrestyConfigLoadedSummary(int lines) {
+    return '$lines lines loaded';
+  }
+
+  @override
+  String get openrestyDialogUpdateHttpsTitle => 'Update HTTPS';
+
+  @override
+  String get openrestyDialogEnableHttpsLabel => 'Enable HTTPS';
+
+  @override
+  String get openrestyDialogRejectInvalidHandshakesLabel =>
+      'Reject invalid handshakes';
+
+  @override
+  String get openrestyDialogModuleTitleFallback => 'Module';
+
+  @override
+  String get openrestyDialogEnableModuleLabel => 'Enable module';
+
+  @override
+  String get openrestyDialogPackagesLabel => 'Packages';
+
+  @override
+  String get openrestyDialogParamsLabel => 'Params';
+
+  @override
+  String get openrestyDialogScriptLabel => 'Script';
+
+  @override
+  String get openrestyDialogPreviewConfigTitle => 'Preview config change';
+
+  @override
+  String get openrestyDialogConfigSourceLabel => 'Config source';
+
+  @override
+  String get openrestyDialogStartBuildTitle => 'Start OpenResty build';
+
+  @override
+  String get openrestyDialogBuildRiskHint =>
+      'Build can refresh gateway binaries and module packages. Confirm before running on production nodes.';
+
+  @override
+  String get openrestyBuildSubmittedMessage => 'Build submitted';
+
+  @override
+  String openrestyBuildSubmittedWithMirrorMessage(String mirror) {
+    return 'Build submitted with mirror $mirror.';
+  }
+
+  @override
+  String get openrestyRiskGatewayInactiveTitle => 'Gateway inactive';
+
+  @override
+  String get openrestyRiskGatewayInactiveMessage =>
+      'OpenResty is not reporting active connections.';
+
+  @override
+  String get openrestyRiskHttpsDisabledTitle => 'HTTPS disabled';
+
+  @override
+  String get openrestyRiskHttpsDisabledMessage =>
+      'Disabling HTTPS reduces the default gateway security baseline.';
+
+  @override
+  String get openrestyRiskNoModulesTitle => 'No modules loaded';
+
+  @override
+  String get openrestyRiskNoModulesMessage =>
+      'OpenResty modules are empty. Review build and module config.';
+
+  @override
+  String get openrestyRiskBuildMirrorMissingTitle => 'Build mirror missing';
+
+  @override
+  String get openrestyRiskBuildMirrorMissingMessage =>
+      'No build mirror is configured. Build speed may be affected.';
+
+  @override
+  String get openrestyRiskRejectHandshakeTitle => 'Reject handshake enabled';
+
+  @override
+  String get openrestyRiskRejectHandshakeMessage =>
+      'This may block clients with invalid TLS negotiation settings.';
+
+  @override
+  String get openrestyRiskModuleDisabledTitle => 'Module disabled';
+
+  @override
+  String openrestyRiskModuleDisabledMessage(String module) {
+    return 'Disabling $module may change gateway behavior immediately.';
+  }
+
+  @override
+  String get openrestyRiskDependencyChangeTitle => 'Dependency change';
+
+  @override
+  String openrestyRiskDependencyChangeMessage(String module) {
+    return 'Package or script changes can introduce dependency conflicts for $module.';
+  }
+
+  @override
+  String get openrestyRiskEmptyConfigTitle => 'Empty config';
+
+  @override
+  String get openrestyRiskEmptyConfigMessage =>
+      'Saving an empty config will break the current gateway setup.';
+
+  @override
+  String get openrestyRiskBraceMismatchTitle => 'Brace mismatch';
+
+  @override
+  String get openrestyRiskBraceMismatchMessage =>
+      'The config appears to have unmatched braces. Validate before saving.';
+
+  @override
+  String get openrestyRiskMissingHttpBlockTitle => 'Missing http block';
+
+  @override
+  String get openrestyRiskMissingHttpBlockMessage =>
+      'No http block was detected in the config source.';
+
+  @override
+  String get openrestyRiskTemporaryMarkersTitle => 'Temporary markers found';
+
+  @override
+  String get openrestyRiskTemporaryMarkersMessage =>
+      'The config still contains TODO or FIXME markers.';
+
+  @override
+  String get openrestyDiffLabelHttps => 'HTTPS';
+
+  @override
+  String get openrestyDiffLabelRejectHandshake => 'Reject Handshake';
+
+  @override
+  String get openrestyDiffLabelEnabled => 'Enabled';
+
+  @override
+  String get openrestyDiffLabelPackages => 'Packages';
+
+  @override
+  String get openrestyDiffLabelParams => 'Params';
+
+  @override
+  String get openrestyDiffLabelScript => 'Script';
+
+  @override
+  String get openrestyDiffLabelConfigSource => 'Config Source';
 
   @override
   String get monitorNetworkLabel => 'Network';

@@ -7,6 +7,19 @@
 - **数据模型数**: 471
 - **优先级分类**: P0 (核心), P1 (高价值), P2 (工具类)
 
+## Phase 2 增量进展（2026-03-27）
+
+- **S2-1（Database + Firewall）**: 主链路维持可用，延续 Repository/Service/Provider/Page 闭环。
+- **S2-2（Website Core）**: 站点生命周期、详情、默认站点、分组、备注与域名主流程维持可用。
+- **S2-3（Security & Gateway）**: `panel ssl + website ssl + openresty` 按统一收口标准推进，风险提示、差异预览、回滚入口与 i18n 一致性继续对齐。
+- **S2-3 本轮收口结果**: Website SSL Center 完成 provider 全量筛选项与健康状态文案国际化对齐；OpenResty/Panel TLS 维持本地化闭环。
+- **门禁执行结果**:
+	- `flutter analyze`：通过（No issues found）
+	- `dart run test_runner.dart unit`：通过
+	- `dart run test_runner.dart ui`：通过
+	- `dart run test_runner.dart integration`：通过（部分用例按环境开关跳过，见测试输出说明）
+- **下一步**: 进入 S2-4（Orchestration + AI）前，继续补齐 S2-3 边界场景用例与文案一致性巡检。
+
 ## 优先级定义
 
 | 优先级 | 定义 | 包含模块 |
@@ -217,5 +230,5 @@
 ---
 
 **文档版本**: 1.0
-**最后更新**: 2026-02-14
+**最后更新**: 2026-03-27
 **维护者**: Open1Panel开发团队

@@ -9,6 +9,20 @@
 - 标签数: 52
 - 覆盖口径: 已实现=存在API调用与数据模型，已测试=具备单元/集成/端到端测试，已文档=包含使用说明与已知限制
 
+## Phase 2 增量覆盖（2026-03-27）
+
+- 范围: S2-3 Security & Gateway（Panel TLS、Website SSL、OpenResty）
+- 收口项:
+	- Website SSL Center：provider 全量筛选项与证书健康状态文案完成国际化映射。
+	- OpenResty Center：风险提示/差异预览/摘要文案维持本地化映射闭环。
+	- Panel TLS：页面文案与风险提示映射维持一致。
+- 门禁结果:
+	- `flutter analyze`：通过
+	- `dart run test_runner.dart unit`：通过
+	- `dart run test_runner.dart ui`：通过
+	- `dart run test_runner.dart integration`：通过（部分依赖环境变量的用例按预期跳过）
+- 备注: 本节为阶段增量记录，不改写全量统计口径；全量统计在下一轮统一盘点时回刷。
+
 ## 实现状态统计
 
 | 维度 | 完成数 | 完成率 |
@@ -146,4 +160,4 @@
 
 ---
 
-**最后更新**: 2026-02-14
+**最后更新**: 2026-03-27

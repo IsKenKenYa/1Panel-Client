@@ -145,7 +145,13 @@ class _WebsiteSslCenterBody extends StatelessWidget {
                               .map(
                                 (item) => DropdownMenuItem<String>(
                                   value: item,
-                                  child: Text(item),
+                                  child: Text(
+                                    item ==
+                                            WebsiteSslCenterProvider
+                                                .providerFilterAll
+                                        ? l10n.websitesSslProviderFilterAll
+                                        : item,
+                                  ),
                                 ),
                               )
                               .toList(growable: false),
@@ -730,7 +736,8 @@ class _CertificateGroupSection extends StatelessWidget {
                     children: [
                       Expanded(child: Text(cert.primaryDomain ?? '-')),
                       SecurityStatusChip(
-                        label: describeCertificateHealth(
+                        label: _localizedHealthLabel(
+                          context,
                           resolveCertificateHealthStatus(cert.expireDate),
                         ),
                         color: _healthColor(
@@ -824,6 +831,23 @@ class _CertificateGroupSection extends StatelessWidget {
         return Theme.of(context).colorScheme.error;
       case CertificateHealthStatus.unknown:
         return Theme.of(context).colorScheme.secondary;
+    }
+  }
+
+  String _localizedHealthLabel(
+    BuildContext context,
+    CertificateHealthStatus status,
+  ) {
+    final l10n = context.l10n;
+    switch (status) {
+      case CertificateHealthStatus.healthy:
+        return l10n.websitesSslHealthHealthy;
+      case CertificateHealthStatus.expiringSoon:
+        return l10n.websitesSslHealthExpiringSoon;
+      case CertificateHealthStatus.expired:
+        return l10n.websitesSslHealthExpired;
+      case CertificateHealthStatus.unknown:
+        return l10n.websitesSslHealthUnknown;
     }
   }
 }

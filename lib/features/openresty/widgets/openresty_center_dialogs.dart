@@ -11,25 +11,26 @@ class OpenRestyCenterDialogs {
     BuildContext context,
     OpenRestyProvider provider,
   ) async {
+    final l10n = context.l10n;
     bool enabled = provider.https?['https'] == true;
     bool rejectHandshake = provider.https?['sslRejectHandshake'] == true;
     await showDialog<void>(
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: const Text('Update HTTPS'),
+          title: Text(l10n.openrestyDialogUpdateHttpsTitle),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Enable HTTPS'),
+                title: Text(l10n.openrestyDialogEnableHttpsLabel),
                 value: enabled,
                 onChanged: (value) => setState(() => enabled = value),
               ),
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Reject invalid handshakes'),
+                title: Text(l10n.openrestyDialogRejectInvalidHandshakesLabel),
                 value: rejectHandshake,
                 onChanged: (value) => setState(() => rejectHandshake = value),
               ),
@@ -48,7 +49,7 @@ class OpenRestyCenterDialogs {
                 );
                 Navigator.pop(dialogContext);
               },
-              child: const Text('Preview'),
+              child: Text(l10n.openrestyPreviewDiffAction),
             ),
           ],
         ),
@@ -61,6 +62,7 @@ class OpenRestyCenterDialogs {
     OpenRestyProvider provider,
     OpenrestyModule module,
   ) async {
+    final l10n = context.l10n;
     bool enabled = module.enable ?? false;
     final packagesController =
         TextEditingController(text: module.packages ?? '');
@@ -71,31 +73,34 @@ class OpenRestyCenterDialogs {
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: Text(module.name ?? 'Module'),
+          title: Text(module.name ?? l10n.openrestyDialogModuleTitleFallback),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: const Text('Enable module'),
+                  title: Text(l10n.openrestyDialogEnableModuleLabel),
                   value: enabled,
                   onChanged: (value) => setState(() => enabled = value),
                 ),
                 TextField(
                   controller: packagesController,
-                  decoration: const InputDecoration(labelText: 'Packages'),
+                  decoration: InputDecoration(
+                      labelText: l10n.openrestyDialogPackagesLabel),
                 ),
                 const SizedBox(height: AppDesignTokens.spacingSm),
                 TextField(
                   controller: paramsController,
-                  decoration: const InputDecoration(labelText: 'Params'),
+                  decoration: InputDecoration(
+                      labelText: l10n.openrestyDialogParamsLabel),
                 ),
                 const SizedBox(height: AppDesignTokens.spacingSm),
                 TextField(
                   controller: scriptController,
                   maxLines: 3,
-                  decoration: const InputDecoration(labelText: 'Script'),
+                  decoration: InputDecoration(
+                      labelText: l10n.openrestyDialogScriptLabel),
                 ),
               ],
             ),
@@ -116,7 +121,7 @@ class OpenRestyCenterDialogs {
                 );
                 Navigator.pop(dialogContext);
               },
-              child: const Text('Preview'),
+              child: Text(l10n.openrestyPreviewDiffAction),
             ),
           ],
         ),
@@ -132,18 +137,19 @@ class OpenRestyCenterDialogs {
     BuildContext context,
     OpenRestyProvider provider,
   ) async {
+    final l10n = context.l10n;
     final controller = TextEditingController(text: provider.configContent);
     await showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Preview config change'),
+        title: Text(l10n.openrestyDialogPreviewConfigTitle),
         content: SizedBox(
           width: 520,
           child: TextField(
             controller: controller,
             maxLines: 16,
-            decoration: const InputDecoration(
-              labelText: 'Config source',
+            decoration: InputDecoration(
+              labelText: l10n.openrestyDialogConfigSourceLabel,
               border: OutlineInputBorder(),
               alignLabelWithHint: true,
             ),
@@ -159,7 +165,7 @@ class OpenRestyCenterDialogs {
               provider.stageConfigUpdate(controller.text);
               Navigator.pop(dialogContext);
             },
-            child: const Text('Preview'),
+            child: Text(l10n.openrestyPreviewDiffAction),
           ),
         ],
       ),
@@ -171,6 +177,7 @@ class OpenRestyCenterDialogs {
     BuildContext context,
     OpenRestyProvider provider,
   ) async {
+    final l10n = context.l10n;
     final mirrorController = TextEditingController(
       text: provider.modules?['mirror']?.toString() ?? '',
     );
@@ -178,25 +185,27 @@ class OpenRestyCenterDialogs {
     await showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Start OpenResty build'),
+        title: Text(l10n.openrestyDialogStartBuildTitle),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Align(
+            Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'Build can refresh gateway binaries and module packages. Confirm before running on production nodes.',
+                l10n.openrestyDialogBuildRiskHint,
               ),
             ),
             const SizedBox(height: AppDesignTokens.spacingMd),
             TextField(
               controller: mirrorController,
-              decoration: const InputDecoration(labelText: 'Mirror'),
+              decoration:
+                  InputDecoration(labelText: l10n.openrestyBuildMirrorLabel),
             ),
             const SizedBox(height: AppDesignTokens.spacingSm),
             TextField(
               controller: taskIdController,
-              decoration: const InputDecoration(labelText: 'Task ID'),
+              decoration:
+                  InputDecoration(labelText: l10n.openrestyBuildTaskIdLabel),
             ),
           ],
         ),
@@ -207,8 +216,9 @@ class OpenRestyCenterDialogs {
           ),
           FilledButton(
             onPressed: () async {
+              final mirror = mirrorController.text.trim();
               await provider.buildOpenResty(
-                mirror: mirrorController.text.trim(),
+                mirror: mirror,
                 taskId: taskIdController.text.trim(),
               );
               if (context.mounted) {
@@ -216,14 +226,16 @@ class OpenRestyCenterDialogs {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
-                      provider.lastBuildMessage ??
-                          context.l10n.commonSaveSuccess,
+                      mirror.isEmpty
+                          ? l10n.openrestyBuildSubmittedMessage
+                          : l10n
+                              .openrestyBuildSubmittedWithMirrorMessage(mirror),
                     ),
                   ),
                 );
               }
             },
-            child: const Text('Build'),
+            child: Text(l10n.openrestyBuildAction),
           ),
         ],
       ),

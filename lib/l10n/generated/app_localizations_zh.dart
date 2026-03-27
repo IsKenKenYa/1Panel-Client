@@ -616,6 +616,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get websitesSslGroupHealthy => '健康';
 
   @override
+  String get websitesSslProviderFilterAll => '全部提供商';
+
+  @override
+  String get websitesSslHealthHealthy => '健康';
+
+  @override
+  String get websitesSslHealthExpiringSoon => '即将过期';
+
+  @override
+  String get websitesSslHealthExpired => '已过期';
+
+  @override
+  String get websitesSslHealthUnknown => '未知';
+
+  @override
   String get openrestyPageTitle => 'OpenResty';
 
   @override
@@ -656,6 +671,237 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get openrestyScopeResultHint => '范围配置结果';
+
+  @override
+  String get openrestyAdvancedSourceEditorTooltip => '高级源码编辑器';
+
+  @override
+  String get openrestyRiskBannerTitle => '网关风险提示';
+
+  @override
+  String get openrestyRunningStatusLabel => '运行状态';
+
+  @override
+  String get openrestyBuildVersionLabel => '构建 / 版本';
+
+  @override
+  String get openrestyCoreSummaryLabel => '核心摘要';
+
+  @override
+  String get openrestyHttpsSummaryLabel => 'HTTPS 摘要';
+
+  @override
+  String get openrestyModulesSummaryLabel => '模块摘要';
+
+  @override
+  String get openrestyCurrentStateLabel => '当前状态';
+
+  @override
+  String get openrestyRejectHandshakeLabel => '拒绝握手';
+
+  @override
+  String get openrestyEditHttpsAction => '编辑 HTTPS';
+
+  @override
+  String get openrestyPreviewDiffAction => '预览差异';
+
+  @override
+  String get openrestyRollbackAction => '回滚';
+
+  @override
+  String get openrestyHttpsDiffPreviewTitle => 'HTTPS 差异预览';
+
+  @override
+  String get openrestyUnnamedModule => '未命名模块';
+
+  @override
+  String get openrestyNoModulesReturned => '网关未返回任何模块。';
+
+  @override
+  String get openrestyModuleDiffPreviewTitle => '模块差异预览';
+
+  @override
+  String get openrestyCurrentConfigLabel => '当前配置';
+
+  @override
+  String get openrestyAdvancedAction => '高级';
+
+  @override
+  String get openrestyConfigDiffPreviewTitle => '配置差异预览';
+
+  @override
+  String get openrestyBuildLastResultLabel => '最近结果';
+
+  @override
+  String get openrestyBuildNoRecentAction => '暂无最近构建操作';
+
+  @override
+  String get openrestyBuildStartAction => '开始构建';
+
+  @override
+  String get openrestyStatusNotRunningSummary => '未运行';
+
+  @override
+  String openrestyStatusRunningSummary(int active) {
+    return '运行中 · active $active';
+  }
+
+  @override
+  String get openrestyHttpsEnabledSummary => 'HTTPS 已启用';
+
+  @override
+  String get openrestyHttpsDisabledSummary => 'HTTPS 已禁用';
+
+  @override
+  String openrestyModulesEnabledSummary(int enabled, int total) {
+    return '已启用模块 $enabled/$total';
+  }
+
+  @override
+  String get openrestyBuildNoMirrorConfigured => '未配置构建镜像地址';
+
+  @override
+  String get openrestyConfigNotLoaded => '配置未加载';
+
+  @override
+  String openrestyConfigLoadedSummary(int lines) {
+    return '已加载 $lines 行';
+  }
+
+  @override
+  String get openrestyDialogUpdateHttpsTitle => '更新 HTTPS';
+
+  @override
+  String get openrestyDialogEnableHttpsLabel => '启用 HTTPS';
+
+  @override
+  String get openrestyDialogRejectInvalidHandshakesLabel => '拒绝无效握手';
+
+  @override
+  String get openrestyDialogModuleTitleFallback => '模块';
+
+  @override
+  String get openrestyDialogEnableModuleLabel => '启用模块';
+
+  @override
+  String get openrestyDialogPackagesLabel => '依赖包';
+
+  @override
+  String get openrestyDialogParamsLabel => '参数';
+
+  @override
+  String get openrestyDialogScriptLabel => '脚本';
+
+  @override
+  String get openrestyDialogPreviewConfigTitle => '预览配置变更';
+
+  @override
+  String get openrestyDialogConfigSourceLabel => '配置源码';
+
+  @override
+  String get openrestyDialogStartBuildTitle => '开始构建 OpenResty';
+
+  @override
+  String get openrestyDialogBuildRiskHint => '构建会刷新网关二进制与模块依赖，请在生产节点执行前再次确认。';
+
+  @override
+  String get openrestyBuildSubmittedMessage => '构建请求已提交';
+
+  @override
+  String openrestyBuildSubmittedWithMirrorMessage(String mirror) {
+    return '已使用镜像 $mirror 提交构建请求。';
+  }
+
+  @override
+  String get openrestyRiskGatewayInactiveTitle => '网关未激活';
+
+  @override
+  String get openrestyRiskGatewayInactiveMessage => 'OpenResty 当前未上报活动连接。';
+
+  @override
+  String get openrestyRiskHttpsDisabledTitle => 'HTTPS 已禁用';
+
+  @override
+  String get openrestyRiskHttpsDisabledMessage => '禁用 HTTPS 会降低网关默认安全基线。';
+
+  @override
+  String get openrestyRiskNoModulesTitle => '未加载模块';
+
+  @override
+  String get openrestyRiskNoModulesMessage => 'OpenResty 模块列表为空，请检查构建与模块配置。';
+
+  @override
+  String get openrestyRiskBuildMirrorMissingTitle => '缺少构建镜像地址';
+
+  @override
+  String get openrestyRiskBuildMirrorMissingMessage => '当前未配置构建镜像地址，可能影响构建速度。';
+
+  @override
+  String get openrestyRiskRejectHandshakeTitle => '已启用拒绝握手';
+
+  @override
+  String get openrestyRiskRejectHandshakeMessage => '这可能阻止 TLS 协商配置不正确的客户端。';
+
+  @override
+  String get openrestyRiskModuleDisabledTitle => '模块已禁用';
+
+  @override
+  String openrestyRiskModuleDisabledMessage(String module) {
+    return '禁用 $module 可能立即改变网关行为。';
+  }
+
+  @override
+  String get openrestyRiskDependencyChangeTitle => '依赖变更';
+
+  @override
+  String openrestyRiskDependencyChangeMessage(String module) {
+    return '依赖包或脚本变更可能为 $module 引入依赖冲突。';
+  }
+
+  @override
+  String get openrestyRiskEmptyConfigTitle => '配置为空';
+
+  @override
+  String get openrestyRiskEmptyConfigMessage => '保存空配置会破坏当前网关配置。';
+
+  @override
+  String get openrestyRiskBraceMismatchTitle => '括号不匹配';
+
+  @override
+  String get openrestyRiskBraceMismatchMessage => '配置中可能存在未匹配的大括号，请先校验。';
+
+  @override
+  String get openrestyRiskMissingHttpBlockTitle => '缺少 http 块';
+
+  @override
+  String get openrestyRiskMissingHttpBlockMessage => '在配置源码中未检测到 http 块。';
+
+  @override
+  String get openrestyRiskTemporaryMarkersTitle => '存在临时标记';
+
+  @override
+  String get openrestyRiskTemporaryMarkersMessage => '配置中仍包含 TODO 或 FIXME 标记。';
+
+  @override
+  String get openrestyDiffLabelHttps => 'HTTPS';
+
+  @override
+  String get openrestyDiffLabelRejectHandshake => '拒绝握手';
+
+  @override
+  String get openrestyDiffLabelEnabled => '启用';
+
+  @override
+  String get openrestyDiffLabelPackages => '依赖包';
+
+  @override
+  String get openrestyDiffLabelParams => '参数';
+
+  @override
+  String get openrestyDiffLabelScript => '脚本';
+
+  @override
+  String get openrestyDiffLabelConfigSource => '配置源码';
 
   @override
   String get monitorNetworkLabel => '网络';

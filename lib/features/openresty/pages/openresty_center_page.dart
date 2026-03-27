@@ -4,6 +4,7 @@ import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/features/openresty/pages/openresty_source_editor_page.dart';
 import 'package:onepanel_client/features/openresty/providers/openresty_provider.dart';
 import 'package:onepanel_client/features/openresty/widgets/openresty_center_dialogs.dart';
+import 'package:onepanel_client/features/openresty/widgets/openresty_center_localizations.dart';
 import 'package:onepanel_client/features/openresty/widgets/openresty_center_section_widgets.dart';
 import 'package:onepanel_client/features/openresty/widgets/openresty_error_view.dart';
 import 'package:onepanel_client/shared/security_gateway/widgets/config_diff_preview_card.dart';
@@ -17,9 +18,10 @@ class OpenRestyCenterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<OpenRestyProvider>(
       builder: (context, provider, _) {
+        final l10n = context.l10n;
         if (provider.error != null && !provider.hasData) {
           return Scaffold(
-            appBar: AppBar(title: const Text('OpenResty Gateway')),
+            appBar: AppBar(title: Text(l10n.openrestyPageTitle)),
             body: OpenRestyErrorView(
               message: provider.error!,
               onRetry: provider.loadAll,
@@ -35,7 +37,7 @@ class OpenRestyCenterPage extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('OpenResty Gateway'),
+            title: Text(l10n.openrestyPageTitle),
             actions: [
               IconButton(
                 icon: const Icon(Icons.refresh),
@@ -44,7 +46,7 @@ class OpenRestyCenterPage extends StatelessWidget {
               ),
               IconButton(
                 icon: const Icon(Icons.code),
-                tooltip: 'Advanced source editor',
+                tooltip: l10n.openrestyAdvancedSourceEditorTooltip,
                 onPressed: () => _openSourceEditor(context, provider),
               ),
             ],
@@ -55,44 +57,50 @@ class OpenRestyCenterPage extends StatelessWidget {
               if (provider.isLoading) const LinearProgressIndicator(),
               RiskNoticeBanner(
                 bannerKey: const Key('openresty-risk-banner'),
-                notices: provider.riskNotices,
-                title: 'Gateway risk banner',
+                notices:
+                    localizeOpenRestyRiskNotices(context, provider.riskNotices),
+                title: l10n.openrestyRiskBannerTitle,
               ),
               const SizedBox(height: AppDesignTokens.spacingMd),
               OpenRestySectionCard(
                 sectionKey: const Key('openresty-section-status'),
-                title: 'Status',
+                title: l10n.openrestyTabStatus,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     OpenRestySummaryLine(
-                        label: 'Running Status', value: provider.statusSummary),
+                        label: l10n.openrestyRunningStatusLabel,
+                        value: openRestyStatusSummary(context, provider)),
                     OpenRestySummaryLine(
-                        label: 'Build / Version', value: provider.buildSummary),
+                        label: l10n.openrestyBuildVersionLabel,
+                        value: openRestyBuildSummary(context, provider)),
                     OpenRestySummaryLine(
-                        label: 'Core Summary', value: provider.configSummary),
+                        label: l10n.openrestyCoreSummaryLabel,
+                        value: openRestyConfigSummary(context, provider)),
                     OpenRestySummaryLine(
-                        label: 'HTTPS Summary', value: provider.httpsSummary),
+                        label: l10n.openrestyHttpsSummaryLabel,
+                        value: openRestyHttpsSummary(context, provider)),
                     OpenRestySummaryLine(
-                        label: 'Modules Summary',
-                        value: provider.modulesSummary),
+                        label: l10n.openrestyModulesSummaryLabel,
+                        value: openRestyModulesSummary(context, provider)),
                   ],
                 ),
               ),
               const SizedBox(height: AppDesignTokens.spacingMd),
               OpenRestySectionCard(
                 sectionKey: const Key('openresty-section-https'),
-                title: 'HTTPS',
+                title: l10n.openrestyTabHttps,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     OpenRestySummaryLine(
-                        label: 'Current State', value: provider.httpsSummary),
+                        label: l10n.openrestyCurrentStateLabel,
+                        value: openRestyHttpsSummary(context, provider)),
                     OpenRestySummaryLine(
-                      label: 'Reject Handshake',
+                      label: l10n.openrestyRejectHandshakeLabel,
                       value: provider.https?['sslRejectHandshake'] == true
-                          ? 'Enabled'
-                          : 'Disabled',
+                          ? l10n.systemSettingsEnabled
+                          : l10n.systemSettingsDisabled,
                     ),
                     const SizedBox(height: AppDesignTokens.spacingSm),
                     Wrap(
@@ -105,27 +113,30 @@ class OpenRestyCenterPage extends StatelessWidget {
                             provider,
                           ),
                           icon: const Icon(Icons.lock_outline),
-                          label: const Text('Edit HTTPS'),
+                          label: Text(l10n.openrestyEditHttpsAction),
                         ),
                         OutlinedButton.icon(
                           onPressed: provider.httpsDraft?.hasChanges == true
                               ? () {}
                               : null,
                           icon: const Icon(Icons.preview_outlined),
-                          label: const Text('Preview diff'),
+                          label: Text(l10n.openrestyPreviewDiffAction),
                         ),
                         OutlinedButton.icon(
                           onPressed: provider.httpsRollbackSnapshot == null
                               ? null
                               : provider.rollbackHttps,
                           icon: const Icon(Icons.history),
-                          label: const Text('Rollback'),
+                          label: Text(l10n.openrestyRollbackAction),
                         ),
                       ],
                     ),
                     ConfigDiffPreviewCard(
-                      title: 'HTTPS diff preview',
-                      items: provider.httpsDraft?.diffItems ?? const [],
+                      title: l10n.openrestyHttpsDiffPreviewTitle,
+                      items: localizeOpenRestyDiffItems(
+                        context,
+                        provider.httpsDraft?.diffItems ?? const [],
+                      ),
                       onApply: provider.applyHttpsDraft,
                       onDiscard: provider.discardHttpsDraft,
                     ),
@@ -135,14 +146,14 @@ class OpenRestyCenterPage extends StatelessWidget {
               const SizedBox(height: AppDesignTokens.spacingMd),
               OpenRestySectionCard(
                 sectionKey: const Key('openresty-section-modules'),
-                title: 'Modules',
+                title: l10n.openrestyTabModules,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     for (final module in provider.moduleList.take(4))
                       ListTile(
                         contentPadding: EdgeInsets.zero,
-                        title: Text(module.name ?? 'Unnamed module'),
+                        title: Text(module.name ?? l10n.openrestyUnnamedModule),
                         subtitle: Text(module.packages ?? '-'),
                         trailing: Switch(
                           value: module.enable ?? false,
@@ -160,10 +171,13 @@ class OpenRestyCenterPage extends StatelessWidget {
                         ),
                       ),
                     if (provider.moduleList.isEmpty)
-                      const Text('No modules returned by the gateway.'),
+                      Text(l10n.openrestyNoModulesReturned),
                     ConfigDiffPreviewCard(
-                      title: 'Module diff preview',
-                      items: provider.moduleDraft?.diffItems ?? const [],
+                      title: l10n.openrestyModuleDiffPreviewTitle,
+                      items: localizeOpenRestyDiffItems(
+                        context,
+                        provider.moduleDraft?.diffItems ?? const [],
+                      ),
                       onApply: provider.applyModuleDraft,
                       onDiscard: provider.discardModuleDraft,
                     ),
@@ -173,12 +187,13 @@ class OpenRestyCenterPage extends StatelessWidget {
               const SizedBox(height: AppDesignTokens.spacingMd),
               OpenRestySectionCard(
                 sectionKey: const Key('openresty-section-config'),
-                title: 'Config',
+                title: l10n.openrestyTabConfig,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     OpenRestySummaryLine(
-                        label: 'Current Config', value: provider.configSummary),
+                        label: l10n.openrestyCurrentConfigLabel,
+                        value: openRestyConfigSummary(context, provider)),
                     const SizedBox(height: AppDesignTokens.spacingSm),
                     Wrap(
                       spacing: AppDesignTokens.spacingSm,
@@ -190,19 +205,19 @@ class OpenRestyCenterPage extends StatelessWidget {
                             provider,
                           ),
                           icon: const Icon(Icons.edit_note),
-                          label: const Text('Preview diff'),
+                          label: Text(l10n.openrestyPreviewDiffAction),
                         ),
                         OutlinedButton.icon(
                           onPressed: provider.configRollbackSnapshot == null
                               ? null
                               : provider.rollbackConfig,
                           icon: const Icon(Icons.history),
-                          label: const Text('Rollback'),
+                          label: Text(l10n.openrestyRollbackAction),
                         ),
                         OutlinedButton.icon(
                           onPressed: () => _openSourceEditor(context, provider),
                           icon: const Icon(Icons.code),
-                          label: const Text('Advanced'),
+                          label: Text(l10n.openrestyAdvancedAction),
                         ),
                       ],
                     ),
@@ -231,8 +246,11 @@ class OpenRestyCenterPage extends StatelessWidget {
                       ),
                     ),
                     ConfigDiffPreviewCard(
-                      title: 'Config diff preview',
-                      items: provider.configDraft?.diffItems ?? const [],
+                      title: l10n.openrestyConfigDiffPreviewTitle,
+                      items: localizeOpenRestyDiffItems(
+                        context,
+                        provider.configDraft?.diffItems ?? const [],
+                      ),
                       onApply: provider.applyConfigDraft,
                       onDiscard: provider.discardConfigDraft,
                     ),
@@ -242,16 +260,18 @@ class OpenRestyCenterPage extends StatelessWidget {
               const SizedBox(height: AppDesignTokens.spacingMd),
               OpenRestySectionCard(
                 sectionKey: const Key('openresty-section-build'),
-                title: 'Build',
+                title: l10n.openrestyTabBuild,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     OpenRestySummaryLine(
-                        label: 'Mirror', value: provider.buildSummary),
+                        label: l10n.openrestyBuildMirrorLabel,
+                        value: openRestyBuildSummary(context, provider)),
                     OpenRestySummaryLine(
-                        label: 'Last Result',
-                        value: provider.lastBuildMessage ??
-                            'No recent build action'),
+                        label: l10n.openrestyBuildLastResultLabel,
+                        value: provider.lastBuildMessage == null
+                            ? l10n.openrestyBuildNoRecentAction
+                            : l10n.openrestyBuildSubmittedMessage),
                     const SizedBox(height: AppDesignTokens.spacingSm),
                     FilledButton.icon(
                       onPressed: () => OpenRestyCenterDialogs.showBuildDialog(
@@ -259,7 +279,7 @@ class OpenRestyCenterPage extends StatelessWidget {
                         provider,
                       ),
                       icon: const Icon(Icons.play_arrow),
-                      label: const Text('Start build'),
+                      label: Text(l10n.openrestyBuildStartAction),
                     ),
                   ],
                 ),

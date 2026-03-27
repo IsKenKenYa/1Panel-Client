@@ -1256,6 +1256,36 @@ abstract class AppLocalizations {
   /// **'Healthy'**
   String get websitesSslGroupHealthy;
 
+  /// No description provided for @websitesSslProviderFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All providers'**
+  String get websitesSslProviderFilterAll;
+
+  /// No description provided for @websitesSslHealthHealthy.
+  ///
+  /// In en, this message translates to:
+  /// **'Healthy'**
+  String get websitesSslHealthHealthy;
+
+  /// No description provided for @websitesSslHealthExpiringSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiring soon'**
+  String get websitesSslHealthExpiringSoon;
+
+  /// No description provided for @websitesSslHealthExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get websitesSslHealthExpired;
+
+  /// No description provided for @websitesSslHealthUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get websitesSslHealthUnknown;
+
   /// No description provided for @openrestyPageTitle.
   ///
   /// In en, this message translates to:
@@ -1339,6 +1369,444 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scope config result'**
   String get openrestyScopeResultHint;
+
+  /// No description provided for @openrestyAdvancedSourceEditorTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced source editor'**
+  String get openrestyAdvancedSourceEditorTooltip;
+
+  /// No description provided for @openrestyRiskBannerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Gateway risk banner'**
+  String get openrestyRiskBannerTitle;
+
+  /// No description provided for @openrestyRunningStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Running Status'**
+  String get openrestyRunningStatusLabel;
+
+  /// No description provided for @openrestyBuildVersionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Build / Version'**
+  String get openrestyBuildVersionLabel;
+
+  /// No description provided for @openrestyCoreSummaryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Core Summary'**
+  String get openrestyCoreSummaryLabel;
+
+  /// No description provided for @openrestyHttpsSummaryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTPS Summary'**
+  String get openrestyHttpsSummaryLabel;
+
+  /// No description provided for @openrestyModulesSummaryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Modules Summary'**
+  String get openrestyModulesSummaryLabel;
+
+  /// No description provided for @openrestyCurrentStateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current State'**
+  String get openrestyCurrentStateLabel;
+
+  /// No description provided for @openrestyRejectHandshakeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject Handshake'**
+  String get openrestyRejectHandshakeLabel;
+
+  /// No description provided for @openrestyEditHttpsAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit HTTPS'**
+  String get openrestyEditHttpsAction;
+
+  /// No description provided for @openrestyPreviewDiffAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview diff'**
+  String get openrestyPreviewDiffAction;
+
+  /// No description provided for @openrestyRollbackAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Rollback'**
+  String get openrestyRollbackAction;
+
+  /// No description provided for @openrestyHttpsDiffPreviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTPS diff preview'**
+  String get openrestyHttpsDiffPreviewTitle;
+
+  /// No description provided for @openrestyUnnamedModule.
+  ///
+  /// In en, this message translates to:
+  /// **'Unnamed module'**
+  String get openrestyUnnamedModule;
+
+  /// No description provided for @openrestyNoModulesReturned.
+  ///
+  /// In en, this message translates to:
+  /// **'No modules returned by the gateway.'**
+  String get openrestyNoModulesReturned;
+
+  /// No description provided for @openrestyModuleDiffPreviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Module diff preview'**
+  String get openrestyModuleDiffPreviewTitle;
+
+  /// No description provided for @openrestyCurrentConfigLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Config'**
+  String get openrestyCurrentConfigLabel;
+
+  /// No description provided for @openrestyAdvancedAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get openrestyAdvancedAction;
+
+  /// No description provided for @openrestyConfigDiffPreviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Config diff preview'**
+  String get openrestyConfigDiffPreviewTitle;
+
+  /// No description provided for @openrestyBuildLastResultLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Result'**
+  String get openrestyBuildLastResultLabel;
+
+  /// No description provided for @openrestyBuildNoRecentAction.
+  ///
+  /// In en, this message translates to:
+  /// **'No recent build action'**
+  String get openrestyBuildNoRecentAction;
+
+  /// No description provided for @openrestyBuildStartAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Start build'**
+  String get openrestyBuildStartAction;
+
+  /// No description provided for @openrestyStatusNotRunningSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Not running'**
+  String get openrestyStatusNotRunningSummary;
+
+  /// No description provided for @openrestyStatusRunningSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Running · active {active}'**
+  String openrestyStatusRunningSummary(int active);
+
+  /// No description provided for @openrestyHttpsEnabledSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTPS enabled'**
+  String get openrestyHttpsEnabledSummary;
+
+  /// No description provided for @openrestyHttpsDisabledSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTPS disabled'**
+  String get openrestyHttpsDisabledSummary;
+
+  /// No description provided for @openrestyModulesEnabledSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{enabled}/{total} modules enabled'**
+  String openrestyModulesEnabledSummary(int enabled, int total);
+
+  /// No description provided for @openrestyBuildNoMirrorConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'No mirror configured'**
+  String get openrestyBuildNoMirrorConfigured;
+
+  /// No description provided for @openrestyConfigNotLoaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Config not loaded'**
+  String get openrestyConfigNotLoaded;
+
+  /// No description provided for @openrestyConfigLoadedSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{lines} lines loaded'**
+  String openrestyConfigLoadedSummary(int lines);
+
+  /// No description provided for @openrestyDialogUpdateHttpsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update HTTPS'**
+  String get openrestyDialogUpdateHttpsTitle;
+
+  /// No description provided for @openrestyDialogEnableHttpsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable HTTPS'**
+  String get openrestyDialogEnableHttpsLabel;
+
+  /// No description provided for @openrestyDialogRejectInvalidHandshakesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject invalid handshakes'**
+  String get openrestyDialogRejectInvalidHandshakesLabel;
+
+  /// No description provided for @openrestyDialogModuleTitleFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Module'**
+  String get openrestyDialogModuleTitleFallback;
+
+  /// No description provided for @openrestyDialogEnableModuleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable module'**
+  String get openrestyDialogEnableModuleLabel;
+
+  /// No description provided for @openrestyDialogPackagesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Packages'**
+  String get openrestyDialogPackagesLabel;
+
+  /// No description provided for @openrestyDialogParamsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Params'**
+  String get openrestyDialogParamsLabel;
+
+  /// No description provided for @openrestyDialogScriptLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Script'**
+  String get openrestyDialogScriptLabel;
+
+  /// No description provided for @openrestyDialogPreviewConfigTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview config change'**
+  String get openrestyDialogPreviewConfigTitle;
+
+  /// No description provided for @openrestyDialogConfigSourceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Config source'**
+  String get openrestyDialogConfigSourceLabel;
+
+  /// No description provided for @openrestyDialogStartBuildTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start OpenResty build'**
+  String get openrestyDialogStartBuildTitle;
+
+  /// No description provided for @openrestyDialogBuildRiskHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Build can refresh gateway binaries and module packages. Confirm before running on production nodes.'**
+  String get openrestyDialogBuildRiskHint;
+
+  /// No description provided for @openrestyBuildSubmittedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Build submitted'**
+  String get openrestyBuildSubmittedMessage;
+
+  /// No description provided for @openrestyBuildSubmittedWithMirrorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Build submitted with mirror {mirror}.'**
+  String openrestyBuildSubmittedWithMirrorMessage(String mirror);
+
+  /// No description provided for @openrestyRiskGatewayInactiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Gateway inactive'**
+  String get openrestyRiskGatewayInactiveTitle;
+
+  /// No description provided for @openrestyRiskGatewayInactiveMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'OpenResty is not reporting active connections.'**
+  String get openrestyRiskGatewayInactiveMessage;
+
+  /// No description provided for @openrestyRiskHttpsDisabledTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTPS disabled'**
+  String get openrestyRiskHttpsDisabledTitle;
+
+  /// No description provided for @openrestyRiskHttpsDisabledMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabling HTTPS reduces the default gateway security baseline.'**
+  String get openrestyRiskHttpsDisabledMessage;
+
+  /// No description provided for @openrestyRiskNoModulesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No modules loaded'**
+  String get openrestyRiskNoModulesTitle;
+
+  /// No description provided for @openrestyRiskNoModulesMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'OpenResty modules are empty. Review build and module config.'**
+  String get openrestyRiskNoModulesMessage;
+
+  /// No description provided for @openrestyRiskBuildMirrorMissingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Build mirror missing'**
+  String get openrestyRiskBuildMirrorMissingTitle;
+
+  /// No description provided for @openrestyRiskBuildMirrorMissingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'No build mirror is configured. Build speed may be affected.'**
+  String get openrestyRiskBuildMirrorMissingMessage;
+
+  /// No description provided for @openrestyRiskRejectHandshakeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject handshake enabled'**
+  String get openrestyRiskRejectHandshakeTitle;
+
+  /// No description provided for @openrestyRiskRejectHandshakeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This may block clients with invalid TLS negotiation settings.'**
+  String get openrestyRiskRejectHandshakeMessage;
+
+  /// No description provided for @openrestyRiskModuleDisabledTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Module disabled'**
+  String get openrestyRiskModuleDisabledTitle;
+
+  /// No description provided for @openrestyRiskModuleDisabledMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabling {module} may change gateway behavior immediately.'**
+  String openrestyRiskModuleDisabledMessage(String module);
+
+  /// No description provided for @openrestyRiskDependencyChangeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Dependency change'**
+  String get openrestyRiskDependencyChangeTitle;
+
+  /// No description provided for @openrestyRiskDependencyChangeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Package or script changes can introduce dependency conflicts for {module}.'**
+  String openrestyRiskDependencyChangeMessage(String module);
+
+  /// No description provided for @openrestyRiskEmptyConfigTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty config'**
+  String get openrestyRiskEmptyConfigTitle;
+
+  /// No description provided for @openrestyRiskEmptyConfigMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving an empty config will break the current gateway setup.'**
+  String get openrestyRiskEmptyConfigMessage;
+
+  /// No description provided for @openrestyRiskBraceMismatchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Brace mismatch'**
+  String get openrestyRiskBraceMismatchTitle;
+
+  /// No description provided for @openrestyRiskBraceMismatchMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The config appears to have unmatched braces. Validate before saving.'**
+  String get openrestyRiskBraceMismatchMessage;
+
+  /// No description provided for @openrestyRiskMissingHttpBlockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing http block'**
+  String get openrestyRiskMissingHttpBlockTitle;
+
+  /// No description provided for @openrestyRiskMissingHttpBlockMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'No http block was detected in the config source.'**
+  String get openrestyRiskMissingHttpBlockMessage;
+
+  /// No description provided for @openrestyRiskTemporaryMarkersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Temporary markers found'**
+  String get openrestyRiskTemporaryMarkersTitle;
+
+  /// No description provided for @openrestyRiskTemporaryMarkersMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The config still contains TODO or FIXME markers.'**
+  String get openrestyRiskTemporaryMarkersMessage;
+
+  /// No description provided for @openrestyDiffLabelHttps.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTPS'**
+  String get openrestyDiffLabelHttps;
+
+  /// No description provided for @openrestyDiffLabelRejectHandshake.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject Handshake'**
+  String get openrestyDiffLabelRejectHandshake;
+
+  /// No description provided for @openrestyDiffLabelEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get openrestyDiffLabelEnabled;
+
+  /// No description provided for @openrestyDiffLabelPackages.
+  ///
+  /// In en, this message translates to:
+  /// **'Packages'**
+  String get openrestyDiffLabelPackages;
+
+  /// No description provided for @openrestyDiffLabelParams.
+  ///
+  /// In en, this message translates to:
+  /// **'Params'**
+  String get openrestyDiffLabelParams;
+
+  /// No description provided for @openrestyDiffLabelScript.
+  ///
+  /// In en, this message translates to:
+  /// **'Script'**
+  String get openrestyDiffLabelScript;
+
+  /// No description provided for @openrestyDiffLabelConfigSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Config Source'**
+  String get openrestyDiffLabelConfigSource;
 
   /// No description provided for @monitorNetworkLabel.
   ///

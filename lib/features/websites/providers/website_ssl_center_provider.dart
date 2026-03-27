@@ -11,6 +11,8 @@ enum CertificateExpiryWindow {
 }
 
 class WebsiteSslCenterProvider extends ChangeNotifier {
+  static const String providerFilterAll = '__all__';
+
   WebsiteSslCenterProvider({WebsiteCertificateService? service})
       : _service = service;
 
@@ -21,7 +23,7 @@ class WebsiteSslCenterProvider extends ChangeNotifier {
   List<WebsiteSSL> certificates = const <WebsiteSSL>[];
   List<WebsiteSSL> _allCertificates = const <WebsiteSSL>[];
   String searchQuery = '';
-  String providerFilter = 'All';
+  String providerFilter = providerFilterAll;
   CertificateExpiryWindow expiryWindow = CertificateExpiryWindow.all;
 
   Future<void> _ensureService() async {
@@ -36,7 +38,7 @@ class WebsiteSslCenterProvider extends ChangeNotifier {
         .toSet()
         .toList()
       ..sort();
-    return <String>['All', ...providers];
+    return <String>[providerFilterAll, ...providers];
   }
 
   int get expiredCount => _allCertificates
@@ -183,7 +185,7 @@ class WebsiteSslCenterProvider extends ChangeNotifier {
   void _applyFilters() {
     final query = searchQuery.toLowerCase();
     final filtered = _allCertificates.where((certificate) {
-      final providerMatches = providerFilter == 'All' ||
+      final providerMatches = providerFilter == providerFilterAll ||
           (certificate.provider ?? '') == providerFilter;
       final domains = <String>[
         certificate.primaryDomain ?? '',

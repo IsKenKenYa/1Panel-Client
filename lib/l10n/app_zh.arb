@@ -284,6 +284,11 @@
   "websitesSslGroupWithin7Days": "7 天内到期",
   "websitesSslGroupWithin30Days": "30 天内到期",
   "websitesSslGroupHealthy": "健康",
+  "websitesSslProviderFilterAll": "全部提供商",
+  "websitesSslHealthHealthy": "健康",
+  "websitesSslHealthExpiringSoon": "即将过期",
+  "websitesSslHealthExpired": "已过期",
+  "websitesSslHealthUnknown": "未知",
   "@websitesSslDownloadHint": {
     "placeholders": {
       "link": {
@@ -305,6 +310,124 @@
   "openrestyScopeWebsiteIdLabel": "网站 ID（可选）",
   "openrestyScopeLoad": "加载范围配置",
   "openrestyScopeResultHint": "范围配置结果",
+  "openrestyAdvancedSourceEditorTooltip": "高级源码编辑器",
+  "openrestyRiskBannerTitle": "网关风险提示",
+  "openrestyRunningStatusLabel": "运行状态",
+  "openrestyBuildVersionLabel": "构建 / 版本",
+  "openrestyCoreSummaryLabel": "核心摘要",
+  "openrestyHttpsSummaryLabel": "HTTPS 摘要",
+  "openrestyModulesSummaryLabel": "模块摘要",
+  "openrestyCurrentStateLabel": "当前状态",
+  "openrestyRejectHandshakeLabel": "拒绝握手",
+  "openrestyEditHttpsAction": "编辑 HTTPS",
+  "openrestyPreviewDiffAction": "预览差异",
+  "openrestyRollbackAction": "回滚",
+  "openrestyHttpsDiffPreviewTitle": "HTTPS 差异预览",
+  "openrestyUnnamedModule": "未命名模块",
+  "openrestyNoModulesReturned": "网关未返回任何模块。",
+  "openrestyModuleDiffPreviewTitle": "模块差异预览",
+  "openrestyCurrentConfigLabel": "当前配置",
+  "openrestyAdvancedAction": "高级",
+  "openrestyConfigDiffPreviewTitle": "配置差异预览",
+  "openrestyBuildLastResultLabel": "最近结果",
+  "openrestyBuildNoRecentAction": "暂无最近构建操作",
+  "openrestyBuildStartAction": "开始构建",
+  "openrestyStatusNotRunningSummary": "未运行",
+  "openrestyStatusRunningSummary": "运行中 · active {active}",
+  "@openrestyStatusRunningSummary": {
+    "placeholders": {
+      "active": {
+        "type": "int"
+      }
+    }
+  },
+  "openrestyHttpsEnabledSummary": "HTTPS 已启用",
+  "openrestyHttpsDisabledSummary": "HTTPS 已禁用",
+  "openrestyModulesEnabledSummary": "已启用模块 {enabled}/{total}",
+  "@openrestyModulesEnabledSummary": {
+    "placeholders": {
+      "enabled": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "openrestyBuildNoMirrorConfigured": "未配置构建镜像地址",
+  "openrestyConfigNotLoaded": "配置未加载",
+  "openrestyConfigLoadedSummary": "已加载 {lines} 行",
+  "@openrestyConfigLoadedSummary": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "openrestyDialogUpdateHttpsTitle": "更新 HTTPS",
+  "openrestyDialogEnableHttpsLabel": "启用 HTTPS",
+  "openrestyDialogRejectInvalidHandshakesLabel": "拒绝无效握手",
+  "openrestyDialogModuleTitleFallback": "模块",
+  "openrestyDialogEnableModuleLabel": "启用模块",
+  "openrestyDialogPackagesLabel": "依赖包",
+  "openrestyDialogParamsLabel": "参数",
+  "openrestyDialogScriptLabel": "脚本",
+  "openrestyDialogPreviewConfigTitle": "预览配置变更",
+  "openrestyDialogConfigSourceLabel": "配置源码",
+  "openrestyDialogStartBuildTitle": "开始构建 OpenResty",
+  "openrestyDialogBuildRiskHint": "构建会刷新网关二进制与模块依赖，请在生产节点执行前再次确认。",
+  "openrestyBuildSubmittedMessage": "构建请求已提交",
+  "openrestyBuildSubmittedWithMirrorMessage": "已使用镜像 {mirror} 提交构建请求。",
+  "@openrestyBuildSubmittedWithMirrorMessage": {
+    "placeholders": {
+      "mirror": {
+        "type": "String"
+      }
+    }
+  },
+  "openrestyRiskGatewayInactiveTitle": "网关未激活",
+  "openrestyRiskGatewayInactiveMessage": "OpenResty 当前未上报活动连接。",
+  "openrestyRiskHttpsDisabledTitle": "HTTPS 已禁用",
+  "openrestyRiskHttpsDisabledMessage": "禁用 HTTPS 会降低网关默认安全基线。",
+  "openrestyRiskNoModulesTitle": "未加载模块",
+  "openrestyRiskNoModulesMessage": "OpenResty 模块列表为空，请检查构建与模块配置。",
+  "openrestyRiskBuildMirrorMissingTitle": "缺少构建镜像地址",
+  "openrestyRiskBuildMirrorMissingMessage": "当前未配置构建镜像地址，可能影响构建速度。",
+  "openrestyRiskRejectHandshakeTitle": "已启用拒绝握手",
+  "openrestyRiskRejectHandshakeMessage": "这可能阻止 TLS 协商配置不正确的客户端。",
+  "openrestyRiskModuleDisabledTitle": "模块已禁用",
+  "openrestyRiskModuleDisabledMessage": "禁用 {module} 可能立即改变网关行为。",
+  "@openrestyRiskModuleDisabledMessage": {
+    "placeholders": {
+      "module": {
+        "type": "String"
+      }
+    }
+  },
+  "openrestyRiskDependencyChangeTitle": "依赖变更",
+  "openrestyRiskDependencyChangeMessage": "依赖包或脚本变更可能为 {module} 引入依赖冲突。",
+  "@openrestyRiskDependencyChangeMessage": {
+    "placeholders": {
+      "module": {
+        "type": "String"
+      }
+    }
+  },
+  "openrestyRiskEmptyConfigTitle": "配置为空",
+  "openrestyRiskEmptyConfigMessage": "保存空配置会破坏当前网关配置。",
+  "openrestyRiskBraceMismatchTitle": "括号不匹配",
+  "openrestyRiskBraceMismatchMessage": "配置中可能存在未匹配的大括号，请先校验。",
+  "openrestyRiskMissingHttpBlockTitle": "缺少 http 块",
+  "openrestyRiskMissingHttpBlockMessage": "在配置源码中未检测到 http 块。",
+  "openrestyRiskTemporaryMarkersTitle": "存在临时标记",
+  "openrestyRiskTemporaryMarkersMessage": "配置中仍包含 TODO 或 FIXME 标记。",
+  "openrestyDiffLabelHttps": "HTTPS",
+  "openrestyDiffLabelRejectHandshake": "拒绝握手",
+  "openrestyDiffLabelEnabled": "启用",
+  "openrestyDiffLabelPackages": "依赖包",
+  "openrestyDiffLabelParams": "参数",
+  "openrestyDiffLabelScript": "脚本",
+  "openrestyDiffLabelConfigSource": "配置源码",
   "monitorNetworkLabel": "网络",
   "monitorMetricCurrent": "当前",
   "monitorMetricMin": "最小",

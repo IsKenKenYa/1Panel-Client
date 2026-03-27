@@ -284,6 +284,11 @@
   "websitesSslGroupWithin7Days": "Within 7 days",
   "websitesSslGroupWithin30Days": "Within 30 days",
   "websitesSslGroupHealthy": "Healthy",
+  "websitesSslProviderFilterAll": "All providers",
+  "websitesSslHealthHealthy": "Healthy",
+  "websitesSslHealthExpiringSoon": "Expiring soon",
+  "websitesSslHealthExpired": "Expired",
+  "websitesSslHealthUnknown": "Unknown",
   "@websitesSslDownloadHint": {
     "placeholders": {
       "link": {
@@ -305,6 +310,124 @@
   "openrestyScopeWebsiteIdLabel": "Website ID (optional)",
   "openrestyScopeLoad": "Load scope",
   "openrestyScopeResultHint": "Scope config result",
+  "openrestyAdvancedSourceEditorTooltip": "Advanced source editor",
+  "openrestyRiskBannerTitle": "Gateway risk banner",
+  "openrestyRunningStatusLabel": "Running Status",
+  "openrestyBuildVersionLabel": "Build / Version",
+  "openrestyCoreSummaryLabel": "Core Summary",
+  "openrestyHttpsSummaryLabel": "HTTPS Summary",
+  "openrestyModulesSummaryLabel": "Modules Summary",
+  "openrestyCurrentStateLabel": "Current State",
+  "openrestyRejectHandshakeLabel": "Reject Handshake",
+  "openrestyEditHttpsAction": "Edit HTTPS",
+  "openrestyPreviewDiffAction": "Preview diff",
+  "openrestyRollbackAction": "Rollback",
+  "openrestyHttpsDiffPreviewTitle": "HTTPS diff preview",
+  "openrestyUnnamedModule": "Unnamed module",
+  "openrestyNoModulesReturned": "No modules returned by the gateway.",
+  "openrestyModuleDiffPreviewTitle": "Module diff preview",
+  "openrestyCurrentConfigLabel": "Current Config",
+  "openrestyAdvancedAction": "Advanced",
+  "openrestyConfigDiffPreviewTitle": "Config diff preview",
+  "openrestyBuildLastResultLabel": "Last Result",
+  "openrestyBuildNoRecentAction": "No recent build action",
+  "openrestyBuildStartAction": "Start build",
+  "openrestyStatusNotRunningSummary": "Not running",
+  "openrestyStatusRunningSummary": "Running · active {active}",
+  "@openrestyStatusRunningSummary": {
+    "placeholders": {
+      "active": {
+        "type": "int"
+      }
+    }
+  },
+  "openrestyHttpsEnabledSummary": "HTTPS enabled",
+  "openrestyHttpsDisabledSummary": "HTTPS disabled",
+  "openrestyModulesEnabledSummary": "{enabled}/{total} modules enabled",
+  "@openrestyModulesEnabledSummary": {
+    "placeholders": {
+      "enabled": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "openrestyBuildNoMirrorConfigured": "No mirror configured",
+  "openrestyConfigNotLoaded": "Config not loaded",
+  "openrestyConfigLoadedSummary": "{lines} lines loaded",
+  "@openrestyConfigLoadedSummary": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "openrestyDialogUpdateHttpsTitle": "Update HTTPS",
+  "openrestyDialogEnableHttpsLabel": "Enable HTTPS",
+  "openrestyDialogRejectInvalidHandshakesLabel": "Reject invalid handshakes",
+  "openrestyDialogModuleTitleFallback": "Module",
+  "openrestyDialogEnableModuleLabel": "Enable module",
+  "openrestyDialogPackagesLabel": "Packages",
+  "openrestyDialogParamsLabel": "Params",
+  "openrestyDialogScriptLabel": "Script",
+  "openrestyDialogPreviewConfigTitle": "Preview config change",
+  "openrestyDialogConfigSourceLabel": "Config source",
+  "openrestyDialogStartBuildTitle": "Start OpenResty build",
+  "openrestyDialogBuildRiskHint": "Build can refresh gateway binaries and module packages. Confirm before running on production nodes.",
+  "openrestyBuildSubmittedMessage": "Build submitted",
+  "openrestyBuildSubmittedWithMirrorMessage": "Build submitted with mirror {mirror}.",
+  "@openrestyBuildSubmittedWithMirrorMessage": {
+    "placeholders": {
+      "mirror": {
+        "type": "String"
+      }
+    }
+  },
+  "openrestyRiskGatewayInactiveTitle": "Gateway inactive",
+  "openrestyRiskGatewayInactiveMessage": "OpenResty is not reporting active connections.",
+  "openrestyRiskHttpsDisabledTitle": "HTTPS disabled",
+  "openrestyRiskHttpsDisabledMessage": "Disabling HTTPS reduces the default gateway security baseline.",
+  "openrestyRiskNoModulesTitle": "No modules loaded",
+  "openrestyRiskNoModulesMessage": "OpenResty modules are empty. Review build and module config.",
+  "openrestyRiskBuildMirrorMissingTitle": "Build mirror missing",
+  "openrestyRiskBuildMirrorMissingMessage": "No build mirror is configured. Build speed may be affected.",
+  "openrestyRiskRejectHandshakeTitle": "Reject handshake enabled",
+  "openrestyRiskRejectHandshakeMessage": "This may block clients with invalid TLS negotiation settings.",
+  "openrestyRiskModuleDisabledTitle": "Module disabled",
+  "openrestyRiskModuleDisabledMessage": "Disabling {module} may change gateway behavior immediately.",
+  "@openrestyRiskModuleDisabledMessage": {
+    "placeholders": {
+      "module": {
+        "type": "String"
+      }
+    }
+  },
+  "openrestyRiskDependencyChangeTitle": "Dependency change",
+  "openrestyRiskDependencyChangeMessage": "Package or script changes can introduce dependency conflicts for {module}.",
+  "@openrestyRiskDependencyChangeMessage": {
+    "placeholders": {
+      "module": {
+        "type": "String"
+      }
+    }
+  },
+  "openrestyRiskEmptyConfigTitle": "Empty config",
+  "openrestyRiskEmptyConfigMessage": "Saving an empty config will break the current gateway setup.",
+  "openrestyRiskBraceMismatchTitle": "Brace mismatch",
+  "openrestyRiskBraceMismatchMessage": "The config appears to have unmatched braces. Validate before saving.",
+  "openrestyRiskMissingHttpBlockTitle": "Missing http block",
+  "openrestyRiskMissingHttpBlockMessage": "No http block was detected in the config source.",
+  "openrestyRiskTemporaryMarkersTitle": "Temporary markers found",
+  "openrestyRiskTemporaryMarkersMessage": "The config still contains TODO or FIXME markers.",
+  "openrestyDiffLabelHttps": "HTTPS",
+  "openrestyDiffLabelRejectHandshake": "Reject Handshake",
+  "openrestyDiffLabelEnabled": "Enabled",
+  "openrestyDiffLabelPackages": "Packages",
+  "openrestyDiffLabelParams": "Params",
+  "openrestyDiffLabelScript": "Script",
+  "openrestyDiffLabelConfigSource": "Config Source",
   "monitorNetworkLabel": "Network",
   "monitorMetricCurrent": "Current",
   "monitorMetricMin": "Min",
