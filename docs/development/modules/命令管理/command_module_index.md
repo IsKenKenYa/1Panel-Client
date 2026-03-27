@@ -9,7 +9,7 @@
 | 子模块 | 端点数 | API 客户端 | 数据模型 | 说明 |
 |--------|--------|------------|----------|------|
 | 命令库 | 9 | `command_v2.dart` | `command_models.dart` + `tool_models.dart` | 覆盖 `create/list/search/tree/update/del/export/upload/import` |
-| 脚本库 | 0 | Week 2 不接入 | - | 留到 Week 4 与 Cronjob/Script Library 主链路再做 |
+| 脚本库 | 5 | `script_library_v2.dart` + `script_run_ws_client.dart` | `script_library_models.dart` | Week 4 已独立交付，详见 `docs/development/modules/脚本库管理/` |
 
 ## 已有落地
 
@@ -43,8 +43,8 @@
 ## 后续计划
 
 1. 后续周再评估“发送到终端”交接能力
-2. Week 4 再衔接 Script Library 与 Cronjob 复用链路
+2. `command_v2.dart` 中残留的脚本库 helper 视为 legacy wrapper，不再作为当前 UI 真值
 
 ---
 **文档版本**: 2.0
-**最后更新**: 2026-03-26
+**最后更新**: 2026-03-27

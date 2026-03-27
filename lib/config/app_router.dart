@@ -39,6 +39,25 @@ import 'package:onepanel_client/features/commands/pages/command_form_page.dart';
 import 'package:onepanel_client/features/commands/pages/commands_page.dart';
 import 'package:onepanel_client/features/commands/providers/command_form_provider.dart';
 import 'package:onepanel_client/features/commands/providers/commands_provider.dart';
+import 'package:onepanel_client/features/backups/models/backup_account_form_args.dart';
+import 'package:onepanel_client/features/backups/models/backup_records_args.dart';
+import 'package:onepanel_client/features/backups/models/backup_recover_args.dart';
+import 'package:onepanel_client/features/backups/pages/backup_account_form_page.dart';
+import 'package:onepanel_client/features/backups/pages/backup_accounts_page.dart';
+import 'package:onepanel_client/features/backups/pages/backup_records_page.dart';
+import 'package:onepanel_client/features/backups/pages/backup_recover_page.dart';
+import 'package:onepanel_client/features/backups/providers/backup_account_form_provider.dart';
+import 'package:onepanel_client/features/backups/providers/backup_accounts_provider.dart';
+import 'package:onepanel_client/features/backups/providers/backup_records_provider.dart';
+import 'package:onepanel_client/features/backups/providers/backup_recover_provider.dart';
+import 'package:onepanel_client/features/cronjobs/models/cronjob_form_args.dart';
+import 'package:onepanel_client/features/cronjobs/pages/cronjob_form_page.dart';
+import 'package:onepanel_client/features/cronjobs/models/cronjob_records_args.dart';
+import 'package:onepanel_client/features/cronjobs/pages/cronjob_records_page.dart';
+import 'package:onepanel_client/features/cronjobs/pages/cronjobs_page.dart';
+import 'package:onepanel_client/features/cronjobs/providers/cronjob_form_provider.dart';
+import 'package:onepanel_client/features/cronjobs/providers/cronjob_records_provider.dart';
+import 'package:onepanel_client/features/cronjobs/providers/cronjobs_provider.dart';
 import 'package:onepanel_client/features/host_assets/models/host_asset_form_args.dart';
 import 'package:onepanel_client/features/host_assets/pages/host_asset_form_page.dart';
 import 'package:onepanel_client/features/host_assets/pages/host_assets_page.dart';
@@ -59,6 +78,8 @@ import 'package:onepanel_client/features/ssh/providers/ssh_certs_provider.dart';
 import 'package:onepanel_client/features/ssh/providers/ssh_logs_provider.dart';
 import 'package:onepanel_client/features/ssh/providers/ssh_sessions_provider.dart';
 import 'package:onepanel_client/features/ssh/providers/ssh_settings_provider.dart';
+import 'package:onepanel_client/features/script_library/pages/script_library_page.dart';
+import 'package:onepanel_client/features/script_library/providers/script_library_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'package:onepanel_client/features/containers/container_detail_page.dart';
@@ -465,44 +486,102 @@ class AppRouter {
         }
         return MaterialPageRoute(builder: (_) => const NotFoundPage());
       case AppRoutes.cronjobs:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsCronjobsTitle,
-          availableInWeek: 4,
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<CronjobsProvider>(
+            create: (_) => CronjobsProvider(),
+            child: const CronjobsPage(),
+          ),
         );
       case AppRoutes.cronjobForm:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsCronjobFormTitle,
-          availableInWeek: 5,
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<CronjobFormProvider>(
+            create: (context) {
+              final provider = CronjobFormProvider();
+              final currentServer = Provider.of<CurrentServerController?>(
+                context,
+                listen: false,
+              );
+              if (currentServer?.hasServer ?? false) {
+                provider.initialize(
+                  settings.arguments as CronjobFormArgs? ??
+                      const CronjobFormArgs(),
+                );
+              }
+              return provider;
+            },
+            child: CronjobFormPage(
+              args: settings.arguments as CronjobFormArgs? ??
+                  const CronjobFormArgs(),
+            ),
+          ),
         );
       case AppRoutes.cronjobRecords:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsCronjobRecordsTitle,
-          availableInWeek: 4,
-        );
+        final cronjobRecordArg = settings.arguments;
+        if (cronjobRecordArg is CronjobRecordsArgs) {
+          return MaterialPageRoute(
+            builder: (_) => ChangeNotifierProvider<CronjobRecordsProvider>(
+              create: (_) => CronjobRecordsProvider(),
+              child: CronjobRecordsPage(args: cronjobRecordArg),
+            ),
+          );
+        }
+        return MaterialPageRoute(builder: (_) => const NotFoundPage());
       case AppRoutes.scripts:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsScriptsTitle,
-          availableInWeek: 4,
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<ScriptLibraryProvider>(
+            create: (_) => ScriptLibraryProvider(),
+            child: const ScriptLibraryPage(),
+          ),
         );
       case AppRoutes.backups:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsBackupsTitle,
-          availableInWeek: 5,
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<BackupAccountsProvider>(
+            create: (_) => BackupAccountsProvider(),
+            child: const BackupAccountsPage(),
+          ),
         );
       case AppRoutes.backupAccountForm:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsBackupAccountFormTitle,
-          availableInWeek: 5,
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<BackupAccountFormProvider>(
+            create: (context) {
+              final provider = BackupAccountFormProvider();
+              final currentServer = Provider.of<CurrentServerController?>(
+                context,
+                listen: false,
+              );
+              if (currentServer?.hasServer ?? false) {
+                provider.initialize(
+                  settings.arguments as BackupAccountFormArgs? ??
+                      const BackupAccountFormArgs(),
+                );
+              }
+              return provider;
+            },
+            child: BackupAccountFormPage(
+              args: settings.arguments as BackupAccountFormArgs? ??
+                  const BackupAccountFormArgs(),
+            ),
+          ),
         );
       case AppRoutes.backupRecords:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsBackupRecordsTitle,
-          availableInWeek: 6,
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<BackupRecordsProvider>(
+            create: (_) => BackupRecordsProvider(),
+            child: BackupRecordsPage(
+              args: settings.arguments as BackupRecordsArgs? ??
+                  const BackupRecordsArgs(),
+            ),
+          ),
         );
       case AppRoutes.backupRecover:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsBackupRecoverTitle,
-          availableInWeek: 6,
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<BackupRecoverProvider>(
+            create: (_) => BackupRecoverProvider(),
+            child: BackupRecoverPage(
+              args: settings.arguments as BackupRecoverArgs? ??
+                  const BackupRecoverArgs(),
+            ),
+          ),
         );
       case AppRoutes.logs:
         return _buildStageOnePlaceholderRoute(

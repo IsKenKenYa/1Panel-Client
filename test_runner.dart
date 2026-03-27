@@ -172,6 +172,68 @@ class TestRunner {
         description: 'Process WebSocket契约测试',
       );
     }
+    final cronjobsProviderDir = Directory('test/features/cronjobs/providers');
+    if (await cronjobsProviderDir.exists()) {
+      await runTests(
+        'test/features/cronjobs/providers/',
+        description: 'Cronjob Provider测试',
+      );
+    }
+    final scriptLibraryProviderDir =
+        Directory('test/features/script_library/providers');
+    if (await scriptLibraryProviderDir.exists()) {
+      await runTests(
+        'test/features/script_library/providers/',
+        description: 'Script Library Provider测试',
+      );
+    }
+    final backupProviderDir = Directory('test/features/backups/providers');
+    if (await backupProviderDir.exists()) {
+      await runTests(
+        'test/features/backups/providers/',
+        description: 'Backup Provider测试',
+      );
+    }
+    final cronjobApiClientFile =
+        File('test/api_client/cronjob_api_client_test.dart');
+    if (await cronjobApiClientFile.exists()) {
+      await runTests(
+        'test/api_client/cronjob_api_client_test.dart',
+        description: 'Cronjob API真实环境测试',
+      );
+    }
+    final scriptLibraryApiClientFile =
+        File('test/api_client/script_library_api_client_test.dart');
+    if (await scriptLibraryApiClientFile.exists()) {
+      await runTests(
+        'test/api_client/script_library_api_client_test.dart',
+        description: 'Script Library API真实环境测试',
+      );
+    }
+    final cronjobFormApiClientFile =
+        File('test/api_client/cronjob_form_api_client_test.dart');
+    if (await cronjobFormApiClientFile.exists()) {
+      await runTests(
+        'test/api_client/cronjob_form_api_client_test.dart',
+        description: 'Cronjob Form API真实环境测试',
+      );
+    }
+    final backupApiClientFile =
+        File('test/api_client/backup_api_client_test.dart');
+    if (await backupApiClientFile.exists()) {
+      await runTests(
+        'test/api_client/backup_api_client_test.dart',
+        description: 'Backup API真实环境测试',
+      );
+    }
+    final scriptRunWsClientTestFile =
+        File('test/core/network/script_run_ws_client_test.dart');
+    if (await scriptRunWsClientTestFile.exists()) {
+      await runTests(
+        'test/core/network/script_run_ws_client_test.dart',
+        description: 'Script Run WebSocket契约测试',
+      );
+    }
   }
 
   static Future<void> runIntegrationTests() async {
@@ -247,6 +309,31 @@ class TestRunner {
       await runTests(
         'test/features/processes/pages/',
         description: 'Process Widget测试',
+      );
+    }
+    final cronjobPagesDir = Directory('test/features/cronjobs/pages');
+    if (await cronjobPagesDir.exists()) {
+      hasTests = true;
+      await runTests(
+        'test/features/cronjobs/pages/',
+        description: 'Cronjob Widget测试',
+      );
+    }
+    final scriptLibraryPagesDir =
+        Directory('test/features/script_library/pages');
+    if (await scriptLibraryPagesDir.exists()) {
+      hasTests = true;
+      await runTests(
+        'test/features/script_library/pages/',
+        description: 'Script Library Widget测试',
+      );
+    }
+    final backupPagesDir = Directory('test/features/backups/pages');
+    if (await backupPagesDir.exists()) {
+      hasTests = true;
+      await runTests(
+        'test/features/backups/pages/',
+        description: 'Backup Widget测试',
       );
     }
     if (!hasTests) {

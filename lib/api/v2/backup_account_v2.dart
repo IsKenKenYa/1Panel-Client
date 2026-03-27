@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../../core/config/api_constants.dart';
 import '../../core/network/dio_client.dart';
 import '../../data/models/backup_account_models.dart';
+import '../../data/models/backup_request_models.dart';
 import '../../data/models/common_models.dart'
     hide CommonBackup, CommonRecover, RecordSearch;
 
@@ -33,7 +34,7 @@ class BackupAccountV2Api {
   }
 
   Future<Response<PageResult<BackupAccountInfo>>> searchBackupAccounts(
-    BackupAccountSearch request,
+    BackupAccountSearchRequest request,
   ) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/backups/search'),
@@ -96,7 +97,8 @@ class BackupAccountV2Api {
     );
   }
 
-  Future<Response<List<dynamic>>> getBuckets(BackupOperate request) async {
+  Future<Response<List<dynamic>>> getBuckets(
+      BackupBucketRequest request) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/backups/buckets'),
       data: request.toJson(),
@@ -110,44 +112,58 @@ class BackupAccountV2Api {
     );
   }
 
-  Future<Response<void>> backupSystemData(CommonBackup request) {
+  Future<Response<void>> backupSystemData(
+    BackupRunRequest request, {
+    String operateNode = 'local',
+  }) {
     return _client.post<void>(
       ApiConstants.buildApiPath('/backups/backup'),
       data: request.toJson(),
+      queryParameters: <String, dynamic>{'operateNode': operateNode},
     );
   }
 
-  Future<Response<void>> recoverSystemData(CommonRecover request) {
+  Future<Response<void>> recoverSystemData(
+    BackupRecoverRequest request, {
+    String operateNode = 'local',
+  }) {
     return _client.post<void>(
       ApiConstants.buildApiPath('/backups/recover'),
       data: request.toJson(),
+      queryParameters: <String, dynamic>{'operateNode': operateNode},
     );
   }
 
-  Future<Response<void>> recoverSystemDataFromUpload(CommonRecover request) {
+  Future<Response<void>> recoverSystemDataFromUpload(
+    BackupRecoverRequest request, {
+    String operateNode = 'local',
+  }) {
     return _client.post<void>(
       ApiConstants.buildApiPath('/backups/recover/byupload'),
       data: request.toJson(),
+      queryParameters: <String, dynamic>{'operateNode': operateNode},
     );
   }
 
-  Future<Response<void>> uploadForRecover({
-    required String filePath,
-    required String targetDir,
+  Future<Response<void>> uploadForRecover(
+    BackupUploadRequest request, {
+    String operateNode = 'local',
   }) {
     return _client.post<void>(
       ApiConstants.buildApiPath('/backups/upload'),
-      data: <String, dynamic>{
-        'filePath': filePath,
-        'targetDir': targetDir,
-      },
+      data: request.toJson(),
+      queryParameters: <String, dynamic>{'operateNode': operateNode},
     );
   }
 
-  Future<Response<String>> downloadBackupRecord(DownloadRecord request) async {
+  Future<Response<String>> downloadBackupRecord(
+    DownloadRecord request, {
+    String operateNode = 'local',
+  }) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/backups/record/download'),
       data: request.toJson(),
+      queryParameters: <String, dynamic>{'operateNode': operateNode},
     );
     return Response<String>(
       data: response.data?['data']?.toString() ?? '',
@@ -158,11 +174,13 @@ class BackupAccountV2Api {
   }
 
   Future<Response<PageResult<BackupRecord>>> searchBackupRecords(
-    RecordSearch request,
-  ) async {
+    BackupRecordQuery request, {
+    String operateNode = 'local',
+  }) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/backups/record/search'),
       data: request.toJson(),
+      queryParameters: <String, dynamic>{'operateNode': operateNode},
     );
     return Response<PageResult<BackupRecord>>(
       data: PageResult.fromJson(
@@ -176,7 +194,7 @@ class BackupAccountV2Api {
   }
 
   Future<Response<PageResult<BackupRecord>>> searchBackupRecordsByCronjob(
-    RecordSearchByCronjob request,
+    BackupRecordByCronjobQuery request,
   ) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/backups/record/search/bycronjob'),
@@ -194,11 +212,13 @@ class BackupAccountV2Api {
   }
 
   Future<Response<List<RecordFileSize>>> loadBackupRecordSizes(
-    SearchForSize request,
-  ) async {
+    BackupRecordSizeQuery request, {
+    String operateNode = 'local',
+  }) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/backups/record/size'),
       data: request.toJson(),
+      queryParameters: <String, dynamic>{'operateNode': operateNode},
     );
     final rawItems = response.data?['data'] as List<dynamic>? ?? const [];
     return Response<List<RecordFileSize>>(
@@ -228,16 +248,21 @@ class BackupAccountV2Api {
     );
   }
 
-  Future<Response<void>> deleteBackupRecords(BatchDelete request) {
+  Future<Response<void>> deleteBackupRecords(
+    BatchDelete request, {
+    String operateNode = 'local',
+  }) {
     return _client.post<void>(
       ApiConstants.buildApiPath('/backups/record/del'),
       data: request.toJson(),
+      queryParameters: <String, dynamic>{'operateNode': operateNode},
     );
   }
 
   Future<Response<void>> updateRecordDescription({
     required int id,
     required String description,
+    String operateNode = 'local',
   }) {
     return _client.post<void>(
       ApiConstants.buildApiPath('/backups/record/description/update'),
@@ -245,6 +270,7 @@ class BackupAccountV2Api {
         'id': id,
         'description': description,
       },
+      queryParameters: <String, dynamic>{'operateNode': operateNode},
     );
   }
 

@@ -4,8 +4,8 @@
 
 - 来源: docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json
 - 端点总数: 546
-- API方法总数: 524
-- API客户端文件: 31
+- API方法总数: 527
+- API客户端文件: 32
 - 标签数: 52
 - 覆盖口径: 已实现=存在API调用与数据模型，已测试=具备单元/集成/端到端测试，已文档=包含使用说明与已知限制
 
@@ -14,15 +14,15 @@
 | 维度 | 完成数 | 完成率 |
 | --- | --- | --- |
 | **API客户端实现** | 51/52 | 98% |
-| **单元测试覆盖** | 23/52 | 44% |
-| **文档覆盖** | 10/52 | 19% |
+| **单元测试覆盖** | 25/52 | 48% |
+| **文档覆盖** | 12/52 | 23% |
 
 ### 按优先级统计
 
 | 优先级 | 模块数 | 已实现 | 已测试 | 已文档 |
 | --- | --- | --- | --- | --- |
 | **P0** | 15 | 15 (100%) | 11 (73%) | 3 (20%) |
-| **P1** | 26 | 26 (100%) | 8 (31%) | 5 (19%) |
+| **P1** | 26 | 26 (100%) | 10 (38%) | 7 (27%) |
 | **P2** | 11 | 10 (91%) | 4 (36%) | 2 (18%) |
 
 ## 优先级规则
@@ -41,7 +41,7 @@
 | System Setting | 43 | setting_v2.dart | 27 | ✅ | ❌ |
 | File | 37 | file_v2.dart | 40 | ✅ | ✅ |
 | App | 30 | app_v2.dart | 27 | ✅ | ✅ |
-| Backup Account | 25 | backup_account_v2.dart | 26 | ❌ | ❌ |
+| Backup Account | 25 | backup_account_v2.dart | 26 | ✅ | ✅ |
 | Runtime | 25 | runtime_v2.dart | 12 | ❌ | ❌ |
 | Container | 19 | container_v2.dart | 43 | ✅ | ✅ |
 | Database Mysql | 14 | database_v2.dart | 17 | ✅ | ❌ |
@@ -57,7 +57,7 @@
 
 | 标签 | 端点数 | API客户端 | 方法数 | 已测试 | 已文档 |
 | --- | --- | --- | --- | --- | --- |
-| Cronjob | 16 | cronjob_v2.dart | 12 | ❌ | ❌ |
+| Cronjob | 16 | cronjob_v2.dart | 12 | ✅ | ✅ |
 | Firewall | 15 | firewall_v2.dart | 12 | ❌ | ❌ |
 | SSH | 12 | ssh_v2.dart | 12 | ✅ | ✅ |
 | Website SSL | 11 | ssl_v2.dart | 17 | ❌ | ❌ |
@@ -71,7 +71,7 @@
 | Container Compose-template | 6 | container_compose_v2.dart | 14 | ❌ | ❌ |
 | Container Image-repo | 6 | docker_v2.dart | 60 | ❌ | ❌ |
 | Container Compose | 5 | container_compose_v2.dart | 14 | ❌ | ❌ |
-| ScriptLibrary | 5 | command_v2.dart | 14 | ❌ | ❌ |
+| ScriptLibrary | 5 | script_library_v2.dart | 3 | ✅ | ✅ |
 | Container Network | 4 | container_v2.dart | 43 | ❌ | ❌ |
 | Container Volume | 4 | container_v2.dart | 43 | ❌ | ❌ |
 | Logs | 4 | logs_v2.dart | 12 | ❌ | ❌ |
@@ -102,7 +102,7 @@
 
 ## 测试文件清单
 
-> Week 3 同步说明：`SSH` / `Process` 已补充真实环境 API client、websocket 契约、Provider 与 Widget 测试；聚合统计以当前模块级更新为准。
+> Week 5 同步说明：`CronjobForm` / `Backup` 已补充真实环境 API client、API 对齐、Provider / Widget 与 no-server 回归测试；聚合统计以当前模块级更新为准。
 
 ### 单元测试 (test/api/)
 - ai_api_test.dart
@@ -116,6 +116,7 @@
 ### 集成测试 (test/api_client/)
 - app_api_client_test.dart
 - command_api_client_test.dart
+- cronjob_api_client_test.dart
 - phase1_api_alignment_test.dart
 - container_api_client_test.dart
 - dashboard_api_client_test.dart
@@ -124,17 +125,22 @@
 - host_api_client_test.dart
 - process_api_client_test.dart
 - setting_api_client_test.dart
+- script_library_api_client_test.dart
 - ssh_api_client_test.dart
 - website_api_client_test.dart
+
+### WebSocket 契约测试
+- process_ws_client_test.dart
+- script_run_ws_client_test.dart
 
 ## 关键差距
 
 ### 测试覆盖不足
-- P1 模块测试率提升到 31%，但 Cronjob、Firewall、Logs 仍未补齐
-- P0 核心模块中 Auth、Monitor、Backup Account、Runtime 仍缺模块级测试
+- P1 模块测试率进一步提升，但 Firewall、Logs 等模块仍未补齐
+- P0 核心模块中 Auth、Monitor、Runtime 仍缺模块级测试
 
 ### 文档覆盖不足
-- 目前 19% 的模块有文档
+- 目前 `Cronjob / Backup Account / SSH / Process / Command / Host / OpenResty / ScriptLibrary / System Group` 已有阶段性文档
 - 仍有大量模块缺少使用说明和已知限制
 
 ### UI集成缺失
@@ -150,4 +156,4 @@
 
 ---
 
-**最后更新**: 2026-03-26
+**最后更新**: 2026-03-27

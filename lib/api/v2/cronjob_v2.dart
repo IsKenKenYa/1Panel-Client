@@ -3,45 +3,48 @@ import 'package:dio/dio.dart';
 import '../../core/config/api_constants.dart';
 import '../../core/network/dio_client.dart';
 import '../../data/models/common_models.dart';
-import '../../data/models/cronjob_models.dart';
+import '../../data/models/cronjob_form_request_models.dart';
+import '../../data/models/cronjob_form_response_models.dart';
+import '../../data/models/cronjob_list_models.dart';
+import '../../data/models/cronjob_record_models.dart';
 
 class CronjobV2Api {
   CronjobV2Api(this._client);
 
   final DioClient _client;
 
-  Future<Response<void>> createCronjob(CronJobCreate request) {
+  Future<Response<void>> createCronjob(CronjobOperateRequest request) {
     return _client.post<void>(
       ApiConstants.buildApiPath('/cronjobs'),
       data: request.toJson(),
     );
   }
 
-  Future<Response<void>> updateCronjob(CronJobUpdate request) {
+  Future<Response<void>> updateCronjob(CronjobOperateRequest request) {
     return _client.post<void>(
       ApiConstants.buildApiPath('/cronjobs/update'),
       data: request.toJson(),
     );
   }
 
-  Future<Response<void>> deleteCronjob(OperateByIDs request) {
+  Future<Response<void>> deleteCronjob(CronjobBatchDeleteRequest request) {
     return _client.post<void>(
       ApiConstants.buildApiPath('/cronjobs/del'),
       data: request.toJson(),
     );
   }
 
-  Future<Response<PageResult<CronJobInfo>>> searchCronjobs(
-    CronJobSearch request,
+  Future<Response<PageResult<CronjobSummary>>> searchCronjobs(
+    CronjobListQuery request,
   ) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/cronjobs/search'),
       data: request.toJson(),
     );
-    return Response<PageResult<CronJobInfo>>(
-      data: PageResult.fromJson(
+    return Response<PageResult<CronjobSummary>>(
+      data: PageResult<CronjobSummary>.fromJson(
         response.data?['data'] as Map<String, dynamic>? ?? const {},
-        (dynamic item) => CronJobInfo.fromJson(item as Map<String, dynamic>),
+        (dynamic item) => CronjobSummary.fromJson(item as Map<String, dynamic>),
       ),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
@@ -49,10 +52,12 @@ class CronjobV2Api {
     );
   }
 
-  Future<Response<List<String>>> loadNextHandle(String spec) async {
+  Future<Response<List<String>>> loadNextHandle(
+    CronjobNextPreviewRequest request,
+  ) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/cronjobs/next'),
-      data: <String, dynamic>{'spec': spec},
+      data: request.toJson(),
     );
     final rawItems = response.data?['data'] as List<dynamic>? ?? const [];
     return Response<List<String>>(
@@ -65,13 +70,16 @@ class CronjobV2Api {
     );
   }
 
-  Future<Response<Map<String, dynamic>>> loadCronjobInfo(int id) async {
+  Future<Response<CronjobOperateResponse>> loadCronjobInfo(int id) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/cronjobs/load/info'),
       data: <String, dynamic>{'id': id},
     );
-    return Response<Map<String, dynamic>>(
-      data: response.data?['data'] as Map<String, dynamic>? ?? const {},
+    return Response<CronjobOperateResponse>(
+      data: CronjobOperateResponse.fromJson(
+        response.data?['data'] as Map<String, dynamic>? ??
+            const <String, dynamic>{},
+      ),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -85,20 +93,17 @@ class CronjobV2Api {
     );
   }
 
-  Future<Response<void>> updateCronjobStatus({
-    required int id,
-    required String status,
-  }) {
+  Future<Response<void>> updateCronjobStatus(CronjobStatusUpdate request) {
     return _client.post<void>(
       ApiConstants.buildApiPath('/cronjobs/status'),
-      data: <String, dynamic>{'id': id, 'status': status},
+      data: request.toJson(),
     );
   }
 
-  Future<Response<void>> handleCronjobOnce(int id) {
+  Future<Response<void>> handleCronjobOnce(CronjobHandleRequest request) {
     return _client.post<void>(
       ApiConstants.buildApiPath('/cronjobs/handle'),
-      data: <String, dynamic>{'id': id},
+      data: request.toJson(),
     );
   }
 
@@ -112,17 +117,18 @@ class CronjobV2Api {
     );
   }
 
-  Future<Response<PageResult<CronJobLog>>> searchCronjobRecords(
-    SearchWithPage request,
+  Future<Response<PageResult<CronjobRecordInfo>>> searchCronjobRecords(
+    CronjobRecordQuery request,
   ) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/cronjobs/search/records'),
       data: request.toJson(),
     );
-    return Response<PageResult<CronJobLog>>(
-      data: PageResult.fromJson(
+    return Response<PageResult<CronjobRecordInfo>>(
+      data: PageResult<CronjobRecordInfo>.fromJson(
         response.data?['data'] as Map<String, dynamic>? ?? const {},
-        (dynamic item) => CronJobLog.fromJson(item as Map<String, dynamic>),
+        (dynamic item) =>
+            CronjobRecordInfo.fromJson(item as Map<String, dynamic>),
       ),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
@@ -143,34 +149,41 @@ class CronjobV2Api {
     );
   }
 
-  Future<Response<void>> cleanRecords({
-    required int cronjobId,
-    required bool cleanData,
-    required bool cleanRemoteData,
-  }) {
+  Future<Response<void>> cleanRecords(CronjobRecordCleanRequest request) {
     return _client.post<void>(
       ApiConstants.buildApiPath('/cronjobs/records/clean'),
-      data: <String, dynamic>{
-        'cronjobID': cronjobId,
-        'cleanData': cleanData,
-        'cleanRemoteData': cleanRemoteData,
-      },
+      data: request.toJson(),
     );
   }
 
-  Future<Response<List<ScriptOptions>>> getScriptOptions() async {
+  Future<Response<List<CronjobScriptOption>>> getScriptOptions() async {
     final response = await _client.get<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/cronjobs/script/options'),
     );
     final rawItems = response.data?['data'] as List<dynamic>? ?? const [];
-    return Response<List<ScriptOptions>>(
+    return Response<List<CronjobScriptOption>>(
       data: rawItems
           .whereType<Map<String, dynamic>>()
-          .map(ScriptOptions.fromJson)
+          .map(CronjobScriptOption.fromJson)
           .toList(growable: false),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<void>> importCronjobs(CronjobImportRequest request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/cronjobs/import'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<List<int>>> exportCronjobs(CronjobExportRequest request) {
+    return _client.post<List<int>>(
+      ApiConstants.buildApiPath('/cronjobs/export'),
+      data: request.toJson(),
+      options: Options(responseType: ResponseType.bytes),
     );
   }
 }

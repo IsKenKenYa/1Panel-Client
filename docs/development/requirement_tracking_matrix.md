@@ -25,7 +25,7 @@
 | **System Setting** | 43 | ✅ setting_v2.dart | ✅ setting_models.dart | ✅ 已测试 | 🟡 部分 | MFA功能已实现 |
 | **File** | 37 | ✅ file_v2.dart | ✅ file_models.dart | ✅ 已测试 | 🟡 部分 | 上传/下载/编辑流程待扩展 |
 | **App** | 30 | ✅ app_v2.dart | ✅ app_models.dart | ✅ 已测试 | 🟡 部分 | 应用商店与安装流程待补齐 |
-| **Backup Account** | 25 | ✅ backup_account_v2.dart | ✅ backup_account_models.dart | ⚠️ 待测试 | 🔴 待集成 | 备份策略与恢复流程待扩展 |
+| **Backup Account** | 25 | ✅ backup_account_v2.dart | ✅ backup_account_models.dart + `backup_request_models.dart` | ✅ 已测试 | ✅ 已集成 | Week 5 已交付账户 / records / recover 主链路 |
 | **Runtime** | 25 | ✅ runtime_v2.dart | ✅ runtime_models.dart | ⚠️ 待测试 | 🔴 待集成 | 运行时管理页面待建设 |
 | **Container** | 19 | ✅ container_v2.dart | ✅ container_models.dart | ✅ 已测试 | 🟡 部分 | 需要补齐网络/卷/镜像管理 |
 | **Database Mysql** | 14 | ✅ database_v2.dart | ✅ database_models.dart | ✅ 已测试 | 🟡 部分 | MySQL特定功能待细化 |
@@ -41,21 +41,21 @@
 
 | 模块 | 端点数 | API客户端 | 数据模型 | 测试覆盖 | UI集成 | 状态 | 备注 |
 |-------|---------|-----------|----------|----------|---------|------|------|
-| **Cronjob** | 16 | ✅ cronjob_v2.dart | ✅ cronjob_models.dart | ⚠️ 待测试 | 🔴 待集成 | 计划任务管理 |
+| **Cronjob** | 16 | ✅ cronjob_v2.dart | ✅ cronjob_models.dart + `cronjob_form_*_models.dart` | ✅ 已测试 | ✅ 已集成 | Week 5 已补 `CronjobFormPage`，支持 shell / curl / backup 首批类型 |
 | **Firewall** | 15 | ✅ firewall_v2.dart | ✅ firewall_models.dart | ⚠️ 待测试 | 🔴 待集成 | 规则管理待建设 |
 | **SSH** | 12 | ✅ ssh_v2.dart | ✅ ssh_*_models.dart | ✅ 已测试 | ✅ 已集成 | Week 3 已交付设置 / 证书 / 日志 / 会话 MVP，session 实时链路复用 `process/ws` |
 | **Website SSL** | 11 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🟡 部分 | 证书与域名细分功能待扩展 |
 | **AI** | 10 | ✅ ai_v2.dart | ✅ ai_models.dart | ✅ 已测试 | 🟡 部分 | GPU/XPU监控与域名绑定 |
 | **Container Image** | 10 | ✅ container_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | 🟡 部分 | 镜像管理功能 |
-| **Host** | 10 | ✅ host_v2.dart | ✅ host_models.dart | ✅ 已测试 | 🟡 部分 | 主机资产 MVP 已接入，SSH / Process 后续周继续 |
+| **Host** | 10 | ✅ host_v2.dart | ✅ host_models.dart | ✅ 已测试 | 🟡 部分 | 主机资产 MVP 已接入，并与 Week 3 SSH / Process 入口联动 |
 | **OpenResty** | 10 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ⚠️ 待测试 | 🟡 部分 | 配置与状态页待建设 |
-| **Command** | 8 | ✅ command_v2.dart | ✅ tool_models.dart | ✅ 已测试 | ✅ 已集成 | Week 2 命令管理 MVP 已接入 |
+| **Command** | 8 | ✅ command_v2.dart | ✅ command_models.dart + `tool_models.dart` | ✅ 已测试 | ✅ 已集成 | Week 2 命令管理 MVP 已接入，脚本库已拆出独立模块 |
 | **Container Docker** | 8 | ✅ docker_v2.dart | ✅ docker_models.dart | ✅ 已测试 | 🟡 部分 | Docker守护进程管理 |
 | **Logs** | 4 | ✅ logs_v2.dart | ✅ logs_models.dart | ⚠️ 待测试 | 🟡 部分 | 日志管理、清理、导出 |
 | **Container Compose-template** | 6 | ✅ container_compose_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | 🔴 待集成 | Compose模板管理 |
 | **Container Image-repo** | 6 | ✅ docker_v2.dart | ✅ docker_models.dart | ⚠️ 待测试 | 🔴 待集成 | 镜像仓库管理 |
 | **Container Compose** | 5 | ✅ container_compose_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | 🔴 待集成 | Docker Compose管理 |
-| **ScriptLibrary** | 5 | ✅ command_v2.dart | ✅ tool_models.dart | ⚠️ 待测试 | 🔴 待集成 | 脚本库管理 |
+| **ScriptLibrary** | 5 | ✅ script_library_v2.dart | ✅ script_library_models.dart | ✅ 已测试 | ✅ 已集成 | Week 4 已交付列表 / 查看代码 / sync / run-output MVP |
 | **Container Network** | 4 | ✅ container_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | 🔴 待集成 | 网络管理 |
 | **Container Volume** | 4 | ✅ container_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | 🔴 待集成 | 卷管理 |
 | **Website CA** | 7 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🔴 待集成 | CA证书管理 |
@@ -86,16 +86,16 @@
 
 ## 实现状态统计
 
-> Week 3 同步说明：`SSH` / `Process` 已完成 API / Repository / Service / Provider / Page 闭环，并补充 websocket / API client / Provider / Widget 测试。
+> Week 5 同步说明：`CronjobForm` 与 `Backup` 主链路已接入真实页面、Provider、Service、API tests 和 widget/no-server 回归。
 
 ### 按优先级统计
 
 | 优先级 | 模块数 | 端点数 | API客户端完成 | 测试覆盖 | UI集成完成 |
 |--------|--------|---------|--------------|----------|-------------|
 | **P0** | 15 | 247 | 100% (15/15) | 73% (11/15) | 33% (5/15) |
-| **P1** | 26 | 239 | 100% (26/26) | 31% (8/26) | 19% (5/26) |
+| **P1** | 26 | 239 | 100% (26/26) | 38% (10/26) | 27% (7/26) |
 | **P2** | 11 | 60 | 91% (10/11) | 27% (3/11) | 0% (0/11) |
-| **总计** | 52 | 546 | 98% (51/52) | 44% (23/52) | 19% (10/52) |
+| **总计** | 52 | 546 | 98% (51/52) | 48% (25/52) | 23% (12/52) |
 
 ### 按实现维度统计
 
@@ -103,8 +103,8 @@
 |------|--------|------|
 | **API客户端实现** | 98% | 51/52个模块有API客户端，仅untagged模块缺失 |
 | **数据模型定义** | 100% | 所有模块都有对应的数据模型 |
-| **单元测试覆盖** | 44% | 23/52个模块有测试文件 |
-| **UI页面集成** | 19% | 10/52个模块有完整的UI页面 |
+| **单元测试覆盖** | 48% | 25/52个模块有测试文件 |
+| **UI页面集成** | 23% | 12/52个模块有完整的UI页面 |
 | **端到端测试** | 0% | 尚未建立端到端测试体系 |
 
 ## 关键差距识别
@@ -115,15 +115,15 @@
 - ⚠️ **待验证**: 所有API客户端需要与OpenAPI规范进行端点级对齐
 
 ### 2. 测试覆盖层面
-- 🔴 **仍需提升**: 当前 40% 的模块有测试文件
-- 🔴 **P1模块测试缺失**: 74%的P1模块缺乏测试
+- 🔴 **仍需提升**: 当前 48% 的模块有测试文件
+- 🔴 **P1模块测试缺失**: 62%的P1模块缺乏测试
 - 🔴 **P2模块测试缺失**: 73%的P2模块缺乏测试
 - 🟡 **P0模块测试较好**: 73%的P0模块有测试
 
 ### 3. UI集成层面
-- 🔴 **仍需提升**: 当前 15% 的模块有完整UI页面
+- 🔴 **仍需提升**: 当前 23% 的模块有完整UI页面
 - 🔴 **P0模块UI缺失**: 67%的P0核心模块UI待建设
-- 🔴 **P1模块UI缺失**: 88%的P1模块UI待建设
+- 🔴 **P1模块UI缺失**: 73%的P1模块UI待建设
 - 🔴 **P2模块UI缺失**: 100%的P2模块UI待建设
 
 ### 4. 功能完整性层面
@@ -147,12 +147,12 @@
 ### 第二阶段：P1高价值功能实现 (4-6周)
 1. **OpenResty模块**: 实现配置和状态页面
 2. **SSL模块**: 完善证书管理UI
-3. **SSH模块**: 实现SSH会话和日志查看
-4. **Cronjob模块**: 实现计划任务管理
-5. **Firewall模块**: 实现规则管理页面
-6. **Logs模块**: 实现日志管理和导出
-7. **AI模块**: 完善GPU/XPU监控和域名绑定
-8. **容器细分功能**: 实现Compose、网络、卷、镜像仓库管理
+3. **Cronjob / ScriptLibrary模块**: Week 4 主链路已完成，Week 5 继续补表单与高级联动
+4. **Firewall模块**: 实现规则管理页面
+5. **Logs模块**: 实现日志管理和导出
+6. **AI模块**: 完善GPU/XPU监控和域名绑定
+7. **容器细分功能**: 实现Compose、网络、卷、镜像仓库管理
+8. **其余 P1 补齐**: 收口未完成的 UI 与 destructive 验证
 
 ### 第三阶段：P2工具类功能实现 (2-3周)
 1. **工具箱模块**: 实现ClamAV、Fail2ban、FTP等工具

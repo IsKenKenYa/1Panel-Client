@@ -1,20 +1,52 @@
-# 备份账户管理模块索引
+# 备份管理模块索引
 
-## 模块定位
-Open1PanelApp 的备份账户管理模块负责备份源配置、备份策略管理、备份恢复操作，提供移动端友好的备份管理体验。
+## 当前范围
 
-## 子模块结构
-- 架构设计: docs/development/modules/备份账户管理/backup_account_module_architecture.md
-- 页面设计: docs/development/modules/备份账户管理/backup_account_pages.md
-- API设计: docs/development/modules/备份账户管理/backup_account_api.md
-- 数据设计: docs/development/modules/备份账户管理/backup_account_data.md
-- 开发计划: docs/development/modules/备份账户管理/backup_account_plan.md
-- 运维手册: docs/development/modules/备份账户管理/backup_account_ops.md
-- 用户手册: docs/development/modules/备份账户管理/backup_account_user_manual.md
-- FAQ: docs/development/modules/备份账户管理/backup_account_faq.md
+- 本目录当前承载：
+  - backup account
+  - backup records
+  - backup recover
+- Phase 1 Week 5 已把原计划中部分 Week 6 的 records/recover 主链路前移，一并落地
 
-## 后续规划
-- 多备份源支持
-- 增量备份功能
-- 备份加密功能
-- 备份计划调度
+## 当前交付状态
+
+- Week 5 已完成：
+  - `BackupAccountsPage`
+  - `BackupAccountFormPage`
+  - `BackupRecordsPage`
+  - `BackupRecoverPage`
+  - `BackupRepository / BackupAccountService / BackupRecordService / BackupRecoverService`
+- 后续增强：
+  - `recoverByUpload` 主 UI
+  - 更完整的 OAuth/provider 引导
+  - 更细的 bucket/文件浏览体验
+
+## 文档清单
+
+- 架构设计：`docs/development/modules/备份账户管理/backup_account_module_architecture.md`
+- API 真值：`docs/development/modules/备份账户管理/backup_api_analysis.md`
+- 开发计划：`docs/development/modules/备份账户管理/backup_account_plan.md`
+- FAQ：`docs/development/modules/备份账户管理/backup_account_faq.md`
+
+## 当前代码落点
+
+- API：
+  - `lib/api/v2/backup_account_v2.dart`
+- Repository：
+  - `lib/data/repositories/backup_repository.dart`
+- Service：
+  - `lib/features/backups/services/`
+- Provider：
+  - `lib/features/backups/providers/`
+- 页面：
+  - `lib/features/backups/pages/`
+
+## 备注
+
+- 旧文档里的 `/backup/accounts/*` 口径已经废弃，当前仓库统一以 `/backups/*` 和 `/core/backups/*` 为真值
+- legacy [backup_account_page.dart](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/features/settings/backup_account_page.dart) 不再是产品入口
+
+---
+
+**文档版本**: 2.0  
+**最后更新**: 2026-03-27

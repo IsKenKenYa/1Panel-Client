@@ -16,6 +16,7 @@ import '../../api/v2/monitor_v2.dart';
 import '../../api/v2/openresty_v2.dart';
 import '../../api/v2/process_v2.dart';
 import '../../api/v2/runtime_v2.dart';
+import '../../api/v2/script_library_v2.dart';
 import '../../api/v2/setting_v2.dart';
 import '../../api/v2/ssh_v2.dart';
 import '../../api/v2/ssl_v2.dart';
@@ -115,6 +116,9 @@ class ApiClientManager {
 
   Future<ProcessV2Api> getProcessApi() async =>
       ProcessV2Api(await getCurrentClient());
+
+  Future<ScriptLibraryV2Api> getScriptLibraryApi() async =>
+      ScriptLibraryV2Api(await getCurrentClient());
 
   Future<RuntimeV2Api> getRuntimeApi() async =>
       RuntimeV2Api(await getCurrentClient());

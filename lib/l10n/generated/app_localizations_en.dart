@@ -3585,6 +3585,358 @@ class AppLocalizationsEn extends AppLocalizations {
   String get operationsScriptsTitle => 'Script Library';
 
   @override
+  String get cronjobsSearchHint => 'Search cronjobs';
+
+  @override
+  String get cronjobsFilterAllGroups => 'All groups';
+
+  @override
+  String get cronjobsGroupFilterAction => 'Filter by group';
+
+  @override
+  String get cronjobsEmptyTitle => 'No cronjobs';
+
+  @override
+  String get cronjobsEmptyDescription =>
+      'Cronjobs will appear here after the Week 4 mainline flow loads data.';
+
+  @override
+  String get cronjobsSpecLabel => 'Spec';
+
+  @override
+  String get cronjobsNextRunLabel => 'Next run';
+
+  @override
+  String get cronjobsTypeLabel => 'Type';
+
+  @override
+  String get cronjobsLastRecordLabel => 'Last record';
+
+  @override
+  String get cronjobsEnableAction => 'Enable';
+
+  @override
+  String get cronjobsDisableAction => 'Disable';
+
+  @override
+  String get cronjobsHandleOnceAction => 'Handle once';
+
+  @override
+  String get cronjobsRecordsAction => 'Records';
+
+  @override
+  String get cronjobsStopAction => 'Stop';
+
+  @override
+  String get cronjobsStatusEnable => 'Enabled';
+
+  @override
+  String get cronjobsStatusDisable => 'Disabled';
+
+  @override
+  String get cronjobsStatusPending => 'Pending';
+
+  @override
+  String get cronjobsTypeShell => 'Shell';
+
+  @override
+  String get cronjobsTypeWebsite => 'Website';
+
+  @override
+  String get cronjobsTypeDatabase => 'Database';
+
+  @override
+  String get cronjobsTypeDirectory => 'Directory';
+
+  @override
+  String get cronjobsTypeSnapshot => 'Snapshot';
+
+  @override
+  String get cronjobsTypeLog => 'Log Cleanup';
+
+  @override
+  String cronjobsUpdateStatusConfirm(String name, String status) {
+    return 'Update cronjob $name to $status?';
+  }
+
+  @override
+  String cronjobsHandleOnceConfirm(String name) {
+    return 'Run cronjob $name once now?';
+  }
+
+  @override
+  String cronjobsStopConfirm(String name) {
+    return 'Stop running cronjob $name?';
+  }
+
+  @override
+  String get cronjobRecordsEmptyTitle => 'No records';
+
+  @override
+  String get cronjobRecordsEmptyDescription =>
+      'Execution records will appear here after the cronjob runs.';
+
+  @override
+  String get cronjobRecordsStatusAll => 'All';
+
+  @override
+  String get cronjobRecordsStatusSuccess => 'Success';
+
+  @override
+  String get cronjobRecordsStatusWaiting => 'Waiting';
+
+  @override
+  String get cronjobRecordsStatusUnexecuted => 'Unexecuted';
+
+  @override
+  String get cronjobRecordsStatusFailed => 'Failed';
+
+  @override
+  String get cronjobRecordsIntervalLabel => 'Interval';
+
+  @override
+  String get cronjobRecordsMessageLabel => 'Message';
+
+  @override
+  String get cronjobRecordsViewLogTitle => 'Record Log';
+
+  @override
+  String get cronjobRecordsCleanAction => 'Clean records';
+
+  @override
+  String get cronjobRecordsCleanConfirm => 'Clean records for this cronjob?';
+
+  @override
+  String cronjobsDeleteConfirm(String name) {
+    return 'Delete cronjob $name?';
+  }
+
+  @override
+  String get cronjobFormCreateTitle => 'Create Cronjob';
+
+  @override
+  String get cronjobFormEditTitle => 'Edit Cronjob';
+
+  @override
+  String get cronjobFormBasicSectionTitle => 'Basic';
+
+  @override
+  String get cronjobFormScheduleSectionTitle => 'Schedule';
+
+  @override
+  String get cronjobFormTargetSectionTitle => 'Target';
+
+  @override
+  String get cronjobFormPolicySectionTitle => 'Policy & Alerts';
+
+  @override
+  String get cronjobFormTypeLabel => 'Type';
+
+  @override
+  String get cronjobFormUrlTypeLabel => 'URL';
+
+  @override
+  String get cronjobFormCustomSpecLabel => 'Custom spec';
+
+  @override
+  String get cronjobFormPreviewAction => 'Preview next runs';
+
+  @override
+  String get cronjobFormBuilderModeLabel => 'Use builder';
+
+  @override
+  String get cronjobFormRawModeLabel => 'Use raw cron spec';
+
+  @override
+  String get cronjobFormDeleteConfirm => 'Delete this cronjob?';
+
+  @override
+  String get cronjobFormBackupTypeLabel => 'Backup type';
+
+  @override
+  String get cronjobFormDatabaseTypeLabel => 'Database type';
+
+  @override
+  String get cronjobFormBackupArgsLabel => 'Backup args';
+
+  @override
+  String get cronjobFormBackupDirectoryLabel => 'Backup directory';
+
+  @override
+  String get cronjobFormDirectoryPathLabel => 'Directory path';
+
+  @override
+  String get cronjobFormSelectedFilesLabel => 'Selected files';
+
+  @override
+  String get cronjobFormExcludePatternsLabel => 'Exclude patterns';
+
+  @override
+  String get cronjobFormIncludeImagesLabel => 'Include images';
+
+  @override
+  String get cronjobFormSourceAccountsLabel => 'Source accounts';
+
+  @override
+  String get cronjobFormDownloadAccountLabel => 'Default download path';
+
+  @override
+  String get cronjobFormSecretLabel => 'Secret';
+
+  @override
+  String get cronjobFormExecutorLabel => 'Executor';
+
+  @override
+  String get cronjobFormUserLabel => 'User';
+
+  @override
+  String get cronjobFormShellInlineLabel => 'Inline';
+
+  @override
+  String get cronjobFormShellLibraryLabel => 'Library';
+
+  @override
+  String get cronjobFormShellPathLabel => 'Path';
+
+  @override
+  String get cronjobFormScriptLibraryLabel => 'Script library';
+
+  @override
+  String get cronjobFormScriptPathLabel => 'Script path';
+
+  @override
+  String get cronjobFormScriptLabel => 'Script';
+
+  @override
+  String get cronjobFormRetainCopiesLabel => 'Retain copies';
+
+  @override
+  String get cronjobFormRetryTimesLabel => 'Retry times';
+
+  @override
+  String get cronjobFormTimeoutLabel => 'Timeout';
+
+  @override
+  String get cronjobFormTimeoutUnitLabel => 'Unit';
+
+  @override
+  String get cronjobFormSecondsLabel => 'Seconds';
+
+  @override
+  String get cronjobFormMinutesLabel => 'Minutes';
+
+  @override
+  String get cronjobFormHoursLabel => 'Hours';
+
+  @override
+  String get cronjobFormIgnoreErrorsLabel => 'Ignore errors';
+
+  @override
+  String get cronjobFormArgumentsLabel => 'Arguments';
+
+  @override
+  String get cronjobFormEnableAlertsLabel => 'Enable alerts';
+
+  @override
+  String get cronjobFormAlertCountLabel => 'Alert count';
+
+  @override
+  String get cronjobFormScheduleModeLabel => 'Mode';
+
+  @override
+  String get cronjobFormScheduleDaily => 'Daily';
+
+  @override
+  String get cronjobFormScheduleWeekly => 'Weekly';
+
+  @override
+  String get cronjobFormScheduleMonthly => 'Monthly';
+
+  @override
+  String get cronjobFormScheduleEveryHours => 'Every N hours';
+
+  @override
+  String get cronjobFormScheduleEveryMinutes => 'Every N minutes';
+
+  @override
+  String get cronjobFormScheduleMinuteLabel => 'Minute';
+
+  @override
+  String get cronjobFormScheduleHourLabel => 'Hour';
+
+  @override
+  String get cronjobFormScheduleWeekdayLabel => 'Weekday';
+
+  @override
+  String get cronjobFormScheduleDayLabel => 'Day';
+
+  @override
+  String get cronjobFormScheduleIntervalLabel => 'Interval';
+
+  @override
+  String get scriptLibrarySearchHint => 'Search scripts';
+
+  @override
+  String get scriptLibraryFilterAllGroups => 'All groups';
+
+  @override
+  String get scriptLibraryGroupFilterAction => 'Filter by group';
+
+  @override
+  String get scriptLibraryEmptyTitle => 'No scripts';
+
+  @override
+  String get scriptLibraryEmptyDescription =>
+      'Scripts will appear here after script library data loads.';
+
+  @override
+  String get scriptLibraryViewCodeAction => 'View code';
+
+  @override
+  String get scriptLibraryRunAction => 'Run';
+
+  @override
+  String get scriptLibrarySyncAction => 'Sync';
+
+  @override
+  String get scriptLibraryDeleteAction => 'Delete';
+
+  @override
+  String get scriptLibraryInteractiveLabel => 'Interactive';
+
+  @override
+  String get scriptLibraryInteractiveYes => 'Yes';
+
+  @override
+  String get scriptLibraryInteractiveNo => 'No';
+
+  @override
+  String get scriptLibraryCreatedAtLabel => 'Created at';
+
+  @override
+  String get scriptLibrarySyncConfirm => 'Sync the script library now?';
+
+  @override
+  String scriptLibraryDeleteConfirm(String name) {
+    return 'Delete script $name?';
+  }
+
+  @override
+  String get scriptLibraryCodeTitle => 'Script Code';
+
+  @override
+  String get scriptLibraryRunTitle => 'Run Script';
+
+  @override
+  String get scriptLibraryRunWaiting => 'Connecting to script output...';
+
+  @override
+  String get scriptLibraryRunNoOutput => 'No output yet';
+
+  @override
+  String get scriptLibraryRunDisconnected => 'Run output disconnected';
+
+  @override
   String get operationsBackupsTitle => 'Backups';
 
   @override
@@ -3595,6 +3947,205 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get operationsBackupRecoverTitle => 'Backup Recover';
+
+  @override
+  String get backupAccountsSearchHint => 'Search backup accounts';
+
+  @override
+  String get backupAccountsEmptyTitle => 'No backup accounts';
+
+  @override
+  String get backupAccountsEmptyDescription =>
+      'Add a backup account to start using backup flows.';
+
+  @override
+  String get backupAccountsScopePublic => 'Public';
+
+  @override
+  String get backupAccountsScopePrivate => 'Private';
+
+  @override
+  String get backupAccountsTokenRefreshed => 'Token refreshed';
+
+  @override
+  String get backupAccountsConnectionOk => 'Connection ok';
+
+  @override
+  String get backupAccountsConnectionFailed => 'Connection failed';
+
+  @override
+  String backupAccountsDeleteConfirm(String name) {
+    return 'Delete backup account $name?';
+  }
+
+  @override
+  String get backupFilesSheetTitle => 'Backup Files';
+
+  @override
+  String get backupFormBasicSectionTitle => 'Basic';
+
+  @override
+  String get backupFormCredentialsSectionTitle => 'Credentials';
+
+  @override
+  String get backupFormStorageSectionTitle => 'Storage';
+
+  @override
+  String get backupFormVerifySectionTitle => 'Verify';
+
+  @override
+  String get backupFormPublicScopeLabel => 'Public scope';
+
+  @override
+  String get backupFormProviderTypeLabel => 'Provider type';
+
+  @override
+  String get backupFormCredentialLabel => 'Credential';
+
+  @override
+  String get backupFormAddressLabel => 'Address';
+
+  @override
+  String get backupFormPortLabel => 'Port';
+
+  @override
+  String get backupFormChinaCloudLabel => 'Use China cloud';
+
+  @override
+  String get backupFormClientIdLabel => 'Client ID';
+
+  @override
+  String get backupFormClientSecretLabel => 'Client Secret';
+
+  @override
+  String get backupFormRedirectUriLabel => 'Redirect URI';
+
+  @override
+  String get backupFormAuthCodeLabel => 'Authorization Code';
+
+  @override
+  String get backupFormOpenAuthorizeAction => 'Open authorize page';
+
+  @override
+  String get backupFormTokenJsonLabel => 'Token JSON';
+
+  @override
+  String get backupFormDriveIdLabel => 'Drive ID';
+
+  @override
+  String get backupFormRefreshTokenLabel => 'Refresh Token';
+
+  @override
+  String get backupFormRememberCredentialsLabel => 'Remember credentials';
+
+  @override
+  String get backupFormRegionLabel => 'Region';
+
+  @override
+  String get backupFormDomainLabel => 'Domain';
+
+  @override
+  String get backupFormEndpointLabel => 'Endpoint';
+
+  @override
+  String get backupFormBucketLabel => 'Bucket';
+
+  @override
+  String get backupFormBackupPathLabel => 'Backup path';
+
+  @override
+  String get backupFormVerifiedLabel => 'Verified';
+
+  @override
+  String get backupFormNotVerifiedLabel => 'Not verified';
+
+  @override
+  String get backupFormTestingLabel => 'Testing...';
+
+  @override
+  String get backupFormTestConnectionAction => 'Test connection';
+
+  @override
+  String get backupRecordsEmptyTitle => 'No backup records';
+
+  @override
+  String get backupRecordsEmptyDescription =>
+      'Backup records will appear here after backups run.';
+
+  @override
+  String get backupRecordsFilterAction => 'Filter';
+
+  @override
+  String backupRecordsDeleteConfirm(String name) {
+    return 'Delete backup record $name?';
+  }
+
+  @override
+  String get backupRecordsTypeLabel => 'Type';
+
+  @override
+  String get backupRecordsNameLabel => 'Name';
+
+  @override
+  String get backupRecordsDetailNameLabel => 'Detail name';
+
+  @override
+  String get backupRecordsApplyAction => 'Apply';
+
+  @override
+  String get backupRecordsStatusLabel => 'Status';
+
+  @override
+  String get backupRecordsSizeLabel => 'Size';
+
+  @override
+  String get backupRecordsDownloadAction => 'Download';
+
+  @override
+  String get backupRecordsRecoverAction => 'Recover';
+
+  @override
+  String get backupRecoverResourceStepTitle => 'Resource';
+
+  @override
+  String get backupRecoverRecordStepTitle => 'Record';
+
+  @override
+  String get backupRecoverConfirmStepTitle => 'Confirm';
+
+  @override
+  String get backupRecoverTypeLabel => 'Type';
+
+  @override
+  String get backupRecoverAppLabel => 'App';
+
+  @override
+  String get backupRecoverWebsiteLabel => 'Website';
+
+  @override
+  String get backupRecoverDatabaseLabel => 'Database';
+
+  @override
+  String get backupRecoverDatabaseTypeLabel => 'Database type';
+
+  @override
+  String get backupRecoverDatabaseItemLabel => 'Database item';
+
+  @override
+  String get backupRecoverLoadRecordsAction => 'Load records';
+
+  @override
+  String get backupRecoverNoCandidateRecords => 'No candidate records';
+
+  @override
+  String get backupRecoverRecordLabel => 'Backup record';
+
+  @override
+  String get backupRecoverStartAction => 'Start recover';
+
+  @override
+  String get backupRecoverConfirmMessage =>
+      'Start recovery from the selected backup record?';
 
   @override
   String get operationsLogsTitle => 'Logs Center';

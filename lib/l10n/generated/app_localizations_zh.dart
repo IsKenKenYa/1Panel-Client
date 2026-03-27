@@ -3522,6 +3522,355 @@ class AppLocalizationsZh extends AppLocalizations {
   String get operationsScriptsTitle => '脚本库';
 
   @override
+  String get cronjobsSearchHint => '搜索计划任务';
+
+  @override
+  String get cronjobsFilterAllGroups => '全部分组';
+
+  @override
+  String get cronjobsGroupFilterAction => '按分组筛选';
+
+  @override
+  String get cronjobsEmptyTitle => '暂无计划任务';
+
+  @override
+  String get cronjobsEmptyDescription => 'Week 4 主链路加载到计划任务后，会在这里展示。';
+
+  @override
+  String get cronjobsSpecLabel => '计划表达式';
+
+  @override
+  String get cronjobsNextRunLabel => '下次执行';
+
+  @override
+  String get cronjobsTypeLabel => '类型';
+
+  @override
+  String get cronjobsLastRecordLabel => '最近记录';
+
+  @override
+  String get cronjobsEnableAction => '启用';
+
+  @override
+  String get cronjobsDisableAction => '停用';
+
+  @override
+  String get cronjobsHandleOnceAction => '执行一次';
+
+  @override
+  String get cronjobsRecordsAction => '执行记录';
+
+  @override
+  String get cronjobsStopAction => '停止';
+
+  @override
+  String get cronjobsStatusEnable => '已启用';
+
+  @override
+  String get cronjobsStatusDisable => '已停用';
+
+  @override
+  String get cronjobsStatusPending => '执行中';
+
+  @override
+  String get cronjobsTypeShell => 'Shell';
+
+  @override
+  String get cronjobsTypeWebsite => '网站';
+
+  @override
+  String get cronjobsTypeDatabase => '数据库';
+
+  @override
+  String get cronjobsTypeDirectory => '目录';
+
+  @override
+  String get cronjobsTypeSnapshot => '快照';
+
+  @override
+  String get cronjobsTypeLog => '日志清理';
+
+  @override
+  String cronjobsUpdateStatusConfirm(String name, String status) {
+    return '确认将计划任务 $name 更新为 $status 吗？';
+  }
+
+  @override
+  String cronjobsHandleOnceConfirm(String name) {
+    return '确认立即执行一次计划任务 $name 吗？';
+  }
+
+  @override
+  String cronjobsStopConfirm(String name) {
+    return '确认停止正在执行的计划任务 $name 吗？';
+  }
+
+  @override
+  String get cronjobRecordsEmptyTitle => '暂无执行记录';
+
+  @override
+  String get cronjobRecordsEmptyDescription => '计划任务运行后，会在这里展示执行记录。';
+
+  @override
+  String get cronjobRecordsStatusAll => '全部';
+
+  @override
+  String get cronjobRecordsStatusSuccess => '成功';
+
+  @override
+  String get cronjobRecordsStatusWaiting => '等待中';
+
+  @override
+  String get cronjobRecordsStatusUnexecuted => '未执行';
+
+  @override
+  String get cronjobRecordsStatusFailed => '失败';
+
+  @override
+  String get cronjobRecordsIntervalLabel => '耗时';
+
+  @override
+  String get cronjobRecordsMessageLabel => '消息';
+
+  @override
+  String get cronjobRecordsViewLogTitle => '记录日志';
+
+  @override
+  String get cronjobRecordsCleanAction => '清理记录';
+
+  @override
+  String get cronjobRecordsCleanConfirm => '确认清理这个计划任务的执行记录吗？';
+
+  @override
+  String cronjobsDeleteConfirm(String name) {
+    return '确认删除计划任务 $name 吗？';
+  }
+
+  @override
+  String get cronjobFormCreateTitle => '创建计划任务';
+
+  @override
+  String get cronjobFormEditTitle => '编辑计划任务';
+
+  @override
+  String get cronjobFormBasicSectionTitle => '基础信息';
+
+  @override
+  String get cronjobFormScheduleSectionTitle => '调度规则';
+
+  @override
+  String get cronjobFormTargetSectionTitle => '执行目标';
+
+  @override
+  String get cronjobFormPolicySectionTitle => '保留与告警';
+
+  @override
+  String get cronjobFormTypeLabel => '类型';
+
+  @override
+  String get cronjobFormUrlTypeLabel => 'URL';
+
+  @override
+  String get cronjobFormCustomSpecLabel => '自定义表达式';
+
+  @override
+  String get cronjobFormPreviewAction => '预览下次执行';
+
+  @override
+  String get cronjobFormBuilderModeLabel => '使用规则构建';
+
+  @override
+  String get cronjobFormRawModeLabel => '使用原始表达式';
+
+  @override
+  String get cronjobFormDeleteConfirm => '确认删除这个计划任务吗？';
+
+  @override
+  String get cronjobFormBackupTypeLabel => '备份类型';
+
+  @override
+  String get cronjobFormDatabaseTypeLabel => '数据库类型';
+
+  @override
+  String get cronjobFormBackupArgsLabel => '备份参数';
+
+  @override
+  String get cronjobFormBackupDirectoryLabel => '备份目录';
+
+  @override
+  String get cronjobFormDirectoryPathLabel => '目录路径';
+
+  @override
+  String get cronjobFormSelectedFilesLabel => '选中文件';
+
+  @override
+  String get cronjobFormExcludePatternsLabel => '排除规则';
+
+  @override
+  String get cronjobFormIncludeImagesLabel => '包含镜像';
+
+  @override
+  String get cronjobFormSourceAccountsLabel => '来源账户';
+
+  @override
+  String get cronjobFormDownloadAccountLabel => '默认下载路径';
+
+  @override
+  String get cronjobFormSecretLabel => '密钥';
+
+  @override
+  String get cronjobFormExecutorLabel => '执行器';
+
+  @override
+  String get cronjobFormUserLabel => '用户';
+
+  @override
+  String get cronjobFormShellInlineLabel => '内联内容';
+
+  @override
+  String get cronjobFormShellLibraryLabel => '脚本库';
+
+  @override
+  String get cronjobFormShellPathLabel => '路径';
+
+  @override
+  String get cronjobFormScriptLibraryLabel => '脚本库';
+
+  @override
+  String get cronjobFormScriptPathLabel => '脚本路径';
+
+  @override
+  String get cronjobFormScriptLabel => '脚本内容';
+
+  @override
+  String get cronjobFormRetainCopiesLabel => '保留副本数';
+
+  @override
+  String get cronjobFormRetryTimesLabel => '重试次数';
+
+  @override
+  String get cronjobFormTimeoutLabel => '超时';
+
+  @override
+  String get cronjobFormTimeoutUnitLabel => '单位';
+
+  @override
+  String get cronjobFormSecondsLabel => '秒';
+
+  @override
+  String get cronjobFormMinutesLabel => '分钟';
+
+  @override
+  String get cronjobFormHoursLabel => '小时';
+
+  @override
+  String get cronjobFormIgnoreErrorsLabel => '忽略错误';
+
+  @override
+  String get cronjobFormArgumentsLabel => '附加参数';
+
+  @override
+  String get cronjobFormEnableAlertsLabel => '启用告警';
+
+  @override
+  String get cronjobFormAlertCountLabel => '告警次数';
+
+  @override
+  String get cronjobFormScheduleModeLabel => '模式';
+
+  @override
+  String get cronjobFormScheduleDaily => '每天';
+
+  @override
+  String get cronjobFormScheduleWeekly => '每周';
+
+  @override
+  String get cronjobFormScheduleMonthly => '每月';
+
+  @override
+  String get cronjobFormScheduleEveryHours => '每 N 小时';
+
+  @override
+  String get cronjobFormScheduleEveryMinutes => '每 N 分钟';
+
+  @override
+  String get cronjobFormScheduleMinuteLabel => '分钟';
+
+  @override
+  String get cronjobFormScheduleHourLabel => '小时';
+
+  @override
+  String get cronjobFormScheduleWeekdayLabel => '周几';
+
+  @override
+  String get cronjobFormScheduleDayLabel => '日期';
+
+  @override
+  String get cronjobFormScheduleIntervalLabel => '间隔';
+
+  @override
+  String get scriptLibrarySearchHint => '搜索脚本';
+
+  @override
+  String get scriptLibraryFilterAllGroups => '全部分组';
+
+  @override
+  String get scriptLibraryGroupFilterAction => '按分组筛选';
+
+  @override
+  String get scriptLibraryEmptyTitle => '暂无脚本';
+
+  @override
+  String get scriptLibraryEmptyDescription => '脚本库加载到脚本后，会在这里展示。';
+
+  @override
+  String get scriptLibraryViewCodeAction => '查看代码';
+
+  @override
+  String get scriptLibraryRunAction => '运行';
+
+  @override
+  String get scriptLibrarySyncAction => '同步';
+
+  @override
+  String get scriptLibraryDeleteAction => '删除';
+
+  @override
+  String get scriptLibraryInteractiveLabel => '交互式';
+
+  @override
+  String get scriptLibraryInteractiveYes => '是';
+
+  @override
+  String get scriptLibraryInteractiveNo => '否';
+
+  @override
+  String get scriptLibraryCreatedAtLabel => '创建时间';
+
+  @override
+  String get scriptLibrarySyncConfirm => '确认立即同步脚本库吗？';
+
+  @override
+  String scriptLibraryDeleteConfirm(String name) {
+    return '确认删除脚本 $name 吗？';
+  }
+
+  @override
+  String get scriptLibraryCodeTitle => '脚本代码';
+
+  @override
+  String get scriptLibraryRunTitle => '运行脚本';
+
+  @override
+  String get scriptLibraryRunWaiting => '正在连接脚本输出...';
+
+  @override
+  String get scriptLibraryRunNoOutput => '暂无输出';
+
+  @override
+  String get scriptLibraryRunDisconnected => '脚本输出已断开';
+
+  @override
   String get operationsBackupsTitle => '备份中心';
 
   @override
@@ -3532,6 +3881,202 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get operationsBackupRecoverTitle => '备份恢复';
+
+  @override
+  String get backupAccountsSearchHint => '搜索备份账户';
+
+  @override
+  String get backupAccountsEmptyTitle => '暂无备份账户';
+
+  @override
+  String get backupAccountsEmptyDescription => '添加备份账户后，就可以开始使用备份主链路。';
+
+  @override
+  String get backupAccountsScopePublic => '公共';
+
+  @override
+  String get backupAccountsScopePrivate => '私有';
+
+  @override
+  String get backupAccountsTokenRefreshed => 'Token 已刷新';
+
+  @override
+  String get backupAccountsConnectionOk => '连接成功';
+
+  @override
+  String get backupAccountsConnectionFailed => '连接失败';
+
+  @override
+  String backupAccountsDeleteConfirm(String name) {
+    return '确认删除备份账户 $name 吗？';
+  }
+
+  @override
+  String get backupFilesSheetTitle => '备份文件';
+
+  @override
+  String get backupFormBasicSectionTitle => '基础信息';
+
+  @override
+  String get backupFormCredentialsSectionTitle => '凭据';
+
+  @override
+  String get backupFormStorageSectionTitle => '存储配置';
+
+  @override
+  String get backupFormVerifySectionTitle => '连接验证';
+
+  @override
+  String get backupFormPublicScopeLabel => '公共范围';
+
+  @override
+  String get backupFormProviderTypeLabel => 'Provider 类型';
+
+  @override
+  String get backupFormCredentialLabel => '凭据';
+
+  @override
+  String get backupFormAddressLabel => '地址';
+
+  @override
+  String get backupFormPortLabel => '端口';
+
+  @override
+  String get backupFormChinaCloudLabel => '使用中国区云';
+
+  @override
+  String get backupFormClientIdLabel => 'Client ID';
+
+  @override
+  String get backupFormClientSecretLabel => 'Client Secret';
+
+  @override
+  String get backupFormRedirectUriLabel => '回调地址';
+
+  @override
+  String get backupFormAuthCodeLabel => '授权码';
+
+  @override
+  String get backupFormOpenAuthorizeAction => '打开授权页';
+
+  @override
+  String get backupFormTokenJsonLabel => 'Token JSON';
+
+  @override
+  String get backupFormDriveIdLabel => 'Drive ID';
+
+  @override
+  String get backupFormRefreshTokenLabel => 'Refresh Token';
+
+  @override
+  String get backupFormRememberCredentialsLabel => '记住凭据';
+
+  @override
+  String get backupFormRegionLabel => '地域';
+
+  @override
+  String get backupFormDomainLabel => '域名';
+
+  @override
+  String get backupFormEndpointLabel => 'Endpoint';
+
+  @override
+  String get backupFormBucketLabel => 'Bucket';
+
+  @override
+  String get backupFormBackupPathLabel => '备份路径';
+
+  @override
+  String get backupFormVerifiedLabel => '已验证';
+
+  @override
+  String get backupFormNotVerifiedLabel => '未验证';
+
+  @override
+  String get backupFormTestingLabel => '验证中...';
+
+  @override
+  String get backupFormTestConnectionAction => '测试连接';
+
+  @override
+  String get backupRecordsEmptyTitle => '暂无备份记录';
+
+  @override
+  String get backupRecordsEmptyDescription => '执行备份后，会在这里展示记录。';
+
+  @override
+  String get backupRecordsFilterAction => '筛选';
+
+  @override
+  String backupRecordsDeleteConfirm(String name) {
+    return '确认删除备份记录 $name 吗？';
+  }
+
+  @override
+  String get backupRecordsTypeLabel => '类型';
+
+  @override
+  String get backupRecordsNameLabel => '名称';
+
+  @override
+  String get backupRecordsDetailNameLabel => '详细名称';
+
+  @override
+  String get backupRecordsApplyAction => '应用';
+
+  @override
+  String get backupRecordsStatusLabel => '状态';
+
+  @override
+  String get backupRecordsSizeLabel => '大小';
+
+  @override
+  String get backupRecordsDownloadAction => '下载';
+
+  @override
+  String get backupRecordsRecoverAction => '恢复';
+
+  @override
+  String get backupRecoverResourceStepTitle => '资源';
+
+  @override
+  String get backupRecoverRecordStepTitle => '记录';
+
+  @override
+  String get backupRecoverConfirmStepTitle => '确认';
+
+  @override
+  String get backupRecoverTypeLabel => '类型';
+
+  @override
+  String get backupRecoverAppLabel => '应用';
+
+  @override
+  String get backupRecoverWebsiteLabel => '网站';
+
+  @override
+  String get backupRecoverDatabaseLabel => '数据库';
+
+  @override
+  String get backupRecoverDatabaseTypeLabel => '数据库类型';
+
+  @override
+  String get backupRecoverDatabaseItemLabel => '数据库项';
+
+  @override
+  String get backupRecoverLoadRecordsAction => '加载记录';
+
+  @override
+  String get backupRecoverNoCandidateRecords => '暂无可恢复记录';
+
+  @override
+  String get backupRecoverRecordLabel => '备份记录';
+
+  @override
+  String get backupRecoverStartAction => '开始恢复';
+
+  @override
+  String get backupRecoverConfirmMessage => '确认从所选备份记录发起恢复吗？';
 
   @override
   String get operationsLogsTitle => '日志中心';

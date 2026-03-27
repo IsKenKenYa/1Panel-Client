@@ -1,127 +1,71 @@
-# 计划任务管理模块开发计划
+# 计划任务与脚本库开发计划
 
-## 里程碑定义
+## Phase 1 周计划对齐
 
-### M1: 任务列表与详情 (第1-2周)
-- 任务列表展示
-- 任务详情查看
-- 任务状态显示
+### Week 4 已完成
 
-### M2: 任务创建与编辑 (第3-4周)
-- 任务创建表单
-- 任务编辑功能
-- Cron表达式编辑器
-- 任务启用/禁用
+- `CronjobsPage`
+- `CronjobRecordsPage`
+- `ScriptLibraryPage`
+- `CronjobRepository / Service / Provider`
+- `ScriptLibraryRepository / Service / Provider`
+- `ScriptRunWsClient`
+- API 对齐测试、真实环境 API client tests、Provider tests、Widget tests
 
-### M3: 执行管理 (第5-6周)
-- 手动执行任务
-- 执行状态监控
-- 执行历史查看
-- 日志查看功能
+### Week 5 已完成
 
-### M4: 测试与优化 (第7-8周)
-- 单元测试覆盖
-- 集成测试
-- 性能优化
-- 文档完善
+- `CronjobFormPage`
+- Cronjob create / update / delete UI
+- `next preview`
+- backup account/records/recover 联动
 
-## 任务分解
+## Week 4 交付边界
 
-### API层任务
-| 任务 | 优先级 | 预估工时 | 依赖 |
-|------|--------|----------|------|
-| CronjobClient完善 | P0 | 4h | 无 |
-| 任务列表API封装 | P0 | 2h | CronjobClient |
-| 任务详情API封装 | P0 | 2h | CronjobClient |
-| 任务执行API封装 | P0 | 3h | CronjobClient |
-| 执行历史API封装 | P1 | 2h | CronjobClient |
-| 日志查看API封装 | P1 | 2h | CronjobClient |
+### 已纳入
 
-### 数据层任务
-| 任务 | 优先级 | 预估工时 | 依赖 |
-|------|--------|----------|------|
-| Cronjob模型 | P0 | 3h | 无 |
-| CronjobRecord模型 | P0 | 2h | 无 |
-| CronjobLog模型 | P1 | 2h | 无 |
-| Cron表达式解析器 | P0 | 4h | 无 |
-| 数据验证器 | P0 | 3h | 模型完成 |
+- Cronjob 列表
+- Cronjob 状态切换
+- Cronjob handle once
+- Cronjob 记录列表与日志查看
+- Cronjob 记录清理
+- Script Library 列表
+- Script code preview
+- Script sync
+- Script run output viewer
 
-### UI层任务
-| 任务 | 优先级 | 预估工时 | 依赖 |
-|------|--------|----------|------|
-| 任务列表页面 | P0 | 8h | 任务模型 |
-| 任务详情页面 | P0 | 6h | 任务模型 |
-| 任务创建表单 | P0 | 8h | Cron解析器 |
-| 任务编辑表单 | P0 | 4h | 创建表单 |
-| Cron表达式编辑器 | P0 | 6h | Cron解析器 |
-| 执行历史页面 | P1 | 6h | Record模型 |
-| 日志查看器 | P1 | 4h | Log模型 |
-| 执行状态指示器 | P0 | 3h | 无 |
+### 明确未纳入
 
-### 测试任务
-| 任务 | 优先级 | 预估工时 | 依赖 |
-|------|--------|----------|------|
-| API客户端单元测试 | P0 | 4h | API层完成 |
-| Cron解析器测试 | P0 | 4h | 解析器完成 |
-| 模型单元测试 | P0 | 3h | 数据层完成 |
-| Provider测试 | P0 | 4h | 服务层完成 |
-| Widget测试 | P1 | 6h | UI层完成 |
-| 集成测试 | P1 | 8h | 全部完成 |
+- Cronjob create / edit 表单
+- Cronjob 批量操作
+- Script create / edit 页面
+- 完整 terminal 管理
 
-### 文档任务
-| 任务 | 优先级 | 预估工时 | 依赖 |
-|------|--------|----------|------|
-| API使用文档 | P1 | 2h | API层完成 |
-| Cron表达式指南 | P1 | 3h | 解析器完成 |
-| 用户操作指南 | P1 | 4h | UI层完成 |
-| 故障排查指南 | P2 | 2h | 测试完成 |
+## 代码结构
 
-## 风险与应对策略
+- `lib/data/repositories/cronjob_repository.dart`
+- `lib/data/repositories/script_library_repository.dart`
+- `lib/features/cronjobs/`
+- `lib/features/script_library/`
+- `lib/core/network/script_run_ws_client.dart`
 
-### 技术风险
-| 风险 | 影响 | 概率 | 应对策略 |
-|------|------|------|----------|
-| Cron表达式解析复杂 | 中 | 高 | 使用成熟的cron解析库 |
-| 执行状态实时更新 | 中 | 中 | 实现WebSocket或轮询机制 |
-| 日志文件过大 | 低 | 中 | 实现日志分页和截断 |
+## 收口标准
 
-### 业务风险
-| 风险 | 影响 | 概率 | 应对策略 |
-|------|------|------|----------|
-| 任务执行失败 | 中 | 中 | 提供详细的错误日志和重试机制 |
-| 任务冲突 | 低 | 低 | 实现任务互斥锁机制 |
-| 资源耗尽 | 高 | 低 | 实现资源限制和监控 |
+Week 5 判定完成需要同时满足：
 
-### 进度风险
-| 风险 | 影响 | 概率 | 应对策略 |
-|------|------|------|----------|
-| Cron编辑器复杂度高 | 中 | 中 | 参考现有开源实现 |
-| 测试覆盖不足 | 中 | 中 | 优先完成核心功能测试 |
-| 文档滞后 | 低 | 中 | 文档与代码同步更新 |
+- 路由已从 placeholder 替换为真实页面
+- no-server 场景不触发 API load
+- `flutter analyze` 通过
+- `dart run test_runner.dart unit` 通过
+- `dart run test_runner.dart ui` 通过
+- `requirement_tracking_matrix` / `api_coverage` / 模块文档已同步
 
-## 验收标准
+## 剩余风险
 
-### 功能验收
-- [ ] 任务列表正确显示
-- [ ] 任务创建/编辑/删除正常
-- [ ] Cron表达式正确解析
-- [ ] 任务手动执行正常
-- [ ] 执行历史正确记录
-- [ ] 日志查看正常
-
-### 质量验收
-- [ ] 单元测试覆盖率≥80%
-- [ ] 关键操作响应时间<200ms
-- [ ] 无严重Bug
-- [ ] 代码通过静态分析
-
-### 文档验收
-- [ ] API文档完整
-- [ ] Cron表达式指南完整
-- [ ] 用户指南完整
-- [ ] FAQ覆盖常见问题
+- Script run 真实环境成功流依赖目标环境里存在可安全执行的脚本
+- Cronjob destructive create/update/delete/import/export 仍需要隔离环境兜底验证
+- 旧 `command_v2.dart` 中仍保留脚本库 legacy wrapper，后续可继续清理
 
 ---
 
-**文档版本**: 1.0
-**最后更新**: 2026-02-14
+**文档版本**: 2.0  
+**最后更新**: 2026-03-27

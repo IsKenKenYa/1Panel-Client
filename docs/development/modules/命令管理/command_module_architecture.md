@@ -46,10 +46,10 @@
 ## 约束与取舍
 
 - Week 2 不实现“发送到终端”
-- Week 2 不实现 Script Library 页面
+- Script Library 已在 Week 4 拆到独立模块；`command_v2.dart` 中旧脚本 helper 仅保留兼容，不作为当前页面真值
 - `POST /core/commands/list` 与 `POST /core/commands/tree` 仅保留 API 能力，不作为当前列表渲染真值
 - CSV 解析为空或格式异常时直接进入错误/提示态，不进入导入确认流
 
 ---
 **文档版本**: 2.0
-**最后更新**: 2026-03-26
+**最后更新**: 2026-03-27

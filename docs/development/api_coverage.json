@@ -1,13 +1,13 @@
 {
   "source": "docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json",
   "generatedAt": "2026-02-14",
-  "lastUpdated": "2026-03-26",
+  "lastUpdated": "2026-03-27",
   "totalEndpoints": 546,
-  "totalApiMethods": 524,
-  "apiClientFiles": 31,
+  "totalApiMethods": 527,
+  "apiClientFiles": 32,
   "testFiles": {
-    "unit": 8,
-    "integration": 12
+    "unit": 9,
+    "integration": 14
   },
   "tags": {
     "Website": {
@@ -50,8 +50,8 @@
       "endpoints": 25,
       "priority": "P0",
       "implemented": 1,
-      "tested": 0,
-      "docs": 0,
+      "tested": 1,
+      "docs": 1,
       "clientFile": "backup_account_v2.dart",
       "methods": 26
     },
@@ -77,8 +77,8 @@
       "endpoints": 16,
       "priority": "P1",
       "implemented": 1,
-      "tested": 0,
-      "docs": 0,
+      "tested": 1,
+      "docs": 1,
       "clientFile": "cronjob_v2.dart",
       "methods": 12
     },
@@ -329,10 +329,10 @@
       "endpoints": 5,
       "priority": "P1",
       "implemented": 1,
-      "tested": 0,
-      "docs": 0,
-      "clientFile": "command_v2.dart",
-      "methods": 14
+      "tested": 1,
+      "docs": 1,
+      "clientFile": "script_library_v2.dart",
+      "methods": 3
     },
     "Container Network": {
       "endpoints": 4,

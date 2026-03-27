@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import '../../core/network/dio_client.dart';
 import '../../core/config/api_constants.dart';
 import '../../data/models/database_models.dart';
+import '../../data/models/database_option_models.dart';
 import '../../data/models/common_models.dart';
 
 class DatabaseV2Api {
@@ -50,7 +51,8 @@ class DatabaseV2Api {
   /// 获取数据库列表，支持分页和搜索
   /// @param request 搜索请求
   /// @return 数据库列表
-  Future<Response<PageResult<DatabaseInfo>>> searchDatabases(DatabaseSearch request) async {
+  Future<Response<PageResult<DatabaseInfo>>> searchDatabases(
+      DatabaseSearch request) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/databases/search'),
       data: request.toJson(),
@@ -115,7 +117,8 @@ class DatabaseV2Api {
   /// @param id 数据库ID
   /// @param request 搜索请求
   /// @return 备份列表
-  Future<Response<PageResult>> searchDatabaseBackups(int id, RecordSearch request) async {
+  Future<Response<PageResult>> searchDatabaseBackups(
+      int id, RecordSearch request) async {
     final response = await _client.post(
       '${ApiConstants.buildApiPath('/databases')}/$id/backups',
       data: request.toJson(),
@@ -166,7 +169,8 @@ class DatabaseV2Api {
   /// 重置指定数据库的密码
   /// @param request 重置密码请求
   /// @return 重置结果
-  Future<Response<DatabaseConn>> resetDatabasePassword(DatabaseResetPassword request) async {
+  Future<Response<DatabaseConn>> resetDatabasePassword(
+      DatabaseResetPassword request) async {
     final response = await _client.post(
       '${ApiConstants.buildApiPath('/databases')}/${request.id}/password/reset',
       data: request.toJson(),
@@ -184,7 +188,8 @@ class DatabaseV2Api {
   /// 获取指定数据库的权限列表
   /// @param id 数据库ID
   /// @return 权限列表
-  Future<Response<List<Map<String, dynamic>>>> getDatabasePrivileges(int id) async {
+  Future<Response<List<Map<String, dynamic>>>> getDatabasePrivileges(
+      int id) async {
     final response = await _client.get(
       '${ApiConstants.buildApiPath('/databases')}/$id/privileges',
     );
@@ -202,7 +207,8 @@ class DatabaseV2Api {
   /// @param id 数据库ID
   /// @param privileges 权限信息
   /// @return 更新结果
-  Future<Response> updateDatabasePrivileges(int id, Map<String, dynamic> privileges) async {
+  Future<Response> updateDatabasePrivileges(
+      int id, Map<String, dynamic> privileges) async {
     return await _client.post(
       '${ApiConstants.buildApiPath('/databases')}/$id/privileges',
       data: privileges,
@@ -258,6 +264,25 @@ class DatabaseV2Api {
   /// @return 数据库类型列表
   Future<List<DatabaseType>> getDatabaseTypes() async {
     return DatabaseType.values;
+  }
+
+  Future<Response<List<DatabaseItemOption>>> listDbItems(String type) async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/databases/db/item/$type'),
+    );
+    final data = response.data?['data'];
+    final items = <DatabaseItemOption>[];
+    if (data is List) {
+      items.addAll(
+        data.whereType<Map<String, dynamic>>().map(DatabaseItemOption.fromJson),
+      );
+    }
+    return Response<List<DatabaseItemOption>>(
+      data: items,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
   }
 
   /// 获取数据库状态选项

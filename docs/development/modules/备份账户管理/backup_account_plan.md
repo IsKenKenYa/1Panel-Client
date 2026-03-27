@@ -1,116 +1,53 @@
-# 备份账户管理模块开发计划
+# 备份管理模块开发计划
 
-## 里程碑定义
+## Phase 1 周计划对齐
 
-### M1: 备份账户管理 (第1周)
+### Week 5 已完成
 
-**目标**: 完成备份账户列表和基本操作功能
+- `BackupAccountsPage`
+- `BackupAccountFormPage`
+- `BackupRecordsPage`
+- `BackupRecoverPage`
+- `BackupRepository`
+- `BackupAccountService`
+- `BackupRecordService`
+- `BackupRecoverService`
+- `BackupOauthCallbackService`
+- API 对齐测试、真实环境 API tests、Provider tests、Widget tests
 
-| 任务 | 预计时间 | 负责人 | 状态 |
-|------|---------|--------|------|
-| 创建BackupAccountProvider | 4h | - | 待开始 |
-| 创建BackupAccountService | 3h | - | 待开始 |
-| 创建BackupAccountListPage | 6h | - | 待开始 |
-| 创建BackupAccountFormPage | 4h | - | 待开始 |
+## Week 5 交付边界
 
-### M2: 备份记录管理 (第2周)
+### 已纳入
 
-**目标**: 完成备份记录查看和管理功能
+- 账户列表、create、edit、delete
+- connection test
+- refresh token
+- browse files
+- records 搜索、按 cronjob 搜索、size merge、download、delete
+- recover from record
+- OAuth callback 基础设施
 
-| 任务 | 预计时间 | 负责人 | 状态 |
-|------|---------|--------|------|
-| 创建BackupRecordListPage | 4h | - | 待开始 |
-| 实现备份记录详情 | 3h | - | 待开始 |
-| 实现备份记录下载 | 2h | - | 待开始 |
-| 实现备份记录删除 | 2h | - | 待开始 |
+### 明确未纳入
 
-### M3: 备份与恢复 (第3周)
+- `recoverByUpload` 主 UI
+- 完整 node selector
+- provider 引导文档化流程
+- 更深的 bucket/file browser
 
-**目标**: 完成系统备份和恢复功能
+## 代码结构
 
-| 任务 | 预计时间 | 负责人 | 状态 |
-|------|---------|--------|------|
-| 创建BackupDialog | 3h | - | 待开始 |
-| 创建RecoverDialog | 3h | - | 待开始 |
-| 实现备份执行功能 | 3h | - | 待开始 |
-| 实现恢复执行功能 | 3h | - | 待开始 |
+- `lib/data/repositories/backup_repository.dart`
+- `lib/features/backups/services/`
+- `lib/features/backups/providers/`
+- `lib/features/backups/pages/`
 
-### M4: 测试与优化 (第4周)
+## 剩余风险
 
-**目标**: 完成测试覆盖和性能优化
-
-| 任务 | 预计时间 | 负责人 | 状态 |
-|------|---------|--------|------|
-| 单元测试编写 | 4h | - | 待开始 |
-| 集成测试编写 | 3h | - | 待开始 |
-| 性能优化 | 2h | - | 待开始 |
-| 文档完善 | 2h | - | 待开始 |
-
-## 任务分解
-
-### API层任务
-
-| 任务ID | 任务描述 | 优先级 | 依赖 | 状态 |
-|--------|---------|--------|------|------|
-| API-001 | 验证现有API方法完整性 | P0 | - | 待开始 |
-| API-002 | 添加错误响应处理 | P0 | - | 待开始 |
-
-### 数据层任务
-
-| 任务ID | 任务描述 | 优先级 | 依赖 | 状态 |
-|--------|---------|--------|------|------|
-| DATA-001 | 验证BackupAccountInfo模型 | P0 | - | 待开始 |
-| DATA-002 | 验证BackupRecord模型 | P0 | - | 待开始 |
-| DATA-003 | 验证BackupOperate模型 | P0 | - | 待开始 |
-
-### 服务层任务
-
-| 任务ID | 任务描述 | 优先级 | 依赖 | 状态 |
-|--------|---------|--------|------|------|
-| SVC-001 | 实现BackupAccountService | P0 | DATA-001 | 待开始 |
-| SVC-002 | 实现BackupRecordService | P0 | DATA-002 | 待开始 |
-| SVC-003 | 实现连接测试逻辑 | P1 | SVC-001 | 待开始 |
-
-### UI层任务
-
-| 任务ID | 任务描述 | 优先级 | 依赖 | 状态 |
-|--------|---------|--------|------|------|
-| UI-001 | 创建BackupAccountListPage | P0 | SVC-001 | 待开始 |
-| UI-002 | 创建BackupAccountFormPage | P0 | SVC-001 | 待开始 |
-| UI-003 | 创建BackupRecordListPage | P0 | SVC-002 | 待开始 |
-| UI-004 | 创建BackupDialog | P0 | SVC-001 | 待开始 |
-| UI-005 | 创建RecoverDialog | P0 | SVC-001 | 待开始 |
-| UI-006 | 创建AccountTestDialog | P1 | SVC-003 | 待开始 |
-
-### 测试任务
-
-| 任务ID | 任务描述 | 优先级 | 依赖 | 状态 |
-|--------|---------|--------|------|------|
-| TEST-001 | BackupAccountV2Api单元测试 | P0 | API-001 | 待开始 |
-| TEST-002 | BackupAccountService单元测试 | P0 | SVC-001 | 待开始 |
-| TEST-003 | 备份账户集成测试 | P0 | UI-001 | 待开始 |
-| TEST-004 | 备份恢复集成测试 | P1 | UI-004 | 待开始 |
-
-## 风险与应对策略
-
-### 技术风险
-
-| 风险 | 影响 | 概率 | 应对策略 |
-|------|------|------|---------|
-| 云存储连接失败 | 高 | 中 | 实现重试机制、详细错误提示 |
-| 大文件上传/下载慢 | 中 | 高 | 分片传输、断点续传 |
-| 凭证过期 | 中 | 中 | 自动刷新Token机制 |
-
-### 进度风险
-
-| 风险 | 影响 | 概率 | 应对策略 |
-|------|------|------|---------|
-| UI设计变更 | 中 | 中 | 保持UI组件解耦 |
-| API接口变更 | 高 | 低 | 建立API变更通知机制 |
-| 测试覆盖不足 | 中 | 中 | 预留缓冲时间 |
+- `OneDrive / GoogleDrive / ALIYUN` 仍需真机 destructive/完整授权成功流验证
+- `recover / refresh token` 为 release gate 级写操作
+- `info/name` 搜索口径兼容是移动端适配策略，后续若上游统一字段仍需回收
 
 ---
 
-**文档版本**: 1.0  
-**最后更新**: 2026-02-14  
-**维护者**: Open1Panel开发团队
+**文档版本**: 2.0  
+**最后更新**: 2026-03-27

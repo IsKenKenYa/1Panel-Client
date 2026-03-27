@@ -7,7 +7,7 @@ import 'package:onepanel_client/api/v2/backup_account_v2.dart';
 import 'package:onepanel_client/core/config/api_constants.dart';
 import 'package:onepanel_client/core/network/dio_client.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
-import 'package:onepanel_client/data/models/backup_account_models.dart';
+import 'package:onepanel_client/data/models/backup_request_models.dart';
 import 'package:onepanel_client/data/models/common_models.dart';
 
 import '../core/test_config_manager.dart';
@@ -100,7 +100,7 @@ void main() {
         return;
       }
 
-      final request = const BackupAccountSearch(
+      final request = const BackupAccountSearchRequest(
         page: 1,
         pageSize: 10,
       ).toJson();
@@ -114,7 +114,7 @@ void main() {
       );
 
       final result = await api.searchBackupAccounts(
-        const BackupAccountSearch(page: 1, pageSize: 10),
+        const BackupAccountSearchRequest(page: 1, pageSize: 10),
       );
       _logSection(
         '✅ Parsed /backups/search',
@@ -163,7 +163,7 @@ void main() {
       }
 
       final accounts = await api.searchBackupAccounts(
-        const BackupAccountSearch(page: 1, pageSize: 10),
+        const BackupAccountSearchRequest(page: 1, pageSize: 10),
       );
       if (accounts.data == null || accounts.data!.items.isEmpty) {
         appLogger.wWithPackage(
@@ -177,7 +177,8 @@ void main() {
       expect(accountId, isNotNull);
       final request = <String, dynamic>{'id': accountId};
 
-      final raw = await _rawPost(client, '/backups/search/files', data: request);
+      final raw =
+          await _rawPost(client, '/backups/search/files', data: request);
       _logSection(
         '✅ Raw /backups/search/files',
         method: 'POST',

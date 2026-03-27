@@ -6914,6 +6914,684 @@ abstract class AppLocalizations {
   /// **'Script Library'**
   String get operationsScriptsTitle;
 
+  /// No description provided for @cronjobsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search cronjobs'**
+  String get cronjobsSearchHint;
+
+  /// No description provided for @cronjobsFilterAllGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'All groups'**
+  String get cronjobsFilterAllGroups;
+
+  /// No description provided for @cronjobsGroupFilterAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by group'**
+  String get cronjobsGroupFilterAction;
+
+  /// No description provided for @cronjobsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No cronjobs'**
+  String get cronjobsEmptyTitle;
+
+  /// No description provided for @cronjobsEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Cronjobs will appear here after the Week 4 mainline flow loads data.'**
+  String get cronjobsEmptyDescription;
+
+  /// No description provided for @cronjobsSpecLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Spec'**
+  String get cronjobsSpecLabel;
+
+  /// No description provided for @cronjobsNextRunLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Next run'**
+  String get cronjobsNextRunLabel;
+
+  /// No description provided for @cronjobsTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get cronjobsTypeLabel;
+
+  /// No description provided for @cronjobsLastRecordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Last record'**
+  String get cronjobsLastRecordLabel;
+
+  /// No description provided for @cronjobsEnableAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable'**
+  String get cronjobsEnableAction;
+
+  /// No description provided for @cronjobsDisableAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable'**
+  String get cronjobsDisableAction;
+
+  /// No description provided for @cronjobsHandleOnceAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Handle once'**
+  String get cronjobsHandleOnceAction;
+
+  /// No description provided for @cronjobsRecordsAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Records'**
+  String get cronjobsRecordsAction;
+
+  /// No description provided for @cronjobsStopAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get cronjobsStopAction;
+
+  /// No description provided for @cronjobsStatusEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get cronjobsStatusEnable;
+
+  /// No description provided for @cronjobsStatusDisable.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get cronjobsStatusDisable;
+
+  /// No description provided for @cronjobsStatusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get cronjobsStatusPending;
+
+  /// No description provided for @cronjobsTypeShell.
+  ///
+  /// In en, this message translates to:
+  /// **'Shell'**
+  String get cronjobsTypeShell;
+
+  /// No description provided for @cronjobsTypeWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'Website'**
+  String get cronjobsTypeWebsite;
+
+  /// No description provided for @cronjobsTypeDatabase.
+  ///
+  /// In en, this message translates to:
+  /// **'Database'**
+  String get cronjobsTypeDatabase;
+
+  /// No description provided for @cronjobsTypeDirectory.
+  ///
+  /// In en, this message translates to:
+  /// **'Directory'**
+  String get cronjobsTypeDirectory;
+
+  /// No description provided for @cronjobsTypeSnapshot.
+  ///
+  /// In en, this message translates to:
+  /// **'Snapshot'**
+  String get cronjobsTypeSnapshot;
+
+  /// No description provided for @cronjobsTypeLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Cleanup'**
+  String get cronjobsTypeLog;
+
+  /// No description provided for @cronjobsUpdateStatusConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Update cronjob {name} to {status}?'**
+  String cronjobsUpdateStatusConfirm(String name, String status);
+
+  /// No description provided for @cronjobsHandleOnceConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Run cronjob {name} once now?'**
+  String cronjobsHandleOnceConfirm(String name);
+
+  /// No description provided for @cronjobsStopConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop running cronjob {name}?'**
+  String cronjobsStopConfirm(String name);
+
+  /// No description provided for @cronjobRecordsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No records'**
+  String get cronjobRecordsEmptyTitle;
+
+  /// No description provided for @cronjobRecordsEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Execution records will appear here after the cronjob runs.'**
+  String get cronjobRecordsEmptyDescription;
+
+  /// No description provided for @cronjobRecordsStatusAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get cronjobRecordsStatusAll;
+
+  /// No description provided for @cronjobRecordsStatusSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Success'**
+  String get cronjobRecordsStatusSuccess;
+
+  /// No description provided for @cronjobRecordsStatusWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting'**
+  String get cronjobRecordsStatusWaiting;
+
+  /// No description provided for @cronjobRecordsStatusUnexecuted.
+  ///
+  /// In en, this message translates to:
+  /// **'Unexecuted'**
+  String get cronjobRecordsStatusUnexecuted;
+
+  /// No description provided for @cronjobRecordsStatusFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get cronjobRecordsStatusFailed;
+
+  /// No description provided for @cronjobRecordsIntervalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Interval'**
+  String get cronjobRecordsIntervalLabel;
+
+  /// No description provided for @cronjobRecordsMessageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get cronjobRecordsMessageLabel;
+
+  /// No description provided for @cronjobRecordsViewLogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Record Log'**
+  String get cronjobRecordsViewLogTitle;
+
+  /// No description provided for @cronjobRecordsCleanAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean records'**
+  String get cronjobRecordsCleanAction;
+
+  /// No description provided for @cronjobRecordsCleanConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean records for this cronjob?'**
+  String get cronjobRecordsCleanConfirm;
+
+  /// No description provided for @cronjobsDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete cronjob {name}?'**
+  String cronjobsDeleteConfirm(String name);
+
+  /// No description provided for @cronjobFormCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Cronjob'**
+  String get cronjobFormCreateTitle;
+
+  /// No description provided for @cronjobFormEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Cronjob'**
+  String get cronjobFormEditTitle;
+
+  /// No description provided for @cronjobFormBasicSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic'**
+  String get cronjobFormBasicSectionTitle;
+
+  /// No description provided for @cronjobFormScheduleSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule'**
+  String get cronjobFormScheduleSectionTitle;
+
+  /// No description provided for @cronjobFormTargetSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Target'**
+  String get cronjobFormTargetSectionTitle;
+
+  /// No description provided for @cronjobFormPolicySectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Policy & Alerts'**
+  String get cronjobFormPolicySectionTitle;
+
+  /// No description provided for @cronjobFormTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get cronjobFormTypeLabel;
+
+  /// No description provided for @cronjobFormUrlTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'URL'**
+  String get cronjobFormUrlTypeLabel;
+
+  /// No description provided for @cronjobFormCustomSpecLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom spec'**
+  String get cronjobFormCustomSpecLabel;
+
+  /// No description provided for @cronjobFormPreviewAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview next runs'**
+  String get cronjobFormPreviewAction;
+
+  /// No description provided for @cronjobFormBuilderModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Use builder'**
+  String get cronjobFormBuilderModeLabel;
+
+  /// No description provided for @cronjobFormRawModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Use raw cron spec'**
+  String get cronjobFormRawModeLabel;
+
+  /// No description provided for @cronjobFormDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this cronjob?'**
+  String get cronjobFormDeleteConfirm;
+
+  /// No description provided for @cronjobFormBackupTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup type'**
+  String get cronjobFormBackupTypeLabel;
+
+  /// No description provided for @cronjobFormDatabaseTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Database type'**
+  String get cronjobFormDatabaseTypeLabel;
+
+  /// No description provided for @cronjobFormBackupArgsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup args'**
+  String get cronjobFormBackupArgsLabel;
+
+  /// No description provided for @cronjobFormBackupDirectoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup directory'**
+  String get cronjobFormBackupDirectoryLabel;
+
+  /// No description provided for @cronjobFormDirectoryPathLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Directory path'**
+  String get cronjobFormDirectoryPathLabel;
+
+  /// No description provided for @cronjobFormSelectedFilesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected files'**
+  String get cronjobFormSelectedFilesLabel;
+
+  /// No description provided for @cronjobFormExcludePatternsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Exclude patterns'**
+  String get cronjobFormExcludePatternsLabel;
+
+  /// No description provided for @cronjobFormIncludeImagesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Include images'**
+  String get cronjobFormIncludeImagesLabel;
+
+  /// No description provided for @cronjobFormSourceAccountsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Source accounts'**
+  String get cronjobFormSourceAccountsLabel;
+
+  /// No description provided for @cronjobFormDownloadAccountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Default download path'**
+  String get cronjobFormDownloadAccountLabel;
+
+  /// No description provided for @cronjobFormSecretLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Secret'**
+  String get cronjobFormSecretLabel;
+
+  /// No description provided for @cronjobFormExecutorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Executor'**
+  String get cronjobFormExecutorLabel;
+
+  /// No description provided for @cronjobFormUserLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get cronjobFormUserLabel;
+
+  /// No description provided for @cronjobFormShellInlineLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Inline'**
+  String get cronjobFormShellInlineLabel;
+
+  /// No description provided for @cronjobFormShellLibraryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Library'**
+  String get cronjobFormShellLibraryLabel;
+
+  /// No description provided for @cronjobFormShellPathLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Path'**
+  String get cronjobFormShellPathLabel;
+
+  /// No description provided for @cronjobFormScriptLibraryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Script library'**
+  String get cronjobFormScriptLibraryLabel;
+
+  /// No description provided for @cronjobFormScriptPathLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Script path'**
+  String get cronjobFormScriptPathLabel;
+
+  /// No description provided for @cronjobFormScriptLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Script'**
+  String get cronjobFormScriptLabel;
+
+  /// No description provided for @cronjobFormRetainCopiesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Retain copies'**
+  String get cronjobFormRetainCopiesLabel;
+
+  /// No description provided for @cronjobFormRetryTimesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry times'**
+  String get cronjobFormRetryTimesLabel;
+
+  /// No description provided for @cronjobFormTimeoutLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Timeout'**
+  String get cronjobFormTimeoutLabel;
+
+  /// No description provided for @cronjobFormTimeoutUnitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit'**
+  String get cronjobFormTimeoutUnitLabel;
+
+  /// No description provided for @cronjobFormSecondsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Seconds'**
+  String get cronjobFormSecondsLabel;
+
+  /// No description provided for @cronjobFormMinutesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Minutes'**
+  String get cronjobFormMinutesLabel;
+
+  /// No description provided for @cronjobFormHoursLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours'**
+  String get cronjobFormHoursLabel;
+
+  /// No description provided for @cronjobFormIgnoreErrorsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Ignore errors'**
+  String get cronjobFormIgnoreErrorsLabel;
+
+  /// No description provided for @cronjobFormArgumentsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Arguments'**
+  String get cronjobFormArgumentsLabel;
+
+  /// No description provided for @cronjobFormEnableAlertsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable alerts'**
+  String get cronjobFormEnableAlertsLabel;
+
+  /// No description provided for @cronjobFormAlertCountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert count'**
+  String get cronjobFormAlertCountLabel;
+
+  /// No description provided for @cronjobFormScheduleModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Mode'**
+  String get cronjobFormScheduleModeLabel;
+
+  /// No description provided for @cronjobFormScheduleDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get cronjobFormScheduleDaily;
+
+  /// No description provided for @cronjobFormScheduleWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get cronjobFormScheduleWeekly;
+
+  /// No description provided for @cronjobFormScheduleMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get cronjobFormScheduleMonthly;
+
+  /// No description provided for @cronjobFormScheduleEveryHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Every N hours'**
+  String get cronjobFormScheduleEveryHours;
+
+  /// No description provided for @cronjobFormScheduleEveryMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Every N minutes'**
+  String get cronjobFormScheduleEveryMinutes;
+
+  /// No description provided for @cronjobFormScheduleMinuteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Minute'**
+  String get cronjobFormScheduleMinuteLabel;
+
+  /// No description provided for @cronjobFormScheduleHourLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Hour'**
+  String get cronjobFormScheduleHourLabel;
+
+  /// No description provided for @cronjobFormScheduleWeekdayLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekday'**
+  String get cronjobFormScheduleWeekdayLabel;
+
+  /// No description provided for @cronjobFormScheduleDayLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get cronjobFormScheduleDayLabel;
+
+  /// No description provided for @cronjobFormScheduleIntervalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Interval'**
+  String get cronjobFormScheduleIntervalLabel;
+
+  /// No description provided for @scriptLibrarySearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search scripts'**
+  String get scriptLibrarySearchHint;
+
+  /// No description provided for @scriptLibraryFilterAllGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'All groups'**
+  String get scriptLibraryFilterAllGroups;
+
+  /// No description provided for @scriptLibraryGroupFilterAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by group'**
+  String get scriptLibraryGroupFilterAction;
+
+  /// No description provided for @scriptLibraryEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No scripts'**
+  String get scriptLibraryEmptyTitle;
+
+  /// No description provided for @scriptLibraryEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Scripts will appear here after script library data loads.'**
+  String get scriptLibraryEmptyDescription;
+
+  /// No description provided for @scriptLibraryViewCodeAction.
+  ///
+  /// In en, this message translates to:
+  /// **'View code'**
+  String get scriptLibraryViewCodeAction;
+
+  /// No description provided for @scriptLibraryRunAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Run'**
+  String get scriptLibraryRunAction;
+
+  /// No description provided for @scriptLibrarySyncAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync'**
+  String get scriptLibrarySyncAction;
+
+  /// No description provided for @scriptLibraryDeleteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get scriptLibraryDeleteAction;
+
+  /// No description provided for @scriptLibraryInteractiveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Interactive'**
+  String get scriptLibraryInteractiveLabel;
+
+  /// No description provided for @scriptLibraryInteractiveYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get scriptLibraryInteractiveYes;
+
+  /// No description provided for @scriptLibraryInteractiveNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get scriptLibraryInteractiveNo;
+
+  /// No description provided for @scriptLibraryCreatedAtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Created at'**
+  String get scriptLibraryCreatedAtLabel;
+
+  /// No description provided for @scriptLibrarySyncConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync the script library now?'**
+  String get scriptLibrarySyncConfirm;
+
+  /// No description provided for @scriptLibraryDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete script {name}?'**
+  String scriptLibraryDeleteConfirm(String name);
+
+  /// No description provided for @scriptLibraryCodeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Script Code'**
+  String get scriptLibraryCodeTitle;
+
+  /// No description provided for @scriptLibraryRunTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Run Script'**
+  String get scriptLibraryRunTitle;
+
+  /// No description provided for @scriptLibraryRunWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting to script output...'**
+  String get scriptLibraryRunWaiting;
+
+  /// No description provided for @scriptLibraryRunNoOutput.
+  ///
+  /// In en, this message translates to:
+  /// **'No output yet'**
+  String get scriptLibraryRunNoOutput;
+
+  /// No description provided for @scriptLibraryRunDisconnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Run output disconnected'**
+  String get scriptLibraryRunDisconnected;
+
   /// No description provided for @operationsBackupsTitle.
   ///
   /// In en, this message translates to:
@@ -6937,6 +7615,390 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Backup Recover'**
   String get operationsBackupRecoverTitle;
+
+  /// No description provided for @backupAccountsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search backup accounts'**
+  String get backupAccountsSearchHint;
+
+  /// No description provided for @backupAccountsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No backup accounts'**
+  String get backupAccountsEmptyTitle;
+
+  /// No description provided for @backupAccountsEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a backup account to start using backup flows.'**
+  String get backupAccountsEmptyDescription;
+
+  /// No description provided for @backupAccountsScopePublic.
+  ///
+  /// In en, this message translates to:
+  /// **'Public'**
+  String get backupAccountsScopePublic;
+
+  /// No description provided for @backupAccountsScopePrivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Private'**
+  String get backupAccountsScopePrivate;
+
+  /// No description provided for @backupAccountsTokenRefreshed.
+  ///
+  /// In en, this message translates to:
+  /// **'Token refreshed'**
+  String get backupAccountsTokenRefreshed;
+
+  /// No description provided for @backupAccountsConnectionOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection ok'**
+  String get backupAccountsConnectionOk;
+
+  /// No description provided for @backupAccountsConnectionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection failed'**
+  String get backupAccountsConnectionFailed;
+
+  /// No description provided for @backupAccountsDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete backup account {name}?'**
+  String backupAccountsDeleteConfirm(String name);
+
+  /// No description provided for @backupFilesSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup Files'**
+  String get backupFilesSheetTitle;
+
+  /// No description provided for @backupFormBasicSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic'**
+  String get backupFormBasicSectionTitle;
+
+  /// No description provided for @backupFormCredentialsSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Credentials'**
+  String get backupFormCredentialsSectionTitle;
+
+  /// No description provided for @backupFormStorageSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage'**
+  String get backupFormStorageSectionTitle;
+
+  /// No description provided for @backupFormVerifySectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get backupFormVerifySectionTitle;
+
+  /// No description provided for @backupFormPublicScopeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Public scope'**
+  String get backupFormPublicScopeLabel;
+
+  /// No description provided for @backupFormProviderTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider type'**
+  String get backupFormProviderTypeLabel;
+
+  /// No description provided for @backupFormCredentialLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Credential'**
+  String get backupFormCredentialLabel;
+
+  /// No description provided for @backupFormAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get backupFormAddressLabel;
+
+  /// No description provided for @backupFormPortLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Port'**
+  String get backupFormPortLabel;
+
+  /// No description provided for @backupFormChinaCloudLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Use China cloud'**
+  String get backupFormChinaCloudLabel;
+
+  /// No description provided for @backupFormClientIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Client ID'**
+  String get backupFormClientIdLabel;
+
+  /// No description provided for @backupFormClientSecretLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Client Secret'**
+  String get backupFormClientSecretLabel;
+
+  /// No description provided for @backupFormRedirectUriLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Redirect URI'**
+  String get backupFormRedirectUriLabel;
+
+  /// No description provided for @backupFormAuthCodeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Authorization Code'**
+  String get backupFormAuthCodeLabel;
+
+  /// No description provided for @backupFormOpenAuthorizeAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Open authorize page'**
+  String get backupFormOpenAuthorizeAction;
+
+  /// No description provided for @backupFormTokenJsonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Token JSON'**
+  String get backupFormTokenJsonLabel;
+
+  /// No description provided for @backupFormDriveIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Drive ID'**
+  String get backupFormDriveIdLabel;
+
+  /// No description provided for @backupFormRefreshTokenLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh Token'**
+  String get backupFormRefreshTokenLabel;
+
+  /// No description provided for @backupFormRememberCredentialsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember credentials'**
+  String get backupFormRememberCredentialsLabel;
+
+  /// No description provided for @backupFormRegionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Region'**
+  String get backupFormRegionLabel;
+
+  /// No description provided for @backupFormDomainLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Domain'**
+  String get backupFormDomainLabel;
+
+  /// No description provided for @backupFormEndpointLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Endpoint'**
+  String get backupFormEndpointLabel;
+
+  /// No description provided for @backupFormBucketLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Bucket'**
+  String get backupFormBucketLabel;
+
+  /// No description provided for @backupFormBackupPathLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup path'**
+  String get backupFormBackupPathLabel;
+
+  /// No description provided for @backupFormVerifiedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified'**
+  String get backupFormVerifiedLabel;
+
+  /// No description provided for @backupFormNotVerifiedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Not verified'**
+  String get backupFormNotVerifiedLabel;
+
+  /// No description provided for @backupFormTestingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Testing...'**
+  String get backupFormTestingLabel;
+
+  /// No description provided for @backupFormTestConnectionAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Test connection'**
+  String get backupFormTestConnectionAction;
+
+  /// No description provided for @backupRecordsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No backup records'**
+  String get backupRecordsEmptyTitle;
+
+  /// No description provided for @backupRecordsEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup records will appear here after backups run.'**
+  String get backupRecordsEmptyDescription;
+
+  /// No description provided for @backupRecordsFilterAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get backupRecordsFilterAction;
+
+  /// No description provided for @backupRecordsDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete backup record {name}?'**
+  String backupRecordsDeleteConfirm(String name);
+
+  /// No description provided for @backupRecordsTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get backupRecordsTypeLabel;
+
+  /// No description provided for @backupRecordsNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get backupRecordsNameLabel;
+
+  /// No description provided for @backupRecordsDetailNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Detail name'**
+  String get backupRecordsDetailNameLabel;
+
+  /// No description provided for @backupRecordsApplyAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get backupRecordsApplyAction;
+
+  /// No description provided for @backupRecordsStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get backupRecordsStatusLabel;
+
+  /// No description provided for @backupRecordsSizeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get backupRecordsSizeLabel;
+
+  /// No description provided for @backupRecordsDownloadAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get backupRecordsDownloadAction;
+
+  /// No description provided for @backupRecordsRecoverAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Recover'**
+  String get backupRecordsRecoverAction;
+
+  /// No description provided for @backupRecoverResourceStepTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Resource'**
+  String get backupRecoverResourceStepTitle;
+
+  /// No description provided for @backupRecoverRecordStepTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Record'**
+  String get backupRecoverRecordStepTitle;
+
+  /// No description provided for @backupRecoverConfirmStepTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get backupRecoverConfirmStepTitle;
+
+  /// No description provided for @backupRecoverTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get backupRecoverTypeLabel;
+
+  /// No description provided for @backupRecoverAppLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'App'**
+  String get backupRecoverAppLabel;
+
+  /// No description provided for @backupRecoverWebsiteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Website'**
+  String get backupRecoverWebsiteLabel;
+
+  /// No description provided for @backupRecoverDatabaseLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Database'**
+  String get backupRecoverDatabaseLabel;
+
+  /// No description provided for @backupRecoverDatabaseTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Database type'**
+  String get backupRecoverDatabaseTypeLabel;
+
+  /// No description provided for @backupRecoverDatabaseItemLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Database item'**
+  String get backupRecoverDatabaseItemLabel;
+
+  /// No description provided for @backupRecoverLoadRecordsAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Load records'**
+  String get backupRecoverLoadRecordsAction;
+
+  /// No description provided for @backupRecoverNoCandidateRecords.
+  ///
+  /// In en, this message translates to:
+  /// **'No candidate records'**
+  String get backupRecoverNoCandidateRecords;
+
+  /// No description provided for @backupRecoverRecordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup record'**
+  String get backupRecoverRecordLabel;
+
+  /// No description provided for @backupRecoverStartAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Start recover'**
+  String get backupRecoverStartAction;
+
+  /// No description provided for @backupRecoverConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Start recovery from the selected backup record?'**
+  String get backupRecoverConfirmMessage;
 
   /// No description provided for @operationsLogsTitle.
   ///
