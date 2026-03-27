@@ -30,7 +30,8 @@ void main() {
     );
   }
 
-  testWidgets('PathSelectorDialog shows current path and subfolders', (tester) async {
+  testWidgets('PathSelectorDialog shows current path and subfolders',
+      (tester) async {
     // Arrange
     final subfolders = [
       FileInfo(
@@ -42,7 +43,7 @@ void main() {
         type: 'dir',
       ),
     ];
-    
+
     when(mockProvider.fetchFiles(any)).thenAnswer((_) async => subfolders);
 
     // Act
@@ -51,11 +52,11 @@ void main() {
         return TextButton(
           onPressed: () {
             showPathSelectorDialog(
-               context,
-               mockProvider,
-               '/',
-               AppLocalizations.of(context),
-             );
+              context,
+              mockProvider,
+              '/',
+              AppLocalizations.of(context),
+            );
           },
           child: const Text('Open Dialog'),
         );
@@ -70,7 +71,8 @@ void main() {
     expect(find.text('/'), findsOneWidget);
   });
 
-  testWidgets('PathSelectorDialog navigates to subfolder on tap', (tester) async {
+  testWidgets('PathSelectorDialog navigates to subfolder on tap',
+      (tester) async {
     // Arrange
     final rootFolders = [
       FileInfo(
@@ -85,7 +87,8 @@ void main() {
     final subFiles = <FileInfo>[]; // Empty subfolder
 
     when(mockProvider.fetchFiles('/')).thenAnswer((_) async => rootFolders);
-    when(mockProvider.fetchFiles('/subfolder1')).thenAnswer((_) async => subFiles);
+    when(mockProvider.fetchFiles('/subfolder1'))
+        .thenAnswer((_) async => subFiles);
 
     // Act
     await tester.pumpWidget(createTestWidget(Builder(

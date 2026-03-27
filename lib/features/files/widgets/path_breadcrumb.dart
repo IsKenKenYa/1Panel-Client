@@ -40,7 +40,8 @@ class PathBreadcrumb extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: Material(
           color: colorScheme.surfaceContainerLow,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: SingleChildScrollView(

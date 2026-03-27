@@ -22,11 +22,12 @@ void showExtractDialog(
   FileInfo file,
   AppLocalizations l10n,
 ) {
-  appLogger.dWithPackage('extract_dialog', 'showExtractDialog: 打开解压对话框, file=${file.path}');
+  appLogger.dWithPackage(
+      'extract_dialog', 'showExtractDialog: 打开解压对话框, file=${file.path}');
   final controller = TextEditingController(text: provider.data.currentPath);
-  
+
   final type = _getCompressType(file.name);
-  
+
   showDialog(
     context: context,
     builder: (dialogContext) => AlertDialog(
@@ -45,15 +46,20 @@ void showExtractDialog(
         ),
         FilledButton(
           onPressed: () async {
-            appLogger.dWithPackage('extract_dialog', 'showExtractDialog: 用户选择目标路径=${controller.text}, type=$type');
+            appLogger.dWithPackage('extract_dialog',
+                'showExtractDialog: 用户选择目标路径=${controller.text}, type=$type');
             Navigator.pop(dialogContext);
             try {
               await provider.extractFile(file.path, controller.text, type);
-              appLogger.iWithPackage('extract_dialog', 'showExtractDialog: 解压成功');
+              appLogger.iWithPackage(
+                  'extract_dialog', 'showExtractDialog: 解压成功');
             } catch (e, stackTrace) {
-              appLogger.eWithPackage('extract_dialog', 'showExtractDialog: 解压失败', error: e, stackTrace: stackTrace);
+              appLogger.eWithPackage(
+                  'extract_dialog', 'showExtractDialog: 解压失败',
+                  error: e, stackTrace: stackTrace);
               if (context.mounted) {
-                DebugErrorDialog.show(context, l10n.filesExtractFailed, e, stackTrace: stackTrace);
+                DebugErrorDialog.show(context, l10n.filesExtractFailed, e,
+                    stackTrace: stackTrace);
               }
             }
           },

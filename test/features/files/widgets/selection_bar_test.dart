@@ -41,7 +41,8 @@ void main() {
       );
     }
 
-    testWidgets('displays selection count correctly', (WidgetTester tester) async {
+    testWidgets('displays selection count correctly',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(selectionCount: 5));
       await tester.pumpAndSettle();
 
@@ -67,7 +68,8 @@ void main() {
       expect(find.byIcon(Icons.delete_outline), findsOneWidget);
     });
 
-    testWidgets('triggers onCompress callback when compress button is tapped', (WidgetTester tester) async {
+    testWidgets('triggers onCompress callback when compress button is tapped',
+        (WidgetTester tester) async {
       var compressCalled = false;
       await tester.pumpWidget(createTestWidget(
         selectionCount: 1,
@@ -81,7 +83,8 @@ void main() {
       expect(compressCalled, isTrue);
     });
 
-    testWidgets('triggers onCopy callback when copy button is tapped', (WidgetTester tester) async {
+    testWidgets('triggers onCopy callback when copy button is tapped',
+        (WidgetTester tester) async {
       var copyCalled = false;
       await tester.pumpWidget(createTestWidget(
         selectionCount: 1,
@@ -95,7 +98,8 @@ void main() {
       expect(copyCalled, isTrue);
     });
 
-    testWidgets('triggers onMove callback when move button is tapped', (WidgetTester tester) async {
+    testWidgets('triggers onMove callback when move button is tapped',
+        (WidgetTester tester) async {
       var moveCalled = false;
       await tester.pumpWidget(createTestWidget(
         selectionCount: 1,
@@ -109,7 +113,8 @@ void main() {
       expect(moveCalled, isTrue);
     });
 
-    testWidgets('triggers onDelete callback when delete button is tapped', (WidgetTester tester) async {
+    testWidgets('triggers onDelete callback when delete button is tapped',
+        (WidgetTester tester) async {
       var deleteCalled = false;
       await tester.pumpWidget(createTestWidget(
         selectionCount: 1,
@@ -123,7 +128,8 @@ void main() {
       expect(deleteCalled, isTrue);
     });
 
-    testWidgets('buttons are disabled when callbacks are null', (WidgetTester tester) async {
+    testWidgets('buttons are disabled when callbacks are null',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(
         selectionCount: 1,
         onCompress: null,
@@ -135,13 +141,15 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      final iconButtons = tester.widgetList<IconButton>(find.byType(IconButton));
+      final iconButtons =
+          tester.widgetList<IconButton>(find.byType(IconButton));
       for (final button in iconButtons) {
         expect(button.onPressed, isNull);
       }
     });
 
-    testWidgets('applies correct container styling', (WidgetTester tester) async {
+    testWidgets('applies correct container styling',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(selectionCount: 1));
       await tester.pumpAndSettle();
 

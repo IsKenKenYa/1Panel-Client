@@ -11,7 +11,8 @@ void showRenameDialog(
   FileInfo file,
   AppLocalizations l10n,
 ) {
-  appLogger.dWithPackage('rename_dialog', 'showRenameDialog: 打开重命名对话框, file=${file.path}');
+  appLogger.dWithPackage(
+      'rename_dialog', 'showRenameDialog: 打开重命名对话框, file=${file.path}');
   final controller = TextEditingController(text: file.name);
   showDialog(
     context: context,
@@ -32,15 +33,19 @@ void showRenameDialog(
         FilledButton(
           onPressed: () async {
             if (controller.text.isEmpty || controller.text == file.name) return;
-            appLogger.dWithPackage('rename_dialog', 'showRenameDialog: 用户输入新名称=${controller.text}');
+            appLogger.dWithPackage('rename_dialog',
+                'showRenameDialog: 用户输入新名称=${controller.text}');
             Navigator.pop(dialogContext);
             try {
               await provider.renameFile(file.path, controller.text);
-              appLogger.iWithPackage('rename_dialog', 'showRenameDialog: 重命名成功');
+              appLogger.iWithPackage(
+                  'rename_dialog', 'showRenameDialog: 重命名成功');
             } catch (e, stackTrace) {
-              appLogger.eWithPackage('rename_dialog', 'showRenameDialog: 重命名失败', error: e, stackTrace: stackTrace);
+              appLogger.eWithPackage('rename_dialog', 'showRenameDialog: 重命名失败',
+                  error: e, stackTrace: stackTrace);
               if (context.mounted) {
-                DebugErrorDialog.show(context, l10n.filesRenameFailed, e, stackTrace: stackTrace);
+                DebugErrorDialog.show(context, l10n.filesRenameFailed, e,
+                    stackTrace: stackTrace);
               }
             }
           },

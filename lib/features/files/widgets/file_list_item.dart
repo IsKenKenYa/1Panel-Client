@@ -43,7 +43,9 @@ class FileListItem extends StatelessWidget {
       child: ListTile(
         leading: Icon(
           isDir ? Icons.folder_outlined : FileUtils.getFileIcon(file.name),
-          color: isDir ? colorScheme.primary : FileUtils.getFileIconColor(file.name, colorScheme),
+          color: isDir
+              ? colorScheme.primary
+              : FileUtils.getFileIconColor(file.name, colorScheme),
           size: 32,
         ),
         title: Row(
@@ -65,7 +67,8 @@ class FileListItem extends StatelessWidget {
         ),
         trailing: PopupMenuButton<String>(
           onSelected: onAction,
-          itemBuilder: (context) => _buildMenuItems(context, l10n, colorScheme, isDir),
+          itemBuilder: (context) =>
+              _buildMenuItems(context, l10n, colorScheme, isDir),
         ),
         onLongPress: onLongPress,
         onTap: onTap,
@@ -86,7 +89,9 @@ class FileListItem extends StatelessWidget {
         PopupMenuItem(value: 'download', child: Text(l10n.filesActionDownload)),
       PopupMenuItem(
         value: 'favorite',
-        child: Text(isFavorite ? l10n.filesRemoveFromFavorites : l10n.filesAddToFavorites),
+        child: Text(isFavorite
+            ? l10n.filesRemoveFromFavorites
+            : l10n.filesAddToFavorites),
       ),
       PopupMenuItem(value: 'rename', child: Text(l10n.filesActionRename)),
       PopupMenuItem(value: 'copy', child: Text(l10n.filesActionCopy)),
@@ -94,7 +99,8 @@ class FileListItem extends StatelessWidget {
       if (!isDir && FileUtils.isCompressedFile(file.name))
         PopupMenuItem(value: 'extract', child: Text(l10n.filesActionExtract)),
       PopupMenuItem(value: 'compress', child: Text(l10n.filesActionCompress)),
-      PopupMenuItem(value: 'permission', child: Text(l10n.filesPermissionTitle)),
+      PopupMenuItem(
+          value: 'permission', child: Text(l10n.filesPermissionTitle)),
       const PopupMenuDivider(),
       PopupMenuItem(
         value: 'delete',

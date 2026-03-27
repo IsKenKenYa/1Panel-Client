@@ -48,7 +48,8 @@ void main() {
     });
 
     testWidgets('displays long error message', (WidgetTester tester) async {
-      const longError = 'This is a very long error message that should still be displayed correctly '
+      const longError =
+          'This is a very long error message that should still be displayed correctly '
           'and might need to wrap to multiple lines depending on the screen width';
 
       await tester.pumpWidget(createTestWidget(
@@ -67,7 +68,8 @@ void main() {
       expect(find.byType(FilledButton), findsOneWidget);
     });
 
-    testWidgets('triggers onRetry callback when retry button is tapped', (WidgetTester tester) async {
+    testWidgets('triggers onRetry callback when retry button is tapped',
+        (WidgetTester tester) async {
       var retryCalled = false;
       await tester.pumpWidget(createTestWidget(
         error: 'Test error message',
@@ -80,7 +82,8 @@ void main() {
       expect(retryCalled, isTrue);
     });
 
-    testWidgets('retry button is disabled when onRetry is null', (WidgetTester tester) async {
+    testWidgets('retry button is disabled when onRetry is null',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(
         error: 'Test error message',
         onRetry: null,
@@ -90,7 +93,8 @@ void main() {
       expect(button.onPressed, isNull);
     });
 
-    testWidgets('centers content vertically and horizontally', (WidgetTester tester) async {
+    testWidgets('centers content vertically and horizontally',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(
         error: 'Test error message',
       ));
@@ -108,7 +112,8 @@ void main() {
       expect(column.mainAxisAlignment, equals(MainAxisAlignment.center));
     });
 
-    testWidgets('has proper spacing between elements', (WidgetTester tester) async {
+    testWidgets('has proper spacing between elements',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(
         error: 'Test error message',
       ));
@@ -143,12 +148,14 @@ void main() {
       expect(find.text(''), findsOneWidget);
     });
 
-    testWidgets('handles special characters in error message', (WidgetTester tester) async {
+    testWidgets('handles special characters in error message',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(
         error: 'Error: <test> & "quotes" \'apostrophes\'',
       ));
 
-      expect(find.text('Error: <test> & "quotes" \'apostrophes\''), findsOneWidget);
+      expect(find.text('Error: <test> & "quotes" \'apostrophes\''),
+          findsOneWidget);
     });
   });
 }

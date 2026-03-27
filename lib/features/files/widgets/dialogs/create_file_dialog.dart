@@ -5,7 +5,8 @@ import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/features/files/files_provider.dart';
 
 void showCreateFileDialog(BuildContext context, FilesProvider provider) {
-  appLogger.dWithPackage('create_file_dialog', 'showCreateFileDialog: 打开创建文件对话框');
+  appLogger.dWithPackage(
+      'create_file_dialog', 'showCreateFileDialog: 打开创建文件对话框');
   final controller = TextEditingController();
   showDialog(
     context: context,
@@ -27,15 +28,21 @@ void showCreateFileDialog(BuildContext context, FilesProvider provider) {
         FilledButton(
           onPressed: () async {
             if (controller.text.isEmpty) return;
-            appLogger.dWithPackage('create_file_dialog', 'showCreateFileDialog: 用户输入名称=${controller.text}');
+            appLogger.dWithPackage('create_file_dialog',
+                'showCreateFileDialog: 用户输入名称=${controller.text}');
             Navigator.pop(dialogContext);
             try {
               await provider.createFile(controller.text);
-              appLogger.iWithPackage('create_file_dialog', 'showCreateFileDialog: 创建成功');
+              appLogger.iWithPackage(
+                  'create_file_dialog', 'showCreateFileDialog: 创建成功');
             } catch (e, stackTrace) {
-              appLogger.eWithPackage('create_file_dialog', 'showCreateFileDialog: 创建失败', error: e, stackTrace: stackTrace);
+              appLogger.eWithPackage(
+                  'create_file_dialog', 'showCreateFileDialog: 创建失败',
+                  error: e, stackTrace: stackTrace);
               if (context.mounted) {
-                DebugErrorDialog.show(context, context.l10n.filesCreateFailed, e, stackTrace: stackTrace);
+                DebugErrorDialog.show(
+                    context, context.l10n.filesCreateFailed, e,
+                    stackTrace: stackTrace);
               }
             }
           },

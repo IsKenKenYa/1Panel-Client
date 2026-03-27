@@ -49,7 +49,8 @@ void main() {
       expect(find.byType(OutlinedButton), findsOneWidget);
     });
 
-    testWidgets('triggers onCreateFolder callback when folder button is tapped', (WidgetTester tester) async {
+    testWidgets('triggers onCreateFolder callback when folder button is tapped',
+        (WidgetTester tester) async {
       var folderCreated = false;
       await tester.pumpWidget(createTestWidget(
         onCreateFolder: () => folderCreated = true,
@@ -61,7 +62,8 @@ void main() {
       expect(folderCreated, isTrue);
     });
 
-    testWidgets('triggers onCreateFile callback when file button is tapped', (WidgetTester tester) async {
+    testWidgets('triggers onCreateFile callback when file button is tapped',
+        (WidgetTester tester) async {
       var fileCreated = false;
       await tester.pumpWidget(createTestWidget(
         onCreateFile: () => fileCreated = true,
@@ -73,20 +75,24 @@ void main() {
       expect(fileCreated, isTrue);
     });
 
-    testWidgets('buttons are disabled when callbacks are null', (WidgetTester tester) async {
+    testWidgets('buttons are disabled when callbacks are null',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(
         onCreateFolder: null,
         onCreateFile: null,
       ));
 
-      final filledButton = tester.widget<FilledButton>(find.byType(FilledButton));
-      final outlinedButton = tester.widget<OutlinedButton>(find.byType(OutlinedButton));
+      final filledButton =
+          tester.widget<FilledButton>(find.byType(FilledButton));
+      final outlinedButton =
+          tester.widget<OutlinedButton>(find.byType(OutlinedButton));
 
       expect(filledButton.onPressed, isNull);
       expect(outlinedButton.onPressed, isNull);
     });
 
-    testWidgets('centers content vertically and horizontally', (WidgetTester tester) async {
+    testWidgets('centers content vertically and horizontally',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget());
 
       final center = tester.widget<Center>(find.byType(Center));
@@ -107,7 +113,8 @@ void main() {
       expect(row.mainAxisAlignment, equals(MainAxisAlignment.center));
     });
 
-    testWidgets('has proper spacing between elements', (WidgetTester tester) async {
+    testWidgets('has proper spacing between elements',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget());
 
       final sizedBoxes = tester.widgetList<SizedBox>(find.byType(SizedBox));

@@ -9,7 +9,8 @@ void showDeleteConfirmDialog(
   FilesProvider provider,
   AppLocalizations l10n,
 ) {
-  appLogger.dWithPackage('delete_confirm_dialog', 'showDeleteConfirmDialog: 打开删除确认对话框, 选中${provider.data.selectionCount}个文件');
+  appLogger.dWithPackage('delete_confirm_dialog',
+      'showDeleteConfirmDialog: 打开删除确认对话框, 选中${provider.data.selectionCount}个文件');
   showDialog(
     context: context,
     builder: (dialogContext) => AlertDialog(
@@ -23,15 +24,20 @@ void showDeleteConfirmDialog(
         FilledButton(
           style: FilledButton.styleFrom(backgroundColor: Colors.red),
           onPressed: () async {
-            appLogger.dWithPackage('delete_confirm_dialog', 'showDeleteConfirmDialog: 用户确认删除');
+            appLogger.dWithPackage(
+                'delete_confirm_dialog', 'showDeleteConfirmDialog: 用户确认删除');
             Navigator.pop(dialogContext);
             try {
               await provider.deleteSelected();
-              appLogger.iWithPackage('delete_confirm_dialog', 'showDeleteConfirmDialog: 删除成功');
+              appLogger.iWithPackage(
+                  'delete_confirm_dialog', 'showDeleteConfirmDialog: 删除成功');
             } catch (e, stackTrace) {
-              appLogger.eWithPackage('delete_confirm_dialog', 'showDeleteConfirmDialog: 删除失败', error: e, stackTrace: stackTrace);
+              appLogger.eWithPackage(
+                  'delete_confirm_dialog', 'showDeleteConfirmDialog: 删除失败',
+                  error: e, stackTrace: stackTrace);
               if (context.mounted) {
-                DebugErrorDialog.show(context, l10n.filesDeleteFailed, e, stackTrace: stackTrace);
+                DebugErrorDialog.show(context, l10n.filesDeleteFailed, e,
+                    stackTrace: stackTrace);
               }
             }
           },

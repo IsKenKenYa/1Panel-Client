@@ -58,7 +58,8 @@ void main() {
       expect(find.text('test.txt'), findsOneWidget);
     });
 
-    testWidgets('renders directory name correctly', (WidgetTester tester) async {
+    testWidgets('renders directory name correctly',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(
         FileListItem(file: testDir),
       ));
@@ -66,7 +67,8 @@ void main() {
       expect(find.text('documents'), findsOneWidget);
     });
 
-    testWidgets('shows folder icon for directories', (WidgetTester tester) async {
+    testWidgets('shows folder icon for directories',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(
         FileListItem(file: testDir),
       ));
@@ -84,7 +86,8 @@ void main() {
       expect(iconFinder, findsOneWidget);
     });
 
-    testWidgets('shows favorite icon when isFavorite is true', (WidgetTester tester) async {
+    testWidgets('shows favorite icon when isFavorite is true',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(
         FileListItem(file: testFile, isFavorite: true),
       ));
@@ -92,7 +95,8 @@ void main() {
       expect(find.byIcon(Icons.star), findsOneWidget);
     });
 
-    testWidgets('does not show favorite icon when isFavorite is false', (WidgetTester tester) async {
+    testWidgets('does not show favorite icon when isFavorite is false',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(
         FileListItem(file: testFile, isFavorite: false),
       ));
@@ -100,7 +104,8 @@ void main() {
       expect(find.byIcon(Icons.star), findsNothing);
     });
 
-    testWidgets('applies selection styling when isSelected is true', (WidgetTester tester) async {
+    testWidgets('applies selection styling when isSelected is true',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(
         FileListItem(file: testFile, isSelected: true),
       ));
@@ -109,7 +114,8 @@ void main() {
       expect(card.color, isNotNull);
     });
 
-    testWidgets('triggers onTap callback when tapped', (WidgetTester tester) async {
+    testWidgets('triggers onTap callback when tapped',
+        (WidgetTester tester) async {
       var tapped = false;
       await tester.pumpWidget(createTestWidget(
         FileListItem(
@@ -124,7 +130,8 @@ void main() {
       expect(tapped, isTrue);
     });
 
-    testWidgets('triggers onLongPress callback when long pressed', (WidgetTester tester) async {
+    testWidgets('triggers onLongPress callback when long pressed',
+        (WidgetTester tester) async {
       var longPressed = false;
       await tester.pumpWidget(createTestWidget(
         FileListItem(
@@ -147,7 +154,8 @@ void main() {
       expect(find.byType(PopupMenuButton<String>), findsOneWidget);
     });
 
-    testWidgets('shows extract option for compressed files', (WidgetTester tester) async {
+    testWidgets('shows extract option for compressed files',
+        (WidgetTester tester) async {
       final zipFile = FileInfo(
         name: 'archive.zip',
         path: '/home/archive.zip',
@@ -338,7 +346,8 @@ void main() {
 
     test('formatFileSize formats gigabytes correctly', () {
       expect(FileUtils.formatFileSize(1024 * 1024 * 1024), equals('1.0 GB'));
-      expect(FileUtils.formatFileSize(1024 * 1024 * 1024 * 2), equals('2.0 GB'));
+      expect(
+          FileUtils.formatFileSize(1024 * 1024 * 1024 * 2), equals('2.0 GB'));
     });
 
     test('formatModifiedAt returns null for null input', () {

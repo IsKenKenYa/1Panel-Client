@@ -8,7 +8,7 @@ import 'package:onepanel_client/features/files/files_provider.dart';
 void showUploadDialog(BuildContext context, FilesProvider provider) {
   appLogger.dWithPackage('upload_dialog', 'showUploadDialog: 打开上传对话框');
   final l10n = context.l10n;
-  
+
   showDialog(
     context: context,
     builder: (dialogContext) => AlertDialog(
@@ -37,23 +37,27 @@ void showUploadDialog(BuildContext context, FilesProvider provider) {
               final result = await FilePicker.platform.pickFiles(
                 allowMultiple: true,
               );
-              
+
               if (result != null && result.files.isNotEmpty) {
                 final filePaths = result.files
                     .where((f) => f.path != null)
                     .map((f) => f.path!)
                     .toList();
-                
+
                 if (filePaths.isNotEmpty) {
-                  appLogger.dWithPackage('upload_dialog', 'showUploadDialog: 选择${filePaths.length}个文件');
+                  appLogger.dWithPackage('upload_dialog',
+                      'showUploadDialog: 选择${filePaths.length}个文件');
                   await provider.uploadFiles(filePaths);
-                  appLogger.iWithPackage('upload_dialog', 'showUploadDialog: 上传成功');
+                  appLogger.iWithPackage(
+                      'upload_dialog', 'showUploadDialog: 上传成功');
                 }
               }
             } catch (e, stackTrace) {
-              appLogger.eWithPackage('upload_dialog', 'showUploadDialog: 上传失败', error: e, stackTrace: stackTrace);
+              appLogger.eWithPackage('upload_dialog', 'showUploadDialog: 上传失败',
+                  error: e, stackTrace: stackTrace);
               if (context.mounted) {
-                DebugErrorDialog.show(context, l10n.filesCreateFailed, e, stackTrace: stackTrace);
+                DebugErrorDialog.show(context, l10n.filesCreateFailed, e,
+                    stackTrace: stackTrace);
               }
             }
           },

@@ -11,8 +11,9 @@ void showPermissionDialog(
   FileInfo file,
   AppLocalizations l10n,
 ) {
-  appLogger.dWithPackage('permission_dialog', 'showPermissionDialog: 打开权限管理对话框, file=${file.path}');
-  
+  appLogger.dWithPackage('permission_dialog',
+      'showPermissionDialog: 打开权限管理对话框, file=${file.path}');
+
   showDialog(
     context: context,
     builder: (dialogContext) => _PermissionDialog(
@@ -42,7 +43,7 @@ class _PermissionDialogState extends State<_PermissionDialog> {
   FileUserGroupResponse? _userGroup;
   bool _isLoading = true;
   String? _error;
-  
+
   int _ownerRead = 0;
   int _ownerWrite = 0;
   int _ownerExecute = 0;
@@ -52,7 +53,7 @@ class _PermissionDialogState extends State<_PermissionDialog> {
   int _otherRead = 0;
   int _otherWrite = 0;
   int _otherExecute = 0;
-  
+
   String? _selectedUser;
   String? _selectedGroup;
   bool _sub = false;
@@ -66,10 +67,10 @@ class _PermissionDialogState extends State<_PermissionDialog> {
   Future<void> _loadPermissionData() async {
     try {
       final userGroup = await widget.provider.getUserGroup();
-      
+
       final mode = widget.file.permission ?? widget.file.mode ?? '755';
       _parseMode(mode);
-      
+
       setState(() {
         _userGroup = userGroup;
         _selectedUser = widget.file.user;
@@ -77,7 +78,8 @@ class _PermissionDialogState extends State<_PermissionDialog> {
         _isLoading = false;
       });
     } catch (e, stackTrace) {
-      appLogger.eWithPackage('permission_dialog', '_loadPermissionData: 加载失败', error: e, stackTrace: stackTrace);
+      appLogger.eWithPackage('permission_dialog', '_loadPermissionData: 加载失败',
+          error: e, stackTrace: stackTrace);
       setState(() {
         _error = e.toString();
         _isLoading = false;
@@ -90,21 +92,21 @@ class _PermissionDialogState extends State<_PermissionDialog> {
     if (cleanMode.length > 3) {
       cleanMode = cleanMode.substring(cleanMode.length - 3);
     }
-    
+
     int modeValue = int.tryParse(cleanMode, radix: 8) ?? 493;
-    
+
     final ownerBits = (modeValue >> 6) & 7;
     final groupBits = (modeValue >> 3) & 7;
     final otherBits = modeValue & 7;
-    
+
     _ownerRead = (ownerBits >> 2) & 1;
     _ownerWrite = (ownerBits >> 1) & 1;
     _ownerExecute = ownerBits & 1;
-    
+
     _groupRead = (groupBits >> 2) & 1;
     _groupWrite = (groupBits >> 1) & 1;
     _groupExecute = groupBits & 1;
-    
+
     _otherRead = (otherBits >> 2) & 1;
     _otherWrite = (otherBits >> 1) & 1;
     _otherExecute = otherBits & 1;
@@ -126,8 +128,9 @@ class _PermissionDialogState extends State<_PermissionDialog> {
 
   Future<void> _savePermission() async {
     final mode = _calculateMode();
-    appLogger.dWithPackage('permission_dialog', '_savePermission: mode=$mode, user=$_selectedUser, group=$_selectedGroup, sub=$_sub');
-    
+    appLogger.dWithPackage('permission_dialog',
+        '_savePermission: mode=$mode, user=$_selectedUser, group=$_selectedGroup, sub=$_sub');
+
     try {
       if (_selectedUser != null && _selectedGroup != null) {
         await widget.provider.changeFileOwner(
@@ -137,13 +140,13 @@ class _PermissionDialogState extends State<_PermissionDialog> {
           sub: _sub,
         );
       }
-      
+
       await widget.provider.changeFileMode(
         widget.file.path,
         mode,
         sub: _sub,
       );
-      
+
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -151,9 +154,11 @@ class _PermissionDialogState extends State<_PermissionDialog> {
         );
       }
     } catch (e, stackTrace) {
-      appLogger.eWithPackage('permission_dialog', '_savePermission: 保存失败', error: e, stackTrace: stackTrace);
+      appLogger.eWithPackage('permission_dialog', '_savePermission: 保存失败',
+          error: e, stackTrace: stackTrace);
       if (mounted) {
-        DebugErrorDialog.show(context, widget.l10n.filesPermissionFailed, e, stackTrace: stackTrace);
+        DebugErrorDialog.show(context, widget.l10n.filesPermissionFailed, e,
+            stackTrace: stackTrace);
       }
     }
   }
@@ -162,7 +167,7 @@ class _PermissionDialogState extends State<_PermissionDialog> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     return AlertDialog(
       title: Row(
         children: [
@@ -211,7 +216,9 @@ class _PermissionDialogState extends State<_PermissionDialog> {
               const SizedBox(height: 16),
               Text(widget.l10n.filesPermissionLoadFailed),
               const SizedBox(height: 8),
-              Text(_error!, style: theme.textTheme.bodySmall, textAlign: TextAlign.center),
+              Text(_error!,
+                  style: theme.textTheme.bodySmall,
+                  textAlign: TextAlign.center),
             ],
           ),
         ),
@@ -271,7 +278,8 @@ class _PermissionDialogState extends State<_PermissionDialog> {
       children: [
         Row(
           children: [
-            Text(widget.l10n.filesPermissionMode, style: theme.textTheme.titleSmall),
+            Text(widget.l10n.filesPermissionMode,
+                style: theme.textTheme.titleSmall),
             const SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -306,7 +314,9 @@ class _PermissionDialogState extends State<_PermissionDialog> {
             const Divider(),
             _buildPermissionRow(
               widget.l10n.filesPermissionOwnerLabel,
-              _ownerRead, _ownerWrite, _ownerExecute,
+              _ownerRead,
+              _ownerWrite,
+              _ownerExecute,
               (r, w, x) => setState(() {
                 _ownerRead = r;
                 _ownerWrite = w;
@@ -316,7 +326,9 @@ class _PermissionDialogState extends State<_PermissionDialog> {
             ),
             _buildPermissionRow(
               widget.l10n.filesPermissionGroupLabel,
-              _groupRead, _groupWrite, _groupExecute,
+              _groupRead,
+              _groupWrite,
+              _groupExecute,
               (r, w, x) => setState(() {
                 _groupRead = r;
                 _groupWrite = w;
@@ -326,7 +338,9 @@ class _PermissionDialogState extends State<_PermissionDialog> {
             ),
             _buildPermissionRow(
               widget.l10n.filesPermissionOtherLabel,
-              _otherRead, _otherWrite, _otherExecute,
+              _otherRead,
+              _otherWrite,
+              _otherExecute,
               (r, w, x) => setState(() {
                 _otherRead = r;
                 _otherWrite = w;
@@ -374,7 +388,9 @@ class _PermissionDialogState extends State<_PermissionDialog> {
 
   Widget _buildPermissionRow(
     String label,
-    int read, int write, int execute,
+    int read,
+    int write,
+    int execute,
     void Function(int, int, int) onChanged,
     ColorScheme colorScheme,
   ) {
@@ -418,7 +434,8 @@ class _PermissionDialogState extends State<_PermissionDialog> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(widget.l10n.filesPermissionChangeOwner, style: theme.textTheme.titleSmall),
+        Text(widget.l10n.filesPermissionChangeOwner,
+            style: theme.textTheme.titleSmall),
         const SizedBox(height: 12),
         Row(
           children: [
@@ -429,12 +446,16 @@ class _PermissionDialogState extends State<_PermissionDialog> {
                 decoration: InputDecoration(
                   labelText: widget.l10n.filesPermissionUser,
                   border: const OutlineInputBorder(),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 ),
-                items: _userGroup?.users.map((u) => DropdownMenuItem(
-                  value: u.user,
-                  child: Text(u.user),
-                )).toList() ?? [],
+                items: _userGroup?.users
+                        .map((u) => DropdownMenuItem(
+                              value: u.user,
+                              child: Text(u.user),
+                            ))
+                        .toList() ??
+                    [],
                 onChanged: (v) => setState(() => _selectedUser = v),
               ),
             ),
@@ -446,12 +467,16 @@ class _PermissionDialogState extends State<_PermissionDialog> {
                 decoration: InputDecoration(
                   labelText: widget.l10n.filesPermissionGroup,
                   border: const OutlineInputBorder(),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 ),
-                items: _userGroup?.groups.map((g) => DropdownMenuItem(
-                  value: g,
-                  child: Text(g),
-                )).toList() ?? [],
+                items: _userGroup?.groups
+                        .map((g) => DropdownMenuItem(
+                              value: g,
+                              child: Text(g),
+                            ))
+                        .toList() ??
+                    [],
                 onChanged: (v) => setState(() => _selectedGroup = v),
               ),
             ),
@@ -467,15 +492,13 @@ class _PermissionDialogState extends State<_PermissionDialog> {
       child: SwitchListTile(
         title: Text(widget.l10n.filesPermissionRecursive),
         subtitle: Text(
-          widget.file.isDir 
-            ? widget.l10n.filesPermissionRecursive
-            : widget.l10n.filesPermissionRecursive,
+          widget.file.isDir
+              ? widget.l10n.filesPermissionRecursive
+              : widget.l10n.filesPermissionRecursive,
           style: theme.textTheme.bodySmall,
         ),
         value: _sub,
-        onChanged: widget.file.isDir 
-          ? (v) => setState(() => _sub = v)
-          : null,
+        onChanged: widget.file.isDir ? (v) => setState(() => _sub = v) : null,
       ),
     );
   }

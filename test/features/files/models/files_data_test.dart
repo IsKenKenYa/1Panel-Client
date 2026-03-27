@@ -8,7 +8,7 @@ void main() {
   group('FilesData Tests', () {
     test('creates with default values', () {
       const data = FilesData();
-      
+
       expect(data.files, isEmpty);
       expect(data.currentPath, equals('/'));
       expect(data.pathHistory, equals(['/']));
@@ -272,7 +272,8 @@ void main() {
       expect(updated.state, equals(WgetDownloadState.success));
       expect(updated.message, equals('Complete'));
       expect(updated.filePath, equals('/file.txt'));
-      expect(original.state, equals(WgetDownloadState.downloading)); // Original unchanged
+      expect(original.state,
+          equals(WgetDownloadState.downloading)); // Original unchanged
     });
 
     test('copyWith preserves original values when not specified', () {

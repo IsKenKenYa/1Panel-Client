@@ -29,7 +29,10 @@ class _MockFilesProvider extends FilesProvider {
   Future<void> refresh() async {}
 
   @override
-  Future<void> wgetDownload({required String url, required String name, bool? ignoreCertificate}) async {}
+  Future<void> wgetDownload(
+      {required String url,
+      required String name,
+      bool? ignoreCertificate}) async {}
 
   @override
   Future<void> uploadFiles(List<String> filePaths) async {}
@@ -52,7 +55,8 @@ class _MockFilesProvider extends FilesProvider {
 
 void main() {
   group('Wget Dialog Tests', () {
-    testWidgets('shows wget dialog with URL field', (WidgetTester tester) async {
+    testWidgets('shows wget dialog with URL field',
+        (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
         locale: const Locale('zh', 'CN'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,

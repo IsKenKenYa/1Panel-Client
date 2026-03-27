@@ -575,8 +575,8 @@ class MockFilesService extends _i1.Mock implements _i3.FilesService {
           #getRecycleBinStatus,
           [],
         ),
-        returnValue:
-            _i4.Future<_i2.FileRecycleStatus>.value(_i6.dummyValue<_i2.FileRecycleStatus>(
+        returnValue: _i4.Future<_i2.FileRecycleStatus>.value(
+            _i6.dummyValue<_i2.FileRecycleStatus>(
           this,
           Invocation.method(
             #getRecycleBinStatus,

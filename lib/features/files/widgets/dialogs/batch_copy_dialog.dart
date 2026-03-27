@@ -43,7 +43,8 @@ void showBatchCopyDialog(
               await provider.copySelected(controller.text);
             } catch (e, stackTrace) {
               if (context.mounted) {
-                DebugErrorDialog.show(context, l10n.filesCopyFailed, e, stackTrace: stackTrace);
+                DebugErrorDialog.show(context, l10n.filesCopyFailed, e,
+                    stackTrace: stackTrace);
               }
             }
           },

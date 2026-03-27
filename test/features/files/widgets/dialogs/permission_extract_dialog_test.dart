@@ -7,11 +7,11 @@ void main() {
       // Mode 755 = rwxr-xr-x
       const mode = '755';
       final modeValue = int.parse(mode, radix: 8);
-      
+
       final ownerBits = (modeValue >> 6) & 7;
       final groupBits = (modeValue >> 3) & 7;
       final otherBits = modeValue & 7;
-      
+
       expect(ownerBits, equals(7)); // rwx
       expect(groupBits, equals(5)); // r-x
       expect(otherBits, equals(5)); // r-x
@@ -22,7 +22,7 @@ void main() {
       const mode = '0755';
       final cleanMode = mode.substring(mode.length - 3);
       final modeValue = int.parse(cleanMode, radix: 8);
-      
+
       final ownerBits = (modeValue >> 6) & 7;
       expect(ownerBits, equals(7)); // rwx
     });
@@ -38,11 +38,11 @@ void main() {
       const otherRead = 1;
       const otherWrite = 0;
       const otherExecute = 1;
-      
+
       final owner = (ownerRead << 2) | (ownerWrite << 1) | ownerExecute;
       final group = (groupRead << 2) | (groupWrite << 1) | groupExecute;
       final other = (otherRead << 2) | (otherWrite << 1) | otherExecute;
-      
+
       expect('$owner$group$other', equals('755'));
     });
 
@@ -52,7 +52,7 @@ void main() {
       final ownerRead = (ownerBits >> 2) & 1;
       final ownerWrite = (ownerBits >> 1) & 1;
       final ownerExecute = ownerBits & 1;
-      
+
       expect(ownerRead, equals(1));
       expect(ownerWrite, equals(1));
       expect(ownerExecute, equals(1));
@@ -63,7 +63,7 @@ void main() {
       final ownerRead = (ownerBits >> 2) & 1;
       final ownerWrite = (ownerBits >> 1) & 1;
       final ownerExecute = ownerBits & 1;
-      
+
       expect(ownerRead, equals(1));
       expect(ownerWrite, equals(0));
       expect(ownerExecute, equals(0));
@@ -74,7 +74,7 @@ void main() {
       final ownerRead = (ownerBits >> 2) & 1;
       final ownerWrite = (ownerBits >> 1) & 1;
       final ownerExecute = ownerBits & 1;
-      
+
       expect(ownerRead, equals(0));
       expect(ownerWrite, equals(1));
       expect(ownerExecute, equals(0));
@@ -85,7 +85,7 @@ void main() {
       final ownerRead = (ownerBits >> 2) & 1;
       final ownerWrite = (ownerBits >> 1) & 1;
       final ownerExecute = ownerBits & 1;
-      
+
       expect(ownerRead, equals(0));
       expect(ownerWrite, equals(0));
       expect(ownerExecute, equals(1));

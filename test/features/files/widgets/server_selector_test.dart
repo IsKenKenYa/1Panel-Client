@@ -31,7 +31,8 @@ void main() {
       expect(find.byIcon(Icons.dns_outlined), findsOneWidget);
     });
 
-    testWidgets('shows error color when no server is selected', (WidgetTester tester) async {
+    testWidgets('shows error color when no server is selected',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(
         currentServer: null,
         onServerChanged: (_) {},
@@ -41,7 +42,8 @@ void main() {
       expect(icon.color, isNotNull);
     });
 
-    testWidgets('shows normal color when server is selected', (WidgetTester tester) async {
+    testWidgets('shows normal color when server is selected',
+        (WidgetTester tester) async {
       final server = ApiConfig(
         id: 'test-server',
         name: 'Test Server',
@@ -69,7 +71,8 @@ void main() {
       expect(find.byType(PopupMenuButton<String>), findsOneWidget);
     });
 
-    testWidgets('uses FutureBuilder for loading servers', (WidgetTester tester) async {
+    testWidgets('uses FutureBuilder for loading servers',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(
         onServerChanged: (_) {},
       ));

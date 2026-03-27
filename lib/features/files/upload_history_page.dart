@@ -37,7 +37,8 @@ class _UploadHistoryPageState extends State<UploadHistoryPage> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
       if (!_isLoading && _hasMore) {
         _loadData();
       }
@@ -46,7 +47,7 @@ class _UploadHistoryPageState extends State<UploadHistoryPage> {
 
   Future<void> _loadData() async {
     if (!_hasMore) return;
-    
+
     setState(() {
       _isLoading = true;
       _error = null;
@@ -127,7 +128,8 @@ class _UploadHistoryPageState extends State<UploadHistoryPage> {
     );
   }
 
-  Widget _buildBody(BuildContext context, AppLocalizations l10n, ThemeData theme) {
+  Widget _buildBody(
+      BuildContext context, AppLocalizations l10n, ThemeData theme) {
     if (_files.isEmpty && !_isLoading) {
       if (_error != null) {
         return Center(
@@ -185,7 +187,8 @@ class _UploadHistoryPageState extends State<UploadHistoryPage> {
   String _formatSize(int bytes) {
     if (bytes < 1024) return '$bytes B';
     if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(2)} KB';
-    if (bytes < 1024 * 1024 * 1024) return '${(bytes / (1024 * 1024)).toStringAsFixed(2)} MB';
+    if (bytes < 1024 * 1024 * 1024)
+      return '${(bytes / (1024 * 1024)).toStringAsFixed(2)} MB';
     return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(2)} GB';
   }
 }
