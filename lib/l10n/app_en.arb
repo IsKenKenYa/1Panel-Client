@@ -484,6 +484,7 @@
   "serverModuleApps": "Apps",
   "serverModuleContainers": "Containers",
   "serverModuleWebsites": "Websites",
+  "serverModuleAi": "AI",
   "serverModuleDatabases": "Databases",
   "serverModuleFirewall": "Firewall",
   "databaseMysqlTab": "MySQL",

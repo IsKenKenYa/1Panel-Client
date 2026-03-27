@@ -484,6 +484,7 @@
   "serverModuleApps": "应用",
   "serverModuleContainers": "容器",
   "serverModuleWebsites": "网站",
+  "serverModuleAi": "AI",
   "serverModuleDatabases": "数据库",
   "serverModuleFirewall": "防火墙",
   "databaseMysqlTab": "MySQL",

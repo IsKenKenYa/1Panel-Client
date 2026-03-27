@@ -1034,6 +1034,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get serverModuleWebsites => '网站';
 
   @override
+  String get serverModuleAi => 'AI';
+
+  @override
   String get serverModuleDatabases => '数据库';
 
   @override

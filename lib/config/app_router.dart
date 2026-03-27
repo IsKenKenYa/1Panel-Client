@@ -40,6 +40,8 @@ import 'package:onepanel_client/features/websites/pages/website_certificate_deta
 import 'package:onepanel_client/features/openresty/openresty_page.dart';
 import 'package:onepanel_client/features/openresty/pages/openresty_source_editor_page.dart';
 import 'package:onepanel_client/features/openresty/providers/openresty_provider.dart';
+import 'package:onepanel_client/features/ai/ai_page.dart';
+import 'package:onepanel_client/features/ai/ai_provider.dart';
 import 'package:onepanel_client/features/settings/ssl_settings_page.dart';
 import 'package:provider/provider.dart';
 
@@ -79,6 +81,7 @@ class AppRoutes {
   static const String appDetail = '/app-detail';
   static const String installedAppDetail = '/installed-app-detail';
   static const String containerDetail = '/container-detail';
+  static const String ai = '/ai';
   static const String orchestration = '/orchestration';
   static const String websites = '/websites';
   static const String websiteDetail = '/website-detail';
@@ -254,6 +257,14 @@ class AppRouter {
               builder: (_) => ContainerDetailPage(container: arg));
         }
         return MaterialPageRoute(builder: (_) => const NotFoundPage());
+
+      case AppRoutes.ai:
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider(
+            create: (_) => AIProvider(),
+            child: const AIPage(),
+          ),
+        );
 
       case AppRoutes.orchestration:
         return MaterialPageRoute(builder: (_) => const OrchestrationPage());

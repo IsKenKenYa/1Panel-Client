@@ -16,6 +16,10 @@
 	- Website SSL Center：provider 全量筛选项与证书健康状态文案完成国际化映射。
 	- OpenResty Center：风险提示/差异预览/摘要文案维持本地化映射闭环。
 	- Panel TLS：页面文案与风险提示映射维持一致。
+- 范围增量: S2-4 Orchestration + AI（启动）
+- 收口项增量:
+	- Orchestration：新增 `orchestration_repository.dart` 与 `orchestration_service.dart`，compose/image/network/volume provider 去 API 直连。
+	- AI：`AIProvider` 改为依赖 `AIRepository`，`AIRepository` 改为通过 `ApiClientManager` 获取 API；新增 `AppRoutes.ai` 并接入 Shell/ServerDetail 入口。
 - 门禁结果:
 	- `flutter analyze`：通过
 	- `dart run test_runner.dart unit`：通过

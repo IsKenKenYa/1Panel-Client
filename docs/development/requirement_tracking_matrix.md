@@ -13,12 +13,15 @@
 - **S2-2（Website Core）**: 站点生命周期、详情、默认站点、分组、备注与域名主流程维持可用。
 - **S2-3（Security & Gateway）**: `panel ssl + website ssl + openresty` 按统一收口标准推进，风险提示、差异预览、回滚入口与 i18n 一致性继续对齐。
 - **S2-3 本轮收口结果**: Website SSL Center 完成 provider 全量筛选项与健康状态文案国际化对齐；OpenResty/Panel TLS 维持本地化闭环。
+- **S2-4（Orchestration + AI）启动结果**:
+	- Orchestration：新增 `repository + service`，compose/image/network/volume 四个 provider 完成去 API 直连改造。
+	- AI：provider 完成去 API 直连改造（改为依赖 repository），新增 `AppRoutes.ai`，并接入 Shell 模块与服务器详情入口。
 - **门禁执行结果**:
 	- `flutter analyze`：通过（No issues found）
 	- `dart run test_runner.dart unit`：通过
 	- `dart run test_runner.dart ui`：通过
 	- `dart run test_runner.dart integration`：通过（部分用例按环境开关跳过，见测试输出说明）
-- **下一步**: 进入 S2-4（Orchestration + AI）前，继续补齐 S2-3 边界场景用例与文案一致性巡检。
+- **下一步**: 继续 S2-4 主链路对齐（Compose/Image/Network/Volume 细节交互与 AI 三主流程深化），并补针对新分层的回归测试。
 
 ## 优先级定义
 

@@ -1055,6 +1055,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get serverModuleWebsites => 'Websites';
 
   @override
+  String get serverModuleAi => 'AI';
+
+  @override
   String get serverModuleDatabases => 'Databases';
 
   @override

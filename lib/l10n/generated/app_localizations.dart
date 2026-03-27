@@ -2060,6 +2060,12 @@ abstract class AppLocalizations {
   /// **'Websites'**
   String get serverModuleWebsites;
 
+  /// No description provided for @serverModuleAi.
+  ///
+  /// In en, this message translates to:
+  /// **'AI'**
+  String get serverModuleAi;
+
   /// No description provided for @serverModuleDatabases.
   ///
   /// In en, this message translates to:
