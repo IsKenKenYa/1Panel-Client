@@ -77,6 +77,14 @@ import 'package:onepanel_client/features/processes/pages/process_detail_page.dar
 import 'package:onepanel_client/features/processes/pages/processes_page.dart';
 import 'package:onepanel_client/features/processes/providers/process_detail_provider.dart';
 import 'package:onepanel_client/features/processes/providers/processes_provider.dart';
+import 'package:onepanel_client/features/runtimes/models/runtime_detail_args.dart';
+import 'package:onepanel_client/features/runtimes/models/runtime_form_args.dart';
+import 'package:onepanel_client/features/runtimes/pages/runtime_detail_page.dart';
+import 'package:onepanel_client/features/runtimes/pages/runtime_form_page.dart';
+import 'package:onepanel_client/features/runtimes/pages/runtimes_center_page.dart';
+import 'package:onepanel_client/features/runtimes/providers/runtime_detail_provider.dart';
+import 'package:onepanel_client/features/runtimes/providers/runtime_form_provider.dart';
+import 'package:onepanel_client/features/runtimes/providers/runtimes_provider.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/ssh/pages/ssh_certs_page.dart';
 import 'package:onepanel_client/features/ssh/pages/ssh_logs_page.dart';
@@ -630,19 +638,32 @@ class AppRouter {
           ),
         );
       case AppRoutes.runtimes:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsRuntimesTitle,
-          availableInWeek: 7,
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<RuntimesProvider>(
+            create: (_) => RuntimesProvider(),
+            child: const RuntimesCenterPage(),
+          ),
         );
       case AppRoutes.runtimeDetail:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsRuntimeDetailTitle,
-          availableInWeek: 7,
+        final detailArgs = settings.arguments;
+        if (detailArgs is! RuntimeDetailArgs) {
+          return MaterialPageRoute(builder: (_) => const NotFoundPage());
+        }
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<RuntimeDetailProvider>(
+            create: (_) => RuntimeDetailProvider(),
+            child: RuntimeDetailPage(args: detailArgs),
+          ),
         );
       case AppRoutes.runtimeForm:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsRuntimeFormTitle,
-          availableInWeek: 7,
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<RuntimeFormProvider>(
+            create: (_) => RuntimeFormProvider(),
+            child: RuntimeFormPage(
+              args: settings.arguments as RuntimeFormArgs? ??
+                  const RuntimeFormArgs(),
+            ),
+          ),
         );
       case AppRoutes.phpExtensions:
         return _buildStageOnePlaceholderRoute(

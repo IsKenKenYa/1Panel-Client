@@ -4459,6 +4459,248 @@ class AppLocalizationsZh extends AppLocalizations {
   String get operationsRuntimeFormTitle => '运行时表单';
 
   @override
+  String get runtimeFormCreateTitle => '创建运行时';
+
+  @override
+  String get runtimeFormEditTitle => '编辑运行时';
+
+  @override
+  String get runtimeOverviewTab => '概览';
+
+  @override
+  String get runtimeConfigTab => '配置';
+
+  @override
+  String get runtimeAdvancedTab => '高级';
+
+  @override
+  String get runtimeSearchHint => '搜索运行时...';
+
+  @override
+  String get runtimeEmptyTitle => '暂无运行时';
+
+  @override
+  String get runtimeEmptyDescription => '当前语言分类下的运行时会显示在这里。';
+
+  @override
+  String get runtimeActionStart => '启动';
+
+  @override
+  String get runtimeActionStop => '停止';
+
+  @override
+  String get runtimeActionRestart => '重启';
+
+  @override
+  String get runtimeActionSync => '同步';
+
+  @override
+  String runtimeActionUnknown(String action) {
+    return '未知操作：$action';
+  }
+
+  @override
+  String get runtimeTypePhp => 'PHP';
+
+  @override
+  String get runtimeTypeNode => 'Node';
+
+  @override
+  String get runtimeTypeJava => 'Java';
+
+  @override
+  String get runtimeTypeGo => 'Go';
+
+  @override
+  String get runtimeTypePython => 'Python';
+
+  @override
+  String get runtimeTypeDotnet => '.NET';
+
+  @override
+  String runtimeTypeUnknown(String type) {
+    return '未知运行时：$type';
+  }
+
+  @override
+  String get runtimeResourceLocal => '本地';
+
+  @override
+  String get runtimeResourceAppStore => '应用商店';
+
+  @override
+  String runtimeResourceUnknown(String resource) {
+    return '未知来源：$resource';
+  }
+
+  @override
+  String get runtimeStatusAll => '全部';
+
+  @override
+  String get runtimeStatusRunning => '运行中';
+
+  @override
+  String get runtimeStatusStopped => '已停止';
+
+  @override
+  String get runtimeStatusError => '错误';
+
+  @override
+  String get runtimeStatusStarting => '启动中';
+
+  @override
+  String get runtimeStatusBuilding => '构建中';
+
+  @override
+  String get runtimeStatusRecreating => '重建中';
+
+  @override
+  String get runtimeStatusSystemRestart => '系统重启中';
+
+  @override
+  String runtimeStatusUnknown(String status) {
+    return '未知状态：$status';
+  }
+
+  @override
+  String get runtimeFieldType => '类型';
+
+  @override
+  String get runtimeFieldStatus => '状态';
+
+  @override
+  String get runtimeFieldVersion => '版本';
+
+  @override
+  String get runtimeFieldResource => '来源';
+
+  @override
+  String get runtimeFieldImage => '镜像';
+
+  @override
+  String get runtimeFieldCodeDir => '代码目录';
+
+  @override
+  String get runtimeFieldExternalPort => '外部端口';
+
+  @override
+  String get runtimeFieldPath => '路径';
+
+  @override
+  String get runtimeFieldSource => '源地址';
+
+  @override
+  String get runtimeFieldRemark => '备注';
+
+  @override
+  String get runtimeFieldHostIp => '主机 IP';
+
+  @override
+  String get runtimeFieldContainerName => '容器名称';
+
+  @override
+  String get runtimeFieldContainerStatus => '容器状态';
+
+  @override
+  String get runtimeFieldExecScript => '运行脚本';
+
+  @override
+  String get runtimeFieldPackageManager => '包管理器';
+
+  @override
+  String get runtimeFieldCreatedAt => '创建时间';
+
+  @override
+  String get runtimeFieldParams => '参数';
+
+  @override
+  String get runtimeFieldRebuild => '保存时重建';
+
+  @override
+  String get runtimeFormBasicSectionTitle => '基础信息';
+
+  @override
+  String get runtimeFormRuntimeSectionTitle => '运行时配置';
+
+  @override
+  String get runtimeFormAdvancedSectionTitle => '高级设置';
+
+  @override
+  String get runtimeFormAppStoreCreateWeek8Hint =>
+      '应用商店运行时创建留到 Week 8 的专用向导，本周只支持手动运行时骨架。';
+
+  @override
+  String get runtimeFormPhpCreateWeek8Hint =>
+      'PHP 创建流保留到 Week 8 的专用表单，本周先收口通用运行时骨架。';
+
+  @override
+  String get runtimeFormNameRequired => '运行时名称不能为空。';
+
+  @override
+  String get runtimeFormImageRequired => '运行时镜像不能为空。';
+
+  @override
+  String get runtimeFormCodeDirRequired => '代码目录不能为空。';
+
+  @override
+  String get runtimeFormPortInvalid => '外部端口必须大于 0。';
+
+  @override
+  String get runtimeFormContainerNameRequired => '容器名称不能为空。';
+
+  @override
+  String get runtimeFormExecScriptRequired => '当前运行时类型必须填写运行脚本。';
+
+  @override
+  String get runtimeFormPackageManagerRequired => 'Node 运行时必须选择包管理器。';
+
+  @override
+  String get runtimeAdvancedRequiresRunning => '运行时启动后，才会解锁更多语言专属高级能力。';
+
+  @override
+  String runtimeAdvancedSummary(
+      int ports, int environments, int volumes, int hosts) {
+    return '高级配置统计：$ports 个端口、$environments 个环境变量、$volumes 个挂载、$hosts 个额外主机。';
+  }
+
+  @override
+  String runtimeDeleteConfirm(String name) {
+    return '确认删除运行时 $name 吗？';
+  }
+
+  @override
+  String runtimeOperateConfirm(String action, String name) {
+    return '确认对运行时 $name 执行 $action 吗？';
+  }
+
+  @override
+  String get runtimeListLoadFailed => '加载运行时列表失败。';
+
+  @override
+  String get runtimeDetailLoadFailed => '加载运行时详情失败。';
+
+  @override
+  String get runtimeFormLoadFailed => '加载运行时表单数据失败。';
+
+  @override
+  String get runtimeFormSaveFailed => '保存运行时失败。';
+
+  @override
+  String get runtimeSyncFailed => '同步运行时状态失败。';
+
+  @override
+  String get runtimeDeleteFailed => '删除运行时失败。';
+
+  @override
+  String get runtimeOperateFailed => '执行运行时操作失败。';
+
+  @override
+  String get runtimeRemarkSaveFailed => '保存运行时备注失败。';
+
+  @override
+  String get runtimeRemarkTooLong => '备注不能超过 128 个字符。';
+
+  @override
   String get operationsPhpExtensionsTitle => 'PHP 扩展';
 
   @override

@@ -199,5 +199,61 @@ void main() {
 
       expect(sync.statusCode, 200);
     });
+
+    test('create/update/delete/operate/remark stay behind destructive gate',
+        () async {
+      if (!canRun) {
+        appLogger.wWithPackage('test.api_client.runtime', '跳过测试: 未检测到可用 API Key');
+        return;
+      }
+      final skipReason = TestEnvironment.skipDestructive();
+      if (skipReason != null) {
+        appLogger.wWithPackage('test.api_client.runtime', '跳过测试: $skipReason');
+        return;
+      }
+
+      final runtimes = await api.getRuntimes(
+        const RuntimeSearch(page: 1, pageSize: 10),
+      );
+      if (runtimes.data == null || runtimes.data!.items.isEmpty) {
+        appLogger.wWithPackage('test.api_client.runtime', '跳过 destructive runtime：当前环境没有可用 runtime');
+        return;
+      }
+      final base = runtimes.data!.items.first;
+      final runtimeId = base.id;
+      if (runtimeId == null) {
+        appLogger.wWithPackage('test.api_client.runtime', '跳过 destructive runtime：候选 runtime 缺少 id');
+        return;
+      }
+
+      final rawOperate = await _rawPost(
+        client,
+        '/runtimes/operate',
+        data: const RuntimeOperate(id: 1, operate: 'restart').toJson(),
+      );
+      _logSection(
+        '✅ Raw /runtimes/operate',
+        method: 'POST',
+        path: '/runtimes/operate',
+        request: const RuntimeOperate(id: 1, operate: 'restart').toJson(),
+        response: rawOperate.data,
+      );
+
+      final remarkPayload = RuntimeRemarkUpdate(
+        id: runtimeId,
+        remark: 'codex-runtime-${DateTime.now().millisecondsSinceEpoch}',
+      );
+      await api.updateRuntimeRemark(remarkPayload);
+      _logSection(
+        '✅ Parsed /runtimes/remark',
+        request: remarkPayload.toJson(),
+      );
+
+      await api.operateRuntime(RuntimeOperate(id: runtimeId, operate: 'restart'));
+      _logSection(
+        '✅ Parsed /runtimes/operate',
+        request: RuntimeOperate(id: runtimeId, operate: 'restart').toJson(),
+      );
+    });
   });
 }

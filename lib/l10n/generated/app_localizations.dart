@@ -8720,6 +8720,457 @@ abstract class AppLocalizations {
   /// **'Runtime Form'**
   String get operationsRuntimeFormTitle;
 
+  /// No description provided for @runtimeFormCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Runtime'**
+  String get runtimeFormCreateTitle;
+
+  /// No description provided for @runtimeFormEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Runtime'**
+  String get runtimeFormEditTitle;
+
+  /// No description provided for @runtimeOverviewTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get runtimeOverviewTab;
+
+  /// No description provided for @runtimeConfigTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Config'**
+  String get runtimeConfigTab;
+
+  /// No description provided for @runtimeAdvancedTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get runtimeAdvancedTab;
+
+  /// No description provided for @runtimeSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search runtimes...'**
+  String get runtimeSearchHint;
+
+  /// No description provided for @runtimeEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No runtimes'**
+  String get runtimeEmptyTitle;
+
+  /// No description provided for @runtimeEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Runtimes in the selected language category will appear here.'**
+  String get runtimeEmptyDescription;
+
+  /// No description provided for @runtimeActionStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get runtimeActionStart;
+
+  /// No description provided for @runtimeActionStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get runtimeActionStop;
+
+  /// No description provided for @runtimeActionRestart.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart'**
+  String get runtimeActionRestart;
+
+  /// No description provided for @runtimeActionSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync'**
+  String get runtimeActionSync;
+
+  /// No description provided for @runtimeActionUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown action: {action}'**
+  String runtimeActionUnknown(String action);
+
+  /// No description provided for @runtimeTypePhp.
+  ///
+  /// In en, this message translates to:
+  /// **'PHP'**
+  String get runtimeTypePhp;
+
+  /// No description provided for @runtimeTypeNode.
+  ///
+  /// In en, this message translates to:
+  /// **'Node'**
+  String get runtimeTypeNode;
+
+  /// No description provided for @runtimeTypeJava.
+  ///
+  /// In en, this message translates to:
+  /// **'Java'**
+  String get runtimeTypeJava;
+
+  /// No description provided for @runtimeTypeGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Go'**
+  String get runtimeTypeGo;
+
+  /// No description provided for @runtimeTypePython.
+  ///
+  /// In en, this message translates to:
+  /// **'Python'**
+  String get runtimeTypePython;
+
+  /// No description provided for @runtimeTypeDotnet.
+  ///
+  /// In en, this message translates to:
+  /// **'.NET'**
+  String get runtimeTypeDotnet;
+
+  /// No description provided for @runtimeTypeUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown runtime: {type}'**
+  String runtimeTypeUnknown(String type);
+
+  /// No description provided for @runtimeResourceLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Local'**
+  String get runtimeResourceLocal;
+
+  /// No description provided for @runtimeResourceAppStore.
+  ///
+  /// In en, this message translates to:
+  /// **'App Store'**
+  String get runtimeResourceAppStore;
+
+  /// No description provided for @runtimeResourceUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown resource: {resource}'**
+  String runtimeResourceUnknown(String resource);
+
+  /// No description provided for @runtimeStatusAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get runtimeStatusAll;
+
+  /// No description provided for @runtimeStatusRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Running'**
+  String get runtimeStatusRunning;
+
+  /// No description provided for @runtimeStatusStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped'**
+  String get runtimeStatusStopped;
+
+  /// No description provided for @runtimeStatusError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get runtimeStatusError;
+
+  /// No description provided for @runtimeStatusStarting.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting'**
+  String get runtimeStatusStarting;
+
+  /// No description provided for @runtimeStatusBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'Building'**
+  String get runtimeStatusBuilding;
+
+  /// No description provided for @runtimeStatusRecreating.
+  ///
+  /// In en, this message translates to:
+  /// **'Recreating'**
+  String get runtimeStatusRecreating;
+
+  /// No description provided for @runtimeStatusSystemRestart.
+  ///
+  /// In en, this message translates to:
+  /// **'System Restart'**
+  String get runtimeStatusSystemRestart;
+
+  /// No description provided for @runtimeStatusUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown status: {status}'**
+  String runtimeStatusUnknown(String status);
+
+  /// No description provided for @runtimeFieldType.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get runtimeFieldType;
+
+  /// No description provided for @runtimeFieldStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get runtimeFieldStatus;
+
+  /// No description provided for @runtimeFieldVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get runtimeFieldVersion;
+
+  /// No description provided for @runtimeFieldResource.
+  ///
+  /// In en, this message translates to:
+  /// **'Resource'**
+  String get runtimeFieldResource;
+
+  /// No description provided for @runtimeFieldImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Image'**
+  String get runtimeFieldImage;
+
+  /// No description provided for @runtimeFieldCodeDir.
+  ///
+  /// In en, this message translates to:
+  /// **'Code directory'**
+  String get runtimeFieldCodeDir;
+
+  /// No description provided for @runtimeFieldExternalPort.
+  ///
+  /// In en, this message translates to:
+  /// **'External port'**
+  String get runtimeFieldExternalPort;
+
+  /// No description provided for @runtimeFieldPath.
+  ///
+  /// In en, this message translates to:
+  /// **'Path'**
+  String get runtimeFieldPath;
+
+  /// No description provided for @runtimeFieldSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get runtimeFieldSource;
+
+  /// No description provided for @runtimeFieldRemark.
+  ///
+  /// In en, this message translates to:
+  /// **'Remark'**
+  String get runtimeFieldRemark;
+
+  /// No description provided for @runtimeFieldHostIp.
+  ///
+  /// In en, this message translates to:
+  /// **'Host IP'**
+  String get runtimeFieldHostIp;
+
+  /// No description provided for @runtimeFieldContainerName.
+  ///
+  /// In en, this message translates to:
+  /// **'Container name'**
+  String get runtimeFieldContainerName;
+
+  /// No description provided for @runtimeFieldContainerStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Container status'**
+  String get runtimeFieldContainerStatus;
+
+  /// No description provided for @runtimeFieldExecScript.
+  ///
+  /// In en, this message translates to:
+  /// **'Run script'**
+  String get runtimeFieldExecScript;
+
+  /// No description provided for @runtimeFieldPackageManager.
+  ///
+  /// In en, this message translates to:
+  /// **'Package manager'**
+  String get runtimeFieldPackageManager;
+
+  /// No description provided for @runtimeFieldCreatedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Created at'**
+  String get runtimeFieldCreatedAt;
+
+  /// No description provided for @runtimeFieldParams.
+  ///
+  /// In en, this message translates to:
+  /// **'Parameters'**
+  String get runtimeFieldParams;
+
+  /// No description provided for @runtimeFieldRebuild.
+  ///
+  /// In en, this message translates to:
+  /// **'Rebuild on save'**
+  String get runtimeFieldRebuild;
+
+  /// No description provided for @runtimeFormBasicSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic'**
+  String get runtimeFormBasicSectionTitle;
+
+  /// No description provided for @runtimeFormRuntimeSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Runtime'**
+  String get runtimeFormRuntimeSectionTitle;
+
+  /// No description provided for @runtimeFormAdvancedSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get runtimeFormAdvancedSectionTitle;
+
+  /// No description provided for @runtimeFormAppStoreCreateWeek8Hint.
+  ///
+  /// In en, this message translates to:
+  /// **'App Store runtime creation stays in the Week 8 wizard. Week 7 only supports the manual runtime skeleton.'**
+  String get runtimeFormAppStoreCreateWeek8Hint;
+
+  /// No description provided for @runtimeFormPhpCreateWeek8Hint.
+  ///
+  /// In en, this message translates to:
+  /// **'PHP creation keeps its dedicated flow for Week 8. Week 7 focuses on the shared runtime skeleton.'**
+  String get runtimeFormPhpCreateWeek8Hint;
+
+  /// No description provided for @runtimeFormNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Runtime name is required.'**
+  String get runtimeFormNameRequired;
+
+  /// No description provided for @runtimeFormImageRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Runtime image is required.'**
+  String get runtimeFormImageRequired;
+
+  /// No description provided for @runtimeFormCodeDirRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Code directory is required.'**
+  String get runtimeFormCodeDirRequired;
+
+  /// No description provided for @runtimeFormPortInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'External port must be greater than 0.'**
+  String get runtimeFormPortInvalid;
+
+  /// No description provided for @runtimeFormContainerNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Container name is required.'**
+  String get runtimeFormContainerNameRequired;
+
+  /// No description provided for @runtimeFormExecScriptRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Run script is required for this runtime type.'**
+  String get runtimeFormExecScriptRequired;
+
+  /// No description provided for @runtimeFormPackageManagerRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Package manager is required for Node runtimes.'**
+  String get runtimeFormPackageManagerRequired;
+
+  /// No description provided for @runtimeAdvancedRequiresRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced runtime-specific capabilities unlock after the runtime is running.'**
+  String get runtimeAdvancedRequiresRunning;
+
+  /// No description provided for @runtimeAdvancedSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced config counts: {ports} ports, {environments} environments, {volumes} volumes, {hosts} extra hosts.'**
+  String runtimeAdvancedSummary(
+      int ports, int environments, int volumes, int hosts);
+
+  /// No description provided for @runtimeDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete runtime {name}?'**
+  String runtimeDeleteConfirm(String name);
+
+  /// No description provided for @runtimeOperateConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Run {action} on runtime {name}?'**
+  String runtimeOperateConfirm(String action, String name);
+
+  /// No description provided for @runtimeListLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load runtimes.'**
+  String get runtimeListLoadFailed;
+
+  /// No description provided for @runtimeDetailLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load runtime detail.'**
+  String get runtimeDetailLoadFailed;
+
+  /// No description provided for @runtimeFormLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load runtime form data.'**
+  String get runtimeFormLoadFailed;
+
+  /// No description provided for @runtimeFormSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save runtime.'**
+  String get runtimeFormSaveFailed;
+
+  /// No description provided for @runtimeSyncFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to sync runtime status.'**
+  String get runtimeSyncFailed;
+
+  /// No description provided for @runtimeDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete runtime.'**
+  String get runtimeDeleteFailed;
+
+  /// No description provided for @runtimeOperateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to operate runtime.'**
+  String get runtimeOperateFailed;
+
+  /// No description provided for @runtimeRemarkSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save runtime remark.'**
+  String get runtimeRemarkSaveFailed;
+
+  /// No description provided for @runtimeRemarkTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Remark must be 128 characters or fewer.'**
+  String get runtimeRemarkTooLong;
+
   /// No description provided for @operationsPhpExtensionsTitle.
   ///
   /// In en, this message translates to:

@@ -1,298 +1,152 @@
 # 运行时管理模块架构设计
 
-## 模块目标
+## 模块定位
 
-运行时管理模块旨在为开发者提供一站式的编程语言运行时环境管理能力，实现：
-- 多语言运行时的统一管理
-- 运行时配置的便捷编辑
-- 运行时状态的实时监控
-- 扩展和依赖的高效管理
+- 运行时管理是 Phase 1 Week 7 的核心模块之一。
+- 信息架构上采用一个运行时中心页 + 详情页 + 基础表单页：
+  - `RuntimesCenterPage`
+  - `RuntimeDetailPage`
+  - `RuntimeFormPage`
+- 顶部统一按语言分类：
+  - `PHP`
+  - `Node`
+  - `Java`
+  - `Go`
+  - `Python`
+  - `.NET`
 
-## 功能完整性清单
+## Source of Truth
 
-### 基于OpenAPI端点
+- Web API：`docs/OpenSource/1Panel/frontend/src/api/modules/runtime.ts`
+- Web interface：`docs/OpenSource/1Panel/frontend/src/api/interface/runtime.ts`
+- Web 页面：`docs/OpenSource/1Panel/frontend/src/views/website/runtime/`
+- 本地客户端：`lib/api/v2/runtime_v2.dart`
+- 本地模型：`lib/data/models/runtime_models.dart`
 
-| 端点 | 方法 | 功能 | 实现状态 | UI状态 |
-|------|------|------|---------|--------|
-| `/runtimes` | POST | 创建运行时 | ✅ 完成 | ❌ 待开发 |
-| `/runtimes/{id}` | GET | 获取详情 | ✅ 完成 | ❌ 待开发 |
-| `/runtimes/del` | POST | 删除运行时 | ✅ 完成 | ❌ 待开发 |
-| `/runtimes/operate` | POST | 操作运行时 | ✅ 完成 | ❌ 待开发 |
-| `/runtimes/{id}/extensions` | GET | PHP扩展列表 | ✅ 完成 | ❌ 待开发 |
-| `/runtimes/php/config/update` | POST | 更新PHP配置 | ✅ 完成 | ❌ 待开发 |
-| `/runtimes/{id}/php/config` | GET | 加载PHP配置 | ✅ 完成 | ❌ 待开发 |
-| `/runtimes/{id}/php/status` | GET | PHP状态 | ✅ 完成 | ❌ 待开发 |
-| `/runtimes/remark/update` | POST | 更新备注 | ✅ 完成 | ❌ 待开发 |
-| `/runtimes/search` | POST | 搜索运行时 | ✅ 完成 | ❌ 待开发 |
-| `/runtimes/status/sync` | POST | 同步状态 | ✅ 完成 | ❌ 待开发 |
-| `/runtimes/update` | POST | 更新运行时 | ✅ 完成 | ❌ 待开发 |
+## Week 7 已落地接口
 
-### 功能清单
+### 通用链路
 
-| 功能模块 | 子功能 | 优先级 | 状态 |
-|---------|--------|--------|------|
-| **运行时列表** | 列表展示 | P0 | API完成 |
-| | 搜索过滤 | P0 | API完成 |
-| | 分页加载 | P0 | API完成 |
-| | 批量选择 | P1 | 待开发 |
-| **运行时操作** | 创建运行时 | P0 | API完成 |
-| | 编辑运行时 | P0 | API完成 |
-| | 删除运行时 | P0 | API完成 |
-| | 启动/停止/重启 | P0 | API完成 |
-| **运行时详情** | 基本信息展示 | P0 | API完成 |
-| | 配置参数展示 | P0 | API完成 |
-| | 状态监控 | P1 | API完成 |
-| **PHP专项** | 扩展管理 | P1 | API完成 |
-| | 配置编辑 | P1 | API完成 |
-| | 状态查询 | P1 | API完成 |
+- `POST /runtimes/search`
+- `GET /runtimes/{id}`
+- `POST /runtimes`
+- `POST /runtimes/update`
+- `POST /runtimes/del`
+- `POST /runtimes/operate`
+- `POST /runtimes/sync`
+- `POST /runtimes/remark`
 
-## 业务流程与交互验证
+### Week 8 预留
 
-### 1. 运行时创建流程
+- `GET /runtimes/php/:id/extensions`
+- `GET /runtimes/php/config/:id`
+- `POST /runtimes/php/config`
+- `GET /runtimes/php/fpm/status/:id`
+- `POST /runtimes/node/package`
+- `POST /runtimes/node/modules`
 
-```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│  点击创建   │────▶│ 选择类型    │────▶│ 填写配置    │
-└─────────────┘     └─────────────┘     └──────┬──────┘
-                                               │
-                    ┌──────────────────────────┘
-                    ▼
-           ┌─────────────┐     ┌─────────────┐
-           │ 验证配置    │────▶│ 提交创建    │
-           └─────────────┘     └──────┬──────┘
-                                       │
-                    ┌──────────────────┴──────┐
-                    │ 成功                    │ 失败
-                    ▼                         ▼
-           ┌─────────────┐           ┌─────────────┐
-           │ 刷新列表    │           │ 显示错误    │
-           └─────────────┘           └─────────────┘
-```
+## 当前移动端结构
 
-### 2. 运行时操作流程
+### 路由
 
-```
-选择运行时 ──▶ 点击操作按钮 ──▶ 确认操作
-                                    │
-                    ┌───────────────┴───────────────┐
-                    │ 启动                          │ 停止/重启
-                    ▼                               ▼
-           ┌─────────────┐                 ┌─────────────┐
-           │ 检查依赖    │                 │ 确认对话框  │
-           └──────┬──────┘                 └──────┬──────┘
-                  │                               │
-                  └───────────────┬───────────────┘
-                                  ▼
-                         ┌─────────────┐
-                         │ 执行操作    │
-                         └──────┬──────┘
-                                │
-                    ┌───────────┴───────────┐
-                    │ 成功                  │ 失败
-                    ▼                       ▼
-             ┌─────────────┐         ┌─────────────┐
-             │ 更新状态    │         │ 显示错误    │
-             └─────────────┘         └─────────────┘
-```
+- `AppRoutes.runtimes`
+- `AppRoutes.runtimeDetail`
+- `AppRoutes.runtimeForm`
 
-### 3. PHP配置编辑流程
+### 分层落点
 
-```
-选择PHP运行时 ──▶ 进入详情 ──▶ 点击配置编辑
-                                    │
-                                    ▼
-                           ┌─────────────┐
-                           │ 加载配置    │
-                           └──────┬──────┘
-                                  │
-                                  ▼
-                           ┌─────────────┐
-                           │ 编辑器展示  │
-                           └──────┬──────┘
-                                  │
-                    ┌─────────────┴─────────────┐
-                    │ 保存                      │ 重置
-                    ▼                           ▼
-           ┌─────────────┐             ┌─────────────┐
-           │ 验证语法    │             │ 重新加载    │
-           └──────┬──────┘             └─────────────┘
-                  │
-           ┌──────┴──────┐
-           │ 正确        │ 错误
-           ▼             ▼
-    ┌─────────────┐ ┌─────────────┐
-    │ 提交保存    │ │ 显示错误    │
-    └─────────────┘ └─────────────┘
-```
+- Repository
+  - `RuntimeRepository`
+- Service
+  - `RuntimeService`
+- Provider
+  - `RuntimesProvider`
+  - `RuntimeDetailProvider`
+  - `RuntimeFormProvider`
+- Presentation
+  - `RuntimesCenterPage`
+  - `RuntimeDetailPage`
+  - `RuntimeFormPage`
 
-## 关键边界与异常处理
+## 页面职责
 
-### 边界条件
+### RuntimesCenterPage
 
-| 场景 | 边界值 | 处理方式 |
-|------|--------|---------|
-| 运行时名称 | 1-64字符 | 前端校验+后端校验 |
-| 版本号格式 | 语义化版本 | 正则校验 |
-| 配置文件大小 | 最大1MB | 前端限制+后端校验 |
-| 环境变量数量 | 最大100个 | 前端限制 |
-| 批量删除数量 | 最大50个 | 前端限制 |
+- 顶部语言分类切换
+- 搜索 + 状态过滤
+- 列表卡片展示
+- 通用操作：
+  - `start`
+  - `stop`
+  - `restart`
+  - `delete`
+  - `sync`
+- 进入详情页 / 表单页
 
-### 异常处理
+### RuntimeDetailPage
 
-| 异常类型 | 错误码 | 处理策略 |
-|---------|--------|---------|
-| 运行时不存在 | 404 | 提示用户，刷新列表 |
-| 操作失败 | 500 | 显示错误信息，提供重试 |
-| 配置语法错误 | 400 | 高亮错误行，提示修正 |
-| 端口冲突 | 409 | 提示更换端口 |
-| 依赖缺失 | 412 | 显示缺失依赖列表 |
+- 三段结构：
+  - `Overview`
+  - `Config`
+  - `Advanced`
+- Overview：
+  - 类型、状态、版本、资源、创建时间
+  - `start / stop / restart`
+- Config：
+  - image / codeDir / path / source / port / container / params
+- Advanced：
+  - remark 编辑
+  - 高级配置统计
+  - Week 8 深能力提示
 
-## 模块分层与职责
+### RuntimeFormPage
 
-### 架构图
+- 三段结构：
+  - `Basic`
+  - `Runtime`
+  - `Advanced`
+- Basic：
+  - name / type / resource / version
+- Runtime：
+  - image / codeDir / port / source / hostIp / containerName / execScript
+  - node 额外有 `packageManager`
+- Advanced：
+  - remark
+  - rebuild
+  - 高级配置统计
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    UI Layer (Pages)                      │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
-│  │RuntimeList  │  │RuntimeDetail│  │RuntimeForm  │     │
-│  └─────────────┘  └─────────────┘  └─────────────┘     │
-│  ┌─────────────┐  ┌─────────────┐                      │
-│  │PHPExtensions│  │ConfigEditor │                      │
-│  └─────────────┘  └─────────────┘                      │
-└─────────────────────────────────────────────────────────┘
-                          │
-                          ▼
-┌─────────────────────────────────────────────────────────┐
-│                 ViewModel Layer (Providers)              │
-│  ┌─────────────────────────────────────────────────┐   │
-│  │              RuntimeProvider                     │   │
-│  │  - runtimes, selectedRuntime, isLoading         │   │
-│  │  - loadRuntimes(), create(), update(), delete() │   │
-│  │  - operate(), syncStatus()                      │   │
-│  └─────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────┘
-                          │
-                          ▼
-┌─────────────────────────────────────────────────────────┐
-│                  Service Layer                           │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
-│  │RuntimeSvc   │  │ConfigService│  │StatusService│     │
-│  └─────────────┘  └─────────────┘  └─────────────┘     │
-└─────────────────────────────────────────────────────────┘
-                          │
-                          ▼
-┌─────────────────────────────────────────────────────────┐
-│                   API Layer                              │
-│  ┌─────────────────────────────────────────────────┐   │
-│  │              RuntimeV2Api                        │   │
-│  │  - createRuntime, getRuntime, deleteRuntime     │   │
-│  │  - operateRuntime, getRuntimes, updateRuntime   │   │
-│  │  - getPhpExtensions, updatePhpConfig, etc.      │   │
-│  └─────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────┘
-                          │
-                          ▼
-┌─────────────────────────────────────────────────────────┐
-│                 Data Layer                               │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
-│  │RuntimeInfo  │  │RuntimeCreate│  │RuntimeUpdate│     │
-│  │JavaRuntime  │  │NodeRuntime  │  │PythonRuntime│     │
-│  │GoRuntime    │  │PHPRuntime   │  │RuntimePkg   │     │
-│  └─────────────┘  └─────────────┘  └─────────────┘     │
-└─────────────────────────────────────────────────────────┘
-```
+## 关键边界
 
-### 职责划分
+- `RuntimeCreate` / `RuntimeUpdate` 已按通用真实字段对齐：
+  - `appDetailId`
+  - `appId`
+  - `type`
+  - `resource`
+  - `image`
+  - `version`
+  - `source`
+  - `codeDir`
+  - `port`
+  - `remark`
+  - `params`
+- `RuntimeService` 负责：
+  - 语言分类排序
+  - 通用字段默认值
+  - status 操作可用性
+  - draft -> request 映射
+- no-server 场景下：
+  - `RuntimesCenterPage`
+  - `RuntimeDetailPage`
+  - `RuntimeFormPage`
+  均不提前打 API
 
-| 层级 | 组件 | 职责 |
-|------|------|------|
-| **UI层** | RuntimeListPage | 运行时列表展示、搜索、批量操作 |
-| | RuntimeDetailPage | 运行时详情、配置、状态展示 |
-| | RuntimeFormPage | 创建/编辑运行时表单 |
-| | PHPExtensionsPage | PHP扩展管理 |
-| | ConfigEditorWidget | 配置文件编辑器 |
-| **ViewModel层** | RuntimeProvider | 运行时状态管理、业务逻辑协调 |
-| **Service层** | RuntimeService | 运行时业务逻辑封装 |
-| | ConfigService | 配置文件处理 |
-| | StatusService | 状态同步与监控 |
-| **API层** | RuntimeV2Api | API调用封装 |
-| **Data层** | 各类模型 | 数据结构定义与序列化 |
+## 已知取舍
 
-## 数据流设计
-
-### 运行时列表加载流程
-
-```
-页面进入 ──▶ RuntimeListPage.initState()
-                    │
-                    ▼
-           RuntimeProvider.loadRuntimes()
-                    │
-                    ▼
-           RuntimeV2Api.getRuntimes(search)
-                    │
-                    ▼
-           服务器响应 PageResult<RuntimeInfo>
-                    │
-                    ▼
-           RuntimeProvider.updateRuntimes()
-                    │
-                    ▼
-           UI刷新展示列表
-```
-
-### 运行时操作流程
-
-```
-用户点击操作 ──▶ 确认对话框
-                    │
-                    ▼
-           RuntimeProvider.operate(id, operation)
-                    │
-                    ▼
-           RuntimeV2Api.operateRuntime(request)
-                    │
-                    ▼
-           服务器执行操作
-                    │
-                    ▼
-           RuntimeProvider.syncStatus()
-                    │
-                    ▼
-           UI更新状态显示
-```
-
-## 与现有实现的差距
-
-### 已实现
-
-| 组件 | 文件 | 状态 |
-|------|------|------|
-| API客户端 | lib/api/v2/runtime_v2.dart | ✅ 完成 |
-| 数据模型 | lib/data/models/runtime_models.dart | ✅ 完成 |
-
-### 待实现
-
-| 组件 | 优先级 | 预计工作量 |
-|------|--------|-----------|
-| RuntimeProvider | P0 | 4小时 |
-| RuntimeService | P0 | 3小时 |
-| RuntimeListPage | P0 | 6小时 |
-| RuntimeDetailPage | P0 | 6小时 |
-| RuntimeFormPage | P0 | 4小时 |
-| PHPExtensionsPage | P1 | 4小时 |
-| ConfigEditorWidget | P1 | 4小时 |
-| 单元测试 | P0 | 4小时 |
-
-## 评审记录表
-
-| 日期 | 评审人 | 评审内容 | 结果 | 备注 |
-|------|--------|---------|------|------|
-| 2026-02-14 | - | 初始架构设计 | 待评审 | - |
+- `appstore create` 和 `PHP create` 暂保留 Week 8 专用向导
+- `Config / Advanced` 当前只做通用字段与统计展示，不内嵌 PHP/Node 深编辑器
+- 删除前依赖检查接口本轮未接主 UI，先保留直接删除确认流
 
 ---
 
-**文档版本**: 1.0  
-**最后更新**: 2026-02-14  
-**维护者**: Open1Panel开发团队
+**文档版本**: 2.0  
+**最后更新**: 2026-03-27

@@ -24,6 +24,7 @@ enum RuntimeType {
 class RuntimeCreate extends Equatable {
   final int? id;
   final int? appDetailId;
+  final int? appId;
   final String name;
   final String resource;
   final String image;
@@ -31,7 +32,9 @@ class RuntimeCreate extends Equatable {
   final String? version;
   final String? source;
   final String? codeDir;
+  final int? port;
   final String? remark;
+  final bool? rebuild;
   final Map<String, dynamic>? params;
   final bool? install;
   final bool? clean;
@@ -43,6 +46,7 @@ class RuntimeCreate extends Equatable {
   const RuntimeCreate({
     this.id,
     this.appDetailId,
+    this.appId,
     required this.name,
     required this.resource,
     required this.image,
@@ -50,7 +54,9 @@ class RuntimeCreate extends Equatable {
     this.version,
     this.source,
     this.codeDir,
+    this.port,
     this.remark,
+    this.rebuild,
     this.params,
     this.install,
     this.clean,
@@ -64,6 +70,7 @@ class RuntimeCreate extends Equatable {
     return RuntimeCreate(
       id: json['id'] as int?,
       appDetailId: json['appDetailId'] as int? ?? json['appDetailID'] as int?,
+      appId: json['appId'] as int? ?? json['appID'] as int?,
       name: json['name'] as String,
       resource: json['resource'] as String? ?? '',
       image: json['image'] as String? ?? '',
@@ -71,7 +78,9 @@ class RuntimeCreate extends Equatable {
       version: json['version'] as String?,
       source: json['source'] as String?,
       codeDir: json['codeDir'] as String?,
+      port: json['port'] as int?,
       remark: json['remark'] as String?,
+      rebuild: json['rebuild'] as bool?,
       params: json['params'] as Map<String, dynamic>?,
       install: json['install'] as bool?,
       clean: json['clean'] as bool?,
@@ -98,6 +107,7 @@ class RuntimeCreate extends Equatable {
     return {
       'id': id,
       'appDetailId': appDetailId,
+      'appID': appId,
       'name': name,
       'resource': resource,
       'image': image,
@@ -105,7 +115,9 @@ class RuntimeCreate extends Equatable {
       'version': version,
       'source': source,
       'codeDir': codeDir,
+      'port': port,
       'remark': remark,
+      'rebuild': rebuild,
       'params': params,
       'install': install,
       'clean': clean,
@@ -120,6 +132,7 @@ class RuntimeCreate extends Equatable {
   List<Object?> get props => [
         id,
         appDetailId,
+        appId,
         name,
         resource,
         image,
@@ -127,7 +140,9 @@ class RuntimeCreate extends Equatable {
         version,
         source,
         codeDir,
+        port,
         remark,
+        rebuild,
         params,
         install,
         clean,
@@ -195,8 +210,7 @@ class RuntimeInfo extends Equatable {
       id: json['id'] as int?,
       name: json['name'] as String?,
       resource: json['resource'] as String?,
-      appDetailId:
-          json['appDetailId'] as int? ?? json['appDetailID'] as int?,
+      appDetailId: json['appDetailId'] as int? ?? json['appDetailID'] as int?,
       appId: json['appId'] as int? ?? json['appID'] as int?,
       type: json['type'] as String?,
       image: json['image'] as String?,
@@ -383,11 +397,16 @@ class RuntimeDelete extends Equatable {
 /// Runtime update request model
 class RuntimeUpdate extends Equatable {
   final int id;
+  final int? appDetailId;
+  final int? appId;
   final String name;
+  final String? resource;
+  final String? type;
   final String? image;
   final String? version;
   final String? source;
   final String? codeDir;
+  final int? port;
   final String? remark;
   final bool? rebuild;
   final Map<String, dynamic>? params;
@@ -400,11 +419,16 @@ class RuntimeUpdate extends Equatable {
 
   const RuntimeUpdate({
     required this.id,
+    this.appDetailId,
+    this.appId,
     required this.name,
+    this.resource,
+    this.type,
     this.image,
     this.version,
     this.source,
     this.codeDir,
+    this.port,
     this.remark,
     this.rebuild,
     this.params,
@@ -419,11 +443,16 @@ class RuntimeUpdate extends Equatable {
   factory RuntimeUpdate.fromJson(Map<String, dynamic> json) {
     return RuntimeUpdate(
       id: json['id'] as int,
+      appDetailId: json['appDetailId'] as int? ?? json['appDetailID'] as int?,
+      appId: json['appId'] as int? ?? json['appID'] as int?,
       name: json['name'] as String? ?? '',
+      resource: json['resource'] as String?,
+      type: json['type'] as String?,
       image: json['image'] as String?,
       version: json['version'] as String?,
       source: json['source'] as String?,
       codeDir: json['codeDir'] as String?,
+      port: json['port'] as int?,
       remark: json['remark'] as String?,
       rebuild: json['rebuild'] as bool?,
       params: json['params'] as Map<String, dynamic>?,
@@ -451,11 +480,16 @@ class RuntimeUpdate extends Equatable {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'appDetailId': appDetailId,
+      'appID': appId,
       'name': name,
+      'resource': resource,
+      'type': type,
       'image': image,
       'version': version,
       'source': source,
       'codeDir': codeDir,
+      'port': port,
       'remark': remark,
       'rebuild': rebuild,
       'params': params,
@@ -471,11 +505,16 @@ class RuntimeUpdate extends Equatable {
   @override
   List<Object?> get props => [
         id,
+        appDetailId,
+        appId,
         name,
+        resource,
+        type,
         image,
         version,
         source,
         codeDir,
+        port,
         remark,
         rebuild,
         params,
@@ -631,7 +670,8 @@ class PHPExtensionSupport extends Equatable {
       };
 
   @override
-  List<Object?> get props => [name, description, installed, check, versions, file];
+  List<Object?> get props =>
+      [name, description, installed, check, versions, file];
 }
 
 class PHPExtensionsRes extends Equatable {
@@ -838,7 +878,9 @@ class JavaRuntime extends Equatable {
       jdkHome: json['jdkHome'] as String?,
       javaHome: json['javaHome'] as String?,
       classpath: json['classpath'] as String?,
-      environmentVariables: (json['environmentVariables'] as Map<String, dynamic>?)?.cast<String, String>(),
+      environmentVariables:
+          (json['environmentVariables'] as Map<String, dynamic>?)
+              ?.cast<String, String>(),
       status: json['status'] as String?,
     );
   }
@@ -857,7 +899,16 @@ class JavaRuntime extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, version, jdkHome, javaHome, classpath, environmentVariables, status];
+  List<Object?> get props => [
+        id,
+        name,
+        version,
+        jdkHome,
+        javaHome,
+        classpath,
+        environmentVariables,
+        status
+      ];
 }
 
 /// Node.js runtime specific model
@@ -890,7 +941,9 @@ class NodeRuntime extends Equatable {
       nodeHome: json['nodeHome'] as String?,
       npmHome: json['npmHome'] as String?,
       packageManager: json['packageManager'] as String?,
-      environmentVariables: (json['environmentVariables'] as Map<String, dynamic>?)?.cast<String, String>(),
+      environmentVariables:
+          (json['environmentVariables'] as Map<String, dynamic>?)
+              ?.cast<String, String>(),
       status: json['status'] as String?,
     );
   }
@@ -909,7 +962,16 @@ class NodeRuntime extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, version, nodeHome, npmHome, packageManager, environmentVariables, status];
+  List<Object?> get props => [
+        id,
+        name,
+        version,
+        nodeHome,
+        npmHome,
+        packageManager,
+        environmentVariables,
+        status
+      ];
 }
 
 /// Python runtime specific model
@@ -942,7 +1004,9 @@ class PythonRuntime extends Equatable {
       pythonHome: json['pythonHome'] as String?,
       pipHome: json['pipHome'] as String?,
       virtualenvPath: json['virtualenvPath'] as String?,
-      environmentVariables: (json['environmentVariables'] as Map<String, dynamic>?)?.cast<String, String>(),
+      environmentVariables:
+          (json['environmentVariables'] as Map<String, dynamic>?)
+              ?.cast<String, String>(),
       status: json['status'] as String?,
     );
   }
@@ -961,7 +1025,16 @@ class PythonRuntime extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, version, pythonHome, pipHome, virtualenvPath, environmentVariables, status];
+  List<Object?> get props => [
+        id,
+        name,
+        version,
+        pythonHome,
+        pipHome,
+        virtualenvPath,
+        environmentVariables,
+        status
+      ];
 }
 
 /// Go runtime specific model
@@ -994,7 +1067,9 @@ class GoRuntime extends Equatable {
       goHome: json['goHome'] as String?,
       gopath: json['gopath'] as String?,
       gocache: json['gocache'] as String?,
-      environmentVariables: (json['environmentVariables'] as Map<String, dynamic>?)?.cast<String, String>(),
+      environmentVariables:
+          (json['environmentVariables'] as Map<String, dynamic>?)
+              ?.cast<String, String>(),
       status: json['status'] as String?,
     );
   }
@@ -1013,7 +1088,16 @@ class GoRuntime extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, version, goHome, gopath, gocache, environmentVariables, status];
+  List<Object?> get props => [
+        id,
+        name,
+        version,
+        goHome,
+        gopath,
+        gocache,
+        environmentVariables,
+        status
+      ];
 }
 
 /// PHP runtime specific model
@@ -1046,7 +1130,9 @@ class PHPRuntime extends Equatable {
       phpHome: json['phpHome'] as String?,
       phpIniPath: json['phpIniPath'] as String?,
       extensionDir: json['extensionDir'] as String?,
-      environmentVariables: (json['environmentVariables'] as Map<String, dynamic>?)?.cast<String, String>(),
+      environmentVariables:
+          (json['environmentVariables'] as Map<String, dynamic>?)
+              ?.cast<String, String>(),
       status: json['status'] as String?,
     );
   }
@@ -1065,7 +1151,16 @@ class PHPRuntime extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, version, phpHome, phpIniPath, extensionDir, environmentVariables, status];
+  List<Object?> get props => [
+        id,
+        name,
+        version,
+        phpHome,
+        phpIniPath,
+        extensionDir,
+        environmentVariables,
+        status
+      ];
 }
 
 /// PHP 容器配置模型（runtime/php/container）
@@ -1091,13 +1186,16 @@ class PHPContainerConfig extends Equatable {
       id: json['id'] as int? ?? 0,
       containerName: json['containerName'] as String?,
       environments: (json['environments'] as List?)
-          ?.map((e) => PhpContainerEnvironment.fromJson(e as Map<String, dynamic>))
+          ?.map((e) =>
+              PhpContainerEnvironment.fromJson(e as Map<String, dynamic>))
           .toList(),
       exposedPorts: (json['exposedPorts'] as List?)
-          ?.map((e) => PhpContainerExposedPort.fromJson(e as Map<String, dynamic>))
+          ?.map((e) =>
+              PhpContainerExposedPort.fromJson(e as Map<String, dynamic>))
           .toList(),
       extraHosts: (json['extraHosts'] as List?)
-          ?.map((e) => PhpContainerExtraHost.fromJson(e as Map<String, dynamic>))
+          ?.map(
+              (e) => PhpContainerExtraHost.fromJson(e as Map<String, dynamic>))
           .toList(),
       volumes: (json['volumes'] as List?)
           ?.map((e) => PhpContainerVolume.fromJson(e as Map<String, dynamic>))
@@ -1109,15 +1207,19 @@ class PHPContainerConfig extends Equatable {
     return {
       'id': id,
       if (containerName != null) 'containerName': containerName,
-      if (environments != null) 'environments': environments!.map((e) => e.toJson()).toList(),
-      if (exposedPorts != null) 'exposedPorts': exposedPorts!.map((e) => e.toJson()).toList(),
-      if (extraHosts != null) 'extraHosts': extraHosts!.map((e) => e.toJson()).toList(),
+      if (environments != null)
+        'environments': environments!.map((e) => e.toJson()).toList(),
+      if (exposedPorts != null)
+        'exposedPorts': exposedPorts!.map((e) => e.toJson()).toList(),
+      if (extraHosts != null)
+        'extraHosts': extraHosts!.map((e) => e.toJson()).toList(),
       if (volumes != null) 'volumes': volumes!.map((e) => e.toJson()).toList(),
     };
   }
 
   @override
-  List<Object?> get props => [id, containerName, environments, exposedPorts, extraHosts, volumes];
+  List<Object?> get props =>
+      [id, containerName, environments, exposedPorts, extraHosts, volumes];
 }
 
 class PhpContainerEnvironment extends Equatable {
@@ -1266,5 +1368,6 @@ class RuntimePackage extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, version, type, runtimeId, description, status];
+  List<Object?> get props =>
+      [id, name, version, type, runtimeId, description, status];
 }

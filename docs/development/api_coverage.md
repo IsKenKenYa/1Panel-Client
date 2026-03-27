@@ -14,14 +14,14 @@
 | 维度 | 完成数 | 完成率 |
 | --- | --- | --- |
 | **API客户端实现** | 51/52 | 98% |
-| **单元测试覆盖** | 27/52 | 52% |
-| **文档覆盖** | 14/52 | 27% |
+| **单元测试覆盖** | 28/52 | 54% |
+| **文档覆盖** | 15/52 | 29% |
 
 ### 按优先级统计
 
 | 优先级 | 模块数 | 已实现 | 已测试 | 已文档 |
 | --- | --- | --- | --- | --- |
-| **P0** | 15 | 15 (100%) | 11 (73%) | 3 (20%) |
+| **P0** | 15 | 15 (100%) | 12 (80%) | 4 (27%) |
 | **P1** | 26 | 26 (100%) | 12 (46%) | 9 (35%) |
 | **P2** | 11 | 10 (91%) | 4 (36%) | 2 (18%) |
 
@@ -42,7 +42,7 @@
 | File | 37 | file_v2.dart | 40 | ✅ | ✅ |
 | App | 30 | app_v2.dart | 27 | ✅ | ✅ |
 | Backup Account | 25 | backup_account_v2.dart | 26 | ✅ | ✅ |
-| Runtime | 25 | runtime_v2.dart | 12 | ❌ | ❌ |
+| Runtime | 25 | runtime_v2.dart | 12 | ✅ | ✅ |
 | Container | 19 | container_v2.dart | 43 | ✅ | ✅ |
 | Database Mysql | 14 | database_v2.dart | 17 | ✅ | ❌ |
 | Dashboard | 12 | dashboard_v2.dart | 16 | ✅ | ❌ |
@@ -102,7 +102,7 @@
 
 ## 测试文件清单
 
-> Week 6 同步说明：`LogsCenterPage` / `SystemLogViewerPage` / `TaskLogDetailPage` 已接入真实页面、Repository、Service、Provider 与 no-server 回归；`system` 与 `task` 正文读取统一复用 `/files/read` 按行链路。
+> Week 7 同步说明：`RuntimesCenterPage` / `RuntimeDetailPage` / `RuntimeFormPage` 已接入真实页面、Repository、Service、Provider 与 no-server 回归；Week 7 只覆盖运行时通用链路，PHP/Node 深能力留到 Week 8。
 
 ### 单元测试 (test/api/)
 - ai_api_test.dart
@@ -139,10 +139,10 @@
 
 ### 测试覆盖不足
 - P1 模块测试率进一步提升，但 Firewall 等模块仍未补齐
-- P0 核心模块中 Auth、Monitor、Runtime 仍缺模块级测试
+- P0 核心模块中 Auth、Monitor 仍缺模块级测试
 
 ### 文档覆盖不足
-- 目前 `Cronjob / Backup Account / SSH / Process / Command / Host / OpenResty / ScriptLibrary / System Group / Logs / TaskLog` 已有阶段性文档
+- 目前 `Cronjob / Backup Account / SSH / Process / Command / Host / OpenResty / ScriptLibrary / System Group / Logs / TaskLog / Runtime` 已有阶段性文档
 - 仍有大量模块缺少使用说明和已知限制
 
 ### UI集成缺失

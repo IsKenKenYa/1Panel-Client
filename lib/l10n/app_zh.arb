@@ -1778,6 +1778,120 @@
   "operationsRuntimesTitle": "运行时",
   "operationsRuntimeDetailTitle": "运行时详情",
   "operationsRuntimeFormTitle": "运行时表单",
+  "runtimeFormCreateTitle": "创建运行时",
+  "runtimeFormEditTitle": "编辑运行时",
+  "runtimeOverviewTab": "概览",
+  "runtimeConfigTab": "配置",
+  "runtimeAdvancedTab": "高级",
+  "runtimeSearchHint": "搜索运行时...",
+  "runtimeEmptyTitle": "暂无运行时",
+  "runtimeEmptyDescription": "当前语言分类下的运行时会显示在这里。",
+  "runtimeActionStart": "启动",
+  "runtimeActionStop": "停止",
+  "runtimeActionRestart": "重启",
+  "runtimeActionSync": "同步",
+  "runtimeActionUnknown": "未知操作：{action}",
+  "@runtimeActionUnknown": {
+    "placeholders": {
+      "action": { "type": "String" }
+    }
+  },
+  "runtimeTypePhp": "PHP",
+  "runtimeTypeNode": "Node",
+  "runtimeTypeJava": "Java",
+  "runtimeTypeGo": "Go",
+  "runtimeTypePython": "Python",
+  "runtimeTypeDotnet": ".NET",
+  "runtimeTypeUnknown": "未知运行时：{type}",
+  "@runtimeTypeUnknown": {
+    "placeholders": {
+      "type": { "type": "String" }
+    }
+  },
+  "runtimeResourceLocal": "本地",
+  "runtimeResourceAppStore": "应用商店",
+  "runtimeResourceUnknown": "未知来源：{resource}",
+  "@runtimeResourceUnknown": {
+    "placeholders": {
+      "resource": { "type": "String" }
+    }
+  },
+  "runtimeStatusAll": "全部",
+  "runtimeStatusRunning": "运行中",
+  "runtimeStatusStopped": "已停止",
+  "runtimeStatusError": "错误",
+  "runtimeStatusStarting": "启动中",
+  "runtimeStatusBuilding": "构建中",
+  "runtimeStatusRecreating": "重建中",
+  "runtimeStatusSystemRestart": "系统重启中",
+  "runtimeStatusUnknown": "未知状态：{status}",
+  "@runtimeStatusUnknown": {
+    "placeholders": {
+      "status": { "type": "String" }
+    }
+  },
+  "runtimeFieldType": "类型",
+  "runtimeFieldStatus": "状态",
+  "runtimeFieldVersion": "版本",
+  "runtimeFieldResource": "来源",
+  "runtimeFieldImage": "镜像",
+  "runtimeFieldCodeDir": "代码目录",
+  "runtimeFieldExternalPort": "外部端口",
+  "runtimeFieldPath": "路径",
+  "runtimeFieldSource": "源地址",
+  "runtimeFieldRemark": "备注",
+  "runtimeFieldHostIp": "主机 IP",
+  "runtimeFieldContainerName": "容器名称",
+  "runtimeFieldContainerStatus": "容器状态",
+  "runtimeFieldExecScript": "运行脚本",
+  "runtimeFieldPackageManager": "包管理器",
+  "runtimeFieldCreatedAt": "创建时间",
+  "runtimeFieldParams": "参数",
+  "runtimeFieldRebuild": "保存时重建",
+  "runtimeFormBasicSectionTitle": "基础信息",
+  "runtimeFormRuntimeSectionTitle": "运行时配置",
+  "runtimeFormAdvancedSectionTitle": "高级设置",
+  "runtimeFormAppStoreCreateWeek8Hint": "应用商店运行时创建留到 Week 8 的专用向导，本周只支持手动运行时骨架。",
+  "runtimeFormPhpCreateWeek8Hint": "PHP 创建流保留到 Week 8 的专用表单，本周先收口通用运行时骨架。",
+  "runtimeFormNameRequired": "运行时名称不能为空。",
+  "runtimeFormImageRequired": "运行时镜像不能为空。",
+  "runtimeFormCodeDirRequired": "代码目录不能为空。",
+  "runtimeFormPortInvalid": "外部端口必须大于 0。",
+  "runtimeFormContainerNameRequired": "容器名称不能为空。",
+  "runtimeFormExecScriptRequired": "当前运行时类型必须填写运行脚本。",
+  "runtimeFormPackageManagerRequired": "Node 运行时必须选择包管理器。",
+  "runtimeAdvancedRequiresRunning": "运行时启动后，才会解锁更多语言专属高级能力。",
+  "runtimeAdvancedSummary": "高级配置统计：{ports} 个端口、{environments} 个环境变量、{volumes} 个挂载、{hosts} 个额外主机。",
+  "@runtimeAdvancedSummary": {
+    "placeholders": {
+      "ports": { "type": "int" },
+      "environments": { "type": "int" },
+      "volumes": { "type": "int" },
+      "hosts": { "type": "int" }
+    }
+  },
+  "runtimeDeleteConfirm": "确认删除运行时 {name} 吗？",
+  "@runtimeDeleteConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "runtimeOperateConfirm": "确认对运行时 {name} 执行 {action} 吗？",
+  "@runtimeOperateConfirm": {
+    "placeholders": {
+      "action": { "type": "String" },
+      "name": { "type": "String" }
+    }
+  },
+  "runtimeListLoadFailed": "加载运行时列表失败。",
+  "runtimeDetailLoadFailed": "加载运行时详情失败。",
+  "runtimeFormLoadFailed": "加载运行时表单数据失败。",
+  "runtimeFormSaveFailed": "保存运行时失败。",
+  "runtimeSyncFailed": "同步运行时状态失败。",
+  "runtimeDeleteFailed": "删除运行时失败。",
+  "runtimeOperateFailed": "执行运行时操作失败。",
+  "runtimeRemarkSaveFailed": "保存运行时备注失败。",
+  "runtimeRemarkTooLong": "备注不能超过 128 个字符。",
   "operationsPhpExtensionsTitle": "PHP 扩展",
   "operationsPhpConfigTitle": "PHP 配置",
   "operationsNodeModulesTitle": "Node 模块",

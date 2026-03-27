@@ -4542,6 +4542,252 @@ class AppLocalizationsEn extends AppLocalizations {
   String get operationsRuntimeFormTitle => 'Runtime Form';
 
   @override
+  String get runtimeFormCreateTitle => 'Create Runtime';
+
+  @override
+  String get runtimeFormEditTitle => 'Edit Runtime';
+
+  @override
+  String get runtimeOverviewTab => 'Overview';
+
+  @override
+  String get runtimeConfigTab => 'Config';
+
+  @override
+  String get runtimeAdvancedTab => 'Advanced';
+
+  @override
+  String get runtimeSearchHint => 'Search runtimes...';
+
+  @override
+  String get runtimeEmptyTitle => 'No runtimes';
+
+  @override
+  String get runtimeEmptyDescription =>
+      'Runtimes in the selected language category will appear here.';
+
+  @override
+  String get runtimeActionStart => 'Start';
+
+  @override
+  String get runtimeActionStop => 'Stop';
+
+  @override
+  String get runtimeActionRestart => 'Restart';
+
+  @override
+  String get runtimeActionSync => 'Sync';
+
+  @override
+  String runtimeActionUnknown(String action) {
+    return 'Unknown action: $action';
+  }
+
+  @override
+  String get runtimeTypePhp => 'PHP';
+
+  @override
+  String get runtimeTypeNode => 'Node';
+
+  @override
+  String get runtimeTypeJava => 'Java';
+
+  @override
+  String get runtimeTypeGo => 'Go';
+
+  @override
+  String get runtimeTypePython => 'Python';
+
+  @override
+  String get runtimeTypeDotnet => '.NET';
+
+  @override
+  String runtimeTypeUnknown(String type) {
+    return 'Unknown runtime: $type';
+  }
+
+  @override
+  String get runtimeResourceLocal => 'Local';
+
+  @override
+  String get runtimeResourceAppStore => 'App Store';
+
+  @override
+  String runtimeResourceUnknown(String resource) {
+    return 'Unknown resource: $resource';
+  }
+
+  @override
+  String get runtimeStatusAll => 'All';
+
+  @override
+  String get runtimeStatusRunning => 'Running';
+
+  @override
+  String get runtimeStatusStopped => 'Stopped';
+
+  @override
+  String get runtimeStatusError => 'Error';
+
+  @override
+  String get runtimeStatusStarting => 'Starting';
+
+  @override
+  String get runtimeStatusBuilding => 'Building';
+
+  @override
+  String get runtimeStatusRecreating => 'Recreating';
+
+  @override
+  String get runtimeStatusSystemRestart => 'System Restart';
+
+  @override
+  String runtimeStatusUnknown(String status) {
+    return 'Unknown status: $status';
+  }
+
+  @override
+  String get runtimeFieldType => 'Type';
+
+  @override
+  String get runtimeFieldStatus => 'Status';
+
+  @override
+  String get runtimeFieldVersion => 'Version';
+
+  @override
+  String get runtimeFieldResource => 'Resource';
+
+  @override
+  String get runtimeFieldImage => 'Image';
+
+  @override
+  String get runtimeFieldCodeDir => 'Code directory';
+
+  @override
+  String get runtimeFieldExternalPort => 'External port';
+
+  @override
+  String get runtimeFieldPath => 'Path';
+
+  @override
+  String get runtimeFieldSource => 'Source';
+
+  @override
+  String get runtimeFieldRemark => 'Remark';
+
+  @override
+  String get runtimeFieldHostIp => 'Host IP';
+
+  @override
+  String get runtimeFieldContainerName => 'Container name';
+
+  @override
+  String get runtimeFieldContainerStatus => 'Container status';
+
+  @override
+  String get runtimeFieldExecScript => 'Run script';
+
+  @override
+  String get runtimeFieldPackageManager => 'Package manager';
+
+  @override
+  String get runtimeFieldCreatedAt => 'Created at';
+
+  @override
+  String get runtimeFieldParams => 'Parameters';
+
+  @override
+  String get runtimeFieldRebuild => 'Rebuild on save';
+
+  @override
+  String get runtimeFormBasicSectionTitle => 'Basic';
+
+  @override
+  String get runtimeFormRuntimeSectionTitle => 'Runtime';
+
+  @override
+  String get runtimeFormAdvancedSectionTitle => 'Advanced';
+
+  @override
+  String get runtimeFormAppStoreCreateWeek8Hint =>
+      'App Store runtime creation stays in the Week 8 wizard. Week 7 only supports the manual runtime skeleton.';
+
+  @override
+  String get runtimeFormPhpCreateWeek8Hint =>
+      'PHP creation keeps its dedicated flow for Week 8. Week 7 focuses on the shared runtime skeleton.';
+
+  @override
+  String get runtimeFormNameRequired => 'Runtime name is required.';
+
+  @override
+  String get runtimeFormImageRequired => 'Runtime image is required.';
+
+  @override
+  String get runtimeFormCodeDirRequired => 'Code directory is required.';
+
+  @override
+  String get runtimeFormPortInvalid => 'External port must be greater than 0.';
+
+  @override
+  String get runtimeFormContainerNameRequired => 'Container name is required.';
+
+  @override
+  String get runtimeFormExecScriptRequired =>
+      'Run script is required for this runtime type.';
+
+  @override
+  String get runtimeFormPackageManagerRequired =>
+      'Package manager is required for Node runtimes.';
+
+  @override
+  String get runtimeAdvancedRequiresRunning =>
+      'Advanced runtime-specific capabilities unlock after the runtime is running.';
+
+  @override
+  String runtimeAdvancedSummary(
+      int ports, int environments, int volumes, int hosts) {
+    return 'Advanced config counts: $ports ports, $environments environments, $volumes volumes, $hosts extra hosts.';
+  }
+
+  @override
+  String runtimeDeleteConfirm(String name) {
+    return 'Delete runtime $name?';
+  }
+
+  @override
+  String runtimeOperateConfirm(String action, String name) {
+    return 'Run $action on runtime $name?';
+  }
+
+  @override
+  String get runtimeListLoadFailed => 'Failed to load runtimes.';
+
+  @override
+  String get runtimeDetailLoadFailed => 'Failed to load runtime detail.';
+
+  @override
+  String get runtimeFormLoadFailed => 'Failed to load runtime form data.';
+
+  @override
+  String get runtimeFormSaveFailed => 'Failed to save runtime.';
+
+  @override
+  String get runtimeSyncFailed => 'Failed to sync runtime status.';
+
+  @override
+  String get runtimeDeleteFailed => 'Failed to delete runtime.';
+
+  @override
+  String get runtimeOperateFailed => 'Failed to operate runtime.';
+
+  @override
+  String get runtimeRemarkSaveFailed => 'Failed to save runtime remark.';
+
+  @override
+  String get runtimeRemarkTooLong => 'Remark must be 128 characters or fewer.';
+
+  @override
   String get operationsPhpExtensionsTitle => 'PHP Extensions';
 
   @override

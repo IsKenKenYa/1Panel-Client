@@ -26,7 +26,7 @@
 | **File** | 37 | ✅ file_v2.dart | ✅ file_models.dart | ✅ 已测试 | 🟡 部分 | 上传/下载/编辑流程待扩展 |
 | **App** | 30 | ✅ app_v2.dart | ✅ app_models.dart | ✅ 已测试 | 🟡 部分 | 应用商店与安装流程待补齐 |
 | **Backup Account** | 25 | ✅ backup_account_v2.dart | ✅ backup_account_models.dart + `backup_request_models.dart` | ✅ 已测试 | ✅ 已集成 | Week 5 已交付账户 / records / recover 主链路；review closeout 后 `BackupRecoverPage` 已对 `app / website / mysql / postgresql / redis / directory / snapshot / log` 做显式类型映射，并拆分 `recordType/requestType`；非可恢复类型保留上下文并禁用提交 |
-| **Runtime** | 25 | ✅ runtime_v2.dart | ✅ runtime_models.dart | ⚠️ 待测试 | 🔴 待集成 | 运行时管理页面待建设 |
+| **Runtime** | 25 | ✅ runtime_v2.dart | ✅ runtime_models.dart | ✅ 已测试 | ✅ 已集成 | Week 7 已交付 `RuntimesCenterPage` / `RuntimeDetailPage` / `RuntimeFormPage` 通用链路；PHP/Node 深能力保留到 Week 8 |
 | **Container** | 19 | ✅ container_v2.dart | ✅ container_models.dart | ✅ 已测试 | 🟡 部分 | 需要补齐网络/卷/镜像管理 |
 | **Database Mysql** | 14 | ✅ database_v2.dart | ✅ database_models.dart | ✅ 已测试 | 🟡 部分 | MySQL特定功能待细化 |
 | **Dashboard** | 12 | ✅ dashboard_v2.dart | ✅ monitoring_models.dart | ✅ 已测试 | ✅ 已集成 | 关注核心指标展示 |
@@ -86,16 +86,16 @@
 
 ## 实现状态统计
 
-> Week 6 同步说明：在 Week 5 closeout 基础上，日志中心已接入真实页面、Provider、Repository、Service、API tests 和 widget/no-server 回归；`task_log` 不再单独做顶级模块。
+> Week 7 同步说明：在 Week 6 日志中心基础上，Runtime 通用链路已接入真实页面、Repository、Service、Provider、API tests 和 widget/no-server 回归；语言特定深化能力继续留到 Week 8。
 
 ### 按优先级统计
 
 | 优先级 | 模块数 | 端点数 | API客户端完成 | 测试覆盖 | UI集成完成 |
 |--------|--------|---------|--------------|----------|-------------|
-| **P0** | 15 | 247 | 100% (15/15) | 73% (11/15) | 33% (5/15) |
+| **P0** | 15 | 247 | 100% (15/15) | 80% (12/15) | 40% (6/15) |
 | **P1** | 26 | 239 | 100% (26/26) | 46% (12/26) | 35% (9/26) |
 | **P2** | 11 | 60 | 91% (10/11) | 27% (3/11) | 0% (0/11) |
-| **总计** | 52 | 546 | 98% (51/52) | 52% (27/52) | 27% (14/52) |
+| **总计** | 52 | 546 | 98% (51/52) | 54% (28/52) | 29% (15/52) |
 
 ### 按实现维度统计
 
@@ -103,8 +103,8 @@
 |------|--------|------|
 | **API客户端实现** | 98% | 51/52个模块有API客户端，仅untagged模块缺失 |
 | **数据模型定义** | 100% | 所有模块都有对应的数据模型 |
-| **单元测试覆盖** | 52% | 27/52个模块有测试文件 |
-| **UI页面集成** | 27% | 14/52个模块有完整的UI页面 |
+| **单元测试覆盖** | 54% | 28/52个模块有测试文件 |
+| **UI页面集成** | 29% | 15/52个模块有完整的UI页面 |
 | **端到端测试** | 0% | 尚未建立端到端测试体系 |
 
 ## 关键差距识别

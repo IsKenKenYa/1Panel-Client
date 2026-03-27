@@ -1840,6 +1840,120 @@
   "operationsRuntimesTitle": "Runtimes",
   "operationsRuntimeDetailTitle": "Runtime Detail",
   "operationsRuntimeFormTitle": "Runtime Form",
+  "runtimeFormCreateTitle": "Create Runtime",
+  "runtimeFormEditTitle": "Edit Runtime",
+  "runtimeOverviewTab": "Overview",
+  "runtimeConfigTab": "Config",
+  "runtimeAdvancedTab": "Advanced",
+  "runtimeSearchHint": "Search runtimes...",
+  "runtimeEmptyTitle": "No runtimes",
+  "runtimeEmptyDescription": "Runtimes in the selected language category will appear here.",
+  "runtimeActionStart": "Start",
+  "runtimeActionStop": "Stop",
+  "runtimeActionRestart": "Restart",
+  "runtimeActionSync": "Sync",
+  "runtimeActionUnknown": "Unknown action: {action}",
+  "@runtimeActionUnknown": {
+    "placeholders": {
+      "action": { "type": "String" }
+    }
+  },
+  "runtimeTypePhp": "PHP",
+  "runtimeTypeNode": "Node",
+  "runtimeTypeJava": "Java",
+  "runtimeTypeGo": "Go",
+  "runtimeTypePython": "Python",
+  "runtimeTypeDotnet": ".NET",
+  "runtimeTypeUnknown": "Unknown runtime: {type}",
+  "@runtimeTypeUnknown": {
+    "placeholders": {
+      "type": { "type": "String" }
+    }
+  },
+  "runtimeResourceLocal": "Local",
+  "runtimeResourceAppStore": "App Store",
+  "runtimeResourceUnknown": "Unknown resource: {resource}",
+  "@runtimeResourceUnknown": {
+    "placeholders": {
+      "resource": { "type": "String" }
+    }
+  },
+  "runtimeStatusAll": "All",
+  "runtimeStatusRunning": "Running",
+  "runtimeStatusStopped": "Stopped",
+  "runtimeStatusError": "Error",
+  "runtimeStatusStarting": "Starting",
+  "runtimeStatusBuilding": "Building",
+  "runtimeStatusRecreating": "Recreating",
+  "runtimeStatusSystemRestart": "System Restart",
+  "runtimeStatusUnknown": "Unknown status: {status}",
+  "@runtimeStatusUnknown": {
+    "placeholders": {
+      "status": { "type": "String" }
+    }
+  },
+  "runtimeFieldType": "Type",
+  "runtimeFieldStatus": "Status",
+  "runtimeFieldVersion": "Version",
+  "runtimeFieldResource": "Resource",
+  "runtimeFieldImage": "Image",
+  "runtimeFieldCodeDir": "Code directory",
+  "runtimeFieldExternalPort": "External port",
+  "runtimeFieldPath": "Path",
+  "runtimeFieldSource": "Source",
+  "runtimeFieldRemark": "Remark",
+  "runtimeFieldHostIp": "Host IP",
+  "runtimeFieldContainerName": "Container name",
+  "runtimeFieldContainerStatus": "Container status",
+  "runtimeFieldExecScript": "Run script",
+  "runtimeFieldPackageManager": "Package manager",
+  "runtimeFieldCreatedAt": "Created at",
+  "runtimeFieldParams": "Parameters",
+  "runtimeFieldRebuild": "Rebuild on save",
+  "runtimeFormBasicSectionTitle": "Basic",
+  "runtimeFormRuntimeSectionTitle": "Runtime",
+  "runtimeFormAdvancedSectionTitle": "Advanced",
+  "runtimeFormAppStoreCreateWeek8Hint": "App Store runtime creation stays in the Week 8 wizard. Week 7 only supports the manual runtime skeleton.",
+  "runtimeFormPhpCreateWeek8Hint": "PHP creation keeps its dedicated flow for Week 8. Week 7 focuses on the shared runtime skeleton.",
+  "runtimeFormNameRequired": "Runtime name is required.",
+  "runtimeFormImageRequired": "Runtime image is required.",
+  "runtimeFormCodeDirRequired": "Code directory is required.",
+  "runtimeFormPortInvalid": "External port must be greater than 0.",
+  "runtimeFormContainerNameRequired": "Container name is required.",
+  "runtimeFormExecScriptRequired": "Run script is required for this runtime type.",
+  "runtimeFormPackageManagerRequired": "Package manager is required for Node runtimes.",
+  "runtimeAdvancedRequiresRunning": "Advanced runtime-specific capabilities unlock after the runtime is running.",
+  "runtimeAdvancedSummary": "Advanced config counts: {ports} ports, {environments} environments, {volumes} volumes, {hosts} extra hosts.",
+  "@runtimeAdvancedSummary": {
+    "placeholders": {
+      "ports": { "type": "int" },
+      "environments": { "type": "int" },
+      "volumes": { "type": "int" },
+      "hosts": { "type": "int" }
+    }
+  },
+  "runtimeDeleteConfirm": "Delete runtime {name}?",
+  "@runtimeDeleteConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "runtimeOperateConfirm": "Run {action} on runtime {name}?",
+  "@runtimeOperateConfirm": {
+    "placeholders": {
+      "action": { "type": "String" },
+      "name": { "type": "String" }
+    }
+  },
+  "runtimeListLoadFailed": "Failed to load runtimes.",
+  "runtimeDetailLoadFailed": "Failed to load runtime detail.",
+  "runtimeFormLoadFailed": "Failed to load runtime form data.",
+  "runtimeFormSaveFailed": "Failed to save runtime.",
+  "runtimeSyncFailed": "Failed to sync runtime status.",
+  "runtimeDeleteFailed": "Failed to delete runtime.",
+  "runtimeOperateFailed": "Failed to operate runtime.",
+  "runtimeRemarkSaveFailed": "Failed to save runtime remark.",
+  "runtimeRemarkTooLong": "Remark must be 128 characters or fewer.",
   "operationsPhpExtensionsTitle": "PHP Extensions",
   "operationsPhpConfigTitle": "PHP Config",
   "operationsNodeModulesTitle": "Node Modules",

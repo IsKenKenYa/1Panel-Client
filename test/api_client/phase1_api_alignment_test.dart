@@ -7,6 +7,7 @@ import 'package:onepanel_client/api/v2/command_v2.dart';
 import 'package:onepanel_client/api/v2/cronjob_v2.dart';
 import 'package:onepanel_client/api/v2/host_v2.dart';
 import 'package:onepanel_client/api/v2/process_v2.dart';
+import 'package:onepanel_client/api/v2/runtime_v2.dart';
 import 'package:onepanel_client/api/v2/script_library_v2.dart';
 import 'package:onepanel_client/api/v2/ssh_v2.dart';
 import 'package:onepanel_client/api/v2/system_group_v2.dart';
@@ -19,6 +20,7 @@ import 'package:onepanel_client/data/models/cronjob_form_response_models.dart';
 import 'package:onepanel_client/data/models/cronjob_list_models.dart';
 import 'package:onepanel_client/data/models/cronjob_record_models.dart';
 import 'package:onepanel_client/data/models/host_models.dart';
+import 'package:onepanel_client/data/models/runtime_models.dart';
 import 'package:onepanel_client/data/models/script_library_models.dart';
 import 'package:onepanel_client/data/models/system_group_models.dart'
     as group_models;
@@ -553,6 +555,98 @@ void main() {
       expect(requestBody, <String, dynamic>{
         'ids': <int>[8]
       });
+    });
+
+    test('RuntimeV2Api aligns search and detail routes', () async {
+      responseBuilder = () => <String, dynamic>{
+            'code': 200,
+            'data': <String, dynamic>{
+              'items': <Map<String, dynamic>>[
+                <String, dynamic>{
+                  'id': 7,
+                  'name': 'node-main',
+                  'type': 'node',
+                  'resource': 'local',
+                },
+              ],
+              'total': 1,
+            },
+          };
+
+      final api = RuntimeV2Api(client);
+      final search = await api.getRuntimes(
+        const RuntimeSearch(page: 1, pageSize: 10, type: 'node'),
+      );
+
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/runtimes/search');
+      expect(requestBody, <String, dynamic>{
+        'page': 1,
+        'pageSize': 10,
+        'type': 'node',
+        'name': null,
+        'status': null,
+      });
+      expect(search.data?.items.single.id, 7);
+
+      responseBuilder = () => <String, dynamic>{
+            'code': 200,
+            'data': <String, dynamic>{'id': 7, 'name': 'node-main'},
+          };
+      final detail = await api.getRuntime(7);
+      expect(requestMethod, 'GET');
+      expect(requestPath, '/api/v2/runtimes/7');
+      expect(detail.data?.id, 7);
+    });
+
+    test('RuntimeV2Api aligns create/update/delete/operate/sync/remark routes',
+        () async {
+      final api = RuntimeV2Api(client);
+
+      await api.createRuntime(
+        const RuntimeCreate(
+          name: 'node-main',
+          resource: 'local',
+          image: 'node:20-alpine',
+          type: 'node',
+          codeDir: '/apps/node',
+          port: 3000,
+        ),
+      );
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/runtimes');
+
+      await api.updateRuntime(
+        const RuntimeUpdate(
+          id: 7,
+          name: 'node-main',
+          type: 'node',
+          resource: 'local',
+          image: 'node:20-alpine',
+          codeDir: '/apps/node',
+          port: 3000,
+        ),
+      );
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/runtimes/update');
+
+      await api.deleteRuntime(const RuntimeDelete(id: 7));
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/runtimes/del');
+
+      await api.operateRuntime(const RuntimeOperate(id: 7, operate: 'restart'));
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/runtimes/operate');
+
+      await api.syncRuntimeStatus();
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/runtimes/sync');
+
+      await api.updateRuntimeRemark(
+        const RuntimeRemarkUpdate(id: 7, remark: 'prod'),
+      );
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/runtimes/remark');
     });
   });
 }

@@ -194,6 +194,13 @@ class TestRunner {
         description: 'Backup Provider测试',
       );
     }
+    final runtimeProviderDir = Directory('test/features/runtimes/providers');
+    if (await runtimeProviderDir.exists()) {
+      await runTests(
+        'test/features/runtimes/providers/',
+        description: 'Runtime Provider测试',
+      );
+    }
     final cronjobApiClientFile =
         File('test/api_client/cronjob_api_client_test.dart');
     if (await cronjobApiClientFile.exists()) {
@@ -224,6 +231,14 @@ class TestRunner {
       await runTests(
         'test/api_client/backup_api_client_test.dart',
         description: 'Backup API真实环境测试',
+      );
+    }
+    final runtimeApiClientFile =
+        File('test/api_client/runtime_api_test.dart');
+    if (await runtimeApiClientFile.exists()) {
+      await runTests(
+        'test/api_client/runtime_api_test.dart',
+        description: 'Runtime API真实环境测试',
       );
     }
     final scriptRunWsClientTestFile =
@@ -334,6 +349,14 @@ class TestRunner {
       await runTests(
         'test/features/backups/pages/',
         description: 'Backup Widget测试',
+      );
+    }
+    final runtimePagesDir = Directory('test/features/runtimes/pages');
+    if (await runtimePagesDir.exists()) {
+      hasTests = true;
+      await runTests(
+        'test/features/runtimes/pages/',
+        description: 'Runtime Widget测试',
       );
     }
     if (!hasTests) {
