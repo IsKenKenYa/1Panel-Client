@@ -7622,6 +7622,12 @@ abstract class AppLocalizations {
   /// **'Search backup accounts'**
   String get backupAccountsSearchHint;
 
+  /// No description provided for @backupAccountsFilterAllTypes.
+  ///
+  /// In en, this message translates to:
+  /// **'All types'**
+  String get backupAccountsFilterAllTypes;
+
   /// No description provided for @backupAccountsEmptyTitle.
   ///
   /// In en, this message translates to:
@@ -7676,6 +7682,36 @@ abstract class AppLocalizations {
   /// **'Backup Files'**
   String get backupFilesSheetTitle;
 
+  /// No description provided for @backupAccountCardBucketLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Bucket'**
+  String get backupAccountCardBucketLabel;
+
+  /// No description provided for @backupAccountCardEndpointLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Endpoint'**
+  String get backupAccountCardEndpointLabel;
+
+  /// No description provided for @backupAccountCardPathLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Path'**
+  String get backupAccountCardPathLabel;
+
+  /// No description provided for @backupAccountCardBrowseFilesAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse files'**
+  String get backupAccountCardBrowseFilesAction;
+
+  /// No description provided for @backupAccountCardRefreshTokenAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh token'**
+  String get backupAccountCardRefreshTokenAction;
+
   /// No description provided for @backupFormBasicSectionTitle.
   ///
   /// In en, this message translates to:
@@ -7711,6 +7747,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Provider type'**
   String get backupFormProviderTypeLabel;
+
+  /// No description provided for @backupFormAccessKeyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Access Key'**
+  String get backupFormAccessKeyLabel;
+
+  /// No description provided for @backupFormUsernameAccessKeyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Username / Access Key'**
+  String get backupFormUsernameAccessKeyLabel;
 
   /// No description provided for @backupFormCredentialLabel.
   ///
@@ -7958,6 +8006,18 @@ abstract class AppLocalizations {
   /// **'Database'**
   String get backupRecoverDatabaseLabel;
 
+  /// No description provided for @backupRecoverOtherLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get backupRecoverOtherLabel;
+
+  /// No description provided for @backupRecoverSourceTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Source type'**
+  String get backupRecoverSourceTypeLabel;
+
   /// No description provided for @backupRecoverDatabaseTypeLabel.
   ///
   /// In en, this message translates to:
@@ -7988,6 +8048,18 @@ abstract class AppLocalizations {
   /// **'Backup record'**
   String get backupRecoverRecordLabel;
 
+  /// No description provided for @backupRecoverSecretLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Secret'**
+  String get backupRecoverSecretLabel;
+
+  /// No description provided for @backupRecoverTimeoutLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Timeout'**
+  String get backupRecoverTimeoutLabel;
+
   /// No description provided for @backupRecoverStartAction.
   ///
   /// In en, this message translates to:
@@ -7999,6 +8071,360 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Start recovery from the selected backup record?'**
   String get backupRecoverConfirmMessage;
+
+  /// No description provided for @backupRecoverUnsupportedTypeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The current mainline preserves {type} record context, but direct recover is not available yet.'**
+  String backupRecoverUnsupportedTypeHint(String type);
+
+  /// No description provided for @backupRecoverUnsupportedTypeSubmitHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Recover submit is currently unavailable for {type} records.'**
+  String backupRecoverUnsupportedTypeSubmitHint(String type);
+
+  /// No description provided for @backupResourceTypeUnknownLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown type: {type}'**
+  String backupResourceTypeUnknownLabel(String type);
+
+  /// No description provided for @backupErrorOauthOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to open the authorization page'**
+  String get backupErrorOauthOpenFailed;
+
+  /// No description provided for @backupErrorOauthUnsupportedProvider.
+  ///
+  /// In en, this message translates to:
+  /// **'This backup provider does not support mobile authorization'**
+  String get backupErrorOauthUnsupportedProvider;
+
+  /// No description provided for @backupErrorRecordPathEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'The backup record path is empty'**
+  String get backupErrorRecordPathEmpty;
+
+  /// No description provided for @backupErrorRecordDownloadEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'The downloaded backup file is empty'**
+  String get backupErrorRecordDownloadEmpty;
+
+  /// No description provided for @cronjobFormErrorImportInvalidJson.
+  ///
+  /// In en, this message translates to:
+  /// **'The imported cronjob file must be a JSON array.'**
+  String get cronjobFormErrorImportInvalidJson;
+
+  /// No description provided for @cronjobFormErrorExportEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'The exported cronjob file is empty.'**
+  String get cronjobFormErrorExportEmpty;
+
+  /// No description provided for @cronjobFormErrorSpecRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Cronjob spec is required.'**
+  String get cronjobFormErrorSpecRequired;
+
+  /// No description provided for @cronjobFormErrorUnsupportedType.
+  ///
+  /// In en, this message translates to:
+  /// **'This cronjob type is not supported in the mobile form yet.'**
+  String get cronjobFormErrorUnsupportedType;
+
+  /// No description provided for @backupTypeLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Local'**
+  String get backupTypeLocal;
+
+  /// No description provided for @backupTypeSftp.
+  ///
+  /// In en, this message translates to:
+  /// **'SFTP'**
+  String get backupTypeSftp;
+
+  /// No description provided for @backupTypeWebdav.
+  ///
+  /// In en, this message translates to:
+  /// **'WebDAV'**
+  String get backupTypeWebdav;
+
+  /// No description provided for @backupTypeS3.
+  ///
+  /// In en, this message translates to:
+  /// **'S3'**
+  String get backupTypeS3;
+
+  /// No description provided for @backupTypeMinio.
+  ///
+  /// In en, this message translates to:
+  /// **'MINIO'**
+  String get backupTypeMinio;
+
+  /// No description provided for @backupTypeOss.
+  ///
+  /// In en, this message translates to:
+  /// **'OSS'**
+  String get backupTypeOss;
+
+  /// No description provided for @backupTypeCos.
+  ///
+  /// In en, this message translates to:
+  /// **'COS'**
+  String get backupTypeCos;
+
+  /// No description provided for @backupTypeKodo.
+  ///
+  /// In en, this message translates to:
+  /// **'KODO'**
+  String get backupTypeKodo;
+
+  /// No description provided for @backupTypeUpyun.
+  ///
+  /// In en, this message translates to:
+  /// **'UPYUN'**
+  String get backupTypeUpyun;
+
+  /// No description provided for @backupTypeOneDrive.
+  ///
+  /// In en, this message translates to:
+  /// **'OneDrive'**
+  String get backupTypeOneDrive;
+
+  /// No description provided for @backupTypeGoogleDrive.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Drive'**
+  String get backupTypeGoogleDrive;
+
+  /// No description provided for @backupTypeAliyun.
+  ///
+  /// In en, this message translates to:
+  /// **'Aliyun Drive'**
+  String get backupTypeAliyun;
+
+  /// No description provided for @backupTypeApp.
+  ///
+  /// In en, this message translates to:
+  /// **'App'**
+  String get backupTypeApp;
+
+  /// No description provided for @backupTypeWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'Website'**
+  String get backupTypeWebsite;
+
+  /// No description provided for @backupTypeDatabase.
+  ///
+  /// In en, this message translates to:
+  /// **'Database'**
+  String get backupTypeDatabase;
+
+  /// No description provided for @backupTypeDirectory.
+  ///
+  /// In en, this message translates to:
+  /// **'Directory'**
+  String get backupTypeDirectory;
+
+  /// No description provided for @backupTypeSnapshot.
+  ///
+  /// In en, this message translates to:
+  /// **'Snapshot'**
+  String get backupTypeSnapshot;
+
+  /// No description provided for @backupTypeLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Log'**
+  String get backupTypeLog;
+
+  /// No description provided for @backupTypeContainer.
+  ///
+  /// In en, this message translates to:
+  /// **'Container'**
+  String get backupTypeContainer;
+
+  /// No description provided for @backupTypeCompose.
+  ///
+  /// In en, this message translates to:
+  /// **'Compose'**
+  String get backupTypeCompose;
+
+  /// No description provided for @backupTypeOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get backupTypeOther;
+
+  /// No description provided for @databaseTypeMysql.
+  ///
+  /// In en, this message translates to:
+  /// **'MySQL'**
+  String get databaseTypeMysql;
+
+  /// No description provided for @databaseTypeMysqlCluster.
+  ///
+  /// In en, this message translates to:
+  /// **'MySQL Cluster'**
+  String get databaseTypeMysqlCluster;
+
+  /// No description provided for @databaseTypeMariadb.
+  ///
+  /// In en, this message translates to:
+  /// **'MariaDB'**
+  String get databaseTypeMariadb;
+
+  /// No description provided for @databaseTypePostgresql.
+  ///
+  /// In en, this message translates to:
+  /// **'PostgreSQL'**
+  String get databaseTypePostgresql;
+
+  /// No description provided for @databaseTypePostgresqlCluster.
+  ///
+  /// In en, this message translates to:
+  /// **'PostgreSQL Cluster'**
+  String get databaseTypePostgresqlCluster;
+
+  /// No description provided for @databaseTypeRedis.
+  ///
+  /// In en, this message translates to:
+  /// **'Redis'**
+  String get databaseTypeRedis;
+
+  /// No description provided for @cronjobFormAppsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps'**
+  String get cronjobFormAppsLabel;
+
+  /// No description provided for @cronjobFormWebsitesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Websites'**
+  String get cronjobFormWebsitesLabel;
+
+  /// No description provided for @cronjobFormDatabasesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Databases'**
+  String get cronjobFormDatabasesLabel;
+
+  /// No description provided for @cronjobFormIgnoreAppsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Ignore apps'**
+  String get cronjobFormIgnoreAppsLabel;
+
+  /// No description provided for @cronjobFormShellModeInline.
+  ///
+  /// In en, this message translates to:
+  /// **'Inline'**
+  String get cronjobFormShellModeInline;
+
+  /// No description provided for @cronjobFormShellModeLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Library'**
+  String get cronjobFormShellModeLibrary;
+
+  /// No description provided for @cronjobFormShellModePath.
+  ///
+  /// In en, this message translates to:
+  /// **'Path'**
+  String get cronjobFormShellModePath;
+
+  /// No description provided for @cronjobFormUrlItemLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'URL {index}'**
+  String cronjobFormUrlItemLabel(int index);
+
+  /// No description provided for @cronjobFormAddUrlAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add URL'**
+  String get cronjobFormAddUrlAction;
+
+  /// No description provided for @cronjobFormAlertMethodMail.
+  ///
+  /// In en, this message translates to:
+  /// **'Mail'**
+  String get cronjobFormAlertMethodMail;
+
+  /// No description provided for @cronjobFormAlertMethodWecom.
+  ///
+  /// In en, this message translates to:
+  /// **'WeCom'**
+  String get cronjobFormAlertMethodWecom;
+
+  /// No description provided for @cronjobFormAlertMethodDingtalk.
+  ///
+  /// In en, this message translates to:
+  /// **'DingTalk'**
+  String get cronjobFormAlertMethodDingtalk;
+
+  /// No description provided for @cronjobFormCustomSpecItemLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom spec {index}'**
+  String cronjobFormCustomSpecItemLabel(int index);
+
+  /// No description provided for @cronjobFormImportInvalidJson.
+  ///
+  /// In en, this message translates to:
+  /// **'The imported cronjob file must be a JSON array'**
+  String get cronjobFormImportInvalidJson;
+
+  /// No description provided for @cronjobFormExportEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'The exported cronjob file is empty'**
+  String get cronjobFormExportEmpty;
+
+  /// No description provided for @cronjobFormSpecRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Cronjob spec is required'**
+  String get cronjobFormSpecRequired;
+
+  /// No description provided for @cronjobFormUnsupportedType.
+  ///
+  /// In en, this message translates to:
+  /// **'This cronjob type is not supported in mobile yet'**
+  String get cronjobFormUnsupportedType;
+
+  /// No description provided for @cronjobFormUnknownBackupType.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown backup type: {type}'**
+  String cronjobFormUnknownBackupType(String type);
+
+  /// No description provided for @cronjobFormUnknownDatabaseType.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown database type: {type}'**
+  String cronjobFormUnknownDatabaseType(String type);
+
+  /// No description provided for @cronjobFormUnknownAlertMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown alert method: {method}'**
+  String cronjobFormUnknownAlertMethod(String method);
+
+  /// No description provided for @cronjobFormUnknownError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unexpected cronjob form error: {message}'**
+  String cronjobFormUnknownError(String message);
 
   /// No description provided for @operationsLogsTitle.
   ///

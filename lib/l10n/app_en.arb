@@ -1597,6 +1597,7 @@
   "operationsBackupRecordsTitle": "Backup Records",
   "operationsBackupRecoverTitle": "Backup Recover",
   "backupAccountsSearchHint": "Search backup accounts",
+  "backupAccountsFilterAllTypes": "All types",
   "backupAccountsEmptyTitle": "No backup accounts",
   "backupAccountsEmptyDescription": "Add a backup account to start using backup flows.",
   "backupAccountsScopePublic": "Public",
@@ -1611,12 +1612,19 @@
     }
   },
   "backupFilesSheetTitle": "Backup Files",
+  "backupAccountCardBucketLabel": "Bucket",
+  "backupAccountCardEndpointLabel": "Endpoint",
+  "backupAccountCardPathLabel": "Path",
+  "backupAccountCardBrowseFilesAction": "Browse files",
+  "backupAccountCardRefreshTokenAction": "Refresh token",
   "backupFormBasicSectionTitle": "Basic",
   "backupFormCredentialsSectionTitle": "Credentials",
   "backupFormStorageSectionTitle": "Storage",
   "backupFormVerifySectionTitle": "Verify",
   "backupFormPublicScopeLabel": "Public scope",
   "backupFormProviderTypeLabel": "Provider type",
+  "backupFormAccessKeyLabel": "Access Key",
+  "backupFormUsernameAccessKeyLabel": "Username / Access Key",
   "backupFormCredentialLabel": "Credential",
   "backupFormAddressLabel": "Address",
   "backupFormPortLabel": "Port",
@@ -1663,13 +1671,121 @@
   "backupRecoverAppLabel": "App",
   "backupRecoverWebsiteLabel": "Website",
   "backupRecoverDatabaseLabel": "Database",
+  "backupRecoverOtherLabel": "Other",
+  "backupRecoverSourceTypeLabel": "Source type",
   "backupRecoverDatabaseTypeLabel": "Database type",
   "backupRecoverDatabaseItemLabel": "Database item",
   "backupRecoverLoadRecordsAction": "Load records",
   "backupRecoverNoCandidateRecords": "No candidate records",
   "backupRecoverRecordLabel": "Backup record",
+  "backupRecoverSecretLabel": "Secret",
+  "backupRecoverTimeoutLabel": "Timeout",
   "backupRecoverStartAction": "Start recover",
   "backupRecoverConfirmMessage": "Start recovery from the selected backup record?",
+  "backupRecoverUnsupportedTypeHint": "The current mainline preserves {type} record context, but direct recover is not available yet.",
+  "@backupRecoverUnsupportedTypeHint": {
+    "placeholders": {
+      "type": { "type": "String" }
+    }
+  },
+  "backupRecoverUnsupportedTypeSubmitHint": "Recover submit is currently unavailable for {type} records.",
+  "@backupRecoverUnsupportedTypeSubmitHint": {
+    "placeholders": {
+      "type": { "type": "String" }
+    }
+  },
+  "backupResourceTypeUnknownLabel": "Unknown type: {type}",
+  "@backupResourceTypeUnknownLabel": {
+    "placeholders": {
+      "type": { "type": "String" }
+    }
+  },
+  "backupErrorOauthOpenFailed": "Unable to open the authorization page",
+  "backupErrorOauthUnsupportedProvider": "This backup provider does not support mobile authorization",
+  "backupErrorRecordPathEmpty": "The backup record path is empty",
+  "backupErrorRecordDownloadEmpty": "The downloaded backup file is empty",
+  "cronjobFormErrorImportInvalidJson": "The imported cronjob file must be a JSON array.",
+  "cronjobFormErrorExportEmpty": "The exported cronjob file is empty.",
+  "cronjobFormErrorSpecRequired": "Cronjob spec is required.",
+  "cronjobFormErrorUnsupportedType": "This cronjob type is not supported in the mobile form yet.",
+  "backupTypeLocal": "Local",
+  "backupTypeSftp": "SFTP",
+  "backupTypeWebdav": "WebDAV",
+  "backupTypeS3": "S3",
+  "backupTypeMinio": "MINIO",
+  "backupTypeOss": "OSS",
+  "backupTypeCos": "COS",
+  "backupTypeKodo": "KODO",
+  "backupTypeUpyun": "UPYUN",
+  "backupTypeOneDrive": "OneDrive",
+  "backupTypeGoogleDrive": "Google Drive",
+  "backupTypeAliyun": "Aliyun Drive",
+  "backupTypeApp": "App",
+  "backupTypeWebsite": "Website",
+  "backupTypeDatabase": "Database",
+  "backupTypeDirectory": "Directory",
+  "backupTypeSnapshot": "Snapshot",
+  "backupTypeLog": "Log",
+  "backupTypeContainer": "Container",
+  "backupTypeCompose": "Compose",
+  "backupTypeOther": "Other",
+  "databaseTypeMysql": "MySQL",
+  "databaseTypeMysqlCluster": "MySQL Cluster",
+  "databaseTypeMariadb": "MariaDB",
+  "databaseTypePostgresql": "PostgreSQL",
+  "databaseTypePostgresqlCluster": "PostgreSQL Cluster",
+  "databaseTypeRedis": "Redis",
+  "cronjobFormAppsLabel": "Apps",
+  "cronjobFormWebsitesLabel": "Websites",
+  "cronjobFormDatabasesLabel": "Databases",
+  "cronjobFormIgnoreAppsLabel": "Ignore apps",
+  "cronjobFormShellModeInline": "Inline",
+  "cronjobFormShellModeLibrary": "Library",
+  "cronjobFormShellModePath": "Path",
+  "cronjobFormUrlItemLabel": "URL {index}",
+  "@cronjobFormUrlItemLabel": {
+    "placeholders": {
+      "index": { "type": "int" }
+    }
+  },
+  "cronjobFormAddUrlAction": "Add URL",
+  "cronjobFormAlertMethodMail": "Mail",
+  "cronjobFormAlertMethodWecom": "WeCom",
+  "cronjobFormAlertMethodDingtalk": "DingTalk",
+  "cronjobFormCustomSpecItemLabel": "Custom spec {index}",
+  "@cronjobFormCustomSpecItemLabel": {
+    "placeholders": {
+      "index": { "type": "int" }
+    }
+  },
+  "cronjobFormImportInvalidJson": "The imported cronjob file must be a JSON array",
+  "cronjobFormExportEmpty": "The exported cronjob file is empty",
+  "cronjobFormSpecRequired": "Cronjob spec is required",
+  "cronjobFormUnsupportedType": "This cronjob type is not supported in mobile yet",
+  "cronjobFormUnknownBackupType": "Unknown backup type: {type}",
+  "@cronjobFormUnknownBackupType": {
+    "placeholders": {
+      "type": { "type": "String" }
+    }
+  },
+  "cronjobFormUnknownDatabaseType": "Unknown database type: {type}",
+  "@cronjobFormUnknownDatabaseType": {
+    "placeholders": {
+      "type": { "type": "String" }
+    }
+  },
+  "cronjobFormUnknownAlertMethod": "Unknown alert method: {method}",
+  "@cronjobFormUnknownAlertMethod": {
+    "placeholders": {
+      "method": { "type": "String" }
+    }
+  },
+  "cronjobFormUnknownError": "Unexpected cronjob form error: {message}",
+  "@cronjobFormUnknownError": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
   "operationsLogsTitle": "Logs Center",
   "operationsSystemLogViewerTitle": "System Log Viewer",
   "operationsTaskLogDetailTitle": "Task Log Detail",

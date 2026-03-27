@@ -66,6 +66,7 @@
 - `accessKey / credential` 的 Base64 编码在 Repository 层完成
 - 支持节点参数的 backup/recover/record 写操作默认使用 `operateNode=local`
 - `LOCAL` 账户视为内置只读项，不提供 create/edit/delete
+- Week 5 review 收口后，Week 5 新页面的用户可见文本、confirm 文案、页面级错误提示统一走 l10n
 
 ## Week 5 页面主链路
 
@@ -94,10 +95,34 @@
 ### BackupRecoverPage
 - 只做 `From record`
 - 三步：`Resource / Record / Confirm`
-- Week 5 UI 只开放：
+- UI 高层分类：
   - `app`
   - `website`
   - `database`
+  - `other`（仅用于承接真实记录类型，不作为主路径扩 scope）
+- Provider / Service 显式拆分：
+  - `recordType`：保留真实 backup 记录来源，用于 `record/search`
+  - `requestType`：恢复提交时传给 `/backups/recover`
+- 真实记录类型映射：
+  - `app -> app`
+  - `website -> website`
+  - `mysql / mysql-cluster / mariadb -> database`，UI 归为 `mysql` 家族，但从 records 进入时保留原始 `recordType/requestType`
+  - `postgresql / postgresql-cluster -> database`
+  - `redis / redis-cluster -> database`
+  - `directory / snapshot / log -> other`
+- `database` 作为非真实 record type 只用作高层分类；若从外部以 `database` 进入，移动端默认落到 `mysql` 家族
+- 当前 recover submit 允许：
+  - `app`
+  - `website`
+  - `mysql / mysql-cluster / mariadb`
+  - `postgresql / postgresql-cluster`
+  - `redis / redis-cluster`
+- 当前 recover submit 不开放：
+  - `directory`
+  - `snapshot`
+  - `log`
+  这些类型在移动端保留 record context，并明确展示“当前不可直接恢复”的状态，而不是忽略异常值或让 dropdown 进入非法态
+  若后续遇到未知 record type，也保持 `other + raw type` 上下文，不静默改写为 `directory`
 
 ## 已知取舍
 

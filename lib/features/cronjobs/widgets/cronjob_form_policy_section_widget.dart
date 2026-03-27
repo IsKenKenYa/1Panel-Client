@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/features/cronjobs/utils/cronjob_form_l10n_helper.dart';
 
 class CronjobFormPolicySectionWidget extends StatelessWidget {
   const CronjobFormPolicySectionWidget({
@@ -88,8 +89,8 @@ class CronjobFormPolicySectionWidget extends StatelessWidget {
               width: 120,
               child: DropdownButtonFormField<String>(
                 initialValue: timeoutUnit,
-                decoration:
-                    InputDecoration(labelText: l10n.cronjobFormTimeoutUnitLabel),
+                decoration: InputDecoration(
+                    labelText: l10n.cronjobFormTimeoutUnitLabel),
                 items: <DropdownMenuItem<String>>[
                   DropdownMenuItem(
                       value: 's', child: Text(l10n.cronjobFormSecondsLabel)),
@@ -148,7 +149,7 @@ class CronjobFormPolicySectionWidget extends StatelessWidget {
             runSpacing: 8,
             children: const <String>['mail', 'weCom', 'dingTalk']
                 .map((item) => FilterChip(
-                      label: Text(item),
+                      label: Text(cronjobAlertMethodLabel(l10n, item)),
                       selected: alertMethods.contains(item),
                       onSelected: (value) {
                         final next = List<String>.from(alertMethods);

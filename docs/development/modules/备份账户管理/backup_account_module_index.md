@@ -16,6 +16,11 @@
   - `BackupRecordsPage`
   - `BackupRecoverPage`
   - `BackupRepository / BackupAccountService / BackupRecordService / BackupRecoverService`
+- Week 5 review 收口补充：
+  - `BackupRecoverPage` 已对 `app / website / mysql / postgresql / redis / directory / snapshot / log` 做明确类型映射
+  - 恢复链路已拆成 `recordType`（records/search）和 `requestType`（recover submit），避免真实记录类型把页面带进非法状态
+  - `directory / snapshot / log` 在移动端保留记录上下文，不再把页面打进非法 dropdown 状态；当前仅阻止直接 recover submit
+  - Week 5 新页残留用户文案已统一迁移到 l10n
 - 后续增强：
   - `recoverByUpload` 主 UI
   - 更完整的 OAuth/provider 引导

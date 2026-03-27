@@ -209,8 +209,19 @@ class BackupAccountFormProvider extends ChangeNotifier with AsyncStateNotifier {
     }
   }
 
-  Future<void> startOAuth() {
-    return _service.openOAuthAuthorizePage(_draft);
+  Future<void> startOAuth() async {
+    clearError(notify: false);
+    try {
+      await _service.openOAuthAuthorizePage(_draft);
+    } catch (error, stackTrace) {
+      appLogger.eWithPackage(
+        'features.backups.providers.account_form',
+        'startOAuth failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      setError(error);
+    }
   }
 
   void applyAliyunToken(String tokenJson) {

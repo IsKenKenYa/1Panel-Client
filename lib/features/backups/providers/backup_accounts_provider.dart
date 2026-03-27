@@ -21,6 +21,7 @@ class BackupAccountsProvider extends ChangeNotifier with AsyncStateNotifier {
   String get searchQuery => _searchQuery;
   String? get selectedType => _selectedType;
   bool get isMutating => _isMutating;
+  List<String> get availableTypes => _service.creatableProviderTypes();
 
   Future<void> load() async {
     setLoading();

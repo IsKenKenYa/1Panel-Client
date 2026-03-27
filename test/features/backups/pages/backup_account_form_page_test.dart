@@ -84,7 +84,8 @@ void main() {
     await controller.close();
   });
 
-  testWidgets('BackupAccountFormPage does not initialize when no server is active',
+  testWidgets(
+      'BackupAccountFormPage does not initialize when no server is active',
       (tester) async {
     final service = _MockBackupAccountService();
     final callbackService = _MockBackupOauthCallbackService();

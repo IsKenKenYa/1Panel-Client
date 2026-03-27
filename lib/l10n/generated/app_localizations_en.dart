@@ -3952,6 +3952,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backupAccountsSearchHint => 'Search backup accounts';
 
   @override
+  String get backupAccountsFilterAllTypes => 'All types';
+
+  @override
   String get backupAccountsEmptyTitle => 'No backup accounts';
 
   @override
@@ -3982,6 +3985,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backupFilesSheetTitle => 'Backup Files';
 
   @override
+  String get backupAccountCardBucketLabel => 'Bucket';
+
+  @override
+  String get backupAccountCardEndpointLabel => 'Endpoint';
+
+  @override
+  String get backupAccountCardPathLabel => 'Path';
+
+  @override
+  String get backupAccountCardBrowseFilesAction => 'Browse files';
+
+  @override
+  String get backupAccountCardRefreshTokenAction => 'Refresh token';
+
+  @override
   String get backupFormBasicSectionTitle => 'Basic';
 
   @override
@@ -3998,6 +4016,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupFormProviderTypeLabel => 'Provider type';
+
+  @override
+  String get backupFormAccessKeyLabel => 'Access Key';
+
+  @override
+  String get backupFormUsernameAccessKeyLabel => 'Username / Access Key';
 
   @override
   String get backupFormCredentialLabel => 'Credential';
@@ -4126,6 +4150,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backupRecoverDatabaseLabel => 'Database';
 
   @override
+  String get backupRecoverOtherLabel => 'Other';
+
+  @override
+  String get backupRecoverSourceTypeLabel => 'Source type';
+
+  @override
   String get backupRecoverDatabaseTypeLabel => 'Database type';
 
   @override
@@ -4141,11 +4171,220 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backupRecoverRecordLabel => 'Backup record';
 
   @override
+  String get backupRecoverSecretLabel => 'Secret';
+
+  @override
+  String get backupRecoverTimeoutLabel => 'Timeout';
+
+  @override
   String get backupRecoverStartAction => 'Start recover';
 
   @override
   String get backupRecoverConfirmMessage =>
       'Start recovery from the selected backup record?';
+
+  @override
+  String backupRecoverUnsupportedTypeHint(String type) {
+    return 'The current mainline preserves $type record context, but direct recover is not available yet.';
+  }
+
+  @override
+  String backupRecoverUnsupportedTypeSubmitHint(String type) {
+    return 'Recover submit is currently unavailable for $type records.';
+  }
+
+  @override
+  String backupResourceTypeUnknownLabel(String type) {
+    return 'Unknown type: $type';
+  }
+
+  @override
+  String get backupErrorOauthOpenFailed =>
+      'Unable to open the authorization page';
+
+  @override
+  String get backupErrorOauthUnsupportedProvider =>
+      'This backup provider does not support mobile authorization';
+
+  @override
+  String get backupErrorRecordPathEmpty => 'The backup record path is empty';
+
+  @override
+  String get backupErrorRecordDownloadEmpty =>
+      'The downloaded backup file is empty';
+
+  @override
+  String get cronjobFormErrorImportInvalidJson =>
+      'The imported cronjob file must be a JSON array.';
+
+  @override
+  String get cronjobFormErrorExportEmpty =>
+      'The exported cronjob file is empty.';
+
+  @override
+  String get cronjobFormErrorSpecRequired => 'Cronjob spec is required.';
+
+  @override
+  String get cronjobFormErrorUnsupportedType =>
+      'This cronjob type is not supported in the mobile form yet.';
+
+  @override
+  String get backupTypeLocal => 'Local';
+
+  @override
+  String get backupTypeSftp => 'SFTP';
+
+  @override
+  String get backupTypeWebdav => 'WebDAV';
+
+  @override
+  String get backupTypeS3 => 'S3';
+
+  @override
+  String get backupTypeMinio => 'MINIO';
+
+  @override
+  String get backupTypeOss => 'OSS';
+
+  @override
+  String get backupTypeCos => 'COS';
+
+  @override
+  String get backupTypeKodo => 'KODO';
+
+  @override
+  String get backupTypeUpyun => 'UPYUN';
+
+  @override
+  String get backupTypeOneDrive => 'OneDrive';
+
+  @override
+  String get backupTypeGoogleDrive => 'Google Drive';
+
+  @override
+  String get backupTypeAliyun => 'Aliyun Drive';
+
+  @override
+  String get backupTypeApp => 'App';
+
+  @override
+  String get backupTypeWebsite => 'Website';
+
+  @override
+  String get backupTypeDatabase => 'Database';
+
+  @override
+  String get backupTypeDirectory => 'Directory';
+
+  @override
+  String get backupTypeSnapshot => 'Snapshot';
+
+  @override
+  String get backupTypeLog => 'Log';
+
+  @override
+  String get backupTypeContainer => 'Container';
+
+  @override
+  String get backupTypeCompose => 'Compose';
+
+  @override
+  String get backupTypeOther => 'Other';
+
+  @override
+  String get databaseTypeMysql => 'MySQL';
+
+  @override
+  String get databaseTypeMysqlCluster => 'MySQL Cluster';
+
+  @override
+  String get databaseTypeMariadb => 'MariaDB';
+
+  @override
+  String get databaseTypePostgresql => 'PostgreSQL';
+
+  @override
+  String get databaseTypePostgresqlCluster => 'PostgreSQL Cluster';
+
+  @override
+  String get databaseTypeRedis => 'Redis';
+
+  @override
+  String get cronjobFormAppsLabel => 'Apps';
+
+  @override
+  String get cronjobFormWebsitesLabel => 'Websites';
+
+  @override
+  String get cronjobFormDatabasesLabel => 'Databases';
+
+  @override
+  String get cronjobFormIgnoreAppsLabel => 'Ignore apps';
+
+  @override
+  String get cronjobFormShellModeInline => 'Inline';
+
+  @override
+  String get cronjobFormShellModeLibrary => 'Library';
+
+  @override
+  String get cronjobFormShellModePath => 'Path';
+
+  @override
+  String cronjobFormUrlItemLabel(int index) {
+    return 'URL $index';
+  }
+
+  @override
+  String get cronjobFormAddUrlAction => 'Add URL';
+
+  @override
+  String get cronjobFormAlertMethodMail => 'Mail';
+
+  @override
+  String get cronjobFormAlertMethodWecom => 'WeCom';
+
+  @override
+  String get cronjobFormAlertMethodDingtalk => 'DingTalk';
+
+  @override
+  String cronjobFormCustomSpecItemLabel(int index) {
+    return 'Custom spec $index';
+  }
+
+  @override
+  String get cronjobFormImportInvalidJson =>
+      'The imported cronjob file must be a JSON array';
+
+  @override
+  String get cronjobFormExportEmpty => 'The exported cronjob file is empty';
+
+  @override
+  String get cronjobFormSpecRequired => 'Cronjob spec is required';
+
+  @override
+  String get cronjobFormUnsupportedType =>
+      'This cronjob type is not supported in mobile yet';
+
+  @override
+  String cronjobFormUnknownBackupType(String type) {
+    return 'Unknown backup type: $type';
+  }
+
+  @override
+  String cronjobFormUnknownDatabaseType(String type) {
+    return 'Unknown database type: $type';
+  }
+
+  @override
+  String cronjobFormUnknownAlertMethod(String method) {
+    return 'Unknown alert method: $method';
+  }
+
+  @override
+  String cronjobFormUnknownError(String message) {
+    return 'Unexpected cronjob form error: $message';
+  }
 
   @override
   String get operationsLogsTitle => 'Logs Center';

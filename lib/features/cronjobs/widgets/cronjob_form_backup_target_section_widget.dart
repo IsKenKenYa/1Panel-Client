@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/app_models.dart';
 import 'package:onepanel_client/data/models/backup_account_models.dart';
 import 'package:onepanel_client/data/models/database_option_models.dart';
+import 'package:onepanel_client/shared/i18n/backup_l10n_helper.dart';
 
 class CronjobFormBackupTargetSectionWidget extends StatelessWidget {
   const CronjobFormBackupTargetSectionWidget({
@@ -82,18 +84,26 @@ class CronjobFormBackupTargetSectionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Column(
       children: <Widget>[
         DropdownButtonFormField<String>(
           initialValue: backupType,
-          decoration: const InputDecoration(labelText: 'Backup type'),
-          items: const <DropdownMenuItem<String>>[
-            DropdownMenuItem(value: 'app', child: Text('App')),
-            DropdownMenuItem(value: 'website', child: Text('Website')),
-            DropdownMenuItem(value: 'database', child: Text('Database')),
-            DropdownMenuItem(value: 'directory', child: Text('Directory')),
-            DropdownMenuItem(value: 'snapshot', child: Text('Snapshot')),
-            DropdownMenuItem(value: 'log', child: Text('Logs')),
+          decoration:
+              InputDecoration(labelText: l10n.cronjobFormBackupTypeLabel),
+          items: <DropdownMenuItem<String>>[
+            for (final item in const <String>[
+              'app',
+              'website',
+              'database',
+              'directory',
+              'snapshot',
+              'log',
+            ])
+              DropdownMenuItem<String>(
+                value: item,
+                child: Text(backupResourceTypeLabel(l10n, item)),
+              ),
           ],
           onChanged: (value) {
             if (value != null) {
@@ -104,7 +114,7 @@ class CronjobFormBackupTargetSectionWidget extends StatelessWidget {
         const SizedBox(height: 12),
         if (backupType == 'app')
           _ChipSelector(
-            label: 'Apps',
+            label: l10n.cronjobFormAppsLabel,
             options: appOptions
                 .map((item) =>
                     _ChipItem(item.id?.toString() ?? '', item.name ?? ''))
@@ -114,7 +124,7 @@ class CronjobFormBackupTargetSectionWidget extends StatelessWidget {
           ),
         if (backupType == 'website')
           _ChipSelector(
-            label: 'Websites',
+            label: l10n.cronjobFormWebsitesLabel,
             options: websiteOptions
                 .map(
                   (item) => _ChipItem(
@@ -131,16 +141,20 @@ class CronjobFormBackupTargetSectionWidget extends StatelessWidget {
         if (backupType == 'database') ...<Widget>[
           DropdownButtonFormField<String>(
             initialValue: databaseType,
-            decoration: const InputDecoration(labelText: 'Database type'),
-            items: const <DropdownMenuItem<String>>[
-              DropdownMenuItem(value: 'mysql', child: Text('MySQL')),
-              DropdownMenuItem(
-                  value: 'mysql-cluster', child: Text('MySQL Cluster')),
-              DropdownMenuItem(value: 'mariadb', child: Text('MariaDB')),
-              DropdownMenuItem(value: 'postgresql', child: Text('PostgreSQL')),
-              DropdownMenuItem(
-                  value: 'postgresql-cluster',
-                  child: Text('PostgreSQL Cluster')),
+            decoration:
+                InputDecoration(labelText: l10n.cronjobFormDatabaseTypeLabel),
+            items: <DropdownMenuItem<String>>[
+              for (final item in const <String>[
+                'mysql',
+                'mysql-cluster',
+                'mariadb',
+                'postgresql',
+                'postgresql-cluster',
+              ])
+                DropdownMenuItem<String>(
+                  value: item,
+                  child: Text(backupResourceTypeLabel(l10n, item)),
+                ),
             ],
             onChanged: (value) {
               if (value != null) {
@@ -150,7 +164,7 @@ class CronjobFormBackupTargetSectionWidget extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           _ChipSelector(
-            label: 'Databases',
+            label: l10n.cronjobFormDatabasesLabel,
             options: databaseItems
                 .map(
                   (item) => _ChipItem(
@@ -173,7 +187,8 @@ class CronjobFormBackupTargetSectionWidget extends StatelessWidget {
                   .where((item) => item.isNotEmpty)
                   .toList(growable: false),
             ),
-            decoration: const InputDecoration(labelText: 'Backup args'),
+            decoration:
+                InputDecoration(labelText: l10n.cronjobFormBackupArgsLabel),
           ),
         ],
         if (backupType == 'directory') ...<Widget>[
@@ -181,7 +196,7 @@ class CronjobFormBackupTargetSectionWidget extends StatelessWidget {
             value: isDir,
             onChanged: (value) => onDirectoryChanged(isDir: value),
             contentPadding: EdgeInsets.zero,
-            title: const Text('Backup directory'),
+            title: Text(l10n.cronjobFormBackupDirectoryLabel),
           ),
           const SizedBox(height: 12),
           TextFormField(
@@ -189,7 +204,9 @@ class CronjobFormBackupTargetSectionWidget extends StatelessWidget {
             initialValue: sourceDir,
             onChanged: (value) => onDirectoryChanged(sourceDir: value),
             decoration: InputDecoration(
-              labelText: isDir ? 'Directory path' : 'Selected files',
+              labelText: isDir
+                  ? l10n.cronjobFormDirectoryPathLabel
+                  : l10n.cronjobFormSelectedFilesLabel,
             ),
           ),
           const SizedBox(height: 12),
@@ -203,7 +220,8 @@ class CronjobFormBackupTargetSectionWidget extends StatelessWidget {
                   .where((item) => item.isNotEmpty)
                   .toList(growable: false),
             ),
-            decoration: const InputDecoration(labelText: 'Exclude patterns'),
+            decoration: InputDecoration(
+                labelText: l10n.cronjobFormExcludePatternsLabel),
           ),
           if (!isDir && files.isNotEmpty) ...<Widget>[
             const SizedBox(height: 8),
@@ -215,10 +233,10 @@ class CronjobFormBackupTargetSectionWidget extends StatelessWidget {
             value: withImage,
             onChanged: (value) => onSnapshotChanged(withImage: value),
             contentPadding: EdgeInsets.zero,
-            title: const Text('Include images'),
+            title: Text(l10n.cronjobFormIncludeImagesLabel),
           ),
           _ChipSelector(
-            label: 'Ignore apps',
+            label: l10n.cronjobFormIgnoreAppsLabel,
             options: appOptions
                 .where((item) => item.id != null)
                 .map(
@@ -238,13 +256,13 @@ class CronjobFormBackupTargetSectionWidget extends StatelessWidget {
         ],
         const SizedBox(height: 12),
         _ChipSelector(
-          label: 'Source accounts',
+          label: l10n.cronjobFormSourceAccountsLabel,
           options: backupOptions
               .where((item) => item.id != 0)
               .map(
                 (item) => _ChipItem(
                   item.id.toString(),
-                  '${item.type} · ${item.name}',
+                  '${backupProviderLabel(l10n, item.type)} · ${item.name}',
                 ),
               )
               .toList(growable: false),
@@ -261,13 +279,15 @@ class CronjobFormBackupTargetSectionWidget extends StatelessWidget {
         const SizedBox(height: 12),
         DropdownButtonFormField<int>(
           initialValue: downloadAccountID,
-          decoration: const InputDecoration(labelText: 'Default download path'),
+          decoration:
+              InputDecoration(labelText: l10n.cronjobFormDownloadAccountLabel),
           items: backupOptions
               .where((item) => sourceAccountItems.contains(item.id))
               .map(
                 (item) => DropdownMenuItem<int>(
                   value: item.id,
-                  child: Text('${item.type} · ${item.name}'),
+                  child: Text(
+                      '${backupProviderLabel(l10n, item.type)} · ${item.name}'),
                 ),
               )
               .toList(growable: false),
@@ -278,7 +298,7 @@ class CronjobFormBackupTargetSectionWidget extends StatelessWidget {
           key: ValueKey<String>('backup-secret-$secret'),
           initialValue: secret,
           onChanged: (value) => onPolicyChanged(secret: value),
-          decoration: const InputDecoration(labelText: 'Secret'),
+          decoration: InputDecoration(labelText: l10n.cronjobFormSecretLabel),
         ),
       ],
     );

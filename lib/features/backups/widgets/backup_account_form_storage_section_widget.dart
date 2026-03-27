@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/backups/models/backup_account_draft.dart';
 
 class BackupAccountFormStorageSectionWidget extends StatelessWidget {
@@ -29,6 +30,7 @@ class BackupAccountFormStorageSectionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final type = draft.type;
     final objectStorage = const <String>{
       'S3',
@@ -46,7 +48,7 @@ class BackupAccountFormStorageSectionWidget extends StatelessWidget {
             key: ValueKey<String>('backup-region-${draft.stringVar('region')}'),
             initialValue: draft.stringVar('region'),
             onChanged: (value) => onVarChanged('region', value),
-            decoration: const InputDecoration(labelText: 'Region'),
+            decoration: InputDecoration(labelText: l10n.backupFormRegionLabel),
           ),
         if (type == 'COS' || type == 'S3') const SizedBox(height: 12),
         if (objectStorage)
@@ -58,7 +60,9 @@ class BackupAccountFormStorageSectionWidget extends StatelessWidget {
             onChanged: (value) =>
                 onVarChanged(type == 'KODO' ? 'domain' : 'endpoint', value),
             decoration: InputDecoration(
-              labelText: type == 'KODO' ? 'Domain' : 'Endpoint',
+              labelText: type == 'KODO'
+                  ? l10n.backupFormDomainLabel
+                  : l10n.backupFormEndpointLabel,
             ),
           ),
         if (objectStorage) const SizedBox(height: 12),
@@ -71,11 +75,15 @@ class BackupAccountFormStorageSectionWidget extends StatelessWidget {
                         key: ValueKey<String>('backup-bucket-${draft.bucket}'),
                         initialValue: draft.bucket,
                         onChanged: (value) => onCommonChanged(bucket: value),
-                        decoration: const InputDecoration(labelText: 'Bucket'),
+                        decoration: InputDecoration(
+                            labelText: l10n.backupFormBucketLabel),
                       )
                     : DropdownButtonFormField<String>(
-                        initialValue: draft.bucket.isEmpty ? null : draft.bucket,
-                        decoration: const InputDecoration(labelText: 'Bucket'),
+                        initialValue:
+                            draft.bucket.isEmpty ? null : draft.bucket,
+                        decoration: InputDecoration(
+                          labelText: l10n.backupFormBucketLabel,
+                        ),
                         items: bucketOptions
                             .map(
                               (item) => DropdownMenuItem<String>(
@@ -104,7 +112,8 @@ class BackupAccountFormStorageSectionWidget extends StatelessWidget {
           key: ValueKey<String>('backup-path-${draft.backupPath}'),
           initialValue: draft.backupPath,
           onChanged: (value) => onCommonChanged(backupPath: value),
-          decoration: const InputDecoration(labelText: 'Backup path'),
+          decoration:
+              InputDecoration(labelText: l10n.backupFormBackupPathLabel),
         ),
       ],
     );

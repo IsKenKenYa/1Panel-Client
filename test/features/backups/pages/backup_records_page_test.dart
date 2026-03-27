@@ -58,7 +58,8 @@ void main() {
           name: any(named: 'name'),
           detailName: any(named: 'detailName'),
         )).thenAnswer((_) async => <BackupRecordListItem>[item]);
-    when(() => service.downloadRecord(any())).thenAnswer((_) async => throw UnimplementedError());
+    when(() => service.downloadRecord(any()))
+        .thenAnswer((_) async => throw UnimplementedError());
     when(() => service.deleteRecord(any())).thenAnswer((_) async {});
 
     await tester.pumpWidget(

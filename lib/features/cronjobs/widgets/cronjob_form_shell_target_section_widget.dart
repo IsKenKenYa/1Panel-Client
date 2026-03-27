@@ -51,10 +51,19 @@ class CronjobFormShellTargetSectionWidget extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         SegmentedButton<String>(
-          segments: const <ButtonSegment<String>>[
-            ButtonSegment(value: 'input', label: Text('Inline')),
-            ButtonSegment(value: 'library', label: Text('Library')),
-            ButtonSegment(value: 'select', label: Text('Path')),
+          segments: <ButtonSegment<String>>[
+            ButtonSegment(
+              value: 'input',
+              label: Text(l10n.cronjobFormShellModeInline),
+            ),
+            ButtonSegment(
+              value: 'library',
+              label: Text(l10n.cronjobFormShellModeLibrary),
+            ),
+            ButtonSegment(
+              value: 'select',
+              label: Text(l10n.cronjobFormShellModePath),
+            ),
           ],
           selected: <String>{scriptMode},
           onSelectionChanged: (Set<String> values) {

@@ -18,6 +18,9 @@
 - Cronjob create / update / delete UI
 - `next preview`
 - backup account/records/recover 联动
+- Week 5 review closeout：
+  - `CronjobFormPage` 残留硬编码文案与错误提示已清到 l10n
+  - backup/database/alert method 的未知值与页面级未知错误已统一走模块级 l10n fallback
 
 ## Week 4 交付边界
 

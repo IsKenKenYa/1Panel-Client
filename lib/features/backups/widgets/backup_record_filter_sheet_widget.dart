@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/shared/i18n/backup_l10n_helper.dart';
 
 class BackupRecordFilterSheetWidget extends StatefulWidget {
   const BackupRecordFilterSheetWidget({
@@ -41,6 +43,7 @@ class _BackupRecordFilterSheetWidgetState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -49,17 +52,23 @@ class _BackupRecordFilterSheetWidgetState
           children: <Widget>[
             DropdownButtonFormField<String>(
               initialValue: _type,
-              decoration: const InputDecoration(labelText: 'Type'),
-              items: const <DropdownMenuItem<String>>[
-                DropdownMenuItem(value: 'app', child: Text('App')),
-                DropdownMenuItem(value: 'website', child: Text('Website')),
-                DropdownMenuItem(value: 'mysql', child: Text('MySQL')),
-                DropdownMenuItem(
-                    value: 'postgresql', child: Text('PostgreSQL')),
-                DropdownMenuItem(value: 'redis', child: Text('Redis')),
-                DropdownMenuItem(value: 'directory', child: Text('Directory')),
-                DropdownMenuItem(value: 'snapshot', child: Text('Snapshot')),
-                DropdownMenuItem(value: 'log', child: Text('Log')),
+              decoration:
+                  InputDecoration(labelText: l10n.backupRecordsTypeLabel),
+              items: <DropdownMenuItem<String>>[
+                for (final item in const <String>[
+                  'app',
+                  'website',
+                  'mysql',
+                  'postgresql',
+                  'redis',
+                  'directory',
+                  'snapshot',
+                  'log',
+                ])
+                  DropdownMenuItem(
+                    value: item,
+                    child: Text(backupResourceTypeLabel(l10n, item)),
+                  ),
               ],
               onChanged: (value) {
                 if (value != null) {
@@ -70,12 +79,15 @@ class _BackupRecordFilterSheetWidgetState
             const SizedBox(height: 12),
             TextField(
               controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Name'),
+              decoration:
+                  InputDecoration(labelText: l10n.backupRecordsNameLabel),
             ),
             const SizedBox(height: 12),
             TextField(
               controller: _detailNameController,
-              decoration: const InputDecoration(labelText: 'Detail name'),
+              decoration: InputDecoration(
+                labelText: l10n.backupRecordsDetailNameLabel,
+              ),
             ),
             const SizedBox(height: 16),
             FilledButton(
@@ -84,7 +96,7 @@ class _BackupRecordFilterSheetWidgetState
                 'name': _nameController.text,
                 'detailName': _detailNameController.text,
               }),
-              child: const Text('Apply'),
+              child: Text(l10n.backupRecordsApplyAction),
             ),
           ],
         ),

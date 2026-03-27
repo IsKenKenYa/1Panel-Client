@@ -25,7 +25,7 @@
 | **System Setting** | 43 | ✅ setting_v2.dart | ✅ setting_models.dart | ✅ 已测试 | 🟡 部分 | MFA功能已实现 |
 | **File** | 37 | ✅ file_v2.dart | ✅ file_models.dart | ✅ 已测试 | 🟡 部分 | 上传/下载/编辑流程待扩展 |
 | **App** | 30 | ✅ app_v2.dart | ✅ app_models.dart | ✅ 已测试 | 🟡 部分 | 应用商店与安装流程待补齐 |
-| **Backup Account** | 25 | ✅ backup_account_v2.dart | ✅ backup_account_models.dart + `backup_request_models.dart` | ✅ 已测试 | ✅ 已集成 | Week 5 已交付账户 / records / recover 主链路 |
+| **Backup Account** | 25 | ✅ backup_account_v2.dart | ✅ backup_account_models.dart + `backup_request_models.dart` | ✅ 已测试 | ✅ 已集成 | Week 5 已交付账户 / records / recover 主链路；review closeout 后 `BackupRecoverPage` 已对 `app / website / mysql / postgresql / redis / directory / snapshot / log` 做显式类型映射，并拆分 `recordType/requestType`；非可恢复类型保留上下文并禁用提交 |
 | **Runtime** | 25 | ✅ runtime_v2.dart | ✅ runtime_models.dart | ⚠️ 待测试 | 🔴 待集成 | 运行时管理页面待建设 |
 | **Container** | 19 | ✅ container_v2.dart | ✅ container_models.dart | ✅ 已测试 | 🟡 部分 | 需要补齐网络/卷/镜像管理 |
 | **Database Mysql** | 14 | ✅ database_v2.dart | ✅ database_models.dart | ✅ 已测试 | 🟡 部分 | MySQL特定功能待细化 |
@@ -41,7 +41,7 @@
 
 | 模块 | 端点数 | API客户端 | 数据模型 | 测试覆盖 | UI集成 | 状态 | 备注 |
 |-------|---------|-----------|----------|----------|---------|------|------|
-| **Cronjob** | 16 | ✅ cronjob_v2.dart | ✅ cronjob_models.dart + `cronjob_form_*_models.dart` | ✅ 已测试 | ✅ 已集成 | Week 5 已补 `CronjobFormPage`，支持 shell / curl / backup 首批类型 |
+| **Cronjob** | 16 | ✅ cronjob_v2.dart | ✅ cronjob_models.dart + `cronjob_form_*_models.dart` | ✅ 已测试 | ✅ 已集成 | Week 5 已补 `CronjobFormPage`，支持 shell / curl / backup 首批类型；review closeout 已清理剩余页面文案、未知类型 fallback 与错误提示到 l10n |
 | **Firewall** | 15 | ✅ firewall_v2.dart | ✅ firewall_models.dart | ⚠️ 待测试 | 🔴 待集成 | 规则管理待建设 |
 | **SSH** | 12 | ✅ ssh_v2.dart | ✅ ssh_*_models.dart | ✅ 已测试 | ✅ 已集成 | Week 3 已交付设置 / 证书 / 日志 / 会话 MVP，session 实时链路复用 `process/ws` |
 | **Website SSL** | 11 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🟡 部分 | 证书与域名细分功能待扩展 |
@@ -86,7 +86,7 @@
 
 ## 实现状态统计
 
-> Week 5 同步说明：`CronjobForm` 与 `Backup` 主链路已接入真实页面、Provider、Service、API tests 和 widget/no-server 回归。
+> Week 5 同步说明：`CronjobForm` 与 `Backup` 主链路已接入真实页面、Provider、Service、API tests 和 widget/no-server 回归；本轮 review closeout 额外收口了 `BackupRecover` 的 `recordType/requestType` 映射，以及 Week 5 新页的 l10n 清理。
 
 ### 按优先级统计
 

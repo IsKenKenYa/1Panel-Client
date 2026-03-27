@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/cronjobs/models/cronjob_form_args.dart';
 import 'package:onepanel_client/features/cronjobs/providers/cronjob_form_provider.dart';
+import 'package:onepanel_client/features/cronjobs/utils/cronjob_form_l10n_helper.dart';
 import 'package:onepanel_client/features/cronjobs/widgets/cronjob_form_backup_target_section_widget.dart';
 import 'package:onepanel_client/features/cronjobs/widgets/cronjob_form_basic_section_widget.dart';
 import 'package:onepanel_client/features/cronjobs/widgets/cronjob_form_policy_section_widget.dart';
@@ -60,7 +61,7 @@ class _CronjobFormPageState extends State<CronjobFormPage> {
           ],
           body: AsyncStatePageBodyWidget(
             isLoading: provider.isLoading,
-            errorMessage: provider.errorMessage,
+            errorMessage: localizeCronjobFormError(l10n, provider.errorMessage),
             onRetry: () => provider.initialize(widget.args),
             child: ListView(
               padding: const EdgeInsets.all(16),
@@ -250,7 +251,10 @@ class _CronjobFormPageState extends State<CronjobFormPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          context.read<CronjobFormProvider>().errorMessage ??
+          localizeCronjobFormError(
+                context.l10n,
+                context.read<CronjobFormProvider>().errorMessage,
+              ) ??
               context.l10n.commonSaveFailed,
         ),
       ),

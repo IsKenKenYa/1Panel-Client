@@ -18,6 +18,10 @@
 - Week 5 待完成：
   - 已完成 `CronjobFormPage`
   - 继续保留更复杂类型到后续周
+- Week 5 review 收口补充：
+  - `CronjobFormPage` 残留用户可见硬编码文案已统一迁移到 l10n
+  - 页面级错误提示已改为通过 form error code -> l10n 映射输出
+  - backup/database/alert method 的未知值 fallback 也已改为模块级 l10n 文案
 
 ## 文档清单
 

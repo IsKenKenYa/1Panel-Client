@@ -102,7 +102,7 @@
 
 ## 测试文件清单
 
-> Week 5 同步说明：`CronjobForm` / `Backup` 已补充真实环境 API client、API 对齐、Provider / Widget 与 no-server 回归测试；聚合统计以当前模块级更新为准。
+> Week 5 同步说明：`CronjobForm` / `Backup` 已补充真实环境 API client、API 对齐、Provider / Widget 与 no-server 回归测试；本轮 review closeout 继续收口 `BackupRecover` 的 `recordType/requestType` 映射和 Week 5 新页 l10n。
 
 ### 单元测试 (test/api/)
 - ai_api_test.dart
@@ -115,8 +115,10 @@
 
 ### 集成测试 (test/api_client/)
 - app_api_client_test.dart
+- backup_api_client_test.dart
 - command_api_client_test.dart
 - cronjob_api_client_test.dart
+- cronjob_form_api_client_test.dart
 - phase1_api_alignment_test.dart
 - container_api_client_test.dart
 - dashboard_api_client_test.dart

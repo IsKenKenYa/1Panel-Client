@@ -38,8 +38,8 @@ void main() {
 
   testWidgets('BackupAccountsPage renders account card', (tester) async {
     final service = _MockBackupAccountService();
-    when(() => service.searchAccounts(keyword: any(named: 'keyword'), type: any(named: 'type')))
-        .thenAnswer(
+    when(() => service.searchAccounts(
+        keyword: any(named: 'keyword'), type: any(named: 'type'))).thenAnswer(
       (_) async => const <BackupAccountInfo>[
         BackupAccountInfo(
           id: 1,
@@ -105,6 +105,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    verifyNever(() => service.searchAccounts(keyword: any(named: 'keyword'), type: any(named: 'type')));
+    verifyNever(() => service.searchAccounts(
+        keyword: any(named: 'keyword'), type: any(named: 'type')));
   });
 }

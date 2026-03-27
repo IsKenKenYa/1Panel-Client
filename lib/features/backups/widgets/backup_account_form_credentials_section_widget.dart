@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/backups/models/backup_account_draft.dart';
 
 class BackupAccountFormCredentialsSectionWidget extends StatelessWidget {
@@ -29,6 +30,7 @@ class BackupAccountFormCredentialsSectionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final type = draft.type;
     final isObjectStorage = const <String>{
       'S3',
@@ -50,8 +52,9 @@ class BackupAccountFormCredentialsSectionWidget extends StatelessWidget {
             initialValue: draft.accessKey,
             onChanged: (value) => onCommonChanged(accessKey: value),
             decoration: InputDecoration(
-              labelText:
-                  isPasswordType ? 'Username / Access Key' : 'Access Key',
+              labelText: isPasswordType
+                  ? l10n.backupFormUsernameAccessKeyLabel
+                  : l10n.backupFormAccessKeyLabel,
             ),
           ),
         if (isObjectStorage || isPasswordType || type == 'UPYUN')
@@ -61,7 +64,8 @@ class BackupAccountFormCredentialsSectionWidget extends StatelessWidget {
             key: ValueKey<String>('backup-credential-${draft.credential}'),
             initialValue: draft.credential,
             onChanged: (value) => onCommonChanged(credential: value),
-            decoration: const InputDecoration(labelText: 'Credential'),
+            decoration:
+                InputDecoration(labelText: l10n.backupFormCredentialLabel),
           ),
         if (type == 'SFTP') ...<Widget>[
           const SizedBox(height: 12),
@@ -70,7 +74,7 @@ class BackupAccountFormCredentialsSectionWidget extends StatelessWidget {
                 'backup-sftp-address-${draft.stringVar('address')}'),
             initialValue: draft.stringVar('address'),
             onChanged: (value) => onVarChanged('address', value),
-            decoration: const InputDecoration(labelText: 'Address'),
+            decoration: InputDecoration(labelText: l10n.backupFormAddressLabel),
           ),
           const SizedBox(height: 12),
           TextFormField(
@@ -80,7 +84,7 @@ class BackupAccountFormCredentialsSectionWidget extends StatelessWidget {
             keyboardType: TextInputType.number,
             onChanged: (value) =>
                 onVarChanged('port', int.tryParse(value) ?? 22),
-            decoration: const InputDecoration(labelText: 'Port'),
+            decoration: InputDecoration(labelText: l10n.backupFormPortLabel),
           ),
         ],
         if (type == 'WebDAV') ...<Widget>[
@@ -90,7 +94,7 @@ class BackupAccountFormCredentialsSectionWidget extends StatelessWidget {
                 'backup-webdav-address-${draft.stringVar('address')}'),
             initialValue: draft.stringVar('address'),
             onChanged: (value) => onVarChanged('address', value),
-            decoration: const InputDecoration(labelText: 'Address'),
+            decoration: InputDecoration(labelText: l10n.backupFormAddressLabel),
           ),
         ],
         if (isOAuth) ...<Widget>[
@@ -99,14 +103,15 @@ class BackupAccountFormCredentialsSectionWidget extends StatelessWidget {
               value: draft.boolVar('isCN'),
               onChanged: onOneDriveRegionChanged,
               contentPadding: EdgeInsets.zero,
-              title: const Text('Use China cloud'),
+              title: Text(l10n.backupFormChinaCloudLabel),
             ),
           TextFormField(
             key: ValueKey<String>(
                 'backup-client-id-${draft.stringVar('client_id')}'),
             initialValue: draft.stringVar('client_id'),
             onChanged: (value) => onVarChanged('client_id', value),
-            decoration: const InputDecoration(labelText: 'Client ID'),
+            decoration:
+                InputDecoration(labelText: l10n.backupFormClientIdLabel),
           ),
           const SizedBox(height: 12),
           TextFormField(
@@ -114,7 +119,8 @@ class BackupAccountFormCredentialsSectionWidget extends StatelessWidget {
                 'backup-client-secret-${draft.stringVar('client_secret')}'),
             initialValue: draft.stringVar('client_secret'),
             onChanged: (value) => onVarChanged('client_secret', value),
-            decoration: const InputDecoration(labelText: 'Client Secret'),
+            decoration:
+                InputDecoration(labelText: l10n.backupFormClientSecretLabel),
           ),
           const SizedBox(height: 12),
           TextFormField(
@@ -122,14 +128,16 @@ class BackupAccountFormCredentialsSectionWidget extends StatelessWidget {
                 'backup-redirect-${draft.stringVar('redirect_uri')}'),
             initialValue: draft.stringVar('redirect_uri'),
             onChanged: (value) => onVarChanged('redirect_uri', value),
-            decoration: const InputDecoration(labelText: 'Redirect URI'),
+            decoration:
+                InputDecoration(labelText: l10n.backupFormRedirectUriLabel),
           ),
           const SizedBox(height: 12),
           TextFormField(
             key: ValueKey<String>('backup-code-${draft.stringVar('code')}'),
             initialValue: draft.stringVar('code'),
             onChanged: (value) => onVarChanged('code', value),
-            decoration: const InputDecoration(labelText: 'Authorization Code'),
+            decoration:
+                InputDecoration(labelText: l10n.backupFormAuthCodeLabel),
           ),
           const SizedBox(height: 12),
           Align(
@@ -137,7 +145,7 @@ class BackupAccountFormCredentialsSectionWidget extends StatelessWidget {
             child: FilledButton.tonalIcon(
               onPressed: onStartOAuth,
               icon: const Icon(Icons.open_in_browser_outlined),
-              label: const Text('Open authorize page'),
+              label: Text(l10n.backupFormOpenAuthorizeAction),
             ),
           ),
         ],
@@ -149,7 +157,8 @@ class BackupAccountFormCredentialsSectionWidget extends StatelessWidget {
             minLines: 3,
             maxLines: 6,
             onChanged: onAliyunTokenChanged,
-            decoration: const InputDecoration(labelText: 'Token JSON'),
+            decoration:
+                InputDecoration(labelText: l10n.backupFormTokenJsonLabel),
           ),
           const SizedBox(height: 12),
           TextFormField(
@@ -157,7 +166,7 @@ class BackupAccountFormCredentialsSectionWidget extends StatelessWidget {
                 'backup-aliyun-drive-${draft.stringVar('drive_id')}'),
             initialValue: draft.stringVar('drive_id'),
             onChanged: (value) => onVarChanged('drive_id', value),
-            decoration: const InputDecoration(labelText: 'Drive ID'),
+            decoration: InputDecoration(labelText: l10n.backupFormDriveIdLabel),
           ),
           const SizedBox(height: 12),
           TextFormField(
@@ -165,7 +174,8 @@ class BackupAccountFormCredentialsSectionWidget extends StatelessWidget {
                 'backup-aliyun-refresh-${draft.stringVar('refresh_token')}'),
             initialValue: draft.stringVar('refresh_token'),
             onChanged: (value) => onVarChanged('refresh_token', value),
-            decoration: const InputDecoration(labelText: 'Refresh Token'),
+            decoration:
+                InputDecoration(labelText: l10n.backupFormRefreshTokenLabel),
           ),
         ],
         if (type != 'OneDrive' &&
@@ -176,7 +186,7 @@ class BackupAccountFormCredentialsSectionWidget extends StatelessWidget {
             value: draft.rememberAuth,
             onChanged: (value) => onCommonChanged(rememberAuth: value),
             contentPadding: EdgeInsets.zero,
-            title: const Text('Remember credentials'),
+            title: Text(l10n.backupFormRememberCredentialsLabel),
           ),
       ],
     );

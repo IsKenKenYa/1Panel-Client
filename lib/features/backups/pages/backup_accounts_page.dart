@@ -11,6 +11,7 @@ import 'package:onepanel_client/features/backups/widgets/backup_account_card_wid
 import 'package:onepanel_client/features/backups/widgets/backup_files_sheet_widget.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
+import 'package:onepanel_client/shared/i18n/backup_l10n_helper.dart';
 import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:provider/provider.dart';
@@ -62,27 +63,13 @@ class _BackupAccountsPageState extends State<BackupAccountsPage> {
               itemBuilder: (context) => <PopupMenuEntry<String?>>[
                 PopupMenuItem<String?>(
                   value: null,
-                  child: Text(l10n.commandsFilterAllGroups),
+                  child: Text(l10n.backupAccountsFilterAllTypes),
                 ),
-                const PopupMenuItem<String?>(
-                    value: 'SFTP', child: Text('SFTP')),
-                const PopupMenuItem<String?>(
-                    value: 'WebDAV', child: Text('WebDAV')),
-                const PopupMenuItem<String?>(value: 'S3', child: Text('S3')),
-                const PopupMenuItem<String?>(
-                    value: 'MINIO', child: Text('MINIO')),
-                const PopupMenuItem<String?>(value: 'OSS', child: Text('OSS')),
-                const PopupMenuItem<String?>(value: 'COS', child: Text('COS')),
-                const PopupMenuItem<String?>(
-                    value: 'KODO', child: Text('KODO')),
-                const PopupMenuItem<String?>(
-                    value: 'UPYUN', child: Text('UPYUN')),
-                const PopupMenuItem<String?>(
-                    value: 'OneDrive', child: Text('OneDrive')),
-                const PopupMenuItem<String?>(
-                    value: 'GoogleDrive', child: Text('GoogleDrive')),
-                const PopupMenuItem<String?>(
-                    value: 'ALIYUN', child: Text('ALIYUN')),
+                for (final item in provider.availableTypes)
+                  PopupMenuItem<String?>(
+                    value: item,
+                    child: Text(backupProviderLabel(l10n, item)),
+                  ),
               ],
               icon: const Icon(Icons.filter_alt_outlined),
             ),
@@ -108,7 +95,7 @@ class _BackupAccountsPageState extends State<BackupAccountsPage> {
                       onChanged: provider.updateSearchQuery,
                       onSubmitted: (_) => provider.load(),
                       decoration: InputDecoration(
-                        hintText: 'Search backup accounts',
+                        hintText: l10n.backupAccountsSearchHint,
                         prefixIcon: const Icon(Icons.search),
                       ),
                     ),
@@ -139,11 +126,11 @@ class _BackupAccountsPageState extends State<BackupAccountsPage> {
                 child: AsyncStatePageBodyWidget(
                   isLoading: provider.isLoading,
                   isEmpty: provider.isEmpty,
-                  errorMessage: provider.errorMessage,
+                  errorMessage:
+                      localizeBackupError(l10n, provider.errorMessage),
                   onRetry: provider.load,
-                  emptyTitle: 'No backup accounts',
-                  emptyDescription:
-                      'Add a backup account to start using backup flows.',
+                  emptyTitle: l10n.backupAccountsEmptyTitle,
+                  emptyDescription: l10n.backupAccountsEmptyDescription,
                   child: RefreshIndicator(
                     onRefresh: provider.load,
                     child: ListView.separated(
@@ -157,7 +144,9 @@ class _BackupAccountsPageState extends State<BackupAccountsPage> {
                         return BackupAccountCardWidget(
                           account: account,
                           endpoint: _accountService.endpointText(account),
-                          scopeLabel: account.isPublic ? 'Public' : 'Private',
+                          scopeLabel: account.isPublic
+                              ? l10n.backupAccountsScopePublic
+                              : l10n.backupAccountsScopePrivate,
                           onEdit: readOnly ? null : () => _openEdit(account),
                           onTest: () => _test(account),
                           onBrowseFiles: () => _browseFiles(account),
@@ -221,8 +210,13 @@ class _BackupAccountsPageState extends State<BackupAccountsPage> {
     if (!mounted || result == null) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-          content: Text(result.msg ??
-              (result.isOk ? 'Connection ok' : 'Connection failed'))),
+        content: Text(
+          localizeBackupError(context.l10n, result.msg) ??
+              (result.isOk
+                  ? context.l10n.backupAccountsConnectionOk
+                  : context.l10n.backupAccountsConnectionFailed),
+        ),
+      ),
     );
   }
 
@@ -231,7 +225,7 @@ class _BackupAccountsPageState extends State<BackupAccountsPage> {
         await context.read<BackupAccountsProvider>().refreshToken(account);
     if (!mounted || !success) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Token refreshed')),
+      SnackBar(content: Text(context.l10n.backupAccountsTokenRefreshed)),
     );
   }
 
@@ -255,7 +249,7 @@ class _BackupAccountsPageState extends State<BackupAccountsPage> {
     final confirmed = await ConfirmActionSheetWidget.show(
       context,
       title: context.l10n.commonDelete,
-      message: 'Delete backup account ${account.name}?',
+      message: context.l10n.backupAccountsDeleteConfirm(account.name),
       confirmLabel: context.l10n.commonDelete,
       confirmIcon: Icons.delete_outline,
       isDestructive: true,

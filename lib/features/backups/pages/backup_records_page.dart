@@ -9,6 +9,7 @@ import 'package:onepanel_client/features/backups/widgets/backup_record_card_widg
 import 'package:onepanel_client/features/backups/widgets/backup_record_filter_sheet_widget.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
+import 'package:onepanel_client/shared/i18n/backup_l10n_helper.dart';
 import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:provider/provider.dart';
@@ -50,7 +51,7 @@ class _BackupRecordsPageState extends State<BackupRecordsPage> {
             IconButton(
               onPressed: _openFilter,
               icon: const Icon(Icons.filter_alt_outlined),
-              tooltip: 'Filter',
+              tooltip: l10n.backupRecordsFilterAction,
             ),
             IconButton(
               onPressed: provider.isLoading ? null : provider.load,
@@ -61,11 +62,10 @@ class _BackupRecordsPageState extends State<BackupRecordsPage> {
           body: AsyncStatePageBodyWidget(
             isLoading: provider.isLoading,
             isEmpty: provider.isEmpty,
-            errorMessage: provider.errorMessage,
+            errorMessage: localizeBackupError(l10n, provider.errorMessage),
             onRetry: provider.load,
-            emptyTitle: 'No backup records',
-            emptyDescription:
-                'Backup records will appear here after backups run.',
+            emptyTitle: l10n.backupRecordsEmptyTitle,
+            emptyDescription: l10n.backupRecordsEmptyDescription,
             child: RefreshIndicator(
               onRefresh: provider.load,
               child: ListView.separated(
@@ -124,7 +124,8 @@ class _BackupRecordsPageState extends State<BackupRecordsPage> {
     final confirmed = await ConfirmActionSheetWidget.show(
       context,
       title: context.l10n.commonDelete,
-      message: 'Delete backup record ${item.record.fileName ?? ''}?',
+      message:
+          context.l10n.backupRecordsDeleteConfirm(item.record.fileName ?? ''),
       confirmLabel: context.l10n.commonDelete,
       confirmIcon: Icons.delete_outline,
       isDestructive: true,

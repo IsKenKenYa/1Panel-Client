@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
 
 class CronjobFormUrlTargetSectionWidget extends StatelessWidget {
   const CronjobFormUrlTargetSectionWidget({
@@ -12,6 +13,7 @@ class CronjobFormUrlTargetSectionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Column(
       children: <Widget>[
         for (var index = 0; index < urlItems.length; index++) ...<Widget>[
@@ -26,7 +28,9 @@ class CronjobFormUrlTargetSectionWidget extends StatelessWidget {
                     items[index] = value;
                     onChanged(items);
                   },
-                  decoration: InputDecoration(labelText: 'URL ${index + 1}'),
+                  decoration: InputDecoration(
+                    labelText: l10n.cronjobFormUrlItemLabel(index + 1),
+                  ),
                 ),
               ),
               if (urlItems.length > 1)
@@ -46,7 +50,7 @@ class CronjobFormUrlTargetSectionWidget extends StatelessWidget {
           child: TextButton.icon(
             onPressed: () => onChanged(<String>[...urlItems, '']),
             icon: const Icon(Icons.add),
-            label: const Text('URL'),
+            label: Text(l10n.cronjobFormAddUrlAction),
           ),
         ),
       ],

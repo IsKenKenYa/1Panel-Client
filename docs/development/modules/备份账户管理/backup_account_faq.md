@@ -37,7 +37,7 @@
 3. 点击"测试连接"按钮
 4. 查看测试结果
 
-**API端点**: `POST /backups/test`
+**API端点**: `POST /backups/conn/check`
 
 ### Q4: 备份记录保留多长时间？
 
@@ -67,6 +67,25 @@
 5. 确认恢复操作
 
 **API端点**: `POST /backups/recover`
+
+**当前移动端 recover submit 支持**:
+- `app`
+- `website`
+- `mysql / mysql-cluster / mariadb`
+- `postgresql / postgresql-cluster`
+- `redis / redis-cluster`
+
+**当前移动端只保留记录上下文、不开放直接提交恢复**:
+- `directory`
+- `snapshot`
+- `log`
+
+这些类型现在会稳定进入 `BackupRecoverPage`，但会明确提示“当前不可直接恢复”，避免页面进入非法状态。
+
+补充口径：
+- `recordType` 保留真实记录来源，用于 `record/search`
+- `requestType` 作为 recover submit 的真实提交类型
+- UI 仍只按 `app / website / database / other` 展示高层分类；数据库类在 UI 侧归并为 `mysql / postgresql / redis` 家族
 
 ### Q7: 备份失败怎么办？
 

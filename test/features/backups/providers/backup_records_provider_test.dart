@@ -52,7 +52,8 @@ void main() {
           detailName: any(named: 'detailName'),
         )).thenAnswer((_) async => <BackupRecordListItem>[item]);
     when(() => service.downloadRecord(any())).thenAnswer(
-      (_) async => const FileSaveResult(success: true, filePath: '/tmp/dump.tar.gz'),
+      (_) async =>
+          const FileSaveResult(success: true, filePath: '/tmp/dump.tar.gz'),
     );
     when(() => service.deleteRecord(any())).thenAnswer((_) async {});
     provider = BackupRecordsProvider(service: service);

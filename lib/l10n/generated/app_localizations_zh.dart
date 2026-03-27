@@ -3886,6 +3886,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backupAccountsSearchHint => '搜索备份账户';
 
   @override
+  String get backupAccountsFilterAllTypes => '全部类型';
+
+  @override
   String get backupAccountsEmptyTitle => '暂无备份账户';
 
   @override
@@ -3915,6 +3918,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backupFilesSheetTitle => '备份文件';
 
   @override
+  String get backupAccountCardBucketLabel => 'Bucket';
+
+  @override
+  String get backupAccountCardEndpointLabel => 'Endpoint';
+
+  @override
+  String get backupAccountCardPathLabel => '路径';
+
+  @override
+  String get backupAccountCardBrowseFilesAction => '浏览文件';
+
+  @override
+  String get backupAccountCardRefreshTokenAction => '刷新 Token';
+
+  @override
   String get backupFormBasicSectionTitle => '基础信息';
 
   @override
@@ -3931,6 +3949,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get backupFormProviderTypeLabel => 'Provider 类型';
+
+  @override
+  String get backupFormAccessKeyLabel => 'Access Key';
+
+  @override
+  String get backupFormUsernameAccessKeyLabel => '用户名 / Access Key';
 
   @override
   String get backupFormCredentialLabel => '凭据';
@@ -4058,6 +4082,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backupRecoverDatabaseLabel => '数据库';
 
   @override
+  String get backupRecoverOtherLabel => '其他';
+
+  @override
+  String get backupRecoverSourceTypeLabel => '来源类型';
+
+  @override
   String get backupRecoverDatabaseTypeLabel => '数据库类型';
 
   @override
@@ -4073,10 +4103,211 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backupRecoverRecordLabel => '备份记录';
 
   @override
+  String get backupRecoverSecretLabel => '密钥';
+
+  @override
+  String get backupRecoverTimeoutLabel => '超时';
+
+  @override
   String get backupRecoverStartAction => '开始恢复';
 
   @override
   String get backupRecoverConfirmMessage => '确认从所选备份记录发起恢复吗？';
+
+  @override
+  String backupRecoverUnsupportedTypeHint(String type) {
+    return '当前主链先保留 $type 记录的恢复上下文，直接恢复操作暂未开放。';
+  }
+
+  @override
+  String backupRecoverUnsupportedTypeSubmitHint(String type) {
+    return '当前暂不支持对 $type 记录直接提交恢复。';
+  }
+
+  @override
+  String backupResourceTypeUnknownLabel(String type) {
+    return '未知类型：$type';
+  }
+
+  @override
+  String get backupErrorOauthOpenFailed => '无法打开授权页面';
+
+  @override
+  String get backupErrorOauthUnsupportedProvider => '当前备份提供商不支持移动端授权流程';
+
+  @override
+  String get backupErrorRecordPathEmpty => '备份记录路径为空';
+
+  @override
+  String get backupErrorRecordDownloadEmpty => '下载得到的备份文件为空';
+
+  @override
+  String get cronjobFormErrorImportInvalidJson => '导入的计划任务文件必须是 JSON 数组。';
+
+  @override
+  String get cronjobFormErrorExportEmpty => '导出的计划任务文件为空。';
+
+  @override
+  String get cronjobFormErrorSpecRequired => '计划任务表达式不能为空。';
+
+  @override
+  String get cronjobFormErrorUnsupportedType => '当前移动端表单暂不支持该计划任务类型。';
+
+  @override
+  String get backupTypeLocal => '本地';
+
+  @override
+  String get backupTypeSftp => 'SFTP';
+
+  @override
+  String get backupTypeWebdav => 'WebDAV';
+
+  @override
+  String get backupTypeS3 => 'S3';
+
+  @override
+  String get backupTypeMinio => 'MINIO';
+
+  @override
+  String get backupTypeOss => 'OSS';
+
+  @override
+  String get backupTypeCos => 'COS';
+
+  @override
+  String get backupTypeKodo => 'KODO';
+
+  @override
+  String get backupTypeUpyun => 'UPYUN';
+
+  @override
+  String get backupTypeOneDrive => 'OneDrive';
+
+  @override
+  String get backupTypeGoogleDrive => 'Google Drive';
+
+  @override
+  String get backupTypeAliyun => '阿里云盘';
+
+  @override
+  String get backupTypeApp => '应用';
+
+  @override
+  String get backupTypeWebsite => '网站';
+
+  @override
+  String get backupTypeDatabase => '数据库';
+
+  @override
+  String get backupTypeDirectory => '目录';
+
+  @override
+  String get backupTypeSnapshot => '快照';
+
+  @override
+  String get backupTypeLog => '日志';
+
+  @override
+  String get backupTypeContainer => '容器';
+
+  @override
+  String get backupTypeCompose => '编排';
+
+  @override
+  String get backupTypeOther => '其他';
+
+  @override
+  String get databaseTypeMysql => 'MySQL';
+
+  @override
+  String get databaseTypeMysqlCluster => 'MySQL 集群';
+
+  @override
+  String get databaseTypeMariadb => 'MariaDB';
+
+  @override
+  String get databaseTypePostgresql => 'PostgreSQL';
+
+  @override
+  String get databaseTypePostgresqlCluster => 'PostgreSQL 集群';
+
+  @override
+  String get databaseTypeRedis => 'Redis';
+
+  @override
+  String get cronjobFormAppsLabel => '应用';
+
+  @override
+  String get cronjobFormWebsitesLabel => '网站';
+
+  @override
+  String get cronjobFormDatabasesLabel => '数据库';
+
+  @override
+  String get cronjobFormIgnoreAppsLabel => '忽略应用';
+
+  @override
+  String get cronjobFormShellModeInline => '内联';
+
+  @override
+  String get cronjobFormShellModeLibrary => '脚本库';
+
+  @override
+  String get cronjobFormShellModePath => '路径';
+
+  @override
+  String cronjobFormUrlItemLabel(int index) {
+    return 'URL $index';
+  }
+
+  @override
+  String get cronjobFormAddUrlAction => '添加 URL';
+
+  @override
+  String get cronjobFormAlertMethodMail => '邮件';
+
+  @override
+  String get cronjobFormAlertMethodWecom => '企业微信';
+
+  @override
+  String get cronjobFormAlertMethodDingtalk => '钉钉';
+
+  @override
+  String cronjobFormCustomSpecItemLabel(int index) {
+    return '自定义表达式 $index';
+  }
+
+  @override
+  String get cronjobFormImportInvalidJson => '导入的计划任务文件必须是 JSON 数组';
+
+  @override
+  String get cronjobFormExportEmpty => '导出的计划任务文件为空';
+
+  @override
+  String get cronjobFormSpecRequired => '计划任务表达式不能为空';
+
+  @override
+  String get cronjobFormUnsupportedType => '当前移动端暂不支持这种计划任务类型';
+
+  @override
+  String cronjobFormUnknownBackupType(String type) {
+    return '未知备份类型：$type';
+  }
+
+  @override
+  String cronjobFormUnknownDatabaseType(String type) {
+    return '未知数据库类型：$type';
+  }
+
+  @override
+  String cronjobFormUnknownAlertMethod(String method) {
+    return '未知告警方式：$method';
+  }
+
+  @override
+  String cronjobFormUnknownError(String message) {
+    return '计划任务表单出现未预期错误：$message';
+  }
 
   @override
   String get operationsLogsTitle => '日志中心';

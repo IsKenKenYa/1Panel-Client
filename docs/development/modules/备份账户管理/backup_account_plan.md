@@ -14,6 +14,9 @@
 - `BackupRecoverService`
 - `BackupOauthCallbackService`
 - API 对齐测试、真实环境 API tests、Provider tests、Widget tests
+- Week 5 review closeout：
+  - `BackupRecoverPage` 已收口真实 record source 映射，并拆分 `recordType/requestType`
+  - 残留硬编码文案已清到 l10n
 
 ## Week 5 交付边界
 
@@ -46,6 +49,8 @@
 - `OneDrive / GoogleDrive / ALIYUN` 仍需真机 destructive/完整授权成功流验证
 - `recover / refresh token` 为 release gate 级写操作
 - `info/name` 搜索口径兼容是移动端适配策略，后续若上游统一字段仍需回收
+- `directory / snapshot / log` 当前只保证记录上下文稳定承接，不开放直接 recover submit；若后续上游补可恢复语义，再扩 UI 主路径
+- `mysql-cluster / mariadb / postgresql-cluster / redis-cluster` 当前只在恢复链路保留真实 requestType，不单独扩移动端数据库家族 UI
 
 ---
 

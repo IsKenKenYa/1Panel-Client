@@ -31,10 +31,13 @@ void main() {
 
   setUp(() {
     service = _MockBackupAccountService();
-    when(() => service.searchAccounts(keyword: any(named: 'keyword'), type: any(named: 'type')))
-        .thenAnswer((_) async => accounts);
-    when(() => service.initializeDraft(any())).thenAnswer((_) async => throw UnimplementedError());
-    when(() => service.listFiles(any())).thenAnswer((_) async => const <String>['a.tar.gz']);
+    when(() => service.searchAccounts(
+        keyword: any(named: 'keyword'),
+        type: any(named: 'type'))).thenAnswer((_) async => accounts);
+    when(() => service.initializeDraft(any()))
+        .thenAnswer((_) async => throw UnimplementedError());
+    when(() => service.listFiles(any()))
+        .thenAnswer((_) async => const <String>['a.tar.gz']);
     when(() => service.refreshToken(any())).thenAnswer((_) async {});
     when(() => service.deleteAccount(any())).thenAnswer((_) async {});
     provider = BackupAccountsProvider(service: service);

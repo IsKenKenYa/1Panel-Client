@@ -1535,6 +1535,7 @@
   "operationsBackupRecordsTitle": "备份记录",
   "operationsBackupRecoverTitle": "备份恢复",
   "backupAccountsSearchHint": "搜索备份账户",
+  "backupAccountsFilterAllTypes": "全部类型",
   "backupAccountsEmptyTitle": "暂无备份账户",
   "backupAccountsEmptyDescription": "添加备份账户后，就可以开始使用备份主链路。",
   "backupAccountsScopePublic": "公共",
@@ -1549,12 +1550,19 @@
     }
   },
   "backupFilesSheetTitle": "备份文件",
+  "backupAccountCardBucketLabel": "Bucket",
+  "backupAccountCardEndpointLabel": "Endpoint",
+  "backupAccountCardPathLabel": "路径",
+  "backupAccountCardBrowseFilesAction": "浏览文件",
+  "backupAccountCardRefreshTokenAction": "刷新 Token",
   "backupFormBasicSectionTitle": "基础信息",
   "backupFormCredentialsSectionTitle": "凭据",
   "backupFormStorageSectionTitle": "存储配置",
   "backupFormVerifySectionTitle": "连接验证",
   "backupFormPublicScopeLabel": "公共范围",
   "backupFormProviderTypeLabel": "Provider 类型",
+  "backupFormAccessKeyLabel": "Access Key",
+  "backupFormUsernameAccessKeyLabel": "用户名 / Access Key",
   "backupFormCredentialLabel": "凭据",
   "backupFormAddressLabel": "地址",
   "backupFormPortLabel": "端口",
@@ -1601,13 +1609,121 @@
   "backupRecoverAppLabel": "应用",
   "backupRecoverWebsiteLabel": "网站",
   "backupRecoverDatabaseLabel": "数据库",
+  "backupRecoverOtherLabel": "其他",
+  "backupRecoverSourceTypeLabel": "来源类型",
   "backupRecoverDatabaseTypeLabel": "数据库类型",
   "backupRecoverDatabaseItemLabel": "数据库项",
   "backupRecoverLoadRecordsAction": "加载记录",
   "backupRecoverNoCandidateRecords": "暂无可恢复记录",
   "backupRecoverRecordLabel": "备份记录",
+  "backupRecoverSecretLabel": "密钥",
+  "backupRecoverTimeoutLabel": "超时",
   "backupRecoverStartAction": "开始恢复",
   "backupRecoverConfirmMessage": "确认从所选备份记录发起恢复吗？",
+  "backupRecoverUnsupportedTypeHint": "当前主链先保留 {type} 记录的恢复上下文，直接恢复操作暂未开放。",
+  "@backupRecoverUnsupportedTypeHint": {
+    "placeholders": {
+      "type": { "type": "String" }
+    }
+  },
+  "backupRecoverUnsupportedTypeSubmitHint": "当前暂不支持对 {type} 记录直接提交恢复。",
+  "@backupRecoverUnsupportedTypeSubmitHint": {
+    "placeholders": {
+      "type": { "type": "String" }
+    }
+  },
+  "backupResourceTypeUnknownLabel": "未知类型：{type}",
+  "@backupResourceTypeUnknownLabel": {
+    "placeholders": {
+      "type": { "type": "String" }
+    }
+  },
+  "backupErrorOauthOpenFailed": "无法打开授权页面",
+  "backupErrorOauthUnsupportedProvider": "当前备份提供商不支持移动端授权流程",
+  "backupErrorRecordPathEmpty": "备份记录路径为空",
+  "backupErrorRecordDownloadEmpty": "下载得到的备份文件为空",
+  "cronjobFormErrorImportInvalidJson": "导入的计划任务文件必须是 JSON 数组。",
+  "cronjobFormErrorExportEmpty": "导出的计划任务文件为空。",
+  "cronjobFormErrorSpecRequired": "计划任务表达式不能为空。",
+  "cronjobFormErrorUnsupportedType": "当前移动端表单暂不支持该计划任务类型。",
+  "backupTypeLocal": "本地",
+  "backupTypeSftp": "SFTP",
+  "backupTypeWebdav": "WebDAV",
+  "backupTypeS3": "S3",
+  "backupTypeMinio": "MINIO",
+  "backupTypeOss": "OSS",
+  "backupTypeCos": "COS",
+  "backupTypeKodo": "KODO",
+  "backupTypeUpyun": "UPYUN",
+  "backupTypeOneDrive": "OneDrive",
+  "backupTypeGoogleDrive": "Google Drive",
+  "backupTypeAliyun": "阿里云盘",
+  "backupTypeApp": "应用",
+  "backupTypeWebsite": "网站",
+  "backupTypeDatabase": "数据库",
+  "backupTypeDirectory": "目录",
+  "backupTypeSnapshot": "快照",
+  "backupTypeLog": "日志",
+  "backupTypeContainer": "容器",
+  "backupTypeCompose": "编排",
+  "backupTypeOther": "其他",
+  "databaseTypeMysql": "MySQL",
+  "databaseTypeMysqlCluster": "MySQL 集群",
+  "databaseTypeMariadb": "MariaDB",
+  "databaseTypePostgresql": "PostgreSQL",
+  "databaseTypePostgresqlCluster": "PostgreSQL 集群",
+  "databaseTypeRedis": "Redis",
+  "cronjobFormAppsLabel": "应用",
+  "cronjobFormWebsitesLabel": "网站",
+  "cronjobFormDatabasesLabel": "数据库",
+  "cronjobFormIgnoreAppsLabel": "忽略应用",
+  "cronjobFormShellModeInline": "内联",
+  "cronjobFormShellModeLibrary": "脚本库",
+  "cronjobFormShellModePath": "路径",
+  "cronjobFormUrlItemLabel": "URL {index}",
+  "@cronjobFormUrlItemLabel": {
+    "placeholders": {
+      "index": { "type": "int" }
+    }
+  },
+  "cronjobFormAddUrlAction": "添加 URL",
+  "cronjobFormAlertMethodMail": "邮件",
+  "cronjobFormAlertMethodWecom": "企业微信",
+  "cronjobFormAlertMethodDingtalk": "钉钉",
+  "cronjobFormCustomSpecItemLabel": "自定义表达式 {index}",
+  "@cronjobFormCustomSpecItemLabel": {
+    "placeholders": {
+      "index": { "type": "int" }
+    }
+  },
+  "cronjobFormImportInvalidJson": "导入的计划任务文件必须是 JSON 数组",
+  "cronjobFormExportEmpty": "导出的计划任务文件为空",
+  "cronjobFormSpecRequired": "计划任务表达式不能为空",
+  "cronjobFormUnsupportedType": "当前移动端暂不支持这种计划任务类型",
+  "cronjobFormUnknownBackupType": "未知备份类型：{type}",
+  "@cronjobFormUnknownBackupType": {
+    "placeholders": {
+      "type": { "type": "String" }
+    }
+  },
+  "cronjobFormUnknownDatabaseType": "未知数据库类型：{type}",
+  "@cronjobFormUnknownDatabaseType": {
+    "placeholders": {
+      "type": { "type": "String" }
+    }
+  },
+  "cronjobFormUnknownAlertMethod": "未知告警方式：{method}",
+  "@cronjobFormUnknownAlertMethod": {
+    "placeholders": {
+      "method": { "type": "String" }
+    }
+  },
+  "cronjobFormUnknownError": "计划任务表单出现未预期错误：{message}",
+  "@cronjobFormUnknownError": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
   "operationsLogsTitle": "日志中心",
   "operationsSystemLogViewerTitle": "系统日志查看",
   "operationsTaskLogDetailTitle": "任务日志详情",

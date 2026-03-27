@@ -63,7 +63,7 @@ class CronjobFormScheduleSectionWidget extends StatelessWidget {
                     initialValue: rawSpecs[index],
                     onChanged: (value) => onRawSpecChanged(index, value),
                     decoration: InputDecoration(
-                      labelText: '$customSpecLabel ${index + 1}',
+                      labelText: l10n.cronjobFormCustomSpecItemLabel(index + 1),
                     ),
                   ),
                 ),

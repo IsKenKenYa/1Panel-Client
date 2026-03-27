@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/data/models/backup_account_models.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/shared/i18n/backup_l10n_helper.dart';
 
 class BackupAccountCardWidget extends StatelessWidget {
   const BackupAccountCardWidget({
@@ -25,6 +27,7 @@ class BackupAccountCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -33,18 +36,18 @@ class BackupAccountCardWidget extends StatelessWidget {
           children: <Widget>[
             Text(account.name, style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 4),
-            Text('${account.type} · $scopeLabel'),
+            Text('${backupProviderLabel(l10n, account.type)} · $scopeLabel'),
             if ((account.bucket ?? '').isNotEmpty) ...<Widget>[
               const SizedBox(height: 4),
-              Text('Bucket: ${account.bucket}'),
+              Text('${l10n.backupAccountCardBucketLabel}: ${account.bucket}'),
             ],
             if (endpoint.isNotEmpty) ...<Widget>[
               const SizedBox(height: 4),
-              Text('Endpoint: $endpoint'),
+              Text('${l10n.backupAccountCardEndpointLabel}: $endpoint'),
             ],
             if ((account.backupPath ?? '').isNotEmpty) ...<Widget>[
               const SizedBox(height: 4),
-              Text('Path: ${account.backupPath}'),
+              Text('${l10n.backupAccountCardPathLabel}: ${account.backupPath}'),
             ],
             const SizedBox(height: 12),
             Wrap(
@@ -54,22 +57,25 @@ class BackupAccountCardWidget extends StatelessWidget {
                 if (onEdit != null)
                   OutlinedButton(
                     onPressed: onEdit,
-                    child: const Text('Edit'),
+                    child: Text(l10n.commonEdit),
                   ),
-                OutlinedButton(onPressed: onTest, child: const Text('Test')),
+                OutlinedButton(
+                  onPressed: onTest,
+                  child: Text(l10n.backupFormTestConnectionAction),
+                ),
                 OutlinedButton(
                   onPressed: onBrowseFiles,
-                  child: const Text('Browse files'),
+                  child: Text(l10n.backupAccountCardBrowseFilesAction),
                 ),
                 if (onRefreshToken != null)
                   OutlinedButton(
                     onPressed: onRefreshToken,
-                    child: const Text('Refresh token'),
+                    child: Text(l10n.backupAccountCardRefreshTokenAction),
                   ),
                 if (onDelete != null)
                   OutlinedButton(
                     onPressed: onDelete,
-                    child: const Text('Delete'),
+                    child: Text(l10n.commonDelete),
                   ),
               ],
             ),

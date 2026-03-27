@@ -2,6 +2,10 @@
   "source": "docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json",
   "generatedAt": "2026-02-14",
   "lastUpdated": "2026-03-27",
+  "changeNotes": [
+    "2026-03-27: BackupRecover now canonicalizes app/website/mysql/postgresql/redis/directory/snapshot/log record sources, and separates recordType (record search) from requestType (recover submit).",
+    "2026-03-27: Week 5 backup and cronjob form pages cleared remaining user-visible hardcoded strings to l10n, including cronjob unknown-type and unknown-error fallback copy."
+  ],
   "totalEndpoints": 546,
   "totalApiMethods": 527,
   "apiClientFiles": 32,

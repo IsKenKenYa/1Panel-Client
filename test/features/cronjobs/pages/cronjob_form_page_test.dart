@@ -42,7 +42,11 @@ void main() {
   testWidgets('CronjobFormPage renders sections', (tester) async {
     final service = _MockCronjobFormService();
     when(() => service.loadDraft(any())).thenAnswer(
-      (_) async => const CronjobFormDraft(primaryType: 'shell'),
+      (_) async => const CronjobFormDraft(
+        primaryType: 'shell',
+        useRawSpec: true,
+        rawSpecs: <String>['0 0 * * *'],
+      ),
     );
     when(() => service.loadGroups(forceRefresh: any(named: 'forceRefresh')))
         .thenAnswer(
@@ -64,7 +68,8 @@ void main() {
         .thenAnswer((_) async => <AppInstallInfo>[]);
     when(() => service.loadWebsiteOptions())
         .thenAnswer((_) async => <Map<String, dynamic>>[]);
-    when(() => service.loadDatabaseItems(any())).thenAnswer((_) async => const []);
+    when(() => service.loadDatabaseItems(any()))
+        .thenAnswer((_) async => const []);
 
     await tester.pumpWidget(
       MultiProvider(
@@ -88,6 +93,7 @@ void main() {
 
     expect(find.text('Basic'), findsOneWidget);
     expect(find.text('Schedule'), findsOneWidget);
+    expect(find.text('Custom spec 1'), findsOneWidget);
   });
 
   testWidgets('CronjobFormPage does not initialize when no server is active',

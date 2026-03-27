@@ -106,6 +106,10 @@
 - `next` 预览
 - create / update / delete
 - import/export 仅做 API/test，不做 Week 5 主 UI
+- Week 5 review 收口后，`CronjobFormPage` 与相关 widgets 的用户可见文案、页面级错误提示统一走 l10n
+  - `Custom spec {index}` 改为参数化 l10n key
+  - backup/database/alert method 的未知值 fallback 不再直接透传后端字符串，而是走模块级 l10n
+  - 页面级 error code -> l10n 映射保留，未知错误统一落到模块级 fallback 文案
 
 ### CronjobRecordsPage
 

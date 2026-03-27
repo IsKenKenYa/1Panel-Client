@@ -91,7 +91,7 @@ class CronjobFormService {
     final content = utf8.decode(bytes, allowMalformed: true);
     final decoded = jsonDecode(content);
     if (decoded is! List) {
-      throw Exception('Cronjob import file must be a JSON array');
+      throw Exception('cronjob.importInvalidJson');
     }
     return decoded
         .whereType<Map<String, dynamic>>()
@@ -106,7 +106,7 @@ class CronjobFormService {
   Future<FileSaveResult> exportCronjobs(List<int> ids) async {
     final bytes = await _repository.exportCronjobs(ids);
     if (bytes.isEmpty) {
-      throw Exception('Exported cronjob file is empty');
+      throw Exception('cronjob.exportEmpty');
     }
     return _fileSaveService.saveFile(
       fileName: 'cronjobs.json',
@@ -122,7 +122,7 @@ class CronjobFormService {
           .where((item) => item.isNotEmpty)
           .toList(growable: false);
       if (specs.isEmpty) {
-        throw Exception('Cronjob spec is required');
+        throw Exception('cronjob.specRequired');
       }
       return specs.join('&&');
     }
@@ -300,7 +300,7 @@ class CronjobFormService {
     if (type == 'shell') return 'shell';
     if (type == 'curl') return 'curl';
     if (_supportedBackupTypes.contains(type)) return 'backup';
-    throw Exception('Unsupported cronjob type: $type');
+    throw Exception('cronjob.unsupportedType');
   }
 
   List<String> _splitCsv(String input, {bool fallbackEmpty = false}) {

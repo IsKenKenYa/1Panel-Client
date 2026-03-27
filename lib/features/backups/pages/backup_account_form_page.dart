@@ -8,6 +8,7 @@ import 'package:onepanel_client/features/backups/widgets/backup_account_form_sto
 import 'package:onepanel_client/features/backups/widgets/backup_account_form_verify_section_widget.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
+import 'package:onepanel_client/shared/i18n/backup_l10n_helper.dart';
 import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -48,12 +49,15 @@ class _BackupAccountFormPageState extends State<BackupAccountFormPage> {
               context.read<BackupAccountFormProvider>().initialize(widget.args),
           body: AsyncStatePageBodyWidget(
             isLoading: provider.isLoading,
-            errorMessage: provider.errorMessage,
+            errorMessage: localizeBackupError(l10n, provider.errorMessage),
             onRetry: () => provider.initialize(widget.args),
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: <Widget>[
-                Text('Basic', style: Theme.of(context).textTheme.titleMedium),
+                Text(
+                  l10n.backupFormBasicSectionTitle,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
                 const SizedBox(height: 8),
                 BackupAccountFormBasicSectionWidget(
                   name: provider.draft.name,
@@ -67,7 +71,7 @@ class _BackupAccountFormPageState extends State<BackupAccountFormPage> {
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  'Credentials',
+                  l10n.backupFormCredentialsSectionTitle,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const SizedBox(height: 8),
@@ -80,7 +84,10 @@ class _BackupAccountFormPageState extends State<BackupAccountFormPage> {
                   onStartOAuth: provider.startOAuth,
                 ),
                 const SizedBox(height: 24),
-                Text('Storage', style: Theme.of(context).textTheme.titleMedium),
+                Text(
+                  l10n.backupFormStorageSectionTitle,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
                 const SizedBox(height: 8),
                 BackupAccountFormStorageSectionWidget(
                   draft: provider.draft,
@@ -91,7 +98,10 @@ class _BackupAccountFormPageState extends State<BackupAccountFormPage> {
                   onLoadBuckets: provider.loadBuckets,
                 ),
                 const SizedBox(height: 24),
-                Text('Verify', style: Theme.of(context).textTheme.titleMedium),
+                Text(
+                  l10n.backupFormVerifySectionTitle,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
                 const SizedBox(height: 8),
                 BackupAccountFormVerifySectionWidget(
                   isTesting: provider.isTesting,
@@ -131,7 +141,10 @@ class _BackupAccountFormPageState extends State<BackupAccountFormPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          context.read<BackupAccountFormProvider>().errorMessage ??
+          localizeBackupError(
+                context.l10n,
+                context.read<BackupAccountFormProvider>().errorMessage,
+              ) ??
               context.l10n.commonSaveFailed,
         ),
       ),

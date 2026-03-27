@@ -61,11 +61,11 @@ class BackupRecordService {
       ),
     );
     if (path.trim().isEmpty) {
-      throw Exception('Backup record path is empty');
+      throw Exception('backup.recordPathEmpty');
     }
     final bytes = await _repository.downloadFile(path);
     if (bytes.isEmpty) {
-      throw Exception('Downloaded backup record is empty');
+      throw Exception('backup.recordDownloadEmpty');
     }
     return _fileSaveService.saveFile(
       fileName: record.fileName ?? 'backup-record',

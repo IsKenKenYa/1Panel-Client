@@ -117,7 +117,7 @@ class BackupAccountService {
   Future<void> openOAuthAuthorizePage(BackupAccountDraft draft) async {
     final uri = buildAuthorizeUri(draft);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      throw Exception('Could not open authorize page');
+      throw Exception('backup.oauthOpenFailed');
     }
   }
 
@@ -150,7 +150,7 @@ class BackupAccountService {
         'flowName': 'GeneralOAuthFlow',
       });
     }
-    throw Exception('Unsupported OAuth provider: ${draft.type}');
+    throw Exception('backup.oauthUnsupportedProvider');
   }
 
   BackupAccountDraft applyOauthCallback(
