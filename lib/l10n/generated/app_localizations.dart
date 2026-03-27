@@ -8444,6 +8444,264 @@ abstract class AppLocalizations {
   /// **'Task Log Detail'**
   String get operationsTaskLogDetailTitle;
 
+  /// No description provided for @logsCenterTabOperation.
+  ///
+  /// In en, this message translates to:
+  /// **'Operation'**
+  String get logsCenterTabOperation;
+
+  /// No description provided for @logsCenterTabLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get logsCenterTabLogin;
+
+  /// No description provided for @logsCenterTabTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Task'**
+  String get logsCenterTabTask;
+
+  /// No description provided for @logsCenterTabSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get logsCenterTabSystem;
+
+  /// No description provided for @logsOperationSourceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get logsOperationSourceLabel;
+
+  /// No description provided for @logsOperationActionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Operation'**
+  String get logsOperationActionLabel;
+
+  /// No description provided for @logsOperationEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No operation logs'**
+  String get logsOperationEmptyTitle;
+
+  /// No description provided for @logsOperationEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Operation logs will appear here after the server records actions.'**
+  String get logsOperationEmptyDescription;
+
+  /// No description provided for @logsLoginIpLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'IP'**
+  String get logsLoginIpLabel;
+
+  /// No description provided for @logsLoginEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No login logs'**
+  String get logsLoginEmptyTitle;
+
+  /// No description provided for @logsLoginEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Login logs will appear here after the server records authentication activity.'**
+  String get logsLoginEmptyDescription;
+
+  /// No description provided for @logsTaskTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Task type'**
+  String get logsTaskTypeLabel;
+
+  /// No description provided for @logsTaskExecutingCountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Executing: {count}'**
+  String logsTaskExecutingCountLabel(int count);
+
+  /// No description provided for @logsTaskOpenDetailAction.
+  ///
+  /// In en, this message translates to:
+  /// **'View log'**
+  String get logsTaskOpenDetailAction;
+
+  /// No description provided for @logsTaskEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No task logs'**
+  String get logsTaskEmptyTitle;
+
+  /// No description provided for @logsTaskEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Task logs will appear here after the server runs background tasks.'**
+  String get logsTaskEmptyDescription;
+
+  /// No description provided for @logsSystemFilesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Log files'**
+  String get logsSystemFilesLabel;
+
+  /// No description provided for @logsSystemSourceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get logsSystemSourceLabel;
+
+  /// No description provided for @logsSystemSourceAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent'**
+  String get logsSystemSourceAgent;
+
+  /// No description provided for @logsSystemSourceCore.
+  ///
+  /// In en, this message translates to:
+  /// **'Core'**
+  String get logsSystemSourceCore;
+
+  /// No description provided for @logsSystemOpenViewerAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Open viewer'**
+  String get logsSystemOpenViewerAction;
+
+  /// No description provided for @logsSystemEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No system log files'**
+  String get logsSystemEmptyTitle;
+
+  /// No description provided for @logsSystemEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'System log files will appear here after the server exposes log output.'**
+  String get logsSystemEmptyDescription;
+
+  /// No description provided for @logsSystemViewerNoFileSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a log file to view.'**
+  String get logsSystemViewerNoFileSelected;
+
+  /// No description provided for @logsSystemWatchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch'**
+  String get logsSystemWatchLabel;
+
+  /// No description provided for @logsStatusAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get logsStatusAll;
+
+  /// No description provided for @logsStatusSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Success'**
+  String get logsStatusSuccess;
+
+  /// No description provided for @logsStatusFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get logsStatusFailed;
+
+  /// No description provided for @logsStatusExecuting.
+  ///
+  /// In en, this message translates to:
+  /// **'Executing'**
+  String get logsStatusExecuting;
+
+  /// No description provided for @logsTaskDetailIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Task ID'**
+  String get logsTaskDetailIdLabel;
+
+  /// No description provided for @logsTaskDetailTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Task type'**
+  String get logsTaskDetailTypeLabel;
+
+  /// No description provided for @logsTaskDetailStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get logsTaskDetailStatusLabel;
+
+  /// No description provided for @logsTaskDetailCurrentStepLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current step'**
+  String get logsTaskDetailCurrentStepLabel;
+
+  /// No description provided for @logsTaskDetailCreatedAtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Created at'**
+  String get logsTaskDetailCreatedAtLabel;
+
+  /// No description provided for @logsTaskDetailLogFileLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Log file'**
+  String get logsTaskDetailLogFileLabel;
+
+  /// No description provided for @logsTaskDetailErrorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get logsTaskDetailErrorLabel;
+
+  /// No description provided for @logsOperationLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load operation logs.'**
+  String get logsOperationLoadFailed;
+
+  /// No description provided for @logsLoginLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load login logs.'**
+  String get logsLoginLoadFailed;
+
+  /// No description provided for @logsTaskLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load task logs.'**
+  String get logsTaskLoadFailed;
+
+  /// No description provided for @logsTaskDetailLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load task log content.'**
+  String get logsTaskDetailLoadFailed;
+
+  /// No description provided for @logsTaskMissingTaskId.
+  ///
+  /// In en, this message translates to:
+  /// **'Task ID is required to load task log content.'**
+  String get logsTaskMissingTaskId;
+
+  /// No description provided for @logsSystemFilesLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load system log files.'**
+  String get logsSystemFilesLoadFailed;
+
+  /// No description provided for @logsSystemContentLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load system log content.'**
+  String get logsSystemContentLoadFailed;
+
   /// No description provided for @operationsRuntimesTitle.
   ///
   /// In en, this message translates to:

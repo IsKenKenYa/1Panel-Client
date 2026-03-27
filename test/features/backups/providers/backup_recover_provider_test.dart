@@ -44,6 +44,17 @@ void main() {
     createdAt: '2026-03-27',
   );
 
+  const staleRecord = BackupRecord(
+    id: 99,
+    accountType: 'S3',
+    accountName: 'bucket',
+    downloadAccountID: 1,
+    fileDir: '/data',
+    fileName: 'stale.tar.gz',
+    status: 'Success',
+    createdAt: '2026-03-27',
+  );
+
   const sourceCases = <_SourceExpectation>[
     _SourceExpectation(
       type: 'app',
@@ -113,6 +124,7 @@ void main() {
 
   setUpAll(() {
     registerFallbackValue(record);
+    registerFallbackValue(staleRecord);
     registerFallbackValue(
       const BackupRecoverRequest(
         downloadAccountID: 1,
@@ -310,5 +322,61 @@ void main() {
           secret: any(named: 'secret'),
           timeout: any(named: 'timeout'),
         ));
+  });
+
+  test(
+      'initialize clears stale initialRecord when refreshed records exclude it',
+      () async {
+    when(() => service.loadCandidateRecords(
+          type: any(named: 'type'),
+          name: any(named: 'name'),
+          detailName: any(named: 'detailName'),
+        )).thenAnswer((_) async => const <BackupRecord>[]);
+
+    await provider.initialize(
+      const BackupRecoverArgs(
+        type: 'app',
+        name: 'wordpress',
+        detailName: 'WordPress',
+        initialRecord: staleRecord,
+      ),
+    );
+
+    expect(provider.records, isEmpty);
+    expect(provider.selectedRecord, isNull);
+    expect(provider.canSubmit, isFalse);
+  });
+
+  test('switching resource type clears records and selectedRecord', () async {
+    await provider.initialize(const BackupRecoverArgs());
+    provider.selectApp(provider.apps.first);
+    await provider.loadRecords();
+    provider.selectRecord(record);
+
+    provider.updateResourceType('website');
+
+    expect(provider.records, isEmpty);
+    expect(provider.selectedRecord, isNull);
+    expect(provider.canSubmit, isFalse);
+  });
+
+  test('stale selectedRecord clearing makes canSubmit false', () async {
+    when(() => service.loadCandidateRecords(
+          type: any(named: 'type'),
+          name: any(named: 'name'),
+          detailName: any(named: 'detailName'),
+        )).thenAnswer((_) async => const <BackupRecord>[]);
+
+    await provider.initialize(
+      const BackupRecoverArgs(
+        type: 'website',
+        name: 'demo',
+        detailName: 'demo',
+        initialRecord: staleRecord,
+      ),
+    );
+
+    expect(provider.selectedRecord, isNull);
+    expect(provider.canSubmit, isFalse);
   });
 }

@@ -2,104 +2,112 @@ import 'package:equatable/equatable.dart';
 
 /// Task log model
 class TaskLog extends Equatable {
-  final int? id;
-  final String? taskType;
-  final String? taskName;
+  final String? id;
+  final String? name;
+  final String? type;
+  final String? logFile;
   final String? status;
-  final String? message;
-  final String? details;
-  final String? createTime;
-  final String? updateTime;
-  final String? endTime;
-  final int? progress;
+  final String? errorMsg;
+  final int? operationLogId;
+  final int? resourceId;
+  final String? currentStep;
+  final String? endAt;
+  final String? createdAt;
 
   const TaskLog({
     this.id,
-    this.taskType,
-    this.taskName,
+    this.name,
+    this.type,
+    this.logFile,
     this.status,
-    this.message,
-    this.details,
-    this.createTime,
-    this.updateTime,
-    this.endTime,
-    this.progress,
+    this.errorMsg,
+    this.operationLogId,
+    this.resourceId,
+    this.currentStep,
+    this.endAt,
+    this.createdAt,
   });
 
   factory TaskLog.fromJson(Map<String, dynamic> json) {
     return TaskLog(
-      id: json['id'] as int?,
-      taskType: json['taskType'] as String?,
-      taskName: json['taskName'] as String?,
+      id: json['id']?.toString(),
+      name: json['name'] as String?,
+      type: json['type'] as String?,
+      logFile: json['logFile'] as String?,
       status: json['status'] as String?,
-      message: json['message'] as String?,
-      details: json['details'] as String?,
-      createTime: json['createTime'] as String?,
-      updateTime: json['updateTime'] as String?,
-      endTime: json['endTime'] as String?,
-      progress: json['progress'] as int?,
+      errorMsg: json['errorMsg'] as String?,
+      operationLogId: json['operationLogID'] as int?,
+      resourceId: json['resourceID'] as int?,
+      currentStep: json['currentStep'] as String?,
+      endAt: json['endAt']?.toString(),
+      createdAt: json['createdAt']?.toString(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'taskType': taskType,
-      'taskName': taskName,
+      'name': name,
+      'type': type,
+      'logFile': logFile,
       'status': status,
-      'message': message,
-      'details': details,
-      'createTime': createTime,
-      'updateTime': updateTime,
-      'endTime': endTime,
-      'progress': progress,
+      'errorMsg': errorMsg,
+      'operationLogID': operationLogId,
+      'resourceID': resourceId,
+      'currentStep': currentStep,
+      'endAt': endAt,
+      'createdAt': createdAt,
     };
   }
 
   @override
-  List<Object?> get props => [id, taskType, taskName, status, message, details, createTime, updateTime, endTime, progress];
+  List<Object?> get props => [
+        id,
+        name,
+        type,
+        logFile,
+        status,
+        errorMsg,
+        operationLogId,
+        resourceId,
+        currentStep,
+        endAt,
+        createdAt,
+      ];
 }
 
 /// Task log search model
 class TaskLogSearch extends Equatable {
-  final String? taskType;
+  final String? type;
   final String? status;
-  final String? startTime;
-  final String? endTime;
-  final int? page;
-  final int? pageSize;
+  final int page;
+  final int pageSize;
 
   const TaskLogSearch({
-    this.taskType,
+    this.type,
     this.status,
-    this.startTime,
-    this.endTime,
-    this.page,
-    this.pageSize,
+    this.page = 1,
+    this.pageSize = 20,
   });
 
   factory TaskLogSearch.fromJson(Map<String, dynamic> json) {
     return TaskLogSearch(
-      taskType: json['taskType'] as String?,
+      type: json['type'] as String? ?? json['taskType'] as String?,
       status: json['status'] as String?,
-      startTime: json['startTime'] as String?,
-      endTime: json['endTime'] as String?,
-      page: json['page'] as int?,
-      pageSize: json['pageSize'] as int?,
+      page: json['page'] as int? ?? 1,
+      pageSize: json['pageSize'] as int? ?? 20,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'taskType': taskType,
-      'status': status,
-      'startTime': startTime,
-      'endTime': endTime,
+      'type': type ?? '',
+      'status': status ?? '',
       'page': page,
       'pageSize': pageSize,
     };
   }
 
   @override
-  List<Object?> get props => [taskType, status, startTime, endTime, page, pageSize];
+  List<Object?> get props => [type, status, page, pageSize];
 }

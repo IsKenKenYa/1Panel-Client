@@ -431,6 +431,23 @@ class FileV2Api {
     );
   }
 
+  Future<Response<FileReadByLineResponse>> readFileByLine(
+    FileReadByLineRequest request,
+  ) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/files/read'),
+      data: request.toJson(),
+    );
+    final wrapper = response.data ?? const <String, dynamic>{};
+    final data = wrapper['data'] as Map<String, dynamic>? ?? wrapper;
+    return Response<FileReadByLineResponse>(
+      data: FileReadByLineResponse.fromJson(data),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
   /// 清空回收站
   ///
   /// 清空回收站中的所有文件

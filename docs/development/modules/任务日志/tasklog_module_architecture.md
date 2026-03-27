@@ -1,82 +1,71 @@
 # 任务日志模块架构设计
 
-## 模块目标
+## 模块定位
 
-- 适配 Open1PanelApp 作为 1Panel Linux 运维面板社区版的定位
-- 提供完整的任务执行日志查看能力
-- 支持日志搜索和筛选
-- 提供日志详情和执行结果查看
-- 统一日志管理与错误反馈
+- `task_log` 在信息架构上从属于日志中心
+- 不是独立顶级模块
+- 目标是提供：
+  - 任务日志列表
+  - executing count
+  - 任务日志详情
 
-## 功能完整性清单
+## Source of Truth
 
-基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 的 TaskLog 标签共 2 个端点:
+- `docs/OpenSource/1Panel/frontend/src/api/modules/log.ts`
+- `docs/OpenSource/1Panel/frontend/src/views/log/task/index.vue`
+- `docs/OpenSource/1Panel/frontend/src/components/log/task/index.vue`
+- `lib/api/v2/task_log_v2.dart`
+- `lib/api/v2/file_v2.dart`
 
-### 任务日志列表 (1端点)
-1. GET /task-logs - 获取任务日志列表
+## 当前接口口径
 
-### 日志详情 (1端点)
-2. GET /task-logs/{id} - 获取任务日志详情
+- `POST /logs/tasks/search`
+- `GET /logs/tasks/executing/count`
+- `POST /files/read`
 
-## 业务流程与交互验证
+其中：
 
-### 日志查看流程
-- 进入任务日志页面
-- 显示日志列表
-- 支持按任务类型筛选
-- 支持按时间范围筛选
-- 点击查看详情
+- 列表与执行中计数来自 `task_log_v2`
+- 详情正文来自 `/files/read`，使用 `taskID` 驱动按行读取
 
-### 日志详情流程
-- 从列表选择日志记录
-- 进入详情页面
-- 查看执行参数
-- 查看执行结果
-- 查看错误信息（如有）
+## 当前移动端结构
 
-## 关键边界与异常
+- Repository
+  - `TaskLogRepository`
+- Service
+  - `LogsService`
+- Provider
+  - `TaskLogsProvider`
+- Presentation
+  - `LogsCenterPage` 的 `Task` tab
+  - `TaskLogDetailPage`
 
-### 日志查看异常
-- 日志不存在时的提示
-- 权限不足的处理
-- 日志加载失败的处理
+## 关键边界
 
-### 日志数据异常
-- 日志内容过大
-- 日志格式错误
-- 日志编码问题
+- `TaskLog` 数据模型必须按上游真实字段对齐：
+  - `id`
+  - `name`
+  - `type`
+  - `logFile`
+  - `status`
+  - `errorMsg`
+  - `operationLogID`
+  - `resourceID`
+  - `currentStep`
+  - `endAt`
+  - `createdAt`
+- 不继续沿用旧的虚构字段：
+  - `taskType`
+  - `taskName`
+  - `details`
+  - `progress`
 
-## 模块分层与职责
+## 已知取舍
 
-### 前端
-- UI页面: 日志列表、日志详情
-- 状态管理: 日志列表缓存、筛选状态
-
-### 服务层
-- API适配: TaskLogV2Api
-- 数据模型: TaskLog, TaskLogDetail等
-
-## 数据流
-
-1. 页面加载 -> 请求日志列表 -> API响应
-2. 数据解析 -> 筛选过滤 -> UI渲染
-3. 用户点击 -> 请求详情 -> 详情展示
-4. 筛选变更 -> 列表刷新 -> 用户反馈
-
-## 与现有实现的差距
-
-- 任务日志列表页面缺失
-- 日志详情页面缺失
-- 日志搜索功能缺失
-
-## 评审记录
-
-| 日期 | 评审人 | 结论 | 备注 |
-| --- | --- | --- | --- |
-| 待定 | 评审人A | 待评审 | |
-| 待定 | 评审人B | 待评审 | |
+- 本轮详情页只展示基础元信息和正文日志，不额外做执行参数展开面板
+- 不新增单独的 task detail REST 接口适配层
 
 ---
 
-**文档版本**: 1.0
-**最后更新**: 2026-02-14
+**文档版本**: 2.0  
+**最后更新**: 2026-03-27

@@ -1,136 +1,58 @@
 # 日志管理模块索引
 
-## 模块定位
+## 当前范围
 
-日志管理模块是Open1PanelApp的**运维监控模块**，负责系统日志、应用日志、安全日志、操作日志等各类日志的查看、搜索、导出和清理。该模块为运维人员提供全面的日志分析能力，帮助快速定位问题和审计操作。
+- Phase 1 Week 6 将 `logs + task_log` 统一收口为日志中心。
+- 当前移动端只覆盖：
+  - operation logs
+  - login logs
+  - task logs
+  - system log files
+- 明确不在本轮范围：
+  - website logs
+  - ssh logs
+  - log clean / export UI
 
-### 核心职责
+## 当前交付状态
 
-1. **日志查看** - 实时日志流、历史日志查看
-2. **日志搜索** - 关键词搜索、条件过滤、时间范围筛选
-3. **日志导出** - 多格式导出、批量下载
-4. **日志清理** - 自动清理策略、手动清理
-5. **日志统计** - 日志量统计、错误分析
+- Week 6 已完成：
+  - `LogsCenterPage`
+  - `SystemLogViewerPage`
+  - `TaskLogDetailPage`
+  - `LogsRepository`
+  - `TaskLogRepository`
+  - `LogsService`
+  - `LogsProvider`
+  - `SystemLogsProvider`
+  - `TaskLogsProvider`
+- 关键实现口径：
+  - `task_log` 不再做独立顶级模块，统一并入 `logs/task`
+  - `operation / login / task / system` 采用一个日志中心入口，4 Tab 聚合
+  - `system` 与 `task` 的正文查看复用 `/files/read` 按行读取链路和共享 `LogViewer`
 
-## 子模块结构
+## 代码落点
 
-```
-日志管理/
-├── 系统日志
-│   ├── 日志列表
-│   ├── 日志文件
-│   └── 实时日志
-├── 应用日志
-│   ├── 应用选择
-│   ├── 日志查看
-│   └── 日志搜索
-├── 安全日志
-│   ├── 登录日志
-│   ├── 操作日志
-│   └── 审计日志
-├── 访问日志
-│   ├── 网站访问
-│   ├── API访问
-│   └── 错误日志
-├── 日志操作
-│   ├── 日志搜索
-│   ├── 日志导出
-│   └── 日志清理
-└── 日志统计
-    ├── 日志量统计
-    ├── 错误分析
-    └── 趋势图表
-```
+- API：
+  - `lib/api/v2/logs_v2.dart`
+  - `lib/api/v2/task_log_v2.dart`
+  - `lib/api/v2/file_v2.dart`
+- Repository：
+  - `lib/data/repositories/logs_repository.dart`
+  - `lib/data/repositories/task_log_repository.dart`
+- Service：
+  - `lib/features/logs/services/logs_service.dart`
+- Provider：
+  - `lib/features/logs/providers/`
+- 页面：
+  - `lib/features/logs/pages/`
 
-## API端点映射
+## 已知取舍
 
-| API端点 | 方法 | 功能描述 | 实现状态 |
-|---------|------|---------|---------|
-| `/logs/system` | POST | 获取系统日志 | ✅ 已实现 |
-| `/logs/system/files` | GET | 获取日志文件列表 | ✅ 已实现 |
-| `/logs/system/file` | POST | 获取日志文件内容 | ✅ 已实现 |
-| `/core/logs/clean` | POST | 清理日志 | ✅ 已实现 |
-| `/core/logs/login` | POST | 登录日志搜索 | ✅ 已实现 |
-| `/core/logs/operation` | POST | 操作日志搜索 | ✅ 已实现 |
-| `/logs/app` | POST | 获取应用日志 | ✅ 已实现 |
-| `/logs/security` | POST | 获取安全日志 | ✅ 已实现 |
-| `/logs/access` | POST | 获取访问日志 | ✅ 已实现 |
-| `/logs/error` | POST | 获取错误日志 | ✅ 已实现 |
-| `/logs/stats` | POST | 获取日志统计 | ✅ 已实现 |
-| `/logs/export` | POST | 导出日志 | ✅ 已实现 |
-
-## 现有实现
-
-### API客户端
-- [logs_v2.dart](../../../lib/api/v2/logs_v2.dart) - 12个API方法
-
-### 数据模型
-- [logs_models.dart](../../../lib/data/models/logs_models.dart) - 完整模型定义
-  - `LogLevel` - 日志级别枚举
-  - `LogType` - 日志类型枚举
-  - `LogInfo` - 日志信息
-  - `LogSearch` - 搜索请求
-  - `LogFileInfo` - 日志文件信息
-  - `LogFileContent` - 文件内容请求
-  - `LogStats` - 日志统计
-  - `LogClean` - 清理请求
-  - `LogExport` - 导出请求
-
-## 日志类型
-
-| 类型 | 标识 | 说明 |
-|------|------|------|
-| **系统日志** | system | 系统运行日志 |
-| **应用日志** | application | 应用程序日志 |
-| **安全日志** | security | 安全相关日志 |
-| **操作日志** | operation | 用户操作日志 |
-| **访问日志** | access | HTTP访问日志 |
-| **错误日志** | error | 错误日志 |
-| **审计日志** | audit | 审计日志 |
-| **数据库日志** | database | 数据库日志 |
-
-## 日志级别
-
-| 级别 | 标识 | 说明 |
-|------|------|------|
-| **调试** | debug | 调试信息 |
-| **信息** | info | 一般信息 |
-| **警告** | warning | 警告信息 |
-| **错误** | error | 错误信息 |
-| **致命** | fatal | 致命错误 |
-
-## 后续规划
-
-### 短期目标（1-2周）
-1. 创建日志列表页面
-2. 实现日志搜索功能
-3. 添加日志详情查看
-4. 添加单元测试覆盖
-
-### 中期目标（1个月）
-1. 实现实时日志流
-2. 添加日志导出功能
-3. 实现日志统计图表
-4. 添加日志清理策略
-
-### 长期目标
-1. 支持日志聚合分析
-2. 实现日志告警规则
-3. 支持日志可视化
-4. 集成ELK/Loki
-
-## 质量指标
-
-| 指标 | 当前状态 | 目标 |
-|------|---------|------|
-| API实现 | 100% | 100% |
-| 数据模型 | 100% | 100% |
-| 单元测试 | 0% | ≥80% |
-| 文档覆盖 | 0% | 100% |
-| UI实现 | 0% | 100% |
+- `website logs`、`ssh logs` 在上游 Web 端存在，但本轮不进入移动端日志中心 MVP。
+- `clean logs` / `export logs` 保留 API 真值，不做本轮主 UI。
+- `system` / `task` 正文按行查看优先保证可读性、refresh、watch、copy，不在本轮扩展复杂 tail 策略。
 
 ---
 
-**文档版本**: 1.0  
-**最后更新**: 2026-02-14  
-**维护者**: Open1Panel开发团队
+**文档版本**: 2.0  
+**最后更新**: 2026-03-27

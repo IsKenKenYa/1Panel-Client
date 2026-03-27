@@ -4319,6 +4319,137 @@ class AppLocalizationsZh extends AppLocalizations {
   String get operationsTaskLogDetailTitle => '任务日志详情';
 
   @override
+  String get logsCenterTabOperation => '操作';
+
+  @override
+  String get logsCenterTabLogin => '登录';
+
+  @override
+  String get logsCenterTabTask => '任务';
+
+  @override
+  String get logsCenterTabSystem => '系统';
+
+  @override
+  String get logsOperationSourceLabel => '来源';
+
+  @override
+  String get logsOperationActionLabel => '操作';
+
+  @override
+  String get logsOperationEmptyTitle => '暂无操作日志';
+
+  @override
+  String get logsOperationEmptyDescription => '服务端记录操作后，会在这里显示操作日志。';
+
+  @override
+  String get logsLoginIpLabel => 'IP';
+
+  @override
+  String get logsLoginEmptyTitle => '暂无登录日志';
+
+  @override
+  String get logsLoginEmptyDescription => '服务端记录认证活动后，会在这里显示登录日志。';
+
+  @override
+  String get logsTaskTypeLabel => '任务类型';
+
+  @override
+  String logsTaskExecutingCountLabel(int count) {
+    return '执行中：$count';
+  }
+
+  @override
+  String get logsTaskOpenDetailAction => '查看日志';
+
+  @override
+  String get logsTaskEmptyTitle => '暂无任务日志';
+
+  @override
+  String get logsTaskEmptyDescription => '服务端执行后台任务后，会在这里显示任务日志。';
+
+  @override
+  String get logsSystemFilesLabel => '日志文件';
+
+  @override
+  String get logsSystemSourceLabel => '来源';
+
+  @override
+  String get logsSystemSourceAgent => 'Agent';
+
+  @override
+  String get logsSystemSourceCore => 'Core';
+
+  @override
+  String get logsSystemOpenViewerAction => '打开查看器';
+
+  @override
+  String get logsSystemEmptyTitle => '暂无系统日志文件';
+
+  @override
+  String get logsSystemEmptyDescription => '服务端暴露日志输出后，会在这里显示系统日志文件。';
+
+  @override
+  String get logsSystemViewerNoFileSelected => '请选择要查看的日志文件。';
+
+  @override
+  String get logsSystemWatchLabel => '监听';
+
+  @override
+  String get logsStatusAll => '全部';
+
+  @override
+  String get logsStatusSuccess => '成功';
+
+  @override
+  String get logsStatusFailed => '失败';
+
+  @override
+  String get logsStatusExecuting => '执行中';
+
+  @override
+  String get logsTaskDetailIdLabel => '任务 ID';
+
+  @override
+  String get logsTaskDetailTypeLabel => '任务类型';
+
+  @override
+  String get logsTaskDetailStatusLabel => '状态';
+
+  @override
+  String get logsTaskDetailCurrentStepLabel => '当前步骤';
+
+  @override
+  String get logsTaskDetailCreatedAtLabel => '创建时间';
+
+  @override
+  String get logsTaskDetailLogFileLabel => '日志文件';
+
+  @override
+  String get logsTaskDetailErrorLabel => '错误信息';
+
+  @override
+  String get logsOperationLoadFailed => '加载操作日志失败。';
+
+  @override
+  String get logsLoginLoadFailed => '加载登录日志失败。';
+
+  @override
+  String get logsTaskLoadFailed => '加载任务日志失败。';
+
+  @override
+  String get logsTaskDetailLoadFailed => '加载任务日志内容失败。';
+
+  @override
+  String get logsTaskMissingTaskId => '缺少任务 ID，无法加载任务日志内容。';
+
+  @override
+  String get logsSystemFilesLoadFailed => '加载系统日志文件失败。';
+
+  @override
+  String get logsSystemContentLoadFailed => '加载系统日志内容失败。';
+
+  @override
   String get operationsRuntimesTitle => '运行时';
 
   @override

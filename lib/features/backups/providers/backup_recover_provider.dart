@@ -173,6 +173,8 @@ class BackupRecoverProvider extends ChangeNotifier with AsyncStateNotifier {
         final match = _records.where((item) => item.id == _selectedRecord!.id);
         if (match.isNotEmpty) {
           _selectedRecord = match.first;
+        } else {
+          _selectedRecord = null;
         }
       }
     } catch (error, stackTrace) {

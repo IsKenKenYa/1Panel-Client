@@ -51,7 +51,7 @@
 | **OpenResty** | 10 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ⚠️ 待测试 | 🟡 部分 | 配置与状态页待建设 |
 | **Command** | 8 | ✅ command_v2.dart | ✅ command_models.dart + `tool_models.dart` | ✅ 已测试 | ✅ 已集成 | Week 2 命令管理 MVP 已接入，脚本库已拆出独立模块 |
 | **Container Docker** | 8 | ✅ docker_v2.dart | ✅ docker_models.dart | ✅ 已测试 | 🟡 部分 | Docker守护进程管理 |
-| **Logs** | 4 | ✅ logs_v2.dart | ✅ logs_models.dart | ⚠️ 待测试 | 🟡 部分 | 日志管理、清理、导出 |
+| **Logs** | 4 | ✅ logs_v2.dart | ✅ logs_models.dart | ✅ 已测试 | ✅ 已集成 | Week 6 已交付 `LogsCenterPage` / `SystemLogViewerPage`，当前聚合 operation/login/system 主链路，正文读取复用 `/files/read` |
 | **Container Compose-template** | 6 | ✅ container_compose_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | 🔴 待集成 | Compose模板管理 |
 | **Container Image-repo** | 6 | ✅ docker_v2.dart | ✅ docker_models.dart | ⚠️ 待测试 | 🔴 待集成 | 镜像仓库管理 |
 | **Container Compose** | 5 | ✅ container_compose_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | 🔴 待集成 | Docker Compose管理 |
@@ -65,7 +65,7 @@
 | **Website Nginx** | 4 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ⚠️ 待测试 | 🔴 待集成 | Nginx配置 |
 | **Website HTTPS** | 2 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🔴 待集成 | HTTPS配置 |
 | **Website PHP** | 1 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ⚠️ 待测试 | 🔴 待集成 | PHP配置 |
-| **TaskLog** | 2 | ✅ task_log_v2.dart | ✅ task_log_models.dart | ⚠️ 待测试 | 🔴 待集成 | 任务日志 |
+| **TaskLog** | 2 | ✅ task_log_v2.dart | ✅ task_log_models.dart | ✅ 已测试 | ✅ 已集成 | Week 6 已并入日志中心 `Task` tab，并交付 `TaskLogDetailPage`；详情正文由 `taskID + /files/read` 驱动 |
 | **Process** | 2 | ✅ process_v2.dart | ✅ process_models.dart | ✅ 已测试 | ✅ 已集成 | Week 3 已交付实时列表 / 详情 / stop，主列表真值来自 `process/ws` |
 
 ### P2 优先级模块 (工具类)
@@ -86,16 +86,16 @@
 
 ## 实现状态统计
 
-> Week 5 同步说明：`CronjobForm` 与 `Backup` 主链路已接入真实页面、Provider、Service、API tests 和 widget/no-server 回归；本轮 review closeout 额外收口了 `BackupRecover` 的 `recordType/requestType` 映射，以及 Week 5 新页的 l10n 清理。
+> Week 6 同步说明：在 Week 5 closeout 基础上，日志中心已接入真实页面、Provider、Repository、Service、API tests 和 widget/no-server 回归；`task_log` 不再单独做顶级模块。
 
 ### 按优先级统计
 
 | 优先级 | 模块数 | 端点数 | API客户端完成 | 测试覆盖 | UI集成完成 |
 |--------|--------|---------|--------------|----------|-------------|
 | **P0** | 15 | 247 | 100% (15/15) | 73% (11/15) | 33% (5/15) |
-| **P1** | 26 | 239 | 100% (26/26) | 38% (10/26) | 27% (7/26) |
+| **P1** | 26 | 239 | 100% (26/26) | 46% (12/26) | 35% (9/26) |
 | **P2** | 11 | 60 | 91% (10/11) | 27% (3/11) | 0% (0/11) |
-| **总计** | 52 | 546 | 98% (51/52) | 48% (25/52) | 23% (12/52) |
+| **总计** | 52 | 546 | 98% (51/52) | 52% (27/52) | 27% (14/52) |
 
 ### 按实现维度统计
 
@@ -103,8 +103,8 @@
 |------|--------|------|
 | **API客户端实现** | 98% | 51/52个模块有API客户端，仅untagged模块缺失 |
 | **数据模型定义** | 100% | 所有模块都有对应的数据模型 |
-| **单元测试覆盖** | 48% | 25/52个模块有测试文件 |
-| **UI页面集成** | 23% | 12/52个模块有完整的UI页面 |
+| **单元测试覆盖** | 52% | 27/52个模块有测试文件 |
+| **UI页面集成** | 27% | 14/52个模块有完整的UI页面 |
 | **端到端测试** | 0% | 尚未建立端到端测试体系 |
 
 ## 关键差距识别

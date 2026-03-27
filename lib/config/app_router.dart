@@ -63,6 +63,14 @@ import 'package:onepanel_client/features/host_assets/pages/host_asset_form_page.
 import 'package:onepanel_client/features/host_assets/pages/host_assets_page.dart';
 import 'package:onepanel_client/features/host_assets/providers/host_asset_form_provider.dart';
 import 'package:onepanel_client/features/host_assets/providers/host_assets_provider.dart';
+import 'package:onepanel_client/features/logs/models/system_log_viewer_args.dart';
+import 'package:onepanel_client/features/logs/models/task_log_detail_args.dart';
+import 'package:onepanel_client/features/logs/pages/logs_center_page.dart';
+import 'package:onepanel_client/features/logs/pages/system_log_viewer_page.dart';
+import 'package:onepanel_client/features/logs/pages/task_log_detail_page.dart';
+import 'package:onepanel_client/features/logs/providers/logs_provider.dart';
+import 'package:onepanel_client/features/logs/providers/system_logs_provider.dart';
+import 'package:onepanel_client/features/logs/providers/task_logs_provider.dart';
 import 'package:onepanel_client/features/operations_center/pages/operations_center_page.dart';
 import 'package:onepanel_client/features/operations_center/pages/stage_one_module_placeholder_page.dart';
 import 'package:onepanel_client/features/processes/pages/process_detail_page.dart';
@@ -584,19 +592,42 @@ class AppRouter {
           ),
         );
       case AppRoutes.logs:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsLogsTitle,
-          availableInWeek: 6,
+        return MaterialPageRoute(
+          builder: (_) => MultiProvider(
+            providers: [
+              ChangeNotifierProvider<LogsProvider>(
+                create: (_) => LogsProvider(),
+              ),
+              ChangeNotifierProvider<TaskLogsProvider>(
+                create: (_) => TaskLogsProvider(),
+              ),
+              ChangeNotifierProvider<SystemLogsProvider>(
+                create: (_) => SystemLogsProvider(),
+              ),
+            ],
+            child: const LogsCenterPage(),
+          ),
         );
       case AppRoutes.systemLogViewer:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsSystemLogViewerTitle,
-          availableInWeek: 6,
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<SystemLogsProvider>(
+            create: (_) => SystemLogsProvider(),
+            child: SystemLogViewerPage(
+              args: settings.arguments as SystemLogViewerArgs? ??
+                  const SystemLogViewerArgs(),
+            ),
+          ),
         );
       case AppRoutes.taskLogDetail:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsTaskLogDetailTitle,
-          availableInWeek: 6,
+        final args = settings.arguments;
+        if (args is! TaskLogDetailArgs) {
+          return MaterialPageRoute(builder: (_) => const NotFoundPage());
+        }
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<TaskLogsProvider>(
+            create: (_) => TaskLogsProvider(),
+            child: TaskLogDetailPage(args: args),
+          ),
         );
       case AppRoutes.runtimes:
         return _buildStageOnePlaceholderRoute(

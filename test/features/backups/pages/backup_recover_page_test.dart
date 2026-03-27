@@ -45,6 +45,17 @@ void main() {
     createdAt: '2026-03-27',
   );
 
+  const staleRecord = BackupRecord(
+    id: 99,
+    accountType: 'S3',
+    accountName: 'bucket',
+    downloadAccountID: 1,
+    fileDir: '/data',
+    fileName: 'stale.tar.gz',
+    status: 'Success',
+    createdAt: '2026-03-27',
+  );
+
   Future<void> pumpPage(
     WidgetTester tester, {
     required BackupRecoverService service,
@@ -194,5 +205,34 @@ void main() {
       );
       expect(find.text('Start recover'), findsNothing);
     }
+  });
+
+  testWidgets(
+      'BackupRecoverPage clears stale selectedRecord and returns to record step',
+      (tester) async {
+    final service = buildService();
+    when(() => service.loadCandidateRecords(
+          type: any(named: 'type'),
+          name: any(named: 'name'),
+          detailName: any(named: 'detailName'),
+        )).thenAnswer((_) async => const <BackupRecord>[]);
+
+    await pumpPage(
+      tester,
+      service: service,
+      args: const BackupRecoverArgs(
+        type: 'app',
+        name: 'wordpress',
+        detailName: 'WordPress',
+        initialRecord: staleRecord,
+      ),
+    );
+
+    expect(find.text('No candidate records'), findsOneWidget);
+    expect(find.text('stale.tar.gz'), findsNothing);
+    final button = tester.widget<FilledButton>(
+      find.widgetWithText(FilledButton, 'Start recover'),
+    );
+    expect(button.onPressed, isNull);
   });
 }

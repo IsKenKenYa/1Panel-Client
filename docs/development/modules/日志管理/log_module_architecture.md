@@ -1,268 +1,112 @@
 # 日志管理模块架构设计
 
-## 模块目标
+## 模块定位
 
-日志管理模块旨在为运维人员提供全面、高效的日志管理能力，实现：
-- 多类型日志统一管理
-- 快速搜索与过滤
-- 日志导出与归档
-- 日志统计与分析
+- 日志中心是 Phase 1 Week 6 的运维入口之一。
+- 信息架构上采用一个顶级 `LogsCenterPage`，统一承载：
+  - `Operation`
+  - `Login`
+  - `Task`
+  - `System`
+- `task_log` 作为日志中心的一个子视图实现，不再单独做顶级模块。
 
-## 功能完整性清单
+## Source of Truth
 
-### 基于OpenAPI端点
+- Web API：`docs/OpenSource/1Panel/frontend/src/api/modules/log.ts`
+- Web 路由：`docs/OpenSource/1Panel/frontend/src/routers/modules/log.ts`
+- Web 页面：`docs/OpenSource/1Panel/frontend/src/views/log/`
+- 本地客户端：
+  - `lib/api/v2/logs_v2.dart`
+  - `lib/api/v2/task_log_v2.dart`
+  - `lib/api/v2/file_v2.dart`
 
-| 端点 | 方法 | 功能 | 实现状态 | UI状态 |
-|------|------|------|---------|--------|
-| `/logs/system` | POST | 系统日志 | ✅ 完成 | ❌ 待开发 |
-| `/logs/system/files` | GET | 日志文件列表 | ✅ 完成 | ❌ 待开发 |
-| `/logs/system/file` | POST | 日志文件内容 | ✅ 完成 | ❌ 待开发 |
-| `/core/logs/clean` | POST | 清理日志 | ✅ 完成 | ❌ 待开发 |
-| `/core/logs/login` | POST | 登录日志 | ✅ 完成 | ❌ 待开发 |
-| `/core/logs/operation` | POST | 操作日志 | ✅ 完成 | ❌ 待开发 |
-| `/logs/app` | POST | 应用日志 | ✅ 完成 | ❌ 待开发 |
-| `/logs/security` | POST | 安全日志 | ✅ 完成 | ❌ 待开发 |
-| `/logs/access` | POST | 访问日志 | ✅ 完成 | ❌ 待开发 |
-| `/logs/error` | POST | 错误日志 | ✅ 完成 | ❌ 待开发 |
-| `/logs/stats` | POST | 日志统计 | ✅ 完成 | ❌ 待开发 |
-| `/logs/export` | POST | 导出日志 | ✅ 完成 | ❌ 待开发 |
+## Week 6 已落地接口
 
-### 功能清单
+- `POST /core/logs/operation`
+- `POST /core/logs/login`
+- `GET /logs/system/files`
+- `POST /logs/tasks/search`
+- `GET /logs/tasks/executing/count`
+- `POST /files/read`
+  - 用于 `system` 与 `task` 正文按行读取
 
-| 功能模块 | 子功能 | 优先级 | 状态 |
-|---------|--------|--------|------|
-| **系统日志** | 日志列表 | P0 | API完成 |
-| | 文件浏览 | P0 | API完成 |
-| | 实时日志 | P1 | 待开发 |
-| **应用日志** | 应用选择 | P0 | API完成 |
-| | 日志查看 | P0 | API完成 |
-| | 日志搜索 | P0 | API完成 |
-| **安全日志** | 登录日志 | P0 | API完成 |
-| | 操作日志 | P0 | API完成 |
-| | 审计日志 | P1 | API完成 |
-| **日志操作** | 搜索过滤 | P0 | API完成 |
-| | 导出下载 | P0 | API完成 |
-| | 清理删除 | P0 | API完成 |
-| **日志统计** | 日志量统计 | P1 | API完成 |
-| | 错误分析 | P1 | API完成 |
-| | 趋势图表 | P2 | 待开发 |
+## 当前移动端结构
 
-## 业务流程与交互验证
+### 路由
 
-### 1. 日志查看流程
+- `AppRoutes.logs`
+- `AppRoutes.systemLogViewer`
+- `AppRoutes.taskLogDetail`
 
-```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│  选择类型   │────▶│ 设置条件    │────▶│ 加载日志    │
-└─────────────┘     └─────────────┘     └──────┬──────┘
-                                               │
-                    ┌──────────────────────────┘
-                    ▼
-           ┌─────────────┐     ┌─────────────┐
-           │ 展示列表    │────▶│ 查看详情    │
-           └─────────────┘     └─────────────┘
-```
+### 分层落点
 
-### 2. 日志搜索流程
+- Repository
+  - `LogsRepository`
+  - `TaskLogRepository`
+- Service
+  - `LogsService`
+- Provider
+  - `LogsProvider`
+  - `SystemLogsProvider`
+  - `TaskLogsProvider`
+- Presentation
+  - `LogsCenterPage`
+  - `SystemLogViewerPage`
+  - `TaskLogDetailPage`
 
-```
-输入关键词 ──▶ 选择过滤条件 ──▶ 执行搜索
-                                    │
-                    ┌───────────────┴───────────────┐
-                    │ 有结果                        │ 无结果
-                    ▼                               ▼
-           ┌─────────────┐                 ┌─────────────┐
-           │ 显示结果    │                 │ 提示无结果  │
-           └─────────────┘                 └─────────────┘
-```
+## 页面职责
 
-### 3. 日志导出流程
+### LogsCenterPage
 
-```
-选择日志 ──▶ 设置导出范围 ──▶ 选择格式
-                                    │
-                    ┌───────────────┴───────────────┐
-                    │ JSON                          │ CSV
-                    ▼                               ▼
-           ┌─────────────┐                 ┌─────────────┐
-           │ JSON格式    │                 │ CSV格式     │
-           └──────┬──────┘                 └──────┬──────┘
-                  │                               │
-                  └───────────────┬───────────────┘
-                                  ▼
-                         ┌─────────────┐
-                         │ 下载文件    │
-                         └─────────────┘
-```
+- `DefaultTabController + TabBar + TabBarView`
+- 四个 Tab：
+  - `Operation`
+  - `Login`
+  - `Task`
+  - `System`
+- 每个 tab 都具备：
+  - loading
+  - empty
+  - error
+  - retry
+  - refresh
+  - copy
+  - 基础筛选
 
-## 关键边界与异常处理
+### SystemLogViewerPage
 
-### 边界条件
+- 独立页查看系统日志文件
+- 顶部提供：
+  - Agent/Core 来源切换
+  - 文件选择
+  - watch 开关
+- 正文复用共享 `LogViewer`
 
-| 场景 | 边界值 | 处理方式 |
-|------|--------|---------|
-| 日志文件大小 | 最大100MB | 分页加载，限制单次读取 |
-| 搜索结果数量 | 最大10000条 | 分页展示，提示缩小范围 |
-| 导出文件大小 | 最大50MB | 分批导出，压缩下载 |
-| 日志保留时间 | 默认30天 | 自动清理，可配置 |
-| 实时日志行数 | 最大1000行 | 滚动显示，自动清理 |
+### TaskLogDetailPage
 
-### 异常处理
+- 展示任务元信息：
+  - task id
+  - task type
+  - status
+  - current step
+  - created at
+  - log file
+- 正文通过 `taskID` 驱动 `/files/read`
+- 不发明新的 task detail REST 接口
 
-| 异常类型 | 错误码 | 处理策略 |
-|---------|--------|---------|
-| 日志文件不存在 | 404 | 提示文件不存在，刷新列表 |
-| 日志文件过大 | 413 | 提示文件过大，分批读取 |
-| 权限不足 | 403 | 提示权限不足，联系管理员 |
-| 搜索超时 | 504 | 提示搜索超时，缩小范围 |
-| 导出失败 | 500 | 提示导出失败，重试 |
+## 关键边界
 
-## 模块分层与职责
+- `task_log` 详情正文并不来自独立详情 API，而是来自任务日志文件读取链路。
+- `system` / `task` 正文查看统一复用 `FileReadByLineRequest`，避免在日志模块重复发明文本读取协议。
+- no-server 场景下，三个日志页都不提前打 API。
 
-### 架构图
+## 已知取舍
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    UI Layer (Pages)                      │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
-│  │LogListPage  │  │LogDetailPage│  │LogSearchPage│     │
-│  └─────────────┘  └─────────────┘  └─────────────┘     │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
-│  │RealTimeLog  │  │LogStatsPage │  │LogExportDlg │     │
-│  └─────────────┘  └─────────────┘  └─────────────┘     │
-└─────────────────────────────────────────────────────────┘
-                          │
-                          ▼
-┌─────────────────────────────────────────────────────────┐
-│                 ViewModel Layer (Providers)              │
-│  ┌─────────────────────────────────────────────────┐   │
-│  │              LogProvider                         │   │
-│  │  - logs, selectedLog, isLoading, filters        │   │
-│  │  - loadLogs(), search(), export(), clean()      │   │
-│  └─────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────┘
-                          │
-                          ▼
-┌─────────────────────────────────────────────────────────┐
-│                  Service Layer                           │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
-│  │LogService   │  │SearchService│  │ExportService│     │
-│  └─────────────┘  └─────────────┘  └─────────────┘     │
-└─────────────────────────────────────────────────────────┘
-                          │
-                          ▼
-┌─────────────────────────────────────────────────────────┐
-│                   API Layer                              │
-│  ┌─────────────────────────────────────────────────┐   │
-│  │              LogsV2Api                           │   │
-│  │  - getSystemLogs, getSystemLogFiles             │   │
-│  │  - getSystemLogFileContent, cleanLogs           │   │
-│  │  - searchLoginLogs, searchOperationLogs, etc.   │   │
-│  └─────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────┘
-                          │
-                          ▼
-┌─────────────────────────────────────────────────────────┐
-│                 Data Layer                               │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
-│  │LogInfo      │  │LogSearch    │  │LogStats     │     │
-│  │LogFileInfo  │  │LogExport    │  │LogClean     │     │
-│  └─────────────┘  └─────────────┘  └─────────────┘     │
-└─────────────────────────────────────────────────────────┘
-```
-
-### 职责划分
-
-| 层级 | 组件 | 职责 |
-|------|------|------|
-| **UI层** | LogListPage | 日志列表展示、类型切换、搜索入口 |
-| | LogDetailPage | 日志详情、上下文查看 |
-| | LogSearchPage | 高级搜索、条件过滤 |
-| | RealTimeLogWidget | 实时日志流显示 |
-| | LogStatsPage | 日志统计图表 |
-| | LogExportDialog | 导出配置对话框 |
-| **ViewModel层** | LogProvider | 日志状态管理、业务逻辑协调 |
-| **Service层** | LogService | 日志业务逻辑封装 |
-| | SearchService | 搜索逻辑处理 |
-| | ExportService | 导出逻辑处理 |
-| **API层** | LogsV2Api | API调用封装 |
-| **Data层** | 各类模型 | 数据结构定义与序列化 |
-
-## 数据流设计
-
-### 日志列表加载流程
-
-```
-页面进入 ──▶ LogListPage.initState()
-                    │
-                    ▼
-           LogProvider.loadLogs(type)
-                    │
-                    ▼
-           LogsV2Api.getSystemLogs(search)
-                    │
-                    ▼
-           服务器响应 PageResult<LogInfo>
-                    │
-                    ▼
-           LogProvider.updateLogs()
-                    │
-                    ▼
-           UI刷新展示列表
-```
-
-### 日志搜索流程
-
-```
-输入搜索条件 ──▶ LogSearchPage.submit()
-                    │
-                    ▼
-           LogProvider.searchLogs(criteria)
-                    │
-                    ▼
-           LogsV2Api.getSystemLogs(search)
-                    │
-                    ▼
-           服务器响应搜索结果
-                    │
-                    ▼
-           LogProvider.updateSearchResults()
-                    │
-                    ▼
-           UI显示搜索结果
-```
-
-## 与现有实现的差距
-
-### 已实现
-
-| 组件 | 文件 | 状态 |
-|------|------|------|
-| API客户端 | lib/api/v2/logs_v2.dart | ✅ 完成 |
-| 数据模型 | lib/data/models/logs_models.dart | ✅ 完成 |
-
-### 待实现
-
-| 组件 | 优先级 | 预计工作量 |
-|------|--------|-----------|
-| LogProvider | P0 | 4小时 |
-| LogService | P0 | 3小时 |
-| LogListPage | P0 | 6小时 |
-| LogDetailPage | P0 | 4小时 |
-| LogSearchPage | P0 | 4小时 |
-| RealTimeLogWidget | P1 | 4小时 |
-| LogStatsPage | P1 | 4小时 |
-| LogExportDialog | P0 | 3小时 |
-| 单元测试 | P0 | 4小时 |
-
-## 评审记录表
-
-| 日期 | 评审人 | 评审内容 | 结果 | 备注 |
-|------|--------|---------|------|------|
-| 2026-02-14 | - | 初始架构设计 | 待评审 | - |
+- `website` 与 `ssh` 日志暂不纳入日志中心 MVP。
+- 日志清理与导出动作暂不开放 UI，只保留后续扩展位。
+- 文本查看先优先可读性和筛选，不做更复杂的多源 tail/stream 编排。
 
 ---
 
-**文档版本**: 1.0  
-**最后更新**: 2026-02-14  
-**维护者**: Open1Panel开发团队
+**文档版本**: 2.0  
+**最后更新**: 2026-03-27

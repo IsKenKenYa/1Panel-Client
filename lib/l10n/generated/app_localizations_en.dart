@@ -4396,6 +4396,143 @@ class AppLocalizationsEn extends AppLocalizations {
   String get operationsTaskLogDetailTitle => 'Task Log Detail';
 
   @override
+  String get logsCenterTabOperation => 'Operation';
+
+  @override
+  String get logsCenterTabLogin => 'Login';
+
+  @override
+  String get logsCenterTabTask => 'Task';
+
+  @override
+  String get logsCenterTabSystem => 'System';
+
+  @override
+  String get logsOperationSourceLabel => 'Source';
+
+  @override
+  String get logsOperationActionLabel => 'Operation';
+
+  @override
+  String get logsOperationEmptyTitle => 'No operation logs';
+
+  @override
+  String get logsOperationEmptyDescription =>
+      'Operation logs will appear here after the server records actions.';
+
+  @override
+  String get logsLoginIpLabel => 'IP';
+
+  @override
+  String get logsLoginEmptyTitle => 'No login logs';
+
+  @override
+  String get logsLoginEmptyDescription =>
+      'Login logs will appear here after the server records authentication activity.';
+
+  @override
+  String get logsTaskTypeLabel => 'Task type';
+
+  @override
+  String logsTaskExecutingCountLabel(int count) {
+    return 'Executing: $count';
+  }
+
+  @override
+  String get logsTaskOpenDetailAction => 'View log';
+
+  @override
+  String get logsTaskEmptyTitle => 'No task logs';
+
+  @override
+  String get logsTaskEmptyDescription =>
+      'Task logs will appear here after the server runs background tasks.';
+
+  @override
+  String get logsSystemFilesLabel => 'Log files';
+
+  @override
+  String get logsSystemSourceLabel => 'Source';
+
+  @override
+  String get logsSystemSourceAgent => 'Agent';
+
+  @override
+  String get logsSystemSourceCore => 'Core';
+
+  @override
+  String get logsSystemOpenViewerAction => 'Open viewer';
+
+  @override
+  String get logsSystemEmptyTitle => 'No system log files';
+
+  @override
+  String get logsSystemEmptyDescription =>
+      'System log files will appear here after the server exposes log output.';
+
+  @override
+  String get logsSystemViewerNoFileSelected => 'Select a log file to view.';
+
+  @override
+  String get logsSystemWatchLabel => 'Watch';
+
+  @override
+  String get logsStatusAll => 'All';
+
+  @override
+  String get logsStatusSuccess => 'Success';
+
+  @override
+  String get logsStatusFailed => 'Failed';
+
+  @override
+  String get logsStatusExecuting => 'Executing';
+
+  @override
+  String get logsTaskDetailIdLabel => 'Task ID';
+
+  @override
+  String get logsTaskDetailTypeLabel => 'Task type';
+
+  @override
+  String get logsTaskDetailStatusLabel => 'Status';
+
+  @override
+  String get logsTaskDetailCurrentStepLabel => 'Current step';
+
+  @override
+  String get logsTaskDetailCreatedAtLabel => 'Created at';
+
+  @override
+  String get logsTaskDetailLogFileLabel => 'Log file';
+
+  @override
+  String get logsTaskDetailErrorLabel => 'Error';
+
+  @override
+  String get logsOperationLoadFailed => 'Failed to load operation logs.';
+
+  @override
+  String get logsLoginLoadFailed => 'Failed to load login logs.';
+
+  @override
+  String get logsTaskLoadFailed => 'Failed to load task logs.';
+
+  @override
+  String get logsTaskDetailLoadFailed => 'Failed to load task log content.';
+
+  @override
+  String get logsTaskMissingTaskId =>
+      'Task ID is required to load task log content.';
+
+  @override
+  String get logsSystemFilesLoadFailed => 'Failed to load system log files.';
+
+  @override
+  String get logsSystemContentLoadFailed =>
+      'Failed to load system log content.';
+
+  @override
   String get operationsRuntimesTitle => 'Runtimes';
 
   @override

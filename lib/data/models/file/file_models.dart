@@ -1,6 +1,7 @@
 export 'file_info.dart';
 export 'file_operation.dart';
 export 'file_permission.dart';
+export 'file_read_by_line.dart';
 export 'file_transfer.dart';
 export 'file_compress.dart';
 export 'file_favorite.dart';

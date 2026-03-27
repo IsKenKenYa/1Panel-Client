@@ -4,14 +4,15 @@
   "lastUpdated": "2026-03-27",
   "changeNotes": [
     "2026-03-27: BackupRecover now canonicalizes app/website/mysql/postgresql/redis/directory/snapshot/log record sources, and separates recordType (record search) from requestType (recover submit).",
-    "2026-03-27: Week 5 backup and cronjob form pages cleared remaining user-visible hardcoded strings to l10n, including cronjob unknown-type and unknown-error fallback copy."
+    "2026-03-27: Week 5 backup and cronjob form pages cleared remaining user-visible hardcoded strings to l10n, including cronjob unknown-type and unknown-error fallback copy.",
+    "2026-03-27: Week 6 delivered LogsCenterPage/SystemLogViewerPage/TaskLogDetailPage, aligned task log models to upstream fields, and reused /files/read for system/task log content."
   ],
   "totalEndpoints": 546,
   "totalApiMethods": 527,
   "apiClientFiles": 32,
   "testFiles": {
-    "unit": 9,
-    "integration": 14
+    "unit": 10,
+    "integration": 15
   },
   "tags": {
     "Website": {
@@ -369,8 +370,8 @@
       "endpoints": 4,
       "priority": "P1",
       "implemented": 1,
-      "tested": 0,
-      "docs": 0,
+      "tested": 1,
+      "docs": 1,
       "clientFile": "logs_v2.dart",
       "methods": 12
     },
@@ -450,8 +451,8 @@
       "endpoints": 2,
       "priority": "P1",
       "implemented": 1,
-      "tested": 0,
-      "docs": 0,
+      "tested": 1,
+      "docs": 1,
       "clientFile": "task_log_v2.dart",
       "methods": 2
     },
@@ -489,12 +490,12 @@
       "percentage": 98
     },
     "tested": {
-      "total": 21,
-      "percentage": 40
+      "total": 27,
+      "percentage": 52
     },
     "docs": {
-      "total": 8,
-      "percentage": 15
+      "total": 14,
+      "percentage": 27
     }
   },
   "prioritySummary": {
@@ -507,8 +508,8 @@
     "P1": {
       "modules": 26,
       "implemented": 26,
-      "tested": 6,
-      "docs": 3
+      "tested": 12,
+      "docs": 9
     },
     "P2": {
       "modules": 11,
