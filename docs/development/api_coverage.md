@@ -16,10 +16,15 @@
 	- Website SSL Center：provider 全量筛选项与证书健康状态文案完成国际化映射。
 	- OpenResty Center：风险提示/差异预览/摘要文案维持本地化映射闭环。
 	- Panel TLS：页面文案与风险提示映射维持一致。
-- 范围增量: S2-4 Orchestration + AI（启动）
+- 范围增量: S2-4 Orchestration + AI（主链路收口）
 - 收口项增量:
-	- Orchestration：新增 `orchestration_repository.dart` 与 `orchestration_service.dart`，compose/image/network/volume provider 去 API 直连。
-	- AI：`AIProvider` 改为依赖 `AIRepository`，`AIRepository` 改为通过 `ApiClientManager` 获取 API；新增 `AppRoutes.ai` 并接入 Shell/ServerDetail 入口。
+	- Orchestration：新增 `orchestration_repository.dart` 与 `orchestration_service.dart`，compose/image/network/volume provider 去 API 直连，并补齐独立页的 create/pull/detail/confirm/retry 主流程。
+	- AI：`AIProvider` 改为依赖 `AIRepository`，`AIRepository` 改为通过 `ApiClientManager` 获取 API；`AIPage` 拆为 `Ollama / GPU / Domain` 三标签并完成域名绑定联动。
+	- 回归测试：新增 `test/features/ai/ai_provider_test.dart`、`test/features/orchestration/providers/orchestration_provider_flow_test.dart`。
+- 范围增量补充: S2-4 验证 + S2-5 Auth（进行中）
+- 收口项增量补充:
+	- S2-4：新增 `test/features/ai/ai_page_test.dart` 与 `test/features/orchestration/orchestration_page_test.dart`，补齐 route/injection 与页面壳 smoke。
+	- S2-5：`AuthProvider` 改为依赖 `AuthService`；新增 `AuthRepository / AuthSessionStore`，会话存储切换到 `flutter_secure_storage`。
 - 门禁结果:
 	- `flutter analyze`：通过
 	- `dart run test_runner.dart unit`：通过
@@ -32,14 +37,14 @@
 | 维度 | 完成数 | 完成率 |
 | --- | --- | --- |
 | **API客户端实现** | 51/52 | 98% |
-| **单元测试覆盖** | 21/52 | 40% |
+| **单元测试覆盖** | 22/52 | 42% |
 | **文档覆盖** | 6/52 | 12% |
 
 ### 按优先级统计
 
 | 优先级 | 模块数 | 已实现 | 已测试 | 已文档 |
 | --- | --- | --- | --- | --- |
-| **P0** | 15 | 15 (100%) | 11 (73%) | 3 (20%) |
+| **P0** | 15 | 15 (100%) | 12 (80%) | 3 (20%) |
 | **P1** | 26 | 26 (100%) | 6 (23%) | 1 (4%) |
 | **P2** | 11 | 10 (91%) | 4 (36%) | 2 (18%) |
 
@@ -67,7 +72,7 @@
 | Database | 9 | database_v2.dart | 17 | ✅ | ❌ |
 | Database PostgreSQL | 9 | database_v2.dart | 17 | ✅ | ❌ |
 | Database Redis | 7 | database_v2.dart | 17 | ✅ | ❌ |
-| Auth | 5 | auth_v2.dart | 8 | ❌ | ❌ |
+| Auth | 5 | auth_v2.dart | 8 | ✅ | ❌ |
 | Monitor | 5 | monitor_v2.dart | 7 | ❌ | ❌ |
 | Database Common | 3 | database_v2.dart | 17 | ✅ | ❌ |
 
@@ -80,7 +85,7 @@
 | SSH | 12 | terminal_v2.dart | 18 | ❌ | ❌ |
 | Website SSL | 11 | ssl_v2.dart | 17 | ❌ | ❌ |
 | AI | 10 | ai_v2.dart | 18 | ✅ | ❌ |
-| Container Image | 10 | container_v2.dart | 43 | ❌ | ❌ |
+| Container Image | 10 | container_v2.dart | 43 | ✅ | ❌ |
 | Host | 10 | host_v2.dart | 9 | ❌ | ❌ |
 | OpenResty | 10 | openresty_v2.dart | 9 | ❌ | ✅ |
 | Command | 8 | command_v2.dart | 14 | ✅ | ❌ |
@@ -88,10 +93,10 @@
 | Website CA | 7 | ssl_v2.dart | 17 | ❌ | ❌ |
 | Container Compose-template | 6 | container_compose_v2.dart | 14 | ❌ | ❌ |
 | Container Image-repo | 6 | docker_v2.dart | 60 | ❌ | ❌ |
-| Container Compose | 5 | container_compose_v2.dart | 14 | ❌ | ❌ |
+| Container Compose | 5 | container_compose_v2.dart | 14 | ✅ | ❌ |
 | ScriptLibrary | 5 | command_v2.dart | 14 | ❌ | ❌ |
-| Container Network | 4 | container_v2.dart | 43 | ❌ | ❌ |
-| Container Volume | 4 | container_v2.dart | 43 | ❌ | ❌ |
+| Container Network | 4 | container_v2.dart | 43 | ✅ | ❌ |
+| Container Volume | 4 | container_v2.dart | 43 | ✅ | ❌ |
 | Logs | 4 | logs_v2.dart | 12 | ❌ | ❌ |
 | Website Acme | 4 | ssl_v2.dart | 17 | ❌ | ❌ |
 | Website DNS | 4 | website_v2.dart | 20 | ❌ | ❌ |

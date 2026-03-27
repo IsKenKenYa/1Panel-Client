@@ -24,6 +24,12 @@ class AIProvider with ChangeNotifier {
   /// 错误信息
   String? _errorMessage;
 
+  /// 最近一次操作返回信息
+  String? _lastOperationMessage;
+
+  /// 当前操作的 appInstallId
+  int _activeAppInstallId = 0;
+
   /// 获取GPU信息列表
   List<GpuInfo> get gpuInfoList => _gpuInfoList;
 
@@ -42,6 +48,12 @@ class AIProvider with ChangeNotifier {
   /// 获取错误信息
   String? get errorMessage => _errorMessage;
 
+  /// 获取最近一次操作返回信息
+  String? get lastOperationMessage => _lastOperationMessage;
+
+  /// 获取当前 appInstallId
+  int get activeAppInstallId => _activeAppInstallId;
+
   /// 构造函数
   AIProvider({AIRepository? repository})
       : _repository = repository ?? AIRepository();
@@ -58,24 +70,41 @@ class AIProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void _setLastOperationMessage(String? message) {
+    _lastOperationMessage = message;
+    notifyListeners();
+  }
+
+  void setActiveAppInstallId(int appInstallId) {
+    _activeAppInstallId = appInstallId;
+    notifyListeners();
+  }
+
   /// 清除错误信息
   void clearError() {
     _errorMessage = null;
     notifyListeners();
   }
 
+  void clearLastOperationMessage() {
+    _lastOperationMessage = null;
+    notifyListeners();
+  }
+
   /// 加载GPU/XPU信息
   ///
   /// 获取系统中的GPU或XPU信息
-  Future<void> loadGpuInfo() async {
+  Future<bool> loadGpuInfo() async {
     _setLoading(true);
     _setError(null);
 
     try {
       _gpuInfoList = await _repository.loadGpuInfo();
       notifyListeners();
+      return true;
     } catch (e) {
       _setError('加载GPU信息失败: $e');
+      return false;
     } finally {
       _setLoading(false);
     }
@@ -87,9 +116,9 @@ class AIProvider with ChangeNotifier {
   /// @param page 页码
   /// @param pageSize 每页大小
   /// @param info 搜索信息
-  Future<void> searchOllamaModels({
-    required int page,
-    required int pageSize,
+  Future<bool> searchOllamaModels({
+    int page = 1,
+    int pageSize = 20,
     String? info,
   }) async {
     _setLoading(true);
@@ -103,8 +132,10 @@ class AIProvider with ChangeNotifier {
       );
       _ollamaModelList = result.items;
       notifyListeners();
+      return true;
     } catch (e) {
       _setError('搜索Ollama模型失败: $e');
+      return false;
     } finally {
       _setLoading(false);
     }
@@ -113,15 +144,18 @@ class AIProvider with ChangeNotifier {
   /// 同步Ollama模型列表
   ///
   /// 同步Ollama模型列表
-  Future<void> syncOllamaModels() async {
+  Future<bool> syncOllamaModels() async {
     _setLoading(true);
     _setError(null);
 
     try {
       _ollamaModelDropList = await _repository.syncOllamaModels();
+      await searchOllamaModels();
       notifyListeners();
+      return true;
     } catch (e) {
       _setError('同步Ollama模型失败: $e');
+      return false;
     } finally {
       _setLoading(false);
     }
@@ -131,9 +165,10 @@ class AIProvider with ChangeNotifier {
   ///
   /// 获取当前AI服务绑定的域名信息
   /// @param appInstallId 应用安装ID
-  Future<void> getBindDomain({
+  Future<bool> getBindDomain({
     required int appInstallId,
   }) async {
+    _activeAppInstallId = appInstallId;
     _setLoading(true);
     _setError(null);
 
@@ -142,8 +177,10 @@ class AIProvider with ChangeNotifier {
         appInstallID: appInstallId,
       );
       notifyListeners();
+      return true;
     } catch (e) {
       _setError('获取绑定域名失败: $e');
+      return false;
     } finally {
       _setLoading(false);
     }
@@ -157,13 +194,14 @@ class AIProvider with ChangeNotifier {
   /// @param ipList IP列表
   /// @param sslId SSL证书ID
   /// @param websiteId 网站ID
-  Future<void> bindDomain({
+  Future<bool> bindDomain({
     required int appInstallId,
     String? domain,
     String? ipList,
     int? sslId,
     int? websiteId,
   }) async {
+    _activeAppInstallId = appInstallId;
     _setLoading(true);
     _setError(null);
 
@@ -175,9 +213,12 @@ class AIProvider with ChangeNotifier {
         sslID: sslId,
         websiteID: websiteId,
       );
+      await getBindDomain(appInstallId: appInstallId);
       notifyListeners();
+      return true;
     } catch (e) {
       _setError('绑定域名失败: $e');
+      return false;
     } finally {
       _setLoading(false);
     }
@@ -188,7 +229,7 @@ class AIProvider with ChangeNotifier {
   /// 创建一个新的Ollama模型
   /// @param name 模型名称
   /// @param taskId 任务ID
-  Future<void> createOllamaModel({
+  Future<bool> createOllamaModel({
     required String name,
     String? taskId,
   }) async {
@@ -200,9 +241,12 @@ class AIProvider with ChangeNotifier {
         name: name,
         taskID: taskId,
       );
+      await searchOllamaModels();
       notifyListeners();
+      return true;
     } catch (e) {
       _setError('创建Ollama模型失败: $e');
+      return false;
     } finally {
       _setLoading(false);
     }
@@ -213,7 +257,7 @@ class AIProvider with ChangeNotifier {
   /// 关闭指定Ollama模型的连接
   /// @param name 模型名称
   /// @param taskId 任务ID
-  Future<void> closeOllamaModel({
+  Future<bool> closeOllamaModel({
     required String name,
     String? taskId,
   }) async {
@@ -225,9 +269,12 @@ class AIProvider with ChangeNotifier {
         name: name,
         taskID: taskId,
       );
+      await searchOllamaModels();
       notifyListeners();
+      return true;
     } catch (e) {
       _setError('关闭Ollama模型失败: $e');
+      return false;
     } finally {
       _setLoading(false);
     }
@@ -238,7 +285,7 @@ class AIProvider with ChangeNotifier {
   /// 删除指定的Ollama模型
   /// @param ids 模型ID列表
   /// @param forceDelete 是否强制删除
-  Future<void> deleteOllamaModel({
+  Future<bool> deleteOllamaModel({
     required List<int> ids,
     bool forceDelete = false,
   }) async {
@@ -250,9 +297,12 @@ class AIProvider with ChangeNotifier {
         ids: ids,
         forceDelete: forceDelete,
       );
+      await searchOllamaModels();
       notifyListeners();
+      return true;
     } catch (e) {
       _setError('删除Ollama模型失败: $e');
+      return false;
     } finally {
       _setLoading(false);
     }
@@ -263,7 +313,7 @@ class AIProvider with ChangeNotifier {
   /// 加载指定的Ollama模型
   /// @param name 模型名称
   /// @param taskId 任务ID
-  Future<void> loadOllamaModel({
+  Future<bool> loadOllamaModel({
     required String name,
     String? taskId,
   }) async {
@@ -271,13 +321,16 @@ class AIProvider with ChangeNotifier {
     _setError(null);
 
     try {
-      await _repository.loadOllamaModel(
+      final result = await _repository.loadOllamaModel(
         name: name,
         taskID: taskId,
       );
+      _setLastOperationMessage(result);
       notifyListeners();
+      return true;
     } catch (e) {
       _setError('加载Ollama模型失败: $e');
+      return false;
     } finally {
       _setLoading(false);
     }
@@ -288,7 +341,7 @@ class AIProvider with ChangeNotifier {
   /// 重新创建指定的Ollama模型
   /// @param name 模型名称
   /// @param taskId 任务ID
-  Future<void> recreateOllamaModel({
+  Future<bool> recreateOllamaModel({
     required String name,
     String? taskId,
   }) async {
@@ -300,9 +353,12 @@ class AIProvider with ChangeNotifier {
         name: name,
         taskID: taskId,
       );
+      await searchOllamaModels();
       notifyListeners();
+      return true;
     } catch (e) {
       _setError('重新创建Ollama模型失败: $e');
+      return false;
     } finally {
       _setLoading(false);
     }

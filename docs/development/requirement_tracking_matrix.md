@@ -13,15 +13,22 @@
 - **S2-2（Website Core）**: 站点生命周期、详情、默认站点、分组、备注与域名主流程维持可用。
 - **S2-3（Security & Gateway）**: `panel ssl + website ssl + openresty` 按统一收口标准推进，风险提示、差异预览、回滚入口与 i18n 一致性继续对齐。
 - **S2-3 本轮收口结果**: Website SSL Center 完成 provider 全量筛选项与健康状态文案国际化对齐；OpenResty/Panel TLS 维持本地化闭环。
-- **S2-4（Orchestration + AI）启动结果**:
-	- Orchestration：新增 `repository + service`，compose/image/network/volume 四个 provider 完成去 API 直连改造。
-	- AI：provider 完成去 API 直连改造（改为依赖 repository），新增 `AppRoutes.ai`，并接入 Shell 模块与服务器详情入口。
+- **S2-4（Orchestration + AI）本轮收口结果**:
+	- Orchestration：独立页接入 compose/image/network/volume 四分段，补齐 create/pull 入口、详情抽屉、危险操作确认、失败重试与结果反馈。
+	- AI：`AIPage` 重构为 `Ollama / GPU / Domain` 三标签页，补齐域名绑定联动、操作消息回填与错误恢复提示。
+	- 回归测试：新增 `test/features/ai/ai_provider_test.dart` 与 `test/features/orchestration/providers/orchestration_provider_flow_test.dart`。
+- **S2-4 验证补充**:
+	- AI：新增 `test/features/ai/ai_page_test.dart`，验证 `AppRoutes.ai` 的 route/injection 与页面壳。
+	- Orchestration：新增 `test/features/orchestration/orchestration_page_test.dart`，验证 tab shell 与主操作入口切换。
+- **S2-5（Core Refactor）当前进展**:
+	- Auth：新增 `AuthRepository / AuthService / AuthSessionStore`，`AuthProvider` 已移除 `SharedPreferences + debugPrint`，改为安全存储和 `appLogger`。
+	- 回归测试：新增 `test/features/auth/auth_service_test.dart`，并将 `auth_provider_test.dart` 改为依赖注入风格。
 - **门禁执行结果**:
 	- `flutter analyze`：通过（No issues found）
 	- `dart run test_runner.dart unit`：通过
 	- `dart run test_runner.dart ui`：通过
 	- `dart run test_runner.dart integration`：通过（部分用例按环境开关跳过，见测试输出说明）
-- **下一步**: 继续 S2-4 主链路对齐（Compose/Image/Network/Volume 细节交互与 AI 三主流程深化），并补针对新分层的回归测试。
+- **下一步**: 继续推进 `dashboard / file` 的 S2-5 分层收口，并补回 `S2-2 / S2-3` 与完成口径不一致的 repository / integration 缺口。
 
 ## 优先级定义
 
@@ -50,7 +57,7 @@
 | **Database PostgreSQL** | 9 | ✅ database_v2.dart | ✅ database_models.dart | ⚠️ 待测试 | 🟡 部分 | PostgreSQL特定功能待细化 |
 | **Database Redis** | 7 | ✅ database_v2.dart | ✅ database_models.dart | ⚠️ 待测试 | 🟡 部分 | Redis特定功能待细化 |
 | **Database Common** | 3 | ✅ database_v2.dart | ✅ database_models.dart | ⚠️ 待测试 | 🟡 部分 | 通用数据库操作 |
-| **Auth** | 5 | ✅ auth_v2.dart | ✅ user_models.dart | ✅ 已测试 | ✅ 已集成 | 认证链路完整 |
+| **Auth** | 5 | ✅ auth_v2.dart | ✅ user_models.dart | ✅ 已测试 | ✅ 已集成 | 认证主链路完整，S2-5 安全存储分层已启动 |
 | **Monitor** | 5 | ✅ monitor_v2.dart | ✅ monitoring_models.dart | ⚠️ 待测试 | 🟡 部分 | 性能图表与告警待扩展 |
 
 ### P1 优先级模块 (高价值扩展)
@@ -61,8 +68,8 @@
 | **Firewall** | 15 | ✅ firewall_v2.dart | ✅ firewall_models.dart | ✅ 已测试 | 🟡 部分 | status/rules/ip/ports/search/batch 已接入，advanced chain 待补 |
 | **SSH** | 12 | ✅ terminal_v2.dart | ✅ terminal_models.dart | ⚠️ 待测试 | 🔴 待集成 | SSH会话/日志待扩展 |
 | **Website SSL** | 11 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🟡 部分 | 证书与域名细分功能待扩展 |
-| **AI** | 10 | ✅ ai_v2.dart | ✅ ai_models.dart | ✅ 已测试 | 🟡 部分 | GPU/XPU监控与域名绑定 |
-| **Container Image** | 10 | ✅ container_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | 🟡 部分 | 镜像管理功能 |
+| **AI** | 10 | ✅ ai_v2.dart | ✅ ai_models.dart | ✅ 已测试 | 🟡 部分 | Ollama/GPU/Domain 三主流程已接入，长尾能力待补 |
+| **Container Image** | 10 | ✅ container_v2.dart | ✅ container_models.dart | ✅ 已测试 | 🟡 部分 | 独立页已接入拉取、详情、标签/推送/保存/删除主流程 |
 | **Host** | 10 | ✅ host_v2.dart | ✅ host_models.dart | ⚠️ 待测试 | 🔴 待集成 | 主机管理 |
 | **OpenResty** | 10 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ✅ 已文档 | 🟡 部分 | 配置与状态页待建设 |
 | **Command** | 8 | ✅ command_v2.dart | ✅ tool_models.dart | ✅ 已测试 | 🟡 部分 | 快捷命令 |
@@ -70,10 +77,10 @@
 | **Logs** | 4 | ✅ logs_v2.dart | ✅ logs_models.dart | ⚠️ 待测试 | 🟡 部分 | 日志管理、清理、导出 |
 | **Container Compose-template** | 6 | ✅ container_compose_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | 🔴 待集成 | Compose模板管理 |
 | **Container Image-repo** | 6 | ✅ docker_v2.dart | ✅ docker_models.dart | ⚠️ 待测试 | 🔴 待集成 | 镜像仓库管理 |
-| **Container Compose** | 5 | ✅ container_compose_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | 🔴 待集成 | Docker Compose管理 |
+| **Container Compose** | 5 | ✅ container_compose_v2.dart | ✅ container_models.dart | ✅ 已测试 | 🟡 部分 | 独立页已接入创建、启停重启、更新/校验与日志清理 |
 | **ScriptLibrary** | 5 | ✅ command_v2.dart | ✅ tool_models.dart | ⚠️ 待测试 | 🔴 待集成 | 脚本库管理 |
-| **Container Network** | 4 | ✅ container_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | 🔴 待集成 | 网络管理 |
-| **Container Volume** | 4 | ✅ container_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | 🔴 待集成 | 卷管理 |
+| **Container Network** | 4 | ✅ container_v2.dart | ✅ container_models.dart | ✅ 已测试 | 🟡 部分 | 独立页已接入创建、详情、删除确认与刷新 |
+| **Container Volume** | 4 | ✅ container_v2.dart | ✅ container_models.dart | ✅ 已测试 | 🟡 部分 | 独立页已接入创建、详情、删除确认与刷新 |
 | **Website CA** | 7 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🔴 待集成 | CA证书管理 |
 | **Website Acme** | 4 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🔴 待集成 | ACME证书申请 |
 | **Website DNS** | 4 | ✅ website_v2.dart | ✅ website_models.dart | ⚠️ 待测试 | 🔴 待集成 | DNS管理 |

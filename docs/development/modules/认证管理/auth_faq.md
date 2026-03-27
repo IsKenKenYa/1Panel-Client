@@ -4,13 +4,11 @@
 
 ### Q1: 登录后Token存储在哪里？
 
-**A**: Token使用`SharedPreferences`进行存储（当前实现），存储键值：
+**A**: Token使用 `flutter_secure_storage` 进行存储（当前实现），存储键值：
 - Token键: `auth_token`
 - 用户名键: `auth_username`
 
-**安全建议**: 生产环境建议升级为`flutter_secure_storage`加密存储。
-
-**相关代码**: [auth_provider.dart](../../../lib/features/auth/auth_provider.dart)
+**相关代码**: [auth_session_store.dart](../../../lib/features/auth/auth_session_store.dart)
 
 ### Q2: Token过期后如何处理？
 
@@ -21,7 +19,7 @@
 
 **未来规划**: 实现Token自动刷新机制。
 
-**相关代码**: [auth_provider.dart](../../../lib/features/auth/auth_provider.dart#L212-232)
+**相关代码**: [auth_service.dart](../../../lib/features/auth/auth_service.dart)
 
 ### Q3: 如何启用MFA多因素认证？
 
@@ -33,7 +31,7 @@
 
 **API端点**: `POST /core/auth/mfalogin`
 
-**相关代码**: [auth_provider.dart](../../../lib/features/auth/auth_provider.dart#L171-209)
+**相关代码**: [auth_provider.dart](../../../lib/features/auth/auth_provider.dart)
 
 ### Q4: 演示模式有哪些限制？
 
@@ -60,7 +58,7 @@
 
 ### Q7: 如何实现"记住登录"功能？
 
-**A**: 当前实现通过SharedPreferences持久化存储：
+**A**: 当前实现通过 `AuthSessionStore + flutter_secure_storage` 持久化存储：
 - Token存储在本地
 - 应用启动时检查Token有效性
 - 有效则自动登录，无效则显示登录页
@@ -174,7 +172,7 @@
 
 1. **Token安全**
    - 使用HTTPS传输
-   - 当前使用SharedPreferences存储，生产环境建议升级为加密存储
+   - 当前已使用 `flutter_secure_storage` 加密存储
    - 定期刷新Token
    - 敏感操作二次验证
 
@@ -207,6 +205,6 @@
 
 ---
 
-**文档版本**: 2.0  
-**最后更新**: 2026-02-15  
+**文档版本**: 2.1  
+**最后更新**: 2026-03-27  
 **维护者**: Open1Panel开发团队

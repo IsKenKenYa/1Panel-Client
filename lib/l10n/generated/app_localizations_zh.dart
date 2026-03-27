@@ -1037,6 +1037,92 @@ class AppLocalizationsZh extends AppLocalizations {
   String get serverModuleAi => 'AI';
 
   @override
+  String get aiTabModels => '模型';
+
+  @override
+  String get aiTabGpu => 'GPU';
+
+  @override
+  String get aiTabDomain => '域名';
+
+  @override
+  String get aiModelCreate => '创建模型';
+
+  @override
+  String get aiModelSync => '同步模型';
+
+  @override
+  String get aiModelRecreate => '重新创建模型';
+
+  @override
+  String get aiModelNameLabel => '模型名称';
+
+  @override
+  String get aiTaskIdOptional => '任务 ID（可选）';
+
+  @override
+  String get aiModelNameRequired => '请输入模型名称';
+
+  @override
+  String get aiForceDelete => '强制删除';
+
+  @override
+  String get aiOperationSuccess => '操作成功';
+
+  @override
+  String aiOperationFailed(String error) {
+    return '操作失败：$error';
+  }
+
+  @override
+  String get aiOperationResult => '操作结果';
+
+  @override
+  String get aiNoGpuData => '暂无 GPU 数据';
+
+  @override
+  String get aiFanSpeed => '风扇速度';
+
+  @override
+  String get aiPowerUsage => '功耗';
+
+  @override
+  String get aiPerformanceState => '性能状态';
+
+  @override
+  String get aiDomainHint => '配置 Ollama 域名绑定。请先输入 appInstallID，再加载或提交绑定信息。';
+
+  @override
+  String get aiAppInstallIdLabel => '应用安装 ID';
+
+  @override
+  String get aiAppInstallIdRequired => '请输入应用安装 ID';
+
+  @override
+  String get aiIpAllowListLabel => 'IP 白名单';
+
+  @override
+  String get aiSslIdOptionalLabel => 'SSL ID（可选）';
+
+  @override
+  String get aiWebsiteIdOptionalLabel => '网站 ID（可选）';
+
+  @override
+  String get aiLoadBinding => '加载当前绑定';
+
+  @override
+  String get aiBindDomain => '绑定域名';
+
+  @override
+  String get aiCurrentBinding => '当前绑定';
+
+  @override
+  String get aiConnUrl => '连接地址';
+
+  @override
+  String get containerSystemProtectedNetwork => '系统网络不可删除';
+
+  @override
   String get serverModuleDatabases => '数据库';
 
   @override

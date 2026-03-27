@@ -52,13 +52,33 @@ class _VolumePageState extends State<VolumePage> {
 
         return RefreshIndicator(
           onRefresh: () => provider.loadVolumes(),
-          child: ListView.builder(
+          child: ListView(
             padding: const EdgeInsets.all(16),
-            itemCount: provider.volumes.length,
-            itemBuilder: (context, index) {
-              final volume = provider.volumes[index];
-              return VolumeCard(volume: volume);
-            },
+            children: [
+              if (provider.error != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Material(
+                    color: Theme.of(context).colorScheme.errorContainer,
+                    borderRadius: BorderRadius.circular(12),
+                    child: ListTile(
+                      leading: const Icon(Icons.error_outline),
+                      title: Text(l10n.commonLoadFailedTitle),
+                      subtitle: Text(provider.error!),
+                      trailing: TextButton(
+                        onPressed: () => provider.loadVolumes(),
+                        child: Text(l10n.commonRetry),
+                      ),
+                    ),
+                  ),
+                ),
+              if (provider.isLoading)
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 12),
+                  child: LinearProgressIndicator(minHeight: 2),
+                ),
+              ...provider.volumes.map((volume) => VolumeCard(volume: volume)),
+            ],
           ),
         );
       },

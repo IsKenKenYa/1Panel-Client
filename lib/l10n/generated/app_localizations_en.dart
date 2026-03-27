@@ -1058,6 +1058,94 @@ class AppLocalizationsEn extends AppLocalizations {
   String get serverModuleAi => 'AI';
 
   @override
+  String get aiTabModels => 'Models';
+
+  @override
+  String get aiTabGpu => 'GPU';
+
+  @override
+  String get aiTabDomain => 'Domain';
+
+  @override
+  String get aiModelCreate => 'Create Model';
+
+  @override
+  String get aiModelSync => 'Sync Models';
+
+  @override
+  String get aiModelRecreate => 'Recreate Model';
+
+  @override
+  String get aiModelNameLabel => 'Model Name';
+
+  @override
+  String get aiTaskIdOptional => 'Task ID (optional)';
+
+  @override
+  String get aiModelNameRequired => 'Model name is required';
+
+  @override
+  String get aiForceDelete => 'Force Delete';
+
+  @override
+  String get aiOperationSuccess => 'Operation successful';
+
+  @override
+  String aiOperationFailed(String error) {
+    return 'Operation failed: $error';
+  }
+
+  @override
+  String get aiOperationResult => 'Operation Result';
+
+  @override
+  String get aiNoGpuData => 'No GPU data available';
+
+  @override
+  String get aiFanSpeed => 'Fan Speed';
+
+  @override
+  String get aiPowerUsage => 'Power';
+
+  @override
+  String get aiPerformanceState => 'Performance State';
+
+  @override
+  String get aiDomainHint =>
+      'Configure Ollama domain binding. Enter the appInstallID first, then load or submit binding.';
+
+  @override
+  String get aiAppInstallIdLabel => 'App Install ID';
+
+  @override
+  String get aiAppInstallIdRequired => 'App Install ID is required';
+
+  @override
+  String get aiIpAllowListLabel => 'Allow IP List';
+
+  @override
+  String get aiSslIdOptionalLabel => 'SSL ID (optional)';
+
+  @override
+  String get aiWebsiteIdOptionalLabel => 'Website ID (optional)';
+
+  @override
+  String get aiLoadBinding => 'Load Current Binding';
+
+  @override
+  String get aiBindDomain => 'Bind Domain';
+
+  @override
+  String get aiCurrentBinding => 'Current Binding';
+
+  @override
+  String get aiConnUrl => 'Connection URL';
+
+  @override
+  String get containerSystemProtectedNetwork =>
+      'System network cannot be deleted';
+
+  @override
   String get serverModuleDatabases => 'Databases';
 
   @override

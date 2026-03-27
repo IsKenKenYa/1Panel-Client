@@ -1,13 +1,16 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:onepanel_client/features/auth/auth_provider.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:onepanel_client/data/models/auth_models.dart';
+import 'package:onepanel_client/features/auth/auth_provider.dart';
+import 'package:onepanel_client/features/auth/auth_service.dart';
+import 'package:onepanel_client/features/auth/auth_session_store.dart';
+
+class MockAuthService extends Mock implements AuthService {}
 
 void main() {
   group('AuthModels', () {
     test('LoginRequest toJson should return correct map', () {
-      final request = LoginRequest(
+      const request = LoginRequest(
         username: 'admin',
         password: 'password123',
         captcha: '1234',
@@ -23,7 +26,7 @@ void main() {
     });
 
     test('LoginRequest toJson without optional fields', () {
-      final request = LoginRequest(
+      const request = LoginRequest(
         username: 'admin',
         password: 'password123',
       );
@@ -37,14 +40,12 @@ void main() {
     });
 
     test('LoginResponse fromJson should parse correctly', () {
-      final json = {
+      final response = LoginResponse.fromJson({
         'token': 'test_token_123',
         'name': 'admin',
         'mfaStatus': false,
         'message': 'Login successful',
-      };
-
-      final response = LoginResponse.fromJson(json);
+      });
 
       expect(response.token, 'test_token_123');
       expect(response.name, 'admin');
@@ -53,26 +54,29 @@ void main() {
     });
 
     test('LoginResponse with MFA status true', () {
-      final json = {
+      final response = LoginResponse.fromJson({
         'token': null,
         'name': 'admin',
         'mfaStatus': true,
-      };
-
-      final response = LoginResponse.fromJson(json);
+      });
 
       expect(response.token, null);
       expect(response.mfaStatus, true);
     });
 
     test('CaptchaData fromJson should handle different key names', () {
-      final json1 = {'captchaId': 'id1', 'imagePath': '/path/to/image'};
-      final json2 = {'id': 'id2', 'path': '/path/to/image2'};
-      final json3 = {'image': 'base64data', 'base64': 'base64data2'};
-
-      final captcha1 = CaptchaData.fromJson(json1);
-      final captcha2 = CaptchaData.fromJson(json2);
-      final captcha3 = CaptchaData.fromJson(json3);
+      final captcha1 = CaptchaData.fromJson({
+        'captchaId': 'id1',
+        'imagePath': '/path/to/image',
+      });
+      final captcha2 = CaptchaData.fromJson({
+        'id': 'id2',
+        'path': '/path/to/image2',
+      });
+      final captcha3 = CaptchaData.fromJson({
+        'image': 'base64data',
+        'base64': 'base64data2',
+      });
 
       expect(captcha1.captchaId, 'id1');
       expect(captcha2.captchaId, 'id2');
@@ -80,15 +84,13 @@ void main() {
     });
 
     test('LoginSettings fromJson should parse correctly', () {
-      final json = {
+      final settings = LoginSettings.fromJson({
         'captcha': true,
         'mfa': false,
         'demo': 'demo_mode',
         'title': '1Panel',
         'logo': '/logo.png',
-      };
-
-      final settings = LoginSettings.fromJson(json);
+      });
 
       expect(settings.captcha, true);
       expect(settings.mfa, false);
@@ -97,7 +99,7 @@ void main() {
     });
 
     test('MfaLoginRequest toJson should return correct map', () {
-      final request = MfaLoginRequest(
+      const request = MfaLoginRequest(
         code: '123456',
         name: 'admin',
       );
@@ -109,28 +111,32 @@ void main() {
     });
 
     test('SafetyStatus fromJson should handle different key names', () {
-      final json1 = {'issafety': true, 'message': 'Safe'};
-      final json2 = {'isSafety': false, 'message': 'Not Safe'};
-
-      final status1 = SafetyStatus.fromJson(json1);
-      final status2 = SafetyStatus.fromJson(json2);
+      final status1 = SafetyStatus.fromJson({
+        'issafety': true,
+        'message': 'Safe',
+      });
+      final status2 = SafetyStatus.fromJson({
+        'isSafety': false,
+        'message': 'Not Safe',
+      });
 
       expect(status1.isSafety, true);
       expect(status2.isSafety, false);
     });
 
     test('DemoModeStatus fromJson should parse correctly', () {
-      final json = {'demo': true, 'isDemo': false};
-
-      final status = DemoModeStatus.fromJson(json);
+      final status = DemoModeStatus.fromJson({
+        'demo': true,
+        'isDemo': false,
+      });
 
       expect(status.isDemo, true);
     });
 
     test('Equatable works correctly for LoginRequest', () {
-      final request1 = LoginRequest(username: 'admin', password: 'pass');
-      final request2 = LoginRequest(username: 'admin', password: 'pass');
-      final request3 = LoginRequest(username: 'user', password: 'pass');
+      const request1 = LoginRequest(username: 'admin', password: 'pass');
+      const request2 = LoginRequest(username: 'admin', password: 'pass');
+      const request3 = LoginRequest(username: 'user', password: 'pass');
 
       expect(request1 == request2, true);
       expect(request1 == request3, false);
@@ -138,31 +144,47 @@ void main() {
   });
 
   group('AuthProvider', () {
+    late MockAuthService service;
+    late AuthProvider provider;
+
+    setUpAll(() {
+      registerFallbackValue(
+        const LoginRequest(username: 'fallback', password: 'fallback'),
+      );
+    });
+
     setUp(() {
-      SharedPreferences.setMockInitialValues({});
+      service = MockAuthService();
+      provider = AuthProvider(service: service);
     });
 
     test('Initial status should be initial', () {
-      final provider = AuthProvider();
       expect(provider.status, AuthStatus.initial);
       expect(provider.isAuthenticated, false);
       expect(provider.isMfaRequired, false);
     });
 
-    test('checkAuthStatus should set unauthenticated when no token', () async {
-      final provider = AuthProvider();
+    test('checkAuthStatus should set unauthenticated when no session',
+        () async {
+      when(() => service.restoreSession()).thenAnswer((_) async => null);
+
       await provider.checkAuthStatus();
 
       expect(provider.status, AuthStatus.unauthenticated);
+      expect(provider.token, isNull);
     });
 
-    test('checkAuthStatus should set authenticated when token exists', () async {
-      SharedPreferences.setMockInitialValues({
-        'auth_token': 'test_token',
-        'auth_username': 'admin',
-      });
+    test('checkAuthStatus should set authenticated when session exists',
+        () async {
+      when(
+        () => service.restoreSession(),
+      ).thenAnswer(
+        (_) async => const AuthSession(
+          token: 'test_token',
+          username: 'admin',
+        ),
+      );
 
-      final provider = AuthProvider();
       await provider.checkAuthStatus();
 
       expect(provider.status, AuthStatus.authenticated);
@@ -170,14 +192,107 @@ void main() {
       expect(provider.username, 'admin');
     });
 
-    test('Initial values should be null or false', () {
-      final provider = AuthProvider();
+    test('loadLoginSettings should store fetched settings', () async {
+      when(
+        () => service.loadLoginSettings(),
+      ).thenAnswer(
+        (_) async => const LoginSettings(captcha: true, title: '1Panel'),
+      );
 
-      expect(provider.token, null);
-      expect(provider.username, null);
-      expect(provider.errorMessage, null);
-      expect(provider.captcha, null);
-      expect(provider.loginSettings, null);
+      await provider.loadLoginSettings();
+
+      expect(provider.loginSettings?.captcha, true);
+      expect(provider.loginSettings?.title, '1Panel');
+    });
+
+    test('login should authenticate when service returns token', () async {
+      when(
+        () => service.login(any()),
+      ).thenAnswer(
+        (_) async => const LoginResponse(
+          token: 'auth-token',
+          name: 'admin',
+        ),
+      );
+
+      final success = await provider.login(
+        username: 'admin',
+        password: 'password123',
+      );
+
+      expect(success, isTrue);
+      expect(provider.status, AuthStatus.authenticated);
+      expect(provider.token, 'auth-token');
+      expect(provider.username, 'admin');
+    });
+
+    test('login should enter mfaRequired when service requests MFA', () async {
+      when(
+        () => service.login(any()),
+      ).thenAnswer(
+        (_) async => const LoginResponse(
+          mfaStatus: true,
+          name: 'admin',
+        ),
+      );
+
+      final success = await provider.login(
+        username: 'admin',
+        password: 'password123',
+      );
+
+      expect(success, isFalse);
+      expect(provider.status, AuthStatus.mfaRequired);
+      expect(provider.username, 'admin');
+    });
+
+    test('mfaLogin should authenticate when service returns token', () async {
+      when(() => service.login(any())).thenAnswer(
+        (_) async => const LoginResponse(mfaStatus: true),
+      );
+      when(
+        () => service.mfaLogin(code: '123456', username: 'admin'),
+      ).thenAnswer(
+        (_) async => const LoginResponse(
+          token: 'mfa-token',
+          name: 'admin',
+        ),
+      );
+
+      await provider.login(username: 'admin', password: 'password123');
+      final success = await provider.mfaLogin('123456');
+
+      expect(success, isTrue);
+      expect(provider.status, AuthStatus.authenticated);
+      expect(provider.token, 'mfa-token');
+    });
+
+    test('logout should clear session state even when service fails', () async {
+      when(
+        () => service.restoreSession(),
+      ).thenAnswer(
+        (_) async => const AuthSession(
+          token: 'test_token',
+          username: 'admin',
+        ),
+      );
+      when(() => service.logout()).thenThrow(Exception('network error'));
+
+      await provider.checkAuthStatus();
+      await provider.logout();
+
+      expect(provider.status, AuthStatus.unauthenticated);
+      expect(provider.token, isNull);
+      expect(provider.username, isNull);
+      expect(provider.isLoading, isFalse);
+    });
+
+    test('Initial values should be null or false', () {
+      expect(provider.token, isNull);
+      expect(provider.username, isNull);
+      expect(provider.errorMessage, isNull);
+      expect(provider.captcha, isNull);
+      expect(provider.loginSettings, isNull);
       expect(provider.isLoading, false);
       expect(provider.isDemoMode, false);
     });

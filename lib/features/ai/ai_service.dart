@@ -10,7 +10,7 @@ class AIService {
   AIService(this._api);
 
   /// 绑定域名
-  /// 
+  ///
   /// 为AI服务绑定域名
   /// @param request 绑定域名请求
   /// @return 绑定结果
@@ -25,7 +25,7 @@ class AIService {
   }
 
   /// 获取绑定域名
-  /// 
+  ///
   /// 获取当前AI服务绑定的域名信息
   /// @param request 获取绑定域名请求
   /// @return 域名信息
@@ -41,7 +41,7 @@ class AIService {
   }
 
   /// 加载GPU/XPU信息
-  /// 
+  ///
   /// 获取系统中的GPU或XPU信息
   /// @return GPU/XPU信息列表
   Future<List<GpuInfo>> loadGpuInfo() async {
@@ -56,7 +56,7 @@ class AIService {
   }
 
   /// 创建Ollama模型
-  /// 
+  ///
   /// 创建一个新的Ollama模型
   /// @param request 模型名称请求
   /// @return 创建结果
@@ -71,7 +71,7 @@ class AIService {
   }
 
   /// 关闭Ollama模型连接
-  /// 
+  ///
   /// 关闭指定Ollama模型的连接
   /// @param request 模型名称请求
   /// @return 操作结果
@@ -86,7 +86,7 @@ class AIService {
   }
 
   /// 删除Ollama模型
-  /// 
+  ///
   /// 删除指定的Ollama模型
   /// @param request 删除请求
   /// @return 删除结果
@@ -101,7 +101,7 @@ class AIService {
   }
 
   /// 加载Ollama模型
-  /// 
+  ///
   /// 加载指定的Ollama模型
   /// @param request 模型名称请求
   /// @return 加载结果
@@ -117,7 +117,7 @@ class AIService {
   }
 
   /// 重新创建Ollama模型
-  /// 
+  ///
   /// 重新创建指定的Ollama模型
   /// @param request 模型名称请求
   /// @return 创建结果
@@ -132,11 +132,12 @@ class AIService {
   }
 
   /// 搜索Ollama模型
-  /// 
+  ///
   /// 搜索Ollama模型列表
   /// @param request 搜索请求
   /// @return 搜索结果
-  Future<PageResult<OllamaModel>> searchOllamaModels(SearchWithPage request) async {
+  Future<PageResult<OllamaModel>> searchOllamaModels(
+      SearchWithPage request) async {
     try {
       final response = await _api.searchOllamaModels(request);
       return response.data!;
@@ -148,7 +149,7 @@ class AIService {
   }
 
   /// 同步Ollama模型列表
-  /// 
+  ///
   /// 同步Ollama模型列表
   /// @return 模型列表
   Future<List<OllamaModelDropList>> syncOllamaModels() async {
@@ -163,7 +164,7 @@ class AIService {
   }
 
   /// 处理Dio异常
-  /// 
+  ///
   /// 将Dio异常转换为更友好的错误信息
   /// @param error Dio异常
   /// @return 友好的错误信息

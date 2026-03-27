@@ -156,9 +156,8 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 24),
               FilledButton(
-                onPressed: provider.isLoading
-                    ? null
-                    : () => _handleMfaLogin(provider),
+                onPressed:
+                    provider.isLoading ? null : () => _handleMfaLogin(provider),
                 child: provider.isLoading
                     ? const SizedBox(
                         width: 20,
@@ -244,7 +243,9 @@ class _LoginPageState extends State<LoginPage> {
         border: const OutlineInputBorder(),
         suffixIcon: IconButton(
           icon: Icon(
-            _obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+            _obscurePassword
+                ? Icons.visibility_outlined
+                : Icons.visibility_off_outlined,
           ),
           onPressed: () {
             setState(() {

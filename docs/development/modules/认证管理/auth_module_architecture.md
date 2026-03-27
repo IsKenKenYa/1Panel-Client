@@ -125,7 +125,9 @@ POST /core/auth/logout
 lib/features/auth/
 ├── login_page.dart          # 登录页面
 ├── auth_provider.dart       # 状态管理
-└── widgets/                 # UI组件
+├── auth_service.dart        # 认证业务编排
+├── auth_repository.dart     # Auth API 边界
+└── auth_session_store.dart  # 安全会话存储
 ```
 
 ### API层
@@ -162,20 +164,23 @@ lib/data/models/auth_models.dart
                   │ (ChangeNotifier)│
                   └────────┬───────┘
                            │
+                           ▼
+                  ┌────────────────┐
+                  │  AuthService   │
+                  └────────┬───────┘
+                           │
           ┌────────────────┼────────────────┐
           ▼                ▼                ▼
-    ┌───────────┐   ┌───────────┐   ┌───────────────┐
-    │login()    │   │mfaLogin() │   │logout()       │
-    └─────┬─────┘   └─────┬─────┘   └───────┬───────┘
-          │               │                 │
-          └───────────────┼─────────────────┘
-                          ▼
-                 ┌─────────────────┐
-                 │   AuthV2Api     │
-                 │   (DioClient)   │
-                 └────────┬────────┘
-                          │
-                          ▼
+   ┌──────────────┐  ┌──────────────┐  ┌───────────────┐
+   │AuthRepository│  │SessionStore  │  │  appLogger    │
+   └──────┬───────┘  └──────┬───────┘  └───────────────┘
+          │                 │
+          ▼                 ▼
+   ┌──────────────┐  ┌──────────────┐
+   │  AuthV2Api   │  │Secure Storage│
+   └──────┬───────┘  └──────────────┘
+          │
+          ▼
                  ┌─────────────────┐
                  │  1Panel Server  │
                  │   /core/auth/*  │
@@ -185,8 +190,8 @@ lib/data/models/auth_models.dart
 ## 安全考虑
 
 ### Token存储
-- 使用 `SharedPreferences` 存储Token
-- 敏感操作应使用 `flutter_secure_storage`
+- 使用 `flutter_secure_storage` 存储 Token 与用户名
+- Provider 不再直接负责存储实现
 
 ### 密码处理
 - 密码通过MD5加密后传输（服务端要求）
@@ -201,10 +206,11 @@ lib/data/models/auth_models.dart
 | 测试类型 | 文件 | 测试数 | 状态 |
 |----------|------|--------|------|
 | 数据模型测试 | auth_provider_test.dart | 10 | ✅ 通过 |
-| Provider测试 | auth_provider_test.dart | 4 | ✅ 通过 |
+| Provider测试 | auth_provider_test.dart | 9 | ✅ 通过 |
+| Service测试 | auth_service_test.dart | 4 | ✅ 通过 |
 
 ---
 
-**文档版本**: 2.0
-**最后更新**: 2026-02-15
+**文档版本**: 2.1
+**最后更新**: 2026-03-27
 **数据来源**: docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json

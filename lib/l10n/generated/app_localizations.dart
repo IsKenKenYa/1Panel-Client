@@ -2066,6 +2066,174 @@ abstract class AppLocalizations {
   /// **'AI'**
   String get serverModuleAi;
 
+  /// No description provided for @aiTabModels.
+  ///
+  /// In en, this message translates to:
+  /// **'Models'**
+  String get aiTabModels;
+
+  /// No description provided for @aiTabGpu.
+  ///
+  /// In en, this message translates to:
+  /// **'GPU'**
+  String get aiTabGpu;
+
+  /// No description provided for @aiTabDomain.
+  ///
+  /// In en, this message translates to:
+  /// **'Domain'**
+  String get aiTabDomain;
+
+  /// No description provided for @aiModelCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Model'**
+  String get aiModelCreate;
+
+  /// No description provided for @aiModelSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Models'**
+  String get aiModelSync;
+
+  /// No description provided for @aiModelRecreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Recreate Model'**
+  String get aiModelRecreate;
+
+  /// No description provided for @aiModelNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Model Name'**
+  String get aiModelNameLabel;
+
+  /// No description provided for @aiTaskIdOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Task ID (optional)'**
+  String get aiTaskIdOptional;
+
+  /// No description provided for @aiModelNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Model name is required'**
+  String get aiModelNameRequired;
+
+  /// No description provided for @aiForceDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Force Delete'**
+  String get aiForceDelete;
+
+  /// No description provided for @aiOperationSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Operation successful'**
+  String get aiOperationSuccess;
+
+  /// No description provided for @aiOperationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Operation failed: {error}'**
+  String aiOperationFailed(String error);
+
+  /// No description provided for @aiOperationResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Operation Result'**
+  String get aiOperationResult;
+
+  /// No description provided for @aiNoGpuData.
+  ///
+  /// In en, this message translates to:
+  /// **'No GPU data available'**
+  String get aiNoGpuData;
+
+  /// No description provided for @aiFanSpeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Fan Speed'**
+  String get aiFanSpeed;
+
+  /// No description provided for @aiPowerUsage.
+  ///
+  /// In en, this message translates to:
+  /// **'Power'**
+  String get aiPowerUsage;
+
+  /// No description provided for @aiPerformanceState.
+  ///
+  /// In en, this message translates to:
+  /// **'Performance State'**
+  String get aiPerformanceState;
+
+  /// No description provided for @aiDomainHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure Ollama domain binding. Enter the appInstallID first, then load or submit binding.'**
+  String get aiDomainHint;
+
+  /// No description provided for @aiAppInstallIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'App Install ID'**
+  String get aiAppInstallIdLabel;
+
+  /// No description provided for @aiAppInstallIdRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'App Install ID is required'**
+  String get aiAppInstallIdRequired;
+
+  /// No description provided for @aiIpAllowListLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow IP List'**
+  String get aiIpAllowListLabel;
+
+  /// No description provided for @aiSslIdOptionalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'SSL ID (optional)'**
+  String get aiSslIdOptionalLabel;
+
+  /// No description provided for @aiWebsiteIdOptionalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Website ID (optional)'**
+  String get aiWebsiteIdOptionalLabel;
+
+  /// No description provided for @aiLoadBinding.
+  ///
+  /// In en, this message translates to:
+  /// **'Load Current Binding'**
+  String get aiLoadBinding;
+
+  /// No description provided for @aiBindDomain.
+  ///
+  /// In en, this message translates to:
+  /// **'Bind Domain'**
+  String get aiBindDomain;
+
+  /// No description provided for @aiCurrentBinding.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Binding'**
+  String get aiCurrentBinding;
+
+  /// No description provided for @aiConnUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection URL'**
+  String get aiConnUrl;
+
+  /// No description provided for @containerSystemProtectedNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'System network cannot be deleted'**
+  String get containerSystemProtectedNetwork;
+
   /// No description provided for @serverModuleDatabases.
   ///
   /// In en, this message translates to:
