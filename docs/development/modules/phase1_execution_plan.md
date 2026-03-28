@@ -159,9 +159,30 @@
     - `POST /runtimes/php/extensions/uninstall`
 - Node scripts 执行协议已与上游对齐：
   - 由“误用 `/runtimes/node/modules/operate` 执行 script”切换为“更新 runtime 参数 `EXEC_SCRIPT/CUSTOM_SCRIPT/PACKAGE_MANAGER` 后走 runtime update 链路”。
+- Node scripts 执行反馈闭环已补齐：
+  - `NodeScriptsProvider/NodeScriptsPage` 已接入“执行触发 -> 状态轮询回读 -> 完成/失败展示”。
+  - `NodeRuntimeService` 已在 update 后轮询 runtime 状态并返回执行反馈（成功/失败/超时、轮询次数、message）。
 - `dart run test_runner.dart unit`：通过（destructive 用例按 gate 跳过）
 - `dart run test_runner.dart ui`：通过
 - `dart run test_runner.dart integration`：执行通过，但环境变量 `RUN_INTEGRATION_TESTS` 未开启，集成用例按 gate 跳过
+- 持续检查（本轮）：
+  - `flutter analyze`：通过
+  - `flutter build apk --debug`：通过（产物 `build/app/outputs/flutter-apk/app-debug.apk`）
+  - `dart run test_runner.dart unit`：通过
+  - `dart run test_runner.dart ui`：通过
+  - `dart run test_runner.dart integration`：执行通过（当前环境全部 gate skip）
+
+### Week 8 剩余未完成项（持续跟踪）
+
+- Runtime 深能力 API 仍有未对齐子项：
+  - PHP：`/runtimes/php/file`、`/runtimes/php/update`、`/runtimes/php/fpm/config`、`/runtimes/php/container/*`
+  - Supervisor：`/runtimes/supervisor/process`、`/runtimes/supervisor/process/file`
+- Runtime 深能力页面仍有未完成子流：
+  - `PhpConfigPage` 的 Raw File / Container 配置编辑闭环
+  - Supervisor 进程/配置文件管理页与操作闭环
+- Week 8 测试门禁仍有待补：
+  - integration 写操作回归（当前环境 gate 跳过，需在 `RUN_INTEGRATION_TESTS=true` 环境补跑）
+  - runtime 深能力新增子流对应的 API client / provider / widget 回归测试
 
 ---
 

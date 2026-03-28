@@ -24,7 +24,13 @@ void main() {
         scriptName: any(named: 'scriptName'),
         packageManager: any(named: 'packageManager'),
       ),
-    ).thenAnswer((_) async {});
+    ).thenAnswer(
+      (_) async => const NodeScriptExecutionFeedback(
+        isSuccess: true,
+        status: 'Running',
+        attempts: 2,
+      ),
+    );
 
     provider = NodeScriptsProvider(service: service);
   });
@@ -59,5 +65,8 @@ void main() {
         packageManager: 'npm',
       ),
     ).called(1);
+    expect(provider.executionStatus, 'Running');
+    expect(provider.lastRunSuccess, isTrue);
+    expect(provider.pollAttempts, 2);
   });
 }

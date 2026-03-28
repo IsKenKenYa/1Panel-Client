@@ -4788,6 +4788,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get runtimeRemarkTooLong => 'Remark must be 128 characters or fewer.';
 
   @override
+  String runtimeNodeScriptExecuting(String name) {
+    return 'Running script $name, syncing runtime status...';
+  }
+
+  @override
+  String get runtimeNodeScriptCompleted => 'Script execution completed';
+
+  @override
+  String get runtimeNodeScriptFailed => 'Script execution failed';
+
+  @override
+  String runtimeNodeScriptRuntimeStatus(String status) {
+    return 'Runtime status: $status';
+  }
+
+  @override
+  String runtimeNodeScriptRuntimeMessage(String message) {
+    return 'Runtime message: $message';
+  }
+
+  @override
+  String runtimeNodeScriptPollAttempts(int count) {
+    return 'Status polls: $count';
+  }
+
+  @override
+  String runtimeNodeScriptCompletedWithStatus(String status) {
+    return 'Script execution completed, runtime status: $status';
+  }
+
+  @override
+  String runtimeNodeScriptFailedWithStatus(String status) {
+    return 'Script execution failed, runtime status: $status';
+  }
+
+  @override
+  String get runtimeNodeScriptWaitTimeout =>
+      'Script was triggered, but status confirmation timed out. Please refresh later.';
+
+  @override
   String get operationsPhpExtensionsTitle => 'PHP Extensions';
 
   @override

@@ -1954,6 +1954,45 @@
   "runtimeOperateFailed": "Failed to operate runtime.",
   "runtimeRemarkSaveFailed": "Failed to save runtime remark.",
   "runtimeRemarkTooLong": "Remark must be 128 characters or fewer.",
+  "runtimeNodeScriptExecuting": "Running script {name}, syncing runtime status...",
+  "@runtimeNodeScriptExecuting": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "runtimeNodeScriptCompleted": "Script execution completed",
+  "runtimeNodeScriptFailed": "Script execution failed",
+  "runtimeNodeScriptRuntimeStatus": "Runtime status: {status}",
+  "@runtimeNodeScriptRuntimeStatus": {
+    "placeholders": {
+      "status": { "type": "String" }
+    }
+  },
+  "runtimeNodeScriptRuntimeMessage": "Runtime message: {message}",
+  "@runtimeNodeScriptRuntimeMessage": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+  "runtimeNodeScriptPollAttempts": "Status polls: {count}",
+  "@runtimeNodeScriptPollAttempts": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "runtimeNodeScriptCompletedWithStatus": "Script execution completed, runtime status: {status}",
+  "@runtimeNodeScriptCompletedWithStatus": {
+    "placeholders": {
+      "status": { "type": "String" }
+    }
+  },
+  "runtimeNodeScriptFailedWithStatus": "Script execution failed, runtime status: {status}",
+  "@runtimeNodeScriptFailedWithStatus": {
+    "placeholders": {
+      "status": { "type": "String" }
+    }
+  },
+  "runtimeNodeScriptWaitTimeout": "Script was triggered, but status confirmation timed out. Please refresh later.",
   "operationsPhpExtensionsTitle": "PHP Extensions",
   "operationsPhpConfigTitle": "PHP Config",
   "operationsNodeModulesTitle": "Node Modules",

@@ -65,6 +65,12 @@ class _NodeScriptsPageState extends State<NodeScriptsPage> {
               children: <Widget>[
                 if (provider.codeDir.isNotEmpty)
                   Text('${l10n.runtimeFieldCodeDir}: ${provider.codeDir}'),
+                if (provider.isRunning ||
+                    provider.hasExecutionFeedback ||
+                    provider.runErrorMessage != null) ...<Widget>[
+                  const SizedBox(height: 12),
+                  _buildExecutionFeedbackCard(context, provider),
+                ],
                 const SizedBox(height: 8),
                 ...provider.items.map(
                   (item) => Card(
@@ -93,9 +99,93 @@ class _NodeScriptsPageState extends State<NodeScriptsPage> {
     if (!mounted) {
       return;
     }
+    final provider = context.read<NodeScriptsProvider>();
+    final runError =
+        localizeRuntimeError(context.l10n, provider.runErrorMessage);
+    final statusText = provider.executionStatus.isEmpty
+        ? context.l10n.runtimeStatusUnknown('-')
+        : runtimeStatusLabel(context.l10n, provider.executionStatus);
+
+    final message = switch (success) {
+      true => context.l10n.runtimeNodeScriptCompletedWithStatus(statusText),
+      false when runError != null => runError,
+      _ => context.l10n.runtimeNodeScriptFailedWithStatus(statusText),
+    };
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(success ? context.l10n.commonSaveSuccess : context.l10n.commonSaveFailed),
+        content: Text(message),
+      ),
+    );
+  }
+
+  Widget _buildExecutionFeedbackCard(
+    BuildContext context,
+    NodeScriptsProvider provider,
+  ) {
+    final l10n = context.l10n;
+    final statusText = provider.executionStatus.isEmpty
+        ? l10n.runtimeStatusUnknown('-')
+        : runtimeStatusLabel(l10n, provider.executionStatus);
+    final localizedError = localizeRuntimeError(l10n, provider.runErrorMessage);
+    final subtitleLines = <String>[];
+
+    if (provider.executionStatus.isNotEmpty) {
+      subtitleLines.add(l10n.runtimeNodeScriptRuntimeStatus(statusText));
+    }
+    if (provider.pollAttempts > 0) {
+      subtitleLines
+          .add(l10n.runtimeNodeScriptPollAttempts(provider.pollAttempts));
+    }
+    if (provider.executionMessage?.isNotEmpty ?? false) {
+      subtitleLines.add(
+        l10n.runtimeNodeScriptRuntimeMessage(provider.executionMessage!),
+      );
+    }
+    if (localizedError != null && localizedError.isNotEmpty) {
+      subtitleLines.add(localizedError);
+    }
+
+    final title = provider.isRunning
+        ? l10n.runtimeNodeScriptExecuting(provider.activeScriptName)
+        : (provider.lastRunSuccess == true
+            ? l10n.runtimeNodeScriptCompleted
+            : l10n.runtimeNodeScriptFailed);
+
+    final leading = provider.isRunning
+        ? const SizedBox.square(
+            dimension: 20,
+            child: CircularProgressIndicator(strokeWidth: 2.4),
+          )
+        : Icon(
+            provider.lastRunSuccess == true
+                ? Icons.check_circle_outline
+                : Icons.error_outline,
+          );
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                leading,
+                const SizedBox(width: 8),
+                Expanded(child: Text(title)),
+              ],
+            ),
+            if (provider.isRunning) ...<Widget>[
+              const SizedBox(height: 12),
+              const LinearProgressIndicator(minHeight: 3),
+            ],
+            if (subtitleLines.isNotEmpty) ...<Widget>[
+              const SizedBox(height: 10),
+              Text(subtitleLines.join('\n')),
+            ],
+          ],
+        ),
       ),
     );
   }

@@ -1,12 +1,40 @@
 import 'package:onepanel_client/data/models/runtime_models.dart';
 import 'package:onepanel_client/data/repositories/runtime_repository.dart';
 
+class NodeScriptExecutionFeedback {
+  const NodeScriptExecutionFeedback({
+    required this.isSuccess,
+    required this.status,
+    this.message,
+    this.timedOut = false,
+    this.attempts = 0,
+  });
+
+  final bool isSuccess;
+  final String status;
+  final String? message;
+  final bool timedOut;
+  final int attempts;
+}
+
 class NodeRuntimeService {
   NodeRuntimeService({
     RuntimeRepository? repository,
   }) : _repository = repository ?? RuntimeRepository();
 
   final RuntimeRepository _repository;
+
+  static const Set<String> _runningStatuses = <String>{
+    'Starting',
+    'Building',
+    'Recreating',
+    'Creating',
+  };
+
+  static const Set<String> _failedStatuses = <String>{
+    'Error',
+    'SystemRestart',
+  };
 
   Future<List<NodeModuleInfo>> loadModules(int runtimeId) {
     return _repository.getNodeModules(NodeModuleRequest(id: runtimeId));
@@ -59,10 +87,12 @@ class NodeRuntimeService {
         .getNodePackageScripts(NodePackageRequest(codeDir: codeDir));
   }
 
-  Future<void> runScript({
+  Future<NodeScriptExecutionFeedback> runScript({
     required int runtimeId,
     required String scriptName,
     required String packageManager,
+    int maxPollAttempts = 24,
+    Duration pollInterval = const Duration(seconds: 2),
   }) async {
     final runtime = await _repository.getRuntime(runtimeId);
     if (runtime == null) {
@@ -106,5 +136,52 @@ class NodeRuntimeService {
     );
 
     await _repository.updateRuntime(update);
+
+    return _waitForRuntimeExecution(
+      runtimeId: runtimeId,
+      maxPollAttempts: maxPollAttempts,
+      pollInterval: pollInterval,
+    );
+  }
+
+  Future<NodeScriptExecutionFeedback> _waitForRuntimeExecution({
+    required int runtimeId,
+    required int maxPollAttempts,
+    required Duration pollInterval,
+  }) async {
+    RuntimeInfo? latest;
+
+    for (var i = 0; i < maxPollAttempts; i++) {
+      if (i > 0) {
+        await Future<void>.delayed(pollInterval);
+      }
+
+      try {
+        await _repository.syncRuntimeStatus();
+      } catch (_) {
+        // Ignore sync transient errors and continue polling current runtime detail.
+      }
+
+      latest = await _repository.getRuntime(runtimeId);
+      final status = (latest?.status ?? '').trim();
+
+      if (!_runningStatuses.contains(status)) {
+        return NodeScriptExecutionFeedback(
+          isSuccess: !_failedStatuses.contains(status),
+          status: status,
+          message: latest?.message,
+          attempts: i + 1,
+        );
+      }
+    }
+
+    final status = (latest?.status ?? '').trim();
+    return NodeScriptExecutionFeedback(
+      isSuccess: false,
+      status: status,
+      message: latest?.message,
+      timedOut: true,
+      attempts: maxPollAttempts,
+    );
   }
 }

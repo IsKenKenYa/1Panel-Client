@@ -9171,6 +9171,60 @@ abstract class AppLocalizations {
   /// **'Remark must be 128 characters or fewer.'**
   String get runtimeRemarkTooLong;
 
+  /// No description provided for @runtimeNodeScriptExecuting.
+  ///
+  /// In en, this message translates to:
+  /// **'Running script {name}, syncing runtime status...'**
+  String runtimeNodeScriptExecuting(String name);
+
+  /// No description provided for @runtimeNodeScriptCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Script execution completed'**
+  String get runtimeNodeScriptCompleted;
+
+  /// No description provided for @runtimeNodeScriptFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Script execution failed'**
+  String get runtimeNodeScriptFailed;
+
+  /// No description provided for @runtimeNodeScriptRuntimeStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Runtime status: {status}'**
+  String runtimeNodeScriptRuntimeStatus(String status);
+
+  /// No description provided for @runtimeNodeScriptRuntimeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Runtime message: {message}'**
+  String runtimeNodeScriptRuntimeMessage(String message);
+
+  /// No description provided for @runtimeNodeScriptPollAttempts.
+  ///
+  /// In en, this message translates to:
+  /// **'Status polls: {count}'**
+  String runtimeNodeScriptPollAttempts(int count);
+
+  /// No description provided for @runtimeNodeScriptCompletedWithStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Script execution completed, runtime status: {status}'**
+  String runtimeNodeScriptCompletedWithStatus(String status);
+
+  /// No description provided for @runtimeNodeScriptFailedWithStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Script execution failed, runtime status: {status}'**
+  String runtimeNodeScriptFailedWithStatus(String status);
+
+  /// No description provided for @runtimeNodeScriptWaitTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Script was triggered, but status confirmation timed out. Please refresh later.'**
+  String get runtimeNodeScriptWaitTimeout;
+
   /// No description provided for @operationsPhpExtensionsTitle.
   ///
   /// In en, this message translates to:

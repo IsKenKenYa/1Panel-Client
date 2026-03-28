@@ -55,6 +55,7 @@ String? localizeRuntimeError(
     'runtime.list.operateFailed' => l10n.runtimeOperateFailed,
     'runtime.detail.loadFailed' => l10n.runtimeDetailLoadFailed,
     'runtime.detail.operateFailed' => l10n.runtimeOperateFailed,
+    'runtime.nodeScript.waitTimeout' => l10n.runtimeNodeScriptWaitTimeout,
     'runtime.detail.remarkFailed' => l10n.runtimeRemarkSaveFailed,
     'runtime.detail.syncFailed' => l10n.runtimeSyncFailed,
     'runtime.form.loadFailed' => l10n.runtimeFormLoadFailed,

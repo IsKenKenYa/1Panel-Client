@@ -4701,6 +4701,45 @@ class AppLocalizationsZh extends AppLocalizations {
   String get runtimeRemarkTooLong => '备注不能超过 128 个字符。';
 
   @override
+  String runtimeNodeScriptExecuting(String name) {
+    return '正在执行脚本 $name，并回读运行时状态...';
+  }
+
+  @override
+  String get runtimeNodeScriptCompleted => '脚本执行完成';
+
+  @override
+  String get runtimeNodeScriptFailed => '脚本执行失败';
+
+  @override
+  String runtimeNodeScriptRuntimeStatus(String status) {
+    return '运行时状态：$status';
+  }
+
+  @override
+  String runtimeNodeScriptRuntimeMessage(String message) {
+    return '运行时消息：$message';
+  }
+
+  @override
+  String runtimeNodeScriptPollAttempts(int count) {
+    return '状态轮询次数：$count';
+  }
+
+  @override
+  String runtimeNodeScriptCompletedWithStatus(String status) {
+    return '脚本执行完成，运行时状态：$status';
+  }
+
+  @override
+  String runtimeNodeScriptFailedWithStatus(String status) {
+    return '脚本执行失败，运行时状态：$status';
+  }
+
+  @override
+  String get runtimeNodeScriptWaitTimeout => '脚本已触发，但状态确认超时，请稍后手动刷新确认。';
+
+  @override
   String get operationsPhpExtensionsTitle => 'PHP 扩展';
 
   @override

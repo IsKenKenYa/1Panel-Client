@@ -18,12 +18,28 @@ class NodeScriptsProvider extends ChangeNotifier with AsyncStateNotifier {
   String _packageManager = 'npm';
   List<NodeScriptInfo> _items = const <NodeScriptInfo>[];
   bool _isRunning = false;
+  String _activeScriptName = '';
+  String _executionStatus = '';
+  String? _executionMessage;
+  bool? _lastRunSuccess;
+  bool _lastRunTimedOut = false;
+  int _pollAttempts = 0;
+  String? _runErrorMessage;
 
   String get runtimeName => _runtimeName;
   String get codeDir => _codeDir;
   String get packageManager => _packageManager;
   List<NodeScriptInfo> get items => _items;
   bool get isRunning => _isRunning;
+  String get activeScriptName => _activeScriptName;
+  String get executionStatus => _executionStatus;
+  String? get executionMessage => _executionMessage;
+  bool? get lastRunSuccess => _lastRunSuccess;
+  bool get lastRunTimedOut => _lastRunTimedOut;
+  int get pollAttempts => _pollAttempts;
+  String? get runErrorMessage => _runErrorMessage;
+  bool get hasExecutionFeedback =>
+      _activeScriptName.isNotEmpty && _lastRunSuccess != null;
 
   Future<void> initialize(RuntimeManageArgs args) async {
     _runtimeId = args.runtimeId;
@@ -32,6 +48,7 @@ class NodeScriptsProvider extends ChangeNotifier with AsyncStateNotifier {
     _packageManager = (args.packageManager?.trim().isEmpty ?? true)
         ? 'npm'
         : args.packageManager!.trim();
+    _resetRunFeedback(notify: false);
     await load();
   }
 
@@ -59,19 +76,37 @@ class NodeScriptsProvider extends ChangeNotifier with AsyncStateNotifier {
 
   Future<bool> runScript(String scriptName) async {
     final runtimeId = _runtimeId;
-    if (runtimeId == null || scriptName.trim().isEmpty) {
+    final normalizedName = scriptName.trim();
+    if (runtimeId == null || normalizedName.isEmpty) {
       return false;
     }
     _isRunning = true;
-    clearError(notify: false);
+    _activeScriptName = normalizedName;
+    _executionStatus = 'Starting';
+    _executionMessage = null;
+    _lastRunSuccess = null;
+    _lastRunTimedOut = false;
+    _pollAttempts = 0;
+    _runErrorMessage = null;
     notifyListeners();
     try {
-      await _service.runScript(
+      final feedback = await _service.runScript(
         runtimeId: runtimeId,
-        scriptName: scriptName.trim(),
+        scriptName: normalizedName,
         packageManager: _packageManager,
       );
-      return true;
+
+      _executionStatus = feedback.status;
+      _executionMessage = feedback.message?.trim().isNotEmpty == true
+          ? feedback.message!.trim()
+          : null;
+      _lastRunSuccess = feedback.isSuccess;
+      _lastRunTimedOut = feedback.timedOut;
+      _pollAttempts = feedback.attempts;
+      if (feedback.timedOut) {
+        _runErrorMessage = 'runtime.nodeScript.waitTimeout';
+      }
+      return feedback.isSuccess;
     } catch (error, stackTrace) {
       appLogger.eWithPackage(
         'features.runtimes.providers.node_scripts',
@@ -79,10 +114,28 @@ class NodeScriptsProvider extends ChangeNotifier with AsyncStateNotifier {
         error: error,
         stackTrace: stackTrace,
       );
-      setError('runtime.detail.operateFailed', notify: false);
+      _executionStatus = 'Error';
+      _executionMessage = null;
+      _lastRunSuccess = false;
+      _lastRunTimedOut = false;
+      _pollAttempts = 0;
+      _runErrorMessage = 'runtime.detail.operateFailed';
       return false;
     } finally {
       _isRunning = false;
+      notifyListeners();
+    }
+  }
+
+  void _resetRunFeedback({bool notify = true}) {
+    _activeScriptName = '';
+    _executionStatus = '';
+    _executionMessage = null;
+    _lastRunSuccess = null;
+    _lastRunTimedOut = false;
+    _pollAttempts = 0;
+    _runErrorMessage = null;
+    if (notify) {
       notifyListeners();
     }
   }

@@ -1892,6 +1892,45 @@
   "runtimeOperateFailed": "执行运行时操作失败。",
   "runtimeRemarkSaveFailed": "保存运行时备注失败。",
   "runtimeRemarkTooLong": "备注不能超过 128 个字符。",
+  "runtimeNodeScriptExecuting": "正在执行脚本 {name}，并回读运行时状态...",
+  "@runtimeNodeScriptExecuting": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "runtimeNodeScriptCompleted": "脚本执行完成",
+  "runtimeNodeScriptFailed": "脚本执行失败",
+  "runtimeNodeScriptRuntimeStatus": "运行时状态：{status}",
+  "@runtimeNodeScriptRuntimeStatus": {
+    "placeholders": {
+      "status": { "type": "String" }
+    }
+  },
+  "runtimeNodeScriptRuntimeMessage": "运行时消息：{message}",
+  "@runtimeNodeScriptRuntimeMessage": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+  "runtimeNodeScriptPollAttempts": "状态轮询次数：{count}",
+  "@runtimeNodeScriptPollAttempts": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "runtimeNodeScriptCompletedWithStatus": "脚本执行完成，运行时状态：{status}",
+  "@runtimeNodeScriptCompletedWithStatus": {
+    "placeholders": {
+      "status": { "type": "String" }
+    }
+  },
+  "runtimeNodeScriptFailedWithStatus": "脚本执行失败，运行时状态：{status}",
+  "@runtimeNodeScriptFailedWithStatus": {
+    "placeholders": {
+      "status": { "type": "String" }
+    }
+  },
+  "runtimeNodeScriptWaitTimeout": "脚本已触发，但状态确认超时，请稍后手动刷新确认。",
   "operationsPhpExtensionsTitle": "PHP 扩展",
   "operationsPhpConfigTitle": "PHP 配置",
   "operationsNodeModulesTitle": "Node 模块",
