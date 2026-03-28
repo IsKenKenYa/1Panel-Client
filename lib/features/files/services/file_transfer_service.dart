@@ -7,18 +7,17 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:onepanel_client/core/config/api_constants.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
-
-import 'files_api_gateway.dart';
+import 'package:onepanel_client/data/repositories/files_repository.dart';
 
 class FileTransferService {
-  FileTransferService({FilesApiGateway? gateway})
-      : _gateway = gateway ?? FilesApiGateway();
+  FileTransferService({FilesRepository? repository})
+      : _repository = repository ?? FilesRepository();
 
-  final FilesApiGateway _gateway;
+  final FilesRepository _repository;
   CancelToken? _downloadCancelToken;
 
   Future<void> ensureServer() async {
-    await _gateway.getCurrentServer();
+    await _repository.getCurrentServer();
   }
 
   Future<FileWgetResult> wgetDownload({
@@ -27,7 +26,7 @@ class FileTransferService {
     required String name,
     bool? ignoreCertificate,
   }) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     final response = await api.wgetDownload(
       FileWgetRequest(
         url: url,
@@ -44,7 +43,7 @@ class FileTransferService {
     int pageSize = 20,
     String? search,
   }) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     final response = await api.searchUploadedFiles(
       FileSearch(
         path: '',
@@ -57,7 +56,7 @@ class FileTransferService {
   }
 
   Future<void> downloadFile(String path, String savePath) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     final response = await api.downloadFile(path);
     final bytes = response.data;
     if (bytes == null || bytes.isEmpty) {
@@ -73,7 +72,7 @@ class FileTransferService {
     Function(int received, int total)? onProgress,
   }) async {
     final savePath = await _getDownloadPath(fileName);
-    final config = await _gateway.getCurrentServer();
+    final config = await _repository.getCurrentServer();
     if (config == null) {
       throw StateError('No server configured');
     }

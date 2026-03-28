@@ -27,7 +27,7 @@
 - **S2-5（Core Refactor）当前进展**:
 	- Auth：新增 `AuthRepository / AuthService / AuthSessionStore`，`AuthProvider` 已移除 `SharedPreferences + debugPrint`，改为安全存储和 `appLogger`。
 	- Dashboard：新增 `DashboardRepository / DashboardService`，`DashboardProvider` 已移除 `DashboardV2Api + ApiClientManager + debugPrint` 直连。
-	- File：`FilesService` 已拆分为 `FilesApiGateway + FileBrowserService / FileRecycleService / FileTransferService / FilePreviewService`；`FilesProvider` 已按 `lifecycle / browser / recycle / favorites-transfer / system` 分片，新增 `RecycleBinProvider / TransferManagerProvider / FilePreviewProvider`，页面侧回收站、传输管理与预览已切换到对应 provider。
+	- File：新增 `FilesRepository` 并将 `FileBrowserService / FileRecycleService / FileTransferService / FilePreviewService` 统一切换为 repository 依赖；`FilesProvider` 已按 `lifecycle / browser / recycle / favorites-transfer / system` 分片，新增 `RecycleBinProvider / TransferManagerProvider / FilePreviewProvider`，页面侧回收站、传输管理与预览已切换到对应 provider。
 	- 回归测试：新增 `test/features/auth/auth_service_test.dart`，并将 `auth_provider_test.dart` 改为依赖注入风格。
 - **门禁执行结果**:
 	- `flutter analyze`：通过（No issues found）

@@ -1,16 +1,16 @@
 import '../../../core/config/api_config.dart';
 import '../../../data/models/file_models.dart';
-import 'files_api_gateway.dart';
+import '../../../data/repositories/files_repository.dart';
 
 class FileBrowserService {
-  FileBrowserService({FilesApiGateway? gateway})
-      : _gateway = gateway ?? FilesApiGateway();
+  FileBrowserService({FilesRepository? repository})
+      : _repository = repository ?? FilesRepository();
 
-  final FilesApiGateway _gateway;
+  final FilesRepository _repository;
 
-  Future<ApiConfig?> getCurrentServer() => _gateway.getCurrentServer();
+  Future<ApiConfig?> getCurrentServer() => _repository.getCurrentServer();
 
-  void clearCache() => _gateway.clearCache();
+  void clearCache() => _repository.clearCache();
 
   Future<FileSearchResponse> searchFiles({
     required String path,
@@ -21,7 +21,7 @@ class FileBrowserService {
     String? sortBy,
     String? sortOrder,
   }) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     final response = await api.searchFiles(
       FileSearch(
         path: path,
@@ -46,7 +46,7 @@ class FileBrowserService {
     String? sortOrder,
     bool? showHidden,
   }) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     final response = await api.getFiles(
       FileSearch(
         path: path,
@@ -63,12 +63,12 @@ class FileBrowserService {
   }
 
   Future<void> createDirectory(String path) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     await api.createDirectory(FileCreate(path: path, isDir: true));
   }
 
   Future<void> createFile(String path, {String? content}) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     await api
         .createFile(FileCreate(path: path, content: content, isDir: false));
   }
@@ -78,7 +78,7 @@ class FileBrowserService {
     bool? force,
     bool? isDir,
   }) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     if (paths.length == 1) {
       await api.deleteFile(
         FileDelete(path: paths.first, isDir: isDir, forceDelete: force),
@@ -89,12 +89,12 @@ class FileBrowserService {
   }
 
   Future<void> renameFile(String oldPath, String newPath) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     await api.renameFile(FileRename(oldPath: oldPath, newPath: newPath));
   }
 
   Future<void> moveFiles(List<String> paths, String targetPath) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     await api.moveFiles(
       FileMove(paths: paths, targetPath: targetPath, type: 'cut'),
     );
@@ -105,7 +105,7 @@ class FileBrowserService {
     String targetPath, {
     String? newName,
   }) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     for (final sourcePath in paths) {
       final sourceDir = sourcePath.substring(0, sourcePath.lastIndexOf('/'));
       final sourceName = sourcePath.substring(sourcePath.lastIndexOf('/') + 1);
@@ -127,13 +127,13 @@ class FileBrowserService {
   }
 
   Future<String> getFileContent(String path) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     final response = await api.getFileContent(path);
     return response.data ?? '';
   }
 
   Future<void> updateFileContent(String path, String content) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     await api.updateFileContent(FileContent(path: path, content: content));
   }
 
@@ -144,7 +144,7 @@ class FileBrowserService {
     required String type,
     String? secret,
   }) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     await api.compressFiles(
       FileCompress(
         files: files,
@@ -162,14 +162,14 @@ class FileBrowserService {
     required String type,
     String? secret,
   }) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     await api.extractFile(
       FileExtract(path: path, dst: dst, type: type, secret: secret),
     );
   }
 
   Future<void> changeFileMode(String path, int mode, {bool? sub}) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     await api.updateFileMode(FileModeChange(path: path, mode: mode, sub: sub));
   }
 
@@ -179,7 +179,7 @@ class FileBrowserService {
     String group, {
     bool? sub,
   }) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     await api.updateFileOwner(
       FileOwnerChange(path: path, user: user, group: group, sub: sub),
     );
@@ -192,7 +192,7 @@ class FileBrowserService {
     String? group,
     bool? sub,
   }) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     await api.batchChangeFileRole(
       FileBatchRoleRequest(
         paths: paths,
@@ -205,7 +205,7 @@ class FileBrowserService {
   }
 
   Future<FileCheckResult> checkFile(String path) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     final response = await api.checkFile(FileCheck(path: path));
     return response.data!;
   }
@@ -216,7 +216,7 @@ class FileBrowserService {
     bool? includeFiles,
     bool? includeHidden,
   }) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     final response = await api.getFileTree(
       FileTreeRequest(
         path: path,
@@ -229,7 +229,7 @@ class FileBrowserService {
   }
 
   Future<FileSizeInfo> getFileSize(String path, {bool? recursive}) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     final response = await api.getFileSize(
       FileSizeRequest(path: path, recursive: recursive),
     );
@@ -241,13 +241,13 @@ class FileBrowserService {
     String? name,
     String? description,
   }) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     await api.favoriteFile(
         FileFavorite(path: path, name: name, description: description));
   }
 
   Future<void> unfavoriteFile(String path) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     await api.unfavoriteFile(FileUnfavorite(path: path));
   }
 
@@ -256,7 +256,7 @@ class FileBrowserService {
     int page = 1,
     int pageSize = 100,
   }) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     final response = await api.searchFavoriteFiles(
       FileSearch(path: path, page: page, pageSize: pageSize),
     );
@@ -264,13 +264,13 @@ class FileBrowserService {
   }
 
   Future<FileDepthSizeInfo> getDepthSize(List<String> paths) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     final response = await api.getDepthSize(FileDepthSizeRequest(paths: paths));
     return response.data!;
   }
 
   Future<List<FileMountInfo>> getMountInfo() async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     final response = await api.getMountInfo();
     return response.data ?? const <FileMountInfo>[];
   }
@@ -281,7 +281,7 @@ class FileBrowserService {
     required String linkType,
     bool? overwrite,
   }) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     await api.createFileLink(
       FileLinkCreate(
         sourcePath: sourcePath,
@@ -293,13 +293,13 @@ class FileBrowserService {
   }
 
   Future<FileUserGroupResponse> getUserGroup() async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     final response = await api.getUserGroup();
     return response.data!;
   }
 
   Future<FileBatchCheckResult> batchCheckFiles(List<String> paths) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     final response =
         await api.batchCheckFiles(FileBatchCheckRequest(paths: paths));
     return response.data!;
@@ -311,7 +311,7 @@ class FileBrowserService {
     String? encoding,
     bool? createDir,
   }) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     await api.saveFile(
       FileSave(
         path: path,
@@ -328,7 +328,7 @@ class FileBrowserService {
     int? length,
     String? encoding,
   }) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     final response = await api.readFile(
       FileRead(path: path, offset: offset, length: length, encoding: encoding),
     );
@@ -336,7 +336,7 @@ class FileBrowserService {
   }
 
   Future<void> uploadFile(String path, dynamic file) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     await api.uploadFile(path, file);
   }
 

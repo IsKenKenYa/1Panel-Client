@@ -31,7 +31,7 @@
 	- S2-4：新增 `test/features/ai/ai_page_test.dart` 与 `test/features/orchestration/orchestration_page_test.dart`，补齐 route/injection 与页面壳 smoke。
 	- S2-5：`AuthProvider` 改为依赖 `AuthService`；新增 `AuthRepository / AuthSessionStore`，会话存储切换到 `flutter_secure_storage`。
 	- S2-5：新增 `DashboardRepository / DashboardService`，`DashboardProvider` 改为依赖 service；`FilesProvider` 的回收站读取已收回 service。
-	- S2-5：`file` 分层继续收口为 `FilesApiGateway + Browser/Recycle/Transfer/Preview services`，并新增 `RecycleBinProvider / TransferManagerProvider / FilePreviewProvider` 承接页面状态。
+	- S2-5：`file` 分层继续收口为 `FilesRepository + Browser/Recycle/Transfer/Preview services`，并新增 `RecycleBinProvider / TransferManagerProvider / FilePreviewProvider` 承接页面状态。
 - 门禁结果:
 	- `flutter analyze`：通过
 	- `dart run test_runner.dart unit`：通过

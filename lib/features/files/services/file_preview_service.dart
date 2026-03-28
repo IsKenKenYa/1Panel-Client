@@ -1,18 +1,18 @@
 import '../../../data/models/file_models.dart';
-import 'files_api_gateway.dart';
+import '../../../data/repositories/files_repository.dart';
 
 class FilePreviewService {
-  FilePreviewService({FilesApiGateway? gateway})
-      : _gateway = gateway ?? FilesApiGateway();
+  FilePreviewService({FilesRepository? repository})
+      : _repository = repository ?? FilesRepository();
 
-  final FilesApiGateway _gateway;
+  final FilesRepository _repository;
 
   Future<void> ensureServer() async {
-    await _gateway.getCurrentServer();
+    await _repository.getCurrentServer();
   }
 
   Future<String> getFileContent(String path) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     final response = await api.getFileContent(path);
     return response.data ?? '';
   }
@@ -22,7 +22,7 @@ class FilePreviewService {
     int? line,
     int? limit,
   }) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     final response = await api.previewFile(
       FilePreviewRequest(path: path, line: line, limit: limit),
     );
@@ -35,7 +35,7 @@ class FilePreviewService {
     String? encoding,
     bool? createDir,
   }) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     await api.saveFile(
       FileSave(
         path: path,
@@ -52,7 +52,7 @@ class FilePreviewService {
     int? length,
     String? encoding,
   }) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     final response = await api.readFile(
       FileRead(path: path, offset: offset, length: length, encoding: encoding),
     );
@@ -60,7 +60,7 @@ class FilePreviewService {
   }
 
   Future<List<int>> downloadFileBytes(String path) async {
-    final api = await _gateway.getApi();
+    final api = await _repository.getApi();
     final response = await api.downloadFile(path);
     return response.data ?? const <int>[];
   }

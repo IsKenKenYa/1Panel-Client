@@ -1,34 +1,34 @@
 import '../../data/models/file_models.dart';
 import '../../core/config/api_config.dart';
+import '../../data/repositories/files_repository.dart';
 import 'services/file_browser_service.dart';
 import 'services/file_preview_service.dart';
 import 'services/file_recycle_service.dart';
 import 'services/file_transfer_service.dart';
-import 'services/files_api_gateway.dart';
 
 class FilesService {
   FilesService({
-    FilesApiGateway? gateway,
+    FilesRepository? repository,
     FileBrowserService? browserService,
     FileRecycleService? recycleService,
     FileTransferService? transferService,
     FilePreviewService? previewService,
   }) {
-    _gateway = gateway ?? FilesApiGateway();
-    _browser = browserService ?? FileBrowserService(gateway: _gateway);
-    _recycle = recycleService ?? FileRecycleService(gateway: _gateway);
-    _transfer = transferService ?? FileTransferService(gateway: _gateway);
-    _preview = previewService ?? FilePreviewService(gateway: _gateway);
+    _repository = repository ?? FilesRepository();
+    _browser = browserService ?? FileBrowserService(repository: _repository);
+    _recycle = recycleService ?? FileRecycleService(repository: _repository);
+    _transfer = transferService ?? FileTransferService(repository: _repository);
+    _preview = previewService ?? FilePreviewService(repository: _repository);
   }
 
-  late final FilesApiGateway _gateway;
+  late final FilesRepository _repository;
   late final FileBrowserService _browser;
   late final FileRecycleService _recycle;
   late final FileTransferService _transfer;
   late final FilePreviewService _preview;
 
   void clearCache() {
-    _gateway.clearCache();
+    _repository.clearCache();
   }
 
   Future<ApiConfig?> getCurrentServer() async {
