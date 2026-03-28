@@ -23,8 +23,9 @@ class _SshCertsPageState extends State<SshCertsPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !context.read<CurrentServerController>().hasServer)
+      if (!mounted || !context.read<CurrentServerController>().hasServer) {
         return;
+      }
       context.read<SshCertsProvider>().load();
     });
   }

@@ -26,8 +26,9 @@ class _ProcessDetailPageState extends State<ProcessDetailPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !context.read<CurrentServerController>().hasServer)
+      if (!mounted || !context.read<CurrentServerController>().hasServer) {
         return;
+      }
       context.read<ProcessDetailProvider>().load(widget.pid);
     });
   }

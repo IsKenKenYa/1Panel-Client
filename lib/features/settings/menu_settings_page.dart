@@ -124,15 +124,16 @@ class _MenuSettingsPageState extends State<MenuSettingsPage> {
             onPressed: provider.isSaving
                 ? null
                 : () async {
-                    final success =
-                        await context.read<MenuSettingsProvider>().save();
+                    final menuProvider = context.read<MenuSettingsProvider>();
+                    final messenger = ScaffoldMessenger.of(context);
+                    final success = await menuProvider.save();
                     if (!mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    messenger.showSnackBar(
                       SnackBar(
                         content: Text(
                           success
                               ? l10n.menuSettingsSaveSuccess
-                              : (provider.error ?? l10n.commonSaveFailed),
+                              : (menuProvider.error ?? l10n.commonSaveFailed),
                         ),
                       ),
                     );

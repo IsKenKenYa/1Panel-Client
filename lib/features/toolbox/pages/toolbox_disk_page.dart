@@ -117,6 +117,8 @@ class _ToolboxDiskPageState extends State<ToolboxDiskPage> {
 
   Future<void> _showMountDialog(DiskBasicInfo disk) async {
     final l10n = context.l10n;
+    final diskProvider = context.read<ToolboxDiskProvider>();
+    final messenger = ScaffoldMessenger.of(context);
     final filesystemController = TextEditingController(
         text: disk.filesystem.isEmpty ? 'ext4' : disk.filesystem);
     final mountPointController = TextEditingController(text: disk.mountPoint);
@@ -167,25 +169,23 @@ class _ToolboxDiskPageState extends State<ToolboxDiskPage> {
               ),
               FilledButton(
                 onPressed: () async {
-                  final success =
-                      await context.read<ToolboxDiskProvider>().mountDisk(
-                            DiskMountRequest(
-                              device: disk.device,
-                              filesystem: filesystemController.text.trim(),
-                              mountPoint: mountPointController.text.trim(),
-                              autoMount: autoMount,
-                              noFail: noFail,
-                            ),
-                          );
-                  if (!dialogContext.mounted) return;
+                  final success = await diskProvider.mountDisk(
+                    DiskMountRequest(
+                      device: disk.device,
+                      filesystem: filesystemController.text.trim(),
+                      mountPoint: mountPointController.text.trim(),
+                      autoMount: autoMount,
+                      noFail: noFail,
+                    ),
+                  );
+                  if (!mounted || !dialogContext.mounted) return;
                   Navigator.of(dialogContext).pop();
-                  ScaffoldMessenger.of(this.context).showSnackBar(
+                  messenger.showSnackBar(
                     SnackBar(
                       content: Text(
                         success
                             ? l10n.toolboxDiskMountSuccess
-                            : (this.context.read<ToolboxDiskProvider>().error ??
-                                l10n.commonSaveFailed),
+                            : (diskProvider.error ?? l10n.commonSaveFailed),
                       ),
                     ),
                   );
@@ -201,6 +201,8 @@ class _ToolboxDiskPageState extends State<ToolboxDiskPage> {
 
   Future<void> _showPartitionDialog(DiskInfo disk) async {
     final l10n = context.l10n;
+    final diskProvider = context.read<ToolboxDiskProvider>();
+    final messenger = ScaffoldMessenger.of(context);
     final filesystemController = TextEditingController(text: 'ext4');
     final mountPointController = TextEditingController();
     final labelController = TextEditingController();
@@ -253,25 +255,23 @@ class _ToolboxDiskPageState extends State<ToolboxDiskPage> {
               ),
               FilledButton(
                 onPressed: () async {
-                  final success =
-                      await context.read<ToolboxDiskProvider>().partitionDisk(
-                            DiskPartitionRequest(
-                              device: disk.device,
-                              filesystem: filesystemController.text.trim(),
-                              mountPoint: mountPointController.text.trim(),
-                              label: labelController.text.trim(),
-                              autoMount: autoMount,
-                            ),
-                          );
-                  if (!dialogContext.mounted) return;
+                  final success = await diskProvider.partitionDisk(
+                    DiskPartitionRequest(
+                      device: disk.device,
+                      filesystem: filesystemController.text.trim(),
+                      mountPoint: mountPointController.text.trim(),
+                      label: labelController.text.trim(),
+                      autoMount: autoMount,
+                    ),
+                  );
+                  if (!mounted || !dialogContext.mounted) return;
                   Navigator.of(dialogContext).pop();
-                  ScaffoldMessenger.of(this.context).showSnackBar(
+                  messenger.showSnackBar(
                     SnackBar(
                       content: Text(
                         success
                             ? l10n.toolboxDiskPartitionSuccess
-                            : (this.context.read<ToolboxDiskProvider>().error ??
-                                l10n.commonSaveFailed),
+                            : (diskProvider.error ?? l10n.commonSaveFailed),
                       ),
                     ),
                   );
@@ -287,17 +287,18 @@ class _ToolboxDiskPageState extends State<ToolboxDiskPage> {
 
   Future<void> _handleUnmount(DiskBasicInfo disk) async {
     final l10n = context.l10n;
-    final success = await context.read<ToolboxDiskProvider>().unmountDisk(
-          DiskUnmountRequest(mountPoint: disk.mountPoint),
-        );
+    final diskProvider = context.read<ToolboxDiskProvider>();
+    final messenger = ScaffoldMessenger.of(context);
+    final success = await diskProvider.unmountDisk(
+      DiskUnmountRequest(mountPoint: disk.mountPoint),
+    );
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
+    messenger.showSnackBar(
       SnackBar(
         content: Text(
           success
               ? l10n.toolboxDiskUnmountSuccess
-              : (context.read<ToolboxDiskProvider>().error ??
-                  l10n.commonSaveFailed),
+              : (diskProvider.error ?? l10n.commonSaveFailed),
         ),
       ),
     );

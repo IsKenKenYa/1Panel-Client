@@ -459,11 +459,18 @@ class CommonRecover extends CommonBackup {
   @override
   Map<String, dynamic> toJson() {
     final json = super.toJson();
-    if (backupRecordID != null) json['backupRecordID'] = backupRecordID;
-    if (file != null) json['file'] = file;
-    if (downloadAccountID != null)
+    if (backupRecordID != null) {
+      json['backupRecordID'] = backupRecordID;
+    }
+    if (file != null) {
+      json['file'] = file;
+    }
+    if (downloadAccountID != null) {
       json['downloadAccountID'] = downloadAccountID;
-    if (timeout != null) json['timeout'] = timeout;
+    }
+    if (timeout != null) {
+      json['timeout'] = timeout;
+    }
     return json;
   }
 

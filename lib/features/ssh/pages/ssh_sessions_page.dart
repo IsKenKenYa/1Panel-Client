@@ -23,8 +23,9 @@ class _SshSessionsPageState extends State<SshSessionsPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !context.read<CurrentServerController>().hasServer)
+      if (!mounted || !context.read<CurrentServerController>().hasServer) {
         return;
+      }
       context.read<SshSessionsProvider>().load();
     });
   }

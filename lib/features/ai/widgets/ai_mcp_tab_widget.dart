@@ -147,11 +147,11 @@ class _AIMcpTabWidgetState extends State<AIMcpTabWidget> {
                           ),
                           PopupMenuItem<String>(
                             value: 'start',
-                            child: Text(l10n.aiMcpStart),
+                            child: Text(l10n.commonStart),
                           ),
                           PopupMenuItem<String>(
                             value: 'stop',
-                            child: Text(l10n.aiMcpStop),
+                            child: Text(l10n.commonStop),
                           ),
                           PopupMenuItem<String>(
                             value: 'restart',

@@ -25,8 +25,9 @@ class _SshLogsPageState extends State<SshLogsPage> {
     super.initState();
     _searchController = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !context.read<CurrentServerController>().hasServer)
+      if (!mounted || !context.read<CurrentServerController>().hasServer) {
         return;
+      }
       context.read<SshLogsProvider>().load();
     });
   }

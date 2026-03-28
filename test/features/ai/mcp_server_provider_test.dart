@@ -6,12 +6,18 @@ import 'package:onepanel_client/features/ai/mcp_server_service.dart';
 
 class MockMcpServerService extends Mock implements McpServerService {}
 
+class FakeMcpBindDomain extends Fake implements McpBindDomain {}
+
+class FakeMcpBindDomainUpdate extends Fake implements McpBindDomainUpdate {}
+
 void main() {
   group('McpServerProvider', () {
     late MockMcpServerService service;
     late McpServerProvider provider;
 
     setUp(() {
+      registerFallbackValue(FakeMcpBindDomain());
+      registerFallbackValue(FakeMcpBindDomainUpdate());
       service = MockMcpServerService();
       provider = McpServerProvider(service: service);
     });

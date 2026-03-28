@@ -222,6 +222,7 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
     ToolboxHostToolProvider provider,
   ) async {
     final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
     final configPathController =
         TextEditingController(text: provider.serviceInfo.configPath);
     final serviceNameController =
@@ -257,20 +258,18 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
           ),
           FilledButton(
             onPressed: () async {
-              final success =
-                  await context.read<ToolboxHostToolProvider>().initSupervisor(
-                        configPath: configPathController.text.trim(),
-                        serviceName: serviceNameController.text.trim(),
-                      );
-              if (!dialogContext.mounted) return;
+              final success = await provider.initSupervisor(
+                configPath: configPathController.text.trim(),
+                serviceName: serviceNameController.text.trim(),
+              );
+              if (!mounted || !dialogContext.mounted) return;
               Navigator.of(dialogContext).pop();
-              ScaffoldMessenger.of(this.context).showSnackBar(
+              messenger.showSnackBar(
                 SnackBar(
                   content: Text(
                     success
                         ? l10n.toolboxHostToolSaveSuccess
-                        : (this.context.read<ToolboxHostToolProvider>().error ??
-                            l10n.commonSaveFailed),
+                        : (provider.error ?? l10n.commonSaveFailed),
                   ),
                 ),
               );
@@ -287,6 +286,7 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
     ToolboxHostToolProvider provider,
   ) async {
     final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
     final controller = TextEditingController(text: provider.configContent);
     await showDialog<void>(
       context: context,
@@ -306,18 +306,16 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
           ),
           FilledButton(
             onPressed: () async {
-              final success = await context
-                  .read<ToolboxHostToolProvider>()
-                  .saveSupervisorConfig(controller.text);
-              if (!dialogContext.mounted) return;
+              final success =
+                  await provider.saveSupervisorConfig(controller.text);
+              if (!mounted || !dialogContext.mounted) return;
               Navigator.of(dialogContext).pop();
-              ScaffoldMessenger.of(this.context).showSnackBar(
+              messenger.showSnackBar(
                 SnackBar(
                   content: Text(
                     success
                         ? l10n.toolboxHostToolSaveSuccess
-                        : (this.context.read<ToolboxHostToolProvider>().error ??
-                            l10n.commonSaveFailed),
+                        : (provider.error ?? l10n.commonSaveFailed),
                   ),
                 ),
               );
@@ -335,6 +333,7 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
     HostToolProcessConfig? initialValue,
   }) async {
     final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
     final nameController =
         TextEditingController(text: initialValue?.name ?? '');
     final commandController =
@@ -411,33 +410,27 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
               ),
               FilledButton(
                 onPressed: () async {
-                  final success = await context
-                      .read<ToolboxHostToolProvider>()
-                      .saveProcess(
-                        HostToolProcessConfigRequest(
-                          name: nameController.text.trim(),
-                          operate: initialValue == null ? 'create' : 'update',
-                          command: commandController.text.trim(),
-                          user: userController.text.trim(),
-                          dir: dirController.text.trim(),
-                          numprocs: numprocsController.text.trim(),
-                          autoRestart: autoRestart ? 'true' : 'false',
-                          autoStart: autoStart ? 'true' : 'false',
-                          environment: environmentController.text.trim(),
-                        ),
-                      );
-                  if (!dialogContext.mounted) return;
+                  final success = await provider.saveProcess(
+                    HostToolProcessConfigRequest(
+                      name: nameController.text.trim(),
+                      operate: initialValue == null ? 'create' : 'update',
+                      command: commandController.text.trim(),
+                      user: userController.text.trim(),
+                      dir: dirController.text.trim(),
+                      numprocs: numprocsController.text.trim(),
+                      autoRestart: autoRestart ? 'true' : 'false',
+                      autoStart: autoStart ? 'true' : 'false',
+                      environment: environmentController.text.trim(),
+                    ),
+                  );
+                  if (!mounted || !dialogContext.mounted) return;
                   Navigator.of(dialogContext).pop();
-                  ScaffoldMessenger.of(this.context).showSnackBar(
+                  messenger.showSnackBar(
                     SnackBar(
                       content: Text(
                         success
                             ? l10n.toolboxHostToolSaveSuccess
-                            : (this
-                                    .context
-                                    .read<ToolboxHostToolProvider>()
-                                    .error ??
-                                l10n.commonSaveFailed),
+                            : (provider.error ?? l10n.commonSaveFailed),
                       ),
                     ),
                   );
@@ -458,6 +451,7 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
     String action,
   ) async {
     final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
     if (action == 'edit') {
       await _showProcessDialog(context, provider, initialValue: process);
       return;
@@ -468,7 +462,7 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
     }
     final content =
         await provider.loadProcessFile(name: process.name, file: action);
-    if (!mounted || content == null) return;
+    if (!context.mounted || content == null) return;
     final controller = TextEditingController(text: content);
     await showDialog<void>(
       context: context,
@@ -488,24 +482,18 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
           if (action != 'config')
             TextButton(
               onPressed: () async {
-                final success = await context
-                    .read<ToolboxHostToolProvider>()
-                    .clearProcessFile(
-                      name: process.name,
-                      file: action,
-                    );
-                if (!dialogContext.mounted) return;
+                final success = await provider.clearProcessFile(
+                  name: process.name,
+                  file: action,
+                );
+                if (!mounted || !dialogContext.mounted) return;
                 Navigator.of(dialogContext).pop();
-                ScaffoldMessenger.of(this.context).showSnackBar(
+                messenger.showSnackBar(
                   SnackBar(
                     content: Text(
                       success
                           ? l10n.toolboxHostToolSaveSuccess
-                          : (this
-                                  .context
-                                  .read<ToolboxHostToolProvider>()
-                                  .error ??
-                              l10n.commonSaveFailed),
+                          : (provider.error ?? l10n.commonSaveFailed),
                     ),
                   ),
                 );
@@ -515,25 +503,19 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
           if (action == 'config')
             FilledButton(
               onPressed: () async {
-                final success = await context
-                    .read<ToolboxHostToolProvider>()
-                    .updateProcessFile(
-                      name: process.name,
-                      file: action,
-                      content: controller.text,
-                    );
-                if (!dialogContext.mounted) return;
+                final success = await provider.updateProcessFile(
+                  name: process.name,
+                  file: action,
+                  content: controller.text,
+                );
+                if (!mounted || !dialogContext.mounted) return;
                 Navigator.of(dialogContext).pop();
-                ScaffoldMessenger.of(this.context).showSnackBar(
+                messenger.showSnackBar(
                   SnackBar(
                     content: Text(
                       success
                           ? l10n.toolboxHostToolSaveSuccess
-                          : (this
-                                  .context
-                                  .read<ToolboxHostToolProvider>()
-                                  .error ??
-                              l10n.commonSaveFailed),
+                          : (provider.error ?? l10n.commonSaveFailed),
                     ),
                   ),
                 );

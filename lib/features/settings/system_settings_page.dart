@@ -3,7 +3,6 @@ import 'package:onepanel_client/config/app_router.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
-import 'package:onepanel_client/features/settings/menu_settings_page.dart';
 import 'package:onepanel_client/features/settings/panel_settings_page.dart';
 import 'package:onepanel_client/features/settings/security_settings_page.dart';
 import 'package:onepanel_client/features/settings/settings_provider.dart';

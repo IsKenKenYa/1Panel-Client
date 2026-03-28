@@ -26,8 +26,9 @@ class _SshSettingsPageState extends State<SshSettingsPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !context.read<CurrentServerController>().hasServer)
+      if (!mounted || !context.read<CurrentServerController>().hasServer) {
         return;
+      }
       context.read<SshSettingsProvider>().load();
     });
   }

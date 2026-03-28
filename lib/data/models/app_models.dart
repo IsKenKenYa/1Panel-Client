@@ -95,11 +95,16 @@ class AppItem {
 
   /// 获取标签名称列表
   List<String> get tagNames {
-    if (tags == null) return [];
+    if (tags == null) {
+      return [];
+    }
     return tags!.map((t) {
-      if (t is String) return t;
-      if (t is Map<String, dynamic>)
+      if (t is String) {
+        return t;
+      }
+      if (t is Map<String, dynamic>) {
         return t['name'] as String? ?? t['key'] as String? ?? '';
+      }
       return t.toString();
     }).toList();
   }

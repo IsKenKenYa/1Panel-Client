@@ -65,9 +65,12 @@ void main() {
     while (DateTime.now().isBefore(endTime)) {
       final info = await api.getAppInstallInfo(installId.toString());
       debugPrint('   Current status: ${info.status} (Target: $targetStatus)');
-      if (info.status == targetStatus) return;
-      if (info.status == 'Error')
+      if (info.status == targetStatus) {
+        return;
+      }
+      if (info.status == 'Error') {
         throw Exception('App entered Error state: ${info.message}');
+      }
       await Future.delayed(const Duration(seconds: 3));
     }
     throw Exception('Timeout waiting for status: $targetStatus');
