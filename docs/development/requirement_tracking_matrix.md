@@ -36,7 +36,24 @@
 	- `dart run test_runner.dart ui`：通过
 	- `dart run test_runner.dart integration`：通过（部分用例按环境开关跳过，见测试输出说明）
 	- `dart run test_runner.dart all`：通过
-- **下一步**: 进入 `S2-6 收口与验收`，准备模块1合并材料（完成项/风险残留/回归结果）。
+- **下一步**: 按 S2-6 输出清单完成合并材料整理，并进入模块1 PR 流程。
+
+## Phase 2 Final Closure（2026-03-28）
+
+- **Final 状态**: Phase 2 已完成收口，进入可合并结论阶段。
+- **验收产物**:
+	- 模块完成清单：`docs/development/s2_module_completion_list.md`
+	- 风险残留清单：`docs/development/s2_risk_residual_list.md`
+	- 回归结果清单：`docs/development/s2_regression_results.md`
+	- 路由清理清单：`docs/development/s2_route_cleanup_list.md`
+- **已批准残留（不阻塞 Phase 2 Final）**:
+	- `database`：用户管理细节、更多写操作表单、细分状态展示。
+	- `firewall`：forward / filter advance / chain status。
+- **范围边界确认**:
+	- Website 长尾（`proxy cache / load balance / real ip / stream`）不在 Phase 2 硬范围。
+	- Orchestration 长尾（`image repo / compose template`）不在 Phase 2 硬范围。
+	- 路由清理本轮仅输出清单与证据，不做字符串路由重构。
+- **门禁基线**: `flutter analyze`、`dart run test_runner.dart unit`、`dart run test_runner.dart ui`、`dart run test_runner.dart integration`、`dart run test_runner.dart all` 全部通过。
 
 ## 优先级定义
 

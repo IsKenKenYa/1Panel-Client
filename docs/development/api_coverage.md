@@ -41,6 +41,23 @@
 	- `dart run test_runner.dart all`：通过
 - 备注: 本节为阶段增量记录，不改写全量统计口径；全量统计在下一轮统一盘点时回刷。
 
+## Phase 2 Final Snapshot（2026-03-28）
+
+- Final 口径: Phase 2 以工作流收口为准，当前进入可合并状态。
+- 核心完成面:
+	- S2-1/S2-2/S2-3/S2-4/S2-5 均完成对应硬范围的主链路闭环。
+	- S2-6 验收产物已落盘：
+	  - `docs/development/s2_module_completion_list.md`
+	  - `docs/development/s2_risk_residual_list.md`
+	  - `docs/development/s2_regression_results.md`
+	  - `docs/development/s2_route_cleanup_list.md`
+- 已批准残留（Phase 3）:
+	- `database` 用户管理细节与更多写操作表单。
+	- `firewall` 高级链路（forward/filter advance/chain status）。
+- 范围边界确认:
+	- Website 长尾能力与 Orchestration 长尾能力按计划不纳入 Phase 2 硬交付。
+	- 路由清理本轮仅做清单和证据归档，不进行字符串路由重构。
+
 ## 实现状态统计
 
 | 维度 | 完成数 | 完成率 |
