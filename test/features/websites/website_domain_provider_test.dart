@@ -13,6 +13,7 @@ class _FakeWebsiteDomainService extends WebsiteDomainService {
   final List<WebsiteDomain> items;
   final bool throwOnUpdate;
   int updateCallCount = 0;
+  List<Map<String, dynamic>> lastBatch = const <Map<String, dynamic>>[];
 
   @override
   Future<List<WebsiteDomain>> fetchDomains(int websiteId) async => items;
@@ -28,6 +29,14 @@ class _FakeWebsiteDomainService extends WebsiteDomainService {
     if (throwOnUpdate) {
       throw Exception('domain update failed');
     }
+  }
+
+  @override
+  Future<void> addDomains({
+    required int websiteId,
+    required List<Map<String, dynamic>> domains,
+  }) async {
+    lastBatch = domains;
   }
 }
 
@@ -57,5 +66,22 @@ void main() {
 
     expect(service.updateCallCount, 1);
     expect(provider.error, contains('domain update failed'));
+  });
+
+  test('WebsiteDomainProvider supports batch domain import', () async {
+    final service = _FakeWebsiteDomainService();
+    final provider = WebsiteDomainProvider(
+      websiteId: 1,
+      service: service,
+    );
+
+    await provider.addDomainsBatch(const <Map<String, dynamic>>[
+      {'domain': 'a.example.com', 'port': 80, 'ssl': false},
+      {'domain': 'b.example.com', 'port': 8080, 'ssl': true},
+    ]);
+
+    expect(service.lastBatch, hasLength(2));
+    expect(service.lastBatch.first['domain'], 'a.example.com');
+    expect(service.lastBatch.last['port'], 8080);
   });
 }

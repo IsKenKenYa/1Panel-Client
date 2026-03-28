@@ -326,6 +326,26 @@ class AppLocalizationsZh extends AppLocalizations {
   String get websitesDomainValidationDuplicate => '该域名已存在。';
 
   @override
+  String get websitesDomainBatchAddTitle => '批量添加域名';
+
+  @override
+  String get websitesDomainBatchAddAction => '导入域名';
+
+  @override
+  String get websitesDomainBatchAddHint => '每行一个域名，支持 `域名` 或 `域名:端口` 格式。';
+
+  @override
+  String get websitesDomainBatchInputLabel => '域名列表';
+
+  @override
+  String get websitesDomainBatchValidationEmpty => '请至少输入一个域名。';
+
+  @override
+  String websitesDomainBatchValidationInvalid(String line) {
+    return '无效的域名行：$line';
+  }
+
+  @override
   String websitesDomainDeleteMessage(String domain) {
     return '确定删除域名 $domain 吗？';
   }
@@ -4392,7 +4412,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get operationsCenterSystemSectionTitle => '系统控制';
 
   @override
-  String get operationsCenterSystemSectionDescription => '主机资产、SSH、进程与日志入口';
+  String get operationsCenterSystemSectionDescription =>
+      '分组中心、主机资产、SSH、进程、日志与工具箱工具入口';
 
   @override
   String get operationsCommandsTitle => '命令库';
@@ -6304,6 +6325,19 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get operationsGroupRenameTitle => '重命名分组';
+
+  @override
+  String get operationsGroupCenterTitle => '分组中心';
+
+  @override
+  String get operationsGroupCenterDescription =>
+      '统一管理 core 与 agent 命名空间下的可复用分组。';
+
+  @override
+  String get operationsGroupScopeCore => 'Core';
+
+  @override
+  String get operationsGroupScopeAgent => 'Agent';
 
   @override
   String get operationsGroupNameHint => '请输入分组名称';

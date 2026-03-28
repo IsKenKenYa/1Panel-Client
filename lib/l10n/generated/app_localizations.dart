@@ -716,6 +716,42 @@ abstract class AppLocalizations {
   /// **'This domain already exists.'**
   String get websitesDomainValidationDuplicate;
 
+  /// No description provided for @websitesDomainBatchAddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Batch add domains'**
+  String get websitesDomainBatchAddTitle;
+
+  /// No description provided for @websitesDomainBatchAddAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Import domains'**
+  String get websitesDomainBatchAddAction;
+
+  /// No description provided for @websitesDomainBatchAddHint.
+  ///
+  /// In en, this message translates to:
+  /// **'One domain per line. You can use domain or domain:port.'**
+  String get websitesDomainBatchAddHint;
+
+  /// No description provided for @websitesDomainBatchInputLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Domains'**
+  String get websitesDomainBatchInputLabel;
+
+  /// No description provided for @websitesDomainBatchValidationEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter at least one domain.'**
+  String get websitesDomainBatchValidationEmpty;
+
+  /// No description provided for @websitesDomainBatchValidationInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid domain line: {line}'**
+  String websitesDomainBatchValidationInvalid(String line);
+
   /// No description provided for @websitesDomainDeleteMessage.
   ///
   /// In en, this message translates to:
@@ -8567,7 +8603,7 @@ abstract class AppLocalizations {
   /// No description provided for @operationsCenterSystemSectionDescription.
   ///
   /// In en, this message translates to:
-  /// **'Host assets, SSH, processes, and logs'**
+  /// **'Groups, host assets, SSH, processes, logs, and toolbox tools'**
   String get operationsCenterSystemSectionDescription;
 
   /// No description provided for @operationsCommandsTitle.
@@ -12218,6 +12254,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Rename Group'**
   String get operationsGroupRenameTitle;
+
+  /// No description provided for @operationsGroupCenterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Group Center'**
+  String get operationsGroupCenterTitle;
+
+  /// No description provided for @operationsGroupCenterDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage reusable groups across core and agent namespaces.'**
+  String get operationsGroupCenterDescription;
+
+  /// No description provided for @operationsGroupScopeCore.
+  ///
+  /// In en, this message translates to:
+  /// **'Core'**
+  String get operationsGroupScopeCore;
+
+  /// No description provided for @operationsGroupScopeAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent'**
+  String get operationsGroupScopeAgent;
 
   /// No description provided for @operationsGroupNameHint.
   ///

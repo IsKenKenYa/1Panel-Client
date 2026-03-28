@@ -328,6 +328,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get websitesDomainValidationDuplicate => 'This domain already exists.';
 
   @override
+  String get websitesDomainBatchAddTitle => 'Batch add domains';
+
+  @override
+  String get websitesDomainBatchAddAction => 'Import domains';
+
+  @override
+  String get websitesDomainBatchAddHint =>
+      'One domain per line. You can use domain or domain:port.';
+
+  @override
+  String get websitesDomainBatchInputLabel => 'Domains';
+
+  @override
+  String get websitesDomainBatchValidationEmpty => 'Enter at least one domain.';
+
+  @override
+  String websitesDomainBatchValidationInvalid(String line) {
+    return 'Invalid domain line: $line';
+  }
+
+  @override
   String websitesDomainDeleteMessage(String domain) {
     return 'Delete domain $domain?';
   }
@@ -4491,7 +4512,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get operationsCenterSystemSectionDescription =>
-      'Host assets, SSH, processes, and logs';
+      'Groups, host assets, SSH, processes, logs, and toolbox tools';
 
   @override
   String get operationsCommandsTitle => 'Commands';
@@ -6441,6 +6462,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get operationsGroupRenameTitle => 'Rename Group';
+
+  @override
+  String get operationsGroupCenterTitle => 'Group Center';
+
+  @override
+  String get operationsGroupCenterDescription =>
+      'Manage reusable groups across core and agent namespaces.';
+
+  @override
+  String get operationsGroupScopeCore => 'Core';
+
+  @override
+  String get operationsGroupScopeAgent => 'Agent';
 
   @override
   String get operationsGroupNameHint => 'Enter a group name';

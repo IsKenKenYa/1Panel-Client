@@ -131,6 +131,19 @@
   "websitesDomainValidationRequired": "请输入域名。",
   "websitesDomainValidationPort": "端口必须在 1 到 65535 之间。",
   "websitesDomainValidationDuplicate": "该域名已存在。",
+  "websitesDomainBatchAddTitle": "批量添加域名",
+  "websitesDomainBatchAddAction": "导入域名",
+  "websitesDomainBatchAddHint": "每行一个域名，支持 `域名` 或 `域名:端口` 格式。",
+  "websitesDomainBatchInputLabel": "域名列表",
+  "websitesDomainBatchValidationEmpty": "请至少输入一个域名。",
+  "websitesDomainBatchValidationInvalid": "无效的域名行：{line}",
+  "@websitesDomainBatchValidationInvalid": {
+    "placeholders": {
+      "line": {
+        "type": "String"
+      }
+    }
+  },
   "websitesDomainDeleteMessage": "确定删除域名 {domain} 吗？",
   "@websitesDomainDeleteMessage": {
     "placeholders": {
@@ -1823,7 +1836,7 @@
   "operationsCenterRuntimeSectionTitle": "运行时与交付",
   "operationsCenterRuntimeSectionDescription": "PHP 与 Node.js 的通用运行时链路",
   "operationsCenterSystemSectionTitle": "系统控制",
-  "operationsCenterSystemSectionDescription": "主机资产、SSH、进程与日志入口",
+  "operationsCenterSystemSectionDescription": "分组中心、主机资产、SSH、进程、日志与工具箱工具入口",
   "operationsCommandsTitle": "命令库",
   "operationsCommandFormTitle": "命令表单",
   "operationsHostAssetsTitle": "主机资产",
@@ -2677,6 +2690,10 @@
   "operationsGroupSelectorTitle": "选择分组",
   "operationsGroupCreateTitle": "创建分组",
   "operationsGroupRenameTitle": "重命名分组",
+  "operationsGroupCenterTitle": "分组中心",
+  "operationsGroupCenterDescription": "统一管理 core 与 agent 命名空间下的可复用分组。",
+  "operationsGroupScopeCore": "Core",
+  "operationsGroupScopeAgent": "Agent",
   "operationsGroupNameHint": "请输入分组名称",
   "operationsGroupEmptyDescription": "当前模块还没有可用分组，先创建一个，后续主机、命令或计划任务就能复用。",
   "operationsGroupDefaultLabel": "默认分组",

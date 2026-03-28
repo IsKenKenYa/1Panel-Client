@@ -9,6 +9,7 @@
 - 标签数: 52
 - 覆盖口径: 已实现=存在API调用与数据模型，已测试=具备单元/集成/端到端测试，已文档=包含使用说明与已知限制
 - 适配状态真值: `docs/development/swagger_adaptation_status_checklist.md`
+- 适配状态汇总: `34 已适配 / 18 部分适配 / 0 未适配`
 
 ## Phase 2 增量覆盖（2026-03-28）
 
@@ -25,7 +26,7 @@
 - 范围增量: S2-4 Orchestration + AI（主链路收口）
 - 收口项增量:
 	- Orchestration：新增 `orchestration_repository.dart` 与 `orchestration_service.dart`，compose/image/network/volume provider 去 API 直连，并补齐独立页的 create/pull/detail/confirm/retry 主流程。
-	- AI：`AIProvider` 改为依赖 `AIRepository`，`AIRepository` 改为通过 `ApiClientManager` 获取 API；`AIPage` 拆为 `Ollama / GPU / Domain` 三标签并完成域名绑定联动。
+	- AI：`AIProvider` 改为依赖 `AIRepository`，`AIRepository` 改为通过 `ApiClientManager` 获取 API；`AIPage` 拆为 `Ollama / GPU / Domain / MCP` 四标签并完成域名绑定联动与 MCP 管理。
 	- 回归测试：新增 `test/features/ai/ai_provider_test.dart`、`test/features/orchestration/providers/orchestration_provider_flow_test.dart`。
 - 范围增量补充: S2-4 验证 + S2-5 Auth（进行中）
 - 收口项增量补充:
@@ -67,6 +68,8 @@
 	- `Menu Setting`：新增菜单设置页面，接入默认菜单读取与保存。
 	- `Disk Management`：新增 `toolbox/disk` 路由与 `disk_management_v2.dart` API 链路。
 	- `Host tool`：新增 `toolbox/host-tool` 路由与 `host_tool_v2.dart` API 链路。
+	- `System Group`：新增分组中心页，支持 `core / agent` 命名空间切换与 CRUD。
+	- `Website Domain`：新增批量域名导入，按既有 `/websites/domains` 数组请求体提交。
 - 保持范围边界:
 	- `Website CA / Website Acme / Website DNS`
 	- `Container Image-repo / Container Compose-template`

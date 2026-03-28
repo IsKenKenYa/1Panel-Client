@@ -7,6 +7,7 @@
 - **数据模型数**: 471
 - **优先级分类**: P0 (核心), P1 (高价值), P2 (工具类)
 - **当前状态真值**: `docs/development/swagger_adaptation_status_checklist.md`
+- **当前汇总**: `34 已适配 / 18 部分适配 / 0 未适配`
 
 ## Phase 2 增量进展（2026-03-28）
 
@@ -20,7 +21,7 @@
 	- 测试补充：新增 `website_ssl_center_provider_test.dart`、`openresty_provider_test.dart`，并扩展 `website_s2_integration_test.dart` 与 `security_gateway_s2_integration_test.dart`。
 - **S2-4（Orchestration + AI）本轮收口结果**:
 	- Orchestration：独立页接入 compose/image/network/volume 四分段，补齐 create/pull 入口、详情抽屉、危险操作确认、失败重试与结果反馈。
-	- AI：`AIPage` 重构为 `Ollama / GPU / Domain` 三标签页，补齐域名绑定联动、操作消息回填与错误恢复提示。
+	- AI：`AIPage` 重构为 `Ollama / GPU / Domain / MCP` 四标签页，补齐域名绑定联动、MCP 管理、操作消息回填与错误恢复提示。
 	- 回归测试：新增 `test/features/ai/ai_provider_test.dart` 与 `test/features/orchestration/providers/orchestration_provider_flow_test.dart`。
 - **S2-4 验证补充**:
 	- AI：新增 `test/features/ai/ai_page_test.dart`，验证 `AppRoutes.ai` 的 route/injection 与页面壳。
@@ -111,7 +112,7 @@
 | **Website CA** | 7 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🟡 部分 | 当前仅有账户汇总入口，完整 CRUD 不在 Phase 2 硬范围 |
 | **Website Acme** | 4 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🟡 部分 | 当前仅有账户汇总入口，完整 CRUD 不在 Phase 2 硬范围 |
 | **Website DNS** | 4 | ✅ website_v2.dart | ✅ website_models.dart | ⚠️ 待测试 | 🟡 部分 | 当前仅有账户汇总入口，完整 CRUD 不在 Phase 2 硬范围 |
-| **Website Domain** | 4 | ✅ website_v2.dart | ✅ website_models.dart | ✅ 已测试 | 🟡 部分 | CRUD + 本地校验已接入，默认域名写操作/批量仍缺 |
+| **Website Domain** | 4 | ✅ website_v2.dart | ✅ website_models.dart | ✅ 已测试 | ✅ 已集成 | CRUD、本地校验与批量录入已接入；默认域名归属 Website 主链路 |
 | **Website Nginx** | 4 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ⚠️ 待测试 | ✅ 已集成 | 结构化配置与源码编辑入口已接入 |
 | **Website HTTPS** | 2 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | ✅ 已集成 | 站点 HTTPS 策略页已接入 |
 | **Website PHP** | 1 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ⚠️ 待测试 | 🔴 待集成 | PHP配置 |
@@ -125,7 +126,7 @@
 | **Clam** | 12 | ✅ toolbox_v2.dart | ✅ toolbox_models.dart | ✅ 已测试 | 🟡 部分 | 已有查看页，完整写操作链路仍未补齐 |
 | **Device** | 12 | ✅ host_v2.dart | ✅ host_models.dart | ⚠️ 待测试 | 🟡 部分 | 已并入 `toolbox/device`，不是独立顶级模块 |
 | **McpServer** | 8 | ✅ ai_v2.dart | ✅ mcp_models.dart | ✅ 已测试 | ✅ 已集成 | 已接入 AI 的 `MCP` 标签页与管理表单 |
-| **System Group** | 8 | ✅ system_group_v2.dart | ✅ system_group_models.dart | ✅ 已测试 | 🟡 部分 | Week 1 已完成共享分组底座，暂不提供独立顶级页面 |
+| **System Group** | 8 | ✅ system_group_v2.dart | ✅ system_group_models.dart | ✅ 已测试 | ✅ 已集成 | 已新增分组中心页，支持 core / agent 命名空间管理 |
 | **FTP** | 8 | ✅ toolbox_v2.dart | ✅ toolbox_models.dart | ⚠️ 待测试 | 🟡 部分 | 已有查看页，完整写操作链路仍未补齐 |
 | **Host tool** | 7 | ✅ host_tool_v2.dart | ✅ host_tool_models.dart | ⚠️ 待测试 | ✅ 已集成 | 已新增 `toolbox/host-tool` 闭环 |
 | **Fail2ban** | 7 | ✅ toolbox_v2.dart | ✅ toolbox_models.dart | ⚠️ 待测试 | 🟡 部分 | 已有查看页，完整写操作链路仍未补齐 |

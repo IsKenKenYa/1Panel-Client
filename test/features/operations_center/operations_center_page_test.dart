@@ -50,11 +50,45 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Operations Center'), findsOneWidget);
-    expect(find.text('Automation'), findsOneWidget);
-    expect(find.text('Commands'), findsOneWidget);
-    await tester.scrollUntilVisible(find.text('Host Assets'), 200);
+    expect(
+      find.byKey(
+        const Key(OperationsCenterPage.automationSectionKey),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key(OperationsCenterPage.commandsEntryKey),
+      ),
+      findsOneWidget,
+    );
+    await tester.scrollUntilVisible(
+      find.byKey(const Key(OperationsCenterPage.runtimeSectionKey)),
+      200,
+    );
     await tester.pumpAndSettle();
-    expect(find.text('Host Assets'), findsOneWidget);
-    expect(find.text('Runtimes'), findsOneWidget);
+    expect(
+      find.byKey(
+        const Key(OperationsCenterPage.runtimesEntryKey),
+      ),
+      findsOneWidget,
+    );
+    await tester.scrollUntilVisible(
+      find.byKey(const Key(OperationsCenterPage.hostAssetsEntryKey)),
+      200,
+    );
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(
+        const Key(OperationsCenterPage.groupsEntryKey),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key(OperationsCenterPage.hostAssetsEntryKey),
+      ),
+      findsOneWidget,
+    );
   });
 }

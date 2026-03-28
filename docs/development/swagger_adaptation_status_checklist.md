@@ -24,8 +24,8 @@
 
 | 主状态 | 数量 |
 | --- | --- |
-| 已适配 | 31 |
-| 部分适配 | 21 |
+| 已适配 | 34 |
+| 部分适配 | 18 |
 | 未适配 | 0 |
 
 ## 清单
@@ -51,7 +51,7 @@
 | Firewall | 15 | `firewall` | 已适配 | 已批准残留 | `status/rules/ip/ports` 完成；forward/filter advance/chain status 留 Phase 3 |
 | SSH | 12 | `ssh` | 已适配 | Phase 1 已完成 | 设置、证书、日志、会话均已接入 |
 | Website SSL | 11 | `websites` / `security_gateway` | 已适配 | Phase 2 主范围完成 | 证书中心、站点绑定、HTTPS 策略已接入 |
-| AI | 10 | `ai` | 已适配 | Phase 2 主范围完成 | `Ollama / GPU / Domain` 三标签主流程可用 |
+| AI | 10 | `ai` | 已适配 | Phase 2 主范围完成 | `Ollama / GPU / Domain / MCP` 四标签主流程可用 |
 | Container Image | 10 | `orchestration` | 已适配 | Phase 2 主范围完成 | 镜像列表、拉取、构建、删除、tag/push 已接入 |
 | Host | 10 | `host_assets` | 已适配 | Phase 1 已完成 | 主机资产列表、表单、测试、分组移动已接入 |
 | OpenResty | 10 | `openresty` | 已适配 | Phase 2 主范围完成 | status / https / modules / config / build 已接入 |
@@ -67,7 +67,7 @@
 | Website CA | 7 | `websites` | 部分适配 | 范围边界 | 当前仅有账户汇总入口，完整 CRUD 不在 Phase 2 硬范围 |
 | Website Acme | 4 | `websites` | 部分适配 | 范围边界 | 当前仅有账户汇总入口，完整 CRUD 不在 Phase 2 硬范围 |
 | Website DNS | 4 | `websites` | 部分适配 | 范围边界 | 当前仅有账户汇总入口，完整 CRUD 不在 Phase 2 硬范围 |
-| Website Domain | 4 | `websites` | 部分适配 | Phase 2 主范围完成 | CRUD + 校验已接入，默认域名写操作和批量仍缺 |
+| Website Domain | 4 | `websites` | 已适配 | Phase 2 主范围完成 | CRUD、校验与批量导入已接入；默认域名能力归属 `Website` 主链路，不再作为该 tag 阻断项 |
 | Website Nginx | 4 | `websites` / `openresty` | 已适配 | Phase 2 主范围完成 | 结构化 scope 配置与源码编辑已接入 |
 | Website HTTPS | 2 | `websites` | 已适配 | Phase 2 主范围完成 | 站点 HTTPS 策略页已接入 |
 | Website PHP | 1 | `websites` | 部分适配 | 非本阶段硬范围 | PHP 版本联动存在，但不是独立完整工作流 |
@@ -76,7 +76,7 @@
 | Clam | 12 | `toolbox` | 部分适配 | 非本阶段硬范围 | 现有页能查看 task/record，但写操作与完整流程未补齐 |
 | Device | 12 | `toolbox/device` | 部分适配 | 非本阶段硬范围 | 已并入 `toolbox/device`，不是独立顶级模块 |
 | McpServer | 8 | `ai` | 已适配 | 本轮新增闭环 | 新增 `MCP` 标签页，补齐列表、创建、编辑、操作、域名绑定 |
-| System Group | 8 | `group` | 部分适配 | 非本阶段硬范围 | 共享分组底座已完成，仍不提供独立顶级页面 |
+| System Group | 8 | `group` | 已适配 | 本轮新增闭环 | 新增分组中心页，支持 core / agent 命名空间下的独立查询与 CRUD |
 | FTP | 8 | `toolbox` | 部分适配 | 非本阶段硬范围 | 基础页已接入，但写操作与更多管理链路未补齐 |
 | Host tool | 7 | `toolbox` | 已适配 | 本轮新增闭环 | 新增 `toolbox/host-tool`，接入 supervisord 状态、配置、进程与文件操作 |
 | Fail2ban | 7 | `toolbox` | 部分适配 | 非本阶段硬范围 | 基础页已接入，但完整写操作验证不齐 |

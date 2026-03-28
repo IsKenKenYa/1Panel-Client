@@ -131,6 +131,19 @@
   "websitesDomainValidationRequired": "Domain is required.",
   "websitesDomainValidationPort": "Port must be between 1 and 65535.",
   "websitesDomainValidationDuplicate": "This domain already exists.",
+  "websitesDomainBatchAddTitle": "Batch add domains",
+  "websitesDomainBatchAddAction": "Import domains",
+  "websitesDomainBatchAddHint": "One domain per line. You can use domain or domain:port.",
+  "websitesDomainBatchInputLabel": "Domains",
+  "websitesDomainBatchValidationEmpty": "Enter at least one domain.",
+  "websitesDomainBatchValidationInvalid": "Invalid domain line: {line}",
+  "@websitesDomainBatchValidationInvalid": {
+    "placeholders": {
+      "line": {
+        "type": "String"
+      }
+    }
+  },
   "websitesDomainDeleteMessage": "Delete domain {domain}?",
   "@websitesDomainDeleteMessage": {
     "placeholders": {
@@ -1885,7 +1898,7 @@
   "operationsCenterRuntimeSectionTitle": "Runtime & Delivery",
   "operationsCenterRuntimeSectionDescription": "Shared runtime chains for PHP and Node.js",
   "operationsCenterSystemSectionTitle": "System Control",
-  "operationsCenterSystemSectionDescription": "Host assets, SSH, processes, and logs",
+  "operationsCenterSystemSectionDescription": "Groups, host assets, SSH, processes, logs, and toolbox tools",
   "operationsCommandsTitle": "Commands",
   "operationsCommandFormTitle": "Command Form",
   "operationsHostAssetsTitle": "Host Assets",
@@ -2739,6 +2752,10 @@
   "operationsGroupSelectorTitle": "Select Group",
   "operationsGroupCreateTitle": "Create Group",
   "operationsGroupRenameTitle": "Rename Group",
+  "operationsGroupCenterTitle": "Group Center",
+  "operationsGroupCenterDescription": "Manage reusable groups across core and agent namespaces.",
+  "operationsGroupScopeCore": "Core",
+  "operationsGroupScopeAgent": "Agent",
   "operationsGroupNameHint": "Enter a group name",
   "operationsGroupEmptyDescription": "No groups are available for this module yet. Create one to keep items organized.",
   "operationsGroupDefaultLabel": "Default",

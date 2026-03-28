@@ -33,6 +33,16 @@ class WebsiteDomainService {
     );
   }
 
+  Future<void> addDomains({
+    required int websiteId,
+    required List<Map<String, dynamic>> domains,
+  }) async {
+    await _repository.addDomains(
+      websiteId: websiteId,
+      domains: domains,
+    );
+  }
+
   Future<void> updateDomain({
     required int id,
     String? domain,

@@ -63,6 +63,8 @@ import 'package:onepanel_client/features/backups/providers/backup_account_form_p
 import 'package:onepanel_client/features/backups/providers/backup_accounts_provider.dart';
 import 'package:onepanel_client/features/backups/providers/backup_records_provider.dart';
 import 'package:onepanel_client/features/backups/providers/backup_recover_provider.dart';
+import 'package:onepanel_client/features/group/pages/group_center_page.dart';
+import 'package:onepanel_client/features/group/providers/group_center_provider.dart';
 import 'package:onepanel_client/features/cronjobs/models/cronjob_form_args.dart';
 import 'package:onepanel_client/features/cronjobs/pages/cronjob_form_page.dart';
 import 'package:onepanel_client/features/cronjobs/models/cronjob_records_args.dart';
@@ -189,6 +191,7 @@ class AppRoutes {
   static const String openrestySourceEditor = '/openresty-source-editor';
   static const String panelSsl = '/panel-ssl';
   static const String operations = '/operations';
+  static const String groupCenter = '/operations/groups';
   static const String toolbox = '/toolbox';
   static const String toolboxDevice = '/toolbox/device';
   static const String toolboxDisk = '/toolbox/disk';
@@ -539,6 +542,13 @@ class AppRouter {
 
       case AppRoutes.operations:
         return MaterialPageRoute(builder: (_) => const OperationsCenterPage());
+      case AppRoutes.groupCenter:
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<GroupCenterProvider>(
+            create: (_) => GroupCenterProvider(),
+            child: const GroupCenterPage(),
+          ),
+        );
 
       case AppRoutes.toolbox:
         return MaterialPageRoute(builder: (_) => const ToolboxCenterPage());

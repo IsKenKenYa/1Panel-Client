@@ -7,6 +7,14 @@ import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffol
 class OperationsCenterPage extends StatelessWidget {
   const OperationsCenterPage({super.key});
 
+  static const String automationSectionKey = 'operations-section-automation';
+  static const String runtimeSectionKey = 'operations-section-runtime';
+  static const String systemSectionKey = 'operations-section-system';
+  static const String commandsEntryKey = 'operations-entry-commands';
+  static const String runtimesEntryKey = 'operations-entry-runtimes';
+  static const String groupsEntryKey = 'operations-entry-groups';
+  static const String hostAssetsEntryKey = 'operations-entry-host-assets';
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -52,6 +60,11 @@ class OperationsCenterPage extends StatelessWidget {
         title: l10n.operationsCenterSystemSectionTitle,
         description: l10n.operationsCenterSystemSectionDescription,
         entries: [
+          _OperationEntry(
+            title: l10n.operationsGroupCenterTitle,
+            route: AppRoutes.groupCenter,
+            icon: Icons.folder_copy_outlined,
+          ),
           _OperationEntry(
             title: l10n.operationsHostAssetsTitle,
             route: AppRoutes.hostAssets,
@@ -103,6 +116,14 @@ class OperationsCenterPage extends StatelessWidget {
               const SizedBox(height: 16),
               for (final section in sections) ...[
                 Text(
+                  key: Key(
+                    section.title == l10n.operationsCenterAutomationSectionTitle
+                        ? automationSectionKey
+                        : section.title ==
+                                l10n.operationsCenterRuntimeSectionTitle
+                            ? runtimeSectionKey
+                            : systemSectionKey,
+                  ),
                   section.title,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
@@ -122,6 +143,17 @@ class OperationsCenterPage extends StatelessWidget {
                       SizedBox(
                         width: cardWidth,
                         child: ServerOperationEntryCardWidget(
+                          key: Key(
+                            entry.route == AppRoutes.commands
+                                ? commandsEntryKey
+                                : entry.route == AppRoutes.runtimes
+                                    ? runtimesEntryKey
+                                    : entry.route == AppRoutes.groupCenter
+                                        ? groupsEntryKey
+                                        : entry.route == AppRoutes.hostAssets
+                                            ? hostAssetsEntryKey
+                                            : 'operations-entry-${entry.route}',
+                          ),
                           title: entry.title,
                           icon: entry.icon,
                           onTap: () =>

@@ -13,32 +13,35 @@ class GroupService {
   Future<List<GroupInfo>> listGroups(
     String type, {
     bool forceRefresh = false,
+    GroupApiScope scope = GroupApiScope.core,
   }) async {
-    if (!forceRefresh && _cache.containsKey(type)) {
+    final cacheKey = _cacheKey(type, scope);
+    if (!forceRefresh && _cache.containsKey(cacheKey)) {
       appLogger.dWithPackage(
         'features.group.services.group',
-        'listGroups cache hit: type=$type',
+        'listGroups cache hit: type=$type, scope=$scope',
       );
-      return _cache[type]!;
+      return _cache[cacheKey]!;
     }
 
     appLogger.dWithPackage(
       'features.group.services.group',
-      'listGroups cache miss: type=$type',
+      'listGroups cache miss: type=$type, scope=$scope',
     );
-    final groups = await _repository.listGroups(type);
+    final groups = await _repository.listGroups(type, scope: scope);
     final normalized = _normalizeGroups(groups);
-    _cache[type] = normalized;
+    _cache[cacheKey] = normalized;
     return normalized;
   }
 
   Future<List<GroupInfo>> createGroup({
     required String type,
     required String name,
+    GroupApiScope scope = GroupApiScope.core,
   }) async {
-    await _repository.createGroup(type: type, name: name);
-    invalidate(type: type);
-    return listGroups(type, forceRefresh: true);
+    await _repository.createGroup(type: type, name: name, scope: scope);
+    invalidate(type: type, scope: scope);
+    return listGroups(type, forceRefresh: true, scope: scope);
   }
 
   Future<List<GroupInfo>> updateGroup({
@@ -46,33 +49,42 @@ class GroupService {
     required String type,
     required String name,
     bool isDefault = false,
+    GroupApiScope scope = GroupApiScope.core,
   }) async {
     await _repository.updateGroup(
       id: id,
       type: type,
       name: name,
       isDefault: isDefault,
+      scope: scope,
     );
-    invalidate(type: type);
-    return listGroups(type, forceRefresh: true);
+    invalidate(type: type, scope: scope);
+    return listGroups(type, forceRefresh: true, scope: scope);
   }
 
   Future<List<GroupInfo>> deleteGroup({
     required int id,
     required String type,
+    GroupApiScope scope = GroupApiScope.core,
   }) async {
-    await _repository.deleteGroup(id);
-    invalidate(type: type);
-    return listGroups(type, forceRefresh: true);
+    await _repository.deleteGroup(id, scope: scope);
+    invalidate(type: type, scope: scope);
+    return listGroups(type, forceRefresh: true, scope: scope);
   }
 
-  void invalidate({String? type}) {
+  void invalidate({String? type, GroupApiScope? scope}) {
     if (type == null) {
       _cache.clear();
       return;
     }
-    _cache.remove(type);
+    if (scope == null) {
+      _cache.removeWhere((String key, _) => key.endsWith(':$type'));
+      return;
+    }
+    _cache.remove(_cacheKey(type, scope));
   }
+
+  String _cacheKey(String type, GroupApiScope scope) => '${scope.name}:$type';
 
   List<GroupInfo> _normalizeGroups(List<GroupInfo> input) {
     final deduped = <int?, GroupInfo>{};

@@ -62,6 +62,11 @@ class _WebsiteDomainBody extends StatelessWidget {
             title: Text(l10n.websitesDomainsPageTitle),
             actions: [
               IconButton(
+                icon: const Icon(Icons.playlist_add_outlined),
+                onPressed: () => _showBatchDomainDialog(context, provider),
+                tooltip: l10n.websitesDomainBatchAddTitle,
+              ),
+              IconButton(
                 icon: const Icon(Icons.refresh),
                 onPressed: provider.loadDomains,
                 tooltip: l10n.commonRefresh,

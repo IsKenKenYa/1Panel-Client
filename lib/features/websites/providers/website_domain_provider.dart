@@ -46,6 +46,15 @@ class WebsiteDomainProvider extends ChangeNotifier {
     });
   }
 
+  Future<void> addDomainsBatch(List<Map<String, dynamic>> domains) {
+    return _runMutation(() async {
+      await _service.addDomains(
+        websiteId: websiteId,
+        domains: domains,
+      );
+    });
+  }
+
   Future<void> updateDomain({
     required int id,
     String? domain,
