@@ -50,7 +50,7 @@ class _FileEditorPageState extends State<FileEditorPage> {
   Future<void> _initService() async {
     _service = FilesService();
     await _service!.getCurrentServer();
-    
+
     if (widget.initialContent != null) {
       _originalContent = widget.initialContent!;
       _controller.text = _originalContent;
@@ -79,7 +79,8 @@ class _FileEditorPageState extends State<FileEditorPage> {
   }
 
   Future<void> _loadContent() async {
-    appLogger.dWithPackage('file_editor', '_loadContent: path=${widget.filePath}');
+    appLogger.dWithPackage(
+        'file_editor', '_loadContent: path=${widget.filePath}');
     setState(() {
       _isLoading = true;
       _error = null;
@@ -90,8 +91,10 @@ class _FileEditorPageState extends State<FileEditorPage> {
         _service = FilesService();
         await _service!.getCurrentServer();
       }
-      final content = await _service!.readFile(widget.filePath, encoding: _encoding);
-      appLogger.iWithPackage('file_editor', '_loadContent: 成功加载, 长度=${content.length}');
+      final content =
+          await _service!.readFile(widget.filePath, encoding: _encoding);
+      appLogger.iWithPackage(
+          'file_editor', '_loadContent: 成功加载, 长度=${content.length}');
       if (mounted) {
         _originalContent = content;
         _controller.text = _originalContent;
@@ -101,7 +104,8 @@ class _FileEditorPageState extends State<FileEditorPage> {
         });
       }
     } catch (e, stackTrace) {
-      appLogger.eWithPackage('file_editor', '_loadContent: 加载失败', error: e, stackTrace: stackTrace);
+      appLogger.eWithPackage('file_editor', '_loadContent: 加载失败',
+          error: e, stackTrace: stackTrace);
       if (mounted) {
         setState(() {
           _error = e.toString();
@@ -114,7 +118,8 @@ class _FileEditorPageState extends State<FileEditorPage> {
   Future<void> _saveContent() async {
     if (_isSaving) return;
 
-    appLogger.dWithPackage('file_editor', '_saveContent: path=${widget.filePath}');
+    appLogger.dWithPackage(
+        'file_editor', '_saveContent: path=${widget.filePath}');
     setState(() {
       _isSaving = true;
     });
@@ -124,7 +129,8 @@ class _FileEditorPageState extends State<FileEditorPage> {
         _service = FilesService();
         await _service!.getCurrentServer();
       }
-      await _service!.saveFile(widget.filePath, _controller.text, encoding: _encoding);
+      await _service!
+          .saveFile(widget.filePath, _controller.text, encoding: _encoding);
       appLogger.iWithPackage('file_editor', '_saveContent: 保存成功');
       if (mounted) {
         setState(() {
@@ -140,12 +146,14 @@ class _FileEditorPageState extends State<FileEditorPage> {
         );
       }
     } catch (e, stackTrace) {
-      appLogger.eWithPackage('file_editor', '_saveContent: 保存失败', error: e, stackTrace: stackTrace);
+      appLogger.eWithPackage('file_editor', '_saveContent: 保存失败',
+          error: e, stackTrace: stackTrace);
       if (mounted) {
         setState(() {
           _isSaving = false;
         });
-        DebugErrorDialog.show(context, context.l10n.commonSaveFailed, e, stackTrace: stackTrace);
+        DebugErrorDialog.show(context, context.l10n.commonSaveFailed, e,
+            stackTrace: stackTrace);
       }
     }
   }
@@ -279,7 +287,8 @@ class _FileEditorPageState extends State<FileEditorPage> {
             const SizedBox(height: 16),
             Text(l10n.filesPreviewError, style: theme.textTheme.titleMedium),
             const SizedBox(height: 8),
-            Text(_error!, style: theme.textTheme.bodySmall, textAlign: TextAlign.center),
+            Text(_error!,
+                style: theme.textTheme.bodySmall, textAlign: TextAlign.center),
             const SizedBox(height: 16),
             FilledButton.icon(
               onPressed: _loadContent,

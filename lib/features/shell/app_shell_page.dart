@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/apps/apps_page.dart';
+import 'package:onepanel_client/features/ai/ai_page.dart';
+import 'package:onepanel_client/features/ai/ai_provider.dart';
 import 'package:onepanel_client/features/containers/containers_page.dart';
 import 'package:onepanel_client/features/files/files_page.dart';
 import 'package:onepanel_client/features/security/security_verification_page.dart';
@@ -227,6 +229,17 @@ class _AppShellPageState extends State<AppShellPage> {
           key: ValueKey('websites:$serverId'),
           child: const WebsitesPage(),
         );
+      case ClientModule.ai:
+        if (serverId == null) {
+          return NoServerSelectedState(moduleName: context.l10n.serverModuleAi);
+        }
+        return KeyedSubtree(
+          key: ValueKey('ai:$serverId'),
+          child: ChangeNotifierProvider(
+            create: (_) => AIProvider(),
+            child: const AIPage(),
+          ),
+        );
       case ClientModule.verification:
         if (serverId == null) {
           return NoServerSelectedState(
@@ -269,6 +282,10 @@ class _AppShellPageState extends State<AppShellPage> {
     final Widget? page = switch (module) {
       ClientModule.apps => const AppsPage(),
       ClientModule.websites => const WebsitesPage(),
+      ClientModule.ai => ChangeNotifierProvider(
+          create: (_) => AIProvider(),
+          child: const AIPage(),
+        ),
       ClientModule.verification => const SecurityVerificationPage(),
       _ => null,
     };

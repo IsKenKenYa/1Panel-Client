@@ -35,26 +35,57 @@ class WebsiteDomainProvider extends ChangeNotifier {
     required String domain,
     required int port,
     bool ssl = false,
-  }) async {
-    await _service.addDomain(
-      websiteId: websiteId,
-      domain: domain,
-      port: port,
-      ssl: ssl,
-    );
-    await loadDomains();
+  }) {
+    return _runMutation(() async {
+      await _service.addDomain(
+        websiteId: websiteId,
+        domain: domain,
+        port: port,
+        ssl: ssl,
+      );
+    });
+  }
+
+  Future<void> updateDomain({
+    required int id,
+    String? domain,
+    int? port,
+    bool? ssl,
+  }) {
+    return _runMutation(() async {
+      await _service.updateDomain(
+        id: id,
+        domain: domain,
+        port: port,
+        ssl: ssl,
+      );
+    });
   }
 
   Future<void> updateDomainSsl({
     required int id,
     required bool ssl,
-  }) async {
-    await _service.updateDomainSsl(id: id, ssl: ssl);
-    await loadDomains();
+  }) {
+    return _runMutation(() async {
+      await _service.updateDomainSsl(id: id, ssl: ssl);
+    });
   }
 
-  Future<void> deleteDomain(int id) async {
-    await _service.deleteDomain(id);
-    await loadDomains();
+  Future<void> deleteDomain(int id) {
+    return _runMutation(() async {
+      await _service.deleteDomain(id);
+    });
+  }
+
+  Future<void> _runMutation(Future<void> Function() action) async {
+    error = null;
+    notifyListeners();
+    try {
+      await action();
+      await loadDomains();
+    } catch (e) {
+      error = e.toString();
+      notifyListeners();
+    }
   }
 }

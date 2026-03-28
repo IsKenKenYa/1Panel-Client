@@ -135,15 +135,21 @@ class DatabaseSearch extends Equatable {
   final String? info;
   final String? name;
   final String? type;
+  final String? database;
   final int page;
   final int pageSize;
+  final String orderBy;
+  final String order;
 
   const DatabaseSearch({
     this.info,
     this.name,
     this.type,
+    this.database,
     this.page = 1,
     this.pageSize = 20,
+    this.orderBy = 'createdAt',
+    this.order = 'descending',
   });
 
   factory DatabaseSearch.fromJson(Map<String, dynamic> json) {
@@ -151,8 +157,11 @@ class DatabaseSearch extends Equatable {
       info: json['info'] as String?,
       name: json['name'] as String?,
       type: json['type'] as String?,
+      database: json['database'] as String?,
       page: json['page'] as int? ?? 1,
       pageSize: json['pageSize'] as int? ?? 20,
+      orderBy: json['orderBy'] as String? ?? 'createdAt',
+      order: json['order'] as String? ?? 'descending',
     );
   }
 
@@ -161,13 +170,17 @@ class DatabaseSearch extends Equatable {
       'info': info,
       'name': name,
       'type': type,
+      'database': database,
       'page': page,
       'pageSize': pageSize,
+      'orderBy': orderBy,
+      'order': order,
     };
   }
 
   @override
-  List<Object?> get props => [info, name, type, page, pageSize];
+  List<Object?> get props =>
+      [info, name, type, database, page, pageSize, orderBy, order];
 }
 
 /// 数据库信息模型
@@ -496,4 +509,253 @@ enum DatabaseStatus {
       orElse: () => DatabaseStatus.stopped,
     );
   }
+}
+
+enum DatabaseScope {
+  mysql('mysql'),
+  postgresql('postgresql'),
+  redis('redis'),
+  remote('remote');
+
+  const DatabaseScope(this.value);
+  final String value;
+}
+
+class DatabaseListItem extends Equatable {
+  const DatabaseListItem({
+    required this.scope,
+    required this.name,
+    required this.engine,
+    required this.source,
+    this.id,
+    this.database,
+    this.version,
+    this.username,
+    this.description,
+    this.status,
+    this.address,
+    this.port,
+    this.raw = const <String, dynamic>{},
+  });
+
+  final DatabaseScope scope;
+  final int? id;
+  final String name;
+  final String engine;
+  final String source;
+  final String? database;
+  final String? version;
+  final String? username;
+  final String? description;
+  final String? status;
+  final String? address;
+  final int? port;
+  final Map<String, dynamic> raw;
+
+  bool get isRemote => source == 'remote' || scope == DatabaseScope.remote;
+
+  String get lookupName => database ?? name;
+
+  factory DatabaseListItem.fromMysqlJson(Map<String, dynamic> json) {
+    return DatabaseListItem(
+      scope: DatabaseScope.mysql,
+      id: json['id'] as int?,
+      name: json['name'] as String? ?? '',
+      engine: json['mysqlName'] as String? ?? 'mysql',
+      source: json['from'] as String? ?? 'local',
+      database: json['database'] as String? ?? json['mysqlName'] as String?,
+      version: json['version'] as String?,
+      username: json['username'] as String?,
+      description: json['description'] as String?,
+      raw: Map<String, dynamic>.from(json),
+    );
+  }
+
+  factory DatabaseListItem.fromPostgresqlJson(Map<String, dynamic> json) {
+    return DatabaseListItem(
+      scope: DatabaseScope.postgresql,
+      id: json['id'] as int?,
+      name: json['name'] as String? ?? '',
+      engine: json['postgresqlName'] as String? ?? 'postgresql',
+      source: json['from'] as String? ?? 'local',
+      database:
+          json['database'] as String? ?? json['postgresqlName'] as String?,
+      version: json['version'] as String?,
+      username: json['username'] as String?,
+      description: json['description'] as String?,
+      raw: Map<String, dynamic>.from(json),
+    );
+  }
+
+  factory DatabaseListItem.fromRemoteInfo(DatabaseInfo info) {
+    return DatabaseListItem(
+      scope: DatabaseScope.remote,
+      id: info.id,
+      name: info.name,
+      engine: info.type,
+      source: 'remote',
+      database: info.name,
+      version: info.version,
+      username: info.username,
+      description: info.description ?? info.remark,
+      status: info.status,
+      address: info.host,
+      port: info.port,
+      raw: info.toJson(),
+    );
+  }
+
+  factory DatabaseListItem.fromDatabaseOption(
+    Map<String, dynamic> json,
+    DatabaseScope scope,
+  ) {
+    return DatabaseListItem(
+      scope: scope,
+      id: json['id'] as int?,
+      name: json['database'] as String? ?? json['name'] as String? ?? '',
+      engine: json['type'] as String? ?? scope.value,
+      source: json['from'] as String? ?? 'local',
+      database: json['database'] as String? ?? json['name'] as String?,
+      version: json['version'] as String?,
+      address: json['address'] as String?,
+      raw: Map<String, dynamic>.from(json),
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+        scope,
+        id,
+        name,
+        engine,
+        source,
+        database,
+        version,
+        username,
+        description,
+        status,
+        address,
+        port,
+      ];
+}
+
+class DatabaseBaseInfo extends Equatable {
+  const DatabaseBaseInfo({
+    this.name,
+    this.port,
+    this.password,
+    this.remoteConn,
+    this.mysqlKey,
+    this.containerName,
+    this.raw = const <String, dynamic>{},
+  });
+
+  final String? name;
+  final int? port;
+  final String? password;
+  final bool? remoteConn;
+  final String? mysqlKey;
+  final String? containerName;
+  final Map<String, dynamic> raw;
+
+  factory DatabaseBaseInfo.fromJson(Map<String, dynamic> json) {
+    return DatabaseBaseInfo(
+      name: json['name'] as String?,
+      port: json['port'] as int?,
+      password: json['password'] as String?,
+      remoteConn: json['remoteConn'] as bool?,
+      mysqlKey: json['mysqlKey'] as String?,
+      containerName: json['containerName'] as String?,
+      raw: Map<String, dynamic>.from(json),
+    );
+  }
+
+  @override
+  List<Object?> get props =>
+      [name, port, password, remoteConn, mysqlKey, containerName];
+}
+
+class DatabaseDetailData extends Equatable {
+  const DatabaseDetailData({
+    required this.item,
+    this.baseInfo,
+    this.status,
+    this.variables,
+    this.redisConfig,
+    this.redisPersistence,
+    this.remoteAccess,
+    this.rawConfigFile,
+    this.formatOptions = const <Map<String, dynamic>>[],
+  });
+
+  final DatabaseListItem item;
+  final DatabaseBaseInfo? baseInfo;
+  final Map<String, dynamic>? status;
+  final Map<String, dynamic>? variables;
+  final Map<String, dynamic>? redisConfig;
+  final Map<String, dynamic>? redisPersistence;
+  final bool? remoteAccess;
+  final String? rawConfigFile;
+  final List<Map<String, dynamic>> formatOptions;
+
+  @override
+  List<Object?> get props => [
+        item,
+        baseInfo,
+        status,
+        variables,
+        redisConfig,
+        redisPersistence,
+        remoteAccess,
+        rawConfigFile,
+        formatOptions,
+      ];
+}
+
+class DatabaseFormInput extends Equatable {
+  const DatabaseFormInput({
+    required this.scope,
+    required this.name,
+    required this.engine,
+    required this.source,
+    this.id,
+    this.address,
+    this.port,
+    this.username,
+    this.password,
+    this.description,
+    this.format,
+    this.timeout,
+  });
+
+  final DatabaseScope scope;
+  final int? id;
+  final String name;
+  final String engine;
+  final String source;
+  final String? address;
+  final int? port;
+  final String? username;
+  final String? password;
+  final String? description;
+  final String? format;
+  final int? timeout;
+
+  bool get isRemote => source == 'remote' || scope == DatabaseScope.remote;
+
+  @override
+  List<Object?> get props => [
+        scope,
+        id,
+        name,
+        engine,
+        source,
+        address,
+        port,
+        username,
+        password,
+        description,
+        format,
+        timeout,
+      ];
 }

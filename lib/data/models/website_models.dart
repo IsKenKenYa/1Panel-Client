@@ -183,6 +183,57 @@ class WebsiteCreate extends Equatable {
       ];
 }
 
+class WebsiteUpdate extends Equatable {
+  const WebsiteUpdate({
+    required this.id,
+    required this.primaryDomain,
+    required this.remark,
+    required this.webSiteGroupId,
+    required this.ipv6,
+    required this.favorite,
+  });
+
+  final int id;
+  final String primaryDomain;
+  final String remark;
+  final int webSiteGroupId;
+  final bool ipv6;
+  final bool favorite;
+
+  factory WebsiteUpdate.fromJson(Map<String, dynamic> json) {
+    return WebsiteUpdate(
+      id: json['id'] as int? ?? 0,
+      primaryDomain: json['primaryDomain'] as String? ?? '',
+      remark: json['remark'] as String? ?? '',
+      webSiteGroupId:
+          json['webSiteGroupId'] as int? ?? json['webSiteGroupID'] as int? ?? 0,
+      ipv6: json['IPV6'] as bool? ?? json['ipv6'] as bool? ?? false,
+      favorite: json['favorite'] as bool? ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'primaryDomain': primaryDomain,
+      'remark': remark,
+      'webSiteGroupId': webSiteGroupId,
+      'IPV6': ipv6,
+      'favorite': favorite,
+    };
+  }
+
+  @override
+  List<Object?> get props => [
+        id,
+        primaryDomain,
+        remark,
+        webSiteGroupId,
+        ipv6,
+        favorite,
+      ];
+}
+
 /// Website information model
 class WebsiteInfo extends Equatable {
   final int? id;

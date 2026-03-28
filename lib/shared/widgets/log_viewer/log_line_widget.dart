@@ -45,11 +45,12 @@ class LogLineWidget extends StatelessWidget {
         } else {
           content = '';
         }
-      } else if (settings.timestampFormat == LogTimestampFormat.relative && firstLogTimestamp != null) {
+      } else if (settings.timestampFormat == LogTimestampFormat.relative &&
+          firstLogTimestamp != null) {
         final duration = line.timestamp!.difference(firstLogTimestamp!);
         final relativeTime = _formatDuration(duration);
-        final message = line.timestampEndIndex! < content.length 
-            ? content.substring(line.timestampEndIndex!).trimLeft() 
+        final message = line.timestampEndIndex! < content.length
+            ? content.substring(line.timestampEndIndex!).trimLeft()
             : '';
         content = '$relativeTime $message';
       }
@@ -60,7 +61,9 @@ class LogLineWidget extends StatelessWidget {
     final richText = RichText(
       text: TextSpan(children: spans),
       softWrap: settings.viewMode == LogViewMode.wrap,
-      overflow: settings.viewMode == LogViewMode.wrap ? TextOverflow.visible : TextOverflow.clip,
+      overflow: settings.viewMode == LogViewMode.wrap
+          ? TextOverflow.visible
+          : TextOverflow.clip,
     );
 
     if (settings.viewMode == LogViewMode.wrap) {
@@ -87,7 +90,8 @@ class LogLineWidget extends StatelessWidget {
     return '+${minutes}m${seconds}s.${millis}ms';
   }
 
-  List<InlineSpan> _buildContentSpans(String text, TextStyle baseStyle, ColorScheme scheme) {
+  List<InlineSpan> _buildContentSpans(
+      String text, TextStyle baseStyle, ColorScheme scheme) {
     // 1. Identify all ranges that need styling
     final ranges = <_StyleRange>[];
 
@@ -133,7 +137,7 @@ class LogLineWidget extends StatelessWidget {
 
     // A simple way to handle overlaps is to use a "mask" array, but for text it's better to iterate.
     // Let's use a "stack" approach or just split by boundaries.
-    
+
     // Collect all boundaries
     final boundaries = <int>{0, text.length};
     for (final range in ranges) {
@@ -144,7 +148,7 @@ class LogLineWidget extends StatelessWidget {
 
     for (int i = 0; i < sortedBoundaries.length - 1; i++) {
       final start = sortedBoundaries[i];
-      final end = sortedBoundaries[i+1];
+      final end = sortedBoundaries[i + 1];
       if (start >= end) continue;
 
       // Find the highest priority rule that covers this segment
@@ -166,10 +170,12 @@ class LogLineWidget extends StatelessWidget {
     return spans;
   }
 
-  TextStyle _getRuleStyle(TextStyle base, LogHighlightRule rule, ColorScheme scheme) {
+  TextStyle _getRuleStyle(
+      TextStyle base, LogHighlightRule rule, ColorScheme scheme) {
     return base.copyWith(
       color: _resolveColor(rule.color, rule.colorName, scheme),
-      backgroundColor: _resolveColor(rule.backgroundColor, rule.backgroundColorName, scheme),
+      backgroundColor:
+          _resolveColor(rule.backgroundColor, rule.backgroundColorName, scheme),
       fontWeight: rule.isBold ? FontWeight.bold : null,
       fontStyle: rule.isItalic ? FontStyle.italic : null,
       decoration: rule.isUnderline ? TextDecoration.underline : null,
@@ -179,42 +185,73 @@ class LogLineWidget extends StatelessWidget {
   Color? _resolveColor(Color? color, String? colorName, ColorScheme scheme) {
     if (colorName != null) {
       switch (colorName) {
-        case 'primary': return scheme.primary;
-        case 'onPrimary': return scheme.onPrimary;
-        case 'primaryContainer': return scheme.primaryContainer;
-        case 'onPrimaryContainer': return scheme.onPrimaryContainer;
-        case 'secondary': return scheme.secondary;
-        case 'onSecondary': return scheme.onSecondary;
-        case 'secondaryContainer': return scheme.secondaryContainer;
-        case 'onSecondaryContainer': return scheme.onSecondaryContainer;
-        case 'tertiary': return scheme.tertiary;
-        case 'onTertiary': return scheme.onTertiary;
-        case 'tertiaryContainer': return scheme.tertiaryContainer;
-        case 'onTertiaryContainer': return scheme.onTertiaryContainer;
-        case 'error': return scheme.error;
-        case 'onError': return scheme.onError;
-        case 'errorContainer': return scheme.errorContainer;
-        case 'onErrorContainer': return scheme.onErrorContainer;
-        case 'background': return scheme.surface; // Material 3 uses surface
-        case 'onBackground': return scheme.onSurface;
-        case 'surface': return scheme.surface;
-        case 'onSurface': return scheme.onSurface;
-        case 'surfaceVariant': return scheme.surfaceContainerHighest;
-        case 'onSurfaceVariant': return scheme.onSurfaceVariant;
-        case 'outline': return scheme.outline;
-        case 'outlineVariant': return scheme.outlineVariant;
-        case 'shadow': return scheme.shadow;
-        case 'scrim': return scheme.scrim;
-        case 'inverseSurface': return scheme.inverseSurface;
-        case 'onInverseSurface': return scheme.onInverseSurface;
-        case 'inversePrimary': return scheme.inversePrimary;
-        case 'surfaceTint': return scheme.surfaceTint;
+        case 'primary':
+          return scheme.primary;
+        case 'onPrimary':
+          return scheme.onPrimary;
+        case 'primaryContainer':
+          return scheme.primaryContainer;
+        case 'onPrimaryContainer':
+          return scheme.onPrimaryContainer;
+        case 'secondary':
+          return scheme.secondary;
+        case 'onSecondary':
+          return scheme.onSecondary;
+        case 'secondaryContainer':
+          return scheme.secondaryContainer;
+        case 'onSecondaryContainer':
+          return scheme.onSecondaryContainer;
+        case 'tertiary':
+          return scheme.tertiary;
+        case 'onTertiary':
+          return scheme.onTertiary;
+        case 'tertiaryContainer':
+          return scheme.tertiaryContainer;
+        case 'onTertiaryContainer':
+          return scheme.onTertiaryContainer;
+        case 'error':
+          return scheme.error;
+        case 'onError':
+          return scheme.onError;
+        case 'errorContainer':
+          return scheme.errorContainer;
+        case 'onErrorContainer':
+          return scheme.onErrorContainer;
+        case 'background':
+          return scheme.surface; // Material 3 uses surface
+        case 'onBackground':
+          return scheme.onSurface;
+        case 'surface':
+          return scheme.surface;
+        case 'onSurface':
+          return scheme.onSurface;
+        case 'surfaceVariant':
+          return scheme.surfaceContainerHighest;
+        case 'onSurfaceVariant':
+          return scheme.onSurfaceVariant;
+        case 'outline':
+          return scheme.outline;
+        case 'outlineVariant':
+          return scheme.outlineVariant;
+        case 'shadow':
+          return scheme.shadow;
+        case 'scrim':
+          return scheme.scrim;
+        case 'inverseSurface':
+          return scheme.inverseSurface;
+        case 'onInverseSurface':
+          return scheme.onInverseSurface;
+        case 'inversePrimary':
+          return scheme.inversePrimary;
+        case 'surfaceTint':
+          return scheme.surfaceTint;
       }
     }
     return color;
   }
 
-  List<({int start, int end})> _findMatches(String text, LogHighlightRule rule) {
+  List<({int start, int end})> _findMatches(
+      String text, LogHighlightRule rule) {
     final matches = <({int start, int end})>[];
     if (rule.type == HighlightType.regex) {
       try {
@@ -226,7 +263,8 @@ class LogLineWidget extends StatelessWidget {
         // Ignore invalid regex
       }
     } else {
-      final pattern = rule.caseSensitive ? rule.pattern : rule.pattern.toLowerCase();
+      final pattern =
+          rule.caseSensitive ? rule.pattern : rule.pattern.toLowerCase();
       final target = rule.caseSensitive ? text : text.toLowerCase();
       int start = 0;
       while (true) {

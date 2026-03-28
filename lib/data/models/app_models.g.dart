@@ -298,7 +298,7 @@ AppInstalledIgnoreUpgradeRequest _$AppInstalledIgnoreUpgradeRequestFromJson(
     AppInstalledIgnoreUpgradeRequest(
       appInstallId: (json['appInstallId'] as num).toInt(),
       reason: json['reason'] as String,
-      scope: json['scope'] as String? ?? 'project',
+      scope: json['scope'] as String? ?? AppIgnoreUpgradeScope.version,
     );
 
 Map<String, dynamic> _$AppInstalledIgnoreUpgradeRequestToJson(
@@ -387,36 +387,6 @@ Map<String, dynamic> _$AppServiceResponseToJson(AppServiceResponse instance) =>
       'label': instance.label,
       'status': instance.status,
       'value': instance.value,
-    };
-
-AppstoreConfigResponse _$AppstoreConfigResponseFromJson(
-        Map<String, dynamic> json) =>
-    AppstoreConfigResponse(
-      uninstallDeleteBackup: json['uninstallDeleteBackup'] as String?,
-      uninstallDeleteImage: json['uninstallDeleteImage'] as String?,
-      upgradeBackup: json['upgradeBackup'] as String?,
-    );
-
-Map<String, dynamic> _$AppstoreConfigResponseToJson(
-        AppstoreConfigResponse instance) =>
-    <String, dynamic>{
-      'uninstallDeleteBackup': instance.uninstallDeleteBackup,
-      'uninstallDeleteImage': instance.uninstallDeleteImage,
-      'upgradeBackup': instance.upgradeBackup,
-    };
-
-AppstoreUpdateRequest _$AppstoreUpdateRequestFromJson(
-        Map<String, dynamic> json) =>
-    AppstoreUpdateRequest(
-      scope: json['scope'] as String? ?? '',
-      status: json['status'] as String? ?? '',
-    );
-
-Map<String, dynamic> _$AppstoreUpdateRequestToJson(
-        AppstoreUpdateRequest instance) =>
-    <String, dynamic>{
-      'scope': instance.scope,
-      'status': instance.status,
     };
 
 AppListResponse _$AppListResponseFromJson(Map<String, dynamic> json) =>

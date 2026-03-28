@@ -25,6 +25,7 @@ import '../../api/v2/task_log_v2.dart';
 import '../../api/v2/terminal_v2.dart';
 import '../../api/v2/update_v2.dart';
 import '../../api/v2/website_v2.dart';
+import '../../api/v2/ai_v2.dart';
 import '../config/api_config.dart';
 import 'dio_client.dart';
 
@@ -144,6 +145,11 @@ class ApiClientManager {
 
   Future<WebsiteV2Api> getWebsiteApi() async =>
       WebsiteV2Api(await getCurrentClient());
+
+  Future<AIV2Api> getAiApi() async {
+    final client = await getCurrentClient();
+    return AIV2Api(client);
+  }
 
   void removeClient(String serverId) {
     _clients.remove(serverId);

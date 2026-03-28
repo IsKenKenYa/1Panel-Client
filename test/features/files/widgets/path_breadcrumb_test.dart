@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:onepanel_client/features/files/widgets/path_breadcrumb.dart';
+import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 
 void main() {
   group('PathBreadcrumb Widget Tests', () {
@@ -9,6 +11,13 @@ void main() {
       required void Function(String) onNavigate,
     }) {
       return MaterialApp(
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
@@ -31,7 +40,8 @@ void main() {
       expect(find.byIcon(Icons.home_outlined), findsOneWidget);
     });
 
-    testWidgets('renders single level path correctly', (WidgetTester tester) async {
+    testWidgets('renders single level path correctly',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(
         currentPath: '/home',
         onNavigate: (_) {},
@@ -41,7 +51,8 @@ void main() {
       expect(find.byIcon(Icons.chevron_right), findsOneWidget);
     });
 
-    testWidgets('renders multi-level path correctly', (WidgetTester tester) async {
+    testWidgets('renders multi-level path correctly',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(
         currentPath: '/home/user/documents',
         onNavigate: (_) {},
@@ -63,7 +74,8 @@ void main() {
       expect(find.text('user'), findsOneWidget);
     });
 
-    testWidgets('handles multiple consecutive slashes', (WidgetTester tester) async {
+    testWidgets('handles multiple consecutive slashes',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(
         currentPath: '//home///user//',
         onNavigate: (_) {},
@@ -73,7 +85,8 @@ void main() {
       expect(find.text('user'), findsOneWidget);
     });
 
-    testWidgets('triggers onNavigate with root path when home is tapped', (WidgetTester tester) async {
+    testWidgets('triggers onNavigate with root path when home is tapped',
+        (WidgetTester tester) async {
       String? navigatedPath;
       await tester.pumpWidget(createTestWidget(
         currentPath: '/home/user',
@@ -86,7 +99,8 @@ void main() {
       expect(navigatedPath, equals('/'));
     });
 
-    testWidgets('triggers onNavigate with correct path when segment is tapped', (WidgetTester tester) async {
+    testWidgets('triggers onNavigate with correct path when segment is tapped',
+        (WidgetTester tester) async {
       String? navigatedPath;
       await tester.pumpWidget(createTestWidget(
         currentPath: '/home/user/documents',
@@ -99,7 +113,9 @@ void main() {
       expect(navigatedPath, equals('/home/user'));
     });
 
-    testWidgets('triggers onNavigate with full path when last segment is tapped', (WidgetTester tester) async {
+    testWidgets(
+        'triggers onNavigate with full path when last segment is tapped',
+        (WidgetTester tester) async {
       String? navigatedPath;
       await tester.pumpWidget(createTestWidget(
         currentPath: '/home/user/documents',
@@ -121,7 +137,8 @@ void main() {
       expect(find.byType(SingleChildScrollView), findsOneWidget);
     });
 
-    testWidgets('applies correct styling from theme', (WidgetTester tester) async {
+    testWidgets('applies correct styling from theme',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(
         currentPath: '/home',
         onNavigate: (_) {},
@@ -131,7 +148,8 @@ void main() {
       expect(material.color, isNotNull);
     });
 
-    testWidgets('renders TextButton widgets for each segment', (WidgetTester tester) async {
+    testWidgets('renders TextButton widgets for each segment',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(
         currentPath: '/home/user/documents',
         onNavigate: (_) {},
@@ -149,7 +167,8 @@ void main() {
       expect(find.byIcon(Icons.home_outlined), findsOneWidget);
     });
 
-    testWidgets('handles paths with special characters', (WidgetTester tester) async {
+    testWidgets('handles paths with special characters',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(
         currentPath: '/home/my folder/documents',
         onNavigate: (_) {},

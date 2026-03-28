@@ -1,529 +1,388 @@
 import 'package:equatable/equatable.dart';
 
-/// Firewall rule model
-class FirewallRule extends Equatable {
-  final int? id;
-  final String? name;
-  final String? type;
-  final String? source;
-  final String? target;
-  final String? action;
-  final String? protocol;
-  final int? port;
-  final String? portRange;
-  final bool? enabled;
-  final String? description;
-  final String? createTime;
-  final String? updateTime;
+class FirewallBaseInfo extends Equatable {
+  const FirewallBaseInfo({
+    this.name = '',
+    this.isExist = false,
+    this.isActive = false,
+    this.isInit = false,
+    this.isBind = false,
+    this.version = '',
+    this.pingStatus = '',
+  });
 
+  final String name;
+  final bool isExist;
+  final bool isActive;
+  final bool isInit;
+  final bool isBind;
+  final String version;
+  final String pingStatus;
+
+  factory FirewallBaseInfo.fromJson(Map<String, dynamic> json) {
+    return FirewallBaseInfo(
+      name: json['name'] as String? ?? '',
+      isExist: json['isExist'] as bool? ?? false,
+      isActive: json['isActive'] as bool? ?? false,
+      isInit: json['isInit'] as bool? ?? false,
+      isBind: json['isBind'] as bool? ?? false,
+      version: json['version'] as String? ?? '',
+      pingStatus: json['pingStatus'] as String? ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'isExist': isExist,
+      'isActive': isActive,
+      'isInit': isInit,
+      'isBind': isBind,
+      'version': version,
+      'pingStatus': pingStatus,
+    };
+  }
+
+  @override
+  List<Object?> get props => [
+        name,
+        isExist,
+        isActive,
+        isInit,
+        isBind,
+        version,
+        pingStatus,
+      ];
+}
+
+class FirewallRule extends Equatable {
   const FirewallRule({
     this.id,
-    this.name,
-    this.type,
-    this.source,
-    this.target,
-    this.action,
-    this.protocol,
+    this.family,
+    this.address,
+    this.destination,
     this.port,
-    this.portRange,
-    this.enabled,
+    this.srcPort,
+    this.destPort,
+    this.protocol,
+    this.strategy,
+    this.usedStatus,
     this.description,
-    this.createTime,
-    this.updateTime,
   });
+
+  final int? id;
+  final String? family;
+  final String? address;
+  final String? destination;
+  final String? port;
+  final String? srcPort;
+  final String? destPort;
+  final String? protocol;
+  final String? strategy;
+  final String? usedStatus;
+  final String? description;
 
   factory FirewallRule.fromJson(Map<String, dynamic> json) {
     return FirewallRule(
       id: json['id'] as int?,
-      name: json['name'] as String?,
-      type: json['type'] as String?,
-      source: json['source'] as String?,
-      target: json['target'] as String?,
-      action: json['action'] as String?,
+      family: json['family'] as String?,
+      address: json['address'] as String?,
+      destination: json['destination'] as String?,
+      port: json['port']?.toString(),
+      srcPort: json['srcPort']?.toString(),
+      destPort: json['destPort']?.toString(),
       protocol: json['protocol'] as String?,
-      port: json['port'] as int?,
-      portRange: json['portRange'] as String?,
-      enabled: json['enabled'] as bool?,
-      description: json['description'] as String?,
-      createTime: json['createTime'] as String?,
-      updateTime: json['updateTime'] as String?,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'type': type,
-      'source': source,
-      'target': target,
-      'action': action,
-      'protocol': protocol,
-      'port': port,
-      'portRange': portRange,
-      'enabled': enabled,
-      'description': description,
-      'createTime': createTime,
-      'updateTime': updateTime,
-    };
-  }
-
-  @override
-  List<Object?> get props => [id, name, type, source, target, action, protocol, port, portRange, enabled, description, createTime, updateTime];
-}
-
-/// Firewall rule creation model
-class FirewallRuleCreate extends Equatable {
-  final String name;
-  final String type;
-  final String source;
-  final String? target;
-  final String action;
-  final String? protocol;
-  final int? port;
-  final String? portRange;
-  final bool? enabled;
-  final String? description;
-
-  const FirewallRuleCreate({
-    required this.name,
-    required this.type,
-    required this.source,
-    this.target,
-    required this.action,
-    this.protocol,
-    this.port,
-    this.portRange,
-    this.enabled,
-    this.description,
-  });
-
-  factory FirewallRuleCreate.fromJson(Map<String, dynamic> json) {
-    return FirewallRuleCreate(
-      name: json['name'] as String,
-      type: json['type'] as String,
-      source: json['source'] as String,
-      target: json['target'] as String?,
-      action: json['action'] as String,
-      protocol: json['protocol'] as String?,
-      port: json['port'] as int?,
-      portRange: json['portRange'] as String?,
-      enabled: json['enabled'] as bool?,
+      strategy: json['strategy'] as String?,
+      usedStatus: json['usedStatus'] as String?,
       description: json['description'] as String?,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'name': name,
-      'type': type,
-      'source': source,
-      'target': target,
-      'action': action,
-      'protocol': protocol,
-      'port': port,
-      'portRange': portRange,
-      'enabled': enabled,
-      'description': description,
+      if (id != null) 'id': id,
+      if (family != null) 'family': family,
+      if (address != null) 'address': address,
+      if (destination != null) 'destination': destination,
+      if (port != null) 'port': port,
+      if (srcPort != null) 'srcPort': srcPort,
+      if (destPort != null) 'destPort': destPort,
+      if (protocol != null) 'protocol': protocol,
+      if (strategy != null) 'strategy': strategy,
+      if (usedStatus != null) 'usedStatus': usedStatus,
+      if (description != null) 'description': description,
     };
   }
 
   @override
-  List<Object?> get props => [name, type, source, target, action, protocol, port, portRange, enabled, description];
+  List<Object?> get props => [
+        id,
+        family,
+        address,
+        destination,
+        port,
+        srcPort,
+        destPort,
+        protocol,
+        strategy,
+        usedStatus,
+        description,
+      ];
 }
 
-/// Firewall rule update model
-class FirewallRuleUpdate extends Equatable {
-  final int id;
-  final String? name;
-  final String? type;
-  final String? source;
-  final String? target;
-  final String? action;
-  final String? protocol;
-  final int? port;
-  final String? portRange;
-  final bool? enabled;
-  final String? description;
-
-  const FirewallRuleUpdate({
-    required this.id,
-    this.name,
-    this.type,
-    this.source,
-    this.target,
-    this.action,
-    this.protocol,
-    this.port,
-    this.portRange,
-    this.enabled,
-    this.description,
-  });
-
-  factory FirewallRuleUpdate.fromJson(Map<String, dynamic> json) {
-    return FirewallRuleUpdate(
-      id: json['id'] as int,
-      name: json['name'] as String?,
-      type: json['type'] as String?,
-      source: json['source'] as String?,
-      target: json['target'] as String?,
-      action: json['action'] as String?,
-      protocol: json['protocol'] as String?,
-      port: json['port'] as int?,
-      portRange: json['portRange'] as String?,
-      enabled: json['enabled'] as bool?,
-      description: json['description'] as String?,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'type': type,
-      'source': source,
-      'target': target,
-      'action': action,
-      'protocol': protocol,
-      'port': port,
-      'portRange': portRange,
-      'enabled': enabled,
-      'description': description,
-    };
-  }
-
-  @override
-  List<Object?> get props => [id, name, type, source, target, action, protocol, port, portRange, enabled, description];
-}
-
-/// Firewall rule search model
 class FirewallRuleSearch extends Equatable {
+  const FirewallRuleSearch({
+    this.page = 1,
+    this.pageSize = 20,
+    this.type,
+    this.strategy,
+    this.info,
+  });
+
   final int page;
   final int pageSize;
-  final String? search;
   final String? type;
-  final bool? enabled;
-
-  const FirewallRuleSearch({
-    required this.page,
-    required this.pageSize,
-    this.search,
-    this.type,
-    this.enabled,
-  });
+  final String? strategy;
+  final String? info;
 
   factory FirewallRuleSearch.fromJson(Map<String, dynamic> json) {
     return FirewallRuleSearch(
-      page: json['page'] as int,
-      pageSize: json['pageSize'] as int,
-      search: json['search'] as String?,
+      page: json['page'] as int? ?? 1,
+      pageSize: json['pageSize'] as int? ?? 20,
       type: json['type'] as String?,
-      enabled: json['enabled'] as bool?,
+      strategy: json['strategy'] as String?,
+      info: json['info'] as String?,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {
+    final result = <String, dynamic>{
       'page': page,
       'pageSize': pageSize,
-      'search': search,
-      'type': type,
-      'enabled': enabled,
     };
+    if (type != null && type!.isNotEmpty) {
+      result['type'] = type;
+    }
+    if (strategy != null && strategy!.isNotEmpty) {
+      result['strategy'] = strategy;
+    }
+    if (info != null && info!.isNotEmpty) {
+      result['info'] = info;
+    }
+    return result;
   }
 
   @override
-  List<Object?> get props => [page, pageSize, search, type, enabled];
+  List<Object?> get props => [page, pageSize, type, strategy, info];
 }
 
-/// Firewall port model
-class FirewallPort extends Equatable {
-  final int? id;
-  final int? port;
-  final String? protocol;
-  final String? strategy;
-  final String? source;
-  final bool? enabled;
-  final String? description;
-  final String? createTime;
-
-  const FirewallPort({
-    this.id,
-    this.port,
-    this.protocol,
-    this.strategy,
-    this.source,
-    this.enabled,
-    this.description,
-    this.createTime,
+class FirewallOperation extends Equatable {
+  const FirewallOperation({
+    required this.operation,
+    this.withDockerRestart = false,
   });
 
-  factory FirewallPort.fromJson(Map<String, dynamic> json) {
-    return FirewallPort(
-      id: json['id'] as int?,
-      port: json['port'] as int?,
-      protocol: json['protocol'] as String?,
-      strategy: json['strategy'] as String?,
-      source: json['source'] as String?,
-      enabled: json['enabled'] as bool?,
-      description: json['description'] as String?,
-      createTime: json['createTime'] as String?,
-    );
-  }
+  final String operation;
+  final bool withDockerRestart;
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'port': port,
-      'protocol': protocol,
-      'strategy': strategy,
-      'source': source,
-      'enabled': enabled,
-      'description': description,
-      'createTime': createTime,
+      'operation': operation,
+      'withDockerRestart': withDockerRestart,
     };
   }
 
   @override
-  List<Object?> get props => [id, port, protocol, strategy, source, enabled, description, createTime];
+  List<Object?> get props => [operation, withDockerRestart];
 }
 
-/// Firewall port creation model
-class FirewallPortCreate extends Equatable {
-  final int port;
-  final String protocol;
-  final String strategy;
-  final String? source;
-  final bool? enabled;
-  final String? description;
+enum FirewallRuleKind {
+  rule('rule'),
+  ip('address'),
+  port('port');
 
-  const FirewallPortCreate({
+  const FirewallRuleKind(this.value);
+  final String value;
+}
+
+class FirewallPortRulePayload extends Equatable {
+  const FirewallPortRulePayload({
+    required this.operation,
+    required this.address,
     required this.port,
+    required this.source,
     required this.protocol,
     required this.strategy,
-    this.source,
-    this.enabled,
     this.description,
+    this.chain,
   });
 
-  factory FirewallPortCreate.fromJson(Map<String, dynamic> json) {
-    return FirewallPortCreate(
-      port: json['port'] as int,
-      protocol: json['protocol'] as String,
-      strategy: json['strategy'] as String,
-      source: json['source'] as String?,
-      enabled: json['enabled'] as bool?,
-      description: json['description'] as String?,
-    );
-  }
+  final String operation;
+  final String address;
+  final String port;
+  final String source;
+  final String protocol;
+  final String strategy;
+  final String? description;
+  final String? chain;
 
   Map<String, dynamic> toJson() {
     return {
+      'operation': operation,
+      'address': address,
       'port': port,
+      'source': source,
       'protocol': protocol,
       'strategy': strategy,
-      'source': source,
-      'enabled': enabled,
+      if (description != null) 'description': description,
+      if (chain != null) 'chain': chain,
+    };
+  }
+
+  @override
+  List<Object?> get props => [
+        operation,
+        address,
+        port,
+        source,
+        protocol,
+        strategy,
+        description,
+        chain,
+      ];
+}
+
+class FirewallIpRulePayload extends Equatable {
+  const FirewallIpRulePayload({
+    required this.operation,
+    required this.address,
+    required this.strategy,
+    this.description,
+  });
+
+  final String operation;
+  final String address;
+  final String strategy;
+  final String? description;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'operation': operation,
+      'address': address,
+      'strategy': strategy,
+      if (description != null) 'description': description,
+    };
+  }
+
+  @override
+  List<Object?> get props => [operation, address, strategy, description];
+}
+
+class FirewallUpdatePortRequest extends Equatable {
+  const FirewallUpdatePortRequest({
+    required this.oldRule,
+    required this.newRule,
+  });
+
+  final FirewallPortRulePayload oldRule;
+  final FirewallPortRulePayload newRule;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'oldRule': oldRule.toJson(),
+      'newRule': newRule.toJson(),
+    };
+  }
+
+  @override
+  List<Object?> get props => [oldRule, newRule];
+}
+
+class FirewallUpdateIpRequest extends Equatable {
+  const FirewallUpdateIpRequest({
+    required this.oldRule,
+    required this.newRule,
+  });
+
+  final FirewallIpRulePayload oldRule;
+  final FirewallIpRulePayload newRule;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'oldRule': oldRule.toJson(),
+      'newRule': newRule.toJson(),
+    };
+  }
+
+  @override
+  List<Object?> get props => [oldRule, newRule];
+}
+
+class FirewallDescriptionUpdate extends Equatable {
+  const FirewallDescriptionUpdate({
+    required this.type,
+    required this.description,
+    this.chain = '',
+    this.srcIP = '',
+    this.dstIP = '',
+    this.srcPort = '',
+    this.dstPort = '',
+    this.protocol = '',
+    this.strategy = '',
+  });
+
+  final String type;
+  final String description;
+  final String chain;
+  final String srcIP;
+  final String dstIP;
+  final String srcPort;
+  final String dstPort;
+  final String protocol;
+  final String strategy;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'type': type,
+      'chain': chain,
+      'srcIP': srcIP,
+      'dstIP': dstIP,
+      'srcPort': srcPort,
+      'dstPort': dstPort,
+      'protocol': protocol,
+      'strategy': strategy,
       'description': description,
     };
   }
 
   @override
-  List<Object?> get props => [port, protocol, strategy, source, enabled, description];
+  List<Object?> get props => [
+        type,
+        description,
+        chain,
+        srcIP,
+        dstIP,
+        srcPort,
+        dstPort,
+        protocol,
+        strategy,
+      ];
 }
 
-/// Firewall port search model
-class FirewallPortSearch extends Equatable {
-  final int page;
-  final int pageSize;
-  final String? search;
-  final String? protocol;
-  final String? strategy;
-  final bool? enabled;
-
-  const FirewallPortSearch({
-    required this.page,
-    required this.pageSize,
-    this.search,
-    this.protocol,
-    this.strategy,
-    this.enabled,
+class FirewallBatchRuleRequest extends Equatable {
+  const FirewallBatchRuleRequest({
+    required this.type,
+    required this.rules,
   });
 
-  factory FirewallPortSearch.fromJson(Map<String, dynamic> json) {
-    return FirewallPortSearch(
-      page: json['page'] as int,
-      pageSize: json['pageSize'] as int,
-      search: json['search'] as String?,
-      protocol: json['protocol'] as String?,
-      strategy: json['strategy'] as String?,
-      enabled: json['enabled'] as bool?,
-    );
-  }
+  final String type;
+  final List<Map<String, dynamic>> rules;
 
-  Map<String, dynamic> toJson() {
-    return {
-      'page': page,
-      'pageSize': pageSize,
-      'search': search,
-      'protocol': protocol,
-      'strategy': strategy,
-      'enabled': enabled,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+        'type': type,
+        'rules': rules,
+      };
 
   @override
-  List<Object?> get props => [page, pageSize, search, protocol, strategy, enabled];
-}
-
-/// Firewall status model
-class FirewallStatus extends Equatable {
-  final bool? enabled;
-  final String? status;
-  final String? version;
-  final String? defaultPolicy;
-  final int? activeRules;
-  final int? activePorts;
-
-  const FirewallStatus({
-    this.enabled,
-    this.status,
-    this.version,
-    this.defaultPolicy,
-    this.activeRules,
-    this.activePorts,
-  });
-
-  factory FirewallStatus.fromJson(Map<String, dynamic> json) {
-    return FirewallStatus(
-      enabled: json['enabled'] as bool?,
-      status: json['status'] as String?,
-      version: json['version'] as String?,
-      defaultPolicy: json['defaultPolicy'] as String?,
-      activeRules: json['activeRules'] as int?,
-      activePorts: json['activePorts'] as int?,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'enabled': enabled,
-      'status': status,
-      'version': version,
-      'defaultPolicy': defaultPolicy,
-      'activeRules': activeRules,
-      'activePorts': activePorts,
-    };
-  }
-
-  @override
-  List<Object?> get props => [enabled, status, version, defaultPolicy, activeRules, activePorts];
-}
-
-/// Firewall log model
-class FirewallLog extends Equatable {
-  final int? id;
-  final String? timestamp;
-  final String? action;
-  final String? source;
-  final String? destination;
-  final String? protocol;
-  final int? port;
-  final String? interface;
-  final String? reason;
-
-  const FirewallLog({
-    this.id,
-    this.timestamp,
-    this.action,
-    this.source,
-    this.destination,
-    this.protocol,
-    this.port,
-    this.interface,
-    this.reason,
-  });
-
-  factory FirewallLog.fromJson(Map<String, dynamic> json) {
-    return FirewallLog(
-      id: json['id'] as int?,
-      timestamp: json['timestamp'] as String?,
-      action: json['action'] as String?,
-      source: json['source'] as String?,
-      destination: json['destination'] as String?,
-      protocol: json['protocol'] as String?,
-      port: json['port'] as int?,
-      interface: json['interface'] as String?,
-      reason: json['reason'] as String?,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'timestamp': timestamp,
-      'action': action,
-      'source': source,
-      'destination': destination,
-      'protocol': protocol,
-      'port': port,
-      'interface': interface,
-      'reason': reason,
-    };
-  }
-
-  @override
-  List<Object?> get props => [id, timestamp, action, source, destination, protocol, port, interface, reason];
-}
-
-/// Firewall log search model
-class FirewallLogSearch extends Equatable {
-  final int page;
-  final int pageSize;
-  final String? search;
-  final String? action;
-  final String? source;
-  final String? protocol;
-  final String? startTime;
-  final String? endTime;
-
-  const FirewallLogSearch({
-    required this.page,
-    required this.pageSize,
-    this.search,
-    this.action,
-    this.source,
-    this.protocol,
-    this.startTime,
-    this.endTime,
-  });
-
-  factory FirewallLogSearch.fromJson(Map<String, dynamic> json) {
-    return FirewallLogSearch(
-      page: json['page'] as int,
-      pageSize: json['pageSize'] as int,
-      search: json['search'] as String?,
-      action: json['action'] as String?,
-      source: json['source'] as String?,
-      protocol: json['protocol'] as String?,
-      startTime: json['startTime'] as String?,
-      endTime: json['endTime'] as String?,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'page': page,
-      'pageSize': pageSize,
-      'search': search,
-      'action': action,
-      'source': source,
-      'protocol': protocol,
-      'startTime': startTime,
-      'endTime': endTime,
-    };
-  }
-
-  @override
-  List<Object?> get props => [page, pageSize, search, action, source, protocol, startTime, endTime];
+  List<Object?> get props => [type, rules];
 }

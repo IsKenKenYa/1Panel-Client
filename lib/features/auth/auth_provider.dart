@@ -1,16 +1,20 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../../api/v2/auth_v2.dart';
-import '../../data/models/auth_models.dart';
-import '../../core/network/api_client_manager.dart';
+import 'package:onepanel_client/core/services/logger/logger_service.dart';
+import 'package:onepanel_client/data/models/auth_models.dart';
+import 'package:onepanel_client/features/auth/auth_service.dart';
 
-enum AuthStatus { initial, checking, authenticated, unauthenticated, mfaRequired }
+enum AuthStatus {
+  initial,
+  checking,
+  authenticated,
+  unauthenticated,
+  mfaRequired
+}
 
 class AuthProvider extends ChangeNotifier {
-  AuthV2Api? _api;
-  static const String _tokenKey = 'auth_token';
-  static const String _usernameKey = 'auth_username';
+  AuthProvider({AuthService? service}) : _service = service ?? AuthService();
+
+  final AuthService _service;
 
   AuthStatus _status = AuthStatus.initial;
   String? _token;
@@ -32,27 +36,31 @@ class AuthProvider extends ChangeNotifier {
   bool get isAuthenticated => _status == AuthStatus.authenticated;
   bool get isMfaRequired => _status == AuthStatus.mfaRequired;
 
-  Future<AuthV2Api> _getApi() async {
-    _api ??= await ApiClientManager.instance.getAuthApi();
-    return _api!;
-  }
-
   Future<void> checkAuthStatus() async {
     _status = AuthStatus.checking;
     notifyListeners();
 
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final savedToken = prefs.getString(_tokenKey);
-      
-      if (savedToken != null && savedToken.isNotEmpty) {
-        _token = savedToken;
-        _username = prefs.getString(_usernameKey);
+      final session = await _service.restoreSession();
+
+      if (session != null) {
+        _token = session.token;
+        _username = session.username;
         _status = AuthStatus.authenticated;
       } else {
+        _token = null;
+        _username = null;
         _status = AuthStatus.unauthenticated;
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      appLogger.eWithPackage(
+        'features.auth.auth_provider',
+        'checkAuthStatus failed',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      _token = null;
+      _username = null;
       _status = AuthStatus.unauthenticated;
     }
 
@@ -61,15 +69,14 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> loadLoginSettings() async {
     try {
-      final api = await _getApi();
-      final response = await api.getLoginSettings();
-      final data = response.data;
-
-      if (data != null) {
-        _loginSettings = LoginSettings.fromJson(data);
-      }
-    } catch (e) {
-      debugPrint('Failed to load login settings: $e');
+      _loginSettings = await _service.loadLoginSettings();
+    } catch (e, stackTrace) {
+      appLogger.eWithPackage(
+        'features.auth.auth_provider',
+        'loadLoginSettings failed',
+        error: e,
+        stackTrace: stackTrace,
+      );
     }
 
     notifyListeners();
@@ -77,15 +84,14 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> loadCaptcha() async {
     try {
-      final api = await _getApi();
-      final response = await api.getCaptcha();
-      final data = response.data;
-
-      if (data != null) {
-        _captcha = CaptchaData(base64: data);
-      }
-    } catch (e) {
-      debugPrint('Failed to load captcha: $e');
+      _captcha = await _service.loadCaptcha();
+    } catch (e, stackTrace) {
+      appLogger.eWithPackage(
+        'features.auth.auth_provider',
+        'loadCaptcha failed',
+        error: e,
+        stackTrace: stackTrace,
+      );
     }
 
     notifyListeners();
@@ -93,16 +99,14 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> checkDemoMode() async {
     try {
-      final api = await _getApi();
-      final response = await api.checkDemoMode();
-      final data = response.data;
-
-      if (data != null) {
-        final demoStatus = DemoModeStatus.fromJson(data);
-        _isDemoMode = demoStatus.isDemo ?? false;
-      }
-    } catch (e) {
-      debugPrint('Failed to check demo mode: $e');
+      _isDemoMode = await _service.checkDemoMode();
+    } catch (e, stackTrace) {
+      appLogger.eWithPackage(
+        'features.auth.auth_provider',
+        'checkDemoMode failed',
+        error: e,
+        stackTrace: stackTrace,
+      );
     }
 
     notifyListeners();
@@ -119,46 +123,43 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final api = await _getApi();
-      final request = LoginRequest(
-        username: username,
-        password: password,
-        captcha: captcha,
-        captchaId: captchaId,
-      ).toJson();
+      final response = await _service.login(
+        LoginRequest(
+          username: username,
+          password: password,
+          captcha: captcha,
+          captchaId: captchaId,
+        ),
+      );
 
-      final response = await api.login(request);
-      final data = response.data;
-
-      if (data != null) {
-        final loginResponse = LoginResponse.fromJson(data);
-
-        if (loginResponse.mfaStatus == true) {
-          _username = username;
-          _status = AuthStatus.mfaRequired;
-          _isLoading = false;
-          notifyListeners();
-          return false;
-        }
-
-        if (loginResponse.token != null) {
-          _token = loginResponse.token;
-          _username = username;
-          
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setString(_tokenKey, _token!);
-          await prefs.setString(_usernameKey, username);
-          
-          _status = AuthStatus.authenticated;
-          _isLoading = false;
-          notifyListeners();
-          return true;
-        }
+      if (response?.mfaStatus == true) {
+        _username = username;
+        _status = AuthStatus.mfaRequired;
+        _isLoading = false;
+        notifyListeners();
+        return false;
       }
 
-      _errorMessage = 'Login failed: Invalid response';
+      if (response?.token != null && response!.token!.isNotEmpty) {
+        _token = response.token;
+        _username = username;
+        _status = AuthStatus.authenticated;
+        _isLoading = false;
+        notifyListeners();
+        return true;
+      }
+
+      _errorMessage = response?.message ?? 'Login failed: Invalid response';
+      _token = null;
       _status = AuthStatus.unauthenticated;
-    } catch (e) {
+    } catch (e, stackTrace) {
+      appLogger.eWithPackage(
+        'features.auth.auth_provider',
+        'login failed',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      _token = null;
       _errorMessage = e.toString();
       _status = AuthStatus.unauthenticated;
     }
@@ -174,33 +175,28 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final api = await _getApi();
-      final request = MfaLoginRequest(
+      final response = await _service.mfaLogin(
         code: code,
-        name: _username,
-      ).toJson();
+        username: _username,
+      );
 
-      final response = await api.mfaLogin(request);
-      final data = response.data;
-
-      if (data != null) {
-        final loginResponse = LoginResponse.fromJson(data);
-
-        if (loginResponse.token != null) {
-          _token = loginResponse.token;
-          
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setString(_tokenKey, _token!);
-          
-          _status = AuthStatus.authenticated;
-          _isLoading = false;
-          notifyListeners();
-          return true;
-        }
+      if (response?.token != null && response!.token!.isNotEmpty) {
+        _token = response.token;
+        _username = _username ?? response.name;
+        _status = AuthStatus.authenticated;
+        _isLoading = false;
+        notifyListeners();
+        return true;
       }
 
-      _errorMessage = 'MFA verification failed';
-    } catch (e) {
+      _errorMessage = response?.message ?? 'MFA verification failed';
+    } catch (e, stackTrace) {
+      appLogger.eWithPackage(
+        'features.auth.auth_provider',
+        'mfaLogin failed',
+        error: e,
+        stackTrace: stackTrace,
+      );
       _errorMessage = e.toString();
     }
 
@@ -214,21 +210,21 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final api = await _getApi();
-      await api.logout();
-    } catch (e) {
-      debugPrint('Logout API call failed: $e');
+      await _service.logout();
+    } catch (e, stackTrace) {
+      appLogger.eWithPackage(
+        'features.auth.auth_provider',
+        'logout failed',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    } finally {
+      _token = null;
+      _username = null;
+      _status = AuthStatus.unauthenticated;
+      _isLoading = false;
+      notifyListeners();
     }
-
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_tokenKey);
-    await prefs.remove(_usernameKey);
-    
-    _token = null;
-    _username = null;
-    _status = AuthStatus.unauthenticated;
-    _isLoading = false;
-    notifyListeners();
   }
 
   void clearError() {

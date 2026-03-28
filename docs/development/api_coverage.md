@@ -9,6 +9,55 @@
 - 标签数: 52
 - 覆盖口径: 已实现=存在API调用与数据模型，已测试=具备单元/集成/端到端测试，已文档=包含使用说明与已知限制
 
+## Phase 2 增量覆盖（2026-03-28）
+
+- 范围: S2-3 Security & Gateway（Panel TLS、Website SSL、OpenResty）
+- 收口项:
+	- Website SSL Center：provider 全量筛选项与证书健康状态文案完成国际化映射。
+	- OpenResty Center：风险提示/差异预览/摘要文案维持本地化映射闭环。
+	- Panel TLS：页面文案与风险提示映射维持一致。
+- 范围补充: S2-2 / S2-3 repository 边界收口
+- 收口项补充:
+	- Website Core：新增 `WebsiteRepository / WebsiteDomainRepository / WebsiteConfigRepository`，现有 website services 改为通过 repository 访问 API。
+	- Security & Gateway：新增 `WebsiteSslRepository / OpenRestyRepository / PanelSslRepository`，现有 services 改为通过 repository 访问 API。
+	- 测试补充：新增 `website_ssl_center_provider_test.dart`、`openresty_provider_test.dart`，并扩展 `website_s2_integration_test.dart` 与 `security_gateway_s2_integration_test.dart`。
+- 范围增量: S2-4 Orchestration + AI（主链路收口）
+- 收口项增量:
+	- Orchestration：新增 `orchestration_repository.dart` 与 `orchestration_service.dart`，compose/image/network/volume provider 去 API 直连，并补齐独立页的 create/pull/detail/confirm/retry 主流程。
+	- AI：`AIProvider` 改为依赖 `AIRepository`，`AIRepository` 改为通过 `ApiClientManager` 获取 API；`AIPage` 拆为 `Ollama / GPU / Domain` 三标签并完成域名绑定联动。
+	- 回归测试：新增 `test/features/ai/ai_provider_test.dart`、`test/features/orchestration/providers/orchestration_provider_flow_test.dart`。
+- 范围增量补充: S2-4 验证 + S2-5 Auth（进行中）
+- 收口项增量补充:
+	- S2-4：新增 `test/features/ai/ai_page_test.dart` 与 `test/features/orchestration/orchestration_page_test.dart`，补齐 route/injection 与页面壳 smoke。
+	- S2-5：`AuthProvider` 改为依赖 `AuthService`；新增 `AuthRepository / AuthSessionStore`，会话存储切换到 `flutter_secure_storage`。
+	- S2-5：新增 `DashboardRepository / DashboardService`，`DashboardProvider` 改为依赖 service；`FilesProvider` 的回收站读取已收回 service。
+	- S2-5：`file` 分层继续收口为 `FilesRepository + Browser/Recycle/Transfer/Preview services`，并新增 `RecycleBinProvider / TransferManagerProvider / FilePreviewProvider` 承接页面状态。
+	- S2-5：新增 `test/data/repositories/files_repository_test.dart`，覆盖缓存失效、多服务切换、无配置异常路径。
+- 门禁结果:
+	- `flutter analyze`：通过
+	- `dart run test_runner.dart unit`：通过
+	- `dart run test_runner.dart ui`：通过
+	- `dart run test_runner.dart integration`：通过（部分依赖环境变量的用例按预期跳过）
+	- `dart run test_runner.dart all`：通过
+- 备注: 本节为阶段增量记录，不改写全量统计口径；全量统计在下一轮统一盘点时回刷。
+
+## Phase 2 Final Snapshot（2026-03-28）
+
+- Final 口径: Phase 2 以工作流收口为准，当前进入可合并状态。
+- 核心完成面:
+	- S2-1/S2-2/S2-3/S2-4/S2-5 均完成对应硬范围的主链路闭环。
+	- S2-6 验收产物已落盘：
+	  - `docs/development/s2_module_completion_list.md`
+	  - `docs/development/s2_risk_residual_list.md`
+	  - `docs/development/s2_regression_results.md`
+	  - `docs/development/s2_route_cleanup_list.md`
+- 已批准残留（Phase 3）:
+	- `database` 用户管理细节与更多写操作表单。
+	- `firewall` 高级链路（forward/filter advance/chain status）。
+- 范围边界确认:
+	- Website 长尾能力与 Orchestration 长尾能力按计划不纳入 Phase 2 硬交付。
+	- 路由清理本轮仅做清单和证据归档，不进行字符串路由重构。
+
 ## 实现状态统计
 
 | 维度 | 完成数 | 完成率 |
@@ -49,7 +98,7 @@
 | Database | 9 | database_v2.dart | 17 | ✅ | ❌ |
 | Database PostgreSQL | 9 | database_v2.dart | 17 | ✅ | ❌ |
 | Database Redis | 7 | database_v2.dart | 17 | ✅ | ❌ |
-| Auth | 5 | auth_v2.dart | 8 | ❌ | ❌ |
+| Auth | 5 | auth_v2.dart | 8 | ✅ | ❌ |
 | Monitor | 5 | monitor_v2.dart | 7 | ❌ | ❌ |
 | Database Common | 3 | database_v2.dart | 17 | ✅ | ❌ |
 
@@ -77,7 +126,7 @@
 | Logs | 4 | logs_v2.dart | 12 | ✅ | ✅ |
 | Website Acme | 4 | ssl_v2.dart | 17 | ❌ | ❌ |
 | Website DNS | 4 | website_v2.dart | 20 | ❌ | ❌ |
-| Website Domain | 4 | website_v2.dart | 20 | ❌ | ❌ |
+| Website Domain | 4 | website_v2.dart | 20 | ✅ | ❌ |
 | Website Nginx | 4 | openresty_v2.dart | 9 | ❌ | ❌ |
 | Process | 2 | process_v2.dart | 4 | ✅ | ✅ |
 | TaskLog | 2 | task_log_v2.dart | 2 | ✅ | ✅ |
@@ -122,7 +171,9 @@
 - phase1_api_alignment_test.dart
 - container_api_client_test.dart
 - dashboard_api_client_test.dart
+- database_backup_api_client_test.dart
 - database_api_client_test.dart
+- firewall_api_client_test.dart
 - file_api_client_test.dart
 - host_api_client_test.dart
 - process_api_client_test.dart
@@ -130,6 +181,7 @@
 - script_library_api_client_test.dart
 - ssh_api_client_test.dart
 - website_api_client_test.dart
+- website_lifecycle_api_client_test.dart
 
 ### WebSocket 契约测试
 - process_ws_client_test.dart

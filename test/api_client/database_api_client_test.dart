@@ -14,8 +14,9 @@ void main() {
 
   setUpAll(() async {
     await TestEnvironment.initialize();
-    hasApiKey = TestEnvironment.apiKey.isNotEmpty && TestEnvironment.apiKey != 'your_api_key_here';
-    
+    hasApiKey = TestEnvironment.apiKey.isNotEmpty &&
+        TestEnvironment.apiKey != 'your_api_key_here';
+
     if (hasApiKey) {
       client = DioClient(
         baseUrl: TestEnvironment.baseUrl,
@@ -33,7 +34,7 @@ void main() {
       debugPrint('服务器地址: ${TestEnvironment.baseUrl}');
       debugPrint('API密钥: ${hasApiKey ? "已配置" : "未配置"}');
       debugPrint('========================================\n');
-      
+
       expect(hasApiKey, equals(TestEnvironment.canRunIntegrationTests));
     });
 
@@ -47,6 +48,8 @@ void main() {
         final request = DatabaseSearch(
           page: 1,
           pageSize: 10,
+          orderBy: 'createdAt',
+          order: 'descending',
         );
         final response = await api.searchDatabases(request);
 
@@ -63,7 +66,9 @@ void main() {
 
         if (result.items.isNotEmpty) {
           debugPrint('\n数据库列表:');
-          for (var i = 0; i < (result.items.length > 5 ? 5 : result.items.length); i++) {
+          for (var i = 0;
+              i < (result.items.length > 5 ? 5 : result.items.length);
+              i++) {
             final db = result.items[i];
             debugPrint('  - ${db.name} (${db.type}) - ${db.status}');
           }
@@ -82,10 +87,30 @@ void main() {
 
       final timer = TestPerformanceTimer('searchDatabases');
       timer.start();
-      await api.searchDatabases(DatabaseSearch(page: 1, pageSize: 10));
+      await api.searchDatabases(
+        const DatabaseSearch(
+          page: 1,
+          pageSize: 10,
+          orderBy: 'createdAt',
+          order: 'descending',
+        ),
+      );
       timer.stop();
       timer.logResult();
       expect(timer.duration.inMilliseconds, lessThan(3000));
+    });
+  });
+
+  group('Database enums helper', () {
+    test('DatabaseType.fromString recognizes value and falls back to mysql',
+        () {
+      expect(DatabaseType.fromString('mysql'), DatabaseType.mysql);
+      expect(DatabaseType.fromString('~unknown~'), DatabaseType.mysql);
+    });
+
+    test('DatabaseStatus.fromString falls back to stopped', () {
+      expect(DatabaseStatus.fromString('running'), DatabaseStatus.running);
+      expect(DatabaseStatus.fromString('invalid'), DatabaseStatus.stopped);
     });
   });
 }

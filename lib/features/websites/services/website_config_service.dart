@@ -1,34 +1,27 @@
-import '../../../api/v2/website_v2.dart';
-import '../../../core/network/api_client_manager.dart';
 import '../../../data/models/file/file_info.dart';
 import '../../../data/models/openresty_models.dart';
 import '../../../data/models/ssl_models.dart';
 import '../../../data/models/website_models.dart';
+import '../../../data/repositories/website_config_repository.dart';
 
 class WebsiteConfigService {
-  WebsiteConfigService({WebsiteV2Api? api}) : _api = api;
+  WebsiteConfigService({WebsiteConfigRepository? repository})
+      : _repository = repository ?? WebsiteConfigRepository();
 
-  WebsiteV2Api? _api;
-
-  Future<WebsiteV2Api> _ensureApi() async {
-    _api ??= await ApiClientManager.instance.getWebsiteApi();
-    return _api!;
-  }
+  final WebsiteConfigRepository _repository;
 
   Future<FileInfo> getConfigFile({
     required int websiteId,
     String type = 'nginx',
   }) async {
-    final api = await _ensureApi();
-    return api.getWebsiteConfigFile(id: websiteId, type: type);
+    return _repository.getConfigFile(websiteId: websiteId, type: type);
   }
 
   Future<void> saveConfigFile({
     required int websiteId,
     required String content,
   }) async {
-    final api = await _ensureApi();
-    await api.updateWebsiteNginxConfig(id: websiteId, content: content);
+    await _repository.saveConfigFile(websiteId: websiteId, content: content);
   }
 
   Future<FileInfo> fetchNginxConfigFile(int websiteId) {
@@ -46,11 +39,10 @@ class WebsiteConfigService {
     required int websiteId,
     required NginxKey scope,
   }) async {
-    final api = await _ensureApi();
-    final data = await api.loadWebsiteNginxConfig({
-      'scope': scope.value,
-      'websiteId': websiteId,
-    });
+    final data = await _repository.loadScope(
+      websiteId: websiteId,
+      scope: scope,
+    );
     return WebsiteNginxScopeResponse.fromJson(data);
   }
 
@@ -59,29 +51,28 @@ class WebsiteConfigService {
     required NginxKey scope,
     required List<WebsiteNginxParam> params,
   }) async {
-    final api = await _ensureApi();
-    await api.updateWebsiteNginxConfigByRequest({
-      'operate': 'update',
-      'scope': scope.value,
-      'websiteId': websiteId,
-      'params': params.map((e) => e.toJson()).toList(),
-    });
+    await _repository.updateScope(
+      websiteId: websiteId,
+      scope: scope,
+      params: params,
+    );
   }
 
   Future<void> updatePhpVersion({
     required int websiteId,
     int? runtimeId,
   }) async {
-    final api = await _ensureApi();
-    await api.updateWebsitePhpVersion(websiteId: websiteId, runtimeId: runtimeId);
+    await _repository.updatePhpVersion(
+      websiteId: websiteId,
+      runtimeId: runtimeId,
+    );
   }
 
   Future<String> loadRewrite({
     required int websiteId,
     required String name,
   }) async {
-    final api = await _ensureApi();
-    final data = await api.getWebsiteRewrite(websiteId: websiteId, name: name);
+    final data = await _repository.getRewrite(websiteId: websiteId, name: name);
     final content = data['content'];
     if (content is String) {
       return content;
@@ -94,8 +85,7 @@ class WebsiteConfigService {
     required String name,
     required String content,
   }) async {
-    final api = await _ensureApi();
-    await api.updateWebsiteRewrite(
+    await _repository.updateRewrite(
       websiteId: websiteId,
       name: name,
       content: content,
@@ -106,8 +96,7 @@ class WebsiteConfigService {
     required int websiteId,
     required String name,
   }) async {
-    final api = await _ensureApi();
-    final data = await api.getWebsiteProxy(id: websiteId);
+    final data = await _repository.getProxy(websiteId: websiteId);
     final content = data['content'];
     if (content is String) {
       return content;
@@ -120,8 +109,7 @@ class WebsiteConfigService {
     required String name,
     required String content,
   }) async {
-    final api = await _ensureApi();
-    await api.updateWebsiteProxy(
+    await _repository.updateProxy(
       websiteId: websiteId,
       name: name,
       content: content,
@@ -129,38 +117,32 @@ class WebsiteConfigService {
   }
 
   Future<Map<String, dynamic>> getResource(int websiteId) async {
-    final api = await _ensureApi();
-    return api.getWebsiteResource(websiteId);
+    return _repository.getResource(websiteId);
   }
 
   Future<List<Map<String, dynamic>>> getDatabases() async {
-    final api = await _ensureApi();
-    return api.getWebsiteDatabases();
+    return _repository.getDatabases();
   }
 
   Future<void> changeDatabase(Map<String, dynamic> request) async {
-    final api = await _ensureApi();
-    await api.changeWebsiteDatabase(request);
+    await _repository.changeDatabase(request);
   }
 
-  Future<Map<String, dynamic>> getDirectoryConfig(Map<String, dynamic> request) async {
-    final api = await _ensureApi();
-    return api.getWebsiteDirectory(request);
+  Future<Map<String, dynamic>> getDirectoryConfig(
+      Map<String, dynamic> request) async {
+    return _repository.getDirectoryConfig(request);
   }
 
   Future<void> updateDirectory(Map<String, dynamic> request) async {
-    final api = await _ensureApi();
-    await api.updateWebsiteDirectory(request);
+    await _repository.updateDirectory(request);
   }
 
   Future<void> updateDirectoryPermission(Map<String, dynamic> request) async {
-    final api = await _ensureApi();
-    await api.updateWebsiteDirectoryPermission(request);
+    await _repository.updateDirectoryPermission(request);
   }
 
   Future<Map<String, dynamic>> getHttpsConfig(int websiteId) async {
-    final api = await _ensureApi();
-    final config = await api.getWebsiteHttps(websiteId);
+    final config = await _repository.getHttpsConfig(websiteId);
     return config.toJson();
   }
 
@@ -168,7 +150,9 @@ class WebsiteConfigService {
     required int websiteId,
     required WebsiteHttpsUpdateRequest request,
   }) async {
-    final api = await _ensureApi();
-    return api.updateWebsiteHttps(websiteId: websiteId, request: request);
+    return _repository.updateHttpsConfig(
+      websiteId: websiteId,
+      request: request,
+    );
   }
 }

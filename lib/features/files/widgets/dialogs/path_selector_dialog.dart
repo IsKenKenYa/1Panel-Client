@@ -27,9 +27,11 @@ Future<String?> showPathSelectorDialog(
               children: [
                 // Current path display and navigation
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    color:
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
@@ -69,18 +71,19 @@ Future<String?> showPathSelectorDialog(
                         return const Center(child: CircularProgressIndicator());
                       }
                       if (snapshot.hasError) {
-                         return Center(
-                           child: Column(
-                             mainAxisAlignment: MainAxisAlignment.center,
-                             children: [
-                               Icon(Icons.error_outline, color: Theme.of(context).colorScheme.error),
-                               const SizedBox(height: 8),
-                               Text(l10n.commonError),
-                             ],
-                           ),
-                         );
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.error_outline,
+                                  color: Theme.of(context).colorScheme.error),
+                              const SizedBox(height: 8),
+                              Text(l10n.commonError),
+                            ],
+                          ),
+                        );
                       }
-                      
+
                       final allFiles = snapshot.data ?? [];
                       final folders = allFiles.where((f) => f.isDir).toList();
                       // Sort folders by name
@@ -94,7 +97,8 @@ Future<String?> showPathSelectorDialog(
                         itemBuilder: (context, index) {
                           final folder = folders[index];
                           return ListTile(
-                            leading: const Icon(Icons.folder, color: Colors.amber),
+                            leading:
+                                const Icon(Icons.folder, color: Colors.amber),
                             title: Text(folder.name),
                             onTap: () {
                               setDialogState(() {

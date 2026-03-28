@@ -43,7 +43,8 @@ void showBatchMoveDialog(
               await provider.moveSelected(controller.text);
             } catch (e, stackTrace) {
               if (context.mounted) {
-                DebugErrorDialog.show(context, l10n.filesMoveFailed, e, stackTrace: stackTrace);
+                DebugErrorDialog.show(context, l10n.filesMoveFailed, e,
+                    stackTrace: stackTrace);
               }
             }
           },

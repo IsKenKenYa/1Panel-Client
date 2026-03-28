@@ -36,7 +36,7 @@ class _CreateLinkDialogState extends State<CreateLinkDialog> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    
+
     return AlertDialog(
       title: Text(l10n.filesCreateLinkTitle),
       content: Column(
@@ -81,9 +81,12 @@ class _CreateLinkDialogState extends State<CreateLinkDialog> {
         ),
         FilledButton(
           onPressed: _isLoading ? null : _createLink,
-          child: _isLoading 
-            ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
-            : Text(l10n.commonCreate),
+          child: _isLoading
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2))
+              : Text(l10n.commonCreate),
         ),
       ],
     );
@@ -98,7 +101,8 @@ class _CreateLinkDialogState extends State<CreateLinkDialog> {
     });
 
     try {
-      final linkPath = '${widget.provider.data.currentPath}/${_nameController.text}';
+      final linkPath =
+          '${widget.provider.data.currentPath}/${_nameController.text}';
       await widget.provider.createFileLink(
         sourcePath: widget.sourcePath,
         linkPath: linkPath,
@@ -121,7 +125,8 @@ class _CreateLinkDialogState extends State<CreateLinkDialog> {
   }
 }
 
-void showCreateLinkDialog(BuildContext context, FilesProvider provider, String sourcePath) {
+void showCreateLinkDialog(
+    BuildContext context, FilesProvider provider, String sourcePath) {
   showDialog(
     context: context,
     builder: (context) => CreateLinkDialog(

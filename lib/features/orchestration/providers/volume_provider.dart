@@ -1,10 +1,14 @@
 import 'package:flutter/foundation.dart';
-import '../../../core/network/api_client_manager.dart';
 import '../../../data/models/docker_models.dart';
-import '../../../api/v2/docker_v2.dart';
 import '../../../data/models/container_models.dart';
+import '../services/orchestration_service.dart';
 
 class VolumeProvider extends ChangeNotifier {
+  VolumeProvider({OrchestrationService? service})
+      : _service = service ?? OrchestrationService();
+
+  final OrchestrationService _service;
+
   List<DockerVolume> _volumes = [];
   bool _isLoading = false;
   String? _error;
@@ -12,10 +16,6 @@ class VolumeProvider extends ChangeNotifier {
   List<DockerVolume> get volumes => _volumes;
   bool get isLoading => _isLoading;
   String? get error => _error;
-
-  Future<DockerV2Api> _getApi() async {
-    return await ApiClientManager.instance.getDockerApi();
-  }
 
   Future<void> onServerChanged({bool reload = false}) async {
     _volumes = [];
@@ -33,9 +33,7 @@ class VolumeProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final api = await _getApi();
-      final response = await api.listVolumes();
-      _volumes = response.data ?? [];
+      _volumes = await _service.loadVolumes();
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -50,8 +48,7 @@ class VolumeProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final api = await _getApi();
-      await api.createVolume(request);
+      await _service.createVolume(request);
       await loadVolumes();
       return true;
     } catch (e) {
@@ -68,8 +65,7 @@ class VolumeProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final api = await _getApi();
-      await api.removeVolume(volumeName);
+      await _service.removeVolume(volumeName);
       await loadVolumes();
       return true;
     } catch (e) {

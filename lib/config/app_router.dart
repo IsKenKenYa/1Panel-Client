@@ -4,7 +4,15 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/services/onboarding_service.dart';
 import 'package:onepanel_client/features/onboarding/onboarding_page.dart';
 import 'package:onepanel_client/features/databases/databases_page.dart';
+import 'package:onepanel_client/features/databases/databases_detail_page.dart';
+import 'package:onepanel_client/features/databases/databases_form_page.dart';
+import 'package:onepanel_client/features/databases/databases_remote_page.dart';
+import 'package:onepanel_client/features/databases/databases_redis_page.dart';
+import 'package:onepanel_client/features/databases/pages/database_backup_page.dart';
+import 'package:onepanel_client/features/databases/pages/database_users_page.dart';
+import 'package:onepanel_client/data/models/database_models.dart';
 import 'package:onepanel_client/features/firewall/firewall_page.dart';
+import 'package:onepanel_client/features/firewall/firewall_rule_form_page.dart';
 import 'package:onepanel_client/features/monitoring/monitoring_page.dart';
 import 'package:onepanel_client/features/server/server_detail_page.dart';
 import 'package:onepanel_client/features/server/server_form_page.dart';
@@ -33,6 +41,8 @@ import 'package:onepanel_client/features/websites/pages/website_certificate_deta
 import 'package:onepanel_client/features/openresty/openresty_page.dart';
 import 'package:onepanel_client/features/openresty/pages/openresty_source_editor_page.dart';
 import 'package:onepanel_client/features/openresty/providers/openresty_provider.dart';
+import 'package:onepanel_client/features/ai/ai_page.dart';
+import 'package:onepanel_client/features/ai/ai_provider.dart';
 import 'package:onepanel_client/features/settings/ssl_settings_page.dart';
 import 'package:onepanel_client/features/commands/models/command_form_args.dart';
 import 'package:onepanel_client/features/commands/pages/command_form_page.dart';
@@ -125,7 +135,17 @@ class AppRoutes {
   static const String dashboard = '/dashboard';
   static const String files = '/files';
   static const String databases = '/databases';
+  static const String databaseDetail = '/database-detail';
+  static const String databaseForm = '/database-form';
+  static const String databaseRemote = '/database-remote';
+  static const String databaseRedisConfig = '/database-redis-config';
+  static const String databaseBackups = '/database-backups';
+  static const String databaseUsers = '/database-users';
   static const String firewall = '/firewall';
+  static const String firewallRules = '/firewall-rules';
+  static const String firewallIps = '/firewall-ips';
+  static const String firewallPorts = '/firewall-ports';
+  static const String firewallRuleForm = '/firewall-rule-form';
   static const String terminal = '/terminal';
   static const String monitoring = '/monitoring';
   static const String securityVerification = '/security-verification';
@@ -135,10 +155,12 @@ class AppRoutes {
   static const String appDetail = '/app-detail';
   static const String installedAppDetail = '/installed-app-detail';
   static const String containerDetail = '/container-detail';
+  static const String ai = '/ai';
   static const String orchestration = '/orchestration';
   static const String websites = '/websites';
   static const String websiteDetail = '/website-detail';
   static const String websiteCreate = '/website-create';
+  static const String websiteEdit = '/website-edit';
   static const String websiteConfigCenter = '/website-config-center';
   static const String websiteRoutingRules = '/website-routing-rules';
   static const String websiteSecurityAccess = '/website-security-access';
@@ -216,8 +238,70 @@ class AppRouter {
                 ));
       case AppRoutes.databases:
         return MaterialPageRoute(builder: (_) => const DatabasesPage());
+      case AppRoutes.databaseDetail:
+        final arg = settings.arguments;
+        if (arg is DatabaseListItem) {
+          return MaterialPageRoute(
+            builder: (_) => DatabaseDetailPage(item: arg),
+          );
+        }
+        return MaterialPageRoute(builder: (_) => const NotFoundPage());
+      case AppRoutes.databaseForm:
+        final arg = settings.arguments;
+        final scope = arg is Map<String, dynamic>
+            ? _readDatabaseScope(arg['scope'])
+            : DatabaseScope.mysql;
+        return MaterialPageRoute(
+          builder: (_) => DatabaseFormPage(initialScope: scope),
+        );
+      case AppRoutes.databaseRemote:
+        return MaterialPageRoute(builder: (_) => const DatabaseRemotePage());
+      case AppRoutes.databaseRedisConfig:
+        final arg = settings.arguments;
+        if (arg is DatabaseListItem) {
+          return MaterialPageRoute(
+            builder: (_) => DatabaseRedisPage(item: arg),
+          );
+        }
+        return MaterialPageRoute(builder: (_) => const NotFoundPage());
+      case AppRoutes.databaseBackups:
+        final backupArg = settings.arguments;
+        if (backupArg is DatabaseListItem) {
+          return MaterialPageRoute(
+            builder: (_) => DatabaseBackupPage(item: backupArg),
+          );
+        }
+        return MaterialPageRoute(builder: (_) => const NotFoundPage());
+      case AppRoutes.databaseUsers:
+        final userArg = settings.arguments;
+        if (userArg is DatabaseListItem) {
+          return MaterialPageRoute(
+            builder: (_) => DatabaseUsersPage(item: userArg),
+          );
+        }
+        return MaterialPageRoute(builder: (_) => const NotFoundPage());
       case AppRoutes.firewall:
         return MaterialPageRoute(builder: (_) => const FirewallPage());
+      case AppRoutes.firewallRules:
+        return MaterialPageRoute(
+          builder: (_) => const FirewallPage(initialTab: 1),
+        );
+      case AppRoutes.firewallIps:
+        return MaterialPageRoute(
+          builder: (_) => const FirewallPage(initialTab: 2),
+        );
+      case AppRoutes.firewallPorts:
+        return MaterialPageRoute(
+          builder: (_) => const FirewallPage(initialTab: 3),
+        );
+      case AppRoutes.firewallRuleForm:
+        final arg = settings.arguments;
+        if (arg is FirewallRuleFormArguments) {
+          return MaterialPageRoute(
+            builder: (_) => FirewallRuleFormPage(arguments: arg),
+          );
+        }
+        return MaterialPageRoute(builder: (_) => const NotFoundPage());
       case AppRoutes.terminal:
         return MaterialPageRoute(builder: (_) => const TerminalPage());
       case AppRoutes.monitoring:
@@ -278,6 +362,14 @@ class AppRouter {
         }
         return MaterialPageRoute(builder: (_) => const NotFoundPage());
 
+      case AppRoutes.ai:
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider(
+            create: (_) => AIProvider(),
+            child: const AIPage(),
+          ),
+        );
+
       case AppRoutes.orchestration:
         return MaterialPageRoute(builder: (_) => const OrchestrationPage());
       case AppRoutes.websites:
@@ -285,6 +377,18 @@ class AppRouter {
 
       case AppRoutes.websiteCreate:
         return MaterialPageRoute(builder: (_) => const WebsiteCreateFlowPage());
+
+      case AppRoutes.websiteEdit:
+        {
+          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final websiteId = arg['websiteId'] as int?;
+          if (websiteId == null) {
+            return MaterialPageRoute(builder: (_) => const NotFoundPage());
+          }
+          return MaterialPageRoute(
+            builder: (_) => WebsiteCreateFlowPage.edit(websiteId: websiteId),
+          );
+        }
 
       case AppRoutes.websiteDetail:
         {
@@ -846,6 +950,16 @@ class AppRouter {
       );
     }
     return null;
+  }
+
+  static DatabaseScope _readDatabaseScope(Object? value) {
+    if (value is String) {
+      return DatabaseScope.values.firstWhere(
+        (scope) => scope.value == value,
+        orElse: () => DatabaseScope.mysql,
+      );
+    }
+    return DatabaseScope.mysql;
   }
 }
 

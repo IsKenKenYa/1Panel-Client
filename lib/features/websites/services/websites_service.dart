@@ -1,18 +1,20 @@
-import '../../../api/v2/website_v2.dart';
-import '../../../core/network/api_client_manager.dart';
+import '../../../data/repositories/website_repository.dart';
 import '../../../data/models/website_models.dart';
 
 class WebsitesService {
-  Future<WebsiteV2Api> _getApi() {
-    return ApiClientManager.instance.getWebsiteApi();
-  }
+  WebsitesService({WebsiteRepository? repository})
+      : _repository = repository ?? WebsiteRepository();
+
+  final WebsiteRepository _repository;
 
   Future<List<WebsiteInfo>> fetchWebsites({
     int page = 1,
     int pageSize = 100,
   }) async {
-    final api = await _getApi();
-    final result = await api.getWebsites(page: page, pageSize: pageSize);
+    final result = await _repository.searchWebsites(
+      page: page,
+      pageSize: pageSize,
+    );
     return result.items;
   }
 
@@ -20,8 +22,7 @@ class WebsitesService {
     required int websiteId,
     required String action,
   }) async {
-    final api = await _getApi();
-    await api.operateWebsite(id: websiteId, operate: action);
+    await _repository.operateWebsite(websiteId: websiteId, action: action);
   }
 
   Future<void> startWebsite(int websiteId) {
@@ -37,7 +38,6 @@ class WebsitesService {
   }
 
   Future<void> deleteWebsite(int websiteId) async {
-    final api = await _getApi();
-    await api.deleteWebsite(websiteId);
+    await _repository.deleteWebsite(websiteId);
   }
 }

@@ -6,37 +6,22 @@ import 'package:onepanel_client/features/files/widgets/dialogs/upload_dialog.dar
 import 'package:onepanel_client/features/files/widgets/dialogs/path_selector_dialog.dart';
 import 'package:onepanel_client/features/files/models/models.dart';
 import 'package:onepanel_client/features/files/files_provider.dart';
+import 'package:onepanel_client/features/files/files_service.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 
-class _MockFilesProvider extends FilesProvider {
-  FilesData _mockData = const FilesData(
-    currentPath: '/home',
-    selectedFiles: {'/home/test.txt'},
-  );
-
+class _FakeFilesService extends FilesService {
   @override
-  FilesData get data => _mockData;
-
-  void setMockData(FilesData data) {
-    _mockData = data;
-    notifyListeners();
-  }
-
-  @override
-  Future<void> loadFiles({String? path}) async {}
-
-  @override
-  Future<void> refresh() async {}
-
-  @override
-  Future<void> wgetDownload({required String url, required String name, bool? ignoreCertificate}) async {}
-
-  @override
-  Future<void> uploadFiles(List<String> filePaths) async {}
-
-  @override
-  Future<List<FileInfo>> fetchFiles(String path) async {
-    return [
+  Future<List<FileInfo>> getFiles({
+    required String path,
+    String? search,
+    int page = 1,
+    int pageSize = 100,
+    bool expand = true,
+    String? sortBy,
+    String? sortOrder,
+    bool? showHidden,
+  }) async {
+    return <FileInfo>[
       FileInfo(
         name: 'test_folder',
         path: '$path/test_folder',
@@ -50,9 +35,38 @@ class _MockFilesProvider extends FilesProvider {
   }
 }
 
+class _MockFilesProvider extends FilesProvider {
+  _MockFilesProvider() : super(service: _FakeFilesService());
+
+  FilesData _mockData = const FilesData(
+    currentPath: '/home',
+    selectedFiles: {'/home/test.txt'},
+  );
+
+  @override
+  FilesData get data => _mockData;
+
+  void setMockData(FilesData data) {
+    _mockData = data;
+    notifyListeners();
+  }
+
+  Future<void> loadFiles({String? path}) async {}
+
+  Future<void> refresh() async {}
+
+  Future<void> wgetDownload(
+      {required String url,
+      required String name,
+      bool? ignoreCertificate}) async {}
+
+  Future<void> uploadFiles(List<String> filePaths) async {}
+}
+
 void main() {
   group('Wget Dialog Tests', () {
-    testWidgets('shows wget dialog with URL field', (WidgetTester tester) async {
+    testWidgets('shows wget dialog with URL field',
+        (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
         locale: const Locale('zh', 'CN'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,

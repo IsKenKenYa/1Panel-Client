@@ -1,5 +1,11 @@
 # 数据库管理模块架构设计
 
+> 2026-03-26 修正：
+> 本文下方部分端点清单来自早期规划，和当前 `swagger.json` 以及已落地代码并不完全一致。
+> 当前阶段二实施以 `database_api_analysis.md/.json`、`阶段2计划.md` 与运行时代码为准。
+> 当前真实已落地能力为 `list / detail / form / remote test / redis config / bind user / description & password write`；
+> `backup / restore / backup list` 需要联动 `/backups/*`，不在 `database` 标签端点内直接完成。
+
 ## 模块目标
 
 - 适配 Open1PanelApp 作为 1Panel Linux 运维面板社区版的定位
@@ -141,11 +147,12 @@
 
 ## 与现有实现的差距
 
-- 数据库列表页面缺失
-- 数据库详情页面缺失
-- 备份管理功能缺失
-- 用户管理功能缺失
-- 性能监控图表缺失
+- 列表、详情、表单、远程库、Redis 配置页已落地
+- 远程数据库详情页已收紧为只读，不再暴露当前不支持的写操作
+- Redis 创建入口已临时禁用，等待真实创建链路完成后再开放
+- 备份管理页已通过 `/backups/*` 接入 `list / create / restore / delete`
+- 用户管理页已按真实 V2 接入 `MySQL bind user` 与 `PostgreSQL bind user / privilege`
+- 性能监控图表与更细分的状态页仍缺
 
 ## 评审记录
 

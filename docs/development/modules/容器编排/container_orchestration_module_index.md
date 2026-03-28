@@ -4,6 +4,17 @@
 
 容器编排模块是Open1PanelApp的P1高价值扩展模块，提供Docker容器的高级编排能力，包括Compose管理、网络管理、卷管理、镜像仓库等，是容器管理模块的重要扩展。
 
+## S2-0 基线（2026-03-26）
+
+- 当前状态：
+  当前已有 `route / page / provider` 家族骨架，但 `compose / image / network / volume` 仍缺少 `repository / service`，且 provider 直接依赖 API。
+- 阶段 2 hard scope：
+  `compose / image / network / volume`
+- tail only：
+  `image repo / compose template`
+- 文档缺口：
+  当前仅有家族级文档和 `compose_api_analysis.*`，缺少 `image / network / volume` 的独立 API 基线文档。
+
 ## 子模块结构
 
 | 子模块 | 端点数 | API客户端 | 说明 |

@@ -46,10 +46,9 @@ class ThemeSettingsPage extends StatelessWidget {
           RadioGroup<ThemeMode>(
             groupValue: themeController.themeMode,
             onChanged: (value) {
-              if (value == null) {
-                return;
+              if (value != null) {
+                themeController.updateThemeMode(value);
               }
-              themeController.updateThemeMode(value);
             },
             child: Column(
               children: [

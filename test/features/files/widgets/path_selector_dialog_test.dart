@@ -1,23 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
 import 'package:onepanel_client/features/files/files_provider.dart';
+import 'package:onepanel_client/features/files/files_service.dart';
 import 'package:onepanel_client/features/files/widgets/dialogs/path_selector_dialog.dart';
-// import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Removed
 
-@GenerateMocks([FilesProvider])
-import 'path_selector_dialog_test.mocks.dart';
+class _FakeFilesService extends FilesService {
+  _FakeFilesService(this._responses);
+
+  final Map<String, List<FileInfo>> _responses;
+
+  @override
+  Future<List<FileInfo>> getFiles({
+    required String path,
+    String? search,
+    int page = 1,
+    int pageSize = 100,
+    bool expand = true,
+    String? sortBy,
+    String? sortOrder,
+    bool? showHidden,
+  }) async {
+    return _responses[path] ?? const <FileInfo>[];
+  }
+}
 
 void main() {
-  late MockFilesProvider mockProvider;
-
-  setUp(() {
-    mockProvider = MockFilesProvider();
-  });
-
   Widget createTestWidget(Widget child) {
     return MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -30,8 +39,8 @@ void main() {
     );
   }
 
-  testWidgets('PathSelectorDialog shows current path and subfolders', (tester) async {
-    // Arrange
+  testWidgets('PathSelectorDialog shows current path and subfolders',
+      (tester) async {
     final subfolders = [
       FileInfo(
         name: 'subfolder1',
@@ -42,20 +51,22 @@ void main() {
         type: 'dir',
       ),
     ];
-    
-    when(mockProvider.fetchFiles(any)).thenAnswer((_) async => subfolders);
+    final provider = FilesProvider(
+      service: _FakeFilesService(<String, List<FileInfo>>{
+        '/': subfolders,
+      }),
+    );
 
-    // Act
     await tester.pumpWidget(createTestWidget(Builder(
       builder: (context) {
         return TextButton(
           onPressed: () {
             showPathSelectorDialog(
-               context,
-               mockProvider,
-               '/',
-               AppLocalizations.of(context),
-             );
+              context,
+              provider,
+              '/',
+              context.l10n,
+            );
           },
           child: const Text('Open Dialog'),
         );
@@ -65,13 +76,12 @@ void main() {
     await tester.tap(find.text('Open Dialog'));
     await tester.pumpAndSettle();
 
-    // Assert
     expect(find.text('subfolder1'), findsOneWidget);
     expect(find.text('/'), findsOneWidget);
   });
 
-  testWidgets('PathSelectorDialog navigates to subfolder on tap', (tester) async {
-    // Arrange
+  testWidgets('PathSelectorDialog navigates to subfolder on tap',
+      (tester) async {
     final rootFolders = [
       FileInfo(
         name: 'subfolder1',
@@ -82,19 +92,21 @@ void main() {
         type: 'dir',
       ),
     ];
-    final subFiles = <FileInfo>[]; // Empty subfolder
+    final subFiles = <FileInfo>[];
+    final provider = FilesProvider(
+      service: _FakeFilesService(<String, List<FileInfo>>{
+        '/': rootFolders,
+        '/subfolder1': subFiles,
+      }),
+    );
 
-    when(mockProvider.fetchFiles('/')).thenAnswer((_) async => rootFolders);
-    when(mockProvider.fetchFiles('/subfolder1')).thenAnswer((_) async => subFiles);
-
-    // Act
     await tester.pumpWidget(createTestWidget(Builder(
       builder: (context) {
         return TextButton(
           onPressed: () {
             showPathSelectorDialog(
               context,
-              mockProvider,
+              provider,
               '/',
               AppLocalizations.of(context),
             );
@@ -110,9 +122,6 @@ void main() {
     await tester.tap(find.text('subfolder1'));
     await tester.pumpAndSettle();
 
-    // Assert
-    // Verify that the title updated to /subfolder1
     expect(find.text('/subfolder1'), findsOneWidget);
-    verify(mockProvider.fetchFiles('/subfolder1')).called(1);
   });
 }

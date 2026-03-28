@@ -157,7 +157,8 @@ void main() {
 
       test('states are in correct order', () {
         expect(WgetDownloadState.values[0], equals(WgetDownloadState.idle));
-        expect(WgetDownloadState.values[1], equals(WgetDownloadState.downloading));
+        expect(
+            WgetDownloadState.values[1], equals(WgetDownloadState.downloading));
         expect(WgetDownloadState.values[2], equals(WgetDownloadState.success));
         expect(WgetDownloadState.values[3], equals(WgetDownloadState.error));
       });
@@ -184,7 +185,7 @@ void main() {
 
       test('error flow: idle -> downloading -> error', () {
         var status = const WgetDownloadStatus();
-        
+
         status = status.copyWith(
           state: WgetDownloadState.downloading,
           message: 'Downloading...',
@@ -244,7 +245,8 @@ void main() {
           filePath: '/path/with spaces/and-special_chars/file.zip',
         );
 
-        expect(status.filePath, equals('/path/with spaces/and-special_chars/file.zip'));
+        expect(status.filePath,
+            equals('/path/with spaces/and-special_chars/file.zip'));
       });
 
       test('handles unicode in message', () {

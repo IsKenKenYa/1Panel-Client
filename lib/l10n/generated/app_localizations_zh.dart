@@ -69,6 +69,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get commonReset => '重置';
 
   @override
+  String get commonYes => '是';
+
+  @override
+  String get commonNo => '否';
+
+  @override
   String get commonComingSoon => '即将支持';
 
   @override
@@ -126,10 +132,99 @@ class AppLocalizationsZh extends AppLocalizations {
   String get websitesActionDelete => '删除';
 
   @override
+  String get websitesSetDefaultAction => '设为默认站点';
+
+  @override
+  String get websitesDefaultServerLabel => '默认站点';
+
+  @override
+  String get websitesGroupLabel => '分组';
+
+  @override
+  String get websitesRemarkLabel => '备注';
+
+  @override
+  String get websitesAliasLabel => '别名';
+
+  @override
+  String get websitesPrimaryDomainLabel => '主域名';
+
+  @override
+  String get websitesProxyAddressLabel => '代理地址';
+
+  @override
+  String get websitesProxyTypeLabel => '代理类型';
+
+  @override
+  String get websitesParentWebsiteLabel => '父站点';
+
+  @override
+  String get websitesSiteDirLabel => '站点目录';
+
+  @override
+  String get websitesFilterAllGroups => '全部分组';
+
+  @override
+  String get websitesFilterAllTypes => '全部类型';
+
+  @override
+  String get websitesSelectionEnable => '选择';
+
+  @override
+  String get websitesSelectionDisable => '取消选择';
+
+  @override
+  String get websitesSetGroupAction => '设置分组';
+
+  @override
+  String get websitesLifecycleCreateTitle => '创建网站';
+
+  @override
+  String get websitesLifecycleEditTitle => '编辑网站';
+
+  @override
+  String get websitesLifecycleTypeLabel => '网站类型';
+
+  @override
+  String get websitesLifecycleTypeRuntime => '运行时';
+
+  @override
+  String get websitesLifecycleTypeProxy => '反向代理';
+
+  @override
+  String get websitesLifecycleTypeSubsite => '子站点';
+
+  @override
+  String get websitesLifecycleTypeStatic => '静态站点';
+
+  @override
+  String get websitesValidationGroupRequired => '请选择网站分组。';
+
+  @override
+  String get websitesValidationPrimaryDomainRequired => '请输入主域名。';
+
+  @override
+  String get websitesValidationAliasRequired => '请输入别名。';
+
+  @override
+  String get websitesValidationRuntimeRequired => '请选择运行时。';
+
+  @override
+  String get websitesValidationProxyRequired => '请输入代理地址。';
+
+  @override
+  String get websitesValidationParentRequired => '请选择父站点。';
+
+  @override
   String get websitesOperateSuccess => '操作成功';
 
   @override
   String get websitesOperateFailed => '操作失败';
+
+  @override
+  String websitesSelectedCount(int count) {
+    return '已选择 $count 项';
+  }
 
   @override
   String websitesLoadFailedMessage(String error) {
@@ -149,6 +244,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get websitesDeleteSuccess => '网站已删除';
+
+  @override
+  String websitesBatchDeleteMessage(int count) {
+    return '确定删除 $count 个网站吗？此操作不可撤销。';
+  }
 
   @override
   String get websitesDetailTitle => '网站';
@@ -202,6 +302,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get websitesDomainAddTitle => '添加域名';
 
   @override
+  String get websitesDomainEditTitle => '编辑域名';
+
+  @override
   String get websitesDomainLabel => '域名';
 
   @override
@@ -212,6 +315,20 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get websitesDomainSslLabel => 'SSL';
+
+  @override
+  String get websitesDomainValidationRequired => '请输入域名。';
+
+  @override
+  String get websitesDomainValidationPort => '端口必须在 1 到 65535 之间。';
+
+  @override
+  String get websitesDomainValidationDuplicate => '该域名已存在。';
+
+  @override
+  String websitesDomainDeleteMessage(String domain) {
+    return '确定删除域名 $domain 吗？';
+  }
 
   @override
   String get websitesRewriteNameLabel => '规则名称';
@@ -290,6 +407,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get websitesConfigPageSubtitle => 'Nginx 配置与 PHP 版本';
+
+  @override
+  String get websitesBasicConfigTitle => '基础配置';
+
+  @override
+  String get websitesBasicConfigDatabaseTitle => '数据库绑定';
 
   @override
   String get websitesDomainsPageTitle => '域名管理';
@@ -439,6 +562,81 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get websitesSslExpirationViewTitle => '到期视图';
+
+  @override
+  String websitesSslFilterAllCount(int count) {
+    return '全部（$count）';
+  }
+
+  @override
+  String websitesSslFilterExpiredCount(int count) {
+    return '已过期（$count）';
+  }
+
+  @override
+  String websitesSslFilterWithin7DaysCount(int count) {
+    return '7 天内到期（$count）';
+  }
+
+  @override
+  String websitesSslFilterWithin30DaysCount(int count) {
+    return '30 天内到期（$count）';
+  }
+
+  @override
+  String websitesSslAffectedWebsitesCount(int count) {
+    return '受影响网站：$count';
+  }
+
+  @override
+  String websitesSslAffectedWebsitesDomains(String domains) {
+    return '受影响域名：$domains';
+  }
+
+  @override
+  String get websitesSslImpactHintApply => '立即将该证书应用到已绑定网站吗？';
+
+  @override
+  String get websitesSslImpactWarningHigh => '该操作会影响多个网站，请先确认维护窗口。';
+
+  @override
+  String get websitesSslNoAffectedWebsites => '暂无绑定网站。';
+
+  @override
+  String get websitesSslOpenBoundSiteAction => '打开绑定站点';
+
+  @override
+  String get websitesSslGroupAll => '全部证书';
+
+  @override
+  String get websitesSslGroupExpired => '已过期';
+
+  @override
+  String get websitesSslGroupWithin7Days => '7 天内到期';
+
+  @override
+  String get websitesSslGroupWithin30Days => '30 天内到期';
+
+  @override
+  String get websitesSslGroupHealthy => '健康';
+
+  @override
+  String get websitesSslProviderFilterAll => '全部提供商';
+
+  @override
+  String get websitesSslHealthHealthy => '健康';
+
+  @override
+  String get websitesSslHealthExpiringSoon => '即将过期';
+
+  @override
+  String get websitesSslHealthExpired => '已过期';
+
+  @override
+  String get websitesSslHealthUnknown => '未知';
+
+  @override
   String get openrestyPageTitle => 'OpenResty';
 
   @override
@@ -479,6 +677,237 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get openrestyScopeResultHint => '范围配置结果';
+
+  @override
+  String get openrestyAdvancedSourceEditorTooltip => '高级源码编辑器';
+
+  @override
+  String get openrestyRiskBannerTitle => '网关风险提示';
+
+  @override
+  String get openrestyRunningStatusLabel => '运行状态';
+
+  @override
+  String get openrestyBuildVersionLabel => '构建 / 版本';
+
+  @override
+  String get openrestyCoreSummaryLabel => '核心摘要';
+
+  @override
+  String get openrestyHttpsSummaryLabel => 'HTTPS 摘要';
+
+  @override
+  String get openrestyModulesSummaryLabel => '模块摘要';
+
+  @override
+  String get openrestyCurrentStateLabel => '当前状态';
+
+  @override
+  String get openrestyRejectHandshakeLabel => '拒绝握手';
+
+  @override
+  String get openrestyEditHttpsAction => '编辑 HTTPS';
+
+  @override
+  String get openrestyPreviewDiffAction => '预览差异';
+
+  @override
+  String get openrestyRollbackAction => '回滚';
+
+  @override
+  String get openrestyHttpsDiffPreviewTitle => 'HTTPS 差异预览';
+
+  @override
+  String get openrestyUnnamedModule => '未命名模块';
+
+  @override
+  String get openrestyNoModulesReturned => '网关未返回任何模块。';
+
+  @override
+  String get openrestyModuleDiffPreviewTitle => '模块差异预览';
+
+  @override
+  String get openrestyCurrentConfigLabel => '当前配置';
+
+  @override
+  String get openrestyAdvancedAction => '高级';
+
+  @override
+  String get openrestyConfigDiffPreviewTitle => '配置差异预览';
+
+  @override
+  String get openrestyBuildLastResultLabel => '最近结果';
+
+  @override
+  String get openrestyBuildNoRecentAction => '暂无最近构建操作';
+
+  @override
+  String get openrestyBuildStartAction => '开始构建';
+
+  @override
+  String get openrestyStatusNotRunningSummary => '未运行';
+
+  @override
+  String openrestyStatusRunningSummary(int active) {
+    return '运行中 · active $active';
+  }
+
+  @override
+  String get openrestyHttpsEnabledSummary => 'HTTPS 已启用';
+
+  @override
+  String get openrestyHttpsDisabledSummary => 'HTTPS 已禁用';
+
+  @override
+  String openrestyModulesEnabledSummary(int enabled, int total) {
+    return '已启用模块 $enabled/$total';
+  }
+
+  @override
+  String get openrestyBuildNoMirrorConfigured => '未配置构建镜像地址';
+
+  @override
+  String get openrestyConfigNotLoaded => '配置未加载';
+
+  @override
+  String openrestyConfigLoadedSummary(int lines) {
+    return '已加载 $lines 行';
+  }
+
+  @override
+  String get openrestyDialogUpdateHttpsTitle => '更新 HTTPS';
+
+  @override
+  String get openrestyDialogEnableHttpsLabel => '启用 HTTPS';
+
+  @override
+  String get openrestyDialogRejectInvalidHandshakesLabel => '拒绝无效握手';
+
+  @override
+  String get openrestyDialogModuleTitleFallback => '模块';
+
+  @override
+  String get openrestyDialogEnableModuleLabel => '启用模块';
+
+  @override
+  String get openrestyDialogPackagesLabel => '依赖包';
+
+  @override
+  String get openrestyDialogParamsLabel => '参数';
+
+  @override
+  String get openrestyDialogScriptLabel => '脚本';
+
+  @override
+  String get openrestyDialogPreviewConfigTitle => '预览配置变更';
+
+  @override
+  String get openrestyDialogConfigSourceLabel => '配置源码';
+
+  @override
+  String get openrestyDialogStartBuildTitle => '开始构建 OpenResty';
+
+  @override
+  String get openrestyDialogBuildRiskHint => '构建会刷新网关二进制与模块依赖，请在生产节点执行前再次确认。';
+
+  @override
+  String get openrestyBuildSubmittedMessage => '构建请求已提交';
+
+  @override
+  String openrestyBuildSubmittedWithMirrorMessage(String mirror) {
+    return '已使用镜像 $mirror 提交构建请求。';
+  }
+
+  @override
+  String get openrestyRiskGatewayInactiveTitle => '网关未激活';
+
+  @override
+  String get openrestyRiskGatewayInactiveMessage => 'OpenResty 当前未上报活动连接。';
+
+  @override
+  String get openrestyRiskHttpsDisabledTitle => 'HTTPS 已禁用';
+
+  @override
+  String get openrestyRiskHttpsDisabledMessage => '禁用 HTTPS 会降低网关默认安全基线。';
+
+  @override
+  String get openrestyRiskNoModulesTitle => '未加载模块';
+
+  @override
+  String get openrestyRiskNoModulesMessage => 'OpenResty 模块列表为空，请检查构建与模块配置。';
+
+  @override
+  String get openrestyRiskBuildMirrorMissingTitle => '缺少构建镜像地址';
+
+  @override
+  String get openrestyRiskBuildMirrorMissingMessage => '当前未配置构建镜像地址，可能影响构建速度。';
+
+  @override
+  String get openrestyRiskRejectHandshakeTitle => '已启用拒绝握手';
+
+  @override
+  String get openrestyRiskRejectHandshakeMessage => '这可能阻止 TLS 协商配置不正确的客户端。';
+
+  @override
+  String get openrestyRiskModuleDisabledTitle => '模块已禁用';
+
+  @override
+  String openrestyRiskModuleDisabledMessage(String module) {
+    return '禁用 $module 可能立即改变网关行为。';
+  }
+
+  @override
+  String get openrestyRiskDependencyChangeTitle => '依赖变更';
+
+  @override
+  String openrestyRiskDependencyChangeMessage(String module) {
+    return '依赖包或脚本变更可能为 $module 引入依赖冲突。';
+  }
+
+  @override
+  String get openrestyRiskEmptyConfigTitle => '配置为空';
+
+  @override
+  String get openrestyRiskEmptyConfigMessage => '保存空配置会破坏当前网关配置。';
+
+  @override
+  String get openrestyRiskBraceMismatchTitle => '括号不匹配';
+
+  @override
+  String get openrestyRiskBraceMismatchMessage => '配置中可能存在未匹配的大括号，请先校验。';
+
+  @override
+  String get openrestyRiskMissingHttpBlockTitle => '缺少 http 块';
+
+  @override
+  String get openrestyRiskMissingHttpBlockMessage => '在配置源码中未检测到 http 块。';
+
+  @override
+  String get openrestyRiskTemporaryMarkersTitle => '存在临时标记';
+
+  @override
+  String get openrestyRiskTemporaryMarkersMessage => '配置中仍包含 TODO 或 FIXME 标记。';
+
+  @override
+  String get openrestyDiffLabelHttps => 'HTTPS';
+
+  @override
+  String get openrestyDiffLabelRejectHandshake => '拒绝握手';
+
+  @override
+  String get openrestyDiffLabelEnabled => '启用';
+
+  @override
+  String get openrestyDiffLabelPackages => '依赖包';
+
+  @override
+  String get openrestyDiffLabelParams => '参数';
+
+  @override
+  String get openrestyDiffLabelScript => '脚本';
+
+  @override
+  String get openrestyDiffLabelConfigSource => '配置源码';
 
   @override
   String get monitorNetworkLabel => '网络';
@@ -611,10 +1040,362 @@ class AppLocalizationsZh extends AppLocalizations {
   String get serverModuleWebsites => '网站';
 
   @override
+  String get serverModuleAi => 'AI';
+
+  @override
+  String get aiTabModels => '模型';
+
+  @override
+  String get aiTabGpu => 'GPU';
+
+  @override
+  String get aiTabDomain => '域名';
+
+  @override
+  String get aiModelCreate => '创建模型';
+
+  @override
+  String get aiModelSync => '同步模型';
+
+  @override
+  String get aiModelRecreate => '重新创建模型';
+
+  @override
+  String get aiModelNameLabel => '模型名称';
+
+  @override
+  String get aiTaskIdOptional => '任务 ID（可选）';
+
+  @override
+  String get aiModelNameRequired => '请输入模型名称';
+
+  @override
+  String get aiForceDelete => '强制删除';
+
+  @override
+  String get aiOperationSuccess => '操作成功';
+
+  @override
+  String aiOperationFailed(String error) {
+    return '操作失败：$error';
+  }
+
+  @override
+  String get aiOperationResult => '操作结果';
+
+  @override
+  String get aiNoGpuData => '暂无 GPU 数据';
+
+  @override
+  String get aiFanSpeed => '风扇速度';
+
+  @override
+  String get aiPowerUsage => '功耗';
+
+  @override
+  String get aiPerformanceState => '性能状态';
+
+  @override
+  String get aiDomainHint => '配置 Ollama 域名绑定。请先输入 appInstallID，再加载或提交绑定信息。';
+
+  @override
+  String get aiAppInstallIdLabel => '应用安装 ID';
+
+  @override
+  String get aiAppInstallIdRequired => '请输入应用安装 ID';
+
+  @override
+  String get aiIpAllowListLabel => 'IP 白名单';
+
+  @override
+  String get aiSslIdOptionalLabel => 'SSL ID（可选）';
+
+  @override
+  String get aiWebsiteIdOptionalLabel => '网站 ID（可选）';
+
+  @override
+  String get aiLoadBinding => '加载当前绑定';
+
+  @override
+  String get aiBindDomain => '绑定域名';
+
+  @override
+  String get aiCurrentBinding => '当前绑定';
+
+  @override
+  String get aiConnUrl => '连接地址';
+
+  @override
+  String get containerSystemProtectedNetwork => '系统网络不可删除';
+
+  @override
   String get serverModuleDatabases => '数据库';
 
   @override
   String get serverModuleFirewall => '防火墙';
+
+  @override
+  String get databaseMysqlTab => 'MySQL';
+
+  @override
+  String get databasePostgresqlTab => 'PostgreSQL';
+
+  @override
+  String get databaseRedisTab => 'Redis';
+
+  @override
+  String get databaseRemoteTab => '远程';
+
+  @override
+  String get databaseOverviewTitle => '概览';
+
+  @override
+  String get databaseConfigTitle => '配置文件';
+
+  @override
+  String get databaseBaseInfoTitle => '基础信息';
+
+  @override
+  String get databaseStatusTitle => '状态';
+
+  @override
+  String get databaseVariablesTitle => '变量';
+
+  @override
+  String get databaseScopeLabel => '数据库范围';
+
+  @override
+  String get databaseEngineLabel => '引擎';
+
+  @override
+  String get databaseSourceLabel => '来源';
+
+  @override
+  String get databaseAddressLabel => '地址';
+
+  @override
+  String get databasePortLabel => '端口';
+
+  @override
+  String get databaseContainerLabel => '容器';
+
+  @override
+  String get databaseUsernameLabel => '用户名';
+
+  @override
+  String get databasePasswordLabel => '密码';
+
+  @override
+  String get databaseRemoteAccessLabel => '远程访问';
+
+  @override
+  String get databaseChangePasswordAction => '修改密码';
+
+  @override
+  String get databaseBindUserAction => '绑定用户';
+
+  @override
+  String get databaseTestConnectionAction => '测试连接';
+
+  @override
+  String get databaseRedisConfigTitle => 'Redis 配置';
+
+  @override
+  String get databaseRedisTimeoutLabel => '超时时间';
+
+  @override
+  String get databaseRedisMaxClientsLabel => '最大客户端数';
+
+  @override
+  String get databaseRedisPersistenceTitle => 'Redis 持久化';
+
+  @override
+  String get databaseRedisAppendOnlyLabel => '仅追加模式';
+
+  @override
+  String get databaseRedisSaveLabel => '保存策略';
+
+  @override
+  String get databaseManageTitle => '管理';
+
+  @override
+  String get databaseBackupsPageTitle => '备份';
+
+  @override
+  String get databaseUsersPageTitle => '用户';
+
+  @override
+  String get databaseBackupCreateAction => '创建备份';
+
+  @override
+  String get databaseBackupRestoreAction => '恢复备份';
+
+  @override
+  String get databaseBackupDeleteAction => '删除备份';
+
+  @override
+  String get databaseBackupSecretLabel => '压缩密码';
+
+  @override
+  String get databaseBackupEmpty => '暂无备份记录。';
+
+  @override
+  String get databaseBackupUnsupported => '当前数据库类型不支持备份。';
+
+  @override
+  String get databaseBackupRestoreConfirmMessage => '确定恢复此备份记录吗？现有数据可能被覆盖。';
+
+  @override
+  String get databaseBackupDeleteConfirmMessage => '确定删除此备份记录吗？此操作不可恢复。';
+
+  @override
+  String get databaseUserCurrentLabel => '当前用户';
+
+  @override
+  String get databaseUserPermissionLabel => '权限';
+
+  @override
+  String get databaseUserSuperUserLabel => '超级用户';
+
+  @override
+  String get databaseUserBindAction => '绑定用户';
+
+  @override
+  String get databaseUserPrivilegesAction => '更新权限';
+
+  @override
+  String get databaseUserNoBinding => '暂无已绑定用户信息。';
+
+  @override
+  String get databaseUserUnsupported => '当前数据库类型不支持用户管理。';
+
+  @override
+  String get databasePrivilegeUnavailable => '绑定用户后才可调整权限。';
+
+  @override
+  String get firewallTabStatus => '状态';
+
+  @override
+  String get firewallTabRules => '规则';
+
+  @override
+  String get firewallTabIps => 'IP';
+
+  @override
+  String get firewallTabPorts => '端口';
+
+  @override
+  String get firewallNameLabel => '名称';
+
+  @override
+  String get firewallVersionLabel => '版本';
+
+  @override
+  String get firewallPingLabel => 'Ping';
+
+  @override
+  String get firewallActiveLabel => '启用';
+
+  @override
+  String get firewallInitLabel => '已初始化';
+
+  @override
+  String get firewallBoundLabel => '已绑定';
+
+  @override
+  String get firewallProtocolLabel => '协议';
+
+  @override
+  String get firewallAddressLabel => '地址';
+
+  @override
+  String get firewallStrategyLabel => '策略';
+
+  @override
+  String get firewallPortLabel => '端口';
+
+  @override
+  String get firewallFamilyLabel => '族';
+
+  @override
+  String get firewallSourcePortLabel => '源端口';
+
+  @override
+  String get firewallDestinationPortLabel => '目标端口';
+
+  @override
+  String get firewallRuleDefaultTitle => '规则';
+
+  @override
+  String get firewallUnknownStrategy => '未知';
+
+  @override
+  String get firewallSourceLabel => '来源';
+
+  @override
+  String get firewallSourceAnywhere => '任意位置';
+
+  @override
+  String get firewallSourceAddress => '指定地址';
+
+  @override
+  String get firewallStrategyAccept => '允许';
+
+  @override
+  String get firewallStrategyDrop => '拒绝';
+
+  @override
+  String get firewallStrategyAll => '全部';
+
+  @override
+  String get firewallSearchHint => '按描述、地址或端口搜索';
+
+  @override
+  String get firewallSelectionModeEnable => '选择';
+
+  @override
+  String get firewallSelectionModeDisable => '完成';
+
+  @override
+  String get firewallBatchDeleteAction => '批量删除';
+
+  @override
+  String get firewallBatchAcceptAction => '批量允许';
+
+  @override
+  String get firewallBatchDropAction => '批量拒绝';
+
+  @override
+  String firewallSelectedCount(int count) {
+    return '已选择 $count 项';
+  }
+
+  @override
+  String get firewallCreatePortRuleAction => '创建端口规则';
+
+  @override
+  String get firewallCreateIpRuleAction => '创建 IP 规则';
+
+  @override
+  String get firewallToggleStrategyAction => '切换策略';
+
+  @override
+  String get firewallOperationConfirmTitle => '确认防火墙变更';
+
+  @override
+  String get firewallStartConfirmMessage => '确定启动防火墙服务吗？新规则会立即开始生效。';
+
+  @override
+  String get firewallStopConfirmMessage => '确定停止防火墙服务吗？这可能导致服务暴露在无包过滤状态下。';
+
+  @override
+  String get firewallRestartConfirmMessage => '确定重启防火墙服务吗？现有连接可能会短暂中断。';
+
+  @override
+  String get firewallAddressRequired => '请输入地址。';
+
+  @override
+  String get firewallPortRequired => '请输入端口。';
 
   @override
   String get serverModuleTerminal => '终端';
@@ -1708,6 +2489,140 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get sslSettingsKey => '私钥内容';
+
+  @override
+  String get panelTlsTitle => '面板 TLS';
+
+  @override
+  String get panelTlsOverviewTitle => '概览';
+
+  @override
+  String get panelTlsCertificateTitle => '证书';
+
+  @override
+  String get panelTlsRiskTitle => '风险';
+
+  @override
+  String get panelTlsHistoryTitle => '历史';
+
+  @override
+  String get panelTlsUploadHint => '上传新证书会立即替换当前面板 TLS 证书包。';
+
+  @override
+  String get panelTlsIssuerLabel => '签发者';
+
+  @override
+  String get panelTlsCertificatePathLabel => '证书路径';
+
+  @override
+  String get panelTlsKeyPathLabel => '私钥路径';
+
+  @override
+  String get panelTlsSerialNumberLabel => '序列号';
+
+  @override
+  String get panelTlsLastUpdatedLabel => '最近更新时间';
+
+  @override
+  String get panelTlsNoRecentActions => '暂无最近本地操作。';
+
+  @override
+  String get panelTlsUploadDialogTitle => '上传面板证书';
+
+  @override
+  String get panelTlsCertificatePemLabel => '证书 PEM';
+
+  @override
+  String get panelTlsPrivateKeyPemLabel => '私钥 PEM';
+
+  @override
+  String get panelTlsApplyUpdateTitle => '应用证书更新';
+
+  @override
+  String get panelTlsApplyUpdateMessage =>
+      '该操作会替换当前面板 TLS 证书，并可能在网关重载前短暂影响已连接会话。';
+
+  @override
+  String get panelTlsDownloadDialogTitle => '下载证书包';
+
+  @override
+  String get panelTlsDownloadDialogMessage => '下载仅用于备份或外部校验，请妥善保管导出的私钥。';
+
+  @override
+  String get panelTlsContinueAction => '继续';
+
+  @override
+  String panelTlsDownloadSuccess(int bytes) {
+    return '证书包已下载（$bytes 字节）';
+  }
+
+  @override
+  String get panelTlsHealthHealthy => '健康';
+
+  @override
+  String get panelTlsHealthExpiringSoon => '即将到期';
+
+  @override
+  String get panelTlsHealthExpired => '已过期';
+
+  @override
+  String get panelTlsHealthUnknown => '未知';
+
+  @override
+  String get panelTlsRiskUnknownTitle => '证书到期时间未知';
+
+  @override
+  String get panelTlsRiskUnknownMessage => '无法解析面板证书的到期时间。';
+
+  @override
+  String get panelTlsRiskExpiredTitle => '证书已过期';
+
+  @override
+  String get panelTlsRiskExpiredMessage => '面板 TLS 证书已过期，请立即更换。';
+
+  @override
+  String get panelTlsRiskExpiringSoonTitle => '证书即将到期';
+
+  @override
+  String panelTlsRiskExpiringSoonMessage(int days) {
+    return '面板 TLS 证书将在 $days 天后到期。';
+  }
+
+  @override
+  String get panelTlsRiskSelfSignedTitle => '自签名证书';
+
+  @override
+  String get panelTlsRiskSelfSignedMessage => '自签名证书可能触发浏览器信任告警。';
+
+  @override
+  String get panelTlsValidationDomainRequired => '域名不能为空。';
+
+  @override
+  String get panelTlsValidationCertificateRequired => '证书内容不能为空。';
+
+  @override
+  String get panelTlsValidationCertificatePemRequired => '证书内容必须包含 PEM 证书块。';
+
+  @override
+  String get panelTlsValidationPrivateKeyRequired => '私钥内容不能为空。';
+
+  @override
+  String get panelTlsValidationPrivateKeyPemRequired => '私钥内容必须包含 PEM 私钥块。';
+
+  @override
+  String panelTlsHistoryLoaded(String domain) {
+    return '已加载 $domain 的面板 TLS 状态';
+  }
+
+  @override
+  String panelTlsHistoryUploaded(String domain) {
+    return '已为 $domain 上传新的面板 TLS 证书';
+  }
+
+  @override
+  String panelTlsHistoryDownloaded(int bytes) {
+    return '已下载面板 TLS 证书包（$bytes 字节）';
+  }
 
   @override
   String get upgradeTitle => '系统升级';

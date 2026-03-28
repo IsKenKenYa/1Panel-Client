@@ -738,76 +738,121 @@ class BackupFile extends Equatable {
 /// 备份记录模型
 class BackupRecord extends Equatable {
   final int? id;
+  final String name;
+  final String type;
   final String? accountType;
   final String? accountName;
+  final int? backupAccountId;
   final int? downloadAccountID;
   final String? fileDir;
   final String? fileName;
-  final String? taskID;
+  final String? detailName;
+  final String? backupPath;
+  final int size;
   final String status;
+  final String? taskID;
   final String? message;
   final String? description;
   final String? createdAt;
+  final String? updatedAt;
+  final String? backupTime;
+  final String? recoverTime;
 
   const BackupRecord({
     this.id,
+    this.name = '',
+    this.type = '',
     this.accountType,
     this.accountName,
+    this.backupAccountId,
     this.downloadAccountID,
     this.fileDir,
     this.fileName,
-    this.taskID,
-    this.description,
+    this.detailName,
+    this.backupPath,
+    this.size = 0,
     required this.status,
+    this.taskID,
     this.message,
+    this.description,
     this.createdAt,
+    this.updatedAt,
+    this.backupTime,
+    this.recoverTime,
   });
 
   factory BackupRecord.fromJson(Map<String, dynamic> json) {
     return BackupRecord(
       id: json['id'] as int?,
+      name: json['name'] as String? ?? '',
+      type: json['type'] as String? ?? '',
       accountType: json['accountType'] as String?,
       accountName: json['accountName'] as String?,
+      backupAccountId: json['backupAccountId'] as int?,
       downloadAccountID: json['downloadAccountID'] as int?,
       fileDir: json['fileDir'] as String?,
       fileName: json['fileName'] as String?,
+      detailName: json['detailName'] as String?,
+      backupPath: json['backupPath'] as String?,
+      size: json['size'] as int? ?? 0,
+      status: json['status'] as String? ?? '',
       taskID: json['taskID'] as String?,
-      status: json['status'] as String,
       message: json['message'] as String?,
       description: json['description'] as String?,
       createdAt: json['createdAt']?.toString(),
+      updatedAt: json['updatedAt'] as String?,
+      backupTime: json['backupTime'] as String?,
+      recoverTime: json['recoverTime'] as String?,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'name': name,
+      'type': type,
       'accountType': accountType,
       'accountName': accountName,
+      'backupAccountId': backupAccountId,
       'downloadAccountID': downloadAccountID,
       'fileDir': fileDir,
       'fileName': fileName,
-      'taskID': taskID,
+      'detailName': detailName,
+      'backupPath': backupPath,
+      'size': size,
       'status': status,
+      'taskID': taskID,
       'message': message,
       'description': description,
       'createdAt': createdAt,
+      'updatedAt': updatedAt,
+      'backupTime': backupTime,
+      'recoverTime': recoverTime,
     };
   }
 
   @override
   List<Object?> get props => [
         id,
+        name,
+        type,
         accountType,
         accountName,
+        backupAccountId,
         downloadAccountID,
         fileDir,
         fileName,
+        detailName,
+        backupPath,
+        size,
         taskID,
         status,
         message,
         description,
         createdAt,
+        updatedAt,
+        backupTime,
+        recoverTime,
       ];
 }
 

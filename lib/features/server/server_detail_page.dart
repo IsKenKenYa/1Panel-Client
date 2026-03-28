@@ -147,6 +147,12 @@ class ServerDetailPage extends StatelessWidget {
         icon: Icons.tune_outlined,
         subtitle: l10n.commonExperimental,
         onTap: () => _openRoute(context, AppRoutes.openrestyCenter),
+            ),
+            ServerDetailSectionItem(
+        title: l10n.serverModuleAi,
+        icon: Icons.smart_toy_outlined,
+        subtitle: l10n.commonExperimental,
+        onTap: () => _openRoute(context, AppRoutes.ai),
       ),
       ServerDetailSectionItem(
         title: l10n.serverModuleSystemSettings,
@@ -166,6 +172,8 @@ class ServerDetailPage extends StatelessWidget {
         return '/apps';
       case ClientModule.websites:
         return AppRoutes.websites;
+      case ClientModule.ai:
+        return AppRoutes.ai;
       case ClientModule.verification:
         return AppRoutes.securityVerification;
       case ClientModule.servers:

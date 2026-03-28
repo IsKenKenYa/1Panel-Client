@@ -69,6 +69,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonReset => 'Reset';
 
   @override
+  String get commonYes => 'Yes';
+
+  @override
+  String get commonNo => 'No';
+
+  @override
   String get commonComingSoon => 'Coming soon';
 
   @override
@@ -126,10 +132,100 @@ class AppLocalizationsEn extends AppLocalizations {
   String get websitesActionDelete => 'Delete';
 
   @override
+  String get websitesSetDefaultAction => 'Set Default';
+
+  @override
+  String get websitesDefaultServerLabel => 'Default server';
+
+  @override
+  String get websitesGroupLabel => 'Group';
+
+  @override
+  String get websitesRemarkLabel => 'Remark';
+
+  @override
+  String get websitesAliasLabel => 'Alias';
+
+  @override
+  String get websitesPrimaryDomainLabel => 'Primary domain';
+
+  @override
+  String get websitesProxyAddressLabel => 'Proxy address';
+
+  @override
+  String get websitesProxyTypeLabel => 'Proxy type';
+
+  @override
+  String get websitesParentWebsiteLabel => 'Parent website';
+
+  @override
+  String get websitesSiteDirLabel => 'Site directory';
+
+  @override
+  String get websitesFilterAllGroups => 'All groups';
+
+  @override
+  String get websitesFilterAllTypes => 'All types';
+
+  @override
+  String get websitesSelectionEnable => 'Select';
+
+  @override
+  String get websitesSelectionDisable => 'Cancel selection';
+
+  @override
+  String get websitesSetGroupAction => 'Set Group';
+
+  @override
+  String get websitesLifecycleCreateTitle => 'Create Website';
+
+  @override
+  String get websitesLifecycleEditTitle => 'Edit Website';
+
+  @override
+  String get websitesLifecycleTypeLabel => 'Website type';
+
+  @override
+  String get websitesLifecycleTypeRuntime => 'Runtime';
+
+  @override
+  String get websitesLifecycleTypeProxy => 'Proxy';
+
+  @override
+  String get websitesLifecycleTypeSubsite => 'Subsite';
+
+  @override
+  String get websitesLifecycleTypeStatic => 'Static';
+
+  @override
+  String get websitesValidationGroupRequired => 'Select a website group.';
+
+  @override
+  String get websitesValidationPrimaryDomainRequired =>
+      'Primary domain is required.';
+
+  @override
+  String get websitesValidationAliasRequired => 'Alias is required.';
+
+  @override
+  String get websitesValidationRuntimeRequired => 'Select a runtime.';
+
+  @override
+  String get websitesValidationProxyRequired => 'Proxy address is required.';
+
+  @override
+  String get websitesValidationParentRequired => 'Select a parent website.';
+
+  @override
   String get websitesOperateSuccess => 'Operation successful';
 
   @override
   String get websitesOperateFailed => 'Operation failed';
+
+  @override
+  String websitesSelectedCount(int count) {
+    return '$count selected';
+  }
 
   @override
   String websitesLoadFailedMessage(String error) {
@@ -149,6 +245,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get websitesDeleteSuccess => 'Website deleted';
+
+  @override
+  String websitesBatchDeleteMessage(int count) {
+    return 'Delete $count websites? This action cannot be undone.';
+  }
 
   @override
   String get websitesDetailTitle => 'Website';
@@ -202,6 +303,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get websitesDomainAddTitle => 'Add domain';
 
   @override
+  String get websitesDomainEditTitle => 'Edit domain';
+
+  @override
   String get websitesDomainLabel => 'Domain';
 
   @override
@@ -212,6 +316,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get websitesDomainSslLabel => 'SSL';
+
+  @override
+  String get websitesDomainValidationRequired => 'Domain is required.';
+
+  @override
+  String get websitesDomainValidationPort =>
+      'Port must be between 1 and 65535.';
+
+  @override
+  String get websitesDomainValidationDuplicate => 'This domain already exists.';
+
+  @override
+  String websitesDomainDeleteMessage(String domain) {
+    return 'Delete domain $domain?';
+  }
 
   @override
   String get websitesRewriteNameLabel => 'Rewrite name';
@@ -290,6 +409,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get websitesConfigPageSubtitle => 'Nginx config & PHP version';
+
+  @override
+  String get websitesBasicConfigTitle => 'Basic';
+
+  @override
+  String get websitesBasicConfigDatabaseTitle => 'Database binding';
 
   @override
   String get websitesDomainsPageTitle => 'Domains';
@@ -441,6 +566,83 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get websitesSslExpirationViewTitle => 'Expiration view';
+
+  @override
+  String websitesSslFilterAllCount(int count) {
+    return 'All ($count)';
+  }
+
+  @override
+  String websitesSslFilterExpiredCount(int count) {
+    return 'Expired ($count)';
+  }
+
+  @override
+  String websitesSslFilterWithin7DaysCount(int count) {
+    return 'Within 7 days ($count)';
+  }
+
+  @override
+  String websitesSslFilterWithin30DaysCount(int count) {
+    return 'Within 30 days ($count)';
+  }
+
+  @override
+  String websitesSslAffectedWebsitesCount(int count) {
+    return 'Affected websites: $count';
+  }
+
+  @override
+  String websitesSslAffectedWebsitesDomains(String domains) {
+    return 'Affected domains: $domains';
+  }
+
+  @override
+  String get websitesSslImpactHintApply =>
+      'Apply this certificate to bound websites now?';
+
+  @override
+  String get websitesSslImpactWarningHigh =>
+      'This action affects multiple websites. Confirm maintenance window first.';
+
+  @override
+  String get websitesSslNoAffectedWebsites => 'No bound websites.';
+
+  @override
+  String get websitesSslOpenBoundSiteAction => 'Open bound site';
+
+  @override
+  String get websitesSslGroupAll => 'All certificates';
+
+  @override
+  String get websitesSslGroupExpired => 'Expired';
+
+  @override
+  String get websitesSslGroupWithin7Days => 'Within 7 days';
+
+  @override
+  String get websitesSslGroupWithin30Days => 'Within 30 days';
+
+  @override
+  String get websitesSslGroupHealthy => 'Healthy';
+
+  @override
+  String get websitesSslProviderFilterAll => 'All providers';
+
+  @override
+  String get websitesSslHealthHealthy => 'Healthy';
+
+  @override
+  String get websitesSslHealthExpiringSoon => 'Expiring soon';
+
+  @override
+  String get websitesSslHealthExpired => 'Expired';
+
+  @override
+  String get websitesSslHealthUnknown => 'Unknown';
+
+  @override
   String get openrestyPageTitle => 'OpenResty';
 
   @override
@@ -481,6 +683,249 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get openrestyScopeResultHint => 'Scope config result';
+
+  @override
+  String get openrestyAdvancedSourceEditorTooltip => 'Advanced source editor';
+
+  @override
+  String get openrestyRiskBannerTitle => 'Gateway risk banner';
+
+  @override
+  String get openrestyRunningStatusLabel => 'Running Status';
+
+  @override
+  String get openrestyBuildVersionLabel => 'Build / Version';
+
+  @override
+  String get openrestyCoreSummaryLabel => 'Core Summary';
+
+  @override
+  String get openrestyHttpsSummaryLabel => 'HTTPS Summary';
+
+  @override
+  String get openrestyModulesSummaryLabel => 'Modules Summary';
+
+  @override
+  String get openrestyCurrentStateLabel => 'Current State';
+
+  @override
+  String get openrestyRejectHandshakeLabel => 'Reject Handshake';
+
+  @override
+  String get openrestyEditHttpsAction => 'Edit HTTPS';
+
+  @override
+  String get openrestyPreviewDiffAction => 'Preview diff';
+
+  @override
+  String get openrestyRollbackAction => 'Rollback';
+
+  @override
+  String get openrestyHttpsDiffPreviewTitle => 'HTTPS diff preview';
+
+  @override
+  String get openrestyUnnamedModule => 'Unnamed module';
+
+  @override
+  String get openrestyNoModulesReturned =>
+      'No modules returned by the gateway.';
+
+  @override
+  String get openrestyModuleDiffPreviewTitle => 'Module diff preview';
+
+  @override
+  String get openrestyCurrentConfigLabel => 'Current Config';
+
+  @override
+  String get openrestyAdvancedAction => 'Advanced';
+
+  @override
+  String get openrestyConfigDiffPreviewTitle => 'Config diff preview';
+
+  @override
+  String get openrestyBuildLastResultLabel => 'Last Result';
+
+  @override
+  String get openrestyBuildNoRecentAction => 'No recent build action';
+
+  @override
+  String get openrestyBuildStartAction => 'Start build';
+
+  @override
+  String get openrestyStatusNotRunningSummary => 'Not running';
+
+  @override
+  String openrestyStatusRunningSummary(int active) {
+    return 'Running · active $active';
+  }
+
+  @override
+  String get openrestyHttpsEnabledSummary => 'HTTPS enabled';
+
+  @override
+  String get openrestyHttpsDisabledSummary => 'HTTPS disabled';
+
+  @override
+  String openrestyModulesEnabledSummary(int enabled, int total) {
+    return '$enabled/$total modules enabled';
+  }
+
+  @override
+  String get openrestyBuildNoMirrorConfigured => 'No mirror configured';
+
+  @override
+  String get openrestyConfigNotLoaded => 'Config not loaded';
+
+  @override
+  String openrestyConfigLoadedSummary(int lines) {
+    return '$lines lines loaded';
+  }
+
+  @override
+  String get openrestyDialogUpdateHttpsTitle => 'Update HTTPS';
+
+  @override
+  String get openrestyDialogEnableHttpsLabel => 'Enable HTTPS';
+
+  @override
+  String get openrestyDialogRejectInvalidHandshakesLabel =>
+      'Reject invalid handshakes';
+
+  @override
+  String get openrestyDialogModuleTitleFallback => 'Module';
+
+  @override
+  String get openrestyDialogEnableModuleLabel => 'Enable module';
+
+  @override
+  String get openrestyDialogPackagesLabel => 'Packages';
+
+  @override
+  String get openrestyDialogParamsLabel => 'Params';
+
+  @override
+  String get openrestyDialogScriptLabel => 'Script';
+
+  @override
+  String get openrestyDialogPreviewConfigTitle => 'Preview config change';
+
+  @override
+  String get openrestyDialogConfigSourceLabel => 'Config source';
+
+  @override
+  String get openrestyDialogStartBuildTitle => 'Start OpenResty build';
+
+  @override
+  String get openrestyDialogBuildRiskHint =>
+      'Build can refresh gateway binaries and module packages. Confirm before running on production nodes.';
+
+  @override
+  String get openrestyBuildSubmittedMessage => 'Build submitted';
+
+  @override
+  String openrestyBuildSubmittedWithMirrorMessage(String mirror) {
+    return 'Build submitted with mirror $mirror.';
+  }
+
+  @override
+  String get openrestyRiskGatewayInactiveTitle => 'Gateway inactive';
+
+  @override
+  String get openrestyRiskGatewayInactiveMessage =>
+      'OpenResty is not reporting active connections.';
+
+  @override
+  String get openrestyRiskHttpsDisabledTitle => 'HTTPS disabled';
+
+  @override
+  String get openrestyRiskHttpsDisabledMessage =>
+      'Disabling HTTPS reduces the default gateway security baseline.';
+
+  @override
+  String get openrestyRiskNoModulesTitle => 'No modules loaded';
+
+  @override
+  String get openrestyRiskNoModulesMessage =>
+      'OpenResty modules are empty. Review build and module config.';
+
+  @override
+  String get openrestyRiskBuildMirrorMissingTitle => 'Build mirror missing';
+
+  @override
+  String get openrestyRiskBuildMirrorMissingMessage =>
+      'No build mirror is configured. Build speed may be affected.';
+
+  @override
+  String get openrestyRiskRejectHandshakeTitle => 'Reject handshake enabled';
+
+  @override
+  String get openrestyRiskRejectHandshakeMessage =>
+      'This may block clients with invalid TLS negotiation settings.';
+
+  @override
+  String get openrestyRiskModuleDisabledTitle => 'Module disabled';
+
+  @override
+  String openrestyRiskModuleDisabledMessage(String module) {
+    return 'Disabling $module may change gateway behavior immediately.';
+  }
+
+  @override
+  String get openrestyRiskDependencyChangeTitle => 'Dependency change';
+
+  @override
+  String openrestyRiskDependencyChangeMessage(String module) {
+    return 'Package or script changes can introduce dependency conflicts for $module.';
+  }
+
+  @override
+  String get openrestyRiskEmptyConfigTitle => 'Empty config';
+
+  @override
+  String get openrestyRiskEmptyConfigMessage =>
+      'Saving an empty config will break the current gateway setup.';
+
+  @override
+  String get openrestyRiskBraceMismatchTitle => 'Brace mismatch';
+
+  @override
+  String get openrestyRiskBraceMismatchMessage =>
+      'The config appears to have unmatched braces. Validate before saving.';
+
+  @override
+  String get openrestyRiskMissingHttpBlockTitle => 'Missing http block';
+
+  @override
+  String get openrestyRiskMissingHttpBlockMessage =>
+      'No http block was detected in the config source.';
+
+  @override
+  String get openrestyRiskTemporaryMarkersTitle => 'Temporary markers found';
+
+  @override
+  String get openrestyRiskTemporaryMarkersMessage =>
+      'The config still contains TODO or FIXME markers.';
+
+  @override
+  String get openrestyDiffLabelHttps => 'HTTPS';
+
+  @override
+  String get openrestyDiffLabelRejectHandshake => 'Reject Handshake';
+
+  @override
+  String get openrestyDiffLabelEnabled => 'Enabled';
+
+  @override
+  String get openrestyDiffLabelPackages => 'Packages';
+
+  @override
+  String get openrestyDiffLabelParams => 'Params';
+
+  @override
+  String get openrestyDiffLabelScript => 'Script';
+
+  @override
+  String get openrestyDiffLabelConfigSource => 'Config Source';
 
   @override
   String get monitorNetworkLabel => 'Network';
@@ -616,10 +1061,373 @@ class AppLocalizationsEn extends AppLocalizations {
   String get serverModuleWebsites => 'Websites';
 
   @override
+  String get serverModuleAi => 'AI';
+
+  @override
+  String get aiTabModels => 'Models';
+
+  @override
+  String get aiTabGpu => 'GPU';
+
+  @override
+  String get aiTabDomain => 'Domain';
+
+  @override
+  String get aiModelCreate => 'Create Model';
+
+  @override
+  String get aiModelSync => 'Sync Models';
+
+  @override
+  String get aiModelRecreate => 'Recreate Model';
+
+  @override
+  String get aiModelNameLabel => 'Model Name';
+
+  @override
+  String get aiTaskIdOptional => 'Task ID (optional)';
+
+  @override
+  String get aiModelNameRequired => 'Model name is required';
+
+  @override
+  String get aiForceDelete => 'Force Delete';
+
+  @override
+  String get aiOperationSuccess => 'Operation successful';
+
+  @override
+  String aiOperationFailed(String error) {
+    return 'Operation failed: $error';
+  }
+
+  @override
+  String get aiOperationResult => 'Operation Result';
+
+  @override
+  String get aiNoGpuData => 'No GPU data available';
+
+  @override
+  String get aiFanSpeed => 'Fan Speed';
+
+  @override
+  String get aiPowerUsage => 'Power';
+
+  @override
+  String get aiPerformanceState => 'Performance State';
+
+  @override
+  String get aiDomainHint =>
+      'Configure Ollama domain binding. Enter the appInstallID first, then load or submit binding.';
+
+  @override
+  String get aiAppInstallIdLabel => 'App Install ID';
+
+  @override
+  String get aiAppInstallIdRequired => 'App Install ID is required';
+
+  @override
+  String get aiIpAllowListLabel => 'Allow IP List';
+
+  @override
+  String get aiSslIdOptionalLabel => 'SSL ID (optional)';
+
+  @override
+  String get aiWebsiteIdOptionalLabel => 'Website ID (optional)';
+
+  @override
+  String get aiLoadBinding => 'Load Current Binding';
+
+  @override
+  String get aiBindDomain => 'Bind Domain';
+
+  @override
+  String get aiCurrentBinding => 'Current Binding';
+
+  @override
+  String get aiConnUrl => 'Connection URL';
+
+  @override
+  String get containerSystemProtectedNetwork =>
+      'System network cannot be deleted';
+
+  @override
   String get serverModuleDatabases => 'Databases';
 
   @override
   String get serverModuleFirewall => 'Firewall';
+
+  @override
+  String get databaseMysqlTab => 'MySQL';
+
+  @override
+  String get databasePostgresqlTab => 'PostgreSQL';
+
+  @override
+  String get databaseRedisTab => 'Redis';
+
+  @override
+  String get databaseRemoteTab => 'Remote';
+
+  @override
+  String get databaseOverviewTitle => 'Overview';
+
+  @override
+  String get databaseConfigTitle => 'Config File';
+
+  @override
+  String get databaseBaseInfoTitle => 'Base Info';
+
+  @override
+  String get databaseStatusTitle => 'Status';
+
+  @override
+  String get databaseVariablesTitle => 'Variables';
+
+  @override
+  String get databaseScopeLabel => 'Database Scope';
+
+  @override
+  String get databaseEngineLabel => 'Engine';
+
+  @override
+  String get databaseSourceLabel => 'Source';
+
+  @override
+  String get databaseAddressLabel => 'Address';
+
+  @override
+  String get databasePortLabel => 'Port';
+
+  @override
+  String get databaseContainerLabel => 'Container';
+
+  @override
+  String get databaseUsernameLabel => 'Username';
+
+  @override
+  String get databasePasswordLabel => 'Password';
+
+  @override
+  String get databaseRemoteAccessLabel => 'Remote Access';
+
+  @override
+  String get databaseChangePasswordAction => 'Change Password';
+
+  @override
+  String get databaseBindUserAction => 'Bind User';
+
+  @override
+  String get databaseTestConnectionAction => 'Test Connection';
+
+  @override
+  String get databaseRedisConfigTitle => 'Redis Config';
+
+  @override
+  String get databaseRedisTimeoutLabel => 'Timeout';
+
+  @override
+  String get databaseRedisMaxClientsLabel => 'Max Clients';
+
+  @override
+  String get databaseRedisPersistenceTitle => 'Redis Persistence';
+
+  @override
+  String get databaseRedisAppendOnlyLabel => 'Append Only';
+
+  @override
+  String get databaseRedisSaveLabel => 'Save Policy';
+
+  @override
+  String get databaseManageTitle => 'Manage';
+
+  @override
+  String get databaseBackupsPageTitle => 'Backups';
+
+  @override
+  String get databaseUsersPageTitle => 'Users';
+
+  @override
+  String get databaseBackupCreateAction => 'Create Backup';
+
+  @override
+  String get databaseBackupRestoreAction => 'Restore Backup';
+
+  @override
+  String get databaseBackupDeleteAction => 'Delete Backup';
+
+  @override
+  String get databaseBackupSecretLabel => 'Compression Password';
+
+  @override
+  String get databaseBackupEmpty => 'No backup records yet.';
+
+  @override
+  String get databaseBackupUnsupported =>
+      'Backups are not supported for this database type.';
+
+  @override
+  String get databaseBackupRestoreConfirmMessage =>
+      'Restore this backup record? Existing data may be overwritten.';
+
+  @override
+  String get databaseBackupDeleteConfirmMessage =>
+      'Delete this backup record? This action cannot be undone.';
+
+  @override
+  String get databaseUserCurrentLabel => 'Current User';
+
+  @override
+  String get databaseUserPermissionLabel => 'Permission';
+
+  @override
+  String get databaseUserSuperUserLabel => 'Superuser';
+
+  @override
+  String get databaseUserBindAction => 'Bind User';
+
+  @override
+  String get databaseUserPrivilegesAction => 'Update Privileges';
+
+  @override
+  String get databaseUserNoBinding =>
+      'No bound user information is available yet.';
+
+  @override
+  String get databaseUserUnsupported =>
+      'User management is not supported for this database type.';
+
+  @override
+  String get databasePrivilegeUnavailable =>
+      'Privileges can be adjusted after a user is bound.';
+
+  @override
+  String get firewallTabStatus => 'Status';
+
+  @override
+  String get firewallTabRules => 'Rules';
+
+  @override
+  String get firewallTabIps => 'IPs';
+
+  @override
+  String get firewallTabPorts => 'Ports';
+
+  @override
+  String get firewallNameLabel => 'Name';
+
+  @override
+  String get firewallVersionLabel => 'Version';
+
+  @override
+  String get firewallPingLabel => 'Ping';
+
+  @override
+  String get firewallActiveLabel => 'Active';
+
+  @override
+  String get firewallInitLabel => 'Initialized';
+
+  @override
+  String get firewallBoundLabel => 'Bound';
+
+  @override
+  String get firewallProtocolLabel => 'Protocol';
+
+  @override
+  String get firewallAddressLabel => 'Address';
+
+  @override
+  String get firewallStrategyLabel => 'Strategy';
+
+  @override
+  String get firewallPortLabel => 'Port';
+
+  @override
+  String get firewallFamilyLabel => 'Family';
+
+  @override
+  String get firewallSourcePortLabel => 'Source Port';
+
+  @override
+  String get firewallDestinationPortLabel => 'Destination Port';
+
+  @override
+  String get firewallRuleDefaultTitle => 'Rule';
+
+  @override
+  String get firewallUnknownStrategy => 'Unknown';
+
+  @override
+  String get firewallSourceLabel => 'Source';
+
+  @override
+  String get firewallSourceAnywhere => 'Anywhere';
+
+  @override
+  String get firewallSourceAddress => 'Address';
+
+  @override
+  String get firewallStrategyAccept => 'Accept';
+
+  @override
+  String get firewallStrategyDrop => 'Drop';
+
+  @override
+  String get firewallStrategyAll => 'All';
+
+  @override
+  String get firewallSearchHint => 'Search by description, address, or port';
+
+  @override
+  String get firewallSelectionModeEnable => 'Select';
+
+  @override
+  String get firewallSelectionModeDisable => 'Done';
+
+  @override
+  String get firewallBatchDeleteAction => 'Batch Delete';
+
+  @override
+  String get firewallBatchAcceptAction => 'Batch Accept';
+
+  @override
+  String get firewallBatchDropAction => 'Batch Drop';
+
+  @override
+  String firewallSelectedCount(int count) {
+    return '$count selected';
+  }
+
+  @override
+  String get firewallCreatePortRuleAction => 'Create Port Rule';
+
+  @override
+  String get firewallCreateIpRuleAction => 'Create IP Rule';
+
+  @override
+  String get firewallToggleStrategyAction => 'Toggle Strategy';
+
+  @override
+  String get firewallOperationConfirmTitle => 'Confirm firewall change';
+
+  @override
+  String get firewallStartConfirmMessage =>
+      'Start the firewall service? New rules will begin taking effect immediately.';
+
+  @override
+  String get firewallStopConfirmMessage =>
+      'Stop the firewall service? This may expose services without packet filtering.';
+
+  @override
+  String get firewallRestartConfirmMessage =>
+      'Restart the firewall service? Existing connections may be interrupted briefly.';
+
+  @override
+  String get firewallAddressRequired => 'Address is required.';
+
+  @override
+  String get firewallPortRequired => 'Port is required.';
 
   @override
   String get serverModuleTerminal => 'Terminal';
@@ -1747,6 +2555,149 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sslSettingsKey => 'Private Key Content';
+
+  @override
+  String get panelTlsTitle => 'Panel TLS';
+
+  @override
+  String get panelTlsOverviewTitle => 'Overview';
+
+  @override
+  String get panelTlsCertificateTitle => 'Certificate';
+
+  @override
+  String get panelTlsRiskTitle => 'Risk';
+
+  @override
+  String get panelTlsHistoryTitle => 'History';
+
+  @override
+  String get panelTlsUploadHint =>
+      'Uploading a new certificate replaces the current panel TLS bundle immediately.';
+
+  @override
+  String get panelTlsIssuerLabel => 'Issuer';
+
+  @override
+  String get panelTlsCertificatePathLabel => 'Certificate Path';
+
+  @override
+  String get panelTlsKeyPathLabel => 'Key Path';
+
+  @override
+  String get panelTlsSerialNumberLabel => 'Serial Number';
+
+  @override
+  String get panelTlsLastUpdatedLabel => 'Last Updated';
+
+  @override
+  String get panelTlsNoRecentActions => 'No recent local actions yet.';
+
+  @override
+  String get panelTlsUploadDialogTitle => 'Upload panel certificate';
+
+  @override
+  String get panelTlsCertificatePemLabel => 'Certificate PEM';
+
+  @override
+  String get panelTlsPrivateKeyPemLabel => 'Private Key PEM';
+
+  @override
+  String get panelTlsApplyUpdateTitle => 'Apply certificate update';
+
+  @override
+  String get panelTlsApplyUpdateMessage =>
+      'This replaces the current panel TLS certificate and may interrupt active browser sessions until the gateway reload finishes.';
+
+  @override
+  String get panelTlsDownloadDialogTitle => 'Download certificate bundle';
+
+  @override
+  String get panelTlsDownloadDialogMessage =>
+      'Use downloads for backup or external validation only. Handle private keys carefully after export.';
+
+  @override
+  String get panelTlsContinueAction => 'Continue';
+
+  @override
+  String panelTlsDownloadSuccess(int bytes) {
+    return 'Downloaded certificate bundle ($bytes bytes)';
+  }
+
+  @override
+  String get panelTlsHealthHealthy => 'Healthy';
+
+  @override
+  String get panelTlsHealthExpiringSoon => 'Expiring soon';
+
+  @override
+  String get panelTlsHealthExpired => 'Expired';
+
+  @override
+  String get panelTlsHealthUnknown => 'Unknown';
+
+  @override
+  String get panelTlsRiskUnknownTitle => 'Certificate expiry unknown';
+
+  @override
+  String get panelTlsRiskUnknownMessage =>
+      'The panel certificate expiration time could not be parsed.';
+
+  @override
+  String get panelTlsRiskExpiredTitle => 'Certificate expired';
+
+  @override
+  String get panelTlsRiskExpiredMessage =>
+      'The panel TLS certificate has already expired and should be replaced immediately.';
+
+  @override
+  String get panelTlsRiskExpiringSoonTitle => 'Certificate expiring soon';
+
+  @override
+  String panelTlsRiskExpiringSoonMessage(int days) {
+    return 'The panel TLS certificate expires in $days day(s).';
+  }
+
+  @override
+  String get panelTlsRiskSelfSignedTitle => 'Self-signed certificate';
+
+  @override
+  String get panelTlsRiskSelfSignedMessage =>
+      'Self-signed certificates can trigger browser trust warnings.';
+
+  @override
+  String get panelTlsValidationDomainRequired => 'Domain is required.';
+
+  @override
+  String get panelTlsValidationCertificateRequired =>
+      'Certificate content is required.';
+
+  @override
+  String get panelTlsValidationCertificatePemRequired =>
+      'Certificate must contain a PEM certificate block.';
+
+  @override
+  String get panelTlsValidationPrivateKeyRequired =>
+      'Private key content is required.';
+
+  @override
+  String get panelTlsValidationPrivateKeyPemRequired =>
+      'Private key must contain a PEM key block.';
+
+  @override
+  String panelTlsHistoryLoaded(String domain) {
+    return 'Loaded current panel TLS status for $domain';
+  }
+
+  @override
+  String panelTlsHistoryUploaded(String domain) {
+    return 'Uploaded a new panel TLS certificate for $domain';
+  }
+
+  @override
+  String panelTlsHistoryDownloaded(int bytes) {
+    return 'Downloaded panel TLS certificate bundle ($bytes bytes)';
+  }
 
   @override
   String get upgradeTitle => 'System Upgrade';

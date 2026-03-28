@@ -13,10 +13,13 @@ void main() {
   bool hasApiKey = false;
 
   setUpAll(() async {
+    await TestEnvironment.initialize();
     await TestConfigManager.instance.initialize();
     final baseUrl = TestConfigManager.instance.getString('PANEL_BASE_URL', defaultValue: 'http://localhost:9999');
     final apiKey = TestConfigManager.instance.getString('PANEL_API_KEY');
-    hasApiKey = apiKey.isNotEmpty && apiKey != 'your_api_key_here';
+    hasApiKey = TestEnvironment.canRunIntegrationTests &&
+        apiKey.isNotEmpty &&
+        apiKey != 'your_api_key_here';
 
     if (hasApiKey) {
       client = DioClient(
@@ -37,7 +40,12 @@ void main() {
       debugPrint('API密钥: ${hasApiKey ? "已配置" : "未配置"}');
       debugPrint('========================================\n');
 
-      expect(hasApiKey, equals(TestEnvironment.canRunIntegrationTests));
+      expect(
+        hasApiKey,
+        equals(
+          TestEnvironment.canRunIntegrationTests,
+        ),
+      );
     });
 
     test('获取测试文件列表', () async {

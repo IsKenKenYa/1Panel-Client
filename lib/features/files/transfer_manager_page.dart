@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -10,9 +9,8 @@ import 'package:onepanel_client/core/services/transfer/transfer_task.dart';
 import 'package:onepanel_client/core/services/transfer/transfer_manager.dart';
 import 'package:onepanel_client/core/services/file_save_service.dart';
 import 'package:onepanel_client/features/files/files_provider.dart';
+import 'package:onepanel_client/features/files/providers/transfer_manager_provider.dart';
 import 'package:onepanel_client/features/files/upload_history_page.dart';
-
-enum TransferChannel { downloads, uploads }
 
 class TransferManagerPage extends StatefulWidget {
   const TransferManagerPage({super.key});
@@ -22,38 +20,13 @@ class TransferManagerPage extends StatefulWidget {
 }
 
 class _TransferManagerPageState extends State<TransferManagerPage> {
-  TransferChannel _channel = TransferChannel.downloads;
-  List<DownloadTask>? _downloadTasks;
-  bool _isLoading = true;
-  Timer? _refreshTimer;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadTasks();
-    _startAutoRefresh();
-  }
+  late final TransferManagerProvider _provider = TransferManagerProvider()
+    ..initialize();
 
   @override
   void dispose() {
-    _refreshTimer?.cancel();
+    _provider.dispose();
     super.dispose();
-  }
-  
-  void _startAutoRefresh() {
-    _refreshTimer = Timer.periodic(const Duration(seconds: 2), (_) {
-      _loadTasks();
-    });
-  }
-  
-  Future<void> _loadTasks() async {
-    final tasks = await TransferManager().getDownloaderTasks();
-    if (mounted) {
-      setState(() {
-        _downloadTasks = tasks;
-        _isLoading = false;
-      });
-    }
   }
 
   @override
@@ -61,92 +34,119 @@ class _TransferManagerPageState extends State<TransferManagerPage> {
     final l10n = context.l10n;
     final theme = Theme.of(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.transferManagerTitle),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.history),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => ChangeNotifierProvider.value(
-                    value: context.read<FilesProvider>(),
-                    child: const UploadHistoryPage(),
-                  ),
+    return ChangeNotifierProvider<TransferManagerProvider>.value(
+      value: _provider,
+      child: Consumer<TransferManagerProvider>(
+        builder: (context, provider, _) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(l10n.transferManagerTitle),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.history),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ChangeNotifierProvider.value(
+                          value: context.read<FilesProvider>(),
+                          child: const UploadHistoryPage(),
+                        ),
+                      ),
+                    );
+                  },
+                  tooltip: l10n.filesUploadHistory,
                 ),
-              );
-            },
-            tooltip: l10n.filesUploadHistory,
-          ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadTasks,
-            tooltip: l10n.commonRefresh,
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete_sweep_outlined),
-            onPressed: () => _showClearDialog(context),
-            tooltip: l10n.transferClearCompleted,
-          ),
-        ],
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : LayoutBuilder(
-              builder: (context, constraints) {
-                final isWide = constraints.maxWidth >= 840;
-                if (isWide) {
-                  return Row(
-                    children: [
-                      Expanded(child: _buildDownloadsPane(context, l10n, theme)),
-                      const SizedBox(width: 12),
-                      Expanded(child: _buildUploadsPane(context, l10n, theme)),
-                    ],
-                  );
-                }
+                IconButton(
+                  icon: const Icon(Icons.refresh),
+                  onPressed: provider.loadTasks,
+                  tooltip: l10n.commonRefresh,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete_sweep_outlined),
+                  onPressed: () => _showClearDialog(context, provider),
+                  tooltip: l10n.transferClearCompleted,
+                ),
+              ],
+            ),
+            body: provider.isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : LayoutBuilder(
+                    builder: (context, constraints) {
+                      final isWide = constraints.maxWidth >= 840;
+                      if (isWide) {
+                        return Row(
+                          children: [
+                            Expanded(
+                              child: _buildDownloadsPane(
+                                context,
+                                l10n,
+                                theme,
+                                provider,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: _buildUploadsPane(context, l10n, theme),
+                            ),
+                          ],
+                        );
+                      }
 
-                return Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-                      child: SegmentedButton<TransferChannel>(
-                        segments: [
-                          ButtonSegment<TransferChannel>(
-                            value: TransferChannel.downloads,
-                            icon: const Icon(Icons.download),
-                            label: Text(l10n.transferDownloads),
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                            child: SegmentedButton<TransferChannel>(
+                              segments: [
+                                ButtonSegment<TransferChannel>(
+                                  value: TransferChannel.downloads,
+                                  icon: const Icon(Icons.download),
+                                  label: Text(l10n.transferDownloads),
+                                ),
+                                ButtonSegment<TransferChannel>(
+                                  value: TransferChannel.uploads,
+                                  icon: const Icon(Icons.upload),
+                                  label: Text(l10n.transferUploads),
+                                ),
+                              ],
+                              selected: {provider.channel},
+                              onSelectionChanged: (value) {
+                                provider.setChannel(value.first);
+                              },
+                            ),
                           ),
-                          ButtonSegment<TransferChannel>(
-                            value: TransferChannel.uploads,
-                            icon: const Icon(Icons.upload),
-                            label: Text(l10n.transferUploads),
+                          Expanded(
+                            child: AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 200),
+                              child:
+                                  provider.channel == TransferChannel.downloads
+                                      ? _buildDownloadsPane(
+                                          context,
+                                          l10n,
+                                          theme,
+                                          provider,
+                                        )
+                                      : _buildUploadsPane(context, l10n, theme),
+                            ),
                           ),
                         ],
-                        selected: {_channel},
-                        onSelectionChanged: (value) {
-                          setState(() => _channel = value.first);
-                        },
-                      ),
-                    ),
-                    Expanded(
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 200),
-                        child: _channel == TransferChannel.downloads
-                            ? _buildDownloadsPane(context, l10n, theme)
-                            : _buildUploadsPane(context, l10n, theme),
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
+                      );
+                    },
+                  ),
+          );
+        },
+      ),
     );
   }
 
-  Widget _buildDownloadsPane(BuildContext context, AppLocalizations l10n, ThemeData theme) {
-    final active = _getActiveDownloads();
-    final completed = _getCompletedDownloads();
+  Widget _buildDownloadsPane(
+    BuildContext context,
+    AppLocalizations l10n,
+    ThemeData theme,
+    TransferManagerProvider provider,
+  ) {
+    final active = provider.getActiveDownloads();
+    final completed = provider.getCompletedDownloads();
 
     if (active.isEmpty && completed.isEmpty) {
       return _EmptyState(text: l10n.transferEmpty);
@@ -161,7 +161,7 @@ class _TransferManagerPageState extends State<TransferManagerPage> {
           for (final task in active)
             _DownloadTaskTile(
               task: task,
-              onRefresh: _loadTasks,
+              onRefresh: provider.loadTasks,
             ),
           const SizedBox(height: 16),
         ],
@@ -171,14 +171,15 @@ class _TransferManagerPageState extends State<TransferManagerPage> {
           for (final task in completed)
             _DownloadTaskTile(
               task: task,
-              onRefresh: _loadTasks,
+              onRefresh: provider.loadTasks,
             ),
         ],
       ],
     );
   }
 
-  Widget _buildUploadsPane(BuildContext context, AppLocalizations l10n, ThemeData theme) {
+  Widget _buildUploadsPane(
+      BuildContext context, AppLocalizations l10n, ThemeData theme) {
     return Consumer<TransferManager>(
       builder: (context, manager, _) {
         final active = manager.activeTasks;
@@ -208,33 +209,10 @@ class _TransferManagerPageState extends State<TransferManagerPage> {
     );
   }
 
-  List<DownloadTask> _getActiveDownloads() {
-    if (_downloadTasks == null) return [];
-    return _downloadTasks!
-        .where(
-          (t) =>
-              t.status == DownloadTaskStatus.running ||
-              t.status == DownloadTaskStatus.paused ||
-              t.status == DownloadTaskStatus.enqueued ||
-              t.status == DownloadTaskStatus.undefined ||
-              (t.status == DownloadTaskStatus.failed && t.progress != 100),
-        )
-        .toList();
-  }
-
-  List<DownloadTask> _getCompletedDownloads() {
-    if (_downloadTasks == null) return [];
-    return _downloadTasks!
-        .where(
-          (t) =>
-              t.status == DownloadTaskStatus.complete ||
-              t.status == DownloadTaskStatus.canceled ||
-              (t.status == DownloadTaskStatus.failed && t.progress == 100),
-        )
-        .toList();
-  }
-
-  void _showClearDialog(BuildContext context) {
+  void _showClearDialog(
+    BuildContext context,
+    TransferManagerProvider provider,
+  ) {
     final l10n = context.l10n;
     showDialog(
       context: context,
@@ -248,9 +226,8 @@ class _TransferManagerPageState extends State<TransferManagerPage> {
           ),
           FilledButton(
             onPressed: () async {
-              await TransferManager().clearCompleted();
+              await provider.clearCompletedDownloads();
               if (context.mounted) Navigator.pop(context);
-              _loadTasks();
             },
             child: Text(l10n.commonConfirm),
           ),
@@ -549,7 +526,7 @@ class _DownloadTaskTile extends StatelessWidget {
 
     return buttons;
   }
-  
+
   DownloadTaskStatus _getDisplayStatus(DownloadTask task) {
     if (task.status == DownloadTaskStatus.failed && task.progress == 100) {
       return DownloadTaskStatus.complete;
@@ -574,7 +551,8 @@ class _DownloadTaskTile extends StatelessWidget {
   Future<void> _openDownloadedFile(BuildContext context) async {
     final l10n = context.l10n;
     final fileName = _resolveFileName();
-    final filePath = fileName.isEmpty ? task.savedDir : '${task.savedDir}/$fileName';
+    final filePath =
+        fileName.isEmpty ? task.savedDir : '${task.savedDir}/$fileName';
     final file = File(filePath);
     if (!await file.exists()) {
       if (context.mounted) {
@@ -626,7 +604,8 @@ class _DownloadTaskTile extends StatelessWidget {
   Future<void> _showMoreActions(BuildContext context) async {
     final l10n = context.l10n;
     final fileName = _resolveFileName();
-    final filePath = fileName.isEmpty ? task.savedDir : '${task.savedDir}/$fileName';
+    final filePath =
+        fileName.isEmpty ? task.savedDir : '${task.savedDir}/$fileName';
     final dirPath = task.savedDir;
     await showModalBottomSheet<void>(
       context: context,

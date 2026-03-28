@@ -6,6 +6,7 @@ const List<ClientModule> kPinnableClientModules = [
   ClientModule.containers,
   ClientModule.apps,
   ClientModule.websites,
+  ClientModule.ai,
   ClientModule.verification,
 ];
 
@@ -15,6 +16,7 @@ enum ClientModule {
   containers,
   apps,
   websites,
+  ai,
   settings,
   verification,
 }
@@ -42,6 +44,8 @@ extension ClientModuleX on ClientModule {
         return 'apps';
       case ClientModule.websites:
         return 'websites';
+      case ClientModule.ai:
+        return 'ai';
       case ClientModule.settings:
         return 'settings';
       case ClientModule.verification:
@@ -58,6 +62,7 @@ extension ClientModuleX on ClientModule {
       case ClientModule.containers:
       case ClientModule.apps:
       case ClientModule.websites:
+      case ClientModule.ai:
       case ClientModule.verification:
         return true;
     }
@@ -68,6 +73,7 @@ extension ClientModuleX on ClientModule {
   bool get experimental {
     switch (this) {
       case ClientModule.websites:
+      case ClientModule.ai:
         return true;
       case ClientModule.servers:
       case ClientModule.files:
@@ -91,6 +97,8 @@ extension ClientModuleX on ClientModule {
         return Icons.apps_outlined;
       case ClientModule.websites:
         return Icons.language_outlined;
+      case ClientModule.ai:
+        return Icons.smart_toy_outlined;
       case ClientModule.settings:
         return Icons.settings_outlined;
       case ClientModule.verification:
@@ -110,6 +118,8 @@ extension ClientModuleX on ClientModule {
         return Icons.apps;
       case ClientModule.websites:
         return Icons.language;
+      case ClientModule.ai:
+        return Icons.smart_toy;
       case ClientModule.settings:
         return Icons.settings;
       case ClientModule.verification:
@@ -129,6 +139,8 @@ extension ClientModuleX on ClientModule {
         return l10n.appsPageTitle;
       case ClientModule.websites:
         return l10n.websitesPageTitle;
+      case ClientModule.ai:
+        return l10n.serverModuleAi;
       case ClientModule.settings:
         return l10n.settingsPageTitle;
       case ClientModule.verification:

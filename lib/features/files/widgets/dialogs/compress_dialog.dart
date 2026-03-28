@@ -10,7 +10,8 @@ void showCompressDialog(
   List<String> files,
   AppLocalizations l10n,
 ) {
-  appLogger.dWithPackage('compress_dialog', 'showCompressDialog: 打开压缩对话框, files=$files');
+  appLogger.dWithPackage(
+      'compress_dialog', 'showCompressDialog: 打开压缩对话框, files=$files');
   final nameController = TextEditingController();
   String type = 'zip';
   showDialog(
@@ -52,15 +53,21 @@ void showCompressDialog(
             onPressed: () async {
               if (nameController.text.isEmpty) return;
               final name = nameController.text;
-              appLogger.dWithPackage('compress_dialog', 'showCompressDialog: 用户输入名称=$name, type=$type');
+              appLogger.dWithPackage('compress_dialog',
+                  'showCompressDialog: 用户输入名称=$name, type=$type');
               Navigator.pop(dialogContext);
               try {
-                await provider.compressFiles(files, provider.data.currentPath, name, type);
-                appLogger.iWithPackage('compress_dialog', 'showCompressDialog: 压缩成功');
+                await provider.compressFiles(
+                    files, provider.data.currentPath, name, type);
+                appLogger.iWithPackage(
+                    'compress_dialog', 'showCompressDialog: 压缩成功');
               } catch (e, stackTrace) {
-                appLogger.eWithPackage('compress_dialog', 'showCompressDialog: 压缩失败', error: e, stackTrace: stackTrace);
+                appLogger.eWithPackage(
+                    'compress_dialog', 'showCompressDialog: 压缩失败',
+                    error: e, stackTrace: stackTrace);
                 if (context.mounted) {
-                  DebugErrorDialog.show(context, l10n.filesCompressFailed, e, stackTrace: stackTrace);
+                  DebugErrorDialog.show(context, l10n.filesCompressFailed, e,
+                      stackTrace: stackTrace);
                 }
               }
             },

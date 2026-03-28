@@ -1,7 +1,32 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/features/dashboard/dashboard_provider.dart';
+import 'package:onepanel_client/features/dashboard/services/dashboard_service.dart';
 import 'package:onepanel_client/data/models/common_models.dart';
 import 'package:onepanel_client/data/models/dashboard_models.dart';
+
+class _FakeDashboardService extends DashboardService {
+  _FakeDashboardService({
+    this.dashboardData = const DashboardData(),
+    this.cpuProcesses = const <ProcessInfo>[],
+    this.memoryProcesses = const <ProcessInfo>[],
+  });
+
+  DashboardData dashboardData;
+  List<ProcessInfo> cpuProcesses;
+  List<ProcessInfo> memoryProcesses;
+
+  @override
+  Future<DashboardData> loadDashboardData() async => dashboardData;
+
+  @override
+  Future<({List<ProcessInfo> cpu, List<ProcessInfo> memory})>
+      loadTopProcesses() async {
+    return (
+      cpu: cpuProcesses,
+      memory: memoryProcesses,
+    );
+  }
+}
 
 void main() {
   group('DashboardProvider - 状态管理测试', () {
@@ -18,6 +43,43 @@ void main() {
       expect(provider.data.cpuPercent, isNull);
       expect(provider.data.memoryPercent, isNull);
       expect(provider.data.diskPercent, isNull);
+    });
+
+    test('loadData should update status and data from service', () async {
+      final provider = DashboardProvider(
+        service: _FakeDashboardService(
+          dashboardData: const DashboardData(
+            cpuPercent: 32.5,
+            uptime: '1小时 20分钟',
+          ),
+        ),
+      );
+
+      await provider.loadData();
+
+      expect(provider.status, DashboardStatus.loaded);
+      expect(provider.data.cpuPercent, 32.5);
+      expect(provider.errorMessage, isEmpty);
+    });
+
+    test('loadTopProcesses should update process lists', () async {
+      final provider = DashboardProvider(
+        service: _FakeDashboardService(
+          cpuProcesses: const <ProcessInfo>[
+            ProcessInfo(pid: 1, name: 'nginx', cpuPercent: 1, memoryPercent: 1),
+          ],
+          memoryProcesses: const <ProcessInfo>[
+            ProcessInfo(pid: 2, name: 'mysql', cpuPercent: 1, memoryPercent: 1),
+          ],
+        ),
+      );
+
+      await provider.loadTopProcesses();
+
+      expect(provider.data.topCpuProcesses, hasLength(1));
+      expect(provider.data.topMemoryProcesses, hasLength(1));
+      expect(provider.data.topCpuProcesses.first.name, 'nginx');
+      expect(provider.data.topMemoryProcesses.first.name, 'mysql');
     });
   });
 

@@ -121,7 +121,8 @@ class _ResourceItem extends StatelessWidget {
             child: LinearProgressIndicator(
               value: percent! / 100,
               backgroundColor: color.withValues(alpha: 0.1),
-              valueColor: AlwaysStoppedAnimation<Color>(_getStatusColor(context, percent)),
+              valueColor: AlwaysStoppedAnimation<Color>(
+                  _getStatusColor(context, percent)),
               minHeight: 8,
             ),
           ),

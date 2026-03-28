@@ -73,7 +73,9 @@ class _MountsPageState extends State<MountsPage> {
     }
 
     if (_error != null) {
-      return Center(child: Text(_error!, style: TextStyle(color: theme.colorScheme.error)));
+      return Center(
+          child:
+              Text(_error!, style: TextStyle(color: theme.colorScheme.error)));
     }
 
     if (_mounts == null || _mounts!.isEmpty) {
@@ -85,7 +87,7 @@ class _MountsPageState extends State<MountsPage> {
       itemBuilder: (context, index) {
         final mount = _mounts![index];
         final usagePercent = mount.total > 0 ? (mount.used / mount.total) : 0.0;
-        
+
         return Card(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: ListTile(
@@ -98,7 +100,8 @@ class _MountsPageState extends State<MountsPage> {
                 const SizedBox(height: 4),
                 LinearProgressIndicator(value: usagePercent),
                 const SizedBox(height: 4),
-                Text('${_formatSize(mount.used)} / ${_formatSize(mount.total)}'),
+                Text(
+                    '${_formatSize(mount.used)} / ${_formatSize(mount.total)}'),
               ],
             ),
             trailing: IconButton(
@@ -118,7 +121,9 @@ class _MountsPageState extends State<MountsPage> {
   String _formatSize(int bytes) {
     if (bytes < 1024) return '$bytes B';
     if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(2)} KB';
-    if (bytes < 1024 * 1024 * 1024) return '${(bytes / (1024 * 1024)).toStringAsFixed(2)} MB';
+    if (bytes < 1024 * 1024 * 1024) {
+      return '${(bytes / (1024 * 1024)).toStringAsFixed(2)} MB';
+    }
     return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(2)} GB';
   }
 }

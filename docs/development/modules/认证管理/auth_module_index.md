@@ -4,6 +4,15 @@
 
 认证管理模块是Open1PanelApp的P0核心模块，负责用户身份验证、会话管理、MFA双因素认证等功能，是系统安全的第一道防线。
 
+## S2-0 基线（2026-03-26）
+
+- 当前状态：
+  登录主流程可用；截至 `2026-03-27`，`AuthProvider` 已收回 `api / session / token storage` 混合职责，改为依赖 `AuthService`。
+- 阶段 2 hard scope：
+  `session / token / storage / api` 分层与安全收口
+- API 基线：
+  `check_module_api_updates.py auth` 当前结果为 `unchanged`
+
 ## 子模块结构
 
 基于docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json，Auth标签共8个端点：
@@ -52,14 +61,14 @@
 - ✅ 完善登录页面UI (MDUI3规范)
 - ✅ 实现MFA认证流程
 - ✅ 添加验证码支持
-- ✅ 完成单元测试 (14个测试用例)
+- ✅ 完成 Provider/Service 单元测试
 - ✅ 国际化支持 (17条字符串)
 
 ### 中期目标
 - ⏳ 生物识别登录支持
 - ⏳ 记住登录状态增强
 - ⏳ 多服务器切换
-- ⏳ Token加密存储
+- ✅ Token加密存储
 
 ### 长期目标
 - SSO单点登录
@@ -71,9 +80,13 @@
 | 文件 | 路径 | 说明 |
 |------|------|------|
 | 数据模型 | `lib/data/models/auth_models.dart` | 7个认证模型类 |
-| 状态管理 | `lib/features/auth/auth_provider.dart` | Provider状态管理 |
+| Repository | `lib/features/auth/auth_repository.dart` | Auth API 访问边界 |
+| Service | `lib/features/auth/auth_service.dart` | 认证业务与会话编排 |
+| Session Store | `lib/features/auth/auth_session_store.dart` | 基于 `flutter_secure_storage` 的会话存储 |
+| 状态管理 | `lib/features/auth/auth_provider.dart` | Provider状态管理（仅保留 UI 状态） |
 | 登录页面 | `lib/features/auth/login_page.dart` | MDUI3登录UI |
-| 单元测试 | `test/features/auth/auth_provider_test.dart` | 14个测试用例 |
+| 单元测试 | `test/features/auth/auth_provider_test.dart` | Provider与模型测试 |
+| 单元测试 | `test/features/auth/auth_service_test.dart` | Service与会话存储测试 |
 | 国际化 | `lib/l10n/app_*.arb` | 17条认证字符串 |
 
 ## 与其他模块的关系
@@ -91,6 +104,6 @@
 
 ---
 
-**文档版本**: 2.0
-**最后更新**: 2026-02-15
+**文档版本**: 2.1
+**最后更新**: 2026-03-27
 **数据来源**: docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json

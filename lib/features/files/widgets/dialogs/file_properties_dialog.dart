@@ -49,10 +49,13 @@ class _FilePropertiesDialogState extends State<FilePropertiesDialog> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildPropertyItem(context, l10n.filesNameLabel, props.name, copyable: true),
-          _buildPropertyItem(context, l10n.filesPathLabel, props.path, copyable: true),
+          _buildPropertyItem(context, l10n.filesNameLabel, props.name,
+              copyable: true),
+          _buildPropertyItem(context, l10n.filesPathLabel, props.path,
+              copyable: true),
           _buildPropertyItem(context, l10n.filesTypeLabel, props.type),
-          _buildPropertyItem(context, l10n.filesSizeLabel, _formatSize(props.size)),
+          _buildPropertyItem(
+              context, l10n.filesSizeLabel, _formatSize(props.size)),
           if (props.mimeType != null)
             _buildPropertyItem(context, 'MIME Type', props.mimeType!),
           const Divider(),
@@ -65,9 +68,11 @@ class _FilePropertiesDialogState extends State<FilePropertiesDialog> {
                   : props.permission!,
             ),
           if (props.createdAt != null)
-            _buildPropertyItem(context, l10n.filesCreatedLabel, dateFormat.format(props.createdAt!)),
+            _buildPropertyItem(context, l10n.filesCreatedLabel,
+                dateFormat.format(props.createdAt!)),
           if (props.modifiedAt != null)
-            _buildPropertyItem(context, l10n.filesModifiedLabel, dateFormat.format(props.modifiedAt!)),
+            _buildPropertyItem(context, l10n.filesModifiedLabel,
+                dateFormat.format(props.modifiedAt!)),
         ],
       ),
     );
@@ -80,7 +85,7 @@ class _FilePropertiesDialogState extends State<FilePropertiesDialog> {
     bool copyable = false,
   }) {
     final theme = Theme.of(context);
-    
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Column(
@@ -123,12 +128,15 @@ class _FilePropertiesDialogState extends State<FilePropertiesDialog> {
   String _formatSize(int bytes) {
     if (bytes < 1024) return '$bytes B';
     if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(2)} KB';
-    if (bytes < 1024 * 1024 * 1024) return '${(bytes / (1024 * 1024)).toStringAsFixed(2)} MB';
+    if (bytes < 1024 * 1024 * 1024) {
+      return '${(bytes / (1024 * 1024)).toStringAsFixed(2)} MB';
+    }
     return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(2)} GB';
   }
 }
 
-void showFilePropertiesDialog(BuildContext context, FilesProvider provider, FileInfo file) {
+void showFilePropertiesDialog(
+    BuildContext context, FilesProvider provider, FileInfo file) {
   showDialog(
     context: context,
     builder: (context) => FilePropertiesDialog(

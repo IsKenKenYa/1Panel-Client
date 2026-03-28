@@ -1,10 +1,14 @@
 import 'package:flutter/foundation.dart';
-import '../../../core/network/api_client_manager.dart';
 import '../../../data/models/docker_models.dart';
-import '../../../api/v2/docker_v2.dart';
 import '../../../data/models/container_models.dart';
+import '../services/orchestration_service.dart';
 
 class NetworkProvider extends ChangeNotifier {
+  NetworkProvider({OrchestrationService? service})
+      : _service = service ?? OrchestrationService();
+
+  final OrchestrationService _service;
+
   List<DockerNetwork> _networks = [];
   bool _isLoading = false;
   String? _error;
@@ -12,10 +16,6 @@ class NetworkProvider extends ChangeNotifier {
   List<DockerNetwork> get networks => _networks;
   bool get isLoading => _isLoading;
   String? get error => _error;
-
-  Future<DockerV2Api> _getApi() async {
-    return await ApiClientManager.instance.getDockerApi();
-  }
 
   Future<void> onServerChanged({bool reload = false}) async {
     _networks = [];
@@ -33,9 +33,7 @@ class NetworkProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final api = await _getApi();
-      final response = await api.listNetworks();
-      _networks = response.data ?? [];
+      _networks = await _service.loadNetworks();
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -50,8 +48,7 @@ class NetworkProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final api = await _getApi();
-      await api.createNetwork(request);
+      await _service.createNetwork(request);
       await loadNetworks();
       return true;
     } catch (e) {
@@ -68,8 +65,7 @@ class NetworkProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final api = await _getApi();
-      await api.removeNetwork(networkId);
+      await _service.removeNetwork(networkId);
       await loadNetworks();
       return true;
     } catch (e) {

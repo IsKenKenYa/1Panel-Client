@@ -43,24 +43,26 @@ class ServerSelector extends StatelessWidget {
                 ),
               ];
             }
-            return servers.map((s) => PopupMenuItem<String>(
-              value: s.id,
-              child: Row(
-                children: [
-                  Icon(
-                    s.id == currentServer?.id 
-                        ? Icons.check_circle 
-                        : Icons.circle_outlined,
-                    size: 18,
-                    color: s.id == currentServer?.id 
-                        ? Theme.of(context).colorScheme.primary 
-                        : null,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(child: Text(s.name)),
-                ],
-              ),
-            )).toList();
+            return servers
+                .map((s) => PopupMenuItem<String>(
+                      value: s.id,
+                      child: Row(
+                        children: [
+                          Icon(
+                            s.id == currentServer?.id
+                                ? Icons.check_circle
+                                : Icons.circle_outlined,
+                            size: 18,
+                            color: s.id == currentServer?.id
+                                ? Theme.of(context).colorScheme.primary
+                                : null,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(child: Text(s.name)),
+                        ],
+                      ),
+                    ))
+                .toList();
           },
         );
       },

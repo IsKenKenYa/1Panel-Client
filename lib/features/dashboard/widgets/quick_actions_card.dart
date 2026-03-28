@@ -118,7 +118,8 @@ class QuickActionsCard extends StatelessWidget {
               } catch (e) {
                 if (!context.mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(l10n.dashboardUpdateFailed(e.toString()))),
+                  SnackBar(
+                      content: Text(l10n.dashboardUpdateFailed(e.toString()))),
                 );
               }
             },

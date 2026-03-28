@@ -20,6 +20,8 @@
   "commonUpload": "Upload",
   "commonRefresh": "Refresh",
   "commonReset": "Reset",
+  "commonYes": "Yes",
+  "commonNo": "No",
   "commonComingSoon": "Coming soon",
   "commonEmpty": "No data",
   "commonLoadFailedTitle": "Failed to load",
@@ -39,8 +41,44 @@
   "websitesActionStop": "Stop",
   "websitesActionRestart": "Restart",
   "websitesActionDelete": "Delete",
+  "websitesSetDefaultAction": "Set Default",
+  "websitesDefaultServerLabel": "Default server",
+  "websitesGroupLabel": "Group",
+  "websitesRemarkLabel": "Remark",
+  "websitesAliasLabel": "Alias",
+  "websitesPrimaryDomainLabel": "Primary domain",
+  "websitesProxyAddressLabel": "Proxy address",
+  "websitesProxyTypeLabel": "Proxy type",
+  "websitesParentWebsiteLabel": "Parent website",
+  "websitesSiteDirLabel": "Site directory",
+  "websitesFilterAllGroups": "All groups",
+  "websitesFilterAllTypes": "All types",
+  "websitesSelectionEnable": "Select",
+  "websitesSelectionDisable": "Cancel selection",
+  "websitesSetGroupAction": "Set Group",
+  "websitesLifecycleCreateTitle": "Create Website",
+  "websitesLifecycleEditTitle": "Edit Website",
+  "websitesLifecycleTypeLabel": "Website type",
+  "websitesLifecycleTypeRuntime": "Runtime",
+  "websitesLifecycleTypeProxy": "Proxy",
+  "websitesLifecycleTypeSubsite": "Subsite",
+  "websitesLifecycleTypeStatic": "Static",
+  "websitesValidationGroupRequired": "Select a website group.",
+  "websitesValidationPrimaryDomainRequired": "Primary domain is required.",
+  "websitesValidationAliasRequired": "Alias is required.",
+  "websitesValidationRuntimeRequired": "Select a runtime.",
+  "websitesValidationProxyRequired": "Proxy address is required.",
+  "websitesValidationParentRequired": "Select a parent website.",
   "websitesOperateSuccess": "Operation successful",
   "websitesOperateFailed": "Operation failed",
+  "websitesSelectedCount": "{count} selected",
+  "@websitesSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "websitesLoadFailedMessage": "{error}",
   "@websitesLoadFailedMessage": {
     "placeholders": {
@@ -60,6 +98,14 @@
     }
   },
   "websitesDeleteSuccess": "Website deleted",
+  "websitesBatchDeleteMessage": "Delete {count} websites? This action cannot be undone.",
+  "@websitesBatchDeleteMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "websitesDetailTitle": "Website",
   "websitesTabOverview": "Overview",
   "websitesTabConfig": "Config",
@@ -77,10 +123,22 @@
   "websitesConfigHint": "Nginx config content",
   "websitesJsonHint": "JSON content",
   "websitesDomainAddTitle": "Add domain",
+  "websitesDomainEditTitle": "Edit domain",
   "websitesDomainLabel": "Domain",
   "websitesDomainEmpty": "No domains",
   "websitesDomainDefault": "Default",
   "websitesDomainSslLabel": "SSL",
+  "websitesDomainValidationRequired": "Domain is required.",
+  "websitesDomainValidationPort": "Port must be between 1 and 65535.",
+  "websitesDomainValidationDuplicate": "This domain already exists.",
+  "websitesDomainDeleteMessage": "Delete domain {domain}?",
+  "@websitesDomainDeleteMessage": {
+    "placeholders": {
+      "domain": {
+        "type": "String"
+      }
+    }
+  },
   "websitesRewriteNameLabel": "Rewrite name",
   "websitesRewriteHint": "Rewrite content",
   "websitesProxyNameLabel": "Proxy name",
@@ -107,6 +165,8 @@
   "websitesDetailActionsTitle": "Quick actions",
   "websitesConfigPageTitle": "Config",
   "websitesConfigPageSubtitle": "Nginx config & PHP version",
+  "websitesBasicConfigTitle": "Basic",
+  "websitesBasicConfigDatabaseTitle": "Database binding",
   "websitesDomainsPageTitle": "Domains",
   "websitesDomainsPageSubtitle": "Bind and manage domains",
   "websitesSslPageTitle": "SSL certificates",
@@ -168,6 +228,69 @@
   "websitesHttpsSslIdLabel": "Certificate ID",
   "websitesSslAutoRenewMissingFields": "Certificate is missing the primary domain or provider; cannot update auto-renew.",
   "websitesSslDownloadHint": "Certificate download link: {link}",
+  "websitesSslExpirationViewTitle": "Expiration view",
+  "websitesSslFilterAllCount": "All ({count})",
+  "@websitesSslFilterAllCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "websitesSslFilterExpiredCount": "Expired ({count})",
+  "@websitesSslFilterExpiredCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "websitesSslFilterWithin7DaysCount": "Within 7 days ({count})",
+  "@websitesSslFilterWithin7DaysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "websitesSslFilterWithin30DaysCount": "Within 30 days ({count})",
+  "@websitesSslFilterWithin30DaysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "websitesSslAffectedWebsitesCount": "Affected websites: {count}",
+  "@websitesSslAffectedWebsitesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "websitesSslAffectedWebsitesDomains": "Affected domains: {domains}",
+  "@websitesSslAffectedWebsitesDomains": {
+    "placeholders": {
+      "domains": {
+        "type": "String"
+      }
+    }
+  },
+  "websitesSslImpactHintApply": "Apply this certificate to bound websites now?",
+  "websitesSslImpactWarningHigh": "This action affects multiple websites. Confirm maintenance window first.",
+  "websitesSslNoAffectedWebsites": "No bound websites.",
+  "websitesSslOpenBoundSiteAction": "Open bound site",
+  "websitesSslGroupAll": "All certificates",
+  "websitesSslGroupExpired": "Expired",
+  "websitesSslGroupWithin7Days": "Within 7 days",
+  "websitesSslGroupWithin30Days": "Within 30 days",
+  "websitesSslGroupHealthy": "Healthy",
+  "websitesSslProviderFilterAll": "All providers",
+  "websitesSslHealthHealthy": "Healthy",
+  "websitesSslHealthExpiringSoon": "Expiring soon",
+  "websitesSslHealthExpired": "Expired",
+  "websitesSslHealthUnknown": "Unknown",
   "@websitesSslDownloadHint": {
     "placeholders": {
       "link": {
@@ -189,6 +312,124 @@
   "openrestyScopeWebsiteIdLabel": "Website ID (optional)",
   "openrestyScopeLoad": "Load scope",
   "openrestyScopeResultHint": "Scope config result",
+  "openrestyAdvancedSourceEditorTooltip": "Advanced source editor",
+  "openrestyRiskBannerTitle": "Gateway risk banner",
+  "openrestyRunningStatusLabel": "Running Status",
+  "openrestyBuildVersionLabel": "Build / Version",
+  "openrestyCoreSummaryLabel": "Core Summary",
+  "openrestyHttpsSummaryLabel": "HTTPS Summary",
+  "openrestyModulesSummaryLabel": "Modules Summary",
+  "openrestyCurrentStateLabel": "Current State",
+  "openrestyRejectHandshakeLabel": "Reject Handshake",
+  "openrestyEditHttpsAction": "Edit HTTPS",
+  "openrestyPreviewDiffAction": "Preview diff",
+  "openrestyRollbackAction": "Rollback",
+  "openrestyHttpsDiffPreviewTitle": "HTTPS diff preview",
+  "openrestyUnnamedModule": "Unnamed module",
+  "openrestyNoModulesReturned": "No modules returned by the gateway.",
+  "openrestyModuleDiffPreviewTitle": "Module diff preview",
+  "openrestyCurrentConfigLabel": "Current Config",
+  "openrestyAdvancedAction": "Advanced",
+  "openrestyConfigDiffPreviewTitle": "Config diff preview",
+  "openrestyBuildLastResultLabel": "Last Result",
+  "openrestyBuildNoRecentAction": "No recent build action",
+  "openrestyBuildStartAction": "Start build",
+  "openrestyStatusNotRunningSummary": "Not running",
+  "openrestyStatusRunningSummary": "Running · active {active}",
+  "@openrestyStatusRunningSummary": {
+    "placeholders": {
+      "active": {
+        "type": "int"
+      }
+    }
+  },
+  "openrestyHttpsEnabledSummary": "HTTPS enabled",
+  "openrestyHttpsDisabledSummary": "HTTPS disabled",
+  "openrestyModulesEnabledSummary": "{enabled}/{total} modules enabled",
+  "@openrestyModulesEnabledSummary": {
+    "placeholders": {
+      "enabled": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "openrestyBuildNoMirrorConfigured": "No mirror configured",
+  "openrestyConfigNotLoaded": "Config not loaded",
+  "openrestyConfigLoadedSummary": "{lines} lines loaded",
+  "@openrestyConfigLoadedSummary": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "openrestyDialogUpdateHttpsTitle": "Update HTTPS",
+  "openrestyDialogEnableHttpsLabel": "Enable HTTPS",
+  "openrestyDialogRejectInvalidHandshakesLabel": "Reject invalid handshakes",
+  "openrestyDialogModuleTitleFallback": "Module",
+  "openrestyDialogEnableModuleLabel": "Enable module",
+  "openrestyDialogPackagesLabel": "Packages",
+  "openrestyDialogParamsLabel": "Params",
+  "openrestyDialogScriptLabel": "Script",
+  "openrestyDialogPreviewConfigTitle": "Preview config change",
+  "openrestyDialogConfigSourceLabel": "Config source",
+  "openrestyDialogStartBuildTitle": "Start OpenResty build",
+  "openrestyDialogBuildRiskHint": "Build can refresh gateway binaries and module packages. Confirm before running on production nodes.",
+  "openrestyBuildSubmittedMessage": "Build submitted",
+  "openrestyBuildSubmittedWithMirrorMessage": "Build submitted with mirror {mirror}.",
+  "@openrestyBuildSubmittedWithMirrorMessage": {
+    "placeholders": {
+      "mirror": {
+        "type": "String"
+      }
+    }
+  },
+  "openrestyRiskGatewayInactiveTitle": "Gateway inactive",
+  "openrestyRiskGatewayInactiveMessage": "OpenResty is not reporting active connections.",
+  "openrestyRiskHttpsDisabledTitle": "HTTPS disabled",
+  "openrestyRiskHttpsDisabledMessage": "Disabling HTTPS reduces the default gateway security baseline.",
+  "openrestyRiskNoModulesTitle": "No modules loaded",
+  "openrestyRiskNoModulesMessage": "OpenResty modules are empty. Review build and module config.",
+  "openrestyRiskBuildMirrorMissingTitle": "Build mirror missing",
+  "openrestyRiskBuildMirrorMissingMessage": "No build mirror is configured. Build speed may be affected.",
+  "openrestyRiskRejectHandshakeTitle": "Reject handshake enabled",
+  "openrestyRiskRejectHandshakeMessage": "This may block clients with invalid TLS negotiation settings.",
+  "openrestyRiskModuleDisabledTitle": "Module disabled",
+  "openrestyRiskModuleDisabledMessage": "Disabling {module} may change gateway behavior immediately.",
+  "@openrestyRiskModuleDisabledMessage": {
+    "placeholders": {
+      "module": {
+        "type": "String"
+      }
+    }
+  },
+  "openrestyRiskDependencyChangeTitle": "Dependency change",
+  "openrestyRiskDependencyChangeMessage": "Package or script changes can introduce dependency conflicts for {module}.",
+  "@openrestyRiskDependencyChangeMessage": {
+    "placeholders": {
+      "module": {
+        "type": "String"
+      }
+    }
+  },
+  "openrestyRiskEmptyConfigTitle": "Empty config",
+  "openrestyRiskEmptyConfigMessage": "Saving an empty config will break the current gateway setup.",
+  "openrestyRiskBraceMismatchTitle": "Brace mismatch",
+  "openrestyRiskBraceMismatchMessage": "The config appears to have unmatched braces. Validate before saving.",
+  "openrestyRiskMissingHttpBlockTitle": "Missing http block",
+  "openrestyRiskMissingHttpBlockMessage": "No http block was detected in the config source.",
+  "openrestyRiskTemporaryMarkersTitle": "Temporary markers found",
+  "openrestyRiskTemporaryMarkersMessage": "The config still contains TODO or FIXME markers.",
+  "openrestyDiffLabelHttps": "HTTPS",
+  "openrestyDiffLabelRejectHandshake": "Reject Handshake",
+  "openrestyDiffLabelEnabled": "Enabled",
+  "openrestyDiffLabelPackages": "Packages",
+  "openrestyDiffLabelParams": "Params",
+  "openrestyDiffLabelScript": "Script",
+  "openrestyDiffLabelConfigSource": "Config Source",
   "monitorNetworkLabel": "Network",
   "monitorMetricCurrent": "Current",
   "monitorMetricMin": "Min",
@@ -245,8 +486,138 @@
   "serverModuleApps": "Apps",
   "serverModuleContainers": "Containers",
   "serverModuleWebsites": "Websites",
+  "serverModuleAi": "AI",
+  "aiTabModels": "Models",
+  "aiTabGpu": "GPU",
+  "aiTabDomain": "Domain",
+  "aiModelCreate": "Create Model",
+  "aiModelSync": "Sync Models",
+  "aiModelRecreate": "Recreate Model",
+  "aiModelNameLabel": "Model Name",
+  "aiTaskIdOptional": "Task ID (optional)",
+  "aiModelNameRequired": "Model name is required",
+  "aiForceDelete": "Force Delete",
+  "aiOperationSuccess": "Operation successful",
+  "aiOperationFailed": "Operation failed: {error}",
+  "@aiOperationFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "aiOperationResult": "Operation Result",
+  "aiNoGpuData": "No GPU data available",
+  "aiFanSpeed": "Fan Speed",
+  "aiPowerUsage": "Power",
+  "aiPerformanceState": "Performance State",
+  "aiDomainHint": "Configure Ollama domain binding. Enter the appInstallID first, then load or submit binding.",
+  "aiAppInstallIdLabel": "App Install ID",
+  "aiAppInstallIdRequired": "App Install ID is required",
+  "aiIpAllowListLabel": "Allow IP List",
+  "aiSslIdOptionalLabel": "SSL ID (optional)",
+  "aiWebsiteIdOptionalLabel": "Website ID (optional)",
+  "aiLoadBinding": "Load Current Binding",
+  "aiBindDomain": "Bind Domain",
+  "aiCurrentBinding": "Current Binding",
+  "aiConnUrl": "Connection URL",
+  "containerSystemProtectedNetwork": "System network cannot be deleted",
   "serverModuleDatabases": "Databases",
   "serverModuleFirewall": "Firewall",
+  "databaseMysqlTab": "MySQL",
+  "databasePostgresqlTab": "PostgreSQL",
+  "databaseRedisTab": "Redis",
+  "databaseRemoteTab": "Remote",
+  "databaseOverviewTitle": "Overview",
+  "databaseConfigTitle": "Config File",
+  "databaseBaseInfoTitle": "Base Info",
+  "databaseStatusTitle": "Status",
+  "databaseVariablesTitle": "Variables",
+  "databaseScopeLabel": "Database Scope",
+  "databaseEngineLabel": "Engine",
+  "databaseSourceLabel": "Source",
+  "databaseAddressLabel": "Address",
+  "databasePortLabel": "Port",
+  "databaseContainerLabel": "Container",
+  "databaseUsernameLabel": "Username",
+  "databasePasswordLabel": "Password",
+  "databaseRemoteAccessLabel": "Remote Access",
+  "databaseChangePasswordAction": "Change Password",
+  "databaseBindUserAction": "Bind User",
+  "databaseTestConnectionAction": "Test Connection",
+  "databaseRedisConfigTitle": "Redis Config",
+  "databaseRedisTimeoutLabel": "Timeout",
+  "databaseRedisMaxClientsLabel": "Max Clients",
+  "databaseRedisPersistenceTitle": "Redis Persistence",
+  "databaseRedisAppendOnlyLabel": "Append Only",
+  "databaseRedisSaveLabel": "Save Policy",
+  "databaseManageTitle": "Manage",
+  "databaseBackupsPageTitle": "Backups",
+  "databaseUsersPageTitle": "Users",
+  "databaseBackupCreateAction": "Create Backup",
+  "databaseBackupRestoreAction": "Restore Backup",
+  "databaseBackupDeleteAction": "Delete Backup",
+  "databaseBackupSecretLabel": "Compression Password",
+  "databaseBackupEmpty": "No backup records yet.",
+  "databaseBackupUnsupported": "Backups are not supported for this database type.",
+  "databaseBackupRestoreConfirmMessage": "Restore this backup record? Existing data may be overwritten.",
+  "databaseBackupDeleteConfirmMessage": "Delete this backup record? This action cannot be undone.",
+  "databaseUserCurrentLabel": "Current User",
+  "databaseUserPermissionLabel": "Permission",
+  "databaseUserSuperUserLabel": "Superuser",
+  "databaseUserBindAction": "Bind User",
+  "databaseUserPrivilegesAction": "Update Privileges",
+  "databaseUserNoBinding": "No bound user information is available yet.",
+  "databaseUserUnsupported": "User management is not supported for this database type.",
+  "databasePrivilegeUnavailable": "Privileges can be adjusted after a user is bound.",
+  "firewallTabStatus": "Status",
+  "firewallTabRules": "Rules",
+  "firewallTabIps": "IPs",
+  "firewallTabPorts": "Ports",
+  "firewallNameLabel": "Name",
+  "firewallVersionLabel": "Version",
+  "firewallPingLabel": "Ping",
+  "firewallActiveLabel": "Active",
+  "firewallInitLabel": "Initialized",
+  "firewallBoundLabel": "Bound",
+  "firewallProtocolLabel": "Protocol",
+  "firewallAddressLabel": "Address",
+  "firewallStrategyLabel": "Strategy",
+  "firewallPortLabel": "Port",
+  "firewallFamilyLabel": "Family",
+  "firewallSourcePortLabel": "Source Port",
+  "firewallDestinationPortLabel": "Destination Port",
+  "firewallRuleDefaultTitle": "Rule",
+  "firewallUnknownStrategy": "Unknown",
+  "firewallSourceLabel": "Source",
+  "firewallSourceAnywhere": "Anywhere",
+  "firewallSourceAddress": "Address",
+  "firewallStrategyAccept": "Accept",
+  "firewallStrategyDrop": "Drop",
+  "firewallStrategyAll": "All",
+  "firewallSearchHint": "Search by description, address, or port",
+  "firewallSelectionModeEnable": "Select",
+  "firewallSelectionModeDisable": "Done",
+  "firewallBatchDeleteAction": "Batch Delete",
+  "firewallBatchAcceptAction": "Batch Accept",
+  "firewallBatchDropAction": "Batch Drop",
+  "firewallSelectedCount": "{count} selected",
+  "@firewallSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "firewallCreatePortRuleAction": "Create Port Rule",
+  "firewallCreateIpRuleAction": "Create IP Rule",
+  "firewallToggleStrategyAction": "Toggle Strategy",
+  "firewallOperationConfirmTitle": "Confirm firewall change",
+  "firewallStartConfirmMessage": "Start the firewall service? New rules will begin taking effect immediately.",
+  "firewallStopConfirmMessage": "Stop the firewall service? This may expose services without packet filtering.",
+  "firewallRestartConfirmMessage": "Restart the firewall service? Existing connections may be interrupted briefly.",
+  "firewallAddressRequired": "Address is required.",
+  "firewallPortRequired": "Port is required.",
   "serverModuleTerminal": "Terminal",
   "serverModuleMonitoring": "Monitoring",
   "serverModuleFiles": "File Manager",
@@ -752,6 +1123,82 @@
   "sslSettingsDownloadSuccess": "Certificate downloaded successfully",
   "sslSettingsCert": "Certificate Content",
   "sslSettingsKey": "Private Key Content",
+  "panelTlsTitle": "Panel TLS",
+  "panelTlsOverviewTitle": "Overview",
+  "panelTlsCertificateTitle": "Certificate",
+  "panelTlsRiskTitle": "Risk",
+  "panelTlsHistoryTitle": "History",
+  "panelTlsUploadHint": "Uploading a new certificate replaces the current panel TLS bundle immediately.",
+  "panelTlsIssuerLabel": "Issuer",
+  "panelTlsCertificatePathLabel": "Certificate Path",
+  "panelTlsKeyPathLabel": "Key Path",
+  "panelTlsSerialNumberLabel": "Serial Number",
+  "panelTlsLastUpdatedLabel": "Last Updated",
+  "panelTlsNoRecentActions": "No recent local actions yet.",
+  "panelTlsUploadDialogTitle": "Upload panel certificate",
+  "panelTlsCertificatePemLabel": "Certificate PEM",
+  "panelTlsPrivateKeyPemLabel": "Private Key PEM",
+  "panelTlsApplyUpdateTitle": "Apply certificate update",
+  "panelTlsApplyUpdateMessage": "This replaces the current panel TLS certificate and may interrupt active browser sessions until the gateway reload finishes.",
+  "panelTlsDownloadDialogTitle": "Download certificate bundle",
+  "panelTlsDownloadDialogMessage": "Use downloads for backup or external validation only. Handle private keys carefully after export.",
+  "panelTlsContinueAction": "Continue",
+  "panelTlsDownloadSuccess": "Downloaded certificate bundle ({bytes} bytes)",
+  "@panelTlsDownloadSuccess": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      }
+    }
+  },
+  "panelTlsHealthHealthy": "Healthy",
+  "panelTlsHealthExpiringSoon": "Expiring soon",
+  "panelTlsHealthExpired": "Expired",
+  "panelTlsHealthUnknown": "Unknown",
+  "panelTlsRiskUnknownTitle": "Certificate expiry unknown",
+  "panelTlsRiskUnknownMessage": "The panel certificate expiration time could not be parsed.",
+  "panelTlsRiskExpiredTitle": "Certificate expired",
+  "panelTlsRiskExpiredMessage": "The panel TLS certificate has already expired and should be replaced immediately.",
+  "panelTlsRiskExpiringSoonTitle": "Certificate expiring soon",
+  "panelTlsRiskExpiringSoonMessage": "The panel TLS certificate expires in {days} day(s).",
+  "@panelTlsRiskExpiringSoonMessage": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "panelTlsRiskSelfSignedTitle": "Self-signed certificate",
+  "panelTlsRiskSelfSignedMessage": "Self-signed certificates can trigger browser trust warnings.",
+  "panelTlsValidationDomainRequired": "Domain is required.",
+  "panelTlsValidationCertificateRequired": "Certificate content is required.",
+  "panelTlsValidationCertificatePemRequired": "Certificate must contain a PEM certificate block.",
+  "panelTlsValidationPrivateKeyRequired": "Private key content is required.",
+  "panelTlsValidationPrivateKeyPemRequired": "Private key must contain a PEM key block.",
+  "panelTlsHistoryLoaded": "Loaded current panel TLS status for {domain}",
+  "@panelTlsHistoryLoaded": {
+    "placeholders": {
+      "domain": {
+        "type": "String"
+      }
+    }
+  },
+  "panelTlsHistoryUploaded": "Uploaded a new panel TLS certificate for {domain}",
+  "@panelTlsHistoryUploaded": {
+    "placeholders": {
+      "domain": {
+        "type": "String"
+      }
+    }
+  },
+  "panelTlsHistoryDownloaded": "Downloaded panel TLS certificate bundle ({bytes} bytes)",
+  "@panelTlsHistoryDownloaded": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      }
+    }
+  },
   "upgradeTitle": "System Upgrade",
   "upgradeCurrentVersion": "Current Version",
   "upgradeCurrentVersionLabel": "Current System Version",

@@ -62,7 +62,7 @@ class _LogViewerState extends State<LogViewer> {
     if (!_scrollController.hasClients) return;
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
-    
+
     if (maxScroll - currentScroll > 50) {
       if (_isAutoScrolling) {
         setState(() => _isAutoScrolling = false);
@@ -97,9 +97,10 @@ class _LogViewerState extends State<LogViewer> {
           ThemeData effectiveTheme = appTheme;
 
           if (controller.settings.themeMode != ThemeMode.system) {
-            final targetBrightness = controller.settings.themeMode == ThemeMode.dark
-                ? Brightness.dark
-                : Brightness.light;
+            final targetBrightness =
+                controller.settings.themeMode == ThemeMode.dark
+                    ? Brightness.dark
+                    : Brightness.light;
 
             if (appTheme.brightness != targetBrightness) {
               // We need to generate a new theme with the target brightness
@@ -135,50 +136,58 @@ class _LogViewerState extends State<LogViewer> {
                             if (controller.filteredLogs.isEmpty) {
                               return Center(
                                 child: Text(
-                                  controller.searchQuery.isEmpty 
-                                      ? (widget.emptyMessage ?? AppLocalizations.of(context).logNoLogs) 
-                                      : AppLocalizations.of(context).logNoMatches,
-                                  style: TextStyle(color: colorScheme.onSurfaceVariant),
+                                  controller.searchQuery.isEmpty
+                                      ? (widget.emptyMessage ??
+                                          AppLocalizations.of(context)
+                                              .logNoLogs)
+                                      : AppLocalizations.of(context)
+                                          .logNoMatches,
+                                  style: TextStyle(
+                                      color: colorScheme.onSurfaceVariant),
                                 ),
                               );
                             }
 
-                          Widget listView = ListView.builder(
-                            controller: _scrollController,
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                            itemCount: controller.filteredLogs.length,
-                            itemBuilder: (context, index) {
-                              return LogLineWidget(
-                                index: index + 1,
-                                line: controller.filteredLogs[index],
-                                settings: controller.settings,
-                                query: controller.searchQuery,
-                                firstLogTimestamp: controller.firstLogTimestamp,
-                              );
-                            },
-                          );
-
-                          if (controller.settings.viewMode == LogViewMode.scrollPage) {
-                            return Scrollbar(
-                              controller: _horizontalScrollController,
-                              thumbVisibility: true,
-                              trackVisibility: true,
-                              child: SingleChildScrollView(
-                                controller: _horizontalScrollController,
-                                scrollDirection: Axis.horizontal,
-                                child: SizedBox(
-                                  width: MediaQuery.of(context).size.width * 3,
-                                  child: listView,
-                                ),
-                              ),
+                            Widget listView = ListView.builder(
+                              controller: _scrollController,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              itemCount: controller.filteredLogs.length,
+                              itemBuilder: (context, index) {
+                                return LogLineWidget(
+                                  index: index + 1,
+                                  line: controller.filteredLogs[index],
+                                  settings: controller.settings,
+                                  query: controller.searchQuery,
+                                  firstLogTimestamp:
+                                      controller.firstLogTimestamp,
+                                );
+                              },
                             );
-                          }
 
-                          return listView;
-                        },
+                            if (controller.settings.viewMode ==
+                                LogViewMode.scrollPage) {
+                              return Scrollbar(
+                                controller: _horizontalScrollController,
+                                thumbVisibility: true,
+                                trackVisibility: true,
+                                child: SingleChildScrollView(
+                                  controller: _horizontalScrollController,
+                                  scrollDirection: Axis.horizontal,
+                                  child: SizedBox(
+                                    width:
+                                        MediaQuery.of(context).size.width * 3,
+                                    child: listView,
+                                  ),
+                                ),
+                              );
+                            }
+
+                            return listView;
+                          },
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
                   ),
                 );
               },

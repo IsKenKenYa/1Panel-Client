@@ -20,6 +20,8 @@
   "commonUpload": "上传",
   "commonRefresh": "刷新",
   "commonReset": "重置",
+  "commonYes": "是",
+  "commonNo": "否",
   "commonComingSoon": "即将支持",
   "commonEmpty": "暂无数据",
   "commonLoadFailedTitle": "加载失败",
@@ -39,8 +41,44 @@
   "websitesActionStop": "停止",
   "websitesActionRestart": "重启",
   "websitesActionDelete": "删除",
+  "websitesSetDefaultAction": "设为默认站点",
+  "websitesDefaultServerLabel": "默认站点",
+  "websitesGroupLabel": "分组",
+  "websitesRemarkLabel": "备注",
+  "websitesAliasLabel": "别名",
+  "websitesPrimaryDomainLabel": "主域名",
+  "websitesProxyAddressLabel": "代理地址",
+  "websitesProxyTypeLabel": "代理类型",
+  "websitesParentWebsiteLabel": "父站点",
+  "websitesSiteDirLabel": "站点目录",
+  "websitesFilterAllGroups": "全部分组",
+  "websitesFilterAllTypes": "全部类型",
+  "websitesSelectionEnable": "选择",
+  "websitesSelectionDisable": "取消选择",
+  "websitesSetGroupAction": "设置分组",
+  "websitesLifecycleCreateTitle": "创建网站",
+  "websitesLifecycleEditTitle": "编辑网站",
+  "websitesLifecycleTypeLabel": "网站类型",
+  "websitesLifecycleTypeRuntime": "运行时",
+  "websitesLifecycleTypeProxy": "反向代理",
+  "websitesLifecycleTypeSubsite": "子站点",
+  "websitesLifecycleTypeStatic": "静态站点",
+  "websitesValidationGroupRequired": "请选择网站分组。",
+  "websitesValidationPrimaryDomainRequired": "请输入主域名。",
+  "websitesValidationAliasRequired": "请输入别名。",
+  "websitesValidationRuntimeRequired": "请选择运行时。",
+  "websitesValidationProxyRequired": "请输入代理地址。",
+  "websitesValidationParentRequired": "请选择父站点。",
   "websitesOperateSuccess": "操作成功",
   "websitesOperateFailed": "操作失败",
+  "websitesSelectedCount": "已选择 {count} 项",
+  "@websitesSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "websitesLoadFailedMessage": "{error}",
   "@websitesLoadFailedMessage": {
     "placeholders": {
@@ -60,6 +98,14 @@
     }
   },
   "websitesDeleteSuccess": "网站已删除",
+  "websitesBatchDeleteMessage": "确定删除 {count} 个网站吗？此操作不可撤销。",
+  "@websitesBatchDeleteMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "websitesDetailTitle": "网站",
   "websitesTabOverview": "概览",
   "websitesTabConfig": "配置",
@@ -77,10 +123,22 @@
   "websitesConfigHint": "Nginx 配置内容",
   "websitesJsonHint": "JSON 内容",
   "websitesDomainAddTitle": "添加域名",
+  "websitesDomainEditTitle": "编辑域名",
   "websitesDomainLabel": "域名",
   "websitesDomainEmpty": "暂无域名",
   "websitesDomainDefault": "默认",
   "websitesDomainSslLabel": "SSL",
+  "websitesDomainValidationRequired": "请输入域名。",
+  "websitesDomainValidationPort": "端口必须在 1 到 65535 之间。",
+  "websitesDomainValidationDuplicate": "该域名已存在。",
+  "websitesDomainDeleteMessage": "确定删除域名 {domain} 吗？",
+  "@websitesDomainDeleteMessage": {
+    "placeholders": {
+      "domain": {
+        "type": "String"
+      }
+    }
+  },
   "websitesRewriteNameLabel": "规则名称",
   "websitesRewriteHint": "伪静态内容",
   "websitesProxyNameLabel": "代理名称",
@@ -107,6 +165,8 @@
   "websitesDetailActionsTitle": "快捷操作",
   "websitesConfigPageTitle": "配置管理",
   "websitesConfigPageSubtitle": "Nginx 配置与 PHP 版本",
+  "websitesBasicConfigTitle": "基础配置",
+  "websitesBasicConfigDatabaseTitle": "数据库绑定",
   "websitesDomainsPageTitle": "域名管理",
   "websitesDomainsPageSubtitle": "绑定与维护站点域名",
   "websitesSslPageTitle": "SSL 证书",
@@ -168,6 +228,69 @@
   "websitesHttpsSslIdLabel": "证书 ID",
   "websitesSslAutoRenewMissingFields": "证书缺少主域名或提供商信息，无法更新自动续期。",
   "websitesSslDownloadHint": "证书下载链接：{link}",
+  "websitesSslExpirationViewTitle": "到期视图",
+  "websitesSslFilterAllCount": "全部（{count}）",
+  "@websitesSslFilterAllCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "websitesSslFilterExpiredCount": "已过期（{count}）",
+  "@websitesSslFilterExpiredCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "websitesSslFilterWithin7DaysCount": "7 天内到期（{count}）",
+  "@websitesSslFilterWithin7DaysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "websitesSslFilterWithin30DaysCount": "30 天内到期（{count}）",
+  "@websitesSslFilterWithin30DaysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "websitesSslAffectedWebsitesCount": "受影响网站：{count}",
+  "@websitesSslAffectedWebsitesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "websitesSslAffectedWebsitesDomains": "受影响域名：{domains}",
+  "@websitesSslAffectedWebsitesDomains": {
+    "placeholders": {
+      "domains": {
+        "type": "String"
+      }
+    }
+  },
+  "websitesSslImpactHintApply": "立即将该证书应用到已绑定网站吗？",
+  "websitesSslImpactWarningHigh": "该操作会影响多个网站，请先确认维护窗口。",
+  "websitesSslNoAffectedWebsites": "暂无绑定网站。",
+  "websitesSslOpenBoundSiteAction": "打开绑定站点",
+  "websitesSslGroupAll": "全部证书",
+  "websitesSslGroupExpired": "已过期",
+  "websitesSslGroupWithin7Days": "7 天内到期",
+  "websitesSslGroupWithin30Days": "30 天内到期",
+  "websitesSslGroupHealthy": "健康",
+  "websitesSslProviderFilterAll": "全部提供商",
+  "websitesSslHealthHealthy": "健康",
+  "websitesSslHealthExpiringSoon": "即将过期",
+  "websitesSslHealthExpired": "已过期",
+  "websitesSslHealthUnknown": "未知",
   "@websitesSslDownloadHint": {
     "placeholders": {
       "link": {
@@ -189,6 +312,124 @@
   "openrestyScopeWebsiteIdLabel": "网站 ID（可选）",
   "openrestyScopeLoad": "加载范围配置",
   "openrestyScopeResultHint": "范围配置结果",
+  "openrestyAdvancedSourceEditorTooltip": "高级源码编辑器",
+  "openrestyRiskBannerTitle": "网关风险提示",
+  "openrestyRunningStatusLabel": "运行状态",
+  "openrestyBuildVersionLabel": "构建 / 版本",
+  "openrestyCoreSummaryLabel": "核心摘要",
+  "openrestyHttpsSummaryLabel": "HTTPS 摘要",
+  "openrestyModulesSummaryLabel": "模块摘要",
+  "openrestyCurrentStateLabel": "当前状态",
+  "openrestyRejectHandshakeLabel": "拒绝握手",
+  "openrestyEditHttpsAction": "编辑 HTTPS",
+  "openrestyPreviewDiffAction": "预览差异",
+  "openrestyRollbackAction": "回滚",
+  "openrestyHttpsDiffPreviewTitle": "HTTPS 差异预览",
+  "openrestyUnnamedModule": "未命名模块",
+  "openrestyNoModulesReturned": "网关未返回任何模块。",
+  "openrestyModuleDiffPreviewTitle": "模块差异预览",
+  "openrestyCurrentConfigLabel": "当前配置",
+  "openrestyAdvancedAction": "高级",
+  "openrestyConfigDiffPreviewTitle": "配置差异预览",
+  "openrestyBuildLastResultLabel": "最近结果",
+  "openrestyBuildNoRecentAction": "暂无最近构建操作",
+  "openrestyBuildStartAction": "开始构建",
+  "openrestyStatusNotRunningSummary": "未运行",
+  "openrestyStatusRunningSummary": "运行中 · active {active}",
+  "@openrestyStatusRunningSummary": {
+    "placeholders": {
+      "active": {
+        "type": "int"
+      }
+    }
+  },
+  "openrestyHttpsEnabledSummary": "HTTPS 已启用",
+  "openrestyHttpsDisabledSummary": "HTTPS 已禁用",
+  "openrestyModulesEnabledSummary": "已启用模块 {enabled}/{total}",
+  "@openrestyModulesEnabledSummary": {
+    "placeholders": {
+      "enabled": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "openrestyBuildNoMirrorConfigured": "未配置构建镜像地址",
+  "openrestyConfigNotLoaded": "配置未加载",
+  "openrestyConfigLoadedSummary": "已加载 {lines} 行",
+  "@openrestyConfigLoadedSummary": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "openrestyDialogUpdateHttpsTitle": "更新 HTTPS",
+  "openrestyDialogEnableHttpsLabel": "启用 HTTPS",
+  "openrestyDialogRejectInvalidHandshakesLabel": "拒绝无效握手",
+  "openrestyDialogModuleTitleFallback": "模块",
+  "openrestyDialogEnableModuleLabel": "启用模块",
+  "openrestyDialogPackagesLabel": "依赖包",
+  "openrestyDialogParamsLabel": "参数",
+  "openrestyDialogScriptLabel": "脚本",
+  "openrestyDialogPreviewConfigTitle": "预览配置变更",
+  "openrestyDialogConfigSourceLabel": "配置源码",
+  "openrestyDialogStartBuildTitle": "开始构建 OpenResty",
+  "openrestyDialogBuildRiskHint": "构建会刷新网关二进制与模块依赖，请在生产节点执行前再次确认。",
+  "openrestyBuildSubmittedMessage": "构建请求已提交",
+  "openrestyBuildSubmittedWithMirrorMessage": "已使用镜像 {mirror} 提交构建请求。",
+  "@openrestyBuildSubmittedWithMirrorMessage": {
+    "placeholders": {
+      "mirror": {
+        "type": "String"
+      }
+    }
+  },
+  "openrestyRiskGatewayInactiveTitle": "网关未激活",
+  "openrestyRiskGatewayInactiveMessage": "OpenResty 当前未上报活动连接。",
+  "openrestyRiskHttpsDisabledTitle": "HTTPS 已禁用",
+  "openrestyRiskHttpsDisabledMessage": "禁用 HTTPS 会降低网关默认安全基线。",
+  "openrestyRiskNoModulesTitle": "未加载模块",
+  "openrestyRiskNoModulesMessage": "OpenResty 模块列表为空，请检查构建与模块配置。",
+  "openrestyRiskBuildMirrorMissingTitle": "缺少构建镜像地址",
+  "openrestyRiskBuildMirrorMissingMessage": "当前未配置构建镜像地址，可能影响构建速度。",
+  "openrestyRiskRejectHandshakeTitle": "已启用拒绝握手",
+  "openrestyRiskRejectHandshakeMessage": "这可能阻止 TLS 协商配置不正确的客户端。",
+  "openrestyRiskModuleDisabledTitle": "模块已禁用",
+  "openrestyRiskModuleDisabledMessage": "禁用 {module} 可能立即改变网关行为。",
+  "@openrestyRiskModuleDisabledMessage": {
+    "placeholders": {
+      "module": {
+        "type": "String"
+      }
+    }
+  },
+  "openrestyRiskDependencyChangeTitle": "依赖变更",
+  "openrestyRiskDependencyChangeMessage": "依赖包或脚本变更可能为 {module} 引入依赖冲突。",
+  "@openrestyRiskDependencyChangeMessage": {
+    "placeholders": {
+      "module": {
+        "type": "String"
+      }
+    }
+  },
+  "openrestyRiskEmptyConfigTitle": "配置为空",
+  "openrestyRiskEmptyConfigMessage": "保存空配置会破坏当前网关配置。",
+  "openrestyRiskBraceMismatchTitle": "括号不匹配",
+  "openrestyRiskBraceMismatchMessage": "配置中可能存在未匹配的大括号，请先校验。",
+  "openrestyRiskMissingHttpBlockTitle": "缺少 http 块",
+  "openrestyRiskMissingHttpBlockMessage": "在配置源码中未检测到 http 块。",
+  "openrestyRiskTemporaryMarkersTitle": "存在临时标记",
+  "openrestyRiskTemporaryMarkersMessage": "配置中仍包含 TODO 或 FIXME 标记。",
+  "openrestyDiffLabelHttps": "HTTPS",
+  "openrestyDiffLabelRejectHandshake": "拒绝握手",
+  "openrestyDiffLabelEnabled": "启用",
+  "openrestyDiffLabelPackages": "依赖包",
+  "openrestyDiffLabelParams": "参数",
+  "openrestyDiffLabelScript": "脚本",
+  "openrestyDiffLabelConfigSource": "配置源码",
   "monitorNetworkLabel": "网络",
   "monitorMetricCurrent": "当前",
   "monitorMetricMin": "最小",
@@ -245,8 +486,138 @@
   "serverModuleApps": "应用",
   "serverModuleContainers": "容器",
   "serverModuleWebsites": "网站",
+  "serverModuleAi": "AI",
+  "aiTabModels": "模型",
+  "aiTabGpu": "GPU",
+  "aiTabDomain": "域名",
+  "aiModelCreate": "创建模型",
+  "aiModelSync": "同步模型",
+  "aiModelRecreate": "重新创建模型",
+  "aiModelNameLabel": "模型名称",
+  "aiTaskIdOptional": "任务 ID（可选）",
+  "aiModelNameRequired": "请输入模型名称",
+  "aiForceDelete": "强制删除",
+  "aiOperationSuccess": "操作成功",
+  "aiOperationFailed": "操作失败：{error}",
+  "@aiOperationFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "aiOperationResult": "操作结果",
+  "aiNoGpuData": "暂无 GPU 数据",
+  "aiFanSpeed": "风扇速度",
+  "aiPowerUsage": "功耗",
+  "aiPerformanceState": "性能状态",
+  "aiDomainHint": "配置 Ollama 域名绑定。请先输入 appInstallID，再加载或提交绑定信息。",
+  "aiAppInstallIdLabel": "应用安装 ID",
+  "aiAppInstallIdRequired": "请输入应用安装 ID",
+  "aiIpAllowListLabel": "IP 白名单",
+  "aiSslIdOptionalLabel": "SSL ID（可选）",
+  "aiWebsiteIdOptionalLabel": "网站 ID（可选）",
+  "aiLoadBinding": "加载当前绑定",
+  "aiBindDomain": "绑定域名",
+  "aiCurrentBinding": "当前绑定",
+  "aiConnUrl": "连接地址",
+  "containerSystemProtectedNetwork": "系统网络不可删除",
   "serverModuleDatabases": "数据库",
   "serverModuleFirewall": "防火墙",
+  "databaseMysqlTab": "MySQL",
+  "databasePostgresqlTab": "PostgreSQL",
+  "databaseRedisTab": "Redis",
+  "databaseRemoteTab": "远程",
+  "databaseOverviewTitle": "概览",
+  "databaseConfigTitle": "配置文件",
+  "databaseBaseInfoTitle": "基础信息",
+  "databaseStatusTitle": "状态",
+  "databaseVariablesTitle": "变量",
+  "databaseScopeLabel": "数据库范围",
+  "databaseEngineLabel": "引擎",
+  "databaseSourceLabel": "来源",
+  "databaseAddressLabel": "地址",
+  "databasePortLabel": "端口",
+  "databaseContainerLabel": "容器",
+  "databaseUsernameLabel": "用户名",
+  "databasePasswordLabel": "密码",
+  "databaseRemoteAccessLabel": "远程访问",
+  "databaseChangePasswordAction": "修改密码",
+  "databaseBindUserAction": "绑定用户",
+  "databaseTestConnectionAction": "测试连接",
+  "databaseRedisConfigTitle": "Redis 配置",
+  "databaseRedisTimeoutLabel": "超时时间",
+  "databaseRedisMaxClientsLabel": "最大客户端数",
+  "databaseRedisPersistenceTitle": "Redis 持久化",
+  "databaseRedisAppendOnlyLabel": "仅追加模式",
+  "databaseRedisSaveLabel": "保存策略",
+  "databaseManageTitle": "管理",
+  "databaseBackupsPageTitle": "备份",
+  "databaseUsersPageTitle": "用户",
+  "databaseBackupCreateAction": "创建备份",
+  "databaseBackupRestoreAction": "恢复备份",
+  "databaseBackupDeleteAction": "删除备份",
+  "databaseBackupSecretLabel": "压缩密码",
+  "databaseBackupEmpty": "暂无备份记录。",
+  "databaseBackupUnsupported": "当前数据库类型不支持备份。",
+  "databaseBackupRestoreConfirmMessage": "确定恢复此备份记录吗？现有数据可能被覆盖。",
+  "databaseBackupDeleteConfirmMessage": "确定删除此备份记录吗？此操作不可恢复。",
+  "databaseUserCurrentLabel": "当前用户",
+  "databaseUserPermissionLabel": "权限",
+  "databaseUserSuperUserLabel": "超级用户",
+  "databaseUserBindAction": "绑定用户",
+  "databaseUserPrivilegesAction": "更新权限",
+  "databaseUserNoBinding": "暂无已绑定用户信息。",
+  "databaseUserUnsupported": "当前数据库类型不支持用户管理。",
+  "databasePrivilegeUnavailable": "绑定用户后才可调整权限。",
+  "firewallTabStatus": "状态",
+  "firewallTabRules": "规则",
+  "firewallTabIps": "IP",
+  "firewallTabPorts": "端口",
+  "firewallNameLabel": "名称",
+  "firewallVersionLabel": "版本",
+  "firewallPingLabel": "Ping",
+  "firewallActiveLabel": "启用",
+  "firewallInitLabel": "已初始化",
+  "firewallBoundLabel": "已绑定",
+  "firewallProtocolLabel": "协议",
+  "firewallAddressLabel": "地址",
+  "firewallStrategyLabel": "策略",
+  "firewallPortLabel": "端口",
+  "firewallFamilyLabel": "族",
+  "firewallSourcePortLabel": "源端口",
+  "firewallDestinationPortLabel": "目标端口",
+  "firewallRuleDefaultTitle": "规则",
+  "firewallUnknownStrategy": "未知",
+  "firewallSourceLabel": "来源",
+  "firewallSourceAnywhere": "任意位置",
+  "firewallSourceAddress": "指定地址",
+  "firewallStrategyAccept": "允许",
+  "firewallStrategyDrop": "拒绝",
+  "firewallStrategyAll": "全部",
+  "firewallSearchHint": "按描述、地址或端口搜索",
+  "firewallSelectionModeEnable": "选择",
+  "firewallSelectionModeDisable": "完成",
+  "firewallBatchDeleteAction": "批量删除",
+  "firewallBatchAcceptAction": "批量允许",
+  "firewallBatchDropAction": "批量拒绝",
+  "firewallSelectedCount": "已选择 {count} 项",
+  "@firewallSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "firewallCreatePortRuleAction": "创建端口规则",
+  "firewallCreateIpRuleAction": "创建 IP 规则",
+  "firewallToggleStrategyAction": "切换策略",
+  "firewallOperationConfirmTitle": "确认防火墙变更",
+  "firewallStartConfirmMessage": "确定启动防火墙服务吗？新规则会立即开始生效。",
+  "firewallStopConfirmMessage": "确定停止防火墙服务吗？这可能导致服务暴露在无包过滤状态下。",
+  "firewallRestartConfirmMessage": "确定重启防火墙服务吗？现有连接可能会短暂中断。",
+  "firewallAddressRequired": "请输入地址。",
+  "firewallPortRequired": "请输入端口。",
   "serverModuleTerminal": "终端",
   "serverModuleMonitoring": "监控",
   "serverModuleFiles": "文件管理",
@@ -700,6 +1071,82 @@
   "sslSettingsDownloadSuccess": "证书下载成功",
   "sslSettingsCert": "证书内容",
   "sslSettingsKey": "私钥内容",
+  "panelTlsTitle": "面板 TLS",
+  "panelTlsOverviewTitle": "概览",
+  "panelTlsCertificateTitle": "证书",
+  "panelTlsRiskTitle": "风险",
+  "panelTlsHistoryTitle": "历史",
+  "panelTlsUploadHint": "上传新证书会立即替换当前面板 TLS 证书包。",
+  "panelTlsIssuerLabel": "签发者",
+  "panelTlsCertificatePathLabel": "证书路径",
+  "panelTlsKeyPathLabel": "私钥路径",
+  "panelTlsSerialNumberLabel": "序列号",
+  "panelTlsLastUpdatedLabel": "最近更新时间",
+  "panelTlsNoRecentActions": "暂无最近本地操作。",
+  "panelTlsUploadDialogTitle": "上传面板证书",
+  "panelTlsCertificatePemLabel": "证书 PEM",
+  "panelTlsPrivateKeyPemLabel": "私钥 PEM",
+  "panelTlsApplyUpdateTitle": "应用证书更新",
+  "panelTlsApplyUpdateMessage": "该操作会替换当前面板 TLS 证书，并可能在网关重载前短暂影响已连接会话。",
+  "panelTlsDownloadDialogTitle": "下载证书包",
+  "panelTlsDownloadDialogMessage": "下载仅用于备份或外部校验，请妥善保管导出的私钥。",
+  "panelTlsContinueAction": "继续",
+  "panelTlsDownloadSuccess": "证书包已下载（{bytes} 字节）",
+  "@panelTlsDownloadSuccess": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      }
+    }
+  },
+  "panelTlsHealthHealthy": "健康",
+  "panelTlsHealthExpiringSoon": "即将到期",
+  "panelTlsHealthExpired": "已过期",
+  "panelTlsHealthUnknown": "未知",
+  "panelTlsRiskUnknownTitle": "证书到期时间未知",
+  "panelTlsRiskUnknownMessage": "无法解析面板证书的到期时间。",
+  "panelTlsRiskExpiredTitle": "证书已过期",
+  "panelTlsRiskExpiredMessage": "面板 TLS 证书已过期，请立即更换。",
+  "panelTlsRiskExpiringSoonTitle": "证书即将到期",
+  "panelTlsRiskExpiringSoonMessage": "面板 TLS 证书将在 {days} 天后到期。",
+  "@panelTlsRiskExpiringSoonMessage": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "panelTlsRiskSelfSignedTitle": "自签名证书",
+  "panelTlsRiskSelfSignedMessage": "自签名证书可能触发浏览器信任告警。",
+  "panelTlsValidationDomainRequired": "域名不能为空。",
+  "panelTlsValidationCertificateRequired": "证书内容不能为空。",
+  "panelTlsValidationCertificatePemRequired": "证书内容必须包含 PEM 证书块。",
+  "panelTlsValidationPrivateKeyRequired": "私钥内容不能为空。",
+  "panelTlsValidationPrivateKeyPemRequired": "私钥内容必须包含 PEM 私钥块。",
+  "panelTlsHistoryLoaded": "已加载 {domain} 的面板 TLS 状态",
+  "@panelTlsHistoryLoaded": {
+    "placeholders": {
+      "domain": {
+        "type": "String"
+      }
+    }
+  },
+  "panelTlsHistoryUploaded": "已为 {domain} 上传新的面板 TLS 证书",
+  "@panelTlsHistoryUploaded": {
+    "placeholders": {
+      "domain": {
+        "type": "String"
+      }
+    }
+  },
+  "panelTlsHistoryDownloaded": "已下载面板 TLS 证书包（{bytes} 字节）",
+  "@panelTlsHistoryDownloaded": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      }
+    }
+  },
   "upgradeTitle": "系统升级",
   "upgradeCurrentVersion": "当前版本",
   "upgradeCurrentVersionLabel": "当前系统版本",

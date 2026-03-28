@@ -1,24 +1,20 @@
-import '../../../api/v2/website_v2.dart';
-import '../../../core/network/api_client_manager.dart';
+import '../../../data/repositories/website_repository.dart';
 import '../../../data/models/website_models.dart';
 
 class WebsiteDetailService {
-  WebsiteV2Api? _api;
+  WebsiteDetailService({WebsiteRepository? repository})
+      : _repository = repository ?? WebsiteRepository();
 
-  Future<void> _ensureApi() async {
-    _api ??= await ApiClientManager.instance.getWebsiteApi();
-  }
+  final WebsiteRepository _repository;
 
   Future<WebsiteInfo> fetchWebsiteDetail(int websiteId) async {
-    await _ensureApi();
-    return _api!.getWebsiteDetail(websiteId);
+    return _repository.getWebsiteDetail(websiteId);
   }
 
   Future<void> operateWebsite({
     required int websiteId,
     required String action,
   }) async {
-    await _ensureApi();
-    await _api!.operateWebsite(id: websiteId, operate: action);
+    await _repository.operateWebsite(websiteId: websiteId, action: action);
   }
 }

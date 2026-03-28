@@ -12,7 +12,8 @@ void showCopyDialog(
   FileInfo file,
   AppLocalizations l10n,
 ) {
-  appLogger.dWithPackage('copy_dialog', 'showCopyDialog: 打开复制对话框, file=${file.path}');
+  appLogger.dWithPackage(
+      'copy_dialog', 'showCopyDialog: 打开复制对话框, file=${file.path}');
   final controller = TextEditingController(text: provider.data.currentPath);
   showDialog(
     context: context,
@@ -35,7 +36,8 @@ void showCopyDialog(
               suffixIcon: IconButton(
                 icon: const Icon(Icons.folder_open),
                 onPressed: () async {
-                  final selectedPath = await showPathSelectorDialog(context, provider, controller.text, l10n);
+                  final selectedPath = await showPathSelectorDialog(
+                      context, provider, controller.text, l10n);
                   if (selectedPath != null) {
                     controller.text = selectedPath;
                   }
@@ -53,15 +55,18 @@ void showCopyDialog(
         ),
         FilledButton(
           onPressed: () async {
-            appLogger.dWithPackage('copy_dialog', 'showCopyDialog: 用户选择目标路径=${controller.text}');
+            appLogger.dWithPackage(
+                'copy_dialog', 'showCopyDialog: 用户选择目标路径=${controller.text}');
             Navigator.pop(dialogContext);
             try {
               await provider.copyFile(file.path, controller.text);
               appLogger.iWithPackage('copy_dialog', 'showCopyDialog: 复制成功');
             } catch (e, stackTrace) {
-              appLogger.eWithPackage('copy_dialog', 'showCopyDialog: 复制失败', error: e, stackTrace: stackTrace);
+              appLogger.eWithPackage('copy_dialog', 'showCopyDialog: 复制失败',
+                  error: e, stackTrace: stackTrace);
               if (context.mounted) {
-                DebugErrorDialog.show(context, l10n.filesCopyFailed, e, stackTrace: stackTrace);
+                DebugErrorDialog.show(context, l10n.filesCopyFailed, e,
+                    stackTrace: stackTrace);
               }
             }
           },

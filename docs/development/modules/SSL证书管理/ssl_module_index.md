@@ -4,6 +4,17 @@
 
 SSL证书管理模块是Open1PanelApp的**安全通信模块**，当前主要负责**系统级面板 SSL** 的查看、导入、更新与下载，并承接网站证书体系的共享模型与文档说明。
 
+## S2-0 基线（2026-03-26）
+
+- 当前状态：
+  `panel ssl` 目前只以 `settings/panel_ssl` 薄页存在，尚未形成独立模块目录与独立 feature 心智。
+- 阶段 2 hard scope：
+  `info / update / download`
+- API 基线：
+  `check_module_api_updates.py system_ssl` 当前结果为 `unchanged`
+- 文档缺口：
+  当前没有独立的 `panel ssl` 模块索引/架构/计划目录，只能从系统 SSL 文档侧向映射。
+
 ### 核心职责
 
 1. **证书申请** - Let's Encrypt自动申请、手动申请

@@ -4,6 +4,21 @@
 
 Open1PanelApp 的网站模块负责站点生命周期管理、反向代理、SSL证书与OpenResty配置能力。
 
+## S2-0 基线（2026-03-26）
+
+- 当前状态：
+  网站家族已具备 `pages / providers / services` 骨架，但严格审计结论仍是 `不完整适配`，后续实现必须以严格审计报告为准，而不是以“已有页面”判断完成度。
+- 阶段 2 hard scope：
+  `website lifecycle / detail / default site / group / remark`
+  `website_domain CRUD + validation`
+  `website_config structured config center entry`
+  `website ssl certificate center + website binding + HTTPS strategy`
+  `openresty status / https / modules / config / build`
+- API 基线：
+  `website / openresty / domains / website_ssl / system_ssl` 当前脚本检查均为 `unchanged`
+- 边界：
+  `proxy cache / load balance / real ip / stream / CA / ACME / DNS account` 不在当前阶段 2 hard scope。
+
 ## 子模块结构
 
 - 网站管理-OpenResty
@@ -47,16 +62,31 @@ Open1PanelApp 的网站模块负责站点生命周期管理、反向代理、SSL
 
 ## 本轮实现进展
 
-- 网站模块已开始向 `services / providers / pages / widgets` 结构收敛
-- 站点工作台、配置中心、域名管理、站点 SSL、网站证书中心、OpenResty 中心、系统 SSL 兼容入口均已落地 MVP 页面
-- 现有原始配置/JSON 编辑能力仍保留为高级入口，后续继续逐步结构化
+- 网站主链路已向 `WebsiteService + provider + page` 收敛
+- 网站列表已补搜索、类型/分组筛选、选择模式、批量操作、批量分组
+- 网站详情已补 `edit / set default server / delete`
+- 创建与编辑已统一到 lifecycle flow，当前支持 `runtime / proxy / subsite`
+- 现有原始配置/JSON 编辑能力仍保留为高级入口，配置中心已新增结构化 `Basic` 入口
 
 ## 适配现状与UI链路
 
-- 入口: `lib/features/websites/websites_page.dart` -> `lib/features/websites/website_detail_page.dart`，详情页当前以卡片入口跳转到配置/域名/SSL/OpenResty 子页面。
-- OpenResty 入口: 网站列表页右上角设置按钮跳转 `lib/features/openresty/openresty_page.dart`。
-- 配置/域名/SSL 多以 JSON 或简单表单完成，缺少模块化子页面与分步流程。
-- 关键能力缺口集中在网站创建与批量操作、结构化配置页、域名更新与解析校验、CA/ACME/DNS 账户管理、OpenResty 性能/日志/其他设置。
+- 入口: `lib/features/websites/pages/websites_page.dart` -> `lib/features/websites/pages/website_detail_page.dart`
+- 列表页已覆盖:
+  - 搜索
+  - type/group 筛选
+  - 批量 `start / stop / restart / delete / set group`
+- 详情页已覆盖:
+  - start / stop / restart / delete
+  - edit
+  - set as default server
+  - Config / Domains / SSL / OpenResty workbench 入口
+- 创建/编辑流:
+  - 当前支持 `runtime / proxy / subsite`
+  - 明确不做 app-store/deployment 高级安装模式
+- 关键剩余缺口:
+  - 网站高级能力仍远低于上游
+  - 网站配置的结构化深度仍不足
+  - 域名管理尚未扩到批量和解析探测
 
 ## 重复代码检查
 

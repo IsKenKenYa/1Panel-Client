@@ -54,13 +54,33 @@ class _ImagePageState extends State<ImagePage> {
 
         return RefreshIndicator(
           onRefresh: () => provider.loadImages(),
-          child: ListView.builder(
+          child: ListView(
             padding: const EdgeInsets.all(16),
-            itemCount: provider.images.length,
-            itemBuilder: (context, index) {
-              final image = provider.images[index];
-              return ImageCard(image: image);
-            },
+            children: [
+              if (provider.error != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Material(
+                    color: Theme.of(context).colorScheme.errorContainer,
+                    borderRadius: BorderRadius.circular(12),
+                    child: ListTile(
+                      leading: const Icon(Icons.error_outline),
+                      title: Text(l10n.commonLoadFailedTitle),
+                      subtitle: Text(provider.error!),
+                      trailing: TextButton(
+                        onPressed: () => provider.loadImages(),
+                        child: Text(l10n.commonRetry),
+                      ),
+                    ),
+                  ),
+                ),
+              if (provider.isLoading)
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 12),
+                  child: LinearProgressIndicator(minHeight: 2),
+                ),
+              ...provider.images.map((image) => ImageCard(image: image)),
+            ],
           ),
         );
       },

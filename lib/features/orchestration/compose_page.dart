@@ -23,7 +23,7 @@ class _ComposePageState extends State<ComposePage> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    
+
     return Consumer<ComposeProvider>(
       builder: (context, provider, child) {
         if (provider.isLoading && provider.composes.isEmpty) {
@@ -52,13 +52,34 @@ class _ComposePageState extends State<ComposePage> {
 
         return RefreshIndicator(
           onRefresh: () => provider.loadComposes(),
-          child: ListView.builder(
+          child: ListView(
             padding: const EdgeInsets.all(16),
-            itemCount: provider.composes.length,
-            itemBuilder: (context, index) {
-              final compose = provider.composes[index];
-              return ComposeCard(compose: compose);
-            },
+            children: [
+              if (provider.error != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Material(
+                    color: Theme.of(context).colorScheme.errorContainer,
+                    borderRadius: BorderRadius.circular(12),
+                    child: ListTile(
+                      leading: const Icon(Icons.error_outline),
+                      title: Text(l10n.commonLoadFailedTitle),
+                      subtitle: Text(provider.error!),
+                      trailing: TextButton(
+                        onPressed: () => provider.loadComposes(),
+                        child: Text(l10n.commonRetry),
+                      ),
+                    ),
+                  ),
+                ),
+              if (provider.isLoading)
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 12),
+                  child: LinearProgressIndicator(minHeight: 2),
+                ),
+              ...provider.composes
+                  .map((compose) => ComposeCard(compose: compose)),
+            ],
           ),
         );
       },

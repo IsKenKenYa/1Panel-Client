@@ -41,7 +41,8 @@ void main() {
           MaterialApp(
             home: Scaffold(
               body: ListTile(
-                leading: Icon(dir.isDir ? Icons.folder : Icons.insert_drive_file),
+                leading:
+                    Icon(dir.isDir ? Icons.folder : Icons.insert_drive_file),
                 title: Text(dir.name),
               ),
             ),
@@ -124,11 +125,13 @@ void main() {
 
       test('应该正确格式化 GB', () {
         expect(_formatFileSize(1024 * 1024 * 1024), equals('1.00 GB'));
-        expect(_formatFileSize((1024 * 1024 * 1024 * 1.5).toInt()), equals('1.50 GB'));
+        expect(_formatFileSize((1024 * 1024 * 1024 * 1.5).toInt()),
+            equals('1.50 GB'));
       });
 
       test('应该正确格式化 TB', () {
-        expect(_formatFileSize((1024.0 * 1024 * 1024 * 1024).toInt()), equals('1.00 TB'));
+        expect(_formatFileSize((1024.0 * 1024 * 1024 * 1024).toInt()),
+            equals('1.00 TB'));
       });
     });
 
@@ -215,8 +218,16 @@ void main() {
           type: 'dir',
           isDir: true,
           children: [
-            FileInfo(name: 'child1.txt', path: '/parent/child1.txt', size: 100, type: 'file'),
-            FileInfo(name: 'child2.txt', path: '/parent/child2.txt', size: 200, type: 'file'),
+            FileInfo(
+                name: 'child1.txt',
+                path: '/parent/child1.txt',
+                size: 100,
+                type: 'file'),
+            FileInfo(
+                name: 'child2.txt',
+                path: '/parent/child2.txt',
+                size: 200,
+                type: 'file'),
           ],
         );
 

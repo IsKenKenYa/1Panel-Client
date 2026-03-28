@@ -12,7 +12,8 @@ void showMoveDialog(
   FileInfo file,
   AppLocalizations l10n,
 ) {
-  appLogger.dWithPackage('move_dialog', 'showMoveDialog: 打开移动对话框, file=${file.path}');
+  appLogger.dWithPackage(
+      'move_dialog', 'showMoveDialog: 打开移动对话框, file=${file.path}');
   final controller = TextEditingController(text: provider.data.currentPath);
   showDialog(
     context: context,
@@ -35,7 +36,8 @@ void showMoveDialog(
               suffixIcon: IconButton(
                 icon: const Icon(Icons.folder_open),
                 onPressed: () async {
-                  final selectedPath = await showPathSelectorDialog(context, provider, controller.text, l10n);
+                  final selectedPath = await showPathSelectorDialog(
+                      context, provider, controller.text, l10n);
                   if (selectedPath != null) {
                     controller.text = selectedPath;
                   }
@@ -53,15 +55,18 @@ void showMoveDialog(
         ),
         FilledButton(
           onPressed: () async {
-            appLogger.dWithPackage('move_dialog', 'showMoveDialog: 用户选择目标路径=${controller.text}');
+            appLogger.dWithPackage(
+                'move_dialog', 'showMoveDialog: 用户选择目标路径=${controller.text}');
             Navigator.pop(dialogContext);
             try {
               await provider.moveFile(file.path, controller.text);
               appLogger.iWithPackage('move_dialog', 'showMoveDialog: 移动成功');
             } catch (e, stackTrace) {
-              appLogger.eWithPackage('move_dialog', 'showMoveDialog: 移动失败', error: e, stackTrace: stackTrace);
+              appLogger.eWithPackage('move_dialog', 'showMoveDialog: 移动失败',
+                  error: e, stackTrace: stackTrace);
               if (context.mounted) {
-                DebugErrorDialog.show(context, l10n.filesMoveFailed, e, stackTrace: stackTrace);
+                DebugErrorDialog.show(context, l10n.filesMoveFailed, e,
+                    stackTrace: stackTrace);
               }
             }
           },

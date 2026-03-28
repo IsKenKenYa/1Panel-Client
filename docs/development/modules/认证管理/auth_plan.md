@@ -9,8 +9,8 @@
 | 任务 | 预计时间 | 负责人 | 状态 |
 |------|---------|--------|------|
 | 创建认证数据模型 | 2h | - | ✅ 已完成 |
-| 实现TokenService | 2h | - | ✅ 已完成 (集成于AuthProvider) |
-| 实现AuthService | 3h | - | ✅ 已完成 (集成于AuthProvider) |
+| 实现TokenService | 2h | - | ✅ 已完成 (拆分为AuthSessionStore) |
+| 实现AuthService | 3h | - | ✅ 已完成 (独立 `auth_service.dart`) |
 | 实现AuthProvider | 4h | - | ✅ 已完成 |
 | 创建LoginPage UI | 6h | - | ✅ 已完成 |
 
@@ -31,7 +31,7 @@
 
 | 任务 | 预计时间 | 负责人 | 状态 |
 |------|---------|--------|------|
-| 单元测试编写 | 4h | - | ✅ 已完成 (14个测试) |
+| 单元测试编写 | 4h | - | ✅ 已完成 (Provider/Service) |
 | 集成测试编写 | 3h | - | ⏳ 待实现 |
 | 性能优化 | 2h | - | ⏳ 待实现 |
 | 文档完善 | 2h | - | ✅ 已完成 |
@@ -55,16 +55,16 @@
 | DATA-003 | 创建CaptchaModel模型 | P0 | - | ✅ 已完成 |
 | DATA-004 | 创建MFALoginRequest模型 | P1 | DATA-001 | ✅ 已完成 |
 | DATA-005 | 创建AuthSettings模型 | P1 | - | ✅ 已完成 (LoginSettings) |
-| DATA-006 | 实现Token本地存储 | P0 | - | ✅ 已完成 (SharedPreferences) |
-| DATA-007 | 实现Token加密存储 | P1 | DATA-006 | ⏳ 待实现 |
+| DATA-006 | 实现Token本地存储 | P0 | - | ✅ 已完成 (`flutter_secure_storage`) |
+| DATA-007 | 实现Token加密存储 | P1 | DATA-006 | ✅ 已完成 |
 
 ### 服务层任务
 
 | 任务ID | 任务描述 | 优先级 | 依赖 | 状态 |
 |--------|---------|--------|------|------|
-| SVC-001 | 实现AuthService核心逻辑 | P0 | DATA-001,002 | ✅ 已完成 (AuthProvider) |
-| SVC-002 | 实现TokenService | P0 | DATA-006 | ✅ 已完成 (集成于AuthProvider) |
-| SVC-003 | 实现SessionService | P1 | SVC-002 | ⏳ 待实现 |
+| SVC-001 | 实现AuthService核心逻辑 | P0 | DATA-001,002 | ✅ 已完成 (`auth_service.dart`) |
+| SVC-002 | 实现TokenService | P0 | DATA-006 | ✅ 已完成 (`auth_session_store.dart`) |
+| SVC-003 | 实现SessionService | P1 | SVC-002 | ✅ 已完成 |
 | SVC-004 | 实现登录状态持久化 | P0 | SVC-001 | ✅ 已完成 |
 
 ### UI层任务
@@ -84,8 +84,8 @@
 | 任务ID | 任务描述 | 优先级 | 依赖 | 状态 |
 |--------|---------|--------|------|------|
 | TEST-001 | AuthV2Api单元测试 | P0 | API-001 | ✅ 已完成 |
-| TEST-002 | AuthService单元测试 | P0 | SVC-001 | ✅ 已完成 (AuthProvider测试) |
-| TEST-003 | TokenService单元测试 | P0 | SVC-002 | ✅ 已完成 (集成于AuthProvider测试) |
+| TEST-002 | AuthService单元测试 | P0 | SVC-001 | ✅ 已完成 (`auth_service_test.dart`) |
+| TEST-003 | TokenService单元测试 | P0 | SVC-002 | ✅ 已完成 (`auth_service_test.dart`) |
 | TEST-004 | 登录流程集成测试 | P0 | UI-001 | ⏳ 待实现 |
 | TEST-005 | MFA流程集成测试 | P1 | UI-004 | ⏳ 待实现 |
 | TEST-006 | Token过期处理测试 | P1 | SVC-002 | ⏳ 待实现 |
@@ -126,8 +126,8 @@
 
 ---
 
-**文档版本**: 2.0  
-**最后更新**: 2026-02-15  
+**文档版本**: 2.1  
+**最后更新**: 2026-03-27  
 **维护者**: Open1Panel开发团队
 
 ## 实现文件索引
@@ -135,7 +135,11 @@
 | 文件 | 路径 | 说明 |
 |------|------|------|
 | 数据模型 | `lib/data/models/auth_models.dart` | 7个认证相关模型 |
+| Repository | `lib/features/auth/auth_repository.dart` | Auth API边界 |
+| Service | `lib/features/auth/auth_service.dart` | 认证业务逻辑 |
+| Session Store | `lib/features/auth/auth_session_store.dart` | 安全会话存储 |
 | 状态管理 | `lib/features/auth/auth_provider.dart` | Provider状态管理 |
 | 登录页面 | `lib/features/auth/login_page.dart` | MDUI3登录UI |
-| 单元测试 | `test/features/auth/auth_provider_test.dart` | 14个测试用例 |
+| 单元测试 | `test/features/auth/auth_provider_test.dart` | Provider与模型测试 |
+| 单元测试 | `test/features/auth/auth_service_test.dart` | Service测试 |
 | 国际化 | `lib/l10n/app_*.arb` | 17条认证相关字符串 |

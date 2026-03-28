@@ -8,10 +8,10 @@ import 'package:onepanel_client/features/files/models/models.dart';
 void showWgetDialog(BuildContext context, FilesProvider provider) {
   appLogger.dWithPackage('wget_dialog', 'showWgetDialog: 打开wget下载对话框');
   final l10n = context.l10n;
-  
+
   final urlController = TextEditingController();
   final nameController = TextEditingController();
-  
+
   showDialog(
     context: context,
     builder: (dialogContext) => AlertDialog(
@@ -46,8 +46,8 @@ void showWgetDialog(BuildContext context, FilesProvider provider) {
             Text(
               '${l10n.filesTargetPath}: ${provider.data.currentPath}',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
             ),
             const SizedBox(height: 16),
             TextField(
@@ -68,35 +68,44 @@ void showWgetDialog(BuildContext context, FilesProvider provider) {
         ),
         FilledButton(
           onPressed: () async {
-            if (urlController.text.isEmpty || nameController.text.isEmpty) return;
-            
+            if (urlController.text.isEmpty || nameController.text.isEmpty) {
+              return;
+            }
+
             final url = urlController.text.trim();
             final name = nameController.text.trim();
-            
-            appLogger.dWithPackage('wget_dialog', 'showWgetDialog: url=$url, name=$name');
+
+            appLogger.dWithPackage(
+                'wget_dialog', 'showWgetDialog: url=$url, name=$name');
             Navigator.pop(dialogContext);
-            
+
             try {
               await provider.wgetDownload(
                 url: url,
                 name: name,
               );
-              
+
               if (context.mounted) {
                 final status = provider.data.wgetStatus;
-                if (status != null && status.state == WgetDownloadState.success) {
+                if (status != null &&
+                    status.state == WgetDownloadState.success) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Row(
                         children: [
-                          Icon(Icons.check_circle, color: Theme.of(context).colorScheme.onPrimary),
+                          Icon(Icons.check_circle,
+                              color: Theme.of(context).colorScheme.onPrimary),
                           const SizedBox(width: 8),
-                          Expanded(child: Text(status.message ?? l10n.filesWgetSuccess(status.filePath ?? ''))),
+                          Expanded(
+                              child: Text(status.message ??
+                                  l10n.filesWgetSuccess(
+                                      status.filePath ?? ''))),
                         ],
                       ),
                       backgroundColor: Theme.of(context).colorScheme.primary,
                       behavior: SnackBarBehavior.floating,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
                       action: SnackBarAction(
                         label: l10n.commonConfirm,
                         textColor: Theme.of(context).colorScheme.onPrimary,
@@ -104,24 +113,30 @@ void showWgetDialog(BuildContext context, FilesProvider provider) {
                       ),
                     ),
                   );
-                } else if (status != null && status.state == WgetDownloadState.error) {
+                } else if (status != null &&
+                    status.state == WgetDownloadState.error) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Row(
                         children: [
-                          Icon(Icons.error_outline, color: Theme.of(context).colorScheme.onError),
+                          Icon(Icons.error_outline,
+                              color: Theme.of(context).colorScheme.onError),
                           const SizedBox(width: 8),
-                          Expanded(child: Text(status.message ?? l10n.filesWgetFailed)),
+                          Expanded(
+                              child:
+                                  Text(status.message ?? l10n.filesWgetFailed)),
                         ],
                       ),
                       backgroundColor: Theme.of(context).colorScheme.error,
                       behavior: SnackBarBehavior.floating,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
                       action: SnackBarAction(
                         label: l10n.commonConfirm,
                         textColor: Theme.of(context).colorScheme.onError,
                         onPressed: () {
-                          Clipboard.setData(ClipboardData(text: status.message ?? ''));
+                          Clipboard.setData(
+                              ClipboardData(text: status.message ?? ''));
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(l10n.commonCopied),
@@ -136,20 +151,23 @@ void showWgetDialog(BuildContext context, FilesProvider provider) {
               }
               appLogger.iWithPackage('wget_dialog', 'showWgetDialog: wget下载完成');
             } catch (e, stackTrace) {
-              appLogger.eWithPackage('wget_dialog', 'showWgetDialog: wget下载失败', error: e, stackTrace: stackTrace);
+              appLogger.eWithPackage('wget_dialog', 'showWgetDialog: wget下载失败',
+                  error: e, stackTrace: stackTrace);
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Row(
                       children: [
-                        Icon(Icons.error_outline, color: Theme.of(context).colorScheme.onError),
+                        Icon(Icons.error_outline,
+                            color: Theme.of(context).colorScheme.onError),
                         const SizedBox(width: 8),
                         Expanded(child: Text(e.toString())),
                       ],
                     ),
                     backgroundColor: Theme.of(context).colorScheme.error,
                     behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)),
                     action: SnackBarAction(
                       label: l10n.commonConfirm,
                       textColor: Theme.of(context).colorScheme.onError,

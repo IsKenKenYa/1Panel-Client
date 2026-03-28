@@ -7,6 +7,7 @@ import '../providers/website_config_center_provider.dart';
 import '../widgets/website_async_state_view.dart';
 import '../widgets/website_section_card.dart';
 import '../website_config_page.dart';
+import 'website_basic_config_page.dart';
 import 'website_routing_rules_page.dart';
 import 'website_security_access_page.dart';
 
@@ -15,15 +16,17 @@ class WebsiteConfigCenterPage extends StatelessWidget {
     super.key,
     required this.websiteId,
     this.displayName,
+    this.provider,
   });
 
   final int websiteId;
   final String? displayName;
+  final WebsiteConfigCenterProvider? provider;
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => WebsiteConfigCenterProvider(websiteId: websiteId)..load(),
+      create: (_) => provider ?? WebsiteConfigCenterProvider(websiteId: websiteId)..load(),
       child: _WebsiteConfigCenterBody(
         websiteId: websiteId,
         displayName: displayName,
@@ -60,14 +63,15 @@ class _WebsiteConfigCenterBody extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               children: [
                 WebsiteSectionCard(
-                  title: l10n.websitesConfigEditorTitle,
-                  subtitle: provider.configFile?.path ?? l10n.websitesConfigPageSubtitle,
-                  icon: Icons.code,
+                  title: l10n.websitesBasicConfigTitle,
+                  subtitle: provider.website?.sitePath ?? l10n.websitesConfigPageSubtitle,
+                  icon: Icons.dashboard_customize_outlined,
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) => WebsiteConfigPage(
+                      builder: (_) => WebsiteBasicConfigPage(
                         websiteId: websiteId,
                         displayName: displayName,
+                        provider: provider,
                       ),
                     ),
                   ),
@@ -99,11 +103,9 @@ class _WebsiteConfigCenterBody extends StatelessWidget {
                   ),
                 ),
                 WebsiteSectionCard(
-                  title: l10n.websitesPhpVersionTitle,
-                  subtitle: provider.scopeResponse?.params.isEmpty == false
-                      ? l10n.websitesConfigScopeValuesLabel
-                      : l10n.websitesPhpRuntimeIdHint,
-                  icon: Icons.data_object_outlined,
+                  title: l10n.websitesConfigEditorTitle,
+                  subtitle: provider.configFile?.path ?? l10n.websitesConfigPageSubtitle,
+                  icon: Icons.code,
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (_) => WebsiteConfigPage(

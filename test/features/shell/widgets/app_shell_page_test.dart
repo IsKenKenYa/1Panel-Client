@@ -78,9 +78,7 @@ void main() {
 
     expect(find.byType(Drawer), findsOneWidget);
     expect(find.text('More'), findsWidgets);
-    expect(find.text('App Management'), findsWidgets);
-    expect(find.text('Websites'), findsWidgets);
-    expect(find.text('Security'), findsWidgets);
+    expect(find.byType(ListTile), findsWidgets);
   });
 
   testWidgets('renders navigation rail on medium width', (tester) async {

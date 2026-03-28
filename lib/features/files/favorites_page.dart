@@ -57,7 +57,8 @@ class _FavoritesViewState extends State<FavoritesView> {
       }
       final favorites = await _service!.searchFavoriteFiles(path: '/');
       final favoritePaths = favorites.map((f) => f.path).toSet();
-      appLogger.iWithPackage('favorites_page', '_loadFavorites: 成功加载 ${favorites.length} 个收藏');
+      appLogger.iWithPackage(
+          'favorites_page', '_loadFavorites: 成功加载 ${favorites.length} 个收藏');
       if (mounted) {
         setState(() {
           _favorites = favorites;
@@ -66,7 +67,8 @@ class _FavoritesViewState extends State<FavoritesView> {
         });
       }
     } catch (e, stackTrace) {
-      appLogger.eWithPackage('favorites_page', '_loadFavorites: 加载失败', error: e, stackTrace: stackTrace);
+      appLogger.eWithPackage('favorites_page', '_loadFavorites: 加载失败',
+          error: e, stackTrace: stackTrace);
       if (mounted) {
         setState(() {
           _error = e.toString();
@@ -90,9 +92,11 @@ class _FavoritesViewState extends State<FavoritesView> {
         );
       }
     } catch (e, stackTrace) {
-      appLogger.eWithPackage('favorites_page', '_removeFavorite: 失败', error: e, stackTrace: stackTrace);
+      appLogger.eWithPackage('favorites_page', '_removeFavorite: 失败',
+          error: e, stackTrace: stackTrace);
       if (mounted) {
-        DebugErrorDialog.show(context, l10n.filesFavoritesLoadFailed, e, stackTrace: stackTrace);
+        DebugErrorDialog.show(context, l10n.filesFavoritesLoadFailed, e,
+            stackTrace: stackTrace);
       }
     }
   }
@@ -117,7 +121,8 @@ class _FavoritesViewState extends State<FavoritesView> {
     );
   }
 
-  Widget _buildBody(BuildContext context, AppLocalizations l10n, ThemeData theme) {
+  Widget _buildBody(
+      BuildContext context, AppLocalizations l10n, ThemeData theme) {
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -157,7 +162,8 @@ class _FavoritesViewState extends State<FavoritesView> {
     );
   }
 
-  Widget _buildEmptyState(BuildContext context, AppLocalizations l10n, ThemeData theme) {
+  Widget _buildEmptyState(
+      BuildContext context, AppLocalizations l10n, ThemeData theme) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -200,7 +206,9 @@ class _FavoritesViewState extends State<FavoritesView> {
       child: ListTile(
         leading: Icon(
           isDir ? Icons.folder_outlined : _getFileIcon(file.name),
-          color: isDir ? colorScheme.primary : _getFileIconColor(file.name, colorScheme),
+          color: isDir
+              ? colorScheme.primary
+              : _getFileIconColor(file.name, colorScheme),
           size: 32,
         ),
         title: Row(
@@ -356,7 +364,8 @@ class _FavoritesViewState extends State<FavoritesView> {
   }
 
   void _navigateToFolder(BuildContext context, FileInfo file) {
-    appLogger.dWithPackage('favorites_page', '_navigateToFolder: path=${file.path}');
+    appLogger.dWithPackage(
+        'favorites_page', '_navigateToFolder: path=${file.path}');
     final parentPath = file.path.substring(0, file.path.lastIndexOf('/'));
     final targetPath = parentPath.isEmpty ? '/' : parentPath;
 

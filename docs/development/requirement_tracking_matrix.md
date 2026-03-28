@@ -7,6 +7,54 @@
 - **数据模型数**: 471
 - **优先级分类**: P0 (核心), P1 (高价值), P2 (工具类)
 
+## Phase 2 增量进展（2026-03-28）
+
+- **S2-1（Database + Firewall）**: 主链路维持可用，延续 Repository/Service/Provider/Page 闭环。
+- **S2-2（Website Core）**: 站点生命周期、详情、默认站点、分组、备注与域名主流程维持可用。
+- **S2-3（Security & Gateway）**: `panel ssl + website ssl + openresty` 按统一收口标准推进，风险提示、差异预览、回滚入口与 i18n 一致性继续对齐。
+- **S2-3 本轮收口结果**: Website SSL Center 完成 provider 全量筛选项与健康状态文案国际化对齐；OpenResty/Panel TLS 维持本地化闭环。
+- **S2-2 / S2-3 架构补充**:
+	- Website Core：新增 `WebsiteRepository / WebsiteDomainRepository / WebsiteConfigRepository`，现有 website services 改为依赖 repository。
+	- Security & Gateway：新增 `WebsiteSslRepository / OpenRestyRepository / PanelSslRepository`，现有 services 改为依赖 repository。
+	- 测试补充：新增 `website_ssl_center_provider_test.dart`、`openresty_provider_test.dart`，并扩展 `website_s2_integration_test.dart` 与 `security_gateway_s2_integration_test.dart`。
+- **S2-4（Orchestration + AI）本轮收口结果**:
+	- Orchestration：独立页接入 compose/image/network/volume 四分段，补齐 create/pull 入口、详情抽屉、危险操作确认、失败重试与结果反馈。
+	- AI：`AIPage` 重构为 `Ollama / GPU / Domain` 三标签页，补齐域名绑定联动、操作消息回填与错误恢复提示。
+	- 回归测试：新增 `test/features/ai/ai_provider_test.dart` 与 `test/features/orchestration/providers/orchestration_provider_flow_test.dart`。
+- **S2-4 验证补充**:
+	- AI：新增 `test/features/ai/ai_page_test.dart`，验证 `AppRoutes.ai` 的 route/injection 与页面壳。
+	- Orchestration：新增 `test/features/orchestration/orchestration_page_test.dart`，验证 tab shell 与主操作入口切换。
+- **S2-5（Core Refactor）当前进展**:
+	- Auth：新增 `AuthRepository / AuthService / AuthSessionStore`，`AuthProvider` 已移除 `SharedPreferences + debugPrint`，改为安全存储和 `appLogger`。
+	- Dashboard：新增 `DashboardRepository / DashboardService`，`DashboardProvider` 已移除 `DashboardV2Api + ApiClientManager + debugPrint` 直连。
+	- File：新增 `FilesRepository` 并将 `FileBrowserService / FileRecycleService / FileTransferService / FilePreviewService` 统一切换为 repository 依赖；`FilesProvider` 已按 `lifecycle / browser / recycle / favorites-transfer / system` 分片，新增 `RecycleBinProvider / TransferManagerProvider / FilePreviewProvider`，页面侧回收站、传输管理与预览已切换到对应 provider。
+	- File：新增 `test/data/repositories/files_repository_test.dart`，覆盖缓存失效、多服务切换、无配置异常路径，并修复 files 相关 widget 测试与分层重构后的兼容性。
+	- 回归测试：新增 `test/features/auth/auth_service_test.dart`，并将 `auth_provider_test.dart` 改为依赖注入风格。
+- **门禁执行结果**:
+	- `flutter analyze`：通过（No issues found）
+	- `dart run test_runner.dart unit`：通过
+	- `dart run test_runner.dart ui`：通过
+	- `dart run test_runner.dart integration`：通过（部分用例按环境开关跳过，见测试输出说明）
+	- `dart run test_runner.dart all`：通过
+- **下一步**: 按 S2-6 输出清单完成合并材料整理，并进入模块1 PR 流程。
+
+## Phase 2 Final Closure（2026-03-28）
+
+- **Final 状态**: Phase 2 已完成收口，进入可合并结论阶段。
+- **验收产物**:
+	- 模块完成清单：`docs/development/s2_module_completion_list.md`
+	- 风险残留清单：`docs/development/s2_risk_residual_list.md`
+	- 回归结果清单：`docs/development/s2_regression_results.md`
+	- 路由清理清单：`docs/development/s2_route_cleanup_list.md`
+- **已批准残留（不阻塞 Phase 2 Final）**:
+	- `database`：用户管理细节、更多写操作表单、细分状态展示。
+	- `firewall`：forward / filter advance / chain status。
+- **范围边界确认**:
+	- Website 长尾（`proxy cache / load balance / real ip / stream`）不在 Phase 2 硬范围。
+	- Orchestration 长尾（`image repo / compose template`）不在 Phase 2 硬范围。
+	- 路由清理本轮仅输出清单与证据，不做字符串路由重构。
+- **门禁基线**: `flutter analyze`、`dart run test_runner.dart unit`、`dart run test_runner.dart ui`、`dart run test_runner.dart integration`、`dart run test_runner.dart all` 全部通过。
+
 ## 优先级定义
 
 | 优先级 | 定义 | 包含模块 |
@@ -21,20 +69,20 @@
 
 | 模块 | 端点数 | API客户端 | 数据模型 | 测试覆盖 | UI集成 | 状态 | 备注 |
 |-------|---------|-----------|----------|----------|---------|------|------|
-| **Website** | 54 | ✅ website_v2.dart | ✅ website_models.dart | ✅ 部分测试 | 🟡 部分 | 需要补充SSL和域名细分功能 |
+| **Website** | 54 | ✅ website_v2.dart | ✅ website_models.dart | ✅ 已测试 | 🟡 部分 | lifecycle/detail/default/group/remark/create-edit 已接入，SSL/OpenResty 深化留给后续 |
 | **System Setting** | 43 | ✅ setting_v2.dart | ✅ setting_models.dart | ✅ 已测试 | 🟡 部分 | MFA功能已实现 |
 | **File** | 37 | ✅ file_v2.dart | ✅ file_models.dart | ✅ 已测试 | 🟡 部分 | 上传/下载/编辑流程待扩展 |
 | **App** | 30 | ✅ app_v2.dart | ✅ app_models.dart | ✅ 已测试 | 🟡 部分 | 应用商店与安装流程待补齐 |
 | **Backup Account** | 25 | ✅ backup_account_v2.dart | ✅ backup_account_models.dart + `backup_request_models.dart` | ✅ 已测试 | ✅ 已集成 | Week 5 已交付账户 / records / recover 主链路；review closeout 后 `BackupRecoverPage` 已对 `app / website / mysql / postgresql / redis / directory / snapshot / log` 做显式类型映射，并拆分 `recordType/requestType`；非可恢复类型保留上下文并禁用提交 |
 | **Runtime** | 25 | ✅ runtime_v2.dart | ✅ runtime_models.dart | ✅ 已测试 | ✅ 已集成 | Week 7 已交付 `RuntimesCenterPage` / `RuntimeDetailPage` / `RuntimeFormPage` 通用链路；PHP/Node 深能力保留到 Week 8 |
 | **Container** | 19 | ✅ container_v2.dart | ✅ container_models.dart | ✅ 已测试 | 🟡 部分 | 需要补齐网络/卷/镜像管理 |
-| **Database Mysql** | 14 | ✅ database_v2.dart | ✅ database_models.dart | ✅ 已测试 | 🟡 部分 | MySQL特定功能待细化 |
+| **Database Mysql** | 14 | ✅ database_v2.dart | ✅ database_models.dart | ✅ 已测试 | 🟡 部分 | 列表/详情/backup/user 主链路已接入，细分能力待扩展 |
 | **Dashboard** | 12 | ✅ dashboard_v2.dart | ✅ monitoring_models.dart | ✅ 已测试 | ✅ 已集成 | 关注核心指标展示 |
-| **Database** | 9 | ✅ database_v2.dart | ✅ database_models.dart | ✅ 已测试 | 🟡 部分 | 通用数据库功能 |
+| **Database** | 9 | ✅ database_v2.dart | ✅ database_models.dart | ✅ 已测试 | 🟡 部分 | list/detail/form/backup/users 闭环已成型，remote/redis 细节待继续打磨 |
 | **Database PostgreSQL** | 9 | ✅ database_v2.dart | ✅ database_models.dart | ⚠️ 待测试 | 🟡 部分 | PostgreSQL特定功能待细化 |
 | **Database Redis** | 7 | ✅ database_v2.dart | ✅ database_models.dart | ⚠️ 待测试 | 🟡 部分 | Redis特定功能待细化 |
 | **Database Common** | 3 | ✅ database_v2.dart | ✅ database_models.dart | ⚠️ 待测试 | 🟡 部分 | 通用数据库操作 |
-| **Auth** | 5 | ✅ auth_v2.dart | ✅ user_models.dart | ✅ 已测试 | ✅ 已集成 | 认证链路完整 |
+| **Auth** | 5 | ✅ auth_v2.dart | ✅ user_models.dart | ✅ 已测试 | ✅ 已集成 | 认证主链路完整，S2-5 安全存储分层已启动 |
 | **Monitor** | 5 | ✅ monitor_v2.dart | ✅ monitoring_models.dart | ⚠️ 待测试 | 🟡 部分 | 性能图表与告警待扩展 |
 
 ### P1 优先级模块 (高价值扩展)
@@ -61,7 +109,7 @@
 | **Website CA** | 7 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🔴 待集成 | CA证书管理 |
 | **Website Acme** | 4 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🔴 待集成 | ACME证书申请 |
 | **Website DNS** | 4 | ✅ website_v2.dart | ✅ website_models.dart | ⚠️ 待测试 | 🔴 待集成 | DNS管理 |
-| **Website Domain** | 4 | ✅ website_v2.dart | ✅ website_models.dart | ⚠️ 待测试 | 🔴 待集成 | 域名管理 |
+| **Website Domain** | 4 | ✅ website_v2.dart | ✅ website_models.dart | ✅ 已测试 | 🟡 部分 | CRUD + 本地校验已接入，默认域名写操作/批量仍缺 |
 | **Website Nginx** | 4 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ⚠️ 待测试 | 🔴 待集成 | Nginx配置 |
 | **Website HTTPS** | 2 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🔴 待集成 | HTTPS配置 |
 | **Website PHP** | 1 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ⚠️ 待测试 | 🔴 待集成 | PHP配置 |

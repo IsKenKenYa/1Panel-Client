@@ -14,7 +14,8 @@ void main() {
       });
 
       test('应该正确处理连接失败异常', () {
-        const exception = NetworkConnectionException('Failed to connect to server');
+        const exception =
+            NetworkConnectionException('Failed to connect to server');
 
         expect(exception.message, contains('Failed to connect'));
       });
@@ -138,25 +139,25 @@ void main() {
 
       test('应该正确处理磁盘空间不足错误', () {
         const errorMessage = 'No space left on device';
-        
+
         expect(errorMessage, contains('No space'));
       });
 
       test('应该正确处理文件已存在错误', () {
         const errorMessage = 'File already exists: /test/file.txt';
-        
+
         expect(errorMessage, contains('already exists'));
       });
 
       test('应该正确处理目录非空错误', () {
         const errorMessage = 'Directory not empty: /test/dir';
-        
+
         expect(errorMessage, contains('not empty'));
       });
 
       test('应该正确处理文件被占用错误', () {
         const errorMessage = 'File is in use by another process';
-        
+
         expect(errorMessage, contains('in use'));
       });
     });
@@ -198,37 +199,38 @@ void main() {
 
       test('应该正确处理校验失败', () {
         const errorMessage = 'Checksum mismatch: expected abc123, got def456';
-        
+
         expect(errorMessage, contains('Checksum mismatch'));
       });
 
       test('应该正确处理分块丢失', () {
         const errorMessage = 'Missing chunk: chunk 5 of 10';
-        
+
         expect(errorMessage, contains('Missing chunk'));
       });
     });
 
     group('数据解析错误处理', () {
       test('应该正确处理 JSON 解析错误', () {
-        expect(() => throw FormatException('Invalid JSON'), throwsFormatException);
+        expect(
+            () => throw FormatException('Invalid JSON'), throwsFormatException);
       });
 
       test('应该正确处理类型转换错误', () {
         final json = {'size': 'not_a_number'};
-        
+
         expect(() => json['size'] as int, throwsA(isA<TypeError>()));
       });
 
       test('应该正确处理空值处理', () {
         final json = <String, dynamic>{};
-        
+
         expect(json['nonexistent'], isNull);
       });
 
       test('应该正确处理字段缺失', () {
         final json = {'name': 'test.txt'};
-        
+
         expect(json.containsKey('size'), isFalse);
         expect(json['size'], isNull);
       });
@@ -237,7 +239,7 @@ void main() {
     group('重试机制测试', () {
       test('应该正确计算重试延迟', () {
         final delays = [1, 2, 4, 8, 16];
-        
+
         for (var i = 0; i < delays.length; i++) {
           final delay = delays[i];
           expect(delay, equals(1 << i));
