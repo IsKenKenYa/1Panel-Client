@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/features/files/widgets/server_selector.dart';
+import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 
 void main() {
   group('ServerSelector Widget Tests', () {
@@ -10,6 +12,13 @@ void main() {
       required void Function(String) onServerChanged,
     }) {
       return MaterialApp(
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),

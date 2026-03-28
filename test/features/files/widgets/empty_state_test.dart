@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:onepanel_client/features/files/widgets/empty_state.dart';
+import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 
 void main() {
   group('EmptyState Widget Tests', () {
@@ -9,6 +11,13 @@ void main() {
       VoidCallback? onCreateFile,
     }) {
       return MaterialApp(
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
@@ -95,8 +104,11 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget());
 
-      final center = tester.widget<Center>(find.byType(Center));
-      expect(center, isNotNull);
+      final centers = tester.widgetList<Center>(find.byType(Center));
+      expect(
+        centers.any((center) => center.child is Column),
+        isTrue,
+      );
     });
 
     testWidgets('uses Column for vertical layout', (WidgetTester tester) async {
@@ -109,8 +121,15 @@ void main() {
     testWidgets('uses Row for button layout', (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget());
 
-      final row = tester.widget<Row>(find.byType(Row).last);
-      expect(row.mainAxisAlignment, equals(MainAxisAlignment.center));
+      final rowFinder = find.descendant(
+        of: find.byType(EmptyState),
+        matching: find.byType(Row),
+      );
+      final rows = tester.widgetList<Row>(rowFinder);
+      expect(
+        rows.any((row) => row.mainAxisAlignment == MainAxisAlignment.center),
+        isTrue,
+      );
     });
 
     testWidgets('has proper spacing between elements',

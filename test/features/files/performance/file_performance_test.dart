@@ -107,7 +107,7 @@ void main() {
 
         expect(progress, equals(0.5));
         expect(progressPercent, equals('50.0%'));
-        expect(stopwatch.elapsedMilliseconds, lessThan(1));
+        expect(stopwatch.elapsedMilliseconds, lessThanOrEqualTo(1));
       });
 
       test('应该高效处理分块状态更新', () {

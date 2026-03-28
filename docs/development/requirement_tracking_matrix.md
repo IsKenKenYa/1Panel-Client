@@ -28,13 +28,15 @@
 	- Auth：新增 `AuthRepository / AuthService / AuthSessionStore`，`AuthProvider` 已移除 `SharedPreferences + debugPrint`，改为安全存储和 `appLogger`。
 	- Dashboard：新增 `DashboardRepository / DashboardService`，`DashboardProvider` 已移除 `DashboardV2Api + ApiClientManager + debugPrint` 直连。
 	- File：新增 `FilesRepository` 并将 `FileBrowserService / FileRecycleService / FileTransferService / FilePreviewService` 统一切换为 repository 依赖；`FilesProvider` 已按 `lifecycle / browser / recycle / favorites-transfer / system` 分片，新增 `RecycleBinProvider / TransferManagerProvider / FilePreviewProvider`，页面侧回收站、传输管理与预览已切换到对应 provider。
+	- File：新增 `test/data/repositories/files_repository_test.dart`，覆盖缓存失效、多服务切换、无配置异常路径，并修复 files 相关 widget 测试与分层重构后的兼容性。
 	- 回归测试：新增 `test/features/auth/auth_service_test.dart`，并将 `auth_provider_test.dart` 改为依赖注入风格。
 - **门禁执行结果**:
 	- `flutter analyze`：通过（No issues found）
 	- `dart run test_runner.dart unit`：通过
 	- `dart run test_runner.dart ui`：通过
 	- `dart run test_runner.dart integration`：通过（部分用例按环境开关跳过，见测试输出说明）
-- **下一步**: 继续推进 `dashboard / file` 的 S2-5 分层收口，并补回 `S2-2 / S2-3` 与完成口径不一致的 repository / integration 缺口。
+	- `dart run test_runner.dart all`：通过
+- **下一步**: 进入 `S2-6 收口与验收`，准备模块1合并材料（完成项/风险残留/回归结果）。
 
 ## 优先级定义
 

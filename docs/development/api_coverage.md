@@ -32,11 +32,13 @@
 	- S2-5：`AuthProvider` 改为依赖 `AuthService`；新增 `AuthRepository / AuthSessionStore`，会话存储切换到 `flutter_secure_storage`。
 	- S2-5：新增 `DashboardRepository / DashboardService`，`DashboardProvider` 改为依赖 service；`FilesProvider` 的回收站读取已收回 service。
 	- S2-5：`file` 分层继续收口为 `FilesRepository + Browser/Recycle/Transfer/Preview services`，并新增 `RecycleBinProvider / TransferManagerProvider / FilePreviewProvider` 承接页面状态。
+	- S2-5：新增 `test/data/repositories/files_repository_test.dart`，覆盖缓存失效、多服务切换、无配置异常路径。
 - 门禁结果:
 	- `flutter analyze`：通过
 	- `dart run test_runner.dart unit`：通过
 	- `dart run test_runner.dart ui`：通过
 	- `dart run test_runner.dart integration`：通过（部分依赖环境变量的用例按预期跳过）
+	- `dart run test_runner.dart all`：通过
 - 备注: 本节为阶段增量记录，不改写全量统计口径；全量统计在下一轮统一盘点时回刷。
 
 ## 实现状态统计

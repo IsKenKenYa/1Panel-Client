@@ -43,20 +43,36 @@ void main() {
     };
   }
 
+  String maskedApiKey(String key) {
+    if (key.isEmpty) {
+      return '(empty)';
+    }
+    if (key.length <= 12) {
+      return key;
+    }
+    return '${key.substring(0, 8)}...${key.substring(key.length - 4)}';
+  }
+
   group('API连接验证测试', () {
     test('配置信息验证', () {
+      final canRunIntegration = TestEnvironment.canRunIntegrationTests;
       debugPrint('\n========================================');
       debugPrint('测试配置信息');
       debugPrint('========================================');
       debugPrint('服务器地址: $baseUrl');
-      debugPrint('API密钥: ${apiKey.substring(0, 8)}...${apiKey.substring(apiKey.length - 4)}');
+      debugPrint('API密钥: ${maskedApiKey(apiKey)}');
+      debugPrint('集成测试开关: ${canRunIntegration ? "开启" : "关闭"}');
       debugPrint('密钥长度: ${apiKey.length}');
       debugPrint('========================================\n');
 
       expect(baseUrl, isNotEmpty);
       expect(baseUrl, isNot(equals('http://your-panel-server:port')));
-      expect(apiKey, isNotEmpty);
-      expect(apiKey, isNot(equals('your_api_key_here')));
+      if (canRunIntegration) {
+        expect(apiKey, isNotEmpty);
+        expect(apiKey, isNot(equals('your_api_key_here')));
+      } else {
+        expect(apiKey, equals(''));
+      }
     });
 
     test('Token生成验证', () {

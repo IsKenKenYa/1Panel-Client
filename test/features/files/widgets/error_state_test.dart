@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:onepanel_client/features/files/widgets/error_state.dart';
+import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 
 void main() {
   group('ErrorState Widget Tests', () {
@@ -9,6 +11,13 @@ void main() {
       VoidCallback? onRetry,
     }) {
       return MaterialApp(
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
@@ -99,8 +108,11 @@ void main() {
         error: 'Test error message',
       ));
 
-      final center = tester.widget<Center>(find.byType(Center));
-      expect(center, isNotNull);
+      final centers = tester.widgetList<Center>(find.byType(Center));
+      expect(
+        centers.any((center) => center.child is Column),
+        isTrue,
+      );
     });
 
     testWidgets('uses Column for vertical layout', (WidgetTester tester) async {
