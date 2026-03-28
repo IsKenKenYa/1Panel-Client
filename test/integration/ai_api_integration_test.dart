@@ -27,9 +27,9 @@ Future<void> main() async {
       '应该能够连接到服务器',
       skip: TestEnvironment.skipIntegration() ?? TestEnvironment.skipNoApiKey(),
       () async {
-      expect(TestEnvironment.baseUrl, isNotEmpty);
-      expect(TestEnvironment.apiKey, isNotEmpty);
-      expect(TestEnvironment.apiKey, isNot(equals('your_api_key_here')));
+        expect(TestEnvironment.baseUrl, isNotEmpty);
+        expect(TestEnvironment.apiKey, isNotEmpty);
+        expect(TestEnvironment.apiKey, isNot(equals('your_api_key_here')));
       },
     );
   });
@@ -37,7 +37,7 @@ Future<void> main() async {
   group('Ollama模型API测试', () {
     test('应该能够搜索Ollama模型列表', skip: TestEnvironment.skipIntegration(), () async {
       final request = SearchWithPage(page: 1, pageSize: 10);
-      
+
       final response = await api.searchOllamaModels(request);
 
       expect(response.statusCode, equals(200));
@@ -142,7 +142,8 @@ Future<void> main() async {
 
   group('破坏性操作测试', () {
     test('应该能够创建Ollama模型', skip: TestEnvironment.skipDestructive(), () async {
-      final request = OllamaModelName(name: 'test-model-${DateTime.now().millisecondsSinceEpoch}');
+      final request = OllamaModelName(
+          name: 'test-model-${DateTime.now().millisecondsSinceEpoch}');
 
       try {
         final response = await api.createOllamaModel(request);
@@ -209,7 +210,8 @@ Future<void> main() async {
         await invalidApi.searchOllamaModels(request);
         fail('应该抛出401异常');
       } on DioException catch (e) {
-        expect(e.response?.statusCode, anyOf(equals(400), equals(401), equals(403)));
+        expect(e.response?.statusCode,
+            anyOf(equals(400), equals(401), equals(403)));
       }
     });
 
@@ -232,7 +234,9 @@ Future<void> main() async {
 
       try {
         final request = SearchWithPage(page: 1, pageSize: 10);
-        await timeoutApi.searchOllamaModels(request).timeout(Duration(milliseconds: 1));
+        await timeoutApi
+            .searchOllamaModels(request)
+            .timeout(Duration(milliseconds: 1));
         // 如果请求很快完成，这是正常的
       } catch (e) {
         // 超时或网络错误是正常的

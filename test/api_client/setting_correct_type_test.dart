@@ -10,8 +10,9 @@ void main() {
 
   setUpAll(() async {
     await TestEnvironment.initialize();
-    hasApiKey = TestEnvironment.apiKey.isNotEmpty && TestEnvironment.apiKey != 'your_api_key_here';
-    
+    hasApiKey = TestEnvironment.apiKey.isNotEmpty &&
+        TestEnvironment.apiKey != 'your_api_key_here';
+
     if (hasApiKey) {
       client = DioClient(
         baseUrl: TestEnvironment.baseUrl,
@@ -28,16 +29,16 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('测试终端设置更新（字符串类型）');
       debugPrint('========================================');
-      
+
       // 尝试更新 - 使用字符串类型
       final updateResponse = await dio.post(
         '/api/v2/core/settings/terminal/update',
         data: {
-          'fontSize': '16',  // 字符串类型
+          'fontSize': '16', // 字符串类型
           'cursorStyle': 'block',
           'cursorBlink': 'true',
           'scrollSensitivity': '1',
@@ -46,15 +47,17 @@ void main() {
           'letterSpacing': '0',
         },
       );
-      
+
       final updateData = updateResponse.data as Map<String, dynamic>;
-      debugPrint('更新响应: code=${updateData['code']}, message=${updateData['message']}');
-      
+      debugPrint(
+          '更新响应: code=${updateData['code']}, message=${updateData['message']}');
+
       // 验证
       await Future.delayed(const Duration(milliseconds: 500));
-      final verifyResponse = await dio.post('/api/v2/core/settings/terminal/search');
+      final verifyResponse =
+          await dio.post('/api/v2/core/settings/terminal/search');
       final verifyData = verifyResponse.data as Map<String, dynamic>;
-      
+
       debugPrint('验证后的设置: ${jsonEncode(verifyData['data'])}');
       debugPrint('更新成功: ${updateData['code'] == 200}');
       debugPrint('========================================\n');
@@ -67,27 +70,29 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('测试端口更新（数字类型）');
       debugPrint('========================================');
-      
+
       // 获取当前端口
       final searchResponse = await dio.post('/api/v2/core/settings/search');
       final searchData = searchResponse.data as Map<String, dynamic>;
       final data = searchData['data'] as Map<String, dynamic>?;
-      final currentPort = int.tryParse(data?['serverPort']?.toString() ?? '9999') ?? 9999;
-      
+      final currentPort =
+          int.tryParse(data?['serverPort']?.toString() ?? '9999') ?? 9999;
+
       debugPrint('当前端口: $currentPort');
-      
+
       // 尝试更新端口 - 使用数字类型
       final updateResponse = await dio.post(
         '/api/v2/core/settings/port/update',
-        data: {'serverPort': currentPort},  // 数字类型
+        data: {'serverPort': currentPort}, // 数字类型
       );
-      
+
       final updateData = updateResponse.data as Map<String, dynamic>;
-      debugPrint('更新响应: code=${updateData['code']}, message=${updateData['message']}');
+      debugPrint(
+          '更新响应: code=${updateData['code']}, message=${updateData['message']}');
       debugPrint('更新成功: ${updateData['code'] == 200}');
       debugPrint('========================================\n');
     });
@@ -99,20 +104,20 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('测试绑定地址更新（包含Ipv6）');
       debugPrint('========================================');
-      
+
       // 获取当前设置
       final searchResponse = await dio.post('/api/v2/core/settings/search');
       final searchData = searchResponse.data as Map<String, dynamic>;
       final data = searchData['data'] as Map<String, dynamic>?;
       final currentBind = data?['bindAddress'] as String? ?? '::';
       final ipv6Enabled = data?['ipv6'] == 'Enable';
-      
+
       debugPrint('当前绑定地址: $currentBind, IPv6: $ipv6Enabled');
-      
+
       // 尝试更新 - 包含Ipv6参数
       final updateResponse = await dio.post(
         '/api/v2/core/settings/bind/update',
@@ -121,9 +126,10 @@ void main() {
           'ipv6': ipv6Enabled ? 'Enable' : 'Disable',
         },
       );
-      
+
       final updateData = updateResponse.data as Map<String, dynamic>;
-      debugPrint('更新响应: code=${updateData['code']}, message=${updateData['message']}');
+      debugPrint(
+          '更新响应: code=${updateData['code']}, message=${updateData['message']}');
       debugPrint('更新成功: ${updateData['code'] == 200}');
       debugPrint('========================================\n');
     });
@@ -135,18 +141,20 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('测试快照列表（正确参数）');
       debugPrint('========================================');
-      
+
       // 尝试不同的参数组合
       final testCases = [
         {'page': 1, 'pageSize': 10},
-        {'pageInfo': {'page': 1, 'pageSize': 10}},
+        {
+          'pageInfo': {'page': 1, 'pageSize': 10}
+        },
         {'page': '1', 'pageSize': '10'},
       ];
-      
+
       for (final params in testCases) {
         debugPrint('\n--- 尝试参数: ${jsonEncode(params)} ---');
         try {
@@ -155,12 +163,13 @@ void main() {
             data: params,
           );
           final responseData = response.data as Map<String, dynamic>;
-          debugPrint('响应: code=${responseData['code']}, message=${responseData['message']}');
+          debugPrint(
+              '响应: code=${responseData['code']}, message=${responseData['message']}');
         } catch (e) {
           debugPrint('错误: $e');
         }
       }
-      
+
       debugPrint('========================================\n');
     });
 
@@ -171,19 +180,20 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('测试系统升级版本列表');
       debugPrint('========================================');
-      
+
       try {
-        final response = await dio.post('/api/v2/core/settings/upgrade/releases');
+        final response =
+            await dio.post('/api/v2/core/settings/upgrade/releases');
         debugPrint('响应类型: ${response.data.runtimeType}');
         debugPrint('响应数据: ${jsonEncode(response.data)}');
       } catch (e) {
         debugPrint('错误: $e');
       }
-      
+
       debugPrint('========================================\n');
     });
 
@@ -191,7 +201,7 @@ void main() {
       debugPrint('\n========================================');
       debugPrint('API接口可用性总结');
       debugPrint('========================================');
-      
+
       debugPrint('''
 根据测试结果，以下是API接口的可用性：
 
@@ -217,7 +227,7 @@ void main() {
 2. 终端设置、端口、绑定地址可以修改，但需要正确的参数类型
 3. 面板名称等通用设置无法通过 /core/settings/update 修改
 ''');
-      
+
       debugPrint('========================================\n');
     });
   });

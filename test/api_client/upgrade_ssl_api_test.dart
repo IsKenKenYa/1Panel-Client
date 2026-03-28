@@ -10,8 +10,9 @@ void main() {
 
   setUpAll(() async {
     await TestEnvironment.initialize();
-    hasApiKey = TestEnvironment.apiKey.isNotEmpty && TestEnvironment.apiKey != 'your_api_key_here';
-    
+    hasApiKey = TestEnvironment.apiKey.isNotEmpty &&
+        TestEnvironment.apiKey != 'your_api_key_here';
+
     if (hasApiKey) {
       client = DioClient(
         baseUrl: TestEnvironment.baseUrl,
@@ -29,15 +30,16 @@ void main() {
 
       final dio = client.dio;
       final response = await dio.get('/api/v2/core/settings/upgrade');
-      
+
       debugPrint('\n========================================');
       debugPrint('GET /core/settings/upgrade 响应');
       debugPrint('========================================');
       debugPrint('状态码: ${response.statusCode}');
       debugPrint('数据类型: ${response.data.runtimeType}');
-      
+
       if (response.data != null) {
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(response.data);
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(response.data);
         debugPrint('原始数据:\n$jsonStr');
       }
       debugPrint('========================================\n');
@@ -51,15 +53,16 @@ void main() {
 
       final dio = client.dio;
       final response = await dio.get('/api/v2/core/settings/upgrade/releases');
-      
+
       debugPrint('\n========================================');
       debugPrint('GET /core/settings/upgrade/releases 响应');
       debugPrint('========================================');
       debugPrint('状态码: ${response.statusCode}');
       debugPrint('数据类型: ${response.data.runtimeType}');
-      
+
       if (response.data != null) {
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(response.data);
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(response.data);
         debugPrint('原始数据:\n$jsonStr');
       }
       debugPrint('========================================\n');
@@ -75,15 +78,16 @@ void main() {
 
       final dio = client.dio;
       final response = await dio.get('/api/v2/core/settings/ssl/info');
-      
+
       debugPrint('\n========================================');
       debugPrint('GET /core/settings/ssl/info 响应');
       debugPrint('========================================');
       debugPrint('状态码: ${response.statusCode}');
       debugPrint('数据类型: ${response.data.runtimeType}');
-      
+
       if (response.data != null) {
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(response.data);
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(response.data);
         debugPrint('原始数据:\n$jsonStr');
       }
       debugPrint('========================================\n');

@@ -283,8 +283,9 @@ class UserV2Api {
     );
     return Response(
       data: (response.data as List?)
-          ?.map((item) => Role.fromJson(item as Map<String, dynamic>))
-          .toList() ?? [],
+              ?.map((item) => Role.fromJson(item as Map<String, dynamic>))
+              .toList() ??
+          [],
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -301,8 +302,9 @@ class UserV2Api {
     );
     return Response(
       data: (response.data as List?)
-          ?.map((item) => Permission.fromJson(item as Map<String, dynamic>))
-          .toList() ?? [],
+              ?.map((item) => Permission.fromJson(item as Map<String, dynamic>))
+              .toList() ??
+          [],
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,

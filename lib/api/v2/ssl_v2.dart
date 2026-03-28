@@ -86,7 +86,8 @@ class SSLV2Api {
   /// 解析网站SSL证书状态和配置
   /// @param sslResolve SSL解析配置
   /// @return 解析结果
-  Future<Response<WebsiteSSL>> resolveWebsiteSSL(WebsiteSSLResolve sslResolve) async {
+  Future<Response<WebsiteSSL>> resolveWebsiteSSL(
+      WebsiteSSLResolve sslResolve) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/websites/ssl/resolve'),
       data: sslResolve.toJson(),
@@ -104,7 +105,8 @@ class SSLV2Api {
   /// 分页搜索网站SSL证书列表
   /// @param search 搜索请求
   /// @return SSL证书分页列表
-  Future<Response<PageResult<WebsiteSSL>>> searchWebsiteSSL(WebsiteSSLSearch search) async {
+  Future<Response<PageResult<WebsiteSSL>>> searchWebsiteSSL(
+      WebsiteSSLSearch search) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/websites/ssl/search'),
       data: search.toJson(),
@@ -178,8 +180,9 @@ class SSLV2Api {
     );
     return Response(
       data: (response.data as List?)
-          ?.map((item) => item as Map<String, dynamic>)
-          .toList() ?? [],
+              ?.map((item) => item as Map<String, dynamic>)
+              .toList() ??
+          [],
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -191,7 +194,8 @@ class SSLV2Api {
   /// 验证SSL证书配置的正确性
   /// @param sslConfig SSL配置信息
   /// @return 验证结果
-  Future<Response<Map<String, dynamic>>> validateSSLConfig(Map<String, dynamic> sslConfig) async {
+  Future<Response<Map<String, dynamic>>> validateSSLConfig(
+      Map<String, dynamic> sslConfig) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/websites/ssl/validate'),
       data: sslConfig,

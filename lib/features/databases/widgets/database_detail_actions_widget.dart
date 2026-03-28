@@ -138,15 +138,15 @@ class DatabaseDetailActionsWidget extends StatelessWidget {
           children: [
             TextField(
               controller: usernameController,
-              decoration:
-                  InputDecoration(labelText: context.l10n.databaseUsernameLabel),
+              decoration: InputDecoration(
+                  labelText: context.l10n.databaseUsernameLabel),
             ),
             const SizedBox(height: AppDesignTokens.spacingSm),
             TextField(
               controller: passwordController,
               obscureText: true,
-              decoration:
-                  InputDecoration(labelText: context.l10n.databasePasswordLabel),
+              decoration: InputDecoration(
+                  labelText: context.l10n.databasePasswordLabel),
             ),
           ],
         ),

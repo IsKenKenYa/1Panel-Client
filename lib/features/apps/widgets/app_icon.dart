@@ -40,13 +40,15 @@ class _AppIconState extends State<AppIcon> with AutomaticKeepAliveClientMixin {
   @override
   void didUpdateWidget(covariant AppIcon oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (_getKey(oldWidget) != _getKey(widget) || _getId(oldWidget) != _getId(widget)) {
+    if (_getKey(oldWidget) != _getKey(widget) ||
+        _getId(oldWidget) != _getId(widget)) {
       _loadIcon();
     }
   }
 
   String? _getKey(AppIcon widget) => widget.app?.key ?? widget.appKey;
-  String? _getId(AppIcon widget) => widget.app?.id?.toString() ?? widget.appId?.toString();
+  String? _getId(AppIcon widget) =>
+      widget.app?.id?.toString() ?? widget.appId?.toString();
 
   Future<void> _loadIcon() async {
     final key = _getKey(widget);
@@ -81,9 +83,9 @@ class _AppIconState extends State<AppIcon> with AutomaticKeepAliveClientMixin {
       final appService = context.read<AppService>();
       // 2. Fetch from service
       // Use key first, then id
-      
+
       Uint8List? bytes;
-      
+
       try {
         if (key != null) {
           final response = await appService.getAppIcon(key);
@@ -140,7 +142,8 @@ class _AppIconState extends State<AppIcon> with AutomaticKeepAliveClientMixin {
 
     if (_iconBytes != null) {
       return ClipRRect(
-        borderRadius: BorderRadius.circular(8), // Optional: rounded corners for icon
+        borderRadius:
+            BorderRadius.circular(8), // Optional: rounded corners for icon
         child: Image.memory(
           _iconBytes!,
           width: widget.size,

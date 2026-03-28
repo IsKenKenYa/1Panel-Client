@@ -20,27 +20,35 @@ String _prettyJson(Object? data) {
   }
 }
 
-void _logSection(String title, {String? method, String? path, Object? request, Object? response}) {
-  appLogger.dWithPackage('test.api_client.openresty', '========================================');
+void _logSection(String title,
+    {String? method, String? path, Object? request, Object? response}) {
+  appLogger.dWithPackage(
+      'test.api_client.openresty', '========================================');
   appLogger.dWithPackage('test.api_client.openresty', title);
   if (method != null && path != null) {
-    appLogger.dWithPackage('test.api_client.openresty', 'Request: $method $path');
+    appLogger.dWithPackage(
+        'test.api_client.openresty', 'Request: $method $path');
   }
   if (request != null) {
-    appLogger.dWithPackage('test.api_client.openresty', 'RequestBody: ${_prettyJson(request)}');
+    appLogger.dWithPackage(
+        'test.api_client.openresty', 'RequestBody: ${_prettyJson(request)}');
   }
   if (response != null) {
-    appLogger.dWithPackage('test.api_client.openresty', 'Response: ${_prettyJson(response)}');
+    appLogger.dWithPackage(
+        'test.api_client.openresty', 'Response: ${_prettyJson(response)}');
   }
-  appLogger.dWithPackage('test.api_client.openresty', '========================================');
+  appLogger.dWithPackage(
+      'test.api_client.openresty', '========================================');
 }
 
 Future<Response<Map<String, dynamic>>> _rawGet(DioClient client, String path) {
   return client.get<Map<String, dynamic>>(ApiConstants.buildApiPath(path));
 }
 
-Future<Response<Map<String, dynamic>>> _rawPost(DioClient client, String path, {dynamic data}) {
-  return client.post<Map<String, dynamic>>(ApiConstants.buildApiPath(path), data: data);
+Future<Response<Map<String, dynamic>>> _rawPost(DioClient client, String path,
+    {dynamic data}) {
+  return client.post<Map<String, dynamic>>(ApiConstants.buildApiPath(path),
+      data: data);
 }
 
 void main() {
@@ -63,17 +71,24 @@ void main() {
 
   group('OpenResty API客户端测试', () {
     test('配置验证 - 集成测试开关', () {
-      appLogger.iWithPackage('test.api_client.openresty', '========================================');
+      appLogger.iWithPackage('test.api_client.openresty',
+          '========================================');
       appLogger.iWithPackage('test.api_client.openresty', 'OpenResty API测试配置');
-      appLogger.iWithPackage('test.api_client.openresty', '========================================');
-      appLogger.iWithPackage('test.api_client.openresty', '服务器地址: ${TestEnvironment.baseUrl}');
-      appLogger.iWithPackage('test.api_client.openresty', 'Integration: ${TestEnvironment.runIntegrationTests}');
-      appLogger.iWithPackage('test.api_client.openresty', 'Destructive: ${TestEnvironment.runDestructiveTests}');
-      appLogger.iWithPackage('test.api_client.openresty', '========================================');
+      appLogger.iWithPackage('test.api_client.openresty',
+          '========================================');
+      appLogger.iWithPackage(
+          'test.api_client.openresty', '服务器地址: ${TestEnvironment.baseUrl}');
+      appLogger.iWithPackage('test.api_client.openresty',
+          'Integration: ${TestEnvironment.runIntegrationTests}');
+      appLogger.iWithPackage('test.api_client.openresty',
+          'Destructive: ${TestEnvironment.runDestructiveTests}');
+      appLogger.iWithPackage('test.api_client.openresty',
+          '========================================');
     });
 
     test('analyze_module_api 输出文件存在', () {
-      final file = File('docs/development/modules/网站管理-OpenResty/openresty_api_analysis.json');
+      final file = File(
+          'docs/development/modules/网站管理-OpenResty/openresty_api_analysis.json');
       expect(file.existsSync(), isTrue);
       final jsonStr = file.readAsStringSync();
       final obj = jsonDecode(jsonStr) as Map<String, dynamic>;
@@ -83,54 +98,65 @@ void main() {
     test('GET /openresty/status 应该成功', () async {
       final skipReason = TestEnvironment.skipIntegration();
       if (skipReason != null) {
-        appLogger.wWithPackage('test.api_client.openresty', '跳过测试: $skipReason');
+        appLogger.wWithPackage(
+            'test.api_client.openresty', '跳过测试: $skipReason');
         return;
       }
 
       final raw = await _rawGet(client, '/openresty/status');
-      _logSection('✅ Raw /openresty/status', method: 'GET', path: '/openresty/status', response: raw.data);
+      _logSection('✅ Raw /openresty/status',
+          method: 'GET', path: '/openresty/status', response: raw.data);
 
       final response = await api.getOpenRestyStatus();
-      _logSection('✅ Parsed /openresty/status', response: response.data?.toJson());
+      _logSection('✅ Parsed /openresty/status',
+          response: response.data?.toJson());
     });
 
     test('GET /openresty/modules 应该成功', () async {
       final skipReason = TestEnvironment.skipIntegration();
       if (skipReason != null) {
-        appLogger.wWithPackage('test.api_client.openresty', '跳过测试: $skipReason');
+        appLogger.wWithPackage(
+            'test.api_client.openresty', '跳过测试: $skipReason');
         return;
       }
 
       final raw = await _rawGet(client, '/openresty/modules');
-      _logSection('✅ Raw /openresty/modules', method: 'GET', path: '/openresty/modules', response: raw.data);
+      _logSection('✅ Raw /openresty/modules',
+          method: 'GET', path: '/openresty/modules', response: raw.data);
 
       final response = await api.getOpenRestyModules();
-      _logSection('✅ Parsed /openresty/modules', response: response.data?.toJson());
+      _logSection('✅ Parsed /openresty/modules',
+          response: response.data?.toJson());
     });
 
     test('GET /openresty/https 应该成功', () async {
       final skipReason = TestEnvironment.skipIntegration();
       if (skipReason != null) {
-        appLogger.wWithPackage('test.api_client.openresty', '跳过测试: $skipReason');
+        appLogger.wWithPackage(
+            'test.api_client.openresty', '跳过测试: $skipReason');
         return;
       }
 
       final raw = await _rawGet(client, '/openresty/https');
-      _logSection('✅ Raw /openresty/https', method: 'GET', path: '/openresty/https', response: raw.data);
+      _logSection('✅ Raw /openresty/https',
+          method: 'GET', path: '/openresty/https', response: raw.data);
 
       final response = await api.getOpenRestyHttps();
-      _logSection('✅ Parsed /openresty/https', response: response.data?.toJson());
+      _logSection('✅ Parsed /openresty/https',
+          response: response.data?.toJson());
     });
 
     test('GET /openresty 应该成功', () async {
       final skipReason = TestEnvironment.skipIntegration();
       if (skipReason != null) {
-        appLogger.wWithPackage('test.api_client.openresty', '跳过测试: $skipReason');
+        appLogger.wWithPackage(
+            'test.api_client.openresty', '跳过测试: $skipReason');
         return;
       }
 
       final raw = await _rawGet(client, '/openresty');
-      _logSection('✅ Raw /openresty', method: 'GET', path: '/openresty', response: raw.data);
+      _logSection('✅ Raw /openresty',
+          method: 'GET', path: '/openresty', response: raw.data);
 
       final response = await api.getOpenRestyConfig();
       _logSection('✅ Parsed /openresty', response: response.data?.toJson());
@@ -139,7 +165,8 @@ void main() {
     test('POST /openresty/scope 应该成功', () async {
       final skipReason = TestEnvironment.skipIntegration();
       if (skipReason != null) {
-        appLogger.wWithPackage('test.api_client.openresty', '跳过测试: $skipReason');
+        appLogger.wWithPackage(
+            'test.api_client.openresty', '跳过测试: $skipReason');
         return;
       }
 
@@ -151,10 +178,16 @@ void main() {
         if (websiteId != null) 'websiteId': websiteId,
       };
       final raw = await _rawPost(client, '/openresty/scope', data: request);
-      _logSection('✅ Raw /openresty/scope', method: 'POST', path: '/openresty/scope', request: request, response: raw.data);
+      _logSection('✅ Raw /openresty/scope',
+          method: 'POST',
+          path: '/openresty/scope',
+          request: request,
+          response: raw.data);
 
-      final response = await api.getOpenRestyScope(OpenrestyScopeRequest(scope: NginxKey.indexKey, websiteId: websiteId));
-      _logSection('✅ Parsed /openresty/scope', response: response.data?.map((e) => e.toJson()).toList());
+      final response = await api.getOpenRestyScope(OpenrestyScopeRequest(
+          scope: NginxKey.indexKey, websiteId: websiteId));
+      _logSection('✅ Parsed /openresty/scope',
+          response: response.data?.map((e) => e.toJson()).toList());
     });
 
     test('POST /openresty/build 应支持 destructive gate', () async {

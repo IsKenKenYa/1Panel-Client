@@ -97,7 +97,8 @@ extension FilesProviderLifecycleMixin on FilesProvider {
           pathHistory: <String>[..._data.pathHistory, targetPath],
         );
       }
-      appLogger.iWithPackage('files_provider', 'loadFiles: 成功加载${files.length}个文件');
+      appLogger.iWithPackage(
+          'files_provider', 'loadFiles: 成功加载${files.length}个文件');
     } catch (e, stackTrace) {
       appLogger.eWithPackage(
         'files_provider',

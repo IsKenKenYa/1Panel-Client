@@ -21,7 +21,8 @@ void main() {
   });
 
   group('DockerV2Api Parsing Fix', () {
-    test('listImages throws CastError when response is Map (Current Bug)', () async {
+    test('listImages throws CastError when response is Map (Current Bug)',
+        () async {
       final jsonResponse = {
         "code": 200,
         "message": "success",
@@ -54,7 +55,7 @@ void main() {
         // For reproduction, I expect it to throw.
       } catch (e) {
         // Expected error: type '_Map<String, dynamic>' is not a subtype of type 'List<dynamic>?' in type cast
-        expect(e, isA<TypeError>()); 
+        expect(e, isA<TypeError>());
         return;
       }
       // fail('Should have thrown TypeError');

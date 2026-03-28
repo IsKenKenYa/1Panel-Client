@@ -87,4 +87,3 @@ class PHPContainerConfig extends Equatable {
   List<Object?> get props =>
       [id, containerName, environments, exposedPorts, extraHosts, volumes];
 }
-

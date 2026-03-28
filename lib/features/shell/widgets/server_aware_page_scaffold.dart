@@ -58,8 +58,7 @@ class ServerAwarePageScaffold extends StatelessWidget {
               ? NoServerSelectedState(moduleName: title)
               : body,
           floatingActionButton: showMissingServer ? null : floatingActionButton,
-          bottomNavigationBar:
-              showMissingServer ? null : bottomNavigationBar,
+          bottomNavigationBar: showMissingServer ? null : bottomNavigationBar,
         );
       },
     );

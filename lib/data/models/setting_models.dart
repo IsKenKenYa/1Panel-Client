@@ -52,7 +52,16 @@ class SettingInfo extends Equatable {
   }
 
   @override
-  List<Object?> get props => [key, value, description, type, category, encrypted, defaultValue, updateTime];
+  List<Object?> get props => [
+        key,
+        value,
+        description,
+        type,
+        category,
+        encrypted,
+        defaultValue,
+        updateTime
+      ];
 }
 
 /// Setting update request model
@@ -144,11 +153,22 @@ class SystemSettings extends Equatable {
     this.minPasswordLength,
   });
 
-  factory SystemSettings.fromJson(Map<String, dynamic> json) => _$SystemSettingsFromJson(json);
+  factory SystemSettings.fromJson(Map<String, dynamic> json) =>
+      _$SystemSettingsFromJson(json);
   Map<String, dynamic> toJson() => _$SystemSettingsToJson(this);
 
   @override
-  List<Object?> get props => [siteName, language, theme, timeZone, sessionTimeout, defaultPassword, allowAccessKey, complexity, minPasswordLength];
+  List<Object?> get props => [
+        siteName,
+        language,
+        theme,
+        timeZone,
+        sessionTimeout,
+        defaultPassword,
+        allowAccessKey,
+        complexity,
+        minPasswordLength
+      ];
 }
 
 /// 系统信息
@@ -180,11 +200,24 @@ class SystemInfo extends Equatable {
     this.usedDisk,
   });
 
-  factory SystemInfo.fromJson(Map<String, dynamic> json) => _$SystemInfoFromJson(json);
+  factory SystemInfo.fromJson(Map<String, dynamic> json) =>
+      _$SystemInfoFromJson(json);
   Map<String, dynamic> toJson() => _$SystemInfoToJson(this);
 
   @override
-  List<Object?> get props => [version, build, arch, os, goVersion, dockerVersion, uptime, totalMemory, usedMemory, totalDisk, usedDisk];
+  List<Object?> get props => [
+        version,
+        build,
+        arch,
+        os,
+        goVersion,
+        dockerVersion,
+        uptime,
+        totalMemory,
+        usedMemory,
+        totalDisk,
+        usedDisk
+      ];
 }
 
 /// 系统时间
@@ -198,7 +231,8 @@ class SystemTime extends Equatable {
     this.timeZone,
   });
 
-  factory SystemTime.fromJson(Map<String, dynamic> json) => _$SystemTimeFromJson(json);
+  factory SystemTime.fromJson(Map<String, dynamic> json) =>
+      _$SystemTimeFromJson(json);
   Map<String, dynamic> toJson() => _$SystemTimeToJson(this);
 
   @override
@@ -216,7 +250,8 @@ class SystemTimeSet extends Equatable {
     this.timeZone,
   });
 
-  factory SystemTimeSet.fromJson(Map<String, dynamic> json) => _$SystemTimeSetFromJson(json);
+  factory SystemTimeSet.fromJson(Map<String, dynamic> json) =>
+      _$SystemTimeSetFromJson(json);
   Map<String, dynamic> toJson() => _$SystemTimeSetToJson(this);
 
   @override
@@ -244,11 +279,19 @@ class SecuritySettings extends Equatable {
     this.passwordPolicy,
   });
 
-  factory SecuritySettings.fromJson(Map<String, dynamic> json) => _$SecuritySettingsFromJson(json);
+  factory SecuritySettings.fromJson(Map<String, dynamic> json) =>
+      _$SecuritySettingsFromJson(json);
   Map<String, dynamic> toJson() => _$SecuritySettingsToJson(this);
 
   @override
-  List<Object?> get props => [allowIPs, allowedIPs, authMethod, failedAttempts, lockTime, passwordPolicy];
+  List<Object?> get props => [
+        allowIPs,
+        allowedIPs,
+        authMethod,
+        failedAttempts,
+        lockTime,
+        passwordPolicy
+      ];
 }
 
 /// 安全设置更新
@@ -270,11 +313,19 @@ class SecuritySettingsUpdate extends Equatable {
     this.passwordPolicy,
   });
 
-  factory SecuritySettingsUpdate.fromJson(Map<String, dynamic> json) => _$SecuritySettingsUpdateFromJson(json);
+  factory SecuritySettingsUpdate.fromJson(Map<String, dynamic> json) =>
+      _$SecuritySettingsUpdateFromJson(json);
   Map<String, dynamic> toJson() => _$SecuritySettingsUpdateToJson(this);
 
   @override
-  List<Object?> get props => [allowIPs, allowedIPs, authMethod, failedAttempts, lockTime, passwordPolicy];
+  List<Object?> get props => [
+        allowIPs,
+        allowedIPs,
+        authMethod,
+        failedAttempts,
+        lockTime,
+        passwordPolicy
+      ];
 }
 
 // ==================== 面板设置相关模型 ====================
@@ -306,11 +357,23 @@ class PanelSettings extends Equatable {
     this.bind,
   });
 
-  factory PanelSettings.fromJson(Map<String, dynamic> json) => _$PanelSettingsFromJson(json);
+  factory PanelSettings.fromJson(Map<String, dynamic> json) =>
+      _$PanelSettingsFromJson(json);
   Map<String, dynamic> toJson() => _$PanelSettingsToJson(this);
 
   @override
-  List<Object?> get props => [title, logo, theme, language, serverName, serverAddr, port, ssl, ipv6, bind];
+  List<Object?> get props => [
+        title,
+        logo,
+        theme,
+        language,
+        serverName,
+        serverAddr,
+        port,
+        ssl,
+        ipv6,
+        bind
+      ];
 }
 
 /// 面板设置更新
@@ -340,11 +403,23 @@ class PanelSettingsUpdate extends Equatable {
     this.bind,
   });
 
-  factory PanelSettingsUpdate.fromJson(Map<String, dynamic> json) => _$PanelSettingsUpdateFromJson(json);
+  factory PanelSettingsUpdate.fromJson(Map<String, dynamic> json) =>
+      _$PanelSettingsUpdateFromJson(json);
   Map<String, dynamic> toJson() => _$PanelSettingsUpdateToJson(this);
 
   @override
-  List<Object?> get props => [title, logo, theme, language, serverName, serverAddr, port, ssl, ipv6, bind];
+  List<Object?> get props => [
+        title,
+        logo,
+        theme,
+        language,
+        serverName,
+        serverAddr,
+        port,
+        ssl,
+        ipv6,
+        bind
+      ];
 }
 
 // ==================== 用户设置相关模型 ====================
@@ -370,11 +445,20 @@ class UserSettings extends Equatable {
     this.lockTime,
   });
 
-  factory UserSettings.fromJson(Map<String, dynamic> json) => _$UserSettingsFromJson(json);
+  factory UserSettings.fromJson(Map<String, dynamic> json) =>
+      _$UserSettingsFromJson(json);
   Map<String, dynamic> toJson() => _$UserSettingsToJson(this);
 
   @override
-  List<Object?> get props => [username, email, language, theme, timeZone, failedLoginAttempts, lockTime];
+  List<Object?> get props => [
+        username,
+        email,
+        language,
+        theme,
+        timeZone,
+        failedLoginAttempts,
+        lockTime
+      ];
 }
 
 /// 用户设置更新
@@ -398,11 +482,20 @@ class UserSettingsUpdate extends Equatable {
     this.lockTime,
   });
 
-  factory UserSettingsUpdate.fromJson(Map<String, dynamic> json) => _$UserSettingsUpdateFromJson(json);
+  factory UserSettingsUpdate.fromJson(Map<String, dynamic> json) =>
+      _$UserSettingsUpdateFromJson(json);
   Map<String, dynamic> toJson() => _$UserSettingsUpdateToJson(this);
 
   @override
-  List<Object?> get props => [username, email, language, theme, timeZone, failedLoginAttempts, lockTime];
+  List<Object?> get props => [
+        username,
+        email,
+        language,
+        theme,
+        timeZone,
+        failedLoginAttempts,
+        lockTime
+      ];
 }
 
 // ==================== 通知设置相关模型 ====================
@@ -430,11 +523,21 @@ class NotificationSettings extends Equatable {
     this.webhookUrl,
   });
 
-  factory NotificationSettings.fromJson(Map<String, dynamic> json) => _$NotificationSettingsFromJson(json);
+  factory NotificationSettings.fromJson(Map<String, dynamic> json) =>
+      _$NotificationSettingsFromJson(json);
   Map<String, dynamic> toJson() => _$NotificationSettingsToJson(this);
 
   @override
-  List<Object?> get props => [emailEnabled, emailServer, emailPort, emailUsername, emailPassword, emailFrom, webhookEnabled, webhookUrl];
+  List<Object?> get props => [
+        emailEnabled,
+        emailServer,
+        emailPort,
+        emailUsername,
+        emailPassword,
+        emailFrom,
+        webhookEnabled,
+        webhookUrl
+      ];
 }
 
 /// 通知设置更新
@@ -460,11 +563,21 @@ class NotificationSettingsUpdate extends Equatable {
     this.webhookUrl,
   });
 
-  factory NotificationSettingsUpdate.fromJson(Map<String, dynamic> json) => _$NotificationSettingsUpdateFromJson(json);
+  factory NotificationSettingsUpdate.fromJson(Map<String, dynamic> json) =>
+      _$NotificationSettingsUpdateFromJson(json);
   Map<String, dynamic> toJson() => _$NotificationSettingsUpdateToJson(this);
 
   @override
-  List<Object?> get props => [emailEnabled, emailServer, emailPort, emailUsername, emailPassword, emailFrom, webhookEnabled, webhookUrl];
+  List<Object?> get props => [
+        emailEnabled,
+        emailServer,
+        emailPort,
+        emailUsername,
+        emailPassword,
+        emailFrom,
+        webhookEnabled,
+        webhookUrl
+      ];
 }
 
 // ==================== 备份设置相关模型 ====================
@@ -486,11 +599,13 @@ class BackupSettings extends Equatable {
     this.backupSchedule,
   });
 
-  factory BackupSettings.fromJson(Map<String, dynamic> json) => _$BackupSettingsFromJson(json);
+  factory BackupSettings.fromJson(Map<String, dynamic> json) =>
+      _$BackupSettingsFromJson(json);
   Map<String, dynamic> toJson() => _$BackupSettingsToJson(this);
 
   @override
-  List<Object?> get props => [backupDir, backupType, backupRetention, backupEnabled, backupSchedule];
+  List<Object?> get props =>
+      [backupDir, backupType, backupRetention, backupEnabled, backupSchedule];
 }
 
 /// 备份设置更新
@@ -510,11 +625,13 @@ class BackupSettingsUpdate extends Equatable {
     this.backupSchedule,
   });
 
-  factory BackupSettingsUpdate.fromJson(Map<String, dynamic> json) => _$BackupSettingsUpdateFromJson(json);
+  factory BackupSettingsUpdate.fromJson(Map<String, dynamic> json) =>
+      _$BackupSettingsUpdateFromJson(json);
   Map<String, dynamic> toJson() => _$BackupSettingsUpdateToJson(this);
 
   @override
-  List<Object?> get props => [backupDir, backupType, backupRetention, backupEnabled, backupSchedule];
+  List<Object?> get props =>
+      [backupDir, backupType, backupRetention, backupEnabled, backupSchedule];
 }
 
 // ==================== 主题设置相关模型 ====================
@@ -534,7 +651,8 @@ class ThemeSettings extends Equatable {
     this.textColor,
   });
 
-  factory ThemeSettings.fromJson(Map<String, dynamic> json) => _$ThemeSettingsFromJson(json);
+  factory ThemeSettings.fromJson(Map<String, dynamic> json) =>
+      _$ThemeSettingsFromJson(json);
   Map<String, dynamic> toJson() => _$ThemeSettingsToJson(this);
 
   @override
@@ -556,7 +674,8 @@ class ThemeSettingsUpdate extends Equatable {
     this.textColor,
   });
 
-  factory ThemeSettingsUpdate.fromJson(Map<String, dynamic> json) => _$ThemeSettingsUpdateFromJson(json);
+  factory ThemeSettingsUpdate.fromJson(Map<String, dynamic> json) =>
+      _$ThemeSettingsUpdateFromJson(json);
   Map<String, dynamic> toJson() => _$ThemeSettingsUpdateToJson(this);
 
   @override
@@ -576,7 +695,8 @@ class LanguageSettings extends Equatable {
     this.region,
   });
 
-  factory LanguageSettings.fromJson(Map<String, dynamic> json) => _$LanguageSettingsFromJson(json);
+  factory LanguageSettings.fromJson(Map<String, dynamic> json) =>
+      _$LanguageSettingsFromJson(json);
   Map<String, dynamic> toJson() => _$LanguageSettingsToJson(this);
 
   @override
@@ -594,7 +714,8 @@ class LanguageSet extends Equatable {
     this.region,
   });
 
-  factory LanguageSet.fromJson(Map<String, dynamic> json) => _$LanguageSetFromJson(json);
+  factory LanguageSet.fromJson(Map<String, dynamic> json) =>
+      _$LanguageSetFromJson(json);
   Map<String, dynamic> toJson() => _$LanguageSetToJson(this);
 
   @override
@@ -618,7 +739,8 @@ class NTPSync extends Equatable {
     this.timezone,
   });
 
-  factory NTPSync.fromJson(Map<String, dynamic> json) => _$NTPSyncFromJson(json);
+  factory NTPSync.fromJson(Map<String, dynamic> json) =>
+      _$NTPSyncFromJson(json);
   Map<String, dynamic> toJson() => _$NTPSyncToJson(this);
 
   @override
@@ -638,7 +760,8 @@ class TimezoneInfo extends Equatable {
     this.offset,
   });
 
-  factory TimezoneInfo.fromJson(Map<String, dynamic> json) => _$TimezoneInfoFromJson(json);
+  factory TimezoneInfo.fromJson(Map<String, dynamic> json) =>
+      _$TimezoneInfoFromJson(json);
   Map<String, dynamic> toJson() => _$TimezoneInfoToJson(this);
 
   @override
@@ -658,7 +781,8 @@ class LanguageInfo extends Equatable {
     this.nativeName,
   });
 
-  factory LanguageInfo.fromJson(Map<String, dynamic> json) => _$LanguageInfoFromJson(json);
+  factory LanguageInfo.fromJson(Map<String, dynamic> json) =>
+      _$LanguageInfoFromJson(json);
   Map<String, dynamic> toJson() => _$LanguageInfoToJson(this);
 
   @override
@@ -680,7 +804,8 @@ class ThemeInfo extends Equatable {
     this.backgroundColor,
   });
 
-  factory ThemeInfo.fromJson(Map<String, dynamic> json) => _$ThemeInfoFromJson(json);
+  factory ThemeInfo.fromJson(Map<String, dynamic> json) =>
+      _$ThemeInfoFromJson(json);
   Map<String, dynamic> toJson() => _$ThemeInfoToJson(this);
 
   @override
@@ -702,7 +827,8 @@ class SettingsExport extends Equatable {
     this.version,
   });
 
-  factory SettingsExport.fromJson(Map<String, dynamic> json) => _$SettingsExportFromJson(json);
+  factory SettingsExport.fromJson(Map<String, dynamic> json) =>
+      _$SettingsExportFromJson(json);
   Map<String, dynamic> toJson() => _$SettingsExportToJson(this);
 
   @override
@@ -720,7 +846,8 @@ class SettingsImport extends Equatable {
     this.overwrite,
   });
 
-  factory SettingsImport.fromJson(Map<String, dynamic> json) => _$SettingsImportFromJson(json);
+  factory SettingsImport.fromJson(Map<String, dynamic> json) =>
+      _$SettingsImportFromJson(json);
   Map<String, dynamic> toJson() => _$SettingsImportToJson(this);
 
   @override
@@ -742,7 +869,8 @@ class MfaCredential extends Equatable {
     required this.secret,
   });
 
-  factory MfaCredential.fromJson(Map<String, dynamic> json) => _$MfaCredentialFromJson(json);
+  factory MfaCredential.fromJson(Map<String, dynamic> json) =>
+      _$MfaCredentialFromJson(json);
   Map<String, dynamic> toJson() => _$MfaCredentialToJson(this);
 
   @override
@@ -780,7 +908,8 @@ class MfaBindRequest extends Equatable {
     required this.secret,
   });
 
-  factory MfaBindRequest.fromJson(Map<String, dynamic> json) => _$MfaBindRequestFromJson(json);
+  factory MfaBindRequest.fromJson(Map<String, dynamic> json) =>
+      _$MfaBindRequestFromJson(json);
   Map<String, dynamic> toJson() => _$MfaBindRequestToJson(this);
 
   @override
@@ -798,7 +927,8 @@ class MfaStatus extends Equatable {
     this.secret,
   });
 
-  factory MfaStatus.fromJson(Map<String, dynamic> json) => _$MfaStatusFromJson(json);
+  factory MfaStatus.fromJson(Map<String, dynamic> json) =>
+      _$MfaStatusFromJson(json);
   Map<String, dynamic> toJson() => _$MfaStatusToJson(this);
 
   @override
@@ -826,11 +956,20 @@ class TerminalInfo extends Equatable {
     this.scrollback,
   });
 
-  factory TerminalInfo.fromJson(Map<String, dynamic> json) => _$TerminalInfoFromJson(json);
+  factory TerminalInfo.fromJson(Map<String, dynamic> json) =>
+      _$TerminalInfoFromJson(json);
   Map<String, dynamic> toJson() => _$TerminalInfoToJson(this);
 
   @override
-  List<Object?> get props => [cursorBlink, cursorStyle, fontSize, letterSpacing, lineHeight, scrollSensitivity, scrollback];
+  List<Object?> get props => [
+        cursorBlink,
+        cursorStyle,
+        fontSize,
+        letterSpacing,
+        lineHeight,
+        scrollSensitivity,
+        scrollback
+      ];
 }
 
 /// 界面设置信息
@@ -848,7 +987,8 @@ class InterfaceInfo extends Equatable {
     this.entry,
   });
 
-  factory InterfaceInfo.fromJson(Map<String, dynamic> json) => _$InterfaceInfoFromJson(json);
+  factory InterfaceInfo.fromJson(Map<String, dynamic> json) =>
+      _$InterfaceInfoFromJson(json);
   Map<String, dynamic> toJson() => _$InterfaceInfoToJson(this);
 
   @override
@@ -944,18 +1084,52 @@ class SystemSettingInfo extends Equatable {
     this.apiKeyValidityTime,
   });
 
-  factory SystemSettingInfo.fromJson(Map<String, dynamic> json) => _$SystemSettingInfoFromJson(json);
+  factory SystemSettingInfo.fromJson(Map<String, dynamic> json) =>
+      _$SystemSettingInfoFromJson(json);
   Map<String, dynamic> toJson() => _$SystemSettingInfoToJson(this);
 
   @override
   List<Object?> get props => [
-    userName, systemVersion, developerMode, upgradeBackupCopies, sessionTimeout,
-    port, ipv6, bindAddress, panelName, theme, menuTabs, language, serverPort,
-    ssl, sslType, bindDomain, allowIPs, securityEntrance, dashboardMemoVisible,
-    dashboardSimpleNodeVisible, expirationDays, expirationTime, complexityVerification,
-    mfaStatus, mfaSecret, mfaInterval, appStoreVersion, appStoreLastModified,
-    appStoreSyncStatus, hideMenu, noAuthSetting, proxyUrl, proxyType, proxyPort,
-    proxyUser, proxyPasswd, proxyPasswdKeep, apiInterfaceStatus, apiKey,
-    ipWhiteList, apiKeyValidityTime,
-  ];
+        userName,
+        systemVersion,
+        developerMode,
+        upgradeBackupCopies,
+        sessionTimeout,
+        port,
+        ipv6,
+        bindAddress,
+        panelName,
+        theme,
+        menuTabs,
+        language,
+        serverPort,
+        ssl,
+        sslType,
+        bindDomain,
+        allowIPs,
+        securityEntrance,
+        dashboardMemoVisible,
+        dashboardSimpleNodeVisible,
+        expirationDays,
+        expirationTime,
+        complexityVerification,
+        mfaStatus,
+        mfaSecret,
+        mfaInterval,
+        appStoreVersion,
+        appStoreLastModified,
+        appStoreSyncStatus,
+        hideMenu,
+        noAuthSetting,
+        proxyUrl,
+        proxyType,
+        proxyPort,
+        proxyUser,
+        proxyPasswd,
+        proxyPasswdKeep,
+        apiInterfaceStatus,
+        apiKey,
+        ipWhiteList,
+        apiKeyValidityTime,
+      ];
 }

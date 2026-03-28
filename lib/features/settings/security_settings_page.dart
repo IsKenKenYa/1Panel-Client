@@ -19,7 +19,8 @@ class SecuritySettingsPage extends StatelessWidget {
       body: ListView(
         padding: AppDesignTokens.pagePadding,
         children: [
-          _buildSectionTitle(context, l10n.securitySettingsPasswordSection, theme),
+          _buildSectionTitle(
+              context, l10n.securitySettingsPasswordSection, theme),
           Card(
             child: Column(
               children: [
@@ -42,16 +43,20 @@ class SecuritySettingsPage extends StatelessWidget {
                   secondary: const Icon(Icons.security_outlined),
                   title: Text(l10n.securitySettingsMfaStatus),
                   subtitle: Text(
-                    _isEnabled(settings?.mfaStatus) ? l10n.systemSettingsEnabled : l10n.systemSettingsDisabled,
+                    _isEnabled(settings?.mfaStatus)
+                        ? l10n.systemSettingsEnabled
+                        : l10n.systemSettingsDisabled,
                   ),
                   value: _isEnabled(settings?.mfaStatus),
-                  onChanged: (value) => _showMfaToggleDialog(context, provider, l10n, value),
+                  onChanged: (value) =>
+                      _showMfaToggleDialog(context, provider, l10n, value),
                 ),
               ],
             ),
           ),
           const SizedBox(height: AppDesignTokens.spacingMd),
-          _buildSectionTitle(context, l10n.securitySettingsAccessControl, theme),
+          _buildSectionTitle(
+              context, l10n.securitySettingsAccessControl, theme),
           Card(
             child: Column(
               children: [
@@ -74,13 +79,16 @@ class SecuritySettingsPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppDesignTokens.spacingMd),
-          _buildSectionTitle(context, l10n.securitySettingsPasswordPolicy, theme),
+          _buildSectionTitle(
+              context, l10n.securitySettingsPasswordPolicy, theme),
           Card(
             child: Column(
               children: [
                 _buildInfoListTile(
                   title: l10n.securitySettingsComplexityVerification,
-                  value: _isEnabled(settings?.complexityVerification) ? l10n.systemSettingsEnabled : l10n.systemSettingsDisabled,
+                  value: _isEnabled(settings?.complexityVerification)
+                      ? l10n.systemSettingsEnabled
+                      : l10n.systemSettingsDisabled,
                   icon: Icons.password_outlined,
                 ),
                 _buildInfoListTile(
@@ -96,7 +104,8 @@ class SecuritySettingsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionTitle(BuildContext context, String title, ThemeData theme) {
+  Widget _buildSectionTitle(
+      BuildContext context, String title, ThemeData theme) {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppDesignTokens.spacingSm),
       child: Text(
@@ -126,7 +135,8 @@ class SecuritySettingsPage extends StatelessWidget {
     return value.toLowerCase() == 'enable' || value.toLowerCase() == 'true';
   }
 
-  void _showPasswordDialog(BuildContext context, SettingsProvider provider, AppLocalizations l10n) {
+  void _showPasswordDialog(
+      BuildContext context, SettingsProvider provider, AppLocalizations l10n) {
     final oldPasswordController = TextEditingController();
     final newPasswordController = TextEditingController();
     final confirmPasswordController = TextEditingController();
@@ -148,7 +158,9 @@ class SecuritySettingsPage extends StatelessWidget {
                 decoration: InputDecoration(
                   labelText: l10n.securitySettingsOldPassword,
                   suffixIcon: IconButton(
-                    icon: Icon(obscureOld ? Icons.visibility_outlined : Icons.visibility_off_outlined),
+                    icon: Icon(obscureOld
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined),
                     onPressed: () => setState(() => obscureOld = !obscureOld),
                   ),
                 ),
@@ -160,7 +172,9 @@ class SecuritySettingsPage extends StatelessWidget {
                 decoration: InputDecoration(
                   labelText: l10n.securitySettingsNewPassword,
                   suffixIcon: IconButton(
-                    icon: Icon(obscureNew ? Icons.visibility_outlined : Icons.visibility_off_outlined),
+                    icon: Icon(obscureNew
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined),
                     onPressed: () => setState(() => obscureNew = !obscureNew),
                   ),
                 ),
@@ -172,8 +186,11 @@ class SecuritySettingsPage extends StatelessWidget {
                 decoration: InputDecoration(
                   labelText: l10n.securitySettingsConfirmPassword,
                   suffixIcon: IconButton(
-                    icon: Icon(obscureConfirm ? Icons.visibility_outlined : Icons.visibility_off_outlined),
-                    onPressed: () => setState(() => obscureConfirm = !obscureConfirm),
+                    icon: Icon(obscureConfirm
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined),
+                    onPressed: () =>
+                        setState(() => obscureConfirm = !obscureConfirm),
                   ),
                 ),
               ),
@@ -186,9 +203,11 @@ class SecuritySettingsPage extends StatelessWidget {
             ),
             FilledButton(
               onPressed: () async {
-                if (newPasswordController.text != confirmPasswordController.text) {
+                if (newPasswordController.text !=
+                    confirmPasswordController.text) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.securitySettingsPasswordMismatch)),
+                    SnackBar(
+                        content: Text(l10n.securitySettingsPasswordMismatch)),
                   );
                   return;
                 }
@@ -199,7 +218,10 @@ class SecuritySettingsPage extends StatelessWidget {
                 );
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(success ? l10n.commonSaveSuccess : l10n.commonSaveFailed)),
+                    SnackBar(
+                        content: Text(success
+                            ? l10n.commonSaveSuccess
+                            : l10n.commonSaveFailed)),
                   );
                 }
               },
@@ -211,17 +233,22 @@ class SecuritySettingsPage extends StatelessWidget {
     );
   }
 
-  void _showMfaToggleDialog(BuildContext context, SettingsProvider provider, AppLocalizations l10n, bool enable) {
+  void _showMfaToggleDialog(BuildContext context, SettingsProvider provider,
+      AppLocalizations l10n, bool enable) {
     final codeController = TextEditingController();
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(enable ? l10n.securitySettingsMfaBind : l10n.securitySettingsMfaUnbind),
+        title: Text(enable
+            ? l10n.securitySettingsMfaBind
+            : l10n.securitySettingsMfaUnbind),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(enable ? l10n.securitySettingsEnableMfaConfirm : l10n.securitySettingsMfaUnbindDesc),
+            Text(enable
+                ? l10n.securitySettingsEnableMfaConfirm
+                : l10n.securitySettingsMfaUnbindDesc),
             const SizedBox(height: 16),
             TextField(
               controller: codeController,
@@ -244,13 +271,17 @@ class SecuritySettingsPage extends StatelessWidget {
               Navigator.pop(context);
               bool success;
               if (enable) {
-                success = await provider.bindMfaWithCode(codeController.text, '', '30');
+                success = await provider.bindMfaWithCode(
+                    codeController.text, '', '30');
               } else {
                 success = await provider.unbindMfa(codeController.text);
               }
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(success ? l10n.commonSaveSuccess : l10n.commonSaveFailed)),
+                  SnackBar(
+                      content: Text(success
+                          ? l10n.commonSaveSuccess
+                          : l10n.commonSaveFailed)),
                 );
               }
             },

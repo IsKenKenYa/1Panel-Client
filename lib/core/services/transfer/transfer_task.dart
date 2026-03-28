@@ -56,12 +56,10 @@ class TransferTask extends Equatable {
   String get progressPercent => '${(progress * 100).toStringAsFixed(1)}%';
 
   bool get isResumable =>
-      status == TransferStatus.paused ||
-      status == TransferStatus.failed;
+      status == TransferStatus.paused || status == TransferStatus.failed;
 
   bool get isActive =>
-      status == TransferStatus.running ||
-      status == TransferStatus.pending;
+      status == TransferStatus.running || status == TransferStatus.pending;
 
   TransferTask copyWith({
     String? id,
@@ -137,11 +135,11 @@ class TransferTask extends Equatable {
       uploadedChunks: Set<int>.from(json['uploadedChunks'] as List? ?? []),
       error: json['error'] as String?,
       createdAt: DateTime.parse(json['createdAt'] as String),
-      startedAt: json['startedAt'] != null 
-          ? DateTime.parse(json['startedAt'] as String) 
+      startedAt: json['startedAt'] != null
+          ? DateTime.parse(json['startedAt'] as String)
           : null,
-      completedAt: json['completedAt'] != null 
-          ? DateTime.parse(json['completedAt'] as String) 
+      completedAt: json['completedAt'] != null
+          ? DateTime.parse(json['completedAt'] as String)
           : null,
       localPath: json['localPath'] as String?,
     );
@@ -149,24 +147,24 @@ class TransferTask extends Equatable {
 
   @override
   List<Object?> get props => [
-    id,
-    path,
-    fileName,
-    totalSize,
-    transferredSize,
-    type,
-    status,
-    totalChunks,
-    completedChunks,
-    uploadedChunks,
-    error,
-    createdAt,
-    startedAt,
-    completedAt,
-    speed,
-    eta,
-    localPath,
-  ];
+        id,
+        path,
+        fileName,
+        totalSize,
+        transferredSize,
+        type,
+        status,
+        totalChunks,
+        completedChunks,
+        uploadedChunks,
+        error,
+        createdAt,
+        startedAt,
+        completedAt,
+        speed,
+        eta,
+        localPath,
+      ];
 }
 
 class ChunkInfo extends Equatable {
@@ -209,5 +207,6 @@ class ChunkInfo extends Equatable {
   }
 
   @override
-  List<Object?> get props => [index, start, end, size, data, checksum, isUploaded];
+  List<Object?> get props =>
+      [index, start, end, size, data, checksum, isUploaded];
 }

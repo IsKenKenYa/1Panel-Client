@@ -5,7 +5,7 @@ import 'package:onepanel_client/data/repositories/monitor_repository.dart';
 import 'server_models.dart';
 
 /// 服务器仓库
-/// 
+///
 /// 提供服务器列表管理和监控数据获取功能
 class ServerRepository {
   const ServerRepository();
@@ -27,7 +27,7 @@ class ServerRepository {
   }
 
   /// 加载服务器监控指标
-  /// 
+  ///
   /// 使用统一的 MonitorRepository 获取监控数据
   Future<ServerMetricsSnapshot> loadServerMetrics(String serverId) async {
     try {

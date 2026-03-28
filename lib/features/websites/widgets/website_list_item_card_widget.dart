@@ -120,7 +120,8 @@ class WebsiteListItemCard extends StatelessWidget {
                     value: WebsiteListAction.delete,
                     child: Text(
                       l10n.websitesActionDelete,
-                      style: TextStyle(color: Theme.of(context).colorScheme.error),
+                      style:
+                          TextStyle(color: Theme.of(context).colorScheme.error),
                     ),
                   ),
                 ],

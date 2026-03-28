@@ -18,7 +18,8 @@ class SshV2Api {
     );
     return Response<SshInfo>(
       data: SshInfo.fromJson(
-        response.data?['data'] as Map<String, dynamic>? ?? const <String, dynamic>{},
+        response.data?['data'] as Map<String, dynamic>? ??
+            const <String, dynamic>{},
       ),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
@@ -83,7 +84,8 @@ class SshV2Api {
     );
     return Response<PageResult<SshCertInfo>>(
       data: PageResult<SshCertInfo>.fromJson(
-        response.data?['data'] as Map<String, dynamic>? ?? const <String, dynamic>{},
+        response.data?['data'] as Map<String, dynamic>? ??
+            const <String, dynamic>{},
         (dynamic item) => SshCertInfo.fromJson(item as Map<String, dynamic>),
       ),
       statusCode: response.statusCode,
@@ -100,7 +102,8 @@ class SshV2Api {
   }
 
   Future<Response<void>> syncSshCerts() {
-    return _client.post<void>(ApiConstants.buildApiPath('/hosts/ssh/cert/sync'));
+    return _client
+        .post<void>(ApiConstants.buildApiPath('/hosts/ssh/cert/sync'));
   }
 
   Future<Response<PageResult<SshLogEntry>>> searchSshLogs(
@@ -112,7 +115,8 @@ class SshV2Api {
     );
     return Response<PageResult<SshLogEntry>>(
       data: PageResult<SshLogEntry>.fromJson(
-        response.data?['data'] as Map<String, dynamic>? ?? const <String, dynamic>{},
+        response.data?['data'] as Map<String, dynamic>? ??
+            const <String, dynamic>{},
         (dynamic item) => SshLogEntry.fromJson(item as Map<String, dynamic>),
       ),
       statusCode: response.statusCode,

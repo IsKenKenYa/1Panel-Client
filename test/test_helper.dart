@@ -70,16 +70,20 @@ class TestConfig {
   }
 
   // 快捷访问常用配置
-  static String get baseUrl => get('PANEL_BASE_URL', defaultValue: 'http://localhost:8080');
+  static String get baseUrl =>
+      get('PANEL_BASE_URL', defaultValue: 'http://localhost:8080');
   static String get apiKey => get('PANEL_API_KEY');
   static String get apiVersion => get('API_VERSION', defaultValue: 'v2');
-  static String get testDomain => get('TEST_DOMAIN', defaultValue: 'test.example.com');
+  static String get testDomain =>
+      get('TEST_DOMAIN', defaultValue: 'test.example.com');
   static String get testIp => get('TEST_IP', defaultValue: '127.0.0.1');
-  static String get testEmail => get('TEST_EMAIL', defaultValue: 'test@example.com');
+  static String get testEmail =>
+      get('TEST_EMAIL', defaultValue: 'test@example.com');
   static bool get runIntegrationTests => getBool('RUN_INTEGRATION_TESTS');
   static bool get runDestructiveTests => getBool('RUN_DESTRUCTIVE_TESTS');
   static int get testTimeout => getInt('TEST_TIMEOUT', defaultValue: 30000);
-  static int get tokenValidityMinutes => getInt('TOKEN_VALIDITY_MINUTES', defaultValue: 0);
+  static int get tokenValidityMinutes =>
+      getInt('TOKEN_VALIDITY_MINUTES', defaultValue: 0);
 }
 
 /// Token生成器
@@ -117,7 +121,8 @@ class TestDataGenerator {
   static final _random = Random();
 
   /// 生成随机字符串
-  static String randomString(int length, {String chars = 'abcdefghijklmnopqrstuvwxyz0123456789'}) {
+  static String randomString(int length,
+      {String chars = 'abcdefghijklmnopqrstuvwxyz0123456789'}) {
     return String.fromCharCodes(
       Iterable.generate(
         length,
@@ -171,7 +176,8 @@ class TestApiClient {
   DioClient get client => _client;
 
   /// 发送带认证的请求
-  Future<Response> authenticatedGet(String path, {Map<String, dynamic>? queryParameters}) async {
+  Future<Response> authenticatedGet(String path,
+      {Map<String, dynamic>? queryParameters}) async {
     final headers = TokenGenerator.generateAuthHeaders(apiKey);
     return await _client.get(
       path,
@@ -274,7 +280,8 @@ class SkipConditions {
 
   /// 跳过缺少API密钥的测试
   static String? skipNoApiKey() {
-    return TestConfig.apiKey.isNotEmpty && TestConfig.apiKey != 'your_api_key_here'
+    return TestConfig.apiKey.isNotEmpty &&
+            TestConfig.apiKey != 'your_api_key_here'
         ? null
         : 'API key not configured';
   }
@@ -289,7 +296,8 @@ Future<void> setupTestEnvironment() async {
 /// 清理测试环境
 Future<void> teardownTestEnvironment() async {
   // 清理临时文件等
-  final logDir = Directory(TestConfig.get('TEST_LOG_PATH', defaultValue: './test_logs'));
+  final logDir =
+      Directory(TestConfig.get('TEST_LOG_PATH', defaultValue: './test_logs'));
   if (logDir.existsSync()) {
     // 保留最近7天的日志
     final now = DateTime.now();

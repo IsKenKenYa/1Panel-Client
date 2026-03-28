@@ -11,7 +11,8 @@ class AppV2Api {
 
   AppV2Api(this._client);
 
-  List<T> _parseListData<T>(dynamic dataField, T Function(Map<String, dynamic>) fromJson) {
+  List<T> _parseListData<T>(
+      dynamic dataField, T Function(Map<String, dynamic>) fromJson) {
     if (dataField == null) return [];
     if (dataField is List) {
       return dataField.map((e) => fromJson(e as Map<String, dynamic>)).toList();
@@ -24,7 +25,9 @@ class AppV2Api {
       // Handle potential nested data structure
       final innerData = dataField['data'];
       if (innerData is List) {
-        return innerData.map((e) => fromJson(e as Map<String, dynamic>)).toList();
+        return innerData
+            .map((e) => fromJson(e as Map<String, dynamic>))
+            .toList();
       }
     }
     return [];
@@ -35,13 +38,15 @@ class AppV2Api {
       // Ensure we extract total correctly
       if (dataField.containsKey('items') || dataField.containsKey('total')) {
         final itemsData = dataField['items'];
-        final List<AppItem> items = (itemsData is List) 
-            ? itemsData.map((e) => AppItem.fromJson(e as Map<String, dynamic>)).toList()
+        final List<AppItem> items = (itemsData is List)
+            ? itemsData
+                .map((e) => AppItem.fromJson(e as Map<String, dynamic>))
+                .toList()
             : [];
-        
+
         final totalData = dataField['total'];
         final int total = (totalData is int) ? totalData : items.length;
-        
+
         return AppSearchResponse(items: items, total: total);
       }
       // Try nested 'data' structure if present
@@ -51,18 +56,22 @@ class AppV2Api {
       // Try 'apps' key instead of 'items'
       if (dataField.containsKey('apps')) {
         final itemsData = dataField['apps'];
-        final List<AppItem> items = (itemsData is List) 
-            ? itemsData.map((e) => AppItem.fromJson(e as Map<String, dynamic>)).toList()
+        final List<AppItem> items = (itemsData is List)
+            ? itemsData
+                .map((e) => AppItem.fromJson(e as Map<String, dynamic>))
+                .toList()
             : [];
         final totalData = dataField['total'];
         final int total = (totalData is int) ? totalData : items.length;
         return AppSearchResponse(items: items, total: total);
       }
-      
+
       return AppSearchResponse.fromJson(dataField);
     }
     if (dataField is List) {
-      final items = dataField.map((e) => AppItem.fromJson(e as Map<String, dynamic>)).toList();
+      final items = dataField
+          .map((e) => AppItem.fromJson(e as Map<String, dynamic>))
+          .toList();
       return AppSearchResponse(items: items, total: items.length);
     }
     return AppSearchResponse(items: [], total: 0);
@@ -75,10 +84,13 @@ class AppV2Api {
       }
       final items = _parseListData(dataField, AppInstallInfo.fromJson);
       final total = dataField['total'];
-      return AppUpdateResponse(updates: items, total: total is num ? total.toInt() : items.length);
+      return AppUpdateResponse(
+          updates: items, total: total is num ? total.toInt() : items.length);
     }
     if (dataField is List) {
-      final items = dataField.map((e) => AppInstallInfo.fromJson(e as Map<String, dynamic>)).toList();
+      final items = dataField
+          .map((e) => AppInstallInfo.fromJson(e as Map<String, dynamic>))
+          .toList();
       return AppUpdateResponse(updates: items, total: items.length);
     }
     return AppUpdateResponse(updates: [], total: 0);
@@ -91,7 +103,7 @@ class AppV2Api {
         ApiConstants.buildApiPath('/apps/install'),
         data: request.toJson(),
       );
-      
+
       final data = response.data;
       if (data == null || (data is String && data.isEmpty)) {
         throw DioException(
@@ -102,7 +114,7 @@ class AppV2Api {
       }
 
       if (data is! Map<String, dynamic>) {
-         throw DioException(
+        throw DioException(
           requestOptions: response.requestOptions,
           error: 'Install failed: Invalid response format',
           type: DioExceptionType.badResponse,
@@ -110,11 +122,11 @@ class AppV2Api {
       }
 
       final innerData = data['data'];
-      
+
       if (innerData is Map<String, dynamic>) {
         return AppInstallInfo.fromJson(innerData);
       }
-      
+
       // Handle case where it returns just an ID (int or String)
       if (innerData is int || innerData is String) {
         return AppInstallInfo(
@@ -137,7 +149,7 @@ class AppV2Api {
       );
     } catch (e) {
       if (e is DioException) {
-         rethrow;
+        rethrow;
       }
       throw DioException(
         requestOptions: RequestOptions(path: '/apps/install'),
@@ -184,36 +196,36 @@ class AppV2Api {
     return _parseAppSearchResponse(data['data']);
   }
 
-
   /// 获取应用详情
-  Future<AppItem> getAppDetail(String appId, String version, String type) async {
+  Future<AppItem> getAppDetail(
+      String appId, String version, String type) async {
     final response = await _client.get<dynamic>(
       ApiConstants.buildApiPath('/apps/detail/$appId/$version/$type'),
     );
     final data = response.data;
-    
+
     if (data == null) {
-       throw DioException(
-         requestOptions: response.requestOptions, 
-         error: 'App detail response is empty',
-         type: DioExceptionType.badResponse,
-       );
+      throw DioException(
+        requestOptions: response.requestOptions,
+        error: 'App detail response is empty',
+        type: DioExceptionType.badResponse,
+      );
     }
 
     if (data is! Map<String, dynamic>) {
-       throw DioException(
-         requestOptions: response.requestOptions, 
-         error: 'Invalid response format: Expected Map, got ${data.runtimeType}',
-         type: DioExceptionType.badResponse,
-       );
+      throw DioException(
+        requestOptions: response.requestOptions,
+        error: 'Invalid response format: Expected Map, got ${data.runtimeType}',
+        type: DioExceptionType.badResponse,
+      );
     }
     final innerData = data['data'];
     if (innerData is! Map<String, dynamic>) {
-       throw DioException(
-         requestOptions: response.requestOptions, 
-         error: 'App detail not found or invalid format',
-         type: DioExceptionType.badResponse,
-       );
+      throw DioException(
+        requestOptions: response.requestOptions,
+        error: 'App detail not found or invalid format',
+        type: DioExceptionType.badResponse,
+      );
     }
     return AppItem.fromJson(innerData);
   }
@@ -237,7 +249,8 @@ class AppV2Api {
   }
 
   /// 获取应用详情（节点专用）
-  Future<AppDetailSimple> getAppDetailNode(String appKey, String version) async {
+  Future<AppDetailSimple> getAppDetailNode(
+      String appKey, String version) async {
     final response = await _client.get<dynamic>(
       ApiConstants.buildApiPath('/apps/detail/node/$appKey/$version'),
     );
@@ -272,7 +285,8 @@ class AppV2Api {
   }
 
   /// 取消忽略应用更新
-  Future<void> cancelIgnoreAppUpdate(AppInstalledIgnoreUpgradeRequest request) async {
+  Future<void> cancelIgnoreAppUpdate(
+      AppInstalledIgnoreUpgradeRequest request) async {
     await _client.post(
       ApiConstants.buildApiPath('/apps/ignored/cancel'),
       data: {'id': request.appInstallId},
@@ -280,24 +294,27 @@ class AppV2Api {
   }
 
   /// 检查应用安装
-  Future<AppInstalledCheckResponse> checkAppInstall(AppInstalledCheckRequest request) async {
+  Future<AppInstalledCheckResponse> checkAppInstall(
+      AppInstalledCheckRequest request) async {
     final response = await _client.post<dynamic>(
       ApiConstants.buildApiPath('/apps/installed/check'),
       data: request.toJson(),
     );
     final data = response.data as Map<String, dynamic>;
-    final innerData = Map<String, dynamic>.from(data['data'] as Map<String, dynamic>);
-    
+    final innerData =
+        Map<String, dynamic>.from(data['data'] as Map<String, dynamic>);
+
     // Ensure exist is boolean, default to false if null
     if (innerData['exist'] == null) {
       innerData['exist'] = false;
     }
-    
+
     return AppInstalledCheckResponse.fromJson(innerData);
   }
 
   /// 获取应用安装配置（旧版/默认配置）
-  Future<Map<String, dynamic>> getAppInstallConfig(String name, String key) async {
+  Future<Map<String, dynamic>> getAppInstallConfig(
+      String name, String key) async {
     final response = await _client.post<dynamic>(
       ApiConstants.buildApiPath('/apps/installed/conf'),
       data: {'name': name, 'type': key},
@@ -382,19 +399,20 @@ class AppV2Api {
   }
 
   /// 搜索已安装应用
-  Future<PageResult<AppInstallInfo>> searchInstalledApps(AppInstalledSearchRequest request) async {
+  Future<PageResult<AppInstallInfo>> searchInstalledApps(
+      AppInstalledSearchRequest request) async {
     final response = await _client.post<dynamic>(
       ApiConstants.buildApiPath('/apps/installed/search'),
       data: request.toJson(),
     );
     final data = response.data;
     if (data is! Map<String, dynamic>) {
-       // Return empty result instead of crashing
-       return PageResult(items: [], total: 0);
+      // Return empty result instead of crashing
+      return PageResult(items: [], total: 0);
     }
     final innerData = data['data'];
     if (innerData is! Map<String, dynamic>) {
-       return PageResult(items: [], total: 0);
+      return PageResult(items: [], total: 0);
     }
     return PageResult.fromJson(
       innerData,
@@ -444,10 +462,15 @@ class AppV2Api {
     // 处理API返回的data字段可能是Map或List的情况
     final dataField = data['data'];
     if (dataField is List) {
-      return dataField.map((e) => AppVersion.fromJson(e as Map<String, dynamic>)).toList();
+      return dataField
+          .map((e) => AppVersion.fromJson(e as Map<String, dynamic>))
+          .toList();
     } else if (dataField is Map<String, dynamic>) {
       final items = dataField['items'] as List?;
-      return items?.map((e) => AppVersion.fromJson(e as Map<String, dynamic>)).toList() ?? [];
+      return items
+              ?.map((e) => AppVersion.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [];
     }
     return [];
   }
@@ -461,10 +484,16 @@ class AppV2Api {
     // 处理API返回的data字段可能是Map或List的情况
     final dataField = data['data'];
     if (dataField is List) {
-      return dataField.map((e) => AppServiceResponse.fromJson(e as Map<String, dynamic>)).toList();
+      return dataField
+          .map((e) => AppServiceResponse.fromJson(e as Map<String, dynamic>))
+          .toList();
     } else if (dataField is Map<String, dynamic>) {
       final items = dataField['items'] as List?;
-      return items?.map((e) => AppServiceResponse.fromJson(e as Map<String, dynamic>)).toList() ?? [];
+      return items
+              ?.map(
+                  (e) => AppServiceResponse.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [];
     }
     return [];
   }
@@ -475,7 +504,8 @@ class AppV2Api {
       ApiConstants.buildApiPath('/core/settings/apps/store/config'),
     );
     final data = response.data as Map<String, dynamic>;
-    return AppstoreConfigResponse.fromJson(data['data'] as Map<String, dynamic>);
+    return AppstoreConfigResponse.fromJson(
+        data['data'] as Map<String, dynamic>);
   }
 
   /// 更新应用商店配置

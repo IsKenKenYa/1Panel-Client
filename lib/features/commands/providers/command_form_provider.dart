@@ -43,10 +43,12 @@ class CommandFormProvider extends ChangeNotifier with AsyncStateNotifier {
     try {
       _groups = await _service.loadGroups();
       if (_groups.isNotEmpty) {
-        _selectedGroupId ??= _groups.firstWhere(
-          (group) => group.isDefault == true,
-          orElse: () => _groups.first,
-        ).id;
+        _selectedGroupId ??= _groups
+            .firstWhere(
+              (group) => group.isDefault == true,
+              orElse: () => _groups.first,
+            )
+            .id;
       }
       setSuccess(isEmpty: false);
     } catch (error, stackTrace) {

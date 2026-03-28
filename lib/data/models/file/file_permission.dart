@@ -150,7 +150,8 @@ class FileUserGroupResponse extends Equatable {
   factory FileUserGroupResponse.fromJson(Map<String, dynamic> json) {
     return FileUserGroupResponse(
       users: (json['users'] as List?)
-              ?.map((item) => FileUserGroup.fromJson(item as Map<String, dynamic>))
+              ?.map((item) =>
+                  FileUserGroup.fromJson(item as Map<String, dynamic>))
               .toList() ??
           [],
       groups: (json['groups'] as List?)?.cast<String>() ?? [],

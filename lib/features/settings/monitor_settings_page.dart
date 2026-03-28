@@ -28,10 +28,14 @@ class MonitorSettingsPage extends StatelessWidget {
                   title: Text(l10n.monitorSettingsEnable),
                   value: settings?.enabled ?? true,
                   onChanged: (value) async {
-                    final success = await provider.updateSettings(enabled: value);
+                    final success =
+                        await provider.updateSettings(enabled: value);
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(success ? l10n.monitorSettingsSaved : l10n.monitorSettingsFailed)),
+                        SnackBar(
+                            content: Text(success
+                                ? l10n.monitorSettingsSaved
+                                : l10n.monitorSettingsFailed)),
                       );
                     }
                   },
@@ -39,7 +43,8 @@ class MonitorSettingsPage extends StatelessWidget {
                 _buildEditableListTile(
                   context,
                   title: l10n.monitorSettingsInterval,
-                  value: '${settings?.interval ?? 300} ${l10n.monitorIntervalUnit}',
+                  value:
+                      '${settings?.interval ?? 300} ${l10n.monitorIntervalUnit}',
                   icon: Icons.timer_outlined,
                   onTap: () => _showEditDialog(
                     context,
@@ -52,7 +57,8 @@ class MonitorSettingsPage extends StatelessWidget {
                 _buildEditableListTile(
                   context,
                   title: l10n.monitorSettingsStoreDays,
-                  value: '${settings?.retention ?? 30} ${l10n.monitorRetentionUnit}',
+                  value:
+                      '${settings?.retention ?? 30} ${l10n.monitorRetentionUnit}',
                   icon: Icons.storage_outlined,
                   onTap: () => _showEditDialog(
                     context,
@@ -69,7 +75,8 @@ class MonitorSettingsPage extends StatelessWidget {
           Card(
             child: ListTile(
               leading: const Icon(Icons.delete_outline, color: Colors.red),
-              title: Text(l10n.monitorCleanData, style: const TextStyle(color: Colors.red)),
+              title: Text(l10n.monitorCleanData,
+                  style: const TextStyle(color: Colors.red)),
               onTap: () => _showCleanConfirmDialog(context, provider),
             ),
           ),
@@ -78,7 +85,8 @@ class MonitorSettingsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionTitle(BuildContext context, String title, ThemeData theme) {
+  Widget _buildSectionTitle(
+      BuildContext context, String title, ThemeData theme) {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppDesignTokens.spacingSm),
       child: Text(
@@ -142,7 +150,7 @@ class MonitorSettingsPage extends StatelessWidget {
               Navigator.pop(context);
               final value = int.tryParse(controller.text);
               if (value == null) return;
-              
+
               bool success;
               if (key == 'interval') {
                 success = await provider.updateSettings(interval: value);
@@ -151,10 +159,13 @@ class MonitorSettingsPage extends StatelessWidget {
               } else {
                 return;
               }
-              
+
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(success ? context.l10n.monitorSettingsSaved : context.l10n.monitorSettingsFailed)),
+                  SnackBar(
+                      content: Text(success
+                          ? context.l10n.monitorSettingsSaved
+                          : context.l10n.monitorSettingsFailed)),
                 );
               }
             },
@@ -165,7 +176,8 @@ class MonitorSettingsPage extends StatelessWidget {
     );
   }
 
-  void _showCleanConfirmDialog(BuildContext context, MonitoringProvider provider) {
+  void _showCleanConfirmDialog(
+      BuildContext context, MonitoringProvider provider) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -183,7 +195,10 @@ class MonitorSettingsPage extends StatelessWidget {
               final success = await provider.cleanData();
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(success ? context.l10n.monitorCleanSuccess : context.l10n.monitorCleanFailed)),
+                  SnackBar(
+                      content: Text(success
+                          ? context.l10n.monitorCleanSuccess
+                          : context.l10n.monitorCleanFailed)),
                 );
               }
             },

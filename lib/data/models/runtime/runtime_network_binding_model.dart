@@ -103,4 +103,3 @@ class RuntimeExtraHost extends Equatable {
   @override
   List<Object?> get props => [hostname, ip];
 }
-

@@ -42,7 +42,10 @@ import 'package:onepanel_client/features/openresty/openresty_page.dart';
 import 'package:onepanel_client/features/openresty/pages/openresty_source_editor_page.dart';
 import 'package:onepanel_client/features/openresty/providers/openresty_provider.dart';
 import 'package:onepanel_client/features/ai/ai_page.dart';
+import 'package:onepanel_client/features/ai/mcp_server_provider.dart';
 import 'package:onepanel_client/features/ai/ai_provider.dart';
+import 'package:onepanel_client/features/settings/menu_settings_page.dart';
+import 'package:onepanel_client/features/settings/menu_settings_provider.dart';
 import 'package:onepanel_client/features/settings/ssl_settings_page.dart';
 import 'package:onepanel_client/features/commands/models/command_form_args.dart';
 import 'package:onepanel_client/features/commands/pages/command_form_page.dart';
@@ -119,12 +122,16 @@ import 'package:onepanel_client/features/script_library/providers/script_library
 import 'package:onepanel_client/features/toolbox/pages/toolbox_center_page.dart';
 import 'package:onepanel_client/features/toolbox/pages/toolbox_clam_page.dart';
 import 'package:onepanel_client/features/toolbox/pages/toolbox_device_page.dart';
+import 'package:onepanel_client/features/toolbox/pages/toolbox_disk_page.dart';
 import 'package:onepanel_client/features/toolbox/pages/toolbox_fail2ban_page.dart';
 import 'package:onepanel_client/features/toolbox/pages/toolbox_ftp_page.dart';
+import 'package:onepanel_client/features/toolbox/pages/toolbox_host_tool_page.dart';
 import 'package:onepanel_client/features/toolbox/providers/toolbox_clam_provider.dart';
 import 'package:onepanel_client/features/toolbox/providers/toolbox_device_provider.dart';
+import 'package:onepanel_client/features/toolbox/providers/toolbox_disk_provider.dart';
 import 'package:onepanel_client/features/toolbox/providers/toolbox_fail2ban_provider.dart';
 import 'package:onepanel_client/features/toolbox/providers/toolbox_ftp_provider.dart';
+import 'package:onepanel_client/features/toolbox/providers/toolbox_host_tool_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'package:onepanel_client/features/containers/container_detail_page.dart';
@@ -160,6 +167,7 @@ class AppRoutes {
   static const String securityVerification = '/security-verification';
   static const String settings = '/settings';
   static const String systemSettings = '/system-settings';
+  static const String menuSettings = '/system-settings/menu';
   static const String appStore = '/app-store';
   static const String appDetail = '/app-detail';
   static const String installedAppDetail = '/installed-app-detail';
@@ -183,9 +191,11 @@ class AppRoutes {
   static const String operations = '/operations';
   static const String toolbox = '/toolbox';
   static const String toolboxDevice = '/toolbox/device';
+  static const String toolboxDisk = '/toolbox/disk';
   static const String toolboxClam = '/toolbox/clam';
   static const String toolboxFail2ban = '/toolbox/fail2ban';
   static const String toolboxFtp = '/toolbox/ftp';
+  static const String toolboxHostTool = '/toolbox/host-tool';
   static const String commands = '/commands';
   static const String commandForm = '/commands/form';
   static const String hostAssets = '/hosts-assets';
@@ -335,6 +345,13 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const SettingsPage());
       case AppRoutes.systemSettings:
         return MaterialPageRoute(builder: (_) => const SystemSettingsPage());
+      case AppRoutes.menuSettings:
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<MenuSettingsProvider>(
+            create: (_) => MenuSettingsProvider(),
+            child: const MenuSettingsPage(),
+          ),
+        );
 
       case AppRoutes.appStore:
         return MaterialPageRoute(
@@ -378,8 +395,11 @@ class AppRouter {
 
       case AppRoutes.ai:
         return MaterialPageRoute(
-          builder: (_) => ChangeNotifierProvider(
-            create: (_) => AIProvider(),
+          builder: (_) => MultiProvider(
+            providers: [
+              ChangeNotifierProvider(create: (_) => AIProvider()),
+              ChangeNotifierProvider(create: (_) => McpServerProvider()),
+            ],
             child: const AIPage(),
           ),
         );
@@ -530,6 +550,13 @@ class AppRouter {
             child: const ToolboxDevicePage(),
           ),
         );
+      case AppRoutes.toolboxDisk:
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<ToolboxDiskProvider>(
+            create: (_) => ToolboxDiskProvider(),
+            child: const ToolboxDiskPage(),
+          ),
+        );
 
       case AppRoutes.toolboxClam:
         return MaterialPageRoute(
@@ -552,6 +579,13 @@ class AppRouter {
           builder: (_) => ChangeNotifierProvider<ToolboxFtpProvider>(
             create: (_) => ToolboxFtpProvider(),
             child: const ToolboxFtpPage(),
+          ),
+        );
+      case AppRoutes.toolboxHostTool:
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<ToolboxHostToolProvider>(
+            create: (_) => ToolboxHostToolProvider(),
+            child: const ToolboxHostToolPage(),
           ),
         );
 

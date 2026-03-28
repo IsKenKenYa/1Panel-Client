@@ -19,7 +19,8 @@ class TestRunner {
     debugPrint('========================================\n');
   }
 
-  void endSuite(String suiteName, {required int passed, required int failed, required int skipped}) {
+  void endSuite(String suiteName,
+      {required int passed, required int failed, required int skipped}) {
     final result = TestSuiteResult(
       suiteName: suiteName,
       passed: passed,
@@ -77,20 +78,24 @@ class TestRunner {
     debugPrint('  ✅ 通过: $totalPassed');
     debugPrint('  ❌ 失败: $totalFailed');
     debugPrint('  ⏭️  跳过: $totalSkipped');
-    debugPrint('  通过率: ${totalTests > 0 ? (totalPassed / totalTests * 100).toStringAsFixed(2) : 0}%');
+    debugPrint(
+        '  通过率: ${totalTests > 0 ? (totalPassed / totalTests * 100).toStringAsFixed(2) : 0}%');
     debugPrint('');
 
     debugPrint('各模块测试结果:');
     for (final result in _results) {
-      final status = result.failed > 0 ? '❌' : (result.skipped > 0 ? '⚠️' : '✅');
-      debugPrint('  $status ${result.suiteName}: ${result.passed}/${result.passed + result.failed + result.skipped}');
+      final status =
+          result.failed > 0 ? '❌' : (result.skipped > 0 ? '⚠️' : '✅');
+      debugPrint(
+          '  $status ${result.suiteName}: ${result.passed}/${result.passed + result.failed + result.skipped}');
     }
     debugPrint('');
 
     _saveReport(totalTests, totalPassed, totalFailed, totalSkipped, duration);
   }
 
-  Future<void> _saveReport(int total, int passed, int failed, int skipped, Duration duration) async {
+  Future<void> _saveReport(
+      int total, int passed, int failed, int skipped, Duration duration) async {
     if (!TestEnvironment.saveTestLogs) return;
 
     try {
@@ -116,7 +121,8 @@ class TestRunner {
       buffer.writeln('| 通过数 | $passed |');
       buffer.writeln('| 失败数 | $failed |');
       buffer.writeln('| 跳过数 | $skipped |');
-      buffer.writeln('| 通过率 | ${total > 0 ? (passed / total * 100).toStringAsFixed(2) : 0}% |');
+      buffer.writeln(
+          '| 通过率 | ${total > 0 ? (passed / total * 100).toStringAsFixed(2) : 0}% |');
       buffer.writeln();
       buffer.writeln('## 测试环境');
       buffer.writeln();
@@ -124,8 +130,10 @@ class TestRunner {
       buffer.writeln('|--------|------|');
       buffer.writeln('| 服务器URL | ${TestEnvironment.baseUrl} |');
       buffer.writeln('| API版本 | ${TestEnvironment.apiVersion} |');
-      buffer.writeln('| 集成测试 | ${TestEnvironment.runIntegrationTests ? '启用' : '禁用'} |');
-      buffer.writeln('| 破坏性测试 | ${TestEnvironment.runDestructiveTests ? '启用' : '禁用'} |');
+      buffer.writeln(
+          '| 集成测试 | ${TestEnvironment.runIntegrationTests ? '启用' : '禁用'} |');
+      buffer.writeln(
+          '| 破坏性测试 | ${TestEnvironment.runDestructiveTests ? '启用' : '禁用'} |');
       buffer.writeln();
       buffer.writeln('## 各模块测试结果');
       buffer.writeln();
@@ -133,8 +141,11 @@ class TestRunner {
       buffer.writeln('|------|------|------|------|------|');
 
       for (final result in _results) {
-        final status = result.failed > 0 ? '❌ 失败' : (result.skipped > 0 ? '⚠️ 部分跳过' : '✅ 通过');
-        buffer.writeln('| ${result.suiteName} | ${result.passed} | ${result.failed} | ${result.skipped} | $status |');
+        final status = result.failed > 0
+            ? '❌ 失败'
+            : (result.skipped > 0 ? '⚠️ 部分跳过' : '✅ 通过');
+        buffer.writeln(
+            '| ${result.suiteName} | ${result.passed} | ${result.failed} | ${result.skipped} | $status |');
       }
 
       buffer.writeln();

@@ -10,11 +10,13 @@ class ProcessService {
 
   final ProcessRepository _repository;
 
-  Future<ProcessDetail> loadDetail(int pid) => _repository.getProcessDetail(pid);
+  Future<ProcessDetail> loadDetail(int pid) =>
+      _repository.getProcessDetail(pid);
 
   Future<void> stopProcess(int pid) => _repository.stopProcess(pid);
 
-  Future<List<ListeningProcess>> loadListening() => _repository.getListeningProcesses();
+  Future<List<ListeningProcess>> loadListening() =>
+      _repository.getListeningProcesses();
 
   Stream<List<ProcessSummary>> watchProcesses() => _repository.watchProcesses();
 
@@ -45,9 +47,7 @@ class ProcessService {
         )
         .where(
           (item) =>
-              item.status.isNotEmpty &&
-              item.name.isNotEmpty &&
-              item.pid > 0,
+              item.status.isNotEmpty && item.name.isNotEmpty && item.pid > 0,
         )
         .toList(growable: false);
   }

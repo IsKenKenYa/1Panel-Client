@@ -36,7 +36,8 @@ class FileTreeRequest extends Equatable {
   }
 
   @override
-  List<Object?> get props => [path, maxDepth, includeFiles, includeHidden, excludePatterns];
+  List<Object?> get props =>
+      [path, maxDepth, includeFiles, includeHidden, excludePatterns];
 }
 
 class FileTree extends Equatable {

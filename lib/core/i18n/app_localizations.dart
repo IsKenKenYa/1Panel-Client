@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// 应用程序本地化配置类
-/// 
+///
 /// 此类负责管理应用程序的多语言支持，按照Flutter官方推荐的方式实现国际化。
 /// 参考: https://docs.flutter.cn/ui/accessibility-and-internationalization/internationalization/
 class AppLocalizations {
@@ -33,7 +33,7 @@ class AppLocalizations {
   final String force;
   final String refresh;
   final String notFound;
-  
+
   // GPU相关文本
   final String gpu;
   final String temperature;
@@ -42,7 +42,7 @@ class AppLocalizations {
   final String memoryUsage;
   final String totalMemory;
   final String usedMemory;
-  
+
   // 域名绑定相关文本
   final String domain;
   final String appId;

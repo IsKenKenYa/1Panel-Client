@@ -10,8 +10,9 @@ void main() {
 
   setUpAll(() async {
     await TestEnvironment.initialize();
-    hasApiKey = TestEnvironment.apiKey.isNotEmpty && TestEnvironment.apiKey != 'your_api_key_here';
-    
+    hasApiKey = TestEnvironment.apiKey.isNotEmpty &&
+        TestEnvironment.apiKey != 'your_api_key_here';
+
     if (hasApiKey) {
       client = DioClient(
         baseUrl: TestEnvironment.baseUrl,
@@ -28,16 +29,16 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('获取当前面板配置');
       debugPrint('========================================');
-      
+
       final response = await dio.post('/api/v2/core/settings/search');
       final data = response.data as Map<String, dynamic>;
-      
+
       debugPrint('响应: ${jsonEncode(data)}');
-      
+
       if (data['data'] != null) {
         final settings = data['data'] as Map<String, dynamic>;
         debugPrint('\n可编辑字段:');
@@ -50,7 +51,7 @@ void main() {
         debugPrint('  theme: ${settings['theme']}');
         debugPrint('  language: ${settings['language']}');
       }
-      
+
       debugPrint('========================================\n');
     });
 
@@ -61,26 +62,35 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('测试面板名称更新');
       debugPrint('========================================');
-      
+
       // 获取当前名称
       final searchResponse = await dio.post('/api/v2/core/settings/search');
       final searchData = searchResponse.data as Map<String, dynamic>;
       final data = searchData['data'] as Map<String, dynamic>?;
       final originalName = data?['panelName'] as String? ?? '';
-      
+
       debugPrint('当前面板名称: $originalName');
-      
+
       // 尝试不同的更新方式
       final testCases = [
-        {'endpoint': '/core/settings/update', 'data': {'key': 'panelName', 'value': 'TestPanel'}},
-        {'endpoint': '/core/settings/name/update', 'data': {'panelName': 'TestPanel'}},
-        {'endpoint': '/core/settings/panel/update', 'data': {'panelName': 'TestPanel'}},
+        {
+          'endpoint': '/core/settings/update',
+          'data': {'key': 'panelName', 'value': 'TestPanel'}
+        },
+        {
+          'endpoint': '/core/settings/name/update',
+          'data': {'panelName': 'TestPanel'}
+        },
+        {
+          'endpoint': '/core/settings/panel/update',
+          'data': {'panelName': 'TestPanel'}
+        },
       ];
-      
+
       for (final testCase in testCases) {
         debugPrint('\n--- 测试 ${testCase['endpoint']} ---');
         try {
@@ -89,12 +99,13 @@ void main() {
             data: testCase['data'],
           );
           final responseData = response.data as Map<String, dynamic>;
-          debugPrint('响应: code=${responseData['code']}, message=${responseData['message']}');
+          debugPrint(
+              '响应: code=${responseData['code']}, message=${responseData['message']}');
         } catch (e) {
           debugPrint('错误: $e');
         }
       }
-      
+
       debugPrint('========================================\n');
     });
 
@@ -105,29 +116,32 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('测试端口更新');
       debugPrint('========================================');
-      
+
       // 获取当前端口
       final searchResponse = await dio.post('/api/v2/core/settings/search');
       final searchData = searchResponse.data as Map<String, dynamic>;
       final data = searchData['data'] as Map<String, dynamic>?;
-      final currentPort = int.tryParse(data?['serverPort']?.toString() ?? '9999') ?? 9999;
-      
+      final currentPort =
+          int.tryParse(data?['serverPort']?.toString() ?? '9999') ?? 9999;
+
       debugPrint('当前端口: $currentPort');
-      
+
       // 尝试更新（使用相同端口测试接口是否正常）
       final response = await dio.post(
         '/api/v2/core/settings/port/update',
         data: {'serverPort': currentPort},
       );
-      
+
       final responseData = response.data as Map<String, dynamic>;
-      debugPrint('响应: code=${responseData['code']}, message=${responseData['message']}');
-      debugPrint('接口可用: ${responseData['code'] == 200 || responseData['code'] == 500}');
-      
+      debugPrint(
+          '响应: code=${responseData['code']}, message=${responseData['message']}');
+      debugPrint(
+          '接口可用: ${responseData['code'] == 200 || responseData['code'] == 500}');
+
       debugPrint('========================================\n');
     });
 
@@ -138,20 +152,20 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('测试绑定地址更新');
       debugPrint('========================================');
-      
+
       // 获取当前设置
       final searchResponse = await dio.post('/api/v2/core/settings/search');
       final searchData = searchResponse.data as Map<String, dynamic>;
       final data = searchData['data'] as Map<String, dynamic>?;
       final currentBind = data?['bindAddress'] as String? ?? '::';
       final ipv6Enabled = data?['ipv6'] == 'Enable';
-      
+
       debugPrint('当前绑定地址: $currentBind, IPv6: $ipv6Enabled');
-      
+
       // 尝试更新
       final response = await dio.post(
         '/api/v2/core/settings/bind/update',
@@ -160,11 +174,12 @@ void main() {
           'ipv6': ipv6Enabled ? 'Enable' : 'Disable',
         },
       );
-      
+
       final responseData = response.data as Map<String, dynamic>;
-      debugPrint('响应: code=${responseData['code']}, message=${responseData['message']}');
+      debugPrint(
+          '响应: code=${responseData['code']}, message=${responseData['message']}');
       debugPrint('接口可用: ${responseData['code'] == 200}');
-      
+
       debugPrint('========================================\n');
     });
 
@@ -175,11 +190,11 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('测试开发者模式和会话超时更新');
       debugPrint('========================================');
-      
+
       // 测试 /core/settings/update 接口
       final testCases = [
         {'key': 'developerMode', 'value': 'Enable'},
@@ -187,7 +202,7 @@ void main() {
         {'key': 'theme', 'value': 'dark'},
         {'key': 'language', 'value': 'en'},
       ];
-      
+
       for (final testCase in testCases) {
         debugPrint('\n--- 测试 ${testCase['key']} = ${testCase['value']} ---');
         final response = await dio.post(
@@ -195,9 +210,10 @@ void main() {
           data: testCase,
         );
         final responseData = response.data as Map<String, dynamic>;
-        debugPrint('响应: code=${responseData['code']}, message=${responseData['message']}');
+        debugPrint(
+            '响应: code=${responseData['code']}, message=${responseData['message']}');
       }
-      
+
       debugPrint('========================================\n');
     });
   });
@@ -210,11 +226,11 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('测试快照列表接口');
       debugPrint('========================================');
-      
+
       // 尝试不同的参数格式
       final testCases = [
         {
@@ -234,12 +250,9 @@ void main() {
             'order': 'desc',
           }
         },
-        {
-          'desc': '空参数',
-          'data': {}
-        },
+        {'desc': '空参数', 'data': {}},
       ];
-      
+
       for (final testCase in testCases) {
         debugPrint('\n--- ${testCase['desc']} ---');
         try {
@@ -248,8 +261,9 @@ void main() {
             data: testCase['data'],
           );
           final responseData = response.data as Map<String, dynamic>;
-          debugPrint('响应: code=${responseData['code']}, message=${responseData['message']}');
-          
+          debugPrint(
+              '响应: code=${responseData['code']}, message=${responseData['message']}');
+
           if (responseData['code'] == 200 && responseData['data'] != null) {
             final data = responseData['data'] as Map<String, dynamic>;
             final items = data['items'] as List<dynamic>? ?? [];
@@ -259,7 +273,7 @@ void main() {
           debugPrint('错误: $e');
         }
       }
-      
+
       debugPrint('========================================\n');
     });
 
@@ -270,20 +284,24 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('测试快照创建接口');
       debugPrint('========================================');
-      
+
       final response = await dio.post(
         '/api/v2/settings/snapshot/create',
-        data: {'description': 'API Test Snapshot ${DateTime.now().millisecondsSinceEpoch}'},
+        data: {
+          'description':
+              'API Test Snapshot ${DateTime.now().millisecondsSinceEpoch}'
+        },
       );
-      
+
       final responseData = response.data as Map<String, dynamic>;
-      debugPrint('响应: code=${responseData['code']}, message=${responseData['message']}');
+      debugPrint(
+          '响应: code=${responseData['code']}, message=${responseData['message']}');
       debugPrint('接口可用: ${responseData['code'] == 200}');
-      
+
       debugPrint('========================================\n');
     });
 
@@ -294,20 +312,21 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('测试快照状态接口');
       debugPrint('========================================');
-      
+
       // 尝试获取快照状态
       try {
         final response = await dio.post('/api/v2/settings/snapshot/status');
         final responseData = response.data as Map<String, dynamic>;
-        debugPrint('响应: code=${responseData['code']}, message=${responseData['message']}');
+        debugPrint(
+            '响应: code=${responseData['code']}, message=${responseData['message']}');
       } catch (e) {
         debugPrint('错误: $e');
       }
-      
+
       debugPrint('========================================\n');
     });
   });
@@ -317,7 +336,7 @@ void main() {
       debugPrint('\n========================================');
       debugPrint('API接口可用性总结');
       debugPrint('========================================');
-      
+
       debugPrint('''
 根据测试结果：
 
@@ -340,7 +359,7 @@ void main() {
 3. 终端设置可以编辑
 4. 快照管理需要正确的参数格式
 ''');
-      
+
       debugPrint('========================================\n');
     });
   });

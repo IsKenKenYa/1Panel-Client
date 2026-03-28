@@ -20,23 +20,31 @@ String _prettyJson(Object? data) {
   }
 }
 
-void _logSection(String title, {String? method, String? path, Object? request, Object? response}) {
-  appLogger.dWithPackage('test.api_client.website_ssl', '========================================');
+void _logSection(String title,
+    {String? method, String? path, Object? request, Object? response}) {
+  appLogger.dWithPackage('test.api_client.website_ssl',
+      '========================================');
   appLogger.dWithPackage('test.api_client.website_ssl', title);
   if (method != null && path != null) {
-    appLogger.dWithPackage('test.api_client.website_ssl', 'Request: $method $path');
+    appLogger.dWithPackage(
+        'test.api_client.website_ssl', 'Request: $method $path');
   }
   if (request != null) {
-    appLogger.dWithPackage('test.api_client.website_ssl', 'RequestBody: ${_prettyJson(request)}');
+    appLogger.dWithPackage(
+        'test.api_client.website_ssl', 'RequestBody: ${_prettyJson(request)}');
   }
   if (response != null) {
-    appLogger.dWithPackage('test.api_client.website_ssl', 'Response: ${_prettyJson(response)}');
+    appLogger.dWithPackage(
+        'test.api_client.website_ssl', 'Response: ${_prettyJson(response)}');
   }
-  appLogger.dWithPackage('test.api_client.website_ssl', '========================================');
+  appLogger.dWithPackage('test.api_client.website_ssl',
+      '========================================');
 }
 
-Future<Response<Map<String, dynamic>>> _rawPost(DioClient client, String path, {dynamic data}) {
-  return client.post<Map<String, dynamic>>(ApiConstants.buildApiPath(path), data: data);
+Future<Response<Map<String, dynamic>>> _rawPost(DioClient client, String path,
+    {dynamic data}) {
+  return client.post<Map<String, dynamic>>(ApiConstants.buildApiPath(path),
+      data: data);
 }
 
 Future<Response<Map<String, dynamic>>> _rawGet(DioClient client, String path) {
@@ -63,7 +71,8 @@ void main() {
 
   group('网站SSL证书 API客户端测试', () {
     test('analyze_module_api 输出文件存在', () {
-      final file = File('docs/development/modules/网站SSL证书/website_ssl_api_analysis.json');
+      final file = File(
+          'docs/development/modules/网站SSL证书/website_ssl_api_analysis.json');
       expect(file.existsSync(), isTrue);
       final jsonStr = file.readAsStringSync();
       final obj = jsonDecode(jsonStr) as Map<String, dynamic>;
@@ -73,13 +82,15 @@ void main() {
     test('GET /websites/:id/https 应该成功', () async {
       final skipReason = TestEnvironment.skipIntegration();
       if (skipReason != null) {
-        appLogger.wWithPackage('test.api_client.website_ssl', '跳过测试: $skipReason');
+        appLogger.wWithPackage(
+            'test.api_client.website_ssl', '跳过测试: $skipReason');
         return;
       }
 
       final websites = await api.getWebsites(page: 1, pageSize: 1);
       if (websites.items.isEmpty) {
-        appLogger.wWithPackage('test.api_client.website_ssl', '测试服务器暂无网站，跳过站点 https 配置拉取');
+        appLogger.wWithPackage(
+            'test.api_client.website_ssl', '测试服务器暂无网站，跳过站点 https 配置拉取');
         return;
       }
 
@@ -87,7 +98,10 @@ void main() {
       expect(websiteId, isNotNull);
 
       final raw = await _rawGet(client, '/websites/$websiteId/https');
-      _logSection('✅ Raw /websites/:id/https', method: 'GET', path: '/websites/$websiteId/https', response: raw.data);
+      _logSection('✅ Raw /websites/:id/https',
+          method: 'GET',
+          path: '/websites/$websiteId/https',
+          response: raw.data);
 
       final https = await api.getWebsiteHttps(websiteId!);
       _logSection('✅ Parsed /websites/:id/https', response: https.toJson());
@@ -96,7 +110,8 @@ void main() {
     test('POST /websites/ssl/search 应该成功', () async {
       final skipReason = TestEnvironment.skipIntegration();
       if (skipReason != null) {
-        appLogger.wWithPackage('test.api_client.website_ssl', '跳过测试: $skipReason');
+        appLogger.wWithPackage(
+            'test.api_client.website_ssl', '跳过测试: $skipReason');
         return;
       }
 
@@ -108,10 +123,15 @@ void main() {
       ).toJson();
 
       final raw = await _rawPost(client, '/websites/ssl/search', data: request);
-      _logSection('✅ Raw /websites/ssl/search', method: 'POST', path: '/websites/ssl/search', request: request, response: raw.data);
+      _logSection('✅ Raw /websites/ssl/search',
+          method: 'POST',
+          path: '/websites/ssl/search',
+          request: request,
+          response: raw.data);
 
       final resp = await sslApi.searchWebsiteSSL(
-        WebsiteSSLSearch(page: 1, pageSize: 10, order: 'descending', orderBy: 'expire_date'),
+        WebsiteSSLSearch(
+            page: 1, pageSize: 10, order: 'descending', orderBy: 'expire_date'),
       );
       _logSection('✅ Parsed /websites/ssl/search', response: {
         'total': resp.data?.total,
@@ -122,13 +142,15 @@ void main() {
     test('GET /websites/ssl/website/:websiteId 应该成功或无证书', () async {
       final skipReason = TestEnvironment.skipIntegration();
       if (skipReason != null) {
-        appLogger.wWithPackage('test.api_client.website_ssl', '跳过测试: $skipReason');
+        appLogger.wWithPackage(
+            'test.api_client.website_ssl', '跳过测试: $skipReason');
         return;
       }
 
       final websites = await api.getWebsites(page: 1, pageSize: 1);
       if (websites.items.isEmpty) {
-        appLogger.wWithPackage('test.api_client.website_ssl', '测试服务器暂无网站，跳过站点 SSL 证书拉取');
+        appLogger.wWithPackage(
+            'test.api_client.website_ssl', '测试服务器暂无网站，跳过站点 SSL 证书拉取');
         return;
       }
 
@@ -137,7 +159,10 @@ void main() {
 
       try {
         final raw = await _rawGet(client, '/websites/ssl/website/$websiteId');
-        _logSection('✅ Raw /websites/ssl/website/:websiteId', method: 'GET', path: '/websites/ssl/website/$websiteId', response: raw.data);
+        _logSection('✅ Raw /websites/ssl/website/:websiteId',
+            method: 'GET',
+            path: '/websites/ssl/website/$websiteId',
+            response: raw.data);
 
         final resp = await sslApi.getWebsiteSSLByWebsiteId(websiteId!);
         final ssl = resp.data;
@@ -146,18 +171,24 @@ void main() {
           return;
         }
 
-        _logSection('✅ Parsed /websites/ssl/website/:websiteId', response: ssl.toJson());
+        _logSection('✅ Parsed /websites/ssl/website/:websiteId',
+            response: ssl.toJson());
 
         final sslId = ssl.id;
         if (sslId != null) {
           final rawDetail = await _rawGet(client, '/websites/ssl/$sslId');
-          _logSection('✅ Raw /websites/ssl/:id', method: 'GET', path: '/websites/ssl/$sslId', response: rawDetail.data);
+          _logSection('✅ Raw /websites/ssl/:id',
+              method: 'GET',
+              path: '/websites/ssl/$sslId',
+              response: rawDetail.data);
 
           final detailResp = await sslApi.getWebsiteSSLById(sslId);
-          _logSection('✅ Parsed /websites/ssl/:id', response: detailResp.data?.toJson());
+          _logSection('✅ Parsed /websites/ssl/:id',
+              response: detailResp.data?.toJson());
         }
       } catch (e) {
-        appLogger.wWithPackage('test.api_client.website_ssl', '站点未绑定证书或接口返回异常: $e');
+        appLogger.wWithPackage(
+            'test.api_client.website_ssl', '站点未绑定证书或接口返回异常: $e');
       }
     });
 
@@ -211,7 +242,10 @@ void main() {
         const WebsiteSSLSearch(page: 1, pageSize: 5),
       );
       final cert = resp.data?.items.firstOrNull;
-      if (cert == null || cert.id == null || cert.primaryDomain == null || cert.provider == null) {
+      if (cert == null ||
+          cert.id == null ||
+          cert.primaryDomain == null ||
+          cert.provider == null) {
         return;
       }
 
@@ -238,11 +272,13 @@ void main() {
         return;
       }
 
-      final acmeId = int.tryParse(Platform.environment['TEST_ACME_ACCOUNT_ID'] ?? '');
+      final acmeId =
+          int.tryParse(Platform.environment['TEST_ACME_ACCOUNT_ID'] ?? '');
       final domain = Platform.environment['TEST_SSL_DOMAIN'] ?? '';
       final providerName = Platform.environment['TEST_SSL_PROVIDER'] ?? '';
       if (acmeId == null || domain.isEmpty || providerName.isEmpty) {
-        appLogger.wWithPackage('test.api_client.website_ssl', '缺少 TEST_ACME_ACCOUNT_ID / TEST_SSL_DOMAIN / TEST_SSL_PROVIDER');
+        appLogger.wWithPackage('test.api_client.website_ssl',
+            '缺少 TEST_ACME_ACCOUNT_ID / TEST_SSL_DOMAIN / TEST_SSL_PROVIDER');
         return;
       }
 
@@ -257,7 +293,10 @@ void main() {
       final search = await sslApi.searchWebsiteSSL(
         WebsiteSSLSearch(page: 1, pageSize: 10, domain: domain),
       );
-      final created = search.data?.items.where((item) => item.primaryDomain == domain).toList() ?? const <WebsiteSSL>[];
+      final created = search.data?.items
+              .where((item) => item.primaryDomain == domain)
+              .toList() ??
+          const <WebsiteSSL>[];
       if (created.isEmpty || created.first.id == null) {
         return;
       }
@@ -279,7 +318,8 @@ void main() {
       final cert = Platform.environment['TEST_WEBSITE_SSL_CERT'] ?? '';
       final key = Platform.environment['TEST_WEBSITE_SSL_KEY'] ?? '';
       if (cert.isEmpty || key.isEmpty) {
-        appLogger.wWithPackage('test.api_client.website_ssl', '缺少 TEST_WEBSITE_SSL_CERT / TEST_WEBSITE_SSL_KEY');
+        appLogger.wWithPackage('test.api_client.website_ssl',
+            '缺少 TEST_WEBSITE_SSL_CERT / TEST_WEBSITE_SSL_KEY');
         return;
       }
 

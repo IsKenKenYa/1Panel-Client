@@ -28,4 +28,3 @@ class PHPExtensionInstallRequest extends Equatable {
   @override
   List<Object?> get props => [id, name, taskId];
 }
-

@@ -3,7 +3,7 @@ import '../../data/repositories/monitor_repository.dart';
 import '../../api/v2/monitor_v2.dart';
 
 /// 监控服务
-/// 
+///
 /// 提供监控数据获取和处理功能
 /// 使用统一的 MonitorRepository 获取数据
 class MonitoringService extends BaseComponent {
@@ -15,7 +15,7 @@ class MonitoringService extends BaseComponent {
   final MonitorRepository _monitorRepo = const MonitorRepository();
 
   /// 获取当前监控指标
-  /// 
+  ///
   /// 返回最新的CPU、内存、磁盘、负载数据
   Future<MonitorMetricsSnapshot> getCurrentMetrics() async {
     return runGuarded(() async {
@@ -31,7 +31,8 @@ class MonitoringService extends BaseComponent {
     return runGuarded(() async {
       final client = await clientManager.getCurrentClient();
       // API返回的是base数据，包含cpu字段
-      return _monitorRepo.getTimeSeries(client, 'base', 'cpu', duration: duration);
+      return _monitorRepo.getTimeSeries(client, 'base', 'cpu',
+          duration: duration);
     });
   }
 
@@ -42,7 +43,8 @@ class MonitoringService extends BaseComponent {
     return runGuarded(() async {
       final client = await clientManager.getCurrentClient();
       // API返回的是base数据，包含memory字段
-      return _monitorRepo.getTimeSeries(client, 'base', 'memory', duration: duration);
+      return _monitorRepo.getTimeSeries(client, 'base', 'memory',
+          duration: duration);
     });
   }
 
@@ -53,7 +55,8 @@ class MonitoringService extends BaseComponent {
     return runGuarded(() async {
       final client = await clientManager.getCurrentClient();
       // API返回的是base数据，包含cpuLoad1字段
-      return _monitorRepo.getTimeSeries(client, 'base', 'cpuLoad1', duration: duration);
+      return _monitorRepo.getTimeSeries(client, 'base', 'cpuLoad1',
+          duration: duration);
     });
   }
 
@@ -63,7 +66,8 @@ class MonitoringService extends BaseComponent {
   }) async {
     return runGuarded(() async {
       final client = await clientManager.getCurrentClient();
-      return _monitorRepo.getTimeSeries(client, 'io', 'disk', duration: duration);
+      return _monitorRepo.getTimeSeries(client, 'io', 'disk',
+          duration: duration);
     });
   }
 
@@ -73,7 +77,8 @@ class MonitoringService extends BaseComponent {
   }) async {
     return runGuarded(() async {
       final client = await clientManager.getCurrentClient();
-      return _monitorRepo.getTimeSeries(client, 'network', 'networkIn', duration: duration);
+      return _monitorRepo.getTimeSeries(client, 'network', 'networkIn',
+          duration: duration);
     });
   }
 
@@ -125,8 +130,8 @@ class MonitoringService extends BaseComponent {
   }) async {
     return runGuarded(() async {
       final client = await clientManager.getCurrentClient();
-      return _monitorRepo.getMonitorData(client, duration: duration, startTime: startTime);
+      return _monitorRepo.getMonitorData(client,
+          duration: duration, startTime: startTime);
     });
   }
 }
-

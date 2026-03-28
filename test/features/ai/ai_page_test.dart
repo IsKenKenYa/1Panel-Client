@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/features/ai/ai_page.dart';
+import 'package:onepanel_client/features/ai/mcp_server_provider.dart';
 import 'package:onepanel_client/features/ai/ai_provider.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -29,11 +30,16 @@ void main() {
     expect(find.text('Models'), findsOneWidget);
     expect(find.text('GPU'), findsOneWidget);
     expect(find.text('Domain'), findsOneWidget);
+    expect(find.text('MCP'), findsOneWidget);
 
     final aiContext = tester.element(find.byType(AIPage));
     expect(
       Provider.of<AIProvider>(aiContext, listen: false),
       isA<AIProvider>(),
+    );
+    expect(
+      Provider.of<McpServerProvider>(aiContext, listen: false),
+      isA<McpServerProvider>(),
     );
   });
 }

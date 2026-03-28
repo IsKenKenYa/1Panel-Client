@@ -73,4 +73,3 @@ class PHPExtensionsRes extends Equatable {
   @override
   List<Object?> get props => [extensions, supportExtensions];
 }
-

@@ -31,10 +31,8 @@ class AppBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final safeIndex = currentIndex.clamp(0, items.length - 1);
-    final disabledColor = Theme.of(context)
-        .colorScheme
-        .onSurfaceVariant
-        .withValues(alpha: 0.42);
+    final disabledColor =
+        Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.42);
 
     return NavigationBar(
       selectedIndex: safeIndex,

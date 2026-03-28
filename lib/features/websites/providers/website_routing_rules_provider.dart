@@ -24,7 +24,8 @@ class WebsiteRoutingRulesProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final rewrite = _service.loadRewrite(websiteId: websiteId, name: rewriteName);
+      final rewrite =
+          _service.loadRewrite(websiteId: websiteId, name: rewriteName);
       final proxy = _service.loadProxy(websiteId: websiteId, name: proxyName);
       final result = await Future.wait([rewrite, proxy]);
       rewriteContent = result[0];

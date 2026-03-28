@@ -40,26 +40,26 @@ class _ApiConfigPageState extends State<ApiConfigPage> {
 
     try {
       appLogger.dWithPackage('api.config', '开始加载API配置');
-      
+
       final configs = await ApiConfigManager.getConfigs();
       final currentConfig = await ApiConfigManager.getCurrentConfig();
-      
+
       if (!mounted) return;
       setState(() {
         _configs = configs;
         _currentConfig = currentConfig;
         _isLoading = false;
       });
-      
+
       appLogger.dWithPackage('api.config', 'API配置加载成功，共${configs.length}个配置');
     } catch (e) {
       if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
-      
+
       appLogger.eWithPackage('api.config', '加载API配置失败', error: e);
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('加载配置失败: $e')),
       );
@@ -76,8 +76,9 @@ class _ApiConfigPageState extends State<ApiConfigPage> {
     });
 
     try {
-      appLogger.iWithPackage('api.config', '开始保存API配置: ${_nameController.text}');
-      
+      appLogger.iWithPackage(
+          'api.config', '开始保存API配置: ${_nameController.text}');
+
       final config = ApiConfig(
         id: DateTime.now().microsecondsSinceEpoch.toString(),
         name: _nameController.text,
@@ -87,19 +88,20 @@ class _ApiConfigPageState extends State<ApiConfigPage> {
       );
 
       await ApiConfigManager.saveConfig(config);
-      
+
       // 如果保存的是默认配置或者没有当前配置，设置为当前配置
       if (_isDefault || _currentConfig == null) {
         await ApiConfigManager.setCurrentConfig(config.id);
       }
-      
+
       await _loadConfigs();
       if (!mounted) return;
-      
+
       _clearForm();
-      
-      appLogger.iWithPackage('api.config', 'API配置保存成功: ${_nameController.text}');
-      
+
+      appLogger.iWithPackage(
+          'api.config', 'API配置保存成功: ${_nameController.text}');
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('配置保存成功')),
       );
@@ -108,9 +110,10 @@ class _ApiConfigPageState extends State<ApiConfigPage> {
       setState(() {
         _isLoading = false;
       });
-      
-      appLogger.eWithPackage('api.config', '保存API配置失败: ${_nameController.text}', error: e);
-      
+
+      appLogger.eWithPackage('api.config', '保存API配置失败: ${_nameController.text}',
+          error: e);
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('保存配置失败: $e')),
       );
@@ -119,9 +122,9 @@ class _ApiConfigPageState extends State<ApiConfigPage> {
 
   Future<void> _deleteConfig(String id) async {
     final config = _configs.firstWhere((c) => c.id == id);
-    
+
     appLogger.wWithPackage('api.config', '删除API配置: ${config.name}');
-    
+
     setState(() {
       _isLoading = true;
     });
@@ -130,9 +133,9 @@ class _ApiConfigPageState extends State<ApiConfigPage> {
       await ApiConfigManager.deleteConfig(id);
       await _loadConfigs();
       if (!mounted) return;
-      
+
       appLogger.wWithPackage('api.config', 'API配置删除成功: ${config.name}');
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('配置 "${config.name}" 删除成功')),
       );
@@ -141,9 +144,10 @@ class _ApiConfigPageState extends State<ApiConfigPage> {
       setState(() {
         _isLoading = false;
       });
-      
-      appLogger.eWithPackage('api.config', '删除API配置失败: ${config.name}', error: e);
-      
+
+      appLogger.eWithPackage('api.config', '删除API配置失败: ${config.name}',
+          error: e);
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('删除配置失败: $e')),
       );
@@ -152,9 +156,9 @@ class _ApiConfigPageState extends State<ApiConfigPage> {
 
   Future<void> _setCurrentConfig(String id) async {
     final config = _configs.firstWhere((c) => c.id == id);
-    
+
     appLogger.iWithPackage('api.config', '切换当前API配置: ${config.name}');
-    
+
     setState(() {
       _isLoading = true;
     });
@@ -163,9 +167,9 @@ class _ApiConfigPageState extends State<ApiConfigPage> {
       await ApiConfigManager.setCurrentConfig(id);
       await _loadConfigs();
       if (!mounted) return;
-      
+
       appLogger.iWithPackage('api.config', 'API配置切换成功: ${config.name}');
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('已切换到配置 "${config.name}"')),
       );
@@ -174,9 +178,10 @@ class _ApiConfigPageState extends State<ApiConfigPage> {
       setState(() {
         _isLoading = false;
       });
-      
-      appLogger.eWithPackage('api.config', '切换API配置失败: ${config.name}', error: e);
-      
+
+      appLogger.eWithPackage('api.config', '切换API配置失败: ${config.name}',
+          error: e);
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('切换配置失败: $e')),
       );
@@ -329,7 +334,7 @@ class _ApiConfigPageState extends State<ApiConfigPage> {
                           itemBuilder: (context, index) {
                             final config = _configs[index];
                             final isCurrent = _currentConfig?.id == config.id;
-                            
+
                             return Card(
                               margin: const EdgeInsets.only(bottom: 8),
                               child: ListTile(
@@ -341,12 +346,14 @@ class _ApiConfigPageState extends State<ApiConfigPage> {
                                     if (config.isDefault)
                                       const Tooltip(
                                         message: '默认配置',
-                                        child: Icon(Icons.star, color: Colors.amber),
+                                        child: Icon(Icons.star,
+                                            color: Colors.amber),
                                       ),
                                     if (isCurrent)
                                       const Tooltip(
                                         message: '当前配置',
-                                        child: Icon(Icons.check_circle, color: Colors.green),
+                                        child: Icon(Icons.check_circle,
+                                            color: Colors.green),
                                       ),
                                     PopupMenuButton<String>(
                                       onSelected: (value) {
@@ -370,7 +377,9 @@ class _ApiConfigPageState extends State<ApiConfigPage> {
                                         ),
                                         const PopupMenuItem(
                                           value: 'delete',
-                                          child: Text('删除', style: TextStyle(color: Colors.red)),
+                                          child: Text('删除',
+                                              style:
+                                                  TextStyle(color: Colors.red)),
                                         ),
                                       ],
                                     ),

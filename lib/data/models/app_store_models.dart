@@ -61,5 +61,17 @@ class AppInfo extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, description, version, author, icon, tags, status, installPath, downloadCount, updateTime];
+  List<Object?> get props => [
+        id,
+        name,
+        description,
+        version,
+        author,
+        icon,
+        tags,
+        status,
+        installPath,
+        downloadCount,
+        updateTime
+      ];
 }

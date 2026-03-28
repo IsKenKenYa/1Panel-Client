@@ -7,7 +7,8 @@ import '../../data/models/common_models.dart';
 /// API响应解析帮助类
 class ApiResponseParser {
   /// 从1Panel API响应中提取data字段
-  static T extractData<T>(Response<Map<String, dynamic>> response, T Function(Map<String, dynamic>) fromJson) {
+  static T extractData<T>(Response<Map<String, dynamic>> response,
+      T Function(Map<String, dynamic>) fromJson) {
     final body = response.data!;
     if (body.containsKey('data') && body['data'] != null) {
       return fromJson(body['data'] as Map<String, dynamic>);
@@ -16,7 +17,8 @@ class ApiResponseParser {
   }
 
   /// 从1Panel API响应中提取data字段（Map类型）
-  static Map<String, dynamic> extractMapData(Response<Map<String, dynamic>> response) {
+  static Map<String, dynamic> extractMapData(
+      Response<Map<String, dynamic>> response) {
     final body = response.data!;
     if (body.containsKey('data') && body['data'] != null) {
       return body['data'] as Map<String, dynamic>;
@@ -25,7 +27,8 @@ class ApiResponseParser {
   }
 
   /// 从1Panel API响应中提取data字段（List类型）
-  static List<dynamic> extractListData(Response<Map<String, dynamic>> response) {
+  static List<dynamic> extractListData(
+      Response<Map<String, dynamic>> response) {
     final body = response.data!;
     if (body.containsKey('data') && body['data'] != null) {
       return body['data'] as List<dynamic>;
@@ -41,7 +44,7 @@ class ApiResponseParser {
 }
 
 /// Dashboard V2 API客户端
-/// 
+///
 /// 基于docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json规范实现
 /// 包含12个端点：8个GET + 4个POST
 class DashboardV2Api {
@@ -52,7 +55,7 @@ class DashboardV2Api {
   // ==================== 基础信息模块 (2个端点) ====================
 
   /// 获取仪表盘基础信息
-  /// 
+  ///
   /// GET /dashboard/base/:ioOption/:netOption
   /// @param ioOption IO选项 (default/custom)
   /// @param netOption 网络选项 (default/custom)
@@ -62,7 +65,8 @@ class DashboardV2Api {
     String? netOption,
   }) async {
     final response = await _client.get<Map<String, dynamic>>(
-      ApiConstants.buildApiPath('/dashboard/base/${ioOption ?? 'default'}/${netOption ?? 'default'}'),
+      ApiConstants.buildApiPath(
+          '/dashboard/base/${ioOption ?? 'default'}/${netOption ?? 'default'}'),
     );
     return Response(
       data: ApiResponseParser.extractMapData(response),
@@ -73,7 +77,7 @@ class DashboardV2Api {
   }
 
   /// 获取操作系统信息
-  /// 
+  ///
   /// GET /dashboard/base/os
   /// @return 操作系统信息
   Future<Response<SystemInfo>> getOperatingSystemInfo() async {
@@ -91,7 +95,7 @@ class DashboardV2Api {
   // ==================== 实时监控模块 (4个端点) ====================
 
   /// 获取当前实时指标
-  /// 
+  ///
   /// GET /dashboard/current/:ioOption/:netOption
   /// @param ioOption IO选项 (default/custom)
   /// @param netOption 网络选项 (default/custom)
@@ -101,7 +105,8 @@ class DashboardV2Api {
     String? netOption,
   }) async {
     final response = await _client.get<Map<String, dynamic>>(
-      ApiConstants.buildApiPath('/dashboard/current/${ioOption ?? 'default'}/${netOption ?? 'default'}'),
+      ApiConstants.buildApiPath(
+          '/dashboard/current/${ioOption ?? 'default'}/${netOption ?? 'default'}'),
     );
     return Response(
       data: ApiResponseParser.extractData(response, SystemMetrics.fromJson),
@@ -112,7 +117,7 @@ class DashboardV2Api {
   }
 
   /// 获取当前节点信息
-  /// 
+  ///
   /// GET /dashboard/current/node
   /// @return 节点信息
   Future<Response<Map<String, dynamic>>> getCurrentNode() async {
@@ -128,7 +133,7 @@ class DashboardV2Api {
   }
 
   /// 获取CPU占用Top进程
-  /// 
+  ///
   /// GET /dashboard/current/top/cpu
   /// @return Top CPU进程列表
   Future<Response<dynamic>> getTopCPUProcesses() async {
@@ -144,7 +149,7 @@ class DashboardV2Api {
   }
 
   /// 获取内存占用Top进程
-  /// 
+  ///
   /// GET /dashboard/current/top/mem
   /// @return Top内存进程列表
   Future<Response<dynamic>> getTopMemoryProcesses() async {
@@ -162,7 +167,7 @@ class DashboardV2Api {
   // ==================== 应用启动器模块 (3个端点) ====================
 
   /// 获取应用启动器列表
-  /// 
+  ///
   /// GET /dashboard/app/launcher
   /// @return 应用启动器列表
   Future<Response<List<dynamic>>> getAppLauncher() async {
@@ -178,7 +183,7 @@ class DashboardV2Api {
   }
 
   /// 获取应用启动器选项
-  /// 
+  ///
   /// POST /dashboard/app/launcher/option
   /// @param request 请求参数
   /// @return 应用启动器选项
@@ -198,7 +203,7 @@ class DashboardV2Api {
   }
 
   /// 更新应用启动器展示
-  /// 
+  ///
   /// POST /dashboard/app/launcher/show
   /// @param request 请求参数
   /// @return 操作结果
@@ -220,7 +225,7 @@ class DashboardV2Api {
   // ==================== 快捷跳转模块 (2个端点) ====================
 
   /// 获取快捷跳转选项
-  /// 
+  ///
   /// GET /dashboard/quick/option
   /// @return 快捷跳转选项列表
   Future<Response<List<dynamic>>> getQuickOption() async {
@@ -236,7 +241,7 @@ class DashboardV2Api {
   }
 
   /// 更新快捷跳转配置
-  /// 
+  ///
   /// POST /dashboard/quick/change
   /// @param request 请求参数
   /// @return 操作结果
@@ -258,7 +263,7 @@ class DashboardV2Api {
   // ==================== 系统操作模块 (1个端点) ====================
 
   /// 系统重启/关机操作
-  /// 
+  ///
   /// POST /dashboard/system/restart/:operation
   /// @param operation 操作类型 (restart/shutdown)
   /// @return 操作结果

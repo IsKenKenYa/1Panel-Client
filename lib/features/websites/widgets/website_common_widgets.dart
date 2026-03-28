@@ -23,7 +23,8 @@ class WebsiteErrorSection extends StatelessWidget {
           children: [
             const Icon(Icons.error_outline, size: 64),
             const SizedBox(height: 16),
-            Text(l10n.commonLoadFailedTitle, style: Theme.of(context).textTheme.titleLarge),
+            Text(l10n.commonLoadFailedTitle,
+                style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 8),
             Text(message, textAlign: TextAlign.center),
             const SizedBox(height: 16),

@@ -45,7 +45,8 @@ void main() {
     );
     when(() => service.createCert(any())).thenAnswer((_) async {});
     when(() => service.updateCert(any())).thenAnswer((_) async {});
-    when(() => service.deleteCerts(any(), forceDelete: any(named: 'forceDelete')))
+    when(() =>
+            service.deleteCerts(any(), forceDelete: any(named: 'forceDelete')))
         .thenAnswer((_) async {});
     when(() => service.syncCerts()).thenAnswer((_) async {});
     provider = SshCertsProvider(service: service);

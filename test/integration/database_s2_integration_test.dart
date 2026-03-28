@@ -37,7 +37,8 @@ void main() {
       expect(response.data, isNotNull);
     });
 
-    test('database backup write flow is explicitly gated behind destructive mode',
+    test(
+        'database backup write flow is explicitly gated behind destructive mode',
         () async {
       await TestEnvironment.initialize();
       if (!TestEnvironment.runIntegrationTests ||

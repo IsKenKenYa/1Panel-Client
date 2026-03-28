@@ -24,4 +24,3 @@ class FpmStatusItem extends Equatable {
   @override
   List<Object?> get props => [key, value];
 }
-

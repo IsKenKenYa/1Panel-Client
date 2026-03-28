@@ -24,7 +24,8 @@ void main() {
 
   group('Token认证测试', () {
     setUp(() => runner.startSuite('Token认证'));
-    tearDown(() => runner.endSuite('Token认证', passed: 0, failed: 0, skipped: 0));
+    tearDown(
+        () => runner.endSuite('Token认证', passed: 0, failed: 0, skipped: 0));
     token_auth.main();
   });
 
@@ -36,13 +37,15 @@ void main() {
 
   group('Toolbox API单元测试', () {
     setUp(() => runner.startSuite('Toolbox API'));
-    tearDown(() => runner.endSuite('Toolbox API', passed: 0, failed: 0, skipped: 0));
+    tearDown(
+        () => runner.endSuite('Toolbox API', passed: 0, failed: 0, skipped: 0));
     toolbox_api.main();
   });
 
   group('Container API单元测试', () {
     setUp(() => runner.startSuite('Container API'));
-    tearDown(() => runner.endSuite('Container API', passed: 0, failed: 0, skipped: 0));
+    tearDown(() =>
+        runner.endSuite('Container API', passed: 0, failed: 0, skipped: 0));
     container_api.main();
   });
 
@@ -54,7 +57,8 @@ void main() {
 
   group('AI API集成测试', () {
     setUp(() => runner.startSuite('AI API集成'));
-    tearDown(() => runner.endSuite('AI API集成', passed: 0, failed: 0, skipped: 0));
+    tearDown(
+        () => runner.endSuite('AI API集成', passed: 0, failed: 0, skipped: 0));
     ai_integration.main();
   });
 }

@@ -98,7 +98,8 @@ class _ComposeCreateDialogState extends State<ComposeCreateDialog> {
               final request = ContainerComposeCreate(
                 from: 'edit',
                 name: _nameController.text,
-                path: _pathController.text.isEmpty ? null : _pathController.text,
+                path:
+                    _pathController.text.isEmpty ? null : _pathController.text,
                 file: _contentController.text,
                 env: _envController.text.isEmpty ? null : _envController.text,
               );

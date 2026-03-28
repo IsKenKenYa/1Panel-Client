@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
-import 'package:onepanel_client/data/models/container_models.dart' hide ContainerStats;
+import 'package:onepanel_client/data/models/container_models.dart'
+    hide ContainerStats;
 import '../containers_provider.dart';
 
 class OverviewTab extends StatelessWidget {
@@ -47,7 +48,8 @@ class OverviewTab extends StatelessWidget {
               children: [
                 _buildStatsCard(context, l10n, stats, colorScheme),
                 const SizedBox(height: 16),
-                if (status != null) _buildDetailStatsCard(context, l10n, status, colorScheme),
+                if (status != null)
+                  _buildDetailStatsCard(context, l10n, status, colorScheme),
               ],
             ),
           ),
@@ -126,10 +128,14 @@ class OverviewTab extends StatelessWidget {
               spacing: 16,
               runSpacing: 16,
               children: [
-                _buildChip(context, l10n.containerStatsImages, status.imageCount.toString(), Icons.image),
-                _buildChip(context, l10n.containerStatsNetworks, status.networkCount.toString(), Icons.hub),
-                _buildChip(context, l10n.containerStatsVolumes, status.volumeCount.toString(), Icons.storage),
-                _buildChip(context, l10n.containerStatsRepos, status.repoCount.toString(), Icons.store),
+                _buildChip(context, l10n.containerStatsImages,
+                    status.imageCount.toString(), Icons.image),
+                _buildChip(context, l10n.containerStatsNetworks,
+                    status.networkCount.toString(), Icons.hub),
+                _buildChip(context, l10n.containerStatsVolumes,
+                    status.volumeCount.toString(), Icons.storage),
+                _buildChip(context, l10n.containerStatsRepos,
+                    status.repoCount.toString(), Icons.store),
               ],
             ),
           ],
@@ -164,7 +170,8 @@ class OverviewTab extends StatelessWidget {
     );
   }
 
-  Widget _buildChip(BuildContext context, String label, String value, IconData icon) {
+  Widget _buildChip(
+      BuildContext context, String label, String value, IconData icon) {
     return Chip(
       avatar: Icon(icon, size: 18),
       label: Text('$label: $value'),

@@ -109,7 +109,8 @@ class InstalledAppDetailProvider extends ChangeNotifier {
 
       if (_appInfo!.id != null) {
         try {
-          _appConfig = await _appService.getAppInstallParams(_appInfo!.id.toString());
+          _appConfig =
+              await _appService.getAppInstallParams(_appInfo!.id.toString());
         } catch (e) {
           _configError = e.toString();
           _appConfig = null;
@@ -122,7 +123,8 @@ class InstalledAppDetailProvider extends ChangeNotifier {
 
         if (_appInfo!.canUpdate == true) {
           try {
-            _updateVersions = await _appService.getAppUpdateVersions(_appInfo!.id.toString());
+            _updateVersions =
+                await _appService.getAppUpdateVersions(_appInfo!.id.toString());
           } catch (e) {
             _updateVersionsError = e.toString();
             _updateVersions = const [];
@@ -159,7 +161,8 @@ class InstalledAppDetailProvider extends ChangeNotifier {
 
     final containers = await _containerService.listContainers();
     for (final container in containers) {
-      if (container.name == containerName || container.name == '/$containerName') {
+      if (container.name == containerName ||
+          container.name == '/$containerName') {
         return container;
       }
     }

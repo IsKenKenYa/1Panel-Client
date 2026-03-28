@@ -77,7 +77,8 @@ class _FakeCurrentServerController extends CurrentServerController {
 }
 
 void main() {
-  testWidgets('WebsitesPage supports search and selection mode', (tester) async {
+  testWidgets('WebsitesPage supports search and selection mode',
+      (tester) async {
     final provider = WebsitesProvider(
       service: FakeWebsiteService(
         searchResult: const PageResult(

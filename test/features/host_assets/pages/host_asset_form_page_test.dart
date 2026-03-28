@@ -49,7 +49,8 @@ void main() {
             value: _FakeCurrentServerController(),
           ),
           ChangeNotifierProvider<HostAssetFormProvider>(
-            create: (_) => HostAssetFormProvider(service: service)..initialize(null),
+            create: (_) =>
+                HostAssetFormProvider(service: service)..initialize(null),
           ),
         ],
         child: MaterialApp(

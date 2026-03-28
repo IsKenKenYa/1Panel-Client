@@ -132,12 +132,12 @@ class ContainersPageImageDialogs {
           .toList();
       final request = ImageBuild(
         contextDir: contextController.text,
-        dockerfile:
-            dockerfileController.text.isEmpty ? null : dockerfileController.text,
-        tags: tags.isEmpty ? null : tags,
-        buildArgs: buildArgsController.text.isEmpty
+        dockerfile: dockerfileController.text.isEmpty
             ? null
-            : buildArgsController.text,
+            : dockerfileController.text,
+        tags: tags.isEmpty ? null : tags,
+        buildArgs:
+            buildArgsController.text.isEmpty ? null : buildArgsController.text,
       );
       final success = await provider.buildImage(request);
       if (context.mounted) {

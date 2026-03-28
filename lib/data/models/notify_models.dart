@@ -45,5 +45,6 @@ class NotificationMessage extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, title, content, level, type, read, createTime];
+  List<Object?> get props =>
+      [id, title, content, level, type, read, createTime];
 }

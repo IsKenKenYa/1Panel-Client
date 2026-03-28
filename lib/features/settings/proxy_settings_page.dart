@@ -84,8 +84,11 @@ class _ProxySettingsPageState extends State<ProxySettingsPage> {
                       value: _proxyType,
                       underline: const SizedBox(),
                       items: [
-                        DropdownMenuItem(value: 'http', child: Text(l10n.proxySettingsHttp)),
-                        DropdownMenuItem(value: 'https', child: Text(l10n.proxySettingsHttps)),
+                        DropdownMenuItem(
+                            value: 'http', child: Text(l10n.proxySettingsHttp)),
+                        DropdownMenuItem(
+                            value: 'https',
+                            child: Text(l10n.proxySettingsHttps)),
                       ],
                       onChanged: _enabled
                           ? (value) {
@@ -186,7 +189,9 @@ class _ProxySettingsPageState extends State<ProxySettingsPage> {
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(success ? l10n.proxySettingsSaved : l10n.proxySettingsFailed)),
+        SnackBar(
+            content: Text(
+                success ? l10n.proxySettingsSaved : l10n.proxySettingsFailed)),
       );
     }
   }

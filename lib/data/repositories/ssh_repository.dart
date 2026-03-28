@@ -62,7 +62,8 @@ class SSHRepository {
     await api.updateSshFile(request);
   }
 
-  Future<PageResult<SshCertInfo>> searchCerts(SshCertSearchRequest request) async {
+  Future<PageResult<SshCertInfo>> searchCerts(
+      SshCertSearchRequest request) async {
     final api = await _ensureApi();
     final response = await api.searchSshCerts(request);
     return response.data ??
@@ -89,7 +90,8 @@ class SSHRepository {
     await api.syncSshCerts();
   }
 
-  Future<PageResult<SshLogEntry>> searchLogs(SshLogSearchRequest request) async {
+  Future<PageResult<SshLogEntry>> searchLogs(
+      SshLogSearchRequest request) async {
     final api = await _ensureApi();
     final response = await api.searchSshLogs(request);
     return response.data ??

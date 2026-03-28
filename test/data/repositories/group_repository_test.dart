@@ -28,7 +28,8 @@ void main() {
 
   setUpAll(() {
     registerFallbackValue(const group_models.GroupSearch(type: 'command'));
-    registerFallbackValue(const group_models.GroupCreate(name: 'group', type: 'command'));
+    registerFallbackValue(
+        const group_models.GroupCreate(name: 'group', type: 'command'));
     registerFallbackValue(
       const group_models.GroupUpdate(
         id: 1,
@@ -42,17 +43,18 @@ void main() {
   setUp(() {
     clientManager = _MockApiClientManager();
     api = _MockSystemGroupV2Api();
-    when(() => clientManager.getSystemGroupApi())
-        .thenAnswer((_) async => api);
+    when(() => clientManager.getSystemGroupApi()).thenAnswer((_) async => api);
     repository = GroupRepository(clientManager: clientManager);
   });
 
   test('listGroups calls core search API when scope is core', () async {
     when(() => api.searchCoreGroups(any())).thenAnswer(
-      (_) async => _fakeGroupResponse([group_models.GroupInfo(id: 1, name: 'A', type: 'command')]),
+      (_) async => _fakeGroupResponse(
+          [group_models.GroupInfo(id: 1, name: 'A', type: 'command')]),
     );
 
-    final groups = await repository.listGroups('command', scope: GroupApiScope.core);
+    final groups =
+        await repository.listGroups('command', scope: GroupApiScope.core);
 
     expect(groups, hasLength(1));
     verify(() => api.searchCoreGroups(any())).called(1);
@@ -61,7 +63,8 @@ void main() {
 
   test('listGroups calls agent search API when scope is agent', () async {
     when(() => api.searchAgentGroups(any())).thenAnswer(
-      (_) async => _fakeGroupResponse([group_models.GroupInfo(id: 2, name: 'B', type: 'shell')]),
+      (_) async => _fakeGroupResponse(
+          [group_models.GroupInfo(id: 2, name: 'B', type: 'shell')]),
     );
 
     await repository.listGroups('shell', scope: GroupApiScope.agent);
@@ -71,23 +74,25 @@ void main() {
   });
 
   test('createGroup routes to correct namespace', () async {
-    when(() => api.createCoreGroup(any()))
-        .thenAnswer((_) async => Response(requestOptions: RequestOptions(path: '/')));
-    when(() => api.createAgentGroup(any()))
-        .thenAnswer((_) async => Response(requestOptions: RequestOptions(path: '/')));
+    when(() => api.createCoreGroup(any())).thenAnswer(
+        (_) async => Response(requestOptions: RequestOptions(path: '/')));
+    when(() => api.createAgentGroup(any())).thenAnswer(
+        (_) async => Response(requestOptions: RequestOptions(path: '/')));
 
-    await repository.createGroup(type: 'command', name: 'New', scope: GroupApiScope.core);
+    await repository.createGroup(
+        type: 'command', name: 'New', scope: GroupApiScope.core);
     verify(() => api.createCoreGroup(any())).called(1);
 
-    await repository.createGroup(type: 'command', name: 'New', scope: GroupApiScope.agent);
+    await repository.createGroup(
+        type: 'command', name: 'New', scope: GroupApiScope.agent);
     verify(() => api.createAgentGroup(any())).called(1);
   });
 
   test('updateGroup routes to correct namespace', () async {
-    when(() => api.updateCoreGroup(any()))
-        .thenAnswer((_) async => Response(requestOptions: RequestOptions(path: '/')));
-    when(() => api.updateAgentGroup(any()))
-        .thenAnswer((_) async => Response(requestOptions: RequestOptions(path: '/')));
+    when(() => api.updateCoreGroup(any())).thenAnswer(
+        (_) async => Response(requestOptions: RequestOptions(path: '/')));
+    when(() => api.updateAgentGroup(any())).thenAnswer(
+        (_) async => Response(requestOptions: RequestOptions(path: '/')));
 
     await repository.updateGroup(
       id: 1,
@@ -107,10 +112,10 @@ void main() {
   });
 
   test('deleteGroup routes to correct namespace', () async {
-    when(() => api.deleteCoreGroup(any()))
-        .thenAnswer((_) async => Response(requestOptions: RequestOptions(path: '/')));
-    when(() => api.deleteAgentGroup(any()))
-        .thenAnswer((_) async => Response(requestOptions: RequestOptions(path: '/')));
+    when(() => api.deleteCoreGroup(any())).thenAnswer(
+        (_) async => Response(requestOptions: RequestOptions(path: '/')));
+    when(() => api.deleteAgentGroup(any())).thenAnswer(
+        (_) async => Response(requestOptions: RequestOptions(path: '/')));
 
     await repository.deleteGroup(1, scope: GroupApiScope.core);
     verify(() => api.deleteCoreGroup(any())).called(1);

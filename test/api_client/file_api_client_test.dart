@@ -13,8 +13,9 @@ void main() {
 
   setUpAll(() async {
     await TestEnvironment.initialize();
-    hasApiKey = TestEnvironment.apiKey.isNotEmpty && TestEnvironment.apiKey != 'your_api_key_here';
-    
+    hasApiKey = TestEnvironment.apiKey.isNotEmpty &&
+        TestEnvironment.apiKey != 'your_api_key_here';
+
     if (hasApiKey) {
       client = DioClient(
         baseUrl: TestEnvironment.baseUrl,
@@ -32,7 +33,7 @@ void main() {
       debugPrint('服务器地址: ${TestEnvironment.baseUrl}');
       debugPrint('API密钥: ${hasApiKey ? "已配置" : "未配置"}');
       debugPrint('========================================\n');
-      
+
       expect(hasApiKey, equals(TestEnvironment.canRunIntegrationTests));
     });
 
@@ -55,7 +56,7 @@ void main() {
         debugPrint('✅ 文件列表测试成功');
         debugPrint('========================================');
         debugPrint('文件数量: ${files.length}');
-        
+
         if (files.isNotEmpty) {
           debugPrint('\n文件列表:');
           for (var i = 0; i < (files.length > 10 ? 10 : files.length); i++) {

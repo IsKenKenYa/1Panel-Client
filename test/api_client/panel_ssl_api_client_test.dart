@@ -26,7 +26,8 @@ void main() {
     test('GET /core/settings/ssl/info 应该成功', () async {
       final skipReason = TestEnvironment.skipIntegration();
       if (skipReason != null) {
-        appLogger.wWithPackage('test.api_client.panel_ssl', '跳过测试: $skipReason');
+        appLogger.wWithPackage(
+            'test.api_client.panel_ssl', '跳过测试: $skipReason');
         return;
       }
 
@@ -37,7 +38,8 @@ void main() {
     test('POST /core/settings/ssl/download 应该成功', () async {
       final skipReason = TestEnvironment.skipIntegration();
       if (skipReason != null) {
-        appLogger.wWithPackage('test.api_client.panel_ssl', '跳过测试: $skipReason');
+        appLogger.wWithPackage(
+            'test.api_client.panel_ssl', '跳过测试: $skipReason');
         return;
       }
 

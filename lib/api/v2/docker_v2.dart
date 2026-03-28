@@ -12,7 +12,8 @@ class DockerV2Api {
 
   // --- Images ---
 
-  List<T> _parseList<T>(dynamic data, T Function(Map<String, dynamic>) fromJson) {
+  List<T> _parseList<T>(
+      dynamic data, T Function(Map<String, dynamic>) fromJson) {
     if (data is List) {
       return data.map((e) => fromJson(e as Map<String, dynamic>)).toList();
     }
@@ -99,13 +100,15 @@ class DockerV2Api {
   }
 
   /// Search images
-  Future<Response<PageResult<Map<String, dynamic>>>> searchImages(SearchWithPage request) async {
+  Future<Response<PageResult<Map<String, dynamic>>>> searchImages(
+      SearchWithPage request) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/containers/image/search'),
       data: request.toJson(),
     );
     return Response(
-      data: PageResult.fromJson(response.data?['data'] ?? {}, (json) => json as Map<String, dynamic>),
+      data: PageResult.fromJson(
+          response.data?['data'] ?? {}, (json) => json as Map<String, dynamic>),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -116,7 +119,10 @@ class DockerV2Api {
   Future<Response> removeImage(String imageId, {bool force = false}) async {
     return await _client.post(
       ApiConstants.buildApiPath('/containers/image/remove'),
-      data: {'names': [imageId], 'force': force},
+      data: {
+        'names': [imageId],
+        'force': force
+      },
     );
   }
 
@@ -147,7 +153,9 @@ class DockerV2Api {
   Future<Response> removeNetwork(String networkId) async {
     return await _client.post(
       ApiConstants.buildApiPath('/containers/network/del'),
-      data: {'names': [networkId]},
+      data: {
+        'names': [networkId]
+      },
     );
   }
 
@@ -178,7 +186,9 @@ class DockerV2Api {
   Future<Response> removeVolume(String volumeName) async {
     return await _client.post(
       ApiConstants.buildApiPath('/containers/volume/del'),
-      data: {'names': [volumeName]},
+      data: {
+        'names': [volumeName]
+      },
     );
   }
 }

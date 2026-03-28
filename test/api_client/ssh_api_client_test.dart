@@ -31,18 +31,22 @@ void _logSection(
   Object? request,
   Object? response,
 }) {
-  appLogger.dWithPackage('test.api_client.ssh', '========================================');
+  appLogger.dWithPackage(
+      'test.api_client.ssh', '========================================');
   appLogger.dWithPackage('test.api_client.ssh', title);
   if (method != null && path != null) {
     appLogger.dWithPackage('test.api_client.ssh', 'Request: $method $path');
   }
   if (request != null) {
-    appLogger.dWithPackage('test.api_client.ssh', 'RequestBody: ${_prettyJson(request)}');
+    appLogger.dWithPackage(
+        'test.api_client.ssh', 'RequestBody: ${_prettyJson(request)}');
   }
   if (response != null) {
-    appLogger.dWithPackage('test.api_client.ssh', 'Response: ${_prettyJson(response)}');
+    appLogger.dWithPackage(
+        'test.api_client.ssh', 'Response: ${_prettyJson(response)}');
   }
-  appLogger.dWithPackage('test.api_client.ssh', '========================================');
+  appLogger.dWithPackage(
+      'test.api_client.ssh', '========================================');
 }
 
 Future<Response<Map<String, dynamic>>> _rawPost(
@@ -169,7 +173,8 @@ void main() {
         'key': 'sshdConf',
         'value': file.data,
       };
-      final updateRaw = await _rawPost(client, '/hosts/ssh/file/update', data: updateRequest);
+      final updateRaw =
+          await _rawPost(client, '/hosts/ssh/file/update', data: updateRequest);
       _logSection(
         '✅ Raw /hosts/ssh/file/update',
         method: 'POST',
@@ -226,7 +231,8 @@ void main() {
         response: result.data?.items.map((item) => item.address).toList(),
       );
 
-      final exportRaw = await _rawPost(client, '/hosts/ssh/log/export', data: request);
+      final exportRaw =
+          await _rawPost(client, '/hosts/ssh/log/export', data: request);
       _logSection(
         '✅ Raw /hosts/ssh/log/export',
         method: 'POST',
@@ -235,14 +241,16 @@ void main() {
         response: exportRaw.data,
       );
       final exportResult = await api.exportSshLogs(const SshLogSearchRequest());
-      _logSection('✅ Parsed /hosts/ssh/log/export', response: exportResult.data);
+      _logSection('✅ Parsed /hosts/ssh/log/export',
+          response: exportResult.data);
     });
 
     test('GET /process/ws 应支持 SSH session websocket 查询', () async {
       if (!canRun) return;
       final wsClient = ProcessWsClient();
       await wsClient.connect();
-      final future = wsClient.messages.first.timeout(const Duration(seconds: 10));
+      final future =
+          wsClient.messages.first.timeout(const Duration(seconds: 10));
       await wsClient.send(const SshSessionQuery(loginUser: '').toJson());
       final result = await future;
       _logSection('✅ Parsed /process/ws ssh', response: result);

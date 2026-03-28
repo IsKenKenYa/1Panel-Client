@@ -25,7 +25,8 @@ class RetryInterceptor extends Interceptor {
     if (_shouldRetry(err) && currentRetry < maxRetries) {
       final delay = retryDelays[currentRetry.clamp(0, retryDelays.length - 1)];
 
-      _logger.w('[network] Retrying ${err.requestOptions.path} (attempt ${currentRetry + 1}/$maxRetries)');
+      _logger.w(
+          '[network] Retrying ${err.requestOptions.path} (attempt ${currentRetry + 1}/$maxRetries)');
 
       await Future.delayed(delay);
 

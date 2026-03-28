@@ -12,8 +12,9 @@ void main() {
 
   setUpAll(() async {
     await TestEnvironment.initialize();
-    hasApiKey = TestEnvironment.apiKey.isNotEmpty && TestEnvironment.apiKey != 'your_api_key_here';
-    
+    hasApiKey = TestEnvironment.apiKey.isNotEmpty &&
+        TestEnvironment.apiKey != 'your_api_key_here';
+
     if (hasApiKey) {
       client = DioClient(
         baseUrl: TestEnvironment.baseUrl,
@@ -35,12 +36,13 @@ void main() {
       debugPrint('========================================');
 
       final response = await api.getOperatingSystemInfo();
-      
+
       debugPrint('状态码: ${response.statusCode}');
       debugPrint('响应数据类型: ${response.data.runtimeType}');
-      
+
       if (response.data != null) {
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(response.data);
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(response.data);
         debugPrint('完整响应数据:\n$jsonStr');
       } else {
         debugPrint('响应数据为空');
@@ -59,14 +61,15 @@ void main() {
       debugPrint('========================================');
 
       final response = await api.getDashboardBase();
-      
+
       debugPrint('状态码: ${response.statusCode}');
       debugPrint('响应数据类型: ${response.data.runtimeType}');
-      
+
       if (response.data != null) {
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(response.data);
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(response.data);
         debugPrint('完整响应数据:\n$jsonStr');
-        
+
         // 检查关键字段
         final data = response.data!;
         debugPrint('\n--- 关键字段检查 ---');
@@ -100,12 +103,13 @@ void main() {
       debugPrint('========================================');
 
       final response = await api.getCurrentMetrics();
-      
+
       debugPrint('状态码: ${response.statusCode}');
       debugPrint('响应数据类型: ${response.data.runtimeType}');
-      
+
       if (response.data != null) {
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(response.data);
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(response.data);
         debugPrint('完整响应数据:\n$jsonStr');
       } else {
         debugPrint('响应数据为空');
@@ -124,12 +128,13 @@ void main() {
       debugPrint('========================================');
 
       final response = await api.getTopCPUProcesses();
-      
+
       debugPrint('状态码: ${response.statusCode}');
       debugPrint('响应数据类型: ${response.data.runtimeType}');
-      
+
       if (response.data != null) {
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(response.data);
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(response.data);
         debugPrint('完整响应数据:\n$jsonStr');
       } else {
         debugPrint('响应数据为空');
@@ -148,12 +153,13 @@ void main() {
       debugPrint('========================================');
 
       final response = await api.getTopMemoryProcesses();
-      
+
       debugPrint('状态码: ${response.statusCode}');
       debugPrint('响应数据类型: ${response.data.runtimeType}');
-      
+
       if (response.data != null) {
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(response.data);
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(response.data);
         debugPrint('完整响应数据:\n$jsonStr');
       } else {
         debugPrint('响应数据为空');
@@ -172,12 +178,13 @@ void main() {
       debugPrint('========================================');
 
       final response = await api.getCurrentNode();
-      
+
       debugPrint('状态码: ${response.statusCode}');
       debugPrint('响应数据类型: ${response.data.runtimeType}');
-      
+
       if (response.data != null) {
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(response.data);
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(response.data);
         debugPrint('完整响应数据:\n$jsonStr');
       } else {
         debugPrint('响应数据为空');

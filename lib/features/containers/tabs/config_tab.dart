@@ -35,7 +35,7 @@ class _ConfigTabState extends State<ConfigTab> {
     return Consumer<ContainersProvider>(
       builder: (context, provider, _) {
         final config = provider.data.daemonJson;
-        
+
         if (!_isLoaded && config.isNotEmpty) {
           _controller.text = config;
           _isLoaded = true;
@@ -80,7 +80,8 @@ class _ConfigTabState extends State<ConfigTab> {
               FilledButton.icon(
                 onPressed: () async {
                   final scaffoldMessenger = ScaffoldMessenger.of(context);
-                  final success = await provider.updateDaemonJson(_controller.text);
+                  final success =
+                      await provider.updateDaemonJson(_controller.text);
                   if (!mounted) return;
                   if (success) {
                     scaffoldMessenger.showSnackBar(

@@ -150,7 +150,8 @@ class _PhpExtensionsPageState extends State<PhpExtensionsPage> {
     final confirm = await ConfirmActionSheetWidget.show(
       context,
       title: item.installed ? l10n.appActionUninstall : l10n.appStoreInstall,
-      message: '${item.installed ? l10n.appActionUninstall : l10n.appStoreInstall} ${item.name}?',
+      message:
+          '${item.installed ? l10n.appActionUninstall : l10n.appStoreInstall} ${item.name}?',
       confirmLabel:
           item.installed ? l10n.appActionUninstall : l10n.appStoreInstall,
       isDestructive: item.installed,
@@ -160,7 +161,8 @@ class _PhpExtensionsPageState extends State<PhpExtensionsPage> {
     if (!confirm || !mounted) {
       return;
     }
-    final success = await context.read<PhpExtensionsProvider>().toggleExtension(item);
+    final success =
+        await context.read<PhpExtensionsProvider>().toggleExtension(item);
     if (!mounted) {
       return;
     }

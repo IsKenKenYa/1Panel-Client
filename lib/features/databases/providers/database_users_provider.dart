@@ -54,8 +54,8 @@ class DatabaseUsersProvider extends ChangeNotifier {
         permission: permission,
         superUser: superUser,
       );
-      final nextContext = (_state.context ?? await _service.loadContext(item))
-          .copyWith(
+      final nextContext =
+          (_state.context ?? await _service.loadContext(item)).copyWith(
         currentUsername: username,
         superUser: superUser,
       );

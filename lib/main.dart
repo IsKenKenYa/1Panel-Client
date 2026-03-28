@@ -43,16 +43,16 @@ void main() async {
     );
     return true;
   };
-  
+
   // Initialize Hive
   await Hive.initFlutter();
-  
+
   // Initialize Flutter Downloader
   await FlutterDownloader.initialize(
     debug: true,
     ignoreSsl: true,
   );
-  
+
   runApp(
     MultiProvider(
       providers: [

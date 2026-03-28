@@ -135,7 +135,9 @@ class PhpSupervisorProvider extends ChangeNotifier with AsyncStateNotifier {
     final runtimeId = _runtimeId;
     final normalizedName = name.trim();
     final normalizedCommand = command.trim();
-    if (runtimeId == null || normalizedName.isEmpty || normalizedCommand.isEmpty) {
+    if (runtimeId == null ||
+        normalizedName.isEmpty ||
+        normalizedCommand.isEmpty) {
       setError('runtime.form.nameRequired');
       return false;
     }

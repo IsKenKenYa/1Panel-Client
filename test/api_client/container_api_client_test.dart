@@ -15,8 +15,9 @@ void main() {
 
   setUpAll(() async {
     await TestEnvironment.initialize();
-    hasApiKey = TestEnvironment.apiKey.isNotEmpty && TestEnvironment.apiKey != 'your_api_key_here';
-    
+    hasApiKey = TestEnvironment.apiKey.isNotEmpty &&
+        TestEnvironment.apiKey != 'your_api_key_here';
+
     if (hasApiKey) {
       client = DioClient(
         baseUrl: TestEnvironment.baseUrl,
@@ -25,7 +26,8 @@ void main() {
       api = ContainerV2Api(client);
 
       try {
-        final response = await api.searchContainers(PageContainer(page: 1, pageSize: 1));
+        final response =
+            await api.searchContainers(PageContainer(page: 1, pageSize: 1));
         if (response.data != null && response.data!.items.isNotEmpty) {
           sampleContainer = response.data!.items.first;
         }
@@ -79,8 +81,10 @@ void main() {
         debugPrint('Compose数量: ${status.composeCount}');
         debugPrint('========================================\n');
 
-        TestDataValidator.expectNonNegativeInt(status.running, fieldName: 'running');
-        TestDataValidator.expectNonNegativeInt(status.exited, fieldName: 'exited');
+        TestDataValidator.expectNonNegativeInt(status.running,
+            fieldName: 'running');
+        TestDataValidator.expectNonNegativeInt(status.exited,
+            fieldName: 'exited');
         TestDataValidator.expectNonNegativeInt(status.all, fieldName: 'all');
       });
     });
@@ -108,7 +112,9 @@ void main() {
 
         if (result.items.isNotEmpty) {
           debugPrint('\n容器列表:');
-          for (var i = 0; i < (result.items.length > 5 ? 5 : result.items.length); i++) {
+          for (var i = 0;
+              i < (result.items.length > 5 ? 5 : result.items.length);
+              i++) {
             final container = result.items[i];
             debugPrint('  - ${container.name} (${container.status})');
           }
@@ -149,7 +155,8 @@ void main() {
         final response = await api.getDockerStatus();
         expect(response.statusCode, equals(200));
         expect(response.data, isNotNull);
-        debugPrint('✅ Docker status: active=${response.data!.isActive}, exist=${response.data!.isExist}');
+        debugPrint(
+            '✅ Docker status: active=${response.data!.isActive}, exist=${response.data!.isExist}');
       });
 
       test('listContainersByImage - 获取按镜像分组容器列表', () async {
@@ -175,7 +182,8 @@ void main() {
           return;
         }
 
-        final response = await api.getContainerItemStats(OperationWithName(name: sampleContainer!.name));
+        final response = await api.getContainerItemStats(
+            OperationWithName(name: sampleContainer!.name));
         expect(response.statusCode, equals(200));
         expect(response.data, isNotNull);
         debugPrint('✅ Container item stats: ${response.data!.toJson()}');
@@ -187,7 +195,8 @@ void main() {
           return;
         }
 
-        final response = await api.getContainerUsers(OperationWithName(name: sampleContainer!.name));
+        final response = await api
+            .getContainerUsers(OperationWithName(name: sampleContainer!.name));
         expect(response.statusCode, equals(200));
         debugPrint('✅ Container users: ${response.data}');
       });
@@ -210,7 +219,8 @@ void main() {
             (f) => !f.isDir,
             orElse: () => files.isNotEmpty
                 ? files.first
-                : const ContainerFileInfo(name: '', path: '/', isDir: true, isLink: false),
+                : const ContainerFileInfo(
+                    name: '', path: '/', isDir: true, isLink: false),
           );
 
           if (file.isDir || file.path.isEmpty) {
@@ -219,19 +229,22 @@ void main() {
           }
 
           final contentResponse = await api.getContainerFileContent(
-            ContainerFileRequest(containerId: sampleContainer!.id, path: file.path),
+            ContainerFileRequest(
+                containerId: sampleContainer!.id, path: file.path),
           );
           expect(contentResponse.statusCode, equals(200));
           debugPrint('✅ File content size: ${contentResponse.data?.size}');
 
           final sizeResponse = await api.getContainerFileSize(
-            ContainerFileRequest(containerId: sampleContainer!.id, path: file.path),
+            ContainerFileRequest(
+                containerId: sampleContainer!.id, path: file.path),
           );
           expect(sizeResponse.statusCode, equals(200));
           debugPrint('✅ File size: ${sizeResponse.data}');
 
           final downloadResponse = await api.downloadContainerFile(
-            ContainerFileRequest(containerId: sampleContainer!.id, path: file.path),
+            ContainerFileRequest(
+                containerId: sampleContainer!.id, path: file.path),
           );
           expect(downloadResponse.statusCode, equals(200));
           debugPrint('✅ File download bytes: ${downloadResponse.data?.length}');

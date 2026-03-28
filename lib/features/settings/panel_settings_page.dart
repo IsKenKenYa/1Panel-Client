@@ -53,17 +53,22 @@ class PanelSettingsPage extends StatelessWidget {
               children: [
                 _buildInfoListTile(
                   title: l10n.panelSettingsDeveloperMode,
-                  value: _isEnabled(settings?.developerMode) ? l10n.systemSettingsEnabled : l10n.systemSettingsDisabled,
+                  value: _isEnabled(settings?.developerMode)
+                      ? l10n.systemSettingsEnabled
+                      : l10n.systemSettingsDisabled,
                   icon: Icons.code_outlined,
                 ),
                 _buildInfoListTile(
                   title: l10n.panelSettingsIpv6,
-                  value: _isEnabled(settings?.ipv6) ? l10n.systemSettingsEnabled : l10n.systemSettingsDisabled,
+                  value: _isEnabled(settings?.ipv6)
+                      ? l10n.systemSettingsEnabled
+                      : l10n.systemSettingsDisabled,
                   icon: Icons.network_check_outlined,
                 ),
                 _buildInfoListTile(
                   title: l10n.panelSettingsSessionTimeout,
-                  value: l10n.panelSettingsMinutes(settings?.sessionTimeout ?? '30'),
+                  value: l10n
+                      .panelSettingsMinutes(settings?.sessionTimeout ?? '30'),
                   icon: Icons.timer_outlined,
                 ),
               ],
@@ -74,7 +79,8 @@ class PanelSettingsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionTitle(BuildContext context, String title, ThemeData theme) {
+  Widget _buildSectionTitle(
+      BuildContext context, String title, ThemeData theme) {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppDesignTokens.spacingSm),
       child: Text(

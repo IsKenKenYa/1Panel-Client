@@ -15,7 +15,8 @@ class SshSessionFilterSheetWidget extends StatefulWidget {
       _SshSessionFilterSheetWidgetState();
 }
 
-class _SshSessionFilterSheetWidgetState extends State<SshSessionFilterSheetWidget> {
+class _SshSessionFilterSheetWidgetState
+    extends State<SshSessionFilterSheetWidget> {
   late final TextEditingController _loginUserController;
   late final TextEditingController _loginIpController;
 
@@ -24,7 +25,8 @@ class _SshSessionFilterSheetWidgetState extends State<SshSessionFilterSheetWidge
     super.initState();
     _loginUserController =
         TextEditingController(text: widget.initialQuery.loginUser);
-    _loginIpController = TextEditingController(text: widget.initialQuery.loginIP);
+    _loginIpController =
+        TextEditingController(text: widget.initialQuery.loginIP);
   }
 
   @override
@@ -48,16 +50,19 @@ class _SshSessionFilterSheetWidgetState extends State<SshSessionFilterSheetWidge
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Text(l10n.commonSearch, style: Theme.of(context).textTheme.titleLarge),
+            Text(l10n.commonSearch,
+                style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 16),
             TextField(
               controller: _loginUserController,
-              decoration: InputDecoration(labelText: l10n.sshSessionsLoginUserLabel),
+              decoration:
+                  InputDecoration(labelText: l10n.sshSessionsLoginUserLabel),
             ),
             const SizedBox(height: 12),
             TextField(
               controller: _loginIpController,
-              decoration: InputDecoration(labelText: l10n.sshSessionsLoginIpLabel),
+              decoration:
+                  InputDecoration(labelText: l10n.sshSessionsLoginIpLabel),
             ),
             const SizedBox(height: 16),
             SizedBox(

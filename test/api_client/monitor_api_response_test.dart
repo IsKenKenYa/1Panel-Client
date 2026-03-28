@@ -12,8 +12,9 @@ void main() {
 
   setUpAll(() async {
     await TestEnvironment.initialize();
-    hasApiKey = TestEnvironment.apiKey.isNotEmpty && TestEnvironment.apiKey != 'your_api_key_here';
-    
+    hasApiKey = TestEnvironment.apiKey.isNotEmpty &&
+        TestEnvironment.apiKey != 'your_api_key_here';
+
     if (hasApiKey) {
       client = DioClient(
         baseUrl: TestEnvironment.baseUrl,
@@ -49,16 +50,16 @@ void main() {
       debugPrint('  endTime: ${now.toUtc().toIso8601String()}');
 
       final response = await api.search(request);
-      
+
       debugPrint('\n状态码: ${response.statusCode}');
       debugPrint('响应数据类型: ${response.data.runtimeType}');
-      
+
       if (response.data != null) {
         debugPrint('\n--- 响应结构 ---');
         debugPrint('code: ${response.data!.code}');
         debugPrint('message: ${response.data!.message}');
         debugPrint('data项数: ${response.data!.data?.length ?? 0}');
-        
+
         if (response.data!.data != null) {
           for (var i = 0; i < response.data!.data!.length; i++) {
             final item = response.data!.data![i];
@@ -66,7 +67,7 @@ void main() {
             debugPrint('  param: ${item.param}');
             debugPrint('  date数量: ${item.date?.length ?? 0}');
             debugPrint('  value数量: ${item.value?.length ?? 0}');
-            
+
             if (item.value != null && item.value!.isNotEmpty) {
               debugPrint('  最后一个value:');
               final lastValue = item.value!.last;
@@ -76,8 +77,9 @@ void main() {
             }
           }
         }
-        
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(response.data);
+
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(response.data);
         debugPrint('\n完整响应数据:\n$jsonStr');
       } else {
         debugPrint('响应数据为空');
@@ -105,18 +107,18 @@ void main() {
       );
 
       final response = await api.search(request);
-      
+
       debugPrint('状态码: ${response.statusCode}');
-      
+
       if (response.data != null) {
         debugPrint('code: ${response.data!.code}');
         debugPrint('data项数: ${response.data!.data?.length ?? 0}');
-        
+
         if (response.data!.data != null && response.data!.data!.isNotEmpty) {
           final item = response.data!.data!.first;
           debugPrint('param: ${item.param}');
           debugPrint('value数量: ${item.value?.length ?? 0}');
-          
+
           if (item.value != null && item.value!.isNotEmpty) {
             debugPrint('\n--- 最后一个value ---');
             final lastValue = item.value!.last;
@@ -125,8 +127,9 @@ void main() {
             });
           }
         }
-        
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(response.data);
+
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(response.data);
         debugPrint('\n完整响应数据:\n$jsonStr');
       }
       debugPrint('========================================\n');
@@ -152,27 +155,28 @@ void main() {
       );
 
       final response = await api.search(request);
-      
+
       debugPrint('状态码: ${response.statusCode}');
-      
+
       if (response.data != null) {
         debugPrint('code: ${response.data!.code}');
         debugPrint('data项数: ${response.data!.data?.length ?? 0}');
-        
+
         // 打印所有数据项
         for (final item in response.data!.data ?? []) {
           debugPrint('\n--- 数据项 ${item.param} ---');
           debugPrint('date数量: ${item.date?.length ?? 0}');
           debugPrint('value数量: ${item.value?.length ?? 0}');
-          
+
           // 打印date数组内容
           if (item.date != null && item.date!.isNotEmpty) {
             debugPrint('date数组前3个:');
             for (var i = 0; i < item.date!.length && i < 3; i++) {
-              debugPrint('  date[$i]: "${item.date![i]}" (类型: ${item.date![i].runtimeType})');
+              debugPrint(
+                  '  date[$i]: "${item.date![i]}" (类型: ${item.date![i].runtimeType})');
             }
           }
-          
+
           // 打印最后一个value
           if (item.value != null && item.value!.isNotEmpty) {
             final lastVal = item.value!.last;
@@ -205,17 +209,17 @@ void main() {
       );
 
       final response = await api.search(request);
-      
+
       debugPrint('状态码: ${response.statusCode}');
-      
+
       if (response.data != null) {
         debugPrint('code: ${response.data!.code}');
-        
+
         if (response.data!.data != null && response.data!.data!.isNotEmpty) {
           final item = response.data!.data!.first;
           debugPrint('param: ${item.param}');
           debugPrint('value数量: ${item.value?.length ?? 0}');
-          
+
           if (item.value != null && item.value!.isNotEmpty) {
             debugPrint('\n--- 最后一个value ---');
             final lastValue = item.value!.last;
@@ -224,8 +228,9 @@ void main() {
             });
           }
         }
-        
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(response.data);
+
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(response.data);
         debugPrint('\n完整响应数据:\n$jsonStr');
       }
       debugPrint('========================================\n');
@@ -251,17 +256,17 @@ void main() {
       );
 
       final response = await api.search(request);
-      
+
       debugPrint('状态码: ${response.statusCode}');
-      
+
       if (response.data != null) {
         debugPrint('code: ${response.data!.code}');
-        
+
         if (response.data!.data != null && response.data!.data!.isNotEmpty) {
           final item = response.data!.data!.first;
           debugPrint('param: ${item.param}');
           debugPrint('value数量: ${item.value?.length ?? 0}');
-          
+
           if (item.value != null && item.value!.isNotEmpty) {
             debugPrint('\n--- 最后一个value ---');
             final lastValue = item.value!.last;
@@ -270,8 +275,9 @@ void main() {
             });
           }
         }
-        
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(response.data);
+
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(response.data);
         debugPrint('\n完整响应数据:\n$jsonStr');
       }
       debugPrint('========================================\n');
@@ -290,28 +296,30 @@ void main() {
       // 首先打印原始响应
       final dio = client.dio;
       final rawResponse = await dio.get('/api/v2/hosts/monitor/setting');
-      
+
       debugPrint('\n--- 原始响应 ---');
       debugPrint('状态码: ${rawResponse.statusCode}');
       debugPrint('数据类型: ${rawResponse.data.runtimeType}');
       if (rawResponse.data != null) {
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(rawResponse.data);
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(rawResponse.data);
         debugPrint('原始数据:\n$jsonStr');
       }
-      
+
       // 测试解析后的数据
       final response = await api.getSetting();
-      
+
       debugPrint('\n--- 解析后数据 ---');
       debugPrint('状态码: ${response.statusCode}');
       debugPrint('响应数据类型: ${response.data.runtimeType}');
-      
+
       if (response.data != null) {
         debugPrint('interval: ${response.data!.interval}');
         debugPrint('retention: ${response.data!.retention}');
         debugPrint('enabled: ${response.data!.enabled}');
-        
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(response.data);
+
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(response.data);
         debugPrint('\n完整响应数据:\n$jsonStr');
       }
       debugPrint('========================================\n');

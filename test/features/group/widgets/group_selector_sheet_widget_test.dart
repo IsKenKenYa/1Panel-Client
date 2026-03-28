@@ -15,8 +15,10 @@ void main() {
 
   setUp(() {
     service = _MockGroupService();
-    when(() => service.listGroups(any(), forceRefresh: any(named: 'forceRefresh')))
-        .thenAnswer((_) async => [GroupInfo(id: 7, name: 'Ops', type: 'command')]);
+    when(() =>
+            service.listGroups(any(), forceRefresh: any(named: 'forceRefresh')))
+        .thenAnswer(
+            (_) async => [GroupInfo(id: 7, name: 'Ops', type: 'command')]);
   });
 
   testWidgets('shows group option and allows selection', (tester) async {

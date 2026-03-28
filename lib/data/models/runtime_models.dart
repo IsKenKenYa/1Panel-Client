@@ -1,4 +1,3 @@
-
 import 'package:equatable/equatable.dart';
 
 part 'runtime/runtime_type_model.dart';

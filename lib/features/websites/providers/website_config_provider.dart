@@ -64,6 +64,7 @@ class WebsiteConfigProvider extends ChangeNotifier {
   }
 
   Future<void> updatePhpVersion(int? runtimeId) {
-    return _service.updatePhpVersion(websiteId: websiteId, runtimeId: runtimeId);
+    return _service.updatePhpVersion(
+        websiteId: websiteId, runtimeId: runtimeId);
   }
 }

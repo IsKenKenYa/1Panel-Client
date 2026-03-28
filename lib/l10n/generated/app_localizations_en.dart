@@ -6459,4 +6459,258 @@ class AppLocalizationsEn extends AppLocalizations {
   String operationsGroupDeleteConfirmMessage(String groupName) {
     return 'Delete group $groupName? Existing module items will need a new group assignment later.';
   }
+
+  @override
+  String get commonClear => 'Clear';
+
+  @override
+  String get aiTabMcp => 'MCP';
+
+  @override
+  String get aiMcpSearchHint => 'Search MCP servers';
+
+  @override
+  String get aiMcpCreate => 'Create server';
+
+  @override
+  String get aiMcpEdit => 'Edit server';
+
+  @override
+  String get aiMcpBindDomain => 'Bind domain';
+
+  @override
+  String get aiMcpBindingTitle => 'MCP domain binding';
+
+  @override
+  String get aiMcpNoServers => 'No MCP servers';
+
+  @override
+  String get aiMcpConfigPreviewTitle => 'Config Preview';
+
+  @override
+  String aiMcpDeleteConfirm(String name) {
+    return 'Delete MCP server $name?';
+  }
+
+  @override
+  String get aiMcpDialogCreateTitle => 'Create MCP Server';
+
+  @override
+  String get aiMcpDialogEditTitle => 'Edit MCP Server';
+
+  @override
+  String get aiMcpCommandLabel => 'Command';
+
+  @override
+  String get aiMcpTransportLabel => 'Transport';
+
+  @override
+  String get aiMcpTypeLabel => 'Type';
+
+  @override
+  String get aiMcpPortLabel => 'Port';
+
+  @override
+  String get aiMcpBaseUrlLabel => 'Base URL';
+
+  @override
+  String get aiMcpHostIpLabel => 'Host IP';
+
+  @override
+  String get aiMcpContainerLabel => 'Container Name';
+
+  @override
+  String get aiMcpSsePathLabel => 'SSE Path';
+
+  @override
+  String get aiMcpStreamablePathLabel => 'Streamable HTTP Path';
+
+  @override
+  String get aiMcpExternalUrl => 'External URL';
+
+  @override
+  String get aiMcpStatusLabel => 'Status';
+
+  @override
+  String get aiMcpNameRequired => 'Enter a server name';
+
+  @override
+  String get aiMcpCommandRequired => 'Enter a command';
+
+  @override
+  String get aiMcpTypeRequired => 'Enter a type';
+
+  @override
+  String get aiMcpTransportRequired => 'Enter a transport';
+
+  @override
+  String get aiMcpPortRequired => 'Enter a valid port';
+
+  @override
+  String get aiMcpDomainDialogTitle => 'Update MCP Domain';
+
+  @override
+  String get aiMcpDomainRequired => 'Enter a domain';
+
+  @override
+  String get menuSettingsTitle => 'Menu Settings';
+
+  @override
+  String get menuSettingsDescription =>
+      'Manage the default menu order returned by the panel.';
+
+  @override
+  String get menuSettingsAddLabel => 'Menu item';
+
+  @override
+  String get menuSettingsEditTitle => 'Edit Menu Item';
+
+  @override
+  String get menuSettingsSaveSuccess => 'Menu settings saved';
+
+  @override
+  String get toolboxDiskTitle => 'Disk Management';
+
+  @override
+  String get toolboxDiskCardSubtitle =>
+      'Inspect disks, partitions, and mount state';
+
+  @override
+  String get toolboxDiskOverviewTitle => 'Disk Overview';
+
+  @override
+  String get toolboxDiskTotalDisksLabel => 'Total disks';
+
+  @override
+  String get toolboxDiskTotalCapacityLabel => 'Total capacity';
+
+  @override
+  String get toolboxDiskUnpartitionedSectionTitle => 'Unpartitioned disks';
+
+  @override
+  String get toolboxDiskSystemSectionTitle => 'System disks';
+
+  @override
+  String get toolboxDiskDataSectionTitle => 'Data disks';
+
+  @override
+  String get toolboxDiskMountAction => 'Mount';
+
+  @override
+  String get toolboxDiskUnmountAction => 'Unmount';
+
+  @override
+  String get toolboxDiskPartitionAction => 'Partition';
+
+  @override
+  String get toolboxDiskFilesystemLabel => 'Filesystem';
+
+  @override
+  String get toolboxDiskMountPointLabel => 'Mount point';
+
+  @override
+  String get toolboxDiskAutoMountLabel => 'Auto mount';
+
+  @override
+  String get toolboxDiskNoFailLabel => 'No fail';
+
+  @override
+  String get toolboxDiskLabelLabel => 'Label';
+
+  @override
+  String get toolboxDiskMountSuccess => 'Disk mounted';
+
+  @override
+  String get toolboxDiskPartitionSuccess => 'Disk partitioned';
+
+  @override
+  String get toolboxDiskUnmountSuccess => 'Disk unmounted';
+
+  @override
+  String get toolboxDiskSizeLabel => 'Size';
+
+  @override
+  String get toolboxDiskModelLabel => 'Model';
+
+  @override
+  String get toolboxDiskUnmounted => 'Unmounted';
+
+  @override
+  String get toolboxDiskSystemDiskTag => 'System';
+
+  @override
+  String get toolboxHostToolTitle => 'Host Tool';
+
+  @override
+  String get toolboxHostToolCardSubtitle =>
+      'Manage supervisord service and process files';
+
+  @override
+  String get toolboxHostToolServiceSectionTitle => 'Supervisor Service';
+
+  @override
+  String get toolboxHostToolConfigSectionTitle => 'Supervisor Config';
+
+  @override
+  String get toolboxHostToolProcessSectionTitle => 'Supervisor Processes';
+
+  @override
+  String get toolboxHostToolStatusLabel => 'Status';
+
+  @override
+  String get toolboxHostToolVersionLabel => 'Version';
+
+  @override
+  String get toolboxHostToolConfigPathLabel => 'Config path';
+
+  @override
+  String get toolboxHostToolServiceNameLabel => 'Service name';
+
+  @override
+  String get toolboxHostToolInitAction => 'Initialize';
+
+  @override
+  String get toolboxHostToolStartAction => 'Start';
+
+  @override
+  String get toolboxHostToolStopAction => 'Stop';
+
+  @override
+  String get toolboxHostToolSaveSuccess => 'Host tool updated';
+
+  @override
+  String get toolboxHostToolCommandLabel => 'Command';
+
+  @override
+  String get toolboxHostToolNumprocsLabel => 'Processes';
+
+  @override
+  String get toolboxHostToolUserLabel => 'User';
+
+  @override
+  String get toolboxHostToolDirLabel => 'Working directory';
+
+  @override
+  String get toolboxHostToolEnvironmentLabel => 'Environment';
+
+  @override
+  String get toolboxHostToolAutoStartLabel => 'Auto start';
+
+  @override
+  String get toolboxHostToolAutoRestartLabel => 'Auto restart';
+
+  @override
+  String get toolboxHostToolProcessCreateTitle => 'Create Supervisor Process';
+
+  @override
+  String get toolboxHostToolProcessEditTitle => 'Edit Supervisor Process';
+
+  @override
+  String get toolboxHostToolConfigFileAction => 'Config file';
+
+  @override
+  String get toolboxHostToolOutLogAction => 'stdout log';
+
+  @override
+  String get toolboxHostToolErrLogAction => 'stderr log';
 }

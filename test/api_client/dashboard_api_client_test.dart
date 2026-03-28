@@ -14,8 +14,9 @@ void main() {
 
   setUpAll(() async {
     await TestEnvironment.initialize();
-    hasApiKey = TestEnvironment.apiKey.isNotEmpty && TestEnvironment.apiKey != 'your_api_key_here';
-    
+    hasApiKey = TestEnvironment.apiKey.isNotEmpty &&
+        TestEnvironment.apiKey != 'your_api_key_here';
+
     if (hasApiKey) {
       client = DioClient(
         baseUrl: TestEnvironment.baseUrl,
@@ -33,7 +34,7 @@ void main() {
       debugPrint('服务器地址: ${TestEnvironment.baseUrl}');
       debugPrint('API密钥: ${hasApiKey ? "已配置" : "未配置"}');
       debugPrint('========================================\n');
-      
+
       if (!hasApiKey) {
         debugPrint('⚠️  跳过测试: API密钥未配置');
       }
@@ -65,7 +66,8 @@ void main() {
         debugPrint('========================================\n');
 
         TestDataValidator.expectNonEmptyString(info.os, fieldName: 'os');
-        TestDataValidator.expectNonEmptyString(info.platform, fieldName: 'platform');
+        TestDataValidator.expectNonEmptyString(info.platform,
+            fieldName: 'platform');
       });
     });
 

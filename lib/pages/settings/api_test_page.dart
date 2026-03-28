@@ -70,14 +70,16 @@ class _ApiTestPageState extends State<ApiTestPage> {
       );
 
       final response = await apiClient.get(_selectedEndpoint);
-      
+
       setState(() {
-        _testResult = '请求成功!\n\n状态码: ${response.statusCode}\n\n响应数据:\n${_formatJson(response.data)}';
+        _testResult =
+            '请求成功!\n\n状态码: ${response.statusCode}\n\n响应数据:\n${_formatJson(response.data)}';
         _isLoading = false;
       });
     } on DioException catch (e) {
       setState(() {
-        _testResult = '请求失败!\n\n错误类型: ${e.type}\n\n错误信息: ${e.message}\n\n响应数据:\n${e.response?.data ?? '无响应数据'}';
+        _testResult =
+            '请求失败!\n\n错误类型: ${e.type}\n\n错误信息: ${e.message}\n\n响应数据:\n${e.response?.data ?? '无响应数据'}';
         _isLoading = false;
       });
     } catch (e) {
@@ -127,7 +129,8 @@ class _ApiTestPageState extends State<ApiTestPage> {
                           if (_currentConfig != null) ...[
                             Text('名称: ${_currentConfig!.name}'),
                             Text('地址: ${_currentConfig!.url}'),
-                            Text('密钥: ${_currentConfig!.apiKey.substring(0, 8)}...'),
+                            Text(
+                                '密钥: ${_currentConfig!.apiKey.substring(0, 8)}...'),
                           ] else
                             const Text('暂无配置，请先添加API配置'),
                           const SizedBox(height: 16),
@@ -176,7 +179,8 @@ class _ApiTestPageState extends State<ApiTestPage> {
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
-                              onPressed: _currentConfig == null ? null : _testApi,
+                              onPressed:
+                                  _currentConfig == null ? null : _testApi,
                               child: const Text('测试API'),
                             ),
                           ),

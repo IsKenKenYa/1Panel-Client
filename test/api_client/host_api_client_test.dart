@@ -28,7 +28,8 @@ void _logSection(
   Object? request,
   Object? response,
 }) {
-  appLogger.dWithPackage('test.api_client.host', '========================================');
+  appLogger.dWithPackage(
+      'test.api_client.host', '========================================');
   appLogger.dWithPackage('test.api_client.host', title);
   if (method != null && path != null) {
     appLogger.dWithPackage('test.api_client.host', 'Request: $method $path');
@@ -45,7 +46,8 @@ void _logSection(
       'Response: ${_prettyJson(response)}',
     );
   }
-  appLogger.dWithPackage('test.api_client.host', '========================================');
+  appLogger.dWithPackage(
+      'test.api_client.host', '========================================');
 }
 
 Future<Response<Map<String, dynamic>>> _rawPost(
@@ -150,7 +152,9 @@ void main() {
       final parsed = await api.getHostAssetTree();
       _logSection(
         '✅ Parsed /core/hosts/tree',
-        response: parsed.data?.map((item) => {'id': item.id, 'label': item.label}).toList(),
+        response: parsed.data
+            ?.map((item) => {'id': item.id, 'label': item.label})
+            .toList(),
       );
       expect(parsed.statusCode, 200);
     });
@@ -197,7 +201,8 @@ void main() {
         port: host.port ?? 22,
         user: host.user ?? '',
         authMode: host.authMode ?? 'password',
-        password: host.password?.isNotEmpty == true ? _encode(host.password!) : null,
+        password:
+            host.password?.isNotEmpty == true ? _encode(host.password!) : null,
         privateKey: host.privateKey?.isNotEmpty == true
             ? _encode(host.privateKey!)
             : null,
@@ -248,8 +253,11 @@ void main() {
         port: base.port ?? 22,
         user: base.user ?? '',
         authMode: base.authMode ?? 'password',
-        password: base.password?.isNotEmpty == true ? _encode(base.password!) : null,
-        privateKey: base.privateKey?.isNotEmpty == true ? _encode(base.privateKey!) : null,
+        password:
+            base.password?.isNotEmpty == true ? _encode(base.password!) : null,
+        privateKey: base.privateKey?.isNotEmpty == true
+            ? _encode(base.privateKey!)
+            : null,
         passPhrase: base.passPhrase,
         rememberPassword: base.rememberPassword ?? false,
         description: 'codex-temp',

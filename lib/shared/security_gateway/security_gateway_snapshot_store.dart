@@ -113,16 +113,14 @@ class SecurityGatewaySnapshotStore {
 
   Future<void> _persistToStorage() async {
     final prefs = await SharedPreferences.getInstance();
-    final payload = _snapshots.values
-        .map(_snapshotToJson)
-        .toList(growable: false);
+    final payload =
+        _snapshots.values.map(_snapshotToJson).toList(growable: false);
     await prefs.setString(_storageKey, jsonEncode(payload));
   }
 
   void _schedulePersist() {
-    _writeQueue = _writeQueue
-        .then((_) => _persistToStorage())
-        .catchError((_) {});
+    _writeQueue =
+        _writeQueue.then((_) => _persistToStorage()).catchError((_) {});
   }
 
   Map<String, dynamic> _snapshotToJson(
@@ -187,9 +185,7 @@ class SecurityGatewaySnapshotStore {
       );
     }
     if (value is List) {
-      return value
-          .map<dynamic>(_normalizeDynamic)
-          .toList(growable: false);
+      return value.map<dynamic>(_normalizeDynamic).toList(growable: false);
     }
     return value;
   }

@@ -101,53 +101,69 @@ abstract class ApiClientTestBase {
 class TestDataValidator {
   /// 验证字符串非空
   static void expectNonEmptyString(String? value, {String? fieldName}) {
-    expect(value, isNotNull, reason: '${fieldName ?? 'Field'} should not be null');
-    expect(value, isNotEmpty, reason: '${fieldName ?? 'Field'} should not be empty');
+    expect(value, isNotNull,
+        reason: '${fieldName ?? 'Field'} should not be null');
+    expect(value, isNotEmpty,
+        reason: '${fieldName ?? 'Field'} should not be empty');
   }
 
   /// 验证正整数
   static void expectPositiveInt(int? value, {String? fieldName}) {
-    expect(value, isNotNull, reason: '${fieldName ?? 'Field'} should not be null');
-    expect(value, greaterThan(0), reason: '${fieldName ?? 'Field'} should be positive');
+    expect(value, isNotNull,
+        reason: '${fieldName ?? 'Field'} should not be null');
+    expect(value, greaterThan(0),
+        reason: '${fieldName ?? 'Field'} should be positive');
   }
 
   /// 验证非负整数
   static void expectNonNegativeInt(int? value, {String? fieldName}) {
-    expect(value, isNotNull, reason: '${fieldName ?? 'Field'} should not be null');
-    expect(value, greaterThanOrEqualTo(0), reason: '${fieldName ?? 'Field'} should be non-negative');
+    expect(value, isNotNull,
+        reason: '${fieldName ?? 'Field'} should not be null');
+    expect(value, greaterThanOrEqualTo(0),
+        reason: '${fieldName ?? 'Field'} should be non-negative');
   }
 
   /// 验证百分比（0-100）
   static void expectPercentage(num? value, {String? fieldName}) {
-    expect(value, isNotNull, reason: '${fieldName ?? 'Field'} should not be null');
-    expect(value, greaterThanOrEqualTo(0), reason: '${fieldName ?? 'Field'} should be >= 0');
-    expect(value, lessThanOrEqualTo(100), reason: '${fieldName ?? 'Field'} should be <= 100');
+    expect(value, isNotNull,
+        reason: '${fieldName ?? 'Field'} should not be null');
+    expect(value, greaterThanOrEqualTo(0),
+        reason: '${fieldName ?? 'Field'} should be >= 0');
+    expect(value, lessThanOrEqualTo(100),
+        reason: '${fieldName ?? 'Field'} should be <= 100');
   }
 
   /// 验证列表非空
   static void expectNonEmptyList(List? value, {String? fieldName}) {
-    expect(value, isNotNull, reason: '${fieldName ?? 'Field'} should not be null');
-    expect(value, isNotEmpty, reason: '${fieldName ?? 'Field'} should not be empty');
+    expect(value, isNotNull,
+        reason: '${fieldName ?? 'Field'} should not be null');
+    expect(value, isNotEmpty,
+        reason: '${fieldName ?? 'Field'} should not be empty');
   }
 
   /// 验证日期时间格式
   static void expectValidDateTime(String? value, {String? fieldName}) {
-    expect(value, isNotNull, reason: '${fieldName ?? 'Field'} should not be null');
+    expect(value, isNotNull,
+        reason: '${fieldName ?? 'Field'} should not be null');
     expect(() => DateTime.parse(value!), returnsNormally,
         reason: '${fieldName ?? 'Field'} should be a valid datetime');
   }
 
   /// 验证URL格式
   static void expectValidUrl(String? value, {String? fieldName}) {
-    expect(value, isNotNull, reason: '${fieldName ?? 'Field'} should not be null');
+    expect(value, isNotNull,
+        reason: '${fieldName ?? 'Field'} should not be null');
     final uri = Uri.tryParse(value!);
-    expect(uri, isNotNull, reason: '${fieldName ?? 'Field'} should be a valid URL');
-    expect(uri!.hasScheme, isTrue, reason: '${fieldName ?? 'Field'} should have a scheme');
+    expect(uri, isNotNull,
+        reason: '${fieldName ?? 'Field'} should be a valid URL');
+    expect(uri!.hasScheme, isTrue,
+        reason: '${fieldName ?? 'Field'} should have a scheme');
   }
 
   /// 验证IP地址格式
   static void expectValidIpAddress(String? value, {String? fieldName}) {
-    expect(value, isNotNull, reason: '${fieldName ?? 'Field'} should not be null');
+    expect(value, isNotNull,
+        reason: '${fieldName ?? 'Field'} should not be null');
     final ipv4Regex = RegExp(r'^(\d{1,3}\.){3}\d{1,3}$');
     final ipv6Regex = RegExp(r'^[0-9a-fA-F:]+$');
     expect(
@@ -223,15 +239,19 @@ class TestResultCollector {
     final total = _results.length;
 
     debugPrint('\n');
-    debugPrint('╔════════════════════════════════════════════════════════════╗');
+    debugPrint(
+        '╔════════════════════════════════════════════════════════════╗');
     debugPrint('║                    测试结果汇总                            ║');
-    debugPrint('╠════════════════════════════════════════════════════════════╣');
+    debugPrint(
+        '╠════════════════════════════════════════════════════════════╣');
     debugPrint('║ 总测试数: $total');
     debugPrint('║ ✅ 通过: $passed');
     debugPrint('║ ❌ 失败: $failed');
     debugPrint('║ ⏭️  跳过: $skipped');
-    debugPrint('║ 通过率: ${total > 0 ? (passed / total * 100).toStringAsFixed(1) : 0}%');
-    debugPrint('╚════════════════════════════════════════════════════════════╝');
+    debugPrint(
+        '║ 通过率: ${total > 0 ? (passed / total * 100).toStringAsFixed(1) : 0}%');
+    debugPrint(
+        '╚════════════════════════════════════════════════════════════╝');
 
     if (failed > 0) {
       debugPrint('\n失败的测试:');

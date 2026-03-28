@@ -26,7 +26,8 @@ void _logSection(
   Object? request,
   Object? response,
 }) {
-  appLogger.dWithPackage('test.api_client.logs', '========================================');
+  appLogger.dWithPackage(
+      'test.api_client.logs', '========================================');
   appLogger.dWithPackage('test.api_client.logs', title);
   if (method != null && path != null) {
     appLogger.dWithPackage('test.api_client.logs', 'Request: $method $path');
@@ -43,7 +44,8 @@ void _logSection(
       'Response: ${_prettyJson(response)}',
     );
   }
-  appLogger.dWithPackage('test.api_client.logs', '========================================');
+  appLogger.dWithPackage(
+      'test.api_client.logs', '========================================');
 }
 
 Future<Response<Map<String, dynamic>>> _rawGet(DioClient client, String path) {
@@ -87,7 +89,8 @@ void main() {
         return;
       }
 
-      final request = const LoginLogSearchRequest(page: 1, pageSize: 10).toJson();
+      final request =
+          const LoginLogSearchRequest(page: 1, pageSize: 10).toJson();
       final raw = await _rawPost(client, '/core/logs/login', data: request);
       _logSection(
         '✅ Raw /core/logs/login',

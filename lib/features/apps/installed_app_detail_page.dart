@@ -39,7 +39,8 @@ class _InstalledAppDetailView extends StatefulWidget {
   const _InstalledAppDetailView();
 
   @override
-  State<_InstalledAppDetailView> createState() => _InstalledAppDetailViewState();
+  State<_InstalledAppDetailView> createState() =>
+      _InstalledAppDetailViewState();
 }
 
 class _InstalledAppDetailViewState extends State<_InstalledAppDetailView> {
@@ -154,7 +155,8 @@ class _InstalledAppDetailViewState extends State<_InstalledAppDetailView> {
     }
   }
 
-  Future<void> _handleEditConfig(AppConfig config, AppInstallInfo appInfo) async {
+  Future<void> _handleEditConfig(
+      AppConfig config, AppInstallInfo appInfo) async {
     final changed = await showDialog<bool>(
       context: context,
       builder: (_) => EditAppConfigDialog(
@@ -175,7 +177,8 @@ class _InstalledAppDetailViewState extends State<_InstalledAppDetailView> {
   Future<void> _showConnectionInfo() async {
     final l10n = context.l10n;
     try {
-      final info = await context.read<InstalledAppDetailProvider>().getConnectionInfo();
+      final info =
+          await context.read<InstalledAppDetailProvider>().getConnectionInfo();
       if (!mounted) return;
       final jsonText = const JsonEncoder.withIndent('  ').convert(info);
       await showDialog(
@@ -212,7 +215,8 @@ class _InstalledAppDetailViewState extends State<_InstalledAppDetailView> {
       final ok = await launchUrl(url, mode: LaunchMode.externalApplication);
       if (!ok && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.appOperateFailed(l10n.commonUnknownError))),
+          SnackBar(
+              content: Text(l10n.appOperateFailed(l10n.commonUnknownError))),
         );
       }
     } catch (e) {
@@ -233,7 +237,9 @@ class _InstalledAppDetailViewState extends State<_InstalledAppDetailView> {
     );
 
     try {
-      final container = await context.read<InstalledAppDetailProvider>().findInstalledContainer();
+      final container = await context
+          .read<InstalledAppDetailProvider>()
+          .findInstalledContainer();
       if (!mounted) return;
       Navigator.pop(context);
       if (container == null) {
@@ -290,7 +296,8 @@ class _InstalledAppDetailViewState extends State<_InstalledAppDetailView> {
 
     Map<String, dynamic> uninstallCheck = const {};
     try {
-      uninstallCheck = await installedProvider.checkUninstall(app!.id.toString());
+      uninstallCheck =
+          await installedProvider.checkUninstall(app!.id.toString());
     } catch (_) {
       uninstallCheck = const {};
     }
@@ -447,7 +454,8 @@ class _InfoTab extends StatelessWidget {
     }
 
     final isRunning = appInfo!.status?.toLowerCase() == 'running';
-    final statusText = isRunning ? l10n.appStatusRunning : l10n.appStatusStopped;
+    final statusText =
+        isRunning ? l10n.appStatusRunning : l10n.appStatusStopped;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -462,7 +470,8 @@ class _InfoTab extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(appInfo!.appName ?? appInfo!.name ?? '-', style: Theme.of(context).textTheme.headlineSmall),
+                    Text(appInfo!.appName ?? appInfo!.name ?? '-',
+                        style: Theme.of(context).textTheme.headlineSmall),
                     const SizedBox(height: 8),
                     Text(statusText),
                   ],
@@ -486,7 +495,8 @@ class _InfoTab extends StatelessWidget {
             const SizedBox(height: 16),
             Text('${l10n.commonLoadFailedTitle}: $storeDetailError'),
           ],
-          if (storeDetail?.readMe != null && storeDetail!.readMe!.isNotEmpty) ...[
+          if (storeDetail?.readMe != null &&
+              storeDetail!.readMe!.isNotEmpty) ...[
             const SizedBox(height: 16),
             MarkdownBody(data: storeDetail!.readMe!),
           ],
@@ -496,7 +506,8 @@ class _InfoTab extends StatelessWidget {
           ],
           if (services.isNotEmpty) ...[
             const SizedBox(height: 16),
-            ...services.map((s) => ListTile(title: Text(s.label), subtitle: Text(s.value))),
+            ...services.map(
+                (s) => ListTile(title: Text(s.label), subtitle: Text(s.value))),
           ],
         ],
       ),
@@ -546,7 +557,8 @@ class _ConfigTab extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(l10n.appTabConfig, style: Theme.of(context).textTheme.titleLarge),
+              Text(l10n.appTabConfig,
+                  style: Theme.of(context).textTheme.titleLarge),
               FilledButton.icon(
                 onPressed: () => onEdit(appConfig!, appInfo!),
                 icon: const Icon(Icons.edit),
@@ -555,7 +567,8 @@ class _ConfigTab extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          Text('${l10n.commonPort}: ${appInfo!.httpPort ?? '-'} / ${appInfo!.httpsPort ?? '-'}'),
+          Text(
+              '${l10n.commonPort}: ${appInfo!.httpPort ?? '-'} / ${appInfo!.httpsPort ?? '-'}'),
           const SizedBox(height: 8),
           Text('${l10n.appInstallContainerName}: ${appConfig!.containerName}'),
           const SizedBox(height: 8),
@@ -612,7 +625,8 @@ class _BottomBar extends StatelessWidget {
                       label: Text(l10n.appActionWeb),
                     ),
                   ),
-                if (appInfo!.container != null && appInfo!.container!.isNotEmpty) ...[
+                if (appInfo!.container != null &&
+                    appInfo!.container!.isNotEmpty) ...[
                   const SizedBox(width: 12),
                   Expanded(
                     child: OutlinedButton.icon(

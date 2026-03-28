@@ -28,21 +28,24 @@ class TerminalSettingsPage extends StatelessWidget {
                   title: l10n.terminalSettingsCursorStyle,
                   value: terminal?.cursorStyle ?? '-',
                   icon: Icons.arrow_right_alt_outlined,
-                  onTap: () => _showCursorStyleSelector(context, provider, terminal?.cursorStyle ?? 'block'),
+                  onTap: () => _showCursorStyleSelector(
+                      context, provider, terminal?.cursorStyle ?? 'block'),
                 ),
                 _buildEditableListTile(
                   context,
                   title: l10n.terminalSettingsCursorBlink,
                   value: terminal?.cursorBlink ?? '-',
                   icon: Icons.flash_on_outlined,
-                  onTap: () => _showBlinkSelector(context, provider, terminal?.cursorBlink ?? 'true'),
+                  onTap: () => _showBlinkSelector(
+                      context, provider, terminal?.cursorBlink ?? 'true'),
                 ),
                 _buildEditableListTile(
                   context,
                   title: l10n.terminalSettingsFontSize,
                   value: terminal?.fontSize ?? '-',
                   icon: Icons.format_size_outlined,
-                  onTap: () => _showFontSizeDialog(context, provider, terminal?.fontSize ?? '14'),
+                  onTap: () => _showFontSizeDialog(
+                      context, provider, terminal?.fontSize ?? '14'),
                 ),
               ],
             ),
@@ -120,7 +123,8 @@ class TerminalSettingsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionTitle(BuildContext context, String title, ThemeData theme) {
+  Widget _buildSectionTitle(
+      BuildContext context, String title, ThemeData theme) {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppDesignTokens.spacingSm),
       child: Text(
@@ -185,10 +189,12 @@ class TerminalSettingsPage extends StatelessWidget {
                 cursorStyle: field == 'cursorStyle' ? controller.text : null,
                 cursorBlink: field == 'cursorBlink' ? controller.text : null,
                 fontSize: field == 'fontSize' ? controller.text : null,
-                scrollSensitivity: field == 'scrollSensitivity' ? controller.text : null,
+                scrollSensitivity:
+                    field == 'scrollSensitivity' ? controller.text : null,
                 scrollback: field == 'scrollback' ? controller.text : null,
                 lineHeight: field == 'lineHeight' ? controller.text : null,
-                letterSpacing: field == 'letterSpacing' ? controller.text : null,
+                letterSpacing:
+                    field == 'letterSpacing' ? controller.text : null,
               );
               if (context.mounted) {
                 _showResultSnackBar(context, success, context.l10n);
@@ -201,7 +207,8 @@ class TerminalSettingsPage extends StatelessWidget {
     );
   }
 
-  void _showCursorStyleSelector(BuildContext context, SettingsProvider provider, String currentStyle) {
+  void _showCursorStyleSelector(
+      BuildContext context, SettingsProvider provider, String currentStyle) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -213,7 +220,8 @@ class TerminalSettingsPage extends StatelessWidget {
             if (value == null) {
               return;
             }
-            final success = await provider.updateTerminalSettings(cursorStyle: value);
+            final success =
+                await provider.updateTerminalSettings(cursorStyle: value);
             if (context.mounted) {
               _showResultSnackBar(context, success, context.l10n);
             }
@@ -243,7 +251,8 @@ class TerminalSettingsPage extends StatelessWidget {
     );
   }
 
-  void _showBlinkSelector(BuildContext context, SettingsProvider provider, String currentValue) {
+  void _showBlinkSelector(
+      BuildContext context, SettingsProvider provider, String currentValue) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -255,7 +264,8 @@ class TerminalSettingsPage extends StatelessWidget {
             if (value == null) {
               return;
             }
-            final success = await provider.updateTerminalSettings(cursorBlink: value);
+            final success =
+                await provider.updateTerminalSettings(cursorBlink: value);
             if (context.mounted) {
               _showResultSnackBar(context, success, context.l10n);
             }
@@ -280,7 +290,8 @@ class TerminalSettingsPage extends StatelessWidget {
     );
   }
 
-  void _showFontSizeDialog(BuildContext context, SettingsProvider provider, String currentSize) {
+  void _showFontSizeDialog(
+      BuildContext context, SettingsProvider provider, String currentSize) {
     final controller = TextEditingController(text: currentSize);
     showDialog(
       context: context,
@@ -316,7 +327,8 @@ class TerminalSettingsPage extends StatelessWidget {
           FilledButton(
             onPressed: () async {
               Navigator.pop(context);
-              final success = await provider.updateTerminalSettings(fontSize: controller.text);
+              final success = await provider.updateTerminalSettings(
+                  fontSize: controller.text);
               if (context.mounted) {
                 _showResultSnackBar(context, success, context.l10n);
               }
@@ -328,9 +340,12 @@ class TerminalSettingsPage extends StatelessWidget {
     );
   }
 
-  void _showResultSnackBar(BuildContext context, bool success, AppLocalizations l10n) {
+  void _showResultSnackBar(
+      BuildContext context, bool success, AppLocalizations l10n) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(success ? l10n.commonSaveSuccess : l10n.commonSaveFailed)),
+      SnackBar(
+          content:
+              Text(success ? l10n.commonSaveSuccess : l10n.commonSaveFailed)),
     );
   }
 }

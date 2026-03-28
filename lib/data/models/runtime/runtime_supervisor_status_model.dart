@@ -99,4 +99,3 @@ class SupervisorProcessInfo extends Equatable {
         status,
       ];
 }
-

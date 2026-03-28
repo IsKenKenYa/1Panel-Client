@@ -45,7 +45,15 @@ class VersionInfo extends Equatable {
   }
 
   @override
-  List<Object?> get props => [version, buildDate, gitCommit, goVersion, isLatest, latestVersion, releaseNotes];
+  List<Object?> get props => [
+        version,
+        buildDate,
+        gitCommit,
+        goVersion,
+        isLatest,
+        latestVersion,
+        releaseNotes
+      ];
 }
 
 /// Upgrade operation model

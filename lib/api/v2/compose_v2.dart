@@ -133,7 +133,8 @@ class ComposeV2Api {
   }
 
   /// Clean Compose logs
-  Future<Response> cleanComposeLog(ContainerComposeLogCleanRequest request) async {
+  Future<Response> cleanComposeLog(
+      ContainerComposeLogCleanRequest request) async {
     return await _client.post(
       ApiConstants.buildApiPath('/containers/compose/clean/log'),
       data: request.toJson(),

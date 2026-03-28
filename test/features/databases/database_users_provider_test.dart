@@ -19,7 +19,8 @@ class _FakeDatabaseUserService extends DatabaseUserService {
   int privilegeCallCount = 0;
 
   @override
-  Future<DatabaseUserContext> loadContext(DatabaseListItem item) async => context;
+  Future<DatabaseUserContext> loadContext(DatabaseListItem item) async =>
+      context;
 
   @override
   Future<void> bindUser(

@@ -228,7 +228,8 @@ class LoginLogEntry extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, ip, address, agent, status, message, createdAt];
+  List<Object?> get props =>
+      [id, ip, address, agent, status, message, createdAt];
 }
 
 /// 日志搜索模型

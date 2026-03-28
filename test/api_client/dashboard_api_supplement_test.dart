@@ -6,7 +6,7 @@ import 'package:onepanel_client/api/v2/dashboard_v2.dart';
 import 'package:onepanel_client/core/network/dio_client.dart';
 
 /// Dashboard API 补充测试用例
-/// 
+///
 /// 覆盖以下端点:
 /// - getTopCPUProcesses
 /// - getTopMemoryProcesses
@@ -23,9 +23,9 @@ void main() {
 
   setUpAll(() async {
     await TestEnvironment.initialize();
-    hasApiKey = TestEnvironment.apiKey.isNotEmpty && 
-                TestEnvironment.apiKey != 'your_api_key_here';
-    
+    hasApiKey = TestEnvironment.apiKey.isNotEmpty &&
+        TestEnvironment.apiKey != 'your_api_key_here';
+
     if (hasApiKey) {
       client = DioClient(
         baseUrl: TestEnvironment.baseUrl,
@@ -43,7 +43,7 @@ void main() {
       debugPrint('服务器地址: ${TestEnvironment.baseUrl}');
       debugPrint('API密钥: ${hasApiKey ? "已配置" : "未配置"}');
       debugPrint('========================================\n');
-      
+
       if (!hasApiKey) {
         debugPrint('警告: 跳过测试 - API密钥未配置');
       }
@@ -69,16 +69,17 @@ void main() {
       debugPrint('\n========================================');
       debugPrint('CPU占用Top进程测试成功');
       debugPrint('========================================');
-      
+
       // 检查进程列表
       debugPrint('进程数量: ${data.length}');
-      
+
       if (data.isNotEmpty) {
         final firstProcess = data.first as Map<String, dynamic>;
         debugPrint('示例进程:');
         debugPrint('  PID: ${firstProcess['pid']}');
         debugPrint('  名称: ${firstProcess['name'] ?? firstProcess['cmd']}');
-        debugPrint('  CPU: ${firstProcess['cpuPercent'] ?? firstProcess['cpu']}%');
+        debugPrint(
+            '  CPU: ${firstProcess['cpuPercent'] ?? firstProcess['cpu']}%');
       }
       debugPrint('========================================\n');
     });
@@ -112,16 +113,17 @@ void main() {
       debugPrint('\n========================================');
       debugPrint('内存占用Top进程测试成功');
       debugPrint('========================================');
-      
+
       // 检查进程列表
       debugPrint('进程数量: ${data.length}');
-      
+
       if (data.isNotEmpty) {
         final firstProcess = data.first as Map<String, dynamic>;
         debugPrint('示例进程:');
         debugPrint('  PID: ${firstProcess['pid']}');
         debugPrint('  名称: ${firstProcess['name'] ?? firstProcess['cmd']}');
-        debugPrint('  内存: ${firstProcess['memoryPercent'] ?? firstProcess['mem']}%');
+        debugPrint(
+            '  内存: ${firstProcess['memoryPercent'] ?? firstProcess['mem']}%');
       }
       debugPrint('========================================\n');
     });
@@ -156,7 +158,7 @@ void main() {
       debugPrint('\n========================================');
       debugPrint('应用启动器列表测试成功');
       debugPrint('========================================');
-      
+
       for (var item in data) {
         debugPrint(item.toString());
       }
@@ -247,7 +249,7 @@ void main() {
       debugPrint('\n========================================');
       debugPrint('快捷跳转选项测试成功');
       debugPrint('========================================');
-      
+
       for (var item in data) {
         debugPrint(item.toString());
       }
@@ -302,7 +304,7 @@ void main() {
       // 实际环境中应使用mock或跳过此测试
       try {
         final response = await api.systemRestart('restart');
-        
+
         expect(response.statusCode, equals(200));
         debugPrint('\n========================================');
         debugPrint('系统重启操作测试成功');
@@ -313,7 +315,9 @@ void main() {
         debugPrint('系统重启操作被拒绝(预期行为): $e');
         final errorStr = e.toString().toLowerCase();
         expect(
-          errorStr.contains('error') || errorStr.contains('denied') || errorStr.contains('permission'),
+          errorStr.contains('error') ||
+              errorStr.contains('denied') ||
+              errorStr.contains('permission'),
           isTrue,
           reason: '应该返回权限相关错误',
         );
@@ -329,7 +333,7 @@ void main() {
       // 注意: 此测试仅验证API可达性，不实际执行关机
       try {
         final response = await api.systemRestart('shutdown');
-        
+
         expect(response.statusCode, equals(200));
         debugPrint('\n========================================');
         debugPrint('系统关机操作测试成功');
@@ -340,7 +344,9 @@ void main() {
         debugPrint('系统关机操作被拒绝(预期行为): $e');
         final errorStr = e.toString().toLowerCase();
         expect(
-          errorStr.contains('error') || errorStr.contains('denied') || errorStr.contains('permission'),
+          errorStr.contains('error') ||
+              errorStr.contains('denied') ||
+              errorStr.contains('permission'),
           isTrue,
           reason: '应该返回权限相关错误',
         );
@@ -427,20 +433,20 @@ void main() {
 
       final stopwatch = Stopwatch()..start();
       const requestCount = 5;
-      
+
       for (int i = 0; i < requestCount; i++) {
         await api.getCurrentMetrics();
       }
-      
+
       stopwatch.stop();
       final avgTime = stopwatch.elapsedMilliseconds / requestCount;
-      
+
       debugPrint('\n========================================');
       debugPrint('高频请求测试 - $requestCount次请求');
       debugPrint('总耗时: ${stopwatch.elapsedMilliseconds}ms');
       debugPrint('平均耗时: ${avgTime.toStringAsFixed(1)}ms');
       debugPrint('========================================\n');
-      
+
       expect(avgTime, lessThan(2000), reason: '平均响应时间应小于2秒');
     });
   });
@@ -449,9 +455,11 @@ void main() {
   group('测试汇总', () {
     test('打印测试汇总报告', () {
       debugPrint('\n');
-      debugPrint('╔════════════════════════════════════════════════════════════╗');
+      debugPrint(
+          '╔════════════════════════════════════════════════════════════╗');
       debugPrint('║              Dashboard API 补充测试完成                    ║');
-      debugPrint('╠════════════════════════════════════════════════════════════╣');
+      debugPrint(
+          '╠════════════════════════════════════════════════════════════╣');
       debugPrint('║ 已测试端点:                                                ║');
       debugPrint('║   - getTopCPUProcesses (CPU占用Top进程)                    ║');
       debugPrint('║   - getTopMemoryProcesses (内存占用Top进程)                ║');
@@ -461,15 +469,17 @@ void main() {
       debugPrint('║   - getQuickOption (快捷跳转选项)                          ║');
       debugPrint('║   - updateQuickChange (更新快捷跳转配置)                   ║');
       debugPrint('║   - systemRestart (系统重启/关机)                          ║');
-      debugPrint('╠════════════════════════════════════════════════════════════╣');
+      debugPrint(
+          '╠════════════════════════════════════════════════════════════╣');
       debugPrint('║ 测试类型:                                                  ║');
       debugPrint('║   - 功能测试: 12个                                         ║');
       debugPrint('║   - 性能测试: 6个                                          ║');
       debugPrint('║   - 边界测试: 3个                                          ║');
       debugPrint('║   - 并发测试: 2个                                          ║');
-      debugPrint('╚════════════════════════════════════════════════════════════╝');
+      debugPrint(
+          '╚════════════════════════════════════════════════════════════╝');
       debugPrint('\n');
-      
+
       expect(true, isTrue);
     });
   });

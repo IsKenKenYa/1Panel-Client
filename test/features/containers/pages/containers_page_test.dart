@@ -23,7 +23,9 @@ void main() {
   testWidgets('uses custom subnav instead of Material TabBar', (tester) async {
     SharedPreferences.setMockInitialValues({
       'api_configs': jsonEncode([
-        ApiConfig(id: 's1', name: 'Demo', url: 'https://demo.test', apiKey: 'key').toJson(),
+        ApiConfig(
+                id: 's1', name: 'Demo', url: 'https://demo.test', apiKey: 'key')
+            .toJson(),
       ]),
       'current_api_config_id': 's1',
     });
@@ -44,8 +46,10 @@ void main() {
       ],
     );
     when(() => service.listImages()).thenAnswer((_) async => const []);
-    when(() => service.listRepos()).thenAnswer((_) async => const <ContainerRepo>[]);
-    when(() => service.listTemplates()).thenAnswer((_) async => const <ContainerTemplate>[]);
+    when(() => service.listRepos())
+        .thenAnswer((_) async => const <ContainerRepo>[]);
+    when(() => service.listTemplates())
+        .thenAnswer((_) async => const <ContainerTemplate>[]);
     when(() => service.getContainerStatus()).thenAnswer(
       (_) async => const ContainerStatus(
         all: 1,
@@ -71,7 +75,8 @@ void main() {
     await tester.pumpWidget(
       MultiProvider(
         providers: [
-          ChangeNotifierProvider<CurrentServerController>.value(value: currentServer),
+          ChangeNotifierProvider<CurrentServerController>.value(
+              value: currentServer),
         ],
         child: MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,

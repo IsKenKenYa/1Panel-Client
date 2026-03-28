@@ -131,4 +131,3 @@ class RuntimeUpdate extends Equatable {
         extraHosts,
       ];
 }
-

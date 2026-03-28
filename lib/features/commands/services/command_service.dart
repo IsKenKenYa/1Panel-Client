@@ -78,9 +78,9 @@ class CommandService {
       throw Exception('Exported file is empty');
     }
 
-    final fileName =
-        path.split('/').lastWhere((segment) => segment.trim().isNotEmpty,
-            orElse: () => 'commands.csv');
+    final fileName = path.split('/').lastWhere(
+        (segment) => segment.trim().isNotEmpty,
+        orElse: () => 'commands.csv');
 
     return _fileSaveService.saveFile(
       fileName: fileName,

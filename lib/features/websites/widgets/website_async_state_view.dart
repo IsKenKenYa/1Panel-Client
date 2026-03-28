@@ -32,7 +32,8 @@ class WebsiteAsyncStateView extends StatelessWidget {
             children: [
               const Icon(Icons.error_outline, size: 56),
               const SizedBox(height: 12),
-              Text(l10n.commonLoadFailedTitle, style: Theme.of(context).textTheme.titleMedium),
+              Text(l10n.commonLoadFailedTitle,
+                  style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 8),
               Text(error!, textAlign: TextAlign.center),
               if (onRetry != null) ...[

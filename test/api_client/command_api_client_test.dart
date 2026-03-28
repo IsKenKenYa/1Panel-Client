@@ -28,7 +28,8 @@ void _logSection(
   Object? request,
   Object? response,
 }) {
-  appLogger.dWithPackage('test.api_client.command', '========================================');
+  appLogger.dWithPackage(
+      'test.api_client.command', '========================================');
   appLogger.dWithPackage('test.api_client.command', title);
   if (method != null && path != null) {
     appLogger.dWithPackage('test.api_client.command', 'Request: $method $path');
@@ -45,7 +46,8 @@ void _logSection(
       'Response: ${_prettyJson(response)}',
     );
   }
-  appLogger.dWithPackage('test.api_client.command', '========================================');
+  appLogger.dWithPackage(
+      'test.api_client.command', '========================================');
 }
 
 Future<Response<Map<String, dynamic>>> _rawPost(
@@ -86,8 +88,10 @@ void main() {
   group('Command API客户端测试', () {
     test('POST /core/commands/search 应该成功', () async {
       if (!canRun) return;
-      final request = const CommandSearchRequest(page: 1, pageSize: 10).toJson();
-      final raw = await _rawPost(client, '/core/commands/search', data: request);
+      final request =
+          const CommandSearchRequest(page: 1, pageSize: 10).toJson();
+      final raw =
+          await _rawPost(client, '/core/commands/search', data: request);
       _logSection(
         '✅ Raw /core/commands/search',
         method: 'POST',
@@ -178,8 +182,7 @@ void main() {
         appLogger.wWithPackage('test.api_client.command', '跳过测试: $skipReason');
         return;
       }
-      final uniqueName =
-          'codex-${DateTime.now().millisecondsSinceEpoch}';
+      final uniqueName = 'codex-${DateTime.now().millisecondsSinceEpoch}';
       final items = <CommandOperate>[
         CommandOperate(
           name: uniqueName,

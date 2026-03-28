@@ -8,7 +8,8 @@ import '../../data/models/setting_models.dart';
 /// API响应解析帮助类
 class _Parser {
   /// 从1Panel API响应中提取data字段
-  static T extractData<T>(Response<Map<String, dynamic>> response, T Function(Map<String, dynamic>) fromJson) {
+  static T extractData<T>(Response<Map<String, dynamic>> response,
+      T Function(Map<String, dynamic>) fromJson) {
     final body = response.data!;
     if (body.containsKey('data') && body['data'] != null) {
       return fromJson(body['data'] as Map<String, dynamic>);
@@ -17,7 +18,8 @@ class _Parser {
   }
 
   /// 从1Panel API响应中提取data字段（Map类型）
-  static Map<String, dynamic> extractMapData(Response<Map<String, dynamic>> response) {
+  static Map<String, dynamic> extractMapData(
+      Response<Map<String, dynamic>> response) {
     final body = response.data!;
     if (body.containsKey('data') && body['data'] != null) {
       return body['data'] as Map<String, dynamic>;
@@ -25,22 +27,29 @@ class _Parser {
     return {};
   }
 
-  static List<T> extractListDataFromMap<T>(Response<Map<String, dynamic>> response, T Function(Map<String, dynamic>) fromJson) {
+  static List<T> extractListDataFromMap<T>(
+      Response<Map<String, dynamic>> response,
+      T Function(Map<String, dynamic>) fromJson) {
     final body = response.data!;
     final data = body['data'];
     if (data is List) {
-      return data.map((item) => fromJson(item as Map<String, dynamic>)).toList();
+      return data
+          .map((item) => fromJson(item as Map<String, dynamic>))
+          .toList();
     }
     if (data is Map<String, dynamic>) {
       final items = data['items'];
       if (items is List) {
-        return items.map((item) => fromJson(item as Map<String, dynamic>)).toList();
+        return items
+            .map((item) => fromJson(item as Map<String, dynamic>))
+            .toList();
       }
     }
     return [];
   }
 
-  static List<Map<String, dynamic>> extractRawListDataFromMap(Response<Map<String, dynamic>> response) {
+  static List<Map<String, dynamic>> extractRawListDataFromMap(
+      Response<Map<String, dynamic>> response) {
     final body = response.data!;
     final data = body['data'];
     if (data is List) {
@@ -56,7 +65,9 @@ class _Parser {
   }
 
   /// 从1Panel API响应中提取data字段（PageResult类型）
-  static PageResult<T> extractPageData<T>(Response<Map<String, dynamic>> response, T Function(Map<String, dynamic>) fromJson) {
+  static PageResult<T> extractPageData<T>(
+      Response<Map<String, dynamic>> response,
+      T Function(Map<String, dynamic>) fromJson) {
     final body = response.data!;
     if (body.containsKey('data') && body['data'] != null) {
       return PageResult.fromJson(
@@ -82,7 +93,8 @@ class ContainerV2Api {
   }
 
   /// 通过命令创建容器
-  Future<Response> createContainerByCommand(ContainerCreateByCommand request) async {
+  Future<Response> createContainerByCommand(
+      ContainerCreateByCommand request) async {
     return await _client.post(
       ApiConstants.buildApiPath('/containers/command'),
       data: request.toJson(),
@@ -106,10 +118,13 @@ class ContainerV2Api {
   }
 
   /// 停止容器
-  Future<Response> stopContainer(List<String> names, {bool force = false}) async {
+  Future<Response> stopContainer(List<String> names,
+      {bool force = false}) async {
     return await operateContainer(ContainerOperation(
       names: names,
-      operation: force ? ContainerOperationType.kill.value : ContainerOperationType.stop.value,
+      operation: force
+          ? ContainerOperationType.kill.value
+          : ContainerOperationType.stop.value,
     ));
   }
 
@@ -143,7 +158,8 @@ class ContainerV2Api {
   }
 
   /// 删除容器
-  Future<Response> deleteContainer(List<String> names, {bool force = false}) async {
+  Future<Response> deleteContainer(List<String> names,
+      {bool force = false}) async {
     return await operateContainer(ContainerOperation(
       names: names,
       operation: ContainerOperationType.remove.value,
@@ -151,7 +167,8 @@ class ContainerV2Api {
   }
 
   /// 搜索容器
-  Future<Response<PageResult<ContainerInfo>>> searchContainers(PageContainer request) async {
+  Future<Response<PageResult<ContainerInfo>>> searchContainers(
+      PageContainer request) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/containers/search'),
       data: request.toJson(),
@@ -196,7 +213,8 @@ class ContainerV2Api {
       ApiConstants.buildApiPath('/containers/list/stats'),
     );
     return Response(
-      data: _Parser.extractListDataFromMap(response, ContainerListStats.fromJson),
+      data:
+          _Parser.extractListDataFromMap(response, ContainerListStats.fromJson),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -218,7 +236,8 @@ class ContainerV2Api {
   }
 
   /// 获取容器资源占用统计
-  Future<Response<ContainerItemStats>> getContainerItemStats(OperationWithName request) async {
+  Future<Response<ContainerItemStats>> getContainerItemStats(
+      OperationWithName request) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/containers/item/stats'),
       data: request.toJson(),
@@ -232,7 +251,8 @@ class ContainerV2Api {
   }
 
   /// 获取容器用户列表
-  Future<Response<List<String>>> getContainerUsers(OperationWithName request) async {
+  Future<Response<List<String>>> getContainerUsers(
+      OperationWithName request) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/containers/users'),
       data: request.toJson(),
@@ -341,7 +361,8 @@ class ContainerV2Api {
   }
 
   /// 获取容器信息
-  Future<Response<ContainerOperate>> getContainerInfo(OperationWithName request) async {
+  Future<Response<ContainerOperate>> getContainerInfo(
+      OperationWithName request) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/containers/info'),
       data: request.toJson(),
@@ -388,20 +409,22 @@ class ContainerV2Api {
       queryParameters: queryParams,
       options: Options(responseType: ResponseType.plain),
     );
-    
+
     // Return the raw 'data' field which might be String, List, or Map
     // For SSE/plain text, response.data will be the string content
     return response;
   }
 
   /// 获取容器文件列表
-  Future<Response<List<ContainerFileInfo>>> searchContainerFiles(ContainerFileRequest request) async {
+  Future<Response<List<ContainerFileInfo>>> searchContainerFiles(
+      ContainerFileRequest request) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/containers/files/search'),
       data: request.toJson(),
     );
     return Response(
-      data: _Parser.extractListDataFromMap(response, ContainerFileInfo.fromJson),
+      data:
+          _Parser.extractListDataFromMap(response, ContainerFileInfo.fromJson),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -409,7 +432,8 @@ class ContainerV2Api {
   }
 
   /// 获取容器文件内容
-  Future<Response<ContainerFileContent>> getContainerFileContent(ContainerFileRequest request) async {
+  Future<Response<ContainerFileContent>> getContainerFileContent(
+      ContainerFileRequest request) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/containers/files/content'),
       data: request.toJson(),
@@ -423,7 +447,8 @@ class ContainerV2Api {
   }
 
   /// 获取容器文件大小
-  Future<Response<int>> getContainerFileSize(ContainerFileRequest request) async {
+  Future<Response<int>> getContainerFileSize(
+      ContainerFileRequest request) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/containers/files/size'),
       data: request.toJson(),
@@ -439,7 +464,8 @@ class ContainerV2Api {
   }
 
   /// 删除容器文件
-  Future<Response> deleteContainerFiles(ContainerFileBatchDeleteRequest request) async {
+  Future<Response> deleteContainerFiles(
+      ContainerFileBatchDeleteRequest request) async {
     return await _client.post(
       ApiConstants.buildApiPath('/containers/files/del'),
       data: request.toJson(),
@@ -447,7 +473,8 @@ class ContainerV2Api {
   }
 
   /// 下载容器文件
-  Future<Response<List<int>>> downloadContainerFile(ContainerFileRequest request) async {
+  Future<Response<List<int>>> downloadContainerFile(
+      ContainerFileRequest request) async {
     final response = await _client.post<List<int>>(
       ApiConstants.buildApiPath('/containers/files/download'),
       data: request.toJson(),
@@ -568,7 +595,8 @@ class ContainerV2Api {
   }
 
   /// 删除镜像
-  Future<Response<ContainerPruneReport>> removeImage(BatchDelete request) async {
+  Future<Response<ContainerPruneReport>> removeImage(
+      BatchDelete request) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/containers/image/remove'),
       data: request.toJson(),
@@ -590,7 +618,8 @@ class ContainerV2Api {
   }
 
   /// 搜索镜像
-  Future<Response<PageResult<Map<String, dynamic>>>> searchImages(SearchWithPage request) async {
+  Future<Response<PageResult<Map<String, dynamic>>>> searchImages(
+      SearchWithPage request) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/containers/image/search'),
       data: request.toJson(),
@@ -642,7 +671,8 @@ class ContainerV2Api {
   }
 
   /// 搜索网络
-  Future<Response<PageResult<Map<String, dynamic>>>> searchNetworks(SearchWithPage request) async {
+  Future<Response<PageResult<Map<String, dynamic>>>> searchNetworks(
+      SearchWithPage request) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/containers/network/search'),
       data: request.toJson(),
@@ -686,7 +716,8 @@ class ContainerV2Api {
   }
 
   /// 搜索卷
-  Future<Response<PageResult<Map<String, dynamic>>>> searchVolumes(SearchWithPage request) async {
+  Future<Response<PageResult<Map<String, dynamic>>>> searchVolumes(
+      SearchWithPage request) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/containers/volume/search'),
       data: request.toJson(),
@@ -752,7 +783,8 @@ class ContainerV2Api {
   }
 
   /// 搜索仓库
-  Future<Response<PageResult<ContainerRepo>>> searchRepos(SearchWithPage request) async {
+  Future<Response<PageResult<ContainerRepo>>> searchRepos(
+      SearchWithPage request) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/containers/repo/search'),
       data: request.toJson(),
@@ -772,7 +804,8 @@ class ContainerV2Api {
       ApiConstants.buildApiPath('/containers/template'),
     );
     return Response(
-      data: _Parser.extractListDataFromMap(response, ContainerTemplate.fromJson),
+      data:
+          _Parser.extractListDataFromMap(response, ContainerTemplate.fromJson),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -812,7 +845,8 @@ class ContainerV2Api {
   }
 
   /// 搜索模版
-  Future<Response<PageResult<ContainerTemplate>>> searchTemplates(SearchWithPage request) async {
+  Future<Response<PageResult<ContainerTemplate>>> searchTemplates(
+      SearchWithPage request) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/containers/template/search'),
       data: request.toJson(),
@@ -847,7 +881,7 @@ class ContainerV2Api {
       requestOptions: response.requestOptions,
     );
   }
-  
+
   /// 获取Daemon配置内容 (File content)
   Future<Response<String>> getDaemonJsonFile() async {
     final response = await _client.get<Map<String, dynamic>>(
@@ -870,7 +904,8 @@ class ContainerV2Api {
   }
 
   /// 更新Daemon配置（通过文件内容）
-  Future<Response> updateDaemonJsonByFile(DaemonJsonUpdateByFile request) async {
+  Future<Response> updateDaemonJsonByFile(
+      DaemonJsonUpdateByFile request) async {
     return await _client.post(
       ApiConstants.buildApiPath('/containers/daemonjson/update/byfile'),
       data: request.toJson(),

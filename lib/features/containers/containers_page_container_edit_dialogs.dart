@@ -36,7 +36,10 @@ class ContainersPageContainerEditDialogs {
       ),
     );
 
-    if (result != null && result.isNotEmpty && result != name && context.mounted) {
+    if (result != null &&
+        result.isNotEmpty &&
+        result != name &&
+        context.mounted) {
       final provider = context.read<ContainersProvider>();
       final success = await provider.renameContainer(name, result);
       if (context.mounted) {

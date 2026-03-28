@@ -26,7 +26,8 @@ class _HostAssetsPageState extends State<HostAssetsPage> {
     super.initState();
     _searchController = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !context.read<CurrentServerController>().hasServer) return;
+      if (!mounted || !context.read<CurrentServerController>().hasServer)
+        return;
       context.read<HostAssetsProvider>().load();
     });
   }
@@ -45,7 +46,8 @@ class _HostAssetsPageState extends State<HostAssetsPage> {
         final selectionMode = provider.selectedIds.isNotEmpty;
         return ServerAwarePageScaffold(
           title: l10n.operationsHostAssetsTitle,
-          onServerChanged: () => context.read<HostAssetsProvider>().load(forceRefresh: true),
+          onServerChanged: () =>
+              context.read<HostAssetsProvider>().load(forceRefresh: true),
           actions: <Widget>[
             if (selectionMode)
               IconButton(
@@ -59,7 +61,9 @@ class _HostAssetsPageState extends State<HostAssetsPage> {
               tooltip: l10n.hostAssetsGroupFilterAction,
             ),
             IconButton(
-              onPressed: provider.isLoading ? null : () => provider.load(forceRefresh: true),
+              onPressed: provider.isLoading
+                  ? null
+                  : () => provider.load(forceRefresh: true),
               icon: const Icon(Icons.refresh),
               tooltip: l10n.commonRefresh,
             ),
@@ -162,7 +166,9 @@ class _HostAssetsPageState extends State<HostAssetsPage> {
 
   String _hostGroupLabel(HostInfo host, dynamic l10n) {
     final name = host.groupBelong?.trim();
-    return name == null || name.isEmpty ? l10n.operationsGroupDefaultLabel : name;
+    return name == null || name.isEmpty
+        ? l10n.operationsGroupDefaultLabel
+        : name;
   }
 
   Future<void> _pickGroupFilter(HostAssetsProvider provider) async {

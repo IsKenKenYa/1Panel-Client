@@ -30,12 +30,16 @@ class ModuleSubnav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ordered = controller.loaded ? controller.orderedIds : items.map((item) => item.id).toList();
+    final ordered = controller.loaded
+        ? controller.orderedIds
+        : items.map((item) => item.id).toList();
     final orderedItems = ordered
         .map((id) => items.firstWhere((item) => item.id == id))
         .toList(growable: false);
-    final visible = orderedItems.take(controller.maxVisibleItems).toList(growable: false);
-    final overflow = orderedItems.skip(controller.maxVisibleItems).toList(growable: false);
+    final visible =
+        orderedItems.take(controller.maxVisibleItems).toList(growable: false);
+    final overflow =
+        orderedItems.skip(controller.maxVisibleItems).toList(growable: false);
     final l10n = context.l10n;
 
     return Row(
@@ -148,7 +152,8 @@ class ModuleSubnav extends StatelessWidget {
                           });
                         },
                         itemBuilder: (context, index) {
-                          final item = items.firstWhere((entry) => entry.id == mutable[index]);
+                          final item = items.firstWhere(
+                              (entry) => entry.id == mutable[index]);
                           return ListTile(
                             key: ValueKey(item.id),
                             leading: Icon(item.icon),

@@ -36,7 +36,8 @@ void main() {
       ),
     );
     when(() => service.exportLogs(any())).thenAnswer(
-      (_) async => const FileSaveResult(success: true, filePath: '/tmp/ssh.log'),
+      (_) async =>
+          const FileSaveResult(success: true, filePath: '/tmp/ssh.log'),
     );
     provider = SshLogsProvider(service: service);
   });

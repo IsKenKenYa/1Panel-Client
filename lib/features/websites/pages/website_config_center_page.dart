@@ -26,7 +26,9 @@ class WebsiteConfigCenterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => provider ?? WebsiteConfigCenterProvider(websiteId: websiteId)..load(),
+      create: (_) =>
+          provider ?? WebsiteConfigCenterProvider(websiteId: websiteId)
+            ..load(),
       child: _WebsiteConfigCenterBody(
         websiteId: websiteId,
         displayName: displayName,
@@ -64,7 +66,8 @@ class _WebsiteConfigCenterBody extends StatelessWidget {
               children: [
                 WebsiteSectionCard(
                   title: l10n.websitesBasicConfigTitle,
-                  subtitle: provider.website?.sitePath ?? l10n.websitesConfigPageSubtitle,
+                  subtitle: provider.website?.sitePath ??
+                      l10n.websitesConfigPageSubtitle,
                   icon: Icons.dashboard_customize_outlined,
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
@@ -77,7 +80,8 @@ class _WebsiteConfigCenterBody extends StatelessWidget {
                   ),
                 ),
                 WebsiteSectionCard(
-                  title: '${l10n.websitesTabProxy} / ${l10n.websitesTabRewrite}',
+                  title:
+                      '${l10n.websitesTabProxy} / ${l10n.websitesTabRewrite}',
                   subtitle: l10n.websitesConfigScopeTitle,
                   icon: Icons.alt_route,
                   onTap: () => Navigator.of(context).push(
@@ -104,7 +108,8 @@ class _WebsiteConfigCenterBody extends StatelessWidget {
                 ),
                 WebsiteSectionCard(
                   title: l10n.websitesConfigEditorTitle,
-                  subtitle: provider.configFile?.path ?? l10n.websitesConfigPageSubtitle,
+                  subtitle: provider.configFile?.path ??
+                      l10n.websitesConfigPageSubtitle,
                   icon: Icons.code,
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(

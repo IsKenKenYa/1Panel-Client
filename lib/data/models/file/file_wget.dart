@@ -77,5 +77,6 @@ class FileWgetResult extends Equatable {
   }
 
   @override
-  List<Object?> get props => [success, filePath, error, downloadedSize, checksum, key];
+  List<Object?> get props =>
+      [success, filePath, error, downloadedSize, checksum, key];
 }

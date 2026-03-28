@@ -31,7 +31,7 @@ class ServerProvider extends ChangeNotifier {
 
   Future<void> loadMetrics() async {
     if (_isLoadingMetrics) return;
-    
+
     _isLoadingMetrics = true;
     notifyListeners();
 
@@ -40,12 +40,14 @@ class ServerProvider extends ChangeNotifier {
         final metrics = await _repository.loadServerMetrics(server.config.id);
         _metrics[server.config.id] = metrics;
       }
-      
-      _servers = _servers.map((s) => ServerCardViewModel(
-        config: s.config,
-        isCurrent: s.isCurrent,
-        metrics: _metrics[s.config.id] ?? const ServerMetricsSnapshot(),
-      )).toList();
+
+      _servers = _servers
+          .map((s) => ServerCardViewModel(
+                config: s.config,
+                isCurrent: s.isCurrent,
+                metrics: _metrics[s.config.id] ?? const ServerMetricsSnapshot(),
+              ))
+          .toList();
     } finally {
       _isLoadingMetrics = false;
       notifyListeners();

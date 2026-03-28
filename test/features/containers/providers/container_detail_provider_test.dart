@@ -28,7 +28,8 @@ void main() {
     });
 
     test('loadAll populates inspect logs and stats', () async {
-      when(() => containerService.inspectContainer('c-1')).thenAnswer((_) async => '{}');
+      when(() => containerService.inspectContainer('c-1'))
+          .thenAnswer((_) async => '{}');
       when(() => containerService.getContainerLogs('mysql-demo', tail: '1000'))
           .thenAnswer((_) async => 'line-1');
       when(() => containerService.getContainerStats('c-1')).thenAnswer(
@@ -54,7 +55,8 @@ void main() {
     });
 
     test('loadAll keeps successful sections when logs fail', () async {
-      when(() => containerService.inspectContainer('c-1')).thenAnswer((_) async => '{}');
+      when(() => containerService.inspectContainer('c-1'))
+          .thenAnswer((_) async => '{}');
       when(() => containerService.getContainerLogs('mysql-demo', tail: '1000'))
           .thenThrow(Exception('logs failed'));
       when(() => containerService.getContainerStats('c-1')).thenAnswer(

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/config/app_router.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
-import 'package:onepanel_client/features/settings/settings_provider.dart';
+import 'package:onepanel_client/features/settings/menu_settings_page.dart';
 import 'package:onepanel_client/features/settings/panel_settings_page.dart';
 import 'package:onepanel_client/features/settings/security_settings_page.dart';
+import 'package:onepanel_client/features/settings/settings_provider.dart';
 import 'package:onepanel_client/features/settings/snapshot_page.dart';
 import 'package:onepanel_client/features/settings/terminal_settings_page.dart';
 import 'package:onepanel_client/features/settings/api_key_settings_page.dart';
@@ -75,7 +77,8 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
     );
   }
 
-  Widget _buildErrorView(BuildContext context, SettingsProvider provider, AppLocalizations l10n) {
+  Widget _buildErrorView(
+      BuildContext context, SettingsProvider provider, AppLocalizations l10n) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -131,10 +134,19 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
                 context,
                 icon: Icons.vpn_lock_outlined,
                 title: l10n.proxySettingsTitle,
-                subtitle: settings?.proxyUrl != null && settings!.proxyUrl!.isNotEmpty
-                    ? l10n.systemSettingsEnabled
-                    : l10n.systemSettingsDisabled,
+                subtitle:
+                    settings?.proxyUrl != null && settings!.proxyUrl!.isNotEmpty
+                        ? l10n.systemSettingsEnabled
+                        : l10n.systemSettingsDisabled,
                 onTap: () => _navigateTo(context, const ProxySettingsPage()),
+              ),
+              _buildSettingTile(
+                context,
+                icon: Icons.view_sidebar_outlined,
+                title: l10n.menuSettingsTitle,
+                subtitle: l10n.menuSettingsDescription,
+                onTap: () =>
+                    Navigator.pushNamed(context, AppRoutes.menuSettings),
               ),
             ],
           ),
@@ -290,7 +302,8 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
     );
   }
 
-  Widget _buildSectionTitle(BuildContext context, String title, ThemeData theme) {
+  Widget _buildSectionTitle(
+      BuildContext context, String title, ThemeData theme) {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppDesignTokens.spacingSm),
       child: Text(
@@ -315,12 +328,14 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
       leading: Icon(icon),
       title: Text(title),
       subtitle: Text(subtitle),
-      trailing: trailing ?? (onTap != null ? const Icon(Icons.chevron_right) : null),
+      trailing:
+          trailing ?? (onTap != null ? const Icon(Icons.chevron_right) : null),
       onTap: onTap,
     );
   }
 
-  Widget _buildStatusChip(BuildContext context, bool isEnabled, AppLocalizations l10n) {
+  Widget _buildStatusChip(
+      BuildContext context, bool isEnabled, AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
@@ -356,7 +371,8 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
     );
   }
 
-  void _navigateToWithProvider<T extends ChangeNotifier>(BuildContext context, Widget page) {
+  void _navigateToWithProvider<T extends ChangeNotifier>(
+      BuildContext context, Widget page) {
     Navigator.push(
       context,
       MaterialPageRoute(

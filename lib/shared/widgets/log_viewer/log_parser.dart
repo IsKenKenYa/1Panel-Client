@@ -78,7 +78,11 @@ class LogParser {
   }
 
   static List<LogLine> _parseInBackground(String rawLogs) {
-    return rawLogs.trimRight().split('\n').map((line) => _parseLogLine(line)).toList();
+    return rawLogs
+        .trimRight()
+        .split('\n')
+        .map((line) => _parseLogLine(line))
+        .toList();
   }
 
   static LogLine _parseLogLine(String line) {
@@ -110,7 +114,10 @@ class LogParser {
     // Fallback level detection
     if (level == LogLevel.unknown) {
       final upperLine = line.toUpperCase();
-      if (upperLine.contains('ERROR') || upperLine.contains('ERR') || upperLine.contains('EXCEPTION') || upperLine.contains('FATAL')) {
+      if (upperLine.contains('ERROR') ||
+          upperLine.contains('ERR') ||
+          upperLine.contains('EXCEPTION') ||
+          upperLine.contains('FATAL')) {
         level = LogLevel.error;
       } else if (upperLine.contains('WARN') || upperLine.contains('WARNING')) {
         level = LogLevel.warn;

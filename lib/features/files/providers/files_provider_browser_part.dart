@@ -4,7 +4,8 @@ extension FilesProviderBrowserMixin on FilesProvider {
   Future<void> createDirectory(String name) async {
     final newPath =
         _data.currentPath == '/' ? '/$name' : '${_data.currentPath}/$name';
-    appLogger.dWithPackage('files_provider', 'createDirectory: name=$name, fullPath=$newPath');
+    appLogger.dWithPackage(
+        'files_provider', 'createDirectory: name=$name, fullPath=$newPath');
     try {
       await _service.createDirectory(newPath);
       appLogger.iWithPackage('files_provider', 'createDirectory: 成功');
@@ -40,7 +41,8 @@ extension FilesProviderBrowserMixin on FilesProvider {
         final file = await MultipartFile.fromFile(filePath);
         await _service.uploadFile(_data.currentPath, file);
       }
-      appLogger.iWithPackage('files_provider', 'uploadFiles: 成功上传 ${filePaths.length} 个文件');
+      appLogger.iWithPackage(
+          'files_provider', 'uploadFiles: 成功上传 ${filePaths.length} 个文件');
       await refresh();
     } catch (e, stackTrace) {
       appLogger.eWithPackage('files_provider', 'uploadFiles: 失败',
@@ -101,8 +103,8 @@ extension FilesProviderBrowserMixin on FilesProvider {
       appLogger.wWithPackage('files_provider', 'moveSelected: 没有选中的文件');
       return;
     }
-    appLogger.dWithPackage(
-        'files_provider', 'moveSelected: 移动${_data.selectedFiles.length}个文件到$targetPath');
+    appLogger.dWithPackage('files_provider',
+        'moveSelected: 移动${_data.selectedFiles.length}个文件到$targetPath');
     try {
       await _service.moveFiles(_data.selectedFiles.toList(), targetPath);
       appLogger.iWithPackage('files_provider', 'moveSelected: 成功');
@@ -120,8 +122,8 @@ extension FilesProviderBrowserMixin on FilesProvider {
       appLogger.wWithPackage('files_provider', 'copySelected: 没有选中的文件');
       return;
     }
-    appLogger.dWithPackage(
-        'files_provider', 'copySelected: 复制${_data.selectedFiles.length}个文件到$targetPath');
+    appLogger.dWithPackage('files_provider',
+        'copySelected: 复制${_data.selectedFiles.length}个文件到$targetPath');
     try {
       await _service.copyFiles(_data.selectedFiles.toList(), targetPath);
       appLogger.iWithPackage('files_provider', 'copySelected: 成功');
@@ -135,7 +137,8 @@ extension FilesProviderBrowserMixin on FilesProvider {
   }
 
   Future<void> moveFile(String sourcePath, String targetPath) async {
-    appLogger.dWithPackage('files_provider', 'moveFile: source=$sourcePath, target=$targetPath');
+    appLogger.dWithPackage(
+        'files_provider', 'moveFile: source=$sourcePath, target=$targetPath');
     try {
       await _service.moveFiles(<String>[sourcePath], targetPath);
       appLogger.iWithPackage('files_provider', 'moveFile: 成功');
@@ -148,7 +151,8 @@ extension FilesProviderBrowserMixin on FilesProvider {
   }
 
   Future<void> copyFile(String sourcePath, String targetPath) async {
-    appLogger.dWithPackage('files_provider', 'copyFile: source=$sourcePath, target=$targetPath');
+    appLogger.dWithPackage(
+        'files_provider', 'copyFile: source=$sourcePath, target=$targetPath');
     try {
       await _service.copyFiles(<String>[sourcePath], targetPath);
       appLogger.iWithPackage('files_provider', 'copyFile: 成功');
@@ -160,13 +164,15 @@ extension FilesProviderBrowserMixin on FilesProvider {
     }
   }
 
-  Future<String> getFileContent(String path) async => _service.getFileContent(path);
+  Future<String> getFileContent(String path) async =>
+      _service.getFileContent(path);
 
   Future<void> saveFileContent(String path, String content) async {
     await _service.updateFileContent(path, content);
   }
 
-  Future<void> compressSelected(String name, String type, {String? secret}) async {
+  Future<void> compressSelected(String name, String type,
+      {String? secret}) async {
     if (_data.selectedFiles.isEmpty) {
       appLogger.wWithPackage('files_provider', 'compressSelected: 没有选中的文件');
       return;
@@ -198,7 +204,8 @@ extension FilesProviderBrowserMixin on FilesProvider {
     String type, {
     String? secret,
   }) async {
-    appLogger.dWithPackage('files_provider', 'compressFiles: 压缩${files.length}个文件到$dst/$name, type=$type');
+    appLogger.dWithPackage('files_provider',
+        'compressFiles: 压缩${files.length}个文件到$dst/$name, type=$type');
     try {
       await _service.compressFiles(
         files: files,
@@ -216,10 +223,13 @@ extension FilesProviderBrowserMixin on FilesProvider {
     }
   }
 
-  Future<void> extractFile(String path, String dst, String type, {String? secret}) async {
-    appLogger.dWithPackage('files_provider', 'extractFile: 解压$path到$dst, type=$type');
+  Future<void> extractFile(String path, String dst, String type,
+      {String? secret}) async {
+    appLogger.dWithPackage(
+        'files_provider', 'extractFile: 解压$path到$dst, type=$type');
     try {
-      await _service.extractFile(path: path, dst: dst, type: type, secret: secret);
+      await _service.extractFile(
+          path: path, dst: dst, type: type, secret: secret);
       appLogger.iWithPackage('files_provider', 'extractFile: 成功');
       await refresh();
     } catch (e, stackTrace) {

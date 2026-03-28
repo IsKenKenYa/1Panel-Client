@@ -125,7 +125,8 @@ void main() {
     ).called(1);
   });
 
-  test('saveProcessDefinition create calls service and refreshes list', () async {
+  test('saveProcessDefinition create calls service and refreshes list',
+      () async {
     await provider.initialize(const RuntimeManageArgs(runtimeId: 7));
 
     final saved = await provider.saveProcessDefinition(

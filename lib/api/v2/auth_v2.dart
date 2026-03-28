@@ -73,7 +73,8 @@ class AuthV2Api {
   /// 使用用户名和密码进行登录
   /// @param request 登录请求
   /// @return 登录结果
-  Future<Response<Map<String, dynamic>>> login(Map<String, dynamic> request) async {
+  Future<Response<Map<String, dynamic>>> login(
+      Map<String, dynamic> request) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/core/auth/login'),
       data: request,
@@ -107,7 +108,8 @@ class AuthV2Api {
   /// 使用MFA码进行登录验证
   /// @param request MFA登录请求
   /// @return 登录结果
-  Future<Response<Map<String, dynamic>>> mfaLogin(Map<String, dynamic> request) async {
+  Future<Response<Map<String, dynamic>>> mfaLogin(
+      Map<String, dynamic> request) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/core/auth/mfalogin'),
       data: request,

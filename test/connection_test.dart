@@ -114,10 +114,11 @@ void main() {
         );
 
         debugPrint('响应状态码: ${response.statusCode}');
-        debugPrint('响应数据: ${const JsonEncoder.withIndent('  ').convert(response.data)}');
+        debugPrint(
+            '响应数据: ${const JsonEncoder.withIndent('  ').convert(response.data)}');
 
         expect(response.statusCode, equals(200));
-        
+
         if (response.data is Map) {
           final data = response.data as Map;
           debugPrint('\n========================================');
@@ -163,7 +164,7 @@ void main() {
         debugPrint('响应状态码: ${response.statusCode}');
 
         expect(response.statusCode, equals(200));
-        
+
         if (response.data is Map) {
           final data = response.data as Map;
           if (data['data'] != null) {
@@ -199,7 +200,7 @@ void main() {
         );
 
         expect(response.statusCode, equals(200));
-        
+
         if (response.data is Map) {
           final data = response.data as Map;
           if (data['data'] != null) {
@@ -239,7 +240,7 @@ void main() {
         );
 
         expect(response.statusCode, equals(200));
-        
+
         if (response.data is Map) {
           final data = response.data as Map;
           if (data['data'] != null) {
@@ -282,7 +283,7 @@ void main() {
         );
 
         expect(response.statusCode, equals(200));
-        
+
         if (response.data is Map) {
           final data = response.data as Map;
           if (data['data'] != null) {
@@ -294,7 +295,8 @@ void main() {
               debugPrint('  已安装应用:');
               for (var item in items) {
                 final app = item as Map;
-                debugPrint('    - ${app['name']} (${app['appName']}) - ${app['status']}');
+                debugPrint(
+                    '    - ${app['name']} (${app['appName']}) - ${app['status']}');
               }
             }
           }
@@ -324,7 +326,7 @@ void main() {
         );
 
         expect(response.statusCode, equals(200));
-        
+
         if (response.data is Map) {
           final data = response.data as Map;
           if (data['data'] != null) {
@@ -336,7 +338,8 @@ void main() {
               debugPrint('  网站:');
               for (var item in items) {
                 final site = item as Map;
-                debugPrint('    - ${site['primaryDomain']} (${site['status']})');
+                debugPrint(
+                    '    - ${site['primaryDomain']} (${site['status']})');
               }
             }
           }
@@ -350,14 +353,17 @@ void main() {
 
     test('连接测试总结', () {
       debugPrint('\n');
-      debugPrint('╔════════════════════════════════════════════════════════════╗');
+      debugPrint(
+          '╔════════════════════════════════════════════════════════════╗');
       debugPrint('║                    连接测试总结                            ║');
-      debugPrint('╠════════════════════════════════════════════════════════════╣');
+      debugPrint(
+          '╠════════════════════════════════════════════════════════════╣');
       debugPrint('║ 服务器地址: $baseUrl');
       debugPrint('║ 认证方式: API密钥 + 时间戳');
       debugPrint('║ Token格式: md5(1panel + API-Key + Timestamp)');
       debugPrint('║ 连接状态: ✅ 成功');
-      debugPrint('╚════════════════════════════════════════════════════════════╝');
+      debugPrint(
+          '╚════════════════════════════════════════════════════════════╝');
       debugPrint('\n');
     });
   });

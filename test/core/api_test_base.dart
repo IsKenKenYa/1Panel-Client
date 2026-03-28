@@ -47,9 +47,11 @@ abstract class ApiTestBase {
     return digest.toString();
   }
 
-  Future<Response> authenticatedGet(String path, {Map<String, dynamic>? queryParameters}) async {
+  Future<Response> authenticatedGet(String path,
+      {Map<String, dynamic>? queryParameters}) async {
     final headers = generateAuthHeaders();
-    return await dio.get(path, queryParameters: queryParameters, options: Options(headers: headers));
+    return await dio.get(path,
+        queryParameters: queryParameters, options: Options(headers: headers));
   }
 
   Future<Response> authenticatedPost(String path, {dynamic data}) async {
@@ -64,7 +66,8 @@ abstract class ApiTestBase {
 
   Future<Response> authenticatedDelete(String path, {dynamic data}) async {
     final headers = generateAuthHeaders();
-    return await dio.delete(path, data: data, options: Options(headers: headers));
+    return await dio.delete(path,
+        data: data, options: Options(headers: headers));
   }
 
   void expectSuccess(Response response) {
@@ -100,7 +103,8 @@ abstract class ApiTestBase {
 class TestDataFactory {
   static final _random = Random();
 
-  static String randomString(int length, {String chars = 'abcdefghijklmnopqrstuvwxyz0123456789'}) {
+  static String randomString(int length,
+      {String chars = 'abcdefghijklmnopqrstuvwxyz0123456789'}) {
     return String.fromCharCodes(
       Iterable.generate(
         length,
@@ -150,7 +154,8 @@ class TestDataFactory {
   }
 
   static String randomApiKey() {
-    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const chars =
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     return randomString(32, chars: chars);
   }
 }
@@ -256,8 +261,10 @@ class TestReport {
     buffer.writeln('|----------|------|----------|----------|');
 
     for (final result in results) {
-      final status = result.passed ? '✅ 通过' : (result.skipped ? '⏭️ 跳过' : '❌ 失败');
-      buffer.writeln('| ${result.name} | $status | ${result.duration.inMilliseconds} | ${result.error ?? '-'} |');
+      final status =
+          result.passed ? '✅ 通过' : (result.skipped ? '⏭️ 跳过' : '❌ 失败');
+      buffer.writeln(
+          '| ${result.name} | $status | ${result.duration.inMilliseconds} | ${result.error ?? '-'} |');
     }
 
     return buffer.toString();

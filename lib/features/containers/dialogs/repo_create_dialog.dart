@@ -25,9 +25,11 @@ class _RepoCreateDialogState extends State<RepoCreateDialog> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.repo?.name ?? '');
-    _urlController = TextEditingController(text: widget.repo?.downloadUrl ?? '');
+    _urlController =
+        TextEditingController(text: widget.repo?.downloadUrl ?? '');
     _userController = TextEditingController(text: widget.repo?.username ?? '');
-    _passwordController = TextEditingController(text: widget.repo?.password ?? '');
+    _passwordController =
+        TextEditingController(text: widget.repo?.password ?? '');
   }
 
   @override
@@ -96,7 +98,8 @@ class _RepoCreateDialogState extends State<RepoCreateDialog> {
                   labelText: l10n.commonPassword,
                   border: const OutlineInputBorder(),
                   suffixIcon: IconButton(
-                    icon: Icon(_isObscure ? Icons.visibility : Icons.visibility_off),
+                    icon: Icon(
+                        _isObscure ? Icons.visibility : Icons.visibility_off),
                     onPressed: () {
                       setState(() {
                         _isObscure = !_isObscure;
@@ -122,8 +125,11 @@ class _RepoCreateDialogState extends State<RepoCreateDialog> {
                 id: widget.repo?.id,
                 name: _nameController.text,
                 downloadUrl: _urlController.text,
-                username: _userController.text.isEmpty ? null : _userController.text,
-                password: _passwordController.text.isEmpty ? null : _passwordController.text,
+                username:
+                    _userController.text.isEmpty ? null : _userController.text,
+                password: _passwordController.text.isEmpty
+                    ? null
+                    : _passwordController.text,
               );
 
               final provider = context.read<ContainersProvider>();

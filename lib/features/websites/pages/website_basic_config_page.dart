@@ -25,13 +25,14 @@ class WebsiteBasicConfigPage extends StatelessWidget {
     if (provider != null) {
       return ChangeNotifierProvider<WebsiteConfigCenterProvider>.value(
         value: provider!,
-        child:
-            _WebsiteBasicConfigBody(displayName: displayName, websiteId: websiteId),
+        child: _WebsiteBasicConfigBody(
+            displayName: displayName, websiteId: websiteId),
       );
     }
     return ChangeNotifierProvider(
       create: (_) => WebsiteConfigCenterProvider(websiteId: websiteId)..load(),
-      child: _WebsiteBasicConfigBody(displayName: displayName, websiteId: websiteId),
+      child: _WebsiteBasicConfigBody(
+          displayName: displayName, websiteId: websiteId),
     );
   }
 }

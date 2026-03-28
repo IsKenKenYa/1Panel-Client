@@ -39,11 +39,12 @@ void main() {
         .thenAnswer((_) async => testApp);
 
     await tester.pumpWidget(createWidgetUnderTest());
-    
+
     expect(find.byType(AppDetailPage), findsOneWidget);
   });
 
-  testWidgets('AppDetailPage shows loading indicator then content', (tester) async {
+  testWidgets('AppDetailPage shows loading indicator then content',
+      (tester) async {
     final detailedApp = AppItem(
       id: 1,
       name: 'Test App',
@@ -58,9 +59,9 @@ void main() {
     // Return a future that completes after a delay to simulate loading
     when(() => mockAppService.getAppDetail(any(), any(), any()))
         .thenAnswer((_) async {
-          await Future.delayed(const Duration(milliseconds: 100));
-          return detailedApp;
-        });
+      await Future.delayed(const Duration(milliseconds: 100));
+      return detailedApp;
+    });
 
     await tester.pumpWidget(createWidgetUnderTest());
 
@@ -74,12 +75,13 @@ void main() {
     expect(find.text('Detailed Readme Content'), findsOneWidget);
     expect(find.text('Detailed Description'), findsOneWidget);
   });
-  
-  testWidgets('AppDetailPage does not throw ProviderNotFoundException', (tester) async {
-      when(() => mockAppService.getAppDetail(any(), any(), any()))
+
+  testWidgets('AppDetailPage does not throw ProviderNotFoundException',
+      (tester) async {
+    when(() => mockAppService.getAppDetail(any(), any(), any()))
         .thenAnswer((_) async => testApp);
-      
-      await tester.pumpWidget(createWidgetUnderTest());
-      expect(tester.takeException(), isNull);
+
+    await tester.pumpWidget(createWidgetUnderTest());
+    expect(tester.takeException(), isNull);
   });
 }

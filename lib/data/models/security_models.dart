@@ -87,7 +87,8 @@ class SecurityScanResult extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, scanType, target, status, issues, startTime, endTime, createTime];
+  List<Object?> get props =>
+      [id, scanType, target, status, issues, startTime, endTime, createTime];
 }
 
 /// Security issue model
@@ -139,7 +140,16 @@ class SecurityIssue extends Equatable {
   }
 
   @override
-  List<Object?> get props => [severity, type, title, description, affectedResource, recommendation, cveId, cvssScore];
+  List<Object?> get props => [
+        severity,
+        type,
+        title,
+        description,
+        affectedResource,
+        recommendation,
+        cveId,
+        cvssScore
+      ];
 }
 
 /// Intrusion detection rule model
@@ -199,7 +209,18 @@ class IntrusionRule extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, type, pattern, action, enabled, severity, description, createTime, updateTime];
+  List<Object?> get props => [
+        id,
+        name,
+        type,
+        pattern,
+        action,
+        enabled,
+        severity,
+        description,
+        createTime,
+        updateTime
+      ];
 }
 
 /// Intrusion event model
@@ -259,7 +280,18 @@ class IntrusionEvent extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, sourceIp, target, type, severity, description, ruleId, ruleName, timestamp, blocked];
+  List<Object?> get props => [
+        id,
+        sourceIp,
+        target,
+        type,
+        severity,
+        description,
+        ruleId,
+        ruleName,
+        timestamp,
+        blocked
+      ];
 }
 
 /// Access control rule model
@@ -323,7 +355,19 @@ class AccessControlRule extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, type, source, target, action, protocol, port, enabled, createTime, updateTime];
+  List<Object?> get props => [
+        id,
+        name,
+        type,
+        source,
+        target,
+        action,
+        protocol,
+        port,
+        enabled,
+        createTime,
+        updateTime
+      ];
 }
 
 /// Security status model
@@ -371,7 +415,15 @@ class SecurityStatus extends Equatable {
   }
 
   @override
-  List<Object?> get props => [firewallEnabled, intrusionDetectionEnabled, autoScanEnabled, scanInterval, lastScanTime, threatsDetected, blockedAttacks];
+  List<Object?> get props => [
+        firewallEnabled,
+        intrusionDetectionEnabled,
+        autoScanEnabled,
+        scanInterval,
+        lastScanTime,
+        threatsDetected,
+        blockedAttacks
+      ];
 }
 
 /// Security configuration model
@@ -423,7 +475,16 @@ class SecurityConfig extends Equatable {
   }
 
   @override
-  List<Object?> get props => [enableFirewall, enableIntrusionDetection, enableAutoScan, scanInterval, scanType, enableNotifications, notificationEmail, customRules];
+  List<Object?> get props => [
+        enableFirewall,
+        enableIntrusionDetection,
+        enableAutoScan,
+        scanInterval,
+        scanType,
+        enableNotifications,
+        notificationEmail,
+        customRules
+      ];
 }
 
 /// Security log model
@@ -475,5 +536,6 @@ class SecurityLog extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, level, type, message, source, target, details, timestamp];
+  List<Object?> get props =>
+      [id, level, type, message, source, target, details, timestamp];
 }

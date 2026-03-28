@@ -8,6 +8,7 @@
 - API客户端文件: 32
 - 标签数: 52
 - 覆盖口径: 已实现=存在API调用与数据模型，已测试=具备单元/集成/端到端测试，已文档=包含使用说明与已知限制
+- 适配状态真值: `docs/development/swagger_adaptation_status_checklist.md`
 
 ## Phase 2 增量覆盖（2026-03-28）
 
@@ -57,6 +58,19 @@
 - 范围边界确认:
 	- Website 长尾能力与 Orchestration 长尾能力按计划不纳入 Phase 2 硬交付。
 	- 路由清理本轮仅做清单和证据归档，不进行字符串路由重构。
+
+## Post-Final Checklist Closure（2026-03-28）
+
+- 新增 canonical 清单：`docs/development/swagger_adaptation_status_checklist.md`
+- 本轮新增闭环:
+	- `McpServer`：AI 页新增 `MCP` 标签，补齐列表、创建、编辑、操作、域名绑定。
+	- `Menu Setting`：新增菜单设置页面，接入默认菜单读取与保存。
+	- `Disk Management`：新增 `toolbox/disk` 路由与 `disk_management_v2.dart` API 链路。
+	- `Host tool`：新增 `toolbox/host-tool` 路由与 `host_tool_v2.dart` API 链路。
+- 保持范围边界:
+	- `Website CA / Website Acme / Website DNS`
+	- `Container Image-repo / Container Compose-template`
+- `untagged` 行继续保留，但已在 canonical 清单中补充 owner 归类附录。
 
 ## 实现状态统计
 

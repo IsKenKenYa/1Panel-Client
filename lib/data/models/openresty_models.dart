@@ -186,7 +186,8 @@ class OpenrestyParam extends Equatable {
   factory OpenrestyParam.fromJson(Map<String, dynamic> json) {
     return OpenrestyParam(
       name: json['name'] as String?,
-      params: (json['params'] as List?)?.whereType<String>().toList() ?? const [],
+      params:
+          (json['params'] as List?)?.whereType<String>().toList() ?? const [],
     );
   }
 
@@ -293,7 +294,8 @@ class OpenrestyDefaultHttpsUpdateRequest extends Equatable {
     this.sslRejectHandshake,
   });
 
-  factory OpenrestyDefaultHttpsUpdateRequest.fromJson(Map<String, dynamic> json) {
+  factory OpenrestyDefaultHttpsUpdateRequest.fromJson(
+      Map<String, dynamic> json) {
     return OpenrestyDefaultHttpsUpdateRequest(
       operate: OpenrestyDefaultHttpsOperate.values.firstWhere(
         (e) => e.value == json['operate'],
@@ -427,7 +429,9 @@ class OpenrestyConfigUpdateRequest extends Equatable {
         orElse: () => OpenrestyConfigOperate.update,
       ),
       params: json['params'],
-      scope: json['scope'] is String ? NginxKey.fromString(json['scope'] as String) : null,
+      scope: json['scope'] is String
+          ? NginxKey.fromString(json['scope'] as String)
+          : null,
       websiteId: json['websiteId'] as int?,
     );
   }
@@ -595,7 +599,8 @@ class OpenrestyLogSearch extends Equatable {
   }
 
   @override
-  List<Object?> get props => [domain, startTime, endTime, page, pageSize, keyword];
+  List<Object?> get props =>
+      [domain, startTime, endTime, page, pageSize, keyword];
 }
 
 /// OpenResty error log model

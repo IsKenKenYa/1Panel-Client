@@ -13,8 +13,9 @@ void main() {
 
   setUpAll(() async {
     await TestEnvironment.initialize();
-    hasApiKey = TestEnvironment.apiKey.isNotEmpty && TestEnvironment.apiKey != 'your_api_key_here';
-    
+    hasApiKey = TestEnvironment.apiKey.isNotEmpty &&
+        TestEnvironment.apiKey != 'your_api_key_here';
+
     if (hasApiKey) {
       client = DioClient(
         baseUrl: TestEnvironment.baseUrl,
@@ -32,7 +33,7 @@ void main() {
       debugPrint('服务器地址: ${TestEnvironment.baseUrl}');
       debugPrint('API密钥: ${hasApiKey ? "已配置" : "未配置"}');
       debugPrint('========================================\n');
-      
+
       expect(hasApiKey, equals(TestEnvironment.canRunIntegrationTests));
     });
 
@@ -113,7 +114,7 @@ void main() {
           interval: '30',
           secret: '',
         );
-        
+
         final response = await api.loadMfaInfo(request);
 
         expect(response.statusCode, equals(200));

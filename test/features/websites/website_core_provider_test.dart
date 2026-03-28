@@ -86,7 +86,8 @@ class FakeWebsiteService extends WebsiteService {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> preCheck(Map<String, dynamic> request) async {
+  Future<List<Map<String, dynamic>>> preCheck(
+      Map<String, dynamic> request) async {
     return const [];
   }
 

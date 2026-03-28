@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:onepanel_client/data/models/backup_account_models.dart' as backup;
+import 'package:onepanel_client/data/models/backup_account_models.dart'
+    as backup;
 import 'package:onepanel_client/data/models/common_models.dart';
 import 'package:onepanel_client/data/models/database_models.dart';
 import 'package:onepanel_client/features/databases/providers/database_backup_provider.dart';
@@ -8,7 +9,8 @@ import 'package:onepanel_client/features/databases/services/database_backup_serv
 
 class _FakeDatabaseBackupService extends DatabaseBackupService {
   _FakeDatabaseBackupService({
-    this.pageResult = const PageResult<backup.BackupRecord>(items: [], total: 0),
+    this.pageResult =
+        const PageResult<backup.BackupRecord>(items: [], total: 0),
     this.throwOnCreate = false,
     this.throwOnRestore = false,
     this.throwOnDelete = false,
@@ -130,7 +132,8 @@ void main() {
     expect(provider.state.error, contains('create failed'));
   });
 
-  test('DatabaseBackupProvider deleteBackupRecord reloads on success', () async {
+  test('DatabaseBackupProvider deleteBackupRecord reloads on success',
+      () async {
     final service = _FakeDatabaseBackupService(
       pageResult: const PageResult(items: [record], total: 1),
     );

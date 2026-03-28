@@ -76,7 +76,7 @@ class _CacheStrategySelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -148,7 +148,7 @@ class _CacheSizeSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -186,7 +186,7 @@ class _CacheStatsDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final stats = FilePreviewCacheManager().getMemoryCacheStats();
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -216,9 +216,10 @@ class _CacheStatsDisplay extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label, style: Theme.of(context).textTheme.bodyMedium),
-        Text(value, style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          fontWeight: FontWeight.bold,
-        )),
+        Text(value,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                )),
       ],
     );
   }
@@ -228,7 +229,7 @@ class _ClearCacheButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    
+
     return ElevatedButton.icon(
       onPressed: () async {
         final confirmed = await showDialog<bool>(
@@ -248,7 +249,7 @@ class _ClearCacheButton extends StatelessWidget {
             ],
           ),
         );
-        
+
         if (confirmed == true && context.mounted) {
           await FilePreviewCacheManager().clearAllCache();
           if (context.mounted) {

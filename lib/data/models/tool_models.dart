@@ -49,5 +49,6 @@ class ToolInfo extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, description, category, version, status, enabled, config];
+  List<Object?> get props =>
+      [id, name, description, category, version, status, enabled, config];
 }

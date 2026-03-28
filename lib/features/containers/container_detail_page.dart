@@ -2,7 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
-import 'package:onepanel_client/data/models/container_models.dart' hide Container;
+import 'package:onepanel_client/data/models/container_models.dart'
+    hide Container;
 import 'package:onepanel_client/features/containers/providers/container_detail_provider.dart';
 import 'package:onepanel_client/features/containers/widgets/container_logs_view.dart';
 import 'package:onepanel_client/features/containers/widgets/container_stats_view.dart';
@@ -126,9 +127,13 @@ class _InfoTab extends StatelessWidget {
               children: [
                 _InfoItem(label: l10n.containerInfoId, value: container.id),
                 _InfoItem(label: l10n.containerInfoName, value: container.name),
-                _InfoItem(label: l10n.containerInfoImage, value: container.image),
-                _InfoItem(label: l10n.containerInfoStatus, value: container.status),
-                _InfoItem(label: l10n.containerInfoCreated, value: container.createTime ?? '-'),
+                _InfoItem(
+                    label: l10n.containerInfoImage, value: container.image),
+                _InfoItem(
+                    label: l10n.containerInfoStatus, value: container.status),
+                _InfoItem(
+                    label: l10n.containerInfoCreated,
+                    value: container.createTime ?? '-'),
                 _InfoItem(
                   label: l10n.serverIpLabel,
                   value: container.ipAddress ?? '-',
@@ -185,7 +190,7 @@ class _InfoItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(

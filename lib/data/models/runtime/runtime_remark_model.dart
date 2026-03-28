@@ -24,4 +24,3 @@ class RuntimeRemarkUpdate extends Equatable {
   @override
   List<Object?> get props => [id, remark];
 }
-

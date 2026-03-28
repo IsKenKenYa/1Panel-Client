@@ -50,9 +50,11 @@ void main() {
     final service = _MockProcessService();
     when(() => service.watchProcesses()).thenAnswer((_) => controller.stream);
     when(() => service.connectProcesses(any())).thenAnswer((_) async {});
-    when(() => service.loadListening()).thenAnswer((_) async => const <ListeningProcess>[]);
+    when(() => service.loadListening())
+        .thenAnswer((_) async => const <ListeningProcess>[]);
     when(() => service.closeProcesses()).thenAnswer((_) async {});
-    when(() => service.mergeListeningData(any(), any())).thenAnswer((invocation) {
+    when(() => service.mergeListeningData(any(), any()))
+        .thenAnswer((invocation) {
       return invocation.positionalArguments.first as List<ProcessSummary>;
     });
 

@@ -28,18 +28,22 @@ void _logSection(
   Object? request,
   Object? response,
 }) {
-  appLogger.dWithPackage('test.api_client.process', '========================================');
+  appLogger.dWithPackage(
+      'test.api_client.process', '========================================');
   appLogger.dWithPackage('test.api_client.process', title);
   if (method != null && path != null) {
     appLogger.dWithPackage('test.api_client.process', 'Request: $method $path');
   }
   if (request != null) {
-    appLogger.dWithPackage('test.api_client.process', 'RequestBody: ${_prettyJson(request)}');
+    appLogger.dWithPackage(
+        'test.api_client.process', 'RequestBody: ${_prettyJson(request)}');
   }
   if (response != null) {
-    appLogger.dWithPackage('test.api_client.process', 'Response: ${_prettyJson(response)}');
+    appLogger.dWithPackage(
+        'test.api_client.process', 'Response: ${_prettyJson(response)}');
   }
-  appLogger.dWithPackage('test.api_client.process', '========================================');
+  appLogger.dWithPackage(
+      'test.api_client.process', '========================================');
 }
 
 Future<Response<Map<String, dynamic>>> _rawPost(
@@ -105,7 +109,9 @@ void main() {
       final result = await api.getListeningProcesses();
       _logSection(
         '✅ Parsed /process/listening',
-        response: result.data?.map((item) => {'pid': item.pid, 'ports': item.ports}).toList(),
+        response: result.data
+            ?.map((item) => {'pid': item.pid, 'ports': item.ports})
+            .toList(),
       );
       expect(result.data, isNotNull);
     });
@@ -114,8 +120,10 @@ void main() {
       if (!canRun) return;
       final wsClient = ProcessWsClient();
       await wsClient.connect();
-      final future = wsClient.messages.first.timeout(const Duration(seconds: 10));
-      await wsClient.send(const {'type': 'ps', 'pid': null, 'name': '', 'username': ''});
+      final future =
+          wsClient.messages.first.timeout(const Duration(seconds: 10));
+      await wsClient
+          .send(const {'type': 'ps', 'pid': null, 'name': '', 'username': ''});
       final result = await future;
       _logSection('✅ Parsed /process/ws ps', response: result);
       expect(result, isA<List<dynamic>>());
@@ -126,8 +134,10 @@ void main() {
       if (!canRun) return;
       final wsClient = ProcessWsClient();
       await wsClient.connect();
-      final future = wsClient.messages.first.timeout(const Duration(seconds: 10));
-      await wsClient.send(const {'type': 'ps', 'pid': null, 'name': '', 'username': ''});
+      final future =
+          wsClient.messages.first.timeout(const Duration(seconds: 10));
+      await wsClient
+          .send(const {'type': 'ps', 'pid': null, 'name': '', 'username': ''});
       final rows = await future as List<dynamic>;
       await wsClient.close();
       if (rows.isEmpty) return;
@@ -158,7 +168,8 @@ void main() {
       }
       final wsClient = ProcessWsClient();
       await wsClient.connect();
-      final future = wsClient.messages.first.timeout(const Duration(seconds: 10));
+      final future =
+          wsClient.messages.first.timeout(const Duration(seconds: 10));
       await wsClient.send(const <String, dynamic>{
         'type': 'ssh',
         'loginUser': '',
@@ -167,7 +178,9 @@ void main() {
       final rows = await future;
       await wsClient.close();
 
-      final items = rows is List ? rows.whereType<Map<String, dynamic>>().toList() : const <Map<String, dynamic>>[];
+      final items = rows is List
+          ? rows.whereType<Map<String, dynamic>>().toList()
+          : const <Map<String, dynamic>>[];
       if (items.isEmpty) {
         appLogger.wWithPackage(
           'test.api_client.process',

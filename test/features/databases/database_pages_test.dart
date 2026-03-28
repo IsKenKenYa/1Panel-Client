@@ -10,7 +10,8 @@ import 'package:onepanel_client/features/databases/pages/database_users_page.dar
 import 'package:onepanel_client/features/databases/services/database_backup_service.dart';
 import 'package:onepanel_client/features/databases/services/database_user_service.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
-import 'package:onepanel_client/data/models/backup_account_models.dart' as backup;
+import 'package:onepanel_client/data/models/backup_account_models.dart'
+    as backup;
 import 'package:onepanel_client/data/models/common_models.dart';
 
 class _FakeDatabaseDetailService extends DatabasesService {
@@ -43,7 +44,8 @@ class _FakeDatabaseUserPageService extends DatabaseUserService {
   final DatabaseUserContext context;
 
   @override
-  Future<DatabaseUserContext> loadContext(DatabaseListItem item) async => context;
+  Future<DatabaseUserContext> loadContext(DatabaseListItem item) async =>
+      context;
 }
 
 void main() {

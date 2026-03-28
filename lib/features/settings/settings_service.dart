@@ -82,7 +82,8 @@ class SettingsService {
 
   Future<String?> getReleaseNotes(String version) async {
     final apiClient = await _getApi();
-    final response = await apiClient.getReleaseNotes(api.ReleaseNotesRequest(version: version));
+    final response = await apiClient
+        .getReleaseNotes(api.ReleaseNotesRequest(version: version));
     return response.data;
   }
 
@@ -117,7 +118,8 @@ class SettingsService {
     await apiClient.importSnapshot(request);
   }
 
-  Future<void> updateSnapshotDescription(api.SnapshotDescriptionUpdate request) async {
+  Future<void> updateSnapshotDescription(
+      api.SnapshotDescriptionUpdate request) async {
     final apiClient = await _getApi();
     await apiClient.updateSnapshotDescription(request);
   }
@@ -141,6 +143,32 @@ class SettingsService {
   Future<void> updateTerminalSettings(api.TerminalUpdate request) async {
     final apiClient = await _getApi();
     await apiClient.updateTerminalSettings(request);
+  }
+
+  Future<List<String>> getDefaultMenus() async {
+    final apiClient = await _getApi();
+    final response = await apiClient.getDefaultMenu();
+    final raw = response.data;
+    if (raw is List<dynamic>) {
+      return raw.map((dynamic item) => item.toString()).toList(growable: false);
+    }
+    if (raw is Map<String, dynamic>) {
+      final dynamic menus = raw['menus'] ?? raw['items'] ?? raw['data'];
+      if (menus is List<dynamic>) {
+        return menus
+            .map((dynamic item) => item.toString())
+            .toList(growable: false);
+      }
+    }
+    if (raw is String && raw.trim().isNotEmpty) {
+      return <String>[raw.trim()];
+    }
+    return const <String>[];
+  }
+
+  Future<void> updateMenuSettings(api.MenuUpdate request) async {
+    final apiClient = await _getApi();
+    await apiClient.updateMenuSettings(request);
   }
 
   Future<dynamic> generateApiKey() async {

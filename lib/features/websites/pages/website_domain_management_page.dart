@@ -23,8 +23,8 @@ class WebsiteDomainManagementPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) =>
-          provider ?? WebsiteDomainProvider(websiteId: websiteId)..loadDomains(),
+      create: (_) => provider ?? WebsiteDomainProvider(websiteId: websiteId)
+        ..loadDomains(),
       child: _WebsiteDomainBody(primaryDomain: primaryDomain),
     );
   }
@@ -101,7 +101,6 @@ class _WebsiteDomainBody extends StatelessWidget {
       },
     );
   }
-
 }
 
 class _DomainCard extends StatelessWidget {

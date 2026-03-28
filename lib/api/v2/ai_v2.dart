@@ -27,7 +27,8 @@ class AIV2Api {
   /// 获取当前AI服务绑定的域名信息
   /// @param request 获取绑定域名请求
   /// @return 域名信息
-  Future<Response<OllamaBindDomainRes>> getBindDomain(OllamaBindDomainReq request) async {
+  Future<Response<OllamaBindDomainRes>> getBindDomain(
+      OllamaBindDomainReq request) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/ai/domain/get'),
       data: request.toJson(),
@@ -45,12 +46,12 @@ class AIV2Api {
   /// 获取系统中的GPU或XPU信息
   /// @return GPU/XPU信息
   Future<Response<List<GpuInfo>>> loadGpuInfo() async {
-    final response = await _client.get(ApiConstants.buildApiPath('/ai/gpu/load'));
+    final response =
+        await _client.get(ApiConstants.buildApiPath('/ai/gpu/load'));
     return Response(
-      data: (response.data as List?)
-              ?.map((i) => GpuInfo.fromJson(i))
-              .toList() ??
-          [],
+      data:
+          (response.data as List?)?.map((i) => GpuInfo.fromJson(i)).toList() ??
+              [],
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -94,7 +95,7 @@ class AIV2Api {
   }
 
   /// 加载Ollama模型
-  /// 
+  ///
   /// 加载指定的Ollama模型
   /// @param request 模型名称请求
   /// @return 加载结果
@@ -112,7 +113,7 @@ class AIV2Api {
   }
 
   /// 重新创建Ollama模型
-  /// 
+  ///
   /// 重新创建指定的Ollama模型
   /// @param request 模型名称请求
   /// @return 创建结果
@@ -124,17 +125,19 @@ class AIV2Api {
   }
 
   /// 搜索Ollama模型
-  /// 
+  ///
   /// 搜索Ollama模型列表
   /// @param request 搜索请求
   /// @return 搜索结果
-  Future<Response<PageResult<OllamaModel>>> searchOllamaModels(SearchWithPage request) async {
+  Future<Response<PageResult<OllamaModel>>> searchOllamaModels(
+      SearchWithPage request) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/ai/ollama/model/search'),
       data: request.toJson(),
     );
     return Response(
-      data: PageResult<OllamaModel>.fromJson(response.data, (json) => OllamaModel.fromJson(json as Map<String, dynamic>)),
+      data: PageResult<OllamaModel>.fromJson(response.data,
+          (json) => OllamaModel.fromJson(json as Map<String, dynamic>)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -146,7 +149,8 @@ class AIV2Api {
   /// 同步Ollama模型列表
   /// @return 模型列表
   Future<Response<List<OllamaModelDropList>>> syncOllamaModels() async {
-    final response = await _client.post(ApiConstants.buildApiPath('/ai/ollama/model/sync'));
+    final response =
+        await _client.post(ApiConstants.buildApiPath('/ai/ollama/model/sync'));
     return Response(
       data: (response.data as List?)
               ?.map((i) => OllamaModelDropList.fromJson(i))
@@ -205,7 +209,8 @@ class AIV2Api {
   /// 搜索MCP服务器列表
   /// @param request 搜索请求
   /// @return 搜索结果
-  Future<Response<McpServersRes>> searchMcpServers(McpServerSearch request) async {
+  Future<Response<McpServersRes>> searchMcpServers(
+      McpServerSearch request) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/ai/mcp/search'),
       data: request.toJson(),

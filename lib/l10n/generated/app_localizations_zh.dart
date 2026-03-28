@@ -6322,4 +6322,255 @@ class AppLocalizationsZh extends AppLocalizations {
   String operationsGroupDeleteConfirmMessage(String groupName) {
     return '确认删除分组 $groupName 吗？后续相关模块项需要重新指定分组。';
   }
+
+  @override
+  String get commonClear => '清空';
+
+  @override
+  String get aiTabMcp => 'MCP';
+
+  @override
+  String get aiMcpSearchHint => '搜索 MCP 服务器';
+
+  @override
+  String get aiMcpCreate => '创建服务器';
+
+  @override
+  String get aiMcpEdit => '编辑服务器';
+
+  @override
+  String get aiMcpBindDomain => '绑定域名';
+
+  @override
+  String get aiMcpBindingTitle => 'MCP 域名绑定';
+
+  @override
+  String get aiMcpNoServers => '暂无 MCP 服务器';
+
+  @override
+  String get aiMcpConfigPreviewTitle => '配置预览';
+
+  @override
+  String aiMcpDeleteConfirm(String name) {
+    return '确认删除 MCP 服务器 $name 吗？';
+  }
+
+  @override
+  String get aiMcpDialogCreateTitle => '创建 MCP 服务器';
+
+  @override
+  String get aiMcpDialogEditTitle => '编辑 MCP 服务器';
+
+  @override
+  String get aiMcpCommandLabel => '命令';
+
+  @override
+  String get aiMcpTransportLabel => '传输方式';
+
+  @override
+  String get aiMcpTypeLabel => '类型';
+
+  @override
+  String get aiMcpPortLabel => '端口';
+
+  @override
+  String get aiMcpBaseUrlLabel => '基础地址';
+
+  @override
+  String get aiMcpHostIpLabel => '主机 IP';
+
+  @override
+  String get aiMcpContainerLabel => '容器名称';
+
+  @override
+  String get aiMcpSsePathLabel => 'SSE 路径';
+
+  @override
+  String get aiMcpStreamablePathLabel => 'Streamable HTTP 路径';
+
+  @override
+  String get aiMcpExternalUrl => '外部地址';
+
+  @override
+  String get aiMcpStatusLabel => '状态';
+
+  @override
+  String get aiMcpNameRequired => '请输入服务器名称';
+
+  @override
+  String get aiMcpCommandRequired => '请输入命令';
+
+  @override
+  String get aiMcpTypeRequired => '请输入类型';
+
+  @override
+  String get aiMcpTransportRequired => '请输入传输方式';
+
+  @override
+  String get aiMcpPortRequired => '请输入有效端口';
+
+  @override
+  String get aiMcpDomainDialogTitle => '更新 MCP 域名';
+
+  @override
+  String get aiMcpDomainRequired => '请输入域名';
+
+  @override
+  String get menuSettingsTitle => '菜单设置';
+
+  @override
+  String get menuSettingsDescription => '管理面板返回的默认菜单顺序。';
+
+  @override
+  String get menuSettingsAddLabel => '菜单项';
+
+  @override
+  String get menuSettingsEditTitle => '编辑菜单项';
+
+  @override
+  String get menuSettingsSaveSuccess => '菜单设置已保存';
+
+  @override
+  String get toolboxDiskTitle => '磁盘管理';
+
+  @override
+  String get toolboxDiskCardSubtitle => '查看磁盘、分区和挂载状态';
+
+  @override
+  String get toolboxDiskOverviewTitle => '磁盘概览';
+
+  @override
+  String get toolboxDiskTotalDisksLabel => '磁盘总数';
+
+  @override
+  String get toolboxDiskTotalCapacityLabel => '总容量';
+
+  @override
+  String get toolboxDiskUnpartitionedSectionTitle => '未分区磁盘';
+
+  @override
+  String get toolboxDiskSystemSectionTitle => '系统磁盘';
+
+  @override
+  String get toolboxDiskDataSectionTitle => '数据磁盘';
+
+  @override
+  String get toolboxDiskMountAction => '挂载';
+
+  @override
+  String get toolboxDiskUnmountAction => '卸载';
+
+  @override
+  String get toolboxDiskPartitionAction => '分区';
+
+  @override
+  String get toolboxDiskFilesystemLabel => '文件系统';
+
+  @override
+  String get toolboxDiskMountPointLabel => '挂载点';
+
+  @override
+  String get toolboxDiskAutoMountLabel => '开机自动挂载';
+
+  @override
+  String get toolboxDiskNoFailLabel => '失败时跳过';
+
+  @override
+  String get toolboxDiskLabelLabel => '标签';
+
+  @override
+  String get toolboxDiskMountSuccess => '磁盘挂载成功';
+
+  @override
+  String get toolboxDiskPartitionSuccess => '磁盘分区成功';
+
+  @override
+  String get toolboxDiskUnmountSuccess => '磁盘卸载成功';
+
+  @override
+  String get toolboxDiskSizeLabel => '容量';
+
+  @override
+  String get toolboxDiskModelLabel => '型号';
+
+  @override
+  String get toolboxDiskUnmounted => '未挂载';
+
+  @override
+  String get toolboxDiskSystemDiskTag => '系统盘';
+
+  @override
+  String get toolboxHostToolTitle => '主机工具';
+
+  @override
+  String get toolboxHostToolCardSubtitle => '管理 supervisord 服务和进程文件';
+
+  @override
+  String get toolboxHostToolServiceSectionTitle => 'Supervisor 服务';
+
+  @override
+  String get toolboxHostToolConfigSectionTitle => 'Supervisor 配置';
+
+  @override
+  String get toolboxHostToolProcessSectionTitle => 'Supervisor 进程';
+
+  @override
+  String get toolboxHostToolStatusLabel => '状态';
+
+  @override
+  String get toolboxHostToolVersionLabel => '版本';
+
+  @override
+  String get toolboxHostToolConfigPathLabel => '配置路径';
+
+  @override
+  String get toolboxHostToolServiceNameLabel => '服务名称';
+
+  @override
+  String get toolboxHostToolInitAction => '初始化';
+
+  @override
+  String get toolboxHostToolStartAction => '启动';
+
+  @override
+  String get toolboxHostToolStopAction => '停止';
+
+  @override
+  String get toolboxHostToolSaveSuccess => '主机工具已更新';
+
+  @override
+  String get toolboxHostToolCommandLabel => '命令';
+
+  @override
+  String get toolboxHostToolNumprocsLabel => '进程数';
+
+  @override
+  String get toolboxHostToolUserLabel => '用户';
+
+  @override
+  String get toolboxHostToolDirLabel => '工作目录';
+
+  @override
+  String get toolboxHostToolEnvironmentLabel => '环境变量';
+
+  @override
+  String get toolboxHostToolAutoStartLabel => '自动启动';
+
+  @override
+  String get toolboxHostToolAutoRestartLabel => '自动重启';
+
+  @override
+  String get toolboxHostToolProcessCreateTitle => '创建 Supervisor 进程';
+
+  @override
+  String get toolboxHostToolProcessEditTitle => '编辑 Supervisor 进程';
+
+  @override
+  String get toolboxHostToolConfigFileAction => '配置文件';
+
+  @override
+  String get toolboxHostToolOutLogAction => '标准输出日志';
+
+  @override
+  String get toolboxHostToolErrLogAction => '错误日志';
 }

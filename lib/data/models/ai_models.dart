@@ -74,7 +74,8 @@ class OllamaBindDomainRes {
   factory OllamaBindDomainRes.fromJson(Map<String, dynamic> json) {
     return OllamaBindDomainRes(
       acmeAccountID: json['acmeAccountID'],
-      allowIPs: json['allowIPs'] != null ? List<String>.from(json['allowIPs']) : null,
+      allowIPs:
+          json['allowIPs'] != null ? List<String>.from(json['allowIPs']) : null,
       connUrl: json['connUrl'],
       domain: json['domain'],
       sslID: json['sslID'],

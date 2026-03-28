@@ -22,19 +22,25 @@ void main() {
   String? appType;
   String? appKey;
   int? installedAppId;
-  String installName = 'test-redis-${DateTime.now().millisecondsSinceEpoch}'; // Use unique name to avoid conflicts
+  String installName =
+      'test-redis-${DateTime.now().millisecondsSinceEpoch}'; // Use unique name to avoid conflicts
 
   setUpAll(() async {
     await TestEnvironment.initialize();
-    hasApiKey = TestEnvironment.apiKey.isNotEmpty && TestEnvironment.apiKey != 'your_api_key_here';
-    
-    debugPrint('\n╔════════════════════════════════════════════════════════════╗');
-    debugPrint('║              App Management Full Integration Test           ║');
-    debugPrint('╠════════════════════════════════════════════════════════════╣');
+    hasApiKey = TestEnvironment.apiKey.isNotEmpty &&
+        TestEnvironment.apiKey != 'your_api_key_here';
+
+    debugPrint(
+        '\n╔════════════════════════════════════════════════════════════╗');
+    debugPrint(
+        '║              App Management Full Integration Test           ║');
+    debugPrint(
+        '╠════════════════════════════════════════════════════════════╣');
     debugPrint('║ Server: ${TestEnvironment.baseUrl}');
     debugPrint('║ API Key: ${hasApiKey ? "Configured" : "Missing"}');
-    debugPrint('╚════════════════════════════════════════════════════════════╝\n');
-    
+    debugPrint(
+        '╚════════════════════════════════════════════════════════════╝\n');
+
     if (hasApiKey) {
       client = DioClient(
         baseUrl: TestEnvironment.baseUrl,
@@ -53,13 +59,15 @@ void main() {
   });
 
   // Helper to poll for status
-  Future<void> waitForStatus(int installId, String targetStatus, {Duration timeout = const Duration(minutes: 5)}) async {
+  Future<void> waitForStatus(int installId, String targetStatus,
+      {Duration timeout = const Duration(minutes: 5)}) async {
     final endTime = DateTime.now().add(timeout);
     while (DateTime.now().isBefore(endTime)) {
       final info = await api.getAppInstallInfo(installId.toString());
       debugPrint('   Current status: ${info.status} (Target: $targetStatus)');
       if (info.status == targetStatus) return;
-      if (info.status == 'Error') throw Exception('App entered Error state: ${info.message}');
+      if (info.status == 'Error')
+        throw Exception('App entered Error state: ${info.message}');
       await Future.delayed(const Duration(seconds: 3));
     }
     throw Exception('Timeout waiting for status: $targetStatus');
@@ -85,7 +93,8 @@ void main() {
         await api.syncRemoteApps();
         resultCollector.addSuccess('Sync Remote Apps', Duration.zero);
       } catch (e) {
-        resultCollector.addFailure('Sync Remote Apps', e.toString(), Duration.zero);
+        resultCollector.addFailure(
+            'Sync Remote Apps', e.toString(), Duration.zero);
       }
     });
 
@@ -95,7 +104,8 @@ void main() {
         await api.syncLocalApps();
         resultCollector.addSuccess('Sync Local Apps', Duration.zero);
       } catch (e) {
-        resultCollector.addFailure('Sync Local Apps', e.toString(), Duration.zero);
+        resultCollector.addFailure(
+            'Sync Local Apps', e.toString(), Duration.zero);
       }
     });
 
@@ -103,13 +113,15 @@ void main() {
       if (!hasApiKey) return;
       final testName = 'Search App';
       try {
-        final request = AppSearchRequest(page: 1, pageSize: 10, name: 'redis'); // Use Redis
+        final request =
+            AppSearchRequest(page: 1, pageSize: 10, name: 'redis'); // Use Redis
         final response = await api.searchApps(request);
         logResponse('/apps/search', response.items.length);
         expect(response.items, isNotEmpty);
         targetApp = response.items.first;
         appKey = targetApp!.key;
-        debugPrint('✅ Found app: ${targetApp!.name} (Key: $appKey, ID: ${targetApp!.id})');
+        debugPrint(
+            '✅ Found app: ${targetApp!.name} (Key: $appKey, ID: ${targetApp!.id})');
         resultCollector.addSuccess(testName, Duration.zero);
       } catch (e) {
         resultCollector.addFailure(testName, e.toString(), Duration.zero);
@@ -123,23 +135,24 @@ void main() {
       try {
         // Fetch full detail first by key to ensure we have versions
         targetApp = await api.getAppByKey(targetApp!.key!);
-        
+
         final versions = targetApp!.versions ?? [];
         if (versions.isEmpty) {
           resultCollector.addSkipped(testName, 'No versions found');
           return;
         }
-        
+
         appVersion = versions.first;
-        appType = targetApp!.type ?? 'runtime'; 
-        
+        appType = targetApp!.type ?? 'runtime';
+
         debugPrint('📦 Selected Version: $appVersion, Type: $appType');
 
-        targetAppDetail = await api.getAppDetail(targetApp!.id.toString(), appVersion!, appType!);
+        targetAppDetail = await api.getAppDetail(
+            targetApp!.id.toString(), appVersion!, appType!);
         logResponse('/apps/detail', targetAppDetail?.toJson());
         expect(targetAppDetail, isNotNull);
         appDetailId = targetAppDetail!.id;
-        
+
         debugPrint('✅ Got detail for ID: $appDetailId');
         resultCollector.addSuccess(testName, Duration.zero);
       } catch (e) {
@@ -158,7 +171,8 @@ void main() {
         expect(item.id, equals(appDetailId));
         resultCollector.addSuccess('Get Detail by ID', Duration.zero);
       } catch (e) {
-        resultCollector.addFailure('Get Detail by ID', e.toString(), Duration.zero);
+        resultCollector.addFailure(
+            'Get Detail by ID', e.toString(), Duration.zero);
       }
     });
 
@@ -170,7 +184,8 @@ void main() {
         expect(item.key, equals(appKey));
         resultCollector.addSuccess('Get App by Key', Duration.zero);
       } catch (e) {
-        resultCollector.addFailure('Get App by Key', e.toString(), Duration.zero);
+        resultCollector.addFailure(
+            'Get App by Key', e.toString(), Duration.zero);
       }
     });
 
@@ -182,7 +197,8 @@ void main() {
         expect(response.data, isNotNull);
         resultCollector.addSuccess('Get App Icon (Key)', Duration.zero);
       } catch (e) {
-        resultCollector.addFailure('Get App Icon (Key)', e.toString(), Duration.zero);
+        resultCollector.addFailure(
+            'Get App Icon (Key)', e.toString(), Duration.zero);
       }
     });
 
@@ -193,7 +209,8 @@ void main() {
         logResponse('/apps/detail/node/:appKey/:version', detail.toJson());
         resultCollector.addSuccess('Get Detail Node', Duration.zero);
       } catch (e) {
-        resultCollector.addFailure('Get Detail Node', e.toString(), Duration.zero);
+        resultCollector.addFailure(
+            'Get Detail Node', e.toString(), Duration.zero);
       }
     });
   });
@@ -201,7 +218,8 @@ void main() {
   group('2. App Installation', () {
     test('Cleanup before install', () async {
       if (!hasApiKey) return;
-      final search = await api.searchInstalledApps(AppInstalledSearchRequest(page: 1, pageSize: 10, name: installName));
+      final search = await api.searchInstalledApps(
+          AppInstalledSearchRequest(page: 1, pageSize: 10, name: installName));
       if (search.items.isNotEmpty) {
         debugPrint('⚠️ Found existing test app, uninstalling...');
         final app = search.items.first;
@@ -213,24 +231,28 @@ void main() {
     test('POST /apps/installed/check - Check Install', () async {
       if (!hasApiKey || targetApp == null || appVersion == null) return;
       try {
-        final req = AppInstalledCheckRequest(key: targetApp!.key!, version: appVersion!, type: appType!);
+        final req = AppInstalledCheckRequest(
+            key: targetApp!.key!, version: appVersion!, type: appType!);
         final res = await api.checkAppInstall(req);
         logResponse('/apps/installed/check', res.toJson());
         resultCollector.addSuccess('Check Install', Duration.zero);
       } catch (e) {
-        resultCollector.addFailure('Check Install', e.toString(), Duration.zero);
+        resultCollector.addFailure(
+            'Check Install', e.toString(), Duration.zero);
       }
     });
 
     test('POST /apps/installed/conf - Get Install Config', () async {
       if (!hasApiKey || targetApp == null) return;
       try {
-        final config = await api.getAppInstallConfig(targetApp!.name!, targetApp!.key!);
+        final config =
+            await api.getAppInstallConfig(targetApp!.name!, targetApp!.key!);
         logResponse('/apps/installed/conf', config.keys.toList());
         resultCollector.addSuccess('Get Install Config', Duration.zero);
       } catch (e) {
         debugPrint('⚠️ Get Install Config failed: $e');
-        resultCollector.addSuccess('Get Install Config (Warning)', Duration.zero);
+        resultCollector.addSuccess(
+            'Get Install Config (Warning)', Duration.zero);
       }
     });
 
@@ -240,9 +262,10 @@ void main() {
       try {
         // Check limits
         final installedList = await api.getInstalledApps();
-        final installedCount = installedList.where((app) => app.appKey == targetApp!.key).length;
+        final installedCount =
+            installedList.where((app) => app.appKey == targetApp!.key).length;
         final limit = targetApp!.limit ?? 0;
-        
+
         if (limit > 0 && installedCount >= limit) {
           resultCollector.addSkipped(testName, 'App limit reached');
           return;
@@ -253,19 +276,19 @@ void main() {
           name: installName,
           type: appType,
           advanced: false,
-          params: {}, 
+          params: {},
           allowPort: true,
         );
-        
+
         debugPrint('🚀 Starting installation of $installName...');
         final info = await api.installApp(request);
         installedAppId = info.id;
-        
+
         expect(installedAppId, isNotNull);
         debugPrint('✅ Installation started. ID: $installedAppId');
-        
+
         await waitForStatus(installedAppId!, 'Running');
-        
+
         resultCollector.addSuccess(testName, Duration.zero);
       } catch (e) {
         resultCollector.addFailure(testName, e.toString(), Duration.zero);
@@ -283,7 +306,8 @@ void main() {
         logResponse('/apps/installed/list', 'Found ${list.length} apps');
         resultCollector.addSuccess('List Installed', Duration.zero);
       } catch (e) {
-        resultCollector.addFailure('List Installed', e.toString(), Duration.zero);
+        resultCollector.addFailure(
+            'List Installed', e.toString(), Duration.zero);
       }
     });
 
@@ -295,7 +319,8 @@ void main() {
         expect(info.id, equals(installedAppId));
         resultCollector.addSuccess('Get Install Info', Duration.zero);
       } catch (e) {
-        resultCollector.addFailure('Get Install Info', e.toString(), Duration.zero);
+        resultCollector.addFailure(
+            'Get Install Info', e.toString(), Duration.zero);
       }
     });
 
@@ -307,7 +332,8 @@ void main() {
         expect(params, isNotNull);
         resultCollector.addSuccess('Get Install Params', Duration.zero);
       } catch (e) {
-        resultCollector.addFailure('Get Install Params', e.toString(), Duration.zero);
+        resultCollector.addFailure(
+            'Get Install Params', e.toString(), Duration.zero);
       }
     });
 
@@ -318,7 +344,8 @@ void main() {
         logResponse('/apps/installed/conninfo', info);
         resultCollector.addSuccess('Get Conn Info', Duration.zero);
       } catch (e) {
-        resultCollector.addFailure('Get Conn Info', e.toString(), Duration.zero);
+        resultCollector.addFailure(
+            'Get Conn Info', e.toString(), Duration.zero);
       }
     });
 
@@ -326,53 +353,58 @@ void main() {
       if (!hasApiKey || installedAppId == null) return;
       try {
         debugPrint('⏹ Stopping app...');
-        await api.operateApp(AppInstalledOperateRequest(installId: installedAppId!, operate: 'stop'));
+        await api.operateApp(AppInstalledOperateRequest(
+            installId: installedAppId!, operate: 'stop'));
         await waitForStatus(installedAppId!, 'Stopped');
-        
+
         debugPrint('▶️ Starting app...');
-        await api.operateApp(AppInstalledOperateRequest(installId: installedAppId!, operate: 'start'));
+        await api.operateApp(AppInstalledOperateRequest(
+            installId: installedAppId!, operate: 'start'));
         await waitForStatus(installedAppId!, 'Running');
-        
+
         debugPrint('🔄 Restarting app...');
-        await api.operateApp(AppInstalledOperateRequest(installId: installedAppId!, operate: 'restart'));
+        await api.operateApp(AppInstalledOperateRequest(
+            installId: installedAppId!, operate: 'restart'));
         await waitForStatus(installedAppId!, 'Running');
-        
+
         resultCollector.addSuccess('App Operations', Duration.zero);
       } catch (e) {
-        resultCollector.addFailure('App Operations', e.toString(), Duration.zero);
+        resultCollector.addFailure(
+            'App Operations', e.toString(), Duration.zero);
       }
     });
-    
+
     test('POST /apps/installed/params/update - Update Params', () async {
       if (!hasApiKey || installedAppId == null) return;
       try {
-         final config = await api.getAppInstallParams(installedAppId!);
-         logResponse('getAppInstallParams', config.toJson());
-         
-         // Construct update request: transform params list to map
-         final paramsMap = <String, dynamic>{};
-         for (var p in config.params) {
-           paramsMap[p.key] = p.value;
-         }
+        final config = await api.getAppInstallParams(installedAppId!);
+        logResponse('getAppInstallParams', config.toJson());
 
-         final updateReq = AppInstalledParamsUpdateRequest(
-           installId: installedAppId!,
-           cpuQuota: config.cpuQuota,
-           memoryLimit: config.memoryLimit,
-           memoryUnit: config.memoryUnit,
-           containerName: config.containerName,
-           allowPort: config.allowPort,
-           dockerCompose: config.dockerCompose,
-           hostMode: config.hostMode,
-           type: config.type,
-           webUI: config.webUI,
-           params: paramsMap,
-         );
+        // Construct update request: transform params list to map
+        final paramsMap = <String, dynamic>{};
+        for (var p in config.params) {
+          paramsMap[p.key] = p.value;
+        }
 
-         await api.updateAppParams(updateReq);
-         resultCollector.addSuccess('Update Params', Duration.zero);
+        final updateReq = AppInstalledParamsUpdateRequest(
+          installId: installedAppId!,
+          cpuQuota: config.cpuQuota,
+          memoryLimit: config.memoryLimit,
+          memoryUnit: config.memoryUnit,
+          containerName: config.containerName,
+          allowPort: config.allowPort,
+          dockerCompose: config.dockerCompose,
+          hostMode: config.hostMode,
+          type: config.type,
+          webUI: config.webUI,
+          params: paramsMap,
+        );
+
+        await api.updateAppParams(updateReq);
+        resultCollector.addSuccess('Update Params', Duration.zero);
       } catch (e) {
-        resultCollector.addFailure('Update Params', e.toString(), Duration.zero);
+        resultCollector.addFailure(
+            'Update Params', e.toString(), Duration.zero);
       }
     });
 
@@ -388,7 +420,8 @@ void main() {
         );
         resultCollector.addSuccess('Update Config', Duration.zero);
       } catch (e) {
-        resultCollector.addFailure('Update Config', e.toString(), Duration.zero);
+        resultCollector.addFailure(
+            'Update Config', e.toString(), Duration.zero);
       }
     });
 
@@ -397,7 +430,8 @@ void main() {
       try {
         final info = await api.getAppInstallInfo(installedAppId.toString());
         if (info.appKey == null || info.name == null) {
-          resultCollector.addSkipped('Change Port', 'Missing app key or install name');
+          resultCollector.addSkipped(
+              'Change Port', 'Missing app key or install name');
           return;
         }
         final int currentPort = info.httpPort ?? info.httpsPort ?? 0;
@@ -428,7 +462,8 @@ void main() {
         logResponse('/apps/services/:key', services.length);
         resultCollector.addSuccess('Get App Services', Duration.zero);
       } catch (e) {
-        resultCollector.addFailure('Get App Services', e.toString(), Duration.zero);
+        resultCollector.addFailure(
+            'Get App Services', e.toString(), Duration.zero);
       }
     });
 
@@ -439,11 +474,13 @@ void main() {
         logResponse('/core/settings/apps/store/config', config.toJson());
         resultCollector.addSuccess('Get Store Config', Duration.zero);
       } catch (e) {
-        resultCollector.addFailure('Get Store Config', e.toString(), Duration.zero);
+        resultCollector.addFailure(
+            'Get Store Config', e.toString(), Duration.zero);
       }
     });
 
-    test('POST /core/settings/apps/store/update - Update Store Config', () async {
+    test('POST /core/settings/apps/store/update - Update Store Config',
+        () async {
       if (!hasApiKey) return;
       try {
         final config = await api.getAppstoreConfig();
@@ -456,7 +493,8 @@ void main() {
         );
         resultCollector.addSuccess('Update Store Config', Duration.zero);
       } catch (e) {
-        resultCollector.addFailure('Update Store Config', e.toString(), Duration.zero);
+        resultCollector.addFailure(
+            'Update Store Config', e.toString(), Duration.zero);
       }
     });
 
@@ -467,7 +505,8 @@ void main() {
         logResponse('/apps/checkupdate', res.toJson());
         resultCollector.addSuccess('Check App Update', Duration.zero);
       } catch (e) {
-        resultCollector.addFailure('Check App Update', e.toString(), Duration.zero);
+        resultCollector.addFailure(
+            'Check App Update', e.toString(), Duration.zero);
       }
     });
   });
@@ -479,7 +518,8 @@ void main() {
         await api.syncAppStatus();
         resultCollector.addSuccess('Sync App Status', Duration.zero);
       } catch (e) {
-        resultCollector.addFailure('Sync App Status', e.toString(), Duration.zero);
+        resultCollector.addFailure(
+            'Sync App Status', e.toString(), Duration.zero);
       }
     });
 
@@ -488,15 +528,15 @@ void main() {
       try {
         await api.loadAppPort({
           'name': targetApp!.name,
-          'type': targetApp!.key, 
-        }); 
+          'type': targetApp!.key,
+        });
         resultCollector.addSuccess('Load App Port', Duration.zero);
       } catch (e) {
         debugPrint('⚠️ Load App Port warning: $e');
         resultCollector.addSuccess('Load App Port (Warning)', Duration.zero);
       }
     });
-    
+
     test('Ignore & Cancel Ignore Update', () async {
       if (!hasApiKey || installedAppId == null) return;
       try {
@@ -517,18 +557,21 @@ void main() {
 
         resultCollector.addSuccess('Ignore/Cancel Update', Duration.zero);
       } catch (e) {
-        resultCollector.addFailure('Ignore/Cancel Update', e.toString(), Duration.zero);
+        resultCollector.addFailure(
+            'Ignore/Cancel Update', e.toString(), Duration.zero);
       }
     });
-    
+
     test('Get Update Versions', () async {
       if (!hasApiKey || installedAppId == null) return;
       try {
-        final versions = await api.getAppUpdateVersions(installedAppId.toString());
+        final versions =
+            await api.getAppUpdateVersions(installedAppId.toString());
         logResponse('getAppUpdateVersions', versions.length);
         resultCollector.addSuccess('Get Update Versions', Duration.zero);
       } catch (e) {
-        resultCollector.addFailure('Get Update Versions', e.toString(), Duration.zero);
+        resultCollector.addFailure(
+            'Get Update Versions', e.toString(), Duration.zero);
       }
     });
 
@@ -537,12 +580,12 @@ void main() {
       final testName = 'Uninstall App';
       try {
         debugPrint('🗑 Uninstalling app...');
-        
+
         final check = await api.checkAppUninstall(installedAppId.toString());
         logResponse('checkAppUninstall', check);
 
         await api.uninstallApp(installedAppId.toString());
-        
+
         // Wait for removal
         bool removed = false;
         for (int i = 0; i < 20; i++) {
@@ -553,7 +596,7 @@ void main() {
           }
           await Future.delayed(const Duration(seconds: 2));
         }
-        
+
         expect(removed, isTrue);
         debugPrint('✅ App uninstalled successfully');
         resultCollector.addSuccess(testName, Duration.zero);
@@ -567,7 +610,8 @@ void main() {
   group('Edge Cases', () {
     test('Get App Icon - Invalid ID (404/500)', () async {
       if (!hasApiKey) {
-        resultCollector.addSkipped('Get App Icon - Invalid ID (404/500)', 'API key not configured');
+        resultCollector.addSkipped(
+            'Get App Icon - Invalid ID (404/500)', 'API key not configured');
         return;
       }
       try {
@@ -580,7 +624,8 @@ void main() {
 
     test('Get App Detail - Invalid ID', () async {
       if (!hasApiKey) {
-        resultCollector.addSkipped('Get App Detail - Invalid ID', 'API key not configured');
+        resultCollector.addSkipped(
+            'Get App Detail - Invalid ID', 'API key not configured');
         return;
       }
       try {
@@ -594,7 +639,8 @@ void main() {
 
     test('Install App - Missing Required Fields', () async {
       if (!hasApiKey) {
-        resultCollector.addSkipped('Install App - Missing Required Fields', 'API key not configured');
+        resultCollector.addSkipped(
+            'Install App - Missing Required Fields', 'API key not configured');
         return;
       }
       try {

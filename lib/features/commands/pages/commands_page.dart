@@ -32,7 +32,8 @@ class _CommandsPageState extends State<CommandsPage> {
     super.initState();
     _searchController = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !context.read<CurrentServerController>().hasServer) return;
+      if (!mounted || !context.read<CurrentServerController>().hasServer)
+        return;
       context.read<CommandsProvider>().load();
     });
   }
@@ -51,7 +52,8 @@ class _CommandsPageState extends State<CommandsPage> {
         final selectionMode = provider.hasSelection;
         return ServerAwarePageScaffold(
           title: l10n.operationsCommandsTitle,
-          onServerChanged: () => context.read<CommandsProvider>().load(forceRefresh: true),
+          onServerChanged: () =>
+              context.read<CommandsProvider>().load(forceRefresh: true),
           actions: <Widget>[
             if (selectionMode)
               IconButton(
@@ -77,7 +79,9 @@ class _CommandsPageState extends State<CommandsPage> {
               tooltip: l10n.commandsGroupFilterAction,
             ),
             IconButton(
-              onPressed: provider.isLoading ? null : () => provider.load(forceRefresh: true),
+              onPressed: provider.isLoading
+                  ? null
+                  : () => provider.load(forceRefresh: true),
               icon: const Icon(Icons.refresh),
               tooltip: l10n.commonRefresh,
             ),
@@ -160,7 +164,9 @@ class _CommandsPageState extends State<CommandsPage> {
       (group) => group.id == provider.selectedGroupId,
       orElse: () => provider.groups.first,
     );
-    return match.name?.trim().isNotEmpty == true ? match.name! : context.l10n.operationsGroupDefaultLabel;
+    return match.name?.trim().isNotEmpty == true
+        ? match.name!
+        : context.l10n.operationsGroupDefaultLabel;
   }
 
   String _commandGroupLabel(CommandInfo item, dynamic l10n) {
@@ -173,7 +179,8 @@ class _CommandsPageState extends State<CommandsPage> {
   Future<void> _copyCommand(CommandInfo item) async {
     await Clipboard.setData(ClipboardData(text: item.command ?? ''));
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.l10n.commonCopySuccess)));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(context.l10n.commonCopySuccess)));
   }
 
   Future<void> _pickImportFile() async {

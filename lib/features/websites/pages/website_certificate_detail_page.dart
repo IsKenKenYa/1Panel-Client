@@ -16,7 +16,9 @@ class WebsiteCertificateDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => WebsiteCertificateDetailProvider(certificateId: certificateId)..load(),
+      create: (_) =>
+          WebsiteCertificateDetailProvider(certificateId: certificateId)
+            ..load(),
       child: const _WebsiteCertificateDetailBody(),
     );
   }

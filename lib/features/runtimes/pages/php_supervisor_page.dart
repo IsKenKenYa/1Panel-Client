@@ -472,12 +472,12 @@ class _PhpSupervisorPageState extends State<PhpSupervisorPage> {
         TextEditingController(text: initial?.command ?? '');
     final userController = TextEditingController(
       text: initial == null
-        ? 'www-data'
-        : (initial.user.trim().isEmpty ? 'www-data' : initial.user),
+          ? 'www-data'
+          : (initial.user.trim().isEmpty ? 'www-data' : initial.user),
     );
     final dirController = TextEditingController(text: initial?.dir ?? '');
     final numprocsController = TextEditingController(
-        text: initial == null
+      text: initial == null
           ? '1'
           : (initial.numprocs.trim().isEmpty ? '1' : initial.numprocs),
     );

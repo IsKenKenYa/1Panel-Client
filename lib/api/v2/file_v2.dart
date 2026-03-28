@@ -36,7 +36,8 @@ class FileV2Api {
       ApiConstants.buildApiPath('/files/search'),
       data: request.toJson(),
     );
-    final fileResponse = FileSearchResponse.fromJson(response.data as Map<String, dynamic>);
+    final fileResponse =
+        FileSearchResponse.fromJson(response.data as Map<String, dynamic>);
     return Response(
       data: fileResponse.items,
       statusCode: response.statusCode,
@@ -300,7 +301,8 @@ class FileV2Api {
   /// 分块下载大文件
   /// @param request 分块下载请求
   /// @return 分块内容
-  Future<Response<FileChunkData>> chunkDownload(FileChunkDownload request) async {
+  Future<Response<FileChunkData>> chunkDownload(
+      FileChunkDownload request) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/files/chunkdownload'),
       data: request.toJson(),
@@ -360,26 +362,33 @@ class FileV2Api {
   /// 搜索收藏的文件或目录
   /// @param request 搜索请求
   /// @return 收藏文件列表
-  Future<Response<List<FileInfo>>> searchFavoriteFiles(FileSearch request) async {
+  Future<Response<List<FileInfo>>> searchFavoriteFiles(
+      FileSearch request) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/files/favorite/search'),
       data: request.toJson(),
     );
     final responseData = response.data;
     List<FileInfo> files = [];
-    
+
     if (responseData is Map<String, dynamic>) {
       final dataWrapper = responseData['data'];
       if (dataWrapper is Map<String, dynamic>) {
         final itemsRaw = dataWrapper['items'];
         if (itemsRaw is List) {
-          files = itemsRaw.map((item) => FileInfo.fromJson(item as Map<String, dynamic>)).toList();
+          files = itemsRaw
+              .map((item) => FileInfo.fromJson(item as Map<String, dynamic>))
+              .toList();
         }
       } else if (dataWrapper is List) {
-        files = dataWrapper.map((item) => FileInfo.fromJson(item as Map<String, dynamic>)).toList();
+        files = dataWrapper
+            .map((item) => FileInfo.fromJson(item as Map<String, dynamic>))
+            .toList();
       }
     } else if (responseData is List) {
-      files = responseData.map((item) => FileInfo.fromJson(item as Map<String, dynamic>)).toList();
+      files = responseData
+          .map((item) => FileInfo.fromJson(item as Map<String, dynamic>))
+          .toList();
     }
     return Response(
       data: files,
@@ -463,7 +472,8 @@ class FileV2Api {
   /// 减少回收站大小（删除最旧的文件）
   /// @param request 减少请求
   /// @return 减少结果
-  Future<Response<FileRecycleResult>> reduceRecycleBin(FileRecycleReduce request) async {
+  Future<Response<FileRecycleResult>> reduceRecycleBin(
+      FileRecycleReduce request) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/files/recycle/reduce'),
       data: request.toJson(),
@@ -481,7 +491,8 @@ class FileV2Api {
   /// 从回收站恢复文件到原路径
   /// @param request 恢复请求
   /// @return 恢复结果
-  Future<Response> restoreRecycleBinFile(RecycleBinReduceRequest request) async {
+  Future<Response> restoreRecycleBinFile(
+      RecycleBinReduceRequest request) async {
     return await _client.post(
       ApiConstants.buildApiPath('/files/recycle/reduce'),
       data: request.toJson(),
@@ -501,19 +512,25 @@ class FileV2Api {
     final data = response.data;
     List<FileInfo> files = [];
     if (data is List) {
-      files = data.map((item) => FileInfo.fromJson(item as Map<String, dynamic>)).toList();
+      files = data
+          .map((item) => FileInfo.fromJson(item as Map<String, dynamic>))
+          .toList();
     } else if (data is Map<String, dynamic>) {
       final dataWrapper = data['data'];
       if (dataWrapper is Map<String, dynamic>) {
         final itemsRaw = dataWrapper['items'];
         if (itemsRaw is List) {
-          files = itemsRaw.map((item) => FileInfo.fromJson(item as Map<String, dynamic>)).toList();
+          files = itemsRaw
+              .map((item) => FileInfo.fromJson(item as Map<String, dynamic>))
+              .toList();
         }
       }
       if (files.isEmpty) {
         final itemsRaw = data['items'] ?? data['files'];
         if (itemsRaw is List) {
-          files = itemsRaw.map((item) => FileInfo.fromJson(item as Map<String, dynamic>)).toList();
+          files = itemsRaw
+              .map((item) => FileInfo.fromJson(item as Map<String, dynamic>))
+              .toList();
         }
       }
     }
@@ -594,7 +611,8 @@ class FileV2Api {
   /// 搜索已上传的文件
   /// @param request 搜索请求
   /// @return 上传文件列表
-  Future<Response<List<FileInfo>>> searchUploadedFiles(FileSearch request) async {
+  Future<Response<List<FileInfo>>> searchUploadedFiles(
+      FileSearch request) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/files/upload/search'),
       data: request.toJson(),
@@ -603,20 +621,28 @@ class FileV2Api {
     final data = response.data;
     List<FileInfo> files = [];
     if (data is List) {
-      files = data.map((item) => FileInfo.fromJson(item as Map<String, dynamic>)).toList();
+      files = data
+          .map((item) => FileInfo.fromJson(item as Map<String, dynamic>))
+          .toList();
     } else if (data is Map<String, dynamic>) {
       var itemsRaw = data['items'] ?? data['data'];
-      
+
       if (itemsRaw is List) {
-        files = itemsRaw.map((item) => FileInfo.fromJson(item as Map<String, dynamic>)).toList();
+        files = itemsRaw
+            .map((item) => FileInfo.fromJson(item as Map<String, dynamic>))
+            .toList();
       } else if (itemsRaw is Map<String, dynamic>) {
-         // Handle case where items might be wrapped in another object or pagination
-         // Try to find a list inside
-         if (itemsRaw['items'] is List) {
-           files = (itemsRaw['items'] as List).map((item) => FileInfo.fromJson(item as Map<String, dynamic>)).toList();
-         } else if (itemsRaw['data'] is List) {
-           files = (itemsRaw['data'] as List).map((item) => FileInfo.fromJson(item as Map<String, dynamic>)).toList();
-         }
+        // Handle case where items might be wrapped in another object or pagination
+        // Try to find a list inside
+        if (itemsRaw['items'] is List) {
+          files = (itemsRaw['items'] as List)
+              .map((item) => FileInfo.fromJson(item as Map<String, dynamic>))
+              .toList();
+        } else if (itemsRaw['data'] is List) {
+          files = (itemsRaw['data'] as List)
+              .map((item) => FileInfo.fromJson(item as Map<String, dynamic>))
+              .toList();
+        }
       }
     }
     return Response(
@@ -685,7 +711,8 @@ class FileV2Api {
   /// 获取多个文件或目录的大小
   /// @param request 多文件大小请求
   /// @return 多文件大小信息
-  Future<Response<FileDepthSizeInfo>> getDepthSize(FileDepthSizeRequest request) async {
+  Future<Response<FileDepthSizeInfo>> getDepthSize(
+      FileDepthSizeRequest request) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/files/depth/size'),
       data: request.toJson(),
@@ -709,10 +736,16 @@ class FileV2Api {
     final data = response.data;
     List<FileMountInfo> mounts = [];
     if (data is List) {
-      mounts = data.map((item) => FileMountInfo.fromJson(item as Map<String, dynamic>)).toList();
+      mounts = data
+          .map((item) => FileMountInfo.fromJson(item as Map<String, dynamic>))
+          .toList();
     } else if (data is Map<String, dynamic>) {
       final items = data['items'] as List? ?? data['data'] as List?;
-      mounts = items?.map((item) => FileMountInfo.fromJson(item as Map<String, dynamic>)).toList() ?? [];
+      mounts = items
+              ?.map((item) =>
+                  FileMountInfo.fromJson(item as Map<String, dynamic>))
+              .toList() ??
+          [];
     }
     return Response(
       data: mounts,
@@ -749,7 +782,8 @@ class FileV2Api {
       ApiConstants.buildApiPath('/files/user/group'),
     );
     return Response(
-      data: FileUserGroupResponse.fromJson(response.data as Map<String, dynamic>),
+      data:
+          FileUserGroupResponse.fromJson(response.data as Map<String, dynamic>),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -761,13 +795,15 @@ class FileV2Api {
   /// 批量检查文件是否存在
   /// @param request 批量检查请求
   /// @return 批量检查结果
-  Future<Response<FileBatchCheckResult>> batchCheckFiles(FileBatchCheckRequest request) async {
+  Future<Response<FileBatchCheckResult>> batchCheckFiles(
+      FileBatchCheckRequest request) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/files/batch/check'),
       data: request.toJson(),
     );
     return Response(
-      data: FileBatchCheckResult.fromJson(response.data as Map<String, dynamic>),
+      data:
+          FileBatchCheckResult.fromJson(response.data as Map<String, dynamic>),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,

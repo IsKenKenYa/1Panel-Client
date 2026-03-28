@@ -33,7 +33,7 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
   // Actually AppInstallCreateRequest.services is Map<String, String>
   // Let's assume Key = Service Name/Internal Port, Value = External Port
   final List<_MapEntryController> _services = [];
-  
+
   // Params (Env): key = env name, value = env value
   final List<_MapEntryController> _params = [];
 
@@ -194,7 +194,8 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context).appOperateFailed(e.toString())),
+            content: Text(
+                AppLocalizations.of(context).appOperateFailed(e.toString())),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -235,7 +236,8 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
                 },
               ),
               const SizedBox(height: 16),
-              if (widget.app.versions != null && widget.app.versions!.isNotEmpty)
+              if (widget.app.versions != null &&
+                  widget.app.versions!.isNotEmpty)
                 DropdownButtonFormField<String>(
                   initialValue: _selectedVersion,
                   decoration: InputDecoration(
@@ -245,7 +247,9 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
                   items: widget.app.versions!.map((v) {
                     return DropdownMenuItem(value: v, child: Text(v));
                   }).toList(),
-                  onChanged: (_isLoading || _isCheckingVersion) ? null : _handleVersionChanged,
+                  onChanged: (_isLoading || _isCheckingVersion)
+                      ? null
+                      : _handleVersionChanged,
                 ),
               const SizedBox(height: 16),
               SwitchListTile(
@@ -276,7 +280,8 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
                           border: const OutlineInputBorder(),
                           suffixText: 'Core',
                         ),
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true),
                       ),
                     ),
                     const SizedBox(width: 16),

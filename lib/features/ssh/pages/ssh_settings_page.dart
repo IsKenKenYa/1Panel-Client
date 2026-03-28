@@ -26,7 +26,8 @@ class _SshSettingsPageState extends State<SshSettingsPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !context.read<CurrentServerController>().hasServer) return;
+      if (!mounted || !context.read<CurrentServerController>().hasServer)
+        return;
       context.read<SshSettingsProvider>().load();
     });
   }
@@ -260,7 +261,8 @@ class _SshSettingsPageState extends State<SshSettingsPage> {
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
-                  onPressed: () => Navigator.of(context).pop(controller.text.trim()),
+                  onPressed: () =>
+                      Navigator.of(context).pop(controller.text.trim()),
                   child: Text(context.l10n.commonConfirm),
                 ),
               ),
@@ -294,6 +296,8 @@ class _SshSettingsPageState extends State<SshSettingsPage> {
       confirmLabel: context.l10n.commonSave,
     );
     if (!confirmed || !mounted) return;
-    await context.read<SshSettingsProvider>().saveRawConfig(_rawFileController.text);
+    await context
+        .read<SshSettingsProvider>()
+        .saveRawConfig(_rawFileController.text);
   }
 }

@@ -95,7 +95,8 @@ class _TerminalPageState extends State<TerminalPage> {
             )
           : ListView.separated(
               itemCount: _items.length,
-              separatorBuilder: (_, __) => const SizedBox(height: AppDesignTokens.spacingSm),
+              separatorBuilder: (_, __) =>
+                  const SizedBox(height: AppDesignTokens.spacingSm),
               itemBuilder: (context, index) {
                 final item = _items[index];
                 return AppCard(

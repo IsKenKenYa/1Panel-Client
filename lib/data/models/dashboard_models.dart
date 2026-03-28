@@ -19,8 +19,16 @@ class ProcessInfo extends Equatable {
     return ProcessInfo(
       pid: json['pid'] as int? ?? 0,
       name: json['name'] as String? ?? json['cmd'] as String? ?? '',
-      cpuPercent: (json['percent'] as num? ?? json['cpuPercent'] as num? ?? json['cpu'] as num?)?.toDouble() ?? 0.0,
-      memoryPercent: (json['memoryPercent'] as num? ?? json['mem'] as num? ?? json['memory'] as num?)?.toDouble() ?? 0.0,
+      cpuPercent: (json['percent'] as num? ??
+                  json['cpuPercent'] as num? ??
+                  json['cpu'] as num?)
+              ?.toDouble() ??
+          0.0,
+      memoryPercent: (json['memoryPercent'] as num? ??
+                  json['mem'] as num? ??
+                  json['memory'] as num?)
+              ?.toDouble() ??
+          0.0,
       user: json['user'] as String?,
     );
   }

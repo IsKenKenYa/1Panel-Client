@@ -10,8 +10,9 @@ void main() {
 
   setUpAll(() async {
     await TestEnvironment.initialize();
-    hasApiKey = TestEnvironment.apiKey.isNotEmpty && TestEnvironment.apiKey != 'your_api_key_here';
-    
+    hasApiKey = TestEnvironment.apiKey.isNotEmpty &&
+        TestEnvironment.apiKey != 'your_api_key_here';
+
     if (hasApiKey) {
       client = DioClient(
         baseUrl: TestEnvironment.baseUrl,
@@ -28,13 +29,20 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('测试不同的order参数值');
       debugPrint('========================================');
-      
-      final orderValues = ['asc', 'desc', 'ASC', 'DESC', 'ascending', 'descending'];
-      
+
+      final orderValues = [
+        'asc',
+        'desc',
+        'ASC',
+        'DESC',
+        'ascending',
+        'descending'
+      ];
+
       for (final order in orderValues) {
         debugPrint('\n--- 测试 order = "$order" ---');
         try {
@@ -48,8 +56,9 @@ void main() {
             },
           );
           final responseData = response.data as Map<String, dynamic>;
-          debugPrint('响应: code=${responseData['code']}, message=${responseData['message']}');
-          
+          debugPrint(
+              '响应: code=${responseData['code']}, message=${responseData['message']}');
+
           if (responseData['code'] == 200 && responseData['data'] != null) {
             final data = responseData['data'] as Map<String, dynamic>;
             final items = data['items'] as List<dynamic>? ?? [];
@@ -59,7 +68,7 @@ void main() {
           debugPrint('错误: $e');
         }
       }
-      
+
       debugPrint('========================================\n');
     });
 
@@ -70,11 +79,11 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('测试不同的参数结构');
       debugPrint('========================================');
-      
+
       final testCases = [
         {
           'desc': '扁平结构',
@@ -119,7 +128,7 @@ void main() {
           }
         },
       ];
-      
+
       for (final testCase in testCases) {
         debugPrint('\n--- ${testCase['desc']} ---');
         debugPrint('参数: ${jsonEncode(testCase['data'])}');
@@ -129,8 +138,9 @@ void main() {
             data: testCase['data'],
           );
           final responseData = response.data as Map<String, dynamic>;
-          debugPrint('响应: code=${responseData['code']}, message=${responseData['message']}');
-          
+          debugPrint(
+              '响应: code=${responseData['code']}, message=${responseData['message']}');
+
           if (responseData['code'] == 200 && responseData['data'] != null) {
             final data = responseData['data'] as Map<String, dynamic>;
             final items = data['items'] as List<dynamic>? ?? [];
@@ -140,7 +150,7 @@ void main() {
           debugPrint('错误: $e');
         }
       }
-      
+
       debugPrint('========================================\n');
     });
 
@@ -151,20 +161,23 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('测试快照创建');
       debugPrint('========================================');
-      
+
       final createResponse = await dio.post(
         '/api/v2/settings/snapshot/create',
-        data: {'description': 'API Test ${DateTime.now().millisecondsSinceEpoch}'},
+        data: {
+          'description': 'API Test ${DateTime.now().millisecondsSinceEpoch}'
+        },
       );
-      
+
       final createData = createResponse.data as Map<String, dynamic>;
-      debugPrint('创建响应: code=${createData['code']}, message=${createData['message']}');
+      debugPrint(
+          '创建响应: code=${createData['code']}, message=${createData['message']}');
       debugPrint('创建成功: ${createData['code'] == 200}');
-      
+
       debugPrint('========================================\n');
     });
   });

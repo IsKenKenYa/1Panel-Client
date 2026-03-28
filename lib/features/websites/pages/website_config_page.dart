@@ -11,7 +11,8 @@ class WebsiteConfigPage extends StatelessWidget {
   final int websiteId;
   final String? displayName;
 
-  const WebsiteConfigPage({super.key, required this.websiteId, this.displayName});
+  const WebsiteConfigPage(
+      {super.key, required this.websiteId, this.displayName});
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +70,8 @@ class _WebsiteConfigBodyState extends State<_WebsiteConfigBody> {
         }
 
         final configContent = provider.nginxConfigFile?.content ?? '';
-        if (_configController.text.isEmpty || _configController.text == configContent) {
+        if (_configController.text.isEmpty ||
+            _configController.text == configContent) {
           _configController.text = configContent;
         }
 
@@ -103,7 +105,8 @@ class _WebsiteConfigBodyState extends State<_WebsiteConfigBody> {
               _PhpVersionCard(
                 controller: _runtimeIdController,
                 onUpdate: () async {
-                  final runtimeId = int.tryParse(_runtimeIdController.text.trim());
+                  final runtimeId =
+                      int.tryParse(_runtimeIdController.text.trim());
                   await provider.updatePhpVersion(runtimeId);
                   if (!context.mounted) return;
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -139,7 +142,8 @@ class _ConfigEditorCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(l10n.websitesConfigEditorTitle, style: Theme.of(context).textTheme.titleMedium),
+            Text(l10n.websitesConfigEditorTitle,
+                style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 12),
             Row(
               children: [
@@ -197,7 +201,8 @@ class _ScopeCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(l10n.websitesConfigScopeTitle, style: Theme.of(context).textTheme.titleMedium),
+            Text(l10n.websitesConfigScopeTitle,
+                style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 12),
             DropdownButtonFormField<NginxKey>(
               initialValue: scope,
@@ -206,7 +211,8 @@ class _ScopeCard extends StatelessWidget {
                 border: const OutlineInputBorder(),
               ),
               items: NginxKey.values
-                  .map((key) => DropdownMenuItem(value: key, child: Text(key.value)))
+                  .map((key) =>
+                      DropdownMenuItem(value: key, child: Text(key.value)))
                   .toList(),
               onChanged: (value) {
                 if (value != null) {
@@ -229,18 +235,23 @@ class _ScopeCard extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(param.name ?? '-', style: Theme.of(context).textTheme.titleSmall),
+                              Text(param.name ?? '-',
+                                  style:
+                                      Theme.of(context).textTheme.titleSmall),
                               const SizedBox(height: 6),
                               Wrap(
                                 spacing: 6,
                                 runSpacing: 6,
-                                children: param.params.map((item) => Chip(label: Text(item))).toList(),
+                                children: param.params
+                                    .map((item) => Chip(label: Text(item)))
+                                    .toList(),
                               ),
                             ],
                           ),
                         ),
                         TextButton(
-                          onPressed: () => _showEditDialog(context, param, params),
+                          onPressed: () =>
+                              _showEditDialog(context, param, params),
                           child: Text(l10n.commonEdit),
                         ),
                       ],
@@ -254,7 +265,8 @@ class _ScopeCard extends StatelessWidget {
     );
   }
 
-  Future<void> _showEditDialog(BuildContext context, WebsiteNginxParam param, List<WebsiteNginxParam> allParams) async {
+  Future<void> _showEditDialog(BuildContext context, WebsiteNginxParam param,
+      List<WebsiteNginxParam> allParams) async {
     final l10n = context.l10n;
     final controller = TextEditingController(text: param.params.join(','));
     await showDialog<void>(
@@ -282,7 +294,9 @@ class _ScopeCard extends StatelessWidget {
                   .toList();
               Navigator.of(ctx).pop();
               final updated = param.copyWith(params: values);
-              final next = allParams.map((item) => item.name == updated.name ? updated : item).toList();
+              final next = allParams
+                  .map((item) => item.name == updated.name ? updated : item)
+                  .toList();
               await onEdit(next);
             },
             child: Text(l10n.commonSave),
@@ -309,7 +323,8 @@ class _PhpVersionCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(l10n.websitesPhpVersionTitle, style: Theme.of(context).textTheme.titleMedium),
+            Text(l10n.websitesPhpVersionTitle,
+                style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 12),
             TextField(
               controller: controller,

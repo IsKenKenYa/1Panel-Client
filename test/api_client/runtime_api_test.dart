@@ -26,7 +26,8 @@ void _logSection(
   Object? request,
   Object? response,
 }) {
-  appLogger.dWithPackage('test.api_client.runtime', '========================================');
+  appLogger.dWithPackage(
+      'test.api_client.runtime', '========================================');
   appLogger.dWithPackage('test.api_client.runtime', title);
   if (method != null && path != null) {
     appLogger.dWithPackage('test.api_client.runtime', 'Request: $method $path');
@@ -43,7 +44,8 @@ void _logSection(
       'Response: ${_prettyJson(response)}',
     );
   }
-  appLogger.dWithPackage('test.api_client.runtime', '========================================');
+  appLogger.dWithPackage(
+      'test.api_client.runtime', '========================================');
 }
 
 Future<Response<Map<String, dynamic>>> _rawGet(DioClient client, String path) {
@@ -83,7 +85,8 @@ void main() {
   group('Runtime API客户端测试', () {
     test('POST /runtimes/search 应该成功', () async {
       if (!canRun) {
-        appLogger.wWithPackage('test.api_client.runtime', '跳过测试: 未检测到可用 API Key');
+        appLogger.wWithPackage(
+            'test.api_client.runtime', '跳过测试: 未检测到可用 API Key');
         return;
       }
 
@@ -113,7 +116,8 @@ void main() {
 
     test('GET /runtimes/:id 应该成功', () async {
       if (!canRun) {
-        appLogger.wWithPackage('test.api_client.runtime', '跳过测试: 未检测到可用 API Key');
+        appLogger.wWithPackage(
+            'test.api_client.runtime', '跳过测试: 未检测到可用 API Key');
         return;
       }
 
@@ -121,7 +125,8 @@ void main() {
         const RuntimeSearch(page: 1, pageSize: 10),
       );
       if (runtimes.data == null || runtimes.data!.items.isEmpty) {
-        appLogger.wWithPackage('test.api_client.runtime', '测试环境暂无 runtime，跳过详情拉取');
+        appLogger.wWithPackage(
+            'test.api_client.runtime', '测试环境暂无 runtime，跳过详情拉取');
         return;
       }
 
@@ -147,7 +152,8 @@ void main() {
 
     test('修正后的 PHP 或 sync 接口应至少成功一条', () async {
       if (!canRun) {
-        appLogger.wWithPackage('test.api_client.runtime', '跳过测试: 未检测到可用 API Key');
+        appLogger.wWithPackage(
+            'test.api_client.runtime', '跳过测试: 未检测到可用 API Key');
         return;
       }
 
@@ -182,7 +188,8 @@ void main() {
         return;
       }
 
-      final raw = await _rawPost(client, '/runtimes/sync', data: const <String, dynamic>{});
+      final raw = await _rawPost(client, '/runtimes/sync',
+          data: const <String, dynamic>{});
       _logSection(
         '✅ Raw /runtimes/sync',
         method: 'POST',
@@ -203,7 +210,8 @@ void main() {
     test('create/update/delete/operate/remark stay behind destructive gate',
         () async {
       if (!canRun) {
-        appLogger.wWithPackage('test.api_client.runtime', '跳过测试: 未检测到可用 API Key');
+        appLogger.wWithPackage(
+            'test.api_client.runtime', '跳过测试: 未检测到可用 API Key');
         return;
       }
       final skipReason = TestEnvironment.skipDestructive();
@@ -216,13 +224,15 @@ void main() {
         const RuntimeSearch(page: 1, pageSize: 10),
       );
       if (runtimes.data == null || runtimes.data!.items.isEmpty) {
-        appLogger.wWithPackage('test.api_client.runtime', '跳过 destructive runtime：当前环境没有可用 runtime');
+        appLogger.wWithPackage('test.api_client.runtime',
+            '跳过 destructive runtime：当前环境没有可用 runtime');
         return;
       }
       final base = runtimes.data!.items.first;
       final runtimeId = base.id;
       if (runtimeId == null) {
-        appLogger.wWithPackage('test.api_client.runtime', '跳过 destructive runtime：候选 runtime 缺少 id');
+        appLogger.wWithPackage('test.api_client.runtime',
+            '跳过 destructive runtime：候选 runtime 缺少 id');
         return;
       }
 
@@ -249,7 +259,8 @@ void main() {
         request: remarkPayload.toJson(),
       );
 
-      await api.operateRuntime(RuntimeOperate(id: runtimeId, operate: 'restart'));
+      await api
+          .operateRuntime(RuntimeOperate(id: runtimeId, operate: 'restart'));
       _logSection(
         '✅ Parsed /runtimes/operate',
         request: RuntimeOperate(id: runtimeId, operate: 'restart').toJson(),

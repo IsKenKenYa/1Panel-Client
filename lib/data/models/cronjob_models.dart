@@ -94,7 +94,18 @@ class CronJobCreate extends Equatable {
   }
 
   @override
-  List<Object?> get props => [name, type, cronExpression, command, script, websiteId, databaseId, backupType, parameters, enable];
+  List<Object?> get props => [
+        name,
+        type,
+        cronExpression,
+        command,
+        script,
+        websiteId,
+        databaseId,
+        backupType,
+        parameters,
+        enable
+      ];
 }
 
 /// Cron job information model
@@ -157,7 +168,9 @@ class CronJobInfo extends Equatable {
       databaseName: json['databaseName'] as String?,
       backupType: json['backupType'] as String?,
       parameters: json['parameters'] as Map<String, dynamic>?,
-      status: json['status'] != null ? CronJobStatus.fromString(json['status'] as String) : null,
+      status: json['status'] != null
+          ? CronJobStatus.fromString(json['status'] as String)
+          : null,
       lastExecutionTime: json['lastExecutionTime'] as String?,
       nextExecutionTime: json['nextExecutionTime'] as String?,
       executionCount: json['executionCount'] as int?,
@@ -240,7 +253,9 @@ class CronJobSearch extends Equatable {
       pageSize: json['pageSize'] as int?,
       search: json['search'] as String?,
       type: json['type'] as String?,
-      status: json['status'] != null ? CronJobStatus.fromString(json['status'] as String) : null,
+      status: json['status'] != null
+          ? CronJobStatus.fromString(json['status'] as String)
+          : null,
     );
   }
 
@@ -303,7 +318,8 @@ class CronJobUpdate extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, cronExpression, command, script, parameters, enable];
+  List<Object?> get props =>
+      [id, name, cronExpression, command, script, parameters, enable];
 }
 
 /// Cron job operation model
@@ -391,7 +407,18 @@ class CronJobLog extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, cronJobId, cronJobName, status, startTime, endTime, duration, output, error, exitCode];
+  List<Object?> get props => [
+        id,
+        cronJobId,
+        cronJobName,
+        status,
+        startTime,
+        endTime,
+        duration,
+        output,
+        error,
+        exitCode
+      ];
 }
 
 /// Cron job statistics model
@@ -443,5 +470,14 @@ class CronJobStats extends Equatable {
   }
 
   @override
-  List<Object?> get props => [totalJobs, enabledJobs, disabledJobs, runningJobs, failedJobs, todayExecutions, weekExecutions, monthExecutions];
+  List<Object?> get props => [
+        totalJobs,
+        enabledJobs,
+        disabledJobs,
+        runningJobs,
+        failedJobs,
+        todayExecutions,
+        weekExecutions,
+        monthExecutions
+      ];
 }

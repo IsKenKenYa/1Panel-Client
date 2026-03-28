@@ -19,23 +19,31 @@ String _prettyJson(Object? data) {
   }
 }
 
-void _logSection(String title, {String? method, String? path, Object? request, Object? response}) {
-  appLogger.dWithPackage('test.api_client.website_config', '========================================');
+void _logSection(String title,
+    {String? method, String? path, Object? request, Object? response}) {
+  appLogger.dWithPackage('test.api_client.website_config',
+      '========================================');
   appLogger.dWithPackage('test.api_client.website_config', title);
   if (method != null && path != null) {
-    appLogger.dWithPackage('test.api_client.website_config', 'Request: $method $path');
+    appLogger.dWithPackage(
+        'test.api_client.website_config', 'Request: $method $path');
   }
   if (request != null) {
-    appLogger.dWithPackage('test.api_client.website_config', 'RequestBody: ${_prettyJson(request)}');
+    appLogger.dWithPackage('test.api_client.website_config',
+        'RequestBody: ${_prettyJson(request)}');
   }
   if (response != null) {
-    appLogger.dWithPackage('test.api_client.website_config', 'Response: ${_prettyJson(response)}');
+    appLogger.dWithPackage(
+        'test.api_client.website_config', 'Response: ${_prettyJson(response)}');
   }
-  appLogger.dWithPackage('test.api_client.website_config', '========================================');
+  appLogger.dWithPackage('test.api_client.website_config',
+      '========================================');
 }
 
-Future<Response<Map<String, dynamic>>> _rawPost(DioClient client, String path, {dynamic data}) {
-  return client.post<Map<String, dynamic>>(ApiConstants.buildApiPath(path), data: data);
+Future<Response<Map<String, dynamic>>> _rawPost(DioClient client, String path,
+    {dynamic data}) {
+  return client.post<Map<String, dynamic>>(ApiConstants.buildApiPath(path),
+      data: data);
 }
 
 void main() {
@@ -56,7 +64,8 @@ void main() {
 
   group('网站配置管理 API客户端测试', () {
     test('analyze_module_api 输出文件存在', () {
-      final file = File('docs/development/modules/网站配置管理/website_api_analysis.json');
+      final file =
+          File('docs/development/modules/网站配置管理/website_api_analysis.json');
       expect(file.existsSync(), isTrue);
       final jsonStr = file.readAsStringSync();
       final obj = jsonDecode(jsonStr) as Map<String, dynamic>;
@@ -66,13 +75,15 @@ void main() {
     test('GET /websites/:id/config/:type 应该成功或返回业务错误', () async {
       final skipReason = TestEnvironment.skipIntegration();
       if (skipReason != null) {
-        appLogger.wWithPackage('test.api_client.website_config', '跳过测试: $skipReason');
+        appLogger.wWithPackage(
+            'test.api_client.website_config', '跳过测试: $skipReason');
         return;
       }
 
       final websites = await api.getWebsites(page: 1, pageSize: 1);
       if (websites.items.isEmpty) {
-        appLogger.wWithPackage('test.api_client.website_config', '测试服务器暂无网站，跳过站点配置拉取');
+        appLogger.wWithPackage(
+            'test.api_client.website_config', '测试服务器暂无网站，跳过站点配置拉取');
         return;
       }
 
@@ -80,7 +91,8 @@ void main() {
       expect(websiteId, isNotNull);
 
       try {
-        final fileInfo = await api.getWebsiteConfigFile(id: websiteId!, type: 'nginx');
+        final fileInfo =
+            await api.getWebsiteConfigFile(id: websiteId!, type: 'nginx');
         _logSection('✅ Website nginx config', response: {
           'websiteId': websiteId,
           'name': fileInfo.name,
@@ -88,20 +100,23 @@ void main() {
           'contentLength': fileInfo.content?.length ?? 0,
         });
       } catch (e) {
-        appLogger.wWithPackage('test.api_client.website_config', '/websites/:id/config/:type 返回异常: $e');
+        appLogger.wWithPackage('test.api_client.website_config',
+            '/websites/:id/config/:type 返回异常: $e');
       }
     });
 
     test('POST /websites/config 应该成功', () async {
       final skipReason = TestEnvironment.skipIntegration();
       if (skipReason != null) {
-        appLogger.wWithPackage('test.api_client.website_config', '跳过测试: $skipReason');
+        appLogger.wWithPackage(
+            'test.api_client.website_config', '跳过测试: $skipReason');
         return;
       }
 
       final websites = await api.getWebsites(page: 1, pageSize: 1);
       if (websites.items.isEmpty) {
-        appLogger.wWithPackage('test.api_client.website_config', '测试服务器暂无网站，跳过配置 scope 拉取');
+        appLogger.wWithPackage(
+            'test.api_client.website_config', '测试服务器暂无网站，跳过配置 scope 拉取');
         return;
       }
 
@@ -113,7 +128,11 @@ void main() {
         'websiteId': websiteId,
       };
       final raw = await _rawPost(client, '/websites/config', data: request);
-      _logSection('✅ Raw /websites/config', method: 'POST', path: '/websites/config', request: request, response: raw.data);
+      _logSection('✅ Raw /websites/config',
+          method: 'POST',
+          path: '/websites/config',
+          request: request,
+          response: raw.data);
 
       final parsed = await api.loadWebsiteNginxConfig(request);
       _logSection('✅ Parsed /websites/config', response: parsed);
@@ -122,13 +141,15 @@ void main() {
     test('POST /websites/config/update 应该成功或返回业务错误', () async {
       final skipReason = TestEnvironment.skipDestructive();
       if (skipReason != null) {
-        appLogger.wWithPackage('test.api_client.website_config', '跳过测试: $skipReason');
+        appLogger.wWithPackage(
+            'test.api_client.website_config', '跳过测试: $skipReason');
         return;
       }
 
       final websites = await api.getWebsites(page: 1, pageSize: 1);
       if (websites.items.isEmpty) {
-        appLogger.wWithPackage('test.api_client.website_config', '测试服务器暂无网站，跳过配置更新');
+        appLogger.wWithPackage(
+            'test.api_client.website_config', '测试服务器暂无网站，跳过配置更新');
         return;
       }
 
@@ -139,11 +160,14 @@ void main() {
         'scope': NginxKey.indexKey.value,
         'websiteId': websiteId,
       };
-      final rawScope = await _rawPost(client, '/websites/config', data: scopeRequest);
+      final rawScope =
+          await _rawPost(client, '/websites/config', data: scopeRequest);
       final scopeData = (rawScope.data ?? const {})['data'];
 
-      if (scopeData is! Map<String, dynamic> || !scopeData.containsKey('params')) {
-        appLogger.wWithPackage('test.api_client.website_config', 'scope 返回不包含 params，跳过 /websites/config/update');
+      if (scopeData is! Map<String, dynamic> ||
+          !scopeData.containsKey('params')) {
+        appLogger.wWithPackage('test.api_client.website_config',
+            'scope 返回不包含 params，跳过 /websites/config/update');
         return;
       }
 
@@ -155,24 +179,32 @@ void main() {
       };
 
       try {
-        final raw = await _rawPost(client, '/websites/config/update', data: updateRequest);
-        _logSection('✅ Raw /websites/config/update', method: 'POST', path: '/websites/config/update', request: updateRequest, response: raw.data);
+        final raw = await _rawPost(client, '/websites/config/update',
+            data: updateRequest);
+        _logSection('✅ Raw /websites/config/update',
+            method: 'POST',
+            path: '/websites/config/update',
+            request: updateRequest,
+            response: raw.data);
         await api.updateWebsiteNginxConfigByRequest(updateRequest);
       } catch (e) {
-        appLogger.wWithPackage('test.api_client.website_config', '/websites/config/update 返回异常: $e');
+        appLogger.wWithPackage('test.api_client.website_config',
+            '/websites/config/update 返回异常: $e');
       }
     });
 
     test('POST /websites/nginx/update 应该成功或返回业务错误', () async {
       final skipReason = TestEnvironment.skipDestructive();
       if (skipReason != null) {
-        appLogger.wWithPackage('test.api_client.website_config', '跳过测试: $skipReason');
+        appLogger.wWithPackage(
+            'test.api_client.website_config', '跳过测试: $skipReason');
         return;
       }
 
       final websites = await api.getWebsites(page: 1, pageSize: 1);
       if (websites.items.isEmpty) {
-        appLogger.wWithPackage('test.api_client.website_config', '测试服务器暂无网站，跳过 nginx 配置更新');
+        appLogger.wWithPackage(
+            'test.api_client.website_config', '测试服务器暂无网站，跳过 nginx 配置更新');
         return;
       }
 
@@ -181,15 +213,18 @@ void main() {
 
       String? content;
       try {
-        final fileInfo = await api.getWebsiteConfigFile(id: websiteId!, type: 'nginx');
+        final fileInfo =
+            await api.getWebsiteConfigFile(id: websiteId!, type: 'nginx');
         content = fileInfo.content;
       } catch (e) {
-        appLogger.wWithPackage('test.api_client.website_config', '获取 nginx 配置失败: $e');
+        appLogger.wWithPackage(
+            'test.api_client.website_config', '获取 nginx 配置失败: $e');
         return;
       }
 
       if (content == null || content.isEmpty) {
-        appLogger.wWithPackage('test.api_client.website_config', 'nginx 配置内容为空，跳过更新');
+        appLogger.wWithPackage(
+            'test.api_client.website_config', 'nginx 配置内容为空，跳过更新');
         return;
       }
 
@@ -198,11 +233,17 @@ void main() {
         'content': content,
       };
       try {
-        final raw = await _rawPost(client, '/websites/nginx/update', data: request);
-        _logSection('✅ Raw /websites/nginx/update', method: 'POST', path: '/websites/nginx/update', request: request, response: raw.data);
+        final raw =
+            await _rawPost(client, '/websites/nginx/update', data: request);
+        _logSection('✅ Raw /websites/nginx/update',
+            method: 'POST',
+            path: '/websites/nginx/update',
+            request: request,
+            response: raw.data);
         await api.updateWebsiteNginxConfig(id: websiteId, content: content);
       } catch (e) {
-        appLogger.wWithPackage('test.api_client.website_config', '/websites/nginx/update 返回异常: $e');
+        appLogger.wWithPackage('test.api_client.website_config',
+            '/websites/nginx/update 返回异常: $e');
       }
     });
   });

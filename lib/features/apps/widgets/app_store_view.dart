@@ -198,13 +198,15 @@ class _AppStoreViewState extends State<AppStoreView> {
                   },
                   child: GridView.builder(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                    gridDelegate:
+                        const SliverGridDelegateWithMaxCrossAxisExtent(
                       maxCrossAxisExtent: 400,
                       mainAxisExtent: 200,
                       crossAxisSpacing: 16,
                       mainAxisSpacing: 16,
                     ),
-                    itemCount: provider.apps.length + (provider.hasMore ? 1 : 0),
+                    itemCount:
+                        provider.apps.length + (provider.hasMore ? 1 : 0),
                     itemBuilder: (context, index) {
                       if (index == provider.apps.length) {
                         return const Center(

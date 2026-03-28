@@ -45,7 +45,15 @@ class UpdateInfo extends Equatable {
   }
 
   @override
-  List<Object?> get props => [currentVersion, latestVersion, releaseNotes, isUpdateAvailable, downloadUrl, releaseDate, updateType];
+  List<Object?> get props => [
+        currentVersion,
+        latestVersion,
+        releaseNotes,
+        isUpdateAvailable,
+        downloadUrl,
+        releaseDate,
+        updateType
+      ];
 }
 
 /// Update check request model
@@ -169,5 +177,6 @@ class UpdateProgress extends Equatable {
   }
 
   @override
-  List<Object?> get props => [status, progress, message, currentStep, totalSteps];
+  List<Object?> get props =>
+      [status, progress, message, currentStep, totalSteps];
 }

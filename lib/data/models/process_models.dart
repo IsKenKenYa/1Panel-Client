@@ -128,7 +128,8 @@ class ListeningProcess extends Equatable {
   final List<int> ports;
 
   factory ListeningProcess.fromJson(Map<String, dynamic> json) {
-    final rawPorts = json['Port'] as Map<String, dynamic>? ?? const <String, dynamic>{};
+    final rawPorts =
+        json['Port'] as Map<String, dynamic>? ?? const <String, dynamic>{};
     return ListeningProcess(
       pid: json['PID'] as int? ?? 0,
       protocol: json['Protocol'] as int? ?? 0,

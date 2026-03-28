@@ -51,8 +51,8 @@ class DatabaseRemotePage extends StatelessWidget {
                         : ListView.separated(
                             padding: AppDesignTokens.pagePadding,
                             itemCount: provider.state.items.length,
-                            separatorBuilder: (_, __) =>
-                                const SizedBox(height: AppDesignTokens.spacingSm),
+                            separatorBuilder: (_, __) => const SizedBox(
+                                height: AppDesignTokens.spacingSm),
                             itemBuilder: (context, index) {
                               final item = provider.state.items[index];
                               return AppCard(

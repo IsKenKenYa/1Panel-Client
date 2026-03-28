@@ -11,7 +11,7 @@ class TemplatesTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    
+
     return Consumer<ContainersProvider>(
       builder: (context, provider, _) {
         final templates = provider.data.templates;
@@ -58,7 +58,8 @@ class TemplatesTab extends StatelessWidget {
                       if (value == 'edit') {
                         showDialog(
                           context: context,
-                          builder: (context) => TemplateCreateDialog(template: template),
+                          builder: (context) =>
+                              TemplateCreateDialog(template: template),
                         );
                       } else if (value == 'delete') {
                         final confirm = await showDialog<bool>(
@@ -93,7 +94,8 @@ class TemplatesTab extends StatelessWidget {
                         value: 'delete',
                         child: Text(
                           l10n.commonDelete,
-                          style: TextStyle(color: Theme.of(context).colorScheme.error),
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.error),
                         ),
                       ),
                     ],

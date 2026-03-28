@@ -278,7 +278,8 @@ class SettingV2Api {
   /// 更新应用商店配置
   /// @param request 应用商店配置更新请求
   /// @return 更新结果
-  Future<Response<void>> updateAppStoreConfig(AppStoreConfigUpdate request) async {
+  Future<Response<void>> updateAppStoreConfig(
+      AppStoreConfigUpdate request) async {
     return await _client.post(
       ApiConstants.buildApiPath('/core/settings/apps/store/update'),
       data: request.toJson(),
@@ -582,7 +583,8 @@ class SettingV2Api {
   /// 删除指定的备份账户
   /// @param request 删除请求
   /// @return 删除结果
-  Future<Response<void>> deleteBackupAccount(BackupAccountDelete request) async {
+  Future<Response<void>> deleteBackupAccount(
+      BackupAccountDelete request) async {
     return await _client.post(
       ApiConstants.buildApiPath('/backups/del'),
       data: request.toJson(),
@@ -620,7 +622,8 @@ class SettingV2Api {
   /// 更新快照描述信息
   /// @param request 描述更新请求
   /// @return 更新结果
-  Future<Response<void>> updateSnapshotDescription(SnapshotDescriptionUpdate request) async {
+  Future<Response<void>> updateSnapshotDescription(
+      SnapshotDescriptionUpdate request) async {
     return await _client.post(
       ApiConstants.buildApiPath('/settings/snapshot/description/update'),
       data: request.toJson(),
@@ -728,7 +731,8 @@ class SettingV2Api {
   /// 检查本地SSH连接信息
   /// @param request 检查请求
   /// @return 检查结果
-  Future<Response<dynamic>> checkSSHConnection(SSHConnectionCheck request) async {
+  Future<Response<dynamic>> checkSSHConnection(
+      SSHConnectionCheck request) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/settings/ssh/check/info'),
       data: request.toJson(),
@@ -762,7 +766,8 @@ class SettingV2Api {
   /// 更新本地默认SSH连接
   /// @param request 更新请求
   /// @return 更新结果
-  Future<Response<void>> updateDefaultSSHConnection(SSHDefaultUpdate request) async {
+  Future<Response<void>> updateDefaultSSHConnection(
+      SSHDefaultUpdate request) async {
     return await _client.post(
       ApiConstants.buildApiPath('/settings/ssh/conn/default'),
       data: request.toJson(),
@@ -841,7 +846,8 @@ class PasswordUpdate {
 
   const PasswordUpdate({required this.oldPassword, required this.newPassword});
 
-  Map<String, dynamic> toJson() => {'oldPassword': oldPassword, 'newPassword': newPassword};
+  Map<String, dynamic> toJson() =>
+      {'oldPassword': oldPassword, 'newPassword': newPassword};
 }
 
 class PortUpdate {
@@ -997,7 +1003,8 @@ class SnapshotDescriptionUpdate {
   final int id;
   final String description;
 
-  const SnapshotDescriptionUpdate({required this.id, required this.description});
+  const SnapshotDescriptionUpdate(
+      {required this.id, required this.description});
 
   Map<String, dynamic> toJson() => {'id': id, 'description': description};
 }
@@ -1072,7 +1079,8 @@ class SSHConnectionSave {
   final String? password;
   final String? privateKey;
 
-  const SSHConnectionSave({this.host, this.port, this.user, this.password, this.privateKey});
+  const SSHConnectionSave(
+      {this.host, this.port, this.user, this.password, this.privateKey});
 
   Map<String, dynamic> toJson() => {
         if (host != null) 'host': host,

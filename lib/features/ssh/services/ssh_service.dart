@@ -55,9 +55,11 @@ class SSHService {
     );
   }
 
-  Future<void> createCert(SshCertOperate request) => _repository.createCert(request);
+  Future<void> createCert(SshCertOperate request) =>
+      _repository.createCert(request);
 
-  Future<void> updateCert(SshCertOperate request) => _repository.updateCert(request);
+  Future<void> updateCert(SshCertOperate request) =>
+      _repository.updateCert(request);
 
   Future<void> deleteCerts(List<int> ids, {bool forceDelete = false}) {
     return _repository.deleteCerts(ids, forceDelete: forceDelete);

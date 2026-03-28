@@ -49,7 +49,8 @@ class ContainerImage extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, repoTags, repoDigests, size, created, labels, architecture, os];
+  List<Object?> get props =>
+      [id, repoTags, repoDigests, size, created, labels, architecture, os];
 }
 
 /// Container network model
@@ -86,7 +87,8 @@ class ContainerNetwork extends Equatable {
       enableIPv6: json['enableIPv6'] as bool?,
       ipam: json['ipam'] as Map<String, dynamic>?,
       options: json['options'] as Map<String, dynamic>?,
-      containers: (json['containers'] as List?)?.map((e) => e as String).toList(),
+      containers:
+          (json['containers'] as List?)?.map((e) => e as String).toList(),
     );
   }
 
@@ -105,7 +107,17 @@ class ContainerNetwork extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, driver, scope, internal, enableIPv6, ipam, options, containers];
+  List<Object?> get props => [
+        id,
+        name,
+        driver,
+        scope,
+        internal,
+        enableIPv6,
+        ipam,
+        options,
+        containers
+      ];
 }
 
 /// Container volume model
@@ -153,7 +165,8 @@ class ContainerVolume extends Equatable {
   }
 
   @override
-  List<Object?> get props => [name, driver, options, labels, mountpoint, createdAt, scope];
+  List<Object?> get props =>
+      [name, driver, options, labels, mountpoint, createdAt, scope];
 }
 
 /// Container registry model
@@ -209,7 +222,17 @@ class ContainerRegistry extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, url, username, secure, description, enabled, createTime, updateTime];
+  List<Object?> get props => [
+        id,
+        name,
+        url,
+        username,
+        secure,
+        description,
+        enabled,
+        createTime,
+        updateTime
+      ];
 }
 
 /// Container network creation request
@@ -257,7 +280,8 @@ class ContainerNetworkCreate extends Equatable {
   }
 
   @override
-  List<Object?> get props => [name, driver, internal, enableIPv6, ipam, options, labels];
+  List<Object?> get props =>
+      [name, driver, internal, enableIPv6, ipam, options, labels];
 }
 
 /// Container volume creation request
@@ -337,7 +361,8 @@ class ContainerRegistryCreate extends Equatable {
   }
 
   @override
-  List<Object?> get props => [name, url, username, password, secure, description];
+  List<Object?> get props =>
+      [name, url, username, password, secure, description];
 }
 
 /// Container image pull request
@@ -449,7 +474,8 @@ class ContainerSearch extends Equatable {
   }
 
   @override
-  List<Object?> get props => [page, pageSize, search, status, sortBy, sortOrder];
+  List<Object?> get props =>
+      [page, pageSize, search, status, sortBy, sortOrder];
 }
 
 // ============================================
@@ -501,7 +527,8 @@ class ContainerComposeLogSearch extends Equatable {
   }
 
   @override
-  List<Object?> get props => [composeId, lines, name, since, tail, follow, container];
+  List<Object?> get props =>
+      [composeId, lines, name, since, tail, follow, container];
 }
 
 /// Container Compose Config Update Model
@@ -589,7 +616,15 @@ class ContainerComposeStatus extends Equatable {
   }
 
   @override
-  List<Object?> get props => [name, status, containerCount, runningCount, exitedCount, createdAt, updatedAt];
+  List<Object?> get props => [
+        name,
+        status,
+        containerCount,
+        runningCount,
+        exitedCount,
+        createdAt,
+        updatedAt
+      ];
 }
 
 /// Container Compose Import Model

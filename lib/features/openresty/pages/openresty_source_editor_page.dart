@@ -9,7 +9,8 @@ class OpenRestySourceEditorPage extends StatefulWidget {
   const OpenRestySourceEditorPage({super.key, this.initialContent});
 
   @override
-  State<OpenRestySourceEditorPage> createState() => _OpenRestySourceEditorPageState();
+  State<OpenRestySourceEditorPage> createState() =>
+      _OpenRestySourceEditorPageState();
 }
 
 class _OpenRestySourceEditorPageState extends State<OpenRestySourceEditorPage> {
@@ -41,7 +42,9 @@ class _OpenRestySourceEditorPageState extends State<OpenRestySourceEditorPage> {
   Future<void> _save() async {
     final l10n = context.l10n;
     try {
-      await context.read<OpenRestyProvider>().updateConfigSource(_controller.text);
+      await context
+          .read<OpenRestyProvider>()
+          .updateConfigSource(_controller.text);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.commonSaveSuccess)),

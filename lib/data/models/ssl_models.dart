@@ -62,7 +62,8 @@ class SSLCertificateCreate extends Equatable {
 
   factory SSLCertificateCreate.fromJson(Map<String, dynamic> json) {
     return SSLCertificateCreate(
-      domains: (json['domains'] as List?)?.map((e) => e as String).toList() ?? [],
+      domains:
+          (json['domains'] as List?)?.map((e) => e as String).toList() ?? [],
       certificateType: json['certificateType'] as String,
       email: json['email'] as String?,
       privateKey: json['privateKey'] as String?,
@@ -89,7 +90,17 @@ class SSLCertificateCreate extends Equatable {
   }
 
   @override
-  List<Object?> get props => [domains, certificateType, email, privateKey, certificate, chain, keyType, autoRenew, websiteId];
+  List<Object?> get props => [
+        domains,
+        certificateType,
+        email,
+        privateKey,
+        certificate,
+        chain,
+        keyType,
+        autoRenew,
+        websiteId
+      ];
 }
 
 /// SSL certificate information model
@@ -148,7 +159,9 @@ class SSLCertificateInfo extends Equatable {
       startDate: json['startDate'] as String?,
       expireDate: json['expireDate'] as String?,
       days: json['days'] as int?,
-      status: json['status'] != null ? SSLCertificateStatus.fromString(json['status'] as String) : null,
+      status: json['status'] != null
+          ? SSLCertificateStatus.fromString(json['status'] as String)
+          : null,
       autoRenew: json['autoRenew'] as bool?,
       websiteId: json['websiteId'] as int?,
       websiteName: json['websiteName'] as String?,
@@ -227,7 +240,9 @@ class SSLCertificateSearch extends Equatable {
       pageSize: json['pageSize'] as int?,
       search: json['search'] as String?,
       certificateType: json['certificateType'] as String?,
-      status: json['status'] != null ? SSLCertificateStatus.fromString(json['status'] as String) : null,
+      status: json['status'] != null
+          ? SSLCertificateStatus.fromString(json['status'] as String)
+          : null,
       domain: json['domain'] as String?,
     );
   }
@@ -244,7 +259,8 @@ class SSLCertificateSearch extends Equatable {
   }
 
   @override
-  List<Object?> get props => [page, pageSize, search, certificateType, status, domain];
+  List<Object?> get props =>
+      [page, pageSize, search, certificateType, status, domain];
 }
 
 /// SSL certificate update request model
@@ -292,7 +308,8 @@ class SSLCertificateUpdate extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, domains, autoRenew, email, privateKey, certificate, chain];
+  List<Object?> get props =>
+      [id, domains, autoRenew, email, privateKey, certificate, chain];
 }
 
 /// SSL certificate operation model
@@ -368,7 +385,15 @@ class SSLCertificateValidation extends Equatable {
   }
 
   @override
-  List<Object?> get props => [isValid, isTrusted, isExpired, isSelfSigned, daysUntilExpiry, errors, warnings];
+  List<Object?> get props => [
+        isValid,
+        isTrusted,
+        isExpired,
+        isSelfSigned,
+        daysUntilExpiry,
+        errors,
+        warnings
+      ];
 }
 
 /// ACME account model (for Let's Encrypt)
@@ -416,7 +441,8 @@ class ACMEAccount extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, email, server, status, registered, kid, createdAt];
+  List<Object?> get props =>
+      [id, email, server, status, registered, kid, createdAt];
 }
 
 /// SSL certificate challenge model
@@ -644,7 +670,8 @@ class WebsiteSSL extends Equatable {
       return raw.whereType<String>().toList();
     }
     if (raw is String) {
-      final parts = raw.split(RegExp(r'[\\s,]+')).where((e) => e.isNotEmpty).toList();
+      final parts =
+          raw.split(RegExp(r'[\\s,]+')).where((e) => e.isNotEmpty).toList();
       return parts.isEmpty ? null : parts;
     }
     return null;
@@ -828,8 +855,12 @@ class WebsiteHttpsConfig extends Equatable {
               .map((e) => e.toInt())
               .toList() ??
           const [],
-      sslProtocol: (json['SSLProtocol'] as List?)?.whereType<String>().toList() ?? const [],
-      ssl: json['SSL'] is Map<String, dynamic> ? WebsiteSSL.fromJson(json['SSL'] as Map<String, dynamic>) : null,
+      sslProtocol:
+          (json['SSLProtocol'] as List?)?.whereType<String>().toList() ??
+              const [],
+      ssl: json['SSL'] is Map<String, dynamic>
+          ? WebsiteSSL.fromJson(json['SSL'] as Map<String, dynamic>)
+          : null,
     );
   }
 
@@ -907,7 +938,8 @@ class WebsiteHttpsUpdateRequest extends Equatable {
       enable: json['enable'] as bool?,
       httpConfig: json['httpConfig'] as String?,
       type: json['type'] as String?,
-      websiteSSLId: json['websiteSSLId'] as int? ?? json['websiteSSLID'] as int?,
+      websiteSSLId:
+          json['websiteSSLId'] as int? ?? json['websiteSSLID'] as int?,
       certificate: json['certificate'] as String?,
       certificatePath: json['certificatePath'] as String?,
       privateKey: json['privateKey'] as String?,
@@ -939,7 +971,8 @@ class WebsiteHttpsUpdateRequest extends Equatable {
       if (httpsPorts != null) 'httpsPorts': httpsPorts,
       if (sslProtocol != null) 'SSLProtocol': sslProtocol,
       if (hsts != null) 'hsts': hsts,
-      if (hstsIncludeSubDomains != null) 'hstsIncludeSubDomains': hstsIncludeSubDomains,
+      if (hstsIncludeSubDomains != null)
+        'hstsIncludeSubDomains': hstsIncludeSubDomains,
       if (http3 != null) 'http3': http3,
       if (algorithm != null) 'algorithm': algorithm,
       if (importType != null) 'importType': importType,
@@ -1180,7 +1213,8 @@ class WebsiteSSLSearch extends Equatable {
       page: json['page'] as int? ?? 1,
       pageSize: json['pageSize'] as int? ?? 10,
       domain: json['domain'] as String?,
-      acmeAccountId: json['acmeAccountID'] as String? ?? json['acmeAccountId'] as String?,
+      acmeAccountId:
+          json['acmeAccountID'] as String? ?? json['acmeAccountId'] as String?,
       order: json['order'] as String? ?? 'descending',
       orderBy: json['orderBy'] as String? ?? 'expire_date',
     );
@@ -1198,7 +1232,8 @@ class WebsiteSSLSearch extends Equatable {
   }
 
   @override
-  List<Object?> get props => [page, pageSize, domain, acmeAccountId, order, orderBy];
+  List<Object?> get props =>
+      [page, pageSize, domain, acmeAccountId, order, orderBy];
 }
 
 /// Website SSL 更新模型
@@ -1367,7 +1402,15 @@ class WebsiteSSLUpload extends Equatable {
   }
 
   @override
-  List<Object?> get props => [sslID, privateKey, certificate, certificatePath, privateKeyPath, description, type];
+  List<Object?> get props => [
+        sslID,
+        privateKey,
+        certificate,
+        certificatePath,
+        privateKeyPath,
+        description,
+        type
+      ];
 }
 
 /// DNS 账户模型

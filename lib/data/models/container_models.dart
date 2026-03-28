@@ -603,11 +603,13 @@ class ContainerInfo extends Equatable {
       image: (json['image'] ?? json['imageName']) as String? ?? '',
       status: (json['status'] ?? json['runTime']) as String? ?? '',
       state: json['state'] as String? ?? '',
-      ports: (json['ports'] is List) ? (json['ports'] as List).cast<String>() : null,
+      ports: (json['ports'] is List)
+          ? (json['ports'] as List).cast<String>()
+          : null,
       createTime: json['createTime'] as String?,
       ipAddress: json['ipAddress'] as String?,
-      network: (json['network'] is List) 
-          ? (json['network'] as List).join(', ') 
+      network: (json['network'] is List)
+          ? (json['network'] as List).join(', ')
           : json['network'] as String?,
       cpuUsage: json['cpuUsage'] as String?,
       memoryUsage: json['memoryUsage'] as String?,
@@ -700,7 +702,8 @@ class ContainerCommit extends Equatable {
   }
 
   @override
-  List<Object?> get props => [author, comment, containerID, containerName, newImageName, pause];
+  List<Object?> get props =>
+      [author, comment, containerID, containerName, newImageName, pause];
 }
 
 /// 容器清理模型
@@ -1048,7 +1051,8 @@ class ContainerComposeUpdateRequest extends Equatable {
   }
 
   @override
-  List<Object?> get props => [name, path, content, env, detailPath, forcePull, taskID];
+  List<Object?> get props =>
+      [name, path, content, env, detailPath, forcePull, taskID];
 }
 
 class ContainerComposeLogCleanRequest extends Equatable {
@@ -1720,7 +1724,8 @@ class VolumeCreate extends Equatable {
     return VolumeCreate(
       name: json['name'] as String,
       driver: json['driver'] as String?,
-      driverOpts: (json['driverOpts'] as Map<String, dynamic>?)?.cast<String, String>(),
+      driverOpts:
+          (json['driverOpts'] as Map<String, dynamic>?)?.cast<String, String>(),
       labels: (json['labels'] as Map<String, dynamic>?)?.cast<String, String>(),
     );
   }
@@ -1771,7 +1776,8 @@ class ContainerPruneReport extends Equatable {
   }
 
   @override
-  List<Object?> get props => [deletedCount, spaceReclaimed, deletedItems, message];
+  List<Object?> get props =>
+      [deletedCount, spaceReclaimed, deletedItems, message];
 }
 
 /// 容器仓库模型
@@ -1823,7 +1829,8 @@ class ContainerRepo extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, downloadUrl, username, password, status, createdAt, updatedAt];
+  List<Object?> get props =>
+      [id, name, downloadUrl, username, password, status, createdAt, updatedAt];
 }
 
 /// 容器仓库创建/更新模型
@@ -1897,7 +1904,8 @@ class ContainerTemplate extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, description, content, createdAt, updatedAt];
+  List<Object?> get props =>
+      [id, name, description, content, createdAt, updatedAt];
 }
 
 /// 容器模板创建/更新模型
@@ -2066,7 +2074,8 @@ class ContainerFileInfo extends Equatable {
   }
 
   @override
-  List<Object?> get props => [name, path, isDir, isLink, linkTo, modTime, mode, size];
+  List<Object?> get props =>
+      [name, path, isDir, isLink, linkTo, modTime, mode, size];
 }
 
 /// 容器文件内容模型

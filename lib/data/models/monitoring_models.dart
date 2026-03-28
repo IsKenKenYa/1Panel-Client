@@ -92,10 +92,13 @@ class SystemMetrics extends Equatable {
 
   factory SystemMetrics.fromJson(Map<String, dynamic> json) {
     return SystemMetrics(
-      type: json['type'] != null ? MetricType.fromString(json['type'] as String) : null,
+      type: json['type'] != null
+          ? MetricType.fromString(json['type'] as String)
+          : null,
       unit: json['unit'] as String?,
       dataPoints: (json['dataPoints'] as List?)
-          ?.map((item) => MetricDataPoint.fromJson(item as Map<String, dynamic>))
+          ?.map(
+              (item) => MetricDataPoint.fromJson(item as Map<String, dynamic>))
           .toList(),
       min: (json['min'] as num?)?.toDouble(),
       max: (json['max'] as num?)?.toDouble(),
@@ -163,7 +166,14 @@ class CPUMetrics extends Equatable {
   }
 
   @override
-  List<Object?> get props => [usagePercent, loadAverage1m, loadAverage5m, loadAverage15m, cores, coreMetrics];
+  List<Object?> get props => [
+        usagePercent,
+        loadAverage1m,
+        loadAverage5m,
+        loadAverage15m,
+        cores,
+        coreMetrics
+      ];
 }
 
 /// CPU core metrics model
@@ -243,7 +253,8 @@ class MemoryMetrics extends Equatable {
   }
 
   @override
-  List<Object?> get props => [total, used, free, available, cached, buffers, usagePercent];
+  List<Object?> get props =>
+      [total, used, free, available, cached, buffers, usagePercent];
 }
 
 /// Disk metrics model
@@ -299,7 +310,17 @@ class DiskMetrics extends Equatable {
   }
 
   @override
-  List<Object?> get props => [device, mountPoint, total, used, free, usagePercent, readSpeed, writeSpeed, iops];
+  List<Object?> get props => [
+        device,
+        mountPoint,
+        total,
+        used,
+        free,
+        usagePercent,
+        readSpeed,
+        writeSpeed,
+        iops
+      ];
 }
 
 /// Network metrics model
@@ -347,7 +368,15 @@ class NetworkMetrics extends Equatable {
   }
 
   @override
-  List<Object?> get props => [interface, bytesReceived, bytesSent, packetsReceived, packetsSent, receiveSpeed, transmitSpeed];
+  List<Object?> get props => [
+        interface,
+        bytesReceived,
+        bytesSent,
+        packetsReceived,
+        packetsSent,
+        receiveSpeed,
+        transmitSpeed
+      ];
 }
 
 /// Alert rule model
@@ -382,10 +411,14 @@ class AlertRule extends Equatable {
     return AlertRule(
       id: json['id'] as int?,
       name: json['name'] as String?,
-      metricType: json['metricType'] != null ? MetricType.fromString(json['metricType'] as String) : null,
+      metricType: json['metricType'] != null
+          ? MetricType.fromString(json['metricType'] as String)
+          : null,
       condition: json['condition'] as String?,
       threshold: (json['threshold'] as num?)?.toDouble(),
-      level: json['level'] != null ? AlertLevel.fromString(json['level'] as String) : null,
+      level: json['level'] != null
+          ? AlertLevel.fromString(json['level'] as String)
+          : null,
       enabled: json['enabled'] as bool?,
       description: json['description'] as String?,
       cooldown: json['cooldown'] as int?,
@@ -411,7 +444,19 @@ class AlertRule extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, metricType, condition, threshold, level, enabled, description, cooldown, createTime, updateTime];
+  List<Object?> get props => [
+        id,
+        name,
+        metricType,
+        condition,
+        threshold,
+        level,
+        enabled,
+        description,
+        cooldown,
+        createTime,
+        updateTime
+      ];
 }
 
 /// Alert notification model
@@ -440,7 +485,9 @@ class AlertNotification extends Equatable {
     return AlertNotification(
       id: json['id'] as int?,
       ruleName: json['ruleName'] as String?,
-      level: json['level'] != null ? AlertLevel.fromString(json['level'] as String) : null,
+      level: json['level'] != null
+          ? AlertLevel.fromString(json['level'] as String)
+          : null,
       message: json['message'] as String?,
       details: json['details'] as String?,
       status: json['status'] as String?,
@@ -463,7 +510,8 @@ class AlertNotification extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, ruleName, level, message, details, status, timestamp, acknowledged];
+  List<Object?> get props =>
+      [id, ruleName, level, message, details, status, timestamp, acknowledged];
 }
 
 /// Security configuration model
@@ -513,7 +561,8 @@ class SecurityConfig extends Equatable {
       jwtSecret: json['jwtSecret'] as String?,
       jwtExpireHours: json['jwtExpireHours'] as int?,
       ipWhitelistEnabled: json['ipWhitelistEnabled'] as bool?,
-      ipWhitelist: (json['ipWhitelist'] as List?)?.map((e) => e as String).toList(),
+      ipWhitelist:
+          (json['ipWhitelist'] as List?)?.map((e) => e as String).toList(),
       maxLoginAttempts: json['maxLoginAttempts'] as int?,
       lockoutDuration: json['lockoutDuration'] as int?,
       passwordPolicyEnabled: json['passwordPolicyEnabled'] as bool?,

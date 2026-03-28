@@ -8,7 +8,8 @@ class TerminalV2Api {
 
   TerminalV2Api(this._client);
 
-  Future<Response<TerminalSessionInfo>> createTerminalSession(TerminalSessionCreate request) async {
+  Future<Response<TerminalSessionInfo>> createTerminalSession(
+      TerminalSessionCreate request) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/terminal/sessions'),
       data: request.toJson(),
@@ -27,15 +28,18 @@ class TerminalV2Api {
     );
     return Response(
       data: (response.data as List?)
-          ?.map((item) => TerminalSessionInfo.fromJson(item as Map<String, dynamic>))
-          .toList() ?? [],
+              ?.map((item) =>
+                  TerminalSessionInfo.fromJson(item as Map<String, dynamic>))
+              .toList() ??
+          [],
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
     );
   }
 
-  Future<Response<TerminalSessionInfo>> getTerminalSessionDetail(String sessionId) async {
+  Future<Response<TerminalSessionInfo>> getTerminalSessionDetail(
+      String sessionId) async {
     final response = await _client.get(
       ApiConstants.buildApiPath('/terminal/sessions/$sessionId'),
     );
@@ -58,13 +62,15 @@ class TerminalV2Api {
     );
   }
 
-  Future<Response<TerminalCommandResult>> executeTerminalCommand(TerminalCommandExecute request) async {
+  Future<Response<TerminalCommandResult>> executeTerminalCommand(
+      TerminalCommandExecute request) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/terminal/command'),
       data: request.toJson(),
     );
     return Response(
-      data: TerminalCommandResult.fromJson(response.data as Map<String, dynamic>),
+      data:
+          TerminalCommandResult.fromJson(response.data as Map<String, dynamic>),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -85,7 +91,8 @@ class TerminalV2Api {
     );
   }
 
-  Future<Response> getTerminalOutput(String sessionId, {int lines = 100}) async {
+  Future<Response> getTerminalOutput(String sessionId,
+      {int lines = 100}) async {
     final data = {
       'lines': lines,
     };
@@ -123,7 +130,8 @@ class TerminalV2Api {
     );
   }
 
-  Future<Response> getTerminalHistory(String sessionId, {int limit = 100}) async {
+  Future<Response> getTerminalHistory(String sessionId,
+      {int limit = 100}) async {
     final data = {
       'limit': limit,
     };
@@ -210,7 +218,8 @@ class TerminalV2Api {
       'processId': processId,
     };
     return await _client.post(
-      ApiConstants.buildApiPath('/terminal/sessions/$sessionId/processes/terminate'),
+      ApiConstants.buildApiPath(
+          '/terminal/sessions/$sessionId/processes/terminate'),
       data: data,
     );
   }

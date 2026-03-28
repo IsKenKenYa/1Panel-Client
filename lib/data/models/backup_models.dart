@@ -57,5 +57,16 @@ class BackupPlan extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, type, source, target, schedule, enabled, lastBackupTime, nextBackupTime, retentionDays];
+  List<Object?> get props => [
+        id,
+        name,
+        type,
+        source,
+        target,
+        schedule,
+        enabled,
+        lastBackupTime,
+        nextBackupTime,
+        retentionDays
+      ];
 }

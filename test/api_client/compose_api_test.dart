@@ -51,12 +51,14 @@ void main() {
       expect(response.data!.items.first.name, 'test-compose');
     });
 
-    test('listComposes handles Map items by converting values to List (if supported) or empty', () async {
+    test(
+        'listComposes handles Map items by converting values to List (if supported) or empty',
+        () async {
       // This simulates the condition where items is a Map
       final jsonResponse = {
         "items": {
-           "1": { "id": "1", "name": "test-map" } 
-        }, 
+          "1": {"id": "1", "name": "test-map"}
+        },
         "total": 1
       };
 
@@ -71,17 +73,14 @@ void main() {
           ));
 
       final response = await api.listComposes();
-      // Current implementation returns empty list for Map. 
+      // Current implementation returns empty list for Map.
       // If we want to support Map, we should update PageResult.
       // For now, verify it doesn't crash.
-      expect(response.data!.items, isEmpty); 
+      expect(response.data!.items, isEmpty);
     });
-    
+
     test('listComposes handles null items gracefully', () async {
-      final jsonResponse = {
-        "items": null,
-        "total": 0
-      };
+      final jsonResponse = {"items": null, "total": 0};
 
       when(mockClient.post(
         any,

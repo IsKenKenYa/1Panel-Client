@@ -23,8 +23,10 @@ class _TemplateCreateDialogState extends State<TemplateCreateDialog> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.template?.name ?? '');
-    _descriptionController = TextEditingController(text: widget.template?.description ?? '');
-    _contentController = TextEditingController(text: widget.template?.content ?? '');
+    _descriptionController =
+        TextEditingController(text: widget.template?.description ?? '');
+    _contentController =
+        TextEditingController(text: widget.template?.content ?? '');
   }
 
   @override
@@ -41,7 +43,8 @@ class _TemplateCreateDialogState extends State<TemplateCreateDialog> {
     final isEdit = widget.template != null;
 
     return AlertDialog(
-      title: Text(isEdit ? l10n.commonEditTemplate : l10n.orchestrationCreateTemplate),
+      title: Text(
+          isEdit ? l10n.commonEditTemplate : l10n.orchestrationCreateTemplate),
       content: SizedBox(
         width: 600,
         child: SingleChildScrollView(

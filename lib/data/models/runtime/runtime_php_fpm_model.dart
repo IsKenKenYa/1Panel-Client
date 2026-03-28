@@ -37,4 +37,3 @@ class PHPFpmConfig extends Equatable {
   @override
   List<Object?> get props => [id, params];
 }
-

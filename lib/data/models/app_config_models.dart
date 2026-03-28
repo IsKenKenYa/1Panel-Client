@@ -34,7 +34,8 @@ class AppConfig {
     this.restartPolicy,
   });
 
-  factory AppConfig.fromJson(Map<String, dynamic> json) => _$AppConfigFromJson(json);
+  factory AppConfig.fromJson(Map<String, dynamic> json) =>
+      _$AppConfigFromJson(json);
   Map<String, dynamic> toJson() => _$AppConfigToJson(this);
 }
 
@@ -70,7 +71,8 @@ class InstallParams {
     this.showPassword,
   });
 
-  factory InstallParams.fromJson(Map<String, dynamic> json) => _$InstallParamsFromJson(json);
+  factory InstallParams.fromJson(Map<String, dynamic> json) =>
+      _$InstallParamsFromJson(json);
   Map<String, dynamic> toJson() => _$InstallParamsToJson(this);
 }
 

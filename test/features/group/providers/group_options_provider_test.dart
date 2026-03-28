@@ -14,7 +14,8 @@ void main() {
 
   setUp(() {
     service = _MockGroupService();
-    when(() => service.listGroups(any(), forceRefresh: any(named: 'forceRefresh')))
+    when(() =>
+            service.listGroups(any(), forceRefresh: any(named: 'forceRefresh')))
         .thenAnswer((_) async => [group]);
     provider = GroupOptionsProvider(service: service);
   });
@@ -27,7 +28,8 @@ void main() {
     expect(provider.status, isNotNull);
   });
 
-  test('load preserves null selection when empty selection is allowed', () async {
+  test('load preserves null selection when empty selection is allowed',
+      () async {
     await provider.initialize(
       groupType: 'command',
       allowEmptySelection: true,
@@ -38,20 +40,24 @@ void main() {
   });
 
   test('createGroup refreshes list and selects created group', () async {
-    when(() => service.createGroup(type: any(named: 'type'), name: any(named: 'name')))
-        .thenAnswer((_) async => [group]);
+    when(() => service.createGroup(
+        type: any(named: 'type'),
+        name: any(named: 'name'))).thenAnswer((_) async => [group]);
     await provider.initialize(groupType: 'command');
 
     await provider.createGroup('NewOps');
 
-    verify(() => service.createGroup(type: 'command', name: 'NewOps')).called(1);
+    verify(() => service.createGroup(type: 'command', name: 'NewOps'))
+        .called(1);
     expect(provider.selectedGroupId, 1);
   });
 
   test('updateGroup refreshes selection', () async {
-    when(() => service.updateGroup(id: any(named: 'id'), type: any(named: 'type'),
-            name: any(named: 'name'), isDefault: any(named: 'isDefault')))
-        .thenAnswer((_) async => [group]);
+    when(() => service.updateGroup(
+        id: any(named: 'id'),
+        type: any(named: 'type'),
+        name: any(named: 'name'),
+        isDefault: any(named: 'isDefault'))).thenAnswer((_) async => [group]);
     await provider.initialize(groupType: 'command');
 
     await provider.updateGroup(id: 1, name: 'OpsRenamed');
@@ -65,7 +71,8 @@ void main() {
   });
 
   test('deleteGroup refreshes list and resets selection', () async {
-    when(() => service.deleteGroup(id: any(named: 'id'), type: any(named: 'type')))
+    when(() =>
+            service.deleteGroup(id: any(named: 'id'), type: any(named: 'type')))
         .thenAnswer((_) async => []);
     await provider.initialize(groupType: 'command');
 

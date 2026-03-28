@@ -41,7 +41,8 @@ class WebsiteGroup extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, description, sort, createTime, updateTime];
+  List<Object?> get props =>
+      [id, name, description, sort, createTime, updateTime];
 }
 
 /// Website group create request model

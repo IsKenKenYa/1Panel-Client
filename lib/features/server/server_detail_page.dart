@@ -147,8 +147,8 @@ class ServerDetailPage extends StatelessWidget {
         icon: Icons.tune_outlined,
         subtitle: l10n.commonExperimental,
         onTap: () => _openRoute(context, AppRoutes.openrestyCenter),
-            ),
-            ServerDetailSectionItem(
+      ),
+      ServerDetailSectionItem(
         title: l10n.serverModuleAi,
         icon: Icons.smart_toy_outlined,
         subtitle: l10n.commonExperimental,

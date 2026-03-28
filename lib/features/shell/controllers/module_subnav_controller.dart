@@ -17,8 +17,10 @@ class ModuleSubnavController extends ChangeNotifier {
 
   bool get loaded => _loaded;
   List<String> get orderedIds => List.unmodifiable(_orderedIds);
-  List<String> get visibleIds => _orderedIds.take(maxVisibleItems).toList(growable: false);
-  List<String> get overflowIds => _orderedIds.skip(maxVisibleItems).toList(growable: false);
+  List<String> get visibleIds =>
+      _orderedIds.take(maxVisibleItems).toList(growable: false);
+  List<String> get overflowIds =>
+      _orderedIds.skip(maxVisibleItems).toList(growable: false);
 
   Future<void> load() async {
     final prefs = await SharedPreferences.getInstance();

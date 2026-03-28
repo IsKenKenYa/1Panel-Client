@@ -126,9 +126,11 @@ class FileMove extends Equatable {
 
   factory FileMove.fromJson(Map<String, dynamic> json) {
     return FileMove(
-      paths: (json['oldPaths'] as List?)?.cast<String>() ?? 
-             (json['paths'] as List?)?.cast<String>() ?? [],
-      targetPath: json['newPath'] as String? ?? json['targetPath'] as String? ?? '',
+      paths: (json['oldPaths'] as List?)?.cast<String>() ??
+          (json['paths'] as List?)?.cast<String>() ??
+          [],
+      targetPath:
+          json['newPath'] as String? ?? json['targetPath'] as String? ?? '',
       type: json['type'] as String?,
       name: json['name'] as String?,
       cover: json['cover'] as bool?,

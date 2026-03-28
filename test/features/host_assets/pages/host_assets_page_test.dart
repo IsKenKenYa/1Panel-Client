@@ -40,7 +40,8 @@ void main() {
     registerFallbackValue(const HostSearchRequest());
   });
 
-  testWidgets('HostAssetsPage shows host card and create action', (tester) async {
+  testWidgets('HostAssetsPage shows host card and create action',
+      (tester) async {
     final service = _MockHostAssetService();
     when(() => service.loadGroups(forceRefresh: any(named: 'forceRefresh')))
         .thenAnswer(
@@ -115,7 +116,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    verifyNever(() => service.loadGroups(forceRefresh: any(named: 'forceRefresh')));
+    verifyNever(
+        () => service.loadGroups(forceRefresh: any(named: 'forceRefresh')));
     verifyNever(() => service.searchHosts(any()));
   });
 }

@@ -28,10 +28,13 @@ class ApiKeySettingsPage extends StatelessWidget {
                   secondary: const Icon(Icons.key_outlined),
                   title: Text(l10n.apiKeySettingsEnabled),
                   subtitle: Text(
-                    _isEnabled(settings?.apiInterfaceStatus) ? l10n.systemSettingsEnabled : l10n.systemSettingsDisabled,
+                    _isEnabled(settings?.apiInterfaceStatus)
+                        ? l10n.systemSettingsEnabled
+                        : l10n.systemSettingsDisabled,
                   ),
                   value: _isEnabled(settings?.apiInterfaceStatus),
-                  onChanged: (value) => _toggleApiKey(context, provider, l10n, value),
+                  onChanged: (value) =>
+                      _toggleApiKey(context, provider, l10n, value),
                 ),
               ],
             ),
@@ -80,7 +83,8 @@ class ApiKeySettingsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionTitle(BuildContext context, String title, ThemeData theme) {
+  Widget _buildSectionTitle(
+      BuildContext context, String title, ThemeData theme) {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppDesignTokens.spacingSm),
       child: Text(
@@ -138,12 +142,16 @@ class ApiKeySettingsPage extends StatelessWidget {
     return value.toLowerCase() == 'enable' || value.toLowerCase() == 'true';
   }
 
-  void _toggleApiKey(BuildContext context, SettingsProvider provider, AppLocalizations l10n, bool enable) async {
+  void _toggleApiKey(BuildContext context, SettingsProvider provider,
+      AppLocalizations l10n, bool enable) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(enable ? l10n.apiKeySettingsEnable : l10n.apiKeySettingsDisable),
-        content: Text(enable ? l10n.apiKeySettingsEnableConfirm : l10n.apiKeySettingsDisableConfirm),
+        title: Text(
+            enable ? l10n.apiKeySettingsEnable : l10n.apiKeySettingsDisable),
+        content: Text(enable
+            ? l10n.apiKeySettingsEnableConfirm
+            : l10n.apiKeySettingsDisableConfirm),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -158,7 +166,8 @@ class ApiKeySettingsPage extends StatelessWidget {
     );
 
     if (confirmed == true && context.mounted) {
-      final validityTimeStr = provider.data.systemSettings?.apiKeyValidityTime ?? '0';
+      final validityTimeStr =
+          provider.data.systemSettings?.apiKeyValidityTime ?? '0';
       final validityTimeInt = int.tryParse(validityTimeStr) ?? 0;
       final success = await provider.updateApiConfig(
         status: enable ? 'Enable' : 'Disable',
@@ -167,13 +176,16 @@ class ApiKeySettingsPage extends StatelessWidget {
       );
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(success ? l10n.commonSaveSuccess : l10n.commonSaveFailed)),
+          SnackBar(
+              content: Text(
+                  success ? l10n.commonSaveSuccess : l10n.commonSaveFailed)),
         );
       }
     }
   }
 
-  void _regenerateApiKey(BuildContext context, SettingsProvider provider, AppLocalizations l10n) async {
+  void _regenerateApiKey(BuildContext context, SettingsProvider provider,
+      AppLocalizations l10n) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -196,7 +208,10 @@ class ApiKeySettingsPage extends StatelessWidget {
       final success = await provider.generateApiKey();
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(success ? l10n.apiKeySettingsRegenerateSuccess : l10n.commonSaveFailed)),
+          SnackBar(
+              content: Text(success
+                  ? l10n.apiKeySettingsRegenerateSuccess
+                  : l10n.commonSaveFailed)),
         );
       }
     }

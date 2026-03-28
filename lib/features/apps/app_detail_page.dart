@@ -34,7 +34,7 @@ class _AppDetailPageState extends State<AppDetailPage> {
       final appService = context.read<AppService>();
       final version = _app.versions?.first ?? 'latest';
       final type = _app.type ?? 'unknown';
-      
+
       final detail = await appService.getAppDetail(
         _app.id.toString(),
         version,
@@ -110,12 +110,14 @@ class _AppDetailPageState extends State<AppDetailPage> {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.warning_amber, color: theme.colorScheme.onErrorContainer),
+                  Icon(Icons.warning_amber,
+                      color: theme.colorScheme.onErrorContainer),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       _error!,
-                      style: TextStyle(color: theme.colorScheme.onErrorContainer),
+                      style:
+                          TextStyle(color: theme.colorScheme.onErrorContainer),
                     ),
                   ),
                   IconButton(
@@ -174,7 +176,8 @@ class _AppDetailPageState extends State<AppDetailPage> {
               const SizedBox(height: 4),
               if (_app.versions != null && _app.versions!.isNotEmpty)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
                     color: theme.colorScheme.primaryContainer,
                     borderRadius: BorderRadius.circular(4),

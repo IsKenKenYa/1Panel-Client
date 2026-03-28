@@ -53,6 +53,21 @@ class ToolboxCenterPage extends StatelessWidget {
             icon: Icons.developer_board_outlined,
             onTap: () => Navigator.pushNamed(context, AppRoutes.toolboxDevice),
           ),
+          const SizedBox(height: 12),
+          ServerOperationEntryCardWidget(
+            title: l10n.toolboxDiskTitle,
+            subtitle: l10n.toolboxDiskCardSubtitle,
+            icon: Icons.storage_outlined,
+            onTap: () => Navigator.pushNamed(context, AppRoutes.toolboxDisk),
+          ),
+          const SizedBox(height: 12),
+          ServerOperationEntryCardWidget(
+            title: l10n.toolboxHostToolTitle,
+            subtitle: l10n.toolboxHostToolCardSubtitle,
+            icon: Icons.settings_applications_outlined,
+            onTap: () =>
+                Navigator.pushNamed(context, AppRoutes.toolboxHostTool),
+          ),
         ],
       ),
     );

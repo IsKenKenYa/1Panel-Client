@@ -13,8 +13,10 @@ import 'package:onepanel_client/features/shell/controllers/current_server_contro
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 
 class MockAppService extends Mock implements AppService {}
+
 class FakeAppInstalledSearchRequest extends Fake
     implements AppInstalledSearchRequest {}
+
 class FakeAppSearchRequest extends Fake implements AppSearchRequest {}
 
 void main() {
@@ -26,7 +28,9 @@ void main() {
   testWidgets('uses custom subnav instead of Material TabBar', (tester) async {
     SharedPreferences.setMockInitialValues({
       'api_configs': jsonEncode([
-        ApiConfig(id: 's1', name: 'Demo', url: 'https://demo.test', apiKey: 'key').toJson(),
+        ApiConfig(
+                id: 's1', name: 'Demo', url: 'https://demo.test', apiKey: 'key')
+            .toJson(),
       ]),
       'current_api_config_id': 's1',
     });

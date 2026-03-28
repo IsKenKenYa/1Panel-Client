@@ -31,9 +31,12 @@ void main() {
       provider = InstalledAppsProvider(appService: appService);
     });
 
-    test('loadInstalledApps loads all pages instead of truncating at 100', () async {
-      when(() => appService.searchInstalledApps(any())).thenAnswer((invocation) async {
-        final request = invocation.positionalArguments.first as AppInstalledSearchRequest;
+    test('loadInstalledApps loads all pages instead of truncating at 100',
+        () async {
+      when(() => appService.searchInstalledApps(any()))
+          .thenAnswer((invocation) async {
+        final request =
+            invocation.positionalArguments.first as AppInstalledSearchRequest;
         if (request.page == 1) {
           return PageResult(
             items: List.generate(

@@ -76,7 +76,8 @@ class WebsiteCreate extends Equatable {
       alias: json['alias'] as String? ?? '',
       appId: json['appID'] as int? ?? json['appId'] as int?,
       appInstall: json['appInstall'] as Map<String, dynamic>?,
-      appInstallId: json['appInstallID'] as int? ?? json['appInstallId'] as int?,
+      appInstallId:
+          json['appInstallID'] as int? ?? json['appInstallId'] as int?,
       appType: json['appType'] as String?,
       createDb: json['createDb'] as bool?,
       dbFormat: json['dbFormat'] as String?,
@@ -92,7 +93,8 @@ class WebsiteCreate extends Equatable {
       ftpPassword: json['ftpPassword'] as String?,
       ftpUser: json['ftpUser'] as String?,
       name: json['name'] as String?,
-      parentWebsiteId: json['parentWebsiteID'] as int? ?? json['parentWebsiteId'] as int?,
+      parentWebsiteId:
+          json['parentWebsiteID'] as int? ?? json['parentWebsiteId'] as int?,
       port: json['port'] as int?,
       proxy: json['proxy'] as String?,
       proxyType: json['proxyType'] as String?,
@@ -106,8 +108,10 @@ class WebsiteCreate extends Equatable {
       streamPorts: json['streamPorts'] as String?,
       taskId: json['taskID'] as String? ?? json['taskId'] as String?,
       type: json['type'] as String? ?? '',
-      webSiteGroupId: json['webSiteGroupID'] as int? ?? json['webSiteGroupId'] as int? ?? 0,
-      websiteSSLId: json['websiteSSLID'] as int? ?? json['websiteSSLId'] as int?,
+      webSiteGroupId:
+          json['webSiteGroupID'] as int? ?? json['webSiteGroupId'] as int? ?? 0,
+      websiteSSLId:
+          json['websiteSSLID'] as int? ?? json['websiteSSLId'] as int?,
     );
   }
 
@@ -343,7 +347,8 @@ class WebsiteInfo extends Equatable {
   factory WebsiteInfo.fromJson(Map<String, dynamic> json) {
     return WebsiteInfo(
       id: json['id'] as int?,
-      primaryDomain: json['primaryDomain'] as String? ?? json['domain'] as String?,
+      primaryDomain:
+          json['primaryDomain'] as String? ?? json['domain'] as String?,
       alias: json['alias'] as String?,
       type: json['type'] as String?,
       status: json['status'] as String?,
@@ -375,18 +380,23 @@ class WebsiteInfo extends Equatable {
       runtimeId: json['runtimeID'] as int? ?? json['runtimeId'] as int?,
       runtimeName: json['runtimeName'] as String?,
       runtimeTypeName: json['runtimeType'] as String?,
-      appInstallId: json['appInstallId'] as int? ?? json['appInstallID'] as int?,
+      appInstallId:
+          json['appInstallId'] as int? ?? json['appInstallID'] as int?,
       appName: json['appName'] as String?,
       dbId: json['dbID'] as int? ?? json['dbId'] as int?,
       dbType: json['dbType'] as String?,
       ftpId: json['ftpId'] as int?,
-      parentWebsiteId: json['parentWebsiteID'] as int? ?? json['parentWebsiteId'] as int?,
+      parentWebsiteId:
+          json['parentWebsiteID'] as int? ?? json['parentWebsiteId'] as int?,
       parentSite: json['parentSite'] as String?,
       childSites: json['childSites'] as List?,
-      webSiteGroupId: json['webSiteGroupId'] as int? ?? json['webSiteGroupID'] as int?,
-      webSiteSSLId: json['webSiteSSLId'] as int? ?? json['webSiteSSLID'] as int?,
+      webSiteGroupId:
+          json['webSiteGroupId'] as int? ?? json['webSiteGroupID'] as int?,
+      webSiteSSLId:
+          json['webSiteSSLId'] as int? ?? json['webSiteSSLID'] as int?,
       webSiteSSL: json['webSiteSSL'] is Map<String, dynamic>
-          ? ssl_models.WebsiteSSL.fromJson(json['webSiteSSL'] as Map<String, dynamic>)
+          ? ssl_models.WebsiteSSL.fromJson(
+              json['webSiteSSL'] as Map<String, dynamic>)
           : null,
       domains: (json['domains'] as List?)
               ?.whereType<Map<String, dynamic>>()
@@ -548,7 +558,8 @@ class WebsiteSearch extends Equatable {
   }
 
   @override
-  List<Object?> get props => [page, pageSize, order, orderBy, name, type, websiteGroupId];
+  List<Object?> get props =>
+      [page, pageSize, order, orderBy, name, type, websiteGroupId];
 }
 
 /// Website PHP version update request
@@ -589,7 +600,8 @@ class WebsiteNginxParam extends Equatable {
   factory WebsiteNginxParam.fromJson(Map<String, dynamic> json) {
     return WebsiteNginxParam(
       name: json['name'] as String?,
-      params: (json['params'] as List?)?.whereType<String>().toList() ?? const [],
+      params:
+          (json['params'] as List?)?.whereType<String>().toList() ?? const [],
     );
   }
 
@@ -693,7 +705,17 @@ class WebsiteDomain extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, domain, websiteId, ssl, port, createdAt, updatedAt, websiteName, isDefault];
+  List<Object?> get props => [
+        id,
+        domain,
+        websiteId,
+        ssl,
+        port,
+        createdAt,
+        updatedAt,
+        websiteName,
+        isDefault
+      ];
 }
 
 /// Nginx upstream server model
@@ -741,7 +763,8 @@ class NginxUpstreamServer extends Equatable {
   }
 
   @override
-  List<Object?> get props => [server, weight, maxFails, maxConns, failTimeout, failTimeoutUnit, flag];
+  List<Object?> get props =>
+      [server, weight, maxFails, maxConns, failTimeout, failTimeoutUnit, flag];
 }
 
 /// SSL certificate model
@@ -801,7 +824,18 @@ class SSLCertificate extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, domain, certType, issuer, startDate, expireDate, days, status, createTime, updateTime];
+  List<Object?> get props => [
+        id,
+        domain,
+        certType,
+        issuer,
+        startDate,
+        expireDate,
+        days,
+        status,
+        createTime,
+        updateTime
+      ];
 }
 
 /// SSL apply request model
@@ -822,7 +856,8 @@ class SSLApply extends Equatable {
 
   factory SSLApply.fromJson(Map<String, dynamic> json) {
     return SSLApply(
-      domains: (json['domains'] as List?)?.map((e) => e as String).toList() ?? [],
+      domains:
+          (json['domains'] as List?)?.map((e) => e as String).toList() ?? [],
       email: json['email'] as String?,
       keyType: json['keyType'] as String?,
       websiteId: json['websiteId'] as int?,
@@ -885,7 +920,8 @@ class WebsiteConfig extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, websiteId, configType, content, createTime, updateTime];
+  List<Object?> get props =>
+      [id, websiteId, configType, content, createTime, updateTime];
 }
 
 /// Website rewrite rule model
@@ -977,7 +1013,8 @@ class WebsiteProxy extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, websiteId, type, address, port, path, enable, createTime];
+  List<Object?> get props =>
+      [id, websiteId, type, address, port, path, enable, createTime];
 }
 
 /// Website traffic statistics model
@@ -1170,7 +1207,16 @@ class WebsiteAuth extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, websiteId, username, password, remark, enable, createTime, updateTime];
+  List<Object?> get props => [
+        id,
+        websiteId,
+        username,
+        password,
+        remark,
+        enable,
+        createTime,
+        updateTime
+      ];
 }
 
 /// Website authentication path model
@@ -1222,7 +1268,8 @@ class WebsiteAuthPath extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, websiteId, path, content, remark, enable, createTime, updateTime];
+  List<Object?> get props =>
+      [id, websiteId, path, content, remark, enable, createTime, updateTime];
 }
 
 /// Website database model
@@ -1274,7 +1321,16 @@ class WebsiteDatabase extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, websiteId, database, username, password, remark, createTime, updateTime];
+  List<Object?> get props => [
+        id,
+        websiteId,
+        database,
+        username,
+        password,
+        remark,
+        createTime,
+        updateTime
+      ];
 }
 
 /// Website directory model
@@ -1370,7 +1426,18 @@ class WebsiteLoadBalancer extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, type, address, port, path, enable, upstreams, createTime, updateTime];
+  List<Object?> get props => [
+        id,
+        name,
+        type,
+        address,
+        port,
+        path,
+        enable,
+        upstreams,
+        createTime,
+        updateTime
+      ];
 }
 
 /// Website leech protection model
@@ -1399,7 +1466,8 @@ class WebsiteLeech extends Equatable {
     return WebsiteLeech(
       id: json['id'] as int?,
       websiteId: json['websiteId'] as int?,
-      extensions: (json['extensions'] as List?)?.map((e) => e as String).toList(),
+      extensions:
+          (json['extensions'] as List?)?.map((e) => e as String).toList(),
       domains: (json['domains'] as List?)?.map((e) => e as String).toList(),
       enable: json['enable'] as bool?,
       remark: json['remark'] as String?,
@@ -1422,7 +1490,16 @@ class WebsiteLeech extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, websiteId, extensions, domains, enable, remark, createTime, updateTime];
+  List<Object?> get props => [
+        id,
+        websiteId,
+        extensions,
+        domains,
+        enable,
+        remark,
+        createTime,
+        updateTime
+      ];
 }
 
 /// Website log model
@@ -1506,7 +1583,8 @@ class WebsiteRealIP extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, websiteId, header, addr, enable, createTime, updateTime];
+  List<Object?> get props =>
+      [id, websiteId, header, addr, enable, createTime, updateTime];
 }
 
 /// Website redirect model
@@ -1570,7 +1648,19 @@ class WebsiteRedirect extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, websiteId, type, domain, path, target, keepPath, statusCode, enable, createTime, updateTime];
+  List<Object?> get props => [
+        id,
+        websiteId,
+        type,
+        domain,
+        path,
+        target,
+        keepPath,
+        statusCode,
+        enable,
+        createTime,
+        updateTime
+      ];
 }
 
 /// Website resource model

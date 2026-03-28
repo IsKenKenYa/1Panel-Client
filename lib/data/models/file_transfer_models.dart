@@ -65,7 +65,9 @@ class FileUploadRequest extends Equatable {
       filePath: json['filePath'] as String,
       fileSize: json['fileSize'] as int,
       checksum: json['checksum'] as String?,
-      uploadType: json['uploadType'] != null ? UploadType.fromString(json['uploadType'] as String) : null,
+      uploadType: json['uploadType'] != null
+          ? UploadType.fromString(json['uploadType'] as String)
+          : null,
       chunkSize: json['chunkSize'] as int?,
       overwrite: json['overwrite'] as String?,
       metadata: json['metadata'] as Map<String, dynamic>?,
@@ -86,7 +88,16 @@ class FileUploadRequest extends Equatable {
   }
 
   @override
-  List<Object?> get props => [fileName, filePath, fileSize, checksum, uploadType, chunkSize, overwrite, metadata];
+  List<Object?> get props => [
+        fileName,
+        filePath,
+        fileSize,
+        checksum,
+        uploadType,
+        chunkSize,
+        overwrite,
+        metadata
+      ];
 }
 
 /// File upload info model
@@ -135,7 +146,9 @@ class FileUploadInfo extends Equatable {
       fileSize: json['fileSize'] as int?,
       uploadedSize: json['uploadedSize'] as int?,
       progress: (json['progress'] as num?)?.toDouble(),
-      status: json['status'] != null ? UploadStatus.fromString(json['status'] as String) : null,
+      status: json['status'] != null
+          ? UploadStatus.fromString(json['status'] as String)
+          : null,
       checksum: json['checksum'] as String?,
       chunkSize: json['chunkSize'] as int?,
       totalChunks: json['totalChunks'] as int?,
@@ -227,7 +240,8 @@ class ChunkUploadRequest extends Equatable {
   }
 
   @override
-  List<Object?> get props => [uploadId, chunkIndex, chunkData, chunkChecksum, chunkSize];
+  List<Object?> get props =>
+      [uploadId, chunkIndex, chunkData, chunkChecksum, chunkSize];
 }
 
 /// File download request model
@@ -267,7 +281,8 @@ class FileDownloadRequest extends Equatable {
   }
 
   @override
-  List<Object?> get props => [filePath, savePath, forceDownload, checkIntegrity, metadata];
+  List<Object?> get props =>
+      [filePath, savePath, forceDownload, checkIntegrity, metadata];
 }
 
 /// File download info model
@@ -339,7 +354,21 @@ class FileDownloadInfo extends Equatable {
   }
 
   @override
-  List<Object?> get props => [downloadId, filePath, savePath, fileSize, downloadedSize, progress, status, checksum, startTime, endTime, speed, error, metadata];
+  List<Object?> get props => [
+        downloadId,
+        filePath,
+        savePath,
+        fileSize,
+        downloadedSize,
+        progress,
+        status,
+        checksum,
+        startTime,
+        endTime,
+        speed,
+        error,
+        metadata
+      ];
 }
 
 /// Transfer operation model
@@ -354,7 +383,9 @@ class TransferOperation extends Equatable {
 
   factory TransferOperation.fromJson(Map<String, dynamic> json) {
     return TransferOperation(
-      transferIds: (json['transferIds'] as List?)?.map((e) => e as String).toList() ?? [],
+      transferIds:
+          (json['transferIds'] as List?)?.map((e) => e as String).toList() ??
+              [],
       operation: json['operation'] as String,
     );
   }
@@ -423,5 +454,15 @@ class TransferStats extends Equatable {
   }
 
   @override
-  List<Object?> get props => [activeUploads, activeDownloads, completedUploads, completedDownloads, failedTransfers, totalUploadSpeed, totalDownloadSpeed, totalUploaded, totalDownloaded];
+  List<Object?> get props => [
+        activeUploads,
+        activeDownloads,
+        completedUploads,
+        completedDownloads,
+        failedTransfers,
+        totalUploadSpeed,
+        totalDownloadSpeed,
+        totalUploaded,
+        totalDownloaded
+      ];
 }

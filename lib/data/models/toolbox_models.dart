@@ -613,7 +613,8 @@ class Fail2banBaseInfo extends Equatable {
   }
 
   @override
-  List<Object?> get props => [bantime, findtime, isEnable, maxretry, port, version];
+  List<Object?> get props =>
+      [bantime, findtime, isEnable, maxretry, port, version];
 }
 
 /// Fail2ban更新请求
@@ -974,7 +975,9 @@ class Clean extends Equatable {
 
   factory Clean.fromJson(Map<String, dynamic> json) {
     return Clean(
-      cleanData: (json['cleanData'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      cleanData: (json['cleanData'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
     );
   }
 

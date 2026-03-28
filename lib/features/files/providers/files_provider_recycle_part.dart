@@ -60,9 +60,11 @@ extension FilesProviderRecycleMixin on FilesProvider {
     appLogger.dWithPackage('files_provider', 'restoreFile: 恢复文件 ${file.name}');
     try {
       await _service.restoreFile(
-        RecycleBinReduceRequest(rName: file.rName, from: file.from, name: file.name),
+        RecycleBinReduceRequest(
+            rName: file.rName, from: file.from, name: file.name),
       );
-      appLogger.iWithPackage('files_provider', 'restoreFile: 成功恢复文件 ${file.name}');
+      appLogger.iWithPackage(
+          'files_provider', 'restoreFile: 成功恢复文件 ${file.name}');
       await loadRecycleBinStatus();
     } catch (e, stackTrace) {
       appLogger.eWithPackage(
@@ -76,7 +78,8 @@ extension FilesProviderRecycleMixin on FilesProvider {
   }
 
   Future<void> restoreFiles(List<RecycleBinItem> files) async {
-    appLogger.dWithPackage('files_provider', 'restoreFiles: 恢复${files.length}个文件');
+    appLogger.dWithPackage(
+        'files_provider', 'restoreFiles: 恢复${files.length}个文件');
     try {
       final requests = files
           .map(
@@ -88,7 +91,8 @@ extension FilesProviderRecycleMixin on FilesProvider {
           )
           .toList(growable: false);
       await _service.restoreFiles(requests);
-      appLogger.iWithPackage('files_provider', 'restoreFiles: 成功恢复${files.length}个文件');
+      appLogger.iWithPackage(
+          'files_provider', 'restoreFiles: 成功恢复${files.length}个文件');
       await loadRecycleBinStatus();
     } catch (e, stackTrace) {
       appLogger.eWithPackage(
@@ -102,10 +106,12 @@ extension FilesProviderRecycleMixin on FilesProvider {
   }
 
   Future<void> deletePermanently(RecycleBinItem file) async {
-    appLogger.dWithPackage('files_provider', 'deletePermanently: 永久删除文件 ${file.name}');
+    appLogger.dWithPackage(
+        'files_provider', 'deletePermanently: 永久删除文件 ${file.name}');
     try {
       await _service.deleteRecycleBinFiles(<RecycleBinItem>[file]);
-      appLogger.iWithPackage('files_provider', 'deletePermanently: 成功永久删除文件 ${file.name}');
+      appLogger.iWithPackage(
+          'files_provider', 'deletePermanently: 成功永久删除文件 ${file.name}');
       await loadRecycleBinStatus();
     } catch (e, stackTrace) {
       appLogger.eWithPackage(
@@ -119,7 +125,8 @@ extension FilesProviderRecycleMixin on FilesProvider {
   }
 
   Future<void> deletePermanentlyFiles(List<RecycleBinItem> files) async {
-    appLogger.dWithPackage('files_provider', 'deletePermanentlyFiles: 永久删除${files.length}个文件');
+    appLogger.dWithPackage(
+        'files_provider', 'deletePermanentlyFiles: 永久删除${files.length}个文件');
     try {
       await _service.deleteRecycleBinFiles(files);
       appLogger.iWithPackage(

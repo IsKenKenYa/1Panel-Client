@@ -37,10 +37,12 @@ class AuthInterceptor extends Interceptor {
     _logger.d('[network] 1Panel auth headers added for ${options.path}');
     super.onRequest(options, handler);
   }
+
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     if (err.response?.statusCode == 401) {
-      _logger.w('[network] 1Panel authentication failed for ${err.requestOptions.path}');
+      _logger.w(
+          '[network] 1Panel authentication failed for ${err.requestOptions.path}');
       _logger.w('[network] Response: ${err.response?.data}');
     }
     super.onError(err, handler);

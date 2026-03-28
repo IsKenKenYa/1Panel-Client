@@ -34,7 +34,8 @@ class ServerConnectionService {
         },
       ));
 
-      final timestamp = (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString();
+      final timestamp =
+          (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString();
       final authString = '1panel$apiKey$timestamp';
       final bytes = utf8.encode(authString);
       final digest = md5.convert(bytes);
@@ -69,7 +70,7 @@ class ServerConnectionService {
     } on DioException catch (e) {
       stopwatch.stop();
       String errorMessage;
-      
+
       switch (e.type) {
         case DioExceptionType.connectionTimeout:
         case DioExceptionType.sendTimeout:
@@ -83,7 +84,8 @@ class ServerConnectionService {
           if (e.response?.statusCode == 401) {
             errorMessage = 'Authentication failed: Invalid API key';
           } else {
-            errorMessage = 'Server error: ${e.response?.statusCode ?? 'Unknown'}';
+            errorMessage =
+                'Server error: ${e.response?.statusCode ?? 'Unknown'}';
           }
           break;
         default:

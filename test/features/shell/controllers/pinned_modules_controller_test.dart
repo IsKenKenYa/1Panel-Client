@@ -13,7 +13,8 @@ void main() {
       expect(controller.pins, [ClientModule.files, ClientModule.containers]);
     });
 
-    test('setPin swaps duplicate modules instead of duplicating them', () async {
+    test('setPin swaps duplicate modules instead of duplicating them',
+        () async {
       SharedPreferences.setMockInitialValues({});
       final controller = PinnedModulesController();
       await controller.load();

@@ -2,7 +2,8 @@ import 'package:flutter/foundation.dart';
 import '../services/website_account_service.dart';
 
 class WebsiteSslAccountsProvider extends ChangeNotifier {
-  WebsiteSslAccountsProvider({WebsiteAccountService? service}) : _service = service;
+  WebsiteSslAccountsProvider({WebsiteAccountService? service})
+      : _service = service;
 
   WebsiteAccountService? _service;
 
@@ -10,7 +11,8 @@ class WebsiteSslAccountsProvider extends ChangeNotifier {
   String? error;
   List<Map<String, dynamic>> dnsAccounts = const <Map<String, dynamic>>[];
   List<Map<String, dynamic>> acmeAccounts = const <Map<String, dynamic>>[];
-  List<Map<String, dynamic>> certificateAuthorities = const <Map<String, dynamic>>[];
+  List<Map<String, dynamic>> certificateAuthorities =
+      const <Map<String, dynamic>>[];
 
   Future<void> _ensureService() async {
     _service ??= WebsiteAccountService();

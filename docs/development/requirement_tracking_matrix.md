@@ -6,6 +6,7 @@
 - **标签数**: 52
 - **数据模型数**: 471
 - **优先级分类**: P0 (核心), P1 (高价值), P2 (工具类)
+- **当前状态真值**: `docs/development/swagger_adaptation_status_checklist.md`
 
 ## Phase 2 增量进展（2026-03-28）
 
@@ -46,6 +47,7 @@
 	- 风险残留清单：`docs/development/s2_risk_residual_list.md`
 	- 回归结果清单：`docs/development/s2_regression_results.md`
 	- 路由清理清单：`docs/development/s2_route_cleanup_list.md`
+	- Swagger 适配状态清单：`docs/development/swagger_adaptation_status_checklist.md`
 - **已批准残留（不阻塞 Phase 2 Final）**:
 	- `database`：用户管理细节、更多写操作表单、细分状态展示。
 	- `firewall`：forward / filter advance / chain status。
@@ -90,28 +92,28 @@
 | 模块 | 端点数 | API客户端 | 数据模型 | 测试覆盖 | UI集成 | 状态 | 备注 |
 |-------|---------|-----------|----------|----------|---------|------|------|
 | **Cronjob** | 16 | ✅ cronjob_v2.dart | ✅ cronjob_models.dart + `cronjob_form_*_models.dart` | ✅ 已测试 | ✅ 已集成 | Week 5 已补 `CronjobFormPage`，支持 shell / curl / backup 首批类型；review closeout 已清理剩余页面文案、未知类型 fallback 与错误提示到 l10n |
-| **Firewall** | 15 | ✅ firewall_v2.dart | ✅ firewall_models.dart | ⚠️ 待测试 | 🔴 待集成 | 规则管理待建设 |
+| **Firewall** | 15 | ✅ firewall_v2.dart | ✅ firewall_models.dart | ⚠️ 待测试 | ✅ 已集成 | `status/rules/ip/ports` 主链路已完成；高级链路进入已批准残留 |
 | **SSH** | 12 | ✅ ssh_v2.dart | ✅ ssh_*_models.dart | ✅ 已测试 | ✅ 已集成 | Week 3 已交付设置 / 证书 / 日志 / 会话 MVP，session 实时链路复用 `process/ws` |
-| **Website SSL** | 11 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🟡 部分 | 证书与域名细分功能待扩展 |
-| **AI** | 10 | ✅ ai_v2.dart | ✅ ai_models.dart | ✅ 已测试 | 🟡 部分 | GPU/XPU监控与域名绑定 |
+| **Website SSL** | 11 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | ✅ 已集成 | 证书中心、站点绑定、HTTPS 策略已接入；CA/ACME/DNS 深化能力仍在范围边界 |
+| **AI** | 10 | ✅ ai_v2.dart | ✅ ai_models.dart | ✅ 已测试 | ✅ 已集成 | `Ollama / GPU / Domain / MCP` 四标签页已接入 |
 | **Container Image** | 10 | ✅ container_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | 🟡 部分 | 镜像管理功能 |
 | **Host** | 10 | ✅ host_v2.dart | ✅ host_models.dart | ✅ 已测试 | 🟡 部分 | 主机资产 MVP 已接入，并与 Week 3 SSH / Process 入口联动 |
-| **OpenResty** | 10 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ⚠️ 待测试 | 🟡 部分 | 配置与状态页待建设 |
+| **OpenResty** | 10 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ⚠️ 待测试 | ✅ 已集成 | `status / https / modules / config / build` 主链路已接入 |
 | **Command** | 8 | ✅ command_v2.dart | ✅ command_models.dart + `tool_models.dart` | ✅ 已测试 | ✅ 已集成 | Week 2 命令管理 MVP 已接入，脚本库已拆出独立模块 |
 | **Container Docker** | 8 | ✅ docker_v2.dart | ✅ docker_models.dart | ✅ 已测试 | 🟡 部分 | Docker守护进程管理 |
 | **Logs** | 4 | ✅ logs_v2.dart | ✅ logs_models.dart | ✅ 已测试 | ✅ 已集成 | Week 6 已交付 `LogsCenterPage` / `SystemLogViewerPage`，当前聚合 operation/login/system 主链路，正文读取复用 `/files/read` |
-| **Container Compose-template** | 6 | ✅ container_compose_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | 🔴 待集成 | Compose模板管理 |
-| **Container Image-repo** | 6 | ✅ docker_v2.dart | ✅ docker_models.dart | ⚠️ 待测试 | 🔴 待集成 | 镜像仓库管理 |
-| **Container Compose** | 5 | ✅ container_compose_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | 🔴 待集成 | Docker Compose管理 |
+| **Container Compose-template** | 6 | ✅ container_compose_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | 🟡 部分 | 页面存在，但按计划不纳入 Phase 2 硬交付 |
+| **Container Image-repo** | 6 | ✅ docker_v2.dart | ✅ docker_models.dart | ⚠️ 待测试 | 🟡 部分 | 页面存在，但按计划不纳入 Phase 2 硬交付 |
+| **Container Compose** | 5 | ✅ container_compose_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | ✅ 已集成 | Orchestration 主流程已接入 |
 | **ScriptLibrary** | 5 | ✅ script_library_v2.dart | ✅ script_library_models.dart | ✅ 已测试 | ✅ 已集成 | Week 4 已交付列表 / 查看代码 / sync / run-output MVP |
-| **Container Network** | 4 | ✅ container_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | 🔴 待集成 | 网络管理 |
-| **Container Volume** | 4 | ✅ container_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | 🔴 待集成 | 卷管理 |
-| **Website CA** | 7 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🔴 待集成 | CA证书管理 |
-| **Website Acme** | 4 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🔴 待集成 | ACME证书申请 |
-| **Website DNS** | 4 | ✅ website_v2.dart | ✅ website_models.dart | ⚠️ 待测试 | 🔴 待集成 | DNS管理 |
+| **Container Network** | 4 | ✅ container_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | ✅ 已集成 | Orchestration 主流程已接入 |
+| **Container Volume** | 4 | ✅ container_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | ✅ 已集成 | Orchestration 主流程已接入 |
+| **Website CA** | 7 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🟡 部分 | 当前仅有账户汇总入口，完整 CRUD 不在 Phase 2 硬范围 |
+| **Website Acme** | 4 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🟡 部分 | 当前仅有账户汇总入口，完整 CRUD 不在 Phase 2 硬范围 |
+| **Website DNS** | 4 | ✅ website_v2.dart | ✅ website_models.dart | ⚠️ 待测试 | 🟡 部分 | 当前仅有账户汇总入口，完整 CRUD 不在 Phase 2 硬范围 |
 | **Website Domain** | 4 | ✅ website_v2.dart | ✅ website_models.dart | ✅ 已测试 | 🟡 部分 | CRUD + 本地校验已接入，默认域名写操作/批量仍缺 |
-| **Website Nginx** | 4 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ⚠️ 待测试 | 🔴 待集成 | Nginx配置 |
-| **Website HTTPS** | 2 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🔴 待集成 | HTTPS配置 |
+| **Website Nginx** | 4 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ⚠️ 待测试 | ✅ 已集成 | 结构化配置与源码编辑入口已接入 |
+| **Website HTTPS** | 2 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | ✅ 已集成 | 站点 HTTPS 策略页已接入 |
 | **Website PHP** | 1 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ⚠️ 待测试 | 🔴 待集成 | PHP配置 |
 | **TaskLog** | 2 | ✅ task_log_v2.dart | ✅ task_log_models.dart | ✅ 已测试 | ✅ 已集成 | Week 6 已并入日志中心 `Task` tab，并交付 `TaskLogDetailPage`；详情正文由 `taskID + /files/read` 驱动 |
 | **Process** | 2 | ✅ process_v2.dart | ✅ process_models.dart | ✅ 已测试 | ✅ 已集成 | Week 3 已交付实时列表 / 详情 / stop，主列表真值来自 `process/ws` |
@@ -120,17 +122,17 @@
 
 | 模块 | 端点数 | API客户端 | 数据模型 | 测试覆盖 | UI集成 | 状态 | 备注 |
 |-------|---------|-----------|----------|----------|---------|------|------|
-| **Clam** | 12 | ✅ toolbox_v2.dart | ✅ toolbox_models.dart | ✅ 已测试 | 🔴 待集成 | 病毒扫描 |
-| **Device** | 12 | ✅ host_v2.dart | ✅ host_models.dart | ⚠️ 待测试 | 🔴 待集成 | 设备管理 |
-| **McpServer** | 8 | ✅ ai_v2.dart | ✅ mcp_models.dart | ✅ 已测试 | 🔴 待集成 | MCP服务器管理 |
+| **Clam** | 12 | ✅ toolbox_v2.dart | ✅ toolbox_models.dart | ✅ 已测试 | 🟡 部分 | 已有查看页，完整写操作链路仍未补齐 |
+| **Device** | 12 | ✅ host_v2.dart | ✅ host_models.dart | ⚠️ 待测试 | 🟡 部分 | 已并入 `toolbox/device`，不是独立顶级模块 |
+| **McpServer** | 8 | ✅ ai_v2.dart | ✅ mcp_models.dart | ✅ 已测试 | ✅ 已集成 | 已接入 AI 的 `MCP` 标签页与管理表单 |
 | **System Group** | 8 | ✅ system_group_v2.dart | ✅ system_group_models.dart | ✅ 已测试 | 🟡 部分 | Week 1 已完成共享分组底座，暂不提供独立顶级页面 |
-| **FTP** | 8 | ✅ toolbox_v2.dart | ✅ toolbox_models.dart | ⚠️ 待测试 | 🔴 待集成 | FTP管理 |
-| **Host tool** | 7 | ✅ toolbox_v2.dart | ✅ toolbox_models.dart | ⚠️ 待测试 | 🔴 待集成 | 主机工具 |
-| **Fail2ban** | 7 | ✅ toolbox_v2.dart | ✅ toolbox_models.dart | ⚠️ 待测试 | 🔴 待集成 | 入侵防护 |
-| **Disk Management** | 4 | ✅ toolbox_v2.dart | ✅ toolbox_models.dart | ⚠️ 待测试 | 🔴 待集成 | 磁盘管理 |
-| **PHP Extensions** | 4 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ⚠️ 待测试 | 🔴 待集成 | PHP扩展 |
-| **untagged** | 4 | - | - | - | 🔴 待集成 | 未分类端点 |
-| **Menu Setting** | 1 | ✅ setting_v2.dart | ✅ setting_models.dart | ⚠️ 待测试 | 🔴 待集成 | 菜单设置 |
+| **FTP** | 8 | ✅ toolbox_v2.dart | ✅ toolbox_models.dart | ⚠️ 待测试 | 🟡 部分 | 已有查看页，完整写操作链路仍未补齐 |
+| **Host tool** | 7 | ✅ host_tool_v2.dart | ✅ host_tool_models.dart | ⚠️ 待测试 | ✅ 已集成 | 已新增 `toolbox/host-tool` 闭环 |
+| **Fail2ban** | 7 | ✅ toolbox_v2.dart | ✅ toolbox_models.dart | ⚠️ 待测试 | 🟡 部分 | 已有查看页，完整写操作链路仍未补齐 |
+| **Disk Management** | 4 | ✅ disk_management_v2.dart | ✅ disk_management_models.dart | ⚠️ 待测试 | ✅ 已集成 | 已新增 `toolbox/disk` 闭环 |
+| **PHP Extensions** | 4 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ⚠️ 待测试 | ✅ 已集成 | Runtime 深能力页已接入 |
+| **untagged** | 4 | - | - | - | 🟡 部分 | 方法已在 `container_v2.dart` / `website_v2.dart` 中存在，仍需保留归类行 |
+| **Menu Setting** | 1 | ✅ setting_v2.dart | ✅ setting_models.dart | ⚠️ 待测试 | ✅ 已集成 | 已新增菜单设置路由与页面 |
 
 ## 实现状态统计
 

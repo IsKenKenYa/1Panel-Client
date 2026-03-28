@@ -17,7 +17,8 @@ class MockMonitorLocalDataSource extends MonitorLocalDataSource {
   }
 
   @override
-  Future<List<MonitorDataPoint>> getPoints(String metric, DateTime start, DateTime end) async {
+  Future<List<MonitorDataPoint>> getPoints(
+      String metric, DateTime start, DateTime end) async {
     return [];
   }
 }
@@ -38,8 +39,10 @@ class FakeMonitoringService extends MonitoringService {
         'cpu': MonitorTimeSeries(
           name: 'cpu',
           data: [
-            MonitorDataPoint(time: now.subtract(const Duration(minutes: 2)), value: 0.2),
-            MonitorDataPoint(time: now.subtract(const Duration(minutes: 1)), value: 0.6),
+            MonitorDataPoint(
+                time: now.subtract(const Duration(minutes: 2)), value: 0.2),
+            MonitorDataPoint(
+                time: now.subtract(const Duration(minutes: 1)), value: 0.6),
             MonitorDataPoint(time: now, value: 0.9),
           ],
         ),
@@ -70,10 +73,12 @@ class ErrorMonitoringService extends MonitoringService {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  const MethodChannel channel = MethodChannel('dev.fluttercommunity.plus/connectivity');
+  const MethodChannel channel =
+      MethodChannel('dev.fluttercommunity.plus/connectivity');
 
   setUp(() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
       channel,
       (MethodCall methodCall) async {
         if (methodCall.method == 'check') {
@@ -85,7 +90,8 @@ void main() {
   });
 
   tearDown(() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
       channel,
       null,
     );

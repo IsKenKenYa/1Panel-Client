@@ -9,7 +9,7 @@ data: 2023-01-01 12:00:00 Log entry 1
 data: 2023-01-01 12:00:01 Log entry 2
 data:   Indented line
 ''';
-      
+
       final lines = input.split('\n');
       final logs = <String>[];
       for (final line in lines) {
@@ -25,13 +25,14 @@ data:   Indented line
         }
       }
       final result = logs.join('\n');
-      
-      expect(result, '2023-01-01 12:00:00 Log entry 1\n2023-01-01 12:00:01 Log entry 2\n  Indented line');
+
+      expect(result,
+          '2023-01-01 12:00:00 Log entry 1\n2023-01-01 12:00:01 Log entry 2\n  Indented line');
     });
 
     test('handles lines without data prefix', () {
       const input = 'Just a normal line\nAnother line';
-      
+
       final lines = input.split('\n');
       final logs = <String>[];
       for (final line in lines) {
@@ -47,7 +48,7 @@ data:   Indented line
         }
       }
       final result = logs.join('\n');
-      
+
       expect(result, 'Just a normal line\nAnother line');
     });
   });

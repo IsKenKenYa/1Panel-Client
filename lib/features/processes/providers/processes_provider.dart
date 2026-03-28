@@ -91,7 +91,8 @@ class ProcessesProvider extends ChangeNotifier with AsyncStateNotifier {
   }
 
   Future<void> _bindStreamIfNeeded() async {
-    _subscription ??= _service.watchProcesses().listen((List<ProcessSummary> data) {
+    _subscription ??=
+        _service.watchProcesses().listen((List<ProcessSummary> data) {
       _rawItems = data;
       _rebuildItems();
       setSuccess(isEmpty: _items.isEmpty, notify: false);
@@ -123,13 +124,15 @@ class ProcessesProvider extends ChangeNotifier with AsyncStateNotifier {
   }
 
   void _rebuildItems() {
-    var merged =
-        _service.mergeListeningData(_rawItems, _listening).toList(growable: true);
+    var merged = _service
+        .mergeListeningData(_rawItems, _listening)
+        .toList(growable: true);
     if (_query.statuses.isNotEmpty) {
       merged = merged
           .where(
             (item) => _query.statuses.any(
-              (status) => item.status.toLowerCase().contains(status.toLowerCase()),
+              (status) =>
+                  item.status.toLowerCase().contains(status.toLowerCase()),
             ),
           )
           .toList(growable: false);

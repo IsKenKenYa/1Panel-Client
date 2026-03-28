@@ -46,7 +46,8 @@ class ProcessConnection extends Equatable {
   }
 
   @override
-  List<Object?> get props => <Object?>[type, status, localAddress, remoteAddress];
+  List<Object?> get props =>
+      <Object?>[type, status, localAddress, remoteAddress];
 }
 
 class ProcessOpenFile extends Equatable {

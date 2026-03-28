@@ -36,7 +36,8 @@ class FileSaveService {
     required Uint8List bytes,
     String? mimeType,
   }) async {
-    appLogger.dWithPackage('file_save', 'saveFile: fileName=$fileName, bytesLength=${bytes.length}');
+    appLogger.dWithPackage('file_save',
+        'saveFile: fileName=$fileName, bytesLength=${bytes.length}');
 
     try {
       if (Platform.isAndroid) {
@@ -55,7 +56,8 @@ class FileSaveService {
     }
   }
 
-  Future<FileSaveResult> _saveFileAndroid(String fileName, Uint8List bytes) async {
+  Future<FileSaveResult> _saveFileAndroid(
+      String fileName, Uint8List bytes) async {
     final androidInfo = await _getAndroidVersion();
     final isAndroid10OrAbove = androidInfo >= 29;
 
@@ -90,7 +92,8 @@ class FileSaveService {
     );
   }
 
-  Future<FileSaveResult> _saveFileIOS(String fileName, Uint8List bytes, String? mimeType) async {
+  Future<FileSaveResult> _saveFileIOS(
+      String fileName, Uint8List bytes, String? mimeType) async {
     try {
       final result = await FilePicker.platform.saveFile(
         dialogTitle: '保存文件',
@@ -112,8 +115,9 @@ class FileSaveService {
         );
       }
     } catch (e) {
-      appLogger.wWithPackage('file_save', '_saveFileIOS: FilePicker保存失败，降级到应用文档目录: $e');
-      
+      appLogger.wWithPackage(
+          'file_save', '_saveFileIOS: FilePicker保存失败，降级到应用文档目录: $e');
+
       final downloadDir = await getApplicationDocumentsDirectory();
       final safeFileName = _sanitizeFileName(fileName);
       final filePath = await _getUniqueFilePath(downloadDir.path, safeFileName);
@@ -121,7 +125,8 @@ class FileSaveService {
       final file = await File(filePath).create(recursive: true);
       await file.writeAsBytes(bytes);
 
-      appLogger.iWithPackage('file_save', '_saveFileIOS: 文件已保存到应用文档目录 $filePath');
+      appLogger.iWithPackage(
+          'file_save', '_saveFileIOS: 文件已保存到应用文档目录 $filePath');
       return FileSaveResult(
         success: true,
         filePath: filePath,
@@ -129,7 +134,8 @@ class FileSaveService {
     }
   }
 
-  Future<FileSaveResult> _saveFileDesktop(String fileName, Uint8List bytes) async {
+  Future<FileSaveResult> _saveFileDesktop(
+      String fileName, Uint8List bytes) async {
     try {
       final result = await FilePicker.platform.saveFile(
         dialogTitle: '保存文件',
@@ -151,9 +157,11 @@ class FileSaveService {
         );
       }
     } catch (e) {
-      appLogger.wWithPackage('file_save', '_saveFileDesktop: FilePicker保存失败，降级到下载目录: $e');
-      
-      final downloadDir = await getDownloadsDirectory() ?? await getApplicationDocumentsDirectory();
+      appLogger.wWithPackage(
+          'file_save', '_saveFileDesktop: FilePicker保存失败，降级到下载目录: $e');
+
+      final downloadDir = await getDownloadsDirectory() ??
+          await getApplicationDocumentsDirectory();
       final safeFileName = _sanitizeFileName(fileName);
       final filePath = await _getUniqueFilePath(downloadDir.path, safeFileName);
 
@@ -210,7 +218,8 @@ class FileSaveService {
 
       return PermissionStatus.denied;
     } catch (e) {
-      appLogger.wWithPackage('file_save', 'requestStoragePermission: 权限检查失败，降级处理: $e');
+      appLogger.wWithPackage(
+          'file_save', 'requestStoragePermission: 权限检查失败，降级处理: $e');
       return PermissionStatus.granted;
     }
   }
@@ -265,7 +274,7 @@ class FileSaveService {
 
     // 注意: 需要在 pubspec.yaml 中添加 open_file 包依赖:
     // open_file: ^3.5.10
-    // 
+    //
     // 使用方式:
     // import 'package:open_file/open_file.dart';
     // final result = await OpenFile.open(filePath);
@@ -303,7 +312,8 @@ class FileSaveService {
       throw UnsupportedError('当前平台不支持打开文件所在目录');
     }
 
-    appLogger.iWithPackage('file_save', 'openFileLocation: 已打开目录 ${directory.path}');
+    appLogger.iWithPackage(
+        'file_save', 'openFileLocation: 已打开目录 ${directory.path}');
   }
 
   Future<bool> openDownloadsDirectory() async {
@@ -320,13 +330,14 @@ class FileSaveService {
         await intent.launch();
         return true;
       } catch (e) {
-        appLogger.wWithPackage('file_save', 'openDownloadsDirectory: Android 打开失败: $e');
+        appLogger.wWithPackage(
+            'file_save', 'openDownloadsDirectory: Android 打开失败: $e');
         return false;
       }
     }
 
-    final downloadDir =
-        await getDownloadsDirectory() ?? await getApplicationDocumentsDirectory();
+    final downloadDir = await getDownloadsDirectory() ??
+        await getApplicationDocumentsDirectory();
     if (Platform.isMacOS) {
       await Process.run('open', [downloadDir.path]);
       return true;
@@ -366,12 +377,14 @@ class FileSaveService {
     // 无需权限，文件自动出现在系统下载管理器中
     final downloadDir = await getDownloadsDirectory();
     if (downloadDir != null) {
-      appLogger.iWithPackage('file_save', '_getAndroid10PlusDownloadDir: 使用系统下载目录 ${downloadDir.path}');
+      appLogger.iWithPackage('file_save',
+          '_getAndroid10PlusDownloadDir: 使用系统下载目录 ${downloadDir.path}');
       return downloadDir;
     }
 
     // 降级方案：如果 getDownloadsDirectory() 返回 null
-    appLogger.wWithPackage('file_save', '_getAndroid10PlusDownloadDir: getDownloadsDirectory() 返回 null，降级到应用文档目录');
+    appLogger.wWithPackage('file_save',
+        '_getAndroid10PlusDownloadDir: getDownloadsDirectory() 返回 null，降级到应用文档目录');
     final appDir = await getApplicationDocumentsDirectory();
     final fallbackPath = '${appDir.path}/Download';
     final fallbackDir = Directory(fallbackPath);
@@ -401,7 +414,7 @@ class FileSaveService {
 
   Future<String> _getUniqueFilePath(String directory, String fileName) async {
     final filePath = '$directory/$fileName';
-    
+
     if (!await File(filePath).exists()) {
       return filePath;
     }
@@ -450,11 +463,13 @@ class FileSaveService {
         final dir = await getApplicationDocumentsDirectory();
         return dir.path;
       } else {
-        final dir = await getDownloadsDirectory() ?? await getApplicationDocumentsDirectory();
+        final dir = await getDownloadsDirectory() ??
+            await getApplicationDocumentsDirectory();
         return dir.path;
       }
     } catch (e) {
-      appLogger.eWithPackage('file_save', 'getDownloadDirectoryPath: 获取下载目录失败', error: e);
+      appLogger.eWithPackage('file_save', 'getDownloadDirectoryPath: 获取下载目录失败',
+          error: e);
       return null;
     }
   }

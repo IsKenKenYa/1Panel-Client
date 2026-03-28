@@ -15,7 +15,14 @@ class _NetworkCreateDialogState extends State<NetworkCreateDialog> {
   final _subnetController = TextEditingController();
   final _gatewayController = TextEditingController();
 
-  final List<String> _drivers = ['bridge', 'host', 'null', 'macvlan', 'ipvlan', 'overlay'];
+  final List<String> _drivers = [
+    'bridge',
+    'host',
+    'null',
+    'macvlan',
+    'ipvlan',
+    'overlay'
+  ];
   String _selectedDriver = 'bridge';
 
   @override

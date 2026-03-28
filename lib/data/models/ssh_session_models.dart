@@ -45,5 +45,6 @@ class SshSessionInfo extends Equatable {
   }
 
   @override
-  List<Object?> get props => <Object?>[username, pid, terminal, host, loginTime];
+  List<Object?> get props =>
+      <Object?>[username, pid, terminal, host, loginTime];
 }

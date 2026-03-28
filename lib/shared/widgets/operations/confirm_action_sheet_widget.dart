@@ -69,9 +69,8 @@ class ConfirmActionSheetWidget extends StatelessWidget {
             child: FilledButton.icon(
               style: FilledButton.styleFrom(
                 backgroundColor: confirmColor,
-                foregroundColor: isDestructive
-                    ? colorScheme.onError
-                    : colorScheme.onPrimary,
+                foregroundColor:
+                    isDestructive ? colorScheme.onError : colorScheme.onPrimary,
               ),
               onPressed: () => Navigator.of(context).pop(true),
               icon: Icon(confirmIcon),

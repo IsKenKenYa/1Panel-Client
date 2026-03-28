@@ -120,7 +120,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    verifyNever(() => service.loadGroups(forceRefresh: any(named: 'forceRefresh')));
+    verifyNever(
+        () => service.loadGroups(forceRefresh: any(named: 'forceRefresh')));
     verifyNever(() => service.searchCommands(any()));
   });
 }

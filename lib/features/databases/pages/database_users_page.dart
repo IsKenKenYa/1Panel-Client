@@ -63,7 +63,8 @@ class _DatabaseUsersPageViewState extends State<_DatabaseUsersPageView> {
     final l10n = context.l10n;
     final state = provider.state;
     final userContext = state.context;
-    final currentUsername = userContext?.currentUsername ?? widget.item.username;
+    final currentUsername =
+        userContext?.currentUsername ?? widget.item.username;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.databaseUsersPageTitle)),
@@ -105,21 +106,21 @@ class _DatabaseUsersPageViewState extends State<_DatabaseUsersPageView> {
                           },
                           onSubmit: () => _submitBind(context, provider),
                         ),
-                        if (databaseSupportsPrivilegeManagement(widget.item.scope))
-                          ...[
-                            const SizedBox(height: AppDesignTokens.spacingMd),
-                            DatabasePrivilegeCardWidget(
-                              currentUsername: currentUsername,
-                              privilegeSuperUser: _privilegeSuperUser,
-                              onPrivilegeChanged: (value) {
-                                setState(() => _privilegeSuperUser = value);
-                              },
-                              onSubmit: () => _submitPrivileges(
-                                context,
-                                provider,
-                              ),
+                        if (databaseSupportsPrivilegeManagement(
+                            widget.item.scope)) ...[
+                          const SizedBox(height: AppDesignTokens.spacingMd),
+                          DatabasePrivilegeCardWidget(
+                            currentUsername: currentUsername,
+                            privilegeSuperUser: _privilegeSuperUser,
+                            onPrivilegeChanged: (value) {
+                              setState(() => _privilegeSuperUser = value);
+                            },
+                            onSubmit: () => _submitPrivileges(
+                              context,
+                              provider,
                             ),
-                          ],
+                          ),
+                        ],
                       ],
                     ),
     );

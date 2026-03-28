@@ -12248,6 +12248,504 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete group {groupName}? Existing module items will need a new group assignment later.'**
   String operationsGroupDeleteConfirmMessage(String groupName);
+
+  /// No description provided for @commonClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get commonClear;
+
+  /// No description provided for @aiTabMcp.
+  ///
+  /// In en, this message translates to:
+  /// **'MCP'**
+  String get aiTabMcp;
+
+  /// No description provided for @aiMcpSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search MCP servers'**
+  String get aiMcpSearchHint;
+
+  /// No description provided for @aiMcpCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create server'**
+  String get aiMcpCreate;
+
+  /// No description provided for @aiMcpEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit server'**
+  String get aiMcpEdit;
+
+  /// No description provided for @aiMcpBindDomain.
+  ///
+  /// In en, this message translates to:
+  /// **'Bind domain'**
+  String get aiMcpBindDomain;
+
+  /// No description provided for @aiMcpBindingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'MCP domain binding'**
+  String get aiMcpBindingTitle;
+
+  /// No description provided for @aiMcpNoServers.
+  ///
+  /// In en, this message translates to:
+  /// **'No MCP servers'**
+  String get aiMcpNoServers;
+
+  /// No description provided for @aiMcpConfigPreviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Config Preview'**
+  String get aiMcpConfigPreviewTitle;
+
+  /// No description provided for @aiMcpDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete MCP server {name}?'**
+  String aiMcpDeleteConfirm(String name);
+
+  /// No description provided for @aiMcpDialogCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create MCP Server'**
+  String get aiMcpDialogCreateTitle;
+
+  /// No description provided for @aiMcpDialogEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit MCP Server'**
+  String get aiMcpDialogEditTitle;
+
+  /// No description provided for @aiMcpCommandLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Command'**
+  String get aiMcpCommandLabel;
+
+  /// No description provided for @aiMcpTransportLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Transport'**
+  String get aiMcpTransportLabel;
+
+  /// No description provided for @aiMcpTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get aiMcpTypeLabel;
+
+  /// No description provided for @aiMcpPortLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Port'**
+  String get aiMcpPortLabel;
+
+  /// No description provided for @aiMcpBaseUrlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Base URL'**
+  String get aiMcpBaseUrlLabel;
+
+  /// No description provided for @aiMcpHostIpLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Host IP'**
+  String get aiMcpHostIpLabel;
+
+  /// No description provided for @aiMcpContainerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Container Name'**
+  String get aiMcpContainerLabel;
+
+  /// No description provided for @aiMcpSsePathLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'SSE Path'**
+  String get aiMcpSsePathLabel;
+
+  /// No description provided for @aiMcpStreamablePathLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Streamable HTTP Path'**
+  String get aiMcpStreamablePathLabel;
+
+  /// No description provided for @aiMcpExternalUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'External URL'**
+  String get aiMcpExternalUrl;
+
+  /// No description provided for @aiMcpStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get aiMcpStatusLabel;
+
+  /// No description provided for @aiMcpNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a server name'**
+  String get aiMcpNameRequired;
+
+  /// No description provided for @aiMcpCommandRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a command'**
+  String get aiMcpCommandRequired;
+
+  /// No description provided for @aiMcpTypeRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a type'**
+  String get aiMcpTypeRequired;
+
+  /// No description provided for @aiMcpTransportRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a transport'**
+  String get aiMcpTransportRequired;
+
+  /// No description provided for @aiMcpPortRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid port'**
+  String get aiMcpPortRequired;
+
+  /// No description provided for @aiMcpDomainDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update MCP Domain'**
+  String get aiMcpDomainDialogTitle;
+
+  /// No description provided for @aiMcpDomainRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a domain'**
+  String get aiMcpDomainRequired;
+
+  /// No description provided for @menuSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu Settings'**
+  String get menuSettingsTitle;
+
+  /// No description provided for @menuSettingsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage the default menu order returned by the panel.'**
+  String get menuSettingsDescription;
+
+  /// No description provided for @menuSettingsAddLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu item'**
+  String get menuSettingsAddLabel;
+
+  /// No description provided for @menuSettingsEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Menu Item'**
+  String get menuSettingsEditTitle;
+
+  /// No description provided for @menuSettingsSaveSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu settings saved'**
+  String get menuSettingsSaveSuccess;
+
+  /// No description provided for @toolboxDiskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Disk Management'**
+  String get toolboxDiskTitle;
+
+  /// No description provided for @toolboxDiskCardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspect disks, partitions, and mount state'**
+  String get toolboxDiskCardSubtitle;
+
+  /// No description provided for @toolboxDiskOverviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Disk Overview'**
+  String get toolboxDiskOverviewTitle;
+
+  /// No description provided for @toolboxDiskTotalDisksLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total disks'**
+  String get toolboxDiskTotalDisksLabel;
+
+  /// No description provided for @toolboxDiskTotalCapacityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total capacity'**
+  String get toolboxDiskTotalCapacityLabel;
+
+  /// No description provided for @toolboxDiskUnpartitionedSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpartitioned disks'**
+  String get toolboxDiskUnpartitionedSectionTitle;
+
+  /// No description provided for @toolboxDiskSystemSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'System disks'**
+  String get toolboxDiskSystemSectionTitle;
+
+  /// No description provided for @toolboxDiskDataSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Data disks'**
+  String get toolboxDiskDataSectionTitle;
+
+  /// No description provided for @toolboxDiskMountAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Mount'**
+  String get toolboxDiskMountAction;
+
+  /// No description provided for @toolboxDiskUnmountAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Unmount'**
+  String get toolboxDiskUnmountAction;
+
+  /// No description provided for @toolboxDiskPartitionAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Partition'**
+  String get toolboxDiskPartitionAction;
+
+  /// No description provided for @toolboxDiskFilesystemLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Filesystem'**
+  String get toolboxDiskFilesystemLabel;
+
+  /// No description provided for @toolboxDiskMountPointLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Mount point'**
+  String get toolboxDiskMountPointLabel;
+
+  /// No description provided for @toolboxDiskAutoMountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto mount'**
+  String get toolboxDiskAutoMountLabel;
+
+  /// No description provided for @toolboxDiskNoFailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'No fail'**
+  String get toolboxDiskNoFailLabel;
+
+  /// No description provided for @toolboxDiskLabelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Label'**
+  String get toolboxDiskLabelLabel;
+
+  /// No description provided for @toolboxDiskMountSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Disk mounted'**
+  String get toolboxDiskMountSuccess;
+
+  /// No description provided for @toolboxDiskPartitionSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Disk partitioned'**
+  String get toolboxDiskPartitionSuccess;
+
+  /// No description provided for @toolboxDiskUnmountSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Disk unmounted'**
+  String get toolboxDiskUnmountSuccess;
+
+  /// No description provided for @toolboxDiskSizeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get toolboxDiskSizeLabel;
+
+  /// No description provided for @toolboxDiskModelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get toolboxDiskModelLabel;
+
+  /// No description provided for @toolboxDiskUnmounted.
+  ///
+  /// In en, this message translates to:
+  /// **'Unmounted'**
+  String get toolboxDiskUnmounted;
+
+  /// No description provided for @toolboxDiskSystemDiskTag.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get toolboxDiskSystemDiskTag;
+
+  /// No description provided for @toolboxHostToolTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Host Tool'**
+  String get toolboxHostToolTitle;
+
+  /// No description provided for @toolboxHostToolCardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage supervisord service and process files'**
+  String get toolboxHostToolCardSubtitle;
+
+  /// No description provided for @toolboxHostToolServiceSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Supervisor Service'**
+  String get toolboxHostToolServiceSectionTitle;
+
+  /// No description provided for @toolboxHostToolConfigSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Supervisor Config'**
+  String get toolboxHostToolConfigSectionTitle;
+
+  /// No description provided for @toolboxHostToolProcessSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Supervisor Processes'**
+  String get toolboxHostToolProcessSectionTitle;
+
+  /// No description provided for @toolboxHostToolStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get toolboxHostToolStatusLabel;
+
+  /// No description provided for @toolboxHostToolVersionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get toolboxHostToolVersionLabel;
+
+  /// No description provided for @toolboxHostToolConfigPathLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Config path'**
+  String get toolboxHostToolConfigPathLabel;
+
+  /// No description provided for @toolboxHostToolServiceNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Service name'**
+  String get toolboxHostToolServiceNameLabel;
+
+  /// No description provided for @toolboxHostToolInitAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Initialize'**
+  String get toolboxHostToolInitAction;
+
+  /// No description provided for @toolboxHostToolStartAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get toolboxHostToolStartAction;
+
+  /// No description provided for @toolboxHostToolStopAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get toolboxHostToolStopAction;
+
+  /// No description provided for @toolboxHostToolSaveSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Host tool updated'**
+  String get toolboxHostToolSaveSuccess;
+
+  /// No description provided for @toolboxHostToolCommandLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Command'**
+  String get toolboxHostToolCommandLabel;
+
+  /// No description provided for @toolboxHostToolNumprocsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Processes'**
+  String get toolboxHostToolNumprocsLabel;
+
+  /// No description provided for @toolboxHostToolUserLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get toolboxHostToolUserLabel;
+
+  /// No description provided for @toolboxHostToolDirLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Working directory'**
+  String get toolboxHostToolDirLabel;
+
+  /// No description provided for @toolboxHostToolEnvironmentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Environment'**
+  String get toolboxHostToolEnvironmentLabel;
+
+  /// No description provided for @toolboxHostToolAutoStartLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto start'**
+  String get toolboxHostToolAutoStartLabel;
+
+  /// No description provided for @toolboxHostToolAutoRestartLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto restart'**
+  String get toolboxHostToolAutoRestartLabel;
+
+  /// No description provided for @toolboxHostToolProcessCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Supervisor Process'**
+  String get toolboxHostToolProcessCreateTitle;
+
+  /// No description provided for @toolboxHostToolProcessEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Supervisor Process'**
+  String get toolboxHostToolProcessEditTitle;
+
+  /// No description provided for @toolboxHostToolConfigFileAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Config file'**
+  String get toolboxHostToolConfigFileAction;
+
+  /// No description provided for @toolboxHostToolOutLogAction.
+  ///
+  /// In en, this message translates to:
+  /// **'stdout log'**
+  String get toolboxHostToolOutLogAction;
+
+  /// No description provided for @toolboxHostToolErrLogAction.
+  ///
+  /// In en, this message translates to:
+  /// **'stderr log'**
+  String get toolboxHostToolErrLogAction;
 }
 
 class _AppLocalizationsDelegate

@@ -23,7 +23,8 @@ class _SshCertsPageState extends State<SshCertsPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !context.read<CurrentServerController>().hasServer) return;
+      if (!mounted || !context.read<CurrentServerController>().hasServer)
+        return;
       context.read<SshCertsProvider>().load();
     });
   }
@@ -102,7 +103,8 @@ class _SshCertsPageState extends State<SshCertsPage> {
       showDragHandle: true,
       builder: (_) => SshCertFormSheetWidget(
         title: context.l10n.sshCertCreateTitle,
-        onSubmit: (request) => context.read<SshCertsProvider>().createCert(request),
+        onSubmit: (request) =>
+            context.read<SshCertsProvider>().createCert(request),
       ),
     );
   }
@@ -125,7 +127,8 @@ class _SshCertsPageState extends State<SshCertsPage> {
           privateKey: item.privateKey,
           description: item.description,
         ),
-        onSubmit: (request) => context.read<SshCertsProvider>().updateCert(request),
+        onSubmit: (request) =>
+            context.read<SshCertsProvider>().updateCert(request),
       ),
     );
   }

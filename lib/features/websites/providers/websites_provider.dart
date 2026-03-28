@@ -60,8 +60,9 @@ class WebsitesData {
       error: identical(error, _unset) ? this.error : error as String?,
       lastUpdated: lastUpdated ?? this.lastUpdated,
       query: query ?? this.query,
-      typeFilter:
-          identical(typeFilter, _unset) ? this.typeFilter : typeFilter as String?,
+      typeFilter: identical(typeFilter, _unset)
+          ? this.typeFilter
+          : typeFilter as String?,
       groupFilterId: identical(groupFilterId, _unset)
           ? this.groupFilterId
           : groupFilterId as int?,

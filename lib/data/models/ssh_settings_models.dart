@@ -35,7 +35,8 @@ class SshInfo extends Equatable {
       message: json['message'] as String? ?? '',
       port: json['port']?.toString() ?? '',
       listenAddress: json['listenAddress'] as String? ?? '',
-      passwordAuthentication: json['passwordAuthentication'] as String? ?? 'yes',
+      passwordAuthentication:
+          json['passwordAuthentication'] as String? ?? 'yes',
       pubkeyAuthentication: json['pubkeyAuthentication'] as String? ?? 'yes',
       permitRootLogin: json['permitRootLogin'] as String? ?? 'yes',
       useDNS: json['useDNS'] as String? ?? 'no',

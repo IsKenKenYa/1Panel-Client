@@ -46,7 +46,9 @@ class _ToolboxDevicePageState extends State<ToolboxDevicePage> {
             title: l10n.toolboxDeviceOverviewTitle,
             child: Column(
               children: [
-                _InfoRow(label: l10n.toolboxDeviceHostname, value: provider.hostname),
+                _InfoRow(
+                    label: l10n.toolboxDeviceHostname,
+                    value: provider.hostname),
                 _InfoRow(label: l10n.toolboxDeviceDns, value: provider.dns),
                 _InfoRow(label: l10n.toolboxDeviceNtp, value: provider.ntp),
                 _InfoRow(label: l10n.toolboxDeviceSwap, value: provider.swap),
@@ -89,7 +91,7 @@ class _ToolboxDevicePageState extends State<ToolboxDevicePage> {
           _SectionCard(
             title: l10n.toolboxDeviceUsersTitle,
             child: provider.users.isEmpty
-              ? Text(l10n.commonEmpty)
+                ? Text(l10n.commonEmpty)
                 : Wrap(
                     spacing: 8,
                     runSpacing: 8,
@@ -103,7 +105,7 @@ class _ToolboxDevicePageState extends State<ToolboxDevicePage> {
           _SectionCard(
             title: l10n.toolboxDeviceZoneOptionsTitle,
             child: provider.zoneOptions.isEmpty
-              ? Text(l10n.commonEmpty)
+                ? Text(l10n.commonEmpty)
                 : Wrap(
                     spacing: 8,
                     runSpacing: 8,
@@ -146,7 +148,8 @@ class _ToolboxDevicePageState extends State<ToolboxDevicePage> {
             children: [
               TextField(
                 controller: hostnameController,
-                decoration: InputDecoration(labelText: l10n.toolboxDeviceHostname),
+                decoration:
+                    InputDecoration(labelText: l10n.toolboxDeviceHostname),
               ),
               const SizedBox(height: 12),
               TextField(
@@ -186,7 +189,9 @@ class _ToolboxDevicePageState extends State<ToolboxDevicePage> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                    success ? l10n.commonSaveSuccess : (provider.error ?? l10n.commonSaveFailed),
+                    success
+                        ? l10n.commonSaveSuccess
+                        : (provider.error ?? l10n.commonSaveFailed),
                   ),
                 ),
               );
@@ -203,7 +208,8 @@ class _ToolboxDevicePageState extends State<ToolboxDevicePage> {
     ToolboxDeviceProvider provider,
   ) async {
     final l10n = context.l10n;
-    final success = await provider.checkDns(provider.dns == '-' ? '' : provider.dns);
+    final success =
+        await provider.checkDns(provider.dns == '-' ? '' : provider.dns);
     if (!context.mounted) {
       return;
     }

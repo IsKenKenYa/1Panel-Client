@@ -10,7 +10,8 @@ extension FilesProviderFavoritesTransferMixin on FilesProvider {
         favorites: favorites,
         favoritePaths: favoritePaths,
       );
-      appLogger.iWithPackage('files_provider', 'loadFavorites: 成功加载${favorites.length}个收藏');
+      appLogger.iWithPackage(
+          'files_provider', 'loadFavorites: 成功加载${favorites.length}个收藏');
       _emitChange();
     } catch (e, stackTrace) {
       appLogger.eWithPackage('files_provider', 'loadFavorites: 加载失败',
@@ -19,7 +20,8 @@ extension FilesProviderFavoritesTransferMixin on FilesProvider {
   }
 
   Future<void> addToFavorites(FileInfo file) async {
-    appLogger.dWithPackage('files_provider', 'addToFavorites: path=${file.path}');
+    appLogger.dWithPackage(
+        'files_provider', 'addToFavorites: path=${file.path}');
     try {
       await _service.favoriteFile(file.path, name: file.name);
       final newFavorites = <FileInfo>[..._data.favorites, file];
@@ -41,9 +43,11 @@ extension FilesProviderFavoritesTransferMixin on FilesProvider {
     appLogger.dWithPackage('files_provider', 'removeFromFavorites: path=$path');
     try {
       await _service.unfavoriteFile(path);
-      final newFavorites =
-          _data.favorites.where((file) => file.path != path).toList(growable: false);
-      final newFavoritePaths = Set<String>.from(_data.favoritePaths)..remove(path);
+      final newFavorites = _data.favorites
+          .where((file) => file.path != path)
+          .toList(growable: false);
+      final newFavoritePaths = Set<String>.from(_data.favoritePaths)
+        ..remove(path);
       _data = _data.copyWith(
         favorites: newFavorites,
         favoritePaths: newFavoritePaths,

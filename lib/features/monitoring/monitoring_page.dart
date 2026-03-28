@@ -45,11 +45,13 @@ class _MonitoringPageState extends State<MonitoringPage> {
             itemBuilder: (context) => [
               PopupMenuItem(
                 value: 6,
-                child: Text(l10n.monitorDataPointsCount(6, l10n.monitorTimeMinutes(30))),
+                child: Text(l10n.monitorDataPointsCount(
+                    6, l10n.monitorTimeMinutes(30))),
               ),
               PopupMenuItem(
                 value: 12,
-                child: Text(l10n.monitorDataPointsCount(12, l10n.monitorTimeHours(1))),
+                child: Text(
+                    l10n.monitorDataPointsCount(12, l10n.monitorTimeHours(1))),
               ),
             ],
           ),
@@ -141,8 +143,8 @@ class _MonitoringPageState extends State<MonitoringPage> {
     Future<void> Function() onRefresh,
   ) {
     final l10n = context.l10n;
-    final hasData = data.currentMetrics != null || 
-        data.cpuTimeSeries != null || 
+    final hasData = data.currentMetrics != null ||
+        data.cpuTimeSeries != null ||
         data.memoryTimeSeries != null;
 
     if (data.error != null && !hasData) {
@@ -216,7 +218,7 @@ class _MonitoringPageState extends State<MonitoringPage> {
 
   Widget _buildGPUCard(BuildContext context, List<GPUInfo> gpuInfo) {
     final l10n = context.l10n;
-    
+
     return AppCard(
       title: l10n.monitorGPU,
       child: Column(
@@ -227,7 +229,7 @@ class _MonitoringPageState extends State<MonitoringPage> {
 
   Widget _buildGPUItem(BuildContext context, GPUInfo gpu) {
     final l10n = context.l10n;
-    
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppDesignTokens.spacingSm),
       child: Column(
@@ -243,24 +245,24 @@ class _MonitoringPageState extends State<MonitoringPage> {
               Expanded(
                 child: _GPUStatItem(
                   label: l10n.monitorGPUUtilization,
-                  value: gpu.utilization != null 
-                      ? '${gpu.utilization!.toStringAsFixed(1)}%' 
+                  value: gpu.utilization != null
+                      ? '${gpu.utilization!.toStringAsFixed(1)}%'
                       : '--',
                 ),
               ),
               Expanded(
                 child: _GPUStatItem(
                   label: l10n.monitorGPUMemory,
-                  value: gpu.memory != null 
-                      ? '${gpu.memory!.toStringAsFixed(1)}%' 
+                  value: gpu.memory != null
+                      ? '${gpu.memory!.toStringAsFixed(1)}%'
                       : '--',
                 ),
               ),
               Expanded(
                 child: _GPUStatItem(
                   label: l10n.monitorGPUTemperature,
-                  value: gpu.temperature != null 
-                      ? '${gpu.temperature!.toStringAsFixed(0)}°C' 
+                  value: gpu.temperature != null
+                      ? '${gpu.temperature!.toStringAsFixed(0)}°C'
                       : '--',
                 ),
               ),
@@ -271,7 +273,8 @@ class _MonitoringPageState extends State<MonitoringPage> {
     );
   }
 
-  Widget _buildCurrentMetrics(BuildContext context, MonitorMetricsSnapshot? metrics) {
+  Widget _buildCurrentMetrics(
+      BuildContext context, MonitorMetricsSnapshot? metrics) {
     final l10n = context.l10n;
     if (metrics == null) return const SizedBox.shrink();
 
@@ -330,7 +333,6 @@ class _MonitoringPageState extends State<MonitoringPage> {
       unit: unit,
     );
   }
-
 }
 
 class _MetricChip extends StatelessWidget {
@@ -688,7 +690,7 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
       setState(() {
         _isSaving = false;
       });
-      
+
       if (success) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.l10n.monitorSettingsSaved)),
@@ -725,11 +727,12 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
     if (confirmed == true && mounted) {
       final provider = context.read<MonitoringProvider>();
       final success = await provider.cleanData();
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(success ? l10n.monitorCleanSuccess : l10n.monitorCleanFailed),
+            content: Text(
+                success ? l10n.monitorCleanSuccess : l10n.monitorCleanFailed),
           ),
         );
         // 清理后重新加载数据

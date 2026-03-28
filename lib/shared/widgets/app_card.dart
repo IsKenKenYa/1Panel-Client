@@ -25,7 +25,7 @@ class AppCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Card(
       color: backgroundColor ?? colorScheme.surfaceContainerLow,
       elevation: 0,
@@ -61,10 +61,13 @@ class AppCard extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 title,
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  color: colorScheme.onSurface,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(
+                                      color: colorScheme.onSurface,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                               ),
                             ),
                           ],
@@ -72,9 +75,13 @@ class AppCard extends StatelessWidget {
                         if (subtitle != null) ...[
                           const SizedBox(height: 4),
                           DefaultTextStyle(
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: colorScheme.onSurfaceVariant,
-                            ) ?? TextStyle(),
+                            style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color: colorScheme.onSurfaceVariant,
+                                    ) ??
+                                TextStyle(),
                             child: subtitle!,
                           ),
                         ],
@@ -91,8 +98,9 @@ class AppCard extends StatelessWidget {
                 const SizedBox(height: 16),
                 DefaultTextStyle(
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurface,
-                  ) ?? TextStyle(),
+                            color: colorScheme.onSurface,
+                          ) ??
+                      TextStyle(),
                   child: child!,
                 ),
               ],

@@ -43,8 +43,7 @@ class _HostAssetFormPageState extends State<HostAssetFormPage> {
     _descriptionController =
         TextEditingController(text: initial?.description ?? '');
     _userController = TextEditingController(text: initial?.user ?? 'root');
-    _passwordController =
-        TextEditingController(text: initial?.password ?? '');
+    _passwordController = TextEditingController(text: initial?.password ?? '');
     _privateKeyController =
         TextEditingController(text: initial?.privateKey ?? '');
     _passPhraseController =
@@ -73,7 +72,8 @@ class _HostAssetFormPageState extends State<HostAssetFormPage> {
           title: provider.isEditing
               ? l10n.hostAssetsEditTitle
               : l10n.hostAssetsCreateTitle,
-          onServerChanged: () => context.read<HostAssetFormProvider>().initialize(widget.args),
+          onServerChanged: () =>
+              context.read<HostAssetFormProvider>().initialize(widget.args),
           body: AsyncStatePageBodyWidget(
             isLoading: provider.isLoading,
             errorMessage: provider.errorMessage,
@@ -117,7 +117,8 @@ class _HostAssetFormPageState extends State<HostAssetFormPage> {
                   onUserChanged: (value) => provider.updateAuth(user: value),
                   onAuthModeChanged: (value) => provider.updateAuth(
                     authMode: value,
-                    password: value == 'password' ? _passwordController.text : '',
+                    password:
+                        value == 'password' ? _passwordController.text : '',
                     privateKey:
                         value == 'key' ? _privateKeyController.text : '',
                     passPhrase:

@@ -77,7 +77,8 @@ class _BackupAccountPageState extends State<BackupAccountPage> {
     );
   }
 
-  Widget _buildBody(BuildContext context, ThemeData theme, AppLocalizations l10n) {
+  Widget _buildBody(
+      BuildContext context, ThemeData theme, AppLocalizations l10n) {
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -109,7 +110,8 @@ class _BackupAccountPageState extends State<BackupAccountPage> {
             const SizedBox(height: 16),
             const Text('暂无备份账户'),
             const SizedBox(height: 8),
-            const Text('备份账户用于存储系统快照和备份文件', style: TextStyle(color: Colors.grey)),
+            const Text('备份账户用于存储系统快照和备份文件',
+                style: TextStyle(color: Colors.grey)),
             const SizedBox(height: 16),
             FilledButton.icon(
               onPressed: () => _showAddAccountDialog(context),
@@ -131,7 +133,8 @@ class _BackupAccountPageState extends State<BackupAccountPage> {
     );
   }
 
-  Widget _buildAccountCard(BuildContext context, ThemeData theme, Map<String, dynamic> account) {
+  Widget _buildAccountCard(
+      BuildContext context, ThemeData theme, Map<String, dynamic> account) {
     final id = account['id'] as int?;
     final name = account['name'] as String? ?? 'Unknown';
     final type = account['type'] as String? ?? 'Unknown';
@@ -179,7 +182,8 @@ class _BackupAccountPageState extends State<BackupAccountPage> {
                   color: Colors.green.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Text('公共', style: TextStyle(fontSize: 10, color: Colors.green)),
+                child: const Text('公共',
+                    style: TextStyle(fontSize: 10, color: Colors.green)),
               ),
             ],
           ],
@@ -190,7 +194,9 @@ class _BackupAccountPageState extends State<BackupAccountPage> {
           itemBuilder: (context) => [
             const PopupMenuItem(value: 'browse', child: Text('浏览文件')),
             const PopupMenuDivider(),
-            const PopupMenuItem(value: 'delete', child: Text('删除', style: TextStyle(color: Colors.red))),
+            const PopupMenuItem(
+                value: 'delete',
+                child: Text('删除', style: TextStyle(color: Colors.red))),
           ],
         ),
       ),

@@ -35,60 +35,72 @@ class AppLogger {
 
   void t(dynamic message, {dynamic error, StackTrace? stackTrace}) {
     _ensureInitialized();
-    _logger.t('【Open1PanelMobile】$message', error: error, stackTrace: stackTrace);
+    _logger.t('【Open1PanelMobile】$message',
+        error: error, stackTrace: stackTrace);
   }
 
   void d(dynamic message, {dynamic error, StackTrace? stackTrace}) {
     _ensureInitialized();
-    _logger.d('【Open1PanelMobile】$message', error: error, stackTrace: stackTrace);
+    _logger.d('【Open1PanelMobile】$message',
+        error: error, stackTrace: stackTrace);
   }
 
   void i(dynamic message, {dynamic error, StackTrace? stackTrace}) {
     _ensureInitialized();
-    _logger.i('【Open1PanelMobile】$message', error: error, stackTrace: stackTrace);
+    _logger.i('【Open1PanelMobile】$message',
+        error: error, stackTrace: stackTrace);
   }
 
   void w(dynamic message, {dynamic error, StackTrace? stackTrace}) {
     _ensureInitialized();
-    _logger.w('【Open1PanelMobile】$message', error: error, stackTrace: stackTrace);
+    _logger.w('【Open1PanelMobile】$message',
+        error: error, stackTrace: stackTrace);
   }
 
   void e(dynamic message, {dynamic error, StackTrace? stackTrace}) {
     _ensureInitialized();
-    _logger.e('【Open1PanelMobile】$message', error: error, stackTrace: stackTrace);
+    _logger.e('【Open1PanelMobile】$message',
+        error: error, stackTrace: stackTrace);
   }
 
   void f(dynamic message, {dynamic error, StackTrace? stackTrace}) {
     _ensureInitialized();
-    _logger.f('【Open1PanelMobile】$message', error: error, stackTrace: stackTrace);
+    _logger.f('【Open1PanelMobile】$message',
+        error: error, stackTrace: stackTrace);
   }
 
-  void tWithPackage(String packageName, dynamic message, {dynamic error, StackTrace? stackTrace}) {
+  void tWithPackage(String packageName, dynamic message,
+      {dynamic error, StackTrace? stackTrace}) {
     _ensureInitialized();
     _logger.t('[$packageName] $message', error: error, stackTrace: stackTrace);
   }
 
-  void dWithPackage(String packageName, dynamic message, {dynamic error, StackTrace? stackTrace}) {
+  void dWithPackage(String packageName, dynamic message,
+      {dynamic error, StackTrace? stackTrace}) {
     _ensureInitialized();
     _logger.d('[$packageName] $message', error: error, stackTrace: stackTrace);
   }
 
-  void iWithPackage(String packageName, dynamic message, {dynamic error, StackTrace? stackTrace}) {
+  void iWithPackage(String packageName, dynamic message,
+      {dynamic error, StackTrace? stackTrace}) {
     _ensureInitialized();
     _logger.i('[$packageName] $message', error: error, stackTrace: stackTrace);
   }
 
-  void wWithPackage(String packageName, dynamic message, {dynamic error, StackTrace? stackTrace}) {
+  void wWithPackage(String packageName, dynamic message,
+      {dynamic error, StackTrace? stackTrace}) {
     _ensureInitialized();
     _logger.w('[$packageName] $message', error: error, stackTrace: stackTrace);
   }
 
-  void eWithPackage(String packageName, dynamic message, {dynamic error, StackTrace? stackTrace}) {
+  void eWithPackage(String packageName, dynamic message,
+      {dynamic error, StackTrace? stackTrace}) {
     _ensureInitialized();
     _logger.e('[$packageName] $message', error: error, stackTrace: stackTrace);
   }
 
-  void fWithPackage(String packageName, dynamic message, {dynamic error, StackTrace? stackTrace}) {
+  void fWithPackage(String packageName, dynamic message,
+      {dynamic error, StackTrace? stackTrace}) {
     _ensureInitialized();
     _logger.f('[$packageName] $message', error: error, stackTrace: stackTrace);
   }

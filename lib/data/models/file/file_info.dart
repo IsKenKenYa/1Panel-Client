@@ -98,7 +98,9 @@ class FileSearchResponse extends Equatable {
       );
     }
     if (dataField is List) {
-      final items = dataField.map((item) => FileInfo.fromJson(item as Map<String, dynamic>)).toList();
+      final items = dataField
+          .map((item) => FileInfo.fromJson(item as Map<String, dynamic>))
+          .toList();
       return FileSearchResponse(items: items, total: items.length);
     }
     if (json['items'] is List) {

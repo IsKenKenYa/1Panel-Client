@@ -6,7 +6,8 @@ import 'package:onepanel_client/core/network/process_ws_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  test('ProcessWsClient connects to /process/ws with operateNode and auth headers',
+  test(
+      'ProcessWsClient connects to /process/ws with operateNode and auth headers',
       () async {
     late String requestPath;
     late String operateNode;

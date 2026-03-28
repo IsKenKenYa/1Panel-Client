@@ -39,8 +39,8 @@ Future<void> main() async {
       '应该能够连接到服务器',
       skip: SkipConditions.skipIntegration() ?? SkipConditions.skipNoApiKey(),
       () async {
-      final response = await apiClient.authenticatedGet('/api/v2/health');
-      expect(response.statusCode, anyOf(equals(200), equals(404)));
+        final response = await apiClient.authenticatedGet('/api/v2/health');
+        expect(response.statusCode, anyOf(equals(200), equals(404)));
       },
     );
 
@@ -48,10 +48,11 @@ Future<void> main() async {
       '认证应该成功',
       skip: SkipConditions.skipIntegration() ?? SkipConditions.skipNoApiKey(),
       () async {
-      final headers = TokenGenerator.generateAuthHeaders(TestConfig.apiKey);
-      expect(headers.containsKey('1Panel-Token'), isTrue);
-      expect(headers.containsKey('1Panel-Timestamp'), isTrue);
-      expect(TokenGenerator.validateTokenFormat(headers['1Panel-Token']!), isTrue);
+        final headers = TokenGenerator.generateAuthHeaders(TestConfig.apiKey);
+        expect(headers.containsKey('1Panel-Token'), isTrue);
+        expect(headers.containsKey('1Panel-Timestamp'), isTrue);
+        expect(TokenGenerator.validateTokenFormat(headers['1Panel-Token']!),
+            isTrue);
       },
     );
   });
@@ -64,7 +65,8 @@ Future<void> main() async {
       expect(response.data, isNotNull);
     });
 
-    test('应该能够获取Fail2ban基础信息', skip: SkipConditions.skipIntegration(), () async {
+    test('应该能够获取Fail2ban基础信息', skip: SkipConditions.skipIntegration(),
+        () async {
       final response = await toolboxApi.getFail2banBaseInfo();
 
       expect(response.statusCode, equals(200));
@@ -181,10 +183,9 @@ Future<void> main() async {
   });
 
   group('API错误处理测试', () {
-    test(
-      '应该处理无效Token',
-      skip: SkipConditions.skipIntegration() ?? SkipConditions.skipNoApiKey(),
-      () async {
+    test('应该处理无效Token',
+        skip: SkipConditions.skipIntegration() ?? SkipConditions.skipNoApiKey(),
+        () async {
       final invalidClient = TestApiClient(
         baseUrl: TestConfig.baseUrl,
         apiKey: 'invalid_key',
@@ -204,12 +205,12 @@ Future<void> main() async {
       '应该处理无效路径',
       skip: SkipConditions.skipIntegration() ?? SkipConditions.skipNoApiKey(),
       () async {
-      try {
-        await apiClient.authenticatedGet('/api/v2/invalid/path');
-        fail('应该抛出异常');
-      } catch (e) {
-        expect(e, isA<Exception>());
-      }
+        try {
+          await apiClient.authenticatedGet('/api/v2/invalid/path');
+          fail('应该抛出异常');
+        } catch (e) {
+          expect(e, isA<Exception>());
+        }
       },
     );
   });

@@ -225,8 +225,7 @@ class RecordSearchByCronjob extends Equatable {
 
   factory RecordSearchByCronjob.fromJson(Map<String, dynamic> json) {
     return RecordSearchByCronjob(
-      cronjobID:
-          json['cronjobID'] as int? ?? json['cronjobId'] as int? ?? 0,
+      cronjobID: json['cronjobID'] as int? ?? json['cronjobId'] as int? ?? 0,
       page: json['page'] as int? ?? 1,
       pageSize: json['pageSize'] as int? ?? 20,
     );
@@ -273,8 +272,7 @@ class SearchForSize extends RecordSearch {
       info: json['info'] as String?,
       order: json['order'] as String?,
       orderBy: json['orderBy'] as String?,
-      cronjobID:
-          json['cronjobID'] as int? ?? json['cronjobId'] as int?,
+      cronjobID: json['cronjobID'] as int? ?? json['cronjobId'] as int?,
     );
   }
 
@@ -463,7 +461,8 @@ class CommonRecover extends CommonBackup {
     final json = super.toJson();
     if (backupRecordID != null) json['backupRecordID'] = backupRecordID;
     if (file != null) json['file'] = file;
-    if (downloadAccountID != null) json['downloadAccountID'] = downloadAccountID;
+    if (downloadAccountID != null)
+      json['downloadAccountID'] = downloadAccountID;
     if (timeout != null) json['timeout'] = timeout;
     return json;
   }
@@ -732,7 +731,8 @@ class BackupFile extends Equatable {
   }
 
   @override
-  List<Object?> get props => [name, path, size, lastModified, etag, isDirectory];
+  List<Object?> get props =>
+      [name, path, size, lastModified, etag, isDirectory];
 }
 
 /// 备份记录模型

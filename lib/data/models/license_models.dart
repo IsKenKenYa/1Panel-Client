@@ -45,5 +45,6 @@ class LicenseInfo extends Equatable {
   }
 
   @override
-  List<Object?> get props => [key, type, status, expireTime, features, user, maxDevices];
+  List<Object?> get props =>
+      [key, type, status, expireTime, features, user, maxDevices];
 }

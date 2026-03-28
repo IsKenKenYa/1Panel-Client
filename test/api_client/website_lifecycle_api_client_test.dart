@@ -62,7 +62,8 @@ void main() {
     test('POST /websites/options should respond', () async {
       final skipReason = TestEnvironment.skipIntegration();
       if (skipReason != null) {
-        appLogger.wWithPackage('test.api_client.website_lifecycle', '跳过测试: $skipReason');
+        appLogger.wWithPackage(
+            'test.api_client.website_lifecycle', '跳过测试: $skipReason');
         return;
       }
 
@@ -77,7 +78,8 @@ void main() {
     test('POST /websites/check should respond', () async {
       final skipReason = TestEnvironment.skipIntegration();
       if (skipReason != null) {
-        appLogger.wWithPackage('test.api_client.website_lifecycle', '跳过测试: $skipReason');
+        appLogger.wWithPackage(
+            'test.api_client.website_lifecycle', '跳过测试: $skipReason');
         return;
       }
 
@@ -89,17 +91,20 @@ void main() {
       expect(response, isA<List<Map<String, dynamic>>>());
     });
 
-    test('POST /websites/update and /websites/default/server are destructive-gated',
+    test(
+        'POST /websites/update and /websites/default/server are destructive-gated',
         () async {
       final skipReason = TestEnvironment.skipDestructive();
       if (skipReason != null) {
-        appLogger.wWithPackage('test.api_client.website_lifecycle', '跳过测试: $skipReason');
+        appLogger.wWithPackage(
+            'test.api_client.website_lifecycle', '跳过测试: $skipReason');
         return;
       }
 
       final websites = await api.getWebsites(page: 1, pageSize: 1);
       if (websites.items.isEmpty || websites.items.first.id == null) {
-        appLogger.wWithPackage('test.api_client.website_lifecycle', '无网站可用于写测试，跳过');
+        appLogger.wWithPackage(
+            'test.api_client.website_lifecycle', '无网站可用于写测试，跳过');
         return;
       }
       final detail = await api.getWebsiteDetail(websites.items.first.id!);
@@ -112,14 +117,17 @@ void main() {
         'IPV6': detail.ipv6 ?? false,
         'favorite': detail.favorite ?? false,
       };
-      final rawUpdate = await _rawPost(client, '/websites/update', data: updateRequest);
-      _log('raw website update', request: updateRequest, response: rawUpdate.data);
+      final rawUpdate =
+          await _rawPost(client, '/websites/update', data: updateRequest);
+      _log('raw website update',
+          request: updateRequest, response: rawUpdate.data);
       await api.updateWebsite(updateRequest);
 
       final defaultRequest = {'id': detail.id};
-      final rawDefault =
-          await _rawPost(client, '/websites/default/server', data: defaultRequest);
-      _log('raw set default website', request: defaultRequest, response: rawDefault.data);
+      final rawDefault = await _rawPost(client, '/websites/default/server',
+          data: defaultRequest);
+      _log('raw set default website',
+          request: defaultRequest, response: rawDefault.data);
       await api.changeDefaultServer(id: detail.id!);
     });
   });

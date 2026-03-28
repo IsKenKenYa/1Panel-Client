@@ -22,7 +22,8 @@ void main() {
         final expectedToken = expectedDigest.toString();
 
         // 使用TokenGenerator生成
-        final generatedToken = TokenGenerator.generateToken(testApiKey, testTimestamp);
+        final generatedToken =
+            TokenGenerator.generateToken(testApiKey, testTimestamp);
 
         expect(generatedToken, equals(expectedToken));
         expect(generatedToken.length, equals(32));
@@ -38,14 +39,16 @@ void main() {
 
       test('不同时间戳应该生成不同Token', () {
         final token1 = TokenGenerator.generateToken(testApiKey, testTimestamp);
-        final token2 = TokenGenerator.generateToken(testApiKey, testTimestamp + 1);
+        final token2 =
+            TokenGenerator.generateToken(testApiKey, testTimestamp + 1);
 
         expect(token1, isNot(equals(token2)));
       });
 
       test('不同API密钥应该生成不同Token', () {
         final token1 = TokenGenerator.generateToken(testApiKey, testTimestamp);
-        final token2 = TokenGenerator.generateToken('different_key', testTimestamp);
+        final token2 =
+            TokenGenerator.generateToken('different_key', testTimestamp);
 
         expect(token1, isNot(equals(token2)));
       });
@@ -93,9 +96,18 @@ void main() {
 
     group('Token格式验证测试', () {
       test('有效的32位十六进制字符串应该通过验证', () {
-        expect(TokenGenerator.validateTokenFormat('a1b2c3d4e5f6789012345678abcdef00'), isTrue);
-        expect(TokenGenerator.validateTokenFormat('12345678901234567890123456789012'), isTrue);
-        expect(TokenGenerator.validateTokenFormat('abcdefabcdefabcdefabcdefabcdefab'), isTrue);
+        expect(
+            TokenGenerator.validateTokenFormat(
+                'a1b2c3d4e5f6789012345678abcdef00'),
+            isTrue);
+        expect(
+            TokenGenerator.validateTokenFormat(
+                '12345678901234567890123456789012'),
+            isTrue);
+        expect(
+            TokenGenerator.validateTokenFormat(
+                'abcdefabcdefabcdefabcdefabcdefab'),
+            isTrue);
       });
 
       test('非32位字符串应该验证失败', () {
@@ -106,10 +118,22 @@ void main() {
       });
 
       test('包含非十六进制字符应该验证失败', () {
-        expect(TokenGenerator.validateTokenFormat('g1b2c3d4e5f6789012345678abcdef00'), isFalse);
-        expect(TokenGenerator.validateTokenFormat('A1B2C3D4E5F6789012345678ABCDEF00'), isFalse); // 大写
-        expect(TokenGenerator.validateTokenFormat('a1b2c3d4e5f6789012345678abcde!00'), isFalse);
-        expect(TokenGenerator.validateTokenFormat('a1b2c3d4e5f6789012345678abcdef 0'), isFalse);
+        expect(
+            TokenGenerator.validateTokenFormat(
+                'g1b2c3d4e5f6789012345678abcdef00'),
+            isFalse);
+        expect(
+            TokenGenerator.validateTokenFormat(
+                'A1B2C3D4E5F6789012345678ABCDEF00'),
+            isFalse); // 大写
+        expect(
+            TokenGenerator.validateTokenFormat(
+                'a1b2c3d4e5f6789012345678abcde!00'),
+            isFalse);
+        expect(
+            TokenGenerator.validateTokenFormat(
+                'a1b2c3d4e5f6789012345678abcdef 0'),
+            isFalse);
       });
     });
 
@@ -159,7 +183,8 @@ void main() {
         final tokens = <String>{};
 
         for (int i = 0; i < 100; i++) {
-          final token = TokenGenerator.generateToken(testApiKey, testTimestamp + i);
+          final token =
+              TokenGenerator.generateToken(testApiKey, testTimestamp + i);
           tokens.add(token);
         }
 
@@ -168,12 +193,14 @@ void main() {
       });
 
       test('Token应该对输入敏感（雪崩效应）', () {
-        final baseToken = TokenGenerator.generateToken(testApiKey, testTimestamp);
+        final baseToken =
+            TokenGenerator.generateToken(testApiKey, testTimestamp);
 
         // 修改API密钥的一个字符
         final modifiedKey = testApiKey.substring(0, testApiKey.length - 1) +
             (testApiKey.codeUnitAt(testApiKey.length - 1) == 97 ? 'b' : 'a');
-        final modifiedToken = TokenGenerator.generateToken(modifiedKey, testTimestamp);
+        final modifiedToken =
+            TokenGenerator.generateToken(modifiedKey, testTimestamp);
 
         // 两个Token应该完全不同
         int diffCount = 0;
@@ -194,7 +221,8 @@ void main() {
         final timestamp = headers['1Panel-Timestamp']!;
 
         // 服务器端验证
-        final expectedToken = TokenGenerator.generateToken(testApiKey, int.parse(timestamp));
+        final expectedToken =
+            TokenGenerator.generateToken(testApiKey, int.parse(timestamp));
 
         expect(token, equals(expectedToken));
       });
@@ -204,7 +232,8 @@ void main() {
         final wrongToken = '${headers['1Panel-Token']!.substring(0, 31)}x';
         final timestamp = headers['1Panel-Timestamp']!;
 
-        final expectedToken = TokenGenerator.generateToken(testApiKey, int.parse(timestamp));
+        final expectedToken =
+            TokenGenerator.generateToken(testApiKey, int.parse(timestamp));
 
         expect(wrongToken, isNot(equals(expectedToken)));
       });
@@ -212,9 +241,11 @@ void main() {
       test('错误的时间戳应该验证失败', () {
         final headers = TokenGenerator.generateAuthHeaders(testApiKey);
         final token = headers['1Panel-Token']!;
-        final wrongTimestamp = (int.parse(headers['1Panel-Timestamp']!) + 1).toString();
+        final wrongTimestamp =
+            (int.parse(headers['1Panel-Timestamp']!) + 1).toString();
 
-        final expectedToken = TokenGenerator.generateToken(testApiKey, int.parse(wrongTimestamp));
+        final expectedToken =
+            TokenGenerator.generateToken(testApiKey, int.parse(wrongTimestamp));
 
         expect(token, isNot(equals(expectedToken)));
       });

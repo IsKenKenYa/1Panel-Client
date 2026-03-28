@@ -25,7 +25,8 @@ class _SshLogsPageState extends State<SshLogsPage> {
     super.initState();
     _searchController = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !context.read<CurrentServerController>().hasServer) return;
+      if (!mounted || !context.read<CurrentServerController>().hasServer)
+        return;
       context.read<SshLogsProvider>().load();
     });
   }
@@ -79,9 +80,12 @@ class _SshLogsPageState extends State<SshLogsPage> {
                     Wrap(
                       spacing: 8,
                       children: <Widget>[
-                        _statusChip(provider, SshLogStatus.all, l10n.sshLogsStatusAll),
-                        _statusChip(provider, SshLogStatus.success, l10n.sshLogsStatusSuccess),
-                        _statusChip(provider, SshLogStatus.failed, l10n.sshLogsStatusFailed),
+                        _statusChip(
+                            provider, SshLogStatus.all, l10n.sshLogsStatusAll),
+                        _statusChip(provider, SshLogStatus.success,
+                            l10n.sshLogsStatusSuccess),
+                        _statusChip(provider, SshLogStatus.failed,
+                            l10n.sshLogsStatusFailed),
                       ],
                     ),
                   ],
@@ -119,7 +123,8 @@ class _SshLogsPageState extends State<SshLogsPage> {
     );
   }
 
-  Widget _statusChip(SshLogsProvider provider, SshLogStatus status, String label) {
+  Widget _statusChip(
+      SshLogsProvider provider, SshLogStatus status, String label) {
     return ChoiceChip(
       label: Text(label),
       selected: provider.statusFilter == status,
@@ -133,7 +138,8 @@ class _SshLogsPageState extends State<SshLogsPage> {
   Future<void> _copyItem(SshLogEntry item) async {
     await Clipboard.setData(
       ClipboardData(
-        text: '${item.address}:${item.port}\n${item.user}\n${item.authMode}\n${item.status}\n${item.message}',
+        text:
+            '${item.address}:${item.port}\n${item.user}\n${item.authMode}\n${item.status}\n${item.message}',
       ),
     );
     if (!mounted) return;
@@ -147,6 +153,7 @@ class _SshLogsPageState extends State<SshLogsPage> {
     final message = result.success
         ? context.l10n.sshLogsExportSaved(result.filePath ?? '')
         : (result.errorMessage ?? context.l10n.commonSaveFailed);
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 }

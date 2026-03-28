@@ -45,5 +45,6 @@ class RecoveryPoint extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, description, createTime, size, type, automatic];
+  List<Object?> get props =>
+      [id, name, description, createTime, size, type, automatic];
 }

@@ -28,8 +28,7 @@ class CommandsProvider extends ChangeNotifier with AsyncStateNotifier {
   List<CommandInfo> get commands => _commands;
   List<GroupInfo> get groups => _groups;
   Set<int> get selectedIds => Set<int>.unmodifiable(_selectedIds);
-  Set<int> get selectedPreviewIds =>
-      Set<int>.unmodifiable(_selectedPreviewIds);
+  Set<int> get selectedPreviewIds => Set<int>.unmodifiable(_selectedPreviewIds);
   List<CommandInfo> get importPreviewItems => _importPreviewItems;
   String get searchQuery => _searchQuery;
   int? get selectedGroupId => _selectedGroupId;
@@ -220,7 +219,8 @@ class CommandsProvider extends ChangeNotifier with AsyncStateNotifier {
     notifyListeners();
     try {
       final items = _importPreviewItems
-          .where((item) => item.id != null && _selectedPreviewIds.contains(item.id))
+          .where((item) =>
+              item.id != null && _selectedPreviewIds.contains(item.id))
           .map(_service.toOperate)
           .toList(growable: false);
       await _service.importCommands(items);

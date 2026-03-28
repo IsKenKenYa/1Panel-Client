@@ -92,4 +92,3 @@ class PHPConfigUpdate extends Equatable {
         maxExecutionTime,
       ];
 }
-

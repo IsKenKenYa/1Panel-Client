@@ -41,7 +41,8 @@ class ToolboxV2Api {
   }
 
   /// 搜索Clam扫描文件
-  Future<Response<PageResult<ClamFileInfo>>> searchClamFiles(ClamFileReq request) async {
+  Future<Response<PageResult<ClamFileInfo>>> searchClamFiles(
+      ClamFileReq request) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/toolbox/clam/file/search'),
       data: request.toJson(),
@@ -90,7 +91,8 @@ class ToolboxV2Api {
   }
 
   /// 搜索Clam扫描记录
-  Future<Response<PageResult<ClamLogInfo>>> searchClamRecords(ClamLogSearch request) async {
+  Future<Response<PageResult<ClamLogInfo>>> searchClamRecords(
+      ClamLogSearch request) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/toolbox/clam/record/search'),
       data: request.toJson(),
@@ -107,7 +109,8 @@ class ToolboxV2Api {
   }
 
   /// 搜索Clam扫描任务
-  Future<Response<PageResult<ClamBaseInfo>>> searchClam(PageRequest request) async {
+  Future<Response<PageResult<ClamBaseInfo>>> searchClam(
+      PageRequest request) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/toolbox/clam/search'),
       data: request.toJson(),
@@ -165,7 +168,8 @@ class ToolboxV2Api {
   }
 
   /// 获取清理日志
-  Future<Response<PageResult<CleanLog>>> getCleanLogs(PageRequest request) async {
+  Future<Response<PageResult<CleanLog>>> getCleanLogs(
+      PageRequest request) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/toolbox/clean/log'),
       data: request.toJson(),
@@ -337,7 +341,8 @@ class ToolboxV2Api {
   }
 
   /// 搜索Fail2ban记录
-  Future<Response<PageResult<Fail2banRecord>>> searchFail2ban(Fail2banSearch request) async {
+  Future<Response<PageResult<Fail2banRecord>>> searchFail2ban(
+      Fail2banSearch request) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/toolbox/fail2ban/search'),
       data: request.toJson(),
@@ -401,7 +406,8 @@ class ToolboxV2Api {
   }
 
   /// 搜索FTP日志
-  Future<Response<PageResult<dynamic>>> searchFtpLogs(FtpLogSearch request) async {
+  Future<Response<PageResult<dynamic>>> searchFtpLogs(
+      FtpLogSearch request) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/toolbox/ftp/log/search'),
       data: request.toJson(),

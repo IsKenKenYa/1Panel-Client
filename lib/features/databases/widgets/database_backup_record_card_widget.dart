@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
-import 'package:onepanel_client/data/models/backup_account_models.dart' as backup;
+import 'package:onepanel_client/data/models/backup_account_models.dart'
+    as backup;
 import 'package:onepanel_client/shared/widgets/app_card.dart';
 
 class DatabaseBackupRecordCardWidget extends StatelessWidget {

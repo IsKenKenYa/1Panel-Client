@@ -85,7 +85,8 @@ class UserCreate extends Equatable {
   }
 
   @override
-  List<Object?> get props => [username, password, email, nickname, role, phone, description, enable];
+  List<Object?> get props =>
+      [username, password, email, nickname, role, phone, description, enable];
 }
 
 /// User information model
@@ -132,7 +133,9 @@ class UserInfo extends Equatable {
       phone: json['phone'] as String?,
       avatar: json['avatar'] as String?,
       description: json['description'] as String?,
-      status: json['status'] != null ? UserStatus.fromString(json['status'] as String) : null,
+      status: json['status'] != null
+          ? UserStatus.fromString(json['status'] as String)
+          : null,
       lastLoginTime: json['lastLoginTime'] as String?,
       lastLoginIp: json['lastLoginIp'] as String?,
       loginCount: json['loginCount'] as int?,
@@ -161,7 +164,22 @@ class UserInfo extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, username, email, nickname, role, phone, avatar, description, status, lastLoginTime, lastLoginIp, loginCount, createTime, updateTime];
+  List<Object?> get props => [
+        id,
+        username,
+        email,
+        nickname,
+        role,
+        phone,
+        avatar,
+        description,
+        status,
+        lastLoginTime,
+        lastLoginIp,
+        loginCount,
+        createTime,
+        updateTime
+      ];
 }
 
 /// User search request model
@@ -186,7 +204,9 @@ class UserSearch extends Equatable {
       pageSize: json['pageSize'] as int?,
       search: json['search'] as String?,
       role: json['role'] as String?,
-      status: json['status'] != null ? UserStatus.fromString(json['status'] as String) : null,
+      status: json['status'] != null
+          ? UserStatus.fromString(json['status'] as String)
+          : null,
     );
   }
 
@@ -257,7 +277,8 @@ class UserUpdate extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, email, nickname, role, phone, avatar, description, enable, password];
+  List<Object?> get props =>
+      [id, email, nickname, role, phone, avatar, description, enable, password];
 }
 
 /// User operation model
@@ -342,7 +363,9 @@ class UserLoginResponse extends Equatable {
     return UserLoginResponse(
       token: json['token'] as String?,
       refreshToken: json['refreshToken'] as String?,
-      user: json['user'] != null ? UserInfo.fromJson(json['user'] as Map<String, dynamic>) : null,
+      user: json['user'] != null
+          ? UserInfo.fromJson(json['user'] as Map<String, dynamic>)
+          : null,
       expiresIn: json['expiresIn'] as int?,
     );
   }
@@ -437,13 +460,15 @@ class Role extends Equatable {
       'name': name,
       'code': code,
       'description': description,
-      'permissions': permissions?.map((permission) => permission.toJson()).toList(),
+      'permissions':
+          permissions?.map((permission) => permission.toJson()).toList(),
       'createTime': createTime,
     };
   }
 
   @override
-  List<Object?> get props => [id, name, code, description, permissions, createTime];
+  List<Object?> get props =>
+      [id, name, code, description, permissions, createTime];
 }
 
 /// User session model
@@ -495,7 +520,16 @@ class UserSession extends Equatable {
   }
 
   @override
-  List<Object?> get props => [sessionId, userId, username, ipAddress, userAgent, loginTime, lastActivity, active];
+  List<Object?> get props => [
+        sessionId,
+        userId,
+        username,
+        ipAddress,
+        userAgent,
+        loginTime,
+        lastActivity,
+        active
+      ];
 }
 
 /// MFA login request model
@@ -539,7 +573,8 @@ class UserMFALogin extends Equatable {
   }
 
   @override
-  List<Object?> get props => [username, password, captcha, rememberMe, mfaCode, mfaToken];
+  List<Object?> get props =>
+      [username, password, captcha, rememberMe, mfaCode, mfaToken];
 }
 
 /// Captcha response model
@@ -636,16 +671,16 @@ class AuthSettings extends Equatable {
 
   @override
   List<Object?> get props => [
-    captchaEnabled,
-    mfaEnabled,
-    rememberMeEnabled,
-    sessionTimeout,
-    maxLoginAttempts,
-    lockoutDuration,
-    passwordPolicyEnabled,
-    passwordMinLength,
-    passwordRequireNumbers,
-    passwordRequireSymbols,
-    passwordRequireUppercase,
-  ];
+        captchaEnabled,
+        mfaEnabled,
+        rememberMeEnabled,
+        sessionTimeout,
+        maxLoginAttempts,
+        lockoutDuration,
+        passwordPolicyEnabled,
+        passwordMinLength,
+        passwordRequireNumbers,
+        passwordRequireSymbols,
+        passwordRequireUppercase,
+      ];
 }

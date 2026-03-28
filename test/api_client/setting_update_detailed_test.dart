@@ -10,8 +10,9 @@ void main() {
 
   setUpAll(() async {
     await TestEnvironment.initialize();
-    hasApiKey = TestEnvironment.apiKey.isNotEmpty && TestEnvironment.apiKey != 'your_api_key_here';
-    
+    hasApiKey = TestEnvironment.apiKey.isNotEmpty &&
+        TestEnvironment.apiKey != 'your_api_key_here';
+
     if (hasApiKey) {
       client = DioClient(
         baseUrl: TestEnvironment.baseUrl,
@@ -28,22 +29,22 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('获取所有可用设置字段');
       debugPrint('========================================');
-      
+
       final response = await dio.post('/api/v2/core/settings/search');
       final data = response.data as Map<String, dynamic>;
       final settings = data['data'] as Map<String, dynamic>?;
-      
+
       if (settings != null) {
         debugPrint('\n所有设置字段:');
         for (final entry in settings.entries) {
           debugPrint('  ${entry.key}: ${entry.value}');
         }
       }
-      
+
       debugPrint('========================================\n');
     });
 
@@ -54,16 +55,16 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('测试所有可能的key值');
       debugPrint('========================================');
-      
+
       // 获取当前设置
       final searchResponse = await dio.post('/api/v2/core/settings/search');
       final searchData = searchResponse.data as Map<String, dynamic>;
       final settings = searchData['data'] as Map<String, dynamic>?;
-      
+
       if (settings != null) {
         // 测试每个字段
         final keysToTest = [
@@ -85,11 +86,11 @@ void main() {
           'proxyUser',
           'upgradeBackupCopies',
         ];
-        
+
         for (final key in keysToTest) {
           final currentValue = settings[key];
           debugPrint('\n--- 测试 key="$key", 当前值="$currentValue" ---');
-          
+
           try {
             final response = await dio.post(
               '/api/v2/core/settings/update',
@@ -97,13 +98,14 @@ void main() {
             );
             final responseData = response.data as Map<String, dynamic>;
             final success = responseData['code'] == 200;
-            debugPrint('结果: ${success ? "✅ 成功" : "❌ 失败"} - code=${responseData['code']}, message=${responseData['message']}');
+            debugPrint(
+                '结果: ${success ? "✅ 成功" : "❌ 失败"} - code=${responseData['code']}, message=${responseData['message']}');
           } catch (e) {
             debugPrint('错误: $e');
           }
         }
       }
-      
+
       debugPrint('========================================\n');
     });
 
@@ -114,35 +116,53 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('测试不同的请求格式');
       debugPrint('========================================');
-      
+
       final testCases = [
-        {'desc': '标准格式', 'data': {'key': 'sessionTimeout', 'value': '60'}},
-        {'desc': '大写Key', 'data': {'Key': 'sessionTimeout', 'value': '60'}},
-        {'desc': '大写Value', 'data': {'key': 'sessionTimeout', 'Value': '60'}},
-        {'desc': '字符串数字', 'data': {'key': 'sessionTimeout', 'value': 60}},
-        {'desc': '嵌套data', 'data': {'data': {'key': 'sessionTimeout', 'value': '60'}}},
+        {
+          'desc': '标准格式',
+          'data': {'key': 'sessionTimeout', 'value': '60'}
+        },
+        {
+          'desc': '大写Key',
+          'data': {'Key': 'sessionTimeout', 'value': '60'}
+        },
+        {
+          'desc': '大写Value',
+          'data': {'key': 'sessionTimeout', 'Value': '60'}
+        },
+        {
+          'desc': '字符串数字',
+          'data': {'key': 'sessionTimeout', 'value': 60}
+        },
+        {
+          'desc': '嵌套data',
+          'data': {
+            'data': {'key': 'sessionTimeout', 'value': '60'}
+          }
+        },
       ];
-      
+
       for (final testCase in testCases) {
         debugPrint('\n--- ${testCase['desc']} ---');
         debugPrint('请求: ${jsonEncode(testCase['data'])}');
-        
+
         try {
           final response = await dio.post(
             '/api/v2/core/settings/update',
             data: testCase['data'],
           );
           final responseData = response.data as Map<String, dynamic>;
-          debugPrint('响应: code=${responseData['code']}, message=${responseData['message']}');
+          debugPrint(
+              '响应: code=${responseData['code']}, message=${responseData['message']}');
         } catch (e) {
           debugPrint('错误: $e');
         }
       }
-      
+
       debugPrint('========================================\n');
     });
 
@@ -153,16 +173,22 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('检查其他更新接口');
       debugPrint('========================================');
-      
+
       final endpoints = [
-        {'path': '/core/settings/menu/update', 'data': {'hideMenu': '[]'}},
-        {'path': '/core/settings/proxy/update', 'data': {'proxyUrl': '', 'proxyType': ''}},
+        {
+          'path': '/core/settings/menu/update',
+          'data': {'hideMenu': '[]'}
+        },
+        {
+          'path': '/core/settings/proxy/update',
+          'data': {'proxyUrl': '', 'proxyType': ''}
+        },
       ];
-      
+
       for (final endpoint in endpoints) {
         debugPrint('\n--- 测试 ${endpoint['path']} ---');
         try {
@@ -171,12 +197,13 @@ void main() {
             data: endpoint['data'],
           );
           final responseData = response.data as Map<String, dynamic>;
-          debugPrint('响应: code=${responseData['code']}, message=${responseData['message']}');
+          debugPrint(
+              '响应: code=${responseData['code']}, message=${responseData['message']}');
         } catch (e) {
           debugPrint('错误: $e');
         }
       }
-      
+
       debugPrint('========================================\n');
     });
 
@@ -184,7 +211,7 @@ void main() {
       debugPrint('\n========================================');
       debugPrint('总结');
       debugPrint('========================================');
-      
+
       debugPrint('''
 根据测试结果：
 
@@ -212,7 +239,7 @@ void main() {
 结论：大部分面板设置只能读取，无法通过API修改。
 这可能是1Panel的设计限制，需要通过Web界面进行修改。
 ''');
-      
+
       debugPrint('========================================\n');
     });
   });

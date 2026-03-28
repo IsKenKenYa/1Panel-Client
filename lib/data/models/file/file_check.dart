@@ -62,7 +62,8 @@ class FileCheckResult extends Equatable {
       exists: json['exists'] as bool? ?? false,
       readable: json['readable'] as bool? ?? false,
       writable: json['writable'] as bool? ?? false,
-      isDirectory: json['isDir'] as bool? ?? json['isDirectory'] as bool? ?? false,
+      isDirectory:
+          json['isDir'] as bool? ?? json['isDirectory'] as bool? ?? false,
       isFile: json['isFile'] as bool? ?? false,
       size: json['size'] as int?,
       lastModified: json['lastModified'] as String?,
@@ -83,7 +84,16 @@ class FileCheckResult extends Equatable {
   }
 
   @override
-  List<Object?> get props => [path, exists, readable, writable, isDirectory, isFile, size, lastModified];
+  List<Object?> get props => [
+        path,
+        exists,
+        readable,
+        writable,
+        isDirectory,
+        isFile,
+        size,
+        lastModified
+      ];
 }
 
 class FileBatchCheckRequest extends Equatable {

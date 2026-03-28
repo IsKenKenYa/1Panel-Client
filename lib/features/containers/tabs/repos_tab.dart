@@ -11,7 +11,7 @@ class ReposTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    
+
     return Consumer<ContainersProvider>(
       builder: (context, provider, _) {
         final repos = provider.data.repos;
@@ -93,7 +93,8 @@ class ReposTab extends StatelessWidget {
                         value: 'delete',
                         child: Text(
                           l10n.commonDelete,
-                          style: TextStyle(color: Theme.of(context).colorScheme.error),
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.error),
                         ),
                       ),
                     ],

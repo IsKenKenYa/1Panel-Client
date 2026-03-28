@@ -1,8 +1,7 @@
-
 import 'dart:async';
 
 /// 通用存储服务接口
-/// 
+///
 /// 定义了应用程序统一的存储操作规范
 abstract class StorageService {
   /// 初始化服务
@@ -37,13 +36,13 @@ abstract class StorageService {
   /// 监听数据变化
   /// [key] 键名
   Stream<dynamic> watch(String key);
-  
+
   /// 获取所有键
   List<dynamic> get keys;
-  
+
   /// 获取所有值
   List<dynamic> get values;
-  
+
   /// 检查键是否存在
   bool containsKey(String key);
 }

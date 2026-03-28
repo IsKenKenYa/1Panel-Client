@@ -89,9 +89,10 @@ class CommandImportPreviewSheetWidget extends StatelessWidget {
                           item.command ?? '',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                fontFamily: 'monospace',
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontFamily: 'monospace',
+                                  ),
                         ),
                       ],
                     ),

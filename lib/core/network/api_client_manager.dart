@@ -7,10 +7,12 @@ import '../../api/v2/container_v2.dart';
 import '../../api/v2/cronjob_v2.dart';
 import '../../api/v2/dashboard_v2.dart';
 import '../../api/v2/database_v2.dart';
+import '../../api/v2/disk_management_v2.dart';
 import '../../api/v2/docker_v2.dart';
 import '../../api/v2/file_v2.dart';
 import '../../api/v2/firewall_v2.dart';
 import '../../api/v2/host_v2.dart';
+import '../../api/v2/host_tool_v2.dart';
 import '../../api/v2/logs_v2.dart';
 import '../../api/v2/monitor_v2.dart';
 import '../../api/v2/openresty_v2.dart';
@@ -98,6 +100,9 @@ class ApiClientManager {
   Future<DatabaseV2Api> getDatabaseApi() async =>
       DatabaseV2Api(await getCurrentClient());
 
+  Future<DiskManagementV2Api> getDiskManagementApi() async =>
+      DiskManagementV2Api(await getCurrentClient());
+
   Future<DockerV2Api> getDockerApi() async =>
       DockerV2Api(await getCurrentClient());
 
@@ -107,6 +112,9 @@ class ApiClientManager {
       FirewallV2Api(await getCurrentClient());
 
   Future<HostV2Api> getHostApi() async => HostV2Api(await getCurrentClient());
+
+  Future<HostToolV2Api> getHostToolApi() async =>
+      HostToolV2Api(await getCurrentClient());
 
   Future<LogsV2Api> getLogsApi() async => LogsV2Api(await getCurrentClient());
 
@@ -141,7 +149,7 @@ class ApiClientManager {
   Future<TerminalV2Api> getTerminalApi() async =>
       TerminalV2Api(await getCurrentClient());
 
-    Future<ToolboxV2Api> getToolboxApi() async =>
+  Future<ToolboxV2Api> getToolboxApi() async =>
       ToolboxV2Api(await getCurrentClient());
 
   Future<UpdateV2Api> getUpdateApi() async =>

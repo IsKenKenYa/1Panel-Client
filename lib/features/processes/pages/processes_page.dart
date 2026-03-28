@@ -24,7 +24,8 @@ class _ProcessesPageState extends State<ProcessesPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !context.read<CurrentServerController>().hasServer) return;
+      if (!mounted || !context.read<CurrentServerController>().hasServer)
+        return;
       context.read<ProcessesProvider>().load();
     });
   }

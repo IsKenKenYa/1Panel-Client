@@ -43,8 +43,7 @@ class WebsiteLifecycleRuntimeCard extends StatelessWidget {
             const SizedBox(height: 12),
             TextFormField(
               initialValue: siteDir,
-              decoration:
-                  InputDecoration(labelText: l10n.websitesSiteDirLabel),
+              decoration: InputDecoration(labelText: l10n.websitesSiteDirLabel),
               onChanged: onSiteDirChanged,
             ),
           ],

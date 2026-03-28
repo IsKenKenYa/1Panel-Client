@@ -36,5 +36,6 @@ class FileBatchResult extends Equatable {
   }
 
   @override
-  List<Object?> get props => [success, successCount, failureCount, errors, processedPaths];
+  List<Object?> get props =>
+      [success, successCount, failureCount, errors, processedPaths];
 }

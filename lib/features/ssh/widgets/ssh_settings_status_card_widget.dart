@@ -61,7 +61,8 @@ class SshSettingsStatusCardWidget extends StatelessWidget {
                   onPressed: isBusy
                       ? null
                       : () => onOperate(info.isActive ? 'stop' : 'start'),
-                  child: Text(info.isActive ? l10n.commonStop : l10n.commonStart),
+                  child:
+                      Text(info.isActive ? l10n.commonStop : l10n.commonStart),
                 ),
                 FilledButton.tonal(
                   onPressed: isBusy ? null : () => onOperate('restart'),

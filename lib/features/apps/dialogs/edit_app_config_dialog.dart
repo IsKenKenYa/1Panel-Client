@@ -47,11 +47,16 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
         _params[param.key] = param.value;
       }
     }
-    _httpPortController = TextEditingController(text: widget.httpPort?.toString() ?? '');
-    _httpsPortController = TextEditingController(text: widget.httpsPort?.toString() ?? '');
-    _containerNameController = TextEditingController(text: widget.appConfig.containerName);
-    _cpuQuotaController = TextEditingController(text: widget.appConfig.cpuQuota.toString());
-    _memoryLimitController = TextEditingController(text: widget.appConfig.memoryLimit.toString());
+    _httpPortController =
+        TextEditingController(text: widget.httpPort?.toString() ?? '');
+    _httpsPortController =
+        TextEditingController(text: widget.httpsPort?.toString() ?? '');
+    _containerNameController =
+        TextEditingController(text: widget.appConfig.containerName);
+    _cpuQuotaController =
+        TextEditingController(text: widget.appConfig.cpuQuota.toString());
+    _memoryLimitController =
+        TextEditingController(text: widget.appConfig.memoryLimit.toString());
     _memoryUnit = widget.appConfig.memoryUnit;
   }
 
@@ -105,7 +110,8 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
       if (widget.appConfig.allowPort) {
         final newHttp = int.tryParse(_httpPortController.text);
         final newHttps = int.tryParse(_httpsPortController.text);
-        final canUpdatePort = widget.appKey.isNotEmpty && widget.appName.isNotEmpty;
+        final canUpdatePort =
+            widget.appKey.isNotEmpty && widget.appName.isNotEmpty;
 
         if (canUpdatePort && newHttp != widget.httpPort && newHttp != null) {
           await provider.changeAppPort(
@@ -161,7 +167,8 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
     final colorScheme = Theme.of(context).colorScheme;
 
     // Filter editable params
-    final editableParams = widget.appConfig.params.where((p) => p.edit).toList();
+    final editableParams =
+        widget.appConfig.params.where((p) => p.edit).toList();
 
     return AlertDialog(
       title: Text(l10n.appTabConfig),
@@ -175,7 +182,8 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (widget.appConfig.allowPort) ...[
-                  Text(l10n.commonPort, style: Theme.of(context).textTheme.titleSmall),
+                  Text(l10n.commonPort,
+                      style: Theme.of(context).textTheme.titleSmall),
                   const SizedBox(height: 8),
                   Row(
                     children: [
@@ -188,7 +196,9 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
                             isDense: true,
                           ),
                           keyboardType: TextInputType.number,
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -201,7 +211,9 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
                             isDense: true,
                           ),
                           keyboardType: TextInputType.number,
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
                         ),
                       ),
                     ],
@@ -210,8 +222,8 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
                   const Divider(),
                   const SizedBox(height: 16),
                 ],
-
-                Text(l10n.containerTitle, style: Theme.of(context).textTheme.titleSmall),
+                Text(l10n.containerTitle,
+                    style: Theme.of(context).textTheme.titleSmall),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _containerNameController,
@@ -232,7 +244,8 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
                           border: const OutlineInputBorder(),
                           isDense: true,
                         ),
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -247,7 +260,9 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
                                 border: const OutlineInputBorder(),
                                 isDense: true,
                               ),
-                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                      decimal: true),
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -256,8 +271,10 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
                             child: DropdownButtonFormField<String>(
                               initialValue: _memoryUnit,
                               items: const [
-                                DropdownMenuItem(value: 'MB', child: Text('MB')),
-                                DropdownMenuItem(value: 'GB', child: Text('GB')),
+                                DropdownMenuItem(
+                                    value: 'MB', child: Text('MB')),
+                                DropdownMenuItem(
+                                    value: 'GB', child: Text('GB')),
                               ],
                               onChanged: (val) {
                                 if (val != null) {
@@ -268,7 +285,8 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
                               },
                               decoration: const InputDecoration(
                                 border: OutlineInputBorder(),
-                                contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                                contentPadding:
+                                    EdgeInsets.symmetric(horizontal: 8),
                                 isDense: true,
                               ),
                             ),
@@ -281,9 +299,9 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
                 const SizedBox(height: 16),
                 const Divider(),
                 const SizedBox(height: 16),
-                
                 if (editableParams.isNotEmpty) ...[
-                  Text(l10n.commonParams, style: Theme.of(context).textTheme.titleSmall),
+                  Text(l10n.commonParams,
+                      style: Theme.of(context).textTheme.titleSmall),
                   const SizedBox(height: 8),
                   ...editableParams.map((param) {
                     return Padding(
@@ -304,16 +322,16 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
         ),
         FilledButton(
           onPressed: _isLoading ? null : _submit,
-          child: _isLoading 
-            ? SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: colorScheme.onPrimary,
-                ),
-              )
-            : Text(l10n.commonSave),
+          child: _isLoading
+              ? SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: colorScheme.onPrimary,
+                  ),
+                )
+              : Text(l10n.commonSave),
         ),
       ],
     );
@@ -323,51 +341,51 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
     final l10n = context.l10n;
     // Determine label (use current locale if possible, or fallback)
     // Here simplified
-    final label = param.labelZh; 
-    
-    if (param.type == 'select' && param.values != null) {
-       final values = param.values; 
-       List<DropdownMenuItem<dynamic>> items = [];
-       
-       if (values is List) {
-         for (var v in values) {
-           // Handle string or map
-           if (v is String) {
-             items.add(DropdownMenuItem(value: v, child: Text(v)));
-           } else if (v is Map) {
-             items.add(DropdownMenuItem(
-               value: v['value'], 
-               child: Text(v['label']?.toString() ?? v['value'].toString()),
-             ));
-           }
-         }
-       }
-       
-       // Ensure current value exists in items, otherwise add it or set to null
-       var currentValue = _params[param.key];
-       if (currentValue != null && !items.any((i) => i.value == currentValue)) {
-         // If current value is not in the list, maybe it's a type mismatch or custom value?
-         // Or just don't set value
-         currentValue = null; 
-       }
+    final label = param.labelZh;
 
-       return DropdownButtonFormField<dynamic>(
-         initialValue: currentValue,
-         decoration: InputDecoration(
-           labelText: label,
-           border: const OutlineInputBorder(),
-           isDense: true,
-           helperText: param.rule,
-         ),
-         items: items,
-         onChanged: (val) {
-           setState(() {
-             _params[param.key] = val;
-           });
-         },
-       );
+    if (param.type == 'select' && param.values != null) {
+      final values = param.values;
+      List<DropdownMenuItem<dynamic>> items = [];
+
+      if (values is List) {
+        for (var v in values) {
+          // Handle string or map
+          if (v is String) {
+            items.add(DropdownMenuItem(value: v, child: Text(v)));
+          } else if (v is Map) {
+            items.add(DropdownMenuItem(
+              value: v['value'],
+              child: Text(v['label']?.toString() ?? v['value'].toString()),
+            ));
+          }
+        }
+      }
+
+      // Ensure current value exists in items, otherwise add it or set to null
+      var currentValue = _params[param.key];
+      if (currentValue != null && !items.any((i) => i.value == currentValue)) {
+        // If current value is not in the list, maybe it's a type mismatch or custom value?
+        // Or just don't set value
+        currentValue = null;
+      }
+
+      return DropdownButtonFormField<dynamic>(
+        initialValue: currentValue,
+        decoration: InputDecoration(
+          labelText: label,
+          border: const OutlineInputBorder(),
+          isDense: true,
+          helperText: param.rule,
+        ),
+        items: items,
+        onChanged: (val) {
+          setState(() {
+            _params[param.key] = val;
+          });
+        },
+      );
     }
-    
+
     // Default to text field
     return TextFormField(
       initialValue: _params[param.key]?.toString(),
@@ -379,7 +397,7 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
       ),
       onSaved: (val) {
         if (val != null) {
-           _params[param.key] = val;
+          _params[param.key] = val;
         }
       },
       validator: (val) {

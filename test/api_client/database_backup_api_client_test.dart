@@ -61,10 +61,12 @@ void main() {
   });
 
   group('Database backup API客户端测试', () {
-    test('POST /backups/record/search accepts database record search', () async {
+    test('POST /backups/record/search accepts database record search',
+        () async {
       final skipReason = TestEnvironment.skipIntegration();
       if (skipReason != null) {
-        appLogger.wWithPackage('test.api_client.database_backup', '跳过测试: $skipReason');
+        appLogger.wWithPackage(
+            'test.api_client.database_backup', '跳过测试: $skipReason');
         return;
       }
 
@@ -87,15 +89,18 @@ void main() {
       expect(response.data, isNotNull);
     });
 
-    test('database backup write flow is gated behind destructive mode', () async {
+    test('database backup write flow is gated behind destructive mode',
+        () async {
       final skipIntegrationReason = TestEnvironment.skipIntegration();
       if (skipIntegrationReason != null) {
-        appLogger.wWithPackage('test.api_client.database_backup', '跳过测试: $skipIntegrationReason');
+        appLogger.wWithPackage(
+            'test.api_client.database_backup', '跳过测试: $skipIntegrationReason');
         return;
       }
       final skipDestructiveReason = TestEnvironment.skipDestructive();
       if (skipDestructiveReason != null) {
-        appLogger.wWithPackage('test.api_client.database_backup', '跳过测试: $skipDestructiveReason');
+        appLogger.wWithPackage(
+            'test.api_client.database_backup', '跳过测试: $skipDestructiveReason');
         return;
       }
 

@@ -100,10 +100,11 @@ class PageResult<T> extends Equatable {
     this.totalPages = 1,
   });
 
-  factory PageResult.fromJson(Map<String, dynamic> json, T Function(dynamic) fromJsonT) {
+  factory PageResult.fromJson(
+      Map<String, dynamic> json, T Function(dynamic) fromJsonT) {
     var itemsJson = json['items'];
     List<T> itemsList = [];
-    
+
     if (itemsJson is List) {
       itemsList = itemsJson.map((item) => fromJsonT(item)).toList();
     } else if (itemsJson is Map) {
@@ -199,7 +200,8 @@ class CommonResponse<T> extends Equatable {
     this.timestamp,
   });
 
-  factory CommonResponse.fromJson(Map<String, dynamic> json, T Function(dynamic)? fromJsonT) {
+  factory CommonResponse.fromJson(
+      Map<String, dynamic> json, T Function(dynamic)? fromJsonT) {
     return CommonResponse(
       success: json['success'] as bool? ?? false,
       message: json['message'] as String? ?? '',
@@ -836,7 +838,8 @@ class ScriptOperate extends Equatable {
   }
 
   @override
-  List<Object?> get props => [description, groups, id, isInteractive, name, script];
+  List<Object?> get props =>
+      [description, groups, id, isInteractive, name, script];
 }
 
 /// 脚本选项模型

@@ -51,7 +51,8 @@ class FileSizeInfo extends Equatable {
       path: json['path'] as String?,
       totalSize: json['totalSize'] as int? ?? json['size'] as int? ?? 0,
       fileCount: json['fileCount'] as int? ?? 0,
-      directoryCount: json['directoryCount'] as int? ?? json['dirCount'] as int? ?? 0,
+      directoryCount:
+          json['directoryCount'] as int? ?? json['dirCount'] as int? ?? 0,
       sizeByType: (json['sizeByType'] as Map<String, dynamic>?)?.map(
         (key, value) => MapEntry(key, value as int),
       ),
@@ -69,7 +70,8 @@ class FileSizeInfo extends Equatable {
   }
 
   @override
-  List<Object?> get props => [path, totalSize, fileCount, directoryCount, sizeByType];
+  List<Object?> get props =>
+      [path, totalSize, fileCount, directoryCount, sizeByType];
 }
 
 class FileDepthSizeRequest extends Equatable {
@@ -108,7 +110,8 @@ class FileDepthSizeInfo extends Equatable {
     final sizesMap = <String, int>{};
     if (json['sizes'] is Map) {
       (json['sizes'] as Map).forEach((key, value) {
-        sizesMap[key.toString()] = (value is int) ? value : int.tryParse(value.toString()) ?? 0;
+        sizesMap[key.toString()] =
+            (value is int) ? value : int.tryParse(value.toString()) ?? 0;
       });
     }
     return FileDepthSizeInfo(

@@ -94,7 +94,8 @@ class _UpgradePageState extends State<UpgradePage> {
                 child: ListTile(
                   leading: const Icon(Icons.info_outline),
                   title: Text(l10n.upgradeCurrentVersionLabel),
-                  trailing: Text(currentVersion, style: const TextStyle(color: Colors.grey)),
+                  trailing: Text(currentVersion,
+                      style: const TextStyle(color: Colors.grey)),
                 ),
               ),
               const SizedBox(height: AppDesignTokens.spacingMd),
@@ -103,7 +104,8 @@ class _UpgradePageState extends State<UpgradePage> {
                 child: FutureBuilder<List<dynamic>?>(
                   future: _releasesFuture,
                   builder: (context, releasesSnapshot) {
-                    if (releasesSnapshot.connectionState == ConnectionState.waiting) {
+                    if (releasesSnapshot.connectionState ==
+                        ConnectionState.waiting) {
                       return const Padding(
                         padding: EdgeInsets.all(16),
                         child: Center(child: CircularProgressIndicator()),
@@ -116,7 +118,8 @@ class _UpgradePageState extends State<UpgradePage> {
                         child: Center(
                           child: Column(
                             children: [
-                              const Icon(Icons.error_outline, color: Colors.red, size: 48),
+                              const Icon(Icons.error_outline,
+                                  color: Colors.red, size: 48),
                               const SizedBox(height: 8),
                               Text(l10n.commonLoadFailedTitle),
                             ],
@@ -132,7 +135,8 @@ class _UpgradePageState extends State<UpgradePage> {
                         child: Center(
                           child: Column(
                             children: [
-                              const Icon(Icons.check_circle, color: Colors.green, size: 48),
+                              const Icon(Icons.check_circle,
+                                  color: Colors.green, size: 48),
                               const SizedBox(height: 8),
                               Text(l10n.upgradeNoUpdates),
                             ],
@@ -143,10 +147,13 @@ class _UpgradePageState extends State<UpgradePage> {
 
                     return Column(
                       children: releases.map((release) {
-                        final version = release['version'] as String? ?? 'Unknown';
-                        final description = release['description'] as String? ?? '';
+                        final version =
+                            release['version'] as String? ?? 'Unknown';
+                        final description =
+                            release['description'] as String? ?? '';
                         final isLatest = release['isLatest'] == true;
-                        final isDowngrade = _isDowngrade(currentVersion, version);
+                        final isDowngrade =
+                            _isDowngrade(currentVersion, version);
 
                         return ListTile(
                           leading: Icon(
@@ -167,40 +174,48 @@ class _UpgradePageState extends State<UpgradePage> {
                               if (isLatest) ...[
                                 const SizedBox(width: 8),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 2),
                                   decoration: BoxDecoration(
                                     color: Colors.green.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Text(
                                     l10n.upgradeLatest,
-                                    style: const TextStyle(fontSize: 10, color: Colors.green),
+                                    style: const TextStyle(
+                                        fontSize: 10, color: Colors.green),
                                   ),
                                 ),
                               ],
                               if (isDowngrade) ...[
                                 const SizedBox(width: 8),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 2),
                                   decoration: BoxDecoration(
                                     color: Colors.orange.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Text(
                                     l10n.upgradeDowngradeButton,
-                                    style: const TextStyle(fontSize: 10, color: Colors.orange),
+                                    style: const TextStyle(
+                                        fontSize: 10, color: Colors.orange),
                                   ),
                                 ),
                               ],
                             ],
                           ),
-                          subtitle: description.isNotEmpty ? Text(description, maxLines: 2) : null,
+                          subtitle: description.isNotEmpty
+                              ? Text(description, maxLines: 2)
+                              : null,
                           trailing: IconButton(
                             icon: const Icon(Icons.notes_outlined),
                             tooltip: l10n.upgradeViewNotes,
-                            onPressed: () => _showReleaseNotes(context, provider, l10n, version),
+                            onPressed: () => _showReleaseNotes(
+                                context, provider, l10n, version),
                           ),
-                          onTap: () => _showUpgradeDialog(context, provider, l10n, version, isDowngrade),
+                          onTap: () => _showUpgradeDialog(
+                              context, provider, l10n, version, isDowngrade),
                         );
                       }).toList(),
                     );
@@ -214,7 +229,8 @@ class _UpgradePageState extends State<UpgradePage> {
     );
   }
 
-  Widget _buildSectionTitle(BuildContext context, String title, ThemeData theme) {
+  Widget _buildSectionTitle(
+      BuildContext context, String title, ThemeData theme) {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppDesignTokens.spacingSm),
       child: Text(
@@ -227,7 +243,8 @@ class _UpgradePageState extends State<UpgradePage> {
     );
   }
 
-  void _showReleaseNotes(BuildContext context, SettingsProvider provider, AppLocalizations l10n, String version) {
+  void _showReleaseNotes(BuildContext context, SettingsProvider provider,
+      AppLocalizations l10n, String version) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -266,29 +283,39 @@ class _UpgradePageState extends State<UpgradePage> {
     );
   }
 
-  void _showUpgradeDialog(BuildContext context, SettingsProvider provider, AppLocalizations l10n, String version, bool isDowngrade) {
+  void _showUpgradeDialog(BuildContext context, SettingsProvider provider,
+      AppLocalizations l10n, String version, bool isDowngrade) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(isDowngrade ? l10n.upgradeDowngradeConfirm : l10n.upgradeConfirm),
-        content: Text(isDowngrade ? l10n.upgradeDowngradeMessage(version) : l10n.upgradeConfirmMessage(version)),
+        title: Text(
+            isDowngrade ? l10n.upgradeDowngradeConfirm : l10n.upgradeConfirm),
+        content: Text(isDowngrade
+            ? l10n.upgradeDowngradeMessage(version)
+            : l10n.upgradeConfirmMessage(version)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(l10n.commonCancel),
           ),
           FilledButton(
-            style: isDowngrade ? FilledButton.styleFrom(backgroundColor: Colors.orange) : null,
+            style: isDowngrade
+                ? FilledButton.styleFrom(backgroundColor: Colors.orange)
+                : null,
             onPressed: () async {
               Navigator.pop(context);
               final success = await provider.upgrade(version: version);
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(success ? l10n.upgradeStarted : l10n.commonSaveFailed)),
+                  SnackBar(
+                      content: Text(success
+                          ? l10n.upgradeStarted
+                          : l10n.commonSaveFailed)),
                 );
               }
             },
-            child: Text(isDowngrade ? l10n.upgradeDowngradeButton : l10n.upgradeButton),
+            child: Text(
+                isDowngrade ? l10n.upgradeDowngradeButton : l10n.upgradeButton),
           ),
         ],
       ),

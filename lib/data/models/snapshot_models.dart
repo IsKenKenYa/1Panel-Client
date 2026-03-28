@@ -14,7 +14,8 @@ class SnapshotOperate extends Equatable {
     required this.operate,
   });
 
-  factory SnapshotOperate.fromJson(Map<String, dynamic> json) => _$SnapshotOperateFromJson(json);
+  factory SnapshotOperate.fromJson(Map<String, dynamic> json) =>
+      _$SnapshotOperateFromJson(json);
   Map<String, dynamic> toJson() => _$SnapshotOperateToJson(this);
 
   @override
@@ -32,7 +33,8 @@ class SnapshotOperateRequest extends Equatable {
     required this.operate,
   });
 
-  factory SnapshotOperateRequest.fromJson(Map<String, dynamic> json) => _$SnapshotOperateRequestFromJson(json);
+  factory SnapshotOperateRequest.fromJson(Map<String, dynamic> json) =>
+      _$SnapshotOperateRequestFromJson(json);
   Map<String, dynamic> toJson() => _$SnapshotOperateRequestToJson(this);
 
   @override
@@ -66,11 +68,23 @@ class SnapshotInfo extends Equatable {
     this.appCount,
   });
 
-  factory SnapshotInfo.fromJson(Map<String, dynamic> json) => _$SnapshotInfoFromJson(json);
+  factory SnapshotInfo.fromJson(Map<String, dynamic> json) =>
+      _$SnapshotInfoFromJson(json);
   Map<String, dynamic> toJson() => _$SnapshotInfoToJson(this);
 
   @override
-  List<Object?> get props => [id, name, description, createTime, status, path, size, version, isDefault, appCount];
+  List<Object?> get props => [
+        id,
+        name,
+        description,
+        createTime,
+        status,
+        path,
+        size,
+        version,
+        isDefault,
+        appCount
+      ];
 }
 
 /// 快照创建请求
@@ -98,11 +112,22 @@ class SnapshotCreateRequest extends Equatable {
     this.encryptDatabase,
   });
 
-  factory SnapshotCreateRequest.fromJson(Map<String, dynamic> json) => _$SnapshotCreateRequestFromJson(json);
+  factory SnapshotCreateRequest.fromJson(Map<String, dynamic> json) =>
+      _$SnapshotCreateRequestFromJson(json);
   Map<String, dynamic> toJson() => _$SnapshotCreateRequestToJson(this);
 
   @override
-  List<Object?> get props => [name, description, source, ignoreApps, ignoreDatabases, ignoreDirectories, encryptConfig, encryptApp, encryptDatabase];
+  List<Object?> get props => [
+        name,
+        description,
+        source,
+        ignoreApps,
+        ignoreDatabases,
+        ignoreDirectories,
+        encryptConfig,
+        encryptApp,
+        encryptDatabase
+      ];
 }
 
 /// 快照创建结果
@@ -118,7 +143,8 @@ class SnapshotCreateResult extends Equatable {
     this.snapshotId,
   });
 
-  factory SnapshotCreateResult.fromJson(Map<String, dynamic> json) => _$SnapshotCreateResultFromJson(json);
+  factory SnapshotCreateResult.fromJson(Map<String, dynamic> json) =>
+      _$SnapshotCreateResultFromJson(json);
   Map<String, dynamic> toJson() => _$SnapshotCreateResultToJson(this);
 
   @override
@@ -138,7 +164,8 @@ class SnapshotRecoverRequest extends Equatable {
     this.encryptionPassword,
   });
 
-  factory SnapshotRecoverRequest.fromJson(Map<String, dynamic> json) => _$SnapshotRecoverRequestFromJson(json);
+  factory SnapshotRecoverRequest.fromJson(Map<String, dynamic> json) =>
+      _$SnapshotRecoverRequestFromJson(json);
   Map<String, dynamic> toJson() => _$SnapshotRecoverRequestToJson(this);
 
   @override
@@ -158,7 +185,8 @@ class SnapshotRecoverResult extends Equatable {
     this.snapshotInfo,
   });
 
-  factory SnapshotRecoverResult.fromJson(Map<String, dynamic> json) => _$SnapshotRecoverResultFromJson(json);
+  factory SnapshotRecoverResult.fromJson(Map<String, dynamic> json) =>
+      _$SnapshotRecoverResultFromJson(json);
   Map<String, dynamic> toJson() => _$SnapshotRecoverResultToJson(this);
 
   @override

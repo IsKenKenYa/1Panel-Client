@@ -29,7 +29,8 @@ void main() {
     expect(snapshot?.data, isA<Map<String, dynamic>>());
   });
 
-  test('save persists snapshots and clear removes persisted snapshots', () async {
+  test('save persists snapshots and clear removes persisted snapshots',
+      () async {
     await store.ensureInitialized();
 
     store.save<Map<String, dynamic>>(

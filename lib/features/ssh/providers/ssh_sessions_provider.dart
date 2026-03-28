@@ -72,7 +72,8 @@ class SshSessionsProvider extends ChangeNotifier with AsyncStateNotifier {
   }
 
   Future<void> _bindStreamIfNeeded() async {
-    _subscription ??= _service.watchSessions().listen((List<SshSessionInfo> items) {
+    _subscription ??=
+        _service.watchSessions().listen((List<SshSessionInfo> items) {
       _items = items;
       setSuccess(isEmpty: items.isEmpty, notify: false);
       notifyListeners();

@@ -46,7 +46,8 @@ class RecycleBinItem extends Equatable {
   }
 
   @override
-  List<Object?> get props => [sourcePath, name, isDir, size, deleteTime, rName, from];
+  List<Object?> get props =>
+      [sourcePath, name, isDir, size, deleteTime, rName, from];
 }
 
 class RecycleBinReduceRequest extends Equatable {

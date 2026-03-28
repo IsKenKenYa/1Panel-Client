@@ -53,5 +53,15 @@ class LDAPConfig extends Equatable {
   }
 
   @override
-  List<Object?> get props => [server, port, bindDn, baseDn, userFilter, userAttribute, sslEnabled, startTls, enabled];
+  List<Object?> get props => [
+        server,
+        port,
+        bindDn,
+        baseDn,
+        userFilter,
+        userAttribute,
+        sslEnabled,
+        startTls,
+        enabled
+      ];
 }

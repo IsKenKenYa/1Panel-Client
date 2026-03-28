@@ -78,4 +78,3 @@ class PHPConfigFileContent extends Equatable {
   @override
   List<Object?> get props => [path, content];
 }
-

@@ -104,7 +104,8 @@ void main() {
           'totalPages': 0,
         };
 
-        final result = PageResult<String>.fromJson(json, (item) => item as String);
+        final result =
+            PageResult<String>.fromJson(json, (item) => item as String);
 
         expect(result.items, isEmpty);
         expect(result.total, equals(0));

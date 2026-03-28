@@ -64,22 +64,26 @@ class _ProcessFilterSheetWidgetState extends State<ProcessFilterSheetWidget> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(l10n.commonSearch, style: Theme.of(context).textTheme.titleLarge),
+              Text(l10n.commonSearch,
+                  style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 16),
               TextField(
                 controller: _pidController,
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(labelText: l10n.processesSearchPidLabel),
+                decoration:
+                    InputDecoration(labelText: l10n.processesSearchPidLabel),
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: l10n.processesSearchNameLabel),
+                decoration:
+                    InputDecoration(labelText: l10n.processesSearchNameLabel),
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: _userController,
-                decoration: InputDecoration(labelText: l10n.processesSearchUserLabel),
+                decoration:
+                    InputDecoration(labelText: l10n.processesSearchUserLabel),
               ),
               const SizedBox(height: 12),
               Text(

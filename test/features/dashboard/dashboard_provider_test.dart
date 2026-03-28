@@ -90,12 +90,12 @@ void main() {
         memoryPercent: 60.0,
         uptime: '12345',
       );
-      
+
       final copied = original.copyWith(
         cpuPercent: 75.0,
         uptime: '67890',
       );
-      
+
       expect(copied.cpuPercent, equals(75.0));
       expect(copied.memoryPercent, equals(60.0));
       expect(copied.uptime, equals('67890'));
@@ -103,7 +103,7 @@ void main() {
 
     test('DashboardData应该正确处理空值', () {
       const data = DashboardData();
-      
+
       expect(data.cpuPercent, isNull);
       expect(data.memoryUsage, equals('--'));
       expect(data.diskUsage, equals('--'));
@@ -114,14 +114,16 @@ void main() {
 
     test('DashboardData应该正确存储进程列表', () {
       final cpuProcesses = [
-        const ProcessInfo(pid: 1234, name: 'nginx', cpuPercent: 15.5, memoryPercent: 2.3),
-        const ProcessInfo(pid: 5678, name: 'mysql', cpuPercent: 12.3, memoryPercent: 8.5),
+        const ProcessInfo(
+            pid: 1234, name: 'nginx', cpuPercent: 15.5, memoryPercent: 2.3),
+        const ProcessInfo(
+            pid: 5678, name: 'mysql', cpuPercent: 12.3, memoryPercent: 8.5),
       ];
-      
+
       final data = DashboardData(
         topCpuProcesses: cpuProcesses,
       );
-      
+
       expect(data.topCpuProcesses.length, equals(2));
       expect(data.topCpuProcesses[0].name, equals('nginx'));
       expect(data.topCpuProcesses[1].pid, equals(5678));
@@ -137,9 +139,9 @@ void main() {
         'memoryPercent': 2.3,
         'user': 'root',
       };
-      
+
       final process = ProcessInfo.fromJson(json);
-      
+
       expect(process.pid, equals(1234));
       expect(process.name, equals('nginx'));
       expect(process.cpuPercent, equals(15.5));
@@ -154,9 +156,9 @@ void main() {
         'cpu': 5.0,
         'mem': 3.0,
       };
-      
+
       final process = ProcessInfo.fromJson(json);
-      
+
       expect(process.name, equals('docker'));
       expect(process.cpuPercent, equals(5.0));
       expect(process.memoryPercent, equals(3.0));
@@ -164,9 +166,9 @@ void main() {
 
     test('应该正确处理缺失字段', () {
       final json = <String, dynamic>{};
-      
+
       final process = ProcessInfo.fromJson(json);
-      
+
       expect(process.pid, equals(0));
       expect(process.name, isEmpty);
       expect(process.cpuPercent, equals(0.0));
@@ -182,9 +184,9 @@ void main() {
         memoryPercent: 2.3,
         user: 'root',
       );
-      
+
       final json = process.toJson();
-      
+
       expect(json['pid'], equals(1234));
       expect(json['name'], equals('nginx'));
       expect(json['cpuPercent'], equals(15.5));
@@ -199,21 +201,21 @@ void main() {
         cpuPercent: 15.5,
         memoryPercent: 2.3,
       );
-      
+
       const process2 = ProcessInfo(
         pid: 1234,
         name: 'nginx',
         cpuPercent: 15.5,
         memoryPercent: 2.3,
       );
-      
+
       const process3 = ProcessInfo(
         pid: 5678,
         name: 'mysql',
         cpuPercent: 12.3,
         memoryPercent: 8.5,
       );
-      
+
       expect(process1, equals(process2));
       expect(process1, isNot(equals(process3)));
     });
@@ -235,9 +237,9 @@ void main() {
         'os': 'Ubuntu',
         'kernelVersion': '5.15.0',
       };
-      
+
       final metrics = DashboardMetrics.fromJson(json);
-      
+
       expect(metrics.cpuPercent, equals(45.5));
       expect(metrics.memoryPercent, equals(60.0));
       expect(metrics.diskPercent, equals(75.0));
@@ -255,9 +257,9 @@ void main() {
         diskPercent: 75.0,
         uptime: '86400',
       );
-      
+
       final json = metrics.toJson();
-      
+
       expect(json['cpuPercent'], equals(45.5));
       expect(json['memoryPercent'], equals(60.0));
       expect(json['diskPercent'], equals(75.0));
@@ -273,7 +275,7 @@ void main() {
         time: DateTime(2024, 1, 1, 12, 0, 0),
         type: ActivityType.success,
       );
-      
+
       expect(activity.title, equals('System Restart'));
       expect(activity.description, equals('System restarted successfully'));
       expect(activity.type, equals(ActivityType.success));
@@ -285,7 +287,7 @@ void main() {
         description: 'Test',
         time: DateTime.now(),
       );
-      
+
       expect(activity.type, equals(ActivityType.info));
     });
   });
@@ -335,9 +337,9 @@ void main() {
         'websiteCount': 3,
         'databaseCount': 2,
       };
-      
+
       final info = SystemInfo.fromJson(json);
-      
+
       expect(info.hostname, equals('test-server'));
       expect(info.os, equals('Ubuntu'));
       expect(info.cpuCores, equals(8));
@@ -354,9 +356,9 @@ void main() {
         cpuCores: 8,
         panelVersion: '2.0.0',
       );
-      
+
       final json = info.toJson();
-      
+
       expect(json['hostname'], equals('test-server'));
       expect(json['os'], equals('Ubuntu'));
       expect(json['cpuCores'], equals(8));
@@ -371,7 +373,7 @@ void main() {
         memoryPercent: 100.0,
         diskPercent: 100.0,
       );
-      
+
       expect(data.cpuPercent, equals(100.0));
       expect(data.memoryPercent, equals(100.0));
       expect(data.diskPercent, equals(100.0));
@@ -383,7 +385,7 @@ void main() {
         memoryPercent: 0.0,
         diskPercent: 0.0,
       );
-      
+
       expect(data.cpuPercent, equals(0.0));
       expect(data.memoryPercent, equals(0.0));
       expect(data.diskPercent, equals(0.0));
@@ -392,14 +394,14 @@ void main() {
     test('ProcessInfo应该处理负值PID（转换为默认值）', () {
       final json = {'pid': -1, 'name': 'test'};
       final process = ProcessInfo.fromJson(json);
-      
+
       expect(process.pid, equals(-1));
     });
 
     test('DashboardMetrics应该处理空字符串uptime', () {
       final json = {'uptime': ''};
       final metrics = DashboardMetrics.fromJson(json);
-      
+
       expect(metrics.uptime, equals(''));
     });
   });

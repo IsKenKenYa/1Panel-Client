@@ -23,7 +23,8 @@ class SnapshotV2Api {
     );
   }
 
-  Future<Response<void>> updateSnapshotDescription(SnapshotDescriptionUpdate request) async {
+  Future<Response<void>> updateSnapshotDescription(
+      SnapshotDescriptionUpdate request) async {
     return await _client.post(
       ApiConstants.buildApiPath('/settings/snapshot/description/update'),
       data: request.toJson(),
@@ -69,7 +70,8 @@ class SnapshotV2Api {
     );
   }
 
-  Future<Response<PageResult<SnapshotInfo>>> searchSnapshots(SearchWithPage request) async {
+  Future<Response<PageResult<SnapshotInfo>>> searchSnapshots(
+      SearchWithPage request) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/settings/snapshot/search'),
       data: request.toJson(),

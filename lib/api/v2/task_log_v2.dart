@@ -21,7 +21,8 @@ class TaskLogV2Api {
     );
   }
 
-  Future<Response<PageResult<TaskLog>>> searchTaskLogs(TaskLogSearch request) async {
+  Future<Response<PageResult<TaskLog>>> searchTaskLogs(
+      TaskLogSearch request) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/logs/tasks/search'),
       data: request.toJson(),

@@ -29,7 +29,8 @@ void main() {
     );
     when(() => service.closeProcesses()).thenAnswer((_) async {});
     when(() => service.stopProcess(any())).thenAnswer((_) async {});
-    when(() => service.mergeListeningData(any(), any())).thenAnswer((invocation) {
+    when(() => service.mergeListeningData(any(), any()))
+        .thenAnswer((invocation) {
       final items = invocation.positionalArguments[0] as List<ProcessSummary>;
       return items
           .map((item) => item.copyWith(listeningPorts: const <int>[22]))

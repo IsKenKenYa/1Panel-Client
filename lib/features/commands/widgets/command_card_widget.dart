@@ -35,9 +35,7 @@ class CommandCardWidget extends StatelessWidget {
       subtitle: Text(groupLabel),
       trailing: selectionMode
           ? Icon(
-              isSelected
-                  ? Icons.check_circle
-                  : Icons.radio_button_unchecked,
+              isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
               color: isSelected
                   ? colorScheme.primary
                   : colorScheme.onSurfaceVariant,

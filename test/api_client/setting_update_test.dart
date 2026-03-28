@@ -10,8 +10,9 @@ void main() {
 
   setUpAll(() async {
     await TestEnvironment.initialize();
-    hasApiKey = TestEnvironment.apiKey.isNotEmpty && TestEnvironment.apiKey != 'your_api_key_here';
-    
+    hasApiKey = TestEnvironment.apiKey.isNotEmpty &&
+        TestEnvironment.apiKey != 'your_api_key_here';
+
     if (hasApiKey) {
       client = DioClient(
         baseUrl: TestEnvironment.baseUrl,
@@ -29,13 +30,14 @@ void main() {
 
       final dio = client.dio;
       final rawResponse = await dio.post('/api/v2/core/settings/search');
-      
+
       debugPrint('\n========================================');
       debugPrint('当前系统设置');
       debugPrint('========================================');
-      
+
       if (rawResponse.data != null) {
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(rawResponse.data);
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(rawResponse.data);
         debugPrint('原始响应:\n$jsonStr');
       }
       debugPrint('========================================\n');
@@ -48,25 +50,26 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('测试更新 panelName');
       debugPrint('========================================');
-      
+
       final requestBody = {'key': 'panelName', 'value': 'TestPanel'};
       debugPrint('请求体: ${jsonEncode(requestBody)}');
-      
+
       try {
         final rawResponse = await dio.post(
           '/api/v2/core/settings/update',
           data: requestBody,
         );
-        
+
         debugPrint('状态码: ${rawResponse.statusCode}');
         debugPrint('响应数据类型: ${rawResponse.data.runtimeType}');
-        
+
         if (rawResponse.data != null) {
-          final jsonStr = const JsonEncoder.withIndent('  ').convert(rawResponse.data);
+          final jsonStr =
+              const JsonEncoder.withIndent('  ').convert(rawResponse.data);
           debugPrint('响应数据:\n$jsonStr');
         }
       } catch (e) {
@@ -83,13 +86,14 @@ void main() {
 
       final dio = client.dio;
       final rawResponse = await dio.post('/api/v2/core/settings/search');
-      
+
       debugPrint('\n========================================');
       debugPrint('更新后的系统设置');
       debugPrint('========================================');
-      
+
       if (rawResponse.data != null) {
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(rawResponse.data);
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(rawResponse.data);
         debugPrint('原始响应:\n$jsonStr');
       }
       debugPrint('========================================\n');
@@ -102,25 +106,26 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('测试更新 theme');
       debugPrint('========================================');
-      
+
       final requestBody = {'key': 'theme', 'value': 'dark'};
       debugPrint('请求体: ${jsonEncode(requestBody)}');
-      
+
       try {
         final rawResponse = await dio.post(
           '/api/v2/core/settings/update',
           data: requestBody,
         );
-        
+
         debugPrint('状态码: ${rawResponse.statusCode}');
         debugPrint('响应数据类型: ${rawResponse.data.runtimeType}');
-        
+
         if (rawResponse.data != null) {
-          final jsonStr = const JsonEncoder.withIndent('  ').convert(rawResponse.data);
+          final jsonStr =
+              const JsonEncoder.withIndent('  ').convert(rawResponse.data);
           debugPrint('响应数据:\n$jsonStr');
         }
       } catch (e) {
@@ -136,29 +141,30 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('测试更新终端设置');
       debugPrint('========================================');
-      
+
       final requestBody = {
         'fontSize': 16,
         'cursorStyle': 'block',
         'cursorBlink': 'true',
       };
       debugPrint('请求体: ${jsonEncode(requestBody)}');
-      
+
       try {
         final rawResponse = await dio.post(
           '/api/v2/core/settings/terminal/update',
           data: requestBody,
         );
-        
+
         debugPrint('状态码: ${rawResponse.statusCode}');
         debugPrint('响应数据类型: ${rawResponse.data.runtimeType}');
-        
+
         if (rawResponse.data != null) {
-          final jsonStr = const JsonEncoder.withIndent('  ').convert(rawResponse.data);
+          final jsonStr =
+              const JsonEncoder.withIndent('  ').convert(rawResponse.data);
           debugPrint('响应数据:\n$jsonStr');
         }
       } catch (e) {
@@ -174,14 +180,16 @@ void main() {
       }
 
       final dio = client.dio;
-      final rawResponse = await dio.post('/api/v2/core/settings/terminal/search');
-      
+      final rawResponse =
+          await dio.post('/api/v2/core/settings/terminal/search');
+
       debugPrint('\n========================================');
       debugPrint('当前终端设置');
       debugPrint('========================================');
-      
+
       if (rawResponse.data != null) {
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(rawResponse.data);
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(rawResponse.data);
         debugPrint('原始响应:\n$jsonStr');
       }
       debugPrint('========================================\n');
@@ -200,21 +208,22 @@ void main() {
         {'key': 'developerMode', 'value': 'false'},
         {'key': 'ipv6', 'value': 'false'},
       ];
-      
+
       for (final testCase in testCases) {
         debugPrint('\n----------------------------------------');
         debugPrint('测试更新 ${testCase['key']} = ${testCase['value']}');
         debugPrint('----------------------------------------');
-        
+
         try {
           final rawResponse = await dio.post(
             '/api/v2/core/settings/update',
             data: testCase,
           );
-          
+
           debugPrint('状态码: ${rawResponse.statusCode}');
           if (rawResponse.data != null) {
-            final jsonStr = const JsonEncoder.withIndent('  ').convert(rawResponse.data);
+            final jsonStr =
+                const JsonEncoder.withIndent('  ').convert(rawResponse.data);
             debugPrint('响应: $jsonStr');
           }
         } catch (e) {
@@ -231,13 +240,14 @@ void main() {
 
       final dio = client.dio;
       final rawResponse = await dio.post('/api/v2/core/settings/search');
-      
+
       debugPrint('\n========================================');
       debugPrint('最终系统设置');
       debugPrint('========================================');
-      
+
       if (rawResponse.data != null) {
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(rawResponse.data);
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(rawResponse.data);
         debugPrint('原始响应:\n$jsonStr');
       }
       debugPrint('========================================\n');

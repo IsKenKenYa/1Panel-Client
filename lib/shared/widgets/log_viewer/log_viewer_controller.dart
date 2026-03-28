@@ -28,7 +28,8 @@ class LogSettings {
   final LogTheme theme;
 
   LogViewMode get viewMode => _viewMode ?? LogViewMode.scrollLine;
-  LogTimestampFormat get timestampFormat => _timestampFormat ?? LogTimestampFormat.absolute;
+  LogTimestampFormat get timestampFormat =>
+      _timestampFormat ?? LogTimestampFormat.absolute;
   ThemeMode get themeMode => _themeMode ?? ThemeMode.system;
 
   LogSettings({
@@ -39,10 +40,10 @@ class LogSettings {
     LogTimestampFormat? timestampFormat,
     ThemeMode? themeMode,
     LogTheme? theme,
-  }) : _viewMode = viewMode ?? LogViewMode.scrollLine,
-       _timestampFormat = timestampFormat ?? LogTimestampFormat.absolute,
-       _themeMode = themeMode ?? ThemeMode.system,
-       theme = theme ?? LogTheme.defaultTheme;
+  })  : _viewMode = viewMode ?? LogViewMode.scrollLine,
+        _timestampFormat = timestampFormat ?? LogTimestampFormat.absolute,
+        _themeMode = themeMode ?? ThemeMode.system,
+        theme = theme ?? LogTheme.defaultTheme;
 
   // Backward compatibility for isWrap
   bool get isWrap => viewMode == LogViewMode.wrap;
@@ -88,7 +89,9 @@ class LogSettings {
         mode = LogViewMode.values[idx];
       }
     } else if (json.containsKey('isWrap')) {
-      mode = (json['isWrap'] as bool? ?? false) ? LogViewMode.wrap : LogViewMode.scrollLine;
+      mode = (json['isWrap'] as bool? ?? false)
+          ? LogViewMode.wrap
+          : LogViewMode.scrollLine;
     }
 
     LogTimestampFormat timestampFormat = LogTimestampFormat.absolute;
@@ -121,7 +124,7 @@ class LogSettings {
 
 class LogViewerController extends ChangeNotifier {
   static const _storageKey = 'log_viewer_settings';
-  
+
   List<LogLine> _logs = [];
   List<LogLine> _filteredLogs = [];
   LogSettings _settings = LogSettings();
@@ -176,7 +179,7 @@ class LogViewerController extends ChangeNotifier {
       return;
     }
     _logs = await LogParser.parse(rawLogs);
-    
+
     // Find first timestamp
     _firstLogTimestamp = null;
     for (final log in _logs) {
@@ -185,7 +188,7 @@ class LogViewerController extends ChangeNotifier {
         break;
       }
     }
-    
+
     _applyFilters();
   }
 
@@ -208,7 +211,9 @@ class LogViewerController extends ChangeNotifier {
       _filteredLogs = List.from(_logs);
     } else {
       _filteredLogs = _logs.map((log) {
-        final isMatch = log.originalContent.toLowerCase().contains(_searchQuery.toLowerCase());
+        final isMatch = log.originalContent
+            .toLowerCase()
+            .contains(_searchQuery.toLowerCase());
         return log.copyWith(isMatch: isMatch);
       }).toList();
 

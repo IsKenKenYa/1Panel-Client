@@ -9,8 +9,9 @@ void main() {
 
   setUpAll(() async {
     await TestEnvironment.initialize();
-    hasApiKey = TestEnvironment.apiKey.isNotEmpty && TestEnvironment.apiKey != 'your_api_key_here';
-    
+    hasApiKey = TestEnvironment.apiKey.isNotEmpty &&
+        TestEnvironment.apiKey != 'your_api_key_here';
+
     if (hasApiKey) {
       client = DioClient(
         baseUrl: TestEnvironment.baseUrl,
@@ -27,22 +28,22 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('/settings/search 返回的字段');
       debugPrint('========================================');
-      
+
       final response = await dio.post('/api/v2/settings/search');
       final data = response.data as Map<String, dynamic>;
       final settings = data['data'] as Map<String, dynamic>?;
-      
+
       if (settings != null) {
         debugPrint('\n所有字段:');
         for (final entry in settings.entries) {
           debugPrint('  ${entry.key}: ${entry.value}');
         }
       }
-      
+
       debugPrint('========================================\n');
     });
 
@@ -53,46 +54,49 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('尝试更新 /settings/search 中的字段');
       debugPrint('========================================');
-      
+
       // 获取当前设置
       final searchResponse = await dio.post('/api/v2/settings/search');
       final searchData = searchResponse.data as Map<String, dynamic>;
       final settings = searchData['data'] as Map<String, dynamic>?;
-      
+
       // 测试更新 monitorInterval
       final originalInterval = settings?['monitorInterval'] as String? ?? '300';
       final newInterval = originalInterval == '600' ? '300' : '600';
-      
-      debugPrint('\n--- 测试更新 monitorInterval: $originalInterval -> $newInterval ---');
-      
+
+      debugPrint(
+          '\n--- 测试更新 monitorInterval: $originalInterval -> $newInterval ---');
+
       final updateResponse = await dio.post(
         '/api/v2/settings/update',
         data: {'key': 'monitorInterval', 'value': newInterval},
       );
-      
+
       final updateData = updateResponse.data as Map<String, dynamic>;
-      debugPrint('更新响应: code=${updateData['code']}, message=${updateData['message']}');
-      
+      debugPrint(
+          '更新响应: code=${updateData['code']}, message=${updateData['message']}');
+
       // 验证
       await Future.delayed(const Duration(milliseconds: 500));
       final verifyResponse = await dio.post('/api/v2/settings/search');
       final verifyData = verifyResponse.data as Map<String, dynamic>;
       final verifySettings = verifyData['data'] as Map<String, dynamic>?;
-      final currentInterval = verifySettings?['monitorInterval'] as String? ?? '';
-      
+      final currentInterval =
+          verifySettings?['monitorInterval'] as String? ?? '';
+
       debugPrint('验证后的 monitorInterval: $currentInterval');
       debugPrint('更新成功: ${currentInterval == newInterval}');
-      
+
       // 恢复
       await dio.post(
         '/api/v2/settings/update',
         data: {'key': 'monitorInterval', 'value': originalInterval},
       );
-      
+
       debugPrint('========================================\n');
     });
 
@@ -103,33 +107,33 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('对比两个接口的字段');
       debugPrint('========================================');
-      
+
       final coreResponse = await dio.post('/api/v2/core/settings/search');
       final coreData = coreResponse.data as Map<String, dynamic>;
       final coreSettings = coreData['data'] as Map<String, dynamic>?;
-      
+
       final settingsResponse = await dio.post('/api/v2/settings/search');
       final settingsData = settingsResponse.data as Map<String, dynamic>;
       final settingsSettings = settingsData['data'] as Map<String, dynamic>?;
-      
+
       debugPrint('\n/core/settings/search 字段:');
       if (coreSettings != null) {
         for (final key in coreSettings.keys) {
           debugPrint('  $key');
         }
       }
-      
+
       debugPrint('\n/settings/search 字段:');
       if (settingsSettings != null) {
         for (final key in settingsSettings.keys) {
           debugPrint('  $key');
         }
       }
-      
+
       debugPrint('========================================\n');
     });
 
@@ -137,7 +141,7 @@ void main() {
       debugPrint('\n========================================');
       debugPrint('最终结论');
       debugPrint('========================================');
-      
+
       debugPrint('''
 根据测试结果：
 
@@ -164,7 +168,7 @@ void main() {
 
 结论: 面板名称等基础信息确实无法通过API修改，这是1Panel的设计限制。
 ''');
-      
+
       debugPrint('========================================\n');
     });
   });

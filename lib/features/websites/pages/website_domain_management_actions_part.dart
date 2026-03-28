@@ -115,8 +115,7 @@ extension _WebsiteDomainActions on _WebsiteDomainBody {
     }
     final duplicate = currentDomains.any(
       (item) =>
-          item.id != currentId &&
-          item.domain?.trim().toLowerCase() == domain,
+          item.id != currentId && item.domain?.trim().toLowerCase() == domain,
     );
     if (duplicate) {
       return l10n.websitesDomainValidationDuplicate;

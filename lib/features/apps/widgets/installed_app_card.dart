@@ -28,7 +28,8 @@ class InstalledAppCard extends StatelessWidget {
     final l10n = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
     final isRunning = app.status?.toLowerCase() == 'running';
-    final statusColor = isRunning ? colorScheme.tertiary : colorScheme.secondary;
+    final statusColor =
+        isRunning ? colorScheme.tertiary : colorScheme.secondary;
     final unknownLabel = l10n.systemSettingsUnknown;
 
     final List<String> ports = [];
@@ -104,7 +105,6 @@ class InstalledAppCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
           ],
-          
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -161,7 +161,9 @@ class InstalledAppCard extends StatelessWidget {
         if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
           if (context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(l10n.appOperateFailed(l10n.commonUnknownError))),
+              SnackBar(
+                  content:
+                      Text(l10n.appOperateFailed(l10n.commonUnknownError))),
             );
           }
         }

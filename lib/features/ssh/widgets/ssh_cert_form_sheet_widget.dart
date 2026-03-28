@@ -36,11 +36,16 @@ class _SshCertFormSheetWidgetState extends State<SshCertFormSheetWidget> {
     super.initState();
     final initial = widget.initialValue;
     _nameController = TextEditingController(text: initial?.name ?? '');
-    _passPhraseController = TextEditingController(text: initial?.passPhrase ?? '');
-    _publicKeyController = TextEditingController(text: initial?.publicKey ?? '');
-    _privateKeyController = TextEditingController(text: initial?.privateKey ?? '');
-    _descriptionController = TextEditingController(text: initial?.description ?? '');
-    _mode = initial == null ? 'generate' : 'input'; _encryptionMode = initial?.encryptionMode ?? 'ed25519';
+    _passPhraseController =
+        TextEditingController(text: initial?.passPhrase ?? '');
+    _publicKeyController =
+        TextEditingController(text: initial?.publicKey ?? '');
+    _privateKeyController =
+        TextEditingController(text: initial?.privateKey ?? '');
+    _descriptionController =
+        TextEditingController(text: initial?.description ?? '');
+    _mode = initial == null ? 'generate' : 'input';
+    _encryptionMode = initial?.encryptionMode ?? 'ed25519';
   }
 
   @override
@@ -77,7 +82,8 @@ class _SshCertFormSheetWidgetState extends State<SshCertFormSheetWidget> {
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
                 initialValue: _encryptionMode,
-                decoration: InputDecoration(labelText: l10n.sshCertEncryptionModeLabel),
+                decoration:
+                    InputDecoration(labelText: l10n.sshCertEncryptionModeLabel),
                 items: const <DropdownMenuItem<String>>[
                   DropdownMenuItem(value: 'ed25519', child: Text('ED25519')),
                   DropdownMenuItem(value: 'ecdsa', child: Text('ECDSA')),
@@ -91,7 +97,8 @@ class _SshCertFormSheetWidgetState extends State<SshCertFormSheetWidget> {
               const SizedBox(height: 12),
               TextField(
                 controller: _passPhraseController,
-                decoration: InputDecoration(labelText: l10n.sshCertPassPhraseLabel),
+                decoration:
+                    InputDecoration(labelText: l10n.sshCertPassPhraseLabel),
               ),
               if (widget.initialValue == null) ...<Widget>[
                 const SizedBox(height: 12),
@@ -124,7 +131,8 @@ class _SshCertFormSheetWidgetState extends State<SshCertFormSheetWidget> {
                   minLines: 4,
                   maxLines: 8,
                   style: const TextStyle(fontFamily: 'monospace'),
-                  decoration: InputDecoration(labelText: l10n.sshCertPublicKeyLabel),
+                  decoration:
+                      InputDecoration(labelText: l10n.sshCertPublicKeyLabel),
                 ),
                 const SizedBox(height: 12),
                 TextField(
@@ -132,7 +140,8 @@ class _SshCertFormSheetWidgetState extends State<SshCertFormSheetWidget> {
                   minLines: 4,
                   maxLines: 8,
                   style: const TextStyle(fontFamily: 'monospace'),
-                  decoration: InputDecoration(labelText: l10n.sshCertPrivateKeyLabel),
+                  decoration:
+                      InputDecoration(labelText: l10n.sshCertPrivateKeyLabel),
                 ),
               ],
               if (_mode == 'import') ...<Widget>[
@@ -205,7 +214,8 @@ class _SshCertFormSheetWidgetState extends State<SshCertFormSheetWidget> {
         description: _descriptionController.text.trim(),
       ),
     );
-    if (!mounted) return; setState(() => _isSaving = false);
+    if (!mounted) return;
+    setState(() => _isSaving = false);
     if (success) Navigator.of(context).pop();
   }
 }

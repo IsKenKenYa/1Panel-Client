@@ -38,20 +38,34 @@ class ApiConstants {
 /// 1Panel API路径常量
 class ApiPaths {
   // 基础路径
-  static String ai(String endpoint) => ApiConstants.buildApiPath('/ai$endpoint');
-  static String dashboard(String endpoint) => ApiConstants.buildApiPath('/dashboard$endpoint');
-  static String apps(String endpoint) => ApiConstants.buildApiPath('/apps$endpoint');
-  static String files(String endpoint) => ApiConstants.buildApiPath('/files$endpoint');
-  static String settings(String endpoint) => ApiConstants.buildApiPath('/settings$endpoint');
-  static String containers(String endpoint) => ApiConstants.buildApiPath('/containers$endpoint');
-  static String backups(String endpoint) => ApiConstants.buildApiPath('/backups$endpoint');
-  static String cronjob(String endpoint) => ApiConstants.buildApiPath('/cronjob$endpoint');
-  static String database(String endpoint) => ApiConstants.buildApiPath('/database$endpoint');
-  static String host(String endpoint) => ApiConstants.buildApiPath('/host$endpoint');
-  static String nginx(String endpoint) => ApiConstants.buildApiPath('/nginx$endpoint');
-  static String process(String endpoint) => ApiConstants.buildApiPath('/process$endpoint');
-  static String website(String endpoint) => ApiConstants.buildApiPath('/website$endpoint');
-  static String group(String endpoint) => ApiConstants.buildApiPath('/group$endpoint');
+  static String ai(String endpoint) =>
+      ApiConstants.buildApiPath('/ai$endpoint');
+  static String dashboard(String endpoint) =>
+      ApiConstants.buildApiPath('/dashboard$endpoint');
+  static String apps(String endpoint) =>
+      ApiConstants.buildApiPath('/apps$endpoint');
+  static String files(String endpoint) =>
+      ApiConstants.buildApiPath('/files$endpoint');
+  static String settings(String endpoint) =>
+      ApiConstants.buildApiPath('/settings$endpoint');
+  static String containers(String endpoint) =>
+      ApiConstants.buildApiPath('/containers$endpoint');
+  static String backups(String endpoint) =>
+      ApiConstants.buildApiPath('/backups$endpoint');
+  static String cronjob(String endpoint) =>
+      ApiConstants.buildApiPath('/cronjob$endpoint');
+  static String database(String endpoint) =>
+      ApiConstants.buildApiPath('/database$endpoint');
+  static String host(String endpoint) =>
+      ApiConstants.buildApiPath('/host$endpoint');
+  static String nginx(String endpoint) =>
+      ApiConstants.buildApiPath('/nginx$endpoint');
+  static String process(String endpoint) =>
+      ApiConstants.buildApiPath('/process$endpoint');
+  static String website(String endpoint) =>
+      ApiConstants.buildApiPath('/website$endpoint');
+  static String group(String endpoint) =>
+      ApiConstants.buildApiPath('/group$endpoint');
 
   // 特殊路径（无需认证）
   static const String authLogin = '/api/v2/core/auth/login';

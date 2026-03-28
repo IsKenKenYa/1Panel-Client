@@ -20,7 +20,8 @@ class PinnedModulesController extends ChangeNotifier {
   Future<void> load() async {
     final prefs = await SharedPreferences.getInstance();
     final stored = prefs.getStringList(_storageKey);
-    _pins = _normalizePins(stored?.map(clientModuleFromId).whereType<ClientModule>().toList());
+    _pins = _normalizePins(
+        stored?.map(clientModuleFromId).whereType<ClientModule>().toList());
     _isLoaded = true;
     notifyListeners();
   }
@@ -59,7 +60,11 @@ class PinnedModulesController extends ChangeNotifier {
       if (next.length == 2) break;
     }
 
-    for (final fallback in const [ClientModule.files, ClientModule.containers, ClientModule.apps]) {
+    for (final fallback in const [
+      ClientModule.files,
+      ClientModule.containers,
+      ClientModule.apps
+    ]) {
       if (next.length == 2) break;
       if (!next.contains(fallback)) {
         next.add(fallback);

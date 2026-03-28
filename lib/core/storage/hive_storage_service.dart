@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
@@ -7,15 +6,15 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'storage_service.dart';
 
 /// 基于Hive的存储服务实现
-/// 
+///
 /// 支持AES-256加密，自动管理密钥
 class HiveStorageService implements StorageService {
   final String boxName;
   final bool isEncrypted;
-  
+
   late Box _box;
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
-  
+
   HiveStorageService({
     required this.boxName,
     this.isEncrypted = false,
@@ -29,20 +28,18 @@ class HiveStorageService implements StorageService {
     }
 
     await Hive.initFlutter();
-    
+
     List<int>? encryptionKey;
-    
+
     if (isEncrypted) {
       // 尝试获取现有密钥
       String? keyStr = await _secureStorage.read(key: '${boxName}_key');
-      
+
       if (keyStr == null) {
         // 生成新密钥
         final key = Hive.generateSecureKey();
         await _secureStorage.write(
-          key: '${boxName}_key', 
-          value: base64Url.encode(key)
-        );
+            key: '${boxName}_key', value: base64Url.encode(key));
         encryptionKey = key;
       } else {
         encryptionKey = base64Url.decode(keyStr);
@@ -107,13 +104,13 @@ class HiveStorageService implements StorageService {
   Stream<dynamic> watch(String key) {
     return _box.watch(key: key).map((event) => event.value);
   }
-  
+
   @override
   List<dynamic> get keys => _box.keys.toList();
-  
+
   @override
   List<dynamic> get values => _box.values.toList();
-  
+
   @override
   bool containsKey(String key) {
     return _box.containsKey(key);

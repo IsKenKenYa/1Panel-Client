@@ -181,5 +181,6 @@ class TerminalSessionInfo extends Equatable {
   }
 
   @override
-  List<Object?> get props => [sessionId, status, containerId, createTime, lastActivityTime];
+  List<Object?> get props =>
+      [sessionId, status, containerId, createTime, lastActivityTime];
 }

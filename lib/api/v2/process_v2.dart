@@ -23,7 +23,8 @@ class ProcessV2Api {
     );
     return Response<ProcessDetail>(
       data: ProcessDetail.fromJson(
-        response.data?['data'] as Map<String, dynamic>? ?? const <String, dynamic>{},
+        response.data?['data'] as Map<String, dynamic>? ??
+            const <String, dynamic>{},
       ),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,

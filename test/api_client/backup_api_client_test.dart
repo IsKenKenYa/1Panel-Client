@@ -27,18 +27,22 @@ void _logSection(
   Object? request,
   Object? response,
 }) {
-  appLogger.dWithPackage('test.api_client.backup', '========================================');
+  appLogger.dWithPackage(
+      'test.api_client.backup', '========================================');
   appLogger.dWithPackage('test.api_client.backup', title);
   if (method != null && path != null) {
     appLogger.dWithPackage('test.api_client.backup', 'Request: $method $path');
   }
   if (request != null) {
-    appLogger.dWithPackage('test.api_client.backup', 'RequestBody: ${_prettyJson(request)}');
+    appLogger.dWithPackage(
+        'test.api_client.backup', 'RequestBody: ${_prettyJson(request)}');
   }
   if (response != null) {
-    appLogger.dWithPackage('test.api_client.backup', 'Response: ${_prettyJson(response)}');
+    appLogger.dWithPackage(
+        'test.api_client.backup', 'Response: ${_prettyJson(response)}');
   }
-  appLogger.dWithPackage('test.api_client.backup', '========================================');
+  appLogger.dWithPackage(
+      'test.api_client.backup', '========================================');
 }
 
 Future<Response<Map<String, dynamic>>> _rawPost(
@@ -71,14 +75,17 @@ void main() {
   });
 
   group('Backup API客户端测试', () {
-    test('search/options/record search/size/search files should succeed', () async {
+    test('search/options/record search/size/search files should succeed',
+        () async {
       if (!canRun) return;
       final accounts = await api.searchBackupAccounts(
         const BackupAccountSearchRequest(page: 1, pageSize: 20),
       );
-      _logSection('✅ Parsed /backups/search', response: {'total': accounts.data?.total});
+      _logSection('✅ Parsed /backups/search',
+          response: {'total': accounts.data?.total});
       final options = await api.getBackupAccountOptions();
-      _logSection('✅ Parsed /backups/options', response: options.data?.map((item) => item.name).toList());
+      _logSection('✅ Parsed /backups/options',
+          response: options.data?.map((item) => item.name).toList());
       expect(options.data, isNotNull);
 
       final recordsRaw = await _rawPost(
@@ -86,25 +93,36 @@ void main() {
         '/backups/record/search',
         data: const BackupRecordQuery(type: 'app').toJson(),
       );
-      _logSection('✅ Raw /backups/record/search', method: 'POST', path: '/backups/record/search', request: const BackupRecordQuery(type: 'app').toJson(), response: recordsRaw.data);
-      final records = await api.searchBackupRecords(const BackupRecordQuery(type: 'app'));
-      _logSection('✅ Parsed /backups/record/search', response: {'total': records.data?.total});
+      _logSection('✅ Raw /backups/record/search',
+          method: 'POST',
+          path: '/backups/record/search',
+          request: const BackupRecordQuery(type: 'app').toJson(),
+          response: recordsRaw.data);
+      final records =
+          await api.searchBackupRecords(const BackupRecordQuery(type: 'app'));
+      _logSection('✅ Parsed /backups/record/search',
+          response: {'total': records.data?.total});
 
       final sizes = await api.loadBackupRecordSizes(
         const BackupRecordSizeQuery(type: 'app'),
       );
-      _logSection('✅ Parsed /backups/record/size', response: sizes.data?.length);
+      _logSection('✅ Parsed /backups/record/size',
+          response: sizes.data?.length);
 
-      final firstAccountId = accounts.data == null || accounts.data!.items.isEmpty
-          ? null
-          : accounts.data!.items.first.id;
+      final firstAccountId =
+          accounts.data == null || accounts.data!.items.isEmpty
+              ? null
+              : accounts.data!.items.first.id;
       if (firstAccountId != null) {
-        final files = await api.listBackupFiles(OperateByID(id: firstAccountId));
+        final files =
+            await api.listBackupFiles(OperateByID(id: firstAccountId));
         _logSection('✅ Parsed /backups/search/files', response: files.data);
       }
     });
 
-    test('check/client info/refresh token/backup/recover stay behind destructive gate', () async {
+    test(
+        'check/client info/refresh token/backup/recover stay behind destructive gate',
+        () async {
       if (!canRun) return;
       final skipReason = TestEnvironment.skipDestructive();
       if (skipReason != null) {
@@ -120,12 +138,18 @@ void main() {
         backupPath: '/tmp',
         vars: '{"address":"127.0.0.1","port":22,"authMode":"password"}',
       );
-      final checkRaw = await _rawPost(client, '/backups/conn/check', data: checkRequest.toJson());
-      _logSection('✅ Raw /backups/conn/check', method: 'POST', path: '/backups/conn/check', request: checkRequest.toJson(), response: checkRaw.data);
+      final checkRaw = await _rawPost(client, '/backups/conn/check',
+          data: checkRequest.toJson());
+      _logSection('✅ Raw /backups/conn/check',
+          method: 'POST',
+          path: '/backups/conn/check',
+          request: checkRequest.toJson(),
+          response: checkRaw.data);
       await api.checkBackupConnection(checkRequest);
 
       final clientInfo = await api.getBackupClientInfo('Onedrive');
-      _logSection('✅ Parsed /core/backups/client/Onedrive', response: clientInfo.data?.toJson());
+      _logSection('✅ Parsed /core/backups/client/Onedrive',
+          response: clientInfo.data?.toJson());
 
       final accounts = await api.searchBackupAccounts(
         const BackupAccountSearchRequest(page: 1, pageSize: 20),

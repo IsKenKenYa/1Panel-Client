@@ -33,7 +33,8 @@ void main() {
       containerService = MockContainerService();
     });
 
-    test('refresh keeps partial data and exposes section-level errors', () async {
+    test('refresh keeps partial data and exposes section-level errors',
+        () async {
       when(() => appService.getAppDetail('2', '8.0.0', 'app')).thenThrow(
         Exception('detail failed'),
       );
@@ -76,7 +77,8 @@ void main() {
       when(() => appService.getAppDetail('2', '8.0.0', 'app')).thenAnswer(
         (_) async => AppItem(id: 2, name: 'MySQL', type: 'app'),
       );
-      when(() => appService.getAppServices('mysql')).thenAnswer((_) async => const []);
+      when(() => appService.getAppServices('mysql'))
+          .thenAnswer((_) async => const []);
       when(() => appService.getAppInstallParams('1')).thenAnswer(
         (_) async => AppConfig(
           params: const [],
@@ -90,7 +92,8 @@ void main() {
           webUI: '',
         ),
       );
-      when(() => appService.getAppUpdateVersions('1')).thenAnswer((_) async => const []);
+      when(() => appService.getAppUpdateVersions('1'))
+          .thenAnswer((_) async => const []);
       when(() => containerService.listContainers()).thenAnswer(
         (_) async => const [
           ContainerInfo(

@@ -302,7 +302,8 @@ void main() {
     test('大量端口映射应该正确处理', () {
       final ports = List.generate(
         100,
-        (i) => PortHelper(containerPort: '${8080 + i}', hostPort: '${9000 + i}'),
+        (i) =>
+            PortHelper(containerPort: '${8080 + i}', hostPort: '${9000 + i}'),
       );
 
       final model = ContainerOperate(

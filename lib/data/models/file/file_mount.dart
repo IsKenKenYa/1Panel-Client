@@ -40,5 +40,6 @@ class FileMountInfo extends Equatable {
   }
 
   @override
-  List<Object?> get props => [device, mountPoint, fsType, total, used, available];
+  List<Object?> get props =>
+      [device, mountPoint, fsType, total, used, available];
 }

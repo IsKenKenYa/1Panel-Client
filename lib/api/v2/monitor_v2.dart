@@ -3,7 +3,7 @@ import '../../core/network/dio_client.dart';
 import '../../core/config/api_constants.dart';
 
 /// 监控搜索请求
-/// 
+///
 /// 根据1PanelV2OpenAPI规范，请求参数为：
 /// - param: 监控参数类型 (cpu/memory/load/io/network/all/base)
 /// - startTime: 开始时间 (UTC ISO8601格式)
@@ -40,7 +40,7 @@ class MonitorGPUSearch {
 }
 
 /// 监控数据项
-/// 
+///
 /// API响应格式: {param: 'base', date: [...], value: [...]}
 class MonitorDataItem {
   final String? param;
@@ -71,7 +71,7 @@ class MonitorDataItem {
 }
 
 /// 监控搜索响应
-/// 
+///
 /// API响应格式: {code: 200, message: '', data: [MonitorDataItem...]}
 class MonitorSearchResponse {
   final int? code;
@@ -167,7 +167,8 @@ class MonitorSetting {
     return MonitorSetting(
       interval: int.tryParse(json['monitorInterval']?.toString() ?? ''),
       retention: int.tryParse(json['monitorStoreDays']?.toString() ?? ''),
-      enabled: json['monitorStatus'] == 'Enable' || json['monitorStatus'] == true,
+      enabled:
+          json['monitorStatus'] == 'Enable' || json['monitorStatus'] == true,
       defaultNetwork: json['defaultNetwork'] as String?,
       defaultIO: json['defaultIO'] as String?,
     );
@@ -176,7 +177,8 @@ class MonitorSetting {
   Map<String, dynamic> toJson() => {
         if (interval != null) 'monitorInterval': interval,
         if (retention != null) 'monitorStoreDays': retention,
-        if (enabled != null) 'monitorStatus': (enabled == true) ? 'Enable' : 'Disable',
+        if (enabled != null)
+          'monitorStatus': (enabled == true) ? 'Enable' : 'Disable',
         if (defaultNetwork != null) 'defaultNetwork': defaultNetwork,
         if (defaultIO != null) 'defaultIO': defaultIO,
       };
@@ -197,12 +199,13 @@ class MonitorSettingUpdate {
   Map<String, dynamic> toJson() => {
         if (interval != null) 'monitorInterval': interval,
         if (retention != null) 'monitorStoreDays': retention,
-        if (enabled != null) 'monitorStatus': (enabled == true) ? 'Enable' : 'Disable',
+        if (enabled != null)
+          'monitorStatus': (enabled == true) ? 'Enable' : 'Disable',
       };
 }
 
 /// Monitor V2 API客户端
-/// 
+///
 /// 基于1PanelV2OpenAPI规范实现
 /// 端点: /hosts/monitor/search, /hosts/monitor/setting, /hosts/monitor/clean
 class MonitorV2Api {
@@ -211,7 +214,7 @@ class MonitorV2Api {
   MonitorV2Api(this._client);
 
   /// 搜索监控数据
-  /// 
+  ///
   /// POST /hosts/monitor/search
   /// @param request 监控搜索请求
   /// @return 监控搜索响应
@@ -221,7 +224,8 @@ class MonitorV2Api {
       data: request.toJson(),
     );
     return Response(
-      data: MonitorSearchResponse.fromJson(response.data as Map<String, dynamic>),
+      data:
+          MonitorSearchResponse.fromJson(response.data as Map<String, dynamic>),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -229,7 +233,7 @@ class MonitorV2Api {
   }
 
   /// 获取GPU监控数据
-  /// 
+  ///
   /// POST /hosts/monitor/gpu/search
   Future<Response<MonitorGPUData>> searchGPU(MonitorGPUSearch request) async {
     final response = await _client.post(
@@ -245,7 +249,7 @@ class MonitorV2Api {
   }
 
   /// 清理监控数据
-  /// 
+  ///
   /// POST /hosts/monitor/clean
   Future<Response> clean() async {
     return await _client.post(
@@ -254,7 +258,7 @@ class MonitorV2Api {
   }
 
   /// 获取监控设置
-  /// 
+  ///
   /// GET /hosts/monitor/setting
   Future<Response<MonitorSetting>> getSetting() async {
     final response = await _client.get(
@@ -271,7 +275,7 @@ class MonitorV2Api {
   }
 
   /// 更新监控设置
-  /// 
+  ///
   /// POST /hosts/monitor/setting/update
   Future<Response> updateSetting(MonitorSettingUpdate request) async {
     return await _client.post(

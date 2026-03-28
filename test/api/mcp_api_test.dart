@@ -360,7 +360,8 @@ void main() {
         outputTransport: 'stdio',
         type: 'stdio',
         environments: [
-          McpEnvironment(key: 'SPECIAL_KEY', value: 'value with spaces & symbols'),
+          McpEnvironment(
+              key: 'SPECIAL_KEY', value: 'value with spaces & symbols'),
         ],
       );
 
@@ -368,7 +369,8 @@ void main() {
       final restored = McpServerCreate.fromJson(json);
 
       expect(restored.name, equals('特殊字符测试 !@#\$%'));
-      expect(restored.command, equals('echo "hello world" && ls -la | grep test'));
+      expect(
+          restored.command, equals('echo "hello world" && ls -la | grep test'));
     });
 
     test('Unicode字符应该正确处理', () {

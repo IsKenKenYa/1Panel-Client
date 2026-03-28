@@ -13,8 +13,9 @@ void main() {
 
   setUpAll(() async {
     await TestEnvironment.initialize();
-    hasApiKey = TestEnvironment.apiKey.isNotEmpty && TestEnvironment.apiKey != 'your_api_key_here';
-    
+    hasApiKey = TestEnvironment.apiKey.isNotEmpty &&
+        TestEnvironment.apiKey != 'your_api_key_here';
+
     if (hasApiKey) {
       client = DioClient(
         baseUrl: TestEnvironment.baseUrl,
@@ -38,11 +39,11 @@ void main() {
       debugPrint('========================================');
       debugPrint('状态码: ${response.statusCode}');
       debugPrint('数据是否为null: ${response.data == null}');
-      
+
       if (response.data != null) {
         final data = response.data!;
         expect(data, isA<SystemSettingInfo>());
-        
+
         debugPrint('userName: ${data.userName}');
         debugPrint('panelName: ${data.panelName}');
         debugPrint('systemVersion: ${data.systemVersion}');
@@ -52,7 +53,7 @@ void main() {
         debugPrint('ssl: ${data.ssl}');
         debugPrint('mfaStatus: ${data.mfaStatus}');
         debugPrint('apiInterfaceStatus: ${data.apiInterfaceStatus}');
-        
+
         expect(response.statusCode, equals(200));
       }
       debugPrint('========================================\n');
@@ -71,16 +72,16 @@ void main() {
       debugPrint('========================================');
       debugPrint('状态码: ${response.statusCode}');
       debugPrint('数据是否为null: ${response.data == null}');
-      
+
       if (response.data != null) {
         final data = response.data!;
         expect(data, isA<TerminalInfo>());
-        
+
         debugPrint('cursorBlink: ${data.cursorBlink}');
         debugPrint('cursorStyle: ${data.cursorStyle}');
         debugPrint('fontSize: ${data.fontSize}');
         debugPrint('lineHeight: ${data.lineHeight}');
-        
+
         expect(response.statusCode, equals(200));
       }
       debugPrint('========================================\n');
@@ -99,7 +100,7 @@ void main() {
       debugPrint('========================================');
       debugPrint('状态码: ${response.statusCode}');
       debugPrint('数据是否为null: ${response.data == null}');
-      
+
       if (response.data != null) {
         expect(response.data, isA<List<String>>());
         debugPrint('接口数量: ${response.data!.length}');
@@ -122,7 +123,7 @@ void main() {
         interval: '30',
         secret: '',
       );
-      
+
       final response = await api.loadMfaInfo(request);
 
       debugPrint('\n========================================');
@@ -130,14 +131,15 @@ void main() {
       debugPrint('========================================');
       debugPrint('状态码: ${response.statusCode}');
       debugPrint('数据是否为null: ${response.data == null}');
-      
+
       if (response.data != null) {
         final data = response.data!;
         expect(data, isA<MfaOtp>());
-        
+
         debugPrint('secret: ${data.secret}');
-        debugPrint('qrImage: ${data.qrImage != null ? "${data.qrImage!.length} chars" : "null"}');
-        
+        debugPrint(
+            'qrImage: ${data.qrImage != null ? "${data.qrImage!.length} chars" : "null"}');
+
         expect(response.statusCode, equals(200));
       }
       debugPrint('========================================\n');
@@ -157,11 +159,11 @@ void main() {
         debugPrint('========================================');
         debugPrint('状态码: ${response.statusCode}');
         debugPrint('数据是否为null: ${response.data == null}');
-        
+
         if (response.data != null) {
           final data = response.data!;
           expect(data, isA<MfaStatus>());
-          
+
           debugPrint('enabled: ${data.enabled}');
           debugPrint('secret: ${data.secret}');
         }
@@ -185,7 +187,7 @@ void main() {
       debugPrint('========================================');
       debugPrint('状态码: ${response.statusCode}');
       debugPrint('数据是否为null: ${response.data == null}');
-      
+
       if (response.data != null) {
         debugPrint('返回数据: $response.data');
       }
@@ -207,9 +209,10 @@ void main() {
         debugPrint('========================================');
         debugPrint('状态码: ${response.statusCode}');
         debugPrint('数据是否为null: ${response.data == null}');
-        
+
         if (response.data != null) {
-          final jsonStr = const JsonEncoder.withIndent('  ').convert(response.data);
+          final jsonStr =
+              const JsonEncoder.withIndent('  ').convert(response.data);
           debugPrint('SSL信息:\n$jsonStr');
         }
         expect(response.statusCode, equals(200));
@@ -233,9 +236,10 @@ void main() {
         debugPrint('========================================');
         debugPrint('状态码: ${response.statusCode}');
         debugPrint('数据是否为null: ${response.data == null}');
-        
+
         if (response.data != null) {
-          final jsonStr = const JsonEncoder.withIndent('  ').convert(response.data);
+          final jsonStr =
+              const JsonEncoder.withIndent('  ').convert(response.data);
           debugPrint('升级信息:\n$jsonStr');
         }
         expect(response.statusCode, equals(200));
@@ -258,7 +262,7 @@ void main() {
       debugPrint('========================================');
       debugPrint('状态码: ${response.statusCode}');
       debugPrint('数据是否为null: ${response.data == null}');
-      
+
       if (response.data != null) {
         debugPrint('版本数量: ${response.data!.length}');
         if (response.data!.isNotEmpty) {
@@ -276,16 +280,18 @@ void main() {
       }
 
       try {
-        final response = await api.searchSnapshots(SnapshotSearch(page: 1, pageSize: 10));
+        final response =
+            await api.searchSnapshots(SnapshotSearch(page: 1, pageSize: 10));
 
         debugPrint('\n========================================');
         debugPrint('searchSnapshots 响应');
         debugPrint('========================================');
         debugPrint('状态码: ${response.statusCode}');
         debugPrint('数据是否为null: ${response.data == null}');
-        
+
         if (response.data != null) {
-          final jsonStr = const JsonEncoder.withIndent('  ').convert(response.data);
+          final jsonStr =
+              const JsonEncoder.withIndent('  ').convert(response.data);
           debugPrint('快照数据:\n$jsonStr');
         }
         expect(response.statusCode, equals(200));
@@ -309,9 +315,10 @@ void main() {
         debugPrint('========================================');
         debugPrint('状态码: ${response.statusCode}');
         debugPrint('数据是否为null: ${response.data == null}');
-        
+
         if (response.data != null) {
-          final jsonStr = const JsonEncoder.withIndent('  ').convert(response.data);
+          final jsonStr =
+              const JsonEncoder.withIndent('  ').convert(response.data);
           debugPrint('认证设置:\n$jsonStr');
         }
         expect(response.statusCode, equals(200));
@@ -335,9 +342,10 @@ void main() {
         debugPrint('========================================');
         debugPrint('状态码: ${response.statusCode}');
         debugPrint('数据是否为null: ${response.data == null}');
-        
+
         if (response.data != null) {
-          final jsonStr = const JsonEncoder.withIndent('  ').convert(response.data);
+          final jsonStr =
+              const JsonEncoder.withIndent('  ').convert(response.data);
           debugPrint('SSH连接信息:\n$jsonStr');
         }
         expect(response.statusCode, equals(200));
@@ -356,20 +364,20 @@ void main() {
       }
 
       final stopwatch = Stopwatch()..start();
-      
+
       await api.getSystemSettings();
       final systemTime = stopwatch.elapsedMilliseconds;
       stopwatch.reset();
       stopwatch.start();
-      
+
       await api.getTerminalSettings();
       final terminalTime = stopwatch.elapsedMilliseconds;
       stopwatch.reset();
       stopwatch.start();
-      
+
       await api.getNetworkInterfaces();
       final interfaceTime = stopwatch.elapsedMilliseconds;
-      
+
       debugPrint('\n========================================');
       debugPrint('API性能基准');
       debugPrint('========================================');
@@ -377,7 +385,7 @@ void main() {
       debugPrint('getTerminalSettings: ${terminalTime}ms');
       debugPrint('getNetworkInterfaces: ${interfaceTime}ms');
       debugPrint('========================================\n');
-      
+
       expect(systemTime, lessThan(5000));
       expect(terminalTime, lessThan(5000));
       expect(interfaceTime, lessThan(5000));

@@ -13,8 +13,9 @@ void main() {
 
   setUpAll(() async {
     await TestEnvironment.initialize();
-    hasApiKey = TestEnvironment.apiKey.isNotEmpty && TestEnvironment.apiKey != 'your_api_key_here';
-    
+    hasApiKey = TestEnvironment.apiKey.isNotEmpty &&
+        TestEnvironment.apiKey != 'your_api_key_here';
+
     if (hasApiKey) {
       client = DioClient(
         baseUrl: TestEnvironment.baseUrl,
@@ -34,28 +35,29 @@ void main() {
       // 首先打印原始响应
       final dio = client.dio;
       final rawResponse = await dio.post('/api/v2/core/settings/search');
-      
+
       debugPrint('\n========================================');
       debugPrint('getSystemSettings 原始响应');
       debugPrint('========================================');
       debugPrint('状态码: ${rawResponse.statusCode}');
       debugPrint('数据类型: ${rawResponse.data.runtimeType}');
-      
+
       if (rawResponse.data != null) {
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(rawResponse.data);
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(rawResponse.data);
         debugPrint('原始数据:\n$jsonStr');
       }
       debugPrint('========================================\n');
-      
+
       // 测试解析后的数据
       final response = await api.getSystemSettings();
-      
+
       debugPrint('\n========================================');
       debugPrint('getSystemSettings 解析后的数据');
       debugPrint('========================================');
       debugPrint('状态码: ${response.statusCode}');
       debugPrint('数据是否为null: ${response.data == null}');
-      
+
       if (response.data != null) {
         final data = response.data!;
         debugPrint('userName: ${data.userName}');
@@ -68,8 +70,9 @@ void main() {
         debugPrint('mfaStatus: ${data.mfaStatus}');
         debugPrint('apiKey: ${data.apiKey}');
         debugPrint('apiInterfaceStatus: ${data.apiInterfaceStatus}');
-        
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(data.toJson());
+
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(data.toJson());
         debugPrint('\n完整数据:\n$jsonStr');
       }
       debugPrint('========================================\n');
@@ -88,9 +91,10 @@ void main() {
       debugPrint('========================================');
       debugPrint('状态码: ${response.statusCode}');
       debugPrint('数据类型: ${response.data.runtimeType}');
-      
+
       if (response.data != null) {
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(response.data);
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(response.data);
         debugPrint('数据内容:\n$jsonStr');
       }
       debugPrint('========================================\n');
@@ -109,9 +113,10 @@ void main() {
       debugPrint('========================================');
       debugPrint('状态码: ${response.statusCode}');
       debugPrint('数据类型: ${response.data.runtimeType}');
-      
+
       if (response.data != null) {
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(response.data);
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(response.data);
         debugPrint('数据内容:\n$jsonStr');
       }
       debugPrint('========================================\n');
@@ -128,7 +133,7 @@ void main() {
         interval: '30',
         secret: '',
       );
-      
+
       final response = await api.loadMfaInfo(request);
 
       debugPrint('\n========================================');
@@ -136,9 +141,10 @@ void main() {
       debugPrint('========================================');
       debugPrint('状态码: ${response.statusCode}');
       debugPrint('数据类型: ${response.data.runtimeType}');
-      
+
       if (response.data != null) {
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(response.data);
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(response.data);
         debugPrint('数据内容:\n$jsonStr');
       }
       debugPrint('========================================\n');
@@ -157,9 +163,10 @@ void main() {
       debugPrint('========================================');
       debugPrint('状态码: ${response.statusCode}');
       debugPrint('数据类型: ${response.data.runtimeType}');
-      
+
       if (response.data != null) {
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(response.data);
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(response.data);
         debugPrint('数据内容:\n$jsonStr');
       }
       debugPrint('========================================\n');
@@ -174,28 +181,29 @@ void main() {
       // 首先打印原始响应
       final dio = client.dio;
       final rawResponse = await dio.get('/api/v2/core/settings/interface');
-      
+
       debugPrint('\n========================================');
       debugPrint('getInterfaceSettings 原始响应');
       debugPrint('========================================');
       debugPrint('状态码: ${rawResponse.statusCode}');
       debugPrint('数据类型: ${rawResponse.data.runtimeType}');
-      
+
       if (rawResponse.data != null) {
-        final jsonStr = const JsonEncoder.withIndent('  ').convert(rawResponse.data);
+        final jsonStr =
+            const JsonEncoder.withIndent('  ').convert(rawResponse.data);
         debugPrint('原始数据:\n$jsonStr');
       }
       debugPrint('========================================\n');
-      
+
       // 测试解析后的数据
       final response = await api.getNetworkInterfaces();
-      
+
       debugPrint('\n========================================');
       debugPrint('getNetworkInterfaces 解析后的数据');
       debugPrint('========================================');
       debugPrint('状态码: ${response.statusCode}');
       debugPrint('数据是否为null: ${response.data == null}');
-      
+
       if (response.data != null) {
         debugPrint('接口数量: ${response.data!.length}');
         if (response.data!.isNotEmpty) {

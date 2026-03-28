@@ -71,7 +71,8 @@ class _InstalledAppsViewState extends State<InstalledAppsView> {
                 } catch (e) {
                   if (mounted) {
                     scaffoldMessenger.showSnackBar(
-                      SnackBar(content: Text(l10n.appOperateFailed(e.toString()))),
+                      SnackBar(
+                          content: Text(l10n.appOperateFailed(e.toString()))),
                     );
                   }
                 }
@@ -121,7 +122,8 @@ class _InstalledAppsViewState extends State<InstalledAppsView> {
               children: [
                 Icon(Icons.error_outline, size: 48, color: colorScheme.error),
                 const SizedBox(height: 16),
-                Text('${context.l10n.commonLoadFailedTitle}: ${provider.error}'),
+                Text(
+                    '${context.l10n.commonLoadFailedTitle}: ${provider.error}'),
                 const SizedBox(height: 16),
                 FilledButton(
                   onPressed: _handleRefresh,

@@ -27,7 +27,8 @@ class AppSearchRequest {
     this.type,
   });
 
-  factory AppSearchRequest.fromJson(Map<String, dynamic> json) => _$AppSearchRequestFromJson(json);
+  factory AppSearchRequest.fromJson(Map<String, dynamic> json) =>
+      _$AppSearchRequestFromJson(json);
   Map<String, dynamic> toJson() => _$AppSearchRequestToJson(this);
 }
 
@@ -42,7 +43,8 @@ class AppSearchResponse {
     required this.total,
   });
 
-  factory AppSearchResponse.fromJson(Map<String, dynamic> json) => _$AppSearchResponseFromJson(json);
+  factory AppSearchResponse.fromJson(Map<String, dynamic> json) =>
+      _$AppSearchResponseFromJson(json);
   Map<String, dynamic> toJson() => _$AppSearchResponseToJson(this);
 }
 
@@ -87,15 +89,17 @@ class AppItem {
     this.website,
   });
 
-  factory AppItem.fromJson(Map<String, dynamic> json) => _$AppItemFromJson(json);
+  factory AppItem.fromJson(Map<String, dynamic> json) =>
+      _$AppItemFromJson(json);
   Map<String, dynamic> toJson() => _$AppItemToJson(this);
-  
+
   /// 获取标签名称列表
   List<String> get tagNames {
     if (tags == null) return [];
     return tags!.map((t) {
       if (t is String) return t;
-      if (t is Map<String, dynamic>) return t['name'] as String? ?? t['key'] as String? ?? '';
+      if (t is Map<String, dynamic>)
+        return t['name'] as String? ?? t['key'] as String? ?? '';
       return t.toString();
     }).toList();
   }
@@ -174,7 +178,8 @@ class AppInstallCreateRequest {
     this.webUI,
   });
 
-  factory AppInstallCreateRequest.fromJson(Map<String, dynamic> json) => _$AppInstallCreateRequestFromJson(json);
+  factory AppInstallCreateRequest.fromJson(Map<String, dynamic> json) =>
+      _$AppInstallCreateRequestFromJson(json);
   Map<String, dynamic> toJson() => _$AppInstallCreateRequestToJson(this);
 }
 
@@ -223,7 +228,8 @@ class AppInstall {
     this.webUI,
   });
 
-  factory AppInstall.fromJson(Map<String, dynamic> json) => _$AppInstallFromJson(json);
+  factory AppInstall.fromJson(Map<String, dynamic> json) =>
+      _$AppInstallFromJson(json);
   Map<String, dynamic> toJson() => _$AppInstallToJson(this);
 }
 
@@ -301,7 +307,8 @@ class AppInstalledInfoRequest {
     this.name,
   });
 
-  factory AppInstalledInfoRequest.fromJson(Map<String, dynamic> json) => _$AppInstalledInfoRequestFromJson(json);
+  factory AppInstalledInfoRequest.fromJson(Map<String, dynamic> json) =>
+      _$AppInstalledInfoRequestFromJson(json);
   Map<String, dynamic> toJson() => _$AppInstalledInfoRequestToJson(this);
 }
 
@@ -316,7 +323,8 @@ class AppInstalledCheckResponse {
     this.message,
   });
 
-  factory AppInstalledCheckResponse.fromJson(Map<String, dynamic> json) => _$AppInstalledCheckResponseFromJson(json);
+  factory AppInstalledCheckResponse.fromJson(Map<String, dynamic> json) =>
+      _$AppInstalledCheckResponseFromJson(json);
   Map<String, dynamic> toJson() => _$AppInstalledCheckResponseToJson(this);
 }
 
@@ -342,10 +350,10 @@ class AppInstalledCheckRequest {
   }
 
   Map<String, dynamic> toJson() => {
-    'key': key,
-    'version': version,
-    'type': type,
-  };
+        'key': key,
+        'version': version,
+        'type': type,
+      };
 }
 
 /// 应用已安装忽略更新请求模型
@@ -365,12 +373,14 @@ class AppInstalledIgnoreUpgradeRequest {
           'scope must be one of: all, version',
         );
 
-  factory AppInstalledIgnoreUpgradeRequest.fromJson(Map<String, dynamic> json) => _$AppInstalledIgnoreUpgradeRequestFromJson(json);
+  factory AppInstalledIgnoreUpgradeRequest.fromJson(
+          Map<String, dynamic> json) =>
+      _$AppInstalledIgnoreUpgradeRequestFromJson(json);
   Map<String, dynamic> toJson() => {
-    'appID': appInstallId,
-    'reason': reason,
-    'scope': scope,
-  };
+        'appID': appInstallId,
+        'reason': reason,
+        'scope': scope,
+      };
 }
 
 class AppIgnoreUpgradeScope {
@@ -508,7 +518,8 @@ class AppInstalledOperateRequest {
     this.taskID,
   });
 
-  factory AppInstalledOperateRequest.fromJson(Map<String, dynamic> json) => _$AppInstalledOperateRequestFromJson(json);
+  factory AppInstalledOperateRequest.fromJson(Map<String, dynamic> json) =>
+      _$AppInstalledOperateRequestFromJson(json);
   Map<String, dynamic> toJson() => _$AppInstalledOperateRequestToJson(this);
 }
 
@@ -537,7 +548,8 @@ class AppInstalledSearchRequest {
     this.update,
   });
 
-  factory AppInstalledSearchRequest.fromJson(Map<String, dynamic> json) => _$AppInstalledSearchRequestFromJson(json);
+  factory AppInstalledSearchRequest.fromJson(Map<String, dynamic> json) =>
+      _$AppInstalledSearchRequestFromJson(json);
   Map<String, dynamic> toJson() => _$AppInstalledSearchRequestToJson(this);
 }
 
@@ -558,7 +570,8 @@ class AppServiceResponse {
     required this.value,
   });
 
-  factory AppServiceResponse.fromJson(Map<String, dynamic> json) => _$AppServiceResponseFromJson(json);
+  factory AppServiceResponse.fromJson(Map<String, dynamic> json) =>
+      _$AppServiceResponseFromJson(json);
   Map<String, dynamic> toJson() => _$AppServiceResponseToJson(this);
 }
 
@@ -712,35 +725,35 @@ class AppInstallInfo {
   }
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'name': name,
-    'appName': appName,
-    'appKey': appKey,
-    'version': version,
-    'status': status,
-    'container': container,
-    'appType': appType,
-    'env': env,
-    'icon': icon,
-    'description': description,
-    'createdAt': createdAt,
-    'appId': appId,
-    'appDetailId': appDetailId,
-    'message': message,
-    'httpPort': httpPort,
-    'httpsPort': httpsPort,
-    'path': path,
-    'canUpdate': canUpdate,
-    'ready': ready,
-    'total': total,
-    'appStatus': appStatus,
-    'dockerCompose': dockerCompose,
-    'webUI': webUI,
-    'favorite': favorite,
-    'isEdit': isEdit,
-    'linkDB': linkDB,
-    'serviceName': serviceName,
-  };
+        'id': id,
+        'name': name,
+        'appName': appName,
+        'appKey': appKey,
+        'version': version,
+        'status': status,
+        'container': container,
+        'appType': appType,
+        'env': env,
+        'icon': icon,
+        'description': description,
+        'createdAt': createdAt,
+        'appId': appId,
+        'appDetailId': appDetailId,
+        'message': message,
+        'httpPort': httpPort,
+        'httpsPort': httpsPort,
+        'path': path,
+        'canUpdate': canUpdate,
+        'ready': ready,
+        'total': total,
+        'appStatus': appStatus,
+        'dockerCompose': dockerCompose,
+        'webUI': webUI,
+        'favorite': favorite,
+        'isEdit': isEdit,
+        'linkDB': linkDB,
+        'serviceName': serviceName,
+      };
 }
 
 /// 应用列表响应模型
@@ -754,7 +767,8 @@ class AppListResponse {
     required this.total,
   });
 
-  factory AppListResponse.fromJson(Map<String, dynamic> json) => _$AppListResponseFromJson(json);
+  factory AppListResponse.fromJson(Map<String, dynamic> json) =>
+      _$AppListResponseFromJson(json);
   Map<String, dynamic> toJson() => _$AppListResponseToJson(this);
 }
 
@@ -769,7 +783,8 @@ class AppUpdateResponse {
     required this.total,
   });
 
-  factory AppUpdateResponse.fromJson(Map<String, dynamic> json) => _$AppUpdateResponseFromJson(json);
+  factory AppUpdateResponse.fromJson(Map<String, dynamic> json) =>
+      _$AppUpdateResponseFromJson(json);
   Map<String, dynamic> toJson() => _$AppUpdateResponseToJson(this);
 }
 
@@ -788,7 +803,8 @@ class AppVersion {
     this.isPrerelease,
   });
 
-  factory AppVersion.fromJson(Map<String, dynamic> json) => _$AppVersionFromJson(json);
+  factory AppVersion.fromJson(Map<String, dynamic> json) =>
+      _$AppVersionFromJson(json);
   Map<String, dynamic> toJson() => _$AppVersionToJson(this);
 }
 

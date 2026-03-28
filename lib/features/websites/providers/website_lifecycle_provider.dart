@@ -81,13 +81,15 @@ class WebsiteLifecycleState {
       groups: groups ?? this.groups,
       runtimes: runtimes ?? this.runtimes,
       parentWebsites: parentWebsites ?? this.parentWebsites,
-      website: identical(website, _unset) ? this.website : website as WebsiteInfo?,
+      website:
+          identical(website, _unset) ? this.website : website as WebsiteInfo?,
       type: type ?? this.type,
       alias: alias ?? this.alias,
       primaryDomain: primaryDomain ?? this.primaryDomain,
       remark: remark ?? this.remark,
       groupId: identical(groupId, _unset) ? this.groupId : groupId as int?,
-      runtimeId: identical(runtimeId, _unset) ? this.runtimeId : runtimeId as int?,
+      runtimeId:
+          identical(runtimeId, _unset) ? this.runtimeId : runtimeId as int?,
       siteDir: siteDir ?? this.siteDir,
       proxyType: proxyType ?? this.proxyType,
       proxyAddress: proxyAddress ?? this.proxyAddress,
@@ -262,8 +264,7 @@ class WebsiteLifecycleProvider extends ChangeNotifier {
       proxyType: _state.type == 'proxy' ? _state.proxyType : null,
       proxy: _state.type == 'proxy' ? _state.proxyAddress.trim() : null,
       port: port,
-      parentWebsiteId:
-          _state.type == 'subsite' ? _state.parentWebsiteId : null,
+      parentWebsiteId: _state.type == 'subsite' ? _state.parentWebsiteId : null,
       domains: primaryDomain.isEmpty
           ? null
           : [

@@ -4,7 +4,8 @@ import 'package:onepanel_client/core/services/base_component.dart';
 
 void main() {
   test('BaseComponent缓存按TTL过期', () async {
-    final component = BaseComponent(defaultCacheTtl: const Duration(milliseconds: 1));
+    final component =
+        BaseComponent(defaultCacheTtl: const Duration(milliseconds: 1));
     component.setCache<int>('value', 42);
     expect(component.getCache<int>('value'), 42);
     await Future<void>.delayed(const Duration(milliseconds: 5));

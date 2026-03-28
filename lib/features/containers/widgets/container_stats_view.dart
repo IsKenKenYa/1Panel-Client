@@ -68,7 +68,8 @@ class ContainerStatsView extends StatelessWidget {
                 child: _StatCard(
                   title: l10n.containerStatsMemory,
                   value: _formatBytes(stats.memory),
-                  subtitle: '${l10n.monitorMetricCurrent}: ${_formatBytes(stats.memory)}',
+                  subtitle:
+                      '${l10n.monitorMetricCurrent}: ${_formatBytes(stats.memory)}',
                   color: memoryColor,
                   icon: Icons.sd_storage,
                 ),
@@ -113,7 +114,8 @@ class ContainerStatsView extends StatelessWidget {
   String _formatBytes(num bytes) {
     if (bytes < 1024) return '${bytes.toInt()} B';
     if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
-    if (bytes < 1024 * 1024 * 1024) return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+    if (bytes < 1024 * 1024 * 1024)
+      return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
     return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(1)} GB';
   }
 }
@@ -151,9 +153,9 @@ class _StatCard extends StatelessWidget {
               Text(
                 value,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: colorScheme.onSurface,
-                ),
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onSurface,
+                    ),
               ),
             ],
           ),
@@ -162,8 +164,8 @@ class _StatCard extends StatelessWidget {
             Text(
               subtitle!,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
+                    color: colorScheme.onSurfaceVariant,
+                  ),
             ),
           ],
           if (progress != null) ...[

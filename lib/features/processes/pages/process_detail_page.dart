@@ -26,7 +26,8 @@ class _ProcessDetailPageState extends State<ProcessDetailPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !context.read<CurrentServerController>().hasServer) return;
+      if (!mounted || !context.read<CurrentServerController>().hasServer)
+        return;
       context.read<ProcessDetailProvider>().load(widget.pid);
     });
   }
@@ -39,15 +40,18 @@ class _ProcessDetailPageState extends State<ProcessDetailPage> {
         final detail = provider.detail;
         return ServerAwarePageScaffold(
           title: l10n.operationsProcessDetailTitle,
-          onServerChanged: () => context.read<ProcessDetailProvider>().load(widget.pid),
+          onServerChanged: () =>
+              context.read<ProcessDetailProvider>().load(widget.pid),
           actions: <Widget>[
             IconButton(
-              onPressed: provider.isLoading ? null : () => provider.load(widget.pid),
+              onPressed:
+                  provider.isLoading ? null : () => provider.load(widget.pid),
               icon: const Icon(Icons.refresh),
               tooltip: l10n.commonRefresh,
             ),
             IconButton(
-              onPressed: provider.isStopping || detail == null ? null : _stopProcess,
+              onPressed:
+                  provider.isStopping || detail == null ? null : _stopProcess,
               icon: const Icon(Icons.stop_circle_outlined),
               tooltip: l10n.commonStop,
             ),
@@ -88,10 +92,12 @@ class _ProcessDetailPageState extends State<ProcessDetailPage> {
       child: Column(
         children: <Widget>[
           _detailRow('PID', detail.pid.toString()),
-          _detailRow(l10n.processDetailParentPidLabel, detail.parentPid.toString()),
+          _detailRow(
+              l10n.processDetailParentPidLabel, detail.parentPid.toString()),
           _detailRow(l10n.commonName, detail.name),
           _detailRow(l10n.commonUsername, detail.username),
-          _detailRow(l10n.processesConnectionsLabel, detail.numConnections.toString()),
+          _detailRow(
+              l10n.processesConnectionsLabel, detail.numConnections.toString()),
           _detailRow(l10n.processesThreadsLabel, detail.numThreads.toString()),
           _detailRow(l10n.processesStartTimeLabel, detail.startTime),
           _detailRow(l10n.processDetailDiskReadLabel, detail.diskRead),
@@ -147,8 +153,10 @@ class _ProcessDetailPageState extends State<ProcessDetailPage> {
           ? Text(l10n.processDetailNoConnections)
           : Column(
               children: detail.connections.map((ProcessConnection item) {
-                final local = '${item.localAddress.ip}:${item.localAddress.port}';
-                final remote = '${item.remoteAddress.ip}:${item.remoteAddress.port}';
+                final local =
+                    '${item.localAddress.ip}:${item.localAddress.port}';
+                final remote =
+                    '${item.remoteAddress.ip}:${item.remoteAddress.port}';
                 return _detailRow(local, '${item.status} · $remote');
               }).toList(growable: false),
             ),

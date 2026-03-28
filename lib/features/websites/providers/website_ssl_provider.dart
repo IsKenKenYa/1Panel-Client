@@ -44,7 +44,8 @@ class WebsiteSslProvider extends ChangeNotifier {
   }
 
   Future<void> updateHttpsConfig(WebsiteHttpsUpdateRequest request) async {
-    httpsConfig = await _service.updateHttpsConfig(websiteId: websiteId, request: request);
+    httpsConfig = await _service.updateHttpsConfig(
+        websiteId: websiteId, request: request);
     notifyListeners();
   }
 

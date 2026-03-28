@@ -9,11 +9,11 @@ class BusinessResponseInterceptor extends Interceptor {
     if (response.data is Map<String, dynamic>) {
       final data = response.data as Map<String, dynamic>;
       final code = data['code'];
-      
+
       if (code != null && code != 200) {
         final message = data['message'] ?? '未知错误';
         appLogger.eWithPackage('network', '业务错误: code=$code, message=$message');
-        
+
         final exception = DioException(
           requestOptions: response.requestOptions,
           response: response,

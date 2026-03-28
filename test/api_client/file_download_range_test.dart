@@ -15,7 +15,8 @@ void main() {
   setUpAll(() async {
     await TestEnvironment.initialize();
     await TestConfigManager.instance.initialize();
-    final baseUrl = TestConfigManager.instance.getString('PANEL_BASE_URL', defaultValue: 'http://localhost:9999');
+    final baseUrl = TestConfigManager.instance
+        .getString('PANEL_BASE_URL', defaultValue: 'http://localhost:9999');
     final apiKey = TestConfigManager.instance.getString('PANEL_API_KEY');
     hasApiKey = TestEnvironment.canRunIntegrationTests &&
         apiKey.isNotEmpty &&
@@ -32,7 +33,8 @@ void main() {
 
   group('文件下载 API Range 头支持测试', () {
     test('配置验证 - API密钥已配置', () {
-      final baseUrl = TestConfigManager.instance.getString('PANEL_BASE_URL', defaultValue: 'http://localhost:9999');
+      final baseUrl = TestConfigManager.instance
+          .getString('PANEL_BASE_URL', defaultValue: 'http://localhost:9999');
       debugPrint('\n========================================');
       debugPrint('文件下载 API Range 头测试配置');
       debugPrint('========================================');
@@ -63,8 +65,11 @@ void main() {
         try {
           final request = FileSearch(path: path);
           final response = await api.getFiles(request);
-          if (response.statusCode == 200 && response.data != null && response.data!.isNotEmpty) {
-            final nonDirs = response.data!.where((f) => !f.isDir && f.size > 0).toList();
+          if (response.statusCode == 200 &&
+              response.data != null &&
+              response.data!.isNotEmpty) {
+            final nonDirs =
+                response.data!.where((f) => !f.isDir && f.size > 0).toList();
             if (nonDirs.isNotEmpty) {
               files = response.data;
               foundPath = path;
@@ -91,7 +96,9 @@ void main() {
       debugPrint('文件数量: ${files.length}');
 
       // 找一个文件用于测试
-      final nonDirFiles = files.where((f) => !f.isDir && f.size > 0 && f.size < 100 * 1024 * 1024).toList();
+      final nonDirFiles = files
+          .where((f) => !f.isDir && f.size > 0 && f.size < 100 * 1024 * 1024)
+          .toList();
       if (nonDirFiles.isNotEmpty) {
         final testFile = nonDirFiles.first;
         debugPrint('\n测试文件: ${testFile.name}');
@@ -116,7 +123,8 @@ void main() {
           final request = FileSearch(path: path);
           final response = await api.getFiles(request);
           if (response.statusCode == 200 && response.data != null) {
-            final files = response.data!.where((f) => !f.isDir && f.size > 1024).toList();
+            final files =
+                response.data!.where((f) => !f.isDir && f.size > 1024).toList();
             if (files.isNotEmpty) {
               testFile = files.first;
               break;
@@ -159,23 +167,23 @@ void main() {
         // 检查是否支持 Range
         if (response.statusCode == 206) {
           debugPrint('✅ 服务器支持 Range 头，返回 206 Partial Content');
-          
+
           // 检查 Content-Range 头
           final contentRange = response.headers.value('content-range');
           if (contentRange != null) {
             debugPrint('Content-Range: $contentRange');
           }
-          
+
           // 检查 Accept-Ranges 头
           final acceptRanges = response.headers.value('accept-ranges');
           if (acceptRanges != null) {
             debugPrint('Accept-Ranges: $acceptRanges');
           }
-          
+
           // 检查返回的数据大小
           final data = response.data as List<int>;
           debugPrint('返回数据大小: ${data.length} bytes');
-          
+
           expect(data.length, lessThanOrEqualTo(1024));
         } else if (response.statusCode == 200) {
           debugPrint('⚠️  服务器返回 200，可能不支持 Range 头');
@@ -209,7 +217,8 @@ void main() {
           final request = FileSearch(path: path);
           final response = await api.getFiles(request);
           if (response.statusCode == 200 && response.data != null) {
-            final files = response.data!.where((f) => !f.isDir && f.size > 0).toList();
+            final files =
+                response.data!.where((f) => !f.isDir && f.size > 0).toList();
             if (files.isNotEmpty) {
               testFile = files.first;
               break;

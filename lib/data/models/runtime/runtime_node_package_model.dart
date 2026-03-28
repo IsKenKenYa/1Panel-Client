@@ -110,4 +110,3 @@ class NodeScriptInfo extends Equatable {
   @override
   List<Object?> get props => [name, script];
 }
-

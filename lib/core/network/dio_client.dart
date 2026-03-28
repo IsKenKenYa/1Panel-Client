@@ -32,7 +32,8 @@ class DioClient {
         'User-Agent': ApiConstants.userAgent,
       },
       responseType: ResponseType.json,
-      validateStatus: (status) => status != null && status >= 200 && status < 300,
+      validateStatus: (status) =>
+          status != null && status >= 200 && status < 300,
     );
   }
 
@@ -75,7 +76,8 @@ class DioClient {
       final response = await requestFunction();
       return response;
     } on DioException catch (e) {
-      _safeLog('e', '[network] DioException: ${e.type}, message: ${e.message}, response: ${e.response?.data}');
+      _safeLog('e',
+          '[network] DioException: ${e.type}, message: ${e.message}, response: ${e.response?.data}');
       throw _convertException(e);
     } catch (e) {
       _safeLog('e', '[network] Unexpected error: $e');
@@ -89,7 +91,8 @@ class DioClient {
     final errorMessage = e.message ?? e.toString();
     final responseData = e.response?.data;
 
-    _safeLog('d', '[network] Converting exception: type=${e.type}, statusCode=$statusCode, message=$errorMessage');
+    _safeLog('d',
+        '[network] Converting exception: type=${e.type}, statusCode=$statusCode, message=$errorMessage');
 
     if (e.type == DioExceptionType.connectionError ||
         e.type == DioExceptionType.connectionTimeout ||
@@ -139,10 +142,10 @@ class DioClient {
     Options? options,
   }) {
     return _executeRequest(() => _dio.get<T>(
-      path,
-      queryParameters: queryParameters,
-      options: options,
-    ));
+          path,
+          queryParameters: queryParameters,
+          options: options,
+        ));
   }
 
   /// POST请求 - 返回完整Response对象
@@ -153,11 +156,11 @@ class DioClient {
     Options? options,
   }) {
     return _executeRequest(() => _dio.post<T>(
-      path,
-      data: data,
-      queryParameters: queryParameters,
-      options: options,
-    ));
+          path,
+          data: data,
+          queryParameters: queryParameters,
+          options: options,
+        ));
   }
 
   /// PUT请求 - 返回完整Response对象
@@ -168,11 +171,11 @@ class DioClient {
     Options? options,
   }) {
     return _executeRequest(() => _dio.put<T>(
-      path,
-      data: data,
-      queryParameters: queryParameters,
-      options: options,
-    ));
+          path,
+          data: data,
+          queryParameters: queryParameters,
+          options: options,
+        ));
   }
 
   /// DELETE请求 - 返回完整Response对象
@@ -183,11 +186,11 @@ class DioClient {
     Options? options,
   }) {
     return _executeRequest(() => _dio.delete<T>(
-      path,
-      data: data,
-      queryParameters: queryParameters,
-      options: options,
-    ));
+          path,
+          data: data,
+          queryParameters: queryParameters,
+          options: options,
+        ));
   }
 
   /// PATCH请求 - 返回完整Response对象
@@ -198,11 +201,11 @@ class DioClient {
     Options? options,
   }) {
     return _executeRequest(() => _dio.patch<T>(
-      path,
-      data: data,
-      queryParameters: queryParameters,
-      options: options,
-    ));
+          path,
+          data: data,
+          queryParameters: queryParameters,
+          options: options,
+        ));
   }
 
   /// 文件上传
@@ -213,11 +216,11 @@ class DioClient {
     Options? options,
   }) {
     return _executeRequest(() => _dio.post<T>(
-      path,
-      data: formData,
-      options: options,
-      onSendProgress: onSendProgress,
-    ));
+          path,
+          data: formData,
+          options: options,
+          onSendProgress: onSendProgress,
+        ));
   }
 
   /// 文件下载

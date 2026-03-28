@@ -10,8 +10,9 @@ void main() {
 
   setUpAll(() async {
     await TestEnvironment.initialize();
-    hasApiKey = TestEnvironment.apiKey.isNotEmpty && TestEnvironment.apiKey != 'your_api_key_here';
-    
+    hasApiKey = TestEnvironment.apiKey.isNotEmpty &&
+        TestEnvironment.apiKey != 'your_api_key_here';
+
     if (hasApiKey) {
       client = DioClient(
         baseUrl: TestEnvironment.baseUrl,
@@ -28,11 +29,11 @@ void main() {
       }
 
       final dio = client.dio;
-      
+
       debugPrint('\n========================================');
       debugPrint('测试: POST /settings/snapshot 创建快照');
       debugPrint('========================================');
-      
+
       // 测试不同的请求格式
       final testCases = [
         {
@@ -45,7 +46,7 @@ void main() {
           'downloadAccountID': 1,
         },
       ];
-      
+
       for (var i = 0; i < testCases.length; i++) {
         debugPrint('\n--- 测试用例 ${i + 1}: ${testCases[i]} ---');
         try {
@@ -55,7 +56,8 @@ void main() {
           );
           debugPrint('成功! 状态码: ${response.statusCode}');
           if (response.data != null) {
-            final jsonStr = const JsonEncoder.withIndent('  ').convert(response.data);
+            final jsonStr =
+                const JsonEncoder.withIndent('  ').convert(response.data);
             debugPrint('响应数据:\n$jsonStr');
           }
           break; // 成功就退出

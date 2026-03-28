@@ -7,7 +7,8 @@ class LoggerConfig {
 
   /// 是否为桌面平台（有终端）
   static bool get _isDesktopPlatform {
-    return !kIsWeb && (io.Platform.isLinux || io.Platform.isMacOS || io.Platform.isWindows);
+    return !kIsWeb &&
+        (io.Platform.isLinux || io.Platform.isMacOS || io.Platform.isWindows);
   }
 
   /// 日志格式配置

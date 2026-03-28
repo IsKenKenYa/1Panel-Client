@@ -49,7 +49,8 @@ class _CommandFormPageState extends State<CommandFormPage> {
           title: provider.isEditing
               ? l10n.commandsEditTitle
               : l10n.commandsCreateTitle,
-          onServerChanged: () => context.read<CommandFormProvider>().initialize(widget.args),
+          onServerChanged: () =>
+              context.read<CommandFormProvider>().initialize(widget.args),
           body: AsyncStatePageBodyWidget(
             isLoading: provider.isLoading,
             errorMessage: provider.errorMessage,
@@ -143,7 +144,9 @@ class _CommandFormPageState extends State<CommandFormPage> {
       return;
     }
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.read<CommandFormProvider>().errorMessage ?? context.l10n.commonSaveFailed)),
+      SnackBar(
+          content: Text(context.read<CommandFormProvider>().errorMessage ??
+              context.l10n.commonSaveFailed)),
     );
   }
 }

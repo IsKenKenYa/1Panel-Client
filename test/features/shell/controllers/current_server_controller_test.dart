@@ -9,8 +9,10 @@ void main() {
   group('CurrentServerController', () {
     test('loads servers and current selection from storage', () async {
       final configs = [
-        ApiConfig(id: 's1', name: 'Alpha', url: 'https://alpha.test', apiKey: 'a'),
-        ApiConfig(id: 's2', name: 'Beta', url: 'https://beta.test', apiKey: 'b'),
+        ApiConfig(
+            id: 's1', name: 'Alpha', url: 'https://alpha.test', apiKey: 'a'),
+        ApiConfig(
+            id: 's2', name: 'Beta', url: 'https://beta.test', apiKey: 'b'),
       ];
       SharedPreferences.setMockInitialValues({
         'api_configs': jsonEncode(configs.map((e) => e.toJson()).toList()),
@@ -27,8 +29,10 @@ void main() {
 
     test('selectServer persists and updates current server', () async {
       final configs = [
-        ApiConfig(id: 's1', name: 'Alpha', url: 'https://alpha.test', apiKey: 'a'),
-        ApiConfig(id: 's2', name: 'Beta', url: 'https://beta.test', apiKey: 'b'),
+        ApiConfig(
+            id: 's1', name: 'Alpha', url: 'https://alpha.test', apiKey: 'a'),
+        ApiConfig(
+            id: 's2', name: 'Beta', url: 'https://beta.test', apiKey: 'b'),
       ];
       SharedPreferences.setMockInitialValues({
         'api_configs': jsonEncode(configs.map((e) => e.toJson()).toList()),

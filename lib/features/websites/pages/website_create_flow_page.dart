@@ -28,12 +28,12 @@ class WebsiteCreateFlowPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) =>
-          provider ??
+      create: (_) => provider ??
           WebsiteLifecycleProvider(
             mode: mode,
             websiteId: websiteId,
-          )..load(),
+          )
+        ..load(),
       child: _WebsiteLifecycleBody(mode: mode),
     );
   }

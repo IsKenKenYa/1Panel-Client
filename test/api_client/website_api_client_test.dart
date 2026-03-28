@@ -20,27 +20,34 @@ String _prettyJson(Object? data) {
   }
 }
 
-void _logSection(String title, {String? method, String? path, Object? request, Object? response}) {
-  appLogger.dWithPackage('test.api_client.website', '========================================');
+void _logSection(String title,
+    {String? method, String? path, Object? request, Object? response}) {
+  appLogger.dWithPackage(
+      'test.api_client.website', '========================================');
   appLogger.dWithPackage('test.api_client.website', title);
   if (method != null && path != null) {
     appLogger.dWithPackage('test.api_client.website', 'Request: $method $path');
   }
   if (request != null) {
-    appLogger.dWithPackage('test.api_client.website', 'RequestBody: ${_prettyJson(request)}');
+    appLogger.dWithPackage(
+        'test.api_client.website', 'RequestBody: ${_prettyJson(request)}');
   }
   if (response != null) {
-    appLogger.dWithPackage('test.api_client.website', 'Response: ${_prettyJson(response)}');
+    appLogger.dWithPackage(
+        'test.api_client.website', 'Response: ${_prettyJson(response)}');
   }
-  appLogger.dWithPackage('test.api_client.website', '========================================');
+  appLogger.dWithPackage(
+      'test.api_client.website', '========================================');
 }
 
 Future<Response<Map<String, dynamic>>> _rawGet(DioClient client, String path) {
   return client.get<Map<String, dynamic>>(ApiConstants.buildApiPath(path));
 }
 
-Future<Response<Map<String, dynamic>>> _rawPost(DioClient client, String path, {dynamic data}) {
-  return client.post<Map<String, dynamic>>(ApiConstants.buildApiPath(path), data: data);
+Future<Response<Map<String, dynamic>>> _rawPost(DioClient client, String path,
+    {dynamic data}) {
+  return client.post<Map<String, dynamic>>(ApiConstants.buildApiPath(path),
+      data: data);
 }
 
 void main() {
@@ -63,13 +70,19 @@ void main() {
 
   group('Website API客户端测试', () {
     test('配置验证 - API密钥与集成测试开关', () {
-      appLogger.iWithPackage('test.api_client.website', '========================================');
+      appLogger.iWithPackage('test.api_client.website',
+          '========================================');
       appLogger.iWithPackage('test.api_client.website', 'Website API测试配置');
-      appLogger.iWithPackage('test.api_client.website', '========================================');
-      appLogger.iWithPackage('test.api_client.website', '服务器地址: ${TestEnvironment.baseUrl}');
-      appLogger.iWithPackage('test.api_client.website', 'Integration: ${TestEnvironment.runIntegrationTests}');
-      appLogger.iWithPackage('test.api_client.website', 'Destructive: ${TestEnvironment.runDestructiveTests}');
-      appLogger.iWithPackage('test.api_client.website', '========================================');
+      appLogger.iWithPackage('test.api_client.website',
+          '========================================');
+      appLogger.iWithPackage(
+          'test.api_client.website', '服务器地址: ${TestEnvironment.baseUrl}');
+      appLogger.iWithPackage('test.api_client.website',
+          'Integration: ${TestEnvironment.runIntegrationTests}');
+      appLogger.iWithPackage('test.api_client.website',
+          'Destructive: ${TestEnvironment.runDestructiveTests}');
+      appLogger.iWithPackage('test.api_client.website',
+          '========================================');
 
       expect(canRun, equals(TestEnvironment.canRunIntegrationTests));
     });
@@ -83,7 +96,11 @@ void main() {
 
       final request = WebsiteSearch(page: 1, pageSize: 10).toJson();
       final raw = await _rawPost(client, '/websites/search', data: request);
-      _logSection('✅ Raw /websites/search', method: 'POST', path: '/websites/search', request: request, response: raw.data);
+      _logSection('✅ Raw /websites/search',
+          method: 'POST',
+          path: '/websites/search',
+          request: request,
+          response: raw.data);
 
       final result = await api.getWebsites(page: 1, pageSize: 10);
       _logSection(
@@ -116,7 +133,8 @@ void main() {
       expect(websiteId, isNotNull);
 
       final raw = await _rawGet(client, '/websites/$websiteId');
-      _logSection('✅ Raw /websites/:id', method: 'GET', path: '/websites/$websiteId', response: raw.data);
+      _logSection('✅ Raw /websites/:id',
+          method: 'GET', path: '/websites/$websiteId', response: raw.data);
 
       final detail = await api.getWebsiteDetail(websiteId!);
       _logSection('✅ Parsed /websites/:id', response: detail.toJson());
@@ -126,7 +144,8 @@ void main() {
   group('Website API性能测试', () {
     test('getWebsites响应时间应该小于3秒', () async {
       if (!canRun) {
-        appLogger.wWithPackage('test.api_client.website', '跳过测试: API密钥未配置或集成测试未开启');
+        appLogger.wWithPackage(
+            'test.api_client.website', '跳过测试: API密钥未配置或集成测试未开启');
         return;
       }
 

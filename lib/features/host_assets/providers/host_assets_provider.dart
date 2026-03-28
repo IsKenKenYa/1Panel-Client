@@ -82,9 +82,8 @@ class HostAssetsProvider extends ChangeNotifier with AsyncStateNotifier {
     try {
       final success = await _service.testHostById(host.id);
       _testStates[host.id] = HostAssetTestState(
-        status: success
-            ? HostAssetTestStatus.success
-            : HostAssetTestStatus.failure,
+        status:
+            success ? HostAssetTestStatus.success : HostAssetTestStatus.failure,
       );
     } catch (error) {
       _testStates[host.id] = HostAssetTestState(

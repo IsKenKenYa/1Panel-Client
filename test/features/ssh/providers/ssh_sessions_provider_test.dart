@@ -50,7 +50,8 @@ void main() {
   test('applyFilters reconnects with new query', () async {
     await provider.applyFilters(const SshSessionQuery(loginUser: 'root'));
 
-    verify(() => service.connectSessions(const SshSessionQuery(loginUser: 'root')))
+    verify(() =>
+            service.connectSessions(const SshSessionQuery(loginUser: 'root')))
         .called(greaterThanOrEqualTo(1));
   });
 }

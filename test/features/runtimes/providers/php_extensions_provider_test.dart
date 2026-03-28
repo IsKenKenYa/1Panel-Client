@@ -21,10 +21,10 @@ void main() {
         ],
       ),
     );
-    when(() => service.installExtension(any(), any(), taskId: any(named: 'taskId')))
-        .thenAnswer((_) async {});
-    when(() => service.uninstallExtension(any(), any(), taskId: any(named: 'taskId')))
-        .thenAnswer((_) async {});
+    when(() => service.installExtension(any(), any(),
+        taskId: any(named: 'taskId'))).thenAnswer((_) async {});
+    when(() => service.uninstallExtension(any(), any(),
+        taskId: any(named: 'taskId'))).thenAnswer((_) async {});
 
     provider = PhpExtensionsProvider(service: service);
   });
@@ -44,6 +44,8 @@ void main() {
     );
 
     expect(result, isTrue);
-    verify(() => service.installExtension(9, 'redis', taskId: any(named: 'taskId'))).called(1);
+    verify(() =>
+            service.installExtension(9, 'redis', taskId: any(named: 'taskId')))
+        .called(1);
   });
 }

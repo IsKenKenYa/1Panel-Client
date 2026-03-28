@@ -27,18 +27,23 @@ void _logSection(
   Object? request,
   Object? response,
 }) {
-  appLogger.dWithPackage('test.api_client.cronjob_form', '========================================');
+  appLogger.dWithPackage('test.api_client.cronjob_form',
+      '========================================');
   appLogger.dWithPackage('test.api_client.cronjob_form', title);
   if (method != null && path != null) {
-    appLogger.dWithPackage('test.api_client.cronjob_form', 'Request: $method $path');
+    appLogger.dWithPackage(
+        'test.api_client.cronjob_form', 'Request: $method $path');
   }
   if (request != null) {
-    appLogger.dWithPackage('test.api_client.cronjob_form', 'RequestBody: ${_prettyJson(request)}');
+    appLogger.dWithPackage(
+        'test.api_client.cronjob_form', 'RequestBody: ${_prettyJson(request)}');
   }
   if (response != null) {
-    appLogger.dWithPackage('test.api_client.cronjob_form', 'Response: ${_prettyJson(response)}');
+    appLogger.dWithPackage(
+        'test.api_client.cronjob_form', 'Response: ${_prettyJson(response)}');
   }
-  appLogger.dWithPackage('test.api_client.cronjob_form', '========================================');
+  appLogger.dWithPackage('test.api_client.cronjob_form',
+      '========================================');
 }
 
 Future<Response<Map<String, dynamic>>> _rawPost(
@@ -71,7 +76,8 @@ void main() {
   });
 
   group('Cronjob Form API客户端测试', () {
-    test('POST /cronjobs/load/info and /cronjobs/next should succeed', () async {
+    test('POST /cronjobs/load/info and /cronjobs/next should succeed',
+        () async {
       if (!canRun) return;
       final searchRaw = await _rawPost(
         client,
@@ -85,26 +91,42 @@ void main() {
           'order': 'null',
         },
       );
-      final items = (searchRaw.data?['data']?['items'] as List<dynamic>? ?? const <dynamic>[])
+      final items = (searchRaw.data?['data']?['items'] as List<dynamic>? ??
+              const <dynamic>[])
           .whereType<Map<String, dynamic>>()
           .toList(growable: false);
       if (items.isEmpty) {
-        appLogger.wWithPackage('test.api_client.cronjob_form', '跳过 load/info：当前环境没有 cronjob');
+        appLogger.wWithPackage(
+            'test.api_client.cronjob_form', '跳过 load/info：当前环境没有 cronjob');
         return;
       }
       final id = items.first['id'] as int;
-      final infoRaw = await _rawPost(client, '/cronjobs/load/info', data: <String, dynamic>{'id': id});
-      _logSection('✅ Raw /cronjobs/load/info', method: 'POST', path: '/cronjobs/load/info', request: <String, dynamic>{'id': id}, response: infoRaw.data);
+      final infoRaw = await _rawPost(client, '/cronjobs/load/info',
+          data: <String, dynamic>{'id': id});
+      _logSection('✅ Raw /cronjobs/load/info',
+          method: 'POST',
+          path: '/cronjobs/load/info',
+          request: <String, dynamic>{'id': id},
+          response: infoRaw.data);
       final info = await api.loadCronjobInfo(id);
-      _logSection('✅ Parsed /cronjobs/load/info', response: {'id': info.data?.id, 'type': info.data?.type, 'name': info.data?.name});
+      _logSection('✅ Parsed /cronjobs/load/info', response: {
+        'id': info.data?.id,
+        'type': info.data?.type,
+        'name': info.data?.name
+      });
 
       final nextRaw = await _rawPost(
         client,
         '/cronjobs/next',
         data: const <String, dynamic>{'spec': '0 0 * * *'},
       );
-      _logSection('✅ Raw /cronjobs/next', method: 'POST', path: '/cronjobs/next', request: const <String, dynamic>{'spec': '0 0 * * *'}, response: nextRaw.data);
-      final next = await api.loadNextHandle(const CronjobNextPreviewRequest(spec: '0 0 * * *'));
+      _logSection('✅ Raw /cronjobs/next',
+          method: 'POST',
+          path: '/cronjobs/next',
+          request: const <String, dynamic>{'spec': '0 0 * * *'},
+          response: nextRaw.data);
+      final next = await api
+          .loadNextHandle(const CronjobNextPreviewRequest(spec: '0 0 * * *'));
       _logSection('✅ Parsed /cronjobs/next', response: next.data);
       expect(next.data, isNotEmpty);
     });
@@ -114,17 +136,21 @@ void main() {
       final raw = await client.get<Map<String, dynamic>>(
         ApiConstants.buildApiPath('/cronjobs/script/options'),
       );
-      _logSection('✅ Raw /cronjobs/script/options', method: 'GET', path: '/cronjobs/script/options', response: raw.data);
+      _logSection('✅ Raw /cronjobs/script/options',
+          method: 'GET', path: '/cronjobs/script/options', response: raw.data);
       final parsed = await api.getScriptOptions();
-      _logSection('✅ Parsed /cronjobs/script/options', response: parsed.data?.map((item) => item.name).toList());
+      _logSection('✅ Parsed /cronjobs/script/options',
+          response: parsed.data?.map((item) => item.name).toList());
       expect(parsed.data, isNotNull);
     });
 
-    test('create/update/delete/import/export stay behind destructive gate', () async {
+    test('create/update/delete/import/export stay behind destructive gate',
+        () async {
       if (!canRun) return;
       final skipReason = TestEnvironment.skipDestructive();
       if (skipReason != null) {
-        appLogger.wWithPackage('test.api_client.cronjob_form', '跳过测试: $skipReason');
+        appLogger.wWithPackage(
+            'test.api_client.cronjob_form', '跳过测试: $skipReason');
         return;
       }
 
@@ -139,8 +165,13 @@ void main() {
         script: 'echo codex',
         user: 'root',
       );
-      final createRaw = await _rawPost(client, '/cronjobs', data: create.toJson());
-      _logSection('✅ Raw /cronjobs', method: 'POST', path: '/cronjobs', request: create.toJson(), response: createRaw.data);
+      final createRaw =
+          await _rawPost(client, '/cronjobs', data: create.toJson());
+      _logSection('✅ Raw /cronjobs',
+          method: 'POST',
+          path: '/cronjobs',
+          request: create.toJson(),
+          response: createRaw.data);
       await api.createCronjob(create);
 
       final importRequest = CronjobImportRequest(
@@ -157,12 +188,19 @@ void main() {
           ),
         ],
       );
-      final importRaw = await _rawPost(client, '/cronjobs/import', data: importRequest.toJson());
-      _logSection('✅ Raw /cronjobs/import', method: 'POST', path: '/cronjobs/import', request: importRequest.toJson(), response: importRaw.data);
+      final importRaw = await _rawPost(client, '/cronjobs/import',
+          data: importRequest.toJson());
+      _logSection('✅ Raw /cronjobs/import',
+          method: 'POST',
+          path: '/cronjobs/import',
+          request: importRequest.toJson(),
+          response: importRaw.data);
       await api.importCronjobs(importRequest);
 
-      final export = await api.exportCronjobs(const CronjobExportRequest(ids: <int>[]));
-      _logSection('✅ Parsed /cronjobs/export', response: Uint8List.fromList(export.data ?? const <int>[]).length);
+      final export =
+          await api.exportCronjobs(const CronjobExportRequest(ids: <int>[]));
+      _logSection('✅ Parsed /cronjobs/export',
+          response: Uint8List.fromList(export.data ?? const <int>[]).length);
       expect(export.data, isNotNull);
     });
   });

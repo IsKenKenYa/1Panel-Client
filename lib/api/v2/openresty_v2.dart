@@ -4,7 +4,8 @@ import '../../core/config/api_constants.dart';
 import '../../data/models/openresty_models.dart';
 
 class _Parser {
-  static Map<String, dynamic> extractMapData(Response<Map<String, dynamic>> response) {
+  static Map<String, dynamic> extractMapData(
+      Response<Map<String, dynamic>> response) {
     final body = response.data;
     if (body is Map<String, dynamic>) {
       final data = body['data'];
@@ -15,7 +16,8 @@ class _Parser {
     return {};
   }
 
-  static List<Map<String, dynamic>> extractListData(Response<Map<String, dynamic>> response) {
+  static List<Map<String, dynamic>> extractListData(
+      Response<Map<String, dynamic>> response) {
     final body = response.data;
     if (body is Map<String, dynamic>) {
       final data = body['data'];
@@ -51,7 +53,8 @@ class OpenRestyV2Api {
     );
   }
 
-  Future<Response<void>> updateOpenRestyConfigByFile(OpenrestyConfigFileUpdateRequest request) async {
+  Future<Response<void>> updateOpenRestyConfigByFile(
+      OpenrestyConfigFileUpdateRequest request) async {
     return await _client.post(
       ApiConstants.buildApiPath('/openresty/file'),
       data: request.toJson(),
@@ -70,7 +73,8 @@ class OpenRestyV2Api {
     );
   }
 
-  Future<Response<void>> updateOpenRestyHttps(OpenrestyDefaultHttpsUpdateRequest request) async {
+  Future<Response<void>> updateOpenRestyHttps(
+      OpenrestyDefaultHttpsUpdateRequest request) async {
     return await _client.post(
       ApiConstants.buildApiPath('/openresty/https'),
       data: request.toJson(),
@@ -89,19 +93,22 @@ class OpenRestyV2Api {
     );
   }
 
-  Future<Response<void>> updateOpenRestyModules(OpenrestyModuleUpdateRequest request) async {
+  Future<Response<void>> updateOpenRestyModules(
+      OpenrestyModuleUpdateRequest request) async {
     return await _client.post(
       ApiConstants.buildApiPath('/openresty/modules/update'),
       data: request.toJson(),
     );
   }
 
-  Future<Response<List<OpenrestyParam>>> getOpenRestyScope(OpenrestyScopeRequest request) async {
+  Future<Response<List<OpenrestyParam>>> getOpenRestyScope(
+      OpenrestyScopeRequest request) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/openresty/scope'),
       data: request.toJson(),
     );
-    final items = _Parser.extractListData(response).map(OpenrestyParam.fromJson).toList();
+    final items =
+        _Parser.extractListData(response).map(OpenrestyParam.fromJson).toList();
     return Response(
       data: items,
       statusCode: response.statusCode,
@@ -122,7 +129,8 @@ class OpenRestyV2Api {
     );
   }
 
-  Future<Response<void>> updateOpenResty(OpenrestyConfigUpdateRequest request) async {
+  Future<Response<void>> updateOpenResty(
+      OpenrestyConfigUpdateRequest request) async {
     return await _client.post(
       ApiConstants.buildApiPath('/openresty/update'),
       data: request.toJson(),
