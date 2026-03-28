@@ -2,6 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'settings_service.dart';
 import '../../api/v2/setting_v2.dart' as api;
 import '../../data/models/setting_models.dart';
+import '../../core/services/logger/logger_service.dart';
+
+const String _settingsProviderPackage = 'features.settings.settings_provider';
 
 class SettingsData {
   final bool isLoading;
@@ -69,59 +72,73 @@ class SettingsProvider extends ChangeNotifier {
 
   SettingsData get data => _data;
 
+  void _setError(
+    String action,
+    Object error, {
+    StackTrace? stackTrace,
+  }) {
+    appLogger.eWithPackage(
+      _settingsProviderPackage,
+      '$action failed',
+      error: error,
+      stackTrace: stackTrace,
+    );
+    _data = _data.copyWith(
+      isLoading: false,
+      isRefreshing: false,
+      error: '$action失败: $error',
+    );
+    notifyListeners();
+  }
+
   Future<void> loadSystemSettings() async {
     _data = _data.copyWith(isLoading: true, error: null);
     notifyListeners();
 
     try {
       final settings = await _service.getSystemSettings();
-      
+
       _data = _data.copyWith(
         systemSettings: settings,
         isLoading: false,
         lastUpdated: DateTime.now(),
       );
       notifyListeners();
-    } catch (e) {
-      debugPrint('[SettingsProvider] loadSystemSettings error: $e');
-      _data = _data.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      );
-      notifyListeners();
+    } catch (e, stackTrace) {
+      _setError('加载系统设置', e, stackTrace: stackTrace);
     }
   }
 
   Future<void> loadTerminalSettings() async {
     try {
       final settings = await _service.getTerminalSettings();
-      
+
       _data = _data.copyWith(terminalSettings: settings);
       notifyListeners();
-    } catch (e) {
-      debugPrint('[SettingsProvider] loadTerminalSettings error: $e');
+    } catch (e, stackTrace) {
+      _setError('加载终端设置', e, stackTrace: stackTrace);
     }
   }
 
   Future<void> loadNetworkInterfaces() async {
     try {
       final interfaces = await _service.getNetworkInterfaces();
-      
+
       _data = _data.copyWith(networkInterfaces: interfaces);
       notifyListeners();
-    } catch (e) {
-      debugPrint('[SettingsProvider] loadNetworkInterfaces error: $e');
+    } catch (e, stackTrace) {
+      _setError('加载网络接口', e, stackTrace: stackTrace);
     }
   }
 
   Future<void> loadMfaInfo(MfaCredential request) async {
     try {
       final mfaInfo = await _service.loadMfaInfo(request);
-      
+
       _data = _data.copyWith(mfaInfo: mfaInfo);
       notifyListeners();
-    } catch (e) {
-      debugPrint('[SettingsProvider] loadMfaInfo error: $e');
+    } catch (e, stackTrace) {
+      _setError('加载MFA信息', e, stackTrace: stackTrace);
     }
   }
 
@@ -135,8 +152,8 @@ class SettingsProvider extends ChangeNotifier {
       _data = _data.copyWith(mfaInfo: mfaInfo);
       notifyListeners();
       return mfaInfo;
-    } catch (e) {
-      debugPrint('[SettingsProvider] loadMfaOtp error: $e');
+    } catch (e, stackTrace) {
+      _setError('加载MFA OTP', e, stackTrace: stackTrace);
       return null;
     }
   }
@@ -144,49 +161,54 @@ class SettingsProvider extends ChangeNotifier {
   Future<void> loadMfaStatus() async {
     try {
       final status = await _service.getMfaStatus();
-      
+
       _data = _data.copyWith(mfaStatus: status);
       notifyListeners();
-    } catch (e) {
-      debugPrint('[SettingsProvider] loadMfaStatus error: $e');
+    } catch (e, stackTrace) {
+      _setError('加载MFA状态', e, stackTrace: stackTrace);
     }
   }
 
   Future<void> loadSSLInfo() async {
     try {
       final sslInfo = await _service.getSSLInfo();
-      
+
       _data = _data.copyWith(sslInfo: sslInfo);
       notifyListeners();
-    } catch (e) {
-      debugPrint('[SettingsProvider] loadSSLInfo error: $e');
+    } catch (e, stackTrace) {
+      _setError('加载SSL信息', e, stackTrace: stackTrace);
     }
   }
 
   Future<void> loadUpgradeInfo() async {
     try {
       final upgradeInfo = await _service.getUpgradeInfo();
-      
+
       _data = _data.copyWith(upgradeInfo: upgradeInfo);
       notifyListeners();
-    } catch (e) {
-      debugPrint('[SettingsProvider] loadUpgradeInfo error: $e');
+    } catch (e, stackTrace) {
+      _setError('加载升级信息', e, stackTrace: stackTrace);
     }
   }
 
   Future<void> loadSnapshots() async {
-    final result = await _service.searchSnapshots(api.SnapshotSearch());
-    _data = _data.copyWith(snapshots: result?['items'] as List<dynamic>?);
-    notifyListeners();
+    try {
+      final result = await _service.searchSnapshots(api.SnapshotSearch());
+      _data = _data.copyWith(snapshots: result?['items'] as List<dynamic>?);
+      notifyListeners();
+    } catch (e, stackTrace) {
+      _setError('加载快照列表', e, stackTrace: stackTrace);
+    }
   }
 
   Future<bool> updateSystemSetting(String key, String value) async {
     try {
-      await _service.updateSystemSetting(api.SettingUpdate(key: key, value: value));
+      await _service
+          .updateSystemSetting(api.SettingUpdate(key: key, value: value));
       await loadSystemSettings();
       return true;
-    } catch (e) {
-      debugPrint('[SettingsProvider] updateSystemSetting error: $e');
+    } catch (e, stackTrace) {
+      _setError('更新系统设置', e, stackTrace: stackTrace);
       return false;
     }
   }
@@ -218,8 +240,8 @@ class SettingsProvider extends ChangeNotifier {
       );
       await loadTerminalSettings();
       return true;
-    } catch (e) {
-      debugPrint('[SettingsProvider] updateTerminalSettings error: $e');
+    } catch (e, stackTrace) {
+      _setError('更新终端设置', e, stackTrace: stackTrace);
       return false;
     }
   }
@@ -235,8 +257,8 @@ class SettingsProvider extends ChangeNotifier {
       ));
       await loadSystemSettings();
       return true;
-    } catch (e) {
-      debugPrint('[SettingsProvider] updateProxySettings error: $e');
+    } catch (e, stackTrace) {
+      _setError('更新代理设置', e, stackTrace: stackTrace);
       return false;
     }
   }
@@ -246,13 +268,14 @@ class SettingsProvider extends ChangeNotifier {
       await _service.bindMfa(request);
       await loadMfaStatus();
       return true;
-    } catch (e) {
-      debugPrint('[SettingsProvider] bindMfa error: $e');
+    } catch (e, stackTrace) {
+      _setError('绑定MFA', e, stackTrace: stackTrace);
       return false;
     }
   }
 
-  Future<bool> bindMfaWithCode(String code, String secret, String interval) async {
+  Future<bool> bindMfaWithCode(
+      String code, String secret, String interval) async {
     try {
       await _service.bindMfa(MfaBindRequest(
         code: code,
@@ -261,8 +284,8 @@ class SettingsProvider extends ChangeNotifier {
       ));
       await loadMfaStatus();
       return true;
-    } catch (e) {
-      debugPrint('[SettingsProvider] bindMfaWithCode error: $e');
+    } catch (e, stackTrace) {
+      _setError('使用验证码绑定MFA', e, stackTrace: stackTrace);
       return false;
     }
   }
@@ -272,8 +295,8 @@ class SettingsProvider extends ChangeNotifier {
       await _service.unbindMfa({'code': code});
       await loadMfaStatus();
       return true;
-    } catch (e) {
-      debugPrint('[SettingsProvider] unbindMfa error: $e');
+    } catch (e, stackTrace) {
+      _setError('解绑MFA', e, stackTrace: stackTrace);
       return false;
     }
   }
@@ -285,8 +308,8 @@ class SettingsProvider extends ChangeNotifier {
         newPassword: newPassword,
       ));
       return true;
-    } catch (e) {
-      debugPrint('[SettingsProvider] updatePassword error: $e');
+    } catch (e, stackTrace) {
+      _setError('更新密码', e, stackTrace: stackTrace);
       return false;
     }
   }
@@ -299,8 +322,8 @@ class SettingsProvider extends ChangeNotifier {
         return true;
       }
       return false;
-    } catch (e) {
-      debugPrint('[SettingsProvider] generateApiKey error: $e');
+    } catch (e, stackTrace) {
+      _setError('生成API Key', e, stackTrace: stackTrace);
       return false;
     }
   }
@@ -318,8 +341,8 @@ class SettingsProvider extends ChangeNotifier {
       ));
       await loadSystemSettings();
       return true;
-    } catch (e) {
-      debugPrint('[SettingsProvider] updateApiConfig error: $e');
+    } catch (e, stackTrace) {
+      _setError('更新API配置', e, stackTrace: stackTrace);
       return false;
     }
   }
@@ -339,8 +362,8 @@ class SettingsProvider extends ChangeNotifier {
       ));
       await loadSSLInfo();
       return true;
-    } catch (e) {
-      debugPrint('[SettingsProvider] updateSSL error: $e');
+    } catch (e, stackTrace) {
+      _setError('更新SSL配置', e, stackTrace: stackTrace);
       return false;
     }
   }
@@ -349,8 +372,8 @@ class SettingsProvider extends ChangeNotifier {
     try {
       await _service.downloadSSL();
       return true;
-    } catch (e) {
-      debugPrint('[SettingsProvider] downloadSSL error: $e');
+    } catch (e, stackTrace) {
+      _setError('下载SSL', e, stackTrace: stackTrace);
       return false;
     }
   }
@@ -360,20 +383,36 @@ class SettingsProvider extends ChangeNotifier {
     required String sourceAccountIDs,
     required int downloadAccountID,
   }) async {
-    debugPrint('[SettingsProvider] createSnapshot: description=$description, sourceAccountIDs=$sourceAccountIDs, downloadAccountID=$downloadAccountID');
-    await _service.createSnapshot(api.SnapshotCreate(
-      description: description,
-      sourceAccountIDs: sourceAccountIDs,
-      downloadAccountID: downloadAccountID,
-    ));
-    await loadSnapshots();
-    return true;
+    appLogger.dWithPackage(
+      _settingsProviderPackage,
+      'createSnapshot: source=$sourceAccountIDs download=$downloadAccountID',
+    );
+    try {
+      await _service.createSnapshot(api.SnapshotCreate(
+        description: description,
+        sourceAccountIDs: sourceAccountIDs,
+        downloadAccountID: downloadAccountID,
+      ));
+      await loadSnapshots();
+      return true;
+    } catch (e, stackTrace) {
+      _setError('创建快照', e, stackTrace: stackTrace);
+      return false;
+    }
   }
 
   Future<List<Map<String, dynamic>>?> loadBackupAccountOptions() async {
-    final result = await _service.getBackupAccountOptions();
-    debugPrint('[SettingsProvider] loadBackupAccountOptions result: $result');
-    return result;
+    try {
+      final result = await _service.getBackupAccountOptions();
+      appLogger.dWithPackage(
+        _settingsProviderPackage,
+        'loadBackupAccountOptions count=${result?.length ?? 0}',
+      );
+      return result;
+    } catch (e, stackTrace) {
+      _setError('加载备份账户选项', e, stackTrace: stackTrace);
+      return null;
+    }
   }
 
   Future<bool> deleteSnapshot(List<int> ids) async {
@@ -381,8 +420,8 @@ class SettingsProvider extends ChangeNotifier {
       await _service.deleteSnapshot(api.SnapshotDelete(ids: ids));
       await loadSnapshots();
       return true;
-    } catch (e) {
-      debugPrint('[SettingsProvider] deleteSnapshot error: $e');
+    } catch (e, stackTrace) {
+      _setError('删除快照', e, stackTrace: stackTrace);
       return false;
     }
   }
@@ -391,8 +430,8 @@ class SettingsProvider extends ChangeNotifier {
     try {
       await _service.recoverSnapshot(api.SnapshotRecover(id: id));
       return true;
-    } catch (e) {
-      debugPrint('[SettingsProvider] recoverSnapshot error: $e');
+    } catch (e, stackTrace) {
+      _setError('恢复快照', e, stackTrace: stackTrace);
       return false;
     }
   }
@@ -401,8 +440,8 @@ class SettingsProvider extends ChangeNotifier {
     try {
       await _service.rollbackSnapshot(api.SnapshotRollback(id: id));
       return true;
-    } catch (e) {
-      debugPrint('[SettingsProvider] rollbackSnapshot error: $e');
+    } catch (e, stackTrace) {
+      _setError('回滚快照', e, stackTrace: stackTrace);
       return false;
     }
   }
@@ -412,19 +451,20 @@ class SettingsProvider extends ChangeNotifier {
       await _service.importSnapshot(api.SnapshotImport(path: path));
       await loadSnapshots();
       return true;
-    } catch (e) {
-      debugPrint('[SettingsProvider] importSnapshot error: $e');
+    } catch (e, stackTrace) {
+      _setError('导入快照', e, stackTrace: stackTrace);
       return false;
     }
   }
 
   Future<bool> updateSnapshotDescription(int id, String description) async {
     try {
-      await _service.updateSnapshotDescription(api.SnapshotDescriptionUpdate(id: id, description: description));
+      await _service.updateSnapshotDescription(
+          api.SnapshotDescriptionUpdate(id: id, description: description));
       await loadSnapshots();
       return true;
-    } catch (e) {
-      debugPrint('[SettingsProvider] updateSnapshotDescription error: $e');
+    } catch (e, stackTrace) {
+      _setError('更新快照描述', e, stackTrace: stackTrace);
       return false;
     }
   }
@@ -433,8 +473,8 @@ class SettingsProvider extends ChangeNotifier {
     try {
       await _service.upgrade(api.UpgradeRequest(version: version));
       return true;
-    } catch (e) {
-      debugPrint('[SettingsProvider] upgrade error: $e');
+    } catch (e, stackTrace) {
+      _setError('执行升级', e, stackTrace: stackTrace);
       return false;
     }
   }
@@ -442,8 +482,8 @@ class SettingsProvider extends ChangeNotifier {
   Future<List<dynamic>?> getUpgradeReleases() async {
     try {
       return await _service.getUpgradeReleases();
-    } catch (e) {
-      debugPrint('[SettingsProvider] getUpgradeReleases error: $e');
+    } catch (e, stackTrace) {
+      _setError('获取升级版本列表', e, stackTrace: stackTrace);
       return null;
     }
   }
@@ -451,8 +491,8 @@ class SettingsProvider extends ChangeNotifier {
   Future<String?> getReleaseNotes(String version) async {
     try {
       return await _service.getReleaseNotes(version);
-    } catch (e) {
-      debugPrint('[SettingsProvider] getReleaseNotes error: $e');
+    } catch (e, stackTrace) {
+      _setError('获取发布说明', e, stackTrace: stackTrace);
       return null;
     }
   }
@@ -476,13 +516,8 @@ class SettingsProvider extends ChangeNotifier {
         lastUpdated: DateTime.now(),
       );
       notifyListeners();
-    } catch (e) {
-      debugPrint('[SettingsProvider] load error: $e');
-      _data = _data.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      );
-      notifyListeners();
+    } catch (e, stackTrace) {
+      _setError('加载设置数据', e, stackTrace: stackTrace);
     }
   }
 
@@ -494,9 +529,8 @@ class SettingsProvider extends ChangeNotifier {
       await load();
       _data = _data.copyWith(isRefreshing: false);
       notifyListeners();
-    } catch (e) {
-      _data = _data.copyWith(isRefreshing: false, error: e.toString());
-      notifyListeners();
+    } catch (e, stackTrace) {
+      _setError('刷新设置数据', e, stackTrace: stackTrace);
     }
   }
 

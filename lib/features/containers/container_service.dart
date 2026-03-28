@@ -4,24 +4,29 @@ import '../../core/services/base_component.dart';
 import '../../data/models/common_models.dart';
 import '../../data/models/container_extension_models.dart';
 import '../../data/models/container_models.dart';
+import '../../data/repositories/container_repository.dart';
 
 class ContainerService extends BaseComponent {
   ContainerService({
+    ContainerRepository? repository,
     ContainerV2Api? api,
     super.clientManager,
     super.permissionResolver,
-  }) : _overrideApi = api;
+  }) : _repository = repository ??
+            ContainerRepository(
+              clientManager: clientManager,
+              api: api,
+            );
 
-  final ContainerV2Api? _overrideApi;
+  final ContainerRepository _repository;
 
   Future<ContainerV2Api> _ensureApi() async {
-    if (_overrideApi != null) {
-      return _overrideApi;
-    }
-    return clientManager.getContainerApi();
+    return _repository.ensureApi();
   }
 
-  void resetForServerChange() {}
+  void resetForServerChange() {
+    _repository.resetForServerChange();
+  }
 
   Future<List<ContainerInfo>> listContainers() {
     return runGuarded(() async {
@@ -193,7 +198,8 @@ class ContainerService extends BaseComponent {
   Future<ContainerItemStats> getContainerItemStats(String name) {
     return runGuarded(() async {
       final api = await _ensureApi();
-      final response = await api.getContainerItemStats(OperationWithName(name: name));
+      final response =
+          await api.getContainerItemStats(OperationWithName(name: name));
       return response.data!;
     });
   }
@@ -201,7 +207,8 @@ class ContainerService extends BaseComponent {
   Future<List<String>> getContainerUsers(String name) {
     return runGuarded(() async {
       final api = await _ensureApi();
-      final response = await api.getContainerUsers(OperationWithName(name: name));
+      final response =
+          await api.getContainerUsers(OperationWithName(name: name));
       return response.data ?? [];
     });
   }
@@ -285,7 +292,8 @@ class ContainerService extends BaseComponent {
     });
   }
 
-  Future<String> getContainerLogs(String containerName, {String? since, String? tail}) {
+  Future<String> getContainerLogs(String containerName,
+      {String? since, String? tail}) {
     return runGuarded(() async {
       final api = await _ensureApi();
       final response = await api.getContainerLogs(
@@ -293,10 +301,10 @@ class ContainerService extends BaseComponent {
         since: since,
         tail: tail,
       );
-      
+
       final data = response.data;
       if (data == null) return '';
-      
+
       if (data is String) {
         // Handle SSE format: "data: log content"
         if (data.contains('data:')) {
@@ -318,14 +326,14 @@ class ContainerService extends BaseComponent {
         }
         return data;
       }
-      
+
       if (data is Map) {
         // If it's a map, try to find 'data' or return toString
         if (data.containsKey('data')) return data['data'].toString();
         return data.toString();
       }
       if (data is List) return data.join('\n');
-      
+
       return data.toString();
     });
   }

@@ -1,5 +1,8 @@
 import 'package:flutter/foundation.dart';
 import '../../api/v2/monitor_v2.dart';
+import '../../core/services/logger/logger_service.dart';
+
+const String _monitorRepoPackage = 'data.repositories.monitor_repository';
 
 /// 磁盘数据
 class DiskData {
@@ -178,7 +181,7 @@ MonitorMetricsSnapshot parseMetricsResponse(dynamic data, DateTime timestamp) {
     final lastValue = values.last;
     if (lastValue is! Map<String, dynamic>) continue;
 
-    // debugPrint not recommended in isolate, just process silently or use print if needed
+    // Keep parsing silent in isolate to avoid side effects and output noise.
     // print('[MonitorRepository] Parsing param=$param, lastValue keys: ${lastValue.keys.toList()}');
 
     switch (param) {
@@ -337,7 +340,8 @@ class MonitorRepository {
       final now = DateTime.now();
       final startTime = now.subtract(const Duration(hours: 1));
 
-      debugPrint('[MonitorRepository] Calling API...');
+      appLogger.dWithPackage(
+          _monitorRepoPackage, 'Calling monitor metrics API');
       final response = await client.post(
         '/api/v2/hosts/monitor/search',
         data: {
@@ -349,8 +353,12 @@ class MonitorRepository {
 
       return parseMetricsResponse(response.data, now);
     } catch (e, stack) {
-      debugPrint('[MonitorRepository] getCurrentMetrics error: $e');
-      debugPrint('[MonitorRepository] Stack: $stack');
+      appLogger.eWithPackage(
+        _monitorRepoPackage,
+        'getCurrentMetrics failed',
+        error: e,
+        stackTrace: stack,
+      );
       return const MonitorMetricsSnapshot();
     }
   }
@@ -382,8 +390,13 @@ class MonitorRepository {
       );
 
       return parseTimeSeriesResponse(response.data, 'base', valueKey);
-    } catch (e) {
-      debugPrint('[MonitorRepository] getTimeSeries error: $e');
+    } catch (e, stack) {
+      appLogger.eWithPackage(
+        _monitorRepoPackage,
+        'getTimeSeries failed: param=$param valueKey=$valueKey',
+        error: e,
+        stackTrace: stack,
+      );
       return MonitorTimeSeries.empty(param);
     }
   }
@@ -413,8 +426,13 @@ class MonitorRepository {
         parseMonitorDataPackage,
         MonitorDataParseArgs(response.data, now),
       );
-    } catch (e) {
-      debugPrint('[MonitorRepository] getMonitorData error: $e');
+    } catch (e, stack) {
+      appLogger.eWithPackage(
+        _monitorRepoPackage,
+        'getMonitorData failed',
+        error: e,
+        stackTrace: stack,
+      );
       return MonitorDataPackage(
         current: const MonitorMetricsSnapshot(),
         timeSeries: {},
@@ -446,8 +464,13 @@ class MonitorRepository {
         }
       }
       return [];
-    } catch (e) {
-      debugPrint('[MonitorRepository] getGPUInfo error: $e');
+    } catch (e, stack) {
+      appLogger.eWithPackage(
+        _monitorRepoPackage,
+        'getGPUInfo failed',
+        error: e,
+        stackTrace: stack,
+      );
       return [];
     }
   }
@@ -460,8 +483,13 @@ class MonitorRepository {
         return MonitorSetting.fromJson(response.data as Map<String, dynamic>);
       }
       return null;
-    } catch (e) {
-      debugPrint('[MonitorRepository] getSetting error: $e');
+    } catch (e, stack) {
+      appLogger.eWithPackage(
+        _monitorRepoPackage,
+        'getSetting failed',
+        error: e,
+        stackTrace: stack,
+      );
       return null;
     }
   }
@@ -483,8 +511,13 @@ class MonitorRepository {
         },
       );
       return true;
-    } catch (e) {
-      debugPrint('[MonitorRepository] updateSetting error: $e');
+    } catch (e, stack) {
+      appLogger.eWithPackage(
+        _monitorRepoPackage,
+        'updateSetting failed',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
   }
@@ -494,8 +527,13 @@ class MonitorRepository {
     try {
       await client.post('/api/v2/hosts/monitor/clean');
       return true;
-    } catch (e) {
-      debugPrint('[MonitorRepository] cleanData error: $e');
+    } catch (e, stack) {
+      appLogger.eWithPackage(
+        _monitorRepoPackage,
+        'cleanData failed',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     }
   }

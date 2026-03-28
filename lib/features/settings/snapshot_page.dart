@@ -4,6 +4,9 @@ import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/settings/settings_provider.dart';
 import 'package:onepanel_client/core/utils/debug_error_dialog.dart';
+import 'package:onepanel_client/core/services/logger/logger_service.dart';
+
+const String _snapshotPagePackage = 'features.settings.snapshot_page';
 
 class SnapshotPage extends StatefulWidget {
   const SnapshotPage({super.key});
@@ -39,7 +42,10 @@ class _SnapshotPageState extends State<SnapshotPage> {
 
     try {
       final accounts = await provider.loadBackupAccountOptions();
-      debugPrint('[SnapshotPage] loadBackupAccountOptions: $accounts');
+      appLogger.dWithPackage(
+        _snapshotPagePackage,
+        'loadBackupAccountOptions count=${accounts?.length ?? 0}',
+      );
       if (mounted) {
         setState(() {
           _backupAccounts = accounts;
@@ -79,7 +85,8 @@ class _SnapshotPageState extends State<SnapshotPage> {
     );
   }
 
-  Widget _buildBody(BuildContext context, ThemeData theme, List<dynamic>? snapshots, AppLocalizations l10n) {
+  Widget _buildBody(BuildContext context, ThemeData theme,
+      List<dynamic>? snapshots, AppLocalizations l10n) {
     if (_loadError != null) {
       return Center(
         child: Column(
@@ -117,7 +124,8 @@ class _SnapshotPageState extends State<SnapshotPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.photo_library_outlined, size: 64, color: Colors.grey),
+          const Icon(Icons.photo_library_outlined,
+              size: 64, color: Colors.grey),
           const SizedBox(height: 16),
           Text(l10n.snapshotEmpty),
           const SizedBox(height: 8),
@@ -136,7 +144,8 @@ class _SnapshotPageState extends State<SnapshotPage> {
     );
   }
 
-  Widget _buildSnapshotCard(BuildContext context, ThemeData theme, Map<String, dynamic> snapshot, AppLocalizations l10n) {
+  Widget _buildSnapshotCard(BuildContext context, ThemeData theme,
+      Map<String, dynamic> snapshot, AppLocalizations l10n) {
     return Card(
       margin: const EdgeInsets.only(bottom: AppDesignTokens.spacingSm),
       child: ListTile(
@@ -146,18 +155,25 @@ class _SnapshotPageState extends State<SnapshotPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('${l10n.snapshotCreatedAt}: ${snapshot['createdAt'] ?? '-'}'),
-            Text('${l10n.snapshotDescription}: ${snapshot['description'] ?? '-'}'),
+            Text(
+                '${l10n.snapshotDescription}: ${snapshot['description'] ?? '-'}'),
           ],
         ),
         isThreeLine: true,
         trailing: PopupMenuButton<String>(
-          onSelected: (value) => _handleSnapshotAction(context, value, snapshot, l10n),
+          onSelected: (value) =>
+              _handleSnapshotAction(context, value, snapshot, l10n),
           itemBuilder: (context) => [
             PopupMenuItem(value: 'recover', child: Text(l10n.snapshotRecover)),
-            PopupMenuItem(value: 'rollback', child: Text(l10n.snapshotRollback)),
-            PopupMenuItem(value: 'editDesc', child: Text(l10n.snapshotEditDesc)),
+            PopupMenuItem(
+                value: 'rollback', child: Text(l10n.snapshotRollback)),
+            PopupMenuItem(
+                value: 'editDesc', child: Text(l10n.snapshotEditDesc)),
             const PopupMenuDivider(),
-            PopupMenuItem(value: 'delete', child: Text(l10n.snapshotDelete, style: const TextStyle(color: Colors.red))),
+            PopupMenuItem(
+                value: 'delete',
+                child: Text(l10n.snapshotDelete,
+                    style: const TextStyle(color: Colors.red))),
           ],
         ),
       ),
@@ -173,7 +189,10 @@ class _SnapshotPageState extends State<SnapshotPage> {
       selectedAccountId = _backupAccounts!.first['id'] as int;
     }
 
-    debugPrint('[SnapshotPage] _showCreateSnapshotDialog: _backupAccounts=$_backupAccounts, initial selectedAccountId=$selectedAccountId');
+    appLogger.dWithPackage(
+      _snapshotPagePackage,
+      'showCreateSnapshotDialog: accountCount=${_backupAccounts?.length ?? 0}',
+    );
 
     showDialog(
       context: context,
@@ -214,7 +233,10 @@ class _SnapshotPageState extends State<SnapshotPage> {
                       );
                     }).toList(),
                     onChanged: (value) {
-                      debugPrint('[SnapshotPage] Dropdown changed to: $value');
+                      appLogger.dWithPackage(
+                        _snapshotPagePackage,
+                        'backup account changed: $value',
+                      );
                       setDialogState(() {
                         selectedAccountId = value;
                       });
@@ -229,26 +251,40 @@ class _SnapshotPageState extends State<SnapshotPage> {
                 child: Text(l10n.commonCancel),
               ),
               FilledButton(
-                onPressed: _backupAccounts == null || _backupAccounts!.isEmpty || selectedAccountId == null
+                onPressed: _backupAccounts == null ||
+                        _backupAccounts!.isEmpty ||
+                        selectedAccountId == null
                     ? null
                     : () async {
                         Navigator.pop(dialogContext);
-                        debugPrint('[SnapshotPage] Creating snapshot with account: $selectedAccountId');
+                        appLogger.iWithPackage(
+                          _snapshotPagePackage,
+                          'createSnapshot with account: $selectedAccountId',
+                        );
                         try {
                           final success = await provider.createSnapshot(
-                            description: descController.text.isEmpty ? null : descController.text,
+                            description: descController.text.isEmpty
+                                ? null
+                                : descController.text,
                             sourceAccountIDs: selectedAccountId.toString(),
                             downloadAccountID: selectedAccountId!,
                           );
-                          debugPrint('[SnapshotPage] Create snapshot result: $success');
+                          appLogger.iWithPackage(
+                            _snapshotPagePackage,
+                            'createSnapshot result: $success',
+                          );
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(success ? l10n.snapshotCreateSuccess : l10n.snapshotCreateFailed)),
+                              SnackBar(
+                                  content: Text(success
+                                      ? l10n.snapshotCreateSuccess
+                                      : l10n.snapshotCreateFailed)),
                             );
                           }
                         } catch (e, stackTrace) {
                           if (context.mounted) {
-                            DebugErrorDialog.show(context, '创建快照失败', e, stackTrace: stackTrace);
+                            DebugErrorDialog.show(context, '创建快照失败', e,
+                                stackTrace: stackTrace);
                           }
                         }
                       },
@@ -288,12 +324,16 @@ class _SnapshotPageState extends State<SnapshotPage> {
                 final success = await provider.importSnapshot(controller.text);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(success ? l10n.snapshotImportSuccess : l10n.snapshotImportFailed)),
+                    SnackBar(
+                        content: Text(success
+                            ? l10n.snapshotImportSuccess
+                            : l10n.snapshotImportFailed)),
                   );
                 }
               } catch (e, stackTrace) {
                 if (context.mounted) {
-                  DebugErrorDialog.show(context, '导入快照失败', e, stackTrace: stackTrace);
+                  DebugErrorDialog.show(context, '导入快照失败', e,
+                      stackTrace: stackTrace);
                 }
               }
             },
@@ -304,7 +344,8 @@ class _SnapshotPageState extends State<SnapshotPage> {
     );
   }
 
-  void _handleSnapshotAction(BuildContext context, String action, Map<String, dynamic> snapshot, AppLocalizations l10n) {
+  void _handleSnapshotAction(BuildContext context, String action,
+      Map<String, dynamic> snapshot, AppLocalizations l10n) {
     final provider = context.read<SettingsProvider>();
     final id = snapshot['id'] as int;
     switch (action) {
@@ -315,7 +356,8 @@ class _SnapshotPageState extends State<SnapshotPage> {
         _showRollbackConfirmDialog(context, provider, id, l10n);
         break;
       case 'editDesc':
-        _showEditDescDialog(context, provider, id, snapshot['description'] as String?, l10n);
+        _showEditDescDialog(
+            context, provider, id, snapshot['description'] as String?, l10n);
         break;
       case 'delete':
         _showDeleteConfirmDialog(context, provider, [id], l10n);
@@ -323,7 +365,8 @@ class _SnapshotPageState extends State<SnapshotPage> {
     }
   }
 
-  void _showRecoverConfirmDialog(BuildContext context, SettingsProvider provider, int id, AppLocalizations l10n) {
+  void _showRecoverConfirmDialog(BuildContext context,
+      SettingsProvider provider, int id, AppLocalizations l10n) {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -341,12 +384,16 @@ class _SnapshotPageState extends State<SnapshotPage> {
                 final success = await provider.recoverSnapshot(id);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(success ? l10n.snapshotRecoverSuccess : l10n.snapshotRecoverFailed)),
+                    SnackBar(
+                        content: Text(success
+                            ? l10n.snapshotRecoverSuccess
+                            : l10n.snapshotRecoverFailed)),
                   );
                 }
               } catch (e, stackTrace) {
                 if (context.mounted) {
-                  DebugErrorDialog.show(context, '恢复快照失败', e, stackTrace: stackTrace);
+                  DebugErrorDialog.show(context, '恢复快照失败', e,
+                      stackTrace: stackTrace);
                 }
               }
             },
@@ -357,7 +404,8 @@ class _SnapshotPageState extends State<SnapshotPage> {
     );
   }
 
-  void _showRollbackConfirmDialog(BuildContext context, SettingsProvider provider, int id, AppLocalizations l10n) {
+  void _showRollbackConfirmDialog(BuildContext context,
+      SettingsProvider provider, int id, AppLocalizations l10n) {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -375,12 +423,16 @@ class _SnapshotPageState extends State<SnapshotPage> {
                 final success = await provider.rollbackSnapshot(id);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(success ? l10n.snapshotRollbackSuccess : l10n.snapshotRollbackFailed)),
+                    SnackBar(
+                        content: Text(success
+                            ? l10n.snapshotRollbackSuccess
+                            : l10n.snapshotRollbackFailed)),
                   );
                 }
               } catch (e, stackTrace) {
                 if (context.mounted) {
-                  DebugErrorDialog.show(context, '回滚快照失败', e, stackTrace: stackTrace);
+                  DebugErrorDialog.show(context, '回滚快照失败', e,
+                      stackTrace: stackTrace);
                 }
               }
             },
@@ -391,7 +443,8 @@ class _SnapshotPageState extends State<SnapshotPage> {
     );
   }
 
-  void _showEditDescDialog(BuildContext context, SettingsProvider provider, int id, String? currentDesc, AppLocalizations l10n) {
+  void _showEditDescDialog(BuildContext context, SettingsProvider provider,
+      int id, String? currentDesc, AppLocalizations l10n) {
     final controller = TextEditingController(text: currentDesc ?? '');
     showDialog(
       context: context,
@@ -414,15 +467,20 @@ class _SnapshotPageState extends State<SnapshotPage> {
             onPressed: () async {
               Navigator.pop(dialogContext);
               try {
-                final success = await provider.updateSnapshotDescription(id, controller.text);
+                final success = await provider.updateSnapshotDescription(
+                    id, controller.text);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(success ? l10n.snapshotEditDescSuccess : l10n.snapshotEditDescFailed)),
+                    SnackBar(
+                        content: Text(success
+                            ? l10n.snapshotEditDescSuccess
+                            : l10n.snapshotEditDescFailed)),
                   );
                 }
               } catch (e, stackTrace) {
                 if (context.mounted) {
-                  DebugErrorDialog.show(context, '更新描述失败', e, stackTrace: stackTrace);
+                  DebugErrorDialog.show(context, '更新描述失败', e,
+                      stackTrace: stackTrace);
                 }
               }
             },
@@ -433,7 +491,8 @@ class _SnapshotPageState extends State<SnapshotPage> {
     );
   }
 
-  void _showDeleteConfirmDialog(BuildContext context, SettingsProvider provider, List<int> ids, AppLocalizations l10n) {
+  void _showDeleteConfirmDialog(BuildContext context, SettingsProvider provider,
+      List<int> ids, AppLocalizations l10n) {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -452,12 +511,16 @@ class _SnapshotPageState extends State<SnapshotPage> {
                 final success = await provider.deleteSnapshot(ids);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(success ? l10n.snapshotDeleteSuccess : l10n.snapshotDeleteFailed)),
+                    SnackBar(
+                        content: Text(success
+                            ? l10n.snapshotDeleteSuccess
+                            : l10n.snapshotDeleteFailed)),
                   );
                 }
               } catch (e, stackTrace) {
                 if (context.mounted) {
-                  DebugErrorDialog.show(context, '删除快照失败', e, stackTrace: stackTrace);
+                  DebugErrorDialog.show(context, '删除快照失败', e,
+                      stackTrace: stackTrace);
                 }
               }
             },

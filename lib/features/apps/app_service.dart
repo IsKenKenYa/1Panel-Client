@@ -4,13 +4,19 @@ import '../../core/services/base_component.dart';
 import '../../data/models/app_models.dart';
 
 import '../../data/models/app_config_models.dart';
+import '../../data/repositories/app_repository.dart';
 
 class AppService extends BaseComponent {
   AppService({
+    AppRepository? repository,
     AppV2Api? api,
     super.clientManager,
     super.permissionResolver,
-  }) : _overrideApi = api;
+  }) : _repository = repository ??
+            AppRepository(
+              clientManager: clientManager,
+              api: api,
+            );
 
   Future<Response<List<int>>> getAppIcon(String appKey) {
     return runGuarded(() async {
@@ -19,16 +25,15 @@ class AppService extends BaseComponent {
     });
   }
 
-  final AppV2Api? _overrideApi;
+  final AppRepository _repository;
 
   Future<AppV2Api> _ensureApi() async {
-    if (_overrideApi != null) {
-      return _overrideApi;
-    }
-    return clientManager.getAppApi();
+    return _repository.ensureApi();
   }
 
-  void resetForServerChange() {}
+  void resetForServerChange() {
+    _repository.resetForServerChange();
+  }
 
   Future<AppSearchResponse> searchApps(AppSearchRequest request) {
     return runGuarded(() async {
@@ -44,7 +49,8 @@ class AppService extends BaseComponent {
     });
   }
 
-  Future<PageResult<AppInstallInfo>> searchInstalledApps(AppInstalledSearchRequest request) {
+  Future<PageResult<AppInstallInfo>> searchInstalledApps(
+      AppInstalledSearchRequest request) {
     return runGuarded(() async {
       final api = await _ensureApi();
       return api.searchInstalledApps(request);
@@ -175,7 +181,8 @@ class AppService extends BaseComponent {
     });
   }
 
-  Future<AppInstalledCheckResponse> checkAppInstall(AppInstalledCheckRequest request) {
+  Future<AppInstalledCheckResponse> checkAppInstall(
+      AppInstalledCheckRequest request) {
     return runGuarded(() async {
       final api = await _ensureApi();
       return api.checkAppInstall(request);

@@ -136,8 +136,9 @@ class TestEnvironment {
 
   static String get baseUrl =>
       config.getString('PANEL_BASE_URL', defaultValue: 'http://localhost:9999');
-  static String get apiKey =>
-      runIntegrationTests ? config.getString('PANEL_API_KEY') : '';
+  static String get apiKey => (runIntegrationTests || runLiveApiTests)
+      ? config.getString('PANEL_API_KEY')
+      : '';
   static String get apiVersion =>
       config.getString('API_VERSION', defaultValue: 'v2');
   static int get tokenValidityMinutes =>
@@ -152,6 +153,7 @@ class TestEnvironment {
 
   static bool get runIntegrationTests =>
       config.getBool('RUN_INTEGRATION_TESTS');
+  static bool get runLiveApiTests => config.getBool('RUN_LIVE_API_TESTS');
   static bool get runDestructiveTests =>
       config.getBool('RUN_DESTRUCTIVE_TESTS');
   static bool get runPerformanceTests =>
@@ -174,6 +176,12 @@ class TestEnvironment {
     return runIntegrationTests
         ? null
         : 'Integration tests disabled (set RUN_INTEGRATION_TESTS=true)';
+  }
+
+  static String? skipLiveApi() {
+    return runLiveApiTests
+        ? null
+        : 'Live API tests disabled (set RUN_LIVE_API_TESTS=true)';
   }
 
   static String? skipDestructive() {
@@ -200,5 +208,9 @@ class TestEnvironment {
 
   static bool get canRunIntegrationTests {
     return runIntegrationTests && skipNoApiKey() == null;
+  }
+
+  static bool get canRunLiveApiTests {
+    return runLiveApiTests && skipNoApiKey() == null;
   }
 }

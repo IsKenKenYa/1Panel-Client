@@ -73,6 +73,63 @@ class TestRunner {
     }
   }
 
+  static String get liveTestTimeout {
+    final raw = Platform.environment['LIVE_API_TEST_TIMEOUT'];
+    if (raw == null || raw.isEmpty) {
+      return '60s';
+    }
+    return raw;
+  }
+
+  static int get liveTestRetries {
+    final raw = Platform.environment['LIVE_API_TEST_RETRIES'];
+    final retries = int.tryParse(raw ?? '1') ?? 1;
+    return retries < 1 ? 1 : retries;
+  }
+
+  static bool get liveApiEnabled {
+    final raw = Platform.environment['RUN_LIVE_API_TESTS']?.toLowerCase();
+    return raw == 'true' || raw == '1' || raw == 'yes';
+  }
+
+  static Future<void> runLiveTestWithRetry(
+    String testPath, {
+    String? description,
+  }) async {
+    if (description != null) {
+      printHeader(description);
+    }
+
+    final flutter = await resolveFlutterCommand();
+    var attempt = 0;
+    var success = false;
+
+    while (attempt < liveTestRetries && !success) {
+      attempt++;
+      if (attempt > 1) {
+        printWarning('重试 $attempt/$liveTestRetries: $testPath');
+      }
+
+      final exitCode = await runCommand(flutter, [
+        'test',
+        testPath,
+        '--reporter=expanded',
+        '--timeout=$liveTestTimeout',
+      ]);
+
+      success = exitCode == 0;
+      if (!success && attempt < liveTestRetries) {
+        await Future<void>.delayed(Duration(seconds: attempt));
+      }
+    }
+
+    if (success) {
+      printSuccess('测试通过');
+    } else {
+      printError('测试失败 (重试后仍未通过)');
+    }
+  }
+
   static Future<void> runAllTests() async {
     printHeader('运行全量回归测试');
     final flutter = await resolveFlutterCommand();
@@ -120,21 +177,6 @@ class TestRunner {
         description: 'Host Assets Provider测试',
       );
     }
-    final commandApiClientFile =
-        File('test/api_client/command_api_client_test.dart');
-    if (await commandApiClientFile.exists()) {
-      await runTests(
-        'test/api_client/command_api_client_test.dart',
-        description: 'Command API真实环境测试',
-      );
-    }
-    final hostApiClientFile = File('test/api_client/host_api_client_test.dart');
-    if (await hostApiClientFile.exists()) {
-      await runTests(
-        'test/api_client/host_api_client_test.dart',
-        description: 'Host API真实环境测试',
-      );
-    }
     final sshProviderDir = Directory('test/features/ssh/providers');
     if (await sshProviderDir.exists()) {
       await runTests(
@@ -147,29 +189,6 @@ class TestRunner {
       await runTests(
         'test/features/processes/providers/',
         description: 'Process Provider测试',
-      );
-    }
-    final sshApiClientFile = File('test/api_client/ssh_api_client_test.dart');
-    if (await sshApiClientFile.exists()) {
-      await runTests(
-        'test/api_client/ssh_api_client_test.dart',
-        description: 'SSH API真实环境测试',
-      );
-    }
-    final processApiClientFile =
-        File('test/api_client/process_api_client_test.dart');
-    if (await processApiClientFile.exists()) {
-      await runTests(
-        'test/api_client/process_api_client_test.dart',
-        description: 'Process API真实环境测试',
-      );
-    }
-    final processWsClientTestFile =
-        File('test/core/network/process_ws_client_test.dart');
-    if (await processWsClientTestFile.exists()) {
-      await runTests(
-        'test/core/network/process_ws_client_test.dart',
-        description: 'Process WebSocket契约测试',
       );
     }
     final cronjobsProviderDir = Directory('test/features/cronjobs/providers');
@@ -201,52 +220,71 @@ class TestRunner {
         description: 'Runtime Provider测试',
       );
     }
-    final cronjobApiClientFile =
-        File('test/api_client/cronjob_api_client_test.dart');
-    if (await cronjobApiClientFile.exists()) {
-      await runTests(
-        'test/api_client/cronjob_api_client_test.dart',
-        description: 'Cronjob API真实环境测试',
-      );
+  }
+
+  static Future<void> runLiveApiTests() async {
+    printHeader('运行真实环境 API 测试');
+
+    if (!liveApiEnabled) {
+      printWarning('未启用真实环境 API 测试 (设置 RUN_LIVE_API_TESTS=true)');
+      return;
     }
-    final scriptLibraryApiClientFile =
-        File('test/api_client/script_library_api_client_test.dart');
-    if (await scriptLibraryApiClientFile.exists()) {
-      await runTests(
-        'test/api_client/script_library_api_client_test.dart',
-        description: 'Script Library API真实环境测试',
-      );
-    }
-    final cronjobFormApiClientFile =
-        File('test/api_client/cronjob_form_api_client_test.dart');
-    if (await cronjobFormApiClientFile.exists()) {
-      await runTests(
-        'test/api_client/cronjob_form_api_client_test.dart',
-        description: 'Cronjob Form API真实环境测试',
-      );
-    }
-    final backupApiClientFile =
-        File('test/api_client/backup_api_client_test.dart');
-    if (await backupApiClientFile.exists()) {
-      await runTests(
-        'test/api_client/backup_api_client_test.dart',
-        description: 'Backup API真实环境测试',
-      );
-    }
-    final runtimeApiClientFile =
-        File('test/api_client/runtime_api_test.dart');
-    if (await runtimeApiClientFile.exists()) {
-      await runTests(
-        'test/api_client/runtime_api_test.dart',
-        description: 'Runtime API真实环境测试',
-      );
-    }
-    final scriptRunWsClientTestFile =
-        File('test/core/network/script_run_ws_client_test.dart');
-    if (await scriptRunWsClientTestFile.exists()) {
-      await runTests(
-        'test/core/network/script_run_ws_client_test.dart',
-        description: 'Script Run WebSocket契约测试',
+
+    final suites = <Map<String, String>>[
+      {
+        'path': 'test/api_client/command_api_client_test.dart',
+        'desc': 'Command API真实环境测试',
+      },
+      {
+        'path': 'test/api_client/host_api_client_test.dart',
+        'desc': 'Host API真实环境测试',
+      },
+      {
+        'path': 'test/api_client/ssh_api_client_test.dart',
+        'desc': 'SSH API真实环境测试',
+      },
+      {
+        'path': 'test/api_client/process_api_client_test.dart',
+        'desc': 'Process API真实环境测试',
+      },
+      {
+        'path': 'test/core/network/process_ws_client_test.dart',
+        'desc': 'Process WebSocket契约测试',
+      },
+      {
+        'path': 'test/api_client/cronjob_api_client_test.dart',
+        'desc': 'Cronjob API真实环境测试',
+      },
+      {
+        'path': 'test/api_client/script_library_api_client_test.dart',
+        'desc': 'Script Library API真实环境测试',
+      },
+      {
+        'path': 'test/api_client/cronjob_form_api_client_test.dart',
+        'desc': 'Cronjob Form API真实环境测试',
+      },
+      {
+        'path': 'test/api_client/backup_api_client_test.dart',
+        'desc': 'Backup API真实环境测试',
+      },
+      {
+        'path': 'test/api_client/runtime_api_test.dart',
+        'desc': 'Runtime API真实环境测试',
+      },
+      {
+        'path': 'test/core/network/script_run_ws_client_test.dart',
+        'desc': 'Script Run WebSocket契约测试',
+      },
+    ];
+
+    for (final suite in suites) {
+      final file = File(suite['path']!);
+      if (!await file.exists()) {
+        continue;
+      }
+      await runLiveTestWithRetry(
+        suite['path']!,
+        description: suite['desc'],
       );
     }
   }
@@ -446,6 +484,7 @@ class TestRunner {
 选项:
   all           运行全量回归测试
   unit          仅运行单元测试
+  live          仅运行真实环境 API 测试
   integration   仅运行集成测试
   ui            仅运行UI/Widget测试
   auth          运行认证测试
@@ -470,6 +509,9 @@ class TestRunner {
   - PANEL_API_KEY: API密钥
   - RUN_INTEGRATION_TESTS: 是否运行集成测试 (true/false)
   - RUN_DESTRUCTIVE_TESTS: 是否运行破坏性测试 (true/false)
+  - RUN_LIVE_API_TESTS: 是否运行真实环境 API 测试 (true/false)
+  - LIVE_API_TEST_TIMEOUT: 真实环境测试超时 (例如 60s)
+  - LIVE_API_TEST_RETRIES: 真实环境测试重试次数 (默认 1)
 
 注意:
   1Panel OpenAPI 仅支持 API密钥 认证方式
@@ -512,6 +554,9 @@ Future<void> main(List<String> args) async {
       break;
     case 'unit':
       await TestRunner.runUnitTests();
+      break;
+    case 'live':
+      await TestRunner.runLiveApiTests();
       break;
     case 'integration':
       await TestRunner.runIntegrationTests();
