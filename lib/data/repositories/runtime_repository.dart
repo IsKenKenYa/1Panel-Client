@@ -140,6 +140,13 @@ class RuntimeRepository {
     await api.operateSupervisorProcess(request);
   }
 
+  Future<void> upsertSupervisorProcess(
+    SupervisorProcessUpsertRequest request,
+  ) async {
+    final api = await _ensureApi();
+    await api.upsertSupervisorProcess(request);
+  }
+
   Future<String> operateSupervisorProcessFile(
     SupervisorProcessFileRequest request,
   ) async {

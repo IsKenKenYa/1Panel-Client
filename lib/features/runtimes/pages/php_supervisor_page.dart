@@ -60,6 +60,13 @@ class _PhpSupervisorPageState extends State<PhpSupervisorPage> {
               icon: const Icon(Icons.refresh),
               tooltip: l10n.commonRefresh,
             ),
+            IconButton(
+              onPressed: provider.isLoading || provider.isOperating
+                  ? null
+                  : () => _openProcessEditor(),
+              icon: const Icon(Icons.add),
+              tooltip: l10n.commonAdd,
+            ),
           ],
           body: AsyncStatePageBodyWidget(
             isLoading: provider.isLoading,
@@ -164,6 +171,13 @@ class _PhpSupervisorPageState extends State<PhpSupervisorPage> {
                         ? null
                         : () => _operate(item.name, 'restart'),
                     child: Text(l10n.commonRestart),
+                  ),
+                if (!isBuiltin)
+                  TextButton(
+                    onPressed: provider.isOperating
+                        ? null
+                        : () => _openProcessEditor(initial: item),
+                    child: Text(l10n.commonEdit),
                   ),
                 if (!isBuiltin)
                   TextButton(
@@ -445,5 +459,176 @@ class _PhpSupervisorPageState extends State<PhpSupervisorPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
     );
+  }
+
+  Future<void> _openProcessEditor({
+    SupervisorProcessInfo? initial,
+  }) async {
+    final l10n = context.l10n;
+    final isEdit = initial != null;
+
+    final nameController = TextEditingController(text: initial?.name ?? '');
+    final commandController =
+        TextEditingController(text: initial?.command ?? '');
+    final userController = TextEditingController(
+      text: initial == null
+        ? 'www-data'
+        : (initial.user.trim().isEmpty ? 'www-data' : initial.user),
+    );
+    final dirController = TextEditingController(text: initial?.dir ?? '');
+    final numprocsController = TextEditingController(
+        text: initial == null
+          ? '1'
+          : (initial.numprocs.trim().isEmpty ? '1' : initial.numprocs),
+    );
+    final environmentController =
+        TextEditingController(text: initial?.environment ?? '');
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(
+              16,
+              12,
+              16,
+              MediaQuery.of(sheetContext).viewInsets.bottom + 16,
+            ),
+            child: Consumer<PhpSupervisorProvider>(
+              builder: (_, provider, __) {
+                return SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        isEdit
+                            ? '${l10n.commonEdit} ${l10n.operationsSupervisorTitle}'
+                            : '${l10n.commonAdd} ${l10n.operationsSupervisorTitle}',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: nameController,
+                        decoration: InputDecoration(
+                          labelText: l10n.commonName,
+                          border: const OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: commandController,
+                        decoration: InputDecoration(
+                          labelText: l10n.containerInfoCommand,
+                          border: const OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: userController,
+                        decoration: InputDecoration(
+                          labelText: l10n.commonUsername,
+                          border: const OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: dirController,
+                        decoration: InputDecoration(
+                          labelText: l10n.commonPath,
+                          border: const OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: numprocsController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: l10n.runtimeFieldParams,
+                          border: const OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: environmentController,
+                        decoration: InputDecoration(
+                          labelText: l10n.processDetailEnvironmentSectionTitle,
+                          border: const OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: <Widget>[
+                          TextButton(
+                            onPressed: provider.isOperating
+                                ? null
+                                : () => Navigator.of(sheetContext).pop(),
+                            child: Text(l10n.commonCancel),
+                          ),
+                          const Spacer(),
+                          FilledButton(
+                            onPressed: provider.isOperating
+                                ? null
+                                : () async {
+                                    final supervisorProvider =
+                                        context.read<PhpSupervisorProvider>();
+                                    final success = await supervisorProvider
+                                        .saveProcessDefinition(
+                                      operate: isEdit ? 'update' : 'create',
+                                      name: nameController.text,
+                                      command: commandController.text,
+                                      user: userController.text,
+                                      dir: dirController.text,
+                                      numprocs: numprocsController.text,
+                                      environment: environmentController.text,
+                                    );
+                                    if (!sheetContext.mounted) {
+                                      return;
+                                    }
+                                    final localized = sheetContext.l10n;
+                                    final message = success
+                                        ? localized.commonSaveSuccess
+                                        : (localizeRuntimeError(
+                                              localized,
+                                              supervisorProvider.errorMessage,
+                                            ) ??
+                                            localized.commonSaveFailed);
+                                    if (success &&
+                                        Navigator.of(sheetContext).canPop()) {
+                                      Navigator.of(sheetContext).pop();
+                                    }
+                                    ScaffoldMessenger.of(sheetContext)
+                                        .showSnackBar(
+                                      SnackBar(content: Text(message)),
+                                    );
+                                  },
+                            child: provider.isOperating
+                                ? const SizedBox.square(
+                                    dimension: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : Text(l10n.commonSave),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+
+    nameController.dispose();
+    commandController.dispose();
+    userController.dispose();
+    dirController.dispose();
+    numprocsController.dispose();
+    environmentController.dispose();
   }
 }

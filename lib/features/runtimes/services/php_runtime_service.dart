@@ -120,6 +120,30 @@ class PhpRuntimeService {
     );
   }
 
+  Future<void> upsertSupervisorProcess({
+    required int runtimeId,
+    required String operate,
+    required String name,
+    required String command,
+    required String user,
+    required String dir,
+    required String numprocs,
+    required String environment,
+  }) {
+    return _repository.upsertSupervisorProcess(
+      SupervisorProcessUpsertRequest(
+        operate: operate,
+        name: name,
+        command: command,
+        user: user,
+        dir: dir,
+        numprocs: numprocs,
+        id: runtimeId,
+        environment: environment,
+      ),
+    );
+  }
+
   Future<String> loadSupervisorFile({
     required int runtimeId,
     required String name,

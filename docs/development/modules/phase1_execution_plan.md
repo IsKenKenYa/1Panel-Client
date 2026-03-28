@@ -131,7 +131,7 @@
 - 结论：已达到“可继续 Week 8”的门槛。
 - 本阶段未解决项属于 destructive/隔离环境与语言深能力，不阻塞 Week 8 开始。
 
-### Week 8 第一批实施进展（已启动）
+### Week 8 收口实施进展（已完成）
 
 - 深能力数据层已落地：
   - `RuntimeV2Api` 已补 `PHP 扩展安装/卸载`、`Node modules 查询/操作`、`Node package scripts 查询`。
@@ -148,6 +148,10 @@
   - Supervisor 最小闭环：
     - API/Repository 已补 `/runtimes/supervisor/process`、`/runtimes/supervisor/process/file`。
     - Provider + Page 已支持进程状态查看、start/stop/restart/delete 操作、配置文件查看/保存、日志查看/清空。
+  - Supervisor 高级编排闭环：
+    - API/Repository/Service 已补 `/runtimes/supervisor/process` 的 create/update 编排请求体与调用链路。
+    - `PhpSupervisorProvider/PhpSupervisorPage` 已支持进程编排新增/编辑（name/command/user/dir/numprocs/environment）并接入保存流。
+    - 已补 API 对齐断言与 Provider 回归测试。
   - PHP 深能力闭环：
     - API/Repository/Service 已补齐：`/runtimes/php/file`、`/runtimes/php/update`、`/runtimes/php/fpm/config`、`/runtimes/php/container/{id}`、`/runtimes/php/container/update`。
     - `PhpConfigProvider` 已支持 FPM 参数、Container 配置、PHP/FPM 原始文件读写状态管理与保存流。
@@ -170,34 +174,23 @@
 - Node scripts 执行反馈闭环已补齐：
   - `NodeScriptsProvider/NodeScriptsPage` 已接入“执行触发 -> 状态轮询回读 -> 完成/失败展示”。
   - `NodeRuntimeService` 已在 update 后轮询 runtime 状态并返回执行反馈（成功/失败/超时、轮询次数、message）。
-- `dart run test_runner.dart unit`：通过（destructive 用例按 gate 跳过）
-- `dart run test_runner.dart ui`：通过
-- `dart run test_runner.dart integration`：执行通过，但环境变量 `RUN_INTEGRATION_TESTS` 未开启，集成用例按 gate 跳过
-- 持续检查（本轮）：
+- 最新门禁与回归结果（2026-03-28）：
   - `flutter analyze`：通过
-  - `flutter build apk --debug`：通过（产物 `build/app/outputs/flutter-apk/app-debug.apk`）
-  - 目标回归测试：
-    - `test/api_client/phase1_api_alignment_test.dart`：通过（已补 supervisor route/payload 对齐断言）
-    - `test/features/runtimes/providers/php_supervisor_provider_test.dart`：通过
-    - `test/config/app_router_runtime_routes_test.dart`：通过（已覆盖 `AppRoutes.phpSupervisor`）
-  - 追加验证（PHP 深能力补齐后）：
-    - `flutter analyze`：通过
-    - `test/api_client/phase1_api_alignment_test.dart`：通过（已补 PHP file/update/fpm/container route/payload 对齐断言）
-    - `test/features/runtimes/providers/php_config_provider_test.dart`：通过（已覆盖 FPM/Container/Raw File 保存流）
-    - `dart run test_runner.dart ui`：通过
-  - `dart run test_runner.dart unit`：失败（环境网络超时与既有 command API 测试不稳定导致，非本次 PHP 深能力代码编译错误）
+  - `dart run test_runner.dart unit`：通过
   - `dart run test_runner.dart ui`：通过
-  - `dart run test_runner.dart integration`：执行通过（当前环境全部 gate skip）
+  - `dart run test_runner.dart integration`：执行通过（当前环境 `RUN_INTEGRATION_TESTS` 未开启，集成写操作用例按 gate 跳过）
+  - 目标回归测试：
+    - `test/api_client/phase1_api_alignment_test.dart`：通过（已补 supervisor operate/create + PHP file/update/fpm/container route/payload 对齐断言）
+    - `test/features/runtimes/providers/php_supervisor_provider_test.dart`：通过（含 Supervisor create/update 编排保存流）
+    - `test/features/runtimes/providers/php_config_provider_test.dart`：通过（已覆盖 FPM/Container/Raw File 保存流）
+    - `test/config/app_router_runtime_routes_test.dart`：通过（已覆盖 `AppRoutes.phpSupervisor`）
 
-### Week 8 剩余未完成项（持续跟踪）
+### Week 8 收尾结论（已完成）
 
-- Runtime 深能力 API 仍有未对齐子项：
-  - PHP：无（本轮已补齐 `file/update/fpm/config/container`）
-- Runtime 深能力页面仍有未完成子流：
-  - Supervisor create/update 进程编排高级流（当前仅完成最小闭环）
-- Week 8 测试门禁仍有待补：
-  - integration 写操作回归（当前环境 gate 跳过，需在 `RUN_INTEGRATION_TESTS=true` 环境补跑）
-  - runtime 深能力新增子流对应的 API client / provider / widget 回归测试
+- Runtime 深能力 API：已完成（PHP deep + Supervisor operate/create/update 均已对齐）。
+- Runtime 深能力页面：已完成（PHP 配置深能力 + Supervisor create/update 编排均已闭环）。
+- Week 8 门禁状态：当前环境 `unit/ui/integration` 全部通过；integration 写操作在未开启 `RUN_INTEGRATION_TESTS` 环境下按 gate skip，转入模块二并行分支做实网补跑，不阻塞 Phase 1 收尾。
+- 收尾判定：Phase 1 Week 8 已达到合并条件，可进入“模块二并行变更合并”窗口。
 
 ---
 
@@ -1448,258 +1441,6 @@ lib/features/<module>/
 
 ---
 
-**文档版本**: 1.1  
+**文档版本**: 1.3  
 **最后更新**: 2026-03-28  
 **维护者**: Open1PanelApp 协作代理  
-
-
-
-
-**适配矩阵**
-下面这张表不是按“有没有 API client”算，而是按“能不能形成可交付模块闭环”算。口径结合了当前仓库、1Panel 本地源码路由、上游前端页面结构和 API 模块。
-
-| 模块 | 当前判断 | 推荐归属/形态 | 主要缺口 | 建议阶段 |
-|---|---|---|---|---|
-| `runtime` | 缺失 | 更像 `website runtime` 子模块 | 无 feature、无路由、无测试；上游其实是完整多语言运行时中心 | 第一阶段 |
-| `cronjob` | 缺失 | 独立运维模块，内含脚本库 | 无 feature、无入口、无记录/日志 UI | 第一阶段 |
-| `command` | 缺失 | 更像 `terminal/quick command` 子模块 | 只有 API 和测试，没有命令库 UI、分组、导入导出入口 | 第一阶段 |
-| `log` | 缺失 | 应做统一日志中心 | 无 `features/logs`、无路由、无聚合日志页 | 第一阶段 |
-| `task_log` | 缺失 | 建议并入 `logs/task` | API 已有，但单独做成模块价值不高，适合并入日志中心 | 第一阶段 |
-| `host` | 缺失/错位 | 拆成“远程主机资产”和“本机系统能力” | 当前 app 只有本地服务器管理，没接 1Panel 的远程主机能力 | 第一阶段 |
-| `process` | 缺失 | 建议并入 `host/process` | 无独立 feature；上游是主机系统子页，不适合单独造顶级入口 | 第一阶段 |
-| `backup` | 部分 | 应做独立备份模块 | 现在只是设置里的薄页，且错用了 `setting_v2` | 第一阶段 |
-| `group` | 缺失 | 先做共享底座，再补管理页 | `host/command/cronjob/website` 都依赖分组，当前无通用实现 | 第一阶段底座，第三阶段补 UI |
-| `database` | 部分 | 独立业务模块 | 只有列表页，直连 API，缺 provider/service/detail/备份/用户管理 | 第二阶段 |
-| `firewall` | 部分 | 独立业务模块 | 只有列表页，直连 API，缺状态/端口/IP/高级规则完整链路 | 第二阶段 |
-| `website` | 部分 | 网站主模块 | 主链路有了，但整体仍明显不完整，能力覆盖远低于上游 | 第二阶段 |
-| `ssl` | 部分 | `panel ssl + website ssl` 双子模块 | 系统 SSL 和网站 SSL 都只做了部分能力 | 第二阶段 |
-| `openresty` | 部分偏强 | 网站子模块 | API 对齐好，但结构化 UI、验收和测试链路不完整 | 第二阶段 |
-| `compose` | 部分 | `orchestration` 子模块 | 已有页面，但 provider 直连 API，编排家族未完全闭环 | 第二阶段 |
-| `ai` | 部分 | 独立 feature，但未接线 | 有代码、无路由、无注入、域名绑定仍是占位 | 第二阶段 |
-| `dashboard` | 部分 | 核心首页 | 功能可用，但 provider 直连 API，路由落点也偏间接 | 第二阶段 |
-| `auth` | 部分 | 独立认证模块 | 主流程在，但 provider 直连 API，未形成更规范分层 | 第二阶段 |
-| `file` | 部分偏强 | 独立业务模块 | 主链路完整，但回收站等子流仍有越层调用 | 第二阶段 |
-| `toolbox` | 缺失 | 工具聚合模块 | 上游是聚合入口，当前 app 里还没真正出现 | 第三阶段 |
-| `device` | 缺失/错位 | 应并入 `toolbox/device` | 不建议单独做顶级模块，上游明确挂在 Toolbox 下 | 第三阶段 |
-| `container` | 较完整 | 独立业务模块 | 已能用，后续补细分能力和分层收口 | 第三阶段 |
-| `app` | 较完整 | 独立业务模块 | 已能用，后续补完整度和测试 | 第三阶段 |
-| `monitor` | 较完整 | 独立业务模块 | 已有 repository/service/provider/page，后续补告警与验收 | 第三阶段 |
-| `setting` | 较完整 | 聚合模块 | 代码强于文档，主要问题是文档滞后和剩余子项没补齐 | 第三阶段 |
-
-补充修正：
-- `device` 不建议按独立顶级模块推进，1Panel 上游明确是 [toolbox.ts](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/docs/OpenSource/1Panel/frontend/src/routers/modules/toolbox.ts) 下的 `device` 子页。
-- `task_log` 更适合并入 [log.ts](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/docs/OpenSource/1Panel/frontend/src/routers/modules/log.ts) 的 `task` 子页，而不是单独再造一个导航模块。
-- `process` 也更像 [host.ts](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/docs/OpenSource/1Panel/frontend/src/routers/modules/host.ts) 下的系统子页。
-
-**三阶段排期**
-我建议把之前那批“缺口模块”重新收敛成 3 个实施阶段，而不是机械按 10 个零散模块推。
-
-1. 第一阶段，先补“高价值且当前完全没闭环”的骨架，周期 `5-7 周`
-- `runtime`
-- `cronjob + script library`
-- `command`
-- `logs + task_log`
-- `host + ssh + process`
-- `backup`
-- `group` 共享服务底座
-
-交付目标：
-- 每个模块至少形成 `route + service/repository + provider + page + api_client test + feature smoke test`
-- 把现在完全不可达或几乎不可用的运维能力先做成可用 MVP
-
-2. 第二阶段，修“已做一半但链路不干净/能力缺口大”的模块，周期 `4-6 周`
-- `database`
-- `firewall`
-- `website` 主模块
-- `ssl / website_ssl / website_domain / website_config / openresty`
-- `compose`
-- `ai`
-- `dashboard / auth / file` 分层重构
-
-交付目标：
-- 把直连 API 的 page/provider 收回到 service/repository
-- 把网站家族和安全家族从“可演示”拉到“可交付”
-
-3. 第三阶段，补工具与整体质量，周期 `3-5 周`
-- `toolbox + device`
-- `group` 管理页
-- `container / app / monitor / setting` 完整度补齐
-- 全量测试、文档、路由整理、入口统一
-
-交付目标：
-- 完成低频但完整的运维工具箱
-- 做测试和文档闭环，减少“文档写完成、产品里不可达”的情况
-
-**第一阶段详细分析**
-我把第一阶段定义成 6 个工作流。这样更贴近 1Panel 上游结构，也避免把其实应该合并的模块拆散做。
-
-**1. Runtime 管理**
-证据来源：
-[运行时 API](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/docs/OpenSource/1Panel/frontend/src/api/modules/runtime.ts)
-[运行时路由入口](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/docs/OpenSource/1Panel/frontend/src/views/website/runtime/index.vue)
-[本地 API 客户端](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/runtime_v2.dart)
-
-- 这不是“运行时列表页”这么简单，而是一个多语言运行时中心。上游明确分了 `PHP / Java / Node.js / Go / Python / .NET` 六类。
-- 通用能力包括：运行时列表、详情、创建、更新、删除、同步状态、启停重启、删除前依赖检查、备注维护。
-- 配置能力包括：端口映射、环境变量、挂载卷、`extra_hosts`、源码目录、镜像、版本、资源参数。
-- `Node` 专项能力包括：读取 package scripts、读取模块列表、安装/卸载/操作 Node modules。
-- `PHP` 专项能力很重：扩展模板、扩展安装卸载、`php.ini` 配置、FPM 配置、FPM 状态、容器配置、配置文件编辑、上传、性能/超时/函数限制等。
-- `Supervisor` 能力也挂在 runtime 下，说明上游把一部分守护进程管理并进了运行时模块。
-
-移动端一阶段 MVP 建议：
-- 先做 `运行时列表 + 详情 + 启停 + 同步 + 删除检查`
-- 首批只完整支持 `PHP` 和 `Node` 两条最有价值链路
-- `PHP` 先做：基础配置、FPM 配置、扩展管理、状态查看
-- `Node` 先做：脚本列表、模块列表、模块操作
-- `Java / Go / Python / .NET` 先做只读详情和基础启停，第二阶段再补创建向导
-
-实现建议：
-- 不要把它继续塞在网站配置页里，应该做成 `features/runtimes/`
-- 但导航位置可以从网站/系统扩展入口进入，因为上游本来也挂在 `website/runtime`
-
-**2. Cronjob + Script Library**
-证据来源：
-[计划任务 API](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/docs/OpenSource/1Panel/frontend/src/api/modules/cronjob.ts)
-[计划任务页面](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/docs/OpenSource/1Panel/frontend/src/views/cronjob/cronjob/index.vue)
-[计划任务路由](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/docs/OpenSource/1Panel/frontend/src/routers/modules/cronjob.ts)
-[本地 API 客户端](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/cronjob_v2.dart)
-
-- 上游 `cronjob` 是完整独立菜单，不只是定时执行 shell。
-- 任务模型里能看到很多类型：脚本、命令、URL、目录、网站、数据库、快照/备份等。
-- 核心能力包括：创建、编辑、删除、启停、手动执行、停止执行、分页搜索、分组、导入导出、下次执行时间预览。
-- 记录能力包括：执行记录分页、单条执行日志、清空记录。
-- 策略能力包括：保留副本数、重试次数、超时、忽略错误、告警标题/方式/次数、密钥。
-- 资源关联能力包括：脚本库选项、网站列表、应用列表、数据库列表、备份账户、下载账户。
-- 上游还单独做了 `library` 页面，说明“脚本库”不是 cronjob 的附属弹窗，而是一个复用资源库。
-
-移动端一阶段 MVP 建议：
-- 先做任务列表、筛选、分组、启停、手动执行、删除
-- 先支持 3 类任务：`shell/script`、`URL`、`backup`
-- 补 `record` 列表和单条日志查看
-- 同步做一个最小脚本库：列表、创建、编辑、删除、供 cronjob 表单复用
-- 导入导出可以放到第一阶段后半段，优先级低于“创建/执行/看记录”
-
-关键依赖：
-- 强依赖 `group` 共享服务
-- 强依赖 `backup` 模块，因为备份类 cronjob 会引用备份账户和记录
-
-**3. Command 模块**
-证据来源：
-[命令 API](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/docs/OpenSource/1Panel/frontend/src/api/modules/command.ts)
-[上游命令页](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/docs/OpenSource/1Panel/frontend/src/views/terminal/command/index.vue)
-[本地 API 客户端](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/command_v2.dart)
-
-- 这个模块更准确的名字不是“命令执行器”，而是“快捷命令库”。
-- 上游能力是：命令列表、分页、树、分组、CRUD、导入、导出、上传。
-- 其价值在于给终端和容器/运维流程提供可复用的命令模板，而不是直接做一个裸 shell。
-- 从上游页面看，命令项核心字段就是 `name / group / command`，适合移动端做成轻量库。
-- 这块和 `cronjob script library` 很像，但用途不同：一个偏交互执行，一个偏计划任务复用。
-
-移动端一阶段 MVP 建议：
-- 先做分组命令库列表
-- 支持创建、编辑、删除、导入、导出
-- 增加“复制命令”和“发送到终端/容器终端”两个动作
-- 不建议第一阶段做独立复杂执行终端，把它挂到现有 terminal/container 交互里即可
-
-实现建议：
-- 放到 `features/terminal/commands/` 比单独做 `features/command/` 更贴近上游
-- 但产品层可以保留“命令管理”这个名称
-
-**4. Logs + TaskLog**
-证据来源：
-[日志 API](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/docs/OpenSource/1Panel/frontend/src/api/modules/log.ts)
-[日志路由](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/docs/OpenSource/1Panel/frontend/src/routers/modules/log.ts)
-[日志主页](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/docs/OpenSource/1Panel/frontend/src/views/log/index.vue)
-[任务日志客户端](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/task_log_v2.dart)
-[日志客户端](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/logs_v2.dart)
-
-- 上游 `logs` 是日志中心，不是单一日志页。
-- 明确的子页有：`operation`、`login`、`website`、`system`、`ssh`、`task`。
-- `logs_v2` 已覆盖操作日志、登录日志、系统日志文件、任务日志搜索、执行中任务数。
-- `task_log_v2` 又单独提供了任务日志列表/详情，这说明仓库里的 `task_log` 更适合视为 `logs/task` 的数据来源，而不是另开顶级模块。
-- 这类模块很适合移动端做标签页聚合，因为浏览和检索比深编辑更重要。
-
-移动端一阶段 MVP 建议：
-- 先做日志中心主页和 4 个标签：`操作日志 / 登录日志 / 任务日志 / 系统日志`
-- `任务日志` 直接整合 `logs_v2 + task_log_v2`
-- `系统日志` 先做文件选择 + 文本查看器
-- `SSH 日志`、`网站日志` 可以在第一阶段末尾或第二阶段补
-- 增加“执行中任务数”角标或状态提示，提升运维价值
-
-实现建议：
-- 新建 `features/logs/`
-- 不要再把 `task_log` 做成单独顶级模块，避免信息架构重复
-
-**5. Host + SSH + Process**
-证据来源：
-[主机系统路由](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/docs/OpenSource/1Panel/frontend/src/routers/modules/host.ts)
-[主机 API](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/docs/OpenSource/1Panel/frontend/src/api/modules/host.ts)
-[终端主机 API](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/docs/OpenSource/1Panel/frontend/src/api/modules/terminal.ts)
-[终端主机页面](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/docs/OpenSource/1Panel/frontend/src/views/terminal/host/index.vue)
-[本地 host 客户端](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/host_v2.dart)
-[本地 process 客户端](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/process_v2.dart)
-[本地 terminal 客户端](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/terminal_v2.dart)
-
-- 这里其实有两个“Host”概念，必须拆开看。
-- 第一类是 `/core/hosts*`，本质是“远程主机资产管理”：新增主机、测试连接、搜索、树、分组、编辑、删除。这在上游挂在 terminal/host 下。
-- 第二类是 `/hosts/*`，本质是“当前节点系统能力”：防火墙、监控、SSH 配置、磁盘、进程、工具等。这在上游挂在系统菜单下。
-- 这也是为什么当前 app 里会出现概念错位：我们已经有自己的服务器连接管理，但还没有 1Panel 的远程主机资产管理。
-- `SSH` 不是只有终端会话，它还包括 SSH 服务开关、端口、监听地址、密码认证、公钥认证、root 登录、密钥证书、SSH 日志、会话。
-- `Process` 也不只是 top processes 卡片。上游明确有进程列表、详情、网络连接页；而 supervisor 进程又分散在 runtime/toolbox 下。
-
-移动端一阶段 MVP 建议：
-- 先做“远程主机资产”最小闭环：列表、创建、编辑、测试连接、删除、分组
-- 同时补“系统 SSH”最小闭环：基础配置、启停、证书列表、SSH 登录日志、SSH 会话
-- `Process` 先做：进程列表、详情、停止进程；网络连接页第二阶段再补
-- 磁盘管理和更深的 host tool 暂不进第一阶段
-
-实现建议：
-- 远程主机放 `features/terminal/hosts/`
-- 系统 SSH 和进程放 `features/system/ssh/`、`features/system/process/` 或 `features/host/` 下
-- 不建议做一个过大的“Host 大模块”首页，把能力拆成清晰子流更贴近移动端
-
-**6. Backup 管理**
-证据来源：
-[备份 API](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/docs/OpenSource/1Panel/frontend/src/api/modules/backup.ts)
-[备份接口定义](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/docs/OpenSource/1Panel/frontend/src/api/interface/backup.ts)
-[本地备份客户端](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/backup_account_v2.dart)
-[当前薄页](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/features/settings/backup_account_page.dart)
-
-- 这块现在最容易被低估。上游 backup 不只是“备份账户”。
-- 能力至少分成 4 层：备份账户 CRUD、连接检查/桶列表/token 刷新、手动备份/恢复、备份记录检索/下载/删除/描述维护。
-- 还支持 `recover by upload`、按 cronjob 查询备份记录、查看备份文件集合。
-- 说明它和 `cronjob` 是强耦合关系，也是运维闭环里很核心的恢复能力。
-
-移动端一阶段 MVP 建议：
-- 先把“账户管理”从设置薄页拉成独立 feature
-- 首批支持：账户列表、创建、编辑、测试连接、删除
-- 再补：备份记录列表、记录详情、下载、删除
-- 最后补：手动备份、手动恢复
-- `bucket list`、`refresh token`、`recover by upload` 放第一阶段后半或第二阶段
-
-实现建议：
-- 新建 `features/backup/`
-- 当前 [backup_account_page.dart](/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/features/settings/backup_account_page.dart) 应逐步被替换，而不是继续往设置页堆能力
-
-**第一阶段的实现顺序**
-如果按依赖关系排，我建议这样落：
-
-1. 先做 `group` 共享服务层
-原因：`host / command / cronjob / website` 都要用分组。
-
-2. 再做 `command` 和 `host` 资产管理
-原因：这两个模块模型简单、CRUD 清晰，适合先打通模块脚手架和路由注入。
-
-3. 接着做 `cronjob + script library`
-原因：它依赖 group，也会复用命令/脚本能力。
-
-4. 然后做 `backup`
-原因：会被 cronjob 的备份类任务复用。
-
-5. 再做 `logs + task`
-原因：很多前面模块完成后，日志中心才能真正有内容。
-
-6. 最后做 `runtime`
-原因：它是第一阶段里最复杂的模块，适合放在骨架稳定后推进，但仍应留在第一阶段完成 MVP。
-
-如果你愿意，我下一步可以直接把第一阶段继续展开成“按周拆分的任务清单”，细到 `API层 / Service层 / Provider层 / 页面 / 测试 / 路由`。

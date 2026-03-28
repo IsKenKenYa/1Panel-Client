@@ -34,6 +34,19 @@ void main() {
     ).thenAnswer((_) async {});
 
     when(
+      () => service.upsertSupervisorProcess(
+        runtimeId: any(named: 'runtimeId'),
+        operate: any(named: 'operate'),
+        name: any(named: 'name'),
+        command: any(named: 'command'),
+        user: any(named: 'user'),
+        dir: any(named: 'dir'),
+        numprocs: any(named: 'numprocs'),
+        environment: any(named: 'environment'),
+      ),
+    ).thenAnswer((_) async {});
+
+    when(
       () => service.loadSupervisorFile(
         runtimeId: any(named: 'runtimeId'),
         name: any(named: 'name'),
@@ -110,5 +123,34 @@ void main() {
         content: '[program:php-fpm]\nnumprocs=1',
       ),
     ).called(1);
+  });
+
+  test('saveProcessDefinition create calls service and refreshes list', () async {
+    await provider.initialize(const RuntimeManageArgs(runtimeId: 7));
+
+    final saved = await provider.saveProcessDefinition(
+      operate: 'create',
+      name: 'queue-worker',
+      command: 'php artisan queue:work --sleep=3',
+      user: 'www-data',
+      dir: '/www/wwwroot/default',
+      numprocs: '1',
+      environment: 'APP_ENV=production',
+    );
+
+    expect(saved, isTrue);
+    verify(
+      () => service.upsertSupervisorProcess(
+        runtimeId: 7,
+        operate: 'create',
+        name: 'queue-worker',
+        command: 'php artisan queue:work --sleep=3',
+        user: 'www-data',
+        dir: '/www/wwwroot/default',
+        numprocs: '1',
+        environment: 'APP_ENV=production',
+      ),
+    ).called(1);
+    verify(() => service.loadSupervisorProcesses(7)).called(greaterThan(1));
   });
 }

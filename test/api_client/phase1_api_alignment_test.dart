@@ -759,6 +759,31 @@ void main() {
         'id': 9,
       });
 
+      await api.upsertSupervisorProcess(
+        const SupervisorProcessUpsertRequest(
+          operate: 'create',
+          name: 'queue-worker',
+          command: 'php artisan queue:work --sleep=3',
+          user: 'www-data',
+          dir: '/www/wwwroot/default',
+          numprocs: '1',
+          id: 9,
+          environment: 'APP_ENV=production',
+        ),
+      );
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/runtimes/supervisor/process');
+      expect(requestBody, <String, dynamic>{
+        'operate': 'create',
+        'name': 'queue-worker',
+        'command': 'php artisan queue:work --sleep=3',
+        'user': 'www-data',
+        'dir': '/www/wwwroot/default',
+        'numprocs': '1',
+        'id': 9,
+        'environment': 'APP_ENV=production',
+      });
+
       responseBuilder = () => <String, dynamic>{
             'code': 200,
             'data': '[program:queue-worker]\\ncommand=php artisan queue:work',

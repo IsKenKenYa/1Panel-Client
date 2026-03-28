@@ -250,6 +250,15 @@ class RuntimeV2Api {
     );
   }
 
+  Future<Response<void>> upsertSupervisorProcess(
+    SupervisorProcessUpsertRequest request,
+  ) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/runtimes/supervisor/process'),
+      data: request.toJson(),
+    );
+  }
+
   Future<Response<String>> operateSupervisorProcessFile(
     SupervisorProcessFileRequest request,
   ) async {

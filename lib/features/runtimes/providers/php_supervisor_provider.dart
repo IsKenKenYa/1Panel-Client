@@ -123,6 +123,54 @@ class PhpSupervisorProvider extends ChangeNotifier with AsyncStateNotifier {
     }
   }
 
+  Future<bool> saveProcessDefinition({
+    required String operate,
+    required String name,
+    required String command,
+    required String user,
+    required String dir,
+    required String numprocs,
+    required String environment,
+  }) async {
+    final runtimeId = _runtimeId;
+    final normalizedName = name.trim();
+    final normalizedCommand = command.trim();
+    if (runtimeId == null || normalizedName.isEmpty || normalizedCommand.isEmpty) {
+      setError('runtime.form.nameRequired');
+      return false;
+    }
+
+    _isOperating = true;
+    clearError(notify: false);
+    notifyListeners();
+    try {
+      await _service.upsertSupervisorProcess(
+        runtimeId: runtimeId,
+        operate: operate.trim(),
+        name: normalizedName,
+        command: normalizedCommand,
+        user: user.trim(),
+        dir: dir.trim(),
+        numprocs: numprocs.trim().isEmpty ? '1' : numprocs.trim(),
+        environment: environment.trim(),
+      );
+      await load();
+      return true;
+    } catch (error, stackTrace) {
+      appLogger.eWithPackage(
+        'features.runtimes.providers.php_supervisor',
+        'save process definition failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      setError('runtime.detail.operateFailed', notify: false);
+      return false;
+    } finally {
+      _isOperating = false;
+      notifyListeners();
+    }
+  }
+
   Future<bool> openFile({
     required String processName,
     required String fileName,
