@@ -138,6 +138,90 @@ class RuntimeV2Api {
     );
   }
 
+  Future<Response<PHPConfigFileContent>> loadPhpConfigFile(
+    PHPConfigFileRequest request,
+  ) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/runtimes/php/file'),
+      data: request.toJson(),
+    );
+    final rawData = response.data?['data'];
+    final fileContent = switch (rawData) {
+      Map<String, dynamic> map => PHPConfigFileContent.fromJson(map),
+      String text => PHPConfigFileContent(content: text),
+      _ => const PHPConfigFileContent(),
+    };
+    return Response<PHPConfigFileContent>(
+      data: fileContent,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<void>> updatePhpConfigFile(PHPConfigFileUpdate request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/runtimes/php/update'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<PHPFpmConfig>> loadPhpFpmConfig(int id) async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/runtimes/php/fpm/config/$id'),
+    );
+    final rawData = response.data?['data'];
+
+    final config = switch (rawData) {
+      Map<String, dynamic> map when map.containsKey('params') =>
+        PHPFpmConfig.fromJson(map).copyWith(id: id),
+      Map<String, dynamic> map => PHPFpmConfig(
+          id: id,
+          params: map.map((key, value) => MapEntry(key, value.toString())),
+        ),
+      _ => PHPFpmConfig(id: id),
+    };
+
+    return Response<PHPFpmConfig>(
+      data: config,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<void>> updatePhpFpmConfig(PHPFpmConfig request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/runtimes/php/fpm/config'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<PHPContainerConfig>> loadPhpContainerConfig(int id) async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/runtimes/php/container/$id'),
+    );
+    final rawData = response.data?['data'];
+    final config = switch (rawData) {
+      Map<String, dynamic> map => PHPContainerConfig.fromJson(map),
+      _ => PHPContainerConfig(id: id),
+    };
+
+    return Response<PHPContainerConfig>(
+      data: config.id == 0 ? config.copyWith(id: id) : config,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<void>> updatePhpContainerConfig(PHPContainerConfig request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/runtimes/php/container/update'),
+      data: request.toJson(),
+    );
+  }
+
   Future<Response<List<SupervisorProcessInfo>>> getSupervisorProcesses(
     int id,
   ) async {

@@ -90,6 +90,41 @@ class RuntimeRepository {
     await api.updatePhpConfig(request);
   }
 
+  Future<PHPConfigFileContent> loadPhpConfigFile(
+    PHPConfigFileRequest request,
+  ) async {
+    final api = await _ensureApi();
+    final response = await api.loadPhpConfigFile(request);
+    return response.data ?? const PHPConfigFileContent();
+  }
+
+  Future<void> updatePhpConfigFile(PHPConfigFileUpdate request) async {
+    final api = await _ensureApi();
+    await api.updatePhpConfigFile(request);
+  }
+
+  Future<PHPFpmConfig> loadPhpFpmConfig(int runtimeId) async {
+    final api = await _ensureApi();
+    final response = await api.loadPhpFpmConfig(runtimeId);
+    return response.data ?? PHPFpmConfig(id: runtimeId);
+  }
+
+  Future<void> updatePhpFpmConfig(PHPFpmConfig request) async {
+    final api = await _ensureApi();
+    await api.updatePhpFpmConfig(request);
+  }
+
+  Future<PHPContainerConfig> loadPhpContainerConfig(int runtimeId) async {
+    final api = await _ensureApi();
+    final response = await api.loadPhpContainerConfig(runtimeId);
+    return response.data ?? PHPContainerConfig(id: runtimeId);
+  }
+
+  Future<void> updatePhpContainerConfig(PHPContainerConfig request) async {
+    final api = await _ensureApi();
+    await api.updatePhpContainerConfig(request);
+  }
+
   Future<List<SupervisorProcessInfo>> getSupervisorProcesses(
     int runtimeId,
   ) async {

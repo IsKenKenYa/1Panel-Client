@@ -4834,6 +4834,54 @@ class AppLocalizationsEn extends AppLocalizations {
   String get operationsPhpConfigTitle => 'PHP Config';
 
   @override
+  String get runtimePhpTabBasic => 'Basic';
+
+  @override
+  String get runtimePhpTabFpm => 'FPM';
+
+  @override
+  String get runtimePhpTabContainer => 'Container';
+
+  @override
+  String get runtimePhpTabPhpFile => 'PHP File';
+
+  @override
+  String get runtimePhpTabFpmFile => 'FPM File';
+
+  @override
+  String get runtimePhpFpmConfigTitle => 'FPM Parameters';
+
+  @override
+  String get runtimePhpFpmMode => 'Process manager mode';
+
+  @override
+  String get runtimePhpFpmMaxChildren => 'pm.max_children';
+
+  @override
+  String get runtimePhpFpmStartServers => 'pm.start_servers';
+
+  @override
+  String get runtimePhpFpmMinSpareServers => 'pm.min_spare_servers';
+
+  @override
+  String get runtimePhpFpmMaxSpareServers => 'pm.max_spare_servers';
+
+  @override
+  String get runtimePhpContainerExtraHosts => 'Extra hosts';
+
+  @override
+  String get runtimePhpContainerPort => 'Container Port';
+
+  @override
+  String get runtimePhpHostPort => 'Host Port';
+
+  @override
+  String get runtimePhpHostIp => 'Host IP';
+
+  @override
+  String get runtimePhpVolumeTarget => 'Target';
+
+  @override
   String get operationsSupervisorTitle => 'Supervisor';
 
   @override

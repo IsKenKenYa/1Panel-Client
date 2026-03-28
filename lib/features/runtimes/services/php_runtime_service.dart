@@ -48,6 +48,56 @@ class PhpRuntimeService {
     return _repository.updatePhpConfig(request);
   }
 
+  Future<PHPConfigFileContent> loadConfigFile({
+    required int runtimeId,
+    required String type,
+  }) {
+    return _repository.loadPhpConfigFile(
+      PHPConfigFileRequest(
+        id: runtimeId,
+        type: type,
+      ),
+    );
+  }
+
+  Future<void> saveConfigFile({
+    required int runtimeId,
+    required String type,
+    required String content,
+  }) {
+    return _repository.updatePhpConfigFile(
+      PHPConfigFileUpdate(
+        id: runtimeId,
+        type: type,
+        content: content,
+      ),
+    );
+  }
+
+  Future<PHPFpmConfig> loadFpmConfig(int runtimeId) {
+    return _repository.loadPhpFpmConfig(runtimeId);
+  }
+
+  Future<void> saveFpmConfig({
+    required int runtimeId,
+    required Map<String, String> params,
+  }) {
+    return _repository.updatePhpFpmConfig(
+      PHPFpmConfig(
+        id: runtimeId,
+        params: params,
+      ),
+    );
+  }
+
+  Future<PHPContainerConfig> loadContainerConfig(int runtimeId) {
+    return _repository.loadPhpContainerConfig(runtimeId);
+  }
+
+  Future<void> saveContainerConfig(PHPContainerConfig request) {
+    return _repository.updatePhpContainerConfig(request);
+  }
+
   Future<List<FpmStatusItem>> loadFpmStatus(int runtimeId) {
     return _repository.getPhpStatus(runtimeId);
   }

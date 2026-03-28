@@ -818,5 +818,104 @@ void main() {
         'taskID': 'task-uninstall',
       });
     });
+
+    test('RuntimeV2Api aligns Week8 php deep routes and payloads', () async {
+      final api = RuntimeV2Api(client);
+
+      responseBuilder = () => <String, dynamic>{
+            'code': 200,
+            'data': <String, dynamic>{
+              'path': '/etc/php/8.4/php.ini',
+              'content': '; php config',
+            },
+          };
+      final phpFile = await api.loadPhpConfigFile(
+        const PHPConfigFileRequest(id: 9, type: 'php'),
+      );
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/runtimes/php/file');
+      expect(requestBody, <String, dynamic>{'id': 9, 'type': 'php'});
+      expect(phpFile.data?.path, '/etc/php/8.4/php.ini');
+
+      await api.updatePhpConfigFile(
+        const PHPConfigFileUpdate(
+          id: 9,
+          type: 'fpm',
+          content: '; fpm config',
+        ),
+      );
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/runtimes/php/update');
+      expect(requestBody, <String, dynamic>{
+        'id': 9,
+        'type': 'fpm',
+        'content': '; fpm config',
+      });
+
+      responseBuilder = () => <String, dynamic>{
+            'code': 200,
+            'data': <String, dynamic>{
+              'pm': 'dynamic',
+              'pm.max_children': '50',
+            },
+          };
+      final fpmConfig = await api.loadPhpFpmConfig(9);
+      expect(requestMethod, 'GET');
+      expect(requestPath, '/api/v2/runtimes/php/fpm/config/9');
+      expect(fpmConfig.data?.params['pm.max_children'], '50');
+
+      await api.updatePhpFpmConfig(
+        const PHPFpmConfig(
+          id: 9,
+          params: <String, String>{
+            'pm': 'dynamic',
+            'pm.max_children': '100',
+          },
+        ),
+      );
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/runtimes/php/fpm/config');
+      expect(requestBody, <String, dynamic>{
+        'id': 9,
+        'params': <String, String>{
+          'pm': 'dynamic',
+          'pm.max_children': '100',
+        },
+      });
+
+      responseBuilder = () => <String, dynamic>{
+            'code': 200,
+            'data': <String, dynamic>{
+              'id': 9,
+              'containerName': 'php-84',
+              'environments': <Map<String, dynamic>>[
+                <String, dynamic>{'key': 'TZ', 'value': 'Asia/Shanghai'},
+              ],
+            },
+          };
+      final container = await api.loadPhpContainerConfig(9);
+      expect(requestMethod, 'GET');
+      expect(requestPath, '/api/v2/runtimes/php/container/9');
+      expect(container.data?.containerName, 'php-84');
+
+      await api.updatePhpContainerConfig(
+        const PHPContainerConfig(
+          id: 9,
+          containerName: 'php-84',
+          environments: <PhpContainerEnvironment>[
+            PhpContainerEnvironment(key: 'TZ', value: 'Asia/Shanghai'),
+          ],
+        ),
+      );
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/runtimes/php/container/update');
+      expect(requestBody, <String, dynamic>{
+        'id': 9,
+        'containerName': 'php-84',
+        'environments': <Map<String, dynamic>>[
+          <String, dynamic>{'key': 'TZ', 'value': 'Asia/Shanghai'},
+        ],
+      });
+    });
   });
 }

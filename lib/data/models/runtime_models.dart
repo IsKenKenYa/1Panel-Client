@@ -798,6 +798,123 @@ class PHPConfigUpdate extends Equatable {
       ];
 }
 
+class PHPConfigFileRequest extends Equatable {
+  final int id;
+  final String type;
+
+  const PHPConfigFileRequest({
+    required this.id,
+    required this.type,
+  });
+
+  factory PHPConfigFileRequest.fromJson(Map<String, dynamic> json) {
+    return PHPConfigFileRequest(
+      id: json['id'] as int? ?? 0,
+      type: json['type'] as String? ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'type': type,
+      };
+
+  @override
+  List<Object?> get props => [id, type];
+}
+
+class PHPConfigFileUpdate extends Equatable {
+  final int id;
+  final String type;
+  final String content;
+
+  const PHPConfigFileUpdate({
+    required this.id,
+    required this.type,
+    required this.content,
+  });
+
+  factory PHPConfigFileUpdate.fromJson(Map<String, dynamic> json) {
+    return PHPConfigFileUpdate(
+      id: json['id'] as int? ?? 0,
+      type: json['type'] as String? ?? '',
+      content: json['content'] as String? ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'type': type,
+        'content': content,
+      };
+
+  @override
+  List<Object?> get props => [id, type, content];
+}
+
+class PHPConfigFileContent extends Equatable {
+  final String path;
+  final String content;
+
+  const PHPConfigFileContent({
+    this.path = '',
+    this.content = '',
+  });
+
+  factory PHPConfigFileContent.fromJson(Map<String, dynamic> json) {
+    return PHPConfigFileContent(
+      path: json['path'] as String? ?? '',
+      content: json['content'] as String? ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'path': path,
+        'content': content,
+      };
+
+  @override
+  List<Object?> get props => [path, content];
+}
+
+class PHPFpmConfig extends Equatable {
+  final int id;
+  final Map<String, String> params;
+
+  const PHPFpmConfig({
+    required this.id,
+    this.params = const <String, String>{},
+  });
+
+  factory PHPFpmConfig.fromJson(Map<String, dynamic> json) {
+    return PHPFpmConfig(
+      id: json['id'] as int? ?? 0,
+      params: (json['params'] as Map<String, dynamic>?)?.map(
+            (key, value) => MapEntry(key, value.toString()),
+          ) ??
+          const <String, String>{},
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'params': params,
+      };
+
+  PHPFpmConfig copyWith({
+    int? id,
+    Map<String, String>? params,
+  }) {
+    return PHPFpmConfig(
+      id: id ?? this.id,
+      params: params ?? this.params,
+    );
+  }
+
+  @override
+  List<Object?> get props => [id, params];
+}
+
 class PHPExtensionInstallRequest extends Equatable {
   final int id;
   final String name;
@@ -1523,6 +1640,36 @@ class PHPContainerConfig extends Equatable {
     };
   }
 
+  PHPContainerConfig copyWith({
+    int? id,
+    String? containerName,
+    List<PhpContainerEnvironment>? environments,
+    List<PhpContainerExposedPort>? exposedPorts,
+    List<PhpContainerExtraHost>? extraHosts,
+    List<PhpContainerVolume>? volumes,
+  }) {
+    return PHPContainerConfig(
+      id: id ?? this.id,
+      containerName: containerName ?? this.containerName,
+      environments: environments ?? this.environments,
+      exposedPorts: exposedPorts ?? this.exposedPorts,
+      extraHosts: extraHosts ?? this.extraHosts,
+      volumes: volumes ?? this.volumes,
+    );
+  }
+
+  List<PhpContainerEnvironment> get safeEnvironments =>
+      environments ?? const <PhpContainerEnvironment>[];
+
+  List<PhpContainerExposedPort> get safeExposedPorts =>
+      exposedPorts ?? const <PhpContainerExposedPort>[];
+
+  List<PhpContainerExtraHost> get safeExtraHosts =>
+      extraHosts ?? const <PhpContainerExtraHost>[];
+
+  List<PhpContainerVolume> get safeVolumes =>
+      volumes ?? const <PhpContainerVolume>[];
+
   @override
   List<Object?> get props =>
       [id, containerName, environments, exposedPorts, extraHosts, volumes];
@@ -1545,6 +1692,16 @@ class PhpContainerEnvironment extends Equatable {
         if (key != null) 'key': key,
         if (value != null) 'value': value,
       };
+
+  PhpContainerEnvironment copyWith({
+    String? key,
+    String? value,
+  }) {
+    return PhpContainerEnvironment(
+      key: key ?? this.key,
+      value: value ?? this.value,
+    );
+  }
 
   @override
   List<Object?> get props => [key, value];
@@ -1575,6 +1732,18 @@ class PhpContainerExposedPort extends Equatable {
         if (hostPort != null) 'hostPort': hostPort,
       };
 
+  PhpContainerExposedPort copyWith({
+    int? containerPort,
+    String? hostIP,
+    int? hostPort,
+  }) {
+    return PhpContainerExposedPort(
+      containerPort: containerPort ?? this.containerPort,
+      hostIP: hostIP ?? this.hostIP,
+      hostPort: hostPort ?? this.hostPort,
+    );
+  }
+
   @override
   List<Object?> get props => [containerPort, hostIP, hostPort];
 }
@@ -1600,6 +1769,16 @@ class PhpContainerExtraHost extends Equatable {
         if (ip != null) 'ip': ip,
       };
 
+  PhpContainerExtraHost copyWith({
+    String? hostname,
+    String? ip,
+  }) {
+    return PhpContainerExtraHost(
+      hostname: hostname ?? this.hostname,
+      ip: ip ?? this.ip,
+    );
+  }
+
   @override
   List<Object?> get props => [hostname, ip];
 }
@@ -1624,6 +1803,16 @@ class PhpContainerVolume extends Equatable {
         if (source != null) 'source': source,
         if (target != null) 'target': target,
       };
+
+  PhpContainerVolume copyWith({
+    String? source,
+    String? target,
+  }) {
+    return PhpContainerVolume(
+      source: source ?? this.source,
+      target: target ?? this.target,
+    );
+  }
 
   @override
   List<Object?> get props => [source, target];

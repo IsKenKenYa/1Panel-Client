@@ -9237,6 +9237,102 @@ abstract class AppLocalizations {
   /// **'PHP Config'**
   String get operationsPhpConfigTitle;
 
+  /// No description provided for @runtimePhpTabBasic.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic'**
+  String get runtimePhpTabBasic;
+
+  /// No description provided for @runtimePhpTabFpm.
+  ///
+  /// In en, this message translates to:
+  /// **'FPM'**
+  String get runtimePhpTabFpm;
+
+  /// No description provided for @runtimePhpTabContainer.
+  ///
+  /// In en, this message translates to:
+  /// **'Container'**
+  String get runtimePhpTabContainer;
+
+  /// No description provided for @runtimePhpTabPhpFile.
+  ///
+  /// In en, this message translates to:
+  /// **'PHP File'**
+  String get runtimePhpTabPhpFile;
+
+  /// No description provided for @runtimePhpTabFpmFile.
+  ///
+  /// In en, this message translates to:
+  /// **'FPM File'**
+  String get runtimePhpTabFpmFile;
+
+  /// No description provided for @runtimePhpFpmConfigTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'FPM Parameters'**
+  String get runtimePhpFpmConfigTitle;
+
+  /// No description provided for @runtimePhpFpmMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Process manager mode'**
+  String get runtimePhpFpmMode;
+
+  /// No description provided for @runtimePhpFpmMaxChildren.
+  ///
+  /// In en, this message translates to:
+  /// **'pm.max_children'**
+  String get runtimePhpFpmMaxChildren;
+
+  /// No description provided for @runtimePhpFpmStartServers.
+  ///
+  /// In en, this message translates to:
+  /// **'pm.start_servers'**
+  String get runtimePhpFpmStartServers;
+
+  /// No description provided for @runtimePhpFpmMinSpareServers.
+  ///
+  /// In en, this message translates to:
+  /// **'pm.min_spare_servers'**
+  String get runtimePhpFpmMinSpareServers;
+
+  /// No description provided for @runtimePhpFpmMaxSpareServers.
+  ///
+  /// In en, this message translates to:
+  /// **'pm.max_spare_servers'**
+  String get runtimePhpFpmMaxSpareServers;
+
+  /// No description provided for @runtimePhpContainerExtraHosts.
+  ///
+  /// In en, this message translates to:
+  /// **'Extra hosts'**
+  String get runtimePhpContainerExtraHosts;
+
+  /// No description provided for @runtimePhpContainerPort.
+  ///
+  /// In en, this message translates to:
+  /// **'Container Port'**
+  String get runtimePhpContainerPort;
+
+  /// No description provided for @runtimePhpHostPort.
+  ///
+  /// In en, this message translates to:
+  /// **'Host Port'**
+  String get runtimePhpHostPort;
+
+  /// No description provided for @runtimePhpHostIp.
+  ///
+  /// In en, this message translates to:
+  /// **'Host IP'**
+  String get runtimePhpHostIp;
+
+  /// No description provided for @runtimePhpVolumeTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Target'**
+  String get runtimePhpVolumeTarget;
+
   /// No description provided for @operationsSupervisorTitle.
   ///
   /// In en, this message translates to:

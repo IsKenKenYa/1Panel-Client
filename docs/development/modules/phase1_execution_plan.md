@@ -148,6 +148,10 @@
   - Supervisor 最小闭环：
     - API/Repository 已补 `/runtimes/supervisor/process`、`/runtimes/supervisor/process/file`。
     - Provider + Page 已支持进程状态查看、start/stop/restart/delete 操作、配置文件查看/保存、日志查看/清空。
+  - PHP 深能力闭环：
+    - API/Repository/Service 已补齐：`/runtimes/php/file`、`/runtimes/php/update`、`/runtimes/php/fpm/config`、`/runtimes/php/container/{id}`、`/runtimes/php/container/update`。
+    - `PhpConfigProvider` 已支持 FPM 参数、Container 配置、PHP/FPM 原始文件读写状态管理与保存流。
+    - `PhpConfigPage` 已升级为多分区 Tab（Basic/FPM/Container/PHP File/FPM File），并拆分独立子组件。
 
 ### Week 8 当前验证结果
 
@@ -176,16 +180,20 @@
     - `test/api_client/phase1_api_alignment_test.dart`：通过（已补 supervisor route/payload 对齐断言）
     - `test/features/runtimes/providers/php_supervisor_provider_test.dart`：通过
     - `test/config/app_router_runtime_routes_test.dart`：通过（已覆盖 `AppRoutes.phpSupervisor`）
-  - `dart run test_runner.dart unit`：失败（环境网络超时导致 `test/api_client/runtime_api_test.dart` 用例失败，非本次 supervisor 代码编译错误）
+  - 追加验证（PHP 深能力补齐后）：
+    - `flutter analyze`：通过
+    - `test/api_client/phase1_api_alignment_test.dart`：通过（已补 PHP file/update/fpm/container route/payload 对齐断言）
+    - `test/features/runtimes/providers/php_config_provider_test.dart`：通过（已覆盖 FPM/Container/Raw File 保存流）
+    - `dart run test_runner.dart ui`：通过
+  - `dart run test_runner.dart unit`：失败（环境网络超时与既有 command API 测试不稳定导致，非本次 PHP 深能力代码编译错误）
   - `dart run test_runner.dart ui`：通过
   - `dart run test_runner.dart integration`：执行通过（当前环境全部 gate skip）
 
 ### Week 8 剩余未完成项（持续跟踪）
 
 - Runtime 深能力 API 仍有未对齐子项：
-  - PHP：`/runtimes/php/file`、`/runtimes/php/update`、`/runtimes/php/fpm/config`、`/runtimes/php/container/*`
+  - PHP：无（本轮已补齐 `file/update/fpm/config/container`）
 - Runtime 深能力页面仍有未完成子流：
-  - `PhpConfigPage` 的 Raw File / Container 配置编辑闭环
   - Supervisor create/update 进程编排高级流（当前仅完成最小闭环）
 - Week 8 测试门禁仍有待补：
   - integration 写操作回归（当前环境 gate 跳过，需在 `RUN_INTEGRATION_TESTS=true` 环境补跑）

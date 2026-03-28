@@ -4746,6 +4746,54 @@ class AppLocalizationsZh extends AppLocalizations {
   String get operationsPhpConfigTitle => 'PHP 配置';
 
   @override
+  String get runtimePhpTabBasic => '基础';
+
+  @override
+  String get runtimePhpTabFpm => 'FPM';
+
+  @override
+  String get runtimePhpTabContainer => '容器';
+
+  @override
+  String get runtimePhpTabPhpFile => 'PHP 文件';
+
+  @override
+  String get runtimePhpTabFpmFile => 'FPM 文件';
+
+  @override
+  String get runtimePhpFpmConfigTitle => 'FPM 参数';
+
+  @override
+  String get runtimePhpFpmMode => '进程管理模式';
+
+  @override
+  String get runtimePhpFpmMaxChildren => 'pm.max_children';
+
+  @override
+  String get runtimePhpFpmStartServers => 'pm.start_servers';
+
+  @override
+  String get runtimePhpFpmMinSpareServers => 'pm.min_spare_servers';
+
+  @override
+  String get runtimePhpFpmMaxSpareServers => 'pm.max_spare_servers';
+
+  @override
+  String get runtimePhpContainerExtraHosts => '额外主机';
+
+  @override
+  String get runtimePhpContainerPort => '容器端口';
+
+  @override
+  String get runtimePhpHostPort => '主机端口';
+
+  @override
+  String get runtimePhpHostIp => '主机 IP';
+
+  @override
+  String get runtimePhpVolumeTarget => '目标';
+
+  @override
   String get operationsSupervisorTitle => 'Supervisor 管理';
 
   @override
