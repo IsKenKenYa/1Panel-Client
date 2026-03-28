@@ -151,6 +151,14 @@
 - 聚焦新增测试：
   - `app_router_runtime_routes_test.dart`（含四条 Week8 路由）通过
   - 4 个新增 Provider 单测通过
+  - `phase1_api_alignment_test.dart` 已补 Week8 路由与 payload 断言：
+    - `POST /runtimes/node/modules`
+    - `POST /runtimes/node/modules/operate`
+    - `POST /runtimes/node/package`
+    - `POST /runtimes/php/extensions/install`
+    - `POST /runtimes/php/extensions/uninstall`
+- Node scripts 执行协议已与上游对齐：
+  - 由“误用 `/runtimes/node/modules/operate` 执行 script”切换为“更新 runtime 参数 `EXEC_SCRIPT/CUSTOM_SCRIPT/PACKAGE_MANAGER` 后走 runtime update 链路”。
 - `dart run test_runner.dart unit`：通过（destructive 用例按 gate 跳过）
 - `dart run test_runner.dart ui`：通过
 - `dart run test_runner.dart integration`：执行通过，但环境变量 `RUN_INTEGRATION_TESTS` 未开启，集成用例按 gate 跳过

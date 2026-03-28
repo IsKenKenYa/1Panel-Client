@@ -377,7 +377,9 @@ void main() {
       );
       expect(requestMethod, 'POST');
       expect(requestPath, '/api/v2/cronjobs/export');
-      expect(requestBody, <String, dynamic>{'ids': <int>[3]});
+      expect(requestBody, <String, dynamic>{
+        'ids': <int>[3]
+      });
       expect(export.data, isNotNull);
     });
 
@@ -394,7 +396,8 @@ void main() {
 
       final api = BackupAccountV2Api(client);
       final search = await api.searchBackupAccounts(
-        const BackupAccountSearchRequest(page: 1, pageSize: 20, keyword: 'bucket'),
+        const BackupAccountSearchRequest(
+            page: 1, pageSize: 20, keyword: 'bucket'),
       );
       expect(requestMethod, 'POST');
       expect(requestPath, '/api/v2/backups/search');
@@ -404,7 +407,11 @@ void main() {
 
       responseBuilder = () => <String, dynamic>{
             'code': 200,
-            'data': <String, dynamic>{'isOk': true, 'msg': 'ok', 'token': 'aGVsbG8='},
+            'data': <String, dynamic>{
+              'isOk': true,
+              'msg': 'ok',
+              'token': 'aGVsbG8='
+            },
           };
       final check = await api.checkBackupConnection(
         const BackupOperate(
@@ -476,7 +483,8 @@ void main() {
       expect(requestPath, '/api/v2/backups/record/del');
 
       await api.backupSystemData(
-        const BackupRunRequest(type: 'app', name: 'wordpress', taskID: 'task-1'),
+        const BackupRunRequest(
+            type: 'app', name: 'wordpress', taskID: 'task-1'),
       );
       expect(requestMethod, 'POST');
       expect(requestPath, '/api/v2/backups/backup');
@@ -647,6 +655,98 @@ void main() {
       );
       expect(requestMethod, 'POST');
       expect(requestPath, '/api/v2/runtimes/remark');
+    });
+
+    test('RuntimeV2Api aligns Week8 node modules/package routes and payloads',
+        () async {
+      final api = RuntimeV2Api(client);
+
+      responseBuilder = () => <String, dynamic>{
+            'code': 200,
+            'data': <Map<String, dynamic>>[
+              <String, dynamic>{
+                'name': 'eslint',
+                'version': '9.0.0',
+                'description': 'lint tool',
+              },
+            ],
+          };
+      final modules = await api.getNodeModules(const NodeModuleRequest(id: 7));
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/runtimes/node/modules');
+      expect(requestBody, <String, dynamic>{
+        'ID': 7,
+      });
+      expect(modules.data?.single.name, 'eslint');
+
+      await api.operateNodeModule(
+        const NodeModuleRequest(
+          id: 7,
+          operate: 'install',
+          module: 'pm2',
+          packageManager: 'npm',
+        ),
+      );
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/runtimes/node/modules/operate');
+      expect(requestBody, <String, dynamic>{
+        'ID': 7,
+        'Operate': 'install',
+        'Module': 'pm2',
+        'PkgManager': 'npm',
+      });
+
+      responseBuilder = () => <String, dynamic>{
+            'code': 200,
+            'data': <Map<String, dynamic>>[
+              <String, dynamic>{'name': 'start', 'script': 'node index.js'},
+            ],
+          };
+      final scripts = await api.getNodePackageScripts(
+        const NodePackageRequest(codeDir: '/opt/node-app'),
+      );
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/runtimes/node/package');
+      expect(requestBody, <String, dynamic>{
+        'codeDir': '/opt/node-app',
+      });
+      expect(scripts.data?.single.name, 'start');
+    });
+
+    test(
+        'RuntimeV2Api aligns Week8 php extension install/uninstall routes and payloads',
+        () async {
+      final api = RuntimeV2Api(client);
+
+      await api.installPhpExtension(
+        const PHPExtensionInstallRequest(
+          id: 9,
+          name: 'redis',
+          taskId: 'task-install',
+        ),
+      );
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/runtimes/php/extensions/install');
+      expect(requestBody, <String, dynamic>{
+        'id': 9,
+        'name': 'redis',
+        'taskID': 'task-install',
+      });
+
+      await api.uninstallPhpExtension(
+        const PHPExtensionInstallRequest(
+          id: 9,
+          name: 'redis',
+          taskId: 'task-uninstall',
+        ),
+      );
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/runtimes/php/extensions/uninstall');
+      expect(requestBody, <String, dynamic>{
+        'id': 9,
+        'name': 'redis',
+        'taskID': 'task-uninstall',
+      });
     });
   });
 }

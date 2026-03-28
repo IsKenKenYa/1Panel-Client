@@ -55,19 +55,56 @@ class NodeRuntimeService {
   }
 
   Future<List<NodeScriptInfo>> loadScripts(String codeDir) {
-    return _repository.getNodePackageScripts(NodePackageRequest(codeDir: codeDir));
+    return _repository
+        .getNodePackageScripts(NodePackageRequest(codeDir: codeDir));
   }
 
   Future<void> runScript({
     required int runtimeId,
     required String scriptName,
     required String packageManager,
-  }) {
-    return operateModule(
-      runtimeId: runtimeId,
-      module: scriptName,
-      operate: 'script',
-      packageManager: packageManager,
+  }) async {
+    final runtime = await _repository.getRuntime(runtimeId);
+    if (runtime == null) {
+      throw Exception('runtime.detail.loadFailed');
+    }
+
+    final normalizedScript = scriptName.trim();
+    if (normalizedScript.isEmpty) {
+      throw Exception('runtime.form.execScriptRequired');
+    }
+
+    final normalizedManager =
+        packageManager.trim().isEmpty ? 'npm' : packageManager.trim();
+
+    final params = <String, dynamic>{
+      ...(runtime.params ?? const <String, dynamic>{}),
+      'EXEC_SCRIPT': normalizedScript,
+      'CUSTOM_SCRIPT': '0',
+      'PACKAGE_MANAGER': normalizedManager,
+    };
+
+    final update = RuntimeUpdate(
+      id: runtimeId,
+      appDetailId: runtime.appDetailId,
+      appId: runtime.appId,
+      name: runtime.name ?? 'node-$runtimeId',
+      resource: runtime.resource,
+      type: runtime.type,
+      image: runtime.image,
+      version: runtime.version,
+      source: runtime.source,
+      codeDir: runtime.codeDir,
+      port: int.tryParse(runtime.port ?? ''),
+      remark: runtime.remark,
+      rebuild: true,
+      params: params,
+      exposedPorts: runtime.exposedPorts,
+      environments: runtime.environments,
+      volumes: runtime.volumes,
+      extraHosts: runtime.extraHosts,
     );
+
+    await _repository.updateRuntime(update);
   }
 }

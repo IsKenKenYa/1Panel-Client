@@ -818,11 +818,9 @@ class PHPExtensionInstallRequest extends Equatable {
   }
 
   Map<String, dynamic> toJson() => {
-        'ID': id,
         'id': id,
         'name': name,
-        'taskID': taskId,
-        'taskId': taskId,
+        if (taskId.isNotEmpty) 'taskID': taskId,
       };
 
   @override
@@ -839,7 +837,7 @@ class NodeModuleRequest extends Equatable {
     required this.id,
     this.operate = '',
     this.module = '',
-    this.packageManager = 'npm',
+    this.packageManager = '',
   });
 
   factory NodeModuleRequest.fromJson(Map<String, dynamic> json) {
@@ -850,19 +848,15 @@ class NodeModuleRequest extends Equatable {
       packageManager: json['pkgManager'] as String? ??
           json['PkgManager'] as String? ??
           json['packageManager'] as String? ??
-          'npm',
+          '',
     );
   }
 
   Map<String, dynamic> toJson() => {
         'ID': id,
-        'id': id,
-        'operate': operate,
-        'Operate': operate,
-        'module': module,
-        'Module': module,
-        'pkgManager': packageManager,
-        'PkgManager': packageManager,
+        if (operate.isNotEmpty) 'Operate': operate,
+        if (module.isNotEmpty) 'Module': module,
+        if (packageManager.isNotEmpty) 'PkgManager': packageManager,
       };
 
   @override
