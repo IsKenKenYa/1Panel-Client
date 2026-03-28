@@ -72,6 +72,11 @@ class OperationsCenterPage extends StatelessWidget {
             route: AppRoutes.logs,
             icon: Icons.article_outlined,
           ),
+          _OperationEntry(
+            title: l10n.operationsToolboxTitle,
+            route: AppRoutes.toolbox,
+            icon: Icons.handyman_outlined,
+          ),
         ],
       ),
     ];

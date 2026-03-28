@@ -23,6 +23,7 @@ import '../../api/v2/ssl_v2.dart';
 import '../../api/v2/system_group_v2.dart';
 import '../../api/v2/task_log_v2.dart';
 import '../../api/v2/terminal_v2.dart';
+import '../../api/v2/toolbox_v2.dart';
 import '../../api/v2/update_v2.dart';
 import '../../api/v2/website_v2.dart';
 import '../../api/v2/ai_v2.dart';
@@ -139,6 +140,9 @@ class ApiClientManager {
 
   Future<TerminalV2Api> getTerminalApi() async =>
       TerminalV2Api(await getCurrentClient());
+
+    Future<ToolboxV2Api> getToolboxApi() async =>
+      ToolboxV2Api(await getCurrentClient());
 
   Future<UpdateV2Api> getUpdateApi() async =>
       UpdateV2Api(await getCurrentClient());

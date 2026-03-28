@@ -116,6 +116,9 @@ import 'package:onepanel_client/features/ssh/providers/ssh_sessions_provider.dar
 import 'package:onepanel_client/features/ssh/providers/ssh_settings_provider.dart';
 import 'package:onepanel_client/features/script_library/pages/script_library_page.dart';
 import 'package:onepanel_client/features/script_library/providers/script_library_provider.dart';
+import 'package:onepanel_client/features/toolbox/pages/toolbox_center_page.dart';
+import 'package:onepanel_client/features/toolbox/pages/toolbox_device_page.dart';
+import 'package:onepanel_client/features/toolbox/providers/toolbox_device_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'package:onepanel_client/features/containers/container_detail_page.dart';
@@ -172,6 +175,8 @@ class AppRoutes {
   static const String openrestySourceEditor = '/openresty-source-editor';
   static const String panelSsl = '/panel-ssl';
   static const String operations = '/operations';
+  static const String toolbox = '/toolbox';
+  static const String toolboxDevice = '/toolbox/device';
   static const String commands = '/commands';
   static const String commandForm = '/commands/form';
   static const String hostAssets = '/hosts-assets';
@@ -505,6 +510,17 @@ class AppRouter {
 
       case AppRoutes.operations:
         return MaterialPageRoute(builder: (_) => const OperationsCenterPage());
+
+      case AppRoutes.toolbox:
+        return MaterialPageRoute(builder: (_) => const ToolboxCenterPage());
+
+      case AppRoutes.toolboxDevice:
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<ToolboxDeviceProvider>(
+            create: (_) => ToolboxDeviceProvider(),
+            child: const ToolboxDevicePage(),
+          ),
+        );
 
       case AppRoutes.commands:
         return MaterialPageRoute(

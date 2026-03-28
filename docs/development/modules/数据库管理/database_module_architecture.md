@@ -2,7 +2,7 @@
 
 > 2026-03-26 修正：
 > 本文下方部分端点清单来自早期规划，和当前 `swagger.json` 以及已落地代码并不完全一致。
-> 当前实施以 `database_api_analysis.md/.json`、`阶段总计划（docs/development/modules/阶段2计划.md）` 与运行时代码为准。
+> 当前实施以 `database_api_analysis.md/.json`、`阶段总计划（docs/development/modules/阶段总计划.md）` 与运行时代码为准。
 > 当前真实已落地能力为 `list / detail / form / remote test / redis config / bind user / description & password write`；
 > `backup / restore / backup list` 需要联动 `/backups/*`，不在 `database` 标签端点内直接完成。
 

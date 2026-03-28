@@ -4425,6 +4425,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get operationsProcessDetailTitle => '进程详情';
 
   @override
+  String get operationsToolboxTitle => '工具箱';
+
+  @override
   String get operationsCronjobsTitle => '计划任务';
 
   @override
@@ -4435,6 +4438,63 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get operationsScriptsTitle => '脚本库';
+
+  @override
+  String get toolboxCenterTitle => '工具箱';
+
+  @override
+  String get toolboxCenterIntro => '工具聚合入口，当前优先提供设备管理能力。';
+
+  @override
+  String get toolboxDeviceTitle => '设备管理';
+
+  @override
+  String get toolboxDeviceCardSubtitle => '主机名、DNS、NTP 与 Swap 配置';
+
+  @override
+  String get toolboxDeviceOverviewTitle => '设备概览';
+
+  @override
+  String get toolboxDeviceConfigTitle => '设备配置';
+
+  @override
+  String get toolboxDeviceUsersTitle => '系统用户';
+
+  @override
+  String get toolboxDeviceZoneOptionsTitle => '时区选项';
+
+  @override
+  String get toolboxDeviceHostname => '主机名';
+
+  @override
+  String get toolboxDeviceDns => 'DNS';
+
+  @override
+  String get toolboxDeviceNtp => 'NTP';
+
+  @override
+  String get toolboxDeviceSwap => 'Swap';
+
+  @override
+  String get toolboxDeviceTimeLabel => '本地时间';
+
+  @override
+  String get toolboxDeviceSystemLabel => '系统';
+
+  @override
+  String get toolboxDeviceCheckDns => '检查 DNS';
+
+  @override
+  String get toolboxDeviceEditConfig => '编辑配置';
+
+  @override
+  String get toolboxDeviceCheckDnsSuccess => 'DNS 检查通过';
+
+  @override
+  String get toolboxDeviceCheckDnsFailed => 'DNS 检查失败';
+
+  @override
+  String get toolboxDeviceDnsRequired => '请先填写 DNS';
 
   @override
   String get cronjobsSearchHint => '搜索计划任务';

@@ -396,7 +396,6 @@ The app integrates with 1Panel V2 API using:
 
 ### Development Documentation
 - [Development Docs](docs/development/)
-- [Unified Phase Plan (Phase 1 + Phase 2)](docs/development/modules/阶段2计划.md)
 
 ## 🤝 Contributing
 

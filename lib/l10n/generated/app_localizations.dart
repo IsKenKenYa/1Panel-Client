@@ -8630,6 +8630,12 @@ abstract class AppLocalizations {
   /// **'Process Detail'**
   String get operationsProcessDetailTitle;
 
+  /// No description provided for @operationsToolboxTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Toolbox'**
+  String get operationsToolboxTitle;
+
   /// No description provided for @operationsCronjobsTitle.
   ///
   /// In en, this message translates to:
@@ -8653,6 +8659,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Script Library'**
   String get operationsScriptsTitle;
+
+  /// No description provided for @toolboxCenterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Toolbox'**
+  String get toolboxCenterTitle;
+
+  /// No description provided for @toolboxCenterIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'A consolidated tools entry. Device management is delivered first.'**
+  String get toolboxCenterIntro;
+
+  /// No description provided for @toolboxDeviceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Device Management'**
+  String get toolboxDeviceTitle;
+
+  /// No description provided for @toolboxDeviceCardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hostname, DNS, NTP, and swap configuration'**
+  String get toolboxDeviceCardSubtitle;
+
+  /// No description provided for @toolboxDeviceOverviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Device Overview'**
+  String get toolboxDeviceOverviewTitle;
+
+  /// No description provided for @toolboxDeviceConfigTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Device Configuration'**
+  String get toolboxDeviceConfigTitle;
+
+  /// No description provided for @toolboxDeviceUsersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'System Users'**
+  String get toolboxDeviceUsersTitle;
+
+  /// No description provided for @toolboxDeviceZoneOptionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Time Zone Options'**
+  String get toolboxDeviceZoneOptionsTitle;
+
+  /// No description provided for @toolboxDeviceHostname.
+  ///
+  /// In en, this message translates to:
+  /// **'Hostname'**
+  String get toolboxDeviceHostname;
+
+  /// No description provided for @toolboxDeviceDns.
+  ///
+  /// In en, this message translates to:
+  /// **'DNS'**
+  String get toolboxDeviceDns;
+
+  /// No description provided for @toolboxDeviceNtp.
+  ///
+  /// In en, this message translates to:
+  /// **'NTP'**
+  String get toolboxDeviceNtp;
+
+  /// No description provided for @toolboxDeviceSwap.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap'**
+  String get toolboxDeviceSwap;
+
+  /// No description provided for @toolboxDeviceTimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Local Time'**
+  String get toolboxDeviceTimeLabel;
+
+  /// No description provided for @toolboxDeviceSystemLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get toolboxDeviceSystemLabel;
+
+  /// No description provided for @toolboxDeviceCheckDns.
+  ///
+  /// In en, this message translates to:
+  /// **'Check DNS'**
+  String get toolboxDeviceCheckDns;
+
+  /// No description provided for @toolboxDeviceEditConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Configuration'**
+  String get toolboxDeviceEditConfig;
+
+  /// No description provided for @toolboxDeviceCheckDnsSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'DNS check succeeded'**
+  String get toolboxDeviceCheckDnsSuccess;
+
+  /// No description provided for @toolboxDeviceCheckDnsFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'DNS check failed'**
+  String get toolboxDeviceCheckDnsFailed;
+
+  /// No description provided for @toolboxDeviceDnsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please provide DNS first'**
+  String get toolboxDeviceDnsRequired;
 
   /// No description provided for @cronjobsSearchHint.
   ///

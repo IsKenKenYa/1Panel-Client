@@ -4524,6 +4524,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get operationsProcessDetailTitle => 'Process Detail';
 
   @override
+  String get operationsToolboxTitle => 'Toolbox';
+
+  @override
   String get operationsCronjobsTitle => 'Cronjobs';
 
   @override
@@ -4534,6 +4537,65 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get operationsScriptsTitle => 'Script Library';
+
+  @override
+  String get toolboxCenterTitle => 'Toolbox';
+
+  @override
+  String get toolboxCenterIntro =>
+      'A consolidated tools entry. Device management is delivered first.';
+
+  @override
+  String get toolboxDeviceTitle => 'Device Management';
+
+  @override
+  String get toolboxDeviceCardSubtitle =>
+      'Hostname, DNS, NTP, and swap configuration';
+
+  @override
+  String get toolboxDeviceOverviewTitle => 'Device Overview';
+
+  @override
+  String get toolboxDeviceConfigTitle => 'Device Configuration';
+
+  @override
+  String get toolboxDeviceUsersTitle => 'System Users';
+
+  @override
+  String get toolboxDeviceZoneOptionsTitle => 'Time Zone Options';
+
+  @override
+  String get toolboxDeviceHostname => 'Hostname';
+
+  @override
+  String get toolboxDeviceDns => 'DNS';
+
+  @override
+  String get toolboxDeviceNtp => 'NTP';
+
+  @override
+  String get toolboxDeviceSwap => 'Swap';
+
+  @override
+  String get toolboxDeviceTimeLabel => 'Local Time';
+
+  @override
+  String get toolboxDeviceSystemLabel => 'System';
+
+  @override
+  String get toolboxDeviceCheckDns => 'Check DNS';
+
+  @override
+  String get toolboxDeviceEditConfig => 'Edit Configuration';
+
+  @override
+  String get toolboxDeviceCheckDnsSuccess => 'DNS check succeeded';
+
+  @override
+  String get toolboxDeviceCheckDnsFailed => 'DNS check failed';
+
+  @override
+  String get toolboxDeviceDnsRequired => 'Please provide DNS first';
 
   @override
   String get cronjobsSearchHint => 'Search cronjobs';
