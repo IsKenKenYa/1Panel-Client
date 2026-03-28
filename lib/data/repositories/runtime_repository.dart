@@ -60,4 +60,58 @@ class RuntimeRepository {
     final api = await _ensureApi();
     await api.updateRuntimeRemark(request);
   }
+
+  Future<PHPExtensionsRes> getPhpExtensions(int runtimeId) async {
+    final api = await _ensureApi();
+    final response = await api.getPhpExtensions(runtimeId);
+    return response.data ?? const PHPExtensionsRes();
+  }
+
+  Future<void> installPhpExtension(PHPExtensionInstallRequest request) async {
+    final api = await _ensureApi();
+    await api.installPhpExtension(request);
+  }
+
+  Future<void> uninstallPhpExtension(
+    PHPExtensionInstallRequest request,
+  ) async {
+    final api = await _ensureApi();
+    await api.uninstallPhpExtension(request);
+  }
+
+  Future<PHPConfig?> loadPhpConfig(int runtimeId) async {
+    final api = await _ensureApi();
+    final response = await api.loadPhpConfig(runtimeId);
+    return response.data;
+  }
+
+  Future<void> updatePhpConfig(PHPConfigUpdate request) async {
+    final api = await _ensureApi();
+    await api.updatePhpConfig(request);
+  }
+
+  Future<List<FpmStatusItem>> getPhpStatus(int runtimeId) async {
+    final api = await _ensureApi();
+    final response = await api.getPhpStatus(runtimeId);
+    return response.data ?? const <FpmStatusItem>[];
+  }
+
+  Future<List<NodeModuleInfo>> getNodeModules(NodeModuleRequest request) async {
+    final api = await _ensureApi();
+    final response = await api.getNodeModules(request);
+    return response.data ?? const <NodeModuleInfo>[];
+  }
+
+  Future<void> operateNodeModule(NodeModuleRequest request) async {
+    final api = await _ensureApi();
+    await api.operateNodeModule(request);
+  }
+
+  Future<List<NodeScriptInfo>> getNodePackageScripts(
+    NodePackageRequest request,
+  ) async {
+    final api = await _ensureApi();
+    final response = await api.getNodePackageScripts(request);
+    return response.data ?? const <NodeScriptInfo>[];
+  }
 }

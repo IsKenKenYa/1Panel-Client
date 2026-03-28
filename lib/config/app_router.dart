@@ -72,13 +72,21 @@ import 'package:onepanel_client/features/logs/providers/logs_provider.dart';
 import 'package:onepanel_client/features/logs/providers/system_logs_provider.dart';
 import 'package:onepanel_client/features/logs/providers/task_logs_provider.dart';
 import 'package:onepanel_client/features/operations_center/pages/operations_center_page.dart';
-import 'package:onepanel_client/features/operations_center/pages/stage_one_module_placeholder_page.dart';
+import 'package:onepanel_client/features/runtimes/models/runtime_manage_args.dart';
+import 'package:onepanel_client/features/runtimes/pages/node_modules_page.dart';
+import 'package:onepanel_client/features/runtimes/pages/node_scripts_page.dart';
+import 'package:onepanel_client/features/runtimes/pages/php_config_page.dart';
+import 'package:onepanel_client/features/runtimes/pages/php_extensions_page.dart';
 import 'package:onepanel_client/features/processes/pages/process_detail_page.dart';
 import 'package:onepanel_client/features/processes/pages/processes_page.dart';
 import 'package:onepanel_client/features/processes/providers/process_detail_provider.dart';
 import 'package:onepanel_client/features/processes/providers/processes_provider.dart';
 import 'package:onepanel_client/features/runtimes/models/runtime_detail_args.dart';
 import 'package:onepanel_client/features/runtimes/models/runtime_form_args.dart';
+import 'package:onepanel_client/features/runtimes/providers/node_modules_provider.dart';
+import 'package:onepanel_client/features/runtimes/providers/node_scripts_provider.dart';
+import 'package:onepanel_client/features/runtimes/providers/php_config_provider.dart';
+import 'package:onepanel_client/features/runtimes/providers/php_extensions_provider.dart';
 import 'package:onepanel_client/features/runtimes/pages/runtime_detail_page.dart';
 import 'package:onepanel_client/features/runtimes/pages/runtime_form_page.dart';
 import 'package:onepanel_client/features/runtimes/pages/runtimes_center_page.dart';
@@ -666,24 +674,60 @@ class AppRouter {
           ),
         );
       case AppRoutes.phpExtensions:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsPhpExtensionsTitle,
-          availableInWeek: 8,
+        final phpExtensionsArgs = _readRuntimeManageArgs(
+          settings.arguments,
+          runtimeKind: 'php',
+        );
+        if (phpExtensionsArgs == null) {
+          return MaterialPageRoute(builder: (_) => const NotFoundPage());
+        }
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<PhpExtensionsProvider>(
+            create: (_) => PhpExtensionsProvider(),
+            child: PhpExtensionsPage(args: phpExtensionsArgs),
+          ),
         );
       case AppRoutes.phpConfig:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsPhpConfigTitle,
-          availableInWeek: 8,
+        final phpConfigArgs = _readRuntimeManageArgs(
+          settings.arguments,
+          runtimeKind: 'php',
+        );
+        if (phpConfigArgs == null) {
+          return MaterialPageRoute(builder: (_) => const NotFoundPage());
+        }
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<PhpConfigProvider>(
+            create: (_) => PhpConfigProvider(),
+            child: PhpConfigPage(args: phpConfigArgs),
+          ),
         );
       case AppRoutes.nodeModules:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsNodeModulesTitle,
-          availableInWeek: 8,
+        final nodeModulesArgs = _readRuntimeManageArgs(
+          settings.arguments,
+          runtimeKind: 'node',
+        );
+        if (nodeModulesArgs == null) {
+          return MaterialPageRoute(builder: (_) => const NotFoundPage());
+        }
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<NodeModulesProvider>(
+            create: (_) => NodeModulesProvider(),
+            child: NodeModulesPage(args: nodeModulesArgs),
+          ),
         );
       case AppRoutes.nodeScripts:
-        return _buildStageOnePlaceholderRoute(
-          titleBuilder: (l10n) => l10n.operationsNodeScriptsTitle,
-          availableInWeek: 8,
+        final nodeScriptsArgs = _readRuntimeManageArgs(
+          settings.arguments,
+          runtimeKind: 'node',
+        );
+        if (nodeScriptsArgs == null) {
+          return MaterialPageRoute(builder: (_) => const NotFoundPage());
+        }
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<NodeScriptsProvider>(
+            create: (_) => NodeScriptsProvider(),
+            child: NodeScriptsPage(args: nodeScriptsArgs),
+          ),
         );
 
       case AppRoutes.openrestySourceEditor:
@@ -748,16 +792,44 @@ class AppRouter {
     return null;
   }
 
-  static Route<dynamic> _buildStageOnePlaceholderRoute({
-    required String Function(dynamic l10n) titleBuilder,
-    required int availableInWeek,
+  static RuntimeManageArgs? _readRuntimeManageArgs(
+    Object? arguments, {
+    String? runtimeKind,
   }) {
-    return MaterialPageRoute(
-      builder: (context) => StageOneModulePlaceholderPage(
-        title: titleBuilder(context.l10n),
-        availableInWeek: availableInWeek,
-      ),
-    );
+    if (arguments is RuntimeManageArgs) {
+      return arguments;
+    }
+    if (arguments is RuntimeDetailArgs) {
+      return RuntimeManageArgs(
+        runtimeId: arguments.runtimeId,
+        runtimeKind: runtimeKind,
+      );
+    }
+    if (arguments is int) {
+      return RuntimeManageArgs(
+        runtimeId: arguments,
+        runtimeKind: runtimeKind,
+      );
+    }
+    if (arguments is Map<String, dynamic>) {
+      final runtimeId = (arguments['runtimeId'] as int?) ??
+          (arguments['id'] as int?) ??
+          int.tryParse(arguments['runtimeId']?.toString() ?? '');
+      if (runtimeId == null) {
+        return null;
+      }
+      return RuntimeManageArgs(
+        runtimeId: runtimeId,
+        runtimeName: arguments['runtimeName']?.toString(),
+        runtimeKind:
+            arguments['runtimeKind']?.toString() ??
+            arguments['runtimeType']?.toString() ??
+            runtimeKind,
+        codeDir: arguments['codeDir']?.toString(),
+        packageManager: arguments['packageManager']?.toString(),
+      );
+    }
+    return null;
   }
 }
 

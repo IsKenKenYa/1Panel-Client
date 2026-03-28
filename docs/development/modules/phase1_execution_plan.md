@@ -97,6 +97,64 @@
 - `device` 不单独做顶级模块，后续归属 `toolbox/device`
 - `runtime` 作为独立 feature 落地，但信息架构上保留“与网站运行时相关”的语义
 
+## 执行进度快照（2026-03-28）
+
+### Week 6 收口状态
+
+- `Logs + Task Log` 已完成代码评审收口。
+- 主链路可用、可评审、可测试。
+
+### Week 7 收口状态
+
+- `Runtime` 通用链路已完成：
+  - `RuntimesCenterPage`
+  - `RuntimeDetailPage`
+  - `RuntimeFormPage`
+  - `RuntimeRepository + RuntimeService + 3 Provider`
+- 入口与路由已接入：
+  - `OperationsCenterPage -> AppRoutes.runtimes`
+  - `AppRoutes.runtimeDetail`
+  - `AppRoutes.runtimeForm`
+- 范围边界已锁定：
+  - 已交付：`list/detail/create/update/delete/operate/sync/remark` 通用链路
+  - 延后到 Week 8：`PHP 扩展/FPM 深配置`、`Node modules/scripts`、多语言完整创建向导
+
+### Week 7 门禁结果
+
+- `flutter analyze`：通过
+- `dart run test_runner.dart unit`：通过
+- `dart run test_runner.dart ui`：通过
+- Runtime 聚焦测试（API / Provider / Page / Route / no-server）：通过
+
+### Week 8 启动门槛判断
+
+- 结论：已达到“可继续 Week 8”的门槛。
+- 本阶段未解决项属于 destructive/隔离环境与语言深能力，不阻塞 Week 8 开始。
+
+### Week 8 第一批实施进展（已启动）
+
+- 深能力数据层已落地：
+  - `RuntimeV2Api` 已补 `PHP 扩展安装/卸载`、`Node modules 查询/操作`、`Node package scripts 查询`。
+  - `RuntimeRepository` 已补对应仓储方法。
+  - `runtime_models.dart` 已补 Week 8 请求/响应模型（PHP extension install、Node module/package/scripts）。
+- 页面与路由已落地：
+  - `AppRoutes.phpExtensions/phpConfig/nodeModules/nodeScripts` 已从 placeholder 切换为真实页面与 Provider 注入。
+  - `RuntimeDetailAdvancedTabWidget` 已增加 PHP/Node 深能力跳转按钮。
+- Week 8 新增实现：
+  - Services: `php_runtime_service.dart`、`node_runtime_service.dart`
+  - Providers: `php_extensions_provider.dart`、`php_config_provider.dart`、`node_modules_provider.dart`、`node_scripts_provider.dart`
+  - Pages: `php_extensions_page.dart`、`php_config_page.dart`、`node_modules_page.dart`、`node_scripts_page.dart`
+
+### Week 8 当前验证结果
+
+- `flutter analyze`：通过
+- 聚焦新增测试：
+  - `app_router_runtime_routes_test.dart`（含四条 Week8 路由）通过
+  - 4 个新增 Provider 单测通过
+- `dart run test_runner.dart unit`：通过（destructive 用例按 gate 跳过）
+- `dart run test_runner.dart ui`：通过
+- `dart run test_runner.dart integration`：执行通过，但环境变量 `RUN_INTEGRATION_TESTS` 未开启，集成用例按 gate 跳过
+
 ---
 
 ## 当前问题基线
@@ -1345,8 +1403,8 @@ lib/features/<module>/
 
 ---
 
-**文档版本**: 1.0  
-**最后更新**: 2026-03-25  
+**文档版本**: 1.1  
+**最后更新**: 2026-03-28  
 **维护者**: Open1PanelApp 协作代理  
 
 

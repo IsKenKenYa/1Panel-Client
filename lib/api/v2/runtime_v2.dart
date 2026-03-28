@@ -99,6 +99,24 @@ class RuntimeV2Api {
     );
   }
 
+  Future<Response<void>> installPhpExtension(
+    PHPExtensionInstallRequest request,
+  ) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/runtimes/php/extensions/install'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<void>> uninstallPhpExtension(
+    PHPExtensionInstallRequest request,
+  ) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/runtimes/php/extensions/uninstall'),
+      data: request.toJson(),
+    );
+  }
+
   Future<Response<PHPConfig>> loadPhpConfig(int id) async {
     final response = await _client.get<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/runtimes/php/config/$id'),
@@ -117,6 +135,53 @@ class RuntimeV2Api {
     return _client.post<void>(
       ApiConstants.buildApiPath('/runtimes/php/config'),
       data: request.toJson(),
+    );
+  }
+
+  Future<Response<List<NodeModuleInfo>>> getNodeModules(
+    NodeModuleRequest request,
+  ) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/runtimes/node/modules'),
+      data: request.toJson(),
+    );
+    final rawData = response.data?['data'];
+    final items = (rawData is List<dynamic> ? rawData : const <dynamic>[])
+        .whereType<Map<String, dynamic>>()
+        .map(NodeModuleInfo.fromJson)
+        .toList(growable: false);
+    return Response<List<NodeModuleInfo>>(
+      data: items,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<void>> operateNodeModule(NodeModuleRequest request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/runtimes/node/modules/operate'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<List<NodeScriptInfo>>> getNodePackageScripts(
+    NodePackageRequest request,
+  ) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/runtimes/node/package'),
+      data: request.toJson(),
+    );
+    final rawData = response.data?['data'];
+    final items = (rawData is List<dynamic> ? rawData : const <dynamic>[])
+        .whereType<Map<String, dynamic>>()
+        .map(NodeScriptInfo.fromJson)
+        .toList(growable: false);
+    return Response<List<NodeScriptInfo>>(
+      data: items,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
     );
   }
 
