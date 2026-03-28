@@ -9,12 +9,11 @@ import 'package:onepanel_client/features/files/services/file_preview_service.dar
 class _FakeFilePreviewService extends FilePreviewService {
   _FakeFilePreviewService({
     this.content = 'line1\nline2',
-    this.preview = 'line1\nline2\nline3',
     this.bytes = const <int>[1, 2, 3],
   });
 
   final String content;
-  final String preview;
+  final String preview = 'line1\nline2\nline3';
   final List<int> bytes;
 
   @override

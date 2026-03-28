@@ -8,7 +8,8 @@ extension FilesProviderSystemMixin on FilesProvider {
     String? group,
     bool? sub,
   }) async {
-    appLogger.dWithPackage('files_provider', 'batchChangeFileRole: paths=$paths');
+    appLogger.dWithPackage(
+        'files_provider', 'batchChangeFileRole: paths=$paths');
     try {
       await _service.batchChangeFileRole(
         paths: paths,
@@ -96,7 +97,7 @@ extension FilesProviderSystemMixin on FilesProvider {
       throw Exception('storage_permission_denied');
     }
 
-    if (file.size >= _chunkDownloadThreshold) {
+    if (file.size >= FilesProvider._chunkDownloadThreshold) {
       appLogger.iWithPackage(
         'files_provider',
         'downloadFile: 大文件(${file.size} bytes)，建议使用分块下载',
@@ -162,7 +163,8 @@ extension FilesProviderSystemMixin on FilesProvider {
       }
       return taskId;
     } catch (e, stackTrace) {
-      appLogger.eWithPackage('files_provider', '_downloadWithFlutterDownloader: 失败',
+      appLogger.eWithPackage(
+          'files_provider', '_downloadWithFlutterDownloader: 失败',
           error: e, stackTrace: stackTrace);
       rethrow;
     }
@@ -174,7 +176,8 @@ extension FilesProviderSystemMixin on FilesProvider {
     required String linkType,
     bool? overwrite,
   }) async {
-    appLogger.dWithPackage('files_provider', 'createFileLink: source=$sourcePath, link=$linkPath');
+    appLogger.dWithPackage(
+        'files_provider', 'createFileLink: source=$sourcePath, link=$linkPath');
     try {
       await _service.createFileLink(
         sourcePath: sourcePath,

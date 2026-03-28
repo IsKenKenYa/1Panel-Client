@@ -33,55 +33,41 @@ class _MockFilesProvider extends FilesProvider {
     notifyListeners();
   }
 
-  @override
   Future<void> createDirectory(String name) async {}
 
-  @override
   Future<void> createFile(String name, {String? content}) async {}
 
-  @override
   Future<void> renameFile(String oldPath, String newName) async {}
 
-  @override
   Future<void> moveFile(String sourcePath, String targetPath) async {}
 
-  @override
   Future<void> copyFile(String sourcePath, String targetPath) async {}
 
-  @override
   Future<void> extractFile(String path, String dst, String type,
       {String? secret}) async {}
 
-  @override
   Future<void> compressFiles(
       List<String> files, String dst, String name, String type,
       {String? secret}) async {}
 
-  @override
   Future<void> deleteSelected() async {}
 
-  @override
   Future<void> moveSelected(String targetPath) async {}
 
-  @override
   Future<void> copySelected(String targetPath) async {}
 
-  @override
   void setSearchQuery(String? query) {
     _mockData = _mockData.copyWith(searchQuery: query);
     notifyListeners();
   }
 
-  @override
   void setSorting(String? sortBy, String? sortOrder) {
     _mockData = _mockData.copyWith(sortBy: sortBy, sortOrder: sortOrder);
     notifyListeners();
   }
 
-  @override
   Future<void> loadFiles({String? path}) async {}
 
-  @override
   Future<void> refresh() async {}
 }
 

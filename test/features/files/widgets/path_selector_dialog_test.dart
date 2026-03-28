@@ -44,7 +44,7 @@ void main() {
       ),
     ];
 
-    when(mockProvider.fetchFiles(any)).thenAnswer((_) async => subfolders);
+    when(mockProvider.fetchFiles('/')).thenAnswer((_) async => subfolders);
 
     // Act
     await tester.pumpWidget(createTestWidget(Builder(
@@ -55,7 +55,7 @@ void main() {
               context,
               mockProvider,
               '/',
-              AppLocalizations.of(context),
+              context.l10n,
             );
           },
           child: const Text('Open Dialog'),

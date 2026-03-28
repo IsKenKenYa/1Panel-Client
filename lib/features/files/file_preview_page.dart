@@ -724,8 +724,9 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
     final ext = fileName.split('.').last.toLowerCase();
     final name = fileName.toLowerCase();
 
-    if (name == 'dockerfile' || name.startsWith('dockerfile.'))
+    if (name == 'dockerfile' || name.startsWith('dockerfile.')) {
       return 'dockerfile';
+    }
     if (name == 'makefile') return 'makefile';
     if (name == '.gitignore') return 'gitignore';
     if (name.startsWith('.env')) return 'bash';

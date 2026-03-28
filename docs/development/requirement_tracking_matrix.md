@@ -7,7 +7,7 @@
 - **数据模型数**: 471
 - **优先级分类**: P0 (核心), P1 (高价值), P2 (工具类)
 
-## Phase 2 增量进展（2026-03-27）
+## Phase 2 增量进展（2026-03-28）
 
 - **S2-1（Database + Firewall）**: 主链路维持可用，延续 Repository/Service/Provider/Page 闭环。
 - **S2-2（Website Core）**: 站点生命周期、详情、默认站点、分组、备注与域名主流程维持可用。
@@ -27,7 +27,7 @@
 - **S2-5（Core Refactor）当前进展**:
 	- Auth：新增 `AuthRepository / AuthService / AuthSessionStore`，`AuthProvider` 已移除 `SharedPreferences + debugPrint`，改为安全存储和 `appLogger`。
 	- Dashboard：新增 `DashboardRepository / DashboardService`，`DashboardProvider` 已移除 `DashboardV2Api + ApiClientManager + debugPrint` 直连。
-	- File：`FilesProvider` 的回收站状态/列表读取已收回 `FilesService`，先消除 provider 直调 API。
+	- File：`FilesService` 已拆分为 `FilesApiGateway + FileBrowserService / FileRecycleService / FileTransferService / FilePreviewService`；`FilesProvider` 已按 `lifecycle / browser / recycle / favorites-transfer / system` 分片，新增 `RecycleBinProvider / TransferManagerProvider / FilePreviewProvider`，页面侧回收站、传输管理与预览已切换到对应 provider。
 	- 回归测试：新增 `test/features/auth/auth_service_test.dart`，并将 `auth_provider_test.dart` 改为依赖注入风格。
 - **门禁执行结果**:
 	- `flutter analyze`：通过（No issues found）

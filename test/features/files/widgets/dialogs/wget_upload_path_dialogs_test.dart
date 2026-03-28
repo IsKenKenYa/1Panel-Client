@@ -22,22 +22,17 @@ class _MockFilesProvider extends FilesProvider {
     notifyListeners();
   }
 
-  @override
   Future<void> loadFiles({String? path}) async {}
 
-  @override
   Future<void> refresh() async {}
 
-  @override
   Future<void> wgetDownload(
       {required String url,
       required String name,
       bool? ignoreCertificate}) async {}
 
-  @override
   Future<void> uploadFiles(List<String> filePaths) async {}
 
-  @override
   Future<List<FileInfo>> fetchFiles(String path) async {
     return [
       FileInfo(

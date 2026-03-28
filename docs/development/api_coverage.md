@@ -9,7 +9,7 @@
 - 标签数: 52
 - 覆盖口径: 已实现=存在API调用与数据模型，已测试=具备单元/集成/端到端测试，已文档=包含使用说明与已知限制
 
-## Phase 2 增量覆盖（2026-03-27）
+## Phase 2 增量覆盖（2026-03-28）
 
 - 范围: S2-3 Security & Gateway（Panel TLS、Website SSL、OpenResty）
 - 收口项:
@@ -31,6 +31,7 @@
 	- S2-4：新增 `test/features/ai/ai_page_test.dart` 与 `test/features/orchestration/orchestration_page_test.dart`，补齐 route/injection 与页面壳 smoke。
 	- S2-5：`AuthProvider` 改为依赖 `AuthService`；新增 `AuthRepository / AuthSessionStore`，会话存储切换到 `flutter_secure_storage`。
 	- S2-5：新增 `DashboardRepository / DashboardService`，`DashboardProvider` 改为依赖 service；`FilesProvider` 的回收站读取已收回 service。
+	- S2-5：`file` 分层继续收口为 `FilesApiGateway + Browser/Recycle/Transfer/Preview services`，并新增 `RecycleBinProvider / TransferManagerProvider / FilePreviewProvider` 承接页面状态。
 - 门禁结果:
 	- `flutter analyze`：通过
 	- `dart run test_runner.dart unit`：通过

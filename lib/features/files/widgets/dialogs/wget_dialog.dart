@@ -68,8 +68,9 @@ void showWgetDialog(BuildContext context, FilesProvider provider) {
         ),
         FilledButton(
           onPressed: () async {
-            if (urlController.text.isEmpty || nameController.text.isEmpty)
+            if (urlController.text.isEmpty || nameController.text.isEmpty) {
               return;
+            }
 
             final url = urlController.text.trim();
             final name = nameController.text.trim();
