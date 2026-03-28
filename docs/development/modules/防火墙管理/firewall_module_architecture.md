@@ -2,7 +2,7 @@
 
 > 2026-03-26 修正：
 > 本文下方部分路径与页面缺口描述来自早期规划，当前实际实现已切到 `/hosts/firewall/*`。
-> 当前阶段二实施以 `firewall_api_analysis.md/.json`、`阶段2计划.md` 与运行时代码为准。
+> 当前实施以 `firewall_api_analysis.md/.json`、`阶段总计划（docs/development/modules/阶段2计划.md）` 与运行时代码为准。
 > 已落地能力为 `status / rules / ip / ports / rule form`，并已有 provider/widget/integration/api client 测试。
 
 ## 模块目标

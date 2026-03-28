@@ -301,6 +301,7 @@ flutter packages pub run build_runner build
 
 ### 开发文档
 - [开发文档](docs/development/)
+- [阶段总计划（Phase 1 + Phase 2）](docs/development/modules/阶段2计划.md)
 
 ## 🤝 贡献
 
