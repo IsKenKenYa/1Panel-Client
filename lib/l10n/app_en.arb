@@ -1995,6 +1995,8 @@
   "runtimeNodeScriptWaitTimeout": "Script was triggered, but status confirmation timed out. Please refresh later.",
   "operationsPhpExtensionsTitle": "PHP Extensions",
   "operationsPhpConfigTitle": "PHP Config",
+  "operationsSupervisorTitle": "Supervisor",
+  "runtimeSupervisorStatusWarning": "Partially running",
   "operationsNodeModulesTitle": "Node Modules",
   "operationsNodeScriptsTitle": "Node Scripts",
   "commandsCreateTitle": "Create Command",

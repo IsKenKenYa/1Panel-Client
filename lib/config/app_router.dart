@@ -77,6 +77,7 @@ import 'package:onepanel_client/features/runtimes/pages/node_modules_page.dart';
 import 'package:onepanel_client/features/runtimes/pages/node_scripts_page.dart';
 import 'package:onepanel_client/features/runtimes/pages/php_config_page.dart';
 import 'package:onepanel_client/features/runtimes/pages/php_extensions_page.dart';
+import 'package:onepanel_client/features/runtimes/pages/php_supervisor_page.dart';
 import 'package:onepanel_client/features/processes/pages/process_detail_page.dart';
 import 'package:onepanel_client/features/processes/pages/processes_page.dart';
 import 'package:onepanel_client/features/processes/providers/process_detail_provider.dart';
@@ -87,6 +88,7 @@ import 'package:onepanel_client/features/runtimes/providers/node_modules_provide
 import 'package:onepanel_client/features/runtimes/providers/node_scripts_provider.dart';
 import 'package:onepanel_client/features/runtimes/providers/php_config_provider.dart';
 import 'package:onepanel_client/features/runtimes/providers/php_extensions_provider.dart';
+import 'package:onepanel_client/features/runtimes/providers/php_supervisor_provider.dart';
 import 'package:onepanel_client/features/runtimes/pages/runtime_detail_page.dart';
 import 'package:onepanel_client/features/runtimes/pages/runtime_form_page.dart';
 import 'package:onepanel_client/features/runtimes/pages/runtimes_center_page.dart';
@@ -174,6 +176,7 @@ class AppRoutes {
   static const String runtimeForm = '/runtimes/form';
   static const String phpExtensions = '/runtimes/php/extensions';
   static const String phpConfig = '/runtimes/php/config';
+  static const String phpSupervisor = '/runtimes/php/supervisor';
   static const String nodeModules = '/runtimes/node/modules';
   static const String nodeScripts = '/runtimes/node/scripts';
 }
@@ -701,6 +704,20 @@ class AppRouter {
             child: PhpConfigPage(args: phpConfigArgs),
           ),
         );
+      case AppRoutes.phpSupervisor:
+        final phpSupervisorArgs = _readRuntimeManageArgs(
+          settings.arguments,
+          runtimeKind: 'php',
+        );
+        if (phpSupervisorArgs == null) {
+          return MaterialPageRoute(builder: (_) => const NotFoundPage());
+        }
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<PhpSupervisorProvider>(
+            create: (_) => PhpSupervisorProvider(),
+            child: PhpSupervisorPage(args: phpSupervisorArgs),
+          ),
+        );
       case AppRoutes.nodeModules:
         final nodeModulesArgs = _readRuntimeManageArgs(
           settings.arguments,
@@ -821,8 +838,7 @@ class AppRouter {
       return RuntimeManageArgs(
         runtimeId: runtimeId,
         runtimeName: arguments['runtimeName']?.toString(),
-        runtimeKind:
-            arguments['runtimeKind']?.toString() ??
+        runtimeKind: arguments['runtimeKind']?.toString() ??
             arguments['runtimeType']?.toString() ??
             runtimeKind,
         codeDir: arguments['codeDir']?.toString(),

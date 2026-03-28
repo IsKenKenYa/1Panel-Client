@@ -4746,6 +4746,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get operationsPhpConfigTitle => 'PHP 配置';
 
   @override
+  String get operationsSupervisorTitle => 'Supervisor 管理';
+
+  @override
+  String get runtimeSupervisorStatusWarning => '部分运行';
+
+  @override
   String get operationsNodeModulesTitle => 'Node 模块';
 
   @override

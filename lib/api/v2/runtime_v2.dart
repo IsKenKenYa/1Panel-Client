@@ -138,6 +138,55 @@ class RuntimeV2Api {
     );
   }
 
+  Future<Response<List<SupervisorProcessInfo>>> getSupervisorProcesses(
+    int id,
+  ) async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/runtimes/supervisor/process/$id'),
+    );
+    final rawData = response.data?['data'];
+    final items = (rawData is List<dynamic> ? rawData : const <dynamic>[])
+        .whereType<Map<String, dynamic>>()
+        .map(SupervisorProcessInfo.fromJson)
+        .toList(growable: false);
+    return Response<List<SupervisorProcessInfo>>(
+      data: items,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<void>> operateSupervisorProcess(
+    SupervisorProcessOperateRequest request,
+  ) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/runtimes/supervisor/process'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<String>> operateSupervisorProcessFile(
+    SupervisorProcessFileRequest request,
+  ) async {
+    final response = await _client.post<dynamic>(
+      ApiConstants.buildApiPath('/runtimes/supervisor/process/file'),
+      data: request.toJson(),
+    );
+    final rawData = response.data;
+    final content = switch (rawData) {
+      Map<String, dynamic> map => map['data']?.toString() ?? '',
+      String text => text,
+      _ => '',
+    };
+    return Response<String>(
+      data: content,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
   Future<Response<List<NodeModuleInfo>>> getNodeModules(
     NodeModuleRequest request,
   ) async {

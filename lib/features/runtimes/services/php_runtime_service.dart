@@ -51,4 +51,69 @@ class PhpRuntimeService {
   Future<List<FpmStatusItem>> loadFpmStatus(int runtimeId) {
     return _repository.getPhpStatus(runtimeId);
   }
+
+  Future<List<SupervisorProcessInfo>> loadSupervisorProcesses(int runtimeId) {
+    return _repository.getSupervisorProcesses(runtimeId);
+  }
+
+  Future<void> operateSupervisorProcess({
+    required int runtimeId,
+    required String name,
+    required String operate,
+  }) {
+    return _repository.operateSupervisorProcess(
+      SupervisorProcessOperateRequest(
+        operate: operate,
+        name: name,
+        id: runtimeId,
+      ),
+    );
+  }
+
+  Future<String> loadSupervisorFile({
+    required int runtimeId,
+    required String name,
+    required String file,
+  }) {
+    return _repository.operateSupervisorProcessFile(
+      SupervisorProcessFileRequest(
+        operate: 'get',
+        name: name,
+        file: file,
+        id: runtimeId,
+      ),
+    );
+  }
+
+  Future<void> updateSupervisorFile({
+    required int runtimeId,
+    required String name,
+    required String file,
+    required String content,
+  }) async {
+    await _repository.operateSupervisorProcessFile(
+      SupervisorProcessFileRequest(
+        operate: 'update',
+        name: name,
+        file: file,
+        id: runtimeId,
+        content: content,
+      ),
+    );
+  }
+
+  Future<void> clearSupervisorLog({
+    required int runtimeId,
+    required String name,
+    required String file,
+  }) async {
+    await _repository.operateSupervisorProcessFile(
+      SupervisorProcessFileRequest(
+        operate: 'clear',
+        name: name,
+        file: file,
+        id: runtimeId,
+      ),
+    );
+  }
 }

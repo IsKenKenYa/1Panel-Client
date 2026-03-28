@@ -4834,6 +4834,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get operationsPhpConfigTitle => 'PHP Config';
 
   @override
+  String get operationsSupervisorTitle => 'Supervisor';
+
+  @override
+  String get runtimeSupervisorStatusWarning => 'Partially running';
+
+  @override
   String get operationsNodeModulesTitle => 'Node Modules';
 
   @override

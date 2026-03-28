@@ -1933,6 +1933,8 @@
   "runtimeNodeScriptWaitTimeout": "脚本已触发，但状态确认超时，请稍后手动刷新确认。",
   "operationsPhpExtensionsTitle": "PHP 扩展",
   "operationsPhpConfigTitle": "PHP 配置",
+  "operationsSupervisorTitle": "Supervisor 管理",
+  "runtimeSupervisorStatusWarning": "部分运行",
   "operationsNodeModulesTitle": "Node 模块",
   "operationsNodeScriptsTitle": "Node 脚本",
   "commandsCreateTitle": "创建命令",

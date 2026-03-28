@@ -988,6 +988,172 @@ class FpmStatusItem extends Equatable {
   List<Object?> get props => [key, value];
 }
 
+class SupervisorProcessStatus extends Equatable {
+  final String pid;
+  final String status;
+  final String uptime;
+  final String name;
+
+  const SupervisorProcessStatus({
+    this.pid = '',
+    this.status = '',
+    this.uptime = '',
+    this.name = '',
+  });
+
+  factory SupervisorProcessStatus.fromJson(Map<String, dynamic> json) {
+    return SupervisorProcessStatus(
+      pid: json['pid'] as String? ?? json['PID'] as String? ?? '',
+      status: json['status'] as String? ?? '',
+      uptime: json['uptime'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'PID': pid,
+        'status': status,
+        'uptime': uptime,
+        'name': name,
+      };
+
+  @override
+  List<Object?> get props => [pid, status, uptime, name];
+}
+
+class SupervisorProcessInfo extends Equatable {
+  final String name;
+  final String command;
+  final String user;
+  final String dir;
+  final String numprocs;
+  final String environment;
+  final String autoStart;
+  final String autoRestart;
+  final List<SupervisorProcessStatus> status;
+
+  const SupervisorProcessInfo({
+    required this.name,
+    this.command = '',
+    this.user = '',
+    this.dir = '',
+    this.numprocs = '',
+    this.environment = '',
+    this.autoStart = '',
+    this.autoRestart = '',
+    this.status = const <SupervisorProcessStatus>[],
+  });
+
+  factory SupervisorProcessInfo.fromJson(Map<String, dynamic> json) {
+    return SupervisorProcessInfo(
+      name: json['name'] as String? ?? '',
+      command: json['command'] as String? ?? '',
+      user: json['user'] as String? ?? '',
+      dir: json['dir'] as String? ?? '',
+      numprocs: json['numprocs']?.toString() ?? '',
+      environment: json['environment'] as String? ?? '',
+      autoStart: json['autoStart'] as String? ?? '',
+      autoRestart: json['autoRestart'] as String? ?? '',
+      status: (json['status'] as List<dynamic>?)
+              ?.whereType<Map<String, dynamic>>()
+              .map(SupervisorProcessStatus.fromJson)
+              .toList(growable: false) ??
+          const <SupervisorProcessStatus>[],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'command': command,
+        'user': user,
+        'dir': dir,
+        'numprocs': numprocs,
+        'environment': environment,
+        'autoStart': autoStart,
+        'autoRestart': autoRestart,
+        'status': status.map((item) => item.toJson()).toList(),
+      };
+
+  @override
+  List<Object?> get props => [
+        name,
+        command,
+        user,
+        dir,
+        numprocs,
+        environment,
+        autoStart,
+        autoRestart,
+        status,
+      ];
+}
+
+class SupervisorProcessOperateRequest extends Equatable {
+  final String operate;
+  final String name;
+  final int id;
+
+  const SupervisorProcessOperateRequest({
+    required this.operate,
+    required this.name,
+    required this.id,
+  });
+
+  factory SupervisorProcessOperateRequest.fromJson(Map<String, dynamic> json) {
+    return SupervisorProcessOperateRequest(
+      operate: json['operate'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+      id: json['id'] as int? ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'operate': operate,
+        'name': name,
+        'id': id,
+      };
+
+  @override
+  List<Object?> get props => [operate, name, id];
+}
+
+class SupervisorProcessFileRequest extends Equatable {
+  final String operate;
+  final String name;
+  final String file;
+  final int id;
+  final String? content;
+
+  const SupervisorProcessFileRequest({
+    required this.operate,
+    required this.name,
+    required this.file,
+    required this.id,
+    this.content,
+  });
+
+  factory SupervisorProcessFileRequest.fromJson(Map<String, dynamic> json) {
+    return SupervisorProcessFileRequest(
+      operate: json['operate'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+      file: json['file'] as String? ?? '',
+      id: json['id'] as int? ?? 0,
+      content: json['content'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'operate': operate,
+        'name': name,
+        'file': file,
+        'id': id,
+        if (content != null) 'content': content,
+      };
+
+  @override
+  List<Object?> get props => [operate, name, file, id, content];
+}
+
 /// Java runtime specific model
 class JavaRuntime extends Equatable {
   final int? id;

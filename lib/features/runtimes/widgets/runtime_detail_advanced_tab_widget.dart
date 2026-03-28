@@ -108,6 +108,15 @@ class RuntimeDetailAdvancedTabWidget extends StatelessWidget {
           icon: const Icon(Icons.tune_outlined),
           label: Text(l10n.operationsPhpConfigTitle),
         ),
+        OutlinedButton.icon(
+          onPressed: () => Navigator.pushNamed(
+            context,
+            AppRoutes.phpSupervisor,
+            arguments: args,
+          ),
+          icon: const Icon(Icons.settings_applications_outlined),
+          label: Text(l10n.operationsSupervisorTitle),
+        ),
       ];
     }
 

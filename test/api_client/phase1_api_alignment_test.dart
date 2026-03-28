@@ -713,6 +713,76 @@ void main() {
       expect(scripts.data?.single.name, 'start');
     });
 
+    test('RuntimeV2Api aligns Week8 supervisor process and process-file routes',
+        () async {
+      final api = RuntimeV2Api(client);
+
+      responseBuilder = () => <String, dynamic>{
+            'code': 200,
+            'data': <Map<String, dynamic>>[
+              <String, dynamic>{
+                'name': 'php-fpm',
+                'command': 'php-fpm -F',
+                'user': 'www-data',
+                'dir': '/www/wwwroot/default',
+                'numprocs': '1',
+                'status': <Map<String, dynamic>>[
+                  <String, dynamic>{
+                    'PID': '100',
+                    'status': 'RUNNING',
+                    'uptime': '0:00:10',
+                    'name': 'php-fpm',
+                  },
+                ],
+              },
+            ],
+          };
+
+      final processes = await api.getSupervisorProcesses(9);
+      expect(requestMethod, 'GET');
+      expect(requestPath, '/api/v2/runtimes/supervisor/process/9');
+      expect(processes.data?.single.name, 'php-fpm');
+      expect(processes.data?.single.status.single.status, 'RUNNING');
+
+      await api.operateSupervisorProcess(
+        const SupervisorProcessOperateRequest(
+          operate: 'restart',
+          name: 'queue-worker',
+          id: 9,
+        ),
+      );
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/runtimes/supervisor/process');
+      expect(requestBody, <String, dynamic>{
+        'operate': 'restart',
+        'name': 'queue-worker',
+        'id': 9,
+      });
+
+      responseBuilder = () => <String, dynamic>{
+            'code': 200,
+            'data': '[program:queue-worker]\\ncommand=php artisan queue:work',
+          };
+
+      final processFile = await api.operateSupervisorProcessFile(
+        const SupervisorProcessFileRequest(
+          operate: 'get',
+          name: 'queue-worker',
+          file: 'config',
+          id: 9,
+        ),
+      );
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/runtimes/supervisor/process/file');
+      expect(requestBody, <String, dynamic>{
+        'operate': 'get',
+        'name': 'queue-worker',
+        'file': 'config',
+        'id': 9,
+      });
+      expect(processFile.data, contains('[program:queue-worker]'));
+    });
+
     test(
         'RuntimeV2Api aligns Week8 php extension install/uninstall routes and payloads',
         () async {

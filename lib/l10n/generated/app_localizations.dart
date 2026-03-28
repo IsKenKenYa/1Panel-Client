@@ -9237,6 +9237,18 @@ abstract class AppLocalizations {
   /// **'PHP Config'**
   String get operationsPhpConfigTitle;
 
+  /// No description provided for @operationsSupervisorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Supervisor'**
+  String get operationsSupervisorTitle;
+
+  /// No description provided for @runtimeSupervisorStatusWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Partially running'**
+  String get runtimeSupervisorStatusWarning;
+
   /// No description provided for @operationsNodeModulesTitle.
   ///
   /// In en, this message translates to:

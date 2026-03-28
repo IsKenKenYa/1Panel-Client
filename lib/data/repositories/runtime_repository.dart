@@ -90,6 +90,29 @@ class RuntimeRepository {
     await api.updatePhpConfig(request);
   }
 
+  Future<List<SupervisorProcessInfo>> getSupervisorProcesses(
+    int runtimeId,
+  ) async {
+    final api = await _ensureApi();
+    final response = await api.getSupervisorProcesses(runtimeId);
+    return response.data ?? const <SupervisorProcessInfo>[];
+  }
+
+  Future<void> operateSupervisorProcess(
+    SupervisorProcessOperateRequest request,
+  ) async {
+    final api = await _ensureApi();
+    await api.operateSupervisorProcess(request);
+  }
+
+  Future<String> operateSupervisorProcessFile(
+    SupervisorProcessFileRequest request,
+  ) async {
+    final api = await _ensureApi();
+    final response = await api.operateSupervisorProcessFile(request);
+    return response.data ?? '';
+  }
+
   Future<List<FpmStatusItem>> getPhpStatus(int runtimeId) async {
     final api = await _ensureApi();
     final response = await api.getPhpStatus(runtimeId);

@@ -65,6 +65,13 @@ void main() {
     expect(find.textContaining('PHP Config'), findsWidgets);
 
     navigatorKey.currentState!.pushNamed(
+      AppRoutes.phpSupervisor,
+      arguments: deepArgs,
+    );
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Supervisor'), findsWidgets);
+
+    navigatorKey.currentState!.pushNamed(
       AppRoutes.nodeModules,
       arguments: deepArgs,
     );

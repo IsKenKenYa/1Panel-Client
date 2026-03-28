@@ -142,8 +142,12 @@
   - `RuntimeDetailAdvancedTabWidget` 已增加 PHP/Node 深能力跳转按钮。
 - Week 8 新增实现：
   - Services: `php_runtime_service.dart`、`node_runtime_service.dart`
-  - Providers: `php_extensions_provider.dart`、`php_config_provider.dart`、`node_modules_provider.dart`、`node_scripts_provider.dart`
-  - Pages: `php_extensions_page.dart`、`php_config_page.dart`、`node_modules_page.dart`、`node_scripts_page.dart`
+  - Providers: `php_extensions_provider.dart`、`php_config_provider.dart`、`php_supervisor_provider.dart`、`node_modules_provider.dart`、`node_scripts_provider.dart`
+  - Pages: `php_extensions_page.dart`、`php_config_page.dart`、`php_supervisor_page.dart`、`node_modules_page.dart`、`node_scripts_page.dart`
+  - Router/入口：`AppRoutes.phpSupervisor` 与 Runtime 详情高级页 supervisor 跳转按钮已接通。
+  - Supervisor 最小闭环：
+    - API/Repository 已补 `/runtimes/supervisor/process`、`/runtimes/supervisor/process/file`。
+    - Provider + Page 已支持进程状态查看、start/stop/restart/delete 操作、配置文件查看/保存、日志查看/清空。
 
 ### Week 8 当前验证结果
 
@@ -168,7 +172,11 @@
 - 持续检查（本轮）：
   - `flutter analyze`：通过
   - `flutter build apk --debug`：通过（产物 `build/app/outputs/flutter-apk/app-debug.apk`）
-  - `dart run test_runner.dart unit`：通过
+  - 目标回归测试：
+    - `test/api_client/phase1_api_alignment_test.dart`：通过（已补 supervisor route/payload 对齐断言）
+    - `test/features/runtimes/providers/php_supervisor_provider_test.dart`：通过
+    - `test/config/app_router_runtime_routes_test.dart`：通过（已覆盖 `AppRoutes.phpSupervisor`）
+  - `dart run test_runner.dart unit`：失败（环境网络超时导致 `test/api_client/runtime_api_test.dart` 用例失败，非本次 supervisor 代码编译错误）
   - `dart run test_runner.dart ui`：通过
   - `dart run test_runner.dart integration`：执行通过（当前环境全部 gate skip）
 
@@ -176,10 +184,9 @@
 
 - Runtime 深能力 API 仍有未对齐子项：
   - PHP：`/runtimes/php/file`、`/runtimes/php/update`、`/runtimes/php/fpm/config`、`/runtimes/php/container/*`
-  - Supervisor：`/runtimes/supervisor/process`、`/runtimes/supervisor/process/file`
 - Runtime 深能力页面仍有未完成子流：
   - `PhpConfigPage` 的 Raw File / Container 配置编辑闭环
-  - Supervisor 进程/配置文件管理页与操作闭环
+  - Supervisor create/update 进程编排高级流（当前仅完成最小闭环）
 - Week 8 测试门禁仍有待补：
   - integration 写操作回归（当前环境 gate 跳过，需在 `RUN_INTEGRATION_TESTS=true` 环境补跑）
   - runtime 深能力新增子流对应的 API client / provider / widget 回归测试
@@ -259,6 +266,7 @@
 - `runtimeForm = '/runtimes/form'`
 - `phpExtensions = '/runtimes/php/extensions'`
 - `phpConfig = '/runtimes/php/config'`
+- `phpSupervisor = '/runtimes/php/supervisor'`
 - `nodeModules = '/runtimes/node/modules'`
 - `nodeScripts = '/runtimes/node/scripts'`
 
