@@ -4443,7 +4443,82 @@ class AppLocalizationsZh extends AppLocalizations {
   String get toolboxCenterTitle => '工具箱';
 
   @override
-  String get toolboxCenterIntro => '工具聚合入口，当前优先提供设备管理能力。';
+  String get toolboxCenterIntro => '工具聚合入口，包含 ClamAV、Fail2ban、FTP 与设备管理。';
+
+  @override
+  String get toolboxCommonOverviewTitle => '概览';
+
+  @override
+  String get toolboxCommonRecentRecordsTitle => '最近记录';
+
+  @override
+  String get toolboxStatusLabel => '状态';
+
+  @override
+  String get toolboxVersionLabel => '版本';
+
+  @override
+  String get toolboxStatusEnabled => '已启用';
+
+  @override
+  String get toolboxStatusDisabled => '已停用';
+
+  @override
+  String get toolboxClamTitle => 'ClamAV';
+
+  @override
+  String get toolboxClamCardSubtitle => '扫描任务状态与最近扫描记录';
+
+  @override
+  String get toolboxClamTasksTitle => '扫描任务';
+
+  @override
+  String get toolboxClamRecordsTitle => '最近扫描记录';
+
+  @override
+  String get toolboxFail2banTitle => 'Fail2ban';
+
+  @override
+  String get toolboxFail2banCardSubtitle => '封禁策略与拦截记录';
+
+  @override
+  String get toolboxFail2banConfigTitle => 'Fail2ban 配置';
+
+  @override
+  String get toolboxFail2banEditConfig => '编辑 Fail2ban 配置';
+
+  @override
+  String get toolboxFail2banBantime => '封禁时长';
+
+  @override
+  String get toolboxFail2banFindtime => '统计窗口';
+
+  @override
+  String get toolboxFail2banMaxretry => '最大重试次数';
+
+  @override
+  String get toolboxFail2banPort => '端口';
+
+  @override
+  String get toolboxFtpTitle => 'FTP';
+
+  @override
+  String get toolboxFtpCardSubtitle => 'FTP 服务状态与用户同步';
+
+  @override
+  String get toolboxFtpUsersTitle => 'FTP 用户';
+
+  @override
+  String get toolboxFtpBaseDir => '根目录';
+
+  @override
+  String get toolboxFtpSyncAction => '同步用户';
+
+  @override
+  String get toolboxFtpSyncSuccess => 'FTP 用户同步成功';
+
+  @override
+  String get toolboxFtpSyncFailed => 'FTP 用户同步失败';
 
   @override
   String get toolboxDeviceTitle => '设备管理';

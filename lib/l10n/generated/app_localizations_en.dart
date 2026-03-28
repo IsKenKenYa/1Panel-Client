@@ -4543,7 +4543,84 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get toolboxCenterIntro =>
-      'A consolidated tools entry. Device management is delivered first.';
+      'A consolidated tools entry for ClamAV, Fail2ban, FTP, and device management.';
+
+  @override
+  String get toolboxCommonOverviewTitle => 'Overview';
+
+  @override
+  String get toolboxCommonRecentRecordsTitle => 'Recent Records';
+
+  @override
+  String get toolboxStatusLabel => 'Status';
+
+  @override
+  String get toolboxVersionLabel => 'Version';
+
+  @override
+  String get toolboxStatusEnabled => 'Enabled';
+
+  @override
+  String get toolboxStatusDisabled => 'Disabled';
+
+  @override
+  String get toolboxClamTitle => 'ClamAV';
+
+  @override
+  String get toolboxClamCardSubtitle =>
+      'Scan task status and recent scan records';
+
+  @override
+  String get toolboxClamTasksTitle => 'Scan Tasks';
+
+  @override
+  String get toolboxClamRecordsTitle => 'Recent Scan Records';
+
+  @override
+  String get toolboxFail2banTitle => 'Fail2ban';
+
+  @override
+  String get toolboxFail2banCardSubtitle => 'Ban policy and blocked IP records';
+
+  @override
+  String get toolboxFail2banConfigTitle => 'Fail2ban Configuration';
+
+  @override
+  String get toolboxFail2banEditConfig => 'Edit Fail2ban Configuration';
+
+  @override
+  String get toolboxFail2banBantime => 'Ban Time';
+
+  @override
+  String get toolboxFail2banFindtime => 'Find Time';
+
+  @override
+  String get toolboxFail2banMaxretry => 'Max Retry';
+
+  @override
+  String get toolboxFail2banPort => 'Port';
+
+  @override
+  String get toolboxFtpTitle => 'FTP';
+
+  @override
+  String get toolboxFtpCardSubtitle =>
+      'FTP service status and user synchronization';
+
+  @override
+  String get toolboxFtpUsersTitle => 'FTP Users';
+
+  @override
+  String get toolboxFtpBaseDir => 'Base Directory';
+
+  @override
+  String get toolboxFtpSyncAction => 'Sync Users';
+
+  @override
+  String get toolboxFtpSyncSuccess => 'FTP users synchronized';
+
+  @override
+  String get toolboxFtpSyncFailed => 'Failed to synchronize FTP users';
 
   @override
   String get toolboxDeviceTitle => 'Device Management';

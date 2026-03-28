@@ -117,8 +117,14 @@ import 'package:onepanel_client/features/ssh/providers/ssh_settings_provider.dar
 import 'package:onepanel_client/features/script_library/pages/script_library_page.dart';
 import 'package:onepanel_client/features/script_library/providers/script_library_provider.dart';
 import 'package:onepanel_client/features/toolbox/pages/toolbox_center_page.dart';
+import 'package:onepanel_client/features/toolbox/pages/toolbox_clam_page.dart';
 import 'package:onepanel_client/features/toolbox/pages/toolbox_device_page.dart';
+import 'package:onepanel_client/features/toolbox/pages/toolbox_fail2ban_page.dart';
+import 'package:onepanel_client/features/toolbox/pages/toolbox_ftp_page.dart';
+import 'package:onepanel_client/features/toolbox/providers/toolbox_clam_provider.dart';
 import 'package:onepanel_client/features/toolbox/providers/toolbox_device_provider.dart';
+import 'package:onepanel_client/features/toolbox/providers/toolbox_fail2ban_provider.dart';
+import 'package:onepanel_client/features/toolbox/providers/toolbox_ftp_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'package:onepanel_client/features/containers/container_detail_page.dart';
@@ -177,6 +183,9 @@ class AppRoutes {
   static const String operations = '/operations';
   static const String toolbox = '/toolbox';
   static const String toolboxDevice = '/toolbox/device';
+  static const String toolboxClam = '/toolbox/clam';
+  static const String toolboxFail2ban = '/toolbox/fail2ban';
+  static const String toolboxFtp = '/toolbox/ftp';
   static const String commands = '/commands';
   static const String commandForm = '/commands/form';
   static const String hostAssets = '/hosts-assets';
@@ -519,6 +528,30 @@ class AppRouter {
           builder: (_) => ChangeNotifierProvider<ToolboxDeviceProvider>(
             create: (_) => ToolboxDeviceProvider(),
             child: const ToolboxDevicePage(),
+          ),
+        );
+
+      case AppRoutes.toolboxClam:
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<ToolboxClamProvider>(
+            create: (_) => ToolboxClamProvider(),
+            child: const ToolboxClamPage(),
+          ),
+        );
+
+      case AppRoutes.toolboxFail2ban:
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<ToolboxFail2banProvider>(
+            create: (_) => ToolboxFail2banProvider(),
+            child: const ToolboxFail2banPage(),
+          ),
+        );
+
+      case AppRoutes.toolboxFtp:
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<ToolboxFtpProvider>(
+            create: (_) => ToolboxFtpProvider(),
+            child: const ToolboxFtpPage(),
           ),
         );
 

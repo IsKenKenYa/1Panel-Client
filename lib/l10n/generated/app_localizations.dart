@@ -8669,8 +8669,158 @@ abstract class AppLocalizations {
   /// No description provided for @toolboxCenterIntro.
   ///
   /// In en, this message translates to:
-  /// **'A consolidated tools entry. Device management is delivered first.'**
+  /// **'A consolidated tools entry for ClamAV, Fail2ban, FTP, and device management.'**
   String get toolboxCenterIntro;
+
+  /// No description provided for @toolboxCommonOverviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get toolboxCommonOverviewTitle;
+
+  /// No description provided for @toolboxCommonRecentRecordsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Records'**
+  String get toolboxCommonRecentRecordsTitle;
+
+  /// No description provided for @toolboxStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get toolboxStatusLabel;
+
+  /// No description provided for @toolboxVersionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get toolboxVersionLabel;
+
+  /// No description provided for @toolboxStatusEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get toolboxStatusEnabled;
+
+  /// No description provided for @toolboxStatusDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get toolboxStatusDisabled;
+
+  /// No description provided for @toolboxClamTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'ClamAV'**
+  String get toolboxClamTitle;
+
+  /// No description provided for @toolboxClamCardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan task status and recent scan records'**
+  String get toolboxClamCardSubtitle;
+
+  /// No description provided for @toolboxClamTasksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan Tasks'**
+  String get toolboxClamTasksTitle;
+
+  /// No description provided for @toolboxClamRecordsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Scan Records'**
+  String get toolboxClamRecordsTitle;
+
+  /// No description provided for @toolboxFail2banTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fail2ban'**
+  String get toolboxFail2banTitle;
+
+  /// No description provided for @toolboxFail2banCardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ban policy and blocked IP records'**
+  String get toolboxFail2banCardSubtitle;
+
+  /// No description provided for @toolboxFail2banConfigTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fail2ban Configuration'**
+  String get toolboxFail2banConfigTitle;
+
+  /// No description provided for @toolboxFail2banEditConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Fail2ban Configuration'**
+  String get toolboxFail2banEditConfig;
+
+  /// No description provided for @toolboxFail2banBantime.
+  ///
+  /// In en, this message translates to:
+  /// **'Ban Time'**
+  String get toolboxFail2banBantime;
+
+  /// No description provided for @toolboxFail2banFindtime.
+  ///
+  /// In en, this message translates to:
+  /// **'Find Time'**
+  String get toolboxFail2banFindtime;
+
+  /// No description provided for @toolboxFail2banMaxretry.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Retry'**
+  String get toolboxFail2banMaxretry;
+
+  /// No description provided for @toolboxFail2banPort.
+  ///
+  /// In en, this message translates to:
+  /// **'Port'**
+  String get toolboxFail2banPort;
+
+  /// No description provided for @toolboxFtpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'FTP'**
+  String get toolboxFtpTitle;
+
+  /// No description provided for @toolboxFtpCardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'FTP service status and user synchronization'**
+  String get toolboxFtpCardSubtitle;
+
+  /// No description provided for @toolboxFtpUsersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'FTP Users'**
+  String get toolboxFtpUsersTitle;
+
+  /// No description provided for @toolboxFtpBaseDir.
+  ///
+  /// In en, this message translates to:
+  /// **'Base Directory'**
+  String get toolboxFtpBaseDir;
+
+  /// No description provided for @toolboxFtpSyncAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Users'**
+  String get toolboxFtpSyncAction;
+
+  /// No description provided for @toolboxFtpSyncSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'FTP users synchronized'**
+  String get toolboxFtpSyncSuccess;
+
+  /// No description provided for @toolboxFtpSyncFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to synchronize FTP users'**
+  String get toolboxFtpSyncFailed;
 
   /// No description provided for @toolboxDeviceTitle.
   ///

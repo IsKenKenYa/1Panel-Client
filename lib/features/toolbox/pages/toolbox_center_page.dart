@@ -26,6 +26,28 @@ class ToolboxCenterPage extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           ServerOperationEntryCardWidget(
+            title: l10n.toolboxClamTitle,
+            subtitle: l10n.toolboxClamCardSubtitle,
+            icon: Icons.security_outlined,
+            onTap: () => Navigator.pushNamed(context, AppRoutes.toolboxClam),
+          ),
+          const SizedBox(height: 12),
+          ServerOperationEntryCardWidget(
+            title: l10n.toolboxFail2banTitle,
+            subtitle: l10n.toolboxFail2banCardSubtitle,
+            icon: Icons.gpp_bad_outlined,
+            onTap: () =>
+                Navigator.pushNamed(context, AppRoutes.toolboxFail2ban),
+          ),
+          const SizedBox(height: 12),
+          ServerOperationEntryCardWidget(
+            title: l10n.toolboxFtpTitle,
+            subtitle: l10n.toolboxFtpCardSubtitle,
+            icon: Icons.folder_shared_outlined,
+            onTap: () => Navigator.pushNamed(context, AppRoutes.toolboxFtp),
+          ),
+          const SizedBox(height: 12),
+          ServerOperationEntryCardWidget(
             title: l10n.toolboxDeviceTitle,
             subtitle: l10n.toolboxDeviceCardSubtitle,
             icon: Icons.developer_board_outlined,
