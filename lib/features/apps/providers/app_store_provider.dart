@@ -134,4 +134,17 @@ class AppStoreProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<List<AppInstallInfo>> loadIgnoredUpdates() async {
+    return _appService.getIgnoredAppDetails();
+  }
+
+  Future<void> cancelIgnoreUpdate(int appInstallId) async {
+    await _appService.cancelIgnoreAppUpdate(
+      AppInstalledIgnoreUpgradeRequest(
+        appInstallId: appInstallId,
+        reason: '',
+      ),
+    );
+  }
 }

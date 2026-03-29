@@ -17,7 +17,9 @@ import 'package:onepanel_client/features/settings/backup_account_page.dart';
 import 'package:onepanel_client/features/monitoring/monitoring_provider.dart';
 
 class SystemSettingsPage extends StatefulWidget {
-  const SystemSettingsPage({super.key});
+  const SystemSettingsPage({super.key, this.provider});
+
+  final SettingsProvider? provider;
 
   @override
   State<SystemSettingsPage> createState() => _SystemSettingsPageState();
@@ -25,11 +27,13 @@ class SystemSettingsPage extends StatefulWidget {
 
 class _SystemSettingsPageState extends State<SystemSettingsPage> {
   late SettingsProvider _provider;
+  late bool _ownsProvider;
 
   @override
   void initState() {
     super.initState();
-    _provider = SettingsProvider();
+    _ownsProvider = widget.provider == null;
+    _provider = widget.provider ?? SettingsProvider();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _provider.load();
     });
@@ -37,7 +41,9 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
 
   @override
   void dispose() {
-    _provider.dispose();
+    if (_ownsProvider) {
+      _provider.dispose();
+    }
     super.dispose();
   }
 
@@ -138,6 +144,33 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
                         ? l10n.systemSettingsEnabled
                         : l10n.systemSettingsDisabled,
                 onTap: () => _navigateTo(context, const ProxySettingsPage()),
+              ),
+              _buildSettingTile(
+                context,
+                icon: Icons.storefront_outlined,
+                title: l10n.appStoreTitle,
+                subtitle:
+                    _extractAppStoreUrl(provider.data.appStoreConfig) ??
+                        l10n.systemSettingsNotSet,
+                onTap: () => _showAppStoreConfigDialog(context, provider, l10n),
+              ),
+              _buildSettingTile(
+                context,
+                icon: Icons.settings_ethernet_outlined,
+                title: l10n.operationsSshTitle,
+                subtitle: _formatSshConnectionSummary(
+                  provider.data.sshConnection,
+                  l10n,
+                ),
+                onTap: () => _showSshConnectionDialog(context, provider, l10n),
+              ),
+              _buildSettingTile(
+                context,
+                icon: Icons.device_hub_outlined,
+                title: l10n.sshSettingsNetworkSectionTitle,
+                subtitle:
+                    _formatNetworkInterfacesSummary(provider.data.networkInterfaces, l10n),
+                onTap: () => _showNetworkInterfacesDialog(context, provider, l10n),
               ),
               _buildSettingTile(
                 context,
@@ -349,6 +382,267 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
           fontSize: 12,
           color: isEnabled ? Colors.green : Colors.grey,
         ),
+      ),
+    );
+  }
+
+  String? _extractAppStoreUrl(dynamic config) {
+    if (config is! Map) {
+      return null;
+    }
+    final map = config.cast<dynamic, dynamic>();
+    final value = map['storeUrl'] ?? map['url'] ?? map['storeURL'];
+    if (value is String && value.trim().isNotEmpty) {
+      return value.trim();
+    }
+    return null;
+  }
+
+  String _formatSshConnectionSummary(
+    dynamic connection,
+    AppLocalizations l10n,
+  ) {
+    if (connection is! Map) {
+      return l10n.systemSettingsNotSet;
+    }
+
+    final map = connection.cast<dynamic, dynamic>();
+    final host = map['host']?.toString();
+    final port = map['port']?.toString();
+    final user = map['user']?.toString();
+
+    if (host == null || host.isEmpty) {
+      return l10n.systemSettingsNotSet;
+    }
+    final portText = (port == null || port.isEmpty) ? '' : ':$port';
+    final userText = (user == null || user.isEmpty) ? '' : ' ($user)';
+    return '$host$portText$userText';
+  }
+
+  String _formatNetworkInterfacesSummary(
+    List<String>? interfaces,
+    AppLocalizations l10n,
+  ) {
+    if (interfaces == null || interfaces.isEmpty) {
+      return l10n.commonEmpty;
+    }
+    if (interfaces.length <= 2) {
+      return interfaces.join(', ');
+    }
+    final preview = interfaces.take(2).join(', ');
+    final remain = interfaces.length - 2;
+    return '$preview +$remain';
+  }
+
+  Future<void> _showAppStoreConfigDialog(
+    BuildContext context,
+    SettingsProvider provider,
+    AppLocalizations l10n,
+  ) async {
+    await provider.loadAppStoreConfig();
+    if (!context.mounted) {
+      return;
+    }
+
+    final initialUrl = _extractAppStoreUrl(provider.data.appStoreConfig) ?? '';
+    final controller = TextEditingController(text: initialUrl);
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.appStoreTitle),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(
+            labelText: 'Store URL',
+            hintText: 'https://',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(l10n.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () async {
+              final ok = await provider.updateAppStoreConfig(
+                controller.text.trim().isEmpty ? null : controller.text.trim(),
+              );
+              if (!dialogContext.mounted) {
+                return;
+              }
+              ScaffoldMessenger.of(dialogContext).showSnackBar(
+                SnackBar(
+                  content:
+                      Text(ok ? l10n.commonSaveSuccess : l10n.commonSaveFailed),
+                ),
+              );
+              if (ok) {
+                Navigator.of(dialogContext).pop();
+              }
+            },
+            child: Text(l10n.commonSave),
+          ),
+        ],
+      ),
+    );
+
+    controller.dispose();
+  }
+
+  Future<void> _showSshConnectionDialog(
+    BuildContext context,
+    SettingsProvider provider,
+    AppLocalizations l10n,
+  ) async {
+    await provider.loadSSHConnection();
+    if (!context.mounted) {
+      return;
+    }
+
+    final connection = provider.data.sshConnection;
+    final map = connection is Map ? connection.cast<dynamic, dynamic>() : null;
+
+    final hostController =
+        TextEditingController(text: map?['host']?.toString() ?? '');
+    final portController =
+        TextEditingController(text: map?['port']?.toString() ?? '22');
+    final userController =
+        TextEditingController(text: map?['user']?.toString() ?? '');
+    final passwordController =
+        TextEditingController(text: map?['password']?.toString() ?? '');
+    final privateKeyController =
+        TextEditingController(text: map?['privateKey']?.toString() ?? '');
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.operationsSshTitle),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: hostController,
+                decoration: const InputDecoration(
+                  labelText: 'Host',
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: portController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Port',
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: userController,
+                decoration: const InputDecoration(
+                  labelText: 'User',
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: privateKeyController,
+                minLines: 2,
+                maxLines: 5,
+                decoration: const InputDecoration(
+                  labelText: 'Private Key',
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(l10n.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () async {
+              final ok = await provider.saveSSHConnection(
+                host: hostController.text.trim().isEmpty
+                    ? null
+                    : hostController.text.trim(),
+                port: int.tryParse(portController.text.trim()),
+                user: userController.text.trim().isEmpty
+                    ? null
+                    : userController.text.trim(),
+                password: passwordController.text,
+                privateKey: privateKeyController.text.trim().isEmpty
+                    ? null
+                    : privateKeyController.text.trim(),
+              );
+              if (!dialogContext.mounted) {
+                return;
+              }
+              ScaffoldMessenger.of(dialogContext).showSnackBar(
+                SnackBar(
+                  content:
+                      Text(ok ? l10n.commonSaveSuccess : l10n.commonSaveFailed),
+                ),
+              );
+              if (ok) {
+                Navigator.of(dialogContext).pop();
+              }
+            },
+            child: Text(l10n.commonSave),
+          ),
+        ],
+      ),
+    );
+
+    hostController.dispose();
+    portController.dispose();
+    userController.dispose();
+    passwordController.dispose();
+    privateKeyController.dispose();
+  }
+
+  Future<void> _showNetworkInterfacesDialog(
+    BuildContext context,
+    SettingsProvider provider,
+    AppLocalizations l10n,
+  ) async {
+    await provider.loadNetworkInterfaces();
+    if (!context.mounted) {
+      return;
+    }
+    final interfaces = provider.data.networkInterfaces ?? const <String>[];
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.sshSettingsNetworkSectionTitle),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: interfaces.isEmpty
+              ? Text(l10n.commonEmpty)
+              : ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: interfaces.length,
+                  itemBuilder: (context, index) => ListTile(
+                    dense: true,
+                    leading: const Icon(Icons.lan_outlined),
+                    title: Text(interfaces[index]),
+                  ),
+                ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(l10n.commonClose),
+          ),
+        ],
       ),
     );
   }

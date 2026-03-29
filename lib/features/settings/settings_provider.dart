@@ -17,6 +17,9 @@ class SettingsData {
   final MfaStatus? mfaStatus;
   final dynamic sslInfo;
   final dynamic upgradeInfo;
+  final dynamic appStoreConfig;
+  final dynamic authSetting;
+  final dynamic sshConnection;
   final List<dynamic>? snapshots;
   final DateTime? lastUpdated;
 
@@ -31,6 +34,9 @@ class SettingsData {
     this.mfaStatus,
     this.sslInfo,
     this.upgradeInfo,
+    this.appStoreConfig,
+    this.authSetting,
+    this.sshConnection,
     this.snapshots,
     this.lastUpdated,
   });
@@ -46,6 +52,9 @@ class SettingsData {
     MfaStatus? mfaStatus,
     dynamic sslInfo,
     dynamic upgradeInfo,
+    dynamic appStoreConfig,
+    dynamic authSetting,
+    dynamic sshConnection,
     List<dynamic>? snapshots,
     DateTime? lastUpdated,
   }) {
@@ -60,6 +69,9 @@ class SettingsData {
       mfaStatus: mfaStatus ?? this.mfaStatus,
       sslInfo: sslInfo ?? this.sslInfo,
       upgradeInfo: upgradeInfo ?? this.upgradeInfo,
+      appStoreConfig: appStoreConfig ?? this.appStoreConfig,
+      authSetting: authSetting ?? this.authSetting,
+      sshConnection: sshConnection ?? this.sshConnection,
       snapshots: snapshots ?? this.snapshots,
       lastUpdated: lastUpdated ?? this.lastUpdated,
     );
@@ -67,8 +79,11 @@ class SettingsData {
 }
 
 class SettingsProvider extends ChangeNotifier {
+  SettingsProvider({SettingsService? service})
+      : _service = service ?? SettingsService();
+
   SettingsData _data = const SettingsData();
-  final SettingsService _service = SettingsService();
+  final SettingsService _service;
 
   SettingsData get data => _data;
 
@@ -128,6 +143,36 @@ class SettingsProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e, stackTrace) {
       _setError('加载网络接口', e, stackTrace: stackTrace);
+    }
+  }
+
+  Future<void> loadAppStoreConfig() async {
+    try {
+      final config = await _service.getAppStoreConfig();
+      _data = _data.copyWith(appStoreConfig: config);
+      notifyListeners();
+    } catch (e, stackTrace) {
+      _setError('加载应用商店配置', e, stackTrace: stackTrace);
+    }
+  }
+
+  Future<void> loadAuthSetting() async {
+    try {
+      final setting = await _service.getAuthSetting();
+      _data = _data.copyWith(authSetting: setting);
+      notifyListeners();
+    } catch (e, stackTrace) {
+      _setError('加载认证设置', e, stackTrace: stackTrace);
+    }
+  }
+
+  Future<void> loadSSHConnection() async {
+    try {
+      final connection = await _service.getSSHConnection();
+      _data = _data.copyWith(sshConnection: connection);
+      notifyListeners();
+    } catch (e, stackTrace) {
+      _setError('加载SSH连接', e, stackTrace: stackTrace);
     }
   }
 
@@ -259,6 +304,43 @@ class SettingsProvider extends ChangeNotifier {
       return true;
     } catch (e, stackTrace) {
       _setError('更新代理设置', e, stackTrace: stackTrace);
+      return false;
+    }
+  }
+
+  Future<bool> updateAppStoreConfig(String? storeUrl) async {
+    try {
+      await _service
+          .updateAppStoreConfig(api.AppStoreConfigUpdate(storeUrl: storeUrl));
+      await loadAppStoreConfig();
+      return true;
+    } catch (e, stackTrace) {
+      _setError('更新应用商店配置', e, stackTrace: stackTrace);
+      return false;
+    }
+  }
+
+  Future<bool> saveSSHConnection({
+    String? host,
+    int? port,
+    String? user,
+    String? password,
+    String? privateKey,
+  }) async {
+    try {
+      await _service.saveSSHConnection(
+        api.SSHConnectionSave(
+          host: host,
+          port: port,
+          user: user,
+          password: password,
+          privateKey: privateKey,
+        ),
+      );
+      await loadSSHConnection();
+      return true;
+    } catch (e, stackTrace) {
+      _setError('保存SSH连接', e, stackTrace: stackTrace);
       return false;
     }
   }
@@ -508,10 +590,50 @@ class SettingsProvider extends ChangeNotifier {
         _service.getNetworkInterfaces(),
       ]);
 
+      dynamic appStoreConfig;
+      dynamic authSetting;
+      dynamic sshConnection;
+
+      try {
+        appStoreConfig = await _service.getAppStoreConfig();
+      } catch (e, stackTrace) {
+        appLogger.wWithPackage(
+          _settingsProviderPackage,
+          '加载应用商店配置失败，继续主链路',
+          error: e,
+          stackTrace: stackTrace,
+        );
+      }
+
+      try {
+        authSetting = await _service.getAuthSetting();
+      } catch (e, stackTrace) {
+        appLogger.wWithPackage(
+          _settingsProviderPackage,
+          '加载认证设置失败，继续主链路',
+          error: e,
+          stackTrace: stackTrace,
+        );
+      }
+
+      try {
+        sshConnection = await _service.getSSHConnection();
+      } catch (e, stackTrace) {
+        appLogger.wWithPackage(
+          _settingsProviderPackage,
+          '加载SSH连接失败，继续主链路',
+          error: e,
+          stackTrace: stackTrace,
+        );
+      }
+
       _data = _data.copyWith(
         systemSettings: results[0] as SystemSettingInfo?,
         terminalSettings: results[1] as TerminalInfo?,
         networkInterfaces: results[2] as List<String>?,
+        appStoreConfig: appStoreConfig,
+        authSetting: authSetting,
+        sshConnection: sshConnection,
         isLoading: false,
         lastUpdated: DateTime.now(),
       );

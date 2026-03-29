@@ -1,10 +1,19 @@
 import 'package:onepanel_client/api/v2/setting_v2.dart' as api;
-import 'package:onepanel_client/core/network/api_client_manager.dart';
 import 'package:onepanel_client/data/models/setting_models.dart';
+import 'package:onepanel_client/data/repositories/setting_repository.dart';
 
 class SettingsService {
+  SettingsService({SettingRepository? repository})
+      : _repository = repository ?? SettingRepository();
+
+  final SettingRepository _repository;
+
   Future<api.SettingV2Api> _getApi() async {
-    return await ApiClientManager.instance.getSettingApi();
+    return _repository.ensureApi();
+  }
+
+  void resetForServerChange() {
+    _repository.resetForServerChange();
   }
 
   Future<SystemSettingInfo?> getSystemSettings() async {
@@ -181,6 +190,11 @@ class SettingsService {
     final apiClient = await _getApi();
     final response = await apiClient.getAppStoreConfig();
     return response.data;
+  }
+
+  Future<void> updateAppStoreConfig(api.AppStoreConfigUpdate request) async {
+    final apiClient = await _getApi();
+    await apiClient.updateAppStoreConfig(request);
   }
 
   Future<dynamic> getAuthSetting() async {
