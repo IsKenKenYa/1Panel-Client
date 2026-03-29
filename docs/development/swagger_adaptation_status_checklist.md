@@ -1,6 +1,6 @@
 # Swagger 适配状态清单
 
-更新日期: 2026-03-28  
+更新日期: 2026-03-29  
 规范源: `docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json`
 
 ## 口径
@@ -19,6 +19,8 @@
   - `非本阶段硬范围`
   - `本轮新增闭环`
   - `待归类`
+- 文档一致性校验脚本: `python3 scripts/validate_swagger_adaptation_docs.py`
+- 本次自动回刷冻结基线: `34 已适配 / 18 部分适配 / 0 未适配`
 
 ## 汇总
 

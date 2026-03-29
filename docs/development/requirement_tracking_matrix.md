@@ -7,7 +7,8 @@
 - **数据模型数**: 471
 - **优先级分类**: P0 (核心), P1 (高价值), P2 (工具类)
 - **当前状态真值**: `docs/development/swagger_adaptation_status_checklist.md`
-- **当前汇总**: `34 已适配 / 18 部分适配 / 0 未适配`
+- **当前汇总（自动回刷）**: `34 已适配 / 18 部分适配 / 0 未适配`
+- **一致性校验**: `python3 scripts/validate_swagger_adaptation_docs.py`
 
 ## Phase 2 增量进展（2026-03-28）
 

@@ -81,8 +81,17 @@ extension _WebsiteDomainActions on _WebsiteDomainBody {
                     );
                     return;
                   }
-                  Navigator.of(ctx).pop();
                   await provider.addDomainsBatch(parseResult.domains);
+                  if (!context.mounted) {
+                    return;
+                  }
+                  if (provider.error != null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(provider.error!)),
+                    );
+                    return;
+                  }
+                  Navigator.of(ctx).pop();
                 },
                 child: Text(l10n.websitesDomainBatchAddAction),
               ),
@@ -166,7 +175,6 @@ extension _WebsiteDomainActions on _WebsiteDomainBody {
                     );
                     return;
                   }
-                  Navigator.of(ctx).pop();
                   if (existing == null) {
                     await provider.addDomain(
                       domain: domain,
@@ -181,6 +189,16 @@ extension _WebsiteDomainActions on _WebsiteDomainBody {
                       ssl: ssl,
                     );
                   }
+                  if (!context.mounted) {
+                    return;
+                  }
+                  if (provider.error != null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(provider.error!)),
+                    );
+                    return;
+                  }
+                  Navigator.of(ctx).pop();
                 },
                 child:
                     Text(existing == null ? l10n.commonAdd : l10n.commonSave),
@@ -298,6 +316,14 @@ extension _WebsiteDomainActions on _WebsiteDomainBody {
     );
     if (confirmed == true && domain.id != null) {
       await provider.deleteDomain(domain.id!);
+      if (!context.mounted) {
+        return;
+      }
+      if (provider.error != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(provider.error!)),
+        );
+      }
     }
   }
 }

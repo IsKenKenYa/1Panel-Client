@@ -14,31 +14,37 @@ class OperationsCenterPage extends StatelessWidget {
   static const String runtimesEntryKey = 'operations-entry-runtimes';
   static const String groupsEntryKey = 'operations-entry-groups';
   static const String hostAssetsEntryKey = 'operations-entry-host-assets';
+  static const String toolboxEntryKey = 'operations-entry-toolbox';
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final sections = <_OperationsSection>[
       _OperationsSection(
+        id: 'automation',
         title: l10n.operationsCenterAutomationSectionTitle,
         description: l10n.operationsCenterAutomationSectionDescription,
         entries: [
           _OperationEntry(
+            routeId: 'cronjobs',
             title: l10n.operationsCronjobsTitle,
             route: AppRoutes.cronjobs,
             icon: Icons.schedule_outlined,
           ),
           _OperationEntry(
+            routeId: 'scripts',
             title: l10n.operationsScriptsTitle,
             route: AppRoutes.scripts,
             icon: Icons.code_outlined,
           ),
           _OperationEntry(
+            routeId: 'commands',
             title: l10n.operationsCommandsTitle,
             route: AppRoutes.commands,
             icon: Icons.terminal_outlined,
           ),
           _OperationEntry(
+            routeId: 'backups',
             title: l10n.operationsBackupsTitle,
             route: AppRoutes.backups,
             icon: Icons.backup_outlined,
@@ -46,10 +52,12 @@ class OperationsCenterPage extends StatelessWidget {
         ],
       ),
       _OperationsSection(
+        id: 'runtime',
         title: l10n.operationsCenterRuntimeSectionTitle,
         description: l10n.operationsCenterRuntimeSectionDescription,
         entries: [
           _OperationEntry(
+            routeId: 'runtimes',
             title: l10n.operationsRuntimesTitle,
             route: AppRoutes.runtimes,
             icon: Icons.memory_outlined,
@@ -57,35 +65,42 @@ class OperationsCenterPage extends StatelessWidget {
         ],
       ),
       _OperationsSection(
+        id: 'system',
         title: l10n.operationsCenterSystemSectionTitle,
         description: l10n.operationsCenterSystemSectionDescription,
         entries: [
           _OperationEntry(
+            routeId: 'groups',
             title: l10n.operationsGroupCenterTitle,
             route: AppRoutes.groupCenter,
             icon: Icons.folder_copy_outlined,
           ),
           _OperationEntry(
+            routeId: 'host-assets',
             title: l10n.operationsHostAssetsTitle,
             route: AppRoutes.hostAssets,
             icon: Icons.dns_outlined,
           ),
           _OperationEntry(
+            routeId: 'ssh',
             title: l10n.operationsSshTitle,
             route: AppRoutes.ssh,
             icon: Icons.key_outlined,
           ),
           _OperationEntry(
+            routeId: 'processes',
             title: l10n.operationsProcessesTitle,
             route: AppRoutes.processes,
             icon: Icons.monitor_heart_outlined,
           ),
           _OperationEntry(
+            routeId: 'logs',
             title: l10n.operationsLogsTitle,
             route: AppRoutes.logs,
             icon: Icons.article_outlined,
           ),
           _OperationEntry(
+            routeId: 'toolbox',
             title: l10n.operationsToolboxTitle,
             route: AppRoutes.toolbox,
             icon: Icons.handyman_outlined,
@@ -116,14 +131,7 @@ class OperationsCenterPage extends StatelessWidget {
               const SizedBox(height: 16),
               for (final section in sections) ...[
                 Text(
-                  key: Key(
-                    section.title == l10n.operationsCenterAutomationSectionTitle
-                        ? automationSectionKey
-                        : section.title ==
-                                l10n.operationsCenterRuntimeSectionTitle
-                            ? runtimeSectionKey
-                            : systemSectionKey,
-                  ),
+                  key: Key('operations-section-${section.id}'),
                   section.title,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
@@ -143,17 +151,7 @@ class OperationsCenterPage extends StatelessWidget {
                       SizedBox(
                         width: cardWidth,
                         child: ServerOperationEntryCardWidget(
-                          key: Key(
-                            entry.route == AppRoutes.commands
-                                ? commandsEntryKey
-                                : entry.route == AppRoutes.runtimes
-                                    ? runtimesEntryKey
-                                    : entry.route == AppRoutes.groupCenter
-                                        ? groupsEntryKey
-                                        : entry.route == AppRoutes.hostAssets
-                                            ? hostAssetsEntryKey
-                                            : 'operations-entry-${entry.route}',
-                          ),
+                          key: Key('operations-entry-${entry.routeId}'),
                           title: entry.title,
                           icon: entry.icon,
                           onTap: () =>
@@ -174,11 +172,13 @@ class OperationsCenterPage extends StatelessWidget {
 
 class _OperationsSection {
   const _OperationsSection({
+    required this.id,
     required this.title,
     required this.description,
     required this.entries,
   });
 
+  final String id;
   final String title;
   final String description;
   final List<_OperationEntry> entries;
@@ -186,11 +186,13 @@ class _OperationsSection {
 
 class _OperationEntry {
   const _OperationEntry({
+    required this.routeId,
     required this.title,
     required this.route,
     required this.icon,
   });
 
+  final String routeId;
   final String title;
   final String route;
   final IconData icon;

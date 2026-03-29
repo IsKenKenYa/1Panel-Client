@@ -37,6 +37,20 @@ class _FakeWebsiteDomainService extends WebsiteDomainService {
   }) async {}
 }
 
+class _FailingWebsiteDomainService extends _FakeWebsiteDomainService {
+  _FailingWebsiteDomainService(super.domains);
+
+  @override
+  Future<void> addDomain({
+    required int websiteId,
+    required String domain,
+    required int port,
+    bool ssl = false,
+  }) async {
+    throw Exception('add failed');
+  }
+}
+
 class _FakeWebsiteConfigCenterProvider extends WebsiteConfigCenterProvider {
   _FakeWebsiteConfigCenterProvider()
       : super(
@@ -175,6 +189,41 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('This domain already exists.'), findsOneWidget);
+  });
+
+  testWidgets('WebsiteDomainManagementPage keeps dialog open on add failure',
+      (tester) async {
+    final provider = WebsiteDomainProvider(
+      websiteId: 1,
+      service: _FailingWebsiteDomainService(
+        const [WebsiteDomain(id: 1, domain: 'example.com', port: 80)],
+      ),
+    );
+    await provider.loadDomains();
+
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: WebsiteDomainManagementPage(
+          websiteId: 1,
+          provider: provider,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+
+    final fields = find.byType(TextField);
+    await tester.enterText(fields.first, 'new.example.com');
+    await tester.enterText(fields.at(1), '443');
+    await tester.tap(find.text('Add').last);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(AlertDialog), findsOneWidget);
+    expect(find.textContaining('add failed'), findsOneWidget);
   });
 
   testWidgets('WebsiteConfigCenterPage shows structured entry cards',

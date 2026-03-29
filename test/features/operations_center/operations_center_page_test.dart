@@ -34,6 +34,15 @@ class FakeCurrentServerController extends CurrentServerController {
 }
 
 void main() {
+  Future<void> scrollToKey(WidgetTester tester, Key key) async {
+    await tester.scrollUntilVisible(
+      find.byKey(key),
+      220,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+  }
+
   testWidgets('OperationsCenterPage exposes phase-one entry cards',
       (tester) async {
     await tester.pumpWidget(
@@ -50,45 +59,32 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Operations Center'), findsOneWidget);
-    expect(
-      find.byKey(
-        const Key(OperationsCenterPage.automationSectionKey),
-      ),
-      findsOneWidget,
-    );
-    expect(
-      find.byKey(
-        const Key(OperationsCenterPage.commandsEntryKey),
-      ),
-      findsOneWidget,
-    );
-    await tester.scrollUntilVisible(
-      find.byKey(const Key(OperationsCenterPage.runtimeSectionKey)),
-      200,
-    );
-    await tester.pumpAndSettle();
-    expect(
-      find.byKey(
-        const Key(OperationsCenterPage.runtimesEntryKey),
-      ),
-      findsOneWidget,
-    );
-    await tester.scrollUntilVisible(
-      find.byKey(const Key(OperationsCenterPage.hostAssetsEntryKey)),
-      200,
-    );
-    await tester.pumpAndSettle();
-    expect(
-      find.byKey(
-        const Key(OperationsCenterPage.groupsEntryKey),
-      ),
-      findsOneWidget,
-    );
-    expect(
-      find.byKey(
-        const Key(OperationsCenterPage.hostAssetsEntryKey),
-      ),
-      findsOneWidget,
-    );
+    const automationSectionKey = Key(OperationsCenterPage.automationSectionKey);
+    const runtimeSectionKey = Key(OperationsCenterPage.runtimeSectionKey);
+    const systemSectionKey = Key(OperationsCenterPage.systemSectionKey);
+    const commandsEntryKey = Key(OperationsCenterPage.commandsEntryKey);
+    const runtimesEntryKey = Key(OperationsCenterPage.runtimesEntryKey);
+    const groupsEntryKey = Key(OperationsCenterPage.groupsEntryKey);
+    const hostAssetsEntryKey = Key(OperationsCenterPage.hostAssetsEntryKey);
+    const toolboxEntryKey = Key(OperationsCenterPage.toolboxEntryKey);
+
+    expect(find.byKey(automationSectionKey), findsOneWidget);
+    expect(find.byKey(commandsEntryKey), findsOneWidget);
+
+    await scrollToKey(tester, runtimeSectionKey);
+    expect(find.byKey(runtimeSectionKey), findsOneWidget);
+    expect(find.byKey(runtimesEntryKey), findsOneWidget);
+
+    await scrollToKey(tester, systemSectionKey);
+    expect(find.byKey(systemSectionKey), findsOneWidget);
+
+    await scrollToKey(tester, groupsEntryKey);
+    expect(find.byKey(groupsEntryKey), findsOneWidget);
+
+    await scrollToKey(tester, hostAssetsEntryKey);
+    expect(find.byKey(hostAssetsEntryKey), findsOneWidget);
+
+    await scrollToKey(tester, toolboxEntryKey);
+    expect(find.byKey(toolboxEntryKey), findsOneWidget);
   });
 }
