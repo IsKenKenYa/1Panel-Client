@@ -38,6 +38,11 @@ class _FakeWebsiteAccountService extends WebsiteAccountService {
   int createDnsCallCount = 0;
   int updateAcmeCallCount = 0;
   int deleteDnsCallCount = 0;
+  int createAcmeCallCount = 0;
+  int deleteAcmeCallCount = 0;
+  int createCaCallCount = 0;
+  int deleteCaCallCount = 0;
+  int obtainCallCount = 0;
   int renewCallCount = 0;
   int? lastRenewSslId;
   bool failNextOperation = false;
@@ -83,6 +88,34 @@ class _FakeWebsiteAccountService extends WebsiteAccountService {
   }
 
   @override
+  Future<void> createAcmeAccount({
+    required String email,
+    String type = 'letsencrypt',
+    String keyType = '2048',
+    bool useProxy = false,
+    String? eabKid,
+    String? eabHmacKey,
+    String? caDirUrl,
+    bool useEab = false,
+  }) async {
+    _maybeThrow();
+    createAcmeCallCount += 1;
+    _acmeAccounts.add(<String, dynamic>{
+      'id': 200 + _acmeAccounts.length,
+      'email': email,
+      'type': type,
+      'useProxy': useProxy,
+    });
+  }
+
+  @override
+  Future<void> deleteAcmeAccount(int id) async {
+    _maybeThrow();
+    deleteAcmeCallCount += 1;
+    _acmeAccounts.removeWhere((item) => item['id'] == id);
+  }
+
+  @override
   Future<void> updateAcmeAccount({
     required int id,
     required bool useProxy,
@@ -99,6 +132,47 @@ class _FakeWebsiteAccountService extends WebsiteAccountService {
   @override
   Future<List<Map<String, dynamic>>> loadCertificateAuthorities() async {
     return List<Map<String, dynamic>>.from(_certificateAuthorities);
+  }
+
+  @override
+  Future<void> createCertificateAuthority({
+    required String name,
+    required String commonName,
+    required String country,
+    required String organization,
+    required String keyType,
+    String? organizationUint,
+    String? province,
+    String? city,
+  }) async {
+    _maybeThrow();
+    createCaCallCount += 1;
+    _certificateAuthorities.add(<String, dynamic>{
+      'id': 300 + _certificateAuthorities.length,
+      'name': name,
+      'commonName': commonName,
+      'country': country,
+      'organization': organization,
+    });
+  }
+
+  @override
+  Future<void> deleteCertificateAuthority(int id) async {
+    _maybeThrow();
+    deleteCaCallCount += 1;
+    _certificateAuthorities.removeWhere((item) => item['id'] == id);
+  }
+
+  @override
+  Future<void> obtainCertificateByAuthority({
+    required int id,
+    required String domains,
+    String keyType = '2048',
+    int time = 1,
+    String unit = 'year',
+  }) async {
+    _maybeThrow();
+    obtainCallCount += 1;
   }
 
   @override
@@ -165,6 +239,107 @@ void main() {
     expect(provider.acmeAccounts.first['useProxy'], isTrue);
   });
 
+  test('WebsiteSslAccountsProvider creates acme account and refreshes list',
+      () async {
+    final service = _FakeWebsiteAccountService();
+    final provider = WebsiteSslAccountsProvider(service: service);
+
+    await provider.load();
+    final ok = await provider.createAcmeAccount(
+      email: 'new@example.com',
+      type: 'zerossl',
+      useProxy: true,
+    );
+
+    expect(ok, isTrue);
+    expect(service.createAcmeCallCount, 1);
+    expect(
+      provider.acmeAccounts.any((item) => item['email'] == 'new@example.com'),
+      isTrue,
+    );
+    expect(provider.operationError, isNull);
+  });
+
+  test('WebsiteSslAccountsProvider deletes acme account and refreshes list',
+      () async {
+    final service = _FakeWebsiteAccountService();
+    final provider = WebsiteSslAccountsProvider(service: service);
+
+    await provider.load();
+    expect(provider.acmeAccounts, hasLength(1));
+
+    final acmeId = provider.resolveAccountId(provider.acmeAccounts.first);
+    final ok = await provider.deleteAcmeAccount(acmeId!);
+
+    expect(ok, isTrue);
+    expect(service.deleteAcmeCallCount, 1);
+    expect(provider.acmeAccounts, isEmpty);
+    expect(provider.operationError, isNull);
+  });
+
+  test(
+      'WebsiteSslAccountsProvider creates certificate authority and refreshes',
+      () async {
+    final service = _FakeWebsiteAccountService();
+    final provider = WebsiteSslAccountsProvider(service: service);
+
+    await provider.load();
+    final ok = await provider.createCertificateAuthority(
+      name: 'test-ca',
+      commonName: 'Test CA',
+      country: 'CN',
+      organization: 'Test Org',
+      keyType: '2048',
+    );
+
+    expect(ok, isTrue);
+    expect(service.createCaCallCount, 1);
+    expect(
+      provider.certificateAuthorities.any((item) => item['name'] == 'test-ca'),
+      isTrue,
+    );
+    expect(provider.operationError, isNull);
+  });
+
+  test(
+      'WebsiteSslAccountsProvider deletes certificate authority and refreshes',
+      () async {
+    final service = _FakeWebsiteAccountService();
+    final provider = WebsiteSslAccountsProvider(service: service);
+
+    await provider.load();
+    expect(provider.certificateAuthorities, hasLength(1));
+
+    final caId =
+        provider.resolveAccountId(provider.certificateAuthorities.first);
+    final ok = await provider.deleteCertificateAuthority(caId!);
+
+    expect(ok, isTrue);
+    expect(service.deleteCaCallCount, 1);
+    expect(provider.certificateAuthorities, isEmpty);
+    expect(provider.operationError, isNull);
+  });
+
+  test('WebsiteSslAccountsProvider obtains certificate via CA', () async {
+    final service = _FakeWebsiteAccountService();
+    final provider = WebsiteSslAccountsProvider(service: service);
+
+    await provider.load();
+    final caId =
+        provider.resolveAccountId(provider.certificateAuthorities.first);
+    final ok = await provider.obtainCertificateByAuthority(
+      id: caId!,
+      domains: 'example.com',
+      keyType: '2048',
+      time: 1,
+      unit: 'year',
+    );
+
+    expect(ok, isTrue);
+    expect(service.obtainCallCount, 1);
+    expect(provider.operationError, isNull);
+  });
+
   test('WebsiteSslAccountsProvider renews certificate and tracks failures',
       () async {
     final service = _FakeWebsiteAccountService();
@@ -182,5 +357,38 @@ void main() {
 
     expect(failed, isFalse);
     expect(provider.operationError, contains('mock failure'));
+  });
+
+  test('WebsiteSslAccountsProvider clears operationError on next successful op',
+      () async {
+    final service = _FakeWebsiteAccountService();
+    final provider = WebsiteSslAccountsProvider(service: service);
+
+    await provider.load();
+
+    service.failNextOperation = true;
+    await provider.deleteDnsAccount(1);
+    expect(provider.operationError, isNotNull);
+
+    final ok = await provider.createDnsAccount(
+      name: 'recovery',
+      type: 'cloudflare',
+      authorization: <String, dynamic>{'token': 'y'},
+    );
+    expect(ok, isTrue);
+    expect(provider.operationError, isNull);
+  });
+
+  test('WebsiteSslAccountsProvider downloads CA file successfully', () async {
+    final service = _FakeWebsiteAccountService();
+    final provider = WebsiteSslAccountsProvider(service: service);
+
+    await provider.load();
+    final caId =
+        provider.resolveAccountId(provider.certificateAuthorities.first);
+    final link = await provider.downloadCertificateAuthorityFile(caId!);
+
+    expect(link, equals('download://ca/$caId'));
+    expect(provider.operationError, isNull);
   });
 }
