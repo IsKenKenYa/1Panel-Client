@@ -20,137 +20,216 @@ extension _WebsiteSslAccountsActions on _WebsiteSslAccountsBody {
               ? ''
               : _readString(existing!, const ['name']),
     );
-    final typeController = TextEditingController(
-      text:
-          _readString(existing ?? const <String, dynamic>{}, const ['type']) ==
-                  '-'
-              ? ''
-              : _readString(existing!, const ['type']),
+
+    final existingType =
+        _readString(existing ?? const <String, dynamic>{}, const ['type']);
+    var selectedType =
+        (existingType == '-') ? _kDnsProviderTemplates.first.type : existingType;
+
+    Map<String, TextEditingController> _buildTemplateControllers(
+      _DnsProviderTemplate template,
+    ) {
+      return {
+        for (final field in template.fields)
+          field.key: TextEditingController(
+            text: initialAuthorization[field.key]?.toString() ?? '',
+          ),
+      };
+    }
+
+    // Raw JSON fallback controller (for custom/unknown types)
+    final authorizationController = TextEditingController(
+      text: jsonEncode(initialAuthorization),
     );
-    final authorizationController =
-        TextEditingController(text: jsonEncode(initialAuthorization));
+
+    var templateControllers = _buildTemplateControllers(
+      _findDnsTemplate(selectedType) ?? _kDnsProviderTemplates.first,
+    );
 
     await showDialog<void>(
       context: context,
       builder: (dialogContext) {
-        return AlertDialog(
-          title: Text(
-            isEdit
-                ? l10n.websitesSslAccountsEditDnsAction
-                : l10n.websitesSslAccountsCreateDnsAction,
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: nameController,
-                  decoration: InputDecoration(labelText: l10n.commonName),
+        return StatefulBuilder(
+          builder: (context, setState) {
+            final template = _findDnsTemplate(selectedType);
+            return AlertDialog(
+              title: Text(
+                isEdit
+                    ? l10n.websitesSslAccountsEditDnsAction
+                    : l10n.websitesSslAccountsCreateDnsAction,
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: nameController,
+                      decoration:
+                          InputDecoration(labelText: l10n.commonName),
+                    ),
+                    const SizedBox(height: 12),
+                    if (!isEdit)
+                      DropdownButtonFormField<String>(
+                        value: selectedType,
+                        decoration: InputDecoration(
+                          labelText: l10n.websitesSslAccountsTypeLabel,
+                        ),
+                        items: [
+                          for (final t in _kDnsProviderTemplates)
+                            DropdownMenuItem(
+                              value: t.type,
+                              child: Text(t.type),
+                            ),
+                          const DropdownMenuItem(
+                            value: 'custom',
+                            child: Text('custom'),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (value == null) return;
+                          setState(() {
+                            for (final c in templateControllers.values) {
+                              c.dispose();
+                            }
+                            selectedType = value;
+                            final newTemplate = _findDnsTemplate(value);
+                            if (newTemplate != null) {
+                              templateControllers =
+                                  _buildTemplateControllers(newTemplate);
+                            } else {
+                              templateControllers = {};
+                            }
+                          });
+                        },
+                      )
+                    else
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(l10n.websitesSslAccountsTypeLabel),
+                        subtitle: Text(selectedType),
+                      ),
+                    const SizedBox(height: 12),
+                    if (template != null)
+                      _DnsDynamicAuthFields(
+                        key: ValueKey(template.type),
+                        template: template,
+                        controllers: templateControllers,
+                      )
+                    else
+                      TextField(
+                        controller: authorizationController,
+                        minLines: 3,
+                        maxLines: 6,
+                        decoration: InputDecoration(
+                          labelText:
+                              l10n.websitesSslAccountsAuthorizationLabel,
+                        ),
+                      ),
+                  ],
                 ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: typeController,
-                  decoration: InputDecoration(
-                    labelText: l10n.websitesSslAccountsTypeLabel,
-                  ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                  child: Text(l10n.commonCancel),
                 ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: authorizationController,
-                  minLines: 3,
-                  maxLines: 6,
-                  decoration: InputDecoration(
-                    labelText: l10n.websitesSslAccountsAuthorizationLabel,
-                  ),
+                FilledButton(
+                  onPressed: () async {
+                    final name = nameController.text.trim();
+                    final type = selectedType;
+                    if (name.isEmpty) {
+                      _showError(
+                        context,
+                        l10n.websitesSslAccountsValidationNameRequired,
+                      );
+                      return;
+                    }
+
+                    late final Map<String, dynamic>? authorization;
+                    if (template != null) {
+                      final auth = <String, dynamic>{};
+                      for (final field in template.fields) {
+                        final value =
+                            templateControllers[field.key]?.text.trim() ?? '';
+                        auth[field.key] = value;
+                      }
+                      if (auth.values
+                          .every((v) => (v as String).isEmpty)) {
+                        _showError(
+                          context,
+                          l10n.websitesSslAccountsValidationAuthorizationRequired,
+                        );
+                        return;
+                      }
+                      authorization = auth;
+                    } else {
+                      authorization = _parseAuthorization(
+                        authorizationController.text,
+                      );
+                      if (authorization == null) {
+                        _showError(
+                          context,
+                          l10n.websitesSslAccountsValidationAuthorizationInvalid,
+                        );
+                        return;
+                      }
+                      if (authorization.isEmpty) {
+                        _showError(
+                          context,
+                          l10n.websitesSslAccountsValidationAuthorizationRequired,
+                        );
+                        return;
+                      }
+                    }
+
+                    late final bool ok;
+                    if (isEdit) {
+                      if (id == null) {
+                        _showError(
+                            context, l10n.websitesSslAccountsMissingId);
+                        return;
+                      }
+                      ok = await provider.updateDnsAccount(
+                        id: id,
+                        name: name,
+                        type: type,
+                        authorization: authorization,
+                      );
+                    } else {
+                      ok = await provider.createDnsAccount(
+                        name: name,
+                        type: type,
+                        authorization: authorization,
+                      );
+                    }
+
+                    if (!context.mounted) {
+                      return;
+                    }
+                    if (ok) {
+                      Navigator.of(dialogContext).pop();
+                      _showSuccess(context, l10n.websitesOperateSuccess);
+                      return;
+                    }
+                    _showError(
+                      context,
+                      provider.operationError ?? l10n.websitesOperateFailed,
+                    );
+                  },
+                  child: Text(l10n.commonSave),
                 ),
               ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: Text(l10n.commonCancel),
-            ),
-            FilledButton(
-              onPressed: () async {
-                final name = nameController.text.trim();
-                final type = typeController.text.trim();
-                if (name.isEmpty) {
-                  _showError(
-                    context,
-                    l10n.websitesSslAccountsValidationNameRequired,
-                  );
-                  return;
-                }
-                if (type.isEmpty) {
-                  _showError(
-                    context,
-                    l10n.websitesSslAccountsValidationTypeRequired,
-                  );
-                  return;
-                }
-
-                final authorization = _parseAuthorization(
-                  authorizationController.text,
-                );
-                if (authorization == null) {
-                  _showError(
-                    context,
-                    l10n.websitesSslAccountsValidationAuthorizationInvalid,
-                  );
-                  return;
-                }
-                if (authorization.isEmpty) {
-                  _showError(
-                    context,
-                    l10n.websitesSslAccountsValidationAuthorizationRequired,
-                  );
-                  return;
-                }
-
-                late final bool ok;
-                if (isEdit) {
-                  if (id == null) {
-                    _showError(context, l10n.websitesSslAccountsMissingId);
-                    return;
-                  }
-                  ok = await provider.updateDnsAccount(
-                    id: id,
-                    name: name,
-                    type: type,
-                    authorization: authorization,
-                  );
-                } else {
-                  ok = await provider.createDnsAccount(
-                    name: name,
-                    type: type,
-                    authorization: authorization,
-                  );
-                }
-
-                if (!context.mounted) {
-                  return;
-                }
-                if (ok) {
-                  Navigator.of(dialogContext).pop();
-                  _showSuccess(context, l10n.websitesOperateSuccess);
-                  return;
-                }
-                _showError(
-                  context,
-                  provider.operationError ?? l10n.websitesOperateFailed,
-                );
-              },
-              child: Text(l10n.commonSave),
-            ),
-          ],
+            );
+          },
         );
       },
     );
 
     nameController.dispose();
-    typeController.dispose();
     authorizationController.dispose();
+    for (final c in templateControllers.values) {
+      c.dispose();
+    }
   }
 
   Future<void> _showAcmeDialog(
@@ -888,3 +967,137 @@ extension _WebsiteSslAccountsActions on _WebsiteSslAccountsBody {
     );
   }
 }
+
+// ---------------------------------------------------------------------------
+// DNS provider preset templates
+// ---------------------------------------------------------------------------
+
+class _DnsTemplateField {
+  const _DnsTemplateField(
+    this.key,
+    this.label, {
+    this.sensitive = false,
+  });
+
+  final String key;
+  final String label;
+  final bool sensitive;
+}
+
+class _DnsProviderTemplate {
+  const _DnsProviderTemplate(this.type, this.fields);
+
+  final String type;
+  final List<_DnsTemplateField> fields;
+}
+
+const List<_DnsProviderTemplate> _kDnsProviderTemplates = [
+  _DnsProviderTemplate('cloudflare', [
+    _DnsTemplateField('dnsApiToken', 'API Token', sensitive: true),
+  ]),
+  _DnsProviderTemplate('aliyun', [
+    _DnsTemplateField('accessKey', 'Access Key ID'),
+    _DnsTemplateField('secretKey', 'Access Key Secret', sensitive: true),
+  ]),
+  _DnsProviderTemplate('dnspod', [
+    _DnsTemplateField('id', 'Secret ID'),
+    _DnsTemplateField('token', 'Secret Token', sensitive: true),
+  ]),
+  _DnsProviderTemplate('huaweiCloud', [
+    _DnsTemplateField('accessKey', 'Access Key ID'),
+    _DnsTemplateField('secretKey', 'Secret Access Key', sensitive: true),
+  ]),
+  _DnsProviderTemplate('tencentCloud', [
+    _DnsTemplateField('secretId', 'Secret ID'),
+    _DnsTemplateField('secretKey', 'Secret Key', sensitive: true),
+  ]),
+  _DnsProviderTemplate('godaddy', [
+    _DnsTemplateField('apiKey', 'API Key'),
+    _DnsTemplateField('apiSecret', 'API Secret', sensitive: true),
+  ]),
+  _DnsProviderTemplate('route53', [
+    _DnsTemplateField('accessKey', 'Access Key ID'),
+    _DnsTemplateField('secretKey', 'Secret Access Key', sensitive: true),
+    _DnsTemplateField('region', 'Region'),
+  ]),
+  _DnsProviderTemplate('digitalocean', [
+    _DnsTemplateField('authToken', 'Auth Token', sensitive: true),
+  ]),
+  _DnsProviderTemplate('vultr', [
+    _DnsTemplateField('apiKey', 'API Key', sensitive: true),
+  ]),
+  _DnsProviderTemplate('namecheap', [
+    _DnsTemplateField('apiUser', 'API User'),
+    _DnsTemplateField('apiKey', 'API Key', sensitive: true),
+  ]),
+];
+
+_DnsProviderTemplate? _findDnsTemplate(String type) {
+  for (final t in _kDnsProviderTemplates) {
+    if (t.type == type) {
+      return t;
+    }
+  }
+  return null;
+}
+
+// ---------------------------------------------------------------------------
+// DNS dialog with template-driven fields and sensitive-field masking
+// ---------------------------------------------------------------------------
+
+class _DnsDynamicAuthFields extends StatefulWidget {
+  const _DnsDynamicAuthFields({
+    super.key,
+    required this.template,
+    required this.controllers,
+  });
+
+  final _DnsProviderTemplate template;
+  final Map<String, TextEditingController> controllers;
+
+  @override
+  State<_DnsDynamicAuthFields> createState() => _DnsDynamicAuthFieldsState();
+}
+
+class _DnsDynamicAuthFieldsState extends State<_DnsDynamicAuthFields> {
+  final Set<String> _visibleFields = {};
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (final field in widget.template.fields) ...[
+          TextField(
+            controller: widget.controllers[field.key],
+            obscureText: field.sensitive && !_visibleFields.contains(field.key),
+            decoration: InputDecoration(
+              labelText: field.label,
+              suffixIcon: field.sensitive
+                  ? IconButton(
+                      icon: Icon(
+                        _visibleFields.contains(field.key)
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined,
+                      ),
+                      tooltip: _visibleFields.contains(field.key)
+                          ? 'Hide'
+                          : 'Show',
+                      onPressed: () => setState(() {
+                        if (_visibleFields.contains(field.key)) {
+                          _visibleFields.remove(field.key);
+                        } else {
+                          _visibleFields.add(field.key);
+                        }
+                      }),
+                    )
+                  : null,
+            ),
+          ),
+          const SizedBox(height: 12),
+        ],
+      ],
+    );
+  }
+}
+
