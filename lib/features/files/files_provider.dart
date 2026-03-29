@@ -26,6 +26,7 @@ class FilesProvider extends ChangeNotifier {
 
   final FilesService _service;
   FilesData _data = const FilesData();
+  final Map<String, String> _serverPathMemory = <String, String>{};
 
   static const int _chunkDownloadThreshold = 50 * 1024 * 1024;
 
@@ -43,5 +44,19 @@ class FilesProvider extends ChangeNotifier {
     final segments = _pathSegments(path);
     if (segments.isEmpty) return '/';
     return '/${segments.join('/')}';
+  }
+
+  void _rememberPathForServer(String? serverId, String path) {
+    if (serverId == null || serverId.isEmpty) {
+      return;
+    }
+    _serverPathMemory[serverId] = _normalizePath(path);
+  }
+
+  String _restorePathForServer(String? serverId) {
+    if (serverId == null || serverId.isEmpty) {
+      return '/';
+    }
+    return _normalizePath(_serverPathMemory[serverId] ?? '/');
   }
 }

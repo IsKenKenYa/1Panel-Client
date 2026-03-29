@@ -164,13 +164,38 @@ class MonitorSetting {
   });
 
   factory MonitorSetting.fromJson(Map<String, dynamic> json) {
+    final intervalRaw = json['monitorInterval'] ?? json['MonitorInterval'];
+    final retentionRaw =
+        json['monitorStoreDays'] ?? json['MonitorStoreDays'];
+    final statusRaw = json['monitorStatus'] ?? json['MonitorStatus'];
+    final defaultNetworkRaw =
+        json['defaultNetwork'] ?? json['DefaultNetwork'];
+    final defaultIORaw = json['defaultIO'] ?? json['DefaultIO'];
+
+    bool? enabled;
+    if (statusRaw is bool) {
+      enabled = statusRaw;
+    } else if (statusRaw != null) {
+      final normalized = statusRaw.toString().toLowerCase();
+      if (normalized == 'enable' ||
+          normalized == 'enabled' ||
+          normalized == 'true' ||
+          normalized == '1') {
+        enabled = true;
+      } else if (normalized == 'disable' ||
+          normalized == 'disabled' ||
+          normalized == 'false' ||
+          normalized == '0') {
+        enabled = false;
+      }
+    }
+
     return MonitorSetting(
-      interval: int.tryParse(json['monitorInterval']?.toString() ?? ''),
-      retention: int.tryParse(json['monitorStoreDays']?.toString() ?? ''),
-      enabled:
-          json['monitorStatus'] == 'Enable' || json['monitorStatus'] == true,
-      defaultNetwork: json['defaultNetwork'] as String?,
-      defaultIO: json['defaultIO'] as String?,
+      interval: int.tryParse(intervalRaw?.toString() ?? ''),
+      retention: int.tryParse(retentionRaw?.toString() ?? ''),
+      enabled: enabled,
+      defaultNetwork: defaultNetworkRaw?.toString(),
+      defaultIO: defaultIORaw?.toString(),
     );
   }
 
@@ -195,6 +220,23 @@ class MonitorSettingUpdate {
     this.retention,
     this.enabled,
   });
+
+  List<Map<String, dynamic>> toUpdateItems() {
+    final items = <Map<String, dynamic>>[];
+    if (interval != null) {
+      items.add({'key': 'MonitorInterval', 'value': interval});
+    }
+    if (retention != null) {
+      items.add({'key': 'MonitorStoreDays', 'value': retention});
+    }
+    if (enabled != null) {
+      items.add({
+        'key': 'MonitorStatus',
+        'value': (enabled == true) ? 'Enable' : 'Disable',
+      });
+    }
+    return items;
+  }
 
   Map<String, dynamic> toJson() => {
         if (interval != null) 'monitorInterval': interval,
@@ -265,9 +307,9 @@ class MonitorV2Api {
       ApiConstants.buildApiPath('/hosts/monitor/setting'),
     );
     final data = response.data as Map<String, dynamic>;
-    final innerData = data['data'] as Map<String, dynamic>?;
+    final payload = data['data'] as Map<String, dynamic>? ?? data;
     return Response(
-      data: innerData != null ? MonitorSetting.fromJson(innerData) : null,
+      data: MonitorSetting.fromJson(payload),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -278,10 +320,22 @@ class MonitorV2Api {
   ///
   /// POST /hosts/monitor/setting/update
   Future<Response> updateSetting(MonitorSettingUpdate request) async {
-    return await _client.post(
-      ApiConstants.buildApiPath('/hosts/monitor/setting/update'),
-      data: request.toJson(),
-    );
+    final updates = request.toUpdateItems();
+    if (updates.isEmpty) {
+      return await _client.post(
+        ApiConstants.buildApiPath('/hosts/monitor/setting/update'),
+        data: request.toJson(),
+      );
+    }
+
+    Response? lastResponse;
+    for (final item in updates) {
+      lastResponse = await _client.post(
+        ApiConstants.buildApiPath('/hosts/monitor/setting/update'),
+        data: item,
+      );
+    }
+    return lastResponse!;
   }
 
   // ==================== 便捷方法 ====================

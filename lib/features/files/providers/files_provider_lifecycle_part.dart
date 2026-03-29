@@ -27,6 +27,7 @@ extension FilesProviderLifecycleMixin on FilesProvider {
         isLoading: false,
         selectedFiles: <String>{},
       );
+      _rememberPathForServer(server?.id, targetPath);
       appLogger.iWithPackage(
         'files_provider',
         'initialize: 初始化完成, files=${files.length}, serverId=${server?.id}',
@@ -91,6 +92,7 @@ extension FilesProviderLifecycleMixin on FilesProvider {
         isLoading: false,
         selectedFiles: <String>{},
       );
+      _rememberPathForServer(_data.currentServer?.id, targetPath);
 
       if (path != null && !_data.pathHistory.contains(targetPath)) {
         _data = _data.copyWith(
@@ -126,9 +128,26 @@ extension FilesProviderLifecycleMixin on FilesProvider {
   }
 
   void onServerChanged() {
-    appLogger.dWithPackage('files_provider', 'onServerChanged: 服务器变更，重置状态');
+    onServerChangedWithIds();
+  }
+
+  void onServerChangedWithIds({
+    String? previousServerId,
+    String? nextServerId,
+  }) {
+    if (previousServerId != null && previousServerId.isNotEmpty) {
+      _rememberPathForServer(previousServerId, _data.currentPath);
+    }
+    final restoredPath = _restorePathForServer(nextServerId);
+    appLogger.dWithPackage(
+      'files_provider',
+      'onServerChanged: server=$previousServerId->$nextServerId, restoredPath=$restoredPath',
+    );
     _service.clearCache();
-    _data = const FilesData();
+    _data = FilesData(
+      currentPath: restoredPath,
+      pathHistory: <String>[restoredPath],
+    );
     _emitChange();
     unawaited(initialize());
   }

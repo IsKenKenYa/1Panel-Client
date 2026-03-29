@@ -7,6 +7,7 @@ class ApiConfig {
   final String url;
   final String apiKey;
   final int tokenValidity;
+  final bool allowInsecureTls;
   final bool isDefault;
   final DateTime lastUsed;
 
@@ -16,6 +17,7 @@ class ApiConfig {
     required this.url,
     required this.apiKey,
     this.tokenValidity = 0,
+    this.allowInsecureTls = false,
     this.isDefault = false,
     DateTime? lastUsed,
   }) : lastUsed = lastUsed ?? DateTime.now();
@@ -27,6 +29,7 @@ class ApiConfig {
       'url': url,
       'apiKey': apiKey,
       'tokenValidity': tokenValidity,
+      'allowInsecureTls': allowInsecureTls,
       'isDefault': isDefault,
       'lastUsed': lastUsed.toIso8601String(),
     };
@@ -39,8 +42,11 @@ class ApiConfig {
       url: json['url'],
       apiKey: json['apiKey'],
       tokenValidity: json['tokenValidity'] as int? ?? 0,
+      allowInsecureTls: json['allowInsecureTls'] as bool? ?? false,
       isDefault: json['isDefault'] ?? false,
-      lastUsed: DateTime.parse(json['lastUsed']),
+      lastUsed: json['lastUsed'] == null
+          ? DateTime.now()
+          : DateTime.parse(json['lastUsed'] as String),
     );
   }
 }
@@ -75,13 +81,16 @@ class ApiConfigManager {
 
     // 如果设置为默认配置，需要将其他配置设为非默认
     if (config.isDefault) {
-      for (var c in configs) {
+      for (var i = 0; i < configs.length; i++) {
+        final c = configs[i];
         if (c.id != config.id) {
-          c = ApiConfig(
+          configs[i] = ApiConfig(
             id: c.id,
             name: c.name,
             url: c.url,
             apiKey: c.apiKey,
+            tokenValidity: c.tokenValidity,
+            allowInsecureTls: c.allowInsecureTls,
             isDefault: false,
             lastUsed: c.lastUsed,
           );

@@ -91,10 +91,14 @@ class _FilesViewState extends State<FilesView> {
     if (serverId == null || serverId == _activeServerId) {
       return;
     }
+    final previousServerId = _activeServerId;
     _activeServerId = serverId;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      context.read<FilesProvider>().onServerChanged();
+      context.read<FilesProvider>().onServerChangedWithIds(
+            previousServerId: previousServerId,
+            nextServerId: serverId,
+          );
     });
   }
 

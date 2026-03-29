@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -131,6 +133,45 @@ void main() {
       // Assert
       expect(provider.data.currentPath, '/new/path');
       verify(mockService.getFiles(path: '/new/path', search: null)).called(1);
+    });
+
+    test('uploadFiles should use locked target path', () async {
+      final tempDir = await Directory.systemTemp.createTemp('files_upload_test');
+      final tempFile = File('${tempDir.path}/demo.txt');
+      await tempFile.writeAsString('demo');
+
+      when(mockService.uploadFile(any, any)).thenAnswer((_) async {});
+
+      await provider.uploadFiles(
+        [tempFile.path],
+        targetPath: '/locked/path',
+      );
+
+      verify(mockService.uploadFile('/locked/path', any)).called(1);
+
+      await tempDir.delete(recursive: true);
+    });
+
+    test('onServerChangedWithIds should restore remembered path', () async {
+      when(mockService.getCurrentServer()).thenAnswer((_) async => null);
+      when(mockService.getFiles(
+              path: anyNamed('path'), search: anyNamed('search')))
+          .thenAnswer((_) async => const <FileInfo>[]);
+
+      await provider.navigateTo('/var/www');
+      provider.onServerChangedWithIds(
+        previousServerId: 'server-a',
+        nextServerId: 'server-b',
+      );
+      await Future<void>.delayed(Duration.zero);
+
+      await provider.navigateTo('/opt/apps');
+      provider.onServerChangedWithIds(
+        previousServerId: 'server-b',
+        nextServerId: 'server-a',
+      );
+
+      expect(provider.data.currentPath, '/var/www');
     });
   });
 }

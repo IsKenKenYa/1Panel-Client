@@ -68,9 +68,24 @@ extension _ContainersPageSections on _ContainersPageViewState {
               isLoading: provider.containersState.isLoading,
               showStatsHeader: false,
               onRefresh: provider.refresh,
-              onStart: provider.startContainer,
-              onStop: provider.stopContainer,
-              onRestart: provider.restartContainer,
+              onStart: (name) => _handleContainerAction(
+                context,
+                provider,
+                name,
+                action: _ContainerLifecycleAction.start,
+              ),
+              onStop: (name) => _handleContainerAction(
+                context,
+                provider,
+                name,
+                action: _ContainerLifecycleAction.stop,
+              ),
+              onRestart: (name) => _handleContainerAction(
+                context,
+                provider,
+                name,
+                action: _ContainerLifecycleAction.restart,
+              ),
               onDelete: (id) => ContainersPageContainerMaintenanceDialogs
                   .showDeleteContainerDialog(context, id),
               onRename: (name) =>
@@ -98,6 +113,10 @@ extension _ContainersPageSections on _ContainersPageViewState {
                 context,
                 name,
               ),
+              onTerminal: (container) => _openContainerTerminal(
+                context,
+                container,
+              ),
             );
           },
         );
@@ -119,4 +138,104 @@ extension _ContainersPageSections on _ContainersPageViewState {
         return const SizedBox.shrink();
     }
   }
+
+  Future<void> _handleContainerAction(
+    BuildContext context,
+    ContainersProvider provider,
+    String containerName, {
+    required _ContainerLifecycleAction action,
+  }) async {
+    final l10n = context.l10n;
+    final actionLabel = _actionLabel(l10n, action);
+    final shouldContinue = await showDialog<bool>(
+          context: context,
+          builder: (dialogContext) {
+            return AlertDialog(
+              title: Text(actionLabel),
+              content: Text('${l10n.containerInfoName}: $containerName'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(false),
+                  child: Text(l10n.commonCancel),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(true),
+                  child: Text(l10n.commonConfirm),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
+
+    if (!shouldContinue) {
+      return;
+    }
+
+    bool success;
+    switch (action) {
+      case _ContainerLifecycleAction.start:
+        success = await provider.startContainer(containerName);
+        break;
+      case _ContainerLifecycleAction.stop:
+        success = await provider.stopContainer(containerName);
+        break;
+      case _ContainerLifecycleAction.restart:
+        success = await provider.restartContainer(containerName);
+        break;
+    }
+
+    if (!context.mounted) {
+      return;
+    }
+
+    final messenger = ScaffoldMessenger.of(context);
+    final message = success
+        ? l10n.containerOperateSuccess
+        : l10n.containerOperateFailed(
+            provider.data.error ?? l10n.commonUnknownError,
+          );
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor:
+              success ? Theme.of(context).colorScheme.tertiary : null,
+        ),
+      );
+  }
+
+  String _actionLabel(dynamic l10n, _ContainerLifecycleAction action) {
+    switch (action) {
+      case _ContainerLifecycleAction.start:
+        return l10n.containerActionStart;
+      case _ContainerLifecycleAction.stop:
+        return l10n.containerActionStop;
+      case _ContainerLifecycleAction.restart:
+        return l10n.containerActionRestart;
+    }
+  }
+
+  void _openContainerTerminal(BuildContext context, dynamic container) {
+    final containerId =
+        (container.id?.toString().isNotEmpty ?? false) ? container.id : null;
+    Navigator.pushNamed(
+      context,
+      '/terminal',
+      arguments: <String, dynamic>{
+        'type': 'container',
+        'containerId': containerId ?? container.name,
+        'containerName': container.name,
+        'command': '/bin/sh',
+        'user': 'root',
+      },
+    );
+  }
+}
+
+enum _ContainerLifecycleAction {
+  start,
+  stop,
+  restart,
 }

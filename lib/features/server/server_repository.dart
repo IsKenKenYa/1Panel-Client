@@ -38,7 +38,12 @@ class ServerRepository {
       );
 
       final manager = ApiClientManager.instance;
-      final client = manager.getClient(serverId, config.url, config.apiKey);
+      final client = manager.getClient(
+        serverId,
+        config.url,
+        config.apiKey,
+        allowInsecureTls: config.allowInsecureTls,
+      );
 
       final monitorRepo = const MonitorRepository();
       final metrics = await monitorRepo.getCurrentMetrics(client);
@@ -64,6 +69,7 @@ class ServerRepository {
   /// 删除服务器配置
   Future<void> removeConfig(String id) async {
     await ApiConfigManager.deleteConfig(id);
+    ApiClientManager.instance.removeClient(id);
   }
 
   /// 保存服务器配置

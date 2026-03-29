@@ -53,8 +53,17 @@ class ApiClientManager {
     return config;
   }
 
-  DioClient getClient(String serverId, String serverUrl, String apiKey) {
-    final nextMeta = _ClientConfigMeta(url: serverUrl, apiKey: apiKey);
+  DioClient getClient(
+    String serverId,
+    String serverUrl,
+    String apiKey, {
+    bool allowInsecureTls = false,
+  }) {
+    final nextMeta = _ClientConfigMeta(
+      url: serverUrl,
+      apiKey: apiKey,
+      allowInsecureTls: allowInsecureTls,
+    );
     final currentMeta = _clientMeta[serverId];
 
     if (currentMeta == nextMeta && _clients.containsKey(serverId)) {
@@ -64,6 +73,7 @@ class ApiClientManager {
     final client = DioClient(
       baseUrl: serverUrl,
       apiKey: apiKey,
+      allowInsecureTls: allowInsecureTls,
     );
     _clients[serverId] = client;
     _clientMeta[serverId] = nextMeta;
@@ -72,7 +82,12 @@ class ApiClientManager {
 
   Future<DioClient> getCurrentClient() async {
     final config = await _getCurrentConfig();
-    return getClient(config.id, config.url, config.apiKey);
+    return getClient(
+      config.id,
+      config.url,
+      config.apiKey,
+      allowInsecureTls: config.allowInsecureTls,
+    );
   }
 
   Future<AppV2Api> getAppApi() async => AppV2Api(await getCurrentClient());
@@ -178,10 +193,12 @@ class _ClientConfigMeta {
   const _ClientConfigMeta({
     required this.url,
     required this.apiKey,
+    required this.allowInsecureTls,
   });
 
   final String url;
   final String apiKey;
+  final bool allowInsecureTls;
 
   @override
   bool operator ==(Object other) {
@@ -190,9 +207,10 @@ class _ClientConfigMeta {
     }
     return other is _ClientConfigMeta &&
         other.url == url &&
-        other.apiKey == apiKey;
+        other.apiKey == apiKey &&
+        other.allowInsecureTls == allowInsecureTls;
   }
 
   @override
-  int get hashCode => Object.hash(url, apiKey);
+  int get hashCode => Object.hash(url, apiKey, allowInsecureTls);
 }

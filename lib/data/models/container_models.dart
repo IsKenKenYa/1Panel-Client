@@ -738,21 +738,29 @@ class ContainerPrune extends Equatable {
 class ContainerUpgrade extends Equatable {
   final bool? forcePull;
   final String image;
-  final String name;
+  final List<String> names;
   final String? taskID;
 
   const ContainerUpgrade({
     this.forcePull,
     required this.image,
-    required this.name,
+    required this.names,
     this.taskID,
   });
 
   factory ContainerUpgrade.fromJson(Map<String, dynamic> json) {
+    final rawNames = json['names'];
+    final parsedNames = rawNames is List
+        ? rawNames.map((item) => item.toString()).toList()
+        : <String>[];
+    if (parsedNames.isEmpty && json['name'] != null) {
+      parsedNames.add(json['name'].toString());
+    }
+
     return ContainerUpgrade(
       forcePull: json['forcePull'] as bool?,
       image: json['image'] as String,
-      name: json['name'] as String,
+      names: parsedNames,
       taskID: json['taskID'] as String?,
     );
   }
@@ -761,13 +769,13 @@ class ContainerUpgrade extends Equatable {
     return {
       'forcePull': forcePull,
       'image': image,
-      'name': name,
+      'names': names,
       'taskID': taskID,
     };
   }
 
   @override
-  List<Object?> get props => [forcePull, image, name, taskID];
+  List<Object?> get props => [forcePull, image, names, taskID];
 }
 
 /// 容器重命名模型
@@ -894,17 +902,26 @@ class ContainerCompose extends Equatable {
   });
 
   factory ContainerCompose.fromJson(Map<String, dynamic> json) {
+    List<String>? parseStringList(dynamic value) {
+      if (value is List) {
+        return value.map((item) => item.toString()).toList();
+      }
+      return null;
+    }
+
     return ContainerCompose(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      path: json['path'] as String?,
-      version: json['version'] as String?,
-      status: json['status'] as String?,
-      createTime: json['createTime'] as String?,
-      updateTime: json['updateTime'] as String?,
-      networks: (json['networks'] as List?)?.cast<String>(),
-      volumes: (json['volumes'] as List?)?.cast<String>(),
-      services: (json['services'] as List?)?.cast<String>(),
+      id: json['id']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      path: json['path']?.toString(),
+      version: json['version']?.toString(),
+      status: json['status']?.toString(),
+      createTime: json['createTime']?.toString() ??
+          json['createdAt']?.toString(),
+      updateTime: json['updateTime']?.toString() ??
+          json['updatedAt']?.toString(),
+      networks: parseStringList(json['networks']),
+      volumes: parseStringList(json['volumes']),
+      services: parseStringList(json['services']),
     );
   }
 

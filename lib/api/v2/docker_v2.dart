@@ -32,6 +32,25 @@ class DockerV2Api {
     return [];
   }
 
+  List<T> _parsePageItems<T>(
+    dynamic data,
+    T Function(Map<String, dynamic>) fromJson,
+  ) {
+    if (data is Map<String, dynamic>) {
+      final payload = data['data'];
+      if (payload is Map<String, dynamic>) {
+        final items = payload['items'];
+        if (items is List) {
+          return items
+              .whereType<Map<String, dynamic>>()
+              .map(fromJson)
+              .toList();
+        }
+      }
+    }
+    return _parseList(data, fromJson);
+  }
+
   /// List all images
   Future<Response<List<DockerImage>>> listImages() async {
     final response = await _client.get(
@@ -130,11 +149,12 @@ class DockerV2Api {
 
   /// List networks
   Future<Response<List<DockerNetwork>>> listNetworks() async {
-    final response = await _client.get(
-      ApiConstants.buildApiPath('/containers/network'),
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/containers/network/search'),
+      data: const SearchWithPage(page: 1, pageSize: 100).toJson(),
     );
     return Response(
-      data: _parseList(response.data, DockerNetwork.fromJson),
+      data: _parsePageItems(response.data, DockerNetwork.fromJson),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -163,11 +183,12 @@ class DockerV2Api {
 
   /// List volumes
   Future<Response<List<DockerVolume>>> listVolumes() async {
-    final response = await _client.get(
-      ApiConstants.buildApiPath('/containers/volume'),
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/containers/volume/search'),
+      data: const SearchWithPage(page: 1, pageSize: 100).toJson(),
     );
     return Response(
-      data: _parseList(response.data, DockerVolume.fromJson),
+      data: _parsePageItems(response.data, DockerVolume.fromJson),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,

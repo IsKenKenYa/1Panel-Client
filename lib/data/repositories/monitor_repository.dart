@@ -480,7 +480,12 @@ class MonitorRepository {
     try {
       final response = await client.get('/api/v2/hosts/monitor/setting');
       if (response.data != null && response.data is Map) {
-        return MonitorSetting.fromJson(response.data as Map<String, dynamic>);
+        final body = response.data as Map<String, dynamic>;
+        final payload = body['data'];
+        if (payload is Map<String, dynamic>) {
+          return MonitorSetting.fromJson(payload);
+        }
+        return MonitorSetting.fromJson(body);
       }
       return null;
     } catch (e, stack) {
@@ -502,14 +507,26 @@ class MonitorRepository {
     bool? enabled,
   }) async {
     try {
-      await client.post(
-        '/api/v2/hosts/monitor/setting/update',
-        data: {
-          if (interval != null) 'interval': interval,
-          if (retention != null) 'retention': retention,
-          if (enabled != null) 'enabled': enabled,
-        },
-      );
+      final updates = <Map<String, dynamic>>[];
+      if (interval != null) {
+        updates.add({'key': 'MonitorInterval', 'value': interval});
+      }
+      if (retention != null) {
+        updates.add({'key': 'MonitorStoreDays', 'value': retention});
+      }
+      if (enabled != null) {
+        updates.add({
+          'key': 'MonitorStatus',
+          'value': enabled ? 'Enable' : 'Disable',
+        });
+      }
+
+      for (final update in updates) {
+        await client.post(
+          '/api/v2/hosts/monitor/setting/update',
+          data: update,
+        );
+      }
       return true;
     } catch (e, stack) {
       appLogger.eWithPackage(

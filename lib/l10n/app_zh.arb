@@ -658,6 +658,31 @@
       }
     }
   },
+  "serverDeleteConfirmTitle": "删除服务器",
+  "serverDeleteConfirmMessage": "确定删除服务器 {name} 吗？",
+  "@serverDeleteConfirmMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "serverDeleteSuccess": "已删除服务器 {name}",
+  "@serverDeleteSuccess": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "serverDeleteFailed": "删除服务器失败：{error}",
+  "@serverDeleteFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "serverFormTestHint": "连接测试可在 client 适配后接入。",
   "serverTestSuccess": "连接成功",
   "serverTestFailed": "连接失败",
@@ -666,6 +691,8 @@
   "serverMetricsUnavailable": "监控数据暂不可用",
   "serverTokenValidity": "接口密钥有效期",
   "serverTokenValidityHint": "设置为0时不校验时间戳",
+  "serverFormAllowInsecureTls": "忽略 TLS 证书校验",
+  "serverFormAllowInsecureTlsHint": "仅在可信的自签名或内网环境中启用。",
   "serverFormMinutes": "分钟",
   "filesPageTitle": "文件",
   "filesPath": "路径",

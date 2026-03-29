@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 
@@ -20,6 +21,7 @@ class ServerConnectionService {
   Future<ServerConnectionResult> testConnection({
     required String serverUrl,
     required String apiKey,
+    bool allowInsecureTls = false,
   }) async {
     final stopwatch = Stopwatch()..start();
 
@@ -33,6 +35,19 @@ class ServerConnectionService {
           'Accept': 'application/json',
         },
       ));
+
+      if (allowInsecureTls && !kIsWeb) {
+        try {
+          (dio.httpClientAdapter as dynamic).onHttpClientCreate =
+              (dynamic httpClient) {
+            httpClient.badCertificateCallback =
+                (dynamic cert, String host, int port) => true;
+            return httpClient;
+          };
+        } catch (_) {
+          // Ignore adapter-level failures and continue with default validation.
+        }
+      }
 
       final timestamp =
           (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString();

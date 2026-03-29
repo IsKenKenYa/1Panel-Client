@@ -14,15 +14,16 @@ class ContainersTab extends StatelessWidget {
   final bool isLoading;
   final bool showStatsHeader;
   final Future<void> Function() onRefresh;
-  final Future<bool> Function(String) onStart;
-  final Future<bool> Function(String) onStop;
-  final Future<bool> Function(String) onRestart;
+  final Future<void> Function(String) onStart;
+  final Future<void> Function(String) onStop;
+  final Future<void> Function(String) onRestart;
   final void Function(String) onDelete;
   final void Function(String) onRename;
   final void Function(ContainerInfo) onUpgrade;
   final void Function(ContainerInfo) onCommit;
   final void Function(ContainerInfo) onEdit;
   final void Function(String) onCleanLog;
+  final void Function(ContainerInfo) onTerminal;
 
   const ContainersTab({
     super.key,
@@ -40,6 +41,7 @@ class ContainersTab extends StatelessWidget {
     required this.onCommit,
     required this.onEdit,
     required this.onCleanLog,
+    required this.onTerminal,
   });
 
   @override
@@ -110,6 +112,7 @@ class ContainersTab extends StatelessWidget {
               onCommit: () => onCommit(containerInfo),
               onEdit: () => onEdit(containerInfo),
               onCleanLog: () => onCleanLog(containerInfo.name),
+              onTerminal: () => onTerminal(containerInfo),
               onTap: () {
                 Navigator.pushNamed(
                   context,

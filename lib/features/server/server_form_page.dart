@@ -26,6 +26,7 @@ class _ServerFormPageState extends State<ServerFormPage> {
 
   bool _saving = false;
   bool _testing = false;
+  bool _allowInsecureTls = false;
   ServerConnectionResult? _testResult;
 
   @override
@@ -55,6 +56,7 @@ class _ServerFormPageState extends State<ServerFormPage> {
       final result = await _connectionService.testConnection(
         serverUrl: _urlController.text.trim(),
         apiKey: _apiKeyController.text.trim(),
+        allowInsecureTls: _allowInsecureTls,
       );
 
       if (!mounted) return;
@@ -108,6 +110,7 @@ class _ServerFormPageState extends State<ServerFormPage> {
         url: _urlController.text.trim(),
         apiKey: _apiKeyController.text.trim(),
         tokenValidity: int.tryParse(_tokenValidityController.text.trim()) ?? 0,
+        allowInsecureTls: _allowInsecureTls,
         isDefault: true,
       );
 
@@ -195,6 +198,18 @@ class _ServerFormPageState extends State<ServerFormPage> {
                   suffixText: l10n.serverFormMinutes,
                 ),
                 keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: AppDesignTokens.spacingSm),
+              SwitchListTile.adaptive(
+                contentPadding: EdgeInsets.zero,
+                value: _allowInsecureTls,
+                onChanged: (value) {
+                  setState(() {
+                    _allowInsecureTls = value;
+                  });
+                },
+                title: Text(l10n.serverFormAllowInsecureTls),
+                subtitle: Text(l10n.serverFormAllowInsecureTlsHint),
               ),
               const SizedBox(height: AppDesignTokens.spacingLg),
               SizedBox(

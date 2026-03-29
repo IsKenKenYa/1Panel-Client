@@ -229,6 +229,7 @@ class _ServerListPageState extends State<ServerListPage> {
                                 key: index == 0 ? _firstCardKey : null,
                                 data: item,
                                 onTap: () => _openDetail(item),
+                                onDelete: () => _deleteServer(item),
                               ),
                             );
                           },
@@ -279,6 +280,56 @@ class _ServerListPageState extends State<ServerListPage> {
       ),
     );
   }
+
+  Future<void> _deleteServer(ServerCardViewModel item) async {
+    final l10n = context.l10n;
+    final confirmed =
+        await showDialog<bool>(
+          context: context,
+          builder: (dialogContext) => AlertDialog(
+            title: Text(l10n.serverDeleteConfirmTitle),
+            content: Text(l10n.serverDeleteConfirmMessage(item.config.name)),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext, false),
+                child: Text(l10n.commonCancel),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(dialogContext, true),
+                child: Text(l10n.commonDelete),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+
+    if (!confirmed || !mounted) {
+      return;
+    }
+
+    final serverProvider = context.read<ServerProvider>();
+    final currentServerController = context.read<CurrentServerController>();
+    final messenger = ScaffoldMessenger.of(context);
+    final successMessage = l10n.serverDeleteSuccess(item.config.name);
+
+    try {
+      await serverProvider.delete(item.config.id);
+      await currentServerController.refresh();
+      if (!mounted) {
+        return;
+      }
+      messenger.showSnackBar(SnackBar(content: Text(successMessage)));
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(l10n.serverDeleteFailed(error.toString())),
+        ),
+      );
+    }
+  }
 }
 
 class _ServerCard extends StatelessWidget {
@@ -286,10 +337,12 @@ class _ServerCard extends StatelessWidget {
     super.key,
     required this.data,
     required this.onTap,
+    required this.onDelete,
   });
 
   final ServerCardViewModel data;
   final VoidCallback onTap;
+  final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -318,6 +371,11 @@ class _ServerCard extends StatelessWidget {
                       visualDensity: VisualDensity.compact,
                       label: Text(l10n.serverCurrent),
                     ),
+                  IconButton(
+                    tooltip: l10n.commonDelete,
+                    icon: const Icon(Icons.delete_outline),
+                    onPressed: onDelete,
+                  ),
                 ],
               ),
               const SizedBox(height: AppDesignTokens.spacingSm),

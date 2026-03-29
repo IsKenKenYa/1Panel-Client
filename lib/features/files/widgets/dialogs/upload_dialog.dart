@@ -8,6 +8,7 @@ import 'package:onepanel_client/features/files/files_provider.dart';
 void showUploadDialog(BuildContext context, FilesProvider provider) {
   appLogger.dWithPackage('upload_dialog', 'showUploadDialog: 打开上传对话框');
   final l10n = context.l10n;
+  final targetPath = provider.data.currentPath;
 
   showDialog(
     context: context,
@@ -18,7 +19,7 @@ void showUploadDialog(BuildContext context, FilesProvider provider) {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${l10n.filesTargetPath}: ${provider.data.currentPath}',
+            '${l10n.filesTargetPath}: $targetPath',
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: 16),
@@ -47,7 +48,10 @@ void showUploadDialog(BuildContext context, FilesProvider provider) {
                 if (filePaths.isNotEmpty) {
                   appLogger.dWithPackage('upload_dialog',
                       'showUploadDialog: 选择${filePaths.length}个文件');
-                  await provider.uploadFiles(filePaths);
+                  await provider.uploadFiles(
+                    filePaths,
+                    targetPath: targetPath,
+                  );
                   appLogger.iWithPackage(
                       'upload_dialog', 'showUploadDialog: 上传成功');
                 }

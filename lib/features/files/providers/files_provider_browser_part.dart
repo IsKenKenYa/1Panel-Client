@@ -33,17 +33,22 @@ extension FilesProviderBrowserMixin on FilesProvider {
     }
   }
 
-  Future<void> uploadFiles(List<String> filePaths) async {
+  Future<void> uploadFiles(List<String> filePaths, {String? targetPath}) async {
+    final resolvedTargetPath = _normalizePath(targetPath ?? _data.currentPath);
     appLogger.dWithPackage('files_provider',
-        'uploadFiles: filePaths=$filePaths, targetPath=${_data.currentPath}');
+        'uploadFiles: filePaths=$filePaths, targetPath=$resolvedTargetPath');
     try {
       for (final filePath in filePaths) {
         final file = await MultipartFile.fromFile(filePath);
-        await _service.uploadFile(_data.currentPath, file);
+        await _service.uploadFile(resolvedTargetPath, file);
       }
       appLogger.iWithPackage(
           'files_provider', 'uploadFiles: 成功上传 ${filePaths.length} 个文件');
-      await refresh();
+      _rememberPathForServer(_data.currentServer?.id, resolvedTargetPath);
+
+      if (_normalizePath(_data.currentPath) == resolvedTargetPath) {
+        await refresh();
+      }
     } catch (e, stackTrace) {
       appLogger.eWithPackage('files_provider', 'uploadFiles: 失败',
           error: e, stackTrace: stackTrace);

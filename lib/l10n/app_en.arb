@@ -658,6 +658,31 @@
       }
     }
   },
+  "serverDeleteConfirmTitle": "Delete server",
+  "serverDeleteConfirmMessage": "Delete server {name}?",
+  "@serverDeleteConfirmMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "serverDeleteSuccess": "Deleted server {name}",
+  "@serverDeleteSuccess": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "serverDeleteFailed": "Failed to delete server: {error}",
+  "@serverDeleteFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "serverFormTestHint": "Connection test can be added after client adaptation.",
   "serverTestSuccess": "Connection successful",
   "serverTestFailed": "Connection failed",
@@ -666,6 +691,8 @@
   "serverMetricsUnavailable": "Metrics unavailable",
   "serverTokenValidity": "Token validity (minutes)",
   "serverTokenValidityHint": "Set to 0 to skip timestamp validation",
+  "serverFormAllowInsecureTls": "Ignore TLS certificate validation",
+  "serverFormAllowInsecureTlsHint": "Only enable for trusted self-signed or internal endpoints.",
   "serverFormMinutes": "minutes",
   "filesPageTitle": "Files",
   "filesPath": "Path",

@@ -1480,6 +1480,24 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get serverDeleteConfirmTitle => '删除服务器';
+
+  @override
+  String serverDeleteConfirmMessage(String name) {
+    return '确定删除服务器 $name 吗？';
+  }
+
+  @override
+  String serverDeleteSuccess(String name) {
+    return '已删除服务器 $name';
+  }
+
+  @override
+  String serverDeleteFailed(String error) {
+    return '删除服务器失败：$error';
+  }
+
+  @override
   String get serverFormTestHint => '连接测试可在 client 适配后接入。';
 
   @override
@@ -1499,6 +1517,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get serverTokenValidityHint => '设置为0时不校验时间戳';
+
+  @override
+  String get serverFormAllowInsecureTls => '忽略 TLS 证书校验';
+
+  @override
+  String get serverFormAllowInsecureTlsHint => '仅在可信的自签名或内网环境中启用。';
 
   @override
   String get serverFormMinutes => '分钟';

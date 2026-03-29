@@ -2936,6 +2936,30 @@ abstract class AppLocalizations {
   /// **'Failed to save server: {error}'**
   String serverFormSaveFailed(String error);
 
+  /// No description provided for @serverDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete server'**
+  String get serverDeleteConfirmTitle;
+
+  /// No description provided for @serverDeleteConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete server {name}?'**
+  String serverDeleteConfirmMessage(String name);
+
+  /// No description provided for @serverDeleteSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted server {name}'**
+  String serverDeleteSuccess(String name);
+
+  /// No description provided for @serverDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete server: {error}'**
+  String serverDeleteFailed(String error);
+
   /// No description provided for @serverFormTestHint.
   ///
   /// In en, this message translates to:
@@ -2977,6 +3001,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Set to 0 to skip timestamp validation'**
   String get serverTokenValidityHint;
+
+  /// No description provided for @serverFormAllowInsecureTls.
+  ///
+  /// In en, this message translates to:
+  /// **'Ignore TLS certificate validation'**
+  String get serverFormAllowInsecureTls;
+
+  /// No description provided for @serverFormAllowInsecureTlsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Only enable for trusted self-signed or internal endpoints.'**
+  String get serverFormAllowInsecureTlsHint;
 
   /// No description provided for @serverFormMinutes.
   ///

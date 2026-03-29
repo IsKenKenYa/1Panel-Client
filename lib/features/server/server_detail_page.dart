@@ -38,6 +38,11 @@ class ServerDetailPage extends StatelessWidget {
         title: Text(l10n.serverDetailTitle),
         actions: [
           ServerSwitcherAction(onChanged: () => serverProvider.load()),
+          IconButton(
+            tooltip: l10n.commonDelete,
+            icon: const Icon(Icons.delete_outline),
+            onPressed: () => _deleteServer(context, activeServer),
+          ),
         ],
       ),
       body: ListView(
@@ -185,5 +190,61 @@ class ServerDetailPage extends StatelessWidget {
 
   void _openRoute(BuildContext context, String route) {
     Navigator.pushNamed(context, route);
+  }
+
+  Future<void> _deleteServer(
+    BuildContext context,
+    ServerCardViewModel target,
+  ) async {
+    final l10n = context.l10n;
+    final confirmed =
+        await showDialog<bool>(
+          context: context,
+          builder: (dialogContext) => AlertDialog(
+            title: Text(l10n.serverDeleteConfirmTitle),
+            content: Text(l10n.serverDeleteConfirmMessage(target.config.name)),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext, false),
+                child: Text(l10n.commonCancel),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(dialogContext, true),
+                child: Text(l10n.commonDelete),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+    if (!confirmed || !context.mounted) {
+      return;
+    }
+
+    final serverProvider = context.read<ServerProvider>();
+    final currentServerController = context.read<CurrentServerController>();
+    final messenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
+    final successMessage = l10n.serverDeleteSuccess(target.config.name);
+
+    try {
+      await serverProvider.delete(target.config.id);
+      await currentServerController.refresh();
+      if (!context.mounted) {
+        return;
+      }
+      messenger.showSnackBar(
+        SnackBar(content: Text(successMessage)),
+      );
+      navigator.maybePop();
+    } catch (error) {
+      if (!context.mounted) {
+        return;
+      }
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(l10n.serverDeleteFailed(error.toString())),
+        ),
+      );
+    }
   }
 }

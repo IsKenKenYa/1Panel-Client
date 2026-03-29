@@ -25,9 +25,14 @@ class ComposeV2Api {
       ApiConstants.buildApiPath('/containers/compose/search'),
       data: request.toJson(),
     );
+    final body = (response.data as Map?)?.cast<String, dynamic>() ??
+        const <String, dynamic>{};
+    final payload = body['data'] is Map<String, dynamic>
+        ? body['data'] as Map<String, dynamic>
+        : body;
     return Response(
       data: PageResult.fromJson(
-        response.data as Map<String, dynamic>,
+        payload,
         (json) => ComposeProject.fromJson(json as Map<String, dynamic>),
       ),
       statusCode: response.statusCode,
@@ -43,8 +48,13 @@ class ComposeV2Api {
       ApiConstants.buildApiPath('/containers/compose'),
       data: compose.toJson(),
     );
+    final body = (response.data as Map?)?.cast<String, dynamic>() ??
+        const <String, dynamic>{};
+    final payload = body['data'] is Map<String, dynamic>
+        ? body['data'] as Map<String, dynamic>
+        : body;
     return Response(
-      data: ComposeProject.fromJson(response.data as Map<String, dynamic>),
+      data: ComposeProject.fromJson(payload),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,

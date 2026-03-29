@@ -64,16 +64,40 @@ class SecuritySettingsPage extends StatelessWidget {
                   title: l10n.securitySettingsSecurityEntrance,
                   value: settings?.securityEntrance ?? '-',
                   icon: Icons.login_outlined,
+                  onTap: () => _showSystemSettingEditDialog(
+                    context,
+                    provider,
+                    l10n,
+                    title: l10n.securitySettingsSecurityEntrance,
+                    settingKey: 'SecurityEntrance',
+                    currentValue: settings?.securityEntrance ?? '',
+                  ),
                 ),
                 _buildInfoListTile(
                   title: l10n.securitySettingsBindDomain,
                   value: settings?.bindDomain ?? '-',
                   icon: Icons.domain_outlined,
+                  onTap: () => _showSystemSettingEditDialog(
+                    context,
+                    provider,
+                    l10n,
+                    title: l10n.securitySettingsBindDomain,
+                    settingKey: 'BindDomain',
+                    currentValue: settings?.bindDomain ?? '',
+                  ),
                 ),
                 _buildInfoListTile(
                   title: l10n.securitySettingsAllowIPs,
                   value: settings?.allowIPs ?? '-',
                   icon: Icons.list_alt_outlined,
+                  onTap: () => _showSystemSettingEditDialog(
+                    context,
+                    provider,
+                    l10n,
+                    title: l10n.securitySettingsAllowIPs,
+                    settingKey: 'AllowIPs',
+                    currentValue: settings?.allowIPs ?? '',
+                  ),
                 ),
               ],
             ),
@@ -84,17 +108,35 @@ class SecuritySettingsPage extends StatelessWidget {
           Card(
             child: Column(
               children: [
-                _buildInfoListTile(
-                  title: l10n.securitySettingsComplexityVerification,
-                  value: _isEnabled(settings?.complexityVerification)
-                      ? l10n.systemSettingsEnabled
-                      : l10n.systemSettingsDisabled,
-                  icon: Icons.password_outlined,
+                SwitchListTile(
+                  secondary: const Icon(Icons.password_outlined),
+                  title: Text(l10n.securitySettingsComplexityVerification),
+                  subtitle: Text(
+                    _isEnabled(settings?.complexityVerification)
+                        ? l10n.systemSettingsEnabled
+                        : l10n.systemSettingsDisabled,
+                  ),
+                  value: _isEnabled(settings?.complexityVerification),
+                  onChanged: (value) => _updateSystemSwitch(
+                    context,
+                    provider,
+                    settingKey: 'ComplexityVerification',
+                    value: value,
+                  ),
                 ),
                 _buildInfoListTile(
                   title: l10n.securitySettingsExpirationDays,
                   value: settings?.expirationDays ?? '-',
                   icon: Icons.calendar_today_outlined,
+                  onTap: () => _showSystemSettingEditDialog(
+                    context,
+                    provider,
+                    l10n,
+                    title: l10n.securitySettingsExpirationDays,
+                    settingKey: 'ExpirationDays',
+                    currentValue: settings?.expirationDays ?? '0',
+                    keyboardType: TextInputType.number,
+                  ),
                 ),
               ],
             ),
@@ -122,17 +164,110 @@ class SecuritySettingsPage extends StatelessWidget {
     required String title,
     required String value,
     required IconData icon,
+    VoidCallback? onTap,
   }) {
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
-      trailing: Text(value, style: const TextStyle(color: Colors.grey)),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 160),
+            child: Text(
+              value,
+              style: const TextStyle(color: Colors.grey),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          if (onTap != null) ...[
+            const SizedBox(width: 8),
+            const Icon(Icons.edit_outlined, size: 18, color: Colors.grey),
+          ],
+        ],
+      ),
+      onTap: onTap,
     );
   }
 
   bool _isEnabled(String? value) {
     if (value == null) return false;
     return value.toLowerCase() == 'enable' || value.toLowerCase() == 'true';
+  }
+
+  Future<void> _updateSystemSwitch(
+    BuildContext context,
+    SettingsProvider provider, {
+    required String settingKey,
+    required bool value,
+  }) async {
+    final success = await provider.updateSystemSetting(
+      settingKey,
+      value ? 'Enable' : 'Disable',
+    );
+    if (!context.mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          success ? context.l10n.commonSaveSuccess : context.l10n.commonSaveFailed,
+        ),
+      ),
+    );
+  }
+
+  void _showSystemSettingEditDialog(
+    BuildContext context,
+    SettingsProvider provider,
+    AppLocalizations l10n, {
+    required String title,
+    required String settingKey,
+    required String currentValue,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    final controller = TextEditingController(text: currentValue);
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(title),
+        content: TextField(
+          controller: controller,
+          decoration: InputDecoration(hintText: title),
+          keyboardType: keyboardType,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(l10n.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () async {
+              final value = controller.text.trim();
+              final success = await provider.updateSystemSetting(
+                settingKey,
+                value,
+              );
+              if (!dialogContext.mounted) {
+                return;
+              }
+              Navigator.pop(dialogContext);
+              if (!context.mounted) {
+                return;
+              }
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    success ? l10n.commonSaveSuccess : l10n.commonSaveFailed,
+                  ),
+                ),
+              );
+            },
+            child: Text(l10n.commonSave),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showPasswordDialog(

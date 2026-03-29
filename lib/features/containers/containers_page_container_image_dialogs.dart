@@ -52,7 +52,7 @@ class ContainersPageContainerImageDialogs {
     if (result == true && context.mounted) {
       final provider = context.read<ContainersProvider>();
       final request = ContainerUpgrade(
-        name: container.name,
+        names: <String>[container.name],
         image: controller.text,
         forcePull: forcePull,
       );

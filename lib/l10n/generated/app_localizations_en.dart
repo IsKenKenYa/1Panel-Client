@@ -1513,6 +1513,24 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get serverDeleteConfirmTitle => 'Delete server';
+
+  @override
+  String serverDeleteConfirmMessage(String name) {
+    return 'Delete server $name?';
+  }
+
+  @override
+  String serverDeleteSuccess(String name) {
+    return 'Deleted server $name';
+  }
+
+  @override
+  String serverDeleteFailed(String error) {
+    return 'Failed to delete server: $error';
+  }
+
+  @override
   String get serverFormTestHint =>
       'Connection test can be added after client adaptation.';
 
@@ -1533,6 +1551,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get serverTokenValidityHint => 'Set to 0 to skip timestamp validation';
+
+  @override
+  String get serverFormAllowInsecureTls => 'Ignore TLS certificate validation';
+
+  @override
+  String get serverFormAllowInsecureTlsHint =>
+      'Only enable for trusted self-signed or internal endpoints.';
 
   @override
   String get serverFormMinutes => 'minutes';

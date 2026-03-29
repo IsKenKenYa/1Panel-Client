@@ -13,9 +13,14 @@ class DioClient {
   final Dio _dio;
   late AuthInterceptor _authInterceptor;
 
-  DioClient({String? baseUrl, String? apiKey})
+  DioClient({
+    String? baseUrl,
+    String? apiKey,
+    bool allowInsecureTls = false,
+  })
       : _dio = Dio(_createBaseOptionsStatic(baseUrl)) {
     _authInterceptor = AuthInterceptor(apiKey);
+    _configureTls(allowInsecureTls);
     _addInterceptors();
   }
 
@@ -43,6 +48,27 @@ class DioClient {
     _dio.interceptors.add(BusinessResponseInterceptor());
     _dio.interceptors.add(LoggingInterceptor(ApiConstants.isDebugMode));
     _dio.interceptors.add(RetryInterceptor());
+  }
+
+  void _configureTls(bool allowInsecureTls) {
+    if (!allowInsecureTls || kIsWeb) {
+      return;
+    }
+
+    final adapter = _dio.httpClientAdapter;
+    try {
+      (adapter as dynamic).onHttpClientCreate = (dynamic httpClient) {
+        httpClient.badCertificateCallback =
+            (dynamic cert, String host, int port) => true;
+        return httpClient;
+      };
+      _safeLog('w', '[network] Insecure TLS certificate validation enabled');
+    } catch (_) {
+      _safeLog(
+        'w',
+        '[network] Failed to enable insecure TLS mode for current adapter',
+      );
+    }
   }
 
   /// 安全日志输出
