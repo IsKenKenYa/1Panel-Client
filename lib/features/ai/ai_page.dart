@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/features/ai/agents/widgets/ai_agents_tab_widget.dart';
 import 'package:onepanel_client/features/ai/mcp_server_provider.dart';
 import 'package:onepanel_client/features/ai/widgets/ai_domain_tab_widget.dart';
 import 'package:onepanel_client/features/ai/widgets/ai_gpu_tab_widget.dart';
@@ -22,7 +23,7 @@ class _AIPageState extends State<AIPage> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
   }
 
   @override
@@ -46,6 +47,7 @@ class _AIPageState extends State<AIPage> with SingleTickerProviderStateMixin {
                 Tab(text: l10n.aiTabModels),
                 Tab(text: l10n.aiTabGpu),
                 Tab(text: l10n.aiTabDomain),
+                Tab(text: l10n.aiTabAgents),
                 Tab(text: l10n.aiTabMcp),
               ],
             ),
@@ -71,6 +73,7 @@ class _AIPageState extends State<AIPage> with SingleTickerProviderStateMixin {
                     AIOllamaTabWidget(),
                     AIGpuTabWidget(),
                     AIDomainTabWidget(),
+                    AIAgentsTabWidget(),
                     AIMcpTabWidget(),
                   ],
                 ),

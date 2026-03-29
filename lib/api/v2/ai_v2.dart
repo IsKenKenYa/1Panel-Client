@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import '../../core/network/dio_client.dart';
 import '../../core/config/api_constants.dart';
 import '../../data/models/ai_models.dart';
+import '../../data/models/ai/agent_models.dart';
 import '../../data/models/mcp_models.dart';
 import '../../data/models/common_models.dart';
 
@@ -159,6 +160,527 @@ class AIV2Api {
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
+    );
+  }
+
+  // ==================== Agents 管理 ====================
+
+  /// 创建 Agent
+  Future<Response<AgentItem>> createAgent(AgentCreateReq request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/ai/agents'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: AgentItem.fromJson(
+        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
+      ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 分页查询 Agents
+  Future<Response<PageResult<AgentItem>>> pageAgents(
+      SearchWithPage request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/search'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: PageResult<AgentItem>.fromJson(
+        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
+        (dynamic json) => AgentItem.fromJson(json as Map<String, dynamic>),
+      ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 删除 Agent
+  Future<Response> deleteAgent(AgentDeleteReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/delete'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 重置 Agent token
+  Future<Response> resetAgentToken(AgentTokenResetReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/token/reset'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 更新 Agent 模型配置
+  Future<Response> updateAgentModelConfig(
+      AgentModelConfigUpdateReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/model/update'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 获取 Agent 总览
+  Future<Response<AgentOverview>> getAgentOverview(AgentOverviewReq request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/overview'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: AgentOverview.fromJson(
+        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
+      ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 获取 Agent 支持的模型供应商
+  Future<Response<List<ProviderInfo>>> getAgentProviders() async {
+    final response = await _client.get(
+      ApiConstants.buildApiPath('/ai/agents/providers'),
+    );
+    return Response(
+      data: (response.data as List?)
+              ?.whereType<Map<String, dynamic>>()
+              .map(ProviderInfo.fromJson)
+              .toList() ??
+          const <ProviderInfo>[],
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 创建 Agent 账号
+  Future<Response> createAgentAccount(AgentAccountCreateReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/accounts'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 更新 Agent 账号
+  Future<Response> updateAgentAccount(AgentAccountUpdateReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/accounts/update'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 分页查询 Agent 账号
+  Future<Response<PageResult<AgentAccountItem>>> pageAgentAccounts(
+      AgentAccountSearch request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/accounts/search'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: PageResult<AgentAccountItem>.fromJson(
+        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
+        (dynamic json) =>
+            AgentAccountItem.fromJson(json as Map<String, dynamic>),
+      ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 获取账号模型列表
+  Future<Response<List<AgentAccountModel>>> getAgentAccountModels(
+      AgentAccountModelReq request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/accounts/models'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: (response.data as List?)
+              ?.whereType<Map<String, dynamic>>()
+              .map(AgentAccountModel.fromJson)
+              .toList() ??
+          const <AgentAccountModel>[],
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 创建账号模型
+  Future<Response> createAgentAccountModel(
+      AgentAccountModelCreateReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/accounts/models/create'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 更新账号模型
+  Future<Response> updateAgentAccountModel(
+      AgentAccountModelUpdateReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/accounts/models/update'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 删除账号模型
+  Future<Response> deleteAgentAccountModel(
+      AgentAccountModelDeleteReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/accounts/models/delete'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 验证账号配置
+  Future<Response> verifyAgentAccount(AgentAccountVerifyReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/accounts/verify'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 删除账号
+  Future<Response> deleteAgentAccount(AgentAccountDeleteReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/accounts/delete'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 获取飞书通道配置
+  Future<Response<AgentFeishuConfig>> getAgentFeishuConfig(
+      AgentFeishuConfigReq request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/channel/feishu/get'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: AgentFeishuConfig.fromJson(
+        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
+      ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 更新飞书通道配置
+  Future<Response> updateAgentFeishuConfig(
+      AgentFeishuConfigUpdateReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/channel/feishu/update'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 获取 Telegram 通道配置
+  Future<Response<AgentTelegramConfig>> getAgentTelegramConfig(
+      AgentTelegramConfigReq request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/channel/telegram/get'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: AgentTelegramConfig.fromJson(
+        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
+      ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 更新 Telegram 通道配置
+  Future<Response> updateAgentTelegramConfig(
+      AgentTelegramConfigUpdateReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/channel/telegram/update'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 获取 Discord 通道配置
+  Future<Response<AgentDiscordConfig>> getAgentDiscordConfig(
+      AgentDiscordConfigReq request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/channel/discord/get'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: AgentDiscordConfig.fromJson(
+        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
+      ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 更新 Discord 通道配置
+  Future<Response> updateAgentDiscordConfig(
+      AgentDiscordConfigUpdateReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/channel/discord/update'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 获取企业微信通道配置
+  Future<Response<AgentWecomConfig>> getAgentWecomConfig(
+      AgentWecomConfigReq request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/channel/wecom/get'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: AgentWecomConfig.fromJson(
+        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
+      ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 更新企业微信通道配置
+  Future<Response> updateAgentWecomConfig(
+      AgentWecomConfigUpdateReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/channel/wecom/update'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 获取钉钉通道配置
+  Future<Response<AgentDingTalkConfig>> getAgentDingTalkConfig(
+      AgentDingTalkConfigReq request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/channel/dingtalk/get'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: AgentDingTalkConfig.fromJson(
+        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
+      ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 更新钉钉通道配置
+  Future<Response> updateAgentDingTalkConfig(
+      AgentDingTalkConfigUpdateReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/channel/dingtalk/update'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 登录微信通道
+  Future<Response> loginAgentWeixinChannel(AgentWeixinLoginReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/channel/weixin/login'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 获取 QQ Bot 配置
+  Future<Response<AgentQQBotConfig>> getAgentQQBotConfig(
+      AgentQQBotConfigReq request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/channel/qqbot/get'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: AgentQQBotConfig.fromJson(
+        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
+      ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 更新 QQ Bot 配置
+  Future<Response> updateAgentQQBotConfig(
+      AgentQQBotConfigUpdateReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/channel/qqbot/update'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 安装 Agent 插件
+  Future<Response> installAgentPlugin(AgentPluginInstallReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/plugin/install'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 检查 Agent 插件状态
+  Future<Response<AgentPluginStatus>> checkAgentPlugin(
+      AgentPluginCheckReq request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/plugin/check'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: AgentPluginStatus.fromJson(
+        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
+      ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 获取 Agent 安全配置
+  Future<Response<AgentSecurityConfig>> getAgentSecurityConfig(
+      AgentSecurityConfigReq request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/security/get'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: AgentSecurityConfig.fromJson(
+        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
+      ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 更新 Agent 安全配置
+  Future<Response> updateAgentSecurityConfig(
+      AgentSecurityConfigUpdateReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/security/update'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 获取 Agent 其他配置
+  Future<Response<AgentOtherConfig>> getAgentOtherConfig(
+      AgentOtherConfigReq request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/other/get'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: AgentOtherConfig.fromJson(
+        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
+      ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 更新 Agent 其他配置
+  Future<Response> updateAgentOtherConfig(
+      AgentOtherConfigUpdateReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/other/update'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 获取 Agent 配置文件
+  Future<Response<AgentConfigFile>> getAgentConfigFile(
+      AgentConfigFileReq request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/config-file/get'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: AgentConfigFile.fromJson(
+        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
+      ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 更新 Agent 配置文件
+  Future<Response> updateAgentConfigFile(
+      AgentConfigFileUpdateReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/config-file/update'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 列出 Agent 技能
+  Future<Response<List<AgentSkillItem>>> listAgentSkills(
+      AgentSkillsReq request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/skills/list'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: (response.data as List?)
+              ?.whereType<Map<String, dynamic>>()
+              .map(AgentSkillItem.fromJson)
+              .toList() ??
+          const <AgentSkillItem>[],
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 搜索 Agent 技能
+  Future<Response<List<AgentSkillSearchItem>>> searchAgentSkills(
+      AgentSkillSearchReq request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/skills/search'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: (response.data as List?)
+              ?.whereType<Map<String, dynamic>>()
+              .map(AgentSkillSearchItem.fromJson)
+              .toList() ??
+          const <AgentSkillSearchItem>[],
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 更新 Agent 技能启用状态
+  Future<Response> updateAgentSkill(AgentSkillUpdateReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/skills/update'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 安装 Agent 技能
+  Future<Response> installAgentSkill(AgentSkillInstallReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/skills/install'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 审批通道配对
+  Future<Response> approveAgentChannelPairing(
+      AgentChannelPairingApproveReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/channel/pairing/approve'),
+      data: request.toJson(),
     );
   }
 

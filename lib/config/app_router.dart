@@ -42,6 +42,7 @@ import 'package:onepanel_client/features/openresty/openresty_page.dart';
 import 'package:onepanel_client/features/openresty/pages/openresty_source_editor_page.dart';
 import 'package:onepanel_client/features/openresty/providers/openresty_provider.dart';
 import 'package:onepanel_client/features/ai/ai_page.dart';
+import 'package:onepanel_client/features/ai/agents/agents_provider.dart';
 import 'package:onepanel_client/features/ai/mcp_server_provider.dart';
 import 'package:onepanel_client/features/ai/ai_provider.dart';
 import 'package:onepanel_client/features/settings/menu_settings_page.dart';
@@ -401,6 +402,7 @@ class AppRouter {
           builder: (_) => MultiProvider(
             providers: [
               ChangeNotifierProvider(create: (_) => AIProvider()),
+              ChangeNotifierProvider(create: (_) => AgentsProvider()),
               ChangeNotifierProvider(create: (_) => McpServerProvider()),
             ],
             child: const AIPage(),

@@ -6961,4 +6961,152 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get toolboxHostToolErrLogAction => 'stderr log';
+
+  @override
+  String get aiTabAgents => 'Agents';
+
+  @override
+  String get aiAgentsSubTabAgent => 'Agents';
+
+  @override
+  String get aiAgentsSubTabModel => 'Models';
+
+  @override
+  String get aiAgentsSearchHint => 'Search agents';
+
+  @override
+  String get aiAgentsCreate => 'Create Agent';
+
+  @override
+  String get aiAgentsDeleteConfirm =>
+      'Are you sure you want to delete this item?';
+
+  @override
+  String get aiAgentsNoAgents => 'No agents found';
+
+  @override
+  String get aiAgentsNoSelection => 'Select an agent to view details';
+
+  @override
+  String get aiAgentsOverview => 'Overview';
+
+  @override
+  String get aiAgentsChannels => 'Channels';
+
+  @override
+  String get aiAgentsSkills => 'Skills';
+
+  @override
+  String get aiAgentsSettings => 'Settings';
+
+  @override
+  String get aiAgentsSkillSearchHint => 'Search skills';
+
+  @override
+  String get aiAgentsInstall => 'Install';
+
+  @override
+  String get aiAgentsEnabled => 'Enabled';
+
+  @override
+  String get aiAgentsDisabled => 'Disabled';
+
+  @override
+  String get aiAgentsNotInstalled => 'Not installed';
+
+  @override
+  String get aiAgentsAllowedOrigins => 'Allowed origins';
+
+  @override
+  String get aiAgentsTimezone => 'Timezone';
+
+  @override
+  String get aiAgentsNpmRegistry => 'NPM Registry';
+
+  @override
+  String get aiAgentsBrowserEnabled => 'Enable browser tool';
+
+  @override
+  String get aiAgentsConfigFile => 'Config file';
+
+  @override
+  String get aiAgentsSaveConfig => 'Save config';
+
+  @override
+  String get aiAgentsAgentType => 'Agent type';
+
+  @override
+  String get aiAgentsOpenclaw => 'OpenClaw';
+
+  @override
+  String get aiAgentsCopaw => 'CoPaw';
+
+  @override
+  String get aiAgentsAppVersion => 'App version';
+
+  @override
+  String get aiAgentsVersionRequired => 'App version is required';
+
+  @override
+  String get aiAgentsWebUiPort => 'WebUI port';
+
+  @override
+  String get aiAgentsPortRequired => 'Enter a valid port';
+
+  @override
+  String get aiAgentsAccount => 'Account';
+
+  @override
+  String get aiAgentsAccountRequired => 'Select an account';
+
+  @override
+  String get aiAgentsModel => 'Model';
+
+  @override
+  String get aiAgentsModelRequired => 'Select a model';
+
+  @override
+  String get aiAgentsTokenOptional => 'Token (optional)';
+
+  @override
+  String get aiAgentsNameRequired => 'Name is required';
+
+  @override
+  String get aiAgentsProvider => 'Provider';
+
+  @override
+  String get aiAgentsProviderRequired => 'Select a provider';
+
+  @override
+  String get aiAgentsApiKey => 'API Key';
+
+  @override
+  String get aiAgentsApiKeyRequired => 'API key is required';
+
+  @override
+  String get aiAgentsBaseUrl => 'Base URL';
+
+  @override
+  String get aiAgentsApiType => 'API Type';
+
+  @override
+  String get aiAgentsApiTypeRequired => 'API type is required';
+
+  @override
+  String get aiAgentsRememberApiKey => 'Remember API key';
+
+  @override
+  String get aiAgentsSyncAgents => 'Sync associated agents';
+
+  @override
+  String get aiAgentsVerify => 'Verify';
+
+  @override
+  String get aiAgentsVerified => 'Verified';
+
+  @override
+  String get aiAgentsUnverified => 'Unverified';
+
+  @override
+  String get aiAgentsAllProviders => 'All providers';
 }

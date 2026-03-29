@@ -1,6 +1,9 @@
 export '../../api/v2/ai_v2.dart';
 export '../../data/models/ai_models.dart';
+export '../../data/models/ai/agent_models.dart';
 export 'ai_service.dart';
 export 'ai_repository.dart';
 export 'ai_provider.dart';
+export 'agents/agents_repository.dart';
+export 'agents/agents_provider.dart';
 export 'ai_page.dart';

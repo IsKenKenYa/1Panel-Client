@@ -13184,6 +13184,300 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'stderr log'**
   String get toolboxHostToolErrLogAction;
+
+  /// No description provided for @aiTabAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents'**
+  String get aiTabAgents;
+
+  /// No description provided for @aiAgentsSubTabAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents'**
+  String get aiAgentsSubTabAgent;
+
+  /// No description provided for @aiAgentsSubTabModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Models'**
+  String get aiAgentsSubTabModel;
+
+  /// No description provided for @aiAgentsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search agents'**
+  String get aiAgentsSearchHint;
+
+  /// No description provided for @aiAgentsCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Agent'**
+  String get aiAgentsCreate;
+
+  /// No description provided for @aiAgentsDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this item?'**
+  String get aiAgentsDeleteConfirm;
+
+  /// No description provided for @aiAgentsNoAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'No agents found'**
+  String get aiAgentsNoAgents;
+
+  /// No description provided for @aiAgentsNoSelection.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an agent to view details'**
+  String get aiAgentsNoSelection;
+
+  /// No description provided for @aiAgentsOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get aiAgentsOverview;
+
+  /// No description provided for @aiAgentsChannels.
+  ///
+  /// In en, this message translates to:
+  /// **'Channels'**
+  String get aiAgentsChannels;
+
+  /// No description provided for @aiAgentsSkills.
+  ///
+  /// In en, this message translates to:
+  /// **'Skills'**
+  String get aiAgentsSkills;
+
+  /// No description provided for @aiAgentsSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get aiAgentsSettings;
+
+  /// No description provided for @aiAgentsSkillSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search skills'**
+  String get aiAgentsSkillSearchHint;
+
+  /// No description provided for @aiAgentsInstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Install'**
+  String get aiAgentsInstall;
+
+  /// No description provided for @aiAgentsEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get aiAgentsEnabled;
+
+  /// No description provided for @aiAgentsDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get aiAgentsDisabled;
+
+  /// No description provided for @aiAgentsNotInstalled.
+  ///
+  /// In en, this message translates to:
+  /// **'Not installed'**
+  String get aiAgentsNotInstalled;
+
+  /// No description provided for @aiAgentsAllowedOrigins.
+  ///
+  /// In en, this message translates to:
+  /// **'Allowed origins'**
+  String get aiAgentsAllowedOrigins;
+
+  /// No description provided for @aiAgentsTimezone.
+  ///
+  /// In en, this message translates to:
+  /// **'Timezone'**
+  String get aiAgentsTimezone;
+
+  /// No description provided for @aiAgentsNpmRegistry.
+  ///
+  /// In en, this message translates to:
+  /// **'NPM Registry'**
+  String get aiAgentsNpmRegistry;
+
+  /// No description provided for @aiAgentsBrowserEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable browser tool'**
+  String get aiAgentsBrowserEnabled;
+
+  /// No description provided for @aiAgentsConfigFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Config file'**
+  String get aiAgentsConfigFile;
+
+  /// No description provided for @aiAgentsSaveConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Save config'**
+  String get aiAgentsSaveConfig;
+
+  /// No description provided for @aiAgentsAgentType.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent type'**
+  String get aiAgentsAgentType;
+
+  /// No description provided for @aiAgentsOpenclaw.
+  ///
+  /// In en, this message translates to:
+  /// **'OpenClaw'**
+  String get aiAgentsOpenclaw;
+
+  /// No description provided for @aiAgentsCopaw.
+  ///
+  /// In en, this message translates to:
+  /// **'CoPaw'**
+  String get aiAgentsCopaw;
+
+  /// No description provided for @aiAgentsAppVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'App version'**
+  String get aiAgentsAppVersion;
+
+  /// No description provided for @aiAgentsVersionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'App version is required'**
+  String get aiAgentsVersionRequired;
+
+  /// No description provided for @aiAgentsWebUiPort.
+  ///
+  /// In en, this message translates to:
+  /// **'WebUI port'**
+  String get aiAgentsWebUiPort;
+
+  /// No description provided for @aiAgentsPortRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid port'**
+  String get aiAgentsPortRequired;
+
+  /// No description provided for @aiAgentsAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get aiAgentsAccount;
+
+  /// No description provided for @aiAgentsAccountRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an account'**
+  String get aiAgentsAccountRequired;
+
+  /// No description provided for @aiAgentsModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get aiAgentsModel;
+
+  /// No description provided for @aiAgentsModelRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a model'**
+  String get aiAgentsModelRequired;
+
+  /// No description provided for @aiAgentsTokenOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Token (optional)'**
+  String get aiAgentsTokenOptional;
+
+  /// No description provided for @aiAgentsNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Name is required'**
+  String get aiAgentsNameRequired;
+
+  /// No description provided for @aiAgentsProvider.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider'**
+  String get aiAgentsProvider;
+
+  /// No description provided for @aiAgentsProviderRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a provider'**
+  String get aiAgentsProviderRequired;
+
+  /// No description provided for @aiAgentsApiKey.
+  ///
+  /// In en, this message translates to:
+  /// **'API Key'**
+  String get aiAgentsApiKey;
+
+  /// No description provided for @aiAgentsApiKeyRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'API key is required'**
+  String get aiAgentsApiKeyRequired;
+
+  /// No description provided for @aiAgentsBaseUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Base URL'**
+  String get aiAgentsBaseUrl;
+
+  /// No description provided for @aiAgentsApiType.
+  ///
+  /// In en, this message translates to:
+  /// **'API Type'**
+  String get aiAgentsApiType;
+
+  /// No description provided for @aiAgentsApiTypeRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'API type is required'**
+  String get aiAgentsApiTypeRequired;
+
+  /// No description provided for @aiAgentsRememberApiKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember API key'**
+  String get aiAgentsRememberApiKey;
+
+  /// No description provided for @aiAgentsSyncAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync associated agents'**
+  String get aiAgentsSyncAgents;
+
+  /// No description provided for @aiAgentsVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get aiAgentsVerify;
+
+  /// No description provided for @aiAgentsVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified'**
+  String get aiAgentsVerified;
+
+  /// No description provided for @aiAgentsUnverified.
+  ///
+  /// In en, this message translates to:
+  /// **'Unverified'**
+  String get aiAgentsUnverified;
+
+  /// No description provided for @aiAgentsAllProviders.
+  ///
+  /// In en, this message translates to:
+  /// **'All providers'**
+  String get aiAgentsAllProviders;
 }
 
 class _AppLocalizationsDelegate

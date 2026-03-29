@@ -6811,4 +6811,151 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get toolboxHostToolErrLogAction => '错误日志';
+
+  @override
+  String get aiTabAgents => 'Agents';
+
+  @override
+  String get aiAgentsSubTabAgent => 'Agents';
+
+  @override
+  String get aiAgentsSubTabModel => '模型';
+
+  @override
+  String get aiAgentsSearchHint => '搜索 Agents';
+
+  @override
+  String get aiAgentsCreate => '创建 Agent';
+
+  @override
+  String get aiAgentsDeleteConfirm => '确定要删除此项吗？';
+
+  @override
+  String get aiAgentsNoAgents => '暂无 Agent';
+
+  @override
+  String get aiAgentsNoSelection => '请选择一个 Agent 查看详情';
+
+  @override
+  String get aiAgentsOverview => '概览';
+
+  @override
+  String get aiAgentsChannels => '渠道';
+
+  @override
+  String get aiAgentsSkills => '技能';
+
+  @override
+  String get aiAgentsSettings => '设置';
+
+  @override
+  String get aiAgentsSkillSearchHint => '搜索技能';
+
+  @override
+  String get aiAgentsInstall => '安装';
+
+  @override
+  String get aiAgentsEnabled => '已启用';
+
+  @override
+  String get aiAgentsDisabled => '已禁用';
+
+  @override
+  String get aiAgentsNotInstalled => '未安装';
+
+  @override
+  String get aiAgentsAllowedOrigins => '允许来源';
+
+  @override
+  String get aiAgentsTimezone => '时区';
+
+  @override
+  String get aiAgentsNpmRegistry => 'NPM 镜像';
+
+  @override
+  String get aiAgentsBrowserEnabled => '启用浏览器工具';
+
+  @override
+  String get aiAgentsConfigFile => '配置文件';
+
+  @override
+  String get aiAgentsSaveConfig => '保存配置';
+
+  @override
+  String get aiAgentsAgentType => 'Agent 类型';
+
+  @override
+  String get aiAgentsOpenclaw => 'OpenClaw';
+
+  @override
+  String get aiAgentsCopaw => 'CoPaw';
+
+  @override
+  String get aiAgentsAppVersion => '应用版本';
+
+  @override
+  String get aiAgentsVersionRequired => '应用版本不能为空';
+
+  @override
+  String get aiAgentsWebUiPort => 'WebUI 端口';
+
+  @override
+  String get aiAgentsPortRequired => '请输入有效端口';
+
+  @override
+  String get aiAgentsAccount => '账号';
+
+  @override
+  String get aiAgentsAccountRequired => '请选择账号';
+
+  @override
+  String get aiAgentsModel => '模型';
+
+  @override
+  String get aiAgentsModelRequired => '请选择模型';
+
+  @override
+  String get aiAgentsTokenOptional => 'Token（可选）';
+
+  @override
+  String get aiAgentsNameRequired => '名称不能为空';
+
+  @override
+  String get aiAgentsProvider => '供应商';
+
+  @override
+  String get aiAgentsProviderRequired => '请选择供应商';
+
+  @override
+  String get aiAgentsApiKey => 'API Key';
+
+  @override
+  String get aiAgentsApiKeyRequired => 'API Key 不能为空';
+
+  @override
+  String get aiAgentsBaseUrl => 'Base URL';
+
+  @override
+  String get aiAgentsApiType => 'API 类型';
+
+  @override
+  String get aiAgentsApiTypeRequired => 'API 类型不能为空';
+
+  @override
+  String get aiAgentsRememberApiKey => '记住 API Key';
+
+  @override
+  String get aiAgentsSyncAgents => '同步关联 Agent';
+
+  @override
+  String get aiAgentsVerify => '校验';
+
+  @override
+  String get aiAgentsVerified => '已校验';
+
+  @override
+  String get aiAgentsUnverified => '未校验';
+
+  @override
+  String get aiAgentsAllProviders => '全部供应商';
 }
