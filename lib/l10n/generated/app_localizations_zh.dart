@@ -2328,6 +2328,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get authMfaCancel => '返回登录';
 
   @override
+  String get authPasskeyLogin => '使用 Passkey 登录';
+
+  @override
+  String get authPasskeyUnsupported => 'Passkey 暂不可用';
+
+  @override
   String get authDemoMode => '演示模式：部分功能受限';
 
   @override
@@ -2499,6 +2505,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get systemSettingsSecurityConfigDesc => 'MFA认证、访问控制等';
+
+  @override
+  String get systemSettingsDashboardMemo => '仪表盘备忘录';
+
+  @override
+  String get systemSettingsDashboardMemoHint => '写点备忘内容，展示在仪表盘...';
 
   @override
   String get systemSettingsApiKey => 'API密钥';
@@ -3011,6 +3023,44 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get securitySettingsUnbindMfa => '解绑MFA';
+
+  @override
+  String get securitySettingsPasskeySection => 'Passkey';
+
+  @override
+  String get securitySettingsPasskeyRegister => '注册 Passkey';
+
+  @override
+  String get securitySettingsPasskeyRegisterDesc => '在当前设备创建新的 Passkey';
+
+  @override
+  String get securitySettingsPasskeyUnsupported => '当前不支持 Passkey';
+
+  @override
+  String get securitySettingsPasskeyUnsupportedDesc => '当前平台或浏览器暂不支持 Passkey。';
+
+  @override
+  String get securitySettingsPasskeyEmpty => '暂无 Passkey';
+
+  @override
+  String get securitySettingsPasskeyCreatedAt => '创建时间';
+
+  @override
+  String get securitySettingsPasskeyLastUsedAt => '最近使用';
+
+  @override
+  String get securitySettingsPasskeyName => 'Passkey 名称';
+
+  @override
+  String get securitySettingsPasskeyNameHint => '例如：我的 iPhone / 工作电脑';
+
+  @override
+  String get securitySettingsPasskeyDeleteTitle => '删除 Passkey';
+
+  @override
+  String securitySettingsPasskeyDeleteMessage(String name) {
+    return '确认删除 Passkey \"$name\" 吗？此操作不可撤销。';
+  }
 
   @override
   String get securitySettingsAccessControl => '访问控制';

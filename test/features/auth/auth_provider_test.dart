@@ -1,11 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:onepanel_client/core/services/passkey_service.dart';
 import 'package:onepanel_client/data/models/auth_models.dart';
 import 'package:onepanel_client/features/auth/auth_provider.dart';
 import 'package:onepanel_client/features/auth/auth_service.dart';
 import 'package:onepanel_client/features/auth/auth_session_store.dart';
 
 class MockAuthService extends Mock implements AuthService {}
+
+class MockPasskeyService extends Mock implements PasskeyService {}
 
 void main() {
   group('AuthModels', () {
@@ -159,17 +162,23 @@ void main() {
 
   group('AuthProvider', () {
     late MockAuthService service;
+    late MockPasskeyService passkeyService;
     late AuthProvider provider;
 
     setUpAll(() {
       registerFallbackValue(
         const LoginRequest(username: 'fallback', password: 'fallback'),
       );
+      registerFallbackValue(<String, dynamic>{});
     });
 
     setUp(() {
       service = MockAuthService();
-      provider = AuthProvider(service: service);
+      passkeyService = MockPasskeyService();
+      provider = AuthProvider(
+        service: service,
+        passkeyService: passkeyService,
+      );
     });
 
     test('Initial status should be initial', () {
@@ -286,6 +295,75 @@ void main() {
       expect(provider.token, 'mfa-token');
     });
 
+    test('checkPasskeyAvailability should update support status', () async {
+      when(
+        () => passkeyService.getAvailability(),
+      ).thenAnswer((_) async => const PasskeyAvailabilityResult.supported());
+
+      await provider.checkPasskeyAvailability();
+
+      expect(provider.isPasskeySupported, isTrue);
+      expect(provider.passkeyUnsupportedReason, isNull);
+      expect(provider.isPasskeyChecking, isFalse);
+    });
+
+    test('passkeyLogin should authenticate when passkey flow succeeds',
+        () async {
+      const sessionId = 'session-1';
+      final credential = <String, dynamic>{'id': 'credential-1'};
+
+      when(
+        () => passkeyService.getAvailability(),
+      ).thenAnswer((_) async => const PasskeyAvailabilityResult.supported());
+      when(
+        () => service.beginPasskeyLogin(
+          entranceCode: any(named: 'entranceCode'),
+        ),
+      ).thenAnswer(
+        (_) async => const PasskeyBeginResponse(
+          sessionId: sessionId,
+          publicKey: {'challenge': 'abc'},
+        ),
+      );
+      when(
+        () => passkeyService.authenticateCredential(any()),
+      ).thenAnswer((_) async => credential);
+      when(
+        () => service.finishPasskeyLogin(
+          credential: credential,
+          sessionId: sessionId,
+          entranceCode: any(named: 'entranceCode'),
+        ),
+      ).thenAnswer(
+        (_) async => const LoginResponse(
+          token: 'passkey-token',
+          name: 'admin',
+        ),
+      );
+
+      final success = await provider.passkeyLogin();
+
+      expect(success, isTrue);
+      expect(provider.status, AuthStatus.authenticated);
+      expect(provider.token, 'passkey-token');
+      expect(provider.username, 'admin');
+    });
+
+    test('passkeyLogin should fail when platform unsupported', () async {
+      when(
+        () => passkeyService.getAvailability(),
+      ).thenAnswer(
+        (_) async =>
+            const PasskeyAvailabilityResult.unsupported('Linux 仅提供占位提示'),
+      );
+
+      final success = await provider.passkeyLogin();
+
+      expect(success, isFalse);
+      expect(provider.status, AuthStatus.unauthenticated);
+      expect(provider.errorMessage, contains('Linux'));
+    });
+
     test('logout should clear session state even when service fails', () async {
       when(
         () => service.restoreSession(),
@@ -312,6 +390,7 @@ void main() {
       expect(provider.errorMessage, isNull);
       expect(provider.captcha, isNull);
       expect(provider.loginSettings, isNull);
+      expect(provider.isPasskeySupported, false);
       expect(provider.isLoading, false);
       expect(provider.isDemoMode, false);
     });

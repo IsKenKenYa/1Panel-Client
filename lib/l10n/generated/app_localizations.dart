@@ -4556,6 +4556,18 @@ abstract class AppLocalizations {
   /// **'Back to login'**
   String get authMfaCancel;
 
+  /// No description provided for @authPasskeyLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Login with Passkey'**
+  String get authPasskeyLogin;
+
+  /// No description provided for @authPasskeyUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Passkey unavailable'**
+  String get authPasskeyUnsupported;
+
   /// No description provided for @authDemoMode.
   ///
   /// In en, this message translates to:
@@ -4873,6 +4885,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'MFA authentication, access control, etc.'**
   String get systemSettingsSecurityConfigDesc;
+
+  /// No description provided for @systemSettingsDashboardMemo.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard Memo'**
+  String get systemSettingsDashboardMemo;
+
+  /// No description provided for @systemSettingsDashboardMemoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write a quick note for your dashboard...'**
+  String get systemSettingsDashboardMemoHint;
 
   /// No description provided for @systemSettingsApiKey.
   ///
@@ -5851,6 +5875,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unbind MFA'**
   String get securitySettingsUnbindMfa;
+
+  /// No description provided for @securitySettingsPasskeySection.
+  ///
+  /// In en, this message translates to:
+  /// **'Passkey'**
+  String get securitySettingsPasskeySection;
+
+  /// No description provided for @securitySettingsPasskeyRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Register Passkey'**
+  String get securitySettingsPasskeyRegister;
+
+  /// No description provided for @securitySettingsPasskeyRegisterDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a new passkey on this device'**
+  String get securitySettingsPasskeyRegisterDesc;
+
+  /// No description provided for @securitySettingsPasskeyUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Passkey not supported'**
+  String get securitySettingsPasskeyUnsupported;
+
+  /// No description provided for @securitySettingsPasskeyUnsupportedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Current platform or browser does not support passkey.'**
+  String get securitySettingsPasskeyUnsupportedDesc;
+
+  /// No description provided for @securitySettingsPasskeyEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No passkeys yet'**
+  String get securitySettingsPasskeyEmpty;
+
+  /// No description provided for @securitySettingsPasskeyCreatedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Created'**
+  String get securitySettingsPasskeyCreatedAt;
+
+  /// No description provided for @securitySettingsPasskeyLastUsedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Last used'**
+  String get securitySettingsPasskeyLastUsedAt;
+
+  /// No description provided for @securitySettingsPasskeyName.
+  ///
+  /// In en, this message translates to:
+  /// **'Passkey name'**
+  String get securitySettingsPasskeyName;
+
+  /// No description provided for @securitySettingsPasskeyNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. My iPhone or Work Laptop'**
+  String get securitySettingsPasskeyNameHint;
+
+  /// No description provided for @securitySettingsPasskeyDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Passkey'**
+  String get securitySettingsPasskeyDeleteTitle;
+
+  /// No description provided for @securitySettingsPasskeyDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete passkey \"{name}\"? This action cannot be undone.'**
+  String securitySettingsPasskeyDeleteMessage(String name);
 
   /// No description provided for @securitySettingsAccessControl.
   ///

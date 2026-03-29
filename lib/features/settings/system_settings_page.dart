@@ -180,6 +180,13 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
                 onTap: () =>
                     Navigator.pushNamed(context, AppRoutes.menuSettings),
               ),
+              _buildSettingTile(
+                context,
+                icon: Icons.sticky_note_2_outlined,
+                title: l10n.systemSettingsDashboardMemo,
+                subtitle: _formatMemoSummary(provider.data.dashboardMemo, l10n),
+                onTap: () => _showDashboardMemoDialog(context, provider, l10n),
+              ),
             ],
           ),
         ),
@@ -432,6 +439,72 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
     final preview = interfaces.take(2).join(', ');
     final remain = interfaces.length - 2;
     return '$preview +$remain';
+  }
+
+  String _formatMemoSummary(String? memo, AppLocalizations l10n) {
+    final value = memo?.trim() ?? '';
+    if (value.isEmpty) {
+      return l10n.systemSettingsNotSet;
+    }
+    if (value.length <= 36) {
+      return value;
+    }
+    return '${value.substring(0, 36)}...';
+  }
+
+  Future<void> _showDashboardMemoDialog(
+    BuildContext context,
+    SettingsProvider provider,
+    AppLocalizations l10n,
+  ) async {
+    await provider.loadDashboardMemo();
+    if (!context.mounted) {
+      return;
+    }
+
+    final controller = TextEditingController(text: provider.data.dashboardMemo);
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.systemSettingsDashboardMemo),
+        content: TextField(
+          controller: controller,
+          minLines: 4,
+          maxLines: 8,
+          maxLength: 500,
+          decoration: InputDecoration(
+            hintText: l10n.systemSettingsDashboardMemoHint,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(l10n.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () async {
+              final ok = await provider.updateDashboardMemo(controller.text);
+              if (!dialogContext.mounted) {
+                return;
+              }
+              ScaffoldMessenger.of(dialogContext).showSnackBar(
+                SnackBar(
+                  content:
+                      Text(ok ? l10n.commonSaveSuccess : l10n.commonSaveFailed),
+                ),
+              );
+              if (ok) {
+                Navigator.of(dialogContext).pop();
+              }
+            },
+            child: Text(l10n.commonSave),
+          ),
+        ],
+      ),
+    );
+
+    controller.dispose();
   }
 
   Future<void> _showAppStoreConfigDialog(

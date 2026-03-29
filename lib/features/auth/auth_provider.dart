@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/services/passkey_service.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/models/auth_models.dart';
 import 'package:onepanel_client/features/auth/auth_service.dart';
@@ -12,9 +13,14 @@ enum AuthStatus {
 }
 
 class AuthProvider extends ChangeNotifier {
-  AuthProvider({AuthService? service}) : _service = service ?? AuthService();
+  AuthProvider({
+    AuthService? service,
+    PasskeyService? passkeyService,
+  })  : _service = service ?? AuthService(),
+        _passkeyService = passkeyService ?? PasskeyService();
 
   final AuthService _service;
+  final PasskeyService _passkeyService;
 
   AuthStatus _status = AuthStatus.initial;
   String? _token;
@@ -24,6 +30,9 @@ class AuthProvider extends ChangeNotifier {
   String? _errorMessage;
   CaptchaData? _captcha;
   LoginSettings? _loginSettings;
+  bool _isPasskeySupported = false;
+  String? _passkeyUnsupportedReason;
+  bool _isPasskeyChecking = false;
   bool _isLoading = false;
   bool _isDemoMode = false;
 
@@ -33,10 +42,36 @@ class AuthProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   CaptchaData? get captcha => _captcha;
   LoginSettings? get loginSettings => _loginSettings;
+  bool get isPasskeySupported => _isPasskeySupported;
+  String? get passkeyUnsupportedReason => _passkeyUnsupportedReason;
+  bool get isPasskeyChecking => _isPasskeyChecking;
   bool get isLoading => _isLoading;
   bool get isDemoMode => _isDemoMode;
   bool get isAuthenticated => _status == AuthStatus.authenticated;
   bool get isMfaRequired => _status == AuthStatus.mfaRequired;
+
+  Future<void> checkPasskeyAvailability() async {
+    _isPasskeyChecking = true;
+    notifyListeners();
+
+    try {
+      final availability = await _passkeyService.getAvailability();
+      _isPasskeySupported = availability.isSupported;
+      _passkeyUnsupportedReason = availability.reason;
+    } catch (e, stackTrace) {
+      appLogger.eWithPackage(
+        'features.auth.auth_provider',
+        'checkPasskeyAvailability failed',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      _isPasskeySupported = false;
+      _passkeyUnsupportedReason = _passkeyService.toUserMessage(e);
+    }
+
+    _isPasskeyChecking = false;
+    notifyListeners();
+  }
 
   Future<void> checkAuthStatus() async {
     _status = AuthStatus.checking;
@@ -224,6 +259,74 @@ class AuthProvider extends ChangeNotifier {
     _isLoading = false;
     notifyListeners();
     return false;
+  }
+
+  Future<bool> passkeyLogin() async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final availability = await _passkeyService.getAvailability();
+      _isPasskeySupported = availability.isSupported;
+      _passkeyUnsupportedReason = availability.reason;
+
+      if (!availability.isSupported) {
+        _errorMessage = availability.reason ?? '当前平台不支持 Passkey';
+        _status = AuthStatus.unauthenticated;
+        return false;
+      }
+
+      final begin = await _service.beginPasskeyLogin(
+        entranceCode: _entranceCode,
+      );
+      final sessionId = begin?.sessionId;
+      final publicKey = begin?.publicKey;
+
+      if (sessionId == null ||
+          sessionId.isEmpty ||
+          publicKey is! Map<String, dynamic>) {
+        _errorMessage = 'Passkey 登录初始化失败';
+        _status = AuthStatus.unauthenticated;
+        return false;
+      }
+
+      final credential =
+          await _passkeyService.authenticateCredential(publicKey);
+      final response = await _service.finishPasskeyLogin(
+        credential: credential,
+        sessionId: sessionId,
+        entranceCode: _entranceCode,
+      );
+
+      if (response?.token != null && response!.token!.isNotEmpty) {
+        _token = response.token;
+        _username = response.name;
+        _pendingPassword = null;
+        _entranceCode = response.entranceCode ?? _entranceCode;
+        _status = AuthStatus.authenticated;
+        return true;
+      }
+
+      _errorMessage = response?.message ?? 'Passkey 登录失败';
+      _pendingPassword = null;
+      _status = AuthStatus.unauthenticated;
+      return false;
+    } catch (e, stackTrace) {
+      appLogger.eWithPackage(
+        'features.auth.auth_provider',
+        'passkeyLogin failed',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      _errorMessage = _passkeyService.toUserMessage(e);
+      _pendingPassword = null;
+      _status = AuthStatus.unauthenticated;
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
   Future<void> logout() async {

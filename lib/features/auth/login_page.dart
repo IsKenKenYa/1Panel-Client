@@ -28,6 +28,7 @@ class _LoginPageState extends State<LoginPage> {
       final provider = context.read<AuthProvider>();
       provider.loadLoginSettings();
       provider.checkDemoMode();
+      provider.checkPasskeyAvailability();
     });
   }
 
@@ -90,6 +91,21 @@ class _LoginPageState extends State<LoginPage> {
                 ],
                 const SizedBox(height: 24),
                 _buildLoginButton(provider, l10n, colorScheme),
+                const SizedBox(height: 12),
+                _buildPasskeyLoginButton(provider, l10n, colorScheme),
+                if (provider.isPasskeyChecking) ...[
+                  const SizedBox(height: 8),
+                  const LinearProgressIndicator(minHeight: 2),
+                ] else if (!provider.isPasskeySupported &&
+                    (provider.passkeyUnsupportedReason?.trim().isNotEmpty ??
+                        false)) ...[
+                  const SizedBox(height: 8),
+                  _buildPasskeyHint(
+                    provider.passkeyUnsupportedReason!,
+                    l10n,
+                    colorScheme,
+                  ),
+                ],
                 if (provider.errorMessage != null) ...[
                   const SizedBox(height: 16),
                   _buildErrorMessage(provider, colorScheme),
@@ -343,6 +359,40 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  Widget _buildPasskeyLoginButton(
+    AuthProvider provider,
+    dynamic l10n,
+    ColorScheme colorScheme,
+  ) {
+    return OutlinedButton.icon(
+      onPressed: provider.isLoading ||
+              provider.isPasskeyChecking ||
+              !provider.isPasskeySupported
+          ? null
+          : () => _handlePasskeyLogin(provider),
+      style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+      ),
+      icon: const Icon(Icons.phonelink_lock_outlined),
+      label: Text(l10n.authPasskeyLogin),
+    );
+  }
+
+  Widget _buildPasskeyHint(
+    String reason,
+    dynamic l10n,
+    ColorScheme colorScheme,
+  ) {
+    return Text(
+      '${l10n.authPasskeyUnsupported}: $reason',
+      style: TextStyle(
+        color: colorScheme.onSurfaceVariant,
+        fontSize: 12,
+      ),
+      textAlign: TextAlign.center,
+    );
+  }
+
   Widget _buildErrorMessage(AuthProvider provider, ColorScheme colorScheme) {
     return Container(
       padding: const EdgeInsets.all(12),
@@ -405,6 +455,10 @@ class _LoginPageState extends State<LoginPage> {
     if (code.length != 6) return;
 
     await provider.mfaLogin(code);
+  }
+
+  Future<void> _handlePasskeyLogin(AuthProvider provider) async {
+    await provider.passkeyLogin();
   }
 
   Uint8List _decodeBase64(String base64) {

@@ -2392,6 +2392,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authMfaCancel => 'Back to login';
 
   @override
+  String get authPasskeyLogin => 'Login with Passkey';
+
+  @override
+  String get authPasskeyUnsupported => 'Passkey unavailable';
+
+  @override
   String get authDemoMode => 'Demo mode: Some features are limited';
 
   @override
@@ -2568,6 +2574,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get systemSettingsSecurityConfigDesc =>
       'MFA authentication, access control, etc.';
+
+  @override
+  String get systemSettingsDashboardMemo => 'Dashboard Memo';
+
+  @override
+  String get systemSettingsDashboardMemoHint =>
+      'Write a quick note for your dashboard...';
 
   @override
   String get systemSettingsApiKey => 'API Key';
@@ -3095,6 +3108,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get securitySettingsUnbindMfa => 'Unbind MFA';
+
+  @override
+  String get securitySettingsPasskeySection => 'Passkey';
+
+  @override
+  String get securitySettingsPasskeyRegister => 'Register Passkey';
+
+  @override
+  String get securitySettingsPasskeyRegisterDesc =>
+      'Create a new passkey on this device';
+
+  @override
+  String get securitySettingsPasskeyUnsupported => 'Passkey not supported';
+
+  @override
+  String get securitySettingsPasskeyUnsupportedDesc =>
+      'Current platform or browser does not support passkey.';
+
+  @override
+  String get securitySettingsPasskeyEmpty => 'No passkeys yet';
+
+  @override
+  String get securitySettingsPasskeyCreatedAt => 'Created';
+
+  @override
+  String get securitySettingsPasskeyLastUsedAt => 'Last used';
+
+  @override
+  String get securitySettingsPasskeyName => 'Passkey name';
+
+  @override
+  String get securitySettingsPasskeyNameHint => 'e.g. My iPhone or Work Laptop';
+
+  @override
+  String get securitySettingsPasskeyDeleteTitle => 'Delete Passkey';
+
+  @override
+  String securitySettingsPasskeyDeleteMessage(String name) {
+    return 'Delete passkey \"$name\"? This action cannot be undone.';
+  }
 
   @override
   String get securitySettingsAccessControl => 'Access Control';

@@ -1,11 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/data/models/setting_models.dart';
 import 'package:onepanel_client/features/settings/settings_provider.dart';
+import 'package:provider/provider.dart';
 
-class SecuritySettingsPage extends StatelessWidget {
+class SecuritySettingsPage extends StatefulWidget {
   const SecuritySettingsPage({super.key});
+
+  @override
+  State<SecuritySettingsPage> createState() => _SecuritySettingsPageState();
+}
+
+class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<SettingsProvider>().loadPasskeys();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +69,10 @@ class SecuritySettingsPage extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(height: AppDesignTokens.spacingMd),
+          _buildSectionTitle(
+              context, l10n.securitySettingsPasskeySection, theme),
+          _buildPasskeyCard(context, provider, l10n),
           const SizedBox(height: AppDesignTokens.spacingMd),
           _buildSectionTitle(
               context, l10n.securitySettingsAccessControl, theme),
@@ -146,8 +165,114 @@ class SecuritySettingsPage extends StatelessWidget {
     );
   }
 
+  Widget _buildPasskeyCard(
+    BuildContext context,
+    SettingsProvider provider,
+    AppLocalizations l10n,
+  ) {
+    final data = provider.data;
+    final deletingId = data.passkeyDeletingId;
+
+    return Card(
+      child: Column(
+        children: [
+          ListTile(
+            leading: const Icon(Icons.phonelink_lock_outlined),
+            title: Text(l10n.securitySettingsPasskeyRegister),
+            subtitle: Text(
+              data.isPasskeySupported
+                  ? l10n.securitySettingsPasskeyRegisterDesc
+                  : (data.passkeyUnsupportedReason ??
+                      l10n.securitySettingsPasskeyUnsupported),
+            ),
+            trailing: data.isPasskeyRegistering
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.add),
+            onTap: data.isPasskeySupported && !data.isPasskeyRegistering
+                ? () => _showPasskeyRegisterDialog(context, provider, l10n)
+                : null,
+          ),
+          if (data.isPasskeysLoading)
+            const Padding(
+              padding: EdgeInsets.all(12),
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            )
+          else if (!data.isPasskeySupported)
+            ListTile(
+              leading: const Icon(Icons.info_outline),
+              title: Text(l10n.securitySettingsPasskeyUnsupported),
+              subtitle: Text(
+                data.passkeyUnsupportedReason ??
+                    l10n.securitySettingsPasskeyUnsupportedDesc,
+              ),
+              trailing: IconButton(
+                icon: const Icon(Icons.refresh_outlined),
+                onPressed: () => provider.loadPasskeys(),
+                tooltip: l10n.systemSettingsRefresh,
+              ),
+            )
+          else if (data.passkeys.isEmpty)
+            ListTile(
+              leading: const Icon(Icons.key_off_outlined),
+              title: Text(l10n.securitySettingsPasskeyEmpty),
+              trailing: IconButton(
+                icon: const Icon(Icons.refresh_outlined),
+                onPressed: () => provider.loadPasskeys(),
+                tooltip: l10n.systemSettingsRefresh,
+              ),
+            )
+          else
+            ...data.passkeys.map(
+              (item) => ListTile(
+                leading: const Icon(Icons.key_outlined),
+                title: Text(item.name?.trim().isNotEmpty == true
+                    ? item.name!
+                    : (item.id ?? '-')),
+                subtitle: Text(_formatPasskeySubtitle(item, l10n)),
+                trailing: deletingId == item.id
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : IconButton(
+                        icon: const Icon(Icons.delete_outline),
+                        onPressed: item.id == null
+                            ? null
+                            : () => _showDeletePasskeyDialog(
+                                  context,
+                                  provider,
+                                  l10n,
+                                  item,
+                                ),
+                      ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  String _formatPasskeySubtitle(PasskeyInfo item, AppLocalizations l10n) {
+    final createdAt = item.createdAt ?? '-';
+    final lastUsedAt = item.lastUsedAt ?? '-';
+    return '${l10n.securitySettingsPasskeyCreatedAt}: $createdAt\n'
+        '${l10n.securitySettingsPasskeyLastUsedAt}: $lastUsedAt';
+  }
+
   Widget _buildSectionTitle(
-      BuildContext context, String title, ThemeData theme) {
+    BuildContext context,
+    String title,
+    ThemeData theme,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppDesignTokens.spacingSm),
       child: Text(
@@ -211,8 +336,104 @@ class SecuritySettingsPage extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          success ? context.l10n.commonSaveSuccess : context.l10n.commonSaveFailed,
+          success
+              ? context.l10n.commonSaveSuccess
+              : context.l10n.commonSaveFailed,
         ),
+      ),
+    );
+  }
+
+  void _showPasskeyRegisterDialog(
+    BuildContext context,
+    SettingsProvider provider,
+    AppLocalizations l10n,
+  ) {
+    final controller = TextEditingController();
+
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.securitySettingsPasskeyRegister),
+        content: TextField(
+          controller: controller,
+          maxLength: 64,
+          decoration: InputDecoration(
+            labelText: l10n.securitySettingsPasskeyName,
+            hintText: l10n.securitySettingsPasskeyNameHint,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(l10n.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () async {
+              final success = await provider.registerPasskey(controller.text);
+              if (!dialogContext.mounted) {
+                return;
+              }
+              final message = success
+                  ? l10n.commonSaveSuccess
+                  : (provider.data.error ?? l10n.commonSaveFailed);
+              ScaffoldMessenger.of(dialogContext).showSnackBar(
+                SnackBar(content: Text(message)),
+              );
+              if (success) {
+                Navigator.pop(dialogContext);
+              }
+            },
+            child: Text(l10n.commonConfirm),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeletePasskeyDialog(
+    BuildContext context,
+    SettingsProvider provider,
+    AppLocalizations l10n,
+    PasskeyInfo item,
+  ) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.securitySettingsPasskeyDeleteTitle),
+        content: Text(
+          l10n.securitySettingsPasskeyDeleteMessage(
+            item.name?.trim().isNotEmpty == true
+                ? item.name!
+                : (item.id ?? '-'),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(l10n.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () async {
+              Navigator.pop(dialogContext);
+              final id = item.id;
+              if (id == null || id.isEmpty) {
+                return;
+              }
+              final success = await provider.deletePasskey(id);
+              if (!context.mounted) {
+                return;
+              }
+              final message = success
+                  ? l10n.commonDelete
+                  : (provider.data.error ?? l10n.commonSaveFailed);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(message)),
+              );
+            },
+            child: Text(l10n.commonDelete),
+          ),
+        ],
       ),
     );
   }
@@ -271,7 +492,10 @@ class SecuritySettingsPage extends StatelessWidget {
   }
 
   void _showPasswordDialog(
-      BuildContext context, SettingsProvider provider, AppLocalizations l10n) {
+    BuildContext context,
+    SettingsProvider provider,
+    AppLocalizations l10n,
+  ) {
     final oldPasswordController = TextEditingController();
     final newPasswordController = TextEditingController();
     final confirmPasswordController = TextEditingController();
@@ -342,7 +566,8 @@ class SecuritySettingsPage extends StatelessWidget {
                     confirmPasswordController.text) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                        content: Text(l10n.securitySettingsPasswordMismatch)),
+                      content: Text(l10n.securitySettingsPasswordMismatch),
+                    ),
                   );
                   return;
                 }
@@ -354,9 +579,12 @@ class SecuritySettingsPage extends StatelessWidget {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                        content: Text(success
+                      content: Text(
+                        success
                             ? l10n.commonSaveSuccess
-                            : l10n.commonSaveFailed)),
+                            : l10n.commonSaveFailed,
+                      ),
+                    ),
                   );
                 }
               },
@@ -368,16 +596,22 @@ class SecuritySettingsPage extends StatelessWidget {
     );
   }
 
-  void _showMfaToggleDialog(BuildContext context, SettingsProvider provider,
-      AppLocalizations l10n, bool enable) {
+  void _showMfaToggleDialog(
+    BuildContext context,
+    SettingsProvider provider,
+    AppLocalizations l10n,
+    bool enable,
+  ) {
     final codeController = TextEditingController();
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(enable
-            ? l10n.securitySettingsMfaBind
-            : l10n.securitySettingsMfaUnbind),
+        title: Text(
+          enable
+              ? l10n.securitySettingsMfaBind
+              : l10n.securitySettingsMfaUnbind,
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -407,16 +641,20 @@ class SecuritySettingsPage extends StatelessWidget {
               bool success;
               if (enable) {
                 success = await provider.bindMfaWithCode(
-                    codeController.text, '', '30');
+                  codeController.text,
+                  '',
+                  '30',
+                );
               } else {
                 success = await provider.unbindMfa(codeController.text);
               }
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                      content: Text(success
-                          ? l10n.commonSaveSuccess
-                          : l10n.commonSaveFailed)),
+                    content: Text(
+                      success ? l10n.commonSaveSuccess : l10n.commonSaveFailed,
+                    ),
+                  ),
                 );
               }
             },

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'settings_service.dart';
 import '../../api/v2/setting_v2.dart' as api;
 import '../../data/models/setting_models.dart';
+import '../../core/services/passkey_service.dart';
 import '../../core/services/logger/logger_service.dart';
 
 const String _settingsProviderPackage = 'features.settings.settings_provider';
@@ -20,6 +21,15 @@ class SettingsData {
   final dynamic appStoreConfig;
   final dynamic authSetting;
   final dynamic sshConnection;
+  final String? dashboardMemo;
+  final bool isMemoLoading;
+  final bool isMemoSaving;
+  final List<PasskeyInfo> passkeys;
+  final bool isPasskeysLoading;
+  final bool isPasskeyRegistering;
+  final String? passkeyDeletingId;
+  final bool isPasskeySupported;
+  final String? passkeyUnsupportedReason;
   final List<dynamic>? snapshots;
   final DateTime? lastUpdated;
 
@@ -37,6 +47,15 @@ class SettingsData {
     this.appStoreConfig,
     this.authSetting,
     this.sshConnection,
+    this.dashboardMemo,
+    this.isMemoLoading = false,
+    this.isMemoSaving = false,
+    this.passkeys = const <PasskeyInfo>[],
+    this.isPasskeysLoading = false,
+    this.isPasskeyRegistering = false,
+    this.passkeyDeletingId,
+    this.isPasskeySupported = false,
+    this.passkeyUnsupportedReason,
     this.snapshots,
     this.lastUpdated,
   });
@@ -55,6 +74,15 @@ class SettingsData {
     dynamic appStoreConfig,
     dynamic authSetting,
     dynamic sshConnection,
+    String? dashboardMemo,
+    bool? isMemoLoading,
+    bool? isMemoSaving,
+    List<PasskeyInfo>? passkeys,
+    bool? isPasskeysLoading,
+    bool? isPasskeyRegistering,
+    String? passkeyDeletingId,
+    bool? isPasskeySupported,
+    String? passkeyUnsupportedReason,
     List<dynamic>? snapshots,
     DateTime? lastUpdated,
   }) {
@@ -72,6 +100,16 @@ class SettingsData {
       appStoreConfig: appStoreConfig ?? this.appStoreConfig,
       authSetting: authSetting ?? this.authSetting,
       sshConnection: sshConnection ?? this.sshConnection,
+      dashboardMemo: dashboardMemo ?? this.dashboardMemo,
+      isMemoLoading: isMemoLoading ?? this.isMemoLoading,
+      isMemoSaving: isMemoSaving ?? this.isMemoSaving,
+      passkeys: passkeys ?? this.passkeys,
+      isPasskeysLoading: isPasskeysLoading ?? this.isPasskeysLoading,
+      isPasskeyRegistering:
+          isPasskeyRegistering ?? this.isPasskeyRegistering,
+      passkeyDeletingId: passkeyDeletingId,
+      isPasskeySupported: isPasskeySupported ?? this.isPasskeySupported,
+      passkeyUnsupportedReason: passkeyUnsupportedReason,
       snapshots: snapshots ?? this.snapshots,
       lastUpdated: lastUpdated ?? this.lastUpdated,
     );
@@ -79,11 +117,15 @@ class SettingsData {
 }
 
 class SettingsProvider extends ChangeNotifier {
-  SettingsProvider({SettingsService? service})
-      : _service = service ?? SettingsService();
+  SettingsProvider({
+    SettingsService? service,
+    PasskeyService? passkeyService,
+  })  : _service = service ?? SettingsService(),
+        _passkeyService = passkeyService ?? PasskeyService();
 
   SettingsData _data = const SettingsData();
   final SettingsService _service;
+  final PasskeyService _passkeyService;
 
   SettingsData get data => _data;
 
@@ -143,6 +185,188 @@ class SettingsProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e, stackTrace) {
       _setError('加载网络接口', e, stackTrace: stackTrace);
+    }
+  }
+
+  Future<void> loadDashboardMemo() async {
+    _data = _data.copyWith(isMemoLoading: true);
+    notifyListeners();
+
+    try {
+      final memo = await _service.getDashboardMemo();
+      _data = _data.copyWith(
+        dashboardMemo: memo,
+        isMemoLoading: false,
+      );
+      notifyListeners();
+    } catch (e, stackTrace) {
+      appLogger.eWithPackage(
+        _settingsProviderPackage,
+        'loadDashboardMemo failed',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      _data = _data.copyWith(
+        isMemoLoading: false,
+        error: '加载仪表盘备忘录失败: $e',
+      );
+      notifyListeners();
+    }
+  }
+
+  Future<bool> updateDashboardMemo(String content) async {
+    _data = _data.copyWith(isMemoSaving: true, error: null);
+    notifyListeners();
+
+    try {
+      await _service.updateDashboardMemo(content);
+      _data = _data.copyWith(
+        dashboardMemo: content,
+        isMemoSaving: false,
+      );
+      notifyListeners();
+      return true;
+    } catch (e, stackTrace) {
+      appLogger.eWithPackage(
+        _settingsProviderPackage,
+        'updateDashboardMemo failed',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      _data = _data.copyWith(
+        isMemoSaving: false,
+        error: '更新仪表盘备忘录失败: $e',
+      );
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<void> loadPasskeys() async {
+    _data = _data.copyWith(isPasskeysLoading: true, error: null);
+    notifyListeners();
+
+    try {
+      final availability = await _passkeyService.getAvailability();
+      if (!availability.isSupported) {
+        _data = _data.copyWith(
+          passkeys: const <PasskeyInfo>[],
+          isPasskeysLoading: false,
+          isPasskeySupported: false,
+          passkeyUnsupportedReason: availability.reason,
+        );
+        notifyListeners();
+        return;
+      }
+
+      final items = await _service.listPasskeys();
+      _data = _data.copyWith(
+        passkeys: items,
+        isPasskeysLoading: false,
+        isPasskeySupported: true,
+        passkeyUnsupportedReason: null,
+      );
+      notifyListeners();
+    } catch (e, stackTrace) {
+      appLogger.eWithPackage(
+        _settingsProviderPackage,
+        'loadPasskeys failed',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      _data = _data.copyWith(
+        isPasskeysLoading: false,
+        error: '加载 Passkey 列表失败: $e',
+      );
+      notifyListeners();
+    }
+  }
+
+  Future<bool> registerPasskey(String name) async {
+    final normalizedName = name.trim();
+    if (normalizedName.isEmpty) {
+      _data = _data.copyWith(error: 'Passkey 名称不能为空');
+      notifyListeners();
+      return false;
+    }
+
+    _data = _data.copyWith(isPasskeyRegistering: true, error: null);
+    notifyListeners();
+
+    try {
+      final availability = await _passkeyService.getAvailability();
+      if (!availability.isSupported) {
+        _data = _data.copyWith(
+          isPasskeyRegistering: false,
+          isPasskeySupported: false,
+          passkeyUnsupportedReason: availability.reason,
+          error: availability.reason ?? '当前平台不支持 Passkey',
+        );
+        notifyListeners();
+        return false;
+      }
+
+      final begin = await _service.beginPasskeyRegister(normalizedName);
+      final sessionId = begin?.sessionId;
+      final publicKey = begin?.publicKey;
+      if (sessionId == null || sessionId.isEmpty || publicKey is! Map<String, dynamic>) {
+        _data = _data.copyWith(
+          isPasskeyRegistering: false,
+          error: 'Passkey 注册初始化失败',
+        );
+        notifyListeners();
+        return false;
+      }
+
+      final credential = await _passkeyService.registerCredential(publicKey);
+      await _service.finishPasskeyRegister(
+        sessionId: sessionId,
+        credential: credential,
+      );
+      await loadPasskeys();
+
+      _data = _data.copyWith(isPasskeyRegistering: false);
+      notifyListeners();
+      return true;
+    } catch (e, stackTrace) {
+      appLogger.eWithPackage(
+        _settingsProviderPackage,
+        'registerPasskey failed',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      _data = _data.copyWith(
+        isPasskeyRegistering: false,
+        error: _passkeyService.toUserMessage(e),
+      );
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> deletePasskey(String id) async {
+    _data = _data.copyWith(passkeyDeletingId: id, error: null);
+    notifyListeners();
+
+    try {
+      await _service.deletePasskey(id);
+      await loadPasskeys();
+      _data = _data.copyWith(passkeyDeletingId: null);
+      notifyListeners();
+      return true;
+    } catch (e, stackTrace) {
+      appLogger.eWithPackage(
+        _settingsProviderPackage,
+        'deletePasskey failed',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      _data = _data.copyWith(
+        passkeyDeletingId: null,
+        error: '删除 Passkey 失败: $e',
+      );
+      notifyListeners();
+      return false;
     }
   }
 
@@ -593,6 +817,10 @@ class SettingsProvider extends ChangeNotifier {
       dynamic appStoreConfig;
       dynamic authSetting;
       dynamic sshConnection;
+      String? dashboardMemo;
+      var passkeys = const <PasskeyInfo>[];
+      var isPasskeySupported = false;
+      String? passkeyUnsupportedReason;
 
       try {
         appStoreConfig = await _service.getAppStoreConfig();
@@ -627,6 +855,33 @@ class SettingsProvider extends ChangeNotifier {
         );
       }
 
+      try {
+        dashboardMemo = await _service.getDashboardMemo();
+      } catch (e, stackTrace) {
+        appLogger.wWithPackage(
+          _settingsProviderPackage,
+          '加载仪表盘备忘录失败，继续主链路',
+          error: e,
+          stackTrace: stackTrace,
+        );
+      }
+
+      try {
+        final availability = await _passkeyService.getAvailability();
+        isPasskeySupported = availability.isSupported;
+        passkeyUnsupportedReason = availability.reason;
+        if (availability.isSupported) {
+          passkeys = await _service.listPasskeys();
+        }
+      } catch (e, stackTrace) {
+        appLogger.wWithPackage(
+          _settingsProviderPackage,
+          '加载 Passkey 列表失败，继续主链路',
+          error: e,
+          stackTrace: stackTrace,
+        );
+      }
+
       _data = _data.copyWith(
         systemSettings: results[0] as SystemSettingInfo?,
         terminalSettings: results[1] as TerminalInfo?,
@@ -634,6 +889,15 @@ class SettingsProvider extends ChangeNotifier {
         appStoreConfig: appStoreConfig,
         authSetting: authSetting,
         sshConnection: sshConnection,
+        dashboardMemo: dashboardMemo,
+        passkeys: passkeys,
+        isPasskeySupported: isPasskeySupported,
+        passkeyUnsupportedReason: passkeyUnsupportedReason,
+        isPasskeysLoading: false,
+        isPasskeyRegistering: false,
+        passkeyDeletingId: null,
+        isMemoLoading: false,
+        isMemoSaving: false,
         isLoading: false,
         lastUpdated: DateTime.now(),
       );

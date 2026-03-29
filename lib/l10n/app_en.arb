@@ -1059,6 +1059,8 @@
   "authMfaHint": "000000",
   "authMfaVerify": "Verify",
   "authMfaCancel": "Back to login",
+  "authPasskeyLogin": "Login with Passkey",
+  "authPasskeyUnsupported": "Passkey unavailable",
   "authDemoMode": "Demo mode: Some features are limited",
   "authLoginFailed": "Login failed",
   "authLogoutSuccess": "Logged out successfully",
@@ -1164,6 +1166,8 @@
   "systemSettingsSecuritySection": "Security Settings",
   "systemSettingsSecurityConfig": "Security Config",
   "systemSettingsSecurityConfigDesc": "MFA authentication, access control, etc.",
+  "systemSettingsDashboardMemo": "Dashboard Memo",
+  "systemSettingsDashboardMemoHint": "Write a quick note for your dashboard...",
   "systemSettingsApiKey": "API Key",
   "systemSettingsBackupSection": "Backup & Recovery",
   "systemSettingsSnapshot": "Snapshot Management",
@@ -1376,6 +1380,25 @@
   "securitySettingsMfaSecret": "Secret: {secret}",
   "securitySettingsMfaCode": "Verification Code",
   "securitySettingsUnbindMfa": "Unbind MFA",
+  "securitySettingsPasskeySection": "Passkey",
+  "securitySettingsPasskeyRegister": "Register Passkey",
+  "securitySettingsPasskeyRegisterDesc": "Create a new passkey on this device",
+  "securitySettingsPasskeyUnsupported": "Passkey not supported",
+  "securitySettingsPasskeyUnsupportedDesc": "Current platform or browser does not support passkey.",
+  "securitySettingsPasskeyEmpty": "No passkeys yet",
+  "securitySettingsPasskeyCreatedAt": "Created",
+  "securitySettingsPasskeyLastUsedAt": "Last used",
+  "securitySettingsPasskeyName": "Passkey name",
+  "securitySettingsPasskeyNameHint": "e.g. My iPhone or Work Laptop",
+  "securitySettingsPasskeyDeleteTitle": "Delete Passkey",
+  "securitySettingsPasskeyDeleteMessage": "Delete passkey \"{name}\"? This action cannot be undone.",
+  "@securitySettingsPasskeyDeleteMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "securitySettingsAccessControl": "Access Control",
   "securitySettingsSecurityEntrance": "Security Entrance",
   "securitySettingsBindDomain": "Bind Domain",

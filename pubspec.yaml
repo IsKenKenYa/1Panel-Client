@@ -93,6 +93,7 @@ dependencies:
   flutter_colorpicker: ^1.1.0
   dynamic_color: ^1.7.0
   wakelock_plus: ^1.5.1
+  passkeys: ^2.18.0
 
 dev_dependencies:
   flutter_test:

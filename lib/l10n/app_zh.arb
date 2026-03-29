@@ -1059,6 +1059,8 @@
   "authMfaHint": "000000",
   "authMfaVerify": "验证",
   "authMfaCancel": "返回登录",
+  "authPasskeyLogin": "使用 Passkey 登录",
+  "authPasskeyUnsupported": "Passkey 暂不可用",
   "authDemoMode": "演示模式：部分功能受限",
   "authLoginFailed": "登录失败",
   "authLogoutSuccess": "已成功登出",
@@ -1112,6 +1114,8 @@
   "systemSettingsSecuritySection": "安全设置",
   "systemSettingsSecurityConfig": "安全配置",
   "systemSettingsSecurityConfigDesc": "MFA认证、访问控制等",
+  "systemSettingsDashboardMemo": "仪表盘备忘录",
+  "systemSettingsDashboardMemoHint": "写点备忘内容，展示在仪表盘...",
   "systemSettingsApiKey": "API密钥",
   "systemSettingsBackupSection": "备份恢复",
   "systemSettingsSnapshot": "快照管理",
@@ -1324,6 +1328,25 @@
   "securitySettingsMfaSecret": "密钥: {secret}",
   "securitySettingsMfaCode": "验证码",
   "securitySettingsUnbindMfa": "解绑MFA",
+  "securitySettingsPasskeySection": "Passkey",
+  "securitySettingsPasskeyRegister": "注册 Passkey",
+  "securitySettingsPasskeyRegisterDesc": "在当前设备创建新的 Passkey",
+  "securitySettingsPasskeyUnsupported": "当前不支持 Passkey",
+  "securitySettingsPasskeyUnsupportedDesc": "当前平台或浏览器暂不支持 Passkey。",
+  "securitySettingsPasskeyEmpty": "暂无 Passkey",
+  "securitySettingsPasskeyCreatedAt": "创建时间",
+  "securitySettingsPasskeyLastUsedAt": "最近使用",
+  "securitySettingsPasskeyName": "Passkey 名称",
+  "securitySettingsPasskeyNameHint": "例如：我的 iPhone / 工作电脑",
+  "securitySettingsPasskeyDeleteTitle": "删除 Passkey",
+  "securitySettingsPasskeyDeleteMessage": "确认删除 Passkey \"{name}\" 吗？此操作不可撤销。",
+  "@securitySettingsPasskeyDeleteMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "securitySettingsAccessControl": "访问控制",
   "securitySettingsSecurityEntrance": "安全入口",
   "securitySettingsBindDomain": "绑定域名",
