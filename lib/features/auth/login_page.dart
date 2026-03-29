@@ -390,10 +390,13 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _handleLogin(AuthProvider provider) async {
     if (!_formKey.currentState!.validate()) return;
 
+    final locale = Localizations.localeOf(context);
     await provider.login(
       username: _usernameController.text.trim(),
       password: _passwordController.text,
+      language: _resolveLanguageTag(locale),
       captcha: _captchaController.text.trim(),
+      captchaId: provider.captcha?.captchaId,
     );
   }
 
@@ -416,5 +419,23 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e) {
       return Uint8List(0);
     }
+  }
+
+  String _resolveLanguageTag(Locale locale) {
+    final languageCode = locale.languageCode.toLowerCase();
+    final scriptCode = locale.scriptCode;
+    final countryCode = locale.countryCode?.toUpperCase();
+
+    if (languageCode == 'zh' && scriptCode == 'Hant') {
+      return 'zh-Hant';
+    }
+    if (languageCode == 'pt' && countryCode == 'BR') {
+      return 'pt-BR';
+    }
+    if (languageCode == 'es' && countryCode == 'ES') {
+      return 'es-ES';
+    }
+
+    return languageCode;
   }
 }

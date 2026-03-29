@@ -35,25 +35,6 @@ class CommandV2Api {
     );
   }
 
-  Future<Response<List<CommandInfo>>> listCommands({
-    String type = 'command',
-  }) async {
-    final response = await _client.post<Map<String, dynamic>>(
-      ApiConstants.buildApiPath('/core/commands/list'),
-      data: <String, dynamic>{'type': type},
-    );
-    final rawItems = response.data?['data'] as List<dynamic>? ?? const [];
-    return Response<List<CommandInfo>>(
-      data: rawItems
-          .whereType<Map<String, dynamic>>()
-          .map(CommandInfo.fromJson)
-          .toList(growable: false),
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
-    );
-  }
-
   Future<Response<void>> deleteCommand(OperateByIDs request) {
     return _client.post<void>(
       ApiConstants.buildApiPath('/core/commands/del'),
@@ -80,23 +61,6 @@ class CommandV2Api {
       data: <String, dynamic>{
         'items': items.map((CommandOperate item) => item.toJson()).toList(),
       },
-    );
-  }
-
-  Future<Response<List<CommandInfo>>> uploadCommands(FormData formData) async {
-    final response = await _client.upload<Map<String, dynamic>>(
-      ApiConstants.buildApiPath('/core/commands/upload'),
-      formData,
-    );
-    final rawItems = response.data?['data'] as List<dynamic>? ?? const [];
-    return Response<List<CommandInfo>>(
-      data: rawItems
-          .whereType<Map<String, dynamic>>()
-          .map(CommandInfo.fromJson)
-          .toList(growable: false),
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
     );
   }
 

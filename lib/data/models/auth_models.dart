@@ -3,12 +3,16 @@ import 'package:equatable/equatable.dart';
 class LoginRequest extends Equatable {
   final String username;
   final String password;
+  final String language;
+  final String? entranceCode;
   final String? captcha;
   final String? captchaId;
 
   const LoginRequest({
     required this.username,
     required this.password,
+    this.language = 'en',
+    this.entranceCode,
     this.captcha,
     this.captchaId,
   });
@@ -17,13 +21,21 @@ class LoginRequest extends Equatable {
     return {
       'name': username,
       'password': password,
+      'language': language,
       if (captcha != null) 'captcha': captcha,
-      if (captchaId != null) 'captchaId': captchaId,
+      if (captchaId != null) 'captchaID': captchaId,
     };
   }
 
   @override
-  List<Object?> get props => [username, password, captcha, captchaId];
+  List<Object?> get props => [
+        username,
+        password,
+        language,
+        entranceCode,
+        captcha,
+        captchaId,
+      ];
 }
 
 class LoginResponse extends Equatable {
@@ -31,45 +43,102 @@ class LoginResponse extends Equatable {
   final String? name;
   final bool? mfaStatus;
   final String? message;
+  final String? entranceCode;
 
   const LoginResponse({
     this.token,
     this.name,
     this.mfaStatus,
     this.message,
+    this.entranceCode,
   });
+
+  static bool? _parseMfaStatus(dynamic value) {
+    if (value == null) return null;
+    if (value is bool) return value;
+    if (value is String) {
+      final normalized = value.trim().toLowerCase();
+      if (normalized.isEmpty) return null;
+      return normalized == 'enable' ||
+          normalized == 'enabled' ||
+          normalized == 'true' ||
+          normalized == '1';
+    }
+    return null;
+  }
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) {
     return LoginResponse(
       token: json['token'] as String?,
       name: json['name'] as String?,
-      mfaStatus: json['mfaStatus'] as bool?,
+      mfaStatus: _parseMfaStatus(json['mfaStatus']),
       message: json['message'] as String?,
     );
   }
 
+  LoginResponse copyWith({
+    String? token,
+    String? name,
+    bool? mfaStatus,
+    String? message,
+    String? entranceCode,
+  }) {
+    return LoginResponse(
+      token: token ?? this.token,
+      name: name ?? this.name,
+      mfaStatus: mfaStatus ?? this.mfaStatus,
+      message: message ?? this.message,
+      entranceCode: entranceCode ?? this.entranceCode,
+    );
+  }
+
   @override
-  List<Object?> get props => [token, name, mfaStatus, message];
+  List<Object?> get props => [token, name, mfaStatus, message, entranceCode];
 }
 
 class MfaLoginRequest extends Equatable {
   final String code;
-  final String? name;
+  final String name;
+  final String password;
+  final String? entranceCode;
 
   const MfaLoginRequest({
     required this.code,
-    this.name,
+    required this.name,
+    required this.password,
+    this.entranceCode,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'code': code,
-      if (name != null) 'name': name,
+      'name': name,
+      'password': password,
     };
   }
 
   @override
-  List<Object?> get props => [code, name];
+  List<Object?> get props => [code, name, password, entranceCode];
+}
+
+class PasskeyBeginResponse extends Equatable {
+  final String? sessionId;
+  final dynamic publicKey;
+
+  const PasskeyBeginResponse({
+    this.sessionId,
+    this.publicKey,
+  });
+
+  factory PasskeyBeginResponse.fromJson(Map<String, dynamic> json) {
+    return PasskeyBeginResponse(
+      sessionId: json['sessionId'] as String?,
+      publicKey: json['publicKey'],
+    );
+  }
+
+  @override
+  List<Object?> get props => [sessionId, publicKey];
 }
 
 class CaptchaData extends Equatable {

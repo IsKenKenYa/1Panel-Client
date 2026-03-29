@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -59,12 +58,6 @@ Future<Response<Map<String, dynamic>>> _rawPost(
     ApiConstants.buildApiPath(path),
     data: data,
   );
-}
-
-FormData _buildUploadFormData(Uint8List bytes) {
-  return FormData.fromMap(<String, dynamic>{
-    'file': MultipartFile.fromBytes(bytes, filename: 'commands.csv'),
-  });
 }
 
 void main() {
@@ -132,30 +125,6 @@ void main() {
         response: parsed.data?.map((item) => item.toJson()).toList(),
       );
       expect(parsed.statusCode, 200);
-    });
-
-    test('POST /core/commands/upload 应该返回导入预览', () async {
-      if (!canRun) return;
-      final csv = Uint8List.fromList(
-        utf8.encode('name,command\nCodex Import Preview,echo hello\n'),
-      );
-      final rawFormData = _buildUploadFormData(csv);
-      final raw = await client.upload<Map<String, dynamic>>(
-        ApiConstants.buildApiPath('/core/commands/upload'),
-        rawFormData,
-      );
-      _logSection(
-        '✅ Raw /core/commands/upload',
-        method: 'POST',
-        path: '/core/commands/upload',
-        response: raw.data,
-      );
-      final parsed = await api.uploadCommands(_buildUploadFormData(csv));
-      _logSection(
-        '✅ Parsed /core/commands/upload',
-        response: parsed.data?.map((item) => item.toJson()).toList(),
-      );
-      expect(parsed.data, isA<List<CommandInfo>>());
     });
 
     test('POST /core/commands/export 应该返回导出路径', () async {

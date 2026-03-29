@@ -74,10 +74,14 @@ void main() {
       expect(sessionStore.session?.username, 'admin');
     });
 
-    test('mfaLogin uses response name when username is not provided', () async {
+    test('mfaLogin persists session for validated credentials', () async {
       when(
         () => repository.mfaLogin(
-          const MfaLoginRequest(code: '123456'),
+          const MfaLoginRequest(
+            code: '123456',
+            name: 'admin',
+            password: 'password123',
+          ),
         ),
       ).thenAnswer(
         (_) async => const LoginResponse(
@@ -86,7 +90,11 @@ void main() {
         ),
       );
 
-      await service.mfaLogin(code: '123456');
+      await service.mfaLogin(
+        code: '123456',
+        username: 'admin',
+        password: 'password123',
+      );
 
       expect(sessionStore.session?.token, 'mfa-token');
       expect(sessionStore.session?.username, 'admin');

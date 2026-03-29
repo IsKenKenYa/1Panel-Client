@@ -19,6 +19,8 @@ class AuthProvider extends ChangeNotifier {
   AuthStatus _status = AuthStatus.initial;
   String? _token;
   String? _username;
+  String? _pendingPassword;
+  String? _entranceCode;
   String? _errorMessage;
   CaptchaData? _captcha;
   LoginSettings? _loginSettings;
@@ -115,6 +117,7 @@ class AuthProvider extends ChangeNotifier {
   Future<bool> login({
     required String username,
     required String password,
+    String language = 'en',
     String? captcha,
     String? captchaId,
   }) async {
@@ -127,13 +130,17 @@ class AuthProvider extends ChangeNotifier {
         LoginRequest(
           username: username,
           password: password,
+          language: language,
+          entranceCode: _entranceCode,
           captcha: captcha,
-          captchaId: captchaId,
+          captchaId: captchaId ?? _captcha?.captchaId,
         ),
       );
 
       if (response?.mfaStatus == true) {
         _username = username;
+        _pendingPassword = password;
+        _entranceCode = response?.entranceCode ?? _entranceCode;
         _status = AuthStatus.mfaRequired;
         _isLoading = false;
         notifyListeners();
@@ -143,6 +150,8 @@ class AuthProvider extends ChangeNotifier {
       if (response?.token != null && response!.token!.isNotEmpty) {
         _token = response.token;
         _username = username;
+        _pendingPassword = null;
+        _entranceCode = response.entranceCode ?? _entranceCode;
         _status = AuthStatus.authenticated;
         _isLoading = false;
         notifyListeners();
@@ -151,6 +160,7 @@ class AuthProvider extends ChangeNotifier {
 
       _errorMessage = response?.message ?? 'Login failed: Invalid response';
       _token = null;
+      _pendingPassword = null;
       _status = AuthStatus.unauthenticated;
     } catch (e, stackTrace) {
       appLogger.eWithPackage(
@@ -160,6 +170,7 @@ class AuthProvider extends ChangeNotifier {
         stackTrace: stackTrace,
       );
       _token = null;
+      _pendingPassword = null;
       _errorMessage = e.toString();
       _status = AuthStatus.unauthenticated;
     }
@@ -175,14 +186,24 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
+      if (_username == null || _pendingPassword == null) {
+        _errorMessage = 'MFA context is missing. Please login again.';
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
       final response = await _service.mfaLogin(
         code: code,
-        username: _username,
+        username: _username!,
+        password: _pendingPassword!,
+        entranceCode: _entranceCode,
       );
 
       if (response?.token != null && response!.token!.isNotEmpty) {
         _token = response.token;
         _username = _username ?? response.name;
+        _pendingPassword = null;
+        _entranceCode = response.entranceCode ?? _entranceCode;
         _status = AuthStatus.authenticated;
         _isLoading = false;
         notifyListeners();
@@ -221,6 +242,8 @@ class AuthProvider extends ChangeNotifier {
     } finally {
       _token = null;
       _username = null;
+      _pendingPassword = null;
+      _entranceCode = null;
       _status = AuthStatus.unauthenticated;
       _isLoading = false;
       notifyListeners();
@@ -233,6 +256,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   void resetMfaState() {
+    _pendingPassword = null;
     _status = AuthStatus.unauthenticated;
     notifyListeners();
   }

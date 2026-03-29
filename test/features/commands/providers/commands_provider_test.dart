@@ -54,7 +54,7 @@ void main() {
       ),
     );
     when(() => service.deleteCommands(any())).thenAnswer((_) async {});
-    when(() => service.uploadCommandsCsv(
+    when(() => service.parseImportPreviewCsv(
           bytes: any(named: 'bytes'),
           fileName: any(named: 'fileName'),
         )).thenAnswer(

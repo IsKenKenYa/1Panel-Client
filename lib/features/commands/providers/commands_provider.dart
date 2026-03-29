@@ -126,7 +126,7 @@ class CommandsProvider extends ChangeNotifier with AsyncStateNotifier {
     clearError(notify: false);
     notifyListeners();
     try {
-      final rawPreview = await _service.uploadCommandsCsv(
+      final rawPreview = await _service.parseImportPreviewCsv(
         bytes: bytes,
         fileName: fileName,
       );

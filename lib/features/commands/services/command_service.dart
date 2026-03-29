@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'dart:convert';
 
 import 'package:onepanel_client/core/network/api_client_manager.dart';
 import 'package:onepanel_client/core/services/file_save_service.dart';
@@ -47,14 +48,63 @@ class CommandService {
     return _repository.deleteCommands(ids);
   }
 
-  Future<List<CommandInfo>> uploadCommandsCsv({
+  Future<List<CommandInfo>> parseImportPreviewCsv({
     required Uint8List bytes,
     required String fileName,
-  }) {
-    return _repository.uploadCommandsCsv(
-      bytes: bytes,
-      fileName: fileName,
+  }) async {
+    appLogger.dWithPackage(
+      'features.commands.services.command',
+      'parseImportPreviewCsv: fileName=$fileName, bytes=${bytes.length}',
     );
+
+    if (bytes.isEmpty) {
+      return const <CommandInfo>[];
+    }
+
+    final content = utf8.decode(bytes, allowMalformed: true).replaceFirst(
+          '\uFEFF',
+          '',
+        );
+    final rows = _parseCsvRows(content);
+    if (rows.isEmpty) {
+      return const <CommandInfo>[];
+    }
+
+    final headerIndex = _buildHeaderIndex(rows.first);
+    final nameIndex = headerIndex['name'];
+    final commandIndex = headerIndex['command'];
+    if (nameIndex == null || commandIndex == null) {
+      throw const FormatException('CSV must contain name and command columns');
+    }
+
+    final typeIndex = headerIndex['type'];
+    final groupBelongIndex = headerIndex['groupbelong'];
+    final groupIdIndex = headerIndex['groupid'];
+
+    final previewItems = <CommandInfo>[];
+    for (var rowIndex = 1; rowIndex < rows.length; rowIndex++) {
+      final row = rows[rowIndex];
+      final name = _readCell(row, nameIndex);
+      final command = _readCell(row, commandIndex);
+      if (name.isEmpty || command.isEmpty) {
+        continue;
+      }
+
+      final type = _readCell(row, typeIndex);
+      final groupBelong = _readCell(row, groupBelongIndex);
+      final groupIdRaw = _readCell(row, groupIdIndex);
+      previewItems.add(
+        CommandInfo(
+          name: name,
+          command: command,
+          type: type.isEmpty ? 'command' : type,
+          groupBelong: groupBelong.isEmpty ? null : groupBelong,
+          groupID: int.tryParse(groupIdRaw),
+        ),
+      );
+    }
+
+    return previewItems;
   }
 
   Future<void> importCommands(List<CommandOperate> items) {
@@ -116,5 +166,86 @@ class CommandService {
       groupID: info.groupID,
       groupBelong: info.groupBelong,
     );
+  }
+
+  List<List<String>> _parseCsvRows(String source) {
+    final rows = <List<String>>[];
+    final currentRow = <String>[];
+    final currentField = StringBuffer();
+    var inQuotes = false;
+
+    void pushField() {
+      currentRow.add(currentField.toString());
+      currentField.clear();
+    }
+
+    void pushRow() {
+      if (currentRow.length == 1 && currentRow.first.trim().isEmpty) {
+        currentRow.clear();
+        return;
+      }
+      rows.add(List<String>.from(currentRow, growable: false));
+      currentRow.clear();
+    }
+
+    for (var i = 0; i < source.length; i++) {
+      final ch = source[i];
+      if (ch == '"') {
+        final hasEscapedQuote =
+            inQuotes && i + 1 < source.length && source[i + 1] == '"';
+        if (hasEscapedQuote) {
+          currentField.write('"');
+          i++;
+          continue;
+        }
+        inQuotes = !inQuotes;
+        continue;
+      }
+
+      final isLineBreak = ch == '\n' || ch == '\r';
+      if (!inQuotes && ch == ',') {
+        pushField();
+        continue;
+      }
+      if (!inQuotes && isLineBreak) {
+        pushField();
+        if (ch == '\r' && i + 1 < source.length && source[i + 1] == '\n') {
+          i++;
+        }
+        pushRow();
+        continue;
+      }
+
+      currentField.write(ch);
+    }
+
+    if (inQuotes) {
+      throw const FormatException('CSV contains unterminated quoted field');
+    }
+    pushField();
+    pushRow();
+    return rows;
+  }
+
+  Map<String, int> _buildHeaderIndex(List<String> header) {
+    final index = <String, int>{};
+    for (var i = 0; i < header.length; i++) {
+      final key = _normalizeHeader(header[i]);
+      if (key.isNotEmpty && !index.containsKey(key)) {
+        index[key] = i;
+      }
+    }
+    return index;
+  }
+
+  String _normalizeHeader(String value) {
+    return value.trim().toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '');
+  }
+
+  String _readCell(List<String> row, int? index) {
+    if (index == null || index < 0 || index >= row.length) {
+      return '';
+    }
+    return row[index].trim();
   }
 }

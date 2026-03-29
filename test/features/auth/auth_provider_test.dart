@@ -21,8 +21,9 @@ void main() {
 
       expect(json['name'], 'admin');
       expect(json['password'], 'password123');
+      expect(json['language'], 'en');
       expect(json['captcha'], '1234');
-      expect(json['captchaId'], 'abc123');
+      expect(json['captchaID'], 'abc123');
     });
 
     test('LoginRequest toJson without optional fields', () {
@@ -35,8 +36,9 @@ void main() {
 
       expect(json['name'], 'admin');
       expect(json['password'], 'password123');
+      expect(json['language'], 'en');
       expect(json.containsKey('captcha'), false);
-      expect(json.containsKey('captchaId'), false);
+      expect(json.containsKey('captchaID'), false);
     });
 
     test('LoginResponse fromJson should parse correctly', () {
@@ -61,6 +63,16 @@ void main() {
       });
 
       expect(response.token, null);
+      expect(response.mfaStatus, true);
+    });
+
+    test('LoginResponse parses string MFA status from swagger schema', () {
+      final response = LoginResponse.fromJson({
+        'token': null,
+        'name': 'admin',
+        'mfaStatus': 'enable',
+      });
+
       expect(response.mfaStatus, true);
     });
 
@@ -102,12 +114,14 @@ void main() {
       const request = MfaLoginRequest(
         code: '123456',
         name: 'admin',
+        password: 'password123',
       );
 
       final json = request.toJson();
 
       expect(json['code'], '123456');
       expect(json['name'], 'admin');
+      expect(json['password'], 'password123');
     });
 
     test('SafetyStatus fromJson should handle different key names', () {
@@ -251,7 +265,12 @@ void main() {
         (_) async => const LoginResponse(mfaStatus: true),
       );
       when(
-        () => service.mfaLogin(code: '123456', username: 'admin'),
+        () => service.mfaLogin(
+          code: '123456',
+          username: 'admin',
+          password: 'password123',
+          entranceCode: any(named: 'entranceCode'),
+        ),
       ).thenAnswer(
         (_) async => const LoginResponse(
           token: 'mfa-token',

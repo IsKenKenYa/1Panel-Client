@@ -34,6 +34,47 @@ class SettingsService {
     return response.data;
   }
 
+  Future<String?> getDashboardMemo() async {
+    final apiClient = await _getApi();
+    final response = await apiClient.getDashboardMemo();
+    return response.data;
+  }
+
+  Future<void> updateDashboardMemo(String content) async {
+    final apiClient = await _getApi();
+    await apiClient.updateDashboardMemo(MemoUpdate(content: content));
+  }
+
+  Future<List<PasskeyInfo>> listPasskeys() async {
+    final apiClient = await _getApi();
+    final response = await apiClient.listPasskeys();
+    return response.data ?? const <PasskeyInfo>[];
+  }
+
+  Future<PasskeyBeginResponse?> beginPasskeyRegister(String name) async {
+    final apiClient = await _getApi();
+    final response = await apiClient.beginPasskeyRegister(
+      PasskeyRegisterRequest(name: name),
+    );
+    return response.data;
+  }
+
+  Future<void> finishPasskeyRegister({
+    required String sessionId,
+    required Map<String, dynamic> credential,
+  }) async {
+    final apiClient = await _getApi();
+    await apiClient.finishPasskeyRegister(
+      sessionId: sessionId,
+      credential: credential,
+    );
+  }
+
+  Future<void> deletePasskey(String id) async {
+    final apiClient = await _getApi();
+    await apiClient.deletePasskey(id);
+  }
+
   Future<MfaOtp?> loadMfaInfo(MfaCredential request) async {
     final apiClient = await _getApi();
     final response = await apiClient.loadMfaInfo(request);

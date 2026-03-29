@@ -141,6 +141,88 @@ class SettingV2Api {
     );
   }
 
+  Future<Response<String?>> getDashboardMemo() async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/core/settings/memo'),
+    );
+    final memo = _extractDataRaw(response.data);
+    return Response<String?>(
+      data: memo?.toString(),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+      headers: response.headers,
+      extra: response.extra,
+      redirects: response.redirects,
+      isRedirect: response.isRedirect,
+    );
+  }
+
+  Future<Response<void>> updateDashboardMemo(MemoUpdate request) async {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/core/settings/memo'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<List<PasskeyInfo>>> listPasskeys() async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/core/settings/passkey/list'),
+    );
+    final items = _extractDataList(response.data) ?? const <dynamic>[];
+    return Response<List<PasskeyInfo>>(
+      data: items
+          .whereType<Map<String, dynamic>>()
+          .map(PasskeyInfo.fromJson)
+          .toList(growable: false),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+      headers: response.headers,
+      extra: response.extra,
+      redirects: response.redirects,
+      isRedirect: response.isRedirect,
+    );
+  }
+
+  Future<Response<PasskeyBeginResponse?>> beginPasskeyRegister(
+    PasskeyRegisterRequest request,
+  ) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/core/settings/passkey/register/begin'),
+      data: request.toJson(),
+    );
+    final data = _extractData(response.data);
+    return Response<PasskeyBeginResponse?>(
+      data: data == null ? null : PasskeyBeginResponse.fromJson(data),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+      headers: response.headers,
+      extra: response.extra,
+      redirects: response.redirects,
+      isRedirect: response.isRedirect,
+    );
+  }
+
+  Future<Response<void>> finishPasskeyRegister({
+    required String sessionId,
+    required Map<String, dynamic> credential,
+  }) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/core/settings/passkey/register/finish'),
+      data: credential,
+      options:
+          Options(headers: <String, dynamic>{'Passkey-Session': sessionId}),
+    );
+  }
+
+  Future<Response<void>> deletePasskey(String id) {
+    return _client.delete<void>(
+      ApiConstants.buildApiPath('/core/settings/passkey/$id'),
+    );
+  }
+
   /// 更新密码设置
   ///
   /// 更新系统密码设置

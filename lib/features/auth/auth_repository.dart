@@ -36,16 +36,55 @@ class AuthRepository {
 
   Future<LoginResponse?> login(LoginRequest request) async {
     final api = await _getApi();
-    final data = (await api.login(request.toJson())).data;
+    final response = await api.login(
+      request.toJson(),
+      entranceCode: request.entranceCode,
+    );
+    final data = response.data;
     if (data == null) return null;
-    return LoginResponse.fromJson(data);
+    final entranceCode = response.headers.value('EntranceCode') ??
+        response.headers.value('entrancecode');
+    return LoginResponse.fromJson(data).copyWith(entranceCode: entranceCode);
   }
 
   Future<LoginResponse?> mfaLogin(MfaLoginRequest request) async {
     final api = await _getApi();
-    final data = (await api.mfaLogin(request.toJson())).data;
+    final response = await api.mfaLogin(
+      request.toJson(),
+      entranceCode: request.entranceCode,
+    );
+    final data = response.data;
     if (data == null) return null;
-    return LoginResponse.fromJson(data);
+    final entranceCode = response.headers.value('EntranceCode') ??
+        response.headers.value('entrancecode');
+    return LoginResponse.fromJson(data).copyWith(entranceCode: entranceCode);
+  }
+
+  Future<PasskeyBeginResponse?> beginPasskeyLogin({
+    String? entranceCode,
+  }) async {
+    final api = await _getApi();
+    final response = await api.passkeyBeginLogin(entranceCode: entranceCode);
+    return response.data;
+  }
+
+  Future<LoginResponse?> finishPasskeyLogin({
+    required Map<String, dynamic> credential,
+    required String sessionId,
+    String? entranceCode,
+  }) async {
+    final api = await _getApi();
+    final response = await api.passkeyFinishLogin(
+      credential: credential,
+      sessionId: sessionId,
+      entranceCode: entranceCode,
+    );
+    final data = response.data;
+    if (data == null) return null;
+    final nextEntranceCode = response.headers.value('EntranceCode') ??
+        response.headers.value('entrancecode');
+    return LoginResponse.fromJson(data)
+        .copyWith(entranceCode: nextEntranceCode);
   }
 
   Future<void> logout() async {

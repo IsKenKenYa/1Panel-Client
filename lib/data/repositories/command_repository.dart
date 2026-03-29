@@ -1,7 +1,3 @@
-import 'dart:typed_data';
-
-import 'package:dio/dio.dart';
-
 import 'package:onepanel_client/api/v2/command_v2.dart';
 import 'package:onepanel_client/core/network/api_client_manager.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
@@ -36,25 +32,6 @@ class CommandRepository {
           items: <CommandInfo>[],
           total: 0,
         );
-  }
-
-  Future<List<CommandInfo>> uploadCommandsCsv({
-    required Uint8List bytes,
-    required String fileName,
-  }) async {
-    appLogger.dWithPackage(
-      'data.repositories.command',
-      'uploadCommandsCsv: fileName=$fileName, bytes=${bytes.length}',
-    );
-    final api = await _ensureApi();
-    final formData = FormData.fromMap(<String, dynamic>{
-      'file': MultipartFile.fromBytes(
-        bytes,
-        filename: fileName,
-      ),
-    });
-    final response = await api.uploadCommands(formData);
-    return response.data ?? const <CommandInfo>[];
   }
 
   Future<void> importCommands(List<CommandOperate> items) async {

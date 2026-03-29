@@ -49,18 +49,50 @@ class AuthService {
 
   Future<LoginResponse?> mfaLogin({
     required String code,
-    String? username,
+    required String username,
+    required String password,
+    String? entranceCode,
   }) async {
     appLogger.dWithPackage(
       'features.auth.auth_service',
       'mfaLogin: user=$username',
     );
     final response = await _repository.mfaLogin(
-      MfaLoginRequest(code: code, name: username),
+      MfaLoginRequest(
+        code: code,
+        name: username,
+        password: password,
+        entranceCode: entranceCode,
+      ),
     );
     await _persistSessionIfNeeded(
       response,
-      username: username ?? response?.name,
+      username: username,
+    );
+    return response;
+  }
+
+  Future<PasskeyBeginResponse?> beginPasskeyLogin({
+    String? entranceCode,
+  }) async {
+    appLogger.dWithPackage('features.auth.auth_service', 'beginPasskeyLogin');
+    return _repository.beginPasskeyLogin(entranceCode: entranceCode);
+  }
+
+  Future<LoginResponse?> finishPasskeyLogin({
+    required Map<String, dynamic> credential,
+    required String sessionId,
+    String? entranceCode,
+  }) async {
+    appLogger.dWithPackage('features.auth.auth_service', 'finishPasskeyLogin');
+    final response = await _repository.finishPasskeyLogin(
+      credential: credential,
+      sessionId: sessionId,
+      entranceCode: entranceCode,
+    );
+    await _persistSessionIfNeeded(
+      response,
+      username: response?.name,
     );
     return response;
   }

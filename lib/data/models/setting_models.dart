@@ -1133,3 +1133,71 @@ class SystemSettingInfo extends Equatable {
         apiKeyValidityTime,
       ];
 }
+
+class MemoUpdate extends Equatable {
+  final String content;
+
+  const MemoUpdate({required this.content});
+
+  Map<String, dynamic> toJson() => <String, dynamic>{'content': content};
+
+  @override
+  List<Object?> get props => [content];
+}
+
+class PasskeyInfo extends Equatable {
+  final String? id;
+  final String? name;
+  final String? createdAt;
+  final String? lastUsedAt;
+
+  const PasskeyInfo({
+    this.id,
+    this.name,
+    this.createdAt,
+    this.lastUsedAt,
+  });
+
+  factory PasskeyInfo.fromJson(Map<String, dynamic> json) {
+    return PasskeyInfo(
+      id: json['id'] as String?,
+      name: json['name'] as String?,
+      createdAt: json['createdAt'] as String?,
+      lastUsedAt: json['lastUsedAt'] as String?,
+    );
+  }
+
+  @override
+  List<Object?> get props => [id, name, createdAt, lastUsedAt];
+}
+
+class PasskeyRegisterRequest extends Equatable {
+  final String name;
+
+  const PasskeyRegisterRequest({required this.name});
+
+  Map<String, dynamic> toJson() => <String, dynamic>{'name': name};
+
+  @override
+  List<Object?> get props => [name];
+}
+
+class PasskeyBeginResponse extends Equatable {
+  final String? sessionId;
+  final dynamic publicKey;
+
+  const PasskeyBeginResponse({
+    this.sessionId,
+    this.publicKey,
+  });
+
+  factory PasskeyBeginResponse.fromJson(Map<String, dynamic> json) {
+    return PasskeyBeginResponse(
+      sessionId: json['sessionId'] as String?,
+      publicKey: json['publicKey'],
+    );
+  }
+
+  @override
+  List<Object?> get props => [sessionId, publicKey];
+}
