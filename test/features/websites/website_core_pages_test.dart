@@ -245,6 +245,7 @@ void main() {
 
     expect(find.text('Basic'), findsOneWidget);
     expect(find.textContaining('Proxy'), findsOneWidget);
+    expect(find.byIcon(Icons.code_off), findsOneWidget);
     expect(find.text('Nginx config file'), findsOneWidget);
   });
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:onepanel_client/api/v2/monitor_v2.dart';
 import 'package:onepanel_client/data/repositories/monitor_repository.dart';
 import 'package:onepanel_client/features/monitoring/monitoring_provider.dart';
 import 'package:onepanel_client/features/monitoring/monitoring_service.dart';
@@ -24,6 +25,8 @@ class MockMonitorLocalDataSource extends MonitorLocalDataSource {
 }
 
 class FakeMonitoringService extends MonitoringService {
+  int gpuInfoCallCount = 0;
+
   @override
   Future<MonitorDataPackage> getMonitorData({
     Duration duration = const Duration(hours: 1),
@@ -57,6 +60,19 @@ class FakeMonitoringService extends MonitoringService {
         'io': MonitorTimeSeries.empty('io'),
       },
     );
+  }
+
+  @override
+  Future<List<GPUInfo>> getGPUInfo() async {
+    gpuInfoCallCount += 1;
+    return const [
+      GPUInfo(
+        name: 'NVIDIA A10',
+        utilization: 20,
+        memory: 50,
+        temperature: 60,
+      ),
+    ];
   }
 }
 
@@ -120,5 +136,38 @@ void main() {
     );
     await provider.load();
     expect(provider.data.error, isNotNull);
+  });
+
+  test('MonitoringProvider按GPU策略刷新', () async {
+    final service = FakeMonitoringService();
+    final provider = MonitoringProvider(
+      service: service,
+      dataSource: MockMonitorLocalDataSource(),
+    );
+
+    provider.updateGpuRefreshPolicy(
+      enabled: true,
+      interval: const Duration(hours: 1),
+    );
+
+    await provider.refreshByPolicy();
+    await provider.refreshByPolicy();
+
+    expect(service.gpuInfoCallCount, 1);
+    expect(provider.data.gpuInfo, isNotEmpty);
+  });
+
+  test('MonitoringProvider关闭GPU自动刷新后不会拉取GPU数据', () async {
+    final service = FakeMonitoringService();
+    final provider = MonitoringProvider(
+      service: service,
+      dataSource: MockMonitorLocalDataSource(),
+    );
+
+    provider.setGpuAutoRefreshEnabled(false);
+    await provider.refreshByPolicy();
+
+    expect(service.gpuInfoCallCount, 0);
+    expect(provider.gpuAutoRefreshEnabled, isFalse);
   });
 }

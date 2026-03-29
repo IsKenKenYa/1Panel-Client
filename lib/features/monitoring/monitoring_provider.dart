@@ -116,6 +116,9 @@ class MonitoringProvider extends ChangeNotifier {
   // 自动刷新设置
   Duration _refreshInterval = const Duration(seconds: 5);
   bool _autoRefreshEnabled = false;
+  Duration _gpuRefreshInterval = const Duration(seconds: 30);
+  bool _gpuAutoRefreshEnabled = true;
+  DateTime? _lastGpuRefreshAt;
   int _maxDataPoints = 1000; // 默认增加点数，支持更平滑的曲线
 
   // 时间范围设置
@@ -145,6 +148,8 @@ class MonitoringProvider extends ChangeNotifier {
   MonitoringData get data => _data;
   Duration get refreshInterval => _refreshInterval;
   bool get autoRefreshEnabled => _autoRefreshEnabled;
+  Duration get gpuRefreshInterval => _gpuRefreshInterval;
+  bool get gpuAutoRefreshEnabled => _gpuAutoRefreshEnabled;
   int get maxDataPoints => _maxDataPoints;
   Duration get timeRange => _timeRange;
   DateTime? get customStartTime => _customStartTime;
@@ -185,7 +190,7 @@ class MonitoringProvider extends ChangeNotifier {
           'Network restored, reloading monitoring data',
         );
         // 网络恢复，尝试重新加载数据并补全缺口
-        load(silent: true);
+        unawaited(refreshByPolicy(silent: true));
       }
     });
   }
@@ -202,7 +207,7 @@ class MonitoringProvider extends ChangeNotifier {
       _stopTimer();
       // 后台模式：5分钟刷新一次
       _refreshTimer = Timer.periodic(const Duration(minutes: 5), (_) {
-        load(silent: true);
+        unawaited(refreshByPolicy(silent: true));
       });
     } else if (state == AppLifecycleState.resumed) {
       appLogger.dWithPackage(
@@ -219,6 +224,41 @@ class MonitoringProvider extends ChangeNotifier {
     _refreshInterval = interval;
     if (_autoRefreshEnabled) {
       _startTimer();
+    }
+    notifyListeners();
+  }
+
+  /// 设置GPU自动刷新开关
+  void setGpuAutoRefreshEnabled(bool enabled) {
+    _gpuAutoRefreshEnabled = enabled;
+    if (enabled) {
+      _lastGpuRefreshAt = null;
+      unawaited(_refreshGpuInfoByPolicy());
+    }
+    notifyListeners();
+  }
+
+  /// 设置GPU自动刷新间隔
+  void setGpuRefreshInterval(Duration interval) {
+    if (interval <= Duration.zero) {
+      return;
+    }
+    _gpuRefreshInterval = interval;
+    notifyListeners();
+  }
+
+  /// 原子更新GPU刷新策略
+  void updateGpuRefreshPolicy({
+    required bool enabled,
+    required Duration interval,
+  }) {
+    if (interval > Duration.zero) {
+      _gpuRefreshInterval = interval;
+    }
+    _gpuAutoRefreshEnabled = enabled;
+    if (enabled) {
+      _lastGpuRefreshAt = null;
+      unawaited(_refreshGpuInfoByPolicy());
     }
     notifyListeners();
   }
@@ -272,8 +312,21 @@ class MonitoringProvider extends ChangeNotifier {
       'Auto refresh started: ${_refreshInterval.inSeconds}s',
     );
     _refreshTimer = Timer.periodic(_refreshInterval, (_) {
-      load(silent: true);
+      unawaited(refreshByPolicy(silent: true));
     });
+  }
+
+  Future<void> _refreshGpuInfoByPolicy() async {
+    if (!_gpuAutoRefreshEnabled) {
+      return;
+    }
+    final now = DateTime.now();
+    final lastRefreshAt = _lastGpuRefreshAt;
+    if (lastRefreshAt != null &&
+        now.difference(lastRefreshAt) < _gpuRefreshInterval) {
+      return;
+    }
+    await loadGPUInfo();
   }
 
   void _stopTimer() {
@@ -561,6 +614,12 @@ class MonitoringProvider extends ChangeNotifier {
     await load(silent: true);
   }
 
+  /// 按策略刷新（主监控 + 可选GPU）
+  Future<void> refreshByPolicy({bool silent = true}) async {
+    await load(silent: silent);
+    await _refreshGpuInfoByPolicy();
+  }
+
   /// 清除错误
   void clearError() {
     _data = _data.copyWith(error: null);
@@ -618,6 +677,7 @@ class MonitoringProvider extends ChangeNotifier {
     try {
       await _ensureService();
       final gpuInfo = await _service!.getGPUInfo();
+      _lastGpuRefreshAt = DateTime.now();
       _data = _data.copyWith(gpuInfo: gpuInfo);
       notifyListeners();
     } catch (e, stackTrace) {

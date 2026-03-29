@@ -8,19 +8,23 @@ import 'package:onepanel_client/features/databases/widgets/database_detail_error
 import 'package:onepanel_client/shared/widgets/app_card.dart';
 
 import 'databases_provider.dart';
+import 'databases_service.dart';
 
 class DatabaseRedisPage extends StatelessWidget {
   const DatabaseRedisPage({
     super.key,
     required this.item,
+    this.service,
   });
 
   final DatabaseListItem item;
+  final DatabasesService? service;
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => DatabaseDetailProvider(item: item)..load(),
+      create: (_) => DatabaseDetailProvider(item: item, service: service)
+        ..load(),
       child: const _DatabaseRedisPageView(),
     );
   }
@@ -110,11 +114,7 @@ class _DatabaseRedisPageViewState extends State<_DatabaseRedisPageView> {
                   FilledButton(
                     onPressed: provider.isSubmitting
                         ? null
-                        : () => provider.updateRedisConfig({
-                              'dbType': item.engine,
-                              'timeout': _timeoutController.text.trim(),
-                              'maxclients': _maxClientsController.text.trim(),
-                            }),
+                        : () => _submitRedisConfig(provider, item),
                     child: Text(context.l10n.commonSave),
                   ),
                 ],
@@ -142,12 +142,7 @@ class _DatabaseRedisPageViewState extends State<_DatabaseRedisPageView> {
                   FilledButton(
                     onPressed: provider.isSubmitting
                         ? null
-                        : () => provider.updateRedisPersistence({
-                              'type': item.engine,
-                              'dbType': item.engine,
-                              'appendonly': _appendOnlyController.text.trim(),
-                              'save': _saveController.text.trim(),
-                            }),
+                        : () => _submitRedisPersistence(provider, item),
                     child: Text(context.l10n.commonSave),
                   ),
                 ],
@@ -155,6 +150,46 @@ class _DatabaseRedisPageViewState extends State<_DatabaseRedisPageView> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Future<void> _submitRedisConfig(
+    DatabaseDetailProvider provider,
+    DatabaseListItem item,
+  ) async {
+    final ok = await provider.updateRedisConfig({
+      'dbType': item.engine,
+      'timeout': _timeoutController.text.trim(),
+      'maxclients': _maxClientsController.text.trim(),
+    });
+    if (!mounted) {
+      return;
+    }
+    _showSaveResult(ok);
+  }
+
+  Future<void> _submitRedisPersistence(
+    DatabaseDetailProvider provider,
+    DatabaseListItem item,
+  ) async {
+    final ok = await provider.updateRedisPersistence({
+      'type': item.engine,
+      'dbType': item.engine,
+      'appendonly': _appendOnlyController.text.trim(),
+      'save': _saveController.text.trim(),
+    });
+    if (!mounted) {
+      return;
+    }
+    _showSaveResult(ok);
+  }
+
+  void _showSaveResult(bool success) {
+    final l10n = context.l10n;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(success ? l10n.commonSaveSuccess : l10n.commonSaveFailed),
       ),
     );
   }

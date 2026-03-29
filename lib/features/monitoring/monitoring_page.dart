@@ -651,6 +651,8 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
   bool _isSaving = false;
   bool _enabled = true;
   int _retention = 30;
+  bool _gpuAutoRefreshEnabled = true;
+  Duration _gpuRefreshInterval = const Duration(seconds: 30);
 
   @override
   void initState() {
@@ -666,10 +668,14 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
       setState(() {
         _enabled = settings.enabled ?? true;
         _retention = settings.retention ?? 30;
+        _gpuAutoRefreshEnabled = provider.gpuAutoRefreshEnabled;
+        _gpuRefreshInterval = provider.gpuRefreshInterval;
         _isLoading = false;
       });
     } else {
       setState(() {
+        _gpuAutoRefreshEnabled = provider.gpuAutoRefreshEnabled;
+        _gpuRefreshInterval = provider.gpuRefreshInterval;
         _isLoading = false;
       });
     }
@@ -692,6 +698,10 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
       });
 
       if (success) {
+        provider.updateGpuRefreshPolicy(
+          enabled: _gpuAutoRefreshEnabled,
+          interval: _gpuRefreshInterval,
+        );
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.l10n.monitorSettingsSaved)),
         );
@@ -768,6 +778,51 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
                       });
                     },
                   ),
+                  SwitchListTile(
+                    title: Text('${l10n.monitorGPU} ${l10n.monitorEnable}'),
+                    value: _gpuAutoRefreshEnabled,
+                    onChanged: (value) {
+                      setState(() {
+                        _gpuAutoRefreshEnabled = value;
+                      });
+                    },
+                  ),
+                  if (_gpuAutoRefreshEnabled)
+                    DropdownButtonFormField<Duration>(
+                      key: ValueKey<int>(_gpuRefreshInterval.inSeconds),
+                      initialValue: _gpuRefreshInterval,
+                      decoration: InputDecoration(
+                        labelText:
+                            '${l10n.monitorGPU} ${l10n.monitorRefreshInterval}',
+                        border: const OutlineInputBorder(),
+                      ),
+                      items: [
+                        DropdownMenuItem(
+                          value: const Duration(seconds: 5),
+                          child: Text(l10n.monitorSeconds(5)),
+                        ),
+                        DropdownMenuItem(
+                          value: const Duration(seconds: 10),
+                          child: Text(l10n.monitorSeconds(10)),
+                        ),
+                        DropdownMenuItem(
+                          value: const Duration(seconds: 30),
+                          child: Text(l10n.monitorSeconds(30)),
+                        ),
+                        DropdownMenuItem(
+                          value: const Duration(minutes: 1),
+                          child: Text(l10n.monitorMinute(1)),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        if (value == null) {
+                          return;
+                        }
+                        setState(() {
+                          _gpuRefreshInterval = value;
+                        });
+                      },
+                    ),
                   const SizedBox(height: AppDesignTokens.spacingMd),
                   Text(l10n.monitorRetention),
                   Slider(

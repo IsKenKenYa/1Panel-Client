@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/data/models/database_models.dart';
 import 'package:onepanel_client/features/databases/databases_detail_page.dart';
 import 'package:onepanel_client/features/databases/databases_form_page.dart';
+import 'package:onepanel_client/features/databases/databases_redis_page.dart';
 import 'package:onepanel_client/features/databases/databases_service.dart';
 import 'package:onepanel_client/features/databases/pages/database_backup_page.dart';
 import 'package:onepanel_client/features/databases/pages/database_users_page.dart';
@@ -46,6 +47,34 @@ class _FakeDatabaseUserPageService extends DatabaseUserService {
   @override
   Future<DatabaseUserContext> loadContext(DatabaseListItem item) async =>
       context;
+}
+
+class _FakeDatabaseRedisPageService extends DatabasesService {
+  _FakeDatabaseRedisPageService(this.detail);
+
+  final DatabaseDetailData detail;
+
+  int updateRedisConfigCallCount = 0;
+  int updateRedisPersistenceCallCount = 0;
+
+  @override
+  Future<DatabaseDetailData> loadDetail(DatabaseListItem item) async => detail;
+
+  @override
+  Future<void> updateRedisConfig({
+    required String database,
+    required Map<String, dynamic> payload,
+  }) async {
+    updateRedisConfigCallCount += 1;
+  }
+
+  @override
+  Future<void> updateRedisPersistence({
+    required String database,
+    required Map<String, dynamic> payload,
+  }) async {
+    updateRedisPersistenceCallCount += 1;
+  }
 }
 
 void main() {
@@ -190,5 +219,48 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Update Privileges'), findsWidgets);
+  });
+
+  testWidgets('DatabaseRedisPage save actions trigger write requests',
+      (tester) async {
+    const redisItem = DatabaseListItem(
+      scope: DatabaseScope.redis,
+      name: 'redis-main',
+      engine: 'redis',
+      source: 'local',
+    );
+
+    final service = _FakeDatabaseRedisPageService(
+      const DatabaseDetailData(
+        item: redisItem,
+        redisConfig: {'timeout': '30', 'maxclients': '1000'},
+        redisPersistence: {'appendonly': 'yes', 'save': '900 1'},
+      ),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: DatabaseRedisPage(
+          item: redisItem,
+          service: service,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final saveButtons = find.widgetWithText(FilledButton, 'Save');
+    await tester.tap(saveButtons.first);
+    await tester.pumpAndSettle();
+
+    final secondSaveButton = saveButtons.last;
+    await tester.ensureVisible(secondSaveButton);
+    await tester.pumpAndSettle();
+    await tester.tap(secondSaveButton);
+    await tester.pumpAndSettle();
+
+    expect(service.updateRedisConfigCallCount, 1);
+    expect(service.updateRedisPersistenceCallCount, 1);
   });
 }

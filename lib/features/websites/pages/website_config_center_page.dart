@@ -107,6 +107,20 @@ class _WebsiteConfigCenterBody extends StatelessWidget {
                   ),
                 ),
                 WebsiteSectionCard(
+                  title: l10n.websitesPhpVersionTitle,
+                  subtitle: provider.website?.runtimeName ??
+                      l10n.websitesConfigPageSubtitle,
+                  icon: Icons.code_off,
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => WebsiteConfigPage(
+                        websiteId: websiteId,
+                        displayName: displayName,
+                      ),
+                    ),
+                  ),
+                ),
+                WebsiteSectionCard(
                   title: l10n.websitesConfigEditorTitle,
                   subtitle: provider.configFile?.path ??
                       l10n.websitesConfigPageSubtitle,

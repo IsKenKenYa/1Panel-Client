@@ -9,6 +9,15 @@ import 'package:onepanel_client/features/databases/databases_provider.dart';
 class DatabaseDetailActionsWidget extends StatelessWidget {
   const DatabaseDetailActionsWidget({super.key});
 
+  void _showSubmitResult(BuildContext context, bool success) {
+    final l10n = context.l10n;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(success ? l10n.commonSaveSuccess : l10n.commonSaveFailed),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<DatabaseDetailProvider>();
@@ -80,6 +89,7 @@ class DatabaseDetailActionsWidget extends StatelessWidget {
             onPressed: () async {
               final ok = await onSubmit(controller.text.trim());
               if (!context.mounted) return;
+              _showSubmitResult(context, ok);
               if (ok) Navigator.of(context).pop();
             },
             child: Text(context.l10n.commonSave),
@@ -111,6 +121,7 @@ class DatabaseDetailActionsWidget extends StatelessWidget {
             onPressed: () async {
               final ok = await onSubmit(controller.text.trim());
               if (!context.mounted) return;
+              _showSubmitResult(context, ok);
               if (ok) Navigator.of(context).pop();
             },
             child: Text(context.l10n.commonConfirm),
@@ -162,6 +173,7 @@ class DatabaseDetailActionsWidget extends StatelessWidget {
                 password: passwordController.text.trim(),
               );
               if (!context.mounted) return;
+              _showSubmitResult(context, ok);
               if (ok) Navigator.of(context).pop();
             },
             child: Text(context.l10n.commonConfirm),

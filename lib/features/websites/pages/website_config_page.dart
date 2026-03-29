@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/models/openresty_models.dart';
+import '../../../data/models/runtime_models.dart';
 import '../../../data/models/website_models.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import '../providers/website_config_provider.dart';
@@ -10,14 +11,16 @@ import '../widgets/website_common_widgets.dart';
 class WebsiteConfigPage extends StatelessWidget {
   final int websiteId;
   final String? displayName;
+  final WebsiteConfigProvider? provider;
 
   const WebsiteConfigPage(
-      {super.key, required this.websiteId, this.displayName});
+      {super.key, required this.websiteId, this.displayName, this.provider});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => WebsiteConfigProvider(websiteId: websiteId)..loadAll(),
+      create: (_) => (provider ?? WebsiteConfigProvider(websiteId: websiteId))
+        ..loadAll(),
       child: _WebsiteConfigBody(title: displayName),
     );
   }
@@ -34,12 +37,10 @@ class _WebsiteConfigBody extends StatefulWidget {
 
 class _WebsiteConfigBodyState extends State<_WebsiteConfigBody> {
   final TextEditingController _configController = TextEditingController();
-  final TextEditingController _runtimeIdController = TextEditingController();
 
   @override
   void dispose() {
     _configController.dispose();
-    _runtimeIdController.dispose();
     super.dispose();
   }
 
@@ -103,14 +104,20 @@ class _WebsiteConfigBodyState extends State<_WebsiteConfigBody> {
               ),
               const SizedBox(height: 12),
               _PhpVersionCard(
-                controller: _runtimeIdController,
+                currentRuntimeName: provider.website?.runtimeName,
+                selectedRuntimeId: provider.selectedRuntimeId,
+                runtimes: provider.phpRuntimes,
+                onRuntimeChanged: provider.setSelectedRuntimeId,
+                isUpdating: provider.isUpdatingPhpVersion,
                 onUpdate: () async {
-                  final runtimeId =
-                      int.tryParse(_runtimeIdController.text.trim());
-                  await provider.updatePhpVersion(runtimeId);
+                  final success = await provider.updatePhpVersion();
                   if (!context.mounted) return;
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.commonSaveSuccess)),
+                    SnackBar(
+                      content: Text(
+                        success ? l10n.commonSaveSuccess : l10n.commonSaveFailed,
+                      ),
+                    ),
                   );
                 },
               ),
@@ -309,10 +316,21 @@ class _ScopeCard extends StatelessWidget {
 }
 
 class _PhpVersionCard extends StatelessWidget {
-  final TextEditingController controller;
-  final VoidCallback onUpdate;
+  final String? currentRuntimeName;
+  final int? selectedRuntimeId;
+  final List<RuntimeInfo> runtimes;
+  final ValueChanged<int?> onRuntimeChanged;
+  final bool isUpdating;
+  final Future<void> Function() onUpdate;
 
-  const _PhpVersionCard({required this.controller, required this.onUpdate});
+  const _PhpVersionCard({
+    required this.currentRuntimeName,
+    required this.selectedRuntimeId,
+    required this.runtimes,
+    required this.onRuntimeChanged,
+    required this.isUpdating,
+    required this.onUpdate,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -326,20 +344,44 @@ class _PhpVersionCard extends StatelessWidget {
             Text(l10n.websitesPhpVersionTitle,
                 style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 12),
-            TextField(
-              controller: controller,
-              keyboardType: TextInputType.number,
+            Text(
+              '${l10n.websitesRuntimeLabel}: ${currentRuntimeName ?? '-'}',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 12),
+            DropdownButtonFormField<int?>(
+              key: ValueKey<int?>(selectedRuntimeId),
+              initialValue: selectedRuntimeId,
               decoration: InputDecoration(
                 labelText: l10n.websitesPhpRuntimeIdLabel,
                 hintText: l10n.websitesPhpRuntimeIdHint,
                 border: const OutlineInputBorder(),
               ),
+              items: [
+                const DropdownMenuItem<int?>(
+                  value: null,
+                  child: Text('-'),
+                ),
+                ...runtimes.map(
+                  (runtime) => DropdownMenuItem<int?>(
+                    value: runtime.id,
+                    child: Text(runtime.name ?? '${runtime.id ?? '-'}'),
+                  ),
+                ),
+              ],
+              onChanged: onRuntimeChanged,
             ),
             const SizedBox(height: 12),
             FilledButton.icon(
-              onPressed: onUpdate,
+              onPressed: isUpdating ? null : onUpdate,
               icon: const Icon(Icons.save),
-              label: Text(l10n.commonSave),
+              label: isUpdating
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : Text(l10n.commonSave),
             ),
           ],
         ),
