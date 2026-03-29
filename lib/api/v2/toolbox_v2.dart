@@ -66,18 +66,18 @@ class ToolboxV2Api {
     );
   }
 
-  /// 操作Clam扫描任务
-  Future<Response> operateClam(OperateByID request) async {
+  /// 操作Clam服务
+  Future<Response> operateClam(String operation) async {
     return await _client.post(
-      ApiConstants.buildApiPath('/toolbox/clam/handle'),
-      data: request.toJson(),
+      ApiConstants.buildApiPath('/toolbox/clam/operate'),
+      data: <String, dynamic>{'operation': operation},
     );
   }
 
-  /// 操作Clam扫描
+  /// 执行Clam扫描任务
   Future<Response> handleClam(OperateByID request) async {
     return await _client.post(
-      ApiConstants.buildApiPath('/toolbox/clam/operate'),
+      ApiConstants.buildApiPath('/toolbox/clam/handle'),
       data: request.toJson(),
     );
   }
@@ -325,15 +325,15 @@ class ToolboxV2Api {
   }
 
   /// 操作Fail2ban
-  Future<Response> operateFail2ban(OperateByType request) async {
+  Future<Response> operateFail2ban(String operation) async {
     return await _client.post(
       ApiConstants.buildApiPath('/toolbox/fail2ban/operate'),
-      data: request.toJson(),
+      data: <String, dynamic>{'operation': operation},
     );
   }
 
   /// 操作Fail2ban SSHD
-  Future<Response> operateFail2banSshd(OperateByType request) async {
+  Future<Response> operateFail2banSshd(Fail2banSet request) async {
     return await _client.post(
       ApiConstants.buildApiPath('/toolbox/fail2ban/operate/sshd'),
       data: request.toJson(),
@@ -424,10 +424,10 @@ class ToolboxV2Api {
   }
 
   /// 操作FTP服务
-  Future<Response> operateFtp(OperateByType request) async {
+  Future<Response> operateFtp(String operation) async {
     return await _client.post(
       ApiConstants.buildApiPath('/toolbox/ftp/operate'),
-      data: request.toJson(),
+      data: <String, dynamic>{'operation': operation},
     );
   }
 

@@ -7,12 +7,13 @@
 - **数据模型数**: 471
 - **优先级分类**: P0 (核心), P1 (高价值), P2 (工具类)
 - **当前状态真值**: `docs/development/swagger_adaptation_status_checklist.md`
-- **当前汇总（自动回刷）**: `45 已适配 / 7 部分适配 / 0 未适配`
+- **当前汇总（自动回刷）**: `52 已适配 / 0 部分适配 / 0 未适配`
 - **一致性校验**: `python3 scripts/validate_swagger_adaptation_docs.py`
 
 ## Phase 6 文档回刷（2026-03-29）
 
 - A组设置类 7 项已完成最短收口：System Setting、App、Monitor、Database PostgreSQL/Redis/Common、Website PHP。
+- B/C组 7 项已完成收口：Website CA/Acme/DNS 与 Toolbox Clam/Device/FTP/Fail2ban。
 - 三份追踪文档已按最新实现证据回刷，并通过一致性校验脚本。
 - 验证门禁：`flutter analyze`、`dart run test_runner.dart unit`、`dart run test_runner.dart ui`、`dart run test_runner.dart integration`（按环境开关 skip）均已通过。
 
@@ -123,9 +124,9 @@
 | **ScriptLibrary** | 5 | ✅ script_library_v2.dart | ✅ script_library_models.dart | ✅ 已测试 | ✅ 已集成 | Week 4 已交付列表 / 查看代码 / sync / run-output MVP |
 | **Container Network** | 4 | ✅ container_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | ✅ 已集成 | Orchestration 主流程已接入 |
 | **Container Volume** | 4 | ✅ container_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | ✅ 已集成 | Orchestration 主流程已接入 |
-| **Website CA** | 7 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🟡 部分 | 当前仅有账户汇总入口，完整 CRUD 不在 Phase 2 硬范围 |
-| **Website Acme** | 4 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | 🟡 部分 | 当前仅有账户汇总入口，完整 CRUD 不在 Phase 2 硬范围 |
-| **Website DNS** | 4 | ✅ website_v2.dart | ✅ website_models.dart | ⚠️ 待测试 | 🟡 部分 | 当前仅有账户汇总入口，完整 CRUD 不在 Phase 2 硬范围 |
+| **Website CA** | 7 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ✅ 已测试 | ✅ 已集成 | `WebsiteSslAccountsPage/Provider` 已补齐 CA 创建/删除、签发、续签、下载，并通过 provider/page 回归 |
+| **Website Acme** | 4 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ✅ 已测试 | ✅ 已集成 | `WebsiteSslAccountsPage/Provider` 已补齐 ACME 创建/更新/删除与失败反馈回填，并通过 provider/page 回归 |
+| **Website DNS** | 4 | ✅ website_v2.dart | ✅ website_models.dart | ✅ 已测试 | ✅ 已集成 | `WebsiteSslAccountsPage/Provider` 已补齐 DNS 账户创建/更新/删除与授权参数提交流程，并通过 provider/page 回归 |
 | **Website Domain** | 4 | ✅ website_v2.dart | ✅ website_models.dart | ✅ 已测试 | ✅ 已集成 | CRUD、本地校验与批量录入已接入；默认域名归属 Website 主链路 |
 | **Website Nginx** | 4 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ⚠️ 待测试 | ✅ 已集成 | 结构化配置与源码编辑入口已接入 |
 | **Website HTTPS** | 2 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | ✅ 已集成 | 站点 HTTPS 策略页已接入 |
@@ -137,13 +138,13 @@
 
 | 模块 | 端点数 | API客户端 | 数据模型 | 测试覆盖 | UI集成 | 状态 | 备注 |
 |-------|---------|-----------|----------|----------|---------|------|------|
-| **Clam** | 12 | ✅ toolbox_v2.dart | ✅ toolbox_models.dart | ✅ 已测试 | 🟡 部分 | 已有查看页，完整写操作链路仍未补齐 |
-| **Device** | 12 | ✅ host_v2.dart | ✅ host_models.dart | ⚠️ 待测试 | 🟡 部分 | 已并入 `toolbox/device`，不是独立顶级模块 |
+| **Clam** | 12 | ✅ toolbox_v2.dart | ✅ toolbox_models.dart | ✅ 已测试 | ✅ 已集成 | `ToolboxClamPage` 已补任务 CRUD、handle/operate、记录清理与分页，provider 测试已覆盖 |
+| **Device** | 12 | ✅ toolbox_v2.dart | ✅ toolbox_models.dart | ✅ 已测试 | ✅ 已集成 | `ToolboxDevicePage` 已补配置编辑、DNS 校验、改密、swap 更新，provider 测试已覆盖 |
 | **McpServer** | 8 | ✅ ai_v2.dart | ✅ mcp_models.dart | ✅ 已测试 | ✅ 已集成 | 已接入 AI 的 `MCP` 标签页与管理表单 |
 | **System Group** | 8 | ✅ system_group_v2.dart | ✅ system_group_models.dart | ✅ 已测试 | ✅ 已集成 | 已新增分组中心页，支持 core / agent 命名空间管理 |
-| **FTP** | 8 | ✅ toolbox_v2.dart | ✅ toolbox_models.dart | ⚠️ 待测试 | 🟡 部分 | 已有查看页，完整写操作链路仍未补齐 |
+| **FTP** | 8 | ✅ toolbox_v2.dart | ✅ toolbox_models.dart | ✅ 已测试 | ✅ 已集成 | `ToolboxFtpPage` 已补用户 CRUD、服务操作、搜索与分页，provider 测试已覆盖 |
 | **Host tool** | 7 | ✅ host_tool_v2.dart | ✅ host_tool_models.dart | ⚠️ 待测试 | ✅ 已集成 | 已新增 `toolbox/host-tool` 闭环 |
-| **Fail2ban** | 7 | ✅ toolbox_v2.dart | ✅ toolbox_models.dart | ⚠️ 待测试 | 🟡 部分 | 已有查看页，完整写操作链路仍未补齐 |
+| **Fail2ban** | 7 | ✅ toolbox_v2.dart | ✅ toolbox_models.dart | ✅ 已测试 | ✅ 已集成 | `ToolboxFail2banPage` 已补配置更新、enable/disable、start/stop/restart 与 sshd 操作，provider 测试已覆盖 |
 | **Disk Management** | 4 | ✅ disk_management_v2.dart | ✅ disk_management_models.dart | ⚠️ 待测试 | ✅ 已集成 | 已新增 `toolbox/disk` 闭环 |
 | **PHP Extensions** | 4 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ⚠️ 待测试 | ✅ 已集成 | Runtime 深能力页已接入 |
 | **untagged** | 4 | - | - | ✅ 已归类 | ✅ 已归类 | 4 个端点均已完成 owner 归类与调用落点：container stats/limit/list stats 与 website proxy config |

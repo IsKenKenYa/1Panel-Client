@@ -17,10 +17,18 @@ class ToolboxFtpService {
 
   final ToolboxRepository _repository;
 
-  Future<ToolboxFtpSnapshot> loadSnapshot() async {
+  Future<ToolboxFtpSnapshot> loadSnapshot({
+    int page = 1,
+    int pageSize = 50,
+    String? keyword,
+  }) async {
     final results = await Future.wait<dynamic>([
       _repository.getFtpBaseInfo(),
-      _repository.searchFtpUsers(page: 1, pageSize: 50),
+      _repository.searchFtpUsers(
+        page: page,
+        pageSize: pageSize,
+        keyword: keyword,
+      ),
     ]);
 
     return ToolboxFtpSnapshot(
@@ -31,5 +39,21 @@ class ToolboxFtpService {
 
   Future<void> syncUsers() async {
     await _repository.syncFtp();
+  }
+
+  Future<void> createUser(FtpCreate request) {
+    return _repository.createFtpUser(request);
+  }
+
+  Future<void> updateUser(FtpUpdate request) {
+    return _repository.updateFtpUser(request);
+  }
+
+  Future<void> deleteUsers(List<int> ids) {
+    return _repository.deleteFtpUsers(ids);
+  }
+
+  Future<void> operateService(String operation) {
+    return _repository.operateFtp(operation);
   }
 }

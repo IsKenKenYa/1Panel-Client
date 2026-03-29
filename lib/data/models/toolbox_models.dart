@@ -657,6 +657,34 @@ class Fail2banUpdate extends Equatable {
   List<Object?> get props => [bantime, findtime, isEnable, maxretry, port];
 }
 
+/// Fail2ban SSHD操作请求
+class Fail2banSet extends Equatable {
+  final List<String>? ips;
+  final String? operate;
+
+  const Fail2banSet({
+    this.ips,
+    this.operate,
+  });
+
+  factory Fail2banSet.fromJson(Map<String, dynamic> json) {
+    return Fail2banSet(
+      ips: (json['ips'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      operate: json['operate'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'ips': ips,
+      'operate': operate,
+    };
+  }
+
+  @override
+  List<Object?> get props => [ips, operate];
+}
+
 /// Fail2ban搜索请求
 class Fail2banSearch extends Equatable {
   final String? ip;

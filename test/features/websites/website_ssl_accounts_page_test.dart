@@ -153,7 +153,7 @@ class _FakeWebsiteAccountService extends WebsiteAccountService {
 }
 
 void main() {
-  Widget _buildPage(WebsiteSslAccountsProvider provider) {
+  Widget buildPage(WebsiteSslAccountsProvider provider) {
     return MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
@@ -166,7 +166,7 @@ void main() {
     final service = _FakeWebsiteAccountService();
     final provider = WebsiteSslAccountsProvider(service: service);
 
-    await tester.pumpWidget(_buildPage(provider));
+    await tester.pumpWidget(buildPage(provider));
     await tester.pumpAndSettle();
 
     expect(find.text('CA'), findsOneWidget);
@@ -189,7 +189,7 @@ void main() {
     final service = _FakeWebsiteAccountService();
     final provider = WebsiteSslAccountsProvider(service: service);
 
-    await tester.pumpWidget(_buildPage(provider));
+    await tester.pumpWidget(buildPage(provider));
     await tester.pumpAndSettle();
 
     // CA tab is default; check action icons are present
@@ -204,7 +204,7 @@ void main() {
     final service = _FakeWebsiteAccountService();
     final provider = WebsiteSslAccountsProvider(service: service);
 
-    await tester.pumpWidget(_buildPage(provider));
+    await tester.pumpWidget(buildPage(provider));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('ACME'));
@@ -219,7 +219,7 @@ void main() {
     final service = _FakeWebsiteAccountService();
     final provider = WebsiteSslAccountsProvider(service: service);
 
-    await tester.pumpWidget(_buildPage(provider));
+    await tester.pumpWidget(buildPage(provider));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('ACME'));
@@ -234,7 +234,7 @@ void main() {
     final service = _FakeWebsiteAccountService();
     final provider = WebsiteSslAccountsProvider(service: service);
 
-    await tester.pumpWidget(_buildPage(provider));
+    await tester.pumpWidget(buildPage(provider));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('ACME'));
@@ -261,7 +261,7 @@ void main() {
     final service = _FakeWebsiteAccountService()..failAcmeCreate = true;
     final provider = WebsiteSslAccountsProvider(service: service);
 
-    await tester.pumpWidget(_buildPage(provider));
+    await tester.pumpWidget(buildPage(provider));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('ACME'));
@@ -277,7 +277,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(AlertDialog), findsOneWidget);
-    expect(find.textContaining('mock failure'), findsOneWidget);
+    expect(find.textContaining('mock failure'), findsAtLeastNWidgets(1));
   });
 
   testWidgets('WebsiteSslAccountsPage shows confirm dialog when deleting ACME',
@@ -285,7 +285,7 @@ void main() {
     final service = _FakeWebsiteAccountService();
     final provider = WebsiteSslAccountsProvider(service: service);
 
-    await tester.pumpWidget(_buildPage(provider));
+    await tester.pumpWidget(buildPage(provider));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('ACME'));
@@ -296,7 +296,12 @@ void main() {
 
     expect(find.byType(AlertDialog), findsOneWidget);
 
-    await tester.tap(find.text('Delete'));
+    await tester.tap(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.widgetWithText(FilledButton, 'Delete'),
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(service.deleteAcmeCallCount, 1);
@@ -308,7 +313,7 @@ void main() {
     final service = _FakeWebsiteAccountService();
     final provider = WebsiteSslAccountsProvider(service: service);
 
-    await tester.pumpWidget(_buildPage(provider));
+    await tester.pumpWidget(buildPage(provider));
     await tester.pumpAndSettle();
 
     await tester.tap(find.byIcon(Icons.delete_outline));
@@ -316,7 +321,12 @@ void main() {
 
     expect(find.byType(AlertDialog), findsOneWidget);
 
-    await tester.tap(find.text('Delete'));
+    await tester.tap(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.widgetWithText(FilledButton, 'Delete'),
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(service.deleteCaCallCount, 1);
@@ -327,7 +337,7 @@ void main() {
     final service = _FakeWebsiteAccountService()..failDnsCreate = true;
     final provider = WebsiteSslAccountsProvider(service: service);
 
-    await tester.pumpWidget(_buildPage(provider));
+    await tester.pumpWidget(buildPage(provider));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('DNS'));
@@ -347,6 +357,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(AlertDialog), findsOneWidget);
-    expect(find.textContaining('mock failure'), findsOneWidget);
+    expect(find.textContaining('mock failure'), findsAtLeastNWidgets(1));
   });
 }

@@ -26,7 +26,7 @@ extension _WebsiteSslAccountsActions on _WebsiteSslAccountsBody {
     var selectedType =
         (existingType == '-') ? _kDnsProviderTemplates.first.type : existingType;
 
-    Map<String, TextEditingController> _buildTemplateControllers(
+    Map<String, TextEditingController> buildTemplateControllers(
       _DnsProviderTemplate template,
     ) {
       return {
@@ -42,7 +42,7 @@ extension _WebsiteSslAccountsActions on _WebsiteSslAccountsBody {
       text: jsonEncode(initialAuthorization),
     );
 
-    var templateControllers = _buildTemplateControllers(
+    var templateControllers = buildTemplateControllers(
       _findDnsTemplate(selectedType) ?? _kDnsProviderTemplates.first,
     );
 
@@ -70,7 +70,7 @@ extension _WebsiteSslAccountsActions on _WebsiteSslAccountsBody {
                     const SizedBox(height: 12),
                     if (!isEdit)
                       DropdownButtonFormField<String>(
-                        value: selectedType,
+                        initialValue: selectedType,
                         decoration: InputDecoration(
                           labelText: l10n.websitesSslAccountsTypeLabel,
                         ),
@@ -95,7 +95,7 @@ extension _WebsiteSslAccountsActions on _WebsiteSslAccountsBody {
                             final newTemplate = _findDnsTemplate(value);
                             if (newTemplate != null) {
                               templateControllers =
-                                  _buildTemplateControllers(newTemplate);
+                                  buildTemplateControllers(newTemplate);
                             } else {
                               templateControllers = {};
                             }
@@ -225,11 +225,11 @@ extension _WebsiteSslAccountsActions on _WebsiteSslAccountsBody {
       },
     );
 
-    nameController.dispose();
-    authorizationController.dispose();
-    for (final c in templateControllers.values) {
-      c.dispose();
-    }
+    _disposeControllersDeferred(<TextEditingController>[
+      nameController,
+      authorizationController,
+      ...templateControllers.values,
+    ]);
   }
 
   Future<void> _showAcmeDialog(
@@ -409,7 +409,7 @@ extension _WebsiteSslAccountsActions on _WebsiteSslAccountsBody {
       },
     );
 
-    emailController.dispose();
+    _disposeControllersDeferred(<TextEditingController>[emailController]);
   }
 
   Future<void> _showCertificateAuthorityDialog(
@@ -569,13 +569,15 @@ extension _WebsiteSslAccountsActions on _WebsiteSslAccountsBody {
       },
     );
 
-    nameController.dispose();
-    commonNameController.dispose();
-    countryController.dispose();
-    organizationController.dispose();
-    organizationUintController.dispose();
-    provinceController.dispose();
-    cityController.dispose();
+    _disposeControllersDeferred(<TextEditingController>[
+      nameController,
+      commonNameController,
+      countryController,
+      organizationController,
+      organizationUintController,
+      provinceController,
+      cityController,
+    ]);
   }
 
   Future<void> _showObtainDialog(
@@ -714,8 +716,10 @@ extension _WebsiteSslAccountsActions on _WebsiteSslAccountsBody {
       },
     );
 
-    domainsController.dispose();
-    timeController.dispose();
+    _disposeControllersDeferred(<TextEditingController>[
+      domainsController,
+      timeController,
+    ]);
   }
 
   Future<void> _renewCertificate(
@@ -953,6 +957,14 @@ extension _WebsiteSslAccountsActions on _WebsiteSslAccountsBody {
         value.toString(),
       ),
     );
+  }
+
+  void _disposeControllersDeferred(List<TextEditingController> controllers) {
+    Future<void>.delayed(const Duration(milliseconds: 300), () {
+      for (final controller in controllers) {
+        controller.dispose();
+      }
+    });
   }
 
   void _showError(BuildContext context, String message) {

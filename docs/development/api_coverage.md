@@ -9,12 +9,13 @@
 - 标签数: 52
 - 覆盖口径: 已实现=存在API调用与数据模型，已测试=具备单元/集成/端到端测试，已文档=包含使用说明与已知限制
 - 适配状态真值: `docs/development/swagger_adaptation_status_checklist.md`
-- 适配状态汇总（自动回刷）: `45 已适配 / 7 部分适配 / 0 未适配`
+- 适配状态汇总（自动回刷）: `52 已适配 / 0 部分适配 / 0 未适配`
 - 一致性校验: `python3 scripts/validate_swagger_adaptation_docs.py`
 
 ## Phase 6 文档回刷（2026-03-29）
 
 - A组设置类 7 项已完成最短收口并回刷证据：System Setting、App、Monitor、Database PostgreSQL/Redis/Common、Website PHP。
+- B/C组 7 项已完成收口并回刷证据：Website CA/Acme/DNS、Toolbox Clam/Device/FTP/Fail2ban。
 - A组页面写操作均已统一链路：`Page -> Provider -> Service -> Repository -> API`。
 - 本轮新增/扩展测试已覆盖 provider 流程与页面交互，详情见各模块 `test/features/...` 用例。
 
@@ -78,7 +79,6 @@
 	- `System Group`：新增分组中心页，支持 `core / agent` 命名空间切换与 CRUD。
 	- `Website Domain`：新增批量域名导入，按既有 `/websites/domains` 数组请求体提交。
 - 保持范围边界:
-	- `Website CA / Website Acme / Website DNS`
 	- `Container Image-repo / Container Compose-template`
 - `untagged` 行继续保留，但已在 canonical 清单中补充 owner 归类附录。
 
@@ -140,7 +140,7 @@
 | OpenResty | 10 | openresty_v2.dart | 9 | ❌ | ✅ |
 | Command | 8 | command_v2.dart | 14 | ✅ | ✅ |
 | Container Docker | 8 | docker_v2.dart | 60 | ✅ | ✅ |
-| Website CA | 7 | ssl_v2.dart | 17 | ❌ | ❌ |
+| Website CA | 7 | ssl_v2.dart | 17 | ✅ | ✅ |
 | Container Compose-template | 6 | container_compose_v2.dart | 14 | ✅ | ✅ |
 | Container Image-repo | 6 | docker_v2.dart | 60 | ✅ | ✅ |
 | Container Compose | 5 | container_compose_v2.dart | 14 | ❌ | ❌ |
@@ -148,8 +148,8 @@
 | Container Network | 4 | container_v2.dart | 43 | ❌ | ❌ |
 | Container Volume | 4 | container_v2.dart | 43 | ❌ | ❌ |
 | Logs | 4 | logs_v2.dart | 12 | ✅ | ✅ |
-| Website Acme | 4 | ssl_v2.dart | 17 | ❌ | ❌ |
-| Website DNS | 4 | website_v2.dart | 20 | ❌ | ❌ |
+| Website Acme | 4 | ssl_v2.dart | 17 | ✅ | ✅ |
+| Website DNS | 4 | website_v2.dart | 20 | ✅ | ✅ |
 | Website Domain | 4 | website_v2.dart | 20 | ✅ | ❌ |
 | Website Nginx | 4 | openresty_v2.dart | 9 | ❌ | ❌ |
 | Process | 2 | process_v2.dart | 4 | ✅ | ✅ |
@@ -161,12 +161,12 @@
 
 | 标签 | 端点数 | API客户端 | 方法数 | 已测试 | 已文档 |
 | --- | --- | --- | --- | --- | --- |
-| Clam | 12 | toolbox_v2.dart | 42 | ✅ | ❌ |
-| Device | 12 | host_v2.dart | 9 | ❌ | ❌ |
-| FTP | 8 | toolbox_v2.dart | 42 | ✅ | ❌ |
+| Clam | 12 | toolbox_v2.dart | 42 | ✅ | ✅ |
+| Device | 12 | toolbox_v2.dart | 42 | ✅ | ✅ |
+| FTP | 8 | toolbox_v2.dart | 42 | ✅ | ✅ |
 | McpServer | 8 | ai_v2.dart | 18 | ✅ | ❌ |
 | System Group | 8 | system_group_v2.dart | 8 | ✅ | ✅ |
-| Fail2ban | 7 | toolbox_v2.dart | 42 | ✅ | ❌ |
+| Fail2ban | 7 | toolbox_v2.dart | 42 | ✅ | ✅ |
 | Host tool | 7 | toolbox_v2.dart | 42 | ✅ | ❌ |
 | Disk Management | 4 | toolbox_v2.dart | 42 | ✅ | ❌ |
 | PHP Extensions | 4 | openresty_v2.dart | 9 | ❌ | ❌ |

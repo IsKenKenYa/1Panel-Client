@@ -21,14 +21,14 @@
   - `已归类附录`
   - `待归类`
 - 文档一致性校验脚本: `python3 scripts/validate_swagger_adaptation_docs.py`
-- 本次自动回刷冻结基线: `45 已适配 / 7 部分适配 / 0 未适配`
+- 本次自动回刷冻结基线: `52 已适配 / 0 部分适配 / 0 未适配`
 
 ## 汇总
 
 | 主状态 | 数量 |
 | --- | --- |
-| 已适配 | 45 |
-| 部分适配 | 7 |
+| 已适配 | 52 |
+| 部分适配 | 0 |
 | 未适配 | 0 |
 
 ## 清单
@@ -67,22 +67,22 @@
 | ScriptLibrary | 5 | `script_library` | 已适配 | Phase 1 已完成 | 列表、查看、同步、输出已接入 |
 | Container Network | 4 | `orchestration` | 已适配 | Phase 2 主范围完成 | 网络列表与创建/删除链路已接入 |
 | Container Volume | 4 | `orchestration` | 已适配 | Phase 2 主范围完成 | 卷列表与创建/删除链路已接入 |
-| Website CA | 7 | `websites` | 部分适配 | 范围边界 | 当前仅有账户汇总入口，完整 CRUD 不在 Phase 2 硬范围 |
-| Website Acme | 4 | `websites` | 部分适配 | 范围边界 | 当前仅有账户汇总入口，完整 CRUD 不在 Phase 2 硬范围 |
-| Website DNS | 4 | `websites` | 部分适配 | 范围边界 | 当前仅有账户汇总入口，完整 CRUD 不在 Phase 2 硬范围 |
+| Website CA | 7 | `websites` | 已适配 | 本轮新增闭环 | `WebsiteSslAccountsPage/Provider` 已补齐 CA 创建/删除、签发、续签、下载；`website_ssl_accounts_provider_test.dart` 与 `website_ssl_accounts_page_test.dart` 覆盖关键流程 |
+| Website Acme | 4 | `websites` | 已适配 | 本轮新增闭环 | `WebsiteSslAccountsPage/Provider` 已补齐 ACME 创建/更新/删除及失败提示回填；provider/page 测试已覆盖 |
+| Website DNS | 4 | `websites` | 已适配 | 本轮新增闭环 | `WebsiteSslAccountsPage/Provider` 已补齐 DNS 账户创建/更新/删除与授权参数提交流程；provider/page 测试已覆盖 |
 | Website Domain | 4 | `websites` | 已适配 | Phase 2 主范围完成 | CRUD、校验与批量导入已接入；默认域名能力归属 `Website` 主链路，不再作为该 tag 阻断项 |
 | Website Nginx | 4 | `websites` / `openresty` | 已适配 | Phase 2 主范围完成 | 结构化 scope 配置与源码编辑已接入 |
 | Website HTTPS | 2 | `websites` | 已适配 | Phase 2 主范围完成 | 站点 HTTPS 策略页已接入 |
 | Website PHP | 1 | `websites` | 已适配 | 本轮新增闭环 | 配置中心已挂接 PHP 入口；`WebsiteConfigProvider/Page` 已补当前版本读取、runtime 列表选择、切换提交与失败提示；新增 `website_config_provider_test.dart`、`website_config_page_test.dart` |
 | TaskLog | 2 | `logs` | 已适配 | Phase 1 已完成 | 已并入日志中心 Task 链路 |
 | Process | 2 | `processes` | 已适配 | Phase 1 已完成 | 列表、详情、stop 主链路完成 |
-| Clam | 12 | `toolbox` | 部分适配 | 非本阶段硬范围 | 现有页能查看 task/record，但写操作与完整流程未补齐 |
-| Device | 12 | `toolbox/device` | 部分适配 | 非本阶段硬范围 | 已并入 `toolbox/device`，不是独立顶级模块 |
+| Clam | 12 | `toolbox` | 已适配 | 本轮新增闭环 | `ToolboxClamPage -> ToolboxClamProvider -> ToolboxClamService -> ToolboxRepository -> toolbox_v2` 已补任务 CRUD、handle/operate、记录清理与分页；新增 `toolbox_clam_provider_test.dart` |
+| Device | 12 | `toolbox/device` | 已适配 | 本轮新增闭环 | `ToolboxDevicePage -> ToolboxDeviceProvider -> ToolboxDeviceService -> ToolboxRepository -> toolbox_v2` 已补配置编辑、DNS 校验、改密、swap 更新；新增 `toolbox_device_provider_test.dart` |
 | McpServer | 8 | `ai` | 已适配 | 本轮新增闭环 | 新增 `MCP` 标签页，补齐列表、创建、编辑、操作、域名绑定 |
 | System Group | 8 | `group` | 已适配 | 本轮新增闭环 | 新增分组中心页，支持 core / agent 命名空间下的独立查询与 CRUD |
-| FTP | 8 | `toolbox` | 部分适配 | 非本阶段硬范围 | 基础页已接入，但写操作与更多管理链路未补齐 |
+| FTP | 8 | `toolbox` | 已适配 | 本轮新增闭环 | `ToolboxFtpPage -> ToolboxFtpProvider -> ToolboxFtpService -> ToolboxRepository -> toolbox_v2` 已补用户 CRUD、服务操作、搜索与分页；新增 `toolbox_ftp_provider_test.dart` |
 | Host tool | 7 | `toolbox` | 已适配 | 本轮新增闭环 | 新增 `toolbox/host-tool`，接入 supervisord 状态、配置、进程与文件操作 |
-| Fail2ban | 7 | `toolbox` | 部分适配 | 非本阶段硬范围 | 基础页已接入，但完整写操作验证不齐 |
+| Fail2ban | 7 | `toolbox` | 已适配 | 本轮新增闭环 | `ToolboxFail2banPage -> ToolboxFail2banProvider -> ToolboxFail2banService -> ToolboxRepository -> toolbox_v2` 已补配置更新、enable/disable、start/stop/restart 与 sshd 操作；新增 `toolbox_fail2ban_provider_test.dart` |
 | Disk Management | 4 | `toolbox` | 已适配 | 本轮新增闭环 | 新增 `toolbox/disk`，接入列表、分区、挂载、卸载 |
 | PHP Extensions | 4 | `runtimes` | 已适配 | Phase 1 已完成 | PHP 扩展页与 provider 链路已接入 |
 | untagged | 4 | `containers` / `websites` | 已适配 | 已归类附录 | 4 个接口均已完成 API 与调用落点归类：`ContainerService` 使用 `/containers/item/stats`，`container_v2` 提供 `limit/list stats`，`website_v2` 提供 `proxy config` |

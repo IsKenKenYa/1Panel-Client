@@ -198,6 +198,13 @@ class TestRunner {
         description: 'Cronjob Provider测试',
       );
     }
+    final toolboxProviderDir = Directory('test/features/toolbox/providers');
+    if (await toolboxProviderDir.exists()) {
+      await runTests(
+        'test/features/toolbox/providers/',
+        description: 'Toolbox Provider测试',
+      );
+    }
     final scriptLibraryProviderDir =
         Directory('test/features/script_library/providers');
     if (await scriptLibraryProviderDir.exists()) {

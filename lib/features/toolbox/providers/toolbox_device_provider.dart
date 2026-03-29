@@ -12,6 +12,8 @@ class ToolboxDeviceProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool _isSaving = false;
   bool _isCheckingDns = false;
+  bool _isUpdatingPassword = false;
+  bool _isUpdatingSwap = false;
   String? _error;
   DeviceBaseInfo _baseInfo = const DeviceBaseInfo();
   Map<String, dynamic> _conf = const <String, dynamic>{};
@@ -21,6 +23,10 @@ class ToolboxDeviceProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get isSaving => _isSaving;
   bool get isCheckingDns => _isCheckingDns;
+  bool get isUpdatingPassword => _isUpdatingPassword;
+  bool get isUpdatingSwap => _isUpdatingSwap;
+  bool get isBusy =>
+      _isSaving || _isCheckingDns || _isUpdatingPassword || _isUpdatingSwap;
   String? get error => _error;
   DeviceBaseInfo get baseInfo => _baseInfo;
   Map<String, dynamic> get conf => _conf;
@@ -119,6 +125,89 @@ class ToolboxDeviceProvider extends ChangeNotifier {
       return false;
     } finally {
       _isCheckingDns = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> updateSwap(String swap) async {
+    final trimmed = swap.trim();
+    if (trimmed.isEmpty) {
+      _error = 'swap-empty';
+      notifyListeners();
+      return false;
+    }
+
+    _isUpdatingSwap = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _service.updateSwap(trimmed);
+      await load(silent: true);
+      return true;
+    } catch (error, stackTrace) {
+      appLogger.eWithPackage(
+        'features.toolbox.providers.toolbox_device',
+        'update swap failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      _error = error.toString();
+      return false;
+    } finally {
+      _isUpdatingSwap = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> changePassword({
+    required String oldPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    final oldTrimmed = oldPassword.trim();
+    final newTrimmed = newPassword.trim();
+    final confirmTrimmed = confirmPassword.trim();
+
+    if (oldTrimmed.isEmpty || newTrimmed.isEmpty || confirmTrimmed.isEmpty) {
+      _error = 'password-empty';
+      notifyListeners();
+      return false;
+    }
+
+    if (newTrimmed.length < 6) {
+      _error = 'password-too-short';
+      notifyListeners();
+      return false;
+    }
+
+    if (newTrimmed != confirmTrimmed) {
+      _error = 'password-mismatch';
+      notifyListeners();
+      return false;
+    }
+
+    _isUpdatingPassword = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _service.updatePassword(
+        oldPassword: oldTrimmed,
+        newPassword: newTrimmed,
+      );
+      return true;
+    } catch (error, stackTrace) {
+      appLogger.eWithPackage(
+        'features.toolbox.providers.toolbox_device',
+        'change password failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      _error = error.toString();
+      return false;
+    } finally {
+      _isUpdatingPassword = false;
       notifyListeners();
     }
   }

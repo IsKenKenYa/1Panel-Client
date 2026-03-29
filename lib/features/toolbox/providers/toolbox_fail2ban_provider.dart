@@ -11,6 +11,7 @@ class ToolboxFail2banProvider extends ChangeNotifier {
 
   bool _isLoading = false;
   bool _isSaving = false;
+  bool _isOperating = false;
   String? _error;
   Fail2banBaseInfo _baseInfo = const Fail2banBaseInfo();
   String _configText = '';
@@ -18,6 +19,8 @@ class ToolboxFail2banProvider extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
   bool get isSaving => _isSaving;
+  bool get isOperating => _isOperating;
+  bool get isBusy => _isSaving || _isOperating;
   String? get error => _error;
   Fail2banBaseInfo get baseInfo => _baseInfo;
   String get configText => _configText;
@@ -84,6 +87,73 @@ class ToolboxFail2banProvider extends ChangeNotifier {
       return false;
     } finally {
       _isSaving = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> toggle(bool enabled) {
+    return _operate(enabled ? 'enable' : 'disable');
+  }
+
+  Future<bool> restart() {
+    return _operate('restart');
+  }
+
+  Future<bool> start() {
+    return _operate('start');
+  }
+
+  Future<bool> stop() {
+    return _operate('stop');
+  }
+
+  Future<bool> operateSshd({
+    required String operate,
+    List<String> ips = const <String>[],
+  }) async {
+    _isOperating = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _service.operateSshd(operate: operate, ips: ips);
+      await load(silent: true);
+      return true;
+    } catch (error, stackTrace) {
+      appLogger.eWithPackage(
+        'features.toolbox.providers.toolbox_fail2ban',
+        'operate fail2ban sshd failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      _error = error.toString();
+      return false;
+    } finally {
+      _isOperating = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> _operate(String operation) async {
+    _isOperating = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _service.operate(operation);
+      await load(silent: true);
+      return true;
+    } catch (error, stackTrace) {
+      appLogger.eWithPackage(
+        'features.toolbox.providers.toolbox_fail2ban',
+        'operate fail2ban failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      _error = error.toString();
+      return false;
+    } finally {
+      _isOperating = false;
       notifyListeners();
     }
   }

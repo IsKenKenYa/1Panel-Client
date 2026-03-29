@@ -29,6 +29,16 @@ class ToolboxRepository {
     await api.updateDeviceConf(request);
   }
 
+  Future<void> updateDevicePassword(DevicePasswdUpdate request) async {
+    final api = await _ensureApi();
+    await api.updateDevicePassword(request);
+  }
+
+  Future<void> updateDeviceSwap(String swap) async {
+    final api = await _ensureApi();
+    await api.updateDeviceSwap(swap);
+  }
+
   Future<void> checkDns(String dns) async {
     final api = await _ensureApi();
     await api.checkDNS(dns);
@@ -47,6 +57,44 @@ class ToolboxRepository {
   Future<ClamBaseInfo> getClamBaseInfo() async {
     final api = await _ensureApi();
     return (await api.getClamBaseInfo()).data ?? const ClamBaseInfo();
+  }
+
+  Future<void> createClamTask(ClamCreate request) async {
+    final api = await _ensureApi();
+    await api.createClam(request);
+  }
+
+  Future<void> updateClamTask(ClamUpdate request) async {
+    final api = await _ensureApi();
+    await api.updateClam(request);
+  }
+
+  Future<void> deleteClamTasks({
+    required List<int> ids,
+    bool removeInfected = false,
+  }) async {
+    if (ids.isEmpty) {
+      return;
+    }
+    final api = await _ensureApi();
+    await api.deleteClam(
+      ClamDelete(ids: ids, removeInfected: removeInfected),
+    );
+  }
+
+  Future<void> handleClam(int id) async {
+    final api = await _ensureApi();
+    await api.handleClam(OperateByID(id: id));
+  }
+
+  Future<void> operateClam(String operation) async {
+    final api = await _ensureApi();
+    await api.operateClam(operation);
+  }
+
+  Future<void> cleanClamRecords(int id) async {
+    final api = await _ensureApi();
+    await api.cleanClamRecords(OperateByID(id: id));
   }
 
   Future<List<ClamBaseInfo>> searchClamTasks({
@@ -107,6 +155,21 @@ class ToolboxRepository {
     await api.updateFail2ban(request);
   }
 
+  Future<void> operateFail2ban(String operation) async {
+    final api = await _ensureApi();
+    await api.operateFail2ban(operation);
+  }
+
+  Future<void> operateFail2banSshd({
+    required String operate,
+    List<String> ips = const <String>[],
+  }) async {
+    final api = await _ensureApi();
+    await api.operateFail2banSshd(
+      Fail2banSet(operate: operate, ips: ips),
+    );
+  }
+
   Future<FtpBaseInfo> getFtpBaseInfo() async {
     final api = await _ensureApi();
     return (await api.getFtpBaseInfo()).data ?? const FtpBaseInfo();
@@ -131,6 +194,29 @@ class ToolboxRepository {
   Future<void> syncFtp() async {
     final api = await _ensureApi();
     await api.syncFtp();
+  }
+
+  Future<void> createFtpUser(FtpCreate request) async {
+    final api = await _ensureApi();
+    await api.createFtp(request);
+  }
+
+  Future<void> updateFtpUser(FtpUpdate request) async {
+    final api = await _ensureApi();
+    await api.updateFtp(request);
+  }
+
+  Future<void> deleteFtpUsers(List<int> ids) async {
+    if (ids.isEmpty) {
+      return;
+    }
+    final api = await _ensureApi();
+    await api.deleteFtp(FtpDelete(ids: ids));
+  }
+
+  Future<void> operateFtp(String operation) async {
+    final api = await _ensureApi();
+    await api.operateFtp(operation);
   }
 
   Map<String, dynamic> _normalizeToMap(dynamic value) {

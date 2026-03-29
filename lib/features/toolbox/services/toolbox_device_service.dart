@@ -53,6 +53,22 @@ class ToolboxDeviceService {
     );
   }
 
+  Future<void> updatePassword({
+    required String oldPassword,
+    required String newPassword,
+  }) {
+    return _repository.updateDevicePassword(
+      DevicePasswdUpdate(
+        oldPasswd: oldPassword,
+        newPasswd: newPassword,
+      ),
+    );
+  }
+
+  Future<void> updateSwap(String swap) {
+    return _repository.updateDeviceSwap(swap);
+  }
+
   Future<void> verifyDns(String dns) async {
     await _repository.checkDns(dns);
   }

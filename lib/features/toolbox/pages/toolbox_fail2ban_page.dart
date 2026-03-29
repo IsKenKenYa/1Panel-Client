@@ -5,6 +5,8 @@ import 'package:onepanel_client/features/toolbox/providers/toolbox_fail2ban_prov
 import 'package:onepanel_client/features/toolbox/widgets/toolbox_sections_widget.dart';
 import 'package:provider/provider.dart';
 
+part 'toolbox_fail2ban_page_actions_part.dart';
+
 class ToolboxFail2banPage extends StatefulWidget {
   const ToolboxFail2banPage({super.key});
 
@@ -12,7 +14,8 @@ class ToolboxFail2banPage extends StatefulWidget {
   State<ToolboxFail2banPage> createState() => _ToolboxFail2banPageState();
 }
 
-class _ToolboxFail2banPageState extends State<ToolboxFail2banPage> {
+class _ToolboxFail2banPageState extends State<ToolboxFail2banPage>
+  with _ToolboxFail2banPageActionsPart {
   @override
   void initState() {
     super.initState();
@@ -74,6 +77,43 @@ class _ToolboxFail2banPageState extends State<ToolboxFail2banPage> {
                   label: l10n.toolboxFail2banPort,
                   value: baseInfo.port ?? '-',
                 ),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    OutlinedButton(
+                      onPressed: provider.isBusy
+                          ? null
+                          : () => _operateService(context, provider, 'start'),
+                      child: Text(l10n.commonStart),
+                    ),
+                    OutlinedButton(
+                      onPressed: provider.isBusy
+                          ? null
+                          : () => _operateService(context, provider, 'stop'),
+                      child: Text(l10n.commonStop),
+                    ),
+                    FilledButton(
+                      onPressed: provider.isBusy
+                          ? null
+                          : () => _operateService(
+                                context,
+                                provider,
+                                'restart',
+                              ),
+                      child: Text(l10n.commonRestart),
+                    ),
+                  ],
+                ),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  value: baseInfo.isEnable ?? false,
+                  onChanged: provider.isBusy
+                      ? null
+                      : (value) => _toggleEnable(context, provider, value),
+                  title: Text(l10n.toolboxStatusLabel),
+                ),
               ],
             ),
           ),
@@ -84,7 +124,7 @@ class _ToolboxFail2banPageState extends State<ToolboxFail2banPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 OutlinedButton.icon(
-                  onPressed: provider.isSaving
+                  onPressed: provider.isBusy
                       ? null
                       : () => _showEditDialog(context, provider),
                   icon: const Icon(Icons.edit_outlined),
@@ -123,92 +163,4 @@ class _ToolboxFail2banPageState extends State<ToolboxFail2banPage> {
     );
   }
 
-  Future<void> _showEditDialog(
-    BuildContext context,
-    ToolboxFail2banProvider provider,
-  ) async {
-    final l10n = context.l10n;
-    final base = provider.baseInfo;
-    final bantimeController = TextEditingController(text: base.bantime ?? '');
-    final findtimeController = TextEditingController(text: base.findtime ?? '');
-    final maxretryController = TextEditingController(text: base.maxretry ?? '');
-    final portController = TextEditingController(text: base.port ?? '');
-    var enabled = base.isEnable ?? false;
-
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Text(l10n.toolboxFail2banEditConfig),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  value: enabled,
-                  onChanged: (value) => setState(() => enabled = value),
-                  title: Text(l10n.toolboxStatusLabel),
-                ),
-                TextField(
-                  controller: bantimeController,
-                  decoration:
-                      InputDecoration(labelText: l10n.toolboxFail2banBantime),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: findtimeController,
-                  decoration:
-                      InputDecoration(labelText: l10n.toolboxFail2banFindtime),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: maxretryController,
-                  decoration:
-                      InputDecoration(labelText: l10n.toolboxFail2banMaxretry),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: portController,
-                  decoration:
-                      InputDecoration(labelText: l10n.toolboxFail2banPort),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: Text(l10n.commonCancel),
-            ),
-            FilledButton(
-              onPressed: () async {
-                Navigator.pop(dialogContext);
-                final success = await provider.saveConfig(
-                  bantime: bantimeController.text,
-                  findtime: findtimeController.text,
-                  maxretry: maxretryController.text,
-                  port: portController.text,
-                  isEnable: enabled,
-                );
-                if (!context.mounted) {
-                  return;
-                }
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      success
-                          ? l10n.commonSaveSuccess
-                          : (provider.error ?? l10n.commonSaveFailed),
-                    ),
-                  ),
-                );
-              },
-              child: Text(l10n.commonSave),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

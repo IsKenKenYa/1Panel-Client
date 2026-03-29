@@ -36,4 +36,18 @@ class ToolboxFail2banService {
   Future<void> updateConfig(Fail2banUpdate request) async {
     await _repository.updateFail2ban(request);
   }
+
+  Future<void> operate(String operation) {
+    return _repository.operateFail2ban(operation);
+  }
+
+  Future<void> operateSshd({
+    required String operate,
+    List<String> ips = const <String>[],
+  }) {
+    return _repository.operateFail2banSshd(
+      operate: operate,
+      ips: ips,
+    );
+  }
 }
