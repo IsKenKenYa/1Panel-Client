@@ -304,6 +304,68 @@
   "websitesSslHealthExpiringSoon": "Expiring soon",
   "websitesSslHealthExpired": "Expired",
   "websitesSslHealthUnknown": "Unknown",
+  "websitesSslAccountsCaTab": "CA",
+  "websitesSslAccountsAcmeTab": "ACME",
+  "websitesSslAccountsDnsTab": "DNS",
+  "websitesSslAccountsEmpty": "No accounts",
+  "websitesSslAccountsCreateCaAction": "Create CA",
+  "websitesSslAccountsCreateAcmeAction": "Create ACME account",
+  "websitesSslAccountsEditAcmeAction": "Edit ACME account",
+  "websitesSslAccountsCreateDnsAction": "Create DNS account",
+  "websitesSslAccountsEditDnsAction": "Edit DNS account",
+  "websitesSslAccountsObtainAction": "Obtain certificate",
+  "websitesSslAccountsRenewAction": "Renew certificate",
+  "websitesSslAccountsDownloadAction": "Download CA file",
+  "websitesSslAccountsTypeLabel": "Type",
+  "websitesSslAccountsAuthorizationLabel": "Authorization JSON",
+  "websitesSslAccountsEmailLabel": "Email",
+  "websitesSslAccountsKeyTypeLabel": "Key type",
+  "websitesSslAccountsUseProxyLabel": "Use proxy",
+  "websitesSslAccountsCommonNameLabel": "Common name",
+  "websitesSslAccountsCountryLabel": "Country",
+  "websitesSslAccountsOrganizationLabel": "Organization",
+  "websitesSslAccountsOrganizationUnitLabel": "Organization unit",
+  "websitesSslAccountsProvinceLabel": "Province",
+  "websitesSslAccountsCityLabel": "City",
+  "websitesSslAccountsDomainsLabel": "Domains (comma-separated)",
+  "websitesSslAccountsTimeLabel": "Validity period",
+  "websitesSslAccountsUnitLabel": "Unit",
+  "websitesSslAccountsValidationNameRequired": "Name is required.",
+  "websitesSslAccountsValidationTypeRequired": "Type is required.",
+  "websitesSslAccountsValidationEmailRequired": "Email is required.",
+  "websitesSslAccountsValidationAuthorizationRequired": "Authorization is required.",
+  "websitesSslAccountsValidationAuthorizationInvalid": "Authorization must be a valid JSON object.",
+  "websitesSslAccountsValidationRequiredFields": "Please complete all required fields.",
+  "websitesSslAccountsValidationDomainsRequired": "Domains are required.",
+  "websitesSslAccountsValidationTimeInvalid": "Validity period must be greater than 0.",
+  "websitesSslAccountsMissingId": "Missing account ID.",
+  "websitesSslAccountsMissingSslId": "Missing SSL ID for renew.",
+  "websitesSslAccountsRenewConfirmMessage": "Renew this certificate now?",
+  "websitesSslAccountsDownloadSuccess": "CA download request submitted.",
+  "websitesSslAccountsDeleteDnsMessage": "Delete DNS account {name}?",
+  "@websitesSslAccountsDeleteDnsMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "websitesSslAccountsDeleteAcmeMessage": "Delete ACME account {email}?",
+  "@websitesSslAccountsDeleteAcmeMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "websitesSslAccountsDeleteCaMessage": "Delete CA {name}?",
+  "@websitesSslAccountsDeleteCaMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "@websitesSslDownloadHint": {
     "placeholders": {
       "link": {

@@ -635,6 +635,27 @@ class WebsiteV2Api {
     return const <Map<String, dynamic>>[];
   }
 
+  Future<void> createDnsAccount(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/dns'),
+      data: request,
+    );
+  }
+
+  Future<void> updateDnsAccount(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/dns/update'),
+      data: request,
+    );
+  }
+
+  Future<void> deleteDnsAccount(int id) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/dns/del'),
+      data: {'id': id},
+    );
+  }
+
   Future<List<Map<String, dynamic>>> searchAcmeAccounts(
       Map<String, dynamic> request) async {
     final response = await _client.post<Map<String, dynamic>>(
@@ -649,6 +670,31 @@ class WebsiteV2Api {
     return const <Map<String, dynamic>>[];
   }
 
+  Future<Map<String, dynamic>> createAcmeAccount(
+      Map<String, dynamic> request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/acme'),
+      data: request,
+    );
+    return _extractMapData(response);
+  }
+
+  Future<Map<String, dynamic>> updateAcmeAccount(
+      Map<String, dynamic> request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/acme/update'),
+      data: request,
+    );
+    return _extractMapData(response);
+  }
+
+  Future<void> deleteAcmeAccount(int id) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/acme/del'),
+      data: {'id': id},
+    );
+  }
+
   Future<List<Map<String, dynamic>>> searchCertificateAuthorities(
       Map<String, dynamic> request) async {
     final response = await _client.post<Map<String, dynamic>>(
@@ -661,6 +707,53 @@ class WebsiteV2Api {
       return items.whereType<Map<String, dynamic>>().toList();
     }
     return const <Map<String, dynamic>>[];
+  }
+
+  Future<Map<String, dynamic>> createCertificateAuthority(
+      Map<String, dynamic> request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/ca'),
+      data: request,
+    );
+    return _extractMapData(response);
+  }
+
+  Future<Map<String, dynamic>> getCertificateAuthority(int id) async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/ca/$id'),
+    );
+    return _extractMapData(response);
+  }
+
+  Future<void> deleteCertificateAuthority(int id) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/ca/del'),
+      data: {'id': id},
+    );
+  }
+
+  Future<Map<String, dynamic>> obtainCertificateByAuthority(
+      Map<String, dynamic> request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/ca/obtain'),
+      data: request,
+    );
+    return _extractMapData(response);
+  }
+
+  Future<void> renewCertificateByAuthority(int sslId) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/ca/renew'),
+      data: {'SSLID': sslId},
+    );
+  }
+
+  Future<String> downloadCertificateAuthorityFile(int id) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/websites/ca/download'),
+      data: {'id': id},
+    );
+    return response.data.toString();
   }
 
   Future<void> updateWebsiteProxy({

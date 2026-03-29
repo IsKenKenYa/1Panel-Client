@@ -21,14 +21,14 @@
   - `已归类附录`
   - `待归类`
 - 文档一致性校验脚本: `python3 scripts/validate_swagger_adaptation_docs.py`
-- 本次自动回刷冻结基线: `38 已适配 / 14 部分适配 / 0 未适配`
+- 本次自动回刷冻结基线: `45 已适配 / 7 部分适配 / 0 未适配`
 
 ## 汇总
 
 | 主状态 | 数量 |
 | --- | --- |
-| 已适配 | 38 |
-| 部分适配 | 14 |
+| 已适配 | 45 |
+| 部分适配 | 7 |
 | 未适配 | 0 |
 
 ## 清单
@@ -36,20 +36,20 @@
 | Tag | 端点数 | Owner 模块 | 主状态 | 范围标记 | 当前证据 / 备注 |
 | --- | --- | --- | --- | --- | --- |
 | Website | 54 | `websites` | 已适配 | Phase 2 主范围完成 | 生命周期、详情、默认站点、分组、备注已接入；长尾能力拆到子 tag 或范围边界 |
-| System Setting | 43 | `settings` | 部分适配 | 非本阶段硬范围 | 系统、终端、代理、监控、快照、菜单设置均有入口，但不是本阶段硬交付核心 |
+| System Setting | 43 | `settings` | 已适配 | 本轮新增闭环 | `SystemSettingsPage -> SettingsProvider -> SettingsService -> SettingRepository -> setting_v2` 已补应用商店配置、SSH 连接、网络接口、终端设置与快照常用操作读写；新增 `settings_provider_test.dart`、`system_settings_page_test.dart` |
 | File | 37 | `files` | 已适配 | Phase 2 主范围完成 | `FilesRepository + services + providers + pages` 已收口 |
-| App | 30 | `apps` | 部分适配 | 非本阶段硬范围 | `AppsPage -> InstalledAppsProvider/AppStoreProvider -> AppService -> AppRepository -> app_v2` 主链路可用；已覆盖 `apps_page_test.dart` 与 provider 回归，更多运维细项仍在范围外 |
+| App | 30 | `apps` | 已适配 | 本轮新增闭环 | `AppsPage -> InstalledAppsProvider/AppStoreProvider -> AppService -> AppRepository -> app_v2` 主链路闭环；忽略升级/取消忽略、配置更新、端口变更、同步触发均经 Provider 暴露并带结果提示；新增 `app_store_provider_test.dart`、`app_store_page_test.dart` |
 | Backup Account | 25 | `backups` | 已适配 | Phase 1 已完成 | 账户、记录、恢复主流程已闭环 |
 | Runtime | 25 | `runtimes` | 已适配 | Phase 1 已完成 | 通用链路与 PHP/Node/Supervisor 深能力已接入 |
 | Container | 19 | `containers` | 已适配 | Phase 1 已完成 | 容器列表、详情、常用操作链路可用 |
 | Database Mysql | 14 | `databases` | 已适配 | Phase 2 主范围完成 | list/detail/form/backup/users 主链路可用 |
 | Dashboard | 12 | `dashboard` | 已适配 | Phase 2 主范围完成 | repository/service/provider 重构完成 |
 | Database | 9 | `databases` | 已适配 | 已批准残留 | 主链路完成，细分状态与更多表单留 Phase 3 |
-| Database PostgreSQL | 9 | `databases` | 部分适配 | 已批准残留 | PostgreSQL 细节能力仍低于 MySQL 主链路完成度 |
-| Database Redis | 7 | `databases` | 部分适配 | 已批准残留 | Redis 细节配置与写操作仍有缺口 |
+| Database PostgreSQL | 9 | `databases` | 已适配 | 本轮新增闭环 | `DatabaseUsersPage/Provider` 已覆盖 bindUser 与 updatePrivileges 写链路并提供页面反馈；新增 `database_users_provider_test.dart` 与 `database_pages_test.dart`（PostgreSQL 用户权限交互） |
+| Database Redis | 7 | `databases` | 已适配 | 本轮新增闭环 | `DatabaseRedisPage -> DatabaseDetailProvider -> DatabasesService -> DatabaseRepository -> database_v2` 已补配置/持久化写入与成功失败反馈；新增 `database_detail_provider_test.dart`、`database_pages_test.dart` |
 | Auth | 5 | `auth` | 已适配 | Phase 2 主范围完成 | 安全存储、service、session store 已接入 |
-| Monitor | 5 | `monitoring` | 部分适配 | 非本阶段硬范围 | `MonitoringPage -> MonitoringProvider -> MonitoringService -> MonitorRepository (+ MonitorLocalDataSource)` 主链路可用；已覆盖 `monitoring_provider_test.dart`，告警与更深链路未做本轮收口 |
-| Database Common | 3 | `databases` | 部分适配 | 已批准残留 | 通用数据库能力存在，但未做到完整可视化闭环 |
+| Monitor | 5 | `monitoring` | 已适配 | 本轮新增闭环 | `MonitoringPage -> MonitoringProvider -> MonitoringService -> MonitorRepository (+ MonitorLocalDataSource)` 已补 GPU 刷新策略（开关+间隔）可控，设置保存后即时影响轮询行为；新增 `monitoring_provider_test.dart`、`monitoring_page_test.dart` |
+| Database Common | 3 | `databases` | 已适配 | 本轮新增闭环 | 通用详情写操作（描述/改密/绑定）统一反馈链路已闭环，失败路径回退可见；新增 `database_detail_provider_test.dart` 写入失败覆盖 |
 | Cronjob | 16 | `cronjobs` | 已适配 | Phase 1 已完成 | 列表、表单、记录链路已交付 |
 | Firewall | 15 | `firewall` | 已适配 | 已批准残留 | `status/rules/ip/ports` 完成；forward/filter advance/chain status 留 Phase 3 |
 | SSH | 12 | `ssh` | 已适配 | Phase 1 已完成 | 设置、证书、日志、会话均已接入 |
@@ -73,7 +73,7 @@
 | Website Domain | 4 | `websites` | 已适配 | Phase 2 主范围完成 | CRUD、校验与批量导入已接入；默认域名能力归属 `Website` 主链路，不再作为该 tag 阻断项 |
 | Website Nginx | 4 | `websites` / `openresty` | 已适配 | Phase 2 主范围完成 | 结构化 scope 配置与源码编辑已接入 |
 | Website HTTPS | 2 | `websites` | 已适配 | Phase 2 主范围完成 | 站点 HTTPS 策略页已接入 |
-| Website PHP | 1 | `websites` | 部分适配 | 非本阶段硬范围 | PHP 版本联动存在，但不是独立完整工作流 |
+| Website PHP | 1 | `websites` | 已适配 | 本轮新增闭环 | 配置中心已挂接 PHP 入口；`WebsiteConfigProvider/Page` 已补当前版本读取、runtime 列表选择、切换提交与失败提示；新增 `website_config_provider_test.dart`、`website_config_page_test.dart` |
 | TaskLog | 2 | `logs` | 已适配 | Phase 1 已完成 | 已并入日志中心 Task 链路 |
 | Process | 2 | `processes` | 已适配 | Phase 1 已完成 | 列表、详情、stop 主链路完成 |
 | Clam | 12 | `toolbox` | 部分适配 | 非本阶段硬范围 | 现有页能查看 task/record，但写操作与完整流程未补齐 |

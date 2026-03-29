@@ -9,8 +9,14 @@
 - 标签数: 52
 - 覆盖口径: 已实现=存在API调用与数据模型，已测试=具备单元/集成/端到端测试，已文档=包含使用说明与已知限制
 - 适配状态真值: `docs/development/swagger_adaptation_status_checklist.md`
-- 适配状态汇总（自动回刷）: `38 已适配 / 14 部分适配 / 0 未适配`
+- 适配状态汇总（自动回刷）: `45 已适配 / 7 部分适配 / 0 未适配`
 - 一致性校验: `python3 scripts/validate_swagger_adaptation_docs.py`
+
+## Phase 6 文档回刷（2026-03-29）
+
+- A组设置类 7 项已完成最短收口并回刷证据：System Setting、App、Monitor、Database PostgreSQL/Redis/Common、Website PHP。
+- A组页面写操作均已统一链路：`Page -> Provider -> Service -> Repository -> API`。
+- 本轮新增/扩展测试已覆盖 provider 流程与页面交互，详情见各模块 `test/features/...` 用例。
 
 ## Phase 2 增量覆盖（2026-03-28）
 
@@ -105,7 +111,7 @@
 | 标签 | 端点数 | API客户端 | 方法数 | 已测试 | 已文档 |
 | --- | --- | --- | --- | --- | --- |
 | Website | 54 | website_v2.dart | 20 | ✅ | ❌ |
-| System Setting | 43 | setting_v2.dart | 27 | ✅ | ❌ |
+| System Setting | 43 | setting_v2.dart | 27 | ✅ | ✅ |
 | File | 37 | file_v2.dart | 40 | ✅ | ✅ |
 | App | 30 | app_v2.dart | 27 | ✅ | ✅ |
 | Backup Account | 25 | backup_account_v2.dart | 26 | ✅ | ✅ |
@@ -114,11 +120,11 @@
 | Database Mysql | 14 | database_v2.dart | 17 | ✅ | ❌ |
 | Dashboard | 12 | dashboard_v2.dart | 16 | ✅ | ❌ |
 | Database | 9 | database_v2.dart | 17 | ✅ | ❌ |
-| Database PostgreSQL | 9 | database_v2.dart | 17 | ✅ | ❌ |
-| Database Redis | 7 | database_v2.dart | 17 | ✅ | ❌ |
+| Database PostgreSQL | 9 | database_v2.dart | 17 | ✅ | ✅ |
+| Database Redis | 7 | database_v2.dart | 17 | ✅ | ✅ |
 | Auth | 5 | auth_v2.dart | 8 | ✅ | ❌ |
 | Monitor | 5 | monitor_v2.dart | 7 | ✅ | ✅ |
-| Database Common | 3 | database_v2.dart | 17 | ✅ | ❌ |
+| Database Common | 3 | database_v2.dart | 17 | ✅ | ✅ |
 
 ### P1 高价值扩展模块
 
@@ -149,7 +155,7 @@
 | Process | 2 | process_v2.dart | 4 | ✅ | ✅ |
 | TaskLog | 2 | task_log_v2.dart | 2 | ✅ | ✅ |
 | Website HTTPS | 2 | ssl_v2.dart | 17 | ❌ | ❌ |
-| Website PHP | 1 | openresty_v2.dart | 9 | ❌ | ❌ |
+| Website PHP | 1 | website_v2.dart | 20 | ✅ | ✅ |
 
 ### P2 工具类模块
 

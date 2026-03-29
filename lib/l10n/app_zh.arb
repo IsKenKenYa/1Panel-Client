@@ -304,6 +304,68 @@
   "websitesSslHealthExpiringSoon": "即将过期",
   "websitesSslHealthExpired": "已过期",
   "websitesSslHealthUnknown": "未知",
+  "websitesSslAccountsCaTab": "CA",
+  "websitesSslAccountsAcmeTab": "ACME",
+  "websitesSslAccountsDnsTab": "DNS",
+  "websitesSslAccountsEmpty": "暂无账户",
+  "websitesSslAccountsCreateCaAction": "创建 CA",
+  "websitesSslAccountsCreateAcmeAction": "创建 ACME 账户",
+  "websitesSslAccountsEditAcmeAction": "编辑 ACME 账户",
+  "websitesSslAccountsCreateDnsAction": "创建 DNS 账户",
+  "websitesSslAccountsEditDnsAction": "编辑 DNS 账户",
+  "websitesSslAccountsObtainAction": "签发证书",
+  "websitesSslAccountsRenewAction": "续期证书",
+  "websitesSslAccountsDownloadAction": "下载 CA 文件",
+  "websitesSslAccountsTypeLabel": "类型",
+  "websitesSslAccountsAuthorizationLabel": "授权 JSON",
+  "websitesSslAccountsEmailLabel": "邮箱",
+  "websitesSslAccountsKeyTypeLabel": "密钥类型",
+  "websitesSslAccountsUseProxyLabel": "使用代理",
+  "websitesSslAccountsCommonNameLabel": "通用名称",
+  "websitesSslAccountsCountryLabel": "国家",
+  "websitesSslAccountsOrganizationLabel": "组织",
+  "websitesSslAccountsOrganizationUnitLabel": "组织单位",
+  "websitesSslAccountsProvinceLabel": "省份",
+  "websitesSslAccountsCityLabel": "城市",
+  "websitesSslAccountsDomainsLabel": "域名（逗号分隔）",
+  "websitesSslAccountsTimeLabel": "有效期",
+  "websitesSslAccountsUnitLabel": "单位",
+  "websitesSslAccountsValidationNameRequired": "名称不能为空。",
+  "websitesSslAccountsValidationTypeRequired": "类型不能为空。",
+  "websitesSslAccountsValidationEmailRequired": "邮箱不能为空。",
+  "websitesSslAccountsValidationAuthorizationRequired": "授权信息不能为空。",
+  "websitesSslAccountsValidationAuthorizationInvalid": "授权信息必须是合法 JSON 对象。",
+  "websitesSslAccountsValidationRequiredFields": "请补齐必填字段。",
+  "websitesSslAccountsValidationDomainsRequired": "域名不能为空。",
+  "websitesSslAccountsValidationTimeInvalid": "有效期必须大于 0。",
+  "websitesSslAccountsMissingId": "缺少账户 ID。",
+  "websitesSslAccountsMissingSslId": "缺少可续期的 SSL ID。",
+  "websitesSslAccountsRenewConfirmMessage": "确认立即续期该证书吗？",
+  "websitesSslAccountsDownloadSuccess": "已提交 CA 下载请求。",
+  "websitesSslAccountsDeleteDnsMessage": "确认删除 DNS 账户 {name} 吗？",
+  "@websitesSslAccountsDeleteDnsMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "websitesSslAccountsDeleteAcmeMessage": "确认删除 ACME 账户 {email} 吗？",
+  "@websitesSslAccountsDeleteAcmeMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "websitesSslAccountsDeleteCaMessage": "确认删除 CA {name} 吗？",
+  "@websitesSslAccountsDeleteCaMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "@websitesSslDownloadHint": {
     "placeholders": {
       "link": {

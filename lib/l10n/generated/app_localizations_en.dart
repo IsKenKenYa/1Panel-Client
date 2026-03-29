@@ -664,6 +664,142 @@ class AppLocalizationsEn extends AppLocalizations {
   String get websitesSslHealthUnknown => 'Unknown';
 
   @override
+  String get websitesSslAccountsCaTab => 'CA';
+
+  @override
+  String get websitesSslAccountsAcmeTab => 'ACME';
+
+  @override
+  String get websitesSslAccountsDnsTab => 'DNS';
+
+  @override
+  String get websitesSslAccountsEmpty => 'No accounts';
+
+  @override
+  String get websitesSslAccountsCreateCaAction => 'Create CA';
+
+  @override
+  String get websitesSslAccountsCreateAcmeAction => 'Create ACME account';
+
+  @override
+  String get websitesSslAccountsEditAcmeAction => 'Edit ACME account';
+
+  @override
+  String get websitesSslAccountsCreateDnsAction => 'Create DNS account';
+
+  @override
+  String get websitesSslAccountsEditDnsAction => 'Edit DNS account';
+
+  @override
+  String get websitesSslAccountsObtainAction => 'Obtain certificate';
+
+  @override
+  String get websitesSslAccountsRenewAction => 'Renew certificate';
+
+  @override
+  String get websitesSslAccountsDownloadAction => 'Download CA file';
+
+  @override
+  String get websitesSslAccountsTypeLabel => 'Type';
+
+  @override
+  String get websitesSslAccountsAuthorizationLabel => 'Authorization JSON';
+
+  @override
+  String get websitesSslAccountsEmailLabel => 'Email';
+
+  @override
+  String get websitesSslAccountsKeyTypeLabel => 'Key type';
+
+  @override
+  String get websitesSslAccountsUseProxyLabel => 'Use proxy';
+
+  @override
+  String get websitesSslAccountsCommonNameLabel => 'Common name';
+
+  @override
+  String get websitesSslAccountsCountryLabel => 'Country';
+
+  @override
+  String get websitesSslAccountsOrganizationLabel => 'Organization';
+
+  @override
+  String get websitesSslAccountsOrganizationUnitLabel => 'Organization unit';
+
+  @override
+  String get websitesSslAccountsProvinceLabel => 'Province';
+
+  @override
+  String get websitesSslAccountsCityLabel => 'City';
+
+  @override
+  String get websitesSslAccountsDomainsLabel => 'Domains (comma-separated)';
+
+  @override
+  String get websitesSslAccountsTimeLabel => 'Validity period';
+
+  @override
+  String get websitesSslAccountsUnitLabel => 'Unit';
+
+  @override
+  String get websitesSslAccountsValidationNameRequired => 'Name is required.';
+
+  @override
+  String get websitesSslAccountsValidationTypeRequired => 'Type is required.';
+
+  @override
+  String get websitesSslAccountsValidationEmailRequired => 'Email is required.';
+
+  @override
+  String get websitesSslAccountsValidationAuthorizationRequired =>
+      'Authorization is required.';
+
+  @override
+  String get websitesSslAccountsValidationAuthorizationInvalid =>
+      'Authorization must be a valid JSON object.';
+
+  @override
+  String get websitesSslAccountsValidationRequiredFields =>
+      'Please complete all required fields.';
+
+  @override
+  String get websitesSslAccountsValidationDomainsRequired =>
+      'Domains are required.';
+
+  @override
+  String get websitesSslAccountsValidationTimeInvalid =>
+      'Validity period must be greater than 0.';
+
+  @override
+  String get websitesSslAccountsMissingId => 'Missing account ID.';
+
+  @override
+  String get websitesSslAccountsMissingSslId => 'Missing SSL ID for renew.';
+
+  @override
+  String get websitesSslAccountsRenewConfirmMessage =>
+      'Renew this certificate now?';
+
+  @override
+  String get websitesSslAccountsDownloadSuccess =>
+      'CA download request submitted.';
+
+  @override
+  String websitesSslAccountsDeleteDnsMessage(String name) {
+    return 'Delete DNS account $name?';
+  }
+
+  @override
+  String websitesSslAccountsDeleteAcmeMessage(String email) {
+    return 'Delete ACME account $email?';
+  }
+
+  @override
+  String websitesSslAccountsDeleteCaMessage(String name) {
+    return 'Delete CA $name?';
+  }
+
+  @override
   String get openrestyPageTitle => 'OpenResty';
 
   @override

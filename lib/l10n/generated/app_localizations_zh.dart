@@ -657,6 +657,136 @@ class AppLocalizationsZh extends AppLocalizations {
   String get websitesSslHealthUnknown => '未知';
 
   @override
+  String get websitesSslAccountsCaTab => 'CA';
+
+  @override
+  String get websitesSslAccountsAcmeTab => 'ACME';
+
+  @override
+  String get websitesSslAccountsDnsTab => 'DNS';
+
+  @override
+  String get websitesSslAccountsEmpty => '暂无账户';
+
+  @override
+  String get websitesSslAccountsCreateCaAction => '创建 CA';
+
+  @override
+  String get websitesSslAccountsCreateAcmeAction => '创建 ACME 账户';
+
+  @override
+  String get websitesSslAccountsEditAcmeAction => '编辑 ACME 账户';
+
+  @override
+  String get websitesSslAccountsCreateDnsAction => '创建 DNS 账户';
+
+  @override
+  String get websitesSslAccountsEditDnsAction => '编辑 DNS 账户';
+
+  @override
+  String get websitesSslAccountsObtainAction => '签发证书';
+
+  @override
+  String get websitesSslAccountsRenewAction => '续期证书';
+
+  @override
+  String get websitesSslAccountsDownloadAction => '下载 CA 文件';
+
+  @override
+  String get websitesSslAccountsTypeLabel => '类型';
+
+  @override
+  String get websitesSslAccountsAuthorizationLabel => '授权 JSON';
+
+  @override
+  String get websitesSslAccountsEmailLabel => '邮箱';
+
+  @override
+  String get websitesSslAccountsKeyTypeLabel => '密钥类型';
+
+  @override
+  String get websitesSslAccountsUseProxyLabel => '使用代理';
+
+  @override
+  String get websitesSslAccountsCommonNameLabel => '通用名称';
+
+  @override
+  String get websitesSslAccountsCountryLabel => '国家';
+
+  @override
+  String get websitesSslAccountsOrganizationLabel => '组织';
+
+  @override
+  String get websitesSslAccountsOrganizationUnitLabel => '组织单位';
+
+  @override
+  String get websitesSslAccountsProvinceLabel => '省份';
+
+  @override
+  String get websitesSslAccountsCityLabel => '城市';
+
+  @override
+  String get websitesSslAccountsDomainsLabel => '域名（逗号分隔）';
+
+  @override
+  String get websitesSslAccountsTimeLabel => '有效期';
+
+  @override
+  String get websitesSslAccountsUnitLabel => '单位';
+
+  @override
+  String get websitesSslAccountsValidationNameRequired => '名称不能为空。';
+
+  @override
+  String get websitesSslAccountsValidationTypeRequired => '类型不能为空。';
+
+  @override
+  String get websitesSslAccountsValidationEmailRequired => '邮箱不能为空。';
+
+  @override
+  String get websitesSslAccountsValidationAuthorizationRequired => '授权信息不能为空。';
+
+  @override
+  String get websitesSslAccountsValidationAuthorizationInvalid =>
+      '授权信息必须是合法 JSON 对象。';
+
+  @override
+  String get websitesSslAccountsValidationRequiredFields => '请补齐必填字段。';
+
+  @override
+  String get websitesSslAccountsValidationDomainsRequired => '域名不能为空。';
+
+  @override
+  String get websitesSslAccountsValidationTimeInvalid => '有效期必须大于 0。';
+
+  @override
+  String get websitesSslAccountsMissingId => '缺少账户 ID。';
+
+  @override
+  String get websitesSslAccountsMissingSslId => '缺少可续期的 SSL ID。';
+
+  @override
+  String get websitesSslAccountsRenewConfirmMessage => '确认立即续期该证书吗？';
+
+  @override
+  String get websitesSslAccountsDownloadSuccess => '已提交 CA 下载请求。';
+
+  @override
+  String websitesSslAccountsDeleteDnsMessage(String name) {
+    return '确认删除 DNS 账户 $name 吗？';
+  }
+
+  @override
+  String websitesSslAccountsDeleteAcmeMessage(String email) {
+    return '确认删除 ACME 账户 $email 吗？';
+  }
+
+  @override
+  String websitesSslAccountsDeleteCaMessage(String name) {
+    return '确认删除 CA $name 吗？';
+  }
+
+  @override
   String get openrestyPageTitle => 'OpenResty';
 
   @override

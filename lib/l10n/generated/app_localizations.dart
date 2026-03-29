@@ -1334,6 +1334,252 @@ abstract class AppLocalizations {
   /// **'Unknown'**
   String get websitesSslHealthUnknown;
 
+  /// No description provided for @websitesSslAccountsCaTab.
+  ///
+  /// In en, this message translates to:
+  /// **'CA'**
+  String get websitesSslAccountsCaTab;
+
+  /// No description provided for @websitesSslAccountsAcmeTab.
+  ///
+  /// In en, this message translates to:
+  /// **'ACME'**
+  String get websitesSslAccountsAcmeTab;
+
+  /// No description provided for @websitesSslAccountsDnsTab.
+  ///
+  /// In en, this message translates to:
+  /// **'DNS'**
+  String get websitesSslAccountsDnsTab;
+
+  /// No description provided for @websitesSslAccountsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No accounts'**
+  String get websitesSslAccountsEmpty;
+
+  /// No description provided for @websitesSslAccountsCreateCaAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create CA'**
+  String get websitesSslAccountsCreateCaAction;
+
+  /// No description provided for @websitesSslAccountsCreateAcmeAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create ACME account'**
+  String get websitesSslAccountsCreateAcmeAction;
+
+  /// No description provided for @websitesSslAccountsEditAcmeAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit ACME account'**
+  String get websitesSslAccountsEditAcmeAction;
+
+  /// No description provided for @websitesSslAccountsCreateDnsAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create DNS account'**
+  String get websitesSslAccountsCreateDnsAction;
+
+  /// No description provided for @websitesSslAccountsEditDnsAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit DNS account'**
+  String get websitesSslAccountsEditDnsAction;
+
+  /// No description provided for @websitesSslAccountsObtainAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Obtain certificate'**
+  String get websitesSslAccountsObtainAction;
+
+  /// No description provided for @websitesSslAccountsRenewAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Renew certificate'**
+  String get websitesSslAccountsRenewAction;
+
+  /// No description provided for @websitesSslAccountsDownloadAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Download CA file'**
+  String get websitesSslAccountsDownloadAction;
+
+  /// No description provided for @websitesSslAccountsTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get websitesSslAccountsTypeLabel;
+
+  /// No description provided for @websitesSslAccountsAuthorizationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Authorization JSON'**
+  String get websitesSslAccountsAuthorizationLabel;
+
+  /// No description provided for @websitesSslAccountsEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get websitesSslAccountsEmailLabel;
+
+  /// No description provided for @websitesSslAccountsKeyTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Key type'**
+  String get websitesSslAccountsKeyTypeLabel;
+
+  /// No description provided for @websitesSslAccountsUseProxyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Use proxy'**
+  String get websitesSslAccountsUseProxyLabel;
+
+  /// No description provided for @websitesSslAccountsCommonNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Common name'**
+  String get websitesSslAccountsCommonNameLabel;
+
+  /// No description provided for @websitesSslAccountsCountryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Country'**
+  String get websitesSslAccountsCountryLabel;
+
+  /// No description provided for @websitesSslAccountsOrganizationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization'**
+  String get websitesSslAccountsOrganizationLabel;
+
+  /// No description provided for @websitesSslAccountsOrganizationUnitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization unit'**
+  String get websitesSslAccountsOrganizationUnitLabel;
+
+  /// No description provided for @websitesSslAccountsProvinceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Province'**
+  String get websitesSslAccountsProvinceLabel;
+
+  /// No description provided for @websitesSslAccountsCityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get websitesSslAccountsCityLabel;
+
+  /// No description provided for @websitesSslAccountsDomainsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Domains (comma-separated)'**
+  String get websitesSslAccountsDomainsLabel;
+
+  /// No description provided for @websitesSslAccountsTimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Validity period'**
+  String get websitesSslAccountsTimeLabel;
+
+  /// No description provided for @websitesSslAccountsUnitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit'**
+  String get websitesSslAccountsUnitLabel;
+
+  /// No description provided for @websitesSslAccountsValidationNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Name is required.'**
+  String get websitesSslAccountsValidationNameRequired;
+
+  /// No description provided for @websitesSslAccountsValidationTypeRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Type is required.'**
+  String get websitesSslAccountsValidationTypeRequired;
+
+  /// No description provided for @websitesSslAccountsValidationEmailRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Email is required.'**
+  String get websitesSslAccountsValidationEmailRequired;
+
+  /// No description provided for @websitesSslAccountsValidationAuthorizationRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Authorization is required.'**
+  String get websitesSslAccountsValidationAuthorizationRequired;
+
+  /// No description provided for @websitesSslAccountsValidationAuthorizationInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Authorization must be a valid JSON object.'**
+  String get websitesSslAccountsValidationAuthorizationInvalid;
+
+  /// No description provided for @websitesSslAccountsValidationRequiredFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Please complete all required fields.'**
+  String get websitesSslAccountsValidationRequiredFields;
+
+  /// No description provided for @websitesSslAccountsValidationDomainsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Domains are required.'**
+  String get websitesSslAccountsValidationDomainsRequired;
+
+  /// No description provided for @websitesSslAccountsValidationTimeInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Validity period must be greater than 0.'**
+  String get websitesSslAccountsValidationTimeInvalid;
+
+  /// No description provided for @websitesSslAccountsMissingId.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing account ID.'**
+  String get websitesSslAccountsMissingId;
+
+  /// No description provided for @websitesSslAccountsMissingSslId.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing SSL ID for renew.'**
+  String get websitesSslAccountsMissingSslId;
+
+  /// No description provided for @websitesSslAccountsRenewConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Renew this certificate now?'**
+  String get websitesSslAccountsRenewConfirmMessage;
+
+  /// No description provided for @websitesSslAccountsDownloadSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'CA download request submitted.'**
+  String get websitesSslAccountsDownloadSuccess;
+
+  /// No description provided for @websitesSslAccountsDeleteDnsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete DNS account {name}?'**
+  String websitesSslAccountsDeleteDnsMessage(String name);
+
+  /// No description provided for @websitesSslAccountsDeleteAcmeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete ACME account {email}?'**
+  String websitesSslAccountsDeleteAcmeMessage(String email);
+
+  /// No description provided for @websitesSslAccountsDeleteCaMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete CA {name}?'**
+  String websitesSslAccountsDeleteCaMessage(String name);
+
   /// No description provided for @openrestyPageTitle.
   ///
   /// In en, this message translates to:

@@ -7,8 +7,21 @@
 - **数据模型数**: 471
 - **优先级分类**: P0 (核心), P1 (高价值), P2 (工具类)
 - **当前状态真值**: `docs/development/swagger_adaptation_status_checklist.md`
-- **当前汇总（自动回刷）**: `38 已适配 / 14 部分适配 / 0 未适配`
+- **当前汇总（自动回刷）**: `45 已适配 / 7 部分适配 / 0 未适配`
 - **一致性校验**: `python3 scripts/validate_swagger_adaptation_docs.py`
+
+## Phase 6 文档回刷（2026-03-29）
+
+- A组设置类 7 项已完成最短收口：System Setting、App、Monitor、Database PostgreSQL/Redis/Common、Website PHP。
+- 三份追踪文档已按最新实现证据回刷，并通过一致性校验脚本。
+- 验证门禁：`flutter analyze`、`dart run test_runner.dart unit`、`dart run test_runner.dart ui`、`dart run test_runner.dart integration`（按环境开关 skip）均已通过。
+
+### A组移动端增强（并行，不阻塞收口）
+
+- 状态：待并行实施（不作为 Phase 6 收口阻断项）。
+- 增强项 1：设置修改草稿本地缓存（切后台恢复）。
+- 增强项 2：写操作统一底部动作栏与单手可达按钮布局。
+- 增强项 3：关键写操作增加震动反馈与可撤销提示（Snackbar + Undo）。
 
 ## Phase 2 增量进展（2026-03-28）
 
@@ -74,20 +87,20 @@
 | 模块 | 端点数 | API客户端 | 数据模型 | 测试覆盖 | UI集成 | 状态 | 备注 |
 |-------|---------|-----------|----------|----------|---------|------|------|
 | **Website** | 54 | ✅ website_v2.dart | ✅ website_models.dart | ✅ 已测试 | 🟡 部分 | lifecycle/detail/default/group/remark/create-edit 已接入，SSL/OpenResty 深化留给后续 |
-| **System Setting** | 43 | ✅ setting_v2.dart | ✅ setting_models.dart | ✅ 已测试 | 🟡 部分 | MFA功能已实现 |
+| **System Setting** | 43 | ✅ setting_v2.dart | ✅ setting_models.dart | ✅ 已测试 | ✅ 已集成 | 已补应用商店配置、SSH连接、网络接口、终端设置与快照常用操作双向链路；`system_settings_page_test.dart` 与 `settings_provider_test.dart` 已覆盖 |
 | **File** | 37 | ✅ file_v2.dart | ✅ file_models.dart | ✅ 已测试 | 🟡 部分 | 上传/下载/编辑流程待扩展 |
-| **App** | 30 | ✅ app_v2.dart | ✅ app_models.dart | ✅ 已测试 | 🟡 部分 | `AppsPage -> InstalledAppsProvider/AppStoreProvider -> AppService -> AppRepository` 主链路可用，更多运维细项待补齐 |
+| **App** | 30 | ✅ app_v2.dart | ✅ app_models.dart | ✅ 已测试 | ✅ 已集成 | Installed/App Store 双分栏保持不变；忽略升级/取消忽略、配置更新、端口变更、同步触发均经 Provider 链路并带成功/失败反馈 |
 | **Backup Account** | 25 | ✅ backup_account_v2.dart | ✅ backup_account_models.dart + `backup_request_models.dart` | ✅ 已测试 | ✅ 已集成 | Week 5 已交付账户 / records / recover 主链路；review closeout 后 `BackupRecoverPage` 已对 `app / website / mysql / postgresql / redis / directory / snapshot / log` 做显式类型映射，并拆分 `recordType/requestType`；非可恢复类型保留上下文并禁用提交 |
 | **Runtime** | 25 | ✅ runtime_v2.dart | ✅ runtime_models.dart | ✅ 已测试 | ✅ 已集成 | Week 7 已交付 `RuntimesCenterPage` / `RuntimeDetailPage` / `RuntimeFormPage` 通用链路；PHP/Node 深能力保留到 Week 8 |
 | **Container** | 19 | ✅ container_v2.dart | ✅ container_models.dart | ✅ 已测试 | 🟡 部分 | 需要补齐网络/卷/镜像管理 |
 | **Database Mysql** | 14 | ✅ database_v2.dart | ✅ database_models.dart | ✅ 已测试 | 🟡 部分 | 列表/详情/backup/user 主链路已接入，细分能力待扩展 |
 | **Dashboard** | 12 | ✅ dashboard_v2.dart | ✅ monitoring_models.dart | ✅ 已测试 | ✅ 已集成 | 关注核心指标展示 |
 | **Database** | 9 | ✅ database_v2.dart | ✅ database_models.dart | ✅ 已测试 | 🟡 部分 | list/detail/form/backup/users 闭环已成型，remote/redis 细节待继续打磨 |
-| **Database PostgreSQL** | 9 | ✅ database_v2.dart | ✅ database_models.dart | ⚠️ 待测试 | 🟡 部分 | PostgreSQL特定功能待细化 |
-| **Database Redis** | 7 | ✅ database_v2.dart | ✅ database_models.dart | ⚠️ 待测试 | 🟡 部分 | Redis特定功能待细化 |
-| **Database Common** | 3 | ✅ database_v2.dart | ✅ database_models.dart | ⚠️ 待测试 | 🟡 部分 | 通用数据库操作 |
+| **Database PostgreSQL** | 9 | ✅ database_v2.dart | ✅ database_models.dart | ✅ 已测试 | ✅ 已集成 | `DatabaseUsersPage/Provider` 已覆盖 bindUser 与 updatePrivileges 写链路及失败回退，页面交互回归已补齐 |
+| **Database Redis** | 7 | ✅ database_v2.dart | ✅ database_models.dart | ✅ 已测试 | ✅ 已集成 | `DatabaseRedisPage` 已补配置/持久化写操作与反馈闭环，provider/page 测试已覆盖 |
+| **Database Common** | 3 | ✅ database_v2.dart | ✅ database_models.dart | ✅ 已测试 | ✅ 已集成 | 通用详情写操作（描述/改密/绑定）反馈链路与失败路径回退已覆盖 |
 | **Auth** | 5 | ✅ auth_v2.dart | ✅ user_models.dart | ✅ 已测试 | ✅ 已集成 | 认证主链路完整，S2-5 安全存储分层已启动 |
-| **Monitor** | 5 | ✅ monitor_v2.dart | ✅ monitoring_models.dart | ✅ 已测试 | 🟡 部分 | `MonitoringProvider -> MonitoringService -> MonitorRepository` 主链路可用，告警与更深链路待扩展 |
+| **Monitor** | 5 | ✅ monitor_v2.dart | ✅ monitoring_models.dart | ✅ 已测试 | ✅ 已集成 | GPU 刷新策略（开关+间隔）可控，设置保存后即时影响轮询；`monitoring_provider_test.dart` 与 `monitoring_page_test.dart` 已覆盖 |
 
 ### P1 优先级模块 (高价值扩展)
 
@@ -116,7 +129,7 @@
 | **Website Domain** | 4 | ✅ website_v2.dart | ✅ website_models.dart | ✅ 已测试 | ✅ 已集成 | CRUD、本地校验与批量录入已接入；默认域名归属 Website 主链路 |
 | **Website Nginx** | 4 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ⚠️ 待测试 | ✅ 已集成 | 结构化配置与源码编辑入口已接入 |
 | **Website HTTPS** | 2 | ✅ ssl_v2.dart | ✅ ssl_models.dart | ⚠️ 待测试 | ✅ 已集成 | 站点 HTTPS 策略页已接入 |
-| **Website PHP** | 1 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ⚠️ 待测试 | 🔴 待集成 | PHP配置 |
+| **Website PHP** | 1 | ✅ website_v2.dart | ✅ website_models.dart | ✅ 已测试 | ✅ 已集成 | 配置中心已挂接入口；配置页支持当前版本回显、runtime 列表切换、提交成功/失败反馈；provider/page 测试已补齐 |
 | **TaskLog** | 2 | ✅ task_log_v2.dart | ✅ task_log_models.dart | ✅ 已测试 | ✅ 已集成 | Week 6 已并入日志中心 `Task` tab，并交付 `TaskLogDetailPage`；详情正文由 `taskID + /files/read` 驱动 |
 | **Process** | 2 | ✅ process_v2.dart | ✅ process_models.dart | ✅ 已测试 | ✅ 已集成 | Week 3 已交付实时列表 / 详情 / stop，主列表真值来自 `process/ws` |
 
