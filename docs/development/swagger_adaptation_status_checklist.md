@@ -18,16 +18,17 @@
   - `范围边界`
   - `非本阶段硬范围`
   - `本轮新增闭环`
+  - `已归类附录`
   - `待归类`
 - 文档一致性校验脚本: `python3 scripts/validate_swagger_adaptation_docs.py`
-- 本次自动回刷冻结基线: `34 已适配 / 18 部分适配 / 0 未适配`
+- 本次自动回刷冻结基线: `38 已适配 / 14 部分适配 / 0 未适配`
 
 ## 汇总
 
 | 主状态 | 数量 |
 | --- | --- |
-| 已适配 | 34 |
-| 部分适配 | 18 |
+| 已适配 | 38 |
+| 部分适配 | 14 |
 | 未适配 | 0 |
 
 ## 清单
@@ -37,7 +38,7 @@
 | Website | 54 | `websites` | 已适配 | Phase 2 主范围完成 | 生命周期、详情、默认站点、分组、备注已接入；长尾能力拆到子 tag 或范围边界 |
 | System Setting | 43 | `settings` | 部分适配 | 非本阶段硬范围 | 系统、终端、代理、监控、快照、菜单设置均有入口，但不是本阶段硬交付核心 |
 | File | 37 | `files` | 已适配 | Phase 2 主范围完成 | `FilesRepository + services + providers + pages` 已收口 |
-| App | 30 | `apps` | 部分适配 | 非本阶段硬范围 | 应用商店与已安装应用链路可用，更多运维细项未做收口 |
+| App | 30 | `apps` | 部分适配 | 非本阶段硬范围 | `AppsPage -> InstalledAppsProvider/AppStoreProvider -> AppService -> AppRepository -> app_v2` 主链路可用；已覆盖 `apps_page_test.dart` 与 provider 回归，更多运维细项仍在范围外 |
 | Backup Account | 25 | `backups` | 已适配 | Phase 1 已完成 | 账户、记录、恢复主流程已闭环 |
 | Runtime | 25 | `runtimes` | 已适配 | Phase 1 已完成 | 通用链路与 PHP/Node/Supervisor 深能力已接入 |
 | Container | 19 | `containers` | 已适配 | Phase 1 已完成 | 容器列表、详情、常用操作链路可用 |
@@ -47,7 +48,7 @@
 | Database PostgreSQL | 9 | `databases` | 部分适配 | 已批准残留 | PostgreSQL 细节能力仍低于 MySQL 主链路完成度 |
 | Database Redis | 7 | `databases` | 部分适配 | 已批准残留 | Redis 细节配置与写操作仍有缺口 |
 | Auth | 5 | `auth` | 已适配 | Phase 2 主范围完成 | 安全存储、service、session store 已接入 |
-| Monitor | 5 | `monitoring` | 部分适配 | 非本阶段硬范围 | 监控页可用，但告警和更深监控链路未做本轮收口 |
+| Monitor | 5 | `monitoring` | 部分适配 | 非本阶段硬范围 | `MonitoringPage -> MonitoringProvider -> MonitoringService -> MonitorRepository (+ MonitorLocalDataSource)` 主链路可用；已覆盖 `monitoring_provider_test.dart`，告警与更深链路未做本轮收口 |
 | Database Common | 3 | `databases` | 部分适配 | 已批准残留 | 通用数据库能力存在，但未做到完整可视化闭环 |
 | Cronjob | 16 | `cronjobs` | 已适配 | Phase 1 已完成 | 列表、表单、记录链路已交付 |
 | Firewall | 15 | `firewall` | 已适配 | 已批准残留 | `status/rules/ip/ports` 完成；forward/filter advance/chain status 留 Phase 3 |
@@ -58,10 +59,10 @@
 | Host | 10 | `host_assets` | 已适配 | Phase 1 已完成 | 主机资产列表、表单、测试、分组移动已接入 |
 | OpenResty | 10 | `openresty` | 已适配 | Phase 2 主范围完成 | status / https / modules / config / build 已接入 |
 | Command | 8 | `commands` | 已适配 | Phase 1 已完成 | 列表、导入预览、表单与执行链路可用 |
-| Container Docker | 8 | `containers` | 部分适配 | 非本阶段硬范围 | daemon config / repo / template 在容器页存在，但不是本阶段主收口对象 |
+| Container Docker | 8 | `containers` | 已适配 | 本轮新增闭环 | `ContainersProvider + ContainerService + container_v2` 已形成 daemon config / repo / template 读写闭环；补充 `containers_provider_test.dart` daemon 写回回归 |
 | Logs | 4 | `logs` | 已适配 | Phase 1 已完成 | operation / login / system / task 主链路已接入 |
-| Container Compose-template | 6 | `containers` | 部分适配 | 范围边界 | 页面存在，但按计划不纳入 Phase 2 主交付 |
-| Container Image-repo | 6 | `containers` | 部分适配 | 范围边界 | 页面存在，但按计划不纳入 Phase 2 主交付 |
+| Container Compose-template | 6 | `containers` | 已适配 | 本轮新增闭环 | `TemplatesTab + TemplateCreateDialog` 已接入 create/update/delete；补充 `containers_provider_test.dart` 模板 CRUD 回归 |
+| Container Image-repo | 6 | `containers` | 已适配 | 本轮新增闭环 | `ReposTab + RepoCreateDialog` 已接入 create/update/delete；补充 `containers_provider_test.dart` 仓库 CRUD 回归 |
 | Container Compose | 5 | `orchestration` | 已适配 | Phase 2 主范围完成 | 独立编排页已接入 create/detail/operate |
 | ScriptLibrary | 5 | `script_library` | 已适配 | Phase 1 已完成 | 列表、查看、同步、输出已接入 |
 | Container Network | 4 | `orchestration` | 已适配 | Phase 2 主范围完成 | 网络列表与创建/删除链路已接入 |
@@ -84,7 +85,7 @@
 | Fail2ban | 7 | `toolbox` | 部分适配 | 非本阶段硬范围 | 基础页已接入，但完整写操作验证不齐 |
 | Disk Management | 4 | `toolbox` | 已适配 | 本轮新增闭环 | 新增 `toolbox/disk`，接入列表、分区、挂载、卸载 |
 | PHP Extensions | 4 | `runtimes` | 已适配 | Phase 1 已完成 | PHP 扩展页与 provider 链路已接入 |
-| untagged | 4 | `containers` / `websites` | 部分适配 | 待归类 | 方法已在 client 中实现，但 Swagger 未打 tag，仍需保留独立归类行 |
+| untagged | 4 | `containers` / `websites` | 已适配 | 已归类附录 | 4 个接口均已完成 API 与调用落点归类：`ContainerService` 使用 `/containers/item/stats`，`container_v2` 提供 `limit/list stats`，`website_v2` 提供 `proxy config` |
 | Menu Setting | 1 | `settings` | 已适配 | 本轮新增闭环 | 新增菜单设置路由与页面，接入默认菜单读取和保存 |
 
 ## untagged 归类附录

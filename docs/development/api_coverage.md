@@ -9,7 +9,7 @@
 - 标签数: 52
 - 覆盖口径: 已实现=存在API调用与数据模型，已测试=具备单元/集成/端到端测试，已文档=包含使用说明与已知限制
 - 适配状态真值: `docs/development/swagger_adaptation_status_checklist.md`
-- 适配状态汇总（自动回刷）: `34 已适配 / 18 部分适配 / 0 未适配`
+- 适配状态汇总（自动回刷）: `38 已适配 / 14 部分适配 / 0 未适配`
 - 一致性校验: `python3 scripts/validate_swagger_adaptation_docs.py`
 
 ## Phase 2 增量覆盖（2026-03-28）
@@ -117,7 +117,7 @@
 | Database PostgreSQL | 9 | database_v2.dart | 17 | ✅ | ❌ |
 | Database Redis | 7 | database_v2.dart | 17 | ✅ | ❌ |
 | Auth | 5 | auth_v2.dart | 8 | ✅ | ❌ |
-| Monitor | 5 | monitor_v2.dart | 7 | ❌ | ❌ |
+| Monitor | 5 | monitor_v2.dart | 7 | ✅ | ✅ |
 | Database Common | 3 | database_v2.dart | 17 | ✅ | ❌ |
 
 ### P1 高价值扩展模块
@@ -133,10 +133,10 @@
 | Host | 10 | host_v2.dart | 9 | ✅ | ✅ |
 | OpenResty | 10 | openresty_v2.dart | 9 | ❌ | ✅ |
 | Command | 8 | command_v2.dart | 14 | ✅ | ✅ |
-| Container Docker | 8 | docker_v2.dart | 60 | ❌ | ❌ |
+| Container Docker | 8 | docker_v2.dart | 60 | ✅ | ✅ |
 | Website CA | 7 | ssl_v2.dart | 17 | ❌ | ❌ |
-| Container Compose-template | 6 | container_compose_v2.dart | 14 | ❌ | ❌ |
-| Container Image-repo | 6 | docker_v2.dart | 60 | ❌ | ❌ |
+| Container Compose-template | 6 | container_compose_v2.dart | 14 | ✅ | ✅ |
+| Container Image-repo | 6 | docker_v2.dart | 60 | ✅ | ✅ |
 | Container Compose | 5 | container_compose_v2.dart | 14 | ❌ | ❌ |
 | ScriptLibrary | 5 | script_library_v2.dart | 3 | ✅ | ✅ |
 | Container Network | 4 | container_v2.dart | 43 | ❌ | ❌ |
@@ -164,7 +164,7 @@
 | Host tool | 7 | toolbox_v2.dart | 42 | ✅ | ❌ |
 | Disk Management | 4 | toolbox_v2.dart | 42 | ✅ | ❌ |
 | PHP Extensions | 4 | openresty_v2.dart | 9 | ❌ | ❌ |
-| untagged | 4 | - | - | ❌ | ❌ |
+| untagged | 4 | - | - | ❌ | ✅ |
 | Menu Setting | 1 | setting_v2.dart | 27 | ❌ | ❌ |
 
 ## 测试文件清单
@@ -209,7 +209,7 @@
 
 ### 测试覆盖不足
 - P1 模块测试率进一步提升，但 Firewall 等模块仍未补齐
-- P0 核心模块中 Auth、Monitor 仍缺模块级测试
+- P0 核心模块中 Auth 仍缺模块级测试
 
 ### 文档覆盖不足
 - 目前 `Cronjob / Backup Account / SSH / Process / Command / Host / OpenResty / ScriptLibrary / System Group / Logs / TaskLog / Runtime` 已有阶段性文档

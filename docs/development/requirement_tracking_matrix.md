@@ -7,7 +7,7 @@
 - **数据模型数**: 471
 - **优先级分类**: P0 (核心), P1 (高价值), P2 (工具类)
 - **当前状态真值**: `docs/development/swagger_adaptation_status_checklist.md`
-- **当前汇总（自动回刷）**: `34 已适配 / 18 部分适配 / 0 未适配`
+- **当前汇总（自动回刷）**: `38 已适配 / 14 部分适配 / 0 未适配`
 - **一致性校验**: `python3 scripts/validate_swagger_adaptation_docs.py`
 
 ## Phase 2 增量进展（2026-03-28）
@@ -76,7 +76,7 @@
 | **Website** | 54 | ✅ website_v2.dart | ✅ website_models.dart | ✅ 已测试 | 🟡 部分 | lifecycle/detail/default/group/remark/create-edit 已接入，SSL/OpenResty 深化留给后续 |
 | **System Setting** | 43 | ✅ setting_v2.dart | ✅ setting_models.dart | ✅ 已测试 | 🟡 部分 | MFA功能已实现 |
 | **File** | 37 | ✅ file_v2.dart | ✅ file_models.dart | ✅ 已测试 | 🟡 部分 | 上传/下载/编辑流程待扩展 |
-| **App** | 30 | ✅ app_v2.dart | ✅ app_models.dart | ✅ 已测试 | 🟡 部分 | 应用商店与安装流程待补齐 |
+| **App** | 30 | ✅ app_v2.dart | ✅ app_models.dart | ✅ 已测试 | 🟡 部分 | `AppsPage -> InstalledAppsProvider/AppStoreProvider -> AppService -> AppRepository` 主链路可用，更多运维细项待补齐 |
 | **Backup Account** | 25 | ✅ backup_account_v2.dart | ✅ backup_account_models.dart + `backup_request_models.dart` | ✅ 已测试 | ✅ 已集成 | Week 5 已交付账户 / records / recover 主链路；review closeout 后 `BackupRecoverPage` 已对 `app / website / mysql / postgresql / redis / directory / snapshot / log` 做显式类型映射，并拆分 `recordType/requestType`；非可恢复类型保留上下文并禁用提交 |
 | **Runtime** | 25 | ✅ runtime_v2.dart | ✅ runtime_models.dart | ✅ 已测试 | ✅ 已集成 | Week 7 已交付 `RuntimesCenterPage` / `RuntimeDetailPage` / `RuntimeFormPage` 通用链路；PHP/Node 深能力保留到 Week 8 |
 | **Container** | 19 | ✅ container_v2.dart | ✅ container_models.dart | ✅ 已测试 | 🟡 部分 | 需要补齐网络/卷/镜像管理 |
@@ -87,7 +87,7 @@
 | **Database Redis** | 7 | ✅ database_v2.dart | ✅ database_models.dart | ⚠️ 待测试 | 🟡 部分 | Redis特定功能待细化 |
 | **Database Common** | 3 | ✅ database_v2.dart | ✅ database_models.dart | ⚠️ 待测试 | 🟡 部分 | 通用数据库操作 |
 | **Auth** | 5 | ✅ auth_v2.dart | ✅ user_models.dart | ✅ 已测试 | ✅ 已集成 | 认证主链路完整，S2-5 安全存储分层已启动 |
-| **Monitor** | 5 | ✅ monitor_v2.dart | ✅ monitoring_models.dart | ⚠️ 待测试 | 🟡 部分 | 性能图表与告警待扩展 |
+| **Monitor** | 5 | ✅ monitor_v2.dart | ✅ monitoring_models.dart | ✅ 已测试 | 🟡 部分 | `MonitoringProvider -> MonitoringService -> MonitorRepository` 主链路可用，告警与更深链路待扩展 |
 
 ### P1 优先级模块 (高价值扩展)
 
@@ -102,10 +102,10 @@
 | **Host** | 10 | ✅ host_v2.dart | ✅ host_models.dart | ✅ 已测试 | 🟡 部分 | 主机资产 MVP 已接入，并与 Week 3 SSH / Process 入口联动 |
 | **OpenResty** | 10 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ⚠️ 待测试 | ✅ 已集成 | `status / https / modules / config / build` 主链路已接入 |
 | **Command** | 8 | ✅ command_v2.dart | ✅ command_models.dart + `tool_models.dart` | ✅ 已测试 | ✅ 已集成 | Week 2 命令管理 MVP 已接入，脚本库已拆出独立模块 |
-| **Container Docker** | 8 | ✅ docker_v2.dart | ✅ docker_models.dart | ✅ 已测试 | 🟡 部分 | Docker守护进程管理 |
+| **Container Docker** | 8 | ✅ docker_v2.dart | ✅ docker_models.dart | ✅ 已测试 | ✅ 已集成 | daemon config / repo / template 已形成读写闭环，并补充 provider 回归 |
 | **Logs** | 4 | ✅ logs_v2.dart | ✅ logs_models.dart | ✅ 已测试 | ✅ 已集成 | Week 6 已交付 `LogsCenterPage` / `SystemLogViewerPage`，当前聚合 operation/login/system 主链路，正文读取复用 `/files/read` |
-| **Container Compose-template** | 6 | ✅ container_compose_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | 🟡 部分 | 页面存在，但按计划不纳入 Phase 2 硬交付 |
-| **Container Image-repo** | 6 | ✅ docker_v2.dart | ✅ docker_models.dart | ⚠️ 待测试 | 🟡 部分 | 页面存在，但按计划不纳入 Phase 2 硬交付 |
+| **Container Compose-template** | 6 | ✅ container_compose_v2.dart | ✅ container_models.dart | ✅ 已测试 | ✅ 已集成 | `TemplatesTab + TemplateCreateDialog` 已接入 create/update/delete，并补充 provider CRUD 回归 |
+| **Container Image-repo** | 6 | ✅ docker_v2.dart | ✅ docker_models.dart | ✅ 已测试 | ✅ 已集成 | `ReposTab + RepoCreateDialog` 已接入 create/update/delete，并补充 provider CRUD 回归 |
 | **Container Compose** | 5 | ✅ container_compose_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | ✅ 已集成 | Orchestration 主流程已接入 |
 | **ScriptLibrary** | 5 | ✅ script_library_v2.dart | ✅ script_library_models.dart | ✅ 已测试 | ✅ 已集成 | Week 4 已交付列表 / 查看代码 / sync / run-output MVP |
 | **Container Network** | 4 | ✅ container_v2.dart | ✅ container_models.dart | ⚠️ 待测试 | ✅ 已集成 | Orchestration 主流程已接入 |
@@ -133,7 +133,7 @@
 | **Fail2ban** | 7 | ✅ toolbox_v2.dart | ✅ toolbox_models.dart | ⚠️ 待测试 | 🟡 部分 | 已有查看页，完整写操作链路仍未补齐 |
 | **Disk Management** | 4 | ✅ disk_management_v2.dart | ✅ disk_management_models.dart | ⚠️ 待测试 | ✅ 已集成 | 已新增 `toolbox/disk` 闭环 |
 | **PHP Extensions** | 4 | ✅ openresty_v2.dart | ✅ openresty_models.dart | ⚠️ 待测试 | ✅ 已集成 | Runtime 深能力页已接入 |
-| **untagged** | 4 | - | - | - | 🟡 部分 | 方法已在 `container_v2.dart` / `website_v2.dart` 中存在，仍需保留归类行 |
+| **untagged** | 4 | - | - | ✅ 已归类 | ✅ 已归类 | 4 个端点均已完成 owner 归类与调用落点：container stats/limit/list stats 与 website proxy config |
 | **Menu Setting** | 1 | ✅ setting_v2.dart | ✅ setting_models.dart | ⚠️ 待测试 | ✅ 已集成 | 已新增菜单设置路由与页面 |
 
 ## 实现状态统计
@@ -163,7 +163,7 @@
 
 ### 1. API客户端层面
 - ✅ **已解决**: 98%的模块都有API客户端
-- ⚠️ **待完善**: untagged模块的4个端点需要归类
+- ✅ **已完成**: untagged模块4个端点已完成 owner 归类与证据附录
 - ⚠️ **待验证**: 所有API客户端需要与OpenAPI规范进行端点级对齐
 
 ### 2. 测试覆盖层面
