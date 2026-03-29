@@ -116,6 +116,22 @@ class WebsiteConfigService {
     );
   }
 
+  Future<void> deleteProxy(Map<String, dynamic> request) async {
+    await _repository.deleteProxy(request);
+  }
+
+  Future<void> updateProxyStatus(Map<String, dynamic> request) async {
+    await _repository.updateProxyStatus(request);
+  }
+
+  Future<void> updateRedirectFile(Map<String, dynamic> request) async {
+    await _repository.updateRedirectFile(request);
+  }
+
+  Future<void> updateLoadBalancerFile(Map<String, dynamic> request) async {
+    await _repository.updateLoadBalancerFile(request);
+  }
+
   Future<Map<String, dynamic>> getResource(int websiteId) async {
     return _repository.getResource(websiteId);
   }

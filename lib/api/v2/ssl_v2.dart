@@ -122,6 +122,24 @@ class SSLV2Api {
     );
   }
 
+  Future<Response<List<WebsiteSSL>>> listWebsiteSSL(
+      WebsiteSSLSearch request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/ssl/list'),
+      data: request.toJson(),
+    );
+    final rawItems = response.data?['data'] as List<dynamic>? ?? const [];
+    return Response<List<WebsiteSSL>>(
+      data: rawItems
+          .whereType<Map<String, dynamic>>()
+          .map(WebsiteSSL.fromJson)
+          .toList(growable: false),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
   /// 更新SSL证书
   ///
   /// 更新网站SSL证书配置

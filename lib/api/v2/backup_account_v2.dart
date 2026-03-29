@@ -84,7 +84,7 @@ class BackupAccountV2Api {
     BackupOperate request,
   ) async {
     final response = await _client.post<Map<String, dynamic>>(
-      ApiConstants.buildApiPath('/backups/conn/check'),
+      ApiConstants.buildApiPath('/backups/check'),
       data: request.toJson(),
     );
     return Response<BackupCheckResult>(

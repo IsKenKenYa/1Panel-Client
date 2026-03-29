@@ -442,6 +442,27 @@ class WebsiteV2Api {
     return _extractMapData(response);
   }
 
+  Future<void> updateWebsiteProxyFile(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/proxies/file'),
+      data: request,
+    );
+  }
+
+  Future<void> deleteWebsiteProxy(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/proxies/delete'),
+      data: request,
+    );
+  }
+
+  Future<void> updateWebsiteProxyStatus(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/proxies/status'),
+      data: request,
+    );
+  }
+
   Future<Map<String, dynamic>> getWebsiteAuthConfig(
       Map<String, dynamic> request) async {
     final response = await _client.post<Map<String, dynamic>>(
@@ -543,6 +564,13 @@ class WebsiteV2Api {
     );
   }
 
+  Future<void> updateWebsiteRedirectFile(Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/redirect/file'),
+      data: request,
+    );
+  }
+
   Future<List<Map<String, dynamic>>> getWebsiteLoadBalancers(
       int websiteId) async {
     final response = await _client.get<Map<String, dynamic>>(
@@ -563,6 +591,14 @@ class WebsiteV2Api {
   Future<void> updateWebsiteLoadBalancer(Map<String, dynamic> request) async {
     await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/websites/lbs/update'),
+      data: request,
+    );
+  }
+
+  Future<void> updateWebsiteLoadBalancerFile(
+      Map<String, dynamic> request) async {
+    await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/lbs/file'),
       data: request,
     );
   }

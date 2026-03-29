@@ -206,15 +206,46 @@ class _RuntimesCenterPageState extends State<RuntimesCenterPage> {
   }
 
   Future<void> _delete(RuntimeInfo item) async {
+    final provider = context.read<RuntimesProvider>();
+    final dependencies = await provider.checkDeleteDependency(item);
+    if (!mounted) return;
+    if (dependencies == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.commonLoadFailedTitle)),
+      );
+      return;
+    }
+
+    final dependencyNames = _extractDependencyNames(dependencies);
+    final message = dependencyNames.isEmpty
+        ? context.l10n.runtimeDeleteConfirm(item.name ?? '-')
+        : '${context.l10n.runtimeDeleteConfirm(item.name ?? '-')}\n\n${context.l10n.openrestyRiskDependencyChangeTitle}\n${dependencyNames.join('\n')}';
+
     final confirmed = await ConfirmActionSheetWidget.show(
       context,
       title: context.l10n.commonDelete,
-      message: context.l10n.runtimeDeleteConfirm(item.name ?? '-'),
+      message: message,
       confirmLabel: context.l10n.commonDelete,
       isDestructive: true,
       confirmIcon: Icons.delete_outline,
     );
     if (!confirmed || !mounted) return;
-    await context.read<RuntimesProvider>().delete(item);
+    await provider.delete(item);
+  }
+
+  List<String> _extractDependencyNames(List<Map<String, dynamic>> dependencies) {
+    final names = <String>[];
+    for (final item in dependencies) {
+      final rawName = item['name'] ??
+          item['appName'] ??
+          item['resourceName'] ??
+          item['label'] ??
+          item['id'];
+      final name = rawName?.toString().trim() ?? '';
+      if (name.isNotEmpty) {
+        names.add('• $name');
+      }
+    }
+    return names;
   }
 }

@@ -46,6 +46,14 @@ class RuntimeRepository {
     await api.deleteRuntime(request);
   }
 
+  Future<List<Map<String, dynamic>>> checkRuntimeDeleteDependency(
+    int runtimeId,
+  ) async {
+    final api = await _ensureApi();
+    final response = await api.checkRuntimeDeleteDependency(runtimeId);
+    return response.data ?? const <Map<String, dynamic>>[];
+  }
+
   Future<void> operateRuntime(RuntimeOperate request) async {
     final api = await _ensureApi();
     await api.operateRuntime(request);

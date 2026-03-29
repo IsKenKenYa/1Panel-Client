@@ -45,6 +45,26 @@ class WebsiteSslRepository {
     return response.data?.items ?? const <WebsiteSSL>[];
   }
 
+  Future<List<WebsiteSSL>> listCertificates({
+    String order = 'descending',
+    String orderBy = 'expire_date',
+    String? domain,
+    String? acmeAccountId,
+  }) async {
+    final api = await _ensureSslApi();
+    final response = await api.listWebsiteSSL(
+      WebsiteSSLSearch(
+        page: 1,
+        pageSize: 1000,
+        order: order,
+        orderBy: orderBy,
+        domain: domain,
+        acmeAccountId: acmeAccountId,
+      ),
+    );
+    return response.data ?? const <WebsiteSSL>[];
+  }
+
   Future<WebsiteSSL?> getCertificateDetail(int id) async {
     final api = await _ensureSslApi();
     final response = await api.getWebsiteSSLById(id);

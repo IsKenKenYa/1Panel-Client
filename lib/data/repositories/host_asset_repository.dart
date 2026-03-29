@@ -87,6 +87,12 @@ class HostAssetRepository {
     await api.updateHostAssetGroup(request);
   }
 
+  Future<Map<String, dynamic>> getHostComponent(String name) async {
+    final api = await _ensureApi();
+    final response = await api.getHostComponent(name);
+    return response.data ?? const <String, dynamic>{};
+  }
+
   HostOperate _encodeOperate(HostOperate request) {
     final encodedPassword = request.password?.isNotEmpty == true
         ? _encode(request.password!)

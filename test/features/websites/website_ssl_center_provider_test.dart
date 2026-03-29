@@ -23,6 +23,16 @@ class _FakeWebsiteSslCenterService extends WebsiteCertificateService {
   }
 
   @override
+  Future<List<WebsiteSSL>> listCertificates({
+    String order = 'descending',
+    String orderBy = 'expire_date',
+    String? domain,
+    String? acmeAccountId,
+  }) async {
+    return certificates;
+  }
+
+  @override
   Future<void> deleteCertificate(int id) async {
     deleteCallCount += 1;
     certificates = certificates.where((item) => item.id != id).toList();

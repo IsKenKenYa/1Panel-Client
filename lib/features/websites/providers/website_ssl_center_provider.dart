@@ -95,7 +95,7 @@ class WebsiteSslCenterProvider extends ChangeNotifier {
     try {
       await _ensureService();
       searchQuery = domain ?? searchQuery;
-      _allCertificates = await _service!.searchCertificates(domain: domain);
+      _allCertificates = await _service!.listCertificates(domain: domain);
       _applyFilters();
     } catch (e) {
       error = e.toString();

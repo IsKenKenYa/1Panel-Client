@@ -85,6 +85,21 @@ class RuntimeV2Api {
     );
   }
 
+  Future<Response<List<Map<String, dynamic>>>> checkRuntimeDeleteDependency(
+    int id,
+  ) async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/runtimes/installed/delete/check/$id'),
+    );
+    final rawItems = response.data?['data'] as List<dynamic>? ?? const [];
+    return Response<List<Map<String, dynamic>>>(
+      data: rawItems.whereType<Map<String, dynamic>>().toList(growable: false),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
   Future<Response<PHPExtensionsRes>> getPhpExtensions(int id) async {
     final response = await _client.get<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/runtimes/php/$id/extensions'),

@@ -205,6 +205,21 @@ class HostV2Api {
     );
   }
 
+  Future<Response<Map<String, dynamic>>> getHostComponent(String name) async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/hosts/components/$name'),
+    );
+    final rawData = response.data?['data'];
+    return Response<Map<String, dynamic>>(
+      data: rawData is Map<String, dynamic>
+          ? rawData
+          : const <String, dynamic>{},
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
   Map<String, dynamic> _mapHostPayload(HostCreate request, {int? id}) {
     final hasKeyAuth = (request.privateKey?.isNotEmpty ?? false);
     return <String, dynamic>{

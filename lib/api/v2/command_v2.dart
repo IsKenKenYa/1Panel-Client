@@ -18,12 +18,17 @@ class CommandV2Api {
   }
 
   Future<Response<CommandInfo>> getCommand(OperateByType request) async {
-    final response = await listCommands(type: request.type);
-    final firstItem = response.data?.isEmpty ?? true
-        ? const CommandInfo()
-        : response.data!.first;
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/core/commands/command'),
+      queryParameters: request.toJson()
+        ..removeWhere((String _, dynamic value) => value == null),
+    );
+    final rawData = response.data?['data'];
+    final command = rawData is Map<String, dynamic>
+        ? CommandInfo.fromJson(rawData)
+        : const CommandInfo();
     return Response<CommandInfo>(
-      data: firstItem,
+      data: command,
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,

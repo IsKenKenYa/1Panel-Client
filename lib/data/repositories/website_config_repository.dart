@@ -101,11 +101,31 @@ class WebsiteConfigRepository {
     required String content,
   }) async {
     final api = await _ensureApi();
-    await api.updateWebsiteProxy(
-      websiteId: websiteId,
-      name: name,
-      content: content,
-    );
+    await api.updateWebsiteProxyFile(<String, dynamic>{
+      'websiteID': websiteId,
+      'name': name,
+      'content': content,
+    });
+  }
+
+  Future<void> deleteProxy(Map<String, dynamic> request) async {
+    final api = await _ensureApi();
+    await api.deleteWebsiteProxy(request);
+  }
+
+  Future<void> updateProxyStatus(Map<String, dynamic> request) async {
+    final api = await _ensureApi();
+    await api.updateWebsiteProxyStatus(request);
+  }
+
+  Future<void> updateRedirectFile(Map<String, dynamic> request) async {
+    final api = await _ensureApi();
+    await api.updateWebsiteRedirectFile(request);
+  }
+
+  Future<void> updateLoadBalancerFile(Map<String, dynamic> request) async {
+    final api = await _ensureApi();
+    await api.updateWebsiteLoadBalancerFile(request);
   }
 
   Future<Map<String, dynamic>> getResource(int websiteId) async {

@@ -133,6 +133,23 @@ class RuntimesProvider extends ChangeNotifier with AsyncStateNotifier {
     }
   }
 
+  Future<List<Map<String, dynamic>>?> checkDeleteDependency(
+      RuntimeInfo item) async {
+    if (item.id == null) return const <Map<String, dynamic>>[];
+    try {
+      return await _service.checkDeleteDependency(item.id!);
+    } catch (error, stackTrace) {
+      appLogger.eWithPackage(
+        'features.runtimes.providers.list',
+        'check delete dependency failed',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      setError('runtime.list.deleteFailed');
+      return null;
+    }
+  }
+
   bool canStart(RuntimeInfo item) => _service.canStart(item);
   bool canStop(RuntimeInfo item) => _service.canStop(item);
   bool canRestart(RuntimeInfo item) => _service.canRestart(item);

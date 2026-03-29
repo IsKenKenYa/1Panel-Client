@@ -23,6 +23,20 @@ class WebsiteCertificateService {
     );
   }
 
+  Future<List<WebsiteSSL>> listCertificates({
+    String order = 'descending',
+    String orderBy = 'expire_date',
+    String? domain,
+    String? acmeAccountId,
+  }) async {
+    return _repository.listCertificates(
+      order: order,
+      orderBy: orderBy,
+      domain: domain,
+      acmeAccountId: acmeAccountId,
+    );
+  }
+
   Future<WebsiteSSL?> getCertificateDetail(int id) {
     return _repository.getCertificateDetail(id);
   }

@@ -49,6 +49,10 @@ class RuntimeService {
     return _repository.deleteRuntime(RuntimeDelete(id: id));
   }
 
+  Future<List<Map<String, dynamic>>> checkDeleteDependency(int id) {
+    return _repository.checkRuntimeDeleteDependency(id);
+  }
+
   Future<void> operateRuntime(int id, String operate) {
     return _repository.operateRuntime(RuntimeOperate(id: id, operate: operate));
   }
