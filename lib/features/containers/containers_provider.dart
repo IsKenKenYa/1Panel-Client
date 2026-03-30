@@ -11,11 +11,25 @@ class ContainerStats {
   final int stopped;
   final int paused;
 
+  // Compose 统计
+  final int composeTotal;
+  final int composeRunning;
+
+  // 全局资源占用（来自 /containers/list/stats 聚合）
+  final double totalCpuPercent;
+  final double totalMemoryPercent;
+  final int totalMemoryUsageBytes;
+
   const ContainerStats({
     this.total = 0,
     this.running = 0,
     this.stopped = 0,
     this.paused = 0,
+    this.composeTotal = 0,
+    this.composeRunning = 0,
+    this.totalCpuPercent = 0.0,
+    this.totalMemoryPercent = 0.0,
+    this.totalMemoryUsageBytes = 0,
   });
 }
 
@@ -330,6 +344,32 @@ class ContainersProvider extends ChangeNotifier {
         );
       }
 
+      // 加载 Compose 项目列表
+      int composeTotal = 0, composeRunning = 0;
+      try {
+        final composePage = await _service!.listComposesPage();
+        composeTotal = composePage.total;
+        composeRunning = composePage.items
+            .where((c) => c.status?.toLowerCase() == 'running')
+            .length;
+      } catch (_) {
+        // compose 加载失败不影响主流程
+      }
+
+      // 加载容器实时资源统计
+      double totalCpu = 0.0, totalMemPct = 0.0;
+      int totalMemBytes = 0;
+      try {
+        final statsList = await _service!.listContainerStats();
+        for (final s in statsList) {
+          totalCpu += s.cpuPercent;
+          totalMemPct += s.memoryPercent;
+          totalMemBytes += s.memoryUsage;
+        }
+      } catch (_) {
+        // stats 加载失败不影响主流程
+      }
+
       try {
         daemonJson = await _service!.getDaemonJson();
         _configState = _configState.copyWith(
@@ -372,6 +412,11 @@ class ContainersProvider extends ChangeNotifier {
           running: running,
           stopped: stopped,
           paused: paused,
+          composeTotal: composeTotal,
+          composeRunning: composeRunning,
+          totalCpuPercent: totalCpu,
+          totalMemoryPercent: totalMemPct,
+          totalMemoryUsageBytes: totalMemBytes,
         ),
         imageStats: ImageStats(
           total: images.length,

@@ -4162,6 +4162,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get containerInfoLabels => 'Labels';
 
   @override
+  String get containerInfoProject => 'Project';
+
+  @override
   String get containerStatsCpu => 'CPU Usage';
 
   @override

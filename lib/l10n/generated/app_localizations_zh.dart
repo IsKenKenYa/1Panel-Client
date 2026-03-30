@@ -4059,6 +4059,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get containerInfoLabels => '标签';
 
   @override
+  String get containerInfoProject => '项目';
+
+  @override
   String get containerStatsCpu => 'CPU使用率';
 
   @override

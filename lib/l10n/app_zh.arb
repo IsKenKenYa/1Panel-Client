@@ -1750,6 +1750,7 @@
   "containerInfoPorts": "端口映射",
   "containerInfoEnv": "环境变量",
   "containerInfoLabels": "标签",
+  "containerInfoProject": "项目",
   "containerStatsCpu": "CPU使用率",
   "containerStatsMemory": "内存使用",
   "containerStatsNetwork": "网络I/O",

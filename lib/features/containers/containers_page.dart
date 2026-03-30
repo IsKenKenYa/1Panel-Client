@@ -174,12 +174,12 @@ class _ContainersPageViewState extends State<_ContainersPageView> {
           body: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const ContainerInlineSummaryCard(),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 8),
                     ModuleSubnav(
                       controller: _subnavController,
                       items: subnavItems,

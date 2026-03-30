@@ -54,7 +54,14 @@ class ModuleSubnav extends StatelessWidget {
                     padding: const EdgeInsets.only(right: 8),
                     child: ChoiceChip(
                       selected: selectedId == item.id,
-                      avatar: Icon(item.icon, size: 18),
+                      showCheckmark: false,
+                      avatar: Icon(
+                        item.icon,
+                        size: 18,
+                        color: selectedId == item.id
+                            ? Theme.of(context).colorScheme.onSecondaryContainer
+                            : null,
+                      ),
                       label: Text(item.label),
                       onSelected: (_) => onSelected(item.id),
                     ),

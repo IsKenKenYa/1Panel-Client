@@ -1802,6 +1802,7 @@
   "containerInfoPorts": "Port Bindings",
   "containerInfoEnv": "Environment Variables",
   "containerInfoLabels": "Labels",
+  "containerInfoProject": "Project",
   "containerStatsCpu": "CPU Usage",
   "containerStatsMemory": "Memory Usage",
   "containerStatsNetwork": "Network I/O",

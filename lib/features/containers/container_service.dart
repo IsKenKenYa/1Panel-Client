@@ -1,9 +1,12 @@
 import 'package:dio/dio.dart';
+import '../../api/v2/compose_v2.dart';
 import '../../api/v2/container_v2.dart';
+import '../../core/network/api_client_manager.dart';
 import '../../core/services/base_component.dart';
 import '../../data/models/common_models.dart';
 import '../../data/models/container_extension_models.dart';
 import '../../data/models/container_models.dart';
+import '../../data/models/docker_models.dart';
 import '../../data/repositories/container_repository.dart';
 
 class ContainerService extends BaseComponent {
@@ -19,13 +22,19 @@ class ContainerService extends BaseComponent {
             );
 
   final ContainerRepository _repository;
+  ComposeV2Api? _composeApi;
 
   Future<ContainerV2Api> _ensureApi() async {
     return _repository.ensureApi();
   }
 
+  Future<ComposeV2Api> _ensureComposeApi() async {
+    return _composeApi ??= await ApiClientManager.instance.getComposeApi();
+  }
+
   void resetForServerChange() {
     _repository.resetForServerChange();
+    _composeApi = null;
   }
 
   Future<List<ContainerInfo>> listContainers() {
@@ -448,6 +457,27 @@ class ContainerService extends BaseComponent {
       final api = await _ensureApi();
       final response = await api.getContainerStatus();
       return response.data!;
+    });
+  }
+
+  /// 获取所有容器的实时 CPU/内存统计
+  Future<List<ContainerListStats>> listContainerStats() {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      final response = await api.listContainerStats();
+      return response.data ?? [];
+    });
+  }
+
+  /// 列出 Compose 项目（分页，取第一页总数）
+  Future<PageResult<ComposeProject>> listComposesPage({
+    int page = 1,
+    int pageSize = 100,
+  }) {
+    return runGuarded(() async {
+      final api = await _ensureComposeApi();
+      final response = await api.listComposes(page: page, pageSize: pageSize);
+      return response.data ?? PageResult(items: [], total: 0);
     });
   }
 }

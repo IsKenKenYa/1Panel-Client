@@ -36,6 +36,18 @@ class ContainerCard extends StatelessWidget {
     this.onCleanLog,
   });
 
+  /// 从 labels 中提取 compose 项目名
+  String? _projectName() {
+    if (container.labels == null) return null;
+    for (final label in container.labels!) {
+      if (label.startsWith('com.docker.compose.project=')) {
+        final value = label.split('=').skip(1).join('=').trim();
+        return value.isEmpty ? null : value;
+      }
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -44,24 +56,43 @@ class ContainerCard extends StatelessWidget {
     final isRunning = containerState == 'running';
     final statusColor = _statusColor(colorScheme, containerState);
     final statusLabel = _statusLabel(l10n, containerState);
+    final projectName = _projectName();
+    final ports = _formatPorts();
 
     return AppCard(
+      onTap: onTap,
+      // --- 顶部标题行：容器名 + 状态点 + 更多菜单 ---
       title: container.name,
       leading: CircleAvatar(
+        radius: 18,
         backgroundColor: colorScheme.surfaceContainerHighest,
         child: Icon(
-          Icons.layers_outlined,
+          Icons.view_in_ar,
           color: colorScheme.primary,
+          size: 20,
         ),
       ),
-      subtitle: Text(container.image),
+      subtitle: projectName != null
+          ? Text(
+              '${l10n.containerInfoProject}: $projectName',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+            )
+          : Text(
+              container.image,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _StatusChip(
-            status: statusLabel,
-            color: statusColor,
-          ),
+          // 小圆点状态指示器
+          _StatusDot(color: statusColor, label: statusLabel),
+          const SizedBox(width: 4),
           PopupMenuButton<String>(
             tooltip: l10n.commonMore,
             onSelected: (value) {
@@ -96,50 +127,74 @@ class ContainerCard extends StatelessWidget {
           ),
         ],
       ),
-      onTap: onTap,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (container.ports != null ||
-              (container.portBindings != null &&
-                  container.portBindings!.isNotEmpty))
+          // --- CPU / 内存两列次级信息（仅在有数据时显示）---
+          if (container.cpuUsage != null || container.memoryUsage != null)
             Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Text(
-                '${l10n.containerInfoPorts}: ${_formatPorts(container)}',
-                style: TextStyle(
-                  color: colorScheme.onSurfaceVariant,
-                  fontSize: 14,
-                ),
+              padding: const EdgeInsets.only(bottom: 6),
+              child: Row(
+                children: [
+                  if (container.cpuUsage != null)
+                    _MetricChip(
+                      label: 'CPU',
+                      value: container.cpuUsage!,
+                      color: colorScheme.primary,
+                    ),
+                  if (container.cpuUsage != null &&
+                      container.memoryUsage != null)
+                    const SizedBox(width: 8),
+                  if (container.memoryUsage != null)
+                    _MetricChip(
+                      label: l10n.containerStatsMemory,
+                      value: container.memoryUsage!,
+                      color: colorScheme.tertiary,
+                    ),
+                ],
               ),
             ),
+
+          // --- 端口信息 ---
+          if (ports.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Wrap(
+                spacing: 4,
+                runSpacing: 3,
+                children: ports
+                    .map(
+                      (p) => _PortChip(port: p, colorScheme: colorScheme),
+                    )
+                    .toList(),
+              ),
+            ),
+
+          // --- 操作按钮行 ---
           Wrap(
-            alignment: WrapAlignment.end,
-            runSpacing: 8,
             spacing: 8,
+            runSpacing: 8,
             children: [
               if (isRunning) ...[
                 _ActionButton(
-                  icon: Icons.stop,
+                  icon: Icons.stop_rounded,
                   label: l10n.containerActionStop,
                   color: colorScheme.error,
                   onTap: onStop,
                 ),
-                const SizedBox(width: 8),
                 _ActionButton(
                   icon: Icons.restart_alt,
                   label: l10n.containerActionRestart,
                   color: colorScheme.primary,
                   onTap: onRestart,
                 ),
-              ] else ...[
+              ] else
                 _ActionButton(
-                  icon: Icons.play_arrow,
+                  icon: Icons.play_arrow_rounded,
                   label: l10n.containerActionStart,
                   color: colorScheme.tertiary,
                   onTap: onStart,
                 ),
-              ],
               if (onTerminal != null)
                 _ActionButton(
                   icon: Icons.terminal,
@@ -148,16 +203,10 @@ class ContainerCard extends StatelessWidget {
                   onTap: onTerminal,
                 ),
               _ActionButton(
-                icon: Icons.description_outlined,
+                icon: Icons.receipt_long_outlined,
                 label: l10n.containerActionLogs,
-                color: colorScheme.tertiary,
+                color: colorScheme.onSurfaceVariant,
                 onTap: onLogs,
-              ),
-              _ActionButton(
-                icon: Icons.delete_outline,
-                label: l10n.containerActionDelete,
-                color: colorScheme.error,
-                onTap: onDelete,
               ),
             ],
           ),
@@ -177,7 +226,7 @@ class ContainerCard extends StatelessWidget {
       case 'removing':
         return colorScheme.error;
       default:
-        return colorScheme.secondary;
+        return colorScheme.onSurfaceVariant.withValues(alpha: 0.5);
     }
   }
 
@@ -202,52 +251,132 @@ class ContainerCard extends StatelessWidget {
     }
   }
 
-  String _formatPorts(ContainerInfo container) {
+  List<String> _formatPorts() {
     if (container.portBindings != null && container.portBindings!.isNotEmpty) {
       return container.portBindings!
-          .take(3)
+          .take(4)
           .map((p) => '${p.hostPort}:${p.containerPort}')
-          .join(', ');
+          .toList();
     }
     if (container.ports != null && container.ports!.isNotEmpty) {
-      return container.ports!.join(', ');
+      return container.ports!.take(4).toList();
     }
-    return '';
+    return [];
   }
 }
 
-class _StatusChip extends StatelessWidget {
-  final String status;
-  final Color color;
+// ---------------------------------------------------------------------------
+// 小圆点状态指示器（替代原来的大 Chip）
+// ---------------------------------------------------------------------------
+class _StatusDot extends StatelessWidget {
+  const _StatusDot({required this.color, required this.label});
 
-  const _StatusChip({
-    required this.status,
-    required this.color,
-  });
+  final Color color;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
-    return Semantics(
-      label: status,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Text(
-          status,
-          style: TextStyle(
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(
             color: color,
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
+            shape: BoxShape.circle,
           ),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: color,
+                fontWeight: FontWeight.w500,
+              ),
+        ),
+      ],
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// CPU / 内存指标徽章
+// ---------------------------------------------------------------------------
+class _MetricChip extends StatelessWidget {
+  const _MetricChip({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  final String label;
+  final String value;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: '$label ',
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
+            ),
+            TextSpan(
+              text: value,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: color,
+                    fontWeight: FontWeight.w600,
+                  ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
+// ---------------------------------------------------------------------------
+// 端口 Chip
+// ---------------------------------------------------------------------------
+class _PortChip extends StatelessWidget {
+  const _PortChip({required this.port, required this.colorScheme});
+
+  final String port;
+  final ColorScheme colorScheme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        border: Border.all(color: colorScheme.outlineVariant),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Text(
+        port,
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+              fontFamily: 'monospace',
+            ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 操作按钮（紧凑版）
+// ---------------------------------------------------------------------------
 class _ActionButton extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -272,24 +401,23 @@ class _ActionButton extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(8),
           child: Container(
-            constraints: const BoxConstraints(minHeight: 48),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            constraints: const BoxConstraints(minHeight: 30),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
+              color: color.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(7),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, color: color, size: 18),
-                const SizedBox(width: 4),
+                Icon(icon, color: color, size: 14),
+                const SizedBox(width: 3),
                 Text(
                   label,
-                  style: TextStyle(
-                    color: color,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: color,
+                        fontWeight: FontWeight.w500,
+                      ),
                 ),
               ],
             ),

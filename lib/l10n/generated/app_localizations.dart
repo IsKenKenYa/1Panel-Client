@@ -7892,6 +7892,12 @@ abstract class AppLocalizations {
   /// **'Labels'**
   String get containerInfoLabels;
 
+  /// No description provided for @containerInfoProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Project'**
+  String get containerInfoProject;
+
   /// No description provided for @containerStatsCpu.
   ///
   /// In en, this message translates to:
