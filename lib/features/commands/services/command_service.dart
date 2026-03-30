@@ -32,6 +32,10 @@ class CommandService {
     return _repository.searchCommands(request);
   }
 
+  Future<List<CommandInfo>> listCommands({String type = 'command'}) {
+    return _repository.listCommands(type: type);
+  }
+
   Future<List<GroupInfo>> loadGroups({bool forceRefresh = false}) {
     return _groupService.listGroups('command', forceRefresh: forceRefresh);
   }

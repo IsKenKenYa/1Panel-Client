@@ -136,6 +136,57 @@ void main() {
       expect(response.data?.single.label, 'Default');
     });
 
+    test('CommandV2Api aligns list route to POST /core/commands/list',
+        () async {
+      responseBuilder = () => <String, dynamic>{
+            'code': 200,
+            'data': <Map<String, dynamic>>[
+              <String, dynamic>{
+                'id': 1,
+                'name': 'Default',
+                'type': 'command',
+                'command': 'echo 1',
+              },
+            ],
+          };
+
+      final api = CommandV2Api(client);
+      final response = await api.listCommands();
+
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/core/commands/list');
+      expect(requestBody, <String, dynamic>{'type': 'command'});
+      expect(response.data?.single.name, 'Default');
+    });
+
+    test('CommandV2Api legacy getCommand now uses POST /core/commands/list',
+        () async {
+      responseBuilder = () => <String, dynamic>{
+            'code': 200,
+            'data': <Map<String, dynamic>>[
+              <String, dynamic>{
+                'id': 8,
+                'name': 'Default',
+                'type': 'command',
+                'command': 'echo 8',
+              },
+            ],
+          };
+
+      final api = CommandV2Api(client);
+      final response = await api.getCommand(
+        const OperateByType(name: 'Default', type: 'command'),
+      );
+
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/core/commands/list');
+      expect(requestBody, <String, dynamic>{
+        'name': 'Default',
+        'type': 'command',
+      });
+      expect(response.data?.name, 'Default');
+    });
+
     test('SshV2Api aligns settings route to POST /hosts/ssh/search', () async {
       responseBuilder = () => <String, dynamic>{
             'code': 200,
@@ -421,7 +472,7 @@ void main() {
         ),
       );
       expect(requestMethod, 'POST');
-      expect(requestPath, '/api/v2/backups/conn/check');
+      expect(requestPath, '/api/v2/backups/check');
       expect(check.data?.isOk, isTrue);
 
       responseBuilder = () => <String, dynamic>{

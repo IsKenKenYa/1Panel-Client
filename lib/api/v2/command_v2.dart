@@ -17,16 +17,62 @@ class CommandV2Api {
     );
   }
 
-  Future<Response<CommandInfo>> getCommand(OperateByType request) async {
-    final response = await _client.get<Map<String, dynamic>>(
-      ApiConstants.buildApiPath('/core/commands/command'),
-      queryParameters: request.toJson()
-        ..removeWhere((String _, dynamic value) => value == null),
+  Future<Response<List<CommandInfo>>> listCommands({
+    String type = 'command',
+  }) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/core/commands/list'),
+      data: <String, dynamic>{'type': type},
     );
-    final rawData = response.data?['data'];
-    final command = rawData is Map<String, dynamic>
-        ? CommandInfo.fromJson(rawData)
-        : const CommandInfo();
+    final items = _parseCommandInfoList(response.data?['data']);
+    return Response<List<CommandInfo>>(
+      data: items,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  @Deprecated('Use listCommands for command list retrieval.')
+  Future<Response<CommandInfo>> getCommand(OperateByType request) async {
+    final payload = request.toJson()
+      ..removeWhere(
+        (String _, dynamic value) =>
+            value == null || (value is String && value.trim().isEmpty),
+      );
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/core/commands/list'),
+      data: payload,
+    );
+    final items = _parseCommandInfoList(response.data?['data']);
+
+    var command = const CommandInfo();
+    var found = false;
+
+    if (request.id != null) {
+      for (final item in items) {
+        if (item.id == request.id) {
+          command = item;
+          found = true;
+          break;
+        }
+      }
+    }
+
+    if (!found && request.name.trim().isNotEmpty) {
+      for (final item in items) {
+        if ((item.name ?? '').trim() == request.name.trim()) {
+          command = item;
+          found = true;
+          break;
+        }
+      }
+    }
+
+    if (!found && items.isNotEmpty) {
+      command = items.first;
+    }
+
     return Response<CommandInfo>(
       data: command,
       statusCode: response.statusCode,
@@ -117,6 +163,19 @@ class CommandV2Api {
       ApiConstants.buildApiPath('/core/commands/update'),
       data: request.toJson(),
     );
+  }
+
+  List<CommandInfo> _parseCommandInfoList(dynamic rawData) {
+    if (rawData is List) {
+      return rawData
+          .whereType<Map<String, dynamic>>()
+          .map(CommandInfo.fromJson)
+          .toList(growable: false);
+    }
+    if (rawData is Map<String, dynamic>) {
+      return <CommandInfo>[CommandInfo.fromJson(rawData)];
+    }
+    return const <CommandInfo>[];
   }
 
   Future<Response<void>> createScript(ScriptOperate request) {

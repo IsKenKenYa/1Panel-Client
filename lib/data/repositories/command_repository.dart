@@ -34,6 +34,16 @@ class CommandRepository {
         );
   }
 
+  Future<List<CommandInfo>> listCommands({String type = 'command'}) async {
+    appLogger.dWithPackage(
+      'data.repositories.command',
+      'listCommands: type=$type',
+    );
+    final api = await _ensureApi();
+    final response = await api.listCommands(type: type);
+    return response.data ?? const <CommandInfo>[];
+  }
+
   Future<void> importCommands(List<CommandOperate> items) async {
     final api = await _ensureApi();
     await api.importCommand(items);

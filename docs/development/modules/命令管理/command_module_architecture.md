@@ -18,6 +18,34 @@
 8. `POST /core/commands/upload`：上传 CSV，返回导入预览列表
 9. `POST /core/commands/import`：最终导入，body 为 `List<CommandOperate>`
 
+## 契约偏差判定（2026-03-30）
+
+- 上游只读快照显示：`/core/commands/tree`、`/core/commands/command` 在 Swagger 中为 `GET`。
+- 后端运行时路由显示：`/core/commands/tree`、`/core/commands/list` 均为 `POST`。
+- 客户端执行策略：
+  - `getCommandTree` 固定走 `POST /core/commands/tree`
+  - 命令列表能力固定走 `POST /core/commands/list`
+  - **不做 GET 回退**，避免掩盖契约漂移
+- 真值优先级：`Router/实测 API > Swagger 注解/生成产物`。
+- issue 闭环：
+  - 上游 issue：`1Panel-dev/1Panel#12363`
+  - 本仓跟踪 issue：`IsKenKenYa/1Panel-Client#6`
+
+## 链路同步阻断规则
+
+当命令契约发生调整时，以下链路必须同批更新，任一缺失视为未完成：
+
+1. `lib/api/v2/command_v2.dart`
+2. `lib/data/repositories/command_repository.dart`
+3. `lib/features/commands/services/command_service.dart`
+4. `lib/features/commands/providers/*`
+5. `lib/features/commands/pages/*`
+6. `test/api_client/command_api_client_test.dart`
+7. `test/api_client/phase1_api_alignment_test.dart`
+8. `test/features/commands/**`
+9. `test/integration/api_integration_test.dart`
+10. `docs/development/modules/命令管理/*`
+
 ## 分层职责
 
 - `CommandRepository`

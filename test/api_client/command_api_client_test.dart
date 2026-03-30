@@ -127,6 +127,108 @@ void main() {
       expect(parsed.statusCode, 200);
     });
 
+    test('POST /core/commands/list 应该返回命令列表', () async {
+      if (!canRun) return;
+      final request = <String, dynamic>{'type': 'command'};
+      final raw = await _rawPost(client, '/core/commands/list', data: request);
+      _logSection(
+        '✅ Raw /core/commands/list',
+        method: 'POST',
+        path: '/core/commands/list',
+        request: request,
+        response: raw.data,
+      );
+
+      final parsed = await api.listCommands();
+      _logSection(
+        '✅ Parsed /core/commands/list',
+        response: parsed.data?.map((item) => item.toJson()).toList(),
+      );
+
+      expect(parsed.statusCode, 200);
+      expect(parsed.data, isNotNull);
+    });
+
+    test('POST /core/commands create/update/del 主链路应可回归', () async {
+      if (!canRun) return;
+      final skipReason = TestEnvironment.skipDestructive();
+      if (skipReason != null) {
+        appLogger.wWithPackage('test.api_client.command', '跳过测试: $skipReason');
+        return;
+      }
+
+      final uniqueName =
+          'codex-create-${DateTime.now().millisecondsSinceEpoch}';
+      final created = CommandOperate(
+        name: uniqueName,
+        command: 'echo created',
+        type: 'command',
+        groupID: 0,
+      );
+
+      await api.createCommand(created);
+      _logSection(
+        '✅ Parsed /core/commands create',
+        method: 'POST',
+        path: '/core/commands',
+        request: created.toJson(),
+      );
+
+      final createdSearch = await api.searchCommands(
+        CommandSearchRequest(page: 1, pageSize: 20, info: uniqueName),
+      );
+      final createdItems = createdSearch.data?.items
+              .where((item) => item.name == uniqueName)
+              .toList() ??
+          const <CommandInfo>[];
+      expect(createdItems, isNotEmpty);
+
+      final target = createdItems.first;
+      final updatedName = '$uniqueName-updated';
+      final updated = CommandOperate(
+        id: target.id,
+        name: updatedName,
+        command: 'echo updated',
+        type: 'command',
+        groupID: target.groupID ?? 0,
+      );
+
+      await api.updateCommand(updated);
+      _logSection(
+        '✅ Parsed /core/commands/update',
+        method: 'POST',
+        path: '/core/commands/update',
+        request: updated.toJson(),
+      );
+
+      final updatedSearch = await api.searchCommands(
+        CommandSearchRequest(page: 1, pageSize: 20, info: updatedName),
+      );
+      final updatedItems = updatedSearch.data?.items
+              .where((item) => item.name == updatedName)
+              .toList() ??
+          const <CommandInfo>[];
+      _logSection(
+        '✅ Parsed create/update verify',
+        response: updatedItems.map((item) => item.toJson()).toList(),
+      );
+      expect(updatedItems, isNotEmpty);
+
+      final ids = updatedItems
+          .map((item) => item.id)
+          .whereType<int>()
+          .toList(growable: false);
+      if (ids.isNotEmpty) {
+        await api.deleteCommand(OperateByIDs(ids: ids));
+        _logSection(
+          '✅ Parsed /core/commands/del',
+          method: 'POST',
+          path: '/core/commands/del',
+          request: <String, dynamic>{'ids': ids},
+        );
+      }
+    });
+
     test('POST /core/commands/export 应该返回导出路径', () async {
       if (!canRun) return;
       final raw = await _rawPost(client, '/core/commands/export');

@@ -141,6 +141,13 @@ Future<void> main() async {
       expect(response.data, isA<List>());
     });
 
+    test('应该能够获取命令列表', skip: SkipConditions.skipIntegration(), () async {
+      final response = await commandApi.listCommands();
+
+      expect(response.statusCode, equals(200));
+      expect(response.data, isA<List>());
+    });
+
     test('应该能够搜索命令', skip: SkipConditions.skipIntegration(), () async {
       final request = PageRequest(page: 1, pageSize: 10);
       final response = await commandApi.searchCommand(request);

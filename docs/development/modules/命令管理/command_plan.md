@@ -10,6 +10,18 @@
 
 ## 后续计划
 
+### M0: 契约真值收口（阻断项）
+
+- 完成 `tree/list` 契约真值判定与证据矩阵。
+- 客户端保持严格 `POST`（不做 `GET` 回退）。
+- 同步 API -> Repository -> Service -> Provider -> Page/Widget -> 测试 -> 文档 全链路。
+- 产出上游 issue + 本仓 issue 并回填编号。
+
+**Issue 回填位**:
+
+- 上游 issue：`1Panel-dev/1Panel#12363`
+- 本仓 issue：`IsKenKenYa/1Panel-Client#6`
+
 ### M1: 命令主链路维护
 - 命令列表与搜索
 - 导入/导出闭环维护
@@ -30,6 +42,8 @@
 
 ## 验收标准
 
+- 契约偏差 issue 已登记并回填编号
+- 命令模块链路对账表全部通过
 - `flutter analyze` 通过
 - `dart run test_runner.dart unit` 通过
 - `dart run test_runner.dart ui` 通过

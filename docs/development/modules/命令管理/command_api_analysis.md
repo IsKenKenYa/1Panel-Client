@@ -1,39 +1,19 @@
 # COMMAND 模块API端点详细分析
 
 > 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
-> 生成时间: 2026-03-23 18:47:54
+> 生成时间: 2026-03-30 11:54:29
 
 ## API端点总览
 
-- 端点数量: **9**
-- 方法总数: **9**
+- 端点数量: **8**
+- 方法总数: **8**
 
 | 方法 | 数量 |
 |------|------|
 | GET | 2 |
-| POST | 7 |
+| POST | 6 |
 
 ## API端点详情
-
-### `/containers/command`
-
-#### POST
-
-**摘要**: Create container by command
-
-**标签**: Container
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
 
 ### `/core/commands`
 
@@ -145,7 +125,7 @@
 
 ### `/core/commands/tree`
 
-#### POST
+#### GET
 
 **摘要**: Tree commands
 

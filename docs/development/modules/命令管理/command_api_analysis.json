@@ -1,40 +1,11 @@
 {
   "module": "command",
-  "generatedAt": "2026-03-23T18:47:54.942513",
+  "generatedAt": "2026-03-30T11:54:29.474711",
   "summary": {
-    "endpointCount": 9,
-    "methodCount": 9
+    "endpointCount": 8,
+    "methodCount": 8
   },
   "endpoints": [
-    {
-      "path": "/containers/command",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Create container by command",
-          "description": "",
-          "tags": [
-            "Container"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
     {
       "path": "/core/commands",
       "methods": [
@@ -197,7 +168,7 @@
       "path": "/core/commands/tree",
       "methods": [
         {
-          "method": "POST",
+          "method": "GET",
           "summary": "Tree commands",
           "description": "",
           "tags": [

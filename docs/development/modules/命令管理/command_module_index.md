@@ -40,6 +40,26 @@
 8. `POST /core/commands/upload`：返回导入预览
 9. `POST /core/commands/import`：提交最终导入
 
+## 契约偏差状态
+
+- 已确认偏差：
+  - Swagger 快照中 `tree/command` 存在 `GET` 标注
+  - 运行时路由与客户端执行均以 `POST` 为真值
+- 当前策略：客户端严格 `POST`，不做 `GET` 回退。
+- 证据来源：
+  - 路由：`docs/OpenSource/1Panel/core/router/command.go`
+  - 注解：`docs/OpenSource/1Panel/core/app/api/v2/command.go`
+  - Swagger：`docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json`
+  - 客户端：`lib/api/v2/command_v2.dart`
+- issue 跟踪：
+  - 上游 issue：`1Panel-dev/1Panel#12363`
+  - 本仓 issue：`IsKenKenYa/1Panel-Client#6`
+
+## 链路同步检查
+
+- API 契约变更后，必须同步更新 Repository/Service/Provider/Page/测试/模块文档。
+- 若任一链路未更新，模块不得进入“完成”状态。
+
 ## 后续计划
 
 1. 后续周再评估“发送到终端”交接能力
