@@ -1,5 +1,7 @@
-import 'package:dio/dio.dart' show Response, Options, ResponseType;
+import 'package:dio/dio.dart'
+  show Response, Options, ResponseType, DioException;
 import '../../core/network/dio_client.dart';
+import '../../core/network/network_exceptions.dart';
 import '../../core/config/api_constants.dart';
 import '../../data/models/setting_models.dart';
 
@@ -28,6 +30,18 @@ class SettingV2Api {
     if (responseData == null) return null;
     final map = responseData as Map<String, dynamic>;
     return map['data'];
+  }
+
+  bool _shouldFallbackToLegacySettingsPath(Object error) {
+    if (error is DioException) {
+      final statusCode = error.response?.statusCode;
+      return statusCode == 404 || statusCode == 405;
+    }
+    if (error is NetworkException) {
+      final statusCode = error.statusCode;
+      return statusCode == 404 || statusCode == 405;
+    }
+    return false;
   }
 
   /// 获取系统设置
@@ -72,10 +86,20 @@ class SettingV2Api {
   /// @param request 设置更新请求
   /// @return 更新结果
   Future<Response<void>> updateSystemSetting(SettingUpdate request) async {
-    return await _client.post(
-      ApiConstants.buildApiPath('/settings/update'),
-      data: request.toJson(),
-    );
+    try {
+      return await _client.post(
+        ApiConstants.buildApiPath('/core/settings/update'),
+        data: request.toJson(),
+      );
+    } catch (error) {
+      if (!_shouldFallbackToLegacySettingsPath(error)) {
+        rethrow;
+      }
+      return await _client.post(
+        ApiConstants.buildApiPath('/settings/update'),
+        data: request.toJson(),
+      );
+    }
   }
 
   /// 获取系统信息
@@ -424,9 +448,19 @@ class SettingV2Api {
   /// 检查设置是否可用
   /// @return 可用性结果
   Future<Response<dynamic>> checkSettingsAvailable() async {
-    final response = await _client.get(
-      ApiConstants.buildApiPath('/settings/search/available'),
-    );
+    Response<dynamic> response;
+    try {
+      response = await _client.get(
+        ApiConstants.buildApiPath('/core/settings/search/available'),
+      );
+    } catch (error) {
+      if (!_shouldFallbackToLegacySettingsPath(error)) {
+        rethrow;
+      }
+      response = await _client.get(
+        ApiConstants.buildApiPath('/settings/search/available'),
+      );
+    }
     return Response(
       data: _extractDataRaw(response.data),
       statusCode: response.statusCode,

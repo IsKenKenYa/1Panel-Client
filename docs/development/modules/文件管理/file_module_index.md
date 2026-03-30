@@ -12,6 +12,17 @@ Open1PanelApp 的文件管理模块负责服务器文件系统的浏览、操作
 - API 基线：
   `check_module_api_updates.py file` 当前结果为 `unchanged`
 
+## 增量收口记录（2026-03-30）
+
+- 新增端点补齐：`/files/convert`、`/files/remarks`、`/files/remark` 已完成 API -> Service -> Provider -> Page/Widget 最小闭环。
+- UI 最小入口补齐：
+  - 文件属性弹窗已支持备注读取/保存。
+  - 文件列表操作菜单已增加“转换编码”入口（最小可用提交流）。
+- 对齐测试补齐：
+  - `test/api_client/file_v2_alignment_test.dart`：新增上述 3 个端点 route/payload 对齐断言。
+  - `test/features/files/files_provider_test.dart`：新增 `remarks/remark/convert` provider 行为测试。
+- 阶段性收口同步：本次增量已回写阶段清单与阶段总计划（见 `docs/development/s2_module_completion_list.md`、`docs/development/modules/阶段总计划.md`）。
+
 ## 架构改造完成状态
 
 ### ✅ 已完成

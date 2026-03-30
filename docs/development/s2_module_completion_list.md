@@ -1,6 +1,6 @@
 # S2-6 模块完成清单（Phase 2 Final）
 
-更新日期: 2026-03-28  
+更新日期: 2026-03-30  
 适用分支: 模块适配-阶段2
 
 ## 1. 收口口径
@@ -35,7 +35,14 @@
 | Orchestration + AI | 完成（主范围） | 编排与 AI 主流程收口，tail 项按计划排除 |
 | Dashboard + Auth + File | 完成 | 分层改造与门禁回归通过 |
 
-## 4. S2-6 结项判定
+## 4. 2026-03-30 Files 增量收口补记
+
+- 收口内容：补齐 `/files/convert`、`/files/remarks`、`/files/remark` 端点在客户端链路的缺口（API -> Service -> Provider -> Page/Widget）。
+- UI 状态：文件属性弹窗备注编辑已接通；文件菜单“转换编码”最小入口已接通。
+- 对齐验证：新增 `test/api_client/file_v2_alignment_test.dart`，并在 `test/features/files/files_provider_test.dart` 增补行为断言。
+- 门禁状态：已在本轮通过 `flutter analyze` 与 Files 相关聚焦测试。
+
+## 5. S2-6 结项判定
 
 - 判定结果: 通过。
 - 进入状态: Phase 2 Final，可用于模块1合并评审。

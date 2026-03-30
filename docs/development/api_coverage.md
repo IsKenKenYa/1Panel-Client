@@ -43,6 +43,8 @@
 	- S2-5：新增 `DashboardRepository / DashboardService`，`DashboardProvider` 改为依赖 service；`FilesProvider` 的回收站读取已收回 service。
 	- S2-5：`file` 分层继续收口为 `FilesRepository + Browser/Recycle/Transfer/Preview services`，并新增 `RecycleBinProvider / TransferManagerProvider / FilePreviewProvider` 承接页面状态。
 	- S2-5：新增 `test/data/repositories/files_repository_test.dart`，覆盖缓存失效、多服务切换、无配置异常路径。
+	- S2-5：补齐 `/files/convert`、`/files/remarks`、`/files/remark` 客户端链路（API -> Service -> Provider -> Page/Widget），并在 UI 侧接通“属性备注读写 + 转换编码入口”最小闭环。
+	- S2-5：新增 `test/api_client/file_v2_alignment_test.dart`，并补齐 `test/features/files/files_provider_test.dart` 对应行为断言。
 - 门禁结果:
 	- `flutter analyze`：通过
 	- `dart run test_runner.dart unit`：通过
@@ -199,6 +201,7 @@
 - database_api_client_test.dart
 - firewall_api_client_test.dart
 - file_api_client_test.dart
+- file_v2_alignment_test.dart
 - host_api_client_test.dart
 - process_api_client_test.dart
 - setting_api_client_test.dart
@@ -234,4 +237,4 @@
 
 ---
 
-**最后更新**: 2026-03-29
+**最后更新**: 2026-03-30

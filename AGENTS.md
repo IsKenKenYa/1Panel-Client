@@ -13,9 +13,12 @@
 - CN: 状态管理默认 Provider，其他方案需评审通过。EN: Provider is the default; other patterns require review.
 
 ## File Size & Split Rules (Strict)
-- CN: 页面文件 ≤ 300 LOC；组件 ≤ 200 LOC；Provider/ViewModel ≤ 300 LOC；Service/Repository ≤ 400 LOC；Model ≤ 200 LOC。EN: Page ≤ 300 LOC; Widget ≤ 200 LOC; Provider/ViewModel ≤ 300 LOC; Service/Repository ≤ 400 LOC; Model ≤ 200 LOC.
+- CN: 所有代码文件（除文档与 Swagger 产物）硬上限为 `1000 LOC`，超过必须拆分后再提交。EN: Hard cap for all code files (excluding docs and Swagger artifacts) is `1000 LOC`; files above this must be split before merge.
+- CN: 推荐阈值：普通逻辑文件（Provider/ViewModel/Service/Repository/Model/Utils）建议 ≤ `500 LOC`。EN: Recommended target for general logic files (Provider/ViewModel/Service/Repository/Model/Utils) is `<= 500 LOC`.
+- CN: UI 文件允许更大体量（Page/复合 Widget 建议 ≤ `800 LOC`），但同样不得超过 `1000 LOC`。EN: UI files may be larger (Page/composite Widget recommended `<= 800 LOC`), but must still stay within the `1000 LOC` hard cap.
+- CN: UI 允许大文件，但“能拆分的组件必须拆分，能复用的组件必须复用”；禁止重复造轮子与复制粘贴组件。EN: UI files can be larger, but splittable parts must be extracted and reusable parts must be reused; avoid duplicate/copied components.
+- CN: 单一逻辑/架构文件不得承担 `3` 个及以上功能域（职责上限 `2` 个）。EN: A single logic/architecture file must not own `3+` functional domains (max `2` responsibilities).
 - CN: LOC 统计口径为非空非注释行；生成文件 (`*.g.dart`, `*.freezed.dart`) 不计。EN: LOC counts non-empty non-comment lines; generated files (`*.g.dart`, `*.freezed.dart`) are excluded.
-- CN: 超出阈值必须拆分为子组件或子模块，并同步调整文件夹结构。EN: If over limit, split into sub-widgets/modules and update folder structure.
 
 ## Build, Test, and Development Commands
 - `flutter pub get` — install dependencies.

@@ -7,6 +7,9 @@ import 'package:onepanel_client/features/settings/settings_service.dart';
 class _FakeSettingsService extends SettingsService {
   String? lastStoreUrl;
   api.SSHConnectionSave? lastSshRequest;
+  api.SettingUpdate? lastSystemSettingRequest;
+  dynamic settingsAvailability = true;
+  int checkSettingsAvailableCallCount = 0;
 
   dynamic _appStoreConfig = <String, dynamic>{'storeUrl': 'https://store.old'};
   dynamic _sshConnection = <String, dynamic>{
@@ -60,6 +63,17 @@ class _FakeSettingsService extends SettingsService {
       'user': request.user,
     };
   }
+
+  @override
+  Future<dynamic> checkSettingsAvailable() async {
+    checkSettingsAvailableCallCount += 1;
+    return settingsAvailability;
+  }
+
+  @override
+  Future<void> updateSystemSetting(api.SettingUpdate request) async {
+    lastSystemSettingRequest = request;
+  }
 }
 
 void main() {
@@ -105,6 +119,30 @@ void main() {
       expect(service.lastSshRequest?.port, 2222);
       expect((provider.data.sshConnection as Map)['host'], '10.0.0.2');
       expect((provider.data.sshConnection as Map)['port'], 2222);
+    });
+
+    test('updateSystemSetting checks availability before update', () async {
+      final service = _FakeSettingsService();
+      final provider = SettingsProvider(service: service);
+
+      final ok = await provider.updateSystemSetting('panelName', 'Panel X');
+
+      expect(ok, isTrue);
+      expect(service.checkSettingsAvailableCallCount, 1);
+      expect(service.lastSystemSettingRequest?.key, 'panelName');
+      expect(service.lastSystemSettingRequest?.value, 'Panel X');
+    });
+
+    test('updateSystemSetting stops when setting is unavailable', () async {
+      final service = _FakeSettingsService()..settingsAvailability = false;
+      final provider = SettingsProvider(service: service);
+
+      final ok = await provider.updateSystemSetting('panelName', 'Panel Y');
+
+      expect(ok, isFalse);
+      expect(service.checkSettingsAvailableCallCount, 1);
+      expect(service.lastSystemSettingRequest, isNull);
+      expect(provider.data.error, contains('更新系统设置失败'));
     });
   });
 }

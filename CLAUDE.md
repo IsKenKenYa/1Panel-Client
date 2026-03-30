@@ -108,9 +108,12 @@ lib/
 - CN: 业务逻辑不得写在 Widget `build()` 内。EN: No business logic inside Widget `build()`.
 
 ## File Size Thresholds (Strict)
-- CN: 页面文件 ≤ 300 LOC；组件 ≤ 200 LOC；Provider/ViewModel ≤ 300 LOC；Service/Repository ≤ 400 LOC；Model ≤ 200 LOC。EN: Page ≤ 300 LOC; Widget ≤ 200 LOC; Provider/ViewModel ≤ 300 LOC; Service/Repository ≤ 400 LOC; Model ≤ 200 LOC.
+- CN: 所有代码文件（除文档与 Swagger 产物）硬上限为 `1000 LOC`，超过必须拆分后再提交。EN: Hard cap for all code files (excluding docs and Swagger artifacts) is `1000 LOC`; files above this must be split before merge.
+- CN: 推荐阈值：普通逻辑文件（Provider/ViewModel/Service/Repository/Model/Utils）建议 ≤ `500 LOC`。EN: Recommended target for general logic files (Provider/ViewModel/Service/Repository/Model/Utils) is `<= 500 LOC`.
+- CN: UI 文件允许更大体量（Page/复合 Widget 建议 ≤ `800 LOC`），但同样不得超过 `1000 LOC`。EN: UI files may be larger (Page/composite Widget recommended `<= 800 LOC`), but must still stay within the `1000 LOC` hard cap.
+- CN: UI 允许大文件，但“能拆分的组件必须拆分，能复用的组件必须复用”；禁止重复造轮子与复制粘贴组件。EN: UI files can be larger, but splittable parts must be extracted and reusable parts must be reused; avoid duplicate/copied components.
+- CN: 单一逻辑/架构文件不得承担 `3` 个及以上功能域（职责上限 `2` 个）。EN: A single logic/architecture file must not own `3+` functional domains (max `2` responsibilities).
 - CN: 统计口径为非空非注释行；生成文件 (`*.g.dart`, `*.freezed.dart`) 不计。EN: LOC counts non-empty non-comment lines; generated files are excluded.
-- CN: 超出阈值必须拆分为子组件或子模块并调整目录。EN: If over limit, split into sub-widgets/modules and adjust directories.
 
 ## State Management Policy
 - CN: 默认 Provider；Bloc 或其他方案需评审通过且在 feature 内隔离使用。EN: Provider by default; Bloc or others require review and must stay isolated within the feature module.
@@ -334,7 +337,7 @@ void main() {
 
 ## Code Review Checklist
 - CN: 分层依赖是否正确，UI 是否直接调用 API。EN: Dependency direction correct; UI not calling API directly.
-- CN: 文件是否超出 LOC 阈值，是否需要拆分。EN: File size within LOC thresholds or split appropriately.
+- CN: 文件是否满足 `500/800` 推荐阈值与 `1000` 硬上限，职责是否超过 2 个功能域。EN: File size meets `500/800` recommended limits and `1000` hard cap; responsibilities do not exceed 2 functional domains.
 - CN: 错误处理与日志是否完整且使用 `appLogger`。EN: Error handling and logging complete using `appLogger`.
 - CN: 测试是否满足门禁要求（unit/integration/ui）。EN: Test gate satisfied (unit/integration/ui).
 - CN: 新增/变更规范是否同步更新 `AGENTS.md` 与 `CLAUDE.md`。EN: Standards changes synchronized to `AGENTS.md` and `CLAUDE.md`.

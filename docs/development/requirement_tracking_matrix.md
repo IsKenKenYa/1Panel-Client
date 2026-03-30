@@ -55,6 +55,18 @@
 	- `dart run test_runner.dart all`：通过
 - **下一步**: 按 S2-6 输出清单完成合并材料整理，并进入模块1 PR 流程。
 
+## Files 增量收口补记（2026-03-30）
+
+- **收口范围**: `S2-5 File` 子域补齐 `/files/convert`、`/files/remarks`、`/files/remark` 客户端链路（`API -> Service -> Provider -> Page/Widget`）。
+- **UI 最小闭环**:
+	- 文件属性弹窗已接通备注读取与保存。
+	- 文件菜单已补“转换编码”入口与提交反馈。
+- **对齐验证**:
+	- 新增 `test/api_client/file_v2_alignment_test.dart`，补齐上述端点的 route/payload 对齐断言。
+	- `test/features/files/files_provider_test.dart` 已增补 `remark/remarks/convert` 行为断言。
+- **文档回写**: 本增量已同步到 `docs/development/s2_module_completion_list.md` 与 `docs/development/modules/阶段总计划.md`。
+- **门禁状态**: `flutter analyze` 全仓通过（No issues found）。
+
 ## Phase 2 Final Closure（2026-03-28）
 
 - **Final 状态**: Phase 2 已完成收口，进入可合并结论阶段。

@@ -190,6 +190,12 @@ class SettingsService {
     await apiClient.updateSystemSetting(request);
   }
 
+  Future<dynamic> checkSettingsAvailable() async {
+    final apiClient = await _getApi();
+    final response = await apiClient.checkSettingsAvailable();
+    return response.data;
+  }
+
   Future<void> updateTerminalSettings(api.TerminalUpdate request) async {
     final apiClient = await _getApi();
     await apiClient.updateTerminalSettings(request);

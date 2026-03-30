@@ -148,6 +148,59 @@ class SettingsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _isSystemSettingsAvailable(dynamic status) {
+    if (status == null) {
+      return true;
+    }
+    if (status is bool) {
+      return status;
+    }
+    if (status is num) {
+      return status != 0;
+    }
+    if (status is String) {
+      final normalized = status.trim().toLowerCase();
+      if (normalized.isEmpty) {
+        return true;
+      }
+      if (normalized == 'false' ||
+          normalized == 'disable' ||
+          normalized == 'disabled' ||
+          normalized == '0' ||
+          normalized == 'no') {
+        return false;
+      }
+      if (normalized == 'true' ||
+          normalized == 'enable' ||
+          normalized == 'enabled' ||
+          normalized == '1' ||
+          normalized == 'yes') {
+        return true;
+      }
+      return true;
+    }
+    if (status is Map) {
+      final map = status.cast<dynamic, dynamic>();
+      for (final key in <String>[
+        'available',
+        'isAvailable',
+        'status',
+        'enabled',
+        'enable',
+        'value',
+      ]) {
+        if (map.containsKey(key)) {
+          return _isSystemSettingsAvailable(map[key]);
+        }
+      }
+      return true;
+    }
+    if (status is List && status.length == 1) {
+      return _isSystemSettingsAvailable(status.first);
+    }
+    return true;
+  }
+
   Future<void> loadSystemSettings() async {
     _data = _data.copyWith(isLoading: true, error: null);
     notifyListeners();
@@ -472,6 +525,11 @@ class SettingsProvider extends ChangeNotifier {
 
   Future<bool> updateSystemSetting(String key, String value) async {
     try {
+      final availableStatus = await _service.checkSettingsAvailable();
+      if (!_isSystemSettingsAvailable(availableStatus)) {
+        throw StateError('系统设置当前不可更新');
+      }
+
       await _service
           .updateSystemSetting(api.SettingUpdate(key: key, value: value));
       await loadSystemSettings();

@@ -4,6 +4,15 @@
 
 系统设置模块是Open1PanelApp的P0核心模块，提供系统级别的配置管理能力，包括面板设置、安全配置、通知设置、快照管理等，是整个应用运行的基础配置中心。
 
+## 增量收口记录（2026-03-30）
+
+- Core Settings 通用端点补齐：`/core/settings/search/available`、`/core/settings/update` 已纳入客户端主链路。
+- 实现策略：优先走 core 路径；当服务端返回 `404/405` 时回退到 legacy 路径（`/settings/search/available`、`/settings/update`）以兼容历史环境。
+- 链路确认：`SettingV2Api -> SettingRepository -> SettingsService -> SettingsProvider -> SecuritySettingsPage/SystemSettingsPage`。
+- 测试补齐：
+	- `test/api_client/setting_v2_alignment_test.dart`：覆盖 core 路由与 fallback 行为。
+	- `test/features/settings/settings_provider_test.dart`：覆盖 provider 更新前可用性检查。
+
 ## 子模块结构
 
 | 子模块 | 端点数 | API客户端 | 说明 |
@@ -41,4 +50,4 @@
 ---
 
 **文档版本**: 1.0
-**最后更新**: 2026-02-14
+**最后更新**: 2026-03-30
