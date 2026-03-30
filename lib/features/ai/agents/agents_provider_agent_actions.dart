@@ -110,7 +110,6 @@ extension AgentsProviderAgentActions on AgentsProvider {
         _repository.listSkills(agentId),
         _repository.getSecurityConfig(agentId),
         _repository.getOtherConfig(agentId),
-        _repository.getBrowserConfig(agentId),
         _repository.getConfigFile(agentId),
         _repository.getFeishuConfig(agentId),
         _repository.getTelegramConfig(agentId),
@@ -124,15 +123,14 @@ extension AgentsProviderAgentActions on AgentsProvider {
       _skills = results[1] as List<AgentSkillItem>;
       _securityConfig = results[2] as AgentSecurityConfig;
       _otherConfig = results[3] as AgentOtherConfig;
-      _browserConfig = results[4] as AgentBrowserConfig;
-      _configFile = results[5] as AgentConfigFile;
+      _configFile = results[4] as AgentConfigFile;
 
-      final feishu = results[6] as AgentFeishuConfig;
-      final telegram = results[7] as AgentTelegramConfig;
-      final discord = results[8] as AgentDiscordConfig;
-      final wecom = results[9] as AgentWecomConfig;
-      final dingtalk = results[10] as AgentDingTalkConfig;
-      final qqbot = results[11] as AgentQQBotConfig;
+      final feishu = results[5] as AgentFeishuConfig;
+      final telegram = results[6] as AgentTelegramConfig;
+      final discord = results[7] as AgentDiscordConfig;
+      final wecom = results[8] as AgentWecomConfig;
+      final dingtalk = results[9] as AgentDingTalkConfig;
+      final qqbot = results[10] as AgentQQBotConfig;
 
       _channels = <String, AgentChannelSnapshot>{
         'feishu': AgentChannelSnapshot(
@@ -289,54 +287,6 @@ extension AgentsProviderAgentActions on AgentsProvider {
       return true;
     } catch (error, stackTrace) {
       _captureError(error, stackTrace, 'save other config failed');
-      _emitChange();
-      return false;
-    }
-  }
-
-  Future<bool> saveBrowserConfig({
-    required bool enabled,
-    required bool headless,
-    required bool noSandbox,
-    required String defaultProfile,
-  }) async {
-    final agentId = _selectedAgent?.id;
-    if (agentId == null || agentId <= 0) {
-      return false;
-    }
-
-    try {
-      await _repository.updateBrowserConfig(
-        agentId: agentId,
-        enabled: enabled,
-        headless: headless,
-        noSandbox: noSandbox,
-        defaultProfile: defaultProfile,
-      );
-      _browserConfig = await _repository.getBrowserConfig(agentId);
-      _emitChange();
-      return true;
-    } catch (error, stackTrace) {
-      _captureError(error, stackTrace, 'save browser config failed');
-      _emitChange();
-      return false;
-    }
-  }
-
-  Future<bool> approveFeishuPairing(String pairingCode) async {
-    final agentId = _selectedAgent?.id;
-    if (agentId == null || agentId <= 0 || pairingCode.trim().isEmpty) {
-      return false;
-    }
-
-    try {
-      await _repository.approveFeishuPairing(
-        agentId: agentId,
-        pairingCode: pairingCode.trim(),
-      );
-      return true;
-    } catch (error, stackTrace) {
-      _captureError(error, stackTrace, 'approve feishu pairing failed');
       _emitChange();
       return false;
     }
