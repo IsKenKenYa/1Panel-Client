@@ -4,6 +4,8 @@ import 'package:onepanel_client/data/models/ai/agent_models.dart';
 import 'package:onepanel_client/features/ai/agents/agents_provider.dart';
 import 'package:provider/provider.dart';
 
+import 'ai_agent_create_form_widget.dart';
+
 class AIAgentCreateDialog extends StatefulWidget {
   const AIAgentCreateDialog({super.key});
 
@@ -36,11 +38,6 @@ class _AIAgentCreateDialogState extends State<AIAgentCreateDialog> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final provider = context.watch<AgentsProvider>();
-    final selectedAccount = provider.accounts
-        .where((item) => item.id == _accountId)
-        .cast<AgentAccountItem?>()
-        .firstOrNull;
-    final models = selectedAccount?.models ?? const <AgentAccountModel>[];
 
     return Form(
       key: _formKey,
@@ -51,145 +48,64 @@ class _AIAgentCreateDialogState extends State<AIAgentCreateDialog> {
           children: <Widget>[
             Text(l10n.aiAgentsCreate, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),
-            TextFormField(
-              controller: _nameController,
-              decoration: InputDecoration(
-                labelText: l10n.commonName,
-                border: const OutlineInputBorder(),
-              ),
-              validator: (value) => (value ?? '').trim().isEmpty
+            AIAgentCreateFormWidget(
+              provider: provider,
+              submitting: _submitting,
+              agentType: _agentType,
+              accountId: _accountId,
+              model: _model,
+              nameController: _nameController,
+              versionController: _versionController,
+              portController: _portController,
+              tokenController: _tokenController,
+              onAgentTypeChanged: (value) {
+                if (value == null) {
+                  return;
+                }
+                setState(() {
+                  _agentType = value;
+                  _nameController.text = value == 'copaw' ? 'CoPaw' : 'OpenClaw';
+                  _portController.text = value == 'copaw' ? '8088' : '18789';
+                  if (value == 'copaw') {
+                    _accountId = null;
+                    _model = '';
+                  }
+                });
+              },
+              onAccountChanged: (value) {
+                setState(() {
+                  _accountId = value;
+                  final account = provider.accounts
+                      .where((item) => item.id == value)
+                      .cast<AgentAccountItem?>()
+                      .firstOrNull;
+                  _model = account?.models.firstOrNull?.id ?? '';
+                });
+              },
+              onModelChanged: (value) {
+                setState(() {
+                  _model = value ?? '';
+                });
+              },
+              nameValidator: (value) => (value ?? '').trim().isEmpty
                   ? l10n.aiAgentsNameRequired
                   : null,
-            ),
-            const SizedBox(height: 8),
-            DropdownButtonFormField<String>(
-              value: _agentType,
-              decoration: InputDecoration(
-                labelText: l10n.aiAgentsAgentType,
-                border: const OutlineInputBorder(),
-              ),
-              items: <DropdownMenuItem<String>>[
-                DropdownMenuItem(
-                  value: 'openclaw',
-                  child: Text(l10n.aiAgentsOpenclaw),
-                ),
-                DropdownMenuItem(
-                  value: 'copaw',
-                  child: Text(l10n.aiAgentsCopaw),
-                ),
-              ],
-              onChanged: _submitting
-                  ? null
-                  : (value) {
-                      if (value == null) {
-                        return;
-                      }
-                      setState(() {
-                        _agentType = value;
-                        _nameController.text =
-                            value == 'copaw' ? 'CoPaw' : 'OpenClaw';
-                        _portController.text = value == 'copaw' ? '8088' : '18789';
-                        if (value == 'copaw') {
-                          _accountId = null;
-                          _model = '';
-                        }
-                      });
-                    },
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _versionController,
-              decoration: InputDecoration(
-                labelText: l10n.aiAgentsAppVersion,
-                border: const OutlineInputBorder(),
-              ),
-              validator: (value) => (value ?? '').trim().isEmpty
+              versionValidator: (value) => (value ?? '').trim().isEmpty
                   ? l10n.aiAgentsVersionRequired
                   : null,
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _portController,
-              decoration: InputDecoration(
-                labelText: l10n.aiAgentsWebUiPort,
-                border: const OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.number,
-              validator: (value) {
+              portValidator: (value) {
                 final port = int.tryParse((value ?? '').trim());
                 if (port == null || port <= 0 || port > 65535) {
                   return l10n.aiAgentsPortRequired;
                 }
                 return null;
               },
+              accountValidator: (value) =>
+                  value == null ? l10n.aiAgentsAccountRequired : null,
+              modelValidator: (value) => (value ?? '').trim().isEmpty
+                  ? l10n.aiAgentsModelRequired
+                  : null,
             ),
-            if (_agentType == 'openclaw') ...<Widget>[
-              const SizedBox(height: 8),
-              DropdownButtonFormField<int>(
-                value: _accountId,
-                decoration: InputDecoration(
-                  labelText: l10n.aiAgentsAccount,
-                  border: const OutlineInputBorder(),
-                ),
-                items: provider.accounts
-                    .map(
-                      (item) => DropdownMenuItem<int>(
-                        value: item.id,
-                        child: Text(item.name),
-                      ),
-                    )
-                    .toList(),
-                onChanged: _submitting
-                    ? null
-                    : (value) {
-                        setState(() {
-                          _accountId = value;
-                          final account = provider.accounts
-                              .where((item) => item.id == value)
-                              .cast<AgentAccountItem?>()
-                              .firstOrNull;
-                          _model = account?.models.firstOrNull?.id ?? '';
-                        });
-                      },
-                validator: (value) => value == null
-                    ? l10n.aiAgentsAccountRequired
-                    : null,
-              ),
-              const SizedBox(height: 8),
-              DropdownButtonFormField<String>(
-                value: _model.isEmpty ? null : _model,
-                decoration: InputDecoration(
-                  labelText: l10n.aiAgentsModel,
-                  border: const OutlineInputBorder(),
-                ),
-                items: models
-                    .map(
-                      (item) => DropdownMenuItem<String>(
-                        value: item.id,
-                        child: Text(item.name),
-                      ),
-                    )
-                    .toList(),
-                onChanged: _submitting
-                    ? null
-                    : (value) {
-                        setState(() {
-                          _model = value ?? '';
-                        });
-                      },
-                validator: (value) => (value ?? '').trim().isEmpty
-                    ? l10n.aiAgentsModelRequired
-                    : null,
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _tokenController,
-                decoration: InputDecoration(
-                  labelText: l10n.aiAgentsTokenOptional,
-                  border: const OutlineInputBorder(),
-                ),
-              ),
-            ],
             const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -244,14 +160,5 @@ class _AIAgentCreateDialogState extends State<AIAgentCreateDialog> {
     if (success && mounted) {
       Navigator.of(context).pop();
     }
-  }
-}
-
-extension<T> on Iterable<T> {
-  T? get firstOrNull {
-    if (isEmpty) {
-      return null;
-    }
-    return first;
   }
 }

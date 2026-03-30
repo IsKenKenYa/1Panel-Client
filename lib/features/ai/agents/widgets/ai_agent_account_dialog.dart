@@ -4,6 +4,8 @@ import 'package:onepanel_client/data/models/ai/agent_models.dart';
 import 'package:onepanel_client/features/ai/agents/agents_provider.dart';
 import 'package:provider/provider.dart';
 
+import 'ai_agent_account_form_widget.dart';
+
 class AIAgentAccountDialog extends StatefulWidget {
   const AIAgentAccountDialog({
     super.key,
@@ -87,111 +89,55 @@ class _AIAgentAccountDialogState extends State<AIAgentAccountDialog> {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              value: _provider.isEmpty ? null : _provider,
-              decoration: InputDecoration(
-                labelText: l10n.aiAgentsProvider,
-                border: const OutlineInputBorder(),
-              ),
-              items: provider.providers
-                  .map(
-                    (item) => DropdownMenuItem<String>(
-                      value: item.provider,
-                      child: Text(item.displayName),
-                    ),
-                  )
-                  .toList(),
-              onChanged: _submitting || _isEdit
-                  ? null
-                  : (value) {
-                      if (value == null) {
-                        return;
-                      }
-                      final providerItem = provider.providers
-                          .where((item) => item.provider == value)
-                          .cast<ProviderInfo?>()
-                          .firstOrNull;
-                      setState(() {
-                        _provider = value;
-                        _baseUrlController.text = providerItem?.baseUrl ?? '';
-                      });
-                    },
-              validator: (value) => (value ?? '').isEmpty
-                  ? l10n.aiAgentsProviderRequired
-                  : null,
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _nameController,
-              decoration: InputDecoration(
-                labelText: l10n.commonName,
-                border: const OutlineInputBorder(),
-              ),
-              validator: (value) => (value ?? '').trim().isEmpty
-                  ? l10n.aiAgentsNameRequired
-                  : null,
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _apiKeyController,
-              decoration: InputDecoration(
-                labelText: l10n.aiAgentsApiKey,
-                border: const OutlineInputBorder(),
-              ),
-              validator: (value) => (value ?? '').trim().isEmpty
-                  ? l10n.aiAgentsApiKeyRequired
-                  : null,
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _baseUrlController,
-              decoration: InputDecoration(
-                labelText: l10n.aiAgentsBaseUrl,
-                border: const OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _apiTypeController,
-              decoration: InputDecoration(
-                labelText: l10n.aiAgentsApiType,
-                border: const OutlineInputBorder(),
-              ),
-              validator: (value) => (value ?? '').trim().isEmpty
-                  ? l10n.aiAgentsApiTypeRequired
-                  : null,
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _remarkController,
-              minLines: 2,
-              maxLines: 4,
-              decoration: InputDecoration(
-                labelText: l10n.commonDescription,
-                border: const OutlineInputBorder(),
-              ),
-            ),
-            CheckboxListTile(
-              value: _rememberApiKey,
-              contentPadding: EdgeInsets.zero,
-              title: Text(l10n.aiAgentsRememberApiKey),
-              onChanged: (value) {
+            AIAgentAccountFormWidget(
+              provider: provider,
+              uiProvider: provider,
+              submitting: _submitting,
+              isEdit: _isEdit,
+              currentProvider: _provider,
+              nameController: _nameController,
+              apiKeyController: _apiKeyController,
+              baseUrlController: _baseUrlController,
+              apiTypeController: _apiTypeController,
+              remarkController: _remarkController,
+              rememberApiKey: _rememberApiKey,
+              syncAgents: _syncAgents,
+              onProviderChanged: (value) {
+                if (value == null) {
+                  return;
+                }
+                final providerItem = provider.providers
+                    .where((item) => item.provider == value)
+                    .cast<ProviderInfo?>()
+                    .firstOrNull;
+                setState(() {
+                  _provider = value;
+                  _baseUrlController.text = providerItem?.baseUrl ?? '';
+                });
+              },
+              onRememberApiKeyChanged: (value) {
                 setState(() {
                   _rememberApiKey = value ?? false;
                 });
               },
+              onSyncAgentsChanged: (value) {
+                setState(() {
+                  _syncAgents = value ?? false;
+                });
+              },
+              providerValidator: (value) => (value ?? '').isEmpty
+                  ? l10n.aiAgentsProviderRequired
+                  : null,
+              nameValidator: (value) => (value ?? '').trim().isEmpty
+                  ? l10n.aiAgentsNameRequired
+                  : null,
+              apiKeyValidator: (value) => (value ?? '').trim().isEmpty
+                  ? l10n.aiAgentsApiKeyRequired
+                  : null,
+              apiTypeValidator: (value) => (value ?? '').trim().isEmpty
+                  ? l10n.aiAgentsApiTypeRequired
+                  : null,
             ),
-            if (_isEdit)
-              CheckboxListTile(
-                value: _syncAgents,
-                contentPadding: EdgeInsets.zero,
-                title: Text(l10n.aiAgentsSyncAgents),
-                onChanged: (value) {
-                  setState(() {
-                    _syncAgents = value ?? false;
-                  });
-                },
-              ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
@@ -261,14 +207,5 @@ class _AIAgentAccountDialogState extends State<AIAgentAccountDialog> {
     if (success && mounted) {
       Navigator.of(context).pop();
     }
-  }
-}
-
-extension<T> on Iterable<T> {
-  T? get firstOrNull {
-    if (isEmpty) {
-      return null;
-    }
-    return first;
   }
 }

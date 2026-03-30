@@ -40,7 +40,10 @@ class _AIAgentAccountsWidgetState extends State<AIAgentAccountsWidget> {
                   SizedBox(
                     width: 220,
                     child: DropdownButtonFormField<String>(
-                      value: provider.accountProvider.isEmpty
+                      key: ValueKey<String?>(
+                        'account-provider-${provider.accountProvider}',
+                      ),
+                      initialValue: provider.accountProvider.isEmpty
                           ? null
                           : provider.accountProvider,
                       decoration: InputDecoration(
