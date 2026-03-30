@@ -118,46 +118,34 @@ class ServerDetailPage extends StatelessWidget {
         onTap: () => _openRoute(context, AppRoutes.operations),
       ),
       ServerDetailSectionItem(
-        title: l10n.serverModuleWebsites,
-        icon: Icons.language_outlined,
-        subtitle: l10n.commonExperimental,
-        onTap: () => _openRoute(context, '/websites'),
-      ),
-      ServerDetailSectionItem(
         title: l10n.serverModuleDatabases,
         icon: Icons.storage_outlined,
         subtitle: l10n.commonExperimental,
-        onTap: () => _openRoute(context, '/databases'),
+        onTap: () => _openRoute(context, AppRoutes.databases),
       ),
       ServerDetailSectionItem(
         title: l10n.serverModuleFirewall,
         icon: Icons.shield_outlined,
         subtitle: l10n.commonExperimental,
-        onTap: () => _openRoute(context, '/firewall'),
+        onTap: () => _openRoute(context, AppRoutes.firewall),
       ),
       ServerDetailSectionItem(
         title: l10n.serverModuleTerminal,
         icon: Icons.terminal_outlined,
         subtitle: l10n.commonExperimental,
-        onTap: () => _openRoute(context, '/terminal'),
+        onTap: () => _openRoute(context, AppRoutes.terminal),
       ),
       ServerDetailSectionItem(
         title: l10n.serverModuleMonitoring,
         icon: Icons.monitor_heart_outlined,
         subtitle: l10n.commonExperimental,
-        onTap: () => _openRoute(context, '/monitoring'),
+        onTap: () => _openRoute(context, AppRoutes.monitoring),
       ),
       ServerDetailSectionItem(
         title: l10n.openrestyPageTitle,
         icon: Icons.tune_outlined,
         subtitle: l10n.commonExperimental,
         onTap: () => _openRoute(context, AppRoutes.openrestyCenter),
-      ),
-      ServerDetailSectionItem(
-        title: l10n.serverModuleAi,
-        icon: Icons.smart_toy_outlined,
-        subtitle: l10n.commonExperimental,
-        onTap: () => _openRoute(context, AppRoutes.ai),
       ),
       ServerDetailSectionItem(
         title: l10n.serverModuleSystemSettings,
@@ -172,9 +160,9 @@ class ServerDetailPage extends StatelessWidget {
       case ClientModule.files:
         return AppRoutes.files;
       case ClientModule.containers:
-        return '/containers';
+        return AppRoutes.containers;
       case ClientModule.apps:
-        return '/apps';
+        return AppRoutes.apps;
       case ClientModule.websites:
         return AppRoutes.websites;
       case ClientModule.ai:

@@ -78,10 +78,21 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    final l10n =
+      AppLocalizations.of(tester.element(find.byType(ServerDetailPage)));
+
     expect(find.byType(GridView), findsNothing);
     expect(find.text('Bottom Tabs'), findsOneWidget);
     expect(find.text('Edit Tabs'), findsOneWidget);
     expect(find.text('Files'), findsWidgets);
+    expect(find.text(l10n.serverModuleWebsites), findsOneWidget);
+    expect(find.text(l10n.serverModuleAi), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text(l10n.serverModuleSystemSettings),
+      200,
+    );
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.serverModuleSystemSettings), findsOneWidget);
     await tester.scrollUntilVisible(find.text('Operations Center'), 200);
     await tester.pumpAndSettle();
     expect(find.text('Operations Center'), findsWidgets);

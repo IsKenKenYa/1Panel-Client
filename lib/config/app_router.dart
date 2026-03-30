@@ -153,6 +153,8 @@ class AppRoutes {
   static const String serverDetail = '/server-detail';
   static const String dashboard = '/dashboard';
   static const String files = '/files';
+  static const String containers = '/containers';
+  static const String apps = '/apps';
   static const String databases = '/databases';
   static const String databaseDetail = '/database-detail';
   static const String databaseForm = '/database-form';
@@ -959,7 +961,7 @@ class AppRouter {
           );
         }
 
-      case '/containers':
+      case AppRoutes.containers:
         return MaterialPageRoute(
           builder: (_) => const AppShellPage(
             initialIndex: 2,
@@ -967,7 +969,7 @@ class AppRouter {
           ),
         );
 
-      case '/apps':
+      case AppRoutes.apps:
         return MaterialPageRoute(
           builder: (_) => const AppsPage(),
         );

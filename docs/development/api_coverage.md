@@ -84,6 +84,22 @@
 	- `Container Image-repo / Container Compose-template`
 - `untagged` 行继续保留，但已在 canonical 清单中补充 owner 归类附录。
 
+## 未完美适配清单（2026-03-30 复核）
+
+- 说明：`swagger_adaptation_status_checklist` 维度为 tag 级“已适配真值”，本节补充“仍需收口”的测试/文档维度缺口。
+- A. 文档统计待回刷（代码已有测试证据）
+	- `Firewall`：`api_coverage` 当前标记“未测试”，但已存在 `test/features/firewall/*` 回归用例。
+	- `Website SSL`：`api_coverage` 当前标记“未测试”，但已存在 `website_ssl_*` provider/page 用例。
+	- `OpenResty`：`api_coverage` 当前标记“未测试”，但已存在 `openresty_provider_test.dart` 与页面测试。
+- B. 真实测试缺口（优先补齐）
+	- `Container Image / Compose / Network / Volume`
+	- `Website Nginx / Website HTTPS`
+	- `PHP Extensions`
+	- `Menu Setting`
+- C. 已批准残留（非本轮阻断）
+	- `Database`：用户管理细节与更多写操作表单留 Phase 3。
+	- `Firewall`：forward/filter advance/chain status 留 Phase 3。
+
 ## 实现状态统计
 
 | 维度 | 完成数 | 完成率 |
