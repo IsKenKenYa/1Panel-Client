@@ -43,6 +43,21 @@ const List<UiOverflowVariant> kCoreOverflowVariants = [
   ),
 ];
 
+const List<UiOverflowVariant> kGoldenBaselineVariants = [
+  UiOverflowVariant(
+    name: 'en-phone-1.0x',
+    locale: Locale('en'),
+    size: Size(390, 844),
+    textScale: 1.0,
+  ),
+  UiOverflowVariant(
+    name: 'zh-phone-1.0x',
+    locale: Locale('zh'),
+    size: Size(390, 844),
+    textScale: 1.0,
+  ),
+];
+
 Future<void> pumpOverflowHarness(
   WidgetTester tester, {
   required Widget child,
