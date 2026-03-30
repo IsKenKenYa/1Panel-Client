@@ -322,6 +322,39 @@ class FileBrowserService {
     );
   }
 
+  Future<void> convertFiles({
+    required List<FileMediaConvertItem> files,
+    required String outputPath,
+    bool deleteSource = false,
+    String? taskId,
+  }) async {
+    final api = await _repository.getApi();
+    await api.convertFiles(
+      FileMediaConvertRequest(
+        files: files,
+        outputPath: outputPath,
+        deleteSource: deleteSource,
+        taskID: taskId,
+      ),
+    );
+  }
+
+  Future<Map<String, String>> getFileRemarks(List<String> paths) async {
+    if (paths.isEmpty) {
+      return const <String, String>{};
+    }
+
+    final api = await _repository.getApi();
+    final response =
+        await api.batchGetFileRemarks(FileRemarkBatch(paths: paths));
+    return response.data?.remarks ?? const <String, String>{};
+  }
+
+  Future<void> setFileRemark(String path, String remark) async {
+    final api = await _repository.getApi();
+    await api.setFileRemark(FileRemarkUpdate(path: path, remark: remark));
+  }
+
   Future<String> readFile(
     String path, {
     int? offset,

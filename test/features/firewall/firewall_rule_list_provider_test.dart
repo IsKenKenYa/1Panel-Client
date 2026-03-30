@@ -16,6 +16,9 @@ class _FakeFirewallRuleService implements FirewallServiceInterface {
   FirewallDescriptionUpdate? lastDescriptionUpdate;
   FirewallUpdateIpRequest? lastIpUpdate;
   FirewallUpdatePortRequest? lastPortUpdate;
+  FirewallFilterBatchOperation? lastFilterBatchOperation;
+  FirewallFilterChainOperation? lastFilterChainOperation;
+  FirewallForwardOperateRequest? lastForwardRequest;
 
   final FirewallRule _rule = const FirewallRule(
     id: 1,
@@ -42,6 +45,52 @@ class _FakeFirewallRuleService implements FirewallServiceInterface {
     lastInfo = info;
     lastStrategy = strategy;
     return PageResult(items: [_rule], total: 1);
+  }
+
+  @override
+  Future<PageResult<FirewallRule>> searchFilterRules({
+    required int page,
+    required int pageSize,
+    required String type,
+    String? info,
+  }) async {
+    lastPage = page;
+    lastPageSize = pageSize;
+    lastType = type;
+    lastInfo = info;
+    return PageResult(items: [_rule], total: 1);
+  }
+
+  @override
+  Future<FirewallFilterChainStatus> loadFilterChainStatus({
+    required String name,
+  }) async {
+    return const FirewallFilterChainStatus(
+      isBind: true,
+      defaultStrategy: 'accept',
+    );
+  }
+
+  @override
+  Future<void> operateFilterChain({
+    required FirewallFilterChainOperation operation,
+  }) async {
+    lastFilterChainOperation = operation;
+  }
+
+  @override
+  Future<void> operateFilterRule(FirewallFilterRuleOperation request) async {}
+
+  @override
+  Future<void> batchOperateFilterRules(
+    FirewallFilterBatchOperation request,
+  ) async {
+    lastFilterBatchOperation = request;
+  }
+
+  @override
+  Future<void> operateForwardRules(FirewallForwardOperateRequest request) async {
+    lastForwardRequest = request;
   }
 
   @override
@@ -76,12 +125,11 @@ class _FakeFirewallRuleService implements FirewallServiceInterface {
 
 class _ThrowingRuleService extends _FakeFirewallRuleService {
   @override
-  Future<PageResult<FirewallRule>> searchRules({
+  Future<PageResult<FirewallRule>> searchFilterRules({
     required int page,
     required int pageSize,
-    String? type,
+    required String type,
     String? info,
-    String? strategy,
   }) async {
     throw Exception('search fail');
   }
@@ -98,21 +146,31 @@ void main() {
     expect(service.lastPage, 2);
     expect(service.lastPageSize, 5);
     expect(service.lastInfo, 'hello');
-    expect(service.lastType, isNull);
+    expect(service.lastType, '1PANEL_INPUT');
   });
 
-  test('FirewallRulesProvider passes strategy and keeps it on refresh',
+  test('FirewallRulesProvider keeps search term on refresh',
       () async {
     final service = _FakeFirewallRuleService();
     final provider = FirewallRulesProvider(service: service);
     await provider.load(search: 'ssh', strategy: 'drop');
 
     expect(service.lastInfo, 'ssh');
-    expect(service.lastStrategy, 'drop');
+    expect(service.lastType, '1PANEL_INPUT');
 
     await provider.refresh();
     expect(service.lastInfo, 'ssh');
-    expect(service.lastStrategy, 'drop');
+    expect(service.lastType, '1PANEL_INPUT');
+  });
+
+  test('FirewallRulesProvider can switch filter chain', () async {
+    final service = _FakeFirewallRuleService();
+    final provider = FirewallRulesProvider(service: service);
+
+    await provider.switchFilterChain('1PANEL_OUTPUT');
+
+    expect(provider.filterChain, '1PANEL_OUTPUT');
+    expect(service.lastType, '1PANEL_OUTPUT');
   });
 
   test('FirewallIpProvider attaches type filter', () async {

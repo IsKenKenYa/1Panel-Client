@@ -4,8 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
 import 'package:onepanel_client/features/files/files_provider.dart';
+import 'package:onepanel_client/features/files/widgets/dialogs/file_remark_editor_widget.dart';
 
-class FilePropertiesDialog extends StatefulWidget {
+class FilePropertiesDialog extends StatelessWidget {
   final FilesProvider provider;
   final FileInfo file;
 
@@ -15,11 +16,6 @@ class FilePropertiesDialog extends StatefulWidget {
     required this.file,
   });
 
-  @override
-  State<FilePropertiesDialog> createState() => _FilePropertiesDialogState();
-}
-
-class _FilePropertiesDialogState extends State<FilePropertiesDialog> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -41,7 +37,7 @@ class _FilePropertiesDialogState extends State<FilePropertiesDialog> {
   }
 
   Widget _buildContent(BuildContext context, dynamic l10n, ThemeData theme) {
-    final props = widget.file;
+    final props = file;
     final dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
 
     return SingleChildScrollView(
@@ -73,6 +69,11 @@ class _FilePropertiesDialogState extends State<FilePropertiesDialog> {
           if (props.modifiedAt != null)
             _buildPropertyItem(context, l10n.filesModifiedLabel,
                 dateFormat.format(props.modifiedAt!)),
+          const Divider(),
+          FileRemarkEditorWidget(
+            provider: provider,
+            file: file,
+          ),
         ],
       ),
     );

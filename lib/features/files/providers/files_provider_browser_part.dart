@@ -176,6 +176,112 @@ extension FilesProviderBrowserMixin on FilesProvider {
     await _service.updateFileContent(path, content);
   }
 
+  Future<Map<String, String>> loadFileRemarks(List<String> paths) async {
+    appLogger.dWithPackage(
+        'files_provider', 'loadFileRemarks: paths=${paths.length}');
+    try {
+      return await _service.getFileRemarks(paths);
+    } catch (e, stackTrace) {
+      appLogger.eWithPackage('files_provider', 'loadFileRemarks: 失败',
+          error: e, stackTrace: stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<void> updateFileRemark(
+    String path,
+    String remark, {
+    bool refreshAfterSave = true,
+  }) async {
+    appLogger.dWithPackage(
+      'files_provider',
+      'updateFileRemark: path=$path, remarkLength=${remark.length}',
+    );
+    try {
+      await _service.setFileRemark(path, remark);
+      appLogger.iWithPackage('files_provider', 'updateFileRemark: 成功');
+      if (refreshAfterSave) {
+        await refresh();
+      }
+    } catch (e, stackTrace) {
+      appLogger.eWithPackage('files_provider', 'updateFileRemark: 失败',
+          error: e, stackTrace: stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<void> convertFile(
+    FileInfo file, {
+    required String outputFormat,
+    String? outputPath,
+    bool deleteSource = false,
+    String? taskId,
+  }) async {
+    if (file.isDir) {
+      throw ArgumentError('Directory cannot be converted');
+    }
+
+    final normalizedOutputFormat = outputFormat.trim().toLowerCase();
+    if (normalizedOutputFormat.isEmpty) {
+      throw ArgumentError('Output format is required');
+    }
+
+    final extension = _resolveFileExtension(file);
+    if (extension.isEmpty) {
+      throw ArgumentError('File extension is required for conversion');
+    }
+
+    final slashIndex = file.path.lastIndexOf('/');
+    final parentPath =
+        slashIndex <= 0 ? '/' : file.path.substring(0, slashIndex);
+    final resolvedOutputPath = _normalizePath(outputPath ?? _data.currentPath);
+    final resolvedTaskId = taskId?.isNotEmpty == true
+        ? taskId
+        : 'file-convert-${DateTime.now().millisecondsSinceEpoch}';
+
+    appLogger.dWithPackage(
+      'files_provider',
+      'convertFile: file=${file.path}, output=$normalizedOutputFormat, dst=$resolvedOutputPath',
+    );
+
+    try {
+      await _service.convertFiles(
+        files: <FileMediaConvertItem>[
+          FileMediaConvertItem(
+            path: parentPath,
+            type: file.type,
+            inputFile: file.name,
+            extension: extension,
+            outputFormat: normalizedOutputFormat,
+          ),
+        ],
+        outputPath: resolvedOutputPath,
+        deleteSource: deleteSource,
+        taskId: resolvedTaskId,
+      );
+      appLogger.iWithPackage('files_provider', 'convertFile: 转换任务已提交');
+      await refresh();
+    } catch (e, stackTrace) {
+      appLogger.eWithPackage('files_provider', 'convertFile: 失败',
+          error: e, stackTrace: stackTrace);
+      rethrow;
+    }
+  }
+
+  String _resolveFileExtension(FileInfo file) {
+    final modelExtension = file.extension;
+    if (modelExtension != null && modelExtension.trim().isNotEmpty) {
+      final trimmed = modelExtension.trim();
+      return trimmed.startsWith('.') ? trimmed : '.$trimmed';
+    }
+
+    final dotIndex = file.name.lastIndexOf('.');
+    if (dotIndex > 0 && dotIndex < file.name.length - 1) {
+      return file.name.substring(dotIndex);
+    }
+    return '';
+  }
+
   Future<void> compressSelected(String name, String type,
       {String? secret}) async {
     if (_data.selectedFiles.isEmpty) {

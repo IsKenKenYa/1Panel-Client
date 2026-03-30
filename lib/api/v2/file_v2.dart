@@ -688,6 +688,60 @@ class FileV2Api {
     );
   }
 
+  /// 转换文件
+  ///
+  /// 调用服务端文件转换任务
+  /// @param request 文件转换请求
+  /// @return 转换任务提交结果
+  Future<Response> convertFiles(FileMediaConvertRequest request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/files/convert'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 批量获取文件备注
+  ///
+  /// @param request 文件备注批量查询请求
+  /// @return 路径到备注的映射
+  Future<Response<FileRemarksResponse>> batchGetFileRemarks(
+    FileRemarkBatch request,
+  ) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/files/remarks'),
+      data: request.toJson(),
+    );
+
+    final raw = response.data;
+    Map<String, dynamic> remarkPayload = const <String, dynamic>{};
+    if (raw is Map<String, dynamic>) {
+      final data = raw['data'];
+      if (data is Map<String, dynamic>) {
+        remarkPayload = data;
+      } else {
+        remarkPayload = raw;
+      }
+    }
+
+    return Response(
+      data: FileRemarksResponse.fromJson(remarkPayload),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 设置文件备注
+  ///
+  /// @param request 文件备注更新请求
+  /// @return 设置结果
+  Future<Response> setFileRemark(FileRemarkUpdate request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/files/remark'),
+      data: request.toJson(),
+    );
+  }
+
   /// 转换文件日志
   ///
   /// 获取文件转换日志

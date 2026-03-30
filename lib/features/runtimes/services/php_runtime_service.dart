@@ -1,4 +1,5 @@
 import 'package:onepanel_client/data/models/runtime_models.dart';
+import 'package:onepanel_client/data/models/common_models.dart';
 import 'package:onepanel_client/data/repositories/runtime_repository.dart';
 
 class PhpRuntimeService {
@@ -10,6 +11,48 @@ class PhpRuntimeService {
 
   Future<PHPExtensionsRes> loadExtensions(int runtimeId) {
     return _repository.getPhpExtensions(runtimeId);
+  }
+
+  Future<PageResult<PHPExtensionRecord>> loadExtensionRecords({
+    int page = 1,
+    int pageSize = 20,
+    bool all = false,
+  }) {
+    return _repository.searchPhpExtensionRecords(
+      page: page,
+      pageSize: pageSize,
+      all: all,
+    );
+  }
+
+  Future<void> createExtensionRecord({
+    required String name,
+    required String extensions,
+  }) {
+    return _repository.createPhpExtensionRecord(
+      PHPExtensionRecordCreate(
+        name: name,
+        extensions: extensions,
+      ),
+    );
+  }
+
+  Future<void> updateExtensionRecord({
+    required int id,
+    required String extensions,
+  }) {
+    return _repository.updatePhpExtensionRecord(
+      PHPExtensionRecordUpdate(
+        id: id,
+        extensions: extensions,
+      ),
+    );
+  }
+
+  Future<void> deleteExtensionRecord(int id) {
+    return _repository.deletePhpExtensionRecord(
+      PHPExtensionRecordDelete(id: id),
+    );
   }
 
   Future<void> installExtension(

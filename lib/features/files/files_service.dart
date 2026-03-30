@@ -283,6 +283,28 @@ class FilesService {
     );
   }
 
+  Future<void> convertFiles({
+    required List<FileMediaConvertItem> files,
+    required String outputPath,
+    bool deleteSource = false,
+    String? taskId,
+  }) async {
+    await _browser.convertFiles(
+      files: files,
+      outputPath: outputPath,
+      deleteSource: deleteSource,
+      taskId: taskId,
+    );
+  }
+
+  Future<Map<String, String>> getFileRemarks(List<String> paths) async {
+    return _browser.getFileRemarks(paths);
+  }
+
+  Future<void> setFileRemark(String path, String remark) async {
+    await _browser.setFileRemark(path, remark);
+  }
+
   Future<String> previewFile(String path, {int? line, int? limit}) async {
     return _preview.previewFile(path, line: line, limit: limit);
   }

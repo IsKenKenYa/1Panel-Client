@@ -10,6 +10,17 @@ class RuntimeV2Api {
 
   final DioClient _client;
 
+  Map<String, dynamic> _extractMapPayload(dynamic raw) {
+    if (raw is Map<String, dynamic>) {
+      final nested = raw['data'];
+      if (nested is Map<String, dynamic>) {
+        return nested;
+      }
+      return raw;
+    }
+    return const <String, dynamic>{};
+  }
+
   Future<Response<RuntimeInfo>> createRuntime(RuntimeCreate request) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/runtimes'),
@@ -111,6 +122,54 @@ class RuntimeV2Api {
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<PageResult<PHPExtensionRecord>>> searchPhpExtensionRecords(
+    PHPExtensionRecordSearch request,
+  ) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/runtimes/php/extensions/search'),
+      data: request.toJson(),
+    );
+    final payload = _extractMapPayload(response.data);
+    return Response<PageResult<PHPExtensionRecord>>(
+      data: PageResult.fromJson(
+        payload,
+        (dynamic item) => PHPExtensionRecord.fromJson(
+          item as Map<String, dynamic>,
+        ),
+      ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<void>> createPhpExtensionRecord(
+    PHPExtensionRecordCreate request,
+  ) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/runtimes/php/extensions'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<void>> updatePhpExtensionRecord(
+    PHPExtensionRecordUpdate request,
+  ) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/runtimes/php/extensions/update'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<void>> deletePhpExtensionRecord(
+    PHPExtensionRecordDelete request,
+  ) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/runtimes/php/extensions/del'),
+      data: request.toJson(),
     );
   }
 

@@ -7,11 +7,19 @@ import '../firewall_service.dart';
 class FirewallRuleListProvider extends ChangeNotifier {
   FirewallRuleListProvider({
     this.type,
+    this.useFilterApi = false,
+    String initialFilterChain = '1PANEL_INPUT',
     FirewallServiceInterface? service,
-  }) : _service = service ?? FirewallService();
+  })  : _service = service ?? FirewallService(),
+        _filterChain = initialFilterChain;
 
   final FirewallServiceInterface _service;
   final String? type;
+  final bool useFilterApi;
+
+  String _filterChain;
+  bool _filterChainBound = false;
+  String _filterDefaultStrategy = '';
 
   PageResult<FirewallRule>? _page;
   bool _loading = false;
@@ -28,6 +36,9 @@ class FirewallRuleListProvider extends ChangeNotifier {
   String? get error => _error;
   int get total => _page?.total ?? 0;
   bool get hasResults => items.isNotEmpty;
+  String get filterChain => _filterChain;
+  bool get isFilterChainBound => _filterChainBound;
+  String get filterDefaultStrategy => _filterDefaultStrategy;
 
   Future<void> load({
     int page = 1,
@@ -44,13 +55,27 @@ class FirewallRuleListProvider extends ChangeNotifier {
     _lastStrategy = strategy;
 
     try {
-      _page = await _service.searchRules(
-        page: page,
-        pageSize: pageSize,
-        type: type,
-        info: search,
-        strategy: strategy,
-      );
+      if (useFilterApi) {
+        _page = await _service.searchFilterRules(
+          page: page,
+          pageSize: pageSize,
+          type: _filterChain,
+          info: search,
+        );
+        final chainStatus = await _service.loadFilterChainStatus(
+          name: _filterChain,
+        );
+        _filterChainBound = chainStatus.isBind;
+        _filterDefaultStrategy = chainStatus.defaultStrategy;
+      } else {
+        _page = await _service.searchRules(
+          page: page,
+          pageSize: pageSize,
+          type: type,
+          info: search,
+          strategy: strategy,
+        );
+      }
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -68,10 +93,56 @@ class FirewallRuleListProvider extends ChangeNotifier {
     );
   }
 
+  Future<void> switchFilterChain(String chain) async {
+    if (!useFilterApi || _filterChain == chain) {
+      return;
+    }
+    _filterChain = chain;
+    await refresh();
+  }
+
+  Future<bool> toggleFilterChainBinding(bool bind) async {
+    if (!useFilterApi) {
+      return false;
+    }
+    return _runMutation(() async {
+      await _service.operateFilterChain(
+        operation: FirewallFilterChainOperation(
+          name: _filterChain,
+          operate: bind ? 'bind' : 'unbind',
+        ),
+      );
+      final chainStatus = await _service.loadFilterChainStatus(
+        name: _filterChain,
+      );
+      _filterChainBound = chainStatus.isBind;
+      _filterDefaultStrategy = chainStatus.defaultStrategy;
+      await refresh();
+    });
+  }
+
   Future<bool> updateDescription(
     FirewallRule rule,
     String description,
   ) async {
+    if (useFilterApi) {
+      return _runMutation(() async {
+        final removeRule = _buildFilterRuleOperation(
+          rule,
+          operation: 'remove',
+        );
+        final addRule = _buildFilterRuleOperation(
+          rule,
+          operation: 'add',
+          description: description,
+        );
+        await _service.batchOperateFilterRules(
+          FirewallFilterBatchOperation(rules: [removeRule, addRule]),
+        );
+        await refresh();
+      });
+    }
+
     return _runMutation(() async {
       await _service.updateDescription(
         FirewallDescriptionUpdate(
@@ -93,7 +164,31 @@ class FirewallRuleListProvider extends ChangeNotifier {
     FirewallRule rule,
     String nextStrategy,
   ) async {
+    if (useFilterApi) {
+      return _runMutation(() async {
+        final removeRule = _buildFilterRuleOperation(
+          rule,
+          operation: 'remove',
+        );
+        final addRule = _buildFilterRuleOperation(
+          rule,
+          operation: 'add',
+          strategy: nextStrategy,
+        );
+        await _service.batchOperateFilterRules(
+          FirewallFilterBatchOperation(rules: [removeRule, addRule]),
+        );
+        await refresh();
+      });
+    }
+
     final inferredType = type ?? _inferType(rule);
+    if (inferredType == 'forward') {
+      _error = 'Forward rules do not support strategy toggling.';
+      notifyListeners();
+      return false;
+    }
+
     if (inferredType == 'address') {
       return _runMutation(() async {
         await _service.updateIpRule(
@@ -144,17 +239,44 @@ class FirewallRuleListProvider extends ChangeNotifier {
   }
 
   Future<bool> deleteRules(List<FirewallRule> rules) async {
+    if (useFilterApi) {
+      return _runMutation(() async {
+        await _service.batchOperateFilterRules(
+          FirewallFilterBatchOperation(
+            rules: [
+              for (final rule in rules)
+                _buildFilterRuleOperation(
+                  rule,
+                  operation: 'remove',
+                ),
+            ],
+          ),
+        );
+        await refresh();
+      });
+    }
+
     final inferredType =
         type ?? (rules.isNotEmpty ? _inferType(rules.first) : 'port');
     return _runMutation(() async {
-      await _service.deleteRules(
-        FirewallBatchRuleRequest(
-          type: inferredType,
-          rules: [
-            for (final rule in rules) _buildRemoveRule(rule, inferredType),
-          ],
-        ),
-      );
+      if (inferredType == 'forward') {
+        await _service.operateForwardRules(
+          FirewallForwardOperateRequest(
+            rules: [
+              for (final rule in rules) _buildForwardRemoveRule(rule),
+            ],
+          ),
+        );
+      } else {
+        await _service.deleteRules(
+          FirewallBatchRuleRequest(
+            type: inferredType,
+            rules: [
+              for (final rule in rules) _buildRemoveRule(rule, inferredType),
+            ],
+          ),
+        );
+      }
       await refresh();
     });
   }
@@ -181,10 +303,54 @@ class FirewallRuleListProvider extends ChangeNotifier {
   }
 
   String _inferType(FirewallRule rule) {
+    if ((rule.targetIP ?? '').isNotEmpty || (rule.targetPort ?? '').isNotEmpty) {
+      return 'forward';
+    }
     if ((rule.address ?? '').isNotEmpty && (rule.port ?? '').isEmpty) {
       return 'address';
     }
     return 'port';
+  }
+
+  FirewallForwardRule _buildForwardRemoveRule(FirewallRule rule) {
+    return FirewallForwardRule(
+      operation: 'remove',
+      protocol: rule.protocol ?? 'tcp',
+      port: rule.port ?? '',
+      targetPort: rule.targetPort ?? rule.destPort ?? '',
+      targetIP: rule.targetIP,
+      interface: rule.interface,
+    );
+  }
+
+  FirewallFilterRuleOperation _buildFilterRuleOperation(
+    FirewallRule rule, {
+    required String operation,
+    String? strategy,
+    String? description,
+  }) {
+    final srcPort = int.tryParse(rule.srcPort ?? '');
+    final dstPort = int.tryParse(rule.destPort ?? rule.port ?? '');
+    final protocol = (rule.protocol ?? '').trim();
+    final chain = (rule.chain ?? '').trim().isEmpty ? _filterChain : rule.chain!;
+
+    return FirewallFilterRuleOperation(
+      operation: operation,
+      id: rule.id,
+      chain: chain,
+      protocol: protocol.toLowerCase() == 'all' ? '' : protocol,
+      srcIP: _emptyToNull(rule.srcIP ?? rule.address),
+      srcPort: srcPort,
+      dstIP: _emptyToNull(rule.dstIP ?? rule.destination),
+      dstPort: dstPort,
+      strategy: strategy ?? (rule.strategy ?? 'accept'),
+      description: description ?? rule.description,
+    );
+  }
+
+  String? _emptyToNull(String? value) {
+    final trimmed = value?.trim() ?? '';
+    return trimmed.isEmpty ? null : trimmed;
   }
 
   Future<bool> _runMutation(Future<void> Function() action) async {
@@ -205,7 +371,8 @@ class FirewallRuleListProvider extends ChangeNotifier {
 }
 
 class FirewallRulesProvider extends FirewallRuleListProvider {
-  FirewallRulesProvider({super.service}) : super(type: null);
+  FirewallRulesProvider({super.service})
+      : super(type: null, useFilterApi: true);
 }
 
 class FirewallIpProvider extends FirewallRuleListProvider {

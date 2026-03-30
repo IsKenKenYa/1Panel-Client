@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:onepanel_client/data/models/common_models.dart';
 import 'package:onepanel_client/data/models/runtime_models.dart';
 import 'package:onepanel_client/features/runtimes/models/runtime_manage_args.dart';
 import 'package:onepanel_client/features/runtimes/providers/php_extensions_provider.dart';
@@ -25,6 +26,18 @@ void main() {
         taskId: any(named: 'taskId'))).thenAnswer((_) async {});
     when(() => service.uninstallExtension(any(), any(),
         taskId: any(named: 'taskId'))).thenAnswer((_) async {});
+    when(
+      () => service.loadExtensionRecords(
+        page: any(named: 'page'),
+        pageSize: any(named: 'pageSize'),
+        all: any(named: 'all'),
+      ),
+    ).thenAnswer(
+      (_) async => const PageResult<PHPExtensionRecord>(
+        items: <PHPExtensionRecord>[],
+        total: 0,
+      ),
+    );
 
     provider = PhpExtensionsProvider(service: service);
   });

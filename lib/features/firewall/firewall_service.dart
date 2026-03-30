@@ -15,6 +15,27 @@ abstract class FirewallServiceInterface {
     String? strategy,
   });
 
+  Future<PageResult<FirewallRule>> searchFilterRules({
+    required int page,
+    required int pageSize,
+    required String type,
+    String? info,
+  });
+
+  Future<FirewallFilterChainStatus> loadFilterChainStatus({
+    required String name,
+  });
+
+  Future<void> operateFilterChain({
+    required FirewallFilterChainOperation operation,
+  });
+
+  Future<void> operateFilterRule(FirewallFilterRuleOperation request);
+
+  Future<void> batchOperateFilterRules(FirewallFilterBatchOperation request);
+
+  Future<void> operateForwardRules(FirewallForwardOperateRequest request);
+
   Future<void> operateFirewall({required FirewallOperation operation});
 
   Future<void> createPortRule(FirewallPortRulePayload payload);
@@ -72,6 +93,71 @@ class FirewallService extends BaseComponent
         info: info,
       );
       return _repository.searchRules(api, request);
+    });
+  }
+
+  @override
+  Future<PageResult<FirewallRule>> searchFilterRules({
+    required int page,
+    required int pageSize,
+    required String type,
+    String? info,
+  }) async {
+    return runGuarded(() async {
+      final api = await _loadApi();
+      final request = FirewallRuleSearch(
+        page: page,
+        pageSize: pageSize,
+        type: type,
+        info: info,
+      );
+      return _repository.searchFilterRules(api, request);
+    });
+  }
+
+  @override
+  Future<FirewallFilterChainStatus> loadFilterChainStatus({
+    required String name,
+  }) async {
+    return runGuarded(() async {
+      final api = await _loadApi();
+      return _repository.loadFilterChainStatus(api, name);
+    });
+  }
+
+  @override
+  Future<void> operateFilterChain({
+    required FirewallFilterChainOperation operation,
+  }) async {
+    return runGuarded(() async {
+      final api = await _loadApi();
+      await _repository.operateFilterChain(api, operation);
+    });
+  }
+
+  @override
+  Future<void> operateFilterRule(FirewallFilterRuleOperation request) async {
+    return runGuarded(() async {
+      final api = await _loadApi();
+      await _repository.operateFilterRule(api, request);
+    });
+  }
+
+  @override
+  Future<void> batchOperateFilterRules(
+    FirewallFilterBatchOperation request,
+  ) async {
+    return runGuarded(() async {
+      final api = await _loadApi();
+      await _repository.batchOperateFilterRules(api, request);
+    });
+  }
+
+  @override
+  Future<void> operateForwardRules(FirewallForwardOperateRequest request) async {
+    return runGuarded(() async {
+      final api = await _loadApi();
+      await _repository.operateForwardRules(api, request);
     });
   }
 

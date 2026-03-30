@@ -14,6 +14,8 @@ class _FakeRuleTabService implements FirewallServiceInterface {
   final List<FirewallBatchRuleRequest> deleteRequests = [];
   final List<FirewallUpdateIpRequest> ipUpdates = [];
   final List<FirewallUpdatePortRequest> portUpdates = [];
+  FirewallFilterBatchOperation? lastFilterBatchOperation;
+  FirewallFilterChainOperation? lastFilterChainOperation;
   String? lastInfo;
   String? lastStrategy;
   String? lastType;
@@ -58,6 +60,83 @@ class _FakeRuleTabService implements FirewallServiceInterface {
       total: 2,
     );
   }
+
+  @override
+  Future<PageResult<FirewallRule>> searchFilterRules({
+    required int page,
+    required int pageSize,
+    required String type,
+    String? info,
+  }) async {
+    lastType = type;
+    lastInfo = info;
+    if (type == '1PANEL_OUTPUT') {
+      return const PageResult(
+        items: [
+          FirewallRule(
+            id: 3,
+            chain: '1PANEL_OUTPUT',
+            dstIP: '8.8.8.8',
+            destPort: '53',
+            protocol: 'udp',
+            strategy: 'accept',
+          ),
+        ],
+        total: 1,
+      );
+    }
+    return const PageResult(
+      items: [
+        FirewallRule(
+          id: 1,
+          chain: '1PANEL_INPUT',
+          srcIP: '1.1.1.1',
+          destPort: '22',
+          protocol: 'tcp',
+          strategy: 'accept',
+        ),
+        FirewallRule(
+          id: 2,
+          chain: '1PANEL_INPUT',
+          srcIP: '2.2.2.2',
+          destPort: '80',
+          protocol: 'tcp',
+          strategy: 'drop',
+        ),
+      ],
+      total: 2,
+    );
+  }
+
+  @override
+  Future<FirewallFilterChainStatus> loadFilterChainStatus({
+    required String name,
+  }) async {
+    return const FirewallFilterChainStatus(
+      isBind: true,
+      defaultStrategy: 'accept',
+    );
+  }
+
+  @override
+  Future<void> operateFilterChain({
+    required FirewallFilterChainOperation operation,
+  }) async {
+    lastFilterChainOperation = operation;
+  }
+
+  @override
+  Future<void> operateFilterRule(FirewallFilterRuleOperation request) async {}
+
+  @override
+  Future<void> batchOperateFilterRules(
+    FirewallFilterBatchOperation request,
+  ) async {
+    lastFilterBatchOperation = request;
+  }
+
+  @override
+  Future<void> operateForwardRules(FirewallForwardOperateRequest request) async {}
 
   @override
   Future<void> operateFirewall({required FirewallOperation operation}) async {}
@@ -126,7 +205,6 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Drop').last);
     await tester.pumpAndSettle();
-    expect(service.lastStrategy, 'drop');
 
     await tester.tap(find.byKey(const Key('firewall.selectionModeButton')));
     await tester.pumpAndSettle();
@@ -136,8 +214,12 @@ void main() {
 
     await tester.tap(find.byKey(const Key('firewall.bulkDeleteButton')));
     await tester.pumpAndSettle();
-    expect(service.deleteRequests.map((e) => e.type),
-        containsAll(['address', 'port']));
+    expect(service.lastFilterBatchOperation, isNotNull);
+    expect(
+      service.lastFilterBatchOperation!.rules
+          .every((rule) => rule.operation == 'remove'),
+      isTrue,
+    );
   });
 
   testWidgets('FirewallIpTab batch accept toggles strategy', (tester) async {

@@ -136,7 +136,8 @@ void main() {
     });
 
     test('uploadFiles should use locked target path', () async {
-      final tempDir = await Directory.systemTemp.createTemp('files_upload_test');
+      final tempDir =
+          await Directory.systemTemp.createTemp('files_upload_test');
       final tempFile = File('${tempDir.path}/demo.txt');
       await tempFile.writeAsString('demo');
 
@@ -172,6 +173,68 @@ void main() {
       );
 
       expect(provider.data.currentPath, '/var/www');
+    });
+
+    test('loadFileRemarks should return mapped remarks', () async {
+      when(mockService.getFileRemarks(any))
+          .thenAnswer((_) async => {'/file1.txt': 'demo remark'});
+
+      final result = await provider.loadFileRemarks(['/file1.txt']);
+
+      expect(result['/file1.txt'], 'demo remark');
+      verify(mockService.getFileRemarks(['/file1.txt'])).called(1);
+    });
+
+    test('updateFileRemark should save and refresh current path', () async {
+      when(mockService.setFileRemark(any, any)).thenAnswer((_) async {});
+      when(mockService.getFiles(
+              path: anyNamed('path'), search: anyNamed('search')))
+          .thenAnswer((_) async => const <FileInfo>[]);
+
+      await provider.updateFileRemark('/file1.txt', 'new remark');
+
+      verify(mockService.setFileRemark('/file1.txt', 'new remark')).called(1);
+      verify(mockService.getFiles(path: '/', search: null)).called(1);
+    });
+
+    test('convertFile should call service with normalized request', () async {
+      when(
+        mockService.convertFiles(
+          files: anyNamed('files'),
+          outputPath: anyNamed('outputPath'),
+          deleteSource: anyNamed('deleteSource'),
+          taskId: anyNamed('taskId'),
+        ),
+      ).thenAnswer((_) async {});
+      when(mockService.getFiles(
+              path: anyNamed('path'), search: anyNamed('search')))
+          .thenAnswer((_) async => const <FileInfo>[]);
+
+      await provider.convertFile(
+        testFiles[1],
+        outputFormat: 'mp3',
+        outputPath: '/tmp',
+      );
+
+      final captured = verify(
+        mockService.convertFiles(
+          files: captureAnyNamed('files'),
+          outputPath: captureAnyNamed('outputPath'),
+          deleteSource: captureAnyNamed('deleteSource'),
+          taskId: captureAnyNamed('taskId'),
+        ),
+      ).captured;
+
+      final requestFiles = captured[0] as List<FileMediaConvertItem>;
+      expect(requestFiles, hasLength(1));
+      expect(requestFiles.single.path, '/');
+      expect(requestFiles.single.inputFile, 'file1.txt');
+      expect(requestFiles.single.extension, '.txt');
+      expect(requestFiles.single.outputFormat, 'mp3');
+      expect(captured[1], '/tmp');
+      expect(captured[2], false);
+      expect((captured[3] as String).startsWith('file-convert-'), isTrue);
+      verify(mockService.getFiles(path: '/', search: null)).called(1);
     });
   });
 }

@@ -78,4 +78,56 @@ class FirewallRepository {
   ) async {
     await api.batchOperate(request.toJson());
   }
+
+  Future<FirewallFilterChainStatus> loadFilterChainStatus(
+    FirewallV2Api api,
+    String name,
+  ) async {
+    final response = await api.loadFilterChainStatus(name);
+    final data = response.data;
+    if (data != null) {
+      return data;
+    }
+    throw StateError('Unexpected firewall filter chain status response');
+  }
+
+  Future<PageResult<FirewallRule>> searchFilterRules(
+    FirewallV2Api api,
+    FirewallRuleSearch request,
+  ) async {
+    final response = await api.searchFilterRules(request);
+    final body = response.data;
+    if (body != null) {
+      return body;
+    }
+    throw StateError('Unexpected firewall filter rules response');
+  }
+
+  Future<void> operateFilterChain(
+    FirewallV2Api api,
+    FirewallFilterChainOperation request,
+  ) async {
+    await api.operateFilterChain(request);
+  }
+
+  Future<void> operateFilterRule(
+    FirewallV2Api api,
+    FirewallFilterRuleOperation request,
+  ) async {
+    await api.operateFilterRule(request);
+  }
+
+  Future<void> batchOperateFilterRules(
+    FirewallV2Api api,
+    FirewallFilterBatchOperation request,
+  ) async {
+    await api.batchOperateFilterRules(request);
+  }
+
+  Future<void> operateForwardRules(
+    FirewallV2Api api,
+    FirewallForwardOperateRequest request,
+  ) async {
+    await api.operateForwardRules(request);
+  }
 }

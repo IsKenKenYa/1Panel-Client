@@ -61,6 +61,11 @@ class _PhpExtensionsPageState extends State<PhpExtensionsPage> {
               icon: const Icon(Icons.refresh),
               tooltip: l10n.commonRefresh,
             ),
+            IconButton(
+              onPressed: provider.isOperating ? null : () => _showRecordDialog(),
+              icon: const Icon(Icons.add),
+              tooltip: l10n.commonCreate,
+            ),
           ],
           body: Column(
             children: <Widget>[
@@ -84,14 +89,68 @@ class _PhpExtensionsPageState extends State<PhpExtensionsPage> {
                   onRetry: provider.load,
                   emptyTitle: l10n.runtimeEmptyTitle,
                   emptyDescription: l10n.runtimeEmptyDescription,
-                  child: ListView.separated(
+                  child: ListView(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                    itemCount: provider.filteredItems.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 10),
-                    itemBuilder: (context, index) {
-                      final item = provider.filteredItems[index];
-                      return _buildItemCard(context, provider, item);
-                    },
+                    children: <Widget>[
+                      for (final item in provider.filteredItems) ...<Widget>[
+                        _buildItemCard(context, provider, item),
+                        const SizedBox(height: 10),
+                      ],
+                      const SizedBox(height: 8),
+                      Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Text(
+                              '${l10n.operationsPhpExtensionsTitle} Records',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          ),
+                          TextButton.icon(
+                            onPressed: provider.isOperating
+                                ? null
+                                : () => _showRecordDialog(),
+                            icon: const Icon(Icons.add),
+                            label: Text(l10n.commonCreate),
+                          ),
+                        ],
+                      ),
+                      if (provider.extensionRecords.isEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: Text(
+                            l10n.runtimeEmptyDescription,
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ),
+                      for (final record in provider.extensionRecords) ...<Widget>[
+                        Card(
+                          child: ListTile(
+                            title: Text(record.name),
+                            subtitle: Text(record.extensions),
+                            trailing: Wrap(
+                              spacing: 8,
+                              children: <Widget>[
+                                IconButton(
+                                  onPressed: provider.isOperating
+                                      ? null
+                                      : () => _showRecordDialog(record: record),
+                                  icon: const Icon(Icons.edit_outlined),
+                                  tooltip: l10n.commonEdit,
+                                ),
+                                IconButton(
+                                  onPressed: provider.isOperating
+                                      ? null
+                                      : () => _deleteRecord(record),
+                                  icon: const Icon(Icons.delete_outline),
+                                  tooltip: l10n.commonDelete,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ],
                   ),
                 ),
               ),
@@ -169,6 +228,99 @@ class _PhpExtensionsPageState extends State<PhpExtensionsPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(success ? l10n.commonSaveSuccess : l10n.commonSaveFailed),
+      ),
+    );
+  }
+
+  Future<void> _showRecordDialog({PHPExtensionRecord? record}) async {
+    final l10n = context.l10n;
+    final nameController = TextEditingController(text: record?.name ?? '');
+    final extensionsController =
+        TextEditingController(text: record?.extensions ?? '');
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(record == null ? l10n.commonCreate : l10n.commonEdit),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              TextField(
+                controller: nameController,
+                enabled: record == null,
+                decoration: InputDecoration(labelText: l10n.commonName),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: extensionsController,
+                minLines: 2,
+                maxLines: 6,
+                decoration: const InputDecoration(labelText: 'Extensions'),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(l10n.commonCancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(l10n.commonConfirm),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed != true || !mounted) {
+      return;
+    }
+
+    final provider = context.read<PhpExtensionsProvider>();
+    final ok = record == null
+        ? await provider.createExtensionRecord(
+            nameController.text,
+            extensionsController.text,
+          )
+        : await provider.updateExtensionRecord(
+            record,
+            extensionsController.text,
+          );
+
+    if (!mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(ok ? l10n.commonSaveSuccess : l10n.commonSaveFailed),
+      ),
+    );
+  }
+
+  Future<void> _deleteRecord(PHPExtensionRecord record) async {
+    final l10n = context.l10n;
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.commonDelete,
+      message: '${l10n.commonDelete} ${record.name}?',
+      confirmLabel: l10n.commonDelete,
+      isDestructive: true,
+      confirmIcon: Icons.delete_outline,
+    );
+    if (!confirmed || !mounted) {
+      return;
+    }
+
+    final ok =
+        await context.read<PhpExtensionsProvider>().deleteExtensionRecord(record);
+    if (!mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(ok ? l10n.commonSaveSuccess : l10n.commonSaveFailed),
       ),
     );
   }

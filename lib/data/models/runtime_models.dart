@@ -7,6 +7,7 @@ part 'runtime/runtime_filters_model.dart';
 part 'runtime/runtime_update_model.dart';
 part 'runtime/runtime_network_binding_model.dart';
 part 'runtime/runtime_php_extension_catalog_model.dart';
+part 'runtime/runtime_php_extension_record_model.dart';
 part 'runtime/runtime_php_config_base_model.dart';
 part 'runtime/runtime_php_config_file_model.dart';
 part 'runtime/runtime_php_fpm_model.dart';

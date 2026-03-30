@@ -58,41 +58,59 @@ class FirewallBaseInfo extends Equatable {
 class FirewallRule extends Equatable {
   const FirewallRule({
     this.id,
+    this.chain,
     this.family,
     this.address,
     this.destination,
+    this.srcIP,
+    this.dstIP,
     this.port,
     this.srcPort,
     this.destPort,
     this.protocol,
     this.strategy,
+    this.targetIP,
+    this.targetPort,
+    this.interface,
     this.usedStatus,
     this.description,
   });
 
   final int? id;
+  final String? chain;
   final String? family;
   final String? address;
   final String? destination;
+  final String? srcIP;
+  final String? dstIP;
   final String? port;
   final String? srcPort;
   final String? destPort;
   final String? protocol;
   final String? strategy;
+  final String? targetIP;
+  final String? targetPort;
+  final String? interface;
   final String? usedStatus;
   final String? description;
 
   factory FirewallRule.fromJson(Map<String, dynamic> json) {
     return FirewallRule(
       id: json['id'] as int?,
+      chain: json['chain'] as String?,
       family: json['family'] as String?,
       address: json['address'] as String?,
       destination: json['destination'] as String?,
+      srcIP: json['srcIP'] as String? ?? json['address'] as String?,
+      dstIP: json['dstIP'] as String? ?? json['destination'] as String?,
       port: json['port']?.toString(),
       srcPort: json['srcPort']?.toString(),
       destPort: json['destPort']?.toString(),
       protocol: json['protocol'] as String?,
       strategy: json['strategy'] as String?,
+      targetIP: json['targetIP'] as String?,
+      targetPort: json['targetPort']?.toString(),
+      interface: json['interface'] as String?,
       usedStatus: json['usedStatus'] as String?,
       description: json['description'] as String?,
     );
@@ -101,14 +119,20 @@ class FirewallRule extends Equatable {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      if (chain != null) 'chain': chain,
       if (family != null) 'family': family,
       if (address != null) 'address': address,
       if (destination != null) 'destination': destination,
+      if (srcIP != null) 'srcIP': srcIP,
+      if (dstIP != null) 'dstIP': dstIP,
       if (port != null) 'port': port,
       if (srcPort != null) 'srcPort': srcPort,
       if (destPort != null) 'destPort': destPort,
       if (protocol != null) 'protocol': protocol,
       if (strategy != null) 'strategy': strategy,
+      if (targetIP != null) 'targetIP': targetIP,
+      if (targetPort != null) 'targetPort': targetPort,
+      if (interface != null) 'interface': interface,
       if (usedStatus != null) 'usedStatus': usedStatus,
       if (description != null) 'description': description,
     };
@@ -117,17 +141,217 @@ class FirewallRule extends Equatable {
   @override
   List<Object?> get props => [
         id,
+        chain,
         family,
         address,
         destination,
+        srcIP,
+        dstIP,
         port,
         srcPort,
         destPort,
         protocol,
         strategy,
+        targetIP,
+        targetPort,
+        interface,
         usedStatus,
         description,
       ];
+}
+
+class FirewallFilterChainStatus extends Equatable {
+  const FirewallFilterChainStatus({
+    this.isBind = false,
+    this.defaultStrategy = '',
+  });
+
+  final bool isBind;
+  final String defaultStrategy;
+
+  factory FirewallFilterChainStatus.fromJson(Map<String, dynamic> json) {
+    return FirewallFilterChainStatus(
+      isBind: json['isBind'] as bool? ?? false,
+      defaultStrategy: json['defaultStrategy'] as String? ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'isBind': isBind,
+      'defaultStrategy': defaultStrategy,
+    };
+  }
+
+  @override
+  List<Object?> get props => [isBind, defaultStrategy];
+}
+
+class FirewallFilterChainOperation extends Equatable {
+  const FirewallFilterChainOperation({
+    required this.name,
+    required this.operate,
+  });
+
+  final String name;
+  final String operate;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'operate': operate,
+    };
+  }
+
+  @override
+  List<Object?> get props => [name, operate];
+}
+
+class FirewallFilterRuleOperation extends Equatable {
+  const FirewallFilterRuleOperation({
+    required this.operation,
+    required this.chain,
+    required this.strategy,
+    this.id,
+    this.protocol,
+    this.srcIP,
+    this.srcPort,
+    this.dstIP,
+    this.dstPort,
+    this.description,
+  });
+
+  final String operation;
+  final String chain;
+  final String strategy;
+  final int? id;
+  final String? protocol;
+  final String? srcIP;
+  final int? srcPort;
+  final String? dstIP;
+  final int? dstPort;
+  final String? description;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'operation': operation,
+      'chain': chain,
+      'strategy': strategy,
+      if (id != null) 'id': id,
+      if (protocol != null) 'protocol': protocol,
+      if (srcIP != null) 'srcIP': srcIP,
+      if (srcPort != null) 'srcPort': srcPort,
+      if (dstIP != null) 'dstIP': dstIP,
+      if (dstPort != null) 'dstPort': dstPort,
+      if (description != null) 'description': description,
+    };
+  }
+
+  @override
+  List<Object?> get props => [
+        operation,
+        chain,
+        strategy,
+        id,
+        protocol,
+        srcIP,
+        srcPort,
+        dstIP,
+        dstPort,
+        description,
+      ];
+}
+
+class FirewallFilterBatchOperation extends Equatable {
+  const FirewallFilterBatchOperation({
+    required this.rules,
+  });
+
+  final List<FirewallFilterRuleOperation> rules;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'rules': rules.map((rule) => rule.toJson()).toList(growable: false),
+    };
+  }
+
+  @override
+  List<Object?> get props => [rules];
+}
+
+class FirewallForwardRule extends Equatable {
+  const FirewallForwardRule({
+    required this.operation,
+    required this.protocol,
+    required this.port,
+    required this.targetPort,
+    this.targetIP,
+    this.interface,
+    this.num,
+  });
+
+  final String operation;
+  final String protocol;
+  final String port;
+  final String targetPort;
+  final String? targetIP;
+  final String? interface;
+  final String? num;
+
+  factory FirewallForwardRule.fromJson(Map<String, dynamic> json) {
+    return FirewallForwardRule(
+      operation: json['operation'] as String? ?? 'add',
+      protocol: json['protocol'] as String? ?? 'tcp',
+      port: json['port']?.toString() ?? '',
+      targetPort: json['targetPort']?.toString() ?? '',
+      targetIP: json['targetIP'] as String?,
+      interface: json['interface'] as String?,
+      num: json['num']?.toString(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'operation': operation,
+      'protocol': protocol,
+      'port': port,
+      'targetPort': targetPort,
+      if (targetIP != null) 'targetIP': targetIP,
+      if (interface != null) 'interface': interface,
+      if (num != null) 'num': num,
+    };
+  }
+
+  @override
+  List<Object?> get props => [
+        operation,
+        protocol,
+        port,
+        targetPort,
+        targetIP,
+        interface,
+        num,
+      ];
+}
+
+class FirewallForwardOperateRequest extends Equatable {
+  const FirewallForwardOperateRequest({
+    required this.rules,
+    this.forceDelete,
+  });
+
+  final List<FirewallForwardRule> rules;
+  final bool? forceDelete;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'rules': rules.map((rule) => rule.toJson()).toList(growable: false),
+      if (forceDelete != null) 'forceDelete': forceDelete,
+    };
+  }
+
+  @override
+  List<Object?> get props => [rules, forceDelete];
 }
 
 class FirewallRuleSearch extends Equatable {

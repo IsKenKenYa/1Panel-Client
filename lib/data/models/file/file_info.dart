@@ -149,6 +149,7 @@ class FileInfo extends Equatable {
   final String? gid;
   final bool isDetail;
   final String? content;
+  final String? remark;
   final String? mode;
   final String? from;
   final String? rName;
@@ -175,6 +176,7 @@ class FileInfo extends Equatable {
     this.gid,
     this.isDetail = false,
     this.content,
+    this.remark,
     this.mode,
     this.from,
     this.rName,
@@ -214,6 +216,7 @@ class FileInfo extends Equatable {
       gid: json['gid'] as String?,
       isDetail: json['isDetail'] as bool? ?? false,
       content: json['content'] as String?,
+      remark: json['remark'] as String?,
       mode: json['mode'] as String?,
       from: json['from'] as String? ?? json['sourcePath'] as String?,
       rName: json['rName'] as String?,
@@ -243,6 +246,7 @@ class FileInfo extends Equatable {
       'gid': gid,
       'isDetail': isDetail,
       'content': content,
+      'remark': remark,
       'from': from,
       'rName': rName,
     };
@@ -271,6 +275,7 @@ class FileInfo extends Equatable {
         gid,
         isDetail,
         content,
+        remark,
         mode,
         from,
         rName,

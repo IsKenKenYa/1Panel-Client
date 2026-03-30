@@ -15,3 +15,5 @@ export 'file_create.dart';
 export 'file_mount.dart';
 export 'file_batch_result.dart';
 export 'file_preview.dart';
+export 'file_remark.dart';
+export 'file_media_convert.dart';

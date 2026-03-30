@@ -10,6 +10,17 @@ class FirewallV2Api {
 
   final DioClient _client;
 
+  Map<String, dynamic> _extractMapPayload(dynamic raw) {
+    if (raw is Map<String, dynamic>) {
+      final nested = raw['data'];
+      if (nested is Map<String, dynamic>) {
+        return nested;
+      }
+      return raw;
+    }
+    return const <String, dynamic>{};
+  }
+
   Future<Response<FirewallBaseInfo>> loadFirewallBaseInfo({
     String tab = 'base',
   }) async {
@@ -18,7 +29,7 @@ class FirewallV2Api {
       data: {'name': tab},
     );
     return Response(
-      data: FirewallBaseInfo.fromJson(response.data as Map<String, dynamic>),
+      data: FirewallBaseInfo.fromJson(_extractMapPayload(response.data)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -32,9 +43,10 @@ class FirewallV2Api {
       ApiConstants.buildApiPath('/hosts/firewall/search'),
       data: request.toJson(),
     );
+    final payload = _extractMapPayload(response.data);
     return Response(
       data: PageResult.fromJson(
-        response.data as Map<String, dynamic>,
+        payload,
         (json) => FirewallRule.fromJson(json as Map<String, dynamic>),
       ),
       statusCode: response.statusCode,
@@ -107,6 +119,76 @@ class FirewallV2Api {
     return await _client.post(
       ApiConstants.buildApiPath('/hosts/firewall/update/port'),
       data: payload,
+    );
+  }
+
+  Future<Response<FirewallFilterChainStatus>> loadFilterChainStatus(
+    String name,
+  ) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/hosts/firewall/filter/chain/status'),
+      data: <String, dynamic>{'name': name},
+    );
+    return Response(
+      data: FirewallFilterChainStatus.fromJson(
+        _extractMapPayload(response.data),
+      ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<PageResult<FirewallRule>>> searchFilterRules(
+    FirewallRuleSearch request,
+  ) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/hosts/firewall/filter/search'),
+      data: request.toJson(),
+    );
+    final payload = _extractMapPayload(response.data);
+    return Response(
+      data: PageResult.fromJson(
+        payload,
+        (json) => FirewallRule.fromJson(json as Map<String, dynamic>),
+      ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<void>> operateFilterChain(
+    FirewallFilterChainOperation request,
+  ) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/hosts/firewall/filter/operate'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<void>> operateFilterRule(FirewallFilterRuleOperation request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/hosts/firewall/filter/rule/operate'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<void>> batchOperateFilterRules(
+    FirewallFilterBatchOperation request,
+  ) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/hosts/firewall/filter/rule/batch'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<void>> operateForwardRules(
+    FirewallForwardOperateRequest request,
+  ) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/hosts/firewall/forward'),
+      data: request.toJson(),
     );
   }
 }

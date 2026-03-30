@@ -15,6 +15,9 @@ extension _FilesViewItemOpeners on _FilesViewState {
       case 'download':
         _startDownload(context, provider, file, l10n);
         break;
+      case 'convert':
+        _showConvertDialog(context, provider, file, l10n);
+        break;
       case 'preview':
         _openFilePreview(context, file);
         break;
@@ -78,5 +81,107 @@ extension _FilesViewItemOpeners on _FilesViewState {
         ),
       ),
     );
+  }
+
+  Future<void> _showConvertDialog(
+    BuildContext context,
+    FilesProvider provider,
+    FileInfo file,
+    AppLocalizations l10n,
+  ) async {
+    final outputPathController = TextEditingController(
+      text: provider.data.currentPath,
+    );
+    final outputFormatController = TextEditingController();
+    var backupSource = true;
+
+    try {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (dialogContext) {
+          return StatefulBuilder(
+            builder: (dialogContext, setDialogState) {
+              return AlertDialog(
+                title: Text(l10n.filesEncodingConvert),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: outputPathController,
+                      decoration: InputDecoration(labelText: l10n.filesPath),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: outputFormatController,
+                      decoration:
+                          InputDecoration(labelText: l10n.filesEncodingTo),
+                    ),
+                    const SizedBox(height: 12),
+                    CheckboxListTile(
+                      value: backupSource,
+                      onChanged: (value) {
+                        setDialogState(() {
+                          backupSource = value ?? true;
+                        });
+                      },
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(l10n.filesEncodingBackup),
+                      controlAffinity: ListTileControlAffinity.leading,
+                    ),
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(dialogContext).pop(false),
+                    child: Text(l10n.commonCancel),
+                  ),
+                  FilledButton(
+                    onPressed: () => Navigator.of(dialogContext).pop(true),
+                    child: Text(l10n.commonConfirm),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+
+      if (confirmed != true || !context.mounted) {
+        return;
+      }
+
+      final outputFormat = outputFormatController.text.trim();
+      if (outputFormat.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.commonEmpty)),
+        );
+        return;
+      }
+
+      try {
+        await provider.convertFile(
+          file,
+          outputFormat: outputFormat,
+          outputPath: outputPathController.text.trim(),
+          deleteSource: !backupSource,
+        );
+        if (!context.mounted) {
+          return;
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.filesEncodingConvertDone)),
+        );
+      } catch (_) {
+        if (!context.mounted) {
+          return;
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.filesEncodingConvertFailed)),
+        );
+      }
+    } finally {
+      outputPathController.dispose();
+      outputFormatController.dispose();
+    }
   }
 }

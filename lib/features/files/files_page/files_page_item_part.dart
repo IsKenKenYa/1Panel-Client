@@ -56,6 +56,11 @@ extension _FilesViewItemActions on _FilesViewState {
                 value: 'download',
                 child: Text(l10n.filesActionDownload),
               ),
+            if (!isDir)
+              PopupMenuItem(
+                value: 'convert',
+                child: Text(l10n.filesEncodingConvert),
+              ),
             PopupMenuItem(
               value: 'favorite',
               child: Text(

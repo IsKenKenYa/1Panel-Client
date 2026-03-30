@@ -75,6 +75,47 @@ class RuntimeRepository {
     return response.data ?? const PHPExtensionsRes();
   }
 
+  Future<PageResult<PHPExtensionRecord>> searchPhpExtensionRecords({
+    int page = 1,
+    int pageSize = 20,
+    bool all = false,
+  }) async {
+    final api = await _ensureApi();
+    final response = await api.searchPhpExtensionRecords(
+      PHPExtensionRecordSearch(
+        page: page,
+        pageSize: pageSize,
+        all: all,
+      ),
+    );
+    return response.data ??
+        const PageResult<PHPExtensionRecord>(
+          items: <PHPExtensionRecord>[],
+          total: 0,
+        );
+  }
+
+  Future<void> createPhpExtensionRecord(
+    PHPExtensionRecordCreate request,
+  ) async {
+    final api = await _ensureApi();
+    await api.createPhpExtensionRecord(request);
+  }
+
+  Future<void> updatePhpExtensionRecord(
+    PHPExtensionRecordUpdate request,
+  ) async {
+    final api = await _ensureApi();
+    await api.updatePhpExtensionRecord(request);
+  }
+
+  Future<void> deletePhpExtensionRecord(
+    PHPExtensionRecordDelete request,
+  ) async {
+    final api = await _ensureApi();
+    await api.deletePhpExtensionRecord(request);
+  }
+
   Future<void> installPhpExtension(PHPExtensionInstallRequest request) async {
     final api = await _ensureApi();
     await api.installPhpExtension(request);

@@ -69,25 +69,77 @@ class _FirewallRulesTabState extends State<FirewallRulesTab> {
             const SizedBox(height: AppDesignTokens.spacingSm),
         itemBuilder: (context, index) {
           if (index == 0) {
-            return FirewallRuleListControls(
-              searchController: _searchController,
-              strategyFilter: _strategyFilter,
-              isSelectionMode: _selectionMode,
-              selectedCount: _selected.length,
-              isMutating: provider.isMutating,
-              onSearch: _loadRules,
-              onStrategyChanged: _onStrategyChanged,
-              onToggleSelectionMode: _toggleSelectionMode,
-              onCreate: () => Navigator.pushNamed(
-                context,
-                AppRoutes.firewallRuleForm,
-                arguments: const FirewallRuleFormArguments(
-                  kind: FirewallRuleKind.port,
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (provider.useFilterApi) ...[
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppDesignTokens.spacingSm),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: DropdownButtonFormField<String>(
+                              key: ValueKey('filter-chain-${provider.filterChain}'),
+                              initialValue: provider.filterChain,
+                              decoration: const InputDecoration(
+                                labelText: 'Chain',
+                              ),
+                              items: const [
+                                DropdownMenuItem(
+                                  value: '1PANEL_INPUT',
+                                  child: Text('1PANEL_INPUT'),
+                                ),
+                                DropdownMenuItem(
+                                  value: '1PANEL_OUTPUT',
+                                  child: Text('1PANEL_OUTPUT'),
+                                ),
+                              ],
+                              onChanged: provider.isMutating
+                                  ? null
+                                  : (value) {
+                                      if (value != null) {
+                                        _onFilterChainChanged(value);
+                                      }
+                                    },
+                            ),
+                          ),
+                          const SizedBox(width: AppDesignTokens.spacingSm),
+                          FilledButton.tonal(
+                            onPressed: provider.isMutating
+                                ? null
+                                : () => _toggleFilterChainBinding(provider),
+                            child: Text(
+                              provider.isFilterChainBound ? 'Unbind' : 'Bind',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: AppDesignTokens.spacingSm),
+                ],
+                FirewallRuleListControls(
+                  searchController: _searchController,
+                  strategyFilter: _strategyFilter,
+                  isSelectionMode: _selectionMode,
+                  selectedCount: _selected.length,
+                  isMutating: provider.isMutating,
+                  onSearch: _loadRules,
+                  onStrategyChanged: _onStrategyChanged,
+                  onToggleSelectionMode: _toggleSelectionMode,
+                  onCreate: () => Navigator.pushNamed(
+                    context,
+                    AppRoutes.firewallRuleForm,
+                    arguments: const FirewallRuleFormArguments(
+                      kind: FirewallRuleKind.port,
+                    ),
+                  ),
+                  onDeleteSelected: () => _deleteSelected(provider),
+                  onAcceptSelected: () => _toggleSelected(provider, 'accept'),
+                  onDropSelected: () => _toggleSelected(provider, 'drop'),
                 ),
-              ),
-              onDeleteSelected: () => _deleteSelected(provider),
-              onAcceptSelected: () => _toggleSelected(provider, 'accept'),
-              onDropSelected: () => _toggleSelected(provider, 'drop'),
+              ],
             );
           }
           final rule = provider.items[index - 1];
@@ -113,10 +165,11 @@ class _FirewallRulesTabState extends State<FirewallRulesTab> {
                       value,
                     ),
                     itemBuilder: (context) => [
-                      PopupMenuItem(
-                        value: 'edit',
-                        child: Text(context.l10n.commonEdit),
-                      ),
+                      if (!provider.useFilterApi)
+                        PopupMenuItem(
+                          value: 'edit',
+                          child: Text(context.l10n.commonEdit),
+                        ),
                       PopupMenuItem(
                         value: 'toggle',
                         child: Text(context.l10n.firewallToggleStrategyAction),
@@ -157,6 +210,21 @@ class _FirewallRulesTabState extends State<FirewallRulesTab> {
       _strategyFilter = value;
     });
     await _loadRules();
+  }
+
+  Future<void> _onFilterChainChanged(String chain) async {
+    final provider = context.read<FirewallRulesProvider>();
+    await provider.switchFilterChain(chain);
+    if (!mounted) {
+      return;
+    }
+    setState(_selected.clear);
+  }
+
+  Future<void> _toggleFilterChainBinding(
+    FirewallRulesProvider provider,
+  ) async {
+    await provider.toggleFilterChainBinding(!provider.isFilterChainBound);
   }
 
   void _toggleSelectionMode() {
@@ -262,6 +330,12 @@ class _FirewallRulesTabState extends State<FirewallRulesTab> {
     if (rule.description?.isNotEmpty == true) {
       return rule.description!;
     }
+    if (rule.targetIP?.isNotEmpty == true || rule.targetPort?.isNotEmpty == true) {
+      final ip = rule.targetIP?.isNotEmpty == true ? rule.targetIP! : '-';
+      final port =
+          rule.targetPort?.isNotEmpty == true ? rule.targetPort! : '-';
+      return '$ip:$port';
+    }
     if (rule.address?.isNotEmpty == true) {
       return rule.address!;
     }
@@ -302,6 +376,15 @@ class _FirewallRulesTabState extends State<FirewallRulesTab> {
       parts.add(
         '${context.l10n.firewallDestinationPortLabel}: ${rule.destPort}',
       );
+    }
+    if (rule.targetIP?.isNotEmpty == true) {
+      parts.add('targetIP: ${rule.targetIP}');
+    }
+    if (rule.targetPort?.isNotEmpty == true) {
+      parts.add('targetPort: ${rule.targetPort}');
+    }
+    if (rule.interface?.isNotEmpty == true) {
+      parts.add('interface: ${rule.interface}');
     }
     if (parts.isEmpty) {
       return null;

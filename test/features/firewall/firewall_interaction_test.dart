@@ -30,6 +30,39 @@ class _FakeFirewallInteractionService implements FirewallServiceInterface {
   }
 
   @override
+  Future<PageResult<FirewallRule>> searchFilterRules({
+    required int page,
+    required int pageSize,
+    required String type,
+    String? info,
+  }) async {
+    return const PageResult(items: [], total: 0);
+  }
+
+  @override
+  Future<FirewallFilterChainStatus> loadFilterChainStatus({
+    required String name,
+  }) async {
+    return const FirewallFilterChainStatus();
+  }
+
+  @override
+  Future<void> operateFilterChain({
+    required FirewallFilterChainOperation operation,
+  }) async {}
+
+  @override
+  Future<void> operateFilterRule(FirewallFilterRuleOperation request) async {}
+
+  @override
+  Future<void> batchOperateFilterRules(
+    FirewallFilterBatchOperation request,
+  ) async {}
+
+  @override
+  Future<void> operateForwardRules(FirewallForwardOperateRequest request) async {}
+
+  @override
   Future<void> operateFirewall({required FirewallOperation operation}) async {}
 
   @override

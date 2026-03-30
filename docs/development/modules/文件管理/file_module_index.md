@@ -150,6 +150,8 @@ Open1PanelApp 的文件管理模块负责服务器文件系统的浏览、操作
 | POST /files/recycle/search | 搜索回收站 | ✅ |
 | POST /files/convert | 转换文件编码 | ✅ |
 | POST /files/convert/log | 转换日志 | ✅ |
+| POST /files/remarks | 批量获取文件备注 | ✅ |
+| POST /files/remark | 设置文件备注 | ✅ |
 | POST /files/preview | 预览文件 | ✅ |
 | POST /files/read | 读取文件 | ✅ |
 | POST /files/user/group | 获取用户组 | ✅ |

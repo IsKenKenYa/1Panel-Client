@@ -760,6 +760,55 @@ class MockFilesService extends _i1.Mock implements _i3.FilesService {
       ) as _i4.Future<void>);
 
   @override
+  _i4.Future<void> convertFiles({
+    required List<_i2.FileMediaConvertItem>? files,
+    required String? outputPath,
+    bool? deleteSource = false,
+    String? taskId,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #convertFiles,
+          [],
+          {
+            #files: files,
+            #outputPath: outputPath,
+            #deleteSource: deleteSource,
+            #taskId: taskId,
+          },
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+
+  @override
+  _i4.Future<Map<String, String>> getFileRemarks(List<String>? paths) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getFileRemarks,
+          [paths],
+        ),
+        returnValue: _i4.Future<Map<String, String>>.value(<String, String>{}),
+      ) as _i4.Future<Map<String, String>>);
+
+  @override
+  _i4.Future<void> setFileRemark(
+    String? path,
+    String? remark,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setFileRemark,
+          [
+            path,
+            remark,
+          ],
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+
+  @override
   _i4.Future<String> previewFile(
     String? path, {
     int? line,
