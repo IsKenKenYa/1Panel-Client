@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/container_models.dart'
     hide Container;
-import 'package:onepanel_client/shared/widgets/app_card.dart';
 
 class ContainerCard extends StatelessWidget {
   final ContainerInfo container;
@@ -50,183 +49,220 @@ class ContainerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     final l10n = context.l10n;
-    final containerState = container.state.toLowerCase();
-    final isRunning = containerState == 'running';
-    final statusColor = _statusColor(colorScheme, containerState);
-    final statusLabel = _statusLabel(l10n, containerState);
+    final state = container.state.toLowerCase();
+    final isRunning = state == 'running';
+    final statusColor = _statusColor(scheme, state);
+    final statusLabel = _statusLabel(l10n, state);
     final projectName = _projectName();
     final ports = _formatPorts();
 
-    return AppCard(
-      onTap: onTap,
-      // --- 顶部标题行：容器名 + 状态点 + 更多菜单 ---
-      title: container.name,
-      leading: CircleAvatar(
-        radius: 18,
-        backgroundColor: colorScheme.surfaceContainerHighest,
-        child: Icon(
-          Icons.view_in_ar,
-          color: colorScheme.primary,
-          size: 20,
+    return Card(
+      elevation: 0,
+      color: scheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: BorderSide(
+          color: scheme.outlineVariant.withValues(alpha: 0.4),
         ),
       ),
-      subtitle: projectName != null
-          ? Text(
-              '${l10n.containerInfoProject}: $projectName',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-            )
-          : Text(
-              container.image,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-      trailing: Row(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(14, 14, 8, 14),
+          child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          // 小圆点状态指示器
-          _StatusDot(color: statusColor, label: statusLabel),
-          const SizedBox(width: 4),
-          PopupMenuButton<String>(
-            tooltip: l10n.commonMore,
-            onSelected: (value) {
-              if (value == 'rename') onRename?.call();
-              if (value == 'upgrade') onUpgrade?.call();
-              if (value == 'edit') onEdit?.call();
-              if (value == 'commit') onCommit?.call();
-              if (value == 'cleanLog') onCleanLog?.call();
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 'rename',
-                child: Text(l10n.containerActionRename),
+          // ── 头部：图标 + 名称 + 状态 + 菜单 ──
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // 图标
+              _ContainerIcon(scheme: scheme),
+              const SizedBox(width: 10),
+              // 名称 + 副标题
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      container.name,
+                      style: textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 1),
+                    Row(
+                      children: [
+                        _StatusDot(color: statusColor),
+                        const SizedBox(width: 4),
+                        Text(
+                          statusLabel,
+                          style: textTheme.labelSmall
+                              ?.copyWith(color: statusColor),
+                        ),
+                        if (projectName != null) ...[
+                          Text(
+                            '  ${l10n.containerInfoProject}: ',
+                            style: textTheme.labelSmall?.copyWith(
+                              color: scheme.onSurfaceVariant,
+                            ),
+                          ),
+                          Flexible(
+                            child: Text(
+                              projectName,
+                              style: textTheme.labelSmall?.copyWith(
+                                color: scheme.onSurfaceVariant,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              PopupMenuItem(
-                value: 'upgrade',
-                child: Text(l10n.containerActionUpgrade),
-              ),
-              PopupMenuItem(
-                value: 'edit',
-                child: Text(l10n.containerActionEdit),
-              ),
-              PopupMenuItem(
-                value: 'commit',
-                child: Text(l10n.containerActionCommit),
-              ),
-              PopupMenuItem(
-                value: 'cleanLog',
-                child: Text(l10n.containerActionCleanLog),
+              // 更多菜单
+              _MoreMenu(
+                l10n: l10n,
+                onRename: onRename,
+                onUpgrade: onUpgrade,
+                onEdit: onEdit,
+                onCommit: onCommit,
+                onCleanLog: onCleanLog,
+                onDelete: onDelete,
               ),
             ],
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // --- CPU / 内存两列次级信息（仅在有数据时显示）---
+
+          // ── 镜像名（副行）──
+          Padding(
+            padding: const EdgeInsets.only(top: 6, bottom: 4),
+            child: Text(
+              container.image,
+              style: textTheme.bodySmall?.copyWith(
+                color: scheme.onSurfaceVariant,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+
+          // ── CPU / 内存 / 网络（有数据时）──
           if (container.cpuUsage != null || container.memoryUsage != null)
             Padding(
               padding: const EdgeInsets.only(bottom: 6),
-              child: Row(
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 4,
                 children: [
                   if (container.cpuUsage != null)
                     _MetricChip(
+                      icon: Icons.memory_outlined,
                       label: 'CPU',
                       value: container.cpuUsage!,
-                      color: colorScheme.primary,
+                      color: scheme.primary,
                     ),
-                  if (container.cpuUsage != null &&
-                      container.memoryUsage != null)
-                    const SizedBox(width: 8),
                   if (container.memoryUsage != null)
                     _MetricChip(
+                      icon: Icons.storage_outlined,
                       label: l10n.containerStatsMemory,
                       value: container.memoryUsage!,
-                      color: colorScheme.tertiary,
+                      color: scheme.tertiary,
                     ),
                 ],
               ),
             ),
 
-          // --- 端口信息 ---
+          // ── 端口映射 ──
           if (ports.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Wrap(
-                spacing: 4,
-                runSpacing: 3,
-                children: ports
-                    .map(
-                      (p) => _PortChip(port: p, colorScheme: colorScheme),
-                    )
-                    .toList(),
+                spacing: 5,
+                runSpacing: 4,
+                children:
+                    ports.map((p) => _PortChip(port: p, scheme: scheme)).toList(),
               ),
             ),
 
-          // --- 操作按钮行 ---
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
+          // ── 分隔线 ──
+          Divider(
+            height: 12,
+            thickness: 1,
+            color: scheme.outlineVariant.withValues(alpha: 0.5),
+          ),
+
+          // ── 操作按钮行 ──
+          Row(
             children: [
               if (isRunning) ...[
                 _ActionButton(
                   icon: Icons.stop_rounded,
                   label: l10n.containerActionStop,
-                  color: colorScheme.error,
+                  color: scheme.error,
                   onTap: onStop,
                 ),
+                const SizedBox(width: 6),
                 _ActionButton(
                   icon: Icons.restart_alt,
                   label: l10n.containerActionRestart,
-                  color: colorScheme.primary,
+                  color: scheme.primary,
                   onTap: onRestart,
                 ),
               ] else
                 _ActionButton(
                   icon: Icons.play_arrow_rounded,
                   label: l10n.containerActionStart,
-                  color: colorScheme.tertiary,
+                  color: scheme.tertiary,
                   onTap: onStart,
                 ),
-              if (onTerminal != null)
+              if (onTerminal != null) ...[
+                const SizedBox(width: 6),
                 _ActionButton(
                   icon: Icons.terminal,
                   label: l10n.containerActionTerminal,
-                  color: colorScheme.secondary,
+                  color: scheme.secondary,
                   onTap: onTerminal,
                 ),
+              ],
+              const SizedBox(width: 6),
               _ActionButton(
                 icon: Icons.receipt_long_outlined,
                 label: l10n.containerActionLogs,
-                color: colorScheme.onSurfaceVariant,
+                color: scheme.onSurfaceVariant,
                 onTap: onLogs,
               ),
             ],
           ),
         ],
       ),
+        ),
+      ),
     );
   }
 
-  Color _statusColor(ColorScheme colorScheme, String state) {
+  Color _statusColor(ColorScheme scheme, String state) {
     switch (state) {
       case 'running':
-        return colorScheme.tertiary;
+        return scheme.tertiary;
       case 'restarting':
       case 'paused':
-        return colorScheme.primary;
+        return scheme.primary;
       case 'dead':
       case 'removing':
-        return colorScheme.error;
+        return scheme.error;
       default:
-        return colorScheme.onSurfaceVariant.withValues(alpha: 0.5);
+        return scheme.onSurfaceVariant.withValues(alpha: 0.5);
     }
   }
 
@@ -265,51 +301,61 @@ class ContainerCard extends StatelessWidget {
   }
 }
 
-// ---------------------------------------------------------------------------
-// 小圆点状态指示器（替代原来的大 Chip）
-// ---------------------------------------------------------------------------
-class _StatusDot extends StatelessWidget {
-  const _StatusDot({required this.color, required this.label});
-
-  final Color color;
-  final String label;
+// ────────────────────────────────────────────────────────────────────────────
+// 容器图标头像
+// ────────────────────────────────────────────────────────────────────────────
+class _ContainerIcon extends StatelessWidget {
+  const _ContainerIcon({required this.scheme});
+  final ColorScheme scheme;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 8,
-          height: 8,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-          ),
-        ),
-        const SizedBox(width: 4),
-        Text(
-          label,
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: color,
-                fontWeight: FontWeight.w500,
-              ),
-        ),
-      ],
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: scheme.primaryContainer,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      alignment: Alignment.center,
+      child: Icon(
+        Icons.view_in_ar,
+        color: scheme.onPrimaryContainer,
+        size: 22,
+      ),
     );
   }
 }
 
-// ---------------------------------------------------------------------------
+// ────────────────────────────────────────────────────────────────────────────
+// 状态小圆点
+// ────────────────────────────────────────────────────────────────────────────
+class _StatusDot extends StatelessWidget {
+  const _StatusDot({required this.color});
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 7,
+      height: 7,
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+    );
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────────────
 // CPU / 内存指标徽章
-// ---------------------------------------------------------------------------
+// ────────────────────────────────────────────────────────────────────────────
 class _MetricChip extends StatelessWidget {
   const _MetricChip({
+    required this.icon,
     required this.label,
     required this.value,
     required this.color,
   });
 
+  final IconData icon;
   final String label;
   final String value;
   final Color color;
@@ -318,65 +364,129 @@ class _MetricChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
       decoration: BoxDecoration(
-        color: scheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(5),
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(6),
       ),
-      child: RichText(
-        text: TextSpan(
-          children: [
-            TextSpan(
-              text: '$label ',
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: scheme.onSurfaceVariant,
-                  ),
-            ),
-            TextSpan(
-              text: value,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: color,
-                    fontWeight: FontWeight.w600,
-                  ),
-            ),
-          ],
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 11, color: color),
+          const SizedBox(width: 3),
+          Text(
+            '$label ',
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: scheme.onSurfaceVariant,
+                ),
+          ),
+          Text(
+            value,
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: color,
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
+        ],
       ),
     );
   }
 }
 
-// ---------------------------------------------------------------------------
-// 端口 Chip
-// ---------------------------------------------------------------------------
+// ────────────────────────────────────────────────────────────────────────────
+// 端口 Chip（参考图二样式：border + 等宽字体）
+// ────────────────────────────────────────────────────────────────────────────
 class _PortChip extends StatelessWidget {
-  const _PortChip({required this.port, required this.colorScheme});
-
+  const _PortChip({required this.port, required this.scheme});
   final String port;
-  final ColorScheme colorScheme;
+  final ColorScheme scheme;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        border: Border.all(color: colorScheme.outlineVariant),
-        borderRadius: BorderRadius.circular(5),
+        color: scheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: scheme.outlineVariant),
       ),
-      child: Text(
-        port,
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: colorScheme.onSurfaceVariant,
-              fontFamily: 'monospace',
-            ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.open_in_new, size: 10, color: scheme.onSurfaceVariant),
+          const SizedBox(width: 3),
+          Text(
+            port,
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: scheme.onSurfaceVariant,
+                  fontFamily: 'monospace',
+                ),
+          ),
+        ],
       ),
     );
   }
 }
 
-// ---------------------------------------------------------------------------
+// ────────────────────────────────────────────────────────────────────────────
+// 更多菜单
+// ────────────────────────────────────────────────────────────────────────────
+class _MoreMenu extends StatelessWidget {
+  const _MoreMenu({
+    required this.l10n,
+    this.onRename,
+    this.onUpgrade,
+    this.onEdit,
+    this.onCommit,
+    this.onCleanLog,
+    this.onDelete,
+  });
+
+  final dynamic l10n;
+  final VoidCallback? onRename;
+  final VoidCallback? onUpgrade;
+  final VoidCallback? onEdit;
+  final VoidCallback? onCommit;
+  final VoidCallback? onCleanLog;
+  final VoidCallback? onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<String>(
+      tooltip: l10n.commonMore,
+      iconSize: 18,
+      onSelected: (value) {
+        if (value == 'rename') onRename?.call();
+        if (value == 'upgrade') onUpgrade?.call();
+        if (value == 'edit') onEdit?.call();
+        if (value == 'commit') onCommit?.call();
+        if (value == 'cleanLog') onCleanLog?.call();
+        if (value == 'delete') onDelete?.call();
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(value: 'rename', child: Text(l10n.containerActionRename)),
+        PopupMenuItem(
+            value: 'upgrade', child: Text(l10n.containerActionUpgrade)),
+        PopupMenuItem(value: 'edit', child: Text(l10n.containerActionEdit)),
+        PopupMenuItem(value: 'commit', child: Text(l10n.containerActionCommit)),
+        PopupMenuItem(
+            value: 'cleanLog', child: Text(l10n.containerActionCleanLog)),
+        const PopupMenuDivider(),
+        PopupMenuItem(
+          value: 'delete',
+          child: Text(
+            l10n.containerActionDelete,
+            style: TextStyle(color: Theme.of(context).colorScheme.error),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────────────
 // 操作按钮（紧凑版）
-// ---------------------------------------------------------------------------
+// ────────────────────────────────────────────────────────────────────────────
 class _ActionButton extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -399,19 +509,18 @@ class _ActionButton extends StatelessWidget {
         label: label,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(7),
           child: Container(
-            constraints: const BoxConstraints(minHeight: 30),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.08),
+              color: color.withValues(alpha: 0.09),
               borderRadius: BorderRadius.circular(7),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(icon, color: color, size: 14),
-                const SizedBox(width: 3),
+                const SizedBox(width: 4),
                 Text(
                   label,
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(

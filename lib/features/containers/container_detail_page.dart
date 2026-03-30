@@ -8,7 +8,6 @@ import 'package:onepanel_client/features/containers/providers/container_detail_p
 import 'package:onepanel_client/features/containers/widgets/container_logs_view.dart';
 import 'package:onepanel_client/features/containers/widgets/container_stats_view.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanel_client/shared/widgets/app_card.dart';
 
 class ContainerDetailPage extends StatelessWidget {
   final ContainerInfo container;
@@ -117,54 +116,71 @@ class _InfoTab extends StatelessWidget {
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppCard(
+          // ── 基本信息卡片 ──
+          _InfoCard(
             title: l10n.appBaseInfo,
-            child: Column(
-              children: [
-                _InfoItem(label: l10n.containerInfoId, value: container.id),
-                _InfoItem(label: l10n.containerInfoName, value: container.name),
-                _InfoItem(
-                    label: l10n.containerInfoImage, value: container.image),
-                _InfoItem(
-                    label: l10n.containerInfoStatus, value: container.status),
-                _InfoItem(
-                    label: l10n.containerInfoCreated,
-                    value: container.createTime ?? '-'),
-                _InfoItem(
-                  label: l10n.serverIpLabel,
-                  value: container.ipAddress ?? '-',
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-          if (provider.inspectData != null)
-            AppCard(
-              title: l10n.containerInspectJson,
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: SelectableText(
-                  _formatJson(provider.inspectData!),
-                  style: TextStyle(
-                    fontFamily: 'monospace',
-                    fontSize: 12,
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
+            rows: [
+              _InfoRow(
+                icon: Icons.fingerprint,
+                label: l10n.containerInfoId,
+                value: container.id,
+                mono: true,
               ),
+              _InfoRow(
+                icon: Icons.label_outline,
+                label: l10n.containerInfoName,
+                value: container.name,
+              ),
+              _InfoRow(
+                icon: Icons.inventory_2_outlined,
+                label: l10n.containerInfoImage,
+                value: container.image,
+              ),
+              _InfoRow(
+                icon: Icons.circle_outlined,
+                label: l10n.containerInfoStatus,
+                value: container.status,
+                valueColor: _stateColor(colorScheme, container.state),
+              ),
+              _InfoRow(
+                icon: Icons.access_time_outlined,
+                label: l10n.containerInfoCreated,
+                value: container.createTime ?? '-',
+              ),
+              _InfoRow(
+                icon: Icons.lan_outlined,
+                label: l10n.serverIpLabel,
+                value: container.ipAddress ?? '-',
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          // ── Inspect JSON ──
+          if (provider.inspectData != null)
+            _InspectJsonCard(
+              title: l10n.containerInspectJson,
+              jsonString: _formatJson(provider.inspectData!),
+              scheme: colorScheme,
             ),
         ],
       ),
     );
+  }
+
+  Color _stateColor(ColorScheme scheme, String state) {
+    switch (state.toLowerCase()) {
+      case 'running':
+        return scheme.tertiary;
+      case 'dead':
+      case 'removing':
+        return scheme.error;
+      default:
+        return scheme.onSurfaceVariant;
+    }
   }
 
   String _formatJson(String jsonString) {
@@ -178,42 +194,208 @@ class _InfoTab extends StatelessWidget {
   }
 }
 
-class _InfoItem extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _InfoItem({
-    required this.label,
-    required this.value,
-  });
+// ─────────────────────────────────────────────────────────────────────────────
+// 信息卡片（带标题 + 行列表）
+// ─────────────────────────────────────────────────────────────────────────────
+class _InfoCard extends StatelessWidget {
+  const _InfoCard({required this.title, required this.rows});
+  final String title;
+  final List<_InfoRow> rows;
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.4)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 卡片标题
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+            child: Text(
+              title,
+              style: textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Divider(height: 1, indent: 16, endIndent: 16),
+          // 行列表
+          ...rows.asMap().entries.map((entry) {
+            final isLast = entry.key == rows.length - 1;
+            return Column(
+              children: [
+                entry.value,
+                if (!isLast)
+                  Divider(
+                    height: 1,
+                    indent: 48,
+                    endIndent: 0,
+                    color: scheme.outlineVariant.withValues(alpha: 0.3),
+                  ),
+              ],
+            );
+          }),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 单行信息项
+// ─────────────────────────────────────────────────────────────────────────────
+class _InfoRow extends StatelessWidget {
+  const _InfoRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+    this.valueColor,
+    this.mono = false,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+  final Color? valueColor;
+  final bool mono;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Icon(icon, size: 16, color: scheme.onSurfaceVariant),
+          const SizedBox(width: 10),
           SizedBox(
-            width: 100,
+            width: 80,
             child: Text(
               label,
-              style: TextStyle(
-                color: colorScheme.onSurfaceVariant,
-                fontWeight: FontWeight.w500,
+              style: textTheme.bodySmall?.copyWith(
+                color: scheme.onSurfaceVariant,
               ),
             ),
           ),
           Expanded(
             child: SelectableText(
               value,
-              style: TextStyle(
-                color: colorScheme.onSurface,
+              style: (mono
+                      ? textTheme.bodySmall
+                          ?.copyWith(fontFamily: 'monospace', fontSize: 11)
+                      : textTheme.bodySmall)
+                  ?.copyWith(
+                color: valueColor ?? scheme.onSurface,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Inspect JSON 卡片
+// ─────────────────────────────────────────────────────────────────────────────
+class _InspectJsonCard extends StatefulWidget {
+  const _InspectJsonCard({
+    required this.title,
+    required this.jsonString,
+    required this.scheme,
+  });
+  final String title;
+  final String jsonString;
+  final ColorScheme scheme;
+
+  @override
+  State<_InspectJsonCard> createState() => _InspectJsonCardState();
+}
+
+class _InspectJsonCardState extends State<_InspectJsonCard> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final scheme = widget.scheme;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.4)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 可折叠标题行
+          InkWell(
+            onTap: () => setState(() => _expanded = !_expanded),
+            borderRadius: BorderRadius.circular(14),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 12, 12),
+              child: Row(
+                children: [
+                  Icon(Icons.data_object,
+                      size: 16, color: scheme.onSurfaceVariant),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      widget.title,
+                      style: textTheme.titleSmall
+                          ?.copyWith(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  Icon(
+                    _expanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: scheme.onSurfaceVariant,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          // 折叠内容
+          if (_expanded) ...[
+            Divider(
+                height: 1,
+                color: scheme.outlineVariant.withValues(alpha: 0.4)),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: scheme.surfaceContainerHighest,
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(14),
+                  bottomRight: Radius.circular(14),
+                ),
+              ),
+              child: SelectableText(
+                widget.jsonString,
+                style: textTheme.bodySmall?.copyWith(
+                  fontFamily: 'monospace',
+                  fontSize: 11,
+                  color: scheme.onSurfaceVariant,
+                  height: 1.5,
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
