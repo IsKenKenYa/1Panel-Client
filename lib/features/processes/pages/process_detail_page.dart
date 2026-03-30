@@ -183,8 +183,21 @@ class _ProcessDetailPageState extends State<ProcessDetailPage> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          SizedBox(width: 120, child: Text(label)),
-          Expanded(child: SelectableText(value)),
+          ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 88, maxWidth: 136),
+            child: Text(
+              label,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: SelectableText(
+              value,
+              maxLines: 4,
+            ),
+          ),
         ],
       ),
     );

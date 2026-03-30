@@ -87,12 +87,18 @@ class WebsiteListItemCard extends StatelessWidget {
                 decoration:
                     BoxDecoration(color: statusColor, shape: BoxShape.circle),
               ),
-        title: Text(website.displayDomain ?? l10n.websitesUnknownDomain),
+        title: Text(
+          website.displayDomain ?? l10n.websitesUnknownDomain,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
         subtitle: Text(
           '$statusText'
           '${website.type?.isNotEmpty == true ? ' · ${website.type}' : ''}'
           '${website.group?.isNotEmpty == true ? ' · ${website.group}' : ''}'
           '${website.remark?.isNotEmpty == true ? ' · ${website.remark}' : ''}',
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
         ),
         trailing: selectionMode
             ? null

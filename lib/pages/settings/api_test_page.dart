@@ -127,10 +127,11 @@ class _ApiTestPageState extends State<ApiTestPage> {
                           ),
                           const SizedBox(height: 16),
                           if (_currentConfig != null) ...[
-                            Text('名称: ${_currentConfig!.name}'),
-                            Text('地址: ${_currentConfig!.url}'),
-                            Text(
-                                '密钥: ${_currentConfig!.apiKey.substring(0, 8)}...'),
+                            _buildInfoLine('名称: ${_currentConfig!.name}'),
+                            _buildInfoLine('地址: ${_currentConfig!.url}'),
+                            _buildInfoLine(
+                              '密钥: ${_maskedApiKey(_currentConfig!.apiKey)}',
+                            ),
                           ] else
                             const Text('暂无配置，请先添加API配置'),
                           const SizedBox(height: 16),
@@ -159,6 +160,7 @@ class _ApiTestPageState extends State<ApiTestPage> {
                           const SizedBox(height: 16),
                           DropdownButtonFormField<String>(
                             initialValue: _selectedEndpoint,
+                            isExpanded: true,
                             decoration: const InputDecoration(
                               labelText: '选择API端点',
                               border: OutlineInputBorder(),
@@ -166,7 +168,11 @@ class _ApiTestPageState extends State<ApiTestPage> {
                             items: _endpoints.map((endpoint) {
                               return DropdownMenuItem<String>(
                                 value: endpoint,
-                                child: Text(endpoint),
+                                child: Text(
+                                  endpoint,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               );
                             }).toList(),
                             onChanged: (value) {
@@ -239,6 +245,21 @@ class _ApiTestPageState extends State<ApiTestPage> {
                 ],
               ),
             ),
+    );
+  }
+
+  String _maskedApiKey(String apiKey) {
+    if (apiKey.length <= 8) {
+      return apiKey;
+    }
+    return '${apiKey.substring(0, 8)}...';
+  }
+
+  Widget _buildInfoLine(String value) {
+    return Text(
+      value,
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
     );
   }
 }

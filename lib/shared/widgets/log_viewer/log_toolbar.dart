@@ -68,29 +68,53 @@ class _LogToolbarState extends State<LogToolbar> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 if (widget.controller.totalMatches > 0)
-                                  Text(
-                                    '${widget.controller.currentMatchCount}/${widget.controller.totalMatches}',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurfaceVariant,
+                                  SizedBox(
+                                    width: 56,
+                                    child: Text(
+                                      '${widget.controller.currentMatchCount}/${widget.controller.totalMatches}',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.end,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurfaceVariant,
+                                      ),
                                     ),
                                   ),
                                 IconButton(
                                   icon: const Icon(Icons.keyboard_arrow_up,
                                       size: 20),
+                                  constraints: const BoxConstraints(
+                                    minWidth: 36,
+                                    minHeight: 36,
+                                  ),
+                                  padding: EdgeInsets.zero,
+                                  visualDensity: VisualDensity.compact,
                                   onPressed: widget.controller.previousMatch,
                                   tooltip: l10n.logPreviousMatch,
                                 ),
                                 IconButton(
                                   icon: const Icon(Icons.keyboard_arrow_down,
                                       size: 20),
+                                  constraints: const BoxConstraints(
+                                    minWidth: 36,
+                                    minHeight: 36,
+                                  ),
+                                  padding: EdgeInsets.zero,
+                                  visualDensity: VisualDensity.compact,
                                   onPressed: widget.controller.nextMatch,
                                   tooltip: l10n.logNextMatch,
                                 ),
                                 IconButton(
                                   icon: const Icon(Icons.close, size: 20),
+                                  constraints: const BoxConstraints(
+                                    minWidth: 36,
+                                    minHeight: 36,
+                                  ),
+                                  padding: EdgeInsets.zero,
+                                  visualDensity: VisualDensity.compact,
                                   onPressed: () {
                                     widget.controller.search('');
                                     _searchController.clear();

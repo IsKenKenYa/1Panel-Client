@@ -113,4 +113,93 @@ void main() {
 
     verifyNever(() => service.loadDetail(any()));
   });
+
+  testWidgets('ProcessDetailPage keeps long detail rows stable',
+      (tester) async {
+    tester.view.physicalSize = const Size(360, 640);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    final longCmd =
+        '${List.filled(10, '/usr/local/bin/very-long-command').join(' ')} --with-flag --env=staging';
+    final longDetail = ProcessDetail(
+      pid: 2,
+      name: 'runtime',
+      parentPid: 1,
+      username: 'root',
+      status: 'running',
+      startTime: 'now',
+      numThreads: 2,
+      numConnections: 2,
+      diskRead: '12MB',
+      diskWrite: '22MB',
+      cmdLine: longCmd,
+      rss: '1M',
+      pss: '1M',
+      uss: '1M',
+      swap: '0B',
+      shared: '0B',
+      vms: '1M',
+      hwm: '1M',
+      data: '0B',
+      stack: '0B',
+      locked: '0B',
+      text: '0B',
+      dirty: '0B',
+      envs: const <String>['A=B'],
+      openFiles: <ProcessOpenFile>[
+        ProcessOpenFile(
+          path:
+              '/var/log/${List.filled(24, 'very-long-file-path-segment').join('/')}/runtime.log',
+          fd: 3,
+        ),
+      ],
+      connections: const <ProcessConnection>[],
+    );
+
+    final service = _MockProcessService();
+    when(() => service.loadDetail(any())).thenAnswer((_) async => longDetail);
+
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<CurrentServerController>.value(
+            value: _FakeCurrentServerController(),
+          ),
+          ChangeNotifierProvider<ProcessDetailProvider>(
+            create: (_) => ProcessDetailProvider(service: service),
+          ),
+        ],
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('en'),
+          builder: (context, child) {
+            final mediaQuery = MediaQuery.of(context);
+            return MediaQuery(
+              data: mediaQuery.copyWith(textScaler: const TextScaler.linear(2)),
+              child: child ?? const SizedBox.shrink(),
+            );
+          },
+          home: const ProcessDetailPage(pid: 2),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+
+    final commandFinder = find.byWidgetPredicate(
+      (widget) =>
+          widget is SelectableText &&
+          (widget.data?.contains('--env=staging') ?? false),
+    );
+    expect(commandFinder, findsOneWidget);
+
+    final commandWidget = tester.widget<SelectableText>(commandFinder);
+    expect(commandWidget.maxLines, 4);
+  });
 }

@@ -77,6 +77,28 @@ class _CacheStrategySelector extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
+    String strategyLabel(CacheStrategy strategy) {
+      switch (strategy) {
+        case CacheStrategy.hybrid:
+          return l10n.settingsCacheStrategyHybrid;
+        case CacheStrategy.memoryOnly:
+          return l10n.settingsCacheStrategyMemoryOnly;
+        case CacheStrategy.diskOnly:
+          return l10n.settingsCacheStrategyDiskOnly;
+      }
+    }
+
+    String strategyDescription(CacheStrategy strategy) {
+      switch (strategy) {
+        case CacheStrategy.hybrid:
+          return l10n.settingsCacheStrategyHybridDesc;
+        case CacheStrategy.memoryOnly:
+          return l10n.settingsCacheStrategyMemoryOnlyDesc;
+        case CacheStrategy.diskOnly:
+          return l10n.settingsCacheStrategyDiskOnlyDesc;
+      }
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -88,52 +110,43 @@ class _CacheStrategySelector extends StatelessWidget {
         DropdownButton<CacheStrategy>(
           value: settings.cacheStrategy,
           isExpanded: true,
+          itemHeight: null,
+          selectedItemBuilder: (context) => CacheStrategy.values
+              .map(
+                (strategy) => Text(
+                  strategyLabel(strategy),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              )
+              .toList(growable: false),
           onChanged: (value) {
             if (value != null) {
               settings.updateCacheStrategy(value);
             }
           },
-          items: [
-            DropdownMenuItem(
-              value: CacheStrategy.hybrid,
+          items: CacheStrategy.values.map((strategy) {
+            return DropdownMenuItem(
+              value: strategy,
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(l10n.settingsCacheStrategyHybrid),
                   Text(
-                    l10n.settingsCacheStrategyHybridDesc,
+                    strategyLabel(strategy),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    strategyDescription(strategy),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
               ),
-            ),
-            DropdownMenuItem(
-              value: CacheStrategy.memoryOnly,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(l10n.settingsCacheStrategyMemoryOnly),
-                  Text(
-                    l10n.settingsCacheStrategyMemoryOnlyDesc,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
-            ),
-            DropdownMenuItem(
-              value: CacheStrategy.diskOnly,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(l10n.settingsCacheStrategyDiskOnly),
-                  Text(
-                    l10n.settingsCacheStrategyDiskOnlyDesc,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
-            ),
-          ],
+            );
+          }).toList(growable: false),
         ),
       ],
     );
@@ -213,13 +226,27 @@ class _CacheStatsDisplay extends StatelessWidget {
 
   Widget _buildStatRow(BuildContext context, String label, String value) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: Theme.of(context).textTheme.bodyMedium),
-        Text(value,
+        Expanded(
+          child: Text(
+            label,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Flexible(
+          child: Text(
+            value,
+            maxLines: 1,
+            textAlign: TextAlign.end,
+            overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.bold,
-                )),
+                ),
+          ),
+        ),
       ],
     );
   }

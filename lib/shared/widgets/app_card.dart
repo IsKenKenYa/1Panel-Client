@@ -61,6 +61,8 @@ class AppCard extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 title,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleMedium
@@ -82,6 +84,8 @@ class AppCard extends StatelessWidget {
                                       color: colorScheme.onSurfaceVariant,
                                     ) ??
                                 TextStyle(),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                             child: subtitle!,
                           ),
                         ],

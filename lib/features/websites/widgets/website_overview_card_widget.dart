@@ -29,6 +29,8 @@ class WebsiteOverviewCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     website?.displayDomain ?? l10n.websitesUnknownDomain,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
@@ -45,6 +47,8 @@ class WebsiteOverviewCard extends StatelessWidget {
                     isRunning
                         ? l10n.websitesStatusRunning
                         : l10n.websitesStatusStopped,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.labelLarge?.copyWith(
                           color: isRunning
                               ? colorScheme.onTertiaryContainer
@@ -55,20 +59,46 @@ class WebsiteOverviewCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            Text('${l10n.websitesTypeLabel}: ${website?.type ?? '-'}'),
-            Text('${l10n.websitesProtocolLabel}: ${website?.protocol ?? '-'}'),
-            Text('${l10n.websitesSitePathLabel}: ${website?.sitePath ?? '-'}'),
-            Text('${l10n.websitesGroupLabel}: ${website?.group ?? '-'}'),
-            Text('${l10n.websitesRemarkLabel}: ${website?.remark ?? '-'}'),
-            Text(
+            _buildDetailLine(
+              context,
+              '${l10n.websitesTypeLabel}: ${website?.type ?? '-'}',
+            ),
+            _buildDetailLine(
+              context,
+              '${l10n.websitesProtocolLabel}: ${website?.protocol ?? '-'}',
+            ),
+            _buildDetailLine(
+              context,
+              '${l10n.websitesSitePathLabel}: ${website?.sitePath ?? '-'}',
+            ),
+            _buildDetailLine(
+              context,
+              '${l10n.websitesGroupLabel}: ${website?.group ?? '-'}',
+            ),
+            _buildDetailLine(
+              context,
+              '${l10n.websitesRemarkLabel}: ${website?.remark ?? '-'}',
+            ),
+            _buildDetailLine(
+              context,
               '${l10n.websitesRuntimeLabel}: ${website?.runtimeName ?? website?.runtimeTypeName ?? '-'}',
             ),
-            Text(
+            _buildDetailLine(
+              context,
               '${l10n.websitesDefaultServerLabel}: ${(website?.defaultServer ?? false) ? l10n.commonYes : l10n.commonNo}',
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildDetailLine(BuildContext context, String value) {
+    return Text(
+      value,
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+      style: Theme.of(context).textTheme.bodyMedium,
     );
   }
 }

@@ -24,21 +24,40 @@ class RuntimeDetailConfigTabWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 if ((runtime.image ?? '').isNotEmpty)
-                  Text('${l10n.runtimeFieldImage}: ${runtime.image}'),
+                  _buildConfigLine(
+                    context,
+                    '${l10n.runtimeFieldImage}: ${runtime.image}',
+                  ),
                 if ((runtime.codeDir ?? '').isNotEmpty)
-                  Text('${l10n.runtimeFieldCodeDir}: ${runtime.codeDir}'),
+                  _buildConfigLine(
+                    context,
+                    '${l10n.runtimeFieldCodeDir}: ${runtime.codeDir}',
+                  ),
                 if ((runtime.path ?? '').isNotEmpty)
-                  Text('${l10n.runtimeFieldPath}: ${runtime.path}'),
+                  _buildConfigLine(
+                    context,
+                    '${l10n.runtimeFieldPath}: ${runtime.path}',
+                  ),
                 if ((runtime.source ?? '').isNotEmpty)
-                  Text('${l10n.runtimeFieldSource}: ${runtime.source}'),
+                  _buildConfigLine(
+                    context,
+                    '${l10n.runtimeFieldSource}: ${runtime.source}',
+                  ),
                 if ((runtime.port ?? '').isNotEmpty)
-                  Text('${l10n.runtimeFieldExternalPort}: ${runtime.port}'),
+                  _buildConfigLine(
+                    context,
+                    '${l10n.runtimeFieldExternalPort}: ${runtime.port}',
+                  ),
                 if ((runtime.container ?? '').isNotEmpty)
-                  Text(
-                      '${l10n.runtimeFieldContainerName}: ${runtime.container}'),
+                  _buildConfigLine(
+                    context,
+                    '${l10n.runtimeFieldContainerName}: ${runtime.container}',
+                  ),
                 if ((runtime.containerStatus ?? '').isNotEmpty)
-                  Text(
-                      '${l10n.runtimeFieldContainerStatus}: ${runtime.containerStatus}'),
+                  _buildConfigLine(
+                    context,
+                    '${l10n.runtimeFieldContainerStatus}: ${runtime.containerStatus}',
+                  ),
                 if (params.isNotEmpty) ...<Widget>[
                   const SizedBox(height: 12),
                   Text(
@@ -47,7 +66,10 @@ class RuntimeDetailConfigTabWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   ...params.entries.map(
-                    (entry) => Text('${entry.key}: ${entry.value}'),
+                    (entry) => _buildConfigLine(
+                      context,
+                      '${entry.key}: ${entry.value}',
+                    ),
                   ),
                 ],
               ],
@@ -55,6 +77,15 @@ class RuntimeDetailConfigTabWidget extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildConfigLine(BuildContext context, String value) {
+    return Text(
+      value,
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+      style: Theme.of(context).textTheme.bodyMedium,
     );
   }
 }
