@@ -6,6 +6,7 @@ import 'package:onepanel_client/core/services/app_settings_controller.dart';
 import 'package:onepanel_client/core/services/onboarding_service.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/features/settings/about_page.dart';
+import 'package:onepanel_client/features/settings/app_lock_settings_page.dart';
 import 'package:onepanel_client/features/settings/screens/theme_settings_page.dart';
 import 'package:onepanel_client/features/shell/widgets/shell_drawer_scope.dart';
 import 'package:onepanel_client/pages/settings/cache_settings_page.dart';
@@ -60,6 +61,21 @@ class SettingsPage extends StatelessWidget {
                     Padding(
                       padding: AppDesignTokens.pagePadding,
                       child: _LanguageSelector(settings: settings),
+                    ),
+                    const Divider(height: 1),
+                    ListTile(
+                      leading: const Icon(Icons.lock_person_outlined),
+                      title: Text(l10n.settingsAppLock),
+                      subtitle: Text(l10n.settingsAppLockDesc),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const AppLockSettingsPage(),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 );

@@ -7,6 +7,7 @@ import 'package:onepanel_client/features/ai/ai_provider.dart';
 import 'package:onepanel_client/features/ai/mcp_server_provider.dart';
 import 'package:onepanel_client/features/containers/containers_page.dart';
 import 'package:onepanel_client/features/files/files_page.dart';
+import 'package:onepanel_client/features/security/app_lock_controller.dart';
 import 'package:onepanel_client/features/security/security_verification_page.dart';
 import 'package:onepanel_client/features/server/server_list_page.dart';
 import 'package:onepanel_client/features/websites/websites_page.dart';
@@ -265,10 +266,41 @@ class _AppShellPageState extends State<AppShellPage> {
     });
   }
 
+  Future<bool> _ensureModuleUnlocked(ClientModule module) async {
+    final appLockController = context.read<AppLockController?>();
+    if (appLockController == null) {
+      return true;
+    }
+    if (!appLockController.shouldRequireUnlockForModuleId(module.storageId)) {
+      return true;
+    }
+
+    final success = await appLockController.authenticateForUnlock(
+      reason:
+          context.l10n.appLockUnlockReasonModule(module.label(context.l10n)),
+    );
+    if (!mounted) {
+      return false;
+    }
+    if (!success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            appLockController.lastError ?? context.l10n.appLockAuthFailed,
+          ),
+        ),
+      );
+    }
+    return success;
+  }
+
   Future<void> _handleModuleSelection(
       ClientModule module, bool hasServer) async {
     if (!hasServer && module.requiresServer) {
       await ServerSwitcherAction.showServerPicker(context);
+      return;
+    }
+    if (!await _ensureModuleUnlocked(module)) {
       return;
     }
     _handleModuleOpen(module);
@@ -278,6 +310,9 @@ class _AppShellPageState extends State<AppShellPage> {
       ClientModule module, bool hasServer) async {
     if (!hasServer && module.requiresServer) {
       await ServerSwitcherAction.showServerPicker(context);
+      return;
+    }
+    if (!await _ensureModuleUnlocked(module)) {
       return;
     }
 

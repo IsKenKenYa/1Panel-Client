@@ -1,5 +1,99 @@
 import 'dart:convert';
+import 'dart:async';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+const String _apiConfigManagerPackage = 'core.config.api_config';
+
+abstract class ApiKeyStore {
+  Future<String?> read(String key);
+  Future<void> write(String key, String value);
+  Future<void> delete(String key);
+}
+
+class SecureApiKeyStore implements ApiKeyStore {
+  SecureApiKeyStore({FlutterSecureStorage? storage})
+      : _storage = storage ?? const FlutterSecureStorage();
+
+  static const Duration _operationTimeout = Duration(milliseconds: 200);
+
+  final FlutterSecureStorage _storage;
+  final Map<String, String> _memoryFallback = <String, String>{};
+
+  @override
+  Future<String?> read(String key) async {
+    try {
+      final value = await _storage
+          .read(key: key)
+          .timeout(_operationTimeout, onTimeout: () => null);
+      return value ?? _memoryFallback[key];
+    } on TimeoutException catch (e, stackTrace) {
+      appLogger.wWithPackage(
+        _apiConfigManagerPackage,
+        'secure storage read timeout, using in-memory fallback',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      return _memoryFallback[key];
+    } catch (e, stackTrace) {
+      appLogger.wWithPackage(
+        _apiConfigManagerPackage,
+        'secure storage read failed, using in-memory fallback',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      return _memoryFallback[key];
+    }
+  }
+
+  @override
+  Future<void> write(String key, String value) async {
+    try {
+      await _storage.write(key: key, value: value).timeout(_operationTimeout);
+      _memoryFallback.remove(key);
+    } on TimeoutException catch (e, stackTrace) {
+      appLogger.wWithPackage(
+        _apiConfigManagerPackage,
+        'secure storage write timeout, using in-memory fallback',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      _memoryFallback[key] = value;
+    } catch (e, stackTrace) {
+      appLogger.wWithPackage(
+        _apiConfigManagerPackage,
+        'secure storage write failed, using in-memory fallback',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      _memoryFallback[key] = value;
+    }
+  }
+
+  @override
+  Future<void> delete(String key) async {
+    try {
+      await _storage.delete(key: key).timeout(_operationTimeout);
+    } on TimeoutException catch (e, stackTrace) {
+      appLogger.wWithPackage(
+        _apiConfigManagerPackage,
+        'secure storage delete timeout, clearing in-memory fallback',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    } catch (e, stackTrace) {
+      appLogger.wWithPackage(
+        _apiConfigManagerPackage,
+        'secure storage delete failed, clearing in-memory fallback',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
+    _memoryFallback.remove(key);
+  }
+}
 
 class ApiConfig {
   final String id;
@@ -54,6 +148,37 @@ class ApiConfig {
 class ApiConfigManager {
   static const _configsKey = 'api_configs';
   static const _currentConfigIdKey = 'current_api_config_id';
+  static const _apiKeyPrefix = 'api_config_api_key_';
+
+  static ApiKeyStore _apiKeyStore = SecureApiKeyStore();
+
+  static String _apiKeyStorageKey(String serverId) => '$_apiKeyPrefix$serverId';
+
+  @visibleForTesting
+  static void setApiKeyStoreForTest(ApiKeyStore store) {
+    _apiKeyStore = store;
+  }
+
+  @visibleForTesting
+  static void resetApiKeyStoreForTest() {
+    _apiKeyStore = SecureApiKeyStore();
+  }
+
+  static Map<String, dynamic> _toPersistedJson(ApiConfig config) {
+    final json = config.toJson();
+    json.remove('apiKey');
+    return json;
+  }
+
+  static Future<void> _persistConfigs(
+    SharedPreferences prefs,
+    List<ApiConfig> configs,
+  ) async {
+    await prefs.setString(
+      _configsKey,
+      jsonEncode(configs.map(_toPersistedJson).toList(growable: false)),
+    );
+  }
 
   static Future<List<ApiConfig>> getConfigs() async {
     final prefs = await SharedPreferences.getInstance();
@@ -63,8 +188,49 @@ class ApiConfigManager {
       return [];
     }
 
-    final List<dynamic> decoded = jsonDecode(configsJson);
-    return decoded.map((json) => ApiConfig.fromJson(json)).toList();
+    final decoded = jsonDecode(configsJson);
+    if (decoded is! List) {
+      return [];
+    }
+
+    final configs = <ApiConfig>[];
+    var shouldPersist = false;
+
+    for (final entry in decoded) {
+      if (entry is! Map) {
+        continue;
+      }
+
+      final map = Map<String, dynamic>.from(entry);
+      final serverId = map['id']?.toString();
+      if (serverId == null || serverId.isEmpty) {
+        continue;
+      }
+
+      final legacyApiKey = map['apiKey']?.toString();
+      String? apiKey;
+      if (legacyApiKey != null && legacyApiKey.isNotEmpty) {
+        await _apiKeyStore.write(_apiKeyStorageKey(serverId), legacyApiKey);
+        map.remove('apiKey');
+        apiKey = legacyApiKey;
+        shouldPersist = true;
+      } else {
+        apiKey = await _apiKeyStore.read(_apiKeyStorageKey(serverId));
+      }
+
+      final normalizedJson = <String, dynamic>{
+        ...map,
+        'id': serverId,
+        'apiKey': apiKey ?? '',
+      };
+      configs.add(ApiConfig.fromJson(normalizedJson));
+    }
+
+    if (shouldPersist) {
+      await _persistConfigs(prefs, configs);
+    }
+
+    return configs;
   }
 
   static Future<void> saveConfig(ApiConfig config) async {
@@ -98,8 +264,9 @@ class ApiConfigManager {
       }
     }
 
-    await prefs.setString(
-        _configsKey, jsonEncode(configs.map((c) => c.toJson()).toList()));
+    await _apiKeyStore.write(_apiKeyStorageKey(config.id), config.apiKey);
+
+    await _persistConfigs(prefs, configs);
   }
 
   static Future<void> deleteConfig(String id) async {
@@ -108,8 +275,8 @@ class ApiConfigManager {
 
     configs.removeWhere((c) => c.id == id);
 
-    await prefs.setString(
-        _configsKey, jsonEncode(configs.map((c) => c.toJson()).toList()));
+    await _persistConfigs(prefs, configs);
+    await _apiKeyStore.delete(_apiKeyStorageKey(id));
 
     // 如果删除的是当前选中的配置，清除当前配置ID
     final currentConfigId = prefs.getString(_currentConfigIdKey);
@@ -142,6 +309,9 @@ class ApiConfigManager {
     }
 
     final configs = await getConfigs();
+    if (configs.isEmpty) {
+      return null;
+    }
     return configs.firstWhere((c) => c.id == currentConfigId,
         orElse: () => configs.first);
   }

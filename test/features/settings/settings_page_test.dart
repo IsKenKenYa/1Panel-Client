@@ -34,6 +34,7 @@ void main() {
 
     expect(find.text('Feedback'), findsOneWidget);
     expect(find.text('About'), findsOneWidget);
+    expect(find.text('App Lock'), findsOneWidget);
 
     await tester.scrollUntilVisible(
       find.text('About'),

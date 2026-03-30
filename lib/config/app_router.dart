@@ -19,6 +19,7 @@ import 'package:onepanel_client/features/server/server_form_page.dart';
 import 'package:onepanel_client/features/server/server_list_page.dart';
 import 'package:onepanel_client/features/server/server_models.dart';
 import 'package:onepanel_client/features/security/security_verification_page.dart';
+import 'package:onepanel_client/features/security/app_lock_controller.dart';
 import 'package:onepanel_client/features/shell/app_shell_page.dart';
 import 'package:onepanel_client/features/terminal/terminal_page.dart';
 import 'package:onepanel_client/pages/settings/settings_page.dart';
@@ -1096,6 +1097,60 @@ class _SplashPageState extends State<SplashPage> {
 
     if (configs.isEmpty) {
       Navigator.pushReplacementNamed(context, AppRoutes.serverConfig);
+      return;
+    }
+
+    final appLockController = context.read<AppLockController?>();
+    final appOpenUnlockReason = context.l10n.appLockUnlockReasonAppOpen;
+    if (appLockController != null) {
+      if (!appLockController.isLoaded) {
+        await appLockController.load();
+        if (!mounted) {
+          return;
+        }
+      }
+
+      while (mounted && appLockController.shouldRequireUnlockForAppOpen()) {
+        final unlocked = await appLockController.authenticateForUnlock(
+          reason: appOpenUnlockReason,
+        );
+        if (!mounted) {
+          return;
+        }
+        if (unlocked) {
+          break;
+        }
+
+        final retry = await showDialog<bool>(
+          context: context,
+          builder: (dialogContext) {
+            final l10n = dialogContext.l10n;
+            return AlertDialog(
+              title: Text(l10n.appLockTitle),
+              content: Text(
+                appLockController.lastError ?? l10n.appLockAuthFailed,
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(false),
+                  child: Text(l10n.commonCancel),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(true),
+                  child: Text(l10n.commonRetry),
+                ),
+              ],
+            );
+          },
+        );
+
+        if (retry != true) {
+          return;
+        }
+      }
+    }
+
+    if (!mounted) {
       return;
     }
 

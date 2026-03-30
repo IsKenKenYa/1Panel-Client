@@ -1942,6 +1942,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsTheme => '主题';
 
   @override
+  String get settingsAppLock => '应用锁';
+
+  @override
+  String get settingsAppLockDesc => '使用生物识别或设备凭据保护敏感模块';
+
+  @override
   String get settingsServerManagement => '服务器管理';
 
   @override
@@ -2341,6 +2347,70 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get authLogoutSuccess => '已成功登出';
+
+  @override
+  String get appLockTitle => '应用锁';
+
+  @override
+  String get appLockDeviceAuthStatus => '设备认证能力';
+
+  @override
+  String get appLockDeviceAuthSupported => '当前设备支持生物识别或设备凭据';
+
+  @override
+  String get appLockDeviceAuthUnsupported => '当前设备不支持本地认证';
+
+  @override
+  String get appLockEnable => '启用应用锁';
+
+  @override
+  String get appLockEnableDesc => '打开受保护内容前需要本地认证';
+
+  @override
+  String get appLockLockOnAppOpen => '进入应用时要求解锁';
+
+  @override
+  String get appLockLockOnAppOpenDesc => '进入应用主页前先验证身份';
+
+  @override
+  String get appLockLockOnProtectedModule => '访问受保护模块时要求解锁';
+
+  @override
+  String get appLockLockOnProtectedModuleDesc => '仅对你选择的模块再次验证身份';
+
+  @override
+  String get appLockRelockAfterMinutes => '后台停留后重新上锁';
+
+  @override
+  String appLockRelockAfterMinutesOption(int minutes) {
+    return '$minutes 分钟';
+  }
+
+  @override
+  String get appLockProtectedModules => '受保护模块';
+
+  @override
+  String get appLockSelectAll => '全选';
+
+  @override
+  String get appLockClearAll => '清空';
+
+  @override
+  String get appLockNoProtectedModules => '当前未启用模块级保护。';
+
+  @override
+  String get appLockAuthFailed => '认证失败';
+
+  @override
+  String get appLockUnlockReasonEnable => '请验证身份以启用应用锁';
+
+  @override
+  String get appLockUnlockReasonAppOpen => '请验证身份以打开 1Panel Client';
+
+  @override
+  String appLockUnlockReasonModule(String module) {
+    return '请验证身份以打开 $module';
+  }
 
   @override
   String get coachDone => '我知道了';

@@ -94,6 +94,7 @@ dependencies:
   dynamic_color: ^1.7.0
   wakelock_plus: ^1.5.1
   passkeys: ^2.18.0
+  local_auth: ^2.3.0
 
 dev_dependencies:
   flutter_test:

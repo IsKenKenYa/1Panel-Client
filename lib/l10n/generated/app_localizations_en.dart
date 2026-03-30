@@ -1987,6 +1987,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsTheme => 'Theme';
 
   @override
+  String get settingsAppLock => 'App Lock';
+
+  @override
+  String get settingsAppLockDesc =>
+      'Use biometric/device credentials to protect sensitive modules';
+
+  @override
   String get settingsServerManagement => 'Server management';
 
   @override
@@ -2405,6 +2412,79 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authLogoutSuccess => 'Logged out successfully';
+
+  @override
+  String get appLockTitle => 'App Lock';
+
+  @override
+  String get appLockDeviceAuthStatus => 'Device authentication';
+
+  @override
+  String get appLockDeviceAuthSupported =>
+      'Biometric or device credential is available on this device';
+
+  @override
+  String get appLockDeviceAuthUnsupported =>
+      'Current device does not support local authentication';
+
+  @override
+  String get appLockEnable => 'Enable app lock';
+
+  @override
+  String get appLockEnableDesc =>
+      'Prompt for local authentication before opening protected content';
+
+  @override
+  String get appLockLockOnAppOpen => 'Require unlock on app open';
+
+  @override
+  String get appLockLockOnAppOpenDesc =>
+      'Verify identity before entering the app';
+
+  @override
+  String get appLockLockOnProtectedModule =>
+      'Require unlock for protected modules';
+
+  @override
+  String get appLockLockOnProtectedModuleDesc =>
+      'Only selected modules will require another verification';
+
+  @override
+  String get appLockRelockAfterMinutes => 'Relock after background time';
+
+  @override
+  String appLockRelockAfterMinutesOption(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get appLockProtectedModules => 'Protected modules';
+
+  @override
+  String get appLockSelectAll => 'Select all';
+
+  @override
+  String get appLockClearAll => 'Clear';
+
+  @override
+  String get appLockNoProtectedModules =>
+      'Module protection is currently disabled.';
+
+  @override
+  String get appLockAuthFailed => 'Authentication failed';
+
+  @override
+  String get appLockUnlockReasonEnable =>
+      'Verify your identity to enable app lock';
+
+  @override
+  String get appLockUnlockReasonAppOpen =>
+      'Verify your identity to open 1Panel Client';
+
+  @override
+  String appLockUnlockReasonModule(String module) {
+    return 'Verify your identity to open $module';
+  }
 
   @override
   String get coachDone => 'Got it';

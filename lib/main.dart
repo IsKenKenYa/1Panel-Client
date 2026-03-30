@@ -16,6 +16,7 @@ import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 import 'features/dashboard/dashboard_provider.dart';
 import 'features/apps/app_service.dart';
 import 'features/websites/websites_provider.dart';
+import 'features/security/app_lock_controller.dart';
 import 'features/server/server_provider.dart';
 import 'features/shell/controllers/current_server_controller.dart';
 import 'features/shell/controllers/pinned_modules_controller.dart';
@@ -62,6 +63,9 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (_) => ThemeController(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => AppLockController(),
         ),
         // Server Management
         ChangeNotifierProvider(
@@ -110,15 +114,19 @@ class AppBootstrap extends StatefulWidget {
   State<AppBootstrap> createState() => _AppBootstrapState();
 }
 
-class _AppBootstrapState extends State<AppBootstrap> {
+class _AppBootstrapState extends State<AppBootstrap>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
       await context.read<AppSettingsController>().load();
       if (!mounted) return;
       await context.read<ThemeController>().load();
+      if (!mounted) return;
+      await context.read<AppLockController>().load();
       if (!mounted) return;
       await context.read<CurrentServerController>().load();
       if (!mounted) return;
@@ -126,6 +134,20 @@ class _AppBootstrapState extends State<AppBootstrap> {
       if (!mounted) return;
       context.read<TransferManager>().init();
     });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!mounted) {
+      return;
+    }
+    context.read<AppLockController>().onAppLifecycleChanged(state);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override

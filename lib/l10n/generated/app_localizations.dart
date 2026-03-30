@@ -3818,6 +3818,18 @@ abstract class AppLocalizations {
   /// **'Theme'**
   String get settingsTheme;
 
+  /// No description provided for @settingsAppLock.
+  ///
+  /// In en, this message translates to:
+  /// **'App Lock'**
+  String get settingsAppLock;
+
+  /// No description provided for @settingsAppLockDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Use biometric/device credentials to protect sensitive modules'**
+  String get settingsAppLockDesc;
+
   /// No description provided for @settingsServerManagement.
   ///
   /// In en, this message translates to:
@@ -4585,6 +4597,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Logged out successfully'**
   String get authLogoutSuccess;
+
+  /// No description provided for @appLockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'App Lock'**
+  String get appLockTitle;
+
+  /// No description provided for @appLockDeviceAuthStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Device authentication'**
+  String get appLockDeviceAuthStatus;
+
+  /// No description provided for @appLockDeviceAuthSupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric or device credential is available on this device'**
+  String get appLockDeviceAuthSupported;
+
+  /// No description provided for @appLockDeviceAuthUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Current device does not support local authentication'**
+  String get appLockDeviceAuthUnsupported;
+
+  /// No description provided for @appLockEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable app lock'**
+  String get appLockEnable;
+
+  /// No description provided for @appLockEnableDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Prompt for local authentication before opening protected content'**
+  String get appLockEnableDesc;
+
+  /// No description provided for @appLockLockOnAppOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Require unlock on app open'**
+  String get appLockLockOnAppOpen;
+
+  /// No description provided for @appLockLockOnAppOpenDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify identity before entering the app'**
+  String get appLockLockOnAppOpenDesc;
+
+  /// No description provided for @appLockLockOnProtectedModule.
+  ///
+  /// In en, this message translates to:
+  /// **'Require unlock for protected modules'**
+  String get appLockLockOnProtectedModule;
+
+  /// No description provided for @appLockLockOnProtectedModuleDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Only selected modules will require another verification'**
+  String get appLockLockOnProtectedModuleDesc;
+
+  /// No description provided for @appLockRelockAfterMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Relock after background time'**
+  String get appLockRelockAfterMinutes;
+
+  /// No description provided for @appLockRelockAfterMinutesOption.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
+  String appLockRelockAfterMinutesOption(int minutes);
+
+  /// No description provided for @appLockProtectedModules.
+  ///
+  /// In en, this message translates to:
+  /// **'Protected modules'**
+  String get appLockProtectedModules;
+
+  /// No description provided for @appLockSelectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Select all'**
+  String get appLockSelectAll;
+
+  /// No description provided for @appLockClearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get appLockClearAll;
+
+  /// No description provided for @appLockNoProtectedModules.
+  ///
+  /// In en, this message translates to:
+  /// **'Module protection is currently disabled.'**
+  String get appLockNoProtectedModules;
+
+  /// No description provided for @appLockAuthFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication failed'**
+  String get appLockAuthFailed;
+
+  /// No description provided for @appLockUnlockReasonEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify your identity to enable app lock'**
+  String get appLockUnlockReasonEnable;
+
+  /// No description provided for @appLockUnlockReasonAppOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify your identity to open 1Panel Client'**
+  String get appLockUnlockReasonAppOpen;
+
+  /// No description provided for @appLockUnlockReasonModule.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify your identity to open {module}'**
+  String appLockUnlockReasonModule(String module);
 
   /// No description provided for @coachDone.
   ///

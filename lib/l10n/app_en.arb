@@ -877,6 +877,8 @@
   "settingsSystem": "System",
   "settingsLanguage": "Language",
   "settingsTheme": "Theme",
+  "settingsAppLock": "App Lock",
+  "settingsAppLockDesc": "Use biometric/device credentials to protect sensitive modules",
   "settingsServerManagement": "Server management",
   "settingsResetOnboarding": "Replay welcome guide",
   "settingsAbout": "About",
@@ -1064,6 +1066,40 @@
   "authDemoMode": "Demo mode: Some features are limited",
   "authLoginFailed": "Login failed",
   "authLogoutSuccess": "Logged out successfully",
+  "appLockTitle": "App Lock",
+  "appLockDeviceAuthStatus": "Device authentication",
+  "appLockDeviceAuthSupported": "Biometric or device credential is available on this device",
+  "appLockDeviceAuthUnsupported": "Current device does not support local authentication",
+  "appLockEnable": "Enable app lock",
+  "appLockEnableDesc": "Prompt for local authentication before opening protected content",
+  "appLockLockOnAppOpen": "Require unlock on app open",
+  "appLockLockOnAppOpenDesc": "Verify identity before entering the app",
+  "appLockLockOnProtectedModule": "Require unlock for protected modules",
+  "appLockLockOnProtectedModuleDesc": "Only selected modules will require another verification",
+  "appLockRelockAfterMinutes": "Relock after background time",
+  "appLockRelockAfterMinutesOption": "{minutes} min",
+  "@appLockRelockAfterMinutesOption": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "appLockProtectedModules": "Protected modules",
+  "appLockSelectAll": "Select all",
+  "appLockClearAll": "Clear",
+  "appLockNoProtectedModules": "Module protection is currently disabled.",
+  "appLockAuthFailed": "Authentication failed",
+  "appLockUnlockReasonEnable": "Verify your identity to enable app lock",
+  "appLockUnlockReasonAppOpen": "Verify your identity to open 1Panel Client",
+  "appLockUnlockReasonModule": "Verify your identity to open {module}",
+  "@appLockUnlockReasonModule": {
+    "placeholders": {
+      "module": {
+        "type": "String"
+      }
+    }
+  },
   "coachDone": "Got it",
   "notFoundTitle": "Page not found",
   "notFoundDesc": "The requested page does not exist.",

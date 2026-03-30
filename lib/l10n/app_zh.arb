@@ -877,6 +877,8 @@
   "settingsSystem": "系统",
   "settingsLanguage": "语言",
   "settingsTheme": "主题",
+  "settingsAppLock": "应用锁",
+  "settingsAppLockDesc": "使用生物识别或设备凭据保护敏感模块",
   "settingsServerManagement": "服务器管理",
   "settingsResetOnboarding": "重新体验新手引导",
   "settingsAbout": "关于",
@@ -1064,6 +1066,40 @@
   "authDemoMode": "演示模式：部分功能受限",
   "authLoginFailed": "登录失败",
   "authLogoutSuccess": "已成功登出",
+  "appLockTitle": "应用锁",
+  "appLockDeviceAuthStatus": "设备认证能力",
+  "appLockDeviceAuthSupported": "当前设备支持生物识别或设备凭据",
+  "appLockDeviceAuthUnsupported": "当前设备不支持本地认证",
+  "appLockEnable": "启用应用锁",
+  "appLockEnableDesc": "打开受保护内容前需要本地认证",
+  "appLockLockOnAppOpen": "进入应用时要求解锁",
+  "appLockLockOnAppOpenDesc": "进入应用主页前先验证身份",
+  "appLockLockOnProtectedModule": "访问受保护模块时要求解锁",
+  "appLockLockOnProtectedModuleDesc": "仅对你选择的模块再次验证身份",
+  "appLockRelockAfterMinutes": "后台停留后重新上锁",
+  "appLockRelockAfterMinutesOption": "{minutes} 分钟",
+  "@appLockRelockAfterMinutesOption": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "appLockProtectedModules": "受保护模块",
+  "appLockSelectAll": "全选",
+  "appLockClearAll": "清空",
+  "appLockNoProtectedModules": "当前未启用模块级保护。",
+  "appLockAuthFailed": "认证失败",
+  "appLockUnlockReasonEnable": "请验证身份以启用应用锁",
+  "appLockUnlockReasonAppOpen": "请验证身份以打开 1Panel Client",
+  "appLockUnlockReasonModule": "请验证身份以打开 {module}",
+  "@appLockUnlockReasonModule": {
+    "placeholders": {
+      "module": {
+        "type": "String"
+      }
+    }
+  },
   "coachDone": "我知道了",
   "notFoundTitle": "页面不存在",
   "notFoundDesc": "请求的页面不存在或已迁移。",

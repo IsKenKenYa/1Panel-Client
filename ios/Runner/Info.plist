@@ -60,5 +60,9 @@
 	<true/>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>需要访问相册以保存下载的图片</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>需要使用面容 ID 来保护您的 1Panel 服务器数据安全</string>
+	<key>NSBiometricUsageDescription</key>
+	<string>需要使用生物识别来验证身份并解锁敏感操作</string>
 </dict>
 </plist>
