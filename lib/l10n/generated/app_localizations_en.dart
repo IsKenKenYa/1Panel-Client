@@ -7109,4 +7109,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aiAgentsAllProviders => 'All providers';
+
+  @override
+  String get aiAgentsBrowserConfig => 'Browser config';
+
+  @override
+  String get aiAgentsBrowserDefaultProfile => 'Default profile';
+
+  @override
+  String get aiAgentsBrowserExecutablePath => 'Executable path';
+
+  @override
+  String get aiAgentsBrowserHeadless => 'Headless mode';
+
+  @override
+  String get aiAgentsBrowserNoSandbox => 'Disable sandbox';
+
+  @override
+  String get aiAgentsSaveBrowserConfig => 'Save browser config';
+
+  @override
+  String get aiAgentsBrowserDefaultProfileRequired =>
+      'Default profile is required';
+
+  @override
+  String get aiAgentsFeishuPairing => 'Feishu pairing';
+
+  @override
+  String get aiAgentsPairingCode => 'Pairing code';
+
+  @override
+  String get aiAgentsApprovePairing => 'Approve pairing';
+
+  @override
+  String get aiAgentsPairingCodeRequired => 'Pairing code is required';
+
+  @override
+  String get aiAgentsPairingApproveSuccess => 'Pairing approved';
 }

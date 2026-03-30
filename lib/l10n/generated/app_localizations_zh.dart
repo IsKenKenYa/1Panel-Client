@@ -6958,4 +6958,40 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get aiAgentsAllProviders => '全部供应商';
+
+  @override
+  String get aiAgentsBrowserConfig => '浏览器配置';
+
+  @override
+  String get aiAgentsBrowserDefaultProfile => '默认 Profile';
+
+  @override
+  String get aiAgentsBrowserExecutablePath => '可执行文件路径';
+
+  @override
+  String get aiAgentsBrowserHeadless => '无界面模式';
+
+  @override
+  String get aiAgentsBrowserNoSandbox => '禁用沙箱';
+
+  @override
+  String get aiAgentsSaveBrowserConfig => '保存浏览器配置';
+
+  @override
+  String get aiAgentsBrowserDefaultProfileRequired => '默认 Profile 不能为空';
+
+  @override
+  String get aiAgentsFeishuPairing => '飞书配对';
+
+  @override
+  String get aiAgentsPairingCode => '配对码';
+
+  @override
+  String get aiAgentsApprovePairing => '审批配对';
+
+  @override
+  String get aiAgentsPairingCodeRequired => '请输入配对码';
+
+  @override
+  String get aiAgentsPairingApproveSuccess => '配对审批成功';
 }

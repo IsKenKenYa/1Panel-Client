@@ -2956,5 +2956,17 @@
   "aiAgentsVerify": "校验",
   "aiAgentsVerified": "已校验",
   "aiAgentsUnverified": "未校验",
-  "aiAgentsAllProviders": "全部供应商"
+  "aiAgentsAllProviders": "全部供应商",
+  "aiAgentsBrowserConfig": "浏览器配置",
+  "aiAgentsBrowserDefaultProfile": "默认 Profile",
+  "aiAgentsBrowserExecutablePath": "可执行文件路径",
+  "aiAgentsBrowserHeadless": "无界面模式",
+  "aiAgentsBrowserNoSandbox": "禁用沙箱",
+  "aiAgentsSaveBrowserConfig": "保存浏览器配置",
+  "aiAgentsBrowserDefaultProfileRequired": "默认 Profile 不能为空",
+  "aiAgentsFeishuPairing": "飞书配对",
+  "aiAgentsPairingCode": "配对码",
+  "aiAgentsApprovePairing": "审批配对",
+  "aiAgentsPairingCodeRequired": "请输入配对码",
+  "aiAgentsPairingApproveSuccess": "配对审批成功"
 }

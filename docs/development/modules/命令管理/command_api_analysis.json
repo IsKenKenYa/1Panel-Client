@@ -197,7 +197,7 @@
       "path": "/core/commands/tree",
       "methods": [
         {
-          "method": "GET",
+          "method": "POST",
           "summary": "Tree commands",
           "description": "",
           "tags": [

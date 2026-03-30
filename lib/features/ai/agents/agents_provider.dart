@@ -42,6 +42,7 @@ class AgentsProvider extends ChangeNotifier {
       const <AgentSkillSearchItem>[];
   AgentSecurityConfig _securityConfig = const AgentSecurityConfig();
   AgentOtherConfig _otherConfig = const AgentOtherConfig();
+  AgentBrowserConfig _browserConfig = const AgentBrowserConfig();
   AgentConfigFile _configFile = const AgentConfigFile();
   Map<String, AgentChannelSnapshot> _channels =
       const <String, AgentChannelSnapshot>{};
@@ -66,6 +67,7 @@ class AgentsProvider extends ChangeNotifier {
   List<AgentSkillSearchItem> get skillSearchResults => _skillSearchResults;
   AgentSecurityConfig get securityConfig => _securityConfig;
   AgentOtherConfig get otherConfig => _otherConfig;
+  AgentBrowserConfig get browserConfig => _browserConfig;
   AgentConfigFile get configFile => _configFile;
   Map<String, AgentChannelSnapshot> get channels => _channels;
 

@@ -107,6 +107,17 @@ class AIAgentSettingsSection extends StatelessWidget {
     required this.onBrowserEnabledChanged,
     required this.onSaveSettings,
     required this.onSaveConfig,
+    required this.browserExecutablePath,
+    required this.browserProfileController,
+    required this.browserConfigEnabled,
+    required this.browserHeadless,
+    required this.browserNoSandbox,
+    required this.onBrowserConfigEnabledChanged,
+    required this.onBrowserHeadlessChanged,
+    required this.onBrowserNoSandboxChanged,
+    required this.onSaveBrowserConfig,
+    required this.feishuPairingCodeController,
+    required this.onApproveFeishuPairing,
   });
 
   final AgentsProvider provider;
@@ -118,6 +129,17 @@ class AIAgentSettingsSection extends StatelessWidget {
   final ValueChanged<bool> onBrowserEnabledChanged;
   final Future<void> Function() onSaveSettings;
   final Future<void> Function() onSaveConfig;
+  final String browserExecutablePath;
+  final TextEditingController browserProfileController;
+  final bool browserConfigEnabled;
+  final bool browserHeadless;
+  final bool browserNoSandbox;
+  final ValueChanged<bool> onBrowserConfigEnabledChanged;
+  final ValueChanged<bool> onBrowserHeadlessChanged;
+  final ValueChanged<bool> onBrowserNoSandboxChanged;
+  final Future<void> Function() onSaveBrowserConfig;
+  final TextEditingController feishuPairingCodeController;
+  final Future<void> Function() onApproveFeishuPairing;
 
   @override
   Widget build(BuildContext context) {
@@ -189,6 +211,87 @@ class AIAgentSettingsSection extends StatelessWidget {
               FilledButton(
                 onPressed: onSaveConfig,
                 child: Text(l10n.aiAgentsSaveConfig),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          const Divider(height: 1),
+          const SizedBox(height: 16),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              l10n.aiAgentsBrowserConfig,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            controller: browserProfileController,
+            decoration: InputDecoration(
+              labelText: l10n.aiAgentsBrowserDefaultProfile,
+              border: const OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 8),
+          InputDecorator(
+            decoration: InputDecoration(
+              labelText: l10n.aiAgentsBrowserExecutablePath,
+              border: const OutlineInputBorder(),
+            ),
+            child: SelectableText(
+              browserExecutablePath.isEmpty ? '-' : browserExecutablePath,
+            ),
+          ),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(l10n.aiAgentsEnabled),
+            value: browserConfigEnabled,
+            onChanged: onBrowserConfigEnabledChanged,
+          ),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(l10n.aiAgentsBrowserHeadless),
+            value: browserHeadless,
+            onChanged: onBrowserHeadlessChanged,
+          ),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(l10n.aiAgentsBrowserNoSandbox),
+            value: browserNoSandbox,
+            onChanged: onBrowserNoSandboxChanged,
+          ),
+          Row(
+            children: <Widget>[
+              FilledButton(
+                onPressed: onSaveBrowserConfig,
+                child: Text(l10n.aiAgentsSaveBrowserConfig),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          const Divider(height: 1),
+          const SizedBox(height: 16),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              l10n.aiAgentsFeishuPairing,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            controller: feishuPairingCodeController,
+            decoration: InputDecoration(
+              labelText: l10n.aiAgentsPairingCode,
+              border: const OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: <Widget>[
+              FilledButton(
+                onPressed: onApproveFeishuPairing,
+                child: Text(l10n.aiAgentsApprovePairing),
               ),
             ],
           ),

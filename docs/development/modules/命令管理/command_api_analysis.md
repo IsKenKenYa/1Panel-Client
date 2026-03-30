@@ -145,7 +145,7 @@
 
 ### `/core/commands/tree`
 
-#### GET
+#### POST
 
 **摘要**: Tree commands
 

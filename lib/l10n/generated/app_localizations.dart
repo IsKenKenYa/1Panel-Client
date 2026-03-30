@@ -13478,6 +13478,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All providers'**
   String get aiAgentsAllProviders;
+
+  /// No description provided for @aiAgentsBrowserConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Browser config'**
+  String get aiAgentsBrowserConfig;
+
+  /// No description provided for @aiAgentsBrowserDefaultProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Default profile'**
+  String get aiAgentsBrowserDefaultProfile;
+
+  /// No description provided for @aiAgentsBrowserExecutablePath.
+  ///
+  /// In en, this message translates to:
+  /// **'Executable path'**
+  String get aiAgentsBrowserExecutablePath;
+
+  /// No description provided for @aiAgentsBrowserHeadless.
+  ///
+  /// In en, this message translates to:
+  /// **'Headless mode'**
+  String get aiAgentsBrowserHeadless;
+
+  /// No description provided for @aiAgentsBrowserNoSandbox.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable sandbox'**
+  String get aiAgentsBrowserNoSandbox;
+
+  /// No description provided for @aiAgentsSaveBrowserConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Save browser config'**
+  String get aiAgentsSaveBrowserConfig;
+
+  /// No description provided for @aiAgentsBrowserDefaultProfileRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Default profile is required'**
+  String get aiAgentsBrowserDefaultProfileRequired;
+
+  /// No description provided for @aiAgentsFeishuPairing.
+  ///
+  /// In en, this message translates to:
+  /// **'Feishu pairing'**
+  String get aiAgentsFeishuPairing;
+
+  /// No description provided for @aiAgentsPairingCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Pairing code'**
+  String get aiAgentsPairingCode;
+
+  /// No description provided for @aiAgentsApprovePairing.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve pairing'**
+  String get aiAgentsApprovePairing;
+
+  /// No description provided for @aiAgentsPairingCodeRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Pairing code is required'**
+  String get aiAgentsPairingCodeRequired;
+
+  /// No description provided for @aiAgentsPairingApproveSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Pairing approved'**
+  String get aiAgentsPairingApproveSuccess;
 }
 
 class _AppLocalizationsDelegate

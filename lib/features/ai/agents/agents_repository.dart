@@ -157,6 +157,19 @@ class AgentsRepository {
     return response.data ?? const AgentFeishuConfig();
   }
 
+  Future<void> approveFeishuPairing({
+    required int agentId,
+    required String pairingCode,
+  }) async {
+    final api = await _getApi();
+    await api.approveAgentFeishuPairing(
+      AgentFeishuPairingApproveReq(
+        agentId: agentId,
+        pairingCode: pairingCode,
+      ),
+    );
+  }
+
   Future<AgentTelegramConfig> getTelegramConfig(int agentId) async {
     final api = await _getApi();
     final response = await api
@@ -217,6 +230,32 @@ class AgentsRepository {
     final response =
         await api.getAgentOtherConfig(AgentOtherConfigReq(agentId: agentId));
     return response.data ?? const AgentOtherConfig();
+  }
+
+  Future<AgentBrowserConfig> getBrowserConfig(int agentId) async {
+    final api = await _getApi();
+    final response =
+        await api.getAgentBrowserConfig(AgentBrowserConfigReq(agentId: agentId));
+    return response.data ?? const AgentBrowserConfig();
+  }
+
+  Future<void> updateBrowserConfig({
+    required int agentId,
+    required bool enabled,
+    required bool headless,
+    required bool noSandbox,
+    required String defaultProfile,
+  }) async {
+    final api = await _getApi();
+    await api.updateAgentBrowserConfig(
+      AgentBrowserConfigUpdateReq(
+        agentId: agentId,
+        enabled: enabled,
+        headless: headless,
+        noSandbox: noSandbox,
+        defaultProfile: defaultProfile,
+      ),
+    );
   }
 
   Future<void> updateOtherConfig({

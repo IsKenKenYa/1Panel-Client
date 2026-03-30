@@ -3018,5 +3018,17 @@
   "aiAgentsVerify": "Verify",
   "aiAgentsVerified": "Verified",
   "aiAgentsUnverified": "Unverified",
-  "aiAgentsAllProviders": "All providers"
+  "aiAgentsAllProviders": "All providers",
+  "aiAgentsBrowserConfig": "Browser config",
+  "aiAgentsBrowserDefaultProfile": "Default profile",
+  "aiAgentsBrowserExecutablePath": "Executable path",
+  "aiAgentsBrowserHeadless": "Headless mode",
+  "aiAgentsBrowserNoSandbox": "Disable sandbox",
+  "aiAgentsSaveBrowserConfig": "Save browser config",
+  "aiAgentsBrowserDefaultProfileRequired": "Default profile is required",
+  "aiAgentsFeishuPairing": "Feishu pairing",
+  "aiAgentsPairingCode": "Pairing code",
+  "aiAgentsApprovePairing": "Approve pairing",
+  "aiAgentsPairingCodeRequired": "Pairing code is required",
+  "aiAgentsPairingApproveSuccess": "Pairing approved"
 }

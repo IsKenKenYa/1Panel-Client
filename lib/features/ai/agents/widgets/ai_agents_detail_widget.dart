@@ -20,9 +20,16 @@ class _AIAgentsDetailWidgetState extends State<AIAgentsDetailWidget> {
   final TextEditingController _npmRegistryController = TextEditingController();
   final TextEditingController _configController = TextEditingController();
   final TextEditingController _skillSearchController = TextEditingController();
+  final TextEditingController _browserProfileController =
+      TextEditingController();
+  final TextEditingController _feishuPairingCodeController =
+      TextEditingController();
 
   String _skillSource = 'clawhub';
   bool _browserEnabled = false;
+  bool _browserConfigEnabled = false;
+  bool _browserHeadless = false;
+  bool _browserNoSandbox = false;
   int _boundAgentId = -1;
 
   @override
@@ -32,6 +39,8 @@ class _AIAgentsDetailWidgetState extends State<AIAgentsDetailWidget> {
     _npmRegistryController.dispose();
     _configController.dispose();
     _skillSearchController.dispose();
+    _browserProfileController.dispose();
+    _feishuPairingCodeController.dispose();
     super.dispose();
   }
 
@@ -79,13 +88,37 @@ class _AIAgentsDetailWidgetState extends State<AIAgentsDetailWidget> {
                   npmRegistryController: _npmRegistryController,
                   configController: _configController,
                   browserEnabled: _browserEnabled,
+                  browserExecutablePath: provider.browserConfig.executablePath,
+                  browserProfileController: _browserProfileController,
+                  browserConfigEnabled: _browserConfigEnabled,
+                  browserHeadless: _browserHeadless,
+                  browserNoSandbox: _browserNoSandbox,
                   onBrowserEnabledChanged: (value) {
                     setState(() {
                       _browserEnabled = value;
                     });
                   },
+                  onBrowserConfigEnabledChanged: (value) {
+                    setState(() {
+                      _browserConfigEnabled = value;
+                    });
+                  },
+                  onBrowserHeadlessChanged: (value) {
+                    setState(() {
+                      _browserHeadless = value;
+                    });
+                  },
+                  onBrowserNoSandboxChanged: (value) {
+                    setState(() {
+                      _browserNoSandbox = value;
+                    });
+                  },
                   onSaveSettings: () => _saveSettings(context, provider),
+                  onSaveBrowserConfig: () => _saveBrowserConfig(context, provider),
                   onSaveConfig: () => provider.saveConfigFile(_configController.text),
+                  feishuPairingCodeController: _feishuPairingCodeController,
+                  onApproveFeishuPairing: () =>
+                      _approveFeishuPairing(context, provider),
                 ),
               ],
             ),
@@ -104,6 +137,11 @@ class _AIAgentsDetailWidgetState extends State<AIAgentsDetailWidget> {
     _timezoneController.text = provider.otherConfig.userTimezone;
     _browserEnabled = provider.otherConfig.browserEnabled;
     _npmRegistryController.text = provider.otherConfig.npmRegistry;
+    _browserProfileController.text = provider.browserConfig.defaultProfile;
+    _browserConfigEnabled = provider.browserConfig.enabled;
+    _browserHeadless = provider.browserConfig.headless;
+    _browserNoSandbox = provider.browserConfig.noSandbox;
+    _feishuPairingCodeController.clear();
     _configController.text = provider.configFile.content;
   }
 
@@ -122,6 +160,52 @@ class _AIAgentsDetailWidgetState extends State<AIAgentsDetailWidget> {
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.l10n.commonSaveSuccess)),
+      );
+    }
+  }
+
+  Future<void> _saveBrowserConfig(
+    BuildContext context,
+    AgentsProvider provider,
+  ) async {
+    final profile = _browserProfileController.text.trim();
+    if (profile.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.aiAgentsBrowserDefaultProfileRequired)),
+      );
+      return;
+    }
+
+    final success = await provider.saveBrowserConfig(
+      enabled: _browserConfigEnabled,
+      headless: _browserHeadless,
+      noSandbox: _browserNoSandbox,
+      defaultProfile: profile,
+    );
+    if (success && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.commonSaveSuccess)),
+      );
+    }
+  }
+
+  Future<void> _approveFeishuPairing(
+    BuildContext context,
+    AgentsProvider provider,
+  ) async {
+    final pairingCode = _feishuPairingCodeController.text.trim();
+    if (pairingCode.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.aiAgentsPairingCodeRequired)),
+      );
+      return;
+    }
+
+    final success = await provider.approveFeishuPairing(pairingCode);
+    if (success && context.mounted) {
+      _feishuPairingCodeController.clear();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.aiAgentsPairingApproveSuccess)),
       );
     }
   }
