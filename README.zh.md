@@ -1,10 +1,16 @@
-# 1Panel Client
+<p align="center">
+  <img src="assets/branding/app_icon_master.png" alt="1Panel Client Logo" width="120" />
+</p>
 
-1Panel Client 是一个用于连接和管理一台或多台 1Panel 服务器的跨平台客户端。
+<h1 align="center">1Panel Client</h1>
+
+<p align="center">用于连接和管理一台或多台 1Panel 服务器的跨平台客户端。</p>
+
+<p align="center">
+  <strong>中文</strong> | <a href="README.md">English</a>
+</p>
 
 ---
-
-**中文**: [README.zh.md](README.zh.md) | **English**: [README.md](README.md)
 
 ## 它是什么
 

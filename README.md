@@ -1,10 +1,16 @@
-# 1Panel Client
+<p align="center">
+  <img src="assets/branding/app_icon_master.png" alt="1Panel Client Logo" width="120" />
+</p>
 
-1Panel Client is a cross-platform client for connecting to and managing one or more 1Panel servers.
+<h1 align="center">1Panel Client</h1>
+
+<p align="center">A cross-platform client for connecting to and managing one or more 1Panel servers.</p>
+
+<p align="center">
+  <a href="README.zh.md">中文文档</a> | <strong>English</strong>
+</p>
 
 ---
-
-**中文文档**: [README.zh.md](README.zh.md) | **English**: [README.md](README.md)
 
 ## What It Is
 
