@@ -9,8 +9,6 @@ import 'package:onepanelapp_app/pages/settings/settings_page.dart';
 import 'package:onepanelapp_app/widgets/navigation/app_bottom_navigation_bar.dart';
 
 const double _kTabletBreakpoint = 600;
-const int _kNavigationDestinationCount = 4;
-
 class PlatformAdaptiveShellPage extends StatefulWidget {
   const PlatformAdaptiveShellPage({
     super.key,
@@ -30,7 +28,8 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
   @override
   void initState() {
     super.initState();
-    _index = widget.initialIndex.clamp(0, _kNavigationDestinationCount - 1);
+    final maxIndex = _buildPages().length - 1;
+    _index = widget.initialIndex.clamp(0, maxIndex);
   }
 
   @override
@@ -257,7 +256,7 @@ class _IosPhoneShellScaffold extends StatelessWidget {
           ),
         ],
       ),
-      tabBuilder: (_, tabIndex) => pages[tabIndex],
+      tabBuilder: (context, tabIndex) => pages[tabIndex],
     );
   }
 }
