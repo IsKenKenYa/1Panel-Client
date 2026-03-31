@@ -11,6 +11,7 @@ import 'package:onepanelapp_app/pages/settings/settings_page.dart';
 import 'package:onepanelapp_app/widgets/navigation/app_bottom_navigation_bar.dart';
 
 const double _kTabletBreakpoint = 600;
+// Material 3 large-screen guidance commonly treats >= 960dp as expanded width.
 const double _kAndroidLargeScreenBreakpoint = 960;
 const double _kMacosNavRailSurfaceAlpha = 0.65;
 const double _kMacosNavRailBorderAlpha = 0.45;
@@ -32,13 +33,6 @@ class PlatformAdaptiveShellPage extends StatefulWidget {
 }
 
 class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
-  static const List<Widget> _pages = <Widget>[
-    ServerListPage(),
-    FilesPage(),
-    SecurityVerificationPage(),
-    SettingsPage(),
-  ];
-
   late int _index;
 
   @override
@@ -49,6 +43,7 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
 
   @override
   Widget build(BuildContext context) {
+    final pages = _pages;
     final shortestSide = MediaQuery.sizeOf(context).shortestSide;
     final width = MediaQuery.sizeOf(context).width;
     final isTablet = shortestSide >= _kTabletBreakpoint;
@@ -62,14 +57,14 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
       if (isTablet) {
         return _TabletShellScaffold(
           index: _index,
-          pages: _pages,
+          pages: pages,
           isAndroidTablet: false,
           onDestinationSelected: _onDestinationSelected,
         );
       }
 
       return Scaffold(
-        body: IndexedStack(index: _index, children: _pages),
+        body: IndexedStack(index: _index, children: pages),
         bottomNavigationBar: AppBottomNavigationBar(
           currentIndex: _index,
           onTap: _onDestinationSelected,
@@ -80,7 +75,7 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
     if (_isPlatform(TargetPlatform.macOS)) {
       return _MacosShellScaffold(
         index: _index,
-        pages: _pages,
+        pages: pages,
         onDestinationSelected: _onDestinationSelected,
       );
     }
@@ -88,7 +83,7 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
     if (_isPlatform(TargetPlatform.windows)) {
       return _WindowsShellScaffold(
         index: _index,
-        pages: _pages,
+        pages: pages,
         onDestinationSelected: _onDestinationSelected,
       );
     }
@@ -96,7 +91,7 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
     if (isIpad) {
       return _IpadShellScaffold(
         index: _index,
-        pages: _pages,
+        pages: pages,
         onDestinationSelected: _onDestinationSelected,
       );
     }
@@ -105,13 +100,13 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
       if (isAndroidLargeScreen) {
         return _AndroidLargeScreenShellScaffold(
           index: _index,
-          pages: _pages,
+          pages: pages,
           onDestinationSelected: _onDestinationSelected,
         );
       }
       return _AndroidPadShellScaffold(
         index: _index,
-        pages: _pages,
+        pages: pages,
         onDestinationSelected: _onDestinationSelected,
       );
     }
@@ -119,7 +114,7 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
     if (isTablet) {
       return _TabletShellScaffold(
         index: _index,
-        pages: _pages,
+        pages: pages,
         isAndroidTablet: false,
         onDestinationSelected: _onDestinationSelected,
       );
@@ -128,13 +123,13 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
     if (isIos) {
       return _IosPhoneShellScaffold(
         index: _index,
-        pages: _pages,
+        pages: pages,
         onDestinationSelected: _onDestinationSelected,
       );
     }
 
     return Scaffold(
-      body: IndexedStack(index: _index, children: _pages),
+      body: IndexedStack(index: _index, children: pages),
       bottomNavigationBar: AppBottomNavigationBar(
         currentIndex: _index,
         onTap: _onDestinationSelected,
@@ -154,6 +149,13 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
       _index = value;
     });
   }
+
+  List<Widget> get _pages => const <Widget>[
+        ServerListPage(),
+        FilesPage(),
+        SecurityVerificationPage(),
+        SettingsPage(),
+      ];
 }
 
 class _MacosShellScaffold extends StatelessWidget {
@@ -193,6 +195,7 @@ class _MacosShellScaffold extends StatelessWidget {
                   child: Container(
                     width: 88,
                     decoration: BoxDecoration(
+                      // withValues is the Flutter replacement of withOpacity.
                       color: scheme.surface.withValues(
                         alpha: _kMacosNavRailSurfaceAlpha,
                       ),
@@ -412,8 +415,7 @@ class _AndroidLargeScreenShellScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
-    final navItems = _navigationMeta(context);
-    final activeMeta = navItems[index];
+    final activeMeta = _navigationMetaForIndex(context, index);
     return Scaffold(
       body: Row(
         children: [
@@ -455,7 +457,7 @@ class _AndroidLargeScreenShellScaffold extends StatelessWidget {
                       child: ListTile(
                         leading: const Icon(Icons.tips_and_updates_outlined),
                         title: Text(l10n.commonComingSoon),
-                        subtitle: Text(l10n.commonLoading),
+                        subtitle: Text(l10n.commonComingSoon),
                       ),
                     ),
                   ],
@@ -576,26 +578,30 @@ class _NavigationMeta {
   final String subtitle;
 }
 
-List<_NavigationMeta> _navigationMeta(BuildContext context) {
+_NavigationMeta _navigationMetaForIndex(BuildContext context, int pageIndex) {
   final l10n = context.l10n;
-  return [
-    _NavigationMeta(
-      title: l10n.navServer,
-      subtitle: l10n.serverPageTitle,
-    ),
-    _NavigationMeta(
-      title: l10n.navFiles,
-      subtitle: l10n.filesPageTitle,
-    ),
-    _NavigationMeta(
-      title: l10n.navSecurity,
-      subtitle: l10n.securityPageTitle,
-    ),
-    _NavigationMeta(
-      title: l10n.navSettings,
-      subtitle: l10n.settingsPageTitle,
-    ),
-  ];
+  switch (pageIndex) {
+    case 0:
+      return _NavigationMeta(
+        title: l10n.navServer,
+        subtitle: l10n.serverPageTitle,
+      );
+    case 1:
+      return _NavigationMeta(
+        title: l10n.navFiles,
+        subtitle: l10n.filesPageTitle,
+      );
+    case 2:
+      return _NavigationMeta(
+        title: l10n.navSecurity,
+        subtitle: l10n.securityPageTitle,
+      );
+    default:
+      return _NavigationMeta(
+        title: l10n.navSettings,
+        subtitle: l10n.settingsPageTitle,
+      );
+  }
 }
 
 List<NavigationRailDestination> _destinations(BuildContext context) {
