@@ -17,7 +17,11 @@ class _AppLogOutput extends LogOutput {
     }
     if (LoggerConfig.enableFileOutput) {
       for (final line in event.lines) {
-        unawaited(_fileManager.appendLine(line));
+        unawaited(
+          _fileManager
+              .appendLine(line)
+              .catchError((Object _, StackTrace __) {}),
+        );
       }
     }
   }
@@ -48,7 +52,11 @@ class AppLogger {
       filter: _AppLoggerFilter(filter),
       output: _AppLogOutput(),
     );
-    unawaited(LogFileManagerService().cleanupExpired());
+    unawaited(
+      LogFileManagerService()
+          .cleanupExpired()
+          .catchError((Object _, StackTrace __) {}),
+    );
   }
 
   Future<void> loadPreferences() async {

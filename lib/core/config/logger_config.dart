@@ -43,7 +43,7 @@ class LoggerConfig {
 
   /// 日志输出配置
   static const bool enableConsoleOutput = true;
-  static const bool enableFileOutput = true;
+  static bool get enableFileOutput => !kReleaseMode;
   static const String logFileName = 'app_logs.txt';
   static const int maxLogFileSize = 10 * 1024 * 1024;
   static const int maxLogFiles = 5;

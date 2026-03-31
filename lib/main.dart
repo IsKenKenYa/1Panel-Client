@@ -25,7 +25,16 @@ import 'features/monitoring/monitoring_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   appLogger.init();
-  await appLogger.loadPreferences();
+  try {
+    await appLogger.loadPreferences();
+  } catch (error, stackTrace) {
+    appLogger.wWithPackage(
+      'main',
+      'Failed to load logger preferences, using default log level',
+      error: error,
+      stackTrace: stackTrace,
+    );
+  }
 
   FlutterError.onError = (details) {
     appLogger.eWithPackage(

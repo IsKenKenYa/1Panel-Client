@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../core/services/logger/logger_service.dart';
 import 'log_parser.dart';
 import 'log_theme.dart';
 

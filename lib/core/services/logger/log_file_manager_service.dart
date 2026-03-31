@@ -8,6 +8,7 @@ class LogFileManagerService {
       LogFileManagerService._internal();
   factory LogFileManagerService() => _instance;
   LogFileManagerService._internal();
+  Future<void> _writeQueue = Future<void>.value();
 
   Future<Directory> getLogDirectory() async {
     final baseDir = await getApplicationSupportDirectory();
@@ -25,6 +26,13 @@ class LogFileManagerService {
 
   Future<void> appendLine(String line) async {
     if (!LoggerConfig.enableFileOutput) return;
+    _writeQueue = _writeQueue
+        .then((_) => _appendLineInternal(line))
+        .catchError((_) => _appendLineInternal(line));
+    return _writeQueue;
+  }
+
+  Future<void> _appendLineInternal(String line) async {
     final file = await getCurrentLogFile();
     await _rotateIfNeeded(file);
     await file.writeAsString('$line\n', mode: FileMode.append, flush: true);
