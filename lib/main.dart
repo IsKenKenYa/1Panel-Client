@@ -25,6 +25,7 @@ import 'features/monitoring/monitoring_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   appLogger.init();
+  await appLogger.loadPreferences();
 
   FlutterError.onError = (details) {
     appLogger.eWithPackage(

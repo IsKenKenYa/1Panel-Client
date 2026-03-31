@@ -2586,6 +2586,27 @@ class AppLocalizationsZh extends AppLocalizations {
   String get systemSettingsAppLogsExportSubtitle => '导出本地应用调试日志';
 
   @override
+  String get systemSettingsAppLogsLevelTitle => '应用日志级别';
+
+  @override
+  String get systemSettingsLogLevelTrace => '跟踪';
+
+  @override
+  String get systemSettingsLogLevelDebug => '调试';
+
+  @override
+  String get systemSettingsLogLevelInfo => '信息';
+
+  @override
+  String get systemSettingsLogLevelWarning => '警告';
+
+  @override
+  String get systemSettingsLogLevelError => '错误';
+
+  @override
+  String get systemSettingsLogLevelFatal => '致命';
+
+  @override
   String get systemSettingsAppLogsClearSubtitle => '删除本地持久化日志文件';
 
   @override

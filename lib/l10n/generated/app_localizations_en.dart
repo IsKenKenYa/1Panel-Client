@@ -2667,6 +2667,27 @@ class AppLocalizationsEn extends AppLocalizations {
       'Export local application debug logs';
 
   @override
+  String get systemSettingsAppLogsLevelTitle => 'App log level';
+
+  @override
+  String get systemSettingsLogLevelTrace => 'Trace';
+
+  @override
+  String get systemSettingsLogLevelDebug => 'Debug';
+
+  @override
+  String get systemSettingsLogLevelInfo => 'Info';
+
+  @override
+  String get systemSettingsLogLevelWarning => 'Warning';
+
+  @override
+  String get systemSettingsLogLevelError => 'Error';
+
+  @override
+  String get systemSettingsLogLevelFatal => 'Fatal';
+
+  @override
   String get systemSettingsAppLogsClearSubtitle =>
       'Delete local persisted log files';
 

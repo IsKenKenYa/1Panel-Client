@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import '../../config/logger_config.dart';
+import 'log_level.dart';
 
 class LogFileManagerService {
   static final LogFileManagerService _instance =
@@ -84,15 +85,45 @@ class LogFileManagerService {
           a.lastModifiedSync().millisecondsSinceEpoch);
   }
 
-  Future<String> readAllLogs() async {
+  Future<String> readAllLogs({AppLogLevel? minLevel}) async {
     final files = await listLogFiles();
     final buffer = StringBuffer();
     for (final file in files.reversed) {
       if (!await file.exists()) continue;
       buffer.writeln('===== ${file.uri.pathSegments.last} =====');
-      buffer.writeln(await file.readAsString());
+      final content = await file.readAsString();
+      if (minLevel == null) {
+        buffer.writeln(content);
+      } else {
+        buffer.writeln(_filterLogsByLevel(content, minLevel));
+      }
     }
     return buffer.toString();
+  }
+
+  String _filterLogsByLevel(String raw, AppLogLevel minLevel) {
+    if (raw.isEmpty) return raw;
+    final lines = raw.split('\n');
+    final kept = <String>[];
+    final levelPattern = RegExp(r'\b(TRACE|DEBUG|INFO|WARNING|ERROR|FATAL)\b');
+
+    for (final line in lines) {
+      if (line.trim().isEmpty) {
+        kept.add(line);
+        continue;
+      }
+      final match = levelPattern.firstMatch(line.toUpperCase());
+      if (match == null) {
+        kept.add(line);
+        continue;
+      }
+      final level = AppLogLevel.fromStorage(match.group(1)?.toLowerCase());
+      if (level.weight >= minLevel.weight) {
+        kept.add(line);
+      }
+    }
+
+    return kept.join('\n');
   }
 
   Future<void> clearLogs() async {

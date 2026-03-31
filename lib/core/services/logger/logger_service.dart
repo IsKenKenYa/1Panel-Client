@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 import '../../config/logger_config.dart';
+import 'log_level.dart';
 import 'log_file_manager_service.dart';
+import 'log_preferences_service.dart';
 
 class _AppLogOutput extends LogOutput {
   final ConsoleOutput _consoleOutput = ConsoleOutput();
@@ -28,6 +30,8 @@ class AppLogger {
   AppLogger._internal();
 
   late final Logger _logger;
+  AppLogLevel _minLogLevel = AppLogLevel.trace;
+  final LogPreferencesService _preferencesService = LogPreferencesService();
 
   /// 初始化日志服务
   void init() {
@@ -45,6 +49,17 @@ class AppLogger {
       output: _AppLogOutput(),
     );
     unawaited(LogFileManagerService().cleanupExpired());
+  }
+
+  Future<void> loadPreferences() async {
+    _minLogLevel = await _preferencesService.loadMinLogLevel();
+  }
+
+  AppLogLevel get minLogLevel => _minLogLevel;
+
+  Future<void> setMinLogLevel(AppLogLevel level) async {
+    _minLogLevel = level;
+    await _preferencesService.saveMinLogLevel(level);
   }
 
   void _ensureInitialized() {
@@ -139,6 +154,8 @@ class _AppLoggerFilter extends LogFilter {
     if (!_delegate.shouldLog(event)) return false;
     final message = event.message?.toString() ?? '';
     if (LoggerConfig.shouldFilterLog(message)) return false;
+    final currentLevel = AppLogLevelX.fromLoggerLevel(event.level);
+    if (currentLevel.weight < appLogger.minLogLevel.weight) return false;
     return true;
   }
 }

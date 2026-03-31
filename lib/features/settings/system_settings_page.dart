@@ -15,8 +15,10 @@ import 'package:onepanel_client/features/settings/monitor_settings_page.dart';
 import 'package:onepanel_client/features/settings/proxy_settings_page.dart';
 import 'package:onepanel_client/features/settings/backup_account_page.dart';
 import 'package:onepanel_client/features/monitoring/monitoring_provider.dart';
+import 'package:onepanel_client/core/services/logger/log_level.dart';
 import 'package:onepanel_client/core/services/logger/log_export_service.dart';
 import 'package:onepanel_client/core/services/logger/log_file_manager_service.dart';
+import 'package:onepanel_client/core/services/logger/logger_service.dart';
 
 class SystemSettingsPage extends StatefulWidget {
   const SystemSettingsPage({super.key, this.provider});
@@ -195,6 +197,13 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
                 title: l10n.commonExport,
                 subtitle: l10n.systemSettingsAppLogsExportSubtitle,
                 onTap: () => _exportAppLogs(context),
+              ),
+              _buildSettingTile(
+                context,
+                icon: Icons.filter_alt_outlined,
+                title: l10n.systemSettingsAppLogsLevelTitle,
+                subtitle: _logLevelLabel(l10n, appLogger.minLogLevel),
+                onTap: () => _selectAppLogLevel(context),
               ),
               _buildSettingTile(
                 context,
@@ -773,7 +782,8 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
 
   Future<void> _exportAppLogs(BuildContext context) async {
     final l10n = context.l10n;
-    final result = await LogExportService().exportLogs();
+    final result =
+        await LogExportService().exportLogs(minLevel: appLogger.minLogLevel);
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -811,6 +821,63 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(l10n.systemSettingsAppLogsCleared)),
+    );
+  }
+
+  String _logLevelLabel(AppLocalizations l10n, AppLogLevel level) {
+    switch (level) {
+      case AppLogLevel.trace:
+        return l10n.systemSettingsLogLevelTrace;
+      case AppLogLevel.debug:
+        return l10n.systemSettingsLogLevelDebug;
+      case AppLogLevel.info:
+        return l10n.systemSettingsLogLevelInfo;
+      case AppLogLevel.warning:
+        return l10n.systemSettingsLogLevelWarning;
+      case AppLogLevel.error:
+        return l10n.systemSettingsLogLevelError;
+      case AppLogLevel.fatal:
+        return l10n.systemSettingsLogLevelFatal;
+    }
+  }
+
+  Future<void> _selectAppLogLevel(BuildContext context) async {
+    final l10n = context.l10n;
+    final selected = await showDialog<AppLogLevel>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.systemSettingsAppLogsLevelTitle),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: AppLogLevel.values
+              .map(
+                (level) => RadioListTile<AppLogLevel>(
+                  value: level,
+                  groupValue: appLogger.minLogLevel,
+                  title: Text(_logLevelLabel(l10n, level)),
+                  onChanged: (value) => Navigator.of(dialogContext).pop(value),
+                ),
+              )
+              .toList(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(l10n.commonCancel),
+          ),
+        ],
+      ),
+    );
+    if (selected == null) return;
+    await appLogger.setMinLogLevel(selected);
+    if (!context.mounted) return;
+    setState(() {});
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '${l10n.commonSaveSuccess}: ${_logLevelLabel(l10n, selected)}',
+        ),
+      ),
     );
   }
 }

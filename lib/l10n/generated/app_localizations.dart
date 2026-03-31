@@ -5036,6 +5036,48 @@ abstract class AppLocalizations {
   /// **'Export local application debug logs'**
   String get systemSettingsAppLogsExportSubtitle;
 
+  /// No description provided for @systemSettingsAppLogsLevelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'App log level'**
+  String get systemSettingsAppLogsLevelTitle;
+
+  /// No description provided for @systemSettingsLogLevelTrace.
+  ///
+  /// In en, this message translates to:
+  /// **'Trace'**
+  String get systemSettingsLogLevelTrace;
+
+  /// No description provided for @systemSettingsLogLevelDebug.
+  ///
+  /// In en, this message translates to:
+  /// **'Debug'**
+  String get systemSettingsLogLevelDebug;
+
+  /// No description provided for @systemSettingsLogLevelInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get systemSettingsLogLevelInfo;
+
+  /// No description provided for @systemSettingsLogLevelWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning'**
+  String get systemSettingsLogLevelWarning;
+
+  /// No description provided for @systemSettingsLogLevelError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get systemSettingsLogLevelError;
+
+  /// No description provided for @systemSettingsLogLevelFatal.
+  ///
+  /// In en, this message translates to:
+  /// **'Fatal'**
+  String get systemSettingsLogLevelFatal;
+
   /// No description provided for @systemSettingsAppLogsClearSubtitle.
   ///
   /// In en, this message translates to:
