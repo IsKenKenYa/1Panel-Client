@@ -35,8 +35,16 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
     final isTablet = MediaQuery.sizeOf(context).shortestSide >= 600;
     final pages = _buildPages();
 
-    if (_isDesktopPlatform) {
-      return _DesktopShellScaffold(
+    if (_isMacosPlatform) {
+      return _MacosShellScaffold(
+        index: _index,
+        pages: pages,
+        onDestinationSelected: _onDestinationSelected,
+      );
+    }
+
+    if (_isWindowsPlatform) {
+      return _WindowsShellScaffold(
         index: _index,
         pages: pages,
         onDestinationSelected: _onDestinationSelected,
@@ -77,13 +85,20 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
     ];
   }
 
-  bool get _isDesktopPlatform {
+  bool get _isMacosPlatform {
     if (kIsWeb) {
       return false;
     }
 
-    return defaultTargetPlatform == TargetPlatform.macOS ||
-        defaultTargetPlatform == TargetPlatform.windows;
+    return defaultTargetPlatform == TargetPlatform.macOS;
+  }
+
+  bool get _isWindowsPlatform {
+    if (kIsWeb) {
+      return false;
+    }
+
+    return defaultTargetPlatform == TargetPlatform.windows;
   }
 
   bool get _isIosPlatform {
@@ -100,8 +115,41 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
   }
 }
 
-class _DesktopShellScaffold extends StatelessWidget {
-  const _DesktopShellScaffold({
+class _MacosShellScaffold extends StatelessWidget {
+  const _MacosShellScaffold({
+    required this.index,
+    required this.pages,
+    required this.onDestinationSelected,
+  });
+
+  final int index;
+  final List<Widget> pages;
+  final ValueChanged<int> onDestinationSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Row(
+        children: [
+          NavigationRail(
+            selectedIndex: index,
+            onDestinationSelected: onDestinationSelected,
+            labelType: NavigationRailLabelType.none,
+            useIndicator: false,
+            destinations: _destinations(context),
+          ),
+          const VerticalDivider(width: 1),
+          Expanded(
+            child: IndexedStack(index: index, children: pages),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _WindowsShellScaffold extends StatelessWidget {
+  const _WindowsShellScaffold({
     required this.index,
     required this.pages,
     required this.onDestinationSelected,
@@ -120,6 +168,7 @@ class _DesktopShellScaffold extends StatelessWidget {
             selectedIndex: index,
             onDestinationSelected: onDestinationSelected,
             labelType: NavigationRailLabelType.all,
+            extended: true,
             destinations: _destinations(context),
           ),
           const VerticalDivider(width: 1),
