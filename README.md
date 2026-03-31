@@ -4,6 +4,11 @@
 
 <h1 align="center">1Panel Client</h1>
 
+<p align="center">
+  <a href="https://github.com/IsKenKenYa/1Panel-Client/releases"><img src="https://img.shields.io/badge/version-0.5.0--alpha.1%2B1-blue.svg" alt="Version" /></a>
+  <a href="https://github.com/IsKenKenYa/1Panel-Client/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-green.svg" alt="License" /></a>
+</p>
+
 <p align="center">A cross-platform client for connecting to and managing one or more 1Panel servers.</p>
 
 <p align="center">
@@ -28,7 +33,15 @@
 
 - Switch between multiple 1Panel servers
 - View server status and key runtime information
-- Work with files, containers, apps, websites, and other common modules
+- **Dashboard**: Real-time monitoring (CPU, Memory, Disk, Network I/O)
+- **Container Management**: Docker containers, images, logs, and statistics
+- **File Management**: Browse, edit, upload/download, recycle bin, transfer manager
+- **Database Management**: MySQL, PostgreSQL, Redis with full operations
+- **Website Management**: SSL certificates, batch operations, domain management
+- **AI Management**: Ollama models, AI agent configuration, GPU monitoring
+- **System Tools**: ClamAV, Fail2ban, FTP management
+- **Runtime Management**: PHP extensions, Node modules, Supervisor
+- **Backup & Restore**: Complete backup operations and recovery
 - Use a mobile-friendly interface instead of relying on a browser session
 
 ## First-Time Setup

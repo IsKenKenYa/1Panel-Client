@@ -86,11 +86,9 @@
 
 ## 未完美适配清单（2026-03-30 复核）
 
-- 说明：`swagger_adaptation_status_checklist` 维度为 tag 级“已适配真值”，本节补充“仍需收口”的测试/文档维度缺口。
+- 说明：`swagger_adaptation_status_checklist` 维度为 tag 级”已适配真值”，本节补充”仍需收口”的测试/文档维度缺口。
 - A. 文档统计待回刷（代码已有测试证据）
-	- `Firewall`：`api_coverage` 当前标记“未测试”，但已存在 `test/features/firewall/*` 回归用例。
-	- `Website SSL`：`api_coverage` 当前标记“未测试”，但已存在 `website_ssl_*` provider/page 用例。
-	- `OpenResty`：`api_coverage` 当前标记“未测试”，但已存在 `openresty_provider_test.dart` 与页面测试。
+	- 无（Firewall、Website SSL、OpenResty 已回刷为”已测试”）
 - B. 真实测试缺口（优先补齐）
 	- `Container Image / Compose / Network / Volume`
 	- `Website Nginx / Website HTTPS`
@@ -149,13 +147,13 @@
 | 标签 | 端点数 | API客户端 | 方法数 | 已测试 | 已文档 |
 | --- | --- | --- | --- | --- | --- |
 | Cronjob | 16 | cronjob_v2.dart | 12 | ✅ | ✅ |
-| Firewall | 15 | firewall_v2.dart | 12 | ❌ | ❌ |
+| Firewall | 15 | firewall_v2.dart | 12 | ✅ | ❌ |
 | SSH | 12 | ssh_v2.dart | 12 | ✅ | ✅ |
-| Website SSL | 11 | ssl_v2.dart | 17 | ❌ | ❌ |
+| Website SSL | 11 | ssl_v2.dart | 17 | ✅ | ❌ |
 | AI | 10 | ai_v2.dart | 18 | ✅ | ❌ |
 | Container Image | 10 | container_v2.dart | 43 | ❌ | ❌ |
 | Host | 10 | host_v2.dart | 9 | ✅ | ✅ |
-| OpenResty | 10 | openresty_v2.dart | 9 | ❌ | ✅ |
+| OpenResty | 10 | openresty_v2.dart | 9 | ✅ | ✅ |
 | Command | 8 | command_v2.dart | 14 | ✅ | ✅ |
 | Container Docker | 8 | docker_v2.dart | 60 | ✅ | ✅ |
 | Website CA | 7 | ssl_v2.dart | 17 | ✅ | ✅ |

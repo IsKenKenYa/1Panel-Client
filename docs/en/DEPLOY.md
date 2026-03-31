@@ -138,4 +138,4 @@ sudo timedatectl set-ntp true
 
 ---
 
-*Last updated: 2024-02-12*
+*Last updated: 2026-03-30*
