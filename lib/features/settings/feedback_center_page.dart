@@ -20,6 +20,8 @@ class FeedbackCenterPage extends StatefulWidget {
 }
 
 class _FeedbackCenterPageState extends State<FeedbackCenterPage> {
+  final fs.FileSaveService _fileSaveService = fs.FileSaveService();
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -190,21 +192,13 @@ ${l10n.settingsFeedbackTemplateEnvironment}
 
     if (!result.success &&
         result.permissionStatus == fs.PermissionStatus.denied) {
-      final granted = await _requestStoragePermissionAgain();
+      final permissionStatus = await _fileSaveService.requestStoragePermission();
       if (!context.mounted) return;
-      if (granted) {
+      if (permissionStatus == fs.PermissionStatus.granted) {
         final retryResult =
             await LogExportService().exportLogs(minLevel: appLogger.minLogLevel);
         if (!context.mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              retryResult.success
-                  ? '${l10n.commonSaveSuccess}: ${retryResult.filePath ?? ''}'
-                  : '${l10n.commonSaveFailed}: ${retryResult.errorMessage ?? ''}',
-            ),
-          ),
-        );
+        _showExportResultSnackBar(context, retryResult);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.permissionStorageRequired)),
@@ -213,29 +207,14 @@ ${l10n.settingsFeedbackTemplateEnvironment}
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          result.success
-              ? '${l10n.commonSaveSuccess}: ${result.filePath ?? ''}'
-              : '${l10n.commonSaveFailed}: ${result.errorMessage ?? ''}',
-        ),
-      ),
-    );
+    _showExportResultSnackBar(context, result);
   }
 
-  Future<bool> _requestStoragePermissionAgain() async {
-    final status = await Permission.storage.request();
-    if (status.isGranted) return true;
-
-    final manageStatus = await Permission.manageExternalStorage.request();
-    return manageStatus.isGranted;
-  }
-
-  Future<void> _showPermissionSettingsDialog(BuildContext context) async {
-    final l10n = context.l10n;
+  Future<void> _showPermissionSettingsDialog(
+      BuildContext dialogParentContext) async {
+    final l10n = dialogParentContext.l10n;
     await showDialog<void>(
-      context: context,
+      context: dialogParentContext,
       builder: (dialogContext) => AlertDialog(
         title: Text(l10n.permissionRequired),
         content: Text(l10n.permissionStorageRequired),
@@ -252,6 +231,19 @@ ${l10n.settingsFeedbackTemplateEnvironment}
             child: Text(l10n.permissionGoToSettings),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showExportResultSnackBar(BuildContext context, fs.FileSaveResult result) {
+    final l10n = context.l10n;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          result.success
+              ? '${l10n.commonSaveSuccess}: ${result.filePath ?? ''}'
+              : '${l10n.commonSaveFailed}: ${result.errorMessage ?? ''}',
+        ),
       ),
     );
   }

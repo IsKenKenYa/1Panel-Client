@@ -8,7 +8,7 @@ import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 class AboutPage extends StatefulWidget {
   const AboutPage({super.key});
 
-  static const officialDomain = 'onepanel.iskenkenya.com';
+  static const officialDomainName = 'onepanel.iskenkenya.com';
   static const repoSsh = 'git@github.com:IsKenKenYa/1Panel-Client.git';
   static const repoHttps = 'https://github.com/IsKenKenYa/1Panel-Client.git';
   static const issuesUrl = 'https://github.com/IsKenKenYa/1Panel-Client/issues';
@@ -65,10 +65,11 @@ class _AboutPageState extends State<AboutPage> {
                     const Divider(height: 24),
                     _LinkRow(
                       label: l10n.aboutOfficialDomainLabel,
-                      value: AboutPage.officialDomain,
+                      value: AboutPage.officialDomainName,
                       onOpen: () => _openLink(
-                          context, 'https://${AboutPage.officialDomain}'),
-                      onCopy: () => _copyText(context, AboutPage.officialDomain),
+                          context, 'https://${AboutPage.officialDomainName}'),
+                      onCopy: () =>
+                          _copyText(context, AboutPage.officialDomainName),
                     ),
                   ],
                 ),
@@ -189,7 +190,7 @@ class _HeroCard extends StatelessWidget {
             ],
             const SizedBox(height: AppDesignTokens.spacingSm),
             Text(
-              AboutPage.officialDomain,
+              AboutPage.officialDomainName,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: colorScheme.primary,
                   ),
