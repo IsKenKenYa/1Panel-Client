@@ -144,10 +144,6 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
     return defaultTargetPlatform == platform;
   }
 
-  bool _isTabletLayout(BuildContext context) {
-    return MediaQuery.sizeOf(context).shortestSide >= _kTabletBreakpoint;
-  }
-
   void _onDestinationSelected(int value) {
     setState(() {
       _index = value;
