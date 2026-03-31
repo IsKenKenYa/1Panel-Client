@@ -9,6 +9,8 @@ class LogFileManagerService {
   factory LogFileManagerService() => _instance;
   LogFileManagerService._internal();
   Future<void> _writeQueue = Future<void>.value();
+  static final RegExp _levelPattern =
+      RegExp(r'\b(TRACE|DEBUG|INFO|WARNING|ERROR|FATAL)\b');
 
   Future<Directory> getLogDirectory() async {
     final baseDir = await getApplicationSupportDirectory();
@@ -26,9 +28,7 @@ class LogFileManagerService {
 
   Future<void> appendLine(String line) async {
     if (!LoggerConfig.enableFileOutput) return;
-    _writeQueue = _writeQueue
-        .then((_) => _appendLineInternal(line))
-        .catchError((_) => _appendLineInternal(line));
+    _writeQueue = _writeQueue.then((_) => _appendLineInternal(line));
     return _writeQueue;
   }
 
@@ -113,14 +113,13 @@ class LogFileManagerService {
     if (raw.isEmpty) return raw;
     final lines = raw.split('\n');
     final kept = <String>[];
-    final levelPattern = RegExp(r'\b(TRACE|DEBUG|INFO|WARNING|ERROR|FATAL)\b');
 
     for (final line in lines) {
       if (line.trim().isEmpty) {
         kept.add(line);
         continue;
       }
-      final match = levelPattern.firstMatch(line.toUpperCase());
+      final match = _levelPattern.firstMatch(line.toUpperCase());
       if (match == null) {
         kept.add(line);
         continue;

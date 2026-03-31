@@ -106,7 +106,7 @@ We welcome contributions to improve our documentation!
 - [1Panel Official Website](https://1panel.cn)
 - [1Panel Documentation](https://1panel.cn/docs/)
 - [Flutter Documentation](https://docs.flutter.dev)
-- [GitHub Repository](https://github.com/yourusername/1PanelOpenSourceApp)
+- [GitHub Repository](https://github.com/IsKenKenYa/1Panel-Client)
 
 ---
 
