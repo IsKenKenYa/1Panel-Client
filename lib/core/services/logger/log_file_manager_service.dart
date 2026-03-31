@@ -51,18 +51,22 @@ class LogFileManagerService {
 
   Future<void> _enforceMaxFiles() async {
     final dir = await getLogDirectory();
-    final files = dir
-        .listSync()
-        .whereType<File>()
-        .where((f) => f.path.endsWith('.txt'))
-        .toList()
-      ..sort((a, b) =>
-          b.lastModifiedSync().millisecondsSinceEpoch -
-          a.lastModifiedSync().millisecondsSinceEpoch);
+    final files = <File>[];
+    await for (final entity in dir.list()) {
+      if (entity is File && entity.path.endsWith('.txt')) {
+        files.add(entity);
+      }
+    }
+    final entries = <({File file, DateTime modified})>[];
+    for (final file in files) {
+      entries.add((file: file, modified: await file.lastModified()));
+    }
+    entries.sort((a, b) =>
+        b.modified.millisecondsSinceEpoch - a.modified.millisecondsSinceEpoch);
     if (files.length <= LoggerConfig.maxLogFiles) return;
-    for (final file in files.skip(LoggerConfig.maxLogFiles)) {
-      if (await file.exists()) {
-        await file.delete();
+    for (final entry in entries.skip(LoggerConfig.maxLogFiles)) {
+      if (await entry.file.exists()) {
+        await entry.file.delete();
       }
     }
   }
@@ -83,14 +87,19 @@ class LogFileManagerService {
 
   Future<List<File>> listLogFiles() async {
     final dir = await getLogDirectory();
-    return dir
-        .listSync()
-        .whereType<File>()
-        .where((f) => f.path.endsWith('.txt'))
-        .toList()
-      ..sort((a, b) =>
-          b.lastModifiedSync().millisecondsSinceEpoch -
-          a.lastModifiedSync().millisecondsSinceEpoch);
+    final files = <File>[];
+    await for (final entity in dir.list()) {
+      if (entity is File && entity.path.endsWith('.txt')) {
+        files.add(entity);
+      }
+    }
+    final entries = <({File file, DateTime modified})>[];
+    for (final file in files) {
+      entries.add((file: file, modified: await file.lastModified()));
+    }
+    entries.sort((a, b) =>
+        b.modified.millisecondsSinceEpoch - a.modified.millisecondsSinceEpoch);
+    return entries.map((entry) => entry.file).toList();
   }
 
   Future<String> readAllLogs({AppLogLevel? minLevel}) async {

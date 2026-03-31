@@ -43,6 +43,7 @@ class LoggerConfig {
 
   /// 日志输出配置
   static const bool enableConsoleOutput = true;
+  /// File logging is disabled in release to reduce default privacy/storage impact.
   static bool get enableFileOutput => !kReleaseMode;
   static const String logFileName = 'app_logs.txt';
   static const int maxLogFileSize = 10 * 1024 * 1024;
