@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import '../services/logger/logger_service.dart';
 import '../config/api_constants.dart';
 import 'network_exceptions.dart';
@@ -16,8 +17,7 @@ class DioClient {
     String? baseUrl,
     String? apiKey,
     bool allowInsecureTls = false,
-  })
-      : _dio = Dio(_createBaseOptionsStatic(baseUrl)) {
+  }) : _dio = Dio(_createBaseOptionsStatic(baseUrl)) {
     _authInterceptor = AuthInterceptor(apiKey);
     _configureTls(allowInsecureTls);
     _addInterceptors();

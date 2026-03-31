@@ -912,6 +912,27 @@
   "languageZh": "Chinese",
   "languageEn": "English",
   "commonExperimental": "Experimental",
+  "releaseChannelPreview": "Preview",
+  "releaseChannelAlpha": "Dev (Alpha)",
+  "releaseChannelBeta": "Beta",
+  "releaseChannelPreRelease": "Pre-Release",
+  "releaseChannelRelease": "Release",
+  "testingWarningDialogTitle": "{channel} warning",
+  "@testingWarningDialogTitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "testingWarningDialogBody": "This build is for testing and feedback collection. Continue only if you understand the risks.",
+  "testingWarningRiskUnstable": "This version may be unstable and features can change at any time.",
+  "testingWarningRiskDataLoss": "Data loss or configuration issues may occur during testing. Please back up first.",
+  "testingWarningRiskNoProd": "Do not use test builds on production servers.",
+  "testingWarningConsentText": "I understand these risks and agree to continue using the test build.",
+  "testingWarningExit": "Exit app",
+  "testingWarningContinue": "Continue",
+  "testingWarningAgreeAndContinue": "Agree and continue",
   "onboardingSkip": "Skip",
   "onboardingNext": "Next",
   "onboardingStart": "Start",
@@ -1206,6 +1227,7 @@
   "systemSettingsDashboardMemoHint": "Write a quick note for your dashboard...",
   "systemSettingsAppLogsExportSubtitle": "Export local application debug logs",
   "systemSettingsAppLogsLevelTitle": "App log level",
+  "systemSettingsAppLogsLevelLocked": "The current channel locks log level (forced Debug).",
   "systemSettingsLogLevelTrace": "Trace",
   "systemSettingsLogLevelDebug": "Debug",
   "systemSettingsLogLevelInfo": "Info",

@@ -4028,6 +4028,90 @@ abstract class AppLocalizations {
   /// **'Experimental'**
   String get commonExperimental;
 
+  /// No description provided for @releaseChannelPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get releaseChannelPreview;
+
+  /// No description provided for @releaseChannelAlpha.
+  ///
+  /// In en, this message translates to:
+  /// **'Dev (Alpha)'**
+  String get releaseChannelAlpha;
+
+  /// No description provided for @releaseChannelBeta.
+  ///
+  /// In en, this message translates to:
+  /// **'Beta'**
+  String get releaseChannelBeta;
+
+  /// No description provided for @releaseChannelPreRelease.
+  ///
+  /// In en, this message translates to:
+  /// **'Pre-Release'**
+  String get releaseChannelPreRelease;
+
+  /// No description provided for @releaseChannelRelease.
+  ///
+  /// In en, this message translates to:
+  /// **'Release'**
+  String get releaseChannelRelease;
+
+  /// No description provided for @testingWarningDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{channel} warning'**
+  String testingWarningDialogTitle(String channel);
+
+  /// No description provided for @testingWarningDialogBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This build is for testing and feedback collection. Continue only if you understand the risks.'**
+  String get testingWarningDialogBody;
+
+  /// No description provided for @testingWarningRiskUnstable.
+  ///
+  /// In en, this message translates to:
+  /// **'This version may be unstable and features can change at any time.'**
+  String get testingWarningRiskUnstable;
+
+  /// No description provided for @testingWarningRiskDataLoss.
+  ///
+  /// In en, this message translates to:
+  /// **'Data loss or configuration issues may occur during testing. Please back up first.'**
+  String get testingWarningRiskDataLoss;
+
+  /// No description provided for @testingWarningRiskNoProd.
+  ///
+  /// In en, this message translates to:
+  /// **'Do not use test builds on production servers.'**
+  String get testingWarningRiskNoProd;
+
+  /// No description provided for @testingWarningConsentText.
+  ///
+  /// In en, this message translates to:
+  /// **'I understand these risks and agree to continue using the test build.'**
+  String get testingWarningConsentText;
+
+  /// No description provided for @testingWarningExit.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit app'**
+  String get testingWarningExit;
+
+  /// No description provided for @testingWarningContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get testingWarningContinue;
+
+  /// No description provided for @testingWarningAgreeAndContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Agree and continue'**
+  String get testingWarningAgreeAndContinue;
+
   /// No description provided for @onboardingSkip.
   ///
   /// In en, this message translates to:
@@ -5041,6 +5125,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'App log level'**
   String get systemSettingsAppLogsLevelTitle;
+
+  /// No description provided for @systemSettingsAppLogsLevelLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'The current channel locks log level (forced Debug).'**
+  String get systemSettingsAppLogsLevelLocked;
 
   /// No description provided for @systemSettingsLogLevelTrace.
   ///

@@ -27,6 +27,7 @@ void main() async {
   appLogger.init();
   try {
     await appLogger.loadPreferences();
+    await appLogger.applyReleaseChannelPolicy();
   } catch (error, stackTrace) {
     appLogger.wWithPackage(
       'main',

@@ -912,6 +912,27 @@
   "languageZh": "中文",
   "languageEn": "英文",
   "commonExperimental": "抢先体验",
+  "releaseChannelPreview": "抢先体验",
+  "releaseChannelAlpha": "Dev（Alpha）",
+  "releaseChannelBeta": "Beta",
+  "releaseChannelPreRelease": "Pre-Release",
+  "releaseChannelRelease": "正式版",
+  "testingWarningDialogTitle": "{channel} 风险提示",
+  "@testingWarningDialogTitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "testingWarningDialogBody": "当前版本用于测试与反馈收集，请在了解风险后继续。",
+  "testingWarningRiskUnstable": "版本可能不稳定，部分功能可能随时调整。",
+  "testingWarningRiskDataLoss": "测试期间可能出现数据丢失或配置异常，请提前备份。",
+  "testingWarningRiskNoProd": "请勿在生产服务器上参与测试。",
+  "testingWarningConsentText": "我已了解以上风险，并同意继续使用测试版本。",
+  "testingWarningExit": "退出应用",
+  "testingWarningContinue": "继续",
+  "testingWarningAgreeAndContinue": "同意并继续",
   "onboardingSkip": "跳过",
   "onboardingNext": "下一步",
   "onboardingStart": "开始使用",
@@ -1154,6 +1175,7 @@
   "systemSettingsDashboardMemoHint": "写点备忘内容，展示在仪表盘...",
   "systemSettingsAppLogsExportSubtitle": "导出本地应用调试日志",
   "systemSettingsAppLogsLevelTitle": "应用日志级别",
+  "systemSettingsAppLogsLevelLocked": "当前渠道已锁定日志级别（强制 Debug）。",
   "systemSettingsLogLevelTrace": "跟踪",
   "systemSettingsLogLevelDebug": "调试",
   "systemSettingsLogLevelInfo": "信息",

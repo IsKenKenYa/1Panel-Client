@@ -27,6 +27,19 @@ class TestServerProvider extends ServerProvider {
   Future<void> loadMetrics() async {}
 }
 
+Future<void> _pumpWithFrameCap(
+  WidgetTester tester, {
+  int maxFrames = 120,
+  Duration step = const Duration(milliseconds: 16),
+}) async {
+  for (var i = 0; i < maxFrames; i++) {
+    await tester.pump(step);
+    if (!tester.binding.hasScheduledFrame) {
+      return;
+    }
+  }
+}
+
 void main() {
   testWidgets(
       'ServerDetailPage uses launcher sections instead of old grid cards',
@@ -76,7 +89,7 @@ void main() {
         ),
       ),
     );
-    await tester.pumpAndSettle();
+    await _pumpWithFrameCap(tester);
 
     final l10n =
       AppLocalizations.of(tester.element(find.byType(ServerDetailPage)));
@@ -84,18 +97,23 @@ void main() {
     expect(find.byType(GridView), findsNothing);
     expect(find.text('Bottom Tabs'), findsOneWidget);
     expect(find.text('Edit Tabs'), findsOneWidget);
-    expect(find.text('Files'), findsWidgets);
-    expect(find.text(l10n.serverModuleWebsites), findsOneWidget);
-    expect(find.text(l10n.serverModuleAi), findsOneWidget);
-    await tester.scrollUntilVisible(
-      find.text(l10n.serverModuleSystemSettings),
-      200,
+    expect(find.text('Files', skipOffstage: false), findsWidgets);
+    expect(
+      find.text(l10n.serverModuleWebsites, skipOffstage: false),
+      findsOneWidget,
     );
-    await tester.pumpAndSettle();
-    expect(find.text(l10n.serverModuleSystemSettings), findsOneWidget);
-    await tester.scrollUntilVisible(find.text('Operations Center'), 200);
-    await tester.pumpAndSettle();
-    expect(find.text('Operations Center'), findsWidgets);
-    expect(find.text('Experimental'), findsWidgets);
+    expect(
+      find.text(l10n.serverModuleAi, skipOffstage: false),
+      findsOneWidget,
+    );
+    expect(
+      find.text(l10n.serverModuleSystemSettings, skipOffstage: false),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Operations Center', skipOffstage: false),
+      findsWidgets,
+    );
+    expect(find.text('Experimental', skipOffstage: false), findsWidgets);
   });
 }

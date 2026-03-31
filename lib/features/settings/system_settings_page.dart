@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:provider/provider.dart';
+import 'package:onepanel_client/core/config/release_channel_config.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/settings/panel_settings_page.dart';
@@ -113,6 +114,10 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
   ) {
     final settings = provider.data.systemSettings;
     final lastUpdated = provider.data.lastUpdated;
+    final isLogLevelLocked = AppReleaseChannelConfig.forceDebugLogLevel;
+    final logLevelSubtitle = isLogLevelLocked
+        ? '${_logLevelLabel(l10n, appLogger.minLogLevel)} · ${l10n.systemSettingsAppLogsLevelLocked}'
+        : _logLevelLabel(l10n, appLogger.minLogLevel);
 
     return ListView(
       padding: AppDesignTokens.pagePadding,
@@ -153,9 +158,8 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
                 context,
                 icon: Icons.storefront_outlined,
                 title: l10n.appStoreTitle,
-                subtitle:
-                    _extractAppStoreUrl(provider.data.appStoreConfig) ??
-                        l10n.systemSettingsNotSet,
+                subtitle: _extractAppStoreUrl(provider.data.appStoreConfig) ??
+                    l10n.systemSettingsNotSet,
                 onTap: () => _showAppStoreConfigDialog(context, provider, l10n),
               ),
               _buildSettingTile(
@@ -172,9 +176,10 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
                 context,
                 icon: Icons.device_hub_outlined,
                 title: l10n.sshSettingsNetworkSectionTitle,
-                subtitle:
-                    _formatNetworkInterfacesSummary(provider.data.networkInterfaces, l10n),
-                onTap: () => _showNetworkInterfacesDialog(context, provider, l10n),
+                subtitle: _formatNetworkInterfacesSummary(
+                    provider.data.networkInterfaces, l10n),
+                onTap: () =>
+                    _showNetworkInterfacesDialog(context, provider, l10n),
               ),
               _buildSettingTile(
                 context,
@@ -202,8 +207,10 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
                 context,
                 icon: Icons.filter_alt_outlined,
                 title: l10n.systemSettingsAppLogsLevelTitle,
-                subtitle: _logLevelLabel(l10n, appLogger.minLogLevel),
-                onTap: () => _selectAppLogLevel(context),
+                subtitle: logLevelSubtitle,
+                onTap: () => isLogLevelLocked
+                    ? _showLogLevelLockedHint(context)
+                    : _selectAppLogLevel(context),
               ),
               _buildSettingTile(
                 context,
@@ -843,22 +850,29 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
 
   Future<void> _selectAppLogLevel(BuildContext context) async {
     final l10n = context.l10n;
+    final channelFloor = _channelMinLogLevelFloor();
+    final selectableLevels = AppLogLevel.values
+        .where((level) => level.weight >= channelFloor.weight)
+        .toList();
+
     final selected = await showDialog<AppLogLevel>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(l10n.systemSettingsAppLogsLevelTitle),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: AppLogLevel.values
-              .map(
-                (level) => RadioListTile<AppLogLevel>(
-                  value: level,
-                  groupValue: appLogger.minLogLevel,
-                  title: Text(_logLevelLabel(l10n, level)),
-                  onChanged: (value) => Navigator.of(dialogContext).pop(value),
-                ),
-              )
-              .toList(),
+        content: RadioGroup<AppLogLevel>(
+          groupValue: appLogger.minLogLevel,
+          onChanged: (value) => Navigator.of(dialogContext).pop(value),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: selectableLevels
+                .map(
+                  (level) => RadioListTile<AppLogLevel>(
+                    value: level,
+                    title: Text(_logLevelLabel(l10n, level)),
+                  ),
+                )
+                .toList(),
+          ),
         ),
         actions: [
           TextButton(
@@ -870,14 +884,35 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
     );
     if (selected == null) return;
     await appLogger.setMinLogLevel(selected);
+    await appLogger.applyReleaseChannelPolicy();
     if (!context.mounted) return;
     setState(() {});
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          '${l10n.commonSaveSuccess}: ${_logLevelLabel(l10n, selected)}',
+          '${l10n.commonSaveSuccess}: ${_logLevelLabel(l10n, appLogger.minLogLevel)}',
         ),
       ),
+    );
+  }
+
+  AppLogLevel _channelMinLogLevelFloor() {
+    switch (AppReleaseChannelConfig.current) {
+      case AppReleaseChannel.preview:
+      case AppReleaseChannel.alpha:
+      case AppReleaseChannel.beta:
+        return AppLogLevel.debug;
+      case AppReleaseChannel.preRelease:
+        return AppLogLevel.info;
+      case AppReleaseChannel.release:
+        return AppLogLevel.warning;
+    }
+  }
+
+  void _showLogLevelLockedHint(BuildContext context) {
+    final l10n = context.l10n;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.systemSettingsAppLogsLevelLocked)),
     );
   }
 }

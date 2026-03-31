@@ -2047,6 +2047,50 @@ class AppLocalizationsZh extends AppLocalizations {
   String get commonExperimental => '抢先体验';
 
   @override
+  String get releaseChannelPreview => '抢先体验';
+
+  @override
+  String get releaseChannelAlpha => 'Dev（Alpha）';
+
+  @override
+  String get releaseChannelBeta => 'Beta';
+
+  @override
+  String get releaseChannelPreRelease => 'Pre-Release';
+
+  @override
+  String get releaseChannelRelease => '正式版';
+
+  @override
+  String testingWarningDialogTitle(String channel) {
+    return '$channel 风险提示';
+  }
+
+  @override
+  String get testingWarningDialogBody => '当前版本用于测试与反馈收集，请在了解风险后继续。';
+
+  @override
+  String get testingWarningRiskUnstable => '版本可能不稳定，部分功能可能随时调整。';
+
+  @override
+  String get testingWarningRiskDataLoss => '测试期间可能出现数据丢失或配置异常，请提前备份。';
+
+  @override
+  String get testingWarningRiskNoProd => '请勿在生产服务器上参与测试。';
+
+  @override
+  String get testingWarningConsentText => '我已了解以上风险，并同意继续使用测试版本。';
+
+  @override
+  String get testingWarningExit => '退出应用';
+
+  @override
+  String get testingWarningContinue => '继续';
+
+  @override
+  String get testingWarningAgreeAndContinue => '同意并继续';
+
+  @override
   String get onboardingSkip => '跳过';
 
   @override
@@ -2587,6 +2631,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get systemSettingsAppLogsLevelTitle => '应用日志级别';
+
+  @override
+  String get systemSettingsAppLogsLevelLocked => '当前渠道已锁定日志级别（强制 Debug）。';
 
   @override
   String get systemSettingsLogLevelTrace => '跟踪';

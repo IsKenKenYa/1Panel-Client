@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
+import 'package:onepanel_client/core/config/release_channel_config.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/services/onboarding_service.dart';
+import 'package:onepanel_client/core/services/startup/testing_channel_consent_service.dart';
 import 'package:onepanel_client/features/onboarding/onboarding_page.dart';
 import 'package:onepanel_client/features/databases/databases_page.dart';
 import 'package:onepanel_client/features/databases/databases_detail_page.dart';
@@ -1069,6 +1072,9 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  final TestingChannelConsentService _consentService =
+      TestingChannelConsentService();
+
   @override
   void initState() {
     super.initState();
@@ -1077,6 +1083,11 @@ class _SplashPageState extends State<SplashPage> {
 
   Future<void> _bootstrap() async {
     await Future.delayed(const Duration(milliseconds: 300));
+
+    final canContinue = await _handleTestingChannelGate();
+    if (!mounted || !canContinue) {
+      return;
+    }
 
     final onboardingService = OnboardingService();
     final shouldShowOnboarding = await onboardingService.shouldShowOnboarding();
@@ -1155,6 +1166,123 @@ class _SplashPageState extends State<SplashPage> {
     }
 
     Navigator.pushReplacementNamed(context, AppRoutes.home);
+  }
+
+  Future<bool> _handleTestingChannelGate() async {
+    if (!AppReleaseChannelConfig.shouldShowColdStartWarning) {
+      return true;
+    }
+
+    final consentState = await _consentService.readState(
+      AppReleaseChannelConfig.channelStorageValue,
+    );
+
+    if (!mounted) {
+      return false;
+    }
+
+    final confirmed = await _showTestingWarningDialog(
+      requireConsent: AppReleaseChannelConfig.shouldRequireConsent &&
+          consentState.requiresConsent,
+    );
+
+    if (!mounted) {
+      return false;
+    }
+
+    if (!confirmed) {
+      await SystemNavigator.pop();
+      return false;
+    }
+
+    if (consentState.requiresConsent) {
+      await _consentService.markAccepted(consentState);
+    }
+
+    return true;
+  }
+
+  Future<bool> _showTestingWarningDialog({required bool requireConsent}) async {
+    final l10n = context.l10n;
+    final channelLabel = _channelLabel(l10n);
+    var agreed = !requireConsent;
+
+    final result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (dialogContext, setState) {
+            final dialogL10n = dialogContext.l10n;
+            return AlertDialog(
+              title: Text(dialogL10n.testingWarningDialogTitle(channelLabel)),
+              content: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(dialogL10n.testingWarningDialogBody),
+                    const SizedBox(height: 12),
+                    Text('• ${dialogL10n.testingWarningRiskUnstable}'),
+                    const SizedBox(height: 6),
+                    Text('• ${dialogL10n.testingWarningRiskDataLoss}'),
+                    const SizedBox(height: 6),
+                    Text('• ${dialogL10n.testingWarningRiskNoProd}'),
+                    if (requireConsent) ...[
+                      const SizedBox(height: 12),
+                      CheckboxListTile(
+                        value: agreed,
+                        contentPadding: EdgeInsets.zero,
+                        controlAffinity: ListTileControlAffinity.leading,
+                        title: Text(dialogL10n.testingWarningConsentText),
+                        onChanged: (value) {
+                          setState(() {
+                            agreed = value ?? false;
+                          });
+                        },
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(false),
+                  child: Text(dialogL10n.testingWarningExit),
+                ),
+                FilledButton(
+                  onPressed: agreed
+                      ? () => Navigator.of(dialogContext).pop(true)
+                      : null,
+                  child: Text(
+                    requireConsent
+                        ? dialogL10n.testingWarningAgreeAndContinue
+                        : dialogL10n.testingWarningContinue,
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+
+    return result ?? false;
+  }
+
+  String _channelLabel(AppLocalizations l10n) {
+    switch (AppReleaseChannelConfig.current) {
+      case AppReleaseChannel.preview:
+        return l10n.releaseChannelPreview;
+      case AppReleaseChannel.alpha:
+        return l10n.releaseChannelAlpha;
+      case AppReleaseChannel.beta:
+        return l10n.releaseChannelBeta;
+      case AppReleaseChannel.preRelease:
+        return l10n.releaseChannelPreRelease;
+      case AppReleaseChannel.release:
+        return l10n.releaseChannelRelease;
+    }
   }
 
   @override

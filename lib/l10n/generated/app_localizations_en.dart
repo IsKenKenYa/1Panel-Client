@@ -2097,6 +2097,55 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonExperimental => 'Experimental';
 
   @override
+  String get releaseChannelPreview => 'Preview';
+
+  @override
+  String get releaseChannelAlpha => 'Dev (Alpha)';
+
+  @override
+  String get releaseChannelBeta => 'Beta';
+
+  @override
+  String get releaseChannelPreRelease => 'Pre-Release';
+
+  @override
+  String get releaseChannelRelease => 'Release';
+
+  @override
+  String testingWarningDialogTitle(String channel) {
+    return '$channel warning';
+  }
+
+  @override
+  String get testingWarningDialogBody =>
+      'This build is for testing and feedback collection. Continue only if you understand the risks.';
+
+  @override
+  String get testingWarningRiskUnstable =>
+      'This version may be unstable and features can change at any time.';
+
+  @override
+  String get testingWarningRiskDataLoss =>
+      'Data loss or configuration issues may occur during testing. Please back up first.';
+
+  @override
+  String get testingWarningRiskNoProd =>
+      'Do not use test builds on production servers.';
+
+  @override
+  String get testingWarningConsentText =>
+      'I understand these risks and agree to continue using the test build.';
+
+  @override
+  String get testingWarningExit => 'Exit app';
+
+  @override
+  String get testingWarningContinue => 'Continue';
+
+  @override
+  String get testingWarningAgreeAndContinue => 'Agree and continue';
+
+  @override
   String get onboardingSkip => 'Skip';
 
   @override
@@ -2668,6 +2717,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get systemSettingsAppLogsLevelTitle => 'App log level';
+
+  @override
+  String get systemSettingsAppLogsLevelLocked =>
+      'The current channel locks log level (forced Debug).';
 
   @override
   String get systemSettingsLogLevelTrace => 'Trace';

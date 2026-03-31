@@ -15,6 +15,7 @@ import 'package:onepanel_client/features/shell/controllers/current_server_contro
 import 'package:onepanel_client/features/shell/controllers/pinned_modules_controller.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
 import 'package:onepanel_client/features/shell/widgets/adaptive_shell_navigation_widget.dart';
+import 'package:onepanel_client/features/shell/widgets/channel_watermark_badge_widget.dart';
 import 'package:onepanel_client/features/shell/widgets/mobile_more_modules_drawer.dart';
 import 'package:onepanel_client/features/shell/widgets/no_server_selected_state.dart';
 import 'package:onepanel_client/features/shell/widgets/shell_drawer_scope.dart';
@@ -114,37 +115,41 @@ class _AppShellPageState extends State<AppShellPage> {
             _buildCurrentPage(selectedModule, currentServer.currentServerId);
 
         if (width >= 1024) {
-          return Scaffold(
-            body: Row(
-              children: [
-                ShellSidebarNavigation(
-                  modules: modules,
-                  selectedModule: selectedModule,
-                  hasServer: currentServer.hasServer,
-                  onSelect: (module) =>
-                      _handleModuleSelection(module, currentServer.hasServer),
-                ),
-                const VerticalDivider(width: 1),
-                Expanded(child: body),
-              ],
+          return _wrapWithChannelWatermark(
+            Scaffold(
+              body: Row(
+                children: [
+                  ShellSidebarNavigation(
+                    modules: modules,
+                    selectedModule: selectedModule,
+                    hasServer: currentServer.hasServer,
+                    onSelect: (module) =>
+                        _handleModuleSelection(module, currentServer.hasServer),
+                  ),
+                  const VerticalDivider(width: 1),
+                  Expanded(child: body),
+                ],
+              ),
             ),
           );
         }
 
         if (width >= 600) {
-          return Scaffold(
-            body: Row(
-              children: [
-                ShellRailNavigation(
-                  modules: modules,
-                  selectedModule: selectedModule,
-                  hasServer: currentServer.hasServer,
-                  onSelect: (module) =>
-                      _handleModuleSelection(module, currentServer.hasServer),
-                ),
-                const VerticalDivider(width: 1),
-                Expanded(child: body),
-              ],
+          return _wrapWithChannelWatermark(
+            Scaffold(
+              body: Row(
+                children: [
+                  ShellRailNavigation(
+                    modules: modules,
+                    selectedModule: selectedModule,
+                    hasServer: currentServer.hasServer,
+                    onSelect: (module) =>
+                        _handleModuleSelection(module, currentServer.hasServer),
+                  ),
+                  const VerticalDivider(width: 1),
+                  Expanded(child: body),
+                ],
+              ),
             ),
           );
         }
@@ -159,37 +164,50 @@ class _AppShellPageState extends State<AppShellPage> {
             ),
         ];
 
-        return Scaffold(
-          key: _mobileScaffoldKey,
-          drawerEnableOpenDragGesture: true,
-          drawer: MobileMoreModulesDrawer(
-            modules: moreModules,
-            pinnedModules: pinnedModules.pins,
-            selectedModule: selectedModule,
-            hasServer: currentServer.hasServer,
-            onClose: () => Navigator.of(context).maybePop(),
-            onManageServers: () {
-              Navigator.of(context).maybePop();
-              _handleModuleSelection(
-                  ClientModule.servers, currentServer.hasServer);
-            },
-            onModuleTap: (module) {
-              Navigator.of(context).maybePop();
-              _openStandaloneModule(module, currentServer.hasServer);
-            },
-          ),
-          body: ShellDrawerScope(
-            openDrawer: () => _mobileScaffoldKey.currentState?.openDrawer(),
-            child: body,
-          ),
-          bottomNavigationBar: AppBottomNavigationBar(
-            currentIndex: selectedIndex,
-            onTap: (index) =>
-                _handleModuleSelection(modules[index], currentServer.hasServer),
-            items: items,
+        return _wrapWithChannelWatermark(
+          Scaffold(
+            key: _mobileScaffoldKey,
+            drawerEnableOpenDragGesture: true,
+            drawer: MobileMoreModulesDrawer(
+              modules: moreModules,
+              pinnedModules: pinnedModules.pins,
+              selectedModule: selectedModule,
+              hasServer: currentServer.hasServer,
+              onClose: () => Navigator.of(context).maybePop(),
+              onManageServers: () {
+                Navigator.of(context).maybePop();
+                _handleModuleSelection(
+                    ClientModule.servers, currentServer.hasServer);
+              },
+              onModuleTap: (module) {
+                Navigator.of(context).maybePop();
+                _openStandaloneModule(module, currentServer.hasServer);
+              },
+            ),
+            body: ShellDrawerScope(
+              openDrawer: () => _mobileScaffoldKey.currentState?.openDrawer(),
+              child: body,
+            ),
+            bottomNavigationBar: AppBottomNavigationBar(
+              currentIndex: selectedIndex,
+              onTap: (index) => _handleModuleSelection(
+                modules[index],
+                currentServer.hasServer,
+              ),
+              items: items,
+            ),
           ),
         );
       },
+    );
+  }
+
+  Widget _wrapWithChannelWatermark(Widget child) {
+    return Stack(
+      children: [
+        Positioned.fill(child: child),
+        const ChannelWatermarkBadgeWidget(),
+      ],
     );
   }
 

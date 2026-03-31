@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:onepanel_client/core/config/release_channel_config.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 
@@ -30,6 +31,7 @@ class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final channelLabel = _channelLabelForL10n(l10n);
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.aboutPageTitle),
@@ -59,32 +61,34 @@ class _AboutPageState extends State<AboutPage> {
                     const Divider(height: 24),
                     _InfoRow(
                       label: l10n.aboutChannelLabel,
-                      value: l10n.commonExperimental,
+                      value: channelLabel,
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: AppDesignTokens.spacingLg),
-              _SectionCard(
-                title: l10n.aboutPreviewSectionTitle,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(l10n.aboutPreviewSummary),
-                    const SizedBox(height: AppDesignTokens.spacingSm),
-                    Text(l10n.aboutPreviewNoAutoUpdate),
-                    const SizedBox(height: AppDesignTokens.spacingSm),
-                    Text(l10n.aboutPreviewFeedback),
-                    const SizedBox(height: AppDesignTokens.spacingMd),
-                    FilledButton.tonalIcon(
-                      onPressed: () =>
-                          _openLink(context, AboutPage.releasesUrl),
-                      icon: const Icon(Icons.open_in_new),
-                      label: Text(l10n.aboutReleaseAction),
-                    ),
-                  ],
+              if (AppReleaseChannelConfig.isPreviewFamily) ...[
+                const SizedBox(height: AppDesignTokens.spacingLg),
+                _SectionCard(
+                  title: l10n.aboutPreviewSectionTitle,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(l10n.aboutPreviewSummary),
+                      const SizedBox(height: AppDesignTokens.spacingSm),
+                      Text(l10n.aboutPreviewNoAutoUpdate),
+                      const SizedBox(height: AppDesignTokens.spacingSm),
+                      Text(l10n.aboutPreviewFeedback),
+                      const SizedBox(height: AppDesignTokens.spacingMd),
+                      FilledButton.tonalIcon(
+                        onPressed: () =>
+                            _openLink(context, AboutPage.releasesUrl),
+                        icon: const Icon(Icons.open_in_new),
+                        label: Text(l10n.aboutReleaseAction),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+              ],
               const SizedBox(height: AppDesignTokens.spacingLg),
               _SectionCard(
                 title: l10n.aboutFeedbackSectionTitle,
@@ -174,6 +178,7 @@ class _HeroCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
+    final channelLabel = _channelLabelForL10n(l10n);
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -201,7 +206,7 @@ class _HeroCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(999),
               ),
               child: Text(
-                l10n.commonExperimental,
+                channelLabel,
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
                       color: colorScheme.onTertiaryContainer,
                     ),
@@ -220,6 +225,21 @@ class _HeroCard extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+String _channelLabelForL10n(AppLocalizations l10n) {
+  switch (AppReleaseChannelConfig.current) {
+    case AppReleaseChannel.preview:
+      return l10n.releaseChannelPreview;
+    case AppReleaseChannel.alpha:
+      return l10n.releaseChannelAlpha;
+    case AppReleaseChannel.beta:
+      return l10n.releaseChannelBeta;
+    case AppReleaseChannel.preRelease:
+      return l10n.releaseChannelPreRelease;
+    case AppReleaseChannel.release:
+      return l10n.releaseChannelRelease;
   }
 }
 

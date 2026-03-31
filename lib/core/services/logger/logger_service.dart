@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 import '../../config/logger_config.dart';
+import '../../config/release_channel_config.dart';
 import 'log_level.dart';
 import 'log_file_manager_service.dart';
 import 'log_preferences_service.dart';
@@ -23,13 +24,7 @@ class _AppLogOutput extends LogOutput {
               .catchError((Object error, StackTrace stackTrace) {
             if (LoggerConfig.enableConsoleOutput) {
               _consoleOutput.output(
-                OutputEvent(
-                  Level.error,
-                  [
-                    '[core.services.logger] Failed to persist log line: $error',
-                    stackTrace.toString(),
-                  ],
-                ),
+                event,
               );
             }
           }),
@@ -80,6 +75,27 @@ class AppLogger {
   Future<void> setMinLogLevel(AppLogLevel level) async {
     _minLogLevel = level;
     await _preferencesService.saveMinLogLevel(level);
+  }
+
+  Future<void> applyReleaseChannelPolicy() async {
+    if (AppReleaseChannelConfig.forceDebugLogLevel) {
+      if (_minLogLevel != AppLogLevel.debug) {
+        await setMinLogLevel(AppLogLevel.debug);
+      }
+      return;
+    }
+
+    final AppLogLevel floor = switch (AppReleaseChannelConfig.current) {
+      AppReleaseChannel.preview => AppLogLevel.debug,
+      AppReleaseChannel.alpha => AppLogLevel.debug,
+      AppReleaseChannel.beta => AppLogLevel.debug,
+      AppReleaseChannel.preRelease => AppLogLevel.info,
+      AppReleaseChannel.release => AppLogLevel.warning,
+    };
+
+    if (_minLogLevel.weight < floor.weight) {
+      await setMinLogLevel(floor);
+    }
   }
 
   void _ensureInitialized() {
