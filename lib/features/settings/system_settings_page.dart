@@ -192,15 +192,15 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
               _buildSettingTile(
                 context,
                 icon: Icons.download_outlined,
-                title: '导出应用日志',
-                subtitle: '导出本地调试日志文件',
+                title: l10n.commonExport,
+                subtitle: l10n.systemSettingsAppLogsExportSubtitle,
                 onTap: () => _exportAppLogs(context),
               ),
               _buildSettingTile(
                 context,
                 icon: Icons.delete_sweep_outlined,
-                title: '清理应用日志',
-                subtitle: '删除本地持久化日志',
+                title: l10n.commonClear,
+                subtitle: l10n.systemSettingsAppLogsClearSubtitle,
                 onTap: () => _clearAppLogs(context),
               ),
             ],
@@ -791,8 +791,8 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
     final confirmed = await showDialog<bool>(
           context: context,
           builder: (dialogContext) => AlertDialog(
-            title: const Text('清理应用日志'),
-            content: const Text('确定删除本地应用日志吗？此操作不可恢复。'),
+            title: Text(l10n.systemSettingsAppLogsClearTitle),
+            content: Text(l10n.systemSettingsAppLogsClearConfirm),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(dialogContext).pop(false),
@@ -810,7 +810,7 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
     await LogFileManagerService().clearLogs();
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('应用日志已清理')),
+      SnackBar(content: Text(l10n.systemSettingsAppLogsCleared)),
     );
   }
 }

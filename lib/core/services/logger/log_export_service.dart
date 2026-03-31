@@ -38,7 +38,7 @@ version: ${packageInfo.version}+${packageInfo.buildNumber}
     } catch (e, stackTrace) {
       appLogger.eWithPackage(
         'core.services.logger',
-        '导出应用日志失败',
+        'Failed to export app logs',
         error: e,
         stackTrace: stackTrace,
       );

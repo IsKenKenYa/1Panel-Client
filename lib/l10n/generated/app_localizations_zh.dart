@@ -2583,6 +2583,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get systemSettingsDashboardMemoHint => '写点备忘内容，展示在仪表盘...';
 
   @override
+  String get systemSettingsAppLogsExportSubtitle => '导出本地应用调试日志';
+
+  @override
+  String get systemSettingsAppLogsClearSubtitle => '删除本地持久化日志文件';
+
+  @override
+  String get systemSettingsAppLogsClearTitle => '清理应用日志';
+
+  @override
+  String get systemSettingsAppLogsClearConfirm => '确定清理本地应用日志吗？此操作不可恢复。';
+
+  @override
+  String get systemSettingsAppLogsCleared => '应用日志已清理';
+
+  @override
   String get systemSettingsApiKey => 'API密钥';
 
   @override
