@@ -9,6 +9,7 @@ import 'package:onepanelapp_app/pages/settings/settings_page.dart';
 import 'package:onepanelapp_app/widgets/navigation/app_bottom_navigation_bar.dart';
 
 const double _kTabletBreakpoint = 600;
+const int _kNavigationDestinationCount = 4;
 
 class PlatformAdaptiveShellPage extends StatefulWidget {
   const PlatformAdaptiveShellPage({
@@ -29,12 +30,13 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
   @override
   void initState() {
     super.initState();
-    _index = widget.initialIndex.clamp(0, 3);
+    _index = widget.initialIndex.clamp(0, _kNavigationDestinationCount - 1);
   }
 
   @override
   Widget build(BuildContext context) {
     final isTablet = _isTabletLayout(context);
+    final isAndroid = _isPlatform(TargetPlatform.android);
     final pages = _buildPages();
 
     if (_isMacosPlatform) {
@@ -57,6 +59,7 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
       return _TabletShellScaffold(
         index: _index,
         pages: pages,
+        isAndroidTablet: isAndroid && isTablet,
         onDestinationSelected: _onDestinationSelected,
       );
     }
@@ -187,19 +190,17 @@ class _TabletShellScaffold extends StatelessWidget {
   const _TabletShellScaffold({
     required this.index,
     required this.pages,
+    required this.isAndroidTablet,
     required this.onDestinationSelected,
   });
 
   final int index;
   final List<Widget> pages;
+  final bool isAndroidTablet;
   final ValueChanged<int> onDestinationSelected;
 
   @override
   Widget build(BuildContext context) {
-    final isAndroidTablet = !kIsWeb &&
-        defaultTargetPlatform == TargetPlatform.android &&
-        MediaQuery.sizeOf(context).shortestSide >= _kTabletBreakpoint;
-
     return Scaffold(
       body: Row(
         children: [
