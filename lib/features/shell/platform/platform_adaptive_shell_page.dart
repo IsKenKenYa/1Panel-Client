@@ -1,0 +1,237 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
+import 'package:onepanelapp_app/features/files/files_page.dart';
+import 'package:onepanelapp_app/features/security/security_verification_page.dart';
+import 'package:onepanelapp_app/features/server/server_list_page.dart';
+import 'package:onepanelapp_app/pages/settings/settings_page.dart';
+import 'package:onepanelapp_app/widgets/navigation/app_bottom_navigation_bar.dart';
+
+class PlatformAdaptiveShellPage extends StatefulWidget {
+  const PlatformAdaptiveShellPage({
+    super.key,
+    this.initialIndex = 0,
+  });
+
+  final int initialIndex;
+
+  @override
+  State<PlatformAdaptiveShellPage> createState() =>
+      _PlatformAdaptiveShellPageState();
+}
+
+class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
+  late int _index;
+
+  @override
+  void initState() {
+    super.initState();
+    _index = widget.initialIndex.clamp(0, 3);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isTablet = MediaQuery.sizeOf(context).shortestSide >= 600;
+    final pages = _buildPages();
+
+    if (_isDesktopPlatform) {
+      return _DesktopShellScaffold(
+        index: _index,
+        pages: pages,
+        onDestinationSelected: _onDestinationSelected,
+      );
+    }
+
+    if (isTablet) {
+      return _TabletShellScaffold(
+        index: _index,
+        pages: pages,
+        onDestinationSelected: _onDestinationSelected,
+      );
+    }
+
+    if (_isIosPlatform) {
+      return _IosPhoneShellScaffold(
+        index: _index,
+        pages: pages,
+        onDestinationSelected: _onDestinationSelected,
+      );
+    }
+
+    return Scaffold(
+      body: IndexedStack(index: _index, children: pages),
+      bottomNavigationBar: AppBottomNavigationBar(
+        currentIndex: _index,
+        onTap: _onDestinationSelected,
+      ),
+    );
+  }
+
+  List<Widget> _buildPages() {
+    return const <Widget>[
+      ServerListPage(),
+      FilesPage(),
+      SecurityVerificationPage(),
+      SettingsPage(),
+    ];
+  }
+
+  bool get _isDesktopPlatform {
+    if (kIsWeb) {
+      return false;
+    }
+
+    return defaultTargetPlatform == TargetPlatform.macOS ||
+        defaultTargetPlatform == TargetPlatform.windows;
+  }
+
+  bool get _isIosPlatform {
+    if (kIsWeb) {
+      return false;
+    }
+    return defaultTargetPlatform == TargetPlatform.iOS;
+  }
+
+  void _onDestinationSelected(int value) {
+    setState(() {
+      _index = value;
+    });
+  }
+}
+
+class _DesktopShellScaffold extends StatelessWidget {
+  const _DesktopShellScaffold({
+    required this.index,
+    required this.pages,
+    required this.onDestinationSelected,
+  });
+
+  final int index;
+  final List<Widget> pages;
+  final ValueChanged<int> onDestinationSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Row(
+        children: [
+          NavigationRail(
+            selectedIndex: index,
+            onDestinationSelected: onDestinationSelected,
+            labelType: NavigationRailLabelType.all,
+            destinations: _destinations(context),
+          ),
+          const VerticalDivider(width: 1),
+          Expanded(
+            child: IndexedStack(index: index, children: pages),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TabletShellScaffold extends StatelessWidget {
+  const _TabletShellScaffold({
+    required this.index,
+    required this.pages,
+    required this.onDestinationSelected,
+  });
+
+  final int index;
+  final List<Widget> pages;
+  final ValueChanged<int> onDestinationSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final isAndroidTablet = !kIsWeb &&
+        defaultTargetPlatform == TargetPlatform.android &&
+        MediaQuery.sizeOf(context).shortestSide >= 600;
+
+    return Scaffold(
+      body: Row(
+        children: [
+          NavigationRail(
+            selectedIndex: index,
+            onDestinationSelected: onDestinationSelected,
+            extended: isAndroidTablet,
+            destinations: _destinations(context),
+          ),
+          const VerticalDivider(width: 1),
+          Expanded(
+            child: IndexedStack(index: index, children: pages),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _IosPhoneShellScaffold extends StatelessWidget {
+  const _IosPhoneShellScaffold({
+    required this.index,
+    required this.pages,
+    required this.onDestinationSelected,
+  });
+
+  final int index;
+  final List<Widget> pages;
+  final ValueChanged<int> onDestinationSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return CupertinoTabScaffold(
+      tabBar: CupertinoTabBar(
+        currentIndex: index,
+        onTap: onDestinationSelected,
+        items: [
+          BottomNavigationBarItem(
+            icon: const Icon(CupertinoIcons.desktopcomputer),
+            label: l10n.navServer,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(CupertinoIcons.folder),
+            label: l10n.navFiles,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(CupertinoIcons.shield),
+            label: l10n.navSecurity,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(CupertinoIcons.gear),
+            label: l10n.navSettings,
+          ),
+        ],
+      ),
+      tabBuilder: (_, tabIndex) => pages[tabIndex],
+    );
+  }
+}
+
+List<NavigationRailDestination> _destinations(BuildContext context) {
+  final l10n = context.l10n;
+  return [
+    NavigationRailDestination(
+      icon: const Icon(Icons.dns_outlined),
+      selectedIcon: const Icon(Icons.dns),
+      label: Text(l10n.navServer),
+    ),
+    NavigationRailDestination(
+      icon: const Icon(Icons.folder_outlined),
+      selectedIcon: const Icon(Icons.folder),
+      label: Text(l10n.navFiles),
+    ),
+    NavigationRailDestination(
+      icon: const Icon(Icons.verified_user_outlined),
+      selectedIcon: const Icon(Icons.verified_user),
+      label: Text(l10n.navSecurity),
+    ),
+    NavigationRailDestination(
+      icon: const Icon(Icons.settings_outlined),
+      selectedIcon: const Icon(Icons.settings),
+      label: Text(l10n.navSettings),
+    ),
+  ];
+}
