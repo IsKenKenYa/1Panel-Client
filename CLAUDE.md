@@ -2,13 +2,21 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project Overview
+## 权威规范 / Authoritative Standards
 
-**1Panel Open** is a cross-platform Flutter mobile application that provides mobile access to the 1Panel Linux server management panel. The app serves as a mobile interface for managing server applications, containers, websites, files, and AI features through a modern, responsive UI.
+**⚠️ 重要：本文需与 `AGENTS.md` 配合使用**
 
-## Authoritative Standards
+| 文件 | 内容 | 优先级 |
+|------|------|--------|
+| [`AGENTS.md`](AGENTS.md) | 硬性规则：架构规范、文件阈值、命名约定、测试门禁 | **最高** |
+| `CLAUDE.md` | 流程细则：开发命令、架构概述、项目结构 | 补充 |
 
-CN: 权威规范以 `AGENTS.md`（硬性规则）与 `CLAUDE.md`（流程与细则）为准。EN: Authoritative standards live in `AGENTS.md` (hard rules) and `CLAUDE.md` (process/details).
+CN: 阅读顺序：先 `AGENTS.md` 了解强制规则，再 `CLAUDE.md` 了解项目细节。
+EN: Read `AGENTS.md` first for mandatory rules, then `CLAUDE.md` for project details.
+
+## 项目概述 / Project Overview
+
+**1Panel Open** 是一个跨平台 Flutter 移动应用，提供对 1Panel Linux 服务器管理面板的移动访问。
 
 ### Current Implementation Status
 - ✅ **AI Management Module**: Complete (Ollama models, GPU monitoring, domain binding)

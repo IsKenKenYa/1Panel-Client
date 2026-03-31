@@ -138,4 +138,4 @@ sudo timedatectl set-ntp true
 
 ---
 
-*最后更新：2024-02-12*
+*最后更新：2026-03-30*

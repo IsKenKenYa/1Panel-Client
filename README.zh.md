@@ -4,6 +4,11 @@
 
 <h1 align="center">1Panel Client</h1>
 
+<p align="center">
+  <a href="https://github.com/IsKenKenYa/1Panel-Client/releases"><img src="https://img.shields.io/badge/版本 -0.5.0--alpha.1%2B1-blue.svg" alt="版本" /></a>
+  <a href="https://github.com/IsKenKenYa/1Panel-Client/blob/master/LICENSE"><img src="https://img.shields.io/badge/许可-GPL--3.0-green.svg" alt="许可" /></a>
+</p>
+
 <p align="center">用于连接和管理一台或多台 1Panel 服务器的跨平台客户端。</p>
 
 <p align="center">
@@ -28,7 +33,15 @@
 
 - 在多台 1Panel 服务器之间快速切换
 - 查看服务器状态与关键运行信息
-- 进入文件、容器、应用、网站等常用模块处理日常任务
+- **仪表板**: 实时监控（CPU、内存、磁盘、网络 I/O）
+- **容器管理**: Docker 容器、镜像、日志和统计
+- **文件管理**: 浏览、编辑、上传/下载、回收站、传输管理器
+- **数据库管理**: MySQL、PostgreSQL、Redis 完整操作
+- **网站管理**: SSL 证书、批量操作、域名管理
+- **AI 管理**: Ollama 模型、AI 代理配置、GPU 监控
+- **系统工具**: ClamAV、Fail2ban、FTP 管理
+- **运行时管理**: PHP 扩展、Node 模块、Supervisor
+- **备份与恢复**: 完整的备份操作和恢复
 - 在移动端或桌面端获得更直接的操作入口，而不必总依赖浏览器
 
 ## 第一次使用

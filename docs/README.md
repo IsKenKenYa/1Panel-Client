@@ -62,16 +62,21 @@ Choose your preferred language:
 
 1Panel Open Source App is a Flutter-based mobile and desktop client for managing 1Panel servers. It provides a modern, intuitive interface for server management.
 
+**Version**: 0.5.0-alpha.1+1
+
 ### Features
 
-- Real-time server monitoring (CPU, Memory, Disk)
-- Docker container management
-- File management with built-in editor
-- Database management (MySQL, PostgreSQL, Redis)
-- Website and SSL certificate management
-- System log viewing
-- Multi-server support
-- Secure API authentication
+- **Dashboard**: Real-time server monitoring (CPU, Memory, Disk, Network)
+- **Container Management**: Docker container lifecycle, logs, and statistics
+- **File Management**: Built-in editor, recycle bin, transfer manager
+- **Database Management**: MySQL, PostgreSQL, Redis with full operations
+- **Website Management**: SSL certificates, batch operations, domain management
+- **AI Management**: Ollama models, AI agent configuration, GPU monitoring
+- **System Tools**: ClamAV, Fail2ban, FTP management
+- **Runtime Management**: PHP extensions, Node modules, Supervisor
+- **Backup & Restore**: Complete backup operations and recovery
+- **Multi-server Support**: Switch between multiple 1Panel instances
+- **Secure Authentication**: API key + timestamp (MD5 token)
 
 ### Supported Platforms
 
@@ -106,7 +111,7 @@ We welcome contributions to improve our documentation!
 - [1Panel Official Website](https://1panel.cn)
 - [1Panel Documentation](https://1panel.cn/docs/)
 - [Flutter Documentation](https://docs.flutter.dev)
-- [GitHub Repository](https://github.com/yourusername/1PanelOpenSourceApp)
+- [GitHub Repository](https://github.com/IsKenKenYa/1Panel-Client)
 
 ---
 
@@ -116,4 +121,4 @@ This documentation is licensed under the same license as the project. See the ma
 
 ---
 
-*Last updated: 2025-01-12*
+*Last updated: 2026-03-30*

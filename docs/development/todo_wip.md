@@ -19,6 +19,8 @@
 - ✅ OpenResty模块设计文档已完成，等待实现与评审
 - 🔄 P0核心模块UI完善（Dashboard、File、App、Container、Website）
 - 🔄 测试覆盖率提升（目标≥80%）
+- ✅ Firewall/Website SSL/OpenResty 测试补齐
+- 🔄 P2 模块文档完善（Host tool、Disk Management、Menu Setting）
 
 ## 接口集成状态
 
@@ -34,8 +36,8 @@
 | Runtime | ✅ 已存在 | 🔴 待补齐 | ⚠️ 待测试 | 运行时管理页面待建设 |
 | Monitor | ✅ 已存在 | 🟡 部分 | ⚠️ 待测试 | 性能图表与告警待扩展 |
 | Backup Account | ✅ 已存在 | 🔴 待补齐 | ⚠️ 待测试 | 备份策略与恢复流程待扩展 |
-| OpenResty | ✅ 已存在 | 🔴 待补齐 | ⚠️ 待测试 | 配置与状态页待建设 |
-| Firewall | ✅ 已存在 | 🔴 待补齐 | ⚠️ 待测试 | 规则管理待建设 |
+| OpenResty | ✅ 已存在 | 🟡 部分 | ✅ 已测试 | 配置与状态页待建设 |
+| Firewall | ✅ 已存在 | 🔴 待补齐 | ✅ 已测试 | 规则管理待建设 |
 | SSH | ✅ 已存在 | 🔴 待补齐 | ⚠️ 待测试 | SSH会话/日志待扩展 |
 
 ## 测试覆盖率
@@ -91,4 +93,4 @@
 
 ---
 
-**最后更新**: 2026-02-14
+**最后更新**: 2026-03-30
