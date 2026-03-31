@@ -1981,7 +1981,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsSystem => 'System';
 
   @override
+  String get settingsSupport => 'Support';
+
+  @override
   String get settingsLanguage => 'Language';
+
+  @override
+  String get settingsLanguageHint =>
+      'Language updates apply immediately. If not specified, the app follows system settings.';
 
   @override
   String get settingsTheme => 'Theme';
@@ -2004,6 +2011,120 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsFeedback => 'Feedback';
+
+  @override
+  String get settingsFeedbackCenterTitle => 'Feedback Center';
+
+  @override
+  String get settingsFeedbackCenterSubtitle =>
+      'Manage logs and submit product feedback';
+
+  @override
+  String get settingsFeedbackCenterIntro =>
+      'Before submitting an issue, export logs and include repro steps to speed up triage.';
+
+  @override
+  String get settingsFeedbackGuideTitle => 'Feedback Checklist';
+
+  @override
+  String get settingsFeedbackGuideStep1 =>
+      'Confirm the issue is reproducible and capture the key operation path.';
+
+  @override
+  String get settingsFeedbackGuideStep2 =>
+      'Export app logs and include the timestamp and release channel.';
+
+  @override
+  String get settingsFeedbackGuideStep3 =>
+      'Describe the difference between expected and actual behavior.';
+
+  @override
+  String get settingsFeedbackIssueSubtitle =>
+      'Report bugs or suggestions in GitHub Issues';
+
+  @override
+  String get settingsFeedbackCopyTemplate => 'Copy feedback template';
+
+  @override
+  String get settingsFeedbackTemplateHint =>
+      'Copy a structured template and fill it in directly';
+
+  @override
+  String get settingsFeedbackLogsTitle => 'Log Management';
+
+  @override
+  String get settingsFeedbackTemplateTitle => 'Issue Summary';
+
+  @override
+  String get settingsFeedbackTemplateSummary => 'What happened';
+
+  @override
+  String get settingsFeedbackTemplateRepro => 'Steps to reproduce';
+
+  @override
+  String get settingsFeedbackTemplateExpected => 'Expected behavior';
+
+  @override
+  String get settingsFeedbackTemplateActual => 'Actual behavior';
+
+  @override
+  String get settingsFeedbackTemplateLogs => 'Logs and screenshots';
+
+  @override
+  String get settingsFeedbackTemplateEnvironment => 'Environment';
+
+  @override
+  String get settingsLegalCenterTitle => 'Legal';
+
+  @override
+  String get settingsLegalCenterSubtitle =>
+      'Privacy, terms, and open-source notices';
+
+  @override
+  String get settingsLegalCenterIntro =>
+      'These documents describe data handling, service terms, and open-source dependency notices.';
+
+  @override
+  String get settingsLegalDocumentsTitle => 'Legal Documents';
+
+  @override
+  String get settingsLegalPrivacyPolicy => 'Privacy Policy';
+
+  @override
+  String get settingsLegalTermsOfService => 'Terms of Service';
+
+  @override
+  String get settingsLegalThirdPartyNotices => 'Third-party License Notices';
+
+  @override
+  String get settingsLegalOpenSourceLicense =>
+      'Project Open-source License (GPL-3.0)';
+
+  @override
+  String get settingsLegalFlutterPackages => 'Flutter Package Licenses';
+
+  @override
+  String get settingsMainlandSdkDisclosureTitle =>
+      'Mainland China SDK Disclosure';
+
+  @override
+  String get settingsMainlandSdkDisclosureSubtitle =>
+      'View integrated dependencies and regional notes';
+
+  @override
+  String get settingsMainlandSdkDisclaimer =>
+      'This page shows auto-scanned integrated dependencies and reserved regional compliance notes.';
+
+  @override
+  String get settingsMainlandSdkNone =>
+      'No proprietary SDK dedicated to Mainland China is currently integrated. If introduced, it will be disclosed here.';
+
+  @override
+  String get settingsMainlandSdkAutoScanTitle => 'Auto-scanned Dependency List';
+
+  @override
+  String get settingsMainlandSdkAutoScanEmpty =>
+      'No dependency data found. Tap refresh and try again.';
 
   @override
   String get settingsFeedbackOpenFailed => 'Could not open the feedback page.';

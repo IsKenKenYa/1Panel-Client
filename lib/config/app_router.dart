@@ -27,6 +27,10 @@ import 'package:onepanel_client/features/shell/app_shell_page.dart';
 import 'package:onepanel_client/features/terminal/terminal_page.dart';
 import 'package:onepanel_client/pages/settings/settings_page.dart';
 import 'package:onepanel_client/features/settings/system_settings_page.dart';
+import 'package:onepanel_client/features/settings/feedback_center_page.dart';
+import 'package:onepanel_client/features/settings/language_settings_page.dart';
+import 'package:onepanel_client/features/settings/legal_center_page.dart';
+import 'package:onepanel_client/features/settings/mainland_sdk_disclosure_page.dart';
 import 'package:onepanel_client/features/apps/apps_page.dart';
 import 'package:onepanel_client/features/apps/app_detail_page.dart';
 import 'package:onepanel_client/features/apps/installed_app_detail_page.dart';
@@ -175,6 +179,11 @@ class AppRoutes {
   static const String monitoring = '/monitoring';
   static const String securityVerification = '/security-verification';
   static const String settings = '/settings';
+  static const String settingsLanguage = '/settings/language';
+  static const String settingsFeedbackCenter = '/settings/feedback-center';
+  static const String settingsLegalCenter = '/settings/legal-center';
+  static const String settingsMainlandSdkDisclosure =
+      '/settings/legal-center/mainland-sdk';
   static const String systemSettings = '/system-settings';
   static const String menuSettings = '/system-settings/menu';
   static const String appStore = '/app-store';
@@ -353,6 +362,22 @@ class AppRouter {
         );
       case AppRoutes.settings:
         return MaterialPageRoute(builder: (_) => const SettingsPage());
+      case AppRoutes.settingsLanguage:
+        return MaterialPageRoute(
+          builder: (_) => const LanguageSettingsPage(),
+        );
+      case AppRoutes.settingsFeedbackCenter:
+        return MaterialPageRoute(
+          builder: (_) => const FeedbackCenterPage(),
+        );
+      case AppRoutes.settingsLegalCenter:
+        return MaterialPageRoute(
+          builder: (_) => const LegalCenterPage(),
+        );
+      case AppRoutes.settingsMainlandSdkDisclosure:
+        return MaterialPageRoute(
+          builder: (_) => const MainlandSdkDisclosurePage(),
+        );
       case AppRoutes.systemSettings:
         return MaterialPageRoute(builder: (_) => const SystemSettingsPage());
       case AppRoutes.menuSettings:
@@ -1293,7 +1318,14 @@ class _SplashPageState extends State<SplashPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.shield_outlined, size: 64),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(18),
+              child: Image.asset(
+                'assets/branding/app_icon_preview.png',
+                width: 72,
+                height: 72,
+              ),
+            ),
             const SizedBox(height: 16),
             Text(l10n.appName, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 24),

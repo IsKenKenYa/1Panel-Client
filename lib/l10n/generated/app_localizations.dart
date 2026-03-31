@@ -3806,11 +3806,23 @@ abstract class AppLocalizations {
   /// **'System'**
   String get settingsSystem;
 
+  /// No description provided for @settingsSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get settingsSupport;
+
   /// No description provided for @settingsLanguage.
   ///
   /// In en, this message translates to:
   /// **'Language'**
   String get settingsLanguage;
+
+  /// No description provided for @settingsLanguageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Language updates apply immediately. If not specified, the app follows system settings.'**
+  String get settingsLanguageHint;
 
   /// No description provided for @settingsTheme.
   ///
@@ -3853,6 +3865,204 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Feedback'**
   String get settingsFeedback;
+
+  /// No description provided for @settingsFeedbackCenterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback Center'**
+  String get settingsFeedbackCenterTitle;
+
+  /// No description provided for @settingsFeedbackCenterSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage logs and submit product feedback'**
+  String get settingsFeedbackCenterSubtitle;
+
+  /// No description provided for @settingsFeedbackCenterIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Before submitting an issue, export logs and include repro steps to speed up triage.'**
+  String get settingsFeedbackCenterIntro;
+
+  /// No description provided for @settingsFeedbackGuideTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback Checklist'**
+  String get settingsFeedbackGuideTitle;
+
+  /// No description provided for @settingsFeedbackGuideStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm the issue is reproducible and capture the key operation path.'**
+  String get settingsFeedbackGuideStep1;
+
+  /// No description provided for @settingsFeedbackGuideStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Export app logs and include the timestamp and release channel.'**
+  String get settingsFeedbackGuideStep2;
+
+  /// No description provided for @settingsFeedbackGuideStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe the difference between expected and actual behavior.'**
+  String get settingsFeedbackGuideStep3;
+
+  /// No description provided for @settingsFeedbackIssueSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Report bugs or suggestions in GitHub Issues'**
+  String get settingsFeedbackIssueSubtitle;
+
+  /// No description provided for @settingsFeedbackCopyTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy feedback template'**
+  String get settingsFeedbackCopyTemplate;
+
+  /// No description provided for @settingsFeedbackTemplateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy a structured template and fill it in directly'**
+  String get settingsFeedbackTemplateHint;
+
+  /// No description provided for @settingsFeedbackLogsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Management'**
+  String get settingsFeedbackLogsTitle;
+
+  /// No description provided for @settingsFeedbackTemplateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Issue Summary'**
+  String get settingsFeedbackTemplateTitle;
+
+  /// No description provided for @settingsFeedbackTemplateSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'What happened'**
+  String get settingsFeedbackTemplateSummary;
+
+  /// No description provided for @settingsFeedbackTemplateRepro.
+  ///
+  /// In en, this message translates to:
+  /// **'Steps to reproduce'**
+  String get settingsFeedbackTemplateRepro;
+
+  /// No description provided for @settingsFeedbackTemplateExpected.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected behavior'**
+  String get settingsFeedbackTemplateExpected;
+
+  /// No description provided for @settingsFeedbackTemplateActual.
+  ///
+  /// In en, this message translates to:
+  /// **'Actual behavior'**
+  String get settingsFeedbackTemplateActual;
+
+  /// No description provided for @settingsFeedbackTemplateLogs.
+  ///
+  /// In en, this message translates to:
+  /// **'Logs and screenshots'**
+  String get settingsFeedbackTemplateLogs;
+
+  /// No description provided for @settingsFeedbackTemplateEnvironment.
+  ///
+  /// In en, this message translates to:
+  /// **'Environment'**
+  String get settingsFeedbackTemplateEnvironment;
+
+  /// No description provided for @settingsLegalCenterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal'**
+  String get settingsLegalCenterTitle;
+
+  /// No description provided for @settingsLegalCenterSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy, terms, and open-source notices'**
+  String get settingsLegalCenterSubtitle;
+
+  /// No description provided for @settingsLegalCenterIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'These documents describe data handling, service terms, and open-source dependency notices.'**
+  String get settingsLegalCenterIntro;
+
+  /// No description provided for @settingsLegalDocumentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal Documents'**
+  String get settingsLegalDocumentsTitle;
+
+  /// No description provided for @settingsLegalPrivacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get settingsLegalPrivacyPolicy;
+
+  /// No description provided for @settingsLegalTermsOfService.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service'**
+  String get settingsLegalTermsOfService;
+
+  /// No description provided for @settingsLegalThirdPartyNotices.
+  ///
+  /// In en, this message translates to:
+  /// **'Third-party License Notices'**
+  String get settingsLegalThirdPartyNotices;
+
+  /// No description provided for @settingsLegalOpenSourceLicense.
+  ///
+  /// In en, this message translates to:
+  /// **'Project Open-source License (GPL-3.0)'**
+  String get settingsLegalOpenSourceLicense;
+
+  /// No description provided for @settingsLegalFlutterPackages.
+  ///
+  /// In en, this message translates to:
+  /// **'Flutter Package Licenses'**
+  String get settingsLegalFlutterPackages;
+
+  /// No description provided for @settingsMainlandSdkDisclosureTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mainland China SDK Disclosure'**
+  String get settingsMainlandSdkDisclosureTitle;
+
+  /// No description provided for @settingsMainlandSdkDisclosureSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'View integrated dependencies and regional notes'**
+  String get settingsMainlandSdkDisclosureSubtitle;
+
+  /// No description provided for @settingsMainlandSdkDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'This page shows auto-scanned integrated dependencies and reserved regional compliance notes.'**
+  String get settingsMainlandSdkDisclaimer;
+
+  /// No description provided for @settingsMainlandSdkNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No proprietary SDK dedicated to Mainland China is currently integrated. If introduced, it will be disclosed here.'**
+  String get settingsMainlandSdkNone;
+
+  /// No description provided for @settingsMainlandSdkAutoScanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-scanned Dependency List'**
+  String get settingsMainlandSdkAutoScanTitle;
+
+  /// No description provided for @settingsMainlandSdkAutoScanEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No dependency data found. Tap refresh and try again.'**
+  String get settingsMainlandSdkAutoScanEmpty;
 
   /// No description provided for @settingsFeedbackOpenFailed.
   ///

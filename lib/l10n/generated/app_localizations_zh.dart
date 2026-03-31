@@ -1936,7 +1936,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsSystem => '系统';
 
   @override
+  String get settingsSupport => '支持与反馈';
+
+  @override
   String get settingsLanguage => '语言';
+
+  @override
+  String get settingsLanguageHint => '语言修改会立即生效，未指定时将跟随系统。';
 
   @override
   String get settingsTheme => '主题';
@@ -1958,6 +1964,105 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsFeedback => '反馈建议';
+
+  @override
+  String get settingsFeedbackCenterTitle => '反馈中心';
+
+  @override
+  String get settingsFeedbackCenterSubtitle => '日志管理与问题反馈入口';
+
+  @override
+  String get settingsFeedbackCenterIntro => '提交问题前建议先导出日志并补充复现步骤，这能显著提升定位效率。';
+
+  @override
+  String get settingsFeedbackGuideTitle => '反馈建议';
+
+  @override
+  String get settingsFeedbackGuideStep1 => '先确认问题可稳定复现，并记录关键操作路径。';
+
+  @override
+  String get settingsFeedbackGuideStep2 => '导出应用日志，附上异常时间点和渠道信息。';
+
+  @override
+  String get settingsFeedbackGuideStep3 => '说明“预期行为”和“实际行为”的差异。';
+
+  @override
+  String get settingsFeedbackIssueSubtitle => '在 GitHub Issues 提交 bug 或改进建议';
+
+  @override
+  String get settingsFeedbackCopyTemplate => '复制反馈模板';
+
+  @override
+  String get settingsFeedbackTemplateHint => '一键复制结构化模板，粘贴后直接填写';
+
+  @override
+  String get settingsFeedbackLogsTitle => '日志管理';
+
+  @override
+  String get settingsFeedbackTemplateTitle => '问题概述';
+
+  @override
+  String get settingsFeedbackTemplateSummary => '现象描述';
+
+  @override
+  String get settingsFeedbackTemplateRepro => '复现步骤';
+
+  @override
+  String get settingsFeedbackTemplateExpected => '预期行为';
+
+  @override
+  String get settingsFeedbackTemplateActual => '实际行为';
+
+  @override
+  String get settingsFeedbackTemplateLogs => '日志与截图';
+
+  @override
+  String get settingsFeedbackTemplateEnvironment => '环境信息';
+
+  @override
+  String get settingsLegalCenterTitle => '法律文件';
+
+  @override
+  String get settingsLegalCenterSubtitle => '隐私、条款与开源许可信息';
+
+  @override
+  String get settingsLegalCenterIntro => '以下文档用于说明应用的数据处理、服务条款与开源依赖信息。';
+
+  @override
+  String get settingsLegalDocumentsTitle => '法律与合规文档';
+
+  @override
+  String get settingsLegalPrivacyPolicy => '隐私政策';
+
+  @override
+  String get settingsLegalTermsOfService => '服务条款';
+
+  @override
+  String get settingsLegalThirdPartyNotices => '第三方许可证声明';
+
+  @override
+  String get settingsLegalOpenSourceLicense => '项目开源许可证（GPL-3.0）';
+
+  @override
+  String get settingsLegalFlutterPackages => 'Flutter 依赖许可证列表';
+
+  @override
+  String get settingsMainlandSdkDisclosureTitle => '中国大陆第三方 SDK 披露';
+
+  @override
+  String get settingsMainlandSdkDisclosureSubtitle => '查看当前集成依赖与地区说明';
+
+  @override
+  String get settingsMainlandSdkDisclaimer => '本页展示已集成依赖的自动扫描结果，并预留地区合规说明。';
+
+  @override
+  String get settingsMainlandSdkNone => '当前未单独接入仅面向中国大陆的专有 SDK；如后续接入会在此更新。';
+
+  @override
+  String get settingsMainlandSdkAutoScanTitle => '自动扫描依赖清单';
+
+  @override
+  String get settingsMainlandSdkAutoScanEmpty => '未读取到依赖信息，请点击右上角刷新重试。';
 
   @override
   String get settingsFeedbackOpenFailed => '无法打开反馈页面。';

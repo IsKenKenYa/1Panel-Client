@@ -62,33 +62,38 @@ class ShellSidebarNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Container(
-      width: 264,
-      color: scheme.surface,
-      padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            context.l10n.appName,
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          const SizedBox(height: 24),
-          for (final module in modules)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: ListTile(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                leading: Icon(module.icon),
-                title: Text(module.label(context.l10n)),
-                selected: module == selectedModule,
-                enabled: !module.requiresServer || hasServer,
-                onTap: () => onSelect(module),
+    return SafeArea(
+      right: false,
+      child: Container(
+        width: 264,
+        color: scheme.surface,
+        padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                context.l10n.appName,
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
-            ),
-        ],
+              const SizedBox(height: 24),
+              for (final module in modules)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: ListTile(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    leading: Icon(module.icon),
+                    title: Text(module.label(context.l10n)),
+                    selected: module == selectedModule,
+                    enabled: !module.requiresServer || hasServer,
+                    onTap: () => onSelect(module),
+                  ),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }

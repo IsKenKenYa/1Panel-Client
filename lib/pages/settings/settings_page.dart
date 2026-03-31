@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/services/app_settings_controller.dart';
 import 'package:onepanel_client/core/services/onboarding_service.dart';
@@ -40,46 +40,52 @@ class SettingsPage extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: AppDesignTokens.spacingSm),
           Card(
-            child: Consumer<AppSettingsController>(
-              builder: (context, settings, _) {
-                return Column(
-                  children: [
-                    ListTile(
-                      leading: const Icon(Icons.color_lens_outlined),
-                      title: Text(l10n.settingsTheme),
+            child: Column(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.color_lens_outlined),
+                  title: Text(l10n.settingsTheme),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ThemeSettingsPage(),
+                      ),
+                    );
+                  },
+                ),
+                const Divider(height: 1),
+                Consumer<AppSettingsController>(
+                  builder: (context, settings, _) {
+                    return ListTile(
+                      leading: const Icon(Icons.language_outlined),
+                      title: Text(l10n.settingsLanguage),
+                      subtitle: Text(
+                        _languageLabel(context, settings.locale),
+                      ),
                       trailing: const Icon(Icons.chevron_right),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ThemeSettingsPage(),
-                          ),
-                        );
-                      },
-                    ),
-                    const Divider(height: 1),
-                    Padding(
-                      padding: AppDesignTokens.pagePadding,
-                      child: _LanguageSelector(settings: settings),
-                    ),
-                    const Divider(height: 1),
-                    ListTile(
-                      leading: const Icon(Icons.lock_person_outlined),
-                      title: Text(l10n.settingsAppLock),
-                      subtitle: Text(l10n.settingsAppLockDesc),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const AppLockSettingsPage(),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                );
-              },
+                      onTap: () => Navigator.pushNamed(
+                          context, AppRoutes.settingsLanguage),
+                    );
+                  },
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  leading: const Icon(Icons.lock_person_outlined),
+                  title: Text(l10n.settingsAppLock),
+                  subtitle: Text(l10n.settingsAppLockDesc),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AppLockSettingsPage(),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
           const SizedBox(height: AppDesignTokens.spacingLg),
@@ -106,37 +112,34 @@ class SettingsPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppDesignTokens.spacingLg),
-          Text(l10n.settingsSystem,
+          Text(l10n.settingsSupport,
               style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: AppDesignTokens.spacingSm),
           Card(
             child: Column(
               children: [
                 ListTile(
-                  leading: const Icon(Icons.dns_outlined),
-                  title: Text(l10n.settingsServerManagement),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => Navigator.pushNamed(context, '/server'),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.slideshow_outlined),
-                  title: Text(l10n.settingsResetOnboarding),
-                  onTap: () async {
-                    await OnboardingService().resetAll();
-                    if (!context.mounted) {
-                      return;
-                    }
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(l10n.settingsResetOnboardingDone)),
-                    );
-                  },
-                ),
-                ListTile(
                   leading: const Icon(Icons.feedback_outlined),
-                  title: Text(l10n.settingsFeedback),
+                  title: Text(l10n.settingsFeedbackCenterTitle),
+                  subtitle: Text(l10n.settingsFeedbackCenterSubtitle),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () => _openFeedback(context),
+                  onTap: () => Navigator.pushNamed(
+                    context,
+                    AppRoutes.settingsFeedbackCenter,
+                  ),
                 ),
+                const Divider(height: 1),
+                ListTile(
+                  leading: const Icon(Icons.policy_outlined),
+                  title: Text(l10n.settingsLegalCenterTitle),
+                  subtitle: Text(l10n.settingsLegalCenterSubtitle),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => Navigator.pushNamed(
+                    context,
+                    AppRoutes.settingsLegalCenter,
+                  ),
+                ),
+                const Divider(height: 1),
                 ListTile(
                   leading: const Icon(Icons.info_outline),
                   title: Text(l10n.settingsAbout),
@@ -153,58 +156,60 @@ class SettingsPage extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(height: AppDesignTokens.spacingLg),
+          Text(l10n.settingsSystem,
+              style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: AppDesignTokens.spacingSm),
+          Card(
+            child: Column(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.settings_applications_outlined),
+                  title: Text(l10n.systemSettingsTitle),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => Navigator.pushNamed(
+                    context,
+                    AppRoutes.systemSettings,
+                  ),
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  leading: const Icon(Icons.dns_outlined),
+                  title: Text(l10n.settingsServerManagement),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => Navigator.pushNamed(context, AppRoutes.server),
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  leading: const Icon(Icons.slideshow_outlined),
+                  title: Text(l10n.settingsResetOnboarding),
+                  onTap: () async {
+                    await OnboardingService().resetAll();
+                    if (!context.mounted) {
+                      return;
+                    }
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(l10n.settingsResetOnboardingDone)),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
 }
 
-Future<void> _openFeedback(BuildContext context) async {
-  final ok = await launchUrl(
-    Uri.parse(AboutPage.issuesUrl),
-    mode: LaunchMode.externalApplication,
-  );
-  if (!ok && context.mounted) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.l10n.settingsFeedbackOpenFailed)),
-    );
-  }
-}
-
-class _LanguageSelector extends StatelessWidget {
-  const _LanguageSelector({required this.settings});
-
-  final AppSettingsController settings;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final value = settings.locale?.languageCode ?? 'system';
-
-    return Row(
-      children: [
-        Expanded(child: Text(l10n.settingsLanguage)),
-        DropdownButton<String>(
-          value: value,
-          onChanged: (next) {
-            switch (next) {
-              case 'zh':
-                settings.updateLocale(const Locale('zh'));
-                break;
-              case 'en':
-                settings.updateLocale(const Locale('en'));
-                break;
-              default:
-                settings.updateLocale(null);
-            }
-          },
-          items: [
-            DropdownMenuItem(value: 'system', child: Text(l10n.languageSystem)),
-            DropdownMenuItem(value: 'zh', child: Text(l10n.languageZh)),
-            DropdownMenuItem(value: 'en', child: Text(l10n.languageEn)),
-          ],
-        ),
-      ],
-    );
+String _languageLabel(BuildContext context, Locale? locale) {
+  final l10n = context.l10n;
+  switch (locale?.languageCode) {
+    case 'zh':
+      return l10n.languageZh;
+    case 'en':
+      return l10n.languageEn;
+    default:
+      return l10n.languageSystem;
   }
 }
