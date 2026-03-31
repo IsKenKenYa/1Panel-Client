@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
@@ -38,7 +39,7 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
   @override
   void initState() {
     super.initState();
-    _index = widget.initialIndex.clamp(0, _pages.length - 1);
+    _index = widget.initialIndex.clamp(0, math.max(0, _pages.length - 1));
   }
 
   @override
@@ -195,7 +196,7 @@ class _MacosShellScaffold extends StatelessWidget {
                   child: Container(
                     width: 88,
                     decoration: BoxDecoration(
-                      // withValues is the Flutter replacement of withOpacity.
+                      // withValues is Flutter's newer API to set alpha/channel values.
                       color: scheme.surface.withValues(
                         alpha: _kMacosNavRailSurfaceAlpha,
                       ),
@@ -457,7 +458,7 @@ class _AndroidLargeScreenShellScaffold extends StatelessWidget {
                       child: ListTile(
                         leading: const Icon(Icons.tips_and_updates_outlined),
                         title: Text(l10n.commonComingSoon),
-                        subtitle: Text(l10n.commonComingSoon),
+                        subtitle: Text(activeMeta.subtitle),
                       ),
                     ),
                   ],
