@@ -1960,6 +1960,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsServerManagement => '服务器管理';
 
   @override
+  String get settingsServerManagementSubtitle =>
+      '管理多台已连接服务器；服务端系统设置仅在对应服务器详情页中提供。';
+
+  @override
   String get settingsResetOnboarding => '重新体验新手引导';
 
   @override

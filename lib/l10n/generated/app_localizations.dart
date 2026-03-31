@@ -3854,6 +3854,12 @@ abstract class AppLocalizations {
   /// **'Server management'**
   String get settingsServerManagement;
 
+  /// No description provided for @settingsServerManagementSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage multiple connected servers. Server system settings are only available from each server detail page.'**
+  String get settingsServerManagementSubtitle;
+
   /// No description provided for @settingsResetOnboarding.
   ///
   /// In en, this message translates to:

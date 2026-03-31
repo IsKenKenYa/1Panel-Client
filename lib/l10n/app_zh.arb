@@ -883,6 +883,7 @@
   "settingsAppLock": "应用锁",
   "settingsAppLockDesc": "使用生物识别或设备凭据保护敏感模块",
   "settingsServerManagement": "服务器管理",
+  "settingsServerManagementSubtitle": "管理多台已连接服务器；服务端系统设置仅在对应服务器详情页中提供。",
   "settingsResetOnboarding": "重新体验新手引导",
   "settingsAbout": "关于",
   "settingsFeedback": "反馈建议",

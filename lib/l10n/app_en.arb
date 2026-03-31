@@ -883,6 +883,7 @@
   "settingsAppLock": "App Lock",
   "settingsAppLockDesc": "Use biometric/device credentials to protect sensitive modules",
   "settingsServerManagement": "Server management",
+  "settingsServerManagementSubtitle": "Manage multiple connected servers. Server system settings are only available from each server detail page.",
   "settingsResetOnboarding": "Replay welcome guide",
   "settingsAbout": "About",
   "settingsFeedback": "Feedback",

@@ -2007,6 +2007,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsServerManagement => 'Server management';
 
   @override
+  String get settingsServerManagementSubtitle =>
+      'Manage multiple connected servers. Server system settings are only available from each server detail page.';
+
+  @override
   String get settingsResetOnboarding => 'Replay welcome guide';
 
   @override

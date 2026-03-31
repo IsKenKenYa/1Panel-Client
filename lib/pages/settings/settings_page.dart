@@ -166,6 +166,7 @@ class SettingsPage extends StatelessWidget {
                 ListTile(
                   leading: const Icon(Icons.dns_outlined),
                   title: Text(l10n.settingsServerManagement),
+                  subtitle: Text(l10n.settingsServerManagementSubtitle),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => Navigator.pushNamed(context, AppRoutes.server),
                 ),
