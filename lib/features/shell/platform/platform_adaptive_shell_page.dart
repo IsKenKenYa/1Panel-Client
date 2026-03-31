@@ -44,8 +44,7 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
   @override
   void initState() {
     super.initState();
-    final maxIndex = _pages.length - 1;
-    _index = widget.initialIndex.clamp(0, maxIndex);
+    _index = widget.initialIndex.clamp(0, _pages.length - 1);
   }
 
   @override
@@ -590,7 +589,7 @@ List<_NavigationMeta> _navigationMeta(BuildContext context) {
     ),
     _NavigationMeta(
       title: l10n.navSecurity,
-      subtitle: l10n.navSecurity,
+      subtitle: l10n.securityPageTitle,
     ),
     _NavigationMeta(
       title: l10n.navSettings,
