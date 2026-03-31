@@ -582,7 +582,7 @@ List<_NavigationMeta> _navigationMeta(BuildContext context) {
   return [
     _NavigationMeta(
       title: l10n.navServer,
-      subtitle: l10n.serverListEmptyDesc,
+      subtitle: l10n.serverPageTitle,
     ),
     _NavigationMeta(
       title: l10n.navFiles,
@@ -590,7 +590,7 @@ List<_NavigationMeta> _navigationMeta(BuildContext context) {
     ),
     _NavigationMeta(
       title: l10n.navSecurity,
-      subtitle: l10n.serverActionSecurity,
+      subtitle: l10n.navSecurity,
     ),
     _NavigationMeta(
       title: l10n.navSettings,
