@@ -23,12 +23,19 @@ class PlatformAdaptiveShellPage extends StatefulWidget {
 }
 
 class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
+  static const List<Widget> _pages = <Widget>[
+    ServerListPage(),
+    FilesPage(),
+    SecurityVerificationPage(),
+    SettingsPage(),
+  ];
+
   late int _index;
 
   @override
   void initState() {
     super.initState();
-    final maxIndex = _buildPages().length - 1;
+    final maxIndex = _pages.length - 1;
     _index = widget.initialIndex.clamp(0, maxIndex);
   }
 
@@ -36,7 +43,26 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
   Widget build(BuildContext context) {
     final isTablet = _isTabletLayout(context);
     final isAndroid = _isPlatform(TargetPlatform.android);
-    final pages = _buildPages();
+    final pages = _pages;
+
+    if (kIsWeb) {
+      if (isTablet) {
+        return _TabletShellScaffold(
+          index: _index,
+          pages: pages,
+          isAndroidTablet: false,
+          onDestinationSelected: _onDestinationSelected,
+        );
+      }
+
+      return Scaffold(
+        body: IndexedStack(index: _index, children: pages),
+        bottomNavigationBar: AppBottomNavigationBar(
+          currentIndex: _index,
+          onTap: _onDestinationSelected,
+        ),
+      );
+    }
 
     if (_isMacosPlatform) {
       return _MacosShellScaffold(
@@ -78,15 +104,6 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
         onTap: _onDestinationSelected,
       ),
     );
-  }
-
-  List<Widget> _buildPages() {
-    return const <Widget>[
-      ServerListPage(),
-      FilesPage(),
-      SecurityVerificationPage(),
-      SettingsPage(),
-    ];
   }
 
   bool get _isMacosPlatform {
