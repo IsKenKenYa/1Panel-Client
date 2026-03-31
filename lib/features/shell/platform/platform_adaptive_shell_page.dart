@@ -8,6 +8,8 @@ import 'package:onepanelapp_app/features/server/server_list_page.dart';
 import 'package:onepanelapp_app/pages/settings/settings_page.dart';
 import 'package:onepanelapp_app/widgets/navigation/app_bottom_navigation_bar.dart';
 
+const double _kTabletBreakpoint = 600;
+
 class PlatformAdaptiveShellPage extends StatefulWidget {
   const PlatformAdaptiveShellPage({
     super.key,
@@ -32,7 +34,7 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isTablet = MediaQuery.sizeOf(context).shortestSide >= 600;
+    final isTablet = _isTabletLayout(context);
     final pages = _buildPages();
 
     if (_isMacosPlatform) {
@@ -86,26 +88,26 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
   }
 
   bool get _isMacosPlatform {
-    if (kIsWeb) {
-      return false;
-    }
-
-    return defaultTargetPlatform == TargetPlatform.macOS;
+    return _isPlatform(TargetPlatform.macOS);
   }
 
   bool get _isWindowsPlatform {
-    if (kIsWeb) {
-      return false;
-    }
-
-    return defaultTargetPlatform == TargetPlatform.windows;
+    return _isPlatform(TargetPlatform.windows);
   }
 
   bool get _isIosPlatform {
+    return _isPlatform(TargetPlatform.iOS);
+  }
+
+  bool _isPlatform(TargetPlatform platform) {
     if (kIsWeb) {
       return false;
     }
-    return defaultTargetPlatform == TargetPlatform.iOS;
+    return defaultTargetPlatform == platform;
+  }
+
+  bool _isTabletLayout(BuildContext context) {
+    return MediaQuery.sizeOf(context).shortestSide >= _kTabletBreakpoint;
   }
 
   void _onDestinationSelected(int value) {
@@ -196,7 +198,7 @@ class _TabletShellScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     final isAndroidTablet = !kIsWeb &&
         defaultTargetPlatform == TargetPlatform.android &&
-        MediaQuery.sizeOf(context).shortestSide >= 600;
+        MediaQuery.sizeOf(context).shortestSide >= _kTabletBreakpoint;
 
     return Scaffold(
       body: Row(
