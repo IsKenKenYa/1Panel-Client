@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,8 @@ import 'package:onepanelapp_app/pages/settings/settings_page.dart';
 import 'package:onepanelapp_app/widgets/navigation/app_bottom_navigation_bar.dart';
 
 const double _kTabletBreakpoint = 600;
+const double _kAndroidLargeScreenBreakpoint = 960;
+
 class PlatformAdaptiveShellPage extends StatefulWidget {
   const PlatformAdaptiveShellPage({
     super.key,
@@ -41,8 +45,13 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isTablet = _isTabletLayout(context);
+    final shortestSide = MediaQuery.sizeOf(context).shortestSide;
+    final width = MediaQuery.sizeOf(context).width;
+    final isTablet = shortestSide >= _kTabletBreakpoint;
+    final isAndroidLargeScreen = width >= _kAndroidLargeScreenBreakpoint;
     final isAndroid = _isPlatform(TargetPlatform.android);
+    final isIos = _isPlatform(TargetPlatform.iOS);
+    final isIpad = isIos && isTablet;
 
     if (kIsWeb) {
       if (isTablet) {
@@ -79,16 +88,39 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
       );
     }
 
-    if (isTablet) {
-      return _TabletShellScaffold(
+    if (isIpad) {
+      return _IpadShellScaffold(
         index: _index,
         pages: _pages,
-        isAndroidTablet: isAndroid && isTablet,
         onDestinationSelected: _onDestinationSelected,
       );
     }
 
-    if (_isPlatform(TargetPlatform.iOS)) {
+    if (isAndroid && isTablet) {
+      if (isAndroidLargeScreen) {
+        return _AndroidLargeScreenShellScaffold(
+          index: _index,
+          pages: _pages,
+          onDestinationSelected: _onDestinationSelected,
+        );
+      }
+      return _AndroidPadShellScaffold(
+        index: _index,
+        pages: _pages,
+        onDestinationSelected: _onDestinationSelected,
+      );
+    }
+
+    if (isTablet) {
+      return _TabletShellScaffold(
+        index: _index,
+        pages: _pages,
+        isAndroidTablet: false,
+        onDestinationSelected: _onDestinationSelected,
+      );
+    }
+
+    if (isIos) {
       return _IosPhoneShellScaffold(
         index: _index,
         pages: _pages,
@@ -136,21 +168,66 @@ class _MacosShellScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      body: Row(
-        children: [
-          NavigationRail(
-            selectedIndex: index,
-            onDestinationSelected: onDestinationSelected,
-            labelType: NavigationRailLabelType.none,
-            useIndicator: false,
-            destinations: _destinations(context),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              scheme.surface,
+              scheme.surfaceContainerLowest,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-          const VerticalDivider(width: 1),
-          Expanded(
-            child: IndexedStack(index: index, children: pages),
-          ),
-        ],
+        ),
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                  child: Container(
+                    width: 88,
+                    decoration: BoxDecoration(
+                      color: scheme.surface.withValues(alpha: 0.65),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: scheme.outlineVariant.withValues(alpha: 0.45),
+                      ),
+                    ),
+                    child: NavigationRail(
+                      selectedIndex: index,
+                      onDestinationSelected: onDestinationSelected,
+                      labelType: NavigationRailLabelType.none,
+                      useIndicator: false,
+                      minWidth: 72,
+                      minExtendedWidth: 88,
+                      destinations: _destinations(context),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 16, 16, 16),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: scheme.surfaceContainerLow.withValues(alpha: 0.85),
+                      border: Border.all(color: scheme.outlineVariant),
+                    ),
+                    child: IndexedStack(index: index, children: pages),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -169,17 +246,107 @@ class _WindowsShellScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Scaffold(
+      body: Row(
+        children: [
+          Container(
+            width: 280,
+            decoration: BoxDecoration(
+              color: scheme.surfaceContainerLow,
+              border: Border(
+                right: BorderSide(color: scheme.outlineVariant),
+              ),
+            ),
+            child: NavigationRail(
+              selectedIndex: index,
+              onDestinationSelected: onDestinationSelected,
+              labelType: NavigationRailLabelType.all,
+              extended: true,
+              groupAlignment: -0.95,
+              minExtendedWidth: 280,
+              destinations: _destinations(context),
+            ),
+          ),
+          Expanded(
+            child: DecoratedBox(
+              decoration: BoxDecoration(color: scheme.surface),
+              child: IndexedStack(index: index, children: pages),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _IpadShellScaffold extends StatelessWidget {
+  const _IpadShellScaffold({
+    required this.index,
+    required this.pages,
+    required this.onDestinationSelected,
+  });
+
+  final int index;
+  final List<Widget> pages;
+  final ValueChanged<int> onDestinationSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+      child: SafeArea(
+        child: Row(
+          children: [
+            Container(
+              width: 124,
+              color: CupertinoColors.systemGroupedBackground.resolveFrom(context),
+              child: CupertinoTheme(
+                data: CupertinoTheme.of(context).copyWith(
+                  primaryColor: CupertinoColors.activeBlue.resolveFrom(context),
+                ),
+                child: _CupertinoPadSidebar(
+                  selectedIndex: index,
+                  onTap: onDestinationSelected,
+                ),
+              ),
+            ),
+            const VerticalDivider(width: 1),
+            Expanded(child: IndexedStack(index: index, children: pages)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AndroidPadShellScaffold extends StatelessWidget {
+  const _AndroidPadShellScaffold({
+    required this.index,
+    required this.pages,
+    required this.onDestinationSelected,
+  });
+
+  final int index;
+  final List<Widget> pages;
+  final ValueChanged<int> onDestinationSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
       body: Row(
         children: [
           NavigationRail(
             selectedIndex: index,
             onDestinationSelected: onDestinationSelected,
-            labelType: NavigationRailLabelType.all,
             extended: true,
+            minExtendedWidth: 220,
+            indicatorShape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+            backgroundColor: scheme.surfaceContainerLowest,
             destinations: _destinations(context),
           ),
-          const VerticalDivider(width: 1),
           Expanded(
             child: IndexedStack(index: index, children: pages),
           ),
@@ -223,6 +390,104 @@ class _TabletShellScaffold extends StatelessWidget {
   }
 }
 
+class _AndroidLargeScreenShellScaffold extends StatelessWidget {
+  const _AndroidLargeScreenShellScaffold({
+    required this.index,
+    required this.pages,
+    required this.onDestinationSelected,
+  });
+
+  final int index;
+  final List<Widget> pages;
+  final ValueChanged<int> onDestinationSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
+    return Scaffold(
+      body: Row(
+        children: [
+          NavigationRail(
+            selectedIndex: index,
+            onDestinationSelected: onDestinationSelected,
+            extended: true,
+            minExtendedWidth: 220,
+            destinations: _destinations(context),
+          ),
+          const VerticalDivider(width: 1),
+          Expanded(
+            flex: 4,
+            child: IndexedStack(index: index, children: pages),
+          ),
+          const VerticalDivider(width: 1),
+          Expanded(
+            flex: 2,
+            child: DecoratedBox(
+              decoration: BoxDecoration(color: scheme.surfaceContainerLowest),
+              child: SafeArea(
+                child: ListView(
+                  padding: const EdgeInsets.all(16),
+                  children: [
+                    Text(
+                      l10n.appName,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 12),
+                    Card.filled(
+                      child: ListTile(
+                        leading: const Icon(Icons.dashboard_customize_outlined),
+                        title: Text(_summaryTitle(context, index)),
+                        subtitle: Text(_summarySubtitle(context, index)),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Card(
+                      child: ListTile(
+                        leading: const Icon(Icons.tips_and_updates_outlined),
+                        title: Text(l10n.commonComingSoon),
+                        subtitle: Text(l10n.commonLoading),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _summaryTitle(BuildContext context, int pageIndex) {
+    final l10n = context.l10n;
+    switch (pageIndex) {
+      case 0:
+        return l10n.navServer;
+      case 1:
+        return l10n.navFiles;
+      case 2:
+        return l10n.navSecurity;
+      default:
+        return l10n.navSettings;
+    }
+  }
+
+  String _summarySubtitle(BuildContext context, int pageIndex) {
+    final l10n = context.l10n;
+    switch (pageIndex) {
+      case 0:
+        return l10n.serverListEmptyDesc;
+      case 1:
+        return l10n.filesPageTitle;
+      case 2:
+        return l10n.serverActionSecurity;
+      default:
+        return l10n.settingsPageTitle;
+    }
+  }
+}
+
 class _IosPhoneShellScaffold extends StatelessWidget {
   const _IosPhoneShellScaffold({
     required this.index,
@@ -263,6 +528,61 @@ class _IosPhoneShellScaffold extends StatelessWidget {
       tabBuilder: (context, tabIndex) {
         final safeIndex = tabIndex.clamp(0, pages.length - 1);
         return pages[safeIndex];
+      },
+    );
+  }
+}
+
+class _CupertinoPadSidebar extends StatelessWidget {
+  const _CupertinoPadSidebar({
+    required this.selectedIndex,
+    required this.onTap,
+  });
+
+  final int selectedIndex;
+  final ValueChanged<int> onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final items = [
+      (CupertinoIcons.desktopcomputer, l10n.navServer),
+      (CupertinoIcons.folder, l10n.navFiles),
+      (CupertinoIcons.shield, l10n.navSecurity),
+      (CupertinoIcons.gear, l10n.navSettings),
+    ];
+
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
+      itemCount: items.length,
+      itemBuilder: (context, idx) {
+        final isSelected = idx == selectedIndex;
+        final item = items[idx];
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: CupertinoButton(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            color: isSelected
+                ? CupertinoColors.systemGrey4.resolveFrom(context)
+                : CupertinoColors.systemGrey6.resolveFrom(context),
+            borderRadius: BorderRadius.circular(12),
+            onPressed: () => onTap(idx),
+            child: Row(
+              children: [
+                Icon(item.$1, size: 20),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    item.$2,
+                    textAlign: TextAlign.left,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
       },
     );
   }

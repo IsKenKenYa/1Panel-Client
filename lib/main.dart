@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:onepanelapp_app/config/app_router.dart';
 import 'package:onepanelapp_app/core/services/app_settings_controller.dart';
 import 'package:onepanelapp_app/core/services/transfer/transfer_manager.dart';
@@ -93,25 +94,29 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AppSettingsController>(
       builder: (context, settings, _) {
-        return MaterialApp(
-          title: '1Panel Open',
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.getLightTheme(),
-          darkTheme: AppTheme.getDarkTheme(),
-          themeMode: settings.themeMode,
-          locale: settings.locale,
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-          ],
-          supportedLocales: const [
-            Locale('en'),
-            Locale('zh'),
-          ],
-          onGenerateRoute: AppRouter.generateRoute,
-          initialRoute: AppRoutes.splash,
+        return DynamicColorBuilder(
+          builder: (lightDynamic, darkDynamic) {
+            return MaterialApp(
+              title: '1Panel Open',
+              debugShowCheckedModeBanner: false,
+              theme: AppTheme.getLightTheme(dynamicScheme: lightDynamic),
+              darkTheme: AppTheme.getDarkTheme(dynamicScheme: darkDynamic),
+              themeMode: settings.themeMode,
+              locale: settings.locale,
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+              ],
+              supportedLocales: const [
+                Locale('en'),
+                Locale('zh'),
+              ],
+              onGenerateRoute: AppRouter.generateRoute,
+              initialRoute: AppRoutes.splash,
+            );
+          },
         );
       },
     );
