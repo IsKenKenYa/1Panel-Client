@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:onepanel_client/core/config/release_channel_config.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/services/file_save_service.dart' as fs;
 import 'package:onepanel_client/core/services/logger/log_export_service.dart';
 import 'package:onepanel_client/core/services/logger/log_file_manager_service.dart';
 import 'package:onepanel_client/core/services/logger/log_level.dart';
@@ -179,6 +181,38 @@ ${l10n.settingsFeedbackTemplateEnvironment}
     final result =
         await LogExportService().exportLogs(minLevel: appLogger.minLogLevel);
     if (!context.mounted) return;
+
+    if (!result.success &&
+        result.permissionStatus == fs.PermissionStatus.permanentlyDenied) {
+      await _showPermissionSettingsDialog(context);
+      return;
+    }
+
+    if (!result.success &&
+        result.permissionStatus == fs.PermissionStatus.denied) {
+      final granted = await _requestStoragePermissionAgain();
+      if (!context.mounted) return;
+      if (granted) {
+        final retryResult =
+            await LogExportService().exportLogs(minLevel: appLogger.minLogLevel);
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              retryResult.success
+                  ? '${l10n.commonSaveSuccess}: ${retryResult.filePath ?? ''}'
+                  : '${l10n.commonSaveFailed}: ${retryResult.errorMessage ?? ''}',
+            ),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.permissionStorageRequired)),
+        );
+      }
+      return;
+    }
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
@@ -186,6 +220,38 @@ ${l10n.settingsFeedbackTemplateEnvironment}
               ? '${l10n.commonSaveSuccess}: ${result.filePath ?? ''}'
               : '${l10n.commonSaveFailed}: ${result.errorMessage ?? ''}',
         ),
+      ),
+    );
+  }
+
+  Future<bool> _requestStoragePermissionAgain() async {
+    final status = await Permission.storage.request();
+    if (status.isGranted) return true;
+
+    final manageStatus = await Permission.manageExternalStorage.request();
+    return manageStatus.isGranted;
+  }
+
+  Future<void> _showPermissionSettingsDialog(BuildContext context) async {
+    final l10n = context.l10n;
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.permissionRequired),
+        content: Text(l10n.permissionStorageRequired),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(l10n.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              openAppSettings();
+            },
+            child: Text(l10n.permissionGoToSettings),
+          ),
+        ],
       ),
     );
   }

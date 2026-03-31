@@ -1981,6 +1981,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsSystem => 'System';
 
   @override
+  String get settingsAppSectionTitle => 'App';
+
+  @override
   String get settingsSupport => 'Support';
 
   @override
@@ -2330,25 +2333,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutBuildLabel => 'Build';
 
   @override
-  String get aboutChannelLabel => 'Channel';
+  String get aboutPackageNameLabel => 'Package name';
 
   @override
-  String get aboutPreviewSectionTitle => 'Experimental Preview';
+  String get aboutOfficialDomainLabel => 'Official domain';
 
   @override
-  String get aboutPreviewSummary =>
-      'This Android preview build is for early access and collecting user feedback.';
+  String get aboutProjectSectionTitle => 'Project';
 
   @override
-  String get aboutPreviewNoAutoUpdate =>
-      'Automatic updates are not available in this preview. Download newer builds from GitHub Pre-release.';
+  String get aboutProjectSummary =>
+      '1Panel Client is a mobile app for managing 1Panel servers across multiple environments.';
 
   @override
-  String get aboutPreviewFeedback =>
-      'Official feedback channel: GitHub Issues.';
-
-  @override
-  String get aboutFeedbackSectionTitle => 'Feedback';
+  String get aboutProjectFeatureList =>
+      'Core capabilities: multi-server management, file and website operations, terminal access, and status monitoring.';
 
   @override
   String get aboutFeedbackAction => 'Open GitHub Issues';
@@ -2358,11 +2357,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'Report bugs, usability issues, and suggestions in the official issue tracker.';
 
   @override
-  String get aboutReleaseNotesSectionTitle => 'Current preview notes';
+  String get aboutReleaseNotesSectionTitle => 'Release notes';
 
   @override
   String get aboutReleaseNotesBody =>
-      'This preview focuses on multi-server management, onboarding polish, and early website management workflows.';
+      'See latest updates and changes in the releases page.';
 
   @override
   String get aboutRepositorySectionTitle => 'Repository';
@@ -2377,21 +2376,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutRepositorySshLabel => 'SSH';
 
   @override
-  String get aboutReleaseAction => 'Open Preview Releases';
+  String get aboutReleaseAction => 'View Releases';
 
   @override
   String get aboutLinkOpenFailed => 'Could not open the link.';
 
   @override
-  String get aboutExperimentalModulesTitle => 'Experimental modules';
+  String get aboutExperimentalModulesTitle => 'Modules';
 
   @override
   String get aboutExperimentalModulesDescription =>
-      'Some modules are still being refined for the preview channel and may change based on feedback.';
+      'Server, websites, containers, databases, firewall, terminal, and monitoring.';
 
   @override
   String get aboutExperimentalModulesList =>
-      'Websites, OpenResty, Databases, Firewall, Terminal, Monitoring';
+      'Server · Websites · Containers · Databases · Firewall · Terminal · Monitoring';
 
   @override
   String get dashboardTitle => 'Dashboard';
@@ -2887,6 +2886,12 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get systemSettingsSnapshotDesc =>
       'Create, restore, delete system snapshots';
+
+  @override
+  String get systemSettingsBackupAccountTitle => 'Backup Accounts';
+
+  @override
+  String get systemSettingsBackupAccountDesc => 'Manage backup storage accounts';
 
   @override
   String get systemSettingsSystemSection => 'System Info';

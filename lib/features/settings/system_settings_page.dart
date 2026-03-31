@@ -295,8 +295,8 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
               _buildSettingTile(
                 context,
                 icon: Icons.cloud_outlined,
-                title: '备份账户',
-                subtitle: '管理备份存储账户',
+                title: l10n.systemSettingsBackupAccountTitle,
+                subtitle: l10n.systemSettingsBackupAccountDesc,
                 onTap: () => _navigateTo(context, const BackupAccountPage()),
               ),
             ],
