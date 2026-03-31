@@ -409,6 +409,13 @@ The app integrates with 1Panel V2 API using:
 - [Deployment Guide](docs/en/DEPLOY.md) - Build and deploy the app
 - [User Guide](docs/en/GUIDE.md) - Complete user manual
 - [Testing Guide](docs/en/TESTING.md) - Testing documentation
+- [Privacy Policy](docs/PRIVACY_POLICY.md)
+- [Terms of Service](docs/TERMS_OF_SERVICE.md)
+- [Logging Policy](docs/LOGGING_POLICY.md)
+- [Third-Party Licenses](THIRD_PARTY_LICENSES.md)
+- [Security Policy](SECURITY.md)
+- [Contributing Guide](CONTRIBUTING.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
 
 ### API Documentation
 - [1Panel V2 API Specification](docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json) - Swagger/OpenAPI specification from the 1Panel submodule

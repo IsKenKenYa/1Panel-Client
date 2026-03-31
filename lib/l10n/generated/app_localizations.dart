@@ -5030,6 +5030,78 @@ abstract class AppLocalizations {
   /// **'Write a quick note for your dashboard...'**
   String get systemSettingsDashboardMemoHint;
 
+  /// No description provided for @systemSettingsAppLogsExportSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Export local application debug logs'**
+  String get systemSettingsAppLogsExportSubtitle;
+
+  /// No description provided for @systemSettingsAppLogsLevelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'App log level'**
+  String get systemSettingsAppLogsLevelTitle;
+
+  /// No description provided for @systemSettingsLogLevelTrace.
+  ///
+  /// In en, this message translates to:
+  /// **'Trace'**
+  String get systemSettingsLogLevelTrace;
+
+  /// No description provided for @systemSettingsLogLevelDebug.
+  ///
+  /// In en, this message translates to:
+  /// **'Debug'**
+  String get systemSettingsLogLevelDebug;
+
+  /// No description provided for @systemSettingsLogLevelInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get systemSettingsLogLevelInfo;
+
+  /// No description provided for @systemSettingsLogLevelWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning'**
+  String get systemSettingsLogLevelWarning;
+
+  /// No description provided for @systemSettingsLogLevelError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get systemSettingsLogLevelError;
+
+  /// No description provided for @systemSettingsLogLevelFatal.
+  ///
+  /// In en, this message translates to:
+  /// **'Fatal'**
+  String get systemSettingsLogLevelFatal;
+
+  /// No description provided for @systemSettingsAppLogsClearSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete local persisted log files'**
+  String get systemSettingsAppLogsClearSubtitle;
+
+  /// No description provided for @systemSettingsAppLogsClearTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear app logs'**
+  String get systemSettingsAppLogsClearTitle;
+
+  /// No description provided for @systemSettingsAppLogsClearConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to clear local app logs? This action cannot be undone.'**
+  String get systemSettingsAppLogsClearConfirm;
+
+  /// No description provided for @systemSettingsAppLogsCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'App logs cleared'**
+  String get systemSettingsAppLogsCleared;
+
   /// No description provided for @systemSettingsApiKey.
   ///
   /// In en, this message translates to:

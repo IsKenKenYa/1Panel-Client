@@ -2663,6 +2663,45 @@ class AppLocalizationsEn extends AppLocalizations {
       'Write a quick note for your dashboard...';
 
   @override
+  String get systemSettingsAppLogsExportSubtitle =>
+      'Export local application debug logs';
+
+  @override
+  String get systemSettingsAppLogsLevelTitle => 'App log level';
+
+  @override
+  String get systemSettingsLogLevelTrace => 'Trace';
+
+  @override
+  String get systemSettingsLogLevelDebug => 'Debug';
+
+  @override
+  String get systemSettingsLogLevelInfo => 'Info';
+
+  @override
+  String get systemSettingsLogLevelWarning => 'Warning';
+
+  @override
+  String get systemSettingsLogLevelError => 'Error';
+
+  @override
+  String get systemSettingsLogLevelFatal => 'Fatal';
+
+  @override
+  String get systemSettingsAppLogsClearSubtitle =>
+      'Delete local persisted log files';
+
+  @override
+  String get systemSettingsAppLogsClearTitle => 'Clear app logs';
+
+  @override
+  String get systemSettingsAppLogsClearConfirm =>
+      'Are you sure you want to clear local app logs? This action cannot be undone.';
+
+  @override
+  String get systemSettingsAppLogsCleared => 'App logs cleared';
+
+  @override
   String get systemSettingsApiKey => 'API Key';
 
   @override

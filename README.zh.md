@@ -314,6 +314,13 @@ flutter packages pub run build_runner build
 - [部署指南](docs/zh-CN/DEPLOY.md) - 构建和部署应用
 - [用户指南](docs/zh-CN/GUIDE.md) - 完整用户手册
 - [测试指南](docs/zh-CN/TESTING.md) - 测试文档
+- [隐私政策](docs/PRIVACY_POLICY.zh-CN.md)
+- [服务条款](docs/TERMS_OF_SERVICE.md)
+- [日志与数据保留政策](docs/LOGGING_POLICY.md)
+- [第三方许可证声明](THIRD_PARTY_LICENSES.md)
+- [安全策略](SECURITY.md)
+- [贡献指南](CONTRIBUTING.md)
+- [行为准则](CODE_OF_CONDUCT.md)
 
 ### API 文档
 - [1Panel V2 API 规范](docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json) - 来自 1Panel 子模块的 Swagger/OpenAPI 规范

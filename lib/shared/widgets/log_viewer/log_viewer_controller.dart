@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'log_parser.dart';
 import 'log_theme.dart';
@@ -147,7 +148,11 @@ class LogViewerController extends ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      debugPrint('Failed to load log settings: $e');
+      appLogger.wWithPackage(
+        'shared.widgets.log_viewer',
+        'Failed to load log settings',
+        error: e,
+      );
     }
   }
 
@@ -157,7 +162,11 @@ class LogViewerController extends ChangeNotifier {
       final jsonStr = jsonEncode(_settings.toJson());
       await prefs.setString(_storageKey, jsonStr);
     } catch (e) {
-      debugPrint('Failed to save log settings: $e');
+      appLogger.wWithPackage(
+        'shared.widgets.log_viewer',
+        'Failed to save log settings',
+        error: e,
+      );
     }
   }
 

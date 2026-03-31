@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import '../services/logger/logger_service.dart';
 import '../config/api_constants.dart';
 import 'network_exceptions.dart';
@@ -88,9 +87,9 @@ class DioClient {
         default:
           logger.i(message);
       }
-    } catch (e) {
+    } catch (_) {
       // 忽略日志错误
-      debugPrint('[$level] $message');
+      return;
     }
   }
 
