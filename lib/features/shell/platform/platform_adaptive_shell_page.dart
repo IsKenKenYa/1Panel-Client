@@ -12,6 +12,11 @@ import 'package:onepanelapp_app/widgets/navigation/app_bottom_navigation_bar.dar
 
 const double _kTabletBreakpoint = 600;
 const double _kAndroidLargeScreenBreakpoint = 960;
+const double _kMacosNavRailSurfaceAlpha = 0.65;
+const double _kMacosNavRailBorderAlpha = 0.45;
+const double _kMacosContentSurfaceAlpha = 0.85;
+const double _kWindowsRailGroupAlignment = -0.95;
+const double _kCupertinoPadSidebarIconSize = 20;
 
 class PlatformAdaptiveShellPage extends StatefulWidget {
   const PlatformAdaptiveShellPage({
@@ -51,6 +56,7 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
     final isAndroidLargeScreen = width >= _kAndroidLargeScreenBreakpoint;
     final isAndroid = _isPlatform(TargetPlatform.android);
     final isIos = _isPlatform(TargetPlatform.iOS);
+    // iPadOS uses iOS target platform in Flutter; tablet form factor splits it.
     final isIpad = isIos && isTablet;
 
     if (kIsWeb) {
@@ -188,10 +194,14 @@ class _MacosShellScaffold extends StatelessWidget {
                   child: Container(
                     width: 88,
                     decoration: BoxDecoration(
-                      color: scheme.surface.withValues(alpha: 0.65),
+                      color: scheme.surface.withValues(
+                        alpha: _kMacosNavRailSurfaceAlpha,
+                      ),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: scheme.outlineVariant.withValues(alpha: 0.45),
+                        color: scheme.outlineVariant.withValues(
+                          alpha: _kMacosNavRailBorderAlpha,
+                        ),
                       ),
                     ),
                     child: NavigationRail(
@@ -214,7 +224,9 @@ class _MacosShellScaffold extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      color: scheme.surfaceContainerLow.withValues(alpha: 0.85),
+                      color: scheme.surfaceContainerLow.withValues(
+                        alpha: _kMacosContentSurfaceAlpha,
+                      ),
                       border: Border.all(color: scheme.outlineVariant),
                     ),
                     child: IndexedStack(index: index, children: pages),
@@ -259,7 +271,7 @@ class _WindowsShellScaffold extends StatelessWidget {
               onDestinationSelected: onDestinationSelected,
               labelType: NavigationRailLabelType.all,
               extended: true,
-              groupAlignment: -0.95,
+              groupAlignment: _kWindowsRailGroupAlignment,
               minExtendedWidth: 280,
               destinations: _destinations(context),
             ),
@@ -401,6 +413,8 @@ class _AndroidLargeScreenShellScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
+    final navItems = _navigationMeta(context);
+    final activeMeta = navItems[index.clamp(0, navItems.length - 1)];
     return Scaffold(
       body: Row(
         children: [
@@ -433,8 +447,8 @@ class _AndroidLargeScreenShellScaffold extends StatelessWidget {
                     Card.filled(
                       child: ListTile(
                         leading: const Icon(Icons.dashboard_customize_outlined),
-                        title: Text(_summaryTitle(context, index)),
-                        subtitle: Text(_summarySubtitle(context, index)),
+                        title: Text(activeMeta.title),
+                        subtitle: Text(activeMeta.subtitle),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -453,34 +467,6 @@ class _AndroidLargeScreenShellScaffold extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _summaryTitle(BuildContext context, int pageIndex) {
-    final l10n = context.l10n;
-    switch (pageIndex) {
-      case 0:
-        return l10n.navServer;
-      case 1:
-        return l10n.navFiles;
-      case 2:
-        return l10n.navSecurity;
-      default:
-        return l10n.navSettings;
-    }
-  }
-
-  String _summarySubtitle(BuildContext context, int pageIndex) {
-    final l10n = context.l10n;
-    switch (pageIndex) {
-      case 0:
-        return l10n.serverListEmptyDesc;
-      case 1:
-        return l10n.filesPageTitle;
-      case 2:
-        return l10n.serverActionSecurity;
-      default:
-        return l10n.settingsPageTitle;
-    }
   }
 }
 
@@ -565,7 +551,7 @@ class _CupertinoPadSidebar extends StatelessWidget {
             onPressed: () => onTap(idx),
             child: Row(
               children: [
-                Icon(item.$1, size: 20),
+                Icon(item.$1, size: _kCupertinoPadSidebarIconSize),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
@@ -582,6 +568,38 @@ class _CupertinoPadSidebar extends StatelessWidget {
       },
     );
   }
+}
+
+class _NavigationMeta {
+  const _NavigationMeta({
+    required this.title,
+    required this.subtitle,
+  });
+
+  final String title;
+  final String subtitle;
+}
+
+List<_NavigationMeta> _navigationMeta(BuildContext context) {
+  final l10n = context.l10n;
+  return [
+    _NavigationMeta(
+      title: l10n.navServer,
+      subtitle: l10n.serverListEmptyDesc,
+    ),
+    _NavigationMeta(
+      title: l10n.navFiles,
+      subtitle: l10n.filesPageTitle,
+    ),
+    _NavigationMeta(
+      title: l10n.navSecurity,
+      subtitle: l10n.serverActionSecurity,
+    ),
+    _NavigationMeta(
+      title: l10n.navSettings,
+      subtitle: l10n.settingsPageTitle,
+    ),
+  ];
 }
 
 List<NavigationRailDestination> _destinations(BuildContext context) {
