@@ -15,6 +15,8 @@ import 'package:onepanel_client/features/settings/monitor_settings_page.dart';
 import 'package:onepanel_client/features/settings/proxy_settings_page.dart';
 import 'package:onepanel_client/features/settings/backup_account_page.dart';
 import 'package:onepanel_client/features/monitoring/monitoring_provider.dart';
+import 'package:onepanel_client/core/services/logger/log_export_service.dart';
+import 'package:onepanel_client/core/services/logger/log_file_manager_service.dart';
 
 class SystemSettingsPage extends StatefulWidget {
   const SystemSettingsPage({super.key, this.provider});
@@ -186,6 +188,20 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
                 title: l10n.systemSettingsDashboardMemo,
                 subtitle: _formatMemoSummary(provider.data.dashboardMemo, l10n),
                 onTap: () => _showDashboardMemoDialog(context, provider, l10n),
+              ),
+              _buildSettingTile(
+                context,
+                icon: Icons.download_outlined,
+                title: '导出应用日志',
+                subtitle: '导出本地调试日志文件',
+                onTap: () => _exportAppLogs(context),
+              ),
+              _buildSettingTile(
+                context,
+                icon: Icons.delete_sweep_outlined,
+                title: '清理应用日志',
+                subtitle: '删除本地持久化日志',
+                onTap: () => _clearAppLogs(context),
               ),
             ],
           ),
@@ -753,5 +769,48 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
   String _formatTime(DateTime time) {
     return '${time.year}-${time.month.toString().padLeft(2, '0')}-${time.day.toString().padLeft(2, '0')} '
         '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+  }
+
+  Future<void> _exportAppLogs(BuildContext context) async {
+    final l10n = context.l10n;
+    final result = await LogExportService().exportLogs();
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          result.success
+              ? '${l10n.commonSaveSuccess}: ${result.filePath ?? ''}'
+              : '${l10n.commonSaveFailed}: ${result.errorMessage ?? ''}',
+        ),
+      ),
+    );
+  }
+
+  Future<void> _clearAppLogs(BuildContext context) async {
+    final l10n = context.l10n;
+    final confirmed = await showDialog<bool>(
+          context: context,
+          builder: (dialogContext) => AlertDialog(
+            title: const Text('清理应用日志'),
+            content: const Text('确定删除本地应用日志吗？此操作不可恢复。'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(false),
+                child: Text(l10n.commonCancel),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(dialogContext).pop(true),
+                child: Text(l10n.commonConfirm),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+    if (!confirmed) return;
+    await LogFileManagerService().clearLogs();
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('应用日志已清理')),
+    );
   }
 }
