@@ -18,9 +18,16 @@ class _AppLogOutput extends LogOutput {
     if (LoggerConfig.enableFileOutput) {
       for (final line in event.lines) {
         unawaited(
-          _fileManager
-              .appendLine(line)
-              .catchError((Object _, StackTrace __) {}),
+          _fileManager.appendLine(line).catchError((Object error, StackTrace _) {
+            if (LoggerConfig.enableConsoleOutput) {
+              _consoleOutput.output(
+                OutputEvent(
+                  Level.error,
+                  ['[core.services.logger] Failed to persist log line: $error'],
+                ),
+              );
+            }
+          }),
         );
       }
     }
