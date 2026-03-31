@@ -13,7 +13,7 @@ class PlatformAdaptiveShellPage extends StatefulWidget {
   const PlatformAdaptiveShellPage({
     super.key,
     this.initialIndex = 0,
-  });
+  }) : assert(initialIndex >= 0, 'initialIndex must be non-negative');
 
   final int initialIndex;
 
@@ -43,20 +43,19 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
   Widget build(BuildContext context) {
     final isTablet = _isTabletLayout(context);
     final isAndroid = _isPlatform(TargetPlatform.android);
-    final pages = _pages;
 
     if (kIsWeb) {
       if (isTablet) {
         return _TabletShellScaffold(
           index: _index,
-          pages: pages,
+          pages: _pages,
           isAndroidTablet: false,
           onDestinationSelected: _onDestinationSelected,
         );
       }
 
       return Scaffold(
-        body: IndexedStack(index: _index, children: pages),
+        body: IndexedStack(index: _index, children: _pages),
         bottomNavigationBar: AppBottomNavigationBar(
           currentIndex: _index,
           onTap: _onDestinationSelected,
@@ -64,18 +63,18 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
       );
     }
 
-    if (_isMacosPlatform) {
+    if (_isPlatform(TargetPlatform.macOS)) {
       return _MacosShellScaffold(
         index: _index,
-        pages: pages,
+        pages: _pages,
         onDestinationSelected: _onDestinationSelected,
       );
     }
 
-    if (_isWindowsPlatform) {
+    if (_isPlatform(TargetPlatform.windows)) {
       return _WindowsShellScaffold(
         index: _index,
-        pages: pages,
+        pages: _pages,
         onDestinationSelected: _onDestinationSelected,
       );
     }
@@ -83,39 +82,27 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
     if (isTablet) {
       return _TabletShellScaffold(
         index: _index,
-        pages: pages,
+        pages: _pages,
         isAndroidTablet: isAndroid && isTablet,
         onDestinationSelected: _onDestinationSelected,
       );
     }
 
-    if (_isIosPlatform) {
+    if (_isPlatform(TargetPlatform.iOS)) {
       return _IosPhoneShellScaffold(
         index: _index,
-        pages: pages,
+        pages: _pages,
         onDestinationSelected: _onDestinationSelected,
       );
     }
 
     return Scaffold(
-      body: IndexedStack(index: _index, children: pages),
+      body: IndexedStack(index: _index, children: _pages),
       bottomNavigationBar: AppBottomNavigationBar(
         currentIndex: _index,
         onTap: _onDestinationSelected,
       ),
     );
-  }
-
-  bool get _isMacosPlatform {
-    return _isPlatform(TargetPlatform.macOS);
-  }
-
-  bool get _isWindowsPlatform {
-    return _isPlatform(TargetPlatform.windows);
-  }
-
-  bool get _isIosPlatform {
-    return _isPlatform(TargetPlatform.iOS);
   }
 
   bool _isPlatform(TargetPlatform platform) {
@@ -273,7 +260,10 @@ class _IosPhoneShellScaffold extends StatelessWidget {
           ),
         ],
       ),
-      tabBuilder: (context, tabIndex) => pages[tabIndex],
+      tabBuilder: (context, tabIndex) {
+        final safeIndex = tabIndex.clamp(0, pages.length - 1);
+        return pages[safeIndex];
+      },
     );
   }
 }
