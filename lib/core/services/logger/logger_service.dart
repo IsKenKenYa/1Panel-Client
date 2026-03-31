@@ -1,6 +1,25 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 import '../../config/logger_config.dart';
+import 'log_file_manager_service.dart';
+
+class _AppLogOutput extends LogOutput {
+  final ConsoleOutput _consoleOutput = ConsoleOutput();
+  final LogFileManagerService _fileManager = LogFileManagerService();
+
+  @override
+  void output(OutputEvent event) {
+    if (LoggerConfig.enableConsoleOutput) {
+      _consoleOutput.output(event);
+    }
+    if (LoggerConfig.enableFileOutput) {
+      for (final line in event.lines) {
+        unawaited(_fileManager.appendLine(line));
+      }
+    }
+  }
+}
 
 /// 统一日志服务类
 class AppLogger {
@@ -12,6 +31,7 @@ class AppLogger {
 
   /// 初始化日志服务
   void init() {
+    final filter = kReleaseMode ? ProductionFilter() : DevelopmentFilter();
     _logger = Logger(
       printer: PrettyPrinter(
         methodCount: LoggerConfig.maxMethodCount,
@@ -21,8 +41,10 @@ class AppLogger {
         printEmojis: LoggerConfig.enableEmojis,
         dateTimeFormat: DateTimeFormat.onlyTimeAndSinceStart,
       ),
-      filter: kReleaseMode ? ProductionFilter() : DevelopmentFilter(),
+      filter: _AppLoggerFilter(filter),
+      output: _AppLogOutput(),
     );
+    unawaited(LogFileManagerService().cleanupExpired());
   }
 
   void _ensureInitialized() {
@@ -107,3 +129,16 @@ class AppLogger {
 }
 
 final AppLogger appLogger = AppLogger();
+
+class _AppLoggerFilter extends LogFilter {
+  _AppLoggerFilter(this._delegate);
+  final LogFilter _delegate;
+
+  @override
+  bool shouldLog(LogEvent event) {
+    if (!_delegate.shouldLog(event)) return false;
+    final message = event.message?.toString() ?? '';
+    if (LoggerConfig.shouldFilterLog(message)) return false;
+    return true;
+  }
+}

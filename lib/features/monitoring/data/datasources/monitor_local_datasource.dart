@@ -4,6 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:battery_plus/battery_plus.dart';
+import '../../../../core/services/logger/logger_service.dart';
 import '../../../../core/storage/hive_storage_service.dart';
 import '../../../../data/repositories/monitor_repository.dart';
 import '../models/monitor_hive_adapters.dart';
@@ -185,15 +186,19 @@ class MonitorLocalDataSource {
 
       if (changed) {
         await _storage.put(key, compressedList);
-        debugPrint(
-            '[MonitorLocalDataSource] Compressed $key: ${list.length} -> ${compressedList.length}');
+        appLogger.dWithPackage(
+          'features.monitoring.local_data_source',
+          'Compressed $key: ${list.length} -> ${compressedList.length}',
+        );
       }
     }
 
     if (keysToDelete.isNotEmpty) {
       await _storage.deleteAll(keysToDelete);
-      debugPrint(
-          '[MonitorLocalDataSource] Deleted ${keysToDelete.length} old keys');
+      appLogger.iWithPackage(
+        'features.monitoring.local_data_source',
+        'Deleted ${keysToDelete.length} old keys',
+      );
     }
   }
 
@@ -235,15 +240,20 @@ class MonitorLocalDataSource {
     // 检查网络（仅Wi-Fi）
     final connectivityResult = await _connectivity.checkConnectivity();
     if (!connectivityResult.contains(ConnectivityResult.wifi)) {
-      debugPrint('[MonitorLocalDataSource] Upload skipped: Not on Wi-Fi');
+      appLogger.dWithPackage(
+        'features.monitoring.local_data_source',
+        'Upload skipped: Not on Wi-Fi',
+      );
       return;
     }
 
     // 检查电量 (>30%)
     final batteryLevel = await _battery.batteryLevel;
     if (batteryLevel <= 30) {
-      debugPrint(
-          '[MonitorLocalDataSource] Upload skipped: Battery low ($batteryLevel%)');
+      appLogger.dWithPackage(
+        'features.monitoring.local_data_source',
+        'Upload skipped: Battery low ($batteryLevel%)',
+      );
       return;
     }
 
@@ -277,9 +287,16 @@ class MonitorLocalDataSource {
       try {
         await _mockUpload(key, rawList.cast<MonitorDataPoint>().toList());
         await _storage.delete(key);
-        debugPrint('[MonitorLocalDataSource] Uploaded and deleted $key');
+        appLogger.iWithPackage(
+          'features.monitoring.local_data_source',
+          'Uploaded and deleted $key',
+        );
       } catch (e) {
-        debugPrint('[MonitorLocalDataSource] Failed to upload $key: $e');
+        appLogger.wWithPackage(
+          'features.monitoring.local_data_source',
+          'Failed to upload $key',
+          error: e,
+        );
         // 加入重试队列
         await _queueStorage.put(key, {
           'key': key,
@@ -316,7 +333,9 @@ class MonitorLocalDataSource {
     if (DateTime.now().second % 10 == 0) {
       throw Exception('Upload failed (simulated)');
     }
-    debugPrint(
-        '[MonitorLocalDataSource] Uploaded ${data.length} points for $key');
+    appLogger.dWithPackage(
+      'features.monitoring.local_data_source',
+      'Uploaded ${data.length} points for $key',
+    );
   }
 }

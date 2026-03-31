@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import '../services/logger/logger_service.dart';
 import 'storage_service.dart';
 
 /// 基于Hive的存储服务实现
@@ -56,7 +56,11 @@ class HiveStorageService implements StorageService {
         _box = await Hive.openBox(boxName);
       }
     } catch (e) {
-      debugPrint('[HiveStorage] Error opening box $boxName: $e');
+      appLogger.eWithPackage(
+        'core.storage.hive_storage',
+        'Error opening box $boxName',
+        error: e,
+      );
       // 如果打开失败（可能是密钥不匹配或数据损坏），尝试删除并重新打开
       await Hive.deleteBoxFromDisk(boxName);
       if (isEncrypted && encryptionKey != null) {

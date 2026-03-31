@@ -43,10 +43,11 @@ class LoggerConfig {
 
   /// 日志输出配置
   static const bool enableConsoleOutput = true;
-  static const bool enableFileOutput = false;
+  static const bool enableFileOutput = true;
   static const String logFileName = 'app_logs.txt';
   static const int maxLogFileSize = 10 * 1024 * 1024;
   static const int maxLogFiles = 5;
+  static const int logRetentionDays = 30;
 
   /// 日志过滤配置
   static const List<String> excludedLogTags = [

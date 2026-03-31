@@ -182,7 +182,6 @@ MonitorMetricsSnapshot parseMetricsResponse(dynamic data, DateTime timestamp) {
     if (lastValue is! Map<String, dynamic>) continue;
 
     // Keep parsing silent in isolate to avoid side effects and output noise.
-    // print('[MonitorRepository] Parsing param=$param, lastValue keys: ${lastValue.keys.toList()}');
 
     switch (param) {
       case 'base':

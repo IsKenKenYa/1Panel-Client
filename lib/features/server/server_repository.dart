@@ -1,6 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/network/api_client_manager.dart';
+import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/repositories/monitor_repository.dart';
 import 'server_models.dart';
 
@@ -55,8 +55,12 @@ class ServerRepository {
         load: metrics.load1,
       );
     } catch (e, stack) {
-      debugPrint('[ServerRepository] Error loading metrics: $e');
-      debugPrint('[ServerRepository] Stack: $stack');
+      appLogger.eWithPackage(
+        'features.server.repository',
+        'Error loading server metrics',
+        error: e,
+        stackTrace: stack,
+      );
       return const ServerMetricsSnapshot();
     }
   }
