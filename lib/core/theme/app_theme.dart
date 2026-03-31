@@ -28,7 +28,7 @@ class AppTheme {
     ColorScheme? dynamicScheme,
   }) {
     if (dynamicScheme != null && _supportsMaterialYouPlatform) {
-      return dynamicScheme.copyWith(brightness: brightness);
+      return dynamicScheme;
     }
 
     return ColorScheme.fromSeed(

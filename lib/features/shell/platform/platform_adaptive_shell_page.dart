@@ -22,7 +22,7 @@ class PlatformAdaptiveShellPage extends StatefulWidget {
   const PlatformAdaptiveShellPage({
     super.key,
     this.initialIndex = 0,
-  }) : assert(initialIndex >= 0, 'initialIndex must be non-negative');
+  });
 
   final int initialIndex;
 
@@ -414,7 +414,7 @@ class _AndroidLargeScreenShellScaffold extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
     final navItems = _navigationMeta(context);
-    final activeMeta = navItems[index.clamp(0, navItems.length - 1)];
+    final activeMeta = navItems[index];
     return Scaffold(
       body: Row(
         children: [
@@ -507,10 +507,7 @@ class _IosPhoneShellScaffold extends StatelessWidget {
           ),
         ],
       ),
-      tabBuilder: (context, tabIndex) {
-        final safeIndex = tabIndex.clamp(0, pages.length - 1);
-        return pages[safeIndex];
-      },
+      tabBuilder: (context, tabIndex) => pages[tabIndex],
     );
   }
 }
