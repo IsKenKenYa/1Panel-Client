@@ -8,15 +8,15 @@ import 'package:onepanelapp_app/core/i18n/l10n_x.dart';
 import 'package:onepanelapp_app/features/files/files_page.dart';
 import 'package:onepanelapp_app/features/security/security_verification_page.dart';
 import 'package:onepanelapp_app/features/server/server_list_page.dart';
+import 'package:onepanelapp_app/features/shell/platform/macos/macos_appearance_channel.dart';
+import 'package:onepanelapp_app/features/shell/platform/macos/macos_appearance_context_model.dart';
 import 'package:onepanelapp_app/pages/settings/settings_page.dart';
 import 'package:onepanelapp_app/widgets/navigation/app_bottom_navigation_bar.dart';
 
 const double _kTabletBreakpoint = 600;
 // Material 3 large-screen guidance commonly treats >= 960dp as expanded width.
 const double _kAndroidLargeScreenBreakpoint = 960;
-const double _kMacosNavRailSurfaceAlpha = 0.65;
 const double _kMacosNavRailBorderAlpha = 0.45;
-const double _kMacosContentSurfaceAlpha = 0.85;
 const double _kWindowsRailGroupAlignment = -0.95;
 const double _kCupertinoPadSidebarIconSize = 20;
 
@@ -172,7 +172,50 @@ class _MacosShellScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder<MacosAppearanceContextModel>(
+      future: MacosAppearanceChannel.getAppearanceContext(),
+      builder: (context, snapshot) {
+        final appearance = snapshot.data ?? MacosAppearanceContextModel.fallback;
+        return _MacosShellView(
+          index: index,
+          pages: pages,
+          onDestinationSelected: onDestinationSelected,
+          appearance: appearance,
+        );
+      },
+    );
+  }
+}
+
+class _MacosShellView extends StatelessWidget {
+  const _MacosShellView({
+    required this.index,
+    required this.pages,
+    required this.onDestinationSelected,
+    required this.appearance,
+  });
+
+  final int index;
+  final List<Widget> pages;
+  final ValueChanged<int> onDestinationSelected;
+  final MacosAppearanceContextModel appearance;
+
+  @override
+  Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final reduceTransparency = appearance.reduceTransparencyEnabled;
+    final sidebarAlpha = (reduceTransparency
+        ? 1.0
+        : appearance.preferredSidebarAlpha.clamp(0.25, 1.0))
+        .toDouble();
+    final contentAlpha = (reduceTransparency
+        ? 1.0
+        : appearance.preferredContentAlpha.clamp(0.3, 1.0))
+        .toDouble();
+    final blurSigma = (reduceTransparency
+        ? 0.0
+        : appearance.preferredGlassBlurSigma.clamp(0, 40))
+        .toDouble();
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -192,13 +235,16 @@ class _MacosShellScaffold extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                  filter: ImageFilter.blur(
+                    sigmaX: blurSigma,
+                    sigmaY: blurSigma,
+                  ),
                   child: Container(
                     width: 88,
                     decoration: BoxDecoration(
                       // withValues is Flutter's newer API to set alpha/channel values.
                       color: scheme.surface.withValues(
-                        alpha: _kMacosNavRailSurfaceAlpha,
+                        alpha: sidebarAlpha,
                       ),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
@@ -228,7 +274,7 @@ class _MacosShellScaffold extends StatelessWidget {
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       color: scheme.surfaceContainerLow.withValues(
-                        alpha: _kMacosContentSurfaceAlpha,
+                        alpha: contentAlpha,
                       ),
                       border: Border.all(color: scheme.outlineVariant),
                     ),
