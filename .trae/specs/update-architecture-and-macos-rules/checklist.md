@@ -1,0 +1,4 @@
+- [x] `ui_rules.md` 中已经包含 macOS 26 的主要适配与 macOS 15 的基础兼容。
+- [x] `ui_rules.md` 中已经写明其他平台默认真原生 UI，但可以切换为 Dart MDUI3。
+- [x] `project_rules.md` 已经包含了详细的六大架构层（状态管理、服务、数据仓库、数据模型、API与基础、核心配置）的规范。
+- [x] `AGENTS.md` 中的 Architecture & Layering 部分更新了这六大层的细节或关联指引。
