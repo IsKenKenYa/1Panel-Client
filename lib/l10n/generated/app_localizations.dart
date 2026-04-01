@@ -3806,6 +3806,12 @@ abstract class AppLocalizations {
   /// **'System'**
   String get settingsSystem;
 
+  /// No description provided for @settingsAppSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'App'**
+  String get settingsAppSectionTitle;
+
   /// No description provided for @settingsSupport.
   ///
   /// In en, this message translates to:
@@ -3847,6 +3853,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Server management'**
   String get settingsServerManagement;
+
+  /// No description provided for @settingsServerManagementSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage multiple connected servers. Server system settings are only available from each server detail page.'**
+  String get settingsServerManagementSubtitle;
 
   /// No description provided for @settingsResetOnboarding.
   ///
@@ -4436,41 +4448,35 @@ abstract class AppLocalizations {
   /// **'Build'**
   String get aboutBuildLabel;
 
-  /// No description provided for @aboutChannelLabel.
+  /// No description provided for @aboutPackageNameLabel.
   ///
   /// In en, this message translates to:
-  /// **'Channel'**
-  String get aboutChannelLabel;
+  /// **'Package name'**
+  String get aboutPackageNameLabel;
 
-  /// No description provided for @aboutPreviewSectionTitle.
+  /// No description provided for @aboutOfficialDomainLabel.
   ///
   /// In en, this message translates to:
-  /// **'Experimental Preview'**
-  String get aboutPreviewSectionTitle;
+  /// **'Official domain'**
+  String get aboutOfficialDomainLabel;
 
-  /// No description provided for @aboutPreviewSummary.
+  /// No description provided for @aboutProjectSectionTitle.
   ///
   /// In en, this message translates to:
-  /// **'This Android preview build is for early access and collecting user feedback.'**
-  String get aboutPreviewSummary;
+  /// **'Project'**
+  String get aboutProjectSectionTitle;
 
-  /// No description provided for @aboutPreviewNoAutoUpdate.
+  /// No description provided for @aboutProjectSummary.
   ///
   /// In en, this message translates to:
-  /// **'Automatic updates are not available in this preview. Download newer builds from GitHub Pre-release.'**
-  String get aboutPreviewNoAutoUpdate;
+  /// **'1Panel Client is a mobile app for managing 1Panel servers across multiple environments.'**
+  String get aboutProjectSummary;
 
-  /// No description provided for @aboutPreviewFeedback.
+  /// No description provided for @aboutProjectFeatureList.
   ///
   /// In en, this message translates to:
-  /// **'Official feedback channel: GitHub Issues.'**
-  String get aboutPreviewFeedback;
-
-  /// No description provided for @aboutFeedbackSectionTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Feedback'**
-  String get aboutFeedbackSectionTitle;
+  /// **'Core capabilities: multi-server management, file and website operations, terminal access, and status monitoring.'**
+  String get aboutProjectFeatureList;
 
   /// No description provided for @aboutFeedbackAction.
   ///
@@ -4502,6 +4508,12 @@ abstract class AppLocalizations {
   /// **'Repository'**
   String get aboutRepositorySectionTitle;
 
+  /// No description provided for @aboutLinkOpenAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Open link'**
+  String get aboutLinkOpenAction;
+
   /// No description provided for @aboutRepositoryOpenAction.
   ///
   /// In en, this message translates to:
@@ -4523,7 +4535,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutReleaseAction.
   ///
   /// In en, this message translates to:
-  /// **'Open Preview Releases'**
+  /// **'View Releases'**
   String get aboutReleaseAction;
 
   /// No description provided for @aboutLinkOpenFailed.
@@ -4535,19 +4547,19 @@ abstract class AppLocalizations {
   /// No description provided for @aboutExperimentalModulesTitle.
   ///
   /// In en, this message translates to:
-  /// **'Experimental modules'**
+  /// **'Modules'**
   String get aboutExperimentalModulesTitle;
 
   /// No description provided for @aboutExperimentalModulesDescription.
   ///
   /// In en, this message translates to:
-  /// **'Some modules are still being refined for the preview channel and may change based on feedback.'**
+  /// **'Server, websites, containers, databases, firewall, terminal, and monitoring.'**
   String get aboutExperimentalModulesDescription;
 
   /// No description provided for @aboutExperimentalModulesList.
   ///
   /// In en, this message translates to:
-  /// **'Websites, OpenResty, Databases, Firewall, Terminal, Monitoring'**
+  /// **'Server · Websites · Containers · Databases · Firewall · Terminal · Monitoring'**
   String get aboutExperimentalModulesList;
 
   /// No description provided for @dashboardTitle.
@@ -5425,6 +5437,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create, restore, delete system snapshots'**
   String get systemSettingsSnapshotDesc;
+
+  /// No description provided for @systemSettingsBackupAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup Accounts'**
+  String get systemSettingsBackupAccountTitle;
+
+  /// No description provided for @systemSettingsBackupAccountDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage backup storage accounts'**
+  String get systemSettingsBackupAccountDesc;
 
   /// No description provided for @systemSettingsSystemSection.
   ///

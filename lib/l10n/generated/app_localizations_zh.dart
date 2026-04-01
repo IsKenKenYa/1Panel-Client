@@ -1936,6 +1936,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsSystem => '系统';
 
   @override
+  String get settingsAppSectionTitle => '应用';
+
+  @override
   String get settingsSupport => '支持与反馈';
 
   @override
@@ -1955,6 +1958,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsServerManagement => '服务器管理';
+
+  @override
+  String get settingsServerManagementSubtitle =>
+      '管理多台已连接服务器；服务端系统设置仅在对应服务器详情页中提供。';
 
   @override
   String get settingsResetOnboarding => '重新体验新手引导';
@@ -2253,23 +2260,20 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutBuildLabel => '构建号';
 
   @override
-  String get aboutChannelLabel => '发布渠道';
+  String get aboutPackageNameLabel => '包名';
 
   @override
-  String get aboutPreviewSectionTitle => '抢先体验版';
+  String get aboutOfficialDomainLabel => '官方域名';
 
   @override
-  String get aboutPreviewSummary => '当前 Android 版本用于抢先体验和收集早期用户反馈。';
+  String get aboutProjectSectionTitle => '项目简介';
 
   @override
-  String get aboutPreviewNoAutoUpdate =>
-      '当前抢先体验版不支持自动更新，请通过 GitHub Pre-release 获取新版本。';
+  String get aboutProjectSummary =>
+      '1Panel Client 是用于管理 1Panel 服务器的移动客户端，支持多环境统一管理。';
 
   @override
-  String get aboutPreviewFeedback => '官方唯一反馈渠道：GitHub Issues。';
-
-  @override
-  String get aboutFeedbackSectionTitle => '反馈渠道';
+  String get aboutProjectFeatureList => '核心能力：多服务器管理、文件与网站操作、终端访问、运行状态监控。';
 
   @override
   String get aboutFeedbackAction => '打开 GitHub Issues';
@@ -2278,13 +2282,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutFeedbackHint => '欢迎反馈 bug、交互问题和建议，帮助我们继续打磨 1Panel Client。';
 
   @override
-  String get aboutReleaseNotesSectionTitle => '当前版本说明';
+  String get aboutReleaseNotesSectionTitle => '版本更新';
 
   @override
-  String get aboutReleaseNotesBody => '本次抢先体验版重点开放多服务器管理、欢迎引导优化，以及网站管理的早期流程体验。';
+  String get aboutReleaseNotesBody => '可在 Releases 页面查看最新更新说明与变更记录。';
 
   @override
   String get aboutRepositorySectionTitle => '项目仓库';
+
+  @override
+  String get aboutLinkOpenAction => '打开链接';
 
   @override
   String get aboutRepositoryOpenAction => '打开仓库';
@@ -2296,19 +2303,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutRepositorySshLabel => 'SSH';
 
   @override
-  String get aboutReleaseAction => '查看抢先体验版本';
+  String get aboutReleaseAction => '查看 Releases';
 
   @override
   String get aboutLinkOpenFailed => '无法打开链接。';
 
   @override
-  String get aboutExperimentalModulesTitle => '实验性模块';
+  String get aboutExperimentalModulesTitle => '功能模块';
 
   @override
-  String get aboutExperimentalModulesDescription => '以下模块仍在持续打磨中，可能会根据反馈继续调整。';
+  String get aboutExperimentalModulesDescription => '服务器、网站、容器、数据库、防火墙、终端与监控。';
 
   @override
-  String get aboutExperimentalModulesList => '网站、OpenResty、数据库、防火墙、终端、监控';
+  String get aboutExperimentalModulesList => '服务器 · 网站 · 容器 · 数据库 · 防火墙 · 终端 · 监控';
 
   @override
   String get dashboardTitle => '仪表盘';
@@ -2781,6 +2788,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get systemSettingsSnapshotDesc => '创建、恢复、删除系统快照';
+
+  @override
+  String get systemSettingsBackupAccountTitle => '备份账户';
+
+  @override
+  String get systemSettingsBackupAccountDesc => '管理备份存储账户';
 
   @override
   String get systemSettingsSystemSection => '系统信息';

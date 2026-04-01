@@ -157,25 +157,16 @@ class SettingsPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppDesignTokens.spacingLg),
-          Text(l10n.settingsSystem,
+          Text(l10n.settingsAppSectionTitle,
               style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: AppDesignTokens.spacingSm),
           Card(
             child: Column(
               children: [
                 ListTile(
-                  leading: const Icon(Icons.settings_applications_outlined),
-                  title: Text(l10n.systemSettingsTitle),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => Navigator.pushNamed(
-                    context,
-                    AppRoutes.systemSettings,
-                  ),
-                ),
-                const Divider(height: 1),
-                ListTile(
                   leading: const Icon(Icons.dns_outlined),
                   title: Text(l10n.settingsServerManagement),
+                  subtitle: Text(l10n.settingsServerManagementSubtitle),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => Navigator.pushNamed(context, AppRoutes.server),
                 ),

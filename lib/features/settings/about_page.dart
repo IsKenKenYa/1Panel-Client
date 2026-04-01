@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:onepanel_client/core/config/release_channel_config.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 
 class AboutPage extends StatefulWidget {
   const AboutPage({super.key});
 
+  static const officialDomainName = 'onepanel.iskenkenya.com';
+  static const officialDomainUrl = 'https://$officialDomainName';
   static const repoSsh = 'git@github.com:IsKenKenYa/1Panel-Client.git';
   static const repoHttps = 'https://github.com/IsKenKenYa/1Panel-Client.git';
   static const issuesUrl = 'https://github.com/IsKenKenYa/1Panel-Client/issues';
@@ -31,7 +32,6 @@ class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final channelLabel = _channelLabelForL10n(l10n);
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.aboutPageTitle),
@@ -60,65 +60,50 @@ class _AboutPageState extends State<AboutPage> {
                     ),
                     const Divider(height: 24),
                     _InfoRow(
-                      label: l10n.aboutChannelLabel,
-                      value: channelLabel,
+                      label: l10n.aboutPackageNameLabel,
+                      value: packageInfo?.packageName ?? '-',
                     ),
-                  ],
-                ),
-              ),
-              if (AppReleaseChannelConfig.isPreviewFamily) ...[
-                const SizedBox(height: AppDesignTokens.spacingLg),
-                _SectionCard(
-                  title: l10n.aboutPreviewSectionTitle,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(l10n.aboutPreviewSummary),
-                      const SizedBox(height: AppDesignTokens.spacingSm),
-                      Text(l10n.aboutPreviewNoAutoUpdate),
-                      const SizedBox(height: AppDesignTokens.spacingSm),
-                      Text(l10n.aboutPreviewFeedback),
-                      const SizedBox(height: AppDesignTokens.spacingMd),
-                      FilledButton.tonalIcon(
-                        onPressed: () =>
-                            _openLink(context, AboutPage.releasesUrl),
-                        icon: const Icon(Icons.open_in_new),
-                        label: Text(l10n.aboutReleaseAction),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-              const SizedBox(height: AppDesignTokens.spacingLg),
-              _SectionCard(
-                title: l10n.aboutFeedbackSectionTitle,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(l10n.aboutFeedbackHint),
-                    const SizedBox(height: AppDesignTokens.spacingMd),
-                    FilledButton.icon(
-                      onPressed: () => _openLink(context, AboutPage.issuesUrl),
-                      icon: const Icon(Icons.feedback_outlined),
-                      label: Text(l10n.aboutFeedbackAction),
+                    const Divider(height: 24),
+                    _LinkRow(
+                      label: l10n.aboutOfficialDomainLabel,
+                      value: AboutPage.officialDomainName,
+                      openActionLabel: l10n.aboutLinkOpenAction,
+                      onOpen: () =>
+                          _openLink(context, AboutPage.officialDomainUrl),
+                      onCopy: () =>
+                          _copyText(context, AboutPage.officialDomainName),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: AppDesignTokens.spacingLg),
               _SectionCard(
-                title: l10n.aboutReleaseNotesSectionTitle,
-                child: Text(l10n.aboutReleaseNotesBody),
-              ),
-              const SizedBox(height: AppDesignTokens.spacingLg),
-              _SectionCard(
-                title: l10n.aboutExperimentalModulesTitle,
+                title: l10n.aboutProjectSectionTitle,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(l10n.aboutExperimentalModulesDescription),
+                    Text(l10n.aboutProjectSummary),
                     const SizedBox(height: AppDesignTokens.spacingSm),
-                    Text(l10n.aboutExperimentalModulesList),
+                    Text(l10n.aboutProjectFeatureList),
+                    const SizedBox(height: AppDesignTokens.spacingMd),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        FilledButton.icon(
+                          onPressed: () =>
+                              _openLink(context, AboutPage.issuesUrl),
+                          icon: const Icon(Icons.feedback_outlined),
+                          label: Text(l10n.aboutFeedbackAction),
+                        ),
+                        OutlinedButton.icon(
+                          onPressed: () =>
+                              _openLink(context, AboutPage.releasesUrl),
+                          icon: const Icon(Icons.open_in_new),
+                          label: Text(l10n.aboutReleaseAction),
+                        ),
+                      ],
+                    )
                   ],
                 ),
               ),
@@ -176,9 +161,7 @@ class _HeroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
-    final channelLabel = _channelLabelForL10n(l10n);
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -194,23 +177,9 @@ class _HeroCard extends StatelessWidget {
             ),
             const SizedBox(height: AppDesignTokens.spacingMd),
             Text(
-              l10n.appName,
+              context.l10n.appName,
               style: Theme.of(context).textTheme.headlineSmall,
               textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppDesignTokens.spacingSm),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: colorScheme.tertiaryContainer,
-                borderRadius: BorderRadius.circular(999),
-              ),
-              child: Text(
-                channelLabel,
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      color: colorScheme.onTertiaryContainer,
-                    ),
-              ),
             ),
             if (packageInfo != null) ...[
               const SizedBox(height: AppDesignTokens.spacingSm),
@@ -221,25 +190,17 @@ class _HeroCard extends StatelessWidget {
                     ),
               ),
             ],
+            const SizedBox(height: AppDesignTokens.spacingSm),
+            Text(
+              AboutPage.officialDomainName,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.primary,
+                  ),
+            ),
           ],
         ),
       ),
     );
-  }
-}
-
-String _channelLabelForL10n(AppLocalizations l10n) {
-  switch (AppReleaseChannelConfig.current) {
-    case AppReleaseChannel.preview:
-      return l10n.releaseChannelPreview;
-    case AppReleaseChannel.alpha:
-      return l10n.releaseChannelAlpha;
-    case AppReleaseChannel.beta:
-      return l10n.releaseChannelBeta;
-    case AppReleaseChannel.preRelease:
-      return l10n.releaseChannelPreRelease;
-    case AppReleaseChannel.release:
-      return l10n.releaseChannelRelease;
   }
 }
 
@@ -290,12 +251,14 @@ class _LinkRow extends StatelessWidget {
     required this.value,
     this.onOpen,
     this.onCopy,
+    this.openActionLabel,
   });
 
   final String label;
   final String value;
   final VoidCallback? onOpen;
   final VoidCallback? onCopy;
+  final String? openActionLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -314,7 +277,9 @@ class _LinkRow extends StatelessWidget {
               OutlinedButton.icon(
                 onPressed: onOpen,
                 icon: const Icon(Icons.open_in_new),
-                label: Text(context.l10n.aboutRepositoryOpenAction),
+                label: Text(
+                  openActionLabel ?? context.l10n.aboutRepositoryOpenAction,
+                ),
               ),
             if (onCopy != null)
               OutlinedButton.icon(
