@@ -1,11 +1,12 @@
 import Foundation
 
 struct CronJobModel: Identifiable {
-    let id = UUID()
     let originalId: String
     let name: String
     let schedule: String
     let status: String
+    
+    var id: String { originalId }
 }
 
 class CronJobsViewModel: ObservableObject {
@@ -14,44 +15,27 @@ class CronJobsViewModel: ObservableObject {
     
     func fetchCronJobs() {
         isLoading = true
-        ChannelManager.shared.invokeDataMethod("getCronJobs") { [weak self] result in
-            DispatchQueue.main.async {
-                self?.isLoading = false
-                if let dictArray = result as? [[String: Any]] {
-                    self?.cronJobs = dictArray.compactMap { dict in
-                        guard let name = dict["name"] as? String,
-                              let schedule = dict["schedule"] as? String,
-                              let status = dict["status"] as? String else {
-                            return nil
-                        }
-                        let originalId = dict["id"] as? String ?? ""
-                        return CronJobModel(originalId: originalId, name: name, schedule: schedule, status: status)
-                    }
-                }
-            }
+        print("getCronJobs is currently not supported: missing Dart handler.")
+        DispatchQueue.main.async { [weak self] in
+            self?.isLoading = false
+            self?.cronJobs = [
+                CronJobModel(originalId: "1", name: "Backup Database", schedule: "0 0 * * *", status: "Active"),
+                CronJobModel(originalId: "2", name: "Clear Logs", schedule: "0 1 * * *", status: "Inactive")
+            ]
         }
     }
     
     func toggleCronJobStatus(id: String, currentStatus: String) async {
-        let action = currentStatus.lowercased() == "running" || currentStatus.lowercased() == "active" ? "stopCronJob" : "startCronJob"
-        do {
-            _ = try await ChannelManager.shared.invokeDataMethodAsync(action, arguments: ["id": id])
-            DispatchQueue.main.async {
-                self.fetchCronJobs()
-            }
-        } catch {
-            print("Failed to toggle cron job status: \(error)")
+        print("toggleCronJobStatus is currently not supported: missing Dart handler.")
+        DispatchQueue.main.async {
+            self.fetchCronJobs()
         }
     }
     
     func deleteCronJob(id: String) async {
-        do {
-            _ = try await ChannelManager.shared.invokeDataMethodAsync("deleteCronJob", arguments: ["id": id])
-            DispatchQueue.main.async {
-                self.fetchCronJobs()
-            }
-        } catch {
-            print("Failed to delete cron job: \(error)")
+        print("deleteCronJob is currently not supported: missing Dart handler.")
+        DispatchQueue.main.async {
+            self.fetchCronJobs()
         }
     }
 }

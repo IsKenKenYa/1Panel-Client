@@ -54,6 +54,8 @@ class ChannelManager {
             dataChannel.invokeMethod(method, arguments: arguments) { result in
                 if let flutterError = result as? FlutterError {
                     continuation.resume(throwing: NSError(domain: "FlutterError", code: Int(flutterError.code) ?? -1, userInfo: [NSLocalizedDescriptionKey: flutterError.message ?? "Unknown error"]))
+                } else if result is FlutterMethodNotImplemented {
+                    continuation.resume(throwing: NSError(domain: "FlutterError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Method not implemented"]))
                 } else {
                     continuation.resume(returning: result)
                 }

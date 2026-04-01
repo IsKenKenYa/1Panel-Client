@@ -1,10 +1,11 @@
 import Foundation
 
 struct ServerModel: Identifiable {
-    let id = UUID()
     let originalId: String
     let name: String
     let url: String
+    
+    var id: String { originalId }
 }
 
 class ServersViewModel: ObservableObject {
@@ -31,21 +32,15 @@ class ServersViewModel: ObservableObject {
     }
     
     func deleteServer(id: String) async {
-        do {
-            _ = try await ChannelManager.shared.invokeDataMethodAsync("deleteServer", arguments: ["id": id])
-            DispatchQueue.main.async {
-                self.fetchServers()
-            }
-        } catch {
-            print("Failed to delete server: \(error)")
+        // The corresponding Dart-side handler for deleting servers is not implemented yet.
+        print("deleteServer is currently not supported: missing Dart handler.")
+        DispatchQueue.main.async {
+            self.fetchServers()
         }
     }
     
     func connectServer(id: String) async {
-        do {
-            _ = try await ChannelManager.shared.invokeDataMethodAsync("connectServer", arguments: ["id": id])
-        } catch {
-            print("Failed to connect to server: \(error)")
-        }
+        // The corresponding Dart-side handler for connecting servers is not implemented yet.
+        print("connectServer is currently not supported: missing Dart handler.")
     }
 }

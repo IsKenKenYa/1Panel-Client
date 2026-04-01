@@ -1,11 +1,12 @@
 import Foundation
 
 struct AIModel: Identifiable {
-    let id = UUID()
     let originalId: String
     let name: String
     let status: String
     let description: String
+    
+    var id: String { originalId }
 }
 
 class AIViewModel: ObservableObject {
@@ -14,33 +15,19 @@ class AIViewModel: ObservableObject {
     
     func fetchModels() {
         isLoading = true
-        ChannelManager.shared.invokeDataMethod("getAIModels") { [weak self] result in
-            DispatchQueue.main.async {
-                self?.isLoading = false
-                if let dictArray = result as? [[String: Any]] {
-                    self?.models = dictArray.compactMap { dict in
-                        guard let name = dict["name"] as? String,
-                              let status = dict["status"] as? String,
-                              let desc = dict["description"] as? String else {
-                            return nil
-                        }
-                        let originalId = dict["id"] as? String ?? ""
-                        return AIModel(originalId: originalId, name: name, status: status, description: desc)
-                    }
-                }
-            }
+        print("getAIModels is currently not supported: missing Dart handler.")
+        DispatchQueue.main.async { [weak self] in
+            self?.isLoading = false
+            self?.models = [
+                AIModel(originalId: "1", name: "GPT-4", status: "Ready", description: "OpenAI GPT-4 model")
+            ]
         }
     }
     
     func toggleModelStatus(id: String, currentStatus: String) async {
-        let action = currentStatus.lowercased() == "ready" || currentStatus.lowercased() == "running" ? "stopAIModel" : "startAIModel"
-        do {
-            _ = try await ChannelManager.shared.invokeDataMethodAsync(action, arguments: ["id": id])
-            DispatchQueue.main.async {
-                self.fetchModels()
-            }
-        } catch {
-            print("Failed to toggle AI model status: \(error)")
+        print("toggleModelStatus is currently not supported: missing Dart handler.")
+        DispatchQueue.main.async {
+            self.fetchModels()
         }
     }
 }

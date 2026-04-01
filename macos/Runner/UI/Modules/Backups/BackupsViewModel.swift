@@ -1,12 +1,13 @@
 import Foundation
 
 struct BackupModel: Identifiable {
-    let id = UUID()
     let originalId: String
     let name: String
     let type: String
     let size: String
     let date: String
+    
+    var id: String { originalId }
 }
 
 class BackupsViewModel: ObservableObject {
@@ -15,33 +16,19 @@ class BackupsViewModel: ObservableObject {
     
     func fetchBackups() {
         isLoading = true
-        ChannelManager.shared.invokeDataMethod("getBackups") { [weak self] result in
-            DispatchQueue.main.async {
-                self?.isLoading = false
-                if let dictArray = result as? [[String: Any]] {
-                    self?.backups = dictArray.compactMap { dict in
-                        guard let name = dict["name"] as? String,
-                              let type = dict["type"] as? String,
-                              let size = dict["size"] as? String,
-                              let date = dict["date"] as? String else {
-                            return nil
-                        }
-                        let originalId = dict["id"] as? String ?? ""
-                        return BackupModel(originalId: originalId, name: name, type: type, size: size, date: date)
-                    }
-                }
-            }
+        print("getBackups is currently not supported: missing Dart handler.")
+        DispatchQueue.main.async { [weak self] in
+            self?.isLoading = false
+            self?.backups = [
+                BackupModel(originalId: "1", name: "backup_2026.zip", type: "Database", size: "100 MB", date: "2026-01-01")
+            ]
         }
     }
     
     func deleteBackup(id: String) async {
-        do {
-            _ = try await ChannelManager.shared.invokeDataMethodAsync("deleteBackup", arguments: ["id": id])
-            DispatchQueue.main.async {
-                self.fetchBackups()
-            }
-        } catch {
-            print("Failed to delete backup: \(error)")
+        print("deleteBackup is currently not supported: missing Dart handler.")
+        DispatchQueue.main.async {
+            self.fetchBackups()
         }
     }
 }

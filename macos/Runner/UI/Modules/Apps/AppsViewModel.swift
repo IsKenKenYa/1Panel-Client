@@ -1,11 +1,12 @@
 import Foundation
 
 struct AppModel: Identifiable {
-    let id = UUID()
     let originalId: String
     let name: String
     let status: String
     let version: String
+    
+    var id: String { originalId }
 }
 
 class AppsViewModel: ObservableObject {
@@ -24,7 +25,7 @@ class AppsViewModel: ObservableObject {
                               let version = dict["version"] as? String else {
                             return nil
                         }
-                        let originalId = dict["id"] as? String ?? ""
+                        let originalId = dict["appId"] as? String ?? ""
                         return AppModel(originalId: originalId, name: name, status: status, version: version)
                     }
                 }
@@ -33,25 +34,14 @@ class AppsViewModel: ObservableObject {
     }
     
     func toggleAppStatus(id: String, currentStatus: String) async {
-        let action = currentStatus.lowercased() == "running" ? "stopApp" : "startApp"
-        do {
-            _ = try await ChannelManager.shared.invokeDataMethodAsync(action, arguments: ["id": id])
-            DispatchQueue.main.async {
-                self.fetchApps()
-            }
-        } catch {
-            print("Failed to toggle app status: \(error)")
-        }
+        // Note: The Dart NativeChannelManager currently does not implement "startApp"/"stopApp".
+        // To avoid invoking unsupported method-channel handlers, we no-op here and log instead.
+        print("toggleAppStatus called for id=\(id), currentStatus=\(currentStatus), but start/stop operations are not supported by the current channel implementation.")
     }
     
     func uninstallApp(id: String) async {
-        do {
-            _ = try await ChannelManager.shared.invokeDataMethodAsync("uninstallApp", arguments: ["id": id])
-            DispatchQueue.main.async {
-                self.fetchApps()
-            }
-        } catch {
-            print("Failed to uninstall app: \(error)")
-        }
+        // Note: The Dart NativeChannelManager currently does not implement "uninstallApp".
+        // To avoid invoking an unsupported method-channel handler, we no-op here and log instead.
+        print("uninstallApp called for id=\(id), but uninstall operations are not supported by the current channel implementation.")
     }
 }

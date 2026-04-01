@@ -1,10 +1,11 @@
 import Foundation
 
 struct FileModel: Identifiable {
-    let id = UUID()
     let name: String
     let isDir: Bool
     let path: String
+    
+    var id: String { path }
 }
 
 class FilesViewModel: ObservableObject {
@@ -32,25 +33,20 @@ class FilesViewModel: ObservableObject {
     }
     
     func deleteFile(path: String) async {
-        do {
-            _ = try await ChannelManager.shared.invokeDataMethodAsync("deleteFile", arguments: ["path": path])
-            DispatchQueue.main.async {
-                self.fetchFiles()
-            }
-        } catch {
-            print("Failed to delete file: \(error)")
+        // The Dart-side handler for deleting a file is not implemented.
+        // Do not attempt to call an unsupported method-channel action.
+        print("deleteFile is currently not supported: missing Dart handler.")
+        DispatchQueue.main.async {
+            self.fetchFiles()
         }
     }
     
     func createFolder(name: String) async {
-        do {
-            let newPath = (currentPath as NSString).appendingPathComponent(name)
-            _ = try await ChannelManager.shared.invokeDataMethodAsync("createFolder", arguments: ["path": newPath])
-            DispatchQueue.main.async {
-                self.fetchFiles()
-            }
-        } catch {
-            print("Failed to create folder: \(error)")
+        // The Dart-side handler for creating a folder is not implemented.
+        // Do not attempt to call an unsupported method-channel action.
+        print("createFolder is currently not supported: missing Dart handler.")
+        DispatchQueue.main.async {
+            self.fetchFiles()
         }
     }
 }

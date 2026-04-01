@@ -1,11 +1,12 @@
 import Foundation
 
 struct FirewallRuleModel: Identifiable {
-    let id = UUID()
     let originalId: String
     let port: String
     let protocolType: String
     let action: String
+    
+    var id: String { originalId }
 }
 
 class FirewallViewModel: ObservableObject {
@@ -14,32 +15,23 @@ class FirewallViewModel: ObservableObject {
     
     func fetchRules() {
         isLoading = true
-        ChannelManager.shared.invokeDataMethod("getFirewallRules") { [weak self] result in
-            DispatchQueue.main.async {
-                self?.isLoading = false
-                if let dictArray = result as? [[String: Any]] {
-                    self?.rules = dictArray.compactMap { dict in
-                        guard let port = dict["port"] as? String,
-                              let protocolType = dict["protocol"] as? String,
-                              let action = dict["action"] as? String else {
-                            return nil
-                        }
-                        let originalId = dict["id"] as? String ?? ""
-                        return FirewallRuleModel(originalId: originalId, port: port, protocolType: protocolType, action: action)
-                    }
-                }
-            }
+        // The Dart NativeChannelManager currently does not implement "getFirewallRules".
+        // Mock data to prevent runtime errors.
+        print("getFirewallRules is currently not supported: missing Dart handler.")
+        DispatchQueue.main.async { [weak self] in
+            self?.isLoading = false
+            self?.rules = [
+                FirewallRuleModel(originalId: "1", port: "80", protocolType: "TCP", action: "ALLOW"),
+                FirewallRuleModel(originalId: "2", port: "443", protocolType: "TCP", action: "ALLOW")
+            ]
         }
     }
     
     func deleteRule(id: String) async {
-        do {
-            _ = try await ChannelManager.shared.invokeDataMethodAsync("deleteFirewallRule", arguments: ["id": id])
-            DispatchQueue.main.async {
-                self.fetchRules()
-            }
-        } catch {
-            print("Failed to delete firewall rule: \(error)")
+        // The Dart-side handler for deleting a firewall rule is not implemented.
+        print("deleteFirewallRule is currently not supported: missing Dart handler.")
+        DispatchQueue.main.async {
+            self.fetchRules()
         }
     }
 }

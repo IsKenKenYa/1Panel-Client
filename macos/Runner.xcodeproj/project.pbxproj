@@ -23,7 +23,6 @@
 /* Begin PBXBuildFile section */
 		005328ABD7AA27E35B54EB1E /* FilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D695296FE7F4CF8AAD51CC39 /* FilesView.swift */; };
 		0FA1CBDC5DBB26BAB27A6DE8 /* MonitoringViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F32D7C8CF28CE96026BC83A /* MonitoringViewModel.swift */; };
-		110F152FB93E3CC28FDDDA3B /* MDCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06914210E28222D5801743DC /* MDCard.swift */; };
 		111510452946E14C5FEEF321 /* BackupsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6FDF289CEC86A11BB13AFD /* BackupsViewModel.swift */; };
 		1340692886F147A17871E1A0 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06A7AA990C66B443341AF71 /* ThemeManager.swift */; };
 		17D0872E901FDA10BCF5F543 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF3D4C71EBCEB9269A64E4CB /* SettingsViewModel.swift */; };
@@ -40,7 +39,6 @@
 		530C968689A5A6FB97BF2420 /* MainShellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0BC2233618547B92F673F5 /* MainShellView.swift */; };
 		533AEE81E936D419173E6EF7 /* CronJobsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A19A19386E923399B4C897D /* CronJobsView.swift */; };
 		55DB8C99F80388DAF67C36CD /* ContainersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177F320876FF80E1571539BD /* ContainersView.swift */; };
-		5C04F1493990CF589261E7A4 /* MDList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81E5BCECF7D5C86DD9229ABE /* MDList.swift */; };
 		60294A6DB03EE53394C3C5FF /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 209AE8B3C37542ADB93A414C /* Pods_RunnerTests.framework */; };
 		66576C4E05B5CE69DE8F3805 /* MonitoringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27083B4A316AB0649198636F /* MonitoringView.swift */; };
 		6AF2AAF7024100B15A7198ED /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC49FC168D1872E8BD3543AC /* SidebarView.swift */; };
@@ -100,7 +98,6 @@
 /* Begin PBXFileReference section */
 		030E5442101A5308C9BEEE86 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		03EA651BE7A119BC2C44C711 /* SettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		06914210E28222D5801743DC /* MDCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MDCard.swift; sourceTree = "<group>"; };
 		09F043111F83E145A5A7DA53 /* ServersView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ServersView.swift; sourceTree = "<group>"; };
 		106BB078AA6F1C5B39F3EF0E /* ContainersViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContainersViewModel.swift; sourceTree = "<group>"; };
 		13C6BF85241F60E51282F495 /* TranslationsManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TranslationsManager.swift; sourceTree = "<group>"; };
@@ -136,7 +133,6 @@
 		6A19A19386E923399B4C897D /* CronJobsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CronJobsView.swift; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		80C069787796F00C193F33ED /* WebsitesViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WebsitesViewModel.swift; sourceTree = "<group>"; };
-		81E5BCECF7D5C86DD9229ABE /* MDList.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MDList.swift; sourceTree = "<group>"; };
 		81F8953E102D3383A40212CA /* FlutterContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FlutterContentView.swift; sourceTree = "<group>"; };
 		85B643A248A96F71A6868F7B /* MainShellViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainShellViewController.swift; sourceTree = "<group>"; };
 		8718D639F653E6D627FB8A70 /* WebsitesView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WebsitesView.swift; sourceTree = "<group>"; };
@@ -449,8 +445,6 @@
 		D32B0B965E420CB2E8215615 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				06914210E28222D5801743DC /* MDCard.swift */,
-				81E5BCECF7D5C86DD9229ABE /* MDList.swift */,
 				F0108EE28A3CEF5C75F7574F /* VisualEffectView.swift */,
 			);
 			name = Components;
@@ -714,8 +708,6 @@
 				D8360517223F1A98F03F7D8B /* ChannelManager.swift in Sources */,
 				954508EB2FC0D3E417CAB6E4 /* TranslationsManager.swift in Sources */,
 				1340692886F147A17871E1A0 /* ThemeManager.swift in Sources */,
-				110F152FB93E3CC28FDDDA3B /* MDCard.swift in Sources */,
-				5C04F1493990CF589261E7A4 /* MDList.swift in Sources */,
 				6AF2AAF7024100B15A7198ED /* SidebarView.swift in Sources */,
 				1AD149F8343E02CAA80FC3BB /* FlutterContentView.swift in Sources */,
 				530C968689A5A6FB97BF2420 /* MainShellView.swift in Sources */,

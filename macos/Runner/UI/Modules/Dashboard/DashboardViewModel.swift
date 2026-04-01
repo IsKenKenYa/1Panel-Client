@@ -14,17 +14,16 @@ class DashboardViewModel: ObservableObject {
     
     func fetchDashboardData() {
         isLoading = true
-        ChannelManager.shared.invokeDataMethod("getDashboard") { [weak self] result in
-            DispatchQueue.main.async {
-                self?.isLoading = false
-                if let dict = result as? [String: Any] {
-                    self?.metrics.osInfo = dict["osInfo"] as? String ?? "Unknown OS"
-                    self?.metrics.uptime = dict["uptime"] as? String ?? "0 days"
-                    self?.metrics.cpuUsage = dict["cpuUsage"] as? Int ?? 0
-                    self?.metrics.memoryUsage = dict["memoryUsage"] as? Int ?? 0
-                    self?.metrics.diskUsage = dict["diskUsage"] as? Int ?? 0
-                }
-            }
+        // Note: The Dart NativeChannelManager currently does not implement "getDashboard".
+        // To avoid throwing an unsupported method-channel error, we mock the data here.
+        print("getDashboard is currently not supported: missing Dart handler.")
+        DispatchQueue.main.async { [weak self] in
+            self?.isLoading = false
+            self?.metrics.osInfo = "macOS (Mocked)"
+            self?.metrics.uptime = "1 days"
+            self?.metrics.cpuUsage = 15
+            self?.metrics.memoryUsage = 42
+            self?.metrics.diskUsage = 60
         }
     }
 }

@@ -1,11 +1,12 @@
 import Foundation
 
 struct ContainerModel: Identifiable {
-    let id = UUID()
     let originalId: String
     let name: String
     let image: String
     let state: String
+    
+    var id: String { originalId }
 }
 
 class ContainersViewModel: ObservableObject {
@@ -33,36 +34,30 @@ class ContainersViewModel: ObservableObject {
     }
     
     func toggleContainerState(id: String, currentState: String) async {
-        let action = currentState.lowercased() == "running" ? "stopContainer" : "startContainer"
-        do {
-            _ = try await ChannelManager.shared.invokeDataMethodAsync(action, arguments: ["id": id])
-            DispatchQueue.main.async {
-                self.fetchContainers()
-            }
-        } catch {
-            print("Failed to toggle container state: \(error)")
+        // The corresponding Dart-side handlers for starting/stopping containers
+        // are not implemented yet. Avoid invoking unsupported method-channel
+        // actions and simply refresh the container list instead.
+        print("toggleContainerState is currently not supported: missing Dart handler for container state change.")
+        DispatchQueue.main.async {
+            self.fetchContainers()
         }
     }
     
     func restartContainer(id: String) async {
-        do {
-            _ = try await ChannelManager.shared.invokeDataMethodAsync("restartContainer", arguments: ["id": id])
-            DispatchQueue.main.async {
-                self.fetchContainers()
-            }
-        } catch {
-            print("Failed to restart container: \(error)")
+        // The Dart-side handler for restarting a container is not implemented.
+        // Do not attempt to call an unsupported method-channel action.
+        print("restartContainer is currently not supported: missing Dart handler for restarting containers.")
+        DispatchQueue.main.async {
+            self.fetchContainers()
         }
     }
     
     func deleteContainer(id: String) async {
-        do {
-            _ = try await ChannelManager.shared.invokeDataMethodAsync("deleteContainer", arguments: ["id": id])
-            DispatchQueue.main.async {
-                self.fetchContainers()
-            }
-        } catch {
-            print("Failed to delete container: \(error)")
+        // The Dart-side handler for deleting a container is not implemented.
+        // Do not attempt to call an unsupported method-channel action.
+        print("deleteContainer is currently not supported: missing Dart handler for deleting containers.")
+        DispatchQueue.main.async {
+            self.fetchContainers()
         }
     }
 }
