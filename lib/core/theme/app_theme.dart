@@ -38,7 +38,7 @@ class AppTheme {
   }
 
   static bool get _supportsMaterialYouPlatform {
-    // DynamicColorBuilder provides Material You palettes on Android devices.
+    // Gate used by theme resolution to apply dynamic colors only on Android.
     if (kIsWeb) {
       return false;
     }

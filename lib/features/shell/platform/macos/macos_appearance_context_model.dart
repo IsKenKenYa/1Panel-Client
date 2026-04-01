@@ -1,3 +1,7 @@
+/// macOS native window appearance/material context returned via platform channel.
+///
+/// Contains appearance mode, accessibility toggles, and recommended visual tuning
+/// values that Flutter shell can use to better match NSVisualEffect behavior.
 class MacosAppearanceContextModel {
   const MacosAppearanceContextModel({
     required this.isDarkMode,

@@ -3,6 +3,10 @@ import 'package:onepanelapp_app/core/services/logger/logger_service.dart';
 
 import 'macos_appearance_context_model.dart';
 
+/// MethodChannel bridge for reading macOS native appearance/material context.
+///
+/// This wraps native calls so shell UI can adapt blur/transparency values with
+/// safe fallbacks when channel access fails.
 class MacosAppearanceChannel {
   const MacosAppearanceChannel._();
 
