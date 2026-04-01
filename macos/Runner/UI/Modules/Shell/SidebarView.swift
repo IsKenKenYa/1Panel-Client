@@ -11,18 +11,18 @@ struct SidebarView: View {
     @EnvironmentObject var translations: TranslationsManager
     
     let items: [SidebarItem] = [
-        SidebarItem(id: "dashboard", titleKey: "navDashboard", symbolName: "gauge.with.dots.needle.bottom.100percent"),
+        SidebarItem(id: "dashboard", titleKey: "serverModuleDashboard", symbolName: "gauge.with.dots.needle.bottom.100percent"),
         SidebarItem(id: "servers", titleKey: "navServer", symbolName: "server.rack"),
         SidebarItem(id: "websites", titleKey: "serverModuleWebsites", symbolName: "globe"),
-        SidebarItem(id: "databases", titleKey: "navDatabases", symbolName: "externaldrive.connected.to.line.below"),
+        SidebarItem(id: "databases", titleKey: "serverModuleDatabases", symbolName: "externaldrive.connected.to.line.below"),
         SidebarItem(id: "containers", titleKey: "serverModuleContainers", symbolName: "square.stack.3d.up"),
         SidebarItem(id: "apps", titleKey: "serverModuleApps", symbolName: "app.badge"),
         SidebarItem(id: "files", titleKey: "navFiles", symbolName: "folder"),
         SidebarItem(id: "monitoring", titleKey: "serverModuleMonitoring", symbolName: "chart.xyaxis.line"),
-        SidebarItem(id: "firewall", titleKey: "navFirewall", symbolName: "network.badge.shield.half.filled"),
-        SidebarItem(id: "cronjobs", titleKey: "navCronjob", symbolName: "timer"),
-        SidebarItem(id: "backups", titleKey: "navBackup", symbolName: "archivebox"),
-        SidebarItem(id: "ai", titleKey: "navAi", symbolName: "cpu.fill"),
+        SidebarItem(id: "firewall", titleKey: "serverModuleFirewall", symbolName: "network.badge.shield.half.filled"),
+        SidebarItem(id: "cronjobs", titleKey: "operationsCronjobsTitle", symbolName: "timer"),
+        SidebarItem(id: "backups", titleKey: "operationsBackupsTitle", symbolName: "archivebox"),
+        SidebarItem(id: "ai", titleKey: "serverModuleAi", symbolName: "cpu.fill"),
         SidebarItem(id: "settings", titleKey: "navSettings", symbolName: "gearshape")
     ]
     

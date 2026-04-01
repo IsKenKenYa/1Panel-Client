@@ -4,7 +4,7 @@ struct AIView: View {
     @StateObject private var viewModel = AIViewModel()
     @EnvironmentObject var theme: ThemeManager
     @EnvironmentObject var translations: TranslationsManager
-    
+
     var body: some View {
         Group {
             if viewModel.isLoading {
@@ -23,36 +23,30 @@ struct AIView: View {
                             Text(model.name)
                         }
                         .contextMenu {
-                            let isReady = model.status.lowercased() == "ready" || model.status.lowercased() == "running"
                             Button(action: {
                                 Task {
-                                    await viewModel.toggleModelStatus(id: model.originalId, currentStatus: model.status)
+                                    await viewModel.deleteModel(id: model.originalId)
                                 }
                             }) {
-                                Text(isReady ? translations.get("stop", fallback: "Stop") : translations.get("start", fallback: "Start"))
-                                Image(systemName: isReady ? "stop.fill" : "play.fill")
+                                Text(translations.get("delete", fallback: "Delete"))
+                                Image(systemName: "trash")
                             }
                         }
                     }
-                    TableColumn(translations.get("ai_model_description", fallback: "Description")) { model in
-                        Text(model.description)
+                    TableColumn(translations.get("ai_model_size", fallback: "Size")) { model in
+                        Text(model.size.isEmpty ? "--" : model.size)
                             .foregroundColor(.secondary)
                     }
-                    TableColumn(translations.get("app_status", fallback: "Status")) { model in
-                        let isReady = model.status.lowercased() == "ready" || model.status.lowercased() == "running"
-                        Text(model.status)
-                            .font(.caption)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(isReady ? Color.green.opacity(0.1) : Color.orange.opacity(0.1))
-                            .foregroundColor(isReady ? .green : .orange)
-                            .cornerRadius(4)
+                    TableColumn(translations.get("ai_model_modified", fallback: "Modified")) { model in
+                        Text(model.modified.isEmpty ? "--" : model.modified)
+                            .foregroundColor(.secondary)
                     }
                 }
                 .tableStyle(.inset)
+                .alternatingRowBackgrounds(.disabled)
             }
         }
-        .navigationTitle(translations.get("navAi", fallback: "AI"))
+        .navigationTitle(translations.get("serverModuleAi", fallback: "AI"))
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 Button(action: {

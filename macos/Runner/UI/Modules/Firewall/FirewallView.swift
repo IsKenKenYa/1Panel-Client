@@ -25,7 +25,7 @@ struct FirewallView: View {
                         .contextMenu {
                             Button(action: {
                                 Task {
-                                    await viewModel.deleteRule(id: rule.originalId)
+                                    await viewModel.deleteRule(rule)
                                 }
                             }) {
                                 Text(translations.get("delete", fallback: "Delete"))
@@ -38,8 +38,8 @@ struct FirewallView: View {
                             .foregroundColor(.secondary)
                     }
                     TableColumn(translations.get("firewall_action", fallback: "Action")) { rule in
-                        let isAllow = rule.action.lowercased() == "allow" || rule.action.lowercased() == "accept"
-                        Text(rule.action)
+                        let isAllow = rule.strategy.lowercased() == "allow" || rule.strategy.lowercased() == "accept"
+                        Text(rule.strategy.isEmpty ? "--" : rule.strategy)
                             .font(.caption)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 4)
@@ -49,9 +49,10 @@ struct FirewallView: View {
                     }
                 }
                 .tableStyle(.inset)
+                .alternatingRowBackgrounds(.disabled)
             }
         }
-        .navigationTitle(translations.get("navFirewall", fallback: "Firewall"))
+        .navigationTitle(translations.get("serverModuleFirewall", fallback: "Firewall"))
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 Button(action: {

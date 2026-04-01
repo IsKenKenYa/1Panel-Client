@@ -12,13 +12,20 @@ class MainFlutterWindow: NSWindow {
     let flutterViewController = FlutterViewController(engine: flutterEngine, nibName: nil, bundle: nil)
     let windowFrame = self.frame
     
+    // Apply base window config before mode is determined
+    configureWindowBase()
+
     let methodChannel = FlutterMethodChannel(name: "com.onepanel.client/method", binaryMessenger: flutterViewController.engine.binaryMessenger)
     methodChannel.invokeMethod("getUIRenderMode", arguments: nil) { [weak self] result in
       guard let self = self else { return }
       let mode = result as? String ?? "native"
       if mode == "md3" {
+        // md3: Flutter renders full window, make window transparent for liquid glass
+        self.isOpaque = false
+        self.backgroundColor = .clear
         self.contentViewController = flutterViewController
       } else {
+        // native: keep system default opaque background so titlebar has material
         let shellViewController = MainShellViewController(flutterViewController: flutterViewController)
         self.contentViewController = shellViewController
       }
@@ -26,17 +33,15 @@ class MainFlutterWindow: NSWindow {
     }
 
     RegisterGeneratedPlugins(registry: flutterViewController)
-    configureVisualEffectWindow()
     setupAppearanceChannel(with: flutterViewController)
 
     super.awakeFromNib()
   }
 
-  private func configureVisualEffectWindow() {
+  /// Base window chrome config (applies to both native and md3 modes).
+  private func configureWindowBase() {
     titlebarAppearsTransparent = true
     titleVisibility = .hidden
-    isOpaque = false
-    backgroundColor = .clear
   }
 
   private func setupAppearanceChannel(with controller: FlutterViewController) {

@@ -1,18 +1,11 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/services.dart';
-import '../../features/server/server_repository.dart';
-import '../../features/files/services/file_browser_service.dart';
-import '../../features/apps/app_service.dart';
-import '../../features/websites/services/websites_service.dart';
-import '../../features/monitoring/monitoring_service.dart';
-import '../../features/containers/container_service.dart';
-import '../services/app_preferences_service.dart';
-import '../services/logger/logger_service.dart';
-import '../theme/ui_render_mode.dart';
-import 'package:flutter/material.dart';
 
+import 'native_channel_read_handlers.dart';
+import 'native_channel_write_handlers.dart';
+
+/// macOS Native Channel 主路由器。
+/// 仅负责初始化 MethodChannel 并将各 method 分发到
+/// [NativeChannelReadHandlers] 或 [NativeChannelWriteHandlers]。
 class NativeChannelManager {
   static const MethodChannel _methodChannel =
       MethodChannel('com.onepanel.client/method');
@@ -22,165 +15,100 @@ class NativeChannelManager {
   }
 
   static Future<dynamic> _handleMethodCall(MethodCall call) async {
+    final args = call.arguments;
     switch (call.method) {
+      // ── Read: 已有 ─────────────────────────────────────────────────────
       case 'getServers':
-        return await _getServers(call.arguments);
+        return NativeChannelReadHandlers.getServers(args);
       case 'getFiles':
-        return await _getFiles(call.arguments);
+        return NativeChannelReadHandlers.getFiles(args);
       case 'getApps':
-        return await _getApps(call.arguments);
+        return NativeChannelReadHandlers.getApps(args);
       case 'getWebsites':
-        return await _getWebsites(call.arguments);
+        return NativeChannelReadHandlers.getWebsites(args);
       case 'getMonitoring':
-        return await _getMonitoring(call.arguments);
+        return NativeChannelReadHandlers.getMonitoring(args);
       case 'getContainers':
-        return await _getContainers(call.arguments);
+        return NativeChannelReadHandlers.getContainers(args);
       case 'getSettings':
-        return await _getSettings(call.arguments);
+        return NativeChannelReadHandlers.getSettings(args);
       case 'getTranslations':
-        return await _getTranslations();
+        return NativeChannelReadHandlers.getTranslations();
       case 'getUIRenderMode':
-        return await _getUIRenderMode();
+        return NativeChannelReadHandlers.getUIRenderMode();
+
+      // ── Read: 新增 ─────────────────────────────────────────────────────
+      case 'getDashboard':
+        return NativeChannelReadHandlers.getDashboard(args);
+      case 'getDatabases':
+        return NativeChannelReadHandlers.getDatabases(args);
+      case 'getFirewallRules':
+        return NativeChannelReadHandlers.getFirewallRules(args);
+      case 'getCronJobs':
+        return NativeChannelReadHandlers.getCronJobs(args);
+      case 'getBackups':
+        return NativeChannelReadHandlers.getBackups(args);
+      case 'getAIModels':
+        return NativeChannelReadHandlers.getAIModels(args);
+
+      // ── Write: 服务器 ───────────────────────────────────────────────────
+      case 'connectServer':
+        return NativeChannelWriteHandlers.connectServer(args);
+      case 'deleteServer':
+        return NativeChannelWriteHandlers.deleteServer(args);
+
+      // ── Write: 网站 ─────────────────────────────────────────────────────
+      case 'toggleWebsiteStatus':
+        return NativeChannelWriteHandlers.toggleWebsiteStatus(args);
+      case 'deleteWebsite':
+        return NativeChannelWriteHandlers.deleteWebsite(args);
+
+      // ── Write: 容器 ─────────────────────────────────────────────────────
+      case 'toggleContainerState':
+        return NativeChannelWriteHandlers.toggleContainerState(args);
+      case 'restartContainer':
+        return NativeChannelWriteHandlers.restartContainer(args);
+      case 'deleteContainer':
+        return NativeChannelWriteHandlers.deleteContainer(args);
+
+      // ── Write: 应用 ─────────────────────────────────────────────────────
+      case 'startApp':
+        return NativeChannelWriteHandlers.startApp(args);
+      case 'stopApp':
+        return NativeChannelWriteHandlers.stopApp(args);
+      case 'uninstallApp':
+        return NativeChannelWriteHandlers.uninstallApp(args);
+
+      // ── Write: 文件 ─────────────────────────────────────────────────────
+      case 'deleteFile':
+        return NativeChannelWriteHandlers.deleteFile(args);
+      case 'createFolder':
+        return NativeChannelWriteHandlers.createFolder(args);
+
+      // ── Write: 定时任务 ─────────────────────────────────────────────────
+      case 'toggleCronJobStatus':
+        return NativeChannelWriteHandlers.toggleCronJobStatus(args);
+      case 'deleteCronJob':
+        return NativeChannelWriteHandlers.deleteCronJob(args);
+
+      // ── Write: 备份 ─────────────────────────────────────────────────────
+      case 'deleteBackup':
+        return NativeChannelWriteHandlers.deleteBackup(args);
+
+      // ── Write: AI ───────────────────────────────────────────────────────
+      case 'deleteAIModel':
+        return NativeChannelWriteHandlers.deleteAIModel(args);
+
+      // ── Write: 防火墙 ───────────────────────────────────────────────────
+      case 'deleteFirewallRule':
+        return NativeChannelWriteHandlers.deleteFirewallRule(args);
+
+      // ── Write: 缓存 ─────────────────────────────────────────────────────
+      case 'clearCache':
+        return NativeChannelWriteHandlers.clearCache(args);
+
       default:
         throw MissingPluginException();
     }
-  }
-
-  static Future<dynamic> _getContainers(dynamic arguments) async {
-    try {
-      final service = ContainerService();
-      final containers = await service.listContainers();
-      return containers
-          .map((c) => {
-                'id': c.id,
-                'name': c.name,
-                'image': c.image,
-                'status': c.status,
-                'state': c.state,
-                'createTime': c.createTime,
-                'cpuUsage': c.cpuUsage,
-                'memoryUsage': c.memoryUsage,
-              })
-          .toList();
-    } catch (e) {
-      appLogger.e('Failed to get containers for native: $e');
-      return [];
-    }
-  }
-
-  static Future<dynamic> _getTranslations() async {
-    final prefs = AppPreferencesService();
-    var locale = await prefs.loadLocale();
-    if (locale == null) {
-      final sysLocale = Platform.localeName;
-      if (sysLocale.startsWith('zh')) {
-        locale = const Locale('zh');
-      } else {
-        locale = const Locale('en');
-      }
-    }
-    
-    String arbPath = 'lib/l10n/app_en.arb';
-    if (locale.languageCode == 'zh') {
-      arbPath = 'lib/l10n/app_zh.arb';
-    }
-    
-    try {
-      final jsonString = await rootBundle.loadString(arbPath);
-      final Map<String, dynamic> translations = jsonDecode(jsonString);
-      translations.removeWhere((key, value) => key.startsWith('@'));
-      return translations;
-    } catch (e) {
-      appLogger.e('Failed to load translations: $e');
-      return {};
-    }
-  }
-
-  static Future<String> _getUIRenderMode() async {
-    final prefs = AppPreferencesService();
-    final mode = await prefs.loadUIRenderMode();
-    return mode == UIRenderMode.native ? 'native' : 'md3';
-  }
-
-  static Future<dynamic> _getServers(dynamic arguments) async {
-    final repository = ServerRepository();
-    final servers = await repository.loadServerCards();
-    return servers
-        .map((s) => {
-              'id': s.config.id,
-              'name': s.config.name,
-              'url': s.config.url,
-              'isCurrent': s.isCurrent,
-              'cpu': s.metrics.cpuPercent,
-              'memory': s.metrics.memoryPercent,
-            })
-        .toList();
-  }
-
-  static Future<dynamic> _getFiles(dynamic arguments) async {
-    final service = FileBrowserService();
-    final path = arguments?['path'] as String? ?? '/';
-    final files = await service.getFiles(path: path);
-    return files
-        .map((f) => {
-              'name': f.name,
-              'path': f.path,
-              'isDir': f.isDir,
-              'size': f.size,
-              'modTime': f.modifiedAt?.millisecondsSinceEpoch ?? 0,
-            })
-        .toList();
-  }
-
-  static Future<dynamic> _getApps(dynamic arguments) async {
-    final service = AppService();
-    final apps = await service.getInstalledApps();
-    return apps
-        .map((a) => {
-              'name': a.name,
-              'status': a.status,
-              'version': a.version,
-              'appId': a.appId,
-            })
-        .toList();
-  }
-
-  static Future<dynamic> _getWebsites(dynamic arguments) async {
-    final service = WebsitesService();
-    final websites = await service.fetchWebsites();
-    return websites
-        .map((w) => {
-              'id': w.id,
-              'primaryDomain': w.primaryDomain,
-              'status': w.status,
-              'remark': w.remark,
-              'createdAt': w.createdAt,
-            })
-        .toList();
-  }
-
-  static Future<dynamic> _getSettings(dynamic arguments) async {
-    final prefs = AppPreferencesService();
-    final mode = await prefs.loadUIRenderMode();
-    var locale = await prefs.loadLocale();
-    
-    return {
-      'renderMode': mode == UIRenderMode.native ? 'native' : 'md3',
-      'language': locale?.languageCode ?? 'system',
-      'version': '0.5.0-alpha.1' // fallback version
-    };
-  }
-
-  static Future<dynamic> _getMonitoring(dynamic arguments) async {
-    final service = MonitoringService();
-    final metrics = await service.getCurrentMetrics();
-    return {
-      'cpu': metrics.cpuPercent,
-      'memory': metrics.memoryPercent,
-      'disk': metrics.diskPercent,
-      'load1': metrics.load1,
-      'load5': metrics.load5,
-      'load15': metrics.load15,
-    };
   }
 }

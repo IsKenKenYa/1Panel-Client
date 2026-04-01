@@ -27,9 +27,9 @@ struct DashboardView: View {
                         }
                         
                         HStack(spacing: 16) {
-                            MetricCard(title: "CPU Usage", value: "\(viewModel.metrics.cpuUsage)%", icon: "cpu")
-                            MetricCard(title: "Memory Usage", value: "\(viewModel.metrics.memoryUsage)%", icon: "memorychip")
-                            MetricCard(title: "Disk Usage", value: "\(viewModel.metrics.diskUsage)%", icon: "internaldrive")
+                            MetricCard(title: "CPU Usage", value: String(format: "%.1f%%", viewModel.metrics.cpuUsage), icon: "cpu")
+                            MetricCard(title: "Memory", value: viewModel.metrics.memoryUsageText, icon: "memorychip")
+                            MetricCard(title: "Disk", value: viewModel.metrics.diskUsageText, icon: "internaldrive")
                         }
                         
                         Spacer()
@@ -38,7 +38,7 @@ struct DashboardView: View {
                 }
             }
         }
-        .navigationTitle(translations.get("navDashboard", fallback: "Dashboard"))
+        .navigationTitle(translations.get("serverModuleDashboard", fallback: "Dashboard"))
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 Button(action: {

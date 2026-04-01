@@ -49,9 +49,10 @@ struct DatabasesView: View {
                     }
                 }
                 .tableStyle(.inset)
+                .alternatingRowBackgrounds(.disabled)
             }
         }
-        .navigationTitle(translations.get("navDatabases", fallback: "Databases"))
+        .navigationTitle(translations.get("serverModuleDatabases", fallback: "Databases"))
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 Button(action: {

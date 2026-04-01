@@ -47,9 +47,10 @@ struct BackupsView: View {
                     }
                 }
                 .tableStyle(.inset)
+                .alternatingRowBackgrounds(.disabled)
             }
         }
-        .navigationTitle(translations.get("navBackup", fallback: "Backups"))
+        .navigationTitle(translations.get("operationsBackupsTitle", fallback: "Backups"))
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 Button(action: {

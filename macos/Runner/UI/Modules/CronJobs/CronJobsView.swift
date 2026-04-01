@@ -60,9 +60,10 @@ struct CronJobsView: View {
                     }
                 }
                 .tableStyle(.inset)
+                .alternatingRowBackgrounds(.disabled)
             }
         }
-        .navigationTitle(translations.get("navCronjob", fallback: "Cron Jobs"))
+        .navigationTitle(translations.get("operationsCronjobsTitle", fallback: "Cron Jobs"))
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 Button(action: {
