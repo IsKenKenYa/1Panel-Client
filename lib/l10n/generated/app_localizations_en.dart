@@ -1999,6 +1999,19 @@ class AppLocalizationsEn extends AppLocalizations {
       'Language updates apply immediately. If not specified, the app follows system settings.';
 
   @override
+  String get settingsUIRenderMode => 'UI Render Mode';
+
+  @override
+  String get settingsUIRenderModeNative => 'Native';
+
+  @override
+  String get settingsUIRenderModeMD3 => 'MDUI3';
+
+  @override
+  String get settingsUIRenderModeRestartHint =>
+      'Please restart the app for the UI render mode changes to take effect.';
+
+  @override
   String get settingsTheme => 'Theme';
 
   @override

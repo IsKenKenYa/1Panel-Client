@@ -1,0 +1,6 @@
+- [x] `ThemeController` 中成功添加并持久化了 `uiRenderMode` 状态。
+- [x] 原生端 (macOS/iOS/Windows/Linux) 启动时能正确根据 MethodChannel 异步获取 `uiRenderMode`，决定显示全屏的 Flutter 视图还是原生的应用壳层。
+- [x] Flutter 端成功暴漏了所有的核心业务模块数据接口（如 Apps, Websites, Monitoring）。
+- [x] 原生端成功实现了所有核心业务模块（Apps, Websites, Monitoring）的原生 UI 界面呈现。
+- [x] Flutter 端和原生端的设置页面均提供了 UI 渲染模式 (Native vs MDUI3) 的切换入口。
+- [x] 切换 UI 渲染模式后，应用行为符合预期，非 Android 平台能够自如地在纯原生和纯 Flutter MDUI3 界面之间切换。

@@ -5,10 +5,25 @@ class MainFlutterWindow: NSWindow {
   private var appearanceChannel: FlutterMethodChannel?
 
   override func awakeFromNib() {
-    let flutterViewController = FlutterViewController()
+    let project = FlutterDartProject()
+    let flutterEngine = FlutterEngine(name: "io.flutter", project: project)
+    flutterEngine.run(withEntrypoint: nil)
+
+    let flutterViewController = FlutterViewController(engine: flutterEngine, nibName: nil, bundle: nil)
     let windowFrame = self.frame
-    self.contentViewController = flutterViewController
-    self.setFrame(windowFrame, display: true)
+    
+    let methodChannel = FlutterMethodChannel(name: "com.onepanel.client/method", binaryMessenger: flutterViewController.engine.binaryMessenger)
+    methodChannel.invokeMethod("getUIRenderMode", arguments: nil) { [weak self] result in
+      guard let self = self else { return }
+      let mode = result as? String ?? "native"
+      if mode == "md3" {
+        self.contentViewController = flutterViewController
+      } else {
+        let shellViewController = MainShellViewController(flutterViewController: flutterViewController)
+        self.contentViewController = shellViewController
+      }
+      self.setFrame(windowFrame, display: true)
+    }
 
     RegisterGeneratedPlugins(registry: flutterViewController)
     configureVisualEffectWindow()

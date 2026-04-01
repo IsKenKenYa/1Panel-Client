@@ -5,6 +5,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/services/app_settings_controller.dart';
 import 'package:onepanel_client/core/services/onboarding_service.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/core/theme/ui_render_mode.dart';
 import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/features/settings/about_page.dart';
 import 'package:onepanel_client/features/settings/app_lock_settings_page.dart';
@@ -109,6 +110,64 @@ class _SettingsBody extends StatelessWidget {
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () => Navigator.pushNamed(
                         context, AppRoutes.settingsLanguage),
+                  );
+                },
+              ),
+              const Divider(height: 1),
+              Consumer<AppSettingsController>(
+                builder: (context, settings, _) {
+                  return ListTile(
+                    leading: const Icon(Icons.design_services_outlined),
+                    title: Text(l10n.settingsUIRenderMode),
+                    subtitle: Text(
+                      settings.uiRenderMode == UIRenderMode.native
+                          ? l10n.settingsUIRenderModeNative
+                          : l10n.settingsUIRenderModeMD3,
+                    ),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text(l10n.settingsUIRenderMode),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                RadioListTile<UIRenderMode>(
+                                  title: Text(l10n.settingsUIRenderModeNative),
+                                  value: UIRenderMode.native,
+                                  groupValue: settings.uiRenderMode,
+                                  onChanged: (value) {
+                                    if (value != null) {
+                                      settings.updateUIRenderMode(value);
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text(l10n.settingsUIRenderModeRestartHint)),
+                                      );
+                                    }
+                                  },
+                                ),
+                                RadioListTile<UIRenderMode>(
+                                  title: Text(l10n.settingsUIRenderModeMD3),
+                                  value: UIRenderMode.md3,
+                                  groupValue: settings.uiRenderMode,
+                                  onChanged: (value) {
+                                    if (value != null) {
+                                      settings.updateUIRenderMode(value);
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text(l10n.settingsUIRenderModeRestartHint)),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
                   );
                 },
               ),

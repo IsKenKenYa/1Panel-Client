@@ -5,6 +5,17 @@ final class MainShellViewController: NSSplitViewController, NSToolbarDelegate {
   private let flutterViewController: FlutterViewController
   private let sidebarViewController: MacosSidebarViewController
   private var shellChannel: FlutterMethodChannel?
+  private var dataChannel: FlutterMethodChannel?
+  private var currentModuleId: String?
+  private var serversVC: MacosServersViewController?
+  private var filesVC: MacosFilesViewController?
+  private var appsVC: MacosAppsViewController?
+  private var websitesVC: MacosWebsitesViewController?
+  private var monitoringVC: MacosMonitoringViewController?
+  private var settingsVC: MacosSettingsViewController?
+  private var contentHost: MacosFlutterContentHostViewController?
+  private var contentItem: NSSplitViewItem?
+
   private lazy var toolbar: NSToolbar = {
     let toolbar = NSToolbar(identifier: NSToolbar.Identifier("MainToolbar"))
     toolbar.delegate = self
@@ -30,7 +41,55 @@ final class MainShellViewController: NSSplitViewController, NSToolbarDelegate {
     setupShellChannel()
 
     sidebarViewController.onSelectModule = { [weak self] moduleId in
-      self?.shellChannel?.invokeMethod("selectModule", arguments: ["moduleId": moduleId])
+      self?.handleModuleSelection(moduleId: moduleId)
+    }
+  }
+
+  private func handleModuleSelection(moduleId: String) {
+    self.currentModuleId = moduleId
+    if moduleId == "servers" {
+      if serversVC == nil {
+        serversVC = MacosServersViewController(methodChannel: dataChannel!)
+      }
+      switchToViewController(serversVC!)
+    } else if moduleId == "files" {
+      if filesVC == nil {
+        filesVC = MacosFilesViewController(methodChannel: dataChannel!)
+      }
+      switchToViewController(filesVC!)
+    } else if moduleId == "apps" {
+      if appsVC == nil {
+        appsVC = MacosAppsViewController(methodChannel: dataChannel!)
+      }
+      switchToViewController(appsVC!)
+    } else if moduleId == "websites" {
+      if websitesVC == nil {
+        websitesVC = MacosWebsitesViewController(methodChannel: dataChannel!)
+      }
+      switchToViewController(websitesVC!)
+    } else if moduleId == "monitoring" {
+      if monitoringVC == nil {
+        monitoringVC = MacosMonitoringViewController(methodChannel: dataChannel!)
+      }
+      switchToViewController(monitoringVC!)
+    } else if moduleId == "settings" {
+      if settingsVC == nil {
+        settingsVC = MacosSettingsViewController()
+      }
+      switchToViewController(settingsVC!)
+    } else {
+      switchToViewController(contentHost!)
+      self.shellChannel?.invokeMethod("selectModule", arguments: ["moduleId": moduleId])
+    }
+  }
+
+  private func switchToViewController(_ vc: NSViewController) {
+    guard let contentItem = contentItem else { return }
+    if contentItem.viewController != vc {
+      let newItem = NSSplitViewItem(viewController: vc)
+      removeSplitViewItem(contentItem)
+      addSplitViewItem(newItem)
+      self.contentItem = newItem
     }
   }
 
@@ -42,8 +101,9 @@ final class MainShellViewController: NSSplitViewController, NSToolbarDelegate {
     sidebarItem.minimumThickness = 240
     sidebarItem.maximumThickness = 360
 
-    let contentHost = MacosFlutterContentHostViewController(flutterViewController: flutterViewController)
-    let contentItem = NSSplitViewItem(viewController: contentHost)
+    contentHost = MacosFlutterContentHostViewController(flutterViewController: flutterViewController)
+    let contentItem = NSSplitViewItem(viewController: contentHost!)
+    self.contentItem = contentItem
 
     addSplitViewItem(sidebarItem)
     addSplitViewItem(contentItem)
@@ -59,6 +119,10 @@ final class MainShellViewController: NSSplitViewController, NSToolbarDelegate {
   }
 
   private func setupShellChannel() {
+    dataChannel = FlutterMethodChannel(
+      name: "com.onepanel.client/method",
+      binaryMessenger: flutterViewController.engine.binaryMessenger
+    )
     shellChannel = FlutterMethodChannel(
       name: "onepanel/macos_shell",
       binaryMessenger: flutterViewController.engine.binaryMessenger
@@ -166,4 +230,447 @@ final class MacosFlutterContentHostViewController: NSViewController {
       flutterView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
     ])
   }
+}
+
+
+
+class MacosServersViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
+    private let methodChannel: FlutterMethodChannel
+    private var servers: [[String: Any]] = []
+    private let scrollView = NSScrollView()
+    private let tableView = NSTableView()
+    
+    init(methodChannel: FlutterMethodChannel) {
+        self.methodChannel = methodChannel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func loadView() {
+        self.view = NSView()
+        self.view.wantsLayer = true
+        self.view.layer?.backgroundColor = NSColor.windowBackgroundColor.cgColor
+        
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.hasVerticalScroller = true
+        self.view.addSubview(scrollView)
+        
+        tableView.dataSource = self
+        tableView.delegate = self
+        let col1 = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("Name"))
+        col1.title = "Name"
+        let col2 = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("URL"))
+        col2.title = "URL"
+        tableView.addTableColumn(col1)
+        tableView.addTableColumn(col2)
+        
+        scrollView.documentView = tableView
+        
+        NSLayoutConstraint.activate([
+            scrollView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+        ])
+        
+        loadData()
+    }
+    
+    private func loadData() {
+        methodChannel.invokeMethod("getServers", arguments: nil) { [weak self] result in
+            if let servers = result as? [[String: Any]] {
+                self?.servers = servers
+                self?.tableView.reloadData()
+            }
+        }
+    }
+    
+    func numberOfRows(in tableView: NSTableView) -> Int {
+        return servers.count
+    }
+    
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        let text = NSTextField(labelWithString: "")
+        text.isEditable = false
+        text.drawsBackground = false
+        text.isBordered = false
+        let server = servers[row]
+        if tableColumn?.identifier.rawValue == "Name" {
+            text.stringValue = server["name"] as? String ?? ""
+        } else {
+            text.stringValue = server["url"] as? String ?? ""
+        }
+        return text
+    }
+}
+
+class MacosFilesViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
+    private let methodChannel: FlutterMethodChannel
+    private var files: [[String: Any]] = []
+    private let scrollView = NSScrollView()
+    private let tableView = NSTableView()
+    
+    init(methodChannel: FlutterMethodChannel) {
+        self.methodChannel = methodChannel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func loadView() {
+        self.view = NSView()
+        self.view.wantsLayer = true
+        self.view.layer?.backgroundColor = NSColor.windowBackgroundColor.cgColor
+        
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.hasVerticalScroller = true
+        self.view.addSubview(scrollView)
+        
+        tableView.dataSource = self
+        tableView.delegate = self
+        let col1 = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("Name"))
+        col1.title = "Name"
+        let col2 = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("Type"))
+        col2.title = "Type"
+        tableView.addTableColumn(col1)
+        tableView.addTableColumn(col2)
+        
+        scrollView.documentView = tableView
+        
+        NSLayoutConstraint.activate([
+            scrollView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+        ])
+        
+        loadData()
+    }
+    
+    private func loadData() {
+        methodChannel.invokeMethod("getFiles", arguments: ["path": "/"]) { [weak self] result in
+            if let files = result as? [[String: Any]] {
+                self?.files = files
+                self?.tableView.reloadData()
+            }
+        }
+    }
+    
+    func numberOfRows(in tableView: NSTableView) -> Int {
+        return files.count
+    }
+    
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        let text = NSTextField(labelWithString: "")
+        text.isEditable = false
+        text.drawsBackground = false
+        text.isBordered = false
+        let file = files[row]
+        if tableColumn?.identifier.rawValue == "Name" {
+            text.stringValue = file["name"] as? String ?? ""
+        } else {
+            let isDir = file["isDir"] as? Bool ?? false
+            text.stringValue = isDir ? "Folder" : "File"
+        }
+        return text
+    }
+}
+
+class MacosAppsViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
+    private let methodChannel: FlutterMethodChannel
+    private var apps: [[String: Any]] = []
+    private let scrollView = NSScrollView()
+    private let tableView = NSTableView()
+    
+    init(methodChannel: FlutterMethodChannel) {
+        self.methodChannel = methodChannel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func loadView() {
+        self.view = NSView()
+        self.view.wantsLayer = true
+        self.view.layer?.backgroundColor = NSColor.windowBackgroundColor.cgColor
+        
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.hasVerticalScroller = true
+        self.view.addSubview(scrollView)
+        
+        tableView.dataSource = self
+        tableView.delegate = self
+        
+        let col1 = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("Name"))
+        col1.title = "Name"
+        let col2 = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("Status"))
+        col2.title = "Status"
+        let col3 = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("Version"))
+        col3.title = "Version"
+        
+        tableView.addTableColumn(col1)
+        tableView.addTableColumn(col2)
+        tableView.addTableColumn(col3)
+        
+        scrollView.documentView = tableView
+        
+        NSLayoutConstraint.activate([
+            scrollView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+        ])
+        
+        loadData()
+    }
+    
+    private func loadData() {
+        methodChannel.invokeMethod("getApps", arguments: nil) { [weak self] result in
+            if let apps = result as? [[String: Any]] {
+                self?.apps = apps
+                self?.tableView.reloadData()
+            }
+        }
+    }
+    
+    func numberOfRows(in tableView: NSTableView) -> Int {
+        return apps.count
+    }
+    
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        let text = NSTextField(labelWithString: "")
+        text.isEditable = false
+        text.drawsBackground = false
+        text.isBordered = false
+        let app = apps[row]
+        if tableColumn?.identifier.rawValue == "Name" {
+            text.stringValue = app["name"] as? String ?? ""
+        } else if tableColumn?.identifier.rawValue == "Status" {
+            text.stringValue = app["status"] as? String ?? ""
+        } else if tableColumn?.identifier.rawValue == "Version" {
+            text.stringValue = app["version"] as? String ?? ""
+        }
+        return text
+    }
+}
+
+class MacosWebsitesViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
+    private let methodChannel: FlutterMethodChannel
+    private var websites: [[String: Any]] = []
+    private let scrollView = NSScrollView()
+    private let tableView = NSTableView()
+    
+    init(methodChannel: FlutterMethodChannel) {
+        self.methodChannel = methodChannel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func loadView() {
+        self.view = NSView()
+        self.view.wantsLayer = true
+        self.view.layer?.backgroundColor = NSColor.windowBackgroundColor.cgColor
+        
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.hasVerticalScroller = true
+        self.view.addSubview(scrollView)
+        
+        tableView.dataSource = self
+        tableView.delegate = self
+        
+        let col1 = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("Domain"))
+        col1.title = "Domain"
+        let col2 = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("Status"))
+        col2.title = "Status"
+        let col3 = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("Remark"))
+        col3.title = "Remark"
+        
+        tableView.addTableColumn(col1)
+        tableView.addTableColumn(col2)
+        tableView.addTableColumn(col3)
+        
+        scrollView.documentView = tableView
+        
+        NSLayoutConstraint.activate([
+            scrollView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+        ])
+        
+        loadData()
+    }
+    
+    private func loadData() {
+        methodChannel.invokeMethod("getWebsites", arguments: nil) { [weak self] result in
+            if let websites = result as? [[String: Any]] {
+                self?.websites = websites
+                self?.tableView.reloadData()
+            }
+        }
+    }
+    
+    func numberOfRows(in tableView: NSTableView) -> Int {
+        return websites.count
+    }
+    
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        let text = NSTextField(labelWithString: "")
+        text.isEditable = false
+        text.drawsBackground = false
+        text.isBordered = false
+        let website = websites[row]
+        if tableColumn?.identifier.rawValue == "Domain" {
+            text.stringValue = website["primaryDomain"] as? String ?? ""
+        } else if tableColumn?.identifier.rawValue == "Status" {
+            text.stringValue = website["status"] as? String ?? ""
+        } else if tableColumn?.identifier.rawValue == "Remark" {
+            text.stringValue = website["remark"] as? String ?? ""
+        }
+        return text
+    }
+}
+class MacosMonitoringViewController: NSViewController {
+    private let methodChannel: FlutterMethodChannel
+    private let scrollView = NSScrollView()
+    private let stackView = NSStackView()
+    
+    init(methodChannel: FlutterMethodChannel) {
+        self.methodChannel = methodChannel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func loadView() {
+        self.view = NSView()
+        self.view.wantsLayer = true
+        self.view.layer?.backgroundColor = NSColor.windowBackgroundColor.cgColor
+        
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.hasVerticalScroller = true
+        self.view.addSubview(scrollView)
+        
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.orientation = .vertical
+        stackView.alignment = .leading
+        stackView.spacing = 10
+        stackView.edgeInsets = NSEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
+        
+        scrollView.documentView = stackView
+        
+        NSLayoutConstraint.activate([
+            scrollView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+            stackView.leadingAnchor.constraint(equalTo: scrollView.contentView.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: scrollView.contentView.trailingAnchor)
+        ])
+        
+        loadData()
+    }
+    
+    private func loadData() {
+        methodChannel.invokeMethod("getMonitoring", arguments: nil) { [weak self] result in
+            if let metrics = result as? [String: Any] {
+                self?.updateUI(with: metrics)
+            }
+        }
+    }
+    
+    private func updateUI(with metrics: [String: Any]) {
+        stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        
+        let addMetric = { (title: String, value: Any) in
+            let label = NSTextField(labelWithString: "\(title): \(value)")
+            label.font = NSFont.systemFont(ofSize: 14)
+            self.stackView.addArrangedSubview(label)
+        }
+        
+        addMetric("CPU", "\(metrics["cpu"] ?? 0)%")
+        addMetric("Memory", "\(metrics["memory"] ?? 0)%")
+        addMetric("Disk", "\(metrics["disk"] ?? 0)%")
+        addMetric("Load 1m", metrics["load1"] ?? 0)
+        addMetric("Load 5m", metrics["load5"] ?? 0)
+        addMetric("Load 15m", metrics["load15"] ?? 0)
+    }
+}
+
+class MacosSettingsViewController: NSViewController {
+    private let titleLabel = NSTextField(labelWithString: "Settings")
+    private let renderModeLabel = NSTextField(labelWithString: "UI Render Mode")
+    private let renderModePopUp = NSPopUpButton(frame: .zero, pullsDown: false)
+    private let hintLabel = NSTextField(labelWithString: "Please restart the app for the UI render mode changes to take effect.")
+    
+    override func loadView() {
+        self.view = NSView()
+        self.view.wantsLayer = true
+        self.view.layer?.backgroundColor = NSColor.windowBackgroundColor.cgColor
+        
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.font = NSFont.systemFont(ofSize: 24, weight: .bold)
+        
+        renderModeLabel.translatesAutoresizingMaskIntoConstraints = false
+        renderModeLabel.font = NSFont.systemFont(ofSize: 14)
+        
+        renderModePopUp.translatesAutoresizingMaskIntoConstraints = false
+        renderModePopUp.addItems(withTitles: ["Native", "MDUI3"])
+        
+        // Load current setting
+        let currentMode = UserDefaults.standard.string(forKey: "flutter.app_ui_render_mode") ?? "native"
+        if currentMode == "md3" {
+            renderModePopUp.selectItem(withTitle: "MDUI3")
+        } else {
+            renderModePopUp.selectItem(withTitle: "Native")
+        }
+        
+        renderModePopUp.target = self
+        renderModePopUp.action = #selector(modeChanged(_:))
+        
+        hintLabel.translatesAutoresizingMaskIntoConstraints = false
+        hintLabel.font = NSFont.systemFont(ofSize: 12)
+        hintLabel.textColor = NSColor.secondaryLabelColor
+        hintLabel.isHidden = true
+        
+        self.view.addSubview(titleLabel)
+        self.view.addSubview(renderModeLabel)
+        self.view.addSubview(renderModePopUp)
+        self.view.addSubview(hintLabel)
+        
+        NSLayoutConstraint.activate([
+            titleLabel.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 40),
+            titleLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 40),
+            
+            renderModeLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 30),
+            renderModeLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 40),
+            
+            renderModePopUp.centerYAnchor.constraint(equalTo: renderModeLabel.centerYAnchor),
+            renderModePopUp.leadingAnchor.constraint(equalTo: renderModeLabel.trailingAnchor, constant: 20),
+            renderModePopUp.widthAnchor.constraint(equalToConstant: 120),
+            
+            hintLabel.topAnchor.constraint(equalTo: renderModePopUp.bottomAnchor, constant: 10),
+            hintLabel.leadingAnchor.constraint(equalTo: renderModePopUp.leadingAnchor)
+        ])
+    }
+    
+    @objc private func modeChanged(_ sender: NSPopUpButton) {
+        guard let title = sender.titleOfSelectedItem else { return }
+        let newValue = (title == "MDUI3") ? "md3" : "native"
+        UserDefaults.standard.set(newValue, forKey: "flutter.app_ui_render_mode")
+        UserDefaults.standard.synchronize()
+        hintLabel.isHidden = false
+    }
 }

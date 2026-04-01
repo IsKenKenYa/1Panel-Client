@@ -12,6 +12,9 @@ final class MacosSidebarViewController: NSViewController, NSTableViewDataSource,
   private let items: [MacosSidebarItem] = [
     MacosSidebarItem(id: "servers", titleKey: "nav_servers", symbolName: "server.rack"),
     MacosSidebarItem(id: "files", titleKey: "nav_files", symbolName: "folder"),
+    MacosSidebarItem(id: "apps", titleKey: "nav_apps", symbolName: "app.badge"),
+    MacosSidebarItem(id: "websites", titleKey: "nav_websites", symbolName: "globe"),
+    MacosSidebarItem(id: "monitoring", titleKey: "nav_monitoring", symbolName: "chart.xyaxis.line"),
     MacosSidebarItem(id: "containers", titleKey: "nav_containers", symbolName: "square.stack.3d.up"),
     MacosSidebarItem(id: "settings", titleKey: "nav_settings", symbolName: "gearshape"),
   ]

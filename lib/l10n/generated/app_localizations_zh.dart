@@ -1953,6 +1953,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsLanguageHint => '语言修改会立即生效，未指定时将跟随系统。';
 
   @override
+  String get settingsUIRenderMode => 'UI 渲染模式';
+
+  @override
+  String get settingsUIRenderModeNative => '原生模式';
+
+  @override
+  String get settingsUIRenderModeMD3 => 'MDUI3';
+
+  @override
+  String get settingsUIRenderModeRestartHint => '修改 UI 渲染模式后，请重启应用以生效。';
+
+  @override
   String get settingsTheme => '主题';
 
   @override

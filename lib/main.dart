@@ -8,7 +8,6 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:window_manager/window_manager.dart';
-import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/services/app_settings_controller.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
@@ -16,6 +15,10 @@ import 'package:onepanel_client/core/theme/theme_controller.dart';
 import 'package:onepanel_client/core/services/transfer/transfer_manager.dart';
 import 'package:onepanel_client/core/theme/app_theme.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
+
+import 'package:onepanel_client/core/channel/native_channel_manager.dart';
+import 'package:onepanel_client/core/services/app_preferences_service.dart';
+import 'package:onepanel_client/core/theme/ui_render_mode.dart';
 
 // Feature Providers
 import 'features/dashboard/dashboard_provider.dart';
@@ -30,28 +33,18 @@ import 'features/monitoring/monitoring_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  if (!kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
+  // Initialize Native Channel Manager for headless/engine-only communication as early as possible
+  NativeChannelManager.init();
+  
+  final isAndroid = !kIsWeb && Platform.isAndroid;
+  final prefs = AppPreferencesService();
+  final uiRenderMode = await prefs.loadUIRenderMode();
+  
+  final useFlutterUI = isAndroid || uiRenderMode == UIRenderMode.md3;
+  
+  if (useFlutterUI && !isAndroid) {
+    // Desktop using Flutter UI
     await windowManager.ensureInitialized();
-    await Window.initialize();
-
-    WindowOptions windowOptions = const WindowOptions(
-      size: Size(1000, 800),
-      minimumSize: Size(800, 600),
-      center: true,
-      backgroundColor: Colors.transparent,
-      skipTaskbar: false,
-      titleBarStyle: TitleBarStyle.hidden,
-    );
-
-    await windowManager.waitUntilReadyToShow(windowOptions, () async {
-      if (Platform.isMacOS) {
-        await Window.setEffect(effect: WindowEffect.sidebar, dark: false);
-      } else if (Platform.isWindows) {
-        await Window.setEffect(effect: WindowEffect.mica, dark: false);
-      }
-      await windowManager.show();
-      await windowManager.focus();
-    });
   }
 
   appLogger.init();
@@ -89,60 +82,68 @@ void main() async {
   // Initialize Hive
   await Hive.initFlutter();
 
-  // Initialize Flutter Downloader only on Mobile platforms
-  if (Platform.isAndroid || Platform.isIOS) {
-    await FlutterDownloader.initialize(
-      debug: true,
-      ignoreSsl: true,
-    );
-  }
+  if (useFlutterUI) {
+    if (isAndroid) {
+      // Initialize Flutter Downloader only on Mobile platforms
+      await FlutterDownloader.initialize(
+        debug: true,
+        ignoreSsl: true,
+      );
+    }
 
-  runApp(
-    MultiProvider(
-      providers: [
-        // App Settings
-        ChangeNotifierProvider(
-          create: (_) => AppSettingsController(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => ThemeController(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => AppLockController(),
-        ),
-        // Server Management
-        ChangeNotifierProvider(
-          create: (_) => ServerProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => CurrentServerController(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => PinnedModulesController(),
-        ),
-        // Dashboard
-        ChangeNotifierProvider(
-          create: (_) => DashboardProvider(),
-        ),
-        // Apps
-        Provider<AppService>(
-          create: (_) => AppService(),
-        ),
-        // Websites
-        ChangeNotifierProvider(
-          create: (_) => WebsitesProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => MonitoringProvider(),
-        ),
-        // Transfer Manager
-        ChangeNotifierProvider(
-          create: (_) => TransferManager(),
-        ),
-      ],
-      child: const AppBootstrap(child: MyApp()),
-    ),
-  );
+    runApp(
+      MultiProvider(
+        providers: [
+          // App Settings
+          ChangeNotifierProvider(
+            create: (_) => AppSettingsController(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => ThemeController(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => AppLockController(),
+          ),
+          // Server Management
+          ChangeNotifierProvider(
+            create: (_) => ServerProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => CurrentServerController(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => PinnedModulesController(),
+          ),
+          // Dashboard
+          ChangeNotifierProvider(
+            create: (_) => DashboardProvider(),
+          ),
+          // Apps
+          Provider<AppService>(
+            create: (_) => AppService(),
+          ),
+          // Websites
+          ChangeNotifierProvider(
+            create: (_) => WebsitesProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => MonitoringProvider(),
+          ),
+          // Transfer Manager
+          ChangeNotifierProvider(
+            create: (_) => TransferManager(),
+          ),
+        ],
+        child: const AppBootstrap(child: MyApp()),
+      ),
+    );
+  } else {
+    // Engine-only mode (Headless)
+    appLogger.iWithPackage('main', 'Running in Headless/Engine-only mode for Native UI');
+    
+    // Core services can be instantiated here if needed by NativeChannelManager
+    // e.g. ServerProvider, AppSettingsController, etc.
+  }
 }
 
 class AppBootstrap extends StatefulWidget {

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:onepanel_client/core/theme/ui_render_mode.dart';
+
 enum CacheStrategy {
   memoryOnly,
   diskOnly,
@@ -14,6 +16,7 @@ class AppPreferencesService {
   static const String _cacheMaxSizeKey = 'cache_max_size_mb';
   static const String _useDynamicColorKey = 'app_use_dynamic_color';
   static const String _seedColorKey = 'app_seed_color';
+  static const String _uiRenderModeKey = 'app_ui_render_mode';
 
   Future<ThemeMode> loadThemeMode() async {
     final prefs = await SharedPreferences.getInstance();
@@ -116,5 +119,29 @@ class AppPreferencesService {
   Future<void> saveSeedColor(Color color) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_seedColorKey, color.toARGB32());
+  }
+
+  Future<UIRenderMode> loadUIRenderMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    final value = prefs.getString(_uiRenderModeKey);
+
+    switch (value) {
+      case 'md3':
+        return UIRenderMode.md3;
+      case 'native':
+        return UIRenderMode.native;
+      default:
+        return UIRenderMode.native; // default to native or maybe md3? let's default to md3 as it's Flutter app? Wait, standard is native for desktop? The specs don't specify default. Let's use native.
+    }
+  }
+
+  Future<void> saveUIRenderMode(UIRenderMode mode) async {
+    final prefs = await SharedPreferences.getInstance();
+    final value = switch (mode) {
+      UIRenderMode.md3 => 'md3',
+      UIRenderMode.native => 'native',
+    };
+
+    await prefs.setString(_uiRenderModeKey, value);
   }
 }

@@ -3836,6 +3836,30 @@ abstract class AppLocalizations {
   /// **'Language updates apply immediately. If not specified, the app follows system settings.'**
   String get settingsLanguageHint;
 
+  /// No description provided for @settingsUIRenderMode.
+  ///
+  /// In en, this message translates to:
+  /// **'UI Render Mode'**
+  String get settingsUIRenderMode;
+
+  /// No description provided for @settingsUIRenderModeNative.
+  ///
+  /// In en, this message translates to:
+  /// **'Native'**
+  String get settingsUIRenderModeNative;
+
+  /// No description provided for @settingsUIRenderModeMD3.
+  ///
+  /// In en, this message translates to:
+  /// **'MDUI3'**
+  String get settingsUIRenderModeMD3;
+
+  /// No description provided for @settingsUIRenderModeRestartHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Please restart the app for the UI render mode changes to take effect.'**
+  String get settingsUIRenderModeRestartHint;
+
   /// No description provided for @settingsTheme.
   ///
   /// In en, this message translates to:
