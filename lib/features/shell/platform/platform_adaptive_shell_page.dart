@@ -159,8 +159,9 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
       ];
 }
 
-class _MacosShellScaffold extends StatelessWidget {
+class _MacosShellScaffold extends StatefulWidget {
   const _MacosShellScaffold({
+    super.key,
     required this.index,
     required this.pages,
     required this.onDestinationSelected,
@@ -171,15 +172,28 @@ class _MacosShellScaffold extends StatelessWidget {
   final ValueChanged<int> onDestinationSelected;
 
   @override
+  State<_MacosShellScaffold> createState() => _MacosShellScaffoldState();
+}
+
+class _MacosShellScaffoldState extends State<_MacosShellScaffold> {
+  late final Future<MacosAppearanceContextModel> _appearanceFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _appearanceFuture = MacosAppearanceChannel.getAppearanceContext();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder<MacosAppearanceContextModel>(
-      future: MacosAppearanceChannel.getAppearanceContext(),
+      future: _appearanceFuture,
       builder: (context, snapshot) {
         final appearance = snapshot.data ?? MacosAppearanceContextModel.fallback;
         return _MacosShellView(
-          index: index,
-          pages: pages,
-          onDestinationSelected: onDestinationSelected,
+          index: widget.index,
+          pages: widget.pages,
+          onDestinationSelected: widget.onDestinationSelected,
           appearance: appearance,
         );
       },
@@ -216,6 +230,30 @@ class _MacosShellView extends StatelessWidget {
         ? 0.0
         : appearance.preferredGlassBlurSigma.clamp(0, 40))
         .toDouble();
+    final railContainer = Container(
+      width: 88,
+      decoration: BoxDecoration(
+        // withValues is Flutter's newer API to set alpha/channel values.
+        color: scheme.surface.withValues(
+          alpha: sidebarAlpha,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: scheme.outlineVariant.withValues(
+            alpha: _kMacosNavRailBorderAlpha,
+          ),
+        ),
+      ),
+      child: NavigationRail(
+        selectedIndex: index,
+        onDestinationSelected: onDestinationSelected,
+        labelType: NavigationRailLabelType.none,
+        useIndicator: false,
+        minWidth: 72,
+        minExtendedWidth: 88,
+        destinations: _destinations(context),
+      ),
+    );
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -234,36 +272,15 @@ class _MacosShellView extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(
-                    sigmaX: blurSigma,
-                    sigmaY: blurSigma,
-                  ),
-                  child: Container(
-                    width: 88,
-                    decoration: BoxDecoration(
-                      // withValues is Flutter's newer API to set alpha/channel values.
-                      color: scheme.surface.withValues(
-                        alpha: sidebarAlpha,
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: scheme.outlineVariant.withValues(
-                          alpha: _kMacosNavRailBorderAlpha,
+                child: blurSigma == 0
+                    ? railContainer
+                    : BackdropFilter(
+                        filter: ImageFilter.blur(
+                          sigmaX: blurSigma,
+                          sigmaY: blurSigma,
                         ),
+                        child: railContainer,
                       ),
-                    ),
-                    child: NavigationRail(
-                      selectedIndex: index,
-                      onDestinationSelected: onDestinationSelected,
-                      labelType: NavigationRailLabelType.none,
-                      useIndicator: false,
-                      minWidth: 72,
-                      minExtendedWidth: 88,
-                      destinations: _destinations(context),
-                    ),
-                  ),
-                ),
               ),
             ),
             Expanded(
