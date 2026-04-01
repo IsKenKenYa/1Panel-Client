@@ -1,0 +1,6 @@
+- [ ] `.trae/rules/ui_rules.md` 已更新，明确非 Android 平台的真原生设计语言原则。
+- [ ] `AGENTS.md` 已更新，写入了完整的 Dart 架构层级规范（State, Service, Repository, Model, API/Infra, Core/Config）。
+- [ ] macOS `Runner/UI/Components/` 中的 `MDCard.swift` 和 `MDList.swift` 等 MDUI3 仿制组件已被安全移除。
+- [ ] macOS 主框架（`MainShellView`, `SidebarView`）成功应用了 macOS 原生的半透明（Liquid Glass）效果和原生导航模式。
+- [ ] macOS 业务模块（Servers, Files, Apps 等）成功应用了 macOS 原生的 `Table` 或原生样式组件展示列表数据。
+- [ ] 所有通过 Channel 获取数据并驱动 UI 的 ViewModel 逻辑未受破坏，功能正常运行。
