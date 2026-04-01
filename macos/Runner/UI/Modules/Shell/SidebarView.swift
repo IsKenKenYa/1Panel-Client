@@ -25,7 +25,7 @@ struct SidebarView: View {
             ForEach(items) { item in
                 NavigationLink(value: item.id) {
                     Label {
-                        Text(TranslationsManager.shared.get(item.titleKey, fallback: item.titleKey))
+                        Text(translations.get(item.titleKey, fallback: item.titleKey))
                     } icon: {
                         Image(systemName: item.symbolName)
                     }
@@ -35,5 +35,7 @@ struct SidebarView: View {
         }
         .listStyle(SidebarListStyle())
         .frame(minWidth: 200, idealWidth: 240, maxWidth: 300)
+        // Using native sidebar material for true native look (Liquid Glass)
+        .background(VisualEffectView(material: .sidebar, blendingMode: .behindWindow))
     }
 }

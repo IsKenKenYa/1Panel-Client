@@ -7,7 +7,7 @@ struct ServersView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(TranslationsManager.shared.get("navServer", fallback: "Servers"))
+            Text(translations.get("navServer", fallback: "Servers"))
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding(.horizontal)
@@ -20,20 +20,16 @@ struct ServersView: View {
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                ScrollView {
-                    LazyVStack(spacing: 12) {
-                        ForEach(viewModel.servers) { server in
-                            MDCard {
-                                MDListItem(
-                                    title: server.name,
-                                    subtitle: server.url,
-                                    icon: "server.rack"
-                                )
-                            }
-                        }
+                Table(viewModel.servers) {
+                    TableColumn(translations.get("server_name", fallback: "Name")) { server in
+                        Text(server.name)
                     }
-                    .padding()
+                    TableColumn(translations.get("server_url", fallback: "URL")) { server in
+                        Text(server.url)
+                    }
                 }
+                .tableStyle(.inset)
+                .padding(.horizontal)
             }
         }
         .padding(.top)

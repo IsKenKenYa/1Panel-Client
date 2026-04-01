@@ -7,7 +7,7 @@ struct AppsView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(TranslationsManager.shared.get("serverModuleApps", fallback: "Apps"))
+            Text(translations.get("serverModuleApps", fallback: "Apps"))
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding(.horizontal)
@@ -20,28 +20,30 @@ struct AppsView: View {
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                ScrollView {
-                    LazyVStack(spacing: 12) {
-                        ForEach(viewModel.apps) { app in
-                            MDCard {
-                                MDListItem(
-                                    title: app.name,
-                                    subtitle: "Version: \(app.version)",
-                                    icon: "app.badge"
-                                ) {
-                                    Text(app.status)
-                                        .font(.caption)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 4)
-                                        .background(Color.blue.opacity(0.1))
-                                        .foregroundColor(.blue)
-                                        .cornerRadius(8)
-                                }
-                            }
+                Table(viewModel.apps) {
+                    TableColumn(translations.get("server_name", fallback: "Name")) { app in
+                        HStack {
+                            Image(systemName: "app.badge")
+                                .foregroundColor(.blue)
+                            Text(app.name)
                         }
                     }
-                    .padding()
+                    TableColumn(translations.get("app_version", fallback: "Version")) { app in
+                        Text(app.version)
+                            .foregroundColor(.secondary)
+                    }
+                    TableColumn(translations.get("app_status", fallback: "Status")) { app in
+                        Text(app.status)
+                            .font(.caption)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color.blue.opacity(0.1))
+                            .foregroundColor(.blue)
+                            .cornerRadius(4)
+                    }
                 }
+                .tableStyle(.inset)
+                .padding(.horizontal)
             }
         }
         .padding(.top)

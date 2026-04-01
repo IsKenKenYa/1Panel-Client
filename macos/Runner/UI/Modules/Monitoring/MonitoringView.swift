@@ -7,7 +7,7 @@ struct MonitoringView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(TranslationsManager.shared.get("serverModuleMonitoring", fallback: "Monitoring"))
+            Text(translations.get("serverModuleMonitoring", fallback: "Monitoring"))
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding(.horizontal)
@@ -17,27 +17,28 @@ struct MonitoringView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 ScrollView {
-                    VStack(spacing: 16) {
+                    VStack(spacing: 24) {
                         HStack(spacing: 16) {
-                            MetricCard(title: TranslationsManager.shared.get("monitoring_cpu", fallback: "CPU"), value: "\(viewModel.metrics.cpu)%", icon: "cpu")
-                            MetricCard(title: TranslationsManager.shared.get("monitoring_memory", fallback: "Memory"), value: "\(viewModel.metrics.memory)%", icon: "memorychip")
-                            MetricCard(title: TranslationsManager.shared.get("monitoring_disk", fallback: "Disk"), value: "\(viewModel.metrics.disk)%", icon: "internaldrive")
+                            MetricCard(title: translations.get("monitoring_cpu", fallback: "CPU"), value: "\(viewModel.metrics.cpu)%", icon: "cpu")
+                            MetricCard(title: translations.get("monitoring_memory", fallback: "Memory"), value: "\(viewModel.metrics.memory)%", icon: "memorychip")
+                            MetricCard(title: translations.get("monitoring_disk", fallback: "Disk"), value: "\(viewModel.metrics.disk)%", icon: "internaldrive")
                         }
                         
-                        MDCard {
-                            VStack(alignment: .leading, spacing: 16) {
-                                Text("System Load")
-                                    .font(.headline)
-                                
-                                HStack(spacing: 24) {
-                                    LoadView(title: "1m", value: viewModel.metrics.load1)
-                                    LoadView(title: "5m", value: viewModel.metrics.load5)
-                                    LoadView(title: "15m", value: viewModel.metrics.load15)
-                                }
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("System Load")
+                                .font(.headline)
+                            
+                            HStack(spacing: 32) {
+                                LoadView(title: "1m", value: viewModel.metrics.load1)
+                                LoadView(title: "5m", value: viewModel.metrics.load5)
+                                LoadView(title: "15m", value: viewModel.metrics.load15)
                             }
-                            .padding(.vertical, 8)
-                            .frame(maxWidth: .infinity, alignment: .leading)
                         }
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        // Use native visual effect for cards
+                        .background(VisualEffectView(material: .headerView, blendingMode: .withinWindow))
+                        .cornerRadius(12)
                     }
                     .padding()
                 }
@@ -58,20 +59,20 @@ struct MetricCard: View {
     let icon: String
     
     var body: some View {
-        MDCard {
-            VStack(alignment: .leading, spacing: 12) {
-                HStack {
-                    Image(systemName: icon)
-                        .foregroundColor(theme.primaryColor)
-                    Text(title)
-                        .foregroundColor(.secondary)
-                }
-                Text(value)
-                    .font(.system(size: 28, weight: .bold))
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Image(systemName: icon)
+                    .foregroundColor(theme.primaryColor)
+                Text(title)
+                    .foregroundColor(.secondary)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.vertical, 8)
+            Text(value)
+                .font(.system(size: 28, weight: .bold))
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+        .background(VisualEffectView(material: .headerView, blendingMode: .withinWindow))
+        .cornerRadius(12)
     }
 }
 

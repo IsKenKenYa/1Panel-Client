@@ -7,7 +7,7 @@ struct ContainersView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(TranslationsManager.shared.get("serverModuleContainers", fallback: "Containers"))
+            Text(translations.get("serverModuleContainers", fallback: "Containers"))
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding(.horizontal)
@@ -20,28 +20,31 @@ struct ContainersView: View {
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                ScrollView {
-                    LazyVStack(spacing: 12) {
-                        ForEach(viewModel.containers) { container in
-                            MDCard {
-                                MDListItem(
-                                    title: container.name,
-                                    subtitle: container.image,
-                                    icon: "square.stack.3d.up"
-                                ) {
-                                    Text(container.state)
-                                        .font(.caption)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 4)
-                                        .background(container.state.lowercased() == "running" ? Color.green.opacity(0.1) : Color.gray.opacity(0.1))
-                                        .foregroundColor(container.state.lowercased() == "running" ? .green : .gray)
-                                        .cornerRadius(8)
-                                }
-                            }
+                Table(viewModel.containers) {
+                    TableColumn(translations.get("container_name", fallback: "Name")) { container in
+                        HStack {
+                            Image(systemName: "square.stack.3d.up")
+                                .foregroundColor(.blue)
+                            Text(container.name)
                         }
                     }
-                    .padding()
+                    TableColumn(translations.get("container_image", fallback: "Image")) { container in
+                        Text(container.image)
+                            .foregroundColor(.secondary)
+                    }
+                    TableColumn(translations.get("container_state", fallback: "State")) { container in
+                        let isRunning = container.state.lowercased() == "running"
+                        Text(container.state)
+                            .font(.caption)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(isRunning ? Color.green.opacity(0.1) : Color.gray.opacity(0.1))
+                            .foregroundColor(isRunning ? .green : .gray)
+                            .cornerRadius(4)
+                    }
                 }
+                .tableStyle(.inset)
+                .padding(.horizontal)
             }
         }
         .padding(.top)

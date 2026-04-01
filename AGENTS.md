@@ -7,9 +7,11 @@
 - Structure rule: when a functional module reaches 2+ files, create a dedicated subfolder (e.g., `lib/core/auth/`).
 
 ## Architecture & Layering (Mandatory)
+- CN: 跨平台 UI 策略：Android 与 Android 平板使用 Dart 渲染 MDUI3；其余平台（macOS, iOS, Windows, Linux）默认使用各自平台的原生代码实现真·原生设计语言（如 macOS 液态玻璃），但允许设置切换回 Dart 渲染的 MDUI3。
+- CN: 核心架构必须完全由 Dart 实现，并划分为六大核心层（State, Service, Repository, Model, API/Infra, Core/Config）。禁止在原生代码中重写这部分非 UI 逻辑。
 - CN: 分层依赖方向仅允许 `Presentation -> State -> Service/Repository -> API/Infra`。EN: One-way dependencies only: `Presentation -> State -> Service/Repository -> API/Infra`.
 - CN: UI 层不得直接调用 `lib/api/v2/`，必须经由 Repository/Service。EN: UI must not call `lib/api/v2/` directly; go through Repository/Service.
-- CN: 业务逻辑不得写在 Widget `build()` 内，必须下沉到 Provider/ViewModel 或 Service。EN: No business logic inside `build()`; move it to Provider/ViewModel or Service.
+- CN: 业务逻辑不得写在 Widget `build()` 或原生 UI 控制器内，必须下沉到 Provider/ViewModel 或 Service。EN: No business logic inside `build()` or native UI controllers; move it to Provider/ViewModel or Service.
 - CN: 状态管理默认 Provider，其他方案需评审通过。EN: Provider is the default; other patterns require review.
 
 ## File Size & Split Rules (Strict)

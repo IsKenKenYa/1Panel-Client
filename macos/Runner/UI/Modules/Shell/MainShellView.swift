@@ -12,6 +12,7 @@ struct MainShellView: View {
         NavigationView {
             SidebarView(selectedModule: $selectedModule)
                 .environmentObject(theme)
+                .environmentObject(translations)
             
             Group {
                 if let module = selectedModule {
@@ -41,7 +42,8 @@ struct MainShellView: View {
             .environmentObject(theme)
             .environmentObject(translations)
             .frame(minWidth: 400, maxWidth: .infinity, minHeight: 300, maxHeight: .infinity)
-            .background(theme.backgroundColor)
+            // Use native transparent background for content
+            .background(VisualEffectView(material: .contentBackground, blendingMode: .behindWindow))
         }
         .onAppear {
             translations.load {

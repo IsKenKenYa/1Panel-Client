@@ -7,7 +7,7 @@ struct WebsitesView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(TranslationsManager.shared.get("serverModuleWebsites", fallback: "Websites"))
+            Text(translations.get("serverModuleWebsites", fallback: "Websites"))
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding(.horizontal)
@@ -20,28 +20,31 @@ struct WebsitesView: View {
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                ScrollView {
-                    LazyVStack(spacing: 12) {
-                        ForEach(viewModel.websites) { website in
-                            MDCard {
-                                MDListItem(
-                                    title: website.primaryDomain,
-                                    subtitle: website.remark.isEmpty ? "No remark" : website.remark,
-                                    icon: "globe"
-                                ) {
-                                    Text(website.status)
-                                        .font(.caption)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 4)
-                                        .background(website.status.lowercased() == "running" ? Color.green.opacity(0.1) : Color.red.opacity(0.1))
-                                        .foregroundColor(website.status.lowercased() == "running" ? .green : .red)
-                                        .cornerRadius(8)
-                                }
-                            }
+                Table(viewModel.websites) {
+                    TableColumn(translations.get("website_domain", fallback: "Domain")) { website in
+                        HStack {
+                            Image(systemName: "globe")
+                                .foregroundColor(.blue)
+                            Text(website.primaryDomain)
                         }
                     }
-                    .padding()
+                    TableColumn(translations.get("website_remark", fallback: "Remark")) { website in
+                        Text(website.remark.isEmpty ? "-" : website.remark)
+                            .foregroundColor(.secondary)
+                    }
+                    TableColumn(translations.get("app_status", fallback: "Status")) { website in
+                        let isRunning = website.status.lowercased() == "running"
+                        Text(website.status)
+                            .font(.caption)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(isRunning ? Color.green.opacity(0.1) : Color.red.opacity(0.1))
+                            .foregroundColor(isRunning ? .green : .red)
+                            .cornerRadius(4)
+                    }
                 }
+                .tableStyle(.inset)
+                .padding(.horizontal)
             }
         }
         .padding(.top)

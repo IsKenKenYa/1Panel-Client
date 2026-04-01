@@ -38,17 +38,26 @@ MaterialApp(
 );
 ```
 
-## 平台适配
+## 平台适配与渲染策略
 
-### iOS平台
-- 液态玻璃组件使用原生Swift实现
-- 遵循iOS Human Interface Guidelines
-- 支持iOS原生滑动手势
+### Android 与 Android 平板
+- **渲染方案**：完全使用 Dart 代码渲染 Material Design 3 (MDUI3) 规范。
+- **视觉特性**：支持动态取色(Dynamic Colors)，适配 Android 12+ 视觉特性。
 
-### Android平台
-- 完全遵循Material Design 3规范
-- 支持动态取色(Dynamic Colors)
-- 适配Android 12+视觉特性
+### 其他平台 (macOS, iOS, Windows, Linux)
+- **渲染方案**：默认必须使用各自平台的**原生代码**与**真·原生设计语言**进行渲染（例如 macOS 的 SwiftUI、Windows 的 Fluent Design）。禁止使用原生代码去强行复刻 MDUI3。
+- **Dart 架构边界**：Dart 端仅作为“核心逻辑引擎”，保留状态管理层 (State)、服务层 (Service)、数据仓库层 (Repository)、模型层 (Model)、API 层和配置层。所有网络请求与数据拼装安全地复用 Dart。
+- **UI 模式切换**：支持通过设置切换为“用 Dart 代码渲染的 MDUI3 界面”。但在“原生 UI 模式”下，必须彻底遵循系统原生规范。
+
+### macOS 平台细节
+- 全面拥抱 macOS 15+ 及未来 macOS 26 的设计语言。
+- 必须使用液态玻璃 (Liquid Glass / Vibrancy) 材质、原生侧边栏 (Sidebar) 和原生表格 (Table) 效果。
+- SwiftUI 视图通过 MethodChannel/EventChannel 订阅 Dart 端的业务状态与主题配置（如实现深浅色模式跟随）。
+
+### iOS平台细节
+- 使用 SwiftUI 实现原生界面。
+- 遵循 iOS Human Interface Guidelines。
+- 支持 iOS 原生滑动手势。
 
 ## 设计资源
 - [Material Design 3 官方文档](https://m3.material.io/)

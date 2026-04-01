@@ -7,7 +7,7 @@ struct FilesView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(TranslationsManager.shared.get("navFiles", fallback: "Files"))
+            Text(translations.get("navFiles", fallback: "Files"))
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding(.horizontal)
@@ -20,18 +20,21 @@ struct FilesView: View {
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                ScrollView {
-                    LazyVStack(spacing: 8) {
-                        ForEach(viewModel.files) { file in
-                            MDListItem(
-                                title: file.name,
-                                subtitle: file.isDir ? TranslationsManager.shared.get("folder", fallback: "Folder") : TranslationsManager.shared.get("file", fallback: "File"),
-                                icon: file.isDir ? "folder.fill" : "doc.fill"
-                            )
+                Table(viewModel.files) {
+                    TableColumn(translations.get("server_name", fallback: "Name")) { file in
+                        HStack {
+                            Image(systemName: file.isDir ? "folder.fill" : "doc.fill")
+                                .foregroundColor(file.isDir ? .blue : .secondary)
+                            Text(file.name)
                         }
                     }
-                    .padding()
+                    TableColumn(translations.get("file_type", fallback: "Type")) { file in
+                        Text(file.isDir ? translations.get("folder", fallback: "Folder") : translations.get("file", fallback: "File"))
+                            .foregroundColor(.secondary)
+                    }
                 }
+                .tableStyle(.inset)
+                .padding(.horizontal)
             }
         }
         .padding(.top)

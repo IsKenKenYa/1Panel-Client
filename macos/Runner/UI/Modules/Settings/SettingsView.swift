@@ -7,37 +7,37 @@ struct SettingsView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 24) {
-            Text(TranslationsManager.shared.get("navSettings", fallback: "Settings"))
+            Text(translations.get("navSettings", fallback: "Settings"))
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding(.horizontal)
             
-            MDCard {
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack {
-                        Text(TranslationsManager.shared.get("settings_ui_mode", fallback: "UI Render Mode"))
-                            .font(.headline)
-                        Spacer()
-                        Picker("", selection: Binding(
-                            get: { viewModel.renderMode },
-                            set: { viewModel.updateRenderMode($0) }
-                        )) {
-                            Text("Native").tag("native")
-                            Text("MDUI3").tag("md3")
-                        }
-                        .pickerStyle(MenuPickerStyle())
-                        .frame(width: 120)
+            VStack(alignment: .leading, spacing: 16) {
+                HStack {
+                    Text(translations.get("settings_ui_mode", fallback: "UI Render Mode"))
+                        .font(.headline)
+                    Spacer()
+                    Picker("", selection: Binding(
+                        get: { viewModel.renderMode },
+                        set: { viewModel.updateRenderMode($0) }
+                    )) {
+                        Text("Native").tag("native")
+                        Text("MDUI3").tag("md3")
                     }
-                    
-                    if viewModel.showRestartHint {
-                        Text(TranslationsManager.shared.get("settings_restart_hint", fallback: "Please restart the app for the UI render mode changes to take effect."))
-                            .font(.caption)
-                            .foregroundColor(.orange)
-                    }
+                    .pickerStyle(MenuPickerStyle())
+                    .frame(width: 120)
                 }
-                .padding(.vertical, 8)
-                .frame(maxWidth: .infinity, alignment: .leading)
+                
+                if viewModel.showRestartHint {
+                    Text(translations.get("settings_restart_hint", fallback: "Please restart the app for the UI render mode changes to take effect."))
+                        .font(.caption)
+                        .foregroundColor(.orange)
+                }
             }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(VisualEffectView(material: .headerView, blendingMode: .withinWindow))
+            .cornerRadius(12)
             .padding(.horizontal)
             
             Spacer()
