@@ -17,6 +17,7 @@ const double _kTabletBreakpoint = 600;
 // Material 3 large-screen guidance commonly treats >= 960dp as expanded width.
 const double _kAndroidLargeScreenBreakpoint = 960;
 const double _kMacosNavRailBorderAlpha = 0.45;
+const double _kMacosZeroBlurEpsilon = 0.01;
 const double _kWindowsRailGroupAlignment = -0.95;
 const double _kCupertinoPadSidebarIconSize = 20;
 
@@ -272,7 +273,7 @@ class _MacosShellView extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-                child: blurSigma == 0
+                child: blurSigma <= _kMacosZeroBlurEpsilon
                     ? railContainer
                     : BackdropFilter(
                         filter: ImageFilter.blur(
