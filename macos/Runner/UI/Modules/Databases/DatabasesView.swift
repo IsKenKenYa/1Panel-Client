@@ -49,7 +49,7 @@ struct DatabasesView: View {
                     }
                 }
                 .tableStyle(.inset)
-                .alternatingRowBackgrounds(.disabled)
+                .disableAlternatingRowBackgrounds()
             }
         }
         .navigationTitle(translations.get("serverModuleDatabases", fallback: "Databases"))

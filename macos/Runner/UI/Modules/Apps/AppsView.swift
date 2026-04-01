@@ -58,7 +58,7 @@ struct AppsView: View {
                     }
                 }
                 .tableStyle(.inset)
-                .alternatingRowBackgrounds(.disabled)
+                .disableAlternatingRowBackgrounds()
             }
         }
         .navigationTitle(translations.get("serverModuleApps", fallback: "Apps"))

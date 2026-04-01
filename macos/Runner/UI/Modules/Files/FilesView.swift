@@ -51,7 +51,7 @@ struct FilesView: View {
                     }
                 }
                 .tableStyle(.inset)
-                .alternatingRowBackgrounds(.disabled)
+                .disableAlternatingRowBackgrounds()
             }
         }
         .navigationTitle(URL(fileURLWithPath: viewModel.currentPath).lastPathComponent == "/" ? translations.get("navFiles", fallback: "Files") : URL(fileURLWithPath: viewModel.currentPath).lastPathComponent)

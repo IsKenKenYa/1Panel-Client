@@ -43,7 +43,7 @@ struct ServersView: View {
                     }
                 }
                 .tableStyle(.inset)
-                .alternatingRowBackgrounds(.disabled)
+                .disableAlternatingRowBackgrounds()
             }
         }
         .navigationTitle(translations.get("navServer", fallback: "Servers"))

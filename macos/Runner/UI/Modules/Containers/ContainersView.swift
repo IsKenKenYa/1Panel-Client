@@ -67,7 +67,7 @@ struct ContainersView: View {
                     }
                 }
                 .tableStyle(.inset)
-                .alternatingRowBackgrounds(.disabled)
+                .disableAlternatingRowBackgrounds()
             }
         }
         .navigationTitle(translations.get("serverModuleContainers", fallback: "Containers"))

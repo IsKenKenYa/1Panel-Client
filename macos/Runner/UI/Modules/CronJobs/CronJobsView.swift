@@ -60,7 +60,7 @@ struct CronJobsView: View {
                     }
                 }
                 .tableStyle(.inset)
-                .alternatingRowBackgrounds(.disabled)
+                .disableAlternatingRowBackgrounds()
             }
         }
         .navigationTitle(translations.get("operationsCronjobsTitle", fallback: "Cron Jobs"))

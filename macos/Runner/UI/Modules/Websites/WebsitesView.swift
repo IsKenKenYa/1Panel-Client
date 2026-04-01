@@ -59,7 +59,7 @@ struct WebsitesView: View {
                     }
                 }
                 .tableStyle(.inset)
-                .alternatingRowBackgrounds(.disabled)
+                .disableAlternatingRowBackgrounds()
             }
         }
         .navigationTitle(translations.get("serverModuleWebsites", fallback: "Websites"))

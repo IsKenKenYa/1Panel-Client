@@ -49,7 +49,7 @@ struct FirewallView: View {
                     }
                 }
                 .tableStyle(.inset)
-                .alternatingRowBackgrounds(.disabled)
+                .disableAlternatingRowBackgrounds()
             }
         }
         .navigationTitle(translations.get("serverModuleFirewall", fallback: "Firewall"))
