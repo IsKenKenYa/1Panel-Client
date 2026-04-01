@@ -45,12 +45,12 @@ MaterialApp(
 - **视觉特性**：支持动态取色(Dynamic Colors)，适配 Android 12+ 视觉特性。
 
 ### 其他平台 (macOS, iOS, Windows, Linux)
-- **渲染方案**：默认必须使用各自平台的**原生代码**与**真·原生设计语言**进行渲染（例如 macOS 的 SwiftUI、Windows 的 Fluent Design）。禁止使用原生代码去强行复刻 MDUI3。
+- **渲染方案**：默认必须使用各自平台的**原生代码**实现原生系统的原生 UI 和**原汁原味的交互逻辑**（例如 macOS 的 SwiftUI、Windows 的 Fluent Design）。禁止使用原生代码去强行复刻 MDUI3。
 - **Dart 架构边界**：Dart 端仅作为“核心逻辑引擎”，保留状态管理层 (State)、服务层 (Service)、数据仓库层 (Repository)、模型层 (Model)、API 层和配置层。所有网络请求与数据拼装安全地复用 Dart。
-- **UI 模式切换**：支持通过设置切换为“用 Dart 代码渲染的 MDUI3 界面”。但在“原生 UI 模式”下，必须彻底遵循系统原生规范。
+- **UI 模式切换**：支持通过设置切换为“用 Dart 代码渲染的 MDUI3 界面”，以给用户统一的视觉风格。但在“原生 UI 模式”下，必须彻底遵循系统原生规范。
 
 ### macOS 平台细节
-- 全面拥抱 macOS 15+ 及未来 macOS 26 的设计语言。
+- **适配策略**：目前先规划和完成 macOS，主要针对 **macOS 26** 进行适配，稍微适配 macOS 15（至少需要可以打开）。
 - 必须使用液态玻璃 (Liquid Glass / Vibrancy) 材质、原生侧边栏 (Sidebar) 和原生表格 (Table) 效果。
 - SwiftUI 视图通过 MethodChannel/EventChannel 订阅 Dart 端的业务状态与主题配置（如实现深浅色模式跟随）。
 

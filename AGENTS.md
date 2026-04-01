@@ -9,6 +9,12 @@
 ## Architecture & Layering (Mandatory)
 - CN: 跨平台 UI 策略：Android 与 Android 平板使用 Dart 渲染 MDUI3；其余平台（macOS, iOS, Windows, Linux）默认使用各自平台的原生代码实现真·原生设计语言（如 macOS 液态玻璃），但允许设置切换回 Dart 渲染的 MDUI3。
 - CN: 核心架构必须完全由 Dart 实现，并划分为六大核心层（State, Service, Repository, Model, API/Infra, Core/Config）。禁止在原生代码中重写这部分非 UI 逻辑。
+  - **State Layer**: 默认 Provider，负责连接 UI 与业务逻辑，位于 `lib/features/*/providers/`。
+  - **Service Layer**: 处理核心业务规则、数据加工，位于 `lib/core/services/` 或各业务模块 `*_service.dart`。
+  - **Repository Layer**: 数据单一事实来源，位于 `lib/data/repositories/`，屏蔽数据来源细节。
+  - **Model Layer**: 定义实体、请求/响应结构，位于 `lib/data/models/`，配合生成工具使用。
+  - **API/Infra Layer**: 处理外部通信、本地持久化与平台交互，位于 `lib/api/v2/`、`lib/core/network/`、`lib/core/storage/`、`lib/core/channel/`。
+  - **Core/Config Layer**: 基础配置、路由、主题系统、国际化，位于 `lib/core/` 及其子目录（如 `app_router.dart`、`lib/core/i18n/` 等）。
 - CN: 分层依赖方向仅允许 `Presentation -> State -> Service/Repository -> API/Infra`。EN: One-way dependencies only: `Presentation -> State -> Service/Repository -> API/Infra`.
 - CN: UI 层不得直接调用 `lib/api/v2/`，必须经由 Repository/Service。EN: UI must not call `lib/api/v2/` directly; go through Repository/Service.
 - CN: 业务逻辑不得写在 Widget `build()` 或原生 UI 控制器内，必须下沉到 Provider/ViewModel 或 Service。EN: No business logic inside `build()` or native UI controllers; move it to Provider/ViewModel or Service.
