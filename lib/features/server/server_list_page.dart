@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/features/server/pages/server_list_page_desktop.dart';
 import 'package:onepanel_client/features/server/pages/server_list_page_mobile.dart';
+import 'package:onepanel_client/features/server/server_provider.dart';
 import 'package:onepanel_client/features/server/view_models/server_list_view_model.dart';
 
 class ServerListPage extends StatefulWidget {
@@ -23,8 +24,11 @@ class _ServerListPageState extends State<ServerListPage> {
   @override
   void initState() {
     super.initState();
-    _viewModel = ServerListViewModel(context, enableCoach: widget.enableCoach);
-    _viewModel.init();
+    _viewModel = ServerListViewModel(
+      enableCoach: widget.enableCoach,
+      serverProvider: context.read<ServerProvider>(),
+    );
+    _viewModel.init(context);
   }
 
   @override

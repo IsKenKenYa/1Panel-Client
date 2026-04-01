@@ -783,6 +783,14 @@
   "filesTargetPath": "目标路径",
   "filesTypeDirectory": "目录",
   "filesSelected": "已选择",
+  "filesSelectedCount": "已选择 {count} 项",
+  "@filesSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "filesSelectPath": "选择路径",
   "filesCurrentFolder": "当前文件夹",
   "filesNoSubfolders": "没有子文件夹",

@@ -6,9 +6,8 @@ class MainFlutterWindow: NSWindow {
 
   override func awakeFromNib() {
     let flutterViewController = FlutterViewController()
-    let shellViewController = MainShellViewController(flutterViewController: flutterViewController)
     let windowFrame = self.frame
-    self.contentViewController = shellViewController
+    self.contentViewController = flutterViewController
     self.setFrame(windowFrame, display: true)
 
     RegisterGeneratedPlugins(registry: flutterViewController)

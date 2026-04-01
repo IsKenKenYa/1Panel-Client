@@ -33,7 +33,7 @@ extension _FilesViewScaffold on _FilesViewState {
           DeleteSelectedIntent: CallbackAction<DeleteSelectedIntent>(
             onInvoke: (_) {
               if (provider.data.hasSelection) {
-                showDeleteConfirmDialog(context, provider);
+                showDeleteConfirmDialog(context, provider, l10n);
               }
               return null;
             },
@@ -132,7 +132,7 @@ extension _FilesViewScaffold on _FilesViewState {
           DeleteSelectedIntent: CallbackAction<DeleteSelectedIntent>(
             onInvoke: (_) {
               if (provider.data.hasSelection) {
-                showDeleteConfirmDialog(context, provider);
+                showDeleteConfirmDialog(context, provider, l10n);
               }
               return null;
             },
@@ -205,24 +205,24 @@ extension _FilesViewScaffold on _FilesViewState {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          l10n.filesSelectedCount(provider.data.selectedPaths.length),
+          l10n.filesSelectedCount(provider.data.selectionCount),
           style: Theme.of(context).textTheme.labelLarge,
         ),
         const SizedBox(width: 16),
         IconButton(
           icon: const Icon(Icons.copy_outlined),
           tooltip: l10n.filesActionCopy,
-          onPressed: () => showCopyDialog(context, provider),
+          onPressed: () => showBatchCopyDialog(context, provider, l10n),
         ),
         IconButton(
           icon: const Icon(Icons.cut_outlined),
           tooltip: l10n.filesActionMove,
-          onPressed: () => showMoveDialog(context, provider),
+          onPressed: () => showBatchMoveDialog(context, provider, l10n),
         ),
         IconButton(
           icon: const Icon(Icons.delete_outline),
           tooltip: l10n.commonDelete,
-          onPressed: () => showDeleteConfirmDialog(context, provider),
+          onPressed: () => showDeleteConfirmDialog(context, provider, l10n),
         ),
         IconButton(
           icon: const Icon(Icons.close),

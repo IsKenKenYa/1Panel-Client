@@ -1739,6 +1739,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get filesSelected => '已选择';
 
   @override
+  String filesSelectedCount(int count) {
+    return '已选择 $count 项';
+  }
+
+  @override
   String get filesSelectPath => '选择路径';
 
   @override

@@ -32,7 +32,7 @@ class ServerListPageMobile extends StatelessWidget {
         actions: [
           IconButton(
             key: viewModel.addKey,
-            onPressed: viewModel.openAddServer,
+            onPressed: () => viewModel.openAddServer(context),
             icon: const Icon(Icons.add_circle_outline),
             tooltip: l10n.serverAdd,
           ),
@@ -88,7 +88,7 @@ class ServerListPageMobile extends StatelessWidget {
                               textAlign: TextAlign.center),
                           const SizedBox(height: AppDesignTokens.spacingLg),
                           FilledButton(
-                            onPressed: viewModel.openAddServer,
+                            onPressed: () => viewModel.openAddServer(context),
                             child: Text(l10n.serverAdd),
                           ),
                         ],

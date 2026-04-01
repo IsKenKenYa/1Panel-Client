@@ -783,6 +783,14 @@
   "filesTargetPath": "Target path",
   "filesTypeDirectory": "Directory",
   "filesSelected": "selected",
+  "filesSelectedCount": "{count} selected",
+  "@filesSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "filesSelectPath": "Select Path",
   "filesCurrentFolder": "Current Folder",
   "filesNoSubfolders": "No subfolders",

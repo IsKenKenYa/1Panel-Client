@@ -3428,6 +3428,12 @@ abstract class AppLocalizations {
   /// **'selected'**
   String get filesSelected;
 
+  /// No description provided for @filesSelectedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} selected'**
+  String filesSelectedCount(int count);
+
   /// No description provided for @filesSelectPath.
   ///
   /// In en, this message translates to:

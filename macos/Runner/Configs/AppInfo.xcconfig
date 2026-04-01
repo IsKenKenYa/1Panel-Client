@@ -12,3 +12,7 @@ PRODUCT_BUNDLE_IDENTIFIER = com.iskenkenya.onepanel
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2026 IsKenKenYa. All rights reserved.
+
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"

@@ -1781,6 +1781,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filesSelected => 'selected';
 
   @override
+  String filesSelectedCount(int count) {
+    return '$count selected';
+  }
+
+  @override
   String get filesSelectPath => 'Select Path';
 
   @override

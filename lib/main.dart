@@ -89,11 +89,13 @@ void main() async {
   // Initialize Hive
   await Hive.initFlutter();
 
-  // Initialize Flutter Downloader
-  await FlutterDownloader.initialize(
-    debug: true,
-    ignoreSsl: true,
-  );
+  // Initialize Flutter Downloader only on Mobile platforms
+  if (Platform.isAndroid || Platform.isIOS) {
+    await FlutterDownloader.initialize(
+      debug: true,
+      ignoreSsl: true,
+    );
+  }
 
   runApp(
     MultiProvider(

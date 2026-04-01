@@ -50,7 +50,7 @@ class ServerListPageDesktop extends StatelessWidget {
                       const SizedBox(width: 16),
                       FilledButton.icon(
                         key: viewModel.addKey,
-                        onPressed: viewModel.openAddServer,
+                        onPressed: () => viewModel.openAddServer(context),
                         icon: const Icon(Icons.add),
                         label: Text(l10n.serverAdd),
                       ),

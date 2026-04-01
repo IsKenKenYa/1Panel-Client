@@ -155,6 +155,20 @@ extension FilesProviderBrowserMixin on FilesProvider {
     }
   }
 
+  Future<void> moveFile(String sourcePath, String targetPath) async {
+    appLogger.dWithPackage(
+        'files_provider', 'moveFile: source=$sourcePath, target=$targetPath');
+    try {
+      await _service.moveFiles(<String>[sourcePath], targetPath);
+      appLogger.iWithPackage('files_provider', 'moveFile: 成功');
+      await refresh();
+    } catch (e, stackTrace) {
+      appLogger.eWithPackage('files_provider', 'moveFile: 失败',
+          error: e, stackTrace: stackTrace);
+      rethrow;
+    }
+  }
+
   Future<void> copyFile(String sourcePath, String targetPath) async {
     appLogger.dWithPackage(
         'files_provider', 'copyFile: source=$sourcePath, target=$targetPath');
