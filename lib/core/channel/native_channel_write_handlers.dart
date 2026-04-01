@@ -7,6 +7,7 @@ import '../../features/files/services/file_browser_service.dart';
 import '../../features/firewall/firewall_service.dart';
 import '../../features/server/server_repository.dart';
 import '../../features/websites/services/websites_service.dart';
+import '../../core/config/api_config.dart';
 import '../../data/models/backup_account_models.dart';
 import '../../data/models/firewall_models.dart';
 import '../services/logger/logger_service.dart';
@@ -20,6 +21,28 @@ Map<String, dynamic> _err(Object e) => {'success': false, 'error': e.toString()}
 /// 被 [NativeChannelManager] 的 dispatch switch 调用。
 class NativeChannelWriteHandlers {
   // ── 服务器 ────────────────────────────────────────────────────────────────
+
+  /// 新增服务器配置。参数：`{name: String, url: String, apiKey: String}`
+  static Future<Map<String, dynamic>> addServer(dynamic arguments) async {
+    try {
+      final name = arguments['name'] as String;
+      final url = arguments['url'] as String;
+      final apiKey = arguments['apiKey'] as String;
+      final id = 'server_${DateTime.now().microsecondsSinceEpoch}';
+      final config = ApiConfig(
+        id: id,
+        name: name,
+        url: url,
+        apiKey: apiKey,
+      );
+      final repository = const ServerRepository();
+      await repository.saveConfig(config);
+      return _ok();
+    } catch (e) {
+      appLogger.e('addServer failed: $e');
+      return _err(e);
+    }
+  }
 
   /// 切换当前服务器。参数：`{id: String}`
   static Future<Map<String, dynamic>> connectServer(dynamic arguments) async {
@@ -268,6 +291,37 @@ class NativeChannelWriteHandlers {
   }
 
   // ── 防火墙 ────────────────────────────────────────────────────────────────
+
+  /// 添加防火墙端口规则。参数：`{port: String, protocol: String, address: String, strategy: String}`
+  static Future<Map<String, dynamic>> addFirewallRule(dynamic arguments) async {
+    try {
+      final port = arguments['port'] as String? ?? '';
+      final protocol = arguments['protocol'] as String? ?? 'tcp';
+      final address = arguments['address'] as String? ?? '';
+      final strategy = arguments['strategy'] as String? ?? 'accept';
+      final service = FirewallService();
+      if (port.isNotEmpty) {
+        await service.createPortRule(FirewallPortRulePayload(
+          operation: 'add',
+          address: address,
+          port: port,
+          source: address,
+          protocol: protocol,
+          strategy: strategy,
+        ));
+      } else if (address.isNotEmpty) {
+        await service.createIpRule(FirewallIpRulePayload(
+          operation: 'add',
+          address: address,
+          strategy: strategy,
+        ));
+      }
+      return _ok();
+    } catch (e) {
+      appLogger.e('addFirewallRule failed: $e');
+      return _err(e);
+    }
+  }
 
   /// 删除防火墙规则。参数：`{port: String, protocol: String, address: String, strategy: String}`
   static Future<Map<String, dynamic>> deleteFirewallRule(

@@ -12,27 +12,49 @@ struct MonitoringModel {
 class MonitoringViewModel: ObservableObject {
     @Published var metrics = MonitoringModel()
     @Published var isLoading = false
-    
+
+    private var refreshTimer: Timer?
+    private let refreshInterval: TimeInterval = 5
+
     func fetchMonitoring() {
         isLoading = true
         ChannelManager.shared.invokeDataMethod("getMonitoring") { [weak self] result in
             DispatchQueue.main.async {
                 self?.isLoading = false
-                if let dict = result as? [String: Any] {
-                    self?.metrics.cpu = dict["cpu"] as? Int ?? 0
-                    self?.metrics.memory = dict["memory"] as? Int ?? 0
-                    self?.metrics.disk = dict["disk"] as? Int ?? 0
-                    
-                    if let l1 = dict["load1"] as? Double { self?.metrics.load1 = l1 }
-                    else if let l1 = dict["load1"] as? Int { self?.metrics.load1 = Double(l1) }
-                    
-                    if let l5 = dict["load5"] as? Double { self?.metrics.load5 = l5 }
-                    else if let l5 = dict["load5"] as? Int { self?.metrics.load5 = Double(l5) }
-                    
-                    if let l15 = dict["load15"] as? Double { self?.metrics.load15 = l15 }
-                    else if let l15 = dict["load15"] as? Int { self?.metrics.load15 = Double(l15) }
+                guard let dict = result as? [String: Any] else { return }
+
+                func toInt(_ v: Any?) -> Int {
+                    if let i = v as? Int { return i }
+                    if let d = v as? Double { return Int(d) }
+                    return 0
                 }
+                func toDouble(_ v: Any?) -> Double {
+                    if let d = v as? Double { return d }
+                    if let i = v as? Int { return Double(i) }
+                    return 0
+                }
+
+                self?.metrics.cpu    = toInt(dict["cpu"])
+                self?.metrics.memory = toInt(dict["memory"])
+                self?.metrics.disk   = toInt(dict["disk"])
+                self?.metrics.load1  = toDouble(dict["load1"])
+                self?.metrics.load5  = toDouble(dict["load5"])
+                self?.metrics.load15 = toDouble(dict["load15"])
             }
         }
     }
+
+    func startAutoRefresh() {
+        fetchMonitoring()
+        refreshTimer = Timer.scheduledTimer(withTimeInterval: refreshInterval, repeats: true) { [weak self] _ in
+            self?.fetchMonitoring()
+        }
+    }
+
+    func stopAutoRefresh() {
+        refreshTimer?.invalidate()
+        refreshTimer = nil
+    }
+
+    deinit { stopAutoRefresh() }
 }

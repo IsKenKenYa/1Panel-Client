@@ -5,15 +5,26 @@ struct AIView: View {
     @EnvironmentObject var theme: ThemeManager
     @EnvironmentObject var translations: TranslationsManager
 
+    @State private var modelToDelete: AIModel?
+    @State private var showDeleteConfirm = false
+
     var body: some View {
         Group {
             if viewModel.isLoading {
                 ProgressView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if viewModel.models.isEmpty {
-                Text("No AI models found")
-                    .foregroundColor(.secondary)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                VStack(spacing: 12) {
+                    Image(systemName: "cpu.fill")
+                        .font(.system(size: 48))
+                        .foregroundColor(.secondary)
+                    Text("No AI models found")
+                        .foregroundColor(.secondary)
+                    Text("Use 1Panel to pull Ollama models")
+                        .font(.caption)
+                        .foregroundColor(.secondary.opacity(0.7))
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 Table(viewModel.models) {
                     TableColumn(translations.get("ai_model_name", fallback: "Model")) { model in
@@ -21,15 +32,14 @@ struct AIView: View {
                             Image(systemName: "cpu.fill")
                                 .foregroundColor(.purple)
                             Text(model.name)
+                                .fontWeight(.medium)
                         }
                         .contextMenu {
-                            Button(action: {
-                                Task {
-                                    await viewModel.deleteModel(id: model.originalId)
-                                }
-                            }) {
-                                Text(translations.get("delete", fallback: "Delete"))
-                                Image(systemName: "trash")
+                            Button(role: .destructive) {
+                                modelToDelete = model
+                                showDeleteConfirm = true
+                            } label: {
+                                Label(translations.get("delete", fallback: "Delete"), systemImage: "trash")
                             }
                         }
                     }
@@ -49,16 +59,36 @@ struct AIView: View {
         .navigationTitle(translations.get("serverModuleAi", fallback: "AI"))
         .toolbar {
             ToolbarItem(placement: .automatic) {
-                Button(action: {
-                    viewModel.fetchModels()
-                }) {
-                    Image(systemName: "arrow.clockwise")
+                if viewModel.isProcessing {
+                    ProgressView().scaleEffect(0.6)
+                } else {
+                    Button { viewModel.fetchModels() } label: {
+                        Image(systemName: "arrow.clockwise")
+                    }
+                    .help("Refresh")
                 }
-                .help("Refresh")
             }
         }
-        .onAppear {
-            viewModel.fetchModels()
+        .confirmationDialog(
+            "Delete model \"\(modelToDelete?.name ?? "")\"?",
+            isPresented: $showDeleteConfirm,
+            titleVisibility: .visible
+        ) {
+            Button("Delete", role: .destructive) {
+                if let m = modelToDelete { Task { await viewModel.deleteModel(id: m.originalId) } }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("The model weights will be permanently deleted.")
         }
+        .alert("Error", isPresented: Binding(
+            get: { viewModel.errorMessage != nil },
+            set: { if !$0 { viewModel.errorMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) { viewModel.errorMessage = nil }
+        } message: {
+            Text(viewModel.errorMessage ?? "")
+        }
+        .onAppear { viewModel.fetchModels() }
     }
 }

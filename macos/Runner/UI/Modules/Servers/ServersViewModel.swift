@@ -25,13 +25,28 @@ class ServersViewModel: ObservableObject {
                 self?.servers = dictArray.compactMap { dict in
                     guard let name = dict["name"] as? String,
                           let url = dict["url"] as? String else { return nil }
-                    // id may arrive as Int or String
                     let rawId = dict["id"]
                     let originalId: String
                     if let intId = rawId as? Int { originalId = String(intId) }
                     else { originalId = rawId as? String ?? "" }
                     let isCurrent = dict["isCurrent"] as? Bool ?? false
                     return ServerModel(originalId: originalId, name: name, url: url, isCurrent: isCurrent)
+                }
+            }
+        }
+    }
+
+    func addServer(name: String, url: String, token: String) async {
+        await MainActor.run { isProcessing = true; errorMessage = nil }
+        let args: [String: Any] = ["name": name, "url": url, "apiKey": token]
+        ChannelManager.shared.invokeDataMethod("addServer", arguments: args) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isProcessing = false
+                if let dict = result as? [String: Any],
+                   let success = dict["success"] as? Bool, !success {
+                    self?.errorMessage = dict["error"] as? String ?? "Add failed"
+                } else {
+                    self?.fetchServers()
                 }
             }
         }

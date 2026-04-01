@@ -4,7 +4,10 @@ struct CronJobsView: View {
     @StateObject private var viewModel = CronJobsViewModel()
     @EnvironmentObject var theme: ThemeManager
     @EnvironmentObject var translations: TranslationsManager
-    
+
+    @State private var jobToDelete: CronJobModel?
+    @State private var showDeleteConfirm = false
+
     var body: some View {
         Group {
             if viewModel.isLoading {
@@ -19,27 +22,25 @@ struct CronJobsView: View {
                     TableColumn(translations.get("cronjob_name", fallback: "Name")) { job in
                         HStack {
                             Image(systemName: "timer")
-                                .foregroundColor(.blue)
+                                .foregroundColor(.orange)
                             Text(job.name)
                         }
                         .contextMenu {
-                            let isRunning = job.status.lowercased() == "active" || job.status.lowercased() == "running"
-                            Button(action: {
-                                Task {
-                                    await viewModel.toggleCronJobStatus(id: job.originalId, currentStatus: job.status)
-                                }
-                            }) {
-                                Text(isRunning ? translations.get("stop", fallback: "Stop") : translations.get("start", fallback: "Start"))
-                                Image(systemName: isRunning ? "stop.fill" : "play.fill")
+                            let isActive = job.status.lowercased() == "active" || job.status.lowercased() == "running"
+                            Button {
+                                Task { await viewModel.toggleCronJobStatus(id: job.originalId, currentStatus: job.status) }
+                            } label: {
+                                Label(
+                                    isActive ? translations.get("stop", fallback: "Stop") : translations.get("start", fallback: "Start"),
+                                    systemImage: isActive ? "stop.fill" : "play.fill"
+                                )
                             }
                             Divider()
-                            Button(action: {
-                                Task {
-                                    await viewModel.deleteCronJob(id: job.originalId)
-                                }
-                            }) {
-                                Text(translations.get("delete", fallback: "Delete"))
-                                Image(systemName: "trash")
+                            Button(role: .destructive) {
+                                jobToDelete = job
+                                showDeleteConfirm = true
+                            } label: {
+                                Label(translations.get("delete", fallback: "Delete"), systemImage: "trash")
                             }
                         }
                     }
@@ -48,14 +49,26 @@ struct CronJobsView: View {
                             .foregroundColor(.secondary)
                             .font(.system(.body, design: .monospaced))
                     }
+                    TableColumn("Last Result") { job in
+                        if !job.lastRecordStatus.isEmpty {
+                            let ok = job.lastRecordStatus.lowercased() == "success"
+                            Text(job.lastRecordStatus)
+                                .font(.caption)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 3)
+                                .background(ok ? Color.green.opacity(0.12) : Color.red.opacity(0.12))
+                                .foregroundColor(ok ? .green : .red)
+                                .cornerRadius(4)
+                        }
+                    }
                     TableColumn(translations.get("app_status", fallback: "Status")) { job in
-                        let isRunning = job.status.lowercased() == "active" || job.status.lowercased() == "running"
+                        let isActive = job.status.lowercased() == "active" || job.status.lowercased() == "running"
                         Text(job.status)
                             .font(.caption)
                             .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(isRunning ? Color.green.opacity(0.1) : Color.gray.opacity(0.1))
-                            .foregroundColor(isRunning ? .green : .gray)
+                            .padding(.vertical, 3)
+                            .background(isActive ? Color.green.opacity(0.12) : Color.gray.opacity(0.12))
+                            .foregroundColor(isActive ? .green : .gray)
                             .cornerRadius(4)
                     }
                 }
@@ -66,16 +79,36 @@ struct CronJobsView: View {
         .navigationTitle(translations.get("operationsCronjobsTitle", fallback: "Cron Jobs"))
         .toolbar {
             ToolbarItem(placement: .automatic) {
-                Button(action: {
-                    viewModel.fetchCronJobs()
-                }) {
-                    Image(systemName: "arrow.clockwise")
+                if viewModel.isProcessing {
+                    ProgressView().scaleEffect(0.6)
+                } else {
+                    Button { viewModel.fetchCronJobs() } label: {
+                        Image(systemName: "arrow.clockwise")
+                    }
+                    .help("Refresh")
                 }
-                .help("Refresh")
             }
         }
-        .onAppear {
-            viewModel.fetchCronJobs()
+        .confirmationDialog(
+            "Delete \"\(jobToDelete?.name ?? "")\"?",
+            isPresented: $showDeleteConfirm,
+            titleVisibility: .visible
+        ) {
+            Button("Delete", role: .destructive) {
+                if let j = jobToDelete { Task { await viewModel.deleteCronJob(id: j.originalId) } }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This action cannot be undone.")
         }
+        .alert("Error", isPresented: Binding(
+            get: { viewModel.errorMessage != nil },
+            set: { if !$0 { viewModel.errorMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) { viewModel.errorMessage = nil }
+        } message: {
+            Text(viewModel.errorMessage ?? "")
+        }
+        .onAppear { viewModel.fetchCronJobs() }
     }
 }

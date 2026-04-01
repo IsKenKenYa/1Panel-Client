@@ -52,6 +52,10 @@ class NativeChannelManager {
         return NativeChannelReadHandlers.getAIModels(args);
 
       // ── Write: 服务器 ───────────────────────────────────────────────────
+      // ── Write: 服务器 ───────────────────────────────────────────────────
+      case 'addServer':
+        return NativeChannelWriteHandlers.addServer(args);
+
       case 'connectServer':
         return NativeChannelWriteHandlers.connectServer(args);
       case 'deleteServer':
@@ -100,6 +104,9 @@ class NativeChannelManager {
         return NativeChannelWriteHandlers.deleteAIModel(args);
 
       // ── Write: 防火墙 ───────────────────────────────────────────────────
+      case 'addFirewallRule':
+        return NativeChannelWriteHandlers.addFirewallRule(args);
+
       case 'deleteFirewallRule':
         return NativeChannelWriteHandlers.deleteFirewallRule(args);
 

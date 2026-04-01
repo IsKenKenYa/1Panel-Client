@@ -4,7 +4,10 @@ struct AppsView: View {
     @StateObject private var viewModel = AppsViewModel()
     @EnvironmentObject var theme: ThemeManager
     @EnvironmentObject var translations: TranslationsManager
-    
+
+    @State private var appToUninstall: AppModel?
+    @State private var showUninstallConfirm = false
+
     var body: some View {
         Group {
             if viewModel.isLoading {
@@ -24,36 +27,35 @@ struct AppsView: View {
                         }
                         .contextMenu {
                             let isRunning = app.status.lowercased() == "running"
-                            Button(action: {
-                                Task {
-                                    await viewModel.toggleAppStatus(id: app.originalId, currentStatus: app.status)
-                                }
-                            }) {
-                                Text(isRunning ? translations.get("stop", fallback: "Stop") : translations.get("start", fallback: "Start"))
-                                Image(systemName: isRunning ? "stop.fill" : "play.fill")
+                            Button {
+                                Task { await viewModel.toggleAppStatus(id: app.originalId, currentStatus: app.status) }
+                            } label: {
+                                Label(
+                                    isRunning ? translations.get("stop", fallback: "Stop") : translations.get("start", fallback: "Start"),
+                                    systemImage: isRunning ? "stop.fill" : "play.fill"
+                                )
                             }
                             Divider()
-                            Button(action: {
-                                Task {
-                                    await viewModel.uninstallApp(id: app.originalId)
-                                }
-                            }) {
-                                Text(translations.get("uninstall", fallback: "Uninstall"))
-                                Image(systemName: "trash")
+                            Button(role: .destructive) {
+                                appToUninstall = app
+                                showUninstallConfirm = true
+                            } label: {
+                                Label(translations.get("uninstall", fallback: "Uninstall"), systemImage: "trash")
                             }
                         }
                     }
                     TableColumn(translations.get("app_version", fallback: "Version")) { app in
-                        Text(app.version)
+                        Text(app.version.isEmpty ? "--" : app.version)
                             .foregroundColor(.secondary)
                     }
                     TableColumn(translations.get("app_status", fallback: "Status")) { app in
+                        let isRunning = app.status.lowercased() == "running"
                         Text(app.status)
                             .font(.caption)
                             .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(Color.blue.opacity(0.1))
-                            .foregroundColor(.blue)
+                            .padding(.vertical, 3)
+                            .background(isRunning ? Color.green.opacity(0.12) : Color.gray.opacity(0.12))
+                            .foregroundColor(isRunning ? .green : .gray)
                             .cornerRadius(4)
                     }
                 }
@@ -64,16 +66,36 @@ struct AppsView: View {
         .navigationTitle(translations.get("serverModuleApps", fallback: "Apps"))
         .toolbar {
             ToolbarItem(placement: .automatic) {
-                Button(action: {
-                    viewModel.fetchApps()
-                }) {
-                    Image(systemName: "arrow.clockwise")
+                if viewModel.isProcessing {
+                    ProgressView().scaleEffect(0.6)
+                } else {
+                    Button { viewModel.fetchApps() } label: {
+                        Image(systemName: "arrow.clockwise")
+                    }
+                    .help("Refresh")
                 }
-                .help("Refresh")
             }
         }
-        .onAppear {
-            viewModel.fetchApps()
+        .confirmationDialog(
+            "Uninstall \"\(appToUninstall?.name ?? "")\"?",
+            isPresented: $showUninstallConfirm,
+            titleVisibility: .visible
+        ) {
+            Button("Uninstall", role: .destructive) {
+                if let a = appToUninstall { Task { await viewModel.uninstallApp(id: a.originalId) } }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This will remove the app and its data. This action cannot be undone.")
         }
+        .alert("Error", isPresented: Binding(
+            get: { viewModel.errorMessage != nil },
+            set: { if !$0 { viewModel.errorMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) { viewModel.errorMessage = nil }
+        } message: {
+            Text(viewModel.errorMessage ?? "")
+        }
+        .onAppear { viewModel.fetchApps() }
     }
 }

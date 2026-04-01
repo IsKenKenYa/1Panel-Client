@@ -31,7 +31,7 @@ class FirewallViewModel: ObservableObject {
                     let rawId = dict["id"]
                     let idStr: String
                     if let intId = rawId as? Int { idStr = String(intId) }
-                    else { idStr = rawId as? String ?? "" }
+                    else { idStr = rawId as? String ?? UUID().uuidString }
                     return FirewallRuleModel(
                         originalId: idStr,
                         port: dict["port"] as? String ?? "",
@@ -41,6 +41,26 @@ class FirewallViewModel: ObservableObject {
                         description: dict["description"] as? String ?? ""
                     )
                 }
+            }
+        }
+    }
+
+    func addRule(port: String, protocol proto: String, address: String, strategy: String) async {
+        await MainActor.run { isProcessing = true; errorMessage = nil }
+        let args: [String: Any] = [
+            "port": port,
+            "protocol": proto,
+            "address": address,
+            "strategy": strategy,
+        ]
+        ChannelManager.shared.invokeDataMethod("addFirewallRule", arguments: args) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isProcessing = false
+                if let dict = result as? [String: Any],
+                   let success = dict["success"] as? Bool, !success {
+                    self?.errorMessage = dict["error"] as? String ?? "Add rule failed"
+                }
+                self?.fetchRules()
             }
         }
     }
