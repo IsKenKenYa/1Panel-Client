@@ -16,6 +16,52 @@ namespace {
 #define DWMWA_USE_IMMERSIVE_DARK_MODE 20
 #endif
 
+// Windows 11 window corner preference.
+// See: https://learn.microsoft.com/zh-cn/windows/win32/api/dwmapi/ne-dwmapi-dwmwindowattribute
+#ifndef DWMWA_WINDOW_CORNER_PREFERENCE
+#define DWMWA_WINDOW_CORNER_PREFERENCE 33
+#endif
+
+// Windows 11 system backdrop type (Mica/Acrylic).
+// See: https://learn.microsoft.com/zh-cn/windows/win32/api/dwmapi/ne-dwmapi-dwmwindowattribute
+#ifndef DWMWA_SYSTEMBACKDROP_TYPE
+#define DWMWA_SYSTEMBACKDROP_TYPE 38
+#endif
+
+// Fallback definitions for older Windows SDKs.
+#ifndef DWMSBT_MAINWINDOW
+typedef enum DWM_SYSTEMBACKDROP_TYPE {
+  DWMSBT_AUTO = 0,
+  DWMSBT_NONE = 1,
+  DWMSBT_MAINWINDOW = 2,
+  DWMSBT_TRANSIENTWINDOW = 3,
+  DWMSBT_TABBEDWINDOW = 4
+} DWM_SYSTEMBACKDROP_TYPE;
+#endif
+
+#ifndef DWMWCP_DEFAULT
+typedef enum DWM_WINDOW_CORNER_PREFERENCE {
+  DWMWCP_DEFAULT = 0,
+  DWMWCP_DONOTROUND = 1,
+  DWMWCP_ROUND = 2,
+  DWMWCP_ROUNDSMALL = 3
+} DWM_WINDOW_CORNER_PREFERENCE;
+#endif
+
+void ApplyWindowBackdrop(HWND window, DWM_SYSTEMBACKDROP_TYPE backdrop) {
+  // Supported from Windows 11 build 22621. On older systems this call will fail
+  // and we safely fall back to default rendering.
+  DwmSetWindowAttribute(window, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop,
+                        sizeof(backdrop));
+}
+
+void ApplyWindowCornerPreference(HWND window,
+                                 DWM_WINDOW_CORNER_PREFERENCE preference) {
+  // Supported from Windows 11 build 22000.
+  DwmSetWindowAttribute(window, DWMWA_WINDOW_CORNER_PREFERENCE, &preference,
+                        sizeof(preference));
+}
+
 constexpr const wchar_t kWindowClassName[] = L"FLUTTER_RUNNER_WIN32_WINDOW";
 
 /// Registry key for app theme preference.
@@ -285,4 +331,15 @@ void Win32Window::UpdateTheme(HWND const window) {
     DwmSetWindowAttribute(window, DWMWA_USE_IMMERSIVE_DARK_MODE,
                           &enable_dark_mode, sizeof(enable_dark_mode));
   }
+
+  // Fluent window styling.
+  //
+  // - Mica (MAINWINDOW) is intended for long-lived surfaces (main background).
+  // - Acrylic (TRANSIENTWINDOW) is intended for transient surfaces (menus,
+  //   dialogs, side panes). We expose the underlying capability here first;
+  //   future iterations may toggle it via platform channels.
+  ApplyWindowBackdrop(window, DWMSBT_MAINWINDOW);
+
+  // Keep corner rounding aligned with modern Windows design language.
+  ApplyWindowCornerPreference(window, DWMWCP_ROUND);
 }

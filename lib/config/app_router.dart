@@ -23,7 +23,6 @@ import 'package:onepanel_client/features/server/server_list_page.dart';
 import 'package:onepanel_client/features/server/server_models.dart';
 import 'package:onepanel_client/features/security/security_verification_page.dart';
 import 'package:onepanel_client/features/security/app_lock_controller.dart';
-import 'package:onepanel_client/features/shell/app_shell_page.dart';
 import 'package:onepanel_client/ui/routing/ui_route_host.dart';
 import 'package:onepanel_client/features/terminal/terminal_page.dart';
 import 'package:onepanel_client/pages/settings/settings_page.dart';
@@ -273,10 +272,13 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const NotFoundPage());
       case AppRoutes.files:
         return MaterialPageRoute(
-            builder: (_) => const AppShellPage(
-                  initialIndex: 1,
-                  initialModuleId: 'files',
-                ));
+          builder: (_) => const UiRouteHost(
+            settings: RouteSettings(
+              name: AppRoutes.home,
+              arguments: {'tab': 1, 'module': 'files'},
+            ),
+          ),
+        );
       case AppRoutes.databases:
         return MaterialPageRoute(builder: (_) => const DatabasesPage());
       case AppRoutes.databaseDetail:
@@ -349,9 +351,11 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const MonitoringPage());
       case AppRoutes.dashboard:
         return MaterialPageRoute(
-          builder: (_) => const AppShellPage(
-            initialIndex: 0,
-            initialModuleId: 'servers',
+          builder: (_) => const UiRouteHost(
+            settings: RouteSettings(
+              name: AppRoutes.home,
+              arguments: {'tab': 0, 'module': 'servers'},
+            ),
           ),
         );
       case AppRoutes.securityVerification:
@@ -990,9 +994,11 @@ class AppRouter {
 
       case AppRoutes.containers:
         return MaterialPageRoute(
-          builder: (_) => const AppShellPage(
-            initialIndex: 2,
-            initialModuleId: 'containers',
+          builder: (_) => const UiRouteHost(
+            settings: RouteSettings(
+              name: AppRoutes.home,
+              arguments: {'tab': 2, 'module': 'containers'},
+            ),
           ),
         );
 

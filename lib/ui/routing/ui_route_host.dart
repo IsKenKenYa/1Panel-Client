@@ -56,10 +56,16 @@ class UiRouteHost extends StatelessWidget {
       case UiPlatformKind.desktopWindows:
         return WindowsShellContentPage(initialIndex: initialIndex);
       case UiPlatformKind.desktopLinux:
-        return DesktopShellPage(initialIndex: initialIndex);
+        return DesktopShellPage(
+          initialIndex: initialIndex,
+          initialModuleId: initialModuleId,
+        );
       case UiPlatformKind.web:
         // Web uses a desktop-first shell by default.
-        return DesktopShellPage(initialIndex: initialIndex);
+        return DesktopShellPage(
+          initialIndex: initialIndex,
+          initialModuleId: initialModuleId,
+        );
     }
   }
 
@@ -106,4 +112,3 @@ class _UiNotFoundPage extends StatelessWidget {
     );
   }
 }
-

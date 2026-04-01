@@ -5,22 +5,18 @@ import 'package:onepanel_client/features/apps/apps_page.dart';
 import 'package:onepanel_client/features/ai/ai_page.dart';
 import 'package:onepanel_client/features/ai/ai_provider.dart';
 import 'package:onepanel_client/features/ai/mcp_server_provider.dart';
-import 'package:onepanel_client/features/containers/containers_page.dart';
-import 'package:onepanel_client/features/files/files_page.dart';
 import 'package:onepanel_client/features/security/app_lock_controller.dart';
 import 'package:onepanel_client/features/security/security_verification_page.dart';
-import 'package:onepanel_client/features/server/server_list_page.dart';
 import 'package:onepanel_client/features/websites/websites_page.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/controllers/pinned_modules_controller.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
+import 'package:onepanel_client/features/shell/module_page_factory.dart';
 import 'package:onepanel_client/features/shell/widgets/adaptive_shell_navigation_widget.dart';
 import 'package:onepanel_client/features/shell/widgets/channel_watermark_badge_widget.dart';
 import 'package:onepanel_client/features/shell/widgets/mobile_more_modules_drawer.dart';
-import 'package:onepanel_client/features/shell/widgets/no_server_selected_state.dart';
 import 'package:onepanel_client/features/shell/widgets/shell_drawer_scope.dart';
 import 'package:onepanel_client/features/shell/widgets/server_switcher_action.dart';
-import 'package:onepanel_client/pages/settings/settings_page.dart';
 import 'package:onepanel_client/widgets/navigation/app_bottom_navigation_bar.dart';
 
 class AppShellPage extends StatefulWidget {
@@ -112,7 +108,11 @@ class _AppShellPageState extends State<AppShellPage> {
             : 0;
 
         final body =
-            _buildCurrentPage(selectedModule, currentServer.currentServerId);
+            buildShellModulePage(
+          context,
+          module: selectedModule,
+          serverId: currentServer.currentServerId,
+        );
 
         if (width >= 1024) {
           return _wrapWithChannelWatermark(
@@ -209,72 +209,6 @@ class _AppShellPageState extends State<AppShellPage> {
         const ChannelWatermarkBadgeWidget(),
       ],
     );
-  }
-
-  Widget _buildCurrentPage(ClientModule module, String? serverId) {
-    switch (module) {
-      case ClientModule.servers:
-        return const ServerListPage();
-      case ClientModule.files:
-        if (serverId == null) {
-          return NoServerSelectedState(moduleName: context.l10n.navFiles);
-        }
-        return KeyedSubtree(
-          key: ValueKey('files:$serverId'),
-          child: const FilesPage(),
-        );
-      case ClientModule.containers:
-        if (serverId == null) {
-          return NoServerSelectedState(
-              moduleName: context.l10n.containerManagement);
-        }
-        return KeyedSubtree(
-          key: ValueKey('containers:$serverId'),
-          child: const ContainersPage(),
-        );
-      case ClientModule.apps:
-        if (serverId == null) {
-          return NoServerSelectedState(moduleName: context.l10n.appsPageTitle);
-        }
-        return KeyedSubtree(
-          key: ValueKey('apps:$serverId'),
-          child: const AppsPage(),
-        );
-      case ClientModule.websites:
-        if (serverId == null) {
-          return NoServerSelectedState(
-              moduleName: context.l10n.websitesPageTitle);
-        }
-        return KeyedSubtree(
-          key: ValueKey('websites:$serverId'),
-          child: const WebsitesPage(),
-        );
-      case ClientModule.ai:
-        if (serverId == null) {
-          return NoServerSelectedState(moduleName: context.l10n.serverModuleAi);
-        }
-        return KeyedSubtree(
-          key: ValueKey('ai:$serverId'),
-          child: MultiProvider(
-            providers: [
-              ChangeNotifierProvider(create: (_) => AIProvider()),
-              ChangeNotifierProvider(create: (_) => McpServerProvider()),
-            ],
-            child: const AIPage(),
-          ),
-        );
-      case ClientModule.verification:
-        if (serverId == null) {
-          return NoServerSelectedState(
-              moduleName: context.l10n.serverActionSecurity);
-        }
-        return KeyedSubtree(
-          key: ValueKey('verification:$serverId'),
-          child: const SecurityVerificationPage(),
-        );
-      case ClientModule.settings:
-        return const SettingsPage();
-    }
   }
 
   void _handleModuleOpen(ClientModule module) {
