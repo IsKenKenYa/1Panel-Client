@@ -22,6 +22,16 @@ struct BackupsView: View {
                                 .foregroundColor(.blue)
                             Text(backup.name)
                         }
+                        .contextMenu {
+                            Button(action: {
+                                Task {
+                                    await viewModel.deleteBackup(id: backup.originalId)
+                                }
+                            }) {
+                                Text(translations.get("delete", fallback: "Delete"))
+                                Image(systemName: "trash")
+                            }
+                        }
                     }
                     TableColumn(translations.get("backup_type", fallback: "Type")) { backup in
                         Text(backup.type)

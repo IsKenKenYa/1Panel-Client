@@ -2,6 +2,7 @@ import Foundation
 
 struct FirewallRuleModel: Identifiable {
     let id = UUID()
+    let originalId: String
     let port: String
     let protocolType: String
     let action: String
@@ -23,10 +24,22 @@ class FirewallViewModel: ObservableObject {
                               let action = dict["action"] as? String else {
                             return nil
                         }
-                        return FirewallRuleModel(port: port, protocolType: protocolType, action: action)
+                        let originalId = dict["id"] as? String ?? ""
+                        return FirewallRuleModel(originalId: originalId, port: port, protocolType: protocolType, action: action)
                     }
                 }
             }
+        }
+    }
+    
+    func deleteRule(id: String) async {
+        do {
+            _ = try await ChannelManager.shared.invokeDataMethodAsync("deleteFirewallRule", arguments: ["id": id])
+            DispatchQueue.main.async {
+                self.fetchRules()
+            }
+        } catch {
+            print("Failed to delete firewall rule: \(error)")
         }
     }
 }

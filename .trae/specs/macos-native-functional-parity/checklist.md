@@ -1,0 +1,4 @@
+- [x] `ChannelManager` 成功支持了带有复杂 JSON/Dictionary 参数的双向通信（执行增删改操作）。
+- [x] 各原生模块（Servers, Files, Apps 等）成功将原本仅存在的只读数据展示，升级为支持右键 ContextMenu 或 Toolbar 按钮交互。
+- [x] 原生交互弹窗（如删除确认的 NSAlert/Sheet）被合理运用，替代了强行复刻的 MDUI3 弹窗。
+- [x] 原生层所有的操作成功通过 Channel 触发了 Dart 端的底层逻辑（Service/Repository），实现了功能的完整对齐。

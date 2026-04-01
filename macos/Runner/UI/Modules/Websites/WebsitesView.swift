@@ -22,6 +22,26 @@ struct WebsitesView: View {
                                 .foregroundColor(.blue)
                             Text(website.primaryDomain)
                         }
+                        .contextMenu {
+                            let isRunning = website.status.lowercased() == "running"
+                            Button(action: {
+                                Task {
+                                    await viewModel.toggleWebsiteStatus(id: website.originalId, currentStatus: website.status)
+                                }
+                            }) {
+                                Text(isRunning ? translations.get("stop", fallback: "Stop") : translations.get("start", fallback: "Start"))
+                                Image(systemName: isRunning ? "stop.fill" : "play.fill")
+                            }
+                            Divider()
+                            Button(action: {
+                                Task {
+                                    await viewModel.deleteWebsite(id: website.originalId)
+                                }
+                            }) {
+                                Text(translations.get("delete", fallback: "Delete"))
+                                Image(systemName: "trash")
+                            }
+                        }
                     }
                     TableColumn(translations.get("website_remark", fallback: "Remark")) { website in
                         Text(website.remark.isEmpty ? "-" : website.remark)

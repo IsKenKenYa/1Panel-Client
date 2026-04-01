@@ -45,6 +45,22 @@ class ChannelManager {
         }
     }
     
+    func invokeDataMethodAsync(_ method: String, arguments: Any? = nil) async throws -> Any? {
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let dataChannel = dataChannel else {
+                continuation.resume(throwing: NSError(domain: "ChannelManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "Data channel not initialized"]))
+                return
+            }
+            dataChannel.invokeMethod(method, arguments: arguments) { result in
+                if let flutterError = result as? FlutterError {
+                    continuation.resume(throwing: NSError(domain: "FlutterError", code: Int(flutterError.code) ?? -1, userInfo: [NSLocalizedDescriptionKey: flutterError.message ?? "Unknown error"]))
+                } else {
+                    continuation.resume(returning: result)
+                }
+            }
+        }
+    }
+    
     func invokeShellMethod(_ method: String, arguments: Any? = nil, completion: @escaping (Any?) -> Void) {
         guard let shellChannel = shellChannel else {
             completion(nil)

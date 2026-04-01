@@ -2,6 +2,7 @@ import Foundation
 
 struct CronJobModel: Identifiable {
     let id = UUID()
+    let originalId: String
     let name: String
     let schedule: String
     let status: String
@@ -23,10 +24,34 @@ class CronJobsViewModel: ObservableObject {
                               let status = dict["status"] as? String else {
                             return nil
                         }
-                        return CronJobModel(name: name, schedule: schedule, status: status)
+                        let originalId = dict["id"] as? String ?? ""
+                        return CronJobModel(originalId: originalId, name: name, schedule: schedule, status: status)
                     }
                 }
             }
+        }
+    }
+    
+    func toggleCronJobStatus(id: String, currentStatus: String) async {
+        let action = currentStatus.lowercased() == "running" || currentStatus.lowercased() == "active" ? "stopCronJob" : "startCronJob"
+        do {
+            _ = try await ChannelManager.shared.invokeDataMethodAsync(action, arguments: ["id": id])
+            DispatchQueue.main.async {
+                self.fetchCronJobs()
+            }
+        } catch {
+            print("Failed to toggle cron job status: \(error)")
+        }
+    }
+    
+    func deleteCronJob(id: String) async {
+        do {
+            _ = try await ChannelManager.shared.invokeDataMethodAsync("deleteCronJob", arguments: ["id": id])
+            DispatchQueue.main.async {
+                self.fetchCronJobs()
+            }
+        } catch {
+            print("Failed to delete cron job: \(error)")
         }
     }
 }

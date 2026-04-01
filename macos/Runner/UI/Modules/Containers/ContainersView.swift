@@ -22,6 +22,34 @@ struct ContainersView: View {
                                 .foregroundColor(.blue)
                             Text(container.name)
                         }
+                        .contextMenu {
+                            let isRunning = container.state.lowercased() == "running"
+                            Button(action: {
+                                Task {
+                                    await viewModel.toggleContainerState(id: container.originalId, currentState: container.state)
+                                }
+                            }) {
+                                Text(isRunning ? translations.get("stop", fallback: "Stop") : translations.get("start", fallback: "Start"))
+                                Image(systemName: isRunning ? "stop.fill" : "play.fill")
+                            }
+                            Button(action: {
+                                Task {
+                                    await viewModel.restartContainer(id: container.originalId)
+                                }
+                            }) {
+                                Text(translations.get("restart", fallback: "Restart"))
+                                Image(systemName: "arrow.clockwise")
+                            }
+                            Divider()
+                            Button(action: {
+                                Task {
+                                    await viewModel.deleteContainer(id: container.originalId)
+                                }
+                            }) {
+                                Text(translations.get("delete", fallback: "Delete"))
+                                Image(systemName: "trash")
+                            }
+                        }
                     }
                     TableColumn(translations.get("container_image", fallback: "Image")) { container in
                         Text(container.image)

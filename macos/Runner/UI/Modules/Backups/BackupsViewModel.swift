@@ -2,6 +2,7 @@ import Foundation
 
 struct BackupModel: Identifiable {
     let id = UUID()
+    let originalId: String
     let name: String
     let type: String
     let size: String
@@ -25,10 +26,22 @@ class BackupsViewModel: ObservableObject {
                               let date = dict["date"] as? String else {
                             return nil
                         }
-                        return BackupModel(name: name, type: type, size: size, date: date)
+                        let originalId = dict["id"] as? String ?? ""
+                        return BackupModel(originalId: originalId, name: name, type: type, size: size, date: date)
                     }
                 }
             }
+        }
+    }
+    
+    func deleteBackup(id: String) async {
+        do {
+            _ = try await ChannelManager.shared.invokeDataMethodAsync("deleteBackup", arguments: ["id": id])
+            DispatchQueue.main.async {
+                self.fetchBackups()
+            }
+        } catch {
+            print("Failed to delete backup: \(error)")
         }
     }
 }

@@ -22,6 +22,26 @@ struct AppsView: View {
                                 .foregroundColor(.blue)
                             Text(app.name)
                         }
+                        .contextMenu {
+                            let isRunning = app.status.lowercased() == "running"
+                            Button(action: {
+                                Task {
+                                    await viewModel.toggleAppStatus(id: app.originalId, currentStatus: app.status)
+                                }
+                            }) {
+                                Text(isRunning ? translations.get("stop", fallback: "Stop") : translations.get("start", fallback: "Start"))
+                                Image(systemName: isRunning ? "stop.fill" : "play.fill")
+                            }
+                            Divider()
+                            Button(action: {
+                                Task {
+                                    await viewModel.uninstallApp(id: app.originalId)
+                                }
+                            }) {
+                                Text(translations.get("uninstall", fallback: "Uninstall"))
+                                Image(systemName: "trash")
+                            }
+                        }
                     }
                     TableColumn(translations.get("app_version", fallback: "Version")) { app in
                         Text(app.version)

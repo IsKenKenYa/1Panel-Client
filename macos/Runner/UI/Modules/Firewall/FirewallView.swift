@@ -22,6 +22,16 @@ struct FirewallView: View {
                                 .foregroundColor(.blue)
                             Text(rule.port)
                         }
+                        .contextMenu {
+                            Button(action: {
+                                Task {
+                                    await viewModel.deleteRule(id: rule.originalId)
+                                }
+                            }) {
+                                Text(translations.get("delete", fallback: "Delete"))
+                                Image(systemName: "trash")
+                            }
+                        }
                     }
                     TableColumn(translations.get("firewall_protocol", fallback: "Protocol")) { rule in
                         Text(rule.protocolType)

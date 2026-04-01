@@ -22,6 +22,26 @@ struct CronJobsView: View {
                                 .foregroundColor(.blue)
                             Text(job.name)
                         }
+                        .contextMenu {
+                            let isRunning = job.status.lowercased() == "active" || job.status.lowercased() == "running"
+                            Button(action: {
+                                Task {
+                                    await viewModel.toggleCronJobStatus(id: job.originalId, currentStatus: job.status)
+                                }
+                            }) {
+                                Text(isRunning ? translations.get("stop", fallback: "Stop") : translations.get("start", fallback: "Start"))
+                                Image(systemName: isRunning ? "stop.fill" : "play.fill")
+                            }
+                            Divider()
+                            Button(action: {
+                                Task {
+                                    await viewModel.deleteCronJob(id: job.originalId)
+                                }
+                            }) {
+                                Text(translations.get("delete", fallback: "Delete"))
+                                Image(systemName: "trash")
+                            }
+                        }
                     }
                     TableColumn(translations.get("cronjob_schedule", fallback: "Schedule")) { job in
                         Text(job.schedule)

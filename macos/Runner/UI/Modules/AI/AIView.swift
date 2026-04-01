@@ -22,6 +22,17 @@ struct AIView: View {
                                 .foregroundColor(.purple)
                             Text(model.name)
                         }
+                        .contextMenu {
+                            let isReady = model.status.lowercased() == "ready" || model.status.lowercased() == "running"
+                            Button(action: {
+                                Task {
+                                    await viewModel.toggleModelStatus(id: model.originalId, currentStatus: model.status)
+                                }
+                            }) {
+                                Text(isReady ? translations.get("stop", fallback: "Stop") : translations.get("start", fallback: "Start"))
+                                Image(systemName: isReady ? "stop.fill" : "play.fill")
+                            }
+                        }
                     }
                     TableColumn(translations.get("ai_model_description", fallback: "Description")) { model in
                         Text(model.description)

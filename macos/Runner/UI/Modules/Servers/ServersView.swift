@@ -18,6 +18,25 @@ struct ServersView: View {
                 Table(viewModel.servers) {
                     TableColumn(translations.get("server_name", fallback: "Name")) { server in
                         Text(server.name)
+                            .contextMenu {
+                                Button(action: {
+                                    Task {
+                                        await viewModel.connectServer(id: server.originalId)
+                                    }
+                                }) {
+                                    Text(translations.get("connect", fallback: "Connect"))
+                                    Image(systemName: "link")
+                                }
+                                Divider()
+                                Button(action: {
+                                    Task {
+                                        await viewModel.deleteServer(id: server.originalId)
+                                    }
+                                }) {
+                                    Text(translations.get("delete", fallback: "Delete"))
+                                    Image(systemName: "trash")
+                                }
+                            }
                     }
                     TableColumn(translations.get("server_url", fallback: "URL")) { server in
                         Text(server.url)

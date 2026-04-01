@@ -22,6 +22,16 @@ struct DatabasesView: View {
                                 .foregroundColor(.blue)
                             Text(db.name)
                         }
+                        .contextMenu {
+                            Button(action: {
+                                Task {
+                                    await viewModel.deleteDatabase(id: db.originalId)
+                                }
+                            }) {
+                                Text(translations.get("delete", fallback: "Delete"))
+                                Image(systemName: "trash")
+                            }
+                        }
                     }
                     TableColumn(translations.get("database_type", fallback: "Type")) { db in
                         Text(db.type)

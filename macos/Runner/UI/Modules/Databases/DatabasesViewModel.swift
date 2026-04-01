@@ -2,6 +2,7 @@ import Foundation
 
 struct DatabaseModel: Identifiable {
     let id = UUID()
+    let originalId: String
     let name: String
     let type: String
     let status: String
@@ -23,10 +24,22 @@ class DatabasesViewModel: ObservableObject {
                               let status = dict["status"] as? String else {
                             return nil
                         }
-                        return DatabaseModel(name: name, type: type, status: status)
+                        let originalId = dict["id"] as? String ?? ""
+                        return DatabaseModel(originalId: originalId, name: name, type: type, status: status)
                     }
                 }
             }
+        }
+    }
+    
+    func deleteDatabase(id: String) async {
+        do {
+            _ = try await ChannelManager.shared.invokeDataMethodAsync("deleteDatabase", arguments: ["id": id])
+            DispatchQueue.main.async {
+                self.fetchDatabases()
+            }
+        } catch {
+            print("Failed to delete database: \(error)")
         }
     }
 }

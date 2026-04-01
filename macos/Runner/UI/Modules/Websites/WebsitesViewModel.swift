@@ -2,6 +2,7 @@ import Foundation
 
 struct WebsiteModel: Identifiable {
     let id = UUID()
+    let originalId: String
     let primaryDomain: String
     let status: String
     let remark: String
@@ -23,10 +24,34 @@ class WebsitesViewModel: ObservableObject {
                               let remark = dict["remark"] as? String else {
                             return nil
                         }
-                        return WebsiteModel(primaryDomain: primaryDomain, status: status, remark: remark)
+                        let originalId = dict["id"] as? String ?? ""
+                        return WebsiteModel(originalId: originalId, primaryDomain: primaryDomain, status: status, remark: remark)
                     }
                 }
             }
+        }
+    }
+    
+    func toggleWebsiteStatus(id: String, currentStatus: String) async {
+        let action = currentStatus.lowercased() == "running" ? "stopWebsite" : "startWebsite"
+        do {
+            _ = try await ChannelManager.shared.invokeDataMethodAsync(action, arguments: ["id": id])
+            DispatchQueue.main.async {
+                self.fetchWebsites()
+            }
+        } catch {
+            print("Failed to toggle website status: \(error)")
+        }
+    }
+    
+    func deleteWebsite(id: String) async {
+        do {
+            _ = try await ChannelManager.shared.invokeDataMethodAsync("deleteWebsite", arguments: ["id": id])
+            DispatchQueue.main.async {
+                self.fetchWebsites()
+            }
+        } catch {
+            print("Failed to delete website: \(error)")
         }
     }
 }

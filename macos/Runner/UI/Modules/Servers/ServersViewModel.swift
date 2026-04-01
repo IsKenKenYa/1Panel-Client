@@ -2,6 +2,7 @@ import Foundation
 
 struct ServerModel: Identifiable {
     let id = UUID()
+    let originalId: String
     let name: String
     let url: String
 }
@@ -21,10 +22,30 @@ class ServersViewModel: ObservableObject {
                               let url = dict["url"] as? String else {
                             return nil
                         }
-                        return ServerModel(name: name, url: url)
+                        let originalId = dict["id"] as? String ?? ""
+                        return ServerModel(originalId: originalId, name: name, url: url)
                     }
                 }
             }
+        }
+    }
+    
+    func deleteServer(id: String) async {
+        do {
+            _ = try await ChannelManager.shared.invokeDataMethodAsync("deleteServer", arguments: ["id": id])
+            DispatchQueue.main.async {
+                self.fetchServers()
+            }
+        } catch {
+            print("Failed to delete server: \(error)")
+        }
+    }
+    
+    func connectServer(id: String) async {
+        do {
+            _ = try await ChannelManager.shared.invokeDataMethodAsync("connectServer", arguments: ["id": id])
+        } catch {
+            print("Failed to connect to server: \(error)")
         }
     }
 }

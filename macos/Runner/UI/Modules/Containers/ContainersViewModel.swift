@@ -2,6 +2,7 @@ import Foundation
 
 struct ContainerModel: Identifiable {
     let id = UUID()
+    let originalId: String
     let name: String
     let image: String
     let state: String
@@ -23,10 +24,45 @@ class ContainersViewModel: ObservableObject {
                               let state = dict["state"] as? String else {
                             return nil
                         }
-                        return ContainerModel(name: name, image: image, state: state)
+                        let originalId = dict["id"] as? String ?? ""
+                        return ContainerModel(originalId: originalId, name: name, image: image, state: state)
                     }
                 }
             }
+        }
+    }
+    
+    func toggleContainerState(id: String, currentState: String) async {
+        let action = currentState.lowercased() == "running" ? "stopContainer" : "startContainer"
+        do {
+            _ = try await ChannelManager.shared.invokeDataMethodAsync(action, arguments: ["id": id])
+            DispatchQueue.main.async {
+                self.fetchContainers()
+            }
+        } catch {
+            print("Failed to toggle container state: \(error)")
+        }
+    }
+    
+    func restartContainer(id: String) async {
+        do {
+            _ = try await ChannelManager.shared.invokeDataMethodAsync("restartContainer", arguments: ["id": id])
+            DispatchQueue.main.async {
+                self.fetchContainers()
+            }
+        } catch {
+            print("Failed to restart container: \(error)")
+        }
+    }
+    
+    func deleteContainer(id: String) async {
+        do {
+            _ = try await ChannelManager.shared.invokeDataMethodAsync("deleteContainer", arguments: ["id": id])
+            DispatchQueue.main.async {
+                self.fetchContainers()
+            }
+        } catch {
+            print("Failed to delete container: \(error)")
         }
     }
 }
