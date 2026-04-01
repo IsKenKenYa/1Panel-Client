@@ -9,6 +9,7 @@ class AboutPage extends StatefulWidget {
   const AboutPage({super.key});
 
   static const officialDomainName = 'onepanel.iskenkenya.com';
+  static const officialDomainUrl = 'https://$officialDomainName';
   static const repoSsh = 'git@github.com:IsKenKenYa/1Panel-Client.git';
   static const repoHttps = 'https://github.com/IsKenKenYa/1Panel-Client.git';
   static const issuesUrl = 'https://github.com/IsKenKenYa/1Panel-Client/issues';
@@ -67,8 +68,8 @@ class _AboutPageState extends State<AboutPage> {
                       label: l10n.aboutOfficialDomainLabel,
                       value: AboutPage.officialDomainName,
                       openActionLabel: l10n.aboutLinkOpenAction,
-                      onOpen: () => _openLink(
-                          context, 'https://${AboutPage.officialDomainName}'),
+                      onOpen: () =>
+                          _openLink(context, AboutPage.officialDomainUrl),
                       onCopy: () =>
                           _copyText(context, AboutPage.officialDomainName),
                     ),

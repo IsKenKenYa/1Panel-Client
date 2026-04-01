@@ -192,9 +192,10 @@ ${l10n.settingsFeedbackTemplateEnvironment}
 
     if (!result.success &&
         result.permissionStatus == fs.PermissionStatus.denied) {
-      final permissionStatus = await _fileSaveService.requestStoragePermission();
+      final retryPermissionStatus =
+          await _fileSaveService.requestStoragePermission();
       if (!context.mounted) return;
-      if (permissionStatus == fs.PermissionStatus.granted) {
+      if (retryPermissionStatus == fs.PermissionStatus.granted) {
         final retryResult =
             await LogExportService().exportLogs(minLevel: appLogger.minLogLevel);
         if (!context.mounted) return;
