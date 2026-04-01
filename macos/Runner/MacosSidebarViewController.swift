@@ -10,13 +10,13 @@ final class MacosSidebarViewController: NSViewController, NSTableViewDataSource,
   var onSelectModule: ((String) -> Void)?
 
   private let items: [MacosSidebarItem] = [
-    MacosSidebarItem(id: "servers", titleKey: "nav_servers", symbolName: "server.rack"),
-    MacosSidebarItem(id: "files", titleKey: "nav_files", symbolName: "folder"),
-    MacosSidebarItem(id: "apps", titleKey: "nav_apps", symbolName: "app.badge"),
-    MacosSidebarItem(id: "websites", titleKey: "nav_websites", symbolName: "globe"),
-    MacosSidebarItem(id: "monitoring", titleKey: "nav_monitoring", symbolName: "chart.xyaxis.line"),
-    MacosSidebarItem(id: "containers", titleKey: "nav_containers", symbolName: "square.stack.3d.up"),
-    MacosSidebarItem(id: "settings", titleKey: "nav_settings", symbolName: "gearshape"),
+    MacosSidebarItem(id: "servers", titleKey: "navServer", symbolName: "server.rack"),
+    MacosSidebarItem(id: "files", titleKey: "navFiles", symbolName: "folder"),
+    MacosSidebarItem(id: "apps", titleKey: "serverModuleApps", symbolName: "app.badge"),
+    MacosSidebarItem(id: "websites", titleKey: "serverModuleWebsites", symbolName: "globe"),
+    MacosSidebarItem(id: "monitoring", titleKey: "serverModuleMonitoring", symbolName: "chart.xyaxis.line"),
+    MacosSidebarItem(id: "containers", titleKey: "serverModuleContainers", symbolName: "square.stack.3d.up"),
+    MacosSidebarItem(id: "settings", titleKey: "navSettings", symbolName: "gearshape"),
   ]
 
   private let visualEffectView = NSVisualEffectView()
@@ -125,8 +125,12 @@ final class MacosSidebarViewController: NSViewController, NSTableViewDataSource,
     onSelectModule?(items[row].id)
   }
 
+  func reloadData() {
+    tableView.reloadData()
+  }
+
   private func configure(cell: NSTableCellView, item: MacosSidebarItem) {
-    let title = NSLocalizedString(item.titleKey, comment: "")
+    let title = TranslationsManager.shared.get(item.titleKey, fallback: item.titleKey)
     cell.textField?.stringValue = title
     if let image = NSImage(systemSymbolName: item.symbolName, accessibilityDescription: title) {
       cell.imageView?.image = image

@@ -1,8 +1,32 @@
 #include "flutter_window.h"
 
 #include <optional>
+#include <commctrl.h>
 
 #include "flutter/generated_plugin_registrant.h"
+
+std::wstring FlutterWindow::GetI18nString(const std::string& key, const std::wstring& fallback) {
+  auto it = i18n_cache_.find(key);
+  if (it != i18n_cache_.end()) {
+    return it->second;
+  }
+  return fallback;
+}
+
+void FlutterWindow::SetupListViewColumns() {
+  if (!listbox_hwnd_) return;
+
+  // Add a single column for now, or multiple if needed
+  LVCOLUMN lvc;
+  lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
+  lvc.fmt = LVCFMT_LEFT;
+  lvc.cx = 180;
+  
+  std::wstring col_name = GetI18nString("titleItems", L"Items");
+  lvc.pszText = const_cast<LPWSTR>(col_name.c_str());
+  lvc.iSubItem = 0;
+  ListView_InsertColumn(listbox_hwnd_, 0, &lvc);
+}
 
 FlutterWindow::FlutterWindow(const flutter::DartProject& project)
     : project_(project) {}
@@ -26,13 +50,21 @@ bool FlutterWindow::OnCreate() {
   }
   RegisterPlugins(flutter_controller_->engine());
   
-  // Create a placeholder Win32 ListBox
+  // Initialize common controls
+  INITCOMMONCONTROLSEX icex;
+  icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
+  icex.dwICC = ICC_LISTVIEW_CLASSES;
+  InitCommonControlsEx(&icex);
+
+  // Create a SysListView32 instead of Win32 ListBox
   listbox_hwnd_ = CreateWindow(
-      L"LISTBOX", NULL,
-      WS_CHILD | WS_VISIBLE | LBS_STANDARD,
+      WC_LISTVIEW, NULL,
+      WS_CHILD | WS_VISIBLE | LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | WS_BORDER,
       0, 0, 200, frame.bottom - frame.top,
       GetHandle(), NULL, GetModuleHandle(nullptr), NULL);
-  SendMessage(listbox_hwnd_, LB_ADDSTRING, 0, (LPARAM)L"Loading servers...");
+  ListView_SetExtendedListViewStyle(listbox_hwnd_, LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+
+  SetupListViewColumns();
 
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 

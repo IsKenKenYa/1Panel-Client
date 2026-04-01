@@ -133,6 +133,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - lib/l10n/
     - assets/branding/app_icon_preview.png
     - assets/branding/app_icon_master.png
     - assets/branding/1Panel Client LOGO（Community）.svg

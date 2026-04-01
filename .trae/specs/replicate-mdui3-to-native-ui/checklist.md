@@ -1,0 +1,7 @@
+- [ ] Flutter 端成功新增 `getTranslations` 和其余必需模块（如 Containers）的 Channel 方法。
+- [ ] macOS 端所有界面的占位符（如 `nav_servers`）已替换为正确的多语言文本。
+- [ ] macOS 端的 Servers, Files 等列表和详情界面已重构，具备原生 AppKit 标准的间距、圆角与表格列。
+- [ ] iOS 端的 TabBar 标题和列表卡片已应用正确的多语言文本，并使用 SwiftUI 重构为现代移动端样式。
+- [ ] Windows 端成功消费了多语言字典，界面文本显示正常，且列表展示（Win32 或 WinUI 3）不再是简单的纯文本列表。
+- [ ] Linux (GTK) 端成功消费了多语言字典，并使用结构化的 TreeView 或 ListBox 实现了所有模块的样式对齐。
+- [ ] 原生端的所有 UI 改动仅限于表现层（View），核心数据请求（Model/Repo/Service）均通过 Channel 由 Dart 侧提供，未发生逻辑重复开发。

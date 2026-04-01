@@ -12,6 +12,7 @@ final class MainShellViewController: NSSplitViewController, NSToolbarDelegate {
   private var appsVC: MacosAppsViewController?
   private var websitesVC: MacosWebsitesViewController?
   private var monitoringVC: MacosMonitoringViewController?
+  private var containersVC: MacosContainersViewController?
   private var settingsVC: MacosSettingsViewController?
   private var contentHost: MacosFlutterContentHostViewController?
   private var contentItem: NSSplitViewItem?
@@ -39,6 +40,12 @@ final class MainShellViewController: NSSplitViewController, NSToolbarDelegate {
 
     setupSplitView()
     setupShellChannel()
+    
+    TranslationsManager.shared.load(methodChannel: dataChannel!) { [weak self] in
+      DispatchQueue.main.async {
+        self?.sidebarViewController.reloadData()
+      }
+    }
 
     sidebarViewController.onSelectModule = { [weak self] moduleId in
       self?.handleModuleSelection(moduleId: moduleId)
@@ -72,6 +79,11 @@ final class MainShellViewController: NSSplitViewController, NSToolbarDelegate {
         monitoringVC = MacosMonitoringViewController(methodChannel: dataChannel!)
       }
       switchToViewController(monitoringVC!)
+    } else if moduleId == "containers" {
+      if containersVC == nil {
+        containersVC = MacosContainersViewController(methodChannel: dataChannel!)
+      }
+      switchToViewController(containersVC!)
     } else if moduleId == "settings" {
       if settingsVC == nil {
         settingsVC = MacosSettingsViewController()
@@ -260,10 +272,17 @@ class MacosServersViewController: NSViewController, NSTableViewDataSource, NSTab
         
         tableView.dataSource = self
         tableView.delegate = self
+        if #available(macOS 11.0, *) {
+            tableView.style = .inset
+        }
+        tableView.rowHeight = 44
+        tableView.usesAlternatingRowBackgroundColors = true
+        tableView.gridStyleMask = .solidHorizontalGridLineMask
+
         let col1 = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("Name"))
-        col1.title = "Name"
+        col1.title = TranslationsManager.shared.get("server_name", fallback: "Name")
         let col2 = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("URL"))
-        col2.title = "URL"
+        col2.title = TranslationsManager.shared.get("server_url", fallback: "URL")
         tableView.addTableColumn(col1)
         tableView.addTableColumn(col2)
         
@@ -333,10 +352,17 @@ class MacosFilesViewController: NSViewController, NSTableViewDataSource, NSTable
         
         tableView.dataSource = self
         tableView.delegate = self
+        if #available(macOS 11.0, *) {
+            tableView.style = .inset
+        }
+        tableView.rowHeight = 44
+        tableView.usesAlternatingRowBackgroundColors = true
+        tableView.gridStyleMask = .solidHorizontalGridLineMask
+
         let col1 = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("Name"))
-        col1.title = "Name"
+        col1.title = TranslationsManager.shared.get("server_name", fallback: "Name")
         let col2 = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("Type"))
-        col2.title = "Type"
+        col2.title = TranslationsManager.shared.get("file_type", fallback: "Type")
         tableView.addTableColumn(col1)
         tableView.addTableColumn(col2)
         
@@ -375,7 +401,7 @@ class MacosFilesViewController: NSViewController, NSTableViewDataSource, NSTable
             text.stringValue = file["name"] as? String ?? ""
         } else {
             let isDir = file["isDir"] as? Bool ?? false
-            text.stringValue = isDir ? "Folder" : "File"
+            text.stringValue = isDir ? TranslationsManager.shared.get("folder", fallback: "Folder") : TranslationsManager.shared.get("file", fallback: "File")
         }
         return text
     }
@@ -407,13 +433,20 @@ class MacosAppsViewController: NSViewController, NSTableViewDataSource, NSTableV
         
         tableView.dataSource = self
         tableView.delegate = self
+        if #available(macOS 11.0, *) {
+            tableView.style = .inset
+        }
+        tableView.rowHeight = 44
+        tableView.usesAlternatingRowBackgroundColors = true
+        tableView.gridStyleMask = .solidHorizontalGridLineMask
+
         
         let col1 = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("Name"))
-        col1.title = "Name"
+        col1.title = TranslationsManager.shared.get("server_name", fallback: "Name")
         let col2 = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("Status"))
-        col2.title = "Status"
+        col2.title = TranslationsManager.shared.get("app_status", fallback: "Status")
         let col3 = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("Version"))
-        col3.title = "Version"
+        col3.title = TranslationsManager.shared.get("app_version", fallback: "Version")
         
         tableView.addTableColumn(col1)
         tableView.addTableColumn(col2)
@@ -487,13 +520,20 @@ class MacosWebsitesViewController: NSViewController, NSTableViewDataSource, NSTa
         
         tableView.dataSource = self
         tableView.delegate = self
+        if #available(macOS 11.0, *) {
+            tableView.style = .inset
+        }
+        tableView.rowHeight = 44
+        tableView.usesAlternatingRowBackgroundColors = true
+        tableView.gridStyleMask = .solidHorizontalGridLineMask
+
         
         let col1 = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("Domain"))
-        col1.title = "Domain"
+        col1.title = TranslationsManager.shared.get("website_domain", fallback: "Domain")
         let col2 = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("Status"))
-        col2.title = "Status"
+        col2.title = TranslationsManager.shared.get("app_status", fallback: "Status")
         let col3 = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("Remark"))
-        col3.title = "Remark"
+        col3.title = TranslationsManager.shared.get("website_remark", fallback: "Remark")
         
         tableView.addTableColumn(col1)
         tableView.addTableColumn(col2)
@@ -600,20 +640,20 @@ class MacosMonitoringViewController: NSViewController {
             self.stackView.addArrangedSubview(label)
         }
         
-        addMetric("CPU", "\(metrics["cpu"] ?? 0)%")
-        addMetric("Memory", "\(metrics["memory"] ?? 0)%")
-        addMetric("Disk", "\(metrics["disk"] ?? 0)%")
-        addMetric("Load 1m", metrics["load1"] ?? 0)
-        addMetric("Load 5m", metrics["load5"] ?? 0)
-        addMetric("Load 15m", metrics["load15"] ?? 0)
+        addMetric(TranslationsManager.shared.get("monitoring_cpu", fallback: "CPU"), "\(metrics["cpu"] ?? 0)%")
+        addMetric(TranslationsManager.shared.get("monitoring_memory", fallback: "Memory"), "\(metrics["memory"] ?? 0)%")
+        addMetric(TranslationsManager.shared.get("monitoring_disk", fallback: "Disk"), "\(metrics["disk"] ?? 0)%")
+        addMetric(TranslationsManager.shared.get("monitoring_load1", fallback: "Load 1m"), metrics["load1"] ?? 0)
+        addMetric(TranslationsManager.shared.get("monitoring_load5", fallback: "Load 5m"), metrics["load5"] ?? 0)
+        addMetric(TranslationsManager.shared.get("monitoring_load15", fallback: "Load 15m"), metrics["load15"] ?? 0)
     }
 }
 
 class MacosSettingsViewController: NSViewController {
-    private let titleLabel = NSTextField(labelWithString: "Settings")
-    private let renderModeLabel = NSTextField(labelWithString: "UI Render Mode")
+    private let titleLabel = NSTextField(labelWithString: TranslationsManager.shared.get("nav_settings", fallback: "Settings"))
+    private let renderModeLabel = NSTextField(labelWithString: TranslationsManager.shared.get("settings_ui_mode", fallback: "UI Render Mode"))
     private let renderModePopUp = NSPopUpButton(frame: .zero, pullsDown: false)
-    private let hintLabel = NSTextField(labelWithString: "Please restart the app for the UI render mode changes to take effect.")
+    private let hintLabel = NSTextField(labelWithString: TranslationsManager.shared.get("settings_restart_hint", fallback: "Please restart the app for the UI render mode changes to take effect."))
     
     override func loadView() {
         self.view = NSView()
@@ -672,5 +712,91 @@ class MacosSettingsViewController: NSViewController {
         UserDefaults.standard.set(newValue, forKey: "flutter.app_ui_render_mode")
         UserDefaults.standard.synchronize()
         hintLabel.isHidden = false
+    }
+}
+
+class MacosContainersViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
+    private let methodChannel: FlutterMethodChannel
+    private var containers: [[String: Any]] = []
+    private let scrollView = NSScrollView()
+    private let tableView = NSTableView()
+    
+    init(methodChannel: FlutterMethodChannel) {
+        self.methodChannel = methodChannel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func loadView() {
+        self.view = NSView()
+        self.view.wantsLayer = true
+        self.view.layer?.backgroundColor = NSColor.windowBackgroundColor.cgColor
+        
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.hasVerticalScroller = true
+        self.view.addSubview(scrollView)
+        
+        tableView.dataSource = self
+        tableView.delegate = self
+        if #available(macOS 11.0, *) {
+            tableView.style = .inset
+        }
+        tableView.rowHeight = 44
+        tableView.usesAlternatingRowBackgroundColors = true
+        tableView.gridStyleMask = .solidHorizontalGridLineMask
+        
+        let col1 = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("Name"))
+        col1.title = TranslationsManager.shared.get("container_name", fallback: "Name")
+        let col2 = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("Image"))
+        col2.title = TranslationsManager.shared.get("container_image", fallback: "Image")
+        let col3 = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("State"))
+        col3.title = TranslationsManager.shared.get("container_state", fallback: "State")
+        
+        tableView.addTableColumn(col1)
+        tableView.addTableColumn(col2)
+        tableView.addTableColumn(col3)
+        
+        scrollView.documentView = tableView
+        
+        NSLayoutConstraint.activate([
+            scrollView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+        ])
+        
+        loadData()
+    }
+    
+    private func loadData() {
+        methodChannel.invokeMethod("getContainers", arguments: nil) { [weak self] result in
+            if let containers = result as? [[String: Any]] {
+                self?.containers = containers
+                self?.tableView.reloadData()
+            }
+        }
+    }
+    
+    func numberOfRows(in tableView: NSTableView) -> Int {
+        return containers.count
+    }
+    
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        let text = NSTextField(labelWithString: "")
+        text.isEditable = false
+        text.drawsBackground = false
+        text.isBordered = false
+        let container = containers[row]
+        if tableColumn?.identifier.rawValue == "Name" {
+            text.stringValue = container["name"] as? String ?? ""
+        } else if tableColumn?.identifier.rawValue == "Image" {
+            text.stringValue = container["image"] as? String ?? ""
+        } else if tableColumn?.identifier.rawValue == "State" {
+            text.stringValue = container["state"] as? String ?? ""
+        }
+        return text
     }
 }

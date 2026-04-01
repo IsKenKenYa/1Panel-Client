@@ -41,34 +41,41 @@ struct ContentView: View {
     @State private var files: [[String: Any]] = []
     @State private var apps: [[String: Any]] = []
     @State private var websites: [[String: Any]] = []
+    @State private var containers: [[String: Any]] = []
     @State private var channel: FlutterMethodChannel?
     @State private var monitoring: [String: Any] = [:]
+    @State private var translations: [String: String] = [:]
 
     var body: some View {
         TabView {
-            ServersView(servers: servers, loadServers: loadServers)
+            ServersView(servers: servers, loadServers: loadServers, translations: translations)
                 .tabItem {
-                    Label("Servers", systemImage: "server.rack")
+                    Label(translations["nav_servers"] ?? "Servers", systemImage: "server.rack")
                 }
             
-            FilesView(files: files, loadFiles: loadFiles)
+            FilesView(files: files, loadFiles: loadFiles, translations: translations)
                 .tabItem {
-                    Label("Files", systemImage: "folder")
+                    Label(translations["nav_files"] ?? "Files", systemImage: "folder")
+                }
+            
+            ContainersView(containers: containers, loadContainers: loadContainers, translations: translations)
+                .tabItem {
+                    Label(translations["nav_containers"] ?? "Containers", systemImage: "cube.box")
                 }
                 
-            AppsView(apps: apps, loadApps: loadApps)
+            AppsView(apps: apps, loadApps: loadApps, translations: translations)
                 .tabItem {
-                    Label("Apps", systemImage: "app.badge")
+                    Label(translations["nav_apps"] ?? "Apps", systemImage: "app.badge")
                 }
                 
-            WebsitesView(websites: websites, loadWebsites: loadWebsites)
+            WebsitesView(websites: websites, loadWebsites: loadWebsites, translations: translations)
                 .tabItem {
-                    Label("Websites", systemImage: "globe")
+                    Label(translations["nav_websites"] ?? "Websites", systemImage: "globe")
                 }
                 
-            MonitoringView(metrics: monitoring, loadMonitoring: loadMonitoring)
+            MonitoringView(metrics: monitoring, loadMonitoring: loadMonitoring, translations: translations)
                 .tabItem {
-                    Label("Monitoring", systemImage: "chart.xyaxis.line")
+                    Label(translations["nav_monitoring"] ?? "Monitoring", systemImage: "chart.xyaxis.line")
                 }
 
             ZStack {
@@ -77,22 +84,33 @@ struct ContentView: View {
                     .ignoresSafeArea()
             }
             .tabItem {
-                Label("More", systemImage: "ellipsis.circle")
+                Label("Flutter", systemImage: "ellipsis.circle")
             }
             
-            NativeSettingsView()
+            NativeSettingsView(translations: translations)
                 .tabItem {
-                    Label("Settings", systemImage: "gearshape")
+                    Label(translations["nav_settings"] ?? "Settings", systemImage: "gearshape")
                 }
         }
         .onAppear {
             setupChannel()
+            loadTranslations()
         }
     }
     
     private func setupChannel() {
         if channel == nil {
             channel = FlutterMethodChannel(name: "com.onepanel.client/method", binaryMessenger: engine.binaryMessenger)
+        }
+    }
+    
+    private func loadTranslations() {
+        channel?.invokeMethod("getTranslations", arguments: nil) { result in
+            if let result = result as? [String: String] {
+                DispatchQueue.main.async {
+                    self.translations = result
+                }
+            }
         }
     }
     
@@ -111,6 +129,16 @@ struct ContentView: View {
             if let result = result as? [[String: Any]] {
                 DispatchQueue.main.async {
                     self.files = result
+                }
+            }
+        }
+    }
+    
+    private func loadContainers() {
+        channel?.invokeMethod("getContainers", arguments: nil) { result in
+            if let result = result as? [[String: Any]] {
+                DispatchQueue.main.async {
+                    self.containers = result
                 }
             }
         }
@@ -150,19 +178,53 @@ struct ContentView: View {
 struct ServersView: View {
     let servers: [[String: Any]]
     let loadServers: () -> Void
+    let translations: [String: String]
     
     var body: some View {
         NavigationView {
             List {
                 ForEach(servers.indices, id: \.self) { index in
                     let server = servers[index]
-                    VStack(alignment: .leading) {
-                        Text(server["name"] as? String ?? "Unknown").font(.headline)
-                        Text(server["url"] as? String ?? "").font(.subheadline).foregroundColor(.gray)
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text(server["name"] as? String ?? "Unknown")
+                                .font(.headline)
+                            Spacer()
+                            if server["isCurrent"] as? Bool == true {
+                                Text(translations["server_status_online"] ?? "Current")
+                                    .font(.caption)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(Color.green.opacity(0.2))
+                                    .foregroundColor(.green)
+                                    .cornerRadius(8)
+                            }
+                        }
+                        Text(server["url"] as? String ?? "")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                        
+                        HStack(spacing: 16) {
+                            HStack(spacing: 4) {
+                                Image(systemName: "cpu")
+                                    .foregroundColor(.blue)
+                                Text(String(format: "%.1f%%", server["cpu"] as? Double ?? 0))
+                                    .font(.caption)
+                            }
+                            HStack(spacing: 4) {
+                                Image(systemName: "memorychip")
+                                    .foregroundColor(.purple)
+                                Text(String(format: "%.1f%%", server["memory"] as? Double ?? 0))
+                                    .font(.caption)
+                            }
+                        }
+                        .padding(.top, 4)
                     }
+                    .padding(.vertical, 8)
                 }
             }
-            .navigationTitle("Servers")
+            .listStyle(InsetGroupedListStyle())
+            .navigationTitle(translations["nav_servers"] ?? "Servers")
             .onAppear(perform: loadServers)
         }
     }
@@ -171,45 +233,186 @@ struct ServersView: View {
 struct FilesView: View {
     let files: [[String: Any]]
     let loadFiles: () -> Void
+    let translations: [String: String]
     
     var body: some View {
         NavigationView {
             List {
                 ForEach(files.indices, id: \.self) { index in
                     let file = files[index]
-                    HStack {
-                        Image(systemName: (file["isDir"] as? Bool == true) ? "folder.fill" : "doc")
-                        Text(file["name"] as? String ?? "Unknown")
+                    HStack(spacing: 16) {
+                        Image(systemName: (file["isDir"] as? Bool == true) ? "folder.fill" : "doc.fill")
+                            .foregroundColor((file["isDir"] as? Bool == true) ? .blue : .gray)
+                            .font(.title2)
+                        
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(file["name"] as? String ?? "Unknown")
+                                .font(.body)
+                            
+                            HStack {
+                                if let size = file["size"] as? Int64, size > 0 {
+                                    Text(formatSize(size))
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                                
+                                if let modTime = file["modTime"] as? Int64, modTime > 0 {
+                                    Text(formatDate(modTime))
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                        }
                     }
+                    .padding(.vertical, 4)
                 }
             }
-            .navigationTitle("Files")
+            .listStyle(InsetGroupedListStyle())
+            .navigationTitle(translations["nav_files"] ?? "Files")
             .onAppear(perform: loadFiles)
         }
+    }
+    
+    private func formatSize(_ bytes: Int64) -> String {
+        let formatter = ByteCountFormatter()
+        formatter.allowedUnits = [.useAll]
+        formatter.countStyle = .file
+        return formatter.string(fromByteCount: bytes)
+    }
+    
+    private func formatDate(_ timestamp: Int64) -> String {
+        let date = Date(timeIntervalSince1970: TimeInterval(timestamp) / 1000.0)
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .short
+        return formatter.string(from: date)
+    }
+}
+
+struct ContainersView: View {
+    let containers: [[String: Any]]
+    let loadContainers: () -> Void
+    let translations: [String: String]
+    
+    var body: some View {
+        NavigationView {
+            List {
+                ForEach(containers.indices, id: \.self) { index in
+                    let container = containers[index]
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text(container["name"] as? String ?? "Unknown")
+                                .font(.headline)
+                            Spacer()
+                            Text(container["state"] as? String ?? "Unknown")
+                                .font(.caption)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(stateColor(container["state"] as? String).opacity(0.2))
+                                .foregroundColor(stateColor(container["state"] as? String))
+                                .cornerRadius(8)
+                        }
+                        
+                        Text(container["image"] as? String ?? "Unknown Image")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+                            
+                        HStack(spacing: 16) {
+                            if let cpu = container["cpuUsage"] as? Double {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "cpu")
+                                        .foregroundColor(.blue)
+                                    Text(String(format: "%.2f%%", cpu))
+                                        .font(.caption)
+                                }
+                            }
+                            if let mem = container["memoryUsage"] as? Double {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "memorychip")
+                                        .foregroundColor(.purple)
+                                    Text(formatSize(Int64(mem)))
+                                        .font(.caption)
+                                }
+                            }
+                        }
+                        .padding(.top, 4)
+                    }
+                    .padding(.vertical, 8)
+                }
+            }
+            .listStyle(InsetGroupedListStyle())
+            .navigationTitle(translations["nav_containers"] ?? "Containers")
+            .onAppear(perform: loadContainers)
+        }
+    }
+    
+    private func stateColor(_ state: String?) -> Color {
+        switch state?.lowercased() {
+        case "running": return .green
+        case "exited", "stopped": return .red
+        case "paused": return .orange
+        default: return .gray
+        }
+    }
+    
+    private func formatSize(_ bytes: Int64) -> String {
+        let formatter = ByteCountFormatter()
+        formatter.allowedUnits = [.useAll]
+        formatter.countStyle = .memory
+        return formatter.string(fromByteCount: bytes)
     }
 }
 
 struct AppsView: View {
     let apps: [[String: Any]]
     let loadApps: () -> Void
+    let translations: [String: String]
     
     var body: some View {
         NavigationView {
             List {
                 ForEach(apps.indices, id: \.self) { index in
                     let app = apps[index]
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(app["name"] as? String ?? "Unknown").font(.headline)
-                            Text(app["version"] as? String ?? "").font(.subheadline).foregroundColor(.gray)
+                    HStack(spacing: 16) {
+                        Image(systemName: "app.fill")
+                            .font(.title)
+                            .foregroundColor(.blue)
+                            .frame(width: 40, height: 40)
+                            .background(Color.blue.opacity(0.1))
+                            .cornerRadius(8)
+                            
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(app["name"] as? String ?? "Unknown")
+                                .font(.headline)
+                            Text(app["version"] as? String ?? "")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
                         }
                         Spacer()
-                        Text(app["status"] as? String ?? "").font(.subheadline)
+                        Text(app["status"] as? String ?? "")
+                            .font(.caption)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(statusColor(app["status"] as? String).opacity(0.2))
+                            .foregroundColor(statusColor(app["status"] as? String))
+                            .cornerRadius(8)
                     }
+                    .padding(.vertical, 8)
                 }
             }
-            .navigationTitle("Apps")
+            .listStyle(InsetGroupedListStyle())
+            .navigationTitle(translations["nav_apps"] ?? "Apps")
             .onAppear(perform: loadApps)
+        }
+    }
+    
+    private func statusColor(_ status: String?) -> Color {
+        switch status?.lowercased() {
+        case "installed", "running", "active": return .green
+        case "error", "failed": return .red
+        default: return .gray
         }
     }
 }
@@ -217,24 +420,46 @@ struct AppsView: View {
 struct WebsitesView: View {
     let websites: [[String: Any]]
     let loadWebsites: () -> Void
+    let translations: [String: String]
     
     var body: some View {
         NavigationView {
             List {
                 ForEach(websites.indices, id: \.self) { index in
                     let website = websites[index]
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(website["primaryDomain"] as? String ?? "Unknown").font(.headline)
-                            Text(website["remark"] as? String ?? "").font(.subheadline).foregroundColor(.gray)
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text(website["primaryDomain"] as? String ?? "Unknown")
+                                .font(.headline)
+                            Spacer()
+                            Text(website["status"] as? String ?? "")
+                                .font(.caption)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(statusColor(website["status"] as? String).opacity(0.2))
+                                .foregroundColor(statusColor(website["status"] as? String))
+                                .cornerRadius(8)
                         }
-                        Spacer()
-                        Text(website["status"] as? String ?? "").font(.subheadline)
+                        if let remark = website["remark"] as? String, !remark.isEmpty {
+                            Text(remark)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
                     }
+                    .padding(.vertical, 8)
                 }
             }
-            .navigationTitle("Websites")
+            .listStyle(InsetGroupedListStyle())
+            .navigationTitle(translations["nav_websites"] ?? "Websites")
             .onAppear(perform: loadWebsites)
+        }
+    }
+    
+    private func statusColor(_ status: String?) -> Color {
+        switch status?.lowercased() {
+        case "running", "active": return .green
+        case "stopped": return .red
+        default: return .gray
         }
     }
 }
@@ -242,20 +467,77 @@ struct WebsitesView: View {
 struct MonitoringView: View {
     let metrics: [String: Any]
     let loadMonitoring: () -> Void
+    let translations: [String: String]
     
     var body: some View {
         NavigationView {
             List {
-                HStack { Text("CPU"); Spacer(); Text("\(metrics["cpu"] as? Double ?? 0)%") }
-                HStack { Text("Memory"); Spacer(); Text("\(metrics["memory"] as? Double ?? 0)%") }
-                HStack { Text("Disk"); Spacer(); Text("\(metrics["disk"] as? Double ?? 0)%") }
-                HStack { Text("Load 1m"); Spacer(); Text("\(metrics["load1"] as? Double ?? 0)") }
-                HStack { Text("Load 5m"); Spacer(); Text("\(metrics["load5"] as? Double ?? 0)") }
-                HStack { Text("Load 15m"); Spacer(); Text("\(metrics["load15"] as? Double ?? 0)") }
+                Section(header: Text("System Usage")) {
+                    MetricRow(
+                        title: translations["dashboard_cpu_usage"] ?? "CPU",
+                        value: String(format: "%.1f%%", metrics["cpu"] as? Double ?? 0),
+                        icon: "cpu",
+                        color: .blue
+                    )
+                    MetricRow(
+                        title: translations["dashboard_memory_usage"] ?? "Memory",
+                        value: String(format: "%.1f%%", metrics["memory"] as? Double ?? 0),
+                        icon: "memorychip",
+                        color: .purple
+                    )
+                    MetricRow(
+                        title: translations["dashboard_disk_usage"] ?? "Disk",
+                        value: String(format: "%.1f%%", metrics["disk"] as? Double ?? 0),
+                        icon: "internaldrive",
+                        color: .orange
+                    )
+                }
+                
+                Section(header: Text("Load Average")) {
+                    MetricRow(
+                        title: "1 Min",
+                        value: String(format: "%.2f", metrics["load1"] as? Double ?? 0),
+                        icon: "chart.xyaxis.line",
+                        color: .green
+                    )
+                    MetricRow(
+                        title: "5 Min",
+                        value: String(format: "%.2f", metrics["load5"] as? Double ?? 0),
+                        icon: "chart.xyaxis.line",
+                        color: .green
+                    )
+                    MetricRow(
+                        title: "15 Min",
+                        value: String(format: "%.2f", metrics["load15"] as? Double ?? 0),
+                        icon: "chart.xyaxis.line",
+                        color: .green
+                    )
+                }
             }
-            .navigationTitle("Monitoring")
+            .listStyle(InsetGroupedListStyle())
+            .navigationTitle(translations["nav_monitoring"] ?? "Monitoring")
             .onAppear(perform: loadMonitoring)
         }
+    }
+}
+
+struct MetricRow: View {
+    let title: String
+    let value: String
+    let icon: String
+    let color: Color
+    
+    var body: some View {
+        HStack {
+            Image(systemName: icon)
+                .foregroundColor(color)
+                .frame(width: 30)
+            Text(title)
+            Spacer()
+            Text(value)
+                .bold()
+        }
+        .padding(.vertical, 4)
     }
 }
 
@@ -301,12 +583,13 @@ struct FlutterViewControllerRepresentable: UIViewControllerRepresentable {
 struct NativeSettingsView: View {
     @AppStorage("flutter.app_ui_render_mode") private var uiRenderMode: String = "native"
     @State private var showRestartHint = false
+    let translations: [String: String]
     
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("UI Render Mode")) {
-                    Picker("Mode", selection: $uiRenderMode) {
+                Section(header: Text(translations["settings_display"] ?? "Display")) {
+                    Picker("UI Render Mode", selection: $uiRenderMode) {
                         Text("Native").tag("native")
                         Text("MDUI3").tag("md3")
                     }
@@ -315,13 +598,13 @@ struct NativeSettingsView: View {
                     }
                     
                     if showRestartHint {
-                        Text("Please restart the app for the UI render mode changes to take effect.")
+                        Text(translations["settings_restart_hint"] ?? "Please restart the app for the UI render mode changes to take effect.")
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
                 }
             }
-            .navigationTitle("Settings")
+            .navigationTitle(translations["nav_settings"] ?? "Settings")
         }
     }
 }

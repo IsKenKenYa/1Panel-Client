@@ -1,11 +1,17 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 import '../../features/server/server_repository.dart';
 import '../../features/files/services/file_browser_service.dart';
 import '../../features/apps/app_service.dart';
 import '../../features/websites/services/websites_service.dart';
 import '../../features/monitoring/monitoring_service.dart';
+import '../../features/containers/container_service.dart';
 import '../services/app_preferences_service.dart';
+import '../services/logger/logger_service.dart';
 import '../theme/ui_render_mode.dart';
+import 'package:flutter/material.dart';
 
 class NativeChannelManager {
   static const MethodChannel _methodChannel =
@@ -27,10 +33,64 @@ class NativeChannelManager {
         return await _getWebsites(call.arguments);
       case 'getMonitoring':
         return await _getMonitoring(call.arguments);
+      case 'getContainers':
+        return await _getContainers(call.arguments);
+      case 'getTranslations':
+        return await _getTranslations();
       case 'getUIRenderMode':
         return await _getUIRenderMode();
       default:
         throw MissingPluginException();
+    }
+  }
+
+  static Future<dynamic> _getContainers(dynamic arguments) async {
+    try {
+      final service = ContainerService();
+      final containers = await service.listContainers();
+      return containers
+          .map((c) => {
+                'id': c.id,
+                'name': c.name,
+                'image': c.image,
+                'status': c.status,
+                'state': c.state,
+                'createTime': c.createTime,
+                'cpuUsage': c.cpuUsage,
+                'memoryUsage': c.memoryUsage,
+              })
+          .toList();
+    } catch (e) {
+      appLogger.e('Failed to get containers for native: $e');
+      return [];
+    }
+  }
+
+  static Future<dynamic> _getTranslations() async {
+    final prefs = AppPreferencesService();
+    var locale = await prefs.loadLocale();
+    if (locale == null) {
+      final sysLocale = Platform.localeName;
+      if (sysLocale.startsWith('zh')) {
+        locale = const Locale('zh');
+      } else {
+        locale = const Locale('en');
+      }
+    }
+    
+    String arbPath = 'lib/l10n/app_en.arb';
+    if (locale.languageCode == 'zh') {
+      arbPath = 'lib/l10n/app_zh.arb';
+    }
+    
+    try {
+      final jsonString = await rootBundle.loadString(arbPath);
+      final Map<String, dynamic> translations = jsonDecode(jsonString);
+      translations.removeWhere((key, value) => key.startsWith('@'));
+      return translations;
+    } catch (e) {
+      appLogger.e('Failed to load translations: $e');
+      return {};
     }
   }
 

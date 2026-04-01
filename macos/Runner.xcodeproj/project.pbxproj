@@ -29,6 +29,7 @@
 		33CC11132044BFA00003C045 /* MainFlutterWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CC11122044BFA00003C045 /* MainFlutterWindow.swift */; };
         85B643A248A96F71A6868F7A /* MainShellViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B643A248A96F71A6868F7B /* MainShellViewController.swift */; };
         85B643A248A96F71A6868F7D /* MacosSidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B643A248A96F71A6868F7C /* MacosSidebarViewController.swift */; };
+        85B643A248A96F71A6868F7E /* TranslationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B643A248A96F71A6868F7F /* TranslationsManager.swift */; };
 		60294A6DB03EE53394C3C5FF /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 209AE8B3C37542ADB93A414C /* Pods_RunnerTests.framework */; };
 		AD9C34BDC7AC590E90D4E987 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FD05D12112E9FDC0C7EEF79 /* Pods_Runner.framework */; };
 /* End PBXBuildFile section */
@@ -79,6 +80,7 @@
 		33CC11122044BFA00003C045 /* MainFlutterWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainFlutterWindow.swift; sourceTree = "<group>"; };
         85B643A248A96F71A6868F7B /* MainShellViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainShellViewController.swift; sourceTree = "<group>"; };
         85B643A248A96F71A6868F7C /* MacosSidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacosSidebarViewController.swift; sourceTree = "<group>"; };
+        85B643A248A96F71A6868F7F /* TranslationsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationsManager.swift; sourceTree = "<group>"; };
 		33CEB47222A05771004F2AC0 /* Flutter-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Flutter-Debug.xcconfig"; sourceTree = "<group>"; };
 		33CEB47422A05771004F2AC0 /* Flutter-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Flutter-Release.xcconfig"; sourceTree = "<group>"; };
 		33CEB47722A0578A004F2AC0 /* Flutter-Generated.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Flutter-Generated.xcconfig"; path = "ephemeral/Flutter-Generated.xcconfig"; sourceTree = "<group>"; };
@@ -183,6 +185,7 @@
 				33CC11122044BFA00003C045 /* MainFlutterWindow.swift */,
                 85B643A248A96F71A6868F7B /* MainShellViewController.swift */,
                 85B643A248A96F71A6868F7C /* MacosSidebarViewController.swift */,
+                85B643A248A96F71A6868F7F /* TranslationsManager.swift */,
 				33E51913231747F40026EE4D /* DebugProfile.entitlements */,
 				33E51914231749380026EE4D /* Release.entitlements */,
 				33CC11242044D66E0003C045 /* Resources */,
@@ -446,6 +449,7 @@
 				33CC11132044BFA00003C045 /* MainFlutterWindow.swift in Sources */,
                 85B643A248A96F71A6868F7A /* MainShellViewController.swift in Sources */,
                 85B643A248A96F71A6868F7D /* MacosSidebarViewController.swift in Sources */,
+                85B643A248A96F71A6868F7E /* TranslationsManager.swift in Sources */,
 				33CC10F12044A3C60003C045 /* AppDelegate.swift in Sources */,
 				335BBD1B22A9A15E00E9071D /* GeneratedPluginRegistrant.swift in Sources */,
 			);
