@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/data/models/website_models.dart';
 
 class WebsitesEmptyView extends StatelessWidget {
@@ -72,11 +73,14 @@ class WebsiteListItemCard extends StatelessWidget {
         isRunning ? l10n.websitesStatusRunning : l10n.websitesStatusStopped;
     final statusColor =
         isRunning ? colorScheme.tertiary : colorScheme.secondary;
+        
+    final isDesktop = PlatformUtils.isDesktop(context);
 
     return Card(
+      color: selected && isDesktop ? colorScheme.primaryContainer : null,
       child: ListTile(
         onTap: onTap,
-        leading: selectionMode
+        leading: selectionMode && !isDesktop
             ? Checkbox(
                 value: selected,
                 onChanged: (value) => onSelectedChanged(value ?? false),
@@ -100,7 +104,7 @@ class WebsiteListItemCard extends StatelessWidget {
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
-        trailing: selectionMode
+        trailing: (selectionMode && !isDesktop) || isDesktop
             ? null
             : PopupMenuButton<WebsiteListAction>(
                 tooltip: l10n.commonMore,

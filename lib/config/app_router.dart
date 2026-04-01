@@ -1018,7 +1018,7 @@ class AppRouter {
     }
   }
 
-  static int _readInitialIndex(Object? arguments) {
+  static int readInitialIndex(Object? arguments) {
     if (arguments is int) {
       return arguments;
     }
@@ -1030,7 +1030,7 @@ class AppRouter {
     return 0;
   }
 
-  static String? _readInitialModuleId(Object? arguments) {
+  static String? readInitialModuleId(Object? arguments) {
     if (arguments is String) {
       return arguments;
     }

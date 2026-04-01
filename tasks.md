@@ -1,0 +1,4 @@
+- [x] Task 3: 桌面端原生窗口与材质集成
+  - [x] SubTask 3.1: 引入并配置 `bitsdojo_window` / `window_manager` 处理自定义窗口和标题栏。
+  - [x] SubTask 3.2: 引入 `flutter_acrylic` 等库实现 Windows 云母/亚克力材质及 macOS 液态玻璃/半透明效果，必要时编写 macOS 原生 (Swift) 代码。
+  - [x] SubTask 3.3: 引入菜单栏库 (如 `macos_dock_menu`) 并集成系统级菜单及快捷键响应。

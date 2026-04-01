@@ -1,9 +1,14 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:window_manager/window_manager.dart';
+import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/services/app_settings_controller.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
@@ -24,6 +29,31 @@ import 'features/monitoring/monitoring_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  if (!kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
+    await windowManager.ensureInitialized();
+    await Window.initialize();
+
+    WindowOptions windowOptions = const WindowOptions(
+      size: Size(1000, 800),
+      minimumSize: Size(800, 600),
+      center: true,
+      backgroundColor: Colors.transparent,
+      skipTaskbar: false,
+      titleBarStyle: TitleBarStyle.hidden,
+    );
+
+    await windowManager.waitUntilReadyToShow(windowOptions, () async {
+      if (Platform.isMacOS) {
+        await Window.setEffect(effect: WindowEffect.sidebar, dark: false);
+      } else if (Platform.isWindows) {
+        await Window.setEffect(effect: WindowEffect.mica, dark: false);
+      }
+      await windowManager.show();
+      await windowManager.focus();
+    });
+  }
+
   appLogger.init();
   try {
     await appLogger.loadPreferences();
@@ -184,6 +214,52 @@ class MyApp extends StatelessWidget {
             return MaterialApp(
               title: '1Panel Client',
               debugShowCheckedModeBanner: false,
+              builder: (context, child) {
+                return PlatformMenuBar(
+                  menus: [
+                    PlatformMenu(
+                      label: '1Panel Client',
+                      menus: [
+                        PlatformProvidedMenuItem(
+                          type: PlatformProvidedMenuItemType.about,
+                        ),
+                        PlatformProvidedMenuItem(
+                          type: PlatformProvidedMenuItemType.quit,
+                        ),
+                      ],
+                    ),
+                    PlatformMenu(
+                      label: 'View',
+                      menus: [
+                        PlatformMenuItem(
+                          label: 'Toggle Fullscreen',
+                          shortcut: const SingleActivator(
+                            LogicalKeyboardKey.keyF,
+                            meta: true,
+                            control: true,
+                          ),
+                          onSelected: () async {
+                            bool isFullScreen = await windowManager.isFullScreen();
+                            windowManager.setFullScreen(!isFullScreen);
+                          },
+                        ),
+                      ],
+                    ),
+                    PlatformMenu(
+                      label: 'Window',
+                      menus: [
+                        PlatformProvidedMenuItem(
+                          type: PlatformProvidedMenuItemType.minimizeWindow,
+                        ),
+                        PlatformProvidedMenuItem(
+                          type: PlatformProvidedMenuItemType.zoomWindow,
+                        ),
+                      ],
+                    ),
+                  ],
+                  child: child ?? const SizedBox(),
+                );
+              },
               theme: AppTheme.getLightTheme(
                 dynamicScheme: lightScheme,
                 seedColor: themeController.seedColor,

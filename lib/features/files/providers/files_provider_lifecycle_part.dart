@@ -203,7 +203,40 @@ extension FilesProviderLifecycleMixin on FilesProvider {
   }
 
   void clearSelection() {
-    _data = _data.copyWith(selectedFiles: <String>{});
+    _data = _data.copyWith(selectedFiles: <String>{}, lastSelectedIndex: null);
+    _emitChange();
+  }
+
+  void setLastSelectedIndex(int index) {
+    _data = _data.copyWith(lastSelectedIndex: index);
+  }
+
+  void selectOnly(String path) {
+    _data = _data.copyWith(selectedFiles: {path});
+    _emitChange();
+  }
+
+  void selectRange(int currentIndex) {
+    if (_data.lastSelectedIndex == null) {
+      selectOnly(_data.files[currentIndex].path);
+      setLastSelectedIndex(currentIndex);
+      return;
+    }
+
+    final start = _data.lastSelectedIndex!;
+    final end = currentIndex;
+
+    final lower = start < end ? start : end;
+    final upper = start > end ? start : end;
+
+    final newSelection = Set<String>.from(_data.selectedFiles);
+    for (int i = lower; i <= upper; i++) {
+      if (i >= 0 && i < _data.files.length) {
+        newSelection.add(_data.files[i].path);
+      }
+    }
+
+    _data = _data.copyWith(selectedFiles: newSelection);
     _emitChange();
   }
 }

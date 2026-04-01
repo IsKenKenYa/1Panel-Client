@@ -70,6 +70,7 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
         bottomNavigationBar: AppBottomNavigationBar(
           currentIndex: _index,
           onTap: _onDestinationSelected,
+          items: _navItems(context),
         ),
       );
     }
@@ -135,6 +136,7 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
       bottomNavigationBar: AppBottomNavigationBar(
         currentIndex: _index,
         onTap: _onDestinationSelected,
+        items: _navItems(context),
       ),
     );
   }
@@ -152,6 +154,32 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
     });
   }
 
+  List<AppNavigationBarItem> _navItems(BuildContext context) {
+    final l10n = context.l10n;
+    return [
+      AppNavigationBarItem(
+        icon: Icons.dns_outlined,
+        selectedIcon: Icons.dns,
+        label: l10n.navServer,
+      ),
+      AppNavigationBarItem(
+        icon: Icons.folder_outlined,
+        selectedIcon: Icons.folder,
+        label: l10n.navFiles,
+      ),
+      AppNavigationBarItem(
+        icon: Icons.verified_user_outlined,
+        selectedIcon: Icons.verified_user,
+        label: l10n.navSecurity,
+      ),
+      AppNavigationBarItem(
+        icon: Icons.settings_outlined,
+        selectedIcon: Icons.settings,
+        label: l10n.navSettings,
+      ),
+    ];
+  }
+
   List<Widget> get _pages => const <Widget>[
         ServerListPage(),
         FilesPage(),
@@ -162,7 +190,6 @@ class _PlatformAdaptiveShellPageState extends State<PlatformAdaptiveShellPage> {
 
 class _MacosShellScaffold extends StatefulWidget {
   const _MacosShellScaffold({
-    super.key,
     required this.index,
     required this.pages,
     required this.onDestinationSelected,

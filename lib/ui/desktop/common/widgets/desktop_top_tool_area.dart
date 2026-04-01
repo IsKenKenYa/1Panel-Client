@@ -8,17 +8,20 @@ class DesktopTopToolArea extends StatelessWidget {
   const DesktopTopToolArea({
     super.key,
     required this.selectedModule,
+    this.backgroundColor,
   });
 
   final ClientModule selectedModule;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final title = selectedModule.label(context.l10n);
+    final bgColor = backgroundColor ?? scheme.surface;
 
     return Material(
-      color: scheme.surface,
+      color: bgColor,
       child: SafeArea(
         bottom: false,
         child: Container(

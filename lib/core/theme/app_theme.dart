@@ -60,27 +60,39 @@ class AppTheme {
   }
 
   static ThemeData _buildTheme(ColorScheme scheme) {
+    final isDesktop = defaultTargetPlatform == TargetPlatform.macOS ||
+        defaultTargetPlatform == TargetPlatform.windows ||
+        defaultTargetPlatform == TargetPlatform.linux;
+        
+    final isMacOS = defaultTargetPlatform == TargetPlatform.macOS;
+    final isWindows = defaultTargetPlatform == TargetPlatform.windows;
+
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
-      scaffoldBackgroundColor: scheme.surface,
+      scaffoldBackgroundColor: (isMacOS || isWindows) ? Colors.transparent : scheme.surface,
       appBarTheme: AppBarTheme(
         centerTitle: false,
         elevation: 0,
-        backgroundColor: scheme.surface,
+        backgroundColor: (isMacOS || isWindows) ? Colors.transparent : scheme.surface,
         foregroundColor: scheme.onSurface,
       ),
       cardTheme: CardThemeData(
-        elevation: 0,
+        elevation: isDesktop ? 0 : 1,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
-          side: BorderSide(color: scheme.outlineVariant),
+          side: BorderSide(color: isMacOS ? scheme.outlineVariant.withValues(alpha: 0.5) : scheme.outlineVariant),
         ),
+        color: isMacOS ? scheme.surface.withValues(alpha: 0.8) : scheme.surface,
       ),
       navigationBarTheme: NavigationBarThemeData(
-        elevation: 1,
+        elevation: isDesktop ? 0 : 1,
         indicatorColor: scheme.primaryContainer,
-        backgroundColor: scheme.surface,
+        backgroundColor: (isMacOS || isWindows) ? Colors.transparent : scheme.surface,
+      ),
+      navigationRailTheme: NavigationRailThemeData(
+        backgroundColor: (isMacOS || isWindows) ? Colors.transparent : scheme.surface,
+        indicatorColor: scheme.primaryContainer,
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -99,6 +111,7 @@ class AppTheme {
             borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
           ),
           minimumSize: const Size(0, 44),
+          elevation: isDesktop ? 0 : null,
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(

@@ -21,6 +21,7 @@ class FilesData {
   final bool isDownloading;
   final double downloadProgress;
   final String? downloadingFileName;
+  final int? lastSelectedIndex;
 
   const FilesData({
     this.files = const [],
@@ -41,6 +42,7 @@ class FilesData {
     this.isDownloading = false,
     this.downloadProgress = 0.0,
     this.downloadingFileName,
+    this.lastSelectedIndex,
   });
 
   FilesData copyWith({
@@ -62,6 +64,7 @@ class FilesData {
     bool? isDownloading,
     double? downloadProgress,
     String? downloadingFileName,
+    int? lastSelectedIndex,
   }) {
     return FilesData(
       files: files ?? this.files,
@@ -82,6 +85,7 @@ class FilesData {
       isDownloading: isDownloading ?? this.isDownloading,
       downloadProgress: downloadProgress ?? this.downloadProgress,
       downloadingFileName: downloadingFileName ?? this.downloadingFileName,
+      lastSelectedIndex: lastSelectedIndex ?? this.lastSelectedIndex,
     );
   }
 

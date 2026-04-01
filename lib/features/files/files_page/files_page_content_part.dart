@@ -82,7 +82,8 @@ extension _FilesViewContent on _FilesViewState {
           itemCount: provider.data.files.length,
           itemBuilder: (context, index) {
             final file = provider.data.files[index];
-            return _buildFileItem(context, provider, file, theme, l10n);
+            return _buildFileItem(context, provider, file, theme, l10n,
+                index: index);
           },
         ),
       ),

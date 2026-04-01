@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/utils/platform_utils.dart';
+import 'package:onepanel_client/core/utils/keyboard_utils.dart';
+import 'package:onepanel_client/core/utils/intents.dart';
 import 'package:onepanel_client/data/models/website_group_models.dart';
 import 'package:onepanel_client/data/models/website_models.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
@@ -29,6 +33,7 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
   bool _selectionMode = false;
   String? _typeFilter;
   int? _groupFilterId;
+  int? _lastSelectedIndex;
 
   @override
   void initState() {
@@ -61,11 +66,42 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
     _searchController.clear();
     _selectedIds.clear();
     _selectionMode = false;
+    _lastSelectedIndex = null;
     _typeFilter = null;
     _groupFilterId = null;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       context.read<WebsitesProvider>().onServerChanged();
+    });
+  }
+
+  void _handleSelectRange(int currentIndex, List<WebsiteInfo> websites) {
+    if (_lastSelectedIndex == null) {
+      final id = websites[currentIndex].id;
+      if (id != null) {
+        setState(() {
+          _selectedIds.add(id);
+          _lastSelectedIndex = currentIndex;
+        });
+      }
+      return;
+    }
+
+    final start = _lastSelectedIndex!;
+    final end = currentIndex;
+
+    final lower = start < end ? start : end;
+    final upper = start > end ? start : end;
+
+    setState(() {
+      for (int i = lower; i <= upper; i++) {
+        if (i >= 0 && i < websites.length) {
+          final id = websites[i].id;
+          if (id != null) {
+            _selectedIds.add(id);
+          }
+        }
+      }
     });
   }
 
@@ -180,19 +216,47 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
                 final website = data.websites[index - 2];
                 final id = website.id;
                 final selected = id != null && _selectedIds.contains(id);
-                return WebsiteListItemCard(
+                
+                final isDesktop = PlatformUtils.isDesktop(context);
+
+                Widget content = WebsiteListItemCard(
                   website: website,
                   selectionMode: _selectionMode,
                   selected: selected,
-                  onTap: () => _selectionMode && id != null
-                      ? setState(() {
+                  onTap: () {
+                    if (isDesktop) {
+                      if (id == null) return;
+                      final isShiftPressed = KeyboardUtils.isShiftPressed();
+                      final isControlPressed = KeyboardUtils.isModifierPressed();
+
+                      setState(() {
+                        if (isControlPressed) {
                           if (_selectedIds.contains(id)) {
                             _selectedIds.remove(id);
                           } else {
                             _selectedIds.add(id);
                           }
-                        })
-                      : openWebsiteDetail(context, website),
+                          _lastSelectedIndex = index - 2;
+                        } else if (isShiftPressed) {
+                          _handleSelectRange(index - 2, data.websites);
+                        } else {
+                          _selectedIds.clear();
+                          _selectedIds.add(id);
+                          _lastSelectedIndex = index - 2;
+                        }
+                      });
+                    } else {
+                      _selectionMode && id != null
+                        ? setState(() {
+                            if (_selectedIds.contains(id)) {
+                              _selectedIds.remove(id);
+                            } else {
+                              _selectedIds.add(id);
+                            }
+                          })
+                        : openWebsiteDetail(context, website);
+                    }
+                  },
                   onSelectedChanged: (value) {
                     if (id != null) {
                       setState(() {
@@ -201,18 +265,87 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
                         } else {
                           _selectedIds.remove(id);
                         }
+                        _lastSelectedIndex = index - 2;
                       });
                     }
                   },
                   onAction: (action) =>
                       _handleAction(context, provider, website, action),
                 );
+
+                if (isDesktop) {
+                  content = GestureDetector(
+                    onDoubleTap: () => openWebsiteDetail(context, website),
+                    onSecondaryTapDown: (details) {
+                      if (!selected && id != null) {
+                        setState(() {
+                          _selectedIds.clear();
+                          _selectedIds.add(id);
+                          _lastSelectedIndex = index - 2;
+                        });
+                      }
+                      _showDesktopContextMenu(context, details.globalPosition, provider, website, l10n);
+                    },
+                    child: content,
+                  );
+                }
+
+                return content;
               },
             ),
           );
         },
       ),
     );
+  }
+
+  void _showDesktopContextMenu(
+    BuildContext context,
+    Offset position,
+    WebsitesProvider provider,
+    WebsiteInfo website,
+    AppLocalizations l10n,
+  ) {
+    final isRunning = website.status?.toLowerCase() == 'running';
+    
+    showMenu<WebsiteListAction>(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        position.dx,
+        position.dy,
+        position.dx + 1,
+        position.dy + 1,
+      ),
+      items: [
+        if (!isRunning)
+          PopupMenuItem(
+            value: WebsiteListAction.start,
+            child: Text(l10n.websitesActionStart),
+          ),
+        if (isRunning)
+          PopupMenuItem(
+            value: WebsiteListAction.stop,
+            child: Text(l10n.websitesActionStop),
+          ),
+        if (isRunning)
+          PopupMenuItem(
+            value: WebsiteListAction.restart,
+            child: Text(l10n.websitesActionRestart),
+          ),
+        const PopupMenuDivider(),
+        PopupMenuItem(
+          value: WebsiteListAction.delete,
+          child: Text(
+            l10n.websitesActionDelete,
+            style: TextStyle(color: Theme.of(context).colorScheme.error),
+          ),
+        ),
+      ],
+    ).then((value) {
+      if (value != null) {
+        _handleAction(context, provider, website, value);
+      }
+    });
   }
 
   Future<void> _handleAction(

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/utils/platform_utils.dart';
 
 import '../desktop/common/app/desktop_shell_page.dart';
 import '../desktop/macos/app/macos_shell_content_page.dart';
 import '../desktop/windows/app/windows_shell_content_page.dart';
 import '../mobile/app/mobile_shell_page.dart';
-import 'route_registry.dart';
 import 'ui_target.dart';
-import 'ui_target_resolver.dart';
 
 /// Route host that resolves the current UI target (platform + form factor)
 /// and builds the correct page implementation for a semantic route name.
@@ -24,48 +23,39 @@ class UiRouteHost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final target = UiTargetResolver.resolve(context);
-    final entry = RouteRegistry.lookup(settings.name);
     final routeName = settings.name;
-
-    if (entry != null) {
-      return entry.resolve(target)(context, settings);
-    }
 
     // Start with a minimal mapping: shell routes only.
     if (routeName == '/home') {
-      return _buildHome(context, target);
+      return _buildHome(context);
     }
 
     return _UiNotFoundPage(routeName: routeName);
   }
 
-  Widget _buildHome(BuildContext context, UiTarget target) {
+  Widget _buildHome(BuildContext context) {
     final initialIndex = _readInitialIndex(settings.arguments);
     final initialModuleId = _readInitialModuleId(settings.arguments);
 
-    switch (target.platformKind) {
-      case UiPlatformKind.mobile:
-        return MobileShellPage(
-          initialIndex: initialIndex,
-          initialModuleId: initialModuleId,
-          tabletKind: target.tabletKind,
-        );
-      case UiPlatformKind.desktopMacos:
+    if (PlatformUtils.isDesktop(context)) {
+      if (PlatformUtils.isMacOS) {
         return MacosShellContentPage(initialIndex: initialIndex);
-      case UiPlatformKind.desktopWindows:
+      } else if (PlatformUtils.isWindows) {
         return WindowsShellContentPage(initialIndex: initialIndex);
-      case UiPlatformKind.desktopLinux:
-        return DesktopShellPage(
-          initialIndex: initialIndex,
-          initialModuleId: initialModuleId,
-        );
-      case UiPlatformKind.web:
-        // Web uses a desktop-first shell by default.
-        return DesktopShellPage(
-          initialIndex: initialIndex,
-          initialModuleId: initialModuleId,
-        );
+      }
+      return DesktopShellPage(
+        initialIndex: initialIndex,
+        initialModuleId: initialModuleId,
+      );
+    } else {
+      final tabletKind = PlatformUtils.isTablet(context)
+          ? (PlatformUtils.isIOS ? TabletKind.ipad : TabletKind.androidPad)
+          : TabletKind.none;
+      return MobileShellPage(
+        initialIndex: initialIndex,
+        initialModuleId: initialModuleId,
+        tabletKind: tabletKind,
+      );
     }
   }
 

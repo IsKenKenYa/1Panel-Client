@@ -185,8 +185,7 @@ class ServerDetailPage extends StatelessWidget {
     ServerCardViewModel target,
   ) async {
     final l10n = context.l10n;
-    final confirmed =
-        await showDialog<bool>(
+    final confirmed = await showDialog<bool>(
           context: context,
           builder: (dialogContext) => AlertDialog(
             title: Text(l10n.serverDeleteConfirmTitle),

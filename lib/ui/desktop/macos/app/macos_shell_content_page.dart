@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
+import 'package:onepanel_client/features/shell/controllers/pinned_modules_controller.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
-import 'package:onepanel_client/features/shell/module_page_factory.dart';
-import 'package:onepanel_client/ui/desktop/macos/bridge/macos_shell_channel.dart';
+import 'package:onepanel_client/features/shell/widgets/server_switcher_action.dart';
+import 'package:onepanel_client/ui/desktop/common/widgets/desktop_content_host.dart';
+import 'package:onepanel_client/ui/desktop/common/widgets/desktop_sidebar.dart';
+import 'package:onepanel_client/ui/desktop/common/widgets/desktop_top_tool_area.dart';
 
 /// Flutter-side content area for macOS native shell.
 ///
-/// Phase 1: native Sidebar/Toolbar drives navigation via MethodChannel.
+/// Phase 2: Building macOS-specific navigation shell in Flutter (Sidebar + Top Toolbar)
 class MacosShellContentPage extends StatefulWidget {
   const MacosShellContentPage({
     super.key,
@@ -23,21 +25,12 @@ class MacosShellContentPage extends StatefulWidget {
 }
 
 class _MacosShellContentPageState extends State<MacosShellContentPage> {
-  final MacosShellChannel _channel = MacosShellChannel();
   late ClientModule _selectedModule;
-  String? _lastSentTitle;
 
   @override
   void initState() {
     super.initState();
     _selectedModule = _moduleFromIndex(widget.initialIndex);
-    _channel.setHandler(_handleNativeCall);
-  }
-
-  @override
-  void dispose() {
-    _channel.setHandler(null);
-    super.dispose();
   }
 
   ClientModule _moduleFromIndex(int index) {
@@ -55,54 +48,101 @@ class _MacosShellContentPageState extends State<MacosShellContentPage> {
     }
   }
 
-  Future<dynamic> _handleNativeCall(MethodCall call) async {
-    switch (call.method) {
-      case 'selectModule':
-        final args = call.arguments;
-        if (args is Map) {
-          final moduleId = args['moduleId']?.toString();
-          final module = clientModuleFromId(moduleId);
-          if (module != null && mounted) {
-            setState(() => _selectedModule = module);
-          }
-        }
-        return null;
-      case 'navigate':
-        final args = call.arguments;
-        if (!mounted) return null;
-        if (args is Map) {
-          final route = args['route']?.toString();
-          final arguments = args['arguments'];
-          if (route != null) {
-            await Navigator.of(context).pushNamed(route, arguments: arguments);
-          }
-        }
-        return null;
-      default:
-        return null;
+  List<ClientModule> _desktopModules(PinnedModulesController pinnedModules) {
+    final slots = <ClientModule>[
+      ClientModule.servers,
+      pinnedModules.primaryPin,
+      pinnedModules.secondaryPin,
+    ];
+
+    for (final module in kPinnableClientModules) {
+      if (!slots.contains(module)) {
+        slots.add(module);
+      }
     }
+
+    slots.add(ClientModule.settings);
+    return slots;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CurrentServerController>(
-      builder: (context, currentServer, _) {
-        final selected = (!currentServer.hasServer && _selectedModule.requiresServer)
-            ? ClientModule.servers
-            : _selectedModule;
-        final title = selected.label(context.l10n);
+    return Consumer2<CurrentServerController, PinnedModulesController>(
+      builder: (context, currentServer, pinnedModules, _) {
+        final modules = _desktopModules(pinnedModules);
+        final selectedModule =
+            (!currentServer.hasServer && _selectedModule.requiresServer)
+                ? ClientModule.servers
+                : _selectedModule;
 
-        if (title != _lastSentTitle) {
-          _lastSentTitle = title;
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _channel.setTitle(title);
-          });
-        }
+        final child = Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Row(
+            children: [
+              // macOS style Sidebar
+              DesktopSidebar(
+                width: 250,
+                backgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha: 0.5),
+                modules: modules,
+                selectedModule: selectedModule,
+                hasServer: currentServer.hasServer,
+                onSelect: (module) {
+                  if (!currentServer.hasServer && module.requiresServer) {
+                    ServerSwitcherAction.showServerPicker(context);
+                    return;
+                  }
+                  setState(() {
+                    _selectedModule = module;
+                  });
+                },
+              ),
+              Expanded(
+                child: Column(
+                  children: [
+                    // macOS style Top Toolbar
+                    DesktopTopToolArea(
+                      selectedModule: selectedModule,
+                      backgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha: 0.8),
+                    ),
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(12),
+                        ),
+                        child: Container(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          child: DesktopContentHost(
+                            module: selectedModule,
+                            serverId: currentServer.currentServerId,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
 
-        return buildShellModulePage(
-          context,
-          module: selected,
-          serverId: currentServer.currentServerId,
+        return CallbackShortcuts(
+          bindings: {
+            for (int i = 0; i < modules.length && i < 9; i++)
+              LogicalKeySet(LogicalKeyboardKey.meta, LogicalKeyboardKey(49 + i)): () {
+                final module = modules[i];
+                if (!currentServer.hasServer && module.requiresServer) {
+                  ServerSwitcherAction.showServerPicker(context);
+                  return;
+                }
+                setState(() {
+                  _selectedModule = module;
+                });
+              },
+          },
+          child: Focus(
+            autofocus: true,
+            child: child,
+          ),
         );
       },
     );

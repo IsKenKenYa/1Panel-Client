@@ -9,12 +9,16 @@ class DesktopSidebar extends StatelessWidget {
     required this.selectedModule,
     required this.hasServer,
     required this.onSelect,
+    this.width = 300,
+    this.backgroundColor,
   });
 
   final List<ClientModule> modules;
   final ClientModule selectedModule;
   final bool hasServer;
   final ValueChanged<ClientModule> onSelect;
+  final double width;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -22,26 +26,27 @@ class DesktopSidebar extends StatelessWidget {
         modules.indexOf(selectedModule).clamp(0, modules.length - 1);
     final scheme = Theme.of(context).colorScheme;
     final disabledColor = scheme.onSurfaceVariant.withValues(alpha: 0.42);
+    final bgColor = backgroundColor ?? scheme.surface;
 
     return SafeArea(
       right: false,
       child: Container(
-        width: 300,
+        width: width,
         decoration: BoxDecoration(
-          color: scheme.surface,
+          color: bgColor,
           border: Border(
             right: BorderSide(color: scheme.outlineVariant),
           ),
         ),
         child: NavigationRail(
           extended: true,
-          backgroundColor: scheme.surface,
+          backgroundColor: Colors.transparent,
           selectedIndex: selectedIndex,
           onDestinationSelected: (index) => onSelect(modules[index]),
           labelType: NavigationRailLabelType.none,
           useIndicator: true,
           indicatorColor: scheme.primaryContainer,
-          minExtendedWidth: 300,
+          minExtendedWidth: width,
           leading: Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Text(

@@ -8,12 +8,16 @@ list(APPEND FLUTTER_PLUGIN_LIST
   battery_plus
   connectivity_plus
   dynamic_color
+  flutter_acrylic
   flutter_secure_storage_windows
   local_auth_windows
   passkeys_windows
   permission_handler_windows
+  screen_retriever_windows
   syncfusion_pdfviewer_windows
+  tray_manager
   url_launcher_windows
+  window_manager
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
