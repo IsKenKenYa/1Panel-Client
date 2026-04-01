@@ -2291,6 +2291,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutRepositorySectionTitle => '项目仓库';
 
   @override
+  String get aboutLinkOpenAction => '打开链接';
+
+  @override
   String get aboutRepositoryOpenAction => '打开仓库';
 
   @override

@@ -2371,6 +2371,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutRepositorySectionTitle => 'Repository';
 
   @override
+  String get aboutLinkOpenAction => 'Open link';
+
+  @override
   String get aboutRepositoryOpenAction => 'Open repository';
 
   @override

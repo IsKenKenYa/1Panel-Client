@@ -999,6 +999,7 @@
   "aboutReleaseNotesSectionTitle": "版本更新",
   "aboutReleaseNotesBody": "可在 Releases 页面查看最新更新说明与变更记录。",
   "aboutRepositorySectionTitle": "项目仓库",
+  "aboutLinkOpenAction": "打开链接",
   "aboutRepositoryOpenAction": "打开仓库",
   "aboutRepositoryHttpsLabel": "HTTPS",
   "aboutRepositorySshLabel": "SSH",

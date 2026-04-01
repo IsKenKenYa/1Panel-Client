@@ -66,6 +66,7 @@ class _AboutPageState extends State<AboutPage> {
                     _LinkRow(
                       label: l10n.aboutOfficialDomainLabel,
                       value: AboutPage.officialDomainName,
+                      openActionLabel: l10n.aboutLinkOpenAction,
                       onOpen: () => _openLink(
                           context, 'https://${AboutPage.officialDomainName}'),
                       onCopy: () =>
@@ -249,12 +250,14 @@ class _LinkRow extends StatelessWidget {
     required this.value,
     this.onOpen,
     this.onCopy,
+    this.openActionLabel,
   });
 
   final String label;
   final String value;
   final VoidCallback? onOpen;
   final VoidCallback? onCopy;
+  final String? openActionLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -273,7 +276,9 @@ class _LinkRow extends StatelessWidget {
               OutlinedButton.icon(
                 onPressed: onOpen,
                 icon: const Icon(Icons.open_in_new),
-                label: Text(context.l10n.aboutRepositoryOpenAction),
+                label: Text(
+                  openActionLabel ?? context.l10n.aboutRepositoryOpenAction,
+                ),
               ),
             if (onCopy != null)
               OutlinedButton.icon(

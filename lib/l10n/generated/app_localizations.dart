@@ -4508,6 +4508,12 @@ abstract class AppLocalizations {
   /// **'Repository'**
   String get aboutRepositorySectionTitle;
 
+  /// No description provided for @aboutLinkOpenAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Open link'**
+  String get aboutLinkOpenAction;
+
   /// No description provided for @aboutRepositoryOpenAction.
   ///
   /// In en, this message translates to:

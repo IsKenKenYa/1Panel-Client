@@ -999,6 +999,7 @@
   "aboutReleaseNotesSectionTitle": "Release notes",
   "aboutReleaseNotesBody": "See latest updates and changes in the releases page.",
   "aboutRepositorySectionTitle": "Repository",
+  "aboutLinkOpenAction": "Open link",
   "aboutRepositoryOpenAction": "Open repository",
   "aboutRepositoryHttpsLabel": "HTTPS",
   "aboutRepositorySshLabel": "SSH",
