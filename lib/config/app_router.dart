@@ -11,7 +11,7 @@ import 'package:onepanelapp_app/features/server/server_detail_page.dart';
 import 'package:onepanelapp_app/features/server/server_form_page.dart';
 import 'package:onepanelapp_app/features/server/server_list_page.dart';
 import 'package:onepanelapp_app/features/server/server_models.dart';
-import 'package:onepanelapp_app/features/shell/app_shell_page.dart';
+import 'package:onepanelapp_app/features/shell/platform/platform_adaptive_shell_page.dart';
 import 'package:onepanelapp_app/features/terminal/terminal_page.dart';
 import 'package:onepanelapp_app/features/dashboard/dashboard_page.dart';
 import 'package:onepanelapp_app/pages/settings/settings_page.dart';
@@ -59,7 +59,9 @@ class AppRouter {
       case AppRoutes.home:
         return MaterialPageRoute(
           builder: (_) =>
-              AppShellPage(initialIndex: _readInitialIndex(settings.arguments)),
+              PlatformAdaptiveShellPage(
+                initialIndex: _readInitialIndex(settings.arguments),
+              ),
         );
       case AppRoutes.server:
       case AppRoutes.serverSelection:
@@ -76,7 +78,7 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const NotFoundPage());
       case AppRoutes.files:
         return MaterialPageRoute(
-            builder: (_) => const AppShellPage(initialIndex: 1));
+            builder: (_) => const PlatformAdaptiveShellPage(initialIndex: 1));
       case AppRoutes.databases:
         return MaterialPageRoute(builder: (_) => const DatabasesPage());
       case AppRoutes.firewall:
@@ -144,7 +146,7 @@ class AppRouter {
       // Legacy routes redirect to the new shell.
       case '/websites':
         return MaterialPageRoute(
-            builder: (_) => const AppShellPage(initialIndex: 0));
+            builder: (_) => const PlatformAdaptiveShellPage(initialIndex: 0));
       case '/backups':
       case '/help':
       case '/website-create':

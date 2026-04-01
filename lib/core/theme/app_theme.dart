@@ -1,25 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'app_design_tokens.dart';
 
 class AppTheme {
   const AppTheme._();
 
-  static ThemeData getLightTheme() {
-    final scheme = ColorScheme.fromSeed(
-      seedColor: AppDesignTokens.brand,
+  static ThemeData getLightTheme({ColorScheme? dynamicScheme}) {
+    final scheme = _resolveScheme(
       brightness: Brightness.light,
+      dynamicScheme: dynamicScheme,
     );
 
     return _buildTheme(scheme);
   }
 
-  static ThemeData getDarkTheme() {
-    final scheme = ColorScheme.fromSeed(
-      seedColor: AppDesignTokens.brand,
+  static ThemeData getDarkTheme({ColorScheme? dynamicScheme}) {
+    final scheme = _resolveScheme(
       brightness: Brightness.dark,
+      dynamicScheme: dynamicScheme,
     );
 
     return _buildTheme(scheme);
+  }
+
+  static ColorScheme _resolveScheme({
+    required Brightness brightness,
+    ColorScheme? dynamicScheme,
+  }) {
+    if (dynamicScheme != null && _supportsMaterialYouPlatform) {
+      return dynamicScheme;
+    }
+
+    return ColorScheme.fromSeed(
+      seedColor: AppDesignTokens.brand,
+      brightness: brightness,
+    );
+  }
+
+  static bool get _supportsMaterialYouPlatform {
+    // Gate used by theme resolution to apply dynamic colors only on Android.
+    if (kIsWeb) {
+      return false;
+    }
+    return defaultTargetPlatform == TargetPlatform.android;
   }
 
   static ThemeData _buildTheme(ColorScheme scheme) {
