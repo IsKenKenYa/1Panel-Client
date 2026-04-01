@@ -24,6 +24,7 @@ import 'package:onepanel_client/features/server/server_models.dart';
 import 'package:onepanel_client/features/security/security_verification_page.dart';
 import 'package:onepanel_client/features/security/app_lock_controller.dart';
 import 'package:onepanel_client/features/shell/app_shell_page.dart';
+import 'package:onepanel_client/ui/routing/ui_route_host.dart';
 import 'package:onepanel_client/features/terminal/terminal_page.dart';
 import 'package:onepanel_client/pages/settings/settings_page.dart';
 import 'package:onepanel_client/features/settings/system_settings_page.dart';
@@ -255,10 +256,7 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const OnboardingPage());
       case AppRoutes.home:
         return MaterialPageRoute(
-          builder: (_) => AppShellPage(
-            initialIndex: _readInitialIndex(settings.arguments),
-            initialModuleId: _readInitialModuleId(settings.arguments),
-          ),
+          builder: (_) => UiRouteHost(settings: settings),
         );
       case AppRoutes.server:
       case AppRoutes.serverSelection:
