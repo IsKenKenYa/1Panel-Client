@@ -4,7 +4,7 @@ import FlutterMacOS
 struct MainShellView: View {
     @StateObject private var theme = ThemeManager.shared
     @StateObject private var translations = TranslationsManager.shared
-    @State private var selectedModule: String? = "servers"
+    @State private var selectedModule: String? = "dashboard"
     
     let flutterViewController: FlutterViewController
     
@@ -46,18 +46,30 @@ struct MainShellView: View {
     private var detailContent: some View {
         if let module = selectedModule {
             switch module {
+            case "dashboard":
+                DashboardView()
             case "servers":
                 ServersView()
-            case "files":
-                FilesView()
-            case "apps":
-                AppsView()
             case "websites":
                 WebsitesView()
-            case "monitoring":
-                MonitoringView()
+            case "databases":
+                DatabasesView()
             case "containers":
                 ContainersView()
+            case "apps":
+                AppsView()
+            case "files":
+                FilesView()
+            case "monitoring":
+                MonitoringView()
+            case "firewall":
+                FirewallView()
+            case "cronjobs":
+                CronJobsView()
+            case "backups":
+                BackupsView()
+            case "ai":
+                AIView()
             case "settings":
                 SettingsView()
             default:
