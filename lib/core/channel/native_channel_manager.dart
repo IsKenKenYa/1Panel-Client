@@ -35,6 +35,8 @@ class NativeChannelManager {
         return await _getMonitoring(call.arguments);
       case 'getContainers':
         return await _getContainers(call.arguments);
+      case 'getSettings':
+        return await _getSettings(call.arguments);
       case 'getTranslations':
         return await _getTranslations();
       case 'getUIRenderMode':
@@ -155,6 +157,18 @@ class NativeChannelManager {
               'createdAt': w.createdAt,
             })
         .toList();
+  }
+
+  static Future<dynamic> _getSettings(dynamic arguments) async {
+    final prefs = AppPreferencesService();
+    final mode = await prefs.loadUIRenderMode();
+    var locale = await prefs.loadLocale();
+    
+    return {
+      'renderMode': mode == UIRenderMode.native ? 'native' : 'md3',
+      'language': locale?.languageCode ?? 'system',
+      'version': '0.5.0-alpha.1' // fallback version
+    };
   }
 
   static Future<dynamic> _getMonitoring(dynamic arguments) async {

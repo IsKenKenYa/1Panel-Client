@@ -14,15 +14,15 @@
   - [x] SubTask 3.2: 使用 SwiftUI 完善 Servers 和 Files 模块的列表卡片 (Card/ListRow) 样式，对齐移动端 MD3 设计。
   - [x] SubTask 3.3: 完成其余模块 (Apps, Websites, Monitoring, Containers, Settings) 的 UI 细化。
 
-- [ ] Task 4: Windows 原生 UI 详细复制
-  - [ ] SubTask 4.1: 建立 C++ 侧的多语言字典缓存机制，替换侧边栏/列表头部的占位符。
-  - [ ] SubTask 4.2: 将 Win32 的简陋 ListBox 升级为包含多列、具备更好样式的原生控件（或 WinUI 3 XAML Islands），并填充 Servers 与 Files 模块的数据展示。
-  - [ ] SubTask 4.3: 铺开至 Apps, Websites, Monitoring, Containers, Settings 模块。
+- [x] Task 4: Windows 原生 UI 详细复制
+  - [x] SubTask 4.1: 建立 C++ 侧的多语言字典缓存机制，替换侧边栏/列表头部的占位符。
+  - [x] SubTask 4.2: 将 Win32 的简陋 ListBox 升级为包含多列、具备更好样式的原生控件（或 WinUI 3 XAML Islands），并填充 Servers 与 Files 模块的数据展示。
+  - [x] SubTask 4.3: 铺开至 Apps, Websites, Monitoring, Containers, Settings 模块。
 
-- [ ] Task 5: Linux 原生 UI 详细复制 (GTK)
-  - [ ] SubTask 5.1: 建立 C++ (GTK) 侧的多语言字典，替换 UI 文本。
-  - [ ] SubTask 5.2: 优化 `GtkTreeView` 的列布局和边距，使其接近原生桌面应用标准，完善 Servers 与 Files 模块。
-  - [ ] SubTask 5.3: 铺开至 Apps, Websites, Monitoring, Containers, Settings 模块。
+- [x] Task 5: Linux 原生 UI 详细复制 (GTK)
+  - [x] SubTask 5.1: 建立 C++ (GTK) 侧的多语言字典，替换 UI 文本。
+  - [x] SubTask 5.2: 优化 `GtkTreeView` 的列布局和边距，使其接近原生桌面应用标准，完善 Servers 与 Files 模块。
+  - [x] SubTask 5.3: 铺开至 Apps, Websites, Monitoring, Containers, Settings 模块。
 
 # Task Dependencies
 - Task 2, 3, 4, 5 depend on Task 1 (需要获取到正确的多语言字典和完整数据)
