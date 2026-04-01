@@ -2898,7 +2898,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get systemSettingsBackupAccountTitle => 'Backup Accounts';
 
   @override
-  String get systemSettingsBackupAccountDesc => 'Manage backup storage accounts';
+  String get systemSettingsBackupAccountDesc =>
+      'Manage backup storage accounts';
 
   @override
   String get systemSettingsSystemSection => 'System Info';

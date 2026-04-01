@@ -1002,7 +1002,6 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => const AppsPage(),
         );
-
       case '/container-create':
         return MaterialPageRoute(builder: (_) => const ContainerCreatePage());
 

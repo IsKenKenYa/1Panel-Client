@@ -174,34 +174,24 @@ class MyApp extends StatelessWidget {
       builder: (context, settings, themeController, _) {
         return DynamicColorBuilder(
           builder: (lightDynamic, darkDynamic) {
-            ThemeData lightTheme;
-            ThemeData darkTheme;
-
-            if (lightDynamic != null &&
-                darkDynamic != null &&
-                themeController.useDynamicColor) {
-              lightTheme = AppTheme.create(lightDynamic.harmonized());
-              darkTheme = AppTheme.create(darkDynamic.harmonized());
-            } else {
-              lightTheme = AppTheme.create(
-                ColorScheme.fromSeed(
-                  seedColor: themeController.seedColor,
-                  brightness: Brightness.light,
-                ),
-              );
-              darkTheme = AppTheme.create(
-                ColorScheme.fromSeed(
-                  seedColor: themeController.seedColor,
-                  brightness: Brightness.dark,
-                ),
-              );
-            }
+            final lightScheme = themeController.useDynamicColor
+                ? lightDynamic?.harmonized()
+                : null;
+            final darkScheme = themeController.useDynamicColor
+                ? darkDynamic?.harmonized()
+                : null;
 
             return MaterialApp(
               title: '1Panel Client',
               debugShowCheckedModeBanner: false,
-              theme: lightTheme,
-              darkTheme: darkTheme,
+              theme: AppTheme.getLightTheme(
+                dynamicScheme: lightScheme,
+                seedColor: themeController.seedColor,
+              ),
+              darkTheme: AppTheme.getDarkTheme(
+                dynamicScheme: darkScheme,
+                seedColor: themeController.seedColor,
+              ),
               themeMode: themeController.themeMode,
               locale: settings.locale,
               localizationsDelegates: const [

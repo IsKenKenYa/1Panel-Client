@@ -4493,13 +4493,13 @@ abstract class AppLocalizations {
   /// No description provided for @aboutReleaseNotesSectionTitle.
   ///
   /// In en, this message translates to:
-  /// **'Current preview notes'**
+  /// **'Release notes'**
   String get aboutReleaseNotesSectionTitle;
 
   /// No description provided for @aboutReleaseNotesBody.
   ///
   /// In en, this message translates to:
-  /// **'This preview focuses on multi-server management, onboarding polish, and early website management workflows.'**
+  /// **'See latest updates and changes in the releases page.'**
   String get aboutReleaseNotesBody;
 
   /// No description provided for @aboutRepositorySectionTitle.
