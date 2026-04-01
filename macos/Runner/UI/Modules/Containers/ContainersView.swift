@@ -6,12 +6,7 @@ struct ContainersView: View {
     @EnvironmentObject var translations: TranslationsManager
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(translations.get("serverModuleContainers", fallback: "Containers"))
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .padding(.horizontal)
-            
+        Group {
             if viewModel.isLoading {
                 ProgressView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -44,10 +39,19 @@ struct ContainersView: View {
                     }
                 }
                 .tableStyle(.inset)
-                .padding(.horizontal)
             }
         }
-        .padding(.top)
+        .navigationTitle(translations.get("serverModuleContainers", fallback: "Containers"))
+        .toolbar {
+            ToolbarItem(placement: .automatic) {
+                Button(action: {
+                    viewModel.fetchContainers()
+                }) {
+                    Image(systemName: "arrow.clockwise")
+                }
+                .help("Refresh")
+            }
+        }
         .onAppear {
             viewModel.fetchContainers()
         }

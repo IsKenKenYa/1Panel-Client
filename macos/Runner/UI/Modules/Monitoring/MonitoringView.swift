@@ -6,12 +6,7 @@ struct MonitoringView: View {
     @EnvironmentObject var translations: TranslationsManager
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(translations.get("serverModuleMonitoring", fallback: "Monitoring"))
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .padding(.horizontal)
-            
+        Group {
             if viewModel.isLoading {
                 ProgressView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -24,27 +19,32 @@ struct MonitoringView: View {
                             MetricCard(title: translations.get("monitoring_disk", fallback: "Disk"), value: "\(viewModel.metrics.disk)%", icon: "internaldrive")
                         }
                         
-                        VStack(alignment: .leading, spacing: 16) {
-                            Text("System Load")
-                                .font(.headline)
-                            
-                            HStack(spacing: 32) {
+                        GroupBox(label: Text("System Load").font(.headline)) {
+                            HStack(spacing: 48) {
                                 LoadView(title: "1m", value: viewModel.metrics.load1)
                                 LoadView(title: "5m", value: viewModel.metrics.load5)
                                 LoadView(title: "15m", value: viewModel.metrics.load15)
+                                Spacer()
                             }
+                            .padding(.vertical, 8)
                         }
-                        .padding()
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        // Use native visual effect for cards
-                        .background(VisualEffectView(material: .headerView, blendingMode: .withinWindow))
-                        .cornerRadius(12)
                     }
                     .padding()
                 }
             }
         }
-        .padding(.top)
+        .navigationTitle(translations.get("serverModuleMonitoring", fallback: "Monitoring"))
+        .toolbar {
+            ToolbarItem(placement: .automatic) {
+                Button(action: {
+                    viewModel.fetchMonitoring()
+                }) {
+                    Image(systemName: "arrow.clockwise")
+                }
+                .help("Refresh")
+            }
+        }
         .onAppear {
             viewModel.fetchMonitoring()
         }
@@ -59,20 +59,20 @@ struct MetricCard: View {
     let icon: String
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Image(systemName: icon)
-                    .foregroundColor(theme.primaryColor)
-                Text(title)
-                    .foregroundColor(.secondary)
+        GroupBox {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Image(systemName: icon)
+                        .foregroundColor(theme.primaryColor)
+                    Text(title)
+                        .foregroundColor(.secondary)
+                }
+                Text(value)
+                    .font(.system(size: 28, weight: .bold))
             }
-            Text(value)
-                .font(.system(size: 28, weight: .bold))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.vertical, 4)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
-        .background(VisualEffectView(material: .headerView, blendingMode: .withinWindow))
-        .cornerRadius(12)
     }
 }
 

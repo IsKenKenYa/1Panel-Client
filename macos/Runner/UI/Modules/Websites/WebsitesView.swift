@@ -6,12 +6,7 @@ struct WebsitesView: View {
     @EnvironmentObject var translations: TranslationsManager
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(translations.get("serverModuleWebsites", fallback: "Websites"))
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .padding(.horizontal)
-            
+        Group {
             if viewModel.isLoading {
                 ProgressView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -44,10 +39,19 @@ struct WebsitesView: View {
                     }
                 }
                 .tableStyle(.inset)
-                .padding(.horizontal)
             }
         }
-        .padding(.top)
+        .navigationTitle(translations.get("serverModuleWebsites", fallback: "Websites"))
+        .toolbar {
+            ToolbarItem(placement: .automatic) {
+                Button(action: {
+                    viewModel.fetchWebsites()
+                }) {
+                    Image(systemName: "arrow.clockwise")
+                }
+                .help("Refresh")
+            }
+        }
         .onAppear {
             viewModel.fetchWebsites()
         }

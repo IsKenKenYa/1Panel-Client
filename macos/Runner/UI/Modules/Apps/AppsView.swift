@@ -6,12 +6,7 @@ struct AppsView: View {
     @EnvironmentObject var translations: TranslationsManager
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(translations.get("serverModuleApps", fallback: "Apps"))
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .padding(.horizontal)
-            
+        Group {
             if viewModel.isLoading {
                 ProgressView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -43,10 +38,19 @@ struct AppsView: View {
                     }
                 }
                 .tableStyle(.inset)
-                .padding(.horizontal)
             }
         }
-        .padding(.top)
+        .navigationTitle(translations.get("serverModuleApps", fallback: "Apps"))
+        .toolbar {
+            ToolbarItem(placement: .automatic) {
+                Button(action: {
+                    viewModel.fetchApps()
+                }) {
+                    Image(systemName: "arrow.clockwise")
+                }
+                .help("Refresh")
+            }
+        }
         .onAppear {
             viewModel.fetchApps()
         }

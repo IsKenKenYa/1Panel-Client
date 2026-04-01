@@ -6,12 +6,7 @@ struct ServersView: View {
     @EnvironmentObject var translations: TranslationsManager
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(translations.get("navServer", fallback: "Servers"))
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .padding(.horizontal)
-            
+        Group {
             if viewModel.isLoading {
                 ProgressView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -29,10 +24,19 @@ struct ServersView: View {
                     }
                 }
                 .tableStyle(.inset)
-                .padding(.horizontal)
             }
         }
-        .padding(.top)
+        .navigationTitle(translations.get("navServer", fallback: "Servers"))
+        .toolbar {
+            ToolbarItem(placement: .automatic) {
+                Button(action: {
+                    viewModel.fetchServers()
+                }) {
+                    Image(systemName: "arrow.clockwise")
+                }
+                .help("Refresh")
+            }
+        }
         .onAppear {
             viewModel.fetchServers()
         }
