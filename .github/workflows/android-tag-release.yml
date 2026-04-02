@@ -150,9 +150,12 @@ jobs:
 
       - name: Build Android APK
         run: |
+          BUILD_DATE="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
           flutter build apk --release \
             --dart-define=APP_CHANNEL="${{ steps.meta.outputs.app_channel }}" \
             --dart-define=APP_GIT_BRANCH="${{ steps.meta.outputs.source_branch }}" \
+            --dart-define=APP_GIT_COMMIT="${{ github.sha }}" \
+            --dart-define=APP_BUILD_DATE="$BUILD_DATE" \
             --build-name="${{ steps.meta.outputs.version_name }}" \
             --build-number="${{ github.run_number }}"
           cp build/app/outputs/flutter-apk/app-release.apk "build/${{ steps.meta.outputs.apk_name }}"

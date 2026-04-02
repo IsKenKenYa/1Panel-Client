@@ -5,7 +5,7 @@
 <h1 align="center">1Panel Client</h1>
 
 <p align="center">
-  <a href="https://github.com/IsKenKenYa/1Panel-Client/releases"><img src="https://img.shields.io/badge/version-0.5.0--alpha.1%2B1-blue.svg" alt="Version" /></a>
+  <a href="https://github.com/IsKenKenYa/1Panel-Client/releases"><img src="https://img.shields.io/badge/version-0.5.0--alpha.2%2B2-blue.svg" alt="Version" /></a>
   <a href="https://github.com/IsKenKenYa/1Panel-Client/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-green.svg" alt="License" /></a>
 </p>
 
@@ -76,11 +76,13 @@ To use 1Panel Client, you **must enable API access** on your 1Panel server:
 4. **Add Server**: Open the app, add a new server by entering your 1Panel server URL (e.g., `https://panel.example.com:port`) and the **API Key** you copied.
 5. **Connect**: Test the connection and save. You can now manage your server natively!
 
-## Experimental Preview
+## Release Channels
 
-- The current Android preview build is for early access and feedback collection.
-- Automatic in-app updates are not available in this channel yet.
-- New preview builds are published through GitHub Pre-release.
+- `debug-*` tags publish internal alpha APKs for development verification.
+- `beta-*` tags publish public preview APKs for feedback collection.
+- `pre-release-*` tags publish candidate APKs before stable release.
+- `release-*` tags are reserved for stable releases from `main`.
+- Automatic in-app updates are not available in these channels yet.
 - The official feedback channel is GitHub Issues:
   - [Issues](https://github.com/IsKenKenYa/1Panel-Client/issues)
 

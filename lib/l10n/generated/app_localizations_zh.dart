@@ -2273,6 +2273,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutPackageNameLabel => '包名';
 
   @override
+  String get aboutChannelLabel => '发布渠道';
+
+  @override
+  String get aboutBranchLabel => '来源分支';
+
+  @override
+  String get aboutCommitLabel => '提交 ID';
+
+  @override
+  String get aboutBuildDateLabel => '编译时间';
+
+  @override
   String get aboutOfficialDomainLabel => '官方域名';
 
   @override

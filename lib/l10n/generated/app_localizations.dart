@@ -4472,6 +4472,30 @@ abstract class AppLocalizations {
   /// **'Package name'**
   String get aboutPackageNameLabel;
 
+  /// No description provided for @aboutChannelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel'**
+  String get aboutChannelLabel;
+
+  /// No description provided for @aboutBranchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Source branch'**
+  String get aboutBranchLabel;
+
+  /// No description provided for @aboutCommitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Commit'**
+  String get aboutCommitLabel;
+
+  /// No description provided for @aboutBuildDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Build date'**
+  String get aboutBuildDateLabel;
+
   /// No description provided for @aboutOfficialDomainLabel.
   ///
   /// In en, this message translates to:

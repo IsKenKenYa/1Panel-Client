@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file. (本项目�
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0-alpha.2+2] - 2026-04-02
+
+### Changed
+
+- Switched Android prerelease automation from branch-triggered builds to tag-driven releases using `debug-*`, `beta-*`, `pre-release-*`, and `release-*`.
+- Added build metadata injection for release artifacts, including source branch, commit SHA, and UTC build timestamp.
+- Updated About page build information to show release channel, source branch, commit ID, and build date for easier debugging and feedback collection.
+- Prepared the `2026-04-02` internal debug release flow on `dev` for local tagging and artifact publishing.
+
+### Fixed
+
+- Wired Android release signing in the Kotlin Gradle script so CI-generated APKs can use the configured upload keystore instead of always falling back to debug signing.
+
+### Docs
+
+- Updated release workflow documentation to reflect the `dev` aggregation branch and tag-based APK publishing strategy.
+
 ## [0.5.0-alpha.1+1] - 2026-03-30
 
 ### 🎉 Major Milestone: Complete 1Panel V2 API Integration (重大里程碑：完整的 1Panel V2 API 集成)

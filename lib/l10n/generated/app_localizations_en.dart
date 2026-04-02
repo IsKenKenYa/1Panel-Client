@@ -2351,6 +2351,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutPackageNameLabel => 'Package name';
 
   @override
+  String get aboutChannelLabel => 'Channel';
+
+  @override
+  String get aboutBranchLabel => 'Source branch';
+
+  @override
+  String get aboutCommitLabel => 'Commit';
+
+  @override
+  String get aboutBuildDateLabel => 'Build date';
+
+  @override
   String get aboutOfficialDomainLabel => 'Official domain';
 
   @override
