@@ -899,7 +899,7 @@
   "settingsFeedbackTemplateHint": "一键复制结构化模板，粘贴后直接填写",
   "settingsFeedbackLogsTitle": "日志管理",
   "settingsFeedbackLogExportWarningTitle": "导出日志与测试提示",
-  "settingsFeedbackLogExportWarningMessage": "当前为预览体验发布，推荐使用内网 IP（内网 1Panel 服务器或虚拟机）进行测试以避免影响。\n\n系统已自动对日志中的公网 IP 等信息进行脱敏处理。请勿将日志随意发送给无关人员，并在反馈问题前自行检查是否还有其他敏感信息遗留。",
+  "settingsFeedbackLogExportWarningMessage": "当前为面向公众测试与反馈收集的 Dev 版本，推荐使用内网 IP（内网 1Panel 服务器或虚拟机）进行测试以避免影响。\n\n系统已自动对日志中的公网 IP 等信息进行脱敏处理。请勿将日志随意发送给无关人员，并在反馈问题前自行检查是否还有其他敏感信息遗留。",
   "settingsFeedbackLogExportConfirm": "确认导出",
   "settingsFeedbackTemplateTitle": "问题概述",
   "settingsFeedbackTemplateSummary": "现象描述",
@@ -952,11 +952,11 @@
   "languageZh": "中文",
   "languageEn": "英文",
   "commonExperimental": "抢先体验",
-  "releaseChannelPreview": "抢先体验",
+  "releaseChannelPreview": "Dev",
   "releaseChannelAlpha": "Dev（Alpha）",
   "releaseChannelBeta": "Beta",
   "releaseChannelPreRelease": "Pre-Release",
-  "releaseChannelRelease": "正式版",
+  "releaseChannelRelease": "Release",
   "testingWarningDialogTitle": "{channel} 风险提示",
   "@testingWarningDialogTitle": {
     "placeholders": {

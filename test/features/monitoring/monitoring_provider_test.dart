@@ -30,6 +30,8 @@ class FakeMonitoringService extends MonitoringService {
   @override
   Future<MonitorDataPackage> getMonitorData({
     Duration duration = const Duration(hours: 1),
+    String? io,
+    String? network,
     DateTime? startTime,
   }) async {
     final now = DateTime.now();
@@ -74,15 +76,47 @@ class FakeMonitoringService extends MonitoringService {
       ),
     ];
   }
+
+  @override
+  Future<MonitorSetting?> getSetting() async {
+    return const MonitorSetting(defaultIO: 'sda', defaultNetwork: 'eth0');
+  }
+
+  @override
+  Future<List<String>> getIOOptions() async {
+    return const ['all', 'sda'];
+  }
+
+  @override
+  Future<List<String>> getNetworkOptions() async {
+    return const ['all', 'eth0'];
+  }
 }
 
 class ErrorMonitoringService extends MonitoringService {
   @override
   Future<MonitorDataPackage> getMonitorData({
     Duration duration = const Duration(hours: 1),
+    String? io,
+    String? network,
     DateTime? startTime,
   }) async {
     throw Exception('加载失败');
+  }
+
+  @override
+  Future<MonitorSetting?> getSetting() async {
+    return const MonitorSetting(defaultIO: 'sda', defaultNetwork: 'eth0');
+  }
+
+  @override
+  Future<List<String>> getIOOptions() async {
+    return const ['all', 'sda'];
+  }
+
+  @override
+  Future<List<String>> getNetworkOptions() async {
+    return const ['all', 'eth0'];
   }
 }
 

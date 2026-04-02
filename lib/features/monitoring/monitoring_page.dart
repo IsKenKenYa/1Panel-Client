@@ -114,7 +114,13 @@ class _MonitoringPageState extends State<MonitoringPage> {
             context,
             '${l10n.serverDiskLabel} IO',
             data.ioTimeSeries,
-            '%',
+            'KB/s',
+            selector: _MetricSelector(
+              value: data.selectedIO,
+              options: data.ioOptions,
+              onChanged: (value) =>
+                  context.read<MonitoringProvider>().selectIOOption(value),
+            ),
           ),
           const SizedBox(height: AppDesignTokens.spacingSm),
           _buildTimeSeriesCard(
@@ -122,6 +128,12 @@ class _MonitoringPageState extends State<MonitoringPage> {
             l10n.monitorNetworkLabel,
             data.networkTimeSeries,
             'KB/s',
+            selector: _MetricSelector(
+              value: data.selectedNetwork,
+              options: data.networkOptions,
+              onChanged: (value) =>
+                  context.read<MonitoringProvider>().selectNetworkOption(value),
+            ),
           ),
           // GPU监控卡片（如果有GPU）
           if (data.gpuInfo.isNotEmpty) ...[
@@ -245,16 +257,14 @@ class _MonitoringPageState extends State<MonitoringPage> {
     );
   }
 
-  Widget _buildTimeSeriesCard(
-    BuildContext context,
-    String title,
-    MonitorTimeSeries? timeSeries,
-    String unit,
-  ) {
+  Widget _buildTimeSeriesCard(BuildContext context, String title,
+      MonitorTimeSeries? timeSeries, String unit,
+      {Widget? selector}) {
     return _ExpandableChartCard(
       title: title,
       timeSeries: timeSeries,
       unit: unit,
+      selector: selector,
     );
   }
 }
@@ -290,17 +300,38 @@ class _StatItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-        Text(
-          value,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-      ],
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppDesignTokens.spacingSm,
+        vertical: AppDesignTokens.spacingSm,
+      ),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: AppDesignTokens.spacingXs),
+          Text(
+            value,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -328,11 +359,13 @@ class _ExpandableChartCard extends StatefulWidget {
   final String title;
   final MonitorTimeSeries? timeSeries;
   final String unit;
+  final Widget? selector;
 
   const _ExpandableChartCard({
     required this.title,
     required this.timeSeries,
     required this.unit,
+    this.selector,
   });
 
   @override
@@ -346,47 +379,79 @@ class _ExpandableChartCardState extends State<_ExpandableChartCard> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final timeSeries = widget.timeSeries;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final currentValue = timeSeries != null && timeSeries.data.isNotEmpty
+        ? '${timeSeries.data.last.value.toStringAsFixed(1)}${widget.unit}'
+        : null;
 
     return Card(
+      clipBehavior: Clip.antiAlias,
+      elevation: 0,
+      color: colorScheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
+        side: BorderSide(color: colorScheme.outlineVariant),
+      ),
       child: Column(
         children: [
-          // 标题栏（可点击折叠）
-          InkWell(
-            onTap: () {
-              setState(() {
-                _isExpanded = !_isExpanded;
-              });
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(AppDesignTokens.spacingMd),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      widget.title,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  ),
-                  // 当前值
-                  if (timeSeries != null && timeSeries.data.isNotEmpty)
-                    Text(
-                      '${timeSeries.data.last.value.toStringAsFixed(1)}${widget.unit}',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppDesignTokens.spacingMd,
+              AppDesignTokens.spacingMd,
+              AppDesignTokens.spacingMd,
+              AppDesignTokens.spacingSm,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.title,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
+                          const SizedBox(height: AppDesignTokens.spacingXs),
+                          Text(
+                            currentValue ?? l10n.commonEmpty,
+                            style: theme.textTheme.headlineSmall?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: currentValue != null
+                                  ? colorScheme.onSurface
+                                  : colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  const SizedBox(width: AppDesignTokens.spacingSm),
-                  // 折叠图标
-                  AnimatedRotation(
-                    turns: _isExpanded ? 0.5 : 0,
-                    duration: const Duration(milliseconds: 200),
-                    child: const Icon(Icons.keyboard_arrow_down),
-                  ),
+                    IconButton.filledTonal(
+                      onPressed: () {
+                        setState(() {
+                          _isExpanded = !_isExpanded;
+                        });
+                      },
+                      icon: AnimatedRotation(
+                        turns: _isExpanded ? 0.5 : 0,
+                        duration: const Duration(milliseconds: 200),
+                        child: const Icon(Icons.keyboard_arrow_down_rounded),
+                      ),
+                    ),
+                  ],
+                ),
+                if (widget.selector != null) ...[
+                  const SizedBox(height: AppDesignTokens.spacingSm),
+                  widget.selector!,
                 ],
-              ),
+              ],
             ),
           ),
-          // 展开内容
           AnimatedCrossFade(
             firstChild: const SizedBox.shrink(),
             secondChild: timeSeries == null || timeSeries.data.isEmpty
@@ -399,12 +464,17 @@ class _ExpandableChartCardState extends State<_ExpandableChartCard> {
                             : null,
                   )
                 : Padding(
-                    padding: const EdgeInsets.all(AppDesignTokens.spacingMd),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppDesignTokens.spacingMd,
+                      AppDesignTokens.spacingSm,
+                      AppDesignTokens.spacingMd,
+                      AppDesignTokens.spacingMd,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildStatsRow(context, timeSeries, widget.unit),
-                        const SizedBox(height: AppDesignTokens.spacingSm),
+                        const SizedBox(height: AppDesignTokens.spacingMd),
                         _buildSimpleChart(context, timeSeries, widget.unit),
                       ],
                     ),
@@ -427,25 +497,32 @@ class _ExpandableChartCardState extends State<_ExpandableChartCard> {
     final l10n = context.l10n;
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        _StatItem(
-          label: l10n.monitorMetricMin,
-          value: timeSeries.min != null
-              ? '${timeSeries.min!.toStringAsFixed(1)}$unit'
-              : '--',
+        Expanded(
+          child: _StatItem(
+            label: l10n.monitorMetricMin,
+            value: timeSeries.min != null
+                ? '${timeSeries.min!.toStringAsFixed(1)}$unit'
+                : '--',
+          ),
         ),
-        _StatItem(
-          label: l10n.monitorMetricAvg,
-          value: timeSeries.avg != null
-              ? '${timeSeries.avg!.toStringAsFixed(1)}$unit'
-              : '--',
+        const SizedBox(width: AppDesignTokens.spacingSm),
+        Expanded(
+          child: _StatItem(
+            label: l10n.monitorMetricAvg,
+            value: timeSeries.avg != null
+                ? '${timeSeries.avg!.toStringAsFixed(1)}$unit'
+                : '--',
+          ),
         ),
-        _StatItem(
-          label: l10n.monitorMetricMax,
-          value: timeSeries.max != null
-              ? '${timeSeries.max!.toStringAsFixed(1)}$unit'
-              : '--',
+        const SizedBox(width: AppDesignTokens.spacingSm),
+        Expanded(
+          child: _StatItem(
+            label: l10n.monitorMetricMax,
+            value: timeSeries.max != null
+                ? '${timeSeries.max!.toStringAsFixed(1)}$unit'
+                : '--',
+          ),
         ),
       ],
     );
@@ -458,13 +535,25 @@ class _ExpandableChartCardState extends State<_ExpandableChartCard> {
   ) {
     if (timeSeries.data.isEmpty) return const SizedBox.shrink();
 
-    return SizedBox(
-      height: 200, // 增加高度以容纳更详细的图表
-      child: MonitorChart(
-        data: timeSeries.data,
-        unit: unit,
-        label: timeSeries.name,
-        color: Theme.of(context).colorScheme.primary,
+    return Container(
+      padding: const EdgeInsets.fromLTRB(
+        AppDesignTokens.spacingSm,
+        AppDesignTokens.spacingSm,
+        AppDesignTokens.spacingSm,
+        AppDesignTokens.spacingXs,
+      ),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
+      ),
+      child: SizedBox(
+        height: 220,
+        child: MonitorChart(
+          data: timeSeries.data,
+          unit: unit,
+          label: timeSeries.name,
+          color: Theme.of(context).colorScheme.primary,
+        ),
       ),
     );
   }
@@ -594,6 +683,8 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
   int _maxDataPoints = 1000;
   String _defaultIO = 'all';
   String _defaultNetwork = 'all';
+  List<String> _ioOptions = const ['all'];
+  List<String> _networkOptions = const ['all'];
 
   @override
   void initState() {
@@ -616,6 +707,8 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
         _maxDataPoints = provider.maxDataPoints;
         _defaultIO = settings?.defaultIO ?? 'all';
         _defaultNetwork = settings?.defaultNetwork ?? 'all';
+        _ioOptions = provider.data.ioOptions;
+        _networkOptions = provider.data.networkOptions;
         _isLoading = false;
       });
     }
@@ -627,7 +720,7 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
     });
 
     final provider = context.read<MonitoringProvider>();
-    
+
     // 应用所有设置
     provider.setRefreshInterval(_refreshInterval);
     provider.setTimeRange(_timeRange);
@@ -636,7 +729,7 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
       enabled: _gpuAutoRefreshEnabled,
       interval: _gpuRefreshInterval,
     );
-    
+
     final success = await provider.updateSettings(
       enabled: _enabled,
       retention: _retention,
@@ -934,14 +1027,25 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                     const SizedBox(height: AppDesignTokens.spacingSm),
-                    TextFormField(
-                      initialValue: _defaultIO,
+                    DropdownButtonFormField<String>(
+                      initialValue: _ioOptions.contains(_defaultIO)
+                          ? _defaultIO
+                          : _ioOptions.first,
                       decoration: InputDecoration(
                         labelText: '${l10n.serverDiskLabel} IO 设备',
-                        helperText: '例如: /dev/vda2 或 all (全部)',
+                        helperText: '优先使用具体设备，避免 all 返回空数据',
                         border: const OutlineInputBorder(),
                       ),
+                      items: _ioOptions
+                          .map(
+                            (item) => DropdownMenuItem<String>(
+                              value: item,
+                              child: Text(item),
+                            ),
+                          )
+                          .toList(),
                       onChanged: (value) {
+                        if (value == null) return;
                         setState(() {
                           _defaultIO = value;
                         });
@@ -955,14 +1059,25 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                     const SizedBox(height: AppDesignTokens.spacingSm),
-                    TextFormField(
-                      initialValue: _defaultNetwork,
+                    DropdownButtonFormField<String>(
+                      initialValue: _networkOptions.contains(_defaultNetwork)
+                          ? _defaultNetwork
+                          : _networkOptions.first,
                       decoration: InputDecoration(
                         labelText: '${l10n.monitorNetworkLabel} 接口',
-                        helperText: '例如: eth0 或 all (全部)',
+                        helperText: '优先使用具体网卡，避免 all 返回空数据',
                         border: const OutlineInputBorder(),
                       ),
+                      items: _networkOptions
+                          .map(
+                            (item) => DropdownMenuItem<String>(
+                              value: item,
+                              child: Text(item),
+                            ),
+                          )
+                          .toList(),
                       onChanged: (value) {
+                        if (value == null) return;
                         setState(() {
                           _defaultNetwork = value;
                         });
@@ -994,6 +1109,61 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
               : Text(l10n.commonSave),
         ),
       ],
+    );
+  }
+}
+
+class _MetricSelector extends StatelessWidget {
+  const _MetricSelector({
+    required this.value,
+    required this.options,
+    required this.onChanged,
+  });
+
+  final String value;
+  final List<String> options;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final items = options.isEmpty ? const ['all'] : options;
+    final currentValue = items.contains(value) ? value : items.first;
+
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 220),
+      padding:
+          const EdgeInsets.symmetric(horizontal: AppDesignTokens.spacingSm),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest,
+        border: Border.all(color: colorScheme.outlineVariant),
+        borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: currentValue,
+          isExpanded: true,
+          borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
+          icon: const Icon(Icons.arrow_drop_down_rounded),
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: colorScheme.onSurface,
+          ),
+          items: items
+              .map(
+                (item) => DropdownMenuItem<String>(
+                  value: item,
+                  child: Text(item, overflow: TextOverflow.ellipsis),
+                ),
+              )
+              .toList(),
+          onChanged: (next) {
+            if (next != null) {
+              onChanged(next);
+            }
+          },
+        ),
+      ),
     );
   }
 }

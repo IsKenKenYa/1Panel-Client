@@ -21,17 +21,17 @@ class MonitoringService extends BaseComponent {
   Future<MonitorMetricsSnapshot> getCurrentMetrics() async {
     return runGuarded(() async {
       final client = await clientManager.getCurrentClient();
-      
+
       // 优先使用dashboard API获取当前指标，因为它更可靠
       try {
         final response = await client.get(
           '/api/v2/dashboard/current/default/default',
         );
-        
+
         if (response.data != null && response.data is Map) {
           final data = response.data as Map<String, dynamic>;
           final payload = data['data'] as Map<String, dynamic>?;
-          
+
           if (payload != null) {
             // 解析磁盘数据
             double? diskPercent;
@@ -40,7 +40,7 @@ class MonitoringService extends BaseComponent {
               final firstDisk = diskDataList.first as Map<String, dynamic>?;
               diskPercent = (firstDisk?['usedPercent'] as num?)?.toDouble();
             }
-            
+
             return MonitorMetricsSnapshot(
               cpuPercent: (payload['cpuUsedPercent'] as num?)?.toDouble(),
               memoryPercent: (payload['memoryUsedPercent'] as num?)?.toDouble(),
@@ -63,7 +63,7 @@ class MonitoringService extends BaseComponent {
           error: e,
         );
       }
-      
+
       // 降级方案：使用monitor API
       return _monitorRepo.getCurrentMetrics(client);
     });
@@ -107,23 +107,35 @@ class MonitoringService extends BaseComponent {
 
   /// 获取IO时间序列数据
   Future<MonitorTimeSeries> getIOTimeSeries({
+    String? io,
     Duration duration = const Duration(hours: 1),
   }) async {
     return runGuarded(() async {
       final client = await clientManager.getCurrentClient();
-      return _monitorRepo.getTimeSeries(client, 'io', 'disk',
-          duration: duration);
+      return _monitorRepo.getTimeSeries(
+        client,
+        'io',
+        'ioThroughput',
+        io: io,
+        duration: duration,
+      );
     });
   }
 
   /// 获取网络时间序列数据
   Future<MonitorTimeSeries> getNetworkTimeSeries({
+    String? network,
     Duration duration = const Duration(hours: 1),
   }) async {
     return runGuarded(() async {
       final client = await clientManager.getCurrentClient();
-      return _monitorRepo.getTimeSeries(client, 'network', 'networkIn',
-          duration: duration);
+      return _monitorRepo.getTimeSeries(
+        client,
+        'network',
+        'networkThroughput',
+        network: network,
+        duration: duration,
+      );
     });
   }
 
@@ -174,27 +186,34 @@ class MonitoringService extends BaseComponent {
 
   /// 批量获取监控数据（含当前指标与趋势图）
   Future<MonitorDataPackage> getMonitorData({
+    String? io,
+    String? network,
     Duration duration = const Duration(hours: 1),
     DateTime? startTime,
   }) async {
     return runGuarded(() async {
       final client = await clientManager.getCurrentClient();
-      
+
       // 获取时间序列数据
-      final package = await _monitorRepo.getMonitorData(client,
-          duration: duration, startTime: startTime);
-      
+      final package = await _monitorRepo.getMonitorData(
+        client,
+        io: io,
+        network: network,
+        duration: duration,
+        startTime: startTime,
+      );
+
       // 优先使用dashboard API获取当前指标
       MonitorMetricsSnapshot? currentMetrics;
       try {
         final response = await client.get(
           '/api/v2/dashboard/current/default/default',
         );
-        
+
         if (response.data != null && response.data is Map) {
           final data = response.data as Map<String, dynamic>;
           final payload = data['data'] as Map<String, dynamic>?;
-          
+
           if (payload != null) {
             // 解析磁盘数据
             double? diskPercent;
@@ -203,7 +222,7 @@ class MonitoringService extends BaseComponent {
               final firstDisk = diskDataList.first as Map<String, dynamic>?;
               diskPercent = (firstDisk?['usedPercent'] as num?)?.toDouble();
             }
-            
+
             currentMetrics = MonitorMetricsSnapshot(
               cpuPercent: (payload['cpuUsedPercent'] as num?)?.toDouble(),
               memoryPercent: (payload['memoryUsedPercent'] as num?)?.toDouble(),
@@ -226,12 +245,28 @@ class MonitoringService extends BaseComponent {
           error: e,
         );
       }
-      
+
       // 如果dashboard API成功，使用它的结果；否则使用monitor API的结果
       return MonitorDataPackage(
         current: currentMetrics ?? package.current,
         timeSeries: package.timeSeries,
       );
+    });
+  }
+
+  /// 获取网络接口列表
+  Future<List<String>> getNetworkOptions() async {
+    return runGuarded(() async {
+      final client = await clientManager.getCurrentClient();
+      return _monitorRepo.getNetworkOptions(client);
+    });
+  }
+
+  /// 获取IO设备列表
+  Future<List<String>> getIOOptions() async {
+    return runGuarded(() async {
+      final client = await clientManager.getCurrentClient();
+      return _monitorRepo.getIOOptions(client);
     });
   }
 }

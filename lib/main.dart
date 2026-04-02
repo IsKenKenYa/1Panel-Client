@@ -153,6 +153,7 @@ class _AppBootstrapState extends State<AppBootstrap>
       return;
     }
     context.read<AppLockController>().onAppLifecycleChanged(state);
+    context.read<MonitoringProvider>().onAppLifecycleChanged(state);
   }
 
   @override

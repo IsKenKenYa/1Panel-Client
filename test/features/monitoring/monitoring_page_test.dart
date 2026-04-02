@@ -34,6 +34,8 @@ class _FakeMonitoringService extends MonitoringService {
   @override
   Future<MonitorDataPackage> getMonitorData({
     Duration duration = const Duration(hours: 1),
+    String? io,
+    String? network,
     DateTime? startTime,
   }) async {
     return MonitorDataPackage(
@@ -58,7 +60,22 @@ class _FakeMonitoringService extends MonitoringService {
 
   @override
   Future<MonitorSetting?> getSetting() async {
-    return const MonitorSetting(enabled: true, retention: 30);
+    return const MonitorSetting(
+      enabled: true,
+      retention: 30,
+      defaultIO: 'sda',
+      defaultNetwork: 'eth0',
+    );
+  }
+
+  @override
+  Future<List<String>> getIOOptions() async {
+    return const ['all', 'sda'];
+  }
+
+  @override
+  Future<List<String>> getNetworkOptions() async {
+    return const ['all', 'eth0'];
   }
 
   @override
@@ -66,6 +83,8 @@ class _FakeMonitoringService extends MonitoringService {
     int? interval,
     int? retention,
     bool? enabled,
+    String? defaultIO,
+    String? defaultNetwork,
   }) async {
     updateSettingsCallCount += 1;
     return true;
@@ -128,17 +147,17 @@ void main() {
 
     expect(find.byType(AlertDialog), findsOneWidget);
     expect(find.byType(SwitchListTile), findsNWidgets(2));
-    expect(find.byType(DropdownButtonFormField<Duration>), findsOneWidget);
+    expect(find.byType(DropdownButtonFormField<Duration>), findsNWidgets(4));
 
     await tester.tap(find.byType(SwitchListTile).at(1));
     await tester.pumpAndSettle();
 
-    expect(find.byType(DropdownButtonFormField<Duration>), findsNothing);
+    expect(find.byType(DropdownButtonFormField<Duration>), findsNWidgets(3));
 
     await tester.tap(find.byType(SwitchListTile).at(1));
     await tester.pumpAndSettle();
 
-    expect(find.byType(DropdownButtonFormField<Duration>), findsOneWidget);
+    expect(find.byType(DropdownButtonFormField<Duration>), findsNWidgets(4));
 
     provider.toggleAutoRefresh(false);
     await tester.pumpWidget(const MaterialApp(home: SizedBox.shrink()));

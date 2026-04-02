@@ -139,8 +139,8 @@ MonitorDataPackage parseMonitorDataPackage(MonitorDataParseArgs args) {
     'cpu': parseTimeSeriesResponse(data, 'base', 'cpu'),
     'memory': parseTimeSeriesResponse(data, 'base', 'memory'),
     'load': parseTimeSeriesResponse(data, 'base', 'cpuLoad1'),
-    'io': parseTimeSeriesResponse(data, 'io', 'disk'),
-    'network': parseTimeSeriesResponse(data, 'network', 'networkIn'),
+    'io': parseTimeSeriesResponse(data, 'io', 'ioThroughput'),
+    'network': parseTimeSeriesResponse(data, 'network', 'networkThroughput'),
   };
 
   return MonitorDataPackage(current: current, timeSeries: timeSeries);
@@ -299,29 +299,7 @@ MonitorTimeSeries parseTimeSeriesResponse(
     final valueMap = values[i] as Map<String, dynamic>?;
     if (valueMap == null) continue;
 
-    // 尝试从多个可能的字段获取值
-    double? value;
-    
-    // 优先使用指定的valueKey
-    value = (valueMap[valueKey] as num?)?.toDouble();
-    
-    // 如果valueKey不存在，尝试其他可能的字段名
-    if (value == null) {
-      // 对于IO数据，可能的字段: disk, diskRead, diskWrite, ioRead, ioWrite
-      if (valueKey == 'disk') {
-        value = (valueMap['diskRead'] as num?)?.toDouble() ??
-            (valueMap['diskWrite'] as num?)?.toDouble() ??
-            (valueMap['ioRead'] as num?)?.toDouble() ??
-            (valueMap['ioWrite'] as num?)?.toDouble();
-      }
-      // 对于网络数据，可能的字段: networkIn, networkOut, up, down
-      else if (valueKey == 'networkIn') {
-        value = (valueMap['up'] as num?)?.toDouble() ??
-            (valueMap['down'] as num?)?.toDouble() ??
-            (valueMap['networkOut'] as num?)?.toDouble();
-      }
-    }
-    
+    final value = _extractMetricValue(valueMap, valueKey);
     if (value == null) {
       continue;
     }
@@ -352,6 +330,48 @@ MonitorTimeSeries parseTimeSeriesResponse(
     max: max,
     avg: count > 0 ? sum / count : null,
   );
+}
+
+double? _extractMetricValue(Map<String, dynamic> valueMap, String valueKey) {
+  final directValue = (valueMap[valueKey] as num?)?.toDouble();
+  if (directValue != null) {
+    return directValue;
+  }
+
+  switch (valueKey) {
+    case 'ioThroughput':
+      final read = (valueMap['read'] as num?)?.toDouble();
+      final write = (valueMap['write'] as num?)?.toDouble();
+      if (read != null || write != null) {
+        return ((read ?? 0) + (write ?? 0)) / 1024;
+      }
+
+      final fallback = (valueMap['diskRead'] as num?)?.toDouble() ??
+          (valueMap['diskWrite'] as num?)?.toDouble() ??
+          (valueMap['ioRead'] as num?)?.toDouble() ??
+          (valueMap['ioWrite'] as num?)?.toDouble();
+      return fallback != null ? fallback / 1024 : null;
+    case 'networkThroughput':
+      final up = (valueMap['up'] as num?)?.toDouble();
+      final down = (valueMap['down'] as num?)?.toDouble();
+      if (up != null || down != null) {
+        return (up ?? 0) + (down ?? 0);
+      }
+
+      return (valueMap['networkIn'] as num?)?.toDouble() ??
+          (valueMap['networkOut'] as num?)?.toDouble();
+    case 'disk':
+      return (valueMap['diskRead'] as num?)?.toDouble() ??
+          (valueMap['diskWrite'] as num?)?.toDouble() ??
+          (valueMap['ioRead'] as num?)?.toDouble() ??
+          (valueMap['ioWrite'] as num?)?.toDouble();
+    case 'networkIn':
+      return (valueMap['up'] as num?)?.toDouble() ??
+          (valueMap['down'] as num?)?.toDouble() ??
+          (valueMap['networkOut'] as num?)?.toDouble();
+    default:
+      return null;
+  }
 }
 
 /// 统一监控数据仓库
@@ -401,6 +421,8 @@ class MonitorRepository {
     dynamic client,
     String param,
     String valueKey, {
+    String? io,
+    String? network,
     Duration duration = const Duration(hours: 1),
   }) async {
     try {
@@ -412,12 +434,14 @@ class MonitorRepository {
         '/api/v2/hosts/monitor/search',
         data: {
           'param': 'all',
+          if (io != null) 'io': io,
+          if (network != null) 'network': network,
           'startTime': startTime.toUtc().toIso8601String(),
           'endTime': now.toUtc().toIso8601String(),
         },
       );
 
-      return parseTimeSeriesResponse(response.data, 'base', valueKey);
+      return parseTimeSeriesResponse(response.data, param, valueKey);
     } catch (e, stack) {
       appLogger.eWithPackage(
         _monitorRepoPackage,
@@ -432,6 +456,8 @@ class MonitorRepository {
   /// 批量获取所有监控数据（当前指标 + 时间序列）
   Future<MonitorDataPackage> getMonitorData(
     dynamic client, {
+    String? io,
+    String? network,
     Duration duration = const Duration(hours: 1),
     DateTime? startTime,
   }) async {
@@ -444,6 +470,8 @@ class MonitorRepository {
         '/api/v2/hosts/monitor/search',
         data: {
           'param': 'all',
+          if (io != null) 'io': io,
+          if (network != null) 'network': network,
           'startTime': start.toUtc().toIso8601String(),
           'endTime': now.toUtc().toIso8601String(),
         },
@@ -539,10 +567,10 @@ class MonitorRepository {
     try {
       final updates = <Map<String, dynamic>>[];
       if (interval != null) {
-        updates.add({'key': 'MonitorInterval', 'value': interval});
+        updates.add({'key': 'MonitorInterval', 'value': interval.toString()});
       }
       if (retention != null) {
-        updates.add({'key': 'MonitorStoreDays', 'value': retention});
+        updates.add({'key': 'MonitorStoreDays', 'value': retention.toString()});
       }
       if (enabled != null) {
         updates.add({
@@ -588,6 +616,52 @@ class MonitorRepository {
         stackTrace: stack,
       );
       return false;
+    }
+  }
+
+  /// 获取网络接口列表
+  Future<List<String>> getNetworkOptions(dynamic client) async {
+    try {
+      final response = await client.get('/api/v2/hosts/monitor/netoptions');
+      if (response.data != null && response.data is Map) {
+        final body = response.data as Map<String, dynamic>;
+        final dataList = body['data'] as List?;
+        if (dataList != null) {
+          return dataList.map((e) => e.toString()).toList();
+        }
+      }
+      return ['all'];
+    } catch (e, stack) {
+      appLogger.eWithPackage(
+        _monitorRepoPackage,
+        'getNetworkOptions failed',
+        error: e,
+        stackTrace: stack,
+      );
+      return ['all'];
+    }
+  }
+
+  /// 获取IO设备列表
+  Future<List<String>> getIOOptions(dynamic client) async {
+    try {
+      final response = await client.get('/api/v2/hosts/monitor/iooptions');
+      if (response.data != null && response.data is Map) {
+        final body = response.data as Map<String, dynamic>;
+        final dataList = body['data'] as List?;
+        if (dataList != null) {
+          return dataList.map((e) => e.toString()).toList();
+        }
+      }
+      return ['all'];
+    } catch (e, stack) {
+      appLogger.eWithPackage(
+        _monitorRepoPackage,
+        'getIOOptions failed',
+        error: e,
+        stackTrace: stack,
+      );
+      return ['all'];
     }
   }
 }

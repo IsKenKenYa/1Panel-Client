@@ -3953,7 +3953,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsFeedbackLogExportWarningMessage.
   ///
   /// In en, this message translates to:
-  /// **'This is a preview release. We recommend using a private IP (e.g., an internal 1Panel server or VM) for testing to avoid unexpected impacts.\n\nPublic IP addresses in the logs are automatically masked. However, please do not share logs with unrelated personnel, and manually check for any remaining sensitive information before reporting issues.'**
+  /// **'This is a Dev release for public testing and feedback collection. We recommend using a private IP (e.g., an internal 1Panel server or VM) for testing to avoid unexpected impacts.\n\nPublic IP addresses in the logs are automatically masked. However, please do not share logs with unrelated personnel, and manually check for any remaining sensitive information before reporting issues.'**
   String get settingsFeedbackLogExportWarningMessage;
 
   /// No description provided for @settingsFeedbackLogExportConfirm.
@@ -4271,7 +4271,7 @@ abstract class AppLocalizations {
   /// No description provided for @releaseChannelPreview.
   ///
   /// In en, this message translates to:
-  /// **'Preview'**
+  /// **'Dev'**
   String get releaseChannelPreview;
 
   /// No description provided for @releaseChannelAlpha.
