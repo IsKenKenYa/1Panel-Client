@@ -2315,7 +2315,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutExperimentalModulesDescription => '服务器、网站、容器、数据库、防火墙、终端与监控。';
 
   @override
-  String get aboutExperimentalModulesList => '服务器 · 网站 · 容器 · 数据库 · 防火墙 · 终端 · 监控';
+  String get aboutExperimentalModulesList =>
+      '服务器 · 网站 · 容器 · 数据库 · 防火墙 · 终端 · 监控';
 
   @override
   String get dashboardTitle => '仪表盘';
