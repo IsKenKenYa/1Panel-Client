@@ -1,7 +1,7 @@
 import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/network/api_client_manager.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
-import 'package:onepanel_client/data/repositories/monitor_repository.dart';
+import 'package:onepanel_client/data/repositories/dashboard_repository.dart';
 import 'server_models.dart';
 
 /// 服务器仓库
@@ -28,7 +28,7 @@ class ServerRepository {
 
   /// 加载服务器监控指标
   ///
-  /// 使用统一的 MonitorRepository 获取监控数据
+  /// 使用 DashboardRepository 获取当前服务器快照数据
   Future<ServerMetricsSnapshot> loadServerMetrics(String serverId) async {
     try {
       final configs = await ApiConfigManager.getConfigs();
@@ -37,23 +37,20 @@ class ServerRepository {
         orElse: () => throw Exception('Server not found'),
       );
 
+      // 确保 API 客户端已初始化
       final manager = ApiClientManager.instance;
-      final client = manager.getClient(
+      manager.getClient(
         serverId,
         config.url,
         config.apiKey,
         allowInsecureTls: config.allowInsecureTls,
       );
 
-      final monitorRepo = const MonitorRepository();
-      final metrics = await monitorRepo.getCurrentMetrics(client);
+      // 使用 DashboardRepository 获取当前服务器指标
+      final dashboardRepo = DashboardRepository();
+      final metrics = await dashboardRepo.getCurrentServerMetrics();
 
-      return ServerMetricsSnapshot(
-        cpuPercent: metrics.cpuPercent,
-        memoryPercent: metrics.memoryPercent,
-        diskPercent: metrics.diskPercent,
-        load: metrics.load1,
-      );
+      return metrics;
     } catch (e, stack) {
       appLogger.eWithPackage(
         'features.server.repository',

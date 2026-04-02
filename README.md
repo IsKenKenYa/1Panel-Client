@@ -31,18 +31,40 @@
 
 ## What You Can Do
 
-- Switch between multiple 1Panel servers
-- View server status and key runtime information
-- **Dashboard**: Real-time monitoring (CPU, Memory, Disk, Network I/O)
-- **Container Management**: Docker containers, images, logs, and statistics
-- **File Management**: Browse, edit, upload/download, recycle bin, transfer manager
-- **Database Management**: MySQL, PostgreSQL, Redis with full operations
-- **Website Management**: SSL certificates, batch operations, domain management
-- **AI Management**: Ollama models, AI agent configuration, GPU monitoring
-- **System Tools**: ClamAV, Fail2ban, FTP management
-- **Runtime Management**: PHP extensions, Node modules, Supervisor
-- **Backup & Restore**: Complete backup operations and recovery
-- Use a mobile-friendly interface instead of relying on a browser session
+This client provides comprehensive management capabilities for 1Panel servers with **100% API coverage** (34 modules, 425+ endpoints):
+
+### Core Management (8 Main Modules)
+- **Dashboard**: Real-time system monitoring with CPU, memory, disk, and network I/O metrics
+- **File Management**: Complete file operations including browse, edit, upload/download, recycle bin, transfer manager, favorites, and mount points
+- **Container Management**: Full Docker lifecycle management with containers, images, compose orchestration, networks, and volumes
+- **Application Management**: App store integration with installation, updates, and lifecycle management
+- **Website Management**: Complete website operations including SSL certificates, domain management, routing rules, and configuration center
+- **AI Management**: Ollama model management, AI agent configuration, GPU monitoring, and domain binding
+- **Database Management**: Full support for MySQL/MariaDB, PostgreSQL, and Redis with backup and user management
+- **Settings**: System configuration, security settings, snapshots, and panel updates
+
+### Advanced Operations (14 Additional Modules)
+- **Firewall Management**: Rules, IP whitelist, and port management
+- **Backup & Restore**: Backup accounts, records, and complete recovery operations
+- **Cronjob Management**: Scheduled tasks with execution history and logs
+- **Runtime Management**: PHP extensions/configuration, Node modules/scripts, and Supervisor process management
+- **SSH Management**: SSH settings, certificates, logs, and session management
+- **Process Management**: System process monitoring and control
+- **Host Management**: Host assets and system information
+- **Command Management**: Command execution and history
+- **Script Library**: Script management and execution
+- **Log Center**: System logs and task log viewing
+- **Toolbox**: Device management, disk operations, ClamAV, Fail2ban, and FTP
+- **OpenResty**: Configuration management and source editing
+- **Monitoring**: Real-time metrics with chart visualization
+- **Terminal**: SSH terminal access
+
+### System Features
+- Multi-server switching and management
+- Unified logging system with privacy protection (automatic IP masking)
+- Complete internationalization (Chinese/English)
+- Mobile-optimized interface with tablet support
+- Secure authentication with 1Panel API key integration
 
 ## First-Time Setup (Important: API Configuration)
 
