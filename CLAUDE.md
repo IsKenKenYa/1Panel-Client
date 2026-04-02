@@ -20,10 +20,16 @@ EN: Read `AGENTS.md` first for mandatory rules, then `CLAUDE.md` for project det
 
 ### Current Implementation Status
 - ✅ **AI Management Module**: Complete (Ollama models, GPU monitoring, domain binding)
+- ✅ **Complete API Coverage**: All 34 V2 API modules with 425+ endpoints
+- ✅ **Data Models**: 60+ comprehensive model files with JSON serialization
 - ✅ **Server Configuration**: Multi-server support with API key authentication
-- ✅ **Core Infrastructure**: Logging, i18n (EN/ZH), navigation, Material Design 3
-- 🚧 **Dashboard**: Planned
-- 🚧 **Application/Container/File Management**: UI stubs ready
+- ✅ **Core Infrastructure**: Logging with IP masking, i18n (EN/ZH), navigation, Material Design 3
+- ✅ **Container Management**: Full Docker container and image management
+- ✅ **Database Management**: MySQL, PostgreSQL, Redis operations
+- ✅ **File Management**: Browse, edit, upload/download, recycle bin, transfer manager
+- ✅ **Website Management**: SSL certificates, batch operations, domain management
+- 🚧 **Dashboard**: Planned enhancements
+- 🚧 **Additional Features**: Continuous improvements
 
 ## Development Commands
 
@@ -84,6 +90,7 @@ The project follows **Layered Architecture with MVVM** and clean separation of c
 - **Storage**: Flutter Secure Storage + SharedPreferences
 - **Authentication**: MD5 token generation (`1panel` + API-Key + UnixTimestamp)
 - **Internationalization**: Built-in Flutter i18n (English/Chinese)
+- **Logging**: Unified logging system with privacy protection (automatic IP masking)
 
 ### Project Structure Rules (CRITICAL)
 
@@ -153,7 +160,7 @@ lib/
 **NEVER** use `print()` or `debugPrint()`. Use the unified logging system:
 
 ```dart
-import 'core/services/logger_service.dart';
+import 'core/services/logger/logger_service.dart';
 
 // With explicit package name (RECOMMENDED)
 appLogger.dWithPackage('auth.service', '用户登录成功');
@@ -172,6 +179,15 @@ appLogger.d('[auth.service] 这是一条调试信息');
 - **Debug**: All levels (Trace, Debug, Info, Warning, Error, Fatal)
 - **Profile**: Info, Warning, Error, Fatal
 - **Release**: Warning, Error, Fatal only
+
+#### Privacy Protection
+- **Automatic IP Masking**: Public IPs are automatically masked as `***.***.***.***`
+- **Private IPs Preserved**: Internal IPs (10.x.x.x, 192.168.x.x, 172.16-31.x.x, 127.x.x.x) remain visible for debugging
+- **File Output**: Enabled in all build modes for user feedback
+- **Log Configuration**: 
+  - No stack traces for normal logs (maxMethodCount: 0)
+  - Full stack traces for errors (maxErrorMethodCount: 8)
+  - Max file size: 10MB, retention: 30 days, max files: 5
 
 ### Code Quality Standards
 - **Every commit must**: Compile, pass tests, follow linting rules

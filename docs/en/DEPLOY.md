@@ -88,9 +88,12 @@ Output location: `build/web/`
 
 ## API Key Authentication
 
-### How to Get API Key
+### How to Get API Key & Configure API Access
 
-Login to 1Panel → Settings → API Interface → Generate API Key
+1. Login to your 1Panel Web dashboard.
+2. Go to **Settings** -> **API Interface**.
+3. Toggle the API to **Enable** and copy the **API Key**.
+4. **Important: Configure IP Whitelist**. Under the allowed IPs section, you must add the IP address of the device running the client. If the client runs on a mobile device with a dynamic IP, add `0.0.0.0/0` to allow all IP addresses.
 
 ### Token Generation
 

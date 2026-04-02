@@ -13,5 +13,6 @@
     }
   ],
   "chatgpt.openOnStartup": true,
-  "cmake.ignoreCMakeListsMissing": true
+  "cmake.ignoreCMakeListsMissing": true,
+  "kiroAgent.configureMCP": "Disabled"
 }
