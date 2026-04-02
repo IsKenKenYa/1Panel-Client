@@ -386,17 +386,25 @@ class _ServerCard extends StatelessWidget {
                 runSpacing: 8,
                 children: [
                   _MetricPill(
-                      label: l10n.serverCpuLabel,
-                      value: _percent(data.metrics.cpuPercent)),
+                    icon: Icons.memory_outlined,
+                    label: l10n.serverCpuLabel,
+                    value: _percent(data.metrics.cpuPercent),
+                  ),
                   _MetricPill(
-                      label: l10n.serverMemoryLabel,
-                      value: _percent(data.metrics.memoryPercent)),
+                    icon: Icons.storage_outlined,
+                    label: l10n.serverMemoryLabel,
+                    value: _percent(data.metrics.memoryPercent),
+                  ),
                   _MetricPill(
-                      label: l10n.serverLoadLabel,
-                      value: _decimal(data.metrics.load)),
+                    icon: Icons.speed_outlined,
+                    label: l10n.serverLoadLabel,
+                    value: _decimal(data.metrics.load),
+                  ),
                   _MetricPill(
-                      label: l10n.serverDiskLabel,
-                      value: _percent(data.metrics.diskPercent)),
+                    icon: Icons.sd_card_outlined,
+                    label: l10n.serverDiskLabel,
+                    value: _percent(data.metrics.diskPercent),
+                  ),
                 ],
               ),
               const SizedBox(height: AppDesignTokens.spacingMd),
@@ -454,10 +462,12 @@ class _ServerCard extends StatelessWidget {
 
 class _MetricPill extends StatelessWidget {
   const _MetricPill({
+    required this.icon,
     required this.label,
     required this.value,
   });
 
+  final IconData icon;
   final String label;
   final String value;
 
@@ -470,7 +480,18 @@ class _MetricPill extends StatelessWidget {
         borderRadius: BorderRadius.circular(999),
         color: scheme.surfaceContainerHighest.withValues(alpha: 0.6),
       ),
-      child: Text('$label $value'),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: 16,
+            color: scheme.onSurfaceVariant,
+          ),
+          const SizedBox(width: 4),
+          Text('$label $value'),
+        ],
+      ),
     );
   }
 }

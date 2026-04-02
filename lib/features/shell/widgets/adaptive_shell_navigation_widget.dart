@@ -30,13 +30,39 @@ class ShellRailNavigation extends StatelessWidget {
       destinations: [
         for (final module in modules)
           NavigationRailDestination(
-            icon: Icon(
-              module.icon,
-              color: !module.requiresServer || hasServer ? null : disabledColor,
+            icon: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              transitionBuilder: (child, animation) {
+                return ScaleTransition(
+                  scale: animation,
+                  child: FadeTransition(
+                    opacity: animation,
+                    child: child,
+                  ),
+                );
+              },
+              child: Icon(
+                module.icon,
+                key: ValueKey('${module.storageId}_unselected'),
+                color: !module.requiresServer || hasServer ? null : disabledColor,
+              ),
             ),
-            selectedIcon: Icon(
-              module.selectedIcon,
-              color: !module.requiresServer || hasServer ? null : disabledColor,
+            selectedIcon: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              transitionBuilder: (child, animation) {
+                return ScaleTransition(
+                  scale: animation,
+                  child: FadeTransition(
+                    opacity: animation,
+                    child: child,
+                  ),
+                );
+              },
+              child: Icon(
+                module.selectedIcon,
+                key: ValueKey('${module.storageId}_selected'),
+                color: !module.requiresServer || hasServer ? null : disabledColor,
+              ),
             ),
             label: Text(module.label(context.l10n)),
           ),
@@ -84,7 +110,26 @@ class ShellSidebarNavigation extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    leading: Icon(module.icon),
+                    leading: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 200),
+                      transitionBuilder: (child, animation) {
+                        return ScaleTransition(
+                          scale: animation,
+                          child: FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          ),
+                        );
+                      },
+                      child: Icon(
+                        module == selectedModule
+                            ? module.selectedIcon
+                            : module.icon,
+                        key: ValueKey(
+                          '${module.storageId}_${module == selectedModule}',
+                        ),
+                      ),
+                    ),
                     title: Text(module.label(context.l10n)),
                     selected: module == selectedModule,
                     enabled: !module.requiresServer || hasServer,
