@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
 import 'server_models.dart';
@@ -12,6 +13,8 @@ class ServerProvider extends ChangeNotifier {
   List<ServerCardViewModel> _servers = const [];
   final Map<String, ServerMetricsSnapshot> _metrics = {};
   bool _isLoadingMetrics = false;
+  Timer? _metricsRefreshTimer;
+  static const Duration _metricsRefreshInterval = Duration(seconds: 10);
 
   bool get isLoading => _isLoading;
   bool get isLoadingMetrics => _isLoadingMetrics;
@@ -23,10 +26,33 @@ class ServerProvider extends ChangeNotifier {
 
     try {
       _servers = await _repository.loadServerCards();
+      if (_servers.isNotEmpty) {
+        startMetricsAutoRefresh();
+      }
     } finally {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  void startMetricsAutoRefresh() {
+    _metricsRefreshTimer?.cancel();
+    _metricsRefreshTimer = Timer.periodic(_metricsRefreshInterval, (_) {
+      if (_servers.isNotEmpty) {
+        loadMetrics();
+      }
+    });
+  }
+
+  void stopMetricsAutoRefresh() {
+    _metricsRefreshTimer?.cancel();
+    _metricsRefreshTimer = null;
+  }
+
+  @override
+  void dispose() {
+    stopMetricsAutoRefresh();
+    super.dispose();
   }
 
   Future<void> loadMetrics() async {

@@ -123,7 +123,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byIcon(Icons.settings));
+    await tester.tap(find.byIcon(Icons.tune));
     await tester.pumpAndSettle();
 
     expect(find.byType(AlertDialog), findsOneWidget);
@@ -166,7 +166,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byIcon(Icons.settings));
+    await tester.tap(find.byIcon(Icons.tune));
     await tester.pumpAndSettle();
 
     await tester.tap(find.byType(SwitchListTile).at(1));

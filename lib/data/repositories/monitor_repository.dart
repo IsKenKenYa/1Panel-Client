@@ -255,25 +255,32 @@ MonitorTimeSeries parseTimeSeriesResponse(
     return MonitorTimeSeries.empty(param);
   }
 
-  // 查找匹配的数据项，如果没有匹配的，使用第一个
-  var item = dataList.firstWhere(
-    (e) => (e as Map)['param'] == param,
-    orElse: () => null,
-  );
-
-  // 如果没有找到精确匹配，尝试使用 'base' 数据
-  if (item == null && param != 'base') {
+  // 查找匹配的数据项
+  Map<String, dynamic>? item;
+  try {
     item = dataList.firstWhere(
-      (e) => (e as Map)['param'] == 'base',
-      orElse: () => null,
-    );
+      (e) => (e as Map)['param'] == param,
+    ) as Map<String, dynamic>?;
+  } catch (_) {
+    item = null;
+  }
+
+  // 如果没有找到精确匹配，尝试使用 'base' 数据（base包含cpu/memory/load）
+  if (item == null && param != 'base') {
+    try {
+      item = dataList.firstWhere(
+        (e) => (e as Map)['param'] == 'base',
+      ) as Map<String, dynamic>?;
+    } catch (_) {
+      item = null;
+    }
   }
 
   if (item == null) {
     return MonitorTimeSeries.empty(param);
   }
 
-  final itemMap = item as Map<String, dynamic>;
+  final itemMap = item;
   final dates = (itemMap['date'] as List?)?.map((e) => e.toString()).toList();
   final values = itemMap['value'] as List?;
 
@@ -292,7 +299,29 @@ MonitorTimeSeries parseTimeSeriesResponse(
     final valueMap = values[i] as Map<String, dynamic>?;
     if (valueMap == null) continue;
 
-    final value = (valueMap[valueKey] as num?)?.toDouble();
+    // 尝试从多个可能的字段获取值
+    double? value;
+    
+    // 优先使用指定的valueKey
+    value = (valueMap[valueKey] as num?)?.toDouble();
+    
+    // 如果valueKey不存在，尝试其他可能的字段名
+    if (value == null) {
+      // 对于IO数据，可能的字段: disk, diskRead, diskWrite, ioRead, ioWrite
+      if (valueKey == 'disk') {
+        value = (valueMap['diskRead'] as num?)?.toDouble() ??
+            (valueMap['diskWrite'] as num?)?.toDouble() ??
+            (valueMap['ioRead'] as num?)?.toDouble() ??
+            (valueMap['ioWrite'] as num?)?.toDouble();
+      }
+      // 对于网络数据，可能的字段: networkIn, networkOut, up, down
+      else if (valueKey == 'networkIn') {
+        value = (valueMap['up'] as num?)?.toDouble() ??
+            (valueMap['down'] as num?)?.toDouble() ??
+            (valueMap['networkOut'] as num?)?.toDouble();
+      }
+    }
+    
     if (value == null) {
       continue;
     }
@@ -504,6 +533,8 @@ class MonitorRepository {
     int? interval,
     int? retention,
     bool? enabled,
+    String? defaultIO,
+    String? defaultNetwork,
   }) async {
     try {
       final updates = <Map<String, dynamic>>[];
@@ -518,6 +549,12 @@ class MonitorRepository {
           'key': 'MonitorStatus',
           'value': enabled ? 'Enable' : 'Disable',
         });
+      }
+      if (defaultIO != null) {
+        updates.add({'key': 'DefaultIO', 'value': defaultIO});
+      }
+      if (defaultNetwork != null) {
+        updates.add({'key': 'DefaultNetwork', 'value': defaultNetwork});
       }
 
       for (final update in updates) {

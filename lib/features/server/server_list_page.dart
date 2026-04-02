@@ -347,7 +347,6 @@ class _ServerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final scheme = Theme.of(context).colorScheme;
 
     return Card(
       child: InkWell(
@@ -407,25 +406,6 @@ class _ServerCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: AppDesignTokens.spacingMd),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    _hasMetrics(data.metrics)
-                        ? l10n.serverMetricsAvailable
-                        : l10n.serverMetricsUnavailable,
-                    style: TextStyle(color: scheme.onSurfaceVariant),
-                  ),
-                  Text(
-                    l10n.serverOpenDetail,
-                    style: TextStyle(
-                      color: scheme.primary,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),
@@ -450,13 +430,6 @@ class _ServerCard extends StatelessWidget {
       return '--';
     }
     return value.toStringAsFixed(2);
-  }
-
-  bool _hasMetrics(ServerMetricsSnapshot metrics) {
-    return metrics.cpuPercent != null ||
-        metrics.memoryPercent != null ||
-        metrics.diskPercent != null ||
-        metrics.load != null;
   }
 }
 

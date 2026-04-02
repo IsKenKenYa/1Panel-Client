@@ -36,82 +36,6 @@ class _MonitoringPageState extends State<MonitoringPage> {
       appBar: AppBar(
         title: Text(l10n.serverModuleMonitoring),
         actions: [
-          PopupMenuButton<int>(
-            icon: const Icon(Icons.show_chart),
-            tooltip: l10n.monitorDataPoints,
-            onSelected: (count) {
-              context.read<MonitoringProvider>().setMaxDataPoints(count);
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 6,
-                child: Text(l10n.monitorDataPointsCount(
-                    6, l10n.monitorTimeMinutes(30))),
-              ),
-              PopupMenuItem(
-                value: 12,
-                child: Text(
-                    l10n.monitorDataPointsCount(12, l10n.monitorTimeHours(1))),
-              ),
-            ],
-          ),
-          PopupMenuButton<Duration>(
-            icon: const Icon(Icons.timer),
-            tooltip: l10n.monitorRefreshInterval,
-            onSelected: (duration) {
-              context.read<MonitoringProvider>().setRefreshInterval(duration);
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: const Duration(seconds: 3),
-                child: Text(l10n.monitorSeconds(3)),
-              ),
-              PopupMenuItem(
-                value: const Duration(seconds: 5),
-                child: Text(l10n.monitorSecondsDefault(5)),
-              ),
-              PopupMenuItem(
-                value: const Duration(seconds: 10),
-                child: Text(l10n.monitorSeconds(10)),
-              ),
-              PopupMenuItem(
-                value: const Duration(seconds: 30),
-                child: Text(l10n.monitorSeconds(30)),
-              ),
-              PopupMenuItem(
-                value: const Duration(minutes: 1),
-                child: Text(l10n.monitorMinute(1)),
-              ),
-            ],
-          ),
-          // 时间范围选择器
-          Consumer<MonitoringProvider>(
-            builder: (context, provider, _) => PopupMenuButton<Duration>(
-              icon: const Icon(Icons.history),
-              tooltip: l10n.monitorTimeRange,
-              onSelected: (duration) {
-                provider.setTimeRange(duration);
-              },
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  value: const Duration(hours: 1),
-                  child: Text(l10n.monitorTimeRangeLast1h),
-                ),
-                PopupMenuItem(
-                  value: const Duration(hours: 6),
-                  child: Text(l10n.monitorTimeRangeLast6h),
-                ),
-                PopupMenuItem(
-                  value: const Duration(hours: 24),
-                  child: Text(l10n.monitorTimeRangeLast24h),
-                ),
-                PopupMenuItem(
-                  value: const Duration(days: 7),
-                  child: Text(l10n.monitorTimeRangeLast7d),
-                ),
-              ],
-            ),
-          ),
           Consumer<MonitoringProvider>(
             builder: (context, provider, _) => IconButton(
               icon: const Icon(Icons.refresh),
@@ -120,7 +44,7 @@ class _MonitoringPageState extends State<MonitoringPage> {
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.settings),
+            icon: const Icon(Icons.tune),
             tooltip: l10n.monitorSettings,
             onPressed: () => _showSettingsDialog(context),
           ),
@@ -438,19 +362,9 @@ class _ExpandableChartCardState extends State<_ExpandableChartCard> {
               child: Row(
                 children: [
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.title,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        if (timeSeries != null && timeSeries.data.isNotEmpty)
-                          Text(
-                            l10n.monitorDataPointsLabel(timeSeries.data.length),
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                      ],
+                    child: Text(
+                      widget.title,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),
                   // 当前值
@@ -476,7 +390,14 @@ class _ExpandableChartCardState extends State<_ExpandableChartCard> {
           AnimatedCrossFade(
             firstChild: const SizedBox.shrink(),
             secondChild: timeSeries == null || timeSeries.data.isEmpty
-                ? _EmptyView(title: l10n.commonEmpty)
+                ? _EmptyView(
+                    title: l10n.commonEmpty,
+                    hint: widget.title.contains('IO')
+                        ? '请在设置中配置磁盘IO设备（如 /dev/vda2）'
+                        : widget.title.contains('网络')
+                            ? '请在设置中配置网络接口（如 eth0）'
+                            : null,
+                  )
                 : Padding(
                     padding: const EdgeInsets.all(AppDesignTokens.spacingMd),
                     child: Column(
@@ -552,16 +473,31 @@ class _ExpandableChartCardState extends State<_ExpandableChartCard> {
 class _EmptyView extends StatelessWidget {
   const _EmptyView({
     required this.title,
+    this.hint,
   });
 
   final String title;
+  final String? hint;
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppDesignTokens.spacingMd),
-        child: Text(title),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(title),
+            if (hint != null) ...[
+              const SizedBox(height: AppDesignTokens.spacingSm),
+              Text(
+                hint!,
+                style: Theme.of(context).textTheme.bodySmall,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }
@@ -653,6 +589,11 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
   int _retention = 30;
   bool _gpuAutoRefreshEnabled = true;
   Duration _gpuRefreshInterval = const Duration(seconds: 30);
+  Duration _refreshInterval = const Duration(seconds: 5);
+  Duration _timeRange = const Duration(hours: 1);
+  int _maxDataPoints = 1000;
+  String _defaultIO = 'all';
+  String _defaultNetwork = 'all';
 
   @override
   void initState() {
@@ -664,18 +605,17 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
     final provider = context.read<MonitoringProvider>();
     await provider.loadSettings();
     final settings = provider.data.settings;
-    if (mounted && settings != null) {
+    if (mounted) {
       setState(() {
-        _enabled = settings.enabled ?? true;
-        _retention = settings.retention ?? 30;
+        _enabled = settings?.enabled ?? true;
+        _retention = settings?.retention ?? 30;
         _gpuAutoRefreshEnabled = provider.gpuAutoRefreshEnabled;
         _gpuRefreshInterval = provider.gpuRefreshInterval;
-        _isLoading = false;
-      });
-    } else {
-      setState(() {
-        _gpuAutoRefreshEnabled = provider.gpuAutoRefreshEnabled;
-        _gpuRefreshInterval = provider.gpuRefreshInterval;
+        _refreshInterval = provider.refreshInterval;
+        _timeRange = provider.timeRange;
+        _maxDataPoints = provider.maxDataPoints;
+        _defaultIO = settings?.defaultIO ?? 'all';
+        _defaultNetwork = settings?.defaultNetwork ?? 'all';
         _isLoading = false;
       });
     }
@@ -687,9 +627,21 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
     });
 
     final provider = context.read<MonitoringProvider>();
+    
+    // 应用所有设置
+    provider.setRefreshInterval(_refreshInterval);
+    provider.setTimeRange(_timeRange);
+    provider.setMaxDataPoints(_maxDataPoints);
+    provider.updateGpuRefreshPolicy(
+      enabled: _gpuAutoRefreshEnabled,
+      interval: _gpuRefreshInterval,
+    );
+    
     final success = await provider.updateSettings(
       enabled: _enabled,
       retention: _retention,
+      defaultIO: _defaultIO,
+      defaultNetwork: _defaultNetwork,
     );
 
     if (mounted) {
@@ -698,10 +650,6 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
       });
 
       if (success) {
-        provider.updateGpuRefreshPolicy(
-          enabled: _gpuAutoRefreshEnabled,
-          interval: _gpuRefreshInterval,
-        );
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.l10n.monitorSettingsSaved)),
         );
@@ -761,45 +709,50 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
       title: Text(l10n.monitorSettings),
       content: _isLoading
           ? const SizedBox(
-              width: 200,
+              width: 300,
               child: Center(child: CircularProgressIndicator()),
             )
-          : SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SwitchListTile(
-                    title: Text(l10n.monitorEnable),
-                    value: _enabled,
-                    onChanged: (value) {
-                      setState(() {
-                        _enabled = value;
-                      });
-                    },
-                  ),
-                  SwitchListTile(
-                    title: Text('${l10n.monitorGPU} ${l10n.monitorEnable}'),
-                    value: _gpuAutoRefreshEnabled,
-                    onChanged: (value) {
-                      setState(() {
-                        _gpuAutoRefreshEnabled = value;
-                      });
-                    },
-                  ),
-                  if (_gpuAutoRefreshEnabled)
+          : SizedBox(
+              width: 400,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.monitorEnable,
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    SwitchListTile(
+                      title: Text(l10n.monitorEnable),
+                      value: _enabled,
+                      onChanged: (value) {
+                        setState(() {
+                          _enabled = value;
+                        });
+                      },
+                    ),
+                    const Divider(),
+                    const SizedBox(height: AppDesignTokens.spacingSm),
+                    Text(
+                      l10n.monitorRefreshInterval,
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    const SizedBox(height: AppDesignTokens.spacingSm),
                     DropdownButtonFormField<Duration>(
-                      key: ValueKey<int>(_gpuRefreshInterval.inSeconds),
-                      initialValue: _gpuRefreshInterval,
+                      initialValue: _refreshInterval,
                       decoration: InputDecoration(
-                        labelText:
-                            '${l10n.monitorGPU} ${l10n.monitorRefreshInterval}',
+                        labelText: l10n.monitorRefreshInterval,
                         border: const OutlineInputBorder(),
                       ),
                       items: [
                         DropdownMenuItem(
+                          value: const Duration(seconds: 3),
+                          child: Text(l10n.monitorSeconds(3)),
+                        ),
+                        DropdownMenuItem(
                           value: const Duration(seconds: 5),
-                          child: Text(l10n.monitorSeconds(5)),
+                          child: Text(l10n.monitorSecondsDefault(5)),
                         ),
                         DropdownMenuItem(
                           value: const Duration(seconds: 10),
@@ -815,36 +768,214 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
                         ),
                       ],
                       onChanged: (value) {
-                        if (value == null) {
-                          return;
+                        if (value != null) {
+                          setState(() {
+                            _refreshInterval = value;
+                          });
                         }
+                      },
+                    ),
+                    const SizedBox(height: AppDesignTokens.spacingMd),
+                    const Divider(),
+                    const SizedBox(height: AppDesignTokens.spacingSm),
+                    Text(
+                      l10n.monitorTimeRange,
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    const SizedBox(height: AppDesignTokens.spacingSm),
+                    DropdownButtonFormField<Duration>(
+                      initialValue: _timeRange,
+                      decoration: InputDecoration(
+                        labelText: l10n.monitorTimeRange,
+                        border: const OutlineInputBorder(),
+                      ),
+                      items: [
+                        DropdownMenuItem(
+                          value: const Duration(hours: 1),
+                          child: Text(l10n.monitorTimeRangeLast1h),
+                        ),
+                        DropdownMenuItem(
+                          value: const Duration(hours: 6),
+                          child: Text(l10n.monitorTimeRangeLast6h),
+                        ),
+                        DropdownMenuItem(
+                          value: const Duration(hours: 24),
+                          child: Text(l10n.monitorTimeRangeLast24h),
+                        ),
+                        DropdownMenuItem(
+                          value: const Duration(days: 7),
+                          child: Text(l10n.monitorTimeRangeLast7d),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() {
+                            _timeRange = value;
+                          });
+                        }
+                      },
+                    ),
+                    const SizedBox(height: AppDesignTokens.spacingMd),
+                    const Divider(),
+                    const SizedBox(height: AppDesignTokens.spacingSm),
+                    Text(
+                      l10n.monitorDataPoints,
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    const SizedBox(height: AppDesignTokens.spacingSm),
+                    DropdownButtonFormField<int>(
+                      initialValue: _maxDataPoints,
+                      decoration: InputDecoration(
+                        labelText: l10n.monitorDataPoints,
+                        border: const OutlineInputBorder(),
+                      ),
+                      items: [
+                        DropdownMenuItem(
+                          value: 6,
+                          child: Text(l10n.monitorDataPointsCount(
+                              6, l10n.monitorTimeMinutes(30))),
+                        ),
+                        DropdownMenuItem(
+                          value: 12,
+                          child: Text(l10n.monitorDataPointsCount(
+                              12, l10n.monitorTimeHours(1))),
+                        ),
+                        DropdownMenuItem(
+                          value: 1000,
+                          child: Text(l10n.monitorDataPointsCount(1000, '全部')),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() {
+                            _maxDataPoints = value;
+                          });
+                        }
+                      },
+                    ),
+                    const SizedBox(height: AppDesignTokens.spacingMd),
+                    const Divider(),
+                    const SizedBox(height: AppDesignTokens.spacingSm),
+                    Text(
+                      '${l10n.monitorGPU} ${l10n.monitorSettings}',
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    SwitchListTile(
+                      title: Text('${l10n.monitorGPU} ${l10n.monitorEnable}'),
+                      value: _gpuAutoRefreshEnabled,
+                      onChanged: (value) {
                         setState(() {
-                          _gpuRefreshInterval = value;
+                          _gpuAutoRefreshEnabled = value;
                         });
                       },
                     ),
-                  const SizedBox(height: AppDesignTokens.spacingMd),
-                  Text(l10n.monitorRetention),
-                  Slider(
-                    value: _retention.toDouble(),
-                    min: 1,
-                    max: 365,
-                    divisions: 364,
-                    label: '$_retention ${l10n.monitorRetentionUnit}',
-                    onChanged: (value) {
-                      setState(() {
-                        _retention = value.round();
-                      });
-                    },
-                  ),
-                  Text('$_retention ${l10n.monitorRetentionUnit}'),
-                  const SizedBox(height: AppDesignTokens.spacingLg),
-                  OutlinedButton.icon(
-                    onPressed: _cleanData,
-                    icon: const Icon(Icons.delete_outline),
-                    label: Text(l10n.monitorCleanData),
-                  ),
-                ],
+                    if (_gpuAutoRefreshEnabled) ...[
+                      const SizedBox(height: AppDesignTokens.spacingSm),
+                      DropdownButtonFormField<Duration>(
+                        initialValue: _gpuRefreshInterval,
+                        decoration: InputDecoration(
+                          labelText:
+                              '${l10n.monitorGPU} ${l10n.monitorRefreshInterval}',
+                          border: const OutlineInputBorder(),
+                        ),
+                        items: [
+                          DropdownMenuItem(
+                            value: const Duration(seconds: 5),
+                            child: Text(l10n.monitorSeconds(5)),
+                          ),
+                          DropdownMenuItem(
+                            value: const Duration(seconds: 10),
+                            child: Text(l10n.monitorSeconds(10)),
+                          ),
+                          DropdownMenuItem(
+                            value: const Duration(seconds: 30),
+                            child: Text(l10n.monitorSeconds(30)),
+                          ),
+                          DropdownMenuItem(
+                            value: const Duration(minutes: 1),
+                            child: Text(l10n.monitorMinute(1)),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              _gpuRefreshInterval = value;
+                            });
+                          }
+                        },
+                      ),
+                    ],
+                    const SizedBox(height: AppDesignTokens.spacingMd),
+                    const Divider(),
+                    const SizedBox(height: AppDesignTokens.spacingSm),
+                    Text(
+                      l10n.monitorRetention,
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    const SizedBox(height: AppDesignTokens.spacingSm),
+                    Slider(
+                      value: _retention.toDouble(),
+                      min: 1,
+                      max: 365,
+                      divisions: 364,
+                      label: '$_retention ${l10n.monitorRetentionUnit}',
+                      onChanged: (value) {
+                        setState(() {
+                          _retention = value.round();
+                        });
+                      },
+                    ),
+                    Text('$_retention ${l10n.monitorRetentionUnit}'),
+                    const SizedBox(height: AppDesignTokens.spacingLg),
+                    const Divider(),
+                    const SizedBox(height: AppDesignTokens.spacingSm),
+                    Text(
+                      '${l10n.serverDiskLabel} IO ${l10n.monitorSettings}',
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    const SizedBox(height: AppDesignTokens.spacingSm),
+                    TextFormField(
+                      initialValue: _defaultIO,
+                      decoration: InputDecoration(
+                        labelText: '${l10n.serverDiskLabel} IO 设备',
+                        helperText: '例如: /dev/vda2 或 all (全部)',
+                        border: const OutlineInputBorder(),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          _defaultIO = value;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: AppDesignTokens.spacingMd),
+                    const Divider(),
+                    const SizedBox(height: AppDesignTokens.spacingSm),
+                    Text(
+                      '${l10n.monitorNetworkLabel} ${l10n.monitorSettings}',
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    const SizedBox(height: AppDesignTokens.spacingSm),
+                    TextFormField(
+                      initialValue: _defaultNetwork,
+                      decoration: InputDecoration(
+                        labelText: '${l10n.monitorNetworkLabel} 接口',
+                        helperText: '例如: eth0 或 all (全部)',
+                        border: const OutlineInputBorder(),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          _defaultNetwork = value;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: AppDesignTokens.spacingLg),
+                    OutlinedButton.icon(
+                      onPressed: _cleanData,
+                      icon: const Icon(Icons.delete_outline),
+                      label: Text(l10n.monitorCleanData),
+                    ),
+                  ],
+                ),
               ),
             ),
       actions: [

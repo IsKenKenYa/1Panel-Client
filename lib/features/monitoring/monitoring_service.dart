@@ -1,4 +1,5 @@
 import '../../core/services/base_component.dart';
+import '../../core/services/logger/logger_service.dart';
 import '../../data/repositories/monitor_repository.dart';
 import '../../api/v2/monitor_v2.dart';
 
@@ -20,6 +21,50 @@ class MonitoringService extends BaseComponent {
   Future<MonitorMetricsSnapshot> getCurrentMetrics() async {
     return runGuarded(() async {
       final client = await clientManager.getCurrentClient();
+      
+      // 优先使用dashboard API获取当前指标，因为它更可靠
+      try {
+        final response = await client.get(
+          '/api/v2/dashboard/current/default/default',
+        );
+        
+        if (response.data != null && response.data is Map) {
+          final data = response.data as Map<String, dynamic>;
+          final payload = data['data'] as Map<String, dynamic>?;
+          
+          if (payload != null) {
+            // 解析磁盘数据
+            double? diskPercent;
+            final diskDataList = payload['diskData'] as List?;
+            if (diskDataList != null && diskDataList.isNotEmpty) {
+              final firstDisk = diskDataList.first as Map<String, dynamic>?;
+              diskPercent = (firstDisk?['usedPercent'] as num?)?.toDouble();
+            }
+            
+            return MonitorMetricsSnapshot(
+              cpuPercent: (payload['cpuUsedPercent'] as num?)?.toDouble(),
+              memoryPercent: (payload['memoryUsedPercent'] as num?)?.toDouble(),
+              diskPercent: diskPercent,
+              load1: (payload['load1'] as num?)?.toDouble(),
+              load5: (payload['load5'] as num?)?.toDouble(),
+              load15: (payload['load15'] as num?)?.toDouble(),
+              memoryUsed: payload['memoryUsed'] as int?,
+              memoryTotal: payload['memoryTotal'] as int?,
+              uptime: payload['uptime'] as int?,
+              timestamp: DateTime.now(),
+            );
+          }
+        }
+      } catch (e) {
+        // 如果dashboard API失败，降级使用monitor API
+        appLogger.wWithPackage(
+          'monitoring.service',
+          'Dashboard API failed, fallback to monitor API',
+          error: e,
+        );
+      }
+      
+      // 降级方案：使用monitor API
       return _monitorRepo.getCurrentMetrics(client);
     });
   }
@@ -95,6 +140,8 @@ class MonitoringService extends BaseComponent {
     int? interval,
     int? retention,
     bool? enabled,
+    String? defaultIO,
+    String? defaultNetwork,
   }) async {
     return runGuarded(() async {
       final client = await clientManager.getCurrentClient();
@@ -103,6 +150,8 @@ class MonitoringService extends BaseComponent {
         interval: interval,
         retention: retention,
         enabled: enabled,
+        defaultIO: defaultIO,
+        defaultNetwork: defaultNetwork,
       );
     });
   }
@@ -130,8 +179,59 @@ class MonitoringService extends BaseComponent {
   }) async {
     return runGuarded(() async {
       final client = await clientManager.getCurrentClient();
-      return _monitorRepo.getMonitorData(client,
+      
+      // 获取时间序列数据
+      final package = await _monitorRepo.getMonitorData(client,
           duration: duration, startTime: startTime);
+      
+      // 优先使用dashboard API获取当前指标
+      MonitorMetricsSnapshot? currentMetrics;
+      try {
+        final response = await client.get(
+          '/api/v2/dashboard/current/default/default',
+        );
+        
+        if (response.data != null && response.data is Map) {
+          final data = response.data as Map<String, dynamic>;
+          final payload = data['data'] as Map<String, dynamic>?;
+          
+          if (payload != null) {
+            // 解析磁盘数据
+            double? diskPercent;
+            final diskDataList = payload['diskData'] as List?;
+            if (diskDataList != null && diskDataList.isNotEmpty) {
+              final firstDisk = diskDataList.first as Map<String, dynamic>?;
+              diskPercent = (firstDisk?['usedPercent'] as num?)?.toDouble();
+            }
+            
+            currentMetrics = MonitorMetricsSnapshot(
+              cpuPercent: (payload['cpuUsedPercent'] as num?)?.toDouble(),
+              memoryPercent: (payload['memoryUsedPercent'] as num?)?.toDouble(),
+              diskPercent: diskPercent,
+              load1: (payload['load1'] as num?)?.toDouble(),
+              load5: (payload['load5'] as num?)?.toDouble(),
+              load15: (payload['load15'] as num?)?.toDouble(),
+              memoryUsed: payload['memoryUsed'] as int?,
+              memoryTotal: payload['memoryTotal'] as int?,
+              uptime: payload['uptime'] as int?,
+              timestamp: DateTime.now(),
+            );
+          }
+        }
+      } catch (e) {
+        // 如果dashboard API失败，使用monitor API的结果
+        appLogger.wWithPackage(
+          'monitoring.service',
+          'Dashboard API failed in getMonitorData, using monitor API result',
+          error: e,
+        );
+      }
+      
+      // 如果dashboard API成功，使用它的结果；否则使用monitor API的结果
+      return MonitorDataPackage(
+        current: currentMetrics ?? package.current,
+        timeSeries: package.timeSeries,
+      );
     });
   }
 }

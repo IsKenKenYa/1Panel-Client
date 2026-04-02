@@ -643,6 +643,8 @@ class MonitoringProvider extends ChangeNotifier {
     int? interval,
     int? retention,
     bool? enabled,
+    String? defaultIO,
+    String? defaultNetwork,
   }) async {
     try {
       await _ensureService();
@@ -650,6 +652,8 @@ class MonitoringProvider extends ChangeNotifier {
         interval: interval,
         retention: retention,
         enabled: enabled,
+        defaultIO: defaultIO,
+        defaultNetwork: defaultNetwork,
       );
       if (success) {
         await loadSettings();
