@@ -58,6 +58,12 @@
 - PRs should include: summary of changes, test results, and screenshots for UI changes.
 - Never include secrets or sensitive data in issues, logs, or screenshots.
 
+## Release Branches & CI
+- CN: 长期维护分支使用 `dev` 与 `main`；`dev` 聚合 feature 分支，`main` 为正式发布基线。EN: Long-lived branches are `dev` and `main`; `dev` aggregates feature work and `main` is the stable release baseline.
+- CN: Android APK 当前使用 tag 驱动发布：`debug-*`、`beta-*`、`pre-release-*`、`release-*`。EN: Android APK releases are tag-driven with `debug-*`, `beta-*`, `pre-release-*`, and `release-*`.
+- CN: tag 来源约束为 `debug/beta/pre-release` 必须来自 `dev`，`release` 必须来自 `main`。EN: `debug`, `beta`, and `pre-release` tags must come from `dev`; `release` tags must come from `main`.
+- CN: 渠道映射为 `debug -> Alpha`、`beta -> Beta（公开预览）`、`pre-release -> Pre-Release`、`release -> Release`。EN: Channel mapping is `debug -> Alpha`, `beta -> Beta (public preview)`, `pre-release -> Pre-Release`, `release -> Release`.
+
 ## Security & Configuration Notes
 - API access uses 1Panel API keys; do not commit keys or tokens.
 - When sharing logs or repro steps, redact IPs, usernames, and credentials.

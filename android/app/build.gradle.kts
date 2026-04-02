@@ -5,6 +5,37 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+val keystoreProperties = java.util.Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(keystorePropertiesFile.inputStream())
+}
+
+fun resolveSigningValue(propertyKey: String, envKey: String): String? {
+    val envValue = System.getenv(envKey)?.trim()
+    if (!envValue.isNullOrEmpty()) {
+        return envValue
+    }
+
+    val propertyValue = keystoreProperties.getProperty(propertyKey)?.trim()
+    if (propertyValue.isNullOrEmpty() || propertyValue.startsWith("REPLACE_WITH_")) {
+        return null
+    }
+
+    return propertyValue
+}
+
+val releaseStoreFilePath = resolveSigningValue("storeFile", "ANDROID_KEYSTORE_PATH")
+val releaseKeyAlias = resolveSigningValue("keyAlias", "ANDROID_KEY_ALIAS")
+val releaseKeyPassword = resolveSigningValue("keyPassword", "ANDROID_KEY_PASSWORD")
+val releaseStorePassword = resolveSigningValue("storePassword", "ANDROID_KEYSTORE_PASSWORD")
+val hasReleaseSigning = listOf(
+    releaseStoreFilePath,
+    releaseKeyAlias,
+    releaseKeyPassword,
+    releaseStorePassword,
+).all { !it.isNullOrEmpty() }
+
 android {
     namespace = "com.iskenkenya.onepanel_client"
     compileSdk = flutter.compileSdkVersion
@@ -30,11 +61,25 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        create("release") {
+            if (hasReleaseSigning) {
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+                storeFile = rootProject.file(requireNotNull(releaseStoreFilePath))
+                storePassword = releaseStorePassword
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            // Use upload keystore when available; keep local release builds working without secrets.
+            signingConfig = if (hasReleaseSigning) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
         }
     }
 }

@@ -116,7 +116,11 @@ class AppReleaseChannelConfig {
       return AppReleaseChannel.beta;
     }
 
-    if (normalized.startsWith('alpha/') || normalized.startsWith('dev/')) {
+    if (normalized == 'dev' || normalized.startsWith('dev/')) {
+      return AppReleaseChannel.alpha;
+    }
+
+    if (normalized.startsWith('alpha/')) {
       return AppReleaseChannel.alpha;
     }
 

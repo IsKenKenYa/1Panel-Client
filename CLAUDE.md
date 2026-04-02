@@ -62,6 +62,18 @@ dart run test/scripts/test_runner.dart ui           # UI/Widget tests
 dart run test/scripts/test_runner.dart all          # Full regression
 ```
 
+## Release Branches & APK CI
+- Long-lived branches: `dev`, `main`
+- `dev` is the feature aggregation branch
+- `main` is the stable release branch
+- Current CI/CD scope is Android APK only
+- Release is tag-driven, not branch-driven
+- Android APK tags:
+  - `debug-*` -> internal alpha build from `dev`
+  - `beta-*` -> public beta build from `dev`
+  - `pre-release-*` -> prerelease build from `dev`
+  - `release-*` -> stable release build from `main`
+
 ## Architecture Overview
 
 ### Core Architecture Pattern
