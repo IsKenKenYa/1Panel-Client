@@ -2060,6 +2060,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsFeedbackLogsTitle => 'Log Management';
 
   @override
+  String get settingsFeedbackLogExportWarningTitle =>
+      'Export Logs & Testing Advice';
+
+  @override
+  String get settingsFeedbackLogExportWarningMessage =>
+      'This is a preview release. We recommend using a private IP (e.g., an internal 1Panel server or VM) for testing to avoid unexpected impacts.\n\nPublic IP addresses in the logs are automatically masked. However, please do not share logs with unrelated personnel, and manually check for any remaining sensitive information before reporting issues.';
+
+  @override
+  String get settingsFeedbackLogExportConfirm => 'Export';
+
+  @override
   String get settingsFeedbackTemplateTitle => 'Issue Summary';
 
   @override

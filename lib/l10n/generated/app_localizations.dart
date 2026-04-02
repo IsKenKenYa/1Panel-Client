@@ -3944,6 +3944,24 @@ abstract class AppLocalizations {
   /// **'Log Management'**
   String get settingsFeedbackLogsTitle;
 
+  /// No description provided for @settingsFeedbackLogExportWarningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Export Logs & Testing Advice'**
+  String get settingsFeedbackLogExportWarningTitle;
+
+  /// No description provided for @settingsFeedbackLogExportWarningMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This is a preview release. We recommend using a private IP (e.g., an internal 1Panel server or VM) for testing to avoid unexpected impacts.\n\nPublic IP addresses in the logs are automatically masked. However, please do not share logs with unrelated personnel, and manually check for any remaining sensitive information before reporting issues.'**
+  String get settingsFeedbackLogExportWarningMessage;
+
+  /// No description provided for @settingsFeedbackLogExportConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get settingsFeedbackLogExportConfirm;
+
   /// No description provided for @settingsFeedbackTemplateTitle.
   ///
   /// In en, this message translates to:

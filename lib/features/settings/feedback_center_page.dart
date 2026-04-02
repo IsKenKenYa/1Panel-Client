@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:onepanel_client/core/config/release_channel_config.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
@@ -20,8 +19,6 @@ class FeedbackCenterPage extends StatefulWidget {
 }
 
 class _FeedbackCenterPageState extends State<FeedbackCenterPage> {
-  final fs.FileSaveService _fileSaveService = fs.FileSaveService();
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -180,60 +177,38 @@ ${l10n.settingsFeedbackTemplateEnvironment}
 
   Future<void> _exportAppLogs(BuildContext context) async {
     final l10n = context.l10n;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text(l10n.settingsFeedbackLogExportWarningTitle),
+          content: Text(l10n.settingsFeedbackLogExportWarningMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: Text(l10n.commonCancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: Text(l10n.settingsFeedbackLogExportConfirm),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed != true || !context.mounted) return;
+
     final result =
         await LogExportService().exportLogs(minLevel: appLogger.minLogLevel);
     if (!context.mounted) return;
 
-    if (!result.success &&
-        result.permissionStatus == fs.PermissionStatus.permanentlyDenied) {
-      await _showPermissionSettingsDialog(context);
-      return;
-    }
-
-    if (!result.success &&
-        result.permissionStatus == fs.PermissionStatus.denied) {
-      final retryPermissionStatus =
-          await _fileSaveService.requestStoragePermission();
-      if (!context.mounted) return;
-      if (retryPermissionStatus == fs.PermissionStatus.granted) {
-        final retryResult =
-            await LogExportService().exportLogs(minLevel: appLogger.minLogLevel);
-        if (!context.mounted) return;
-        _showExportResultSnackBar(context, retryResult);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.permissionStorageRequired)),
-        );
-      }
+    if (!result.success) {
+      _showExportResultSnackBar(context, result);
       return;
     }
 
     _showExportResultSnackBar(context, result);
-  }
-
-  Future<void> _showPermissionSettingsDialog(
-      BuildContext dialogParentContext) async {
-    final l10n = dialogParentContext.l10n;
-    await showDialog<void>(
-      context: dialogParentContext,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.permissionRequired),
-        content: Text(l10n.permissionStorageRequired),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () {
-              Navigator.of(dialogContext).pop();
-              openAppSettings();
-            },
-            child: Text(l10n.permissionGoToSettings),
-          ),
-        ],
-      ),
-    );
   }
 
   void _showExportResultSnackBar(BuildContext context, fs.FileSaveResult result) {

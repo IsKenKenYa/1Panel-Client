@@ -50,10 +50,10 @@ flutter packages pub run build_runner watch  # Watch for changes and auto-genera
 flutter test                  # Run all tests
 flutter test test/specific_test.dart  # Run specific test file
 flutter test --coverage       # Run tests with coverage report
-dart run test_runner.dart unit         # Unit tests
-dart run test_runner.dart integration  # Integration tests
-dart run test_runner.dart ui           # UI/Widget tests
-dart run test_runner.dart all          # Full regression
+dart run test/scripts/test_runner.dart unit         # Unit tests
+dart run test/scripts/test_runner.dart integration  # Integration tests
+dart run test/scripts/test_runner.dart ui           # UI/Widget tests
+dart run test/scripts/test_runner.dart all          # Full regression
 ```
 
 ## Architecture Overview
@@ -181,9 +181,9 @@ appLogger.d('[auth.service] 这是一条调试信息');
 
 ## Testing Matrix & CLI Gate
 - CN: 提交前必须可运行 `flutter analyze`。EN: Must be runnable before commit: `flutter analyze`.
-- CN: 必须可运行 `dart run test_runner.dart unit`；涉及 API/网络或数据写入时必须跑 `integration`。EN: Must run `dart run test_runner.dart unit`; for API/network or data writes, must run `integration`.
-- CN: UI 改动必须跑 `dart run test_runner.dart ui` 或说明原因。EN: UI changes must run `dart run test_runner.dart ui` or document why not.
-- CN: 回归基线使用 `dart run test_runner.dart all`。EN: Regression baseline uses `dart run test_runner.dart all`.
+- CN: 必须可运行 `dart run test/scripts/test_runner.dart unit`；涉及 API/网络或数据写入时必须跑 `integration`。EN: Must run `dart run test/scripts/test_runner.dart unit`; for API/network or data writes, must run `integration`.
+- CN: UI 改动必须跑 `dart run test/scripts/test_runner.dart ui` 或说明原因。EN: UI changes must run `dart run test/scripts/test_runner.dart ui` or document why not.
+- CN: 回归基线使用 `dart run test/scripts/test_runner.dart all`。EN: Regression baseline uses `dart run test/scripts/test_runner.dart all`.
 
 ## Skills & MCP (agent-memory-mcp)
 - CN: 重大架构/约定/踩坑需要 `memory_write` 写入知识库（type: `decision`/`pattern`）。EN: Record key architecture decisions/patterns via `memory_write` (type: `decision`/`pattern`).

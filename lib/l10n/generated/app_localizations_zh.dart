@@ -2006,6 +2006,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsFeedbackLogsTitle => '日志管理';
 
   @override
+  String get settingsFeedbackLogExportWarningTitle => '导出日志与测试提示';
+
+  @override
+  String get settingsFeedbackLogExportWarningMessage =>
+      '当前为预览体验发布，推荐使用内网 IP（内网 1Panel 服务器或虚拟机）进行测试以避免影响。\n\n系统已自动对日志中的公网 IP 等信息进行脱敏处理。请勿将日志随意发送给无关人员，并在反馈问题前自行检查是否还有其他敏感信息遗留。';
+
+  @override
+  String get settingsFeedbackLogExportConfirm => '确认导出';
+
+  @override
   String get settingsFeedbackTemplateTitle => '问题概述';
 
   @override
