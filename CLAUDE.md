@@ -104,6 +104,36 @@ The project follows **Layered Architecture with MVVM** and clean separation of c
 - **Internationalization**: Built-in Flutter i18n (English/Chinese)
 - **Logging**: Unified logging system with privacy protection (automatic IP masking)
 
+## Cross-Platform UI Governance
+
+### Default UI Baseline
+- Default UI implementation is **Flutter/Dart + Material Design 3**
+- Existing `MaterialApp + ThemeData + dynamic_color` remains the current baseline
+- Shared pages should stay in Flutter unless a native exception is explicitly justified
+- Shared non-UI layers should remain in Dart by default: API clients, models, providers, services, repositories, routing contracts, and shared infrastructure should not be reimplemented natively without a hard platform constraint
+
+### Native UI Exceptions
+- **Apple platforms**: SwiftUI-native pages are allowed when Apple-native UX provides clear value
+- **Windows**: WinUI3 / Fluent-native pages are allowed when Windows-native UX provides clear value
+- **Android**: Flutter MD3 is the default and preferred implementation path; Kotlin/Compose is exception-only
+- Native UI must not bypass application layering or call API clients directly
+- Native code is mainly for presentation shells, platform integration, and system-level capability access rather than shared product logic
+
+### Multi-Theme / Multi-Design-System Direction
+- Distinguish:
+  - **Design system**: MD3 / Apple-style / Fluent-style
+  - **Theme profile**: light, dark, dynamic color, brand seed, future user-selectable styles
+- Design-system choice must be centrally governed rather than decided ad hoc per page
+- If a new design system is introduced, document target platforms, token mapping, component coverage, and native-exception rationale
+
+### Implementation Guidance
+- Prefer Flutter adaptive implementations before introducing native pages
+- Reserve native pages for system-integration-heavy experiences, major platform UX gains, or clear performance constraints
+- Any native page proposal should define why Flutter is insufficient, what the bridge boundary is, and what the rollback path is
+- The `桌面端适配` branch is a runnable implementation branch for desktop adaptation and may be used as concrete reference material, but it does not redefine the default repository baseline by itself
+
+See `docs/development/cross_platform_ui_governance.md` for the full policy and roadmap.
+
 ### Project Structure Rules (CRITICAL)
 
 #### File Organization Rule
@@ -331,6 +361,12 @@ void main() {
 - Use Material 3 components and theming
 - Follow accessibility guidelines
 - Implement responsive design for different screen sizes
+
+### Platform Design Systems
+- Flutter MD3 is the default shared design language
+- Apple-targeted native pages may follow SwiftUI/HIG idioms and glass-like system aesthetics when approved
+- Windows-targeted native pages may follow WinUI3/Fluent idioms when approved
+- Avoid mixing unrelated platform aesthetics inside a single screen without a documented reason
 
 ### Internationalization
 - All user-facing strings must use `AppLocalizations`
