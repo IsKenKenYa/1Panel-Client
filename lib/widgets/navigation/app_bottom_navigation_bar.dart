@@ -37,29 +37,48 @@ class AppBottomNavigationBar extends StatelessWidget {
     return NavigationBar(
       selectedIndex: safeIndex,
       onDestinationSelected: onTap,
+      animationDuration: const Duration(milliseconds: 400),
       destinations: [
         for (var index = 0; index < items.length; index++)
           NavigationDestination(
-            icon: Icon(
-              items[index].icon,
-              key: _destinationKey(index),
-              color: items[index].enabled ? null : disabledColor,
+            icon: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              transitionBuilder: (child, animation) {
+                return ScaleTransition(
+                  scale: animation,
+                  child: FadeTransition(
+                    opacity: animation,
+                    child: child,
+                  ),
+                );
+              },
+              child: Icon(
+                items[index].icon,
+                key: ValueKey('${index}_unselected'),
+                color: items[index].enabled ? null : disabledColor,
+              ),
             ),
-            selectedIcon: Icon(
-              items[index].selectedIcon,
-              key: _destinationKey(index),
-              color: items[index].enabled ? null : disabledColor,
+            selectedIcon: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              transitionBuilder: (child, animation) {
+                return ScaleTransition(
+                  scale: animation,
+                  child: FadeTransition(
+                    opacity: animation,
+                    child: child,
+                  ),
+                );
+              },
+              child: Icon(
+                items[index].selectedIcon,
+                key: ValueKey('${index}_selected'),
+                color: items[index].enabled ? null : disabledColor,
+              ),
             ),
             label: items[index].label,
+            enabled: items[index].enabled,
           ),
       ],
     );
-  }
-
-  Key? _destinationKey(int index) {
-    if (destinationKeys == null || destinationKeys!.length <= index) {
-      return null;
-    }
-    return destinationKeys![index];
   }
 }

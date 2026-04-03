@@ -20,10 +20,16 @@ EN: Read `AGENTS.md` first for mandatory rules, then `CLAUDE.md` for project det
 
 ### Current Implementation Status
 - ✅ **AI Management Module**: Complete (Ollama models, GPU monitoring, domain binding)
+- ✅ **Complete API Coverage**: All 34 V2 API modules with 425+ endpoints
+- ✅ **Data Models**: 60+ comprehensive model files with JSON serialization
 - ✅ **Server Configuration**: Multi-server support with API key authentication
-- ✅ **Core Infrastructure**: Logging, i18n (EN/ZH), navigation, Material Design 3
-- 🚧 **Dashboard**: Planned
-- 🚧 **Application/Container/File Management**: UI stubs ready
+- ✅ **Core Infrastructure**: Logging with IP masking, i18n (EN/ZH), navigation, Material Design 3
+- ✅ **Container Management**: Full Docker container and image management
+- ✅ **Database Management**: MySQL, PostgreSQL, Redis operations
+- ✅ **File Management**: Browse, edit, upload/download, recycle bin, transfer manager
+- ✅ **Website Management**: SSL certificates, batch operations, domain management
+- 🚧 **Dashboard**: Planned enhancements
+- 🚧 **Additional Features**: Continuous improvements
 
 ## Development Commands
 
@@ -50,11 +56,23 @@ flutter packages pub run build_runner watch  # Watch for changes and auto-genera
 flutter test                  # Run all tests
 flutter test test/specific_test.dart  # Run specific test file
 flutter test --coverage       # Run tests with coverage report
-dart run test_runner.dart unit         # Unit tests
-dart run test_runner.dart integration  # Integration tests
-dart run test_runner.dart ui           # UI/Widget tests
-dart run test_runner.dart all          # Full regression
+dart run test/scripts/test_runner.dart unit         # Unit tests
+dart run test/scripts/test_runner.dart integration  # Integration tests
+dart run test/scripts/test_runner.dart ui           # UI/Widget tests
+dart run test/scripts/test_runner.dart all          # Full regression
 ```
+
+## Release Branches & APK CI
+- Long-lived branches: `dev`, `main`
+- `dev` is the feature aggregation branch
+- `main` is the stable release branch
+- Current CI/CD scope is Android APK only
+- Release is tag-driven, not branch-driven
+- Android APK tags:
+  - `debug-*` -> internal alpha build from `dev`
+  - `beta-*` -> public beta build from `dev`
+  - `pre-release-*` -> prerelease build from `dev`
+  - `release-*` -> stable release build from `main`
 
 ## Architecture Overview
 
@@ -84,6 +102,7 @@ The project follows **Layered Architecture with MVVM** and clean separation of c
 - **Storage**: Flutter Secure Storage + SharedPreferences
 - **Authentication**: MD5 token generation (`1panel` + API-Key + UnixTimestamp)
 - **Internationalization**: Built-in Flutter i18n (English/Chinese)
+- **Logging**: Unified logging system with privacy protection (automatic IP masking)
 
 ### Project Structure Rules (CRITICAL)
 
@@ -153,7 +172,7 @@ lib/
 **NEVER** use `print()` or `debugPrint()`. Use the unified logging system:
 
 ```dart
-import 'core/services/logger_service.dart';
+import 'core/services/logger/logger_service.dart';
 
 // With explicit package name (RECOMMENDED)
 appLogger.dWithPackage('auth.service', '用户登录成功');
@@ -173,6 +192,15 @@ appLogger.d('[auth.service] 这是一条调试信息');
 - **Profile**: Info, Warning, Error, Fatal
 - **Release**: Warning, Error, Fatal only
 
+#### Privacy Protection
+- **Automatic IP Masking**: Public IPs are automatically masked as `***.***.***.***`
+- **Private IPs Preserved**: Internal IPs (10.x.x.x, 192.168.x.x, 172.16-31.x.x, 127.x.x.x) remain visible for debugging
+- **File Output**: Enabled in all build modes for user feedback
+- **Log Configuration**: 
+  - No stack traces for normal logs (maxMethodCount: 0)
+  - Full stack traces for errors (maxErrorMethodCount: 8)
+  - Max file size: 10MB, retention: 30 days, max files: 5
+
 ### Code Quality Standards
 - **Every commit must**: Compile, pass tests, follow linting rules
 - **Analysis**: Run `flutter analyze` before committing
@@ -181,9 +209,9 @@ appLogger.d('[auth.service] 这是一条调试信息');
 
 ## Testing Matrix & CLI Gate
 - CN: 提交前必须可运行 `flutter analyze`。EN: Must be runnable before commit: `flutter analyze`.
-- CN: 必须可运行 `dart run test_runner.dart unit`；涉及 API/网络或数据写入时必须跑 `integration`。EN: Must run `dart run test_runner.dart unit`; for API/network or data writes, must run `integration`.
-- CN: UI 改动必须跑 `dart run test_runner.dart ui` 或说明原因。EN: UI changes must run `dart run test_runner.dart ui` or document why not.
-- CN: 回归基线使用 `dart run test_runner.dart all`。EN: Regression baseline uses `dart run test_runner.dart all`.
+- CN: 必须可运行 `dart run test/scripts/test_runner.dart unit`；涉及 API/网络或数据写入时必须跑 `integration`。EN: Must run `dart run test/scripts/test_runner.dart unit`; for API/network or data writes, must run `integration`.
+- CN: UI 改动必须跑 `dart run test/scripts/test_runner.dart ui` 或说明原因。EN: UI changes must run `dart run test/scripts/test_runner.dart ui` or document why not.
+- CN: 回归基线使用 `dart run test/scripts/test_runner.dart all`。EN: Regression baseline uses `dart run test/scripts/test_runner.dart all`.
 
 ## Skills & MCP (agent-memory-mcp)
 - CN: 重大架构/约定/踩坑需要 `memory_write` 写入知识库（type: `decision`/`pattern`）。EN: Record key architecture decisions/patterns via `memory_write` (type: `decision`/`pattern`).

@@ -2023,6 +2023,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsFeedbackLogsTitle => '日志管理';
 
   @override
+  String get settingsFeedbackLogExportWarningTitle => '导出日志与测试提示';
+
+  @override
+  String get settingsFeedbackLogExportWarningMessage =>
+      '当前为面向公众测试与反馈收集的 Dev 版本，推荐使用内网 IP（内网 1Panel 服务器或虚拟机）进行测试以避免影响。\n\n系统已自动对日志中的公网 IP 等信息进行脱敏处理。请勿将日志随意发送给无关人员，并在反馈问题前自行检查是否还有其他敏感信息遗留。';
+
+  @override
+  String get settingsFeedbackLogExportConfirm => '确认导出';
+
+  @override
   String get settingsFeedbackTemplateTitle => '问题概述';
 
   @override
@@ -2176,7 +2186,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get commonExperimental => '抢先体验';
 
   @override
-  String get releaseChannelPreview => '抢先体验';
+  String get releaseChannelPreview => 'Dev';
 
   @override
   String get releaseChannelAlpha => 'Dev（Alpha）';
@@ -2188,7 +2198,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get releaseChannelPreRelease => 'Pre-Release';
 
   @override
-  String get releaseChannelRelease => '正式版';
+  String get releaseChannelRelease => 'Release';
 
   @override
   String testingWarningDialogTitle(String channel) {
@@ -2278,6 +2288,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get aboutPackageNameLabel => '包名';
+
+  @override
+  String get aboutChannelLabel => '发布渠道';
+
+  @override
+  String get aboutBranchLabel => '来源分支';
+
+  @override
+  String get aboutCommitLabel => '提交 ID';
+
+  @override
+  String get aboutBuildDateLabel => '编译时间';
 
   @override
   String get aboutOfficialDomainLabel => '官方域名';

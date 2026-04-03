@@ -3974,6 +3974,24 @@ abstract class AppLocalizations {
   /// **'Log Management'**
   String get settingsFeedbackLogsTitle;
 
+  /// No description provided for @settingsFeedbackLogExportWarningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Export Logs & Testing Advice'**
+  String get settingsFeedbackLogExportWarningTitle;
+
+  /// No description provided for @settingsFeedbackLogExportWarningMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This is a Dev release for public testing and feedback collection. We recommend using a private IP (e.g., an internal 1Panel server or VM) for testing to avoid unexpected impacts.\n\nPublic IP addresses in the logs are automatically masked. However, please do not share logs with unrelated personnel, and manually check for any remaining sensitive information before reporting issues.'**
+  String get settingsFeedbackLogExportWarningMessage;
+
+  /// No description provided for @settingsFeedbackLogExportConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get settingsFeedbackLogExportConfirm;
+
   /// No description provided for @settingsFeedbackTemplateTitle.
   ///
   /// In en, this message translates to:
@@ -4283,7 +4301,7 @@ abstract class AppLocalizations {
   /// No description provided for @releaseChannelPreview.
   ///
   /// In en, this message translates to:
-  /// **'Preview'**
+  /// **'Dev'**
   String get releaseChannelPreview;
 
   /// No description provided for @releaseChannelAlpha.
@@ -4483,6 +4501,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Package name'**
   String get aboutPackageNameLabel;
+
+  /// No description provided for @aboutChannelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel'**
+  String get aboutChannelLabel;
+
+  /// No description provided for @aboutBranchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Source branch'**
+  String get aboutBranchLabel;
+
+  /// No description provided for @aboutCommitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Commit'**
+  String get aboutCommitLabel;
+
+  /// No description provided for @aboutBuildDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Build date'**
+  String get aboutBuildDateLabel;
 
   /// No description provided for @aboutOfficialDomainLabel.
   ///

@@ -103,7 +103,6 @@ class ServerDetailPage extends StatelessWidget {
     return ServerDetailSectionItem(
       title: module.label(context.l10n),
       icon: module.icon,
-      subtitle: module.experimental ? context.l10n.commonExperimental : null,
       onTap: () => _openRoute(context, _routeForClientModule(module)),
     );
   }
@@ -120,31 +119,26 @@ class ServerDetailPage extends StatelessWidget {
       ServerDetailSectionItem(
         title: l10n.serverModuleDatabases,
         icon: Icons.storage_outlined,
-        subtitle: l10n.commonExperimental,
         onTap: () => _openRoute(context, AppRoutes.databases),
       ),
       ServerDetailSectionItem(
         title: l10n.serverModuleFirewall,
         icon: Icons.shield_outlined,
-        subtitle: l10n.commonExperimental,
         onTap: () => _openRoute(context, AppRoutes.firewall),
       ),
       ServerDetailSectionItem(
         title: l10n.serverModuleTerminal,
         icon: Icons.terminal_outlined,
-        subtitle: l10n.commonExperimental,
         onTap: () => _openRoute(context, AppRoutes.terminal),
       ),
       ServerDetailSectionItem(
         title: l10n.serverModuleMonitoring,
         icon: Icons.monitor_heart_outlined,
-        subtitle: l10n.commonExperimental,
         onTap: () => _openRoute(context, AppRoutes.monitoring),
       ),
       ServerDetailSectionItem(
         title: l10n.openrestyPageTitle,
         icon: Icons.tune_outlined,
-        subtitle: l10n.commonExperimental,
         onTap: () => _openRoute(context, AppRoutes.openrestyCenter),
       ),
       ServerDetailSectionItem(

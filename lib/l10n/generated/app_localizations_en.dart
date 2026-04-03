@@ -2078,6 +2078,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsFeedbackLogsTitle => 'Log Management';
 
   @override
+  String get settingsFeedbackLogExportWarningTitle =>
+      'Export Logs & Testing Advice';
+
+  @override
+  String get settingsFeedbackLogExportWarningMessage =>
+      'This is a Dev release for public testing and feedback collection. We recommend using a private IP (e.g., an internal 1Panel server or VM) for testing to avoid unexpected impacts.\n\nPublic IP addresses in the logs are automatically masked. However, please do not share logs with unrelated personnel, and manually check for any remaining sensitive information before reporting issues.';
+
+  @override
+  String get settingsFeedbackLogExportConfirm => 'Export';
+
+  @override
   String get settingsFeedbackTemplateTitle => 'Issue Summary';
 
   @override
@@ -2243,7 +2254,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonExperimental => 'Experimental';
 
   @override
-  String get releaseChannelPreview => 'Preview';
+  String get releaseChannelPreview => 'Dev';
 
   @override
   String get releaseChannelAlpha => 'Dev (Alpha)';
@@ -2356,6 +2367,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutPackageNameLabel => 'Package name';
+
+  @override
+  String get aboutChannelLabel => 'Channel';
+
+  @override
+  String get aboutBranchLabel => 'Source branch';
+
+  @override
+  String get aboutCommitLabel => 'Commit';
+
+  @override
+  String get aboutBuildDateLabel => 'Build date';
 
   @override
   String get aboutOfficialDomainLabel => 'Official domain';

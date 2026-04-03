@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:onepanel_client/core/config/build_metadata_config.dart';
+import 'package:onepanel_client/core/config/release_channel_config.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 
@@ -32,6 +34,7 @@ class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final channelLabel = _channelLabel(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.aboutPageTitle),
@@ -62,6 +65,50 @@ class _AboutPageState extends State<AboutPage> {
                     _InfoRow(
                       label: l10n.aboutPackageNameLabel,
                       value: packageInfo?.packageName ?? '-',
+                    ),
+                    const Divider(height: 24),
+                    _InfoRow(
+                      label: l10n.aboutChannelLabel,
+                      value: channelLabel,
+                    ),
+                    const Divider(height: 24),
+                    _SelectableInfoRow(
+                      label: l10n.aboutBranchLabel,
+                      value: AppReleaseChannelConfig.branchName.isEmpty
+                          ? '-'
+                          : AppReleaseChannelConfig.branchName,
+                      onCopy: AppReleaseChannelConfig.branchName.isEmpty
+                          ? null
+                          : () => _copyText(
+                                context,
+                                AppReleaseChannelConfig.branchName,
+                              ),
+                    ),
+                    const Divider(height: 24),
+                    _SelectableInfoRow(
+                      label: l10n.aboutCommitLabel,
+                      value: BuildMetadataConfig.shortCommit.isEmpty
+                          ? '-'
+                          : BuildMetadataConfig.shortCommit,
+                      onCopy: BuildMetadataConfig.gitCommit.isEmpty
+                          ? null
+                          : () => _copyText(
+                                context,
+                                BuildMetadataConfig.gitCommit,
+                              ),
+                    ),
+                    const Divider(height: 24),
+                    _SelectableInfoRow(
+                      label: l10n.aboutBuildDateLabel,
+                      value: BuildMetadataConfig.buildDate.isEmpty
+                          ? '-'
+                          : BuildMetadataConfig.buildDate,
+                      onCopy: BuildMetadataConfig.buildDate.isEmpty
+                          ? null
+                          : () => _copyText(
+                                context,
+                                BuildMetadataConfig.buildDate,
+                              ),
                     ),
                     const Divider(height: 24),
                     _LinkRow(
@@ -152,6 +199,22 @@ class _AboutPageState extends State<AboutPage> {
       SnackBar(content: Text(context.l10n.commonCopied)),
     );
   }
+
+  String _channelLabel(BuildContext context) {
+    final l10n = context.l10n;
+    switch (AppReleaseChannelConfig.current) {
+      case AppReleaseChannel.preview:
+        return l10n.releaseChannelPreview;
+      case AppReleaseChannel.alpha:
+        return l10n.releaseChannelAlpha;
+      case AppReleaseChannel.beta:
+        return l10n.releaseChannelBeta;
+      case AppReleaseChannel.preRelease:
+        return l10n.releaseChannelPreRelease;
+      case AppReleaseChannel.release:
+        return l10n.releaseChannelRelease;
+    }
+  }
 }
 
 class _HeroCard extends StatelessWidget {
@@ -240,6 +303,38 @@ class _InfoRow extends StatelessWidget {
       children: [
         Expanded(child: Text(label)),
         Text(value, style: Theme.of(context).textTheme.titleSmall),
+      ],
+    );
+  }
+}
+
+class _SelectableInfoRow extends StatelessWidget {
+  const _SelectableInfoRow({
+    required this.label,
+    required this.value,
+    this.onCopy,
+  });
+
+  final String label;
+  final String value;
+  final VoidCallback? onCopy;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: Theme.of(context).textTheme.labelLarge),
+        const SizedBox(height: AppDesignTokens.spacingXs),
+        SelectableText(value),
+        if (onCopy != null) ...[
+          const SizedBox(height: AppDesignTokens.spacingSm),
+          OutlinedButton.icon(
+            onPressed: onCopy,
+            icon: const Icon(Icons.copy_outlined),
+            label: Text(context.l10n.commonCopy),
+          ),
+        ],
       ],
     );
   }

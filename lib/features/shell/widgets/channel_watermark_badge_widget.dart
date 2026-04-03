@@ -24,18 +24,18 @@ class ChannelWatermarkBadgeWidget extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
-                  color: colorScheme.errorContainer.withValues(alpha: 0.78),
+                  color: colorScheme.errorContainer.withValues(alpha: 0.35),
                   borderRadius: BorderRadius.circular(999),
                   border: Border.all(
-                    color: colorScheme.onErrorContainer.withValues(alpha: 0.45),
+                    color: colorScheme.onErrorContainer.withValues(alpha: 0.2),
                   ),
                 ),
                 child: Text(
                   _channelLabel(context),
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.6,
-                        color: colorScheme.onErrorContainer,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.5,
+                        color: colorScheme.onErrorContainer.withValues(alpha: 0.5),
                       ),
                 ),
               ),

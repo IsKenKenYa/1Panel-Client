@@ -1,0 +1,189 @@
+name: Android Tag Release
+
+on:
+  push:
+    tags:
+      - "debug-*"
+      - "beta-*"
+      - "pre-release-*"
+      - "release-*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-tag-release-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android-tag-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Resolve Tag Metadata
+        id: meta
+        shell: bash
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | awk '{print $2}')
+          VERSION_NAME=${VERSION%%+*}
+          TAG_NAME="${GITHUB_REF_NAME}"
+
+          case "$TAG_NAME" in
+            debug-*)
+              APP_CHANNEL=alpha
+              CHANNEL_LABEL="Debug"
+              SOURCE_BRANCH="dev"
+              RELEASE_KIND="debug"
+              PUBLISH_RELEASE="false"
+              PRERELEASE="false"
+              ;;
+            beta-*)
+              APP_CHANNEL=beta
+              CHANNEL_LABEL="Beta"
+              SOURCE_BRANCH="dev"
+              RELEASE_KIND="beta"
+              PUBLISH_RELEASE="true"
+              PRERELEASE="true"
+              ;;
+            pre-release-*)
+              APP_CHANNEL=pre-release
+              CHANNEL_LABEL="Pre-Release"
+              SOURCE_BRANCH="dev"
+              RELEASE_KIND="pre-release"
+              PUBLISH_RELEASE="true"
+              PRERELEASE="true"
+              ;;
+            release-*)
+              APP_CHANNEL=release
+              CHANNEL_LABEL="Release"
+              SOURCE_BRANCH="main"
+              RELEASE_KIND="release"
+              PUBLISH_RELEASE="true"
+              PRERELEASE="false"
+              ;;
+            *)
+              echo "::error::Unsupported tag: $TAG_NAME"
+              exit 1
+              ;;
+          esac
+
+          APK_NAME="1panel-client-${RELEASE_KIND}-${VERSION_NAME}.apk"
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "version_name=$VERSION_NAME" >> "$GITHUB_OUTPUT"
+          echo "tag_name=$TAG_NAME" >> "$GITHUB_OUTPUT"
+          echo "app_channel=$APP_CHANNEL" >> "$GITHUB_OUTPUT"
+          echo "channel_label=$CHANNEL_LABEL" >> "$GITHUB_OUTPUT"
+          echo "source_branch=$SOURCE_BRANCH" >> "$GITHUB_OUTPUT"
+          echo "release_kind=$RELEASE_KIND" >> "$GITHUB_OUTPUT"
+          echo "publish_release=$PUBLISH_RELEASE" >> "$GITHUB_OUTPUT"
+          echo "prerelease=$PRERELEASE" >> "$GITHUB_OUTPUT"
+          echo "apk_name=$APK_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Validate Tag Source Branch
+        shell: bash
+        run: |
+          git fetch origin "${{ steps.meta.outputs.source_branch }}" --depth=1
+          if ! git branch -r --contains "$GITHUB_SHA" | grep -q "origin/${{ steps.meta.outputs.source_branch }}$"; then
+            echo "::error::Tag ${{ steps.meta.outputs.tag_name }} must point to a commit contained in origin/${{ steps.meta.outputs.source_branch }}"
+            exit 1
+          fi
+
+      - name: Flutter Pub Get
+        run: flutter pub get
+
+      - name: Flutter Analyze
+        run: flutter analyze --no-fatal-warnings --no-fatal-infos
+
+      - name: Unit Test Runner
+        run: dart run test/scripts/test_runner.dart unit
+
+      - name: Validate Android signing secrets
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          missing=0
+          for key in ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD; do
+            if [ -z "${!key}" ]; then
+              echo "::error::Missing required secret: $key"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
+
+      - name: Prepare Android Signing
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/upload-keystore.jks
+          cat > android/key.properties <<EOF
+          storePassword=$ANDROID_KEYSTORE_PASSWORD
+          keyPassword=$ANDROID_KEY_PASSWORD
+          keyAlias=$ANDROID_KEY_ALIAS
+          storeFile=upload-keystore.jks
+          EOF
+
+      - name: Build Android APK
+        run: |
+          BUILD_DATE="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          flutter build apk --release \
+            --dart-define=APP_CHANNEL="${{ steps.meta.outputs.app_channel }}" \
+            --dart-define=APP_GIT_BRANCH="${{ steps.meta.outputs.source_branch }}" \
+            --dart-define=APP_GIT_COMMIT="${{ github.sha }}" \
+            --dart-define=APP_BUILD_DATE="$BUILD_DATE" \
+            --build-name="${{ steps.meta.outputs.version_name }}" \
+            --build-number="${{ github.run_number }}"
+          cp build/app/outputs/flutter-apk/app-release.apk "build/${{ steps.meta.outputs.apk_name }}"
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.meta.outputs.tag_name }}
+          path: build/${{ steps.meta.outputs.apk_name }}
+
+      - name: Publish GitHub Release
+        if: steps.meta.outputs.publish_release == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.meta.outputs.tag_name }}
+          name: ${{ steps.meta.outputs.channel_label }} ${{ steps.meta.outputs.version_name }}
+          target_commitish: ${{ github.sha }}
+          prerelease: ${{ steps.meta.outputs.prerelease == 'true' }}
+          generate_release_notes: true
+          body: |
+            Automated Android APK build from tag.
+
+            - Tag: `${{ steps.meta.outputs.tag_name }}`
+            - Version: `${{ steps.meta.outputs.version }}`
+            - Channel: `${{ steps.meta.outputs.channel_label }}`
+            - Source branch policy: `${{ steps.meta.outputs.source_branch }}`
+            - Signing: `release keystore`
+            - Package: `APK only`
+            - Feedback: `GitHub Issues`
+          files: |
+            build/${{ steps.meta.outputs.apk_name }}

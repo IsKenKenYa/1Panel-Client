@@ -56,18 +56,22 @@ class ServerDetailHeaderCard extends StatelessWidget {
               runSpacing: 8,
               children: [
                 _MetricChip(
+                  icon: Icons.memory_outlined,
                   label: l10n.serverCpuLabel,
                   value: _formatPercent(server.metrics.cpuPercent),
                 ),
                 _MetricChip(
+                  icon: Icons.storage_outlined,
                   label: l10n.serverMemoryLabel,
                   value: _formatPercent(server.metrics.memoryPercent),
                 ),
                 _MetricChip(
+                  icon: Icons.speed_outlined,
                   label: l10n.serverLoadLabel,
                   value: _formatDecimal(server.metrics.load),
                 ),
                 _MetricChip(
+                  icon: Icons.sd_card_outlined,
                   label: l10n.serverDiskLabel,
                   value: _formatPercent(server.metrics.diskPercent),
                 ),
@@ -101,16 +105,24 @@ class ServerDetailHeaderCard extends StatelessWidget {
 
 class _MetricChip extends StatelessWidget {
   const _MetricChip({
+    required this.icon,
     required this.label,
     required this.value,
   });
 
+  final IconData icon;
   final String label;
   final String value;
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Chip(
+      avatar: Icon(
+        icon,
+        size: 18,
+        color: scheme.onSurfaceVariant,
+      ),
       label: Text('$label: $value'),
     );
   }

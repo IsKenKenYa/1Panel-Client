@@ -25,7 +25,7 @@ class LoggerConfig {
   }
 
   static const bool enableEmojis = true;
-  static const int maxMethodCount = 3;
+  static const int maxMethodCount = 0;
   static const int maxErrorMethodCount = 8;
 
   static int get lineLength {
@@ -43,8 +43,8 @@ class LoggerConfig {
 
   /// 日志输出配置
   static const bool enableConsoleOutput = true;
-  /// File logging is disabled in release to reduce default privacy/storage impact.
-  static bool get enableFileOutput => !kReleaseMode;
+  /// 开启文件日志以支持用户在遇到问题时导出反馈
+  static const bool enableFileOutput = true;
   static const String logFileName = 'app_logs.txt';
   static const int maxLogFileSize = 10 * 1024 * 1024;
   static const int maxLogFiles = 5;

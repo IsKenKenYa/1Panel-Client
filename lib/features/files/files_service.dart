@@ -353,10 +353,6 @@ class FilesService {
     return _transfer.checkAndRequestStoragePermission();
   }
 
-  Future<bool> isStoragePermissionPermanentlyDenied() async {
-    return _transfer.isStoragePermissionPermanentlyDenied();
-  }
-
   Future<void> uploadFile(String path, dynamic file) async {
     await _browser.uploadFile(path, file);
   }

@@ -94,7 +94,8 @@ extension FilesProviderSystemMixin on FilesProvider {
 
     final hasPermission = await _service.checkAndRequestStoragePermission();
     if (!hasPermission) {
-      throw Exception('storage_permission_denied');
+      appLogger.wWithPackage('files_provider', 'downloadFile: 存储权限被拒绝');
+      // Even if denied, we try to proceed. checkAndRequestStoragePermission usually returns true now.
     }
 
     if (file.size >= FilesProvider._chunkDownloadThreshold) {
@@ -116,9 +117,15 @@ extension FilesProviderSystemMixin on FilesProvider {
 
       String downloadPath;
       if (Platform.isAndroid) {
-        downloadPath = '/storage/emulated/0/Download';
+        final dir = Directory('/storage/emulated/0/Download');
+        if (!await dir.exists()) {
+          final extDir = await getExternalStorageDirectory();
+          downloadPath = extDir?.path ?? (await getApplicationDocumentsDirectory()).path;
+        } else {
+          downloadPath = dir.path;
+        }
       } else {
-        final directory = await getApplicationDocumentsDirectory();
+        final directory = await getDownloadsDirectory() ?? await getApplicationDocumentsDirectory();
         downloadPath = directory.path;
       }
 
@@ -192,10 +199,6 @@ extension FilesProviderSystemMixin on FilesProvider {
           error: e, stackTrace: stackTrace);
       rethrow;
     }
-  }
-
-  Future<bool> isStoragePermissionPermanentlyDenied() async {
-    return _service.isStoragePermissionPermanentlyDenied();
   }
 
   void cancelDownload() {

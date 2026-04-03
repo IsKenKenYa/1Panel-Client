@@ -139,8 +139,8 @@ MonitorDataPackage parseMonitorDataPackage(MonitorDataParseArgs args) {
     'cpu': parseTimeSeriesResponse(data, 'base', 'cpu'),
     'memory': parseTimeSeriesResponse(data, 'base', 'memory'),
     'load': parseTimeSeriesResponse(data, 'base', 'cpuLoad1'),
-    'io': parseTimeSeriesResponse(data, 'io', 'disk'),
-    'network': parseTimeSeriesResponse(data, 'network', 'networkIn'),
+    'io': parseTimeSeriesResponse(data, 'io', 'ioThroughput'),
+    'network': parseTimeSeriesResponse(data, 'network', 'networkThroughput'),
   };
 
   return MonitorDataPackage(current: current, timeSeries: timeSeries);
@@ -255,25 +255,32 @@ MonitorTimeSeries parseTimeSeriesResponse(
     return MonitorTimeSeries.empty(param);
   }
 
-  // 查找匹配的数据项，如果没有匹配的，使用第一个
-  var item = dataList.firstWhere(
-    (e) => (e as Map)['param'] == param,
-    orElse: () => null,
-  );
-
-  // 如果没有找到精确匹配，尝试使用 'base' 数据
-  if (item == null && param != 'base') {
+  // 查找匹配的数据项
+  Map<String, dynamic>? item;
+  try {
     item = dataList.firstWhere(
-      (e) => (e as Map)['param'] == 'base',
-      orElse: () => null,
-    );
+      (e) => (e as Map)['param'] == param,
+    ) as Map<String, dynamic>?;
+  } catch (_) {
+    item = null;
+  }
+
+  // 如果没有找到精确匹配，尝试使用 'base' 数据（base包含cpu/memory/load）
+  if (item == null && param != 'base') {
+    try {
+      item = dataList.firstWhere(
+        (e) => (e as Map)['param'] == 'base',
+      ) as Map<String, dynamic>?;
+    } catch (_) {
+      item = null;
+    }
   }
 
   if (item == null) {
     return MonitorTimeSeries.empty(param);
   }
 
-  final itemMap = item as Map<String, dynamic>;
+  final itemMap = item;
   final dates = (itemMap['date'] as List?)?.map((e) => e.toString()).toList();
   final values = itemMap['value'] as List?;
 
@@ -292,7 +299,7 @@ MonitorTimeSeries parseTimeSeriesResponse(
     final valueMap = values[i] as Map<String, dynamic>?;
     if (valueMap == null) continue;
 
-    final value = (valueMap[valueKey] as num?)?.toDouble();
+    final value = _extractMetricValue(valueMap, valueKey);
     if (value == null) {
       continue;
     }
@@ -323,6 +330,48 @@ MonitorTimeSeries parseTimeSeriesResponse(
     max: max,
     avg: count > 0 ? sum / count : null,
   );
+}
+
+double? _extractMetricValue(Map<String, dynamic> valueMap, String valueKey) {
+  final directValue = (valueMap[valueKey] as num?)?.toDouble();
+  if (directValue != null) {
+    return directValue;
+  }
+
+  switch (valueKey) {
+    case 'ioThroughput':
+      final read = (valueMap['read'] as num?)?.toDouble();
+      final write = (valueMap['write'] as num?)?.toDouble();
+      if (read != null || write != null) {
+        return ((read ?? 0) + (write ?? 0)) / 1024;
+      }
+
+      final fallback = (valueMap['diskRead'] as num?)?.toDouble() ??
+          (valueMap['diskWrite'] as num?)?.toDouble() ??
+          (valueMap['ioRead'] as num?)?.toDouble() ??
+          (valueMap['ioWrite'] as num?)?.toDouble();
+      return fallback != null ? fallback / 1024 : null;
+    case 'networkThroughput':
+      final up = (valueMap['up'] as num?)?.toDouble();
+      final down = (valueMap['down'] as num?)?.toDouble();
+      if (up != null || down != null) {
+        return (up ?? 0) + (down ?? 0);
+      }
+
+      return (valueMap['networkIn'] as num?)?.toDouble() ??
+          (valueMap['networkOut'] as num?)?.toDouble();
+    case 'disk':
+      return (valueMap['diskRead'] as num?)?.toDouble() ??
+          (valueMap['diskWrite'] as num?)?.toDouble() ??
+          (valueMap['ioRead'] as num?)?.toDouble() ??
+          (valueMap['ioWrite'] as num?)?.toDouble();
+    case 'networkIn':
+      return (valueMap['up'] as num?)?.toDouble() ??
+          (valueMap['down'] as num?)?.toDouble() ??
+          (valueMap['networkOut'] as num?)?.toDouble();
+    default:
+      return null;
+  }
 }
 
 /// 统一监控数据仓库
@@ -372,6 +421,8 @@ class MonitorRepository {
     dynamic client,
     String param,
     String valueKey, {
+    String? io,
+    String? network,
     Duration duration = const Duration(hours: 1),
   }) async {
     try {
@@ -383,12 +434,14 @@ class MonitorRepository {
         '/api/v2/hosts/monitor/search',
         data: {
           'param': 'all',
+          if (io != null) 'io': io,
+          if (network != null) 'network': network,
           'startTime': startTime.toUtc().toIso8601String(),
           'endTime': now.toUtc().toIso8601String(),
         },
       );
 
-      return parseTimeSeriesResponse(response.data, 'base', valueKey);
+      return parseTimeSeriesResponse(response.data, param, valueKey);
     } catch (e, stack) {
       appLogger.eWithPackage(
         _monitorRepoPackage,
@@ -403,6 +456,8 @@ class MonitorRepository {
   /// 批量获取所有监控数据（当前指标 + 时间序列）
   Future<MonitorDataPackage> getMonitorData(
     dynamic client, {
+    String? io,
+    String? network,
     Duration duration = const Duration(hours: 1),
     DateTime? startTime,
   }) async {
@@ -415,6 +470,8 @@ class MonitorRepository {
         '/api/v2/hosts/monitor/search',
         data: {
           'param': 'all',
+          if (io != null) 'io': io,
+          if (network != null) 'network': network,
           'startTime': start.toUtc().toIso8601String(),
           'endTime': now.toUtc().toIso8601String(),
         },
@@ -504,20 +561,28 @@ class MonitorRepository {
     int? interval,
     int? retention,
     bool? enabled,
+    String? defaultIO,
+    String? defaultNetwork,
   }) async {
     try {
       final updates = <Map<String, dynamic>>[];
       if (interval != null) {
-        updates.add({'key': 'MonitorInterval', 'value': interval});
+        updates.add({'key': 'MonitorInterval', 'value': interval.toString()});
       }
       if (retention != null) {
-        updates.add({'key': 'MonitorStoreDays', 'value': retention});
+        updates.add({'key': 'MonitorStoreDays', 'value': retention.toString()});
       }
       if (enabled != null) {
         updates.add({
           'key': 'MonitorStatus',
           'value': enabled ? 'Enable' : 'Disable',
         });
+      }
+      if (defaultIO != null) {
+        updates.add({'key': 'DefaultIO', 'value': defaultIO});
+      }
+      if (defaultNetwork != null) {
+        updates.add({'key': 'DefaultNetwork', 'value': defaultNetwork});
       }
 
       for (final update in updates) {
@@ -551,6 +616,52 @@ class MonitorRepository {
         stackTrace: stack,
       );
       return false;
+    }
+  }
+
+  /// 获取网络接口列表
+  Future<List<String>> getNetworkOptions(dynamic client) async {
+    try {
+      final response = await client.get('/api/v2/hosts/monitor/netoptions');
+      if (response.data != null && response.data is Map) {
+        final body = response.data as Map<String, dynamic>;
+        final dataList = body['data'] as List?;
+        if (dataList != null) {
+          return dataList.map((e) => e.toString()).toList();
+        }
+      }
+      return ['all'];
+    } catch (e, stack) {
+      appLogger.eWithPackage(
+        _monitorRepoPackage,
+        'getNetworkOptions failed',
+        error: e,
+        stackTrace: stack,
+      );
+      return ['all'];
+    }
+  }
+
+  /// 获取IO设备列表
+  Future<List<String>> getIOOptions(dynamic client) async {
+    try {
+      final response = await client.get('/api/v2/hosts/monitor/iooptions');
+      if (response.data != null && response.data is Map) {
+        final body = response.data as Map<String, dynamic>;
+        final dataList = body['data'] as List?;
+        if (dataList != null) {
+          return dataList.map((e) => e.toString()).toList();
+        }
+      }
+      return ['all'];
+    } catch (e, stack) {
+      appLogger.eWithPackage(
+        _monitorRepoPackage,
+        'getIOOptions failed',
+        error: e,
+        stackTrace: stack,
+      );
+      return ['all'];
     }
   }
 }

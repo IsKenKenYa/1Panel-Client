@@ -113,36 +113,23 @@ class FileTransferService {
   }
 
   Future<bool> checkAndRequestStoragePermission() async {
-    if (Platform.isIOS) {
+    if (!Platform.isAndroid) {
       return true;
     }
 
-    if (Platform.isAndroid) {
-      try {
-        if (await Permission.manageExternalStorage.isGranted) {
-          return true;
-        }
-
-        final status = await Permission.storage.status;
-        if (status.isGranted) return true;
-        if (status.isDenied) {
-          return (await Permission.storage.request()).isGranted;
-        }
-        if (status.isPermanentlyDenied) return false;
-      } catch (_) {
-        return true;
-      }
-    }
-
-    return true;
-  }
-
-  Future<bool> isStoragePermissionPermanentlyDenied() async {
-    if (!Platform.isAndroid) return false;
     try {
-      return (await Permission.storage.status).isPermanentlyDenied;
+      final status = await Permission.storage.status;
+      if (status.isGranted) return true;
+      
+      final result = await Permission.storage.request();
+      if (result.isGranted) return true;
+
+      // 从 Android 10 (API 29) 开始，向公共 Downloads 目录写入新文件不需要存储权限。
+      // 在 Android 13+ 上，Permission.storage 会直接返回 denied。
+      // 因此，即使被拒绝，我们也返回 true 放行，让下载操作依赖系统的 Scoped Storage 机制。
+      return true;
     } catch (_) {
-      return false;
+      return true;
     }
   }
 
@@ -155,15 +142,10 @@ class FileTransferService {
   Future<String> _getDownloadPath(String fileName) async {
     Directory downloadDir;
     if (Platform.isAndroid) {
-      final hasPermission = await _requestStoragePermission();
-      if (hasPermission) {
-        downloadDir = Directory('/storage/emulated/0/Download');
-        if (!await downloadDir.exists()) {
-          downloadDir = await getExternalStorageDirectory() ??
-              await getApplicationDocumentsDirectory();
-        }
-      } else {
-        downloadDir = await getApplicationDocumentsDirectory();
+      downloadDir = Directory('/storage/emulated/0/Download');
+      if (!await downloadDir.exists()) {
+        downloadDir = await getExternalStorageDirectory() ??
+            await getApplicationDocumentsDirectory();
       }
     } else if (Platform.isIOS) {
       downloadDir = await getApplicationDocumentsDirectory();
@@ -188,24 +170,5 @@ class FileTransferService {
       counter++;
     }
     return finalPath;
-  }
-
-  Future<bool> _requestStoragePermission() async {
-    if (!Platform.isAndroid) return true;
-    try {
-      if (await Permission.manageExternalStorage.isGranted) return true;
-      final status = await Permission.storage.status;
-      if (status.isGranted) return true;
-      if (status.isDenied) {
-        if ((await Permission.storage.request()).isGranted) return true;
-      }
-      if (status.isPermanentlyDenied) {
-        await openAppSettings();
-        return false;
-      }
-      return (await Permission.manageExternalStorage.request()).isGranted;
-    } catch (_) {
-      return true;
-    }
   }
 }

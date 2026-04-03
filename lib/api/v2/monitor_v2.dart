@@ -10,17 +10,23 @@ import '../../core/config/api_constants.dart';
 /// - endTime: 结束时间 (UTC ISO8601格式)
 class MonitorSearch {
   final String param;
+  final String? io;
+  final String? network;
   final String? startTime;
   final String? endTime;
 
   const MonitorSearch({
     this.param = 'all',
+    this.io,
+    this.network,
     this.startTime,
     this.endTime,
   });
 
   Map<String, dynamic> toJson() => {
         'param': param,
+        if (io != null) 'io': io,
+        if (network != null) 'network': network,
         if (startTime != null) 'startTime': startTime,
         if (endTime != null) 'endTime': endTime,
       };
@@ -165,11 +171,9 @@ class MonitorSetting {
 
   factory MonitorSetting.fromJson(Map<String, dynamic> json) {
     final intervalRaw = json['monitorInterval'] ?? json['MonitorInterval'];
-    final retentionRaw =
-        json['monitorStoreDays'] ?? json['MonitorStoreDays'];
+    final retentionRaw = json['monitorStoreDays'] ?? json['MonitorStoreDays'];
     final statusRaw = json['monitorStatus'] ?? json['MonitorStatus'];
-    final defaultNetworkRaw =
-        json['defaultNetwork'] ?? json['DefaultNetwork'];
+    final defaultNetworkRaw = json['defaultNetwork'] ?? json['DefaultNetwork'];
     final defaultIORaw = json['defaultIO'] ?? json['DefaultIO'];
 
     bool? enabled;
@@ -342,11 +346,15 @@ class MonitorV2Api {
 
   /// 获取所有监控数据
   Future<Response<MonitorSearchResponse>> getAllMetrics({
+    String? io,
+    String? network,
     String? startTime,
     String? endTime,
   }) async {
     return search(MonitorSearch(
       param: 'all',
+      io: io,
+      network: network,
       startTime: startTime,
       endTime: endTime,
     ));
@@ -366,11 +374,13 @@ class MonitorV2Api {
 
   /// 获取IO监控数据 (磁盘)
   Future<Response<MonitorSearchResponse>> getIOMetrics({
+    String? io,
     String? startTime,
     String? endTime,
   }) async {
     return search(MonitorSearch(
       param: 'io',
+      io: io,
       startTime: startTime,
       endTime: endTime,
     ));
@@ -378,11 +388,13 @@ class MonitorV2Api {
 
   /// 获取网络监控数据
   Future<Response<MonitorSearchResponse>> getNetworkMetrics({
+    String? network,
     String? startTime,
     String? endTime,
   }) async {
     return search(MonitorSearch(
       param: 'network',
+      network: network,
       startTime: startTime,
       endTime: endTime,
     ));

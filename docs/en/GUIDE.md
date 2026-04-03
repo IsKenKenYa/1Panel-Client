@@ -78,20 +78,20 @@ Before adding a server, ensure:
 3. **Test Connection**: Tap "Test Connection" to verify
 4. **Save**: Tap "Save" to add the server
 
-### Finding Your API Key
+### Finding Your API Key & Enabling API Access
 
-1. Log in to your 1Panel web interface
-2. Go to **Panel Settings** → **API Interface**
-3. Enable API access if not already enabled
-4. Copy the API key
-5. Add allowed IPs (your device's IP or `0.0.0.0/0` for all IPs)
+1. Log in to your 1Panel web interface via a browser.
+2. Go to **Panel Settings** (面板设置) -> **API Interface** (API 接口) on the left sidebar.
+3. Toggle the **API Interface** switch to **Enable** (开启).
+4. Copy the generated **API Key**.
+5. **CRITICAL STEP**: Add allowed IPs to the IP Whitelist. If you are using the app on a mobile network where your IP frequently changes, enter `0.0.0.0/0` to allow all IPs. Otherwise, enter your static IP or VPN IP.
 
 ### Security Tips
 
-- **Use HTTPS**: Always use HTTPS in production
-- **IP Whitelist**: Restrict API access to specific IPs
-- **API Key**: Keep your API key secure and rotate it regularly
-- **Network**: Use VPN for remote server access when possible
+- **Use HTTPS**: Always use HTTPS in production.
+- **IP Whitelist**: Restrict API access to specific IPs when possible. If using `0.0.0.0/0`, ensure your API key is kept strictly confidential.
+- **API Key**: Keep your API key secure and rotate it regularly.
+- **Network**: Use VPN for remote server access when possible.
 
 ---
 

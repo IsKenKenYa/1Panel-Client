@@ -11,20 +11,62 @@ class _AppLogOutput extends LogOutput {
   final ConsoleOutput _consoleOutput = ConsoleOutput();
   final LogFileManagerService _fileManager = LogFileManagerService();
 
+  static final _ipv4Regex = RegExp(r'\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b');
+
+  bool _isPrivateIp(String ip) {
+    if (ip == '0.0.0.0' || ip == '255.255.255.255') return true;
+    final parts = ip.split('.');
+    if (parts.length != 4) return false;
+    final p1 = int.tryParse(parts[0]);
+    final p2 = int.tryParse(parts[1]);
+    if (p1 == null || p2 == null) return false;
+
+    // 10.0.0.0/8
+    if (p1 == 10) return true;
+    // 172.16.0.0/12
+    if (p1 == 172 && p2 >= 16 && p2 <= 31) return true;
+    // 192.168.0.0/16
+    if (p1 == 192 && p2 == 168) return true;
+    // 127.0.0.0/8 (Loopback)
+    if (p1 == 127) return true;
+    // 169.254.0.0/16 (Link-local)
+    if (p1 == 169 && p2 == 254) return true;
+    
+    return false;
+  }
+
+  String _maskSensitiveInfo(String text) {
+    return text.replaceAllMapped(_ipv4Regex, (match) {
+      final ip = match.group(0)!;
+      if (_isPrivateIp(ip)) {
+        return ip;
+      }
+      return '***.***.***.***';
+    });
+  }
+
   @override
   void output(OutputEvent event) {
+    final maskedLines = event.lines.map((e) => _maskSensitiveInfo(e)).toList();
+    
+    // LogEvent instead of level directly, according to the logger package signature
+    final maskedEvent = OutputEvent(
+      event.origin,
+      maskedLines,
+    );
+
     if (LoggerConfig.enableConsoleOutput) {
-      _consoleOutput.output(event);
+      _consoleOutput.output(maskedEvent);
     }
     if (LoggerConfig.enableFileOutput) {
-      for (final line in event.lines) {
+      for (final line in maskedLines) {
         unawaited(
           _fileManager
               .appendLine(line)
               .catchError((Object error, StackTrace stackTrace) {
             if (LoggerConfig.enableConsoleOutput) {
               _consoleOutput.output(
-                event,
+                maskedEvent,
               );
             }
           }),

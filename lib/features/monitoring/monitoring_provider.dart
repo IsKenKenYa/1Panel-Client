@@ -29,6 +29,10 @@ class MonitoringData {
   final MonitorTimeSeries? networkPreviousSeries;
   final List<GPUInfo> gpuInfo;
   final MonitorSetting? settings;
+  final List<String> ioOptions;
+  final List<String> networkOptions;
+  final String selectedIO;
+  final String selectedNetwork;
   final DateTime? lastUpdated;
 
   const MonitoringData({
@@ -48,6 +52,10 @@ class MonitoringData {
     this.networkPreviousSeries,
     this.gpuInfo = const [],
     this.settings,
+    this.ioOptions = const ['all'],
+    this.networkOptions = const ['all'],
+    this.selectedIO = 'all',
+    this.selectedNetwork = 'all',
     this.lastUpdated,
   });
 
@@ -68,6 +76,10 @@ class MonitoringData {
     MonitorTimeSeries? networkPreviousSeries,
     List<GPUInfo>? gpuInfo,
     MonitorSetting? settings,
+    List<String>? ioOptions,
+    List<String>? networkOptions,
+    String? selectedIO,
+    String? selectedNetwork,
     DateTime? lastUpdated,
   }) {
     return MonitoringData(
@@ -88,6 +100,10 @@ class MonitoringData {
           networkPreviousSeries ?? this.networkPreviousSeries,
       gpuInfo: gpuInfo ?? this.gpuInfo,
       settings: settings ?? this.settings,
+      ioOptions: ioOptions ?? this.ioOptions,
+      networkOptions: networkOptions ?? this.networkOptions,
+      selectedIO: selectedIO ?? this.selectedIO,
+      selectedNetwork: selectedNetwork ?? this.selectedNetwork,
       lastUpdated: lastUpdated ?? this.lastUpdated,
     );
   }
@@ -120,6 +136,7 @@ class MonitoringProvider extends ChangeNotifier {
   bool _gpuAutoRefreshEnabled = true;
   DateTime? _lastGpuRefreshAt;
   int _maxDataPoints = 1000; // 默认增加点数，支持更平滑的曲线
+  bool _isPolling = false;
 
   // 时间范围设置
   Duration _timeRange = const Duration(hours: 1);
@@ -154,6 +171,82 @@ class MonitoringProvider extends ChangeNotifier {
   Duration get timeRange => _timeRange;
   DateTime? get customStartTime => _customStartTime;
   DateTime? get customEndTime => _customEndTime;
+
+  String _normalizeMonitorOption(String? value, List<String> options) {
+    if (options.isEmpty) {
+      return 'all';
+    }
+    if (value != null && value.isNotEmpty && options.contains(value)) {
+      return value;
+    }
+
+    for (final option in options) {
+      if (option != 'all') {
+        return option;
+      }
+    }
+    return options.first;
+  }
+
+  Future<void> _loadMonitorOptionsIfNeeded() async {
+    final needsOptions =
+        _data.ioOptions.length <= 1 || _data.networkOptions.length <= 1;
+    final needsSettings = _data.settings == null;
+    if (!needsOptions && !needsSettings) {
+      return;
+    }
+
+    final settings =
+        needsSettings ? await _service!.getSetting() : _data.settings;
+    final ioOptions =
+        needsOptions ? await _service!.getIOOptions() : _data.ioOptions;
+    final networkOptions = needsOptions
+        ? await _service!.getNetworkOptions()
+        : _data.networkOptions;
+    final safeIoOptions = ioOptions.isEmpty ? const ['all'] : ioOptions;
+    final safeNetworkOptions =
+        networkOptions.isEmpty ? const ['all'] : networkOptions;
+
+    _data = _data.copyWith(
+      settings: settings,
+      ioOptions: safeIoOptions,
+      networkOptions: safeNetworkOptions,
+      selectedIO: _normalizeMonitorOption(
+        _data.selectedIO != 'all' ? _data.selectedIO : settings?.defaultIO,
+        safeIoOptions,
+      ),
+      selectedNetwork: _normalizeMonitorOption(
+        _data.selectedNetwork != 'all'
+            ? _data.selectedNetwork
+            : settings?.defaultNetwork,
+        safeNetworkOptions,
+      ),
+    );
+  }
+
+  Future<void> selectIOOption(String value) async {
+    if (value == _data.selectedIO) {
+      return;
+    }
+    _rawTimeSeries['io']!.clear();
+    _previousRawTimeSeries['io']!.clear();
+    _lastFetchTime = null;
+    _data = _data.copyWith(selectedIO: value);
+    notifyListeners();
+    await load(silent: true);
+  }
+
+  Future<void> selectNetworkOption(String value) async {
+    if (value == _data.selectedNetwork) {
+      return;
+    }
+    _rawTimeSeries['network']!.clear();
+    _previousRawTimeSeries['network']!.clear();
+    _lastFetchTime = null;
+    _data = _data.copyWith(selectedNetwork: value);
+    notifyListeners();
+    await load(silent: true);
+  }
 
   void _recordError(
     String action,
@@ -299,6 +392,7 @@ class MonitoringProvider extends ChangeNotifier {
     _autoRefreshEnabled = enabled;
     if (enabled) {
       _startTimer();
+      unawaited(refreshByPolicy(silent: true));
     } else {
       _stopTimer();
     }
@@ -398,6 +492,7 @@ class MonitoringProvider extends ChangeNotifier {
 
     try {
       await _ensureService();
+      await _loadMonitorOptionsIfNeeded();
 
       final now = DateTime.now();
       DateTime fetchStartTime;
@@ -432,6 +527,8 @@ class MonitoringProvider extends ChangeNotifier {
       // 在线模式：获取数据
       try {
         final result = await _service!.getMonitorData(
+          io: _data.selectedIO,
+          network: _data.selectedNetwork,
           duration: _timeRange,
           startTime: fetchStartTime,
         );
@@ -616,8 +713,16 @@ class MonitoringProvider extends ChangeNotifier {
 
   /// 按策略刷新（主监控 + 可选GPU）
   Future<void> refreshByPolicy({bool silent = true}) async {
-    await load(silent: silent);
-    await _refreshGpuInfoByPolicy();
+    if (_isPolling) {
+      return;
+    }
+    _isPolling = true;
+    try {
+      await load(silent: silent);
+      await _refreshGpuInfoByPolicy();
+    } finally {
+      _isPolling = false;
+    }
   }
 
   /// 清除错误
@@ -631,7 +736,21 @@ class MonitoringProvider extends ChangeNotifier {
     try {
       await _ensureService();
       final settings = await _service!.getSetting();
-      _data = _data.copyWith(settings: settings);
+      final ioOptions = await _service!.getIOOptions();
+      final networkOptions = await _service!.getNetworkOptions();
+      final safeIoOptions = ioOptions.isEmpty ? const ['all'] : ioOptions;
+      final safeNetworkOptions =
+          networkOptions.isEmpty ? const ['all'] : networkOptions;
+      _data = _data.copyWith(
+        settings: settings,
+        ioOptions: safeIoOptions,
+        networkOptions: safeNetworkOptions,
+        selectedIO: _normalizeMonitorOption(settings?.defaultIO, safeIoOptions),
+        selectedNetwork: _normalizeMonitorOption(
+          settings?.defaultNetwork,
+          safeNetworkOptions,
+        ),
+      );
       notifyListeners();
     } catch (e, stackTrace) {
       _recordError('加载监控设置', e, stackTrace: stackTrace);
@@ -643,6 +762,8 @@ class MonitoringProvider extends ChangeNotifier {
     int? interval,
     int? retention,
     bool? enabled,
+    String? defaultIO,
+    String? defaultNetwork,
   }) async {
     try {
       await _ensureService();
@@ -650,9 +771,13 @@ class MonitoringProvider extends ChangeNotifier {
         interval: interval,
         retention: retention,
         enabled: enabled,
+        defaultIO: defaultIO,
+        defaultNetwork: defaultNetwork,
       );
       if (success) {
         await loadSettings();
+        _lastFetchTime = null;
+        await load(silent: true);
       }
       return success;
     } catch (e, stackTrace) {

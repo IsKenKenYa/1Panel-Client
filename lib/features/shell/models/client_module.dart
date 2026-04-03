@@ -90,19 +90,19 @@ extension ClientModuleX on ClientModule {
       case ClientModule.servers:
         return Icons.dns_outlined;
       case ClientModule.files:
-        return Icons.folder_outlined;
+        return Icons.folder_open_outlined;
       case ClientModule.containers:
-        return Icons.layers_outlined;
+        return Icons.widgets_outlined;
       case ClientModule.apps:
-        return Icons.apps_outlined;
+        return Icons.grid_view_outlined;
       case ClientModule.websites:
-        return Icons.language_outlined;
+        return Icons.public_outlined;
       case ClientModule.ai:
-        return Icons.smart_toy_outlined;
+        return Icons.psychology_outlined;
       case ClientModule.settings:
         return Icons.settings_outlined;
       case ClientModule.verification:
-        return Icons.verified_user_outlined;
+        return Icons.shield_outlined;
     }
   }
 
@@ -111,19 +111,19 @@ extension ClientModuleX on ClientModule {
       case ClientModule.servers:
         return Icons.dns;
       case ClientModule.files:
-        return Icons.folder;
+        return Icons.folder_open;
       case ClientModule.containers:
-        return Icons.layers;
+        return Icons.widgets;
       case ClientModule.apps:
-        return Icons.apps;
+        return Icons.grid_view;
       case ClientModule.websites:
-        return Icons.language;
+        return Icons.public;
       case ClientModule.ai:
-        return Icons.smart_toy;
+        return Icons.psychology;
       case ClientModule.settings:
         return Icons.settings;
       case ClientModule.verification:
-        return Icons.verified_user;
+        return Icons.shield;
     }
   }
 

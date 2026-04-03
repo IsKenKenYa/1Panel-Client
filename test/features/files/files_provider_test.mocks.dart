@@ -990,16 +990,6 @@ class MockFilesService extends _i1.Mock implements _i3.FilesService {
       ) as _i4.Future<bool>);
 
   @override
-  _i4.Future<bool> isStoragePermissionPermanentlyDenied() =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #isStoragePermissionPermanentlyDenied,
-          [],
-        ),
-        returnValue: _i4.Future<bool>.value(false),
-      ) as _i4.Future<bool>);
-
-  @override
   _i4.Future<void> uploadFile(
     String? path,
     dynamic file,

@@ -69,23 +69,6 @@ extension _FilesViewAsyncActions on _FilesViewState {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.filesDownloadCancelled)),
         );
-      } else if (errorMsg.contains('storage_permission_denied')) {
-        final isPermanentlyDenied =
-            await provider.isStoragePermissionPermanentlyDenied();
-        if (!context.mounted) return;
-        if (isPermanentlyDenied) {
-          _showPermissionSettingsDialog(context, l10n);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text('存储权限被拒绝，无法下载文件'),
-              action: SnackBarAction(
-                label: '设置',
-                onPressed: () => _showPermissionSettingsDialog(context, l10n),
-              ),
-            ),
-          );
-        }
       } else {
         DebugErrorDialog.show(
           context,
@@ -95,34 +78,6 @@ extension _FilesViewAsyncActions on _FilesViewState {
         );
       }
     });
-  }
-
-  void _showPermissionSettingsDialog(
-    BuildContext context,
-    AppLocalizations l10n,
-  ) {
-    showDialog(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('存储权限'),
-        content: const Text('请在设置中授予存储权限以保存下载文件'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () {
-              Navigator.pop(dialogContext);
-              Permission.storage.request().then((_) {
-                Permission.manageExternalStorage.request();
-              });
-            },
-            child: const Text('打开设置'),
-          ),
-        ],
-      ),
-    );
   }
 
   Future<void> _toggleFavorite(

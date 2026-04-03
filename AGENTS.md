@@ -51,9 +51,9 @@
 
 ## Test Gate (CLI Runnable)
 - CN: 提交前必须可运行 `flutter analyze`。EN: Must be runnable before commit: `flutter analyze`.
-- CN: 必须可运行 `dart run test_runner.dart unit`；涉及 API/网络或数据写入时必须跑 `integration`。EN: Must run `dart run test_runner.dart unit`; if touching API/network or data writes, must run `integration`.
-- CN: UI 改动必须跑 `dart run test_runner.dart ui` 或说明原因。EN: UI changes must run `dart run test_runner.dart ui` or document why not.
-- CN: 回归基线使用 `dart run test_runner.dart all`。EN: Regression baseline uses `dart run test_runner.dart all`.
+- CN: 必须可运行 `dart run test/scripts/test_runner.dart unit`；涉及 API/网络或数据写入时必须跑 `integration`。EN: Must run `dart run test/scripts/test_runner.dart unit`; if touching API/network or data writes, must run `integration`.
+- CN: UI 改动必须跑 `dart run test/scripts/test_runner.dart ui` 或说明原因。EN: UI changes must run `dart run test/scripts/test_runner.dart ui` or document why not.
+- CN: 回归基线使用 `dart run test/scripts/test_runner.dart all`。EN: Regression baseline uses `dart run test/scripts/test_runner.dart all`.
 
 ## Skills & MCP Usage
 - CN: 重大架构/约定/踩坑需写入 `agent-memory-mcp`（type: `decision`/`pattern`）。EN: Record key architecture decisions/patterns in `agent-memory-mcp` (type: `decision`/`pattern`).
@@ -65,6 +65,12 @@
 - Keep PRs small and incremental. For large changes, open an issue first and align on scope.
 - PRs should include: summary of changes, test results, and screenshots for UI changes.
 - Never include secrets or sensitive data in issues, logs, or screenshots.
+
+## Release Branches & CI
+- CN: 长期维护分支使用 `dev` 与 `main`；`dev` 聚合 feature 分支，`main` 为正式发布基线。EN: Long-lived branches are `dev` and `main`; `dev` aggregates feature work and `main` is the stable release baseline.
+- CN: Android APK 当前使用 tag 驱动发布：`debug-*`、`beta-*`、`pre-release-*`、`release-*`。EN: Android APK releases are tag-driven with `debug-*`, `beta-*`, `pre-release-*`, and `release-*`.
+- CN: tag 来源约束为 `debug/beta/pre-release` 必须来自 `dev`，`release` 必须来自 `main`。EN: `debug`, `beta`, and `pre-release` tags must come from `dev`; `release` tags must come from `main`.
+- CN: 渠道映射为 `debug -> Alpha`、`beta -> Beta（公开预览）`、`pre-release -> Pre-Release`、`release -> Release`。EN: Channel mapping is `debug -> Alpha`, `beta -> Beta (public preview)`, `pre-release -> Pre-Release`, `release -> Release`.
 
 ## Security & Configuration Notes
 - API access uses 1Panel API keys; do not commit keys or tokens.
