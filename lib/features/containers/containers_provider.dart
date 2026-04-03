@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import '../../data/models/container_models.dart';
 import '../../data/models/container_extension_models.dart';
@@ -125,7 +126,7 @@ class ContainersData {
 }
 
 /// 容器管理状态管理器
-class ContainersProvider extends ChangeNotifier {
+class ContainersProvider extends ChangeNotifier with SafeChangeNotifier {
   ContainersProvider({ContainerService? service}) : _service = service;
 
   ContainerService? _service;

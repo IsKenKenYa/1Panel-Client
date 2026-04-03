@@ -74,9 +74,11 @@ class ServerCard extends StatelessWidget {
                       value: _percent(data.metrics.diskPercent)),
                 ],
               ),
-              const SizedBox(height: AppDesignTokens.spacingMd),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              const Spacer(),
+              Wrap(
+                spacing: 12,
+                runSpacing: 6,
+                alignment: WrapAlignment.spaceBetween,
                 children: [
                   Text(
                     _hasMetrics(data.metrics)

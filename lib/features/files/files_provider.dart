@@ -27,13 +27,23 @@ class FilesProvider extends ChangeNotifier {
   final FilesService _service;
   FilesData _data = const FilesData();
   final Map<String, String> _serverPathMemory = <String, String>{};
+  bool _disposed = false;
 
   static const int _chunkDownloadThreshold = 50 * 1024 * 1024;
 
   FilesData get data => _data;
 
   void _emitChange() {
+    if (_disposed) {
+      return;
+    }
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
   }
 
   List<String> _pathSegments(String path) {
@@ -59,4 +69,6 @@ class FilesProvider extends ChangeNotifier {
     }
     return _normalizePath(_serverPathMemory[serverId] ?? '/');
   }
+
+  bool get isDisposed => _disposed;
 }

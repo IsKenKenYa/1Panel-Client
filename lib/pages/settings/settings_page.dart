@@ -57,12 +57,16 @@ class _SettingsPageDesktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: scheme.surface,
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 800),
-          child: const _SettingsBody(),
+          child: ColoredBox(
+            color: scheme.surface,
+            child: const _SettingsBody(),
+          ),
         ),
       ),
     );

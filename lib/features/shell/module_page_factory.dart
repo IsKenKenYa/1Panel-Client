@@ -23,6 +23,7 @@ Widget buildShellModulePage(
   BuildContext context, {
   required ClientModule module,
   required String? serverId,
+  bool useStableModuleKey = false,
 }) {
   switch (module) {
     case ClientModule.servers:
@@ -31,58 +32,75 @@ Widget buildShellModulePage(
       if (serverId == null) {
         return NoServerSelectedState(moduleName: context.l10n.navFiles);
       }
-      return KeyedSubtree(
-        key: ValueKey('files:$serverId'),
-        child: const FilesPage(),
-      );
+      final filesPage = const FilesPage();
+      return useStableModuleKey
+          ? filesPage
+          : KeyedSubtree(
+              key: ValueKey('files:$serverId'),
+              child: filesPage,
+            );
     case ClientModule.containers:
       if (serverId == null) {
         return NoServerSelectedState(moduleName: context.l10n.containerManagement);
       }
-      return KeyedSubtree(
-        key: ValueKey('containers:$serverId'),
-        child: const ContainersPage(),
-      );
+      final containersPage = const ContainersPage();
+      return useStableModuleKey
+          ? containersPage
+          : KeyedSubtree(
+              key: ValueKey('containers:$serverId'),
+              child: containersPage,
+            );
     case ClientModule.apps:
       if (serverId == null) {
         return NoServerSelectedState(moduleName: context.l10n.appsPageTitle);
       }
-      return KeyedSubtree(
-        key: ValueKey('apps:$serverId'),
-        child: const AppsPage(),
-      );
+      final appsPage = const AppsPage();
+      return useStableModuleKey
+          ? appsPage
+          : KeyedSubtree(
+              key: ValueKey('apps:$serverId'),
+              child: appsPage,
+            );
     case ClientModule.websites:
       if (serverId == null) {
         return NoServerSelectedState(moduleName: context.l10n.websitesPageTitle);
       }
-      return KeyedSubtree(
-        key: ValueKey('websites:$serverId'),
-        child: const WebsitesPage(),
-      );
+      final websitesPage = const WebsitesPage();
+      return useStableModuleKey
+          ? websitesPage
+          : KeyedSubtree(
+              key: ValueKey('websites:$serverId'),
+              child: websitesPage,
+            );
     case ClientModule.ai:
       if (serverId == null) {
         return NoServerSelectedState(moduleName: context.l10n.serverModuleAi);
       }
-      return KeyedSubtree(
-        key: ValueKey('ai:$serverId'),
-        child: MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (_) => AIProvider()),
-            ChangeNotifierProvider(create: (_) => McpServerProvider()),
-          ],
-          child: const AIPage(),
-        ),
+      final aiPage = MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => AIProvider()),
+          ChangeNotifierProvider(create: (_) => McpServerProvider()),
+        ],
+        child: const AIPage(),
       );
+      return useStableModuleKey
+          ? aiPage
+          : KeyedSubtree(
+              key: ValueKey('ai:$serverId'),
+              child: aiPage,
+            );
     case ClientModule.verification:
       if (serverId == null) {
         return NoServerSelectedState(moduleName: context.l10n.serverActionSecurity);
       }
-      return KeyedSubtree(
-        key: ValueKey('verification:$serverId'),
-        child: const SecurityVerificationPage(),
-      );
+      final verificationPage = const SecurityVerificationPage();
+      return useStableModuleKey
+          ? verificationPage
+          : KeyedSubtree(
+              key: ValueKey('verification:$serverId'),
+              child: verificationPage,
+            );
     case ClientModule.settings:
       return const SettingsPage();
   }
 }
-

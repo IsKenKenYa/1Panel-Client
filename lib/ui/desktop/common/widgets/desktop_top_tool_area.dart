@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
 import 'package:onepanel_client/features/shell/widgets/server_switcher_action.dart';
@@ -8,10 +7,12 @@ class DesktopTopToolArea extends StatelessWidget {
   const DesktopTopToolArea({
     super.key,
     required this.selectedModule,
+    this.onOpenSettings,
     this.backgroundColor,
   });
 
   final ClientModule selectedModule;
+  final VoidCallback? onOpenSettings;
   final Color? backgroundColor;
 
   @override
@@ -43,7 +44,7 @@ class DesktopTopToolArea extends StatelessWidget {
               const SizedBox(width: 4),
               IconButton(
                 tooltip: context.l10n.settingsPageTitle,
-                onPressed: () => Navigator.pushNamed(context, AppRoutes.settings),
+                onPressed: onOpenSettings,
                 icon: const Icon(Icons.settings_outlined),
               ),
             ],
@@ -53,4 +54,3 @@ class DesktopTopToolArea extends StatelessWidget {
     );
   }
 }
-

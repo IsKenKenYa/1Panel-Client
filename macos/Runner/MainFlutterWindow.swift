@@ -20,13 +20,12 @@ class MainFlutterWindow: NSWindow {
       guard let self = self else { return }
       let mode = result as? String ?? "native"
       if mode == "md3" {
-        // md3: Flutter renders full window, make window transparent for liquid glass
-        self.isOpaque = false
-        self.backgroundColor = .clear
+        // md3: Flutter renders the full window, but the host window should stay
+        // opaque so desktop theming remains stable and the titlebar keeps the
+        // standard macOS material instead of showing raw wallpaper.
+        self.isOpaque = true
+        self.backgroundColor = NSColor.windowBackgroundColor
         self.contentViewController = flutterViewController
-        // Add a visual-effect overlay behind the traffic-light buttons so the
-        // transparent titlebar area doesn't show raw wallpaper / desktop.
-        self.addTitlebarVibrancyOverlay(to: flutterViewController.view)
       } else {
         // native: keep system default opaque background so titlebar has material
         let shellViewController = MainShellViewController(flutterViewController: flutterViewController)
@@ -45,28 +44,9 @@ class MainFlutterWindow: NSWindow {
   private func configureWindowBase() {
     titlebarAppearsTransparent = true
     titleVisibility = .hidden
-  }
-
-  /// In md3 mode the Flutter content view covers the whole window including the
-  /// transparent titlebar area.  We place a thin NSVisualEffectView behind the
-  /// traffic-light buttons so the titlebar region has a consistent material
-  /// background instead of showing raw desktop wallpaper.
-  private func addTitlebarVibrancyOverlay(to contentView: NSView) {
-    let titlebarHeight: CGFloat = 28
-    let overlay = NSVisualEffectView()
-    overlay.material = .titlebar
-    overlay.blendingMode = .behindWindow
-    overlay.state = .active
-    overlay.wantsLayer = true
-    overlay.translatesAutoresizingMaskIntoConstraints = false
-    // Insert behind Flutter content so touches still reach Flutter
-    contentView.addSubview(overlay, positioned: .below, relativeTo: nil)
-    NSLayoutConstraint.activate([
-      overlay.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-      overlay.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-      overlay.topAnchor.constraint(equalTo: contentView.topAnchor),
-      overlay.heightAnchor.constraint(equalToConstant: titlebarHeight),
-    ])
+    styleMask.insert(.fullSizeContentView)
+    isOpaque = true
+    backgroundColor = NSColor.windowBackgroundColor
   }
 
   private func setupAppearanceChannel(with controller: FlutterViewController) {

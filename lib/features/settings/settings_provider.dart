@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'settings_service.dart';
 import '../../api/v2/setting_v2.dart' as api;
 import '../../data/models/setting_models.dart';
@@ -116,7 +117,7 @@ class SettingsData {
   }
 }
 
-class SettingsProvider extends ChangeNotifier {
+class SettingsProvider extends ChangeNotifier with SafeChangeNotifier {
   SettingsProvider({
     SettingsService? service,
     PasskeyService? passkeyService,

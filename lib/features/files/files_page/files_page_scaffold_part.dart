@@ -144,7 +144,7 @@ extension _FilesViewScaffold on _FilesViewState {
         child: Focus(
           autofocus: true,
           child: Scaffold(
-            backgroundColor: Colors.transparent,
+            backgroundColor: theme.colorScheme.surface,
             body: Column(
               children: [
                 // Desktop specific toolbar area
@@ -152,6 +152,7 @@ extension _FilesViewScaffold on _FilesViewState {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
+                    color: theme.colorScheme.surface,
                     border: Border(
                       bottom:
                           BorderSide(color: theme.colorScheme.outlineVariant),

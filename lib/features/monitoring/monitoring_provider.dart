@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import '../../data/repositories/monitor_repository.dart';
 import '../../api/v2/monitor_v2.dart';
 import 'monitoring_service.dart';
@@ -113,7 +114,7 @@ class MonitoringData {
 ///
 /// 用于MonitoringPage的状态管理
 /// 实现了增量拉取和生命周期感知
-class MonitoringProvider extends ChangeNotifier {
+class MonitoringProvider extends ChangeNotifier with SafeChangeNotifier {
   MonitoringProvider({
     MonitoringService? service,
     MonitorLocalDataSource? dataSource,

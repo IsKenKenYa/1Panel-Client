@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'server_models.dart';
 import 'server_repository.dart';
 
-class ServerProvider extends ChangeNotifier {
+class ServerProvider extends ChangeNotifier with SafeChangeNotifier {
   ServerProvider({ServerRepository? repository})
       : _repository = repository ?? const ServerRepository();
 

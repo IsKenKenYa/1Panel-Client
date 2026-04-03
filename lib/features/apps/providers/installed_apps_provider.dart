@@ -21,6 +21,7 @@ class AppStats {
 class InstalledAppsProvider extends ChangeNotifier {
   final AppService _appService;
   Timer? _pollingTimer;
+  bool _disposed = false;
 
   InstalledAppsProvider({AppService? appService})
       : _appService = appService ?? AppService();
@@ -35,6 +36,13 @@ class InstalledAppsProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
+  void _notifySafely() {
+    if (_disposed) {
+      return;
+    }
+    notifyListeners();
+  }
+
   Future<void> onServerChanged() async {
     stopPolling();
     _installedApps = [];
@@ -42,12 +50,13 @@ class InstalledAppsProvider extends ChangeNotifier {
     _error = null;
     _isLoading = false;
     _appService.resetForServerChange();
-    notifyListeners();
+    _notifySafely();
     await loadInstalledApps();
   }
 
   @override
   void dispose() {
+    _disposed = true;
     stopPolling();
     super.dispose();
   }
@@ -104,7 +113,7 @@ class InstalledAppsProvider extends ChangeNotifier {
     if (!silent) {
       _isLoading = true;
       _error = null;
-      notifyListeners();
+      _notifySafely();
     }
 
     try {
@@ -118,7 +127,7 @@ class InstalledAppsProvider extends ChangeNotifier {
       if (!silent) {
         _isLoading = false;
       }
-      notifyListeners();
+      _notifySafely();
     }
   }
 

@@ -70,6 +70,7 @@ class _WindowsShellContentPageState extends State<WindowsShellContentPage> {
   Widget build(BuildContext context) {
     return Consumer2<CurrentServerController, PinnedModulesController>(
       builder: (context, currentServer, pinnedModules, _) {
+        final scheme = Theme.of(context).colorScheme;
         final modules = _desktopModules(pinnedModules);
         final selectedModule =
             (!currentServer.hasServer && _selectedModule.requiresServer)
@@ -77,14 +78,14 @@ class _WindowsShellContentPageState extends State<WindowsShellContentPage> {
                 : _selectedModule;
 
         final child = Scaffold(
-          backgroundColor: Colors.transparent,
+          backgroundColor: scheme.surface,
           body: Column(
             children: [
               // Custom Titlebar Placeholder for Windows (Will be integrated with window_manager in Task 3)
               Container(
                 height: 32,
                 width: double.infinity,
-                color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.3),
+                color: scheme.surface,
                 child: Row(
                   children: [
                     const SizedBox(width: 16),
@@ -102,7 +103,7 @@ class _WindowsShellContentPageState extends State<WindowsShellContentPage> {
                     // Windows style Sidebar
                     DesktopSidebar(
                       width: 280,
-                      backgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha: 0.6),
+                      backgroundColor: scheme.surfaceContainerLow,
                       modules: modules,
                       selectedModule: selectedModule,
                       hasServer: currentServer.hasServer,
@@ -121,7 +122,12 @@ class _WindowsShellContentPageState extends State<WindowsShellContentPage> {
                         children: [
                           DesktopTopToolArea(
                             selectedModule: selectedModule,
-                            backgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
+                            backgroundColor: scheme.surface,
+                            onOpenSettings: () {
+                              setState(() {
+                                _selectedModule = ClientModule.settings;
+                              });
+                            },
                           ),
                           Expanded(
                             child: ClipRRect(
@@ -129,7 +135,7 @@ class _WindowsShellContentPageState extends State<WindowsShellContentPage> {
                                 topLeft: Radius.circular(8),
                               ),
                               child: Container(
-                                color: Theme.of(context).scaffoldBackgroundColor,
+                                color: scheme.surface,
                                 child: DesktopContentHost(
                                   module: selectedModule,
                                   serverId: currentServer.currentServerId,
@@ -170,4 +176,3 @@ class _WindowsShellContentPageState extends State<WindowsShellContentPage> {
     );
   }
 }
-

@@ -63,6 +63,7 @@ final class MainShellViewController: NSViewController {
         if let window = view.window {
             window.titleVisibility = .hidden
             window.titlebarAppearsTransparent = true
+            window.backgroundColor = .windowBackgroundColor
             window.styleMask.insert(.fullSizeContentView)
         }
     }

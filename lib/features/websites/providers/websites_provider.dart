@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 
 import '../../../data/models/website_group_models.dart';
 import '../../../data/models/website_models.dart';
@@ -70,7 +71,7 @@ class WebsitesData {
   }
 }
 
-class WebsitesProvider extends ChangeNotifier {
+class WebsitesProvider extends ChangeNotifier with SafeChangeNotifier {
   WebsitesProvider({
     WebsiteService? service,
   }) : _service = service ?? WebsiteService();

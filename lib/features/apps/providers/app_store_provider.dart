@@ -4,6 +4,7 @@ import '../app_service.dart';
 
 class AppStoreProvider extends ChangeNotifier {
   final AppService _appService;
+  bool _disposed = false;
 
   AppStoreProvider({AppService? appService})
       : _appService = appService ?? AppService();
@@ -21,6 +22,13 @@ class AppStoreProvider extends ChangeNotifier {
   String? get error => _error;
   bool get hasMore => _hasMore;
 
+  void _notifySafely() {
+    if (_disposed) {
+      return;
+    }
+    notifyListeners();
+  }
+
   Future<void> onServerChanged() async {
     _appService.resetForServerChange();
     _apps = [];
@@ -29,8 +37,14 @@ class AppStoreProvider extends ChangeNotifier {
     _hasMore = true;
     _isLoading = false;
     _error = null;
-    notifyListeners();
+    _notifySafely();
     await loadApps(refresh: true);
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
   }
 
   Future<void> loadApps({
@@ -47,7 +61,7 @@ class AppStoreProvider extends ChangeNotifier {
 
     _isLoading = true;
     _error = null;
-    notifyListeners();
+    _notifySafely();
 
     try {
       if (refresh) {
@@ -83,14 +97,14 @@ class AppStoreProvider extends ChangeNotifier {
       }
     } finally {
       _isLoading = false;
-      notifyListeners();
+      _notifySafely();
     }
   }
 
   Future<void> installApp(AppInstallCreateRequest request) async {
     _isLoading = true;
     _error = null;
-    notifyListeners();
+    _notifySafely();
 
     try {
       await _appService.installApp(request);
@@ -99,14 +113,14 @@ class AppStoreProvider extends ChangeNotifier {
       rethrow;
     } finally {
       _isLoading = false;
-      notifyListeners();
+      _notifySafely();
     }
   }
 
   Future<void> syncApps() async {
     _isLoading = true;
     _error = null;
-    notifyListeners();
+    _notifySafely();
 
     try {
       await _appService.syncRemoteApps();
@@ -115,14 +129,14 @@ class AppStoreProvider extends ChangeNotifier {
       rethrow;
     } finally {
       _isLoading = false;
-      notifyListeners();
+      _notifySafely();
     }
   }
 
   Future<void> syncLocalApps() async {
     _isLoading = true;
     _error = null;
-    notifyListeners();
+    _notifySafely();
 
     try {
       await _appService.syncLocalApps();
@@ -131,7 +145,7 @@ class AppStoreProvider extends ChangeNotifier {
       rethrow;
     } finally {
       _isLoading = false;
-      notifyListeners();
+      _notifySafely();
     }
   }
 

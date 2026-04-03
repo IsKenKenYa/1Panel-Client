@@ -21,6 +21,9 @@ class _InstalledAppsViewState extends State<InstalledAppsView> {
     super.initState();
     // 初始加载
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
       context.read<InstalledAppsProvider>().loadInstalledApps();
     });
   }

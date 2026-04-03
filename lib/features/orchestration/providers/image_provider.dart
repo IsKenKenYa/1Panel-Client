@@ -1,10 +1,11 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import '../../../data/models/docker_models.dart';
 import '../../../data/models/container_models.dart'; // For ImagePull
 import '../../../data/models/common_models.dart';
 import '../services/orchestration_service.dart';
 
-class DockerImageProvider extends ChangeNotifier {
+class DockerImageProvider extends ChangeNotifier with SafeChangeNotifier {
   DockerImageProvider({OrchestrationService? service})
       : _service = service ?? OrchestrationService();
 

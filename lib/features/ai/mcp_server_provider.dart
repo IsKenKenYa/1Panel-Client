@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/models/mcp_models.dart';
 import 'package:onepanel_client/features/ai/mcp_server_service.dart';
 
-class McpServerProvider extends ChangeNotifier {
+class McpServerProvider extends ChangeNotifier with SafeChangeNotifier {
   McpServerProvider({McpServerService? service})
       : _service = service ?? McpServerService();
 

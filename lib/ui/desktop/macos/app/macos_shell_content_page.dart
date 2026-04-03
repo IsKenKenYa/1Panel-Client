@@ -69,6 +69,7 @@ class _MacosShellContentPageState extends State<MacosShellContentPage> {
   Widget build(BuildContext context) {
     return Consumer2<CurrentServerController, PinnedModulesController>(
       builder: (context, currentServer, pinnedModules, _) {
+        final scheme = Theme.of(context).colorScheme;
         final modules = _desktopModules(pinnedModules);
         final selectedModule =
             (!currentServer.hasServer && _selectedModule.requiresServer)
@@ -76,13 +77,13 @@ class _MacosShellContentPageState extends State<MacosShellContentPage> {
                 : _selectedModule;
 
         final child = Scaffold(
-          backgroundColor: Colors.transparent,
+          backgroundColor: scheme.surface,
           body: Row(
             children: [
               // macOS style Sidebar
               DesktopSidebar(
                 width: 250,
-                backgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha: 0.5),
+                backgroundColor: scheme.surfaceContainerLow,
                 modules: modules,
                 selectedModule: selectedModule,
                 hasServer: currentServer.hasServer,
@@ -102,7 +103,12 @@ class _MacosShellContentPageState extends State<MacosShellContentPage> {
                     // macOS style Top Toolbar
                     DesktopTopToolArea(
                       selectedModule: selectedModule,
-                      backgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha: 0.8),
+                      backgroundColor: scheme.surface,
+                      onOpenSettings: () {
+                        setState(() {
+                          _selectedModule = ClientModule.settings;
+                        });
+                      },
                     ),
                     Expanded(
                       child: ClipRRect(
@@ -110,7 +116,7 @@ class _MacosShellContentPageState extends State<MacosShellContentPage> {
                           topLeft: Radius.circular(12),
                         ),
                         child: Container(
-                          color: Theme.of(context).scaffoldBackgroundColor,
+                          color: scheme.surface,
                           child: DesktopContentHost(
                             module: selectedModule,
                             serverId: currentServer.currentServerId,

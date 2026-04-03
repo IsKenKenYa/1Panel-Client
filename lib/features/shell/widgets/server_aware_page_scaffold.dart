@@ -31,9 +31,11 @@ class ServerAwarePageScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<CurrentServerController>(
       builder: (context, currentServer, _) {
+        final scheme = Theme.of(context).colorScheme;
         final showMissingServer = requireServer && !currentServer.hasServer;
         final canPop = Navigator.of(context).canPop();
         return Scaffold(
+          backgroundColor: scheme.surface,
           appBar: AppBar(
             leading: canPop
                 ? IconButton(
@@ -55,8 +57,14 @@ class ServerAwarePageScaffold extends StatelessWidget {
             bottom: bottom,
           ),
           body: showMissingServer
-              ? NoServerSelectedState(moduleName: title)
-              : body,
+              ? ColoredBox(
+                  color: scheme.surface,
+                  child: NoServerSelectedState(moduleName: title),
+                )
+              : ColoredBox(
+                  color: scheme.surface,
+                  child: body,
+                ),
           floatingActionButton: showMissingServer ? null : floatingActionButton,
           bottomNavigationBar: showMissingServer ? null : bottomNavigationBar,
         );

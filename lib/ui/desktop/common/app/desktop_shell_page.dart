@@ -71,6 +71,7 @@ class _DesktopShellPageState extends State<DesktopShellPage> {
   Widget build(BuildContext context) {
     return Consumer2<CurrentServerController, PinnedModulesController>(
       builder: (context, currentServer, pinnedModules, _) {
+        final scheme = Theme.of(context).colorScheme;
         final modules = _desktopModules(pinnedModules);
         final selectedModule =
             (!currentServer.hasServer && _selectedModule.requiresServer)
@@ -78,9 +79,17 @@ class _DesktopShellPageState extends State<DesktopShellPage> {
                 : _selectedModule;
 
         return Scaffold(
+          backgroundColor: scheme.surface,
           body: Column(
             children: [
-              DesktopTopToolArea(selectedModule: selectedModule),
+              DesktopTopToolArea(
+                selectedModule: selectedModule,
+                onOpenSettings: () {
+                  setState(() {
+                    _selectedModule = ClientModule.settings;
+                  });
+                },
+              ),
               Expanded(
                 child: Row(
                   children: [
@@ -99,9 +108,12 @@ class _DesktopShellPageState extends State<DesktopShellPage> {
                       },
                     ),
                     Expanded(
-                      child: DesktopContentHost(
-                        module: selectedModule,
-                        serverId: currentServer.currentServerId,
+                      child: ColoredBox(
+                        color: scheme.surface,
+                        child: DesktopContentHost(
+                          module: selectedModule,
+                          serverId: currentServer.currentServerId,
+                        ),
                       ),
                     ),
                   ],
