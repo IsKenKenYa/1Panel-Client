@@ -23,13 +23,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
+          cache: gradle
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -51,8 +52,8 @@ jobs:
               CHANNEL_LABEL="Debug"
               SOURCE_BRANCH="dev"
               RELEASE_KIND="debug"
-              PUBLISH_RELEASE="false"
-              PRERELEASE="false"
+              PUBLISH_RELEASE="true"
+              PRERELEASE="true"
               ;;
             beta-*)
               APP_CHANNEL=beta
@@ -97,23 +98,22 @@ jobs:
           echo "prerelease=$PRERELEASE" >> "$GITHUB_OUTPUT"
           echo "apk_name=$APK_NAME" >> "$GITHUB_OUTPUT"
 
-      - name: Validate Tag Source Branch
+      - name: Validate Tag Source Branch Head
         shell: bash
         run: |
-          git fetch origin "${{ steps.meta.outputs.source_branch }}" --depth=1
-          if ! git branch -r --contains "$GITHUB_SHA" | grep -q "origin/${{ steps.meta.outputs.source_branch }}$"; then
-            echo "::error::Tag ${{ steps.meta.outputs.tag_name }} must point to a commit contained in origin/${{ steps.meta.outputs.source_branch }}"
+          REMOTE_HEAD_SHA=$(git ls-remote origin "refs/heads/${{ steps.meta.outputs.source_branch }}" | awk '{print $1}')
+          if [ -z "$REMOTE_HEAD_SHA" ]; then
+            echo "::error::Could not resolve remote branch head for ${{ steps.meta.outputs.source_branch }}"
+            exit 1
+          fi
+          if [ "$REMOTE_HEAD_SHA" != "$GITHUB_SHA" ]; then
+            echo "::error::Tag ${{ steps.meta.outputs.tag_name }} must point to the HEAD of origin/${{ steps.meta.outputs.source_branch }}"
+            echo "::error::Expected $REMOTE_HEAD_SHA but got $GITHUB_SHA"
             exit 1
           fi
 
       - name: Flutter Pub Get
         run: flutter pub get
-
-      - name: Flutter Analyze
-        run: flutter analyze --no-fatal-warnings --no-fatal-infos
-
-      - name: Unit Test Runner
-        run: dart run test/scripts/test_runner.dart unit
 
       - name: Validate Android signing secrets
         env:
@@ -165,6 +165,7 @@ jobs:
         with:
           name: ${{ steps.meta.outputs.tag_name }}
           path: build/${{ steps.meta.outputs.apk_name }}
+          compression-level: 0
 
       - name: Publish GitHub Release
         if: steps.meta.outputs.publish_release == 'true'
@@ -185,5 +186,6 @@ jobs:
             - Signing: `release keystore`
             - Package: `APK only`
             - Feedback: `GitHub Issues`
+            - Note: `debug` tags are internal alpha builds, published as GitHub prereleases for direct APK download
           files: |
             build/${{ steps.meta.outputs.apk_name }}

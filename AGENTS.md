@@ -20,6 +20,16 @@
 - CN: 业务逻辑不得写在 Widget `build()` 或原生 UI 控制器内，必须下沉到 Provider/ViewModel 或 Service。EN: No business logic inside `build()` or native UI controllers; move it to Provider/ViewModel or Service.
 - CN: 状态管理默认 Provider，其他方案需评审通过。EN: Provider is the default; other patterns require review.
 
+## UI Governance (Mandatory)
+- CN: 默认 UI 基线为 Flutter/Dart 实现的 Material Design 3。EN: The default UI baseline is Flutter/Dart with Material Design 3.
+- CN: 共享的非 UI 层（API/Model/Provider/Service/Repository/Infra）默认且优先使用 Dart/Flutter 体系实现。EN: Shared non-UI layers (API/Model/Provider/Service/Repository/Infra) must default to and prioritize Dart/Flutter implementations.
+- CN: 多平台共享页面优先使用 Flutter 实现；只有在平台体验、系统能力或性能收益明确时，才允许原生 UI 例外。EN: Shared multi-platform screens should default to Flutter; native UI exceptions are allowed only when platform UX, system capability, or performance gains are clear.
+- CN: Apple 平台允许 SwiftUI 风格原生页面，Windows 平台允许 WinUI3/Fluent 风格原生页面。EN: Apple platforms may use SwiftUI-native pages, and Windows may use WinUI3/Fluent-native pages.
+- CN: Android 默认不需要为 MD3 重写原生 UI；Kotlin/Compose 仅作为例外能力。EN: Android must not be rewritten natively just to replicate MD3; Kotlin/Compose is exception-only.
+- CN: 多设计系统/多主题必须走统一注册与主题控制，不允许页面自行发明独立 UI 体系。EN: Multi-design-system and multi-theme support must go through centralized registration and theme control; pages may not invent standalone UI systems.
+- CN: 原生代码主要用于 UI 容器、平台交互与系统能力接入，不得承载共享业务核心逻辑。EN: Native code is primarily for UI containers, platform interaction, and system capabilities, and must not own shared business logic.
+- CN: 原生 UI 仍必须遵守 `Presentation -> State -> Service/Repository -> API/Infra`，不得直接跨层访问 API。EN: Native UI must still obey `Presentation -> State -> Service/Repository -> API/Infra` and may not call APIs directly across layers.
+
 ## File Size & Split Rules (Strict)
 - CN: 所有代码文件（除文档与 Swagger 产物）硬上限为 `1000 LOC`，超过必须拆分后再提交。EN: Hard cap for all code files (excluding docs and Swagger artifacts) is `1000 LOC`; files above this must be split before merge.
 - CN: 推荐阈值：普通逻辑文件（Provider/ViewModel/Service/Repository/Model/Utils）建议 ≤ `500 LOC`。EN: Recommended target for general logic files (Provider/ViewModel/Service/Repository/Model/Utils) is `<= 500 LOC`.
@@ -59,6 +69,7 @@
 - CN: 重大架构/约定/踩坑需写入 `agent-memory-mcp`（type: `decision`/`pattern`）。EN: Record key architecture decisions/patterns in `agent-memory-mcp` (type: `decision`/`pattern`).
 - CN: 实施前先用 `memory_search` 检索既有决策。EN: Run `memory_search` before implementation to reuse prior decisions.
 - CN: 规范变更必须同步更新 `AGENTS.md` 与 `CLAUDE.md`。EN: Any standards change must update `AGENTS.md` and `CLAUDE.md`.
+- CN: 跨平台 UI / 原生扩展规则变更时，必须同步更新 `docs/development/cross_platform_ui_governance.md`。EN: Changes to cross-platform UI or native-extension rules must also update `docs/development/cross_platform_ui_governance.md`.
 
 ## Commit & Pull Request Guidelines
 - Commit messages follow Conventional Commits: `feat(scope): ...`, `fix(scope): ...`, `chore: ...`, `refactor: ...`. Scopes may use module names in English or Chinese.

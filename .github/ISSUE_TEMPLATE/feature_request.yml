@@ -1,0 +1,44 @@
+name: "Feature Request | 功能需求"
+description: "Suggest an improvement or new capability | 提交改进建议或新功能需求"
+title: "[Feature] "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Share the problem you want to solve and the outcome you expect.
+
+        请说明你想解决的问题以及你期望得到的结果。
+  - type: textarea
+    id: problem
+    attributes:
+      label: "Problem Statement | 问题背景"
+      description: "What problem are you trying to solve? | 你希望解决什么问题？"
+      placeholder: "The current workflow is ... | 当前流程存在……"
+    validations:
+      required: true
+  - type: textarea
+    id: proposed_solution
+    attributes:
+      label: "Proposed Solution | 建议方案"
+      description: "Describe your preferred solution. | 请描述你倾向的解决方案。"
+      placeholder: "I suggest adding ... | 我建议增加……"
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "Alternatives Considered | 备选方案"
+      description: "Describe alternatives you considered. | 请说明你考虑过的其他方案。"
+  - type: textarea
+    id: use_case
+    attributes:
+      label: "Use Case / User Value | 使用场景 / 用户价值"
+      description: "Explain who benefits and why. | 说明谁会受益，以及为什么有价值。"
+      placeholder: "This helps operators who ... | 这会帮助……"
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: "Additional Context | 补充信息"
+      description: "Add screenshots, references, prior art, or related issues. | 可附截图、参考资料、竞品示例或相关 Issue。"

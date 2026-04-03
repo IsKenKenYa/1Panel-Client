@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security Advisory | 安全漏洞报告
+    url: https://github.com/IsKenKenYa/1Panel-Client/security/advisories/new
+    about: Report security vulnerabilities privately through GitHub Security Advisories. | 请通过 GitHub Security Advisories 私下报告安全漏洞。
+  - name: Contribution Guide | 贡献指南
+    url: https://github.com/IsKenKenYa/1Panel-Client/blob/dev/CONTRIBUTING.md
+    about: Read the contribution workflow, coding rules, and testing gate before opening an issue or PR. | 提交 Issue 或 PR 前，请先阅读贡献流程、编码规范和测试门禁。
+  - name: Project Documentation | 项目文档
+    url: https://github.com/IsKenKenYa/1Panel-Client/blob/dev/docs/README.md
+    about: Check project docs and development references before filing support-style questions. | 提交偏支持类问题前，请先查看项目文档与开发资料。

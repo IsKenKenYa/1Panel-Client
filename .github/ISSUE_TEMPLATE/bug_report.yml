@@ -1,0 +1,107 @@
+name: "Bug Report | 漏洞与缺陷报告"
+description: "Report a reproducible bug or regression | 提交可复现的缺陷或回归问题"
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please fill in the details below. English first, Chinese second is welcome, but either language is acceptable.
+
+        请尽量完整填写以下信息。欢迎使用“英文在前、中文在后”的写法，但单独使用中英文任一语言也可以。
+  - type: textarea
+    id: summary
+    attributes:
+      label: "Summary | 问题概述"
+      description: "Describe the bug clearly. | 请清晰描述问题现象。"
+      placeholder: "What happened? | 发生了什么？"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: "Reproduction Steps | 复现步骤"
+      description: "Provide stable steps to reproduce the issue. | 请提供稳定可复现的操作步骤。"
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: "Expected Result | 期望结果"
+      description: "What did you expect to happen? | 你预期会发生什么？"
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: "Actual Result | 实际结果"
+      description: "What actually happened? | 实际发生了什么？"
+    validations:
+      required: true
+  - type: input
+    id: app_version
+    attributes:
+      label: "App Version | 应用版本"
+      description: "Example: 0.5.0-alpha.2+2 | 示例：0.5.0-alpha.2+2"
+      placeholder: "0.5.0-alpha.2+2"
+    validations:
+      required: true
+  - type: dropdown
+    id: release_channel
+    attributes:
+      label: "Release Channel | 发布渠道"
+      description: "Select the build channel. | 请选择当前构建渠道。"
+      options:
+        - debug / alpha
+        - beta
+        - pre-release
+        - release
+        - unknown
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: "Platform | 平台"
+      description: "Select the affected platform. | 请选择受影响的平台。"
+      options:
+        - Android
+        - iOS
+        - macOS
+        - Windows
+        - Linux
+        - Web
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: device_os
+    attributes:
+      label: "Device / OS | 设备与系统"
+      description: "Device model and OS version. | 设备型号与系统版本。"
+      placeholder: "Pixel 9 / Android 16"
+  - type: input
+    id: panel_version
+    attributes:
+      label: "1Panel Version | 1Panel 版本"
+      description: "Optional but helpful. | 可选，但建议填写。"
+      placeholder: "v2.1.7"
+  - type: textarea
+    id: logs
+    attributes:
+      label: "Logs / Screenshots | 日志 / 截图"
+      description: "Paste logs or attach screenshots. Redact sensitive information first. | 粘贴日志或附上截图。请先脱敏敏感信息。"
+      placeholder: "Attach screenshots or paste sanitized logs here. | 请在此附截图或粘贴已脱敏日志。"
+  - type: checkboxes
+    id: safety_check
+    attributes:
+      label: "Sensitive Data Confirmation | 敏感信息确认"
+      description: "Confirm before submitting. | 提交前请确认。"
+      options:
+        - label: "I removed API keys, tokens, passwords, private IPs, and other sensitive data. | 我已移除 API Key、Token、密码、内网 IP 等敏感信息。"
+          required: true
