@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/services/onboarding_service.dart';
+import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/features/onboarding/coach_mark_overlay.dart';
 import 'package:onepanel_client/features/server/server_detail_page.dart';
 import 'package:onepanel_client/features/server/server_form_page.dart';
@@ -36,16 +37,26 @@ class ServerListViewModel extends ChangeNotifier {
         if (_serverProvider.servers.isNotEmpty) {
           _serverProvider.loadMetrics();
         }
+        if (!context.mounted) {
+          return;
+        }
+        // Check coach marks after initial load
+        checkAndShowCoachMarks(context);
       });
     });
-    // For coach steps, we need context, so we attach listener that captures the current context.
-    // However, it's better to just check once or provide a function.
-    _serverProvider.addListener(() => _onProviderUpdated(context));
+    // Add listener but prevent recursive updates
+    _serverProvider.addListener(_onProviderChanged);
+  }
+
+  void _onProviderChanged() {
+    // Just notify listeners without triggering coach marks
+    // Coach marks will be shown only on initial load
+    notifyListeners();
   }
 
   @override
   void dispose() {
-    // We can't easily remove the closure listener, but since this ViewModel is disposed with the page, it's fine.
+    _serverProvider.removeListener(_onProviderChanged);
     _searchController.dispose();
     super.dispose();
   }
@@ -72,7 +83,7 @@ class ServerListViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> _onProviderUpdated(BuildContext context) async {
+  Future<void> checkAndShowCoachMarks(BuildContext context) async {
     if (!enableCoach) return;
     if (coachSteps.isNotEmpty) return;
 
@@ -122,10 +133,28 @@ class ServerListViewModel extends ChangeNotifier {
 
   Future<void> openAddServer(BuildContext context) async {
     final currentServer = context.read<CurrentServerController>();
-    final result = await Navigator.push<bool>(
-      context,
-      MaterialPageRoute(builder: (_) => const ServerFormPage()),
-    );
+    final bool? result;
+    if (PlatformUtils.isDesktop(context)) {
+      result = await showDialog<bool>(
+        context: context,
+        builder: (dialogContext) => Dialog(
+          insetPadding: const EdgeInsets.all(24),
+          clipBehavior: Clip.antiAlias,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: 720,
+              maxHeight: 820,
+            ),
+            child: const ServerFormPage(),
+          ),
+        ),
+      );
+    } else {
+      result = await Navigator.push<bool>(
+        context,
+        MaterialPageRoute(builder: (_) => const ServerFormPage()),
+      );
+    }
 
     if (result == true) {
       await _serverProvider.load();

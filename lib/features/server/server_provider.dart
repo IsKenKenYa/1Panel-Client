@@ -22,17 +22,21 @@ class ServerProvider extends ChangeNotifier with SafeChangeNotifier {
   List<ServerCardViewModel> get servers => _servers;
 
   Future<void> load() async {
+    if (isDisposed) return;
+    
     _isLoading = true;
     notifyListeners();
 
     try {
       _servers = await _repository.loadServerCards();
-      if (_servers.isNotEmpty) {
+      if (_servers.isNotEmpty && !isDisposed) {
         startMetricsAutoRefresh();
       }
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      if (!isDisposed) {
+        _isLoading = false;
+        notifyListeners();
+      }
     }
   }
 
@@ -57,27 +61,32 @@ class ServerProvider extends ChangeNotifier with SafeChangeNotifier {
   }
 
   Future<void> loadMetrics() async {
-    if (_isLoadingMetrics) return;
+    if (_isLoadingMetrics || isDisposed) return;
 
     _isLoadingMetrics = true;
     notifyListeners();
 
     try {
       for (final server in _servers) {
+        if (isDisposed) break;
         final metrics = await _repository.loadServerMetrics(server.config.id);
         _metrics[server.config.id] = metrics;
       }
 
-      _servers = _servers
-          .map((s) => ServerCardViewModel(
-                config: s.config,
-                isCurrent: s.isCurrent,
-                metrics: _metrics[s.config.id] ?? const ServerMetricsSnapshot(),
-              ))
-          .toList();
+      if (!isDisposed) {
+        _servers = _servers
+            .map((s) => ServerCardViewModel(
+                  config: s.config,
+                  isCurrent: s.isCurrent,
+                  metrics: _metrics[s.config.id] ?? const ServerMetricsSnapshot(),
+                ))
+            .toList();
+      }
     } finally {
-      _isLoadingMetrics = false;
-      notifyListeners();
+      if (!isDisposed) {
+        _isLoadingMetrics = false;
+        notifyListeners();
+      }
     }
   }
 
@@ -87,8 +96,18 @@ class ServerProvider extends ChangeNotifier with SafeChangeNotifier {
   }
 
   Future<void> delete(String id) async {
-    await _repository.removeConfig(id);
-    await load();
+    // Stop metrics refresh before deleting to avoid accessing deleted server
+    stopMetricsAutoRefresh();
+    
+    try {
+      await _repository.removeConfig(id);
+      await load();
+    } finally {
+      // Restart metrics refresh if there are still servers
+      if (_servers.isNotEmpty) {
+        startMetricsAutoRefresh();
+      }
+    }
   }
 
   Future<void> save(ApiConfig config) async {

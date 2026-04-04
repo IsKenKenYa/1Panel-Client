@@ -72,6 +72,7 @@ extension _FilesViewItemActions on _FilesViewState {
 
     if (isDesktop) {
       // Add right-click menu and keyboard selection
+      final selectableContent = content;
       content = GestureDetector(
         onSecondaryTapDown: (details) {
           if (!isSelected) {
@@ -101,10 +102,11 @@ extension _FilesViewItemActions on _FilesViewState {
             if (index != null) provider.setLastSelectedIndex(index);
           }
         },
-        child: content,
+        child: selectableContent,
       );
 
       // Add Drag & Drop support
+      final draggableContent = content;
       content = LongPressDraggable<List<String>>(
         data: provider.data.hasSelection && isSelected
             ? provider.data.selectedFiles.toList()
@@ -157,11 +159,11 @@ extension _FilesViewItemActions on _FilesViewState {
                             borderRadius: BorderRadius.circular(16),
                           )
                         : null,
-                    child: content,
+                    child: draggableContent,
                   );
                 },
               )
-            : content,
+            : draggableContent,
       );
     }
 
@@ -229,26 +231,28 @@ extension _FilesViewItemActions on _FilesViewState {
     ];
   }
 
-  void _showDesktopContextMenu(
+  Future<void> _showDesktopContextMenu(
     BuildContext context,
     Offset position,
     FilesProvider provider,
     FileInfo file,
     AppLocalizations l10n,
-  ) {
-    showMenu<String>(
-      context: context,
+  ) async {
+    if (!mounted) return;
+    final currentContext = context;
+    final value = await showMenu<String>(
+      context: currentContext,
       position: RelativeRect.fromLTRB(
         position.dx,
         position.dy,
         position.dx + 1,
         position.dy + 1,
       ),
-      items: _buildFileMenu(context, provider, file, l10n),
-    ).then((value) {
-      if (value != null) {
-        _handleFileAction(context, provider, file, value, l10n);
-      }
-    });
+      items: _buildFileMenu(currentContext, provider, file, l10n),
+    );
+    if (!mounted || !currentContext.mounted) return;
+    if (value != null) {
+      _handleFileAction(currentContext, provider, file, value, l10n);
+    }
   }
 }

@@ -34,7 +34,9 @@ class AuthInterceptor extends Interceptor {
       'User-Agent': ApiConstants.userAgent,
     });
 
-    _logger.d('[network] 1Panel auth headers added for ${options.path}');
+    _logger.d(
+      '[network] 1Panel auth headers added for ${options.path} (apiKeyLength=${_apiKey!.length})',
+    );
     super.onRequest(options, handler);
   }
 

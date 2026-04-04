@@ -9,6 +9,7 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/config/api_constants.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
 
@@ -21,29 +22,22 @@ part 'providers/files_provider_browser_part.dart';
 part 'providers/files_provider_favorites_transfer_part.dart';
 part 'providers/files_provider_system_part.dart';
 
-class FilesProvider extends ChangeNotifier {
+class FilesProvider extends ChangeNotifier with SafeChangeNotifier {
   FilesProvider({FilesService? service}) : _service = service ?? FilesService();
 
   final FilesService _service;
   FilesData _data = const FilesData();
   final Map<String, String> _serverPathMemory = <String, String>{};
-  bool _disposed = false;
 
   static const int _chunkDownloadThreshold = 50 * 1024 * 1024;
 
   FilesData get data => _data;
 
   void _emitChange() {
-    if (_disposed) {
+    if (isDisposed) {
       return;
     }
     notifyListeners();
-  }
-
-  @override
-  void dispose() {
-    _disposed = true;
-    super.dispose();
   }
 
   List<String> _pathSegments(String path) {
@@ -69,6 +63,4 @@ class FilesProvider extends ChangeNotifier {
     }
     return _normalizePath(_serverPathMemory[serverId] ?? '/');
   }
-
-  bool get isDisposed => _disposed;
 }

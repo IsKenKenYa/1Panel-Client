@@ -1,8 +1,9 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
 import 'package:onepanel_client/features/files/services/file_recycle_service.dart';
 
-class RecycleBinProvider extends ChangeNotifier {
+class RecycleBinProvider extends ChangeNotifier with SafeChangeNotifier {
   RecycleBinProvider({FileRecycleService? service})
       : _service = service ?? FileRecycleService();
 

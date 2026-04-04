@@ -208,15 +208,18 @@ class ServerDetailPage extends StatelessWidget {
     final successMessage = l10n.serverDeleteSuccess(target.config.name);
 
     try {
+      // Close the page first to avoid widget tree issues during deletion
+      navigator.pop();
+      
       await serverProvider.delete(target.config.id);
       await currentServerController.refresh();
+      
       if (!context.mounted) {
         return;
       }
       messenger.showSnackBar(
         SnackBar(content: Text(successMessage)),
       );
-      navigator.maybePop();
     } catch (error) {
       if (!context.mounted) {
         return;

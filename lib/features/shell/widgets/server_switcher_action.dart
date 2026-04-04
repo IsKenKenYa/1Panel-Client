@@ -61,7 +61,11 @@ class ServerSwitcherAction extends StatelessWidget {
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
                       Navigator.pop(sheetContext);
-                      Navigator.pushNamed(context, AppRoutes.server);
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.home,
+                        arguments: <String, dynamic>{'module': 'servers'},
+                      );
                     },
                   )
                 else
@@ -104,7 +108,11 @@ class ServerSwitcherAction extends StatelessWidget {
                   child: TextButton.icon(
                     onPressed: () {
                       Navigator.pop(sheetContext);
-                      Navigator.pushNamed(context, AppRoutes.server);
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.home,
+                        arguments: <String, dynamic>{'module': 'servers'},
+                      );
                     },
                     icon: const Icon(Icons.settings_outlined),
                     label: Text(l10n.serverPageTitle),

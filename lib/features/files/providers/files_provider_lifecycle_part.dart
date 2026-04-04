@@ -43,7 +43,10 @@ extension FilesProviderLifecycleMixin on FilesProvider {
       _data = _data.copyWith(isLoading: false, error: e.toString());
     }
     _emitChange();
-    unawaited(loadFavorites());
+    // Load favorites asynchronously without blocking
+    if (!isDisposed) {
+      loadFavorites();
+    }
   }
 
   Future<void> loadServer() async {
@@ -154,7 +157,7 @@ extension FilesProviderLifecycleMixin on FilesProvider {
       currentPath: restoredPath,
       pathHistory: <String>[restoredPath],
     );
-    _emitChange();
+    // Don't emit change here, let initialize() handle it
     unawaited(initialize());
   }
 
@@ -192,7 +195,7 @@ extension FilesProviderLifecycleMixin on FilesProvider {
   void setSorting(String? sortBy, String? sortOrder) {
     if (isDisposed) return;
     _data = _data.copyWith(sortBy: sortBy, sortOrder: sortOrder);
-    _emitChange();
+    // Don't emit change here, let loadFiles() handle it
     loadFiles();
   }
 

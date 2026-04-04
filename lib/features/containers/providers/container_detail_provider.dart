@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/data/models/container_models.dart'
     hide Container;
 import 'package:onepanel_client/features/containers/container_service.dart';
 
-class ContainerDetailProvider extends ChangeNotifier {
+class ContainerDetailProvider extends ChangeNotifier with SafeChangeNotifier {
   ContainerDetailProvider({
     required this.container,
     ContainerService? service,
@@ -37,6 +38,7 @@ class ContainerDetailProvider extends ChangeNotifier {
   ContainerStats? get stats => _stats;
 
   Future<void> loadAll() async {
+    if (isDisposed) return;
     await Future.wait([
       loadInspect(),
       loadLogs(),
@@ -45,47 +47,68 @@ class ContainerDetailProvider extends ChangeNotifier {
   }
 
   Future<void> loadInspect() async {
+    if (isDisposed) return;
+    
     _inspectLoading = true;
     _inspectError = null;
     notifyListeners();
 
     try {
       _inspectData = await _service.inspectContainer(container.id);
+      if (isDisposed) return;
     } catch (e) {
-      _inspectError = e.toString();
+      if (!isDisposed) {
+        _inspectError = e.toString();
+      }
     } finally {
-      _inspectLoading = false;
-      notifyListeners();
+      if (!isDisposed) {
+        _inspectLoading = false;
+        notifyListeners();
+      }
     }
   }
 
   Future<void> loadLogs({String tail = '1000'}) async {
+    if (isDisposed) return;
+    
     _logsLoading = true;
     _logsError = null;
     notifyListeners();
 
     try {
       _logs = await _service.getContainerLogs(container.name, tail: tail);
+      if (isDisposed) return;
     } catch (e) {
-      _logsError = e.toString();
+      if (!isDisposed) {
+        _logsError = e.toString();
+      }
     } finally {
-      _logsLoading = false;
-      notifyListeners();
+      if (!isDisposed) {
+        _logsLoading = false;
+        notifyListeners();
+      }
     }
   }
 
   Future<void> loadStats() async {
+    if (isDisposed) return;
+    
     _statsLoading = true;
     _statsError = null;
     notifyListeners();
 
     try {
       _stats = await _service.getContainerStats(container.id);
+      if (isDisposed) return;
     } catch (e) {
-      _statsError = e.toString();
+      if (!isDisposed) {
+        _statsError = e.toString();
+      }
     } finally {
-      _statsLoading = false;
-      notifyListeners();
+      if (!isDisposed) {
+        _statsLoading = false;
+        notifyListeners();
+      }
     }
   }
 }

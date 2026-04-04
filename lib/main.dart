@@ -19,6 +19,7 @@ import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 import 'package:onepanel_client/core/channel/native_channel_manager.dart';
 import 'package:onepanel_client/core/services/app_preferences_service.dart';
 import 'package:onepanel_client/core/theme/ui_render_mode.dart';
+import 'package:onepanel_client/core/config/api_config_migration.dart';
 
 // Feature Providers
 import 'features/dashboard/dashboard_provider.dart';
@@ -55,6 +56,18 @@ void main() async {
     appLogger.wWithPackage(
       'main',
       'Failed to load logger preferences, using default log level',
+      error: error,
+      stackTrace: stackTrace,
+    );
+  }
+
+  // Migrate API keys from SharedPreferences fallback to secure storage
+  try {
+    await ApiConfigMigration.runMigrationIfNeeded();
+  } catch (error, stackTrace) {
+    appLogger.wWithPackage(
+      'main',
+      'Failed to run API config migration',
       error: error,
       stackTrace: stackTrace,
     );

@@ -50,9 +50,9 @@
 		8B8E0C9576AFF5C032017D87 /* AppsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6A87537D32DB529B5D3D70F /* AppsViewModel.swift */; };
 		8C79D92CB068BB656DB1C9A1 /* ContainersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106BB078AA6F1C5B39F3EF0E /* ContainersViewModel.swift */; };
 		954508EB2FC0D3E417CAB6E4 /* TranslationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C6BF85241F60E51282F495 /* TranslationsManager.swift */; };
-		A1B2C3D4E5F6A7B9 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8 /* ViewExtensions.swift */; };
 		977972D1DFBA147B4614D45C /* WebsitesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80C069787796F00C193F33ED /* WebsitesViewModel.swift */; };
 		A155DB59447846B3F0EDEB19 /* ServersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F043111F83E145A5A7DA53 /* ServersView.swift */; };
+		A1B2C3D4E5F6A7B9 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8 /* ViewExtensions.swift */; };
 		A8A04BE9CD6A9BA1E8D4E7B1 /* CronJobsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D6328DEDBA9195A6D07E07C /* CronJobsViewModel.swift */; };
 		AD9C34BDC7AC590E90D4E987 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FD05D12112E9FDC0C7EEF79 /* Pods_Runner.framework */; };
 		B3352A63E2C8A42BEAB175EE /* AppsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4037E30682A0357CB82BC9FD /* AppsView.swift */; };
@@ -102,7 +102,6 @@
 		09F043111F83E145A5A7DA53 /* ServersView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ServersView.swift; sourceTree = "<group>"; };
 		106BB078AA6F1C5B39F3EF0E /* ContainersViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContainersViewModel.swift; sourceTree = "<group>"; };
 		13C6BF85241F60E51282F495 /* TranslationsManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TranslationsManager.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F6A7B8 /* ViewExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		177F320876FF80E1571539BD /* ContainersView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContainersView.swift; sourceTree = "<group>"; };
 		1A0BC2233618547B92F673F5 /* MainShellView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MainShellView.swift; sourceTree = "<group>"; };
 		1B4E84B6584A8C5767300FDE /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
@@ -142,6 +141,7 @@
 		8FD05D12112E9FDC0C7EEF79 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		94F2D1A9936C5BA321B7E1E6 /* DatabasesView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DatabasesView.swift; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A7B8 /* ViewExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		A2984FCFD620420B3073F818 /* ServersViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ServersViewModel.swift; sourceTree = "<group>"; };
 		ABC83C63F81101B46E06F93F /* AIView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AIView.swift; sourceTree = "<group>"; };
 		ACDCDA6358CF0F0E429B57F2 /* Pods-RunnerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.debug.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -186,7 +186,6 @@
 				106BB078AA6F1C5B39F3EF0E /* ContainersViewModel.swift */,
 				177F320876FF80E1571539BD /* ContainersView.swift */,
 			);
-			name = Containers;
 			path = Containers;
 			sourceTree = "<group>";
 		};
@@ -196,7 +195,6 @@
 				C43B4CD5DDB68E15585E7031 /* DatabasesViewModel.swift */,
 				94F2D1A9936C5BA321B7E1E6 /* DatabasesView.swift */,
 			);
-			name = Databases;
 			path = Databases;
 			sourceTree = "<group>";
 		};
@@ -206,7 +204,6 @@
 				AF3D4C71EBCEB9269A64E4CB /* SettingsViewModel.swift */,
 				03EA651BE7A119BC2C44C711 /* SettingsView.swift */,
 			);
-			name = Settings;
 			path = Settings;
 			sourceTree = "<group>";
 		};
@@ -216,7 +213,6 @@
 				3D6328DEDBA9195A6D07E07C /* CronJobsViewModel.swift */,
 				6A19A19386E923399B4C897D /* CronJobsView.swift */,
 			);
-			name = CronJobs;
 			path = CronJobs;
 			sourceTree = "<group>";
 		};
@@ -226,7 +222,6 @@
 				32B7E867C44FF0754F9C9776 /* FirewallViewModel.swift */,
 				B41356E02CEE3D8C4BF62145 /* FirewallView.swift */,
 			);
-			name = Firewall;
 			path = Firewall;
 			sourceTree = "<group>";
 		};
@@ -236,7 +231,6 @@
 				5B6FDF289CEC86A11BB13AFD /* BackupsViewModel.swift */,
 				ED28EFBA32961CBCB8FCA361 /* BackupsView.swift */,
 			);
-			name = Backups;
 			path = Backups;
 			sourceTree = "<group>";
 		};
@@ -332,7 +326,6 @@
 				8F32D7C8CF28CE96026BC83A /* MonitoringViewModel.swift */,
 				27083B4A316AB0649198636F /* MonitoringView.swift */,
 			);
-			name = Monitoring;
 			path = Monitoring;
 			sourceTree = "<group>";
 		};
@@ -354,7 +347,6 @@
 				2F04AF5CEFAD0621B386F9ED /* Backups */,
 				5829D420822819963EF13FFF /* AI */,
 			);
-			name = Modules;
 			path = Modules;
 			sourceTree = "<group>";
 		};
@@ -365,7 +357,6 @@
 				D32B0B965E420CB2E8215615 /* Components */,
 				483611CE8D092724429C38C9 /* Modules */,
 			);
-			name = UI;
 			path = UI;
 			sourceTree = "<group>";
 		};
@@ -375,7 +366,6 @@
 				2743C4F500AFAEB21C8E01AA /* AIViewModel.swift */,
 				ABC83C63F81101B46E06F93F /* AIView.swift */,
 			);
-			name = AI;
 			path = AI;
 			sourceTree = "<group>";
 		};
@@ -387,7 +377,6 @@
 				A1B2C3D4E5F6A7B8 /* ViewExtensions.swift */,
 				B06A7AA990C66B443341AF71 /* ThemeManager.swift */,
 			);
-			name = Core;
 			path = Core;
 			sourceTree = "<group>";
 		};
@@ -401,7 +390,6 @@
 				D84736446B6A6F622AB8A0A2 /* Pods-RunnerTests.release.xcconfig */,
 				AFBC6A2821AFF217A3EC8D57 /* Pods-RunnerTests.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -411,7 +399,6 @@
 				A2984FCFD620420B3073F818 /* ServersViewModel.swift */,
 				09F043111F83E145A5A7DA53 /* ServersView.swift */,
 			);
-			name = Servers;
 			path = Servers;
 			sourceTree = "<group>";
 		};
@@ -421,7 +408,6 @@
 				80C069787796F00C193F33ED /* WebsitesViewModel.swift */,
 				8718D639F653E6D627FB8A70 /* WebsitesView.swift */,
 			);
-			name = Websites;
 			path = Websites;
 			sourceTree = "<group>";
 		};
@@ -431,7 +417,6 @@
 				D5A8427D0BFF0CB510FBC088 /* DashboardViewModel.swift */,
 				5FC26FDF7028FD3559C27F1B /* DashboardView.swift */,
 			);
-			name = Dashboard;
 			path = Dashboard;
 			sourceTree = "<group>";
 		};
@@ -441,7 +426,6 @@
 				E6A87537D32DB529B5D3D70F /* AppsViewModel.swift */,
 				4037E30682A0357CB82BC9FD /* AppsView.swift */,
 			);
-			name = Apps;
 			path = Apps;
 			sourceTree = "<group>";
 		};
@@ -450,7 +434,6 @@
 			children = (
 				F0108EE28A3CEF5C75F7574F /* VisualEffectView.swift */,
 			);
-			name = Components;
 			path = Components;
 			sourceTree = "<group>";
 		};
@@ -460,7 +443,6 @@
 				EAF568DDFC4334EA2C19376B /* FilesViewModel.swift */,
 				D695296FE7F4CF8AAD51CC39 /* FilesView.swift */,
 			);
-			name = Files;
 			path = Files;
 			sourceTree = "<group>";
 		};
@@ -471,7 +453,6 @@
 				81F8953E102D3383A40212CA /* FlutterContentView.swift */,
 				1A0BC2233618547B92F673F5 /* MainShellView.swift */,
 			);
-			name = Shell;
 			path = Shell;
 			sourceTree = "<group>";
 		};
@@ -845,7 +826,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -876,6 +857,7 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/DebugProfile.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = MH5TSXPRNK;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -921,7 +903,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -977,7 +959,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -1008,6 +990,7 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/DebugProfile.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = MH5TSXPRNK;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1028,6 +1011,7 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/Release.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = MH5TSXPRNK;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

@@ -47,7 +47,11 @@ class NoServerSelectedState extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             TextButton(
-              onPressed: () => Navigator.pushNamed(context, AppRoutes.server),
+              onPressed: () => Navigator.pushNamed(
+                context,
+                AppRoutes.home,
+                arguments: <String, dynamic>{'module': 'servers'},
+              ),
               child: Text(l10n.serverPageTitle),
             ),
           ],

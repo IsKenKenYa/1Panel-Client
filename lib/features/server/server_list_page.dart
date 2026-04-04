@@ -5,6 +5,7 @@ import 'package:onepanel_client/features/server/pages/server_list_page_desktop.d
 import 'package:onepanel_client/features/server/pages/server_list_page_mobile.dart';
 import 'package:onepanel_client/features/server/server_provider.dart';
 import 'package:onepanel_client/features/server/view_models/server_list_view_model.dart';
+import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 
 class ServerListPage extends StatefulWidget {
   const ServerListPage({
@@ -20,6 +21,8 @@ class ServerListPage extends StatefulWidget {
 
 class _ServerListPageState extends State<ServerListPage> {
   late final ServerListViewModel _viewModel;
+  String? _activeServerId;
+  int _serverCount = 0;
 
   @override
   void initState() {
@@ -29,6 +32,30 @@ class _ServerListPageState extends State<ServerListPage> {
       serverProvider: context.read<ServerProvider>(),
     );
     _viewModel.init(context);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final currentServerController =
+        Provider.of<CurrentServerController>(context);
+    final nextServerId = currentServerController.currentServerId;
+    final nextServerCount = currentServerController.servers.length;
+
+    final serverChanged = _activeServerId != nextServerId;
+    final serverListChanged = _serverCount != nextServerCount;
+
+    _activeServerId = nextServerId;
+    _serverCount = nextServerCount;
+
+    if (!serverChanged && !serverListChanged) {
+      return;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _viewModel.refresh();
+    });
   }
 
   @override

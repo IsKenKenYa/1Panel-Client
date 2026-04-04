@@ -13,7 +13,14 @@ class HiveStorageService implements StorageService {
   final bool isEncrypted;
 
   late Box _box;
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage(
+    iOptions: IOSOptions(
+      accessibility: KeychainAccessibility.first_unlock,
+    ),
+    mOptions: MacOsOptions(
+      accessibility: KeychainAccessibility.first_unlock,
+    ),
+  );
 
   HiveStorageService({
     required this.boxName,
