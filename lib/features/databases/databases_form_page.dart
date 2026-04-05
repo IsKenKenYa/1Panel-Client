@@ -377,7 +377,9 @@ class _DatabaseFormPageState extends State<DatabaseFormPage> {
       engine: _scope == DatabaseScope.remote
           ? _engineController.text.trim()
           : (_selectedDatabaseTarget?.engine ?? _scope.value),
-      source: _scope == DatabaseScope.remote ? 'remote' : 'local',
+      source: _scope == DatabaseScope.remote
+          ? 'remote'
+          : (_selectedDatabaseTarget?.source ?? 'local'),
       targetDatabase: _scope == DatabaseScope.remote
           ? null
           : _selectedDatabaseTarget?.lookupName,

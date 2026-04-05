@@ -122,14 +122,43 @@ class _DatabaseScopeTabView extends StatelessWidget {
           child: LayoutBuilder(
             builder: (context, constraints) {
               final isWideToolbar = constraints.maxWidth >= 720;
-              final toolbarChildren = <Widget>[
-                if (scope == DatabaseScope.mysql ||
-                    scope == DatabaseScope.postgresql)
+              final showSourceFilter = scope == DatabaseScope.mysql ||
+                  scope == DatabaseScope.postgresql;
+              final filterControls = <Widget>[
+                if (showSourceFilter)
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: isWideToolbar ? AppDesignTokens.spacingSm : 0,
+                      bottom: isWideToolbar ? 0 : AppDesignTokens.spacingSm,
+                    ),
+                    child: SegmentedButton<DatabaseSourceFilter>(
+                      segments: [
+                        const ButtonSegment(
+                          value: DatabaseSourceFilter.all,
+                          label: Text('All'),
+                        ),
+                        const ButtonSegment(
+                          value: DatabaseSourceFilter.local,
+                          label: Text('Local'),
+                        ),
+                        ButtonSegment(
+                          value: DatabaseSourceFilter.remote,
+                          label: Text(l10n.databaseRemoteTab),
+                        ),
+                      ],
+                      selected: {provider.state.sourceFilter},
+                      onSelectionChanged: (selection) {
+                        if (selection.isEmpty) return;
+                        provider.setSourceFilter(selection.first);
+                      },
+                    ),
+                  ),
+                if (showSourceFilter)
                   SizedBox(
                     width: isWideToolbar ? 300 : double.infinity,
                     child: DropdownButtonFormField<String>(
                       key: ValueKey(
-                        '${scope.value}:${provider.state.selectedTarget?.lookupName ?? 'none'}:${provider.state.targets.length}',
+                        '${scope.value}:${provider.state.sourceFilter.name}:${provider.state.selectedTarget?.lookupName ?? 'none'}:${provider.state.visibleTargets.length}',
                       ),
                       initialValue: provider.state.selectedTarget?.lookupName,
                       isExpanded: true,
@@ -137,19 +166,37 @@ class _DatabaseScopeTabView extends StatelessWidget {
                         labelText: 'Target Instance',
                       ),
                       items: [
-                        for (final target in provider.state.targets)
+                        for (final target in provider.state.visibleTargets)
                           DropdownMenuItem<String>(
                             value: target.lookupName,
-                            child: Text(
-                              '${target.lookupName} [${target.name}]',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    '${target.lookupName} [${target.name}]',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  target.source,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelSmall
+                                      ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurfaceVariant,
+                                      ),
+                                ),
+                              ],
                             ),
                           ),
                       ],
                       selectedItemBuilder: (context) {
                         return [
-                          for (final target in provider.state.targets)
+                          for (final target in provider.state.visibleTargets)
                             Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
@@ -164,7 +211,8 @@ class _DatabaseScopeTabView extends StatelessWidget {
                           ? null
                           : (value) {
                               DatabaseListItem? next;
-                              for (final item in provider.state.targets) {
+                              for (final item
+                                  in provider.state.visibleTargets) {
                                 if (item.lookupName == value) {
                                   next = item;
                                   break;
@@ -174,20 +222,20 @@ class _DatabaseScopeTabView extends StatelessWidget {
                             },
                     ),
                   ),
-                if (scope == DatabaseScope.mysql ||
-                    scope == DatabaseScope.postgresql)
-                  SizedBox(
-                      width: isWideToolbar ? AppDesignTokens.spacingSm : 0),
-                Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: l10n.commonSearch,
-                      prefixIcon: const Icon(Icons.search),
-                    ),
-                    onSubmitted: (value) => provider.load(query: value),
-                  ),
-                ),
               ];
+              final searchField = ConstrainedBox(
+                constraints: BoxConstraints(
+                  minWidth: isWideToolbar ? 240 : 0,
+                  maxWidth: isWideToolbar ? 360 : double.infinity,
+                ),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: l10n.commonSearch,
+                    prefixIcon: const Icon(Icons.search),
+                  ),
+                  onSubmitted: (value) => provider.load(query: value),
+                ),
+              );
               final actions = Wrap(
                 spacing: AppDesignTokens.spacingSm,
                 runSpacing: AppDesignTokens.spacingSm,
@@ -215,8 +263,16 @@ class _DatabaseScopeTabView extends StatelessWidget {
 
               if (!isWideToolbar) {
                 return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Row(children: toolbarChildren),
+                    Wrap(
+                      spacing: AppDesignTokens.spacingSm,
+                      runSpacing: AppDesignTokens.spacingSm,
+                      children: [
+                        ...filterControls,
+                        searchField,
+                      ],
+                    ),
                     const SizedBox(height: AppDesignTokens.spacingSm),
                     Row(
                       children: [
@@ -229,8 +285,18 @@ class _DatabaseScopeTabView extends StatelessWidget {
               }
 
               return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ...toolbarChildren,
+                  Expanded(
+                    child: Wrap(
+                      spacing: AppDesignTokens.spacingSm,
+                      runSpacing: AppDesignTokens.spacingSm,
+                      children: [
+                        ...filterControls,
+                        searchField,
+                      ],
+                    ),
+                  ),
                   const SizedBox(width: AppDesignTokens.spacingSm),
                   actions,
                 ],

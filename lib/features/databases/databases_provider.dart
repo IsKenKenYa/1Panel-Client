@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/data/models/common_models.dart';
 import 'package:onepanel_client/data/models/database_models.dart';
 import 'package:onepanel_client/features/databases/databases_service.dart';
@@ -8,6 +9,7 @@ class DatabasesState {
     this.page = const PageResult<DatabaseListItem>(items: [], total: 0),
     this.targets = const <DatabaseListItem>[],
     this.selectedTarget,
+    this.sourceFilter = DatabaseSourceFilter.all,
     this.isLoading = false,
     this.isLoadingTargets = false,
     this.error,
@@ -17,15 +19,33 @@ class DatabasesState {
   final PageResult<DatabaseListItem> page;
   final List<DatabaseListItem> targets;
   final DatabaseListItem? selectedTarget;
+  final DatabaseSourceFilter sourceFilter;
   final bool isLoading;
   final bool isLoadingTargets;
   final String? error;
   final String query;
 
   List<DatabaseListItem> get items => page.items;
+
+  List<DatabaseListItem> get visibleTargets {
+    if (sourceFilter == DatabaseSourceFilter.all) {
+      return targets;
+    }
+    final expected =
+        sourceFilter == DatabaseSourceFilter.local ? 'local' : 'remote';
+    return targets
+        .where((item) => item.source.toLowerCase() == expected)
+        .toList(growable: false);
+  }
 }
 
-class DatabasesProvider extends ChangeNotifier {
+enum DatabaseSourceFilter {
+  all,
+  local,
+  remote,
+}
+
+class DatabasesProvider extends ChangeNotifier with SafeChangeNotifier {
   DatabasesProvider({
     required this.scope,
     DatabasesService? service,
@@ -38,10 +58,12 @@ class DatabasesProvider extends ChangeNotifier {
   DatabasesState get state => _state;
 
   Future<void> load({String? query}) async {
+    if (isDisposed) return;
     _state = DatabasesState(
       page: _state.page,
       targets: _state.targets,
       selectedTarget: _state.selectedTarget,
+      sourceFilter: _state.sourceFilter,
       isLoading: true,
       isLoadingTargets: _state.isLoadingTargets,
       query: query ?? _state.query,
@@ -49,6 +71,7 @@ class DatabasesProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
+      if (isDisposed) return;
       DatabaseListItem? selectedTarget = _state.selectedTarget;
       var targets = _state.targets;
       if (scope != DatabaseScope.remote &&
@@ -62,18 +85,22 @@ class DatabasesProvider extends ChangeNotifier {
         targetDatabase: selectedTarget?.lookupName,
         query: query ?? _state.query,
       );
+      if (isDisposed) return;
       _state = DatabasesState(
         page: page,
         targets: targets,
         selectedTarget: selectedTarget,
+        sourceFilter: _state.sourceFilter,
         isLoading: false,
         query: query ?? _state.query,
       );
     } catch (e) {
+      if (isDisposed) return;
       _state = DatabasesState(
         page: _state.page,
         targets: _state.targets,
         selectedTarget: _state.selectedTarget,
+        sourceFilter: _state.sourceFilter,
         isLoading: false,
         isLoadingTargets: _state.isLoadingTargets,
         error: e.toString(),
@@ -86,10 +113,12 @@ class DatabasesProvider extends ChangeNotifier {
   Future<void> refresh() => load(query: _state.query);
 
   Future<void> loadTargets() async {
+    if (isDisposed) return;
     _state = DatabasesState(
       page: _state.page,
       targets: _state.targets,
       selectedTarget: _state.selectedTarget,
+      sourceFilter: _state.sourceFilter,
       isLoading: _state.isLoading,
       isLoadingTargets: true,
       query: _state.query,
@@ -98,6 +127,7 @@ class DatabasesProvider extends ChangeNotifier {
 
     try {
       final targets = await _service.loadDatabaseTargets(scope);
+      if (isDisposed) return;
       final selected = targets.isEmpty
           ? null
           : targets.firstWhere(
@@ -108,14 +138,17 @@ class DatabasesProvider extends ChangeNotifier {
         page: _state.page,
         targets: targets,
         selectedTarget: selected,
+        sourceFilter: _state.sourceFilter,
         isLoading: _state.isLoading,
         query: _state.query,
       );
     } catch (e) {
+      if (isDisposed) return;
       _state = DatabasesState(
         page: _state.page,
         targets: _state.targets,
         selectedTarget: _state.selectedTarget,
+        sourceFilter: _state.sourceFilter,
         isLoading: _state.isLoading,
         error: e.toString(),
         query: _state.query,
@@ -125,11 +158,43 @@ class DatabasesProvider extends ChangeNotifier {
   }
 
   Future<void> selectTarget(DatabaseListItem? target) async {
+    if (isDisposed) return;
     _state = DatabasesState(
       page: _state.page,
       targets: _state.targets,
       selectedTarget: target,
+      sourceFilter: _state.sourceFilter,
       isLoading: _state.isLoading,
+      query: _state.query,
+    );
+    notifyListeners();
+    await load(query: _state.query);
+  }
+
+  Future<void> setSourceFilter(DatabaseSourceFilter filter) async {
+    if (isDisposed) return;
+    DatabaseListItem? selectedTarget = _state.selectedTarget;
+    final visibleTargets = filter == DatabaseSourceFilter.all
+        ? _state.targets
+        : _state.targets
+            .where(
+              (item) =>
+                  item.source.toLowerCase() ==
+                  (filter == DatabaseSourceFilter.local ? 'local' : 'remote'),
+            )
+            .toList(growable: false);
+    if (selectedTarget != null &&
+        !visibleTargets
+            .any((item) => item.lookupName == selectedTarget?.lookupName)) {
+      selectedTarget = visibleTargets.isEmpty ? null : visibleTargets.first;
+    }
+    _state = DatabasesState(
+      page: _state.page,
+      targets: _state.targets,
+      selectedTarget: selectedTarget,
+      sourceFilter: filter,
+      isLoading: _state.isLoading,
+      isLoadingTargets: _state.isLoadingTargets,
       query: _state.query,
     );
     notifyListeners();
@@ -235,7 +300,7 @@ class DatabaseDetailProvider extends ChangeNotifier {
   }
 }
 
-class DatabaseFormProvider extends ChangeNotifier {
+class DatabaseFormProvider extends ChangeNotifier with SafeChangeNotifier {
   DatabaseFormProvider({DatabasesService? service})
       : _service = service ?? DatabasesService();
 
@@ -254,6 +319,7 @@ class DatabaseFormProvider extends ChangeNotifier {
   List<DatabaseListItem> get databaseTargets => _databaseTargets;
 
   Future<void> loadDatabaseTargets(DatabaseScope scope) async {
+    if (isDisposed) return;
     if (scope == DatabaseScope.remote) {
       _databaseTargets = const <DatabaseListItem>[];
       notifyListeners();
@@ -266,34 +332,44 @@ class DatabaseFormProvider extends ChangeNotifier {
     notifyListeners();
     try {
       _databaseTargets = await _service.loadDatabaseTargets(scope);
+      if (isDisposed) return;
     } catch (e) {
+      if (isDisposed) return;
       _error = e.toString();
       _errorMessages = _friendlyErrorMessages(_error!);
     } finally {
-      _isLoadingOptions = false;
-      notifyListeners();
+      if (!isDisposed) {
+        _isLoadingOptions = false;
+        notifyListeners();
+      }
     }
   }
 
   Future<bool> submit(DatabaseFormInput input) async {
+    if (isDisposed) return false;
     _isSubmitting = true;
     _error = null;
     _errorMessages = const <String>[];
     notifyListeners();
     try {
       await _service.submitForm(input);
+      if (isDisposed) return false;
       return true;
     } catch (e) {
+      if (isDisposed) return false;
       _error = e.toString();
       _errorMessages = _friendlyErrorMessages(_error!);
       return false;
     } finally {
-      _isSubmitting = false;
-      notifyListeners();
+      if (!isDisposed) {
+        _isSubmitting = false;
+        notifyListeners();
+      }
     }
   }
 
   Future<bool> testRemote(DatabaseFormInput input) async {
+    if (isDisposed) return false;
     _isSubmitting = true;
     _error = null;
     _errorMessages = const <String>[];
@@ -301,12 +377,15 @@ class DatabaseFormProvider extends ChangeNotifier {
     try {
       return await _service.testRemoteConnection(input);
     } catch (e) {
+      if (isDisposed) return false;
       _error = e.toString();
       _errorMessages = _friendlyErrorMessages(_error!);
       return false;
     } finally {
-      _isSubmitting = false;
-      notifyListeners();
+      if (!isDisposed) {
+        _isSubmitting = false;
+        notifyListeners();
+      }
     }
   }
 
