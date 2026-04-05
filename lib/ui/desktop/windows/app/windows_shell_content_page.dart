@@ -17,12 +17,15 @@ class WindowsShellContentPage extends StatefulWidget {
   const WindowsShellContentPage({
     super.key,
     this.initialIndex = 0,
+    this.initialModuleId,
   });
 
   final int initialIndex;
+  final String? initialModuleId;
 
   @override
-  State<WindowsShellContentPage> createState() => _WindowsShellContentPageState();
+  State<WindowsShellContentPage> createState() =>
+      _WindowsShellContentPageState();
 }
 
 class _WindowsShellContentPageState extends State<WindowsShellContentPage> {
@@ -31,7 +34,8 @@ class _WindowsShellContentPageState extends State<WindowsShellContentPage> {
   @override
   void initState() {
     super.initState();
-    _selectedModule = _moduleFromIndex(widget.initialIndex);
+    _selectedModule = clientModuleFromId(widget.initialModuleId) ??
+        _moduleFromIndex(widget.initialIndex);
   }
 
   ClientModule _moduleFromIndex(int index) {
@@ -156,7 +160,8 @@ class _WindowsShellContentPageState extends State<WindowsShellContentPage> {
         return CallbackShortcuts(
           bindings: {
             for (int i = 0; i < modules.length && i < 9; i++)
-              LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey(49 + i)): () {
+              LogicalKeySet(
+                  LogicalKeyboardKey.control, LogicalKeyboardKey(49 + i)): () {
                 final module = modules[i];
                 if (!currentServer.hasServer && module.requiresServer) {
                   ServerSwitcherAction.showServerPicker(context);

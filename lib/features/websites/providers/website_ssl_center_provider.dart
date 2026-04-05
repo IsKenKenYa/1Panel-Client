@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import '../../../data/models/ssl_models.dart';
 import '../services/website_certificate_service.dart';
 import 'package:onepanel_client/shared/security_gateway/utils/security_gateway_utils.dart';
@@ -10,7 +11,7 @@ enum CertificateExpiryWindow {
   within30Days,
 }
 
-class WebsiteSslCenterProvider extends ChangeNotifier {
+class WebsiteSslCenterProvider extends ChangeNotifier with SafeChangeNotifier {
   static const String providerFilterAll = '__all__';
 
   WebsiteSslCenterProvider({WebsiteCertificateService? service})

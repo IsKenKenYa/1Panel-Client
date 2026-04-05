@@ -39,9 +39,15 @@ class UiRouteHost extends StatelessWidget {
 
     if (PlatformUtils.isDesktop(context)) {
       if (PlatformUtils.isMacOS) {
-        return MacosShellContentPage(initialIndex: initialIndex);
+        return MacosShellContentPage(
+          initialIndex: initialIndex,
+          initialModuleId: initialModuleId,
+        );
       } else if (PlatformUtils.isWindows) {
-        return WindowsShellContentPage(initialIndex: initialIndex);
+        return WindowsShellContentPage(
+          initialIndex: initialIndex,
+          initialModuleId: initialModuleId,
+        );
       }
       return DesktopShellPage(
         initialIndex: initialIndex,

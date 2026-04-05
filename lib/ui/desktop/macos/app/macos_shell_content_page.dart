@@ -16,9 +16,11 @@ class MacosShellContentPage extends StatefulWidget {
   const MacosShellContentPage({
     super.key,
     this.initialIndex = 0,
+    this.initialModuleId,
   });
 
   final int initialIndex;
+  final String? initialModuleId;
 
   @override
   State<MacosShellContentPage> createState() => _MacosShellContentPageState();
@@ -30,7 +32,8 @@ class _MacosShellContentPageState extends State<MacosShellContentPage> {
   @override
   void initState() {
     super.initState();
-    _selectedModule = _moduleFromIndex(widget.initialIndex);
+    _selectedModule = clientModuleFromId(widget.initialModuleId) ??
+        _moduleFromIndex(widget.initialIndex);
   }
 
   ClientModule _moduleFromIndex(int index) {
@@ -134,7 +137,8 @@ class _MacosShellContentPageState extends State<MacosShellContentPage> {
         return CallbackShortcuts(
           bindings: {
             for (int i = 0; i < modules.length && i < 9; i++)
-              LogicalKeySet(LogicalKeyboardKey.meta, LogicalKeyboardKey(49 + i)): () {
+              LogicalKeySet(
+                  LogicalKeyboardKey.meta, LogicalKeyboardKey(49 + i)): () {
                 final module = modules[i];
                 if (!currentServer.hasServer && module.requiresServer) {
                   ServerSwitcherAction.showServerPicker(context);

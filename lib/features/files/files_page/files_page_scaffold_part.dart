@@ -95,6 +95,7 @@ extension _FilesViewScaffold on _FilesViewState {
             ),
             body: _buildPageBody(context, theme, l10n),
             floatingActionButton: FloatingActionButton.extended(
+              heroTag: 'files_page_create_fab',
               onPressed: () => _showCreateOptions(context),
               icon: const Icon(Icons.add),
               label: Text(l10n.filesActionNew),

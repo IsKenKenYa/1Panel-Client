@@ -113,11 +113,10 @@ extension _FilesViewContent on _FilesViewState {
     return LayoutBuilder(
       builder: (context, constraints) {
         final isWide = constraints.maxWidth >= 840;
-        final maxWidth = isWide ? 760.0 : double.infinity;
-        return Align(
-          alignment: Alignment.topCenter,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: maxWidth),
+        final targetWidth = isWide ? 760.0 : constraints.maxWidth;
+        return Center(
+          child: SizedBox(
+            width: targetWidth,
             child: child,
           ),
         );

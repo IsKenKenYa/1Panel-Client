@@ -51,6 +51,7 @@ class _SshCertsPageState extends State<SshCertsPage> {
             ),
           ],
           floatingActionButton: FloatingActionButton.extended(
+            heroTag: 'ssh_certs_create_fab',
             onPressed: _openCreateSheet,
             icon: const Icon(Icons.add),
             label: Text(l10n.commonCreate),

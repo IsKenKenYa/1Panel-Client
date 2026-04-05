@@ -122,6 +122,7 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
         ),
       ],
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'website_list_create_fab',
         onPressed: () => Navigator.pushNamed(context, AppRoutes.websiteCreate),
         icon: const Icon(Icons.add),
         label: Text(l10n.commonCreate),
@@ -272,6 +273,7 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
                 );
 
                 if (isDesktop) {
+                  final desktopCardContent = content;
                   content = GestureDetector(
                     onDoubleTap: () => openWebsiteDetail(context, website),
                     onSecondaryTapDown: (details) {
@@ -284,7 +286,7 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
                       }
                       _showDesktopContextMenu(context, details.globalPosition, provider, website, l10n);
                     },
-                    child: content,
+                    child: desktopCardContent,
                   );
                 }
 
@@ -306,8 +308,9 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
   ) {
     final isRunning = website.status?.toLowerCase() == 'running';
     
+    final currentContext = context;
     showMenu<WebsiteListAction>(
-      context: context,
+      context: currentContext,
       position: RelativeRect.fromLTRB(
         position.dx,
         position.dy,
@@ -335,13 +338,13 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
           value: WebsiteListAction.delete,
           child: Text(
             l10n.websitesActionDelete,
-            style: TextStyle(color: Theme.of(context).colorScheme.error),
+            style: TextStyle(color: Theme.of(currentContext).colorScheme.error),
           ),
         ),
       ],
     ).then((value) {
-      if (value != null) {
-        _handleAction(context, provider, website, value);
+      if (value != null && currentContext.mounted) {
+        _handleAction(currentContext, provider, website, value);
       }
     });
   }

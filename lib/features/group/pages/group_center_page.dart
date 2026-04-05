@@ -55,6 +55,7 @@ class _GroupCenterPageState extends State<GroupCenterPage> {
               ),
             ],
             floatingActionButton: FloatingActionButton.extended(
+              heroTag: 'group_center_create_fab',
               onPressed: provider.isMutating
                   ? null
                   : () => _openEditor(context, provider),

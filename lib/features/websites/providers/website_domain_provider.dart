@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 
 import '../../../data/models/website_models.dart';
 import '../services/website_domain_service.dart';
 
-class WebsiteDomainProvider extends ChangeNotifier {
+class WebsiteDomainProvider extends ChangeNotifier with SafeChangeNotifier {
   final int websiteId;
   final WebsiteDomainService _service;
 

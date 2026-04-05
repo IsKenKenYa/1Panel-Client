@@ -20,14 +20,14 @@ class MainFlutterWindow: NSWindow {
       guard let self = self else { return }
       let mode = result as? String ?? "native"
       if mode == "md3" {
-        // md3: Flutter renders the full window, but the host window should stay
-        // opaque so desktop theming remains stable and the titlebar keeps the
-        // standard macOS material instead of showing raw wallpaper.
-        self.isOpaque = true
-        self.backgroundColor = NSColor.windowBackgroundColor
+        // MD3 pages rely on Flutter's AppBar/navigation patterns. Let the
+        // system titlebar keep its own vertical/horizontal space so the traffic
+        // lights never overlap Flutter back buttons or page titles.
+        self.configureWindowForFlutterMD3()
         self.contentViewController = flutterViewController
       } else {
-        // native: keep system default opaque background so titlebar has material
+        // Native shell keeps the immersive full-size titlebar treatment.
+        self.configureWindowForNativeShell()
         let shellViewController = MainShellViewController(flutterViewController: flutterViewController)
         self.contentViewController = shellViewController
       }
@@ -44,6 +44,22 @@ class MainFlutterWindow: NSWindow {
   private func configureWindowBase() {
     titlebarAppearsTransparent = true
     titleVisibility = .hidden
+    styleMask.insert(.fullSizeContentView)
+    isOpaque = true
+    backgroundColor = NSColor.windowBackgroundColor
+  }
+
+  private func configureWindowForFlutterMD3() {
+    titleVisibility = .hidden
+    titlebarAppearsTransparent = false
+    styleMask.remove(.fullSizeContentView)
+    isOpaque = true
+    backgroundColor = NSColor.windowBackgroundColor
+  }
+
+  private func configureWindowForNativeShell() {
+    titleVisibility = .hidden
+    titlebarAppearsTransparent = true
     styleMask.insert(.fullSizeContentView)
     isOpaque = true
     backgroundColor = NSColor.windowBackgroundColor

@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/models/host_tool_models.dart';
 import 'package:onepanel_client/features/toolbox/services/toolbox_host_tool_service.dart';
 
-class ToolboxHostToolProvider extends ChangeNotifier {
+class ToolboxHostToolProvider extends ChangeNotifier with SafeChangeNotifier {
   ToolboxHostToolProvider({ToolboxHostToolService? service})
       : _service = service ?? ToolboxHostToolService();
 

@@ -15,6 +15,7 @@ import 'package:onepanel_client/features/files/favorites_page.dart';
 import 'package:onepanel_client/features/files/file_editor_page.dart';
 import 'package:onepanel_client/features/files/file_preview_page.dart';
 import 'package:onepanel_client/features/files/files_provider.dart';
+import 'package:onepanel_client/features/files/files_service.dart';
 import 'package:onepanel_client/features/files/mounts_page.dart';
 import 'package:onepanel_client/features/files/recycle_bin_page.dart';
 import 'package:onepanel_client/features/files/upload_history_page.dart';
@@ -52,12 +53,26 @@ part 'files_page/files_page_async_actions_part.dart';
 part 'files_page/files_page_actions_part.dart';
 
 class FilesPage extends StatelessWidget {
-  const FilesPage({super.key});
+  const FilesPage({
+    super.key,
+    this.provider,
+    this.service,
+  });
+
+  final FilesProvider? provider;
+  final FilesService? service;
 
   @override
   Widget build(BuildContext context) {
+    if (provider != null) {
+      return ChangeNotifierProvider<FilesProvider>.value(
+        value: provider!,
+        child: const FilesView(),
+      );
+    }
+
     return ChangeNotifierProvider(
-      create: (_) => FilesProvider(),
+      create: (_) => FilesProvider(service: service),
       child: const FilesView(),
     );
   }

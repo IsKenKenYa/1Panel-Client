@@ -29,6 +29,10 @@
 - CN: 多设计系统/多主题必须走统一注册与主题控制，不允许页面自行发明独立 UI 体系。EN: Multi-design-system and multi-theme support must go through centralized registration and theme control; pages may not invent standalone UI systems.
 - CN: 原生代码主要用于 UI 容器、平台交互与系统能力接入，不得承载共享业务核心逻辑。EN: Native code is primarily for UI containers, platform interaction, and system capabilities, and must not own shared business logic.
 - CN: 原生 UI 仍必须遵守 `Presentation -> State -> Service/Repository -> API/Infra`，不得直接跨层访问 API。EN: Native UI must still obey `Presentation -> State -> Service/Repository -> API/Infra` and may not call APIs directly across layers.
+- CN: 桌面缓存模块页必须禁用非当前页 Hero；独立详情页或带浮动按钮的页面必须显式设置 `heroTag` 或显式禁用 Hero。EN: Desktop-cached module pages must disable Hero on non-active pages; standalone detail pages or FAB-bearing pages must set an explicit `heroTag` or explicitly disable Hero.
+- CN: 禁止用可变 widget 变量形成自引用包装链（例如 `content = GestureDetector(child: content)` 后再在 builder 中引用当前 `content`）。EN: Do not build self-referential widget wrapper chains with mutable widget variables (for example, reassigning `content` and then referencing the current `content` inside a builder).
+- CN: 桌面缓存模块页必须由统一壳承载，普通模块切换不得再 `push` 一个完整壳或首页。EN: Desktop cached modules must stay inside the shared shell host; normal module switches must not `push` a second full shell or home page.
+- CN: 桌面 `Scaffold` / `AppBar` / `NavigationRail` / 壳内容区默认必须使用 `surface` 或 `surfaceContainer*`，禁止整页透明背景。EN: Desktop `Scaffold` / `AppBar` / `NavigationRail` / shell content areas must default to `surface` or `surfaceContainer*`; full-page transparent backgrounds are forbidden.
 
 ## File Size & Split Rules (Strict)
 - CN: 所有代码文件（除文档与 Swagger 产物）硬上限为 `1000 LOC`，超过必须拆分后再提交。EN: Hard cap for all code files (excluding docs and Swagger artifacts) is `1000 LOC`; files above this must be split before merge.

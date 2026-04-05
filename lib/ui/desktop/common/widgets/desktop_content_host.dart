@@ -64,9 +64,12 @@ class _DesktopContentHostState extends State<DesktopContentHost> {
       index: selectedIndex < 0 ? 0 : selectedIndex,
       children: [
         for (final module in modules)
-          KeyedSubtree(
-            key: ValueKey('desktop-module:${module.storageId}'),
-            child: _moduleCache[module]!,
+          HeroMode(
+            enabled: module == widget.module,
+            child: KeyedSubtree(
+              key: ValueKey('desktop-module:${module.storageId}'),
+              child: _moduleCache[module]!,
+            ),
           ),
       ],
     );

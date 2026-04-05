@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 
 import '../../../data/models/runtime_models.dart';
 import '../../../data/models/website_group_models.dart';
@@ -105,7 +106,7 @@ class WebsiteLifecycleState {
   static const _unset = Object();
 }
 
-class WebsiteLifecycleProvider extends ChangeNotifier {
+class WebsiteLifecycleProvider extends ChangeNotifier with SafeChangeNotifier {
   WebsiteLifecycleProvider({
     required this.mode,
     this.websiteId,

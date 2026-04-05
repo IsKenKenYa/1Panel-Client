@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import '../services/website_account_service.dart';
 
-class WebsiteSslAccountsProvider extends ChangeNotifier {
+class WebsiteSslAccountsProvider extends ChangeNotifier
+    with SafeChangeNotifier {
   WebsiteSslAccountsProvider({WebsiteAccountService? service})
       : _service = service;
 

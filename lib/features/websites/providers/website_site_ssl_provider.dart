@@ -1,11 +1,12 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/data/models/ssl_models.dart';
 import 'package:onepanel_client/features/websites/services/website_certificate_service.dart';
 import 'package:onepanel_client/shared/security_gateway/models/security_gateway_models.dart';
 import 'package:onepanel_client/shared/security_gateway/security_gateway_snapshot_store.dart';
 import 'package:onepanel_client/shared/security_gateway/utils/security_gateway_utils.dart';
 
-class WebsiteSiteSslProvider extends ChangeNotifier {
+class WebsiteSiteSslProvider extends ChangeNotifier with SafeChangeNotifier {
   WebsiteSiteSslProvider({
     required this.websiteId,
     this.expectedDomain,

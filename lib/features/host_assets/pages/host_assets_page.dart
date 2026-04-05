@@ -70,6 +70,7 @@ class _HostAssetsPageState extends State<HostAssetsPage> {
             ),
           ],
           floatingActionButton: FloatingActionButton.extended(
+            heroTag: 'host_assets_create_fab',
             onPressed: () => _openForm(),
             icon: const Icon(Icons.add),
             label: Text(l10n.commonCreate),

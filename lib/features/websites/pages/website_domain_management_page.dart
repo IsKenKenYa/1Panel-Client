@@ -74,6 +74,7 @@ class _WebsiteDomainBody extends StatelessWidget {
             ],
           ),
           floatingActionButton: FloatingActionButton.extended(
+            heroTag: 'website_domain_create_fab',
             onPressed: () => _showDomainDialog(context, provider),
             icon: const Icon(Icons.add),
             label: Text(l10n.commonAdd),

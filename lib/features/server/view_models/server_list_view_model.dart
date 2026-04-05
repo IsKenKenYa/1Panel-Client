@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/services/onboarding_service.dart';
 import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/features/onboarding/coach_mark_overlay.dart';
@@ -10,7 +11,7 @@ import 'package:onepanel_client/features/server/server_models.dart';
 import 'package:onepanel_client/features/server/server_provider.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 
-class ServerListViewModel extends ChangeNotifier {
+class ServerListViewModel extends ChangeNotifier with SafeChangeNotifier {
   ServerListViewModel({
     this.enableCoach = true,
     required ServerProvider serverProvider,

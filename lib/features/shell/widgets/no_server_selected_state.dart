@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/features/shell/widgets/server_switcher_action.dart';
 
 class NoServerSelectedState extends StatelessWidget {
@@ -47,11 +48,8 @@ class NoServerSelectedState extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             TextButton(
-              onPressed: () => Navigator.pushNamed(
-                context,
-                AppRoutes.home,
-                arguments: <String, dynamic>{'module': 'servers'},
-              ),
+              onPressed: () =>
+                  openRouteRespectingShell(context, AppRoutes.server),
               child: Text(l10n.serverPageTitle),
             ),
           ],

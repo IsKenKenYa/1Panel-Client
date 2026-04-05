@@ -62,6 +62,7 @@ class _CronjobsPageState extends State<CronjobsPage> {
             ),
           ],
           floatingActionButton: FloatingActionButton.extended(
+            heroTag: 'cronjobs_create_fab',
             onPressed: _openCreate,
             icon: const Icon(Icons.add),
             label: Text(l10n.commonCreate),

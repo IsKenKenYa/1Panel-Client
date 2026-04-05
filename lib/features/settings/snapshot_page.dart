@@ -78,6 +78,7 @@ class _SnapshotPageState extends State<SnapshotPage> {
       ),
       body: _buildBody(context, theme, snapshots, l10n),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'snapshot_create_fab',
         onPressed: () => _showCreateSnapshotDialog(context, l10n),
         icon: const Icon(Icons.add),
         label: Text(l10n.snapshotCreate),

@@ -152,6 +152,22 @@ Native UI does not change architectural boundaries.
 If a native page is introduced, it should be treated as a presentation container, not as a separate business stack.
 If native code is added, the burden of proof is on the native layer to justify why the same result cannot be achieved through Flutter UI adaptation plus shared Dart logic.
 
+## Desktop Shell Stability
+
+Desktop shells keep modules alive longer than mobile shells, so UI stability rules must be stricter.
+
+### Hero and FAB policy
+
+- Cached module pages in desktop shells must disable Hero participation when inactive
+- Pages using `FloatingActionButton` must set explicit `heroTag` values unless Hero is intentionally disabled
+- Never rely on Flutter's default FAB hero tag in a desktop shell that can keep multiple pages alive simultaneously
+
+### Recursive widget construction policy
+
+- Do not reassign mutable widget variables and then feed the current value back into a child/builder path
+- Prefer explicit staged variables such as `baseContent`, `interactiveContent`, and `draggableContent`
+- Any desktop drag/drop or context-menu wrapping should be reviewed for self-referential widget composition
+
 ## Component and Token Governance
 
 Before multiple design systems are implemented, the codebase should move toward semantic component and token abstraction.

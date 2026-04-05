@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 
 import '../services/website_config_service.dart';
 
@@ -14,7 +15,8 @@ class RoutingBatchResult {
   bool get hasFailure => failed > 0;
 }
 
-class WebsiteRoutingRulesProvider extends ChangeNotifier {
+class WebsiteRoutingRulesProvider extends ChangeNotifier
+    with SafeChangeNotifier {
   final int websiteId;
   final WebsiteConfigService _service;
 

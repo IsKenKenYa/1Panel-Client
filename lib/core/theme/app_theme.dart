@@ -63,35 +63,37 @@ class AppTheme {
     final isDesktop = defaultTargetPlatform == TargetPlatform.macOS ||
         defaultTargetPlatform == TargetPlatform.windows ||
         defaultTargetPlatform == TargetPlatform.linux;
-        
+
     final isMacOS = defaultTargetPlatform == TargetPlatform.macOS;
-    final isWindows = defaultTargetPlatform == TargetPlatform.windows;
 
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
-      scaffoldBackgroundColor: (isMacOS || isWindows) ? Colors.transparent : scheme.surface,
+      scaffoldBackgroundColor: scheme.surface,
       appBarTheme: AppBarTheme(
         centerTitle: false,
         elevation: 0,
-        backgroundColor: (isMacOS || isWindows) ? Colors.transparent : scheme.surface,
+        backgroundColor: scheme.surface,
         foregroundColor: scheme.onSurface,
       ),
       cardTheme: CardThemeData(
         elevation: isDesktop ? 0 : 1,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
-          side: BorderSide(color: isMacOS ? scheme.outlineVariant.withValues(alpha: 0.5) : scheme.outlineVariant),
+          side: BorderSide(
+              color: isMacOS
+                  ? scheme.outlineVariant.withValues(alpha: 0.5)
+                  : scheme.outlineVariant),
         ),
         color: isMacOS ? scheme.surface.withValues(alpha: 0.8) : scheme.surface,
       ),
       navigationBarTheme: NavigationBarThemeData(
         elevation: isDesktop ? 0 : 1,
         indicatorColor: scheme.primaryContainer,
-        backgroundColor: (isMacOS || isWindows) ? Colors.transparent : scheme.surface,
+        backgroundColor: scheme.surface,
       ),
       navigationRailTheme: NavigationRailThemeData(
-        backgroundColor: (isMacOS || isWindows) ? Colors.transparent : scheme.surface,
+        backgroundColor: scheme.surface,
         indicatorColor: scheme.primaryContainer,
       ),
       inputDecorationTheme: InputDecorationTheme(

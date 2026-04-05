@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/models/toolbox_models.dart';
 import 'package:onepanel_client/features/toolbox/services/toolbox_ftp_service.dart';
 
-class ToolboxFtpProvider extends ChangeNotifier {
+class ToolboxFtpProvider extends ChangeNotifier with SafeChangeNotifier {
   ToolboxFtpProvider({ToolboxFtpService? service})
       : _service = service ?? ToolboxFtpService();
 

@@ -131,6 +131,11 @@ The project follows **Layered Architecture with MVVM** and clean separation of c
 - Reserve native pages for system-integration-heavy experiences, major platform UX gains, or clear performance constraints
 - Any native page proposal should define why Flutter is insufficient, what the bridge boundary is, and what the rollback path is
 - The `桌面端适配` branch is a runnable implementation branch for desktop adaptation and may be used as concrete reference material, but it does not redefine the default repository baseline by itself
+- Desktop cached modules must stay inside the shared shell host; normal module switches should not push a second shell
+- Desktop shell navigation should prefer module switching; only true detail/editor flows should use routed pages
+- Cached desktop pages must be gated by `HeroMode`, and FABs in those pages must declare explicit `heroTag`
+- Avoid self-referential widget wrapper chains; snapshot wrapped widgets before adding new layers
+- Desktop host surfaces should resolve to `surface` / `surfaceContainer*`, not transparent page backgrounds
 
 See `docs/development/cross_platform_ui_governance.md` for the full policy and roadmap.
 
@@ -367,6 +372,12 @@ void main() {
 - Apple-targeted native pages may follow SwiftUI/HIG idioms and glass-like system aesthetics when approved
 - Windows-targeted native pages may follow WinUI3/Fluent idioms when approved
 - Avoid mixing unrelated platform aesthetics inside a single screen without a documented reason
+
+### Desktop Stability Rules
+- Desktop shell pages that cache modules with `IndexedStack` must avoid duplicate active Heroes across cached pages
+- Use `HeroMode` to disable inactive cached module pages
+- Any page with a `FloatingActionButton` that can coexist with other cached pages should use an explicit `heroTag` or intentionally disable hero participation
+- Avoid mutable widget re-wrapping patterns that can accidentally create self-referential widget trees
 
 ### Internationalization
 - All user-facing strings must use `AppLocalizations`

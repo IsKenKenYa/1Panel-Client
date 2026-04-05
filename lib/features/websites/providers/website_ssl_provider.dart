@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 
 import '../../../data/models/ssl_models.dart';
 import '../services/website_ssl_service.dart';
 
-class WebsiteSslProvider extends ChangeNotifier {
+class WebsiteSslProvider extends ChangeNotifier with SafeChangeNotifier {
   final int websiteId;
   final WebsiteSslService _service;
 
