@@ -52,23 +52,70 @@ class _DatabaseDetailPageView extends StatelessWidget {
                 )
               : RefreshIndicator(
                   onRefresh: provider.load,
-                  child: ListView(
-                    padding: const EdgeInsets.all(16),
-                    children: [
-                      DatabaseDetailSectionsWidget(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final isWide = constraints.maxWidth >= 1080;
+                      final content = DatabaseDetailSectionsWidget(
                         item: item,
                         detail: detail,
-                      ),
-                      DatabaseDetailManagementWidget(item: item),
-                      const DatabaseDetailActionsWidget(),
-                      if (provider.error != null) ...[
-                        const SizedBox(height: 16),
-                        DatabaseDetailErrorWidget(
-                          error: provider.error!,
-                          onRetry: provider.load,
+                      );
+                      final management =
+                          DatabaseDetailManagementWidget(item: item);
+                      const actions = DatabaseDetailActionsWidget();
+
+                      if (!isWide) {
+                        return ListView(
+                          padding: const EdgeInsets.all(16),
+                          children: [
+                            content,
+                            management,
+                            actions,
+                            if (provider.error != null) ...[
+                              const SizedBox(height: 16),
+                              DatabaseDetailErrorWidget(
+                                error: provider.error!,
+                                onRetry: provider.load,
+                              ),
+                            ],
+                          ],
+                        );
+                      }
+
+                      return SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              flex: 11,
+                              child: Column(
+                                children: [
+                                  content,
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              flex: 7,
+                              child: Column(
+                                children: [
+                                  management,
+                                  actions,
+                                  if (provider.error != null) ...[
+                                    const SizedBox(height: 16),
+                                    DatabaseDetailErrorWidget(
+                                      error: provider.error!,
+                                      onRetry: provider.load,
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ],
+                      );
+                    },
                   ),
                 ),
     );

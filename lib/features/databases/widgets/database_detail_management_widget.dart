@@ -29,34 +29,70 @@ class DatabaseDetailManagementWidget extends StatelessWidget {
         const SizedBox(height: AppDesignTokens.spacingMd),
         AppCard(
           title: l10n.databaseManageTitle,
-          child: Wrap(
-            spacing: AppDesignTokens.spacingSm,
-            runSpacing: AppDesignTokens.spacingSm,
+          child: Column(
             children: [
               if (supportsBackups)
-                OutlinedButton.icon(
-                  onPressed: () => Navigator.pushNamed(
+                _ManagementActionTile(
+                  icon: Icons.backup_outlined,
+                  title: l10n.databaseBackupsPageTitle,
+                  onTap: () => Navigator.pushNamed(
                     context,
                     AppRoutes.databaseBackups,
                     arguments: item,
                   ),
-                  icon: const Icon(Icons.backup_outlined),
-                  label: Text(l10n.databaseBackupsPageTitle),
                 ),
+              if (supportsBackups && supportsUsers)
+                const SizedBox(height: AppDesignTokens.spacingSm),
               if (supportsUsers)
-                OutlinedButton.icon(
-                  onPressed: () => Navigator.pushNamed(
+                _ManagementActionTile(
+                  icon: Icons.manage_accounts_outlined,
+                  title: l10n.databaseUsersPageTitle,
+                  onTap: () => Navigator.pushNamed(
                     context,
                     AppRoutes.databaseUsers,
                     arguments: item,
                   ),
-                  icon: const Icon(Icons.manage_accounts_outlined),
-                  label: Text(l10n.databaseUsersPageTitle),
                 ),
             ],
           ),
         ),
       ],
+    );
+  }
+}
+
+class _ManagementActionTile extends StatelessWidget {
+  const _ManagementActionTile({
+    required this.icon,
+    required this.title,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Material(
+      color: scheme.surface,
+      borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(AppDesignTokens.spacingMd),
+          child: Row(
+            children: [
+              Icon(icon, color: scheme.primary),
+              const SizedBox(width: AppDesignTokens.spacingSm),
+              Expanded(child: Text(title)),
+              const Icon(Icons.chevron_right),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

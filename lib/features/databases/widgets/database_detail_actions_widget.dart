@@ -5,6 +5,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/data/models/database_models.dart';
 import 'package:onepanel_client/features/databases/databases_provider.dart';
+import 'package:onepanel_client/shared/widgets/app_card.dart';
 
 class DatabaseDetailActionsWidget extends StatelessWidget {
   const DatabaseDetailActionsWidget({super.key});
@@ -31,34 +32,43 @@ class DatabaseDetailActionsWidget extends StatelessWidget {
     return Column(
       children: [
         const SizedBox(height: AppDesignTokens.spacingMd),
-        Wrap(
-          spacing: AppDesignTokens.spacingSm,
-          runSpacing: AppDesignTokens.spacingSm,
-          children: [
-            OutlinedButton(
-              onPressed: () => _showSingleInputDialog(
-                context,
-                title: l10n.commonDescription,
-                initialValue: item.description ?? '',
-                onSubmit: provider.updateDescription,
+        AppCard(
+          title: l10n.commonMore,
+          child: Column(
+            children: [
+              _ActionTile(
+                icon: Icons.edit_outlined,
+                title: l10n.commonEdit,
+                subtitle: l10n.commonDescription,
+                onTap: () => _showSingleInputDialog(
+                  context,
+                  title: l10n.commonDescription,
+                  initialValue: item.description ?? '',
+                  onSubmit: provider.updateDescription,
+                ),
               ),
-              child: Text(l10n.commonEdit),
-            ),
-            OutlinedButton(
-              onPressed: () => _showPasswordDialog(
-                context,
-                onSubmit: provider.changePassword,
+              const SizedBox(height: AppDesignTokens.spacingSm),
+              _ActionTile(
+                icon: Icons.password_outlined,
+                title: l10n.databaseChangePasswordAction,
+                subtitle: item.lookupName,
+                onTap: () => _showPasswordDialog(
+                  context,
+                  onSubmit: provider.changePassword,
+                ),
               ),
-              child: Text(l10n.databaseChangePasswordAction),
-            ),
-            OutlinedButton(
-              onPressed: () => _showBindUserDialog(
-                context,
-                onSubmit: provider.bindUser,
+              const SizedBox(height: AppDesignTokens.spacingSm),
+              _ActionTile(
+                icon: Icons.person_add_alt_1_outlined,
+                title: l10n.databaseBindUserAction,
+                subtitle: item.name,
+                onTap: () => _showBindUserDialog(
+                  context,
+                  onSubmit: provider.bindUser,
+                ),
               ),
-              child: Text(l10n.databaseBindUserAction),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
@@ -179,6 +189,66 @@ class DatabaseDetailActionsWidget extends StatelessWidget {
             child: Text(context.l10n.commonConfirm),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ActionTile extends StatelessWidget {
+  const _ActionTile({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Material(
+      color: scheme.surface,
+      borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(AppDesignTokens.spacingMd),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: scheme.secondaryContainer,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, color: scheme.onSecondaryContainer, size: 20),
+              ),
+              const SizedBox(width: AppDesignTokens.spacingSm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: scheme.onSurfaceVariant,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right),
+            ],
+          ),
+        ),
       ),
     );
   }

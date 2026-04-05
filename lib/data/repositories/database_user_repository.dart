@@ -18,7 +18,7 @@ class DatabaseUserRepository {
   }) async {
     final api = await _getApi();
     await api.bindMysqlUser({
-      'database': item.engine,
+      'database': item.lookupName,
       'db': item.name,
       'username': username,
       'password': password,
@@ -35,7 +35,7 @@ class DatabaseUserRepository {
     final api = await _getApi();
     await api.bindPostgresqlUser({
       'name': item.name,
-      'database': item.engine,
+      'database': item.lookupName,
       'username': username,
       'password': password,
       'superUser': superUser,
@@ -50,7 +50,7 @@ class DatabaseUserRepository {
     final api = await _getApi();
     await api.changePostgresqlPrivileges({
       'name': item.name,
-      'database': item.engine,
+      'database': item.lookupName,
       'username': username,
       'superUser': superUser,
     });

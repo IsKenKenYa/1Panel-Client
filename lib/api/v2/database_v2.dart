@@ -79,7 +79,7 @@ class DatabaseV2Api {
     String type, {
     String? operateNode,
   }) async {
-    final response = await _client.get<List<dynamic>>(
+    final response = await _client.get<dynamic>(
       _withNode('/databases/db/list/$type', operateNode),
     );
     return _mapListResponse(response);
@@ -88,7 +88,7 @@ class DatabaseV2Api {
   Future<Response<List<Map<String, dynamic>>>> listDatabaseItems(
     String type,
   ) async {
-    final response = await _client.get<List<dynamic>>(
+    final response = await _client.get<dynamic>(
       ApiConstants.buildApiPath('/databases/db/item/$type'),
     );
     return _mapListResponse(response);
@@ -152,7 +152,7 @@ class DatabaseV2Api {
   Future<Response<List<Map<String, dynamic>>>> deleteRemoteDatabaseCheck(
     int id,
   ) async {
-    final response = await _client.post<List<dynamic>>(
+    final response = await _client.post<dynamic>(
       ApiConstants.buildApiPath('/databases/db/del/check'),
       data: {'id': id},
     );
@@ -294,7 +294,7 @@ class DatabaseV2Api {
   Future<Response<List<Map<String, dynamic>>>> loadFormatCollations(
     String database,
   ) async {
-    final response = await _client.post<List<dynamic>>(
+    final response = await _client.post<dynamic>(
       ApiConstants.buildApiPath('/databases/format/options'),
       data: {'name': database},
     );
@@ -304,12 +304,12 @@ class DatabaseV2Api {
   Future<Response<List<dynamic>>> deleteMysqlDatabaseCheck(
     Map<String, dynamic> request,
   ) async {
-    final response = await _client.post<List<dynamic>>(
+    final response = await _client.post<dynamic>(
       ApiConstants.buildApiPath('/databases/del/check'),
       data: request,
     );
     return Response(
-      data: response.data ?? const <dynamic>[],
+      data: _unwrapList(response.data),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -375,7 +375,7 @@ class DatabaseV2Api {
   Future<Response<List<Map<String, dynamic>>>> deletePostgresqlDatabaseCheck(
     Map<String, dynamic> request,
   ) async {
-    final response = await _client.post<List<dynamic>>(
+    final response = await _client.post<dynamic>(
       ApiConstants.buildApiPath('/databases/pg/del/check'),
       data: request,
     );
@@ -499,9 +499,8 @@ class DatabaseV2Api {
   }
 
   Response<List<Map<String, dynamic>>> _mapListResponse(
-    Response<List<dynamic>> response,
-  ) {
-    final data = response.data ?? const <dynamic>[];
+      Response<dynamic> response) {
+    final data = _unwrapList(response.data);
     return Response(
       data: data
           .whereType<Map>()
@@ -531,7 +530,7 @@ class DatabaseV2Api {
   Future<Response<List<Map<String, dynamic>>>> getDatabasePrivileges(
     int id,
   ) async {
-    final response = await _client.get<List<dynamic>>(
+    final response = await _client.get<dynamic>(
       '${ApiConstants.buildApiPath('/databases')}/$id/privileges',
     );
     return _mapListResponse(response);
@@ -633,6 +632,28 @@ class DatabaseV2Api {
       return Map<String, dynamic>.from(data);
     }
     return response;
+  }
+
+  List<dynamic> _unwrapList(dynamic response) {
+    if (response == null) {
+      return const <dynamic>[];
+    }
+    if (response is List<dynamic>) {
+      return response;
+    }
+    if (response is Map<String, dynamic>) {
+      final data = response['data'];
+      if (data is List<dynamic>) {
+        return data;
+      }
+      if (data is List) {
+        return List<dynamic>.from(data);
+      }
+    }
+    if (response is List) {
+      return List<dynamic>.from(response);
+    }
+    return const <dynamic>[];
   }
 
   T? _unwrapPrimitive<T>(dynamic response) {

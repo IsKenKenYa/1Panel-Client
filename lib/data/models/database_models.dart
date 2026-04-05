@@ -528,6 +528,8 @@ class DatabaseListItem extends Equatable {
     required this.engine,
     required this.source,
     this.id,
+    this.targetDatabase,
+    this.instanceLabel,
     this.database,
     this.version,
     this.username,
@@ -543,6 +545,8 @@ class DatabaseListItem extends Equatable {
   final String name;
   final String engine;
   final String source;
+  final String? targetDatabase;
+  final String? instanceLabel;
   final String? database;
   final String? version;
   final String? username;
@@ -554,19 +558,23 @@ class DatabaseListItem extends Equatable {
 
   bool get isRemote => source == 'remote' || scope == DatabaseScope.remote;
 
-  String get lookupName => database ?? name;
+  String get lookupName => targetDatabase ?? database ?? name;
 
   factory DatabaseListItem.fromMysqlJson(Map<String, dynamic> json) {
     return DatabaseListItem(
       scope: DatabaseScope.mysql,
       id: json['id'] as int?,
       name: json['name'] as String? ?? '',
-      engine: json['mysqlName'] as String? ?? 'mysql',
+      engine: json['type'] as String? ?? 'mysql',
       source: json['from'] as String? ?? 'local',
-      database: json['database'] as String? ?? json['mysqlName'] as String?,
+      targetDatabase: json['mysqlName'] as String?,
+      instanceLabel: json['mysqlName'] as String?,
+      database: json['database'] as String?,
       version: json['version'] as String?,
       username: json['username'] as String?,
       description: json['description'] as String?,
+      status: json['status'] as String?,
+      address: json['address'] as String?,
       raw: Map<String, dynamic>.from(json),
     );
   }
@@ -576,13 +584,16 @@ class DatabaseListItem extends Equatable {
       scope: DatabaseScope.postgresql,
       id: json['id'] as int?,
       name: json['name'] as String? ?? '',
-      engine: json['postgresqlName'] as String? ?? 'postgresql',
+      engine: json['type'] as String? ?? 'postgresql',
       source: json['from'] as String? ?? 'local',
-      database:
-          json['database'] as String? ?? json['postgresqlName'] as String?,
+      targetDatabase: json['postgresqlName'] as String?,
+      instanceLabel: json['postgresqlName'] as String?,
+      database: json['database'] as String?,
       version: json['version'] as String?,
       username: json['username'] as String?,
       description: json['description'] as String?,
+      status: json['status'] as String?,
+      address: json['address'] as String?,
       raw: Map<String, dynamic>.from(json),
     );
   }
@@ -594,6 +605,8 @@ class DatabaseListItem extends Equatable {
       name: info.name,
       engine: info.type,
       source: 'remote',
+      targetDatabase: info.name,
+      instanceLabel: info.name,
       database: info.name,
       version: info.version,
       username: info.username,
@@ -612,12 +625,15 @@ class DatabaseListItem extends Equatable {
     return DatabaseListItem(
       scope: scope,
       id: json['id'] as int?,
-      name: json['database'] as String? ?? json['name'] as String? ?? '',
+      name: json['name'] as String? ?? json['database'] as String? ?? '',
       engine: json['type'] as String? ?? scope.value,
       source: json['from'] as String? ?? 'local',
-      database: json['database'] as String? ?? json['name'] as String?,
+      targetDatabase: json['database'] as String?,
+      instanceLabel: json['name'] as String? ?? json['database'] as String?,
+      database: json['database'] as String?,
       version: json['version'] as String?,
       address: json['address'] as String?,
+      status: json['status'] as String?,
       raw: Map<String, dynamic>.from(json),
     );
   }
@@ -629,6 +645,8 @@ class DatabaseListItem extends Equatable {
         name,
         engine,
         source,
+        targetDatabase,
+        instanceLabel,
         database,
         version,
         username,
@@ -719,12 +737,16 @@ class DatabaseFormInput extends Equatable {
     required this.engine,
     required this.source,
     this.id,
+    this.targetDatabase,
     this.address,
     this.port,
     this.username,
     this.password,
     this.description,
     this.format,
+    this.permission,
+    this.permissionIps,
+    this.superUser,
     this.timeout,
   });
 
@@ -733,12 +755,16 @@ class DatabaseFormInput extends Equatable {
   final String name;
   final String engine;
   final String source;
+  final String? targetDatabase;
   final String? address;
   final int? port;
   final String? username;
   final String? password;
   final String? description;
   final String? format;
+  final String? permission;
+  final String? permissionIps;
+  final bool? superUser;
   final int? timeout;
 
   bool get isRemote => source == 'remote' || scope == DatabaseScope.remote;
@@ -750,12 +776,16 @@ class DatabaseFormInput extends Equatable {
         name,
         engine,
         source,
+        targetDatabase,
         address,
         port,
         username,
         password,
         description,
         format,
+        permission,
+        permissionIps,
+        superUser,
         timeout,
       ];
 }

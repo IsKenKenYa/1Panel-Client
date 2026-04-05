@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:onepanel_client/config/app_router.dart';
@@ -79,7 +80,15 @@ class _DatabaseScopeTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => DatabasesProvider(scope: scope)..load(),
+      create: (_) {
+        final provider = DatabasesProvider(scope: scope);
+        if (scope == DatabaseScope.mysql || scope == DatabaseScope.postgresql) {
+          provider.loadTargets().then((_) => provider.load());
+        } else {
+          provider.load();
+        }
+        return provider;
+      },
       child: _DatabaseScopeTabView(scope: scope),
     );
   }
@@ -110,35 +119,123 @@ class _DatabaseScopeTabView extends StatelessWidget {
       children: [
         Padding(
           padding: AppDesignTokens.pagePadding,
-          child: Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: l10n.commonSearch,
-                    prefixIcon: const Icon(Icons.search),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final isWideToolbar = constraints.maxWidth >= 720;
+              final toolbarChildren = <Widget>[
+                if (scope == DatabaseScope.mysql ||
+                    scope == DatabaseScope.postgresql)
+                  SizedBox(
+                    width: isWideToolbar ? 300 : double.infinity,
+                    child: DropdownButtonFormField<String>(
+                      key: ValueKey(
+                        '${scope.value}:${provider.state.selectedTarget?.lookupName ?? 'none'}:${provider.state.targets.length}',
+                      ),
+                      initialValue: provider.state.selectedTarget?.lookupName,
+                      isExpanded: true,
+                      decoration: const InputDecoration(
+                        labelText: 'Target Instance',
+                      ),
+                      items: [
+                        for (final target in provider.state.targets)
+                          DropdownMenuItem<String>(
+                            value: target.lookupName,
+                            child: Text(
+                              '${target.lookupName} [${target.name}]',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                      ],
+                      selectedItemBuilder: (context) {
+                        return [
+                          for (final target in provider.state.targets)
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                '${target.lookupName} [${target.name}]',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                        ];
+                      },
+                      onChanged: provider.state.isLoadingTargets
+                          ? null
+                          : (value) {
+                              DatabaseListItem? next;
+                              for (final item in provider.state.targets) {
+                                if (item.lookupName == value) {
+                                  next = item;
+                                  break;
+                                }
+                              }
+                              provider.selectTarget(next);
+                            },
+                    ),
                   ),
-                  onSubmitted: (value) => provider.load(query: value),
+                if (scope == DatabaseScope.mysql ||
+                    scope == DatabaseScope.postgresql)
+                  SizedBox(
+                      width: isWideToolbar ? AppDesignTokens.spacingSm : 0),
+                Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: l10n.commonSearch,
+                      prefixIcon: const Icon(Icons.search),
+                    ),
+                    onSubmitted: (value) => provider.load(query: value),
+                  ),
                 ),
-              ),
-              const SizedBox(width: AppDesignTokens.spacingSm),
-              IconButton(
-                onPressed: provider.refresh,
-                tooltip: l10n.commonRefresh,
-                icon: const Icon(Icons.refresh),
-              ),
-              IconButton(
-                onPressed: scope == DatabaseScope.redis
-                    ? null
-                    : () => Navigator.pushNamed(
-                          context,
-                          AppRoutes.databaseForm,
-                          arguments: {'scope': scope.value},
-                        ),
-                tooltip: l10n.commonCreate,
-                icon: const Icon(Icons.add),
-              ),
-            ],
+              ];
+              final actions = Wrap(
+                spacing: AppDesignTokens.spacingSm,
+                runSpacing: AppDesignTokens.spacingSm,
+                alignment: WrapAlignment.end,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  OutlinedButton.icon(
+                    onPressed: provider.refresh,
+                    icon: const Icon(Icons.refresh),
+                    label: Text(l10n.commonRefresh),
+                  ),
+                  FilledButton.icon(
+                    onPressed: scope == DatabaseScope.redis
+                        ? null
+                        : () => Navigator.pushNamed(
+                              context,
+                              AppRoutes.databaseForm,
+                              arguments: {'scope': scope.value},
+                            ),
+                    icon: const Icon(Icons.add),
+                    label: Text(l10n.commonCreate),
+                  ),
+                ],
+              );
+
+              if (!isWideToolbar) {
+                return Column(
+                  children: [
+                    Row(children: toolbarChildren),
+                    const SizedBox(height: AppDesignTokens.spacingSm),
+                    Row(
+                      children: [
+                        const Spacer(),
+                        actions,
+                      ],
+                    ),
+                  ],
+                );
+              }
+
+              return Row(
+                children: [
+                  ...toolbarChildren,
+                  const SizedBox(width: AppDesignTokens.spacingSm),
+                  actions,
+                ],
+              );
+            },
           ),
         ),
         Expanded(
@@ -151,24 +248,31 @@ class _DatabaseScopeTabView extends StatelessWidget {
                       Center(child: Text(l10n.commonEmpty)),
                     ],
                   )
-                : ListView.separated(
-                    padding: AppDesignTokens.pagePadding,
-                    itemCount: provider.state.items.length,
-                    separatorBuilder: (_, __) =>
-                        const SizedBox(height: AppDesignTokens.spacingSm),
-                    itemBuilder: (context, index) {
-                      final item = provider.state.items[index];
-                      return AppCard(
-                        title: item.name,
-                        subtitle: Text(_subtitle(item)),
-                        child: Text(_detail(item)),
-                        onTap: () => Navigator.pushNamed(
-                          context,
-                          item.scope == DatabaseScope.redis
-                              ? AppRoutes.databaseRedisConfig
-                              : AppRoutes.databaseDetail,
-                          arguments: item,
+                : LayoutBuilder(
+                    builder: (context, constraints) {
+                      final columns = switch (constraints.maxWidth) {
+                        >= 1360 => 3,
+                        >= 820 => 2,
+                        _ => 1,
+                      };
+                      return GridView.builder(
+                        padding: AppDesignTokens.pagePadding,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: columns,
+                          crossAxisSpacing: AppDesignTokens.spacingSm,
+                          mainAxisSpacing: AppDesignTokens.spacingSm,
+                          mainAxisExtent: 238,
                         ),
+                        itemCount: provider.state.items.length,
+                        itemBuilder: (context, index) {
+                          final item = provider.state.items[index];
+                          return _DatabaseGridCard(
+                            item: item,
+                            subtitle: _subtitle(item),
+                            detail: _detail(item),
+                            onRefresh: provider.refresh,
+                          );
+                        },
                       );
                     },
                   ),
@@ -180,6 +284,9 @@ class _DatabaseScopeTabView extends StatelessWidget {
 
   String _subtitle(DatabaseListItem item) {
     final parts = <String>[item.engine];
+    if (item.lookupName != item.name) {
+      parts.add(item.lookupName);
+    }
     if (item.version?.isNotEmpty == true) {
       parts.add(item.version!);
     }
@@ -191,6 +298,11 @@ class _DatabaseScopeTabView extends StatelessWidget {
 
   String _detail(DatabaseListItem item) {
     final parts = <String>[];
+    if (item.instanceLabel?.isNotEmpty == true &&
+        item.instanceLabel != item.lookupName &&
+        item.instanceLabel != item.name) {
+      parts.add(item.instanceLabel!);
+    }
     if (item.address?.isNotEmpty == true) {
       parts.add(
           item.port != null ? '${item.address}:${item.port}' : item.address!);
@@ -202,6 +314,209 @@ class _DatabaseScopeTabView extends StatelessWidget {
       parts.add(item.description!);
     }
     return parts.isEmpty ? '-' : parts.join(' · ');
+  }
+}
+
+class _DatabaseGridCard extends StatelessWidget {
+  const _DatabaseGridCard({
+    required this.item,
+    required this.subtitle,
+    required this.detail,
+    required this.onRefresh,
+  });
+
+  final DatabaseListItem item;
+  final String subtitle;
+  final String detail;
+  final Future<void> Function() onRefresh;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final scheme = Theme.of(context).colorScheme;
+    final destination = item.scope == DatabaseScope.redis
+        ? AppRoutes.databaseRedisConfig
+        : AppRoutes.databaseDetail;
+
+    return AppCard(
+      title: item.name,
+      leading: _DatabaseEngineBadge(item: item),
+      subtitle: Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          _InfoChip(
+            icon: Icons.developer_board_outlined,
+            label: subtitle,
+          ),
+          if (item.lookupName != item.name)
+            _InfoChip(
+              icon: Icons.hub_outlined,
+              label: item.lookupName,
+            ),
+          _StatusChip(item: item),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(AppDesignTokens.spacingSm),
+            decoration: BoxDecoration(
+              color: scheme.surface,
+              borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
+            ),
+            child: Text(
+              detail,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
+            ),
+          ),
+          const SizedBox(height: AppDesignTokens.spacingMd),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              FilledButton.tonalIcon(
+                onPressed: () => Navigator.pushNamed(
+                  context,
+                  destination,
+                  arguments: item,
+                ),
+                icon: const Icon(Icons.open_in_new),
+                label: Text(l10n.commonMore),
+              ),
+              OutlinedButton.icon(
+                onPressed: detail == '-'
+                    ? null
+                    : () async {
+                        await Clipboard.setData(ClipboardData(text: detail));
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(l10n.commonCopied)),
+                        );
+                      },
+                icon: const Icon(Icons.content_copy_outlined),
+                label: Text(l10n.commonCopy),
+              ),
+              IconButton(
+                tooltip: l10n.commonRefresh,
+                onPressed: onRefresh,
+                icon: const Icon(Icons.refresh),
+              ),
+            ],
+          ),
+        ],
+      ),
+      onTap: () => Navigator.pushNamed(
+        context,
+        destination,
+        arguments: item,
+      ),
+    );
+  }
+}
+
+class _DatabaseEngineBadge extends StatelessWidget {
+  const _DatabaseEngineBadge({required this.item});
+
+  final DatabaseListItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        color: scheme.secondaryContainer,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Icon(
+        switch (item.scope) {
+          DatabaseScope.mysql => Icons.storage_outlined,
+          DatabaseScope.postgresql => Icons.dataset_outlined,
+          DatabaseScope.redis => Icons.memory_outlined,
+          DatabaseScope.remote => Icons.cloud_outlined,
+        },
+        color: scheme.onSecondaryContainer,
+      ),
+    );
+  }
+}
+
+class _InfoChip extends StatelessWidget {
+  const _InfoChip({
+    required this.icon,
+    required this.label,
+  });
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: scheme.surface,
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: scheme.outlineVariant),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: scheme.onSurfaceVariant),
+          const SizedBox(width: 6),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 220),
+            child: Text(
+              label,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatusChip extends StatelessWidget {
+  const _StatusChip({required this.item});
+
+  final DatabaseListItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final statusText = item.status?.trim().isNotEmpty == true
+        ? item.status!
+        : (item.source == 'remote' ? 'remote' : 'local');
+    final isPositive = statusText.toLowerCase().contains('run') ||
+        statusText.toLowerCase().contains('local');
+    final bg =
+        isPositive ? scheme.primaryContainer : scheme.surfaceContainerHighest;
+    final fg = isPositive ? scheme.onPrimaryContainer : scheme.onSurfaceVariant;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        statusText,
+        style: Theme.of(context).textTheme.labelMedium?.copyWith(color: fg),
+      ),
+    );
   }
 }
 

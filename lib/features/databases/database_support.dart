@@ -31,7 +31,7 @@ String databaseBackupName(DatabaseListItem item) {
   switch (item.scope) {
     case DatabaseScope.mysql:
     case DatabaseScope.postgresql:
-      return item.engine;
+      return item.lookupName;
     case DatabaseScope.redis:
       return item.lookupName;
     case DatabaseScope.remote:
