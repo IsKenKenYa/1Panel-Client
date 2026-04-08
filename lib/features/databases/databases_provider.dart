@@ -200,6 +200,41 @@ class DatabasesProvider extends ChangeNotifier with SafeChangeNotifier {
     notifyListeners();
     await load(query: _state.query);
   }
+
+  Future<DatabaseBaseInfo?> loadSelectedBaseInfo() async {
+    final target = _state.selectedTarget;
+    if (target == null) {
+      return null;
+    }
+    return _service.loadBaseInfo(target);
+  }
+
+  Future<bool> loadSelectedRemote() async {
+    final target = _state.selectedTarget;
+    if (target == null || target.source != 'remote') {
+      return false;
+    }
+    try {
+      await _service.loadFromRemote(target);
+      await load(query: _state.query);
+      return true;
+    } catch (e) {
+      if (!isDisposed) {
+        _state = DatabasesState(
+          page: _state.page,
+          targets: _state.targets,
+          selectedTarget: _state.selectedTarget,
+          sourceFilter: _state.sourceFilter,
+          isLoading: false,
+          isLoadingTargets: _state.isLoadingTargets,
+          error: e.toString(),
+          query: _state.query,
+        );
+        notifyListeners();
+      }
+      return false;
+    }
+  }
 }
 
 class DatabaseDetailProvider extends ChangeNotifier {

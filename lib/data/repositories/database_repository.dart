@@ -22,6 +22,15 @@ class DatabaseRepository {
     return response.data ?? const <DatabaseItemOption>[];
   }
 
+  Future<DatabaseBaseInfo> loadBaseInfo(DatabaseListItem item) async {
+    final api = await _getApi();
+    final response = await api.loadDatabaseBaseInfo(
+      type: item.engine,
+      name: item.lookupName,
+    );
+    return DatabaseBaseInfo.fromJson(response.data ?? const <String, dynamic>{});
+  }
+
   Future<List<DatabaseListItem>> loadDatabaseTargets(
       DatabaseScope scope) async {
     final api = await _getApi();
@@ -330,5 +339,24 @@ class DatabaseRepository {
       'database': database,
       ...payload,
     });
+  }
+
+  Future<void> loadFromRemote(DatabaseListItem item) async {
+    final api = await _getApi();
+    switch (item.scope) {
+      case DatabaseScope.mysql:
+        await api.loadMysqlDatabaseFromRemote({
+          'from': item.source,
+          'type': item.engine,
+          'database': item.lookupName,
+        });
+        return;
+      case DatabaseScope.postgresql:
+        await api.loadPostgresqlDatabaseFromRemote(item.lookupName);
+        return;
+      case DatabaseScope.redis:
+      case DatabaseScope.remote:
+        throw UnsupportedError('Remote load is not supported for this scope.');
+    }
   }
 }

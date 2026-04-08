@@ -41,6 +41,10 @@ class DatabasesService {
     return _repository.loadDatabaseTargets(scope);
   }
 
+  Future<DatabaseBaseInfo> loadBaseInfo(DatabaseListItem item) {
+    return _repository.loadBaseInfo(item);
+  }
+
   Future<void> updateDescription(DatabaseListItem item, String description) {
     return _repository.updateDescription(item, description);
   }
@@ -80,5 +84,9 @@ class DatabasesService {
       database: database,
       payload: payload,
     );
+  }
+
+  Future<void> loadFromRemote(DatabaseListItem item) {
+    return _repository.loadFromRemote(item);
   }
 }
