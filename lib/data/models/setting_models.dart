@@ -860,12 +860,12 @@ class SettingsImport extends Equatable {
 @JsonSerializable()
 class MfaCredential extends Equatable {
   final String code;
-  final String interval;
+  final int interval;
   final String secret;
 
   const MfaCredential({
     required this.code,
-    required this.interval,
+    this.interval = 30,
     required this.secret,
   });
 
@@ -875,6 +875,25 @@ class MfaCredential extends Equatable {
 
   @override
   List<Object?> get props => [code, interval, secret];
+}
+
+/// MFA加载请求
+@JsonSerializable()
+class MfaLoadRequest extends Equatable {
+  final String title;
+  final int interval;
+
+  const MfaLoadRequest({
+    required this.title,
+    this.interval = 30,
+  });
+
+  factory MfaLoadRequest.fromJson(Map<String, dynamic> json) =>
+      _$MfaLoadRequestFromJson(json);
+  Map<String, dynamic> toJson() => _$MfaLoadRequestToJson(this);
+
+  @override
+  List<Object?> get props => [title, interval];
 }
 
 /// MFA OTP响应
@@ -904,7 +923,7 @@ class MfaBindRequest extends Equatable {
 
   const MfaBindRequest({
     required this.code,
-    required this.interval,
+    this.interval = '30',
     required this.secret,
   });
 

@@ -128,10 +128,9 @@ void main() {
         return;
       }
 
-      final request = MfaCredential(
-        code: '',
-        interval: '30',
-        secret: '',
+      final request = const MfaLoadRequest(
+        title: '1Panel Client',
+        interval: 30,
       );
 
       final response = await api.loadMfaInfo(request);

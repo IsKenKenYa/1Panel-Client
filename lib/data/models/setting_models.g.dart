@@ -457,7 +457,7 @@ Map<String, dynamic> _$SettingsImportToJson(SettingsImport instance) =>
 MfaCredential _$MfaCredentialFromJson(Map<String, dynamic> json) =>
     MfaCredential(
       code: json['code'] as String,
-      interval: json['interval'] as String,
+      interval: (json['interval'] as num?)?.toInt() ?? 30,
       secret: json['secret'] as String,
     );
 
@@ -466,6 +466,18 @@ Map<String, dynamic> _$MfaCredentialToJson(MfaCredential instance) =>
       'code': instance.code,
       'interval': instance.interval,
       'secret': instance.secret,
+    };
+
+MfaLoadRequest _$MfaLoadRequestFromJson(Map<String, dynamic> json) =>
+    MfaLoadRequest(
+      title: json['title'] as String,
+      interval: (json['interval'] as num?)?.toInt() ?? 30,
+    );
+
+Map<String, dynamic> _$MfaLoadRequestToJson(MfaLoadRequest instance) =>
+    <String, dynamic>{
+      'title': instance.title,
+      'interval': instance.interval,
     };
 
 MfaOtp _$MfaOtpFromJson(Map<String, dynamic> json) => MfaOtp(
@@ -481,7 +493,7 @@ Map<String, dynamic> _$MfaOtpToJson(MfaOtp instance) => <String, dynamic>{
 MfaBindRequest _$MfaBindRequestFromJson(Map<String, dynamic> json) =>
     MfaBindRequest(
       code: json['code'] as String,
-      interval: json['interval'] as String,
+      interval: json['interval'] as String? ?? '30',
       secret: json['secret'] as String,
     );
 

@@ -13,23 +13,34 @@ class SettingV2Api {
   /// 从API响应中提取data字段
   /// API响应结构: { "code": 200, "message": "", "data": {...} }
   Map<String, dynamic>? _extractData(dynamic responseData) {
-    if (responseData == null) return null;
-    final map = responseData as Map<String, dynamic>;
-    return map['data'] as Map<String, dynamic>?;
+    if (responseData is! Map<String, dynamic>) {
+      return null;
+    }
+    final inner = responseData['data'];
+    if (inner is Map<String, dynamic>) {
+      return inner;
+    }
+    return null;
   }
 
   /// 从API响应中提取data字段（List类型）
   List<dynamic>? _extractDataList(dynamic responseData) {
-    if (responseData == null) return null;
-    final map = responseData as Map<String, dynamic>;
-    return map['data'] as List<dynamic>?;
+    if (responseData is! Map<String, dynamic>) {
+      return null;
+    }
+    final inner = responseData['data'];
+    if (inner is List<dynamic>) {
+      return inner;
+    }
+    return null;
   }
 
   /// 从API响应中提取data字段（原始类型）
   dynamic _extractDataRaw(dynamic responseData) {
-    if (responseData == null) return null;
-    final map = responseData as Map<String, dynamic>;
-    return map['data'];
+    if (responseData is! Map<String, dynamic>) {
+      return responseData;
+    }
+    return responseData['data'];
   }
 
   bool _shouldFallbackToLegacySettingsPath(Object error) {
@@ -488,7 +499,7 @@ class SettingV2Api {
   /// 加载MFA密钥和二维码
   /// @param request MFA凭证请求
   /// @return MFA OTP信息
-  Future<Response<MfaOtp>> loadMfaInfo(MfaCredential request) async {
+  Future<Response<MfaOtp>> loadMfaInfo(MfaLoadRequest request) async {
     final response = await _client.post<dynamic>(
       ApiConstants.buildApiPath('/core/settings/mfa'),
       data: request.toJson(),

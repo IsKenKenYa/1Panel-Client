@@ -75,7 +75,7 @@ class SettingsService {
     await apiClient.deletePasskey(id);
   }
 
-  Future<MfaOtp?> loadMfaInfo(MfaCredential request) async {
+  Future<MfaOtp?> loadMfaInfo(MfaLoadRequest request) async {
     final apiClient = await _getApi();
     final response = await apiClient.loadMfaInfo(request);
     return response.data;

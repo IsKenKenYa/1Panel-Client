@@ -454,7 +454,7 @@ class SettingsProvider extends ChangeNotifier with SafeChangeNotifier {
     }
   }
 
-  Future<void> loadMfaInfo(MfaCredential request) async {
+  Future<void> loadMfaInfo(MfaLoadRequest request) async {
     try {
       final mfaInfo = await _service.loadMfaInfo(request);
 
@@ -467,10 +467,9 @@ class SettingsProvider extends ChangeNotifier with SafeChangeNotifier {
 
   Future<MfaOtp?> loadMfaOtp() async {
     try {
-      final mfaInfo = await _service.loadMfaInfo(const MfaCredential(
-        code: '',
-        interval: '30',
-        secret: '',
+      final mfaInfo = await _service.loadMfaInfo(const MfaLoadRequest(
+        title: '1Panel Client',
+        interval: 30,
       ));
       _data = _data.copyWith(mfaInfo: mfaInfo);
       notifyListeners();
