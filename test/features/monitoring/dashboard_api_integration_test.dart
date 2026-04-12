@@ -18,12 +18,12 @@ void main() {
       };
 
       final snapshot = MonitorMetricsSnapshot(
-        cpuPercent: (dashboardResponse['cpuPercent'] as num?)?.toDouble(),
-        memoryPercent: (dashboardResponse['memoryPercent'] as num?)?.toDouble(),
-        diskPercent: (dashboardResponse['diskPercent'] as num?)?.toDouble(),
-        load1: (dashboardResponse['load1'] as num?)?.toDouble(),
-        load5: (dashboardResponse['load5'] as num?)?.toDouble(),
-        load15: (dashboardResponse['load15'] as num?)?.toDouble(),
+        cpuPercent: dashboardResponse['cpuPercent']?.toDouble(),
+        memoryPercent: dashboardResponse['memoryPercent']?.toDouble(),
+        diskPercent: dashboardResponse['diskPercent']?.toDouble(),
+        load1: dashboardResponse['load1']?.toDouble(),
+        load5: dashboardResponse['load5']?.toDouble(),
+        load15: dashboardResponse['load15']?.toDouble(),
         memoryUsed: dashboardResponse['memoryUsed'] as int?,
         memoryTotal: dashboardResponse['memoryTotal'] as int?,
         uptime: dashboardResponse['uptime'] as int?,

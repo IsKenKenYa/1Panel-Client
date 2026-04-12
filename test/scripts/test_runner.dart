@@ -148,6 +148,13 @@ class TestRunner {
         description: 'Phase 1 API对齐测试',
       );
     }
+    final aiAlignmentFile = File('test/api_client/ai_v2_alignment_test.dart');
+    if (await aiAlignmentFile.exists()) {
+      await runTests(
+        'test/api_client/ai_v2_alignment_test.dart',
+        description: 'AI API对齐测试',
+      );
+    }
     final groupServiceDir = Directory('test/features/group/services');
     if (await groupServiceDir.exists()) {
       await runTests(

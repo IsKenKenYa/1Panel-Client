@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart' show Options, ResponseType;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/core/network/dio_client.dart';
