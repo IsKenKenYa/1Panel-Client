@@ -5,6 +5,7 @@ import '../../core/network/dio_client.dart';
 import '../../data/models/common_models.dart';
 import '../../data/models/database_models.dart';
 import '../../data/models/database_option_models.dart';
+import 'api_response_parser.dart';
 
 class DatabaseV2Api {
   DatabaseV2Api(this._client);
@@ -607,65 +608,18 @@ class DatabaseV2Api {
   }
 
   Map<String, dynamic> _unwrapData(Map<String, dynamic>? response) {
-    if (response == null) {
-      return const <String, dynamic>{};
-    }
-    final data = response['data'];
-    if (data is Map<String, dynamic>) {
-      return data;
-    }
-    if (data is Map) {
-      return Map<String, dynamic>.from(data);
-    }
-    return response;
+    return ApiResponseParser.asMap(response, fallbackToRootMap: true);
   }
 
   Map<String, dynamic> _unwrapMap(Map<String, dynamic>? response) {
-    if (response == null) {
-      return const <String, dynamic>{};
-    }
-    final data = response['data'];
-    if (data is Map<String, dynamic>) {
-      return data;
-    }
-    if (data is Map) {
-      return Map<String, dynamic>.from(data);
-    }
-    return response;
+    return ApiResponseParser.asMap(response, fallbackToRootMap: true);
   }
 
   List<dynamic> _unwrapList(dynamic response) {
-    if (response == null) {
-      return const <dynamic>[];
-    }
-    if (response is List<dynamic>) {
-      return response;
-    }
-    if (response is Map<String, dynamic>) {
-      final data = response['data'];
-      if (data is List<dynamic>) {
-        return data;
-      }
-      if (data is List) {
-        return List<dynamic>.from(data);
-      }
-    }
-    if (response is List) {
-      return List<dynamic>.from(response);
-    }
-    return const <dynamic>[];
+    return ApiResponseParser.asList(response);
   }
 
   T? _unwrapPrimitive<T>(dynamic response) {
-    if (response is T) {
-      return response;
-    }
-    if (response is Map<String, dynamic>) {
-      final data = response['data'];
-      if (data is T) {
-        return data;
-      }
-    }
-    return null;
+    return ApiResponseParser.asPrimitive<T>(response);
   }
 }

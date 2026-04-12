@@ -54,13 +54,21 @@ MODULE_PATH_MAPPING = {
 }
 
 KEYWORD_MATCHERS = {
-    'openresty': ['/openresty'],
-    'website': ['/websites'],
-    'domains': ['/websites/domains'],
-    'website_ssl': ['/websites/ssl'],
-    'system_ssl': ['/core/settings/ssl'],
-    'ssl': ['/core/settings/ssl', '/websites/ssl'],
+    'openresty': ['^/openresty'],
+    'website': ['^/websites'],
+    'domains': ['^/websites/domains'],
+    'website_ssl': ['^/websites/ssl'],
+    'system_ssl': ['^/core/settings/ssl'],
+    'ssl': ['^/core/settings/ssl', '^/websites/ssl'],
+    'host': ['^/hosts'],
+    'database': ['^/databases'],
 }
+
+
+def _path_matches(path_lower, matcher):
+    if matcher.startswith('^'):
+        return path_lower.startswith(matcher[1:])
+    return matcher in path_lower
 
 def load_openapi():
     if not OPENAPI_FILE.exists():
@@ -94,7 +102,7 @@ def extract_module_apis(openapi_data, keyword):
     
     for path, methods in paths.items():
         path_lower = path.lower()
-        if not any(m in path_lower for m in matchers):
+        if not any(_path_matches(path_lower, m) for m in matchers):
             continue
 
         api_info = {

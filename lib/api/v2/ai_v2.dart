@@ -5,33 +5,19 @@ import '../../data/models/ai_models.dart';
 import '../../data/models/ai/agent_models.dart';
 import '../../data/models/mcp_models.dart';
 import '../../data/models/common_models.dart';
+import 'api_response_parser.dart';
 
 class AIV2Api {
   final DioClient _client;
 
   AIV2Api(this._client);
 
-  dynamic _unwrapData(dynamic payload) {
-    if (payload is Map<String, dynamic> && payload.containsKey('data')) {
-      return payload['data'];
-    }
-    return payload;
-  }
-
   Map<String, dynamic> _unwrapDataMap(dynamic payload) {
-    final data = _unwrapData(payload);
-    if (data is Map<String, dynamic>) {
-      return data;
-    }
-    return const <String, dynamic>{};
+    return ApiResponseParser.asMap(payload);
   }
 
   List<dynamic> _unwrapDataList(dynamic payload) {
-    final data = _unwrapData(payload);
-    if (data is List) {
-      return data;
-    }
-    return const <dynamic>[];
+    return ApiResponseParser.asList(payload);
   }
 
   /// 绑定域名

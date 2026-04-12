@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import '../../data/repositories/monitor_repository.dart';
-import '../../api/v2/monitor_v2.dart';
+import '../../data/models/monitoring_runtime_models.dart';
 import 'monitoring_service.dart';
 import 'data/datasources/monitor_local_datasource.dart';
 import '../../core/services/logger/logger_service.dart';
@@ -28,7 +28,7 @@ class MonitoringData {
   final MonitorTimeSeries? ioPreviousSeries;
   final MonitorTimeSeries? networkTimeSeries;
   final MonitorTimeSeries? networkPreviousSeries;
-  final List<GPUInfo> gpuInfo;
+  final List<MonitorGpuInfo> gpuInfo;
   final MonitorSetting? settings;
   final List<String> ioOptions;
   final List<String> networkOptions;
@@ -75,7 +75,7 @@ class MonitoringData {
     MonitorTimeSeries? ioPreviousSeries,
     MonitorTimeSeries? networkTimeSeries,
     MonitorTimeSeries? networkPreviousSeries,
-    List<GPUInfo>? gpuInfo,
+    List<MonitorGpuInfo>? gpuInfo,
     MonitorSetting? settings,
     List<String>? ioOptions,
     List<String>? networkOptions,

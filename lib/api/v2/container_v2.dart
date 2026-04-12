@@ -4,74 +4,52 @@ import '../../core/config/api_constants.dart';
 import '../../data/models/container_models.dart';
 import '../../data/models/common_models.dart';
 import '../../data/models/setting_models.dart';
+import 'api_response_parser.dart';
 
 /// API响应解析帮助类
 class _Parser {
   /// 从1Panel API响应中提取data字段
   static T extractData<T>(Response<Map<String, dynamic>> response,
       T Function(Map<String, dynamic>) fromJson) {
-    final body = response.data!;
-    if (body.containsKey('data') && body['data'] != null) {
-      return fromJson(body['data'] as Map<String, dynamic>);
-    }
-    throw Exception('API响应格式错误: 缺少data字段');
+    return ApiResponseParser.extractData(response, fromJson);
   }
 
   /// 从1Panel API响应中提取data字段（Map类型）
   static Map<String, dynamic> extractMapData(
       Response<Map<String, dynamic>> response) {
-    final body = response.data!;
-    if (body.containsKey('data') && body['data'] != null) {
-      return body['data'] as Map<String, dynamic>;
-    }
-    return {};
+    return ApiResponseParser.extractMapData(response);
   }
 
   static List<T> extractListDataFromMap<T>(
       Response<Map<String, dynamic>> response,
       T Function(Map<String, dynamic>) fromJson) {
-    final body = response.data!;
-    final data = body['data'];
-    if (data is List) {
-      return data
-          .map((item) => fromJson(item as Map<String, dynamic>))
-          .toList();
-    }
-    if (data is Map<String, dynamic>) {
-      final items = data['items'];
-      if (items is List) {
-        return items
-            .map((item) => fromJson(item as Map<String, dynamic>))
-            .toList();
-      }
-    }
-    return [];
+    final data = ApiResponseParser.asList(
+      response.data,
+      nestedItemsKey: 'items',
+    );
+    return data
+        .whereType<Map<String, dynamic>>()
+        .map(fromJson)
+        .toList(growable: false);
   }
 
   static List<Map<String, dynamic>> extractRawListDataFromMap(
       Response<Map<String, dynamic>> response) {
-    final body = response.data!;
-    final data = body['data'];
-    if (data is List) {
-      return data.map((item) => item as Map<String, dynamic>).toList();
-    }
-    if (data is Map<String, dynamic>) {
-      final items = data['items'];
-      if (items is List) {
-        return items.map((item) => item as Map<String, dynamic>).toList();
-      }
-    }
-    return [];
+    final data = ApiResponseParser.asList(
+      response.data,
+      nestedItemsKey: 'items',
+    );
+    return data.whereType<Map<String, dynamic>>().toList(growable: false);
   }
 
   /// 从1Panel API响应中提取data字段（PageResult类型）
   static PageResult<T> extractPageData<T>(
       Response<Map<String, dynamic>> response,
       T Function(Map<String, dynamic>) fromJson) {
-    final body = response.data!;
-    if (body.containsKey('data') && body['data'] != null) {
+    final data = ApiResponseParser.asMap(response.data);
+    if (data.isNotEmpty) {
       return PageResult.fromJson(
-        body['data'] as Map<String, dynamic>,
+        data,
         (dynamic item) => fromJson(item as Map<String, dynamic>),
       );
     }

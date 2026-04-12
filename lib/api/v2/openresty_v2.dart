@@ -2,30 +2,19 @@ import 'package:dio/dio.dart';
 import '../../core/network/dio_client.dart';
 import '../../core/config/api_constants.dart';
 import '../../data/models/openresty_models.dart';
+import 'api_response_parser.dart';
 
 class _Parser {
   static Map<String, dynamic> extractMapData(
       Response<Map<String, dynamic>> response) {
-    final body = response.data;
-    if (body is Map<String, dynamic>) {
-      final data = body['data'];
-      if (data is Map<String, dynamic>) {
-        return data;
-      }
-    }
-    return {};
+    return ApiResponseParser.extractMapData(response);
   }
 
   static List<Map<String, dynamic>> extractListData(
       Response<Map<String, dynamic>> response) {
-    final body = response.data;
-    if (body is Map<String, dynamic>) {
-      final data = body['data'];
-      if (data is List) {
-        return data.whereType<Map<String, dynamic>>().toList();
-      }
-    }
-    return [];
+    return ApiResponseParser.extractListData(response)
+        .whereType<Map<String, dynamic>>()
+        .toList(growable: false);
   }
 }
 

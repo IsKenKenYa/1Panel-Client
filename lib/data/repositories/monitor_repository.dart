@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import '../../api/v2/monitor_v2.dart';
+import '../models/monitoring_runtime_models.dart';
 import '../../core/services/logger/logger_service.dart';
 
 const String _monitorRepoPackage = 'data.repositories.monitor_repository';
@@ -497,7 +497,7 @@ class MonitorRepository {
   }
 
   /// 获取GPU信息
-  Future<List<GPUInfo>> getGPUInfo(dynamic client) async {
+  Future<List<MonitorGpuInfo>> getGPUInfo(dynamic client) async {
     try {
       final now = DateTime.now();
       final startTime = now.subtract(const Duration(hours: 1));
@@ -515,7 +515,7 @@ class MonitorRepository {
         final dataList = body['data'] as List?;
         if (dataList != null) {
           return dataList
-              .map((e) => GPUInfo.fromJson(e as Map<String, dynamic>))
+              .map((e) => MonitorGpuInfo.fromJson(e as Map<String, dynamic>))
               .toList();
         }
       }

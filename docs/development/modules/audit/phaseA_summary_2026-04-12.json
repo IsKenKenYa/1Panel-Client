@@ -1,0 +1,403 @@
+{
+  "generatedAt": "2026-04-12",
+  "apiUpdatesExitCode": 0,
+  "clientCoverageExitCode": 2,
+  "apiUpdatesStatusCounts": {
+    "unchanged": 15,
+    "updated": 12
+  },
+  "clientCoverageStatusCounts": {
+    "aligned": 2,
+    "extra_in_client": 1,
+    "missing_in_client": 24
+  },
+  "apiUpdatesNonIdealModules": [
+    "app",
+    "auth",
+    "container",
+    "file",
+    "group",
+    "host",
+    "log",
+    "process",
+    "setting",
+    "ssl",
+    "website",
+    "website_ssl"
+  ],
+  "clientCoverageNonIdealModules": [
+    "system_ssl",
+    "app",
+    "auth",
+    "backup",
+    "command",
+    "container",
+    "cronjob",
+    "dashboard",
+    "database",
+    "device",
+    "domains",
+    "file",
+    "firewall",
+    "group",
+    "host",
+    "log",
+    "openresty",
+    "process",
+    "runtime",
+    "setting",
+    "ssh",
+    "ssl",
+    "toolbox",
+    "website",
+    "website_ssl"
+  ],
+  "topRiskModules": [
+    {
+      "module": "website",
+      "coverageStatus": "missing_in_client",
+      "updateStatus": "updated",
+      "missingInClientCount": 92,
+      "extraInClientCount": 0,
+      "score": 9220,
+      "missingEndpoints": [
+        {
+          "method": "GET",
+          "path": "/websites/:id"
+        },
+        {
+          "method": "GET",
+          "path": "/websites/:id/config/:type"
+        },
+        {
+          "method": "GET",
+          "path": "/websites/:id/https"
+        },
+        {
+          "method": "GET",
+          "path": "/websites/ca/{id}"
+        },
+        {
+          "method": "GET",
+          "path": "/websites/cors/{id}"
+        }
+      ],
+      "extraEndpoints": []
+    },
+    {
+      "module": "host",
+      "coverageStatus": "missing_in_client",
+      "updateStatus": "updated",
+      "missingInClientCount": 45,
+      "extraInClientCount": 0,
+      "score": 4520,
+      "missingEndpoints": [
+        {
+          "method": "GET",
+          "path": "/hosts/components/{name}"
+        },
+        {
+          "method": "GET",
+          "path": "/hosts/disks"
+        },
+        {
+          "method": "GET",
+          "path": "/hosts/monitor/setting"
+        },
+        {
+          "method": "GET",
+          "path": "/hosts/tool/supervisor/process"
+        },
+        {
+          "method": "POST",
+          "path": "/hosts/disks/mount"
+        }
+      ],
+      "extraEndpoints": []
+    },
+    {
+      "module": "database",
+      "coverageStatus": "missing_in_client",
+      "updateStatus": "unchanged",
+      "missingInClientCount": 43,
+      "extraInClientCount": 1,
+      "score": 4301,
+      "missingEndpoints": [
+        {
+          "method": "GET",
+          "path": "/databases/db/:name"
+        },
+        {
+          "method": "GET",
+          "path": "/databases/db/item/:type"
+        },
+        {
+          "method": "GET",
+          "path": "/databases/db/list/:type"
+        },
+        {
+          "method": "GET",
+          "path": "/websites/databases"
+        },
+        {
+          "method": "POST",
+          "path": "/databases"
+        }
+      ],
+      "extraEndpoints": [
+        {
+          "method": "POST",
+          "path": "/databases/update"
+        }
+      ]
+    },
+    {
+      "module": "container",
+      "coverageStatus": "missing_in_client",
+      "updateStatus": "updated",
+      "missingInClientCount": 41,
+      "extraInClientCount": 1,
+      "score": 4121,
+      "missingEndpoints": [
+        {
+          "method": "GET",
+          "path": "/containers/daemonjson"
+        },
+        {
+          "method": "GET",
+          "path": "/containers/daemonjson/file"
+        },
+        {
+          "method": "GET",
+          "path": "/containers/docker/status"
+        },
+        {
+          "method": "GET",
+          "path": "/containers/image"
+        },
+        {
+          "method": "GET",
+          "path": "/containers/image/all"
+        }
+      ],
+      "extraEndpoints": [
+        {
+          "method": "POST",
+          "path": "/containers/command"
+        }
+      ]
+    },
+    {
+      "module": "runtime",
+      "coverageStatus": "missing_in_client",
+      "updateStatus": "unchanged",
+      "missingInClientCount": 31,
+      "extraInClientCount": 0,
+      "score": 3100,
+      "missingEndpoints": [
+        {
+          "method": "GET",
+          "path": "/runtimes/:id"
+        },
+        {
+          "method": "GET",
+          "path": "/runtimes/installed/delete/check/:id"
+        },
+        {
+          "method": "GET",
+          "path": "/runtimes/php/:id/extensions"
+        },
+        {
+          "method": "GET",
+          "path": "/runtimes/php/config/:id"
+        },
+        {
+          "method": "GET",
+          "path": "/runtimes/php/container/:id"
+        }
+      ],
+      "extraEndpoints": []
+    },
+    {
+      "module": "app",
+      "coverageStatus": "missing_in_client",
+      "updateStatus": "updated",
+      "missingInClientCount": 25,
+      "extraInClientCount": 0,
+      "score": 2520,
+      "missingEndpoints": [
+        {
+          "method": "GET",
+          "path": "/apps/:key"
+        },
+        {
+          "method": "GET",
+          "path": "/apps/checkupdate"
+        },
+        {
+          "method": "GET",
+          "path": "/apps/detail/:appId/:version/:type"
+        },
+        {
+          "method": "GET",
+          "path": "/apps/detail/node/:appKey/:version"
+        },
+        {
+          "method": "GET",
+          "path": "/apps/details/:id"
+        }
+      ],
+      "extraEndpoints": []
+    },
+    {
+      "module": "backup",
+      "coverageStatus": "missing_in_client",
+      "updateStatus": "unchanged",
+      "missingInClientCount": 25,
+      "extraInClientCount": 7,
+      "score": 2507,
+      "missingEndpoints": [
+        {
+          "method": "GET",
+          "path": "/backups/local"
+        },
+        {
+          "method": "GET",
+          "path": "/backups/options"
+        },
+        {
+          "method": "GET",
+          "path": "/core/backups/client/:clientType"
+        },
+        {
+          "method": "POST",
+          "path": "/backups"
+        },
+        {
+          "method": "POST",
+          "path": "/backups/backup"
+        }
+      ],
+      "extraEndpoints": [
+        {
+          "method": "POST",
+          "path": "/settings/snapshot"
+        },
+        {
+          "method": "POST",
+          "path": "/settings/snapshot/del"
+        },
+        {
+          "method": "POST",
+          "path": "/settings/snapshot/description/update"
+        },
+        {
+          "method": "POST",
+          "path": "/settings/snapshot/import"
+        },
+        {
+          "method": "POST",
+          "path": "/settings/snapshot/recover"
+        }
+      ]
+    },
+    {
+      "module": "file",
+      "coverageStatus": "missing_in_client",
+      "updateStatus": "updated",
+      "missingInClientCount": 24,
+      "extraInClientCount": 1,
+      "score": 2421,
+      "missingEndpoints": [
+        {
+          "method": "GET",
+          "path": "/containers/daemonjson/file"
+        },
+        {
+          "method": "GET",
+          "path": "/files/download"
+        },
+        {
+          "method": "GET",
+          "path": "/logs/system/files"
+        },
+        {
+          "method": "POST",
+          "path": "/backups/search/files"
+        },
+        {
+          "method": "POST",
+          "path": "/containers/files/content"
+        }
+      ],
+      "extraEndpoints": [
+        {
+          "method": "POST",
+          "path": "/files/download"
+        }
+      ]
+    },
+    {
+      "module": "log",
+      "coverageStatus": "missing_in_client",
+      "updateStatus": "updated",
+      "missingInClientCount": 19,
+      "extraInClientCount": 0,
+      "score": 1920,
+      "missingEndpoints": [
+        {
+          "method": "GET",
+          "path": "/containers/search/log"
+        },
+        {
+          "method": "GET",
+          "path": "/logs/system/files"
+        },
+        {
+          "method": "GET",
+          "path": "/logs/tasks/executing/count"
+        },
+        {
+          "method": "POST",
+          "path": "/ai/agents/channel/weixin/login"
+        },
+        {
+          "method": "POST",
+          "path": "/containers/clean/log"
+        }
+      ],
+      "extraEndpoints": []
+    },
+    {
+      "module": "ssh",
+      "coverageStatus": "missing_in_client",
+      "updateStatus": "unchanged",
+      "missingInClientCount": 17,
+      "extraInClientCount": 0,
+      "score": 1700,
+      "missingEndpoints": [
+        {
+          "method": "GET",
+          "path": "/settings/ssh/conn"
+        },
+        {
+          "method": "POST",
+          "path": "/hosts/ssh/cert"
+        },
+        {
+          "method": "POST",
+          "path": "/hosts/ssh/cert/delete"
+        },
+        {
+          "method": "POST",
+          "path": "/hosts/ssh/cert/search"
+        },
+        {
+          "method": "POST",
+          "path": "/hosts/ssh/cert/sync"
+        }
+      ],
+      "extraEndpoints": []
+    }
+  ]
+}

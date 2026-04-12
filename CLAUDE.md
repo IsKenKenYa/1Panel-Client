@@ -18,6 +18,14 @@ EN: Read `AGENTS.md` first for mandatory rules, then `CLAUDE.md` for project det
 
 **1Panel Open** 是一个跨平台 Flutter 移动应用，提供对 1Panel Linux 服务器管理面板的移动访问。
 
+## 1Panel 上游只读与能力基线
+
+- `docs/OpenSource/1Panel/**` 为上游镜像，仅可读取，禁止修改。
+- 功能适配必须同时参考：
+  - `swagger.json` 契约定义
+  - 1Panel Web 前端行为与交互语义
+- 目标不是仅“接口可调用”，而是“功能高保真还原 + 客户端价值增强（多机统一管理、MFA 等）”。
+
 ### Current Implementation Status
 - ✅ **AI Management Module**: Complete (Ollama models, GPU monitoring, domain binding)
 - ✅ **Complete API Coverage**: All 34 V2 API modules with 425+ endpoints
@@ -107,19 +115,18 @@ The project follows **Layered Architecture with MVVM** and clean separation of c
 ## Cross-Platform UI Governance
 
 ### Default UI Baseline
-- Non-web default UI implementation is **platform-native first** with **MDUI3 fallback**
-- Current runtime supports switching render mode (`native` / `md3`); fallback to MDUI3 is required when a platform native host is not ready
-- Web is not in the current adaptation target scope
-- Shared non-UI layers remain Dart-first by default: API clients, models, providers, services, repositories, routing contracts, and shared infrastructure should not be reimplemented natively without a hard platform constraint
+- Non-web target platforms are Android, iOS, iPadOS, macOS, Windows, Linux, and HarmonyOS (target phase)
+- Web is out of current adaptation scope
+- The project allows multiple design systems and multiple theme profiles, but all must be centrally governed
+- Shared non-UI layers remain Dart-first: API clients, models, providers, services, repositories, routing contracts, and shared infrastructure must not fork per UI stack
 
 ### Native UI Strategy
-- **Apple platforms**: SwiftUI-native pages are allowed and preferred where native UX value is clear
-- **Windows**: WinUI3 / Fluent-native pages are allowed and preferred where desktop UX value is clear
-- **Linux**: GTK/Fluent-style native shell containers are allowed; shared business logic stays in Dart
-- **Android**: Native UI (Kotlin/Compose) is a first-class path with switchable MDUI3 fallback
-- Native UI must not bypass application layering or call API clients directly
-- Native code remains presentation shell + platform capability access; shared product logic stays in Dart
-- **HarmonyOS (future)**: this phase only reserves resolver/channel/provider placeholders and does not commit full native UI delivery
+- **Windows**: Fluent / WinUI3-native experience is preferred
+- **Linux**: current phase may deliver with Dart-rendered MDUI3 first; native container capability can be extended incrementally
+- **Android**: Dart-rendered MDUI3 is the default delivery path; native pages are optional pilots, and MDUI3 does not require native reimplementation
+- **iOS / iPadOS / macOS**: SwiftUI-native experience is preferred, with Liquid Glass-aligned visual direction
+- **HarmonyOS (target phase)**: reserve resolver/channel/provider placeholders first and keep shared business logic in Dart
+- Any native UI must not bypass application layering or call API clients directly
 
 ### Multi-Theme / Multi-Design-System Direction
 - Distinguish:
@@ -129,8 +136,8 @@ The project follows **Layered Architecture with MVVM** and clean separation of c
 - If a new design system is introduced, document target platforms, token mapping, component coverage, and native-exception rationale
 
 ### Implementation Guidance
-- Prefer native shells for non-web targets while keeping Dart non-UI layers shared
-- When native shell capability is missing on a platform, explicitly fallback to MDUI3 and track the gap in module/platform docs
+- Follow platform strategy mapping while keeping Dart non-UI layers shared
+- Do not duplicate business logic across design systems or UI stacks
 - Any native page proposal should define bridge boundary, rollback path, and shared Dart state/service/repository contracts
 - The `桌面端适配` branch is a runnable implementation branch for desktop adaptation and may be used as concrete reference material, but it does not redefine the default repository baseline by itself
 - Desktop cached modules must stay inside the shared shell host; normal module switches should not push a second shell
@@ -370,9 +377,9 @@ void main() {
 - Implement responsive design for different screen sizes
 
 ### Platform Design Systems
-- Flutter MD3 is the default shared design language
-- Apple-targeted native pages may follow SwiftUI/HIG idioms and glass-like system aesthetics when approved
-- Windows-targeted native pages may follow WinUI3/Fluent idioms when approved
+- Flutter MD3 is the default shared delivery path for Android/Linux in the current phase
+- Apple-targeted native pages should follow SwiftUI/HIG idioms and Liquid-Glass-aligned system aesthetics
+- Windows-targeted native pages should follow WinUI3/Fluent idioms
 - Avoid mixing unrelated platform aesthetics inside a single screen without a documented reason
 
 ### Desktop Stability Rules
@@ -397,6 +404,18 @@ void main() {
 - All API calls use HTTPS
 - Custom headers for authentication
 - Certificate pinning if needed
+
+## Automated Delivery Loop (Mandatory)
+
+1. Requirement decomposition (scope, dependencies, acceptance criteria)
+2. Test case design (unit, integration, UI/interaction, contract deviation)
+3. Automated baseline setup (scripts, fixtures, env vars, gates)
+4. Feature implementation with layered architecture
+5. Unit test execution and fixes
+6. Integration test execution and fixes (mandatory for API/network/data write changes)
+7. Documentation and baseline updates (module docs, compatibility strategy, analysis artifacts)
+
+Any failed stage must be fixed before proceeding; no failure carry-forward is allowed.
 
 ## Common Development Workflows
 
@@ -425,6 +444,7 @@ void main() {
 - CN: 文件是否满足 `500/800` 推荐阈值与 `1000` 硬上限，职责是否超过 2 个功能域。EN: File size meets `500/800` recommended limits and `1000` hard cap; responsibilities do not exceed 2 functional domains.
 - CN: 错误处理与日志是否完整且使用 `appLogger`。EN: Error handling and logging complete using `appLogger`.
 - CN: 测试是否满足门禁要求（unit/integration/ui）。EN: Test gate satisfied (unit/integration/ui).
+- CN: 是否严格遵守 `docs/OpenSource/1Panel/**` 只读策略，并以 Web 行为语义完成功能还原。EN: Confirm upstream readonly policy and web-behavior semantic restoration.
 - CN: 新增/变更规范是否同步更新 `AGENTS.md` 与 `CLAUDE.md`。EN: Standards changes synchronized to `AGENTS.md` and `CLAUDE.md`.
 
 ## Build and Deployment

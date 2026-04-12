@@ -1,7 +1,7 @@
 import '../../core/services/base_component.dart';
 import '../../core/services/logger/logger_service.dart';
 import '../../data/repositories/monitor_repository.dart';
-import '../../api/v2/monitor_v2.dart';
+import '../../data/models/monitoring_runtime_models.dart';
 
 /// 监控服务
 ///
@@ -177,7 +177,7 @@ class MonitoringService extends BaseComponent {
   }
 
   /// 获取GPU监控数据
-  Future<List<GPUInfo>> getGPUInfo() async {
+  Future<List<MonitorGpuInfo>> getGPUInfo() async {
     return runGuarded(() async {
       final client = await clientManager.getCurrentClient();
       return _monitorRepo.getGPUInfo(client);

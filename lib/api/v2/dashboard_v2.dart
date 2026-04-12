@@ -3,45 +3,7 @@ import '../../core/network/dio_client.dart';
 import '../../core/config/api_constants.dart';
 import '../../data/models/monitoring_models.dart';
 import '../../data/models/common_models.dart';
-
-/// API响应解析帮助类
-class ApiResponseParser {
-  /// 从1Panel API响应中提取data字段
-  static T extractData<T>(Response<Map<String, dynamic>> response,
-      T Function(Map<String, dynamic>) fromJson) {
-    final body = response.data!;
-    if (body.containsKey('data') && body['data'] != null) {
-      return fromJson(body['data'] as Map<String, dynamic>);
-    }
-    throw Exception('API响应格式错误: 缺少data字段');
-  }
-
-  /// 从1Panel API响应中提取data字段（Map类型）
-  static Map<String, dynamic> extractMapData(
-      Response<Map<String, dynamic>> response) {
-    final body = response.data!;
-    if (body.containsKey('data') && body['data'] != null) {
-      return body['data'] as Map<String, dynamic>;
-    }
-    return {};
-  }
-
-  /// 从1Panel API响应中提取data字段（List类型）
-  static List<dynamic> extractListData(
-      Response<Map<String, dynamic>> response) {
-    final body = response.data!;
-    if (body.containsKey('data') && body['data'] != null) {
-      return body['data'] as List<dynamic>;
-    }
-    return [];
-  }
-
-  /// 从1Panel API响应中提取data字段（动态类型）
-  static dynamic extractDynamicData(Response<Map<String, dynamic>> response) {
-    final body = response.data!;
-    return body['data'];
-  }
-}
+import 'api_response_parser.dart';
 
 /// Dashboard V2 API客户端
 ///

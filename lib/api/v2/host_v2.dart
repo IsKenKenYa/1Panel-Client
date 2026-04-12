@@ -6,6 +6,7 @@ import '../../data/models/common_models.dart';
 import '../../data/models/host_asset_models.dart';
 import '../../data/models/host_models.dart';
 import '../../data/models/host_tree_models.dart';
+import 'api_response_parser.dart';
 
 class HostV2Api {
   HostV2Api(this._client);
@@ -39,9 +40,7 @@ class HostV2Api {
       data: _mapHostPayload(request, id: request.id),
     );
     return Response<HostInfo>(
-      data: HostInfo.fromJson(
-        response.data?['data'] as Map<String, dynamic>? ?? const {},
-      ),
+      data: HostInfo.fromJson(ApiResponseParser.asMap(response.data)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -54,9 +53,7 @@ class HostV2Api {
       data: request.toJson(),
     );
     return Response<HostInfo>(
-      data: HostInfo.fromJson(
-        response.data?['data'] as Map<String, dynamic>? ?? const {},
-      ),
+      data: HostInfo.fromJson(ApiResponseParser.asMap(response.data)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -70,7 +67,7 @@ class HostV2Api {
     );
     return Response<PageResult<HostInfo>>(
       data: PageResult.fromJson(
-        response.data?['data'] as Map<String, dynamic>? ?? const {},
+        ApiResponseParser.asMap(response.data),
         (dynamic item) => HostInfo.fromJson(item as Map<String, dynamic>),
       ),
       statusCode: response.statusCode,
@@ -88,7 +85,7 @@ class HostV2Api {
     );
     return Response<PageResult<HostInfo>>(
       data: PageResult.fromJson(
-        response.data?['data'] as Map<String, dynamic>? ?? const {},
+        ApiResponseParser.asMap(response.data),
         (dynamic item) => HostInfo.fromJson(item as Map<String, dynamic>),
       ),
       statusCode: response.statusCode,
@@ -103,9 +100,7 @@ class HostV2Api {
       data: OperateByID(id: id).toJson(),
     );
     return Response<HostInfo>(
-      data: HostInfo.fromJson(
-        response.data?['data'] as Map<String, dynamic>? ?? const {},
-      ),
+      data: HostInfo.fromJson(ApiResponseParser.asMap(response.data)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -119,7 +114,7 @@ class HostV2Api {
       ApiConstants.buildApiPath('/core/hosts/tree'),
       data: request.toJson(),
     );
-    final rawItems = response.data?['data'] as List<dynamic>? ?? const [];
+    final rawItems = ApiResponseParser.asList(response.data);
     return Response<List<Map<String, dynamic>>>(
       data: rawItems.whereType<Map<String, dynamic>>().toList(growable: false),
       statusCode: response.statusCode,
@@ -135,7 +130,7 @@ class HostV2Api {
       ApiConstants.buildApiPath('/core/hosts/tree'),
       data: <String, dynamic>{'info': info ?? ''},
     );
-    final rawItems = response.data?['data'] as List<dynamic>? ?? const [];
+    final rawItems = ApiResponseParser.asList(response.data);
     return Response<List<HostTreeNode>>(
       data: rawItems
           .whereType<Map<String, dynamic>>()
@@ -153,7 +148,7 @@ class HostV2Api {
       data: _mapHostPayload(request),
     );
     return Response<bool>(
-      data: response.data?['data'] as bool? ?? false,
+      data: ApiResponseParser.asPrimitive<bool>(response.data) ?? false,
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -166,7 +161,7 @@ class HostV2Api {
       data: request.toJson(),
     );
     return Response<bool>(
-      data: response.data?['data'] as bool? ?? false,
+      data: ApiResponseParser.asPrimitive<bool>(response.data) ?? false,
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -178,7 +173,7 @@ class HostV2Api {
       ApiConstants.buildApiPath('/core/hosts/test/byid/$id'),
     );
     return Response<bool>(
-      data: response.data?['data'] as bool? ?? false,
+      data: ApiResponseParser.asPrimitive<bool>(response.data) ?? false,
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -209,11 +204,8 @@ class HostV2Api {
     final response = await _client.get<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/hosts/components/$name'),
     );
-    final rawData = response.data?['data'];
     return Response<Map<String, dynamic>>(
-      data: rawData is Map<String, dynamic>
-          ? rawData
-          : const <String, dynamic>{},
+      data: ApiResponseParser.asMap(response.data),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,

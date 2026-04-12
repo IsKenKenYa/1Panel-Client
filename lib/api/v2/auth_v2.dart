@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import '../../core/network/dio_client.dart';
 import '../../core/config/api_constants.dart';
 import '../../data/models/auth_models.dart';
+import 'api_response_parser.dart';
 
 class AuthV2Api {
   final DioClient _client;
@@ -9,14 +10,14 @@ class AuthV2Api {
   AuthV2Api(this._client);
 
   Map<String, dynamic>? _extractDataMap(dynamic data) {
-    if (data is! Map<String, dynamic>) {
+    if (data is! Map) {
       return null;
     }
-    final nested = data['data'];
-    if (nested is Map<String, dynamic>) {
-      return nested;
+    final parsed = ApiResponseParser.asMap(data, fallbackToRootMap: true);
+    if (parsed.isNotEmpty) {
+      return parsed;
     }
-    return data;
+    return null;
   }
 
   Options? _withEntranceCode(String? entranceCode) {

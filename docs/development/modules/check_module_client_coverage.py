@@ -34,15 +34,28 @@ SCRIPT_DIR = Path(__file__).parent
 API_V2_DIR = SCRIPT_DIR.parent.parent.parent / 'lib' / 'api' / 'v2'
 
 METHOD_SET = {'GET', 'POST', 'PUT', 'DELETE', 'PATCH'}
-CLIENT_ROUTE_PATTERN = re.compile(
-    r"_client\.(get|post|put|delete|patch)\s*\(\s*ApiConstants\.buildApiPath\(\s*['\"]([^'\"]+)['\"]\s*\)",
-    re.IGNORECASE | re.MULTILINE,
-)
+CLIENT_ROUTE_PATTERNS = [
+    # _client.post(... ApiConstants.buildApiPath('/path') ...)
+    re.compile(
+        r"_client\s*\.\s*(get|post|put|delete|patch)(?:<[^\(]*>)?\s*\(\s*ApiConstants\.buildApiPath\(\s*['\"]([^'\"]+)['\"]\s*\)",
+        re.IGNORECASE | re.MULTILINE | re.DOTALL,
+    ),
+    # _client.post('${ApiConstants.buildApiPath('/base')}/$id/...')
+    re.compile(
+        r"_client\s*\.\s*(get|post|put|delete|patch)(?:<[^\(]*>)?\s*\(\s*['\"]\$\{ApiConstants\.buildApiPath\(\s*['\"]([^'\"]+)['\"]\s*\)\}([^'\"]*)['\"]",
+        re.IGNORECASE | re.MULTILINE | re.DOTALL,
+    ),
+    # _client.post(_withNode('/path', ...))
+    re.compile(
+        r"_client\s*\.\s*(get|post|put|delete|patch)(?:<[^\(]*>)?\s*\(\s*_withNode\(\s*['\"]([^'\"]+)['\"]",
+        re.IGNORECASE | re.MULTILINE | re.DOTALL,
+    ),
+]
 
 MODULE_CLIENT_FILES = {
     'dashboard': ['dashboard_v2.dart'],
     'container': ['container_v2.dart'],
-    'website': ['website_v2.dart'],
+    'website': ['website_v2.dart', 'ssl_v2.dart'],
     'openresty': ['openresty_v2.dart'],
     'domains': ['website_v2.dart'],
     'app': ['app_v2.dart'],
@@ -60,7 +73,14 @@ MODULE_CLIENT_FILES = {
     'website_ssl': ['website_v2.dart'],
     'log': ['logs_v2.dart', 'task_log_v2.dart'],
     'ai': ['ai_v2.dart'],
-    'host': ['host_v2.dart'],
+    'host': [
+        'host_v2.dart',
+        'monitor_v2.dart',
+        'ssh_v2.dart',
+        'firewall_v2.dart',
+        'host_tool_v2.dart',
+        'disk_management_v2.dart',
+    ],
     'command': ['command_v2.dart'],
     'process': ['process_v2.dart'],
     'auth': ['auth_v2.dart'],
@@ -77,9 +97,25 @@ LEGACY_EXTRA_ALLOWLIST = {
     },
 }
 
+PATH_PARAM_BRACE_PATTERN = re.compile(r'\{[^/{}]+\}')
+PATH_PARAM_COLON_PATTERN = re.compile(r'/:([A-Za-z_][A-Za-z0-9_]*)')
+PATH_PARAM_DOLLAR_PATTERN = re.compile(r'/\$\{[^/]+\}|/\$[A-Za-z_][A-Za-z0-9_]*')
+
+
+def _normalize_path(path):
+    normalized = path.split('?', 1)[0]
+    normalized = PATH_PARAM_DOLLAR_PATTERN.sub('/{var}', normalized)
+    normalized = PATH_PARAM_COLON_PATTERN.sub('/{var}', normalized)
+    normalized = PATH_PARAM_BRACE_PATTERN.sub('{var}', normalized)
+    return normalized
+
 
 def _to_json_rows(signatures):
     return [{'method': method, 'path': path} for method, path in sorted(signatures)]
+
+
+def _normalize_signatures(signatures):
+    return {(method.upper(), _normalize_path(path)) for method, path in signatures}
 
 
 def _load_client_signatures(file_paths):
@@ -93,17 +129,24 @@ def _load_client_signatures(file_paths):
             continue
 
         content = file_path.read_text(encoding='utf-8')
-        for method, path in CLIENT_ROUTE_PATTERN.findall(content):
-            method_upper = method.upper()
-            if method_upper in METHOD_SET:
-                signatures.add((method_upper, path))
+        for pattern in CLIENT_ROUTE_PATTERNS:
+            for groups in pattern.findall(content):
+                if len(groups) == 2:
+                    method, path = groups
+                else:
+                    method, base, suffix = groups
+                    path = f'{base}{suffix}'
+
+                method_upper = method.upper()
+                if method_upper in METHOD_SET:
+                    signatures.add((method_upper, _normalize_path(path)))
 
     return signatures, missing_files
 
 
 def _build_result(keyword, openapi_data):
     module_apis = extract_module_apis(openapi_data, keyword)
-    swagger_signatures = collect_endpoint_signatures(module_apis)
+    swagger_signatures = _normalize_signatures(collect_endpoint_signatures(module_apis))
 
     client_files = MODULE_CLIENT_FILES.get(keyword)
     if not client_files:
@@ -120,7 +163,7 @@ def _build_result(keyword, openapi_data):
         }
 
     client_signatures, missing_files = _load_client_signatures(client_files)
-    allowlist = LEGACY_EXTRA_ALLOWLIST.get(keyword, set())
+    allowlist = _normalize_signatures(LEGACY_EXTRA_ALLOWLIST.get(keyword, set()))
 
     missing = swagger_signatures - client_signatures
     extra = client_signatures - swagger_signatures
