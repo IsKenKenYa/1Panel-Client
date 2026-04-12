@@ -124,6 +124,10 @@ class DashboardService {
   List<ProcessInfo> _parseProcessList(dynamic data) {
     if (data == null) return const <ProcessInfo>[];
 
+    if (data is List<ProcessInfo>) {
+      return data;
+    }
+
     if (data is List) {
       return data
           .whereType<Map<String, dynamic>>()

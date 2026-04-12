@@ -233,7 +233,7 @@ class _AppStoreViewState extends State<AppStoreView> {
       BuildContext context, AppItem app, AppLocalizations l10n) {
     return AppCard(
       title: app.name ?? '',
-      leading: AppIcon(app: app, size: 40),
+      leading: AppIcon(app: app, iconUrl: app.icon, size: 40),
       subtitle: Text(
         app.description ?? '',
         maxLines: 2,

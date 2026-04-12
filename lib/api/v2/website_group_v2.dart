@@ -14,8 +14,9 @@ class WebsiteGroupV2Api {
     );
   }
 
-  Future<Response<void>> searchGroups(Map<String, dynamic> data) async {
-    return await _client.post<void>(
+  /// 获取网站分组列表
+  Future<Response<Map<String, dynamic>>> searchGroups(Map<String, dynamic> data) async {
+    return await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/groups/search'),
       data: data,
     );

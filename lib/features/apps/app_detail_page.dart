@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../core/i18n/l10n_x.dart';
 import '../../../data/models/app_models.dart';
 import 'app_service.dart';
+import 'providers/app_store_provider.dart';
 import 'widgets/app_install_dialog.dart';
 import 'widgets/app_icon.dart';
 
@@ -59,11 +60,37 @@ class _AppDetailPageState extends State<AppDetailPage> {
     }
   }
 
-  void _showInstallDialog() {
-    showDialog(
+  Future<void> _showInstallDialog() async {
+    final result = await showDialog<bool>(
       context: context,
       builder: (context) => AppInstallDialog(app: _app),
     );
+
+    if (result == true && mounted) {
+      setState(() {
+        _app = AppItem(
+          description: _app.description,
+          github: _app.github,
+          gpuSupport: _app.gpuSupport,
+          icon: _app.icon,
+          id: _app.id,
+          installed: true,
+          key: _app.key,
+          limit: _app.limit,
+          name: _app.name,
+          readMe: _app.readMe,
+          recommend: _app.recommend,
+          resource: _app.resource,
+          status: _app.status,
+          tags: _app.tags,
+          type: _app.type,
+          versions: _app.versions,
+          website: _app.website,
+        );
+      });
+      // Refresh app store list in background
+      context.read<AppStoreProvider>().loadApps(refresh: true);
+    }
   }
 
   @override
@@ -79,10 +106,15 @@ class _AppDetailPageState extends State<AppDetailPage> {
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: FilledButton(
-            onPressed: _showInstallDialog,
-            child: Text(l10n.appStoreInstall),
-          ),
+          child: _app.installed == true
+              ? FilledButton.tonal(
+                  onPressed: null,
+                  child: Text(l10n.appStoreInstalled),
+                )
+              : FilledButton(
+                  onPressed: _showInstallDialog,
+                  child: Text(l10n.appStoreInstall),
+                ),
         ),
       ),
     );
@@ -161,7 +193,7 @@ class _AppDetailPageState extends State<AppDetailPage> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppIcon(app: _app, size: 80),
+        AppIcon(app: _app, iconUrl: _app.icon, size: 80),
         const SizedBox(width: 16),
         Expanded(
           child: Column(

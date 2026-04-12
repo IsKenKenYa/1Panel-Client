@@ -33,6 +33,30 @@ class ContainerStats {
     this.totalMemoryPercent = 0.0,
     this.totalMemoryUsageBytes = 0,
   });
+
+  ContainerStats copyWith({
+    int? total,
+    int? running,
+    int? stopped,
+    int? paused,
+    int? composeTotal,
+    int? composeRunning,
+    double? totalCpuPercent,
+    double? totalMemoryPercent,
+    int? totalMemoryUsageBytes,
+  }) {
+    return ContainerStats(
+      total: total ?? this.total,
+      running: running ?? this.running,
+      stopped: stopped ?? this.stopped,
+      paused: paused ?? this.paused,
+      composeTotal: composeTotal ?? this.composeTotal,
+      composeRunning: composeRunning ?? this.composeRunning,
+      totalCpuPercent: totalCpuPercent ?? this.totalCpuPercent,
+      totalMemoryPercent: totalMemoryPercent ?? this.totalMemoryPercent,
+      totalMemoryUsageBytes: totalMemoryUsageBytes ?? this.totalMemoryUsageBytes,
+    );
+  }
 }
 
 /// 镜像统计数据
@@ -198,7 +222,7 @@ class ContainersProvider extends ChangeNotifier with SafeChangeNotifier {
 
       _data = _data.copyWith(
         containers: containers,
-        containerStats: ContainerStats(
+        containerStats: _data.containerStats.copyWith(
           total: containers.length,
           running: running,
           stopped: stopped,

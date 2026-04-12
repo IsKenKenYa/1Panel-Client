@@ -2,6 +2,7 @@ import 'package:onepanel_client/api/v2/dashboard_v2.dart';
 import 'package:onepanel_client/core/network/api_client_manager.dart';
 import 'package:onepanel_client/core/network/network_exceptions.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
+import 'package:onepanel_client/data/models/dashboard_models.dart';
 import 'package:onepanel_client/features/server/server_models.dart';
 
 class DashboardRepository {
@@ -26,14 +27,14 @@ class DashboardRepository {
     return (await api.getDashboardBase()).data ?? const <String, dynamic>{};
   }
 
-  Future<dynamic> getTopCpuProcesses() async {
+  Future<List<ProcessInfo>> getTopCpuProcesses() async {
     final api = await _ensureApi();
-    return (await api.getTopCPUProcesses()).data;
+    return (await api.getTopCPUProcesses()).data ?? const <ProcessInfo>[];
   }
 
-  Future<dynamic> getTopMemoryProcesses() async {
+  Future<List<ProcessInfo>> getTopMemoryProcesses() async {
     final api = await _ensureApi();
-    return (await api.getTopMemoryProcesses()).data;
+    return (await api.getTopMemoryProcesses()).data ?? const <ProcessInfo>[];
   }
 
   Future<List<dynamic>> getAppLaunchers() async {

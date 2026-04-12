@@ -464,7 +464,11 @@ class _InfoTab extends StatelessWidget {
         children: [
           Row(
             children: [
-              AppIcon(appKey: appInfo!.appKey, appId: appInfo!.appId, size: 64),
+              AppIcon(
+                  appKey: appInfo!.appKey,
+                  appId: appInfo!.appId,
+                  iconUrl: appInfo!.icon,
+                  size: 64),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(

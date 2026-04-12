@@ -58,6 +58,13 @@ class _AppIconState extends State<AppIcon> with AutomaticKeepAliveClientMixin {
       return;
     }
 
+    if (widget.iconUrl != null && widget.iconUrl!.isNotEmpty) {
+      if (widget.iconUrl!.startsWith('http://') ||
+          widget.iconUrl!.startsWith('https://')) {
+        return; // Handled by Image.network directly in build
+      }
+    }
+
     // 1. Check static cache
     if (key != null && _cache.containsKey(key)) {
       setState(() {
@@ -139,6 +146,22 @@ class _AppIconState extends State<AppIcon> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context); // Required for AutomaticKeepAliveClientMixin
+
+    if (widget.iconUrl != null && widget.iconUrl!.isNotEmpty) {
+      if (widget.iconUrl!.startsWith('http://') ||
+          widget.iconUrl!.startsWith('https://')) {
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image.network(
+            widget.iconUrl!,
+            width: widget.size,
+            height: widget.size,
+            fit: BoxFit.contain,
+            errorBuilder: (context, error, stackTrace) => _buildDefaultIcon(),
+          ),
+        );
+      }
+    }
 
     if (_iconBytes != null) {
       return ClipRRect(

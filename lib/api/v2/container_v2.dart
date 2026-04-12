@@ -324,10 +324,20 @@ class ContainerV2Api {
   }
 
   /// 清理容器资源
-  Future<Response<void>> pruneContainers(ContainerPrune request) async {
-    return await _client.post<void>(
+  Future<Response<ContainerPruneReport>> pruneContainers(ContainerPrune request) async {
+    final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/containers/prune'),
       data: request.toJson(),
+    );
+    return Response<ContainerPruneReport>(
+      data: response.data != null ? ContainerPruneReport.fromJson(response.data!) : null,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+      headers: response.headers,
+      isRedirect: response.isRedirect,
+      redirects: response.redirects,
+      extra: response.extra,
     );
   }
 

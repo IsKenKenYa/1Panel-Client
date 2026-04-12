@@ -575,6 +575,7 @@ class DatabaseListItem extends Equatable {
       description: json['description'] as String?,
       status: json['status'] as String?,
       address: json['address'] as String?,
+      port: json['port'] as int?,
       raw: Map<String, dynamic>.from(json),
     );
   }
@@ -594,6 +595,7 @@ class DatabaseListItem extends Equatable {
       description: json['description'] as String?,
       status: json['status'] as String?,
       address: json['address'] as String?,
+      port: json['port'] as int?,
       raw: Map<String, dynamic>.from(json),
     );
   }

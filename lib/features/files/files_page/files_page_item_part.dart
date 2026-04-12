@@ -11,6 +11,12 @@ extension _FilesViewItemActions on _FilesViewState {
     final metadata = <String>[
       isDir ? l10n.filesTypeDirectory : _formatFileSize(file.size),
     ];
+    if (file.permission != null && file.permission!.isNotEmpty) {
+      metadata.add(file.permission!);
+    }
+    if (file.user != null && file.user!.isNotEmpty) {
+      metadata.add(file.user!);
+    }
     final modifiedLabel = _formatModifiedAt(file.modifiedAt);
     if (modifiedLabel != null) {
       metadata.add(modifiedLabel);

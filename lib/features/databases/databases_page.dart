@@ -376,6 +376,24 @@ class _DatabaseScopeTabView extends StatelessWidget {
     if (item.username?.isNotEmpty == true) {
       parts.add(item.username!);
     }
+    
+    if (item.database?.isNotEmpty == true && 
+        item.database != item.name && 
+        item.database != item.lookupName) {
+      parts.add('DB: ${item.database}');
+    }
+    
+    // Postgresql or MySQL specific
+    final charset = item.raw['charset'] as String?;
+    if (charset != null && charset.isNotEmpty) {
+      parts.add('Charset: $charset');
+    }
+    
+    final format = item.raw['format'] as String?;
+    if (format != null && format.isNotEmpty) {
+      parts.add('Format: $format');
+    }
+
     if (item.description?.isNotEmpty == true) {
       parts.add(item.description!);
     }
