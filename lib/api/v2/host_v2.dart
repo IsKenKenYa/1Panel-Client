@@ -13,30 +13,78 @@ class HostV2Api {
 
   final DioClient _client;
 
+  bool _shouldFallbackToLegacy(DioException error) {
+    final statusCode = error.response?.statusCode;
+    return statusCode == 404 || statusCode == 405;
+  }
+
+  Future<Response<T>> _postWithLegacyFallback<T>({
+    required String primaryPath,
+    required String legacyPath,
+    Object? data,
+  }) async {
+    try {
+      return await _client.post<T>(
+        ApiConstants.buildApiPath(primaryPath),
+        data: data,
+      );
+    } on DioException catch (error) {
+      if (!_shouldFallbackToLegacy(error)) {
+        rethrow;
+      }
+      return _client.post<T>(
+        ApiConstants.buildApiPath(legacyPath),
+        data: data,
+      );
+    }
+  }
+
+  Future<Response<Map<String, dynamic>>> _postHostByIdWithFallback(
+    int id,
+  ) async {
+    try {
+      return await _client.post<Map<String, dynamic>>(
+        ApiConstants.buildApiPath('/hosts/test/byid'),
+        data: <String, dynamic>{'id': id},
+      );
+    } on DioException catch (error) {
+      if (!_shouldFallbackToLegacy(error)) {
+        rethrow;
+      }
+      return _client.post<Map<String, dynamic>>(
+        ApiConstants.buildApiPath('/core/hosts/test/byid/$id'),
+      );
+    }
+  }
+
   Future<Response<void>> createHost(HostCreate request) {
-    return _client.post<void>(
-      ApiConstants.buildApiPath('/core/hosts'),
+    return _postWithLegacyFallback<void>(
+      primaryPath: '/hosts',
+      legacyPath: '/core/hosts',
       data: _mapHostPayload(request),
     );
   }
 
   Future<Response<void>> createHostAsset(HostOperate request) {
-    return _client.post<void>(
-      ApiConstants.buildApiPath('/core/hosts'),
+    return _postWithLegacyFallback<void>(
+      primaryPath: '/hosts',
+      legacyPath: '/core/hosts',
       data: request.toJson(),
     );
   }
 
   Future<Response<void>> deleteHost(OperateByIDs request) {
-    return _client.post<void>(
-      ApiConstants.buildApiPath('/core/hosts/del'),
+    return _postWithLegacyFallback<void>(
+      primaryPath: '/hosts/del',
+      legacyPath: '/core/hosts/del',
       data: request.toJson(),
     );
   }
 
   Future<Response<HostInfo>> updateHost(HostUpdate request) async {
-    final response = await _client.post<Map<String, dynamic>>(
-      ApiConstants.buildApiPath('/core/hosts/update'),
+    final response = await _postWithLegacyFallback<Map<String, dynamic>>(
+      primaryPath: '/hosts/update',
+      legacyPath: '/core/hosts/update',
       data: _mapHostPayload(request, id: request.id),
     );
     return Response<HostInfo>(
@@ -48,8 +96,9 @@ class HostV2Api {
   }
 
   Future<Response<HostInfo>> updateHostAsset(HostOperate request) async {
-    final response = await _client.post<Map<String, dynamic>>(
-      ApiConstants.buildApiPath('/core/hosts/update'),
+    final response = await _postWithLegacyFallback<Map<String, dynamic>>(
+      primaryPath: '/hosts/update',
+      legacyPath: '/core/hosts/update',
       data: request.toJson(),
     );
     return Response<HostInfo>(
@@ -61,8 +110,9 @@ class HostV2Api {
   }
 
   Future<Response<PageResult<HostInfo>>> searchHosts(HostSearch request) async {
-    final response = await _client.post<Map<String, dynamic>>(
-      ApiConstants.buildApiPath('/core/hosts/search'),
+    final response = await _postWithLegacyFallback<Map<String, dynamic>>(
+      primaryPath: '/hosts/search',
+      legacyPath: '/core/hosts/search',
       data: request.toJson(),
     );
     return Response<PageResult<HostInfo>>(
@@ -79,8 +129,9 @@ class HostV2Api {
   Future<Response<PageResult<HostInfo>>> searchHostAssets(
     HostSearchRequest request,
   ) async {
-    final response = await _client.post<Map<String, dynamic>>(
-      ApiConstants.buildApiPath('/core/hosts/search'),
+    final response = await _postWithLegacyFallback<Map<String, dynamic>>(
+      primaryPath: '/hosts/search',
+      legacyPath: '/core/hosts/search',
       data: request.toJson(),
     );
     return Response<PageResult<HostInfo>>(
@@ -95,8 +146,9 @@ class HostV2Api {
   }
 
   Future<Response<HostInfo>> getHostById(int id) async {
-    final response = await _client.post<Map<String, dynamic>>(
-      ApiConstants.buildApiPath('/core/hosts/info'),
+    final response = await _postWithLegacyFallback<Map<String, dynamic>>(
+      primaryPath: '/hosts/info',
+      legacyPath: '/core/hosts/info',
       data: OperateByID(id: id).toJson(),
     );
     return Response<HostInfo>(
@@ -110,8 +162,9 @@ class HostV2Api {
   Future<Response<List<Map<String, dynamic>>>> getHostTree(
     SearchWithPage request,
   ) async {
-    final response = await _client.post<Map<String, dynamic>>(
-      ApiConstants.buildApiPath('/core/hosts/tree'),
+    final response = await _postWithLegacyFallback<Map<String, dynamic>>(
+      primaryPath: '/hosts/tree',
+      legacyPath: '/core/hosts/tree',
       data: request.toJson(),
     );
     final rawItems = ApiResponseParser.asList(response.data);
@@ -126,8 +179,9 @@ class HostV2Api {
   Future<Response<List<HostTreeNode>>> getHostAssetTree({
     String? info,
   }) async {
-    final response = await _client.post<Map<String, dynamic>>(
-      ApiConstants.buildApiPath('/core/hosts/tree'),
+    final response = await _postWithLegacyFallback<Map<String, dynamic>>(
+      primaryPath: '/hosts/tree',
+      legacyPath: '/core/hosts/tree',
       data: <String, dynamic>{'info': info ?? ''},
     );
     final rawItems = ApiResponseParser.asList(response.data);
@@ -143,8 +197,9 @@ class HostV2Api {
   }
 
   Future<Response<bool>> testHostByInfo(HostCreate request) async {
-    final response = await _client.post<Map<String, dynamic>>(
-      ApiConstants.buildApiPath('/core/hosts/test/byinfo'),
+    final response = await _postWithLegacyFallback<Map<String, dynamic>>(
+      primaryPath: '/hosts/test/byinfo',
+      legacyPath: '/core/hosts/test/byinfo',
       data: _mapHostPayload(request),
     );
     return Response<bool>(
@@ -156,8 +211,9 @@ class HostV2Api {
   }
 
   Future<Response<bool>> testHostAssetByInfo(HostConnTest request) async {
-    final response = await _client.post<Map<String, dynamic>>(
-      ApiConstants.buildApiPath('/core/hosts/test/byinfo'),
+    final response = await _postWithLegacyFallback<Map<String, dynamic>>(
+      primaryPath: '/hosts/test/byinfo',
+      legacyPath: '/core/hosts/test/byinfo',
       data: request.toJson(),
     );
     return Response<bool>(
@@ -169,9 +225,7 @@ class HostV2Api {
   }
 
   Future<Response<bool>> testHostById(int id) async {
-    final response = await _client.post<Map<String, dynamic>>(
-      ApiConstants.buildApiPath('/core/hosts/test/byid/$id'),
-    );
+    final response = await _postHostByIdWithFallback(id);
     return Response<bool>(
       data: ApiResponseParser.asPrimitive<bool>(response.data) ?? false,
       statusCode: response.statusCode,
@@ -184,8 +238,9 @@ class HostV2Api {
     required int id,
     required int groupId,
   }) {
-    return _client.post<void>(
-      ApiConstants.buildApiPath('/core/hosts/update/group'),
+    return _postWithLegacyFallback<void>(
+      primaryPath: '/hosts/update/group',
+      legacyPath: '/core/hosts/update/group',
       data: <String, dynamic>{
         'id': id,
         'groupID': groupId,
@@ -194,8 +249,9 @@ class HostV2Api {
   }
 
   Future<Response<void>> updateHostAssetGroup(HostGroupChange request) {
-    return _client.post<void>(
-      ApiConstants.buildApiPath('/core/hosts/update/group'),
+    return _postWithLegacyFallback<void>(
+      primaryPath: '/hosts/update/group',
+      legacyPath: '/core/hosts/update/group',
       data: request.toJson(),
     );
   }

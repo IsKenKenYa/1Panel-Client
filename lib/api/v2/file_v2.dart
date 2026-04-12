@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import '../../core/network/dio_client.dart';
 import '../../core/config/api_constants.dart';
+import '../../data/models/common_models.dart';
+import '../../data/models/container_models.dart';
 import '../../data/models/file_models.dart';
 
 class FileV2Api {
@@ -671,6 +673,34 @@ class FileV2Api {
     );
   }
 
+  /// 停止 Wget 下载任务
+  Future<Response<void>> stopWgetDownload(FileWgetStopRequest request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/files/wget/stop'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 上传容器文件
+  Future<Response<void>> uploadContainerFile({
+    required String containerId,
+    required String path,
+    required MultipartFile file,
+  }) {
+    final formData = FormData.fromMap(
+      <String, dynamic>{
+        'containerID': containerId,
+        'path': path,
+        'file': file,
+      },
+    );
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/containers/files/upload'),
+      data: formData,
+      options: Options(contentType: 'multipart/form-data'),
+    );
+  }
+
   /// 创建文件链接
   ///
   /// 创建文件或目录的符号链接
@@ -858,6 +888,136 @@ class FileV2Api {
     return Response(
       data:
           FileBatchCheckResult.fromJson(response.data as Map<String, dynamic>),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 搜索容器文件
+  Future<Response<List<ContainerFileInfo>>> searchContainerFiles(
+    ContainerFileRequest request,
+  ) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/files/search'),
+      data: request.toJson(),
+    );
+    final payload = response.data?['data'];
+    final rawItems = switch (payload) {
+      Map<String, dynamic> map => map['items'] as List<dynamic>? ?? const [],
+      List<dynamic> list => list,
+      _ => const <dynamic>[],
+    };
+    return Response<List<ContainerFileInfo>>(
+      data: rawItems
+          .whereType<Map<String, dynamic>>()
+          .map(ContainerFileInfo.fromJson)
+          .toList(growable: false),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 获取容器文件内容
+  Future<Response<ContainerFileContent>> getContainerFileContent(
+    ContainerFileRequest request,
+  ) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/files/content'),
+      data: request.toJson(),
+    );
+    final data = response.data?['data'] as Map<String, dynamic>? ?? const {};
+    return Response<ContainerFileContent>(
+      data: ContainerFileContent.fromJson(data),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 获取容器文件大小
+  Future<Response<int>> getContainerFileSize(ContainerFileRequest request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/files/size'),
+      data: request.toJson(),
+    );
+    final raw = response.data?['data'];
+    return Response<int>(
+      data: raw is num ? raw.toInt() : 0,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 删除容器文件
+  Future<Response<void>> deleteContainerFiles(
+    ContainerFileBatchDeleteRequest request,
+  ) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/containers/files/del'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 下载容器文件
+  Future<Response<List<int>>> downloadContainerFile(
+    ContainerFileRequest request,
+  ) async {
+    final response = await _client.post<List<int>>(
+      ApiConstants.buildApiPath('/containers/files/download'),
+      data: request.toJson(),
+      options: Options(responseType: ResponseType.bytes),
+    );
+    return Response<List<int>>(
+      data: response.data ?? const [],
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 读取 Docker daemon.json 文件
+  Future<Response<String>> getContainerDaemonJsonFile() async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/daemonjson/file'),
+    );
+    return Response<String>(
+      data: response.data?['data']?.toString() ?? '',
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 查询备份文件列表
+  Future<Response<List<String>>> listBackupFiles(OperateByID request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/backups/search/files'),
+      data: request.toJson(),
+    );
+    final rawItems = response.data?['data'] as List<dynamic>? ?? const [];
+    return Response<List<String>>(
+      data: rawItems.map((dynamic item) => item.toString()).toList(
+            growable: false,
+          ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 查询系统日志文件列表
+  Future<Response<List<String>>> listSystemLogFiles() async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/logs/system/files'),
+    );
+    final rawItems = response.data?['data'] as List<dynamic>? ?? const [];
+    return Response<List<String>>(
+      data: rawItems.map((dynamic item) => item.toString()).toList(
+            growable: false,
+          ),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,

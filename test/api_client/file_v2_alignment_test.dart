@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/api/v2/file_v2.dart';
 import 'package:onepanel_client/core/network/dio_client.dart';
+import 'package:onepanel_client/data/models/common_models.dart';
+import 'package:onepanel_client/data/models/container_models.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
 
 void main() {
@@ -11,12 +14,14 @@ void main() {
     late HttpServer server;
     late DioClient client;
     late Map<String, dynamic>? requestBody;
+    late String rawRequestBody;
     late String requestMethod;
     late String requestPath;
     late Map<String, dynamic> Function() responseBuilder;
 
     setUp(() async {
       requestBody = null;
+      rawRequestBody = '';
       requestMethod = '';
       requestPath = '';
       responseBuilder = () => <String, dynamic>{'code': 200, 'data': null};
@@ -27,9 +32,16 @@ void main() {
         requestPath = request.uri.path;
 
         final payload = await utf8.decoder.bind(request).join();
-        requestBody = payload.isEmpty
-            ? null
-            : jsonDecode(payload) as Map<String, dynamic>;
+        rawRequestBody = payload;
+        if (payload.isEmpty) {
+          requestBody = null;
+        } else {
+          try {
+            requestBody = jsonDecode(payload) as Map<String, dynamic>;
+          } on FormatException {
+            requestBody = null;
+          }
+        }
 
         request.response.statusCode = 200;
         request.response.headers.contentType = ContentType.json;
@@ -125,6 +137,150 @@ void main() {
         'path': '/tmp/demo.mp4',
         'remark': 'updated',
       });
+    });
+
+    test('aligns /containers/files/search route and parses items', () async {
+      responseBuilder = () => <String, dynamic>{
+            'code': 200,
+            'data': <String, dynamic>{
+              'items': <Map<String, dynamic>>[
+                <String, dynamic>{
+                  'name': 'app.log',
+                  'path': '/var/log/app.log',
+                  'isDir': false,
+                  'isLink': false,
+                },
+              ],
+            },
+          };
+
+      final api = FileV2Api(client);
+      final response = await api.searchContainerFiles(
+        const ContainerFileRequest(containerId: 'container-1', path: '/var/log'),
+      );
+
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/containers/files/search');
+      expect(requestBody, <String, dynamic>{
+        'containerID': 'container-1',
+        'path': '/var/log',
+      });
+      expect(response.data?.single.name, 'app.log');
+    });
+
+    test('aligns /containers/files/content route and parses payload', () async {
+      responseBuilder = () => <String, dynamic>{
+            'code': 200,
+            'data': <String, dynamic>{
+              'content': 'hello',
+              'isBinary': false,
+              'size': 5,
+              'truncated': false,
+            },
+          };
+
+      final api = FileV2Api(client);
+      final response = await api.getContainerFileContent(
+        const ContainerFileRequest(containerId: 'container-1', path: '/etc/hosts'),
+      );
+
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/containers/files/content');
+      expect(requestBody, <String, dynamic>{
+        'containerID': 'container-1',
+        'path': '/etc/hosts',
+      });
+      expect(response.data?.content, 'hello');
+      expect(response.data?.size, 5);
+    });
+
+    test('aligns /containers/files/del route and payload', () async {
+      final api = FileV2Api(client);
+
+      await api.deleteContainerFiles(
+        const ContainerFileBatchDeleteRequest(
+          containerId: 'container-1',
+          paths: <String>['/tmp/a.log', '/tmp/b.log'],
+        ),
+      );
+
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/containers/files/del');
+      expect(requestBody, <String, dynamic>{
+        'containerID': 'container-1',
+        'paths': <String>['/tmp/a.log', '/tmp/b.log'],
+      });
+    });
+
+    test('aligns /containers/daemonjson/file route', () async {
+      responseBuilder = () => <String, dynamic>{
+            'code': 200,
+            'data': '{"log-driver":"json-file"}',
+          };
+
+      final api = FileV2Api(client);
+      final response = await api.getContainerDaemonJsonFile();
+
+      expect(requestMethod, 'GET');
+      expect(requestPath, '/api/v2/containers/daemonjson/file');
+      expect(response.data, contains('log-driver'));
+    });
+
+    test('aligns /backups/search/files route and payload', () async {
+      responseBuilder = () => <String, dynamic>{
+            'code': 200,
+            'data': <String>['backup-1.tar.gz', 'backup-2.tar.gz'],
+          };
+
+      final api = FileV2Api(client);
+      final response = await api.listBackupFiles(const OperateByID(id: 7));
+
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/backups/search/files');
+      expect(requestBody, <String, dynamic>{'id': 7});
+      expect(response.data, <String>['backup-1.tar.gz', 'backup-2.tar.gz']);
+    });
+
+    test('aligns /logs/system/files route and parses list', () async {
+      responseBuilder = () => <String, dynamic>{
+            'code': 200,
+            'data': <String>['system.log', 'audit.log'],
+          };
+
+      final api = FileV2Api(client);
+      final response = await api.listSystemLogFiles();
+
+      expect(requestMethod, 'GET');
+      expect(requestPath, '/api/v2/logs/system/files');
+      expect(response.data, <String>['system.log', 'audit.log']);
+    });
+
+    test('aligns /files/wget/stop route and payload', () async {
+      final api = FileV2Api(client);
+
+      await api.stopWgetDownload(const FileWgetStopRequest(key: 'wget-task-1'));
+
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/files/wget/stop');
+      expect(requestBody, <String, dynamic>{'key': 'wget-task-1'});
+    });
+
+    test('aligns /containers/files/upload route and multipart body', () async {
+      final api = FileV2Api(client);
+
+      await api.uploadContainerFile(
+        containerId: 'container-1',
+        path: '/tmp',
+        file: MultipartFile.fromString('demo', filename: 'demo.txt'),
+      );
+
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/containers/files/upload');
+      expect(rawRequestBody, contains('containerID'));
+      expect(rawRequestBody, contains('container-1'));
+      expect(rawRequestBody, contains('path'));
+      expect(rawRequestBody, contains('/tmp'));
+      expect(rawRequestBody, contains('filename="demo.txt"'));
     });
   });
 }

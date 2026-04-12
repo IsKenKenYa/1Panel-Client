@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../../core/config/api_constants.dart';
 import '../../core/network/dio_client.dart';
 import '../../data/models/common_models.dart';
+import '../../data/models/container_models.dart';
 import '../../data/models/logs_models.dart';
 
 class LogsV2Api {
@@ -63,6 +64,59 @@ class LogsV2Api {
       data: rawItems.map((dynamic item) => item.toString()).toList(
             growable: false,
           ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<dynamic>> searchContainerLogs({
+    required String container,
+    String? since,
+    bool? follow,
+    String? tail,
+  }) {
+    final queryParams = <String, dynamic>{'container': container};
+    if (since != null) queryParams['since'] = since;
+    if (follow != null) queryParams['follow'] = follow.toString();
+    if (tail != null) queryParams['tail'] = tail;
+    return _client.get<dynamic>(
+      ApiConstants.buildApiPath('/containers/search/log'),
+      queryParameters: queryParams,
+      options: Options(responseType: ResponseType.plain),
+    );
+  }
+
+  Future<Response<void>> cleanContainerLogs(OperationWithName request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/containers/clean/log'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<void>> cleanComposeLogs(
+    ContainerComposeLogCleanRequest request,
+  ) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/containers/compose/clean/log'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<void>> updateContainerLogOptions(LogOption request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/containers/logoption/update'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<String>> getCronjobRecordLog(OperateByID request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/cronjobs/records/log'),
+      data: request.toJson(),
+    );
+    return Response<String>(
+      data: response.data?['data']?.toString() ?? '',
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,

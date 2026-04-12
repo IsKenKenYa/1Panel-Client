@@ -70,7 +70,7 @@ MODULE_CLIENT_FILES = {
     'cronjob': ['cronjob_v2.dart'],
     'ssl': ['ssl_v2.dart'],
     'system_ssl': ['ssl_v2.dart'],
-    'website_ssl': ['website_v2.dart'],
+    'website_ssl': ['ssl_v2.dart'],
     'log': ['logs_v2.dart', 'task_log_v2.dart'],
     'ai': ['ai_v2.dart'],
     'host': [
@@ -83,10 +83,38 @@ MODULE_CLIENT_FILES = {
     ],
     'command': ['command_v2.dart'],
     'process': ['process_v2.dart'],
-    'auth': ['auth_v2.dart'],
+    'auth': ['auth_v2.dart', 'website_v2.dart'],
     'device': ['toolbox_v2.dart'],
     'toolbox': ['toolbox_v2.dart', 'host_tool_v2.dart', 'disk_management_v2.dart'],
     'group': ['system_group_v2.dart'],
+}
+
+MODULE_CLIENT_PATH_FILTERS = {
+    'website': {
+        'include': ['/websites'],
+        'exclude': ['/websites/domains', '/websites/ssl', '/websites/auths'],
+    },
+    'domains': {
+        'include': ['/websites/domains'],
+    },
+    'website_ssl': {
+        'include': ['/websites/ssl'],
+    },
+    'system_ssl': {
+        'include': ['/core/settings/ssl'],
+    },
+    'ssl': {
+        'include': ['/websites/ssl', '/core/settings/ssl'],
+    },
+    'auth': {
+        'include': ['/websites/auths', '/core/auth'],
+    },
+    'device': {
+        'include': ['/toolbox/device'],
+    },
+    'backup': {
+        'include': ['/backups'],
+    },
 }
 
 LEGACY_EXTRA_ALLOWLIST = {
@@ -116,6 +144,24 @@ def _to_json_rows(signatures):
 
 def _normalize_signatures(signatures):
     return {(method.upper(), _normalize_path(path)) for method, path in signatures}
+
+
+def _apply_module_path_filters(keyword, signatures):
+    filters = MODULE_CLIENT_PATH_FILTERS.get(keyword)
+    if not filters:
+        return signatures
+
+    include_prefixes = tuple(filters.get('include', []))
+    exclude_prefixes = tuple(filters.get('exclude', []))
+
+    filtered = set()
+    for method, path in signatures:
+        if include_prefixes and not path.startswith(include_prefixes):
+            continue
+        if exclude_prefixes and path.startswith(exclude_prefixes):
+            continue
+        filtered.add((method, path))
+    return filtered
 
 
 def _load_client_signatures(file_paths):
@@ -163,6 +209,7 @@ def _build_result(keyword, openapi_data):
         }
 
     client_signatures, missing_files = _load_client_signatures(client_files)
+    client_signatures = _apply_module_path_filters(keyword, client_signatures)
     allowlist = _normalize_signatures(LEGACY_EXTRA_ALLOWLIST.get(keyword, set()))
 
     missing = swagger_signatures - client_signatures

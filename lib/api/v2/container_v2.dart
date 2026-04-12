@@ -3,6 +3,7 @@ import '../../core/network/dio_client.dart';
 import '../../core/config/api_constants.dart';
 import '../../data/models/container_models.dart';
 import '../../data/models/common_models.dart';
+import '../../data/models/runtime_models.dart';
 import '../../data/models/setting_models.dart';
 import 'api_response_parser.dart';
 
@@ -842,6 +843,101 @@ class ContainerV2Api {
   Future<Response> createCompose(ContainerComposeCreate request) async {
     return await _client.post(
       ApiConstants.buildApiPath('/containers/compose'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 搜索 Compose 项目
+  Future<Response<PageResult<ContainerCompose>>> searchComposeProjects(
+    ContainerComposeSearch request,
+  ) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/compose/search'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: _Parser.extractPageData(response, ContainerCompose.fromJson),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 操作 Compose 项目
+  Future<Response> operateComposeProject(ContainerComposeOperate request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/compose/operate'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 读取 Compose 环境变量
+  Future<Response<List<String>>> loadComposeEnv(FilePath request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/compose/env'),
+      data: request.toJson(),
+    );
+    final rawItems = response.data?['data'] as List<dynamic>? ?? const [];
+    return Response<List<String>>(
+      data: rawItems.map((dynamic item) => item.toString()).toList(
+            growable: false,
+          ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 更新 Compose 配置
+  Future<Response> updateComposeProject(
+    ContainerComposeUpdateRequest request,
+  ) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/compose/update'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 测试 Compose 配置
+  Future<Response> testComposeProject(ContainerComposeCreate request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/compose/test'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 清理 Compose 日志
+  Future<Response> cleanComposeProjectLog(
+    ContainerComposeLogCleanRequest request,
+  ) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/containers/compose/clean/log'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 读取 PHP 运行时容器配置
+  Future<Response<PHPContainerConfig>> loadPhpContainerConfig(int id) async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/runtimes/php/container/$id'),
+    );
+    final rawData = response.data?['data'];
+    final config = switch (rawData) {
+      Map<String, dynamic> map => PHPContainerConfig.fromJson(map),
+      _ => PHPContainerConfig(id: id),
+    };
+    return Response<PHPContainerConfig>(
+      data: config.id == 0 ? config.copyWith(id: id) : config,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 更新 PHP 运行时容器配置
+  Future<Response<void>> updatePhpContainerConfig(PHPContainerConfig request) {
+    return _client.post<void>(
+      ApiConstants.buildApiPath('/runtimes/php/container/update'),
       data: request.toJson(),
     );
   }
