@@ -957,4 +957,13 @@ class AIV2Api {
       data: request.toJson(),
     );
   }
+
+  /// 测试大模型接口联通性
+  Future<Response> testAgentModelConnection(Map<String, dynamic> request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/models/test'),
+      data: request,
+    );
+  }
+
 }

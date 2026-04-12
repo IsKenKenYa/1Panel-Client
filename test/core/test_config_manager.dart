@@ -37,8 +37,9 @@ class TestConfigManager {
             var value = line.substring(index + 1).trim();
             if (value.startsWith('"') && value.endsWith('"')) {
               value = value.substring(1, value.length - 1);
-            }
-            if (value.startsWith("'") && value.endsWith("'")) {
+            } else if (value.startsWith("'") && value.endsWith("'")) {
+              value = value.substring(1, value.length - 1);
+            } else if (value.startsWith("`") && value.endsWith("`")) {
               value = value.substring(1, value.length - 1);
             }
             config[key] = value;
@@ -136,7 +137,7 @@ class TestEnvironment {
 
   static String get baseUrl =>
       config.getString('PANEL_BASE_URL', defaultValue: 'http://localhost:9999');
-  static String get apiKey => (runIntegrationTests || runLiveApiTests)
+  static String get apiKey => (runIntegrationTests || runLiveApiTests || true)
       ? config.getString('PANEL_API_KEY')
       : '';
   static String get apiVersion =>

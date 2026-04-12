@@ -324,4 +324,43 @@ class BackupAccountV2Api {
       requestOptions: response.requestOptions,
     );
   }
+
+  /// 创建备份账户
+  Future<Response> createBackupAccountCore(Map<String, dynamic> request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/core/backups'),
+      data: request,
+    );
+  }
+
+  /// 获取指定类型的客户端
+  Future<Response> getBackupClient(String type) async {
+    return await _client.get(
+      ApiConstants.buildApiPath('/core/backups/client/$type'),
+    );
+  }
+
+  /// 删除备份账户
+  Future<Response> deleteBackupAccountCore(Map<String, dynamic> request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/core/backups/del'),
+      data: request,
+    );
+  }
+
+  /// 刷新 OneDrive Token
+  Future<Response> refreshOneDriveToken(Map<String, dynamic> request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/core/backups/refresh/token'),
+      data: request,
+    );
+  }
+
+  /// 更新备份账户
+  Future<Response> updateBackupAccountCore(Map<String, dynamic> request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/core/backups/update'),
+      data: request,
+    );
+  }
 }

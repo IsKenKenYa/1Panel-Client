@@ -140,9 +140,9 @@ class CommandV2Api {
   }
 
   Future<Response<List<CommandTree>>> getCommandTree({
-    String type = 'command',
+    required String type,
   }) async {
-    final response = await _client.post<Map<String, dynamic>>(
+    final response = await _client.get<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/core/commands/tree'),
       data: <String, dynamic>{'type': type},
     );
@@ -152,6 +152,23 @@ class CommandV2Api {
           .whereType<Map<String, dynamic>>()
           .map(CommandTree.fromJson)
           .toList(growable: false),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 获取命令信息
+  Future<Response<CommandInfo>> getCommand({
+    required String type,
+  }) async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/core/commands/command'),
+      data: <String, dynamic>{'type': type},
+    );
+    final data = response.data?['data'] as Map<String, dynamic>?;
+    return Response<CommandInfo>(
+      data: data != null ? CommandInfo.fromJson(data) : null,
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,

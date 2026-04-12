@@ -57,9 +57,10 @@ class SnapshotV2Api {
     );
   }
 
-  Future<Response<void>> recreateSnapshot() async {
+  Future<Response<void>> recreateSnapshot({int id = 0}) async {
     return await _client.post(
       ApiConstants.buildApiPath('/settings/snapshot/recreate'),
+      data: <String, dynamic>{'id': id},
     );
   }
 

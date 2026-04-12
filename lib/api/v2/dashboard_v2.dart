@@ -78,6 +78,20 @@ class DashboardV2Api {
     );
   }
 
+  /// 获取实时指标 (不带基础信息，仅更新)
+  Future<Response> getCurrentMetricsBase(String ioOption, String netOption) async {
+    return await _client.get(
+      ApiConstants.buildApiPath('/dashboard/current/$ioOption/$netOption'),
+    );
+  }
+
+  /// 获取仪表盘基础信息 (带详细)
+  Future<Response> getDashboardBaseDetailed(String ioOption, String netOption) async {
+    return await _client.get(
+      ApiConstants.buildApiPath('/dashboard/base/$ioOption/$netOption'),
+    );
+  }
+
   /// 获取当前节点信息
   ///
   /// GET /dashboard/current/node

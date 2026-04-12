@@ -78,9 +78,9 @@ class SettingV2Api {
   /// @param key 设置key
   /// @return 系统设置
   Future<Response<SettingInfo>> getSystemSettingByKey(String key) async {
-    final response = await _client.get(
+    final response = await _client.post(
       ApiConstants.buildApiPath('/core/settings/by'),
-      queryParameters: {'key': key},
+      data: {'key': key},
     );
     final data = _extractData(response.data);
     return Response(
@@ -916,6 +916,35 @@ class SettingV2Api {
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 重置系统设置
+  Future<Response> resetSystemSetting() async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/core/settings/reset'),
+    );
+  }
+
+  /// 获取监控设置
+  Future<Response<Map<String, dynamic>>> getMonitorSetting() async {
+    final response = await _client.get(
+      ApiConstants.buildApiPath('/hosts/monitor/setting'),
+    );
+    final data = _extractData(response.data);
+    return Response(
+      data: data as Map<String, dynamic>?,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 更新监控设置
+  Future<Response> updateMonitorSetting(String key, String value) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/hosts/monitor/setting/update'),
+      data: {'key': key, 'value': value},
     );
   }
 }

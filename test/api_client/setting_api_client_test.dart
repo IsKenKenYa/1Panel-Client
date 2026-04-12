@@ -148,6 +148,61 @@ void main() {
         debugPrint('========================================\n');
       });
     });
+
+    group('getSystemSettingByKey - 按键获取设置', () {
+      test('应当能获取指定设置项', () async {
+        if (!hasApiKey) {
+          debugPrint('跳过按键获取设置测试: 未配置API密钥');
+          return;
+        }
+
+        try {
+          debugPrint('调用获取设置接口: key=PanelName');
+          final response = await api.getSystemSettingByKey('PanelName');
+
+          debugPrint('响应状态码: ${response.statusCode}');
+          debugPrint('响应消息: ${response.statusMessage}');
+          if (response.data != null) {
+            debugPrint('面板名称: ${response.data!.value}');
+          } else {
+            debugPrint('设置数据为空');
+          }
+
+          expect(response.statusCode, equals(200));
+          // 返回值可能是SettingInfo或者为空，具体取决于后端
+        } catch (e) {
+          debugPrint('测试失败: $e');
+          rethrow;
+        }
+      });
+    });
+
+    group('getMonitorSetting - 获取监控设置', () {
+      test('应当能成功获取监控设置', () async {
+        if (!hasApiKey) {
+          debugPrint('跳过获取监控设置测试: 未配置API密钥');
+          return;
+        }
+
+        try {
+          debugPrint('调用获取监控设置接口');
+          final response = await api.getMonitorSetting();
+
+          debugPrint('响应状态码: ${response.statusCode}');
+          debugPrint('响应消息: ${response.statusMessage}');
+          if (response.data != null) {
+            debugPrint('监控设置数据: ${response.data}');
+          } else {
+            debugPrint('监控设置数据为空');
+          }
+
+          expect(response.statusCode, equals(200));
+        } catch (e) {
+          debugPrint('测试失败: $e');
+          rethrow;
+        }
+      });
+    });
   });
 
   group('Setting API性能测试', () {

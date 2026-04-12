@@ -349,9 +349,18 @@ class DatabaseV2Api {
     );
   }
 
-  Future<Response<void>> loadPostgresqlDatabaseFromRemote(String database) {
+  Future<Response<void>> loadPostgresqlDatabaseFromRemote(
+    String database, {
+    String from = 'remote',
+    String type = 'postgresql',
+  }) {
     return _client.post<void>(
       ApiConstants.buildApiPath('/databases/pg/$database/load'),
+      data: <String, dynamic>{
+        'database': database,
+        'from': from,
+        'type': type,
+      },
     );
   }
 

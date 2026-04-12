@@ -28,7 +28,8 @@ class DatabaseRepository {
       type: item.engine,
       name: item.lookupName,
     );
-    return DatabaseBaseInfo.fromJson(response.data ?? const <String, dynamic>{});
+    return DatabaseBaseInfo.fromJson(
+        response.data ?? const <String, dynamic>{});
   }
 
   Future<List<DatabaseListItem>> loadDatabaseTargets(
@@ -352,7 +353,11 @@ class DatabaseRepository {
         });
         return;
       case DatabaseScope.postgresql:
-        await api.loadPostgresqlDatabaseFromRemote(item.lookupName);
+        await api.loadPostgresqlDatabaseFromRemote(
+          item.lookupName,
+          from: item.source,
+          type: item.engine,
+        );
         return;
       case DatabaseScope.redis:
       case DatabaseScope.remote:

@@ -1,0 +1,361 @@
+{
+  "generatedAt": "2026-04-12T19:05:34.687892",
+  "swaggerFile": "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json",
+  "apiDir": "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2",
+  "summary": {
+    "path_missing": 62,
+    "method_mismatch": 3,
+    "body_missing": 1
+  },
+  "findings": {
+    "path_missing": [
+      {
+        "file": "ai_v2.dart",
+        "method": "POST",
+        "path": "/ai/agents/channel/feishu/approve"
+      },
+      {
+        "file": "ai_v2.dart",
+        "method": "POST",
+        "path": "/ai/agents/browser/get"
+      },
+      {
+        "file": "ai_v2.dart",
+        "method": "POST",
+        "path": "/ai/agents/browser/update"
+      },
+      {
+        "file": "ai_v2.dart",
+        "method": "POST",
+        "path": "/ai/agents/models/test"
+      },
+      {
+        "file": "auth_v2.dart",
+        "method": "GET",
+        "path": "/core/auth/demo"
+      },
+      {
+        "file": "auth_v2.dart",
+        "method": "GET",
+        "path": "/core/auth/issafety"
+      },
+      {
+        "file": "auth_v2.dart",
+        "method": "GET",
+        "path": "/core/auth/language"
+      },
+      {
+        "file": "command_v2.dart",
+        "method": "POST",
+        "path": "/core/commands/list"
+      },
+      {
+        "file": "command_v2.dart",
+        "method": "POST",
+        "path": "/core/commands/list"
+      },
+      {
+        "file": "container_v2.dart",
+        "method": "POST",
+        "path": "/containers/command"
+      },
+      {
+        "file": "database_v2.dart",
+        "method": "POST",
+        "path": "/databases/update"
+      },
+      {
+        "file": "database_v2.dart",
+        "method": "GET",
+        "path": "/databases/redis/check"
+      },
+      {
+        "file": "host_v2.dart",
+        "method": "POST",
+        "path": "/hosts/test/byid"
+      },
+      {
+        "file": "host_v2.dart",
+        "method": "POST",
+        "path": "/core/hosts/test/byid/$id"
+      },
+      {
+        "file": "setting_v2.dart",
+        "method": "GET",
+        "path": "/core/settings/mfa/status"
+      },
+      {
+        "file": "setting_v2.dart",
+        "method": "POST",
+        "path": "/core/settings/mfa/unbind"
+      },
+      {
+        "file": "setting_v2.dart",
+        "method": "POST",
+        "path": "/core/settings/reset"
+      },
+      {
+        "file": "ssl_v2.dart",
+        "method": "GET",
+        "path": "/websites/ssl/options"
+      },
+      {
+        "file": "ssl_v2.dart",
+        "method": "POST",
+        "path": "/websites/ssl/validate"
+      },
+      {
+        "file": "ssl_v2.dart",
+        "method": "POST",
+        "path": "/websites/ssl/auto-renew"
+      },
+      {
+        "file": "ssl_v2.dart",
+        "method": "GET",
+        "path": "/websites/ssl/application/$id/status"
+      },
+      {
+        "file": "terminal_v2.dart",
+        "method": "POST",
+        "path": "/terminal/sessions"
+      },
+      {
+        "file": "terminal_v2.dart",
+        "method": "GET",
+        "path": "/terminal/sessions"
+      },
+      {
+        "file": "terminal_v2.dart",
+        "method": "GET",
+        "path": "/terminal/sessions/$sessionId"
+      },
+      {
+        "file": "terminal_v2.dart",
+        "method": "POST",
+        "path": "/terminal/sessions/delete"
+      },
+      {
+        "file": "terminal_v2.dart",
+        "method": "POST",
+        "path": "/terminal/command"
+      },
+      {
+        "file": "terminal_v2.dart",
+        "method": "POST",
+        "path": "/terminal/sessions/$sessionId/output"
+      },
+      {
+        "file": "terminal_v2.dart",
+        "method": "POST",
+        "path": "/terminal/sessions/$sessionId/input"
+      },
+      {
+        "file": "terminal_v2.dart",
+        "method": "POST",
+        "path": "/terminal/sessions/$sessionId/resize"
+      },
+      {
+        "file": "terminal_v2.dart",
+        "method": "POST",
+        "path": "/terminal/sessions/$sessionId/history"
+      },
+      {
+        "file": "terminal_v2.dart",
+        "method": "POST",
+        "path": "/terminal/sessions/$sessionId/history/clear"
+      },
+      {
+        "file": "terminal_v2.dart",
+        "method": "GET",
+        "path": "/terminal/sessions/$sessionId/status"
+      },
+      {
+        "file": "terminal_v2.dart",
+        "method": "POST",
+        "path": "/terminal/sessions/$sessionId/rename"
+      },
+      {
+        "file": "terminal_v2.dart",
+        "method": "POST",
+        "path": "/terminal/sessions/$sessionId/files"
+      },
+      {
+        "file": "terminal_v2.dart",
+        "method": "POST",
+        "path": "/terminal/sessions/$sessionId/files/upload"
+      },
+      {
+        "file": "terminal_v2.dart",
+        "method": "POST",
+        "path": "/terminal/sessions/$sessionId/files/download"
+      },
+      {
+        "file": "terminal_v2.dart",
+        "method": "GET",
+        "path": "/terminal/sessions/$sessionId/processes"
+      },
+      {
+        "file": "terminal_v2.dart",
+        "method": "POST",
+        "path": "/terminal/sessions/$sessionId/processes/terminate"
+      },
+      {
+        "file": "terminal_v2.dart",
+        "method": "GET",
+        "path": "/terminal/config"
+      },
+      {
+        "file": "terminal_v2.dart",
+        "method": "POST",
+        "path": "/terminal/config"
+      },
+      {
+        "file": "terminal_v2.dart",
+        "method": "GET",
+        "path": "/terminal/themes"
+      },
+      {
+        "file": "terminal_v2.dart",
+        "method": "POST",
+        "path": "/terminal/theme"
+      },
+      {
+        "file": "terminal_v2.dart",
+        "method": "GET",
+        "path": "/terminal/fonts"
+      },
+      {
+        "file": "terminal_v2.dart",
+        "method": "POST",
+        "path": "/terminal/font"
+      },
+      {
+        "file": "toolbox_v2.dart",
+        "method": "GET",
+        "path": "/toolbox/clean/data"
+      },
+      {
+        "file": "toolbox_v2.dart",
+        "method": "POST",
+        "path": "/toolbox/clean/log"
+      },
+      {
+        "file": "toolbox_v2.dart",
+        "method": "GET",
+        "path": "/toolbox/clean/tree"
+      },
+      {
+        "file": "user_v2.dart",
+        "method": "POST",
+        "path": "/users/search"
+      },
+      {
+        "file": "user_v2.dart",
+        "method": "POST",
+        "path": "/users"
+      },
+      {
+        "file": "user_v2.dart",
+        "method": "GET",
+        "path": "/users/$id"
+      },
+      {
+        "file": "user_v2.dart",
+        "method": "POST",
+        "path": "/users/${user.id}"
+      },
+      {
+        "file": "user_v2.dart",
+        "method": "POST",
+        "path": "/users/del"
+      },
+      {
+        "file": "user_v2.dart",
+        "method": "POST",
+        "path": "/users/enable"
+      },
+      {
+        "file": "user_v2.dart",
+        "method": "POST",
+        "path": "/users/disable"
+      },
+      {
+        "file": "user_v2.dart",
+        "method": "POST",
+        "path": "/users/$id/password/reset"
+      },
+      {
+        "file": "user_v2.dart",
+        "method": "POST",
+        "path": "/users/password/change"
+      },
+      {
+        "file": "user_v2.dart",
+        "method": "GET",
+        "path": "/users/current"
+      },
+      {
+        "file": "user_v2.dart",
+        "method": "POST",
+        "path": "/users/current"
+      },
+      {
+        "file": "user_v2.dart",
+        "method": "GET",
+        "path": "/users/roles"
+      },
+      {
+        "file": "user_v2.dart",
+        "method": "GET",
+        "path": "/users/permissions"
+      },
+      {
+        "file": "user_v2.dart",
+        "method": "POST",
+        "path": "/users/sessions/search"
+      },
+      {
+        "file": "user_v2.dart",
+        "method": "POST",
+        "path": "/users/force-logout"
+      }
+    ],
+    "method_mismatch": [
+      {
+        "file": "database_v2.dart",
+        "path": "/databases",
+        "swaggerPath": "/databases",
+        "clientMethod": "GET",
+        "swaggerMethods": [
+          "POST"
+        ]
+      },
+      {
+        "file": "database_v2.dart",
+        "path": "/databases",
+        "swaggerPath": "/databases",
+        "clientMethod": "GET",
+        "swaggerMethods": [
+          "POST"
+        ]
+      },
+      {
+        "file": "file_v2.dart",
+        "path": "/files/download",
+        "swaggerPath": "/files/download",
+        "clientMethod": "POST",
+        "swaggerMethods": [
+          "GET"
+        ]
+      }
+    ],
+    "body_missing": [
+      {
+        "file": "website_v2.dart",
+        "method": "GET",
+        "path": "/websites/lbs",
+        "swaggerPath": "/websites/lbs"
+      }
+    ]
+  }
+}

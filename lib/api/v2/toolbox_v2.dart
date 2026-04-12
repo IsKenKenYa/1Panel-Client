@@ -224,9 +224,16 @@ class ToolboxV2Api {
   }
 
   /// 获取设备配置
-  Future<Response> getDeviceConf() async {
-    return await _client.get(
+  Future<Response<List<String>>> getDeviceConf(String name) async {
+    final response = await _client.post(
       ApiConstants.buildApiPath('/toolbox/device/conf'),
+      data: {'name': name},
+    );
+    return Response(
+      data: (response.data as List<dynamic>).map((e) => e as String).toList(),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
     );
   }
 
@@ -300,7 +307,7 @@ class ToolboxV2Api {
 
   /// 获取Fail2ban基础信息
   Future<Response<Fail2banBaseInfo>> getFail2banBaseInfo() async {
-    final response = await _client.post(
+    final response = await _client.get(
       ApiConstants.buildApiPath('/toolbox/fail2ban/base'),
     );
     return Response(
@@ -449,9 +456,10 @@ class ToolboxV2Api {
   }
 
   /// 同步FTP配置
-  Future<Response> syncFtp() async {
+  Future<Response> syncFtp({List<int> ids = const <int>[]}) async {
     return await _client.post(
       ApiConstants.buildApiPath('/toolbox/ftp/sync'),
+      data: <String, dynamic>{'ids': ids},
     );
   }
 

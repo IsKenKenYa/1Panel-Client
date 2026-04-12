@@ -8,18 +8,20 @@ class UpdateV2Api {
   UpdateV2Api(this._client);
 
   /// 系统升级
-  Future<Response<void>> systemUpgrade() async {
-    return await _client.post(
+  Future<Response<void>> systemUpgrade({String version = ''}) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/core/settings/upgrade'),
+      data: <String, dynamic>{'version': version},
     );
   }
 
   /// 获取升级说明
-  Future<Response<String>> getUpgradeNotes() async {
-    final response = await _client.get<Map<String, dynamic>>(
+  Future<Response<String>> getUpgradeNotes({String version = ''}) async {
+    final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/core/settings/upgrade/notes'),
+      data: <String, dynamic>{'version': version},
     );
-    return Response(
+    return Response<String>(
       data: response.data?['data']?.toString() ?? '',
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,

@@ -45,6 +45,11 @@ CLIENT_ROUTE_PATTERNS = [
         r"_client\s*\.\s*(get|post|put|delete|patch)(?:<[^\(]*>)?\s*\(\s*['\"]\$\{ApiConstants\.buildApiPath\(\s*['\"]([^'\"]+)['\"]\s*\)\}([^'\"]*)['\"]",
         re.IGNORECASE | re.MULTILINE | re.DOTALL,
     ),
+    # _client.post(ApiConstants.buildApiPath('/path/$var'))
+    re.compile(
+        r"_client\s*\.\s*(get|post|put|delete|patch)(?:<[^\(]*>)?\s*\(\s*ApiConstants\.buildApiPath\(\s*['\"]([^'\"]*\$[^'\"]*)['\"]\s*\)",
+        re.IGNORECASE | re.MULTILINE | re.DOTALL,
+    ),
     # _client.post(_withNode('/path', ...))
     re.compile(
         r"_client\s*\.\s*(get|post|put|delete|patch)(?:<[^\(]*>)?\s*\(\s*_withNode\(\s*['\"]([^'\"]+)['\"]",

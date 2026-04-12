@@ -47,4 +47,52 @@ class ProcessV2Api {
       requestOptions: response.requestOptions,
     );
   }
+
+  // ==================== Supervisor 相关配置模块 ====================
+
+  /// 获取 Supervisor 进程配置 (宿主机)
+  Future<Response> getHostSupervisorProcess() async {
+    return await _client.get(
+      ApiConstants.buildApiPath('/hosts/tool/supervisor/process'),
+    );
+  }
+
+  /// 创建/更新 Supervisor 进程配置 (宿主机)
+  Future<Response> saveHostSupervisorProcess(Map<String, dynamic> request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/hosts/tool/supervisor/process'),
+      data: request,
+    );
+  }
+
+  /// 更新 Supervisor 进程文件 (宿主机)
+  Future<Response> saveHostSupervisorProcessFile(Map<String, dynamic> request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/hosts/tool/supervisor/process/file'),
+      data: request,
+    );
+  }
+
+  /// 获取 Supervisor 进程配置 (运行时环境)
+  Future<Response> getRuntimeSupervisorProcess(String runtimeName) async {
+    return await _client.get(
+      ApiConstants.buildApiPath('/runtimes/supervisor/process/$runtimeName'),
+    );
+  }
+
+  /// 创建/更新 Supervisor 进程配置 (运行时环境)
+  Future<Response> saveRuntimeSupervisorProcess(Map<String, dynamic> request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/runtimes/supervisor/process'),
+      data: request,
+    );
+  }
+
+  /// 更新 Supervisor 进程文件 (运行时环境)
+  Future<Response> saveRuntimeSupervisorProcessFile(Map<String, dynamic> request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/runtimes/supervisor/process/file'),
+      data: request,
+    );
+  }
 }

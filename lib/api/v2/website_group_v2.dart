@@ -7,9 +7,10 @@ class WebsiteGroupV2Api {
 
   WebsiteGroupV2Api(this._client);
 
-  Future<Response> getGroups() async {
-    return await _client.get(
+  Future<Response> getGroups({String name = '', String type = ''}) async {
+    return await _client.post(
       ApiConstants.buildApiPath('/groups'),
+      data: <String, dynamic>{'name': name, 'type': type},
     );
   }
 
