@@ -1,0 +1,7 @@
+- [x] API 层：所有的 614 个 API 都拥有正确的 HTTP Method，未发生混淆（如 GET 写成 POST）。
+- [x] API 层：请求的 Path 与 Query、Body 参数映射与 Swagger 契约完全一致，无遗漏和越界。
+- [x] API 层：所有的业务返回数据不再是裸的 `dynamic` 或 `Response`，而是具体映射到了对应的 Dart 模型（Model.fromJson）。
+- [x] 状态层：Provider/Repository 中解析 `ApiResponseParser` 提取的数据与业务模型强类型绑定，无隐性强转报错。
+- [x] 模块可用性：核心模块（应用管理、Dashboard大盘、容器管理、主机管理、文件管理、备份账户等）端点功能均可用。
+- [x] UI 层：无 API 配置等环境异常时，能够正常显示引导界面，而不发生白屏崩溃或无限输出报错。
+- [x] 测试：所有测试代码和底层拦截机制能够正常运行，并且没有因为配置文件或网络错误（Connection Refused 等）发生未预期 Skip。

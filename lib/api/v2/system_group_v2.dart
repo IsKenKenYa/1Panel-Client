@@ -109,23 +109,23 @@ class SystemGroupV2Api {
   // ==================== 关联对象分组更新 ====================
 
   /// 更新计划任务分组
-  Future<Response> updateCronjobGroup(Map<String, dynamic> request) async {
-    return await _client.post(
+  Future<Response<void>> updateCronjobGroup(Map<String, dynamic> request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/cronjobs/group/update'),
       data: request,
     );
   }
 
   /// 获取文件用户分组
-  Future<Response> getFileUserGroup() async {
-    return await _client.post(
+  Future<Response<void>> getFileUserGroup() async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/files/user/group'),
     );
   }
 
   /// 批量更新网站分组
-  Future<Response> updateWebsiteBatchGroup(Map<String, dynamic> request) async {
-    return await _client.post(
+  Future<Response<void>> updateWebsiteBatchGroup(Map<String, dynamic> request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/websites/batch/group'),
       data: request,
     );

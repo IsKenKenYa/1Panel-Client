@@ -4,6 +4,8 @@ import 'package:onepanel_client/data/models/container_models.dart'
     hide Container;
 import 'package:onepanel_client/features/containers/container_service.dart';
 
+import 'package:onepanel_client/core/network/network_exceptions.dart';
+
 class ContainerDetailProvider extends ChangeNotifier with SafeChangeNotifier {
   ContainerDetailProvider({
     required this.container,
@@ -102,7 +104,11 @@ class ContainerDetailProvider extends ChangeNotifier with SafeChangeNotifier {
       if (isDisposed) return;
     } catch (e) {
       if (!isDisposed) {
-        _statsError = e.toString();
+        if (e is NetworkException) {
+          _statsError = e.message;
+        } else {
+          _statsError = e.toString();
+        }
       }
     } finally {
       if (!isDisposed) {

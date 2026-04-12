@@ -67,7 +67,13 @@ class ApiResponseParser {
   ) {
     final payload = asMap(response.data);
     if (payload.isEmpty) {
-      throw Exception('API response missing data map');
+      // 避免当返回 { "code": 200, "message": "successful", "data": null } 且 T 允许为空结构时抛出异常
+      // 我们可以传空的 map 给 fromJson
+      try {
+        return fromJson(const <String, dynamic>{});
+      } catch (e) {
+        throw Exception('API response missing data map and cannot parse empty map: $e');
+      }
     }
     return fromJson(payload);
   }

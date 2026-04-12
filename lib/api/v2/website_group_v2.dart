@@ -7,29 +7,29 @@ class WebsiteGroupV2Api {
 
   WebsiteGroupV2Api(this._client);
 
-  Future<Response> getGroups({String name = '', String type = ''}) async {
-    return await _client.post(
+  Future<Response<void>> getGroups({String name = '', String type = ''}) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/groups'),
       data: <String, dynamic>{'name': name, 'type': type},
     );
   }
 
-  Future<Response> searchGroups(Map<String, dynamic> data) async {
-    return await _client.post(
+  Future<Response<void>> searchGroups(Map<String, dynamic> data) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/groups/search'),
       data: data,
     );
   }
 
-  Future<Response> updateGroup(Map<String, dynamic> data) async {
-    return await _client.post(
+  Future<Response<void>> updateGroup(Map<String, dynamic> data) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/groups/update'),
       data: data,
     );
   }
 
-  Future<Response> deleteGroup(Map<String, dynamic> data) async {
-    return await _client.post(
+  Future<Response<void>> deleteGroup(Map<String, dynamic> data) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/groups/del'),
       data: data,
     );

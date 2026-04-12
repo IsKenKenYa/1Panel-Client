@@ -297,8 +297,8 @@ class MonitorV2Api {
   /// 清理监控数据
   ///
   /// POST /hosts/monitor/clean
-  Future<Response> clean() async {
-    return await _client.post(
+  Future<Response<void>> clean() async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/hosts/monitor/clean'),
     );
   }

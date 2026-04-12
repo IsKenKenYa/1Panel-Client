@@ -118,8 +118,7 @@ class BackupAccountV2Api {
   }) {
     return _client.post<void>(
       ApiConstants.buildApiPath('/backups/backup'),
-      data: request.toJson(),
-      queryParameters: <String, dynamic>{'operateNode': operateNode},
+      data: request.toJson()..addAll({'operateNode': operateNode}),
     );
   }
 
@@ -129,8 +128,7 @@ class BackupAccountV2Api {
   }) {
     return _client.post<void>(
       ApiConstants.buildApiPath('/backups/recover'),
-      data: request.toJson(),
-      queryParameters: <String, dynamic>{'operateNode': operateNode},
+      data: request.toJson()..addAll({'operateNode': operateNode}),
     );
   }
 
@@ -140,8 +138,7 @@ class BackupAccountV2Api {
   }) {
     return _client.post<void>(
       ApiConstants.buildApiPath('/backups/recover/byupload'),
-      data: request.toJson(),
-      queryParameters: <String, dynamic>{'operateNode': operateNode},
+      data: request.toJson()..addAll({'operateNode': operateNode}),
     );
   }
 
@@ -151,8 +148,7 @@ class BackupAccountV2Api {
   }) {
     return _client.post<void>(
       ApiConstants.buildApiPath('/backups/upload'),
-      data: request.toJson(),
-      queryParameters: <String, dynamic>{'operateNode': operateNode},
+      data: request.toJson()..addAll({'operateNode': operateNode}),
     );
   }
 
@@ -162,8 +158,7 @@ class BackupAccountV2Api {
   }) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/backups/record/download'),
-      data: request.toJson(),
-      queryParameters: <String, dynamic>{'operateNode': operateNode},
+      data: request.toJson()..addAll({'operateNode': operateNode}),
     );
     return Response<String>(
       data: response.data?['data']?.toString() ?? '',
@@ -179,8 +174,7 @@ class BackupAccountV2Api {
   }) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/backups/record/search'),
-      data: request.toJson(),
-      queryParameters: <String, dynamic>{'operateNode': operateNode},
+      data: request.toJson()..addAll({'operateNode': operateNode}),
     );
     return Response<PageResult<BackupRecord>>(
       data: PageResult.fromJson(
@@ -326,39 +320,39 @@ class BackupAccountV2Api {
   }
 
   /// 创建备份账户
-  Future<Response> createBackupAccountCore(Map<String, dynamic> request) async {
-    return await _client.post(
+  Future<Response<void>> createBackupAccountCore(Map<String, dynamic> request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/core/backups'),
       data: request,
     );
   }
 
   /// 获取指定类型的客户端
-  Future<Response> getBackupClient(String type) async {
-    return await _client.get(
+  Future<Response<void>> getBackupClient(String type) async {
+    return await _client.get<void>(
       ApiConstants.buildApiPath('/core/backups/client/$type'),
     );
   }
 
   /// 删除备份账户
-  Future<Response> deleteBackupAccountCore(Map<String, dynamic> request) async {
-    return await _client.post(
+  Future<Response<void>> deleteBackupAccountCore(Map<String, dynamic> request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/core/backups/del'),
       data: request,
     );
   }
 
   /// 刷新 OneDrive Token
-  Future<Response> refreshOneDriveToken(Map<String, dynamic> request) async {
-    return await _client.post(
+  Future<Response<void>> refreshOneDriveToken(Map<String, dynamic> request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/core/backups/refresh/token'),
       data: request,
     );
   }
 
   /// 更新备份账户
-  Future<Response> updateBackupAccountCore(Map<String, dynamic> request) async {
-    return await _client.post(
+  Future<Response<void>> updateBackupAccountCore(Map<String, dynamic> request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/core/backups/update'),
       data: request,
     );

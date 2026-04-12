@@ -81,15 +81,15 @@ class DashboardV2Api {
   }
 
   /// 获取实时指标 (不带基础信息，仅更新)
-  Future<Response> getCurrentMetricsBase(String ioOption, String netOption) async {
-    return await _client.get(
+  Future<Response<void>> getCurrentMetricsBase(String ioOption, String netOption) async {
+    return await _client.get<void>(
       ApiConstants.buildApiPath('/dashboard/current/$ioOption/$netOption'),
     );
   }
 
   /// 获取仪表盘基础信息 (带详细)
-  Future<Response> getDashboardBaseDetailed(String ioOption, String netOption) async {
-    return await _client.get(
+  Future<Response<void>> getDashboardBaseDetailed(String ioOption, String netOption) async {
+    return await _client.get<void>(
       ApiConstants.buildApiPath('/dashboard/base/$ioOption/$netOption'),
     );
   }

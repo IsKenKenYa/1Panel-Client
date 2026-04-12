@@ -31,8 +31,8 @@ class UserV2Api {
   ///
   /// 用户登出
   /// @return 登出结果
-  Future<Response> logout() async {
-    return await _client.post(
+  Future<Response<void>> logout() async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/core/auth/logout'),
     );
   }
@@ -130,8 +130,8 @@ class UserV2Api {
   /// 创建新用户
   /// @param user 用户信息
   /// @return 创建结果
-  Future<Response> createUser(UserCreate user) async {
-    return await _client.post(
+  Future<Response<void>> createUser(UserCreate user) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/users'),
       data: user.toJson(),
     );
@@ -159,8 +159,8 @@ class UserV2Api {
   /// 更新用户信息
   /// @param user 用户更新信息
   /// @return 更新结果
-  Future<Response> updateUser(UserUpdate user) async {
-    return await _client.post(
+  Future<Response<void>> updateUser(UserUpdate user) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/users/${user.id}'),
       data: user.toJson(),
     );
@@ -266,8 +266,8 @@ class UserV2Api {
   /// 更新当前登录用户的信息
   /// @param user 用户更新信息
   /// @return 更新结果
-  Future<Response> updateCurrentUser(UserUpdate user) async {
-    return await _client.post(
+  Future<Response<void>> updateCurrentUser(UserUpdate user) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/users/current'),
       data: user.toJson(),
     );

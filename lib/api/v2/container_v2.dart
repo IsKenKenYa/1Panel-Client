@@ -64,32 +64,32 @@ class ContainerV2Api {
   ContainerV2Api(this._client);
 
   /// 创建容器
-  Future<Response> createContainer(ContainerOperate request) async {
-    return await _client.post(
+  Future<Response<void>> createContainer(ContainerOperate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers'),
       data: request.toJson(),
     );
   }
 
   /// 通过命令创建容器
-  Future<Response> createContainerByCommand(
+  Future<Response<void>> createContainerByCommand(
       ContainerCreateByCommand request) async {
-    return await _client.post(
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/command'),
       data: request.toJson(),
     );
   }
 
   /// 操作容器（启动/停止/重启等）
-  Future<Response> operateContainer(ContainerOperation request) async {
-    return await _client.post(
+  Future<Response<void>> operateContainer(ContainerOperation request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/operate'),
       data: request.toJson(),
     );
   }
 
   /// 启动容器
-  Future<Response> startContainer(List<String> names) async {
+  Future<Response<void>> startContainer(List<String> names) async {
     return await operateContainer(ContainerOperation(
       names: names,
       operation: ContainerOperationType.start.value,
@@ -97,7 +97,7 @@ class ContainerV2Api {
   }
 
   /// 停止容器
-  Future<Response> stopContainer(List<String> names,
+  Future<Response<void>> stopContainer(List<String> names,
       {bool force = false}) async {
     return await operateContainer(ContainerOperation(
       names: names,
@@ -108,12 +108,12 @@ class ContainerV2Api {
   }
 
   /// 强制停止容器 (Kill)
-  Future<Response> killContainer(List<String> names) async {
+  Future<Response<void>> killContainer(List<String> names) async {
     return await stopContainer(names, force: true);
   }
 
   /// 重启容器
-  Future<Response> restartContainer(List<String> names) async {
+  Future<Response<void>> restartContainer(List<String> names) async {
     return await operateContainer(ContainerOperation(
       names: names,
       operation: ContainerOperationType.restart.value,
@@ -121,7 +121,7 @@ class ContainerV2Api {
   }
 
   /// 暂停容器
-  Future<Response> pauseContainer(List<String> names) async {
+  Future<Response<void>> pauseContainer(List<String> names) async {
     return await operateContainer(ContainerOperation(
       names: names,
       operation: ContainerOperationType.pause.value,
@@ -129,7 +129,7 @@ class ContainerV2Api {
   }
 
   /// 恢复容器
-  Future<Response> unpauseContainer(List<String> names) async {
+  Future<Response<void>> unpauseContainer(List<String> names) async {
     return await operateContainer(ContainerOperation(
       names: names,
       operation: ContainerOperationType.unpause.value,
@@ -137,7 +137,7 @@ class ContainerV2Api {
   }
 
   /// 删除容器
-  Future<Response> deleteContainer(List<String> names,
+  Future<Response<void>> deleteContainer(List<String> names,
       {bool force = false}) async {
     return await operateContainer(ContainerOperation(
       names: names,
@@ -276,64 +276,64 @@ class ContainerV2Api {
   }
 
   /// 操作Docker服务
-  Future<Response> operateDocker(DockerOperation request) async {
-    return await _client.post(
+  Future<Response<void>> operateDocker(DockerOperation request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/docker/operate'),
       data: request.toJson(),
     );
   }
 
   /// 更新Docker日志配置
-  Future<Response> updateDockerLogOption(LogOption request) async {
-    return await _client.post(
+  Future<Response<void>> updateDockerLogOption(LogOption request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/logoption/update'),
       data: request.toJson(),
     );
   }
 
   /// 更新Docker IPv6配置
-  Future<Response> updateDockerIpv6Option(LogOption request) async {
-    return await _client.post(
+  Future<Response<void>> updateDockerIpv6Option(LogOption request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/ipv6option/update'),
       data: request.toJson(),
     );
   }
 
   /// 升级容器
-  Future<Response> upgradeContainer(ContainerUpgrade request) async {
-    return await _client.post(
+  Future<Response<void>> upgradeContainer(ContainerUpgrade request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/upgrade'),
       data: request.toJson(),
     );
   }
 
   /// 重命名容器
-  Future<Response> renameContainer(ContainerRename request) async {
-    return await _client.post(
+  Future<Response<void>> renameContainer(ContainerRename request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/rename'),
       data: request.toJson(),
     );
   }
 
   /// 提交容器为镜像
-  Future<Response> commitContainer(ContainerCommit request) async {
-    return await _client.post(
+  Future<Response<void>> commitContainer(ContainerCommit request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/commit'),
       data: request.toJson(),
     );
   }
 
   /// 清理容器资源
-  Future<Response> pruneContainers(ContainerPrune request) async {
-    return await _client.post(
+  Future<Response<void>> pruneContainers(ContainerPrune request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/prune'),
       data: request.toJson(),
     );
   }
 
   /// 清理容器日志
-  Future<Response> cleanContainerLog(OperationWithName request) async {
-    return await _client.post(
+  Future<Response<void>> cleanContainerLog(OperationWithName request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/clean/log'),
       data: request.toJson(),
     );
@@ -443,9 +443,9 @@ class ContainerV2Api {
   }
 
   /// 删除容器文件
-  Future<Response> deleteContainerFiles(
+  Future<Response<void>> deleteContainerFiles(
       ContainerFileBatchDeleteRequest request) async {
-    return await _client.post(
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/files/del'),
       data: request.toJson(),
     );
@@ -486,8 +486,8 @@ class ContainerV2Api {
   }
 
   /// 更新容器
-  Future<Response> updateContainer(ContainerOperate request) async {
-    return await _client.post(
+  Future<Response<void>> updateContainer(ContainerOperate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/update'),
       data: request.toJson(),
     );
@@ -550,24 +550,24 @@ class ContainerV2Api {
   }
 
   /// 加载镜像
-  Future<Response> loadImage(ImageLoad request) async {
-    return await _client.post(
+  Future<Response<void>> loadImage(ImageLoad request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/image/load'),
       data: request.toJson(),
     );
   }
 
   /// 拉取镜像
-  Future<Response> pullImage(ImagePull request) async {
-    return await _client.post(
+  Future<Response<void>> pullImage(ImagePull request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/image/pull'),
       data: request.toJson(),
     );
   }
 
   /// 推送镜像
-  Future<Response> pushImage(ImagePush request) async {
-    return await _client.post(
+  Future<Response<void>> pushImage(ImagePush request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/image/push'),
       data: request.toJson(),
     );
@@ -589,8 +589,8 @@ class ContainerV2Api {
   }
 
   /// 保存镜像
-  Future<Response> saveImage(ImageSave request) async {
-    return await _client.post(
+  Future<Response<void>> saveImage(ImageSave request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/image/save'),
       data: request.toJson(),
     );
@@ -612,8 +612,8 @@ class ContainerV2Api {
   }
 
   /// 标记镜像
-  Future<Response> tagImage(ImageTag request) async {
-    return await _client.post(
+  Future<Response<void>> tagImage(ImageTag request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/image/tag'),
       data: request.toJson(),
     );
@@ -634,16 +634,16 @@ class ContainerV2Api {
   }
 
   /// 创建网络
-  Future<Response> createNetwork(NetworkCreate request) async {
-    return await _client.post(
+  Future<Response<void>> createNetwork(NetworkCreate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/network'),
       data: request.toJson(),
     );
   }
 
   /// 删除网络
-  Future<Response> deleteNetwork(BatchDelete request) async {
-    return await _client.post(
+  Future<Response<void>> deleteNetwork(BatchDelete request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/network/del'),
       data: request.toJson(),
     );
@@ -679,16 +679,16 @@ class ContainerV2Api {
   }
 
   /// 创建卷
-  Future<Response> createVolume(VolumeCreate request) async {
-    return await _client.post(
+  Future<Response<void>> createVolume(VolumeCreate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/volume'),
       data: request.toJson(),
     );
   }
 
   /// 删除卷
-  Future<Response> deleteVolume(BatchDelete request) async {
-    return await _client.post(
+  Future<Response<void>> deleteVolume(BatchDelete request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/volume/del'),
       data: request.toJson(),
     );
@@ -724,16 +724,16 @@ class ContainerV2Api {
   }
 
   /// 创建仓库
-  Future<Response> createRepo(ContainerRepoOperate request) async {
-    return await _client.post(
+  Future<Response<void>> createRepo(ContainerRepoOperate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/repo'),
       data: request.toJson(),
     );
   }
 
   /// 更新仓库
-  Future<Response> updateRepo(ContainerRepoOperate request) async {
-    return await _client.post(
+  Future<Response<void>> updateRepo(ContainerRepoOperate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/repo/update'),
       data: request.toJson(),
     );
@@ -754,8 +754,8 @@ class ContainerV2Api {
   }
 
   /// 删除仓库
-  Future<Response> deleteRepo(BatchDelete request) async {
-    return await _client.post(
+  Future<Response<void>> deleteRepo(BatchDelete request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/repo/del'),
       data: request.toJson(),
     );
@@ -792,32 +792,32 @@ class ContainerV2Api {
   }
 
   /// 创建模版
-  Future<Response> createTemplate(ContainerTemplateOperate request) async {
-    return await _client.post(
+  Future<Response<void>> createTemplate(ContainerTemplateOperate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/template'),
       data: request.toJson(),
     );
   }
 
   /// 批量创建模版
-  Future<Response> createTemplateBatch(ContainerTemplateBatch request) async {
-    return await _client.post(
+  Future<Response<void>> createTemplateBatch(ContainerTemplateBatch request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/template/batch'),
       data: request.toJson(),
     );
   }
 
   /// 更新模版
-  Future<Response> updateTemplate(ContainerTemplateOperate request) async {
-    return await _client.post(
+  Future<Response<void>> updateTemplate(ContainerTemplateOperate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/template/update'),
       data: request.toJson(),
     );
   }
 
   /// 删除模版
-  Future<Response> deleteTemplate(BatchDelete request) async {
-    return await _client.post(
+  Future<Response<void>> deleteTemplate(BatchDelete request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/template/del'),
       data: request.toJson(),
     );
@@ -840,8 +840,8 @@ class ContainerV2Api {
 
   // Compose 管理
   /// 创建 Compose 项目
-  Future<Response> createCompose(ContainerComposeCreate request) async {
-    return await _client.post(
+  Future<Response<void>> createCompose(ContainerComposeCreate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/compose'),
       data: request.toJson(),
     );
@@ -864,8 +864,8 @@ class ContainerV2Api {
   }
 
   /// 操作 Compose 项目
-  Future<Response> operateComposeProject(ContainerComposeOperate request) async {
-    return await _client.post(
+  Future<Response<void>> operateComposeProject(ContainerComposeOperate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/compose/operate'),
       data: request.toJson(),
     );
@@ -889,28 +889,28 @@ class ContainerV2Api {
   }
 
   /// 更新 Compose 配置
-  Future<Response> updateComposeProject(
+  Future<Response<void>> updateComposeProject(
     ContainerComposeUpdateRequest request,
   ) async {
-    return await _client.post(
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/compose/update'),
       data: request.toJson(),
     );
   }
 
   /// 测试 Compose 配置
-  Future<Response> testComposeProject(ContainerComposeCreate request) async {
-    return await _client.post(
+  Future<Response<void>> testComposeProject(ContainerComposeCreate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/compose/test'),
       data: request.toJson(),
     );
   }
 
   /// 清理 Compose 日志
-  Future<Response> cleanComposeProjectLog(
+  Future<Response<void>> cleanComposeProjectLog(
     ContainerComposeLogCleanRequest request,
   ) async {
-    return await _client.post(
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/compose/clean/log'),
       data: request.toJson(),
     );
@@ -970,17 +970,17 @@ class ContainerV2Api {
   }
 
   /// 更新Daemon配置（按键值）
-  Future<Response> updateDaemonJsonSetting(SettingUpdate request) async {
-    return await _client.post(
+  Future<Response<void>> updateDaemonJsonSetting(SettingUpdate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/daemonjson/update'),
       data: request.toJson(),
     );
   }
 
   /// 更新Daemon配置（通过文件内容）
-  Future<Response> updateDaemonJsonByFile(
+  Future<Response<void>> updateDaemonJsonByFile(
       DaemonJsonUpdateByFile request) async {
-    return await _client.post(
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/daemonjson/update/byfile'),
       data: request.toJson(),
     );

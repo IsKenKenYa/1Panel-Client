@@ -12,15 +12,15 @@ class DatabaseV2Api {
 
   final DioClient _client;
 
-  Future<Response> deleteDatabase(OperateByID request) async {
-    return await _client.post(
+  Future<Response<void>> deleteDatabase(OperateByID request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/databases/del'),
       data: request.toJson(),
     );
   }
 
-  Future<Response> updateDatabase(DatabaseUpdate request) async {
-    return await _client.post(
+  Future<Response<void>> updateDatabase(DatabaseUpdate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/databases/update'),
       data: request.toJson(),
     );

@@ -920,8 +920,8 @@ class SettingV2Api {
   }
 
   /// 重置系统设置
-  Future<Response> resetSystemSetting() async {
-    return await _client.post(
+  Future<Response<void>> resetSystemSetting() async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/core/settings/reset'),
     );
   }
@@ -941,8 +941,8 @@ class SettingV2Api {
   }
 
   /// 更新监控设置
-  Future<Response> updateMonitorSetting(String key, String value) async {
-    return await _client.post(
+  Future<Response<void>> updateMonitorSetting(String key, String value) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/hosts/monitor/setting/update'),
       data: {'key': key, 'value': value},
     );

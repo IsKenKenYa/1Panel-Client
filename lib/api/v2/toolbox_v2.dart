@@ -12,8 +12,8 @@ class ToolboxV2Api {
   // ==================== Clam 病毒扫描 ====================
 
   /// 创建Clam扫描任务
-  Future<Response> createClam(ClamCreate request) async {
-    return await _client.post(
+  Future<Response<void>> createClam(ClamCreate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/clam'),
       data: request.toJson(),
     );
@@ -33,8 +33,8 @@ class ToolboxV2Api {
   }
 
   /// 删除Clam扫描任务
-  Future<Response> deleteClam(ClamDelete request) async {
-    return await _client.post(
+  Future<Response<void>> deleteClam(ClamDelete request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/clam/del'),
       data: request.toJson(),
     );
@@ -59,32 +59,32 @@ class ToolboxV2Api {
   }
 
   /// 更新Clam扫描文件
-  Future<Response> updateClamFile(ClamFileReq request) async {
-    return await _client.post(
+  Future<Response<void>> updateClamFile(ClamFileReq request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/clam/file/update'),
       data: request.toJson(),
     );
   }
 
   /// 操作Clam服务
-  Future<Response> operateClam(String operation) async {
-    return await _client.post(
+  Future<Response<void>> operateClam(String operation) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/clam/operate'),
       data: <String, dynamic>{'operation': operation},
     );
   }
 
   /// 执行Clam扫描任务
-  Future<Response> handleClam(OperateByID request) async {
-    return await _client.post(
+  Future<Response<void>> handleClam(OperateByID request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/clam/handle'),
       data: request.toJson(),
     );
   }
 
   /// 清理Clam扫描记录
-  Future<Response> cleanClamRecords(OperateByID request) async {
-    return await _client.post(
+  Future<Response<void>> cleanClamRecords(OperateByID request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/clam/record/clean'),
       data: request.toJson(),
     );
@@ -127,16 +127,16 @@ class ToolboxV2Api {
   }
 
   /// 更新Clam扫描状态
-  Future<Response> updateClamStatus(ClamUpdateStatus request) async {
-    return await _client.post(
+  Future<Response<void>> updateClamStatus(ClamUpdateStatus request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/clam/status/update'),
       data: request.toJson(),
     );
   }
 
   /// 更新Clam扫描任务
-  Future<Response> updateClam(ClamUpdate request) async {
-    return await _client.post(
+  Future<Response<void>> updateClam(ClamUpdate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/clam/update'),
       data: request.toJson(),
     );
@@ -145,8 +145,8 @@ class ToolboxV2Api {
   // ==================== 系统清理 ====================
 
   /// 系统清理
-  Future<Response> cleanSystem(Clean request) async {
-    return await _client.post(
+  Future<Response<void>> cleanSystem(Clean request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/clean'),
       data: request.toJson(),
     );
@@ -216,8 +216,8 @@ class ToolboxV2Api {
   }
 
   /// 检查DNS配置
-  Future<Response> checkDNS(String dns) async {
-    return await _client.post(
+  Future<Response<void>> checkDNS(String dns) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/device/check/dns'),
       data: {'dns': dns},
     );
@@ -238,40 +238,40 @@ class ToolboxV2Api {
   }
 
   /// 通过配置更新设备
-  Future<Response> updateDeviceByConf(String conf) async {
-    return await _client.post(
+  Future<Response<void>> updateDeviceByConf(String conf) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/device/update/byconf'),
       data: {'conf': conf},
     );
   }
 
   /// 更新设备配置
-  Future<Response> updateDeviceConf(DeviceConfUpdate request) async {
-    return await _client.post(
+  Future<Response<void>> updateDeviceConf(DeviceConfUpdate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/device/update/conf'),
       data: request.toJson(),
     );
   }
 
   /// 更新设备主机名
-  Future<Response> updateDeviceHostname(String hostname) async {
-    return await _client.post(
+  Future<Response<void>> updateDeviceHostname(String hostname) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/device/update/host'),
       data: {'hostname': hostname},
     );
   }
 
   /// 更新设备密码
-  Future<Response> updateDevicePassword(DevicePasswdUpdate request) async {
-    return await _client.post(
+  Future<Response<void>> updateDevicePassword(DevicePasswdUpdate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/device/update/passwd'),
       data: request.toJson(),
     );
   }
 
   /// 更新交换分区
-  Future<Response> updateDeviceSwap(String swap) async {
-    return await _client.post(
+  Future<Response<void>> updateDeviceSwap(String swap) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/device/update/swap'),
       data: {'swap': swap},
     );
@@ -332,16 +332,16 @@ class ToolboxV2Api {
   }
 
   /// 操作Fail2ban
-  Future<Response> operateFail2ban(String operation) async {
-    return await _client.post(
+  Future<Response<void>> operateFail2ban(String operation) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/fail2ban/operate'),
       data: <String, dynamic>{'operation': operation},
     );
   }
 
   /// 操作Fail2ban SSHD
-  Future<Response> operateFail2banSshd(Fail2banSet request) async {
-    return await _client.post(
+  Future<Response<void>> operateFail2banSshd(Fail2banSet request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/fail2ban/operate/sshd'),
       data: request.toJson(),
     );
@@ -366,16 +366,16 @@ class ToolboxV2Api {
   }
 
   /// 更新Fail2ban配置
-  Future<Response> updateFail2ban(Fail2banUpdate request) async {
-    return await _client.post(
+  Future<Response<void>> updateFail2ban(Fail2banUpdate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/fail2ban/update'),
       data: request.toJson(),
     );
   }
 
   /// 通过配置更新Fail2ban
-  Future<Response> updateFail2banByConf(String conf) async {
-    return await _client.post(
+  Future<Response<void>> updateFail2banByConf(String conf) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/fail2ban/update/byconf'),
       data: {'conf': conf},
     );
@@ -384,8 +384,8 @@ class ToolboxV2Api {
   // ==================== FTP 管理 ====================
 
   /// 创建FTP账户
-  Future<Response> createFtp(FtpCreate request) async {
-    return await _client.post(
+  Future<Response<void>> createFtp(FtpCreate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/ftp'),
       data: request.toJson(),
     );
@@ -405,8 +405,8 @@ class ToolboxV2Api {
   }
 
   /// 删除FTP账户
-  Future<Response> deleteFtp(FtpDelete request) async {
-    return await _client.post(
+  Future<Response<void>> deleteFtp(FtpDelete request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/ftp/del'),
       data: request.toJson(),
     );
@@ -431,8 +431,8 @@ class ToolboxV2Api {
   }
 
   /// 操作FTP服务
-  Future<Response> operateFtp(String operation) async {
-    return await _client.post(
+  Future<Response<void>> operateFtp(String operation) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/ftp/operate'),
       data: <String, dynamic>{'operation': operation},
     );
@@ -456,16 +456,16 @@ class ToolboxV2Api {
   }
 
   /// 同步FTP配置
-  Future<Response> syncFtp({List<int> ids = const <int>[]}) async {
-    return await _client.post(
+  Future<Response<void>> syncFtp({List<int> ids = const <int>[]}) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/ftp/sync'),
       data: <String, dynamic>{'ids': ids},
     );
   }
 
   /// 更新FTP账户
-  Future<Response> updateFtp(FtpUpdate request) async {
-    return await _client.post(
+  Future<Response<void>> updateFtp(FtpUpdate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/ftp/update'),
       data: request.toJson(),
     );
@@ -474,8 +474,8 @@ class ToolboxV2Api {
   // ==================== 系统扫描 ====================
 
   /// 系统扫描
-  Future<Response> scanSystem(Scan request) async {
-    return await _client.post(
+  Future<Response<void>> scanSystem(Scan request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/scan'),
       data: request.toJson(),
     );

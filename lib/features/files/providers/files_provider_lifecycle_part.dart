@@ -67,12 +67,19 @@ extension FilesProviderLifecycleMixin on FilesProvider {
     try {
       return await _service.getFiles(path: path);
     } catch (e, stackTrace) {
-      appLogger.eWithPackage(
-        'files_provider',
-        'fetchFiles: 加载失败',
-        error: e,
-        stackTrace: stackTrace,
-      );
+      if (e is NetworkException) {
+        appLogger.wWithPackage(
+          'files_provider',
+          'fetchFiles: 网络请求失败: ${e.message}',
+        );
+      } else {
+        appLogger.eWithPackage(
+          'files_provider',
+          'fetchFiles: 加载失败',
+          error: e,
+          stackTrace: stackTrace,
+        );
+      }
       rethrow;
     }
   }
@@ -109,13 +116,21 @@ extension FilesProviderLifecycleMixin on FilesProvider {
       appLogger.iWithPackage(
           'files_provider', 'loadFiles: 成功加载${files.length}个文件');
     } catch (e, stackTrace) {
-      appLogger.eWithPackage(
-        'files_provider',
-        'loadFiles: 加载失败',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      _data = _data.copyWith(isLoading: false, error: e.toString());
+      if (e is NetworkException) {
+        appLogger.wWithPackage(
+          'files_provider',
+          'loadFiles: 网络请求失败: ${e.message}',
+        );
+        _data = _data.copyWith(isLoading: false, error: e.message);
+      } else {
+        appLogger.eWithPackage(
+          'files_provider',
+          'loadFiles: 加载失败',
+          error: e,
+          stackTrace: stackTrace,
+        );
+        _data = _data.copyWith(isLoading: false, error: e.toString());
+      }
     }
     _emitChange();
   }

@@ -1,5 +1,6 @@
 import 'package:onepanel_client/api/v2/dashboard_v2.dart';
 import 'package:onepanel_client/core/network/api_client_manager.dart';
+import 'package:onepanel_client/core/network/network_exceptions.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/features/server/server_models.dart';
 
@@ -9,8 +10,15 @@ class DashboardRepository {
   DashboardV2Api? _api;
 
   Future<DashboardV2Api> _ensureApi() async {
-    _api ??= await ApiClientManager.instance.getDashboardApi();
-    return _api!;
+    try {
+      _api ??= await ApiClientManager.instance.getDashboardApi();
+      return _api!;
+    } catch (e) {
+      if (e is StateError && e.message == 'No API config available') {
+        throw const NetworkConnectionException('未配置服务器连接');
+      }
+      rethrow;
+    }
   }
 
   Future<Map<String, dynamic>> getDashboardBase() async {
@@ -133,12 +141,19 @@ class DashboardRepository {
         load: load,
       );
     } catch (e, stack) {
-      appLogger.eWithPackage(
-        'data.repositories.dashboard_repository',
-        'Error getting current server metrics',
-        error: e,
-        stackTrace: stack,
-      );
+      if (e is NetworkException) {
+        appLogger.wWithPackage(
+          'data.repositories.dashboard_repository',
+          'Network error getting current server metrics: ${e.message}',
+        );
+      } else {
+        appLogger.eWithPackage(
+          'data.repositories.dashboard_repository',
+          'Error getting current server metrics',
+          error: e,
+          stackTrace: stack,
+        );
+      }
       return const ServerMetricsSnapshot();
     }
   }

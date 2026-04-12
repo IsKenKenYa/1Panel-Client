@@ -14,8 +14,8 @@ class SSLV2Api {
   /// 为网站创建SSL证书
   /// @param ssl 网站SSL配置
   /// @return 创建结果
-  Future<Response> createWebsiteSSL(WebsiteSSLCreate ssl) async {
-    return await _client.post(
+  Future<Response<void>> createWebsiteSSL(WebsiteSSLCreate ssl) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/websites/ssl'),
       data: ssl.toJson(),
     );
@@ -74,8 +74,8 @@ class SSLV2Api {
   /// 为网站申请SSL证书
   /// @param sslApply SSL申请配置
   /// @return 申请结果
-  Future<Response> applySSL(WebsiteSSLApply sslApply) async {
-    return await _client.post(
+  Future<Response<void>> applySSL(WebsiteSSLApply sslApply) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/websites/ssl/obtain'),
       data: sslApply.toJson(),
     );
@@ -145,8 +145,8 @@ class SSLV2Api {
   /// 更新网站SSL证书配置
   /// @param ssl SSL更新配置
   /// @return 更新结果
-  Future<Response> updateWebsiteSSL(WebsiteSSLUpdate ssl) async {
-    return await _client.post(
+  Future<Response<void>> updateWebsiteSSL(WebsiteSSLUpdate ssl) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/websites/ssl/update'),
       data: ssl.toJson(),
     );
@@ -157,15 +157,15 @@ class SSLV2Api {
   /// 上传SSL证书文件
   /// @param sslUpload SSL上传配置
   /// @return 上传结果
-  Future<Response> uploadSSL(WebsiteSSLUpload sslUpload) async {
-    return await _client.post(
+  Future<Response<void>> uploadSSL(WebsiteSSLUpload sslUpload) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/websites/ssl/upload'),
       data: sslUpload.toJson(),
     );
   }
 
-  Future<Response> uploadSSLFile(FormData formData) async {
-    return await _client.post(
+  Future<Response<void>> uploadSSLFile(FormData formData) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/websites/ssl/upload/file'),
       data: formData,
     );
@@ -294,8 +294,8 @@ class SSLV2Api {
   /// 更新系统 SSL 证书
   /// @param certData 证书数据
   /// @return 更新结果
-  Future<Response> updateSystemSSL(Map<String, dynamic> certData) async {
-    return await _client.post(
+  Future<Response<void>> updateSystemSSL(Map<String, dynamic> certData) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/core/settings/ssl/update'),
       data: certData,
     );

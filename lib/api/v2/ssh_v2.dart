@@ -155,8 +155,8 @@ class SshV2Api {
   }
 
   /// 更新 SSH 设置
-  Future<Response> updateSshSettings(Map<String, dynamic> request) async {
-    return await _client.post(
+  Future<Response<void>> updateSshSettings(Map<String, dynamic> request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/settings/ssh'),
       data: request,
     );
@@ -177,24 +177,24 @@ class SshV2Api {
   }
 
   /// 设置默认 SSH 连接
-  Future<Response> setDefaultSshConn(Map<String, dynamic> request) async {
-    return await _client.post(
+  Future<Response<void>> setDefaultSshConn(Map<String, dynamic> request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/settings/ssh/conn/default'),
       data: request,
     );
   }
 
   /// 获取Fail2ban SSHD运行状态
-  Future<Response> getFail2banSshdStatus() async {
-    return await _client.post(
+  Future<Response<void>> getFail2banSshdStatus() async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/fail2ban/operate/sshd'),
       data: const <String, dynamic>{'operate': 'status'},
     );
   }
 
   /// 启动/停止 Fail2ban SSHD (操作: start, stop, restart)
-  Future<Response> operateFail2banSshd(Map<String, dynamic> request) async {
-    return await _client.post(
+  Future<Response<void>> operateFail2banSshd(Map<String, dynamic> request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/fail2ban/operate/sshd'),
       data: request,
     );

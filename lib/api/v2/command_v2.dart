@@ -139,16 +139,16 @@ class CommandV2Api {
     );
   }
 
-  Future<Response> getCommandTreeByType({required String type}) async {
-    return await _client.get(
+  Future<Response<void>> getCommandTreeByType({required String type}) async {
+    return await _client.get<void>(
       ApiConstants.buildApiPath('/core/commands/tree'),
       queryParameters: <String, dynamic>{'type': type},
     );
   }
 
   /// 获取命令信息
-  Future<Response> getCommandByType({required String type}) async {
-    return await _client.get(
+  Future<Response<void>> getCommandByType({required String type}) async {
+    return await _client.get<void>(
       ApiConstants.buildApiPath('/core/commands/command'),
       queryParameters: <String, dynamic>{'type': type},
     );

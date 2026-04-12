@@ -55,8 +55,8 @@ class FirewallV2Api {
     );
   }
 
-  Future<Response> operateFirewall(FirewallOperation operation) async {
-    return await _client.post(
+  Future<Response<void>> operateFirewall(FirewallOperation operation) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/hosts/firewall/operate'),
       data: operation.toJson(),
     );
@@ -80,43 +80,43 @@ class FirewallV2Api {
     );
   }
 
-  Future<Response> operatePort(Map<String, dynamic> payload) async {
-    return await _client.post(
+  Future<Response<void>> operatePort(Map<String, dynamic> payload) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/hosts/firewall/port'),
       data: payload,
     );
   }
 
-  Future<Response> operateIp(Map<String, dynamic> payload) async {
-    return await _client.post(
+  Future<Response<void>> operateIp(Map<String, dynamic> payload) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/hosts/firewall/ip'),
       data: payload,
     );
   }
 
-  Future<Response> batchOperate(Map<String, dynamic> payload) async {
-    return await _client.post(
+  Future<Response<void>> batchOperate(Map<String, dynamic> payload) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/hosts/firewall/batch'),
       data: payload,
     );
   }
 
-  Future<Response> updateAddr(Map<String, dynamic> payload) async {
-    return await _client.post(
+  Future<Response<void>> updateAddr(Map<String, dynamic> payload) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/hosts/firewall/update/addr'),
       data: payload,
     );
   }
 
-  Future<Response> updateDescription(Map<String, dynamic> payload) async {
-    return await _client.post(
+  Future<Response<void>> updateDescription(Map<String, dynamic> payload) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/hosts/firewall/update/description'),
       data: payload,
     );
   }
 
-  Future<Response> updatePort(Map<String, dynamic> payload) async {
-    return await _client.post(
+  Future<Response<void>> updatePort(Map<String, dynamic> payload) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/hosts/firewall/update/port'),
       data: payload,
     );

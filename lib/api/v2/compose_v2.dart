@@ -127,25 +127,25 @@ class ComposeV2Api {
   }
 
   /// Update Compose project
-  Future<Response> updateCompose(ContainerComposeUpdateRequest request) async {
-    return await _client.post(
+  Future<Response<void>> updateCompose(ContainerComposeUpdateRequest request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/compose/update'),
       data: request.toJson(),
     );
   }
 
   /// Test Compose project
-  Future<Response> testCompose(ContainerComposeCreate request) async {
-    return await _client.post(
+  Future<Response<void>> testCompose(ContainerComposeCreate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/compose/test'),
       data: request.toJson(),
     );
   }
 
   /// Clean Compose logs
-  Future<Response> cleanComposeLog(
+  Future<Response<void>> cleanComposeLog(
       ContainerComposeLogCleanRequest request) async {
-    return await _client.post(
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/compose/clean/log'),
       data: request.toJson(),
     );

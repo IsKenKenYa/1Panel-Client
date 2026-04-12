@@ -535,8 +535,8 @@ class AppV2Api {
   // ==================== 渠道与配对 ====================
 
   /// 批准通道配对请求
-  Future<Response> approveChannelPairing(Map<String, dynamic> request) async {
-    return await _client.post(
+  Future<Response<void>> approveChannelPairing(Map<String, dynamic> request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/ai/agents/channel/pairing/approve'),
       data: request,
     );

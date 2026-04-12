@@ -55,8 +55,8 @@ class FileV2Api {
   /// 创建一个新的文件或目录
   /// @param request 文件创建请求
   /// @return 创建结果
-  Future<Response> createFile(FileCreate request) async {
-    return await _client.post(
+  Future<Response<void>> createFile(FileCreate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/files'),
       data: request.toJson(),
     );
@@ -73,8 +73,8 @@ class FileV2Api {
   /// 删除指定的文件或目录
   /// @param request 文件删除请求
   /// @return 删除结果
-  Future<Response> deleteFile(FileDelete request) async {
-    return await _client.post(
+  Future<Response<void>> deleteFile(FileDelete request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/files/del'),
       data: request.toJson(),
     );
@@ -85,8 +85,8 @@ class FileV2Api {
   /// 批量删除指定的文件或目录
   /// @param request 批量删除请求
   /// @return 删除结果
-  Future<Response> deleteFiles(FileBatchDelete request) async {
-    return await _client.post(
+  Future<Response<void>> deleteFiles(FileBatchDelete request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/files/batch/del'),
       data: request.toJson(),
     );
@@ -97,8 +97,8 @@ class FileV2Api {
   /// 重命名指定的文件或目录
   /// @param request 文件重命名请求
   /// @return 重命名结果
-  Future<Response> renameFile(FileRename request) async {
-    return await _client.post(
+  Future<Response<void>> renameFile(FileRename request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/files/rename'),
       data: request.toJson(),
     );
@@ -109,8 +109,8 @@ class FileV2Api {
   /// 移动指定的文件或目录
   /// @param request 文件移动请求
   /// @return 移动结果
-  Future<Response> moveFiles(FileMove request) async {
-    return await _client.post(
+  Future<Response<void>> moveFiles(FileMove request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/files/move'),
       data: request.toJson(),
     );
@@ -150,8 +150,8 @@ class FileV2Api {
 
   /// 下载文件 (POST 方法，兼容旧版本)
   @Deprecated('Use downloadFile with path parameter instead')
-  Future<Response> downloadFileWithRequest(FileDownload request) async {
-    return await _client.post(
+  Future<Response<void>> downloadFileWithRequest(FileDownload request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/files/download'),
       data: request.toJson(),
     );
@@ -197,8 +197,8 @@ class FileV2Api {
   /// 更新指定文件的内容
   /// @param request 文件内容更新请求
   /// @return 更新结果
-  Future<Response> updateFileContent(FileContent request) async {
-    return await _client.post(
+  Future<Response<void>> updateFileContent(FileContent request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/files/save'),
       data: request.toJson(),
     );
@@ -209,8 +209,8 @@ class FileV2Api {
   /// 压缩指定的文件或目录
   /// @param request 文件压缩请求
   /// @return 压缩结果
-  Future<Response> compressFiles(FileCompress request) async {
-    return await _client.post(
+  Future<Response<void>> compressFiles(FileCompress request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/files/compress'),
       data: request.toJson(),
     );
@@ -221,8 +221,8 @@ class FileV2Api {
   /// 解压指定的压缩文件
   /// @param request 文件解压请求
   /// @return 解压结果
-  Future<Response> decompressFile(FileExtract request) async {
-    return await _client.post(
+  Future<Response<void>> decompressFile(FileExtract request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/files/decompress'),
       data: request.toJson(),
     );
@@ -239,8 +239,8 @@ class FileV2Api {
   /// 更新指定文件的权限模式
   /// @param request 权限模式更新请求
   /// @return 更新结果
-  Future<Response> updateFileMode(FileModeChange request) async {
-    return await _client.post(
+  Future<Response<void>> updateFileMode(FileModeChange request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/files/mode'),
       data: request.toJson(),
     );
@@ -251,8 +251,8 @@ class FileV2Api {
   /// 更新指定文件的所有者
   /// @param request 所有者更新请求
   /// @return 更新结果
-  Future<Response> updateFileOwner(FileOwnerChange request) async {
-    return await _client.post(
+  Future<Response<void>> updateFileOwner(FileOwnerChange request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/files/owner'),
       data: request.toJson(),
     );
@@ -263,8 +263,8 @@ class FileV2Api {
   /// 批量删除文件或目录
   /// @param request 批量删除请求
   /// @return 删除结果
-  Future<Response> batchDeleteFiles(FileBatchOperate request) async {
-    return await _client.post(
+  Future<Response<void>> batchDeleteFiles(FileBatchOperate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/files/batch/del'),
       data: request.toJson(),
     );
@@ -275,8 +275,8 @@ class FileV2Api {
   /// 批量修改文件或目录的角色
   /// @param request 批量角色修改请求
   /// @return 修改结果
-  Future<Response> batchChangeFileRole(FileBatchRoleRequest request) async {
-    return await _client.post(
+  Future<Response<void>> batchChangeFileRole(FileBatchRoleRequest request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/files/batch/role'),
       data: request.toJson(),
     );
@@ -342,8 +342,8 @@ class FileV2Api {
   /// 收藏文件或目录
   /// @param request 收藏请求
   /// @return 收藏结果
-  Future<Response> favoriteFile(FileFavorite request) async {
-    return await _client.post(
+  Future<Response<void>> favoriteFile(FileFavorite request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/files/favorite'),
       data: request.toJson(),
     );
@@ -354,8 +354,8 @@ class FileV2Api {
   /// 取消收藏文件或目录
   /// @param request 取消收藏请求
   /// @return 取消结果
-  Future<Response> unfavoriteFile(FileUnfavorite request) async {
-    return await _client.post(
+  Future<Response<void>> unfavoriteFile(FileUnfavorite request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/files/favorite/del'),
       data: request.toJson(),
     );
@@ -407,8 +407,8 @@ class FileV2Api {
   /// 修改文件或目录的访问模式
   /// @param request 模式修改请求
   /// @return 修改结果
-  Future<Response> changeFileMode(FileModeChange request) async {
-    return await _client.post(
+  Future<Response<void>> changeFileMode(FileModeChange request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/files/mode'),
       data: request.toJson(),
     );
@@ -419,8 +419,8 @@ class FileV2Api {
   /// 修改文件或目录的所有者
   /// @param request 所有者修改请求
   /// @return 修改结果
-  Future<Response> changeFileOwner(FileOwnerChange request) async {
-    return await _client.post(
+  Future<Response<void>> changeFileOwner(FileOwnerChange request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/files/owner'),
       data: request.toJson(),
     );
@@ -465,8 +465,8 @@ class FileV2Api {
   ///
   /// 清空回收站中的所有文件
   /// @return 清空结果
-  Future<Response> clearRecycleBin() async {
-    return await _client.post(
+  Future<Response<void>> clearRecycleBin() async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/files/recycle/clear'),
     );
   }
@@ -495,9 +495,9 @@ class FileV2Api {
   /// 从回收站恢复文件到原路径
   /// @param request 恢复请求
   /// @return 恢复结果
-  Future<Response> restoreRecycleBinFile(
+  Future<Response<void>> restoreRecycleBinFile(
       RecycleBinReduceRequest request) async {
-    return await _client.post(
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/files/recycle/reduce'),
       data: request.toJson(),
     );
@@ -567,8 +567,8 @@ class FileV2Api {
   /// 保存文件内容
   /// @param request 文件保存请求
   /// @return 保存结果
-  Future<Response> saveFile(FileSave request) async {
-    return await _client.post(
+  Future<Response<void>> saveFile(FileSave request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/files/save'),
       data: request.toJson(),
     );
@@ -708,8 +708,8 @@ class FileV2Api {
   /// 创建文件或目录的符号链接
   /// @param request 链接创建请求
   /// @return 创建结果
-  Future<Response> createFileLink(FileLinkCreate request) async {
-    return await _client.post(
+  Future<Response<void>> createFileLink(FileLinkCreate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/files'),
       data: FileCreate(
         path: request.linkPath,
@@ -725,8 +725,8 @@ class FileV2Api {
   /// 调用服务端文件转换任务
   /// @param request 文件转换请求
   /// @return 转换任务提交结果
-  Future<Response> convertFiles(FileMediaConvertRequest request) async {
-    return await _client.post(
+  Future<Response<void>> convertFiles(FileMediaConvertRequest request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/files/convert'),
       data: request.toJson(),
     );
@@ -767,8 +767,8 @@ class FileV2Api {
   ///
   /// @param request 文件备注更新请求
   /// @return 设置结果
-  Future<Response> setFileRemark(FileRemarkUpdate request) async {
-    return await _client.post(
+  Future<Response<void>> setFileRemark(FileRemarkUpdate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/files/remark'),
       data: request.toJson(),
     );

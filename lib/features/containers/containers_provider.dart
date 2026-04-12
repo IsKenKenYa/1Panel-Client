@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/network/network_exceptions.dart';
 import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import '../../data/models/container_models.dart';
@@ -428,10 +429,17 @@ class ContainersProvider extends ChangeNotifier with SafeChangeNotifier {
         lastUpdated: DateTime.now(),
       );
     } catch (e) {
-      _data = ContainersData(
-        isLoading: false,
-        error: '加载数据失败: $e',
-      );
+      if (e is NetworkException) {
+        _data = ContainersData(
+          isLoading: false,
+          error: e.message,
+        );
+      } else {
+        _data = ContainersData(
+          isLoading: false,
+          error: '加载数据失败: $e',
+        );
+      }
 
       _containersState = _containersState.copyWith(isLoading: false);
       _imagesState = _imagesState.copyWith(isLoading: false);
