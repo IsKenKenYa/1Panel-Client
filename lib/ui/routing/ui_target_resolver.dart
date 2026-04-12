@@ -84,15 +84,16 @@ class UiTargetResolver {
           formFactor: UiFormFactor.phone,
         );
       case TargetPlatform.fuchsia:
-        // Treat as mobile for now.
+        // Placeholder mapping for future HarmonyOS family support.
         if (shortestSide >= _kTabletShortestSide) {
           return const UiTarget(
-            platformKind: UiPlatformKind.mobile,
+            platformKind: UiPlatformKind.harmony,
             formFactor: UiFormFactor.tablet,
+            tabletKind: TabletKind.harmonyPad,
           );
         }
         return const UiTarget(
-          platformKind: UiPlatformKind.mobile,
+          platformKind: UiPlatformKind.harmony,
           formFactor: UiFormFactor.phone,
         );
     }

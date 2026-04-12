@@ -1,4 +1,5 @@
 export 'agent_core_models.dart';
+export 'agent_role_models.dart';
 export 'agent_account_model_pool_models.dart';
 export 'agent_account_models.dart';
 export 'agent_channel_social_models.dart';

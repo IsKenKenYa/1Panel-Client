@@ -11,6 +11,29 @@ class AIV2Api {
 
   AIV2Api(this._client);
 
+  dynamic _unwrapData(dynamic payload) {
+    if (payload is Map<String, dynamic> && payload.containsKey('data')) {
+      return payload['data'];
+    }
+    return payload;
+  }
+
+  Map<String, dynamic> _unwrapDataMap(dynamic payload) {
+    final data = _unwrapData(payload);
+    if (data is Map<String, dynamic>) {
+      return data;
+    }
+    return const <String, dynamic>{};
+  }
+
+  List<dynamic> _unwrapDataList(dynamic payload) {
+    final data = _unwrapData(payload);
+    if (data is List) {
+      return data;
+    }
+    return const <dynamic>[];
+  }
+
   /// 绑定域名
   ///
   /// 为AI服务绑定域名
@@ -35,7 +58,7 @@ class AIV2Api {
       data: request.toJson(),
     );
     return Response(
-      data: OllamaBindDomainRes.fromJson(response.data),
+      data: OllamaBindDomainRes.fromJson(_unwrapDataMap(response.data)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -50,9 +73,10 @@ class AIV2Api {
     final response =
         await _client.get(ApiConstants.buildApiPath('/ai/gpu/load'));
     return Response(
-      data:
-          (response.data as List?)?.map((i) => GpuInfo.fromJson(i)).toList() ??
-              [],
+      data: _unwrapDataList(response.data)
+          .whereType<Map<String, dynamic>>()
+          .map(GpuInfo.fromJson)
+          .toList(),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -137,7 +161,7 @@ class AIV2Api {
       data: request.toJson(),
     );
     return Response(
-      data: PageResult<OllamaModel>.fromJson(response.data,
+      data: PageResult<OllamaModel>.fromJson(_unwrapDataMap(response.data),
           (json) => OllamaModel.fromJson(json as Map<String, dynamic>)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
@@ -153,10 +177,10 @@ class AIV2Api {
     final response =
         await _client.post(ApiConstants.buildApiPath('/ai/ollama/model/sync'));
     return Response(
-      data: (response.data as List?)
-              ?.map((i) => OllamaModelDropList.fromJson(i))
-              .toList() ??
-          [],
+      data: _unwrapDataList(response.data)
+          .whereType<Map<String, dynamic>>()
+          .map(OllamaModelDropList.fromJson)
+          .toList(),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -172,9 +196,7 @@ class AIV2Api {
       data: request.toJson(),
     );
     return Response(
-      data: AgentItem.fromJson(
-        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
-      ),
+      data: AgentItem.fromJson(_unwrapDataMap(response.data)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -190,7 +212,7 @@ class AIV2Api {
     );
     return Response(
       data: PageResult<AgentItem>.fromJson(
-        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
+        _unwrapDataMap(response.data),
         (dynamic json) => AgentItem.fromJson(json as Map<String, dynamic>),
       ),
       statusCode: response.statusCode,
@@ -215,6 +237,139 @@ class AIV2Api {
     );
   }
 
+  /// 绑定 Agent 角色通道
+  Future<Response> bindAgentRoleChannel(AgentRoleBindReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/agent/bind'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 解绑 Agent 角色通道
+  Future<Response> unbindAgentRoleChannel(AgentRoleBindReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/agent/unbind'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 查询 Agent 角色通道
+  Future<Response<List<AgentRoleChannelItem>>> getAgentRoleChannels(
+      AgentRoleChannelsReq request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/agent/channels'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: _unwrapDataList(response.data)
+          .whereType<Map<String, dynamic>>()
+          .map(AgentRoleChannelItem.fromJson)
+          .toList(),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 创建 Agent 角色
+  Future<Response<AgentRoleCreateResp>> createAgentRole(
+      AgentRoleCreateReq request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/agent/create'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: AgentRoleCreateResp.fromJson(_unwrapDataMap(response.data)),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 删除 Agent 角色
+  Future<Response> deleteAgentRole(AgentRoleDeleteReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/agent/delete'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 查询 Agent 角色列表
+  Future<Response<List<AgentConfiguredAgentItem>>> listAgentRoles(
+      AgentConfiguredAgentsReq request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/agent/list'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: _unwrapDataList(response.data)
+          .whereType<Map<String, dynamic>>()
+          .map(AgentConfiguredAgentItem.fromJson)
+          .toList(),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 查询 Agent 角色 Markdown 文件
+  Future<Response<List<AgentRoleMarkdownFileItem>>> listAgentRoleMarkdownFiles(
+      AgentRoleMarkdownFilesReq request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/agent/md/list'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: _unwrapDataList(response.data)
+          .whereType<Map<String, dynamic>>()
+          .map(AgentRoleMarkdownFileItem.fromJson)
+          .toList(),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 更新 Agent 角色 Markdown 文件
+  Future<Response> updateAgentRoleMarkdownFiles(
+      AgentRoleMarkdownFilesUpdateReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/agent/md/update'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 获取 Agent 模型配置
+  Future<Response<AgentModelConfig>> getAgentModelConfig(
+      AgentIdReq request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/model/get'),
+      data: request.toJson(),
+    );
+    return Response(
+      data: AgentModelConfig.fromJson(_unwrapDataMap(response.data)),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 更新 Agent 备注
+  Future<Response> updateAgentRemark(AgentRemarkUpdateReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/remark'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 绑定 Agent 网站
+  Future<Response> bindAgentWebsite(AgentWebsiteBindReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/website/bind'),
+      data: request.toJson(),
+    );
+  }
+
   /// 更新 Agent 模型配置
   Future<Response> updateAgentModelConfig(
       AgentModelConfigUpdateReq request) async {
@@ -225,15 +380,14 @@ class AIV2Api {
   }
 
   /// 获取 Agent 总览
-  Future<Response<AgentOverview>> getAgentOverview(AgentOverviewReq request) async {
+  Future<Response<AgentOverview>> getAgentOverview(
+      AgentOverviewReq request) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/ai/agents/overview'),
       data: request.toJson(),
     );
     return Response(
-      data: AgentOverview.fromJson(
-        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
-      ),
+      data: AgentOverview.fromJson(_unwrapDataMap(response.data)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -246,11 +400,10 @@ class AIV2Api {
       ApiConstants.buildApiPath('/ai/agents/providers'),
     );
     return Response(
-      data: (response.data as List?)
-              ?.whereType<Map<String, dynamic>>()
-              .map(ProviderInfo.fromJson)
-              .toList() ??
-          const <ProviderInfo>[],
+      data: _unwrapDataList(response.data)
+          .whereType<Map<String, dynamic>>()
+          .map(ProviderInfo.fromJson)
+          .toList(),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -282,7 +435,7 @@ class AIV2Api {
     );
     return Response(
       data: PageResult<AgentAccountItem>.fromJson(
-        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
+        _unwrapDataMap(response.data),
         (dynamic json) =>
             AgentAccountItem.fromJson(json as Map<String, dynamic>),
       ),
@@ -300,11 +453,10 @@ class AIV2Api {
       data: request.toJson(),
     );
     return Response(
-      data: (response.data as List?)
-              ?.whereType<Map<String, dynamic>>()
-              .map(AgentAccountModel.fromJson)
-              .toList() ??
-          const <AgentAccountModel>[],
+      data: _unwrapDataList(response.data)
+          .whereType<Map<String, dynamic>>()
+          .map(AgentAccountModel.fromJson)
+          .toList(),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -362,9 +514,7 @@ class AIV2Api {
       data: request.toJson(),
     );
     return Response(
-      data: AgentFeishuConfig.fromJson(
-        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
-      ),
+      data: AgentFeishuConfig.fromJson(_unwrapDataMap(response.data)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -397,9 +547,7 @@ class AIV2Api {
       data: request.toJson(),
     );
     return Response(
-      data: AgentTelegramConfig.fromJson(
-        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
-      ),
+      data: AgentTelegramConfig.fromJson(_unwrapDataMap(response.data)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -423,9 +571,7 @@ class AIV2Api {
       data: request.toJson(),
     );
     return Response(
-      data: AgentDiscordConfig.fromJson(
-        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
-      ),
+      data: AgentDiscordConfig.fromJson(_unwrapDataMap(response.data)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -449,9 +595,7 @@ class AIV2Api {
       data: request.toJson(),
     );
     return Response(
-      data: AgentWecomConfig.fromJson(
-        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
-      ),
+      data: AgentWecomConfig.fromJson(_unwrapDataMap(response.data)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -475,9 +619,7 @@ class AIV2Api {
       data: request.toJson(),
     );
     return Response(
-      data: AgentDingTalkConfig.fromJson(
-        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
-      ),
+      data: AgentDingTalkConfig.fromJson(_unwrapDataMap(response.data)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -509,9 +651,7 @@ class AIV2Api {
       data: request.toJson(),
     );
     return Response(
-      data: AgentQQBotConfig.fromJson(
-        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
-      ),
+      data: AgentQQBotConfig.fromJson(_unwrapDataMap(response.data)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -535,6 +675,22 @@ class AIV2Api {
     );
   }
 
+  /// 卸载 Agent 插件
+  Future<Response> uninstallAgentPlugin(AgentPluginUninstallReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/plugin/uninstall'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 升级 Agent 插件
+  Future<Response> upgradeAgentPlugin(AgentPluginUpgradeReq request) async {
+    return await _client.post(
+      ApiConstants.buildApiPath('/ai/agents/plugin/upgrade'),
+      data: request.toJson(),
+    );
+  }
+
   /// 检查 Agent 插件状态
   Future<Response<AgentPluginStatus>> checkAgentPlugin(
       AgentPluginCheckReq request) async {
@@ -543,9 +699,7 @@ class AIV2Api {
       data: request.toJson(),
     );
     return Response(
-      data: AgentPluginStatus.fromJson(
-        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
-      ),
+      data: AgentPluginStatus.fromJson(_unwrapDataMap(response.data)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -560,9 +714,7 @@ class AIV2Api {
       data: request.toJson(),
     );
     return Response(
-      data: AgentSecurityConfig.fromJson(
-        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
-      ),
+      data: AgentSecurityConfig.fromJson(_unwrapDataMap(response.data)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -586,9 +738,7 @@ class AIV2Api {
       data: request.toJson(),
     );
     return Response(
-      data: AgentOtherConfig.fromJson(
-        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
-      ),
+      data: AgentOtherConfig.fromJson(_unwrapDataMap(response.data)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -611,12 +761,8 @@ class AIV2Api {
       ApiConstants.buildApiPath('/ai/agents/browser/get'),
       data: request.toJson(),
     );
-    final payload = response.data;
-    final map = payload is Map<String, dynamic>
-        ? (payload['data'] as Map<String, dynamic>? ?? payload)
-        : const <String, dynamic>{};
     return Response(
-      data: AgentBrowserConfig.fromJson(map),
+      data: AgentBrowserConfig.fromJson(_unwrapDataMap(response.data)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -640,9 +786,7 @@ class AIV2Api {
       data: request.toJson(),
     );
     return Response(
-      data: AgentConfigFile.fromJson(
-        response.data as Map<String, dynamic>? ?? const <String, dynamic>{},
-      ),
+      data: AgentConfigFile.fromJson(_unwrapDataMap(response.data)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -666,11 +810,10 @@ class AIV2Api {
       data: request.toJson(),
     );
     return Response(
-      data: (response.data as List?)
-              ?.whereType<Map<String, dynamic>>()
-              .map(AgentSkillItem.fromJson)
-              .toList() ??
-          const <AgentSkillItem>[],
+      data: _unwrapDataList(response.data)
+          .whereType<Map<String, dynamic>>()
+          .map(AgentSkillItem.fromJson)
+          .toList(),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -685,11 +828,10 @@ class AIV2Api {
       data: request.toJson(),
     );
     return Response(
-      data: (response.data as List?)
-              ?.whereType<Map<String, dynamic>>()
-              .map(AgentSkillSearchItem.fromJson)
-              .toList() ??
-          const <AgentSkillSearchItem>[],
+      data: _unwrapDataList(response.data)
+          .whereType<Map<String, dynamic>>()
+          .map(AgentSkillSearchItem.fromJson)
+          .toList(),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -744,7 +886,7 @@ class AIV2Api {
       ApiConstants.buildApiPath('/ai/mcp/domain/get'),
     );
     return Response(
-      data: McpBindDomainRes.fromJson(response.data),
+      data: McpBindDomainRes.fromJson(_unwrapDataMap(response.data)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -775,7 +917,7 @@ class AIV2Api {
       data: request.toJson(),
     );
     return Response(
-      data: McpServersRes.fromJson(response.data),
+      data: McpServersRes.fromJson(_unwrapDataMap(response.data)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,

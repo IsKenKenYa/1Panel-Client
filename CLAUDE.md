@@ -107,17 +107,19 @@ The project follows **Layered Architecture with MVVM** and clean separation of c
 ## Cross-Platform UI Governance
 
 ### Default UI Baseline
-- Default UI implementation is **Flutter/Dart + Material Design 3**
-- Existing `MaterialApp + ThemeData + dynamic_color` remains the current baseline
-- Shared pages should stay in Flutter unless a native exception is explicitly justified
-- Shared non-UI layers should remain in Dart by default: API clients, models, providers, services, repositories, routing contracts, and shared infrastructure should not be reimplemented natively without a hard platform constraint
+- Non-web default UI implementation is **platform-native first** with **MDUI3 fallback**
+- Current runtime supports switching render mode (`native` / `md3`); fallback to MDUI3 is required when a platform native host is not ready
+- Web is not in the current adaptation target scope
+- Shared non-UI layers remain Dart-first by default: API clients, models, providers, services, repositories, routing contracts, and shared infrastructure should not be reimplemented natively without a hard platform constraint
 
-### Native UI Exceptions
-- **Apple platforms**: SwiftUI-native pages are allowed when Apple-native UX provides clear value
-- **Windows**: WinUI3 / Fluent-native pages are allowed when Windows-native UX provides clear value
-- **Android**: Flutter MD3 is the default and preferred implementation path; Kotlin/Compose is exception-only
+### Native UI Strategy
+- **Apple platforms**: SwiftUI-native pages are allowed and preferred where native UX value is clear
+- **Windows**: WinUI3 / Fluent-native pages are allowed and preferred where desktop UX value is clear
+- **Linux**: GTK/Fluent-style native shell containers are allowed; shared business logic stays in Dart
+- **Android**: Native UI (Kotlin/Compose) is a first-class path with switchable MDUI3 fallback
 - Native UI must not bypass application layering or call API clients directly
-- Native code is mainly for presentation shells, platform integration, and system-level capability access rather than shared product logic
+- Native code remains presentation shell + platform capability access; shared product logic stays in Dart
+- **HarmonyOS (future)**: this phase only reserves resolver/channel/provider placeholders and does not commit full native UI delivery
 
 ### Multi-Theme / Multi-Design-System Direction
 - Distinguish:
@@ -127,9 +129,9 @@ The project follows **Layered Architecture with MVVM** and clean separation of c
 - If a new design system is introduced, document target platforms, token mapping, component coverage, and native-exception rationale
 
 ### Implementation Guidance
-- Prefer Flutter adaptive implementations before introducing native pages
-- Reserve native pages for system-integration-heavy experiences, major platform UX gains, or clear performance constraints
-- Any native page proposal should define why Flutter is insufficient, what the bridge boundary is, and what the rollback path is
+- Prefer native shells for non-web targets while keeping Dart non-UI layers shared
+- When native shell capability is missing on a platform, explicitly fallback to MDUI3 and track the gap in module/platform docs
+- Any native page proposal should define bridge boundary, rollback path, and shared Dart state/service/repository contracts
 - The `桌面端适配` branch is a runnable implementation branch for desktop adaptation and may be used as concrete reference material, but it does not redefine the default repository baseline by itself
 - Desktop cached modules must stay inside the shared shell host; normal module switches should not push a second shell
 - Desktop shell navigation should prefer module switching; only true detail/editor flows should use routed pages

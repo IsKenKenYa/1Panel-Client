@@ -26,6 +26,62 @@ class AgentPluginInstallReq {
   }
 }
 
+class AgentPluginUninstallReq {
+  final int agentId;
+  final String type;
+  final String taskID;
+
+  const AgentPluginUninstallReq({
+    required this.agentId,
+    required this.type,
+    required this.taskID,
+  });
+
+  factory AgentPluginUninstallReq.fromJson(Map<String, dynamic> json) {
+    return AgentPluginUninstallReq(
+      agentId: json['agentId'] as int? ?? 0,
+      type: json['type'] as String? ?? '',
+      taskID: json['taskID'] as String? ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'agentId': agentId,
+      'type': type,
+      'taskID': taskID,
+    };
+  }
+}
+
+class AgentPluginUpgradeReq {
+  final int agentId;
+  final String type;
+  final String taskID;
+
+  const AgentPluginUpgradeReq({
+    required this.agentId,
+    required this.type,
+    required this.taskID,
+  });
+
+  factory AgentPluginUpgradeReq.fromJson(Map<String, dynamic> json) {
+    return AgentPluginUpgradeReq(
+      agentId: json['agentId'] as int? ?? 0,
+      type: json['type'] as String? ?? '',
+      taskID: json['taskID'] as String? ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'agentId': agentId,
+      'type': type,
+      'taskID': taskID,
+    };
+  }
+}
+
 class AgentPluginCheckReq {
   final int agentId;
   final String type;

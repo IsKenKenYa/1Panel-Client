@@ -12,7 +12,7 @@ class ThemeController extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system;
   bool _useDynamicColor = true;
   Color _seedColor = AppDesignTokens.brand;
-  UIRenderMode _uiRenderMode = UIRenderMode.md3;
+  UIRenderMode _uiRenderMode = UIRenderMode.native;
   bool _loaded = false;
 
   ThemeMode get themeMode => _themeMode;

@@ -7,7 +7,10 @@
 - Structure rule: when a functional module reaches 2+ files, create a dedicated subfolder (e.g., `lib/core/auth/`).
 
 ## Architecture & Layering (Mandatory)
-- CN: 跨平台 UI 策略：Android 与 Android 平板使用 Dart 渲染 MDUI3；其余平台（macOS, iOS, Windows, Linux）默认使用各自平台的原生代码实现真·原生设计语言（如 macOS 液态玻璃），但允许设置切换回 Dart 渲染的 MDUI3。
+- CN: 跨平台 UI 策略（非 Web）：所有目标平台（Android, iOS, macOS, Windows, Linux）默认使用各平台原生 UI；可按设置切换到 Dart 渲染的 MDUI3。Web 不在当前适配目标。
+- EN: Non-web UI strategy: Android, iOS, macOS, Windows, and Linux default to platform-native UI, with an optional runtime switch to Dart-rendered MDUI3. Web is out of current adaptation scope.
+- CN: 鸿蒙（HarmonyOS）及其他未来平台本阶段仅允许在 Dart 侧预留 `UiTarget` / Channel / Provider 占位，不得在原生层承载共享业务核心逻辑。
+- EN: For HarmonyOS and future platforms, this phase only allows Dart-side placeholders (`UiTarget`, channel, provider); shared business core logic must remain outside native layers.
 - CN: 核心架构必须完全由 Dart 实现，并划分为六大核心层（State, Service, Repository, Model, API/Infra, Core/Config）。禁止在原生代码中重写这部分非 UI 逻辑。
   - **State Layer**: 默认 Provider，负责连接 UI 与业务逻辑，位于 `lib/features/*/providers/`。
   - **Service Layer**: 处理核心业务规则、数据加工，位于 `lib/core/services/` 或各业务模块 `*_service.dart`。
@@ -21,11 +24,12 @@
 - CN: 状态管理默认 Provider，其他方案需评审通过。EN: Provider is the default; other patterns require review.
 
 ## UI Governance (Mandatory)
-- CN: 默认 UI 基线为 Flutter/Dart 实现的 Material Design 3。EN: The default UI baseline is Flutter/Dart with Material Design 3.
+- CN: 默认 UI 基线（非 Web）为平台原生 UI；MDUI3 作为统一回退渲染层并可由用户切换。EN: The default non-web UI baseline is platform-native UI; MDUI3 is the shared fallback render layer and user-switchable.
 - CN: 共享的非 UI 层（API/Model/Provider/Service/Repository/Infra）默认且优先使用 Dart/Flutter 体系实现。EN: Shared non-UI layers (API/Model/Provider/Service/Repository/Infra) must default to and prioritize Dart/Flutter implementations.
-- CN: 多平台共享页面优先使用 Flutter 实现；只有在平台体验、系统能力或性能收益明确时，才允许原生 UI 例外。EN: Shared multi-platform screens should default to Flutter; native UI exceptions are allowed only when platform UX, system capability, or performance gains are clear.
-- CN: Apple 平台允许 SwiftUI 风格原生页面，Windows 平台允许 WinUI3/Fluent 风格原生页面。EN: Apple platforms may use SwiftUI-native pages, and Windows may use WinUI3/Fluent-native pages.
-- CN: Android 默认不需要为 MD3 重写原生 UI；Kotlin/Compose 仅作为例外能力。EN: Android must not be rewritten natively just to replicate MD3; Kotlin/Compose is exception-only.
+- CN: 各平台应优先实现原生 UI 壳层并复用共享 Dart 内容逻辑；当原生壳能力未就绪时，必须显式回退到 MDUI3，并记录回退原因。EN: Each platform should prioritize native UI shells while reusing shared Dart content logic; if native shell capability is not ready, an explicit MDUI3 fallback with a recorded reason is required.
+- CN: Apple 平台可使用 SwiftUI 原生页面，Windows 可使用 WinUI3/Fluent，Linux 可使用 GTK/Fluent 风格原生容器。EN: Apple may use SwiftUI-native pages, Windows may use WinUI3/Fluent, and Linux may use GTK/Fluent-style native containers.
+- CN: Android 默认采用原生 UI（含 Kotlin/Compose）并保持 MDUI3 可切换回退；禁止出现“原生与 MDUI3 两套业务逻辑”。EN: Android defaults to native UI (including Kotlin/Compose) with switchable MDUI3 fallback; duplicate business logic across native and MDUI3 is forbidden.
+- CN: 鸿蒙属于未来平台：本阶段只做路由/通道/Provider 占位，不承诺原生界面交付。EN: HarmonyOS is a future platform: this phase only reserves routing/channel/provider placeholders and does not commit native UI delivery.
 - CN: 多设计系统/多主题必须走统一注册与主题控制，不允许页面自行发明独立 UI 体系。EN: Multi-design-system and multi-theme support must go through centralized registration and theme control; pages may not invent standalone UI systems.
 - CN: 原生代码主要用于 UI 容器、平台交互与系统能力接入，不得承载共享业务核心逻辑。EN: Native code is primarily for UI containers, platform interaction, and system capabilities, and must not own shared business logic.
 - CN: 原生 UI 仍必须遵守 `Presentation -> State -> Service/Repository -> API/Infra`，不得直接跨层访问 API。EN: Native UI must still obey `Presentation -> State -> Service/Repository -> API/Infra` and may not call APIs directly across layers.

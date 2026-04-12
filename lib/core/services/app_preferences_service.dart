@@ -131,7 +131,7 @@ class AppPreferencesService {
       case 'native':
         return UIRenderMode.native;
       default:
-        return UIRenderMode.native; // default to native or maybe md3? let's default to md3 as it's Flutter app? Wait, standard is native for desktop? The specs don't specify default. Let's use native.
+        return UIRenderMode.native;
     }
   }
 

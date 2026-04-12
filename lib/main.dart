@@ -18,7 +18,7 @@ import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 
 import 'package:onepanel_client/core/channel/native_channel_manager.dart';
 import 'package:onepanel_client/core/services/app_preferences_service.dart';
-import 'package:onepanel_client/core/theme/ui_render_mode.dart';
+import 'package:onepanel_client/core/theme/ui_render_policy.dart';
 import 'package:onepanel_client/core/config/api_config_migration.dart';
 
 // Feature Providers
@@ -38,17 +38,26 @@ void main() async {
   NativeChannelManager.init();
   
   final isAndroid = !kIsWeb && Platform.isAndroid;
+  final isDesktopHost = !kIsWeb &&
+      (Platform.isMacOS || Platform.isWindows || Platform.isLinux);
   final prefs = AppPreferencesService();
   final uiRenderMode = await prefs.loadUIRenderMode();
   
-  final useFlutterUI = isAndroid || uiRenderMode == UIRenderMode.md3;
+  final useFlutterUI = UIRenderPolicy.shouldUseFlutterUI(uiRenderMode);
+  final nativeModeFallback = UIRenderPolicy.isNativeModeFallback(uiRenderMode);
   
-  if (useFlutterUI && !isAndroid) {
-    // Desktop using Flutter UI
+  if (useFlutterUI && isDesktopHost) {
+    // Desktop using Flutter UI needs window bootstrap.
     await windowManager.ensureInitialized();
   }
 
   appLogger.init();
+  if (nativeModeFallback) {
+    appLogger.iWithPackage(
+      'main',
+      UIRenderPolicy.fallbackReason(),
+    );
+  }
   try {
     await appLogger.loadPreferences();
     await appLogger.applyReleaseChannelPolicy();

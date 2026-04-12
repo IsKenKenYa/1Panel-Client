@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 /// Note: this is a UI-level concept (routing/layout), not a domain concept.
 enum UiPlatformKind {
   mobile,
+  /// Future placeholder for HarmonyOS family.
+  harmony,
   desktopMacos,
   desktopWindows,
   desktopLinux,
@@ -21,6 +23,7 @@ enum TabletKind {
   none,
   ipad,
   androidPad,
+  harmonyPad,
   webTablet,
 }
 

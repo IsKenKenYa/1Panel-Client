@@ -2,16 +2,16 @@
 
 ## Summary
 
-This document defines how 1Panel Client should evolve from a single Flutter Material 3 UI baseline into a governed multi-design-system, multi-theme, and selectively native-capable product.
+This document defines how 1Panel Client should evolve into a governed non-web multi-platform product with dual UI systems: platform-native UI first and MDUI3 fallback.
 
-The goal is not to encourage arbitrary UI fragmentation. The goal is to keep one default cross-platform system, allow strong platform-native exceptions where they are valuable, and define a roadmap for introducing multiple visual systems without breaking architecture consistency.
+The goal is not to encourage arbitrary UI fragmentation. The goal is to enforce one shared non-UI Dart core, keep native UI as the non-web default, provide a controlled MDUI3 fallback, and define a roadmap for platform parity without breaking architecture consistency.
 
 ## Current State
 
 - The project currently uses `MaterialApp + ThemeData + dynamic_color`
-- The default design language is Flutter Material Design 3
-- There is no existing native UI registry, no platform-native page catalog, and no central design-system abstraction beyond the current theme controller
-- Platform folders exist, but UI governance is still effectively Flutter-first
+- macOS already has a native shell implementation baseline; iOS/Windows/Linux native shells are still incomplete
+- Render mode (`native` / `md3`) already exists in settings and preferences, but runtime fallback strategy needs stronger governance
+- Platform folders exist, but native parity and fallback evidence are not yet complete across all non-web targets
 - Shared non-UI layers are still overwhelmingly Dart-based, including API access, models, providers, repositories, and infrastructure services
 - The `桌面端适配` branch is a runnable desktop implementation branch and should be treated as valuable implementation reference material, not as an automatic replacement for the default baseline policy
 
@@ -19,16 +19,16 @@ The goal is not to encourage arbitrary UI fragmentation. The goal is to keep one
 
 ### Baseline
 
-- The default UI baseline for all platforms is **Flutter/Dart + Material Design 3**
-- Shared product pages should be implemented in Flutter first
-- Material 3 remains the primary default for Android, shared desktop/mobile screens, and any feature without a strong platform-specific reason
+- The default UI baseline for all **non-web** platforms is **platform-native UI**
+- MDUI3 is the shared fallback rendering layer and must remain switchable at runtime
+- Web is out of current adaptation scope
 - Shared non-UI layers must remain Dart-first and shared across platforms unless a hard system limitation requires otherwise
 
-### Why this remains the default
+### Why this is the default
 
-- The current codebase, theme system, and widget hierarchy are already Flutter-centric
-- Flutter already supports MD3 well, especially for Android
-- Rewriting default Android MD3 in Kotlin/Compose would increase maintenance cost without equivalent product benefit
+- Platform-native interaction quality is a core product goal for desktop and mobile targets
+- Runtime MDUI3 fallback keeps delivery safe while native parity is being completed
+- Shared Dart non-UI layers prevent duplicated business logic across native and MDUI3 modes
 
 ## Design Systems
 
@@ -36,7 +36,7 @@ The project may support multiple design systems over time, but they must be gove
 
 ### Approved design-system families
 
-- **Material Design 3**: default shared system
+- **Material Design 3**: default fallback/shared rendering system
 - **Apple-style system**: allowed for Apple-native screens or Apple-priority visual modes
 - **Fluent / WinUI3-style system**: allowed for Windows-native screens or Windows-priority visual modes
 
@@ -80,9 +80,9 @@ User-facing theme switching is supported conceptually, but theme switching must 
 
 The app should not allow individual pages to invent custom theming logic outside the shared theme system.
 
-## Native UI Exceptions
+## Native UI Strategy
 
-Native UI is allowed, but only as an exception path with clear value.
+Native UI is the non-web default strategy, not an exception.
 
 ### Apple platforms
 
@@ -103,15 +103,22 @@ Native WinUI3 / Fluent pages are allowed when:
 
 ### Android
 
-Android defaults to Flutter Material 3.
+Android defaults to native UI (including Kotlin/Compose) with switchable MDUI3 fallback.
 
-Kotlin / Jetpack Compose native pages are allowed only when:
+Mandatory constraints:
 
-- platform/system APIs make Flutter integration awkward
-- a system-heavy page benefits materially from native implementation
-- there is a documented reason why Flutter adaptive UI is insufficient
+- native and MDUI3 modes must share the same Dart non-UI core
+- no duplicated business rules between native and MDUI3 presentation stacks
+- platform-native UX enhancements must preserve shared state/service/repository contracts
 
-Android native UI is not the default path for ordinary product pages.
+## Future Platform Placeholder (HarmonyOS)
+
+HarmonyOS and other future platforms are handled as staged placeholders in this phase:
+
+- reserve `UiTarget`/routing placeholders in Dart
+- reserve channel/provider placeholders for bridge boundaries
+- do not commit full native UI delivery yet
+- do not move shared business logic into future platform native layers
 
 ## Page Categories
 
@@ -120,19 +127,19 @@ Every screen should conceptually fall into one of these categories:
 ### 1. Shared Flutter Screens
 
 - implemented fully in Flutter
-- use the default shared design system
-- preferred for most product functionality
+- use the shared MDUI3 fallback design system
+- preferred as fallback path and cross-platform backup implementation
 
 ### 2. Platform-Adaptive Flutter Screens
 
 - still implemented in Flutter
 - adapt tokens, navigation, spacing, motion, or interaction by platform
-- preferred before attempting native UI
+- preferred when native shells are unavailable or still under parity implementation
 
 ### 3. Platform-Native Screens
 
 - implemented in SwiftUI, WinUI3, Fluent-native, or exceptional Kotlin/Compose
-- allowed only after explicit justification
+- preferred for non-web targets once shared Dart non-UI contracts are in place
 - must preserve application layering and shared business logic contracts
 
 ## Native Bridge Boundaries
@@ -199,8 +206,8 @@ Any PR introducing a new visual system, native page, or platform-specific UI sho
 ### Phase 1: Governance Baseline
 
 - document the rules in `AGENTS.md`, `CLAUDE.md`, and this file
-- treat Flutter MD3 as the default baseline
-- require explicit approval for native exceptions
+- treat non-web native-first + MDUI3 fallback as baseline
+- require explicit parity checklist and fallback evidence per platform
 
 ### Phase 2: Theme Abstraction
 
@@ -210,15 +217,16 @@ Any PR introducing a new visual system, native page, or platform-specific UI sho
 
 ### Phase 3: Flutter Adaptive Layer
 
-- solve most platform differences inside Flutter first
+- use MDUI3 as controlled fallback and shared rendering baseline
 - adapt spacing, navigation patterns, and tokens by platform where beneficial
 - use the `桌面端适配` branch as runnable implementation reference material where helpful, but keep governance decisions in this document and the mainline repository rules
 
 ### Phase 4: Native Pilot Screens
 
-- pilot one Apple-native page using SwiftUI
-- pilot one Windows-native page using WinUI3 / Fluent
-- only consider Android native pilot if there is a strong system-level reason
+- complete parity checklist for macOS native shell
+- pilot iOS-native shell and Windows-native shell baselines
+- establish Linux-native shell baseline while keeping MDUI3 fallback
+- reserve Harmony placeholder routing/channel/provider contracts
 
 ### Phase 5: Multi-Theme User Selection
 
