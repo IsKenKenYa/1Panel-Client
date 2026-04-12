@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
-import '../../core/network/dio_client.dart';
-import '../../core/config/api_constants.dart';
-import '../../data/models/monitoring_models.dart';
-import '../../data/models/common_models.dart';
-import 'api_response_parser.dart';
 
+import '../../core/config/api_constants.dart';
+import '../../core/network/dio_client.dart';
+import '../../data/models/common_models.dart';
+import '../../data/models/dashboard_models.dart';
+import '../../data/models/monitoring_models.dart';
+import '../../data/models/process_models.dart';
+import 'api_response_parser.dart';
 /// Dashboard V2 API客户端
 ///
 /// 基于docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json规范实现
@@ -112,12 +114,14 @@ class DashboardV2Api {
   ///
   /// GET /dashboard/current/top/cpu
   /// @return Top CPU进程列表
-  Future<Response<dynamic>> getTopCPUProcesses() async {
+  Future<Response<List<ProcessInfo>>> getTopCPUProcesses() async {
     final response = await _client.get<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/dashboard/current/top/cpu'),
     );
+    final rawData = ApiResponseParser.extractDynamicData(response);
+    final list = (rawData as List?)?.map((e) => ProcessInfo.fromJson(e as Map<String, dynamic>)).toList() ?? [];
     return Response(
-      data: ApiResponseParser.extractDynamicData(response),
+      data: list,
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -128,12 +132,14 @@ class DashboardV2Api {
   ///
   /// GET /dashboard/current/top/mem
   /// @return Top内存进程列表
-  Future<Response<dynamic>> getTopMemoryProcesses() async {
+  Future<Response<List<ProcessInfo>>> getTopMemoryProcesses() async {
     final response = await _client.get<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/dashboard/current/top/mem'),
     );
+    final rawData = ApiResponseParser.extractDynamicData(response);
+    final list = (rawData as List?)?.map((e) => ProcessInfo.fromJson(e as Map<String, dynamic>)).toList() ?? [];
     return Response(
-      data: ApiResponseParser.extractDynamicData(response),
+      data: list,
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,

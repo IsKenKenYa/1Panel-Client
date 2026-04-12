@@ -19,10 +19,10 @@ class ToolboxRepository {
   }
 
   Future<Map<String, dynamic>> getDeviceConf() async {
-    final api = await _ensureApi();
-    final raw = (await api.getDeviceConf()).data;
-    return _normalizeToMap(raw);
-  }
+      final api = await _ensureApi();
+      final raw = (await api.getDeviceConf('all')).data;
+      return _normalizeToMap(raw);
+    }
 
   Future<void> updateDeviceConf(DeviceConfUpdate request) async {
     final api = await _ensureApi();

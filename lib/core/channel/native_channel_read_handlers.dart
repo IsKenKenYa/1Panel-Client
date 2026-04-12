@@ -186,7 +186,11 @@ class NativeChannelReadHandlers {
         'panelVersion': s?.panelVersion ?? '',
       };
     } catch (e) {
-      appLogger.e('Failed to get dashboard for native: $e');
+      if (e.toString().contains('No API config available')) {
+        appLogger.i('Native dashboard polling skipped: No active server configured.');
+      } else {
+        appLogger.e('Failed to get dashboard for native: $e');
+      }
       return <String, dynamic>{};
     }
   }
@@ -210,7 +214,11 @@ class NativeChannelReadHandlers {
           });
         }
       } catch (e) {
-        appLogger.w('getDatabases scope=${scope.value} failed: $e');
+        if (e.toString().contains('No API config available')) {
+          appLogger.i('getDatabases scope=$scope skipped: No active server configured.');
+        } else {
+          appLogger.w('getDatabases scope=$scope failed: $e');
+        }
       }
     }
     return result;

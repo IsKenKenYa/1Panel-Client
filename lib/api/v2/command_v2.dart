@@ -139,39 +139,18 @@ class CommandV2Api {
     );
   }
 
-  Future<Response<List<CommandTree>>> getCommandTree({
-    required String type,
-  }) async {
-    final response = await _client.get<Map<String, dynamic>>(
+  Future<Response> getCommandTreeByType({required String type}) async {
+    return await _client.get(
       ApiConstants.buildApiPath('/core/commands/tree'),
-      data: <String, dynamic>{'type': type},
-    );
-    final rawItems = response.data?['data'] as List<dynamic>? ?? const [];
-    return Response<List<CommandTree>>(
-      data: rawItems
-          .whereType<Map<String, dynamic>>()
-          .map(CommandTree.fromJson)
-          .toList(growable: false),
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
+      queryParameters: <String, dynamic>{'type': type},
     );
   }
 
   /// 获取命令信息
-  Future<Response<CommandInfo>> getCommand({
-    required String type,
-  }) async {
-    final response = await _client.get<Map<String, dynamic>>(
+  Future<Response> getCommandByType({required String type}) async {
+    return await _client.get(
       ApiConstants.buildApiPath('/core/commands/command'),
-      data: <String, dynamic>{'type': type},
-    );
-    final data = response.data?['data'] as Map<String, dynamic>?;
-    return Response<CommandInfo>(
-      data: data != null ? CommandInfo.fromJson(data) : null,
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
+      queryParameters: <String, dynamic>{'type': type},
     );
   }
 

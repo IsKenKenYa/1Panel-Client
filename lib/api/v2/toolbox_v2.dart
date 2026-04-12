@@ -227,7 +227,7 @@ class ToolboxV2Api {
   Future<Response<List<String>>> getDeviceConf(String name) async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/toolbox/device/conf'),
-      data: {'name': name},
+      data: <String, dynamic>{'name': name},
     );
     return Response(
       data: (response.data as List<dynamic>).map((e) => e as String).toList(),

@@ -1,7 +1,7 @@
 import json
 import re
 
-with open('coverage_round5.json', 'r') as f:
+with open('coverage_round6.json', 'r') as f:
     content = f.read()
 
 # Find the first {

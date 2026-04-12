@@ -131,7 +131,7 @@ class AppPreferencesService {
       case 'native':
         return UIRenderMode.native;
       default:
-        return UIRenderMode.native;
+        return UIRenderMode.md3; // Default to MD3 so developers can see the Flutter UI
     }
   }
 
