@@ -6,6 +6,7 @@ import 'package:onepanel_client/core/services/app_settings_controller.dart';
 import 'package:onepanel_client/core/services/onboarding_service.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/theme/ui_render_mode.dart';
+import 'package:onepanel_client/core/theme/ui_render_policy.dart';
 import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/features/settings/about_page.dart';
 import 'package:onepanel_client/features/settings/app_lock_settings_page.dart';
@@ -135,38 +136,32 @@ class _SettingsBody extends StatelessWidget {
                         builder: (context) {
                           return AlertDialog(
                             title: Text(l10n.settingsUIRenderMode),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                RadioListTile<UIRenderMode>(
-                                  title: Text(l10n.settingsUIRenderModeNative),
-                                  value: UIRenderMode.native,
-                                  groupValue: settings.uiRenderMode,
-                                  onChanged: (value) {
-                                    if (value != null) {
-                                      settings.updateUIRenderMode(value);
-                                      Navigator.pop(context);
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text(l10n.settingsUIRenderModeRestartHint)),
-                                      );
-                                    }
-                                  },
-                                ),
-                                RadioListTile<UIRenderMode>(
-                                  title: Text(l10n.settingsUIRenderModeMD3),
-                                  value: UIRenderMode.md3,
-                                  groupValue: settings.uiRenderMode,
-                                  onChanged: (value) {
-                                    if (value != null) {
-                                      settings.updateUIRenderMode(value);
-                                      Navigator.pop(context);
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text(l10n.settingsUIRenderModeRestartHint)),
-                                      );
-                                    }
-                                  },
-                                ),
-                              ],
+                            content: RadioGroup<UIRenderMode>(
+                              groupValue: settings.uiRenderMode,
+                              onChanged: (value) {
+                                if (value == null) {
+                                  return;
+                                }
+                                settings.updateUIRenderMode(value);
+                                Navigator.pop(context);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(l10n.settingsUIRenderModeRestartHint)),
+                                );
+                              },
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  if (UIRenderPolicy.canSelectNativeMode())
+                                    RadioListTile<UIRenderMode>(
+                                      title: Text(l10n.settingsUIRenderModeNative),
+                                      value: UIRenderMode.native,
+                                    ),
+                                  RadioListTile<UIRenderMode>(
+                                    title: Text(l10n.settingsUIRenderModeMD3),
+                                    value: UIRenderMode.md3,
+                                  ),
+                                ],
+                              ),
                             ),
                           );
                         },

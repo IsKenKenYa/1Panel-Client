@@ -13,6 +13,10 @@ import 'ui_render_mode.dart';
 class UIRenderPolicy {
   const UIRenderPolicy._();
 
+  static bool canSelectNativeMode() {
+    return supportsNativeHost();
+  }
+
   static bool supportsNativeHost() {
     if (kIsWeb) {
       return false;
@@ -35,6 +39,13 @@ class UIRenderPolicy {
   static bool isNativeModeFallback(UIRenderMode configuredMode) {
     return configuredMode == UIRenderMode.native &&
         shouldUseFlutterUI(configuredMode);
+  }
+
+  static UIRenderMode resolveSupportedMode(UIRenderMode configuredMode) {
+    if (configuredMode == UIRenderMode.native && !supportsNativeHost()) {
+      return UIRenderMode.md3;
+    }
+    return configuredMode;
   }
 
   static String fallbackReason() {

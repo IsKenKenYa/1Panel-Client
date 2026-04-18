@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:onepanel_client/core/channel/windows/windows_capability_whitelist.dart';
+import 'package:onepanel_client/core/channel/windows/windows_shell_bridge.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/controllers/pinned_modules_controller.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
@@ -30,12 +33,47 @@ class WindowsShellContentPage extends StatefulWidget {
 
 class _WindowsShellContentPageState extends State<WindowsShellContentPage> {
   late ClientModule _selectedModule;
+  final WindowsShellBridge _windowsShellBridge = const WindowsShellBridge();
+  WindowsCapabilitySnapshot _capabilitySnapshot =
+      WindowsCapabilitySnapshot.fallback;
+  bool _alwaysOnTop = false;
 
   @override
   void initState() {
     super.initState();
     _selectedModule = clientModuleFromId(widget.initialModuleId) ??
         _moduleFromIndex(widget.initialIndex);
+    _loadBridgeCapabilities();
+  }
+
+  Future<void> _loadBridgeCapabilities() async {
+    final snapshot = await _windowsShellBridge.getCapabilities();
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _capabilitySnapshot = snapshot;
+    });
+    appLogger.iWithPackage(
+      'ui.desktop.windows.shell',
+      'Windows bridge capability snapshot loaded: nativeHost=${snapshot.nativeHostAvailable}, windowCommands=${snapshot.supportsWindowCommands}, alwaysOnTop=${snapshot.supportsAlwaysOnTop}',
+    );
+  }
+
+  Future<void> _executeWindowCommand(
+    WindowsWindowCommand command, {
+    bool? enabled,
+  }) async {
+    final ok = await _windowsShellBridge.performWindowCommand(
+      command,
+      enabled: enabled,
+    );
+    if (!ok) {
+      appLogger.wWithPackage(
+        'ui.desktop.windows.shell',
+        'Windows bridge command failed: ${WindowsCapabilityWhitelist.commandName(command)}',
+      );
+    }
   }
 
   ClientModule _moduleFromIndex(int index) {
@@ -97,7 +135,56 @@ class _WindowsShellContentPageState extends State<WindowsShellContentPage> {
                       context.l10n.appName,
                       style: Theme.of(context).textTheme.labelMedium,
                     ),
-                    // Window controls will go here later
+                    const Spacer(),
+                    if (_capabilitySnapshot.supportsAlwaysOnTop)
+                      IconButton(
+                        visualDensity: VisualDensity.compact,
+                        iconSize: 16,
+                        onPressed: () async {
+                          final nextValue = !_alwaysOnTop;
+                          await _executeWindowCommand(
+                            WindowsWindowCommand.setAlwaysOnTop,
+                            enabled: nextValue,
+                          );
+                          if (!mounted) {
+                            return;
+                          }
+                          setState(() {
+                            _alwaysOnTop = nextValue;
+                          });
+                        },
+                        icon: Icon(
+                          _alwaysOnTop
+                              ? Icons.push_pin
+                              : Icons.push_pin_outlined,
+                        ),
+                      ),
+                    if (_capabilitySnapshot.supportsWindowCommands) ...[
+                      IconButton(
+                        visualDensity: VisualDensity.compact,
+                        iconSize: 16,
+                        onPressed: () {
+                          _executeWindowCommand(WindowsWindowCommand.minimize);
+                        },
+                        icon: const Icon(Icons.minimize),
+                      ),
+                      IconButton(
+                        visualDensity: VisualDensity.compact,
+                        iconSize: 16,
+                        onPressed: () {
+                          _executeWindowCommand(WindowsWindowCommand.maximize);
+                        },
+                        icon: const Icon(Icons.crop_square),
+                      ),
+                      IconButton(
+                        visualDensity: VisualDensity.compact,
+                        iconSize: 16,
+                        onPressed: () {
+                          _executeWindowCommand(WindowsWindowCommand.close);
+                        },
+                        icon: const Icon(Icons.close),
+                      ),
+                    ],
                   ],
                 ),
               ),

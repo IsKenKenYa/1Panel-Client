@@ -160,6 +160,20 @@ Native UI does not change architectural boundaries.
 If a native page is introduced, it should be treated as a presentation container, not as a separate business stack.
 If native code is added, the burden of proof is on the native layer to justify why the same result cannot be achieved through Flutter UI adaptation plus shared Dart logic.
 
+### Windows capability whitelist (Phase 2)
+
+- Windows native bridge channel: `onepanel/windows_bridge`
+- Bridge-owned capabilities currently enabled:
+	- `windowCommands` (minimize / maximize / restore / close)
+	- `alwaysOnTop` (toggle topmost)
+- Declared but not enabled capabilities (must stay disabled until dedicated implementation and review):
+	- `systemBackdrop`
+	- `tray`
+	- `jumpList`
+	- `toast`
+	- `fileAssociation`
+- Boundary rule: Flutter side can only call whitelisted commands through `WindowsShellBridge`; arbitrary command names and direct native invocation are prohibited.
+
 ## Desktop Shell Stability
 
 Desktop shells keep modules alive longer than mobile shells, so UI stability rules must be stricter.
