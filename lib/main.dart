@@ -15,6 +15,7 @@ import 'package:onepanel_client/core/theme/theme_controller.dart';
 import 'package:onepanel_client/core/services/transfer/transfer_manager.dart';
 import 'package:onepanel_client/core/theme/app_theme.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
+import 'package:onepanel_client/features/settings/about_page.dart';
 
 import 'package:onepanel_client/core/channel/native_channel_manager.dart';
 import 'package:onepanel_client/core/services/app_preferences_service.dart';
@@ -241,16 +242,25 @@ class MyApp extends StatelessWidget {
               title: '1Panel Client',
               debugShowCheckedModeBanner: false,
               builder: (context, child) {
+                final l10n = AppLocalizations.of(context)!;
                 return PlatformMenuBar(
                   menus: [
                     PlatformMenu(
                       label: '1Panel Client',
                       menus: [
-                        PlatformProvidedMenuItem(
-                          type: PlatformProvidedMenuItemType.about,
+                        PlatformMenuItem(
+                          label: l10n.aboutPageTitle,
+                          onSelected: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => const AboutPage(),
+                              ),
+                            );
+                          },
                         ),
-                        PlatformProvidedMenuItem(
-                          type: PlatformProvidedMenuItemType.quit,
+                        PlatformMenuItem(
+                          label: l10n.commonClose,
+                          onSelected: () => SystemNavigator.pop(),
                         ),
                       ],
                     ),
@@ -274,11 +284,20 @@ class MyApp extends StatelessWidget {
                     PlatformMenu(
                       label: 'Window',
                       menus: [
-                        PlatformProvidedMenuItem(
-                          type: PlatformProvidedMenuItemType.minimizeWindow,
+                        PlatformMenuItem(
+                          label: 'Minimize',
+                          onSelected: () => windowManager.minimize(),
                         ),
-                        PlatformProvidedMenuItem(
-                          type: PlatformProvidedMenuItemType.zoomWindow,
+                        PlatformMenuItem(
+                          label: 'Maximize / Restore',
+                          onSelected: () async {
+                            final isMaximized = await windowManager.isMaximized();
+                            if (isMaximized) {
+                              await windowManager.unmaximize();
+                            } else {
+                              await windowManager.maximize();
+                            }
+                          },
                         ),
                       ],
                     ),

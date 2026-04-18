@@ -30,25 +30,25 @@ namespace {
 
 // Fallback definitions for older Windows SDKs.
 #ifndef DWMSBT_MAINWINDOW
-typedef enum DWM_SYSTEMBACKDROP_TYPE {
-  DWMSBT_AUTO = 0,
-  DWMSBT_NONE = 1,
-  DWMSBT_MAINWINDOW = 2,
-  DWMSBT_TRANSIENTWINDOW = 3,
-  DWMSBT_TABBEDWINDOW = 4
-} DWM_SYSTEMBACKDROP_TYPE;
+typedef enum FlutterDwmSystemBackdropType {
+  FLUTTER_DWMSBT_AUTO = 0,
+  FLUTTER_DWMSBT_NONE = 1,
+  FLUTTER_DWMSBT_MAINWINDOW = 2,
+  FLUTTER_DWMSBT_TRANSIENTWINDOW = 3,
+  FLUTTER_DWMSBT_TABBEDWINDOW = 4
+} FlutterDwmSystemBackdropType;
 #endif
 
 #ifndef DWMWCP_DEFAULT
-typedef enum DWM_WINDOW_CORNER_PREFERENCE {
-  DWMWCP_DEFAULT = 0,
-  DWMWCP_DONOTROUND = 1,
-  DWMWCP_ROUND = 2,
-  DWMWCP_ROUNDSMALL = 3
-} DWM_WINDOW_CORNER_PREFERENCE;
+typedef enum FlutterDwmWindowCornerPreference {
+  FLUTTER_DWMWCP_DEFAULT = 0,
+  FLUTTER_DWMWCP_DONOTROUND = 1,
+  FLUTTER_DWMWCP_ROUND = 2,
+  FLUTTER_DWMWCP_ROUNDSMALL = 3
+} FlutterDwmWindowCornerPreference;
 #endif
 
-void ApplyWindowBackdrop(HWND window, DWM_SYSTEMBACKDROP_TYPE backdrop) {
+void ApplyWindowBackdrop(HWND window, FlutterDwmSystemBackdropType backdrop) {
   // Supported from Windows 11 build 22621. On older systems this call will fail
   // and we safely fall back to default rendering.
   DwmSetWindowAttribute(window, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop,
@@ -56,7 +56,7 @@ void ApplyWindowBackdrop(HWND window, DWM_SYSTEMBACKDROP_TYPE backdrop) {
 }
 
 void ApplyWindowCornerPreference(HWND window,
-                                 DWM_WINDOW_CORNER_PREFERENCE preference) {
+                                 FlutterDwmWindowCornerPreference preference) {
   // Supported from Windows 11 build 22000.
   DwmSetWindowAttribute(window, DWMWA_WINDOW_CORNER_PREFERENCE, &preference,
                         sizeof(preference));
@@ -338,8 +338,8 @@ void Win32Window::UpdateTheme(HWND const window) {
   // - Acrylic (TRANSIENTWINDOW) is intended for transient surfaces (menus,
   //   dialogs, side panes). We expose the underlying capability here first;
   //   future iterations may toggle it via platform channels.
-  ApplyWindowBackdrop(window, DWMSBT_MAINWINDOW);
+  ApplyWindowBackdrop(window, FLUTTER_DWMSBT_MAINWINDOW);
 
   // Keep corner rounding aligned with modern Windows design language.
-  ApplyWindowCornerPreference(window, DWMWCP_ROUND);
+  ApplyWindowCornerPreference(window, FLUTTER_DWMWCP_ROUND);
 }
