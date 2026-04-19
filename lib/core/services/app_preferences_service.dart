@@ -135,7 +135,7 @@ class AppPreferencesService {
         configuredMode = UIRenderMode.native;
         break;
       default:
-        configuredMode = UIRenderMode.md3; // Default to MD3 so developers can see the Flutter UI
+        configuredMode = UIRenderMode.md3;
         break;
     }
 

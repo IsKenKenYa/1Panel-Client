@@ -22,8 +22,8 @@ class UIRenderPolicy {
       return false;
     }
 
-    // Current native host is production-ready on macOS only.
-    return Platform.isMacOS;
+    // Native shell strategy: macOS (SwiftUI) and Windows (WinUI3).
+    return Platform.isMacOS || Platform.isWindows;
   }
 
   static bool shouldUseFlutterUI(UIRenderMode configuredMode) {

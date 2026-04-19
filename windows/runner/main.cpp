@@ -2,7 +2,10 @@
 #include <flutter/flutter_view_controller.h>
 #include <windows.h>
 
+#include <cstdlib>
+
 #include "flutter_window.h"
+#include "render_mode_bootstrap.h"
 #include "utils.h"
 
 int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
@@ -16,6 +19,22 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   // Initialize COM, so that it is available for use in the library and/or
   // plugins.
   ::CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+
+  const BootstrapRenderMode bootstrap_mode = ReadBootstrapRenderMode();
+  if (bootstrap_mode == BootstrapRenderMode::kNative) {
+    const std::wstring incoming_command_line =
+        command_line != nullptr ? command_line : L"";
+    if (LaunchNativeHostIfConfigured(incoming_command_line)) {
+      ::CoUninitialize();
+      return EXIT_SUCCESS;
+    }
+
+    // Native host is requested but unavailable, fallback to Flutter MD3 path.
+    _wputenv_s(L"ONEPANEL_FORCE_MD3", L"1");
+  }
+
+  // Current process is the Flutter runner path, not the native host path.
+  _wputenv_s(L"ONEPANEL_NATIVE_HOST_ACTIVE", L"0");
 
   flutter::DartProject project(L"data");
 

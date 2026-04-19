@@ -20,6 +20,7 @@ import 'package:onepanel_client/features/settings/about_page.dart';
 import 'package:onepanel_client/core/channel/native_channel_manager.dart';
 import 'package:onepanel_client/core/services/app_preferences_service.dart';
 import 'package:onepanel_client/core/theme/ui_render_policy.dart';
+import 'package:onepanel_client/core/theme/ui_render_mode.dart';
 import 'package:onepanel_client/core/config/api_config_migration.dart';
 
 // Feature Providers
@@ -42,7 +43,24 @@ void main() async {
   final isDesktopHost = !kIsWeb &&
       (Platform.isMacOS || Platform.isWindows || Platform.isLinux);
   final prefs = AppPreferencesService();
-  final uiRenderMode = await prefs.loadUIRenderMode();
+    var uiRenderMode = await prefs.loadUIRenderMode();
+
+    // Windows native mode must be hosted by a native WinUI3 process.
+    // If the Flutter runner process is still active without native handoff,
+    // force fallback to MD3 to avoid rendering an empty headless shell.
+    final windowsNativeHostActive = !kIsWeb &&
+      Platform.isWindows &&
+      Platform.environment['ONEPANEL_NATIVE_HOST_ACTIVE'] == '1';
+    final forceMd3ByBootstrap = !kIsWeb &&
+      Platform.isWindows &&
+      Platform.environment['ONEPANEL_FORCE_MD3'] == '1';
+
+    if (!kIsWeb &&
+      Platform.isWindows &&
+      uiRenderMode == UIRenderMode.native &&
+      (!windowsNativeHostActive || forceMd3ByBootstrap)) {
+    uiRenderMode = UIRenderMode.md3;
+    }
   
   final useFlutterUI = UIRenderPolicy.shouldUseFlutterUI(uiRenderMode);
   final nativeModeFallback = UIRenderPolicy.isNativeModeFallback(uiRenderMode);

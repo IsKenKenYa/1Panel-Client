@@ -25,6 +25,10 @@ import '../theme/ui_render_mode.dart';
 /// 所有 Native Channel 读操作 handlers 的集中实现。
 /// 被 [NativeChannelManager] 的 dispatch switch 调用。
 class NativeChannelReadHandlers {
+  static String _serializeRenderMode(UIRenderMode mode) {
+    return mode == UIRenderMode.native ? 'native' : 'md3';
+  }
+
   // ── 原有 handlers ────────────────────────────────────────────────────────
 
   static Future<dynamic> getServers(dynamic arguments) async {
@@ -122,7 +126,7 @@ class NativeChannelReadHandlers {
   static Future<String> getUIRenderMode() async {
     final prefs = AppPreferencesService();
     final mode = await prefs.loadUIRenderMode();
-    return mode == UIRenderMode.native ? 'native' : 'md3';
+    return _serializeRenderMode(mode);
   }
 
   static Future<dynamic> getSettings(dynamic arguments) async {
@@ -130,7 +134,7 @@ class NativeChannelReadHandlers {
     final mode = await prefs.loadUIRenderMode();
     final locale = await prefs.loadLocale();
     return {
-      'renderMode': mode == UIRenderMode.native ? 'native' : 'md3',
+      'renderMode': _serializeRenderMode(mode),
       'language': locale?.languageCode ?? 'system',
       'version': '0.5.0-alpha.1',
     };

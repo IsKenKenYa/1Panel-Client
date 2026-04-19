@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanel_client/core/channel/windows/windows_capability_whitelist.dart';
-import 'package:onepanel_client/core/channel/windows/windows_shell_bridge.dart';
-import 'package:onepanel_client/core/i18n/l10n_x.dart';
-import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/controllers/pinned_modules_controller.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
@@ -37,11 +33,6 @@ class WindowsShellContentPage extends StatefulWidget {
 
 class _WindowsShellContentPageState extends State<WindowsShellContentPage> {
   late ClientModule _selectedModule;
-  final WindowsShellBridge _windowsShellBridge = WindowsShellBridge();
-  WindowsCapabilitySnapshot _capabilitySnapshot =
-      WindowsCapabilitySnapshot.fallback;
-  bool _alwaysOnTop = false;
-  String _systemBackdropMode = 'unknown';
   String? _embeddedRouteName;
   Object? _embeddedRouteArguments;
 
@@ -52,58 +43,6 @@ class _WindowsShellContentPageState extends State<WindowsShellContentPage> {
         _moduleFromIndex(widget.initialIndex);
     _embeddedRouteName = widget.initialEmbeddedRouteName;
     _embeddedRouteArguments = widget.initialEmbeddedRouteArguments;
-    _loadBridgeCapabilities();
-  }
-
-  Future<void> _loadBridgeCapabilities() async {
-    final snapshot = await _windowsShellBridge.getCapabilities();
-    final state = await _windowsShellBridge.getWindowState();
-    if (!mounted) {
-      return;
-    }
-    setState(() {
-      _capabilitySnapshot = snapshot;
-      _alwaysOnTop = state.isAlwaysOnTop;
-      _systemBackdropMode = state.systemBackdropMode;
-    });
-    appLogger.iWithPackage(
-      'ui.desktop.windows.shell',
-      'Windows bridge capability snapshot loaded: nativeHost=${snapshot.nativeHostAvailable}, windowCommands=${snapshot.supportsWindowCommands}, alwaysOnTop=${snapshot.supportsAlwaysOnTop}, systemBackdrop=${snapshot.supportsSystemBackdrop}, backdropMode=${state.systemBackdropMode}',
-    );
-  }
-
-  Future<void> _executeWindowCommand(
-    WindowsWindowCommand command, {
-    bool? enabled,
-  }) async {
-    final ok = await _windowsShellBridge.performWindowCommand(
-      command,
-      enabled: enabled,
-    );
-    if (!ok) {
-      appLogger.wWithPackage(
-        'ui.desktop.windows.shell',
-        'Windows bridge command failed: ${WindowsCapabilityWhitelist.commandName(command)}',
-      );
-    }
-  }
-
-  Future<void> _switchSystemBackdrop(WindowsSystemBackdropMode mode) async {
-    final ok = await _windowsShellBridge.setSystemBackdrop(mode);
-    if (!ok) {
-      appLogger.wWithPackage(
-        'ui.desktop.windows.shell',
-        'Windows bridge backdrop switch failed: ${WindowsCapabilityWhitelist.systemBackdropModeName(mode)}',
-      );
-      return;
-    }
-    if (!mounted) {
-      return;
-    }
-    setState(() {
-      _systemBackdropMode =
-          WindowsCapabilityWhitelist.systemBackdropModeName(mode);
-    });
   }
 
   ClientModule _moduleFromIndex(int index) {
@@ -149,175 +88,12 @@ class _WindowsShellContentPageState extends State<WindowsShellContentPage> {
                 ? ClientModule.servers
                 : _selectedModule;
         final hasEmbeddedRoute =
-          _embeddedRouteName != null && _embeddedRouteName!.isNotEmpty;
+            _embeddedRouteName != null && _embeddedRouteName!.isNotEmpty;
 
         final child = Scaffold(
           backgroundColor: scheme.surface,
           body: Column(
             children: [
-              // Custom Titlebar Placeholder for Windows (Will be integrated with window_manager in Task 3)
-              Container(
-                height: 32,
-                width: double.infinity,
-                color: scheme.surface,
-                child: Row(
-                  children: [
-                    const SizedBox(width: 16),
-                    Text(
-                      context.l10n.appName,
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
-                    const SizedBox(width: 12),
-                    Container(
-                      width: 1,
-                      height: 14,
-                      color: scheme.outlineVariant,
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      selectedModule.label(context.l10n),
-                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                            color: scheme.onSurfaceVariant,
-                          ),
-                    ),
-                    if (hasEmbeddedRoute) ...[
-                      const SizedBox(width: 8),
-                      Flexible(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: scheme.surfaceContainer,
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.route_outlined,
-                                size: 12,
-                                color: scheme.onSurfaceVariant,
-                              ),
-                              const SizedBox(width: 6),
-                              Flexible(
-                                child: Text(
-                                  _embeddedRouteName!,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelSmall
-                                      ?.copyWith(
-                                        color: scheme.onSurfaceVariant,
-                                      ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                    const Spacer(),
-                    IconButton(
-                      tooltip: context.l10n.commonRefresh,
-                      visualDensity: VisualDensity.compact,
-                      iconSize: 16,
-                      onPressed: _loadBridgeCapabilities,
-                      icon: const Icon(Icons.refresh),
-                    ),
-                    if (_capabilitySnapshot.supportsSystemBackdrop)
-                      PopupMenuButton<WindowsSystemBackdropMode>(
-                        tooltip: 'System backdrop',
-                        iconSize: 16,
-                        onSelected: _switchSystemBackdrop,
-                        itemBuilder: (_) => const [
-                          PopupMenuItem(
-                            value: WindowsSystemBackdropMode.mica,
-                            child: Text('Mica'),
-                          ),
-                          PopupMenuItem(
-                            value: WindowsSystemBackdropMode.acrylic,
-                            child: Text('Acrylic'),
-                          ),
-                          PopupMenuItem(
-                            value: WindowsSystemBackdropMode.none,
-                            child: Text('None'),
-                          ),
-                          PopupMenuItem(
-                            value: WindowsSystemBackdropMode.auto,
-                            child: Text('Auto'),
-                          ),
-                          PopupMenuItem(
-                            value: WindowsSystemBackdropMode.tabbed,
-                            child: Text('Tabbed'),
-                          ),
-                        ],
-                        icon: const Icon(Icons.blur_on_outlined),
-                      ),
-                    if (_capabilitySnapshot.supportsSystemBackdrop)
-                      Padding(
-                        padding: const EdgeInsets.only(right: 6),
-                        child: Text(
-                          _systemBackdropMode,
-                          style: Theme.of(context).textTheme.labelSmall,
-                        ),
-                      ),
-                    if (_capabilitySnapshot.supportsAlwaysOnTop)
-                      IconButton(
-                        tooltip: 'Always on top',
-                        visualDensity: VisualDensity.compact,
-                        iconSize: 16,
-                        onPressed: () async {
-                          final nextValue = !_alwaysOnTop;
-                          await _executeWindowCommand(
-                            WindowsWindowCommand.setAlwaysOnTop,
-                            enabled: nextValue,
-                          );
-                          if (!mounted) {
-                            return;
-                          }
-                          setState(() {
-                            _alwaysOnTop = nextValue;
-                          });
-                        },
-                        icon: Icon(
-                          _alwaysOnTop
-                              ? Icons.push_pin
-                              : Icons.push_pin_outlined,
-                        ),
-                      ),
-                    if (_capabilitySnapshot.supportsWindowCommands) ...[
-                      IconButton(
-                        tooltip: 'Minimize',
-                        visualDensity: VisualDensity.compact,
-                        iconSize: 16,
-                        onPressed: () {
-                          _executeWindowCommand(WindowsWindowCommand.minimize);
-                        },
-                        icon: const Icon(Icons.minimize),
-                      ),
-                      IconButton(
-                        tooltip: 'Maximize',
-                        visualDensity: VisualDensity.compact,
-                        iconSize: 16,
-                        onPressed: () {
-                          _executeWindowCommand(WindowsWindowCommand.maximize);
-                        },
-                        icon: const Icon(Icons.crop_square),
-                      ),
-                      IconButton(
-                        tooltip: 'Close',
-                        visualDensity: VisualDensity.compact,
-                        iconSize: 16,
-                        onPressed: () {
-                          _executeWindowCommand(WindowsWindowCommand.close);
-                        },
-                        icon: const Icon(Icons.close),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
               Expanded(
                 child: Row(
                   children: [
