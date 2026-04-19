@@ -21,14 +21,15 @@ The goal is not to encourage arbitrary UI fragmentation. The goal is to enforce 
 
 - Non-web target platforms are Android, iOS, iPadOS, macOS, Windows, Linux, and HarmonyOS (target phase)
 - The project supports multiple design systems and multiple theme profiles under central governance
-- MDUI3 remains the primary shared delivery path for Android/Linux in the current phase and a reliable fallback path for other platforms when needed
+- MDUI3 is the mandatory, always-available baseline across target platforms and must not be treated as a backup-only path
+- Apple (iOS/iPadOS/macOS) and Windows must keep a native UI track in parallel with the MDUI3 baseline
 - Web is out of current adaptation scope
 - Shared non-UI layers must remain Dart-first and shared across platforms unless a hard system limitation requires otherwise
 
 ### Why this is the default
 
 - Different platforms have different UX priorities, so strategy must be platform-specific instead of one global native-first rule
-- MDUI3 enables stable cross-platform delivery while native shells evolve on selected targets
+- MDUI3 guarantees cross-platform continuity while native tracks can evolve without breaking shared delivery
 - Shared Dart non-UI layers prevent duplicated business logic across design systems and UI stacks
 
 ## Design Systems
@@ -83,28 +84,32 @@ The app should not allow individual pages to invent custom theming logic outside
 
 ## Native UI Strategy
 
-Native UI is governed by platform strategy, not a mandatory baseline for every platform.
+Native UI is governed by platform strategy and mandatory-track requirements for selected platforms.
 
 ### Apple platforms
 
-SwiftUI-native pages are preferred for iOS, iPadOS, and macOS.
+SwiftUI-native pages are mandatory for iOS, iPadOS, and macOS track construction.
 Visual direction should align with Liquid-Glass-like system aesthetics where appropriate.
 
 Examples may include settings, onboarding, or system-integration-heavy flows.
 
 ### Windows
 
-Native WinUI3 / Fluent pages are preferred on Windows.
+Native WinUI3 / Fluent pages are mandatory on Windows track construction.
 
 ### Android
 
 Android defaults to Dart-rendered MDUI3 in the current phase.
-Native pages are optional pilot paths, not a mandatory requirement for MDUI3 delivery.
+Native pages are optional pilot paths and require explicit architecture review approval.
 
 ### Linux
 
 Linux may deliver with Dart-rendered MDUI3 first in the current phase.
 Native container capability can be introduced incrementally.
+
+### HarmonyOS (target phase)
+
+HarmonyOS remains in target scope with staged placeholders now and native milestone planning in roadmap phases.
 
 Mandatory constraints:
 
@@ -128,8 +133,8 @@ Every screen should conceptually fall into one of these categories:
 ### 1. Shared Flutter Screens
 
 - implemented fully in Flutter
-- use the shared MDUI3 fallback design system
-- preferred as fallback path and cross-platform backup implementation
+- use the shared MDUI3 baseline design system
+- preferred as cross-platform baseline implementation
 
 ### 2. Platform-Adaptive Flutter Screens
 
@@ -220,6 +225,7 @@ Any PR introducing a new visual system, native page, or platform-specific UI sho
 5. Does it preserve `Presentation -> State -> Service/Repository -> API/Infra`?
 6. What is the fallback or rollback plan?
 7. Is the plan aligned with platform strategy mapping (Windows native, Apple native, Android/Linux MDUI3-first, Harmony placeholder)?
+8. Does the change preserve the mandatory dual-track requirement (MDUI3 baseline + native track) for Apple and Windows?
 
 ## Roadmap
 
@@ -243,10 +249,9 @@ Any PR introducing a new visual system, native page, or platform-specific UI sho
 
 ### Phase 4: Native Pilot Screens
 
-- complete parity checklist for macOS native shell
-- pilot iOS-native shell and Windows-native shell baselines
-- evaluate Linux native shell incrementally while keeping MDUI3 as default current delivery path
-- reserve Harmony placeholder routing/channel/provider contracts
+- maintain parity checklist for Apple and Windows mandatory native tracks
+- continue incremental Linux native-shell exploration while keeping MDUI3 as the current delivery baseline
+- preserve Harmony placeholder routing/channel/provider contracts and execute native milestone planning
 
 ### Phase 5: Multi-Theme User Selection
 
@@ -263,3 +268,8 @@ The hard rules live in:
 - `CLAUDE.md`
 
 Any changes to cross-platform UI governance must update all three locations together.
+
+Operational workflow references:
+
+- `docs/模块适配专属工作流.md`
+- `docs/原生UI适配专属工作流.md`

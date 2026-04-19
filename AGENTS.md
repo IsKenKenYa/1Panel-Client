@@ -37,16 +37,18 @@
 
 ## 跨平台 UI 治理（非 Web，强制）
 - 适配范围：Android、iOS、iPadOS、macOS、Windows、Linux、HarmonyOS（目标平台）；Web 不在当前适配范围。
-- 允许并鼓励多设计系统与多主题，不限制为两套 UI；但必须走统一注册中心与主题控制，禁止页面私自定义独立体系。
+- MDUI3 是全平台可用基线，必须持续可运行，不得降级为“仅回退方案”。
+- Apple（iOS/iPadOS/macOS）与 Windows 必须建设原生 UI 轨道，同时保留 MDUI3 通用轨道。
+- 允许并鼓励多设计系统与多主题，但必须走统一注册中心与主题控制，禁止页面私自定义独立体系。
 - 设计系统与主题是两层概念：
   - 设计系统：MDUI3、Apple 风格、Fluent/WinUI3 等
   - 主题配置：浅色、深色、动态色、品牌色、用户自定义方案
 - 平台策略：
-  - Windows：原生 Fluent/WinUI3 优先
-  - Linux：当前阶段可优先使用 Dart 渲染 MDUI3 交付，后续逐步扩展原生容器能力
-  - Android：不要求使用原生代码实现 MDUI3，Dart MDUI3 为默认落地路径；可按需试点原生 UI
-  - iOS/iPadOS/macOS：以 SwiftUI 原生界面为主，视觉方向适配 Liquid Glass 风格
-  - HarmonyOS：纳入目标平台，当前阶段允许 `UiTarget`/Channel/Provider 占位并保持共享业务在 Dart 层
+  - Windows：强制建设 Fluent/WinUI3 原生轨道
+  - iOS/iPadOS/macOS：强制建设 SwiftUI 原生轨道，视觉方向适配 Liquid Glass 风格
+  - Android：Dart MDUI3 为默认落地路径；原生实现仅允许经评审批准后引入
+  - Linux：当前阶段以 Dart MDUI3 交付为主，原生容器能力按社区扩展路线规划
+  - HarmonyOS：纳入目标平台并规划原生里程碑，当前阶段允许 `UiTarget`/Channel/Provider 占位并保持共享业务在 Dart 层
 - 无论使用何种 UI 体系，共享业务逻辑都必须复用同一套 Dart State/Service/Repository/API，不得分叉为多套业务实现。
 - 原生 UI 同样必须遵守 `Presentation -> State -> Service/Repository -> API/Infra`，不得跨层直接访问 API。
 - 桌面缓存模块页必须禁用非当前页 Hero；带 `FloatingActionButton` 的页面必须显式设置 `heroTag` 或显式禁用 Hero。
@@ -95,14 +97,17 @@
 - 提交前必须可运行 `flutter analyze`。
 - 提交前必须可运行 `dart run test/scripts/test_runner.dart unit`。
 - 涉及 API/网络或数据写入时，必须运行 `dart run test/scripts/test_runner.dart integration`。
-- 涉及 UI 改动时，必须运行 `dart run test/scripts/test_runner.dart ui` 或在变更说明中给出不可运行原因。
+- 涉及 UI 改动时，必须运行 `dart run test/scripts/test_runner.dart ui`。
+- 涉及 Windows 原生 UI 轨道改动时，必须运行 `dotnet build windows/runner/native_host/OnePanelNativeHost/OnePanelNativeHost.csproj -c Debug`。
+- 涉及 Apple 原生 UI 轨道改动时，必须在 macOS/CI 环境运行 `xcodebuild`（iOS + macOS）构建门禁并附结果。
+- 原生 UI 适配门禁失败必须阻断推进，不允许“带失败继续”。
 - 回归基线使用 `dart run test/scripts/test_runner.dart all`。
 
 ## Skills 与 MCP 使用
 - 重大架构决策、关键约定、通用踩坑必须写入 `agent-memory-mcp`（`decision` / `pattern`）。
 - 实施前应先执行 `memory_search` 检索既有结论，避免重复决策。
 - 规范变更必须同步更新 `AGENTS.md` 与 `CLAUDE.md`。
-- 涉及跨平台 UI 或原生扩展策略变更时，必须同步更新 `docs/development/cross_platform_ui_governance.md`。
+- 涉及跨平台 UI 或原生扩展策略变更时，必须同步更新 `docs/development/cross_platform_ui_governance.md`、`docs/模块适配专属工作流.md`、`docs/原生UI适配专属工作流.md`。
 
 ## 提交与合并请求规范
 - 提交信息遵循 Conventional Commits，例如：`feat(scope): ...`、`fix(scope): ...`、`chore: ...`、`refactor: ...`。

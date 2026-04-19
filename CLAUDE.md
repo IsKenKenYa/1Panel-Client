@@ -117,15 +117,16 @@ The project follows **Layered Architecture with MVVM** and clean separation of c
 ### Default UI Baseline
 - Non-web target platforms are Android, iOS, iPadOS, macOS, Windows, Linux, and HarmonyOS (target phase)
 - Web is out of current adaptation scope
+- MDUI3 is a mandatory, always-available baseline across target platforms, not a backup-only mode
 - The project allows multiple design systems and multiple theme profiles, but all must be centrally governed
 - Shared non-UI layers remain Dart-first: API clients, models, providers, services, repositories, routing contracts, and shared infrastructure must not fork per UI stack
 
 ### Native UI Strategy
-- **Windows**: Fluent / WinUI3-native experience is preferred
-- **Linux**: current phase may deliver with Dart-rendered MDUI3 first; native container capability can be extended incrementally
-- **Android**: Dart-rendered MDUI3 is the default delivery path; native pages are optional pilots, and MDUI3 does not require native reimplementation
-- **iOS / iPadOS / macOS**: SwiftUI-native experience is preferred, with Liquid Glass-aligned visual direction
-- **HarmonyOS (target phase)**: reserve resolver/channel/provider placeholders first and keep shared business logic in Dart
+- **Windows**: Fluent / WinUI3 native track is mandatory
+- **iOS / iPadOS / macOS**: SwiftUI native track is mandatory, aligned with Liquid Glass visual direction
+- **Android**: Dart-rendered MDUI3 is the default delivery path; native pages require explicit architecture review approval
+- **Linux**: current phase delivers with Dart-rendered MDUI3 first; native container capability is a planned community extension path
+- **HarmonyOS (target phase)**: reserve resolver/channel/provider placeholders now and plan native milestones while keeping shared business logic in Dart
 - Any native UI must not bypass application layering or call API clients directly
 
 ### Multi-Theme / Multi-Design-System Direction
@@ -146,7 +147,7 @@ The project follows **Layered Architecture with MVVM** and clean separation of c
 - Avoid self-referential widget wrapper chains; snapshot wrapped widgets before adding new layers
 - Desktop host surfaces should resolve to `surface` / `surfaceContainer*`, not transparent page backgrounds
 
-See `docs/development/cross_platform_ui_governance.md` for the full policy and roadmap.
+See `docs/development/cross_platform_ui_governance.md`, `docs/模块适配专属工作流.md`, and `docs/原生UI适配专属工作流.md` for full policy, workflow, and hard-gate details.
 
 ### Project Structure Rules (CRITICAL)
 
@@ -254,7 +255,10 @@ appLogger.d('[auth.service] 这是一条调试信息');
 ## Testing Matrix & CLI Gate
 - CN: 提交前必须可运行 `flutter analyze`。EN: Must be runnable before commit: `flutter analyze`.
 - CN: 必须可运行 `dart run test/scripts/test_runner.dart unit`；涉及 API/网络或数据写入时必须跑 `integration`。EN: Must run `dart run test/scripts/test_runner.dart unit`; for API/network or data writes, must run `integration`.
-- CN: UI 改动必须跑 `dart run test/scripts/test_runner.dart ui` 或说明原因。EN: UI changes must run `dart run test/scripts/test_runner.dart ui` or document why not.
+- CN: UI 改动必须跑 `dart run test/scripts/test_runner.dart ui`。EN: UI changes must run `dart run test/scripts/test_runner.dart ui`.
+- CN: 涉及 Windows 原生 UI 改动必须跑 `dotnet build windows/runner/native_host/OnePanelNativeHost/OnePanelNativeHost.csproj -c Debug`。EN: Windows-native UI changes must pass the WinUI3 host build gate.
+- CN: 涉及 Apple 原生 UI 改动必须在 macOS/CI 跑 iOS + macOS `xcodebuild` 门禁。EN: Apple-native UI changes must pass iOS and macOS xcodebuild gates in macOS/CI.
+- CN: 原生 UI 门禁失败必须阻断推进。EN: Native UI gate failures must block progression.
 - CN: 回归基线使用 `dart run test/scripts/test_runner.dart all`。EN: Regression baseline uses `dart run test/scripts/test_runner.dart all`.
 
 ## Skills & MCP (agent-memory-mcp)

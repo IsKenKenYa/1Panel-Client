@@ -9,7 +9,32 @@
 ## 开发规范
 
 - 权威规范：`AGENTS.md`（硬性规则）与 `CLAUDE.md`（流程细则）。
-- 提交前基线：`flutter analyze`、`dart run test_runner.dart unit`；涉及 API/网络或 UI 时分别运行 `integration`、`ui`。
+- 提交前基线：`flutter analyze`、`dart run test/scripts/test_runner.dart unit`；涉及 API/网络或 UI 时分别运行 `integration`、`ui`。
+
+## 原生 UI 适配与强门禁
+
+- 原生 UI 适配流程与自动化约束：`docs/原生UI适配专属工作流.md`
+- 模块链路适配流程：`docs/模块适配专属工作流.md`
+- 跨平台治理总纲：`docs/development/cross_platform_ui_governance.md`
+
+强制门禁（任一失败即阻断推进）：
+
+```bash
+flutter analyze
+dart run test/scripts/test_runner.dart unit
+dart run test/scripts/test_runner.dart integration   # 涉及 API/网络/数据写入
+dart run test/scripts/test_runner.dart ui            # 涉及 UI 改动
+dotnet build windows/runner/native_host/OnePanelNativeHost/OnePanelNativeHost.csproj -c Debug   # Windows 原生 UI 改动
+```
+
+Apple 原生 UI 轨道改动需在 macOS/CI 额外执行：
+
+```bash
+xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Debug -sdk iphonesimulator build
+xcodebuild -workspace macos/Runner.xcworkspace -scheme Runner -configuration Debug build
+```
+
+说明：Web 不在当前原生 UI 适配范围内。
 
 ## 认证配置
 

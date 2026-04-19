@@ -10,6 +10,8 @@ This documentation follows the standard docs site structure compatible with Docu
 
 ```
 docs/
+├── 模块适配专属工作流.md     # Module Adaptation Workflow (CN)
+├── 原生UI适配专属工作流.md   # Native UI Adaptation Workflow (CN)
 ├── en/                    # English Documentation
 │   ├── DEPLOY.md         # Deployment Guide
 │   ├── GUIDE.md          # User Guide
@@ -40,6 +42,8 @@ docs/
 
 - [API Documentation](OpenSource/1Panel/core/cmd/server/docs/swagger.json) - 1Panel V2 API Swagger specification from the 1Panel submodule
 - [Development Documentation](development/) - Technical architecture and development guides
+- [模块适配专属工作流](模块适配专属工作流.md) - 模块 API 与业务链路适配工作流
+- [原生UI适配专属工作流](原生UI适配专属工作流.md) - 原生 UI 适配与 AI Agent 强门禁工作流
 
 ### 中文文档
 
