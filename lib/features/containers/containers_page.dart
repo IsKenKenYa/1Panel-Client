@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/features/containers/containers_page_container_edit_dialogs.dart';
 import 'package:onepanel_client/features/containers/containers_page_container_image_dialogs.dart';
 import 'package:onepanel_client/features/containers/containers_page_container_maintenance_dialogs.dart';
@@ -24,6 +25,7 @@ import 'package:onepanel_client/features/orchestration/providers/volume_provider
 import 'package:onepanel_client/features/orchestration/volume_page.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/controllers/module_subnav_controller.dart';
+import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/features/shell/widgets/module_subnav.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 

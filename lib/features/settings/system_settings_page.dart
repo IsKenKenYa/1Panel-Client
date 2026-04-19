@@ -15,6 +15,7 @@ import 'package:onepanel_client/features/settings/upgrade_page.dart';
 import 'package:onepanel_client/features/settings/monitor_settings_page.dart';
 import 'package:onepanel_client/features/settings/proxy_settings_page.dart';
 import 'package:onepanel_client/features/settings/backup_account_page.dart';
+import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/features/monitoring/monitoring_provider.dart';
 import 'package:onepanel_client/core/services/logger/log_level.dart';
 import 'package:onepanel_client/core/services/logger/log_export_service.dart';
@@ -187,7 +188,7 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
                 title: l10n.menuSettingsTitle,
                 subtitle: l10n.menuSettingsDescription,
                 onTap: () =>
-                    Navigator.pushNamed(context, AppRoutes.menuSettings),
+                    openRouteRespectingShell(context, AppRoutes.menuSettings),
               ),
               _buildSettingTile(
                 context,

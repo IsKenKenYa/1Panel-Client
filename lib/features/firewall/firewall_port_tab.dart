@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/data/models/firewall_models.dart';
+import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/shared/widgets/app_card.dart';
 
 import 'firewall_rule_form_page.dart';
@@ -78,7 +80,7 @@ class _FirewallPortTabState extends State<FirewallPortTab> {
               onSearch: _loadRules,
               onStrategyChanged: _onStrategyChanged,
               onToggleSelectionMode: _toggleSelectionMode,
-              onCreate: () => Navigator.pushNamed(
+              onCreate: () => openRouteRespectingShell(
                 context,
                 AppRoutes.firewallRuleForm,
                 arguments: const FirewallRuleFormArguments(
@@ -220,16 +222,25 @@ class _FirewallPortTabState extends State<FirewallPortTab> {
   ) async {
     switch (action) {
       case 'edit':
-        await Navigator.pushNamed(
-          context,
-          AppRoutes.firewallRuleForm,
-          arguments: FirewallRuleFormArguments(
-            kind: FirewallRuleKind.port,
-            rule: rule,
-          ),
+        final editArgs = FirewallRuleFormArguments(
+          kind: FirewallRuleKind.port,
+          rule: rule,
         );
-        if (context.mounted) {
-          await provider.refresh();
+        if (PlatformUtils.isDesktop(context)) {
+          await openRouteRespectingShell(
+            context,
+            AppRoutes.firewallRuleForm,
+            arguments: editArgs,
+          );
+        } else {
+          await Navigator.pushNamed(
+            context,
+            AppRoutes.firewallRuleForm,
+            arguments: editArgs,
+          );
+          if (context.mounted) {
+            await provider.refresh();
+          }
         }
         break;
       case 'toggle':

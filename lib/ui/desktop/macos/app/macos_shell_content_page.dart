@@ -17,10 +17,14 @@ class MacosShellContentPage extends StatefulWidget {
     super.key,
     this.initialIndex = 0,
     this.initialModuleId,
+    this.initialEmbeddedRouteName,
+    this.initialEmbeddedRouteArguments,
   });
 
   final int initialIndex;
   final String? initialModuleId;
+  final String? initialEmbeddedRouteName;
+  final Object? initialEmbeddedRouteArguments;
 
   @override
   State<MacosShellContentPage> createState() => _MacosShellContentPageState();
@@ -28,12 +32,16 @@ class MacosShellContentPage extends StatefulWidget {
 
 class _MacosShellContentPageState extends State<MacosShellContentPage> {
   late ClientModule _selectedModule;
+  String? _embeddedRouteName;
+  Object? _embeddedRouteArguments;
 
   @override
   void initState() {
     super.initState();
     _selectedModule = clientModuleFromId(widget.initialModuleId) ??
         _moduleFromIndex(widget.initialIndex);
+    _embeddedRouteName = widget.initialEmbeddedRouteName;
+    _embeddedRouteArguments = widget.initialEmbeddedRouteArguments;
   }
 
   ClientModule _moduleFromIndex(int index) {
@@ -97,6 +105,8 @@ class _MacosShellContentPageState extends State<MacosShellContentPage> {
                   }
                   setState(() {
                     _selectedModule = module;
+                    _embeddedRouteName = null;
+                    _embeddedRouteArguments = null;
                   });
                 },
               ),
@@ -110,6 +120,8 @@ class _MacosShellContentPageState extends State<MacosShellContentPage> {
                       onOpenSettings: () {
                         setState(() {
                           _selectedModule = ClientModule.settings;
+                          _embeddedRouteName = null;
+                          _embeddedRouteArguments = null;
                         });
                       },
                     ),
@@ -123,6 +135,8 @@ class _MacosShellContentPageState extends State<MacosShellContentPage> {
                           child: DesktopContentHost(
                             module: selectedModule,
                             serverId: currentServer.currentServerId,
+                            embeddedRoute: _embeddedRouteName,
+                            embeddedRouteArguments: _embeddedRouteArguments,
                           ),
                         ),
                       ),
@@ -146,6 +160,8 @@ class _MacosShellContentPageState extends State<MacosShellContentPage> {
                 }
                 setState(() {
                   _selectedModule = module;
+                  _embeddedRouteName = null;
+                  _embeddedRouteArguments = null;
                 });
               },
           },

@@ -3,16 +3,21 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/shell/module_page_factory.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
 import 'package:onepanel_client/features/shell/widgets/no_server_selected_state.dart';
+import 'package:onepanel_client/ui/desktop/common/widgets/desktop_routed_module_host.dart';
 
 class DesktopContentHost extends StatefulWidget {
   const DesktopContentHost({
     super.key,
     required this.module,
     required this.serverId,
+    this.embeddedRoute,
+    this.embeddedRouteArguments,
   });
 
   final ClientModule module;
   final String? serverId;
+  final String? embeddedRoute;
+  final Object? embeddedRouteArguments;
 
   @override
   State<DesktopContentHost> createState() => _DesktopContentHostState();
@@ -52,6 +57,16 @@ class _DesktopContentHostState extends State<DesktopContentHost> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.embeddedRoute != null) {
+      return KeyedSubtree(
+        key: ValueKey('desktop-embedded-route:${widget.embeddedRoute}'),
+        child: DesktopRoutedModuleHost(
+          routeName: widget.embeddedRoute!,
+          routeArguments: widget.embeddedRouteArguments,
+        ),
+      );
+    }
+
     if (widget.module.requiresServer && widget.serverId == null) {
       return NoServerSelectedState(moduleName: widget.module.label(context.l10n));
     }

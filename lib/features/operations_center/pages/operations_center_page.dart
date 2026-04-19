@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/operations_center/widgets/server_operation_entry_card_widget.dart';
+import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 
 class OperationsCenterPage extends StatelessWidget {
@@ -162,7 +163,8 @@ class OperationsCenterPage extends StatelessWidget {
                       key: Key('operations-entry-${entry.routeId}'),
                       title: entry.title,
                       icon: entry.icon,
-                      onTap: () => Navigator.pushNamed(context, entry.route),
+                      onTap: () =>
+                          openRouteRespectingShell(context, entry.route),
                     );
                   },
                 ),

@@ -7,6 +7,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/data/models/database_models.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
+import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/shared/widgets/app_card.dart';
 
@@ -250,7 +251,7 @@ class _DatabaseScopeTabView extends StatelessWidget {
                   FilledButton.icon(
                     onPressed: scope == DatabaseScope.redis
                         ? null
-                        : () => Navigator.pushNamed(
+                        : () => openRouteRespectingShell(
                               context,
                               AppRoutes.databaseForm,
                               arguments: {'scope': scope.value},

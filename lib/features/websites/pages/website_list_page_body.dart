@@ -8,6 +8,7 @@ import 'package:onepanel_client/core/utils/keyboard_utils.dart';
 import 'package:onepanel_client/data/models/website_group_models.dart';
 import 'package:onepanel_client/data/models/website_models.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
+import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 
 import '../providers/websites_provider.dart';
@@ -117,13 +118,14 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
         IconButton(
           icon: const Icon(Icons.tune_outlined),
           onPressed: () =>
-              Navigator.pushNamed(context, AppRoutes.openrestyCenter),
+              openRouteRespectingShell(context, AppRoutes.openrestyCenter),
           tooltip: l10n.openrestyPageTitle,
         ),
       ],
       floatingActionButton: FloatingActionButton.extended(
         heroTag: 'website_list_create_fab',
-        onPressed: () => Navigator.pushNamed(context, AppRoutes.websiteCreate),
+        onPressed: () =>
+            openRouteRespectingShell(context, AppRoutes.websiteCreate),
         icon: const Icon(Icons.add),
         label: Text(l10n.commonCreate),
       ),

@@ -11,6 +11,7 @@ import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/features/settings/about_page.dart';
 import 'package:onepanel_client/features/settings/app_lock_settings_page.dart';
 import 'package:onepanel_client/features/settings/screens/theme_settings_page.dart';
+import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/features/shell/widgets/shell_drawer_scope.dart';
 import 'package:onepanel_client/pages/settings/cache_settings_page.dart';
 
@@ -113,8 +114,10 @@ class _SettingsBody extends StatelessWidget {
                       _languageLabel(context, settings.locale),
                     ),
                     trailing: const Icon(Icons.chevron_right),
-                    onTap: () => Navigator.pushNamed(
-                        context, AppRoutes.settingsLanguage),
+                    onTap: () => openRouteRespectingShell(
+                      context,
+                      AppRoutes.settingsLanguage,
+                    ),
                   );
                 },
               ),
@@ -223,7 +226,7 @@ class _SettingsBody extends StatelessWidget {
                 title: Text(l10n.settingsFeedbackCenterTitle),
                 subtitle: Text(l10n.settingsFeedbackCenterSubtitle),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () => Navigator.pushNamed(
+                onTap: () => openRouteRespectingShell(
                   context,
                   AppRoutes.settingsFeedbackCenter,
                 ),
@@ -234,7 +237,7 @@ class _SettingsBody extends StatelessWidget {
                 title: Text(l10n.settingsLegalCenterTitle),
                 subtitle: Text(l10n.settingsLegalCenterSubtitle),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () => Navigator.pushNamed(
+                onTap: () => openRouteRespectingShell(
                   context,
                   AppRoutes.settingsLegalCenter,
                 ),
@@ -268,7 +271,7 @@ class _SettingsBody extends StatelessWidget {
                 title: Text(l10n.settingsServerManagement),
                 subtitle: Text(l10n.settingsServerManagementSubtitle),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () => Navigator.pushNamed(context, AppRoutes.server),
+                onTap: () => openRouteRespectingShell(context, AppRoutes.server),
               ),
               const Divider(height: 1),
               ListTile(

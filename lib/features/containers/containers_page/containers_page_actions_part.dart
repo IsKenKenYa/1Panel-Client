@@ -55,6 +55,10 @@ extension _ContainersPageActions on _ContainersPageViewState {
         return FloatingActionButton.extended(
           heroTag: 'containers_section_fab',
           onPressed: () async {
+            if (PlatformUtils.isDesktop(context)) {
+              await openRouteRespectingShell(context, '/container-create');
+              return;
+            }
             final created =
                 await Navigator.pushNamed(context, '/container-create');
             if (created == true && context.mounted) {

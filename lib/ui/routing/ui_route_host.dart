@@ -36,22 +36,32 @@ class UiRouteHost extends StatelessWidget {
   Widget _buildHome(BuildContext context) {
     final initialIndex = _readInitialIndex(settings.arguments);
     final initialModuleId = _readInitialModuleId(settings.arguments);
+    final initialEmbeddedRouteName =
+      _readInitialEmbeddedRouteName(settings.arguments);
+    final initialEmbeddedRouteArguments =
+      _readInitialEmbeddedRouteArguments(settings.arguments);
 
     if (PlatformUtils.isDesktop(context)) {
       if (PlatformUtils.isMacOS) {
         return MacosShellContentPage(
           initialIndex: initialIndex,
           initialModuleId: initialModuleId,
+          initialEmbeddedRouteName: initialEmbeddedRouteName,
+          initialEmbeddedRouteArguments: initialEmbeddedRouteArguments,
         );
       } else if (PlatformUtils.isWindows) {
         return WindowsShellContentPage(
           initialIndex: initialIndex,
           initialModuleId: initialModuleId,
+          initialEmbeddedRouteName: initialEmbeddedRouteName,
+          initialEmbeddedRouteArguments: initialEmbeddedRouteArguments,
         );
       }
       return DesktopShellPage(
         initialIndex: initialIndex,
         initialModuleId: initialModuleId,
+        initialEmbeddedRouteName: initialEmbeddedRouteName,
+        initialEmbeddedRouteArguments: initialEmbeddedRouteArguments,
       );
     } else {
       final tabletKind = PlatformUtils.isTablet(context)
@@ -81,6 +91,20 @@ class UiRouteHost extends StatelessWidget {
     }
     if (arguments is Map<String, dynamic>) {
       return arguments['module'] as String?;
+    }
+    return null;
+  }
+
+  String? _readInitialEmbeddedRouteName(Object? arguments) {
+    if (arguments is Map<String, dynamic>) {
+      return arguments['route'] as String?;
+    }
+    return null;
+  }
+
+  Object? _readInitialEmbeddedRouteArguments(Object? arguments) {
+    if (arguments is Map<String, dynamic>) {
+      return arguments['routeArgs'];
     }
     return null;
   }

@@ -34,7 +34,8 @@ class RouteRegistry {
     return _routes[routeName];
   }
 
-  // NOTE: Start small. Only key shell routes are mapped here initially.
+  // AppRouter registers route entries during startup via registerAll.
+  // Keep this empty as a neutral default for tests and early bootstrap.
   static final Map<String, RouteEntry> _routes = <String, RouteEntry>{};
 
   /// Allows app startup to register entries without creating circular imports.

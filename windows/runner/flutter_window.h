@@ -6,6 +6,8 @@
 #include <flutter/method_channel.h>
 #include <flutter/standard_method_codec.h>
 
+#include <shellapi.h>
+
 #include <memory>
 
 #include "win32_window.h"
@@ -31,7 +33,20 @@ class FlutterWindow : public Win32Window {
  private:
   void ConfigureWindowsBridge();
   flutter::EncodableMap BuildCapabilitySnapshot() const;
-  bool PerformWindowCommand(const std::string& command, bool enabled);
+  flutter::EncodableMap BuildWindowState() const;
+  bool PerformWindowCommand(const std::string& command, bool enabled,
+                            const std::string& backdrop_mode);
+  bool ApplySystemBackdropMode(const std::string& mode);
+  bool PerformTrayCommand(const std::string& command);
+  bool ShowToastNotification(const std::wstring& title,
+                             const std::wstring& message);
+  bool ShowTrayBalloon(const std::wstring& title,
+                       const std::wstring& message,
+                       bool enforce_tray_permission);
+  bool EnsureTrayIcon();
+  bool DisposeTrayIcon();
+  bool SetTrayVisibility(bool visible);
+  bool UpdateNotificationPermission(const flutter::EncodableMap& arguments);
 
   // The project to run.
   flutter::DartProject project_;
@@ -43,6 +58,12 @@ class FlutterWindow : public Win32Window {
       windows_bridge_channel_;
 
   bool always_on_top_ = false;
+  NOTIFYICONDATAW tray_icon_data_{};
+  bool tray_initialized_ = false;
+  bool tray_visible_ = false;
+  bool toast_permission_granted_ = true;
+  bool tray_permission_granted_ = true;
+  std::string system_backdrop_mode_ = "mica";
 };
 
 #endif  // RUNNER_FLUTTER_WINDOW_H_

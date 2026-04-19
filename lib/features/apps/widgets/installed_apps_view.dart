@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import '../../../data/models/app_models.dart';
 import '../providers/installed_apps_provider.dart';
 import 'installed_app_card.dart';
@@ -190,9 +191,8 @@ class _InstalledAppsViewState extends State<InstalledAppsView> {
           ),
           const SizedBox(height: 24),
           FilledButton.icon(
-            onPressed: () {
-              Navigator.pushNamed(context, AppRoutes.appStore);
-            },
+            onPressed: () =>
+                openRouteRespectingShell(context, AppRoutes.appStore),
             icon: const Icon(Icons.add),
             label: Text(l10n.appStoreInstall),
           ),

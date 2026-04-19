@@ -16,10 +16,14 @@ class DesktopShellPage extends StatefulWidget {
     super.key,
     this.initialIndex = 0,
     this.initialModuleId,
+    this.initialEmbeddedRouteName,
+    this.initialEmbeddedRouteArguments,
   });
 
   final int initialIndex;
   final String? initialModuleId;
+  final String? initialEmbeddedRouteName;
+  final Object? initialEmbeddedRouteArguments;
 
   @override
   State<DesktopShellPage> createState() => _DesktopShellPageState();
@@ -27,12 +31,16 @@ class DesktopShellPage extends StatefulWidget {
 
 class _DesktopShellPageState extends State<DesktopShellPage> {
   late ClientModule _selectedModule;
+  String? _embeddedRouteName;
+  Object? _embeddedRouteArguments;
 
   @override
   void initState() {
     super.initState();
     _selectedModule =
         clientModuleFromId(widget.initialModuleId) ?? _moduleFromIndex(widget.initialIndex);
+    _embeddedRouteName = widget.initialEmbeddedRouteName;
+    _embeddedRouteArguments = widget.initialEmbeddedRouteArguments;
   }
 
   ClientModule _moduleFromIndex(int index) {
@@ -87,6 +95,8 @@ class _DesktopShellPageState extends State<DesktopShellPage> {
                 onOpenSettings: () {
                   setState(() {
                     _selectedModule = ClientModule.settings;
+                    _embeddedRouteName = null;
+                    _embeddedRouteArguments = null;
                   });
                 },
               ),
@@ -104,6 +114,8 @@ class _DesktopShellPageState extends State<DesktopShellPage> {
                         }
                         setState(() {
                           _selectedModule = module;
+                          _embeddedRouteName = null;
+                          _embeddedRouteArguments = null;
                         });
                       },
                     ),
@@ -113,6 +125,8 @@ class _DesktopShellPageState extends State<DesktopShellPage> {
                         child: DesktopContentHost(
                           module: selectedModule,
                           serverId: currentServer.currentServerId,
+                          embeddedRoute: _embeddedRouteName,
+                          embeddedRouteArguments: _embeddedRouteArguments,
                         ),
                       ),
                     ),

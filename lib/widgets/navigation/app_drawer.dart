@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/features/shell/shell_navigation.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -25,7 +26,7 @@ class AppDrawer extends StatelessWidget {
             title: Text(l10n.navServer),
             onTap: () {
               Navigator.pop(context);
-              Navigator.pushNamed(context, AppRoutes.server);
+              openRouteRespectingShell(context, AppRoutes.server);
             },
           ),
           ListTile(
@@ -33,7 +34,7 @@ class AppDrawer extends StatelessWidget {
             title: Text(l10n.containerManagement),
             onTap: () {
               Navigator.pop(context);
-              Navigator.pushNamed(context, AppRoutes.containers);
+              openRouteRespectingShell(context, AppRoutes.containers);
             },
           ),
           ListTile(
@@ -41,7 +42,7 @@ class AppDrawer extends StatelessWidget {
             title: Text(l10n.navSettings),
             onTap: () {
               Navigator.pop(context);
-              Navigator.pushNamed(context, AppRoutes.settings);
+              openRouteRespectingShell(context, AppRoutes.settings);
             },
           ),
         ],
