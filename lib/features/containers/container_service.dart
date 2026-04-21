@@ -163,7 +163,16 @@ class ContainerService extends BaseComponent {
     return runGuarded(() async {
       final api = await _ensureApi();
       final response = await api.getContainerStats(containerId);
-      return response.data!;
+      return response.data ??
+          const ContainerStats(
+            cache: 0,
+            cpuPercent: 0,
+            ioRead: 0,
+            ioWrite: 0,
+            memory: 0,
+            networkRX: 0,
+            networkTX: 0,
+          );
     });
   }
 
@@ -171,7 +180,7 @@ class ContainerService extends BaseComponent {
     return runGuarded(() async {
       final api = await _ensureApi();
       final response = await api.getDockerStatus();
-      return response.data!;
+      return response.data ?? const DockerStatus(isActive: false, isExist: false);
     });
   }
 
@@ -209,7 +218,7 @@ class ContainerService extends BaseComponent {
       final api = await _ensureApi();
       final response =
           await api.getContainerItemStats(OperationWithName(name: name));
-      return response.data!;
+      return response.data ?? const ContainerItemStats();
     });
   }
 
@@ -244,7 +253,13 @@ class ContainerService extends BaseComponent {
       final response = await api.getContainerFileContent(
         ContainerFileRequest(containerId: containerId, path: path),
       );
-      return response.data!;
+      return response.data ??
+          const ContainerFileContent(
+            content: '',
+            isBinary: false,
+            size: 0,
+            truncated: false,
+          );
     });
   }
 
@@ -456,7 +471,25 @@ class ContainerService extends BaseComponent {
     return runGuarded(() async {
       final api = await _ensureApi();
       final response = await api.getContainerStatus();
-      return response.data!;
+      return response.data ??
+          const ContainerStatus(
+            all: 0,
+            composeCount: 0,
+            composeTemplateCount: 0,
+            containerCount: 0,
+            created: 0,
+            dead: 0,
+            exited: 0,
+            imageCount: 0,
+            imageSize: 0,
+            networkCount: 0,
+            paused: 0,
+            removing: 0,
+            repoCount: 0,
+            restarting: 0,
+            running: 0,
+            volumeCount: 0,
+          );
     });
   }
 

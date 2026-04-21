@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/core/network/network_exceptions.dart';
 import 'package:onepanel_client/features/dashboard/models/dashboard_view_models.dart';
@@ -13,7 +14,7 @@ part 'dashboard_provider_actions_part.dart';
 
 enum DashboardStatus { initial, loading, loaded, error }
 
-class DashboardProvider extends ChangeNotifier {
+class DashboardProvider extends ChangeNotifier with SafeChangeNotifier {
   DashboardProvider({DashboardService? service})
       : _service = service ?? DashboardService();
 

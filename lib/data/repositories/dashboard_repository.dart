@@ -37,14 +37,15 @@ class DashboardRepository {
     return (await api.getTopMemoryProcesses()).data ?? const <ProcessInfo>[];
   }
 
-  Future<List<dynamic>> getAppLaunchers() async {
+  Future<List<Map<String, dynamic>>> getAppLaunchers() async {
     final api = await _ensureApi();
-    return (await api.getAppLauncher()).data ?? const <dynamic>[];
+    return (await api.getAppLauncher()).data ?? const <Map<String, dynamic>>[];
   }
 
-  Future<List<dynamic>> getAppLauncherOptions() async {
+  Future<List<Map<String, dynamic>>> getAppLauncherOptions() async {
     final api = await _ensureApi();
-    return (await api.getAppLauncherOption()).data ?? const <dynamic>[];
+    return (await api.getAppLauncherOption()).data ??
+        const <Map<String, dynamic>>[];
   }
 
   Future<Map<String, dynamic>> getCurrentNode() async {
@@ -63,9 +64,9 @@ class DashboardRepository {
     });
   }
 
-  Future<List<dynamic>> getQuickOptions() async {
+  Future<List<Map<String, dynamic>>> getQuickOptions() async {
     final api = await _ensureApi();
-    return (await api.getQuickOption()).data ?? const <dynamic>[];
+    return (await api.getQuickOption()).data ?? const <Map<String, dynamic>>[];
   }
 
   Future<void> updateQuickChange(List<String> enabledKeys) async {
