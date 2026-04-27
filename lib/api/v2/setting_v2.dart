@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart'
-  show Response, Options, ResponseType, DioException;
+    show Response, Options, ResponseType, DioException;
 import '../../core/network/dio_client.dart';
 import '../../core/network/network_exceptions.dart';
 import '../../core/config/api_constants.dart';
@@ -37,6 +37,14 @@ class SettingV2Api {
 
   /// 从API响应中提取data字段（原始类型）
   dynamic _extractDataRaw(dynamic responseData) {
+    if (responseData is String) {
+      final normalized = responseData.trimLeft().toLowerCase();
+      if (normalized.startsWith('<!doctype html') ||
+          normalized.startsWith('<html')) {
+        return null;
+      }
+      return responseData;
+    }
     if (responseData is! Map<String, dynamic>) {
       return responseData;
     }
@@ -933,7 +941,7 @@ class SettingV2Api {
     );
     final data = _extractData(response.data);
     return Response(
-      data: data as Map<String, dynamic>?,
+      data: data,
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,

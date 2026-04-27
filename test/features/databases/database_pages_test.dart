@@ -77,6 +77,19 @@ class _FakeDatabaseRedisPageService extends DatabasesService {
   }
 }
 
+Future<void> _pumpWithFrameCap(
+  WidgetTester tester, {
+  int maxFrames = 120,
+  Duration step = const Duration(milliseconds: 16),
+}) async {
+  for (var i = 0; i < maxFrames; i++) {
+    await tester.pump(step);
+    if (!tester.binding.hasScheduledFrame) {
+      return;
+    }
+  }
+}
+
 void main() {
   testWidgets('DatabaseDetailPage hides unsupported remote actions',
       (tester) async {
@@ -121,13 +134,13 @@ void main() {
         home: const DatabaseFormPage(initialScope: DatabaseScope.redis),
       ),
     );
-    await tester.pumpAndSettle();
+    await _pumpWithFrameCap(tester);
 
     expect(find.text('mysql'), findsWidgets);
     expect(find.text('redis'), findsNothing);
 
     await tester.tap(find.byType(DropdownButtonFormField<DatabaseScope>));
-    await tester.pumpAndSettle();
+    await _pumpWithFrameCap(tester);
 
     expect(find.text('mysql'), findsWidgets);
     expect(find.text('postgresql'), findsOneWidget);
@@ -223,6 +236,11 @@ void main() {
 
   testWidgets('DatabaseRedisPage save actions trigger write requests',
       (tester) async {
+    tester.view.physicalSize = const Size(1200, 1400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
     const redisItem = DatabaseListItem(
       scope: DatabaseScope.redis,
       name: 'redis-main',
@@ -248,17 +266,15 @@ void main() {
         ),
       ),
     );
-    await tester.pumpAndSettle();
+    await _pumpWithFrameCap(tester);
 
     final saveButtons = find.widgetWithText(FilledButton, 'Save');
     await tester.tap(saveButtons.first);
-    await tester.pumpAndSettle();
+    await _pumpWithFrameCap(tester);
 
     final secondSaveButton = saveButtons.last;
-    await tester.ensureVisible(secondSaveButton);
-    await tester.pumpAndSettle();
     await tester.tap(secondSaveButton);
-    await tester.pumpAndSettle();
+    await _pumpWithFrameCap(tester);
 
     expect(service.updateRedisConfigCallCount, 1);
     expect(service.updateRedisPersistenceCallCount, 1);

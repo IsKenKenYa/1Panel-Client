@@ -11,8 +11,21 @@ import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_
 import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:provider/provider.dart';
 
+typedef HostAssetsGroupPicker = Future<int?> Function({
+  required BuildContext context,
+  required String groupType,
+  int? initialSelectedGroupId,
+  bool allowClearSelection,
+  String? clearOptionLabel,
+});
+
 class HostAssetsPage extends StatefulWidget {
-  const HostAssetsPage({super.key});
+  const HostAssetsPage({
+    super.key,
+    this.groupPicker,
+  });
+
+  final HostAssetsGroupPicker? groupPicker;
 
   @override
   State<HostAssetsPage> createState() => _HostAssetsPageState();
@@ -174,8 +187,9 @@ class _HostAssetsPageState extends State<HostAssetsPage> {
   }
 
   Future<void> _pickGroupFilter(HostAssetsProvider provider) async {
-    final groupId = await GroupSelectorSheetWidget.show(
-      context,
+    final picker = widget.groupPicker ?? _defaultGroupPicker;
+    final groupId = await picker(
+      context: context,
       groupType: 'host',
       initialSelectedGroupId: provider.selectedGroupId,
       allowClearSelection: true,
@@ -188,10 +202,12 @@ class _HostAssetsPageState extends State<HostAssetsPage> {
 
   Future<void> _moveGroup(HostInfo host) async {
     final provider = context.read<HostAssetsProvider>();
-    final groupId = await GroupSelectorSheetWidget.show(
-      context,
+    final picker = widget.groupPicker ?? _defaultGroupPicker;
+    final groupId = await picker(
+      context: context,
       groupType: 'host',
       initialSelectedGroupId: host.groupID,
+      allowClearSelection: false,
     );
     if (groupId == null || groupId == host.groupID) {
       return;
@@ -242,5 +258,21 @@ class _HostAssetsPageState extends State<HostAssetsPage> {
     if (refreshed == true && mounted) {
       await context.read<HostAssetsProvider>().load(forceRefresh: true);
     }
+  }
+
+  Future<int?> _defaultGroupPicker({
+    required BuildContext context,
+    required String groupType,
+    int? initialSelectedGroupId,
+    bool allowClearSelection = false,
+    String? clearOptionLabel,
+  }) {
+    return GroupSelectorSheetWidget.show(
+      context,
+      groupType: groupType,
+      initialSelectedGroupId: initialSelectedGroupId,
+      allowClearSelection: allowClearSelection,
+      clearOptionLabel: clearOptionLabel,
+    );
   }
 }

@@ -136,6 +136,16 @@ class TestRunner {
     await runCommand(flutter, ['test', '--reporter=expanded']);
   }
 
+  static const List<String> _uiTestExcludedPrefixes = <String>[
+    'test/api/',
+    'test/api_client/',
+    'test/auth/',
+    'test/benchmarks/',
+    'test/debug/',
+    'test/integration/',
+    'test/scripts/',
+  ];
+
   static Future<List<String>> _discoverAlignmentTests(
       {String? moduleFilter}) async {
     final apiClientDir = Directory('test/api_client');
@@ -193,6 +203,38 @@ class TestRunner {
 
     unitDirs.sort();
     return unitDirs;
+  }
+
+  static Future<List<String>> _discoverUiTests() async {
+    final testRoot = Directory('test');
+    if (!await testRoot.exists()) {
+      return const <String>[];
+    }
+
+    final uiTests = <String>[];
+    await for (final entity
+        in testRoot.list(recursive: true, followLinks: false)) {
+      if (entity is! File || !entity.path.endsWith('_test.dart')) {
+        continue;
+      }
+
+      final normalizedPath = entity.path.replaceAll('\\', '/');
+      if (_uiTestExcludedPrefixes.any(normalizedPath.startsWith)) {
+        continue;
+      }
+
+      final content = await entity.readAsString();
+      final isWidgetTest = content.contains('testWidgets(') ||
+          content.contains('matchesGoldenFile(');
+      if (!isWidgetTest) {
+        continue;
+      }
+
+      uiTests.add(entity.path);
+    }
+
+    uiTests.sort();
+    return uiTests;
   }
 
   static Future<bool> _containsTestFiles(Directory directory) async {
@@ -291,7 +333,17 @@ class TestRunner {
 
   static Future<void> runUiTests() async {
     printHeader('运行UI/Widget测试');
-    await runTests('test/', description: '所有测试 (包含UI组件测试)');
+    final uiTests = await _discoverUiTests();
+    if (uiTests.isEmpty) {
+      printInfo('未发现 UI/Widget 测试文件');
+      return;
+    }
+
+    printInfo('发现 ${uiTests.length} 个 UI/Widget 测试文件');
+    for (final testFile in uiTests) {
+      final name = testFile.split('/').last;
+      await runTests(testFile, description: 'UI测试: $name');
+    }
   }
 }
 
