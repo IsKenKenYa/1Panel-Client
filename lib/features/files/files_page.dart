@@ -57,29 +57,36 @@ class FilesPage extends StatelessWidget {
     super.key,
     this.provider,
     this.service,
+    this.autoInitialize = true,
   });
 
   final FilesProvider? provider;
   final FilesService? service;
+  final bool autoInitialize;
 
   @override
   Widget build(BuildContext context) {
     if (provider != null) {
       return ChangeNotifierProvider<FilesProvider>.value(
         value: provider!,
-        child: const FilesView(),
+        child: FilesView(autoInitialize: autoInitialize),
       );
     }
 
     return ChangeNotifierProvider(
       create: (_) => FilesProvider(service: service),
-      child: const FilesView(),
+      child: FilesView(autoInitialize: autoInitialize),
     );
   }
 }
 
 class FilesView extends StatefulWidget {
-  const FilesView({super.key});
+  const FilesView({
+    super.key,
+    this.autoInitialize = true,
+  });
+
+  final bool autoInitialize;
 
   @override
   State<FilesView> createState() => _FilesViewState();
@@ -91,10 +98,12 @@ class _FilesViewState extends State<FilesView> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      context.read<FilesProvider>().initialize();
-    });
+    if (widget.autoInitialize) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        context.read<FilesProvider>().initialize();
+      });
+    }
   }
 
   @override
@@ -107,6 +116,10 @@ class _FilesViewState extends State<FilesView> {
       return;
     }
     if (serverId == null || serverId == _activeServerId) {
+      return;
+    }
+    if (!widget.autoInitialize) {
+      _activeServerId = serverId;
       return;
     }
     final previousServerId = _activeServerId;

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/features/files/files_page.dart';
 import 'package:onepanel_client/features/files/files_provider.dart';
@@ -9,37 +7,42 @@ import 'package:onepanel_client/features/files/files_service.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 
 @GenerateMocks([FilesService])
 import '../files_provider_test.mocks.dart';
+
+class _FakeCurrentServerController extends CurrentServerController {
+  final ApiConfig _config = ApiConfig(
+    id: 's1',
+    name: 'Demo',
+    url: 'http://demo.test',
+    apiKey: 'key',
+    allowInsecureTls: true,
+    isDefault: true,
+  );
+
+  @override
+  bool get hasServer => true;
+
+  @override
+  ApiConfig? get currentServer => _config;
+
+  @override
+  String? get currentServerId => _config.id;
+}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('desktop files page builds without stack overflow',
       (tester) async {
-    SharedPreferences.setMockInitialValues({
-      'api_configs':
-          '[{"id":"s1","name":"Demo","url":"http://demo.test","tokenValidity":0,"allowInsecureTls":true,"isDefault":true}]',
-      'current_api_config_id': 's1',
-      'secure_api_key_fallback_api_config_api_key_s1': 'key',
-    });
-
-    final currentServerController = CurrentServerController();
-    await currentServerController.load();
-
+    final currentServerController = _FakeCurrentServerController();
     final mockService = MockFilesService();
     when(mockService.getCurrentServer()).thenAnswer(
-      (_) async => ApiConfig(
-        id: 's1',
-        name: 'Demo',
-        url: 'http://demo.test',
-        apiKey: 'key',
-        allowInsecureTls: true,
-        isDefault: true,
-      ),
+      (_) async => currentServerController.currentServer,
     );
     when(mockService.getFiles(
       path: anyNamed('path'),
@@ -69,6 +72,7 @@ void main() {
         .thenAnswer((_) async => const []);
 
     final provider = FilesProvider(service: mockService);
+    await provider.loadFiles(path: '/');
 
     tester.view.physicalSize = const Size(1600, 1000);
     tester.view.devicePixelRatio = 1.0;
@@ -84,13 +88,16 @@ void main() {
         child: MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: FilesPage(provider: provider),
+          home: FilesPage(
+            provider: provider,
+            autoInitialize: false,
+          ),
         ),
       ),
     );
 
     await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump(const Duration(milliseconds: 50));
 
     expect(find.text('demo.txt'), findsOneWidget);
     expect(find.byType(FilesPage), findsOneWidget);

@@ -45,7 +45,7 @@
 ## D. 测试矩阵验收
 - [ ] D01 flutter analyze 可通过
 - [ ] D02 unit 测试可通过
-- [ ] D03 ui 测试可通过
+- [x] D03 ui 测试可通过
 - [ ] D04 integration 测试可执行（环境满足时）
 - [ ] D05 失败用例有归因与修复计划
 - [ ] D06 关键模块（app、backup、host、command）有回归用例
@@ -75,8 +75,8 @@
 - [ ] F03 ViewModel 层已独立
 - [ ] F04 模块 View 层已独立
 - [ ] F05 render mode 切换仍可用
-- [ ] F06 iOS 构建可通过
-- [ ] F07 macOS 构建可通过
+- [ ] F06 iOS 构建可通过（2026-04-27：Pods 已同步，但仍受 CoreSimulator/ibtool `Cannot allocate memory` 环境阻断）
+- [x] F07 macOS 构建可通过
 - [ ] F08 iOS 与 macOS 导航语义一致
 - [ ] F09 iOS 与 macOS 错误反馈语义一致
 - [ ] F10 iOS 与 macOS 加载空态语义一致

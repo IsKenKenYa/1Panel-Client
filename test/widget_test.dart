@@ -26,9 +26,12 @@ void main() {
       ),
     );
 
-    await tester.pumpAndSettle();
+    await tester.pump();
 
     // Verify that MaterialApp is present
     expect(find.byType(MaterialApp), findsOneWidget);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump(const Duration(milliseconds: 350));
   });
 }

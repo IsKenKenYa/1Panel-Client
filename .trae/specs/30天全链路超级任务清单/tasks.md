@@ -23,8 +23,8 @@
   - [ ] SubTask D02.3: 修复 command 相关历史编译问题
   - [ ] SubTask D02.4: 修复 monitoring 测试签名漂移问题
   - [ ] SubTask D02.5: 处理明显 dead code 与无效导入
-  - [ ] SubTask D02.6: 验证 test_runner unit 可稳定执行
-  - [ ] SubTask D02.7: 验证 test_runner ui 可稳定执行
+  - [x] SubTask D02.6: 验证 test_runner unit 可稳定执行
+  - [x] SubTask D02.7: 验证 test_runner ui 可稳定执行
   - [ ] SubTask D02.8: 输出阻断项闭环报告
 
 ## Day 03 API基线自动巡检脚本固化
@@ -99,9 +99,9 @@
   - [ ] SubTask D09.2: setting extra 端点分类（保留/清理）
   - [ ] SubTask D09.3: 写入兼容原因文档
   - [ ] SubTask D09.4: 清理无价值历史端点
-  - [ ] SubTask D09.5: 补充对齐测试断言
-  - [ ] SubTask D09.6: 回归 database 模块 API 用例
-  - [ ] SubTask D09.7: 回归 setting 模块 API 用例
+  - [x] SubTask D09.5: 补充对齐测试断言
+  - [x] SubTask D09.6: 回归 database 模块 API 用例
+  - [x] SubTask D09.7: 回归 setting 模块 API 用例
   - [ ] SubTask D09.8: 形成 extra 治理批次报告
 
 ## Day 10 ai 与 auth 增强端点治理
@@ -110,7 +110,7 @@
   - [ ] SubTask D10.2: auth 非标准路由复核
   - [ ] SubTask D10.3: 确认浏览器/审批相关端点必要性
   - [ ] SubTask D10.4: 标注未来迁移计划
-  - [ ] SubTask D10.5: 补齐 ai/auth 对齐测试
+  - [x] SubTask D10.5: 补齐 ai/auth 对齐测试
   - [ ] SubTask D10.6: 更新 API 映射文档
   - [ ] SubTask D10.7: 更新模块 FAQ
   - [ ] SubTask D10.8: 输出第二批治理结果

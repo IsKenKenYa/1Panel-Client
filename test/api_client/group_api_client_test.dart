@@ -47,6 +47,13 @@ Future<Response<Map<String, dynamic>>> _rawPost(
   );
 }
 
+void _expectSuccessEnvelope(Response<Map<String, dynamic>> response) {
+  expect(response.statusCode, equals(200));
+  expect(response.data, isNotNull);
+  expect(response.data, containsPair('code', 200));
+  expect(response.data, contains('data'));
+}
+
 void main() {
   late DioClient client;
   late SystemGroupV2Api api;
@@ -86,10 +93,7 @@ void main() {
       response: raw.data,
     );
 
-    expect(raw.statusCode, equals(200));
-    expect(raw.data, isNotNull);
-    expect(raw.data, containsPair('code', 200));
-    expect(raw.data, contains('data'));
+    _expectSuccessEnvelope(raw);
     final rawItems = raw.data!['data'];
     expect(rawItems, isA<List<dynamic>>());
 
@@ -100,6 +104,57 @@ void main() {
     );
 
     expect(parsed.statusCode, equals(200));
+    expect(parsed.data, hasLength((rawItems as List<dynamic>).length));
+    for (var i = 0; i < rawItems.length; i++) {
+      final rawItem = Map<String, dynamic>.from(rawItems[i] as Map);
+      final group = parsed.data![i];
+      expect(group.id, equals(rawItem['id']));
+      expect(group.name, equals(rawItem['name']));
+      expect(group.type, equals(rawItem['type']));
+      expect(group.isDefault, equals(rawItem['isDefault']));
+    }
+  });
+
+  test('POST /groups/search 返回真实 host 分组结构', () async {
+    final skipReason =
+        TestEnvironment.skipIntegration() ?? TestEnvironment.skipNoApiKey();
+    if (skipReason != null) {
+      appLogger.wWithPackage(_pkg, '跳过测试: $skipReason');
+      return;
+    }
+
+    const request = GroupSearch(type: 'host');
+    final raw = await _rawPost(
+      client,
+      '/groups/search',
+      data: request.toJson(),
+    );
+    _logSection(
+      '✅ Raw /groups/search',
+      method: 'POST',
+      path: '/groups/search',
+      request: request.toJson(),
+      response: raw.data,
+    );
+
+    _expectSuccessEnvelope(raw);
+    final rawItems = raw.data!['data'];
+    if (rawItems != null) {
+      expect(rawItems, isA<List<dynamic>>());
+    }
+
+    final parsed = await api.searchAgentGroups(request);
+    _logSection(
+      '✅ Parsed /groups/search',
+      response: parsed.data?.map((group) => group.toJson()).toList(),
+    );
+
+    expect(parsed.statusCode, equals(200));
+    if (rawItems == null) {
+      expect(parsed.data, isEmpty);
+      return;
+    }
+
     expect(parsed.data, hasLength((rawItems as List<dynamic>).length));
     for (var i = 0; i < rawItems.length; i++) {
       final rawItem = Map<String, dynamic>.from(rawItems[i] as Map);
