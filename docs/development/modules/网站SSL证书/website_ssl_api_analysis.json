@@ -1,9 +1,9 @@
 {
   "module": "website_ssl",
-  "generatedAt": "2026-03-13T16:42:03.821532",
+  "generatedAt": "2026-04-27T15:19:33.639958",
   "summary": {
-    "endpointCount": 11,
-    "methodCount": 11
+    "endpointCount": 12,
+    "methodCount": 12
   },
   "endpoints": [
     {
@@ -99,6 +99,35 @@
         {
           "method": "POST",
           "summary": "Download SSL  file",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl/list",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "List website ssl",
           "description": "",
           "tags": [
             "Website SSL"

@@ -136,7 +136,8 @@ class TestRunner {
     await runCommand(flutter, ['test', '--reporter=expanded']);
   }
 
-  static Future<List<String>> _discoverAlignmentTests({String? moduleFilter}) async {
+  static Future<List<String>> _discoverAlignmentTests(
+      {String? moduleFilter}) async {
     final apiClientDir = Directory('test/api_client');
     if (!await apiClientDir.exists()) {
       return const <String>[];
@@ -149,18 +150,18 @@ class TestRunner {
         .map((f) => f.path)
         .where((path) => path.endsWith('_alignment_test.dart'))
         .where((path) {
-          if (normalizedFilter == null || normalizedFilter.isEmpty) {
-            return true;
-          }
-          final name = path.split('/').last.toLowerCase();
-          return name.contains(normalizedFilter);
-        })
-        .toList()
+      if (normalizedFilter == null || normalizedFilter.isEmpty) {
+        return true;
+      }
+      final name = path.split('/').last.toLowerCase();
+      return name.contains(normalizedFilter);
+    }).toList()
       ..sort();
     return tests;
   }
 
-  static Future<List<String>> _discoverFeatureUnitDirs({String? moduleFilter}) async {
+  static Future<List<String>> _discoverFeatureUnitDirs(
+      {String? moduleFilter}) async {
     final featuresRoot = Directory('test/features');
     if (!await featuresRoot.exists()) {
       return const <String>[];
@@ -168,13 +169,18 @@ class TestRunner {
 
     final normalizedFilter = moduleFilter?.toLowerCase();
     final unitDirs = <String>[];
-    await for (final entity in featuresRoot.list(recursive: true, followLinks: false)) {
+    await for (final entity
+        in featuresRoot.list(recursive: true, followLinks: false)) {
       if (entity is! Directory) {
         continue;
       }
       final path = entity.path.replaceAll('\\', '/');
-      final isUnitDir = path.endsWith('/providers') || path.endsWith('/services');
+      final isUnitDir =
+          path.endsWith('/providers') || path.endsWith('/services');
       if (!isUnitDir) {
+        continue;
+      }
+      if (!await _containsTestFiles(entity)) {
         continue;
       }
       if (normalizedFilter != null && normalizedFilter.isNotEmpty) {
@@ -189,6 +195,16 @@ class TestRunner {
     return unitDirs;
   }
 
+  static Future<bool> _containsTestFiles(Directory directory) async {
+    await for (final entity
+        in directory.list(recursive: true, followLinks: false)) {
+      if (entity is File && entity.path.endsWith('_test.dart')) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   static Future<void> runUnitTests({String? moduleFilter}) async {
     printHeader('运行单元测试');
     final normalizedFilter = moduleFilter?.toLowerCase();
@@ -200,7 +216,8 @@ class TestRunner {
       printInfo('已启用模块过滤: $normalizedFilter');
     }
 
-    final alignmentTests = await _discoverAlignmentTests(moduleFilter: normalizedFilter);
+    final alignmentTests =
+        await _discoverAlignmentTests(moduleFilter: normalizedFilter);
     if (alignmentTests.isEmpty) {
       printInfo('未发现匹配的 API 对齐测试');
     } else {
@@ -217,7 +234,10 @@ class TestRunner {
     } else {
       for (final dir in featureUnitDirs) {
         final normalizedPath = dir.replaceAll('\\', '/');
-        final name = normalizedPath.split('/').skipWhile((e) => e != 'features').toList();
+        final name = normalizedPath
+            .split('/')
+            .skipWhile((e) => e != 'features')
+            .toList();
         final label = name.isEmpty ? normalizedPath : name.join('/');
         await runTests(dir, description: 'Feature单测: $label');
       }
@@ -245,7 +265,11 @@ class TestRunner {
             if (normalizedFilter == null || normalizedFilter.isEmpty) {
               return true;
             }
-            return f.path.split('/').last.toLowerCase().contains(normalizedFilter);
+            return f.path
+                .split('/')
+                .last
+                .toLowerCase()
+                .contains(normalizedFilter);
           })
           .map((f) => f.path)
           .toList();
@@ -255,7 +279,8 @@ class TestRunner {
         return;
       }
 
-      printInfo('发现 ${testFiles.length} 个集成测试，超时时间: $liveTestTimeout，重试次数: $liveTestRetries');
+      printInfo(
+          '发现 ${testFiles.length} 个集成测试，超时时间: $liveTestTimeout，重试次数: $liveTestRetries');
 
       for (final testFile in testFiles) {
         final name = testFile.split('/').last;

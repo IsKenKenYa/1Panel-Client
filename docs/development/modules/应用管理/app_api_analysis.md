@@ -1,19 +1,39 @@
 # APP 模块API端点详细分析
 
-> 基于 1PanelV2OpenAPI.json 自动生成
-> 生成时间: 2026-03-13 13:38:17
+> 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
+> 生成时间: 2026-04-27 15:19:33
 
 ## API端点总览
 
-- 端点数量: **33**
-- 方法总数: **33**
+- 端点数量: **35**
+- 方法总数: **35**
 
 | 方法 | 数量 |
 |------|------|
-| GET | 13 |
-| POST | 20 |
+| GET | 14 |
+| POST | 21 |
 
 ## API端点详情
+
+### `/ai/agents/channel/pairing/approve`
+
+#### POST
+
+**摘要**: Approve Agent channel pairing code
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
 
 ### `/apps/:key`
 
@@ -71,6 +91,27 @@
 
 ---
 
+### `/apps/detail/node/:appKey/:version`
+
+#### GET
+
+**摘要**: Search app detail by appkey and version
+
+**标签**: App
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| appId | path | unknown | 是 | app key |
+| version | path | unknown | 是 | app version |
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/apps/details/:id`
 
 #### GET
@@ -91,7 +132,7 @@
 
 ---
 
-### `/apps/icon/:appId`
+### `/apps/icon/:key`
 
 #### GET
 

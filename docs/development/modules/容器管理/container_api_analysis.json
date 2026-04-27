@@ -1,9 +1,9 @@
 {
   "module": "container",
-  "generatedAt": "2026-03-13T13:38:12.472902",
+  "generatedAt": "2026-04-27T15:19:33.267283",
   "summary": {
-    "endpointCount": 63,
-    "methodCount": 67
+    "endpointCount": 69,
+    "methodCount": 73
   },
   "endpoints": [
     {
@@ -41,35 +41,6 @@
         {
           "method": "POST",
           "summary": "Clean container log",
-          "description": "",
-          "tags": [
-            "Container"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/containers/command",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Create container by command",
           "description": "",
           "tags": [
             "Container"
@@ -160,6 +131,35 @@
           "description": "",
           "tags": [
             "Container"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/containers/compose/env",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load compose environment variables",
+          "description": "",
+          "tags": [
+            "Container Compose"
           ],
           "parameters": [
             {
@@ -436,6 +436,190 @@
             "Container Docker"
           ],
           "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/containers/files/content",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get container file content",
+          "description": "",
+          "tags": [
+            "Container"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/containers/files/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete container file",
+          "description": "",
+          "tags": [
+            "Container"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/containers/files/download",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Download container file",
+          "description": "",
+          "tags": [
+            "Container"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {},
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/containers/files/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "List container files",
+          "description": "",
+          "tags": [
+            "Container"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/containers/files/size",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get container file size",
+          "description": "",
+          "tags": [
+            "Container"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/containers/files/upload",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Upload container file",
+          "description": "",
+          "tags": [
+            "Container"
+          ],
+          "parameters": [
+            {
+              "name": "containerID",
+              "in": "formData",
+              "required": true,
+              "type": "unknown",
+              "description": "containerID"
+            },
+            {
+              "name": "path",
+              "in": "formData",
+              "required": true,
+              "type": "unknown",
+              "description": "path"
+            },
+            {
+              "name": "file",
+              "in": "formData",
+              "required": true,
+              "type": "unknown",
+              "description": "file"
+            }
+          ],
           "requestBody": null,
           "responses": {
             "200": {

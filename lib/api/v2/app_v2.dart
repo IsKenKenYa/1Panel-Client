@@ -33,33 +33,6 @@ class AppV2Api {
     return [];
   }
 
-  List<Map<String, dynamic>> _parseObjectListData(dynamic dataField) {
-    if (dataField == null) return const [];
-    if (dataField is List) {
-      return dataField
-          .whereType<Map<String, dynamic>>()
-          .map((item) => Map<String, dynamic>.from(item))
-          .toList(growable: false);
-    }
-    if (dataField is Map<String, dynamic>) {
-      final items = dataField['items'];
-      if (items is List) {
-        return items
-            .whereType<Map<String, dynamic>>()
-            .map((item) => Map<String, dynamic>.from(item))
-            .toList(growable: false);
-      }
-      final innerData = dataField['data'];
-      if (innerData is List) {
-        return innerData
-            .whereType<Map<String, dynamic>>()
-            .map((item) => Map<String, dynamic>.from(item))
-            .toList(growable: false);
-      }
-    }
-    return const [];
-  }
-
   AppSearchResponse _parseAppSearchResponse(dynamic dataField) {
     if (dataField is Map<String, dynamic>) {
       // Ensure we extract total correctly
@@ -559,62 +532,11 @@ class AppV2Api {
     );
   }
 
-  /// 获取应用启动器列表
-  ///
-  /// GET /dashboard/app/launcher
-  Future<List<Map<String, dynamic>>> getAppLauncher() async {
-    final response = await _client.get<dynamic>(
-      ApiConstants.buildApiPath('/dashboard/app/launcher'),
-    );
-    final data = response.data;
-    if (data is! Map<String, dynamic>) {
-      return const [];
-    }
-    return _parseObjectListData(data['data']);
-  }
-
-  /// 获取应用启动器选项
-  ///
-  /// POST /dashboard/app/launcher/option
-  Future<List<Map<String, dynamic>>> getAppLauncherOption({
-    Map<String, dynamic>? request,
-  }) async {
-    final response = await _client.post<dynamic>(
-      ApiConstants.buildApiPath('/dashboard/app/launcher/option'),
-      data: request,
-    );
-    final data = response.data;
-    if (data is! Map<String, dynamic>) {
-      return const [];
-    }
-    return _parseObjectListData(data['data']);
-  }
-
-  /// 更新应用启动器展示
-  ///
-  /// POST /dashboard/app/launcher/show
-  Future<Map<String, dynamic>> updateAppLauncherShow({
-    Map<String, dynamic>? request,
-  }) async {
-    final response = await _client.post<dynamic>(
-      ApiConstants.buildApiPath('/dashboard/app/launcher/show'),
-      data: request,
-    );
-    final data = response.data;
-    if (data is! Map<String, dynamic>) {
-      return const {};
-    }
-    final innerData = data['data'];
-    if (innerData is Map<String, dynamic>) {
-      return Map<String, dynamic>.from(innerData);
-    }
-    return const {};
-  }
-
   // ==================== 渠道与配对 ====================
 
   /// 批准通道配对请求
-  Future<Response<void>> approveChannelPairing(Map<String, dynamic> request) async {
+  Future<Response<void>> approveChannelPairing(
+      Map<String, dynamic> request) async {
     return await _client.post<void>(
       ApiConstants.buildApiPath('/ai/agents/channel/pairing/approve'),
       data: request,

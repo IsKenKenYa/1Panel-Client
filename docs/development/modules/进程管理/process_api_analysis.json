@@ -1,9 +1,9 @@
 {
   "module": "process",
-  "generatedAt": "2026-03-23T18:47:56.167184",
+  "generatedAt": "2026-04-27T15:19:33.495675",
   "summary": {
-    "endpointCount": 7,
-    "methodCount": 8
+    "endpointCount": 8,
+    "methodCount": 9
   },
   "endpoints": [
     {
@@ -70,6 +70,27 @@
               "description": "request"
             }
           ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/process/listening",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get Listening Process",
+          "description": "",
+          "tags": [
+            "Process"
+          ],
+          "parameters": [],
           "requestBody": null,
           "responses": {
             "200": {

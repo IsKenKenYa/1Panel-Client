@@ -1,11 +1,40 @@
 {
   "module": "app",
-  "generatedAt": "2026-03-13T13:38:17.515322",
+  "generatedAt": "2026-04-27T15:19:33.189093",
   "summary": {
-    "endpointCount": 33,
-    "methodCount": 33
+    "endpointCount": 35,
+    "methodCount": 35
   },
   "endpoints": [
+    {
+      "path": "/ai/agents/channel/pairing/approve",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Approve Agent channel pairing code",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
     {
       "path": "/apps/:key",
       "methods": [
@@ -100,6 +129,42 @@
       ]
     },
     {
+      "path": "/apps/detail/node/:appKey/:version",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Search app detail by appkey and version",
+          "description": "",
+          "tags": [
+            "App"
+          ],
+          "parameters": [
+            {
+              "name": "appId",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "app key"
+            },
+            {
+              "name": "version",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "app version"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/apps/details/:id",
       "methods": [
         {
@@ -129,7 +194,7 @@
       ]
     },
     {
-      "path": "/apps/icon/:appId",
+      "path": "/apps/icon/:key",
       "methods": [
         {
           "method": "GET",

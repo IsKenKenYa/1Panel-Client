@@ -139,18 +139,40 @@ class CommandV2Api {
     );
   }
 
-  Future<Response<void>> getCommandTreeByType({required String type}) async {
-    return await _client.get<void>(
+  Future<Response<List<CommandTree>>> getCommandTree({
+    String type = 'command',
+  }) async {
+    final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/core/commands/tree'),
-      queryParameters: <String, dynamic>{'type': type},
+      data: <String, dynamic>{'type': type},
+    );
+    return Response<List<CommandTree>>(
+      data: _parseCommandTreeList(response.data?['data']),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
     );
   }
 
+  Future<Response<List<CommandTree>>> getCommandTreeByType({
+    required String type,
+  }) {
+    return getCommandTree(type: type);
+  }
+
   /// 获取命令信息
-  Future<Response<void>> getCommandByType({required String type}) async {
-    return await _client.get<void>(
+  Future<Response<CommandInfo>> getCommandByType({required String type}) async {
+    final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/core/commands/command'),
-      queryParameters: <String, dynamic>{'type': type},
+      data: <String, dynamic>{'type': type},
+    );
+    return Response<CommandInfo>(
+      data: CommandInfo.fromJson(
+        response.data?['data'] as Map<String, dynamic>? ?? const {},
+      ),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
     );
   }
 
@@ -172,6 +194,19 @@ class CommandV2Api {
       return <CommandInfo>[CommandInfo.fromJson(rawData)];
     }
     return const <CommandInfo>[];
+  }
+
+  List<CommandTree> _parseCommandTreeList(dynamic rawData) {
+    if (rawData is List) {
+      return rawData
+          .whereType<Map<String, dynamic>>()
+          .map(CommandTree.fromJson)
+          .toList(growable: false);
+    }
+    if (rawData is Map<String, dynamic>) {
+      return <CommandTree>[CommandTree.fromJson(rawData)];
+    }
+    return const <CommandTree>[];
   }
 
   Future<Response<void>> createScript(ScriptOperate request) {

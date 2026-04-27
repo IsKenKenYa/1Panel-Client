@@ -1,17 +1,17 @@
 # FILE 模块API端点详细分析
 
 > 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
-> 生成时间: 2026-02-16 23:11:15
+> 生成时间: 2026-04-27 15:19:33
 
 ## API端点总览
 
-- 端点数量: **53**
-- 方法总数: **53**
+- 端点数量: **49**
+- 方法总数: **49**
 
 | 方法 | 数量 |
 |------|------|
 | GET | 4 |
-| POST | 49 |
+| POST | 45 |
 
 ## API端点详情
 
@@ -49,19 +49,117 @@
 
 ---
 
-### `/databases/common/load/file`
+### `/containers/files/content`
 
 #### POST
 
-**摘要**: Load Database conf
+**摘要**: Get container file content
 
-**标签**: Database Common
+**标签**: Container
 
 **参数**:
 
 | 名称 | 位置 | 类型 | 必填 | 描述 |
 |------|------|------|------|------|
 | request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/containers/files/del`
+
+#### POST
+
+**摘要**: Delete container file
+
+**标签**: Container
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/containers/files/download`
+
+#### POST
+
+**摘要**: Download container file
+
+**标签**: Container
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+---
+
+### `/containers/files/search`
+
+#### POST
+
+**摘要**: List container files
+
+**标签**: Container
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/containers/files/size`
+
+#### POST
+
+**摘要**: Get container file size
+
+**标签**: Container
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/containers/files/upload`
+
+#### POST
+
+**摘要**: Upload container file
+
+**标签**: Container
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| containerID | formData | unknown | 是 | containerID |
+| path | formData | unknown | 是 | path |
+| file | formData | unknown | 是 | file |
 
 **响应**:
 
@@ -605,6 +703,46 @@
 
 ---
 
+### `/files/remark`
+
+#### POST
+
+**摘要**: Set file remark
+
+**标签**: File
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/files/remarks`
+
+#### POST
+
+**摘要**: Batch get file remarks
+
+**标签**: File
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/files/rename`
 
 #### POST
@@ -779,53 +917,13 @@
 
 ---
 
-### `/hosts/ssh/file`
+### `/files/wget/stop`
 
 #### POST
 
-**摘要**: Load host SSH conf
+**摘要**: Stop wget file download
 
-**标签**: SSH
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/hosts/ssh/file/update`
-
-#### POST
-
-**摘要**: Update host SSH setting by file
-
-**标签**: SSH
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/hosts/tool/supervisor/process/file`
-
-#### POST
-
-**摘要**: Get Supervisor process config file
-
-**标签**: Host tool
+**标签**: File
 
 **参数**:
 
@@ -846,190 +944,6 @@
 **摘要**: Load system log files
 
 **标签**: Logs
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/openresty/file`
-
-#### POST
-
-**摘要**: Update OpenResty conf by upload file
-
-**标签**: OpenResty
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/runtimes/php/file`
-
-#### POST
-
-**摘要**: Get php conf file
-
-**标签**: Runtime
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/runtimes/supervisor/process/file`
-
-#### POST
-
-**摘要**: Operate supervisor process file
-
-**标签**: Runtime
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/toolbox/clam/file/search`
-
-#### POST
-
-**摘要**: Load clam file
-
-**标签**: Clam
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/toolbox/clam/file/update`
-
-#### POST
-
-**摘要**: Update clam file
-
-**标签**: Clam
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/websites/lbs/file`
-
-#### POST
-
-**摘要**: Update website upstream file
-
-**标签**: Website
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/websites/proxies/file`
-
-#### POST
-
-**摘要**: Update proxy file
-
-**标签**: Website
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/websites/redirect/file`
-
-#### POST
-
-**摘要**: Update redirect file
-
-**标签**: Website
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/websites/ssl/upload/file`
-
-#### POST
-
-**摘要**: Upload SSL file
-
-**标签**: Website SSL
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| type | formData | unknown | 是 | type |
-| description | formData | unknown | 否 | description |
-| sslID | formData | unknown | 否 | sslID |
-| privateKeyFile | formData | unknown | 是 | privateKeyFile |
-| certificateFile | formData | unknown | 是 | certificateFile |
 
 **响应**:
 

@@ -1,9 +1,9 @@
 {
   "module": "host",
-  "generatedAt": "2026-04-12T14:45:30.773860",
+  "generatedAt": "2026-04-27T15:19:33.421624",
   "summary": {
-    "endpointCount": 44,
-    "methodCount": 45
+    "endpointCount": 43,
+    "methodCount": 44
   },
   "endpoints": [
     {
@@ -1219,27 +1219,6 @@
               "description": "request"
             }
           ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/toolbox/device/update/host",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Update device hosts",
-          "description": "",
-          "tags": [
-            "Device"
-          ],
-          "parameters": [],
           "requestBody": null,
           "responses": {
             "200": {

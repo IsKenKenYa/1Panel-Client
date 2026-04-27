@@ -25,7 +25,7 @@ void main() {
       try {
         final response = await api.getBackupClient('S3');
         expect(response.statusCode, equals(200));
-        debugPrint('响应数据: ${response.data}');
+        debugPrint('响应状态: ${response.statusCode}');
       } catch (e) {
         debugPrint('由于环境无法连接真实服务器(Connection refused),此测试视为网络层测试通过');
       }

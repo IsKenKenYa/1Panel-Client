@@ -1,17 +1,17 @@
 # DATABASE 模块API端点详细分析
 
 > 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
-> 生成时间: 2026-03-23 18:47:55
+> 生成时间: 2026-04-27 15:19:33
 
 ## API端点总览
 
-- 端点数量: **43**
-- 方法总数: **44**
+- 端点数量: **42**
+- 方法总数: **42**
 
 | 方法 | 数量 |
 |------|------|
-| GET | 4 |
-| POST | 40 |
+| GET | 3 |
+| POST | 39 |
 
 ## API端点详情
 
@@ -818,38 +818,6 @@
 **摘要**: Update mysql variables
 
 **标签**: Database Mysql
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/websites/databases`
-
-#### GET
-
-**摘要**: Get databases
-
-**标签**: Website
-
-**响应**:
-
-- `200`: OK
-
----
-
-#### POST
-
-**摘要**: Change website database
-
-**标签**: Website
 
 **参数**:
 

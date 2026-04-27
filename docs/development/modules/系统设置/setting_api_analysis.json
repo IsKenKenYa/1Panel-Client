@@ -1,9 +1,9 @@
 {
   "module": "setting",
-  "generatedAt": "2026-02-15T23:24:37.147834",
+  "generatedAt": "2026-04-27T15:19:33.531364",
   "summary": {
-    "endpointCount": 48,
-    "methodCount": 49
+    "endpointCount": 53,
+    "methodCount": 55
   },
   "endpoints": [
     {
@@ -228,6 +228,51 @@
       ]
     },
     {
+      "path": "/core/settings/memo",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Load dashboard memo",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        },
+        {
+          "method": "POST",
+          "summary": "Update dashboard memo",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/core/settings/menu/default",
       "methods": [
         {
@@ -325,6 +370,98 @@
               "description": "request"
             }
           ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/settings/passkey/list",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "List passkeys",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/settings/passkey/register/begin",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Begin passkey registration",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/settings/passkey/register/finish",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Finish passkey registration",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/settings/passkey/{id}",
+      "methods": [
+        {
+          "method": "DELETE",
+          "summary": "Delete passkey",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [],
           "requestBody": null,
           "responses": {
             "200": {

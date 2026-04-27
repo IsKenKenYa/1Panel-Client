@@ -1,17 +1,17 @@
 # SSL 模块API端点详细分析
 
 > 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
-> 生成时间: 2026-02-24 01:55:10
+> 生成时间: 2026-04-27 15:19:33
 
 ## API端点总览
 
-- 端点数量: **14**
-- 方法总数: **14**
+- 端点数量: **15**
+- 方法总数: **15**
 
 | 方法 | 数量 |
 |------|------|
 | GET | 3 |
-| POST | 11 |
+| POST | 12 |
 
 ## API端点详情
 
@@ -128,6 +128,26 @@
 #### POST
 
 **摘要**: Download SSL  file
+
+**标签**: Website SSL
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/websites/ssl/list`
+
+#### POST
+
+**摘要**: List website ssl
 
 **标签**: Website SSL
 

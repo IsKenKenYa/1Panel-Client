@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
-import 'package:onepanel_client/api/v2/monitor_v2.dart';
+import 'package:onepanel_client/data/models/monitoring_runtime_models.dart';
 import 'package:onepanel_client/data/repositories/monitor_repository.dart';
 import 'package:onepanel_client/features/monitoring/data/datasources/monitor_local_datasource.dart';
 import 'package:onepanel_client/features/monitoring/monitoring_page.dart';
@@ -54,8 +54,8 @@ class _FakeMonitoringService extends MonitoringService {
   }
 
   @override
-  Future<List<GPUInfo>> getGPUInfo() async {
-    return const [GPUInfo(name: 'NVIDIA')];
+  Future<List<MonitorGpuInfo>> getGPUInfo() async {
+    return const [MonitorGpuInfo(name: 'NVIDIA')];
   }
 
   @override
@@ -94,6 +94,18 @@ class _FakeMonitoringService extends MonitoringService {
   Future<bool> cleanData() async {
     return true;
   }
+}
+
+Future<void> _tapGpuRefreshSwitch(WidgetTester tester) async {
+  final gpuSwitch = find.byType(SwitchListTile).at(1);
+  await tester.scrollUntilVisible(
+    gpuSwitch,
+    160,
+    scrollable: find.byType(Scrollable).last,
+  );
+  await tester.pumpAndSettle();
+  await tester.tap(gpuSwitch);
+  await tester.pumpAndSettle();
 }
 
 void main() {
@@ -147,17 +159,15 @@ void main() {
 
     expect(find.byType(AlertDialog), findsOneWidget);
     expect(find.byType(SwitchListTile), findsNWidgets(2));
-    expect(find.byType(DropdownButtonFormField<Duration>), findsNWidgets(4));
-
-    await tester.tap(find.byType(SwitchListTile).at(1));
-    await tester.pumpAndSettle();
-
     expect(find.byType(DropdownButtonFormField<Duration>), findsNWidgets(3));
 
-    await tester.tap(find.byType(SwitchListTile).at(1));
-    await tester.pumpAndSettle();
+    await _tapGpuRefreshSwitch(tester);
 
-    expect(find.byType(DropdownButtonFormField<Duration>), findsNWidgets(4));
+    expect(find.byType(DropdownButtonFormField<Duration>), findsNWidgets(2));
+
+    await _tapGpuRefreshSwitch(tester);
+
+    expect(find.byType(DropdownButtonFormField<Duration>), findsNWidgets(3));
 
     provider.toggleAutoRefresh(false);
     await tester.pumpWidget(const MaterialApp(home: SizedBox.shrink()));
@@ -188,8 +198,7 @@ void main() {
     await tester.tap(find.byIcon(Icons.tune));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byType(SwitchListTile).at(1));
-    await tester.pumpAndSettle();
+    await _tapGpuRefreshSwitch(tester);
 
     final dialog = find.byType(AlertDialog);
     final saveButton = find.descendant(
