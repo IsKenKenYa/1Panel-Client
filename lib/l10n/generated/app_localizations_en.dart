@@ -3403,6 +3403,60 @@ class AppLocalizationsEn extends AppLocalizations {
   String get terminalSettingsLetterSpacing => 'Letter Spacing';
 
   @override
+  String get terminalSettingsFontFamily => 'Font Family';
+
+  @override
+  String get terminalSettingsBackgroundColor => 'Background Color';
+
+  @override
+  String get terminalSettingsForegroundColor => 'Foreground Color';
+
+  @override
+  String get terminalSettingsDefaultLocalConnection =>
+      'Default Local Connection';
+
+  @override
+  String get terminalSettingsShowLocalByDefault =>
+      'Show local session by default';
+
+  @override
+  String get terminalSettingsCurrentConnection => 'Current connection';
+
+  @override
+  String get terminalSettingsPreview => 'Preview';
+
+  @override
+  String get terminalSettingsFontFamilyHint =>
+      'Choose one or more monospaced fonts for terminal rendering.';
+
+  @override
+  String get terminalSettingsCursorBlock => 'Block';
+
+  @override
+  String get terminalSettingsCursorUnderline => 'Underline';
+
+  @override
+  String get terminalSettingsCursorBar => 'Bar';
+
+  @override
+  String get terminalSettingsConnectionSetup => 'Connection Setup';
+
+  @override
+  String get terminalSettingsTestConnection => 'Test Connection';
+
+  @override
+  String get terminalSettingsConnectionAuthMode => 'Authentication';
+
+  @override
+  String get terminalSettingsConnectionPassword => 'Password';
+
+  @override
+  String get terminalSettingsConnectionPrivateKey => 'Private Key';
+
+  @override
+  String get terminalSettingsConnectionPassPhrase => 'Passphrase';
+
+  @override
   String get securitySettingsTitle => 'Security Settings';
 
   @override
@@ -6899,6 +6953,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sshSessionsLoginTimeLabel => 'Login time';
+
+  @override
+  String get terminalWorkbenchSessionsTitle => 'Terminal Sessions';
+
+  @override
+  String get terminalWorkbenchNoSessions => 'No terminal sessions';
+
+  @override
+  String get terminalWorkbenchOpenHint => 'Open or create a terminal session';
+
+  @override
+  String get terminalWorkbenchLocalLabel => 'Local';
+
+  @override
+  String get terminalWorkbenchStatusConnected => 'Connected';
+
+  @override
+  String get terminalWorkbenchStatusClosed => 'Closed';
+
+  @override
+  String get terminalWorkbenchStatusIdle => 'Idle';
+
+  @override
+  String get terminalWorkbenchKeyboard => 'Keyboard';
+
+  @override
+  String get terminalWorkbenchCommand => 'Command';
+
+  @override
+  String get terminalWorkbenchQuickCommand => 'Quick Command';
+
+  @override
+  String get terminalWorkbenchSearchHost => 'Search host';
+
+  @override
+  String get terminalWorkbenchPaste => 'Paste';
+
+  @override
+  String get terminalWorkbenchSessionClosed => 'Session closed';
 
   @override
   String sshSessionDisconnectConfirm(String username) {

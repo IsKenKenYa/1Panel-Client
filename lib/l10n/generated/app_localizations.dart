@@ -6374,6 +6374,108 @@ abstract class AppLocalizations {
   /// **'Letter Spacing'**
   String get terminalSettingsLetterSpacing;
 
+  /// No description provided for @terminalSettingsFontFamily.
+  ///
+  /// In en, this message translates to:
+  /// **'Font Family'**
+  String get terminalSettingsFontFamily;
+
+  /// No description provided for @terminalSettingsBackgroundColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Background Color'**
+  String get terminalSettingsBackgroundColor;
+
+  /// No description provided for @terminalSettingsForegroundColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Foreground Color'**
+  String get terminalSettingsForegroundColor;
+
+  /// No description provided for @terminalSettingsDefaultLocalConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Default Local Connection'**
+  String get terminalSettingsDefaultLocalConnection;
+
+  /// No description provided for @terminalSettingsShowLocalByDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Show local session by default'**
+  String get terminalSettingsShowLocalByDefault;
+
+  /// No description provided for @terminalSettingsCurrentConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Current connection'**
+  String get terminalSettingsCurrentConnection;
+
+  /// No description provided for @terminalSettingsPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get terminalSettingsPreview;
+
+  /// No description provided for @terminalSettingsFontFamilyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose one or more monospaced fonts for terminal rendering.'**
+  String get terminalSettingsFontFamilyHint;
+
+  /// No description provided for @terminalSettingsCursorBlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Block'**
+  String get terminalSettingsCursorBlock;
+
+  /// No description provided for @terminalSettingsCursorUnderline.
+  ///
+  /// In en, this message translates to:
+  /// **'Underline'**
+  String get terminalSettingsCursorUnderline;
+
+  /// No description provided for @terminalSettingsCursorBar.
+  ///
+  /// In en, this message translates to:
+  /// **'Bar'**
+  String get terminalSettingsCursorBar;
+
+  /// No description provided for @terminalSettingsConnectionSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection Setup'**
+  String get terminalSettingsConnectionSetup;
+
+  /// No description provided for @terminalSettingsTestConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Test Connection'**
+  String get terminalSettingsTestConnection;
+
+  /// No description provided for @terminalSettingsConnectionAuthMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication'**
+  String get terminalSettingsConnectionAuthMode;
+
+  /// No description provided for @terminalSettingsConnectionPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get terminalSettingsConnectionPassword;
+
+  /// No description provided for @terminalSettingsConnectionPrivateKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Private Key'**
+  String get terminalSettingsConnectionPrivateKey;
+
+  /// No description provided for @terminalSettingsConnectionPassPhrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Passphrase'**
+  String get terminalSettingsConnectionPassPhrase;
+
   /// No description provided for @securitySettingsTitle.
   ///
   /// In en, this message translates to:
@@ -12998,6 +13100,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Login time'**
   String get sshSessionsLoginTimeLabel;
+
+  /// No description provided for @terminalWorkbenchSessionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Terminal Sessions'**
+  String get terminalWorkbenchSessionsTitle;
+
+  /// No description provided for @terminalWorkbenchNoSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'No terminal sessions'**
+  String get terminalWorkbenchNoSessions;
+
+  /// No description provided for @terminalWorkbenchOpenHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Open or create a terminal session'**
+  String get terminalWorkbenchOpenHint;
+
+  /// No description provided for @terminalWorkbenchLocalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Local'**
+  String get terminalWorkbenchLocalLabel;
+
+  /// No description provided for @terminalWorkbenchStatusConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get terminalWorkbenchStatusConnected;
+
+  /// No description provided for @terminalWorkbenchStatusClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get terminalWorkbenchStatusClosed;
+
+  /// No description provided for @terminalWorkbenchStatusIdle.
+  ///
+  /// In en, this message translates to:
+  /// **'Idle'**
+  String get terminalWorkbenchStatusIdle;
+
+  /// No description provided for @terminalWorkbenchKeyboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyboard'**
+  String get terminalWorkbenchKeyboard;
+
+  /// No description provided for @terminalWorkbenchCommand.
+  ///
+  /// In en, this message translates to:
+  /// **'Command'**
+  String get terminalWorkbenchCommand;
+
+  /// No description provided for @terminalWorkbenchQuickCommand.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Command'**
+  String get terminalWorkbenchQuickCommand;
+
+  /// No description provided for @terminalWorkbenchSearchHost.
+  ///
+  /// In en, this message translates to:
+  /// **'Search host'**
+  String get terminalWorkbenchSearchHost;
+
+  /// No description provided for @terminalWorkbenchPaste.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste'**
+  String get terminalWorkbenchPaste;
+
+  /// No description provided for @terminalWorkbenchSessionClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Session closed'**
+  String get terminalWorkbenchSessionClosed;
 
   /// No description provided for @sshSessionDisconnectConfirm.
   ///

@@ -5,6 +5,7 @@ import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/data/models/common_models.dart';
 import 'package:onepanel_client/data/models/host_tree_models.dart';
+import 'package:onepanel_client/features/settings/settings_provider.dart';
 import 'package:onepanel_client/features/settings/terminal_settings_page.dart';
 import 'package:onepanel_client/features/terminal/models/terminal_runtime_models.dart';
 import 'package:onepanel_client/features/terminal/providers/terminal_workbench_provider.dart';
@@ -139,12 +140,17 @@ class _TerminalPageState extends State<TerminalPage> {
                   tooltip: l10n.commonRefresh,
                 ),
                 IconButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
+                  onPressed: () async {
+                    await Navigator.of(context).push(
                       MaterialPageRoute<void>(
-                        builder: (_) => const TerminalSettingsPage(),
+                        builder: (_) => TerminalSettingsPage(
+                          provider: SettingsProvider(),
+                        ),
                       ),
                     );
+                    if (context.mounted) {
+                      await provider.refreshCatalogs();
+                    }
                   },
                   icon: const Icon(Icons.tune_outlined),
                   tooltip: l10n.terminalSettingsTitle,
@@ -255,60 +261,50 @@ class _WorkbenchSidebar extends StatelessWidget {
     return ListView(
       padding: AppDesignTokens.pagePadding,
       children: <Widget>[
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  l10n.serverModuleTerminal,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  provider.localConnection.summary,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: FilledButton.icon(
-                        onPressed: provider.isLaunchingSession
-                            ? null
-                            : () => onOpenLocalSession(),
-                        icon: const Icon(Icons.computer_outlined),
-                        label: const Text('Local'),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: provider.isLaunchingSession
-                            ? null
-                            : () => onOpenHostPicker(),
-                        icon: const Icon(Icons.dns_outlined),
-                        label: Text(l10n.serverPageTitle),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+        Text(
+          l10n.serverModuleTerminal,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(height: 6),
+        Text(
+          provider.localConnection.summary,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: FilledButton.icon(
+                onPressed:
+                    provider.isLaunchingSession ? null : () => onOpenLocalSession(),
+                icon: const Icon(Icons.computer_outlined),
+                label: Text(l10n.terminalWorkbenchLocalLabel),
+              ),
             ),
-          ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed:
+                    provider.isLaunchingSession ? null : () => onOpenHostPicker(),
+                icon: const Icon(Icons.dns_outlined),
+                label: Text(l10n.serverPageTitle),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 12),
         Text(
-          'Sessions',
+          l10n.terminalWorkbenchSessionsTitle,
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 8),
         if (provider.sessions.isEmpty)
-          const Card(
+          Card(
             child: Padding(
-              padding: EdgeInsets.all(16),
-              child: Text('No running terminal sessions'),
+              padding: const EdgeInsets.all(16),
+              child: Text(l10n.terminalWorkbenchNoSessions),
             ),
           )
         else
@@ -325,13 +321,13 @@ class _WorkbenchSidebar extends StatelessWidget {
                     switch (session.connectionState) {
                       TerminalSessionConnectionState.connected =>
                         session.latencyMs == null
-                            ? 'Connected'
-                            : 'Connected · ${session.latencyMs}ms',
-                      TerminalSessionConnectionState.connecting => 'Connecting',
-                      TerminalSessionConnectionState.closed => 'Closed',
+                            ? l10n.terminalWorkbenchStatusConnected
+                            : '${l10n.terminalWorkbenchStatusConnected} · ${session.latencyMs}ms',
+                      TerminalSessionConnectionState.connecting => l10n.dashboardServerStatusConnecting,
+                      TerminalSessionConnectionState.closed => l10n.terminalWorkbenchStatusClosed,
                       TerminalSessionConnectionState.error =>
-                        session.errorMessage ?? 'Error',
-                      TerminalSessionConnectionState.idle => 'Idle',
+                        session.errorMessage ?? l10n.commonError,
+                      TerminalSessionConnectionState.idle => l10n.terminalWorkbenchStatusIdle,
                     },
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -349,40 +345,45 @@ class _WorkbenchSidebar extends StatelessWidget {
             );
           }),
         const SizedBox(height: 12),
-        ExpansionTile(
-          initiallyExpanded: provider.activeSshSessions.isNotEmpty,
-          title: Text(context.l10n.operationsSshSessionsTitle),
-          subtitle: Text(
-            provider.activeSshSessions.isEmpty
-                ? context.l10n.sshSessionsEmptyTitle
-                : '${provider.activeSshSessions.length}',
-          ),
-          children: provider.activeSshSessions.isEmpty
-              ? <Widget>[
-                  ListTile(
-                    title: Text(context.l10n.sshSessionsEmptyTitle),
-                    subtitle: Text(context.l10n.sshSessionsEmptyDescription),
-                  ),
-                ]
-              : provider.activeSshSessions.map((item) {
-                  return ListTile(
-                    title: Text(item.username),
-                    subtitle: Text('${item.host} · ${item.terminal}'),
-                    trailing: IconButton(
-                      onPressed: provider.isDisconnectingSshSession
-                          ? null
-                          : () => provider.disconnectActiveSshSession(item.pid),
-                      icon: const Icon(Icons.link_off_outlined),
-                    ),
-                  );
-                }).toList(growable: false),
+        Text(
+          context.l10n.operationsSshSessionsTitle,
+          style: Theme.of(context).textTheme.titleMedium,
         ),
+        const SizedBox(height: 8),
+        if (provider.activeSshSessions.isEmpty)
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.hub_outlined),
+              title: Text(context.l10n.sshSessionsEmptyTitle),
+              subtitle: Text(context.l10n.sshSessionsEmptyDescription),
+            ),
+          )
+        else
+          ...provider.activeSshSessions.map((item) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Card(
+                child: ListTile(
+                  leading: const Icon(Icons.hub_outlined),
+                  title: Text(item.username),
+                  subtitle: Text('${item.host} · ${item.terminal}'),
+                  trailing: IconButton(
+                    onPressed: provider.isDisconnectingSshSession
+                        ? null
+                        : () => provider.disconnectActiveSshSession(item.pid),
+                    icon: const Icon(Icons.link_off_outlined),
+                    tooltip: context.l10n.commonClose,
+                  ),
+                ),
+              ),
+            );
+          }),
       ],
     );
   }
 }
 
-class _TerminalSessionDetailPage extends StatelessWidget {
+class _TerminalSessionDetailPage extends StatefulWidget {
   const _TerminalSessionDetailPage({
     required this.sessionKey,
   });
@@ -390,12 +391,31 @@ class _TerminalSessionDetailPage extends StatelessWidget {
   final String sessionKey;
 
   @override
+  State<_TerminalSessionDetailPage> createState() =>
+      _TerminalSessionDetailPageState();
+}
+
+class _TerminalSessionDetailPageState extends State<_TerminalSessionDetailPage> {
+  late String _currentSessionKey;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentSessionKey = widget.sessionKey;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<TerminalWorkbenchProvider>(
       builder: (context, provider, _) {
-        final session = provider.sessionByKey(sessionKey);
+        final session =
+            provider.sessionByKey(_currentSessionKey) ?? provider.activeSession;
         if (session == null) {
-          return const Scaffold(body: Center(child: Text('Session closed')));
+          return Scaffold(
+            body: Center(
+              child: Text(context.l10n.terminalWorkbenchSessionClosed),
+            ),
+          );
         }
 
         return Scaffold(
@@ -405,20 +425,21 @@ class _TerminalSessionDetailPage extends StatelessWidget {
               IconButton(
                 onPressed: () => _pasteFromClipboard(session),
                 icon: const Icon(Icons.content_paste_outlined),
-                tooltip: 'Paste',
+                tooltip: context.l10n.terminalWorkbenchPaste,
               ),
               IconButton(
                 onPressed: () => _copySelection(session),
                 icon: const Icon(Icons.copy_all_outlined),
-                tooltip: 'Copy',
+                tooltip: context.l10n.commonCopy,
               ),
               IconButton(
                 onPressed: () => _showQuickCommands(context, provider, session),
                 icon: const Icon(Icons.playlist_play_outlined),
-                tooltip: 'Quick Command',
+                tooltip: context.l10n.terminalWorkbenchQuickCommand,
               ),
               IconButton(
-                onPressed: () => provider.reconnectSession(sessionKey),
+                onPressed: () =>
+                    provider.reconnectSession(session.descriptor.sessionKey),
                 icon: const Icon(Icons.refresh),
                 tooltip: context.l10n.commonRefresh,
               ),
@@ -427,6 +448,14 @@ class _TerminalSessionDetailPage extends StatelessWidget {
           body: _TerminalSessionViewport(
             session: session,
             provider: provider,
+            onSelectSession: provider.sessions.length <= 1
+                ? null
+                : (nextKey) {
+                    setState(() {
+                      _currentSessionKey = nextKey;
+                    });
+                    provider.selectSession(nextKey);
+                  },
           ),
           bottomNavigationBar: SafeArea(
             top: false,
@@ -438,7 +467,7 @@ class _TerminalSessionDetailPage extends StatelessWidget {
                     child: FilledButton.icon(
                       onPressed: session.requestFocus,
                       icon: const Icon(Icons.keyboard_outlined),
-                      label: const Text('Keyboard'),
+                      label: Text(context.l10n.terminalWorkbenchKeyboard),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -447,7 +476,7 @@ class _TerminalSessionDetailPage extends StatelessWidget {
                       onPressed: () =>
                           _showQuickCommands(context, provider, session),
                       icon: const Icon(Icons.playlist_play_outlined),
-                      label: const Text('Command'),
+                      label: Text(context.l10n.terminalWorkbenchCommand),
                     ),
                   ),
                 ],
@@ -508,10 +537,12 @@ class _TerminalSessionViewport extends StatelessWidget {
   const _TerminalSessionViewport({
     required this.session,
     required this.provider,
+    this.onSelectSession,
   });
 
   final TerminalRuntimeSession session;
   final TerminalWorkbenchProvider provider;
+  final ValueChanged<String>? onSelectSession;
 
   @override
   Widget build(BuildContext context) {
@@ -524,9 +555,31 @@ class _TerminalSessionViewport extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Card(
-            child: ListTile(
-              leading: Icon(
+          if (provider.sessions.length > 1) ...[
+            SizedBox(
+              height: 44,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: provider.sessions.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 8),
+                itemBuilder: (context, index) {
+                  final item = provider.sessions[index];
+                  final selected = item.descriptor.sessionKey ==
+                      session.descriptor.sessionKey;
+                  return ChoiceChip(
+                    label: Text(item.descriptor.title),
+                    selected: selected,
+                    onSelected: (_) =>
+                        onSelectSession?.call(item.descriptor.sessionKey),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 10),
+          ],
+          Row(
+            children: <Widget>[
+              Icon(
                 switch (session.connectionState) {
                   TerminalSessionConnectionState.connected =>
                     Icons.cloud_done_outlined,
@@ -539,6 +592,7 @@ class _TerminalSessionViewport extends StatelessWidget {
                   TerminalSessionConnectionState.idle =>
                     Icons.terminal_outlined,
                 },
+                size: 18,
                 color: switch (session.connectionState) {
                   TerminalSessionConnectionState.connected => Colors.green,
                   TerminalSessionConnectionState.connecting => Colors.orange,
@@ -547,16 +601,18 @@ class _TerminalSessionViewport extends StatelessWidget {
                   TerminalSessionConnectionState.idle => null,
                 },
               ),
-              title: Text(session.descriptor.title),
-              subtitle: Text(
-                session.errorMessage ??
-                    (session.latencyMs == null
-                        ? session.connectionState.name
-                        : '${session.connectionState.name} · ${session.latencyMs}ms'),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  session.errorMessage ?? _statusText(context, session),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                ),
               ),
-            ),
+            ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           Expanded(
             child: DecoratedBox(
               decoration: BoxDecoration(
@@ -602,6 +658,24 @@ class _TerminalSessionViewport extends StatelessWidget {
         return TerminalCursorType.block;
     }
   }
+
+  String _statusText(BuildContext context, TerminalRuntimeSession session) {
+    final l10n = context.l10n;
+    final base = switch (session.connectionState) {
+      TerminalSessionConnectionState.connected =>
+        l10n.terminalWorkbenchStatusConnected,
+      TerminalSessionConnectionState.connecting =>
+        l10n.dashboardServerStatusConnecting,
+      TerminalSessionConnectionState.closed => l10n.terminalWorkbenchStatusClosed,
+      TerminalSessionConnectionState.error => session.errorMessage ?? l10n.commonError,
+      TerminalSessionConnectionState.idle => l10n.terminalWorkbenchStatusIdle,
+    };
+    if (session.connectionState != TerminalSessionConnectionState.connected ||
+        session.latencyMs == null) {
+      return base;
+    }
+    return '$base · ${session.latencyMs}ms';
+  }
 }
 
 class _EmptyTerminalState extends StatelessWidget {
@@ -609,8 +683,8 @@ class _EmptyTerminalState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Open or create a terminal session'),
+    return Center(
+      child: Text(context.l10n.terminalWorkbenchOpenHint),
     );
   }
 }
@@ -666,9 +740,9 @@ class _HostPickerSheetState extends State<_HostPickerSheet> {
             TextField(
               controller: _searchController,
               onChanged: (value) => setState(() => _query = value.trim()),
-              decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.search),
-                hintText: 'Search host',
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.search),
+                hintText: context.l10n.terminalWorkbenchSearchHost,
               ),
             ),
             const SizedBox(height: 12),
@@ -745,9 +819,9 @@ class _QuickCommandSheetState extends State<_QuickCommandSheet> {
             TextField(
               controller: _searchController,
               onChanged: (value) => setState(() => _query = value.trim()),
-              decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.search),
-                hintText: 'Quick command',
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.search),
+                hintText: context.l10n.terminalWorkbenchQuickCommand,
               ),
             ),
             const SizedBox(height: 12),

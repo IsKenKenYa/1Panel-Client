@@ -130,6 +130,19 @@ class TerminalWorkbenchProvider extends ChangeNotifier with AsyncStateNotifier {
   }
 
   Future<TerminalRuntimeSession?> openSession(TerminalLaunchIntent intent) async {
+    final existing = _sessions.where((item) => item.descriptor.intent == intent);
+    if (existing.isNotEmpty) {
+      final session = existing.first;
+      _activeSessionKey = session.descriptor.sessionKey;
+      notifyListeners();
+      if (!session.isConnected &&
+          session.connectionState != TerminalSessionConnectionState.connecting) {
+        await reconnectSession(session.descriptor.sessionKey);
+        return sessionByKey(session.descriptor.sessionKey);
+      }
+      return session;
+    }
+
     _isLaunchingSession = true;
     clearError(notify: false);
     notifyListeners();

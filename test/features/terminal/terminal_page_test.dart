@@ -134,6 +134,7 @@ void main() {
       MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('en'),
         home: TerminalPage(
           provider: provider,
           launchIntentOverride: const TerminalLaunchIntent.workbench(),
@@ -143,10 +144,52 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.text('Sessions'), findsOneWidget);
+    expect(find.text('Terminal Sessions'), findsOneWidget);
     expect(find.text('Local'), findsOneWidget);
     expect(find.text('SSH Sessions'), findsOneWidget);
     expect(find.text('root'), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.tune_outlined));
+    await tester.pumpAndSettle();
+    expect(find.text('Terminal Settings'), findsOneWidget);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    provider.dispose();
+    await tester.pump();
+  });
+
+  testWidgets('opening local session twice reuses existing session', (tester) async {
+    final service = _FakeTerminalWorkbenchService();
+    final provider = TerminalWorkbenchProvider(service: service);
+
+    tester.view.physicalSize = const Size(393, 852);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('en'),
+        home: TerminalPage(
+          provider: provider,
+          launchIntentOverride: const TerminalLaunchIntent.workbench(),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+    final localButton = find.widgetWithText(FilledButton, 'Local');
+    await tester.tap(localButton);
+    await tester.pumpAndSettle();
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    await tester.tap(localButton);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Local'), findsAtLeastNWidgets(1));
+    expect(provider.sessions.length, 1);
 
     await tester.pumpWidget(const SizedBox.shrink());
     provider.dispose();

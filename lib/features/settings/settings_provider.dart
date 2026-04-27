@@ -638,6 +638,33 @@ class SettingsProvider extends ChangeNotifier with SafeChangeNotifier {
     }
   }
 
+  Future<bool> checkSSHConnection({
+    String? host,
+    int? port,
+    String? user,
+    String? authMode,
+    String? password,
+    String? privateKey,
+    String? passPhrase,
+  }) async {
+    try {
+      return await _service.checkSSHConnection(
+        api.SSHConnectionCheck(
+          addr: host,
+          port: port,
+          user: user,
+          authMode: authMode,
+          password: password,
+          privateKey: privateKey,
+          passPhrase: passPhrase,
+        ),
+      );
+    } catch (e, stackTrace) {
+      _setError('测试SSH连接', e, stackTrace: stackTrace);
+      return false;
+    }
+  }
+
   Future<bool> updateDefaultSSHConnectionVisibility({
     required bool visible,
     bool withReset = false,

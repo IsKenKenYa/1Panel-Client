@@ -3283,6 +3283,57 @@ class AppLocalizationsZh extends AppLocalizations {
   String get terminalSettingsLetterSpacing => '字母间距';
 
   @override
+  String get terminalSettingsFontFamily => '字体族';
+
+  @override
+  String get terminalSettingsBackgroundColor => '背景色';
+
+  @override
+  String get terminalSettingsForegroundColor => '前景色';
+
+  @override
+  String get terminalSettingsDefaultLocalConnection => '默认本地连接';
+
+  @override
+  String get terminalSettingsShowLocalByDefault => '默认显示本地会话';
+
+  @override
+  String get terminalSettingsCurrentConnection => '当前连接';
+
+  @override
+  String get terminalSettingsPreview => '预览';
+
+  @override
+  String get terminalSettingsFontFamilyHint => '选择一个或多个等宽字体用于终端渲染。';
+
+  @override
+  String get terminalSettingsCursorBlock => '块状';
+
+  @override
+  String get terminalSettingsCursorUnderline => '下划线';
+
+  @override
+  String get terminalSettingsCursorBar => '竖线';
+
+  @override
+  String get terminalSettingsConnectionSetup => '连接设置';
+
+  @override
+  String get terminalSettingsTestConnection => '测试连接';
+
+  @override
+  String get terminalSettingsConnectionAuthMode => '认证方式';
+
+  @override
+  String get terminalSettingsConnectionPassword => '密码';
+
+  @override
+  String get terminalSettingsConnectionPrivateKey => '私钥';
+
+  @override
+  String get terminalSettingsConnectionPassPhrase => '口令';
+
+  @override
   String get securitySettingsTitle => '安全设置';
 
   @override
@@ -6717,6 +6768,45 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get sshSessionsLoginTimeLabel => '登录时间';
+
+  @override
+  String get terminalWorkbenchSessionsTitle => '终端会话';
+
+  @override
+  String get terminalWorkbenchNoSessions => '暂无终端会话';
+
+  @override
+  String get terminalWorkbenchOpenHint => '打开或创建一个终端会话';
+
+  @override
+  String get terminalWorkbenchLocalLabel => '本地';
+
+  @override
+  String get terminalWorkbenchStatusConnected => '已连接';
+
+  @override
+  String get terminalWorkbenchStatusClosed => '已关闭';
+
+  @override
+  String get terminalWorkbenchStatusIdle => '空闲';
+
+  @override
+  String get terminalWorkbenchKeyboard => '键盘';
+
+  @override
+  String get terminalWorkbenchCommand => '命令';
+
+  @override
+  String get terminalWorkbenchQuickCommand => '快捷命令';
+
+  @override
+  String get terminalWorkbenchSearchHost => '搜索主机';
+
+  @override
+  String get terminalWorkbenchPaste => '粘贴';
+
+  @override
+  String get terminalWorkbenchSessionClosed => '会话已关闭';
 
   @override
   String sshSessionDisconnectConfirm(String username) {
