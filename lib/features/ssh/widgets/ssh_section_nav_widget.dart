@@ -18,6 +18,7 @@ class SshSectionNavWidget extends StatelessWidget {
       (route: AppRoutes.sshCerts, label: l10n.operationsSshCertsTitle),
       (route: AppRoutes.sshLogs, label: l10n.operationsSshLogsTitle),
       (route: AppRoutes.sshSessions, label: l10n.operationsSshSessionsTitle),
+      (route: AppRoutes.terminal, label: l10n.serverModuleTerminal),
     ];
 
     return SingleChildScrollView(

@@ -141,13 +141,13 @@ class SshV2Api {
   // ==================== SSH 设置模块 ====================
 
   /// 加载本地 SSH 连接信息
-  Future<Response<Map<String, dynamic>>> getSshConn() async {
+  Future<Response<SshLocalConnectionInfo>> getSshConn() async {
     final response = await _client.get<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/settings/ssh/conn'),
     );
     final data = response.data?['data'] as Map<String, dynamic>?;
-    return Response<Map<String, dynamic>>(
-      data: data,
+    return Response<SshLocalConnectionInfo>(
+      data: SshLocalConnectionInfo.fromJson(data ?? const <String, dynamic>{}),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -163,9 +163,12 @@ class SshV2Api {
   }
 
   /// 检查 SSH 基础信息
-  Future<Response<bool>> checkSshInfo() async {
+  Future<Response<bool>> checkSshInfo({
+    SshLocalConnectionInfo? request,
+  }) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/settings/ssh/check/info'),
+      data: request?.toJson(),
     );
     final data = response.data?['data'] as bool?;
     return Response<bool>(
@@ -177,10 +180,12 @@ class SshV2Api {
   }
 
   /// 设置默认 SSH 连接
-  Future<Response<void>> setDefaultSshConn(Map<String, dynamic> request) async {
+  Future<Response<void>> setDefaultSshConn(
+    SshDefaultConnectionVisibilityUpdate request,
+  ) async {
     return await _client.post<void>(
       ApiConstants.buildApiPath('/settings/ssh/conn/default'),
-      data: request,
+      data: request.toJson(),
     );
   }
 

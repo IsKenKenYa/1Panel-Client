@@ -1,11 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/features/settings/settings_provider.dart';
+import 'package:provider/provider.dart';
 
-class TerminalSettingsPage extends StatelessWidget {
+class TerminalSettingsPage extends StatefulWidget {
   const TerminalSettingsPage({super.key});
+
+  @override
+  State<TerminalSettingsPage> createState() => _TerminalSettingsPageState();
+}
+
+class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      final provider = context.read<SettingsProvider>();
+      provider.loadTerminalSettings();
+      provider.loadSSHConnection();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +31,7 @@ class TerminalSettingsPage extends StatelessWidget {
     final l10n = context.l10n;
     final provider = context.watch<SettingsProvider>();
     final terminal = provider.data.terminalSettings;
+    final sshConnection = provider.data.sshConnection;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.terminalSettingsTitle)),
@@ -29,7 +48,10 @@ class TerminalSettingsPage extends StatelessWidget {
                   value: terminal?.cursorStyle ?? '-',
                   icon: Icons.arrow_right_alt_outlined,
                   onTap: () => _showCursorStyleSelector(
-                      context, provider, terminal?.cursorStyle ?? 'block'),
+                    context,
+                    provider,
+                    terminal?.cursorStyle ?? 'block',
+                  ),
                 ),
                 _buildEditableListTile(
                   context,
@@ -37,15 +59,67 @@ class TerminalSettingsPage extends StatelessWidget {
                   value: terminal?.cursorBlink ?? '-',
                   icon: Icons.flash_on_outlined,
                   onTap: () => _showBlinkSelector(
-                      context, provider, terminal?.cursorBlink ?? 'true'),
+                    context,
+                    provider,
+                    terminal?.cursorBlink ?? 'Enable',
+                  ),
                 ),
                 _buildEditableListTile(
                   context,
                   title: l10n.terminalSettingsFontSize,
                   value: terminal?.fontSize ?? '-',
                   icon: Icons.format_size_outlined,
-                  onTap: () => _showFontSizeDialog(
-                      context, provider, terminal?.fontSize ?? '14'),
+                  onTap: () => _showEditDialog(
+                    context,
+                    provider,
+                    title: l10n.terminalSettingsFontSize,
+                    currentValue: terminal?.fontSize ?? '14',
+                    update: (value) =>
+                        provider.updateTerminalSettings(fontSize: value),
+                  ),
+                ),
+                _buildEditableListTile(
+                  context,
+                  title: 'Font Family',
+                  value: terminal?.fontFamily ?? '-',
+                  icon: Icons.font_download_outlined,
+                  onTap: () => _showEditDialog(
+                    context,
+                    provider,
+                    title: 'Font Family',
+                    currentValue: terminal?.fontFamily ??
+                        "Monaco, Menlo, Consolas, 'Courier New', monospace",
+                    update: (value) =>
+                        provider.updateTerminalSettings(fontFamily: value),
+                  ),
+                ),
+                _buildEditableListTile(
+                  context,
+                  title: 'Background',
+                  value: terminal?.backgroundColor ?? '#000000',
+                  icon: Icons.format_color_fill_outlined,
+                  onTap: () => _showEditDialog(
+                    context,
+                    provider,
+                    title: 'Background',
+                    currentValue: terminal?.backgroundColor ?? '#000000',
+                    update: (value) =>
+                        provider.updateTerminalSettings(backgroundColor: value),
+                  ),
+                ),
+                _buildEditableListTile(
+                  context,
+                  title: 'Foreground',
+                  value: terminal?.foregroundColor ?? '#f5f5f5',
+                  icon: Icons.format_color_text_outlined,
+                  onTap: () => _showEditDialog(
+                    context,
+                    provider,
+                    title: 'Foreground',
+                    currentValue: terminal?.foregroundColor ?? '#f5f5f5',
+                    update: (value) =>
+                        provider.updateTerminalSettings(foregroundColor: value),
+                  ),
                 ),
               ],
             ),
@@ -63,9 +137,10 @@ class TerminalSettingsPage extends StatelessWidget {
                   onTap: () => _showEditDialog(
                     context,
                     provider,
-                    l10n.terminalSettingsScrollSensitivity,
-                    'scrollSensitivity',
-                    terminal?.scrollSensitivity ?? '1',
+                    title: l10n.terminalSettingsScrollSensitivity,
+                    currentValue: terminal?.scrollSensitivity ?? '6',
+                    update: (value) =>
+                        provider.updateTerminalSettings(scrollSensitivity: value),
                   ),
                 ),
                 _buildEditableListTile(
@@ -76,9 +151,10 @@ class TerminalSettingsPage extends StatelessWidget {
                   onTap: () => _showEditDialog(
                     context,
                     provider,
-                    l10n.terminalSettingsScrollback,
-                    'scrollback',
-                    terminal?.scrollback ?? '1000',
+                    title: l10n.terminalSettingsScrollback,
+                    currentValue: terminal?.scrollback ?? '1000',
+                    update: (value) =>
+                        provider.updateTerminalSettings(scrollback: value),
                   ),
                 ),
               ],
@@ -97,9 +173,10 @@ class TerminalSettingsPage extends StatelessWidget {
                   onTap: () => _showEditDialog(
                     context,
                     provider,
-                    l10n.terminalSettingsLineHeight,
-                    'lineHeight',
-                    terminal?.lineHeight ?? '1.2',
+                    title: l10n.terminalSettingsLineHeight,
+                    currentValue: terminal?.lineHeight ?? '1.2',
+                    update: (value) =>
+                        provider.updateTerminalSettings(lineHeight: value),
                   ),
                 ),
                 _buildEditableListTile(
@@ -110,10 +187,39 @@ class TerminalSettingsPage extends StatelessWidget {
                   onTap: () => _showEditDialog(
                     context,
                     provider,
-                    l10n.terminalSettingsLetterSpacing,
-                    'letterSpacing',
-                    terminal?.letterSpacing ?? '0',
+                    title: l10n.terminalSettingsLetterSpacing,
+                    currentValue: terminal?.letterSpacing ?? '0',
+                    update: (value) =>
+                        provider.updateTerminalSettings(letterSpacing: value),
                   ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: AppDesignTokens.spacingMd),
+          _buildSectionTitle(context, 'Default Local Connection', theme),
+          Card(
+            child: Column(
+              children: [
+                SwitchListTile.adaptive(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  title: const Text('Show local session by default'),
+                  subtitle: Text(sshConnection?.summary ?? '-'),
+                  value: sshConnection?.isVisibleByDefault ?? false,
+                  onChanged: (value) async {
+                    final success =
+                        await provider.updateDefaultSSHConnectionVisibility(
+                      visible: value,
+                    );
+                    if (context.mounted) {
+                      _showResultSnackBar(context, success, l10n);
+                    }
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.info_outline),
+                  title: const Text('Current connection'),
+                  subtitle: Text(sshConnection?.summary ?? '-'),
                 ),
               ],
             ),
@@ -147,31 +253,25 @@ class TerminalSettingsPage extends StatelessWidget {
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(value, style: const TextStyle(color: Colors.grey)),
-          if (onTap != null) ...[
-            const SizedBox(width: 8),
-            const Icon(Icons.edit_outlined, size: 18, color: Colors.grey),
-          ],
-        ],
-      ),
+      subtitle: value == '-' ? null : Text(value, maxLines: 1, overflow: TextOverflow.ellipsis),
+      trailing: onTap == null
+          ? null
+          : const Icon(Icons.edit_outlined, size: 18, color: Colors.grey),
       onTap: onTap,
     );
   }
 
-  void _showEditDialog(
+  Future<void> _showEditDialog(
     BuildContext context,
-    SettingsProvider provider,
-    String title,
-    String field,
-    String currentValue,
-  ) {
+    SettingsProvider provider, {
+    required String title,
+    required String currentValue,
+    required Future<bool> Function(String value) update,
+  }) async {
     final controller = TextEditingController(text: currentValue);
-    showDialog(
+    await showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: Text(title),
         content: TextField(
           controller: controller,
@@ -179,23 +279,13 @@ class TerminalSettingsPage extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: Text(context.l10n.commonCancel),
           ),
           FilledButton(
             onPressed: () async {
-              Navigator.pop(context);
-              final success = await provider.updateTerminalSettings(
-                cursorStyle: field == 'cursorStyle' ? controller.text : null,
-                cursorBlink: field == 'cursorBlink' ? controller.text : null,
-                fontSize: field == 'fontSize' ? controller.text : null,
-                scrollSensitivity:
-                    field == 'scrollSensitivity' ? controller.text : null,
-                scrollback: field == 'scrollback' ? controller.text : null,
-                lineHeight: field == 'lineHeight' ? controller.text : null,
-                letterSpacing:
-                    field == 'letterSpacing' ? controller.text : null,
-              );
+              Navigator.pop(dialogContext);
+              final success = await update(controller.text.trim());
               if (context.mounted) {
                 _showResultSnackBar(context, success, context.l10n);
               }
@@ -207,21 +297,19 @@ class TerminalSettingsPage extends StatelessWidget {
     );
   }
 
-  void _showCursorStyleSelector(
-      BuildContext context, SettingsProvider provider, String currentStyle) {
-    showDialog(
+  Future<void> _showCursorStyleSelector(
+      BuildContext context, SettingsProvider provider, String currentStyle) async {
+    await showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: Text(context.l10n.terminalSettingsCursorStyle),
         content: RadioGroup<String>(
           groupValue: currentStyle,
-          onChanged: (value) async {
-            Navigator.pop(context);
-            if (value == null) {
-              return;
-            }
-            final success =
-                await provider.updateTerminalSettings(cursorStyle: value);
+          onChanged: (selected) async {
+            Navigator.pop(dialogContext);
+            final success = await provider.updateTerminalSettings(
+              cursorStyle: selected,
+            );
             if (context.mounted) {
               _showResultSnackBar(context, success, context.l10n);
             }
@@ -229,21 +317,11 @@ class TerminalSettingsPage extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              RadioListTile<String>(
-                title: const Text('Block'),
-                value: 'block',
-                selected: currentStyle == 'block',
-              ),
-              RadioListTile<String>(
-                title: const Text('Underline'),
-                value: 'underline',
-                selected: currentStyle == 'underline',
-              ),
-              RadioListTile<String>(
-                title: const Text('Bar'),
-                value: 'bar',
-                selected: currentStyle == 'bar',
-              ),
+              for (final value in const <String>['block', 'underline', 'bar'])
+                RadioListTile<String>(
+                  title: Text(value),
+                  value: value,
+                ),
             ],
           ),
         ),
@@ -251,21 +329,19 @@ class TerminalSettingsPage extends StatelessWidget {
     );
   }
 
-  void _showBlinkSelector(
-      BuildContext context, SettingsProvider provider, String currentValue) {
-    showDialog(
+  Future<void> _showBlinkSelector(
+      BuildContext context, SettingsProvider provider, String currentValue) async {
+    await showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: Text(context.l10n.terminalSettingsCursorBlink),
         content: RadioGroup<String>(
           groupValue: currentValue,
-          onChanged: (value) async {
-            Navigator.pop(context);
-            if (value == null) {
-              return;
-            }
-            final success =
-                await provider.updateTerminalSettings(cursorBlink: value);
+          onChanged: (selected) async {
+            Navigator.pop(dialogContext);
+            final success = await provider.updateTerminalSettings(
+              cursorBlink: selected,
+            );
             if (context.mounted) {
               _showResultSnackBar(context, success, context.l10n);
             }
@@ -273,69 +349,14 @@ class TerminalSettingsPage extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              RadioListTile<String>(
-                title: Text(context.l10n.systemSettingsEnabled),
-                value: 'true',
-                selected: currentValue == 'true',
-              ),
-              RadioListTile<String>(
-                title: Text(context.l10n.systemSettingsDisabled),
-                value: 'false',
-                selected: currentValue == 'false',
-              ),
+              for (final value in const <String>['Enable', 'Disable'])
+                RadioListTile<String>(
+                  title: Text(value),
+                  value: value,
+                ),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  void _showFontSizeDialog(
-      BuildContext context, SettingsProvider provider, String currentSize) {
-    final controller = TextEditingController(text: currentSize);
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.l10n.terminalSettingsFontSize),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: controller,
-              decoration: const InputDecoration(suffixText: 'px'),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 8,
-              children: [12, 14, 16, 18, 20].map((size) {
-                return ActionChip(
-                  label: Text('$size'),
-                  onPressed: () {
-                    controller.text = size.toString();
-                  },
-                );
-              }).toList(),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(context.l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              final success = await provider.updateTerminalSettings(
-                  fontSize: controller.text);
-              if (context.mounted) {
-                _showResultSnackBar(context, success, context.l10n);
-              }
-            },
-            child: Text(context.l10n.commonSave),
-          ),
-        ],
       ),
     );
   }
@@ -344,8 +365,10 @@ class TerminalSettingsPage extends StatelessWidget {
       BuildContext context, bool success, AppLocalizations l10n) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-          content:
-              Text(success ? l10n.commonSaveSuccess : l10n.commonSaveFailed)),
+        content: Text(
+          success ? l10n.commonSaveSuccess : l10n.commonSaveFailed,
+        ),
+      ),
     );
   }
 }

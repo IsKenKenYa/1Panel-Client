@@ -1,5 +1,6 @@
 import 'package:onepanel_client/api/v2/setting_v2.dart' as api;
 import 'package:onepanel_client/data/models/setting_models.dart';
+import 'package:onepanel_client/data/models/ssh_settings_models.dart';
 import 'package:onepanel_client/data/repositories/setting_repository.dart';
 
 class SettingsService {
@@ -250,15 +251,26 @@ class SettingsService {
     return response.data;
   }
 
-  Future<dynamic> getSSHConnection() async {
+  Future<SshLocalConnectionInfo> getSSHConnection() async {
     final apiClient = await _getApi();
     final response = await apiClient.getSSHConnection();
-    return response.data;
+    return response.data ?? const SshLocalConnectionInfo();
   }
 
   Future<void> saveSSHConnection(api.SSHConnectionSave request) async {
     final apiClient = await _getApi();
     await apiClient.saveSSHConnection(request);
+  }
+
+  Future<bool> checkSSHConnection(api.SSHConnectionCheck request) async {
+    final apiClient = await _getApi();
+    final response = await apiClient.checkSSHConnection(request);
+    return response.data ?? false;
+  }
+
+  Future<void> updateDefaultSSHConnection(api.SSHDefaultUpdate request) async {
+    final apiClient = await _getApi();
+    await apiClient.updateDefaultSSHConnection(request);
   }
 
   Future<void> updatePasswordSettings(api.PasswordUpdate request) async {

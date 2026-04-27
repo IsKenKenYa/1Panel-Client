@@ -4,6 +4,7 @@ import '../../core/network/dio_client.dart';
 import '../../core/network/network_exceptions.dart';
 import '../../core/config/api_constants.dart';
 import '../../data/models/setting_models.dart';
+import '../../data/models/ssh_settings_models.dart';
 
 class SettingV2Api {
   final DioClient _client;
@@ -866,14 +867,14 @@ class SettingV2Api {
   /// 检查本地SSH连接信息
   /// @param request 检查请求
   /// @return 检查结果
-  Future<Response<dynamic>> checkSSHConnection(
+  Future<Response<bool>> checkSSHConnection(
       SSHConnectionCheck request) async {
-    final response = await _client.post(
+    final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/settings/ssh/check/info'),
       data: request.toJson(),
     );
-    return Response(
-      data: _extractDataRaw(response.data),
+    return Response<bool>(
+      data: _extractDataRaw(response.data) as bool?,
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -884,12 +885,15 @@ class SettingV2Api {
   ///
   /// 获取本地SSH连接信息
   /// @return SSH连接信息
-  Future<Response<dynamic>> getSSHConnection() async {
-    final response = await _client.get(
+  Future<Response<SshLocalConnectionInfo>> getSSHConnection() async {
+    final response = await _client.get<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/settings/ssh/conn'),
     );
-    return Response(
-      data: _extractDataRaw(response.data),
+    final data = _extractDataRaw(response.data);
+    return Response<SshLocalConnectionInfo>(
+      data: SshLocalConnectionInfo.fromJson(
+        data is Map<String, dynamic> ? data : const <String, dynamic>{},
+      ),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -972,6 +976,8 @@ class TerminalUpdate {
   final String? lineTheme;
   final String? fontSize;
   final String? fontFamily;
+  final String? backgroundColor;
+  final String? foregroundColor;
   final String? cursorStyle;
   final String? cursorBlink;
   final String? scrollSensitivity;
@@ -983,6 +989,8 @@ class TerminalUpdate {
     this.lineTheme,
     this.fontSize,
     this.fontFamily,
+    this.backgroundColor,
+    this.foregroundColor,
     this.cursorStyle,
     this.cursorBlink,
     this.scrollSensitivity,
@@ -995,6 +1003,8 @@ class TerminalUpdate {
         if (lineTheme != null) 'lineTheme': lineTheme,
         if (fontSize != null) 'fontSize': fontSize,
         if (fontFamily != null) 'fontFamily': fontFamily,
+        if (backgroundColor != null) 'backgroundColor': backgroundColor,
+        if (foregroundColor != null) 'foregroundColor': foregroundColor,
         if (cursorStyle != null) 'cursorStyle': cursorStyle,
         if (cursorBlink != null) 'cursorBlink': cursorBlink,
         if (scrollSensitivity != null) 'scrollSensitivity': scrollSensitivity,
@@ -1237,48 +1247,78 @@ class BackupAccountDelete {
 // ==================== SSH请求模型 ====================
 
 class SSHConnectionSave {
-  final String? host;
+  final String? addr;
   final int? port;
   final String? user;
+  final String? authMode;
   final String? password;
   final String? privateKey;
+  final String? passPhrase;
+  final String? localSSHConnShow;
 
   const SSHConnectionSave(
-      {this.host, this.port, this.user, this.password, this.privateKey});
+      {this.addr,
+      this.port,
+      this.user,
+      this.authMode,
+      this.password,
+      this.privateKey,
+      this.passPhrase,
+      this.localSSHConnShow});
 
   Map<String, dynamic> toJson() => {
-        if (host != null) 'host': host,
+        if (addr != null) 'addr': addr,
         if (port != null) 'port': port,
         if (user != null) 'user': user,
+        if (authMode != null) 'authMode': authMode,
         if (password != null) 'password': password,
         if (privateKey != null) 'privateKey': privateKey,
+        if (passPhrase != null) 'passPhrase': passPhrase,
+        if (localSSHConnShow != null) 'localSSHConnShow': localSSHConnShow,
       };
 }
 
 class SSHConnectionCheck {
-  final String? host;
+  final String? addr;
   final int? port;
   final String? user;
+  final String? authMode;
   final String? password;
+  final String? privateKey;
+  final String? passPhrase;
 
-  const SSHConnectionCheck({this.host, this.port, this.user, this.password});
+  const SSHConnectionCheck({
+    this.addr,
+    this.port,
+    this.user,
+    this.authMode,
+    this.password,
+    this.privateKey,
+    this.passPhrase,
+  });
 
   Map<String, dynamic> toJson() => {
-        if (host != null) 'host': host,
+        if (addr != null) 'addr': addr,
         if (port != null) 'port': port,
         if (user != null) 'user': user,
+        if (authMode != null) 'authMode': authMode,
         if (password != null) 'password': password,
+        if (privateKey != null) 'privateKey': privateKey,
+        if (passPhrase != null) 'passPhrase': passPhrase,
       };
 }
 
 class SSHDefaultUpdate {
-  final int? id;
-  final bool? isDefault;
+  final bool withReset;
+  final String defaultConn;
 
-  const SSHDefaultUpdate({this.id, this.isDefault});
+  const SSHDefaultUpdate({
+    required this.withReset,
+    required this.defaultConn,
+  });
 
   Map<String, dynamic> toJson() => {
-        if (id != null) 'id': id,
-        if (isDefault != null) 'isDefault': isDefault,
+        'withReset': withReset,
+        'defaultConn': defaultConn,
       };
 }

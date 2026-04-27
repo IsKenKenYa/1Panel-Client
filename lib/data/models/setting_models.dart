@@ -960,6 +960,9 @@ class TerminalInfo extends Equatable {
   final String? cursorBlink;
   final String? cursorStyle;
   final String? fontSize;
+  final String? fontFamily;
+  final String? backgroundColor;
+  final String? foregroundColor;
   final String? letterSpacing;
   final String? lineHeight;
   final String? scrollSensitivity;
@@ -969,6 +972,9 @@ class TerminalInfo extends Equatable {
     this.cursorBlink,
     this.cursorStyle,
     this.fontSize,
+    this.fontFamily,
+    this.backgroundColor,
+    this.foregroundColor,
     this.letterSpacing,
     this.lineHeight,
     this.scrollSensitivity,
@@ -984,6 +990,9 @@ class TerminalInfo extends Equatable {
         cursorBlink,
         cursorStyle,
         fontSize,
+        fontFamily,
+        backgroundColor,
+        foregroundColor,
         letterSpacing,
         lineHeight,
         scrollSensitivity,

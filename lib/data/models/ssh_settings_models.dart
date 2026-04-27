@@ -120,3 +120,111 @@ class SshFileUpdateRequest extends Equatable {
   @override
   List<Object?> get props => <Object?>[key, value];
 }
+
+class SshLocalConnectionInfo extends Equatable {
+  const SshLocalConnectionInfo({
+    this.addr = '',
+    this.port = 22,
+    this.user = '',
+    this.authMode = 'password',
+    this.password,
+    this.privateKey,
+    this.passPhrase,
+    this.localSSHConnShow = 'Disable',
+  });
+
+  final String addr;
+  final int port;
+  final String user;
+  final String authMode;
+  final String? password;
+  final String? privateKey;
+  final String? passPhrase;
+  final String localSSHConnShow;
+
+  bool get isVisibleByDefault => localSSHConnShow.toLowerCase() == 'enable';
+  bool get isConfigured => addr.trim().isNotEmpty && user.trim().isNotEmpty;
+
+  String get summary {
+    if (!isConfigured) {
+      return '-';
+    }
+    return '$user@$addr:$port';
+  }
+
+  factory SshLocalConnectionInfo.fromJson(Map<String, dynamic> json) {
+    return SshLocalConnectionInfo(
+      addr: json['addr'] as String? ?? '',
+      port: json['port'] as int? ?? 22,
+      user: json['user'] as String? ?? '',
+      authMode: json['authMode'] as String? ?? 'password',
+      password: json['password'] as String?,
+      privateKey: json['privateKey'] as String?,
+      passPhrase: json['passPhrase'] as String?,
+      localSSHConnShow: json['localSSHConnShow'] as String? ?? 'Disable',
+    );
+  }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'addr': addr,
+        'port': port,
+        'user': user,
+        'authMode': authMode,
+        'password': password,
+        'privateKey': privateKey,
+        'passPhrase': passPhrase,
+        'localSSHConnShow': localSSHConnShow,
+      };
+
+  SshLocalConnectionInfo copyWith({
+    String? addr,
+    int? port,
+    String? user,
+    String? authMode,
+    String? password,
+    String? privateKey,
+    String? passPhrase,
+    String? localSSHConnShow,
+  }) {
+    return SshLocalConnectionInfo(
+      addr: addr ?? this.addr,
+      port: port ?? this.port,
+      user: user ?? this.user,
+      authMode: authMode ?? this.authMode,
+      password: password ?? this.password,
+      privateKey: privateKey ?? this.privateKey,
+      passPhrase: passPhrase ?? this.passPhrase,
+      localSSHConnShow: localSSHConnShow ?? this.localSSHConnShow,
+    );
+  }
+
+  @override
+  List<Object?> get props => <Object?>[
+        addr,
+        port,
+        user,
+        authMode,
+        password,
+        privateKey,
+        passPhrase,
+        localSSHConnShow,
+      ];
+}
+
+class SshDefaultConnectionVisibilityUpdate extends Equatable {
+  const SshDefaultConnectionVisibilityUpdate({
+    required this.withReset,
+    required this.defaultConn,
+  });
+
+  final bool withReset;
+  final String defaultConn;
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'withReset': withReset,
+        'defaultConn': defaultConn,
+      };
+
+  @override
+  List<Object?> get props => <Object?>[withReset, defaultConn];
+}

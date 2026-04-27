@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:onepanel_client/core/services/passkey_service.dart';
 import 'package:onepanel_client/data/models/setting_models.dart';
+import 'package:onepanel_client/data/models/ssh_settings_models.dart';
 import 'package:onepanel_client/features/settings/settings_provider.dart';
 import 'package:onepanel_client/features/settings/settings_service.dart';
 import 'package:onepanel_client/features/settings/system_settings_page.dart';
@@ -41,12 +42,12 @@ class _FakeSettingsService extends SettingsService {
   }
 
   @override
-  Future<dynamic> getSSHConnection() async {
-    return const <String, dynamic>{
-      'host': '10.0.0.1',
-      'port': 22,
-      'user': 'root',
-    };
+  Future<SshLocalConnectionInfo> getSSHConnection() async {
+    return const SshLocalConnectionInfo(
+      addr: '10.0.0.1',
+      port: 22,
+      user: 'root',
+    );
   }
 
   @override

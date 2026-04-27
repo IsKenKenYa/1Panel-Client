@@ -245,6 +245,76 @@ void main() {
           response: exportResult.data);
     });
 
+    test('GET /settings/ssh/conn 应返回本地 SSH 连接摘要', () async {
+      if (!canRun) return;
+      final response = await api.getSshConn();
+      _logSection(
+        '✅ Parsed /settings/ssh/conn',
+        response: response.data?.toJson(),
+      );
+      expect(response.statusCode, 200);
+      expect(response.data, isNotNull);
+    });
+
+    test('POST /settings/ssh/check/info 应支持当前本地连接校验', () async {
+      if (!canRun) return;
+      final connection = (await api.getSshConn()).data;
+      if (connection == null || !connection.isConfigured) {
+        return;
+      }
+      final raw = await _rawPost(
+        client,
+        '/settings/ssh/check/info',
+        data: connection.toJson(),
+      );
+      _logSection(
+        '✅ Raw /settings/ssh/check/info',
+        method: 'POST',
+        path: '/settings/ssh/check/info',
+        request: connection.toJson(),
+        response: raw.data,
+      );
+      final parsed = await api.checkSshInfo(request: connection);
+      _logSection(
+        '✅ Parsed /settings/ssh/check/info',
+        response: parsed.data,
+      );
+      expect(parsed.statusCode, 200);
+      expect(parsed.data, equals(raw.data?['data']));
+    });
+
+    test('POST /settings/ssh/conn/default 应在 destructive 模式下做同值回放',
+        () async {
+      if (!canRun) return;
+      final skipReason = TestEnvironment.skipDestructive();
+      if (skipReason != null) {
+        appLogger.wWithPackage('test.api_client.ssh', '跳过测试: $skipReason');
+        return;
+      }
+      final connection = (await api.getSshConn()).data;
+      final currentValue =
+          connection?.localSSHConnShow.isNotEmpty == true
+              ? connection!.localSSHConnShow
+              : 'Disable';
+      final request = SshDefaultConnectionVisibilityUpdate(
+        withReset: false,
+        defaultConn: currentValue,
+      );
+      final raw = await _rawPost(
+        client,
+        '/settings/ssh/conn/default',
+        data: request.toJson(),
+      );
+      _logSection(
+        '✅ Raw /settings/ssh/conn/default',
+        method: 'POST',
+        path: '/settings/ssh/conn/default',
+        request: request.toJson(),
+        response: raw.data,
+      );
+      await api.setDefaultSshConn(request);
+    });
+
     test('GET /process/ws 应支持 SSH session websocket 查询', () async {
       if (!canRun) return;
       final wsClient = ProcessWsClient();
