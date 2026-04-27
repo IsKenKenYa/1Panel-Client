@@ -512,6 +512,51 @@ void main() {
             'Check App Update', e.toString(), Duration.zero);
       }
     });
+
+    test('GET /dashboard/app/launcher - Get App Launcher', () async {
+      if (!hasApiKey) return;
+      try {
+        final launchers = await api.getAppLauncher();
+        logResponse('/dashboard/app/launcher', launchers);
+        expect(launchers, isA<List<Map<String, dynamic>>>());
+        resultCollector.addSuccess('Get App Launcher', Duration.zero);
+      } catch (e) {
+        resultCollector.addFailure(
+            'Get App Launcher', e.toString(), Duration.zero);
+      }
+    });
+
+    test('POST /dashboard/app/launcher/option - Get App Launcher Option',
+        () async {
+      if (!hasApiKey) return;
+      try {
+        final options = await api.getAppLauncherOption(request: {'type': 'all'});
+        logResponse('/dashboard/app/launcher/option', options);
+        expect(options, isA<List<Map<String, dynamic>>>());
+        resultCollector.addSuccess('Get App Launcher Option', Duration.zero);
+      } catch (e) {
+        resultCollector.addFailure(
+            'Get App Launcher Option', e.toString(), Duration.zero);
+      }
+    });
+
+    test('POST /dashboard/app/launcher/show - Update App Launcher Show',
+        () async {
+      if (!hasApiKey) return;
+      try {
+        final response = await api.updateAppLauncherShow(
+          request: {
+            'key': 'monitor',
+            'show': true,
+          },
+        );
+        logResponse('/dashboard/app/launcher/show', response);
+        resultCollector.addSuccess('Update App Launcher Show', Duration.zero);
+      } catch (e) {
+        resultCollector.addFailure(
+            'Update App Launcher Show', e.toString(), Duration.zero);
+      }
+    });
   });
 
   group('5. Edge Cases & Cleanup', () {

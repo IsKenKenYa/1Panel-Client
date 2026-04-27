@@ -118,7 +118,7 @@ MODULE_CLIENT_PATH_FILTERS = {
         'include': ['/toolbox/device'],
     },
     'backup': {
-        'include': ['/backups'],
+        'include': ['/backups', '/core/backups'],
     },
 }
 

@@ -48,7 +48,8 @@ class ServerListPageMobile extends StatelessWidget {
       return const Center(child: CircularProgressIndicator());
     }
 
-    final data = viewModel.filteredServers;
+    // Use a snapshot to avoid list mutations during sliver layout/paint.
+    final data = viewModel.filteredServers.toList(growable: false);
 
     return Stack(
       children: [
@@ -99,20 +100,22 @@ class ServerListPageMobile extends StatelessWidget {
               else
                 SliverPadding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                  sliver: SliverList.builder(
-                    itemCount: data.length,
-                    itemBuilder: (context, index) {
-                      final item = data[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: ServerCard(
-                          key: index == 0 ? viewModel.firstCardKey : null,
-                          data: item,
-                          onTap: () => viewModel.openDetail(context, item),
-                          onDelete: () => viewModel.deleteServer(context, item),
-                        ),
-                      );
-                    },
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final item = data[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: ServerCard(
+                            key: index == 0 ? viewModel.firstCardKey : null,
+                            data: item,
+                            onTap: () => viewModel.openDetail(context, item),
+                            onDelete: () => viewModel.deleteServer(context, item),
+                          ),
+                        );
+                      },
+                      childCount: data.length,
+                    ),
                   ),
                 ),
             ],
