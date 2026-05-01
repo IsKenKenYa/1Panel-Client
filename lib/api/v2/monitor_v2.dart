@@ -366,7 +366,7 @@ class MonitorV2Api {
     String? endTime,
   }) async {
     return search(MonitorSearch(
-      param: 'base',
+      param: 'all',
       startTime: startTime,
       endTime: endTime,
     ));

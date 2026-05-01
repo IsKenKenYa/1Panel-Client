@@ -101,7 +101,7 @@ void main() {
       final startTime = now.subtract(const Duration(hours: 1));
 
       final request = MonitorSearch(
-        param: 'base',
+        param: 'all',
         startTime: startTime.toUtc().toIso8601String(),
         endTime: now.toUtc().toIso8601String(),
       );

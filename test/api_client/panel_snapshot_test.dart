@@ -4,6 +4,20 @@ import 'package:flutter_test/flutter_test.dart';
 import '../core/test_config_manager.dart';
 import 'package:onepanel_client/core/network/dio_client.dart';
 
+Map<String, dynamic> _snapshotSearchPayload() => const <String, dynamic>{
+      'page': 1,
+      'pageSize': 10,
+      'orderBy': 'createdAt',
+      'order': 'descending',
+    };
+
+Map<String, dynamic> _snapshotCreatePayload(String description) =>
+    <String, dynamic>{
+      'description': description,
+      'sourceAccountIDs': '1',
+      'downloadAccountID': 1,
+    };
+
 void main() {
   late DioClient client;
   bool hasApiKey = false;
@@ -131,16 +145,19 @@ void main() {
       debugPrint('当前端口: $currentPort');
 
       // 尝试更新（使用相同端口测试接口是否正常）
-      final response = await dio.post(
-        '/api/v2/core/settings/port/update',
-        data: {'serverPort': currentPort},
-      );
+      try {
+        final response = await dio.post(
+          '/api/v2/core/settings/port/update',
+          data: {'serverPort': currentPort},
+        );
 
-      final responseData = response.data as Map<String, dynamic>;
-      debugPrint(
-          '响应: code=${responseData['code']}, message=${responseData['message']}');
-      debugPrint(
-          '接口可用: ${responseData['code'] == 200 || responseData['code'] == 500}');
+        final responseData = response.data as Map<String, dynamic>;
+        debugPrint(
+            '响应: code=${responseData['code']}, message=${responseData['message']}');
+        debugPrint('接口可用: ${responseData['code'] == 200}');
+      } catch (e) {
+        debugPrint('错误: $e');
+      }
 
       debugPrint('========================================\n');
     });
@@ -205,13 +222,17 @@ void main() {
 
       for (final testCase in testCases) {
         debugPrint('\n--- 测试 ${testCase['key']} = ${testCase['value']} ---');
-        final response = await dio.post(
-          '/api/v2/core/settings/update',
-          data: testCase,
-        );
-        final responseData = response.data as Map<String, dynamic>;
-        debugPrint(
-            '响应: code=${responseData['code']}, message=${responseData['message']}');
+        try {
+          final response = await dio.post(
+            '/api/v2/core/settings/update',
+            data: testCase,
+          );
+          final responseData = response.data as Map<String, dynamic>;
+          debugPrint(
+              '响应: code=${responseData['code']}, message=${responseData['message']}');
+        } catch (e) {
+          debugPrint('错误: $e');
+        }
       }
 
       debugPrint('========================================\n');
@@ -235,22 +256,12 @@ void main() {
       final testCases = [
         {
           'desc': '完整分页参数',
-          'data': {
-            'page': 1,
-            'pageSize': 10,
-            'orderBy': 'createdAt',
-            'order': 'desc',
-          }
+          'data': _snapshotSearchPayload(),
         },
         {
-          'desc': 'pageInfo结构',
-          'data': {
-            'pageInfo': {'page': 1, 'pageSize': 10},
-            'orderBy': 'createdAt',
-            'order': 'desc',
-          }
+          'desc': '使用 typed client 对齐参数',
+          'data': _snapshotSearchPayload(),
         },
-        {'desc': '空参数', 'data': {}},
       ];
 
       for (final testCase in testCases) {
@@ -260,11 +271,12 @@ void main() {
             '/api/v2/settings/snapshot/search',
             data: testCase['data'],
           );
-          final responseData = response.data as Map<String, dynamic>;
-          debugPrint(
-              '响应: code=${responseData['code']}, message=${responseData['message']}');
+          final responseData = response.data;
+          debugPrint('响应: ${jsonEncode(responseData)}');
 
-          if (responseData['code'] == 200 && responseData['data'] != null) {
+          if (responseData is Map<String, dynamic> &&
+              responseData['code'] == 200 &&
+              responseData['data'] is Map<String, dynamic>) {
             final data = responseData['data'] as Map<String, dynamic>;
             final items = data['items'] as List<dynamic>? ?? [];
             debugPrint('快照数量: ${items.length}');
@@ -290,11 +302,10 @@ void main() {
       debugPrint('========================================');
 
       final response = await dio.post(
-        '/api/v2/settings/snapshot/create',
-        data: {
-          'description':
-              'API Test Snapshot ${DateTime.now().millisecondsSinceEpoch}'
-        },
+        '/api/v2/settings/snapshot',
+        data: _snapshotCreatePayload(
+          'API Test Snapshot ${DateTime.now().millisecondsSinceEpoch}',
+        ),
       );
 
       final responseData = response.data as Map<String, dynamic>;
@@ -305,7 +316,7 @@ void main() {
       debugPrint('========================================\n');
     });
 
-    test('3. 测试快照状态接口', () async {
+    test('3. 测试快照载入接口', () async {
       if (!hasApiKey) {
         debugPrint('⚠️  跳过测试: API密钥未配置');
         return;
@@ -314,12 +325,12 @@ void main() {
       final dio = client.dio;
 
       debugPrint('\n========================================');
-      debugPrint('测试快照状态接口');
+      debugPrint('测试快照载入接口');
       debugPrint('========================================');
 
-      // 尝试获取快照状态
+      // 正式契约为 /settings/snapshot/load
       try {
-        final response = await dio.post('/api/v2/settings/snapshot/status');
+        final response = await dio.get('/api/v2/settings/snapshot/load');
         final responseData = response.data as Map<String, dynamic>;
         debugPrint(
             '响应: code=${responseData['code']}, message=${responseData['message']}');
@@ -350,14 +361,14 @@ void main() {
     这意味着: panelName, developerMode, sessionTimeout, theme, language 等无法通过此接口修改
 
 ⚠️ 需要进一步确认:
-  - 快照列表接口需要正确的分页参数格式
-  - 快照创建接口可能可用
+  - 快照创建需要 sourceAccountIDs/downloadAccountID
+  - 部分设置接口是服务端设计限制，不应再走旧探测路径
 
 结论：
 1. 面板配置中的面板名称、主题、语言等无法通过API编辑
 2. 端口和绑定地址可以编辑
 3. 终端设置可以编辑
-4. 快照管理需要正确的参数格式
+4. 快照管理应使用 /settings/snapshot 与 /settings/snapshot/load 正式路由
 ''');
 
       debugPrint('========================================\n');

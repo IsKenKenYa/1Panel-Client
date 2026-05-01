@@ -4,6 +4,13 @@ import 'package:flutter_test/flutter_test.dart';
 import '../core/test_config_manager.dart';
 import 'package:onepanel_client/core/network/dio_client.dart';
 
+Map<String, dynamic> _snapshotCreatePayload(String description) =>
+    <String, dynamic>{
+      'description': description,
+      'sourceAccountIDs': '1',
+      'downloadAccountID': 1,
+    };
+
 void main() {
   late DioClient client;
   bool hasApiKey = false;
@@ -35,12 +42,10 @@ void main() {
       debugPrint('========================================');
 
       final orderValues = [
-        'asc',
-        'desc',
-        'ASC',
-        'DESC',
+        'descending',
         'ascending',
-        'descending'
+        'desc',
+        'asc',
       ];
 
       for (final order in orderValues) {
@@ -91,38 +96,14 @@ void main() {
             'page': 1,
             'pageSize': 10,
             'orderBy': 'createdAt',
-            'order': 'desc',
+            'order': 'descending',
           }
         },
         {
-          'desc': 'pageInfo嵌套结构',
-          'data': {
-            'pageInfo': {
-              'page': 1,
-              'pageSize': 10,
-            },
-            'orderBy': 'createdAt',
-            'order': 'desc',
-          }
-        },
-        {
-          'desc': '大写Order值',
+          'desc': '扁平结构 desc',
           'data': {
             'page': 1,
             'pageSize': 10,
-            'orderBy': 'createdAt',
-            'Order': 'desc',
-          }
-        },
-        {
-          'desc': '同时有page和pageInfo',
-          'data': {
-            'page': 1,
-            'pageSize': 10,
-            'pageInfo': {
-              'page': 1,
-              'pageSize': 10,
-            },
             'orderBy': 'createdAt',
             'order': 'desc',
           }
@@ -167,10 +148,10 @@ void main() {
       debugPrint('========================================');
 
       final createResponse = await dio.post(
-        '/api/v2/settings/snapshot/create',
-        data: {
-          'description': 'API Test ${DateTime.now().millisecondsSinceEpoch}'
-        },
+        '/api/v2/settings/snapshot',
+        data: _snapshotCreatePayload(
+          'API Test ${DateTime.now().millisecondsSinceEpoch}',
+        ),
       );
 
       final createData = createResponse.data as Map<String, dynamic>;

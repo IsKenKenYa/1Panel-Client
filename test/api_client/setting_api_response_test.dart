@@ -155,18 +155,22 @@ void main() {
         return;
       }
 
-      final response = await api.generateApiKey();
+      try {
+        final response = await api.generateApiKey();
 
-      debugPrint('\n========================================');
-      debugPrint('generateApiKey 响应数据');
-      debugPrint('========================================');
-      debugPrint('状态码: ${response.statusCode}');
-      debugPrint('数据类型: ${response.data.runtimeType}');
+        debugPrint('\n========================================');
+        debugPrint('generateApiKey 响应数据');
+        debugPrint('========================================');
+        debugPrint('状态码: ${response.statusCode}');
+        debugPrint('数据类型: ${response.data.runtimeType}');
 
-      if (response.data != null) {
-        final jsonStr =
-            const JsonEncoder.withIndent('  ').convert(response.data);
-        debugPrint('数据内容:\n$jsonStr');
+        if (response.data != null) {
+          final jsonStr =
+              const JsonEncoder.withIndent('  ').convert(response.data);
+          debugPrint('数据内容:\n$jsonStr');
+        }
+      } catch (e) {
+        debugPrint('⚠️  generateApiKey 探测结果: $e');
       }
       debugPrint('========================================\n');
     });

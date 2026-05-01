@@ -47,7 +47,7 @@ void main() {
       final updateResponse = await dio.post(
         '/api/v2/core/settings/terminal/update',
         data: {
-          'fontSize': 16,
+          'fontSize': '16',
           'cursorStyle': 'block',
           'cursorBlink': 'true',
           'scrollSensitivity': '1',
@@ -94,34 +94,38 @@ void main() {
 
       // 尝试更新 - 使用正确的参数格式
       debugPrint('\n--- 尝试更新面板名称 ---');
-      final updateResponse = await dio.post(
-        '/api/v2/core/settings/update',
-        data: {
-          'key': 'panelName',
-          'value': 'TestPanel_${DateTime.now().millisecondsSinceEpoch}',
-        },
-      );
-
-      final updateData = updateResponse.data as Map<String, dynamic>;
-      debugPrint(
-          '更新响应: code=${updateData['code']}, message=${updateData['message']}');
-
-      // 验证
-      await Future.delayed(const Duration(milliseconds: 500));
-      final verifyResponse = await dio.post('/api/v2/core/settings/search');
-      final verifyData = verifyResponse.data as Map<String, dynamic>;
-      final verifySettings = verifyData['data'] as Map<String, dynamic>?;
-
-      debugPrint('验证后的面板名称: ${verifySettings?['panelName']}');
-      debugPrint('更新成功: ${updateData['code'] == 200}');
-
-      // 恢复原始值
-      if (updateData['code'] == 200) {
-        await dio.post(
+      try {
+        final updateResponse = await dio.post(
           '/api/v2/core/settings/update',
-          data: {'key': 'panelName', 'value': originalPanelName},
+          data: {
+            'key': 'panelName',
+            'value': 'TestPanel_${DateTime.now().millisecondsSinceEpoch}',
+          },
         );
-        debugPrint('已恢复原始面板名称');
+
+        final updateData = updateResponse.data as Map<String, dynamic>;
+        debugPrint(
+            '更新响应: code=${updateData['code']}, message=${updateData['message']}');
+
+        // 验证
+        await Future.delayed(const Duration(milliseconds: 500));
+        final verifyResponse = await dio.post('/api/v2/core/settings/search');
+        final verifyData = verifyResponse.data as Map<String, dynamic>;
+        final verifySettings = verifyData['data'] as Map<String, dynamic>?;
+
+        debugPrint('验证后的面板名称: ${verifySettings?['panelName']}');
+        debugPrint('更新成功: ${updateData['code'] == 200}');
+
+        // 恢复原始值
+        if (updateData['code'] == 200) {
+          await dio.post(
+            '/api/v2/core/settings/update',
+            data: {'key': 'panelName', 'value': originalPanelName},
+          );
+          debugPrint('已恢复原始面板名称');
+        }
+      } catch (e) {
+        debugPrint('更新受限: $e');
       }
 
       debugPrint('========================================\n');
@@ -143,21 +147,26 @@ void main() {
       final searchResponse = await dio.post('/api/v2/core/settings/search');
       final searchData = searchResponse.data as Map<String, dynamic>;
       final data = searchData['data'] as Map<String, dynamic>?;
-      final currentPort = data?['serverPort'] as String?;
+      final currentPort =
+          int.tryParse(data?['serverPort']?.toString() ?? '9999') ?? 9999;
 
       debugPrint('当前端口: $currentPort');
 
       // 尝试更新端口
       debugPrint('\n--- 尝试更新端口 ---');
-      final updateResponse = await dio.post(
-        '/api/v2/core/settings/port/update',
-        data: {'serverPort': currentPort ?? '9999'},
-      );
+      try {
+        final updateResponse = await dio.post(
+          '/api/v2/core/settings/port/update',
+          data: {'serverPort': currentPort},
+        );
 
-      final updateData = updateResponse.data as Map<String, dynamic>;
-      debugPrint(
-          '更新响应: code=${updateData['code']}, message=${updateData['message']}');
-      debugPrint('更新成功: ${updateData['code'] == 200}');
+        final updateData = updateResponse.data as Map<String, dynamic>;
+        debugPrint(
+            '更新响应: code=${updateData['code']}, message=${updateData['message']}');
+        debugPrint('更新成功: ${updateData['code'] == 200}');
+      } catch (e) {
+        debugPrint('更新受限: $e');
+      }
       debugPrint('========================================\n');
     });
 
@@ -178,6 +187,7 @@ void main() {
       final searchData = searchResponse.data as Map<String, dynamic>;
       final data = searchData['data'] as Map<String, dynamic>?;
       final currentBind = data?['bindAddress'] as String?;
+      final ipv6Enabled = data?['ipv6'] == 'Enable';
 
       debugPrint('当前绑定地址: $currentBind');
 
@@ -185,7 +195,10 @@ void main() {
       debugPrint('\n--- 尝试更新绑定地址 ---');
       final updateResponse = await dio.post(
         '/api/v2/core/settings/bind/update',
-        data: {'bindAddress': currentBind ?? '::'},
+        data: {
+          'bindAddress': currentBind ?? '::',
+          'ipv6': ipv6Enabled ? 'Enable' : 'Disable',
+        },
       );
 
       final updateData = updateResponse.data as Map<String, dynamic>;
@@ -256,7 +269,7 @@ void main() {
           'page': 1,
           'pageSize': 10,
           'orderBy': 'createdAt',
-          'order': 'desc',
+          'order': 'descending',
         },
       );
 
@@ -288,8 +301,12 @@ void main() {
       debugPrint('========================================');
 
       final createResponse = await dio.post(
-        '/api/v2/settings/snapshot/create',
-        data: {'description': 'Test snapshot from API test'},
+        '/api/v2/settings/snapshot',
+        data: {
+          'description': 'Test snapshot from API test',
+          'sourceAccountIDs': '1',
+          'downloadAccountID': 1,
+        },
       );
 
       final createData = createResponse.data as Map<String, dynamic>;

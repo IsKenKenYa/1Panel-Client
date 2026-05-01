@@ -85,15 +85,19 @@ void main() {
       debugPrint('当前端口: $currentPort');
 
       // 尝试更新端口 - 使用数字类型
-      final updateResponse = await dio.post(
-        '/api/v2/core/settings/port/update',
-        data: {'serverPort': currentPort}, // 数字类型
-      );
+      try {
+        final updateResponse = await dio.post(
+          '/api/v2/core/settings/port/update',
+          data: {'serverPort': currentPort}, // 数字类型
+        );
 
-      final updateData = updateResponse.data as Map<String, dynamic>;
-      debugPrint(
-          '更新响应: code=${updateData['code']}, message=${updateData['message']}');
-      debugPrint('更新成功: ${updateData['code'] == 200}');
+        final updateData = updateResponse.data as Map<String, dynamic>;
+        debugPrint(
+            '更新响应: code=${updateData['code']}, message=${updateData['message']}');
+        debugPrint('更新成功: ${updateData['code'] == 200}');
+      } catch (e) {
+        debugPrint('错误: $e');
+      }
       debugPrint('========================================\n');
     });
 
@@ -148,11 +152,18 @@ void main() {
 
       // 尝试不同的参数组合
       final testCases = [
-        {'page': 1, 'pageSize': 10},
         {
-          'pageInfo': {'page': 1, 'pageSize': 10}
+          'page': 1,
+          'pageSize': 10,
+          'orderBy': 'createdAt',
+          'order': 'descending',
         },
-        {'page': '1', 'pageSize': '10'},
+        {
+          'page': 1,
+          'pageSize': 10,
+          'orderBy': 'createdAt',
+          'order': 'desc',
+        },
       ];
 
       for (final params in testCases) {

@@ -137,6 +137,7 @@ void main() {
       const request = FirewallRuleSearch(
         page: 1,
         pageSize: 10,
+        type: 'address',
       );
       final raw = await _rawPost(
         client,

@@ -46,7 +46,7 @@ void main() {
       debugPrint('\n--- 尝试更新字体大小为 16 ---');
       final updateResponse = await dio.post(
         '/api/v2/core/settings/terminal/update',
-        data: {'fontSize': 16},
+        data: {'fontSize': '16'},
       );
 
       debugPrint('更新响应: ${jsonEncode(updateResponse.data)}');
@@ -111,7 +111,8 @@ void main() {
       final searchResponse = await dio.post('/api/v2/core/settings/search');
       final searchData = searchResponse.data as Map<String, dynamic>;
       final data = searchData['data'] as Map<String, dynamic>?;
-      final currentPort = data?['serverPort'] as String?;
+      final currentPort =
+          int.tryParse(data?['serverPort']?.toString() ?? '9999') ?? 9999;
 
       debugPrint('当前端口: $currentPort');
 
@@ -119,7 +120,7 @@ void main() {
       debugPrint('\n--- 尝试更新端口 ---');
       final updateResponse = await dio.post(
         '/api/v2/core/settings/port/update',
-        data: {'serverPort': currentPort ?? '9999'},
+        data: {'serverPort': currentPort},
       );
 
       debugPrint('更新响应: ${jsonEncode(updateResponse.data)}');
@@ -143,6 +144,7 @@ void main() {
       final searchData = searchResponse.data as Map<String, dynamic>;
       final data = searchData['data'] as Map<String, dynamic>?;
       final currentBind = data?['bindAddress'] as String?;
+      final ipv6Enabled = data?['ipv6'] == 'Enable';
 
       debugPrint('当前绑定地址: $currentBind');
 
@@ -150,7 +152,10 @@ void main() {
       debugPrint('\n--- 尝试更新绑定地址 ---');
       final updateResponse = await dio.post(
         '/api/v2/core/settings/bind/update',
-        data: {'bindAddress': currentBind ?? '::'},
+        data: {
+          'bindAddress': currentBind ?? '::',
+          'ipv6': ipv6Enabled ? 'Enable' : 'Disable',
+        },
       );
 
       debugPrint('更新响应: ${jsonEncode(updateResponse.data)}');
@@ -205,7 +210,15 @@ void main() {
       debugPrint('========================================');
 
       // 获取现有快照
-      final searchResponse = await dio.post('/api/v2/settings/snapshot/search');
+      final searchResponse = await dio.post(
+        '/api/v2/settings/snapshot/search',
+        data: const {
+          'page': 1,
+          'pageSize': 10,
+          'orderBy': 'createdAt',
+          'order': 'descending',
+        },
+      );
       final searchData = searchResponse.data as Map<String, dynamic>;
 
       debugPrint('现有快照: ${jsonEncode(searchData['data'])}');
@@ -213,8 +226,12 @@ void main() {
       // 尝试创建快照
       debugPrint('\n--- 尝试创建快照 ---');
       final createResponse = await dio.post(
-        '/api/v2/settings/snapshot/create',
-        data: {'description': 'Test snapshot from API test'},
+        '/api/v2/settings/snapshot',
+        data: {
+          'description': 'Test snapshot from API test',
+          'sourceAccountIDs': '1',
+          'downloadAccountID': 1,
+        },
       );
 
       debugPrint('创建响应: ${jsonEncode(createResponse.data)}');
@@ -237,39 +254,77 @@ void main() {
         {
           'name': '终端设置更新',
           'path': '/core/settings/terminal/update',
-          'method': 'POST'
+          'method': 'POST',
+          'data': {'fontSize': '16'},
         },
-        {'name': '系统升级', 'path': '/core/settings/upgrade', 'method': 'POST'},
+        {
+          'name': '系统升级',
+          'path': '/core/settings/upgrade',
+          'method': 'POST',
+          'data': {},
+        },
         {
           'name': '升级版本列表',
           'path': '/core/settings/upgrade/releases',
-          'method': 'POST'
+          'method': 'POST',
+          'data': {},
         },
         {
           'name': '端口更新',
           'path': '/core/settings/port/update',
-          'method': 'POST'
+          'method': 'POST',
+          'data': {'serverPort': 9999},
         },
         {
           'name': '绑定地址更新',
           'path': '/core/settings/bind/update',
-          'method': 'POST'
+          'method': 'POST',
+          'data': {'bindAddress': '::', 'ipv6': 'Enable'},
         },
         {
           'name': 'API配置更新',
           'path': '/core/settings/api/config/update',
-          'method': 'POST'
+          'method': 'POST',
+          'data': {
+            'status': 'Enable',
+            'ipWhiteList': '0.0.0.0/0',
+            'validityTime': 0
+          },
         },
-        {'name': '快照创建', 'path': '/settings/snapshot/create', 'method': 'POST'},
-        {'name': '快照列表', 'path': '/settings/snapshot/search', 'method': 'POST'},
-        {'name': '通用设置更新', 'path': '/core/settings/update', 'method': 'POST'},
+        {
+          'name': '快照创建',
+          'path': '/settings/snapshot',
+          'method': 'POST',
+          'data': {
+            'description': 'summary probe',
+            'sourceAccountIDs': '1',
+            'downloadAccountID': 1,
+          },
+        },
+        {
+          'name': '快照列表',
+          'path': '/settings/snapshot/search',
+          'method': 'POST',
+          'data': {
+            'page': 1,
+            'pageSize': 10,
+            'orderBy': 'createdAt',
+            'order': 'descending',
+          },
+        },
+        {
+          'name': '通用设置更新',
+          'path': '/core/settings/update',
+          'method': 'POST',
+          'data': {'key': 'panelName', 'value': 'summary-probe'},
+        },
       ];
 
       for (final endpoint in endpoints) {
         try {
           final response = await dio.post(
             '/api/v2${endpoint['path']}',
-            data: {},
+            data: endpoint['data'],
           );
           final data = response.data as Map<String, dynamic>;
           final code = data['code'];
