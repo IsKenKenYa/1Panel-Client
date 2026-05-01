@@ -13,6 +13,12 @@ This release focuses on the desktop adaptation track, native platform wiring, te
 
 本版本重点围绕桌面端适配、原生平台接入、终端工作流补齐，以及全局 API、模型、仓库与 UI 的广泛改进。
 
+### 概览（中文）
+
+本次发布主要完成了桌面端适配阶段的核心合并：终端工作台与运行会话、Windows 原生桥接能力、平台自适应壳与模块路由、统一 API 响应解析与异常处理，以及文件、数据库、容器、网站、监控、日志、设置和安全模块的交互优化。
+
+这是一个面向 `debug` 通道的预览版本，适合在目标平台上做完整性验证与反馈收集，不建议直接视作生产稳定版。
+
 ### Added
 
 #### Terminal Workbench and Transport
@@ -35,6 +41,11 @@ This release focuses on the desktop adaptation track, native platform wiring, te
 - Added API exception handling helpers and a WebSocket API connector.
 - Added API client and repository updates for AI, container, database, file, host, logs, monitoring, security, settings, SSL, toolbox, website, and terminal domains.
 
+#### API 基础设施（中文）
+- 新增统一的 API 响应解析器，用于统一处理不同接口的响应结构。
+- 新增 API 异常处理辅助能力与 WebSocket API 连接器。
+- 扩展 AI、容器、数据库、文件、主机、日志、监控、安全、设置、SSL、工具箱、网站和终端等多个领域的 API 客户端与仓库实现。
+
 #### Theme and Rendering Policy
 - Added UI render mode and UI render policy abstractions to centralize rendering decisions.
 - Added platform and keyboard utility helpers for desktop-oriented interaction handling.
@@ -44,52 +55,102 @@ This release focuses on the desktop adaptation track, native platform wiring, te
 - Added native UI workflow documentation and desktop adaptation workflow documentation.
 - Migrated issue templates to GitHub issue form format.
 
+#### 文档与流程（中文）
+- 新增跨平台 UI 治理文档，统一不同平台的设计与接入边界。
+- 新增原生 UI 工作流文档与桌面端适配工作流文档。
+- 将问题模板迁移为 GitHub issue form 格式，提升收集一致性。
+
 ### Changed
 
 #### Release Channel and Build Metadata
 - Kept the tag-driven release channel model with debug/beta/pre-release/release tag families.
 - Continued injecting build metadata for source branch, commit SHA, and build date into release artifacts.
 
+#### 发布通道与构建信息（中文）
+- 继续沿用基于 tag 的发布通道模型，分别对应 debug、beta、pre-release 和 release。
+- 继续向构建产物注入来源分支、提交 SHA 和构建时间，便于追踪与回溯。
+
 #### App Shell and Server Experience
 - Reworked shell navigation to support module switching inside the shared shell host.
 - Refined the server selection and server-aware scaffold flow for desktop layouts.
 - Split server list presentation into mobile and desktop views for clearer platform-specific UX.
 
+#### 应用壳与服务器体验（中文）
+- 重构壳层导航，保证模块切换始终在统一壳内完成。
+- 优化服务器选择与服务器感知页面骨架，适配桌面布局。
+- 将服务器列表拆分为移动端与桌面端展示，提升不同平台上的可读性与操作效率。
+
 #### AI Module
 - Updated AI agent, plugin, setting, and role models to support richer role and plugin metadata handling.
 - Updated the AI provider flow and MCP-related provider behavior for the new model structure.
+
+#### AI 模块（中文）
+- 更新 AI 代理、插件、设置和角色模型，以支持更丰富的角色与插件元数据。
+- 更新 AI Provider 流程与 MCP 相关行为，以适配新的模型结构。
 
 #### Databases Module
 - Refined database loading and remote loading flows.
 - Improved filtering, display, and Redis-specific page composition.
 - Updated database repository and user repository behaviors for the new contract surface.
 
+#### 数据库模块（中文）
+- 优化数据库加载与远程加载流程。
+- 改进筛选、展示和 Redis 专用页面结构。
+- 根据新的接口契约更新数据库仓库与数据库用户仓库行为。
+
 #### Files Module
 - Improved file page interaction, contextual menu behavior, and background handling.
 - Refined file browser, recycle bin, transfer manager, and preview provider logic.
 - Updated file data model handling for downloads and previews.
 
+#### 文件模块（中文）
+- 改进文件页面交互、上下文菜单行为和背景处理。
+- 优化文件浏览器、回收站、传输管理器和预览 Provider 的逻辑。
+- 更新文件数据模型对下载与预览的处理方式。
+
 #### Containers and Orchestration
 - Updated container service, provider, and repository interactions to match the expanded API surface.
 - Improved compose, image, network, and volume provider flows.
+
+#### 容器与编排（中文）
+- 更新容器服务、Provider 与仓库交互，以匹配扩展后的 API 面。
+- 改进 Compose、镜像、网络和卷相关 Provider 的流程。
 
 #### Websites, SSL, and Security
 - Updated website list, domain management, SSL center, and routing-related providers.
 - Improved website certificate, configuration, lifecycle, and security access flows.
 - Updated security provider and repository logic for the expanded authentication and verification surface.
 
+#### 网站、SSL 与安全（中文）
+- 更新网站列表、域名管理、SSL 中心以及路由相关 Provider。
+- 优化网站证书、配置、生命周期和安全访问流程。
+- 根据扩展后的认证与校验场景更新安全 Provider 与仓库逻辑。
+
 #### Logs, Monitoring, and Host Tools
 - Refined log provider behavior for system logs and task logs.
 - Updated monitoring service/provider flows and runtime model support.
 - Improved host assets, SSH, toolbox, and command management integration.
 
+#### 日志、监控与主机工具（中文）
+- 优化系统日志和任务日志的 Provider 行为。
+- 更新监控服务/Provider 流程及运行时模型支持。
+- 强化主机资产、SSH、工具箱和命令管理的集成。
+
 #### Settings and System Pages
 - Updated backup account, snapshot, terminal settings, system settings, and legal center pages.
 - Adjusted settings service/controller behavior to support the new release channel and render policy.
 
+#### 设置与系统页面（中文）
+- 更新备份账户、快照、终端设置、系统设置和法律中心页面。
+- 调整设置服务/控制器行为，以支持新的发布通道和渲染策略。
+
 #### iOS and macOS Project Configuration
 - Updated iOS project dependencies and project settings.
 - Refined macOS shell configuration and release entitlement setup.
+
+#### iOS 与 macOS 工程配置（中文）
+- 更新 iOS 工程依赖与项目配置。
+- 优化 macOS 壳层配置与 Release entitlements 设置。
 
 ### Fixed
 
@@ -98,15 +159,32 @@ This release focuses on the desktop adaptation track, native platform wiring, te
 - Reduced native bridge and channel wiring inconsistencies in the Windows track.
 - Improved response parsing consistency across the API layer.
 
+### 修复（中文）
+
+- 改进 API 测试的错误处理与日志输出，提高诊断可靠性。
+- 修复文件、数据库、网站和壳层等页面上的若干桌面端交互与布局问题。
+- 减少 Windows 原生桥接与通道接线中的不一致问题。
+- 提升 API 层响应解析的一致性。
+
 ### Security
 
 - Reworked MFA request and response models to keep authentication state consistent and easier to validate.
 - Strengthened signing-related release flow assumptions by keeping build metadata and channel mapping explicit.
 
+### 安全（中文）
+
+- 重构 MFA 请求与响应模型，使认证状态更一致、更易验证。
+- 通过明确构建元数据与通道映射，强化与签名相关的发布流程假设。
+
 ### Performance
 
 - Reduced duplicate parsing and error-handling work in the shared API client layer.
 - Split long-lived terminal responsibilities into dedicated transport and session abstractions to reduce coupling.
+
+### 性能（中文）
+
+- 减少共享 API 客户端层重复解析与错误处理的开销。
+- 将长期存在的终端职责拆分为独立的传输与会话抽象，降低耦合。
 
 ### UI/UX
 
@@ -114,21 +192,43 @@ This release focuses on the desktop adaptation track, native platform wiring, te
 - Refined file, database, container, website, and dashboard interaction surfaces.
 - Adjusted UI composition for more consistent desktop behavior across cached pages and native tracks.
 
+### UI/UX（中文）
+
+- 改进桌面壳层导航、模块切换和服务器感知布局。
+- 优化文件、数据库、容器、网站和仪表板的交互层。
+- 调整 UI 组合方式，让缓存页面与原生轨道在桌面上的行为更一致。
+
 ### Compatibility
 
 - This release remains aligned with the 1Panel V2 API family and the current desktop adaptation track.
 - Desktop native features should be validated against the target platform configuration before production use.
+
+### 兼容性（中文）
+
+- 本次发布仍与 1Panel V2 API 家族以及当前桌面端适配轨道保持一致。
+- 桌面原生功能在进入生产使用前，应先在目标平台配置下完成验证。
 
 ### Known Issues
 
 - iOS, macOS, and Windows release builds may fail if platform signing or local toolchain prerequisites are incomplete.
 - Some native UI and bridge features are still evolving and may require platform-specific validation.
 
+### 已知问题（中文）
+
+- 如果平台签名或本地工具链前置条件不完整，iOS、macOS 和 Windows 的 Release 构建可能失败。
+- 部分原生 UI 与桥接功能仍在持续演进中，可能需要按平台进行额外验证。
+
 ### Upgrade Notes
 
 - Keep service-side and client-side versions aligned when validating API compatibility.
 - Re-run login, server switching, terminal, and file-management flows after upgrading because these areas changed the most.
 - If you use release automation, ensure the `debug-*` tag is pushed from `dev` so the Android workflow accepts it.
+
+### 升级提示（中文）
+
+- 在验证 API 兼容性时，请保持服务端与客户端版本尽量对齐。
+- 升级后建议重新走一遍登录、服务器切换、终端和文件管理流程，因为这些区域变更最多。
+- 如果你使用发布自动化，请确保 `debug-*` tag 从 `dev` 推出，这样 Android 工作流才会接受。
 
 ### Module Highlights
 
