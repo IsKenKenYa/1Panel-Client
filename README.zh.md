@@ -5,7 +5,7 @@
 <h1 align="center">1Panel Client</h1>
 
 <p align="center">
-  <a href="https://github.com/IsKenKenYa/1Panel-Client/releases"><img src="https://img.shields.io/badge/版本 -0.5.0--alpha.1%2B1-blue.svg" alt="版本" /></a>
+  <a href="https://github.com/IsKenKenYa/1Panel-Client/releases"><img src="https://img.shields.io/badge/版本-0.6.0%2B1-blue.svg" alt="版本" /></a>
   <a href="https://github.com/IsKenKenYa/1Panel-Client/blob/master/LICENSE"><img src="https://img.shields.io/badge/许可-GPL--3.0-green.svg" alt="许可" /></a>
 </p>
 
@@ -83,6 +83,19 @@
 - 后续版本将通过 GitHub Pre-release 持续发布。
 - 当前官方唯一反馈渠道为 GitHub Issues：
   - [Issues](https://github.com/IsKenKenYa/1Panel-Client/issues)
+
+## 近期更新
+
+### 0.6.0
+
+- 新增终端工作台、运行时会话和 WebSocket 传输层，支持更完整的终端工作流。
+- 新增 Windows 原生主机桥接、能力白名单和系统托盘接入，补齐桌面端原生轨道。
+- 新增平台自适应壳与服务感知导航，保证模块切换始终留在统一壳内。
+- 新增统一 API 响应解析与异常处理，减少网络层重复逻辑。
+- 优化文件、数据库、网站、日志、监控、设置与安全相关的体验与流程。
+- 更新 iOS 与 macOS 工程配置，继续推进原生平台适配。
+
+本次版本仍属于 `debug` 渠道，发布前请先在目标平台验证。
 
 ## 🛠️ 技术栈
 

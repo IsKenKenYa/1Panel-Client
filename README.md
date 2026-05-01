@@ -5,7 +5,7 @@
 <h1 align="center">1Panel Client</h1>
 
 <p align="center">
-  <a href="https://github.com/IsKenKenYa/1Panel-Client/releases"><img src="https://img.shields.io/badge/version-0.5.0--alpha.2%2B2-blue.svg" alt="Version" /></a>
+  <a href="https://github.com/IsKenKenYa/1Panel-Client/releases"><img src="https://img.shields.io/badge/version-0.6.0%2B1-blue.svg" alt="Version" /></a>
   <a href="https://github.com/IsKenKenYa/1Panel-Client/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-green.svg" alt="License" /></a>
 </p>
 
@@ -85,6 +85,19 @@ To use 1Panel Client, you **must enable API access** on your 1Panel server:
 - Automatic in-app updates are not available in these channels yet.
 - The official feedback channel is GitHub Issues:
   - [Issues](https://github.com/IsKenKenYa/1Panel-Client/issues)
+
+## Recent Updates
+
+### 0.6.0
+
+- Added terminal workbench, runtime session, and WebSocket transport layers for longer-lived terminal workflows.
+- Added the Windows native host bridge, capability whitelist, and tray integration for the desktop track.
+- Added adaptive shell routing and server-aware navigation so module switching stays inside the shared shell.
+- Added unified API response parsing and exception handling to reduce duplicated network error logic.
+- Improved files, databases, websites, logs, monitoring, settings, and security flows across the app.
+- Updated iOS and macOS project configuration to keep the native platform track moving forward.
+
+This release is still part of the `debug` channel and should be validated on the target platform before production use.
 
 ## 🛠️ Technology Stack
 

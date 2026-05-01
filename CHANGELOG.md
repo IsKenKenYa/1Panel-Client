@@ -5,6 +5,160 @@ All notable changes to this project will be documented in this file. (本项目�
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2026-05-02
+
+### Overview
+
+This release focuses on the desktop adaptation track, native platform wiring, terminal workflow completion, and a broad set of API, model, repository, and UI refinements across the app.
+
+本版本重点围绕桌面端适配、原生平台接入、终端工作流补齐，以及全局 API、模型、仓库与 UI 的广泛改进。
+
+### Added
+
+#### Terminal Workbench and Transport
+- Added terminal runtime models for session state, appearance, and transport coordination.
+- Added a terminal workbench provider and service layer to manage long-lived terminal sessions.
+- Added WebSocket-based terminal transport, frame codec, and runtime session abstractions.
+
+#### Windows Native Track
+- Added a Windows native host bridge and capability whitelist for native channel access.
+- Added Windows system tray integration and desktop bridge tests.
+- Added Windows capability snapshots and UI bridge support for the native shell.
+
+#### Adaptive Shell and Navigation
+- Added a platform-adaptive shell page to route desktop and mobile surfaces through a unified host.
+- Added module page factory and shell navigation helpers to keep module switching inside the shell.
+- Added desktop/mobile server list split pages and a dedicated server list view model.
+
+#### API Infrastructure
+- Added a unified API response parser.
+- Added API exception handling helpers and a WebSocket API connector.
+- Added API client and repository updates for AI, container, database, file, host, logs, monitoring, security, settings, SSL, toolbox, website, and terminal domains.
+
+#### Theme and Rendering Policy
+- Added UI render mode and UI render policy abstractions to centralize rendering decisions.
+- Added platform and keyboard utility helpers for desktop-oriented interaction handling.
+
+#### Documentation and Workflow
+- Added cross-platform UI governance documentation.
+- Added native UI workflow documentation and desktop adaptation workflow documentation.
+- Migrated issue templates to GitHub issue form format.
+
+### Changed
+
+#### Release Channel and Build Metadata
+- Kept the tag-driven release channel model with debug/beta/pre-release/release tag families.
+- Continued injecting build metadata for source branch, commit SHA, and build date into release artifacts.
+
+#### App Shell and Server Experience
+- Reworked shell navigation to support module switching inside the shared shell host.
+- Refined the server selection and server-aware scaffold flow for desktop layouts.
+- Split server list presentation into mobile and desktop views for clearer platform-specific UX.
+
+#### AI Module
+- Updated AI agent, plugin, setting, and role models to support richer role and plugin metadata handling.
+- Updated the AI provider flow and MCP-related provider behavior for the new model structure.
+
+#### Databases Module
+- Refined database loading and remote loading flows.
+- Improved filtering, display, and Redis-specific page composition.
+- Updated database repository and user repository behaviors for the new contract surface.
+
+#### Files Module
+- Improved file page interaction, contextual menu behavior, and background handling.
+- Refined file browser, recycle bin, transfer manager, and preview provider logic.
+- Updated file data model handling for downloads and previews.
+
+#### Containers and Orchestration
+- Updated container service, provider, and repository interactions to match the expanded API surface.
+- Improved compose, image, network, and volume provider flows.
+
+#### Websites, SSL, and Security
+- Updated website list, domain management, SSL center, and routing-related providers.
+- Improved website certificate, configuration, lifecycle, and security access flows.
+- Updated security provider and repository logic for the expanded authentication and verification surface.
+
+#### Logs, Monitoring, and Host Tools
+- Refined log provider behavior for system logs and task logs.
+- Updated monitoring service/provider flows and runtime model support.
+- Improved host assets, SSH, toolbox, and command management integration.
+
+#### Settings and System Pages
+- Updated backup account, snapshot, terminal settings, system settings, and legal center pages.
+- Adjusted settings service/controller behavior to support the new release channel and render policy.
+
+#### iOS and macOS Project Configuration
+- Updated iOS project dependencies and project settings.
+- Refined macOS shell configuration and release entitlement setup.
+
+### Fixed
+
+- Improved API test error handling and logging output for more reliable diagnostics.
+- Fixed several desktop UI interaction and layout issues across files, database, website, and shell surfaces.
+- Reduced native bridge and channel wiring inconsistencies in the Windows track.
+- Improved response parsing consistency across the API layer.
+
+### Security
+
+- Reworked MFA request and response models to keep authentication state consistent and easier to validate.
+- Strengthened signing-related release flow assumptions by keeping build metadata and channel mapping explicit.
+
+### Performance
+
+- Reduced duplicate parsing and error-handling work in the shared API client layer.
+- Split long-lived terminal responsibilities into dedicated transport and session abstractions to reduce coupling.
+
+### UI/UX
+
+- Improved desktop shell navigation, module switching, and server-aware layouts.
+- Refined file, database, container, website, and dashboard interaction surfaces.
+- Adjusted UI composition for more consistent desktop behavior across cached pages and native tracks.
+
+### Compatibility
+
+- This release remains aligned with the 1Panel V2 API family and the current desktop adaptation track.
+- Desktop native features should be validated against the target platform configuration before production use.
+
+### Known Issues
+
+- iOS, macOS, and Windows release builds may fail if platform signing or local toolchain prerequisites are incomplete.
+- Some native UI and bridge features are still evolving and may require platform-specific validation.
+
+### Upgrade Notes
+
+- Keep service-side and client-side versions aligned when validating API compatibility.
+- Re-run login, server switching, terminal, and file-management flows after upgrading because these areas changed the most.
+- If you use release automation, ensure the `debug-*` tag is pushed from `dev` so the Android workflow accepts it.
+
+### Module Highlights
+
+#### Terminal
+- Introduced terminal runtime models, workbench provider, transport layer, and runtime session support.
+
+#### Shell
+- Added adaptive shell routing and module page creation helpers.
+
+#### Windows
+- Added native host bridge, capability whitelist, and tray integration.
+
+#### Files
+- Improved browser, preview, recycle bin, transfer, and contextual menu flows.
+
+#### Databases
+- Refined load flows, remote loading, Redis-specific presentation, and related repositories.
+
+#### Websites
+- Enhanced domain, SSL, routing, lifecycle, and configuration flows.
+
+#### Logs and Monitoring
+- Updated system/task logs and monitoring runtime support.
+
+#### Settings and Security
+- Refined system settings, backup accounts, snapshot, terminal settings, and MFA data structures.
+
+#### API and Infrastructure
+- Added unified response parsing, exception handling, and WebSocket connector infrastructure.
+
 ## [0.5.0-alpha.2+2] - 2026-04-02
 
 ### Changed
