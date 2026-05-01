@@ -77,15 +77,15 @@ class TerminalV2Api {
     );
   }
 
-  Future<Response> searchTerminalSettings(Map<String, dynamic> data) async {
-    return await _client.post(
+  Future<Response<void>> searchTerminalSettings(Map<String, dynamic> data) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/core/settings/terminal/search'),
       data: data,
     );
   }
 
-  Future<Response> updateTerminalSettings(Map<String, dynamic> data) async {
-    return await _client.post(
+  Future<Response<void>> updateTerminalSettings(Map<String, dynamic> data) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/core/settings/terminal/update'),
       data: data,
     );
@@ -141,14 +141,14 @@ class TerminalV2Api {
     );
   }
 
-  Future<Response> clearTerminalHistory(String sessionId) async {
-    return await _client.post(
+  Future<Response<void>> clearTerminalHistory(String sessionId) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/terminal/sessions/$sessionId/history/clear'),
     );
   }
 
-  Future<Response> getTerminalStatus(String sessionId) async {
-    return await _client.get(
+  Future<Response<void>> getTerminalStatus(String sessionId) async {
+    return await _client.get<void>(
       ApiConstants.buildApiPath('/terminal/sessions/$sessionId/status'),
     );
   }
@@ -204,8 +204,8 @@ class TerminalV2Api {
     );
   }
 
-  Future<Response> getTerminalProcesses(String sessionId) async {
-    return await _client.get(
+  Future<Response<void>> getTerminalProcesses(String sessionId) async {
+    return await _client.get<void>(
       ApiConstants.buildApiPath('/terminal/sessions/$sessionId/processes'),
     );
   }
@@ -224,21 +224,21 @@ class TerminalV2Api {
     );
   }
 
-  Future<Response> getTerminalConfig() async {
-    return await _client.get(
+  Future<Response<void>> getTerminalConfig() async {
+    return await _client.get<void>(
       ApiConstants.buildApiPath('/terminal/config'),
     );
   }
 
-  Future<Response> updateTerminalConfig(Map<String, dynamic> config) async {
-    return await _client.post(
+  Future<Response<void>> updateTerminalConfig(Map<String, dynamic> config) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/terminal/config'),
       data: config,
     );
   }
 
-  Future<Response> getTerminalThemes() async {
-    return await _client.get(
+  Future<Response<void>> getTerminalThemes() async {
+    return await _client.get<void>(
       ApiConstants.buildApiPath('/terminal/themes'),
     );
   }
@@ -253,8 +253,8 @@ class TerminalV2Api {
     );
   }
 
-  Future<Response> getTerminalFonts() async {
-    return await _client.get(
+  Future<Response<void>> getTerminalFonts() async {
+    return await _client.get<void>(
       ApiConstants.buildApiPath('/terminal/fonts'),
     );
   }

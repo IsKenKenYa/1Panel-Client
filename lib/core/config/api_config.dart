@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:async';
+import 'dart:io' as io;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
@@ -15,12 +16,65 @@ abstract class ApiKeyStore {
 
 class SecureApiKeyStore implements ApiKeyStore {
   SecureApiKeyStore({FlutterSecureStorage? storage})
-      : _storage = storage ?? const FlutterSecureStorage();
+      : _storage = storage ??
+            const FlutterSecureStorage(
+              iOptions: IOSOptions(
+                accessibility: KeychainAccessibility.first_unlock,
+              ),
+              mOptions: MacOsOptions(
+                accessibility: KeychainAccessibility.first_unlock,
+              ),
+            );
 
-  static const Duration _operationTimeout = Duration(milliseconds: 200);
+  static const Duration _operationTimeout = Duration(seconds: 5);
 
   final FlutterSecureStorage _storage;
   final Map<String, String> _memoryFallback = <String, String>{};
+
+  bool get _shouldUsePrefsFallback =>
+      !kIsWeb &&
+      (io.Platform.isMacOS || io.Platform.isWindows || io.Platform.isLinux);
+
+  bool get _shouldUseEnvFallbackForDebug =>
+      kDebugMode &&
+      !kIsWeb &&
+      (io.Platform.isMacOS || io.Platform.isWindows || io.Platform.isLinux);
+
+  String _prefsFallbackKey(String key) => 'secure_api_key_fallback_$key';
+
+  Future<String?> _readEnvApiKeyFallback() async {
+    if (!_shouldUseEnvFallbackForDebug) {
+      return null;
+    }
+    try {
+      final envFile = io.File('.env');
+      if (!await envFile.exists()) {
+        return null;
+      }
+      final lines = await envFile.readAsLines();
+      for (final rawLine in lines) {
+        final line = rawLine.trim();
+        if (line.startsWith('PANEL_API_KEY=')) {
+          final value = line.substring('PANEL_API_KEY='.length).trim();
+          if (value.isNotEmpty) {
+            appLogger.wWithPackage(
+              _apiConfigManagerPackage,
+              'using .env API key fallback for desktop debug session',
+            );
+            return value;
+          }
+        }
+      }
+    } catch (e, stackTrace) {
+      appLogger.wWithPackage(
+        _apiConfigManagerPackage,
+        'failed to read .env API key fallback',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
+    return null;
+  }
 
   @override
   Future<String?> read(String key) async {
@@ -28,22 +82,58 @@ class SecureApiKeyStore implements ApiKeyStore {
       final value = await _storage
           .read(key: key)
           .timeout(_operationTimeout, onTimeout: () => null);
-      return value ?? _memoryFallback[key];
+      if (value != null && value.isNotEmpty) {
+        return value;
+      }
+      if (_shouldUsePrefsFallback) {
+        final prefs = await SharedPreferences.getInstance();
+        final fallbackValue = prefs.getString(_prefsFallbackKey(key));
+        if (fallbackValue != null && fallbackValue.isNotEmpty) {
+          return fallbackValue;
+        }
+      }
+      final envFallback = await _readEnvApiKeyFallback();
+      if (envFallback != null && envFallback.isNotEmpty) {
+        return envFallback;
+      }
+      return _memoryFallback[key];
     } on TimeoutException catch (e, stackTrace) {
       appLogger.wWithPackage(
         _apiConfigManagerPackage,
-        'secure storage read timeout, using in-memory fallback',
+        'secure storage read timeout for key: $key',
         error: e,
         stackTrace: stackTrace,
       );
+      if (_shouldUsePrefsFallback) {
+        final prefs = await SharedPreferences.getInstance();
+        final fallbackValue = prefs.getString(_prefsFallbackKey(key));
+        if (fallbackValue != null && fallbackValue.isNotEmpty) {
+          return fallbackValue;
+        }
+      }
+      final envFallback = await _readEnvApiKeyFallback();
+      if (envFallback != null && envFallback.isNotEmpty) {
+        return envFallback;
+      }
       return _memoryFallback[key];
     } catch (e, stackTrace) {
-      appLogger.wWithPackage(
+      appLogger.eWithPackage(
         _apiConfigManagerPackage,
-        'secure storage read failed, using in-memory fallback',
+        'secure storage read failed for key: $key',
         error: e,
         stackTrace: stackTrace,
       );
+      if (_shouldUsePrefsFallback) {
+        final prefs = await SharedPreferences.getInstance();
+        final fallbackValue = prefs.getString(_prefsFallbackKey(key));
+        if (fallbackValue != null && fallbackValue.isNotEmpty) {
+          return fallbackValue;
+        }
+      }
+      final envFallback = await _readEnvApiKeyFallback();
+      if (envFallback != null && envFallback.isNotEmpty) {
+        return envFallback;
+      }
       return _memoryFallback[key];
     }
   }
@@ -53,22 +143,38 @@ class SecureApiKeyStore implements ApiKeyStore {
     try {
       await _storage.write(key: key, value: value).timeout(_operationTimeout);
       _memoryFallback.remove(key);
+      if (_shouldUsePrefsFallback) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString(_prefsFallbackKey(key), value);
+      }
+      appLogger.dWithPackage(
+        _apiConfigManagerPackage,
+        'secure storage write successful for key: $key',
+      );
     } on TimeoutException catch (e, stackTrace) {
-      appLogger.wWithPackage(
+      appLogger.eWithPackage(
         _apiConfigManagerPackage,
-        'secure storage write timeout, using in-memory fallback',
+        'secure storage write timeout for key: $key',
         error: e,
         stackTrace: stackTrace,
       );
       _memoryFallback[key] = value;
+      if (_shouldUsePrefsFallback) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString(_prefsFallbackKey(key), value);
+      }
     } catch (e, stackTrace) {
-      appLogger.wWithPackage(
+      appLogger.eWithPackage(
         _apiConfigManagerPackage,
-        'secure storage write failed, using in-memory fallback',
+        'secure storage write failed for key: $key',
         error: e,
         stackTrace: stackTrace,
       );
       _memoryFallback[key] = value;
+      if (_shouldUsePrefsFallback) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString(_prefsFallbackKey(key), value);
+      }
     }
   }
 
@@ -76,22 +182,30 @@ class SecureApiKeyStore implements ApiKeyStore {
   Future<void> delete(String key) async {
     try {
       await _storage.delete(key: key).timeout(_operationTimeout);
+      appLogger.dWithPackage(
+        _apiConfigManagerPackage,
+        'secure storage delete successful for key: $key',
+      );
     } on TimeoutException catch (e, stackTrace) {
       appLogger.wWithPackage(
         _apiConfigManagerPackage,
-        'secure storage delete timeout, clearing in-memory fallback',
+        'secure storage delete timeout for key: $key',
         error: e,
         stackTrace: stackTrace,
       );
     } catch (e, stackTrace) {
       appLogger.wWithPackage(
         _apiConfigManagerPackage,
-        'secure storage delete failed, clearing in-memory fallback',
+        'secure storage delete failed for key: $key',
         error: e,
         stackTrace: stackTrace,
       );
     }
     _memoryFallback.remove(key);
+    if (_shouldUsePrefsFallback) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_prefsFallbackKey(key));
+    }
   }
 }
 
@@ -151,6 +265,9 @@ class ApiConfigManager {
   static const _apiKeyPrefix = 'api_config_api_key_';
 
   static ApiKeyStore _apiKeyStore = SecureApiKeyStore();
+
+  /// Exposed for migration purposes
+  static ApiKeyStore get apiKeyStore => _apiKeyStore;
 
   static String _apiKeyStorageKey(String serverId) => '$_apiKeyPrefix$serverId';
 

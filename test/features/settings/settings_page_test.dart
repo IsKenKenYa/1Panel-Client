@@ -32,7 +32,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Feedback'), findsOneWidget);
+    expect(find.text('Feedback Center'), findsOneWidget);
     expect(find.text('About'), findsOneWidget);
     expect(find.text('App Lock'), findsOneWidget);
 

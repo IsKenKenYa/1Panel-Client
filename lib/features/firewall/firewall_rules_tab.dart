@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/core/utils/platform_utils.dart';
+import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/shared/widgets/app_card.dart';
 
 import '../../data/models/firewall_models.dart';
@@ -128,7 +130,7 @@ class _FirewallRulesTabState extends State<FirewallRulesTab> {
                   onSearch: _loadRules,
                   onStrategyChanged: _onStrategyChanged,
                   onToggleSelectionMode: _toggleSelectionMode,
-                  onCreate: () => Navigator.pushNamed(
+                  onCreate: () => openRouteRespectingShell(
                     context,
                     AppRoutes.firewallRuleForm,
                     arguments: const FirewallRuleFormArguments(
@@ -297,18 +299,27 @@ class _FirewallRulesTabState extends State<FirewallRulesTab> {
   ) async {
     switch (action) {
       case 'edit':
-        await Navigator.pushNamed(
-          context,
-          AppRoutes.firewallRuleForm,
-          arguments: FirewallRuleFormArguments(
-            kind: (rule.port ?? '').isNotEmpty
-                ? FirewallRuleKind.port
-                : FirewallRuleKind.ip,
-            rule: rule,
-          ),
+        final editArgs = FirewallRuleFormArguments(
+          kind: (rule.port ?? '').isNotEmpty
+              ? FirewallRuleKind.port
+              : FirewallRuleKind.ip,
+          rule: rule,
         );
-        if (context.mounted) {
-          await provider.refresh();
+        if (PlatformUtils.isDesktop(context)) {
+          await openRouteRespectingShell(
+            context,
+            AppRoutes.firewallRuleForm,
+            arguments: editArgs,
+          );
+        } else {
+          await Navigator.pushNamed(
+            context,
+            AppRoutes.firewallRuleForm,
+            arguments: editArgs,
+          );
+          if (context.mounted) {
+            await provider.refresh();
+          }
         }
         break;
       case 'toggle':

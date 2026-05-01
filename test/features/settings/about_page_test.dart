@@ -28,17 +28,20 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('About 1Panel Client'), findsOneWidget);
-    expect(find.text('Experimental'), findsWidgets);
+    expect(find.text('Build information'), findsOneWidget);
+    expect(find.text('Channel'), findsOneWidget);
+    expect(find.text('Dev (Alpha)'), findsOneWidget);
     expect(find.text('0.5.0-alpha.1 (42)'), findsOneWidget);
+    expect(find.text('onepanel.iskenkenya.com'), findsWidgets);
 
     await tester.scrollUntilVisible(
-      find.text('Open Preview Releases'),
+      find.text('View Releases'),
       300,
       scrollable: find.byType(Scrollable).first,
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Open Preview Releases'), findsOneWidget);
+    expect(find.text('View Releases'), findsOneWidget);
 
     await tester.scrollUntilVisible(
       find.text('Open GitHub Issues'),

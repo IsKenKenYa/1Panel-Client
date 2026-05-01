@@ -181,10 +181,10 @@ class LoginSettings extends Equatable {
 
   factory LoginSettings.fromJson(Map<String, dynamic> json) {
     return LoginSettings(
-      captcha: json['captcha'] as bool?,
+      captcha: json['captcha'] as bool? ?? json['needCaptcha'] as bool?,
       mfa: json['mfa'] as bool?,
-      demo: json['demo'] as String?,
-      title: json['title'] as String?,
+      demo: json['demo'] as String? ?? json['isDemo']?.toString(),
+      title: json['title'] as String? ?? json['panelName'] as String?,
       logo: json['logo'] as String?,
     );
   }

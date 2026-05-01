@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanel_client/api/v2/monitor_v2.dart';
+import 'package:onepanel_client/data/models/monitoring_runtime_models.dart';
 import 'package:onepanel_client/data/repositories/monitor_repository.dart';
 import 'package:onepanel_client/features/monitoring/monitoring_provider.dart';
 import 'package:onepanel_client/features/monitoring/monitoring_service.dart';
@@ -65,10 +65,10 @@ class FakeMonitoringService extends MonitoringService {
   }
 
   @override
-  Future<List<GPUInfo>> getGPUInfo() async {
+  Future<List<MonitorGpuInfo>> getGPUInfo() async {
     gpuInfoCallCount += 1;
     return const [
-      GPUInfo(
+      MonitorGpuInfo(
         name: 'NVIDIA A10',
         utilization: 20,
         memory: 50,

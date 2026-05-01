@@ -1,17 +1,18 @@
 # SETTING 模块API端点详细分析
 
 > 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
-> 生成时间: 2026-02-15 23:24:37
+> 生成时间: 2026-04-27 15:19:33
 
 ## API端点总览
 
-- 端点数量: **48**
-- 方法总数: **49**
+- 端点数量: **53**
+- 方法总数: **55**
 
 | 方法 | 数量 |
 |------|------|
-| GET | 13 |
-| POST | 36 |
+| GET | 15 |
+| POST | 39 |
+| DELETE | 1 |
 
 ## API端点详情
 
@@ -165,6 +166,38 @@
 
 ---
 
+### `/core/settings/memo`
+
+#### GET
+
+**摘要**: Load dashboard memo
+
+**标签**: System Setting
+
+**响应**:
+
+- `200`: OK
+
+---
+
+#### POST
+
+**摘要**: Update dashboard memo
+
+**标签**: System Setting
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/core/settings/menu/default`
 
 #### POST
@@ -232,6 +265,68 @@
 | 名称 | 位置 | 类型 | 必填 | 描述 |
 |------|------|------|------|------|
 | request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/core/settings/passkey/list`
+
+#### GET
+
+**摘要**: List passkeys
+
+**标签**: System Setting
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/core/settings/passkey/register/begin`
+
+#### POST
+
+**摘要**: Begin passkey registration
+
+**标签**: System Setting
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/core/settings/passkey/register/finish`
+
+#### POST
+
+**摘要**: Finish passkey registration
+
+**标签**: System Setting
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/core/settings/passkey/{id}`
+
+#### DELETE
+
+**摘要**: Delete passkey
+
+**标签**: System Setting
 
 **响应**:
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 
 class ServerSwitcherAction extends StatelessWidget {
@@ -61,7 +62,10 @@ class ServerSwitcherAction extends StatelessWidget {
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
                       Navigator.pop(sheetContext);
-                      Navigator.pushNamed(context, AppRoutes.server);
+                      openRouteRespectingShell(
+                        context,
+                        AppRoutes.server,
+                      );
                     },
                   )
                 else
@@ -104,7 +108,10 @@ class ServerSwitcherAction extends StatelessWidget {
                   child: TextButton.icon(
                     onPressed: () {
                       Navigator.pop(sheetContext);
-                      Navigator.pushNamed(context, AppRoutes.server);
+                      openRouteRespectingShell(
+                        context,
+                        AppRoutes.server,
+                      );
                     },
                     icon: const Icon(Icons.settings_outlined),
                     label: Text(l10n.serverPageTitle),

@@ -2,21 +2,89 @@ import 'package:dio/dio.dart';
 import '../../core/network/dio_client.dart';
 import '../../core/config/api_constants.dart';
 import '../../data/models/auth_models.dart';
+import 'api_response_parser.dart';
 
 class AuthV2Api {
   final DioClient _client;
 
   AuthV2Api(this._client);
 
-  Map<String, dynamic>? _extractDataMap(dynamic data) {
-    if (data is! Map<String, dynamic>) {
+  dynamic _extractDataRaw(dynamic payload) {
+    return ApiResponseParser.unwrap(payload);
+  }
+
+  Map<String, dynamic>? _extractDataMap(
+    dynamic data, {
+    bool fallbackToRootMap = false,
+  }) {
+    if (data is! Map) {
       return null;
     }
-    final nested = data['data'];
-    if (nested is Map<String, dynamic>) {
-      return nested;
+    final parsed = ApiResponseParser.asMap(
+      data,
+      fallbackToRootMap: fallbackToRootMap,
+    );
+    if (parsed.isNotEmpty) {
+      return parsed;
     }
-    return data;
+    return null;
+  }
+
+  String? _extractStringData(dynamic data) {
+    final raw = _extractDataRaw(data);
+    if (raw is String && raw.trim().isNotEmpty) {
+      if (_looksLikeHtmlPage(raw)) {
+        return null;
+      }
+      return raw;
+    }
+    if (raw is Map) {
+      final map = Map<String, dynamic>.from(raw);
+      for (final key in <String>['language', 'value', 'data', 'message']) {
+        final value = map[key];
+        if (value is String && value.trim().isNotEmpty) {
+          return value;
+        }
+      }
+    }
+    return null;
+  }
+
+  CaptchaData? _extractCaptchaData(dynamic data) {
+    final raw = _extractDataRaw(data);
+    if (raw is String && raw.trim().isNotEmpty) {
+      if (_looksLikeHtmlPage(raw)) {
+        return null;
+      }
+      return CaptchaData(base64: raw);
+    }
+    if (raw is Map) {
+      final parsed = CaptchaData.fromJson(Map<String, dynamic>.from(raw));
+      if (parsed.base64 != null ||
+          parsed.imagePath != null ||
+          parsed.captchaId != null) {
+        return parsed;
+      }
+    }
+    return null;
+  }
+
+  bool _looksLikeHtmlPage(String value) {
+    final normalized = value.trimLeft().toLowerCase();
+    return normalized.startsWith('<!doctype html') ||
+        normalized.startsWith('<html');
+  }
+
+  Map<String, dynamic> _extractBoolOrMapData(
+    dynamic data, {
+    required String key,
+  }) {
+    final raw = _extractDataRaw(data);
+    if (raw is bool) {
+      return <String, dynamic>{key: raw};
+    }
+    return _extractDataMap(data, fallbackToRootMap: true) ??
+        const <String, dynamic>{};
   }
 
   Options? _withEntranceCode(String? entranceCode) {
@@ -31,15 +99,19 @@ class AuthV2Api {
   ///
   /// 获取登录验证码图片
   /// @return 验证码数据
-  Future<Response<String>> getCaptcha() async {
-    final response = await _client.get(
+  Future<Response<CaptchaData?>> getCaptcha() async {
+    final response = await _client.get<dynamic>(
       ApiConstants.buildApiPath('/core/auth/captcha'),
     );
-    return Response(
-      data: response.data.toString(),
+    return Response<CaptchaData?>(
+      data: _extractCaptchaData(response.data),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
+      headers: response.headers,
+      extra: response.extra,
+      redirects: response.redirects,
+      isRedirect: response.isRedirect,
     );
   }
 
@@ -47,14 +119,18 @@ class AuthV2Api {
   ///
   /// @return 演示模式状态
   Future<Response<Map<String, dynamic>>> checkDemoMode() async {
-    final response = await _client.get(
+    final response = await _client.get<dynamic>(
       ApiConstants.buildApiPath('/core/auth/demo'),
     );
-    return Response(
-      data: response.data as Map<String, dynamic>,
+    return Response<Map<String, dynamic>>(
+      data: _extractBoolOrMapData(response.data, key: 'demo'),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
+      headers: response.headers,
+      extra: response.extra,
+      redirects: response.redirects,
+      isRedirect: response.isRedirect,
     );
   }
 
@@ -62,14 +138,18 @@ class AuthV2Api {
   ///
   /// @return 安全状态信息
   Future<Response<Map<String, dynamic>>> getSafetyStatus() async {
-    final response = await _client.get(
+    final response = await _client.get<dynamic>(
       ApiConstants.buildApiPath('/core/auth/issafety'),
     );
-    return Response(
-      data: response.data as Map<String, dynamic>,
+    return Response<Map<String, dynamic>>(
+      data: _extractBoolOrMapData(response.data, key: 'issafety'),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
+      headers: response.headers,
+      extra: response.extra,
+      redirects: response.redirects,
+      isRedirect: response.isRedirect,
     );
   }
 
@@ -77,14 +157,18 @@ class AuthV2Api {
   ///
   /// @return 系统语言设置
   Future<Response<String>> getSystemLanguage() async {
-    final response = await _client.get(
+    final response = await _client.get<dynamic>(
       ApiConstants.buildApiPath('/core/auth/language'),
     );
-    return Response(
-      data: response.data.toString(),
+    return Response<String>(
+      data: _extractStringData(response.data) ?? '',
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
+      headers: response.headers,
+      extra: response.extra,
+      redirects: response.redirects,
+      isRedirect: response.isRedirect,
     );
   }
 
@@ -119,14 +203,18 @@ class AuthV2Api {
   /// 退出当前用户会话
   /// @return 登出结果
   Future<Response<Map<String, dynamic>>> logout() async {
-    final response = await _client.post(
+    final response = await _client.post<dynamic>(
       ApiConstants.buildApiPath('/core/auth/logout'),
     );
-    return Response(
-      data: response.data as Map<String, dynamic>,
+    return Response<Map<String, dynamic>>(
+      data: _extractDataMap(response.data) ?? const <String, dynamic>{},
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
+      headers: response.headers,
+      extra: response.extra,
+      redirects: response.redirects,
+      isRedirect: response.isRedirect,
     );
   }
 
@@ -192,7 +280,8 @@ class AuthV2Api {
       options: Options(headers: headers),
     );
     return Response<Map<String, dynamic>>(
-      data: _extractDataMap(response.data) ?? const <String, dynamic>{},
+      data: _extractDataMap(response.data, fallbackToRootMap: true) ??
+          const <String, dynamic>{},
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -208,14 +297,18 @@ class AuthV2Api {
   /// 获取系统登录相关设置信息
   /// @return 登录设置
   Future<Response<Map<String, dynamic>>> getLoginSettings() async {
-    final response = await _client.get(
+    final response = await _client.get<dynamic>(
       ApiConstants.buildApiPath('/core/auth/setting'),
     );
-    return Response(
-      data: response.data as Map<String, dynamic>,
+    return Response<Map<String, dynamic>>(
+      data: _extractDataMap(response.data) ?? const <String, dynamic>{},
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
+      headers: response.headers,
+      extra: response.extra,
+      redirects: response.redirects,
+      isRedirect: response.isRedirect,
     );
   }
 }

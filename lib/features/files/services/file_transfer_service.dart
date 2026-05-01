@@ -35,7 +35,8 @@ class FileTransferService {
         ignoreCertificate: ignoreCertificate,
       ),
     );
-    return response.data!;
+    return response.data ??
+        const FileWgetResult(success: false, error: '响应为空');
   }
 
   Future<List<FileInfo>> searchUploadedFiles({

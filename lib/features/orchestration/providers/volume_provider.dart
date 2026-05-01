@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import '../../../data/models/docker_models.dart';
 import '../../../data/models/container_models.dart';
 import '../services/orchestration_service.dart';
 
-class VolumeProvider extends ChangeNotifier {
+class VolumeProvider extends ChangeNotifier with SafeChangeNotifier {
   VolumeProvider({OrchestrationService? service})
       : _service = service ?? OrchestrationService();
 

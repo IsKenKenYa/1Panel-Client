@@ -1,0 +1,8 @@
+- [x] 目录结构符合新的分层规范，`lib/ui/` 下区分了 mobile 和 desktop。
+- [x] 启动 App 时能根据系统（macOS/Windows/Android/iOS）和设备形态（Phone/Pad/Desktop）正确进入对应的 UI 壳层。
+- [x] macOS 平台下，应用呈现液态玻璃质感、大圆角，且隐藏了原生标题栏，支持 Cmd 快捷键。
+- [x] Windows 平台下，应用呈现云母/亚克力材质、标准圆角，标题栏与应用内容集成，支持 Ctrl 快捷键。
+- [x] 平板端（iPadOS/Android Pad）应用采用适合大屏的三栏布局或高信息密度布局，Android Pad 支持 Material You 动态取色。
+- [x] 桌面端（macOS/Windows）支持右键菜单、Shift/Ctrl 多选及文件拖拽等专属交互模型。
+- [x] Server、Files、Settings 页面在不同平台下表现出一致的数据状态但不同的 UI 风格。
+- [x] 数据层 (`lib/data`)、网络请求 (`lib/api`) 与通用服务 (`lib/core`) 保持全平台共享，未出现重复逻辑代码。

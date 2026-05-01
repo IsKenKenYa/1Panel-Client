@@ -205,6 +205,7 @@ class _WebsiteSslCenterBody extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'website_ssl_center_create_fab',
         onPressed: () => _showCreateDialog(context),
         icon: const Icon(Icons.add),
         label: Text(initialWebsiteId == null

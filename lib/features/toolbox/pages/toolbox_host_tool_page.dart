@@ -231,6 +231,7 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
       context: context,
       builder: (BuildContext dialogContext) => AlertDialog(
         title: Text(l10n.toolboxHostToolInitAction),
+        scrollable: true,
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -292,9 +293,11 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
       context: context,
       builder: (BuildContext dialogContext) => AlertDialog(
         title: Text(l10n.toolboxHostToolConfigSectionTitle),
+        scrollable: true,
         content: TextField(
           controller: controller,
           maxLines: 14,
+          minLines: 5,
           decoration: const InputDecoration(
             border: OutlineInputBorder(),
           ),
@@ -472,9 +475,11 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
             : action == 'out.log'
                 ? l10n.toolboxHostToolOutLogAction
                 : l10n.toolboxHostToolErrLogAction),
+        scrollable: true,
         content: TextField(
           controller: controller,
           maxLines: 14,
+          minLines: 5,
           readOnly: action != 'config',
           decoration: const InputDecoration(border: OutlineInputBorder()),
         ),

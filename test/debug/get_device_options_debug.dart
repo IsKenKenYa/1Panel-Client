@@ -87,7 +87,7 @@ void main() async {
         print('⚠️  网络接口列表为空');
       }
     }
-  } catch (e, stackTrace) {
+  } catch (e) {
     print('❌ 获取网络接口失败:');
     print('   错误: $e');
     if (e is DioException && e.response != null) {
@@ -120,7 +120,7 @@ void main() async {
         print('⚠️  IO设备列表为空');
       }
     }
-  } catch (e, stackTrace) {
+  } catch (e) {
     print('❌ 获取IO设备失败:');
     print('   错误: $e');
     if (e is DioException && e.response != null) {

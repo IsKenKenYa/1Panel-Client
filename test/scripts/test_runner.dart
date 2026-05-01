@@ -136,78 +136,157 @@ class TestRunner {
     await runCommand(flutter, ['test', '--reporter=expanded']);
   }
 
-  static Future<void> runUnitTests() async {
+  static const List<String> _uiTestExcludedPrefixes = <String>[
+    'test/api/',
+    'test/api_client/',
+    'test/auth/',
+    'test/benchmarks/',
+    'test/debug/',
+    'test/integration/',
+    'test/scripts/',
+  ];
+
+  static Future<List<String>> _discoverAlignmentTests(
+      {String? moduleFilter}) async {
+    final apiClientDir = Directory('test/api_client');
+    if (!await apiClientDir.exists()) {
+      return const <String>[];
+    }
+
+    final normalizedFilter = moduleFilter?.toLowerCase();
+    final files = await apiClientDir.list().toList();
+    final tests = files
+        .whereType<File>()
+        .map((f) => f.path)
+        .where((path) => path.endsWith('_alignment_test.dart'))
+        .where((path) {
+      if (normalizedFilter == null || normalizedFilter.isEmpty) {
+        return true;
+      }
+      final name = path.split('/').last.toLowerCase();
+      return name.contains(normalizedFilter);
+    }).toList()
+      ..sort();
+    return tests;
+  }
+
+  static Future<List<String>> _discoverFeatureUnitDirs(
+      {String? moduleFilter}) async {
+    final featuresRoot = Directory('test/features');
+    if (!await featuresRoot.exists()) {
+      return const <String>[];
+    }
+
+    final normalizedFilter = moduleFilter?.toLowerCase();
+    final unitDirs = <String>[];
+    await for (final entity
+        in featuresRoot.list(recursive: true, followLinks: false)) {
+      if (entity is! Directory) {
+        continue;
+      }
+      final path = entity.path.replaceAll('\\', '/');
+      final isUnitDir =
+          path.endsWith('/providers') || path.endsWith('/services');
+      if (!isUnitDir) {
+        continue;
+      }
+      if (!await _containsTestFiles(entity)) {
+        continue;
+      }
+      if (normalizedFilter != null && normalizedFilter.isNotEmpty) {
+        if (!path.toLowerCase().contains('/$normalizedFilter/')) {
+          continue;
+        }
+      }
+      unitDirs.add(entity.path);
+    }
+
+    unitDirs.sort();
+    return unitDirs;
+  }
+
+  static Future<List<String>> _discoverUiTests() async {
+    final testRoot = Directory('test');
+    if (!await testRoot.exists()) {
+      return const <String>[];
+    }
+
+    final uiTests = <String>[];
+    await for (final entity
+        in testRoot.list(recursive: true, followLinks: false)) {
+      if (entity is! File || !entity.path.endsWith('_test.dart')) {
+        continue;
+      }
+
+      final normalizedPath = entity.path.replaceAll('\\', '/');
+      if (_uiTestExcludedPrefixes.any(normalizedPath.startsWith)) {
+        continue;
+      }
+
+      final content = await entity.readAsString();
+      final isWidgetTest = content.contains('testWidgets(') ||
+          content.contains('matchesGoldenFile(');
+      if (!isWidgetTest) {
+        continue;
+      }
+
+      uiTests.add(entity.path);
+    }
+
+    uiTests.sort();
+    return uiTests;
+  }
+
+  static Future<bool> _containsTestFiles(Directory directory) async {
+    await for (final entity
+        in directory.list(recursive: true, followLinks: false)) {
+      if (entity is File && entity.path.endsWith('_test.dart')) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  static Future<void> runUnitTests({String? moduleFilter}) async {
     printHeader('运行单元测试');
-    await runTests('test/api/', description: 'API单元测试');
-    await runTests('test/auth/', description: '认证单元测试');
-    final phase1ApiFile =
-        File('test/api_client/phase1_api_alignment_test.dart');
-    if (await phase1ApiFile.exists()) {
-      await runTests(
-        'test/api_client/phase1_api_alignment_test.dart',
-        description: 'Phase 1 API对齐测试',
-      );
+    final normalizedFilter = moduleFilter?.toLowerCase();
+
+    if (normalizedFilter == null || normalizedFilter.isEmpty) {
+      await runTests('test/api/', description: 'API单元测试');
+      await runTests('test/auth/', description: '认证单元测试');
+    } else {
+      printInfo('已启用模块过滤: $normalizedFilter');
     }
-    final groupServiceDir = Directory('test/features/group/services');
-    if (await groupServiceDir.exists()) {
-      await runTests(
-        'test/features/group/services/',
-        description: 'Group Service测试',
-      );
+
+    final alignmentTests =
+        await _discoverAlignmentTests(moduleFilter: normalizedFilter);
+    if (alignmentTests.isEmpty) {
+      printInfo('未发现匹配的 API 对齐测试');
+    } else {
+      for (final file in alignmentTests) {
+        final name = file.split('/').last;
+        await runTests(file, description: 'API对齐测试: $name');
+      }
     }
-    final groupProviderDir = Directory('test/features/group/providers');
-    if (await groupProviderDir.exists()) {
-      await runTests(
-        'test/features/group/providers/',
-        description: 'Group Provider测试',
-      );
-    }
-    final commandsProviderDir = Directory('test/features/commands/providers');
-    if (await commandsProviderDir.exists()) {
-      await runTests(
-        'test/features/commands/providers/',
-        description: 'Commands Provider测试',
-      );
-    }
-    final hostAssetsProviderDir =
-        Directory('test/features/host_assets/providers');
-    if (await hostAssetsProviderDir.exists()) {
-      await runTests(
-        'test/features/host_assets/providers/',
-        description: 'Host Assets Provider测试',
-      );
-    }
-    final sshProviderDir = Directory('test/features/ssh/providers');
-    if (await sshProviderDir.exists()) {
-      await runTests(
-        'test/features/ssh/providers/',
-        description: 'SSH Provider测试',
-      );
-    }
-    final processProviderDir = Directory('test/features/processes/providers');
-    if (await processProviderDir.exists()) {
-      await runTests(
-        'test/features/processes/providers/',
-        description: 'Process Provider测试',
-      );
-    }
-    final cronjobsProviderDir = Directory('test/features/cronjobs/providers');
-    if (await cronjobsProviderDir.exists()) {
-      await runTests(
-        'test/features/cronjobs/providers/',
-        description: 'Cronjob Provider测试',
-      );
-    }
-    final filesProviderDir = Directory('test/features/files/providers');
-    if (await filesProviderDir.exists()) {
-      await runTests(
-        'test/features/files/providers/',
-        description: 'Files Provider测试',
-      );
+
+    final featureUnitDirs =
+        await _discoverFeatureUnitDirs(moduleFilter: normalizedFilter);
+    if (featureUnitDirs.isEmpty) {
+      printInfo('未发现匹配的 feature providers/services 单元测试目录');
+    } else {
+      for (final dir in featureUnitDirs) {
+        final normalizedPath = dir.replaceAll('\\', '/');
+        final name = normalizedPath
+            .split('/')
+            .skipWhile((e) => e != 'features')
+            .toList();
+        final label = name.isEmpty ? normalizedPath : name.join('/');
+        await runTests(dir, description: 'Feature单测: $label');
+      }
     }
   }
 
-  static Future<void> runIntegrationTests() async {
+  static Future<void> runIntegrationTests({String? moduleFilter}) async {
     printHeader('运行集成测试');
     if (!liveApiEnabled) {
       printWarning('未开启真实API测试环境，跳过集成测试');
@@ -217,12 +296,23 @@ class TestRunner {
 
     final apiDir = Directory('test/api_client');
     if (await apiDir.exists()) {
+      final normalizedFilter = moduleFilter?.toLowerCase();
       final files = await apiDir.list().toList();
       final testFiles = files
           .whereType<File>()
           .where((f) =>
               f.path.endsWith('_test.dart') &&
-              !f.path.contains('phase1_api_alignment_test.dart'))
+              !f.path.contains('_alignment_test.dart'))
+          .where((f) {
+            if (normalizedFilter == null || normalizedFilter.isEmpty) {
+              return true;
+            }
+            return f.path
+                .split('/')
+                .last
+                .toLowerCase()
+                .contains(normalizedFilter);
+          })
           .map((f) => f.path)
           .toList();
 
@@ -231,7 +321,8 @@ class TestRunner {
         return;
       }
 
-      printInfo('发现 ${testFiles.length} 个集成测试，超时时间: $liveTestTimeout，重试次数: $liveTestRetries');
+      printInfo(
+          '发现 ${testFiles.length} 个集成测试，超时时间: $liveTestTimeout，重试次数: $liveTestRetries');
 
       for (final testFile in testFiles) {
         final name = testFile.split('/').last;
@@ -242,7 +333,17 @@ class TestRunner {
 
   static Future<void> runUiTests() async {
     printHeader('运行UI/Widget测试');
-    await runTests('test/', description: '所有测试 (包含UI组件测试)');
+    final uiTests = await _discoverUiTests();
+    if (uiTests.isEmpty) {
+      printInfo('未发现 UI/Widget 测试文件');
+      return;
+    }
+
+    printInfo('发现 ${uiTests.length} 个 UI/Widget 测试文件');
+    for (final testFile in uiTests) {
+      final name = testFile.split('/').last;
+      await runTests(testFile, description: 'UI测试: $name');
+    }
   }
 }
 
@@ -251,13 +352,16 @@ void main(List<String> args) async {
     // ignore: avoid_print
     print('''
 ${TestRunner.cyan}使用方法:${TestRunner.reset}
-  dart run test/scripts/test_runner.dart <command>
+  dart run test/scripts/test_runner.dart <command> [--module=<name>]
 
 ${TestRunner.cyan}可用命令:${TestRunner.reset}
   ${TestRunner.green}all${TestRunner.reset}         运行全量测试
   ${TestRunner.green}unit${TestRunner.reset}        仅运行单元测试
   ${TestRunner.green}integration${TestRunner.reset} 仅运行集成测试 (需要配置真实环境)
   ${TestRunner.green}ui${TestRunner.reset}          仅运行UI/Widget测试
+
+${TestRunner.cyan}可选参数:${TestRunner.reset}
+  --module=<name>      按模块名过滤 unit/integration 测试（例如: --module=ai）
 
 ${TestRunner.cyan}环境变量:${TestRunner.reset}
   FLUTTER_BIN            指定flutter可执行文件路径
@@ -269,15 +373,22 @@ ${TestRunner.cyan}环境变量:${TestRunner.reset}
   }
 
   final command = args[0];
+  String? moduleFilter;
+  for (final arg in args.skip(1)) {
+    if (arg.startsWith('--module=')) {
+      moduleFilter = arg.substring('--module='.length).trim();
+    }
+  }
+
   switch (command) {
     case 'all':
       await TestRunner.runAllTests();
       break;
     case 'unit':
-      await TestRunner.runUnitTests();
+      await TestRunner.runUnitTests(moduleFilter: moduleFilter);
       break;
     case 'integration':
-      await TestRunner.runIntegrationTests();
+      await TestRunner.runIntegrationTests(moduleFilter: moduleFilter);
       break;
     case 'ui':
       await TestRunner.runUiTests();

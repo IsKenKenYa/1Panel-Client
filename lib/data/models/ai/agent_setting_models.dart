@@ -132,6 +132,92 @@ class AgentOtherConfigUpdateReq {
   }
 }
 
+class AgentBrowserConfigReq {
+  final int agentId;
+
+  const AgentBrowserConfigReq({required this.agentId});
+
+  factory AgentBrowserConfigReq.fromJson(Map<String, dynamic> json) {
+    return AgentBrowserConfigReq(agentId: json['agentId'] as int? ?? 0);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'agentId': agentId};
+  }
+}
+
+class AgentBrowserConfig {
+  final bool enabled;
+  final String executablePath;
+  final String defaultProfile;
+  final bool headless;
+  final bool noSandbox;
+
+  const AgentBrowserConfig({
+    this.enabled = false,
+    this.executablePath = '',
+    this.defaultProfile = '',
+    this.headless = false,
+    this.noSandbox = false,
+  });
+
+  factory AgentBrowserConfig.fromJson(Map<String, dynamic> json) {
+    return AgentBrowserConfig(
+      enabled: json['enabled'] as bool? ?? false,
+      executablePath: json['executablePath'] as String? ?? '',
+      defaultProfile: json['defaultProfile'] as String? ?? '',
+      headless: json['headless'] as bool? ?? false,
+      noSandbox: json['noSandbox'] as bool? ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'enabled': enabled,
+      'executablePath': executablePath,
+      'defaultProfile': defaultProfile,
+      'headless': headless,
+      'noSandbox': noSandbox,
+    };
+  }
+}
+
+class AgentBrowserConfigUpdateReq {
+  final int agentId;
+  final String defaultProfile;
+  final bool enabled;
+  final bool headless;
+  final bool noSandbox;
+
+  const AgentBrowserConfigUpdateReq({
+    required this.agentId,
+    required this.defaultProfile,
+    this.enabled = false,
+    this.headless = false,
+    this.noSandbox = false,
+  });
+
+  factory AgentBrowserConfigUpdateReq.fromJson(Map<String, dynamic> json) {
+    return AgentBrowserConfigUpdateReq(
+      agentId: json['agentId'] as int? ?? 0,
+      defaultProfile: json['defaultProfile'] as String? ?? '',
+      enabled: json['enabled'] as bool? ?? false,
+      headless: json['headless'] as bool? ?? false,
+      noSandbox: json['noSandbox'] as bool? ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'agentId': agentId,
+      'defaultProfile': defaultProfile,
+      'enabled': enabled,
+      'headless': headless,
+      'noSandbox': noSandbox,
+    };
+  }
+}
+
 class AgentConfigFileReq {
   final int agentId;
 

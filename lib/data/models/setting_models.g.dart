@@ -457,7 +457,7 @@ Map<String, dynamic> _$SettingsImportToJson(SettingsImport instance) =>
 MfaCredential _$MfaCredentialFromJson(Map<String, dynamic> json) =>
     MfaCredential(
       code: json['code'] as String,
-      interval: json['interval'] as String,
+      interval: (json['interval'] as num?)?.toInt() ?? 30,
       secret: json['secret'] as String,
     );
 
@@ -466,6 +466,18 @@ Map<String, dynamic> _$MfaCredentialToJson(MfaCredential instance) =>
       'code': instance.code,
       'interval': instance.interval,
       'secret': instance.secret,
+    };
+
+MfaLoadRequest _$MfaLoadRequestFromJson(Map<String, dynamic> json) =>
+    MfaLoadRequest(
+      title: json['title'] as String,
+      interval: (json['interval'] as num?)?.toInt() ?? 30,
+    );
+
+Map<String, dynamic> _$MfaLoadRequestToJson(MfaLoadRequest instance) =>
+    <String, dynamic>{
+      'title': instance.title,
+      'interval': instance.interval,
     };
 
 MfaOtp _$MfaOtpFromJson(Map<String, dynamic> json) => MfaOtp(
@@ -481,7 +493,7 @@ Map<String, dynamic> _$MfaOtpToJson(MfaOtp instance) => <String, dynamic>{
 MfaBindRequest _$MfaBindRequestFromJson(Map<String, dynamic> json) =>
     MfaBindRequest(
       code: json['code'] as String,
-      interval: json['interval'] as String,
+      interval: json['interval'] as String? ?? '30',
       secret: json['secret'] as String,
     );
 
@@ -506,6 +518,9 @@ TerminalInfo _$TerminalInfoFromJson(Map<String, dynamic> json) => TerminalInfo(
       cursorBlink: json['cursorBlink'] as String?,
       cursorStyle: json['cursorStyle'] as String?,
       fontSize: json['fontSize'] as String?,
+      fontFamily: json['fontFamily'] as String?,
+      backgroundColor: json['backgroundColor'] as String?,
+      foregroundColor: json['foregroundColor'] as String?,
       letterSpacing: json['letterSpacing'] as String?,
       lineHeight: json['lineHeight'] as String?,
       scrollSensitivity: json['scrollSensitivity'] as String?,
@@ -517,6 +532,9 @@ Map<String, dynamic> _$TerminalInfoToJson(TerminalInfo instance) =>
       'cursorBlink': instance.cursorBlink,
       'cursorStyle': instance.cursorStyle,
       'fontSize': instance.fontSize,
+      'fontFamily': instance.fontFamily,
+      'backgroundColor': instance.backgroundColor,
+      'foregroundColor': instance.foregroundColor,
       'letterSpacing': instance.letterSpacing,
       'lineHeight': instance.lineHeight,
       'scrollSensitivity': instance.scrollSensitivity,

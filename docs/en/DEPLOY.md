@@ -9,7 +9,32 @@
 ## Developer Standards
 
 - Authoritative standards: `AGENTS.md` (hard rules) and `CLAUDE.md` (process/details).
-- Pre-commit baseline: `flutter analyze` and `dart run test_runner.dart unit`; run `integration` and `ui` when changes touch API/network or UI.
+- Pre-commit baseline: `flutter analyze` and `dart run test/scripts/test_runner.dart unit`; run `integration` and `ui` when changes touch API/network or UI.
+
+## Native UI Adaptation and Hard Gates
+
+- Native UI adaptation workflow and AI-agent constraints: `docs/原生UI适配专属工作流.md`
+- Module adaptation workflow: `docs/模块适配专属工作流.md`
+- Cross-platform governance baseline: `docs/development/cross_platform_ui_governance.md`
+
+Required hard gates (any failure must block progression):
+
+```bash
+flutter analyze
+dart run test/scripts/test_runner.dart unit
+dart run test/scripts/test_runner.dart integration   # when API/network/data-write changes are included
+dart run test/scripts/test_runner.dart ui            # when UI changes are included
+dotnet build windows/runner/native_host/OnePanelNativeHost/OnePanelNativeHost.csproj -c Debug   # for Windows native UI track changes
+```
+
+For Apple native UI track changes, run in macOS/CI:
+
+```bash
+xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Debug -sdk iphonesimulator build
+xcodebuild -workspace macos/Runner.xcworkspace -scheme Runner -configuration Debug build
+```
+
+Note: Web is not in scope for the current native UI adaptation workflow.
 
 ## Authentication Setup
 

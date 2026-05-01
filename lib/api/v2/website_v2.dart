@@ -5,6 +5,7 @@ import '../../data/models/common_models.dart';
 import '../../data/models/file/file_info.dart';
 import '../../data/models/website_models.dart';
 import '../../data/models/ssl_models.dart';
+import 'api_response_parser.dart';
 
 class WebsiteV2Api {
   final DioClient _client;
@@ -13,26 +14,16 @@ class WebsiteV2Api {
 
   static Map<String, dynamic> _extractMapData(
       Response<Map<String, dynamic>> response) {
-    final body = response.data;
-    if (body == null) return <String, dynamic>{};
-    final data = body['data'];
-    if (data is Map<String, dynamic>) return data;
-    return <String, dynamic>{};
+    return ApiResponseParser.asMap(response.data);
   }
 
   static List<dynamic> _extractListData(
       Response<Map<String, dynamic>> response) {
-    final body = response.data;
-    if (body == null) return const <dynamic>[];
-    final data = body['data'];
-    if (data is List) return data;
-    return const <dynamic>[];
+    return ApiResponseParser.asList(response.data);
   }
 
   static dynamic _extractRawData(Response<Map<String, dynamic>> response) {
-    final body = response.data;
-    if (body == null) return null;
-    return body['data'];
+    return ApiResponseParser.unwrap(response.data);
   }
 
   /// 获取网站列表

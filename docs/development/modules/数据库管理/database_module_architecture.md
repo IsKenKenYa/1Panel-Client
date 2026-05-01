@@ -3,7 +3,7 @@
 > 2026-03-26 修正：
 > 本文下方部分端点清单来自早期规划，和当前 `swagger.json` 以及已落地代码并不完全一致。
 > 当前实施以 `database_api_analysis.md/.json`、`阶段总计划（docs/development/modules/阶段总计划.md）` 与运行时代码为准。
-> 当前真实已落地能力为 `list / detail / form / remote test / redis config / bind user / description & password write`；
+> 当前真实已落地能力为 `instance-driven list / detail / form / remote test / redis config / bind user / description & password write`；
 > `backup / restore / backup list` 需要联动 `/backups/*`，不在 `database` 标签端点内直接完成。
 
 ## 模块目标
@@ -145,9 +145,22 @@
 3. 状态更新 -> UI刷新 -> 用户反馈
 4. 长时间操作 -> 进度轮询 -> 状态更新
 
+### 当前已确认的实例驱动规则
+
+- MySQL / PostgreSQL 页面不是直接按数据库类型查询，而是：
+  1. 先加载数据库实例目标
+  2. 选中实例后再查询该实例下的逻辑数据库列表
+- 语义拆分必须固定为：
+  - `dbType`: `mysql / mariadb / postgresql / redis`
+  - `target instance`: 例如 `ruoyi-mysql`
+  - `logical database name`: 例如 `gitea_guangzhou`
+- 详情、创建、用户管理、备份都必须显式区分这三层，禁止再把 `engine` 或 `database` 同时当作实例名和类型名使用。
+
 ## 与现有实现的差距
 
 - 列表、详情、表单、远程库、Redis 配置页已落地
+- MySQL / PostgreSQL 列表页已开始改为实例驱动查询
+- 创建页已开始改为实例选择驱动提交
 - 远程数据库详情页已收紧为只读，不再暴露当前不支持的写操作
 - Redis 创建入口已临时禁用，等待真实创建链路完成后再开放
 - 备份管理页已通过 `/backups/*` 接入 `list / create / restore / delete`

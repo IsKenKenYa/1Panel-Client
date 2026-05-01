@@ -1,9 +1,9 @@
 {
   "module": "database",
-  "generatedAt": "2026-03-23T18:47:55.309074",
+  "generatedAt": "2026-04-27T15:19:33.309049",
   "summary": {
-    "endpointCount": 43,
-    "methodCount": 44
+    "endpointCount": 42,
+    "methodCount": 42
   },
   "endpoints": [
     {
@@ -1172,51 +1172,6 @@
           "description": "",
           "tags": [
             "Database Mysql"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/websites/databases",
-      "methods": [
-        {
-          "method": "GET",
-          "summary": "Get databases",
-          "description": "",
-          "tags": [
-            "Website"
-          ],
-          "parameters": [],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        },
-        {
-          "method": "POST",
-          "summary": "Change website database",
-          "description": "",
-          "tags": [
-            "Website"
           ],
           "parameters": [
             {

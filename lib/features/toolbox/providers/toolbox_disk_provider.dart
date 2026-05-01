@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/models/disk_management_models.dart';
 import 'package:onepanel_client/features/toolbox/services/toolbox_disk_service.dart';
 
-class ToolboxDiskProvider extends ChangeNotifier {
+class ToolboxDiskProvider extends ChangeNotifier with SafeChangeNotifier {
   ToolboxDiskProvider({ToolboxDiskService? service})
       : _service = service ?? ToolboxDiskService();
 

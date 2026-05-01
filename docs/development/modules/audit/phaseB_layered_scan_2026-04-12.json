@@ -1,0 +1,213 @@
+{
+  "uiViolations": [
+    {
+      "file": "lib/features/settings/backup_account_page.dart",
+      "line": 4,
+      "code": "import 'package:onepanel_client/api/v2/setting_v2.dart' as api;"
+    },
+    {
+      "file": "lib/features/settings/backup_account_page.dart",
+      "line": 32,
+      "code": "final apiClient = await ApiClientManager.instance.getSettingApi();"
+    },
+    {
+      "file": "lib/features/settings/backup_account_page.dart",
+      "line": 48,
+      "code": "final apiClient = await ApiClientManager.instance.getSettingApi();"
+    },
+    {
+      "file": "lib/features/monitoring/monitoring_page.dart",
+      "line": 6,
+      "code": "import '../../api/v2/monitor_v2.dart';"
+    }
+  ],
+  "uiViolationCount": 4,
+  "apiParserFiles": [
+    "lib/api/v2/container_v2.dart",
+    "lib/api/v2/auth_v2.dart",
+    "lib/api/v2/ai_v2.dart",
+    "lib/api/v2/database_v2.dart",
+    "lib/api/v2/openresty_v2.dart",
+    "lib/api/v2/dashboard_v2.dart"
+  ],
+  "apiParserFileCount": 6,
+  "apiDirectDataAccessFiles": [
+    "lib/api/v2/system_group_v2.dart",
+    "lib/api/v2/disk_management_v2.dart",
+    "lib/api/v2/command_v2.dart",
+    "lib/api/v2/host_v2.dart",
+    "lib/api/v2/logs_v2.dart",
+    "lib/api/v2/app_v2.dart",
+    "lib/api/v2/task_log_v2.dart",
+    "lib/api/v2/cronjob_v2.dart",
+    "lib/api/v2/ssh_v2.dart",
+    "lib/api/v2/process_v2.dart",
+    "lib/api/v2/container_v2.dart",
+    "lib/api/v2/script_library_v2.dart",
+    "lib/api/v2/host_tool_v2.dart",
+    "lib/api/v2/runtime_v2.dart",
+    "lib/api/v2/compose_v2.dart",
+    "lib/api/v2/ssl_v2.dart",
+    "lib/api/v2/ai_v2.dart",
+    "lib/api/v2/update_v2.dart",
+    "lib/api/v2/snapshot_v2.dart",
+    "lib/api/v2/dashboard_v2.dart",
+    "lib/api/v2/backup_account_v2.dart",
+    "lib/api/v2/docker_v2.dart"
+  ],
+  "apiDirectDataAccessFileCount": 22,
+  "modelRiskTop20": [
+    {
+      "file": "lib/data/models/container_models.dart",
+      "mapDynamic": 99,
+      "dynamic": 100,
+      "listDynamic": 0,
+      "score": 397
+    },
+    {
+      "file": "lib/data/models/setting_models.dart",
+      "mapDynamic": 75,
+      "dynamic": 78,
+      "listDynamic": 0,
+      "score": 303
+    },
+    {
+      "file": "lib/data/models/setting_models.g.dart",
+      "mapDynamic": 64,
+      "dynamic": 98,
+      "listDynamic": 2,
+      "score": 294
+    },
+    {
+      "file": "lib/data/models/toolbox_models.dart",
+      "mapDynamic": 59,
+      "dynamic": 64,
+      "listDynamic": 5,
+      "score": 251
+    },
+    {
+      "file": "lib/data/models/website_models.dart",
+      "mapDynamic": 61,
+      "dynamic": 62,
+      "listDynamic": 1,
+      "score": 247
+    },
+    {
+      "file": "lib/data/models/app_models.g.dart",
+      "mapDynamic": 42,
+      "dynamic": 69,
+      "listDynamic": 9,
+      "score": 213
+    },
+    {
+      "file": "lib/data/models/app_models.dart",
+      "mapDynamic": 52,
+      "dynamic": 54,
+      "listDynamic": 1,
+      "score": 212
+    },
+    {
+      "file": "lib/data/models/common_models.dart",
+      "mapDynamic": 45,
+      "dynamic": 51,
+      "listDynamic": 4,
+      "score": 194
+    },
+    {
+      "file": "lib/data/models/container_extension_models.dart",
+      "mapDynamic": 48,
+      "dynamic": 48,
+      "listDynamic": 0,
+      "score": 192
+    },
+    {
+      "file": "lib/data/models/ssl_models.dart",
+      "mapDynamic": 45,
+      "dynamic": 46,
+      "listDynamic": 0,
+      "score": 181
+    },
+    {
+      "file": "lib/data/models/ai/agent_role_models.dart",
+      "mapDynamic": 35,
+      "dynamic": 58,
+      "listDynamic": 5,
+      "score": 173
+    },
+    {
+      "file": "lib/data/models/openresty_models.dart",
+      "mapDynamic": 41,
+      "dynamic": 42,
+      "listDynamic": 0,
+      "score": 165
+    },
+    {
+      "file": "lib/data/models/backup_account_models.dart",
+      "mapDynamic": 38,
+      "dynamic": 39,
+      "listDynamic": 1,
+      "score": 155
+    },
+    {
+      "file": "lib/data/models/mcp_models.dart",
+      "mapDynamic": 31,
+      "dynamic": 39,
+      "listDynamic": 8,
+      "score": 148
+    },
+    {
+      "file": "lib/data/models/database_models.dart",
+      "mapDynamic": 32,
+      "dynamic": 34,
+      "listDynamic": 0,
+      "score": 130
+    },
+    {
+      "file": "lib/data/models/user_models.dart",
+      "mapDynamic": 28,
+      "dynamic": 28,
+      "listDynamic": 0,
+      "score": 112
+    },
+    {
+      "file": "lib/data/models/logs_models.dart",
+      "mapDynamic": 26,
+      "dynamic": 27,
+      "listDynamic": 0,
+      "score": 105
+    },
+    {
+      "file": "lib/data/models/ai/agent_channel_enterprise_models.dart",
+      "mapDynamic": 22,
+      "dynamic": 30,
+      "listDynamic": 4,
+      "score": 104
+    },
+    {
+      "file": "lib/data/models/ai/agent_setting_models.dart",
+      "mapDynamic": 24,
+      "dynamic": 28,
+      "listDynamic": 2,
+      "score": 104
+    },
+    {
+      "file": "lib/data/models/monitoring_models.dart",
+      "mapDynamic": 24,
+      "dynamic": 24,
+      "listDynamic": 0,
+      "score": 96
+    }
+  ],
+  "modelRiskFileCount": 114,
+  "apiWithoutNameMatchedApiClientTest": [
+    "lib/api/v2/system_group_v2.dart",
+    "lib/api/v2/disk_management_v2.dart",
+    "lib/api/v2/website_group_v2.dart",
+    "lib/api/v2/toolbox_v2.dart",
+    "lib/api/v2/terminal_v2.dart",
+    "lib/api/v2/user_v2.dart",
+    "lib/api/v2/auth_v2.dart",
+    "lib/api/v2/host_tool_v2.dart"
+  ],
+  "apiWithoutNameMatchedApiClientTestCount": 8
+}

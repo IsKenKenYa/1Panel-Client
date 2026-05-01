@@ -1,5 +1,4 @@
-# Uncomment this line to define a global platform for your project
-# platform :ios, '13.0'
+platform :ios, '14.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -26,6 +25,11 @@ end
 require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), flutter_root)
 
 flutter_ios_podfile_setup
+
+# The app currently uses file_picker for documents and generic file selection.
+# Disabling the media picker avoids pulling DKImagePickerController from Git
+# during pod install, which has been blocking iOS builds in this environment.
+Pod::PICKER_MEDIA = false
 
 target 'Runner' do
   use_frameworks!

@@ -1,11 +1,12 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/features/logs/models/system_log_viewer_args.dart';
 import 'package:onepanel_client/features/logs/services/logs_service.dart';
 
 enum SystemLogSource { agent, core }
 
-class SystemLogsProvider extends ChangeNotifier {
+class SystemLogsProvider extends ChangeNotifier with SafeChangeNotifier {
   SystemLogsProvider({
     LogsService? service,
   }) : _service = service ?? LogsService();

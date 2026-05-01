@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/operations_center/widgets/server_operation_entry_card_widget.dart';
+import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 
 class OperationsCenterPage extends StatelessWidget {
@@ -113,9 +114,12 @@ class OperationsCenterPage extends StatelessWidget {
       title: l10n.operationsCenterPageTitle,
       body: LayoutBuilder(
         builder: (context, constraints) {
-          final isWide = constraints.maxWidth >= 720;
-          final cardWidth =
-              isWide ? (constraints.maxWidth - 12) / 2 : constraints.maxWidth;
+          final availableWidth = constraints.maxWidth;
+          final columns = switch (availableWidth) {
+            >= 1280 => 3,
+            >= 760 => 2,
+            _ => 1,
+          };
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
@@ -143,22 +147,26 @@ class OperationsCenterPage extends StatelessWidget {
                       ),
                 ),
                 const SizedBox(height: 12),
-                Wrap(
-                  spacing: 12,
-                  runSpacing: 12,
-                  children: [
-                    for (final entry in section.entries)
-                      SizedBox(
-                        width: cardWidth,
-                        child: ServerOperationEntryCardWidget(
-                          key: Key('operations-entry-${entry.routeId}'),
-                          title: entry.title,
-                          icon: entry.icon,
-                          onTap: () =>
-                              Navigator.pushNamed(context, entry.route),
-                        ),
-                      ),
-                  ],
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: section.entries.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: columns,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    mainAxisExtent: 108,
+                  ),
+                  itemBuilder: (context, index) {
+                    final entry = section.entries[index];
+                    return ServerOperationEntryCardWidget(
+                      key: Key('operations-entry-${entry.routeId}'),
+                      title: entry.title,
+                      icon: entry.icon,
+                      onTap: () =>
+                          openRouteRespectingShell(context, entry.route),
+                    );
+                  },
                 ),
                 const SizedBox(height: 20),
               ],

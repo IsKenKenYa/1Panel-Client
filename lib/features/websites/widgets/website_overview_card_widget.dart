@@ -63,10 +63,35 @@ class WebsiteOverviewCard extends StatelessWidget {
               context,
               '${l10n.websitesTypeLabel}: ${website?.type ?? '-'}',
             ),
+            if (website?.proxy?.isNotEmpty == true)
+              _buildDetailLine(
+                context,
+                '${l10n.websitesProxyAddressLabel}: ${website?.proxy}',
+              ),
+            if (website?.proxyType?.isNotEmpty == true)
+              _buildDetailLine(
+                context,
+                '${l10n.websitesProxyTypeLabel}: ${website?.proxyType}',
+              ),
+            if (website?.dbType?.isNotEmpty == true)
+              _buildDetailLine(
+                context,
+                '${l10n.websitesBasicConfigDatabaseTitle}: ${website?.dbType}',
+              ),
             _buildDetailLine(
               context,
               '${l10n.websitesProtocolLabel}: ${website?.protocol ?? '-'}',
             ),
+            if (website?.sslStatus?.isNotEmpty == true)
+              _buildDetailLine(
+                context,
+                '${l10n.websitesSslStatusLabel}: ${website?.sslStatus}',
+              ),
+            if (website?.sslExpireDate?.isNotEmpty == true)
+              _buildDetailLine(
+                context,
+                '${l10n.websitesSslExpireLabel}: ${website?.sslExpireDate}',
+              ),
             _buildDetailLine(
               context,
               '${l10n.websitesSitePathLabel}: ${website?.sitePath ?? '-'}',

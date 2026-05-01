@@ -104,6 +104,31 @@ class SSHRepository {
     return response.data ?? '';
   }
 
+  Future<SshLocalConnectionInfo> getLocalConnection() async {
+    final api = await _ensureApi();
+    final response = await api.getSshConn();
+    return response.data ?? const SshLocalConnectionInfo();
+  }
+
+  Future<bool> checkLocalConnection([SshLocalConnectionInfo? request]) async {
+    final api = await _ensureApi();
+    final response = await api.checkSshInfo(request: request);
+    return response.data ?? false;
+  }
+
+  Future<void> updateLocalConnectionVisibility({
+    required bool visible,
+    bool withReset = false,
+  }) async {
+    final api = await _ensureApi();
+    await api.setDefaultSshConn(
+      SshDefaultConnectionVisibilityUpdate(
+        withReset: withReset,
+        defaultConn: visible ? 'Enable' : 'Disable',
+      ),
+    );
+  }
+
   Stream<List<SshSessionInfo>> watchSessions() => _sessionController.stream;
 
   Future<void> connectSessions(SshSessionQuery query) async {

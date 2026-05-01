@@ -1,17 +1,17 @@
 # WEBSITE 模块API端点详细分析
 
 > 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
-> 生成时间: 2026-03-13 16:41:48
+> 生成时间: 2026-04-27 15:19:33
 
 ## API端点总览
 
-- 端点数量: **87**
-- 方法总数: **90**
+- 端点数量: **70**
+- 方法总数: **73**
 
 | 方法 | 数量 |
 |------|------|
-| GET | 16 |
-| POST | 74 |
+| GET | 13 |
+| POST | 60 |
 
 ## API端点详情
 
@@ -180,86 +180,6 @@
 **摘要**: Update website acme account
 
 **标签**: Website Acme
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/websites/auths`
-
-#### POST
-
-**摘要**: Get AuthBasic conf
-
-**标签**: Website
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/websites/auths/path`
-
-#### POST
-
-**摘要**: Get AuthBasic conf
-
-**标签**: Website
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/websites/auths/path/update`
-
-#### POST
-
-**摘要**: Get AuthBasic conf
-
-**标签**: Website
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/websites/auths/update`
-
-#### POST
-
-**摘要**: Get AuthBasic conf
-
-**标签**: Website
 
 **参数**:
 
@@ -839,86 +759,6 @@
 
 ---
 
-### `/websites/domains`
-
-#### POST
-
-**摘要**: Create website domain
-
-**标签**: Website Domain
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/websites/domains/:websiteId`
-
-#### GET
-
-**摘要**: Search website domains by websiteId
-
-**标签**: Website Domain
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| websiteId | path | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/websites/domains/del`
-
-#### POST
-
-**摘要**: Delete website domain
-
-**标签**: Website Domain
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/websites/domains/update`
-
-#### POST
-
-**摘要**: Update website domain
-
-**标签**: Website Domain
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
 ### `/websites/exec/composer`
 
 #### POST
@@ -1207,11 +1047,51 @@
 
 ---
 
+### `/websites/proxies/delete`
+
+#### POST
+
+**摘要**: Delete proxy config
+
+**标签**: Website
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/websites/proxies/file`
 
 #### POST
 
 **摘要**: Update proxy file
+
+**标签**: Website
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/websites/proxies/status`
+
+#### POST
+
+**摘要**: Update proxy config status
 
 **标签**: Website
 
@@ -1504,230 +1384,6 @@
 | 名称 | 位置 | 类型 | 必填 | 描述 |
 |------|------|------|------|------|
 | request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/websites/ssl`
-
-#### POST
-
-**摘要**: Create website ssl
-
-**标签**: Website SSL
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/websites/ssl/:id`
-
-#### GET
-
-**摘要**: Search website ssl by id
-
-**标签**: Website SSL
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| id | path | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/websites/ssl/del`
-
-#### POST
-
-**摘要**: Delete website ssl
-
-**标签**: Website SSL
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/websites/ssl/download`
-
-#### POST
-
-**摘要**: Download SSL  file
-
-**标签**: Website SSL
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/websites/ssl/obtain`
-
-#### POST
-
-**摘要**: Apply  ssl
-
-**标签**: Website SSL
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/websites/ssl/resolve`
-
-#### POST
-
-**摘要**: Resolve website ssl
-
-**标签**: Website SSL
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/websites/ssl/search`
-
-#### POST
-
-**摘要**: Page website ssl
-
-**标签**: Website SSL
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/websites/ssl/update`
-
-#### POST
-
-**摘要**: Update ssl
-
-**标签**: Website SSL
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/websites/ssl/upload`
-
-#### POST
-
-**摘要**: Upload ssl
-
-**标签**: Website SSL
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/websites/ssl/upload/file`
-
-#### POST
-
-**摘要**: Upload SSL file
-
-**标签**: Website SSL
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| type | formData | unknown | 是 | type |
-| description | formData | unknown | 否 | description |
-| sslID | formData | unknown | 否 | sslID |
-| privateKeyFile | formData | unknown | 是 | privateKeyFile |
-| certificateFile | formData | unknown | 是 | certificateFile |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/websites/ssl/website/:websiteId`
-
-#### GET
-
-**摘要**: Search website ssl by website id
-
-**标签**: Website SSL
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| websiteId | path | unknown | 是 | request |
 
 **响应**:
 

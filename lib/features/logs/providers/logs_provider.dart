@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/models/logs_models.dart';
 import 'package:onepanel_client/features/logs/services/logs_service.dart';
 
-class LogsProvider extends ChangeNotifier {
+class LogsProvider extends ChangeNotifier with SafeChangeNotifier {
   LogsProvider({
     LogsService? service,
   }) : _service = service ?? LogsService();
@@ -48,6 +49,8 @@ class LogsProvider extends ChangeNotifier {
   }
 
   Future<void> loadOperationLogs() async {
+    if (isDisposed) return;
+    
     _operationLoading = true;
     _operationError = null;
     notifyListeners();
@@ -63,6 +66,7 @@ class LogsProvider extends ChangeNotifier {
               _operationStatus.trim().isEmpty ? null : _operationStatus.trim(),
         ),
       );
+      if (isDisposed) return;
       _operationItems = result.items;
     } catch (error, stackTrace) {
       appLogger.eWithPackage(
@@ -71,15 +75,21 @@ class LogsProvider extends ChangeNotifier {
         error: error,
         stackTrace: stackTrace,
       );
-      _operationItems = const <OperationLogEntry>[];
-      _operationError = 'logs.operation.loadFailed';
+      if (!isDisposed) {
+        _operationItems = const <OperationLogEntry>[];
+        _operationError = 'logs.operation.loadFailed';
+      }
     } finally {
-      _operationLoading = false;
-      notifyListeners();
+      if (!isDisposed) {
+        _operationLoading = false;
+        notifyListeners();
+      }
     }
   }
 
   Future<void> loadLoginLogs() async {
+    if (isDisposed) return;
+    
     _loginLoading = true;
     _loginError = null;
     notifyListeners();
@@ -90,6 +100,7 @@ class LogsProvider extends ChangeNotifier {
           status: _loginStatus.trim().isEmpty ? null : _loginStatus.trim(),
         ),
       );
+      if (isDisposed) return;
       _loginItems = result.items;
     } catch (error, stackTrace) {
       appLogger.eWithPackage(
@@ -98,11 +109,15 @@ class LogsProvider extends ChangeNotifier {
         error: error,
         stackTrace: stackTrace,
       );
-      _loginItems = const <LoginLogEntry>[];
-      _loginError = 'logs.login.loadFailed';
+      if (!isDisposed) {
+        _loginItems = const <LoginLogEntry>[];
+        _loginError = 'logs.login.loadFailed';
+      }
     } finally {
-      _loginLoading = false;
-      notifyListeners();
+      if (!isDisposed) {
+        _loginLoading = false;
+        notifyListeners();
+      }
     }
   }
 

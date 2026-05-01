@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:onepanel_client/config/app_router.dart';
+import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import '../../../core/i18n/l10n_x.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../dashboard_provider.dart';
@@ -33,17 +35,16 @@ class QuickActionsCard extends StatelessWidget {
             icon: Icons.backup,
             label: l10n.dashboardActionBackup,
             color: Theme.of(context).colorScheme.tertiary,
-            onTap: () {
-              Navigator.pushNamed(context, '/backups');
-            },
+            onTap: () => openRouteRespectingShell(context, AppRoutes.backups),
           ),
           _QuickActionItem(
             icon: Icons.security,
             label: l10n.dashboardActionSecurity,
             color: Theme.of(context).colorScheme.secondary,
-            onTap: () {
-              Navigator.pushNamed(context, '/security');
-            },
+            onTap: () => openRouteRespectingShell(
+              context,
+              AppRoutes.securityVerification,
+            ),
           ),
         ],
       ),

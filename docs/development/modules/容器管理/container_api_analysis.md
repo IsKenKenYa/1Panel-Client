@@ -1,17 +1,17 @@
 # CONTAINER 模块API端点详细分析
 
-> 基于 1PanelV2OpenAPI.json 自动生成
-> 生成时间: 2026-03-13 13:38:12
+> 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
+> 生成时间: 2026-04-27 15:19:33
 
 ## API端点总览
 
-- 端点数量: **63**
-- 方法总数: **67**
+- 端点数量: **69**
+- 方法总数: **73**
 
 | 方法 | 数量 |
 |------|------|
 | GET | 15 |
-| POST | 52 |
+| POST | 58 |
 
 ## API端点详情
 
@@ -40,26 +40,6 @@
 #### POST
 
 **摘要**: Clean container log
-
-**标签**: Container
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/containers/command`
-
-#### POST
-
-**摘要**: Create container by command
 
 **标签**: Container
 
@@ -122,6 +102,26 @@
 **摘要**: Clean compose log
 
 **标签**: Container
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/containers/compose/env`
+
+#### POST
+
+**摘要**: Load compose environment variables
+
+**标签**: Container Compose
 
 **参数**:
 
@@ -310,6 +310,124 @@
 **摘要**: Load docker status
 
 **标签**: Container Docker
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/containers/files/content`
+
+#### POST
+
+**摘要**: Get container file content
+
+**标签**: Container
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/containers/files/del`
+
+#### POST
+
+**摘要**: Delete container file
+
+**标签**: Container
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/containers/files/download`
+
+#### POST
+
+**摘要**: Download container file
+
+**标签**: Container
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+---
+
+### `/containers/files/search`
+
+#### POST
+
+**摘要**: List container files
+
+**标签**: Container
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/containers/files/size`
+
+#### POST
+
+**摘要**: Get container file size
+
+**标签**: Container
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/containers/files/upload`
+
+#### POST
+
+**摘要**: Upload container file
+
+**标签**: Container
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| containerID | formData | unknown | 是 | containerID |
+| path | formData | unknown | 是 | path |
+| file | formData | unknown | 是 | file |
 
 **响应**:
 

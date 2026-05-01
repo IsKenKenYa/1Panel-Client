@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/api/v2/setting_v2.dart' as api;
 import 'package:onepanel_client/data/models/setting_models.dart';
+import 'package:onepanel_client/data/models/ssh_settings_models.dart';
 import 'package:onepanel_client/features/settings/settings_provider.dart';
 import 'package:onepanel_client/features/settings/settings_service.dart';
 
@@ -12,11 +13,11 @@ class _FakeSettingsService extends SettingsService {
   int checkSettingsAvailableCallCount = 0;
 
   dynamic _appStoreConfig = <String, dynamic>{'storeUrl': 'https://store.old'};
-  dynamic _sshConnection = <String, dynamic>{
-    'host': '10.0.0.1',
-    'port': 22,
-    'user': 'root',
-  };
+  SshLocalConnectionInfo _sshConnection = const SshLocalConnectionInfo(
+    addr: '10.0.0.1',
+    port: 22,
+    user: 'root',
+  );
 
   @override
   Future<SystemSettingInfo?> getSystemSettings() async {
@@ -44,7 +45,7 @@ class _FakeSettingsService extends SettingsService {
   }
 
   @override
-  Future<dynamic> getSSHConnection() async {
+  Future<SshLocalConnectionInfo> getSSHConnection() async {
     return _sshConnection;
   }
 
@@ -57,11 +58,17 @@ class _FakeSettingsService extends SettingsService {
   @override
   Future<void> saveSSHConnection(api.SSHConnectionSave request) async {
     lastSshRequest = request;
-    _sshConnection = <String, dynamic>{
-      'host': request.host,
-      'port': request.port,
-      'user': request.user,
-    };
+    _sshConnection = SshLocalConnectionInfo(
+      addr: request.addr ?? '',
+      port: request.port ?? 22,
+      user: request.user ?? '',
+      authMode: request.authMode ?? 'password',
+      password: request.password,
+      privateKey: request.privateKey,
+      passPhrase: request.passPhrase,
+      localSSHConnShow:
+          request.localSSHConnShow ?? _sshConnection.localSSHConnShow,
+    );
   }
 
   @override
@@ -89,7 +96,7 @@ void main() {
       expect((provider.data.appStoreConfig as Map)['storeUrl'],
           'https://store.old');
       expect((provider.data.authSetting as Map)['captcha'], isTrue);
-      expect((provider.data.sshConnection as Map)['host'], '10.0.0.1');
+      expect(provider.data.sshConnection?.addr, '10.0.0.1');
     });
 
     test('updateAppStoreConfig writes and reloads latest value', () async {
@@ -115,10 +122,10 @@ void main() {
       );
 
       expect(ok, isTrue);
-      expect(service.lastSshRequest?.host, '10.0.0.2');
+      expect(service.lastSshRequest?.addr, '10.0.0.2');
       expect(service.lastSshRequest?.port, 2222);
-      expect((provider.data.sshConnection as Map)['host'], '10.0.0.2');
-      expect((provider.data.sshConnection as Map)['port'], 2222);
+      expect(provider.data.sshConnection?.addr, '10.0.0.2');
+      expect(provider.data.sshConnection?.port, 2222);
     });
 
     test('updateSystemSetting checks availability before update', () async {

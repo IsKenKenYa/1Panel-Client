@@ -1,11 +1,1598 @@
 {
   "module": "ai",
-  "generatedAt": "2026-03-23T18:47:54.638150",
+  "generatedAt": "2026-04-12T11:56:13.987458",
   "summary": {
-    "endpointCount": 18,
-    "methodCount": 18
+    "endpointCount": 73,
+    "methodCount": 73
   },
   "endpoints": [
+    {
+      "path": "/ai/agents",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create Agent",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/accounts",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create Agent account",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/accounts/delete",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete Agent account",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/accounts/models",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "List Agent account models",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/accounts/models/create",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create Agent account model",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/accounts/models/delete",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete Agent account model",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/accounts/models/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update Agent account model",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/accounts/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page Agent accounts",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/accounts/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update Agent account",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/accounts/verify",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Verify Agent account",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/agent/bind",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Bind Agent role channel",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/agent/channels",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get Agent role channels from config file",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/agent/create",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create Agent role",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/agent/delete",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete Agent role",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/agent/list",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get configured Agent roles from config file",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/agent/md/list",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get Agent role markdown files",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/agent/md/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update Agent role markdown file",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/agent/unbind",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Unbind Agent role channel",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/channel/dingtalk/get",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get Agent DingTalk channel config",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/channel/dingtalk/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update Agent DingTalk channel config",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/channel/discord/get",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get Agent Discord channel config",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/channel/discord/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update Agent Discord channel config",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/channel/feishu/get",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get Agent Feishu channel config",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/channel/feishu/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update Agent Feishu channel config",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/channel/pairing/approve",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Approve Agent channel pairing code",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/channel/qqbot/get",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get Agent QQ Bot channel config",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/channel/qqbot/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update Agent QQ Bot channel config",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/channel/telegram/get",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get Agent Telegram channel config",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/channel/telegram/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update Agent Telegram channel config",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/channel/wecom/get",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get Agent QQ Bot channel config",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/channel/wecom/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update Agent WeCom channel config",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/channel/weixin/login",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Login Agent Weixin channel",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/config-file/get",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get Agent config file",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/config-file/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update Agent config file",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/delete",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete Agent",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/model/get",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get Agent model config",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/model/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update Agent model config",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/other/get",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get Agent Other config",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/other/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update Agent Other config",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/overview",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get Agent overview",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/plugin/check",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Check Agent plugin installation status",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/plugin/install",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Install Agent plugin",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/plugin/uninstall",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Uninstall Agent plugin",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/plugin/upgrade",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Upgrade Agent plugin",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/providers",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get Providers",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/remark",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update Agent remark",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page Agents",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/security/get",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get Agent Security config",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/security/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update Agent Security config",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/skills/install",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Install Agent skill",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/skills/list",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "List Agent skills",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/skills/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Search Agent skills",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/skills/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update Agent skill status",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/token/reset",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Reset Agent token",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/website/bind",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Bind Agent website",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
     {
       "path": "/ai/domain/bind",
       "methods": [

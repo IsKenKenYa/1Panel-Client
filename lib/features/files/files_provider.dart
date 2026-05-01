@@ -5,10 +5,12 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/network/network_exceptions.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/config/api_constants.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
 
@@ -21,7 +23,7 @@ part 'providers/files_provider_browser_part.dart';
 part 'providers/files_provider_favorites_transfer_part.dart';
 part 'providers/files_provider_system_part.dart';
 
-class FilesProvider extends ChangeNotifier {
+class FilesProvider extends ChangeNotifier with SafeChangeNotifier {
   FilesProvider({FilesService? service}) : _service = service ?? FilesService();
 
   final FilesService _service;
@@ -33,6 +35,9 @@ class FilesProvider extends ChangeNotifier {
   FilesData get data => _data;
 
   void _emitChange() {
+    if (isDisposed) {
+      return;
+    }
     notifyListeners();
   }
 

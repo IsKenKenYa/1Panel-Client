@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/services/app_settings_controller.dart';
 import 'package:onepanel_client/core/theme/theme_controller.dart';
 import 'package:onepanel_client/features/server/server_list_page.dart';
@@ -69,5 +70,63 @@ void main() {
     expect((addRect.center.dy - highlightRect.center.dy).abs(), lessThan(2.0));
     expect(highlightRect.width, greaterThan(addRect.width));
     expect(highlightRect.height, greaterThan(addRect.height));
+  });
+
+  testWidgets('mobile server list renders populated cards without exceptions',
+      (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final currentServer = CurrentServerController();
+    await currentServer.load();
+
+    tester.view.physicalSize = const Size(393, 852);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    final serverItems = <ServerCardViewModel>[
+      ServerCardViewModel(
+        config: ApiConfig(
+          id: 'server-1',
+          name: 'Tencent Guangzhou',
+          url: 'http://10.0.0.1:11451',
+          apiKey: 'key-1',
+          allowInsecureTls: true,
+          isDefault: true,
+        ),
+        isCurrent: true,
+        metrics: const ServerMetricsSnapshot(
+          cpuPercent: 0.9,
+          memoryPercent: 35.2,
+          diskPercent: 71.6,
+          load: 0.03,
+        ),
+      ),
+    ];
+
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => AppSettingsController()),
+          ChangeNotifierProvider(create: (_) => ThemeController()),
+          ChangeNotifierProvider<CurrentServerController>.value(
+              value: currentServer),
+          ChangeNotifierProvider<ServerProvider>.value(
+            value: TestServerProvider(items: serverItems),
+          ),
+        ],
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('en'),
+          home: const ServerListPage(enableCoach: false),
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
+
+    expect(find.text('Tencent Guangzhou'), findsOneWidget);
+    expect(find.byIcon(Icons.delete_outline), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }

@@ -23,7 +23,12 @@ import 'package:onepanel_client/features/server/server_list_page.dart';
 import 'package:onepanel_client/features/server/server_models.dart';
 import 'package:onepanel_client/features/security/security_verification_page.dart';
 import 'package:onepanel_client/features/security/app_lock_controller.dart';
-import 'package:onepanel_client/features/shell/app_shell_page.dart';
+import 'package:onepanel_client/features/shell/models/client_module.dart';
+import 'package:onepanel_client/features/shell/shell_navigation.dart';
+import 'package:onepanel_client/ui/routing/ui_route_host.dart';
+import 'package:onepanel_client/ui/routing/route_registry.dart';
+import 'package:onepanel_client/ui/routing/ui_target.dart';
+import 'package:onepanel_client/ui/routing/ui_target_resolver.dart';
 import 'package:onepanel_client/features/terminal/terminal_page.dart';
 import 'package:onepanel_client/pages/settings/settings_page.dart';
 import 'package:onepanel_client/features/settings/system_settings_page.dart';
@@ -247,7 +252,15 @@ class AppRoutes {
 }
 
 class AppRouter {
+  static bool _routeRegistryInitialized = false;
+
   static Route<dynamic> generateRoute(RouteSettings settings) {
+    _ensureRouteRegistryInitialized();
+    final registryRoute = _buildRouteFromRegistry(settings);
+    if (registryRoute != null) {
+      return registryRoute;
+    }
+
     switch (settings.name) {
       case AppRoutes.splash:
         return MaterialPageRoute(builder: (_) => const SplashPage());
@@ -255,10 +268,7 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const OnboardingPage());
       case AppRoutes.home:
         return MaterialPageRoute(
-          builder: (_) => AppShellPage(
-            initialIndex: _readInitialIndex(settings.arguments),
-            initialModuleId: _readInitialModuleId(settings.arguments),
-          ),
+          builder: (_) => UiRouteHost(settings: settings),
         );
       case AppRoutes.server:
       case AppRoutes.serverSelection:
@@ -275,10 +285,13 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const NotFoundPage());
       case AppRoutes.files:
         return MaterialPageRoute(
-            builder: (_) => const AppShellPage(
-                  initialIndex: 1,
-                  initialModuleId: 'files',
-                ));
+          builder: (_) => const UiRouteHost(
+            settings: RouteSettings(
+              name: AppRoutes.home,
+              arguments: {'tab': 1, 'module': 'files'},
+            ),
+          ),
+        );
       case AppRoutes.databases:
         return MaterialPageRoute(builder: (_) => const DatabasesPage());
       case AppRoutes.databaseDetail:
@@ -351,9 +364,11 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const MonitoringPage());
       case AppRoutes.dashboard:
         return MaterialPageRoute(
-          builder: (_) => const AppShellPage(
-            initialIndex: 0,
-            initialModuleId: 'servers',
+          builder: (_) => const UiRouteHost(
+            settings: RouteSettings(
+              name: AppRoutes.home,
+              arguments: {'tab': 0, 'module': 'servers'},
+            ),
           ),
         );
       case AppRoutes.securityVerification:
@@ -992,9 +1007,11 @@ class AppRouter {
 
       case AppRoutes.containers:
         return MaterialPageRoute(
-          builder: (_) => const AppShellPage(
-            initialIndex: 2,
-            initialModuleId: 'containers',
+          builder: (_) => const UiRouteHost(
+            settings: RouteSettings(
+              name: AppRoutes.home,
+              arguments: {'tab': 2, 'module': 'containers'},
+            ),
           ),
         );
 
@@ -1002,7 +1019,6 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => const AppsPage(),
         );
-
       case '/container-create':
         return MaterialPageRoute(builder: (_) => const ContainerCreatePage());
 
@@ -1015,7 +1031,813 @@ class AppRouter {
     }
   }
 
-  static int _readInitialIndex(Object? arguments) {
+  static void _ensureRouteRegistryInitialized() {
+    if (_routeRegistryInitialized) {
+      return;
+    }
+    RouteRegistry.registerAll(_buildRouteRegistryEntries());
+    _routeRegistryInitialized = true;
+  }
+
+  static Route<dynamic>? _buildRouteFromRegistry(RouteSettings settings) {
+    final entry = RouteRegistry.lookup(settings.name);
+    if (entry == null) {
+      return null;
+    }
+
+    return MaterialPageRoute(
+      settings: settings,
+      builder: (context) {
+        final target = UiTargetResolver.resolve(context);
+        final builder = entry.resolve(target);
+        return builder(context, settings);
+      },
+    );
+  }
+
+  static Map<String, RouteEntry> _buildRouteRegistryEntries() {
+    return <String, RouteEntry>{
+      AppRoutes.splash: RouteEntry(
+        defaultBuilder: (_, __) => const SplashPage(),
+      ),
+      AppRoutes.onboarding: RouteEntry(
+        defaultBuilder: (_, __) => const OnboardingPage(),
+      ),
+      AppRoutes.home: RouteEntry(
+        defaultBuilder: (_, settings) => UiRouteHost(settings: settings),
+      ),
+      AppRoutes.server: _shellAwareModuleEntry(
+        routeName: AppRoutes.server,
+        defaultBuilder: (_, __) => const ServerListPage(enableCoach: false),
+      ),
+      AppRoutes.serverSelection: _shellAwareModuleEntry(
+        routeName: AppRoutes.serverSelection,
+        defaultBuilder: (_, __) => const ServerListPage(enableCoach: false),
+      ),
+      AppRoutes.serverConfig: _shellAwareModuleEntry(
+        routeName: AppRoutes.serverConfig,
+        defaultBuilder: (_, __) => const ServerFormPage(),
+      ),
+      AppRoutes.serverDetail: _shellAwareModuleEntry(
+        routeName: AppRoutes.serverDetail,
+        defaultBuilder: (_, settings) {
+          final arg = settings.arguments;
+          if (arg is ServerCardViewModel) {
+            return ServerDetailPage(server: arg);
+          }
+          return const NotFoundPage();
+        },
+      ),
+      AppRoutes.dashboard: _shellAwareModuleEntry(
+        routeName: AppRoutes.dashboard,
+        defaultBuilder: (_, __) => const UiRouteHost(
+          settings: RouteSettings(
+            name: AppRoutes.home,
+            arguments: {'tab': 0, 'module': 'servers'},
+          ),
+        ),
+      ),
+      AppRoutes.files: _shellAwareModuleEntry(
+        routeName: AppRoutes.files,
+        defaultBuilder: (_, __) => const UiRouteHost(
+          settings: RouteSettings(
+            name: AppRoutes.home,
+            arguments: {'tab': 1, 'module': 'files'},
+          ),
+        ),
+      ),
+      AppRoutes.containers: _shellAwareModuleEntry(
+        routeName: AppRoutes.containers,
+        defaultBuilder: (_, __) => const UiRouteHost(
+          settings: RouteSettings(
+            name: AppRoutes.home,
+            arguments: {'tab': 2, 'module': 'containers'},
+          ),
+        ),
+      ),
+      '/container-create': _shellAwareModuleEntry(
+        routeName: '/container-create',
+        defaultBuilder: (_, __) => const ContainerCreatePage(),
+      ),
+      AppRoutes.apps: _shellAwareModuleEntry(
+        routeName: AppRoutes.apps,
+        defaultBuilder: (_, __) => const AppsPage(),
+      ),
+      AppRoutes.appStore: _shellAwareModuleEntry(
+        routeName: AppRoutes.appStore,
+        defaultBuilder: (_, __) => const AppsPage(initialTabIndex: 1),
+      ),
+      AppRoutes.appDetail: _shellAwareModuleEntry(
+        routeName: AppRoutes.appDetail,
+        defaultBuilder: (_, settings) {
+          final arg = settings.arguments;
+          if (arg is AppItem) {
+            return AppDetailPage(app: arg);
+          }
+          if (arg is Map<String, dynamic>) {
+            final appItem = AppItem(
+              id: int.tryParse(arg['appId']?.toString() ?? ''),
+              key: arg['key'] as String?,
+              versions:
+                  arg['version'] != null ? [arg['version'] as String] : null,
+              type: arg['type'] as String?,
+            );
+            return AppDetailPage(app: appItem);
+          }
+          return const NotFoundPage();
+        },
+      ),
+      AppRoutes.installedAppDetail: _shellAwareModuleEntry(
+        routeName: AppRoutes.installedAppDetail,
+        defaultBuilder: (_, settings) {
+          final arg = settings.arguments;
+          if (arg is AppInstallInfo) {
+            return InstalledAppDetailPage(appInfo: arg);
+          }
+          if (arg is Map<String, dynamic> && arg.containsKey('appId')) {
+            return InstalledAppDetailPage(appId: arg['appId'] as String);
+          }
+          return const NotFoundPage();
+        },
+      ),
+      AppRoutes.containerDetail: _shellAwareModuleEntry(
+        routeName: AppRoutes.containerDetail,
+        defaultBuilder: (_, settings) {
+          final arg = settings.arguments;
+          if (arg is ContainerInfo) {
+            return ContainerDetailPage(container: arg);
+          }
+          return const NotFoundPage();
+        },
+      ),
+      AppRoutes.websites: _shellAwareModuleEntry(
+        routeName: AppRoutes.websites,
+        defaultBuilder: (_, __) => const WebsitesPage(),
+      ),
+      AppRoutes.websiteCreate: _shellAwareModuleEntry(
+        routeName: AppRoutes.websiteCreate,
+        defaultBuilder: (_, __) => const WebsiteCreateFlowPage(),
+      ),
+      AppRoutes.websiteEdit: _shellAwareModuleEntry(
+        routeName: AppRoutes.websiteEdit,
+        defaultBuilder: (_, settings) {
+          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final websiteId = arg['websiteId'] as int?;
+          if (websiteId == null) {
+            return const NotFoundPage();
+          }
+          return WebsiteCreateFlowPage.edit(websiteId: websiteId);
+        },
+      ),
+      AppRoutes.websiteDetail: _shellAwareModuleEntry(
+        routeName: AppRoutes.websiteDetail,
+        defaultBuilder: (_, settings) {
+          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final websiteId = arg['websiteId'] as int?;
+          if (websiteId == null) {
+            return const NotFoundPage();
+          }
+          return WebsiteDetailPage(websiteId: websiteId);
+        },
+      ),
+      AppRoutes.ai: _shellAwareModuleEntry(
+        routeName: AppRoutes.ai,
+        defaultBuilder: (_, __) => MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => AIProvider()),
+            ChangeNotifierProvider(create: (_) => AgentsProvider()),
+            ChangeNotifierProvider(create: (_) => McpServerProvider()),
+          ],
+          child: const AIPage(),
+        ),
+      ),
+      AppRoutes.securityVerification: _shellAwareModuleEntry(
+        routeName: AppRoutes.securityVerification,
+        defaultBuilder: (_, __) => const SecurityVerificationPage(),
+      ),
+      AppRoutes.settings: _shellAwareModuleEntry(
+        routeName: AppRoutes.settings,
+        defaultBuilder: (_, __) => const SettingsPage(),
+      ),
+      AppRoutes.settingsLanguage: _shellAwareModuleEntry(
+        routeName: AppRoutes.settingsLanguage,
+        defaultBuilder: (_, __) => const LanguageSettingsPage(),
+      ),
+      AppRoutes.settingsFeedbackCenter: _shellAwareModuleEntry(
+        routeName: AppRoutes.settingsFeedbackCenter,
+        defaultBuilder: (_, __) => const FeedbackCenterPage(),
+      ),
+      AppRoutes.settingsLegalCenter: _shellAwareModuleEntry(
+        routeName: AppRoutes.settingsLegalCenter,
+        defaultBuilder: (_, __) => const LegalCenterPage(),
+      ),
+      AppRoutes.settingsMainlandSdkDisclosure: _shellAwareModuleEntry(
+        routeName: AppRoutes.settingsMainlandSdkDisclosure,
+        defaultBuilder: (_, __) => const MainlandSdkDisclosurePage(),
+      ),
+      AppRoutes.systemSettings: _shellAwareModuleEntry(
+        routeName: AppRoutes.systemSettings,
+        defaultBuilder: (_, __) => const SystemSettingsPage(),
+      ),
+      AppRoutes.menuSettings: _shellAwareModuleEntry(
+        routeName: AppRoutes.menuSettings,
+        defaultBuilder: (_, __) => ChangeNotifierProvider<MenuSettingsProvider>(
+          create: (_) => MenuSettingsProvider(),
+          child: const MenuSettingsPage(),
+        ),
+      ),
+      AppRoutes.panelSsl: _shellAwareModuleEntry(
+        routeName: AppRoutes.panelSsl,
+        defaultBuilder: (_, __) => const SslSettingsPage(),
+      ),
+      AppRoutes.databases: _shellAwareModuleEntry(
+        routeName: AppRoutes.databases,
+        defaultBuilder: (_, __) => const DatabasesPage(),
+      ),
+      AppRoutes.databaseDetail: _shellAwareModuleEntry(
+        routeName: AppRoutes.databaseDetail,
+        defaultBuilder: (_, settings) {
+          final arg = settings.arguments;
+          if (arg is DatabaseListItem) {
+            return DatabaseDetailPage(item: arg);
+          }
+          return const NotFoundPage();
+        },
+      ),
+      AppRoutes.databaseForm: _shellAwareModuleEntry(
+        routeName: AppRoutes.databaseForm,
+        defaultBuilder: (_, settings) {
+          final arg = settings.arguments;
+          final scope = arg is Map<String, dynamic>
+              ? _readDatabaseScope(arg['scope'])
+              : DatabaseScope.mysql;
+          return DatabaseFormPage(initialScope: scope);
+        },
+      ),
+      AppRoutes.databaseRemote: _shellAwareModuleEntry(
+        routeName: AppRoutes.databaseRemote,
+        defaultBuilder: (_, __) => const DatabaseRemotePage(),
+      ),
+      AppRoutes.databaseRedisConfig: _shellAwareModuleEntry(
+        routeName: AppRoutes.databaseRedisConfig,
+        defaultBuilder: (_, settings) {
+          final arg = settings.arguments;
+          if (arg is DatabaseListItem) {
+            return DatabaseRedisPage(item: arg);
+          }
+          return const NotFoundPage();
+        },
+      ),
+      AppRoutes.databaseBackups: _shellAwareModuleEntry(
+        routeName: AppRoutes.databaseBackups,
+        defaultBuilder: (_, settings) {
+          final arg = settings.arguments;
+          if (arg is DatabaseListItem) {
+            return DatabaseBackupPage(item: arg);
+          }
+          return const NotFoundPage();
+        },
+      ),
+      AppRoutes.databaseUsers: _shellAwareModuleEntry(
+        routeName: AppRoutes.databaseUsers,
+        defaultBuilder: (_, settings) {
+          final arg = settings.arguments;
+          if (arg is DatabaseListItem) {
+            return DatabaseUsersPage(item: arg);
+          }
+          return const NotFoundPage();
+        },
+      ),
+      AppRoutes.firewall: _shellAwareModuleEntry(
+        routeName: AppRoutes.firewall,
+        defaultBuilder: (_, __) => const FirewallPage(),
+      ),
+      AppRoutes.firewallRules: _shellAwareModuleEntry(
+        routeName: AppRoutes.firewallRules,
+        defaultBuilder: (_, __) => const FirewallPage(initialTab: 1),
+      ),
+      AppRoutes.firewallIps: _shellAwareModuleEntry(
+        routeName: AppRoutes.firewallIps,
+        defaultBuilder: (_, __) => const FirewallPage(initialTab: 2),
+      ),
+      AppRoutes.firewallPorts: _shellAwareModuleEntry(
+        routeName: AppRoutes.firewallPorts,
+        defaultBuilder: (_, __) => const FirewallPage(initialTab: 3),
+      ),
+      AppRoutes.firewallRuleForm: _shellAwareModuleEntry(
+        routeName: AppRoutes.firewallRuleForm,
+        defaultBuilder: (_, settings) {
+          final arg = settings.arguments;
+          if (arg is FirewallRuleFormArguments) {
+            return FirewallRuleFormPage(arguments: arg);
+          }
+          return const NotFoundPage();
+        },
+      ),
+      AppRoutes.terminal: _shellAwareModuleEntry(
+        routeName: AppRoutes.terminal,
+        defaultBuilder: (_, __) => const TerminalPage(),
+      ),
+      AppRoutes.monitoring: _shellAwareModuleEntry(
+        routeName: AppRoutes.monitoring,
+        defaultBuilder: (_, __) => const MonitoringPage(),
+      ),
+      AppRoutes.operations: _shellAwareModuleEntry(
+        routeName: AppRoutes.operations,
+        defaultBuilder: (_, __) => const OperationsCenterPage(),
+      ),
+      AppRoutes.groupCenter: _shellAwareModuleEntry(
+        routeName: AppRoutes.groupCenter,
+        defaultBuilder: (_, __) => ChangeNotifierProvider<GroupCenterProvider>(
+          create: (_) => GroupCenterProvider(),
+          child: const GroupCenterPage(),
+        ),
+      ),
+      AppRoutes.toolbox: _shellAwareModuleEntry(
+        routeName: AppRoutes.toolbox,
+        defaultBuilder: (_, __) => const ToolboxCenterPage(),
+      ),
+      AppRoutes.toolboxDevice: _shellAwareModuleEntry(
+        routeName: AppRoutes.toolboxDevice,
+        defaultBuilder: (_, __) => ChangeNotifierProvider<ToolboxDeviceProvider>(
+          create: (_) => ToolboxDeviceProvider(),
+          child: const ToolboxDevicePage(),
+        ),
+      ),
+      AppRoutes.toolboxDisk: _shellAwareModuleEntry(
+        routeName: AppRoutes.toolboxDisk,
+        defaultBuilder: (_, __) => ChangeNotifierProvider<ToolboxDiskProvider>(
+          create: (_) => ToolboxDiskProvider(),
+          child: const ToolboxDiskPage(),
+        ),
+      ),
+      AppRoutes.toolboxClam: _shellAwareModuleEntry(
+        routeName: AppRoutes.toolboxClam,
+        defaultBuilder: (_, __) => ChangeNotifierProvider<ToolboxClamProvider>(
+          create: (_) => ToolboxClamProvider(),
+          child: const ToolboxClamPage(),
+        ),
+      ),
+      AppRoutes.toolboxFail2ban: _shellAwareModuleEntry(
+        routeName: AppRoutes.toolboxFail2ban,
+        defaultBuilder: (_, __) =>
+            ChangeNotifierProvider<ToolboxFail2banProvider>(
+          create: (_) => ToolboxFail2banProvider(),
+          child: const ToolboxFail2banPage(),
+        ),
+      ),
+      AppRoutes.toolboxFtp: _shellAwareModuleEntry(
+        routeName: AppRoutes.toolboxFtp,
+        defaultBuilder: (_, __) => ChangeNotifierProvider<ToolboxFtpProvider>(
+          create: (_) => ToolboxFtpProvider(),
+          child: const ToolboxFtpPage(),
+        ),
+      ),
+      AppRoutes.toolboxHostTool: _shellAwareModuleEntry(
+        routeName: AppRoutes.toolboxHostTool,
+        defaultBuilder: (_, __) =>
+            ChangeNotifierProvider<ToolboxHostToolProvider>(
+          create: (_) => ToolboxHostToolProvider(),
+          child: const ToolboxHostToolPage(),
+        ),
+      ),
+      AppRoutes.commands: _shellAwareModuleEntry(
+        routeName: AppRoutes.commands,
+        defaultBuilder: (_, __) => ChangeNotifierProvider<CommandsProvider>(
+          create: (_) => CommandsProvider(),
+          child: const CommandsPage(),
+        ),
+      ),
+      AppRoutes.commandForm: _shellAwareModuleEntry(
+        routeName: AppRoutes.commandForm,
+        defaultBuilder: (context, settings) =>
+            ChangeNotifierProvider<CommandFormProvider>(
+          create: (context) {
+            final provider = CommandFormProvider();
+            final currentServer = Provider.of<CurrentServerController?>(
+              context,
+              listen: false,
+            );
+            if (currentServer?.hasServer ?? false) {
+              provider.initialize(
+                CommandFormArgs(
+                  initialValue: settings.arguments as CommandInfo?,
+                ),
+              );
+            }
+            return provider;
+          },
+          child: CommandFormPage(
+            args: CommandFormArgs(
+              initialValue: settings.arguments as CommandInfo?,
+            ),
+          ),
+        ),
+      ),
+      AppRoutes.hostAssets: _shellAwareModuleEntry(
+        routeName: AppRoutes.hostAssets,
+        defaultBuilder: (_, __) => ChangeNotifierProvider<HostAssetsProvider>(
+          create: (_) => HostAssetsProvider(),
+          child: const HostAssetsPage(),
+        ),
+      ),
+      AppRoutes.hostAssetForm: _shellAwareModuleEntry(
+        routeName: AppRoutes.hostAssetForm,
+        defaultBuilder: (context, settings) =>
+            ChangeNotifierProvider<HostAssetFormProvider>(
+          create: (context) {
+            final provider = HostAssetFormProvider();
+            final currentServer = Provider.of<CurrentServerController?>(
+              context,
+              listen: false,
+            );
+            if (currentServer?.hasServer ?? false) {
+              provider.initialize(
+                HostAssetFormArgs(
+                  initialValue: settings.arguments as HostInfo?,
+                ),
+              );
+            }
+            return provider;
+          },
+          child: HostAssetFormPage(
+            args: HostAssetFormArgs(
+              initialValue: settings.arguments as HostInfo?,
+            ),
+          ),
+        ),
+      ),
+      AppRoutes.ssh: _shellAwareModuleEntry(
+        routeName: AppRoutes.ssh,
+        defaultBuilder: (_, __) => ChangeNotifierProvider<SshSettingsProvider>(
+          create: (_) => SshSettingsProvider(),
+          child: const SshSettingsPage(),
+        ),
+      ),
+      AppRoutes.sshCerts: _shellAwareModuleEntry(
+        routeName: AppRoutes.sshCerts,
+        defaultBuilder: (_, __) => ChangeNotifierProvider<SshCertsProvider>(
+          create: (_) => SshCertsProvider(),
+          child: const SshCertsPage(),
+        ),
+      ),
+      AppRoutes.sshLogs: _shellAwareModuleEntry(
+        routeName: AppRoutes.sshLogs,
+        defaultBuilder: (_, __) => ChangeNotifierProvider<SshLogsProvider>(
+          create: (_) => SshLogsProvider(),
+          child: const SshLogsPage(),
+        ),
+      ),
+      AppRoutes.sshSessions: _shellAwareModuleEntry(
+        routeName: AppRoutes.sshSessions,
+        defaultBuilder: (_, __) =>
+            ChangeNotifierProvider<SshSessionsProvider>(
+          create: (_) => SshSessionsProvider(),
+          child: const SshSessionsPage(),
+        ),
+      ),
+      AppRoutes.processes: _shellAwareModuleEntry(
+        routeName: AppRoutes.processes,
+        defaultBuilder: (_, __) => ChangeNotifierProvider<ProcessesProvider>(
+          create: (_) => ProcessesProvider(),
+          child: const ProcessesPage(),
+        ),
+      ),
+      AppRoutes.processDetail: _shellAwareModuleEntry(
+        routeName: AppRoutes.processDetail,
+        defaultBuilder: (_, settings) {
+          final arg = settings.arguments;
+          if (arg is int) {
+            return ChangeNotifierProvider<ProcessDetailProvider>(
+              create: (_) => ProcessDetailProvider(),
+              child: ProcessDetailPage(pid: arg),
+            );
+          }
+          return const NotFoundPage();
+        },
+      ),
+      AppRoutes.cronjobs: _shellAwareModuleEntry(
+        routeName: AppRoutes.cronjobs,
+        defaultBuilder: (_, __) => ChangeNotifierProvider<CronjobsProvider>(
+          create: (_) => CronjobsProvider(),
+          child: const CronjobsPage(),
+        ),
+      ),
+      AppRoutes.cronjobForm: _shellAwareModuleEntry(
+        routeName: AppRoutes.cronjobForm,
+        defaultBuilder: (context, settings) =>
+            ChangeNotifierProvider<CronjobFormProvider>(
+          create: (context) {
+            final provider = CronjobFormProvider();
+            final currentServer = Provider.of<CurrentServerController?>(
+              context,
+              listen: false,
+            );
+            if (currentServer?.hasServer ?? false) {
+              provider.initialize(
+                settings.arguments as CronjobFormArgs? ??
+                    const CronjobFormArgs(),
+              );
+            }
+            return provider;
+          },
+          child: CronjobFormPage(
+            args:
+                settings.arguments as CronjobFormArgs? ?? const CronjobFormArgs(),
+          ),
+        ),
+      ),
+      AppRoutes.cronjobRecords: _shellAwareModuleEntry(
+        routeName: AppRoutes.cronjobRecords,
+        defaultBuilder: (_, settings) {
+          final arg = settings.arguments;
+          if (arg is CronjobRecordsArgs) {
+            return ChangeNotifierProvider<CronjobRecordsProvider>(
+              create: (_) => CronjobRecordsProvider(),
+              child: CronjobRecordsPage(args: arg),
+            );
+          }
+          return const NotFoundPage();
+        },
+      ),
+      AppRoutes.scripts: _shellAwareModuleEntry(
+        routeName: AppRoutes.scripts,
+        defaultBuilder: (_, __) =>
+            ChangeNotifierProvider<ScriptLibraryProvider>(
+          create: (_) => ScriptLibraryProvider(),
+          child: const ScriptLibraryPage(),
+        ),
+      ),
+      AppRoutes.backups: _shellAwareModuleEntry(
+        routeName: AppRoutes.backups,
+        defaultBuilder: (_, __) =>
+            ChangeNotifierProvider<BackupAccountsProvider>(
+          create: (_) => BackupAccountsProvider(),
+          child: const BackupAccountsPage(),
+        ),
+      ),
+      AppRoutes.backupAccountForm: _shellAwareModuleEntry(
+        routeName: AppRoutes.backupAccountForm,
+        defaultBuilder: (context, settings) =>
+            ChangeNotifierProvider<BackupAccountFormProvider>(
+          create: (context) {
+            final provider = BackupAccountFormProvider();
+            final currentServer = Provider.of<CurrentServerController?>(
+              context,
+              listen: false,
+            );
+            if (currentServer?.hasServer ?? false) {
+              provider.initialize(
+                settings.arguments as BackupAccountFormArgs? ??
+                    const BackupAccountFormArgs(),
+              );
+            }
+            return provider;
+          },
+          child: BackupAccountFormPage(
+            args: settings.arguments as BackupAccountFormArgs? ??
+                const BackupAccountFormArgs(),
+          ),
+        ),
+      ),
+      AppRoutes.backupRecords: _shellAwareModuleEntry(
+        routeName: AppRoutes.backupRecords,
+        defaultBuilder: (_, settings) =>
+            ChangeNotifierProvider<BackupRecordsProvider>(
+          create: (_) => BackupRecordsProvider(),
+          child: BackupRecordsPage(
+            args: settings.arguments as BackupRecordsArgs? ??
+                const BackupRecordsArgs(),
+          ),
+        ),
+      ),
+      AppRoutes.backupRecover: _shellAwareModuleEntry(
+        routeName: AppRoutes.backupRecover,
+        defaultBuilder: (_, settings) =>
+            ChangeNotifierProvider<BackupRecoverProvider>(
+          create: (_) => BackupRecoverProvider(),
+          child: BackupRecoverPage(
+            args: settings.arguments as BackupRecoverArgs? ??
+                const BackupRecoverArgs(),
+          ),
+        ),
+      ),
+      AppRoutes.logs: _shellAwareModuleEntry(
+        routeName: AppRoutes.logs,
+        defaultBuilder: (_, __) => MultiProvider(
+          providers: [
+            ChangeNotifierProvider<LogsProvider>(
+              create: (_) => LogsProvider(),
+            ),
+            ChangeNotifierProvider<TaskLogsProvider>(
+              create: (_) => TaskLogsProvider(),
+            ),
+            ChangeNotifierProvider<SystemLogsProvider>(
+              create: (_) => SystemLogsProvider(),
+            ),
+          ],
+          child: const LogsCenterPage(),
+        ),
+      ),
+      AppRoutes.systemLogViewer: _shellAwareModuleEntry(
+        routeName: AppRoutes.systemLogViewer,
+        defaultBuilder: (_, settings) =>
+            ChangeNotifierProvider<SystemLogsProvider>(
+          create: (_) => SystemLogsProvider(),
+          child: SystemLogViewerPage(
+            args: settings.arguments as SystemLogViewerArgs? ??
+                const SystemLogViewerArgs(),
+          ),
+        ),
+      ),
+      AppRoutes.taskLogDetail: _shellAwareModuleEntry(
+        routeName: AppRoutes.taskLogDetail,
+        defaultBuilder: (_, settings) {
+          final arg = settings.arguments;
+          if (arg is! TaskLogDetailArgs) {
+            return const NotFoundPage();
+          }
+          return ChangeNotifierProvider<TaskLogsProvider>(
+            create: (_) => TaskLogsProvider(),
+            child: TaskLogDetailPage(args: arg),
+          );
+        },
+      ),
+      AppRoutes.runtimes: _shellAwareModuleEntry(
+        routeName: AppRoutes.runtimes,
+        defaultBuilder: (_, __) => ChangeNotifierProvider<RuntimesProvider>(
+          create: (_) => RuntimesProvider(),
+          child: const RuntimesCenterPage(),
+        ),
+      ),
+      AppRoutes.runtimeDetail: _shellAwareModuleEntry(
+        routeName: AppRoutes.runtimeDetail,
+        defaultBuilder: (_, settings) {
+          final detailArgs = settings.arguments;
+          if (detailArgs is! RuntimeDetailArgs) {
+            return const NotFoundPage();
+          }
+          return ChangeNotifierProvider<RuntimeDetailProvider>(
+            create: (_) => RuntimeDetailProvider(),
+            child: RuntimeDetailPage(args: detailArgs),
+          );
+        },
+      ),
+      AppRoutes.runtimeForm: _shellAwareModuleEntry(
+        routeName: AppRoutes.runtimeForm,
+        defaultBuilder: (_, settings) =>
+            ChangeNotifierProvider<RuntimeFormProvider>(
+          create: (_) => RuntimeFormProvider(),
+          child: RuntimeFormPage(
+            args: settings.arguments as RuntimeFormArgs? ??
+                const RuntimeFormArgs(),
+          ),
+        ),
+      ),
+      AppRoutes.phpExtensions: _shellAwareModuleEntry(
+        routeName: AppRoutes.phpExtensions,
+        defaultBuilder: (_, settings) {
+          final args = _readRuntimeManageArgs(
+            settings.arguments,
+            runtimeKind: 'php',
+          );
+          if (args == null) {
+            return const NotFoundPage();
+          }
+          return ChangeNotifierProvider<PhpExtensionsProvider>(
+            create: (_) => PhpExtensionsProvider(),
+            child: PhpExtensionsPage(args: args),
+          );
+        },
+      ),
+      AppRoutes.phpConfig: _shellAwareModuleEntry(
+        routeName: AppRoutes.phpConfig,
+        defaultBuilder: (_, settings) {
+          final args = _readRuntimeManageArgs(
+            settings.arguments,
+            runtimeKind: 'php',
+          );
+          if (args == null) {
+            return const NotFoundPage();
+          }
+          return ChangeNotifierProvider<PhpConfigProvider>(
+            create: (_) => PhpConfigProvider(),
+            child: PhpConfigPage(args: args),
+          );
+        },
+      ),
+      AppRoutes.phpSupervisor: _shellAwareModuleEntry(
+        routeName: AppRoutes.phpSupervisor,
+        defaultBuilder: (_, settings) {
+          final args = _readRuntimeManageArgs(
+            settings.arguments,
+            runtimeKind: 'php',
+          );
+          if (args == null) {
+            return const NotFoundPage();
+          }
+          return ChangeNotifierProvider<PhpSupervisorProvider>(
+            create: (_) => PhpSupervisorProvider(),
+            child: PhpSupervisorPage(args: args),
+          );
+        },
+      ),
+      AppRoutes.nodeModules: _shellAwareModuleEntry(
+        routeName: AppRoutes.nodeModules,
+        defaultBuilder: (_, settings) {
+          final args = _readRuntimeManageArgs(
+            settings.arguments,
+            runtimeKind: 'node',
+          );
+          if (args == null) {
+            return const NotFoundPage();
+          }
+          return ChangeNotifierProvider<NodeModulesProvider>(
+            create: (_) => NodeModulesProvider(),
+            child: NodeModulesPage(args: args),
+          );
+        },
+      ),
+      AppRoutes.nodeScripts: _shellAwareModuleEntry(
+        routeName: AppRoutes.nodeScripts,
+        defaultBuilder: (_, settings) {
+          final args = _readRuntimeManageArgs(
+            settings.arguments,
+            runtimeKind: 'node',
+          );
+          if (args == null) {
+            return const NotFoundPage();
+          }
+          return ChangeNotifierProvider<NodeScriptsProvider>(
+            create: (_) => NodeScriptsProvider(),
+            child: NodeScriptsPage(args: args),
+          );
+        },
+      ),
+      AppRoutes.orchestration: _shellAwareModuleEntry(
+        routeName: AppRoutes.orchestration,
+        defaultBuilder: (_, __) => const OrchestrationPage(),
+      ),
+      AppRoutes.openrestyCenter: _shellAwareModuleEntry(
+        routeName: AppRoutes.openrestyCenter,
+        defaultBuilder: (_, __) => const OpenRestyPage(),
+      ),
+      AppRoutes.openrestySourceEditor: _shellAwareModuleEntry(
+        routeName: AppRoutes.openrestySourceEditor,
+        defaultBuilder: (_, settings) {
+          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          return ChangeNotifierProvider(
+            create: (_) => OpenRestyProvider()..loadAll(),
+            child: OpenRestySourceEditorPage(
+              initialContent: arg['initialContent'] as String?,
+            ),
+          );
+        },
+      ),
+      '/help': RouteEntry(
+        defaultBuilder: (_, __) => const LegacyRedirectPage(),
+      ),
+    };
+  }
+
+  static RouteEntry _shellAwareModuleEntry({
+    required String routeName,
+    required UiRouteBuilder defaultBuilder,
+  }) {
+    final shellTarget = shellRouteTargetForRoute(routeName);
+    if (shellTarget == null) {
+      return RouteEntry(defaultBuilder: defaultBuilder);
+    }
+
+    Widget desktopBuilder(BuildContext context, RouteSettings settings) {
+      final arguments = <String, dynamic>{
+        'module': shellTarget.module.storageId,
+      };
+      if (shellTarget.embedRouteInShell) {
+        arguments['route'] = routeName;
+        if (settings.arguments != null) {
+          arguments['routeArgs'] = settings.arguments;
+        }
+      }
+      return UiRouteHost(
+        settings: RouteSettings(
+          name: AppRoutes.home,
+          arguments: arguments,
+        ),
+      );
+    }
+
+    return RouteEntry(
+      defaultBuilder: defaultBuilder,
+      platformOverrides: {
+        UiPlatformKind.desktopWindows: desktopBuilder,
+        UiPlatformKind.desktopMacos: desktopBuilder,
+        UiPlatformKind.desktopLinux: desktopBuilder,
+      },
+    );
+  }
+
+  static int readInitialIndex(Object? arguments) {
     if (arguments is int) {
       return arguments;
     }
@@ -1027,7 +1849,7 @@ class AppRouter {
     return 0;
   }
 
-  static String? _readInitialModuleId(Object? arguments) {
+  static String? readInitialModuleId(Object? arguments) {
     if (arguments is String) {
       return arguments;
     }

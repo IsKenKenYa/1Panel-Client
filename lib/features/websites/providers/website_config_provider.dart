@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 
 import '../../../data/models/file/file_info.dart';
 import '../../../data/models/openresty_models.dart';
@@ -7,7 +8,7 @@ import '../../../data/models/website_models.dart';
 import '../services/website_config_service.dart';
 import '../services/website_service.dart';
 
-class WebsiteConfigProvider extends ChangeNotifier {
+class WebsiteConfigProvider extends ChangeNotifier with SafeChangeNotifier {
   final int websiteId;
   final WebsiteConfigService _service;
   final WebsiteService _websiteService;

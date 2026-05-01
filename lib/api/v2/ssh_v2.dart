@@ -137,4 +137,71 @@ class SshV2Api {
       requestOptions: response.requestOptions,
     );
   }
+
+  // ==================== SSH 设置模块 ====================
+
+  /// 加载本地 SSH 连接信息
+  Future<Response<SshLocalConnectionInfo>> getSshConn() async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/settings/ssh/conn'),
+    );
+    final data = response.data?['data'] as Map<String, dynamic>?;
+    return Response<SshLocalConnectionInfo>(
+      data: SshLocalConnectionInfo.fromJson(data ?? const <String, dynamic>{}),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 更新 SSH 设置
+  Future<Response<void>> updateSshSettings(Map<String, dynamic> request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/settings/ssh'),
+      data: request,
+    );
+  }
+
+  /// 检查 SSH 基础信息
+  Future<Response<bool>> checkSshInfo({
+    SshLocalConnectionInfo? request,
+  }) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/settings/ssh/check/info'),
+      data: request?.toJson(),
+    );
+    final data = response.data?['data'] as bool?;
+    return Response<bool>(
+      data: data,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 设置默认 SSH 连接
+  Future<Response<void>> setDefaultSshConn(
+    SshDefaultConnectionVisibilityUpdate request,
+  ) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/settings/ssh/conn/default'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 获取Fail2ban SSHD运行状态
+  Future<Response<void>> getFail2banSshdStatus() async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/toolbox/fail2ban/operate/sshd'),
+      data: const <String, dynamic>{'operate': 'status'},
+    );
+  }
+
+  /// 启动/停止 Fail2ban SSHD (操作: start, stop, restart)
+  Future<Response<void>> operateFail2banSshd(Map<String, dynamic> request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/toolbox/fail2ban/operate/sshd'),
+      data: request,
+    );
+  }
 }

@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import '../../data/models/ai_models.dart';
 import 'ai_repository.dart';
 
 /// AI状态管理类
-class AIProvider with ChangeNotifier {
+class AIProvider with ChangeNotifier, SafeChangeNotifier {
   final AIRepository _repository;
 
   /// GPU信息列表

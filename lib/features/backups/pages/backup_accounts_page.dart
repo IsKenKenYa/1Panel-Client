@@ -80,6 +80,7 @@ class _BackupAccountsPageState extends State<BackupAccountsPage> {
             ),
           ],
           floatingActionButton: FloatingActionButton.extended(
+            heroTag: 'backup_accounts_create_fab',
             onPressed: _openCreate,
             icon: const Icon(Icons.add),
             label: Text(l10n.commonCreate),

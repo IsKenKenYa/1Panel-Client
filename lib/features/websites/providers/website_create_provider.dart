@@ -1,8 +1,9 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import '../../../data/models/website_group_models.dart';
 import '../services/website_service.dart';
 
-class WebsiteCreateProvider extends ChangeNotifier {
+class WebsiteCreateProvider extends ChangeNotifier with SafeChangeNotifier {
   WebsiteCreateProvider({WebsiteService? service}) : _service = service;
 
   WebsiteService? _service;

@@ -2,6 +2,7 @@ import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/network/api_client_manager.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/repositories/dashboard_repository.dart';
+import 'package:onepanel_client/core/network/network_exceptions.dart';
 import 'server_models.dart';
 
 /// 服务器仓库
@@ -52,12 +53,19 @@ class ServerRepository {
 
       return metrics;
     } catch (e, stack) {
-      appLogger.eWithPackage(
-        'features.server.repository',
-        'Error loading server metrics',
-        error: e,
-        stackTrace: stack,
-      );
+      if (e is NetworkException) {
+        appLogger.wWithPackage(
+          'features.server.repository',
+          'Network error loading server metrics: ${e.message}',
+        );
+      } else {
+        appLogger.eWithPackage(
+          'features.server.repository',
+          'Error loading server metrics',
+          error: e,
+          stackTrace: stack,
+        );
+      }
       return const ServerMetricsSnapshot();
     }
   }

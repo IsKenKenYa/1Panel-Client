@@ -860,12 +860,12 @@ class SettingsImport extends Equatable {
 @JsonSerializable()
 class MfaCredential extends Equatable {
   final String code;
-  final String interval;
+  final int interval;
   final String secret;
 
   const MfaCredential({
     required this.code,
-    required this.interval,
+    this.interval = 30,
     required this.secret,
   });
 
@@ -875,6 +875,25 @@ class MfaCredential extends Equatable {
 
   @override
   List<Object?> get props => [code, interval, secret];
+}
+
+/// MFA加载请求
+@JsonSerializable()
+class MfaLoadRequest extends Equatable {
+  final String title;
+  final int interval;
+
+  const MfaLoadRequest({
+    required this.title,
+    this.interval = 30,
+  });
+
+  factory MfaLoadRequest.fromJson(Map<String, dynamic> json) =>
+      _$MfaLoadRequestFromJson(json);
+  Map<String, dynamic> toJson() => _$MfaLoadRequestToJson(this);
+
+  @override
+  List<Object?> get props => [title, interval];
 }
 
 /// MFA OTP响应
@@ -904,7 +923,7 @@ class MfaBindRequest extends Equatable {
 
   const MfaBindRequest({
     required this.code,
-    required this.interval,
+    this.interval = '30',
     required this.secret,
   });
 
@@ -941,6 +960,9 @@ class TerminalInfo extends Equatable {
   final String? cursorBlink;
   final String? cursorStyle;
   final String? fontSize;
+  final String? fontFamily;
+  final String? backgroundColor;
+  final String? foregroundColor;
   final String? letterSpacing;
   final String? lineHeight;
   final String? scrollSensitivity;
@@ -950,6 +972,9 @@ class TerminalInfo extends Equatable {
     this.cursorBlink,
     this.cursorStyle,
     this.fontSize,
+    this.fontFamily,
+    this.backgroundColor,
+    this.foregroundColor,
     this.letterSpacing,
     this.lineHeight,
     this.scrollSensitivity,
@@ -965,6 +990,9 @@ class TerminalInfo extends Equatable {
         cursorBlink,
         cursorStyle,
         fontSize,
+        fontFamily,
+        backgroundColor,
+        foregroundColor,
         letterSpacing,
         lineHeight,
         scrollSensitivity,

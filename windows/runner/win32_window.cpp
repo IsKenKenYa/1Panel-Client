@@ -16,6 +16,52 @@ namespace {
 #define DWMWA_USE_IMMERSIVE_DARK_MODE 20
 #endif
 
+// Windows 11 window corner preference.
+// See: https://learn.microsoft.com/zh-cn/windows/win32/api/dwmapi/ne-dwmapi-dwmwindowattribute
+#ifndef DWMWA_WINDOW_CORNER_PREFERENCE
+#define DWMWA_WINDOW_CORNER_PREFERENCE 33
+#endif
+
+// Windows 11 system backdrop type (Mica/Acrylic).
+// See: https://learn.microsoft.com/zh-cn/windows/win32/api/dwmapi/ne-dwmapi-dwmwindowattribute
+#ifndef DWMWA_SYSTEMBACKDROP_TYPE
+#define DWMWA_SYSTEMBACKDROP_TYPE 38
+#endif
+
+// Fallback definitions for older Windows SDKs.
+#ifndef DWMSBT_MAINWINDOW
+typedef enum FlutterDwmSystemBackdropType {
+  FLUTTER_DWMSBT_AUTO = 0,
+  FLUTTER_DWMSBT_NONE = 1,
+  FLUTTER_DWMSBT_MAINWINDOW = 2,
+  FLUTTER_DWMSBT_TRANSIENTWINDOW = 3,
+  FLUTTER_DWMSBT_TABBEDWINDOW = 4
+} FlutterDwmSystemBackdropType;
+#endif
+
+#ifndef DWMWCP_DEFAULT
+typedef enum FlutterDwmWindowCornerPreference {
+  FLUTTER_DWMWCP_DEFAULT = 0,
+  FLUTTER_DWMWCP_DONOTROUND = 1,
+  FLUTTER_DWMWCP_ROUND = 2,
+  FLUTTER_DWMWCP_ROUNDSMALL = 3
+} FlutterDwmWindowCornerPreference;
+#endif
+
+void ApplyWindowBackdrop(HWND window, FlutterDwmSystemBackdropType backdrop) {
+  // Supported from Windows 11 build 22621. On older systems this call will fail
+  // and we safely fall back to default rendering.
+  DwmSetWindowAttribute(window, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop,
+                        sizeof(backdrop));
+}
+
+void ApplyWindowCornerPreference(HWND window,
+                                 FlutterDwmWindowCornerPreference preference) {
+  // Supported from Windows 11 build 22000.
+  DwmSetWindowAttribute(window, DWMWA_WINDOW_CORNER_PREFERENCE, &preference,
+                        sizeof(preference));
+}
+
 constexpr const wchar_t kWindowClassName[] = L"FLUTTER_RUNNER_WIN32_WINDOW";
 
 /// Registry key for app theme preference.
@@ -285,4 +331,15 @@ void Win32Window::UpdateTheme(HWND const window) {
     DwmSetWindowAttribute(window, DWMWA_USE_IMMERSIVE_DARK_MODE,
                           &enable_dark_mode, sizeof(enable_dark_mode));
   }
+
+  // Fluent window styling.
+  //
+  // - Mica (MAINWINDOW) is intended for long-lived surfaces (main background).
+  // - Acrylic (TRANSIENTWINDOW) is intended for transient surfaces (menus,
+  //   dialogs, side panes). We expose the underlying capability here first;
+  //   future iterations may toggle it via platform channels.
+  ApplyWindowBackdrop(window, FLUTTER_DWMSBT_MAINWINDOW);
+
+  // Keep corner rounding aligned with modern Windows design language.
+  ApplyWindowCornerPreference(window, FLUTTER_DWMWCP_ROUND);
 }

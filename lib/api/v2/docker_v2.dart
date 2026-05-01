@@ -65,8 +65,8 @@ class DockerV2Api {
   }
 
   /// Pull image
-  Future<Response> pullImage(ImagePull request) async {
-    return await _client.post(
+  Future<Response<void>> pullImage(ImagePull request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/image/pull'),
       data: request.toJson(),
     );
@@ -87,32 +87,32 @@ class DockerV2Api {
   }
 
   /// Load image
-  Future<Response> loadImage(ImageLoad request) async {
-    return await _client.post(
+  Future<Response<void>> loadImage(ImageLoad request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/image/load'),
       data: request.toJson(),
     );
   }
 
   /// Save image
-  Future<Response> saveImage(ImageSave request) async {
-    return await _client.post(
+  Future<Response<void>> saveImage(ImageSave request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/image/save'),
       data: request.toJson(),
     );
   }
 
   /// Tag image
-  Future<Response> tagImage(ImageTag request) async {
-    return await _client.post(
+  Future<Response<void>> tagImage(ImageTag request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/image/tag'),
       data: request.toJson(),
     );
   }
 
   /// Push image
-  Future<Response> pushImage(ImagePush request) async {
-    return await _client.post(
+  Future<Response<void>> pushImage(ImagePush request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/image/push'),
       data: request.toJson(),
     );
@@ -135,8 +135,8 @@ class DockerV2Api {
   }
 
   /// Remove image
-  Future<Response> removeImage(String imageId, {bool force = false}) async {
-    return await _client.post(
+  Future<Response<void>> removeImage(String imageId, {bool force = false}) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/image/remove'),
       data: {
         'names': [imageId],
@@ -162,16 +162,16 @@ class DockerV2Api {
   }
 
   /// Create network
-  Future<Response> createNetwork(NetworkCreate request) async {
-    return await _client.post(
+  Future<Response<void>> createNetwork(NetworkCreate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/network'),
       data: request.toJson(),
     );
   }
 
   /// Remove network
-  Future<Response> removeNetwork(String networkId) async {
-    return await _client.post(
+  Future<Response<void>> removeNetwork(String networkId) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/network/del'),
       data: {
         'names': [networkId]
@@ -196,16 +196,16 @@ class DockerV2Api {
   }
 
   /// Create volume
-  Future<Response> createVolume(VolumeCreate request) async {
-    return await _client.post(
+  Future<Response<void>> createVolume(VolumeCreate request) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/volume'),
       data: request.toJson(),
     );
   }
 
   /// Remove volume
-  Future<Response> removeVolume(String volumeName) async {
-    return await _client.post(
+  Future<Response<void>> removeVolume(String volumeName) async {
+    return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/volume/del'),
       data: {
         'names': [volumeName]

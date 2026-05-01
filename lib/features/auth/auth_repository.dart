@@ -22,9 +22,7 @@ class AuthRepository {
 
   Future<CaptchaData?> fetchCaptcha() async {
     final api = await _getApi();
-    final data = (await api.getCaptcha()).data;
-    if (data == null || data.isEmpty) return null;
-    return CaptchaData(base64: data);
+    return (await api.getCaptcha()).data;
   }
 
   Future<DemoModeStatus?> fetchDemoModeStatus() async {

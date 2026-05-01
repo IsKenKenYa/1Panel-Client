@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:onepanel_client/core/theme/ui_render_mode.dart';
+import 'package:onepanel_client/core/theme/ui_render_policy.dart';
+
 enum CacheStrategy {
   memoryOnly,
   diskOnly,
@@ -14,6 +17,7 @@ class AppPreferencesService {
   static const String _cacheMaxSizeKey = 'cache_max_size_mb';
   static const String _useDynamicColorKey = 'app_use_dynamic_color';
   static const String _seedColorKey = 'app_seed_color';
+  static const String _uiRenderModeKey = 'app_ui_render_mode';
 
   Future<ThemeMode> loadThemeMode() async {
     final prefs = await SharedPreferences.getInstance();
@@ -116,5 +120,36 @@ class AppPreferencesService {
   Future<void> saveSeedColor(Color color) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_seedColorKey, color.toARGB32());
+  }
+
+  Future<UIRenderMode> loadUIRenderMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    final value = prefs.getString(_uiRenderModeKey);
+
+    UIRenderMode configuredMode;
+    switch (value) {
+      case 'md3':
+        configuredMode = UIRenderMode.md3;
+        break;
+      case 'native':
+        configuredMode = UIRenderMode.native;
+        break;
+      default:
+        configuredMode = UIRenderMode.md3;
+        break;
+    }
+
+    return UIRenderPolicy.resolveSupportedMode(configuredMode);
+  }
+
+  Future<void> saveUIRenderMode(UIRenderMode mode) async {
+    final prefs = await SharedPreferences.getInstance();
+    final resolvedMode = UIRenderPolicy.resolveSupportedMode(mode);
+    final value = switch (resolvedMode) {
+      UIRenderMode.md3 => 'md3',
+      UIRenderMode.native => 'native',
+    };
+
+    await prefs.setString(_uiRenderModeKey, value);
   }
 }

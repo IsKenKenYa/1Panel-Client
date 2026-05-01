@@ -1,6 +1,7 @@
 import 'package:onepanel_client/api/v2/file_v2.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/network/api_client_manager.dart';
+import 'package:onepanel_client/core/network/network_exceptions.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 
 class FilesRepository {
@@ -18,7 +19,7 @@ class FilesRepository {
     appLogger.dWithPackage('files.repository', 'getApi');
     final config = await ApiConfigManager.getCurrentConfig();
     if (config == null) {
-      throw StateError('No server configured');
+      throw const NetworkConnectionException('未配置服务器连接');
     }
 
     if (_api == null ||

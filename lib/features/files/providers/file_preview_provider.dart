@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/services/app_preferences_service.dart';
 import 'package:onepanel_client/core/services/cache/file_preview_cache_manager.dart';
 import 'package:onepanel_client/features/files/services/file_preview_service.dart';
@@ -25,7 +26,7 @@ typedef PreviewTempSaver = Future<String?> Function(
   String fileName,
 );
 
-class FilePreviewProvider extends ChangeNotifier {
+class FilePreviewProvider extends ChangeNotifier with SafeChangeNotifier {
   FilePreviewProvider({
     required this.filePath,
     required this.fileName,

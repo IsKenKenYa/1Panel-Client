@@ -3,7 +3,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/shared/widgets/app_card.dart';
 import 'package:provider/provider.dart';
-import '../../api/v2/monitor_v2.dart';
+import '../../data/models/monitoring_runtime_models.dart';
 import '../../data/repositories/monitor_repository.dart';
 import 'monitoring_provider.dart';
 import 'widgets/monitor_chart.dart';
@@ -152,7 +152,7 @@ class _MonitoringPageState extends State<MonitoringPage> {
     );
   }
 
-  Widget _buildGPUCard(BuildContext context, List<GPUInfo> gpuInfo) {
+  Widget _buildGPUCard(BuildContext context, List<MonitorGpuInfo> gpuInfo) {
     final l10n = context.l10n;
 
     return AppCard(
@@ -163,7 +163,7 @@ class _MonitoringPageState extends State<MonitoringPage> {
     );
   }
 
-  Widget _buildGPUItem(BuildContext context, GPUInfo gpu) {
+  Widget _buildGPUItem(BuildContext context, MonitorGpuInfo gpu) {
     final l10n = context.l10n;
 
     return Padding(

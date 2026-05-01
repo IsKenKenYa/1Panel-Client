@@ -90,6 +90,24 @@ class SSHService {
     );
   }
 
+  Future<SshLocalConnectionInfo> loadLocalConnection() {
+    return _repository.getLocalConnection();
+  }
+
+  Future<bool> checkLocalConnection([SshLocalConnectionInfo? request]) {
+    return _repository.checkLocalConnection(request);
+  }
+
+  Future<void> updateLocalConnectionVisibility({
+    required bool visible,
+    bool withReset = false,
+  }) {
+    return _repository.updateLocalConnectionVisibility(
+      visible: visible,
+      withReset: withReset,
+    );
+  }
+
   Stream<List<SshSessionInfo>> watchSessions() => _repository.watchSessions();
 
   Future<void> connectSessions(SshSessionQuery query) {

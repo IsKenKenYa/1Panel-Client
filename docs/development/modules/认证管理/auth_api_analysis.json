@@ -1,9 +1,9 @@
 {
   "module": "auth",
-  "generatedAt": "2026-02-15T12:57:56.218185",
+  "generatedAt": "2026-04-27T15:19:33.228206",
   "summary": {
-    "endpointCount": 9,
-    "methodCount": 9
+    "endpointCount": 11,
+    "methodCount": 11
   },
   "endpoints": [
     {
@@ -103,6 +103,48 @@
               "description": "request"
             }
           ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/auth/passkey/begin",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "User login with passkey",
+          "description": "",
+          "tags": [
+            "Auth"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/auth/passkey/finish",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "User login with passkey",
+          "description": "",
+          "tags": [
+            "Auth"
+          ],
+          "parameters": [],
           "requestBody": null,
           "responses": {
             "200": {

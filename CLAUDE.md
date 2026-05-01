@@ -18,6 +18,14 @@ EN: Read `AGENTS.md` first for mandatory rules, then `CLAUDE.md` for project det
 
 **1Panel Open** 是一个跨平台 Flutter 移动应用，提供对 1Panel Linux 服务器管理面板的移动访问。
 
+## 1Panel 上游只读与能力基线
+
+- `docs/OpenSource/1Panel/**` 为上游镜像，仅可读取，禁止修改。
+- 功能适配必须同时参考：
+  - `swagger.json` 契约定义
+  - 1Panel Web 前端行为与交互语义
+- 目标不是仅“接口可调用”，而是“功能高保真还原 + 客户端价值增强（多机统一管理、MFA 等）”。
+
 ### Current Implementation Status
 - ✅ **AI Management Module**: Complete (Ollama models, GPU monitoring, domain binding)
 - ✅ **Complete API Coverage**: All 34 V2 API modules with 425+ endpoints
@@ -107,17 +115,19 @@ The project follows **Layered Architecture with MVVM** and clean separation of c
 ## Cross-Platform UI Governance
 
 ### Default UI Baseline
-- Default UI implementation is **Flutter/Dart + Material Design 3**
-- Existing `MaterialApp + ThemeData + dynamic_color` remains the current baseline
-- Shared pages should stay in Flutter unless a native exception is explicitly justified
-- Shared non-UI layers should remain in Dart by default: API clients, models, providers, services, repositories, routing contracts, and shared infrastructure should not be reimplemented natively without a hard platform constraint
+- Non-web target platforms are Android, iOS, iPadOS, macOS, Windows, Linux, and HarmonyOS (target phase)
+- Web is out of current adaptation scope
+- MDUI3 is a mandatory, always-available baseline across target platforms, not a backup-only mode
+- The project allows multiple design systems and multiple theme profiles, but all must be centrally governed
+- Shared non-UI layers remain Dart-first: API clients, models, providers, services, repositories, routing contracts, and shared infrastructure must not fork per UI stack
 
-### Native UI Exceptions
-- **Apple platforms**: SwiftUI-native pages are allowed when Apple-native UX provides clear value
-- **Windows**: WinUI3 / Fluent-native pages are allowed when Windows-native UX provides clear value
-- **Android**: Flutter MD3 is the default and preferred implementation path; Kotlin/Compose is exception-only
-- Native UI must not bypass application layering or call API clients directly
-- Native code is mainly for presentation shells, platform integration, and system-level capability access rather than shared product logic
+### Native UI Strategy
+- **Windows**: Fluent / WinUI3 native track is mandatory
+- **iOS / iPadOS / macOS**: SwiftUI native track is mandatory, aligned with Liquid Glass visual direction
+- **Android**: Dart-rendered MDUI3 is the default delivery path; native pages require explicit architecture review approval
+- **Linux**: current phase delivers with Dart-rendered MDUI3 first; native container capability is a planned community extension path
+- **HarmonyOS (target phase)**: reserve resolver/channel/provider placeholders now and plan native milestones while keeping shared business logic in Dart
+- Any native UI must not bypass application layering or call API clients directly
 
 ### Multi-Theme / Multi-Design-System Direction
 - Distinguish:
@@ -127,12 +137,17 @@ The project follows **Layered Architecture with MVVM** and clean separation of c
 - If a new design system is introduced, document target platforms, token mapping, component coverage, and native-exception rationale
 
 ### Implementation Guidance
-- Prefer Flutter adaptive implementations before introducing native pages
-- Reserve native pages for system-integration-heavy experiences, major platform UX gains, or clear performance constraints
-- Any native page proposal should define why Flutter is insufficient, what the bridge boundary is, and what the rollback path is
+- Follow platform strategy mapping while keeping Dart non-UI layers shared
+- Do not duplicate business logic across design systems or UI stacks
+- Any native page proposal should define bridge boundary, rollback path, and shared Dart state/service/repository contracts
 - The `桌面端适配` branch is a runnable implementation branch for desktop adaptation and may be used as concrete reference material, but it does not redefine the default repository baseline by itself
+- Desktop cached modules must stay inside the shared shell host; normal module switches should not push a second shell
+- Desktop shell navigation should prefer module switching; only true detail/editor flows should use routed pages
+- Cached desktop pages must be gated by `HeroMode`, and FABs in those pages must declare explicit `heroTag`
+- Avoid self-referential widget wrapper chains; snapshot wrapped widgets before adding new layers
+- Desktop host surfaces should resolve to `surface` / `surfaceContainer*`, not transparent page backgrounds
 
-See `docs/development/cross_platform_ui_governance.md` for the full policy and roadmap.
+See `docs/development/cross_platform_ui_governance.md`, `docs/模块适配专属工作流.md`, and `docs/原生UI适配专属工作流.md` for full policy, workflow, and hard-gate details.
 
 ### Project Structure Rules (CRITICAL)
 
@@ -240,7 +255,10 @@ appLogger.d('[auth.service] 这是一条调试信息');
 ## Testing Matrix & CLI Gate
 - CN: 提交前必须可运行 `flutter analyze`。EN: Must be runnable before commit: `flutter analyze`.
 - CN: 必须可运行 `dart run test/scripts/test_runner.dart unit`；涉及 API/网络或数据写入时必须跑 `integration`。EN: Must run `dart run test/scripts/test_runner.dart unit`; for API/network or data writes, must run `integration`.
-- CN: UI 改动必须跑 `dart run test/scripts/test_runner.dart ui` 或说明原因。EN: UI changes must run `dart run test/scripts/test_runner.dart ui` or document why not.
+- CN: UI 改动必须跑 `dart run test/scripts/test_runner.dart ui`。EN: UI changes must run `dart run test/scripts/test_runner.dart ui`.
+- CN: 涉及 Windows 原生 UI 改动必须跑 `dotnet build windows/runner/native_host/OnePanelNativeHost/OnePanelNativeHost.csproj -c Debug`。EN: Windows-native UI changes must pass the WinUI3 host build gate.
+- CN: 涉及 Apple 原生 UI 改动必须在 macOS/CI 跑 iOS + macOS `xcodebuild` 门禁。EN: Apple-native UI changes must pass iOS and macOS xcodebuild gates in macOS/CI.
+- CN: 原生 UI 门禁失败必须阻断推进。EN: Native UI gate failures must block progression.
 - CN: 回归基线使用 `dart run test/scripts/test_runner.dart all`。EN: Regression baseline uses `dart run test/scripts/test_runner.dart all`.
 
 ## Skills & MCP (agent-memory-mcp)
@@ -363,10 +381,16 @@ void main() {
 - Implement responsive design for different screen sizes
 
 ### Platform Design Systems
-- Flutter MD3 is the default shared design language
-- Apple-targeted native pages may follow SwiftUI/HIG idioms and glass-like system aesthetics when approved
-- Windows-targeted native pages may follow WinUI3/Fluent idioms when approved
+- Flutter MD3 is the default shared delivery path for Android/Linux in the current phase
+- Apple-targeted native pages should follow SwiftUI/HIG idioms and Liquid-Glass-aligned system aesthetics
+- Windows-targeted native pages should follow WinUI3/Fluent idioms
 - Avoid mixing unrelated platform aesthetics inside a single screen without a documented reason
+
+### Desktop Stability Rules
+- Desktop shell pages that cache modules with `IndexedStack` must avoid duplicate active Heroes across cached pages
+- Use `HeroMode` to disable inactive cached module pages
+- Any page with a `FloatingActionButton` that can coexist with other cached pages should use an explicit `heroTag` or intentionally disable hero participation
+- Avoid mutable widget re-wrapping patterns that can accidentally create self-referential widget trees
 
 ### Internationalization
 - All user-facing strings must use `AppLocalizations`
@@ -384,6 +408,18 @@ void main() {
 - All API calls use HTTPS
 - Custom headers for authentication
 - Certificate pinning if needed
+
+## Automated Delivery Loop (Mandatory)
+
+1. Requirement decomposition (scope, dependencies, acceptance criteria)
+2. Test case design (unit, integration, UI/interaction, contract deviation)
+3. Automated baseline setup (scripts, fixtures, env vars, gates)
+4. Feature implementation with layered architecture
+5. Unit test execution and fixes
+6. Integration test execution and fixes (mandatory for API/network/data write changes)
+7. Documentation and baseline updates (module docs, compatibility strategy, analysis artifacts)
+
+Any failed stage must be fixed before proceeding; no failure carry-forward is allowed.
 
 ## Common Development Workflows
 
@@ -412,6 +448,7 @@ void main() {
 - CN: 文件是否满足 `500/800` 推荐阈值与 `1000` 硬上限，职责是否超过 2 个功能域。EN: File size meets `500/800` recommended limits and `1000` hard cap; responsibilities do not exceed 2 functional domains.
 - CN: 错误处理与日志是否完整且使用 `appLogger`。EN: Error handling and logging complete using `appLogger`.
 - CN: 测试是否满足门禁要求（unit/integration/ui）。EN: Test gate satisfied (unit/integration/ui).
+- CN: 是否严格遵守 `docs/OpenSource/1Panel/**` 只读策略，并以 Web 行为语义完成功能还原。EN: Confirm upstream readonly policy and web-behavior semantic restoration.
 - CN: 新增/变更规范是否同步更新 `AGENTS.md` 与 `CLAUDE.md`。EN: Standards changes synchronized to `AGENTS.md` and `CLAUDE.md`.
 
 ## Build and Deployment

@@ -1,6 +1,8 @@
 import 'package:onepanel_client/api/v2/dashboard_v2.dart';
 import 'package:onepanel_client/core/network/api_client_manager.dart';
+import 'package:onepanel_client/core/network/network_exceptions.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
+import 'package:onepanel_client/data/models/dashboard_models.dart';
 import 'package:onepanel_client/features/server/server_models.dart';
 
 class DashboardRepository {
@@ -9,8 +11,15 @@ class DashboardRepository {
   DashboardV2Api? _api;
 
   Future<DashboardV2Api> _ensureApi() async {
-    _api ??= await ApiClientManager.instance.getDashboardApi();
-    return _api!;
+    try {
+      _api ??= await ApiClientManager.instance.getDashboardApi();
+      return _api!;
+    } catch (e) {
+      if (e is StateError && e.message == 'No API config available') {
+        throw const NetworkConnectionException('未配置服务器连接');
+      }
+      rethrow;
+    }
   }
 
   Future<Map<String, dynamic>> getDashboardBase() async {
@@ -18,24 +27,25 @@ class DashboardRepository {
     return (await api.getDashboardBase()).data ?? const <String, dynamic>{};
   }
 
-  Future<dynamic> getTopCpuProcesses() async {
+  Future<List<ProcessInfo>> getTopCpuProcesses() async {
     final api = await _ensureApi();
-    return (await api.getTopCPUProcesses()).data;
+    return (await api.getTopCPUProcesses()).data ?? const <ProcessInfo>[];
   }
 
-  Future<dynamic> getTopMemoryProcesses() async {
+  Future<List<ProcessInfo>> getTopMemoryProcesses() async {
     final api = await _ensureApi();
-    return (await api.getTopMemoryProcesses()).data;
+    return (await api.getTopMemoryProcesses()).data ?? const <ProcessInfo>[];
   }
 
-  Future<List<dynamic>> getAppLaunchers() async {
+  Future<List<Map<String, dynamic>>> getAppLaunchers() async {
     final api = await _ensureApi();
-    return (await api.getAppLauncher()).data ?? const <dynamic>[];
+    return (await api.getAppLauncher()).data ?? const <Map<String, dynamic>>[];
   }
 
-  Future<List<dynamic>> getAppLauncherOptions() async {
+  Future<List<Map<String, dynamic>>> getAppLauncherOptions() async {
     final api = await _ensureApi();
-    return (await api.getAppLauncherOption()).data ?? const <dynamic>[];
+    return (await api.getAppLauncherOption()).data ??
+        const <Map<String, dynamic>>[];
   }
 
   Future<Map<String, dynamic>> getCurrentNode() async {
@@ -54,9 +64,9 @@ class DashboardRepository {
     });
   }
 
-  Future<List<dynamic>> getQuickOptions() async {
+  Future<List<Map<String, dynamic>>> getQuickOptions() async {
     final api = await _ensureApi();
-    return (await api.getQuickOption()).data ?? const <dynamic>[];
+    return (await api.getQuickOption()).data ?? const <Map<String, dynamic>>[];
   }
 
   Future<void> updateQuickChange(List<String> enabledKeys) async {
@@ -133,12 +143,19 @@ class DashboardRepository {
         load: load,
       );
     } catch (e, stack) {
-      appLogger.eWithPackage(
-        'data.repositories.dashboard_repository',
-        'Error getting current server metrics',
-        error: e,
-        stackTrace: stack,
-      );
+      if (e is NetworkException) {
+        appLogger.wWithPackage(
+          'data.repositories.dashboard_repository',
+          'Network error getting current server metrics: ${e.message}',
+        );
+      } else {
+        appLogger.eWithPackage(
+          'data.repositories.dashboard_repository',
+          'Error getting current server metrics',
+          error: e,
+          stackTrace: stack,
+        );
+      }
       return const ServerMetricsSnapshot();
     }
   }

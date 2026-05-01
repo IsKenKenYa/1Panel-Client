@@ -80,6 +80,7 @@ class _OrchestrationPageState extends State<OrchestrationPage>
     switch (_tabController.index) {
       case 0:
         return FloatingActionButton.extended(
+          heroTag: 'orchestration_compose_fab',
           onPressed: () =>
               ContainersPageCreateDialogs.showCreateComposeDialog(context),
           icon: const Icon(Icons.add),
@@ -87,12 +88,14 @@ class _OrchestrationPageState extends State<OrchestrationPage>
         );
       case 1:
         return FloatingActionButton.extended(
+          heroTag: 'orchestration_image_fab',
           onPressed: () => ContainersPageImageDialogs.showPullDialog(context),
           icon: const Icon(Icons.download),
           label: Text(l10n.orchestrationPullImage),
         );
       case 2:
         return FloatingActionButton.extended(
+          heroTag: 'orchestration_network_fab',
           onPressed: () =>
               ContainersPageCreateDialogs.showCreateNetworkDialog(context),
           icon: const Icon(Icons.add),
@@ -100,6 +103,7 @@ class _OrchestrationPageState extends State<OrchestrationPage>
         );
       case 3:
         return FloatingActionButton.extended(
+          heroTag: 'orchestration_volume_fab',
           onPressed: () =>
               ContainersPageCreateDialogs.showCreateVolumeDialog(context),
           icon: const Icon(Icons.add),

@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/models/toolbox_models.dart';
 import 'package:onepanel_client/features/toolbox/services/toolbox_clam_service.dart';
 
-class ToolboxClamProvider extends ChangeNotifier {
+class ToolboxClamProvider extends ChangeNotifier with SafeChangeNotifier {
   ToolboxClamProvider({ToolboxClamService? service})
       : _service = service ?? ToolboxClamService();
 

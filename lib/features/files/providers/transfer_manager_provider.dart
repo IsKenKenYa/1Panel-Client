@@ -2,11 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/services/transfer/transfer_manager.dart';
 
 enum TransferChannel { downloads, uploads }
 
-class TransferManagerProvider extends ChangeNotifier {
+class TransferManagerProvider extends ChangeNotifier with SafeChangeNotifier {
   TransferManagerProvider({
     TransferManager? transferManager,
     Future<List<DownloadTask>?> Function()? loadTasksOverride,

@@ -33,7 +33,7 @@ class FileBrowserService {
         sortOrder: sortOrder,
       ),
     );
-    return response.data!;
+    return response.data ?? const FileSearchResponse(items: [], total: 0);
   }
 
   Future<List<FileInfo>> getFiles({
@@ -107,8 +107,17 @@ class FileBrowserService {
   }) async {
     final api = await _repository.getApi();
     for (final sourcePath in paths) {
-      final sourceDir = sourcePath.substring(0, sourcePath.lastIndexOf('/'));
-      final sourceName = sourcePath.substring(sourcePath.lastIndexOf('/') + 1);
+      final normalizedSourcePath =
+          sourcePath.endsWith('/') && sourcePath.length > 1
+              ? sourcePath.substring(0, sourcePath.length - 1)
+              : sourcePath;
+      final separatorIndex = normalizedSourcePath.lastIndexOf('/');
+      final sourceDir = separatorIndex > 0
+          ? normalizedSourcePath.substring(0, separatorIndex)
+          : '';
+      final sourceName = separatorIndex >= 0
+          ? normalizedSourcePath.substring(separatorIndex + 1)
+          : normalizedSourcePath;
 
       var nextName = newName;
       if (sourceDir == targetPath && nextName == null) {
@@ -207,7 +216,14 @@ class FileBrowserService {
   Future<FileCheckResult> checkFile(String path) async {
     final api = await _repository.getApi();
     final response = await api.checkFile(FileCheck(path: path));
-    return response.data!;
+    return response.data ??
+        const FileCheckResult(
+          exists: false,
+          readable: false,
+          writable: false,
+          isDirectory: false,
+          isFile: false,
+        );
   }
 
   Future<FileTree> getFileTree({
@@ -225,7 +241,15 @@ class FileBrowserService {
         includeHidden: includeHidden,
       ),
     );
-    return response.data!;
+    return response.data ??
+        const FileTree(
+          path: '',
+          name: '',
+          type: 'dir',
+          size: 0,
+          children: <FileTree>[],
+          depth: 0,
+        );
   }
 
   Future<FileSizeInfo> getFileSize(String path, {bool? recursive}) async {
@@ -233,7 +257,12 @@ class FileBrowserService {
     final response = await api.getFileSize(
       FileSizeRequest(path: path, recursive: recursive),
     );
-    return response.data!;
+    return response.data ??
+        const FileSizeInfo(
+          totalSize: 0,
+          fileCount: 0,
+          directoryCount: 0,
+        );
   }
 
   Future<void> favoriteFile(
@@ -266,7 +295,8 @@ class FileBrowserService {
   Future<FileDepthSizeInfo> getDepthSize(List<String> paths) async {
     final api = await _repository.getApi();
     final response = await api.getDepthSize(FileDepthSizeRequest(paths: paths));
-    return response.data!;
+    return response.data ??
+        const FileDepthSizeInfo(sizes: <String, int>{}, totalSize: 0);
   }
 
   Future<List<FileMountInfo>> getMountInfo() async {
@@ -295,14 +325,19 @@ class FileBrowserService {
   Future<FileUserGroupResponse> getUserGroup() async {
     final api = await _repository.getApi();
     final response = await api.getUserGroup();
-    return response.data!;
+    return response.data ??
+        const FileUserGroupResponse(
+          users: <FileUserGroup>[],
+          groups: <String>[],
+        );
   }
 
   Future<FileBatchCheckResult> batchCheckFiles(List<String> paths) async {
     final api = await _repository.getApi();
     final response =
         await api.batchCheckFiles(FileBatchCheckRequest(paths: paths));
-    return response.data!;
+    return response.data ??
+        const FileBatchCheckResult(results: <String, FileCheckResult>{});
   }
 
   Future<void> saveFile(

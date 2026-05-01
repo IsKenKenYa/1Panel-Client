@@ -1,0 +1,85 @@
+=== Endpoints to Add/Fix ===
+Missing: GET /dashboard/app/launcher (Module: app)
+  Req:  None
+  Resp: List[#/definitions/dto.AppLauncher]
+
+Missing: POST /ai/agents/channel/pairing/approve (Module: app)
+  Req:  #/definitions/dto.AgentChannelPairingApproveReq
+  Resp: {}
+
+Missing: POST /dashboard/app/launcher/option (Module: app)
+  Req:  #/definitions/dto.SearchByFilter
+  Resp: List[#/definitions/dto.LauncherOption]
+
+Missing: POST /dashboard/app/launcher/show (Module: app)
+  Req:  #/definitions/dto.SettingUpdate
+  Resp: {}
+
+Missing: GET /core/backups/client/{var} (Module: backup)
+  Req:  None
+  Resp: None
+
+Missing: POST /core/backups (Module: backup)
+  Req:  #/definitions/dto.BackupOperate
+  Resp: {}
+
+Missing: POST /core/backups/del (Module: backup)
+  Req:  #/definitions/dto.OperateByName
+  Resp: {}
+
+Missing: POST /core/backups/refresh/token (Module: backup)
+  Req:  #/definitions/dto.OperateByName
+  Resp: {}
+
+Missing: POST /core/backups/update (Module: backup)
+  Req:  #/definitions/dto.BackupOperate
+  Resp: {}
+
+Missing: GET /dashboard/base/{var}/{var} (Module: dashboard)
+  Req:  None
+  Resp: None
+
+Missing: GET /dashboard/current/{var}/{var} (Module: dashboard)
+  Req:  None
+  Resp: None
+
+Missing: POST /cronjobs/group/update (Module: group)
+  Req:  #/definitions/dto.ChangeGroup
+  Resp: {}
+
+Missing: POST /files/user/group (Module: group)
+  Req:  None
+  Resp: #/definitions/response.UserGroupResponse
+
+Missing: POST /websites/batch/group (Module: group)
+  Req:  #/definitions/request.BatchWebsiteGroup
+  Resp: {}
+
+Missing: GET /hosts/tool/supervisor/process (Module: process)
+  Req:  None
+  Resp: #/definitions/response.SupervisorProcessConfig
+
+Missing: GET /runtimes/supervisor/process/{var} (Module: process)
+  Req:  None
+  Resp: None
+
+Missing: POST /hosts/tool/supervisor/process (Module: process)
+  Req:  #/definitions/request.SupervisorProcessConfig
+  Resp: {}
+
+Missing: POST /hosts/tool/supervisor/process/file (Module: process)
+  Req:  #/definitions/request.SupervisorProcessFileReq
+  Resp: {'type': 'string'}
+
+Missing: POST /runtimes/supervisor/process (Module: process)
+  Req:  #/definitions/request.PHPSupervisorProcessConfig
+  Resp: {}
+
+Missing: POST /runtimes/supervisor/process/file (Module: process)
+  Req:  #/definitions/request.PHPSupervisorProcessFileReq
+  Resp: {'type': 'string'}
+
+Missing: POST /toolbox/fail2ban/operate/sshd (Module: ssh)
+  Req:  #/definitions/dto.Fail2BanSet
+  Resp: {}
+

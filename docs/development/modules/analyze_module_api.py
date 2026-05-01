@@ -54,13 +54,42 @@ MODULE_PATH_MAPPING = {
 }
 
 KEYWORD_MATCHERS = {
-    'openresty': ['/openresty'],
-    'website': ['/websites'],
-    'domains': ['/websites/domains'],
-    'website_ssl': ['/websites/ssl'],
-    'system_ssl': ['/core/settings/ssl'],
-    'ssl': ['/core/settings/ssl', '/websites/ssl'],
+    'container': ['^/containers', '^/runtimes/php/container'],
+    'openresty': ['^/openresty'],
+    'website': ['^/websites'],
+    'domains': ['^/websites/domains'],
+    'website_ssl': ['^/websites/ssl'],
+    'system_ssl': ['^/core/settings/ssl'],
+    'ssl': ['^/core/settings/ssl', '^/websites/ssl'],
+    'file': [
+        '^/files',
+        '^/containers/files',
+        '^/containers/daemonjson/file',
+        '^/backups/search/files',
+        '^/logs/system/files',
+    ],
+    'log': [
+        '^/core/logs',
+        '^/logs/system/files',
+        '^/containers/search/log',
+        '^/containers/clean/log',
+        '^/containers/compose/clean/log',
+        '^/containers/logoption/update',
+        '^/cronjobs/records/log',
+    ],
+    'host': ['^/hosts'],
+    'database': ['^/databases'],
 }
+
+KEYWORD_EXCLUDE_MATCHERS = {
+    'website': ['^/websites/domains', '^/websites/ssl', '^/websites/auths'],
+}
+
+
+def _path_matches(path_lower, matcher):
+    if matcher.startswith('^'):
+        return path_lower.startswith(matcher[1:])
+    return matcher in path_lower
 
 def load_openapi():
     if not OPENAPI_FILE.exists():
@@ -91,10 +120,13 @@ def extract_module_apis(openapi_data, keyword):
     module_apis = []
     keyword_lower = keyword.lower()
     matchers = KEYWORD_MATCHERS.get(keyword_lower, [f'/{keyword_lower}'])
+    exclude_matchers = KEYWORD_EXCLUDE_MATCHERS.get(keyword_lower, [])
     
     for path, methods in paths.items():
         path_lower = path.lower()
-        if not any(m in path_lower for m in matchers):
+        if not any(_path_matches(path_lower, m) for m in matchers):
+            continue
+        if any(_path_matches(path_lower, m) for m in exclude_matchers):
             continue
 
         api_info = {

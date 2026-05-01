@@ -524,6 +524,7 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
                 ),
                 const SizedBox(width: 16),
                 FloatingActionButton.large(
+                  heroTag: 'file_preview_audio_play_fab',
                   onPressed: () async {
                     if (_isAudioPlaying) {
                       await _audioPlayer?.pause();

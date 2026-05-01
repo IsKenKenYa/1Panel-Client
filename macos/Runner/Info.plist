@@ -32,5 +32,10 @@
 	<string>NSApplication</string>
 	<key>NSBiometricUsageDescription</key>
 	<string>需要使用生物识别来验证身份并解锁敏感操作</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>

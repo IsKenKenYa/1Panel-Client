@@ -18,7 +18,15 @@ abstract class AuthSessionStore {
 
 class SecureAuthSessionStore implements AuthSessionStore {
   SecureAuthSessionStore({FlutterSecureStorage? storage})
-      : _storage = storage ?? const FlutterSecureStorage();
+      : _storage = storage ??
+            const FlutterSecureStorage(
+              iOptions: IOSOptions(
+                accessibility: KeychainAccessibility.first_unlock,
+              ),
+              mOptions: MacOsOptions(
+                accessibility: KeychainAccessibility.first_unlock,
+              ),
+            );
 
   static const String tokenKey = 'auth_token';
   static const String usernameKey = 'auth_username';

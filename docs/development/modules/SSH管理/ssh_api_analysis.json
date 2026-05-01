@@ -1,11 +1,13 @@
 {
-  "module": "ssh",
-  "generatedAt": "2026-03-23T18:47:56.542258",
+  "module": "ssh_terminal",
+  "generatedAt": "2026-04-27T15:35:41.148002+00:00",
   "summary": {
-    "endpointCount": 17,
-    "methodCount": 17
+    "sshManagementCount": 12,
+    "terminalCount": 2,
+    "sessionStreamCount": 2,
+    "settingsCount": 5
   },
-  "endpoints": [
+  "sshManagementEndpoints": [
     {
       "path": "/hosts/ssh/cert",
       "methods": [
@@ -18,19 +20,15 @@
           ],
           "parameters": [
             {
-              "name": "request",
+              "description": "request",
               "in": "body",
+              "name": "request",
               "required": true,
-              "type": "unknown",
-              "description": "request"
+              "schema": {
+                "$ref": "#/definitions/dto.RootCertOperate"
+              }
             }
           ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
           "deprecated": false
         }
       ]
@@ -47,19 +45,15 @@
           ],
           "parameters": [
             {
-              "name": "request",
+              "description": "request",
               "in": "body",
+              "name": "request",
               "required": true,
-              "type": "unknown",
-              "description": "request"
+              "schema": {
+                "$ref": "#/definitions/dto.ForceDelete"
+              }
             }
           ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
           "deprecated": false
         }
       ]
@@ -76,19 +70,15 @@
           ],
           "parameters": [
             {
-              "name": "request",
+              "description": "request",
               "in": "body",
+              "name": "request",
               "required": true,
-              "type": "unknown",
-              "description": "request"
+              "schema": {
+                "$ref": "#/definitions/dto.SearchWithPage"
+              }
             }
           ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
           "deprecated": false
         }
       ]
@@ -104,12 +94,6 @@
             "SSH"
           ],
           "parameters": [],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
           "deprecated": false
         }
       ]
@@ -126,19 +110,15 @@
           ],
           "parameters": [
             {
-              "name": "request",
+              "description": "request",
               "in": "body",
+              "name": "request",
               "required": true,
-              "type": "unknown",
-              "description": "request"
+              "schema": {
+                "$ref": "#/definitions/dto.RootCertOperate"
+              }
             }
           ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
           "deprecated": false
         }
       ]
@@ -155,19 +135,15 @@
           ],
           "parameters": [
             {
-              "name": "request",
+              "description": "request",
               "in": "body",
+              "name": "request",
               "required": true,
-              "type": "unknown",
-              "description": "request"
+              "schema": {
+                "$ref": "#/definitions/dto.OperationWithName"
+              }
             }
           ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
           "deprecated": false
         }
       ]
@@ -184,19 +160,15 @@
           ],
           "parameters": [
             {
-              "name": "request",
+              "description": "request",
               "in": "body",
+              "name": "request",
               "required": true,
-              "type": "unknown",
-              "description": "request"
+              "schema": {
+                "$ref": "#/definitions/dto.SSHConfUpdate"
+              }
             }
           ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
           "deprecated": false
         }
       ]
@@ -213,19 +185,15 @@
           ],
           "parameters": [
             {
-              "name": "request",
+              "description": "request",
               "in": "body",
+              "name": "request",
               "required": true,
-              "type": "unknown",
-              "description": "request"
+              "schema": {
+                "$ref": "#/definitions/dto.SearchSSHLog"
+              }
             }
           ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
           "deprecated": false
         }
       ]
@@ -242,19 +210,15 @@
           ],
           "parameters": [
             {
-              "name": "request",
+              "description": "request",
               "in": "body",
+              "name": "request",
               "required": true,
-              "type": "unknown",
-              "description": "request"
+              "schema": {
+                "$ref": "#/definitions/dto.SearchSSHLog"
+              }
             }
           ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
           "deprecated": false
         }
       ]
@@ -271,19 +235,15 @@
           ],
           "parameters": [
             {
-              "name": "request",
+              "description": "request",
               "in": "body",
+              "name": "request",
               "required": true,
-              "type": "unknown",
-              "description": "request"
+              "schema": {
+                "$ref": "#/definitions/dto.Operate"
+              }
             }
           ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
           "deprecated": false
         }
       ]
@@ -299,12 +259,6 @@
             "SSH"
           ],
           "parameters": [],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
           "deprecated": false
         }
       ]
@@ -321,65 +275,62 @@
           ],
           "parameters": [
             {
-              "name": "request",
+              "description": "request",
               "in": "body",
+              "name": "request",
               "required": true,
-              "type": "unknown",
-              "description": "request"
+              "schema": {
+                "$ref": "#/definitions/dto.SSHUpdate"
+              }
             }
           ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
           "deprecated": false
         }
       ]
+    }
+  ],
+  "terminalEndpoints": [
+    {
+      "path": "/hosts/terminal",
+      "methods": []
     },
     {
-      "path": "/settings/ssh",
+      "path": "/containers/exec",
+      "methods": []
+    }
+  ],
+  "sessionStreamEndpoints": [
+    {
+      "path": "/process/ws",
+      "methods": []
+    },
+    {
+      "path": "/process/stop",
       "methods": [
         {
           "method": "POST",
-          "summary": "Save local conn info",
+          "summary": "Stop Process",
           "description": "",
           "tags": [
-            "System Setting"
+            "Process"
           ],
-          "parameters": [],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
+          "parameters": [
+            {
+              "description": "request",
+              "in": "body",
+              "name": "request",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/request.ProcessReq"
+              }
             }
-          },
+          ],
           "deprecated": false
         }
       ]
-    },
-    {
-      "path": "/settings/ssh/check/info",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Check local conn info",
-          "description": "",
-          "tags": [
-            "System Setting"
-          ],
-          "parameters": [],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
+    }
+  ],
+  "settingsEndpoints": [
     {
       "path": "/settings/ssh/conn",
       "methods": [
@@ -391,12 +342,6 @@
             "System Setting"
           ],
           "parameters": [],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
           "deprecated": false
         }
       ]
@@ -413,51 +358,105 @@
           ],
           "parameters": [
             {
-              "name": "request",
+              "description": "request",
               "in": "body",
+              "name": "request",
               "required": true,
-              "type": "unknown",
-              "description": "request"
+              "schema": {
+                "$ref": "#/definitions/dto.SSHDefaultConn"
+              }
             }
           ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
           "deprecated": false
         }
       ]
     },
     {
-      "path": "/toolbox/fail2ban/operate/sshd",
+      "path": "/settings/ssh/check/info",
       "methods": [
         {
           "method": "POST",
-          "summary": "Operate sshd of fail2ban",
+          "summary": "Check local conn info",
           "description": "",
           "tags": [
-            "Fail2ban"
+            "System Setting"
           ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
+          "parameters": [],
           "deprecated": false
         }
       ]
+    },
+    {
+      "path": "/core/settings/terminal/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load system terminal setting info",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [],
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/settings/terminal/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update system terminal setting",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [
+            {
+              "description": "request",
+              "in": "body",
+              "name": "request",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/dto.TerminalInfo"
+              }
+            }
+          ],
+          "deprecated": false
+        }
+      ]
+    }
+  ],
+  "ownershipNotes": [
+    {
+      "path": "/hosts/terminal",
+      "owner": "terminal_runtime",
+      "note": "Host/local shell websocket. id missing means local default connection; id present means saved host."
+    },
+    {
+      "path": "/containers/exec",
+      "owner": "terminal_runtime",
+      "note": "Container exec websocket. Current mobile client only uses source=container."
+    },
+    {
+      "path": "/process/ws",
+      "owner": "ssh_sessions",
+      "note": "Realtime SSH session list stream. Used for status/listing only, not session attach."
+    },
+    {
+      "path": "/process/stop",
+      "owner": "ssh_sessions",
+      "note": "Disconnect active SSH session by PID."
+    },
+    {
+      "path": "/settings/ssh/check",
+      "owner": "ownership_gap",
+      "note": "Referenced by 1Panel frontend terminal.ts but absent from current swagger/router snapshot. Client should rely on /settings/ssh/check/info as the documented contract."
+    },
+    {
+      "path": "/core/settings/terminal/search",
+      "owner": "terminal_runtime",
+      "note": "Terminal UI preference source of truth for font/theme/cursor/scrollback."
     }
   ]
 }

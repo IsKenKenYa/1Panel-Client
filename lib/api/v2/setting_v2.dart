@@ -1,9 +1,10 @@
 import 'package:dio/dio.dart'
-  show Response, Options, ResponseType, DioException;
+    show Response, Options, ResponseType, DioException;
 import '../../core/network/dio_client.dart';
 import '../../core/network/network_exceptions.dart';
 import '../../core/config/api_constants.dart';
 import '../../data/models/setting_models.dart';
+import '../../data/models/ssh_settings_models.dart';
 
 class SettingV2Api {
   final DioClient _client;
@@ -13,23 +14,42 @@ class SettingV2Api {
   /// 从API响应中提取data字段
   /// API响应结构: { "code": 200, "message": "", "data": {...} }
   Map<String, dynamic>? _extractData(dynamic responseData) {
-    if (responseData == null) return null;
-    final map = responseData as Map<String, dynamic>;
-    return map['data'] as Map<String, dynamic>?;
+    if (responseData is! Map<String, dynamic>) {
+      return null;
+    }
+    final inner = responseData['data'];
+    if (inner is Map<String, dynamic>) {
+      return inner;
+    }
+    return null;
   }
 
   /// 从API响应中提取data字段（List类型）
   List<dynamic>? _extractDataList(dynamic responseData) {
-    if (responseData == null) return null;
-    final map = responseData as Map<String, dynamic>;
-    return map['data'] as List<dynamic>?;
+    if (responseData is! Map<String, dynamic>) {
+      return null;
+    }
+    final inner = responseData['data'];
+    if (inner is List<dynamic>) {
+      return inner;
+    }
+    return null;
   }
 
   /// 从API响应中提取data字段（原始类型）
   dynamic _extractDataRaw(dynamic responseData) {
-    if (responseData == null) return null;
-    final map = responseData as Map<String, dynamic>;
-    return map['data'];
+    if (responseData is String) {
+      final normalized = responseData.trimLeft().toLowerCase();
+      if (normalized.startsWith('<!doctype html') ||
+          normalized.startsWith('<html')) {
+        return null;
+      }
+      return responseData;
+    }
+    if (responseData is! Map<String, dynamic>) {
+      return responseData;
+    }
+    return responseData['data'];
   }
 
   bool _shouldFallbackToLegacySettingsPath(Object error) {
@@ -67,9 +87,9 @@ class SettingV2Api {
   /// @param key 设置key
   /// @return 系统设置
   Future<Response<SettingInfo>> getSystemSettingByKey(String key) async {
-    final response = await _client.get(
+    final response = await _client.post(
       ApiConstants.buildApiPath('/core/settings/by'),
-      queryParameters: {'key': key},
+      data: {'key': key},
     );
     final data = _extractData(response.data);
     return Response(
@@ -488,7 +508,7 @@ class SettingV2Api {
   /// 加载MFA密钥和二维码
   /// @param request MFA凭证请求
   /// @return MFA OTP信息
-  Future<Response<MfaOtp>> loadMfaInfo(MfaCredential request) async {
+  Future<Response<MfaOtp>> loadMfaInfo(MfaLoadRequest request) async {
     final response = await _client.post<dynamic>(
       ApiConstants.buildApiPath('/core/settings/mfa'),
       data: request.toJson(),
@@ -847,14 +867,14 @@ class SettingV2Api {
   /// 检查本地SSH连接信息
   /// @param request 检查请求
   /// @return 检查结果
-  Future<Response<dynamic>> checkSSHConnection(
+  Future<Response<bool>> checkSSHConnection(
       SSHConnectionCheck request) async {
-    final response = await _client.post(
+    final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/settings/ssh/check/info'),
       data: request.toJson(),
     );
-    return Response(
-      data: _extractDataRaw(response.data),
+    return Response<bool>(
+      data: _extractDataRaw(response.data) as bool?,
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -865,12 +885,15 @@ class SettingV2Api {
   ///
   /// 获取本地SSH连接信息
   /// @return SSH连接信息
-  Future<Response<dynamic>> getSSHConnection() async {
-    final response = await _client.get(
+  Future<Response<SshLocalConnectionInfo>> getSSHConnection() async {
+    final response = await _client.get<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/settings/ssh/conn'),
     );
-    return Response(
-      data: _extractDataRaw(response.data),
+    final data = _extractDataRaw(response.data);
+    return Response<SshLocalConnectionInfo>(
+      data: SshLocalConnectionInfo.fromJson(
+        data is Map<String, dynamic> ? data : const <String, dynamic>{},
+      ),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -907,6 +930,35 @@ class SettingV2Api {
       requestOptions: response.requestOptions,
     );
   }
+
+  /// 重置系统设置
+  Future<Response<void>> resetSystemSetting() async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/core/settings/reset'),
+    );
+  }
+
+  /// 获取监控设置
+  Future<Response<Map<String, dynamic>>> getMonitorSetting() async {
+    final response = await _client.get(
+      ApiConstants.buildApiPath('/hosts/monitor/setting'),
+    );
+    final data = _extractData(response.data);
+    return Response(
+      data: data,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 更新监控设置
+  Future<Response<void>> updateMonitorSetting(String key, String value) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/hosts/monitor/setting/update'),
+      data: {'key': key, 'value': value},
+    );
+  }
 }
 
 // ==================== 请求模型 ====================
@@ -924,6 +976,8 @@ class TerminalUpdate {
   final String? lineTheme;
   final String? fontSize;
   final String? fontFamily;
+  final String? backgroundColor;
+  final String? foregroundColor;
   final String? cursorStyle;
   final String? cursorBlink;
   final String? scrollSensitivity;
@@ -935,6 +989,8 @@ class TerminalUpdate {
     this.lineTheme,
     this.fontSize,
     this.fontFamily,
+    this.backgroundColor,
+    this.foregroundColor,
     this.cursorStyle,
     this.cursorBlink,
     this.scrollSensitivity,
@@ -947,6 +1003,8 @@ class TerminalUpdate {
         if (lineTheme != null) 'lineTheme': lineTheme,
         if (fontSize != null) 'fontSize': fontSize,
         if (fontFamily != null) 'fontFamily': fontFamily,
+        if (backgroundColor != null) 'backgroundColor': backgroundColor,
+        if (foregroundColor != null) 'foregroundColor': foregroundColor,
         if (cursorStyle != null) 'cursorStyle': cursorStyle,
         if (cursorBlink != null) 'cursorBlink': cursorBlink,
         if (scrollSensitivity != null) 'scrollSensitivity': scrollSensitivity,
@@ -1189,48 +1247,78 @@ class BackupAccountDelete {
 // ==================== SSH请求模型 ====================
 
 class SSHConnectionSave {
-  final String? host;
+  final String? addr;
   final int? port;
   final String? user;
+  final String? authMode;
   final String? password;
   final String? privateKey;
+  final String? passPhrase;
+  final String? localSSHConnShow;
 
   const SSHConnectionSave(
-      {this.host, this.port, this.user, this.password, this.privateKey});
+      {this.addr,
+      this.port,
+      this.user,
+      this.authMode,
+      this.password,
+      this.privateKey,
+      this.passPhrase,
+      this.localSSHConnShow});
 
   Map<String, dynamic> toJson() => {
-        if (host != null) 'host': host,
+        if (addr != null) 'addr': addr,
         if (port != null) 'port': port,
         if (user != null) 'user': user,
+        if (authMode != null) 'authMode': authMode,
         if (password != null) 'password': password,
         if (privateKey != null) 'privateKey': privateKey,
+        if (passPhrase != null) 'passPhrase': passPhrase,
+        if (localSSHConnShow != null) 'localSSHConnShow': localSSHConnShow,
       };
 }
 
 class SSHConnectionCheck {
-  final String? host;
+  final String? addr;
   final int? port;
   final String? user;
+  final String? authMode;
   final String? password;
+  final String? privateKey;
+  final String? passPhrase;
 
-  const SSHConnectionCheck({this.host, this.port, this.user, this.password});
+  const SSHConnectionCheck({
+    this.addr,
+    this.port,
+    this.user,
+    this.authMode,
+    this.password,
+    this.privateKey,
+    this.passPhrase,
+  });
 
   Map<String, dynamic> toJson() => {
-        if (host != null) 'host': host,
+        if (addr != null) 'addr': addr,
         if (port != null) 'port': port,
         if (user != null) 'user': user,
+        if (authMode != null) 'authMode': authMode,
         if (password != null) 'password': password,
+        if (privateKey != null) 'privateKey': privateKey,
+        if (passPhrase != null) 'passPhrase': passPhrase,
       };
 }
 
 class SSHDefaultUpdate {
-  final int? id;
-  final bool? isDefault;
+  final bool withReset;
+  final String defaultConn;
 
-  const SSHDefaultUpdate({this.id, this.isDefault});
+  const SSHDefaultUpdate({
+    required this.withReset,
+    required this.defaultConn,
+  });
 
   Map<String, dynamic> toJson() => {
-        if (id != null) 'id': id,
-        if (isDefault != null) 'isDefault': isDefault,
+        'withReset': withReset,
+        'defaultConn': defaultConn,
       };
 }

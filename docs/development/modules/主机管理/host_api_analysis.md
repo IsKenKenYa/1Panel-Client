@@ -1,199 +1,19 @@
 # HOST 模块API端点详细分析
 
 > 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
-> 生成时间: 2026-02-15 15:17:32
+> 生成时间: 2026-04-27 15:19:33
 
 ## API端点总览
 
-- 端点数量: **53**
-- 方法总数: **54**
+- 端点数量: **43**
+- 方法总数: **44**
 
 | 方法 | 数量 |
 |------|------|
 | GET | 4 |
-| POST | 50 |
+| POST | 40 |
 
 ## API端点详情
-
-### `/core/hosts`
-
-#### POST
-
-**摘要**: Create host
-
-**标签**: Host
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/core/hosts/del`
-
-#### POST
-
-**摘要**: Delete host
-
-**标签**: Host
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/core/hosts/info`
-
-#### POST
-
-**摘要**: Get host info
-
-**标签**: Host
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/core/hosts/search`
-
-#### POST
-
-**摘要**: Page host
-
-**标签**: Host
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/core/hosts/test/byid/:id`
-
-#### POST
-
-**摘要**: Test host conn by host id
-
-**标签**: Host
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| id | path | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/core/hosts/test/byinfo`
-
-#### POST
-
-**摘要**: Test host conn by info
-
-**标签**: Host
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/core/hosts/tree`
-
-#### POST
-
-**摘要**: Load host tree
-
-**标签**: Host
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/core/hosts/update`
-
-#### POST
-
-**摘要**: Update host
-
-**标签**: Host
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/core/hosts/update/group`
-
-#### POST
-
-**摘要**: Update host group
-
-**标签**: Host
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
 
 ### `/hosts/components/{name}`
 
@@ -1038,20 +858,6 @@
 | 名称 | 位置 | 类型 | 必填 | 描述 |
 |------|------|------|------|------|
 | request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/toolbox/device/update/host`
-
-#### POST
-
-**摘要**: Update device hosts
-
-**标签**: Device
 
 **响应**:
 

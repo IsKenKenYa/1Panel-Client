@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'package:onepanel_client/data/models/common_models.dart';
 import 'package:onepanel_client/data/models/database_models.dart';
+import 'package:onepanel_client/data/models/database_option_models.dart';
 import 'package:onepanel_client/features/databases/databases_page.dart';
 import 'package:onepanel_client/features/databases/databases_provider.dart';
 import 'package:onepanel_client/features/databases/databases_service.dart';
@@ -22,6 +23,7 @@ class _FakeDatabasesService extends DatabasesService {
   @override
   Future<PageResult<DatabaseListItem>> loadPage({
     required DatabaseScope scope,
+    String? targetDatabase,
     String? query,
     int page = 1,
     int pageSize = 20,
@@ -30,6 +32,17 @@ class _FakeDatabasesService extends DatabasesService {
       throw Exception('boom');
     }
     return pageResult;
+  }
+
+  @override
+  Future<List<DatabaseItemOption>> loadDatabaseItems(String type) async {
+    return const <DatabaseItemOption>[];
+  }
+
+  @override
+  Future<List<DatabaseListItem>> loadDatabaseTargets(
+      DatabaseScope scope) async {
+    return const <DatabaseListItem>[];
   }
 }
 

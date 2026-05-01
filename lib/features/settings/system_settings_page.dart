@@ -15,11 +15,13 @@ import 'package:onepanel_client/features/settings/upgrade_page.dart';
 import 'package:onepanel_client/features/settings/monitor_settings_page.dart';
 import 'package:onepanel_client/features/settings/proxy_settings_page.dart';
 import 'package:onepanel_client/features/settings/backup_account_page.dart';
+import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/features/monitoring/monitoring_provider.dart';
 import 'package:onepanel_client/core/services/logger/log_level.dart';
 import 'package:onepanel_client/core/services/logger/log_export_service.dart';
 import 'package:onepanel_client/core/services/logger/log_file_manager_service.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
+import 'package:onepanel_client/data/models/ssh_settings_models.dart';
 
 class SystemSettingsPage extends StatefulWidget {
   const SystemSettingsPage({super.key, this.provider});
@@ -187,7 +189,7 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
                 title: l10n.menuSettingsTitle,
                 subtitle: l10n.menuSettingsDescription,
                 onTap: () =>
-                    Navigator.pushNamed(context, AppRoutes.menuSettings),
+                    openRouteRespectingShell(context, AppRoutes.menuSettings),
               ),
               _buildSettingTile(
                 context,
@@ -438,24 +440,13 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
   }
 
   String _formatSshConnectionSummary(
-    dynamic connection,
+    SshLocalConnectionInfo? connection,
     AppLocalizations l10n,
   ) {
-    if (connection is! Map) {
+    if (connection == null || !connection.isConfigured) {
       return l10n.systemSettingsNotSet;
     }
-
-    final map = connection.cast<dynamic, dynamic>();
-    final host = map['host']?.toString();
-    final port = map['port']?.toString();
-    final user = map['user']?.toString();
-
-    if (host == null || host.isEmpty) {
-      return l10n.systemSettingsNotSet;
-    }
-    final portText = (port == null || port.isEmpty) ? '' : ':$port';
-    final userText = (user == null || user.isEmpty) ? '' : ' ($user)';
-    return '$host$portText$userText';
+    return connection.summary;
   }
 
   String _formatNetworkInterfacesSummary(
@@ -606,18 +597,17 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
     }
 
     final connection = provider.data.sshConnection;
-    final map = connection is Map ? connection.cast<dynamic, dynamic>() : null;
 
     final hostController =
-        TextEditingController(text: map?['host']?.toString() ?? '');
+        TextEditingController(text: connection?.addr ?? '');
     final portController =
-        TextEditingController(text: map?['port']?.toString() ?? '22');
+        TextEditingController(text: (connection?.port ?? 22).toString());
     final userController =
-        TextEditingController(text: map?['user']?.toString() ?? '');
+        TextEditingController(text: connection?.user ?? '');
     final passwordController =
-        TextEditingController(text: map?['password']?.toString() ?? '');
+        TextEditingController(text: connection?.password ?? '');
     final privateKeyController =
-        TextEditingController(text: map?['privateKey']?.toString() ?? '');
+        TextEditingController(text: connection?.privateKey ?? '');
 
     await showDialog<void>(
       context: context,

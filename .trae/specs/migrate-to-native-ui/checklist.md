@@ -1,0 +1,6 @@
+- [x] Flutter 端成功抽离通信层（`lib/core/channel/`），并能以 Headless/Engine-only 模式在 macOS、iOS、Windows、Linux 平台启动。
+- [x] macOS/iOS 工程成功脱离 FlutterViewController，使用纯 SwiftUI/AppKit 渲染主界面，并通过 Channel 获取底层 Flutter 逻辑与数据。
+- [x] Windows 工程成功脱离 Flutter 默认视图窗口，使用 WinUI 3 渲染主界面，并通过 Channel 获取底层 Flutter 逻辑与数据。
+- [x] Linux 工程成功脱离 Flutter 默认视图窗口，使用原生 UI 框架渲染主界面，并通过 Channel 获取底层 Flutter 逻辑与数据。
+- [x] Server 和 Files 模块在非 Android 平台上均能正常使用各自操作系统的原生组件呈现数据。
+- [x] Android 平台不受此改动影响，继续完美运行原有的 Material Design 3 Flutter UI。

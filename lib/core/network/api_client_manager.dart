@@ -30,6 +30,7 @@ import '../../api/v2/update_v2.dart';
 import '../../api/v2/website_v2.dart';
 import '../../api/v2/ai_v2.dart';
 import '../config/api_config.dart';
+import '../services/logger/logger_service.dart';
 import 'dio_client.dart';
 
 class ApiClientManager {
@@ -82,6 +83,10 @@ class ApiClientManager {
 
   Future<DioClient> getCurrentClient() async {
     final config = await _getCurrentConfig();
+    appLogger.dWithPackage(
+      'core.network.api_client_manager',
+      'getCurrentClient: serverId=${config.id}, url=${config.url}, apiKeyPresent=${config.apiKey.isNotEmpty}, allowInsecureTls=${config.allowInsecureTls}',
+    );
     return getClient(
       config.id,
       config.url,

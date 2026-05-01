@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/features/security/security_repository.dart';
 
-class SecurityProvider extends ChangeNotifier {
+class SecurityProvider extends ChangeNotifier with SafeChangeNotifier {
   SecurityProvider({SecurityVerificationRepository? repository})
       : _repository = repository ?? ApiSecurityVerificationRepository();
 

@@ -3,6 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/features/shell/shell_navigation.dart';
 
 class LegalCenterPage extends StatelessWidget {
   const LegalCenterPage({super.key});
@@ -98,7 +99,7 @@ class LegalCenterPage extends StatelessWidget {
               title: Text(l10n.settingsMainlandSdkDisclosureTitle),
               subtitle: Text(l10n.settingsMainlandSdkDisclosureSubtitle),
               trailing: const Icon(Icons.chevron_right),
-              onTap: () => Navigator.pushNamed(
+              onTap: () => openRouteRespectingShell(
                 context,
                 AppRoutes.settingsMainlandSdkDisclosure,
               ),

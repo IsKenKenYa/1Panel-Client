@@ -14,7 +14,7 @@ class FileRecycleService {
   Future<FileRecycleStatus> getRecycleBinStatus() async {
     final api = await _repository.getApi();
     final response = await api.getRecycleBinStatus();
-    return response.data!;
+    return response.data ?? const FileRecycleStatus(fileCount: 0, totalSize: 0);
   }
 
   Future<List<FileInfo>> searchRecycleBin({

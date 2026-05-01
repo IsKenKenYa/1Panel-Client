@@ -1,0 +1,703 @@
+{
+  "generatedAt": "2026-04-12T18:17:43.754247",
+  "swaggerFile": "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json",
+  "results": [
+    {
+      "module": "ai",
+      "status": "aligned",
+      "swaggerEndpointCount": 73,
+      "clientEndpointCount": 76,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/ai_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [],
+      "extraInClient": [],
+      "allowedExtraInClient": [
+        {
+          "method": "POST",
+          "path": "/ai/agents/browser/get"
+        },
+        {
+          "method": "POST",
+          "path": "/ai/agents/browser/update"
+        },
+        {
+          "method": "POST",
+          "path": "/ai/agents/channel/feishu/approve"
+        }
+      ]
+    },
+    {
+      "module": "cronjob",
+      "status": "aligned",
+      "swaggerEndpointCount": 16,
+      "clientEndpointCount": 16,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/cronjob_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [],
+      "extraInClient": [],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "device",
+      "status": "aligned",
+      "swaggerEndpointCount": 10,
+      "clientEndpointCount": 10,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/toolbox_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [],
+      "extraInClient": [],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "domains",
+      "status": "aligned",
+      "swaggerEndpointCount": 4,
+      "clientEndpointCount": 4,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/website_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [],
+      "extraInClient": [],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "firewall",
+      "status": "aligned",
+      "swaggerEndpointCount": 15,
+      "clientEndpointCount": 15,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/firewall_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [],
+      "extraInClient": [],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "monitor",
+      "status": "aligned",
+      "swaggerEndpointCount": 5,
+      "clientEndpointCount": 5,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/monitor_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [],
+      "extraInClient": [],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "openresty",
+      "status": "aligned",
+      "swaggerEndpointCount": 10,
+      "clientEndpointCount": 10,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/openresty_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [],
+      "extraInClient": [],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "runtime",
+      "status": "aligned",
+      "swaggerEndpointCount": 31,
+      "clientEndpointCount": 31,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/runtime_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [],
+      "extraInClient": [],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "system_ssl",
+      "status": "aligned",
+      "swaggerEndpointCount": 3,
+      "clientEndpointCount": 3,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/ssl_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [],
+      "extraInClient": [],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "website",
+      "status": "aligned",
+      "swaggerEndpointCount": 73,
+      "clientEndpointCount": 73,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/website_v2.dart",
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/ssl_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [],
+      "extraInClient": [],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "auth",
+      "status": "extra_in_client",
+      "swaggerEndpointCount": 11,
+      "clientEndpointCount": 14,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/auth_v2.dart",
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/website_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [],
+      "extraInClient": [
+        {
+          "method": "GET",
+          "path": "/core/auth/demo"
+        },
+        {
+          "method": "GET",
+          "path": "/core/auth/issafety"
+        },
+        {
+          "method": "GET",
+          "path": "/core/auth/language"
+        }
+      ],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "command",
+      "status": "extra_in_client",
+      "swaggerEndpointCount": 8,
+      "clientEndpointCount": 15,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/command_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [],
+      "extraInClient": [
+        {
+          "method": "GET",
+          "path": "/cronjobs/script/options"
+        },
+        {
+          "method": "POST",
+          "path": "/core/commands/list"
+        },
+        {
+          "method": "POST",
+          "path": "/core/script"
+        },
+        {
+          "method": "POST",
+          "path": "/core/script/del"
+        },
+        {
+          "method": "POST",
+          "path": "/core/script/search"
+        },
+        {
+          "method": "POST",
+          "path": "/core/script/sync"
+        },
+        {
+          "method": "POST",
+          "path": "/core/script/update"
+        }
+      ],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "container",
+      "status": "extra_in_client",
+      "swaggerEndpointCount": 73,
+      "clientEndpointCount": 74,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/container_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [],
+      "extraInClient": [
+        {
+          "method": "POST",
+          "path": "/containers/command"
+        }
+      ],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "database",
+      "status": "extra_in_client",
+      "swaggerEndpointCount": 42,
+      "clientEndpointCount": 49,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/database_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [],
+      "extraInClient": [
+        {
+          "method": "GET",
+          "path": "/databases/redis/check"
+        },
+        {
+          "method": "GET",
+          "path": "/databases/{var}/connection/test"
+        },
+        {
+          "method": "GET",
+          "path": "/databases/{var}/privileges"
+        },
+        {
+          "method": "POST",
+          "path": "/databases/update"
+        },
+        {
+          "method": "POST",
+          "path": "/databases/{var}/backups"
+        },
+        {
+          "method": "POST",
+          "path": "/databases/{var}/password/reset"
+        },
+        {
+          "method": "POST",
+          "path": "/databases/{var}/privileges"
+        }
+      ],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "file",
+      "status": "extra_in_client",
+      "swaggerEndpointCount": 49,
+      "clientEndpointCount": 50,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/file_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [],
+      "extraInClient": [
+        {
+          "method": "POST",
+          "path": "/files/download"
+        }
+      ],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "host",
+      "status": "extra_in_client",
+      "swaggerEndpointCount": 44,
+      "clientEndpointCount": 50,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/host_v2.dart",
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/monitor_v2.dart",
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/ssh_v2.dart",
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/firewall_v2.dart",
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/host_tool_v2.dart",
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/disk_management_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [],
+      "extraInClient": [
+        {
+          "method": "GET",
+          "path": "/settings/ssh/conn"
+        },
+        {
+          "method": "POST",
+          "path": "/core/hosts/test/byid/{var}"
+        },
+        {
+          "method": "POST",
+          "path": "/hosts/test/byid"
+        },
+        {
+          "method": "POST",
+          "path": "/settings/ssh"
+        },
+        {
+          "method": "POST",
+          "path": "/settings/ssh/check/info"
+        },
+        {
+          "method": "POST",
+          "path": "/settings/ssh/conn/default"
+        }
+      ],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "log",
+      "status": "extra_in_client",
+      "swaggerEndpointCount": 9,
+      "clientEndpointCount": 11,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/logs_v2.dart",
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/task_log_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [],
+      "extraInClient": [
+        {
+          "method": "GET",
+          "path": "/logs/tasks/executing/count"
+        },
+        {
+          "method": "POST",
+          "path": "/logs/tasks/search"
+        }
+      ],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "setting",
+      "status": "extra_in_client",
+      "swaggerEndpointCount": 55,
+      "clientEndpointCount": 61,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/setting_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [],
+      "extraInClient": [
+        {
+          "method": "GET",
+          "path": "/backups/options"
+        },
+        {
+          "method": "GET",
+          "path": "/core/settings/mfa/status"
+        },
+        {
+          "method": "GET",
+          "path": "/dashboard/base/os"
+        },
+        {
+          "method": "POST",
+          "path": "/backups/del"
+        },
+        {
+          "method": "POST",
+          "path": "/core/settings/mfa/unbind"
+        },
+        {
+          "method": "POST",
+          "path": "/core/settings/reset"
+        }
+      ],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "ssl",
+      "status": "extra_in_client",
+      "swaggerEndpointCount": 15,
+      "clientEndpointCount": 19,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/ssl_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [],
+      "extraInClient": [
+        {
+          "method": "GET",
+          "path": "/websites/ssl/application/{var}/status"
+        },
+        {
+          "method": "GET",
+          "path": "/websites/ssl/options"
+        },
+        {
+          "method": "POST",
+          "path": "/websites/ssl/auto-renew"
+        },
+        {
+          "method": "POST",
+          "path": "/websites/ssl/validate"
+        }
+      ],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "toolbox",
+      "status": "extra_in_client",
+      "swaggerEndpointCount": 39,
+      "clientEndpointCount": 53,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/toolbox_v2.dart",
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/host_tool_v2.dart",
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/disk_management_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [],
+      "extraInClient": [
+        {
+          "method": "GET",
+          "path": "/hosts/disks"
+        },
+        {
+          "method": "GET",
+          "path": "/hosts/tool/supervisor/process"
+        },
+        {
+          "method": "GET",
+          "path": "/toolbox/clean/data"
+        },
+        {
+          "method": "GET",
+          "path": "/toolbox/clean/tree"
+        },
+        {
+          "method": "POST",
+          "path": "/hosts/disks/mount"
+        },
+        {
+          "method": "POST",
+          "path": "/hosts/disks/partition"
+        },
+        {
+          "method": "POST",
+          "path": "/hosts/disks/unmount"
+        },
+        {
+          "method": "POST",
+          "path": "/hosts/tool"
+        },
+        {
+          "method": "POST",
+          "path": "/hosts/tool/config"
+        },
+        {
+          "method": "POST",
+          "path": "/hosts/tool/init"
+        },
+        {
+          "method": "POST",
+          "path": "/hosts/tool/operate"
+        },
+        {
+          "method": "POST",
+          "path": "/hosts/tool/supervisor/process"
+        },
+        {
+          "method": "POST",
+          "path": "/hosts/tool/supervisor/process/file"
+        },
+        {
+          "method": "POST",
+          "path": "/toolbox/clean/log"
+        }
+      ],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "website_ssl",
+      "status": "extra_in_client",
+      "swaggerEndpointCount": 12,
+      "clientEndpointCount": 16,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/ssl_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [],
+      "extraInClient": [
+        {
+          "method": "GET",
+          "path": "/websites/ssl/application/{var}/status"
+        },
+        {
+          "method": "GET",
+          "path": "/websites/ssl/options"
+        },
+        {
+          "method": "POST",
+          "path": "/websites/ssl/auto-renew"
+        },
+        {
+          "method": "POST",
+          "path": "/websites/ssl/validate"
+        }
+      ],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "app",
+      "status": "missing_in_client",
+      "swaggerEndpointCount": 35,
+      "clientEndpointCount": 31,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/app_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [
+        {
+          "method": "GET",
+          "path": "/dashboard/app/launcher"
+        },
+        {
+          "method": "POST",
+          "path": "/ai/agents/channel/pairing/approve"
+        },
+        {
+          "method": "POST",
+          "path": "/dashboard/app/launcher/option"
+        },
+        {
+          "method": "POST",
+          "path": "/dashboard/app/launcher/show"
+        }
+      ],
+      "extraInClient": [],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "backup",
+      "status": "missing_in_client",
+      "swaggerEndpointCount": 25,
+      "clientEndpointCount": 20,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/backup_account_v2.dart",
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/snapshot_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [
+        {
+          "method": "GET",
+          "path": "/core/backups/client/{var}"
+        },
+        {
+          "method": "POST",
+          "path": "/core/backups"
+        },
+        {
+          "method": "POST",
+          "path": "/core/backups/del"
+        },
+        {
+          "method": "POST",
+          "path": "/core/backups/refresh/token"
+        },
+        {
+          "method": "POST",
+          "path": "/core/backups/update"
+        }
+      ],
+      "extraInClient": [],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "dashboard",
+      "status": "missing_in_client",
+      "swaggerEndpointCount": 12,
+      "clientEndpointCount": 10,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/dashboard_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [
+        {
+          "method": "GET",
+          "path": "/dashboard/base/{var}/{var}"
+        },
+        {
+          "method": "GET",
+          "path": "/dashboard/current/{var}/{var}"
+        }
+      ],
+      "extraInClient": [],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "group",
+      "status": "missing_in_client",
+      "swaggerEndpointCount": 11,
+      "clientEndpointCount": 8,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/system_group_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [
+        {
+          "method": "POST",
+          "path": "/cronjobs/group/update"
+        },
+        {
+          "method": "POST",
+          "path": "/files/user/group"
+        },
+        {
+          "method": "POST",
+          "path": "/websites/batch/group"
+        }
+      ],
+      "extraInClient": [],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "process",
+      "status": "missing_in_client",
+      "swaggerEndpointCount": 9,
+      "clientEndpointCount": 3,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/process_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [
+        {
+          "method": "GET",
+          "path": "/hosts/tool/supervisor/process"
+        },
+        {
+          "method": "GET",
+          "path": "/runtimes/supervisor/process/{var}"
+        },
+        {
+          "method": "POST",
+          "path": "/hosts/tool/supervisor/process"
+        },
+        {
+          "method": "POST",
+          "path": "/hosts/tool/supervisor/process/file"
+        },
+        {
+          "method": "POST",
+          "path": "/runtimes/supervisor/process"
+        },
+        {
+          "method": "POST",
+          "path": "/runtimes/supervisor/process/file"
+        }
+      ],
+      "extraInClient": [],
+      "allowedExtraInClient": []
+    },
+    {
+      "module": "ssh",
+      "status": "missing_in_client",
+      "swaggerEndpointCount": 17,
+      "clientEndpointCount": 16,
+      "clientFiles": [
+        "/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp/lib/api/v2/ssh_v2.dart"
+      ],
+      "missingClientFiles": [],
+      "missingInClient": [
+        {
+          "method": "POST",
+          "path": "/toolbox/fail2ban/operate/sshd"
+        }
+      ],
+      "extraInClient": [],
+      "allowedExtraInClient": []
+    }
+  ]
+}
+

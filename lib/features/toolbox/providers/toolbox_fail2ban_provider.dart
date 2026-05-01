@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/models/toolbox_models.dart';
 import 'package:onepanel_client/features/toolbox/services/toolbox_fail2ban_service.dart';
 
-class ToolboxFail2banProvider extends ChangeNotifier {
+class ToolboxFail2banProvider extends ChangeNotifier with SafeChangeNotifier {
   ToolboxFail2banProvider({ToolboxFail2banService? service})
       : _service = service ?? ToolboxFail2banService();
 

@@ -1,9 +1,9 @@
 {
   "module": "website",
-  "generatedAt": "2026-03-13T16:41:48.442193",
+  "generatedAt": "2026-04-27T15:19:33.603767",
   "summary": {
-    "endpointCount": 87,
-    "methodCount": 90
+    "endpointCount": 70,
+    "methodCount": 73
   },
   "endpoints": [
     {
@@ -242,122 +242,6 @@
           "description": "",
           "tags": [
             "Website Acme"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/websites/auths",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Get AuthBasic conf",
-          "description": "",
-          "tags": [
-            "Website"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/websites/auths/path",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Get AuthBasic conf",
-          "description": "",
-          "tags": [
-            "Website"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/websites/auths/path/update",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Get AuthBasic conf",
-          "description": "",
-          "tags": [
-            "Website"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/websites/auths/update",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Get AuthBasic conf",
-          "description": "",
-          "tags": [
-            "Website"
           ],
           "parameters": [
             {
@@ -1199,122 +1083,6 @@
       ]
     },
     {
-      "path": "/websites/domains",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Create website domain",
-          "description": "",
-          "tags": [
-            "Website Domain"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/websites/domains/:websiteId",
-      "methods": [
-        {
-          "method": "GET",
-          "summary": "Search website domains by websiteId",
-          "description": "",
-          "tags": [
-            "Website Domain"
-          ],
-          "parameters": [
-            {
-              "name": "websiteId",
-              "in": "path",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/websites/domains/del",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Delete website domain",
-          "description": "",
-          "tags": [
-            "Website Domain"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/websites/domains/update",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Update website domain",
-          "description": "",
-          "tags": [
-            "Website Domain"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
       "path": "/websites/exec/composer",
       "methods": [
         {
@@ -1734,11 +1502,69 @@
       ]
     },
     {
+      "path": "/websites/proxies/delete",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete proxy config",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/websites/proxies/file",
       "methods": [
         {
           "method": "POST",
           "summary": "Update proxy file",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/proxies/status",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update proxy config status",
           "description": "",
           "tags": [
             "Website"
@@ -2159,353 +1985,6 @@
             {
               "name": "request",
               "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/websites/ssl",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Create website ssl",
-          "description": "",
-          "tags": [
-            "Website SSL"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/websites/ssl/:id",
-      "methods": [
-        {
-          "method": "GET",
-          "summary": "Search website ssl by id",
-          "description": "",
-          "tags": [
-            "Website SSL"
-          ],
-          "parameters": [
-            {
-              "name": "id",
-              "in": "path",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/websites/ssl/del",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Delete website ssl",
-          "description": "",
-          "tags": [
-            "Website SSL"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/websites/ssl/download",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Download SSL  file",
-          "description": "",
-          "tags": [
-            "Website SSL"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/websites/ssl/obtain",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Apply  ssl",
-          "description": "",
-          "tags": [
-            "Website SSL"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/websites/ssl/resolve",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Resolve website ssl",
-          "description": "",
-          "tags": [
-            "Website SSL"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/websites/ssl/search",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Page website ssl",
-          "description": "",
-          "tags": [
-            "Website SSL"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/websites/ssl/update",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Update ssl",
-          "description": "",
-          "tags": [
-            "Website SSL"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/websites/ssl/upload",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Upload ssl",
-          "description": "",
-          "tags": [
-            "Website SSL"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/websites/ssl/upload/file",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Upload SSL file",
-          "description": "",
-          "tags": [
-            "Website SSL"
-          ],
-          "parameters": [
-            {
-              "name": "type",
-              "in": "formData",
-              "required": true,
-              "type": "unknown",
-              "description": "type"
-            },
-            {
-              "name": "description",
-              "in": "formData",
-              "required": false,
-              "type": "unknown",
-              "description": "description"
-            },
-            {
-              "name": "sslID",
-              "in": "formData",
-              "required": false,
-              "type": "unknown",
-              "description": "sslID"
-            },
-            {
-              "name": "privateKeyFile",
-              "in": "formData",
-              "required": true,
-              "type": "unknown",
-              "description": "privateKeyFile"
-            },
-            {
-              "name": "certificateFile",
-              "in": "formData",
-              "required": true,
-              "type": "unknown",
-              "description": "certificateFile"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/websites/ssl/website/:websiteId",
-      "methods": [
-        {
-          "method": "GET",
-          "summary": "Search website ssl by website id",
-          "description": "",
-          "tags": [
-            "Website SSL"
-          ],
-          "parameters": [
-            {
-              "name": "websiteId",
-              "in": "path",
               "required": true,
               "type": "unknown",
               "description": "request"

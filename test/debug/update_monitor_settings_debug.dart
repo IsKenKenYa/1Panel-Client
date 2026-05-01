@@ -71,9 +71,6 @@ void main() async {
     print('✅ 获取成功!');
     print(const JsonEncoder.withIndent('  ').convert(getResponse.data));
     print('');
-
-    final data = getResponse.data as Map<String, dynamic>;
-    final settings = data['data'] as Map<String, dynamic>;
     
     print('📡 步骤2: 更新DefaultIO设置为 /dev/vda2');
     print('=' * 80);

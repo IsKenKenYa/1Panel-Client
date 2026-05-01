@@ -1,9 +1,9 @@
 {
   "module": "group",
-  "generatedAt": "2026-03-23T18:47:55.851114",
+  "generatedAt": "2026-04-27T15:19:33.385008",
   "summary": {
-    "endpointCount": 12,
-    "methodCount": 12
+    "endpointCount": 11,
+    "methodCount": 11
   },
   "endpoints": [
     {
@@ -102,35 +102,6 @@
           "description": "",
           "tags": [
             "System Group"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/core/hosts/update/group",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Update host group",
-          "description": "",
-          "tags": [
-            "Host"
           ],
           "parameters": [
             {

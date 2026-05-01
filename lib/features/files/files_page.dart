@@ -1,16 +1,21 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/core/services/transfer/transfer_manager.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/utils/debug_error_dialog.dart';
+import 'package:onepanel_client/core/utils/platform_utils.dart';
+import 'package:onepanel_client/core/utils/keyboard_utils.dart';
+import 'package:onepanel_client/core/utils/intents.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
 import 'package:onepanel_client/features/files/favorites_page.dart';
 import 'package:onepanel_client/features/files/file_editor_page.dart';
 import 'package:onepanel_client/features/files/file_preview_page.dart';
 import 'package:onepanel_client/features/files/files_provider.dart';
+import 'package:onepanel_client/features/files/files_service.dart';
 import 'package:onepanel_client/features/files/mounts_page.dart';
 import 'package:onepanel_client/features/files/recycle_bin_page.dart';
 import 'package:onepanel_client/features/files/upload_history_page.dart';
@@ -48,19 +53,40 @@ part 'files_page/files_page_async_actions_part.dart';
 part 'files_page/files_page_actions_part.dart';
 
 class FilesPage extends StatelessWidget {
-  const FilesPage({super.key});
+  const FilesPage({
+    super.key,
+    this.provider,
+    this.service,
+    this.autoInitialize = true,
+  });
+
+  final FilesProvider? provider;
+  final FilesService? service;
+  final bool autoInitialize;
 
   @override
   Widget build(BuildContext context) {
+    if (provider != null) {
+      return ChangeNotifierProvider<FilesProvider>.value(
+        value: provider!,
+        child: FilesView(autoInitialize: autoInitialize),
+      );
+    }
+
     return ChangeNotifierProvider(
-      create: (_) => FilesProvider(),
-      child: const FilesView(),
+      create: (_) => FilesProvider(service: service),
+      child: FilesView(autoInitialize: autoInitialize),
     );
   }
 }
 
 class FilesView extends StatefulWidget {
-  const FilesView({super.key});
+  const FilesView({
+    super.key,
+    this.autoInitialize = true,
+  });
+
+  final bool autoInitialize;
 
   @override
   State<FilesView> createState() => _FilesViewState();
@@ -72,10 +98,12 @@ class _FilesViewState extends State<FilesView> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      context.read<FilesProvider>().initialize();
-    });
+    if (widget.autoInitialize) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        context.read<FilesProvider>().initialize();
+      });
+    }
   }
 
   @override
@@ -88,6 +116,10 @@ class _FilesViewState extends State<FilesView> {
       return;
     }
     if (serverId == null || serverId == _activeServerId) {
+      return;
+    }
+    if (!widget.autoInitialize) {
+      _activeServerId = serverId;
       return;
     }
     final previousServerId = _activeServerId;

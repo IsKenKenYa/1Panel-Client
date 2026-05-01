@@ -1,8 +1,9 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import '../../../data/models/app_models.dart';
 import '../app_service.dart';
 
-class AppStoreProvider extends ChangeNotifier {
+class AppStoreProvider extends ChangeNotifier with SafeChangeNotifier {
   final AppService _appService;
 
   AppStoreProvider({AppService? appService})
@@ -22,6 +23,7 @@ class AppStoreProvider extends ChangeNotifier {
   bool get hasMore => _hasMore;
 
   Future<void> onServerChanged() async {
+    if (isDisposed) return;
     _appService.resetForServerChange();
     _apps = [];
     _page = 1;
@@ -42,7 +44,7 @@ class AppStoreProvider extends ChangeNotifier {
     bool? recommend,
     List<String>? tags,
   }) async {
-    if (_isLoading) return;
+    if (_isLoading || isDisposed) return;
     if (!refresh && !_hasMore) return;
 
     _isLoading = true;
@@ -68,6 +70,8 @@ class AppStoreProvider extends ChangeNotifier {
         tags: tags,
       );
       final response = await _appService.searchApps(request);
+      
+      if (isDisposed) return;
 
       if (refresh) {
         _apps = response.items;
@@ -77,17 +81,23 @@ class AppStoreProvider extends ChangeNotifier {
       _total = response.total;
       _hasMore = _apps.length < _total;
     } catch (e) {
-      _error = e.toString();
-      if (!refresh && _page > 1) {
-        _page--; // Revert page increment on failure
+      if (!isDisposed) {
+        _error = e.toString();
+        if (!refresh && _page > 1) {
+          _page--; // Revert page increment on failure
+        }
       }
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      if (!isDisposed) {
+        _isLoading = false;
+        notifyListeners();
+      }
     }
   }
 
   Future<void> installApp(AppInstallCreateRequest request) async {
+    if (isDisposed) return;
+    
     _isLoading = true;
     _error = null;
     notifyListeners();
@@ -95,15 +105,21 @@ class AppStoreProvider extends ChangeNotifier {
     try {
       await _appService.installApp(request);
     } catch (e) {
-      _error = 'Installation failed: ${e.toString()}';
+      if (!isDisposed) {
+        _error = 'Installation failed: ${e.toString()}';
+      }
       rethrow;
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      if (!isDisposed) {
+        _isLoading = false;
+        notifyListeners();
+      }
     }
   }
 
   Future<void> syncApps() async {
+    if (isDisposed) return;
+    
     _isLoading = true;
     _error = null;
     notifyListeners();
@@ -111,15 +127,21 @@ class AppStoreProvider extends ChangeNotifier {
     try {
       await _appService.syncRemoteApps();
     } catch (e) {
-      _error = e.toString();
+      if (!isDisposed) {
+        _error = e.toString();
+      }
       rethrow;
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      if (!isDisposed) {
+        _isLoading = false;
+        notifyListeners();
+      }
     }
   }
 
   Future<void> syncLocalApps() async {
+    if (isDisposed) return;
+    
     _isLoading = true;
     _error = null;
     notifyListeners();
@@ -127,11 +149,15 @@ class AppStoreProvider extends ChangeNotifier {
     try {
       await _appService.syncLocalApps();
     } catch (e) {
-      _error = e.toString();
+      if (!isDisposed) {
+        _error = e.toString();
+      }
       rethrow;
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      if (!isDisposed) {
+        _isLoading = false;
+        notifyListeners();
+      }
     }
   }
 

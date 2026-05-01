@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'settings_service.dart';
 import '../../api/v2/setting_v2.dart' as api;
 import '../../data/models/setting_models.dart';
+import '../../data/models/ssh_settings_models.dart';
 import '../../core/services/passkey_service.dart';
 import '../../core/services/logger/logger_service.dart';
 
@@ -20,7 +22,7 @@ class SettingsData {
   final dynamic upgradeInfo;
   final dynamic appStoreConfig;
   final dynamic authSetting;
-  final dynamic sshConnection;
+  final SshLocalConnectionInfo? sshConnection;
   final String? dashboardMemo;
   final bool isMemoLoading;
   final bool isMemoSaving;
@@ -73,7 +75,7 @@ class SettingsData {
     dynamic upgradeInfo,
     dynamic appStoreConfig,
     dynamic authSetting,
-    dynamic sshConnection,
+    SshLocalConnectionInfo? sshConnection,
     String? dashboardMemo,
     bool? isMemoLoading,
     bool? isMemoSaving,
@@ -116,7 +118,7 @@ class SettingsData {
   }
 }
 
-class SettingsProvider extends ChangeNotifier {
+class SettingsProvider extends ChangeNotifier with SafeChangeNotifier {
   SettingsProvider({
     SettingsService? service,
     PasskeyService? passkeyService,
@@ -453,7 +455,7 @@ class SettingsProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> loadMfaInfo(MfaCredential request) async {
+  Future<void> loadMfaInfo(MfaLoadRequest request) async {
     try {
       final mfaInfo = await _service.loadMfaInfo(request);
 
@@ -466,10 +468,9 @@ class SettingsProvider extends ChangeNotifier {
 
   Future<MfaOtp?> loadMfaOtp() async {
     try {
-      final mfaInfo = await _service.loadMfaInfo(const MfaCredential(
-        code: '',
-        interval: '30',
-        secret: '',
+      final mfaInfo = await _service.loadMfaInfo(const MfaLoadRequest(
+        title: '1Panel Client',
+        interval: 30,
       ));
       _data = _data.copyWith(mfaInfo: mfaInfo);
       notifyListeners();
@@ -544,6 +545,8 @@ class SettingsProvider extends ChangeNotifier {
     String? lineTheme,
     String? fontSize,
     String? fontFamily,
+    String? backgroundColor,
+    String? foregroundColor,
     String? cursorStyle,
     String? cursorBlink,
     String? scrollSensitivity,
@@ -557,6 +560,8 @@ class SettingsProvider extends ChangeNotifier {
           lineTheme: lineTheme,
           fontSize: fontSize,
           fontFamily: fontFamily,
+          backgroundColor: backgroundColor,
+          foregroundColor: foregroundColor,
           cursorStyle: cursorStyle,
           cursorBlink: cursorBlink,
           scrollSensitivity: scrollSensitivity,
@@ -608,21 +613,73 @@ class SettingsProvider extends ChangeNotifier {
     String? user,
     String? password,
     String? privateKey,
+    String? passPhrase,
   }) async {
     try {
+      final authMode =
+          (privateKey != null && privateKey.trim().isNotEmpty) ? 'key' : 'password';
       await _service.saveSSHConnection(
         api.SSHConnectionSave(
-          host: host,
+          addr: host,
           port: port,
           user: user,
+          authMode: authMode,
           password: password,
           privateKey: privateKey,
+          passPhrase: passPhrase,
+          localSSHConnShow: _data.sshConnection?.localSSHConnShow,
         ),
       );
       await loadSSHConnection();
       return true;
     } catch (e, stackTrace) {
       _setError('保存SSH连接', e, stackTrace: stackTrace);
+      return false;
+    }
+  }
+
+  Future<bool> checkSSHConnection({
+    String? host,
+    int? port,
+    String? user,
+    String? authMode,
+    String? password,
+    String? privateKey,
+    String? passPhrase,
+  }) async {
+    try {
+      return await _service.checkSSHConnection(
+        api.SSHConnectionCheck(
+          addr: host,
+          port: port,
+          user: user,
+          authMode: authMode,
+          password: password,
+          privateKey: privateKey,
+          passPhrase: passPhrase,
+        ),
+      );
+    } catch (e, stackTrace) {
+      _setError('测试SSH连接', e, stackTrace: stackTrace);
+      return false;
+    }
+  }
+
+  Future<bool> updateDefaultSSHConnectionVisibility({
+    required bool visible,
+    bool withReset = false,
+  }) async {
+    try {
+      await _service.updateDefaultSSHConnection(
+        api.SSHDefaultUpdate(
+          withReset: withReset,
+          defaultConn: visible ? 'Enable' : 'Disable',
+        ),
+      );
+      await loadSSHConnection();
+      return true;
+    } catch (e, stackTrace) {
+      _setError('更新默认SSH连接显示', e, stackTrace: stackTrace);
       return false;
     }
   }
@@ -874,7 +931,7 @@ class SettingsProvider extends ChangeNotifier {
 
       dynamic appStoreConfig;
       dynamic authSetting;
-      dynamic sshConnection;
+      SshLocalConnectionInfo? sshConnection;
       String? dashboardMemo;
       var passkeys = const <PasskeyInfo>[];
       var isPasskeySupported = false;

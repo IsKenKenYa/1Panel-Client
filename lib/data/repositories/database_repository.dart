@@ -1,18 +1,56 @@
+import 'dart:convert';
+
 import 'package:onepanel_client/api/v2/database_v2.dart';
 import 'package:onepanel_client/core/network/api_client_manager.dart';
 import 'package:onepanel_client/data/models/common_models.dart';
 import 'package:onepanel_client/data/models/database_models.dart';
+import 'package:onepanel_client/data/models/database_option_models.dart';
 
 class DatabaseRepository {
   DatabaseRepository({ApiClientManager? clientManager})
       : _clientManager = clientManager ?? ApiClientManager.instance;
 
   final ApiClientManager _clientManager;
+  static const String _remoteDatabaseTypes =
+      'mysql,mariadb,postgresql,redis,redis-cluster';
 
   Future<DatabaseV2Api> _getApi() => _clientManager.getDatabaseApi();
 
+  Future<List<DatabaseItemOption>> loadDatabaseItems(String type) async {
+    final api = await _getApi();
+    final response = await api.listDbItems(type);
+    return response.data ?? const <DatabaseItemOption>[];
+  }
+
+  Future<DatabaseBaseInfo> loadBaseInfo(DatabaseListItem item) async {
+    final api = await _getApi();
+    final response = await api.loadDatabaseBaseInfo(
+      type: item.engine,
+      name: item.lookupName,
+    );
+    return DatabaseBaseInfo.fromJson(
+        response.data ?? const <String, dynamic>{});
+  }
+
+  Future<List<DatabaseListItem>> loadDatabaseTargets(
+      DatabaseScope scope) async {
+    final api = await _getApi();
+    final type = switch (scope) {
+      DatabaseScope.mysql => 'mysql,mariadb',
+      DatabaseScope.postgresql => 'postgresql',
+      DatabaseScope.redis => 'redis,redis-cluster',
+      DatabaseScope.remote => _remoteDatabaseTypes,
+    };
+    final response = await api.listDatabases(type);
+    return response.data
+            ?.map((item) => DatabaseListItem.fromDatabaseOption(item, scope))
+            .toList(growable: false) ??
+        const <DatabaseListItem>[];
+  }
+
   Future<PageResult<DatabaseListItem>> searchByScope({
     required DatabaseScope scope,
+    String? targetDatabase,
     String? query,
     int page = 1,
     int pageSize = 20,
@@ -23,7 +61,7 @@ class DatabaseRepository {
         final response = await api.searchMysqlDatabases(
           DatabaseSearch(
             info: query,
-            database: 'mysql',
+            database: targetDatabase,
             page: page,
             pageSize: pageSize,
           ),
@@ -41,7 +79,7 @@ class DatabaseRepository {
         final response = await api.searchPostgresqlDatabases(
           DatabaseSearch(
             info: query,
-            database: 'postgresql',
+            database: targetDatabase,
             page: page,
             pageSize: pageSize,
           ),
@@ -73,7 +111,7 @@ class DatabaseRepository {
       case DatabaseScope.remote:
         final response = await api.searchDatabases(
           DatabaseSearch(
-            type: 'remote',
+            type: _remoteDatabaseTypes,
             info: query,
             page: page,
             pageSize: pageSize,
@@ -81,6 +119,7 @@ class DatabaseRepository {
         );
         return PageResult<DatabaseListItem>(
           items: response.data?.items
+                  .where((item) => item.host?.isNotEmpty == true)
                   .map(DatabaseListItem.fromRemoteInfo)
                   .toList(growable: false) ??
               const <DatabaseListItem>[],
@@ -99,19 +138,18 @@ class DatabaseRepository {
       type: type,
       name: lookupName,
     );
-    final rawConfigResponse = await api.loadDatabaseConfigFile(
-      type: type,
-      name: lookupName,
-    );
 
     Map<String, dynamic>? status;
     Map<String, dynamic>? variables;
     Map<String, dynamic>? redisConf;
     Map<String, dynamic>? redisPersistence;
     bool? remoteAccess;
+    String? rawConfigFile;
     List<Map<String, dynamic>> formatOptions = const <Map<String, dynamic>>[];
 
     if (item.scope == DatabaseScope.mysql) {
+      rawConfigFile =
+          (await api.loadDatabaseConfigFile(type: type, name: lookupName)).data;
       status = (await api.loadMysqlStatus(type: type, name: lookupName)).data;
       variables =
           (await api.loadMysqlVariables(type: type, name: lookupName)).data;
@@ -119,6 +157,9 @@ class DatabaseRepository {
           (await api.loadRemoteAccess(type: type, name: lookupName)).data;
       formatOptions =
           (await api.loadFormatCollations(lookupName)).data ?? const [];
+    } else if (item.scope == DatabaseScope.postgresql) {
+      rawConfigFile =
+          (await api.loadDatabaseConfigFile(type: type, name: lookupName)).data;
     } else if (item.scope == DatabaseScope.redis) {
       status = (await api.loadRedisStatus(type: type, name: lookupName)).data;
       redisConf = (await api.loadRedisConf(type: type, name: lookupName)).data;
@@ -138,7 +179,7 @@ class DatabaseRepository {
       redisConfig: redisConf,
       redisPersistence: redisPersistence,
       remoteAccess: remoteAccess,
-      rawConfigFile: rawConfigResponse.data,
+      rawConfigFile: rawConfigFile,
       formatOptions: formatOptions,
     );
   }
@@ -154,7 +195,9 @@ class DatabaseRepository {
         'address': input.address,
         'port': input.port,
         'username': input.username,
-        'password': input.password,
+        'password': input.password == null
+            ? null
+            : base64Encode(utf8.encode(input.password!)),
         'description': input.description,
         'timeout': input.timeout ?? 30,
       };
@@ -169,20 +212,26 @@ class DatabaseRepository {
     final payload = <String, dynamic>{
       'name': input.name,
       'from': input.source,
-      'database': input.engine,
+      'database': input.targetDatabase,
       'format': input.format,
       'username': input.username,
-      'password': input.password,
+      'password': input.password == null
+          ? null
+          : base64Encode(utf8.encode(input.password!)),
       'description': input.description,
     };
     switch (input.scope) {
       case DatabaseScope.mysql:
-        await api.createMysqlDatabase(payload);
+        await api.createMysqlDatabase({
+          ...payload,
+          'permission':
+              input.permission == 'ip' ? input.permissionIps : input.permission,
+        });
         return;
       case DatabaseScope.postgresql:
         await api.createPostgresqlDatabase({
           ...payload,
-          'superUser': false,
+          'superUser': input.superUser ?? true,
         });
         return;
       case DatabaseScope.redis:
@@ -239,7 +288,7 @@ class DatabaseRepository {
     if (item.scope == DatabaseScope.postgresql) {
       await api.bindPostgresqlUser({
         'name': item.name,
-        'database': item.engine,
+        'database': item.lookupName,
         'username': username,
         'password': password,
         'superUser': false,
@@ -247,7 +296,7 @@ class DatabaseRepository {
       return;
     }
     await api.bindMysqlUser({
-      'database': item.engine,
+      'database': item.lookupName,
       'db': item.name,
       'username': username,
       'password': password,
@@ -291,5 +340,28 @@ class DatabaseRepository {
       'database': database,
       ...payload,
     });
+  }
+
+  Future<void> loadFromRemote(DatabaseListItem item) async {
+    final api = await _getApi();
+    switch (item.scope) {
+      case DatabaseScope.mysql:
+        await api.loadMysqlDatabaseFromRemote({
+          'from': item.source,
+          'type': item.engine,
+          'database': item.lookupName,
+        });
+        return;
+      case DatabaseScope.postgresql:
+        await api.loadPostgresqlDatabaseFromRemote(
+          item.lookupName,
+          from: item.source,
+          type: item.engine,
+        );
+        return;
+      case DatabaseScope.redis:
+      case DatabaseScope.remote:
+        throw UnsupportedError('Remote load is not supported for this scope.');
+    }
   }
 }

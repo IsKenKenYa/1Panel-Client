@@ -1,9 +1,13 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:window_manager/window_manager.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/services/app_settings_controller.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
@@ -11,6 +15,13 @@ import 'package:onepanel_client/core/theme/theme_controller.dart';
 import 'package:onepanel_client/core/services/transfer/transfer_manager.dart';
 import 'package:onepanel_client/core/theme/app_theme.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
+import 'package:onepanel_client/features/settings/about_page.dart';
+
+import 'package:onepanel_client/core/channel/native_channel_manager.dart';
+import 'package:onepanel_client/core/services/app_preferences_service.dart';
+import 'package:onepanel_client/core/theme/ui_render_policy.dart';
+import 'package:onepanel_client/core/theme/ui_render_mode.dart';
+import 'package:onepanel_client/core/config/api_config_migration.dart';
 
 // Feature Providers
 import 'features/dashboard/dashboard_provider.dart';
@@ -24,7 +35,48 @@ import 'features/monitoring/monitoring_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Native Channel Manager for headless/engine-only communication as early as possible
+  NativeChannelManager.init();
+  
+  final isAndroid = !kIsWeb && Platform.isAndroid;
+  final isDesktopHost = !kIsWeb &&
+      (Platform.isMacOS || Platform.isWindows || Platform.isLinux);
+  final prefs = AppPreferencesService();
+    var uiRenderMode = await prefs.loadUIRenderMode();
+
+    // Windows native mode must be hosted by a native WinUI3 process.
+    // If the Flutter runner process is still active without native handoff,
+    // force fallback to MD3 to avoid rendering an empty headless shell.
+    final windowsNativeHostActive = !kIsWeb &&
+      Platform.isWindows &&
+      Platform.environment['ONEPANEL_NATIVE_HOST_ACTIVE'] == '1';
+    final forceMd3ByBootstrap = !kIsWeb &&
+      Platform.isWindows &&
+      Platform.environment['ONEPANEL_FORCE_MD3'] == '1';
+
+    if (!kIsWeb &&
+      Platform.isWindows &&
+      uiRenderMode == UIRenderMode.native &&
+      (!windowsNativeHostActive || forceMd3ByBootstrap)) {
+    uiRenderMode = UIRenderMode.md3;
+    }
+  
+  final useFlutterUI = UIRenderPolicy.shouldUseFlutterUI(uiRenderMode);
+  final nativeModeFallback = UIRenderPolicy.isNativeModeFallback(uiRenderMode);
+  
+  if (useFlutterUI && isDesktopHost) {
+    // Desktop using Flutter UI needs window bootstrap.
+    await windowManager.ensureInitialized();
+  }
+
   appLogger.init();
+  if (nativeModeFallback) {
+    appLogger.iWithPackage(
+      'main',
+      UIRenderPolicy.fallbackReason(),
+    );
+  }
   try {
     await appLogger.loadPreferences();
     await appLogger.applyReleaseChannelPolicy();
@@ -32,6 +84,18 @@ void main() async {
     appLogger.wWithPackage(
       'main',
       'Failed to load logger preferences, using default log level',
+      error: error,
+      stackTrace: stackTrace,
+    );
+  }
+
+  // Migrate API keys from SharedPreferences fallback to secure storage
+  try {
+    await ApiConfigMigration.runMigrationIfNeeded();
+  } catch (error, stackTrace) {
+    appLogger.wWithPackage(
+      'main',
+      'Failed to run API config migration',
       error: error,
       stackTrace: stackTrace,
     );
@@ -59,58 +123,68 @@ void main() async {
   // Initialize Hive
   await Hive.initFlutter();
 
-  // Initialize Flutter Downloader
-  await FlutterDownloader.initialize(
-    debug: true,
-    ignoreSsl: true,
-  );
+  if (useFlutterUI) {
+    if (isAndroid) {
+      // Initialize Flutter Downloader only on Mobile platforms
+      await FlutterDownloader.initialize(
+        debug: true,
+        ignoreSsl: true,
+      );
+    }
 
-  runApp(
-    MultiProvider(
-      providers: [
-        // App Settings
-        ChangeNotifierProvider(
-          create: (_) => AppSettingsController(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => ThemeController(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => AppLockController(),
-        ),
-        // Server Management
-        ChangeNotifierProvider(
-          create: (_) => ServerProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => CurrentServerController(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => PinnedModulesController(),
-        ),
-        // Dashboard
-        ChangeNotifierProvider(
-          create: (_) => DashboardProvider(),
-        ),
-        // Apps
-        Provider<AppService>(
-          create: (_) => AppService(),
-        ),
-        // Websites
-        ChangeNotifierProvider(
-          create: (_) => WebsitesProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => MonitoringProvider(),
-        ),
-        // Transfer Manager
-        ChangeNotifierProvider(
-          create: (_) => TransferManager(),
-        ),
-      ],
-      child: const AppBootstrap(child: MyApp()),
-    ),
-  );
+    runApp(
+      MultiProvider(
+        providers: [
+          // App Settings
+          ChangeNotifierProvider(
+            create: (_) => AppSettingsController(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => ThemeController(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => AppLockController(),
+          ),
+          // Server Management
+          ChangeNotifierProvider(
+            create: (_) => ServerProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => CurrentServerController(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => PinnedModulesController(),
+          ),
+          // Dashboard
+          ChangeNotifierProvider(
+            create: (_) => DashboardProvider(),
+          ),
+          // Apps
+          Provider<AppService>(
+            create: (_) => AppService(),
+          ),
+          // Websites
+          ChangeNotifierProvider(
+            create: (_) => WebsitesProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => MonitoringProvider(),
+          ),
+          // Transfer Manager
+          ChangeNotifierProvider(
+            create: (_) => TransferManager(),
+          ),
+        ],
+        child: const AppBootstrap(child: MyApp()),
+      ),
+    );
+  } else {
+    // Engine-only mode (Headless)
+    appLogger.iWithPackage('main', 'Running in Headless/Engine-only mode for Native UI');
+    
+    // Core services can be instantiated here if needed by NativeChannelManager
+    // e.g. ServerProvider, AppSettingsController, etc.
+  }
 }
 
 class AppBootstrap extends StatefulWidget {
@@ -175,34 +249,88 @@ class MyApp extends StatelessWidget {
       builder: (context, settings, themeController, _) {
         return DynamicColorBuilder(
           builder: (lightDynamic, darkDynamic) {
-            ThemeData lightTheme;
-            ThemeData darkTheme;
-
-            if (lightDynamic != null &&
-                darkDynamic != null &&
-                themeController.useDynamicColor) {
-              lightTheme = AppTheme.create(lightDynamic.harmonized());
-              darkTheme = AppTheme.create(darkDynamic.harmonized());
-            } else {
-              lightTheme = AppTheme.create(
-                ColorScheme.fromSeed(
-                  seedColor: themeController.seedColor,
-                  brightness: Brightness.light,
-                ),
-              );
-              darkTheme = AppTheme.create(
-                ColorScheme.fromSeed(
-                  seedColor: themeController.seedColor,
-                  brightness: Brightness.dark,
-                ),
-              );
-            }
+            final lightScheme = themeController.useDynamicColor
+                ? lightDynamic?.harmonized()
+                : null;
+            final darkScheme = themeController.useDynamicColor
+                ? darkDynamic?.harmonized()
+                : null;
 
             return MaterialApp(
               title: '1Panel Client',
               debugShowCheckedModeBanner: false,
-              theme: lightTheme,
-              darkTheme: darkTheme,
+              builder: (context, child) {
+                final l10n = AppLocalizations.of(context)!;
+                return PlatformMenuBar(
+                  menus: [
+                    PlatformMenu(
+                      label: '1Panel Client',
+                      menus: [
+                        PlatformMenuItem(
+                          label: l10n.aboutPageTitle,
+                          onSelected: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => const AboutPage(),
+                              ),
+                            );
+                          },
+                        ),
+                        PlatformMenuItem(
+                          label: l10n.commonClose,
+                          onSelected: () => SystemNavigator.pop(),
+                        ),
+                      ],
+                    ),
+                    PlatformMenu(
+                      label: 'View',
+                      menus: [
+                        PlatformMenuItem(
+                          label: 'Toggle Fullscreen',
+                          shortcut: const SingleActivator(
+                            LogicalKeyboardKey.keyF,
+                            meta: true,
+                            control: true,
+                          ),
+                          onSelected: () async {
+                            bool isFullScreen = await windowManager.isFullScreen();
+                            windowManager.setFullScreen(!isFullScreen);
+                          },
+                        ),
+                      ],
+                    ),
+                    PlatformMenu(
+                      label: 'Window',
+                      menus: [
+                        PlatformMenuItem(
+                          label: 'Minimize',
+                          onSelected: () => windowManager.minimize(),
+                        ),
+                        PlatformMenuItem(
+                          label: 'Maximize / Restore',
+                          onSelected: () async {
+                            final isMaximized = await windowManager.isMaximized();
+                            if (isMaximized) {
+                              await windowManager.unmaximize();
+                            } else {
+                              await windowManager.maximize();
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                  child: child ?? const SizedBox(),
+                );
+              },
+              theme: AppTheme.getLightTheme(
+                dynamicScheme: lightScheme,
+                seedColor: themeController.seedColor,
+              ),
+              darkTheme: AppTheme.getDarkTheme(
+                dynamicScheme: darkScheme,
+                seedColor: themeController.seedColor,
+              ),
               themeMode: themeController.themeMode,
               locale: settings.locale,
               localizationsDelegates: const [

@@ -4,6 +4,13 @@ import 'package:flutter_test/flutter_test.dart';
 import '../core/test_config_manager.dart';
 import 'package:onepanel_client/core/network/dio_client.dart';
 
+Map<String, dynamic> _snapshotSearchPayload() => const <String, dynamic>{
+      'page': 1,
+      'pageSize': 10,
+      'orderBy': 'createdAt',
+      'order': 'descending',
+    };
+
 void main() {
   late DioClient client;
   bool hasApiKey = false;
@@ -29,7 +36,10 @@ void main() {
       }
 
       final dio = client.dio;
-      final response = await dio.post('/api/v2/settings/snapshot/search');
+      final response = await dio.post(
+        '/api/v2/settings/snapshot/search',
+        data: _snapshotSearchPayload(),
+      );
 
       debugPrint('\n========================================');
       debugPrint('POST /settings/snapshot/search 响应');
@@ -58,9 +68,17 @@ void main() {
 
       // 测试不同的请求格式
       final testCases = [
-        {'description': '测试快照'},
-        {'name': '测试快照', 'description': '测试描述'},
-        {},
+        {
+          'description': '测试快照',
+          'sourceAccountIDs': '1',
+          'downloadAccountID': 1,
+        },
+        {
+          'name': '测试快照',
+          'description': '测试描述',
+          'sourceAccountIDs': '1',
+          'downloadAccountID': 1,
+        },
       ];
 
       for (var i = 0; i < testCases.length; i++) {
@@ -76,6 +94,7 @@ void main() {
                 const JsonEncoder.withIndent('  ').convert(response.data);
             debugPrint('响应数据:\n$jsonStr');
           }
+          break;
         } catch (e) {
           debugPrint('失败: $e');
         }

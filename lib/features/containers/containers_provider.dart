@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/network/network_exceptions.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import '../../data/models/container_models.dart';
 import '../../data/models/container_extension_models.dart';
@@ -31,6 +33,30 @@ class ContainerStats {
     this.totalMemoryPercent = 0.0,
     this.totalMemoryUsageBytes = 0,
   });
+
+  ContainerStats copyWith({
+    int? total,
+    int? running,
+    int? stopped,
+    int? paused,
+    int? composeTotal,
+    int? composeRunning,
+    double? totalCpuPercent,
+    double? totalMemoryPercent,
+    int? totalMemoryUsageBytes,
+  }) {
+    return ContainerStats(
+      total: total ?? this.total,
+      running: running ?? this.running,
+      stopped: stopped ?? this.stopped,
+      paused: paused ?? this.paused,
+      composeTotal: composeTotal ?? this.composeTotal,
+      composeRunning: composeRunning ?? this.composeRunning,
+      totalCpuPercent: totalCpuPercent ?? this.totalCpuPercent,
+      totalMemoryPercent: totalMemoryPercent ?? this.totalMemoryPercent,
+      totalMemoryUsageBytes: totalMemoryUsageBytes ?? this.totalMemoryUsageBytes,
+    );
+  }
 }
 
 /// 镜像统计数据
@@ -125,7 +151,7 @@ class ContainersData {
 }
 
 /// 容器管理状态管理器
-class ContainersProvider extends ChangeNotifier {
+class ContainersProvider extends ChangeNotifier with SafeChangeNotifier {
   ContainersProvider({ContainerService? service}) : _service = service;
 
   ContainerService? _service;
@@ -196,7 +222,7 @@ class ContainersProvider extends ChangeNotifier {
 
       _data = _data.copyWith(
         containers: containers,
-        containerStats: ContainerStats(
+        containerStats: _data.containerStats.copyWith(
           total: containers.length,
           running: running,
           stopped: stopped,
@@ -427,10 +453,17 @@ class ContainersProvider extends ChangeNotifier {
         lastUpdated: DateTime.now(),
       );
     } catch (e) {
-      _data = ContainersData(
-        isLoading: false,
-        error: '加载数据失败: $e',
-      );
+      if (e is NetworkException) {
+        _data = ContainersData(
+          isLoading: false,
+          error: e.message,
+        );
+      } else {
+        _data = ContainersData(
+          isLoading: false,
+          error: '加载数据失败: $e',
+        );
+      }
 
       _containersState = _containersState.copyWith(isLoading: false);
       _imagesState = _imagesState.copyWith(isLoading: false);

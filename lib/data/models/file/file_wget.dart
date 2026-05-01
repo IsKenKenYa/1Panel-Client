@@ -80,3 +80,20 @@ class FileWgetResult extends Equatable {
   List<Object?> get props =>
       [success, filePath, error, downloadedSize, checksum, key];
 }
+
+class FileWgetStopRequest extends Equatable {
+  final String key;
+
+  const FileWgetStopRequest({required this.key});
+
+  factory FileWgetStopRequest.fromJson(Map<String, dynamic> json) {
+    return FileWgetStopRequest(key: json['key'] as String? ?? '');
+  }
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{'key': key};
+  }
+
+  @override
+  List<Object?> get props => [key];
+}

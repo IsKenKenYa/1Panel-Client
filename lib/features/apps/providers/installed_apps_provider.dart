@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import '../../../data/models/app_models.dart';
 import '../app_service.dart';
 
@@ -18,7 +19,7 @@ class AppStats {
   });
 }
 
-class InstalledAppsProvider extends ChangeNotifier {
+class InstalledAppsProvider extends ChangeNotifier with SafeChangeNotifier {
   final AppService _appService;
   Timer? _pollingTimer;
 
@@ -36,6 +37,7 @@ class InstalledAppsProvider extends ChangeNotifier {
   String? get error => _error;
 
   Future<void> onServerChanged() async {
+    if (isDisposed) return;
     stopPolling();
     _installedApps = [];
     _stats = const AppStats();
@@ -53,12 +55,15 @@ class InstalledAppsProvider extends ChangeNotifier {
   }
 
   void startPolling() {
+    if (isDisposed) return;
     stopPolling();
     // 立即加载一次
     loadInstalledApps(silent: true);
     // 每5秒轮询一次
     _pollingTimer = Timer.periodic(const Duration(seconds: 5), (_) {
-      loadInstalledApps(silent: true);
+      if (!isDisposed) {
+        loadInstalledApps(silent: true);
+      }
     });
   }
 
@@ -101,6 +106,8 @@ class InstalledAppsProvider extends ChangeNotifier {
   }
 
   Future<void> loadInstalledApps({bool silent = false}) async {
+    if (isDisposed) return;
+    
     if (!silent) {
       _isLoading = true;
       _error = null;
@@ -109,16 +116,19 @@ class InstalledAppsProvider extends ChangeNotifier {
 
     try {
       _installedApps = await _loadAllInstalledApps();
+      if (isDisposed) return;
       _calculateStats();
     } catch (e) {
-      if (!silent) {
+      if (!silent && !isDisposed) {
         _error = e.toString();
       }
     } finally {
-      if (!silent) {
+      if (!silent && !isDisposed) {
         _isLoading = false;
       }
-      notifyListeners();
+      if (!isDisposed) {
+        notifyListeners();
+      }
     }
   }
 
@@ -141,10 +151,12 @@ class InstalledAppsProvider extends ChangeNotifier {
   }
 
   Future<void> operateApp(String installId, String operate) async {
+    if (isDisposed) return;
     try {
       final id = int.tryParse(installId);
       if (id == null) throw Exception('Invalid install ID');
       await _appService.operateApp(id, operate);
+      if (isDisposed) return;
       // 操作后立即刷新状态
       await loadInstalledApps(silent: true);
     } catch (e) {
@@ -153,8 +165,10 @@ class InstalledAppsProvider extends ChangeNotifier {
   }
 
   Future<void> updateAppParams(AppInstalledParamsUpdateRequest request) async {
+    if (isDisposed) return;
     try {
       await _appService.updateAppParams(request);
+      if (isDisposed) return;
       // Refresh after update
       await loadInstalledApps(silent: true);
     } catch (e) {
@@ -163,8 +177,10 @@ class InstalledAppsProvider extends ChangeNotifier {
   }
 
   Future<void> updateAppInstallConfig(AppConfigUpdateRequest config) async {
+    if (isDisposed) return;
     try {
       await _appService.updateAppInstallConfig(config);
+      if (isDisposed) return;
       await loadInstalledApps(silent: true);
     } catch (e) {
       rethrow;
@@ -172,8 +188,10 @@ class InstalledAppsProvider extends ChangeNotifier {
   }
 
   Future<void> changeAppPort(AppPortUpdateRequest request) async {
+    if (isDisposed) return;
     try {
       await _appService.changeAppPort(request);
+      if (isDisposed) return;
       await loadInstalledApps(silent: true);
     } catch (e) {
       rethrow;
@@ -181,8 +199,10 @@ class InstalledAppsProvider extends ChangeNotifier {
   }
 
   Future<void> updateApp(String installId) async {
+    if (isDisposed) return;
     try {
       await _appService.updateApp(installId);
+      if (isDisposed) return;
       // 更新后立即刷新状态
       await loadInstalledApps(silent: true);
     } catch (e) {
@@ -191,6 +211,7 @@ class InstalledAppsProvider extends ChangeNotifier {
   }
 
   Future<void> ignoreUpdate(int appInstallId, String reason) async {
+    if (isDisposed) return;
     try {
       await _appService.ignoreAppUpdate(
         AppInstalledIgnoreUpgradeRequest(
@@ -199,6 +220,7 @@ class InstalledAppsProvider extends ChangeNotifier {
           scope: AppIgnoreUpgradeScope.version,
         ),
       );
+      if (isDisposed) return;
       await loadInstalledApps(silent: true);
     } catch (e) {
       rethrow;
@@ -206,6 +228,7 @@ class InstalledAppsProvider extends ChangeNotifier {
   }
 
   Future<void> cancelIgnoreUpdate(int appInstallId) async {
+    if (isDisposed) return;
     try {
       await _appService.cancelIgnoreAppUpdate(
         AppInstalledIgnoreUpgradeRequest(
@@ -213,6 +236,7 @@ class InstalledAppsProvider extends ChangeNotifier {
           reason: '',
         ),
       );
+      if (isDisposed) return;
       await loadInstalledApps(silent: true);
     } catch (e) {
       rethrow;
@@ -236,8 +260,10 @@ class InstalledAppsProvider extends ChangeNotifier {
   }
 
   Future<void> uninstallApp(String installId) async {
+    if (isDisposed) return;
     try {
       await _appService.uninstallApp(installId);
+      if (isDisposed) return;
       // 卸载后立即刷新状态
       await loadInstalledApps(silent: true);
     } catch (e) {

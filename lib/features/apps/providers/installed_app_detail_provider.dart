@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/models/app_config_models.dart';
 import 'package:onepanel_client/data/models/app_models.dart';
@@ -6,7 +7,7 @@ import 'package:onepanel_client/data/models/container_models.dart';
 import 'package:onepanel_client/features/apps/app_service.dart';
 import 'package:onepanel_client/features/containers/container_service.dart';
 
-class InstalledAppDetailProvider extends ChangeNotifier {
+class InstalledAppDetailProvider extends ChangeNotifier with SafeChangeNotifier {
   final AppService _appService;
   final ContainerService _containerService;
 
@@ -53,6 +54,8 @@ class InstalledAppDetailProvider extends ChangeNotifier {
   }
 
   Future<void> refresh() async {
+    if (isDisposed) return;
+    
     _loading = true;
     _error = null;
     _storeDetailError = null;
@@ -64,12 +67,15 @@ class InstalledAppDetailProvider extends ChangeNotifier {
     try {
       if (_appInfo == null && _appId != null) {
         _appInfo = await _appService.getAppInstallInfo(_appId!);
+        if (isDisposed) return;
       }
 
       if (_appInfo == null) {
-        _error = 'App install info is empty';
-        _loading = false;
-        notifyListeners();
+        if (!isDisposed) {
+          _error = 'App install info is empty';
+          _loading = false;
+          notifyListeners();
+        }
         return;
       }
 
@@ -83,8 +89,11 @@ class InstalledAppDetailProvider extends ChangeNotifier {
             version,
             type,
           );
+          if (isDisposed) return;
         } catch (e) {
-          _storeDetailError = e.toString();
+          if (!isDisposed) {
+            _storeDetailError = e.toString();
+          }
           appLogger.wWithPackage(
             'features.apps.providers.installed_app_detail_provider',
             'Failed to load store detail',
@@ -96,9 +105,12 @@ class InstalledAppDetailProvider extends ChangeNotifier {
       if (_appInfo!.appKey != null && _appInfo!.appKey!.isNotEmpty) {
         try {
           _services = await _appService.getAppServices(_appInfo!.appKey!);
+          if (isDisposed) return;
         } catch (e) {
-          _servicesError = e.toString();
-          _services = const [];
+          if (!isDisposed) {
+            _servicesError = e.toString();
+            _services = const [];
+          }
           appLogger.wWithPackage(
             'features.apps.providers.installed_app_detail_provider',
             'Failed to load app services',
@@ -111,9 +123,12 @@ class InstalledAppDetailProvider extends ChangeNotifier {
         try {
           _appConfig =
               await _appService.getAppInstallParams(_appInfo!.id.toString());
+          if (isDisposed) return;
         } catch (e) {
-          _configError = e.toString();
-          _appConfig = null;
+          if (!isDisposed) {
+            _configError = e.toString();
+            _appConfig = null;
+          }
           appLogger.wWithPackage(
             'features.apps.providers.installed_app_detail_provider',
             'Failed to load app config',
@@ -125,9 +140,12 @@ class InstalledAppDetailProvider extends ChangeNotifier {
           try {
             _updateVersions =
                 await _appService.getAppUpdateVersions(_appInfo!.id.toString());
+            if (isDisposed) return;
           } catch (e) {
-            _updateVersionsError = e.toString();
-            _updateVersions = const [];
+            if (!isDisposed) {
+              _updateVersionsError = e.toString();
+              _updateVersions = const [];
+            }
             appLogger.wWithPackage(
               'features.apps.providers.installed_app_detail_provider',
               'Failed to load app update versions',
@@ -139,27 +157,35 @@ class InstalledAppDetailProvider extends ChangeNotifier {
         }
       }
     } catch (e) {
-      _error = e.toString();
+      if (!isDisposed) {
+        _error = e.toString();
+      }
     } finally {
-      _loading = false;
-      notifyListeners();
+      if (!isDisposed) {
+        _loading = false;
+        notifyListeners();
+      }
     }
   }
 
   Future<Map<String, dynamic>> getConnectionInfo() async {
-    if (_appInfo?.name == null || _appInfo?.appKey == null) {
+    if (isDisposed || _appInfo?.name == null || _appInfo?.appKey == null) {
       return {};
     }
     return _appService.getAppConnInfo(_appInfo!.name!, _appInfo!.appKey!);
   }
 
   Future<ContainerInfo?> findInstalledContainer() async {
+    if (isDisposed) return null;
+    
     final containerName = _appInfo?.container;
     if (containerName == null || containerName.isEmpty) {
       return null;
     }
 
     final containers = await _containerService.listContainers();
+    if (isDisposed) return null;
+    
     for (final container in containers) {
       if (container.name == containerName ||
           container.name == '/$containerName') {
@@ -170,10 +196,12 @@ class InstalledAppDetailProvider extends ChangeNotifier {
   }
 
   Future<void> syncInstallInfo() async {
-    if (_appInfo?.id == null) {
+    if (isDisposed || _appInfo?.id == null) {
       return;
     }
     _appInfo = await _appService.getAppInstallInfo(_appInfo!.id.toString());
-    notifyListeners();
+    if (!isDisposed) {
+      notifyListeners();
+    }
   }
 }

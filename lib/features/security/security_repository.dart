@@ -43,7 +43,7 @@ class ApiSecurityVerificationRepository
     await _ensureApiClient();
     final statusResponse = await _api!.getMfaStatus();
     final otpResponse = await _api!.loadMfaInfo(
-      const MfaCredential(code: '', interval: '30', secret: ''),
+      const MfaLoadRequest(title: '1Panel Client', interval: 30),
     );
     final status = statusResponse.data;
     final otp = otpResponse.data;

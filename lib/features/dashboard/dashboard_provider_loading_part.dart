@@ -17,14 +17,26 @@ extension DashboardProviderLoading on DashboardProvider {
       _isRefreshing = false;
       unawaited(loadTopProcesses());
     } catch (e, stackTrace) {
-      appLogger.eWithPackage(
-        'features.dashboard.dashboard_provider',
-        'loadData failed',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      _status = DashboardStatus.error;
-      _errorMessage = e.toString();
+      if (e is NetworkException) {
+        appLogger.wWithPackage(
+          'features.dashboard.dashboard_provider',
+          'loadData network error: ${e.message}',
+        );
+        _errorMessage = e.message;
+      } else {
+        appLogger.eWithPackage(
+          'features.dashboard.dashboard_provider',
+          'loadData failed',
+          error: e,
+          stackTrace: stackTrace,
+        );
+        _errorMessage = e.toString();
+      }
+      
+      // 如果是静默刷新失败，保持 loaded 状态以允许继续轮询
+      if (!silent) {
+        _status = DashboardStatus.error;
+      }
       _isRefreshing = false;
     }
 

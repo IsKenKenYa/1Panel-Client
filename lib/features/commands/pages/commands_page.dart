@@ -88,6 +88,7 @@ class _CommandsPageState extends State<CommandsPage> {
             ),
           ],
           floatingActionButton: FloatingActionButton.extended(
+            heroTag: 'commands_create_fab',
             onPressed: () => _openForm(),
             icon: const Icon(Icons.add),
             label: Text(l10n.commonCreate),

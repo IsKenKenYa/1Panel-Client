@@ -10,6 +10,7 @@ import 'package:onepanel_client/features/server/widgets/server_detail_section_ca
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/controllers/pinned_modules_controller.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
+import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/features/shell/widgets/mobile_pinned_modules_customizer_sheet.dart';
 import 'package:onepanel_client/features/shell/widgets/server_switcher_action.dart';
 
@@ -24,6 +25,7 @@ class ServerDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final scheme = Theme.of(context).colorScheme;
     final currentServerId =
         context.watch<CurrentServerController>().currentServerId;
     final serverProvider = context.watch<ServerProvider>();
@@ -34,6 +36,7 @@ class ServerDetailPage extends StatelessWidget {
     );
 
     return Scaffold(
+      backgroundColor: scheme.surface,
       appBar: AppBar(
         title: Text(l10n.serverDetailTitle),
         actions: [
@@ -45,42 +48,46 @@ class ServerDetailPage extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView(
-        padding: AppDesignTokens.pagePadding,
-        children: [
-          ServerDetailHeaderCard(
-            server: activeServer,
-            onRefresh: () => _refreshServer(context),
-          ),
-          const SizedBox(height: AppDesignTokens.spacingLg),
-          ServerDetailSectionCard(
-            title: l10n.shellPinnedModulesTitle,
-            description: l10n.shellPinnedModulesDescription,
-            action: TextButton.icon(
-              onPressed: () => showMobilePinnedModulesCustomizerSheet(context),
-              icon: const Icon(Icons.tune),
-              label: Text(l10n.shellPinnedModulesCustomize),
+      body: ColoredBox(
+        color: scheme.surface,
+        child: ListView(
+          padding: AppDesignTokens.pagePadding,
+          children: [
+            ServerDetailHeaderCard(
+              server: activeServer,
+              onRefresh: () => _refreshServer(context),
             ),
-            items: [
-              for (final module in pinnedController.pins)
-                _buildClientModuleItem(context, module),
-            ],
-          ),
-          const SizedBox(height: AppDesignTokens.spacingLg),
-          ServerDetailSectionCard(
-            title: l10n.serverModulesTitle,
-            items: [
-              for (final module in kPinnableClientModules)
-                if (!pinnedController.pins.contains(module))
+            const SizedBox(height: AppDesignTokens.spacingLg),
+            ServerDetailSectionCard(
+              title: l10n.shellPinnedModulesTitle,
+              description: l10n.shellPinnedModulesDescription,
+              action: TextButton.icon(
+                onPressed: () =>
+                    showMobilePinnedModulesCustomizerSheet(context),
+                icon: const Icon(Icons.tune),
+                label: Text(l10n.shellPinnedModulesCustomize),
+              ),
+              items: [
+                for (final module in pinnedController.pins)
                   _buildClientModuleItem(context, module),
-            ],
-          ),
-          const SizedBox(height: AppDesignTokens.spacingLg),
-          ServerDetailSectionCard(
-            title: l10n.commonMore,
-            items: _buildServerModuleItems(context),
-          ),
-        ],
+              ],
+            ),
+            const SizedBox(height: AppDesignTokens.spacingLg),
+            ServerDetailSectionCard(
+              title: l10n.serverModulesTitle,
+              items: [
+                for (final module in kPinnableClientModules)
+                  if (!pinnedController.pins.contains(module))
+                    _buildClientModuleItem(context, module),
+              ],
+            ),
+            const SizedBox(height: AppDesignTokens.spacingLg),
+            ServerDetailSectionCard(
+              title: l10n.commonMore,
+              items: _buildServerModuleItems(context),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -171,7 +178,7 @@ class ServerDetailPage extends StatelessWidget {
   }
 
   void _openRoute(BuildContext context, String route) {
-    Navigator.pushNamed(context, route);
+    openRouteRespectingShell(context, route);
   }
 
   Future<void> _deleteServer(
@@ -208,15 +215,18 @@ class ServerDetailPage extends StatelessWidget {
     final successMessage = l10n.serverDeleteSuccess(target.config.name);
 
     try {
+      // Close the page first to avoid widget tree issues during deletion
+      navigator.pop();
+
       await serverProvider.delete(target.config.id);
       await currentServerController.refresh();
+
       if (!context.mounted) {
         return;
       }
       messenger.showSnackBar(
         SnackBar(content: Text(successMessage)),
       );
-      navigator.maybePop();
     } catch (error) {
       if (!context.mounted) {
         return;

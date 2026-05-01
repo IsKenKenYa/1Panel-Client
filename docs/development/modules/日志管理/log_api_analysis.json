@@ -1,9 +1,9 @@
 {
   "module": "log",
-  "generatedAt": "2026-03-23T18:47:56.004519",
+  "generatedAt": "2026-04-27T15:19:33.458536",
   "summary": {
-    "endpointCount": 18,
-    "methodCount": 18
+    "endpointCount": 9,
+    "methodCount": 9
   },
   "endpoints": [
     {
@@ -151,63 +151,6 @@
       ]
     },
     {
-      "path": "/core/auth/login",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "User login",
-          "description": "",
-          "tags": [
-            "Auth"
-          ],
-          "parameters": [
-            {
-              "name": "EntranceCode",
-              "in": "header",
-              "required": true,
-              "type": "unknown",
-              "description": "安全入口 base64 加密串"
-            },
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/core/auth/logout",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "User logout",
-          "description": "",
-          "tags": [
-            "Auth"
-          ],
-          "parameters": [],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
       "path": "/core/logs/clean",
       "methods": [
         {
@@ -324,93 +267,6 @@
       ]
     },
     {
-      "path": "/files/convert/log",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Convert file",
-          "description": "",
-          "tags": [
-            "File"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/hosts/ssh/log",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Load host SSH logs",
-          "description": "",
-          "tags": [
-            "SSH"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/hosts/ssh/log/export",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Export host SSH logs",
-          "description": "",
-          "tags": [
-            "SSH"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
       "path": "/logs/system/files",
       "methods": [
         {
@@ -421,114 +277,6 @@
             "Logs"
           ],
           "parameters": [],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/logs/tasks/executing/count",
-      "methods": [
-        {
-          "method": "GET",
-          "summary": "Get the number of executing tasks",
-          "description": "",
-          "tags": [
-            "TaskLog"
-          ],
-          "parameters": [],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/logs/tasks/search",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Page task logs",
-          "description": "",
-          "tags": [
-            "TaskLog"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/toolbox/ftp/log/search",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Load FTP operation log",
-          "description": "",
-          "tags": [
-            "FTP"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/websites/log",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Operate website log",
-          "description": "",
-          "tags": [
-            "Website"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
           "requestBody": null,
           "responses": {
             "200": {

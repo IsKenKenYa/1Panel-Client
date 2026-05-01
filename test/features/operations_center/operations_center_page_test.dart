@@ -87,4 +87,27 @@ void main() {
     await scrollToKey(tester, toolboxEntryKey);
     expect(find.byKey(toolboxEntryKey), findsOneWidget);
   });
+
+  testWidgets('OperationsCenterPage uses grid layout on wide screens',
+      (tester) async {
+    tester.view.physicalSize = const Size(1440, 1200);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider<CurrentServerController>.value(
+        value: FakeCurrentServerController(),
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('en'),
+          home: const OperationsCenterPage(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(GridView), findsWidgets);
+  });
 }

@@ -53,7 +53,12 @@ extension _ContainersPageActions on _ContainersPageViewState {
     switch (_selectedSection) {
       case 'containers':
         return FloatingActionButton.extended(
+          heroTag: 'containers_section_fab',
           onPressed: () async {
+            if (PlatformUtils.isDesktop(context)) {
+              await openRouteRespectingShell(context, '/container-create');
+              return;
+            }
             final created =
                 await Navigator.pushNamed(context, '/container-create');
             if (created == true && context.mounted) {
@@ -65,6 +70,7 @@ extension _ContainersPageActions on _ContainersPageViewState {
         );
       case 'compose':
         return FloatingActionButton.extended(
+          heroTag: 'containers_compose_fab',
           onPressed: () =>
               ContainersPageCreateDialogs.showCreateComposeDialog(context),
           icon: const Icon(Icons.add),
@@ -72,12 +78,14 @@ extension _ContainersPageActions on _ContainersPageViewState {
         );
       case 'images':
         return FloatingActionButton.extended(
+          heroTag: 'containers_images_fab',
           onPressed: () => ContainersPageImageDialogs.showPullDialog(context),
           icon: const Icon(Icons.download),
           label: Text(l10n.orchestrationPullImage),
         );
       case 'networks':
         return FloatingActionButton.extended(
+          heroTag: 'containers_networks_fab',
           onPressed: () =>
               ContainersPageCreateDialogs.showCreateNetworkDialog(context),
           icon: const Icon(Icons.add),
@@ -85,6 +93,7 @@ extension _ContainersPageActions on _ContainersPageViewState {
         );
       case 'volumes':
         return FloatingActionButton.extended(
+          heroTag: 'containers_volumes_fab',
           onPressed: () =>
               ContainersPageCreateDialogs.showCreateVolumeDialog(context),
           icon: const Icon(Icons.add),
@@ -92,6 +101,7 @@ extension _ContainersPageActions on _ContainersPageViewState {
         );
       case 'repositories':
         return FloatingActionButton.extended(
+          heroTag: 'containers_repositories_fab',
           onPressed: () =>
               ContainersPageCreateDialogs.showCreateRepoDialog(context),
           icon: const Icon(Icons.add),
@@ -99,6 +109,7 @@ extension _ContainersPageActions on _ContainersPageViewState {
         );
       case 'templates':
         return FloatingActionButton.extended(
+          heroTag: 'containers_templates_fab',
           onPressed: () =>
               ContainersPageCreateDialogs.showCreateTemplateDialog(context),
           icon: const Icon(Icons.add),

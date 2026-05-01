@@ -9,6 +9,7 @@ import 'package:onepanel_client/features/runtimes/utils/runtime_l10n_helper.dart
 import 'package:onepanel_client/features/runtimes/widgets/runtime_summary_card_widget.dart';
 import 'package:onepanel_client/features/runtimes/widgets/runtime_type_selector_widget.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
+import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
@@ -62,10 +63,12 @@ class _RuntimesCenterPageState extends State<RuntimesCenterPage> {
               tooltip: l10n.commonRefresh,
             ),
             IconButton(
-              onPressed: () => Navigator.pushNamed(
+              onPressed: () => openRouteRespectingShell(
                 context,
                 AppRoutes.runtimeForm,
-                arguments: RuntimeFormArgs(initialType: provider.selectedType),
+                arguments: RuntimeFormArgs(
+                  initialType: provider.selectedType,
+                ),
               ),
               icon: const Icon(Icons.add),
               tooltip: l10n.commonCreate,

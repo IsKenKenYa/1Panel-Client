@@ -4,7 +4,7 @@ import 'dart:io';
 
 import '../config/api_config.dart';
 import '../config/api_constants.dart';
-import 'onepanel_auth_headers.dart';
+import 'onepanel_websocket_connector.dart';
 
 class ProcessWsClient {
   ProcessWsClient();
@@ -27,13 +27,10 @@ class ProcessWsClient {
       throw StateError('No API config available');
     }
 
-    final headers = <String, dynamic>{
-      ...OnePanelAuthHeaders.build(config.apiKey),
-      'User-Agent': ApiConstants.userAgent,
-    };
-    final socket = await WebSocket.connect(
-      _buildWsUri(config.url, operateNode).toString(),
-      headers: headers,
+    final socket = await OnePanelWebSocketConnector.connect(
+      config: config,
+      path: ApiConstants.buildApiPath('/process/ws'),
+      queryParameters: <String, String>{'operateNode': operateNode},
     );
     _socket = socket;
     _subscription = socket.listen(
@@ -64,19 +61,5 @@ class ProcessWsClient {
     await _socket?.close();
     _subscription = null;
     _socket = null;
-  }
-
-  Uri _buildWsUri(String baseUrl, String operateNode) {
-    final baseUri = Uri.parse(baseUrl);
-    final normalizedBasePath = baseUri.path.endsWith('/')
-        ? baseUri.path.substring(0, baseUri.path.length - 1)
-        : baseUri.path;
-    final wsPath =
-        '$normalizedBasePath${ApiConstants.buildApiPath('/process/ws')}';
-    return baseUri.replace(
-      scheme: baseUri.scheme == 'https' ? 'wss' : 'ws',
-      path: wsPath,
-      queryParameters: <String, String>{'operateNode': operateNode},
-    );
   }
 }
