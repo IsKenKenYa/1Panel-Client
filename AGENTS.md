@@ -116,17 +116,19 @@
 - 严禁在 issue、日志、截图中泄露密钥与敏感信息。
 
 ## 发布分支与 CI
-- 长期维护分支：`dev`、`main`。
-- `dev` 聚合功能分支，`main` 为稳定发布基线。
-- Android APK 使用 tag 驱动发布：`debug-*`、`beta-*`、`pre-release-*`、`release-*`。
+- 长期主干分支：`dev-v2`，对标 1Panel 服务端 `dev-v2` 的单主干策略。
+- `main` 分支计划移除，所有功能集成、稳定验证与发布准备均围绕 `dev-v2` 展开。
+- Android APK 使用 tag 驱动发布：`debug-*`、`beta-*`、`pre-release-*`、`v*`。
 - tag 来源约束：
-  - `debug/beta/pre-release` 必须来自 `dev`
-  - `release` 必须来自 `main`
+  - `debug` / `beta` / `pre-release` / `v*` 均必须来自 `dev-v2`
 - 渠道映射：
   - `debug -> Alpha`
   - `beta -> Beta（公开预览）`
   - `pre-release -> Pre-Release`
-  - `release -> Release`
+  - `v* -> Release`
+- 版本号策略：
+  - 当前默认仍采用客户端自身语义化版本，如 `v0.6.0`
+  - 与 1Panel V2 版本号同步的方案暂缓实施，需在功能与服务端版本真正对齐后再评估，例如 `v2.1.0-client`
 
 ## 安全与配置说明
 - API 访问使用 1Panel API Key，禁止提交密钥或令牌。

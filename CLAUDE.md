@@ -71,16 +71,20 @@ dart run test/scripts/test_runner.dart all          # Full regression
 ```
 
 ## Release Branches & APK CI
-- Long-lived branches: `dev`, `main`
-- `dev` is the feature aggregation branch
-- `main` is the stable release branch
+- Long-lived branch: `dev-v2` only, aligned with 1Panel server's `dev-v2` single-trunk strategy
+- `main` is being retired; all integration, stabilization, and release preparation should happen on `dev-v2`
 - Current CI/CD scope is Android APK only
 - Release is tag-driven, not branch-driven
 - Android APK tags:
-  - `debug-*` -> internal alpha build from `dev`
-  - `beta-*` -> public beta build from `dev`
-  - `pre-release-*` -> prerelease build from `dev`
-  - `release-*` -> stable release build from `main`
+  - `debug-*` -> internal alpha build from `dev-v2`
+  - `beta-*` -> public beta build from `dev-v2`
+  - `pre-release-*` -> prerelease build from `dev-v2`
+  - `v*` -> stable release build from `dev-v2`
+- Tag source constraints:
+  - `debug`, `beta`, `pre-release`, and `v*` tags must all be created from `dev-v2`
+- Versioning strategy:
+  - Current client releases continue to use the project's own semantic versions, such as `v0.6.0`
+  - Server-version alignment is intentionally deferred until the client reaches true functional parity with 1Panel V2; a future scheme such as `v2.1.0-client` can be introduced then
 
 ## Architecture Overview
 
