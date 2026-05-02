@@ -175,6 +175,10 @@ jobs:
           name: ${{ steps.meta.outputs.channel_label }} ${{ steps.meta.outputs.version_name }}
           target_commitish: ${{ github.sha }}
           prerelease: ${{ steps.meta.outputs.prerelease == 'true' }}
+          # When creating prereleases on repositories with immutable-release policy,
+          # create the release as a draft first so assets can be uploaded. Publish later
+          # from the draft (manually or via a separate workflow) to trigger release.published.
+          draft: ${{ steps.meta.outputs.prerelease == 'true' }}
           generate_release_notes: true
           body: |
             Automated Android APK build from tag.
