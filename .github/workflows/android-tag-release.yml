@@ -6,7 +6,7 @@ on:
       - "debug-*"
       - "beta-*"
       - "pre-release-*"
-      - "release-*"
+      - "v*"
   workflow_dispatch:
 
 permissions:
@@ -50,7 +50,7 @@ jobs:
             debug-*)
               APP_CHANNEL=alpha
               CHANNEL_LABEL="Debug"
-              SOURCE_BRANCH="dev"
+              SOURCE_BRANCH="dev-v2"
               RELEASE_KIND="debug"
               PUBLISH_RELEASE="true"
               PRERELEASE="true"
@@ -58,7 +58,7 @@ jobs:
             beta-*)
               APP_CHANNEL=beta
               CHANNEL_LABEL="Beta"
-              SOURCE_BRANCH="dev"
+              SOURCE_BRANCH="dev-v2"
               RELEASE_KIND="beta"
               PUBLISH_RELEASE="true"
               PRERELEASE="true"
@@ -66,15 +66,15 @@ jobs:
             pre-release-*)
               APP_CHANNEL=pre-release
               CHANNEL_LABEL="Pre-Release"
-              SOURCE_BRANCH="dev"
+              SOURCE_BRANCH="dev-v2"
               RELEASE_KIND="pre-release"
               PUBLISH_RELEASE="true"
               PRERELEASE="true"
               ;;
-            release-*)
+            v*)
               APP_CHANNEL=release
               CHANNEL_LABEL="Release"
-              SOURCE_BRANCH="main"
+              SOURCE_BRANCH="dev-v2"
               RELEASE_KIND="release"
               PUBLISH_RELEASE="true"
               PRERELEASE="false"
@@ -169,6 +169,7 @@ jobs:
 
       - name: Publish GitHub Release
         if: steps.meta.outputs.publish_release == 'true'
+        id: release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.meta.outputs.tag_name }}
@@ -193,3 +194,10 @@ jobs:
             - Note: `debug` tags are internal alpha builds, published as GitHub prereleases for direct APK download
           files: |
             build/${{ steps.meta.outputs.apk_name }}
+
+      - name: Publish Draft Release
+        if: steps.meta.outputs.prerelease == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api -X PATCH repos/${{ github.repository }}/releases/${{ steps.release.outputs.id }} -F draft=false
