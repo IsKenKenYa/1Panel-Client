@@ -818,7 +818,10 @@ class AppVersion {
   genericArgumentFactories: true,
 )
 class PageResult<T> {
+  @JsonKey(defaultValue: [])
   final List<T> items;
+  
+  @JsonKey(defaultValue: 0)
   final int total;
 
   PageResult({

@@ -437,8 +437,8 @@ PageResult<T> _$PageResultFromJson<T>(
   T Function(Object? json) fromJsonT,
 ) =>
     PageResult<T>(
-      items: (json['items'] as List<dynamic>).map(fromJsonT).toList(),
-      total: (json['total'] as num).toInt(),
+      items: (json['items'] as List<dynamic>?)?.map(fromJsonT).toList() ?? [],
+      total: (json['total'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$PageResultToJson<T>(
