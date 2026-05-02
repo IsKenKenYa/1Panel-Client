@@ -1,7 +1,7 @@
 # APP 模块API端点详细分析
 
 > 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
-> 生成时间: 2026-04-27 15:19:33
+> 生成时间: 2026-05-02 16:45:14
 
 ## API端点总览
 

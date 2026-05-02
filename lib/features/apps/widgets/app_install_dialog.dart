@@ -118,7 +118,7 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
       if (mounted && showError) {
         final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.appOperateFailed(e.toString()))),
+          SnackBar(content: Text(l10n.appOperateFailed(_formatError(e)))),
         );
       }
     } finally {
@@ -128,6 +128,28 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
         });
       }
     }
+  }
+
+  /// 格式化错误信息，使其更友好
+  String _formatError(Object error) {
+    final errorStr = error.toString();
+    
+    // 处理 docker-compose.yml 获取失败的错误
+    if (errorStr.contains('docker-compose.yml') && 
+        errorStr.contains('unsupported protocol scheme')) {
+      return '应用配置文件获取失败，可能是应用商店配置不完整';
+    }
+    
+    // 处理其他常见错误
+    if (errorStr.contains('DioException')) {
+      // 提取 message 部分
+      final messageMatch = RegExp(r'message:\s*(.+?)(?:,|$)').firstMatch(errorStr);
+      if (messageMatch != null) {
+        return messageMatch.group(1)?.trim() ?? errorStr;
+      }
+    }
+    
+    return errorStr;
   }
 
   Future<void> _handleSubmit() async {
@@ -195,7 +217,7 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-                AppLocalizations.of(context).appOperateFailed(e.toString())),
+                AppLocalizations.of(context).appOperateFailed(_formatError(e))),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );

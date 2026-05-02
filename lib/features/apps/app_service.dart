@@ -90,6 +90,13 @@ class AppService extends BaseComponent {
     });
   }
 
+  Future<AppItem> getAppByKey(String key) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      return api.getAppByKey(key);
+    });
+  }
+
   Future<AppItem> getAppDetail(String appId, String version, String type) {
     return runGuarded(() async {
       final api = await _ensureApi();
