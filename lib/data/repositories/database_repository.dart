@@ -58,10 +58,18 @@ class DatabaseRepository {
     final api = await _getApi();
     switch (scope) {
       case DatabaseScope.mysql:
+        if (targetDatabase == null || targetDatabase.isEmpty) {
+          return const PageResult<DatabaseListItem>(
+            items: <DatabaseListItem>[],
+            total: 0,
+            page: 1,
+            pageSize: 20,
+          );
+        }
         final response = await api.searchMysqlDatabases(
           DatabaseSearch(
             info: query,
-            database: targetDatabase ?? '',
+            database: targetDatabase,
             page: page,
             pageSize: pageSize,
           ),
@@ -76,10 +84,18 @@ class DatabaseRepository {
           pageSize: pageSize,
         );
       case DatabaseScope.postgresql:
+        if (targetDatabase == null || targetDatabase.isEmpty) {
+          return const PageResult<DatabaseListItem>(
+            items: <DatabaseListItem>[],
+            total: 0,
+            page: 1,
+            pageSize: 20,
+          );
+        }
         final response = await api.searchPostgresqlDatabases(
           DatabaseSearch(
             info: query,
-            database: targetDatabase ?? '',
+            database: targetDatabase,
             page: page,
             pageSize: pageSize,
           ),

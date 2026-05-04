@@ -6,6 +6,17 @@ inclusion: auto
 
 ## 问题修复流程（强制）
 
+### 0. 文档创建前检查（必须）
+```bash
+# 在创建任何文档前，先搜索是否已有相似文档
+find . -name "*.md" -type f | grep -v node_modules | grep -v ".git"
+grep -r "关键词" --include="*.md" .
+
+# 优先更新现有文档，而不是创建新文档
+# 禁止为单个 bug/功能创建独立文档
+# Bug 修复说明写在 test/bugfix/*_test.dart 注释中
+```
+
 ### 1. 问题确认
 ```bash
 # 查看错误日志，定位问题
@@ -13,12 +24,24 @@ flutter run  # 观察运行时错误
 flutter analyze  # 检查静态分析错误
 ```
 
-### 2. 查阅契约
+### 2. 文件修改前检查（必须）
+```bash
+# 检查文件是否已存在，在原文件上修改，不创建副本
+ls -lh lib/path/to/file.dart
+
+# 检查文件大小（行数）
+wc -l lib/path/to/file.dart
+
+# 禁止创建 *_fixed.dart、*_v2.dart、*_new.dart 等副本
+# 只有文件达到 1000 LOC 时才按职责拆分
+```
+
+### 3. 查阅契约
 - API 问题：查看 `docs/OpenSource/1Panel/backend/swagger.json`
 - 前端行为：参考 `docs/OpenSource/1Panel/frontend/src/`
 - **禁止修改** `docs/OpenSource/1Panel/**` 下任何文件
 
-### 3. 编写测试
+### 4. 编写测试
 ```bash
 # 在 test/bugfix/ 创建回归测试
 # 文件名：{issue_description}_test.dart
@@ -40,12 +63,14 @@ void main() {
 }
 ```
 
-### 4. 修复代码
+### 5. 修复代码（在原文件上修改）
 - 遵守分层：`UI -> Provider -> Service/Repository -> API`
 - 文件大小：逻辑 ≤500 LOC，UI ≤800 LOC，硬上限 1000 LOC
 - 使用 `appLogger`，禁止 `print()`
+- **在原文件上修改，不创建 *_fixed.dart、*_v2.dart 等副本**
+- 只有达到 1000 LOC 时才按职责拆分为多个文件
 
-### 5. 验证修复
+### 6. 验证修复
 ```bash
 flutter test test/bugfix/{file}_test.dart  # 运行回归测试
 flutter analyze  # 静态分析
@@ -54,7 +79,7 @@ dart run test/scripts/test_runner.dart unit  # 单元测试
 dart run test/scripts/test_runner.dart integration
 ```
 
-### 6. 热重启应用
+### 7. 热重启应用
 ```bash
 # 模型/API 改动必须热重启（Hot Restart），不是热重载（Hot Reload）
 # IDE: Ctrl+Shift+F5 (Win/Linux) 或 Cmd+Shift+F5 (macOS)
@@ -238,6 +263,7 @@ flutter run
 
 - ❌ 修改 `docs/OpenSource/1Panel/**` 下任何文件
 - ❌ 为单个问题创建专门文档（用测试注释代替）
+- ❌ 创建文件副本（*_fixed.dart、*_v2.dart、*_new.dart 等）
 - ❌ UI 层直接调用 `lib/api/v2/`
 - ❌ 使用 `print()` 或 `debugPrint()`
 - ❌ 在 Widget `build()` 内写业务逻辑

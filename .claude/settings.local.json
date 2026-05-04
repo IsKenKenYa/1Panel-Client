@@ -15,7 +15,9 @@
       "Bash(git -C \"/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp\" status --short)",
       "Bash(git -C \"/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp\" diff \"docs/development/api_coverage.md\" | head -40)",
       "Bash(git -C \"/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp\" diff \"docs/development/todo_wip.md\" | head -40)",
-      "Bash(git -C \"/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp\" diff \"docs/development/modules/module_planning_index.md\" | head -40)"
+      "Bash(git -C \"/Volumes/FanXiangMac/MyOpenSource/Open1PanelApp\" diff \"docs/development/modules/module_planning_index.md\" | head -40)",
+      "Bash(flutter test *)",
+      "Bash(dart run *)"
     ],
     "deny": [],
     "ask": []

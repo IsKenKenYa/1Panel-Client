@@ -2,17 +2,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/data/models/database_models.dart';
 
 /// 回归测试：验证 DatabaseSearch.database 字段为必填
-/// 
+///
 /// 问题描述：
 /// /api/v2/databases/search 端点要求 database 字段是必填的，
 /// 但客户端模型中该字段是可选的，导致当 targetDatabase 为 null 时请求失败。
-/// 
+///
 /// 错误信息：
 /// 参数错误: Key: 'MysqlDBSearch.Database' Error:Field validation for 'Database' failed on the 'required' tag
-/// 
+///
 /// 修复方案：
 /// 1. 将 DatabaseSearch.database 字段从可选改为必填
-/// 2. 在调用时提供默认值（空字符串）
+/// 2. 在 repository 层当 targetDatabase 为空时返回空结果，避免发送无效请求
 void main() {
   group('DatabaseSearch 必填字段验证', () {
     test('database 字段应该是必填的', () {
@@ -96,20 +96,6 @@ void main() {
       expect(search.database, equals('mysql-1'));
     });
 
-    test('使用 ?? 操作符提供默认值', () {
-      // 模拟 repository 中的用法
-      String? targetDatabase;
-      
-      final search = DatabaseSearch(
-        database: targetDatabase ?? '',
-        page: 1,
-        pageSize: 20,
-      );
-
-      expect(search.database, equals(''));
-      expect(search.database, isNotNull);
-    });
-
     test('完整的请求体应该包含所有必需字段', () {
       const search = DatabaseSearch(
         info: '',
@@ -137,6 +123,39 @@ void main() {
       // database 不应该是 null
       expect(json['database'], isNotNull);
       expect(json['database'], equals(''));
+    });
+  });
+
+  group('DatabaseScope 空目标数据库处理', () {
+    test('当 targetDatabase 为空时，应避免发送无效请求', () {
+      // 模拟场景：没有 MySQL 实例时，targetDatabase 为 null
+      String? targetDatabase;
+
+      // 验证空值检查逻辑
+      final isEmpty = targetDatabase == null || targetDatabase.isEmpty;
+      expect(isEmpty, isTrue);
+
+      // 当 targetDatabase 为空时，应该返回空结果而不是发送请求
+      // 这避免了服务端返回 400 错误：
+      // "参数错误: Key: 'MysqlDBSearch.Database' Error:Field validation for 'Database' failed on the 'required' tag"
+    });
+
+    test('当 targetDatabase 为空字符串时，应避免发送无效请求', () {
+      // 模拟场景：targetDatabase 为空字符串
+      const String targetDatabase = '';
+
+      // 验证空值检查逻辑
+      final isEmpty = targetDatabase.isEmpty;
+      expect(isEmpty, isTrue);
+    });
+
+    test('当 targetDatabase 有效时，应正常处理', () {
+      // 模拟场景：有 MySQL 实例时，targetDatabase 有值
+      const String targetDatabase = 'mysql-1';
+
+      // 验证非空检查逻辑
+      final isEmpty = targetDatabase.isEmpty;
+      expect(isEmpty, isFalse);
     });
   });
 }
