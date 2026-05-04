@@ -68,6 +68,11 @@ class AppItem {
   final String? type;
   final List<String>? versions;
   final String? website;
+  final AppParams? params; // 安装参数（仅在 getAppDetail 时返回）
+  final String? dockerCompose; // Docker Compose 内容（仅在 getAppDetail 时返回）
+  final bool? hostMode; // 主机模式（仅在 getAppDetail 时返回）
+  final int? memoryRequired; // 所需内存（仅在 getAppDetail 时返回）
+  final String? architectures; // 支持的架构（仅在 getAppDetail 时返回）
 
   AppItem({
     this.description,
@@ -87,6 +92,11 @@ class AppItem {
     this.type,
     this.versions,
     this.website,
+    this.params,
+    this.dockerCompose,
+    this.hostMode,
+    this.memoryRequired,
+    this.architectures,
   });
 
   factory AppItem.fromJson(Map<String, dynamic> json) =>
@@ -108,6 +118,89 @@ class AppItem {
       return t.toString();
     }).toList();
   }
+}
+
+/// 应用安装参数
+@JsonSerializable()
+class AppParams {
+  final List<AppFormField> formFields;
+
+  AppParams({required this.formFields});
+
+  factory AppParams.fromJson(Map<String, dynamic> json) =>
+      _$AppParamsFromJson(json);
+  Map<String, dynamic> toJson() => _$AppParamsToJson(this);
+}
+
+/// 应用表单字段
+@JsonSerializable()
+class AppFormField {
+  final String type; // text, number, password, service, select, apps
+  final String labelZh;
+  final String labelEn;
+  final bool required;
+  @JsonKey(name: 'default')
+  final dynamic defaultValue;
+  final String envKey;
+  final String? key;
+  final List<dynamic>? values;
+  final AppFormFieldChild? child;
+  final List<dynamic>? params;
+  final bool? multiple;
+  final bool? allowCreate;
+  final Map<String, String>? label;
+  final Map<String, String>? description;
+  final bool? random; // 是否生成随机值
+  final String? rule; // 验证规则
+  final bool? disabled; // 是否禁用
+
+  AppFormField({
+    required this.type,
+    required this.labelZh,
+    required this.labelEn,
+    required this.required,
+    this.defaultValue,
+    required this.envKey,
+    this.key,
+    this.values,
+    this.child,
+    this.params,
+    this.multiple,
+    this.allowCreate,
+    this.label,
+    this.description,
+    this.random,
+    this.rule,
+    this.disabled,
+  });
+
+  factory AppFormField.fromJson(Map<String, dynamic> json) =>
+      _$AppFormFieldFromJson(json);
+  Map<String, dynamic> toJson() => _$AppFormFieldToJson(this);
+}
+
+/// 应用表单字段子项（用于级联选择）
+@JsonSerializable()
+class AppFormFieldChild {
+  final String type;
+  final String labelZh;
+  final String labelEn;
+  final bool required;
+  final String envKey;
+  final List<dynamic>? services;
+
+  AppFormFieldChild({
+    required this.type,
+    required this.labelZh,
+    required this.labelEn,
+    required this.required,
+    required this.envKey,
+    this.services,
+  });
+
+  factory AppFormFieldChild.fromJson(Map<String, dynamic> json) =>
+      _$AppFormFieldChildFromJson(json);
+  Map<String, dynamic> toJson() => _$AppFormFieldChildToJson(this);
 }
 
 /// 应用详情简化模型（/apps/detail/node）

@@ -28,14 +28,19 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
   bool _showAdvanced = false;
   bool _isLoading = false;
   bool _isCheckingVersion = false;
+  bool _isLoadingParams = false;
+
+  // Dynamic form fields from API params
+  final Map<String, TextEditingController> _paramControllers = {};
+  List<dynamic>? _formFields; // From API response
 
   // Services (Ports): key = service/port, value = exposed port?
   // Actually AppInstallCreateRequest.services is Map<String, String>
   // Let's assume Key = Service Name/Internal Port, Value = External Port
   final List<_MapEntryController> _services = [];
 
-  // Params (Env): key = env name, value = env value
-  final List<_MapEntryController> _params = [];
+  // Additional Params (Env): key = env name, value = env value
+  final List<_MapEntryController> _additionalParams = [];
 
   @override
   void initState() {
@@ -63,10 +68,13 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
     _containerNameController.dispose();
     _cpuQuotaController.dispose();
     _memoryLimitController.dispose();
+    for (var controller in _paramControllers.values) {
+      controller.dispose();
+    }
     for (var entry in _services) {
       entry.dispose();
     }
-    for (var entry in _params) {
+    for (var entry in _additionalParams) {
       entry.dispose();
     }
     super.dispose();
@@ -87,9 +95,11 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
 
     setState(() {
       _isCheckingVersion = true;
+      _isLoadingParams = true;
     });
 
     try {
+      // Try to get detail node first
       final detail = await _appService.getAppDetailNode(appKey, version);
       if (mounted) {
         setState(() {
@@ -125,6 +135,61 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
       if (mounted) {
         setState(() {
           _isCheckingVersion = false;
+        });
+      }
+    }
+
+    // Load install params after getting detail ID
+    await _loadInstallParams();
+  }
+
+  /// Load install parameters from API (ports, passwords, etc.)
+  Future<void> _loadInstallParams() async {
+    final appId = widget.app.id;
+    final version = _selectedVersion;
+    final type = widget.app.type ?? 'app';
+    
+    if (appId == null || version == null) {
+      setState(() {
+        _isLoadingParams = false;
+      });
+      return;
+    }
+
+    try {
+      // Call getAppDetail to get params (formFields)
+      final detail = await _appService.getAppDetail(
+        appId.toString(),
+        version,
+        type,
+      );
+
+      // Parse formFields from the detail response
+      // Note: The API returns params in a specific structure
+      // We need to check the actual response structure
+      // For now, let's assume it's in a 'params' field with 'formFields'
+      
+      if (mounted) {
+        setState(() {
+          // Clear existing controllers
+          for (var controller in _paramControllers.values) {
+            controller.dispose();
+          }
+          _paramControllers.clear();
+
+          // TODO: Parse formFields from detail
+          // The structure should be similar to Web frontend's installParams
+          // For now, we'll leave this empty until we verify the API response
+          
+          _isLoadingParams = false;
+        });
+      }
+    } catch (e) {
+      // If loading params fails, continue without them
+      // User can still manually add params
+      if (mounted) {
+        setState(() {
+          _isLoadingParams = false;
         });
       }
     }
@@ -173,7 +238,14 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
       }
 
       final paramsMap = <String, dynamic>{};
-      for (var entry in _params) {
+      
+      // Add dynamic form field values
+      for (var entry in _paramControllers.entries) {
+        paramsMap[entry.key] = entry.value.text;
+      }
+      
+      // Add additional manual params
+      for (var entry in _additionalParams) {
         if (entry.key.text.isNotEmpty) {
           paramsMap[entry.key.text] = entry.value.text;
         }

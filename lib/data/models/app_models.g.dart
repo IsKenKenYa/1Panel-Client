@@ -64,6 +64,13 @@ AppItem _$AppItemFromJson(Map<String, dynamic> json) => AppItem(
           ?.map((e) => e as String)
           .toList(),
       website: json['website'] as String?,
+      params: json['params'] == null
+          ? null
+          : AppParams.fromJson(json['params'] as Map<String, dynamic>),
+      dockerCompose: json['dockerCompose'] as String?,
+      hostMode: json['hostMode'] as bool?,
+      memoryRequired: (json['memoryRequired'] as num?)?.toInt(),
+      architectures: json['architectures'] as String?,
     );
 
 Map<String, dynamic> _$AppItemToJson(AppItem instance) => <String, dynamic>{
@@ -84,6 +91,88 @@ Map<String, dynamic> _$AppItemToJson(AppItem instance) => <String, dynamic>{
       'type': instance.type,
       'versions': instance.versions,
       'website': instance.website,
+      'params': instance.params,
+      'dockerCompose': instance.dockerCompose,
+      'hostMode': instance.hostMode,
+      'memoryRequired': instance.memoryRequired,
+      'architectures': instance.architectures,
+    };
+
+AppParams _$AppParamsFromJson(Map<String, dynamic> json) => AppParams(
+      formFields: (json['formFields'] as List<dynamic>)
+          .map((e) => AppFormField.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$AppParamsToJson(AppParams instance) => <String, dynamic>{
+      'formFields': instance.formFields,
+    };
+
+AppFormField _$AppFormFieldFromJson(Map<String, dynamic> json) => AppFormField(
+      type: json['type'] as String,
+      labelZh: json['labelZh'] as String,
+      labelEn: json['labelEn'] as String,
+      required: json['required'] as bool,
+      defaultValue: json['default'],
+      envKey: json['envKey'] as String,
+      key: json['key'] as String?,
+      values: json['values'] as List<dynamic>?,
+      child: json['child'] == null
+          ? null
+          : AppFormFieldChild.fromJson(json['child'] as Map<String, dynamic>),
+      params: json['params'] as List<dynamic>?,
+      multiple: json['multiple'] as bool?,
+      allowCreate: json['allowCreate'] as bool?,
+      label: (json['label'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as String),
+      ),
+      description: (json['description'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as String),
+      ),
+      random: json['random'] as bool?,
+      rule: json['rule'] as String?,
+      disabled: json['disabled'] as bool?,
+    );
+
+Map<String, dynamic> _$AppFormFieldToJson(AppFormField instance) =>
+    <String, dynamic>{
+      'type': instance.type,
+      'labelZh': instance.labelZh,
+      'labelEn': instance.labelEn,
+      'required': instance.required,
+      'default': instance.defaultValue,
+      'envKey': instance.envKey,
+      'key': instance.key,
+      'values': instance.values,
+      'child': instance.child,
+      'params': instance.params,
+      'multiple': instance.multiple,
+      'allowCreate': instance.allowCreate,
+      'label': instance.label,
+      'description': instance.description,
+      'random': instance.random,
+      'rule': instance.rule,
+      'disabled': instance.disabled,
+    };
+
+AppFormFieldChild _$AppFormFieldChildFromJson(Map<String, dynamic> json) =>
+    AppFormFieldChild(
+      type: json['type'] as String,
+      labelZh: json['labelZh'] as String,
+      labelEn: json['labelEn'] as String,
+      required: json['required'] as bool,
+      envKey: json['envKey'] as String,
+      services: json['services'] as List<dynamic>?,
+    );
+
+Map<String, dynamic> _$AppFormFieldChildToJson(AppFormFieldChild instance) =>
+    <String, dynamic>{
+      'type': instance.type,
+      'labelZh': instance.labelZh,
+      'labelEn': instance.labelEn,
+      'required': instance.required,
+      'envKey': instance.envKey,
+      'services': instance.services,
     };
 
 TagDTO _$TagDTOFromJson(Map<String, dynamic> json) => TagDTO(
