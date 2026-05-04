@@ -544,7 +544,7 @@ class AppInstalledParamsUpdateRequest {
 
   Map<String, dynamic> toJson() {
     return {
-      'installId': installId,
+      'installID': installId,
       'params': params,
       if (advanced != null) 'advanced': advanced,
       if (allowPort != null) 'allowPort': allowPort,

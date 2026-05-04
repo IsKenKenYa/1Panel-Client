@@ -7,7 +7,7 @@ class CronjobListQuery extends Equatable {
     this.info,
     this.groupIds = const <int>[],
     this.orderBy = 'createdAt',
-    this.order = 'null',
+    this.order = 'descending',
   });
 
   final int page;

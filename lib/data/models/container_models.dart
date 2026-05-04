@@ -364,22 +364,30 @@ class ContainerStatus extends Equatable {
   });
 
   factory ContainerStatus.fromJson(Map<String, dynamic> json) {
+    final created = json['created'] as int? ?? 0;
+    final dead = json['dead'] as int? ?? 0;
+    final exited = json['exited'] as int? ?? 0;
+    final paused = json['paused'] as int? ?? 0;
+    final removing = json['removing'] as int? ?? 0;
+    final restarting = json['restarting'] as int? ?? 0;
+    final running = json['running'] as int? ?? 0;
     return ContainerStatus(
-      all: json['all'] as int? ?? 0,
+      all: json['all'] as int? ??
+          (created + dead + exited + paused + removing + restarting + running),
       composeCount: json['composeCount'] as int? ?? 0,
       composeTemplateCount: json['composeTemplateCount'] as int? ?? 0,
       containerCount: json['containerCount'] as int? ?? 0,
-      created: json['created'] as int? ?? 0,
-      dead: json['dead'] as int? ?? 0,
-      exited: json['exited'] as int? ?? 0,
+      created: created,
+      dead: dead,
+      exited: exited,
       imageCount: json['imageCount'] as int? ?? 0,
       imageSize: json['imageSize'] as int? ?? 0,
       networkCount: json['networkCount'] as int? ?? 0,
-      paused: json['paused'] as int? ?? 0,
-      removing: json['removing'] as int? ?? 0,
+      paused: paused,
+      removing: removing,
       repoCount: json['repoCount'] as int? ?? 0,
-      restarting: json['restarting'] as int? ?? 0,
-      running: json['running'] as int? ?? 0,
+      restarting: restarting,
+      running: running,
       volumeCount: json['volumeCount'] as int? ?? 0,
     );
   }

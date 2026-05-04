@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import '../../core/network/dio_client.dart';
 import '../../core/config/api_constants.dart';
+import '../../core/services/logger/logger_service.dart';
 import '../../data/models/auth_models.dart';
 import 'api_response_parser.dart';
 
@@ -34,6 +35,8 @@ class AuthV2Api {
     final raw = _extractDataRaw(data);
     if (raw is String && raw.trim().isNotEmpty) {
       if (_looksLikeHtmlPage(raw)) {
+        appLogger.wWithPackage(
+            'api.v2.auth', 'API returned HTML instead of JSON, endpoint may not exist');
         return null;
       }
       return raw;
