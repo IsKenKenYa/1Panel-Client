@@ -26,6 +26,7 @@ void main() {
 
       final response = await api.searchDatabases(
         const DatabaseSearch(
+          database: '',
           page: 1,
           pageSize: 5,
           orderBy: 'createdAt',

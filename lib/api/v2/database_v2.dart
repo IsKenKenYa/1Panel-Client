@@ -572,6 +572,7 @@ class DatabaseV2Api {
     final request = DatabaseSearch(
       name: name,
       type: type,
+      database: '',
       page: 1,
       pageSize: 1,
     );

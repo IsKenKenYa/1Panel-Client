@@ -1,5 +1,14 @@
 # 仓库开发规范
 
+> **适用范围**：本规范适用于所有 AI IDE（Kiro、Cursor、Windsurf、GitHub Copilot 等）和人工开发者。
+> 
+> **配套文档**：
+> - `AGENTS.md`（本文）：强制规则、架构规范、测试门禁
+> - `CLAUDE.md`：Claude Code 专用补充说明
+> - `.kiro/steering/*.md`：Kiro 自动包含的开发指导
+> 
+> **阅读优先级**：本文 > 配套文档 > 项目内其他文档
+
 ## 项目结构与模块组织
 - 业务源码位于 `lib/`，核心目录包括：
   - `lib/api/v2/`：Retrofit API 客户端
@@ -57,12 +66,59 @@
 - 桌面 `Scaffold` / `AppBar` / `NavigationRail` / 壳内容区默认必须使用 `surface` 或 `surfaceContainer*`，禁止整页透明背景。
 
 ## 文件规模与拆分规则（严格）
+
+### 文件大小限制
 - 所有代码文件（文档与 Swagger 产物除外）硬上限为 `1000 LOC`，超出必须拆分。
 - 推荐阈值：
   - 逻辑文件（Provider/ViewModel/Service/Repository/Model/Utils）建议不超过 `500 LOC`
   - UI 文件（Page/复合 Widget）建议不超过 `800 LOC`
 - 单一逻辑/架构文件不得承担 3 个及以上功能域（职责上限为 2 个）。
 - LOC 统计口径为非空非注释行，`*.g.dart`、`*.freezed.dart` 不计入。
+
+### 文件修改与重构原则（强制）
+1. **在原文件上修改，不创建副本**
+   - ✅ 正确：直接修改 `user_service.dart`
+   - ❌ 错误：创建 `user_service_fixed.dart`、`user_service_v2.dart`、`user_service_new.dart`
+
+2. **达到 1000 LOC 时才拆分**
+   - 文件未达到 1000 LOC 时，继续在原文件中修改
+   - 达到 1000 LOC 时，按职责拆分为多个文件
+   - 拆分后的文件使用有意义的名称，不使用版本后缀
+
+3. **禁止的文件命名模式**
+   - ❌ `{filename}_fixed.dart`：修复版
+   - ❌ `{filename}_new.dart`：新版
+   - ❌ `{filename}_v2.dart`：版本 2
+   - ❌ `{filename}_temp.dart`：临时版
+   - ❌ `{filename}_backup.dart`：备份版
+   - ❌ `{filename}_old.dart`：旧版
+
+4. **正确的文件拆分方式**
+   ```
+   # 错误示例（禁止）
+   lib/data/repositories/
+   ├── database_repository.dart        # 1200 LOC
+   ├── database_repository_fixed.dart  # ❌ 创建修复版
+   └── database_repository_v2.dart     # ❌ 创建新版本
+
+   # 正确示例
+   lib/data/repositories/database/
+   ├── database_repository.dart        # 400 LOC - 主入口
+   ├── mysql_repository.dart           # 300 LOC - MySQL 专用
+   ├── postgresql_repository.dart      # 300 LOC - PostgreSQL 专用
+   └── redis_repository.dart           # 200 LOC - Redis 专用
+   ```
+
+5. **重构流程**
+   - 步骤 1：在原文件中进行修改
+   - 步骤 2：运行测试确保功能正常
+   - 步骤 3：如果文件超过 1000 LOC，按职责拆分
+   - 步骤 4：删除旧文件，不保留备份版本（Git 已有历史记录）
+
+### 文件组织规则
+- 当同一功能模块达到 2 个及以上文件时，必须建立独立子目录（例如 `lib/core/auth/`）。
+- 子目录命名使用小写下划线，反映功能域。
+- 避免创建过深的目录层级（建议不超过 4 层）。
 
 ## 自动化研发流程（强制）
 - 所有模块开发必须按照以下自动化闭环执行，不得跳步：
@@ -103,11 +159,36 @@
 - 原生 UI 适配门禁失败必须阻断推进，不允许“带失败继续”。
 - 回归基线使用 `dart run test/scripts/test_runner.dart all`。
 
-## Skills 与 MCP 使用
+## AI 工具集成与知识管理
+
+### 知识库管理（适用于支持 MCP 的 AI IDE）
 - 重大架构决策、关键约定、通用踩坑必须写入 `agent-memory-mcp`（`decision` / `pattern`）。
 - 实施前应先执行 `memory_search` 检索既有结论，避免重复决策。
-- 规范变更必须同步更新 `AGENTS.md` 与 `CLAUDE.md`。
-- 涉及跨平台 UI 或原生扩展策略变更时，必须同步更新 `docs/development/cross_platform_ui_governance.md`、`docs/模块适配专属工作流.md`、`docs/原生UI适配专属工作流.md`。
+- 不支持 MCP 的 AI IDE：通过阅读本文档和 Git 历史获取项目知识。
+
+### 文档同步规则
+- 规范变更必须同步更新：
+  - `AGENTS.md`（本文，所有 AI IDE 的主要参考）
+  - `CLAUDE.md`（Claude Code 专用补充）
+  - `.kiro/steering/*.md`（Kiro 自动包含的指导文件）
+- 跨平台 UI 或原生扩展策略变更时，必须同步更新：
+  - `docs/development/cross_platform_ui_governance.md`
+  - `docs/模块适配专属工作流.md`
+  - `docs/原生UI适配专属工作流.md`
+
+### AI IDE 特定配置
+- **Kiro**：使用 `.kiro/steering/*.md` 自动包含开发指导
+- **Cursor/Windsurf**：主要参考 `AGENTS.md` 和 `.cursorrules`（如存在）
+- **GitHub Copilot**：通过代码注释和文档上下文理解规范
+- **Claude Code**：参考 `AGENTS.md` + `CLAUDE.md`
+
+### 通用开发流程（所有 AI IDE 适用）
+1. **问题定位**：查看错误日志 → 运行 `flutter analyze`
+2. **查阅契约**：参考 `docs/OpenSource/1Panel/backend/swagger.json` 和前端代码
+3. **编写测试**：在 `test/bugfix/` 创建回归测试，注释中说明问题和修复
+4. **修复代码**：遵守分层架构，文件大小限制
+5. **验证修复**：运行测试门禁（analyze + unit + integration/ui）
+6. **热重启应用**：模型/API 改动需要热重启，不是热重载
 
 ## 提交与合并请求规范
 - 提交信息遵循 Conventional Commits，例如：`feat(scope): ...`、`fix(scope): ...`、`chore: ...`、`refactor: ...`。
@@ -129,6 +210,73 @@
 - 版本号策略：
   - 当前默认仍采用客户端自身语义化版本，如 `v0.6.0`
   - 与 1Panel V2 版本号同步的方案暂缓实施，需在功能与服务端版本真正对齐后再评估，例如 `v2.1.0-client`
+
+## 文档治理
+
+### 文档创建原则（强制）
+1. **先搜索，再创建**
+   - 创建任何文档前，必须先搜索项目中是否已有相似/相关文档
+   - 优先在现有文档中补充内容，而不是创建新文档
+   - 避免为每个小功能创建独立文档，导致文档碎片化
+
+2. **文档合并优先**
+   - 多个相关主题应合并到同一文档的不同章节
+   - 例如：所有数据库相关问题记录在同一个测试文件的不同测试用例中
+   - 避免创建 `database_issue_1.md`、`database_issue_2.md` 等碎片文档
+
+3. **文档更新优先于创建**
+   - 现有文档可以满足需求时，更新现有文档
+   - 只有在主题完全不同且无法合并时，才创建新文档
+
+### 允许的文档类型
+1. **核心规范文档**（主仓库根目录）
+   - `README.md`：项目介绍、快速开始
+   - `AGENTS.md`：开发规范（本文，所有 AI IDE 主要参考）
+   - `CLAUDE.md`：Claude Code 专用补充
+   - `CHANGELOG.md`：版本变更记录
+
+2. **AI IDE 配置文档**
+   - `.kiro/steering/*.md`：Kiro 自动包含的开发指导
+   - `.cursorrules`：Cursor/Windsurf 规则（如需要）
+   - `.github/copilot-instructions.md`：GitHub Copilot 指令（如需要）
+
+3. **架构与策略文档**
+   - `docs/development/cross_platform_ui_governance.md`：跨平台 UI 治理
+   - `docs/模块适配专属工作流.md`：模块适配流程
+   - `docs/原生UI适配专属工作流.md`：原生 UI 适配流程
+
+4. **上游参考文档**（只读）
+   - `docs/OpenSource/1Panel/**`：1Panel 上游镜像，禁止修改
+
+### 禁止的文档模式
+- ❌ 为每个 bug 创建独立文档：`docs/bugfix/issue_123.md`、`docs/bugfix/issue_456.md`
+- ❌ 为每个功能创建独立文档：`docs/features/feature_a.md`、`docs/features/feature_b.md`
+- ❌ 创建临时性文档：`修复指南.md`、`临时说明.md`、`问题排查_20240101.md`
+- ❌ 创建重复内容文档：多个文档描述相同或相似的内容
+- ❌ 使用版本后缀文档：`README_v2.md`、`AGENTS_fixed.md`、`开发规范_新版.md`
+
+### 信息记录位置规则
+| 信息类型 | 记录位置 | 示例 |
+|---------|---------|------|
+| Bug 修复说明 | `test/bugfix/*_test.dart` 注释 | 问题描述、错误信息、修复方案 |
+| 功能变更说明 | Git commit message | `fix(database): 修复搜索必填字段问题` |
+| 详细变更内容 | PR 描述 | 变更说明、测试结果、截图 |
+| 架构决策 | `agent-memory-mcp` (MCP 支持的 IDE) | `decision`/`pattern` 类型 |
+| 开发流程指导 | `.kiro/steering/*.md` 或 `AGENTS.md` | 通用开发流程、测试规范 |
+| 跨平台策略 | `docs/development/*.md` | UI 治理、适配流程 |
+
+### 文档更新触发条件
+- **必须更新 `AGENTS.md`**：架构规则变更、测试门禁变更、文件规模阈值调整
+- **必须更新 `CLAUDE.md`**：Claude Code 特定流程变更
+- **必须更新 `.kiro/steering/*.md`**：Kiro 开发指导变更
+- **必须更新跨平台文档**：原生 UI 策略变更、设计系统调整
+
+### 文档一致性检查
+所有 AI IDE 在修改规范时，必须确保：
+1. `AGENTS.md` 作为主文档已更新
+2. 相关配套文档（`CLAUDE.md`、`.kiro/steering/*.md`）同步更新
+3. 不创建与现有文档重复的新文档
+4. 不在代码仓库中保留过时文档
 
 ## 安全与配置说明
 - API 访问使用 1Panel API Key，禁止提交密钥或令牌。

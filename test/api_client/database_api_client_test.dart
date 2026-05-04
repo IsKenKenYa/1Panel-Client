@@ -210,6 +210,7 @@ void main() {
       }
 
       const request = DatabaseSearch(
+        database: '',
         page: 1,
         pageSize: 10,
         orderBy: 'createdAt',
@@ -669,6 +670,7 @@ void main() {
       timer.start();
       await api.searchDatabases(
         const DatabaseSearch(
+          database: '',
           page: 1,
           pageSize: 10,
           orderBy: 'createdAt',

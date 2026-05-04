@@ -135,7 +135,7 @@ class DatabaseSearch extends Equatable {
   final String? info;
   final String? name;
   final String? type;
-  final String? database;
+  final String database;
   final int page;
   final int pageSize;
   final String orderBy;
@@ -145,7 +145,7 @@ class DatabaseSearch extends Equatable {
     this.info,
     this.name,
     this.type,
-    this.database,
+    required this.database,
     this.page = 1,
     this.pageSize = 20,
     this.orderBy = 'createdAt',
@@ -157,7 +157,7 @@ class DatabaseSearch extends Equatable {
       info: json['info'] as String?,
       name: json['name'] as String?,
       type: json['type'] as String?,
-      database: json['database'] as String?,
+      database: json['database'] as String? ?? '',
       page: json['page'] as int? ?? 1,
       pageSize: json['pageSize'] as int? ?? 20,
       orderBy: json['orderBy'] as String? ?? 'createdAt',

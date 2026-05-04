@@ -61,7 +61,7 @@ class DatabaseRepository {
         final response = await api.searchMysqlDatabases(
           DatabaseSearch(
             info: query,
-            database: targetDatabase,
+            database: targetDatabase ?? '',
             page: page,
             pageSize: pageSize,
           ),
@@ -79,7 +79,7 @@ class DatabaseRepository {
         final response = await api.searchPostgresqlDatabases(
           DatabaseSearch(
             info: query,
-            database: targetDatabase,
+            database: targetDatabase ?? '',
             page: page,
             pageSize: pageSize,
           ),
@@ -113,6 +113,7 @@ class DatabaseRepository {
           DatabaseSearch(
             type: _remoteDatabaseTypes,
             info: query,
+            database: '',
             page: page,
             pageSize: pageSize,
           ),

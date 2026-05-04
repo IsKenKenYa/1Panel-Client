@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 import '../../../data/models/app_models.dart';
-import '../providers/app_store_provider.dart';
 import '../app_service.dart';
 
 class AppInstallDialog extends StatefulWidget {
@@ -32,7 +31,7 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
 
   // Dynamic form fields from API params
   final Map<String, TextEditingController> _paramControllers = {};
-  List<dynamic>? _formFields; // From API response
+  List<AppFormField>? _formFields; // From API response
 
   // Services (Ports): key = service/port, value = exposed port?
   // Actually AppInstallCreateRequest.services is Map<String, String>
@@ -50,12 +49,10 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
     _containerNameController = TextEditingController(text: widget.app.name);
     _cpuQuotaController = TextEditingController();
     _memoryLimitController = TextEditingController();
-    _currentDetailId = widget.app.id;
+    // Don't set _currentDetailId here - it will be set by _resolveDetailId
 
     if (widget.app.versions != null && widget.app.versions!.isNotEmpty) {
       _selectedVersion = widget.app.versions!.first;
-      // If the passed app object doesn't correspond to the first version (unlikely but possible),
-      // we might need to fetch. But usually search results return the default version info.
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _resolveDetailId(showError: false);
@@ -89,9 +86,9 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
   }
 
   Future<void> _resolveDetailId({bool showError = true}) async {
-    final appKey = widget.app.key;
+    final appId = widget.app.id;
     final version = _selectedVersion;
-    if (appKey == null || version == null) return;
+    if (appId == null || version == null) return;
 
     setState(() {
       _isCheckingVersion = true;
@@ -99,32 +96,36 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
     });
 
     try {
-      // Try to get detail node first
-      final detail = await _appService.getAppDetailNode(appKey, version);
+      // Call getAppDetail to get appDetailId and params (like web frontend does)
+      final detail = await _appService.getAppDetail(
+        appId.toString(),
+        version,
+        widget.app.type ?? 'app',
+      );
+      
       if (mounted) {
         setState(() {
-          _currentDetailId = detail.id;
+          _currentDetailId = detail.id; // This is the appDetailId we need
+          
+          // Load form fields from params
+          if (detail.params != null && detail.params!.formFields.isNotEmpty) {
+            _formFields = detail.params!.formFields;
+            
+            // Initialize controllers with default values
+            for (final field in _formFields!) {
+              final controller = TextEditingController();
+              
+              // Set default value if available
+              if (field.defaultValue != null) {
+                controller.text = field.defaultValue.toString();
+              }
+              
+              _paramControllers[field.envKey] = controller;
+            }
+          }
         });
       }
     } catch (e) {
-      try {
-        final appId = widget.app.id;
-        if (appId != null) {
-          final detail = await _appService.getAppDetail(
-            appId.toString(),
-            version,
-            widget.app.type ?? 'app',
-          );
-          if (mounted) {
-            setState(() {
-              _currentDetailId = detail.id;
-            });
-          }
-          return;
-        }
-      } catch (_) {
-        // Ignore and surface the original error below.
-      }
       if (mounted && showError) {
         final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -135,65 +136,13 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
       if (mounted) {
         setState(() {
           _isCheckingVersion = false;
-        });
-      }
-    }
-
-    // Load install params after getting detail ID
-    await _loadInstallParams();
-  }
-
-  /// Load install parameters from API (ports, passwords, etc.)
-  Future<void> _loadInstallParams() async {
-    final appId = widget.app.id;
-    final version = _selectedVersion;
-    final type = widget.app.type ?? 'app';
-    
-    if (appId == null || version == null) {
-      setState(() {
-        _isLoadingParams = false;
-      });
-      return;
-    }
-
-    try {
-      // Call getAppDetail to get params (formFields)
-      final detail = await _appService.getAppDetail(
-        appId.toString(),
-        version,
-        type,
-      );
-
-      // Parse formFields from the detail response
-      // Note: The API returns params in a specific structure
-      // We need to check the actual response structure
-      // For now, let's assume it's in a 'params' field with 'formFields'
-      
-      if (mounted) {
-        setState(() {
-          // Clear existing controllers
-          for (var controller in _paramControllers.values) {
-            controller.dispose();
-          }
-          _paramControllers.clear();
-
-          // TODO: Parse formFields from detail
-          // The structure should be similar to Web frontend's installParams
-          // For now, we'll leave this empty until we verify the API response
-          
-          _isLoadingParams = false;
-        });
-      }
-    } catch (e) {
-      // If loading params fails, continue without them
-      // User can still manually add params
-      if (mounted) {
-        setState(() {
           _isLoadingParams = false;
         });
       }
     }
   }
+
+
 
   /// 格式化错误信息，使其更友好
   String _formatError(Object error) {
@@ -267,14 +216,15 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
             : null,
         memoryUnit: 'MB', // Default unit
         services: _showAdvanced && servicesMap.isNotEmpty ? servicesMap : null,
-        params: _showAdvanced && paramsMap.isNotEmpty ? paramsMap : null,
+        params: paramsMap.isNotEmpty ? paramsMap : null,
         // Default values
         dockerCompose: null,
         hostMode: false,
         allowPort: true,
       );
 
-      await context.read<AppStoreProvider>().installApp(request);
+      // Use AppService directly instead of Provider
+      await _appService.installApp(request);
 
       if (mounted) {
         Navigator.pop(context, true);
@@ -404,7 +354,7 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
                   title: l10n.appInstallEnv,
                   keyLabel: l10n.appInstallEnvKey,
                   valueLabel: l10n.appInstallEnvValue,
-                  items: _params,
+                  items: _additionalParams,
                 ),
               ],
             ],
