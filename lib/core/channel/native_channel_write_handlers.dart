@@ -1021,6 +1021,17 @@ class NativeChannelWriteHandlers {
       final type = arguments['type'] as String? ?? 'deployment';
       final remark = (arguments['remark'] as String? ?? '').trim();
 
+      // 服务端要求 webSiteGroupId 必填且必须存在（record not found 兜底）：
+      // 新装面板无 website 分组时先创建默认分组。
+      var groups = await GroupService().listGroups('website');
+      if (groups.isEmpty) {
+        groups = await GroupService().createGroup(
+          type: 'website',
+          name: '默认网站',
+        );
+      }
+      final groupId = groups.first.id ?? 1;
+
       // 与 Flutter 建站向导同序：先 preCheck 再 create。
       await WebsiteRepository().preCheckWebsite({});
       await WebsiteRepository().createWebsite(
@@ -1029,7 +1040,9 @@ class NativeChannelWriteHandlers {
           name: primaryDomain,
           remark: remark.isEmpty ? null : remark,
           type: type,
-          webSiteGroupId: 0,
+          // 服务端要求 appType 枚举（new/installed）：静态部署挂已装 OpenResty
+          appType: type == 'deployment' ? 'installed' : null,
+          webSiteGroupId: groupId,
           port: port,
           domains: [
             WebsiteDomain(domain: primaryDomain, port: port, ssl: false),
