@@ -22,6 +22,18 @@ void main() {
       expect(result['error'], isNotNull);
     });
 
+    test('回归：本地建库缺 database（目标实例名）快速失败', () async {
+      // 服务端 MysqlDBCreate required：database/format/permission
+      // （2026-09-08 生产面板 400 实测）。本地路径缺 database 时
+      // handler 必须快速失败而非发出注定被拒的请求。
+      final result = await NativeChannelWriteHandlers.createDatabase(
+        {'name': 'app_db'},
+      );
+
+      expect(result['success'], isFalse);
+      expect(result['error'], contains('database is required'));
+    });
+
     test('dispatch 路由 createDatabase 到写 handler', () async {
       final result = await NativeChannelManager.instance.handleMethodCall(
         'createDatabase',

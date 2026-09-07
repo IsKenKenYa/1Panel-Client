@@ -1166,19 +1166,32 @@ class NativeChannelWriteHandlers {
       );
       final isRemote = scope == DatabaseScope.remote || type == 'remote';
       final port = int.tryParse('${arguments['port'] ?? ''}');
-      await DatabasesService().submitForm(
-        DatabaseFormInput(
-          scope: scope,
-          name: name,
-          engine: type,
-          source: isRemote ? 'remote' : 'local',
-          description: (arguments['description'] as String? ?? '').trim(),
-          address: arguments['address'] as String?,
-          port: port,
-          username: arguments['username'] as String?,
-          password: arguments['password'] as String?,
-        ),
+      // 服务端 MysqlDBCreate required：database（目标实例名）/format/permission
+      // （2026-09-08 生产面板 400 实测），本地建库缺一不可。
+      final createInput = DatabaseFormInput(
+        scope: scope,
+        name: name,
+        engine: type,
+        source: isRemote ? 'remote' : 'local',
+        description: (arguments['description'] as String? ?? '').trim(),
+        address: arguments['address'] as String?,
+        port: port,
+        username: arguments['username'] as String?,
+        password: arguments['password'] as String?,
+        targetDatabase: (arguments['database'] as String? ?? '').trim(),
+        format: (arguments['format'] as String? ?? '').trim(),
+        permission: (arguments['permission'] as String? ?? '').trim(),
       );
+      if (!isRemote &&
+          (createInput.targetDatabase == null ||
+              createInput.targetDatabase!.isEmpty)) {
+        return {
+          'success': false,
+          'error':
+              'database is required for local create (target MySQL instance name)',
+        };
+      }
+      await DatabasesService().submitForm(createInput);
       return _ok();
     } catch (e) {
       appLogger.e('createDatabase failed: $e');
