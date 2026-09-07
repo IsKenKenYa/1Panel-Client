@@ -13,6 +13,7 @@ import '../../features/settings/panel_ssl/services/panel_ssl_service.dart';
 import '../../features/websites/services/website_certificate_service.dart';
 
 import '../../features/toolbox/services/toolbox_device_service.dart';
+import '../../data/models/app_models.dart';
 import '../../data/models/common_models.dart';
 import '../../data/models/cronjob_list_models.dart';
 import '../../data/repositories/cronjob_repository.dart';
@@ -215,6 +216,63 @@ class NativeChannelWriteHandlers {
       return _ok();
     } catch (e) {
       appLogger.e('uninstallApp failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 安装应用商店应用（WinUI3 首个场景：OpenResty）。
+  /// 参数：`{appKey: String 必填, version?: String(默认取 versions 第一个),
+  ///   name?: String(默认 appKey)}`
+  /// 返回：`{success: true, appId: <安装返回 id 或 0>}`。
+  static Future<Map<String, dynamic>> installApp(dynamic arguments) async {
+    try {
+      final appKey = (arguments['appKey'] as String? ?? '').trim();
+      if (appKey.isEmpty) {
+        return {'success': false, 'error': 'appKey is required'};
+      }
+      final service = AppService();
+      final app = await service.getAppByKey(appKey);
+      if ((app.key ?? '').isEmpty || app.id == null) {
+        return {'success': false, 'error': 'app not found: $appKey'};
+      }
+      final requestedVersion = (arguments['version'] as String? ?? '').trim();
+      final versions = app.versions ?? const <String>[];
+      final version = requestedVersion.isNotEmpty
+          ? requestedVersion
+          : (versions.isNotEmpty ? versions.first : '');
+      if (version.isEmpty) {
+        return {'success': false, 'error': 'no versions available: $appKey'};
+      }
+
+      // 与 MDUI3 安装对话框同链路：getAppDetail 返回的 id 即 appDetailId，
+      // params 取表单字段默认值（等价对话框 _paramControllers 初始化语义）；
+      // 无表单字段时不传 params 直接安装。
+      final detail = await service.getAppDetail(
+        '${app.id}',
+        version,
+        app.type ?? 'app',
+      );
+      if (detail.id == null) {
+        return {'success': false, 'error': 'app detail not found: $appKey'};
+      }
+      final paramsMap = <String, dynamic>{};
+      for (final field in detail.params?.formFields ?? const <AppFormField>[]) {
+        paramsMap[field.envKey] = field.defaultValue?.toString() ?? '';
+      }
+      final requestedName = (arguments['name'] as String? ?? '').trim();
+      final info = await service.installApp(AppInstallCreateRequest(
+        appDetailId: detail.id!,
+        name: requestedName.isNotEmpty ? requestedName : appKey,
+        type: app.type,
+        advanced: false,
+        memoryUnit: 'MB',
+        params: paramsMap.isNotEmpty ? paramsMap : null,
+        hostMode: false,
+        allowPort: true,
+      ));
+      return {'success': true, 'appId': info.id ?? 0};
+    } catch (e) {
+      appLogger.e('installApp failed: $e');
       return _err(e);
     }
   }
@@ -699,14 +757,19 @@ class NativeChannelWriteHandlers {
   // ── Compose 建/改（B19）──────────────────────────────────────────────────
 
   /// 新建 Compose。参数：
-  /// `{name: String 必填, from?: 'path'|'raw' 默认 'path', path?: String(from=path 必填), file?: String(内容)}`
+  /// `{name: String 必填, from?: 'path'|'raw'|'edit' 默认 'path', path?: String(from=path 必填), file?: String(内容)}`
+  /// 服务端 ComposeCreate.from 枚举为 edit|path|template（无 raw，上游 400
+  /// oneof 校验实测），'raw' 在此归一化为 'edit'。
   static Future<Map<String, dynamic>> createCompose(dynamic arguments) async {
     try {
       final name = (arguments['name'] as String? ?? '').trim();
       if (name.isEmpty) {
         return {'success': false, 'error': 'name is required'};
       }
-      final from = arguments['from'] as String? ?? 'path';
+      var from = arguments['from'] as String? ?? 'path';
+      if (from == 'raw') {
+        from = 'edit';
+      }
       final path = (arguments['path'] as String? ?? '').trim();
       if (from == 'path' && path.isEmpty) {
         return {'success': false, 'error': 'path is required when from=path'};

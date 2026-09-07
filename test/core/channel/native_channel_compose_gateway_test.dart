@@ -30,6 +30,18 @@ void main() {
       expect(result['success'], isFalse);
     });
 
+    test('回归：from=raw 归一化为服务端合法枚举 edit，不再被 path 校验拦截', () async {
+      // 服务端 ComposeCreate.from 枚举为 edit|path|template（2026-09-08
+      // 上游 400 oneof 校验实测），from=raw 必须映射为 edit。
+      final result = await NativeChannelWriteHandlers.createCompose(
+        {'name': 'web', 'from': 'raw', 'file': 'services: {}'},
+      );
+
+      // 无服务器配置时网络层失败，但绝不能是 path 必填校验错误。
+      expect(result['success'], isFalse);
+      expect(result['error'], isNot(contains('path is required')));
+    });
+
     test('dispatch 路由 createCompose 到写 handler', () async {
       final result = await NativeChannelManager.instance.handleMethodCall(
         'createCompose',

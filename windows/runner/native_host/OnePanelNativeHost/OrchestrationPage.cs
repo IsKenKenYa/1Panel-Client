@@ -707,7 +707,7 @@ public sealed class OrchestrationPage : ModulePageBase
                     nameBox.Text.Trim(),
                     from,
                     from == "path" ? pathBox.Text.Trim() : null,
-                    from == "raw" ? contentBox.Text : null,
+                    from == "edit" ? contentBox.Text : null,
                     templateId);
                 if (success)
                 {
@@ -897,10 +897,11 @@ public sealed class OrchestrationPage : ModulePageBase
         }
     }
 
-    /// <summary>Maps the create-source combo index to the bridge "from" value.</summary>
+    /// <summary>Maps the create-source combo index to the bridge "from" value.
+    /// Values follow the server ComposeCreate enum (edit|path|template).</summary>
     private static string FromSelection(int selectedIndex) => selectedIndex switch
     {
-        1 => "raw",
+        1 => "edit",
         2 => "template",
         _ => "path",
     };
@@ -910,7 +911,7 @@ public sealed class OrchestrationPage : ModulePageBase
     {
         if (string.IsNullOrWhiteSpace(name)) return "Name is required.";
         if (from == "path" && string.IsNullOrWhiteSpace(path)) return "Compose file path is required.";
-        if (from == "raw" && string.IsNullOrWhiteSpace(file)) return "Compose content is required.";
+        if (from == "edit" && string.IsNullOrWhiteSpace(file)) return "Compose content is required.";
         if (from == "template")
         {
             if (string.IsNullOrWhiteSpace(templateIdText)) return "Template ID is required.";
