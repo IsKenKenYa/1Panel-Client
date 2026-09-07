@@ -163,11 +163,12 @@ static readonly Dictionary<string, Func<Page>> _pageFactories = new()
 | updateOpenrestyHttps | C# -> Dart | 写 | OpenResty 默认 HTTPS 跳转开关（{operate∈enable/disable, sslRejectHandshake?}；返回 {success: bool}） |
 | createCommand | C# -> Dart | 写 | 新建命令库条目（{name, command 必填, groupID?}；返回 {success: bool}） |
 | deleteCommand | C# -> Dart | 写 | 删除命令库条目（{id}；返回 {success: bool}） |
-| createCompose | C# -> Dart | 写 | 新建 Compose（{name 必填, from 默认 path（此时 path 必填）, file 内容}；返回 {success: bool}） |
+| createCompose | C# -> Dart | 写 | 新建 Compose（{name 必填, from 默认 path（此时 path 必填）, file 内容, from=template 时 template id 必填}；返回 {success: bool}） |
 | updateCompose | C# -> Dart | 写 | 编辑 Compose 配置（{name/path/content 三必填}；返回 {success: bool}） |
 | composeOperate | C# -> Dart | 写 | 编排操作（{id, name 必填, action ∈ up/down/start/stop/restart/delete}，重建最小 ContainerCompose；返回 {success: bool}） |
 | deleteScripts | C# -> Dart | 写 | 批量删除脚本（{ids: [int]}，空数组失败结构；返回 {success: bool}） |
 | uploadCertificate | C# -> Dart | 写 | 上传证书（粘贴形态：{certificate, privateKey 必填, description?}；返回 {success: bool}） |
+| applyCertificate | C# -> Dart | 写 | 应用（申请/续签）证书（{id 必填}；返回 {success: bool}） |
 
 > 备注：AI 域名绑定（bindDomain）发现流已实现（getOllamaContext），绑定写操作已接入。
 > 备注：Terminal 走 websocket 双向通道，属范围外（EventChannel 明确不做），登记后续批次。
@@ -325,8 +326,8 @@ ModulePageBase : Page
 | OpenRestyPage | ModulePageBase | 状态快照 + 配置源查看保存 |
 | CommandsPage | ModulePageBase | 命令库列表 + 新建/删除 + 分组下拉 |
 | ScriptLibraryPage | ModulePageBase | 脚本库只读列表 + 批量删除 |
-| OrchestrationPage | ModulePageBase | Compose 列表 + 六动作操作 + 新建/编辑表单 |
-| SecurityGatewayPage | ModulePageBase | 面板 SSL/证书/OpenResty 状态聚合 + 证书上传 |
+| OrchestrationPage | ModulePageBase | Compose 列表 + 六动作操作 + 新建/编辑表单（新建支持 path/内容/template 三形态） |
+| SecurityGatewayPage | ModulePageBase | 面板 SSL/证书/OpenResty 状态聚合 + 证书上传；证书 Apply（续签） |
 
 ### 状态控件
 

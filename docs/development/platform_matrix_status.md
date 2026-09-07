@@ -44,6 +44,7 @@
 - Compose 建/改与网关开关（B19）已接入：编排新建（path/raw 两形态）与配置全量替换编辑、OpenResty 默认 HTTPS 跳转开关；导航项数不变。
 - 脚本库模块（B20）已接入：脚本只读列表与批量删除（系统脚本保护）；脚本运行/同步走脚本执行通道属范围外；onboarding（引导覆盖层）/operations_center（聚合页无独立数据源）评估为范围外；导航 21 项。
 - Empty 态主操作位与证书上传（B21）已接入：各列表页空数据时仍可创建首条数据；SecurityGateway 支持粘贴上传证书；导航 21 项不变。
+- 证书应用与 Compose 模板创建（B22）已接入：SecurityGateway 证书 Apply（续签）、编排新建支持 from=template；导航 21 项不变。
 
 ## 构建门禁命令
 
