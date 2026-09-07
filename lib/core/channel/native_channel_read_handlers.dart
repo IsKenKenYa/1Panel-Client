@@ -473,7 +473,9 @@ class NativeChannelReadHandlers {
                 'isSystem': s.isSystem,
                 'description': s.description,
                 'groupBelong': s.groupBelong.join(','),
-                'createdAt': s.createdAt,
+                // createdAt 是 DateTime?——StandardMessageCodec 不支持 DateTime，
+                // 直接编码会抛异常致整条回复失败（C# 端收 null）。
+                'createdAt': s.createdAt?.toIso8601String() ?? '',
               })
           .toList();
       return result;
