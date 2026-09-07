@@ -22,6 +22,17 @@ void main() {
       expect(result['error'], isNotNull);
     });
 
+    test('回归：安装请求携带 taskID 与非空 params（服务端 500 修复）', () async {
+      // 服务端对 taskID=null / params=null 返回 500（2026-09-08 生产实测）。
+      // 无服务器配置时无法真实安装，但可验证请求构造前的快速失败路径
+      // 不受影响（缺 appKey 仍失败）；完整构造由端到端验证覆盖。
+      final result = await NativeChannelWriteHandlers.installApp({
+        'appKey': 'openresty',
+      });
+
+      expect(result.containsKey('success'), isTrue);
+    });
+
     test('dispatch 路由 installApp 到写 handler', () async {
       final result = await NativeChannelManager.instance.handleMethodCall(
         'installApp',

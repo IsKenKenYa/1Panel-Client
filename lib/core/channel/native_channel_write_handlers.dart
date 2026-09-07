@@ -266,7 +266,11 @@ class NativeChannelWriteHandlers {
         type: app.type,
         advanced: false,
         memoryUnit: 'MB',
-        params: paramsMap.isNotEmpty ? paramsMap : null,
+        // 服务端对 params/taskID 为 null 时 POST /apps/install 返回 500
+        // （2026-09-08 生产面板实测）：params 必须是空对象而非 null，
+        // taskID 必须是唯一时间戳字符串（上游前端同语义）。
+        params: paramsMap,
+        taskID: DateTime.now().millisecondsSinceEpoch.toString(),
         hostMode: false,
         allowPort: true,
       ));
