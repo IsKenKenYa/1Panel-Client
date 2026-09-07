@@ -22,6 +22,7 @@ import '../../features/firewall/firewall_service.dart';
 import '../../features/server/server_repository.dart';
 import '../../features/websites/services/websites_service.dart';
 import '../../data/models/website_models.dart';
+import '../../data/models/website_ssl_crud_models.dart';
 import '../../data/repositories/website_repository.dart';
 import '../../core/config/api_config.dart';
 import '../../core/services/app_preferences_service.dart';
@@ -797,6 +798,34 @@ class NativeChannelWriteHandlers {
       return _ok();
     } catch (e) {
       appLogger.e('deleteScripts failed: $e');
+      return _err(e);
+    }
+  }
+
+  // ── 证书上传（B21，网关写策略）──────────────────────────────────────────
+
+  /// 上传证书（粘贴形态）。参数：
+  /// `{certificate: String 必填, privateKey: String 必填, description?: String}`
+  static Future<Map<String, dynamic>> uploadCertificate(
+      dynamic arguments) async {
+    try {
+      final certificate = (arguments['certificate'] as String? ?? '').trim();
+      final privateKey = (arguments['privateKey'] as String? ?? '').trim();
+      if (certificate.isEmpty || privateKey.isEmpty) {
+        return {'success': false, 'error': 'certificate and privateKey are required'};
+      }
+      final description = (arguments['description'] as String? ?? '').trim();
+      await WebsiteCertificateService().uploadCertificate(
+        WebsiteSSLUpload(
+          type: 'paste',
+          certificate: certificate,
+          privateKey: privateKey,
+          description: description.isEmpty ? null : description,
+        ),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('uploadCertificate failed: $e');
       return _err(e);
     }
   }

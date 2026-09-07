@@ -162,6 +162,8 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.updateOpenrestyHttps(arguments);
       case 'updateOpenrestyConfig':
         return NativeChannelWriteHandlers.updateOpenrestyConfig(arguments);
+      case 'uploadCertificate':
+        return NativeChannelWriteHandlers.uploadCertificate(arguments);
       case 'deleteScripts':
         return NativeChannelWriteHandlers.deleteScripts(arguments);
       case 'composeOperate':

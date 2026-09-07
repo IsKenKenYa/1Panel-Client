@@ -365,6 +365,19 @@ public static class WindowsBridge
         return IsSuccess(result);
     }
 
+    /// <summary>上传证书（粘贴形态：certificate + privateKey）。</summary>
+    public static async Task<bool> UploadCertificateAsync(
+        string certificate, string privateKey, string? description)
+    {
+        var result = await InvokeAsync("uploadCertificate", new Dictionary<string, object?>
+        {
+            ["certificate"] = certificate,
+            ["privateKey"] = privateKey,
+            ["description"] = description,
+        });
+        return IsSuccess(result);
+    }
+
     /// <summary>新建 shell 定时任务（spec 为原生 cron 表达式）。</summary>
     public static async Task<bool> CreateCronJobAsync(
         string name, string spec, string? script, long groupID)

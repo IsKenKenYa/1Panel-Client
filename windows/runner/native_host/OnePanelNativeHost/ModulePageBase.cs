@@ -17,6 +17,7 @@ public class ModulePageBase : Page
     private readonly ProgressRing _progressRing;
     private readonly ContentPresenter _contentPresenter;
     private readonly StackPanel _emptyPanel;
+    private Button? _emptyPrimaryButton;
     private readonly StackPanel _errorPanel;
 
     protected ContentPresenter ModuleContentPresenter => _contentPresenter;
@@ -74,6 +75,15 @@ public class ModulePageBase : Page
 
         _emptyPanel.Children.Add(emptyIcon);
         _emptyPanel.Children.Add(emptyText);
+        // Optional primary action (e.g. "Add website") shown above Refresh so
+        // users can create the first row on an empty server.
+        _emptyPrimaryButton = new Button
+        {
+            Visibility = Visibility.Collapsed,
+            Style = (Style)Application.Current.Resources["AccentButtonStyle"],
+        };
+        _emptyPrimaryButton.Click += (s, e) => OnRefreshClicked();
+        _emptyPanel.Children.Add(_emptyPrimaryButton);
         _emptyPanel.Children.Add(refreshButton);
 
         _errorPanel = new StackPanel
@@ -144,6 +154,19 @@ public class ModulePageBase : Page
     /// 页面被宿主切换显示时调用（直赋 Content 模式不触发 OnNavigatedTo）。
     /// </summary>
     public void ActivatePage() => OnPageShown();
+
+    /// <summary>Empty 态显示的主操作按钮（如 "Add website"）。传 null 隐藏。</summary>
+    protected void SetEmptyPrimaryAction(string label, RoutedEventHandler handler)
+    {
+        if (_emptyPrimaryButton == null)
+        {
+            return;
+        }
+        _emptyPrimaryButton.Content = label;
+        _emptyPrimaryButton.Visibility = Visibility.Visible;
+        _emptyPrimaryButton.Click -= handler;
+        _emptyPrimaryButton.Click += handler;
+    }
 
     /// <summary>
     /// Public refresh entry for host-level shortcuts (e.g. F5 in the shell).
