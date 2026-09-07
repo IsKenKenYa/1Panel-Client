@@ -174,7 +174,7 @@ public sealed class BackupsPage : ModulePageBase
         // visual tree so Show() actually renders).
         _errorToast.VerticalAlignment = VerticalAlignment.Bottom;
         Grid.SetRow(_errorToast, 1);
-        root.Children.Add(_errorToast);
+        AttachToast(root, _errorToast);
 
         ModuleContentPresenter.Content = root;
     }

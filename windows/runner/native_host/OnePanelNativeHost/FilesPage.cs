@@ -112,7 +112,7 @@ public sealed class FilesPage : ModulePageBase
         root.Children.Add(layout);
 
         // Transient feedback toast overlaid at the bottom of the content card.
-        root.Children.Add(_errorToast);
+        AttachToast(root, _errorToast);
 
         ModuleContentPresenter.Content = root;
     }

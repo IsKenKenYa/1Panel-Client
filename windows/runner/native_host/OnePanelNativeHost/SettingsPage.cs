@@ -198,7 +198,7 @@ public sealed class SettingsPage : ModulePageBase
         // Same overlay pattern as ServersPage: keep the toast in the visual
         // tree, bottom-aligned over the content.
         _errorToast.VerticalAlignment = VerticalAlignment.Bottom;
-        rootGrid.Children.Add(_errorToast);
+        AttachToast(rootGrid, _errorToast);
 
         ModuleContentPresenter.Content = rootGrid;
     }

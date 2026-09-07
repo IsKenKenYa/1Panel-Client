@@ -174,6 +174,23 @@ public class ModulePageBase : Page
     /// </summary>
     public void RefreshPage() => OnRefreshClicked();
 
+    /// <summary>
+    /// Mounts a page-level overlay (the shared ErrorToast) into a freshly
+    /// rebuilt content tree. Pages rebuild their content on every load while
+    /// the toast field stays alive on the previous tree; WinUI3 forbids one
+    /// element having two parents and "Element is already the child of another
+    /// element" (stowed exception) kills the host on the second build, so
+    /// detach from the previous owner first.
+    /// </summary>
+    protected static void AttachToast(Panel root, FrameworkElement toast)
+    {
+        if (toast.Parent is Panel previousOwner)
+        {
+            previousOwner.Children.Remove(toast);
+        }
+        root.Children.Add(toast);
+    }
+
     protected virtual void OnPageShown()
     {
     }
