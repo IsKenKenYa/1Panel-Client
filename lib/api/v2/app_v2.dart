@@ -97,11 +97,18 @@ class AppV2Api {
   }
 
   /// 安装应用
+  ///
+  /// 服务端同步执行安装（拉镜像等），响应远超全局 8s receiveTimeout
+  /// （2026-09-08 生产面板实测被中止）；对齐上游前端 T_5M 长超时。
   Future<AppInstallInfo> installApp(AppInstallCreateRequest request) async {
     try {
       final response = await _client.post<dynamic>(
         ApiConstants.buildApiPath('/apps/install'),
         data: request.toJson(),
+        options: Options(
+          receiveTimeout: const Duration(minutes: 5),
+          sendTimeout: const Duration(minutes: 1),
+        ),
       );
 
       final data = response.data;

@@ -97,6 +97,8 @@ public sealed class CommandsPage : ModulePageBase
         _commands.Clear();
         if (commands.Count == 0)
         {
+            SetEmptyPrimaryAction("Create command",
+                (s, e) => _ = ShowCreateCommandDialogAsync());
             SetState(PageState.Empty);
             return;
         }

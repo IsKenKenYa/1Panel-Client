@@ -679,25 +679,34 @@ class NativeChannelWriteHandlers {
   // ── 编排 Compose（B18，操作最小集）──────────────────────────────────────
 
   static const Set<String> _composeActions = {
-    'up', 'down', 'start', 'stop', 'restart', 'delete',
+    'up', 'down', 'start', 'stop', 'restart', 'delete', 'rebuild',
   };
 
   /// Compose 项目操作。参数：
-  /// `{id: String, name: String, action: up|down|start|stop|restart|delete}`
+  /// `{name: String 必填, operation: up|start|restart|stop|down|delete|rebuild 必填,
+  ///   path?: String}`
+  /// 服务端 ComposeOperation 契约（2026-09-08 swagger 实证）：以 name +
+  /// operation 定位，无 id 字段；字段名为 operation 而非 action。
   static Future<Map<String, dynamic>> composeOperate(dynamic arguments) async {
     try {
-      final id = (arguments['id'] as String? ?? '').trim();
       final name = (arguments['name'] as String? ?? '').trim();
-      final action = (arguments['action'] as String? ?? '').trim();
-      if (id.isEmpty || name.isEmpty) {
-        return {'success': false, 'error': 'id and name are required'};
+      final operation = (arguments['operation'] ?? arguments['action'] ?? '')
+          .toString()
+          .trim();
+      final path = (arguments['path'] as String? ?? '').trim();
+      if (name.isEmpty) {
+        return {'success': false, 'error': 'name is required'};
       }
-      if (!_composeActions.contains(action)) {
-        return {'success': false, 'error': 'Unsupported action: $action'};
+      if (!_composeActions.contains(operation)) {
+        return {'success': false, 'error': 'Unsupported operation: $operation'};
       }
-      final compose = ContainerCompose(id: id, name: name);
+      final compose = ContainerCompose(
+        id: '',
+        name: name,
+        path: path.isEmpty ? null : path,
+      );
       final service = OrchestrationService();
-      switch (action) {
+      switch (operation) {
         case 'up':
           await service.upCompose(compose);
         case 'down':

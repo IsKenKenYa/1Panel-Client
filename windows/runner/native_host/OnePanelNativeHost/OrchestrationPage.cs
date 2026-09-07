@@ -472,7 +472,7 @@ public sealed class OrchestrationPage : ModulePageBase
 
         try
         {
-            var success = await WindowsBridge.ComposeOperateAsync(compose.Id, compose.Name, action);
+            var success = await WindowsBridge.ComposeOperateAsync(compose.Name, action, compose.Path);
             if (success)
             {
                 await LoadComposesCoreAsync(showLoadingState: false);
@@ -507,7 +507,7 @@ public sealed class OrchestrationPage : ModulePageBase
 
             if (!confirmed) return;
 
-            var success = await WindowsBridge.ComposeOperateAsync(compose.Id, compose.Name, "down");
+            var success = await WindowsBridge.ComposeOperateAsync(compose.Name, "down", compose.Path);
             if (success)
             {
                 await LoadComposesCoreAsync(showLoadingState: false);
@@ -542,7 +542,7 @@ public sealed class OrchestrationPage : ModulePageBase
 
             if (!confirmed) return;
 
-            var success = await WindowsBridge.ComposeOperateAsync(compose.Id, compose.Name, "delete");
+            var success = await WindowsBridge.ComposeOperateAsync(compose.Name, "delete", compose.Path);
             if (success)
             {
                 await LoadComposesCoreAsync(showLoadingState: false);

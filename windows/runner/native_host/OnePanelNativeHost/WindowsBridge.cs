@@ -589,15 +589,17 @@ public static class WindowsBridge
         return await InvokeWithRetryAsync("getComposes");
     }
 
-    /// <summary>Compose 项目操作（up/down/start/stop/restart/delete）。</summary>
+    /// <summary>Compose 项目操作。服务端 ComposeOperation 契约（2026-09-08
+    /// swagger 实证）：{name 必填, operation∈up|start|restart|stop|down|delete|rebuild,
+    /// path?} —— 无 id 字段，字段名为 operation。</summary>
     public static async Task<bool> ComposeOperateAsync(
-        string id, string name, string action)
+        string name, string operation, string? path)
     {
         var result = await InvokeAsync("composeOperate", new Dictionary<string, object?>
         {
-            ["id"] = id,
             ["name"] = name,
-            ["action"] = action,
+            ["operation"] = operation,
+            ["path"] = path,
         });
         return IsSuccess(result);
     }
