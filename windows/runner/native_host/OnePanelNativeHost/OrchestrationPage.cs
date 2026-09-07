@@ -23,8 +23,8 @@ namespace OnePanelNativeHost;
 ///   Down takes the containers down keeping the files behind a non-destructive
 ///   confirmation, and Delete removes the compose plus its containers behind a
 ///   destructive confirmation naming the compose.
-/// Create opens the new-compose dialog (name + "From path"/"From content"
-/// source + editor; the upstream template source is deferred) and Edit opens
+/// Create opens the new-compose dialog (name + "From path"/"From content"/
+/// "From template" source + editor) and Edit opens
 /// a full-replacement config editor: the list payload carries no compose
 /// content, so the editor starts empty and the pasted content replaces the
 /// whole file behind an explicit confirmation. All data flows through
@@ -596,8 +596,9 @@ public sealed class OrchestrationPage : ModulePageBase
 
     /// <summary>
     /// New-compose form dialog mirroring the upstream create form (name +
-    /// source selector + editor, template source dropped): "From path" takes
-    /// an existing compose file path, "From content" takes the YAML inline.
+    /// source selector + editor): "From path" takes an existing compose file
+    /// path, "From content" takes the YAML inline, "From template" takes a
+    /// numeric template id validated inline and resolved Dart-side.
     /// _isBusy is held across the whole dialog lifetime so no other flow can
     /// start meanwhile. Closing is intercepted for inline validation; the
     /// dialog stays open while the bridge call runs and only closes on
@@ -616,6 +617,7 @@ public sealed class OrchestrationPage : ModulePageBase
             var sourceCombo = new ComboBox { Header = "Create from", SelectedIndex = 0, MinWidth = 200 };
             sourceCombo.Items.Add("From path");
             sourceCombo.Items.Add("From content");
+            sourceCombo.Items.Add("From template");
 
             var pathBox = new TextBox
             {
@@ -636,6 +638,17 @@ public sealed class OrchestrationPage : ModulePageBase
             };
             ScrollViewer.SetVerticalScrollBarVisibility(contentBox, ScrollBarVisibility.Auto);
 
+            // Template source: mirrors the upstream create form where a compose
+            // is resolved from a template; only the numeric id is captured
+            // here and the template lookup happens Dart-side.
+            var templateBox = new TextBox
+            {
+                Header = "Template ID",
+                PlaceholderText = "e.g. 1",
+                IsSpellCheckEnabled = false,
+                Visibility = Visibility.Collapsed,
+            };
+
             var errorText = new TextBlock
             {
                 FontSize = 12,
@@ -645,17 +658,20 @@ public sealed class OrchestrationPage : ModulePageBase
             };
 
             // Any edit clears the pending inline validation error; switching
-            // the source toggles the path field / editor visibility.
+            // the source toggles the path field / editor / template id field
+            // visibility (exactly one source control shown at a time).
             void ClearError() => SetFormError(errorText, null);
             nameBox.TextChanged += (s, e) => ClearError();
             pathBox.TextChanged += (s, e) => ClearError();
             contentBox.TextChanged += (s, e) => ClearError();
+            templateBox.TextChanged += (s, e) => ClearError();
             sourceCombo.SelectionChanged += (s, e) =>
             {
                 ClearError();
-                var fromContent = sourceCombo.SelectedIndex == 1;
-                pathBox.Visibility = fromContent ? Visibility.Collapsed : Visibility.Visible;
-                contentBox.Visibility = fromContent ? Visibility.Visible : Visibility.Collapsed;
+                var selected = sourceCombo.SelectedIndex;
+                pathBox.Visibility = selected == 0 ? Visibility.Visible : Visibility.Collapsed;
+                contentBox.Visibility = selected == 1 ? Visibility.Visible : Visibility.Collapsed;
+                templateBox.Visibility = selected == 2 ? Visibility.Visible : Visibility.Collapsed;
             };
 
             var form = new StackPanel { Orientation = Orientation.Vertical, Spacing = 12 };
@@ -663,6 +679,7 @@ public sealed class OrchestrationPage : ModulePageBase
             form.Children.Add(sourceCombo);
             form.Children.Add(pathBox);
             form.Children.Add(contentBox);
+            form.Children.Add(templateBox);
             form.Children.Add(errorText);
 
             var dialog = new ContentDialog
@@ -680,12 +697,18 @@ public sealed class OrchestrationPage : ModulePageBase
 
             async Task SubmitCreateAsync()
             {
-                var fromContent = sourceCombo.SelectedIndex == 1;
+                var from = FromSelection(sourceCombo.SelectedIndex);
+                // The template id already passed the integer check in Closing,
+                // so this parse cannot fail on the submit path.
+                long? templateId = from == "template"
+                    ? long.Parse(templateBox.Text.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture)
+                    : null;
                 var success = await WindowsBridge.CreateComposeAsync(
                     nameBox.Text.Trim(),
-                    fromContent ? "raw" : "path",
-                    fromContent ? null : pathBox.Text.Trim(),
-                    fromContent ? contentBox.Text : null);
+                    from,
+                    from == "path" ? pathBox.Text.Trim() : null,
+                    from == "raw" ? contentBox.Text : null,
+                    templateId);
                 if (success)
                 {
                     createSucceeded = true;
@@ -716,9 +739,12 @@ public sealed class OrchestrationPage : ModulePageBase
 
                 // Inline validation: cancel the close so the dialog stays
                 // open and the error shows next to the fields.
-                var fromContent = sourceCombo.SelectedIndex == 1;
                 var error = ValidateCreateInput(
-                    nameBox.Text, fromContent ? "raw" : "path", pathBox.Text, contentBox.Text);
+                    nameBox.Text,
+                    FromSelection(sourceCombo.SelectedIndex),
+                    pathBox.Text,
+                    contentBox.Text,
+                    templateBox.Text);
                 if (error != null)
                 {
                     args.Cancel = true;
@@ -871,12 +897,28 @@ public sealed class OrchestrationPage : ModulePageBase
         }
     }
 
+    /// <summary>Maps the create-source combo index to the bridge "from" value.</summary>
+    private static string FromSelection(int selectedIndex) => selectedIndex switch
+    {
+        1 => "raw",
+        2 => "template",
+        _ => "path",
+    };
+
     /// <summary>Returns the first create-compose validation error, or null when the input is valid.</summary>
-    private static string? ValidateCreateInput(string name, string from, string path, string file)
+    private static string? ValidateCreateInput(string name, string from, string path, string file, string templateIdText)
     {
         if (string.IsNullOrWhiteSpace(name)) return "Name is required.";
         if (from == "path" && string.IsNullOrWhiteSpace(path)) return "Compose file path is required.";
         if (from == "raw" && string.IsNullOrWhiteSpace(file)) return "Compose content is required.";
+        if (from == "template")
+        {
+            if (string.IsNullOrWhiteSpace(templateIdText)) return "Template ID is required.";
+            if (!long.TryParse(templateIdText.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out _))
+            {
+                return "Template ID must be an integer.";
+            }
+        }
         return null;
     }
 
