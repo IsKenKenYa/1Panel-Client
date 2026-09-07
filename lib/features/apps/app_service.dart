@@ -57,10 +57,10 @@ class AppService extends BaseComponent {
     });
   }
 
-  Future<void> installApp(AppInstallCreateRequest request) {
+  Future<AppInstallInfo> installApp(AppInstallCreateRequest request) {
     return runGuarded(() async {
       final api = await _ensureApi();
-      await api.installApp(request);
+      return api.installApp(request);
     });
   }
 

@@ -146,6 +146,8 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.stopApp(arguments);
       case 'uninstallApp':
         return NativeChannelWriteHandlers.uninstallApp(arguments);
+      case 'installApp':
+        return NativeChannelWriteHandlers.installApp(arguments);
 
       // ── Write: 文件 ─────────────────────────────────────────────────────
       case 'deleteFile':

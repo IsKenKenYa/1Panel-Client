@@ -514,7 +514,8 @@ class NativeChannelWriteHandlers {
       if (dns.isEmpty) {
         return {'success': false, 'error': 'dns is required'};
       }
-      await ToolboxDeviceService().verifyDns(dns);
+      // 上游契约：key='form'（表单形态），value 为逗号分隔 DNS 列表。
+      await ToolboxDeviceService().verifyDns('form', dns);
       return _ok();
     } catch (e) {
       appLogger.e('verifyToolboxDns failed: $e');

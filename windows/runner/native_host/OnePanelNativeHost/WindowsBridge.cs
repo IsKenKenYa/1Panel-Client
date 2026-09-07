@@ -185,6 +185,20 @@ public static class WindowsBridge
         return IsSuccess(result);
     }
 
+    /// <summary>安装应用商店应用（appKey 如 openresty）。成功返回 null，
+    /// 失败返回服务端/通道错误描述（与 CreateWebsiteAsync 错误透出同型）。</summary>
+    public static async Task<string?> InstallAppAsync(
+        string appKey, string? version, string? name)
+    {
+        var result = await InvokeJsonAsync("installApp", new Dictionary<string, object?>
+        {
+            ["appKey"] = appKey,
+            ["version"] = version,
+            ["name"] = name,
+        });
+        return ErrorTextOf(result);
+    }
+
     public static async Task<JsonElement?> GetWebsitesAsync()
     {
         return await InvokeWithRetryAsync("getWebsites");
@@ -741,8 +755,9 @@ public static class WindowsBridge
     }
 
     /// <summary>null 表示成功信封；否则取 error 字段文本作为失败原因，
-    /// 供表单对话框内联展示真实服务端错误而非通用提示。</summary>
-    private static string? ErrorTextOf(JsonElement? result)
+    /// 供表单对话框内联展示真实服务端错误而非通用提示。
+    /// internal 供契约测试经 InternalsVisibleTo 直测信封语义。</summary>
+    internal static string? ErrorTextOf(JsonElement? result)
     {
         if (IsSuccess(result))
         {

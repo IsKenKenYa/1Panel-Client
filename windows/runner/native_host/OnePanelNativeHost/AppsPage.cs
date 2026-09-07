@@ -88,6 +88,11 @@ public sealed class AppsPage : ModulePageBase
         var apps = ParseApps(result.Value);
         if (apps.Count == 0)
         {
+            // Empty server: expose the OpenResty install entry on the Empty
+            // panel. SetState(PageState.Content) below collapses the whole
+            // Empty panel when data exists, so the action never shows
+            // alongside the list and needs no explicit teardown.
+            SetEmptyPrimaryAction("Install OpenResty", OnInstallOpenRestyClicked);
             SetState(PageState.Empty);
             return;
         }
@@ -390,6 +395,68 @@ public sealed class AppsPage : ModulePageBase
         finally
         {
             _isBusy = false;
+        }
+    }
+
+    /// <summary>
+    /// Empty-state primary action ("Install OpenResty" on the Empty panel).
+    /// Deliberately a named method rather than a lambda: ModulePageBase
+    /// removes and re-adds the handler on every SetEmptyPrimaryAction call,
+    /// and method-group delegate equality keeps that idempotent instead of
+    /// stacking subscriptions.
+    /// </summary>
+    private void OnInstallOpenRestyClicked(object sender, RoutedEventArgs e)
+    {
+        _ = InstallOpenRestyAsync();
+    }
+
+    /// <summary>
+    /// Confirmed install of OpenResty from the app store (prerequisite
+    /// runtime for websites on a fresh server, mirrors the upstream
+    /// app-store install flow). _isBusy is held across confirmation + call
+    /// so the button cannot start a second task and row operations stay
+    /// blocked.
+    /// </summary>
+    private async Task InstallOpenRestyAsync()
+    {
+        if (_isBusy) return;
+
+        _isBusy = true;
+        var submitted = false;
+        try
+        {
+            var confirmed = await ConfirmDialog.ShowAsync(
+                XamlRoot,
+                "Install OpenResty",
+                "OpenResty will be downloaded and installed from the app store. This may take a few minutes. Continue?",
+                "Install",
+                "Cancel");
+
+            if (!confirmed) return;
+
+            var failure = await WindowsBridge.InstallAppAsync("openresty", null, null);
+            if (failure == null)
+            {
+                submitted = true;
+                _errorToast.Show("OpenResty install task submitted.");
+            }
+            else
+            {
+                // No inline form area on this page: surface the real
+                // bridge/server error alongside the generic toast message.
+                _errorToast.Show($"Failed to submit the install task. {failure}");
+            }
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+
+        // Refresh only after the guard is released: RefreshPage routes into
+        // the guarded LoadAppsAsync, which would no-op while _isBusy is held.
+        if (submitted)
+        {
+            RefreshPage();
         }
     }
 
