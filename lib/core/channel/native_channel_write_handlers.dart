@@ -11,6 +11,7 @@ import '../../features/openresty/services/openresty_service.dart';
 import '../../features/orchestration/services/orchestration_service.dart';
 import '../../features/settings/panel_ssl/services/panel_ssl_service.dart';
 import '../../features/websites/services/website_certificate_service.dart';
+
 import '../../features/toolbox/services/toolbox_device_service.dart';
 import '../../data/models/common_models.dart';
 import '../../data/models/cronjob_list_models.dart';
@@ -710,12 +711,17 @@ class NativeChannelWriteHandlers {
       if (from == 'path' && path.isEmpty) {
         return {'success': false, 'error': 'path is required when from=path'};
       }
+      if (from == 'template' &&
+          int.tryParse('${arguments['template'] ?? ''}') == null) {
+        return {'success': false, 'error': 'template is required when from=template'};
+      }
       await OrchestrationService().createCompose(
         ContainerComposeCreate(
           from: from,
           name: name,
           path: path.isEmpty ? null : path,
           file: arguments['file'] as String?,
+          template: int.tryParse('${arguments['template'] ?? ''}'),
           taskID: DateTime.now().millisecondsSinceEpoch.toString(),
         ),
       );
@@ -826,6 +832,24 @@ class NativeChannelWriteHandlers {
       return _ok();
     } catch (e) {
       appLogger.e('uploadCertificate failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 应用（申请/续签）证书。参数：`{id: int 必填}`
+  static Future<Map<String, dynamic>> applyCertificate(
+      dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments['id'] ?? ''}');
+      if (id == null) {
+        return {'success': false, 'error': 'id is required'};
+      }
+      await WebsiteCertificateService().applyCertificate(
+        WebsiteSSLApply(id: id),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('applyCertificate failed: $e');
       return _err(e);
     }
   }

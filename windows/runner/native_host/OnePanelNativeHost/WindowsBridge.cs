@@ -365,6 +365,14 @@ public static class WindowsBridge
         return IsSuccess(result);
     }
 
+    /// <summary>应用（申请/续签）证书。</summary>
+    public static async Task<bool> ApplyCertificateAsync(long id)
+    {
+        var result = await InvokeAsync("applyCertificate",
+            new Dictionary<string, object?> { ["id"] = id });
+        return IsSuccess(result);
+    }
+
     /// <summary>上传证书（粘贴形态：certificate + privateKey）。</summary>
     public static async Task<bool> UploadCertificateAsync(
         string certificate, string privateKey, string? description)
@@ -591,7 +599,7 @@ public static class WindowsBridge
 
     /// <summary>新建 Compose（from=path 需 path；from=raw 需 file 内容）。</summary>
     public static async Task<bool> CreateComposeAsync(
-        string name, string from, string? path, string? file)
+        string name, string from, string? path, string? file, long? templateId = null)
     {
         var result = await InvokeAsync("createCompose", new Dictionary<string, object?>
         {
@@ -599,6 +607,7 @@ public static class WindowsBridge
             ["from"] = from,
             ["path"] = path,
             ["file"] = file,
+            ["template"] = templateId,
         });
         return IsSuccess(result);
     }
