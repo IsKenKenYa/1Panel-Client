@@ -37,6 +37,11 @@ public sealed class CronJobsPage : ModulePageBase
     public CronJobsPage()
     {
         PageTitle = "CronJobs";
+
+        // Empty-state primary action: opens the create dialog so users can
+        // add the first task. Registered once here; the button only shows
+        // inside the base Empty panel, so the Content state needs no cleanup.
+        SetEmptyPrimaryAction("Create task", (s, e) => _ = ShowTaskDialogAsync(existing: null));
     }
 
     protected override async void OnPageShown()

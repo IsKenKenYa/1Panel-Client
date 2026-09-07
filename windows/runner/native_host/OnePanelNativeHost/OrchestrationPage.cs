@@ -29,7 +29,9 @@ namespace OnePanelNativeHost;
 /// content, so the editor starts empty and the pasted content replaces the
 /// whole file behind an explicit confirmation. All data flows through
 /// WindowsBridge (method channel to the Dart core); no direct HTTP from the
-/// native layer.
+/// native layer. The create action doubles as the Empty-state primary button
+/// (shared handler with the CommandBar command) so the first compose can be
+/// created with no list content.
 /// </summary>
 public sealed class OrchestrationPage : ModulePageBase
 {
@@ -39,9 +41,20 @@ public sealed class OrchestrationPage : ModulePageBase
     /// <summary>Re-entrancy guard shared by loads and row operations.</summary>
     private bool _isBusy;
 
+    /// <summary>
+    /// Guards the shared create entry while it waits for an in-flight flow
+    /// to settle; repeats during that window are swallowed.
+    /// </summary>
+    private bool _createDialogPending;
+
     public OrchestrationPage()
     {
         PageTitle = "Compose";
+
+        // Empty-state primary action: opens the create dialog so users can
+        // add the first compose. Registered once here; the button only shows
+        // inside the base Empty panel, so the Content state needs no cleanup.
+        SetEmptyPrimaryAction("Create compose", OnCreateComposeClicked);
     }
 
     protected override async void OnPageShown()
@@ -184,13 +197,15 @@ public sealed class OrchestrationPage : ModulePageBase
             Background = null, // Stay transparent on the LayerFill card surface.
         };
 
-        // Primary create command (upstream toolbar "create" button), then refresh.
+        // Primary create command (upstream toolbar "create" button), then
+        // refresh. The create command shares its handler with the Empty-state
+        // primary button so both entry points stay in sync.
         var createButton = new AppBarButton
         {
             Label = "Create compose",
             Icon = new FontIcon { Glyph = "\uE710" }, // Add.
         };
-        createButton.Click += (s, e) => _ = ShowCreateComposeDialogAsync();
+        createButton.Click += OnCreateComposeClicked;
         bar.PrimaryCommands.Add(createButton);
 
         var refreshButton = new AppBarButton
@@ -550,6 +565,34 @@ public sealed class OrchestrationPage : ModulePageBase
         "down" => "take down",
         _ => action.ToLowerInvariant(),
     };
+
+    /// <summary>
+    /// Shared "Create compose" click handler for the CommandBar button and
+    /// the Empty-state primary action; opens the create dialog once any
+    /// in-flight flow has settled.
+    /// </summary>
+    private async void OnCreateComposeClicked(object sender, RoutedEventArgs e)
+    {
+        if (_createDialogPending) return;
+        _createDialogPending = true;
+        try
+        {
+            // ModulePageBase co-wires the Empty primary button to a guarded
+            // refresh whose handler runs before this one and holds _isBusy
+            // for the whole load; wait for it to settle or the dialog's own
+            // guard would silently drop the request. For the CommandBar
+            // button the loop is a no-op in the common idle case.
+            while (_isBusy)
+            {
+                await Task.Delay(50);
+            }
+            await ShowCreateComposeDialogAsync();
+        }
+        finally
+        {
+            _createDialogPending = false;
+        }
+    }
 
     /// <summary>
     /// New-compose form dialog mirroring the upstream create form (name +

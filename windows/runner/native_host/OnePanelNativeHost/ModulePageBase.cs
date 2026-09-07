@@ -82,7 +82,8 @@ public class ModulePageBase : Page
             Visibility = Visibility.Collapsed,
             Style = (Style)Application.Current.Resources["AccentButtonStyle"],
         };
-        _emptyPrimaryButton.Click += (s, e) => OnRefreshClicked();
+        // No default Click wiring: SetEmptyPrimaryAction owns the button once
+        // registered; the standalone Refresh button below still covers reloads.
         _emptyPanel.Children.Add(_emptyPrimaryButton);
         _emptyPanel.Children.Add(refreshButton);
 

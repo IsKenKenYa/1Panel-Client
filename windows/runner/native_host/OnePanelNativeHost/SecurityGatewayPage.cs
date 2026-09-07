@@ -19,14 +19,21 @@ namespace OnePanelNativeHost;
 /// settings (SSL info), the website certificate list and the website
 /// OpenResty views, and the client joins them into one security overview.
 ///
-/// WRITE BOUNDARY: the single write action is the OpenResty "default HTTPS
-/// redirect" toggle inside the OpenResty status card. Toggling shows a
-/// confirmation dialog and then calls UpdateOpenrestyHttpsAsync
-/// ("enable"/"disable") through the bridge; success silently refreshes the
-/// status and failure shows the error toast and rolls the toggle back. The
-/// CommandBar itself still carries only Refresh, and gateway policy write
-/// operations (creating/updating/deleting gateway policies, enforcement
-/// toggles, certificate upload and binding) belong to a later batch.
+/// WRITE BOUNDARY: certificate upload is this page's only gateway-policy
+/// write operation (B21): the Website Certificates card header carries an
+/// "Upload certificate" button that opens a paste form (certificate,
+/// private key, optional description), confirms that the certificate will
+/// be imported into the panel and then calls UploadCertificateAsync through
+/// the bridge; success silently refreshes the certificates card and failure
+/// shows the error toast and keeps the form. The page keeps one older,
+/// card-scoped write: the OpenResty "default HTTPS redirect" toggle inside
+/// the OpenResty status card shows a confirmation dialog and calls
+/// UpdateOpenrestyHttpsAsync ("enable"/"disable"); success silently
+/// refreshes the status and failure shows the error toast and rolls the
+/// toggle back. The CommandBar itself still carries only Refresh, and
+/// gateway policy operations beyond upload (creating/updating/deleting
+/// policies, enforcement toggles, certificate binding) belong to a later
+/// batch.
 ///
 /// Data flows through WindowsBridge (Dart business core over the method
 /// channel); no direct HTTP from the native layer. The three sources are
@@ -211,9 +218,10 @@ public sealed class SecurityGatewayPage : ModulePageBase
             Background = null, // Stay transparent on the LayerFill card surface.
         };
 
-        // The bar carries only Refresh; the single write action (default
-        // HTTPS redirect) lives inline in the OpenResty card (see class
-        // header). Policy write actions are deferred to a later batch.
+        // The bar carries only Refresh; write actions live inline in their
+        // cards: certificate upload in the certificates card header and the
+        // default HTTPS redirect toggle in the OpenResty card (see class
+        // header).
         var refreshButton = new AppBarButton
         {
             Label = "Refresh",
@@ -247,13 +255,41 @@ public sealed class SecurityGatewayPage : ModulePageBase
     /// <summary>
     /// Website certificates card: one row per certificate with the primary
     /// domain as the main text, the provider as a neutral tag pill and the
-    /// expiry state as a colored pill. Unavailable (null) collapses the
-    /// card; an empty list keeps the card and shows a "no certificates"
-    /// hint so an empty but reachable source stays distinguishable.
+    /// expiry state as a colored pill. The card header carries the
+    /// "Upload certificate" action (the page's gateway-policy write, paste
+    /// form like the upstream certificate upload). Unavailable (null)
+    /// collapses the card; an empty list keeps the card and shows a "no
+    /// certificates" hint so an empty but reachable source stays
+    /// distinguishable.
     /// </summary>
     private FrameworkElement BuildCertificatesCard(List<CertificateEntry>? certificates)
     {
-        var card = CreateCard("Website Certificates", out var panel);
+        // Header action: opens the paste-form upload dialog. The handler is
+        // busy-guarded so a second click during the dialog lifetime is a
+        // no-op.
+        var uploadButton = new Button
+        {
+            Padding = new Thickness(10, 4, 10, 4),
+            VerticalAlignment = VerticalAlignment.Center,
+            Content = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                Spacing = 6,
+                Children =
+                {
+                    new FontIcon { Glyph = "\uE710", FontSize = 14 },
+                    new TextBlock
+                    {
+                        Text = "Upload certificate",
+                        FontSize = 12,
+                        VerticalAlignment = VerticalAlignment.Center,
+                    },
+                },
+            },
+        };
+        uploadButton.Click += (s, e) => _ = ShowUploadCertificateDialogAsync();
+
+        var card = CreateCard("Website Certificates", out var panel, uploadButton);
 
         if (certificates == null)
         {
@@ -499,6 +535,172 @@ public sealed class SecurityGatewayPage : ModulePageBase
     }
 
     /// <summary>
+    /// Upload certificate dialog (paste form, upstream website_ssl_page
+    /// paste mode): the PEM certificate and its private key are required
+    /// multi-line monospace fields with inline validation, the description
+    /// is optional. Because two ContentDialogs cannot stack on one XamlRoot,
+    /// a valid form first closes this dialog, an explicit confirmation
+    /// states that the certificate will be imported into the panel, and a
+    /// declined confirmation or a failed upload reopens the same form with
+    /// the pasted content intact. _isBusy is held across the whole dialog
+    /// lifetime so the card button cannot open a second dialog and the
+    /// refresh stays blocked while the bridge call runs.
+    /// </summary>
+    private async Task ShowUploadCertificateDialogAsync()
+    {
+        if (_isBusy) return;
+        _isBusy = true;
+
+        try
+        {
+            var certificateBox = new TextBox
+            {
+                Header = "Certificate (PEM)",
+                PlaceholderText = "Paste the full PEM certificate chain",
+                AcceptsReturn = true,
+                Height = 140,
+                FontFamily = new FontFamily("Consolas"),
+                IsSpellCheckEnabled = false,
+                TextWrapping = TextWrapping.NoWrap,
+            };
+            ScrollViewer.SetVerticalScrollBarVisibility(certificateBox, ScrollBarVisibility.Auto);
+
+            var privateKeyBox = new TextBox
+            {
+                Header = "Private key (PEM)",
+                PlaceholderText = "Paste the matching PEM private key",
+                AcceptsReturn = true,
+                Height = 120,
+                FontFamily = new FontFamily("Consolas"),
+                IsSpellCheckEnabled = false,
+                TextWrapping = TextWrapping.NoWrap,
+            };
+            ScrollViewer.SetVerticalScrollBarVisibility(privateKeyBox, ScrollBarVisibility.Auto);
+
+            var descriptionBox = new TextBox
+            {
+                Header = "Description (optional)",
+                PlaceholderText = "e.g. *.example.com issued 2026-09",
+            };
+
+            var errorText = new TextBlock
+            {
+                FontSize = 12,
+                TextWrapping = TextWrapping.Wrap,
+                Foreground = TryGetThemeBrush("SystemFillColorCriticalBrush", Microsoft.UI.Colors.Red),
+                Visibility = Visibility.Collapsed,
+            };
+
+            // Any edit clears the pending inline validation error.
+            certificateBox.TextChanged += (s, e) => SetFormError(errorText, null);
+            privateKeyBox.TextChanged += (s, e) => SetFormError(errorText, null);
+            descriptionBox.TextChanged += (s, e) => SetFormError(errorText, null);
+
+            var form = new StackPanel { Orientation = Orientation.Vertical, Spacing = 12 };
+            form.Children.Add(certificateBox);
+            form.Children.Add(privateKeyBox);
+            form.Children.Add(descriptionBox);
+            form.Children.Add(errorText);
+
+            var dialog = new ContentDialog
+            {
+                Title = "Upload Certificate",
+                Content = form,
+                PrimaryButtonText = "Upload",
+                CloseButtonText = "Cancel",
+                DefaultButton = ContentDialogButton.Primary,
+                XamlRoot = XamlRoot,
+            };
+
+            bool confirmPending = false;
+
+            dialog.Closing += (s, args) =>
+            {
+                // Programmatic close on the way to the confirmation passes
+                // through.
+                if (confirmPending) return;
+                if (args.Result != ContentDialogResult.Primary) return;
+
+                // Inline validation: on invalid input cancel the close so
+                // the dialog stays open and the error shows next to the
+                // fields.
+                if (string.IsNullOrWhiteSpace(certificateBox.Text))
+                {
+                    args.Cancel = true;
+                    SetFormError(errorText, "Certificate is required.");
+                    return;
+                }
+                if (string.IsNullOrWhiteSpace(privateKeyBox.Text))
+                {
+                    args.Cancel = true;
+                    SetFormError(errorText, "Private key is required.");
+                    return;
+                }
+
+                // Close first so the confirmation dialog can open on top
+                // (two ContentDialogs cannot stack on one XamlRoot).
+                args.Cancel = true;
+                confirmPending = true;
+                dialog.Hide();
+            };
+
+            while (true)
+            {
+                confirmPending = false;
+                await dialog.ShowAsync();
+                if (!confirmPending) return; // Closed via Cancel.
+
+                var confirmed = await ConfirmDialog.ShowAsync(
+                    XamlRoot,
+                    "Upload Certificate",
+                    "The certificate will be imported into the panel and becomes available to websites. Continue?",
+                    "Upload",
+                    "Cancel");
+                if (!confirmed) continue; // Back to the form, content kept.
+
+                // Paste semantics per the bridge contract: certificate and
+                // private key are required (validated above); a blank
+                // description is sent as null.
+                var success = await WindowsBridge.UploadCertificateAsync(
+                    certificateBox.Text.Trim(),
+                    privateKeyBox.Text.Trim(),
+                    string.IsNullOrWhiteSpace(descriptionBox.Text) ? null : descriptionBox.Text.Trim());
+
+                if (success)
+                {
+                    // Release the dialog-lifetime guard so the guarded
+                    // silent refresh below can actually run.
+                    _isBusy = false;
+                    await LoadSnapshotAsync(showLoadingState: false);
+                    return;
+                }
+
+                _errorToast.Show("Failed to upload the certificate.");
+                SetFormError(errorText, "Upload failed. The form reopens with your content; try again.");
+            }
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+
+    /// <summary>Shows or hides the inline form validation error.</summary>
+    private static void SetFormError(TextBlock target, string? message)
+    {
+        if (string.IsNullOrEmpty(message))
+        {
+            target.Text = string.Empty;
+            target.Visibility = Visibility.Collapsed;
+        }
+        else
+        {
+            target.Text = message;
+            target.Visibility = Visibility.Visible;
+        }
+    }
+
+    /// <summary>
     /// One certificate row: relative columns only - the domain stretches in
     /// a Star column, the provider and expiry pills sit in Auto columns at
     /// the trailing edge, and the validity range spans the full width below.
@@ -662,10 +864,13 @@ public sealed class SecurityGatewayPage : ModulePageBase
 
     /// <summary>
     /// Card shell shared by all cards: rounded border with a faint translucent
-    /// tint of the theme card stroke plus a semi-bold title line. The caller
-    /// fills <paramref name="panel"/> with the card body.
+    /// tint of the theme card stroke plus a semi-bold title line. An optional
+    /// trailing header action (the certificates card's upload button) is
+    /// aligned opposite the title. The caller fills <paramref name="panel"/>
+    /// with the card body.
     /// </summary>
-    private static FrameworkElement CreateCard(string title, out StackPanel panel)
+    private static FrameworkElement CreateCard(
+        string title, out StackPanel panel, FrameworkElement? headerAction = null)
     {
         var card = new Border
         {
@@ -682,12 +887,29 @@ public sealed class SecurityGatewayPage : ModulePageBase
             Spacing = 10,
         };
 
-        panel.Children.Add(new TextBlock
+        var titleBlock = new TextBlock
         {
             Text = title,
             FontSize = 14,
             FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
-        });
+            VerticalAlignment = VerticalAlignment.Center,
+        };
+
+        if (headerAction != null)
+        {
+            var header = new Grid { ColumnSpacing = 8 };
+            header.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            Grid.SetColumn(titleBlock, 0);
+            Grid.SetColumn(headerAction, 1);
+            header.Children.Add(titleBlock);
+            header.Children.Add(headerAction);
+            panel.Children.Add(header);
+        }
+        else
+        {
+            panel.Children.Add(titleBlock);
+        }
 
         card.Child = panel;
         return card;

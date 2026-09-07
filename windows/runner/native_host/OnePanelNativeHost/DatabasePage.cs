@@ -38,6 +38,11 @@ public sealed class DatabasePage : ModulePageBase
     public DatabasePage()
     {
         PageTitle = "Databases";
+
+        // Empty-state primary action: opens the create dialog so users can
+        // add the first database. Registered once here; the button only shows
+        // inside the base Empty panel, so the Content state needs no cleanup.
+        SetEmptyPrimaryAction("Create database", (s, e) => _ = ShowCreateDatabaseDialogAsync());
     }
 
     protected override async void OnPageShown()

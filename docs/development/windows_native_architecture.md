@@ -167,6 +167,7 @@ static readonly Dictionary<string, Func<Page>> _pageFactories = new()
 | updateCompose | C# -> Dart | 写 | 编辑 Compose 配置（{name/path/content 三必填}；返回 {success: bool}） |
 | composeOperate | C# -> Dart | 写 | 编排操作（{id, name 必填, action ∈ up/down/start/stop/restart/delete}，重建最小 ContainerCompose；返回 {success: bool}） |
 | deleteScripts | C# -> Dart | 写 | 批量删除脚本（{ids: [int]}，空数组失败结构；返回 {success: bool}） |
+| uploadCertificate | C# -> Dart | 写 | 上传证书（粘贴形态：{certificate, privateKey 必填, description?}；返回 {success: bool}） |
 
 > 备注：AI 域名绑定（bindDomain）发现流已实现（getOllamaContext），绑定写操作已接入。
 > 备注：Terminal 走 websocket 双向通道，属范围外（EventChannel 明确不做），登记后续批次。
@@ -299,6 +300,7 @@ ModulePageBase : Page
 - 提供状态切换方法（`ShowLoading()`、`ShowContent()`、`ShowEmpty()`、`ShowError()`）
 - 统一处理桥接调用、超时、异常
 - 提供 `OnDataLoaded()` 虚方法供子类实现数据渲染逻辑
+- ModulePageBase Empty 态统一提供主操作位（空数据服务器仍可创建首条数据）
 
 ### 具体页面
 
@@ -324,7 +326,7 @@ ModulePageBase : Page
 | CommandsPage | ModulePageBase | 命令库列表 + 新建/删除 + 分组下拉 |
 | ScriptLibraryPage | ModulePageBase | 脚本库只读列表 + 批量删除 |
 | OrchestrationPage | ModulePageBase | Compose 列表 + 六动作操作 + 新建/编辑表单 |
-| SecurityGatewayPage | ModulePageBase | 面板 SSL/证书/OpenResty 状态 + HTTPS 跳转开关 |
+| SecurityGatewayPage | ModulePageBase | 面板 SSL/证书/OpenResty 状态聚合 + 证书上传 |
 
 ### 状态控件
 

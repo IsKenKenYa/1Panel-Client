@@ -73,6 +73,11 @@ public sealed class WebsitesPage : ModulePageBase
             var websites = ParseWebsites(result.Value);
             if (websites.Count == 0)
             {
+                // Empty server: expose the create entry on the Empty panel.
+                // SetState(PageState.Content) below collapses the whole Empty
+                // panel when data exists, so the action never shows alongside
+                // the list and needs no explicit teardown.
+                SetEmptyPrimaryAction("Add website", OnEmptyAddWebsiteClicked);
                 SetState(PageState.Empty);
                 return;
             }
@@ -384,6 +389,33 @@ public sealed class WebsitesPage : ModulePageBase
     }
 
     /// <summary>
+    /// Guarded create entry for the CommandBar button: ignored while a
+    /// refresh or row operation is already in flight.
+    /// </summary>
+    private async System.Threading.Tasks.Task ShowAddWebsiteDialogAsync()
+    {
+        if (_isBusy) return;
+        await ShowAddWebsiteDialogCoreAsync();
+    }
+
+    /// <summary>
+    /// Empty-state primary action ("Add website" on the Empty panel).
+    /// Deliberately a named method rather than a lambda: ModulePageBase
+    /// removes and re-adds the handler on every SetEmptyPrimaryAction call,
+    /// and method-group delegate equality keeps that idempotent instead of
+    /// stacking subscriptions.
+    /// </summary>
+    private void OnEmptyAddWebsiteClicked(object sender, RoutedEventArgs e)
+    {
+        // ModulePageBase wires its own default refresh Click on the empty
+        // primary button; that refresh flips _isBusy to true before this
+        // handler runs, so route around the guarded entry or the dialog
+        // would never open. The stray reload settles back into the Empty
+        // state behind the modal dialog and is harmless.
+        _ = ShowAddWebsiteDialogCoreAsync();
+    }
+
+    /// <summary>
     /// Add-website form dialog with inline validation, matching the upstream
     /// create-site form (primary domain required, port defaults to 80, alias
     /// auto-derived Dart-side when empty, deployment type fixed).
@@ -392,9 +424,8 @@ public sealed class WebsitesPage : ModulePageBase
     /// The dialog stays open while the bridge call runs and only closes on
     /// success; on failure the toast shows and the form stays editable.
     /// </summary>
-    private async System.Threading.Tasks.Task ShowAddWebsiteDialogAsync()
+    private async System.Threading.Tasks.Task ShowAddWebsiteDialogCoreAsync()
     {
-        if (_isBusy) return;
         _isBusy = true;
 
         try
