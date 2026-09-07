@@ -24,6 +24,7 @@ public sealed partial class MainWindow : Window
         { "Monitoring", () => new MonitoringPage() },
         { "AI", () => new AIPage() },
         { "Commands", () => new CommandsPage() },
+        { "ScriptLibrary", () => new ScriptLibraryPage() },
         { "Logs", () => new LogsPage() },
         { "Security", () => new SecurityPage() },
         { "Gateway", () => new SecurityGatewayPage() },

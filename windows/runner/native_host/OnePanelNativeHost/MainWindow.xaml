@@ -148,6 +148,19 @@
                         <FontIcon Glyph="&#xE945;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
+                <!-- E943 verified against the official Segoe Fluent Icons table: it is
+                     "Code" (angle-bracket source-code glyph), the closest semantic match
+                     for the script library, which sits in the Commands/automation
+                     neighborhood. The font has no literal "Script" glyph; nearby and
+                     related candidates were rejected: E944 is "ReturnToWindow" and E946
+                     is "Info" (not code glyphs), E756 "CommandPrompt" is an interactive
+                     terminal already rejected for Commands, and E945 "LightningBolt" /
+                     E9D9 "Diagnostic" are taken by Commands and Logs. -->
+                <NavigationViewItem Content="ScriptLibrary">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE943;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <!-- E9D9 verified against the official Segoe Fluent Icons table: it is
                      "Diagnostic", matching the log-review semantics of the 1Panel web
                      "日志" group (system/operation/login/website logs). E7C3 was also

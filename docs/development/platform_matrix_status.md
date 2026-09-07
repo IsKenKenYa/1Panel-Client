@@ -11,7 +11,7 @@
 | Android | MDUI3 | 已完成 | 已完成 | 已完成 | 已完成 |
 | iOS | Native/MDUI3 | 已完成 | 已完成（只读） | 部分完成 | 待 xcodebuild 验证 |
 | macOS | Native/MDUI3 | 已完成 | 已完成 | 部分完成 | 待 xcodebuild 验证 |
-| Windows | Native/MDUI3 双模式 | 已完成（单例页面直赋，导航 20 项） | 已完成（20 页（+OrchestrationPage/SecurityGatewayPage）） | 已完成（CRUD） | 已完成（dotnet build 0 错误 + xUnit 26/26） |
+| Windows | Native/MDUI3 双模式 | 已完成（单例页面直赋，导航 21 项） | 已完成（21 页（+ScriptLibraryPage）） | 已完成（CRUD） | 已完成（dotnet build 0 错误 + xUnit 26/26） |
 | Linux | MDUI3 | 已完成 | 已完成 | 已完成 | 已完成 |
 | HarmonyOS | 占位 | 占位 | 占位 | 占位 | 未启动 |
 
@@ -42,6 +42,7 @@
 - 命令库与 AI 发现流（B17）已接入：命令库 CRUD、分组下拉、getOllamaContext 发现流消费与域名绑定表单；导航 18 项。
 - 编排与安全网关模块（B18）已接入：Compose 列表与六动作操作、面板 SSL/网站证书/OpenResty 状态只读聚合；Compose 创建/编辑与网关写操作属后续批次；导航 20 项。
 - Compose 建/改与网关开关（B19）已接入：编排新建（path/raw 两形态）与配置全量替换编辑、OpenResty 默认 HTTPS 跳转开关；导航项数不变。
+- 脚本库模块（B20）已接入：脚本只读列表与批量删除（系统脚本保护）；脚本运行/同步走脚本执行通道属范围外；onboarding（引导覆盖层）/operations_center（聚合页无独立数据源）评估为范围外；导航 21 项。
 
 ## 构建门禁命令
 

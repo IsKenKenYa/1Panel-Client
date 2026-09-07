@@ -128,3 +128,6 @@ architecture-review-*
 
 # Golden test failure diff artifacts (binary, regenerated per run)
 test/widget_test/failures/
+
+# ZCode session plan artifacts
+.zcode/
