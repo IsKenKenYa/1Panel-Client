@@ -63,9 +63,9 @@ class ToolboxRepository {
     await api.updateDeviceSwap(swap);
   }
 
-  Future<void> checkDns(String dns) async {
+  Future<void> checkDns(String key, String value) async {
     final api = await _ensureApi();
-    await api.checkDNS(dns);
+    await api.checkDNS(key, value);
   }
 
   Future<List<String>> getDeviceUsers() async {

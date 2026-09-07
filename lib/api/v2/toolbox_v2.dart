@@ -223,10 +223,15 @@ class ToolboxV2Api {
   }
 
   /// 检查DNS配置
-  Future<Response<void>> checkDNS(String dns) async {
+  ///
+  /// V2 契约（对齐上游 frontend toolbox.ts checkDNS）：body 为
+  /// `{key, value}` SettingUpdate 结构——key 为形态（'form'|'raw'），
+  /// value 为逗号分隔的 DNS 列表；2026-09-08 生产面板实测发 `{dns}` 会
+  /// 被 400 `SettingUpdate.Key required` 拒绝。
+  Future<Response<void>> checkDNS(String key, String value) async {
     return await _client.post<void>(
       ApiConstants.buildApiPath('/toolbox/device/check/dns'),
-      data: {'dns': dns},
+      data: {'key': key, 'value': value},
     );
   }
 
