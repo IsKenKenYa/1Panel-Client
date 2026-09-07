@@ -462,7 +462,9 @@ class NativeChannelReadHandlers {
         page: int.tryParse('${arguments?['page'] ?? 1}') ?? 1,
         pageSize: int.tryParse('${arguments?['pageSize'] ?? 100}') ?? 100,
       ));
-      return page.items
+      // groupBelong 是 List<String>（契约偏差：Swagger 声明 string）——
+      // 嵌套可空列表在 codec 上曾致 C# 端收 null，序列化为逗号串规避。
+      final result = page.items
           .map((s) => {
                 'id': s.id,
                 'name': s.name,
@@ -470,10 +472,11 @@ class NativeChannelReadHandlers {
                 'isInteractive': s.isInteractive,
                 'isSystem': s.isSystem,
                 'description': s.description,
-                'groupBelong': s.groupBelong,
+                'groupBelong': s.groupBelong.join(','),
                 'createdAt': s.createdAt,
               })
           .toList();
+      return result;
     } catch (e) {
       if (e.toString().contains('No API config available')) {
         appLogger.i('getScripts skipped: No active server configured.');

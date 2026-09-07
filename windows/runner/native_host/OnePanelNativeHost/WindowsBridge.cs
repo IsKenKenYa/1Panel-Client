@@ -83,7 +83,9 @@ public static class WindowsBridge
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"[WindowsBridge] Decode failed for {method}: {ex.Message}");
+            System.IO.File.AppendAllText(
+                System.IO.Path.Combine(AppContext.BaseDirectory, "bridge_decode_errors.log"),
+                $"{DateTime.Now:HH:mm:ss} {method}: {ex.Message}\n");
             return null;
         }
     }
@@ -746,7 +748,9 @@ public static class WindowsBridge
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[WindowsBridge] {method} attempt {attempt} failed: {ex.Message}");
+                System.IO.File.AppendAllText(
+                    System.IO.Path.Combine(AppContext.BaseDirectory, "bridge_decode_errors.log"),
+                    $"{DateTime.Now:HH:mm:ss} {method} attempt {attempt}: {ex.Message}\n");
             }
 
             if (attempt < MaxRetries && RetryableMethods.Contains(method))
