@@ -19,21 +19,27 @@ namespace OnePanelNativeHost;
 /// settings (SSL info), the website certificate list and the website
 /// OpenResty views, and the client joins them into one security overview.
 ///
-/// WRITE BOUNDARY: certificate upload is this page's only gateway-policy
-/// write operation (B21): the Website Certificates card header carries an
-/// "Upload certificate" button that opens a paste form (certificate,
-/// private key, optional description), confirms that the certificate will
-/// be imported into the panel and then calls UploadCertificateAsync through
-/// the bridge; success silently refreshes the certificates card and failure
-/// shows the error toast and keeps the form. The page keeps one older,
+/// WRITE BOUNDARY: the Website Certificates card carries two gateway-policy
+/// write operations. The header "Upload certificate" button (B21) opens a
+/// paste form (certificate, private key, optional description), confirms
+/// that the certificate will be imported into the panel and then calls
+/// UploadCertificateAsync through the bridge; success silently refreshes
+/// the certificates card and failure shows the error toast and keeps the
+/// form. Each certificate row additionally carries a "Renew" action that
+/// mirrors the upstream website_ssl_page apply/renew entry: a
+/// non-destructive confirmation names the primary domain and states that
+/// an ACME apply/renewal request will be sent, then ApplyCertificateAsync
+/// runs through the bridge; success renders a dismissible "Renewal
+/// requested." InfoBar on the certificates card via a silent refresh and
+/// failure shows the error toast. The page keeps one older,
 /// card-scoped write: the OpenResty "default HTTPS redirect" toggle inside
 /// the OpenResty status card shows a confirmation dialog and calls
 /// UpdateOpenrestyHttpsAsync ("enable"/"disable"); success silently
 /// refreshes the status and failure shows the error toast and rolls the
 /// toggle back. The CommandBar itself still carries only Refresh, and
-/// gateway policy operations beyond upload (creating/updating/deleting
-/// policies, enforcement toggles, certificate binding) belong to a later
-/// batch.
+/// gateway policy operations beyond upload and renewal (creating/updating/
+/// deleting policies, enforcement toggles, certificate binding) belong to
+/// a later batch.
 ///
 /// Data flows through WindowsBridge (Dart business core over the method
 /// channel); no direct HTTP from the native layer. The three sources are
@@ -71,6 +77,13 @@ public sealed class SecurityGatewayPage : ModulePageBase
     /// busy debounce).
     /// </summary>
     private bool _suppressHttpsToggleEvents;
+
+    /// <summary>
+    /// Pending renewal success notice ("Renewal requested."), set by the
+    /// renew flow and rendered once as a dismissible InfoBar on the
+    /// certificates card during the next content rebuild.
+    /// </summary>
+    private string? _renewalNotice;
 
     /// <summary>Expiry badge states for one website certificate.</summary>
     private enum CertificateExpiryState
@@ -219,9 +232,9 @@ public sealed class SecurityGatewayPage : ModulePageBase
         };
 
         // The bar carries only Refresh; write actions live inline in their
-        // cards: certificate upload in the certificates card header and the
-        // default HTTPS redirect toggle in the OpenResty card (see class
-        // header).
+        // cards: certificate upload in the certificates card header,
+        // per-row certificate renewal in the same card and the default
+        // HTTPS redirect toggle in the OpenResty card (see class header).
         var refreshButton = new AppBarButton
         {
             Label = "Refresh",
@@ -256,8 +269,10 @@ public sealed class SecurityGatewayPage : ModulePageBase
     /// Website certificates card: one row per certificate with the primary
     /// domain as the main text, the provider as a neutral tag pill and the
     /// expiry state as a colored pill. The card header carries the
-    /// "Upload certificate" action (the page's gateway-policy write, paste
-    /// form like the upstream certificate upload). Unavailable (null)
+    /// "Upload certificate" action (paste form like the upstream certificate
+    /// upload) and each row carries its own "Renew" action (apply/renewal,
+    /// see RenewCertificateAsync). A pending renewal success notice renders
+    /// once as a dismissible InfoBar above the list. Unavailable (null)
     /// collapses the card; an empty list keeps the card and shows a "no
     /// certificates" hint so an empty but reachable source stays
     /// distinguishable.
@@ -290,6 +305,20 @@ public sealed class SecurityGatewayPage : ModulePageBase
         uploadButton.Click += (s, e) => _ = ShowUploadCertificateDialogAsync();
 
         var card = CreateCard("Website Certificates", out var panel, uploadButton);
+
+        // Consume the pending renewal notice exactly once so it cannot leak
+        // into an unrelated later rebuild.
+        var renewalNotice = _renewalNotice;
+        _renewalNotice = null;
+        if (renewalNotice != null)
+        {
+            panel.Children.Add(new InfoBar
+            {
+                Title = renewalNotice,
+                Severity = InfoBarSeverity.Success,
+                IsOpen = true,
+            });
+        }
 
         if (certificates == null)
         {
@@ -701,16 +730,78 @@ public sealed class SecurityGatewayPage : ModulePageBase
     }
 
     /// <summary>
+    /// Renew flow for one certificate row (upstream website_ssl_page apply
+    /// entry): a non-destructive confirmation names the primary domain and
+    /// states that an ACME apply/renewal request will be sent, then the
+    /// bridge triggers the async apply task. Success renders the
+    /// "Renewal requested." InfoBar on the certificates card through a
+    /// silent snapshot refresh; failure shows the error toast and keeps the
+    /// list as-is. The shared _isBusy guard makes clicks during an in-flight
+    /// write or dialog a no-op.
+    /// </summary>
+    private async Task RenewCertificateAsync(CertificateEntry certificate)
+    {
+        if (_isBusy) return;
+
+        // ParseCertificates falls back to -1 when the bridge entry has no
+        // usable id; such a row cannot be renewed.
+        if (certificate.Id < 0)
+        {
+            _errorToast.Show("This certificate has no id and cannot be renewed.");
+            return;
+        }
+
+        var domain = string.IsNullOrWhiteSpace(certificate.PrimaryDomain)
+            ? "--"
+            : certificate.PrimaryDomain.Trim();
+        var confirmed = await ConfirmDialog.ShowAsync(
+            XamlRoot,
+            "Renew Certificate",
+            $"An ACME apply/renewal request will be sent for \"{domain}\". Continue?",
+            "Renew",
+            "Cancel");
+        if (!confirmed) return;
+
+        _isBusy = true;
+        bool success;
+        try
+        {
+            success = await WindowsBridge.ApplyCertificateAsync(certificate.Id);
+        }
+        finally
+        {
+            // Release before the refresh: the guarded load owns the busy
+            // guard from here on.
+            _isBusy = false;
+        }
+
+        if (success)
+        {
+            // The notice is rendered once by the next silent rebuild of the
+            // certificates card (see BuildCertificatesCard).
+            _renewalNotice = "Renewal requested.";
+            await LoadSnapshotAsync(showLoadingState: false);
+        }
+        else
+        {
+            _errorToast.Show($"Failed to request the renewal of \"{domain}\".");
+        }
+    }
+
+    /// <summary>
     /// One certificate row: relative columns only - the domain stretches in
     /// a Star column, the provider and expiry pills sit in Auto columns at
-    /// the trailing edge, and the validity range spans the full width below.
+    /// the trailing edge, the "Renew" action sits in the last Auto column
+    /// (the row's apply/renewal write, see RenewCertificateAsync) and the
+    /// validity range spans the full width below.
     /// </summary>
-    private static FrameworkElement BuildCertificateRow(CertificateEntry certificate)
+    private FrameworkElement BuildCertificateRow(CertificateEntry certificate)
     {
         var (expiryState, daysLeft) = EvaluateExpiry(certificate.ExpireDate);
 
         var row = new Grid { ColumnSpacing = 8, RowSpacing = 2, Margin = new Thickness(0, 0, 0, 6) };
         row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
         row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
         row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
         row.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -747,6 +838,21 @@ public sealed class SecurityGatewayPage : ModulePageBase
         Grid.SetColumn(expiryPill, 2);
         row.Children.Add(expiryPill);
 
+        // Row write action: compact icon-only button (sync glyph) with a
+        // tooltip, matching the card's small-font row density. The handler
+        // is busy-guarded so clicks during an in-flight write are no-ops.
+        var renewButton = new Button
+        {
+            Padding = new Thickness(8, 2, 8, 2),
+            VerticalAlignment = VerticalAlignment.Center,
+            Content = new FontIcon { Glyph = "\uE895", FontSize = 14 },
+        };
+        ToolTipService.SetToolTip(renewButton, "Renew");
+        renewButton.Click += (s, e) => _ = RenewCertificateAsync(certificate);
+        Grid.SetRow(renewButton, 0);
+        Grid.SetColumn(renewButton, 3);
+        row.Children.Add(renewButton);
+
         var validityBlock = new TextBlock
         {
             Text = FormatValidityRange(certificate.StartDate, certificate.ExpireDate),
@@ -756,7 +862,7 @@ public sealed class SecurityGatewayPage : ModulePageBase
         };
         Grid.SetRow(validityBlock, 1);
         Grid.SetColumn(validityBlock, 0);
-        Grid.SetColumnSpan(validityBlock, 3);
+        Grid.SetColumnSpan(validityBlock, 4);
         row.Children.Add(validityBlock);
 
         return row;
