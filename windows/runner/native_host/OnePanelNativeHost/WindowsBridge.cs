@@ -961,15 +961,22 @@ public static class WindowsBridge
             using var stream = new MemoryStream(data);
             using var reader = new BinaryReader(stream);
             var type = reader.ReadByte();
+            void LogDecode(string path)
+            {
+                System.IO.File.AppendAllText(
+                    System.IO.Path.Combine(AppContext.BaseDirectory, "bridge_decode_errors.log"),
+                    $"{DateTime.Now:HH:mm:ss} {path}\n");
+            }
             switch (type)
             {
                 case EnvelopeSuccess:
                     var result = ReadValue(reader);
+                    LogDecode($"success {result?.ToString()?.Substring(0, Math.Min(80, result?.ToString()?.Length ?? 0))}");
                     return JsonSerializer.Serialize(ToJsonSerializable(result));
                 case EnvelopeError:
                     var code = ReadValue(reader) as string ?? "unknown";
                     var message = ReadValue(reader) as string;
-                    System.Diagnostics.Debug.WriteLine($"[WindowsBridge] Method error: {code} - {message}");
+                    LogDecode($"error envelope code={code} message={message}");
                     return null;
                 case EnvelopeNotImplemented:
                     System.Diagnostics.Debug.WriteLine("[WindowsBridge] Method not implemented.");
