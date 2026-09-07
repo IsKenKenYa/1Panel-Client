@@ -42,4 +42,30 @@ void main() {
       expect(result['success'], isFalse);
     });
   });
+
+  group('openrestyMissingInPreCheck (回归：未装 OpenResty 时拦截创建)', () {
+    // 服务端 /websites/check 真实返回形态（2026-09-08 US 测试面板实测）。
+    test('OpenResty 应用未安装时返回 true', () {
+      final blocked = NativeChannelWriteHandlers.openrestyMissingInPreCheck([
+        {'name': '', 'status': '应用未安装', 'version': '', 'appName': 'OpenResty'},
+      ]);
+
+      expect(blocked, isTrue);
+    });
+
+    test('OpenResty 已安装（Running）时返回 false', () {
+      final blocked = NativeChannelWriteHandlers.openrestyMissingInPreCheck([
+        {'name': 'openresty', 'status': 'Running', 'version': '1.27.4', 'appName': 'OpenResty'},
+      ]);
+
+      expect(blocked, isFalse);
+    });
+
+    test('空检查列表不拦截', () {
+      expect(
+        NativeChannelWriteHandlers.openrestyMissingInPreCheck([]),
+        isFalse,
+      );
+    });
+  });
 }

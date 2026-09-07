@@ -473,12 +473,12 @@ public sealed class WebsitesPage : ModulePageBase
             async System.Threading.Tasks.Task SubmitCreateAsync()
             {
                 // Validation already guaranteed a numeric 1-65535 port.
-                var success = await WindowsBridge.CreateWebsiteAsync(
+                var failure = await WindowsBridge.CreateWebsiteAsync(
                     domainBox.Text.Trim(),
                     aliasBox.Text.Trim(),
                     long.Parse(portBox.Text.Trim(), CultureInfo.InvariantCulture),
                     string.IsNullOrWhiteSpace(remarkBox.Text) ? null : remarkBox.Text.Trim());
-                if (success)
+                if (failure == null)
                 {
                     createSucceeded = true;
                     dialog.Hide(); // Closing lets this programmatic close pass.
@@ -487,7 +487,9 @@ public sealed class WebsitesPage : ModulePageBase
                 {
                     submitting = false;
                     _errorToast.Show("Failed to add website.");
-                    SetFormError(errorText, "Create failed. Adjust the inputs and try again.");
+                    // Surface the real server error (e.g. OpenResty not installed)
+                    // instead of a generic message.
+                    SetFormError(errorText, failure);
                 }
             }
 

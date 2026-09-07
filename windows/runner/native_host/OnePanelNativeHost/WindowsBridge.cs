@@ -190,18 +190,19 @@ public static class WindowsBridge
         return await InvokeWithRetryAsync("getWebsites");
     }
 
-    /// <summary>新建网站（deployment 缺省路径；Dart 侧 createWebsite）。</summary>
-    public static async Task<bool> CreateWebsiteAsync(
+    /// <summary>新建网站（deployment 缺省路径；Dart 侧 createWebsite）。
+    /// 成功返回 null，失败返回服务端错误描述（建站对话框内联展示）。</summary>
+    public static async Task<string?> CreateWebsiteAsync(
         string primaryDomain, string alias, long port, string? remark)
     {
-        var result = await InvokeAsync("createWebsite", new Dictionary<string, object?>
+        var result = await InvokeJsonAsync("createWebsite", new Dictionary<string, object?>
         {
             ["primaryDomain"] = primaryDomain,
             ["alias"] = alias,
             ["port"] = port,
             ["remark"] = remark,
         });
-        return IsSuccess(result);
+        return ErrorTextOf(result);
     }
 
     public static async Task<bool> ToggleWebsiteStatusAsync(long id, string currentStatus)
@@ -737,6 +738,23 @@ public static class WindowsBridge
         return result?.ValueKind == JsonValueKind.Object &&
                result.Value.TryGetProperty("success", out var ok) &&
                ok.ValueKind == JsonValueKind.True;
+    }
+
+    /// <summary>null 表示成功信封；否则取 error 字段文本作为失败原因，
+    /// 供表单对话框内联展示真实服务端错误而非通用提示。</summary>
+    private static string? ErrorTextOf(JsonElement? result)
+    {
+        if (IsSuccess(result))
+        {
+            return null;
+        }
+        if (result?.ValueKind == JsonValueKind.Object &&
+            result.Value.TryGetProperty("error", out var err) &&
+            err.ValueKind == JsonValueKind.String)
+        {
+            return err.GetString();
+        }
+        return "Method channel call failed.";
     }
 
     private static bool IsSuccess(string? json)

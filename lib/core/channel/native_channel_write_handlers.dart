@@ -1002,6 +1002,16 @@ class NativeChannelWriteHandlers {
     }
   }
 
+  /// OpenResty 未安装判定（/websites/check preCheck 返回项）。
+  /// 上游建站向导语义：未安装时拦截创建并提示先装 OpenResty，
+  /// 而不是提交一个注定以 "record not found" 失败的创建。
+  static bool openrestyMissingInPreCheck(List<Map<String, dynamic>> checks) =>
+      checks.any(
+        (item) =>
+            '${item['appName'] ?? ''}'.toLowerCase().contains('openresty') &&
+            '${item['status'] ?? ''}'.contains('未安装'),
+      );
+
   /// 新建网站（WinUI3 网站页新建表单，最小字段集对齐 Flutter 建站向导
   /// 的 deployment 缺省路径）。参数：
   /// `{primaryDomain: String, alias?: String, port?: int|String(default 80),
@@ -1032,8 +1042,15 @@ class NativeChannelWriteHandlers {
       }
       final groupId = groups.first.id ?? 1;
 
-      // 与 Flutter 建站向导同序：先 preCheck 再 create。
-      await WebsiteRepository().preCheckWebsite({});
+      // 与 Flutter 建站向导同序：先 preCheck 再 create；OpenResty 未安装时
+      // 快速失败，不提交注定失败的创建。
+      final checks = await WebsiteRepository().preCheckWebsite({});
+      if (openrestyMissingInPreCheck(checks)) {
+        return {
+          'success': false,
+          'error': 'OpenResty 未安装，请先在 1Panel 应用商店安装 OpenResty 后再创建网站',
+        };
+      }
       await WebsiteRepository().createWebsite(
         WebsiteCreate(
           alias: alias,
