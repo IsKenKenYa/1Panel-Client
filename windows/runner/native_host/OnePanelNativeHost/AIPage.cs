@@ -10,11 +10,13 @@ using Windows.UI;
 namespace OnePanelNativeHost;
 
 /// <summary>
-/// Native AI module page: local model list (Ollama) plus a connection card.
-/// Mirrors upstream 1Panel AI model list semantics (name, size, modified
+/// Native AI module page: a tab shell mirroring the upstream 1Panel AI
+/// sidebar sections, with 「本地模型」 hosting the original Ollama model list
+/// plus connection card (upstream model list semantics: name, size, modified
 /// date, create by model name, recreate of an existing model, delete with
-/// confirmation naming the model) and the AI domain tab semantics for the
-/// connection card (Ollama discovery with domain binding).
+/// confirmation naming the model; AI domain tab semantics for the connection
+/// card: Ollama discovery with domain binding). 账号 / MCP / 智能体 / GPU 四个
+/// Tab 委托给并行实现的静态 Tab 类（每次切换重建，数据重载）。
 /// </summary>
 public sealed class AIPage : ModulePageBase
 {
@@ -28,19 +30,147 @@ public sealed class AIPage : ModulePageBase
     private StackPanel? _connectionCardBody;
     private InfoBar? _bindInfoBar;
 
+    // Tab shell state (tab strip row + per-tab content host inside
+    // ModuleContentPresenter). Switching tabs clears and rebuilds the host.
+    private int _selectedTab;
+    private ContentPresenter? _tabContentHost;
+    private readonly List<Button> _tabButtons = new();
+
+    /// <summary>
+    /// Tab 注册表，顺序对应上游 AI 侧边栏（模型账号 → MCP → 智能体 → GPU →
+    /// 本地模型），客户端按任务要求排列：本地模型 → 账号 → MCP → 智能体 → GPU。
+    /// 键为 hostAiTab* 前缀，缺键回落英文。
+    /// </summary>
+    private static readonly (string Key, string English)[] TabItems =
+    {
+        ("hostAiTabModels", "Local Models"),
+        ("hostAiTabAccounts", "Accounts"),
+        ("hostAiTabMcp", "MCP"),
+        ("hostAiTabAgents", "Agents"),
+        ("hostAiTabGpu", "GPU"),
+    };
+
     public AIPage()
     {
         PageTitle = L10n.T("serverModuleAi", "AI");
+        BuildTabShell();
     }
 
-    protected override async void OnPageShown()
+    protected override void OnPageShown()
     {
-        await RefreshAsync();
+        // 每次显示当前 Tab 都重建内容区（数据重载），与切换 Tab 同语义。
+        SelectTab(_selectedTab);
     }
 
-    protected override async void OnRefreshClicked()
+    protected override void OnRefreshClicked()
     {
-        await RefreshAsync();
+        SelectTab(_selectedTab);
+    }
+
+    /// <summary>
+    /// Builds the tab shell once and mounts it into ModuleContentPresenter:
+    /// a horizontal tab strip on top (same visual language as the website
+    /// config shell: plain buttons, AccentButtonStyle marks the selection)
+    /// and a content host below that each tab rebuilds into.
+    /// </summary>
+    private void BuildTabShell()
+    {
+        _tabButtons.Clear();
+
+        var root = new Grid { RowSpacing = 8 };
+        root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // Tab 行
+        root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }); // 内容区
+
+        var tabStrip = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            Spacing = 6,
+            Margin = new Thickness(8, 8, 8, 0),
+        };
+        for (int i = 0; i < TabItems.Length; i++)
+        {
+            var index = i;
+            var button = new Button
+            {
+                Content = L10n.T(TabItems[index].Key, TabItems[index].English),
+                Padding = new Thickness(12, 6, 12, 6),
+                CornerRadius = new CornerRadius(6),
+            };
+            button.Click += (s, e) => SelectTab(index);
+            _tabButtons.Add(button);
+            tabStrip.Children.Add(button);
+        }
+
+        var tabScroll = new ScrollViewer
+        {
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+            HorizontalScrollMode = ScrollMode.Enabled,
+            VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
+            Content = tabStrip,
+        };
+        Grid.SetRow(tabScroll, 0);
+        root.Children.Add(tabScroll);
+
+        _tabContentHost = new ContentPresenter
+        {
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            VerticalAlignment = VerticalAlignment.Stretch,
+        };
+        Grid.SetRow(_tabContentHost, 1);
+        root.Children.Add(_tabContentHost);
+
+        ModuleContentPresenter.Content = root;
+    }
+
+    /// <summary>
+    /// 切换 Tab：更新选中态并清空、重建内容区（每次重新 Build，数据重载）。
+    /// 「本地模型」走原有加载流程（页面级 Loading 态 + 桥调用），其余 Tab
+    /// 直接挂载对应 Tab 类的新实例内容。
+    /// </summary>
+    private void SelectTab(int index)
+    {
+        _selectedTab = index;
+        for (int i = 0; i < _tabButtons.Count; i++)
+        {
+            _tabButtons[i].Style = i == index
+                ? (Style)Application.Current.Resources["AccentButtonStyle"]
+                : null;
+        }
+
+        if (_tabContentHost == null) return;
+
+        // 清空旧内容再重建，避免跨 Tab 残留旧可视树。
+        _tabContentHost.Content = null;
+
+        switch (index)
+        {
+            case 1:
+                _tabContentHost.Content = AiAccountsTab.Build();
+                break;
+            case 2:
+                _tabContentHost.Content = AiMcpTab.Build();
+                break;
+            case 3:
+                _tabContentHost.Content = AiAgentsTab.Build();
+                break;
+            case 4:
+                _tabContentHost.Content = AiGpuTab.Build();
+                break;
+            default:
+                _BuildLocalModelContent();
+                break;
+        }
+    }
+
+    /// <summary>
+    /// 「本地模型」Tab（改造前的页面全部内容）：Ollama 模型列表 + 连接卡 +
+    /// 域名绑定。加载态沿用页面级 SetState，模型数据就绪后由
+    /// <see cref="BuildContent"/> 挂载到当前 Tab 内容区。
+    /// </summary>
+    private void _BuildLocalModelContent()
+    {
+        SetState(PageState.Loading);
+        _ = RefreshAsync();
     }
 
     private async System.Threading.Tasks.Task RefreshAsync()
@@ -68,6 +198,9 @@ public sealed class AIPage : ModulePageBase
             if (showLoadingState) SetState(PageState.Loading);
 
             var result = await WindowsBridge.GetAIModelsAsync();
+            // Tab 壳改造：await 返回时用户可能已切到其他 Tab，丢弃本次结果，
+            // 避免把「本地模型」的加载/错误/列表态覆盖到当前 Tab。
+            if (_selectedTab != 0) return;
             if (result == null)
             {
                 // Bridge failure: full error state on initial load, toast on refresh.
@@ -114,6 +247,8 @@ public sealed class AIPage : ModulePageBase
         try
         {
             var result = await WindowsBridge.GetOllamaContextAsync();
+            // 同上：切走后不再渲染连接卡（渲染目标属于已丢弃的旧内容树）。
+            if (_selectedTab != 0) return;
             _connection = result == null ? null : ParseOllamaContext(result.Value);
             RenderConnectionCard();
         }
@@ -244,7 +379,8 @@ public sealed class AIPage : ModulePageBase
         Grid.SetRow(_errorToast, 1);
         AttachToast(root, _errorToast);
 
-        ModuleContentPresenter.Content = root;
+        if (_tabContentHost == null) return;
+        _tabContentHost.Content = root;
     }
 
     /// <summary>
