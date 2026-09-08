@@ -1,4 +1,5 @@
 import '../../features/ai/ai_repository.dart';
+import '../../api/v2/website_v2.dart';
 import '../../features/apps/app_service.dart';
 import '../../features/commands/services/command_service.dart';
 import '../../features/script_library/services/script_library_service.dart';
@@ -35,6 +36,8 @@ import '../../features/backups/services/backup_recover_service.dart';
 import '../../data/models/backup_request_models.dart';
 import '../../data/models/database_models.dart';
 import '../../data/models/container_compose_models.dart';
+import '../config/api_constants.dart';
+import '../network/api_client_manager.dart';
 import '../services/logger/logger_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:ui' show Locale;
@@ -42,6 +45,10 @@ import 'dart:ui' show Locale;
 /// 统一返回结构：成功 `{success: true}`，失败 `{success: false, error: String}`。
 Map<String, dynamic> _ok() => {'success': true};
 Map<String, dynamic> _err(Object e) => {'success': false, 'error': e.toString()};
+
+/// B1 网站配置中心写通道使用的网站 V2 API（按需构造）。
+Future<WebsiteV2Api> _websiteApi() async =>
+    WebsiteV2Api(await ApiClientManager.instance.getCurrentClient());
 
 /// 所有 Native Channel 写操作 handlers 的集中实现。
 /// 被 [NativeChannelManager] 的 dispatch switch 调用。
@@ -126,6 +133,413 @@ class NativeChannelWriteHandlers {
       return _ok();
     } catch (e) {
       appLogger.e('deleteWebsite failed: $e');
+      return _err(e);
+    }
+  }
+
+  // ── 网站配置中心（B1）───────────────────────────────────────────────────
+  // 契约单一事实源：docs/development/modules/b1_website_channel_contract.md。
+  // 写语义：成功 `{success: true}`，失败 `{success: false, error}`；
+  // 必填参数缺失时快速失败，不发出请求。
+
+  /// 网站 HTTPS 配置。参数：
+  /// `{websiteId: int, enable: bool, websiteSSLId?: int, type: 'existed'|'manual',
+  ///   certificate?: String, privateKey?: String, httpConfig: String,
+  ///   sslProtocol: [String], algorithm: String, hsts?: bool,
+  ///   hstsIncludeSubDomains?: bool, http3?: bool}`
+  /// POST /websites/{websiteId}/https（sslProtocol 映射为服务端 SSLProtocol）。
+  static Future<Map<String, dynamic>> updateWebsiteHttpsConfig(
+      dynamic arguments) async {
+    try {
+      final websiteId =
+          int.tryParse('${arguments['websiteId'] ?? arguments['websiteID'] ?? ''}');
+      if (websiteId == null) {
+        return {'success': false, 'error': 'websiteId is required'};
+      }
+      await (await _websiteApi()).updateWebsiteHttps(
+        websiteId: websiteId,
+        request: WebsiteHttpsUpdateRequest(
+          websiteId: websiteId,
+          enable: arguments['enable'] as bool?,
+          type: arguments['type'] as String?,
+          websiteSSLId: int.tryParse('${arguments['websiteSSLId'] ?? ''}'),
+          certificate: arguments['certificate'] as String?,
+          privateKey: arguments['privateKey'] as String?,
+          httpConfig: arguments['httpConfig'] as String?,
+          sslProtocol:
+              (arguments['sslProtocol'] as List?)?.whereType<String>().toList(),
+          algorithm: arguments['algorithm'] as String?,
+          hsts: arguments['hsts'] as bool?,
+          hstsIncludeSubDomains: arguments['hstsIncludeSubDomains'] as bool?,
+          http3: arguments['http3'] as bool?,
+        ),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateWebsiteHttpsConfig failed: $e');
+      return _err(e);
+    }
+  }
+
+  static const Set<String> _proxyOperates = {'create', 'edit'};
+
+  /// 网站反向代理建/改。参数（全部扁平）：
+  /// `{websiteID: int, operate: 'create'|'edit', name: String, match: String,
+  ///   proxyProtocol: String, proxyAddress: String, proxyHost?: String,
+  ///   sni?: bool, proxySSLName?, sslVerify?: bool, cache?: bool,
+  ///   serverCacheTime?: int, serverCacheUnit?: String, browserCache?: String,
+  ///   cacheTime?: int, cacheUnit?: String, cors?: bool, allowOrigins?: String,
+  ///   allowMethods?: String, allowHeaders?: String, allowCredentials?: bool,
+  ///   preflight?: bool}`
+  /// POST /websites/proxies/update。
+  /// 上游前端保存语义（proxy/create/index.vue）：
+  /// proxyPass = proxyProtocol + proxyAddress，缺省字段取上游 initData 默认值。
+  /// WebsiteV2Api.updateWebsiteProxy 签名为 (websiteId, name, content)，与
+  /// 契约扁平结构体不匹配（服务端吃完整 WebsiteProxyConfig），故按上游形状
+  /// 直发，website_v2.dart 不改动。
+  static Future<Map<String, dynamic>> updateWebsiteProxy(
+      dynamic arguments) async {
+    try {
+      final operate = (arguments['operate'] as String? ?? '').trim();
+      final name = (arguments['name'] as String? ?? '').trim();
+      final match = (arguments['match'] as String? ?? '').trim();
+      final proxyAddress = (arguments['proxyAddress'] as String? ?? '').trim();
+      if (!_proxyOperates.contains(operate)) {
+        return {'success': false, 'error': 'Unsupported operate: $operate'};
+      }
+      if (name.isEmpty || match.isEmpty || proxyAddress.isEmpty) {
+        return {'success': false,
+            'error': 'name, match and proxyAddress are required'};
+      }
+      final proxyProtocol =
+          (arguments['proxyProtocol'] as String? ?? 'http://').trim();
+      final client = await ApiClientManager.instance.getCurrentClient();
+      await client.post<Map<String, dynamic>>(
+        ApiConstants.buildApiPath('/websites/proxies/update'),
+        data: {
+          'id': int.tryParse('${arguments['id'] ?? 0}') ?? 0,
+          'operate': operate,
+          // 契约未携带 enable：与上游 initData 一致默认开启。
+          'enable': arguments['enable'] ?? true,
+          'name': name,
+          'match': match,
+          'proxyPass': '$proxyProtocol$proxyAddress',
+          'proxyProtocol': proxyProtocol,
+          'proxyAddress': proxyAddress,
+          'proxyHost': arguments['proxyHost'] ?? r'$host',
+          'sni': arguments['sni'] ?? false,
+          // 服务端 ProxySSLName 为 string；契约声明 bool——原样透传不转类型。
+          'proxySSLName': arguments['proxySSLName'] ?? '',
+          'sslVerify': arguments['sslVerify'] ?? false,
+          'cache': arguments['cache'] ?? false,
+          'cacheTime': int.tryParse('${arguments['cacheTime'] ?? 0}') ?? 0,
+          'cacheUnit': arguments['cacheUnit'] ?? '',
+          'serverCacheTime':
+              int.tryParse('${arguments['serverCacheTime'] ?? 10}') ?? 10,
+          'serverCacheUnit': arguments['serverCacheUnit'] ?? 'm',
+          'browserCache': arguments['browserCache'] ?? 'noModify',
+          'cors': arguments['cors'] ?? false,
+          'allowOrigins': arguments['allowOrigins'] ?? '*',
+          'allowMethods':
+              arguments['allowMethods'] ?? 'GET,POST,OPTIONS,PUT,DELETE',
+          'allowHeaders': arguments['allowHeaders'] ?? '',
+          'allowCredentials': arguments['allowCredentials'] ?? false,
+          'preflight': arguments['preflight'] ?? true,
+          'modifier': '',
+          'filePath': '',
+          'replaces': <String, dynamic>{},
+        },
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateWebsiteProxy failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 删除网站反向代理。参数：`{id: int, name: String}`。POST /websites/proxies/delete。
+  static Future<Map<String, dynamic>> deleteWebsiteProxy(
+      dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments['id'] ?? ''}');
+      final name = (arguments['name'] as String? ?? '').trim();
+      if (id == null || name.isEmpty) {
+        return {'success': false, 'error': 'id and name are required'};
+      }
+      await (await _websiteApi())
+          .deleteWebsiteProxy({'id': id, 'name': name});
+      return _ok();
+    } catch (e) {
+      appLogger.e('deleteWebsiteProxy failed: $e');
+      return _err(e);
+    }
+  }
+
+  static const Set<String> _proxyStatuses = {'enable', 'disable'};
+
+  /// 网站反向代理启停。参数：
+  /// `{id: int, name: String, status: 'enable'|'disable'}`。POST /websites/proxies/status。
+  static Future<Map<String, dynamic>> updateWebsiteProxyStatus(
+      dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments['id'] ?? ''}');
+      final name = (arguments['name'] as String? ?? '').trim();
+      final status = (arguments['status'] as String? ?? '').trim();
+      if (id == null || name.isEmpty) {
+        return {'success': false, 'error': 'id and name are required'};
+      }
+      if (!_proxyStatuses.contains(status)) {
+        return {'success': false, 'error': 'Unsupported status: $status'};
+      }
+      await (await _websiteApi())
+          .updateWebsiteProxyStatus({'id': id, 'name': name, 'status': status});
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateWebsiteProxyStatus failed: $e');
+      return _err(e);
+    }
+  }
+
+  static const Set<String> _redirectOperates = {
+    'create', 'edit', 'delete', 'enable', 'disable',
+  };
+
+  /// 网站重定向操作。参数（全部扁平）：
+  /// `{websiteID: int, operate: 'create'|'edit'|'delete'|'enable'|'disable',
+  ///   enable: bool, name: String, keepPath?: bool, type: 'domain'|'path'|'404',
+  ///   redirect: '301'|'302', path?: String, target?: String, domains?: [String]}`
+  /// POST /websites/redirect/update（键名与服务端 NginxRedirectReq 一致）。
+  static Future<Map<String, dynamic>> updateWebsiteRedirect(
+      dynamic arguments) async {
+    try {
+      final websiteID = int.tryParse('${arguments['websiteID'] ?? ''}');
+      final operate = (arguments['operate'] as String? ?? '').trim();
+      final name = (arguments['name'] as String? ?? '').trim();
+      if (websiteID == null) {
+        return {'success': false, 'error': 'websiteID is required'};
+      }
+      if (!_redirectOperates.contains(operate)) {
+        return {'success': false, 'error': 'Unsupported operate: $operate'};
+      }
+      if (name.isEmpty) {
+        return {'success': false, 'error': 'name is required'};
+      }
+      await (await _websiteApi()).updateWebsiteRedirectConfig({
+        'websiteID': websiteID,
+        'operate': operate,
+        'enable': arguments['enable'] ?? false,
+        'name': name,
+        if (arguments['keepPath'] != null) 'keepPath': arguments['keepPath'],
+        'type': arguments['type'] as String? ?? '',
+        'redirect': arguments['redirect'] as String? ?? '',
+        if (arguments['path'] != null) 'path': arguments['path'],
+        if (arguments['target'] != null) 'target': arguments['target'],
+        if (arguments['domains'] is List)
+          'domains': (arguments['domains'] as List)
+              .map((e) => '$e')
+              .toList(),
+      });
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateWebsiteRedirect failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 网站伪静态保存。参数：
+  /// `{websiteID: int, name: String, content: String}`。POST /websites/rewrite/update。
+  static Future<Map<String, dynamic>> updateWebsiteRewrite(
+      dynamic arguments) async {
+    try {
+      final websiteID = int.tryParse('${arguments['websiteID'] ?? ''}');
+      final name = (arguments['name'] as String? ?? '').trim();
+      if (websiteID == null) {
+        return {'success': false, 'error': 'websiteID is required'};
+      }
+      if (name.isEmpty) {
+        return {'success': false, 'error': 'name is required'};
+      }
+      await (await _websiteApi()).updateWebsiteRewrite(
+        websiteId: websiteID,
+        name: name,
+        content: arguments['content'] as String? ?? '',
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateWebsiteRewrite failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 网站 CORS 配置。参数：
+  /// `{websiteID: int, cors: bool, allowOrigins: String, allowMethods: String,
+  ///   allowHeaders?: String, allowCredentials?: bool, preflight?: bool}`
+  /// POST /websites/cors/update（键名与服务端 CorsConfigReq 一致）。
+  static Future<Map<String, dynamic>> updateWebsiteCors(
+      dynamic arguments) async {
+    try {
+      final websiteID = int.tryParse('${arguments['websiteID'] ?? ''}');
+      if (websiteID == null) {
+        return {'success': false, 'error': 'websiteID is required'};
+      }
+      await (await _websiteApi()).updateWebsiteCorsConfig({
+        'websiteID': websiteID,
+        'cors': arguments['cors'] ?? false,
+        'allowOrigins': arguments['allowOrigins'] as String? ?? '',
+        'allowMethods': arguments['allowMethods'] as String? ?? '',
+        'allowHeaders': arguments['allowHeaders'] as String? ?? '',
+        'allowCredentials': arguments['allowCredentials'] ?? false,
+        'preflight': arguments['preflight'] ?? false,
+      });
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateWebsiteCors failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 网站防盗链配置。参数：
+  /// `{websiteID: int, enable: bool, extends: String, serverNames: [String],
+  ///   noneRef?: bool, blocked?: bool, return_: '400'|'403'|'404', cache?: bool,
+  ///   cacheTime?: int, cacheUint?: String, logEnable?: bool}`
+  /// POST /websites/leech/update。`return` 是 Dart 保留字：参数键 `return_`
+  /// 映射回服务端键 `return`；`cacheUint` 为上游既有拼写，原样保留。
+  static Future<Map<String, dynamic>> updateWebsiteLeech(
+      dynamic arguments) async {
+    try {
+      final websiteID = int.tryParse('${arguments['websiteID'] ?? ''}');
+      if (websiteID == null) {
+        return {'success': false, 'error': 'websiteID is required'};
+      }
+      await (await _websiteApi()).updateWebsiteLeechConfig({
+        'websiteID': websiteID,
+        'enable': arguments['enable'] ?? false,
+        'extends': arguments['extends'] as String? ?? '',
+        'serverNames': (arguments['serverNames'] as List?)
+                ?.map((e) => '$e')
+                .toList() ??
+            const <String>[],
+        'noneRef': arguments['noneRef'] ?? false,
+        'blocked': arguments['blocked'] ?? false,
+        'return': arguments['return_'] as String? ?? '',
+        'cache': arguments['cache'] ?? false,
+        'cacheTime': int.tryParse('${arguments['cacheTime'] ?? 0}') ?? 0,
+        'cacheUint': arguments['cacheUint'] as String? ?? '',
+        'logEnable': arguments['logEnable'] ?? false,
+      });
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateWebsiteLeech failed: $e');
+      return _err(e);
+    }
+  }
+
+  static const Set<String> _authOperates = {
+    'create', 'edit', 'delete', 'enable', 'disable',
+  };
+
+  /// 网站 BasicAuth 操作。参数：
+  /// `{websiteID: int, operate: 'create'|'edit'|'delete'|'enable'|'disable',
+  ///   scope: 'root', username?: String, password?: String, remark?: String}`
+  /// POST /websites/auths/update。
+  static Future<Map<String, dynamic>> updateWebsiteAuth(
+      dynamic arguments) async {
+    try {
+      final websiteID = int.tryParse('${arguments['websiteID'] ?? ''}');
+      final operate = (arguments['operate'] as String? ?? '').trim();
+      if (websiteID == null) {
+        return {'success': false, 'error': 'websiteID is required'};
+      }
+      if (!_authOperates.contains(operate)) {
+        return {'success': false, 'error': 'Unsupported operate: $operate'};
+      }
+      await (await _websiteApi()).updateWebsiteAuthConfig({
+        'websiteID': websiteID,
+        'operate': operate,
+        'scope': arguments['scope'] as String? ?? 'root',
+        'username': arguments['username'] as String? ?? '',
+        'password': arguments['password'] as String? ?? '',
+        'remark': arguments['remark'] as String? ?? '',
+      });
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateWebsiteAuth failed: $e');
+      return _err(e);
+    }
+  }
+
+  static const Set<String> _pathAuthOperates = {'create', 'edit', 'delete'};
+
+  /// 网站路径 BasicAuth 操作。参数：
+  /// `{websiteID: int, operate: 'create'|'edit'|'delete', path?: String,
+  ///   username?: String, password?: String, name?: String}`
+  /// POST /websites/auths/path/update。
+  static Future<Map<String, dynamic>> updateWebsitePathAuth(
+      dynamic arguments) async {
+    try {
+      final websiteID = int.tryParse('${arguments['websiteID'] ?? ''}');
+      final operate = (arguments['operate'] as String? ?? '').trim();
+      if (websiteID == null) {
+        return {'success': false, 'error': 'websiteID is required'};
+      }
+      if (!_pathAuthOperates.contains(operate)) {
+        return {'success': false, 'error': 'Unsupported operate: $operate'};
+      }
+      await (await _websiteApi()).updateWebsitePathAuthConfig({
+        'websiteID': websiteID,
+        'operate': operate,
+        'path': arguments['path'] as String? ?? '',
+        'username': arguments['username'] as String? ?? '',
+        'password': arguments['password'] as String? ?? '',
+        'name': arguments['name'] as String? ?? '',
+      });
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateWebsitePathAuth failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 网站追加域名。参数：
+  /// `{websiteID: int, domains: [{domain: String, port: int, ssl: bool}]}`
+  /// POST /websites/domains。
+  static Future<Map<String, dynamic>> addWebsiteDomains(
+      dynamic arguments) async {
+    try {
+      final websiteID = int.tryParse('${arguments['websiteID'] ?? ''}');
+      if (websiteID == null) {
+        return {'success': false, 'error': 'websiteID is required'};
+      }
+      final rawDomains = arguments['domains'];
+      if (rawDomains is! List || rawDomains.isEmpty) {
+        return {'success': false, 'error': 'domains is required'};
+      }
+      await (await _websiteApi()).addWebsiteDomains(
+        websiteId: websiteID,
+        domains: rawDomains
+            .whereType<Map>()
+            .map((e) => Map<String, dynamic>.from(e))
+            .toList(),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('addWebsiteDomains failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 删除网站域名。参数：`{id: int}`。POST /websites/domains/del。
+  static Future<Map<String, dynamic>> deleteWebsiteDomain(
+      dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments['id'] ?? ''}');
+      if (id == null) {
+        return {'success': false, 'error': 'id is required'};
+      }
+      await (await _websiteApi()).deleteWebsiteDomain(id: id);
+      return _ok();
+    } catch (e) {
+      appLogger.e('deleteWebsiteDomain failed: $e');
       return _err(e);
     }
   }

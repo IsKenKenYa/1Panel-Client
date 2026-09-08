@@ -112,6 +112,26 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelReadHandlers.getBackups(arguments);
       case 'getAIModels':
         return NativeChannelReadHandlers.getAIModels(arguments);
+      case 'getWebsiteHttpsConfig':
+        return NativeChannelReadHandlers.getWebsiteHttpsConfig(arguments);
+      case 'getWebsiteProxies':
+        return NativeChannelReadHandlers.getWebsiteProxies(arguments);
+      case 'getWebsiteRedirects':
+        return NativeChannelReadHandlers.getWebsiteRedirects(arguments);
+      case 'getWebsiteRewrite':
+        return NativeChannelReadHandlers.getWebsiteRewrite(arguments);
+      case 'getWebsiteCors':
+        return NativeChannelReadHandlers.getWebsiteCors(arguments);
+      case 'getWebsiteLeech':
+        return NativeChannelReadHandlers.getWebsiteLeech(arguments);
+      case 'getWebsiteAuths':
+        return NativeChannelReadHandlers.getWebsiteAuths(arguments);
+      case 'getWebsitePathAuths':
+        return NativeChannelReadHandlers.getWebsitePathAuths(arguments);
+      case 'getWebsiteDomains':
+        return NativeChannelReadHandlers.getWebsiteDomains(arguments);
+      case 'getWebsiteLogs':
+        return NativeChannelReadHandlers.getWebsiteLogs(arguments);
 
       // ── Write: 服务器 ───────────────────────────────────────────────────
       // ── Write: 服务器 ───────────────────────────────────────────────────
@@ -130,6 +150,30 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.toggleWebsiteStatus(arguments);
       case 'deleteWebsite':
         return NativeChannelWriteHandlers.deleteWebsite(arguments);
+      case 'updateWebsiteHttpsConfig':
+        return NativeChannelWriteHandlers.updateWebsiteHttpsConfig(arguments);
+      case 'updateWebsiteProxy':
+        return NativeChannelWriteHandlers.updateWebsiteProxy(arguments);
+      case 'deleteWebsiteProxy':
+        return NativeChannelWriteHandlers.deleteWebsiteProxy(arguments);
+      case 'updateWebsiteProxyStatus':
+        return NativeChannelWriteHandlers.updateWebsiteProxyStatus(arguments);
+      case 'updateWebsiteRedirect':
+        return NativeChannelWriteHandlers.updateWebsiteRedirect(arguments);
+      case 'updateWebsiteRewrite':
+        return NativeChannelWriteHandlers.updateWebsiteRewrite(arguments);
+      case 'updateWebsiteCors':
+        return NativeChannelWriteHandlers.updateWebsiteCors(arguments);
+      case 'updateWebsiteLeech':
+        return NativeChannelWriteHandlers.updateWebsiteLeech(arguments);
+      case 'updateWebsiteAuth':
+        return NativeChannelWriteHandlers.updateWebsiteAuth(arguments);
+      case 'updateWebsitePathAuth':
+        return NativeChannelWriteHandlers.updateWebsitePathAuth(arguments);
+      case 'addWebsiteDomains':
+        return NativeChannelWriteHandlers.addWebsiteDomains(arguments);
+      case 'deleteWebsiteDomain':
+        return NativeChannelWriteHandlers.deleteWebsiteDomain(arguments);
 
       // ── Write: 容器 ─────────────────────────────────────────────────────
       case 'toggleContainerState':
