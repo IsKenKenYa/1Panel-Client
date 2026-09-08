@@ -393,11 +393,25 @@ flutter test test/core/channel/ test/core/platform/
 - 数据经 StandardMethodCodec 编解码，golden 向量双向测试通过
 - 超时和异常处理符合降级策略
 
-### 渲染模式（native/MDUI3 双模式）
+### 渲染模式（native/MDUI3 双模式，2026-09-09 B24 修复后为事实标准）
 
-- 双模式由 runner 侧 `render_mode_bootstrap` 承载：读取 `flutter\.app_ui_render_mode` 配置
-- `native` 模式下 detached 启动 `OnePanelNativeHost.exe`；其余走 MDUI3 Flutter 壳
+- 双模式由 runner 侧 `render_mode_bootstrap` 承载：冷启动读取 `%APPDATA%\IsKenKenYa\1Panel Client\shared_preferences.json` 的 `flutter.app_ui_render_mode`
+- `native` 模式下 detached 启动 `OnePanelNativeHost.exe`（成功则 runner 退出；失败置 `ONEPANEL_FORCE_MD3=1` 静默回落）；其余走 MDUI3 Flutter 壳
+- **宿主 exe 探测候选**（Dart `NativeHostLauncher` 与 C++ bootstrap 同规则，顺序即优先级）：① `<runner目录>\native\`；② `<runner目录>\`；③⑥ 仓库源码树 `dotnet build` 产物 `{Debug,Release}×{win-x64 RID 子目录, TFM 目录}`（csproj 钉 `RuntimeIdentifier=win-x64`，产物在 RID 子目录——B24 之前的候选路径缺 RID 段与分隔符，是「选原生不生效」的深层根因）
+- **MDUI3 内选「原生模式」= 立即生效**（B24）：设置页经 `NativeHostLauncher().launch()` 拉起宿主并退出当前进程；exe 缺失时 SnackBar 给出 `dotnet build windows/runner/native_host/OnePanelNativeHost/OnePanelNativeHost.csproj -c Debug` 指引，偏好保留
+- **冷启动回落可见化**（B24）：bootstrap 置 `ONEPANEL_FORCE_MD3=1` 时 `AppSettingsController.nativeHostMissing=true`，渲染模式条目显示「原生宿主未就绪…已回退 MDUI3」
+- **诊断日志**：bootstrap 每次冷启动把模式判定、逐候选 exists、拉起结果与 GetLastError 追加写入 `<runner目录>\bootstrap_launch.log`（修复「静默回落零感知」）
+- **开发调试注意**：`flutter run` 会话内热重启（r/R）不会重跑 main.cpp bootstrap；选「原生模式」拉起宿主后当前 Flutter 进程 `exit(0)`，flutter run 调试会话断连属预期行为。冷启动验证请直接运行 `build\windows\x64\runner\Debug\onepanel_client.exe`
+- **宿主侧资产刷新链**：宿主输出的 `data\flutter_assets` 来自 `dotnet build` 的 CopyFlutterEngineBundle（源=flutter build 产物）；arb 变更后必须 `flutter build windows --debug` + `dotnet build` 两段重建，否则 getTranslations 读到旧字典（新键回落英文）
 - MDUI3 基线不因原生轨道开发而降级
+
+### 宿主 i18n（B25，运行时查表）
+
+- 单一事实源 = `lib/l10n/app_en.arb`/`app_zh.arb`；C# `L10n` 静态类启动时（`App.OnLaunched` 引擎就绪后 5s 超时）经既有 `getTranslations` 通道拉当前语言整份字典（locale 决策在 Dart 侧：`app_locale` 偏好优先、缺省跟随系统）
+- 页面文案统一 `L10n.T("arbKey", "English fallback")`：缺键/未加载回落英文原样，永不抛异常；约 543 处调用点、567 键引用
+- **语言切换即时生效**：设置页语言 ComboBox 写入成功 → 重拉字典 → `MainWindow.ApplyLanguage()`（导航路由 Tag 与显示 Content 分离，标签重设 + 全部缓存页按新语言重建），不重启
+- 防遗漏门禁：`python scripts/check_l10n_keys.py`（扫 .cs 中 L10n.T 与导航映射引用的键必须存在于 app_en.arb）；`bootstrap_launch.log` 与该脚本均入 B25 验收命令
+- 动态/插值文案（$"...{x}..."）与逻辑双用状态串本批未迁移（约一成），登记后续参数化批次
 
 ### 端到端冒烟
 
