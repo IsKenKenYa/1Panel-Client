@@ -1188,7 +1188,7 @@ class NativeChannelWriteHandlers {
       final port = int.tryParse('${arguments['port'] ?? ''}');
       // 服务端 MysqlDBCreate required：database（目标实例名）/format/permission
       // （2026-09-08 生产面板 400 实测），本地建库缺一不可。
-      final createInput = DatabaseFormInput(
+      var createInput = DatabaseFormInput(
         scope: scope,
         name: name,
         engine: type,
@@ -1202,14 +1202,41 @@ class NativeChannelWriteHandlers {
         format: (arguments['format'] as String? ?? '').trim(),
         permission: (arguments['permission'] as String? ?? '').trim(),
       );
-      if (!isRemote &&
-          (createInput.targetDatabase == null ||
+      if (!isRemote && (createInput.targetDatabase == null ||
               createInput.targetDatabase!.isEmpty)) {
-        return {
-          'success': false,
-          'error':
-              'database is required for local create (target MySQL instance name)',
-        };
+        // 自动发现：取首个本地 MySQL 安装实例名（上游建库目标实例下拉语义）。
+        try {
+          final installed = await AppService().getInstalledApps();
+          for (final a in installed) {
+            if ((a.appKey ?? '').toLowerCase() == 'mysql' &&
+                a.id != null &&
+                a.id! > 0) {
+              createInput = DatabaseFormInput(
+                scope: createInput.scope,
+                name: createInput.name,
+                engine: createInput.engine,
+                source: createInput.source,
+                description: createInput.description,
+                address: createInput.address,
+                port: createInput.port,
+                username: createInput.username,
+                password: createInput.password,
+                targetDatabase: a.name,
+              );
+              break;
+            }
+          }
+        } catch (e) {
+          appLogger.w('createDatabase: discover mysql install failed: $e');
+        }
+        if (createInput.targetDatabase == null ||
+            createInput.targetDatabase!.isEmpty) {
+          return {
+            'success': false,
+            'error':
+                'database is required for local create (target MySQL instance name)',
+          };
+        }
       }
       await DatabasesService().submitForm(createInput);
       return _ok();
