@@ -90,7 +90,9 @@ void main() async {
 
   // window_manager must be initialized before any window API calls;
   // only needed when Flutter renders its own UI (not in native/headless mode).
-  if (useFlutterUI && isDesktopHost) {
+  // 宿主 headless 进程内永不初始化（window_manager 插件在无窗口环境崩溃，
+  // 2026-09-09 实证：宿主内偏好 md3 时 useFlutterUI=true 会误触）。
+  if (useFlutterUI && isDesktopHost && !windowsNativeHostActive) {
     await windowManager.ensureInitialized();
   }
 
