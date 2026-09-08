@@ -66,6 +66,9 @@ public sealed partial class MainWindow : Window
     // B1 网站配置中心子页面：独立字段持有（不进 _pageCache），同一实例跨网站复用。
     private WebsiteConfigPage? _websiteConfigPage;
 
+    // B2 文件编辑器子页面：独立字段持有（不进 _pageCache），同一实例跨文件复用。
+    private FileEditorPage? _fileEditorPage;
+
     public MainWindow()
     {
         InitializeComponent();
@@ -229,5 +232,29 @@ public sealed partial class MainWindow : Window
             _websiteConfigPage.Initialize(websiteId, websiteName);
         }
         ContentFrame.Content = _websiteConfigPage;
+    }
+
+    /// <summary>
+    /// 返回文件列表（B2 文件编辑器子页面的返回动作）。
+    /// 编辑器打开期间 _currentTag 仍为 Files，直接走 ShowPage 即可命中缓存并触发刷新。
+    /// </summary>
+    public void NavigateBackToFiles() => ShowPage("Files");
+
+    /// <summary>
+    /// 打开 B2 文件编辑器子页面：创建/复用独立持有的 FileEditorPage
+    /// （不进 _pageCache），切换文件时经 Initialize 重绑目标文件；
+    /// 页面每次入树 Loaded 均重新拉取内容。导航选中态保持在 Files，由返回按钮显式退出。
+    /// </summary>
+    public void OpenFileEditor(string filePath, string fileName)
+    {
+        if (_fileEditorPage == null)
+        {
+            _fileEditorPage = new FileEditorPage(filePath, fileName);
+        }
+        else
+        {
+            _fileEditorPage.Initialize(filePath, fileName);
+        }
+        ContentFrame.Content = _fileEditorPage;
     }
 }
