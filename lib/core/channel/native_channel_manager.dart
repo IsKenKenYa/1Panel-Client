@@ -137,6 +137,28 @@ class NativeChannelManager implements NativeChannelPort {
       case 'getFavoritesHandler':
         return NativeChannelReadHandlers.getFavoritesHandler(arguments);
 
+      // ── Read: AI 管理深度（B3）─────────────────────────────────────────
+      case 'getGpuLoad':
+        return NativeChannelReadHandlers.getGpuLoad(arguments);
+      case 'getGpuOptions':
+        return NativeChannelReadHandlers.getGpuOptions(arguments);
+      case 'searchGpuHistory':
+        return NativeChannelReadHandlers.searchGpuHistory(arguments);
+      case 'getAgentAccounts':
+        return NativeChannelReadHandlers.getAgentAccounts(arguments);
+      case 'getAgentAccountModels':
+        return NativeChannelReadHandlers.getAgentAccountModels(arguments);
+      case 'getMcpServers':
+        return NativeChannelReadHandlers.getMcpServers(arguments);
+      case 'getMcpServerDetail':
+        return NativeChannelReadHandlers.getMcpServerDetail(arguments);
+      case 'pageAgentsNative':
+        return NativeChannelReadHandlers.pageAgentsNative(arguments);
+      case 'getAgentOverviewNative':
+        return NativeChannelReadHandlers.getAgentOverviewNative(arguments);
+      case 'getAIBindDomain':
+        return NativeChannelReadHandlers.getAIBindDomain(arguments);
+
       // ── Write: 服务器 ───────────────────────────────────────────────────
       // ── Write: 服务器 ───────────────────────────────────────────────────
       case 'addServer':
@@ -284,6 +306,36 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.recreateAIModel(arguments);
       case 'deleteAIModel':
         return NativeChannelWriteHandlers.deleteAIModel(arguments);
+
+      // ── Write: AI 管理深度（B3）────────────────────────────────────────
+      case 'createAgentAccountNative':
+        return NativeChannelWriteHandlers.createAgentAccountNative(arguments);
+      case 'updateAgentAccountNative':
+        return NativeChannelWriteHandlers.updateAgentAccountNative(arguments);
+      case 'deleteAgentAccountNative':
+        return NativeChannelWriteHandlers.deleteAgentAccountNative(arguments);
+      case 'discoverAgentModels':
+        return NativeChannelWriteHandlers.discoverAgentModels(arguments);
+      case 'createMcpServerNative':
+        return NativeChannelWriteHandlers.createMcpServerNative(arguments);
+      case 'deleteMcpServerNative':
+        return NativeChannelWriteHandlers.deleteMcpServerNative(arguments);
+      case 'operateMcpServerNative':
+        return NativeChannelWriteHandlers.operateMcpServerNative(arguments);
+      case 'testMcpConnection':
+        return NativeChannelWriteHandlers.testMcpConnection(arguments);
+      case 'syncMcpStatus':
+        return NativeChannelWriteHandlers.syncMcpStatus(arguments);
+      case 'createAgentNative':
+        return NativeChannelWriteHandlers.createAgentNative(arguments);
+      case 'deleteAgentNative':
+        return NativeChannelWriteHandlers.deleteAgentNative(arguments);
+      case 'loadOllamaModelNative':
+        return NativeChannelWriteHandlers.loadOllamaModelNative(arguments);
+      case 'closeOllamaModelNative':
+        return NativeChannelWriteHandlers.closeOllamaModelNative(arguments);
+      case 'syncOllamaModelsNative':
+        return NativeChannelWriteHandlers.syncOllamaModelsNative(arguments);
 
       // ── Write: 防火墙 ───────────────────────────────────────────────────
       case 'addFirewallRule':

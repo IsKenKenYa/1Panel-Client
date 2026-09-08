@@ -1,6 +1,9 @@
 import '../../features/ai/ai_repository.dart';
 import '../../api/v2/file_v2.dart';
 import '../../api/v2/website_v2.dart';
+import '../../data/models/ai/agent_account_models.dart';
+import '../../data/models/ai/agent_core_models.dart';
+import '../../data/models/mcp_models.dart';
 import '../../features/apps/app_service.dart';
 import '../../features/commands/services/command_service.dart';
 import '../../features/script_library/services/script_library_service.dart';
@@ -1971,6 +1974,399 @@ class NativeChannelWriteHandlers {
       return _ok();
     } catch (e) {
       appLogger.e('changeDatabasePassword failed: $e');
+      return _err(e);
+    }
+  }
+
+  // ── AI 管理深度（B3）────────────────────────────────────────────────────
+  // 契约单一事实源：docs/development/modules/b3_ai_channel_contract.md。
+
+  /// 创建智能体渠道账号。参数：
+  /// `{provider, name, apiKey, baseURL, apiType 必填, authMode?,
+  ///   validateAvailability?, verifyModel?, remark?}`。
+  /// POST /ai/accounts。契约 authMode/validateAvailability/verifyModel 在
+  /// AgentAccountCreateReq 无对应字段，按底层实际能力丢弃（ai_v2.dart 不改）。
+  static Future<Map<String, dynamic>> createAgentAccountNative(
+      dynamic arguments) async {
+    try {
+      final provider = (arguments['provider'] as String? ?? '').trim();
+      final name = (arguments['name'] as String? ?? '').trim();
+      final apiKey = (arguments['apiKey'] as String? ?? '').trim();
+      final baseURL = (arguments['baseURL'] as String? ?? '').trim();
+      final apiType = (arguments['apiType'] as String? ?? '').trim();
+      if (provider.isEmpty || name.isEmpty || apiKey.isEmpty) {
+        return {
+          'success': false,
+          'error': 'provider, name and apiKey are required',
+        };
+      }
+      if (baseURL.isEmpty || apiType.isEmpty) {
+        return {'success': false, 'error': 'baseURL and apiType are required'};
+      }
+      await (await AIRepository().getApi()).createAgentAccount(
+        AgentAccountCreateReq(
+          provider: provider,
+          name: name,
+          apiKey: apiKey,
+          rememberApiKey: true,
+          baseURL: baseURL,
+          apiType: apiType,
+          remark: arguments['remark'] as String? ?? '',
+        ),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('createAgentAccountNative failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 更新智能体渠道账号。参数：
+  /// `{id: int 必填, provider, name, apiKey, baseURL, apiType 必填, remark?}`。
+  /// POST /ai/accounts/update。契约 provider 在 AgentAccountUpdateReq
+  /// 无对应字段，按底层实际能力丢弃（ai_v2.dart 不改）。
+  static Future<Map<String, dynamic>> updateAgentAccountNative(
+      dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments['id'] ?? ''}');
+      if (id == null) {
+        return {'success': false, 'error': 'id is required'};
+      }
+      final name = (arguments['name'] as String? ?? '').trim();
+      final baseURL = (arguments['baseURL'] as String? ?? '').trim();
+      final apiType = (arguments['apiType'] as String? ?? '').trim();
+      if (name.isEmpty || baseURL.isEmpty || apiType.isEmpty) {
+        return {
+          'success': false,
+          'error': 'name, baseURL and apiType are required',
+        };
+      }
+      await (await AIRepository().getApi()).updateAgentAccount(
+        AgentAccountUpdateReq(
+          id: id,
+          name: name,
+          apiKey: arguments['apiKey'] as String? ?? '',
+          rememberApiKey: true,
+          baseURL: baseURL,
+          apiType: apiType,
+          remark: arguments['remark'] as String? ?? '',
+        ),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateAgentAccountNative failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 删除智能体渠道账号。参数：`{id: int}`。POST /ai/accounts/delete。
+  static Future<Map<String, dynamic>> deleteAgentAccountNative(
+      dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments['id'] ?? ''}');
+      if (id == null) {
+        return {'success': false, 'error': 'id is required'};
+      }
+      await (await AIRepository().getApi())
+          .deleteAgentAccount(AgentAccountDeleteReq(id: id));
+      return _ok();
+    } catch (e) {
+      appLogger.e('deleteAgentAccountNative failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 从渠道供应商发现可用模型。参数：
+  /// `{provider, baseURL, apiKey, apiType 必填}`。
+  /// POST /ai/accounts/models/discover。按契约写通道惯例只回执
+  /// 成功/失败（发现结果供服务端落库与后续 models 查询使用）。
+  static Future<Map<String, dynamic>> discoverAgentModels(
+      dynamic arguments) async {
+    try {
+      final provider = (arguments['provider'] as String? ?? '').trim();
+      final baseURL = (arguments['baseURL'] as String? ?? '').trim();
+      final apiKey = (arguments['apiKey'] as String? ?? '').trim();
+      final apiType = (arguments['apiType'] as String? ?? '').trim();
+      if (provider.isEmpty ||
+          baseURL.isEmpty ||
+          apiKey.isEmpty ||
+          apiType.isEmpty) {
+        return {
+          'success': false,
+          'error': 'provider, baseURL, apiKey and apiType are required',
+        };
+      }
+      await (await AIRepository().getApi()).discoverAgentAccountModels(
+        <String, dynamic>{
+          'provider': provider,
+          'baseURL': baseURL,
+          'apiKey': apiKey,
+          'apiType': apiType,
+        },
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('discoverAgentModels failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 创建 MCP 服务器。参数：
+  /// `{name, type, command, protocol, url, outputTransport, containerName,
+  ///   port: int 必填, ssePath?, streamableHttpPath?, gatewayImage?, hostIP?}`。
+  /// POST /ai/mcp/server。契约 url 映射 McpServerCreate.baseUrl；
+  /// protocol/gatewayImage 在底层模型无对应字段，按实际能力丢弃。
+  static Future<Map<String, dynamic>> createMcpServerNative(
+      dynamic arguments) async {
+    try {
+      final name = (arguments['name'] as String? ?? '').trim();
+      final type = (arguments['type'] as String? ?? '').trim();
+      final command = (arguments['command'] as String? ?? '').trim();
+      final outputTransport =
+          (arguments['outputTransport'] as String? ?? '').trim();
+      final baseUrl = (arguments['url'] as String? ?? '').trim();
+      final containerName = (arguments['containerName'] as String? ?? '').trim();
+      final port = int.tryParse('${arguments['port'] ?? ''}');
+      if (name.isEmpty || command.isEmpty) {
+        return {'success': false, 'error': 'name and command are required'};
+      }
+      if (type.isEmpty ||
+          outputTransport.isEmpty ||
+          baseUrl.isEmpty ||
+          containerName.isEmpty ||
+          port == null) {
+        return {
+          'success': false,
+          'error':
+              'type, url, outputTransport, containerName and port are required',
+        };
+      }
+      await (await AIRepository().getApi()).createMcpServer(McpServerCreate(
+        name: name,
+        type: type,
+        command: command,
+        outputTransport: outputTransport,
+        baseUrl: baseUrl,
+        containerName: containerName,
+        port: port,
+        ssePath: arguments['ssePath'] as String?,
+        streamableHttpPath: arguments['streamableHttpPath'] as String?,
+        hostIP: arguments['hostIP'] as String?,
+      ));
+      return _ok();
+    } catch (e) {
+      appLogger.e('createMcpServerNative failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 删除 MCP 服务器。参数：`{id: int}`。POST /ai/mcp/server/del。
+  static Future<Map<String, dynamic>> deleteMcpServerNative(
+      dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments['id'] ?? ''}');
+      if (id == null) {
+        return {'success': false, 'error': 'id is required'};
+      }
+      await (await AIRepository().getApi())
+          .deleteMcpServer(McpServerDelete(id: id));
+      return _ok();
+    } catch (e) {
+      appLogger.e('deleteMcpServerNative failed: $e');
+      return _err(e);
+    }
+  }
+
+  static const Set<String> _mcpOperations = {'start', 'stop', 'restart'};
+
+  /// MCP 服务器操作。参数：`{id: int, operate: 'start'|'stop'|'restart'}`。
+  /// POST /ai/mcp/server/op。
+  static Future<Map<String, dynamic>> operateMcpServerNative(
+      dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments['id'] ?? ''}');
+      final operate = (arguments['operate'] as String? ?? '').trim();
+      if (id == null) {
+        return {'success': false, 'error': 'id is required'};
+      }
+      if (!_mcpOperations.contains(operate)) {
+        return {'success': false, 'error': 'Unsupported operation: $operate'};
+      }
+      await (await AIRepository().getApi())
+          .operateMcpServer(McpServerOperate(id: id, operate: operate));
+      return _ok();
+    } catch (e) {
+      appLogger.e('operateMcpServerNative failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 测试 MCP 服务器连通性。参数：`{id: int}`。
+  /// POST /ai/mcp/server/connection/test。服务端在 200 响应体内回执
+  /// `{success, message}`（对齐上游前端语义）：连接失败映射为
+  /// `{success: false, error: message}` 而非误报成功。
+  static Future<Map<String, dynamic>> testMcpConnection(
+      dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments['id'] ?? ''}');
+      if (id == null) {
+        return {'success': false, 'error': 'id is required'};
+      }
+      final result = await (await AIRepository().getApi())
+          .testMcpServerConnection(<String, dynamic>{'id': id});
+      final data = result.data;
+      if (data != null && data['success'] == false) {
+        return {
+          'success': false,
+          'error': data['message']?.toString() ?? 'connection test failed',
+        };
+      }
+      return _ok();
+    } catch (e) {
+      appLogger.e('testMcpConnection failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 批量同步 MCP 服务器状态。参数：`{ids: int[]}`。
+  /// POST /ai/mcp/server/status/sync（上游契约 body `{ids: number[]}`）。
+  static Future<Map<String, dynamic>> syncMcpStatus(
+      dynamic arguments) async {
+    try {
+      final ids = (arguments['ids'] as List?)
+              ?.map((e) => int.tryParse('$e'))
+              .whereType<int>()
+              .toList() ??
+          <int>[];
+      if (ids.isEmpty) {
+        return {'success': false, 'error': 'ids is required'};
+      }
+      await (await AIRepository().getApi())
+          .syncMcpServerStatus(<String, dynamic>{'ids': ids});
+      return _ok();
+    } catch (e) {
+      appLogger.e('syncMcpStatus failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 创建智能体实例（服务端长耗时任务）。参数：
+  /// `{agentType, name, appVersion, webUIPort: int 必填, remark?}`。
+  /// POST /ai/agents。非必填字段对齐 MDUI3 createAgentSimple 已验证
+  /// 默认值（advanced/allowPort/restartPolicy 及 openclaw allowedOrigins）；
+  /// 契约 remark 在 AgentCreateReq 无对应字段，按底层实际能力丢弃。
+  static Future<Map<String, dynamic>> createAgentNative(
+      dynamic arguments) async {
+    try {
+      final agentType = (arguments['agentType'] as String? ?? '').trim();
+      final name = (arguments['name'] as String? ?? '').trim();
+      final appVersion = (arguments['appVersion'] as String? ?? '').trim();
+      final webUIPort = int.tryParse('${arguments['webUIPort'] ?? ''}');
+      if (agentType.isEmpty || name.isEmpty) {
+        return {'success': false, 'error': 'agentType and name are required'};
+      }
+      if (appVersion.isEmpty || webUIPort == null) {
+        return {
+          'success': false,
+          'error': 'appVersion and webUIPort are required',
+        };
+      }
+      await (await AIRepository().getApi()).createAgent(AgentCreateReq(
+        name: name,
+        appVersion: appVersion,
+        webUIPort: webUIPort,
+        // openclaw 内嵌 Web UI 需限制 CORS 来源（同 MDUI3 创建语义）。
+        allowedOrigins: agentType == 'openclaw'
+            ? <String>['http://127.0.0.1:$webUIPort']
+            : null,
+        agentType: agentType,
+        taskID: DateTime.now().millisecondsSinceEpoch.toString(),
+        advanced: true,
+        containerName: '',
+        allowPort: true,
+        specifyIP: '',
+        restartPolicy: 'unless-stopped',
+        cpuQuota: 0,
+        memoryLimit: 0,
+        memoryUnit: 'M',
+        pullImage: true,
+        editCompose: false,
+        dockerCompose: '',
+      ));
+      return _ok();
+    } catch (e) {
+      appLogger.e('createAgentNative failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 删除智能体实例。参数：`{id: int, forceDelete?: bool}`。
+  /// POST /ai/agents/delete。
+  static Future<Map<String, dynamic>> deleteAgentNative(
+      dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments['id'] ?? ''}');
+      if (id == null) {
+        return {'success': false, 'error': 'id is required'};
+      }
+      await (await AIRepository().getApi()).deleteAgent(AgentDeleteReq(
+        id: id,
+        taskID: DateTime.now().millisecondsSinceEpoch.toString(),
+        forceDelete: arguments['forceDelete'] as bool? ?? false,
+      ));
+      return _ok();
+    } catch (e) {
+      appLogger.e('deleteAgentNative failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 加载 Ollama 模型。参数：`{name: String}`。POST /ai/ollama/model/load。
+  static Future<Map<String, dynamic>> loadOllamaModelNative(
+      dynamic arguments) async {
+    try {
+      final name = (arguments['name'] as String? ?? '').trim();
+      if (name.isEmpty) {
+        return {'success': false, 'error': 'name is required'};
+      }
+      await AIRepository().loadOllamaModel(
+        name: name,
+        taskID: DateTime.now().millisecondsSinceEpoch.toString(),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('loadOllamaModelNative failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 关闭 Ollama 模型连接。参数：`{name: String}`。POST /ai/ollama/close。
+  static Future<Map<String, dynamic>> closeOllamaModelNative(
+      dynamic arguments) async {
+    try {
+      final name = (arguments['name'] as String? ?? '').trim();
+      if (name.isEmpty) {
+        return {'success': false, 'error': 'name is required'};
+      }
+      await AIRepository().closeOllamaModel(
+        name: name,
+        taskID: DateTime.now().millisecondsSinceEpoch.toString(),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('closeOllamaModelNative failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 同步 Ollama 模型列表。参数：`{}`。POST /ai/ollama/model/sync。
+  static Future<Map<String, dynamic>> syncOllamaModelsNative(
+      dynamic arguments) async {
+    try {
+      await AIRepository().syncOllamaModels();
+      return _ok();
+    } catch (e) {
+      appLogger.e('syncOllamaModelsNative failed: $e');
       return _err(e);
     }
   }
