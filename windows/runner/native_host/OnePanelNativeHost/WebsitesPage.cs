@@ -244,7 +244,7 @@ public sealed class WebsitesPage : ModulePageBase
             grid.Children.Add(createdBlock);
         }
 
-        // Row actions: start/stop toggle (label follows status) + delete.
+        // Row actions: config entry + start/stop toggle (label follows status) + delete.
         var actions = new StackPanel
         {
             Orientation = Orientation.Horizontal,
@@ -252,6 +252,30 @@ public sealed class WebsitesPage : ModulePageBase
             VerticalAlignment = VerticalAlignment.Center,
             Margin = new Thickness(16, 0, 0, 0),
         };
+
+        // B1 网站配置中心入口：打开该网站的配置子页面（HTTPS/域名等 Tab）。
+        var configContent = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            Spacing = 6,
+        };
+        configContent.Children.Add(new FontIcon { Glyph = "\uE713", FontSize = 14 });
+        configContent.Children.Add(new TextBlock
+        {
+            Text = L10n.T("hostWebsitesConfig", "Config"),
+            FontSize = 13,
+            VerticalAlignment = VerticalAlignment.Center,
+        });
+        var configButton = new Button
+        {
+            Content = configContent,
+            Padding = new Thickness(10, 4, 10, 4),
+            VerticalAlignment = VerticalAlignment.Center,
+        };
+        ToolTipService.SetToolTip(configButton, L10n.T("hostWebsitesConfigHint", "Website configuration"));
+        configButton.Click += (s, e) =>
+            (App.MainWindow as MainWindow)?.OpenWebsiteConfig((int)website.Id, website.Domain);
+        actions.Children.Add(configButton);
 
         var isRunning = IsRunning(website.Status);
         var toggleButton = new Button

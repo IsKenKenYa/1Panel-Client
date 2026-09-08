@@ -63,6 +63,9 @@ public sealed partial class MainWindow : Window
     private readonly Dictionary<string, Page> _pageCache = new();
     private string? _currentTag;
 
+    // B1 网站配置中心子页面：独立字段持有（不进 _pageCache），同一实例跨网站复用。
+    private WebsiteConfigPage? _websiteConfigPage;
+
     public MainWindow()
     {
         InitializeComponent();
@@ -90,11 +93,13 @@ public sealed partial class MainWindow : Window
     /// <summary>
     /// 语言切换后由设置页调用：重设导航标签，并按新文案重建全部缓存页
     /// （单例缓存页不会随字典刷新，整体重建是唯一的全量生效路径）。
+    /// 网站配置中心子页面同样按新文案整体重建（下次打开时）。
     /// </summary>
     public void ApplyLanguage()
     {
         ApplyNavLabels();
         _pageCache.Clear();
+        _websiteConfigPage = null;
         if (_currentTag != null && _pageFactories.ContainsKey(_currentTag))
         {
             ShowPage(_currentTag);
@@ -200,5 +205,29 @@ public sealed partial class MainWindow : Window
         {
             modulePage.ActivatePage();
         }
+    }
+
+    /// <summary>
+    /// 返回网站列表（B1 网站配置中心子页面的返回动作）。
+    /// 配置中心打开期间 _currentTag 仍为 Websites，直接走 ShowPage 即可命中缓存并触发刷新。
+    /// </summary>
+    public void NavigateBackToWebsites() => ShowPage("Websites");
+
+    /// <summary>
+    /// 打开 B1 网站配置中心子页面：创建/复用独立持有的 WebsiteConfigPage
+    /// （不进 _pageCache），切换网站时经 Initialize 重绑目标网站并回到首个 Tab。
+    /// 导航选中态保持在 Websites，子页面由返回按钮显式退出。
+    /// </summary>
+    public void OpenWebsiteConfig(int websiteId, string websiteName)
+    {
+        if (_websiteConfigPage == null)
+        {
+            _websiteConfigPage = new WebsiteConfigPage(websiteId, websiteName);
+        }
+        else
+        {
+            _websiteConfigPage.Initialize(websiteId, websiteName);
+        }
+        ContentFrame.Content = _websiteConfigPage;
     }
 }
