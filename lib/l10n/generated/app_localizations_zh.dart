@@ -9874,4 +9874,230 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get hostFilesFavoriteFailed => '添加收藏失败。';
+
+  @override
+  String get hostAiAccountsAddAction => '添加账号';
+
+  @override
+  String get hostAiAccountsTitle => '智能体账号';
+
+  @override
+  String get hostAiAccountProviderLabel => '供应商';
+
+  @override
+  String get hostAiAccountApiTypeLabel => 'API 类型';
+
+  @override
+  String get hostAiAccountBaseUrlLabel => 'Base URL';
+
+  @override
+  String get hostAiAccountApiKeyLabel => 'API Key';
+
+  @override
+  String get hostAiAccountRemarkLabel => '备注';
+
+  @override
+  String get hostAiAccountsRefreshFailed => '刷新智能体账号失败。';
+
+  @override
+  String get hostAiAccountsEmpty => '暂无智能体账号。';
+
+  @override
+  String get hostAiAccountProviderRequired => '请选择供应商。';
+
+  @override
+  String get hostAiAccountNameRequired => '请输入名称。';
+
+  @override
+  String get hostAiAccountApiTypeRequired => '请选择 API 类型。';
+
+  @override
+  String get hostAiAccountBaseUrlRequired => '请输入 Base URL。';
+
+  @override
+  String get hostAiAccountApiKeyRequired => '请输入 API Key。';
+
+  @override
+  String get hostAiAccountsSaved => '智能体账号已保存。';
+
+  @override
+  String get hostAiAccountsUpdateFailed => '更新智能体账号失败。';
+
+  @override
+  String get hostAiAccountsCreateFailed => '创建智能体账号失败。';
+
+  @override
+  String get hostAiAccountsSaveFailedRetry => '保存失败，请调整输入后重试。';
+
+  @override
+  String get hostAiAccountDeleteConfirm => '删除智能体账号 {0}？该操作无法撤销。';
+
+  @override
+  String get hostAiAccountsDeleted => '智能体账号已删除。';
+
+  @override
+  String get hostAiAccountsDeleteFailed => '删除智能体账号失败。';
+
+  @override
+  String get hostAiAccountsLoadFailed => '加载智能体账号失败。';
+
+  @override
+  String get hostAiGpuEmpty => '未在此服务器上检测到 GPU。';
+
+  @override
+  String get hostAiGpuRefreshFailed => '刷新 GPU 状态失败。';
+
+  @override
+  String get hostAiGpuDriverVersion => '驱动版本';
+
+  @override
+  String get hostAiGpuCudaVersion => 'CUDA 版本';
+
+  @override
+  String get hostAiGpuTitle => 'GPU';
+
+  @override
+  String get hostAiGpuUnknownDevice => '未知设备';
+
+  @override
+  String get hostAiGpuUtilization => 'GPU 使用率';
+
+  @override
+  String get hostAiGpuTemperature => '温度';
+
+  @override
+  String get hostAiGpuPerformanceState => '性能状态';
+
+  @override
+  String get hostAiGpuPowerUsage => '功耗';
+
+  @override
+  String get hostAiGpuMemoryUsage => '显存使用';
+
+  @override
+  String get hostAiGpuFanSpeed => '风扇转速';
+
+  @override
+  String get hostAiGpuBusId => '总线地址';
+
+  @override
+  String get hostAiGpuPersistenceMode => '持续模式';
+
+  @override
+  String get hostAiGpuDisplayActive => '显卡初始化';
+
+  @override
+  String get hostAiGpuEcc => '不可纠正 ECC';
+
+  @override
+  String get hostAiGpuComputeMode => '计算模式';
+
+  @override
+  String get hostAiGpuMigMode => 'MIG 模式';
+
+  @override
+  String get hostAiGpuMemoryUtilization => '显存使用率';
+
+  @override
+  String get hostAiGpuFrequency => '频率';
+
+  @override
+  String get hostAiGpuProcesses => '进程信息';
+
+  @override
+  String get hostAiGpuShr => '共享显存';
+
+  @override
+  String get hostAiGpuProcessName => '进程名称';
+
+  @override
+  String get hostAiGpuProcessMemory => '显存使用';
+
+  @override
+  String get hostAiGpuProcessTypeC => '计算';
+
+  @override
+  String get hostAiGpuProcessTypeG => '图形';
+
+  @override
+  String get hostAiGpuProcessTypeCG => '计算+图形';
+
+  @override
+  String get hostAiGpuLoadFailed => '加载 GPU 状态失败。';
+
+  @override
+  String get hostAiMcpLoadFailed => '加载 MCP 服务器失败。';
+
+  @override
+  String get hostAiMcpTestConnection => '测试连接';
+
+  @override
+  String get hostAiMcpOperateConfirm => '确认对 MCP 服务器 {1} 执行 {0} 操作？';
+
+  @override
+  String get hostAiMcpOperationSuccess => '操作成功。';
+
+  @override
+  String get hostAiMcpOperationFailed => 'MCP 服务器操作失败。';
+
+  @override
+  String get hostAiMcpTestSuccess => '连接测试成功。';
+
+  @override
+  String get hostAiMcpTestFailed => '连接测试失败。';
+
+  @override
+  String get hostAiMcpDeleteFailed => '删除 MCP 服务器失败。';
+
+  @override
+  String get hostAiMcpUrlRequired => '请输入 Base URL。';
+
+  @override
+  String get hostAiMcpPathRequired => '请输入传输路径。';
+
+  @override
+  String get hostAiMcpContainerRequired => '请输入容器名称。';
+
+  @override
+  String get hostAiMcpImageRequired => '请输入网关镜像。';
+
+  @override
+  String get hostAiMcpCreateFailed => '创建 MCP 服务器失败。';
+
+  @override
+  String get hostAiMcpStatusError => '错误';
+
+  @override
+  String get hostAiAgentTypeHermes => 'Hermes 智能体';
+
+  @override
+  String get hostAiAgentCreateFailed =>
+      '智能体创建失败或超时。安装可能仍在服务器上进行，请耐心等待或查看服务器任务列表。';
+
+  @override
+  String get hostAiAgentLoadFailed => '加载智能体失败。';
+
+  @override
+  String get hostAiAgentOverviewFailed => '加载智能体概览失败。';
+
+  @override
+  String get hostAiAgentDefaultModelLabel => '默认模型';
+
+  @override
+  String get hostAiAgentJobCountLabel => '定时任务数量';
+
+  @override
+  String get hostAiAgentSessionCountLabel => '会话数量';
+
+  @override
+  String get hostAiAgentDeleteConfirm => '删除智能体 {0}？该操作无法撤销。';
+
+  @override
+  String get hostAiAgentOperationSuccess => '操作成功。';
+
+  @override
+  String get hostAiAgentDeleteFailed => '删除智能体失败。';
+
+  @override
+  String get hostAiAgentStatusError => '错误';
 }

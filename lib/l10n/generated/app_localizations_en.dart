@@ -10179,4 +10179,237 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hostFilesFavoriteFailed => 'Failed to add favorite.';
+
+  @override
+  String get hostAiAccountsAddAction => 'Add account';
+
+  @override
+  String get hostAiAccountsTitle => 'Agent Accounts';
+
+  @override
+  String get hostAiAccountProviderLabel => 'Provider';
+
+  @override
+  String get hostAiAccountApiTypeLabel => 'API Type';
+
+  @override
+  String get hostAiAccountBaseUrlLabel => 'Base URL';
+
+  @override
+  String get hostAiAccountApiKeyLabel => 'API Key';
+
+  @override
+  String get hostAiAccountRemarkLabel => 'Remark';
+
+  @override
+  String get hostAiAccountsRefreshFailed => 'Failed to refresh agent accounts.';
+
+  @override
+  String get hostAiAccountsEmpty => 'No agent accounts yet.';
+
+  @override
+  String get hostAiAccountProviderRequired => 'Provider is required.';
+
+  @override
+  String get hostAiAccountNameRequired => 'Name is required.';
+
+  @override
+  String get hostAiAccountApiTypeRequired => 'API type is required.';
+
+  @override
+  String get hostAiAccountBaseUrlRequired => 'Base URL is required.';
+
+  @override
+  String get hostAiAccountApiKeyRequired => 'API Key is required.';
+
+  @override
+  String get hostAiAccountsSaved => 'Agent account saved.';
+
+  @override
+  String get hostAiAccountsUpdateFailed =>
+      'Failed to update the agent account.';
+
+  @override
+  String get hostAiAccountsCreateFailed =>
+      'Failed to create the agent account.';
+
+  @override
+  String get hostAiAccountsSaveFailedRetry =>
+      'Save failed. Adjust the input and try again.';
+
+  @override
+  String get hostAiAccountDeleteConfirm =>
+      'Delete agent account {0}? This cannot be undone.';
+
+  @override
+  String get hostAiAccountsDeleted => 'Agent account deleted.';
+
+  @override
+  String get hostAiAccountsDeleteFailed =>
+      'Failed to delete the agent account.';
+
+  @override
+  String get hostAiAccountsLoadFailed => 'Failed to load agent accounts.';
+
+  @override
+  String get hostAiGpuEmpty => 'No GPU detected on this server.';
+
+  @override
+  String get hostAiGpuRefreshFailed => 'Failed to refresh the GPU status.';
+
+  @override
+  String get hostAiGpuDriverVersion => 'Driver Version';
+
+  @override
+  String get hostAiGpuCudaVersion => 'CUDA Version';
+
+  @override
+  String get hostAiGpuTitle => 'GPU';
+
+  @override
+  String get hostAiGpuUnknownDevice => 'Unknown device';
+
+  @override
+  String get hostAiGpuUtilization => 'GPU Utilization';
+
+  @override
+  String get hostAiGpuTemperature => 'Temperature';
+
+  @override
+  String get hostAiGpuPerformanceState => 'Performance State';
+
+  @override
+  String get hostAiGpuPowerUsage => 'Power Usage';
+
+  @override
+  String get hostAiGpuMemoryUsage => 'Memory Usage';
+
+  @override
+  String get hostAiGpuFanSpeed => 'Fan Speed';
+
+  @override
+  String get hostAiGpuBusId => 'Bus ID';
+
+  @override
+  String get hostAiGpuPersistenceMode => 'Persistence Mode';
+
+  @override
+  String get hostAiGpuDisplayActive => 'Display Active';
+
+  @override
+  String get hostAiGpuEcc => 'Uncorr. ECC';
+
+  @override
+  String get hostAiGpuComputeMode => 'Compute Mode';
+
+  @override
+  String get hostAiGpuMigMode => 'MIG Mode';
+
+  @override
+  String get hostAiGpuMemoryUtilization => 'Memory Utilization';
+
+  @override
+  String get hostAiGpuFrequency => 'Frequency';
+
+  @override
+  String get hostAiGpuProcesses => 'Processes';
+
+  @override
+  String get hostAiGpuShr => 'Shared Mem';
+
+  @override
+  String get hostAiGpuProcessName => 'Process Name';
+
+  @override
+  String get hostAiGpuProcessMemory => 'Memory Usage';
+
+  @override
+  String get hostAiGpuProcessTypeC => 'Compute';
+
+  @override
+  String get hostAiGpuProcessTypeG => 'Graphics';
+
+  @override
+  String get hostAiGpuProcessTypeCG => 'Compute+Graphics';
+
+  @override
+  String get hostAiGpuLoadFailed => 'Failed to load the GPU status.';
+
+  @override
+  String get hostAiMcpLoadFailed => 'Failed to load MCP servers.';
+
+  @override
+  String get hostAiMcpTestConnection => 'Test connection';
+
+  @override
+  String get hostAiMcpOperateConfirm =>
+      'Are you sure to {0} the MCP server {1}?';
+
+  @override
+  String get hostAiMcpOperationSuccess => 'Operation completed.';
+
+  @override
+  String get hostAiMcpOperationFailed => 'MCP server operation failed.';
+
+  @override
+  String get hostAiMcpTestSuccess => 'Connection test passed.';
+
+  @override
+  String get hostAiMcpTestFailed => 'Connection test failed.';
+
+  @override
+  String get hostAiMcpDeleteFailed => 'Failed to delete the MCP server.';
+
+  @override
+  String get hostAiMcpUrlRequired => 'Enter the base URL.';
+
+  @override
+  String get hostAiMcpPathRequired => 'Enter the transport path.';
+
+  @override
+  String get hostAiMcpContainerRequired => 'Enter a container name.';
+
+  @override
+  String get hostAiMcpImageRequired => 'Enter the gateway image.';
+
+  @override
+  String get hostAiMcpCreateFailed => 'Failed to create the MCP server.';
+
+  @override
+  String get hostAiMcpStatusError => 'Error';
+
+  @override
+  String get hostAiAgentTypeHermes => 'Hermes Agent';
+
+  @override
+  String get hostAiAgentCreateFailed =>
+      'Agent creation failed or timed out. The installation may still be running on the server - wait patiently or check the server task list.';
+
+  @override
+  String get hostAiAgentLoadFailed => 'Failed to load agents.';
+
+  @override
+  String get hostAiAgentOverviewFailed => 'Failed to load the agent overview.';
+
+  @override
+  String get hostAiAgentDefaultModelLabel => 'Default model';
+
+  @override
+  String get hostAiAgentJobCountLabel => 'Jobs';
+
+  @override
+  String get hostAiAgentSessionCountLabel => 'Sessions';
+
+  @override
+  String get hostAiAgentDeleteConfirm =>
+      'Delete agent {0}? This action cannot be undone.';
+
+  @override
+  String get hostAiAgentOperationSuccess => 'Operation completed.';
+
+  @override
+  String get hostAiAgentDeleteFailed => 'Failed to delete the agent.';
+
+  @override
+  String get hostAiAgentStatusError => 'Error';
 }

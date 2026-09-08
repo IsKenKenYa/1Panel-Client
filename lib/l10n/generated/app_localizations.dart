@@ -19154,6 +19154,456 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to add favorite.'**
   String get hostFilesFavoriteFailed;
+
+  /// No description provided for @hostAiAccountsAddAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add account'**
+  String get hostAiAccountsAddAction;
+
+  /// No description provided for @hostAiAccountsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent Accounts'**
+  String get hostAiAccountsTitle;
+
+  /// No description provided for @hostAiAccountProviderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider'**
+  String get hostAiAccountProviderLabel;
+
+  /// No description provided for @hostAiAccountApiTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'API Type'**
+  String get hostAiAccountApiTypeLabel;
+
+  /// No description provided for @hostAiAccountBaseUrlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Base URL'**
+  String get hostAiAccountBaseUrlLabel;
+
+  /// No description provided for @hostAiAccountApiKeyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'API Key'**
+  String get hostAiAccountApiKeyLabel;
+
+  /// No description provided for @hostAiAccountRemarkLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Remark'**
+  String get hostAiAccountRemarkLabel;
+
+  /// No description provided for @hostAiAccountsRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh agent accounts.'**
+  String get hostAiAccountsRefreshFailed;
+
+  /// No description provided for @hostAiAccountsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No agent accounts yet.'**
+  String get hostAiAccountsEmpty;
+
+  /// No description provided for @hostAiAccountProviderRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider is required.'**
+  String get hostAiAccountProviderRequired;
+
+  /// No description provided for @hostAiAccountNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Name is required.'**
+  String get hostAiAccountNameRequired;
+
+  /// No description provided for @hostAiAccountApiTypeRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'API type is required.'**
+  String get hostAiAccountApiTypeRequired;
+
+  /// No description provided for @hostAiAccountBaseUrlRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Base URL is required.'**
+  String get hostAiAccountBaseUrlRequired;
+
+  /// No description provided for @hostAiAccountApiKeyRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'API Key is required.'**
+  String get hostAiAccountApiKeyRequired;
+
+  /// No description provided for @hostAiAccountsSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent account saved.'**
+  String get hostAiAccountsSaved;
+
+  /// No description provided for @hostAiAccountsUpdateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update the agent account.'**
+  String get hostAiAccountsUpdateFailed;
+
+  /// No description provided for @hostAiAccountsCreateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create the agent account.'**
+  String get hostAiAccountsCreateFailed;
+
+  /// No description provided for @hostAiAccountsSaveFailedRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Save failed. Adjust the input and try again.'**
+  String get hostAiAccountsSaveFailedRetry;
+
+  /// No description provided for @hostAiAccountDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete agent account \'{0}\'? This cannot be undone.'**
+  String get hostAiAccountDeleteConfirm;
+
+  /// No description provided for @hostAiAccountsDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent account deleted.'**
+  String get hostAiAccountsDeleted;
+
+  /// No description provided for @hostAiAccountsDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete the agent account.'**
+  String get hostAiAccountsDeleteFailed;
+
+  /// No description provided for @hostAiAccountsLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load agent accounts.'**
+  String get hostAiAccountsLoadFailed;
+
+  /// No description provided for @hostAiGpuEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No GPU detected on this server.'**
+  String get hostAiGpuEmpty;
+
+  /// No description provided for @hostAiGpuRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh the GPU status.'**
+  String get hostAiGpuRefreshFailed;
+
+  /// No description provided for @hostAiGpuDriverVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver Version'**
+  String get hostAiGpuDriverVersion;
+
+  /// No description provided for @hostAiGpuCudaVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'CUDA Version'**
+  String get hostAiGpuCudaVersion;
+
+  /// No description provided for @hostAiGpuTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'GPU'**
+  String get hostAiGpuTitle;
+
+  /// No description provided for @hostAiGpuUnknownDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown device'**
+  String get hostAiGpuUnknownDevice;
+
+  /// No description provided for @hostAiGpuUtilization.
+  ///
+  /// In en, this message translates to:
+  /// **'GPU Utilization'**
+  String get hostAiGpuUtilization;
+
+  /// No description provided for @hostAiGpuTemperature.
+  ///
+  /// In en, this message translates to:
+  /// **'Temperature'**
+  String get hostAiGpuTemperature;
+
+  /// No description provided for @hostAiGpuPerformanceState.
+  ///
+  /// In en, this message translates to:
+  /// **'Performance State'**
+  String get hostAiGpuPerformanceState;
+
+  /// No description provided for @hostAiGpuPowerUsage.
+  ///
+  /// In en, this message translates to:
+  /// **'Power Usage'**
+  String get hostAiGpuPowerUsage;
+
+  /// No description provided for @hostAiGpuMemoryUsage.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory Usage'**
+  String get hostAiGpuMemoryUsage;
+
+  /// No description provided for @hostAiGpuFanSpeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Fan Speed'**
+  String get hostAiGpuFanSpeed;
+
+  /// No description provided for @hostAiGpuBusId.
+  ///
+  /// In en, this message translates to:
+  /// **'Bus ID'**
+  String get hostAiGpuBusId;
+
+  /// No description provided for @hostAiGpuPersistenceMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Persistence Mode'**
+  String get hostAiGpuPersistenceMode;
+
+  /// No description provided for @hostAiGpuDisplayActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Display Active'**
+  String get hostAiGpuDisplayActive;
+
+  /// No description provided for @hostAiGpuEcc.
+  ///
+  /// In en, this message translates to:
+  /// **'Uncorr. ECC'**
+  String get hostAiGpuEcc;
+
+  /// No description provided for @hostAiGpuComputeMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Compute Mode'**
+  String get hostAiGpuComputeMode;
+
+  /// No description provided for @hostAiGpuMigMode.
+  ///
+  /// In en, this message translates to:
+  /// **'MIG Mode'**
+  String get hostAiGpuMigMode;
+
+  /// No description provided for @hostAiGpuMemoryUtilization.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory Utilization'**
+  String get hostAiGpuMemoryUtilization;
+
+  /// No description provided for @hostAiGpuFrequency.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequency'**
+  String get hostAiGpuFrequency;
+
+  /// No description provided for @hostAiGpuProcesses.
+  ///
+  /// In en, this message translates to:
+  /// **'Processes'**
+  String get hostAiGpuProcesses;
+
+  /// No description provided for @hostAiGpuShr.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared Mem'**
+  String get hostAiGpuShr;
+
+  /// No description provided for @hostAiGpuProcessName.
+  ///
+  /// In en, this message translates to:
+  /// **'Process Name'**
+  String get hostAiGpuProcessName;
+
+  /// No description provided for @hostAiGpuProcessMemory.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory Usage'**
+  String get hostAiGpuProcessMemory;
+
+  /// No description provided for @hostAiGpuProcessTypeC.
+  ///
+  /// In en, this message translates to:
+  /// **'Compute'**
+  String get hostAiGpuProcessTypeC;
+
+  /// No description provided for @hostAiGpuProcessTypeG.
+  ///
+  /// In en, this message translates to:
+  /// **'Graphics'**
+  String get hostAiGpuProcessTypeG;
+
+  /// No description provided for @hostAiGpuProcessTypeCG.
+  ///
+  /// In en, this message translates to:
+  /// **'Compute+Graphics'**
+  String get hostAiGpuProcessTypeCG;
+
+  /// No description provided for @hostAiGpuLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load the GPU status.'**
+  String get hostAiGpuLoadFailed;
+
+  /// No description provided for @hostAiMcpLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load MCP servers.'**
+  String get hostAiMcpLoadFailed;
+
+  /// No description provided for @hostAiMcpTestConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Test connection'**
+  String get hostAiMcpTestConnection;
+
+  /// No description provided for @hostAiMcpOperateConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure to \'{0}\' the MCP server \'{1}\'?'**
+  String get hostAiMcpOperateConfirm;
+
+  /// No description provided for @hostAiMcpOperationSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Operation completed.'**
+  String get hostAiMcpOperationSuccess;
+
+  /// No description provided for @hostAiMcpOperationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'MCP server operation failed.'**
+  String get hostAiMcpOperationFailed;
+
+  /// No description provided for @hostAiMcpTestSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection test passed.'**
+  String get hostAiMcpTestSuccess;
+
+  /// No description provided for @hostAiMcpTestFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection test failed.'**
+  String get hostAiMcpTestFailed;
+
+  /// No description provided for @hostAiMcpDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete the MCP server.'**
+  String get hostAiMcpDeleteFailed;
+
+  /// No description provided for @hostAiMcpUrlRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the base URL.'**
+  String get hostAiMcpUrlRequired;
+
+  /// No description provided for @hostAiMcpPathRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the transport path.'**
+  String get hostAiMcpPathRequired;
+
+  /// No description provided for @hostAiMcpContainerRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a container name.'**
+  String get hostAiMcpContainerRequired;
+
+  /// No description provided for @hostAiMcpImageRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the gateway image.'**
+  String get hostAiMcpImageRequired;
+
+  /// No description provided for @hostAiMcpCreateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create the MCP server.'**
+  String get hostAiMcpCreateFailed;
+
+  /// No description provided for @hostAiMcpStatusError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get hostAiMcpStatusError;
+
+  /// No description provided for @hostAiAgentTypeHermes.
+  ///
+  /// In en, this message translates to:
+  /// **'Hermes Agent'**
+  String get hostAiAgentTypeHermes;
+
+  /// No description provided for @hostAiAgentCreateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent creation failed or timed out. The installation may still be running on the server - wait patiently or check the server task list.'**
+  String get hostAiAgentCreateFailed;
+
+  /// No description provided for @hostAiAgentLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load agents.'**
+  String get hostAiAgentLoadFailed;
+
+  /// No description provided for @hostAiAgentOverviewFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load the agent overview.'**
+  String get hostAiAgentOverviewFailed;
+
+  /// No description provided for @hostAiAgentDefaultModelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Default model'**
+  String get hostAiAgentDefaultModelLabel;
+
+  /// No description provided for @hostAiAgentJobCountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Jobs'**
+  String get hostAiAgentJobCountLabel;
+
+  /// No description provided for @hostAiAgentSessionCountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sessions'**
+  String get hostAiAgentSessionCountLabel;
+
+  /// No description provided for @hostAiAgentDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete agent \'{0}\'? This action cannot be undone.'**
+  String get hostAiAgentDeleteConfirm;
+
+  /// No description provided for @hostAiAgentOperationSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Operation completed.'**
+  String get hostAiAgentOperationSuccess;
+
+  /// No description provided for @hostAiAgentDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete the agent.'**
+  String get hostAiAgentDeleteFailed;
+
+  /// No description provided for @hostAiAgentStatusError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get hostAiAgentStatusError;
 }
 
 class _AppLocalizationsDelegate
