@@ -9814,4 +9814,64 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get hostWebsiteTabLogs => '日志';
+
+  @override
+  String get hostFilesEditorBack => '返回文件列表';
+
+  @override
+  String get hostFilesEditorLoadFailed => '加载文件内容失败。';
+
+  @override
+  String get hostFilesEditorSaveConfirm => '保存对 {0} 的更改？';
+
+  @override
+  String get hostFilesSearchNoMatch => '没有匹配的文件。';
+
+  @override
+  String get hostFilesPasteAction => '粘贴';
+
+  @override
+  String get hostFilesCutAction => '剪切';
+
+  @override
+  String get hostFilesPermissionLabel => '权限';
+
+  @override
+  String get hostFilesFileNamePlaceholder => '文件名';
+
+  @override
+  String get hostFilesFileNameEmpty => '文件名不能为空。';
+
+  @override
+  String get hostFilesCreateFileFailed => '创建文件 {0} 失败。';
+
+  @override
+  String get hostFilesRenameFailed => '重命名 {0} 失败。';
+
+  @override
+  String get hostFilesCutToast => '已剪切。请到目标目录粘贴。';
+
+  @override
+  String get hostFilesCopyToast => '已复制。请到目标目录粘贴。';
+
+  @override
+  String get hostFilesPasteFailed => '粘贴失败。';
+
+  @override
+  String get hostFilesDestinationLabel => '目标目录';
+
+  @override
+  String get hostFilesCompressFailed => '压缩 {0} 失败。';
+
+  @override
+  String get hostFilesModePlaceholder => '如 755';
+
+  @override
+  String get hostFilesModeInvalid => '请输入 3 位八进制权限（如 755）。';
+
+  @override
+  String get hostFilesModeFailed => '修改 {0} 的权限失败。';
+
+  @override
+  String get hostFilesFavoriteFailed => '添加收藏失败。';
 }

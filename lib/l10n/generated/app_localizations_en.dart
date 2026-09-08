@@ -10118,4 +10118,65 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hostWebsiteTabLogs => 'Logs';
+
+  @override
+  String get hostFilesEditorBack => 'Back to files';
+
+  @override
+  String get hostFilesEditorLoadFailed => 'Failed to load file content.';
+
+  @override
+  String get hostFilesEditorSaveConfirm => 'Save changes to {0}?';
+
+  @override
+  String get hostFilesSearchNoMatch => 'No matching files.';
+
+  @override
+  String get hostFilesPasteAction => 'Paste';
+
+  @override
+  String get hostFilesCutAction => 'Cut';
+
+  @override
+  String get hostFilesPermissionLabel => 'Permissions';
+
+  @override
+  String get hostFilesFileNamePlaceholder => 'File name';
+
+  @override
+  String get hostFilesFileNameEmpty => 'File name cannot be empty.';
+
+  @override
+  String get hostFilesCreateFileFailed => 'Failed to create file {0}.';
+
+  @override
+  String get hostFilesRenameFailed => 'Failed to rename {0}.';
+
+  @override
+  String get hostFilesCutToast => 'Cut. Paste it in the target directory.';
+
+  @override
+  String get hostFilesCopyToast => 'Copied. Paste it in the target directory.';
+
+  @override
+  String get hostFilesPasteFailed => 'Paste failed.';
+
+  @override
+  String get hostFilesDestinationLabel => 'Destination directory';
+
+  @override
+  String get hostFilesCompressFailed => 'Failed to compress {0}.';
+
+  @override
+  String get hostFilesModePlaceholder => 'e.g. 755';
+
+  @override
+  String get hostFilesModeInvalid =>
+      'Enter a 3-digit octal permission (e.g. 755).';
+
+  @override
+  String get hostFilesModeFailed => 'Failed to change permissions of {0}.';
+
+  @override
+  String get hostFilesFavoriteFailed => 'Failed to add favorite.';
 }

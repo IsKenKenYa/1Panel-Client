@@ -19034,6 +19034,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Logs'**
   String get hostWebsiteTabLogs;
+
+  /// No description provided for @hostFilesEditorBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to files'**
+  String get hostFilesEditorBack;
+
+  /// No description provided for @hostFilesEditorLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load file content.'**
+  String get hostFilesEditorLoadFailed;
+
+  /// No description provided for @hostFilesEditorSaveConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Save changes to \'{0}\'?'**
+  String get hostFilesEditorSaveConfirm;
+
+  /// No description provided for @hostFilesSearchNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching files.'**
+  String get hostFilesSearchNoMatch;
+
+  /// No description provided for @hostFilesPasteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste'**
+  String get hostFilesPasteAction;
+
+  /// No description provided for @hostFilesCutAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Cut'**
+  String get hostFilesCutAction;
+
+  /// No description provided for @hostFilesPermissionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions'**
+  String get hostFilesPermissionLabel;
+
+  /// No description provided for @hostFilesFileNamePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'File name'**
+  String get hostFilesFileNamePlaceholder;
+
+  /// No description provided for @hostFilesFileNameEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'File name cannot be empty.'**
+  String get hostFilesFileNameEmpty;
+
+  /// No description provided for @hostFilesCreateFileFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create file \'{0}\'.'**
+  String get hostFilesCreateFileFailed;
+
+  /// No description provided for @hostFilesRenameFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to rename \'{0}\'.'**
+  String get hostFilesRenameFailed;
+
+  /// No description provided for @hostFilesCutToast.
+  ///
+  /// In en, this message translates to:
+  /// **'Cut. Paste it in the target directory.'**
+  String get hostFilesCutToast;
+
+  /// No description provided for @hostFilesCopyToast.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied. Paste it in the target directory.'**
+  String get hostFilesCopyToast;
+
+  /// No description provided for @hostFilesPasteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste failed.'**
+  String get hostFilesPasteFailed;
+
+  /// No description provided for @hostFilesDestinationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Destination directory'**
+  String get hostFilesDestinationLabel;
+
+  /// No description provided for @hostFilesCompressFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to compress \'{0}\'.'**
+  String get hostFilesCompressFailed;
+
+  /// No description provided for @hostFilesModePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 755'**
+  String get hostFilesModePlaceholder;
+
+  /// No description provided for @hostFilesModeInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a 3-digit octal permission (e.g. 755).'**
+  String get hostFilesModeInvalid;
+
+  /// No description provided for @hostFilesModeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to change permissions of \'{0}\'.'**
+  String get hostFilesModeFailed;
+
+  /// No description provided for @hostFilesFavoriteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to add favorite.'**
+  String get hostFilesFavoriteFailed;
 }
 
 class _AppLocalizationsDelegate
