@@ -1128,6 +1128,21 @@ class NativeChannelWriteHandlers {
           'error': 'OpenResty 未安装，请先在 1Panel 应用商店安装 OpenResty 后再创建网站',
         };
       }
+      // 服务端按 appInstallID 定位 openresty 安装实例（record not found 实测根因）。
+      int? openrestyInstallId;
+      try {
+        final installed = await AppService().getInstalledApps();
+        for (final a in installed) {
+          if ((a.appKey ?? '').toLowerCase() == 'openresty' &&
+              a.id != null &&
+              a.id! > 0) {
+            openrestyInstallId = a.id;
+            break;
+          }
+        }
+      } catch (e) {
+        appLogger.w('createWebsite: discover openresty install failed: $e');
+      }
       await WebsiteRepository().createWebsite(
         WebsiteCreate(
           alias: alias,
@@ -1136,6 +1151,7 @@ class NativeChannelWriteHandlers {
           type: type,
           // 服务端要求 appType 枚举（new/installed）：静态部署挂已装 OpenResty
           appType: type == 'deployment' ? 'installed' : null,
+          appInstallId: openrestyInstallId,
           webSiteGroupId: groupId,
           port: port,
           domains: [
