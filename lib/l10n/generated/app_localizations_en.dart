@@ -8808,4 +8808,658 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get filePreviewVideoNotInitialized => 'Video player not initialized';
+
+  @override
+  String get settingsAppearance => 'Appearance';
+
+  @override
+  String get settingsSystemBackdrop => 'System backdrop';
+
+  @override
+  String get settingsRestartRequired => 'Restart required';
+
+  @override
+  String get commonNone => 'None';
+
+  @override
+  String get hostServersRefreshFailed => 'Failed to refresh servers.';
+
+  @override
+  String get hostServersActions => 'Server actions';
+
+  @override
+  String get hostServersSwitch => 'Switch';
+
+  @override
+  String get hostServersDeleteCurrentBlocked =>
+      'The current server cannot be deleted. Switch to another server first.';
+
+  @override
+  String get hostServersNamePlaceholder => 'My server';
+
+  @override
+  String get hostServersUrlRequired => 'URL is required.';
+
+  @override
+  String get hostServersUrlHttpRequired =>
+      'URL must start with http:// or https://.';
+
+  @override
+  String get hostServersApiKeyRequired => 'API key is required.';
+
+  @override
+  String get hostFilesPathPlaceholder => 'Enter a path and press Enter';
+
+  @override
+  String get hostFilesFolderNamePlaceholder => 'Folder name';
+
+  @override
+  String get hostFilesFolderNameEmpty => 'Folder name cannot be empty.';
+
+  @override
+  String get hostContainersRefreshFailed => 'Failed to refresh containers.';
+
+  @override
+  String get hostContainersStopContainer => 'Stop container';
+
+  @override
+  String get hostContainersStartContainer => 'Start container';
+
+  @override
+  String get hostContainersRestartContainer => 'Restart container';
+
+  @override
+  String get hostContainersDeleteContainer => 'Delete container';
+
+  @override
+  String get hostContainersDeleteConfirm => 'Delete Container';
+
+  @override
+  String get hostAppsRefreshFailed => 'Failed to refresh apps.';
+
+  @override
+  String get hostAppsInstallOpenresty => 'Install OpenResty';
+
+  @override
+  String get hostAppsStopApp => 'Stop app';
+
+  @override
+  String get hostAppsStartApp => 'Start app';
+
+  @override
+  String get hostAppsUninstallApp => 'Uninstall app';
+
+  @override
+  String get hostAppsUninstallConfirm => 'Uninstall App';
+
+  @override
+  String get hostAppsOpenrestyInstallConfirm =>
+      'OpenResty will be downloaded and installed from the app store. This may take a few minutes. Continue?';
+
+  @override
+  String get hostAppsOpenrestyInstallSubmitted =>
+      'OpenResty install task submitted.';
+
+  @override
+  String get hostWebsitesRefreshFailed => 'Failed to refresh websites.';
+
+  @override
+  String get hostWebsitesStopWebsite => 'Stop website';
+
+  @override
+  String get hostWebsitesStartWebsite => 'Start website';
+
+  @override
+  String get hostWebsitesPrimaryDomainHint => 'e.g. example.com';
+
+  @override
+  String get hostWebsitesAliasHint => 'Auto-derived from domain if empty';
+
+  @override
+  String get hostWebsitesAddFailed => 'Failed to add website.';
+
+  @override
+  String get hostCommonOptional => 'Optional';
+
+  @override
+  String get hostCommonPortNumeric => 'Port must be a number.';
+
+  @override
+  String get hostOpenrestyRefreshFailed =>
+      'Failed to refresh the OpenResty snapshot.';
+
+  @override
+  String get hostOpenrestyConfigEmptyHint =>
+      '# The OpenResty configuration source is empty or unavailable (/etc/nginx/nginx.conf)';
+
+  @override
+  String get hostOpenrestyConfigSource =>
+      'Configuration source (/etc/nginx/nginx.conf)';
+
+  @override
+  String get hostOpenrestySaveConfig => 'Save OpenResty configuration';
+
+  @override
+  String get hostOpenrestySaveConfigConfirm =>
+      'This will overwrite /etc/nginx/nginx.conf with the edited content.\nAn invalid configuration may make hosted websites unavailable. Continue?';
+
+  @override
+  String get hostOpenrestySaveConfigFailed =>
+      'Failed to save the OpenResty configuration.';
+
+  @override
+  String get hostDatabaseCreate => 'Create database';
+
+  @override
+  String get hostDatabaseRefreshFailed => 'Failed to refresh databases.';
+
+  @override
+  String get hostDatabaseActions => 'Database actions';
+
+  @override
+  String get hostDatabasePasswordRequired => 'Password is required.';
+
+  @override
+  String get hostDatabaseDeleteTitle => 'Delete Database';
+
+  @override
+  String get hostDatabaseNameHint => 'e.g. app_db';
+
+  @override
+  String get hostDatabaseAddressHint => 'e.g. 192.168.1.10';
+
+  @override
+  String get hostDatabasePortHint => 'e.g. 3306';
+
+  @override
+  String get hostDatabaseCreateFailed => 'Failed to create database.';
+
+  @override
+  String get hostDatabaseCreateRetryHint =>
+      'Create failed. Adjust the inputs and try again.';
+
+  @override
+  String get hostDatabaseRemoteAddressRequired =>
+      'Address is required for remote databases.';
+
+  @override
+  String get hostDatabaseRemotePortRequired =>
+      'Port is required for remote databases.';
+
+  @override
+  String get hostDatabaseRemoteUsernameRequired =>
+      'Username is required for remote databases.';
+
+  @override
+  String get hostDatabaseRemotePasswordRequired =>
+      'Password is required for remote databases.';
+
+  @override
+  String get hostOrchestrationRefreshFailed => 'Failed to refresh composes.';
+
+  @override
+  String get hostOrchestrationActions => 'Compose actions';
+
+  @override
+  String get hostOrchestrationUp => 'Up';
+
+  @override
+  String get hostOrchestrationDown => 'Down';
+
+  @override
+  String get hostOrchestrationDownTitle => 'Down Compose';
+
+  @override
+  String get hostOrchestrationNamePlaceholder => 'e.g. my-app';
+
+  @override
+  String get hostOrchestrationCreateFrom => 'Create from';
+
+  @override
+  String get hostOrchestrationFromPath => 'From path';
+
+  @override
+  String get hostOrchestrationFromContent => 'From content';
+
+  @override
+  String get hostOrchestrationFromTemplate => 'From template';
+
+  @override
+  String get hostOrchestrationComposeFilePath => 'Compose file path';
+
+  @override
+  String get hostOrchestrationPathPlaceholder =>
+      'e.g. /opt/1panel/docker/compose/my-app/docker-compose.yml';
+
+  @override
+  String get hostOrchestrationNewComposeContent => 'New compose content (YAML)';
+
+  @override
+  String get hostOrchestrationFullReplacementHint =>
+      'Full replacement: paste the complete new config; empty content will be rejected';
+
+  @override
+  String get hostOrchestrationTemplateId => 'Template ID';
+
+  @override
+  String get hostOrchestrationTemplateIdPlaceholder => 'e.g. 1';
+
+  @override
+  String get hostOrchestrationCreateFailed => 'Failed to create compose.';
+
+  @override
+  String get hostOrchestrationContentRequired => 'Compose content is required.';
+
+  @override
+  String get hostOrchestrationEditTitle => 'Edit Compose';
+
+  @override
+  String get hostOrchestrationReplace => 'Replace';
+
+  @override
+  String get hostOrchestrationSaveFailedReopen =>
+      'Save failed. The editor reopens with your content; try again.';
+
+  @override
+  String get hostOrchestrationPathRequired => 'Compose file path is required.';
+
+  @override
+  String get hostOrchestrationTemplateIdRequired => 'Template ID is required.';
+
+  @override
+  String get hostOrchestrationTemplateIdInteger =>
+      'Template ID must be an integer.';
+
+  @override
+  String get hostCommonCreateFailed =>
+      'Create failed. Adjust the inputs and try again.';
+
+  @override
+  String get hostCommonSaveFailed =>
+      'Save failed. Adjust the inputs and try again.';
+
+  @override
+  String get hostCronJobsCreateTask => 'Create task';
+
+  @override
+  String get hostCronJobsRefreshFailed => 'Failed to refresh cron jobs.';
+
+  @override
+  String get hostCronJobsLastRun => 'Last run';
+
+  @override
+  String get hostCronJobsTaskActions => 'Task actions';
+
+  @override
+  String get hostCronJobsDeleteTaskTitle => 'Delete Task';
+
+  @override
+  String get hostCronJobsNamePlaceholder => 'e.g. Cleanup logs';
+
+  @override
+  String get hostCronJobsScriptReplaceHint =>
+      'Optional; submitting replaces the stored script';
+
+  @override
+  String get hostCronJobsScriptPlaceholder => 'Optional shell script';
+
+  @override
+  String get hostCronJobsEditTask => 'Edit task';
+
+  @override
+  String get hostCronJobsSaveFailed => 'Failed to save the task.';
+
+  @override
+  String get hostCronJobsCreateFailed => 'Failed to create the task.';
+
+  @override
+  String get hostBackupsRefreshFailed => 'Failed to refresh backup records.';
+
+  @override
+  String get hostBackupsActions => 'Backup actions';
+
+  @override
+  String get hostBackupsRestoreUnavailableFailed =>
+      'Restore is unavailable for failed backup records.';
+
+  @override
+  String get hostBackupsRestoreUnavailableSize =>
+      'Restore is unavailable while the file size is unknown.';
+
+  @override
+  String get hostBackupsDeleteUnavailableWaiting =>
+      'Delete is unavailable while the backup is still waiting.';
+
+  @override
+  String get hostBackupsRestoreOverwriteWarning =>
+      'This will overwrite the current data and cannot be undone.';
+
+  @override
+  String get hostBackupsDeleteRecordTitle => 'Delete Backup Record';
+
+  @override
+  String get hostHostSshTitle => 'SSH';
+
+  @override
+  String get hostHostSshRefreshFailed =>
+      'Failed to refresh the SSH information.';
+
+  @override
+  String get hostHostSshNotInstalled =>
+      'SSH service is not installed on this server.';
+
+  @override
+  String get hostHostSshConfigLoadFailed =>
+      'Failed to load the configuration file.';
+
+  @override
+  String get hostHostSshConfigEmptyPlaceholder =>
+      '# The SSH configuration file does not exist or is empty (/etc/ssh/sshd_config)';
+
+  @override
+  String get hostHostSshConfigFileTitle =>
+      'Configuration file (/etc/ssh/sshd_config)';
+
+  @override
+  String get hostHostSshSaveTitle => 'Save SSH configuration';
+
+  @override
+  String get hostHostSshSaveMessage =>
+      'This will overwrite /etc/ssh/sshd_config with the edited content.\nAn invalid configuration may make the SSH service unavailable. Continue?';
+
+  @override
+  String get hostHostSshSaveFailed => 'Failed to save the SSH configuration.';
+
+  @override
+  String get hostToolboxSnapshotRefreshFailed =>
+      'Failed to refresh device snapshot.';
+
+  @override
+  String get hostToolboxKernelLabel => 'Kernel';
+
+  @override
+  String get hostToolboxProductLabel => 'Product';
+
+  @override
+  String get hostToolboxTimeZoneLabel => 'Time Zone';
+
+  @override
+  String get hostToolboxNtpServerLabel => 'NTP Server';
+
+  @override
+  String get hostToolboxSwapOff => 'Off';
+
+  @override
+  String get hostToolboxSwapOffHint => 'Swap is disabled on this host.';
+
+  @override
+  String get hostToolboxSwapTotalHint => 'Total swap size.';
+
+  @override
+  String get hostToolboxDnsPlaceholder => 'e.g. 8.8.8.8';
+
+  @override
+  String get hostToolboxDnsVerifyAction => 'Verify';
+
+  @override
+  String get hostToolboxDnsReachable => 'DNS reachable';
+
+  @override
+  String get hostToolboxDnsEmptyError => 'Enter a DNS server to verify.';
+
+  @override
+  String get hostToolboxUsersTitle => 'Users';
+
+  @override
+  String get hostAiModelsRefreshFailed => 'Failed to refresh AI models.';
+
+  @override
+  String get hostAiModelUnknownName => 'Unknown';
+
+  @override
+  String get hostAiConnectionTitle => 'Connection';
+
+  @override
+  String get hostAiOllamaNotDetected => 'Ollama not detected on this server.';
+
+  @override
+  String get hostAiDomainBoundHint =>
+      'Domain bound. Refresh to see connection details.';
+
+  @override
+  String get hostAiIpAllowlistLabel =>
+      'IP allowlist (optional, comma-separated)';
+
+  @override
+  String get hostAiBindDomainFailed => 'Failed to bind domain.';
+
+  @override
+  String get hostAiBindFailedRetry =>
+      'Bind failed. Adjust the input and try again.';
+
+  @override
+  String get hostAiModelActions => 'Model actions';
+
+  @override
+  String get hostAiModelRecreateAction => 'Recreate';
+
+  @override
+  String get hostAiModelDeleteTitle => 'Delete AI Model';
+
+  @override
+  String get hostAiModelCreateFailed => 'Failed to create model.';
+
+  @override
+  String get hostAiCreateFailedRetry =>
+      'Create failed. Adjust the input and try again.';
+
+  @override
+  String get hostCommandsRefreshFailed => 'Failed to refresh commands.';
+
+  @override
+  String get hostCommandsRowActions => 'Command actions';
+
+  @override
+  String get hostCommandsDeleteTitle => 'Delete Command';
+
+  @override
+  String get hostCommandsNameHint => 'e.g. Cleanup logs';
+
+  @override
+  String get hostCommandsCommandHint => 'e.g. docker ps -a';
+
+  @override
+  String get hostCommandsDefaultGroup => 'Default group';
+
+  @override
+  String get hostCommandsCreateFailed => 'Failed to create the command.';
+
+  @override
+  String get hostCommandsCreateFormError =>
+      'Create failed. Adjust the inputs and try again.';
+
+  @override
+  String get hostCommandsCommandRequired => 'Command is required.';
+
+  @override
+  String get hostScriptLibraryRefreshFailed => 'Failed to refresh scripts.';
+
+  @override
+  String get hostScriptLibraryDeleteSelected => 'Delete selected';
+
+  @override
+  String get hostScriptLibraryRowActions => 'Script actions';
+
+  @override
+  String get hostScriptLibraryDeleteTitle => 'Delete Script';
+
+  @override
+  String get hostScriptLibraryDeleteSelectedTitle => 'Delete Scripts';
+
+  @override
+  String get hostLogsRefreshOperationFailed =>
+      'Failed to refresh operation logs.';
+
+  @override
+  String get hostLogsRefreshLoginFailed => 'Failed to refresh login logs.';
+
+  @override
+  String get hostLogsFileNameRequired => 'File name is required.';
+
+  @override
+  String get hostLogsRefreshTab => 'Refresh current tab';
+
+  @override
+  String get hostLogsFileNameLabel => 'File name';
+
+  @override
+  String get hostLogsCoreToggle => 'Core logs';
+
+  @override
+  String get hostLogsSystemHint =>
+      'Enter a log file name and click Load to view its content.';
+
+  @override
+  String get hostSecurityRefreshFailed => 'Failed to refresh firewall rules.';
+
+  @override
+  String get hostSecurityAddRule => 'Add rule';
+
+  @override
+  String get hostSecurityDeleteRule => 'Delete rule';
+
+  @override
+  String get hostSecurityPortHint => 'e.g. 8080';
+
+  @override
+  String get hostSecurityAddressHint => 'Leave empty for all addresses';
+
+  @override
+  String get hostSecurityAddRuleTitle => 'Add Rule';
+
+  @override
+  String get hostSecurityPortNumeric => 'Port must be a number.';
+
+  @override
+  String get hostSecurityDeleteRuleTitle => 'Delete Rule';
+
+  @override
+  String get hostGatewayRefreshFailed =>
+      'Failed to refresh the security gateway snapshot.';
+
+  @override
+  String get hostGatewayOpenrestyStatus => 'OpenResty Status';
+
+  @override
+  String get hostGatewayHttpsRedirectTitle => 'Default HTTPS redirect';
+
+  @override
+  String get hostGatewayHttpsRedirectDescription =>
+      'Redirect HTTP to HTTPS for all websites';
+
+  @override
+  String get hostGatewayStateUnknown => 'Current state unknown';
+
+  @override
+  String get hostGatewayDisable => 'Disable';
+
+  @override
+  String get hostGatewayHttpsRedirectEnableTitle =>
+      'Enable Default HTTPS Redirect';
+
+  @override
+  String get hostGatewayHttpsRedirectDisableTitle =>
+      'Disable Default HTTPS Redirect';
+
+  @override
+  String get hostGatewayHttpsRedirectEnableMessage =>
+      'Enable HTTP→HTTPS redirect for all websites?';
+
+  @override
+  String get hostGatewayHttpsRedirectDisableMessage =>
+      'Disable HTTP→HTTPS redirect?';
+
+  @override
+  String get hostGatewayHttpsRedirectEnableFailed =>
+      'Failed to enable the default HTTPS redirect.';
+
+  @override
+  String get hostGatewayHttpsRedirectDisableFailed =>
+      'Failed to disable the default HTTPS redirect.';
+
+  @override
+  String get hostGatewayCertificatePlaceholder =>
+      'Paste the full PEM certificate chain';
+
+  @override
+  String get hostGatewayPrivateKeyPlaceholder =>
+      'Paste the matching PEM private key';
+
+  @override
+  String get hostGatewayDescriptionOptional => 'Description (optional)';
+
+  @override
+  String get hostGatewayDescriptionPlaceholder =>
+      'e.g. *.example.com issued 2026-09';
+
+  @override
+  String get hostGatewayCertificateRequired => 'Certificate is required.';
+
+  @override
+  String get hostGatewayUploadConfirmMessage =>
+      'The certificate will be imported into the panel and becomes available to websites. Continue?';
+
+  @override
+  String get hostGatewayUploadFailed => 'Failed to upload the certificate.';
+
+  @override
+  String get hostGatewayUploadFormError =>
+      'Upload failed. The form reopens with your content; try again.';
+
+  @override
+  String get hostGatewayRenewNoId =>
+      'This certificate has no id and cannot be renewed.';
+
+  @override
+  String get hostGatewayRenew => 'Renew';
+
+  @override
+  String get hostGatewayRenewalRequested => 'Renewal requested.';
+
+  @override
+  String get hostGatewayExpiresToday => 'Expires today';
+
+  @override
+  String get hostGatewayValid => 'Valid';
+
+  @override
+  String get hostDashboardRefreshFailed => 'Failed to refresh dashboard.';
+
+  @override
+  String get hostDashboardKernelLabel => 'Kernel';
+
+  @override
+  String get hostDashboardCpuCoresLabel => 'CPU Cores';
+
+  @override
+  String get hostDashboardPanelVersionLabel => 'Panel Version';
+
+  @override
+  String get hostMonitoringRefreshFailed =>
+      'Failed to refresh monitoring data.';
+
+  @override
+  String get hostMonitoringLoadAverage => 'Load Average';
+
+  @override
+  String get hostMonitoringLoad1 => 'Load 1';
+
+  @override
+  String get hostMonitoringLoad5 => 'Load 5';
+
+  @override
+  String get hostMonitoringLoad15 => 'Load 15';
+
+  @override
+  String get hostMonitoringLoadWindows => '1/5/15 min';
 }

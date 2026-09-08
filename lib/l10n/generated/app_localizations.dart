@@ -16616,6 +16616,1206 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Video player not initialized'**
   String get filePreviewVideoNotInitialized;
+
+  /// No description provided for @settingsAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get settingsAppearance;
+
+  /// No description provided for @settingsSystemBackdrop.
+  ///
+  /// In en, this message translates to:
+  /// **'System backdrop'**
+  String get settingsSystemBackdrop;
+
+  /// No description provided for @settingsRestartRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart required'**
+  String get settingsRestartRequired;
+
+  /// No description provided for @commonNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get commonNone;
+
+  /// No description provided for @hostServersRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh servers.'**
+  String get hostServersRefreshFailed;
+
+  /// No description provided for @hostServersActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Server actions'**
+  String get hostServersActions;
+
+  /// No description provided for @hostServersSwitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch'**
+  String get hostServersSwitch;
+
+  /// No description provided for @hostServersDeleteCurrentBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'The current server cannot be deleted. Switch to another server first.'**
+  String get hostServersDeleteCurrentBlocked;
+
+  /// No description provided for @hostServersNamePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'My server'**
+  String get hostServersNamePlaceholder;
+
+  /// No description provided for @hostServersUrlRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'URL is required.'**
+  String get hostServersUrlRequired;
+
+  /// No description provided for @hostServersUrlHttpRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'URL must start with http:// or https://.'**
+  String get hostServersUrlHttpRequired;
+
+  /// No description provided for @hostServersApiKeyRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'API key is required.'**
+  String get hostServersApiKeyRequired;
+
+  /// No description provided for @hostFilesPathPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a path and press Enter'**
+  String get hostFilesPathPlaceholder;
+
+  /// No description provided for @hostFilesFolderNamePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder name'**
+  String get hostFilesFolderNamePlaceholder;
+
+  /// No description provided for @hostFilesFolderNameEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder name cannot be empty.'**
+  String get hostFilesFolderNameEmpty;
+
+  /// No description provided for @hostContainersRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh containers.'**
+  String get hostContainersRefreshFailed;
+
+  /// No description provided for @hostContainersStopContainer.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop container'**
+  String get hostContainersStopContainer;
+
+  /// No description provided for @hostContainersStartContainer.
+  ///
+  /// In en, this message translates to:
+  /// **'Start container'**
+  String get hostContainersStartContainer;
+
+  /// No description provided for @hostContainersRestartContainer.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart container'**
+  String get hostContainersRestartContainer;
+
+  /// No description provided for @hostContainersDeleteContainer.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete container'**
+  String get hostContainersDeleteContainer;
+
+  /// No description provided for @hostContainersDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Container'**
+  String get hostContainersDeleteConfirm;
+
+  /// No description provided for @hostAppsRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh apps.'**
+  String get hostAppsRefreshFailed;
+
+  /// No description provided for @hostAppsInstallOpenresty.
+  ///
+  /// In en, this message translates to:
+  /// **'Install OpenResty'**
+  String get hostAppsInstallOpenresty;
+
+  /// No description provided for @hostAppsStopApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop app'**
+  String get hostAppsStopApp;
+
+  /// No description provided for @hostAppsStartApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Start app'**
+  String get hostAppsStartApp;
+
+  /// No description provided for @hostAppsUninstallApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Uninstall app'**
+  String get hostAppsUninstallApp;
+
+  /// No description provided for @hostAppsUninstallConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Uninstall App'**
+  String get hostAppsUninstallConfirm;
+
+  /// No description provided for @hostAppsOpenrestyInstallConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'OpenResty will be downloaded and installed from the app store. This may take a few minutes. Continue?'**
+  String get hostAppsOpenrestyInstallConfirm;
+
+  /// No description provided for @hostAppsOpenrestyInstallSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'OpenResty install task submitted.'**
+  String get hostAppsOpenrestyInstallSubmitted;
+
+  /// No description provided for @hostWebsitesRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh websites.'**
+  String get hostWebsitesRefreshFailed;
+
+  /// No description provided for @hostWebsitesStopWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop website'**
+  String get hostWebsitesStopWebsite;
+
+  /// No description provided for @hostWebsitesStartWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'Start website'**
+  String get hostWebsitesStartWebsite;
+
+  /// No description provided for @hostWebsitesPrimaryDomainHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. example.com'**
+  String get hostWebsitesPrimaryDomainHint;
+
+  /// No description provided for @hostWebsitesAliasHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-derived from domain if empty'**
+  String get hostWebsitesAliasHint;
+
+  /// No description provided for @hostWebsitesAddFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to add website.'**
+  String get hostWebsitesAddFailed;
+
+  /// No description provided for @hostCommonOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get hostCommonOptional;
+
+  /// No description provided for @hostCommonPortNumeric.
+  ///
+  /// In en, this message translates to:
+  /// **'Port must be a number.'**
+  String get hostCommonPortNumeric;
+
+  /// No description provided for @hostOpenrestyRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh the OpenResty snapshot.'**
+  String get hostOpenrestyRefreshFailed;
+
+  /// No description provided for @hostOpenrestyConfigEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'# The OpenResty configuration source is empty or unavailable (/etc/nginx/nginx.conf)'**
+  String get hostOpenrestyConfigEmptyHint;
+
+  /// No description provided for @hostOpenrestyConfigSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Configuration source (/etc/nginx/nginx.conf)'**
+  String get hostOpenrestyConfigSource;
+
+  /// No description provided for @hostOpenrestySaveConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Save OpenResty configuration'**
+  String get hostOpenrestySaveConfig;
+
+  /// No description provided for @hostOpenrestySaveConfigConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'This will overwrite /etc/nginx/nginx.conf with the edited content.\nAn invalid configuration may make hosted websites unavailable. Continue?'**
+  String get hostOpenrestySaveConfigConfirm;
+
+  /// No description provided for @hostOpenrestySaveConfigFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save the OpenResty configuration.'**
+  String get hostOpenrestySaveConfigFailed;
+
+  /// No description provided for @hostDatabaseCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create database'**
+  String get hostDatabaseCreate;
+
+  /// No description provided for @hostDatabaseRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh databases.'**
+  String get hostDatabaseRefreshFailed;
+
+  /// No description provided for @hostDatabaseActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Database actions'**
+  String get hostDatabaseActions;
+
+  /// No description provided for @hostDatabasePasswordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is required.'**
+  String get hostDatabasePasswordRequired;
+
+  /// No description provided for @hostDatabaseDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Database'**
+  String get hostDatabaseDeleteTitle;
+
+  /// No description provided for @hostDatabaseNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. app_db'**
+  String get hostDatabaseNameHint;
+
+  /// No description provided for @hostDatabaseAddressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 192.168.1.10'**
+  String get hostDatabaseAddressHint;
+
+  /// No description provided for @hostDatabasePortHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 3306'**
+  String get hostDatabasePortHint;
+
+  /// No description provided for @hostDatabaseCreateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create database.'**
+  String get hostDatabaseCreateFailed;
+
+  /// No description provided for @hostDatabaseCreateRetryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Create failed. Adjust the inputs and try again.'**
+  String get hostDatabaseCreateRetryHint;
+
+  /// No description provided for @hostDatabaseRemoteAddressRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Address is required for remote databases.'**
+  String get hostDatabaseRemoteAddressRequired;
+
+  /// No description provided for @hostDatabaseRemotePortRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Port is required for remote databases.'**
+  String get hostDatabaseRemotePortRequired;
+
+  /// No description provided for @hostDatabaseRemoteUsernameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Username is required for remote databases.'**
+  String get hostDatabaseRemoteUsernameRequired;
+
+  /// No description provided for @hostDatabaseRemotePasswordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is required for remote databases.'**
+  String get hostDatabaseRemotePasswordRequired;
+
+  /// No description provided for @hostOrchestrationRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh composes.'**
+  String get hostOrchestrationRefreshFailed;
+
+  /// No description provided for @hostOrchestrationActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Compose actions'**
+  String get hostOrchestrationActions;
+
+  /// No description provided for @hostOrchestrationUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Up'**
+  String get hostOrchestrationUp;
+
+  /// No description provided for @hostOrchestrationDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Down'**
+  String get hostOrchestrationDown;
+
+  /// No description provided for @hostOrchestrationDownTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Down Compose'**
+  String get hostOrchestrationDownTitle;
+
+  /// No description provided for @hostOrchestrationNamePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. my-app'**
+  String get hostOrchestrationNamePlaceholder;
+
+  /// No description provided for @hostOrchestrationCreateFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Create from'**
+  String get hostOrchestrationCreateFrom;
+
+  /// No description provided for @hostOrchestrationFromPath.
+  ///
+  /// In en, this message translates to:
+  /// **'From path'**
+  String get hostOrchestrationFromPath;
+
+  /// No description provided for @hostOrchestrationFromContent.
+  ///
+  /// In en, this message translates to:
+  /// **'From content'**
+  String get hostOrchestrationFromContent;
+
+  /// No description provided for @hostOrchestrationFromTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'From template'**
+  String get hostOrchestrationFromTemplate;
+
+  /// No description provided for @hostOrchestrationComposeFilePath.
+  ///
+  /// In en, this message translates to:
+  /// **'Compose file path'**
+  String get hostOrchestrationComposeFilePath;
+
+  /// No description provided for @hostOrchestrationPathPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. /opt/1panel/docker/compose/my-app/docker-compose.yml'**
+  String get hostOrchestrationPathPlaceholder;
+
+  /// No description provided for @hostOrchestrationNewComposeContent.
+  ///
+  /// In en, this message translates to:
+  /// **'New compose content (YAML)'**
+  String get hostOrchestrationNewComposeContent;
+
+  /// No description provided for @hostOrchestrationFullReplacementHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Full replacement: paste the complete new config; empty content will be rejected'**
+  String get hostOrchestrationFullReplacementHint;
+
+  /// No description provided for @hostOrchestrationTemplateId.
+  ///
+  /// In en, this message translates to:
+  /// **'Template ID'**
+  String get hostOrchestrationTemplateId;
+
+  /// No description provided for @hostOrchestrationTemplateIdPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 1'**
+  String get hostOrchestrationTemplateIdPlaceholder;
+
+  /// No description provided for @hostOrchestrationCreateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create compose.'**
+  String get hostOrchestrationCreateFailed;
+
+  /// No description provided for @hostOrchestrationContentRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Compose content is required.'**
+  String get hostOrchestrationContentRequired;
+
+  /// No description provided for @hostOrchestrationEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Compose'**
+  String get hostOrchestrationEditTitle;
+
+  /// No description provided for @hostOrchestrationReplace.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace'**
+  String get hostOrchestrationReplace;
+
+  /// No description provided for @hostOrchestrationSaveFailedReopen.
+  ///
+  /// In en, this message translates to:
+  /// **'Save failed. The editor reopens with your content; try again.'**
+  String get hostOrchestrationSaveFailedReopen;
+
+  /// No description provided for @hostOrchestrationPathRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Compose file path is required.'**
+  String get hostOrchestrationPathRequired;
+
+  /// No description provided for @hostOrchestrationTemplateIdRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Template ID is required.'**
+  String get hostOrchestrationTemplateIdRequired;
+
+  /// No description provided for @hostOrchestrationTemplateIdInteger.
+  ///
+  /// In en, this message translates to:
+  /// **'Template ID must be an integer.'**
+  String get hostOrchestrationTemplateIdInteger;
+
+  /// No description provided for @hostCommonCreateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Create failed. Adjust the inputs and try again.'**
+  String get hostCommonCreateFailed;
+
+  /// No description provided for @hostCommonSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Save failed. Adjust the inputs and try again.'**
+  String get hostCommonSaveFailed;
+
+  /// No description provided for @hostCronJobsCreateTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Create task'**
+  String get hostCronJobsCreateTask;
+
+  /// No description provided for @hostCronJobsRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh cron jobs.'**
+  String get hostCronJobsRefreshFailed;
+
+  /// No description provided for @hostCronJobsLastRun.
+  ///
+  /// In en, this message translates to:
+  /// **'Last run'**
+  String get hostCronJobsLastRun;
+
+  /// No description provided for @hostCronJobsTaskActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Task actions'**
+  String get hostCronJobsTaskActions;
+
+  /// No description provided for @hostCronJobsDeleteTaskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Task'**
+  String get hostCronJobsDeleteTaskTitle;
+
+  /// No description provided for @hostCronJobsNamePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Cleanup logs'**
+  String get hostCronJobsNamePlaceholder;
+
+  /// No description provided for @hostCronJobsScriptReplaceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional; submitting replaces the stored script'**
+  String get hostCronJobsScriptReplaceHint;
+
+  /// No description provided for @hostCronJobsScriptPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional shell script'**
+  String get hostCronJobsScriptPlaceholder;
+
+  /// No description provided for @hostCronJobsEditTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit task'**
+  String get hostCronJobsEditTask;
+
+  /// No description provided for @hostCronJobsSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save the task.'**
+  String get hostCronJobsSaveFailed;
+
+  /// No description provided for @hostCronJobsCreateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create the task.'**
+  String get hostCronJobsCreateFailed;
+
+  /// No description provided for @hostBackupsRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh backup records.'**
+  String get hostBackupsRefreshFailed;
+
+  /// No description provided for @hostBackupsActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup actions'**
+  String get hostBackupsActions;
+
+  /// No description provided for @hostBackupsRestoreUnavailableFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore is unavailable for failed backup records.'**
+  String get hostBackupsRestoreUnavailableFailed;
+
+  /// No description provided for @hostBackupsRestoreUnavailableSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore is unavailable while the file size is unknown.'**
+  String get hostBackupsRestoreUnavailableSize;
+
+  /// No description provided for @hostBackupsDeleteUnavailableWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete is unavailable while the backup is still waiting.'**
+  String get hostBackupsDeleteUnavailableWaiting;
+
+  /// No description provided for @hostBackupsRestoreOverwriteWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'This will overwrite the current data and cannot be undone.'**
+  String get hostBackupsRestoreOverwriteWarning;
+
+  /// No description provided for @hostBackupsDeleteRecordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Backup Record'**
+  String get hostBackupsDeleteRecordTitle;
+
+  /// No description provided for @hostHostSshTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'SSH'**
+  String get hostHostSshTitle;
+
+  /// No description provided for @hostHostSshRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh the SSH information.'**
+  String get hostHostSshRefreshFailed;
+
+  /// No description provided for @hostHostSshNotInstalled.
+  ///
+  /// In en, this message translates to:
+  /// **'SSH service is not installed on this server.'**
+  String get hostHostSshNotInstalled;
+
+  /// No description provided for @hostHostSshConfigLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load the configuration file.'**
+  String get hostHostSshConfigLoadFailed;
+
+  /// No description provided for @hostHostSshConfigEmptyPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'# The SSH configuration file does not exist or is empty (/etc/ssh/sshd_config)'**
+  String get hostHostSshConfigEmptyPlaceholder;
+
+  /// No description provided for @hostHostSshConfigFileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Configuration file (/etc/ssh/sshd_config)'**
+  String get hostHostSshConfigFileTitle;
+
+  /// No description provided for @hostHostSshSaveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save SSH configuration'**
+  String get hostHostSshSaveTitle;
+
+  /// No description provided for @hostHostSshSaveMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This will overwrite /etc/ssh/sshd_config with the edited content.\nAn invalid configuration may make the SSH service unavailable. Continue?'**
+  String get hostHostSshSaveMessage;
+
+  /// No description provided for @hostHostSshSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save the SSH configuration.'**
+  String get hostHostSshSaveFailed;
+
+  /// No description provided for @hostToolboxSnapshotRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh device snapshot.'**
+  String get hostToolboxSnapshotRefreshFailed;
+
+  /// No description provided for @hostToolboxKernelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Kernel'**
+  String get hostToolboxKernelLabel;
+
+  /// No description provided for @hostToolboxProductLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Product'**
+  String get hostToolboxProductLabel;
+
+  /// No description provided for @hostToolboxTimeZoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Time Zone'**
+  String get hostToolboxTimeZoneLabel;
+
+  /// No description provided for @hostToolboxNtpServerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'NTP Server'**
+  String get hostToolboxNtpServerLabel;
+
+  /// No description provided for @hostToolboxSwapOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get hostToolboxSwapOff;
+
+  /// No description provided for @hostToolboxSwapOffHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap is disabled on this host.'**
+  String get hostToolboxSwapOffHint;
+
+  /// No description provided for @hostToolboxSwapTotalHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Total swap size.'**
+  String get hostToolboxSwapTotalHint;
+
+  /// No description provided for @hostToolboxDnsPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 8.8.8.8'**
+  String get hostToolboxDnsPlaceholder;
+
+  /// No description provided for @hostToolboxDnsVerifyAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get hostToolboxDnsVerifyAction;
+
+  /// No description provided for @hostToolboxDnsReachable.
+  ///
+  /// In en, this message translates to:
+  /// **'DNS reachable'**
+  String get hostToolboxDnsReachable;
+
+  /// No description provided for @hostToolboxDnsEmptyError.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a DNS server to verify.'**
+  String get hostToolboxDnsEmptyError;
+
+  /// No description provided for @hostToolboxUsersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Users'**
+  String get hostToolboxUsersTitle;
+
+  /// No description provided for @hostAiModelsRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh AI models.'**
+  String get hostAiModelsRefreshFailed;
+
+  /// No description provided for @hostAiModelUnknownName.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get hostAiModelUnknownName;
+
+  /// No description provided for @hostAiConnectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection'**
+  String get hostAiConnectionTitle;
+
+  /// No description provided for @hostAiOllamaNotDetected.
+  ///
+  /// In en, this message translates to:
+  /// **'Ollama not detected on this server.'**
+  String get hostAiOllamaNotDetected;
+
+  /// No description provided for @hostAiDomainBoundHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Domain bound. Refresh to see connection details.'**
+  String get hostAiDomainBoundHint;
+
+  /// No description provided for @hostAiIpAllowlistLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'IP allowlist (optional, comma-separated)'**
+  String get hostAiIpAllowlistLabel;
+
+  /// No description provided for @hostAiBindDomainFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to bind domain.'**
+  String get hostAiBindDomainFailed;
+
+  /// No description provided for @hostAiBindFailedRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Bind failed. Adjust the input and try again.'**
+  String get hostAiBindFailedRetry;
+
+  /// No description provided for @hostAiModelActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Model actions'**
+  String get hostAiModelActions;
+
+  /// No description provided for @hostAiModelRecreateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Recreate'**
+  String get hostAiModelRecreateAction;
+
+  /// No description provided for @hostAiModelDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete AI Model'**
+  String get hostAiModelDeleteTitle;
+
+  /// No description provided for @hostAiModelCreateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create model.'**
+  String get hostAiModelCreateFailed;
+
+  /// No description provided for @hostAiCreateFailedRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Create failed. Adjust the input and try again.'**
+  String get hostAiCreateFailedRetry;
+
+  /// No description provided for @hostCommandsRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh commands.'**
+  String get hostCommandsRefreshFailed;
+
+  /// No description provided for @hostCommandsRowActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Command actions'**
+  String get hostCommandsRowActions;
+
+  /// No description provided for @hostCommandsDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Command'**
+  String get hostCommandsDeleteTitle;
+
+  /// No description provided for @hostCommandsNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Cleanup logs'**
+  String get hostCommandsNameHint;
+
+  /// No description provided for @hostCommandsCommandHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. docker ps -a'**
+  String get hostCommandsCommandHint;
+
+  /// No description provided for @hostCommandsDefaultGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Default group'**
+  String get hostCommandsDefaultGroup;
+
+  /// No description provided for @hostCommandsCreateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create the command.'**
+  String get hostCommandsCreateFailed;
+
+  /// No description provided for @hostCommandsCreateFormError.
+  ///
+  /// In en, this message translates to:
+  /// **'Create failed. Adjust the inputs and try again.'**
+  String get hostCommandsCreateFormError;
+
+  /// No description provided for @hostCommandsCommandRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Command is required.'**
+  String get hostCommandsCommandRequired;
+
+  /// No description provided for @hostScriptLibraryRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh scripts.'**
+  String get hostScriptLibraryRefreshFailed;
+
+  /// No description provided for @hostScriptLibraryDeleteSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete selected'**
+  String get hostScriptLibraryDeleteSelected;
+
+  /// No description provided for @hostScriptLibraryRowActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Script actions'**
+  String get hostScriptLibraryRowActions;
+
+  /// No description provided for @hostScriptLibraryDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Script'**
+  String get hostScriptLibraryDeleteTitle;
+
+  /// No description provided for @hostScriptLibraryDeleteSelectedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Scripts'**
+  String get hostScriptLibraryDeleteSelectedTitle;
+
+  /// No description provided for @hostLogsRefreshOperationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh operation logs.'**
+  String get hostLogsRefreshOperationFailed;
+
+  /// No description provided for @hostLogsRefreshLoginFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh login logs.'**
+  String get hostLogsRefreshLoginFailed;
+
+  /// No description provided for @hostLogsFileNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'File name is required.'**
+  String get hostLogsFileNameRequired;
+
+  /// No description provided for @hostLogsRefreshTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh current tab'**
+  String get hostLogsRefreshTab;
+
+  /// No description provided for @hostLogsFileNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'File name'**
+  String get hostLogsFileNameLabel;
+
+  /// No description provided for @hostLogsCoreToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Core logs'**
+  String get hostLogsCoreToggle;
+
+  /// No description provided for @hostLogsSystemHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a log file name and click Load to view its content.'**
+  String get hostLogsSystemHint;
+
+  /// No description provided for @hostSecurityRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh firewall rules.'**
+  String get hostSecurityRefreshFailed;
+
+  /// No description provided for @hostSecurityAddRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Add rule'**
+  String get hostSecurityAddRule;
+
+  /// No description provided for @hostSecurityDeleteRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete rule'**
+  String get hostSecurityDeleteRule;
+
+  /// No description provided for @hostSecurityPortHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 8080'**
+  String get hostSecurityPortHint;
+
+  /// No description provided for @hostSecurityAddressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave empty for all addresses'**
+  String get hostSecurityAddressHint;
+
+  /// No description provided for @hostSecurityAddRuleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Rule'**
+  String get hostSecurityAddRuleTitle;
+
+  /// No description provided for @hostSecurityPortNumeric.
+  ///
+  /// In en, this message translates to:
+  /// **'Port must be a number.'**
+  String get hostSecurityPortNumeric;
+
+  /// No description provided for @hostSecurityDeleteRuleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Rule'**
+  String get hostSecurityDeleteRuleTitle;
+
+  /// No description provided for @hostGatewayRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh the security gateway snapshot.'**
+  String get hostGatewayRefreshFailed;
+
+  /// No description provided for @hostGatewayOpenrestyStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'OpenResty Status'**
+  String get hostGatewayOpenrestyStatus;
+
+  /// No description provided for @hostGatewayHttpsRedirectTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Default HTTPS redirect'**
+  String get hostGatewayHttpsRedirectTitle;
+
+  /// No description provided for @hostGatewayHttpsRedirectDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Redirect HTTP to HTTPS for all websites'**
+  String get hostGatewayHttpsRedirectDescription;
+
+  /// No description provided for @hostGatewayStateUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Current state unknown'**
+  String get hostGatewayStateUnknown;
+
+  /// No description provided for @hostGatewayDisable.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable'**
+  String get hostGatewayDisable;
+
+  /// No description provided for @hostGatewayHttpsRedirectEnableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Default HTTPS Redirect'**
+  String get hostGatewayHttpsRedirectEnableTitle;
+
+  /// No description provided for @hostGatewayHttpsRedirectDisableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable Default HTTPS Redirect'**
+  String get hostGatewayHttpsRedirectDisableTitle;
+
+  /// No description provided for @hostGatewayHttpsRedirectEnableMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable HTTP→HTTPS redirect for all websites?'**
+  String get hostGatewayHttpsRedirectEnableMessage;
+
+  /// No description provided for @hostGatewayHttpsRedirectDisableMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable HTTP→HTTPS redirect?'**
+  String get hostGatewayHttpsRedirectDisableMessage;
+
+  /// No description provided for @hostGatewayHttpsRedirectEnableFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to enable the default HTTPS redirect.'**
+  String get hostGatewayHttpsRedirectEnableFailed;
+
+  /// No description provided for @hostGatewayHttpsRedirectDisableFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to disable the default HTTPS redirect.'**
+  String get hostGatewayHttpsRedirectDisableFailed;
+
+  /// No description provided for @hostGatewayCertificatePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the full PEM certificate chain'**
+  String get hostGatewayCertificatePlaceholder;
+
+  /// No description provided for @hostGatewayPrivateKeyPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the matching PEM private key'**
+  String get hostGatewayPrivateKeyPlaceholder;
+
+  /// No description provided for @hostGatewayDescriptionOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (optional)'**
+  String get hostGatewayDescriptionOptional;
+
+  /// No description provided for @hostGatewayDescriptionPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. *.example.com issued 2026-09'**
+  String get hostGatewayDescriptionPlaceholder;
+
+  /// No description provided for @hostGatewayCertificateRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate is required.'**
+  String get hostGatewayCertificateRequired;
+
+  /// No description provided for @hostGatewayUploadConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The certificate will be imported into the panel and becomes available to websites. Continue?'**
+  String get hostGatewayUploadConfirmMessage;
+
+  /// No description provided for @hostGatewayUploadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to upload the certificate.'**
+  String get hostGatewayUploadFailed;
+
+  /// No description provided for @hostGatewayUploadFormError.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload failed. The form reopens with your content; try again.'**
+  String get hostGatewayUploadFormError;
+
+  /// No description provided for @hostGatewayRenewNoId.
+  ///
+  /// In en, this message translates to:
+  /// **'This certificate has no id and cannot be renewed.'**
+  String get hostGatewayRenewNoId;
+
+  /// No description provided for @hostGatewayRenew.
+  ///
+  /// In en, this message translates to:
+  /// **'Renew'**
+  String get hostGatewayRenew;
+
+  /// No description provided for @hostGatewayRenewalRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'Renewal requested.'**
+  String get hostGatewayRenewalRequested;
+
+  /// No description provided for @hostGatewayExpiresToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires today'**
+  String get hostGatewayExpiresToday;
+
+  /// No description provided for @hostGatewayValid.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid'**
+  String get hostGatewayValid;
+
+  /// No description provided for @hostDashboardRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh dashboard.'**
+  String get hostDashboardRefreshFailed;
+
+  /// No description provided for @hostDashboardKernelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Kernel'**
+  String get hostDashboardKernelLabel;
+
+  /// No description provided for @hostDashboardCpuCoresLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'CPU Cores'**
+  String get hostDashboardCpuCoresLabel;
+
+  /// No description provided for @hostDashboardPanelVersionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel Version'**
+  String get hostDashboardPanelVersionLabel;
+
+  /// No description provided for @hostMonitoringRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh monitoring data.'**
+  String get hostMonitoringRefreshFailed;
+
+  /// No description provided for @hostMonitoringLoadAverage.
+  ///
+  /// In en, this message translates to:
+  /// **'Load Average'**
+  String get hostMonitoringLoadAverage;
+
+  /// No description provided for @hostMonitoringLoad1.
+  ///
+  /// In en, this message translates to:
+  /// **'Load 1'**
+  String get hostMonitoringLoad1;
+
+  /// No description provided for @hostMonitoringLoad5.
+  ///
+  /// In en, this message translates to:
+  /// **'Load 5'**
+  String get hostMonitoringLoad5;
+
+  /// No description provided for @hostMonitoringLoad15.
+  ///
+  /// In en, this message translates to:
+  /// **'Load 15'**
+  String get hostMonitoringLoad15;
+
+  /// No description provided for @hostMonitoringLoadWindows.
+  ///
+  /// In en, this message translates to:
+  /// **'1/5/15 min'**
+  String get hostMonitoringLoadWindows;
 }
 
 class _AppLocalizationsDelegate

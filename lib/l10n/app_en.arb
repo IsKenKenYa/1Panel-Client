@@ -786,7 +786,6 @@
   "serverTestFailed": "Connection failed",
   "serverTestTesting": "Testing connection...",
   "serverMetricsAvailable": "Metrics loaded",
-  "serverMetricsUnavailable": "Metrics unavailable",
   "serverTokenValidity": "Token validity (minutes)",
   "serverTokenValidityHint": "Set to 0 to skip timestamp validation",
   "serverFormAllowInsecureTls": "Ignore TLS certificate validation",
@@ -876,7 +875,6 @@
   "filesCompressType": "Type",
   "filesUploadDeveloping": "Upload feature is under development",
   "commonCreate": "Create",
-  "commonEdit": "Edit",
   "commonName": "Name",
   "commonUsername": "Username",
   "commonPassword": "Password",
@@ -1668,7 +1666,13 @@
   "snapshotDeleteFailed": "Failed to delete snapshot",
   "snapshotLoadFailed": "Failed to load snapshot list",
   "snapshotLoadFailedWithError": "Failed to load snapshot list: {error}",
-  "@snapshotLoadFailedWithError": { "placeholders": { "error": { "type": "String" } } },
+  "@snapshotLoadFailedWithError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "snapshotBackupAccountLoadFailed": "Failed to load backup accounts",
   "snapshotNoBackupAccountHint": "No backup account available. Please add one in Backup Account management first.",
   "snapshotBackupAccountLabel": "Backup Account",
@@ -1763,7 +1767,6 @@
   "filesEncodingConvertFailed": "Encoding conversion failed",
   "filesEncodingLog": "Conversion Log",
   "filesEncodingLogEmpty": "No logs",
-  "commonUnknownError": "Unknown error",
   "filesPreviewImage": "Image Preview",
   "filesPreviewCode": "Code Preview",
   "filesPreviewText": "Text Preview",
@@ -1784,7 +1787,6 @@
     }
   },
   "filesWgetFailed": "Download failed",
-  "filesActionDownload": "Download",
   "recycleBinRestore": "Restore",
   "recycleBinRestoreConfirm": "Are you sure you want to restore {count} selected files?",
   "@recycleBinRestoreConfirm": {
@@ -1927,7 +1929,9 @@
   "appIgnoreUpdateFailed": "Failed to ignore update: {error}",
   "@appIgnoreUpdateFailed": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "appIgnoreUpdateCancel": "Cancel Ignore",
@@ -1959,7 +1963,9 @@
   "appReadmeImageUnsupported": "Image not supported: {url}",
   "@appReadmeImageUnsupported": {
     "placeholders": {
-      "url": { "type": "String" }
+      "url": {
+        "type": "String"
+      }
     }
   },
   "appOperateSuccess": "Operation successful",
@@ -1970,15 +1976,21 @@
   "appUpdateConfirm": "Are you sure to update {app} to {version}?",
   "@appUpdateConfirm": {
     "placeholders": {
-      "app": { "type": "String" },
-      "version": { "type": "String" }
+      "app": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      }
     }
   },
   "appUpdateSuccess": "Update started successfully",
   "appUpdateFailed": "Update failed: {error}",
   "@appUpdateFailed": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "appOperateFailed": "Operation failed: {error}",
@@ -2070,7 +2082,9 @@
   "containerCleanLogConfirm": "Clean logs for {name}?",
   "@containerCleanLogConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "containerPruneType": "Prune Type",
@@ -2115,14 +2129,18 @@
   "orchestrationComposeCleanLogConfirm": "Clean logs for {name}?",
   "@orchestrationComposeCleanLogConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "orchestrationComposeDelete": "Delete Compose",
   "orchestrationComposeDeleteConfirm": "Stop and remove all containers in {name}?",
   "@orchestrationComposeDeleteConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "orchestrationComposeForceDelete": "Force Delete",
@@ -2341,20 +2359,28 @@
   "cronjobsUpdateStatusConfirm": "Update cronjob {name} to {status}?",
   "@cronjobsUpdateStatusConfirm": {
     "placeholders": {
-      "name": { "type": "String" },
-      "status": { "type": "String" }
+      "name": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
     }
   },
   "cronjobsHandleOnceConfirm": "Run cronjob {name} once now?",
   "@cronjobsHandleOnceConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "cronjobsStopConfirm": "Stop running cronjob {name}?",
   "@cronjobsStopConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "cronjobRecordsEmptyTitle": "No records",
@@ -2372,7 +2398,9 @@
   "cronjobsDeleteConfirm": "Delete cronjob {name}?",
   "@cronjobsDeleteConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "cronjobFormCreateTitle": "Create Cronjob",
@@ -2446,7 +2474,9 @@
   "scriptLibraryDeleteConfirm": "Delete script {name}?",
   "@scriptLibraryDeleteConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "scriptLibraryCodeTitle": "Script Code",
@@ -2470,7 +2500,9 @@
   "backupAccountsDeleteConfirm": "Delete backup account {name}?",
   "@backupAccountsDeleteConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "backupFilesSheetTitle": "Backup Files",
@@ -2515,7 +2547,9 @@
   "backupRecordsDeleteConfirm": "Delete backup record {name}?",
   "@backupRecordsDeleteConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "backupRecordsTypeLabel": "Type",
@@ -2547,19 +2581,25 @@
   "backupRecoverUnsupportedTypeHint": "The current mainline preserves {type} record context, but direct recover is not available yet.",
   "@backupRecoverUnsupportedTypeHint": {
     "placeholders": {
-      "type": { "type": "String" }
+      "type": {
+        "type": "String"
+      }
     }
   },
   "backupRecoverUnsupportedTypeSubmitHint": "Recover submit is currently unavailable for {type} records.",
   "@backupRecoverUnsupportedTypeSubmitHint": {
     "placeholders": {
-      "type": { "type": "String" }
+      "type": {
+        "type": "String"
+      }
     }
   },
   "backupResourceTypeUnknownLabel": "Unknown type: {type}",
   "@backupResourceTypeUnknownLabel": {
     "placeholders": {
-      "type": { "type": "String" }
+      "type": {
+        "type": "String"
+      }
     }
   },
   "backupErrorOauthOpenFailed": "Unable to open the authorization page",
@@ -2607,7 +2647,9 @@
   "cronjobFormUrlItemLabel": "URL {index}",
   "@cronjobFormUrlItemLabel": {
     "placeholders": {
-      "index": { "type": "int" }
+      "index": {
+        "type": "int"
+      }
     }
   },
   "cronjobFormAddUrlAction": "Add URL",
@@ -2617,7 +2659,9 @@
   "cronjobFormCustomSpecItemLabel": "Custom spec {index}",
   "@cronjobFormCustomSpecItemLabel": {
     "placeholders": {
-      "index": { "type": "int" }
+      "index": {
+        "type": "int"
+      }
     }
   },
   "cronjobFormImportInvalidJson": "The imported cronjob file must be a JSON array",
@@ -2627,25 +2671,33 @@
   "cronjobFormUnknownBackupType": "Unknown backup type: {type}",
   "@cronjobFormUnknownBackupType": {
     "placeholders": {
-      "type": { "type": "String" }
+      "type": {
+        "type": "String"
+      }
     }
   },
   "cronjobFormUnknownDatabaseType": "Unknown database type: {type}",
   "@cronjobFormUnknownDatabaseType": {
     "placeholders": {
-      "type": { "type": "String" }
+      "type": {
+        "type": "String"
+      }
     }
   },
   "cronjobFormUnknownAlertMethod": "Unknown alert method: {method}",
   "@cronjobFormUnknownAlertMethod": {
     "placeholders": {
-      "method": { "type": "String" }
+      "method": {
+        "type": "String"
+      }
     }
   },
   "cronjobFormUnknownError": "Unexpected cronjob form error: {message}",
   "@cronjobFormUnknownError": {
     "placeholders": {
-      "message": { "type": "String" }
+      "message": {
+        "type": "String"
+      }
     }
   },
   "operationsLogsTitle": "Logs Center",
@@ -2666,7 +2718,9 @@
   "logsTaskExecutingCountLabel": "Executing: {count}",
   "@logsTaskExecutingCountLabel": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "logsTaskOpenDetailAction": "View log",
@@ -2717,7 +2771,9 @@
   "runtimeActionUnknown": "Unknown action: {action}",
   "@runtimeActionUnknown": {
     "placeholders": {
-      "action": { "type": "String" }
+      "action": {
+        "type": "String"
+      }
     }
   },
   "runtimeTypePhp": "PHP",
@@ -2729,7 +2785,9 @@
   "runtimeTypeUnknown": "Unknown runtime: {type}",
   "@runtimeTypeUnknown": {
     "placeholders": {
-      "type": { "type": "String" }
+      "type": {
+        "type": "String"
+      }
     }
   },
   "runtimeResourceLocal": "Local",
@@ -2737,7 +2795,9 @@
   "runtimeResourceUnknown": "Unknown resource: {resource}",
   "@runtimeResourceUnknown": {
     "placeholders": {
-      "resource": { "type": "String" }
+      "resource": {
+        "type": "String"
+      }
     }
   },
   "runtimeStatusAll": "All",
@@ -2751,7 +2811,9 @@
   "runtimeStatusUnknown": "Unknown status: {status}",
   "@runtimeStatusUnknown": {
     "placeholders": {
-      "status": { "type": "String" }
+      "status": {
+        "type": "String"
+      }
     }
   },
   "runtimeFieldType": "Type",
@@ -2788,23 +2850,37 @@
   "runtimeAdvancedSummary": "Advanced config counts: {ports} ports, {environments} environments, {volumes} volumes, {hosts} extra hosts.",
   "@runtimeAdvancedSummary": {
     "placeholders": {
-      "ports": { "type": "int" },
-      "environments": { "type": "int" },
-      "volumes": { "type": "int" },
-      "hosts": { "type": "int" }
+      "ports": {
+        "type": "int"
+      },
+      "environments": {
+        "type": "int"
+      },
+      "volumes": {
+        "type": "int"
+      },
+      "hosts": {
+        "type": "int"
+      }
     }
   },
   "runtimeDeleteConfirm": "Delete runtime {name}?",
   "@runtimeDeleteConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "runtimeOperateConfirm": "Run {action} on runtime {name}?",
   "@runtimeOperateConfirm": {
     "placeholders": {
-      "action": { "type": "String" },
-      "name": { "type": "String" }
+      "action": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
     }
   },
   "runtimeListLoadFailed": "Failed to load runtimes.",
@@ -2819,7 +2895,9 @@
   "runtimeNodeScriptExecuting": "Running script {name}, syncing runtime status...",
   "@runtimeNodeScriptExecuting": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "runtimeNodeScriptCompleted": "Script execution completed",
@@ -2827,31 +2905,41 @@
   "runtimeNodeScriptRuntimeStatus": "Runtime status: {status}",
   "@runtimeNodeScriptRuntimeStatus": {
     "placeholders": {
-      "status": { "type": "String" }
+      "status": {
+        "type": "String"
+      }
     }
   },
   "runtimeNodeScriptRuntimeMessage": "Runtime message: {message}",
   "@runtimeNodeScriptRuntimeMessage": {
     "placeholders": {
-      "message": { "type": "String" }
+      "message": {
+        "type": "String"
+      }
     }
   },
   "runtimeNodeScriptPollAttempts": "Status polls: {count}",
   "@runtimeNodeScriptPollAttempts": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "runtimeNodeScriptCompletedWithStatus": "Script execution completed, runtime status: {status}",
   "@runtimeNodeScriptCompletedWithStatus": {
     "placeholders": {
-      "status": { "type": "String" }
+      "status": {
+        "type": "String"
+      }
     }
   },
   "runtimeNodeScriptFailedWithStatus": "Script execution failed, runtime status: {status}",
   "@runtimeNodeScriptFailedWithStatus": {
     "placeholders": {
-      "status": { "type": "String" }
+      "status": {
+        "type": "String"
+      }
     }
   },
   "runtimeNodeScriptWaitTimeout": "Script was triggered, but status confirmation timed out. Please refresh later.",
@@ -3297,7 +3385,9 @@
   "containerNetworkDriverChip": "Driver: {driver}",
   "@containerNetworkDriverChip": {
     "placeholders": {
-      "driver": { "type": "String" }
+      "driver": {
+        "type": "String"
+      }
     }
   },
   "containerNetworkSystemChip": "System",
@@ -3322,7 +3412,9 @@
   "securityGatewayCertificateCount": "{count} certificate(s)",
   "@securityGatewayCertificateCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "securityGatewayLatestApplyLabel": "Latest Apply",
@@ -3344,13 +3436,17 @@
   "securityGatewayCertsLoadedCount": "{count} certificates loaded",
   "@securityGatewayCertsLoadedCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "securityGatewayExpiringSoonCount": "{count} expiring soon",
   "@securityGatewayExpiringSoonCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "securityGatewayOpenCertCenterAction": "Open certificate center",
@@ -3371,7 +3467,9 @@
   "securityGatewayRiskWebsiteCertsExpiringMessage": "{count} website certificate(s) expire within 30 days.",
   "@securityGatewayRiskWebsiteCertsExpiringMessage": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "securityGatewayRiskOpenRestyUnavailableTitle": "OpenResty status unavailable",
@@ -3381,7 +3479,9 @@
   "websiteSiteSslPageTitleWithDomain": "HTTPS Strategy · {domain}",
   "@websiteSiteSslPageTitleWithDomain": {
     "placeholders": {
-      "domain": { "type": "String" }
+      "domain": {
+        "type": "String"
+      }
     }
   },
   "websiteSiteSslRiskNoticesTitle": "Risk notices",
@@ -3424,7 +3524,9 @@
   "phpExtensionsRecordsTitle": "{title} Records",
   "@phpExtensionsRecordsTitle": {
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "phpExtensionsLabel": "Extensions",
@@ -3581,55 +3683,73 @@
   "fileHistoryTitleWith": "History: {path}",
   "@fileHistoryTitleWith": {
     "placeholders": {
-      "path": { "type": "String" }
+      "path": {
+        "type": "String"
+      }
     }
   },
   "filePermissionTitleWith": "Permissions ({count} files)",
   "@filePermissionTitleWith": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "aiOllamaSizeWith": "Size: {size}",
   "@aiOllamaSizeWith": {
     "placeholders": {
-      "size": { "type": "String" }
+      "size": {
+        "type": "String"
+      }
     }
   },
   "aiAgentsTypeWith": "Type: {type}",
   "@aiAgentsTypeWith": {
     "placeholders": {
-      "type": { "type": "String" }
+      "type": {
+        "type": "String"
+      }
     }
   },
   "databaseMongodbSizeWith": "Size: {size}",
   "@databaseMongodbSizeWith": {
     "placeholders": {
-      "size": { "type": "String" }
+      "size": {
+        "type": "String"
+      }
     }
   },
   "databasePgPrivilegeWith": "Privileges: {privileges}",
   "@databasePgPrivilegeWith": {
     "placeholders": {
-      "privileges": { "type": "String" }
+      "privileges": {
+        "type": "String"
+      }
     }
   },
   "databaseSlowLogTimeWith": "Time: {time}",
   "@databaseSlowLogTimeWith": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "containerInspectIpWith": "IP: {ip}",
   "@containerInspectIpWith": {
     "placeholders": {
-      "ip": { "type": "String" }
+      "ip": {
+        "type": "String"
+      }
     }
   },
   "monitorSettingsEdit": "Edit {key}",
   "@monitorSettingsEdit": {
     "placeholders": {
-      "key": { "type": "String" }
+      "key": {
+        "type": "String"
+      }
     }
   },
   "containerInspectTitle": "Inspect",
@@ -3643,7 +3763,9 @@
   "composeTemplateDeleteConfirm": "Delete template {name}?",
   "@composeTemplateDeleteConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "toolboxClamFilesTitle": "Config Files",
@@ -3659,7 +3781,9 @@
   "databaseUserNewPasswordLabel": "New Password",
   "@databaseUserDeleteConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "aiAgentPluginsTitle": "Agent Plugins",
@@ -3696,6 +3820,205 @@
   "dashboardInterval1m": "1 minute",
   "filePreviewLoadImageFailed": "Failed to load image",
   "filePreviewLoadPdfFailed": "Failed to load PDF",
-  "filePreviewVideoNotInitialized": "Video player not initialized"
-
+  "filePreviewVideoNotInitialized": "Video player not initialized",
+  "settingsAppearance": "Appearance",
+  "settingsSystemBackdrop": "System backdrop",
+  "settingsRestartRequired": "Restart required",
+  "commonNone": "None",
+  "hostServersRefreshFailed": "Failed to refresh servers.",
+  "hostServersActions": "Server actions",
+  "hostServersSwitch": "Switch",
+  "hostServersDeleteCurrentBlocked": "The current server cannot be deleted. Switch to another server first.",
+  "hostServersNamePlaceholder": "My server",
+  "hostServersUrlRequired": "URL is required.",
+  "hostServersUrlHttpRequired": "URL must start with http:// or https://.",
+  "hostServersApiKeyRequired": "API key is required.",
+  "hostFilesPathPlaceholder": "Enter a path and press Enter",
+  "hostFilesFolderNamePlaceholder": "Folder name",
+  "hostFilesFolderNameEmpty": "Folder name cannot be empty.",
+  "hostContainersRefreshFailed": "Failed to refresh containers.",
+  "hostContainersStopContainer": "Stop container",
+  "hostContainersStartContainer": "Start container",
+  "hostContainersRestartContainer": "Restart container",
+  "hostContainersDeleteContainer": "Delete container",
+  "hostContainersDeleteConfirm": "Delete Container",
+  "hostAppsRefreshFailed": "Failed to refresh apps.",
+  "hostAppsInstallOpenresty": "Install OpenResty",
+  "hostAppsStopApp": "Stop app",
+  "hostAppsStartApp": "Start app",
+  "hostAppsUninstallApp": "Uninstall app",
+  "hostAppsUninstallConfirm": "Uninstall App",
+  "hostAppsOpenrestyInstallConfirm": "OpenResty will be downloaded and installed from the app store. This may take a few minutes. Continue?",
+  "hostAppsOpenrestyInstallSubmitted": "OpenResty install task submitted.",
+  "hostWebsitesRefreshFailed": "Failed to refresh websites.",
+  "hostWebsitesStopWebsite": "Stop website",
+  "hostWebsitesStartWebsite": "Start website",
+  "hostWebsitesPrimaryDomainHint": "e.g. example.com",
+  "hostWebsitesAliasHint": "Auto-derived from domain if empty",
+  "hostWebsitesAddFailed": "Failed to add website.",
+  "hostCommonOptional": "Optional",
+  "hostCommonPortNumeric": "Port must be a number.",
+  "hostOpenrestyRefreshFailed": "Failed to refresh the OpenResty snapshot.",
+  "hostOpenrestyConfigEmptyHint": "# The OpenResty configuration source is empty or unavailable (/etc/nginx/nginx.conf)",
+  "hostOpenrestyConfigSource": "Configuration source (/etc/nginx/nginx.conf)",
+  "hostOpenrestySaveConfig": "Save OpenResty configuration",
+  "hostOpenrestySaveConfigConfirm": "This will overwrite /etc/nginx/nginx.conf with the edited content.\nAn invalid configuration may make hosted websites unavailable. Continue?",
+  "hostOpenrestySaveConfigFailed": "Failed to save the OpenResty configuration.",
+  "hostDatabaseCreate": "Create database",
+  "hostDatabaseRefreshFailed": "Failed to refresh databases.",
+  "hostDatabaseActions": "Database actions",
+  "hostDatabasePasswordRequired": "Password is required.",
+  "hostDatabaseDeleteTitle": "Delete Database",
+  "hostDatabaseNameHint": "e.g. app_db",
+  "hostDatabaseAddressHint": "e.g. 192.168.1.10",
+  "hostDatabasePortHint": "e.g. 3306",
+  "hostDatabaseCreateFailed": "Failed to create database.",
+  "hostDatabaseCreateRetryHint": "Create failed. Adjust the inputs and try again.",
+  "hostDatabaseRemoteAddressRequired": "Address is required for remote databases.",
+  "hostDatabaseRemotePortRequired": "Port is required for remote databases.",
+  "hostDatabaseRemoteUsernameRequired": "Username is required for remote databases.",
+  "hostDatabaseRemotePasswordRequired": "Password is required for remote databases.",
+  "hostOrchestrationRefreshFailed": "Failed to refresh composes.",
+  "hostOrchestrationActions": "Compose actions",
+  "hostOrchestrationUp": "Up",
+  "hostOrchestrationDown": "Down",
+  "hostOrchestrationDownTitle": "Down Compose",
+  "hostOrchestrationNamePlaceholder": "e.g. my-app",
+  "hostOrchestrationCreateFrom": "Create from",
+  "hostOrchestrationFromPath": "From path",
+  "hostOrchestrationFromContent": "From content",
+  "hostOrchestrationFromTemplate": "From template",
+  "hostOrchestrationComposeFilePath": "Compose file path",
+  "hostOrchestrationPathPlaceholder": "e.g. /opt/1panel/docker/compose/my-app/docker-compose.yml",
+  "hostOrchestrationNewComposeContent": "New compose content (YAML)",
+  "hostOrchestrationFullReplacementHint": "Full replacement: paste the complete new config; empty content will be rejected",
+  "hostOrchestrationTemplateId": "Template ID",
+  "hostOrchestrationTemplateIdPlaceholder": "e.g. 1",
+  "hostOrchestrationCreateFailed": "Failed to create compose.",
+  "hostOrchestrationContentRequired": "Compose content is required.",
+  "hostOrchestrationEditTitle": "Edit Compose",
+  "hostOrchestrationReplace": "Replace",
+  "hostOrchestrationSaveFailedReopen": "Save failed. The editor reopens with your content; try again.",
+  "hostOrchestrationPathRequired": "Compose file path is required.",
+  "hostOrchestrationTemplateIdRequired": "Template ID is required.",
+  "hostOrchestrationTemplateIdInteger": "Template ID must be an integer.",
+  "hostCommonCreateFailed": "Create failed. Adjust the inputs and try again.",
+  "hostCommonSaveFailed": "Save failed. Adjust the inputs and try again.",
+  "hostCronJobsCreateTask": "Create task",
+  "hostCronJobsRefreshFailed": "Failed to refresh cron jobs.",
+  "hostCronJobsLastRun": "Last run",
+  "hostCronJobsTaskActions": "Task actions",
+  "hostCronJobsDeleteTaskTitle": "Delete Task",
+  "hostCronJobsNamePlaceholder": "e.g. Cleanup logs",
+  "hostCronJobsScriptReplaceHint": "Optional; submitting replaces the stored script",
+  "hostCronJobsScriptPlaceholder": "Optional shell script",
+  "hostCronJobsEditTask": "Edit task",
+  "hostCronJobsSaveFailed": "Failed to save the task.",
+  "hostCronJobsCreateFailed": "Failed to create the task.",
+  "hostBackupsRefreshFailed": "Failed to refresh backup records.",
+  "hostBackupsActions": "Backup actions",
+  "hostBackupsRestoreUnavailableFailed": "Restore is unavailable for failed backup records.",
+  "hostBackupsRestoreUnavailableSize": "Restore is unavailable while the file size is unknown.",
+  "hostBackupsDeleteUnavailableWaiting": "Delete is unavailable while the backup is still waiting.",
+  "hostBackupsRestoreOverwriteWarning": "This will overwrite the current data and cannot be undone.",
+  "hostBackupsDeleteRecordTitle": "Delete Backup Record",
+  "hostHostSshTitle": "SSH",
+  "hostHostSshRefreshFailed": "Failed to refresh the SSH information.",
+  "hostHostSshNotInstalled": "SSH service is not installed on this server.",
+  "hostHostSshConfigLoadFailed": "Failed to load the configuration file.",
+  "hostHostSshConfigEmptyPlaceholder": "# The SSH configuration file does not exist or is empty (/etc/ssh/sshd_config)",
+  "hostHostSshConfigFileTitle": "Configuration file (/etc/ssh/sshd_config)",
+  "hostHostSshSaveTitle": "Save SSH configuration",
+  "hostHostSshSaveMessage": "This will overwrite /etc/ssh/sshd_config with the edited content.\nAn invalid configuration may make the SSH service unavailable. Continue?",
+  "hostHostSshSaveFailed": "Failed to save the SSH configuration.",
+  "hostToolboxSnapshotRefreshFailed": "Failed to refresh device snapshot.",
+  "hostToolboxKernelLabel": "Kernel",
+  "hostToolboxProductLabel": "Product",
+  "hostToolboxTimeZoneLabel": "Time Zone",
+  "hostToolboxNtpServerLabel": "NTP Server",
+  "hostToolboxSwapOff": "Off",
+  "hostToolboxSwapOffHint": "Swap is disabled on this host.",
+  "hostToolboxSwapTotalHint": "Total swap size.",
+  "hostToolboxDnsPlaceholder": "e.g. 8.8.8.8",
+  "hostToolboxDnsVerifyAction": "Verify",
+  "hostToolboxDnsReachable": "DNS reachable",
+  "hostToolboxDnsEmptyError": "Enter a DNS server to verify.",
+  "hostToolboxUsersTitle": "Users",
+  "hostAiModelsRefreshFailed": "Failed to refresh AI models.",
+  "hostAiModelUnknownName": "Unknown",
+  "hostAiConnectionTitle": "Connection",
+  "hostAiOllamaNotDetected": "Ollama not detected on this server.",
+  "hostAiDomainBoundHint": "Domain bound. Refresh to see connection details.",
+  "hostAiIpAllowlistLabel": "IP allowlist (optional, comma-separated)",
+  "hostAiBindDomainFailed": "Failed to bind domain.",
+  "hostAiBindFailedRetry": "Bind failed. Adjust the input and try again.",
+  "hostAiModelActions": "Model actions",
+  "hostAiModelRecreateAction": "Recreate",
+  "hostAiModelDeleteTitle": "Delete AI Model",
+  "hostAiModelCreateFailed": "Failed to create model.",
+  "hostAiCreateFailedRetry": "Create failed. Adjust the input and try again.",
+  "hostCommandsRefreshFailed": "Failed to refresh commands.",
+  "hostCommandsRowActions": "Command actions",
+  "hostCommandsDeleteTitle": "Delete Command",
+  "hostCommandsNameHint": "e.g. Cleanup logs",
+  "hostCommandsCommandHint": "e.g. docker ps -a",
+  "hostCommandsDefaultGroup": "Default group",
+  "hostCommandsCreateFailed": "Failed to create the command.",
+  "hostCommandsCreateFormError": "Create failed. Adjust the inputs and try again.",
+  "hostCommandsCommandRequired": "Command is required.",
+  "hostScriptLibraryRefreshFailed": "Failed to refresh scripts.",
+  "hostScriptLibraryDeleteSelected": "Delete selected",
+  "hostScriptLibraryRowActions": "Script actions",
+  "hostScriptLibraryDeleteTitle": "Delete Script",
+  "hostScriptLibraryDeleteSelectedTitle": "Delete Scripts",
+  "hostLogsRefreshOperationFailed": "Failed to refresh operation logs.",
+  "hostLogsRefreshLoginFailed": "Failed to refresh login logs.",
+  "hostLogsFileNameRequired": "File name is required.",
+  "hostLogsRefreshTab": "Refresh current tab",
+  "hostLogsFileNameLabel": "File name",
+  "hostLogsCoreToggle": "Core logs",
+  "hostLogsSystemHint": "Enter a log file name and click Load to view its content.",
+  "hostSecurityRefreshFailed": "Failed to refresh firewall rules.",
+  "hostSecurityAddRule": "Add rule",
+  "hostSecurityDeleteRule": "Delete rule",
+  "hostSecurityPortHint": "e.g. 8080",
+  "hostSecurityAddressHint": "Leave empty for all addresses",
+  "hostSecurityAddRuleTitle": "Add Rule",
+  "hostSecurityPortNumeric": "Port must be a number.",
+  "hostSecurityDeleteRuleTitle": "Delete Rule",
+  "hostGatewayRefreshFailed": "Failed to refresh the security gateway snapshot.",
+  "hostGatewayOpenrestyStatus": "OpenResty Status",
+  "hostGatewayHttpsRedirectTitle": "Default HTTPS redirect",
+  "hostGatewayHttpsRedirectDescription": "Redirect HTTP to HTTPS for all websites",
+  "hostGatewayStateUnknown": "Current state unknown",
+  "hostGatewayDisable": "Disable",
+  "hostGatewayHttpsRedirectEnableTitle": "Enable Default HTTPS Redirect",
+  "hostGatewayHttpsRedirectDisableTitle": "Disable Default HTTPS Redirect",
+  "hostGatewayHttpsRedirectEnableMessage": "Enable HTTP→HTTPS redirect for all websites?",
+  "hostGatewayHttpsRedirectDisableMessage": "Disable HTTP→HTTPS redirect?",
+  "hostGatewayHttpsRedirectEnableFailed": "Failed to enable the default HTTPS redirect.",
+  "hostGatewayHttpsRedirectDisableFailed": "Failed to disable the default HTTPS redirect.",
+  "hostGatewayCertificatePlaceholder": "Paste the full PEM certificate chain",
+  "hostGatewayPrivateKeyPlaceholder": "Paste the matching PEM private key",
+  "hostGatewayDescriptionOptional": "Description (optional)",
+  "hostGatewayDescriptionPlaceholder": "e.g. *.example.com issued 2026-09",
+  "hostGatewayCertificateRequired": "Certificate is required.",
+  "hostGatewayUploadConfirmMessage": "The certificate will be imported into the panel and becomes available to websites. Continue?",
+  "hostGatewayUploadFailed": "Failed to upload the certificate.",
+  "hostGatewayUploadFormError": "Upload failed. The form reopens with your content; try again.",
+  "hostGatewayRenewNoId": "This certificate has no id and cannot be renewed.",
+  "hostGatewayRenew": "Renew",
+  "hostGatewayRenewalRequested": "Renewal requested.",
+  "hostGatewayExpiresToday": "Expires today",
+  "hostGatewayValid": "Valid",
+  "hostDashboardRefreshFailed": "Failed to refresh dashboard.",
+  "hostDashboardKernelLabel": "Kernel",
+  "hostDashboardCpuCoresLabel": "CPU Cores",
+  "hostDashboardPanelVersionLabel": "Panel Version",
+  "hostMonitoringRefreshFailed": "Failed to refresh monitoring data.",
+  "hostMonitoringLoadAverage": "Load Average",
+  "hostMonitoringLoad1": "Load 1",
+  "hostMonitoringLoad5": "Load 5",
+  "hostMonitoringLoad15": "Load 15",
+  "hostMonitoringLoadWindows": "1/5/15 min"
 }
