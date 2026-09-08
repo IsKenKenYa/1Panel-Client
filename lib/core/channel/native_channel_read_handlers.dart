@@ -437,6 +437,10 @@ class NativeChannelReadHandlers {
     try {
       final certs = await WebsiteCertificateService().searchCertificates(
         pageSize: 50,
+        // 对齐上游 frontend 默认排序（updated_at）；expire_date 列在
+        // 服务端排序实现下返回空列表（2026-09-09 生产实证）。
+        orderBy: 'updated_at',
+        order: 'descending',
       );
       return certs
           .map((c) => {
