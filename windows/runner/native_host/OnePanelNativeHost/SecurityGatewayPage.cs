@@ -96,7 +96,7 @@ public sealed class SecurityGatewayPage : ModulePageBase
 
     public SecurityGatewayPage()
     {
-        PageTitle = "Security Gateway";
+        PageTitle = L10n.T("securityGatewayPageTitle", "Security Gateway");
     }
 
     protected override async void OnPageShown()
@@ -161,7 +161,7 @@ public sealed class SecurityGatewayPage : ModulePageBase
             }
             else
             {
-                _errorToast.Show("Failed to refresh the security gateway snapshot.");
+                _errorToast.Show(L10n.T("hostGatewayRefreshFailed", "Failed to refresh the security gateway snapshot."));
             }
             return;
         }
@@ -237,7 +237,7 @@ public sealed class SecurityGatewayPage : ModulePageBase
         // HTTPS redirect toggle in the OpenResty card (see class header).
         var refreshButton = new AppBarButton
         {
-            Label = "Refresh",
+            Label = L10n.T("commonRefresh", "Refresh"),
             Icon = new FontIcon { Glyph = "\uE72C" },
         };
         refreshButton.Click += (s, e) => _ = LoadSnapshotAsync(showLoadingState: true);
@@ -253,7 +253,7 @@ public sealed class SecurityGatewayPage : ModulePageBase
     /// </summary>
     private FrameworkElement BuildPanelSslCard(JsonElement panelSslMap)
     {
-        var card = CreateCard("Panel SSL", out var panel);
+        var card = CreateCard(L10n.T("securityGatewayPanelTlsSection", "Panel SSL"), out var panel);
 
         if (!HasAnyProperty(panelSslMap))
         {
@@ -295,7 +295,7 @@ public sealed class SecurityGatewayPage : ModulePageBase
                     new FontIcon { Glyph = "\uE710", FontSize = 14 },
                     new TextBlock
                     {
-                        Text = "Upload certificate",
+                        Text = L10n.T("websitesSslUploadAction", "Upload certificate"),
                         FontSize = 12,
                         VerticalAlignment = VerticalAlignment.Center,
                     },
@@ -304,7 +304,7 @@ public sealed class SecurityGatewayPage : ModulePageBase
         };
         uploadButton.Click += (s, e) => _ = ShowUploadCertificateDialogAsync();
 
-        var card = CreateCard("Website Certificates", out var panel, uploadButton);
+        var card = CreateCard(L10n.T("securityGatewayWebsiteCertsSection", "Website Certificates"), out var panel, uploadButton);
 
         // Consume the pending renewal notice exactly once so it cannot leak
         // into an unrelated later rebuild.
@@ -330,7 +330,7 @@ public sealed class SecurityGatewayPage : ModulePageBase
         {
             panel.Children.Add(new TextBlock
             {
-                Text = "No certificates yet.",
+                Text = L10n.T("websitesSslListEmpty", "No certificates yet."),
                 FontSize = 12,
                 Foreground = TryGetThemeBrush("TextFillColorSecondaryBrush", Microsoft.UI.Colors.Gray),
                 TextWrapping = TextWrapping.Wrap,
@@ -355,7 +355,7 @@ public sealed class SecurityGatewayPage : ModulePageBase
     /// </summary>
     private FrameworkElement BuildOpenRestyStatusCard(JsonElement statusMap, JsonElement httpsMap)
     {
-        var card = CreateCard("OpenResty Status", out var panel);
+        var card = CreateCard(L10n.T("hostGatewayOpenrestyStatus", "OpenResty Status"), out var panel);
 
         if (!HasAnyProperty(statusMap))
         {
@@ -384,14 +384,14 @@ public sealed class SecurityGatewayPage : ModulePageBase
         var textPanel = new StackPanel { Orientation = Orientation.Vertical, Spacing = 2 };
         textPanel.Children.Add(new TextBlock
         {
-            Text = "Default HTTPS redirect",
+            Text = L10n.T("hostGatewayHttpsRedirectTitle", "Default HTTPS redirect"),
             FontSize = 13,
             FontWeight = Microsoft.UI.Text.FontWeights.Medium,
             TextWrapping = TextWrapping.Wrap,
         });
         textPanel.Children.Add(new TextBlock
         {
-            Text = "Redirect HTTP to HTTPS for all websites",
+            Text = L10n.T("hostGatewayHttpsRedirectDescription", "Redirect HTTP to HTTPS for all websites"),
             FontSize = 12,
             Foreground = TryGetThemeBrush("TextFillColorSecondaryBrush", Microsoft.UI.Colors.Gray),
             TextWrapping = TextWrapping.Wrap,
@@ -400,7 +400,7 @@ public sealed class SecurityGatewayPage : ModulePageBase
         {
             textPanel.Children.Add(new TextBlock
             {
-                Text = "Current state unknown",
+                Text = L10n.T("hostGatewayStateUnknown", "Current state unknown"),
                 FontSize = 12,
                 Foreground = TryGetThemeBrush("TextFillColorTertiaryBrush", Microsoft.UI.Colors.Gray),
                 TextWrapping = TextWrapping.Wrap,
@@ -409,8 +409,8 @@ public sealed class SecurityGatewayPage : ModulePageBase
 
         var toggle = new ToggleSwitch
         {
-            OnContent = "Enable",
-            OffContent = "Disable",
+            OnContent = L10n.T("commonEnable", "Enable"),
+            OffContent = L10n.T("hostGatewayDisable", "Disable"),
             IsOn = initialState == true,
             VerticalAlignment = VerticalAlignment.Center,
             Margin = new Thickness(12, 0, 0, 0),
@@ -504,12 +504,14 @@ public sealed class SecurityGatewayPage : ModulePageBase
         var enable = toggle.IsOn;
         var confirmed = await ConfirmDialog.ShowAsync(
             XamlRoot,
-            enable ? "Enable Default HTTPS Redirect" : "Disable Default HTTPS Redirect",
             enable
-                ? "Enable HTTP\u2192HTTPS redirect for all websites?"
-                : "Disable HTTP\u2192HTTPS redirect?",
-            enable ? "Enable" : "Disable",
-            "Cancel");
+                ? L10n.T("hostGatewayHttpsRedirectEnableTitle", "Enable Default HTTPS Redirect")
+                : L10n.T("hostGatewayHttpsRedirectDisableTitle", "Disable Default HTTPS Redirect"),
+            enable
+                ? L10n.T("hostGatewayHttpsRedirectEnableMessage", "Enable HTTP\u2192HTTPS redirect for all websites?")
+                : L10n.T("hostGatewayHttpsRedirectDisableMessage", "Disable HTTP\u2192HTTPS redirect?"),
+            enable ? L10n.T("commonEnable", "Enable") : L10n.T("hostGatewayDisable", "Disable"),
+            L10n.T("commonCancel", "Cancel"));
 
         if (!confirmed)
         {
@@ -528,8 +530,8 @@ public sealed class SecurityGatewayPage : ModulePageBase
             if (!success)
             {
                 _errorToast.Show(enable
-                    ? "Failed to enable the default HTTPS redirect."
-                    : "Failed to disable the default HTTPS redirect.");
+                    ? L10n.T("hostGatewayHttpsRedirectEnableFailed", "Failed to enable the default HTTPS redirect.")
+                    : L10n.T("hostGatewayHttpsRedirectDisableFailed", "Failed to disable the default HTTPS redirect."));
                 // Roll the switch back; the content is not rebuilt on failure.
                 SetToggleSilently(toggle, !enable);
             }
@@ -584,8 +586,8 @@ public sealed class SecurityGatewayPage : ModulePageBase
         {
             var certificateBox = new TextBox
             {
-                Header = "Certificate (PEM)",
-                PlaceholderText = "Paste the full PEM certificate chain",
+                Header = L10n.T("panelTlsCertificatePemLabel", "Certificate (PEM)"),
+                PlaceholderText = L10n.T("hostGatewayCertificatePlaceholder", "Paste the full PEM certificate chain"),
                 AcceptsReturn = true,
                 Height = 140,
                 FontFamily = new FontFamily("Consolas"),
@@ -596,8 +598,8 @@ public sealed class SecurityGatewayPage : ModulePageBase
 
             var privateKeyBox = new TextBox
             {
-                Header = "Private key (PEM)",
-                PlaceholderText = "Paste the matching PEM private key",
+                Header = L10n.T("panelTlsPrivateKeyPemLabel", "Private key (PEM)"),
+                PlaceholderText = L10n.T("hostGatewayPrivateKeyPlaceholder", "Paste the matching PEM private key"),
                 AcceptsReturn = true,
                 Height = 120,
                 FontFamily = new FontFamily("Consolas"),
@@ -608,8 +610,8 @@ public sealed class SecurityGatewayPage : ModulePageBase
 
             var descriptionBox = new TextBox
             {
-                Header = "Description (optional)",
-                PlaceholderText = "e.g. *.example.com issued 2026-09",
+                Header = L10n.T("hostGatewayDescriptionOptional", "Description (optional)"),
+                PlaceholderText = L10n.T("hostGatewayDescriptionPlaceholder", "e.g. *.example.com issued 2026-09"),
             };
 
             var errorText = new TextBlock
@@ -633,10 +635,10 @@ public sealed class SecurityGatewayPage : ModulePageBase
 
             var dialog = new ContentDialog
             {
-                Title = "Upload Certificate",
+                Title = L10n.T("sslSettingsUpload", "Upload Certificate"),
                 Content = form,
-                PrimaryButtonText = "Upload",
-                CloseButtonText = "Cancel",
+                PrimaryButtonText = L10n.T("commonUpload", "Upload"),
+                CloseButtonText = L10n.T("commonCancel", "Cancel"),
                 DefaultButton = ContentDialogButton.Primary,
                 XamlRoot = XamlRoot,
             };
@@ -656,13 +658,13 @@ public sealed class SecurityGatewayPage : ModulePageBase
                 if (string.IsNullOrWhiteSpace(certificateBox.Text))
                 {
                     args.Cancel = true;
-                    SetFormError(errorText, "Certificate is required.");
+                    SetFormError(errorText, L10n.T("hostGatewayCertificateRequired", "Certificate is required."));
                     return;
                 }
                 if (string.IsNullOrWhiteSpace(privateKeyBox.Text))
                 {
                     args.Cancel = true;
-                    SetFormError(errorText, "Private key is required.");
+                    SetFormError(errorText, L10n.T("panelTlsValidationPrivateKeyRequired", "Private key is required."));
                     return;
                 }
 
@@ -681,10 +683,10 @@ public sealed class SecurityGatewayPage : ModulePageBase
 
                 var confirmed = await ConfirmDialog.ShowAsync(
                     XamlRoot,
-                    "Upload Certificate",
-                    "The certificate will be imported into the panel and becomes available to websites. Continue?",
-                    "Upload",
-                    "Cancel");
+                    L10n.T("sslSettingsUpload", "Upload Certificate"),
+                    L10n.T("hostGatewayUploadConfirmMessage", "The certificate will be imported into the panel and becomes available to websites. Continue?"),
+                    L10n.T("commonUpload", "Upload"),
+                    L10n.T("commonCancel", "Cancel"));
                 if (!confirmed) continue; // Back to the form, content kept.
 
                 // Paste semantics per the bridge contract: certificate and
@@ -704,8 +706,8 @@ public sealed class SecurityGatewayPage : ModulePageBase
                     return;
                 }
 
-                _errorToast.Show("Failed to upload the certificate.");
-                SetFormError(errorText, "Upload failed. The form reopens with your content; try again.");
+                _errorToast.Show(L10n.T("hostGatewayUploadFailed", "Failed to upload the certificate."));
+                SetFormError(errorText, L10n.T("hostGatewayUploadFormError", "Upload failed. The form reopens with your content; try again."));
             }
         }
         finally
@@ -747,7 +749,7 @@ public sealed class SecurityGatewayPage : ModulePageBase
         // usable id; such a row cannot be renewed.
         if (certificate.Id < 0)
         {
-            _errorToast.Show("This certificate has no id and cannot be renewed.");
+            _errorToast.Show(L10n.T("hostGatewayRenewNoId", "This certificate has no id and cannot be renewed."));
             return;
         }
 
@@ -756,10 +758,10 @@ public sealed class SecurityGatewayPage : ModulePageBase
             : certificate.PrimaryDomain.Trim();
         var confirmed = await ConfirmDialog.ShowAsync(
             XamlRoot,
-            "Renew Certificate",
+            L10n.T("websitesSslAccountsRenewAction", "Renew Certificate"),
             $"An ACME apply/renewal request will be sent for \"{domain}\". Continue?",
-            "Renew",
-            "Cancel");
+            L10n.T("hostGatewayRenew", "Renew"),
+            L10n.T("commonCancel", "Cancel"));
         if (!confirmed) return;
 
         _isBusy = true;
@@ -779,7 +781,7 @@ public sealed class SecurityGatewayPage : ModulePageBase
         {
             // The notice is rendered once by the next silent rebuild of the
             // certificates card (see BuildCertificatesCard).
-            _renewalNotice = "Renewal requested.";
+            _renewalNotice = L10n.T("hostGatewayRenewalRequested", "Renewal requested.");
             await LoadSnapshotAsync(showLoadingState: false);
         }
         else
@@ -847,7 +849,7 @@ public sealed class SecurityGatewayPage : ModulePageBase
             VerticalAlignment = VerticalAlignment.Center,
             Content = new FontIcon { Glyph = "\uE895", FontSize = 14 },
         };
-        ToolTipService.SetToolTip(renewButton, "Renew");
+        ToolTipService.SetToolTip(renewButton, L10n.T("hostGatewayRenew", "Renew"));
         renewButton.Click += (s, e) => _ = RenewCertificateAsync(certificate);
         Grid.SetRow(renewButton, 0);
         Grid.SetColumn(renewButton, 3);
@@ -928,11 +930,11 @@ public sealed class SecurityGatewayPage : ModulePageBase
     {
         return state switch
         {
-            CertificateExpiryState.Expired => "Expired",
+            CertificateExpiryState.Expired => L10n.T("websitesSslHealthExpired", "Expired"),
             CertificateExpiryState.ExpiringSoon
-                => daysLeft == 0 ? "Expires today" : $"Expires in {daysLeft}d",
-            CertificateExpiryState.Valid => "Valid",
-            _ => "Unknown",
+                => daysLeft == 0 ? L10n.T("hostGatewayExpiresToday", "Expires today") : $"Expires in {daysLeft}d",
+            CertificateExpiryState.Valid => L10n.T("hostGatewayValid", "Valid"),
+            _ => L10n.T("websitesSslHealthUnknown", "Unknown"),
         };
     }
 
@@ -1147,9 +1149,9 @@ public sealed class SecurityGatewayPage : ModulePageBase
             case JsonValueKind.Number:
                 return value.GetRawText();
             case JsonValueKind.True:
-                return "Yes";
+                return L10n.T("commonYes", "Yes");
             case JsonValueKind.False:
-                return "No";
+                return L10n.T("commonNo", "No");
             case JsonValueKind.Array:
             case JsonValueKind.Object:
                 return value.GetRawText();

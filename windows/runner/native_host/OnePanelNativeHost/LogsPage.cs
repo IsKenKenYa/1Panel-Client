@@ -58,7 +58,7 @@ public sealed class LogsPage : ModulePageBase
 
     public LogsPage()
     {
-        PageTitle = "Logs";
+        PageTitle = L10n.T("hostNavLogs", "Logs");
     }
 
     /// <summary>Log center tabs, in upstream tab order.</summary>
@@ -126,7 +126,7 @@ public sealed class LogsPage : ModulePageBase
             }
             else
             {
-                _errorToast.Show("Failed to refresh operation logs.");
+                _errorToast.Show(L10n.T("hostLogsRefreshOperationFailed", "Failed to refresh operation logs."));
             }
             return;
         }
@@ -158,7 +158,7 @@ public sealed class LogsPage : ModulePageBase
             }
             else
             {
-                _errorToast.Show("Failed to refresh login logs.");
+                _errorToast.Show(L10n.T("hostLogsRefreshLoginFailed", "Failed to refresh login logs."));
             }
             return;
         }
@@ -236,7 +236,7 @@ public sealed class LogsPage : ModulePageBase
     {
         if (string.IsNullOrWhiteSpace(fileNameBox.Text))
         {
-            SetFormError(errorText, "File name is required.");
+            SetFormError(errorText, L10n.T("hostLogsFileNameRequired", "File name is required."));
             return;
         }
 
@@ -398,9 +398,9 @@ public sealed class LogsPage : ModulePageBase
             VerticalAlignment = VerticalAlignment.Center,
             Margin = new Thickness(0, 0, 8, 0),
         };
-        bar.Items.Add(new SelectorBarItem { Text = "Operation" });
-        bar.Items.Add(new SelectorBarItem { Text = "Login" });
-        bar.Items.Add(new SelectorBarItem { Text = "System" });
+        bar.Items.Add(new SelectorBarItem { Text = L10n.T("logsCenterTabOperation", "Operation") });
+        bar.Items.Add(new SelectorBarItem { Text = L10n.T("logsCenterTabLogin", "Login") });
+        bar.Items.Add(new SelectorBarItem { Text = L10n.T("logsCenterTabSystem", "System") });
         ((SelectorBarItem)bar.Items[(int)_selectedTab]).IsSelected = true;
 
         bar.SelectionChanged += OnTabSelectionChanged;
@@ -416,7 +416,7 @@ public sealed class LogsPage : ModulePageBase
             HorizontalAlignment = HorizontalAlignment.Right,
             VerticalAlignment = VerticalAlignment.Center,
         };
-        ToolTipService.SetToolTip(refreshButton, "Refresh current tab");
+        ToolTipService.SetToolTip(refreshButton, L10n.T("hostLogsRefreshTab", "Refresh current tab"));
         refreshButton.Click += (s, e) => _ = LoadCurrentTabAsync(showLoadingState: true);
         Grid.SetColumn(refreshButton, 1);
         header.Children.Add(refreshButton);
@@ -514,7 +514,7 @@ public sealed class LogsPage : ModulePageBase
         }
         titleRow.Children.Add(new TextBlock
         {
-            Text = string.IsNullOrEmpty(entry.Path) ? "Unknown" : entry.Path,
+            Text = string.IsNullOrEmpty(entry.Path) ? L10n.T("systemSettingsUnknown", "Unknown") : entry.Path,
             FontFamily = new FontFamily("Consolas"),
             FontSize = 13,
             VerticalAlignment = VerticalAlignment.Center,
@@ -573,7 +573,7 @@ public sealed class LogsPage : ModulePageBase
         }
         titleRow.Children.Add(new TextBlock
         {
-            Text = string.IsNullOrEmpty(entry.Ip) ? "Unknown" : entry.Ip,
+            Text = string.IsNullOrEmpty(entry.Ip) ? L10n.T("systemSettingsUnknown", "Unknown") : entry.Ip,
             FontSize = 14,
             FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
             VerticalAlignment = VerticalAlignment.Center,
@@ -626,20 +626,20 @@ public sealed class LogsPage : ModulePageBase
         // control edits write back into the fields.
         var fileNameBox = new TextBox
         {
-            Header = "File name",
+            Header = L10n.T("hostLogsFileNameLabel", "File name"),
             PlaceholderText = "1Panel.log",
             Text = _systemFileName,
         };
         var coreToggle = new CheckBox
         {
-            Content = "Core logs",
+            Content = L10n.T("hostLogsCoreToggle", "Core logs"),
             IsChecked = _systemUseCoreLogs,
             VerticalAlignment = VerticalAlignment.Bottom,
             MinWidth = 0,
         };
         var loadButton = new Button
         {
-            Content = "Load",
+            Content = L10n.T("commonLoad", "Load"),
             VerticalAlignment = VerticalAlignment.Bottom,
         };
 
@@ -723,7 +723,7 @@ public sealed class LogsPage : ModulePageBase
             });
             hint.Children.Add(new TextBlock
             {
-                Text = "Enter a log file name and click Load to view its content.",
+                Text = L10n.T("hostLogsSystemHint", "Enter a log file name and click Load to view its content."),
                 FontSize = 14,
                 Foreground = TryGetThemeBrush("TextFillColorSecondaryBrush", Microsoft.UI.Colors.Gray),
                 HorizontalAlignment = HorizontalAlignment.Center,

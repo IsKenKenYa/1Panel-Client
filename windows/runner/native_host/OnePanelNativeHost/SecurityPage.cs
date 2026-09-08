@@ -35,7 +35,7 @@ public sealed class SecurityPage : ModulePageBase
 
     public SecurityPage()
     {
-        PageTitle = "Security";
+        PageTitle = L10n.T("navSecurity", "Security");
     }
 
     protected override async void OnPageShown()
@@ -85,7 +85,7 @@ public sealed class SecurityPage : ModulePageBase
             }
             else
             {
-                _errorToast.Show("Failed to refresh firewall rules.");
+                _errorToast.Show(L10n.T("hostSecurityRefreshFailed", "Failed to refresh firewall rules."));
             }
             return;
         }
@@ -181,7 +181,7 @@ public sealed class SecurityPage : ModulePageBase
 
         var addButton = new AppBarButton
         {
-            Label = "Add rule",
+            Label = L10n.T("hostSecurityAddRule", "Add rule"),
             Icon = new FontIcon { Glyph = "\uE710" },
         };
         addButton.Click += (s, e) => _ = ShowAddRuleDialogAsync();
@@ -189,7 +189,7 @@ public sealed class SecurityPage : ModulePageBase
 
         var refreshButton = new AppBarButton
         {
-            Label = "Refresh",
+            Label = L10n.T("commonRefresh", "Refresh"),
             Icon = new FontIcon { Glyph = "\uE72C" },
         };
         refreshButton.Click += (s, e) => _ = LoadRulesAsync(showLoadingState: true);
@@ -217,7 +217,7 @@ public sealed class SecurityPage : ModulePageBase
 
         // Protocol pill (neutral accent).
         var protocolBadge = CreateBadge(
-            string.IsNullOrEmpty(rule.Protocol) ? "Unknown" : rule.Protocol,
+            string.IsNullOrEmpty(rule.Protocol) ? L10n.T("firewallUnknownStrategy", "Unknown") : rule.Protocol,
             TryGetThemeBrush("SystemFillColorNeutralBrush", Microsoft.UI.Colors.Gray),
             showDot: false);
         Grid.SetColumn(protocolBadge, 0);
@@ -258,7 +258,7 @@ public sealed class SecurityPage : ModulePageBase
         // server returned.
         var addressBlock = new TextBlock
         {
-            Text = string.IsNullOrWhiteSpace(rule.Address) ? "Anywhere" : rule.Address,
+            Text = string.IsNullOrWhiteSpace(rule.Address) ? L10n.T("firewallSourceAnywhere", "Anywhere") : rule.Address,
             FontSize = 12,
             VerticalAlignment = VerticalAlignment.Center,
             Margin = new Thickness(12, 0, 0, 0),
@@ -280,7 +280,7 @@ public sealed class SecurityPage : ModulePageBase
             Margin = new Thickness(12, 0, 0, 0),
             VerticalAlignment = VerticalAlignment.Center,
         };
-        ToolTipService.SetToolTip(deleteButton, "Delete rule");
+        ToolTipService.SetToolTip(deleteButton, L10n.T("hostSecurityDeleteRule", "Delete rule"));
         deleteButton.Click += async (s, e) => await DeleteRuleAsync(rule);
         Grid.SetColumn(deleteButton, 4);
         grid.Children.Add(deleteButton);
@@ -294,19 +294,19 @@ public sealed class SecurityPage : ModulePageBase
         if (IsAccept(strategy))
         {
             return CreateBadge(
-                "Accept",
+                L10n.T("firewallStrategyAccept", "Accept"),
                 TryGetThemeBrush("SystemFillColorSuccessBrush", Microsoft.UI.Colors.Green),
                 showDot: true);
         }
         if (IsDrop(strategy))
         {
             return CreateBadge(
-                "Drop",
+                L10n.T("firewallStrategyDrop", "Drop"),
                 TryGetThemeBrush("SystemFillColorCriticalBrush", Microsoft.UI.Colors.Red),
                 showDot: true);
         }
         return CreateBadge(
-            string.IsNullOrEmpty(strategy) ? "Unknown" : strategy,
+            string.IsNullOrEmpty(strategy) ? L10n.T("firewallUnknownStrategy", "Unknown") : strategy,
             TryGetThemeBrush("SystemFillColorNeutralBrush", Microsoft.UI.Colors.Gray),
             showDot: false);
     }
@@ -360,28 +360,28 @@ public sealed class SecurityPage : ModulePageBase
 
         try
         {
-            var portBox = new TextBox { Header = "Port", PlaceholderText = "e.g. 8080" };
+            var portBox = new TextBox { Header = L10n.T("firewallPortLabel", "Port"), PlaceholderText = L10n.T("hostSecurityPortHint", "e.g. 8080") };
 
             var protocolBox = new ComboBox
             {
-                Header = "Protocol",
+                Header = L10n.T("firewallProtocolLabel", "Protocol"),
                 SelectedIndex = 0,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
             };
             protocolBox.Items.Add("tcp");
             protocolBox.Items.Add("udp");
 
-            var addressBox = new TextBox { Header = "Address", PlaceholderText = "Leave empty for all addresses" };
+            var addressBox = new TextBox { Header = L10n.T("firewallAddressLabel", "Address"), PlaceholderText = L10n.T("hostSecurityAddressHint", "Leave empty for all addresses") };
 
             var strategyBox = new ComboBox
             {
-                Header = "Strategy",
+                Header = L10n.T("firewallStrategyLabel", "Strategy"),
                 SelectedValuePath = "Tag",
                 SelectedIndex = 0,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
             };
-            strategyBox.Items.Add(new ComboBoxItem { Content = "Accept", Tag = "accept" });
-            strategyBox.Items.Add(new ComboBoxItem { Content = "Drop", Tag = "drop" });
+            strategyBox.Items.Add(new ComboBoxItem { Content = L10n.T("firewallStrategyAccept", "Accept"), Tag = "accept" });
+            strategyBox.Items.Add(new ComboBoxItem { Content = L10n.T("firewallStrategyDrop", "Drop"), Tag = "drop" });
 
             var errorText = new TextBlock
             {
@@ -403,10 +403,10 @@ public sealed class SecurityPage : ModulePageBase
 
             var dialog = new ContentDialog
             {
-                Title = "Add Rule",
+                Title = L10n.T("hostSecurityAddRuleTitle", "Add Rule"),
                 Content = form,
-                PrimaryButtonText = "Add",
-                CloseButtonText = "Cancel",
+                PrimaryButtonText = L10n.T("commonAdd", "Add"),
+                CloseButtonText = L10n.T("commonCancel", "Cancel"),
                 DefaultButton = ContentDialogButton.Primary,
                 XamlRoot = XamlRoot,
             };
@@ -452,14 +452,14 @@ public sealed class SecurityPage : ModulePageBase
     private static string? ValidatePort(string port)
     {
         var trimmed = port.Trim();
-        if (trimmed.Length == 0) return "Port is required.";
+        if (trimmed.Length == 0) return L10n.T("firewallPortRequired", "Port is required.");
         foreach (var ch in trimmed)
         {
-            if (!char.IsDigit(ch)) return "Port must be a number.";
+            if (!char.IsDigit(ch)) return L10n.T("hostSecurityPortNumeric", "Port must be a number.");
         }
         if (!int.TryParse(trimmed, out var value) || value < 1 || value > 65535)
         {
-            return "Port must be between 1 and 65535.";
+            return L10n.T("websitesDomainValidationPort", "Port must be between 1 and 65535.");
         }
         return null;
     }
@@ -476,10 +476,10 @@ public sealed class SecurityPage : ModulePageBase
         // matching the upstream delete dialog naming "port (protocol)".
         var confirmed = await ConfirmDialog.ShowAsync(
             XamlRoot,
-            "Delete Rule",
+            L10n.T("hostSecurityDeleteRuleTitle", "Delete Rule"),
             $"Are you sure you want to delete rule {rule.Port} ({rule.Protocol})?\nThis action cannot be undone.",
-            "Delete",
-            "Cancel",
+            L10n.T("commonDelete", "Delete"),
+            L10n.T("commonCancel", "Cancel"),
             isDestructive: true);
 
         if (!confirmed) return;

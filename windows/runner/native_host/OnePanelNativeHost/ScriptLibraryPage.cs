@@ -43,7 +43,7 @@ public sealed class ScriptLibraryPage : ModulePageBase
 
     public ScriptLibraryPage()
     {
-        PageTitle = "Script Library";
+        PageTitle = L10n.T("hostNavScriptLibrary", "Script Library");
     }
 
     protected override async void OnPageShown()
@@ -93,7 +93,7 @@ public sealed class ScriptLibraryPage : ModulePageBase
             }
             else
             {
-                _errorToast.Show("Failed to refresh scripts.");
+                _errorToast.Show(L10n.T("hostScriptLibraryRefreshFailed", "Failed to refresh scripts."));
             }
             return;
         }
@@ -199,7 +199,7 @@ public sealed class ScriptLibraryPage : ModulePageBase
 
         var refreshButton = new AppBarButton
         {
-            Label = "Refresh",
+            Label = L10n.T("commonRefresh", "Refresh"),
             Icon = new FontIcon { Glyph = "\uE72C" },
         };
         refreshButton.Click += (s, e) => _ = LoadScriptsAsync(showLoadingState: true);
@@ -207,7 +207,7 @@ public sealed class ScriptLibraryPage : ModulePageBase
 
         var deleteButton = new AppBarButton
         {
-            Label = "Delete selected",
+            Label = L10n.T("hostScriptLibraryDeleteSelected", "Delete selected"),
             Icon = new FontIcon { Glyph = "\uE74D" }, // Delete.
             IsEnabled = false, // Enabled once at least one deletable row is selected.
         };
@@ -307,7 +307,7 @@ public sealed class ScriptLibraryPage : ModulePageBase
             HorizontalAlignment = HorizontalAlignment.Right,
             VerticalAlignment = VerticalAlignment.Center,
         };
-        ToolTipService.SetToolTip(moreButton, "Script actions");
+        ToolTipService.SetToolTip(moreButton, L10n.T("hostScriptLibraryRowActions", "Script actions"));
         moreButton.Flyout = BuildRowFlyout(script);
         Grid.SetColumn(moreButton, 1);
         grid.Children.Add(moreButton);
@@ -344,7 +344,7 @@ public sealed class ScriptLibraryPage : ModulePageBase
             VerticalAlignment = VerticalAlignment.Center,
             Child = new TextBlock
             {
-                Text = "System",
+                Text = L10n.T("settingsSystem", "System"),
                 FontSize = 12,
                 Foreground = accentBrush,
                 VerticalAlignment = VerticalAlignment.Center,
@@ -360,7 +360,7 @@ public sealed class ScriptLibraryPage : ModulePageBase
         // semantics: the row delete button is disabled when isSystem).
         var deleteItem = new MenuFlyoutItem
         {
-            Text = "Delete",
+            Text = L10n.T("scriptLibraryDeleteAction", "Delete"),
             Icon = new FontIcon { Glyph = "\uE74D" }, // Delete.
             IsEnabled = !script.IsSystem,
         };
@@ -407,10 +407,10 @@ public sealed class ScriptLibraryPage : ModulePageBase
         {
             var confirmed = await ConfirmDialog.ShowAsync(
                 XamlRoot,
-                "Delete Script",
+                L10n.T("hostScriptLibraryDeleteTitle", "Delete Script"),
                 $"Are you sure you want to delete script \"{script.Name}\"?\nThis action cannot be undone.",
-                "Delete",
-                "Cancel",
+                L10n.T("scriptLibraryDeleteAction", "Delete"),
+                L10n.T("commonCancel", "Cancel"),
                 isDestructive: true);
 
             if (!confirmed) return;
@@ -451,10 +451,10 @@ public sealed class ScriptLibraryPage : ModulePageBase
         {
             var confirmed = await ConfirmDialog.ShowAsync(
                 XamlRoot,
-                "Delete Scripts",
+                L10n.T("hostScriptLibraryDeleteSelectedTitle", "Delete Scripts"),
                 $"Are you sure you want to delete {ids.Count} selected script(s)?\nThis action cannot be undone.",
-                "Delete",
-                "Cancel",
+                L10n.T("scriptLibraryDeleteAction", "Delete"),
+                L10n.T("commonCancel", "Cancel"),
                 isDestructive: true);
 
             if (!confirmed) return;

@@ -38,7 +38,7 @@ public sealed class CommandsPage : ModulePageBase
 
     public CommandsPage()
     {
-        PageTitle = "Commands";
+        PageTitle = L10n.T("hostNavCommands", "Commands");
     }
 
     protected override async void OnPageShown()
@@ -88,7 +88,7 @@ public sealed class CommandsPage : ModulePageBase
             }
             else
             {
-                _errorToast.Show("Failed to refresh commands.");
+                _errorToast.Show(L10n.T("hostCommandsRefreshFailed", "Failed to refresh commands."));
             }
             return;
         }
@@ -97,7 +97,7 @@ public sealed class CommandsPage : ModulePageBase
         _commands.Clear();
         if (commands.Count == 0)
         {
-            SetEmptyPrimaryAction("Create command",
+            SetEmptyPrimaryAction(L10n.T("commandsCreateTitle", "Create command"),
                 (s, e) => _ = ShowCreateCommandDialogAsync());
             SetState(PageState.Empty);
             return;
@@ -183,7 +183,7 @@ public sealed class CommandsPage : ModulePageBase
 
         var createButton = new AppBarButton
         {
-            Label = "Create command",
+            Label = L10n.T("commandsCreateTitle", "Create command"),
             Icon = new FontIcon { Glyph = "\uE710" },
         };
         createButton.Click += (s, e) => _ = ShowCreateCommandDialogAsync();
@@ -191,7 +191,7 @@ public sealed class CommandsPage : ModulePageBase
 
         var refreshButton = new AppBarButton
         {
-            Label = "Refresh",
+            Label = L10n.T("commonRefresh", "Refresh"),
             Icon = new FontIcon { Glyph = "\uE72C" },
         };
         refreshButton.Click += (s, e) => _ = LoadCommandsAsync(showLoadingState: true);
@@ -267,7 +267,7 @@ public sealed class CommandsPage : ModulePageBase
             HorizontalAlignment = HorizontalAlignment.Right,
             VerticalAlignment = VerticalAlignment.Center,
         };
-        ToolTipService.SetToolTip(moreButton, "Command actions");
+        ToolTipService.SetToolTip(moreButton, L10n.T("hostCommandsRowActions", "Command actions"));
         moreButton.Flyout = BuildRowFlyout(entry);
         Grid.SetColumn(moreButton, 1);
         grid.Children.Add(moreButton);
@@ -293,7 +293,7 @@ public sealed class CommandsPage : ModulePageBase
 
         var deleteItem = new MenuFlyoutItem
         {
-            Text = "Delete",
+            Text = L10n.T("commonDelete", "Delete"),
             Icon = new FontIcon { Glyph = "\uE74D" }, // Delete.
         };
         deleteItem.Click += (s, e) => _ = DeleteCommandAsync(entry);
@@ -313,10 +313,10 @@ public sealed class CommandsPage : ModulePageBase
         {
             var confirmed = await ConfirmDialog.ShowAsync(
                 XamlRoot,
-                "Delete Command",
+                L10n.T("hostCommandsDeleteTitle", "Delete Command"),
                 $"Are you sure you want to delete command \"{entry.Name}\"?\nThis action cannot be undone.",
-                "Delete",
-                "Cancel",
+                L10n.T("commonDelete", "Delete"),
+                L10n.T("commonCancel", "Cancel"),
                 isDestructive: true);
 
             if (!confirmed) return;
@@ -356,12 +356,12 @@ public sealed class CommandsPage : ModulePageBase
 
         try
         {
-            var nameBox = new TextBox { Header = "Name", PlaceholderText = "e.g. Cleanup logs" };
+            var nameBox = new TextBox { Header = L10n.T("commonName", "Name"), PlaceholderText = L10n.T("hostCommandsNameHint", "e.g. Cleanup logs") };
 
             var commandBox = new TextBox
             {
-                Header = "Command",
-                PlaceholderText = "e.g. docker ps -a",
+                Header = L10n.T("commandsCommandFieldLabel", "Command"),
+                PlaceholderText = L10n.T("hostCommandsCommandHint", "e.g. docker ps -a"),
                 AcceptsReturn = true,
                 Height = 120,
                 TextWrapping = TextWrapping.Wrap,
@@ -372,8 +372,8 @@ public sealed class CommandsPage : ModulePageBase
             // Dart core resolves to the default group. Real groups are loaded
             // in the background; entries named "Default" are skipped because
             // the synthetic option already represents them.
-            var groupCombo = new ComboBox { Header = "Group", MinWidth = 200, SelectedIndex = 0 };
-            groupCombo.Items.Add(new GroupOption { Id = 0, Label = "Default group" });
+            var groupCombo = new ComboBox { Header = L10n.T("commandsGroupFieldLabel", "Group"), MinWidth = 200, SelectedIndex = 0 };
+            groupCombo.Items.Add(new GroupOption { Id = 0, Label = L10n.T("hostCommandsDefaultGroup", "Default group") });
 
             var errorText = new TextBlock
             {
@@ -397,10 +397,10 @@ public sealed class CommandsPage : ModulePageBase
 
             var dialog = new ContentDialog
             {
-                Title = "Create command",
+                Title = L10n.T("commandsCreateTitle", "Create command"),
                 Content = form,
-                PrimaryButtonText = "Create",
-                CloseButtonText = "Cancel",
+                PrimaryButtonText = L10n.T("commonCreate", "Create"),
+                CloseButtonText = L10n.T("commonCancel", "Cancel"),
                 DefaultButton = ContentDialogButton.Primary,
                 XamlRoot = XamlRoot,
             };
@@ -429,8 +429,8 @@ public sealed class CommandsPage : ModulePageBase
                 else
                 {
                     submitting = false;
-                    _errorToast.Show("Failed to create the command.");
-                    SetFormError(errorText, "Create failed. Adjust the inputs and try again.");
+                    _errorToast.Show(L10n.T("hostCommandsCreateFailed", "Failed to create the command."));
+                    SetFormError(errorText, L10n.T("hostCommandsCreateFormError", "Create failed. Adjust the inputs and try again."));
                 }
             }
 
@@ -517,8 +517,8 @@ public sealed class CommandsPage : ModulePageBase
     /// <summary>Returns the first create-command validation error, or null when the input is valid.</summary>
     private static string? ValidateCommandInput(string name, string command)
     {
-        if (string.IsNullOrWhiteSpace(name)) return "Name is required.";
-        if (string.IsNullOrWhiteSpace(command)) return "Command is required.";
+        if (string.IsNullOrWhiteSpace(name)) return L10n.T("websitesSslAccountsValidationNameRequired", "Name is required.");
+        if (string.IsNullOrWhiteSpace(command)) return L10n.T("hostCommandsCommandRequired", "Command is required.");
         return null;
     }
 
