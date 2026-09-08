@@ -1,4 +1,5 @@
 import '../../features/ai/ai_repository.dart';
+import '../../api/v2/file_v2.dart';
 import '../../api/v2/website_v2.dart';
 import '../../features/apps/app_service.dart';
 import '../../features/commands/services/command_service.dart';
@@ -20,6 +21,7 @@ import '../../data/models/cronjob_list_models.dart';
 import '../../data/repositories/cronjob_repository.dart';
 import '../../data/repositories/cronjob_form_repository.dart';
 import '../../data/models/cronjob_form_request_models.dart';
+import '../../data/models/file_models.dart';
 import '../../features/files/services/file_browser_service.dart';
 import '../../features/firewall/firewall_service.dart';
 import '../../features/server/server_repository.dart';
@@ -49,6 +51,10 @@ Map<String, dynamic> _err(Object e) => {'success': false, 'error': e.toString()}
 /// B1 网站配置中心写通道使用的网站 V2 API（按需构造）。
 Future<WebsiteV2Api> _websiteApi() async =>
     WebsiteV2Api(await ApiClientManager.instance.getCurrentClient());
+
+/// B2 文件管理深度写通道使用的文件 V2 API（按需构造）。
+Future<FileV2Api> _fileApi() async =>
+    FileV2Api(await ApiClientManager.instance.getCurrentClient());
 
 /// 所有 Native Channel 写操作 handlers 的集中实现。
 /// 被 [NativeChannelManager] 的 dispatch switch 调用。
@@ -720,6 +726,242 @@ class NativeChannelWriteHandlers {
       return _ok();
     } catch (e) {
       appLogger.e('createFolder failed: $e');
+      return _err(e);
+    }
+  }
+
+  // ── 文件深度（B2）───────────────────────────────────────────────────────
+  // 契约单一事实源：docs/development/modules/b2_files_channel_contract.md。
+  // 写语义：成功 `{success: true}`，失败 `{success: false, error}`；
+  // 必填参数缺失时快速失败，不发出请求。
+
+  /// 创建空文件（isDir=false 固定）。参数：`{path: String 全路径必填}`。
+  /// POST /files。
+  static Future<Map<String, dynamic>> createFileHandler(
+      dynamic arguments) async {
+    try {
+      final path = arguments['path'] as String? ?? '';
+      if (path.isEmpty) {
+        return {'success': false, 'error': 'path is required'};
+      }
+      await FileBrowserService().createFile(path);
+      return _ok();
+    } catch (e) {
+      appLogger.e('createFileHandler failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 重命名文件/目录。参数：
+  /// `{oldName: String 完整旧路径必填, newName: String 完整新路径必填}`。
+  /// POST /files/rename。
+  static Future<Map<String, dynamic>> renameFileHandler(
+      dynamic arguments) async {
+    try {
+      final oldName = arguments['oldName'] as String? ?? '';
+      final newName = arguments['newName'] as String? ?? '';
+      if (oldName.isEmpty || newName.isEmpty) {
+        return {'success': false, 'error': 'oldName and newName are required'};
+      }
+      await FileBrowserService().renameFile(oldName, newName);
+      return _ok();
+    } catch (e) {
+      appLogger.e('renameFileHandler failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 移动/复制文件。参数：
+  /// `{oldPaths: [String] 必填, newPath: String 目标目录必填,
+  ///   type?: 'copy'|'cut'（缺省由 FileMove 默认 'cut'）}`。
+  /// POST /files/move。
+  static Future<Map<String, dynamic>> moveFilesHandler(
+      dynamic arguments) async {
+    try {
+      final rawPaths = arguments['oldPaths'];
+      final oldPaths =
+          rawPaths is List ? rawPaths.map((e) => '$e').toList() : <String>[];
+      final newPath = arguments['newPath'] as String? ?? '';
+      if (oldPaths.isEmpty || newPath.isEmpty) {
+        return {'success': false, 'error': 'oldPaths and newPath are required'};
+      }
+      await (await _fileApi()).moveFiles(FileMove(
+        paths: oldPaths,
+        targetPath: newPath,
+        type: arguments['type'] as String?,
+      ));
+      return _ok();
+    } catch (e) {
+      appLogger.e('moveFilesHandler failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 压缩文件。参数：
+  /// `{files: [String] 必填, type: String(zip|gz|tar.gz…) 必填,
+  ///   dst: String 必填, name: String 必填}`。POST /files/compress。
+  static Future<Map<String, dynamic>> compressFilesHandler(
+      dynamic arguments) async {
+    try {
+      final rawFiles = arguments['files'];
+      final files =
+          rawFiles is List ? rawFiles.map((e) => '$e').toList() : <String>[];
+      final dst = arguments['dst'] as String? ?? '';
+      final name = arguments['name'] as String? ?? '';
+      final type = arguments['type'] as String? ?? '';
+      if (files.isEmpty) {
+        return {'success': false, 'error': 'files is required'};
+      }
+      if (dst.isEmpty || name.isEmpty || type.isEmpty) {
+        return {'success': false, 'error': 'dst, name and type are required'};
+      }
+      await FileBrowserService().compressFiles(
+        files: files,
+        dst: dst,
+        name: name,
+        type: type,
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('compressFilesHandler failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 解压文件。参数：
+  /// `{path: String 必填, dst: String 必填, type: String 必填}`。
+  /// POST /files/decompress。
+  static Future<Map<String, dynamic>> decompressFileHandler(
+      dynamic arguments) async {
+    try {
+      final path = arguments['path'] as String? ?? '';
+      final dst = arguments['dst'] as String? ?? '';
+      final type = arguments['type'] as String? ?? '';
+      if (path.isEmpty || dst.isEmpty || type.isEmpty) {
+        return {'success': false, 'error': 'path, dst and type are required'};
+      }
+      await FileBrowserService().extractFile(path: path, dst: dst, type: type);
+      return _ok();
+    } catch (e) {
+      appLogger.e('decompressFileHandler failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 修改文件权限。参数：
+  /// `{path: String 必填, mode: int 必填（八进制值的十进制表达，493=0755）}`。
+  /// POST /files/mode。mode 为服务端 os.FileMode 的十进制整型，原样透传。
+  static Future<Map<String, dynamic>> changeFileModeHandler(
+      dynamic arguments) async {
+    try {
+      final path = arguments['path'] as String? ?? '';
+      final mode = int.tryParse('${arguments['mode'] ?? ''}');
+      if (path.isEmpty || mode == null) {
+        return {'success': false, 'error': 'path and mode are required'};
+      }
+      await FileBrowserService().changeFileMode(path, mode);
+      return _ok();
+    } catch (e) {
+      appLogger.e('changeFileModeHandler failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 修改文件所有者。参数：
+  /// `{path: String 必填, user: String 必填, group: String 必填}`。
+  /// POST /files/owner。
+  static Future<Map<String, dynamic>> changeFileOwnerHandler(
+      dynamic arguments) async {
+    try {
+      final path = arguments['path'] as String? ?? '';
+      final user = arguments['user'] as String? ?? '';
+      final group = arguments['group'] as String? ?? '';
+      if (path.isEmpty || user.isEmpty || group.isEmpty) {
+        return {'success': false, 'error': 'path, user and group are required'};
+      }
+      await FileBrowserService().changeFileOwner(path, user, group);
+      return _ok();
+    } catch (e) {
+      appLogger.e('changeFileOwnerHandler failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 保存文件内容。参数：
+  /// `{path: String 必填, content: String 必填（可为空串，用于清空文件）}`。
+  /// POST /files/save。
+  static Future<Map<String, dynamic>> saveFileContentHandler(
+      dynamic arguments) async {
+    try {
+      final path = arguments['path'] as String? ?? '';
+      final content = arguments['content'] as String?;
+      if (path.isEmpty || content == null) {
+        return {'success': false, 'error': 'path and content are required'};
+      }
+      await FileBrowserService().updateFileContent(path, content);
+      return _ok();
+    } catch (e) {
+      appLogger.e('saveFileContentHandler failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 收藏文件/目录。参数：`{path: String 必填}`。POST /files/favorite。
+  static Future<Map<String, dynamic>> addFavoriteHandler(
+      dynamic arguments) async {
+    try {
+      final path = arguments['path'] as String? ?? '';
+      if (path.isEmpty) {
+        return {'success': false, 'error': 'path is required'};
+      }
+      await FileBrowserService().favoriteFile(path);
+      return _ok();
+    } catch (e) {
+      appLogger.e('addFavoriteHandler failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 取消收藏。参数：`{id: int 必填}`。POST /files/favorite/del。
+  /// 契约偏差：FileUnfavorite 模型仅含 path，而 Swagger
+  /// request.FavoriteDelete 必填 id（上游前端同语义 `{id}`），
+  /// 故按原始键直发，file_v2.dart 不改动。
+  static Future<Map<String, dynamic>> removeFavoriteHandler(
+      dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments['id'] ?? ''}');
+      if (id == null) {
+        return {'success': false, 'error': 'id is required'};
+      }
+      final client = await ApiClientManager.instance.getCurrentClient();
+      await client.post<Map<String, dynamic>>(
+        ApiConstants.buildApiPath('/files/favorite/del'),
+        data: {'id': id},
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('removeFavoriteHandler failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// Wget 远程下载。参数：
+  /// `{url: String 必填, path: String 目标目录必填, name: String 保存名必填}`。
+  /// POST /files/wget。
+  static Future<Map<String, dynamic>> wgetDownloadHandler(
+      dynamic arguments) async {
+    try {
+      final url = arguments['url'] as String? ?? '';
+      final path = arguments['path'] as String? ?? '';
+      final name = arguments['name'] as String? ?? '';
+      if (url.isEmpty || path.isEmpty || name.isEmpty) {
+        return {'success': false, 'error': 'url, path and name are required'};
+      }
+      await (await _fileApi())
+          .wgetDownload(FileWgetRequest(url: url, path: path, name: name));
+      return _ok();
+    } catch (e) {
+      appLogger.e('wgetDownloadHandler failed: $e');
       return _err(e);
     }
   }

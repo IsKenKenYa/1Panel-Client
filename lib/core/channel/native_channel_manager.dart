@@ -132,6 +132,10 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelReadHandlers.getWebsiteDomains(arguments);
       case 'getWebsiteLogs':
         return NativeChannelReadHandlers.getWebsiteLogs(arguments);
+      case 'getFileContentHandler':
+        return NativeChannelReadHandlers.getFileContentHandler(arguments);
+      case 'getFavoritesHandler':
+        return NativeChannelReadHandlers.getFavoritesHandler(arguments);
 
       // ── Write: 服务器 ───────────────────────────────────────────────────
       // ── Write: 服务器 ───────────────────────────────────────────────────
@@ -198,6 +202,28 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.deleteFile(arguments);
       case 'createFolder':
         return NativeChannelWriteHandlers.createFolder(arguments);
+      case 'createFileHandler':
+        return NativeChannelWriteHandlers.createFileHandler(arguments);
+      case 'renameFileHandler':
+        return NativeChannelWriteHandlers.renameFileHandler(arguments);
+      case 'moveFilesHandler':
+        return NativeChannelWriteHandlers.moveFilesHandler(arguments);
+      case 'compressFilesHandler':
+        return NativeChannelWriteHandlers.compressFilesHandler(arguments);
+      case 'decompressFileHandler':
+        return NativeChannelWriteHandlers.decompressFileHandler(arguments);
+      case 'changeFileModeHandler':
+        return NativeChannelWriteHandlers.changeFileModeHandler(arguments);
+      case 'changeFileOwnerHandler':
+        return NativeChannelWriteHandlers.changeFileOwnerHandler(arguments);
+      case 'saveFileContentHandler':
+        return NativeChannelWriteHandlers.saveFileContentHandler(arguments);
+      case 'addFavoriteHandler':
+        return NativeChannelWriteHandlers.addFavoriteHandler(arguments);
+      case 'removeFavoriteHandler':
+        return NativeChannelWriteHandlers.removeFavoriteHandler(arguments);
+      case 'wgetDownloadHandler':
+        return NativeChannelWriteHandlers.wgetDownloadHandler(arguments);
 
       // ── Write: 主机/工具箱 ──────────────────────────────────────────────
       case 'createCompose':

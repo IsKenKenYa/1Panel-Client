@@ -771,4 +771,48 @@ class NativeChannelReadHandlers {
       return <String, dynamic>{};
     }
   }
+
+  // ── 文件（B2，只读）────────────────────────────────────────────────────
+  // 契约单一事实源：docs/development/modules/b2_files_channel_contract.md。
+  // 读语义：原样透传服务端数据，失败/缺参返回空值并记录日志。
+
+  /// 文件内容。参数：`{path: String 必填}`。
+  /// POST /files/content `{path, expand: true}`，返回服务端原始 data 对象
+  /// （含 `content` 键），C# 端取 content 字段。
+  static Future<dynamic> getFileContentHandler(dynamic arguments) async {
+    try {
+      final path = arguments?['path'] as String? ?? '';
+      if (path.isEmpty) {
+        return <String, dynamic>{};
+      }
+      final client = await ApiClientManager.instance.getCurrentClient();
+      final response = await client.post<Map<String, dynamic>>(
+        ApiConstants.buildApiPath('/files/content'),
+        data: <String, dynamic>{'path': path, 'expand': true},
+      );
+      return ApiResponseParser.asMap(response.data);
+    } catch (e) {
+      appLogger.e('Failed to get file content for native: $e');
+      return <String, dynamic>{};
+    }
+  }
+
+  /// 收藏列表。参数：`{page?: int, pageSize?: int}`（C# 传 `{}` 取默认值）。
+  /// POST /files/favorite/search（dto.PageInfo），items 列表原样透传。
+  static Future<dynamic> getFavoritesHandler(dynamic arguments) async {
+    try {
+      final client = await ApiClientManager.instance.getCurrentClient();
+      final response = await client.post<Map<String, dynamic>>(
+        ApiConstants.buildApiPath('/files/favorite/search'),
+        data: <String, dynamic>{
+          'page': int.tryParse('${arguments?['page'] ?? 1}') ?? 1,
+          'pageSize': int.tryParse('${arguments?['pageSize'] ?? 100}') ?? 100,
+        },
+      );
+      return ApiResponseParser.asList(response.data, nestedItemsKey: 'items');
+    } catch (e) {
+      appLogger.e('Failed to get favorites for native: $e');
+      return [];
+    }
+  }
 }
