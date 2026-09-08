@@ -45,22 +45,22 @@
             <NavigationView.MenuItems>
                 <!-- Workspace groups aligned with the 1Panel web sidebar semantics
                      (dashboard is the first entry, mirroring the web home page). -->
-                <NavigationViewItem Content="Dashboard">
+                <NavigationViewItem Tag="Dashboard" Content="Dashboard">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE80F;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
-                <NavigationViewItem Content="ScriptLibrary">
+                <NavigationViewItem Tag="ScriptLibrary" Content="ScriptLibrary">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE943;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItemSeparator />
-                <NavigationViewItem Content="Servers" Icon="Globe" />
-                <NavigationViewItem Content="Files" Icon="Folder" />
+                <NavigationViewItem Tag="Servers" Content="Servers" Icon="Globe" />
+                <NavigationViewItem Tag="Files" Content="Files" Icon="Folder" />
                 <NavigationViewItemSeparator />
-                <NavigationViewItem Content="Containers" Icon="AllApps" />
+                <NavigationViewItem Tag="Containers" Content="Containers" Icon="AllApps" />
                 <!-- EF90 verified against the official Segoe Fluent Icons table and
                      rendered from the local font: it is "Flow" (connected nodes), the
                      closest glyph for container orchestration (multiple containers
@@ -72,13 +72,13 @@
                      E9F3 "Process" is a dashed circular arrow (reads as in-progress),
                      EEA3 "VirtualMachineGroup" reads as grouped machines colliding
                      with the multi-host Servers semantics. -->
-                <NavigationViewItem Content="Orchestration">
+                <NavigationViewItem Tag="Orchestration" Content="Orchestration">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xEF90;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Content="Apps" Icon="Library" />
-                <NavigationViewItem Content="Websites" Icon="World" />
+                <NavigationViewItem Tag="Apps" Content="Apps" Icon="Library" />
+                <NavigationViewItem Tag="Websites" Content="Websites" Icon="World" />
                 <!-- E968 verified against the official Segoe Fluent Icons table: it is
                      "Network" (connected nodes), the closest web-server/infrastructure glyph
                      for OpenResty as the reverse-proxy foundation of Websites. Also checked
@@ -86,14 +86,14 @@
                      / E909 "World" visually collide with Websites' globe icon, and EB41
                      "Website" semantically duplicates the Websites entry; the font has no
                      literal "Server" glyph. -->
-                <NavigationViewItem Content="OpenResty">
+                <NavigationViewItem Tag="OpenResty" Content="OpenResty">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE968;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <!-- HardDrive (EDA2) is the closest Segoe Fluent Icons glyph for databases;
                      E8B7 is actually "Folder" and E7F4 is "TVMonitor", so neither fits. -->
-                <NavigationViewItem Content="Databases">
+                <NavigationViewItem Tag="Databases" Content="Databases">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xEDA2;" />
                     </NavigationViewItem.Icon>
@@ -102,7 +102,7 @@
                      (clock face with counter-clockwise arrow), the closest clock/schedule glyph
                      for cron jobs; Calendar is actually E787 and pure Clock is E917, so E823's
                      clock-dial semantics best matches periodic scheduled tasks. -->
-                <NavigationViewItem Content="CronJobs">
+                <NavigationViewItem Tag="CronJobs" Content="CronJobs">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE823;" />
                     </NavigationViewItem.Icon>
@@ -114,7 +114,7 @@
                      already taken by Files; E753 is "Cloud" (Sync is actually E895, a
                      directional file-sync glyph); E81C "History" is a clock that visually
                      collides with CronJobs' E823 "Recent". -->
-                <NavigationViewItem Content="Backups">
+                <NavigationViewItem Tag="Backups" Content="Backups">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE777;" />
                     </NavigationViewItem.Icon>
@@ -123,25 +123,25 @@
                      "DeviceLaptopNoPic", the laptop/host-machine device glyph and the
                      closest match for a host ("System" is actually E770, "Component"
                      E950 reads as a hardware part, "TVMonitor" E7F4 is a plain screen). -->
-                <NavigationViewItem Content="Host">
+                <NavigationViewItem Tag="Host" Content="Host">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE7F8;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <!-- E90F verified against the official Segoe Fluent Icons table: it is
                      "Repair" (wrench), the closest tool/maintenance glyph for Toolbox. -->
-                <NavigationViewItem Content="Toolbox">
+                <NavigationViewItem Tag="Toolbox" Content="Toolbox">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE90F;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Content="Monitoring">
+                <NavigationViewItem Tag="Monitoring" Content="Monitoring">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xEC4A;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItemSeparator />
-                <NavigationViewItem Content="AI" Icon="PreviewLink" />
+                <NavigationViewItem Tag="AI" Content="AI" Icon="PreviewLink" />
                 <!-- E945 verified against the official Segoe Fluent Icons table: it is
                      "LightningBolt", matching the quick-command/one-shot execution
                      semantics of the command library, which sits in the AI/automation
@@ -149,7 +149,7 @@
                      "CommandPrompt" (an interactive terminal glyph, not a command
                      library — "Switch" is actually E8AB) and would read as a terminal
                      entry; E943 "Code" is a plain source-code glyph. -->
-                <NavigationViewItem Content="Commands">
+                <NavigationViewItem Tag="Commands" Content="Commands">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE945;" />
                     </NavigationViewItem.Icon>
@@ -166,12 +166,12 @@
                      "Diagnostic", matching the log-review semantics of the 1Panel web
                      "日志" group (system/operation/login/website logs). E7C3 was also
                      verified ("Page") but is a plain document glyph with no log meaning. -->
-                <NavigationViewItem Content="Logs">
+                <NavigationViewItem Tag="Logs" Content="Logs">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE9D9;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Content="Security">
+                <NavigationViewItem Tag="Security" Content="Security">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE72E;" />
                     </NavigationViewItem.Icon>
@@ -186,7 +186,7 @@
                      network infrastructure glyphs); E8D7 is actually "Permissions"
                      (a key glyph, credentials semantics), not a privacy/gateway
                      glyph as its position in the table might suggest. -->
-                <NavigationViewItem Content="Gateway">
+                <NavigationViewItem Tag="Gateway" Content="Gateway">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xEA18;" />
                     </NavigationViewItem.Icon>
@@ -194,7 +194,7 @@
             </NavigationView.MenuItems>
             <NavigationView.FooterMenuItems>
                 <!-- Bottom standalone group. -->
-                <NavigationViewItem Content="Settings" Icon="Setting" />
+                <NavigationViewItem Tag="Settings" Content="Settings" Icon="Setting" />
             </NavigationView.FooterMenuItems>
             <NavigationView.PaneFooter>
                 <StackPanel Margin="16,4,8,12" Spacing="2">

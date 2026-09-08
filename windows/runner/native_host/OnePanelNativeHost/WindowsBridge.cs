@@ -113,6 +113,12 @@ public static class WindowsBridge
         return await InvokeWithRetryAsync("getSettings");
     }
 
+    /// <summary>宿主 L10n 数据源：当前 locale 整份 arb 字典（getTranslations）。</summary>
+    public static async Task<JsonElement?> GetTranslationsAsync()
+    {
+        return await InvokeWithRetryAsync("getTranslations");
+    }
+
     /// <summary>写客户端偏好（renderMode/language 等，Dart 侧 updateSetting）。</summary>
     public static async Task<bool> UpdateSettingAsync(string key, object? value)
     {

@@ -31,7 +31,37 @@ public sealed partial class MainWindow : Window
         { "Settings", () => new SettingsPage() },
     };
 
+    /// <summary>
+    /// 导航路由 Tag → L10n 键（键集与 Dart arb 同源，缺键回落英文）。
+    /// Tag 承担路由标识（语言无关），Content 只承担显示标签。
+    /// </summary>
+    public static readonly Dictionary<string, (string Key, string English)> NavLabelKeys = new()
+    {
+        { "Dashboard", ("dashboardTitle", "Dashboard") },
+        { "ScriptLibrary", ("hostNavScriptLibrary", "Script Library") },
+        { "Servers", ("navServer", "Servers") },
+        { "Files", ("navFiles", "Files") },
+        { "Containers", ("containerManagement", "Containers") },
+        { "Orchestration", ("orchestrationTitle", "Orchestration") },
+        { "Apps", ("appsPageTitle", "Apps") },
+        { "Websites", ("websitesPageTitle", "Websites") },
+        { "OpenResty", ("openrestyPageTitle", "OpenResty") },
+        { "Databases", ("hostNavDatabases", "Databases") },
+        { "CronJobs", ("hostNavCronJobs", "CronJobs") },
+        { "Backups", ("hostNavBackups", "Backups") },
+        { "Host", ("hostNavHost", "Host") },
+        { "Toolbox", ("toolboxCenterTitle", "Toolbox") },
+        { "Monitoring", ("serverModuleMonitoring", "Monitoring") },
+        { "AI", ("serverModuleAi", "AI") },
+        { "Commands", ("hostNavCommands", "Commands") },
+        { "Logs", ("hostNavLogs", "Logs") },
+        { "Security", ("navSecurity", "Security") },
+        { "Gateway", ("hostNavGateway", "Gateway") },
+        { "Settings", ("navSettings", "Settings") },
+    };
+
     private readonly Dictionary<string, Page> _pageCache = new();
+    private string? _currentTag;
 
     public MainWindow()
     {
@@ -43,6 +73,7 @@ public sealed partial class MainWindow : Window
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(AppTitleBar);
 
+        ApplyNavLabels();
         RootNavigationView.SelectionChanged += OnNavigationSelectionChanged;
         // Adaptive pane: fold to an icon rail on narrow windows.
         RootNavigationView.SizeChanged += OnRootNavigationViewSizeChanged;
@@ -54,6 +85,32 @@ public sealed partial class MainWindow : Window
                 RootNavigationView.SelectedItem = RootNavigationView.MenuItems[0];
             }
         };
+    }
+
+    /// <summary>
+    /// 语言切换后由设置页调用：重设导航标签，并按新文案重建全部缓存页
+    /// （单例缓存页不会随字典刷新，整体重建是唯一的全量生效路径）。
+    /// </summary>
+    public void ApplyLanguage()
+    {
+        ApplyNavLabels();
+        _pageCache.Clear();
+        if (_currentTag != null && _pageFactories.ContainsKey(_currentTag))
+        {
+            ShowPage(_currentTag);
+        }
+    }
+
+    private void ApplyNavLabels()
+    {
+        foreach (var item in GetSelectableNavItems())
+        {
+            var tag = item.Tag?.ToString();
+            if (tag != null && NavLabelKeys.TryGetValue(tag, out var label))
+            {
+                item.Content = L10n.T(label.Key, label.English);
+            }
+        }
     }
 
     // Adaptive pane: icon-only compact rail below 720px width, expanded left pane above.
@@ -118,15 +175,23 @@ public sealed partial class MainWindow : Window
             return;
         }
 
-        var tag = item.Content?.ToString();
-        if (tag is null || !_pageFactories.TryGetValue(tag, out var factory))
+        // 路由键取语言无关的 Tag（Content 已被本地化标签占用）。
+        var tag = item.Tag?.ToString();
+        if (tag is null || !_pageFactories.ContainsKey(tag))
         {
             return;
         }
 
+        ShowPage(tag);
+    }
+
+    private void ShowPage(string tag)
+    {
+        _currentTag = tag;
+
         if (!_pageCache.TryGetValue(tag, out var page))
         {
-            page = factory();
+            page = _pageFactories[tag]();
             _pageCache[tag] = page;
         }
 

@@ -249,7 +249,13 @@ public sealed class SettingsPage : ModulePageBase
                 new[] { "system", "zh", "en" },
                 language,
                 key: "language",
-                title: "Language")));
+                title: "Language",
+                onPersisted: async () =>
+                {
+                    // 即时生效：重拉译文整表 + 导航标签重设 + 全部缓存页按新语言重建。
+                    await L10n.LoadAsync();
+                    (App.MainWindow as MainWindow)?.ApplyLanguage();
+                })));
     }
 
     /// <summary>
@@ -286,9 +292,11 @@ public sealed class SettingsPage : ModulePageBase
     /// ComboBox bound to a string preference (renderMode/language). Selecting
     /// an item writes through WindowsBridge.UpdateSettingAsync; on failure the
     /// toast shows and the selection reverts to the last persisted value.
+    /// onPersisted runs after a successful write (language switch reloads L10n).
     /// </summary>
     private ComboBox CreateStringSettingCombo(
-        string[] labels, string[] values, string? currentValue, string key, string title)
+        string[] labels, string[] values, string? currentValue, string key, string title,
+        Action? onPersisted = null)
     {
         var combo = new ComboBox
         {
@@ -318,6 +326,7 @@ public sealed class SettingsPage : ModulePageBase
             if (success)
             {
                 persistedIndex = index;
+                onPersisted?.Invoke();
             }
             else if (box.SelectedIndex == index)
             {
