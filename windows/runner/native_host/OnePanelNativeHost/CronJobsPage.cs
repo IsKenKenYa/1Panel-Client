@@ -41,7 +41,7 @@ public sealed class CronJobsPage : ModulePageBase
         // Empty-state primary action: opens the create dialog so users can
         // add the first task. Registered once here; the button only shows
         // inside the base Empty panel, so the Content state needs no cleanup.
-        SetEmptyPrimaryAction("Create task", (s, e) => _ = ShowTaskDialogAsync(existing: null));
+        SetEmptyPrimaryAction(L10n.T("hostCronJobsCreateTask", "Create task"), (s, e) => _ = ShowTaskDialogAsync(existing: null));
     }
 
     protected override async void OnPageShown()
@@ -91,7 +91,7 @@ public sealed class CronJobsPage : ModulePageBase
             }
             else
             {
-                _errorToast.Show("Failed to refresh cron jobs.");
+                _errorToast.Show(L10n.T("hostCronJobsRefreshFailed", "Failed to refresh cron jobs."));
             }
             return;
         }
@@ -188,7 +188,7 @@ public sealed class CronJobsPage : ModulePageBase
 
         var createButton = new AppBarButton
         {
-            Label = "Create task",
+            Label = L10n.T("hostCronJobsCreateTask", "Create task"),
             Icon = new FontIcon { Glyph = "\uE710" },
         };
         createButton.Click += (s, e) => _ = ShowTaskDialogAsync(existing: null);
@@ -196,7 +196,7 @@ public sealed class CronJobsPage : ModulePageBase
 
         var refreshButton = new AppBarButton
         {
-            Label = "Refresh",
+            Label = L10n.T("commonRefresh", "Refresh"),
             Icon = new FontIcon { Glyph = "\uE72C" },
         };
         refreshButton.Click += (s, e) => _ = LoadCronJobsAsync(showLoadingState: true);
@@ -267,14 +267,14 @@ public sealed class CronJobsPage : ModulePageBase
         var lastRun = FormatDateString(job.LastRecordTime);
         if (!string.IsNullOrWhiteSpace(job.LastRecordTime))
         {
-            info.Children.Add(BuildScheduleLine("Last run", lastRun, GetRecordStatusBrush(job.LastRecordStatus)));
+            info.Children.Add(BuildScheduleLine(L10n.T("hostCronJobsLastRun", "Last run"), lastRun, GetRecordStatusBrush(job.LastRecordStatus)));
         }
 
         // Next run: neutral line, omitted when the payload carries no value.
         if (!string.IsNullOrWhiteSpace(job.NextHandle))
         {
             info.Children.Add(BuildScheduleLine(
-                "Next run", FormatDateString(job.NextHandle),
+                L10n.T("cronjobsNextRunLabel", "Next run"), FormatDateString(job.NextHandle),
                 TryGetThemeBrush("TextFillColorSecondaryBrush", Microsoft.UI.Colors.Gray)));
         }
 
@@ -291,7 +291,7 @@ public sealed class CronJobsPage : ModulePageBase
             HorizontalAlignment = HorizontalAlignment.Right,
             VerticalAlignment = VerticalAlignment.Center,
         };
-        ToolTipService.SetToolTip(moreButton, "Task actions");
+        ToolTipService.SetToolTip(moreButton, L10n.T("hostCronJobsTaskActions", "Task actions"));
         moreButton.Flyout = BuildRowFlyout(job);
         Grid.SetColumn(moreButton, 1);
         grid.Children.Add(moreButton);
@@ -334,7 +334,7 @@ public sealed class CronJobsPage : ModulePageBase
         // Upstream "handle": run the task immediately, no confirmation needed.
         var runItem = new MenuFlyoutItem
         {
-            Text = "Run once",
+            Text = L10n.T("cronjobsHandleOnceAction", "Run once"),
             Icon = new FontIcon { Glyph = "\uE768" }, // Play.
         };
         runItem.Click += (s, e) => _ = RunOnceAsync(job);
@@ -342,7 +342,7 @@ public sealed class CronJobsPage : ModulePageBase
 
         var editItem = new MenuFlyoutItem
         {
-            Text = "Edit",
+            Text = L10n.T("commonEdit", "Edit"),
             Icon = new FontIcon { Glyph = "\uE70F" }, // Edit.
         };
         editItem.Click += (s, e) => _ = ShowTaskDialogAsync(job);
@@ -353,7 +353,7 @@ public sealed class CronJobsPage : ModulePageBase
         var enabled = IsJobEnabled(job.Status);
         var toggleItem = new MenuFlyoutItem
         {
-            Text = enabled ? "Disable" : "Enable",
+            Text = enabled ? L10n.T("cronjobsDisableAction", "Disable") : L10n.T("cronjobsEnableAction", "Enable"),
             Icon = new FontIcon { Glyph = enabled ? "\uE711" : "\uE73E" }, // Cancel / CheckMark.
         };
         toggleItem.Click += (s, e) => _ = ToggleStatusAsync(job);
@@ -361,7 +361,7 @@ public sealed class CronJobsPage : ModulePageBase
 
         var deleteItem = new MenuFlyoutItem
         {
-            Text = "Delete",
+            Text = L10n.T("commonDelete", "Delete"),
             Icon = new FontIcon { Glyph = "\uE74D" }, // Delete.
         };
         deleteItem.Click += (s, e) => _ = DeleteCronJobAsync(job);
@@ -381,7 +381,7 @@ public sealed class CronJobsPage : ModulePageBase
 
         var badgeContent = new TextBlock
         {
-            Text = string.IsNullOrEmpty(type) ? "Unknown" : type,
+            Text = string.IsNullOrEmpty(type) ? L10n.T("orchestrationStatusUnknown", "Unknown") : type,
             FontSize = 12,
             Foreground = accentBrush,
             VerticalAlignment = VerticalAlignment.Center,
@@ -417,7 +417,7 @@ public sealed class CronJobsPage : ModulePageBase
         });
         badgeContent.Children.Add(new TextBlock
         {
-            Text = string.IsNullOrEmpty(status) ? "Unknown" : status,
+            Text = string.IsNullOrEmpty(status) ? L10n.T("orchestrationStatusUnknown", "Unknown") : status,
             FontSize = 12,
             Foreground = accentBrush,
             VerticalAlignment = VerticalAlignment.Center,
@@ -524,10 +524,10 @@ public sealed class CronJobsPage : ModulePageBase
         {
             var confirmed = await ConfirmDialog.ShowAsync(
                 XamlRoot,
-                "Delete Task",
+                L10n.T("hostCronJobsDeleteTaskTitle", "Delete Task"),
                 $"Are you sure you want to delete task \"{job.Name}\"?\nThis action cannot be undone.",
-                "Delete",
-                "Cancel",
+                L10n.T("commonDelete", "Delete"),
+                L10n.T("commonCancel", "Cancel"),
                 isDestructive: true);
 
             if (!confirmed) return;
@@ -569,14 +569,18 @@ public sealed class CronJobsPage : ModulePageBase
         {
             bool isEdit = existing != null;
 
-            var nameBox = new TextBox { Header = "Name", PlaceholderText = "e.g. Cleanup logs" };
-            var specBox = new TextBox { Header = "Cron expression", PlaceholderText = "*/5 * * * *" };
+            var nameBox = new TextBox
+            {
+                Header = L10n.T("commonName", "Name"),
+                PlaceholderText = L10n.T("hostCronJobsNamePlaceholder", "e.g. Cleanup logs"),
+            };
+            var specBox = new TextBox { Header = L10n.T("toolboxClamCronExpression", "Cron expression"), PlaceholderText = "*/5 * * * *" };
             var scriptBox = new TextBox
             {
-                Header = "Script",
+                Header = L10n.T("cronjobFormScriptLabel", "Script"),
                 PlaceholderText = isEdit
-                    ? "Optional; submitting replaces the stored script"
-                    : "Optional shell script",
+                    ? L10n.T("hostCronJobsScriptReplaceHint", "Optional; submitting replaces the stored script")
+                    : L10n.T("hostCronJobsScriptPlaceholder", "Optional shell script"),
                 AcceptsReturn = true,
                 Height = 120,
                 TextWrapping = TextWrapping.Wrap,
@@ -613,10 +617,10 @@ public sealed class CronJobsPage : ModulePageBase
 
             var dialog = new ContentDialog
             {
-                Title = isEdit ? "Edit task" : "Create task",
+                Title = isEdit ? L10n.T("hostCronJobsEditTask", "Edit task") : L10n.T("hostCronJobsCreateTask", "Create task"),
                 Content = form,
-                PrimaryButtonText = isEdit ? "Save" : "Create",
-                CloseButtonText = "Cancel",
+                PrimaryButtonText = isEdit ? L10n.T("commonSave", "Save") : L10n.T("commonCreate", "Create"),
+                CloseButtonText = L10n.T("commonCancel", "Cancel"),
                 DefaultButton = ContentDialogButton.Primary,
                 XamlRoot = XamlRoot,
             };
@@ -647,10 +651,12 @@ public sealed class CronJobsPage : ModulePageBase
                 else
                 {
                     submitting = false;
-                    _errorToast.Show(isEdit ? "Failed to save the task." : "Failed to create the task.");
+                    _errorToast.Show(isEdit
+                        ? L10n.T("hostCronJobsSaveFailed", "Failed to save the task.")
+                        : L10n.T("hostCronJobsCreateFailed", "Failed to create the task."));
                     SetFormError(errorText, isEdit
-                        ? "Save failed. Adjust the inputs and try again."
-                        : "Create failed. Adjust the inputs and try again.");
+                        ? L10n.T("hostCommonSaveFailed", "Save failed. Adjust the inputs and try again.")
+                        : L10n.T("hostCommonCreateFailed", "Create failed. Adjust the inputs and try again."));
                 }
             }
 
@@ -702,8 +708,8 @@ public sealed class CronJobsPage : ModulePageBase
     /// <summary>Returns the first form validation error, or null when the input is valid.</summary>
     private static string? ValidateTaskInput(string name, string spec)
     {
-        if (string.IsNullOrWhiteSpace(name)) return "Name is required.";
-        if (string.IsNullOrWhiteSpace(spec)) return "Cron expression is required.";
+        if (string.IsNullOrWhiteSpace(name)) return L10n.T("websitesSslAccountsValidationNameRequired", "Name is required.");
+        if (string.IsNullOrWhiteSpace(spec)) return L10n.T("cronjobFormErrorSpecRequired", "Cron expression is required.");
         return null;
     }
 

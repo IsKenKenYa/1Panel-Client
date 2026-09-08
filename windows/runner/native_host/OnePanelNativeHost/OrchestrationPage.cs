@@ -54,7 +54,7 @@ public sealed class OrchestrationPage : ModulePageBase
         // Empty-state primary action: opens the create dialog so users can
         // add the first compose. Registered once here; the button only shows
         // inside the base Empty panel, so the Content state needs no cleanup.
-        SetEmptyPrimaryAction("Create compose", OnCreateComposeClicked);
+        SetEmptyPrimaryAction(L10n.T("orchestrationComposeCreateTitle", "Create compose"), OnCreateComposeClicked);
     }
 
     protected override async void OnPageShown()
@@ -104,7 +104,7 @@ public sealed class OrchestrationPage : ModulePageBase
             }
             else
             {
-                _errorToast.Show("Failed to refresh composes.");
+                _errorToast.Show(L10n.T("hostOrchestrationRefreshFailed", "Failed to refresh composes."));
             }
             return;
         }
@@ -202,7 +202,7 @@ public sealed class OrchestrationPage : ModulePageBase
         // primary button so both entry points stay in sync.
         var createButton = new AppBarButton
         {
-            Label = "Create compose",
+            Label = L10n.T("orchestrationComposeCreateTitle", "Create compose"),
             Icon = new FontIcon { Glyph = "\uE710" }, // Add.
         };
         createButton.Click += OnCreateComposeClicked;
@@ -210,7 +210,7 @@ public sealed class OrchestrationPage : ModulePageBase
 
         var refreshButton = new AppBarButton
         {
-            Label = "Refresh",
+            Label = L10n.T("commonRefresh", "Refresh"),
             Icon = new FontIcon { Glyph = "\uE72C" },
         };
         refreshButton.Click += (s, e) => _ = LoadComposesAsync(showLoadingState: true);
@@ -313,7 +313,7 @@ public sealed class OrchestrationPage : ModulePageBase
             HorizontalAlignment = HorizontalAlignment.Right,
             VerticalAlignment = VerticalAlignment.Center,
         };
-        ToolTipService.SetToolTip(moreButton, "Compose actions");
+        ToolTipService.SetToolTip(moreButton, L10n.T("hostOrchestrationActions", "Compose actions"));
         moreButton.Flyout = BuildRowFlyout(compose);
         Grid.SetColumn(moreButton, 1);
         grid.Children.Add(moreButton);
@@ -333,7 +333,7 @@ public sealed class OrchestrationPage : ModulePageBase
 
         var startItem = new MenuFlyoutItem
         {
-            Text = "Start",
+            Text = L10n.T("commonStart", "Start"),
             Icon = new FontIcon { Glyph = "\uE768" }, // Play.
             IsEnabled = !running,
         };
@@ -342,7 +342,7 @@ public sealed class OrchestrationPage : ModulePageBase
 
         var stopItem = new MenuFlyoutItem
         {
-            Text = "Stop",
+            Text = L10n.T("commonStop", "Stop"),
             Icon = new FontIcon { Glyph = "\uE71A" }, // Stop square.
             IsEnabled = running,
         };
@@ -351,7 +351,7 @@ public sealed class OrchestrationPage : ModulePageBase
 
         var restartItem = new MenuFlyoutItem
         {
-            Text = "Restart",
+            Text = L10n.T("commonRestart", "Restart"),
             Icon = new FontIcon { Glyph = "\uE777" }, // Sync.
         };
         restartItem.Click += (s, e) => _ = OperateAsync(compose, "restart");
@@ -363,7 +363,7 @@ public sealed class OrchestrationPage : ModulePageBase
         // matching the upstream "start/up" operation without confirmation.
         var upItem = new MenuFlyoutItem
         {
-            Text = "Up",
+            Text = L10n.T("hostOrchestrationUp", "Up"),
             Icon = new FontIcon { Glyph = "\uE74A" }, // Up arrow.
         };
         upItem.Click += (s, e) => _ = OperateAsync(compose, "up");
@@ -373,7 +373,7 @@ public sealed class OrchestrationPage : ModulePageBase
         // plain (non-destructive) confirmation is enough.
         var downItem = new MenuFlyoutItem
         {
-            Text = "Down",
+            Text = L10n.T("hostOrchestrationDown", "Down"),
             Icon = new FontIcon { Glyph = "\uE74B" }, // Down arrow.
         };
         downItem.Click += (s, e) => _ = DownComposeAsync(compose);
@@ -386,7 +386,7 @@ public sealed class OrchestrationPage : ModulePageBase
         // ShowEditComposeDialogAsync for the contract boundary).
         var editItem = new MenuFlyoutItem
         {
-            Text = "Edit",
+            Text = L10n.T("commonEdit", "Edit"),
             Icon = new FontIcon { Glyph = "\uE70F" }, // Edit pencil.
         };
         editItem.Click += (s, e) => _ = ShowEditComposeDialogAsync(compose);
@@ -394,7 +394,7 @@ public sealed class OrchestrationPage : ModulePageBase
 
         var deleteItem = new MenuFlyoutItem
         {
-            Text = "Delete",
+            Text = L10n.T("commonDelete", "Delete"),
             Icon = new FontIcon { Glyph = "\uE74D" }, // Delete.
         };
         deleteItem.Click += (s, e) => _ = DeleteComposeAsync(compose);
@@ -499,10 +499,10 @@ public sealed class OrchestrationPage : ModulePageBase
         {
             var confirmed = await ConfirmDialog.ShowAsync(
                 XamlRoot,
-                "Down Compose",
+                L10n.T("hostOrchestrationDownTitle", "Down Compose"),
                 $"Take down compose \"{compose.Name}\"?\nIts containers will be removed; the compose files are kept.",
-                "Down",
-                "Cancel",
+                L10n.T("hostOrchestrationDown", "Down"),
+                L10n.T("commonCancel", "Cancel"),
                 isDestructive: false);
 
             if (!confirmed) return;
@@ -534,10 +534,10 @@ public sealed class OrchestrationPage : ModulePageBase
         {
             var confirmed = await ConfirmDialog.ShowAsync(
                 XamlRoot,
-                "Delete Compose",
+                L10n.T("orchestrationComposeDelete", "Delete Compose"),
                 $"Are you sure you want to delete compose \"{compose.Name}\"?\nThis will delete the compose and all of its containers. This action cannot be undone.",
-                "Delete",
-                "Cancel",
+                L10n.T("commonDelete", "Delete"),
+                L10n.T("commonCancel", "Cancel"),
                 isDestructive: true);
 
             if (!confirmed) return;
@@ -612,22 +612,26 @@ public sealed class OrchestrationPage : ModulePageBase
 
         try
         {
-            var nameBox = new TextBox { Header = "Name", PlaceholderText = "e.g. my-app" };
+            var nameBox = new TextBox
+            {
+                Header = L10n.T("commonName", "Name"),
+                PlaceholderText = L10n.T("hostOrchestrationNamePlaceholder", "e.g. my-app"),
+            };
 
-            var sourceCombo = new ComboBox { Header = "Create from", SelectedIndex = 0, MinWidth = 200 };
-            sourceCombo.Items.Add("From path");
-            sourceCombo.Items.Add("From content");
-            sourceCombo.Items.Add("From template");
+            var sourceCombo = new ComboBox { Header = L10n.T("hostOrchestrationCreateFrom", "Create from"), SelectedIndex = 0, MinWidth = 200 };
+            sourceCombo.Items.Add(L10n.T("hostOrchestrationFromPath", "From path"));
+            sourceCombo.Items.Add(L10n.T("hostOrchestrationFromContent", "From content"));
+            sourceCombo.Items.Add(L10n.T("hostOrchestrationFromTemplate", "From template"));
 
             var pathBox = new TextBox
             {
-                Header = "Compose file path",
-                PlaceholderText = "e.g. /opt/1panel/docker/compose/my-app/docker-compose.yml",
+                Header = L10n.T("hostOrchestrationComposeFilePath", "Compose file path"),
+                PlaceholderText = L10n.T("hostOrchestrationPathPlaceholder", "e.g. /opt/1panel/docker/compose/my-app/docker-compose.yml"),
             };
 
             var contentBox = new TextBox
             {
-                Header = "Compose content (YAML)",
+                Header = L10n.T("orchestrationComposeContentLabel", "Compose content (YAML)"),
                 PlaceholderText = "services:\n  web:\n    image: nginx",
                 AcceptsReturn = true,
                 Height = 220,
@@ -643,8 +647,8 @@ public sealed class OrchestrationPage : ModulePageBase
             // here and the template lookup happens Dart-side.
             var templateBox = new TextBox
             {
-                Header = "Template ID",
-                PlaceholderText = "e.g. 1",
+                Header = L10n.T("hostOrchestrationTemplateId", "Template ID"),
+                PlaceholderText = L10n.T("hostOrchestrationTemplateIdPlaceholder", "e.g. 1"),
                 IsSpellCheckEnabled = false,
                 Visibility = Visibility.Collapsed,
             };
@@ -684,10 +688,10 @@ public sealed class OrchestrationPage : ModulePageBase
 
             var dialog = new ContentDialog
             {
-                Title = "Create compose",
+                Title = L10n.T("orchestrationComposeCreateTitle", "Create compose"),
                 Content = form,
-                PrimaryButtonText = "Create",
-                CloseButtonText = "Cancel",
+                PrimaryButtonText = L10n.T("commonCreate", "Create"),
+                CloseButtonText = L10n.T("commonCancel", "Cancel"),
                 DefaultButton = ContentDialogButton.Primary,
                 XamlRoot = XamlRoot,
             };
@@ -717,8 +721,8 @@ public sealed class OrchestrationPage : ModulePageBase
                 else
                 {
                     submitting = false;
-                    _errorToast.Show("Failed to create compose.");
-                    SetFormError(errorText, "Create failed. Adjust the inputs and try again.");
+                    _errorToast.Show(L10n.T("hostOrchestrationCreateFailed", "Failed to create compose."));
+                    SetFormError(errorText, L10n.T("hostCommonCreateFailed", "Create failed. Adjust the inputs and try again."));
                 }
             }
 
@@ -793,7 +797,7 @@ public sealed class OrchestrationPage : ModulePageBase
             // shown read-only instead of being editable alongside the content.
             var pathBox = new TextBox
             {
-                Header = "Compose file path",
+                Header = L10n.T("hostOrchestrationComposeFilePath", "Compose file path"),
                 Text = compose.Path,
                 IsReadOnly = true,
                 FontFamily = new FontFamily("Consolas"),
@@ -803,8 +807,8 @@ public sealed class OrchestrationPage : ModulePageBase
 
             var contentBox = new TextBox
             {
-                Header = "New compose content (YAML)",
-                PlaceholderText = "Full replacement: paste the complete new config; empty content will be rejected",
+                Header = L10n.T("hostOrchestrationNewComposeContent", "New compose content (YAML)"),
+                PlaceholderText = L10n.T("hostOrchestrationFullReplacementHint", "Full replacement: paste the complete new config; empty content will be rejected"),
                 AcceptsReturn = true,
                 Height = 260,
                 FontFamily = new FontFamily("Consolas"),
@@ -833,8 +837,8 @@ public sealed class OrchestrationPage : ModulePageBase
             {
                 Title = $"Edit compose \"{compose.Name}\"",
                 Content = form,
-                PrimaryButtonText = "Save",
-                CloseButtonText = "Cancel",
+                PrimaryButtonText = L10n.T("commonSave", "Save"),
+                CloseButtonText = L10n.T("commonCancel", "Cancel"),
                 DefaultButton = ContentDialogButton.Primary,
                 XamlRoot = XamlRoot,
             };
@@ -851,7 +855,7 @@ public sealed class OrchestrationPage : ModulePageBase
                 if (string.IsNullOrWhiteSpace(contentBox.Text))
                 {
                     args.Cancel = true;
-                    SetFormError(errorText, "Compose content is required.");
+                    SetFormError(errorText, L10n.T("hostOrchestrationContentRequired", "Compose content is required."));
                     return;
                 }
 
@@ -869,10 +873,10 @@ public sealed class OrchestrationPage : ModulePageBase
 
                 var confirmed = await ConfirmDialog.ShowAsync(
                     XamlRoot,
-                    "Edit Compose",
+                    L10n.T("hostOrchestrationEditTitle", "Edit Compose"),
                     $"Replace the whole config of compose \"{compose.Name}\" with the pasted content?\nThe compose file will be fully overwritten. This action cannot be undone.",
-                    "Replace",
-                    "Cancel",
+                    L10n.T("hostOrchestrationReplace", "Replace"),
+                    L10n.T("commonCancel", "Cancel"),
                     isDestructive: true);
                 if (!confirmed) continue; // Back to the editor, content kept.
 
@@ -888,7 +892,7 @@ public sealed class OrchestrationPage : ModulePageBase
                 }
 
                 _errorToast.Show($"Failed to save the config of \"{compose.Name}\".");
-                SetFormError(errorText, "Save failed. The editor reopens with your content; try again.");
+                SetFormError(errorText, L10n.T("hostOrchestrationSaveFailedReopen", "Save failed. The editor reopens with your content; try again."));
             }
         }
         finally
@@ -909,15 +913,15 @@ public sealed class OrchestrationPage : ModulePageBase
     /// <summary>Returns the first create-compose validation error, or null when the input is valid.</summary>
     private static string? ValidateCreateInput(string name, string from, string path, string file, string templateIdText)
     {
-        if (string.IsNullOrWhiteSpace(name)) return "Name is required.";
-        if (from == "path" && string.IsNullOrWhiteSpace(path)) return "Compose file path is required.";
-        if (from == "edit" && string.IsNullOrWhiteSpace(file)) return "Compose content is required.";
+        if (string.IsNullOrWhiteSpace(name)) return L10n.T("websitesSslAccountsValidationNameRequired", "Name is required.");
+        if (from == "path" && string.IsNullOrWhiteSpace(path)) return L10n.T("hostOrchestrationPathRequired", "Compose file path is required.");
+        if (from == "edit" && string.IsNullOrWhiteSpace(file)) return L10n.T("hostOrchestrationContentRequired", "Compose content is required.");
         if (from == "template")
         {
-            if (string.IsNullOrWhiteSpace(templateIdText)) return "Template ID is required.";
+            if (string.IsNullOrWhiteSpace(templateIdText)) return L10n.T("hostOrchestrationTemplateIdRequired", "Template ID is required.");
             if (!long.TryParse(templateIdText.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out _))
             {
-                return "Template ID must be an integer.";
+                return L10n.T("hostOrchestrationTemplateIdInteger", "Template ID must be an integer.");
             }
         }
         return null;

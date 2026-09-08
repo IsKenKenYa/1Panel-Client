@@ -90,7 +90,7 @@ public sealed class BackupsPage : ModulePageBase
             }
             else
             {
-                _errorToast.Show("Failed to refresh backup records.");
+                _errorToast.Show(L10n.T("hostBackupsRefreshFailed", "Failed to refresh backup records."));
             }
             return;
         }
@@ -194,7 +194,7 @@ public sealed class BackupsPage : ModulePageBase
 
         var refreshButton = new AppBarButton
         {
-            Label = "Refresh",
+            Label = L10n.T("commonRefresh", "Refresh"),
             Icon = new FontIcon { Glyph = "\uE72C" },
         };
         refreshButton.Click += (s, e) => _ = LoadBackupsAsync(showLoadingState: true);
@@ -230,7 +230,7 @@ public sealed class BackupsPage : ModulePageBase
         // File name in a monospace face, like a path/name column entry.
         titleRow.Children.Add(new TextBlock
         {
-            Text = string.IsNullOrEmpty(backup.FileName) ? "Unknown" : backup.FileName,
+            Text = string.IsNullOrEmpty(backup.FileName) ? L10n.T("orchestrationStatusUnknown", "Unknown") : backup.FileName,
             FontFamily = new FontFamily("Consolas"),
             FontSize = 14,
             FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
@@ -304,7 +304,7 @@ public sealed class BackupsPage : ModulePageBase
             HorizontalAlignment = HorizontalAlignment.Right,
             VerticalAlignment = VerticalAlignment.Center,
         };
-        ToolTipService.SetToolTip(moreButton, "Backup actions");
+        ToolTipService.SetToolTip(moreButton, L10n.T("hostBackupsActions", "Backup actions"));
         moreButton.Flyout = BuildRowFlyout(backup);
         Grid.SetColumn(moreButton, 1);
         grid.Children.Add(moreButton);
@@ -323,7 +323,7 @@ public sealed class BackupsPage : ModulePageBase
 
         var restoreItem = new MenuFlyoutItem
         {
-            Text = "Restore",
+            Text = L10n.T("backupRecordsRecoverAction", "Restore"),
             Icon = new FontIcon { Glyph = "\uE7A7" }, // Undo — roll data back to the backup.
             IsEnabled = CanRestore(backup),
         };
@@ -331,21 +331,21 @@ public sealed class BackupsPage : ModulePageBase
         {
             ToolTipService.SetToolTip(restoreItem,
                 backup.Status.Equals("Failed", StringComparison.OrdinalIgnoreCase)
-                    ? "Restore is unavailable for failed backup records."
-                    : "Restore is unavailable while the file size is unknown.");
+                    ? L10n.T("hostBackupsRestoreUnavailableFailed", "Restore is unavailable for failed backup records.")
+                    : L10n.T("hostBackupsRestoreUnavailableSize", "Restore is unavailable while the file size is unknown."));
         }
         restoreItem.Click += (s, e) => _ = RestoreBackupAsync(backup);
         flyout.Items.Add(restoreItem);
 
         var deleteItem = new MenuFlyoutItem
         {
-            Text = "Delete",
+            Text = L10n.T("commonDelete", "Delete"),
             Icon = new FontIcon { Glyph = "\uE74D" }, // Delete.
             IsEnabled = !IsWaiting(backup),
         };
         if (!deleteItem.IsEnabled)
         {
-            ToolTipService.SetToolTip(deleteItem, "Delete is unavailable while the backup is still waiting.");
+            ToolTipService.SetToolTip(deleteItem, L10n.T("hostBackupsDeleteUnavailableWaiting", "Delete is unavailable while the backup is still waiting."));
         }
         deleteItem.Click += (s, e) => _ = DeleteBackupAsync(backup);
         flyout.Items.Add(deleteItem);
@@ -371,7 +371,7 @@ public sealed class BackupsPage : ModulePageBase
 
         var badgeContent = new TextBlock
         {
-            Text = string.IsNullOrEmpty(type) ? "Unknown" : type,
+            Text = string.IsNullOrEmpty(type) ? L10n.T("orchestrationStatusUnknown", "Unknown") : type,
             FontSize = 12,
             Foreground = accentBrush,
             VerticalAlignment = VerticalAlignment.Center,
@@ -409,7 +409,7 @@ public sealed class BackupsPage : ModulePageBase
         });
         badgeContent.Children.Add(new TextBlock
         {
-            Text = string.IsNullOrEmpty(status) ? "Unknown" : status,
+            Text = string.IsNullOrEmpty(status) ? L10n.T("orchestrationStatusUnknown", "Unknown") : status,
             FontSize = 12,
             Foreground = accentBrush,
             VerticalAlignment = VerticalAlignment.Center,
@@ -482,11 +482,11 @@ public sealed class BackupsPage : ModulePageBase
         {
             var confirmed = await ConfirmDialog.ShowAsync(
                 XamlRoot,
-                "Restore Backup",
+                L10n.T("databaseBackupRestoreAction", "Restore Backup"),
                 $"Are you sure you want to restore backup \"{backup.FileName}\" for \"{backup.Name}\"?\n" +
-                "This will overwrite the current data and cannot be undone.",
-                "Restore",
-                "Cancel",
+                L10n.T("hostBackupsRestoreOverwriteWarning", "This will overwrite the current data and cannot be undone."),
+                L10n.T("backupRecordsRecoverAction", "Restore"),
+                L10n.T("commonCancel", "Cancel"),
                 isDestructive: true);
 
             if (!confirmed) return;
@@ -524,10 +524,10 @@ public sealed class BackupsPage : ModulePageBase
         {
             var confirmed = await ConfirmDialog.ShowAsync(
                 XamlRoot,
-                "Delete Backup Record",
+                L10n.T("hostBackupsDeleteRecordTitle", "Delete Backup Record"),
                 $"Are you sure you want to delete backup record \"{backup.FileName}\"?\nThis action cannot be undone.",
-                "Delete",
-                "Cancel",
+                L10n.T("commonDelete", "Delete"),
+                L10n.T("commonCancel", "Cancel"),
                 isDestructive: true);
 
             if (!confirmed) return;
