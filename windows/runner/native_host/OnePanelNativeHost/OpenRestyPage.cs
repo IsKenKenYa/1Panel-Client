@@ -93,7 +93,7 @@ public sealed class OpenRestyPage : ModulePageBase
             }
             else
             {
-                _errorToast.Show("Failed to refresh the OpenResty snapshot.");
+                _errorToast.Show(L10n.T("hostOpenrestyRefreshFailed", "Failed to refresh the OpenResty snapshot."));
             }
             return;
         }
@@ -167,7 +167,7 @@ public sealed class OpenRestyPage : ModulePageBase
 
         var refreshButton = new AppBarButton
         {
-            Label = "Refresh",
+            Label = L10n.T("commonRefresh", "Refresh"),
             Icon = new FontIcon { Glyph = "\uE72C" },
         };
         refreshButton.Click += (s, e) => _ = LoadOpenRestyAsync(showLoadingState: true);
@@ -182,7 +182,7 @@ public sealed class OpenRestyPage : ModulePageBase
     /// </summary>
     private FrameworkElement BuildStatusCard(JsonElement statusMap)
     {
-        var card = CreateCard("Status", out var panel);
+        var card = CreateCard(L10n.T("openrestyTabStatus", "Status"), out var panel);
 
         if (!HasAnyProperty(statusMap))
         {
@@ -200,7 +200,7 @@ public sealed class OpenRestyPage : ModulePageBase
     /// </summary>
     private FrameworkElement BuildHttpsCard(JsonElement httpsMap)
     {
-        var card = CreateCard("HTTPS", out var panel);
+        var card = CreateCard(L10n.T("openrestyTabHttps", "HTTPS"), out var panel);
 
         if (!HasAnyProperty(httpsMap))
         {
@@ -220,7 +220,7 @@ public sealed class OpenRestyPage : ModulePageBase
     /// </summary>
     private FrameworkElement BuildModulesCard(JsonElement modulesMap)
     {
-        var card = CreateCard("Modules", out var panel);
+        var card = CreateCard(L10n.T("openrestyTabModules", "Modules"), out var panel);
 
         if (!HasAnyProperty(modulesMap))
         {
@@ -273,20 +273,20 @@ public sealed class OpenRestyPage : ModulePageBase
             FontSize = 12,
             TextWrapping = TextWrapping.NoWrap,
             Text = configEmpty ? "" : _configContent,
-            PlaceholderText = "# The OpenResty configuration source is empty or unavailable (/etc/nginx/nginx.conf)",
+            PlaceholderText = L10n.T("hostOpenrestyConfigEmptyHint", "# The OpenResty configuration source is empty or unavailable (/etc/nginx/nginx.conf)"),
         };
         ScrollViewer.SetHorizontalScrollBarVisibility(_configBox, ScrollBarVisibility.Auto);
 
         _editConfigButton = new Button
         {
-            Content = "Edit",
+            Content = L10n.T("commonEdit", "Edit"),
             IsEnabled = !configEmpty,
         };
         _editConfigButton.Click += OnEditConfigClicked;
 
         _saveConfigButton = new Button
         {
-            Content = "Save",
+            Content = L10n.T("commonSave", "Save"),
             IsEnabled = false, // Saving is only allowed in edit mode.
         };
         _saveConfigButton.Click += (s, e) => _ = SaveConfigAsync();
@@ -308,7 +308,7 @@ public sealed class OpenRestyPage : ModulePageBase
         {
             Header = new TextBlock
             {
-                Text = "Configuration source (/etc/nginx/nginx.conf)",
+                Text = L10n.T("hostOpenrestyConfigSource", "Configuration source (/etc/nginx/nginx.conf)"),
                 FontSize = 14,
             },
             Content = configPanel,
@@ -342,10 +342,10 @@ public sealed class OpenRestyPage : ModulePageBase
         {
             var confirmed = await ConfirmDialog.ShowAsync(
                 XamlRoot,
-                "Save OpenResty configuration",
-                "This will overwrite /etc/nginx/nginx.conf with the edited content.\nAn invalid configuration may make hosted websites unavailable. Continue?",
-                "Save",
-                "Cancel");
+                L10n.T("hostOpenrestySaveConfig", "Save OpenResty configuration"),
+                L10n.T("hostOpenrestySaveConfigConfirm", "This will overwrite /etc/nginx/nginx.conf with the edited content.\nAn invalid configuration may make hosted websites unavailable. Continue?"),
+                L10n.T("commonSave", "Save"),
+                L10n.T("commonCancel", "Cancel"));
 
             if (!confirmed) return;
 
@@ -357,7 +357,7 @@ public sealed class OpenRestyPage : ModulePageBase
             }
             else
             {
-                _errorToast.Show("Failed to save the OpenResty configuration.");
+                _errorToast.Show(L10n.T("hostOpenrestySaveConfigFailed", "Failed to save the OpenResty configuration."));
                 // Keep the editing state: the buttons are untouched.
             }
         }
@@ -578,9 +578,9 @@ public sealed class OpenRestyPage : ModulePageBase
             case JsonValueKind.Number:
                 return value.GetRawText();
             case JsonValueKind.True:
-                return "Yes";
+                return L10n.T("commonYes", "Yes");
             case JsonValueKind.False:
-                return "No";
+                return L10n.T("commonNo", "No");
             case JsonValueKind.Array:
             case JsonValueKind.Object:
                 return value.GetRawText();

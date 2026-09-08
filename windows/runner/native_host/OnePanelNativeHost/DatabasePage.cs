@@ -42,7 +42,7 @@ public sealed class DatabasePage : ModulePageBase
         // Empty-state primary action: opens the create dialog so users can
         // add the first database. Registered once here; the button only shows
         // inside the base Empty panel, so the Content state needs no cleanup.
-        SetEmptyPrimaryAction("Create database", (s, e) => _ = ShowCreateDatabaseDialogAsync());
+        SetEmptyPrimaryAction(L10n.T("hostDatabaseCreate", "Create database"), (s, e) => _ = ShowCreateDatabaseDialogAsync());
     }
 
     protected override async void OnPageShown()
@@ -92,7 +92,7 @@ public sealed class DatabasePage : ModulePageBase
             }
             else
             {
-                _errorToast.Show("Failed to refresh databases.");
+                _errorToast.Show(L10n.T("hostDatabaseRefreshFailed", "Failed to refresh databases."));
             }
             return;
         }
@@ -122,7 +122,7 @@ public sealed class DatabasePage : ModulePageBase
                 databases.Add(new DatabaseEntry
                 {
                     Id = TryGetInt64(item, "id"),
-                    Name = TryGetString(item, "name") ?? "Unknown",
+                    Name = TryGetString(item, "name") ?? L10n.T("systemSettingsUnknown", "Unknown"),
                     Type = TryGetString(item, "type") ?? "",
                     Version = TryGetString(item, "version") ?? "",
                     Status = TryGetString(item, "status") ?? "",
@@ -189,7 +189,7 @@ public sealed class DatabasePage : ModulePageBase
 
         var createButton = new AppBarButton
         {
-            Label = "Create database",
+            Label = L10n.T("hostDatabaseCreate", "Create database"),
             Icon = new FontIcon { Glyph = "\uE710" },
         };
         createButton.Click += (s, e) => _ = ShowCreateDatabaseDialogAsync();
@@ -197,7 +197,7 @@ public sealed class DatabasePage : ModulePageBase
 
         var refreshButton = new AppBarButton
         {
-            Label = "Refresh",
+            Label = L10n.T("commonRefresh", "Refresh"),
             Icon = new FontIcon { Glyph = "\uE72C" },
         };
         refreshButton.Click += (s, e) => _ = LoadDatabasesAsync(showLoadingState: true);
@@ -276,7 +276,7 @@ public sealed class DatabasePage : ModulePageBase
             HorizontalAlignment = HorizontalAlignment.Right,
             VerticalAlignment = VerticalAlignment.Center,
         };
-        ToolTipService.SetToolTip(moreButton, "Database actions");
+        ToolTipService.SetToolTip(moreButton, L10n.T("hostDatabaseActions", "Database actions"));
         moreButton.Flyout = BuildRowFlyout(database);
         Grid.SetColumn(moreButton, 1);
         grid.Children.Add(moreButton);
@@ -302,7 +302,7 @@ public sealed class DatabasePage : ModulePageBase
 
         var descriptionItem = new MenuFlyoutItem
         {
-            Text = "Description",
+            Text = L10n.T("commonDescription", "Description"),
             Icon = new FontIcon { Glyph = "\uE70F" },
         };
         descriptionItem.Click += (s, e) => _ = EditDescriptionAsync(database);
@@ -310,7 +310,7 @@ public sealed class DatabasePage : ModulePageBase
 
         var passwordItem = new MenuFlyoutItem
         {
-            Text = "Change password",
+            Text = L10n.T("databaseChangePasswordAction", "Change password"),
             Icon = new FontIcon { Glyph = "\uE72E" },
         };
         passwordItem.Click += (s, e) => _ = ChangePasswordAsync(database);
@@ -318,7 +318,7 @@ public sealed class DatabasePage : ModulePageBase
 
         var deleteItem = new MenuFlyoutItem
         {
-            Text = "Delete",
+            Text = L10n.T("commonDelete", "Delete"),
             Icon = new FontIcon { Glyph = "\uE74D" },
         };
         deleteItem.Click += (s, e) => _ = DeleteDatabaseAsync(database);
@@ -337,7 +337,7 @@ public sealed class DatabasePage : ModulePageBase
 
         var badgeContent = new TextBlock
         {
-            Text = string.IsNullOrEmpty(type) ? "Unknown" : type,
+            Text = string.IsNullOrEmpty(type) ? L10n.T("systemSettingsUnknown", "Unknown") : type,
             FontSize = 12,
             Foreground = accentBrush,
             VerticalAlignment = VerticalAlignment.Center,
@@ -431,8 +431,8 @@ public sealed class DatabasePage : ModulePageBase
             };
             var descriptionBox = new TextBox
             {
-                Header = "Description",
-                PlaceholderText = "Optional",
+                Header = L10n.T("commonDescription", "Description"),
+                PlaceholderText = L10n.T("hostCommonOptional", "Optional"),
                 Text = database.Description,
             };
 
@@ -442,10 +442,10 @@ public sealed class DatabasePage : ModulePageBase
 
             var dialog = new ContentDialog
             {
-                Title = "Edit description",
+                Title = L10n.T("snapshotEditDesc", "Edit description"),
                 Content = form,
-                PrimaryButtonText = "Save",
-                CloseButtonText = "Cancel",
+                PrimaryButtonText = L10n.T("commonSave", "Save"),
+                CloseButtonText = L10n.T("commonCancel", "Cancel"),
                 DefaultButton = ContentDialogButton.Primary,
                 XamlRoot = XamlRoot,
             };
@@ -493,7 +493,7 @@ public sealed class DatabasePage : ModulePageBase
                 Margin = new Thickness(0, 0, 0, 12),
                 TextWrapping = TextWrapping.Wrap,
             };
-            var passwordBox = new TextBox { Header = "New password" };
+            var passwordBox = new TextBox { Header = L10n.T("securitySettingsNewPassword", "New password") };
 
             var errorText = new TextBlock
             {
@@ -513,10 +513,10 @@ public sealed class DatabasePage : ModulePageBase
 
             var dialog = new ContentDialog
             {
-                Title = "Change password",
+                Title = L10n.T("databaseChangePasswordAction", "Change password"),
                 Content = form,
-                PrimaryButtonText = "Save",
-                CloseButtonText = "Cancel",
+                PrimaryButtonText = L10n.T("commonSave", "Save"),
+                CloseButtonText = L10n.T("commonCancel", "Cancel"),
                 DefaultButton = ContentDialogButton.Primary,
                 XamlRoot = XamlRoot,
             };
@@ -530,7 +530,7 @@ public sealed class DatabasePage : ModulePageBase
                 if (string.IsNullOrWhiteSpace(passwordBox.Text))
                 {
                     args.Cancel = true;
-                    SetFormError(errorText, "Password is required.");
+                    SetFormError(errorText, L10n.T("hostDatabasePasswordRequired", "Password is required."));
                 }
             };
 
@@ -567,10 +567,10 @@ public sealed class DatabasePage : ModulePageBase
         {
             var confirmed = await ConfirmDialog.ShowAsync(
                 XamlRoot,
-                "Delete Database",
+                L10n.T("hostDatabaseDeleteTitle", "Delete Database"),
                 $"Are you sure you want to delete database \"{database.Name}\" ({database.Type})?\nThis action cannot be undone.",
-                "Delete",
-                "Cancel",
+                L10n.T("commonDelete", "Delete"),
+                L10n.T("commonCancel", "Cancel"),
                 isDestructive: true);
 
             if (!confirmed) return;
@@ -608,21 +608,21 @@ public sealed class DatabasePage : ModulePageBase
 
         try
         {
-            var nameBox = new TextBox { Header = "Name", PlaceholderText = "e.g. app_db" };
+            var nameBox = new TextBox { Header = L10n.T("commonName", "Name"), PlaceholderText = L10n.T("hostDatabaseNameHint", "e.g. app_db") };
 
-            var typeCombo = new ComboBox { Header = "Type", SelectedIndex = 0, MinWidth = 200 };
+            var typeCombo = new ComboBox { Header = L10n.T("commonType", "Type"), SelectedIndex = 0, MinWidth = 200 };
             foreach (var type in DatabaseEntry.KnownTypes)
             {
                 typeCombo.Items.Add(type);
             }
 
-            var descriptionBox = new TextBox { Header = "Description", PlaceholderText = "Optional" };
+            var descriptionBox = new TextBox { Header = L10n.T("commonDescription", "Description"), PlaceholderText = L10n.T("hostCommonOptional", "Optional") };
 
             // Connection-info section, only visible for the remote type.
-            var addressBox = new TextBox { Header = "Address", PlaceholderText = "e.g. 192.168.1.10" };
-            var portBox = new TextBox { Header = "Port", PlaceholderText = "e.g. 3306" };
-            var usernameBox = new TextBox { Header = "Username" };
-            var passwordBox = new TextBox { Header = "Password" };
+            var addressBox = new TextBox { Header = L10n.T("databaseAddressLabel", "Address"), PlaceholderText = L10n.T("hostDatabaseAddressHint", "e.g. 192.168.1.10") };
+            var portBox = new TextBox { Header = L10n.T("databasePortLabel", "Port"), PlaceholderText = L10n.T("hostDatabasePortHint", "e.g. 3306") };
+            var usernameBox = new TextBox { Header = L10n.T("databaseUsernameLabel", "Username") };
+            var passwordBox = new TextBox { Header = L10n.T("databasePasswordLabel", "Password") };
             var connectionPanel = new StackPanel
             {
                 Orientation = Orientation.Vertical,
@@ -669,10 +669,10 @@ public sealed class DatabasePage : ModulePageBase
 
             var dialog = new ContentDialog
             {
-                Title = "Create database",
+                Title = L10n.T("hostDatabaseCreate", "Create database"),
                 Content = form,
-                PrimaryButtonText = "Create",
-                CloseButtonText = "Cancel",
+                PrimaryButtonText = L10n.T("commonCreate", "Create"),
+                CloseButtonText = L10n.T("commonCancel", "Cancel"),
                 DefaultButton = ContentDialogButton.Primary,
                 XamlRoot = XamlRoot,
             };
@@ -710,8 +710,8 @@ public sealed class DatabasePage : ModulePageBase
                 else
                 {
                     submitting = false;
-                    _errorToast.Show("Failed to create database.");
-                    SetFormError(errorText, "Create failed. Adjust the inputs and try again.");
+                    _errorToast.Show(L10n.T("hostDatabaseCreateFailed", "Failed to create database."));
+                    SetFormError(errorText, L10n.T("hostDatabaseCreateRetryHint", "Create failed. Adjust the inputs and try again."));
                 }
             }
 
@@ -767,27 +767,27 @@ public sealed class DatabasePage : ModulePageBase
     private static string? ValidateCreateInput(
         string name, bool isRemote, string address, string port, string username, string password)
     {
-        if (string.IsNullOrWhiteSpace(name)) return "Name is required.";
+        if (string.IsNullOrWhiteSpace(name)) return L10n.T("websitesSslAccountsValidationNameRequired", "Name is required.");
         if (!isRemote) return null;
 
         // Remote databases additionally need full connection info,
         // matching the upstream "remote database" form.
-        if (string.IsNullOrWhiteSpace(address)) return "Address is required for remote databases.";
+        if (string.IsNullOrWhiteSpace(address)) return L10n.T("hostDatabaseRemoteAddressRequired", "Address is required for remote databases.");
 
         var trimmedPort = port.Trim();
-        if (trimmedPort.Length == 0) return "Port is required for remote databases.";
+        if (trimmedPort.Length == 0) return L10n.T("hostDatabaseRemotePortRequired", "Port is required for remote databases.");
         foreach (var ch in trimmedPort)
         {
-            if (!char.IsDigit(ch)) return "Port must be a number.";
+            if (!char.IsDigit(ch)) return L10n.T("hostCommonPortNumeric", "Port must be a number.");
         }
         if (!long.TryParse(trimmedPort, NumberStyles.None, CultureInfo.InvariantCulture, out var value) ||
             value < 1 || value > 65535)
         {
-            return "Port must be between 1 and 65535.";
+            return L10n.T("websitesDomainValidationPort", "Port must be between 1 and 65535.");
         }
 
-        if (string.IsNullOrWhiteSpace(username)) return "Username is required for remote databases.";
-        if (string.IsNullOrWhiteSpace(password)) return "Password is required for remote databases.";
+        if (string.IsNullOrWhiteSpace(username)) return L10n.T("hostDatabaseRemoteUsernameRequired", "Username is required for remote databases.");
+        if (string.IsNullOrWhiteSpace(password)) return L10n.T("hostDatabaseRemotePasswordRequired", "Password is required for remote databases.");
         return null;
     }
 

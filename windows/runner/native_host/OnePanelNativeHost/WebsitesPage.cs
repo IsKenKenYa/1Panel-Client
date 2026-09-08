@@ -65,7 +65,7 @@ public sealed class WebsitesPage : ModulePageBase
                 }
                 else
                 {
-                    _errorToast.Show("Failed to refresh websites.");
+                    _errorToast.Show(L10n.T("hostWebsitesRefreshFailed", "Failed to refresh websites."));
                 }
                 return;
             }
@@ -77,7 +77,7 @@ public sealed class WebsitesPage : ModulePageBase
                 // SetState(PageState.Content) below collapses the whole Empty
                 // panel when data exists, so the action never shows alongside
                 // the list and needs no explicit teardown.
-                SetEmptyPrimaryAction("Add website", OnEmptyAddWebsiteClicked);
+                SetEmptyPrimaryAction(L10n.T("websitesLifecycleCreateTitle", "Add website"), OnEmptyAddWebsiteClicked);
                 SetState(PageState.Empty);
                 return;
             }
@@ -104,7 +104,7 @@ public sealed class WebsitesPage : ModulePageBase
                 websites.Add(new WebsiteEntry
                 {
                     Id = TryGetInt64(item, "id"),
-                    Domain = TryGetString(item, "primaryDomain") ?? "Unknown",
+                    Domain = TryGetString(item, "primaryDomain") ?? L10n.T("systemSettingsUnknown", "Unknown"),
                     Status = TryGetString(item, "status") ?? "",
                     Remark = TryGetString(item, "remark") ?? "",
                     CreatedAt = TryGetString(item, "createdAt") ?? "",
@@ -125,14 +125,14 @@ public sealed class WebsitesPage : ModulePageBase
         var addButton = new AppBarButton
         {
             Icon = new FontIcon { Glyph = "\uE710" },
-            Label = "Add website",
+            Label = L10n.T("websitesLifecycleCreateTitle", "Add website"),
         };
         addButton.Click += (s, e) => _ = ShowAddWebsiteDialogAsync();
 
         var refreshButton = new AppBarButton
         {
             Icon = new FontIcon { Glyph = "\uE72C" },
-            Label = "Refresh",
+            Label = L10n.T("commonRefresh", "Refresh"),
         };
         refreshButton.Click += async (s, e) => await LoadWebsitesAsync(showLoadingState: true);
 
@@ -256,11 +256,11 @@ public sealed class WebsitesPage : ModulePageBase
         var isRunning = IsRunning(website.Status);
         var toggleButton = new Button
         {
-            Content = isRunning ? "Stop" : "Start",
+            Content = isRunning ? L10n.T("websitesActionStop", "Stop") : L10n.T("websitesActionStart", "Start"),
             MinWidth = 68,
             VerticalAlignment = VerticalAlignment.Center,
         };
-        ToolTipService.SetToolTip(toggleButton, isRunning ? "Stop website" : "Start website");
+        ToolTipService.SetToolTip(toggleButton, isRunning ? L10n.T("hostWebsitesStopWebsite", "Stop website") : L10n.T("hostWebsitesStartWebsite", "Start website"));
         toggleButton.Click += async (s, e) => await ToggleWebsiteAsync(website);
         actions.Children.Add(toggleButton);
 
@@ -270,7 +270,7 @@ public sealed class WebsitesPage : ModulePageBase
             Padding = new Thickness(8, 4, 8, 4),
             VerticalAlignment = VerticalAlignment.Center,
         };
-        ToolTipService.SetToolTip(deleteButton, "Delete website");
+        ToolTipService.SetToolTip(deleteButton, L10n.T("websitesDeleteTitle", "Delete website"));
         deleteButton.Click += async (s, e) => await DeleteWebsiteAsync(website);
         actions.Children.Add(deleteButton);
 
@@ -295,7 +295,7 @@ public sealed class WebsitesPage : ModulePageBase
 
         var badgeText = new TextBlock
         {
-            Text = string.IsNullOrEmpty(status) ? "Unknown" : status,
+            Text = string.IsNullOrEmpty(status) ? L10n.T("systemSettingsUnknown", "Unknown") : status,
             FontSize = 12,
             Foreground = accentBrush,
             VerticalAlignment = VerticalAlignment.Center,
@@ -361,10 +361,10 @@ public sealed class WebsitesPage : ModulePageBase
         // the upstream delete dialog that names the primary domain.
         var confirmed = await ConfirmDialog.ShowAsync(
             XamlRoot,
-            "Delete Website",
+            L10n.T("websitesDeleteTitle", "Delete Website"),
             $"Are you sure you want to delete website \"{website.Domain}\"?\nThis action cannot be undone.",
-            "Delete",
-            "Cancel",
+            L10n.T("commonDelete", "Delete"),
+            L10n.T("commonCancel", "Cancel"),
             isDestructive: true);
 
         if (!confirmed) return;
@@ -430,10 +430,10 @@ public sealed class WebsitesPage : ModulePageBase
 
         try
         {
-            var domainBox = new TextBox { Header = "Primary domain", PlaceholderText = "e.g. example.com" };
-            var aliasBox = new TextBox { Header = "Alias", PlaceholderText = "Auto-derived from domain if empty" };
-            var portBox = new TextBox { Header = "Port", Text = "80" };
-            var remarkBox = new TextBox { Header = "Remark", PlaceholderText = "Optional" };
+            var domainBox = new TextBox { Header = L10n.T("websitesPrimaryDomainLabel", "Primary domain"), PlaceholderText = L10n.T("hostWebsitesPrimaryDomainHint", "e.g. example.com") };
+            var aliasBox = new TextBox { Header = L10n.T("websitesAliasLabel", "Alias"), PlaceholderText = L10n.T("hostWebsitesAliasHint", "Auto-derived from domain if empty") };
+            var portBox = new TextBox { Header = L10n.T("websitesDomainPortLabel", "Port"), Text = "80" };
+            var remarkBox = new TextBox { Header = L10n.T("websitesRemarkLabel", "Remark"), PlaceholderText = L10n.T("hostCommonOptional", "Optional") };
 
             var errorText = new TextBlock
             {
@@ -459,10 +459,10 @@ public sealed class WebsitesPage : ModulePageBase
 
             var dialog = new ContentDialog
             {
-                Title = "Add website",
+                Title = L10n.T("websitesLifecycleCreateTitle", "Add website"),
                 Content = form,
-                PrimaryButtonText = "Add",
-                CloseButtonText = "Cancel",
+                PrimaryButtonText = L10n.T("commonAdd", "Add"),
+                CloseButtonText = L10n.T("commonCancel", "Cancel"),
                 DefaultButton = ContentDialogButton.Primary,
                 XamlRoot = XamlRoot,
             };
@@ -486,7 +486,7 @@ public sealed class WebsitesPage : ModulePageBase
                 else
                 {
                     submitting = false;
-                    _errorToast.Show("Failed to add website.");
+                    _errorToast.Show(L10n.T("hostWebsitesAddFailed", "Failed to add website."));
                     // Surface the real server error (e.g. OpenResty not installed)
                     // instead of a generic message.
                     SetFormError(errorText, failure);
@@ -541,17 +541,17 @@ public sealed class WebsitesPage : ModulePageBase
     /// <summary>Returns the first create-website validation error, or null when the input is valid.</summary>
     private static string? ValidateCreateWebsiteInput(string domain, string port)
     {
-        if (string.IsNullOrWhiteSpace(domain)) return "Primary domain is required.";
+        if (string.IsNullOrWhiteSpace(domain)) return L10n.T("websitesValidationPrimaryDomainRequired", "Primary domain is required.");
 
         var trimmedPort = port.Trim();
-        if (trimmedPort.Length == 0) return "Port is required.";
+        if (trimmedPort.Length == 0) return L10n.T("firewallPortRequired", "Port is required.");
         foreach (var ch in trimmedPort)
         {
-            if (!char.IsDigit(ch)) return "Port must be a number.";
+            if (!char.IsDigit(ch)) return L10n.T("hostCommonPortNumeric", "Port must be a number.");
         }
         if (!long.TryParse(trimmedPort, out var value) || value < 1 || value > 65535)
         {
-            return "Port must be between 1 and 65535.";
+            return L10n.T("websitesDomainValidationPort", "Port must be between 1 and 65535.");
         }
         return null;
     }
