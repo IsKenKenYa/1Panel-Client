@@ -1222,6 +1222,11 @@ class NativeChannelWriteHandlers {
                 username: createInput.username,
                 password: createInput.password,
                 targetDatabase: a.name,
+                // 重建时必须保留服务端 required 字段（B11 400 回归：
+                // MysqlDBCreate.Format/Permission），否则注入实例名后
+                // format/permission 静默丢失。
+                format: createInput.format,
+                permission: createInput.permission,
               );
               break;
             }

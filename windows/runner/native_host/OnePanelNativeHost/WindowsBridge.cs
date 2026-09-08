@@ -253,7 +253,9 @@ public static class WindowsBridge
         return IsSuccess(result);
     }
 
-    /// <summary>新建数据库（本地部署最小集；remote 需连接信息）。</summary>
+    /// <summary>新建数据库（本地部署最小集；remote 需连接信息）。
+    /// format/permission 对齐上游 frontend 表单默认（utf8mb4 / 全部 IP %），
+    /// 服务端 MysqlDBCreate required（生产 400 实证，B11）。</summary>
     public static async Task<bool> CreateDatabaseAsync(
         string name, string type, string? description,
         string? address, long? port, string? username, string? password)
@@ -267,6 +269,8 @@ public static class WindowsBridge
             ["port"] = port,
             ["username"] = username,
             ["password"] = password,
+            ["format"] = "utf8mb4",
+            ["permission"] = "%",
         });
         return IsSuccess(result);
     }

@@ -95,4 +95,35 @@ public class DatabaseBridgeContractTests
         Assert.Equal(7L, (long)dict["id"]!);
         Assert.Equal(lastValue, dict[lastKey]);
     }
+
+    [Fact]
+    public void PrepareArgs_createDatabase_keeps_optional_keys_and_format_permission()
+    {
+        // B11 回归：与 CreateDatabaseAsync 本地建库调用点同形（9 键）。
+        // 服务端 MysqlDBCreate 要求 format/permission 必填（生产 400 实证），
+        // C# 侧对齐上游 frontend 表单默认：format=utf8mb4、permission='%'；
+        // 本地表单 remote 连接信息为 null 时键保留（PrepareArgs 路径）。
+        var args = new Dictionary<string, object?>
+        {
+            ["name"] = "e2e_winui3_db",
+            ["type"] = "mysql",
+            ["description"] = null,
+            ["address"] = null,
+            ["port"] = null,
+            ["username"] = null,
+            ["password"] = null,
+            ["format"] = "utf8mb4",
+            ["permission"] = "%",
+        };
+
+        var result = WindowsBridge.PrepareArgs(args);
+
+        var dict = Assert.IsType<Dictionary<string, object?>>(result);
+        Assert.Equal(9, dict.Count);
+        Assert.Equal("e2e_winui3_db", dict["name"]);
+        Assert.Equal("utf8mb4", dict["format"]);
+        Assert.Equal("%", dict["permission"]);
+        Assert.True(dict.ContainsKey("address"));
+        Assert.Null(dict["address"]);
+    }
 }
