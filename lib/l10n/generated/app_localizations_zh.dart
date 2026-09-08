@@ -2050,6 +2050,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsUIRenderModeRestartHint => '修改 UI 渲染模式后，请重启应用以生效。';
 
   @override
+  String get settingsUIRenderModeHostMissing =>
+      '未找到原生宿主。请先执行构建：dotnet build windows/runner/native_host/OnePanelNativeHost/OnePanelNativeHost.csproj -c Debug';
+
+  @override
+  String get settingsUIRenderModeHostMissingStatus =>
+      '原生宿主未就绪（未找到 OnePanelNativeHost.exe），本次启动已回退为 MDUI3。';
+
+  @override
   String get settingsTheme => '主题';
 
   @override

@@ -15,6 +15,7 @@ class AppSettingsController extends ChangeNotifier with SafeChangeNotifier {
   CacheStrategy _cacheStrategy = CacheStrategy.hybrid;
   int _cacheMaxSizeMB = 100;
   UIRenderMode _uiRenderMode = UIRenderMode.native;
+  bool _nativeHostMissing = false;
 
   ThemeMode get themeMode => _themeMode;
   Locale? get locale => _locale;
@@ -22,6 +23,17 @@ class AppSettingsController extends ChangeNotifier with SafeChangeNotifier {
   CacheStrategy get cacheStrategy => _cacheStrategy;
   int get cacheMaxSizeMB => _cacheMaxSizeMB;
   UIRenderMode get uiRenderMode => _uiRenderMode;
+  bool get nativeHostMissing => _nativeHostMissing;
+
+  /// 冷启动宿主缺失（bootstrap 置 ONEPANEL_FORCE_MD3=1）时由装配层标记，
+  /// 设置页据此展示「已回退 MDUI3」状态行。非持久化，仅本次会话有效。
+  void markNativeHostMissing({bool value = true}) {
+    if (_nativeHostMissing == value) {
+      return;
+    }
+    _nativeHostMissing = value;
+    notifyListeners();
+  }
 
   Future<void> load() async {
     _themeMode = await _preferencesService.loadThemeMode();

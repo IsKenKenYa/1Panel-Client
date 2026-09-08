@@ -919,6 +919,8 @@
   "settingsUIRenderModeNative": "Native",
   "settingsUIRenderModeMD3": "MDUI3",
   "settingsUIRenderModeRestartHint": "Please restart the app for the UI render mode changes to take effect.",
+  "settingsUIRenderModeHostMissing": "Native host missing. Build: dotnet build windows/runner/native_host/OnePanelNativeHost/OnePanelNativeHost.csproj -c Debug",
+  "settingsUIRenderModeHostMissingStatus": "Native host not ready (OnePanelNativeHost.exe missing) — this session fell back to MDUI3.",
   "settingsTheme": "Theme",
   "settingsAppLock": "App Lock",
   "settingsAppLockDesc": "Use biometric/device credentials to protect sensitive modules",

@@ -2102,6 +2102,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Please restart the app for the UI render mode changes to take effect.';
 
   @override
+  String get settingsUIRenderModeHostMissing =>
+      'Native host missing. Build: dotnet build windows/runner/native_host/OnePanelNativeHost/OnePanelNativeHost.csproj -c Debug';
+
+  @override
+  String get settingsUIRenderModeHostMissingStatus =>
+      'Native host not ready (OnePanelNativeHost.exe missing) — this session fell back to MDUI3.';
+
+  @override
   String get settingsTheme => 'Theme';
 
   @override

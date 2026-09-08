@@ -919,6 +919,8 @@
   "settingsUIRenderModeNative": "原生模式",
   "settingsUIRenderModeMD3": "MDUI3",
   "settingsUIRenderModeRestartHint": "修改 UI 渲染模式后，请重启应用以生效。",
+  "settingsUIRenderModeHostMissing": "未找到原生宿主。请先执行构建：dotnet build windows/runner/native_host/OnePanelNativeHost/OnePanelNativeHost.csproj -c Debug",
+  "settingsUIRenderModeHostMissingStatus": "原生宿主未就绪（未找到 OnePanelNativeHost.exe），本次启动已回退为 MDUI3。",
   "settingsTheme": "主题",
   "settingsAppLock": "应用锁",
   "settingsAppLockDesc": "使用生物识别或设备凭据保护敏感模块",

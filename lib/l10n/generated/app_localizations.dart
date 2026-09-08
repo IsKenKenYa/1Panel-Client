@@ -4028,6 +4028,18 @@ abstract class AppLocalizations {
   /// **'Please restart the app for the UI render mode changes to take effect.'**
   String get settingsUIRenderModeRestartHint;
 
+  /// No description provided for @settingsUIRenderModeHostMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Native host missing. Build: dotnet build windows/runner/native_host/OnePanelNativeHost/OnePanelNativeHost.csproj -c Debug'**
+  String get settingsUIRenderModeHostMissing;
+
+  /// No description provided for @settingsUIRenderModeHostMissingStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Native host not ready (OnePanelNativeHost.exe missing) — this session fell back to MDUI3.'**
+  String get settingsUIRenderModeHostMissingStatus;
+
   /// No description provided for @settingsTheme.
   ///
   /// In en, this message translates to:

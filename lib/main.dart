@@ -161,7 +161,9 @@ void main() async {
         providers: [
           // App Settings
           ChangeNotifierProvider(
-            create: (_) => AppSettingsController(),
+            create: (_) => AppSettingsController()
+              // 冷启动宿主缺失（bootstrap 强制 MD3）标记，设置页可见化。
+              ..markNativeHostMissing(value: forceMd3ByBootstrap),
           ),
           ChangeNotifierProvider(
             create: (_) => ThemeController(),
