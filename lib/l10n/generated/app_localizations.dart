@@ -2174,6 +2174,54 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get navSettings;
 
+  /// No description provided for @hostNavScriptLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Script Library'**
+  String get hostNavScriptLibrary;
+
+  /// No description provided for @hostNavDatabases.
+  ///
+  /// In en, this message translates to:
+  /// **'Databases'**
+  String get hostNavDatabases;
+
+  /// No description provided for @hostNavCronJobs.
+  ///
+  /// In en, this message translates to:
+  /// **'CronJobs'**
+  String get hostNavCronJobs;
+
+  /// No description provided for @hostNavBackups.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups'**
+  String get hostNavBackups;
+
+  /// No description provided for @hostNavHost.
+  ///
+  /// In en, this message translates to:
+  /// **'Host'**
+  String get hostNavHost;
+
+  /// No description provided for @hostNavCommands.
+  ///
+  /// In en, this message translates to:
+  /// **'Commands'**
+  String get hostNavCommands;
+
+  /// No description provided for @hostNavLogs.
+  ///
+  /// In en, this message translates to:
+  /// **'Logs'**
+  String get hostNavLogs;
+
+  /// No description provided for @hostNavGateway.
+  ///
+  /// In en, this message translates to:
+  /// **'Gateway'**
+  String get hostNavGateway;
+
   /// No description provided for @noServerSelectedTitle.
   ///
   /// In en, this message translates to:

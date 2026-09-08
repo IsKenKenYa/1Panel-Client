@@ -1097,6 +1097,30 @@ class AppLocalizationsZh extends AppLocalizations {
   String get navSettings => '设置';
 
   @override
+  String get hostNavScriptLibrary => '脚本库';
+
+  @override
+  String get hostNavDatabases => '数据库';
+
+  @override
+  String get hostNavCronJobs => '计划任务';
+
+  @override
+  String get hostNavBackups => '备份';
+
+  @override
+  String get hostNavHost => '主机';
+
+  @override
+  String get hostNavCommands => '命令库';
+
+  @override
+  String get hostNavLogs => '日志';
+
+  @override
+  String get hostNavGateway => '网关';
+
+  @override
   String noServerSelectedTitle(String module) {
     return '$module 需要先选择服务器';
   }

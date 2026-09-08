@@ -1122,6 +1122,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navSettings => 'Settings';
 
   @override
+  String get hostNavScriptLibrary => 'Script Library';
+
+  @override
+  String get hostNavDatabases => 'Databases';
+
+  @override
+  String get hostNavCronJobs => 'CronJobs';
+
+  @override
+  String get hostNavBackups => 'Backups';
+
+  @override
+  String get hostNavHost => 'Host';
+
+  @override
+  String get hostNavCommands => 'Commands';
+
+  @override
+  String get hostNavLogs => 'Logs';
+
+  @override
+  String get hostNavGateway => 'Gateway';
+
+  @override
   String noServerSelectedTitle(String module) {
     return '$module needs a server first';
   }

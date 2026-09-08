@@ -517,6 +517,14 @@
   "navFiles": "文件",
   "navSecurity": "安全",
   "navSettings": "设置",
+  "hostNavScriptLibrary": "脚本库",
+  "hostNavDatabases": "数据库",
+  "hostNavCronJobs": "计划任务",
+  "hostNavBackups": "备份",
+  "hostNavHost": "主机",
+  "hostNavCommands": "命令库",
+  "hostNavLogs": "日志",
+  "hostNavGateway": "网关",
   "noServerSelectedTitle": "{module} 需要先选择服务器",
   "@noServerSelectedTitle": {
     "placeholders": {

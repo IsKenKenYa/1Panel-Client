@@ -517,6 +517,14 @@
   "navFiles": "Files",
   "navSecurity": "Security",
   "navSettings": "Settings",
+  "hostNavScriptLibrary": "Script Library",
+  "hostNavDatabases": "Databases",
+  "hostNavCronJobs": "CronJobs",
+  "hostNavBackups": "Backups",
+  "hostNavHost": "Host",
+  "hostNavCommands": "Commands",
+  "hostNavLogs": "Logs",
+  "hostNavGateway": "Gateway",
   "noServerSelectedTitle": "{module} needs a server first",
   "@noServerSelectedTitle": {
     "placeholders": {
