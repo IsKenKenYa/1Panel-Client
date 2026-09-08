@@ -1126,6 +1126,253 @@ public static class WindowsBridge
         return IsSuccess(result);
     }
 
+    // ── B3 AI 管理深度（契约单一事实源：docs/development/modules/b3_ai_channel_contract.md） ──
+
+    /// <summary>读取 GPU 负载（GET /ai/gpu/load）。</summary>
+    public static async Task<JsonElement?> GetGpuLoadAsync()
+    {
+        return await InvokeWithRetryAsync("getGpuLoad");
+    }
+
+    /// <summary>读取 GPU 选项（GET /ai/gpu/options）。</summary>
+    public static async Task<JsonElement?> GetGpuOptionsAsync()
+    {
+        return await InvokeWithRetryAsync("getGpuOptions");
+    }
+
+    /// <summary>按产品名与时间区间检索 GPU 历史（POST /ai/gpu/search）。</summary>
+    public static async Task<JsonElement?> SearchGpuHistoryAsync(
+        string productName, string startTime, string endTime)
+    {
+        return await InvokeWithRetryAsync("searchGpuHistory", new Dictionary<string, object?>
+        {
+            ["productName"] = productName,
+            ["startTime"] = startTime,
+            ["endTime"] = endTime,
+        });
+    }
+
+    /// <summary>分页搜索智能体渠道账号（POST /ai/accounts/search，name 可选过滤）。</summary>
+    public static async Task<JsonElement?> GetAgentAccountsAsync(int page, int pageSize, string? name)
+    {
+        return await InvokeWithRetryAsync("getAgentAccounts", new Dictionary<string, object?>
+        {
+            ["page"] = page,
+            ["pageSize"] = pageSize,
+            ["name"] = name,
+        });
+    }
+
+    /// <summary>读取渠道账号可用模型列表（POST /ai/accounts/models）。</summary>
+    public static async Task<JsonElement?> GetAgentAccountModelsAsync(long accountId)
+    {
+        return await InvokeWithRetryAsync("getAgentAccountModels",
+            new Dictionary<string, object?> { ["accountId"] = accountId });
+    }
+
+    /// <summary>分页搜索 MCP 服务器（POST /ai/mcp/search，name 可选过滤）。</summary>
+    public static async Task<JsonElement?> GetMcpServersAsync(int page, int pageSize, string? name)
+    {
+        return await InvokeWithRetryAsync("getMcpServers", new Dictionary<string, object?>
+        {
+            ["page"] = page,
+            ["pageSize"] = pageSize,
+            ["name"] = name,
+        });
+    }
+
+    /// <summary>读取 MCP 服务器详情（POST /ai/mcp/server/detail）。</summary>
+    public static async Task<JsonElement?> GetMcpServerDetailAsync(long id)
+    {
+        return await InvokeWithRetryAsync("getMcpServerDetail",
+            new Dictionary<string, object?> { ["id"] = id });
+    }
+
+    /// <summary>分页搜索智能体（POST /ai/agents/search；Native 后缀避免与既有同名冲突）。</summary>
+    public static async Task<JsonElement?> PageAgentsNativeAsync(int page, int pageSize)
+    {
+        return await InvokeWithRetryAsync("pageAgentsNative", new Dictionary<string, object?>
+        {
+            ["page"] = page,
+            ["pageSize"] = pageSize,
+        });
+    }
+
+    /// <summary>读取智能体概览（POST /ai/agents/overview）。</summary>
+    public static async Task<JsonElement?> GetAgentOverviewNativeAsync(long agentId)
+    {
+        return await InvokeWithRetryAsync("getAgentOverviewNative",
+            new Dictionary<string, object?> { ["agentId"] = agentId });
+    }
+
+    /// <summary>读取 AI 服务绑定域名（POST /ai/domain/get，消费 getOllamaContext 的 appInstallId）。</summary>
+    public static async Task<JsonElement?> GetAIBindDomainAsync(long appInstallID)
+    {
+        return await InvokeWithRetryAsync("getAIBindDomain",
+            new Dictionary<string, object?> { ["appInstallID"] = appInstallID });
+    }
+
+    /// <summary>新建智能体渠道账号（POST /ai/accounts，可空键显式保留对齐契约 9 字段）。</summary>
+    public static async Task<bool> CreateAgentAccountAsync(
+        string provider, string name, string apiKey, string baseURL, string apiType,
+        string? authMode, bool? validateAvailability, string? verifyModel, string? remark)
+    {
+        var result = await InvokeAsync("createAgentAccountNative", new Dictionary<string, object?>
+        {
+            ["provider"] = provider,
+            ["name"] = name,
+            ["apiKey"] = apiKey,
+            ["baseURL"] = baseURL,
+            ["apiType"] = apiType,
+            ["authMode"] = authMode,
+            ["validateAvailability"] = validateAvailability,
+            ["verifyModel"] = verifyModel,
+            ["remark"] = remark,
+        });
+        return IsSuccess(result);
+    }
+
+    /// <summary>编辑智能体渠道账号（POST /ai/accounts/update）。</summary>
+    public static async Task<bool> UpdateAgentAccountAsync(
+        long id, string provider, string name, string apiKey, string baseURL, string apiType, string? remark)
+    {
+        var result = await InvokeAsync("updateAgentAccountNative", new Dictionary<string, object?>
+        {
+            ["id"] = id,
+            ["provider"] = provider,
+            ["name"] = name,
+            ["apiKey"] = apiKey,
+            ["baseURL"] = baseURL,
+            ["apiType"] = apiType,
+            ["remark"] = remark,
+        });
+        return IsSuccess(result);
+    }
+
+    /// <summary>删除智能体渠道账号（POST /ai/accounts/delete）。</summary>
+    public static async Task<bool> DeleteAgentAccountAsync(long id)
+    {
+        var result = await InvokeAsync("deleteAgentAccountNative",
+            new Dictionary<string, object?> { ["id"] = id });
+        return IsSuccess(result);
+    }
+
+    /// <summary>按供应商发现可用模型（POST /ai/accounts/models/discover）。</summary>
+    public static async Task<bool> DiscoverAgentModelsAsync(
+        string provider, string baseURL, string apiKey, string apiType)
+    {
+        var result = await InvokeAsync("discoverAgentModels", new Dictionary<string, object?>
+        {
+            ["provider"] = provider,
+            ["baseURL"] = baseURL,
+            ["apiKey"] = apiKey,
+            ["apiType"] = apiType,
+        });
+        return IsSuccess(result);
+    }
+
+    /// <summary>新建 MCP 服务器（POST /ai/mcp/server，type: npx|uvx，port 为整型）。</summary>
+    public static async Task<bool> CreateMcpServerAsync(
+        string name, string type, string command, string protocol, string url, string outputTransport,
+        string? ssePath, string? streamableHttpPath, string? gatewayImage, string containerName,
+        long port, string? hostIP)
+    {
+        var result = await InvokeAsync("createMcpServerNative", new Dictionary<string, object?>
+        {
+            ["name"] = name,
+            ["type"] = type,
+            ["command"] = command,
+            ["protocol"] = protocol,
+            ["url"] = url,
+            ["outputTransport"] = outputTransport,
+            ["ssePath"] = ssePath,
+            ["streamableHttpPath"] = streamableHttpPath,
+            ["gatewayImage"] = gatewayImage,
+            ["containerName"] = containerName,
+            ["port"] = port,
+            ["hostIP"] = hostIP,
+        });
+        return IsSuccess(result);
+    }
+
+    /// <summary>删除 MCP 服务器（POST /ai/mcp/server/del）。</summary>
+    public static async Task<bool> DeleteMcpServerAsync(long id)
+    {
+        var result = await InvokeAsync("deleteMcpServerNative",
+            new Dictionary<string, object?> { ["id"] = id });
+        return IsSuccess(result);
+    }
+
+    /// <summary>操作 MCP 服务器（operate: start|stop|restart，POST /ai/mcp/server/op）。</summary>
+    public static async Task<bool> OperateMcpServerAsync(long id, string operate)
+    {
+        var result = await InvokeAsync("operateMcpServerNative",
+            new Dictionary<string, object?> { ["id"] = id, ["operate"] = operate });
+        return IsSuccess(result);
+    }
+
+    /// <summary>测试 MCP 服务器连接（POST /ai/mcp/server/connection/test）。</summary>
+    public static async Task<bool> TestMcpConnectionAsync(long id)
+    {
+        var result = await InvokeAsync("testMcpConnection",
+            new Dictionary<string, object?> { ["id"] = id });
+        return IsSuccess(result);
+    }
+
+    /// <summary>批量同步 MCP 服务器状态（POST /ai/mcp/server/status/sync，ids 列表直传）。</summary>
+    public static async Task<bool> SyncMcpStatusAsync(List<object> ids)
+    {
+        var result = await InvokeAsync("syncMcpStatus",
+            new Dictionary<string, object?> { ["ids"] = ids });
+        return IsSuccess(result);
+    }
+
+    /// <summary>新建智能体（POST /ai/agents，长超时安装流程）。</summary>
+    public static async Task<bool> CreateAgentNativeAsync(
+        string agentType, string name, string? remark, string appVersion, long webUIPort)
+    {
+        var result = await InvokeAsync("createAgentNative", new Dictionary<string, object?>
+        {
+            ["agentType"] = agentType,
+            ["name"] = name,
+            ["remark"] = remark,
+            ["appVersion"] = appVersion,
+            ["webUIPort"] = webUIPort,
+        });
+        return IsSuccess(result);
+    }
+
+    /// <summary>删除智能体（forceDelete 可选，POST /ai/agents/delete）。</summary>
+    public static async Task<bool> DeleteAgentNativeAsync(long id, bool? forceDelete)
+    {
+        var result = await InvokeAsync("deleteAgentNative",
+            new Dictionary<string, object?> { ["id"] = id, ["forceDelete"] = forceDelete });
+        return IsSuccess(result);
+    }
+
+    /// <summary>加载 Ollama 模型到内存（POST /ai/ollama/model/load）。</summary>
+    public static async Task<bool> LoadOllamaModelNativeAsync(string name)
+    {
+        var result = await InvokeAsync("loadOllamaModelNative",
+            new Dictionary<string, object?> { ["name"] = name });
+        return IsSuccess(result);
+    }
+
+    /// <summary>从内存卸载 Ollama 模型（POST /ai/ollama/close）。</summary>
+    public static async Task<bool> CloseOllamaModelNativeAsync(string name)
+    {
+        var result = await InvokeAsync("closeOllamaModelNative",
+            new Dictionary<string, object?> { ["name"] = name });
+        return IsSuccess(result);
+    }
+
+    /// <summary>同步 Ollama 模型列表（POST /ai/ollama/model/sync）。</summary>
+    public static async Task<bool> SyncOllamaModelsNativeAsync()
+    {
+        var result = await InvokeAsync("syncOllamaModelsNative", new Dictionary<string, object?>());
+        return IsSuccess(result);
+    }
+
     public static async Task<bool> AddServerAsync(string name, string url, string apiKey)
     {
         var result = await InvokeAsync("addServer", new Dictionary<string, object?>
