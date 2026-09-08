@@ -239,6 +239,271 @@ public static class WindowsBridge
         return IsSuccess(result);
     }
 
+    // ── B1 网站配置中心（契约单一事实源：docs/development/modules/b1_website_channel_contract.md） ──────
+
+    /// <summary>读取网站 HTTPS 配置（Dart 侧 getWebsiteHttpsConfig）。</summary>
+    public static async Task<JsonElement?> GetWebsiteHttpsConfigAsync(int websiteId)
+    {
+        return await InvokeWithRetryAsync("getWebsiteHttpsConfig",
+            new Dictionary<string, object?> { ["id"] = websiteId });
+    }
+
+    /// <summary>读取网站反向代理列表（Dart 侧 getWebsiteProxies）。</summary>
+    public static async Task<JsonElement?> GetWebsiteProxiesAsync(int websiteId)
+    {
+        return await InvokeWithRetryAsync("getWebsiteProxies",
+            new Dictionary<string, object?> { ["id"] = websiteId });
+    }
+
+    /// <summary>读取网站重定向列表（Dart 侧 getWebsiteRedirects）。</summary>
+    public static async Task<JsonElement?> GetWebsiteRedirectsAsync(int websiteId)
+    {
+        return await InvokeWithRetryAsync("getWebsiteRedirects",
+            new Dictionary<string, object?> { ["websiteID"] = websiteId });
+    }
+
+    /// <summary>读取伪静态 rewrite 规则内容（Dart 侧 getWebsiteRewrite）。</summary>
+    public static async Task<JsonElement?> GetWebsiteRewriteAsync(int websiteId, string name)
+    {
+        return await InvokeWithRetryAsync("getWebsiteRewrite",
+            new Dictionary<string, object?> { ["websiteID"] = websiteId, ["name"] = name });
+    }
+
+    /// <summary>读取网站 CORS 配置（Dart 侧 getWebsiteCors）。</summary>
+    public static async Task<JsonElement?> GetWebsiteCorsAsync(int websiteId)
+    {
+        return await InvokeWithRetryAsync("getWebsiteCors",
+            new Dictionary<string, object?> { ["id"] = websiteId });
+    }
+
+    /// <summary>读取网站防盗链配置（Dart 侧 getWebsiteLeech）。</summary>
+    public static async Task<JsonElement?> GetWebsiteLeechAsync(int websiteId)
+    {
+        return await InvokeWithRetryAsync("getWebsiteLeech",
+            new Dictionary<string, object?> { ["websiteID"] = websiteId });
+    }
+
+    /// <summary>读取网站基础认证列表（Dart 侧 getWebsiteAuths）。</summary>
+    public static async Task<JsonElement?> GetWebsiteAuthsAsync(int websiteId)
+    {
+        return await InvokeWithRetryAsync("getWebsiteAuths",
+            new Dictionary<string, object?> { ["websiteID"] = websiteId });
+    }
+
+    /// <summary>读取网站路径认证列表（Dart 侧 getWebsitePathAuths）。</summary>
+    public static async Task<JsonElement?> GetWebsitePathAuthsAsync(int websiteId)
+    {
+        return await InvokeWithRetryAsync("getWebsitePathAuths",
+            new Dictionary<string, object?> { ["websiteID"] = websiteId });
+    }
+
+    /// <summary>读取网站域名列表（Dart 侧 getWebsiteDomains）。</summary>
+    public static async Task<JsonElement?> GetWebsiteDomainsAsync(int websiteId)
+    {
+        return await InvokeWithRetryAsync("getWebsiteDomains",
+            new Dictionary<string, object?> { ["id"] = websiteId });
+    }
+
+    /// <summary>读取网站访问/错误日志（logType: access.log | error.log，Dart 侧 getWebsiteLogs）。</summary>
+    public static async Task<JsonElement?> GetWebsiteLogsAsync(int websiteId, string logType)
+    {
+        return await InvokeWithRetryAsync("getWebsiteLogs",
+            new Dictionary<string, object?> { ["id"] = websiteId, ["logType"] = logType });
+    }
+
+    /// <summary>更新网站 HTTPS 配置（Dart 侧 updateWebsiteHttpsConfig，全键显式对齐契约 12 字段）。</summary>
+    public static async Task<bool> UpdateWebsiteHttpsAsync(
+        long websiteId, bool enable, string type, string httpConfig, string algorithm,
+        List<object> sslProtocol, long? websiteSSLId, string? certificate, string? privateKey,
+        bool? hsts, bool? hstsIncludeSubDomains, bool? http3)
+    {
+        var result = await InvokeAsync("updateWebsiteHttpsConfig", new Dictionary<string, object?>
+        {
+            ["websiteId"] = websiteId,
+            ["enable"] = enable,
+            ["websiteSSLId"] = websiteSSLId,
+            ["type"] = type,
+            ["certificate"] = certificate,
+            ["privateKey"] = privateKey,
+            ["httpConfig"] = httpConfig,
+            ["sslProtocol"] = sslProtocol,
+            ["algorithm"] = algorithm,
+            ["hsts"] = hsts,
+            ["hstsIncludeSubDomains"] = hstsIncludeSubDomains,
+            ["http3"] = http3,
+        });
+        return IsSuccess(result);
+    }
+
+    /// <summary>新建/编辑网站反向代理（operate: create|edit，全键显式对齐契约 22 字段）。</summary>
+    public static async Task<bool> UpdateWebsiteProxyAsync(
+        long websiteId, string operate, string name, string match, string proxyProtocol,
+        string proxyAddress, string proxyHost, bool? sni, bool? proxySSLName, bool? sslVerify,
+        bool? cache, long? serverCacheTime, string? serverCacheUnit, string? browserCache,
+        long? cacheTime, string? cacheUnit, bool? cors, string? allowOrigins, string? allowMethods,
+        string? allowHeaders, bool? allowCredentials, bool? preflight)
+    {
+        var result = await InvokeAsync("updateWebsiteProxy", new Dictionary<string, object?>
+        {
+            ["websiteID"] = websiteId,
+            ["operate"] = operate,
+            ["name"] = name,
+            ["match"] = match,
+            ["proxyProtocol"] = proxyProtocol,
+            ["proxyAddress"] = proxyAddress,
+            ["proxyHost"] = proxyHost,
+            ["sni"] = sni,
+            ["proxySSLName"] = proxySSLName,
+            ["sslVerify"] = sslVerify,
+            ["cache"] = cache,
+            ["serverCacheTime"] = serverCacheTime,
+            ["serverCacheUnit"] = serverCacheUnit,
+            ["browserCache"] = browserCache,
+            ["cacheTime"] = cacheTime,
+            ["cacheUnit"] = cacheUnit,
+            ["cors"] = cors,
+            ["allowOrigins"] = allowOrigins,
+            ["allowMethods"] = allowMethods,
+            ["allowHeaders"] = allowHeaders,
+            ["allowCredentials"] = allowCredentials,
+            ["preflight"] = preflight,
+        });
+        return IsSuccess(result);
+    }
+
+    /// <summary>删除网站反向代理。</summary>
+    public static async Task<bool> DeleteWebsiteProxyAsync(int id, string name)
+    {
+        var result = await InvokeAsync("deleteWebsiteProxy",
+            new Dictionary<string, object?> { ["id"] = id, ["name"] = name });
+        return IsSuccess(result);
+    }
+
+    /// <summary>启停网站反向代理（status: enable|disable）。</summary>
+    public static async Task<bool> UpdateWebsiteProxyStatusAsync(int id, string name, string status)
+    {
+        var result = await InvokeAsync("updateWebsiteProxyStatus",
+            new Dictionary<string, object?> { ["id"] = id, ["name"] = name, ["status"] = status });
+        return IsSuccess(result);
+    }
+
+    /// <summary>新建/编辑/启停/删除网站重定向（operate 四态，domains 为域名列表）。</summary>
+    public static async Task<bool> UpdateWebsiteRedirectAsync(
+        long websiteId, string operate, bool enable, string name, string type, string redirect,
+        bool? keepPath, string? path, string? target, List<object>? domains)
+    {
+        var result = await InvokeAsync("updateWebsiteRedirect", new Dictionary<string, object?>
+        {
+            ["websiteID"] = websiteId,
+            ["operate"] = operate,
+            ["enable"] = enable,
+            ["name"] = name,
+            ["keepPath"] = keepPath,
+            ["type"] = type,
+            ["redirect"] = redirect,
+            ["path"] = path,
+            ["target"] = target,
+            ["domains"] = domains,
+        });
+        return IsSuccess(result);
+    }
+
+    /// <summary>保存伪静态 rewrite 规则内容（Dart 侧 updateWebsiteRewrite）。</summary>
+    public static async Task<bool> UpdateWebsiteRewriteAsync(int websiteId, string name, string content)
+    {
+        var result = await InvokeAsync("updateWebsiteRewrite",
+            new Dictionary<string, object?> { ["websiteID"] = websiteId, ["name"] = name, ["content"] = content });
+        return IsSuccess(result);
+    }
+
+    /// <summary>保存网站 CORS 配置（Dart 侧 updateWebsiteCors）。</summary>
+    public static async Task<bool> UpdateWebsiteCorsAsync(
+        long websiteId, bool cors, string allowOrigins, string allowMethods,
+        string? allowHeaders, bool? allowCredentials, bool? preflight)
+    {
+        var result = await InvokeAsync("updateWebsiteCors", new Dictionary<string, object?>
+        {
+            ["websiteID"] = websiteId,
+            ["cors"] = cors,
+            ["allowOrigins"] = allowOrigins,
+            ["allowMethods"] = allowMethods,
+            ["allowHeaders"] = allowHeaders,
+            ["allowCredentials"] = allowCredentials,
+            ["preflight"] = preflight,
+        });
+        return IsSuccess(result);
+    }
+
+    /// <summary>保存网站防盗链配置（return 为 Dart 保留字，通道键名为 return_，Dart 侧映射回 return）。</summary>
+    public static async Task<bool> UpdateWebsiteLeechAsync(
+        long websiteId, bool enable, string extends, List<object> serverNames, string returnCode,
+        bool? noneRef, bool? blocked, bool? cache, long? cacheTime, string? cacheUint, bool? logEnable)
+    {
+        var result = await InvokeAsync("updateWebsiteLeech", new Dictionary<string, object?>
+        {
+            ["websiteID"] = websiteId,
+            ["enable"] = enable,
+            ["extends"] = extends,
+            ["serverNames"] = serverNames,
+            ["return_"] = returnCode,
+            ["noneRef"] = noneRef,
+            ["blocked"] = blocked,
+            ["cache"] = cache,
+            ["cacheTime"] = cacheTime,
+            ["cacheUint"] = cacheUint,
+            ["logEnable"] = logEnable,
+        });
+        return IsSuccess(result);
+    }
+
+    /// <summary>网站基础认证操作（operate: create|edit|delete|enable|disable，scope 固定 root）。</summary>
+    public static async Task<bool> UpdateWebsiteAuthAsync(
+        long websiteId, string operate, string scope, string? username, string? password, string? remark)
+    {
+        var result = await InvokeAsync("updateWebsiteAuth", new Dictionary<string, object?>
+        {
+            ["websiteID"] = websiteId,
+            ["operate"] = operate,
+            ["scope"] = scope,
+            ["username"] = username,
+            ["password"] = password,
+            ["remark"] = remark,
+        });
+        return IsSuccess(result);
+    }
+
+    /// <summary>网站路径认证操作（operate: create|edit|delete）。</summary>
+    public static async Task<bool> UpdateWebsitePathAuthAsync(
+        long websiteId, string operate, string? path, string? username, string? password, string? name)
+    {
+        var result = await InvokeAsync("updateWebsitePathAuth", new Dictionary<string, object?>
+        {
+            ["websiteID"] = websiteId,
+            ["operate"] = operate,
+            ["path"] = path,
+            ["username"] = username,
+            ["password"] = password,
+            ["name"] = name,
+        });
+        return IsSuccess(result);
+    }
+
+    /// <summary>追加网站域名（domains 元素形如 {domain, port, ssl}）。</summary>
+    public static async Task<bool> AddWebsiteDomainsAsync(int websiteId, List<object> domains)
+    {
+        var result = await InvokeAsync("addWebsiteDomains",
+            new Dictionary<string, object?> { ["websiteID"] = websiteId, ["domains"] = domains });
+        return IsSuccess(result);
+    }
+
+    /// <summary>删除网站域名。</summary>
+    public static async Task<bool> DeleteWebsiteDomainAsync(int id)
+    {
+        var result = await InvokeAsync("deleteWebsiteDomain",
+            new Dictionary<string, object?> { ["id"] = id });
+        return IsSuccess(result);
+    }
+
     public static async Task<bool> CreateFolderAsync(string path)
     {
         var result = await InvokeAsync("createFolder",
