@@ -218,7 +218,10 @@ public sealed class AIPage : ModulePageBase
             var models = ParseModels(result.Value);
             if (models.Count == 0)
             {
-                SetState(PageState.Empty);
+                // Tab 壳常驻于 _contentPresenter，Empty 态会整页隐藏 Tab 条——
+                // 空列表保持 Content 态，由列表区自渲染空态说明。
+                SetState(PageState.Content);
+                BuildContent(models);
                 return;
             }
 
