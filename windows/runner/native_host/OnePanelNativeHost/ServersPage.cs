@@ -36,7 +36,7 @@ public sealed class ServersPage : ModulePageBase
 
     public ServersPage()
     {
-        PageTitle = "Servers";
+        PageTitle = L10n.T("serverPageTitle", "Servers");
     }
 
     protected override async void OnPageShown()
@@ -86,7 +86,7 @@ public sealed class ServersPage : ModulePageBase
             }
             else
             {
-                _errorToast.Show("Failed to refresh servers.");
+                _errorToast.Show(L10n.T("hostServersRefreshFailed", "Failed to refresh servers."));
             }
             return;
         }
@@ -116,7 +116,7 @@ public sealed class ServersPage : ModulePageBase
                 servers.Add(new ServerEntry
                 {
                     Id = TryGetString(item, "id"),
-                    Name = TryGetString(item, "name") ?? "Unknown",
+                    Name = TryGetString(item, "name") ?? L10n.T("systemSettingsUnknown", "Unknown"),
                     Url = TryGetString(item, "url") ?? "",
                     IsCurrent = TryGetBool(item, "isCurrent"),
                     Cpu = TryGetDouble(item, "cpu"),
@@ -185,7 +185,7 @@ public sealed class ServersPage : ModulePageBase
 
         var addButton = new AppBarButton
         {
-            Label = "Add server",
+            Label = L10n.T("serverFormTitle", "Add server"),
             Icon = new FontIcon { Glyph = "\uE710" },
         };
         addButton.Click += (s, e) => _ = ShowAddServerDialogAsync();
@@ -193,7 +193,7 @@ public sealed class ServersPage : ModulePageBase
 
         var refreshButton = new AppBarButton
         {
-            Label = "Refresh",
+            Label = L10n.T("commonRefresh", "Refresh"),
             Icon = new FontIcon { Glyph = "\uE72C" },
         };
         refreshButton.Click += (s, e) => _ = LoadServersAsync(showLoadingState: true);
@@ -256,11 +256,11 @@ public sealed class ServersPage : ModulePageBase
         // Dashboard-style utilization bars; hidden entirely when no value.
         if (server.Cpu >= 0)
         {
-            info.Children.Add(BuildUsageBar("CPU", server.Cpu));
+            info.Children.Add(BuildUsageBar(L10n.T("serverCpuLabel", "CPU"), server.Cpu));
         }
         if (server.Memory >= 0)
         {
-            info.Children.Add(BuildUsageBar("Memory", server.Memory));
+            info.Children.Add(BuildUsageBar(L10n.T("serverMemoryLabel", "Memory"), server.Memory));
         }
 
         Grid.SetColumn(info, 0);
@@ -276,7 +276,7 @@ public sealed class ServersPage : ModulePageBase
             HorizontalAlignment = HorizontalAlignment.Right,
             VerticalAlignment = VerticalAlignment.Center,
         };
-        ToolTipService.SetToolTip(moreButton, "Server actions");
+        ToolTipService.SetToolTip(moreButton, L10n.T("hostServersActions", "Server actions"));
         moreButton.Flyout = BuildRowFlyout(server);
         Grid.SetColumn(moreButton, 1);
         grid.Children.Add(moreButton);
@@ -290,7 +290,7 @@ public sealed class ServersPage : ModulePageBase
 
         var deleteItem = new MenuFlyoutItem
         {
-            Text = "Delete",
+            Text = L10n.T("commonDelete", "Delete"),
             Icon = new FontIcon { Glyph = "\uE74D" },
         };
         deleteItem.Click += (s, e) => _ = DeleteServerAsync(server);
@@ -315,7 +315,7 @@ public sealed class ServersPage : ModulePageBase
         });
         content.Children.Add(new TextBlock
         {
-            Text = "Current",
+            Text = L10n.T("serverCurrent", "Current"),
             FontSize = 12,
             Foreground = accentBrush,
             VerticalAlignment = VerticalAlignment.Center,
@@ -401,10 +401,10 @@ public sealed class ServersPage : ModulePageBase
         {
             var confirmed = await ConfirmDialog.ShowAsync(
                 XamlRoot,
-                "Switch Server",
+                L10n.T("serverActionSwitch", "Switch Server"),
                 $"Switch to \"{server.Name}\"?\n\nURL: {server.Url}",
-                "Switch",
-                "Cancel");
+                L10n.T("hostServersSwitch", "Switch"),
+                L10n.T("commonCancel", "Cancel"));
 
             if (!confirmed) return;
 
@@ -432,7 +432,7 @@ public sealed class ServersPage : ModulePageBase
 
         if (server.IsCurrent)
         {
-            _errorToast.Show("The current server cannot be deleted. Switch to another server first.");
+            _errorToast.Show(L10n.T("hostServersDeleteCurrentBlocked", "The current server cannot be deleted. Switch to another server first."));
             return;
         }
 
@@ -442,10 +442,10 @@ public sealed class ServersPage : ModulePageBase
         {
             var confirmed = await ConfirmDialog.ShowAsync(
                 XamlRoot,
-                "Delete Server",
+                L10n.T("serverDeleteConfirmTitle", "Delete Server"),
                 $"Delete server \"{server.Name}\" ({server.Url})?\nThis action cannot be undone.",
-                "Delete",
-                "Cancel",
+                L10n.T("commonDelete", "Delete"),
+                L10n.T("commonCancel", "Cancel"),
                 isDestructive: true);
 
             if (!confirmed) return;
@@ -478,9 +478,9 @@ public sealed class ServersPage : ModulePageBase
 
         try
         {
-            var nameBox = new TextBox { Header = "Name", PlaceholderText = "My server" };
-            var urlBox = new TextBox { Header = "URL", PlaceholderText = "http://host:port/" };
-            var apiKeyBox = new TextBox { Header = "API key" };
+            var nameBox = new TextBox { Header = L10n.T("commonName", "Name"), PlaceholderText = L10n.T("hostServersNamePlaceholder", "My server") };
+            var urlBox = new TextBox { Header = L10n.T("commonUrl", "URL"), PlaceholderText = "http://host:port/" };
+            var apiKeyBox = new TextBox { Header = L10n.T("serverFormApiKey", "API key") };
 
             var errorText = new TextBlock
             {
@@ -504,10 +504,10 @@ public sealed class ServersPage : ModulePageBase
 
             var dialog = new ContentDialog
             {
-                Title = "Add Server",
+                Title = L10n.T("serverFormTitle", "Add Server"),
                 Content = form,
-                PrimaryButtonText = "Add",
-                CloseButtonText = "Cancel",
+                PrimaryButtonText = L10n.T("commonAdd", "Add"),
+                CloseButtonText = L10n.T("commonCancel", "Cancel"),
                 DefaultButton = ContentDialogButton.Primary,
                 XamlRoot = XamlRoot,
             };
@@ -549,17 +549,17 @@ public sealed class ServersPage : ModulePageBase
     /// <summary>Returns the first validation error, or null when the input is valid.</summary>
     private static string? ValidateServerInput(string name, string url, string apiKey)
     {
-        if (string.IsNullOrWhiteSpace(name)) return "Name is required.";
+        if (string.IsNullOrWhiteSpace(name)) return L10n.T("websitesSslAccountsValidationNameRequired", "Name is required.");
 
         var trimmedUrl = url.Trim();
-        if (trimmedUrl.Length == 0) return "URL is required.";
+        if (trimmedUrl.Length == 0) return L10n.T("hostServersUrlRequired", "URL is required.");
         if (!trimmedUrl.StartsWith("http://", StringComparison.OrdinalIgnoreCase) &&
             !trimmedUrl.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
         {
-            return "URL must start with http:// or https://.";
+            return L10n.T("hostServersUrlHttpRequired", "URL must start with http:// or https://.");
         }
 
-        if (string.IsNullOrWhiteSpace(apiKey)) return "API key is required.";
+        if (string.IsNullOrWhiteSpace(apiKey)) return L10n.T("hostServersApiKeyRequired", "API key is required.");
         return null;
     }
 

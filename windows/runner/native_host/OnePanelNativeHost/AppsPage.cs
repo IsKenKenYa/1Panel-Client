@@ -30,7 +30,7 @@ public sealed class AppsPage : ModulePageBase
 
     public AppsPage()
     {
-        PageTitle = "Apps";
+        PageTitle = L10n.T("serverModuleApps", "Apps");
     }
 
     protected override async void OnPageShown()
@@ -80,7 +80,7 @@ public sealed class AppsPage : ModulePageBase
             }
             else
             {
-                _errorToast.Show("Failed to refresh apps.");
+                _errorToast.Show(L10n.T("hostAppsRefreshFailed", "Failed to refresh apps."));
             }
             return;
         }
@@ -92,7 +92,7 @@ public sealed class AppsPage : ModulePageBase
             // panel. SetState(PageState.Content) below collapses the whole
             // Empty panel when data exists, so the action never shows
             // alongside the list and needs no explicit teardown.
-            SetEmptyPrimaryAction("Install OpenResty", OnInstallOpenRestyClicked);
+            SetEmptyPrimaryAction(L10n.T("hostAppsInstallOpenresty", "Install OpenResty"), OnInstallOpenRestyClicked);
             SetState(PageState.Empty);
             return;
         }
@@ -114,7 +114,7 @@ public sealed class AppsPage : ModulePageBase
                 apps.Add(new AppEntry
                 {
                     AppId = TryGetString(item, "appId") ?? TryGetNumberAsString(item, "appId"),
-                    Name = TryGetString(item, "name") ?? "Unknown",
+                    Name = TryGetString(item, "name") ?? L10n.T("systemSettingsUnknown", "Unknown"),
                     Version = TryGetString(item, "version") ?? "",
                     Status = TryGetString(item, "status") ?? "",
                 });
@@ -178,7 +178,7 @@ public sealed class AppsPage : ModulePageBase
 
         var refreshButton = new AppBarButton
         {
-            Label = "Refresh",
+            Label = L10n.T("commonRefresh", "Refresh"),
             Icon = new FontIcon { Glyph = "\uE72C" },
         };
         refreshButton.Click += (s, e) => _ = LoadAppsAsync(showLoadingState: true);
@@ -250,7 +250,7 @@ public sealed class AppsPage : ModulePageBase
             VerticalAlignment = VerticalAlignment.Center,
         };
         toggleButton.Content = BuildToggleContent(app.IsRunning);
-        ToolTipService.SetToolTip(toggleButton, app.IsRunning ? "Stop app" : "Start app");
+        ToolTipService.SetToolTip(toggleButton, app.IsRunning ? L10n.T("hostAppsStopApp", "Stop app") : L10n.T("hostAppsStartApp", "Start app"));
         toggleButton.Click += async (s, e) => await ToggleAppAsync(app);
         actions.Children.Add(toggleButton);
 
@@ -260,7 +260,7 @@ public sealed class AppsPage : ModulePageBase
             Padding = new Thickness(8, 4, 8, 4),
             VerticalAlignment = VerticalAlignment.Center,
         };
-        ToolTipService.SetToolTip(uninstallButton, "Uninstall app");
+        ToolTipService.SetToolTip(uninstallButton, L10n.T("hostAppsUninstallApp", "Uninstall app"));
         uninstallButton.Click += async (s, e) => await UninstallAppAsync(app);
         actions.Children.Add(uninstallButton);
 
@@ -285,7 +285,7 @@ public sealed class AppsPage : ModulePageBase
         });
         content.Children.Add(new TextBlock
         {
-            Text = isRunning ? "Stop" : "Start",
+            Text = isRunning ? L10n.T("appActionStop", "Stop") : L10n.T("appActionStart", "Start"),
             FontSize = 14,
             VerticalAlignment = VerticalAlignment.Center,
         });
@@ -302,7 +302,7 @@ public sealed class AppsPage : ModulePageBase
 
         var badgeText = new TextBlock
         {
-            Text = string.IsNullOrWhiteSpace(app.Status) ? "Unknown" : app.Status.Trim(),
+            Text = string.IsNullOrWhiteSpace(app.Status) ? L10n.T("systemSettingsUnknown", "Unknown") : app.Status.Trim(),
             FontSize = 12,
             Foreground = accentBrush,
             VerticalAlignment = VerticalAlignment.Center,
@@ -374,10 +374,10 @@ public sealed class AppsPage : ModulePageBase
             // Upstream uninstall removes the app together with its data.
             var confirmed = await ConfirmDialog.ShowAsync(
                 XamlRoot,
-                "Uninstall App",
+                L10n.T("hostAppsUninstallConfirm", "Uninstall App"),
                 $"Uninstall app \"{app.Name}\"?\nThis will delete the app and its data. This action cannot be undone.",
-                "Uninstall",
-                "Cancel",
+                L10n.T("appActionUninstall", "Uninstall"),
+                L10n.T("commonCancel", "Cancel"),
                 isDestructive: true);
 
             if (!confirmed) return;
@@ -427,10 +427,10 @@ public sealed class AppsPage : ModulePageBase
         {
             var confirmed = await ConfirmDialog.ShowAsync(
                 XamlRoot,
-                "Install OpenResty",
-                "OpenResty will be downloaded and installed from the app store. This may take a few minutes. Continue?",
-                "Install",
-                "Cancel");
+                L10n.T("hostAppsInstallOpenresty", "Install OpenResty"),
+                L10n.T("hostAppsOpenrestyInstallConfirm", "OpenResty will be downloaded and installed from the app store. This may take a few minutes. Continue?"),
+                L10n.T("appStoreInstall", "Install"),
+                L10n.T("commonCancel", "Cancel"));
 
             if (!confirmed) return;
 
@@ -438,7 +438,7 @@ public sealed class AppsPage : ModulePageBase
             if (failure == null)
             {
                 submitted = true;
-                _errorToast.Show("OpenResty install task submitted.");
+                _errorToast.Show(L10n.T("hostAppsOpenrestyInstallSubmitted", "OpenResty install task submitted."));
             }
             else
             {

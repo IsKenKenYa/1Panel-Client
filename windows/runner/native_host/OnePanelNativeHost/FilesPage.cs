@@ -33,7 +33,7 @@ public sealed class FilesPage : ModulePageBase
 
     public FilesPage()
     {
-        PageTitle = "Files";
+        PageTitle = L10n.T("filesPageTitle", "Files");
     }
 
     protected override async void OnPageShown()
@@ -80,7 +80,7 @@ public sealed class FilesPage : ModulePageBase
             {
                 files.Add(new FileEntry
                 {
-                    Name = TryGetString(item, "name") ?? "Unknown",
+                    Name = TryGetString(item, "name") ?? L10n.T("systemSettingsUnknown", "Unknown"),
                     Path = TryGetString(item, "path") ?? "",
                     IsDir = TryGetBool(item, "isDir"),
                     Size = TryGetInt64(item, "size"),
@@ -128,7 +128,7 @@ public sealed class FilesPage : ModulePageBase
 
         var newFolderButton = new AppBarButton
         {
-            Label = "New folder",
+            Label = L10n.T("filesActionNewFolder", "New folder"),
             Icon = new FontIcon { Glyph = "\uE8B7" },
         };
         newFolderButton.Click += (s, e) => _ = ShowCreateFolderDialogAsync(_currentPath);
@@ -136,7 +136,7 @@ public sealed class FilesPage : ModulePageBase
 
         var refreshButton = new AppBarButton
         {
-            Label = "Refresh",
+            Label = L10n.T("commonRefresh", "Refresh"),
             Icon = new FontIcon { Glyph = "\uE72C" },
         };
         refreshButton.Click += (s, e) => _ = RefreshCurrentAsync();
@@ -168,7 +168,7 @@ public sealed class FilesPage : ModulePageBase
         _addressBox = new TextBox
         {
             Text = _currentPath,
-            PlaceholderText = "Enter a path and press Enter",
+            PlaceholderText = L10n.T("hostFilesPathPlaceholder", "Enter a path and press Enter"),
             VerticalAlignment = VerticalAlignment.Center,
             MinWidth = 120,
         };
@@ -199,7 +199,7 @@ public sealed class FilesPage : ModulePageBase
 
         var nameHeader = new TextBlock
         {
-            Text = "Name",
+            Text = L10n.T("filesNameLabel", "Name"),
             FontSize = 12,
             VerticalAlignment = VerticalAlignment.Center,
             Margin = new Thickness(8, 0, 0, 0),
@@ -210,7 +210,7 @@ public sealed class FilesPage : ModulePageBase
 
         var sizeHeader = new TextBlock
         {
-            Text = "Size",
+            Text = L10n.T("commonSize", "Size"),
             FontSize = 12,
             HorizontalAlignment = HorizontalAlignment.Right,
             VerticalAlignment = VerticalAlignment.Center,
@@ -221,7 +221,7 @@ public sealed class FilesPage : ModulePageBase
 
         var dateHeader = new TextBlock
         {
-            Text = "Modified",
+            Text = L10n.T("filesModifiedLabel", "Modified"),
             FontSize = 12,
             HorizontalAlignment = HorizontalAlignment.Right,
             VerticalAlignment = VerticalAlignment.Center,
@@ -356,7 +356,7 @@ public sealed class FilesPage : ModulePageBase
         {
             var newFolderItem = new MenuFlyoutItem
             {
-                Text = "New folder",
+                Text = L10n.T("filesActionNewFolder", "New folder"),
                 Icon = new FontIcon { Glyph = "\uE8B7" },
             };
             newFolderItem.Click += (s, e) => _ = ShowCreateFolderDialogAsync(ResolvePath(file));
@@ -365,7 +365,7 @@ public sealed class FilesPage : ModulePageBase
 
         var deleteItem = new MenuFlyoutItem
         {
-            Text = "Delete",
+            Text = L10n.T("commonDelete", "Delete"),
             Icon = new FontIcon { Glyph = "\uE74D" },
         };
         deleteItem.Click += (s, e) => _ = DeleteEntryAsync(file);
@@ -383,15 +383,15 @@ public sealed class FilesPage : ModulePageBase
     {
         var nameBox = new TextBox
         {
-            PlaceholderText = "Folder name",
+            PlaceholderText = L10n.T("hostFilesFolderNamePlaceholder", "Folder name"),
         };
 
         var dialog = new ContentDialog
         {
-            Title = "New folder",
+            Title = L10n.T("filesActionNewFolder", "New folder"),
             Content = nameBox,
-            PrimaryButtonText = "Create",
-            CloseButtonText = "Cancel",
+            PrimaryButtonText = L10n.T("commonCreate", "Create"),
+            CloseButtonText = L10n.T("commonCancel", "Cancel"),
             DefaultButton = ContentDialogButton.Primary,
             XamlRoot = XamlRoot,
         };
@@ -402,7 +402,7 @@ public sealed class FilesPage : ModulePageBase
         var name = nameBox.Text.Trim();
         if (name.Length == 0)
         {
-            _errorToast.Show("Folder name cannot be empty.");
+            _errorToast.Show(L10n.T("hostFilesFolderNameEmpty", "Folder name cannot be empty."));
             return;
         }
 
@@ -422,10 +422,10 @@ public sealed class FilesPage : ModulePageBase
     {
         var confirmed = await ConfirmDialog.ShowAsync(
             XamlRoot,
-            "Delete",
+            L10n.T("commonDelete", "Delete"),
             $"Delete \"{file.Name}\"?\n\n{(file.IsDir ? "Folder" : "File")}: {ResolvePath(file)}\nThis action cannot be undone.",
-            "Delete",
-            "Cancel",
+            L10n.T("commonDelete", "Delete"),
+            L10n.T("commonCancel", "Cancel"),
             isDestructive: true);
 
         if (!confirmed) return;

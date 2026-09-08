@@ -31,7 +31,7 @@ public sealed class ContainersPage : ModulePageBase
 
     public ContainersPage()
     {
-        PageTitle = "Containers";
+        PageTitle = L10n.T("serverModuleContainers", "Containers");
     }
 
     protected override async void OnPageShown()
@@ -81,7 +81,7 @@ public sealed class ContainersPage : ModulePageBase
             }
             else
             {
-                _errorToast.Show("Failed to refresh containers.");
+                _errorToast.Show(L10n.T("hostContainersRefreshFailed", "Failed to refresh containers."));
             }
             return;
         }
@@ -110,7 +110,7 @@ public sealed class ContainersPage : ModulePageBase
                 containers.Add(new ContainerEntry
                 {
                     Id = TryGetString(item, "id") ?? TryGetNumberAsString(item, "id"),
-                    Name = TryGetString(item, "name") ?? "Unknown",
+                    Name = TryGetString(item, "name") ?? L10n.T("systemSettingsUnknown", "Unknown"),
                     Image = TryGetString(item, "image") ?? "",
                     Status = TryGetString(item, "status") ?? "",
                     State = TryGetString(item, "state") ?? "",
@@ -177,7 +177,7 @@ public sealed class ContainersPage : ModulePageBase
 
         var refreshButton = new AppBarButton
         {
-            Label = "Refresh",
+            Label = L10n.T("commonRefresh", "Refresh"),
             Icon = new FontIcon { Glyph = "\uE72C" },
         };
         refreshButton.Click += (s, e) => _ = LoadContainersAsync(showLoadingState: true);
@@ -235,11 +235,11 @@ public sealed class ContainersPage : ModulePageBase
         // Dashboard-style utilization bars; hidden entirely when no value.
         if (container.CpuUsage >= 0)
         {
-            info.Children.Add(BuildUsageBar("CPU", container.CpuUsage));
+            info.Children.Add(BuildUsageBar(L10n.T("serverCpuLabel", "CPU"), container.CpuUsage));
         }
         if (container.MemoryUsage >= 0)
         {
-            info.Children.Add(BuildUsageBar("Memory", container.MemoryUsage));
+            info.Children.Add(BuildUsageBar(L10n.T("serverMemoryLabel", "Memory"), container.MemoryUsage));
         }
 
         Grid.SetColumn(info, 1);
@@ -262,7 +262,7 @@ public sealed class ContainersPage : ModulePageBase
             VerticalAlignment = VerticalAlignment.Center,
         };
         toggleButton.Content = BuildToggleContent(isRunning);
-        ToolTipService.SetToolTip(toggleButton, isRunning ? "Stop container" : "Start container");
+        ToolTipService.SetToolTip(toggleButton, isRunning ? L10n.T("hostContainersStopContainer", "Stop container") : L10n.T("hostContainersStartContainer", "Start container"));
         toggleButton.Click += async (s, e) => await ToggleContainerAsync(container);
         actions.Children.Add(toggleButton);
 
@@ -272,7 +272,7 @@ public sealed class ContainersPage : ModulePageBase
             Padding = new Thickness(8, 4, 8, 4),
             VerticalAlignment = VerticalAlignment.Center,
         };
-        ToolTipService.SetToolTip(restartButton, "Restart container");
+        ToolTipService.SetToolTip(restartButton, L10n.T("hostContainersRestartContainer", "Restart container"));
         restartButton.Click += async (s, e) => await RestartContainerAsync(container);
         actions.Children.Add(restartButton);
 
@@ -282,7 +282,7 @@ public sealed class ContainersPage : ModulePageBase
             Padding = new Thickness(8, 4, 8, 4),
             VerticalAlignment = VerticalAlignment.Center,
         };
-        ToolTipService.SetToolTip(deleteButton, "Delete container");
+        ToolTipService.SetToolTip(deleteButton, L10n.T("hostContainersDeleteContainer", "Delete container"));
         deleteButton.Click += async (s, e) => await DeleteContainerAsync(container);
         actions.Children.Add(deleteButton);
 
@@ -307,7 +307,7 @@ public sealed class ContainersPage : ModulePageBase
         });
         content.Children.Add(new TextBlock
         {
-            Text = isRunning ? "Stop" : "Start",
+            Text = isRunning ? L10n.T("containerActionStop", "Stop") : L10n.T("containerActionStart", "Start"),
             FontSize = 14,
             VerticalAlignment = VerticalAlignment.Center,
         });
@@ -473,10 +473,10 @@ public sealed class ContainersPage : ModulePageBase
         {
             var confirmed = await ConfirmDialog.ShowAsync(
                 XamlRoot,
-                "Delete Container",
+                L10n.T("hostContainersDeleteConfirm", "Delete Container"),
                 $"Delete container \"{container.Name}\"?\nThis action cannot be undone.",
-                "Delete",
-                "Cancel",
+                L10n.T("commonDelete", "Delete"),
+                L10n.T("commonCancel", "Cancel"),
                 isDestructive: true);
 
             if (!confirmed) return;
@@ -580,7 +580,7 @@ public sealed class ContainersPage : ModulePageBase
         public string DisplayStatus =>
             !string.IsNullOrWhiteSpace(Status) ? Status.Trim()
                 : !string.IsNullOrWhiteSpace(State) ? State.Trim()
-                : "Unknown";
+                : L10n.T("systemSettingsUnknown", "Unknown");
 
         public bool IsRunning =>
             string.Equals(StateKey, "running", StringComparison.OrdinalIgnoreCase);
