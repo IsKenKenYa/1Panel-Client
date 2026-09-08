@@ -430,7 +430,7 @@ public sealed class FilesPage : ModulePageBase
 
         if (!confirmed) return;
 
-        var success = await WindowsBridge.DeleteFileAsync(ResolvePath(file));
+        var success = await WindowsBridge.DeleteFileAsync(ResolvePath(file), file.IsDir);
         if (!success)
         {
             _errorToast.Show($"Failed to delete \"{file.Name}\".");

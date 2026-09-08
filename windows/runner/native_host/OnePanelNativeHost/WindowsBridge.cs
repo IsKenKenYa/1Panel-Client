@@ -345,6 +345,10 @@ public static class WindowsBridge
     {
         var result = await InvokeAsync("updateWebsiteProxy", new Dictionary<string, object?>
         {
+            // 服务端 create/edit 分支用 req.ID 查网站（WithByID(req.ID)），
+            // 必须传网站 ID（传 0 会触发 required 校验 400）；
+            // delete/status 分支的 id 才是代理记录 ID。
+            ["id"] = websiteId,
             ["websiteID"] = websiteId,
             ["operate"] = operate,
             ["name"] = name,
@@ -511,11 +515,140 @@ public static class WindowsBridge
         return IsSuccess(result);
     }
 
-    public static async Task<bool> DeleteFileAsync(string path)
+    /// <summary>删除文件/目录（isDir 按条目类型透传，Dart 侧 deleteFile 支持 {path, isDir?}）。</summary>
+    public static async Task<bool> DeleteFileAsync(string path, bool isDir)
     {
         var result = await InvokeAsync("deleteFile",
+            new Dictionary<string, object?> { ["path"] = path, ["isDir"] = isDir });
+        return IsSuccess(result);
+    }
+
+    // ── B2 文件管理深度（契约单一事实源：docs/development/modules/b2_files_channel_contract.md） ──────
+
+    /// <summary>新建空文件（isDir=false 固定，Dart 侧 createFileHandler → POST /files）。</summary>
+    public static async Task<bool> CreateFileAsync(string path)
+    {
+        var result = await InvokeAsync("createFileHandler",
             new Dictionary<string, object?> { ["path"] = path });
         return IsSuccess(result);
+    }
+
+    /// <summary>重命名文件/目录（oldName/newName 均为完整路径，Dart 侧 renameFileHandler → POST /files/rename）。</summary>
+    public static async Task<bool> RenameFileAsync(string oldName, string newName)
+    {
+        var result = await InvokeAsync("renameFileHandler",
+            new Dictionary<string, object?> { ["oldName"] = oldName, ["newName"] = newName });
+        return IsSuccess(result);
+    }
+
+    /// <summary>批量移动/复制（type: copy|cut；oldPaths 为完整路径 List&lt;string&gt; 直传，
+    /// Dart 侧 moveFilesHandler → POST /files/move）。</summary>
+    public static async Task<bool> MoveFilesAsync(List<string> oldPaths, string newPath, string type)
+    {
+        var result = await InvokeAsync("moveFilesHandler", new Dictionary<string, object?>
+        {
+            ["oldPaths"] = oldPaths,
+            ["newPath"] = newPath,
+            ["type"] = type,
+        });
+        return IsSuccess(result);
+    }
+
+    /// <summary>压缩文件（type: zip|gz|tar.gz…，dst 目标目录、name 压缩包名，
+    /// Dart 侧 compressFilesHandler → POST /files/compress）。</summary>
+    public static async Task<bool> CompressFilesAsync(List<string> files, string type, string dst, string name)
+    {
+        var result = await InvokeAsync("compressFilesHandler", new Dictionary<string, object?>
+        {
+            ["files"] = files,
+            ["type"] = type,
+            ["dst"] = dst,
+            ["name"] = name,
+        });
+        return IsSuccess(result);
+    }
+
+    /// <summary>解压文件（type 与压缩格式一致，Dart 侧 decompressFileHandler → POST /files/decompress）。</summary>
+    public static async Task<bool> DecompressFileAsync(string path, string dst, string type)
+    {
+        var result = await InvokeAsync("decompressFileHandler", new Dictionary<string, object?>
+        {
+            ["path"] = path,
+            ["dst"] = dst,
+            ["type"] = type,
+        });
+        return IsSuccess(result);
+    }
+
+    /// <summary>修改文件权限（mode 为八进制权限的十进制值如 493=0755，
+    /// Dart 侧 changeFileModeHandler → POST /files/mode）。</summary>
+    public static async Task<bool> ChangeFileModeAsync(string path, int mode)
+    {
+        var result = await InvokeAsync("changeFileModeHandler",
+            new Dictionary<string, object?> { ["path"] = path, ["mode"] = mode });
+        return IsSuccess(result);
+    }
+
+    /// <summary>修改文件归属（user/group 为服务端用户/组名，
+    /// Dart 侧 changeFileOwnerHandler → POST /files/owner）。</summary>
+    public static async Task<bool> ChangeFileOwnerAsync(string path, string user, string group)
+    {
+        var result = await InvokeAsync("changeFileOwnerHandler", new Dictionary<string, object?>
+        {
+            ["path"] = path,
+            ["user"] = user,
+            ["group"] = group,
+        });
+        return IsSuccess(result);
+    }
+
+    /// <summary>保存文件内容（Dart 侧 saveFileContentHandler → POST /files/save）。</summary>
+    public static async Task<bool> SaveFileContentAsync(string path, string content)
+    {
+        var result = await InvokeAsync("saveFileContentHandler",
+            new Dictionary<string, object?> { ["path"] = path, ["content"] = content });
+        return IsSuccess(result);
+    }
+
+    /// <summary>收藏路径（Dart 侧 addFavoriteHandler → POST /files/favorite）。</summary>
+    public static async Task<bool> AddFavoriteAsync(string path)
+    {
+        var result = await InvokeAsync("addFavoriteHandler",
+            new Dictionary<string, object?> { ["path"] = path });
+        return IsSuccess(result);
+    }
+
+    /// <summary>取消收藏（id 为收藏记录 ID，Dart 侧 removeFavoriteHandler → POST /files/favorite/del）。</summary>
+    public static async Task<bool> RemoveFavoriteAsync(long id)
+    {
+        var result = await InvokeAsync("removeFavoriteHandler",
+            new Dictionary<string, object?> { ["id"] = id });
+        return IsSuccess(result);
+    }
+
+    /// <summary>服务端从 URL 下载文件（Dart 侧 wgetDownloadHandler → POST /files/wget）。</summary>
+    public static async Task<bool> WgetDownloadAsync(string url, string path, string name)
+    {
+        var result = await InvokeAsync("wgetDownloadHandler", new Dictionary<string, object?>
+        {
+            ["url"] = url,
+            ["path"] = path,
+            ["name"] = name,
+        });
+        return IsSuccess(result);
+    }
+
+    /// <summary>读取文件内容（Dart 侧 getFileContentHandler → POST /files/content {path, expand:true}）。</summary>
+    public static async Task<JsonElement?> GetFileContentAsync(string path)
+    {
+        return await InvokeWithRetryAsync("getFileContentHandler",
+            new Dictionary<string, object?> { ["path"] = path });
+    }
+
+    /// <summary>收藏列表（Dart 侧 getFavoritesHandler → POST /files/favorite/search）。</summary>
+    public static async Task<JsonElement?> GetFavoritesAsync()
+    {
+        return await InvokeWithRetryAsync("getFavoritesHandler");
     }
 
     /// <summary>新建数据库（本地部署最小集；remote 需连接信息）。
