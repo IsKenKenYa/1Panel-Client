@@ -30,7 +30,7 @@ public sealed class AIPage : ModulePageBase
 
     public AIPage()
     {
-        PageTitle = "AI";
+        PageTitle = L10n.T("serverModuleAi", "AI");
     }
 
     protected override async void OnPageShown()
@@ -77,7 +77,7 @@ public sealed class AIPage : ModulePageBase
                 }
                 else
                 {
-                    _errorToast.Show("Failed to refresh AI models.");
+                    _errorToast.Show(L10n.T("hostAiModelsRefreshFailed", "Failed to refresh AI models."));
                 }
                 return;
             }
@@ -163,7 +163,7 @@ public sealed class AIPage : ModulePageBase
                 models.Add(new AIModelEntry
                 {
                     Id = TryGetInt64(item, "id"),
-                    Name = TryGetString(item, "name") ?? "Unknown",
+                    Name = TryGetString(item, "name") ?? L10n.T("hostAiModelUnknownName", "Unknown"),
                     Size = TryGetString(item, "size") ?? "",
                     Modified = TryGetString(item, "modified") ?? "",
                 });
@@ -184,14 +184,14 @@ public sealed class AIPage : ModulePageBase
         var createButton = new AppBarButton
         {
             Icon = new FontIcon { Glyph = "\uE710" },
-            Label = "Create model",
+            Label = L10n.T("aiModelCreate", "Create model"),
         };
         createButton.Click += (s, e) => _ = ShowCreateModelDialogAsync();
 
         var refreshButton = new AppBarButton
         {
             Icon = new FontIcon { Glyph = "\uE72C" },
-            Label = "Refresh",
+            Label = L10n.T("commonRefresh", "Refresh"),
         };
         refreshButton.Click += async (s, e) => await RefreshAsync();
 
@@ -289,7 +289,7 @@ public sealed class AIPage : ModulePageBase
 
         body.Children.Add(new TextBlock
         {
-            Text = "Connection",
+            Text = L10n.T("hostAiConnectionTitle", "Connection"),
             FontSize = 14,
             FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
         });
@@ -312,7 +312,7 @@ public sealed class AIPage : ModulePageBase
             // Neutral information state, not an error: Ollama is optional.
             body.Children.Add(new TextBlock
             {
-                Text = "Ollama not detected on this server.",
+                Text = L10n.T("hostAiOllamaNotDetected", "Ollama not detected on this server."),
                 FontSize = 13,
                 TextWrapping = TextWrapping.Wrap,
                 Foreground = TryGetThemeBrush("TextFillColorSecondaryBrush", Microsoft.UI.Colors.Gray),
@@ -327,10 +327,10 @@ public sealed class AIPage : ModulePageBase
         bag.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         bag.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
-        AddConnectionRow(bag, 0, "App Install ID",
+        AddConnectionRow(bag, 0, L10n.T("aiAppInstallIdLabel", "App Install ID"),
             context.HasAppInstallId ? context.AppInstallId.ToString(CultureInfo.InvariantCulture) : "");
-        AddConnectionRow(bag, 1, "Name", context.Name);
-        AddConnectionRow(bag, 2, "Status", context.Status);
+        AddConnectionRow(bag, 1, L10n.T("commonName", "Name"), context.Name);
+        AddConnectionRow(bag, 2, L10n.T("commonStatus", "Status"), context.Status);
         body.Children.Add(bag);
 
         if (context.Candidates.Count > 1)
@@ -349,7 +349,7 @@ public sealed class AIPage : ModulePageBase
         _bindInfoBar = new InfoBar
         {
             Severity = InfoBarSeverity.Success,
-            Message = "Domain bound. Refresh to see connection details.",
+            Message = L10n.T("hostAiDomainBoundHint", "Domain bound. Refresh to see connection details."),
             IsClosable = true,
             IsOpen = false,
         };
@@ -357,7 +357,7 @@ public sealed class AIPage : ModulePageBase
 
         if (context.HasAppInstallId)
         {
-            var bindButton = new Button { Content = "Bind domain" };
+            var bindButton = new Button { Content = L10n.T("aiBindDomain", "Bind domain") };
             bindButton.Click += (s, e) => _ = ShowBindDomainDialogAsync();
             body.Children.Add(bindButton);
         }
@@ -428,14 +428,14 @@ public sealed class AIPage : ModulePageBase
             {
                 var domainBox = new TextBox
                 {
-                    Header = "Domain",
+                    Header = L10n.T("aiTabDomain", "Domain"),
                     PlaceholderText = "ai.example.com",
                     Text = pendingDomain ?? "",
                 };
 
                 var ipListBox = new TextBox
                 {
-                    Header = "IP allowlist (optional, comma-separated)",
+                    Header = L10n.T("hostAiIpAllowlistLabel", "IP allowlist (optional, comma-separated)"),
                     Text = pendingIpList ?? "",
                 };
 
@@ -457,10 +457,10 @@ public sealed class AIPage : ModulePageBase
 
                 var dialog = new ContentDialog
                 {
-                    Title = "Bind domain",
+                    Title = L10n.T("aiBindDomain", "Bind domain"),
                     Content = form,
-                    PrimaryButtonText = "Bind",
-                    CloseButtonText = "Cancel",
+                    PrimaryButtonText = L10n.T("firewallBindAction", "Bind"),
+                    CloseButtonText = L10n.T("commonCancel", "Cancel"),
                     DefaultButton = ContentDialogButton.Primary,
                     XamlRoot = XamlRoot,
                 };
@@ -475,7 +475,7 @@ public sealed class AIPage : ModulePageBase
                     if (string.IsNullOrWhiteSpace(domainBox.Text))
                     {
                         args.Cancel = true;
-                        SetFormError(errorText, "Domain is required.");
+                        SetFormError(errorText, L10n.T("websitesDomainValidationRequired", "Domain is required."));
                     }
                 };
 
@@ -497,10 +497,10 @@ public sealed class AIPage : ModulePageBase
                 // naming the target instance before touching the bridge.
                 var confirmed = await ConfirmDialog.ShowAsync(
                     XamlRoot,
-                    "Bind Domain",
+                    L10n.T("aiBindDomain", "Bind Domain"),
                     $"Bind \"{domain}\" to Ollama instance #{context.AppInstallId}?\nThe existing domain binding will be overwritten.",
-                    "Bind",
-                    "Cancel",
+                    L10n.T("firewallBindAction", "Bind"),
+                    L10n.T("commonCancel", "Cancel"),
                     isDestructive: false);
 
                 if (!confirmed) continue; // Back to the form; input carried over.
@@ -512,8 +512,8 @@ public sealed class AIPage : ModulePageBase
                     return;
                 }
 
-                _errorToast.Show("Failed to bind domain.");
-                pendingError = "Bind failed. Adjust the input and try again.";
+                _errorToast.Show(L10n.T("hostAiBindDomainFailed", "Failed to bind domain."));
+                pendingError = L10n.T("hostAiBindFailedRetry", "Bind failed. Adjust the input and try again.");
                 // Loop reopens the form so the failure stays editable.
             }
         }
@@ -606,7 +606,7 @@ public sealed class AIPage : ModulePageBase
             VerticalAlignment = VerticalAlignment.Center,
             Margin = new Thickness(16, 0, 0, 0),
         };
-        ToolTipService.SetToolTip(moreButton, "Model actions");
+        ToolTipService.SetToolTip(moreButton, L10n.T("hostAiModelActions", "Model actions"));
         moreButton.Flyout = BuildRowFlyout(model);
         Grid.SetColumn(moreButton, 4);
         grid.Children.Add(moreButton);
@@ -620,7 +620,7 @@ public sealed class AIPage : ModulePageBase
 
         var recreateItem = new MenuFlyoutItem
         {
-            Text = "Recreate",
+            Text = L10n.T("hostAiModelRecreateAction", "Recreate"),
             Icon = new FontIcon { Glyph = "\uE72C" },
         };
         recreateItem.Click += (s, e) => _ = RecreateModelAsync(model);
@@ -628,7 +628,7 @@ public sealed class AIPage : ModulePageBase
 
         var deleteItem = new MenuFlyoutItem
         {
-            Text = "Delete",
+            Text = L10n.T("commonDelete", "Delete"),
             Icon = new FontIcon { Glyph = "\uE74D" },
         };
         deleteItem.Click += (s, e) => _ = DeleteModelAsync(model);
@@ -645,10 +645,10 @@ public sealed class AIPage : ModulePageBase
         // matching the upstream delete dialog that lists selected models.
         var confirmed = await ConfirmDialog.ShowAsync(
             XamlRoot,
-            "Delete AI Model",
+            L10n.T("hostAiModelDeleteTitle", "Delete AI Model"),
             $"Are you sure you want to delete model \"{model.Name}\"?\nThis action cannot be undone.",
-            "Delete",
-            "Cancel",
+            L10n.T("commonDelete", "Delete"),
+            L10n.T("commonCancel", "Cancel"),
             isDestructive: true);
 
         if (!confirmed) return;
@@ -685,10 +685,10 @@ public sealed class AIPage : ModulePageBase
         // and states that the model will be rebuilt.
         var confirmed = await ConfirmDialog.ShowAsync(
             XamlRoot,
-            "Recreate AI Model",
+            L10n.T("aiModelRecreate", "Recreate AI Model"),
             $"Are you sure you want to recreate model \"{model.Name}\"?\nThe model will be pulled again and rebuilt.",
-            "Recreate",
-            "Cancel",
+            L10n.T("hostAiModelRecreateAction", "Recreate"),
+            L10n.T("commonCancel", "Cancel"),
             isDestructive: false);
 
         if (!confirmed) return;
@@ -729,7 +729,7 @@ public sealed class AIPage : ModulePageBase
         {
             var nameBox = new TextBox
             {
-                Header = "Ollama model name",
+                Header = L10n.T("aiModelNameLabel", "Ollama model name"),
                 PlaceholderText = "llama3:8b",
             };
 
@@ -750,10 +750,10 @@ public sealed class AIPage : ModulePageBase
 
             var dialog = new ContentDialog
             {
-                Title = "Create model",
+                Title = L10n.T("aiModelCreate", "Create model"),
                 Content = form,
-                PrimaryButtonText = "Create",
-                CloseButtonText = "Cancel",
+                PrimaryButtonText = L10n.T("commonCreate", "Create"),
+                CloseButtonText = L10n.T("commonCancel", "Cancel"),
                 DefaultButton = ContentDialogButton.Primary,
                 XamlRoot = XamlRoot,
             };
@@ -772,8 +772,8 @@ public sealed class AIPage : ModulePageBase
                 else
                 {
                     submitting = false;
-                    _errorToast.Show("Failed to create model.");
-                    SetFormError(errorText, "Create failed. Adjust the input and try again.");
+                    _errorToast.Show(L10n.T("hostAiModelCreateFailed", "Failed to create model."));
+                    SetFormError(errorText, L10n.T("hostAiCreateFailedRetry", "Create failed. Adjust the input and try again."));
                 }
             }
 
@@ -797,7 +797,7 @@ public sealed class AIPage : ModulePageBase
                 if (string.IsNullOrWhiteSpace(nameBox.Text))
                 {
                     args.Cancel = true;
-                    SetFormError(errorText, "Model name is required.");
+                    SetFormError(errorText, L10n.T("aiModelNameRequired", "Model name is required."));
                     return;
                 }
 

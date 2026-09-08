@@ -45,7 +45,7 @@ public sealed class ToolboxPage : ModulePageBase
 
     public ToolboxPage()
     {
-        PageTitle = "Toolbox";
+        PageTitle = L10n.T("toolboxCenterTitle", "Toolbox");
     }
 
     protected override async void OnPageShown()
@@ -94,7 +94,7 @@ public sealed class ToolboxPage : ModulePageBase
             }
             else
             {
-                _errorToast.Show("Failed to refresh device snapshot.");
+                _errorToast.Show(L10n.T("hostToolboxSnapshotRefreshFailed", "Failed to refresh device snapshot."));
             }
             return;
         }
@@ -207,7 +207,7 @@ public sealed class ToolboxPage : ModulePageBase
 
         var refreshButton = new AppBarButton
         {
-            Label = "Refresh",
+            Label = L10n.T("commonRefresh", "Refresh"),
             Icon = new FontIcon { Glyph = "\uE72C" },
         };
         refreshButton.Click += (s, e) => _ = LoadSnapshotAsync(showLoadingState: true);
@@ -256,7 +256,7 @@ public sealed class ToolboxPage : ModulePageBase
     /// </summary>
     private FrameworkElement BuildSystemInfoCard(DeviceSnapshotEntry entry)
     {
-        var card = CreateCard("System Info", out var panel);
+        var card = CreateCard(L10n.T("systemSettingsSystemSection", "System Info"), out var panel);
 
         // Two label+value pairs per row; relative columns only. Spacer column
         // separates the pair columns, Star columns share the value space.
@@ -271,13 +271,13 @@ public sealed class ToolboxPage : ModulePageBase
             bag.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         }
 
-        AddInfoPair(bag, 0, 0, "Hostname", entry.Hostname);
-        AddInfoPair(bag, 0, 1, "System", JoinNonEmpty(" ", entry.SystemName, entry.SystemVersion));
-        AddInfoPair(bag, 1, 0, "Kernel", entry.ProductVersion);
-        AddInfoPair(bag, 1, 1, "Product", entry.ProductName);
-        AddInfoPair(bag, 2, 0, "Time Zone", entry.TimeZone);
-        AddInfoPair(bag, 2, 1, "Local Time", entry.LocalTime);
-        AddInfoPair(bag, 3, 0, "NTP Server", entry.Ntp);
+        AddInfoPair(bag, 0, 0, L10n.T("toolboxDeviceHostname", "Hostname"), entry.Hostname);
+        AddInfoPair(bag, 0, 1, L10n.T("toolboxDeviceSystemLabel", "System"), JoinNonEmpty(" ", entry.SystemName, entry.SystemVersion));
+        AddInfoPair(bag, 1, 0, L10n.T("hostToolboxKernelLabel", "Kernel"), entry.ProductVersion);
+        AddInfoPair(bag, 1, 1, L10n.T("hostToolboxProductLabel", "Product"), entry.ProductName);
+        AddInfoPair(bag, 2, 0, L10n.T("hostToolboxTimeZoneLabel", "Time Zone"), entry.TimeZone);
+        AddInfoPair(bag, 2, 1, L10n.T("toolboxDeviceTimeLabel", "Local Time"), entry.LocalTime);
+        AddInfoPair(bag, 3, 0, L10n.T("hostToolboxNtpServerLabel", "NTP Server"), entry.Ntp);
 
         panel.Children.Add(bag);
         return card;
@@ -313,19 +313,19 @@ public sealed class ToolboxPage : ModulePageBase
     /// </summary>
     private FrameworkElement BuildSwapCard(DeviceSnapshotEntry entry)
     {
-        var card = CreateCard("Swap", out var panel);
+        var card = CreateCard(L10n.T("toolboxDeviceSwap", "Swap"), out var panel);
 
         var off = entry.SwapMemoryTotal <= 0;
         panel.Children.Add(new TextBlock
         {
-            Text = off ? "Off" : FormatBytes(entry.SwapMemoryTotal),
+            Text = off ? L10n.T("hostToolboxSwapOff", "Off") : FormatBytes(entry.SwapMemoryTotal),
             FontSize = 24,
             FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
         });
 
         panel.Children.Add(new TextBlock
         {
-            Text = off ? "Swap is disabled on this host." : "Total swap size.",
+            Text = off ? L10n.T("hostToolboxSwapOffHint", "Swap is disabled on this host.") : L10n.T("hostToolboxSwapTotalHint", "Total swap size."),
             FontSize = 12,
             Foreground = TryGetThemeBrush("TextFillColorSecondaryBrush", Microsoft.UI.Colors.Gray),
             TextWrapping = TextWrapping.Wrap,
@@ -343,7 +343,7 @@ public sealed class ToolboxPage : ModulePageBase
     /// </summary>
     private FrameworkElement BuildDnsCard(DeviceSnapshotEntry entry)
     {
-        var card = CreateCard("DNS", out var panel);
+        var card = CreateCard(L10n.T("toolboxDeviceDns", "DNS"), out var panel);
 
         if (!string.IsNullOrWhiteSpace(entry.Dns))
         {
@@ -358,14 +358,14 @@ public sealed class ToolboxPage : ModulePageBase
 
         var input = new TextBox
         {
-            PlaceholderText = "e.g. 8.8.8.8",
+            PlaceholderText = L10n.T("hostToolboxDnsPlaceholder", "e.g. 8.8.8.8"),
             HorizontalAlignment = HorizontalAlignment.Stretch,
             Margin = new Thickness(0, 0, 8, 0),
         };
 
         var verifyButton = new Button
         {
-            Content = "Verify",
+            Content = L10n.T("hostToolboxDnsVerifyAction", "Verify"),
             VerticalAlignment = VerticalAlignment.Stretch,
         };
 
@@ -392,7 +392,7 @@ public sealed class ToolboxPage : ModulePageBase
         var successBar = new InfoBar
         {
             Severity = InfoBarSeverity.Success,
-            Message = "DNS reachable",
+            Message = L10n.T("hostToolboxDnsReachable", "DNS reachable"),
             IsClosable = true,
             IsOpen = false,
         };
@@ -430,7 +430,7 @@ public sealed class ToolboxPage : ModulePageBase
             var dns = input.Text.Trim();
             if (dns.Length == 0)
             {
-                SetInlineError(errorText, "Enter a DNS server to verify.");
+                SetInlineError(errorText, L10n.T("hostToolboxDnsEmptyError", "Enter a DNS server to verify."));
                 return;
             }
             SetInlineError(errorText, null);
@@ -459,7 +459,7 @@ public sealed class ToolboxPage : ModulePageBase
     /// </summary>
     private FrameworkElement BuildUsersCard(List<string> users)
     {
-        var card = CreateCard("Users", out var panel);
+        var card = CreateCard(L10n.T("hostToolboxUsersTitle", "Users"), out var panel);
 
         if (users.Count == 0)
         {

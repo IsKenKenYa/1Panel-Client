@@ -45,7 +45,7 @@ public sealed class HostPage : ModulePageBase
 
     public HostPage()
     {
-        PageTitle = "SSH";
+        PageTitle = L10n.T("hostHostSshTitle", "SSH");
     }
 
     protected override async void OnPageShown()
@@ -96,7 +96,7 @@ public sealed class HostPage : ModulePageBase
             }
             else
             {
-                _errorToast.Show("Failed to refresh the SSH information.");
+                _errorToast.Show(L10n.T("hostHostSshRefreshFailed", "Failed to refresh the SSH information."));
             }
             return;
         }
@@ -189,7 +189,7 @@ public sealed class HostPage : ModulePageBase
 
         var refreshButton = new AppBarButton
         {
-            Label = "Refresh",
+            Label = L10n.T("commonRefresh", "Refresh"),
             Icon = new FontIcon { Glyph = "\uE72C" },
         };
         refreshButton.Click += (s, e) => _ = LoadSshAsync(showLoadingState: true);
@@ -203,7 +203,7 @@ public sealed class HostPage : ModulePageBase
 
         var startButton = new AppBarButton
         {
-            Label = "Start",
+            Label = L10n.T("commonStart", "Start"),
             Icon = new FontIcon { Glyph = "\uE768" }, // Play.
             IsEnabled = canOperate && !entry.IsActive,
         };
@@ -212,7 +212,7 @@ public sealed class HostPage : ModulePageBase
 
         var stopButton = new AppBarButton
         {
-            Label = "Stop",
+            Label = L10n.T("commonStop", "Stop"),
             Icon = new FontIcon { Glyph = "\uE71A" }, // Stop.
             IsEnabled = canOperate && entry.IsActive,
         };
@@ -221,7 +221,7 @@ public sealed class HostPage : ModulePageBase
 
         var restartButton = new AppBarButton
         {
-            Label = "Restart",
+            Label = L10n.T("commonRestart", "Restart"),
             Icon = new FontIcon { Glyph = "\uE777" }, // Sync.
             IsEnabled = canOperate,
         };
@@ -263,7 +263,7 @@ public sealed class HostPage : ModulePageBase
             });
             notInstalled.Children.Add(new TextBlock
             {
-                Text = "SSH service is not installed on this server.",
+                Text = L10n.T("hostHostSshNotInstalled", "SSH service is not installed on this server."),
                 FontSize = 13,
                 Foreground = TryGetThemeBrush("SystemFillColorCautionBrush", Microsoft.UI.Colors.DarkOrange),
                 VerticalAlignment = VerticalAlignment.Center,
@@ -284,14 +284,14 @@ public sealed class HostPage : ModulePageBase
         kvGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
         kvGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-        AddKvRow(kvGrid, "Port", CreateValueText(string.IsNullOrEmpty(entry.Port) ? "-" : entry.Port));
-        AddKvRow(kvGrid, "Listen address", CreateValueText(GetListenAddressDisplay(entry)));
-        AddKvRow(kvGrid, "Password authentication", CreateYesNoBadge(entry.PasswordAuthentication));
-        AddKvRow(kvGrid, "Public key authentication", CreateValueText(GetRawOrDash(entry.PubkeyAuthentication)));
-        AddKvRow(kvGrid, "Permit root login", CreateValueText(GetRawOrDash(entry.PermitRootLogin)));
-        AddKvRow(kvGrid, "Use DNS", CreateValueText(GetRawOrDash(entry.UseDns)));
-        AddKvRow(kvGrid, "Auto start", CreateValueText(entry.AutoStart ? "Yes" : "No"));
-        AddKvRow(kvGrid, "Current user", CreateValueText(GetRawOrDash(entry.CurrentUser)));
+        AddKvRow(kvGrid, L10n.T("sshPortLabel", "Port"), CreateValueText(string.IsNullOrEmpty(entry.Port) ? "-" : entry.Port));
+        AddKvRow(kvGrid, L10n.T("sshListenAddressLabel", "Listen address"), CreateValueText(GetListenAddressDisplay(entry)));
+        AddKvRow(kvGrid, L10n.T("sshPasswordAuthenticationLabel", "Password authentication"), CreateYesNoBadge(entry.PasswordAuthentication));
+        AddKvRow(kvGrid, L10n.T("sshPubkeyAuthenticationLabel", "Public key authentication"), CreateValueText(GetRawOrDash(entry.PubkeyAuthentication)));
+        AddKvRow(kvGrid, L10n.T("sshPermitRootLoginLabel", "Permit root login"), CreateValueText(GetRawOrDash(entry.PermitRootLogin)));
+        AddKvRow(kvGrid, L10n.T("sshUseDnsLabel", "Use DNS"), CreateValueText(GetRawOrDash(entry.UseDns)));
+        AddKvRow(kvGrid, L10n.T("sshAutoStartLabel", "Auto start"), CreateValueText(entry.AutoStart ? L10n.T("commonYes", "Yes") : L10n.T("commonNo", "No")));
+        AddKvRow(kvGrid, L10n.T("sshCurrentUserLabel", "Current user"), CreateValueText(GetRawOrDash(entry.CurrentUser)));
 
         // The upstream status message only renders when it carries a value.
         if (!string.IsNullOrWhiteSpace(entry.Message))
@@ -304,7 +304,7 @@ public sealed class HostPage : ModulePageBase
                 TextWrapping = TextWrapping.Wrap,
                 VerticalAlignment = VerticalAlignment.Center,
             };
-            AddKvRow(kvGrid, "Message", messageText);
+            AddKvRow(kvGrid, L10n.T("sshLogsMessageLabel", "Message"), messageText);
         }
 
         card.Children.Add(kvGrid);
@@ -329,7 +329,7 @@ public sealed class HostPage : ModulePageBase
         });
         badgeContent.Children.Add(new TextBlock
         {
-            Text = active ? "Running" : "Stopped",
+            Text = active ? L10n.T("statusRunning", "Running") : L10n.T("statusStopped", "Stopped"),
             FontSize = 15,
             FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
             Foreground = accentBrush,
@@ -367,21 +367,21 @@ public sealed class HostPage : ModulePageBase
             TextWrapping = TextWrapping.NoWrap,
             Text = _configText ?? "",
             PlaceholderText = configFailed
-                ? "Failed to load the configuration file."
-                : "# The SSH configuration file does not exist or is empty (/etc/ssh/sshd_config)",
+                ? L10n.T("hostHostSshConfigLoadFailed", "Failed to load the configuration file.")
+                : L10n.T("hostHostSshConfigEmptyPlaceholder", "# The SSH configuration file does not exist or is empty (/etc/ssh/sshd_config)"),
         };
         ScrollViewer.SetHorizontalScrollBarVisibility(_configBox, ScrollBarVisibility.Auto);
 
         _editConfigButton = new Button
         {
-            Content = "Edit",
+            Content = L10n.T("commonEdit", "Edit"),
             IsEnabled = !configFailed,
         };
         _editConfigButton.Click += OnEditConfigClicked;
 
         _saveConfigButton = new Button
         {
-            Content = "Save",
+            Content = L10n.T("commonSave", "Save"),
             IsEnabled = false, // Saving is only allowed in edit mode.
         };
         _saveConfigButton.Click += (s, e) => _ = SaveConfigAsync();
@@ -403,7 +403,7 @@ public sealed class HostPage : ModulePageBase
         {
             Header = new TextBlock
             {
-                Text = "Configuration file (/etc/ssh/sshd_config)",
+                Text = L10n.T("hostHostSshConfigFileTitle", "Configuration file (/etc/ssh/sshd_config)"),
                 FontSize = 14,
             },
             Content = configPanel,
@@ -437,10 +437,10 @@ public sealed class HostPage : ModulePageBase
         {
             var confirmed = await ConfirmDialog.ShowAsync(
                 XamlRoot,
-                "Save SSH configuration",
-                "This will overwrite /etc/ssh/sshd_config with the edited content.\nAn invalid configuration may make the SSH service unavailable. Continue?",
-                "Save",
-                "Cancel");
+                L10n.T("hostHostSshSaveTitle", "Save SSH configuration"),
+                L10n.T("hostHostSshSaveMessage", "This will overwrite /etc/ssh/sshd_config with the edited content.\nAn invalid configuration may make the SSH service unavailable. Continue?"),
+                L10n.T("commonSave", "Save"),
+                L10n.T("commonCancel", "Cancel"));
 
             if (!confirmed) return;
 
@@ -452,7 +452,7 @@ public sealed class HostPage : ModulePageBase
             }
             else
             {
-                _errorToast.Show("Failed to save the SSH configuration.");
+                _errorToast.Show(L10n.T("hostHostSshSaveFailed", "Failed to save the SSH configuration."));
                 // Keep the editing state: the buttons are untouched.
             }
         }
@@ -554,12 +554,12 @@ public sealed class HostPage : ModulePageBase
         if (value == "yes")
         {
             accentBrush = TryGetThemeBrush("SystemFillColorSuccessBrush", Microsoft.UI.Colors.SeaGreen);
-            text = "Yes";
+            text = L10n.T("commonYes", "Yes");
         }
         else if (value == "no")
         {
             accentBrush = TryGetThemeBrush("SystemFillColorCriticalBrush", Microsoft.UI.Colors.IndianRed);
-            text = "No";
+            text = L10n.T("commonNo", "No");
         }
         else
         {
