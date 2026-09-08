@@ -4179,5 +4179,10 @@
   "hostAiAgentDeleteConfirm": "删除智能体 '{0}'？该操作无法撤销。",
   "hostAiAgentOperationSuccess": "操作成功。",
   "hostAiAgentDeleteFailed": "删除智能体失败。",
-  "hostAiAgentStatusError": "错误"
+  "hostAiAgentStatusError": "错误",
+  "hostAiTabModels": "本地模型",
+  "hostAiTabAccounts": "账号",
+  "hostAiTabMcp": "MCP",
+  "hostAiTabAgents": "智能体",
+  "hostAiTabGpu": "GPU"
 }

@@ -18,6 +18,13 @@ ARB = ROOT / "lib" / "l10n" / "app_en.arb"
 T_PATTERN = re.compile(r'L10n\.T\(\s*"((?:[^"\\]|\\.)*)"')
 # MainWindow.NavLabelKeys 的 { "Tag", ("key", "English") } 元组（仅主窗口扫描）。
 NAV_PATTERN = re.compile(r'\{\s*"[^"]+",\s*\(\s*"((?:[^"\\]|\\.)*)",\s*"')
+# Tab 注册表元组：("English", null|Type.Build) 形态（WebsiteConfigPage/AIPage）。
+TUPLE_PATTERN = re.compile(
+    r'\(\s*"((?:[^"\\]|\\.)*)",\s*"'
+    r'(?:[^"\\]|\\.)*",\s*'
+    r'(?:null|[A-Z][A-Za-z0-9]*\.Build\))')
+# 持有 ("arbKey", "English", ...) 注册表元组的文件清单。
+TUPLE_FILES = {"MainWindow.xaml.cs", "WebsiteConfigPage.cs", "AIPage.cs"}
 
 
 def main() -> int:
@@ -27,8 +34,9 @@ def main() -> int:
     for cs in sorted(HOST_DIR.rglob("*.cs")):
         text = io.open(cs, encoding="utf-8").read()
         patterns = [T_PATTERN]
-        if cs.name == "MainWindow.xaml.cs":
+        if cs.name in TUPLE_FILES:
             patterns.append(NAV_PATTERN)
+            patterns.append(TUPLE_PATTERN)
         for pattern in patterns:
             for match in pattern.finditer(text):
                 total += 1

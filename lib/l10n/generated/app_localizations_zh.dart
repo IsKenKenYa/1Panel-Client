@@ -10100,4 +10100,19 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get hostAiAgentStatusError => '错误';
+
+  @override
+  String get hostAiTabModels => '本地模型';
+
+  @override
+  String get hostAiTabAccounts => '账号';
+
+  @override
+  String get hostAiTabMcp => 'MCP';
+
+  @override
+  String get hostAiTabAgents => '智能体';
+
+  @override
+  String get hostAiTabGpu => 'GPU';
 }

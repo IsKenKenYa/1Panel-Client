@@ -10412,4 +10412,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hostAiAgentStatusError => 'Error';
+
+  @override
+  String get hostAiTabModels => 'Local Models';
+
+  @override
+  String get hostAiTabAccounts => 'Accounts';
+
+  @override
+  String get hostAiTabMcp => 'MCP';
+
+  @override
+  String get hostAiTabAgents => 'Agents';
+
+  @override
+  String get hostAiTabGpu => 'GPU';
 }

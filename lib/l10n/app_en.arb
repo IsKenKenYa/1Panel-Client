@@ -4318,5 +4318,10 @@
   "hostAiAgentDeleteConfirm": "Delete agent '{0}'? This action cannot be undone.",
   "hostAiAgentOperationSuccess": "Operation completed.",
   "hostAiAgentDeleteFailed": "Failed to delete the agent.",
-  "hostAiAgentStatusError": "Error"
+  "hostAiAgentStatusError": "Error",
+  "hostAiTabModels": "Local Models",
+  "hostAiTabAccounts": "Accounts",
+  "hostAiTabMcp": "MCP",
+  "hostAiTabAgents": "Agents",
+  "hostAiTabGpu": "GPU"
 }

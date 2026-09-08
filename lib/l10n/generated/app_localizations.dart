@@ -19604,6 +19604,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error'**
   String get hostAiAgentStatusError;
+
+  /// No description provided for @hostAiTabModels.
+  ///
+  /// In en, this message translates to:
+  /// **'Local Models'**
+  String get hostAiTabModels;
+
+  /// No description provided for @hostAiTabAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts'**
+  String get hostAiTabAccounts;
+
+  /// No description provided for @hostAiTabMcp.
+  ///
+  /// In en, this message translates to:
+  /// **'MCP'**
+  String get hostAiTabMcp;
+
+  /// No description provided for @hostAiTabAgents.
+  ///
+  /// In en, this message translates to:
+  /// **'Agents'**
+  String get hostAiTabAgents;
+
+  /// No description provided for @hostAiTabGpu.
+  ///
+  /// In en, this message translates to:
+  /// **'GPU'**
+  String get hostAiTabGpu;
 }
 
 class _AppLocalizationsDelegate
