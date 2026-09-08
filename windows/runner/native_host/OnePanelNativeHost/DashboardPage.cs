@@ -32,7 +32,7 @@ public sealed class DashboardPage : ModulePageBase
 
     public DashboardPage()
     {
-        PageTitle = "Dashboard";
+        PageTitle = L10n.T("dashboardTitle", "Dashboard");
     }
 
     protected override async void OnPageShown()
@@ -81,7 +81,7 @@ public sealed class DashboardPage : ModulePageBase
             }
             else
             {
-                _errorToast.Show("Failed to refresh dashboard.");
+                _errorToast.Show(L10n.T("hostDashboardRefreshFailed", "Failed to refresh dashboard."));
             }
             return;
         }
@@ -153,17 +153,17 @@ public sealed class DashboardPage : ModulePageBase
         gauges.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
         gauges.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-        var cpuCard = BuildResourceCard("CPU", entry.Cpu, detail: "");
+        var cpuCard = BuildResourceCard(L10n.T("serverCpuLabel", "CPU"), entry.Cpu, detail: "");
         cpuCard.Margin = new Thickness(0, 0, 12, 0);
         Grid.SetColumn(cpuCard, 0);
         gauges.Children.Add(cpuCard);
 
-        var memoryCard = BuildResourceCard("Memory", entry.Memory, entry.MemoryUsage);
+        var memoryCard = BuildResourceCard(L10n.T("serverMemoryLabel", "Memory"), entry.Memory, entry.MemoryUsage);
         memoryCard.Margin = new Thickness(0, 0, 12, 0);
         Grid.SetColumn(memoryCard, 1);
         gauges.Children.Add(memoryCard);
 
-        var diskCard = BuildResourceCard("Disk", entry.Disk, entry.DiskUsage);
+        var diskCard = BuildResourceCard(L10n.T("serverDiskLabel", "Disk"), entry.Disk, entry.DiskUsage);
         Grid.SetColumn(diskCard, 2);
         gauges.Children.Add(diskCard);
 
@@ -193,7 +193,7 @@ public sealed class DashboardPage : ModulePageBase
 
         var refreshButton = new AppBarButton
         {
-            Label = "Refresh",
+            Label = L10n.T("commonRefresh", "Refresh"),
             Icon = new FontIcon { Glyph = "\uE72C" },
         };
         refreshButton.Click += (s, e) => _ = LoadDashboardAsync(showLoadingState: true);
@@ -287,7 +287,7 @@ public sealed class DashboardPage : ModulePageBase
 
         panel.Children.Add(new TextBlock
         {
-            Text = "System Info",
+            Text = L10n.T("systemSettingsSystemSection", "System Info"),
             FontSize = 14,
             FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
         });
@@ -304,12 +304,12 @@ public sealed class DashboardPage : ModulePageBase
         bag.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         bag.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
-        AddInfoPair(bag, 0, 0, "Hostname", entry.Hostname);
-        AddInfoPair(bag, 0, 1, "OS", entry.Os);
-        AddInfoPair(bag, 1, 0, "Kernel", entry.KernelVersion);
-        AddInfoPair(bag, 1, 1, "CPU Cores", entry.CpuCores > 0 ? entry.CpuCores.ToString(CultureInfo.InvariantCulture) : "--");
-        AddInfoPair(bag, 2, 0, "Uptime", entry.Uptime);
-        AddInfoPair(bag, 2, 1, "Panel Version", entry.PanelVersion);
+        AddInfoPair(bag, 0, 0, L10n.T("dashboardHostNameLabel", "Hostname"), entry.Hostname);
+        AddInfoPair(bag, 0, 1, L10n.T("dashboardOsLabel", "OS"), entry.Os);
+        AddInfoPair(bag, 1, 0, L10n.T("hostDashboardKernelLabel", "Kernel"), entry.KernelVersion);
+        AddInfoPair(bag, 1, 1, L10n.T("hostDashboardCpuCoresLabel", "CPU Cores"), entry.CpuCores > 0 ? entry.CpuCores.ToString(CultureInfo.InvariantCulture) : "--");
+        AddInfoPair(bag, 2, 0, L10n.T("dashboardUptimeLabel", "Uptime"), entry.Uptime);
+        AddInfoPair(bag, 2, 1, L10n.T("hostDashboardPanelVersionLabel", "Panel Version"), entry.PanelVersion);
 
         panel.Children.Add(bag);
         card.Child = panel;

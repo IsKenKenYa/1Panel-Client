@@ -32,7 +32,7 @@ public sealed class MonitoringPage : ModulePageBase
 
     public MonitoringPage()
     {
-        PageTitle = "Monitoring";
+        PageTitle = L10n.T("serverModuleMonitoring", "Monitoring");
     }
 
     protected override async void OnPageShown()
@@ -83,7 +83,7 @@ public sealed class MonitoringPage : ModulePageBase
             }
             else
             {
-                _errorToast.Show("Failed to refresh monitoring data.");
+                _errorToast.Show(L10n.T("hostMonitoringRefreshFailed", "Failed to refresh monitoring data."));
             }
             return;
         }
@@ -150,17 +150,17 @@ public sealed class MonitoringPage : ModulePageBase
         cards.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         cards.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
-        var cpuCard = BuildUsageCard("CPU", FormatPercent(snapshot.Cpu), snapshot.Cpu);
+        var cpuCard = BuildUsageCard(L10n.T("serverCpuLabel", "CPU"), FormatPercent(snapshot.Cpu), snapshot.Cpu);
         Grid.SetRow(cpuCard, 0);
         Grid.SetColumn(cpuCard, 0);
         cards.Children.Add(cpuCard);
 
-        var memoryCard = BuildUsageCard("Memory", FormatPercent(snapshot.Memory), snapshot.Memory);
+        var memoryCard = BuildUsageCard(L10n.T("serverMemoryLabel", "Memory"), FormatPercent(snapshot.Memory), snapshot.Memory);
         Grid.SetRow(memoryCard, 0);
         Grid.SetColumn(memoryCard, 1);
         cards.Children.Add(memoryCard);
 
-        var diskCard = BuildUsageCard("Disk", FormatPercent(snapshot.Disk), snapshot.Disk);
+        var diskCard = BuildUsageCard(L10n.T("serverDiskLabel", "Disk"), FormatPercent(snapshot.Disk), snapshot.Disk);
         Grid.SetRow(diskCard, 0);
         Grid.SetColumn(diskCard, 2);
         cards.Children.Add(diskCard);
@@ -204,7 +204,7 @@ public sealed class MonitoringPage : ModulePageBase
 
         var refreshButton = new AppBarButton
         {
-            Label = "Refresh",
+            Label = L10n.T("commonRefresh", "Refresh"),
             Icon = new FontIcon { Glyph = "\uE72C" },
         };
         refreshButton.Click += (s, e) => _ = LoadMonitoringAsync(showLoadingState: true);
@@ -273,18 +273,18 @@ public sealed class MonitoringPage : ModulePageBase
 
         content.Children.Add(new TextBlock
         {
-            Text = "Load Average",
+            Text = L10n.T("hostMonitoringLoadAverage", "Load Average"),
             FontSize = 12,
             Foreground = TryGetThemeBrush("TextFillColorSecondaryBrush", Microsoft.UI.Colors.Gray),
         });
 
-        content.Children.Add(BuildLoadRow("Load 1", snapshot.Load1));
-        content.Children.Add(BuildLoadRow("Load 5", snapshot.Load5));
-        content.Children.Add(BuildLoadRow("Load 15", snapshot.Load15));
+        content.Children.Add(BuildLoadRow(L10n.T("hostMonitoringLoad1", "Load 1"), snapshot.Load1));
+        content.Children.Add(BuildLoadRow(L10n.T("hostMonitoringLoad5", "Load 5"), snapshot.Load5));
+        content.Children.Add(BuildLoadRow(L10n.T("hostMonitoringLoad15", "Load 15"), snapshot.Load15));
 
         content.Children.Add(new TextBlock
         {
-            Text = "1/5/15 min",
+            Text = L10n.T("hostMonitoringLoadWindows", "1/5/15 min"),
             FontSize = 12,
             Foreground = TryGetThemeBrush("TextFillColorTertiaryBrush", Microsoft.UI.Colors.Gray),
         });
