@@ -62,13 +62,13 @@ public class ModulePageBase : Page
         };
         var emptyText = new TextBlock
         {
-            Text = "No data available",
+            Text = L10n.T("commonEmpty", "No data available"),
             FontSize = 16,
             HorizontalAlignment = HorizontalAlignment.Center,
         };
         var refreshButton = new Button
         {
-            Content = "Refresh",
+            Content = L10n.T("commonRefresh", "Refresh"),
             HorizontalAlignment = HorizontalAlignment.Center,
         };
         refreshButton.Click += (s, e) => OnRefreshClicked();
@@ -104,13 +104,13 @@ public class ModulePageBase : Page
         };
         var errorText = new TextBlock
         {
-            Text = "Failed to load data",
+            Text = L10n.T("commonLoadFailedTitle", "Failed to load data"),
             FontSize = 16,
             HorizontalAlignment = HorizontalAlignment.Center,
         };
         var retryButton = new Button
         {
-            Content = "Retry",
+            Content = L10n.T("commonRetry", "Retry"),
             HorizontalAlignment = HorizontalAlignment.Center,
         };
         retryButton.Click += (s, e) => OnRefreshClicked();

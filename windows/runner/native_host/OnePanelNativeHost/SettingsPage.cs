@@ -24,7 +24,7 @@ public sealed class SettingsPage : ModulePageBase
 
     public SettingsPage()
     {
-        PageTitle = "Settings";
+        PageTitle = L10n.T("settingsPageTitle", "Settings");
     }
 
     protected override async void OnPageShown()
@@ -212,7 +212,7 @@ public sealed class SettingsPage : ModulePageBase
     {
         rootPanel.Children.Add(new TextBlock
         {
-            Text = "Appearance",
+            Text = L10n.T("settingsAppearance", "Appearance"),
             FontSize = 18,
             FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
             Margin = new Thickness(0, 16, 0, 8),
@@ -227,25 +227,25 @@ public sealed class SettingsPage : ModulePageBase
         });
 
         rootPanel.Children.Add(CreateComboRow(
-            "System backdrop",
+            L10n.T("settingsSystemBackdrop", "System backdrop"),
             caption: null,
             combo: CreateBackdropCombo()));
 
         rootPanel.Children.Add(CreateComboRow(
-            "Render mode",
-            caption: "Restart required",
+            L10n.T("settingsUIRenderMode", "Render mode"),
+            caption: L10n.T("settingsRestartRequired", "Restart required"),
             combo: CreateStringSettingCombo(
-                new[] { "Native (WinUI3)", "Flutter MDUI3" },
+                new[] { L10n.T("settingsUIRenderModeNative", "Native (WinUI3)"), L10n.T("settingsUIRenderModeMD3", "Flutter MDUI3") },
                 new[] { "native", "md3" },
                 renderMode,
                 key: "renderMode",
                 title: "Render mode")));
 
         rootPanel.Children.Add(CreateComboRow(
-            "Language",
+            L10n.T("settingsLanguage", "Language"),
             caption: null,
             combo: CreateStringSettingCombo(
-                new[] { "System", "中文", "English" },
+                new[] { L10n.T("languageSystem", "System"), "中文", "English" },
                 new[] { "system", "zh", "en" },
                 language,
                 key: "language",
@@ -273,7 +273,7 @@ public sealed class SettingsPage : ModulePageBase
         combo.Items.Add("Mica");
         combo.Items.Add("Mica Alt");
         combo.Items.Add("Acrylic");
-        combo.Items.Add("None");
+        combo.Items.Add(L10n.T("commonNone", "None"));
 
         combo.SelectedIndex = (int)WindowsBridge.LoadWindowBackdrop();
 
@@ -434,8 +434,8 @@ public sealed class SettingsPage : ModulePageBase
         {
             JsonValueKind.String => value.GetString() ?? "",
             JsonValueKind.Number => value.TryGetInt64(out var l) ? l.ToString() : value.GetDouble().ToString("F2"),
-            JsonValueKind.True => "Yes",
-            JsonValueKind.False => "No",
+            JsonValueKind.True => L10n.T("commonYes", "Yes"),
+            JsonValueKind.False => L10n.T("commonNo", "No"),
             JsonValueKind.Null => "—",
             JsonValueKind.Array => $"[{value.GetArrayLength()} items]",
             JsonValueKind.Object => $"{{{value.EnumerateObject().Count()} properties}}",
@@ -447,9 +447,9 @@ public sealed class SettingsPage : ModulePageBase
     {
         return key switch
         {
-            "renderMode" or "language" or "theme" => "Appearance",
-            "version" or "buildNumber" or "channel" => "About",
-            _ => "General",
+            "renderMode" or "language" or "theme" => L10n.T("settingsAppearance", "Appearance"),
+            "version" or "buildNumber" or "channel" => L10n.T("settingsAbout", "About"),
+            _ => L10n.T("settingsGeneral", "General"),
         };
     }
 
@@ -472,7 +472,7 @@ public sealed class SettingsPage : ModulePageBase
         public string RawKey { get; set; } = "";
         public string Key { get; set; } = "";
         public string Value { get; set; } = "";
-        public string Category { get; set; } = "General";
+        public string Category { get; set; } = L10n.T("settingsGeneral", "General");
         public bool IsBool { get; set; }
         public bool BoolValue { get; set; }
     }
