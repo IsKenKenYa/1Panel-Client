@@ -22,29 +22,37 @@ class NativeHostLauncher {
 
   /// 宿主 exe 候选路径（顺序即优先级，与 C++ bootstrap 一致）：
   /// ① runner 输出目录旁的 native 子目录；② 同级；
-  /// ③④ 开发形态下仓库源码树的 dotnet build 产物（Debug/Release）。
+  /// ③④⑤⑥ 开发形态下仓库源码树的 dotnet build 产物（csproj 钉
+  /// RuntimeIdentifier win-x64 时产物在 RID 子目录下，两种形态都探测）。
   static List<String> candidatePaths(String runnerExeDir) {
-    String repoCandidate(String buildMode) => p.join(
-          runnerExeDir,
-          '..',
-          '..',
-          '..',
-          '..',
-          '..',
-          'windows',
-          'runner',
-          'native_host',
-          'OnePanelNativeHost',
-          'bin',
-          buildMode,
-          'net8.0-windows10.0.19041.0',
-          _hostFileName,
-        );
+    List<String> repoCandidate(String buildMode, {bool rid = false}) {
+      final segments = [
+        runnerExeDir,
+        '..',
+        '..',
+        '..',
+        '..',
+        '..',
+        'windows',
+        'runner',
+        'native_host',
+        'OnePanelNativeHost',
+        'bin',
+        buildMode,
+        'net8.0-windows10.0.19041.0',
+        if (rid) 'win-x64',
+        _hostFileName,
+      ];
+      return segments;
+    }
+
     return [
       p.join(runnerExeDir, 'native', _hostFileName),
       p.join(runnerExeDir, _hostFileName),
-      repoCandidate('Debug'),
-      repoCandidate('Release'),
+      p.joinAll(repoCandidate('Debug', rid: true)),
+      p.joinAll(repoCandidate('Debug')),
+      p.joinAll(repoCandidate('Release', rid: true)),
+      p.joinAll(repoCandidate('Release')),
     ];
   }
 

@@ -7,7 +7,7 @@ import 'package:path/path.dart' as p;
 /// ResolveNativeHostExecutablePath 保持一致（顺序即优先级）。
 void main() {
   group('NativeHostLauncher.candidatePaths', () {
-    test('returns 4 candidates in bootstrap order', () {
+    test('returns 6 candidates in bootstrap order', () {
       const runnerExeDir = r'C:\repo\build\windows\x64\runner\Debug';
 
       final candidates = NativeHostLauncher.candidatePaths(runnerExeDir);
@@ -17,7 +17,9 @@ void main() {
         p.join(runnerExeDir, 'native', 'OnePanelNativeHost.exe'),
         // ② runner 输出目录同级。
         p.join(runnerExeDir, 'OnePanelNativeHost.exe'),
-        // ③④ 开发形态：仓库源码树的 dotnet build 产物（Debug/Release）。
+        // ③④⑤⑥ 开发形态：仓库源码树的 dotnet build 产物。csproj 钉
+        // RuntimeIdentifier win-x64 时产物在 RID 子目录下（生产实证），
+        // 未钉 RID 的构建直接落在 TFM 目录，两种形态都探测。
         p.join(
           runnerExeDir,
           '..',
@@ -32,6 +34,40 @@ void main() {
           'bin',
           'Debug',
           'net8.0-windows10.0.19041.0',
+          'win-x64',
+          'OnePanelNativeHost.exe',
+        ),
+        p.join(
+          runnerExeDir,
+          '..',
+          '..',
+          '..',
+          '..',
+          '..',
+          'windows',
+          'runner',
+          'native_host',
+          'OnePanelNativeHost',
+          'bin',
+          'Debug',
+          'net8.0-windows10.0.19041.0',
+          'OnePanelNativeHost.exe',
+        ),
+        p.join(
+          runnerExeDir,
+          '..',
+          '..',
+          '..',
+          '..',
+          '..',
+          'windows',
+          'runner',
+          'native_host',
+          'OnePanelNativeHost',
+          'bin',
+          'Release',
+          'net8.0-windows10.0.19041.0',
+          'win-x64',
           'OnePanelNativeHost.exe',
         ),
         p.join(

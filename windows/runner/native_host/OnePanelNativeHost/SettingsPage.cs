@@ -414,6 +414,9 @@ public sealed class SettingsPage : ModulePageBase
     {
         if (string.IsNullOrEmpty(key)) return key;
 
+        // 已知键优先查表（arb 单一事实源），其余键按 Pascal 拆词兜底。
+        if (key == "version") return L10n.T("aboutVersionLabel", "Version");
+
         var result = new System.Text.StringBuilder();
         for (int i = 0; i < key.Length; i++)
         {
