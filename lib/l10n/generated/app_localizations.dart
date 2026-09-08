@@ -5639,7 +5639,7 @@ abstract class AppLocalizations {
   /// No description provided for @fileSavePrivateFallback.
   ///
   /// In en, this message translates to:
-  /// **'File picker unavailable, saved to app\'s private directory'**
+  /// **'File picker unavailable, saved to the app private directory'**
   String get fileSavePrivateFallback;
 
   /// No description provided for @filePickerUnavailable.
@@ -17816,6 +17816,1224 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'1/5/15 min'**
   String get hostMonitoringLoadWindows;
+
+  /// No description provided for @hostAuthDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this basic authentication user? This cannot be undone.'**
+  String get hostAuthDeleteConfirm;
+
+  /// No description provided for @hostAuthDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete the basic authentication user.'**
+  String get hostAuthDeleteFailed;
+
+  /// No description provided for @hostAuthDisableConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable basic authentication for this website?'**
+  String get hostAuthDisableConfirm;
+
+  /// No description provided for @hostAuthEditHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'The password cannot be echoed. Editing resets the password.'**
+  String get hostAuthEditHelper;
+
+  /// No description provided for @hostAuthEnableConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable basic authentication for \'{0}\'?'**
+  String get hostAuthEnableConfirm;
+
+  /// No description provided for @hostAuthEnableFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update the basic authentication switch.'**
+  String get hostAuthEnableFailed;
+
+  /// No description provided for @hostAuthEnableSwitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable basic authentication'**
+  String get hostAuthEnableSwitch;
+
+  /// No description provided for @hostAuthLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load the basic authentication configuration.'**
+  String get hostAuthLoadFailed;
+
+  /// No description provided for @hostAuthNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Name is required.'**
+  String get hostAuthNameRequired;
+
+  /// No description provided for @hostAuthPasswordInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Password may only contain letters, digits and _-.@\$!%*?& (max 72 characters).'**
+  String get hostAuthPasswordInvalid;
+
+  /// No description provided for @hostAuthPasswordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is required.'**
+  String get hostAuthPasswordRequired;
+
+  /// No description provided for @hostAuthPathDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete path authentication rule \'{0}\'? This cannot be undone.'**
+  String get hostAuthPathDeleteConfirm;
+
+  /// No description provided for @hostAuthPathEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No path authentication rules'**
+  String get hostAuthPathEmpty;
+
+  /// No description provided for @hostAuthPathRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Path is required.'**
+  String get hostAuthPathRequired;
+
+  /// No description provided for @hostAuthRandom.
+  ///
+  /// In en, this message translates to:
+  /// **'Random'**
+  String get hostAuthRandom;
+
+  /// No description provided for @hostAuthRemark.
+  ///
+  /// In en, this message translates to:
+  /// **'Remark'**
+  String get hostAuthRemark;
+
+  /// No description provided for @hostAuthSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update the basic authentication.'**
+  String get hostAuthSaveFailed;
+
+  /// No description provided for @hostAuthSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic authentication updated.'**
+  String get hostAuthSaved;
+
+  /// No description provided for @hostAuthScopeGlobal.
+  ///
+  /// In en, this message translates to:
+  /// **'Global'**
+  String get hostAuthScopeGlobal;
+
+  /// No description provided for @hostAuthUsernameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Username is required.'**
+  String get hostAuthUsernameRequired;
+
+  /// No description provided for @hostCorsAllowCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow cookies to be sent'**
+  String get hostCorsAllowCredentials;
+
+  /// No description provided for @hostCorsAllowHeaders.
+  ///
+  /// In en, this message translates to:
+  /// **'Allowed request headers'**
+  String get hostCorsAllowHeaders;
+
+  /// No description provided for @hostCorsAllowMethods.
+  ///
+  /// In en, this message translates to:
+  /// **'Allowed request methods'**
+  String get hostCorsAllowMethods;
+
+  /// No description provided for @hostCorsAllowOrigins.
+  ///
+  /// In en, this message translates to:
+  /// **'Allowed domains'**
+  String get hostCorsAllowOrigins;
+
+  /// No description provided for @hostCorsEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable CORS'**
+  String get hostCorsEnable;
+
+  /// No description provided for @hostCorsLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load the CORS configuration.'**
+  String get hostCorsLoadFailed;
+
+  /// No description provided for @hostCorsOriginsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Allowed domains is required when CORS is enabled.'**
+  String get hostCorsOriginsRequired;
+
+  /// No description provided for @hostCorsPreflight.
+  ///
+  /// In en, this message translates to:
+  /// **'Preflight request fast response'**
+  String get hostCorsPreflight;
+
+  /// No description provided for @hostCorsPreflightHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Answers cross-origin OPTIONS preflight requests automatically with 204 and the CORS headers'**
+  String get hostCorsPreflightHelper;
+
+  /// No description provided for @hostCorsSaveConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Save the CORS configuration for \'{0}\'?'**
+  String get hostCorsSaveConfirm;
+
+  /// No description provided for @hostCorsSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save the CORS configuration.'**
+  String get hostCorsSaveFailed;
+
+  /// No description provided for @hostCorsSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'CORS configuration saved.'**
+  String get hostCorsSaved;
+
+  /// No description provided for @hostDomainsActionsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Actions'**
+  String get hostDomainsActionsLabel;
+
+  /// No description provided for @hostDomainsAddFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to add domains.'**
+  String get hostDomainsAddFailed;
+
+  /// No description provided for @hostDomainsAddSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Domains added.'**
+  String get hostDomainsAddSuccess;
+
+  /// No description provided for @hostDomainsDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete domain \'{0}\'? This action cannot be undone.'**
+  String get hostDomainsDeleteConfirm;
+
+  /// No description provided for @hostDomainsDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete domain.'**
+  String get hostDomainsDeleteFailed;
+
+  /// No description provided for @hostDomainsDeleteSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Domain deleted.'**
+  String get hostDomainsDeleteSuccess;
+
+  /// No description provided for @hostDomainsDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete domain'**
+  String get hostDomainsDeleteTitle;
+
+  /// No description provided for @hostDomainsInputHint.
+  ///
+  /// In en, this message translates to:
+  /// **'One domain per line. All entries share the port and SSL option below.'**
+  String get hostDomainsInputHint;
+
+  /// No description provided for @hostDomainsInputRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter at least one domain.'**
+  String get hostDomainsInputRequired;
+
+  /// No description provided for @hostDomainsLastDeleteDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'At least one domain must remain.'**
+  String get hostDomainsLastDeleteDisabled;
+
+  /// No description provided for @hostDomainsLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load domains.'**
+  String get hostDomainsLoadFailed;
+
+  /// No description provided for @hostHttpsAlgorithmLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Encryption algorithm'**
+  String get hostHttpsAlgorithmLabel;
+
+  /// No description provided for @hostHttpsAlgorithmRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Encryption algorithm is required.'**
+  String get hostHttpsAlgorithmRequired;
+
+  /// No description provided for @hostHttpsCertEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No certificates available. Import one from the SSL certificate page first.'**
+  String get hostHttpsCertEmpty;
+
+  /// No description provided for @hostHttpsCertLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load certificates.'**
+  String get hostHttpsCertLoadFailed;
+
+  /// No description provided for @hostHttpsCertRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate and private key are required.'**
+  String get hostHttpsCertRequired;
+
+  /// No description provided for @hostHttpsCertSelectPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Select certificate'**
+  String get hostHttpsCertSelectPlaceholder;
+
+  /// No description provided for @hostHttpsCertificateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate'**
+  String get hostHttpsCertificateLabel;
+
+  /// No description provided for @hostHttpsDisableConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabling HTTPS will delete the certificate related configuration. Continue?'**
+  String get hostHttpsDisableConfirm;
+
+  /// No description provided for @hostHttpsDisableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable HTTPS'**
+  String get hostHttpsDisableTitle;
+
+  /// No description provided for @hostHttpsHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Note: Do not use SSL certificates for illegal websites.\nIf HTTPS access cannot be used after enabling, check whether the firewall has released port 443.'**
+  String get hostHttpsHelper;
+
+  /// No description provided for @hostHttpsHstsHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabling HSTS can increase website security'**
+  String get hostHttpsHstsHelper;
+
+  /// No description provided for @hostHttpsHstsSubDomainsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'HSTS include subdomains'**
+  String get hostHttpsHstsSubDomainsLabel;
+
+  /// No description provided for @hostHttpsHttp3Helper.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTP/3 offers faster connections, but not all browsers support it; enabling it may make the site unreachable for some browsers.'**
+  String get hostHttpsHttp3Helper;
+
+  /// No description provided for @hostHttpsHttp3Label.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTP3'**
+  String get hostHttpsHttp3Label;
+
+  /// No description provided for @hostHttpsHttpConfigAlso.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow direct HTTP requests'**
+  String get hostHttpsHttpConfigAlso;
+
+  /// No description provided for @hostHttpsHttpConfigLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTP options'**
+  String get hostHttpsHttpConfigLabel;
+
+  /// No description provided for @hostHttpsHttpConfigOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Block HTTP requests'**
+  String get hostHttpsHttpConfigOnly;
+
+  /// No description provided for @hostHttpsHttpConfigToHttps.
+  ///
+  /// In en, this message translates to:
+  /// **'Redirect to HTTPS'**
+  String get hostHttpsHttpConfigToHttps;
+
+  /// No description provided for @hostHttpsInsecureSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'(not safe)'**
+  String get hostHttpsInsecureSuffix;
+
+  /// No description provided for @hostHttpsIpWarn.
+  ///
+  /// In en, this message translates to:
+  /// **'Websites with IP as domain names need to be set as default site to be accessed normally.'**
+  String get hostHttpsIpWarn;
+
+  /// No description provided for @hostHttpsLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load HTTPS configuration.'**
+  String get hostHttpsLoadFailed;
+
+  /// No description provided for @hostHttpsPortLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTPS port'**
+  String get hostHttpsPortLabel;
+
+  /// No description provided for @hostHttpsPrivateKeyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Private key'**
+  String get hostHttpsPrivateKeyLabel;
+
+  /// No description provided for @hostHttpsProtocolLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Protocol version'**
+  String get hostHttpsProtocolLabel;
+
+  /// No description provided for @hostHttpsProtocolRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least one TLS protocol version.'**
+  String get hostHttpsProtocolRequired;
+
+  /// No description provided for @hostHttpsSaveConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply the HTTPS configuration to \'{0}\'?'**
+  String get hostHttpsSaveConfirm;
+
+  /// No description provided for @hostHttpsSaveConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save HTTPS settings'**
+  String get hostHttpsSaveConfirmTitle;
+
+  /// No description provided for @hostHttpsSectionAdvanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Protocol settings'**
+  String get hostHttpsSectionAdvanced;
+
+  /// No description provided for @hostHttpsSectionBasic.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic'**
+  String get hostHttpsSectionBasic;
+
+  /// No description provided for @hostHttpsSectionCert.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate settings'**
+  String get hostHttpsSectionCert;
+
+  /// No description provided for @hostHttpsSelectCertRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a certificate.'**
+  String get hostHttpsSelectCertRequired;
+
+  /// No description provided for @hostHttpsTypeExisted.
+  ///
+  /// In en, this message translates to:
+  /// **'Existing certificate'**
+  String get hostHttpsTypeExisted;
+
+  /// No description provided for @hostHttpsTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'SSL options'**
+  String get hostHttpsTypeLabel;
+
+  /// No description provided for @hostHttpsTypeManual.
+  ///
+  /// In en, this message translates to:
+  /// **'Import certificate manually'**
+  String get hostHttpsTypeManual;
+
+  /// No description provided for @hostLeechAccessDomains.
+  ///
+  /// In en, this message translates to:
+  /// **'Allowed domains'**
+  String get hostLeechAccessDomains;
+
+  /// No description provided for @hostLeechBlockedHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'When \'Allow empty referrer\' is on, requests without a Referer are not blocked; this also allows any Referer not starting with http/https'**
+  String get hostLeechBlockedHelper;
+
+  /// No description provided for @hostLeechBlockedRef.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow non-standard Referer'**
+  String get hostLeechBlockedRef;
+
+  /// No description provided for @hostLeechBrowserCache.
+  ///
+  /// In en, this message translates to:
+  /// **'Browser Cache'**
+  String get hostLeechBrowserCache;
+
+  /// No description provided for @hostLeechCacheControl.
+  ///
+  /// In en, this message translates to:
+  /// **'Cache control'**
+  String get hostLeechCacheControl;
+
+  /// No description provided for @hostLeechCacheTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Browser Cache Time'**
+  String get hostLeechCacheTime;
+
+  /// No description provided for @hostLeechCacheTimeHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'The time static resources are cached locally in the browser, reducing redundant requests'**
+  String get hostLeechCacheTimeHelper;
+
+  /// No description provided for @hostLeechCacheTimeInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Cache time must be an integer between 1 and 65535.'**
+  String get hostLeechCacheTimeInvalid;
+
+  /// No description provided for @hostLeechDomainsHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'One domain per line'**
+  String get hostLeechDomainsHelper;
+
+  /// No description provided for @hostLeechDomainsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'At least one allowed domain is required when enabled.'**
+  String get hostLeechDomainsRequired;
+
+  /// No description provided for @hostLeechEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable'**
+  String get hostLeechEnable;
+
+  /// No description provided for @hostLeechExtends.
+  ///
+  /// In en, this message translates to:
+  /// **'File extensions'**
+  String get hostLeechExtends;
+
+  /// No description provided for @hostLeechLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load the anti-leech configuration.'**
+  String get hostLeechLoadFailed;
+
+  /// No description provided for @hostLeechLogEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Log static asset requests'**
+  String get hostLeechLogEnable;
+
+  /// No description provided for @hostLeechLogHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Logs static asset requests; usually disabled in production to avoid noisy logs'**
+  String get hostLeechLogHelper;
+
+  /// No description provided for @hostLeechNoneRef.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow empty referrer'**
+  String get hostLeechNoneRef;
+
+  /// No description provided for @hostLeechReturn.
+  ///
+  /// In en, this message translates to:
+  /// **'Response resource'**
+  String get hostLeechReturn;
+
+  /// No description provided for @hostLeechReturnHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTP status code returned after blocking hotlinking requests'**
+  String get hostLeechReturnHelper;
+
+  /// No description provided for @hostLeechSaveConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Save the anti-leech configuration for \'{0}\'?'**
+  String get hostLeechSaveConfirm;
+
+  /// No description provided for @hostLeechSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save the anti-leech configuration.'**
+  String get hostLeechSaveFailed;
+
+  /// No description provided for @hostLeechSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Anti-leech configuration saved.'**
+  String get hostLeechSaved;
+
+  /// No description provided for @hostLogsAccessLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Website logs'**
+  String get hostLogsAccessLog;
+
+  /// No description provided for @hostLogsErrorLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Error log'**
+  String get hostLogsErrorLog;
+
+  /// No description provided for @hostLogsLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load the website log.'**
+  String get hostLogsLoadFailed;
+
+  /// No description provided for @hostLogsRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh the website log.'**
+  String get hostLogsRefreshFailed;
+
+  /// No description provided for @hostLogsStateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Log switch state (read-only in this release)'**
+  String get hostLogsStateHint;
+
+  /// No description provided for @hostProxyAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Proxy'**
+  String get hostProxyAdd;
+
+  /// No description provided for @hostProxyAddressPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 127.0.0.1:8080'**
+  String get hostProxyAddressPlaceholder;
+
+  /// No description provided for @hostProxyAddressRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Target address is required.'**
+  String get hostProxyAddressRequired;
+
+  /// No description provided for @hostProxyAllowCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow credentials'**
+  String get hostProxyAllowCredentials;
+
+  /// No description provided for @hostProxyAllowHeaders.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow headers'**
+  String get hostProxyAllowHeaders;
+
+  /// No description provided for @hostProxyAllowMethods.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow methods'**
+  String get hostProxyAllowMethods;
+
+  /// No description provided for @hostProxyAllowOrigins.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow origins'**
+  String get hostProxyAllowOrigins;
+
+  /// No description provided for @hostProxyBrowserCache.
+  ///
+  /// In en, this message translates to:
+  /// **'Browser cache'**
+  String get hostProxyBrowserCache;
+
+  /// No description provided for @hostProxyBrowserCacheNoModify.
+  ///
+  /// In en, this message translates to:
+  /// **'No modify'**
+  String get hostProxyBrowserCacheNoModify;
+
+  /// No description provided for @hostProxyBrowserCacheTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Cache time'**
+  String get hostProxyBrowserCacheTime;
+
+  /// No description provided for @hostProxyBrowserCacheTimeHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'How long browsers may cache responses.'**
+  String get hostProxyBrowserCacheTimeHelper;
+
+  /// No description provided for @hostProxyCacheSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Cache'**
+  String get hostProxyCacheSection;
+
+  /// No description provided for @hostProxyCacheTimeInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Cache time must be a number between 1 and 65535.'**
+  String get hostProxyCacheTimeInvalid;
+
+  /// No description provided for @hostProxyCancelEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel edit'**
+  String get hostProxyCancelEdit;
+
+  /// No description provided for @hostProxyCors.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable CORS'**
+  String get hostProxyCors;
+
+  /// No description provided for @hostProxyCorsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'CORS'**
+  String get hostProxyCorsSection;
+
+  /// No description provided for @hostProxyDeleteConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete proxy \'{0}\'? The proxy config file will be removed.'**
+  String get hostProxyDeleteConfirmMessage;
+
+  /// No description provided for @hostProxyDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete proxy'**
+  String get hostProxyDeleteConfirmTitle;
+
+  /// No description provided for @hostProxyDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete the proxy.'**
+  String get hostProxyDeleteFailed;
+
+  /// No description provided for @hostProxyDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Proxy deleted.'**
+  String get hostProxyDeleted;
+
+  /// No description provided for @hostProxyDisable.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable'**
+  String get hostProxyDisable;
+
+  /// No description provided for @hostProxyDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'disabled'**
+  String get hostProxyDisabled;
+
+  /// No description provided for @hostProxyEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Proxy'**
+  String get hostProxyEditTitle;
+
+  /// No description provided for @hostProxyEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No proxy rules yet.'**
+  String get hostProxyEmpty;
+
+  /// No description provided for @hostProxyHost.
+  ///
+  /// In en, this message translates to:
+  /// **'Proxy host'**
+  String get hostProxyHost;
+
+  /// No description provided for @hostProxyHostHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Host header sent upstream; \$host keeps the original domain.'**
+  String get hostProxyHostHelper;
+
+  /// No description provided for @hostProxyHostRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Proxy host is required.'**
+  String get hostProxyHostRequired;
+
+  /// No description provided for @hostProxyListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Proxy rules'**
+  String get hostProxyListTitle;
+
+  /// No description provided for @hostProxyLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load the proxy list.'**
+  String get hostProxyLoadFailed;
+
+  /// No description provided for @hostProxyMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Proxy path'**
+  String get hostProxyMatch;
+
+  /// No description provided for @hostProxyMatchRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Proxy path is required.'**
+  String get hostProxyMatchRequired;
+
+  /// No description provided for @hostProxyNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Name is required.'**
+  String get hostProxyNameRequired;
+
+  /// No description provided for @hostProxyOriginsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow origins is required when CORS is enabled.'**
+  String get hostProxyOriginsRequired;
+
+  /// No description provided for @hostProxyPass.
+  ///
+  /// In en, this message translates to:
+  /// **'Target address'**
+  String get hostProxyPass;
+
+  /// No description provided for @hostProxyPassHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Upstream address the requests are forwarded to.'**
+  String get hostProxyPassHelper;
+
+  /// No description provided for @hostProxyPreflight.
+  ///
+  /// In en, this message translates to:
+  /// **'Preflight'**
+  String get hostProxyPreflight;
+
+  /// No description provided for @hostProxySaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save the proxy.'**
+  String get hostProxySaveFailed;
+
+  /// No description provided for @hostProxyServerCache.
+  ///
+  /// In en, this message translates to:
+  /// **'Server cache'**
+  String get hostProxyServerCache;
+
+  /// No description provided for @hostProxyServerCacheTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Cache time'**
+  String get hostProxyServerCacheTime;
+
+  /// No description provided for @hostProxyServerCacheTimeHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'How long upstream responses stay in the server cache.'**
+  String get hostProxyServerCacheTimeHelper;
+
+  /// No description provided for @hostProxySni.
+  ///
+  /// In en, this message translates to:
+  /// **'SNI'**
+  String get hostProxySni;
+
+  /// No description provided for @hostProxySniHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Send the server name to the HTTPS upstream (proxy_ssl_server_name).'**
+  String get hostProxySniHelper;
+
+  /// No description provided for @hostProxySslVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'SSL verify'**
+  String get hostProxySslVerify;
+
+  /// No description provided for @hostProxySslVerifyHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify the upstream certificate when proxying over HTTPS.'**
+  String get hostProxySslVerifyHelper;
+
+  /// No description provided for @hostProxyStatusFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update the proxy status.'**
+  String get hostProxyStatusFailed;
+
+  /// No description provided for @hostProxyStatusUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Proxy status updated.'**
+  String get hostProxyStatusUpdated;
+
+  /// No description provided for @hostRedirectAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Redirect'**
+  String get hostRedirectAdd;
+
+  /// No description provided for @hostRedirectCancelEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel edit'**
+  String get hostRedirectCancelEdit;
+
+  /// No description provided for @hostRedirectDeleteConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete redirect \'{0}\'?'**
+  String get hostRedirectDeleteConfirmMessage;
+
+  /// No description provided for @hostRedirectDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete redirect'**
+  String get hostRedirectDeleteConfirmTitle;
+
+  /// No description provided for @hostRedirectDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete the redirect.'**
+  String get hostRedirectDeleteFailed;
+
+  /// No description provided for @hostRedirectDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Redirect deleted.'**
+  String get hostRedirectDeleted;
+
+  /// No description provided for @hostRedirectDisable.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable'**
+  String get hostRedirectDisable;
+
+  /// No description provided for @hostRedirectDomains.
+  ///
+  /// In en, this message translates to:
+  /// **'Domains'**
+  String get hostRedirectDomains;
+
+  /// No description provided for @hostRedirectDomainsHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'One domain per line.'**
+  String get hostRedirectDomainsHelper;
+
+  /// No description provided for @hostRedirectDomainsPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'One domain per line, e.g. old.example.com'**
+  String get hostRedirectDomainsPlaceholder;
+
+  /// No description provided for @hostRedirectDomainsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'At least one domain is required.'**
+  String get hostRedirectDomainsRequired;
+
+  /// No description provided for @hostRedirectEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Redirect'**
+  String get hostRedirectEditTitle;
+
+  /// No description provided for @hostRedirectEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No redirect rules yet.'**
+  String get hostRedirectEmpty;
+
+  /// No description provided for @hostRedirectKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'keep path'**
+  String get hostRedirectKeep;
+
+  /// No description provided for @hostRedirectKeepPath.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep path'**
+  String get hostRedirectKeepPath;
+
+  /// No description provided for @hostRedirectKeepPathHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Append the original request path to the target URL.'**
+  String get hostRedirectKeepPathHelper;
+
+  /// No description provided for @hostRedirectListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Redirect rules'**
+  String get hostRedirectListTitle;
+
+  /// No description provided for @hostRedirectLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load the redirect list.'**
+  String get hostRedirectLoadFailed;
+
+  /// No description provided for @hostRedirectNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Name is required.'**
+  String get hostRedirectNameRequired;
+
+  /// No description provided for @hostRedirectNotKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'drop path'**
+  String get hostRedirectNotKeep;
+
+  /// No description provided for @hostRedirectPathRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Path is required.'**
+  String get hostRedirectPathRequired;
+
+  /// No description provided for @hostRedirectSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save the redirect.'**
+  String get hostRedirectSaveFailed;
+
+  /// No description provided for @hostRedirectStatusFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update the redirect status.'**
+  String get hostRedirectStatusFailed;
+
+  /// No description provided for @hostRedirectStatusUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Redirect status updated.'**
+  String get hostRedirectStatusUpdated;
+
+  /// No description provided for @hostRedirectTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Target URL'**
+  String get hostRedirectTarget;
+
+  /// No description provided for @hostRedirectTargetRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Target URL is required.'**
+  String get hostRedirectTargetRequired;
+
+  /// No description provided for @hostRedirectTypeDomain.
+  ///
+  /// In en, this message translates to:
+  /// **'Domain'**
+  String get hostRedirectTypeDomain;
+
+  /// No description provided for @hostRedirectTypePath.
+  ///
+  /// In en, this message translates to:
+  /// **'Path'**
+  String get hostRedirectTypePath;
+
+  /// No description provided for @hostRedirectWay.
+  ///
+  /// In en, this message translates to:
+  /// **'Redirect'**
+  String get hostRedirectWay;
+
+  /// No description provided for @hostRedirectWayHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'301 is permanent, 302 is temporary.'**
+  String get hostRedirectWayHelper;
+
+  /// No description provided for @hostRewriteCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewrite rules'**
+  String get hostRewriteCardTitle;
+
+  /// No description provided for @hostRewriteContentPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'# nginx rewrite rules'**
+  String get hostRewriteContentPlaceholder;
+
+  /// No description provided for @hostRewriteCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get hostRewriteCurrent;
+
+  /// No description provided for @hostRewriteHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved rules take effect once nginx reloads, which happens automatically after saving.'**
+  String get hostRewriteHelper;
+
+  /// No description provided for @hostRewriteHelper2.
+  ///
+  /// In en, this message translates to:
+  /// **'Modifying rewrite rules may affect how the website resolves.'**
+  String get hostRewriteHelper2;
+
+  /// No description provided for @hostRewriteLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load the rewrite content.'**
+  String get hostRewriteLoadFailed;
+
+  /// No description provided for @hostRewriteMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewrite mode'**
+  String get hostRewriteMode;
+
+  /// No description provided for @hostRewriteSaveAndReload.
+  ///
+  /// In en, this message translates to:
+  /// **'Save and reload'**
+  String get hostRewriteSaveAndReload;
+
+  /// No description provided for @hostRewriteSaveConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Save the rewrite rules for \'{0}\' and reload nginx?'**
+  String get hostRewriteSaveConfirmMessage;
+
+  /// No description provided for @hostRewriteSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save the rewrite rules.'**
+  String get hostRewriteSaveFailed;
+
+  /// No description provided for @hostRewriteSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewrite rules saved and nginx reloaded.'**
+  String get hostRewriteSaved;
+
+  /// No description provided for @hostWebsiteConfigBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to websites'**
+  String get hostWebsiteConfigBack;
+
+  /// No description provided for @hostWebsiteTabPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'This module will be provided in a later batch.'**
+  String get hostWebsiteTabPlaceholder;
+
+  /// No description provided for @hostWebsitesConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Config'**
+  String get hostWebsitesConfig;
+
+  /// No description provided for @hostWebsitesConfigHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Website configuration'**
+  String get hostWebsitesConfigHint;
+
+  /// No description provided for @hostHttpsTabTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTPS'**
+  String get hostHttpsTabTitle;
+
+  /// No description provided for @hostDomainsTabTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Domains'**
+  String get hostDomainsTabTitle;
+
+  /// No description provided for @hostWebsiteTabProxy.
+  ///
+  /// In en, this message translates to:
+  /// **'Reverse Proxy'**
+  String get hostWebsiteTabProxy;
+
+  /// No description provided for @hostWebsiteTabRedirect.
+  ///
+  /// In en, this message translates to:
+  /// **'Redirect'**
+  String get hostWebsiteTabRedirect;
+
+  /// No description provided for @hostWebsiteTabRewrite.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewrite'**
+  String get hostWebsiteTabRewrite;
+
+  /// No description provided for @hostWebsiteTabCors.
+  ///
+  /// In en, this message translates to:
+  /// **'CORS'**
+  String get hostWebsiteTabCors;
+
+  /// No description provided for @hostWebsiteTabAntiLeech.
+  ///
+  /// In en, this message translates to:
+  /// **'Anti-Leech'**
+  String get hostWebsiteTabAntiLeech;
+
+  /// No description provided for @hostWebsiteTabBasicAuth.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic Auth'**
+  String get hostWebsiteTabBasicAuth;
+
+  /// No description provided for @hostWebsiteTabLogs.
+  ///
+  /// In en, this message translates to:
+  /// **'Logs'**
+  String get hostWebsiteTabLogs;
 }
 
 class _AppLocalizationsDelegate

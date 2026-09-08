@@ -9197,4 +9197,621 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get hostMonitoringLoadWindows => '1/5/15 分钟';
+
+  @override
+  String get hostAuthDeleteConfirm => '删除该密码访问用户？该操作无法撤销。';
+
+  @override
+  String get hostAuthDeleteFailed => '删除密码访问用户失败。';
+
+  @override
+  String get hostAuthDisableConfirm => '停用该网站的密码访问？';
+
+  @override
+  String get hostAuthEditHelper => '密码为非对称加密，无法回显，编辑需要重新设置密码';
+
+  @override
+  String get hostAuthEnableConfirm => '为 {0} 开启密码访问？';
+
+  @override
+  String get hostAuthEnableFailed => '更新密码访问开关失败。';
+
+  @override
+  String get hostAuthEnableSwitch => '开启密码访问';
+
+  @override
+  String get hostAuthLoadFailed => '加载密码访问配置失败。';
+
+  @override
+  String get hostAuthNameRequired => '名称不能为空。';
+
+  @override
+  String get hostAuthPasswordInvalid => '密码仅支持字母、数字和 _-.@\$!%*?&（最长 72 位）。';
+
+  @override
+  String get hostAuthPasswordRequired => '请输入密码。';
+
+  @override
+  String get hostAuthPathDeleteConfirm => '删除路径认证规则 {0}？该操作无法撤销。';
+
+  @override
+  String get hostAuthPathEmpty => '暂无路径认证规则';
+
+  @override
+  String get hostAuthPathRequired => '请输入路径。';
+
+  @override
+  String get hostAuthRandom => '随机密码';
+
+  @override
+  String get hostAuthRemark => '备注';
+
+  @override
+  String get hostAuthSaveFailed => '更新密码访问失败。';
+
+  @override
+  String get hostAuthSaved => '密码访问已更新。';
+
+  @override
+  String get hostAuthScopeGlobal => '全局';
+
+  @override
+  String get hostAuthUsernameRequired => '请输入用户名。';
+
+  @override
+  String get hostCorsAllowCredentials => '允许携带cookies';
+
+  @override
+  String get hostCorsAllowHeaders => '允许的请求头';
+
+  @override
+  String get hostCorsAllowMethods => '允许的请求方法';
+
+  @override
+  String get hostCorsAllowOrigins => '允许访问的域名';
+
+  @override
+  String get hostCorsEnable => '开启跨域';
+
+  @override
+  String get hostCorsLoadFailed => '加载跨域配置失败。';
+
+  @override
+  String get hostCorsOriginsRequired => '开启跨域后，允许访问的域名不能为空。';
+
+  @override
+  String get hostCorsPreflight => '预检请求快速响应';
+
+  @override
+  String get hostCorsPreflightHelper =>
+      '开启后，当浏览器发送跨域预检请求（OPTIONS 请求）时，系统会自动返回 204 状态码并设置必要的跨域响应头';
+
+  @override
+  String get hostCorsSaveConfirm => '保存 {0} 的跨域配置？';
+
+  @override
+  String get hostCorsSaveFailed => '保存跨域配置失败。';
+
+  @override
+  String get hostCorsSaved => '跨域配置已保存。';
+
+  @override
+  String get hostDomainsActionsLabel => '操作';
+
+  @override
+  String get hostDomainsAddFailed => '添加域名失败。';
+
+  @override
+  String get hostDomainsAddSuccess => '域名添加成功。';
+
+  @override
+  String get hostDomainsDeleteConfirm => '删除域名 {0}？该操作无法撤销。';
+
+  @override
+  String get hostDomainsDeleteFailed => '删除域名失败。';
+
+  @override
+  String get hostDomainsDeleteSuccess => '域名已删除。';
+
+  @override
+  String get hostDomainsDeleteTitle => '删除域名';
+
+  @override
+  String get hostDomainsInputHint => '一行一个域名，所有域名共用下方的端口和 SSL 选项。';
+
+  @override
+  String get hostDomainsInputRequired => '请至少输入一个域名。';
+
+  @override
+  String get hostDomainsLastDeleteDisabled => '至少需要保留一个域名。';
+
+  @override
+  String get hostDomainsLoadFailed => '加载域名列表失败。';
+
+  @override
+  String get hostHttpsAlgorithmLabel => '加密算法';
+
+  @override
+  String get hostHttpsAlgorithmRequired => '请选择加密算法。';
+
+  @override
+  String get hostHttpsCertEmpty => '暂无可用证书，请先在 SSL 证书页面导入。';
+
+  @override
+  String get hostHttpsCertLoadFailed => '加载证书失败。';
+
+  @override
+  String get hostHttpsCertRequired => '请输入证书和私钥。';
+
+  @override
+  String get hostHttpsCertSelectPlaceholder => '选择证书';
+
+  @override
+  String get hostHttpsCertificateLabel => '证书';
+
+  @override
+  String get hostHttpsDisableConfirm => '禁用 HTTPS会删除证书相关配置，是否继续？';
+
+  @override
+  String get hostHttpsDisableTitle => '禁用 HTTPS';
+
+  @override
+  String get hostHttpsHelper =>
+      '注意：请勿将SSL证书用于非法网站 \n 如开启后无法使用HTTPS访问，请检查安全组是否正确放行443端口';
+
+  @override
+  String get hostHttpsHstsHelper => '开启 HSTS 可以增加网站安全性';
+
+  @override
+  String get hostHttpsHstsSubDomainsLabel => 'HSTS 包含子域名';
+
+  @override
+  String get hostHttpsHttp3Helper =>
+      'HTTP/3 是 HTTP/2 的升级版本，提供更快的连接速度和更好的性能，但是不是所有浏览器都支持 HTTP/3，开启后可能会导致部分浏览器无法访问';
+
+  @override
+  String get hostHttpsHttp3Label => 'HTTP3';
+
+  @override
+  String get hostHttpsHttpConfigAlso => 'HTTP可直接访问';
+
+  @override
+  String get hostHttpsHttpConfigLabel => 'HTTP 选项';
+
+  @override
+  String get hostHttpsHttpConfigOnly => '禁止 HTTP';
+
+  @override
+  String get hostHttpsHttpConfigToHttps => '访问HTTP自动跳转到HTTPS';
+
+  @override
+  String get hostHttpsInsecureSuffix => '（不安全）';
+
+  @override
+  String get hostHttpsIpWarn => 'IP 为域名的网站，需要设置为默认站点才能正常访问';
+
+  @override
+  String get hostHttpsLoadFailed => '加载 HTTPS 配置失败。';
+
+  @override
+  String get hostHttpsPortLabel => 'HTTPS 端口';
+
+  @override
+  String get hostHttpsPrivateKeyLabel => '私钥';
+
+  @override
+  String get hostHttpsProtocolLabel => '支持的协议版本';
+
+  @override
+  String get hostHttpsProtocolRequired => '请至少选择一个 TLS 协议版本。';
+
+  @override
+  String get hostHttpsSaveConfirm => '将 HTTPS 配置应用到 {0}？';
+
+  @override
+  String get hostHttpsSaveConfirmTitle => '保存 HTTPS 设置';
+
+  @override
+  String get hostHttpsSectionAdvanced => 'SSL 协议设置';
+
+  @override
+  String get hostHttpsSectionBasic => '基本';
+
+  @override
+  String get hostHttpsSectionCert => '证书设置';
+
+  @override
+  String get hostHttpsSelectCertRequired => '请选择证书。';
+
+  @override
+  String get hostHttpsTypeExisted => '选择已有证书';
+
+  @override
+  String get hostHttpsTypeLabel => 'SSL 选项';
+
+  @override
+  String get hostHttpsTypeManual => '手动导入证书';
+
+  @override
+  String get hostLeechAccessDomains => '允许的域名';
+
+  @override
+  String get hostLeechBlockedHelper =>
+      '允许 Referer 为空启用时，不会阻止无 Referer 的请求（直接访问等），启用非标准 Referer 时会放行任何不以 http/https 开头的 Referer 请求（客户端请求等）';
+
+  @override
+  String get hostLeechBlockedRef => '允许非标准 Referer';
+
+  @override
+  String get hostLeechBrowserCache => '浏览器缓存';
+
+  @override
+  String get hostLeechCacheControl => '缓存控制';
+
+  @override
+  String get hostLeechCacheTime => '浏览器缓存时间';
+
+  @override
+  String get hostLeechCacheTimeHelper =>
+      '静态资源在浏览器本地缓存的时间，减少重复请求。到期前用户刷新页面会直接使用本地缓存。';
+
+  @override
+  String get hostLeechCacheTimeInvalid => '缓存时间必须是 1-65535 之间的整数。';
+
+  @override
+  String get hostLeechDomainsHelper => '一行一个域名';
+
+  @override
+  String get hostLeechDomainsRequired => '开启后，允许的域名不能为空。';
+
+  @override
+  String get hostLeechEnable => '开启';
+
+  @override
+  String get hostLeechExtends => '文件扩展名';
+
+  @override
+  String get hostLeechLoadFailed => '加载防盗链配置失败。';
+
+  @override
+  String get hostLeechLogEnable => '记录请求日志';
+
+  @override
+  String get hostLeechLogHelper => '记录静态资源的请求，生产环境通常可以关闭避免过多无意义的日志';
+
+  @override
+  String get hostLeechNoneRef => '允许 Referer 为空';
+
+  @override
+  String get hostLeechReturn => '响应资源';
+
+  @override
+  String get hostLeechReturnHelper => '拦截盗链请求后，返回的 HTTP 状态码';
+
+  @override
+  String get hostLeechSaveConfirm => '保存 {0} 的防盗链配置？';
+
+  @override
+  String get hostLeechSaveFailed => '保存防盗链配置失败。';
+
+  @override
+  String get hostLeechSaved => '防盗链配置已保存。';
+
+  @override
+  String get hostLogsAccessLog => '网站日志';
+
+  @override
+  String get hostLogsErrorLog => '错误日志';
+
+  @override
+  String get hostLogsLoadFailed => '加载网站日志失败。';
+
+  @override
+  String get hostLogsRefreshFailed => '刷新网站日志失败。';
+
+  @override
+  String get hostLogsStateHint => '日志开关状态（当前版本只读）';
+
+  @override
+  String get hostProxyAdd => '添加反向代理';
+
+  @override
+  String get hostProxyAddressPlaceholder => '例: 127.0.0.1:8080';
+
+  @override
+  String get hostProxyAddressRequired => '请输入代理地址。';
+
+  @override
+  String get hostProxyAllowCredentials => '允许携带cookies';
+
+  @override
+  String get hostProxyAllowHeaders => '允许的请求头';
+
+  @override
+  String get hostProxyAllowMethods => '允许的请求方法';
+
+  @override
+  String get hostProxyAllowOrigins => '允许访问的域名';
+
+  @override
+  String get hostProxyBrowserCache => '浏览器缓存';
+
+  @override
+  String get hostProxyBrowserCacheNoModify => '不修改';
+
+  @override
+  String get hostProxyBrowserCacheTime => '浏览器缓存时间';
+
+  @override
+  String get hostProxyBrowserCacheTimeHelper =>
+      '静态资源在浏览器本地缓存的时间，减少重复请求。到期前用户刷新页面会直接使用本地缓存。';
+
+  @override
+  String get hostProxyCacheSection => '缓存';
+
+  @override
+  String get hostProxyCacheTimeInvalid => '缓存时间必须是 1-65535 之间的数字。';
+
+  @override
+  String get hostProxyCancelEdit => '取消编辑';
+
+  @override
+  String get hostProxyCors => '开启跨域';
+
+  @override
+  String get hostProxyCorsSection => '跨域访问';
+
+  @override
+  String get hostProxyDeleteConfirmMessage => '删除反向代理 {0}？对应的配置文件将被移除。';
+
+  @override
+  String get hostProxyDeleteConfirmTitle => '删除反向代理';
+
+  @override
+  String get hostProxyDeleteFailed => '删除反向代理失败。';
+
+  @override
+  String get hostProxyDeleted => '反向代理已删除。';
+
+  @override
+  String get hostProxyDisable => '禁用';
+
+  @override
+  String get hostProxyDisabled => '已停止';
+
+  @override
+  String get hostProxyEditTitle => '编辑反向代理';
+
+  @override
+  String get hostProxyEmpty => '暂无反向代理规则。';
+
+  @override
+  String get hostProxyHost => '后端域名';
+
+  @override
+  String get hostProxyHostHelper => '将域名添加到请求头传递到代理服务器';
+
+  @override
+  String get hostProxyHostRequired => '请输入后端域名。';
+
+  @override
+  String get hostProxyListTitle => '反向代理规则';
+
+  @override
+  String get hostProxyLoadFailed => '加载反向代理列表失败。';
+
+  @override
+  String get hostProxyMatch => '前端请求路径';
+
+  @override
+  String get hostProxyMatchRequired => '请输入前端请求路径。';
+
+  @override
+  String get hostProxyNameRequired => '名称不能为空。';
+
+  @override
+  String get hostProxyOriginsRequired => '开启跨域后，允许访问的域名不能为空。';
+
+  @override
+  String get hostProxyPass => '后端代理地址';
+
+  @override
+  String get hostProxyPassHelper => '代理的站点，必须为可正常访问的URL';
+
+  @override
+  String get hostProxyPreflight => '预检请求快速响应';
+
+  @override
+  String get hostProxySaveFailed => '保存反向代理失败。';
+
+  @override
+  String get hostProxyServerCache => '服务器缓存';
+
+  @override
+  String get hostProxyServerCacheTime => '服务器缓存时间';
+
+  @override
+  String get hostProxyServerCacheTimeHelper =>
+      '请求在服务器端缓存的时间，到期前相同请求会直接返回缓存结果，不再请求源站。';
+
+  @override
+  String get hostProxySni => '回源 SNI';
+
+  @override
+  String get hostProxySniHelper =>
+      '反代后端为 https 的时候可能需要设置回源 SNI，具体需要看 CDN 服务商文档';
+
+  @override
+  String get hostProxySslVerify => '校验后端 SSL 证书';
+
+  @override
+  String get hostProxySslVerifyHelper => '开启后，反向代理 HTTPS 后端时将严格校验服务器证书（默认不校验）';
+
+  @override
+  String get hostProxyStatusFailed => '更新反向代理状态失败。';
+
+  @override
+  String get hostProxyStatusUpdated => '反向代理状态已更新。';
+
+  @override
+  String get hostRedirectAdd => '添加重定向';
+
+  @override
+  String get hostRedirectCancelEdit => '取消编辑';
+
+  @override
+  String get hostRedirectDeleteConfirmMessage => '删除重定向 {0}？';
+
+  @override
+  String get hostRedirectDeleteConfirmTitle => '删除重定向';
+
+  @override
+  String get hostRedirectDeleteFailed => '删除重定向失败。';
+
+  @override
+  String get hostRedirectDeleted => '重定向已删除。';
+
+  @override
+  String get hostRedirectDisable => '禁用';
+
+  @override
+  String get hostRedirectDomains => '域名';
+
+  @override
+  String get hostRedirectDomainsHelper => '一行一个域名。';
+
+  @override
+  String get hostRedirectDomainsPlaceholder => '一行一个域名，例如 old.example.com';
+
+  @override
+  String get hostRedirectDomainsRequired => '请至少输入一个域名。';
+
+  @override
+  String get hostRedirectEditTitle => '编辑重定向';
+
+  @override
+  String get hostRedirectEmpty => '暂无重定向规则。';
+
+  @override
+  String get hostRedirectKeep => '保留路径';
+
+  @override
+  String get hostRedirectKeepPath => '保留路径';
+
+  @override
+  String get hostRedirectKeepPathHelper => '将原始请求路径附加到目标 URL 之后。';
+
+  @override
+  String get hostRedirectListTitle => '重定向规则';
+
+  @override
+  String get hostRedirectLoadFailed => '加载重定向列表失败。';
+
+  @override
+  String get hostRedirectNameRequired => '名称不能为空。';
+
+  @override
+  String get hostRedirectNotKeep => '不保留路径';
+
+  @override
+  String get hostRedirectPathRequired => '请输入路径。';
+
+  @override
+  String get hostRedirectSaveFailed => '保存重定向失败。';
+
+  @override
+  String get hostRedirectStatusFailed => '更新重定向状态失败。';
+
+  @override
+  String get hostRedirectStatusUpdated => '重定向状态已更新。';
+
+  @override
+  String get hostRedirectTarget => '目标URL地址';
+
+  @override
+  String get hostRedirectTargetRequired => '请输入目标URL地址。';
+
+  @override
+  String get hostRedirectTypeDomain => '域名';
+
+  @override
+  String get hostRedirectTypePath => '路径';
+
+  @override
+  String get hostRedirectWay => '方式';
+
+  @override
+  String get hostRedirectWayHelper => '301永久重定向，302临时重定向';
+
+  @override
+  String get hostRewriteCardTitle => '伪静态规则';
+
+  @override
+  String get hostRewriteContentPlaceholder => '# nginx 伪静态规则';
+
+  @override
+  String get hostRewriteCurrent => '当前';
+
+  @override
+  String get hostRewriteHelper => '保存后 nginx 将自动重载并使规则生效。';
+
+  @override
+  String get hostRewriteHelper2 => '修改伪静态规则可能影响网站的访问解析。';
+
+  @override
+  String get hostRewriteLoadFailed => '加载伪静态内容失败。';
+
+  @override
+  String get hostRewriteMode => '方案';
+
+  @override
+  String get hostRewriteSaveAndReload => '保存并重载';
+
+  @override
+  String get hostRewriteSaveConfirmMessage => '保存 {0} 的伪静态规则并重载 nginx？';
+
+  @override
+  String get hostRewriteSaveFailed => '保存伪静态规则失败。';
+
+  @override
+  String get hostRewriteSaved => '伪静态规则已保存，nginx 已重载。';
+
+  @override
+  String get hostWebsiteConfigBack => '返回网站列表';
+
+  @override
+  String get hostWebsiteTabPlaceholder => '该模块将在后续批次提供。';
+
+  @override
+  String get hostWebsitesConfig => '配置';
+
+  @override
+  String get hostWebsitesConfigHint => '网站设置';
+
+  @override
+  String get hostHttpsTabTitle => 'HTTPS';
+
+  @override
+  String get hostDomainsTabTitle => '域名';
+
+  @override
+  String get hostWebsiteTabProxy => '反向代理';
+
+  @override
+  String get hostWebsiteTabRedirect => '重定向';
+
+  @override
+  String get hostWebsiteTabRewrite => '伪静态';
+
+  @override
+  String get hostWebsiteTabCors => '跨域共享（CORS）';
+
+  @override
+  String get hostWebsiteTabAntiLeech => '防盗链';
+
+  @override
+  String get hostWebsiteTabBasicAuth => '密码访问';
+
+  @override
+  String get hostWebsiteTabLogs => '日志';
 }

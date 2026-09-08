@@ -3005,7 +3005,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fileSavePrivateFallback =>
-      'File picker unavailable, saved to app\'s private directory';
+      'File picker unavailable, saved to the app private directory';
 
   @override
   String get filePickerUnavailable => 'File picker unavailable';
@@ -9462,4 +9462,660 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hostMonitoringLoadWindows => '1/5/15 min';
+
+  @override
+  String get hostAuthDeleteConfirm =>
+      'Delete this basic authentication user? This cannot be undone.';
+
+  @override
+  String get hostAuthDeleteFailed =>
+      'Failed to delete the basic authentication user.';
+
+  @override
+  String get hostAuthDisableConfirm =>
+      'Disable basic authentication for this website?';
+
+  @override
+  String get hostAuthEditHelper =>
+      'The password cannot be echoed. Editing resets the password.';
+
+  @override
+  String get hostAuthEnableConfirm => 'Enable basic authentication for {0}?';
+
+  @override
+  String get hostAuthEnableFailed =>
+      'Failed to update the basic authentication switch.';
+
+  @override
+  String get hostAuthEnableSwitch => 'Enable basic authentication';
+
+  @override
+  String get hostAuthLoadFailed =>
+      'Failed to load the basic authentication configuration.';
+
+  @override
+  String get hostAuthNameRequired => 'Name is required.';
+
+  @override
+  String get hostAuthPasswordInvalid =>
+      'Password may only contain letters, digits and _-.@\$!%*?& (max 72 characters).';
+
+  @override
+  String get hostAuthPasswordRequired => 'Password is required.';
+
+  @override
+  String get hostAuthPathDeleteConfirm =>
+      'Delete path authentication rule {0}? This cannot be undone.';
+
+  @override
+  String get hostAuthPathEmpty => 'No path authentication rules';
+
+  @override
+  String get hostAuthPathRequired => 'Path is required.';
+
+  @override
+  String get hostAuthRandom => 'Random';
+
+  @override
+  String get hostAuthRemark => 'Remark';
+
+  @override
+  String get hostAuthSaveFailed => 'Failed to update the basic authentication.';
+
+  @override
+  String get hostAuthSaved => 'Basic authentication updated.';
+
+  @override
+  String get hostAuthScopeGlobal => 'Global';
+
+  @override
+  String get hostAuthUsernameRequired => 'Username is required.';
+
+  @override
+  String get hostCorsAllowCredentials => 'Allow cookies to be sent';
+
+  @override
+  String get hostCorsAllowHeaders => 'Allowed request headers';
+
+  @override
+  String get hostCorsAllowMethods => 'Allowed request methods';
+
+  @override
+  String get hostCorsAllowOrigins => 'Allowed domains';
+
+  @override
+  String get hostCorsEnable => 'Enable CORS';
+
+  @override
+  String get hostCorsLoadFailed => 'Failed to load the CORS configuration.';
+
+  @override
+  String get hostCorsOriginsRequired =>
+      'Allowed domains is required when CORS is enabled.';
+
+  @override
+  String get hostCorsPreflight => 'Preflight request fast response';
+
+  @override
+  String get hostCorsPreflightHelper =>
+      'Answers cross-origin OPTIONS preflight requests automatically with 204 and the CORS headers';
+
+  @override
+  String get hostCorsSaveConfirm => 'Save the CORS configuration for {0}?';
+
+  @override
+  String get hostCorsSaveFailed => 'Failed to save the CORS configuration.';
+
+  @override
+  String get hostCorsSaved => 'CORS configuration saved.';
+
+  @override
+  String get hostDomainsActionsLabel => 'Actions';
+
+  @override
+  String get hostDomainsAddFailed => 'Failed to add domains.';
+
+  @override
+  String get hostDomainsAddSuccess => 'Domains added.';
+
+  @override
+  String get hostDomainsDeleteConfirm =>
+      'Delete domain {0}? This action cannot be undone.';
+
+  @override
+  String get hostDomainsDeleteFailed => 'Failed to delete domain.';
+
+  @override
+  String get hostDomainsDeleteSuccess => 'Domain deleted.';
+
+  @override
+  String get hostDomainsDeleteTitle => 'Delete domain';
+
+  @override
+  String get hostDomainsInputHint =>
+      'One domain per line. All entries share the port and SSL option below.';
+
+  @override
+  String get hostDomainsInputRequired => 'Enter at least one domain.';
+
+  @override
+  String get hostDomainsLastDeleteDisabled =>
+      'At least one domain must remain.';
+
+  @override
+  String get hostDomainsLoadFailed => 'Failed to load domains.';
+
+  @override
+  String get hostHttpsAlgorithmLabel => 'Encryption algorithm';
+
+  @override
+  String get hostHttpsAlgorithmRequired => 'Encryption algorithm is required.';
+
+  @override
+  String get hostHttpsCertEmpty =>
+      'No certificates available. Import one from the SSL certificate page first.';
+
+  @override
+  String get hostHttpsCertLoadFailed => 'Failed to load certificates.';
+
+  @override
+  String get hostHttpsCertRequired =>
+      'Certificate and private key are required.';
+
+  @override
+  String get hostHttpsCertSelectPlaceholder => 'Select certificate';
+
+  @override
+  String get hostHttpsCertificateLabel => 'Certificate';
+
+  @override
+  String get hostHttpsDisableConfirm =>
+      'Disabling HTTPS will delete the certificate related configuration. Continue?';
+
+  @override
+  String get hostHttpsDisableTitle => 'Disable HTTPS';
+
+  @override
+  String get hostHttpsHelper =>
+      'Note: Do not use SSL certificates for illegal websites.\nIf HTTPS access cannot be used after enabling, check whether the firewall has released port 443.';
+
+  @override
+  String get hostHttpsHstsHelper =>
+      'Enabling HSTS can increase website security';
+
+  @override
+  String get hostHttpsHstsSubDomainsLabel => 'HSTS include subdomains';
+
+  @override
+  String get hostHttpsHttp3Helper =>
+      'HTTP/3 offers faster connections, but not all browsers support it; enabling it may make the site unreachable for some browsers.';
+
+  @override
+  String get hostHttpsHttp3Label => 'HTTP3';
+
+  @override
+  String get hostHttpsHttpConfigAlso => 'Allow direct HTTP requests';
+
+  @override
+  String get hostHttpsHttpConfigLabel => 'HTTP options';
+
+  @override
+  String get hostHttpsHttpConfigOnly => 'Block HTTP requests';
+
+  @override
+  String get hostHttpsHttpConfigToHttps => 'Redirect to HTTPS';
+
+  @override
+  String get hostHttpsInsecureSuffix => '(not safe)';
+
+  @override
+  String get hostHttpsIpWarn =>
+      'Websites with IP as domain names need to be set as default site to be accessed normally.';
+
+  @override
+  String get hostHttpsLoadFailed => 'Failed to load HTTPS configuration.';
+
+  @override
+  String get hostHttpsPortLabel => 'HTTPS port';
+
+  @override
+  String get hostHttpsPrivateKeyLabel => 'Private key';
+
+  @override
+  String get hostHttpsProtocolLabel => 'Protocol version';
+
+  @override
+  String get hostHttpsProtocolRequired =>
+      'Select at least one TLS protocol version.';
+
+  @override
+  String get hostHttpsSaveConfirm => 'Apply the HTTPS configuration to {0}?';
+
+  @override
+  String get hostHttpsSaveConfirmTitle => 'Save HTTPS settings';
+
+  @override
+  String get hostHttpsSectionAdvanced => 'Protocol settings';
+
+  @override
+  String get hostHttpsSectionBasic => 'Basic';
+
+  @override
+  String get hostHttpsSectionCert => 'Certificate settings';
+
+  @override
+  String get hostHttpsSelectCertRequired => 'Please select a certificate.';
+
+  @override
+  String get hostHttpsTypeExisted => 'Existing certificate';
+
+  @override
+  String get hostHttpsTypeLabel => 'SSL options';
+
+  @override
+  String get hostHttpsTypeManual => 'Import certificate manually';
+
+  @override
+  String get hostLeechAccessDomains => 'Allowed domains';
+
+  @override
+  String get hostLeechBlockedHelper =>
+      'When Allow empty referrer is on, requests without a Referer are not blocked; this also allows any Referer not starting with http/https';
+
+  @override
+  String get hostLeechBlockedRef => 'Allow non-standard Referer';
+
+  @override
+  String get hostLeechBrowserCache => 'Browser Cache';
+
+  @override
+  String get hostLeechCacheControl => 'Cache control';
+
+  @override
+  String get hostLeechCacheTime => 'Browser Cache Time';
+
+  @override
+  String get hostLeechCacheTimeHelper =>
+      'The time static resources are cached locally in the browser, reducing redundant requests';
+
+  @override
+  String get hostLeechCacheTimeInvalid =>
+      'Cache time must be an integer between 1 and 65535.';
+
+  @override
+  String get hostLeechDomainsHelper => 'One domain per line';
+
+  @override
+  String get hostLeechDomainsRequired =>
+      'At least one allowed domain is required when enabled.';
+
+  @override
+  String get hostLeechEnable => 'Enable';
+
+  @override
+  String get hostLeechExtends => 'File extensions';
+
+  @override
+  String get hostLeechLoadFailed =>
+      'Failed to load the anti-leech configuration.';
+
+  @override
+  String get hostLeechLogEnable => 'Log static asset requests';
+
+  @override
+  String get hostLeechLogHelper =>
+      'Logs static asset requests; usually disabled in production to avoid noisy logs';
+
+  @override
+  String get hostLeechNoneRef => 'Allow empty referrer';
+
+  @override
+  String get hostLeechReturn => 'Response resource';
+
+  @override
+  String get hostLeechReturnHelper =>
+      'HTTP status code returned after blocking hotlinking requests';
+
+  @override
+  String get hostLeechSaveConfirm =>
+      'Save the anti-leech configuration for {0}?';
+
+  @override
+  String get hostLeechSaveFailed =>
+      'Failed to save the anti-leech configuration.';
+
+  @override
+  String get hostLeechSaved => 'Anti-leech configuration saved.';
+
+  @override
+  String get hostLogsAccessLog => 'Website logs';
+
+  @override
+  String get hostLogsErrorLog => 'Error log';
+
+  @override
+  String get hostLogsLoadFailed => 'Failed to load the website log.';
+
+  @override
+  String get hostLogsRefreshFailed => 'Failed to refresh the website log.';
+
+  @override
+  String get hostLogsStateHint =>
+      'Log switch state (read-only in this release)';
+
+  @override
+  String get hostProxyAdd => 'Add Proxy';
+
+  @override
+  String get hostProxyAddressPlaceholder => 'e.g. 127.0.0.1:8080';
+
+  @override
+  String get hostProxyAddressRequired => 'Target address is required.';
+
+  @override
+  String get hostProxyAllowCredentials => 'Allow credentials';
+
+  @override
+  String get hostProxyAllowHeaders => 'Allow headers';
+
+  @override
+  String get hostProxyAllowMethods => 'Allow methods';
+
+  @override
+  String get hostProxyAllowOrigins => 'Allow origins';
+
+  @override
+  String get hostProxyBrowserCache => 'Browser cache';
+
+  @override
+  String get hostProxyBrowserCacheNoModify => 'No modify';
+
+  @override
+  String get hostProxyBrowserCacheTime => 'Cache time';
+
+  @override
+  String get hostProxyBrowserCacheTimeHelper =>
+      'How long browsers may cache responses.';
+
+  @override
+  String get hostProxyCacheSection => 'Cache';
+
+  @override
+  String get hostProxyCacheTimeInvalid =>
+      'Cache time must be a number between 1 and 65535.';
+
+  @override
+  String get hostProxyCancelEdit => 'Cancel edit';
+
+  @override
+  String get hostProxyCors => 'Enable CORS';
+
+  @override
+  String get hostProxyCorsSection => 'CORS';
+
+  @override
+  String get hostProxyDeleteConfirmMessage =>
+      'Delete proxy {0}? The proxy config file will be removed.';
+
+  @override
+  String get hostProxyDeleteConfirmTitle => 'Delete proxy';
+
+  @override
+  String get hostProxyDeleteFailed => 'Failed to delete the proxy.';
+
+  @override
+  String get hostProxyDeleted => 'Proxy deleted.';
+
+  @override
+  String get hostProxyDisable => 'Disable';
+
+  @override
+  String get hostProxyDisabled => 'disabled';
+
+  @override
+  String get hostProxyEditTitle => 'Edit Proxy';
+
+  @override
+  String get hostProxyEmpty => 'No proxy rules yet.';
+
+  @override
+  String get hostProxyHost => 'Proxy host';
+
+  @override
+  String get hostProxyHostHelper =>
+      'Host header sent upstream; \$host keeps the original domain.';
+
+  @override
+  String get hostProxyHostRequired => 'Proxy host is required.';
+
+  @override
+  String get hostProxyListTitle => 'Proxy rules';
+
+  @override
+  String get hostProxyLoadFailed => 'Failed to load the proxy list.';
+
+  @override
+  String get hostProxyMatch => 'Proxy path';
+
+  @override
+  String get hostProxyMatchRequired => 'Proxy path is required.';
+
+  @override
+  String get hostProxyNameRequired => 'Name is required.';
+
+  @override
+  String get hostProxyOriginsRequired =>
+      'Allow origins is required when CORS is enabled.';
+
+  @override
+  String get hostProxyPass => 'Target address';
+
+  @override
+  String get hostProxyPassHelper =>
+      'Upstream address the requests are forwarded to.';
+
+  @override
+  String get hostProxyPreflight => 'Preflight';
+
+  @override
+  String get hostProxySaveFailed => 'Failed to save the proxy.';
+
+  @override
+  String get hostProxyServerCache => 'Server cache';
+
+  @override
+  String get hostProxyServerCacheTime => 'Cache time';
+
+  @override
+  String get hostProxyServerCacheTimeHelper =>
+      'How long upstream responses stay in the server cache.';
+
+  @override
+  String get hostProxySni => 'SNI';
+
+  @override
+  String get hostProxySniHelper =>
+      'Send the server name to the HTTPS upstream (proxy_ssl_server_name).';
+
+  @override
+  String get hostProxySslVerify => 'SSL verify';
+
+  @override
+  String get hostProxySslVerifyHelper =>
+      'Verify the upstream certificate when proxying over HTTPS.';
+
+  @override
+  String get hostProxyStatusFailed => 'Failed to update the proxy status.';
+
+  @override
+  String get hostProxyStatusUpdated => 'Proxy status updated.';
+
+  @override
+  String get hostRedirectAdd => 'Add Redirect';
+
+  @override
+  String get hostRedirectCancelEdit => 'Cancel edit';
+
+  @override
+  String get hostRedirectDeleteConfirmMessage => 'Delete redirect {0}?';
+
+  @override
+  String get hostRedirectDeleteConfirmTitle => 'Delete redirect';
+
+  @override
+  String get hostRedirectDeleteFailed => 'Failed to delete the redirect.';
+
+  @override
+  String get hostRedirectDeleted => 'Redirect deleted.';
+
+  @override
+  String get hostRedirectDisable => 'Disable';
+
+  @override
+  String get hostRedirectDomains => 'Domains';
+
+  @override
+  String get hostRedirectDomainsHelper => 'One domain per line.';
+
+  @override
+  String get hostRedirectDomainsPlaceholder =>
+      'One domain per line, e.g. old.example.com';
+
+  @override
+  String get hostRedirectDomainsRequired => 'At least one domain is required.';
+
+  @override
+  String get hostRedirectEditTitle => 'Edit Redirect';
+
+  @override
+  String get hostRedirectEmpty => 'No redirect rules yet.';
+
+  @override
+  String get hostRedirectKeep => 'keep path';
+
+  @override
+  String get hostRedirectKeepPath => 'Keep path';
+
+  @override
+  String get hostRedirectKeepPathHelper =>
+      'Append the original request path to the target URL.';
+
+  @override
+  String get hostRedirectListTitle => 'Redirect rules';
+
+  @override
+  String get hostRedirectLoadFailed => 'Failed to load the redirect list.';
+
+  @override
+  String get hostRedirectNameRequired => 'Name is required.';
+
+  @override
+  String get hostRedirectNotKeep => 'drop path';
+
+  @override
+  String get hostRedirectPathRequired => 'Path is required.';
+
+  @override
+  String get hostRedirectSaveFailed => 'Failed to save the redirect.';
+
+  @override
+  String get hostRedirectStatusFailed =>
+      'Failed to update the redirect status.';
+
+  @override
+  String get hostRedirectStatusUpdated => 'Redirect status updated.';
+
+  @override
+  String get hostRedirectTarget => 'Target URL';
+
+  @override
+  String get hostRedirectTargetRequired => 'Target URL is required.';
+
+  @override
+  String get hostRedirectTypeDomain => 'Domain';
+
+  @override
+  String get hostRedirectTypePath => 'Path';
+
+  @override
+  String get hostRedirectWay => 'Redirect';
+
+  @override
+  String get hostRedirectWayHelper => '301 is permanent, 302 is temporary.';
+
+  @override
+  String get hostRewriteCardTitle => 'Rewrite rules';
+
+  @override
+  String get hostRewriteContentPlaceholder => '# nginx rewrite rules';
+
+  @override
+  String get hostRewriteCurrent => 'Current';
+
+  @override
+  String get hostRewriteHelper =>
+      'Saved rules take effect once nginx reloads, which happens automatically after saving.';
+
+  @override
+  String get hostRewriteHelper2 =>
+      'Modifying rewrite rules may affect how the website resolves.';
+
+  @override
+  String get hostRewriteLoadFailed => 'Failed to load the rewrite content.';
+
+  @override
+  String get hostRewriteMode => 'Rewrite mode';
+
+  @override
+  String get hostRewriteSaveAndReload => 'Save and reload';
+
+  @override
+  String get hostRewriteSaveConfirmMessage =>
+      'Save the rewrite rules for {0} and reload nginx?';
+
+  @override
+  String get hostRewriteSaveFailed => 'Failed to save the rewrite rules.';
+
+  @override
+  String get hostRewriteSaved => 'Rewrite rules saved and nginx reloaded.';
+
+  @override
+  String get hostWebsiteConfigBack => 'Back to websites';
+
+  @override
+  String get hostWebsiteTabPlaceholder =>
+      'This module will be provided in a later batch.';
+
+  @override
+  String get hostWebsitesConfig => 'Config';
+
+  @override
+  String get hostWebsitesConfigHint => 'Website configuration';
+
+  @override
+  String get hostHttpsTabTitle => 'HTTPS';
+
+  @override
+  String get hostDomainsTabTitle => 'Domains';
+
+  @override
+  String get hostWebsiteTabProxy => 'Reverse Proxy';
+
+  @override
+  String get hostWebsiteTabRedirect => 'Redirect';
+
+  @override
+  String get hostWebsiteTabRewrite => 'Rewrite';
+
+  @override
+  String get hostWebsiteTabCors => 'CORS';
+
+  @override
+  String get hostWebsiteTabAntiLeech => 'Anti-Leech';
+
+  @override
+  String get hostWebsiteTabBasicAuth => 'Basic Auth';
+
+  @override
+  String get hostWebsiteTabLogs => 'Logs';
 }
