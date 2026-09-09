@@ -11,7 +11,8 @@ using System.Threading.Tasks;
 
 namespace OnePanelNativeHost;
 
-public static class WindowsBridge
+// partial：B4 数据库深度方法在 WindowsBridgeDatabase.cs（LOC 治理拆分，非功能分叉）。
+public static partial class WindowsBridge
 {
     // 与 Dart 侧 NativeChannelManager 同一通道（iOS/macOS 原生轨道共用）。
     private const string ChannelName = "com.onepanel.client/method";
