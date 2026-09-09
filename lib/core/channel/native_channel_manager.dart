@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 
+import 'native_channel_database_deep_handlers.dart';
 import 'native_channel_port.dart';
 import 'native_channel_read_handlers.dart';
 import 'native_channel_write_handlers.dart';
@@ -351,6 +352,60 @@ class NativeChannelManager implements NativeChannelPort {
       // ── Write: 缓存 ─────────────────────────────────────────────────────
       case 'clearCache':
         return NativeChannelWriteHandlers.clearCache(arguments);
+
+      // ── Read: 数据库深度（B4）─────────────────────────────────────────
+      case 'getDatabaseBaseInfo':
+        return NativeChannelDatabaseDeepHandlers.getDatabaseBaseInfo(arguments);
+      case 'getDatabaseConfFile':
+        return NativeChannelDatabaseDeepHandlers.getDatabaseConfFile(arguments);
+      case 'getMysqlVariables':
+        return NativeChannelDatabaseDeepHandlers.getMysqlVariables(arguments);
+      case 'getMysqlStatus':
+        return NativeChannelDatabaseDeepHandlers.getMysqlStatus(arguments);
+      case 'getRedisConf':
+        return NativeChannelDatabaseDeepHandlers.getRedisConf(arguments);
+      case 'getRedisStatus':
+        return NativeChannelDatabaseDeepHandlers.getRedisStatus(arguments);
+      case 'getRedisPersistence':
+        return NativeChannelDatabaseDeepHandlers.getRedisPersistence(arguments);
+      case 'getDatabaseRemoteAccess':
+        return NativeChannelDatabaseDeepHandlers.getDatabaseRemoteAccess(
+            arguments);
+      case 'getDatabaseUsers':
+        return NativeChannelDatabaseDeepHandlers.getDatabaseUsers(arguments);
+      case 'getDatabaseGrants':
+        return NativeChannelDatabaseDeepHandlers.getDatabaseGrants(arguments);
+      case 'getDatabaseBackups':
+        return NativeChannelDatabaseDeepHandlers.getDatabaseBackups(arguments);
+
+      // ── Write: 数据库深度（B4）────────────────────────────────────────
+      case 'updateDatabaseConfFile':
+        return NativeChannelDatabaseDeepHandlers.updateDatabaseConfFile(
+            arguments);
+      case 'updateMysqlVariables':
+        return NativeChannelDatabaseDeepHandlers.updateMysqlVariables(arguments);
+      case 'updateRedisConf':
+        return NativeChannelDatabaseDeepHandlers.updateRedisConf(arguments);
+      case 'updateRedisPersistence':
+        return NativeChannelDatabaseDeepHandlers.updateRedisPersistence(
+            arguments);
+      case 'changeRedisPassword':
+        return NativeChannelDatabaseDeepHandlers.changeRedisPassword(arguments);
+      case 'updateDatabaseAccess':
+        return NativeChannelDatabaseDeepHandlers.updateDatabaseAccess(arguments);
+      case 'updateDatabaseUserPassword':
+        return NativeChannelDatabaseDeepHandlers.updateDatabaseUserPassword(
+            arguments);
+      case 'createDatabaseUser':
+        return NativeChannelDatabaseDeepHandlers.createDatabaseUser(arguments);
+      case 'deleteDatabaseUser':
+        return NativeChannelDatabaseDeepHandlers.deleteDatabaseUser(arguments);
+      case 'updateDatabaseUser':
+        return NativeChannelDatabaseDeepHandlers.updateDatabaseUser(arguments);
+      case 'grantDatabaseUser':
+        return NativeChannelDatabaseDeepHandlers.grantDatabaseUser(arguments);
+      case 'revokeDatabaseGrant':
+        return NativeChannelDatabaseDeepHandlers.revokeDatabaseGrant(arguments);
 
       default:
         throw MissingPluginException();
