@@ -214,6 +214,9 @@ void main() {
 
     await tester.tap(find.byKey(const Key('firewall.bulkDeleteButton')));
     await tester.pumpAndSettle();
+    // 删除需经过确认对话框（破坏性操作二次确认）。
+    await tester.tap(find.text('Confirm').last);
+    await tester.pumpAndSettle();
     expect(service.lastFilterBatchOperation, isNotNull);
     expect(
       service.lastFilterBatchOperation!.rules
