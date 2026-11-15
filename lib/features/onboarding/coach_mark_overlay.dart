@@ -44,9 +44,16 @@ class _CoachMarkOverlayState extends State<CoachMarkOverlay> {
 
     return Positioned.fill(
       child: Material(
-        color: Colors.black54,
+        color: Colors.transparent,
         child: Stack(
           children: [
+            // 蒙版在目标区域挖孔：用户视线直接落在目标控件上，
+            // 而非隔着半透明灰色猜测要看什么。
+            Positioned.fill(
+              child: CustomPaint(
+                painter: _CoachMarkMaskPainter(holeRect: rect),
+              ),
+            ),
             if (rect != null)
               Positioned(
                 left: rect.left - 6,
@@ -79,9 +86,19 @@ class _CoachMarkOverlayState extends State<CoachMarkOverlay> {
     dynamic l10n,
   ) {
     final size = MediaQuery.sizeOf(context);
-    final top = rect == null
-        ? size.height * 0.4
-        : (rect.bottom + 12).clamp(24, size.height - 220);
+    const estimatedBubbleHeight = 200.0;
+    double top;
+    if (rect == null) {
+      top = size.height * 0.4;
+    } else if (rect.bottom + 12 + estimatedBubbleHeight <= size.height - 24) {
+      // 目标下方放得下：紧贴目标下方，视觉关联最强。
+      top = rect.bottom + 12;
+    } else if (rect.top - 12 - estimatedBubbleHeight >= 24) {
+      // 下方放不下则放到目标上方。
+      top = rect.top - 12 - estimatedBubbleHeight;
+    } else {
+      top = (size.height - estimatedBubbleHeight).clamp(24.0, size.height);
+    }
 
     return Positioned(
       left: AppDesignTokens.spacingLg,
@@ -157,4 +174,33 @@ class _CoachMarkOverlayState extends State<CoachMarkOverlay> {
       targetRender.size.height,
     );
   }
+}
+
+/// 全屏半透明蒙版，目标区域按 even-odd 规则挖孔透出真实控件。
+class _CoachMarkMaskPainter extends CustomPainter {
+  _CoachMarkMaskPainter({required this.holeRect});
+
+  final Rect? holeRect;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()..color = Colors.black54;
+    if (holeRect == null) {
+      canvas.drawRect(Offset.zero & size, paint);
+      return;
+    }
+    final hole = RRect.fromRectAndRadius(
+      holeRect!.inflate(6),
+      const Radius.circular(AppDesignTokens.radiusMd),
+    );
+    final path = Path()
+      ..fillType = PathFillType.evenOdd
+      ..addRect(Offset.zero & size)
+      ..addRRect(hole);
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(_CoachMarkMaskPainter oldDelegate) =>
+      oldDelegate.holeRect != holeRect;
 }

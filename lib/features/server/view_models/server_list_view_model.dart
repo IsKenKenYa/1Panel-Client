@@ -100,8 +100,11 @@ class ServerListViewModel extends ChangeNotifier with SafeChangeNotifier {
       if (!context.mounted) return;
 
       final l10n = context.l10n;
+      final hasServers = _serverProvider.servers.isNotEmpty;
       final steps = <CoachMarkStep>[];
-      if (showAdd) {
+      // 「先添加第一台服务器」仅在确实没有服务器时展示；
+      // 已有服务器时引导卡片操作，文案与场景保持一致。
+      if (showAdd && !hasServers) {
         steps.add(
           CoachMarkStep(
             targetKey: addKey,
@@ -110,7 +113,7 @@ class ServerListViewModel extends ChangeNotifier with SafeChangeNotifier {
           ),
         );
       }
-      if (showCard && _serverProvider.servers.isNotEmpty) {
+      if (showCard && hasServers) {
         steps.add(
           CoachMarkStep(
             targetKey: firstCardKey,

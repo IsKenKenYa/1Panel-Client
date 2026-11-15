@@ -126,8 +126,35 @@ class MonitorRepository {
   /// 数组，见上游 frontend/src/api/interface/ai.ts MonitorGPUData），并非
   /// GPU 列表；旧实现按 List 解析必然失败。这里取各序列最后一个采样点
   /// 还原当前 GPU 状态，并兼容 data 为空 / 字段缺失。
+  ///
+  /// 上游 service 要求 search 必须携带设备（deviceID/productName），先经
+  /// GET /ai/gpu/options 取设备列表；无 GPU 设备时直接返回空，不再发起
+  /// 必然 500 的历史查询。
   Future<List<MonitorGpuInfo>> getGPUInfo(dynamic client) async {
     try {
+      String? deviceId;
+      String? productName;
+      bool legacy = false;
+      final optionsResponse = await client.get('/api/v2/ai/gpu/options');
+      if (optionsResponse.data is Map) {
+        final body = Map<String, dynamic>.from(optionsResponse.data as Map);
+        final payload = body['data'] is Map
+            ? Map<String, dynamic>.from(body['data'] as Map)
+            : body;
+        final chartHide = payload['chartHide'];
+        if (chartHide is List && chartHide.isNotEmpty) {
+          final first =
+              Map<String, dynamic>.from(chartHide.first as Map);
+          deviceId = (first['deviceID'] as String?)?.trim();
+          productName = (first['productName'] as String?)?.trim();
+          legacy = first['legacy'] == true;
+        }
+      }
+      if ((deviceId == null || deviceId.isEmpty) &&
+          (productName == null || productName.isEmpty)) {
+        return [];
+      }
+
       final now = DateTime.now();
       final startTime = now.subtract(const Duration(hours: 1));
 
@@ -136,6 +163,9 @@ class MonitorRepository {
         data: {
           'startTime': startTime.toUtc().toIso8601String(),
           'endTime': now.toUtc().toIso8601String(),
+          'deviceID': deviceId ?? '',
+          'productName': productName ?? '',
+          'legacy': legacy,
         },
       );
 
