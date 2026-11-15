@@ -549,7 +549,7 @@ void main() {
 
     test('POST /hosts/firewall/search - 防火墙规则', () async {
       if (skip() != null) return;
-      late final raw;
+      late final Response<dynamic> raw;
       try {
         raw = await _rawPost(client, '/hosts/firewall/search', data: {
           'page': 1,
