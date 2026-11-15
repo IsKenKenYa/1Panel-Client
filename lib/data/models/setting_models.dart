@@ -1189,6 +1189,59 @@ class PasskeyRegisterRequest extends Equatable {
   List<Object?> get props => [name];
 }
 
+class ModelDownloaderSetting extends Equatable {
+  final String modelDir;
+  final String? featuredModelsSync;
+  final String? hfEndpoint;
+  final String? hfToken;
+  final String? modelScopeEndpoint;
+  final String? modelScopeToken;
+
+  const ModelDownloaderSetting({
+    required this.modelDir,
+    this.featuredModelsSync,
+    this.hfEndpoint,
+    this.hfToken,
+    this.modelScopeEndpoint,
+    this.modelScopeToken,
+  });
+
+  factory ModelDownloaderSetting.fromJson(Map<String, dynamic> json) {
+    return ModelDownloaderSetting(
+      modelDir: json['modelDir'] as String? ?? '',
+      featuredModelsSync: json['featuredModelsSync'] as String?,
+      hfEndpoint: json['hfEndpoint'] as String?,
+      hfToken: json['hfToken'] as String?,
+      modelScopeEndpoint: json['modelScopeEndpoint'] as String?,
+      modelScopeToken: json['modelScopeToken'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final json = <String, dynamic>{'modelDir': modelDir};
+    if (featuredModelsSync != null) {
+      json['featuredModelsSync'] = featuredModelsSync;
+    }
+    if (hfEndpoint != null) json['hfEndpoint'] = hfEndpoint;
+    if (hfToken != null) json['hfToken'] = hfToken;
+    if (modelScopeEndpoint != null) {
+      json['modelScopeEndpoint'] = modelScopeEndpoint;
+    }
+    if (modelScopeToken != null) json['modelScopeToken'] = modelScopeToken;
+    return json;
+  }
+
+  @override
+  List<Object?> get props => [
+        modelDir,
+        featuredModelsSync,
+        hfEndpoint,
+        hfToken,
+        modelScopeEndpoint,
+        modelScopeToken,
+      ];
+}
+
 class PasskeyBeginResponse extends Equatable {
   final String? sessionId;
   final dynamic publicKey;

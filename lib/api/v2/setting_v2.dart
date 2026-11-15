@@ -1050,6 +1050,29 @@ class SettingV2Api {
       requestOptions: response.requestOptions,
     );
   }
+
+  /// 获取模型下载器设置。
+  Future<Response<ModelDownloaderSetting>> getModelDownloaderSettings() async {
+    final response = await _client.get<dynamic>(
+      ApiConstants.buildApiPath('/xpack/model/downloader/settings'),
+    );
+    final data = ApiResponseParser.asMapOrNull(response.data);
+    return Response<ModelDownloaderSetting>(
+      data: data != null ? ModelDownloaderSetting.fromJson(data) : null,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 更新模型下载器设置。
+  Future<Response<void>> updateModelDownloaderSettings(
+      ModelDownloaderSetting request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/xpack/model/downloader/settings'),
+      data: request.toJson(),
+    );
+  }
 }
 
 // ==================== 请求模型 ====================

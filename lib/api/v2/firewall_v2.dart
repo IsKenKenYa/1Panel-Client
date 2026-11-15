@@ -4,6 +4,7 @@ import '../../core/config/api_constants.dart';
 import '../../core/network/dio_client.dart';
 import '../../data/models/common_models.dart';
 import '../../data/models/firewall_models.dart';
+import '../../data/models/firewall_v2_models.dart';
 
 /// 1Panel host firewall API client.
 ///
@@ -192,6 +193,248 @@ class FirewallV2Api {
   ) {
     return _client.post<void>(
       ApiConstants.buildApiPath('/hosts/firewall/forward'),
+      data: request.toJson(),
+    );
+  }
+
+  // ==================== Unified firewall v2 (1Panel v2.5.1) ====================
+
+  Map<String, dynamic> _unwrapMap(dynamic raw) {
+    final payload = _extractMapPayload(raw);
+    return payload;
+  }
+
+  Future<Response<Map<String, dynamic>>> loadFirewallV2Settings() async {
+    final response = await _client.get(
+      ApiConstants.buildApiPath('/hosts/firewall/settings'),
+    );
+    return Response<Map<String, dynamic>>(
+      data: _unwrapMap(response.data),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<void>> updateFirewallIPv6(
+      FirewallIPv6Operation request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/hosts/firewall/settings/ipv6'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<void>> operateFirewallBackend(
+      FirewallBackendOperation request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/hosts/firewall/settings/operate'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<void>> createFirewallPortWhitelist(
+      FirewallPortWhitelistOperation request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/hosts/firewall/settings/whitelist'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<void>> updateFirewallPortWhitelist(
+      FirewallPortWhitelistUpdate request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/hosts/firewall/settings/whitelist/update'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<void>> deleteFirewallPortWhitelist(
+      FirewallPortWhitelistOperation request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/hosts/firewall/settings/whitelist/delete'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<Map<String, dynamic>>> loadFirewallRuleBackups(
+      String subsystem) async {
+    final response = await _client.get(
+      ApiConstants.buildApiPath('/hosts/firewall/rules/backups'),
+      queryParameters: <String, dynamic>{'subsystem': subsystem},
+    );
+    return Response<Map<String, dynamic>>(
+      data: _unwrapMap(response.data),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<Map<String, dynamic>>> searchFirewallRuleInventory(
+      FirewallRuleInventoryRequest request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/hosts/firewall/rules/search'),
+      data: request.toJson(),
+    );
+    return Response<Map<String, dynamic>>(
+      data: _unwrapMap(response.data),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<void>> createFirewallV2Rules(
+      FirewallRuleCreateRequest request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/hosts/firewall/rules'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<void>> deleteFirewallV2Rules(
+      FirewallRuleDeleteRequest request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/hosts/firewall/rules/delete'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<void>> updateFirewallV2Rule(
+      FirewallRuleUpdateRequest request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/hosts/firewall/rules/update'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<void>> reorderFirewallV2Rule(
+      FirewallRuleReorderRequest request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/hosts/firewall/rules/reorder'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<void>> resetFirewallV2Rules(
+      FirewallRuleResetRequest request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/hosts/firewall/rules/reset'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<String>> loadFirewallNativeDetail(
+      FirewallNativeDetailRequest request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/hosts/firewall/rules/native/detail'),
+      data: request.toJson(),
+    );
+    final raw = response.data is Map ? response.data['data'] : response.data;
+    return Response<String>(
+      data: raw?.toString() ?? '',
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<Map<String, dynamic>>> loadFirewallForwardBase() async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/hosts/firewall/forward/base'),
+    );
+    return Response<Map<String, dynamic>>(
+      data: _unwrapMap(response.data),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<void>> enableFirewallForwarding(
+      FirewallForwardEnableRequest request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/hosts/firewall/forward/enable'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<void>> operateFirewallForwardRules(
+      FirewallForwardOperateV2Request request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/hosts/firewall/forward/operate'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<Map<String, dynamic>>> searchFirewallForwardRules(
+      FirewallForwardSearchRequest request) async {
+    final response = await _client.post(
+      ApiConstants.buildApiPath('/hosts/firewall/forward/search'),
+      data: request.toJson(),
+    );
+    return Response<Map<String, dynamic>>(
+      data: _unwrapMap(response.data),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<Map<String, dynamic>>> loadFirewallDockerPorts() async {
+    final response = await _client.get(
+      ApiConstants.buildApiPath('/hosts/firewall/docker/ports'),
+    );
+    return Response<Map<String, dynamic>>(
+      data: _unwrapMap(response.data),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<List<dynamic>>> loadFirewallDockerEndpoints() async {
+    final response = await _client.get(
+      ApiConstants.buildApiPath('/hosts/firewall/docker/endpoints'),
+    );
+    final raw = response.data is Map ? response.data['data'] : response.data;
+    return Response<List<dynamic>>(
+      data: raw is List ? List<dynamic>.from(raw) : const <dynamic>[],
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<void>> operateFirewallDockerGuard(
+      FirewallDockerOperation request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/hosts/firewall/docker/operate'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<void>> batchUpsertFirewallDockerPolicies(
+      FirewallDockerPolicyBatch request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/hosts/firewall/docker/policies/batch'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<void>> batchDeleteFirewallDockerPolicies(
+      FirewallDockerPolicyBatchDelete request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath(
+          '/hosts/firewall/docker/policies/delete/batch'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<void>> operateFirewallFamily(
+      FirewallFamilyOperation request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/hosts/firewall/family/operate'),
       data: request.toJson(),
     );
   }

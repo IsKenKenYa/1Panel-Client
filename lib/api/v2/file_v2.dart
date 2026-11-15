@@ -115,6 +115,14 @@ class FileV2Api {
     );
   }
 
+  /// 停止服务端文件移动任务
+  Future<Response<void>> stopFileMoveTask(FileMoveStopRequest request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/files/move/stop'),
+      data: request.toJson(),
+    );
+  }
+
   /// 上传文件
   ///
   /// 上传文件到指定目录

@@ -152,6 +152,21 @@ class FileMove extends Equatable {
   List<Object?> get props => [paths, targetPath, type, name, cover];
 }
 
+class FileMoveStopRequest extends Equatable {
+  final String taskID;
+
+  const FileMoveStopRequest({required this.taskID});
+
+  factory FileMoveStopRequest.fromJson(Map<String, dynamic> json) {
+    return FileMoveStopRequest(taskID: json['taskID'] as String? ?? '');
+  }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{'taskID': taskID};
+
+  @override
+  List<Object?> get props => [taskID];
+}
+
 class FileCopy extends Equatable {
   final List<String> paths;
   final String targetPath;

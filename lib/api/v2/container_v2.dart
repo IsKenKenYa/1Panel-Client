@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import '../../core/network/dio_client.dart';
 import '../../core/config/api_constants.dart';
 import '../../data/models/container_models.dart';
+import '../../data/models/container_compose_models.dart';
 import '../../data/models/common_models.dart';
 import '../../data/models/runtime_models.dart';
 import '../../data/models/setting_models.dart';
@@ -871,6 +872,14 @@ class ContainerV2Api {
   ) async {
     return await _client.post<void>(
       ApiConstants.buildApiPath('/containers/compose/clean/log'),
+      data: request.toJson(),
+    );
+  }
+
+  /// 设置 Compose 项目置顶状态
+  Future<Response<void>> pinComposeProject(ComposePin request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/containers/compose/pin'),
       data: request.toJson(),
     );
   }

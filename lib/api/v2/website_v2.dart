@@ -4,6 +4,7 @@ import '../../core/config/api_constants.dart';
 import '../../data/models/common_models.dart';
 import '../../data/models/file/file_info.dart';
 import '../../data/models/website_models.dart';
+import '../../data/models/website_template_models.dart';
 import '../../data/models/ssl_models.dart';
 import 'api_response_parser.dart';
 
@@ -817,6 +818,133 @@ class WebsiteV2Api {
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
+    );
+  }
+
+  // ==================== Website templates ====================
+
+  Future<PageResult<WebsiteTemplateDto>> searchWebsiteTemplates(
+      WebsiteTemplateSearch request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/templates/search'),
+      data: request.toJson(),
+    );
+    return PageResult.fromJson(
+      _extractMapData(response),
+      (json) => WebsiteTemplateDto.fromJson(json as Map<String, dynamic>),
+    );
+  }
+
+  Future<Response<WebsiteTemplateDto>> getWebsiteTemplate(
+      WebsiteTemplateIdReq request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/templates/get'),
+      data: request.toJson(),
+    );
+    final data = _extractMapData(response);
+    return Response<WebsiteTemplateDto>(
+      data: data.isEmpty ? null : WebsiteTemplateDto.fromJson(data),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<void>> createWebsiteTemplate(
+      WebsiteTemplateCreate request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/websites/templates'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<void>> updateWebsiteTemplate(
+      WebsiteTemplateUpdate request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/websites/templates/update'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<void>> deleteWebsiteTemplate(
+      WebsiteTemplateIdReq request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/websites/templates/del'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<Map<String, dynamic>>> uploadWebsiteTemplateZip(
+      MultipartFile file) async {
+    final formData = FormData.fromMap(<String, dynamic>{'file': file});
+    final response = await _client.post<dynamic>(
+      ApiConstants.buildApiPath('/websites/templates/upload'),
+      data: formData,
+    );
+    final raw = ApiResponseParser.unwrap(response.data);
+    return Response<Map<String, dynamic>>(
+      data: raw is Map ? Map<String, dynamic>.from(raw) : <String, dynamic>{},
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<WebsitePreviewDto>> previewWebsiteTemplate(
+      WebsitePreviewReq request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/templates/preview'),
+      data: request.toJson(),
+    );
+    final data = _extractMapData(response);
+    return Response<WebsitePreviewDto>(
+      data: data.isEmpty ? null : WebsitePreviewDto.fromJson(data),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<PageResult<WebsiteTemplateOutputDto>> searchWebsiteTemplateOutputs(
+      WebsiteTemplateOutputSearch request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/templates/outputs/search'),
+      data: request.toJson(),
+    );
+    return PageResult.fromJson(
+      _extractMapData(response),
+      (json) => WebsiteTemplateOutputDto.fromJson(json as Map<String, dynamic>),
+    );
+  }
+
+  Future<Response<WebsiteTemplateOutputDto>> getWebsiteTemplateOutput(
+      WebsiteTemplateIdReq request) async {
+    final response = await _client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/websites/templates/outputs/get'),
+      data: request.toJson(),
+    );
+    final data = _extractMapData(response);
+    return Response<WebsiteTemplateOutputDto>(
+      data: data.isEmpty ? null : WebsiteTemplateOutputDto.fromJson(data),
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      requestOptions: response.requestOptions,
+    );
+  }
+
+  Future<Response<void>> createWebsiteTemplateOutput(
+      WebsiteTemplateOutputCreate request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/websites/templates/outputs'),
+      data: request.toJson(),
+    );
+  }
+
+  Future<Response<void>> deleteWebsiteTemplateOutput(
+      WebsiteTemplateIdReq request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/websites/templates/outputs/del'),
+      data: request.toJson(),
     );
   }
 }

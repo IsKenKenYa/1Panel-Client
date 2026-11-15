@@ -1,5 +1,28 @@
 import 'package:equatable/equatable.dart';
 
+class ComposePin extends Equatable {
+  final String name;
+  final bool? isPinned;
+
+  const ComposePin({required this.name, this.isPinned});
+
+  factory ComposePin.fromJson(Map<String, dynamic> json) {
+    return ComposePin(
+      name: json['name'] as String? ?? '',
+      isPinned: json['isPinned'] as bool?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final json = <String, dynamic>{'name': name};
+    if (isPinned != null) json['isPinned'] = isPinned;
+    return json;
+  }
+
+  @override
+  List<Object?> get props => [name, isPinned];
+}
+
 class ContainerCompose extends Equatable {
   final String id;
   final String name;

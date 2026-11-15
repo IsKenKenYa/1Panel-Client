@@ -537,6 +537,15 @@ class AIV2Api {
     );
   }
 
+  /// 切换到内置 OpenClaw 飞书插件（异步任务）。
+  Future<Response<void>> switchAgentFeishuPlugin(
+      AgentFeishuSwitchReq request) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/ai/agents/channel/feishu/switch'),
+      data: request.toJson(),
+    );
+  }
+
   /// 获取 Telegram 通道配置
   Future<Response<AgentTelegramConfig>> getAgentTelegramConfig(
       AgentTelegramConfigReq request) async {

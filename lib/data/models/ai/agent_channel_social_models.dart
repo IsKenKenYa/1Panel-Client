@@ -112,6 +112,43 @@ class AgentFeishuPairingApproveReq {
   }
 }
 
+class AgentFeishuSwitchReq {
+  final int agentId;
+  final String taskID;
+  final String groupSessionScope;
+  final String requireMention;
+  final bool? streaming;
+
+  const AgentFeishuSwitchReq({
+    required this.agentId,
+    required this.taskID,
+    required this.groupSessionScope,
+    required this.requireMention,
+    this.streaming,
+  });
+
+  factory AgentFeishuSwitchReq.fromJson(Map<String, dynamic> json) {
+    return AgentFeishuSwitchReq(
+      agentId: json['agentId'] as int? ?? 0,
+      taskID: json['taskID'] as String? ?? '',
+      groupSessionScope: json['groupSessionScope'] as String? ?? '',
+      requireMention: json['requireMention'] as String? ?? '',
+      streaming: json['streaming'] as bool?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final json = <String, dynamic>{
+      'agentId': agentId,
+      'taskID': taskID,
+      'groupSessionScope': groupSessionScope,
+      'requireMention': requireMention,
+    };
+    if (streaming != null) json['streaming'] = streaming;
+    return json;
+  }
+}
+
 class AgentTelegramConfigReq {
   final int agentId;
 
