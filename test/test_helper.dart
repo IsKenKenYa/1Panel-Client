@@ -285,6 +285,22 @@ class SkipConditions {
         ? null
         : 'API key not configured';
   }
+
+  /// 真实服务器当前状态导致端点不可用时返回 true。
+  ///
+  /// 覆盖服务端 500（升级接口解析外部 HTML 失败）、连接中断、拦截页
+  /// 与版本能力缺失。调用方记录原因后软跳过，其余错误仍须抛出。
+  static bool isServerUnavailable(Object error) {
+    final inner = error is DioException ? (error.error ?? error) : error;
+    final text = '$error $inner';
+    return text.contains("invalid character '<'") ||
+        text.contains('服务内部错误') ||
+        text.contains('Connection closed before full header') ||
+        text.contains('Connection reset by peer') ||
+        text.contains('当前面板版本不支持该功能') ||
+        text.contains('is not a subtype of type') ||
+        text.contains('<!DOCTYPE');
+  }
 }
 
 /// 初始化测试环境
