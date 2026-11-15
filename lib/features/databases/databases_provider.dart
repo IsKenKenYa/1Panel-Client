@@ -239,7 +239,7 @@ class DatabasesProvider extends ChangeNotifier with SafeChangeNotifier {
   }
 }
 
-class DatabaseDetailProvider extends ChangeNotifier {
+class DatabaseDetailProvider extends ChangeNotifier with SafeChangeNotifier {
   DatabaseDetailProvider({
     required this.item,
     DatabasesService? service,

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/utils/error_message_utils.dart';
 import 'package:onepanel_client/data/models/website_models.dart';
 import 'package:onepanel_client/data/repositories/website_repository.dart';
@@ -14,7 +15,7 @@ import 'package:onepanel_client/data/repositories/website_repository.dart';
 ///
 /// Providers inject this store and call [load] (once) or [refresh] (after
 /// mutations). They read [website] to access the cached data.
-class WebsiteDetailStore extends ChangeNotifier {
+class WebsiteDetailStore extends ChangeNotifier with SafeChangeNotifier {
   WebsiteDetailStore({
     required int websiteId,
     WebsiteRepository? repository,

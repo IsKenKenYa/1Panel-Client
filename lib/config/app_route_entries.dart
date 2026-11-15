@@ -318,7 +318,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.websiteEdit: shellAwareModuleEntry(
         routeName: AppRoutes.websiteEdit,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final websiteId = arg['websiteId'] as int?;
           if (websiteId == null) {
             return const NotFoundPage();
@@ -329,7 +329,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.websiteDetail: shellAwareModuleEntry(
         routeName: AppRoutes.websiteDetail,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final websiteId = arg['websiteId'] as int?;
           if (websiteId == null) {
             return const NotFoundPage();
@@ -340,7 +340,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.websiteConfigCenter: shellAwareModuleEntry(
         routeName: AppRoutes.websiteConfigCenter,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final websiteId = arg['websiteId'] as int?;
           if (websiteId == null) {
             return const NotFoundPage();
@@ -354,7 +354,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.websiteRoutingRules: shellAwareModuleEntry(
         routeName: AppRoutes.websiteRoutingRules,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final websiteId = arg['websiteId'] as int?;
           if (websiteId == null) {
             return const NotFoundPage();
@@ -368,7 +368,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.websiteSecurityAccess: shellAwareModuleEntry(
         routeName: AppRoutes.websiteSecurityAccess,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final websiteId = arg['websiteId'] as int?;
           if (websiteId == null) {
             return const NotFoundPage();
@@ -382,7 +382,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.websiteDomains: shellAwareModuleEntry(
         routeName: AppRoutes.websiteDomains,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final websiteId = arg['websiteId'] as int?;
           if (websiteId == null) {
             return const NotFoundPage();
@@ -396,7 +396,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.websiteSiteSsl: shellAwareModuleEntry(
         routeName: AppRoutes.websiteSiteSsl,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final websiteId = arg['websiteId'] as int?;
           if (websiteId == null) {
             return const NotFoundPage();
@@ -410,7 +410,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.websiteSslCenter: shellAwareModuleEntry(
         routeName: AppRoutes.websiteSslCenter,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           return WebsiteSslCenterPage(
             initialWebsiteId: arg['websiteId'] as int?,
           );
@@ -419,7 +419,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.websiteCertificateDetail: shellAwareModuleEntry(
         routeName: AppRoutes.websiteCertificateDetail,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final certificateId = arg['certificateId'] as int?;
           if (certificateId == null) {
             return const NotFoundPage();
@@ -438,7 +438,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.websiteTemplateForm: shellAwareModuleEntry(
         routeName: AppRoutes.websiteTemplateForm,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           return ChangeNotifierProvider<WebsiteTemplateProvider>(
             create: (_) => WebsiteTemplateProvider(),
             child: WebsiteTemplateFormPage(
@@ -450,7 +450,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.websiteTemplateOutputs: shellAwareModuleEntry(
         routeName: AppRoutes.websiteTemplateOutputs,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           return ChangeNotifierProvider<WebsiteTemplateProvider>(
             create: (_) => WebsiteTemplateProvider(),
             child: WebsiteTemplateOutputsPage(
@@ -462,7 +462,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.websiteTemplateOutputCreate: shellAwareModuleEntry(
         routeName: AppRoutes.websiteTemplateOutputCreate,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final templateId = arg['templateId'] as int?;
           if (templateId == null) {
             return const NotFoundPage();
@@ -719,7 +719,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
             if (currentServer?.hasServer ?? false) {
               provider.initialize(
                 CommandFormArgs(
-                  initialValue: settings.arguments as CommandInfo?,
+                  initialValue: readRouteArg<CommandInfo>(settings.arguments),
                 ),
               );
             }
@@ -727,7 +727,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
           },
           child: CommandFormPage(
             args: CommandFormArgs(
-              initialValue: settings.arguments as CommandInfo?,
+              initialValue: readRouteArg<CommandInfo>(settings.arguments),
             ),
           ),
         ),
@@ -752,7 +752,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
             if (currentServer?.hasServer ?? false) {
               provider.initialize(
                 HostAssetFormArgs(
-                  initialValue: settings.arguments as HostInfo?,
+                  initialValue: readRouteArg<HostInfo>(settings.arguments),
                 ),
               );
             }
@@ -760,7 +760,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
           },
           child: HostAssetFormPage(
             args: HostAssetFormArgs(
-              initialValue: settings.arguments as HostInfo?,
+              initialValue: readRouteArg<HostInfo>(settings.arguments),
             ),
           ),
         ),
@@ -832,14 +832,14 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
             );
             if (currentServer?.hasServer ?? false) {
               provider.initialize(
-                settings.arguments as CronjobFormArgs? ??
+                readRouteArg<CronjobFormArgs>(settings.arguments) ??
                     const CronjobFormArgs(),
               );
             }
             return provider;
           },
           child: CronjobFormPage(
-            args: settings.arguments as CronjobFormArgs? ??
+            args: readRouteArg<CronjobFormArgs>(settings.arguments) ??
                 const CronjobFormArgs(),
           ),
         ),
@@ -885,14 +885,14 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
             );
             if (currentServer?.hasServer ?? false) {
               provider.initialize(
-                settings.arguments as BackupAccountFormArgs? ??
+                readRouteArg<BackupAccountFormArgs>(settings.arguments) ??
                     const BackupAccountFormArgs(),
               );
             }
             return provider;
           },
           child: BackupAccountFormPage(
-            args: settings.arguments as BackupAccountFormArgs? ??
+            args: readRouteArg<BackupAccountFormArgs>(settings.arguments) ??
                 const BackupAccountFormArgs(),
           ),
         ),
@@ -903,7 +903,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
             ChangeNotifierProvider<BackupRecordsProvider>(
           create: (_) => BackupRecordsProvider(),
           child: BackupRecordsPage(
-            args: settings.arguments as BackupRecordsArgs? ??
+            args: readRouteArg<BackupRecordsArgs>(settings.arguments) ??
                 const BackupRecordsArgs(),
           ),
         ),
@@ -914,7 +914,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
             ChangeNotifierProvider<BackupRecoverProvider>(
           create: (_) => BackupRecoverProvider(),
           child: BackupRecoverPage(
-            args: settings.arguments as BackupRecoverArgs? ??
+            args: readRouteArg<BackupRecoverArgs>(settings.arguments) ??
                 const BackupRecoverArgs(),
           ),
         ),
@@ -942,7 +942,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
             ChangeNotifierProvider<SystemLogsProvider>(
           create: (_) => SystemLogsProvider(),
           child: SystemLogViewerPage(
-            args: settings.arguments as SystemLogViewerArgs? ??
+            args: readRouteArg<SystemLogViewerArgs>(settings.arguments) ??
                 const SystemLogViewerArgs(),
           ),
         ),
@@ -986,7 +986,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
             ChangeNotifierProvider<RuntimeFormProvider>(
           create: (_) => RuntimeFormProvider(),
           child: RuntimeFormPage(
-            args: settings.arguments as RuntimeFormArgs? ??
+            args: readRouteArg<RuntimeFormArgs>(settings.arguments) ??
                 const RuntimeFormArgs(),
           ),
         ),
@@ -1078,7 +1078,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.securityGatewayCenter: shellAwareModuleEntry(
         routeName: AppRoutes.securityGatewayCenter,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final sectionName = arg['initialSection'] as String?;
           final initialSection = SecurityGatewaySection.values.firstWhere(
             (s) => s.name == sectionName,
@@ -1098,7 +1098,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.openrestySourceEditor: shellAwareModuleEntry(
         routeName: AppRoutes.openrestySourceEditor,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           return ChangeNotifierProvider(
             create: (_) => OpenRestyProvider()..loadAll(),
             child: OpenRestySourceEditorPage(
@@ -1110,7 +1110,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.websiteHttps: shellAwareModuleEntry(
         routeName: AppRoutes.websiteHttps,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final websiteId = arg['websiteId'] as int?;
           if (websiteId == null) {
             return const NotFoundPage();
@@ -1124,7 +1124,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.websiteRedirect: shellAwareModuleEntry(
         routeName: AppRoutes.websiteRedirect,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final websiteId = arg['websiteId'] as int?;
           if (websiteId == null) {
             return const NotFoundPage();
@@ -1138,7 +1138,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.websiteCors: shellAwareModuleEntry(
         routeName: AppRoutes.websiteCors,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final websiteId = arg['websiteId'] as int?;
           if (websiteId == null) {
             return const NotFoundPage();
@@ -1152,7 +1152,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.websiteLeech: shellAwareModuleEntry(
         routeName: AppRoutes.websiteLeech,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final websiteId = arg['websiteId'] as int?;
           if (websiteId == null) {
             return const NotFoundPage();
@@ -1166,7 +1166,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.websiteLog: shellAwareModuleEntry(
         routeName: AppRoutes.websiteLog,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final websiteId = arg['websiteId'] as int?;
           if (websiteId == null) {
             return const NotFoundPage();
@@ -1180,7 +1180,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.websiteAuthBasic: shellAwareModuleEntry(
         routeName: AppRoutes.websiteAuthBasic,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final websiteId = arg['websiteId'] as int?;
           if (websiteId == null) {
             return const NotFoundPage();
@@ -1194,7 +1194,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.websiteResource: shellAwareModuleEntry(
         routeName: AppRoutes.websiteResource,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final websiteId = arg['websiteId'] as int?;
           if (websiteId == null) {
             return const NotFoundPage();
@@ -1208,7 +1208,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.websiteLoadBalancer: shellAwareModuleEntry(
         routeName: AppRoutes.websiteLoadBalancer,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final websiteId = arg['websiteId'] as int?;
           if (websiteId == null) {
             return const NotFoundPage();
@@ -1230,14 +1230,14 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.fileHistory: shellAwareModuleEntry(
         routeName: AppRoutes.fileHistory,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           return FileHistoryPage(path: arg['path']?.toString() ?? '/');
         },
       ),
       AppRoutes.filePermission: shellAwareModuleEntry(
         routeName: AppRoutes.filePermission,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final paths = (arg['paths'] as List<dynamic>? ?? const [])
               .map((e) => e.toString())
               .toList(growable: false);
@@ -1270,7 +1270,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.mcpServerDetail: shellAwareModuleEntry(
         routeName: AppRoutes.mcpServerDetail,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final serverId = arg['serverId'] as int?;
           if (serverId == null) {
             return const NotFoundPage();
@@ -1284,7 +1284,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.databaseMongodb: shellAwareModuleEntry(
         routeName: AppRoutes.databaseMongodb,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final databaseName = arg['databaseName'] as String?;
           if (databaseName == null) {
             return const NotFoundPage();
@@ -1297,7 +1297,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.databaseMysqlVariables: shellAwareModuleEntry(
         routeName: AppRoutes.databaseMysqlVariables,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final databaseName = arg['databaseName'] as String?;
           if (databaseName == null) {
             return const NotFoundPage();
@@ -1310,7 +1310,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.databasePgPrivileges: shellAwareModuleEntry(
         routeName: AppRoutes.databasePgPrivileges,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final databaseName = arg['databaseName'] as String?;
           if (databaseName == null) {
             return const NotFoundPage();
@@ -1323,7 +1323,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.databaseRedisPersistence: shellAwareModuleEntry(
         routeName: AppRoutes.databaseRedisPersistence,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final databaseName = arg['databaseName'] as String?;
           if (databaseName == null) {
             return const NotFoundPage();
@@ -1336,7 +1336,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.databaseSlowLog: shellAwareModuleEntry(
         routeName: AppRoutes.databaseSlowLog,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final databaseName = arg['databaseName'] as String?;
           if (databaseName == null) {
             return const NotFoundPage();
@@ -1349,7 +1349,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.databaseRemoteConfig: shellAwareModuleEntry(
         routeName: AppRoutes.databaseRemoteConfig,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final databaseName = arg['databaseName'] as String?;
           final databaseType = arg['databaseType'] as String?;
           if (databaseName == null || databaseType == null) {
@@ -1364,7 +1364,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.containerInspect: shellAwareModuleEntry(
         routeName: AppRoutes.containerInspect,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final containerId = arg['containerId'] as String?;
           final containerName = arg['containerName'] as String?;
           if (containerId == null || containerName == null) {
@@ -1379,7 +1379,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.containerFiles: shellAwareModuleEntry(
         routeName: AppRoutes.containerFiles,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final containerId = arg['containerId'] as String?;
           final containerName = arg['containerName'] as String?;
           if (containerId == null || containerName == null) {
@@ -1414,7 +1414,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       AppRoutes.aiAgentPlugins: shellAwareModuleEntry(
         routeName: AppRoutes.aiAgentPlugins,
         defaultBuilder: (_, settings) {
-          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final arg = readRouteArg<Map<String, dynamic>>(settings.arguments) ?? const {};
           final agentId = arg['agentId'];
           if (agentId == null) {
             return const NotFoundPage();
@@ -1528,3 +1528,7 @@ DatabaseScope readDatabaseScope(Object? value) {
   }
   return DatabaseScope.mysql;
 }
+
+/// Type-safe route argument reader: returns null instead of throwing
+/// when the arguments are absent or of an unexpected type.
+T? readRouteArg<T>(Object? arguments) => arguments is T ? arguments : null;
