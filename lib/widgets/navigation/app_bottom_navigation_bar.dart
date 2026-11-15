@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:glass/glass.dart';
 
 class AppNavigationBarItem {
   const AppNavigationBarItem({
@@ -79,6 +80,13 @@ class AppBottomNavigationBar extends StatelessWidget {
             enabled: items[index].enabled,
           ),
       ],
+    )
+        // 导航浮层液态玻璃：内容从栏下滚动穿透（Apple Liquid Glass 语义）。
+        // Impeller 下 GPU 折射着色器；Web/Skia 与低端设备由包内自动回退纯模糊，
+        // 无障碍「减弱透明度」场景由调用方 theme 层保持栏底色兜底。
+        .asGlass(
+      tintColor: Theme.of(context).colorScheme.surface,
+      frosted: true,
     );
   }
 }
