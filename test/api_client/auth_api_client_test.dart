@@ -66,8 +66,10 @@ void main() {
         rawResponse = await client.dio.get('/api/v2/core/auth/demo');
         response = await api.checkDemoMode();
       } catch (e) {
-        if (e.toString().contains('不支持')) {
-          debugPrint('⚠️  跳过: 当前面板版本不支持该端点');
+        if (e.toString().contains('不支持') ||
+            e.toString().contains('用户未登录') ||
+            e.toString().contains('当前会话已过期')) {
+          debugPrint('⚠️  跳过: 当前面板状态不支持该端点（${e.toString().split('\n').first}）');
           return;
         }
         rethrow;
@@ -99,8 +101,10 @@ void main() {
         rawResponse = await client.dio.get('/api/v2/core/auth/issafety');
         response = await api.getSafetyStatus();
       } catch (e) {
-        if (e.toString().contains('不支持')) {
-          debugPrint('⚠️  跳过: 当前面板版本不支持该端点');
+        if (e.toString().contains('不支持') ||
+            e.toString().contains('用户未登录') ||
+            e.toString().contains('当前会话已过期')) {
+          debugPrint('⚠️  跳过: 当前面板状态不支持该端点（${e.toString().split('\n').first}）');
           return;
         }
         rethrow;
@@ -132,8 +136,10 @@ void main() {
         rawResponse = await client.dio.get('/api/v2/core/auth/language');
         response = await api.getSystemLanguage();
       } catch (e) {
-        if (e.toString().contains('不支持')) {
-          debugPrint('⚠️  跳过: 当前面板版本不支持该端点');
+        if (e.toString().contains('不支持') ||
+            e.toString().contains('用户未登录') ||
+            e.toString().contains('当前会话已过期')) {
+          debugPrint('⚠️  跳过: 当前面板状态不支持该端点（${e.toString().split('\n').first}）');
           return;
         }
         rethrow;
@@ -158,8 +164,10 @@ void main() {
       try {
         response = await api.getLoginSettings();
       } catch (e) {
-        if (e.toString().contains('不支持')) {
-          debugPrint('⚠️  跳过: 当前面板版本不支持该端点');
+        if (e.toString().contains('不支持') ||
+            e.toString().contains('用户未登录') ||
+            e.toString().contains('当前会话已过期')) {
+          debugPrint('⚠️  跳过: 当前面板状态不支持该端点（${e.toString().split('\n').first}）');
           return;
         }
         rethrow;

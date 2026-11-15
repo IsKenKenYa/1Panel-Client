@@ -66,6 +66,10 @@ void main() {
   late DioClient client;
   late FirewallV2Api api;
   bool canRun = false;
+  // v2.5.1 面板移除了旧版 V1 防火墙端点（/hosts/firewall/base|search 等），
+  // 服务器返回 404 时按版本差异软跳过；统一防火墙 V2 由
+  // firewall_v2_alignment_test.dart 覆盖。
+  bool v1EndpointsRemoved = false;
 
   setUpAll(() async {
     await TestEnvironment.initialize();
@@ -77,6 +81,19 @@ void main() {
         apiKey: TestEnvironment.apiKey,
       );
       api = FirewallV2Api(client);
+      try {
+        await _rawPost(
+          client,
+          '/hosts/firewall/search',
+          data: const FirewallRuleSearch(page: 1, pageSize: 1, type: 'address').toJson(),
+        );
+      } catch (e) {
+        if (e.toString().contains('404')) {
+          v1EndpointsRemoved = true;
+        } else {
+          rethrow;
+        }
+      }
     }
   });
 
@@ -100,6 +117,13 @@ void main() {
       final skipReason = TestEnvironment.skipIntegration();
       if (skipReason != null) {
         appLogger.wWithPackage('test.api_client.firewall', '跳过测试: $skipReason');
+        return;
+      }
+      if (v1EndpointsRemoved) {
+        appLogger.wWithPackage(
+          'test.api_client.firewall',
+          '跳过测试: 服务器已移除旧版 V1 防火墙端点',
+        );
         return;
       }
 
@@ -131,6 +155,13 @@ void main() {
       final skipReason = TestEnvironment.skipIntegration();
       if (skipReason != null) {
         appLogger.wWithPackage('test.api_client.firewall', '跳过测试: $skipReason');
+        return;
+      }
+      if (v1EndpointsRemoved) {
+        appLogger.wWithPackage(
+          'test.api_client.firewall',
+          '跳过测试: 服务器已移除旧版 V1 防火墙端点',
+        );
         return;
       }
 

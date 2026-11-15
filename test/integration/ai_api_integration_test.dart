@@ -54,10 +54,11 @@ Future<void> main() async {
         expect(response.data, isA<List>());
       } on Exception catch (e) {
         if (e.toString().contains('ollama service is not found') ||
-            e.toString().contains('record not found')) {
-          // 服务器未安装 Ollama，属于服务器状态差异，软跳过
+            e.toString().contains('record not found') ||
+            e.toString().contains('404')) {
+          // 服务器未安装 Ollama 或 v2.5.1 已移除该端点，属于服务器状态差异，软跳过
           // ignore: avoid_print
-          print('SKIP: 服务器未安装 Ollama，软跳过同步模型列表测试');
+          print('SKIP: 服务器未安装 Ollama 或端点已移除，软跳过同步模型列表测试');
           return;
         }
         rethrow;

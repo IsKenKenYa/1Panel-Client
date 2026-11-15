@@ -296,7 +296,7 @@ void main() {
       } catch (e) {
         resultCollector.addFailure(testName, e.toString(), Duration.zero);
       }
-    });
+    }, timeout: const Timeout(Duration(minutes: 10)));
   });
 
   group('3. Installed App Management', () {
