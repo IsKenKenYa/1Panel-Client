@@ -4,6 +4,7 @@ import 'package:onepanel_client/features/openresty/pages/openresty_center_page.d
 import 'package:onepanel_client/features/openresty/providers/openresty_provider.dart';
 import 'package:onepanel_client/features/openresty/services/openresty_service.dart';
 import 'package:onepanel_client/features/openresty/widgets/openresty_error_view.dart';
+import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 import 'package:onepanel_client/shared/security_gateway/security_gateway_snapshot_store.dart';
 import 'package:provider/provider.dart';
@@ -30,11 +31,22 @@ class _NotInstalledOpenRestyService extends OpenRestyService {
 }
 
 Widget _wrapTestApp(Widget child) {
-  return MaterialApp(
-    localizationsDelegates: AppLocalizations.localizationsDelegates,
-    supportedLocales: AppLocalizations.supportedLocales,
-    home: child,
+  return ChangeNotifierProvider<CurrentServerController>(
+    create: (_) => _FakeCurrentServerController(),
+    child: MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: child,
+    ),
   );
+}
+
+class _FakeCurrentServerController extends CurrentServerController {
+  @override
+  String? get currentServerId => 'server-1';
+
+  @override
+  bool get hasServer => true;
 }
 
 void main() {

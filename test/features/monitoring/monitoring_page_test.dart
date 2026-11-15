@@ -10,7 +10,16 @@ import 'package:onepanel_client/features/monitoring/data/datasources/monitor_loc
 import 'package:onepanel_client/features/monitoring/monitoring_page.dart';
 import 'package:onepanel_client/features/monitoring/monitoring_provider.dart';
 import 'package:onepanel_client/features/monitoring/monitoring_service.dart';
+import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
+
+class _FakeCurrentServerController extends CurrentServerController {
+  @override
+  String? get currentServerId => 'server-1';
+
+  @override
+  bool get hasServer => true;
+}
 
 class _FakeMonitorLocalDataSource extends MonitorLocalDataSource {
   @override
@@ -144,8 +153,15 @@ void main() {
     );
 
     await tester.pumpWidget(
-      ChangeNotifierProvider<MonitoringProvider>.value(
-        value: provider,
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<CurrentServerController>.value(
+            value: _FakeCurrentServerController(),
+          ),
+          ChangeNotifierProvider<MonitoringProvider>.value(
+            value: provider,
+          ),
+        ],
         child: MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
@@ -185,8 +201,15 @@ void main() {
     );
 
     await tester.pumpWidget(
-      ChangeNotifierProvider<MonitoringProvider>.value(
-        value: provider,
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<CurrentServerController>.value(
+            value: _FakeCurrentServerController(),
+          ),
+          ChangeNotifierProvider<MonitoringProvider>.value(
+            value: provider,
+          ),
+        ],
         child: MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
