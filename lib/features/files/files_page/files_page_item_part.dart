@@ -25,16 +25,31 @@ extension _FilesViewItemActions on _FilesViewState {
     final isDesktop = PlatformUtils.isDesktop(context);
 
     Widget content = Card(
-      margin: const EdgeInsets.only(bottom: AppDesignTokens.spacingXs),
-      color: isSelected ? colorScheme.primaryContainer : null,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      margin: const EdgeInsets.only(bottom: AppDesignTokens.listCardGap),
+      color: isSelected ? colorScheme.secondaryContainer : null,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: ListTile(
-        leading: Icon(
-          isDir ? Icons.folder_outlined : _getFileIcon(file.name),
-          color: isDir
-              ? colorScheme.primary
-              : _getFileIconColor(file.name, colorScheme),
-          size: 32,
+        visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
+        // 文件图标放进 tonal 容器：M3 图标承载惯例，识别度高于裸图标。
+        leading: Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(AppDesignTokens.radiusSm),
+            color: isDir
+                ? colorScheme.primaryContainer
+                : colorScheme.surfaceContainerHighest,
+          ),
+          alignment: Alignment.center,
+          child: Icon(
+            isDir
+                ? Icons.folder_outlined
+                : _getFileIcon(file.name),
+            color: isDir
+                ? colorScheme.onPrimaryContainer
+                : _getFileIconColor(file.name, colorScheme),
+            size: 20,
+          ),
         ),
         title: Row(
           children: [

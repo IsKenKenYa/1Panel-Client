@@ -26,11 +26,14 @@ class ServerCard extends StatelessWidget {
         final hasBoundedHeight = constraints.maxHeight.isFinite;
 
         return Card(
+          clipBehavior: Clip.antiAlias,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
+          ),
           child: InkWell(
             onTap: onTap,
-            borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
             child: Padding(
-              padding: AppDesignTokens.pagePadding,
+              padding: const EdgeInsets.all(AppDesignTokens.spacingMd),
               child: Column(
                 mainAxisSize:
                     hasBoundedHeight ? MainAxisSize.max : MainAxisSize.min,
@@ -38,6 +41,27 @@ class ServerCard extends StatelessWidget {
                 children: [
                   Row(
                     children: [
+                      // 服务器标识容器：M3 avatar 惯例，与文件列表图标体系一致。
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(AppDesignTokens.radiusSm),
+                          color: data.isCurrent
+                              ? scheme.primaryContainer
+                              : scheme.surfaceContainerHighest,
+                        ),
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.dns_outlined,
+                          color: data.isCurrent
+                              ? scheme.onPrimaryContainer
+                              : scheme.onSurfaceVariant,
+                          size: 22,
+                        ),
+                      ),
+                      const SizedBox(width: AppDesignTokens.spacingMd),
                       Expanded(
                         child: Text(
                           data.config.name,
@@ -49,7 +73,8 @@ class ServerCard extends StatelessWidget {
                       if (data.isCurrent) ...[
                         const SizedBox(width: 8),
                         Chip(
-                          visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
+                          visualDensity:
+                              AdaptiveLayoutSpec.of(context).adaptiveDensity,
                           label: Text(l10n.serverCurrent),
                         ),
                       ],
@@ -61,11 +86,20 @@ class ServerCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: AppDesignTokens.spacingSm),
-                  Text('${l10n.serverIpLabel}: ${_extractHost(data.config.url)}'),
-                  const SizedBox(height: AppDesignTokens.spacingMd),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 52), // 40 容器 + 12 间距对齐
+                    child: Text(
+                      '${l10n.serverIpLabel}: ${_extractHost(data.config.url)}',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: scheme.onSurfaceVariant,
+                          ),
+                    ),
+                  ),
+                  const SizedBox(height: AppDesignTokens.spacingSm),
                   Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
+                    spacing: 6,
+                    runSpacing: 6,
                     children: [
                       _MetricPill(
                           label: l10n.serverCpuLabel,
@@ -83,7 +117,7 @@ class ServerCard extends StatelessWidget {
                   ),
                   if (hasBoundedHeight) const Spacer(),
                   if (!hasBoundedHeight)
-                    const SizedBox(height: AppDesignTokens.spacingLg),
+                    const SizedBox(height: AppDesignTokens.spacingMd),
                   Wrap(
                     spacing: 12,
                     runSpacing: 6,
@@ -93,13 +127,17 @@ class ServerCard extends StatelessWidget {
                         _hasMetrics(data.metrics)
                             ? l10n.serverMetricsAvailable
                             : l10n.serverMetricsUnavailable,
-                        style: TextStyle(color: scheme.onSurfaceVariant),
+                        style: TextStyle(
+                          color: scheme.onSurfaceVariant,
+                          fontSize: 12,
+                        ),
                       ),
                       Text(
                         l10n.serverOpenDetail,
                         style: TextStyle(
                           color: scheme.primary,
                           fontWeight: FontWeight.w600,
+                          fontSize: 12,
                         ),
                       ),
                     ],
@@ -153,12 +191,15 @@ class _MetricPill extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(999),
         color: scheme.surfaceContainerHighest.withValues(alpha: 0.6),
       ),
-      child: Text('$label $value'),
+      child: Text(
+        '$label $value',
+        style: Theme.of(context).textTheme.labelSmall,
+      ),
     );
   }
 }
