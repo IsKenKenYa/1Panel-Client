@@ -92,7 +92,8 @@ class _LogToolbarState extends State<LogToolbar> {
                                     minHeight: 36,
                                   ),
                                   padding: EdgeInsets.zero,
-                                  visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
+                                  // 搜索行内嵌 36x36 定制紧凑按钮，双端固定密度。
+                                  visualDensity: VisualDensity.compact,
                                   onPressed: widget.controller.previousMatch,
                                   tooltip: l10n.logPreviousMatch,
                                 ),
@@ -104,7 +105,7 @@ class _LogToolbarState extends State<LogToolbar> {
                                     minHeight: 36,
                                   ),
                                   padding: EdgeInsets.zero,
-                                  visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
+                                  visualDensity: VisualDensity.compact,
                                   onPressed: widget.controller.nextMatch,
                                   tooltip: l10n.logNextMatch,
                                 ),
@@ -115,7 +116,7 @@ class _LogToolbarState extends State<LogToolbar> {
                                     minHeight: 36,
                                   ),
                                   padding: EdgeInsets.zero,
-                                  visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
+                                  visualDensity: VisualDensity.compact,
                                   onPressed: () {
                                     widget.controller.search('');
                                     _searchController.clear();
