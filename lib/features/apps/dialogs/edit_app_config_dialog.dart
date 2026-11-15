@@ -5,6 +5,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/app_config_models.dart';
 import 'package:onepanel_client/data/models/app_models.dart';
 import 'package:onepanel_client/features/apps/providers/installed_apps_provider.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_panel.dart';
 
 import '../../../core/utils/snackbar_utils.dart';
 class EditAppConfigDialog extends StatefulWidget {
@@ -160,14 +161,16 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final colorScheme = Theme.of(context).colorScheme;
 
     // Filter editable params
     final editableParams =
         widget.appConfig.params.where((p) => p.edit).toList();
 
-    return AlertDialog(
-      title: Text(l10n.appTabConfig),
+    return AppFormPanel(
+      title: l10n.appTabConfig,
+      isSaving: _isLoading,
+      confirmLabel: l10n.commonSave,
+      onConfirm: _submit,
       content: SizedBox(
         width: double.maxFinite,
         child: SingleChildScrollView(
@@ -311,25 +314,6 @@ class _EditAppConfigDialogState extends State<EditAppConfigDialog> {
           ),
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: _isLoading ? null : () => Navigator.pop(context),
-          child: Text(l10n.commonCancel),
-        ),
-        FilledButton(
-          onPressed: _isLoading ? null : _submit,
-          child: _isLoading
-              ? SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: colorScheme.onPrimary,
-                  ),
-                )
-              : Text(l10n.commonSave),
-        ),
-      ],
     );
   }
 

@@ -9,6 +9,7 @@ import 'package:onepanel_client/features/containers/dialogs/network_create_dialo
 import 'package:onepanel_client/features/containers/dialogs/volume_create_dialog.dart';
 import 'package:onepanel_client/features/containers/dialogs/repo_create_dialog.dart';
 import 'package:onepanel_client/features/containers/dialogs/template_create_dialog.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_panel.dart';
 import 'package:onepanel_client/features/orchestration/providers/compose_provider.dart';
 import 'package:onepanel_client/features/orchestration/providers/network_provider.dart';
 import 'package:onepanel_client/features/orchestration/providers/volume_provider.dart';
@@ -20,8 +21,8 @@ class ContainersPageCreateDialogs {
     if (!ContainersOpsGuard.begin('compose-create')) return;
     try {
       final l10n = context.l10n;
-      final result = await showDialog<ContainerComposeCreate>(
-        context: context,
+      final result = await showAdaptiveFormPanel<ContainerComposeCreate>(
+        context,
         builder: (context) => const ComposeCreateDialog(),
       );
 
@@ -46,8 +47,8 @@ class ContainersPageCreateDialogs {
     if (!ContainersOpsGuard.begin('network-create')) return;
     try {
       final l10n = context.l10n;
-      final result = await showDialog<Map<String, dynamic>>(
-        context: context,
+      final result = await showAdaptiveFormPanel<Map<String, dynamic>>(
+        context,
         builder: (context) => const NetworkCreateDialog(),
       );
 
@@ -81,8 +82,8 @@ class ContainersPageCreateDialogs {
     if (!ContainersOpsGuard.begin('volume-create')) return;
     try {
       final l10n = context.l10n;
-      final result = await showDialog<Map<String, dynamic>>(
-        context: context,
+      final result = await showAdaptiveFormPanel<Map<String, dynamic>>(
+        context,
         builder: (context) => const VolumeCreateDialog(),
       );
 
@@ -113,8 +114,8 @@ class ContainersPageCreateDialogs {
     if (!ContainersOpsGuard.begin('repo-create')) return;
     try {
       final l10n = context.l10n;
-      final result = await showDialog<bool>(
-        context: context,
+      final result = await showAdaptiveFormPanel<bool>(
+        context,
         builder: (context) => const RepoCreateDialog(),
       );
       if (result == true && context.mounted) {
@@ -129,8 +130,8 @@ class ContainersPageCreateDialogs {
     if (!ContainersOpsGuard.begin('template-create')) return;
     try {
       final l10n = context.l10n;
-      final result = await showDialog<bool>(
-        context: context,
+      final result = await showAdaptiveFormPanel<bool>(
+        context,
         builder: (context) => const TemplateCreateDialog(),
       );
       if (result == true && context.mounted) {

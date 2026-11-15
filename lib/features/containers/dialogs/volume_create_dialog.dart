@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
-import 'package:onepanel_client/shared/widgets/forms/app_form_dialog.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_panel.dart';
 
 class VolumeCreateDialog extends StatefulWidget {
   const VolumeCreateDialog({super.key});
@@ -29,7 +29,7 @@ class _VolumeCreateDialogState extends State<VolumeCreateDialog> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return AppFormDialog(
+    return AppFormPanel(
       title: l10n.orchestrationCreateVolume,
       content: SingleChildScrollView(
         child: Form(

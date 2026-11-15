@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
-import 'package:onepanel_client/shared/widgets/forms/app_form_dialog.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_panel.dart';
 import '../../../data/models/container_models.dart';
 
 class ComposeCreateDialog extends StatefulWidget {
@@ -29,7 +29,7 @@ class _ComposeCreateDialogState extends State<ComposeCreateDialog> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return AppFormDialog(
+    return AppFormPanel(
       title: l10n.orchestrationComposeCreateTitle,
       content: SingleChildScrollView(
         child: Form(

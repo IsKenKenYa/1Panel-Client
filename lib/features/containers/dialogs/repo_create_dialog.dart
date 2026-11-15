@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/container_models.dart';
 import 'package:onepanel_client/features/containers/containers_provider.dart';
-import 'package:onepanel_client/shared/widgets/forms/app_form_dialog.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_panel.dart';
 
 class RepoCreateDialog extends StatefulWidget {
   final ContainerRepo? repo;
@@ -48,7 +48,7 @@ class _RepoCreateDialogState extends State<RepoCreateDialog> {
     final l10n = context.l10n;
     final isEdit = widget.repo != null;
 
-    return AppFormDialog(
+    return AppFormPanel(
       title: isEdit ? l10n.commonEdit : l10n.commonCreate,
       isSaving: _saving,
       content: SingleChildScrollView(

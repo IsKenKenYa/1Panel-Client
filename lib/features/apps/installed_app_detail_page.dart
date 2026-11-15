@@ -11,6 +11,7 @@ import 'package:onepanel_client/features/apps/dialogs/edit_app_config_dialog.dar
 import 'package:onepanel_client/features/apps/providers/installed_app_detail_provider.dart';
 import 'package:onepanel_client/features/apps/providers/installed_apps_provider.dart';
 import 'package:onepanel_client/features/apps/widgets/app_icon.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_panel.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
@@ -154,8 +155,8 @@ class _InstalledAppDetailViewState extends State<_InstalledAppDetailView> {
 
   Future<void> _handleEditConfig(
       AppConfig config, AppInstallInfo appInfo) async {
-    final changed = await showDialog<bool>(
-      context: context,
+    final changed = await showAdaptiveFormPanel<bool>(
+      context,
       builder: (_) => EditAppConfigDialog(
         appInstallId: appInfo.id!,
         appConfig: config,

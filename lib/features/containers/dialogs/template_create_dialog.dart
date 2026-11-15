@@ -4,7 +4,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/container_models.dart';
 import 'package:onepanel_client/features/containers/containers_provider.dart';
 import 'package:onepanel_client/core/layout/adaptive_layout.dart';
-import 'package:onepanel_client/shared/widgets/forms/app_form_dialog.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_panel.dart';
 
 class TemplateCreateDialog extends StatefulWidget {
   final ContainerTemplate? template;
@@ -44,12 +44,14 @@ class _TemplateCreateDialogState extends State<TemplateCreateDialog> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final isEdit = widget.template != null;
+    final spec = AdaptiveLayoutSpec.of(context);
 
-    return AppFormDialog(
+    return AppFormPanel(
       title:
           isEdit ? l10n.commonEditTemplate : l10n.orchestrationCreateTemplate,
       isSaving: _saving,
-      content: SizedBox(width: AdaptiveLayoutSpec.of(context).dialogConstraints.maxWidth,
+      content: SizedBox(
+        width: spec.isDesktop ? spec.dialogConstraints.maxWidth : double.maxFinite,
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,

@@ -7,6 +7,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/data/models/container_models.dart';
 import 'package:onepanel_client/features/orchestration/providers/image_provider.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_panel.dart';
 
 /// 镜像操作对话框入口（pull/build/load/search）。
 /// 全部写操作经 [ContainersOpsGuard] 互斥，防重复提交。
@@ -78,58 +79,47 @@ class ContainersPageImageDialogs {
       final tagsController = TextEditingController();
       final buildArgsController = TextEditingController();
 
-      final result = await showDialog<bool>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text(l10n.orchestrationImageBuild),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: contextController,
-                  decoration: InputDecoration(
-                    labelText: l10n.containerBuildContext,
-                    border: const OutlineInputBorder(),
-                  ),
+      final result = await showAdaptiveFormPanel<bool>(
+        context,
+        builder: (dialogContext) => AppFormPanel(
+          title: l10n.orchestrationImageBuild,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: contextController,
+                decoration: InputDecoration(
+                  labelText: l10n.containerBuildContext,
+                  border: const OutlineInputBorder(),
                 ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: dockerfileController,
-                  decoration: InputDecoration(
-                    labelText: l10n.containerBuildDockerfile,
-                    border: const OutlineInputBorder(),
-                  ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: dockerfileController,
+                decoration: InputDecoration(
+                  labelText: l10n.containerBuildDockerfile,
+                  border: const OutlineInputBorder(),
                 ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: tagsController,
-                  decoration: InputDecoration(
-                    labelText: l10n.containerBuildTags,
-                    border: const OutlineInputBorder(),
-                  ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: tagsController,
+                decoration: InputDecoration(
+                  labelText: l10n.containerBuildTags,
+                  border: const OutlineInputBorder(),
                 ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: buildArgsController,
-                  decoration: InputDecoration(
-                    labelText: l10n.containerBuildArgs,
-                    border: const OutlineInputBorder(),
-                  ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: buildArgsController,
+                decoration: InputDecoration(
+                  labelText: l10n.containerBuildArgs,
+                  border: const OutlineInputBorder(),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text(l10n.commonCancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(l10n.commonConfirm),
-            ),
-          ],
+          onConfirm: () async => Navigator.of(dialogContext).pop(true),
         ),
       );
 
