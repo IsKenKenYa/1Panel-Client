@@ -4,6 +4,10 @@ inclusion: auto
 
 # 功能测试用例自动生成规则
 
+> **强制规则以 `AGENTS.md` 为准**，其中「最高优先级执行规则」优先于本文全部内容。每次用户消息提到 AGENTS.md 时，必须重新阅读 `AGENTS.md` 全文。
+>
+> - 每次改动完成后自动执行完整测试闭环并迭代到门禁全部通过；提交消息遵循 Conventional Commits 且必须包含 `scope`，按模块或类别分别提交。详见 `AGENTS.md`「每次改动后的全自动测试闭环（强制）」与「提交与合并请求规范」。
+
 ## 触发条件
 
 当以下情况发生时，自动生成对应测试用例：
@@ -134,7 +138,7 @@ void main() {
 - ✅ `PlatformCapabilities` 正确识别 `TargetPlatform.ohos` 或 `operatingSystem=ohos`
 - ✅ API key 保存后重启模拟仍能从 secure store / 持久 fallback 恢复
 - ✅ `api_configs` 不持久化明文 `apiKey`
-- ✅ 401 诊断能区分空 key、HTML 401、时间偏差、IP 白名单/密钥问题
+- ✅ 401 诊断能区分空 key、HTML 401、时间差别、IP 白名单/密钥问题
 - ✅ 日志导出在 OHOS 走 native save 或应用文档目录 fallback，并返回有效路径
 - ✅ 下载任务重试重新生成认证头，避免旧时间戳导致 401
 - ✅ ArkTS bridge 注册器包含项目自有 `onepanel/ohos_platform` 通道

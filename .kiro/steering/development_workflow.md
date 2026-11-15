@@ -4,6 +4,11 @@ inclusion: auto
 
 # 开发工作流
 
+> **强制规则以 `AGENTS.md` 为准**，其中「最高优先级执行规则」优先于本文全部内容。每次用户消息提到 AGENTS.md 时，必须重新阅读 `AGENTS.md` 全文。
+>
+> - 默认在当前分支直接修改与提交，新建分支必须得到用户明确同意；提交消息遵循 Conventional Commits 且必须包含 `scope`，按模块或类别分别提交。详见 `AGENTS.md`「分支、发布与 CI」与「提交与合并请求规范」。
+> - 每次改动完成后自动执行完整测试闭环（理解需求 → 测试用例设计 → 自动化测试基线准备 → 功能开发 → 单元测试 → 集成测试 → 文档与基线回写），迭代到门禁全部通过。详见 `AGENTS.md`「每次改动后的全自动测试闭环（强制）」。
+
 ## 实时功能规划（强制）
 
 - 功能批次状态唯一维护在 `docs/development/modules/阶段总计划.md`；不要在模块计划、审计报告或聊天记录中维护第二份“当前状态”。
@@ -19,7 +24,7 @@ inclusion: auto
 rg --files -g '*.md' -g '!docs/OpenSource/**'
 rg '关键词' -g '*.md' -g '!docs/OpenSource/**'
 
-# 优先更新现有文档，而不是创建新文档
+# 优先更新现有文档，禁止为单个功能创建新文档
 # 禁止为单个 bug/功能创建独立文档
 # Bug 修复说明写在 test/bugfix/*_test.dart 注释中
 ```
@@ -40,10 +45,10 @@ ls -lh lib/path/to/file.dart
 wc -l lib/path/to/file.dart
 
 # 禁止创建 *_fixed.dart、*_v2.dart、*_new.dart 等副本
-# 只有文件达到 1000 LOC 时才按职责拆分
+# 只有文件达到 1000 LOC 时才按职责分成多个文件
 ```
 
-### 3. 查阅契约
+### 3. 查阅接口定义
 - API 问题：查看 `docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json`
 - 前端行为：参考 `docs/OpenSource/1Panel/frontend/src/`
 - **禁止修改** `docs/OpenSource/1Panel/**` 下任何文件
@@ -75,7 +80,7 @@ void main() {
 - 文件大小：逻辑 ≤500 LOC，UI ≤800 LOC，硬上限 1000 LOC
 - 使用 `appLogger`，禁止 `print()`
 - **在原文件上修改，不创建 *_fixed.dart、*_v2.dart 等副本**
-- 只有达到 1000 LOC 时才按职责拆分为多个文件
+- 只有达到 1000 LOC 时才按职责分成多个文件
 
 ### 6. 验证修复
 ```bash
@@ -98,7 +103,7 @@ flutter clean && flutter pub get && flutter run
 
 ## 新功能开发流程（强制）
 
-### 1. 需求拆解
+### 1. 理解需求
 - 明确能力边界
 - 确认依赖关系
 - 定义验收条件
@@ -182,7 +187,7 @@ debugPrint('调试信息');  // 禁止
 # 检查文件行数（排除空行和注释）
 find lib -name "*.dart" ! -name "*.g.dart" ! -name "*.freezed.dart" -exec wc -l {} + | sort -rn | head -20
 
-# 超过阈值必须拆分：
+# 超过阈值必须分成多个文件：
 # - 逻辑文件：500 LOC（推荐），1000 LOC（硬上限）
 # - UI 文件：800 LOC（推荐），1000 LOC（硬上限）
 ```
@@ -216,7 +221,7 @@ hflutter build hap --release
 ## HarmonyOS / OHOS 开发规则
 
 - HarmonyOS 是一等目标平台，平台缺口通过 Dart facade + ArkTS bridge 补齐。
-- Flutter 侧优先使用 `PlatformFileService`、`PlatformDiagnosticsService`、`PlatformDownloadService`、`PlatformMediaService` 等 facade，禁止在 UI/业务层散落裸 `MethodChannel`。
+- Flutter 侧优先使用 `PlatformFileService`、`PlatformDiagnosticsService`、`PlatformDownloadService`、`PlatformMediaService` 等 facade，禁止在 UI/业务层直接使用 `MethodChannel`。
 - ArkTS bridge 位于 `ohos/entry/src/main/ets/plugins/`，通道名为 `onepanel/ohos_platform`。
 - Windows 用户使用 Flutter-OH 的 `flutter.bat` 完整路径，不要求配置 `hflutter` shell 函数。
 - 排障时必须优先保留仓库 `pubspec.lock`，避免第三方包升级后触发 `TargetPlatform.ohos` 编译错误。
@@ -248,7 +253,7 @@ class Model {
 
 ### API 调用失败
 1. 查看日志中的请求体和响应
-2. 对比 `swagger.json` 中的契约定义
+2. 对比 `swagger.json` 中的接口定义
 3. 参考 Web 前端的实际调用方式
 4. 在客户端兼容差异，**不修改** swagger.json
 

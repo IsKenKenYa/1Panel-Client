@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-本文件为 Claude Code 提供项目补充说明。**强制规则见 `AGENTS.md`**。
+本文件为 Claude Code 提供项目补充说明。**强制规则见 `AGENTS.md`，其中「最高优先级执行规则」优先于本文全部内容**。每次用户消息提到 AGENTS.md 时，必须重新阅读 `AGENTS.md` 全文。
 
 ## 项目概述
 
@@ -15,7 +15,7 @@
 - 容器管理、数据库管理、文件管理、网站管理、Dashboard 实时监控
 - Shell 架构：自适应壳 + 模块切换 + 服务器感知导航
 - HarmonyOS 平台适配（Flutter-OH bridge + HUKS 安全存储 + 原生下载器）
-- 统一消息提示系统（SnackBarUtils，替代散落的 272 处内联调用）
+- 统一消息提示系统（SnackBarUtils，替换 272 处内联调用）
 - 33 个功能模块完整覆盖
 
 ## 开发命令
@@ -34,10 +34,16 @@ flutter build ios --release                  # iOS（仅 macOS）
 
 测试门禁：`dart run test/scripts/test_runner.dart unit|integration|ui|all`
 
+## 日常分支与提交
+
+- 默认在当前分支直接修改与提交，新建分支必须得到用户明确同意；详见 `AGENTS.md`「分支、发布与 CI」。
+- 提交消息遵循 Conventional Commits 且必须包含 `scope`，一次任务涉及多个模块时按模块或类别分别提交。
+- 每次改动完成后自动执行完整测试闭环并迭代到门禁全部通过，详见 `AGENTS.md`「每次改动后的全自动测试闭环（强制）」。
+
 ## 实时功能规划
 
 - 当前功能批次的唯一计划入口是 `docs/development/modules/阶段总计划.md`。
-- 开工前登记范围、上游行为对照、契约关键字、验收标准与门禁；完成后在同一条目回写实际交付、残留和命令结果。
+- 开工前登记范围、上游前端行为对照、接口定义关键字、验收标准与门禁；完成后在同一条目回写实际交付、残留和命令结果。
 - 强制规则以 `AGENTS.md`「模块适配与原生UI工作流」为准；旧的独立工作流文档已退役，不得重新引用。
 
 ## 架构概览
@@ -130,11 +136,11 @@ CodeGraph 通过 MCP Server 提供代码符号索引。当 `.codegraph/` 存在�
 ### 工程技能
 | 技能 | 用途 |
 |------|------|
-| `/grill-with-docs` | 开始前对齐需求，挑战计划，更新领域术语和 ADR |
+| `/grill-with-docs` | 开始前确认需求，挑战计划，更新领域术语和 ADR |
 | `/tdd` | 红-绿-重构循环，垂直切片式开发 |
 | `/diagnose` | 纪律性诊断循环：复现 → 最小化 → 假设 → 插桩 → 修复 → 回归测试 |
 | `/to-prd` | 将当前对话上下文转为 PRD 并提交为 GitHub issue |
-| `/to-issues` | 将计划/PRD 拆分为可独立领取的 GitHub issues |
+| `/to-issues` | 将计划/PRD 分成可独立领取的 GitHub issues |
 | `/improve-codebase-architecture` | 发现代码库中的深层优化机会 |
 | `/zoom-out` | 将代码放在整体系统上下文中解释 |
 | `/triage` | 通过状态机对 issue 进行分类 |
