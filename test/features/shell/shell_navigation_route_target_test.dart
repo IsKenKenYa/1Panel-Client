@@ -64,7 +64,7 @@ void main() {
     });
 
     test('v2.5.1 sub-pages are embedded in their owning module shell', () {
-      final cases = <String, (ClientModule, AppRoutes)>{
+      final cases = <String, (ClientModule, String)>{
         'websiteHttps': (ClientModule.websites, AppRoutes.websiteHttps),
         'websiteLog': (ClientModule.websites, AppRoutes.websiteLog),
         'fileShare': (ClientModule.files, AppRoutes.fileShare),
