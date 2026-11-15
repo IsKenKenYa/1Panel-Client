@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../core/test_config_manager.dart';
+import '../test_helper.dart';
 import 'package:onepanel_client/core/network/dio_client.dart';
 
 void main() {
@@ -182,7 +184,16 @@ void main() {
       debugPrint('========================================');
 
       // 获取当前版本
-      final searchResponse = await dio.post('/api/v2/core/settings/search');
+      final Response<dynamic> searchResponse;
+      try {
+        searchResponse = await dio.post('/api/v2/core/settings/search');
+      } catch (e) {
+        if (SkipConditions.isServerUnavailable(e)) {
+          debugPrint('⚠️  跳过测试: 服务器设置端点当前连接中断');
+          return;
+        }
+        rethrow;
+      }
       final searchData = searchResponse.data as Map<String, dynamic>;
       final data = searchData['data'] as Map<String, dynamic>?;
       final currentVersion = data?['systemVersion'] as String?;
@@ -224,15 +235,24 @@ void main() {
       debugPrint('测试快照列表');
       debugPrint('========================================');
 
-      final searchResponse = await dio.post(
-        '/api/v2/settings/snapshot/search',
-        data: {
-          'page': 1,
-          'pageSize': 10,
-          'orderBy': 'createdAt',
-          'order': 'descending',
-        },
-      );
+      final Response<dynamic> searchResponse;
+      try {
+        searchResponse = await dio.post(
+          '/api/v2/settings/snapshot/search',
+          data: {
+            'page': 1,
+            'pageSize': 10,
+            'orderBy': 'createdAt',
+            'order': 'descending',
+          },
+        );
+      } catch (e) {
+        if (SkipConditions.isServerUnavailable(e)) {
+          debugPrint('⚠️  跳过测试: 服务器快照端点当前连接中断');
+          return;
+        }
+        rethrow;
+      }
 
       final searchData = searchResponse.data as Map<String, dynamic>;
       debugPrint('快照列表响应: code=${searchData['code']}');
@@ -261,14 +281,23 @@ void main() {
       debugPrint('测试快照创建');
       debugPrint('========================================');
 
-      final createResponse = await dio.post(
-        '/api/v2/settings/snapshot',
-        data: {
-          'description': 'Test snapshot from API test',
-          'sourceAccountIDs': '1',
-          'downloadAccountID': 1,
-        },
-      );
+      final Response<dynamic> createResponse;
+      try {
+        createResponse = await dio.post(
+          '/api/v2/settings/snapshot',
+          data: {
+            'description': 'Test snapshot from API test',
+            'sourceAccountIDs': '1',
+            'downloadAccountID': 1,
+          },
+        );
+      } catch (e) {
+        if (SkipConditions.isServerUnavailable(e)) {
+          debugPrint('⚠️  跳过测试: 服务器快照端点当前连接中断');
+          return;
+        }
+        rethrow;
+      }
 
       final createData = createResponse.data as Map<String, dynamic>;
       debugPrint(

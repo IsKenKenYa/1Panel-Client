@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../core/test_config_manager.dart';
 import 'package:onepanel_client/api/v2/setting_v2.dart';
 import 'package:onepanel_client/core/network/dio_client.dart';
 import 'package:onepanel_client/data/models/setting_models.dart';
+import '../test_helper.dart';
 
 void main() {
   late DioClient client;
@@ -282,7 +284,16 @@ void main() {
         return;
       }
 
-      final response = await api.getUpgradeReleases();
+      final Response<dynamic> response;
+      try {
+        response = await api.getUpgradeReleases();
+      } catch (e) {
+        if (SkipConditions.isServerUnavailable(e)) {
+          debugPrint('⚠️  跳过测试: 服务器升级版本端点当前不可用');
+          return;
+        }
+        rethrow;
+      }
 
       debugPrint('\n========================================');
       debugPrint('getUpgradeReleases 响应');
@@ -392,30 +403,38 @@ void main() {
 
       final stopwatch = Stopwatch()..start();
 
-      await api.getSystemSettings();
-      final systemTime = stopwatch.elapsedMilliseconds;
-      stopwatch.reset();
-      stopwatch.start();
+      try {
+        await api.getSystemSettings();
+        final systemTime = stopwatch.elapsedMilliseconds;
+        stopwatch.reset();
+        stopwatch.start();
 
-      await api.getTerminalSettings();
-      final terminalTime = stopwatch.elapsedMilliseconds;
-      stopwatch.reset();
-      stopwatch.start();
+        await api.getTerminalSettings();
+        final terminalTime = stopwatch.elapsedMilliseconds;
+        stopwatch.reset();
+        stopwatch.start();
 
-      await api.getNetworkInterfaces();
-      final interfaceTime = stopwatch.elapsedMilliseconds;
+        await api.getNetworkInterfaces();
+        final interfaceTime = stopwatch.elapsedMilliseconds;
 
-      debugPrint('\n========================================');
-      debugPrint('API性能基准');
-      debugPrint('========================================');
-      debugPrint('getSystemSettings: ${systemTime}ms');
-      debugPrint('getTerminalSettings: ${terminalTime}ms');
-      debugPrint('getNetworkInterfaces: ${interfaceTime}ms');
-      debugPrint('========================================\n');
+        debugPrint('\n========================================');
+        debugPrint('API性能基准');
+        debugPrint('========================================');
+        debugPrint('getSystemSettings: ${systemTime}ms');
+        debugPrint('getTerminalSettings: ${terminalTime}ms');
+        debugPrint('getNetworkInterfaces: ${interfaceTime}ms');
+        debugPrint('========================================\n');
 
-      expect(systemTime, lessThan(5000));
-      expect(terminalTime, lessThan(5000));
-      expect(interfaceTime, lessThan(5000));
+        expect(systemTime, lessThan(5000));
+        expect(terminalTime, lessThan(5000));
+        expect(interfaceTime, lessThan(5000));
+      } catch (e) {
+        if (SkipConditions.isServerUnavailable(e)) {
+          debugPrint('⚠️  跳过测试: 服务器当前连接中断');
+          return;
+        }
+        rethrow;
+      }
     });
   });
 }

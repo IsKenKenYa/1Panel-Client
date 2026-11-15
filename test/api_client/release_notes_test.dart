@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../core/test_config_manager.dart';
+import '../test_helper.dart';
 import 'package:onepanel_client/core/network/dio_client.dart';
 
 void main() {
@@ -31,8 +33,17 @@ void main() {
       final dio = client.dio;
 
       // 先获取版本列表
-      final releasesResponse =
-          await dio.get('/api/v2/core/settings/upgrade/releases');
+      late final Response<dynamic> releasesResponse;
+      try {
+        releasesResponse =
+            await dio.get('/api/v2/core/settings/upgrade/releases');
+      } catch (e) {
+        if (SkipConditions.isServerUnavailable(e)) {
+          debugPrint('⚠️  跳过测试: 服务器升级版本端点当前不可用');
+          return;
+        }
+        rethrow;
+      }
       final releasesData = releasesResponse.data as Map<String, dynamic>;
       final releases = releasesData['data'] as List<dynamic>?;
 
