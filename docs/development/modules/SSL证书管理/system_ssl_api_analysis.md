@@ -1,17 +1,17 @@
 # SYSTEM_SSL 模块API端点详细分析
 
 > 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
-> 生成时间: 2026-03-23 18:47:56
+> 生成时间: 2026-11-15 12:33:22
 
 ## API端点总览
 
-- 端点数量: **3**
-- 方法总数: **3**
+- 端点数量: **4**
+- 方法总数: **4**
 
 | 方法 | 数量 |
 |------|------|
 | GET | 1 |
-| POST | 2 |
+| POST | 3 |
 
 ## API端点详情
 
@@ -34,6 +34,20 @@
 #### GET
 
 **摘要**: Load system cert info
+
+**标签**: System Setting
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/core/settings/ssl/reload`
+
+#### POST
+
+**摘要**: Reload SSL
 
 **标签**: System Setting
 

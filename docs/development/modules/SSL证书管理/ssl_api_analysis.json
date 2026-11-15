@@ -1,9 +1,9 @@
 {
   "module": "ssl",
-  "generatedAt": "2026-04-27T15:19:33.568687",
+  "generatedAt": "2026-11-15T12:33:22.498277",
   "summary": {
-    "endpointCount": 15,
-    "methodCount": 15
+    "endpointCount": 18,
+    "methodCount": 18
   },
   "endpoints": [
     {
@@ -33,6 +33,27 @@
         {
           "method": "GET",
           "summary": "Load system cert info",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/settings/ssl/reload",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Reload SSL",
           "description": "",
           "tags": [
             "System Setting"
@@ -194,6 +215,35 @@
       ]
     },
     {
+      "path": "/websites/ssl/import",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Import master SSL",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/websites/ssl/list",
       "methods": [
         {
@@ -228,6 +278,35 @@
         {
           "method": "POST",
           "summary": "Apply  ssl",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl/push",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Push ssl to nodes",
           "description": "",
           "tags": [
             "Website SSL"

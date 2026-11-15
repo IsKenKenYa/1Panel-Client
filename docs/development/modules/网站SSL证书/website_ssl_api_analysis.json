@@ -1,9 +1,9 @@
 {
   "module": "website_ssl",
-  "generatedAt": "2026-04-27T15:19:33.639958",
+  "generatedAt": "2026-11-15T12:33:22.613670",
   "summary": {
-    "endpointCount": 12,
-    "methodCount": 12
+    "endpointCount": 14,
+    "methodCount": 14
   },
   "endpoints": [
     {
@@ -123,6 +123,35 @@
       ]
     },
     {
+      "path": "/websites/ssl/import",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Import master SSL",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/websites/ssl/list",
       "methods": [
         {
@@ -157,6 +186,35 @@
         {
           "method": "POST",
           "summary": "Apply  ssl",
+          "description": "",
+          "tags": [
+            "Website SSL"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/ssl/push",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Push ssl to nodes",
           "description": "",
           "tags": [
             "Website SSL"

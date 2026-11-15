@@ -1,17 +1,17 @@
 # DATABASE 模块API端点详细分析
 
 > 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
-> 生成时间: 2026-05-04 18:07:54
+> 生成时间: 2026-11-15 12:33:22
 
 ## API端点总览
 
-- 端点数量: **42**
-- 方法总数: **42**
+- 端点数量: **63**
+- 方法总数: **63**
 
 | 方法 | 数量 |
 |------|------|
-| GET | 3 |
-| POST | 39 |
+| GET | 4 |
+| POST | 59 |
 
 ## API端点详情
 
@@ -35,31 +35,11 @@
 
 ---
 
-### `/databases/bind`
-
-#### POST
-
-**摘要**: Bind user of mysql database
-
-**标签**: Database Mysql
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
 ### `/databases/change/access`
 
 #### POST
 
-**摘要**: Change mysql access
+**摘要**: Change mysql root access
 
 **标签**: Database Mysql
 
@@ -79,7 +59,7 @@
 
 #### POST
 
-**摘要**: Change mysql password
+**摘要**: Change mysql root password
 
 **标签**: Database Mysql
 
@@ -183,6 +163,12 @@
 
 **标签**: Database
 
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| name | path | unknown | 是 | name |
+
 **响应**:
 
 - `200`: OK
@@ -257,6 +243,12 @@
 
 **标签**: Database
 
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| type | path | unknown | 是 | type |
+
 **响应**:
 
 - `200`: OK
@@ -270,6 +262,12 @@
 **摘要**: List databases
 
 **标签**: Database
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| type | path | unknown | 是 | type |
 
 **响应**:
 
@@ -397,6 +395,86 @@
 
 ---
 
+### `/databases/grants`
+
+#### POST
+
+**摘要**: Grant mysql user
+
+**标签**: Database Mysql
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/databases/grants/del`
+
+#### POST
+
+**摘要**: Revoke mysql grant
+
+**标签**: Database Mysql
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/databases/grants/search`
+
+#### POST
+
+**摘要**: List mysql grants
+
+**标签**: Database Mysql
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/databases/grants/summary`
+
+#### POST
+
+**摘要**: List mysql grant summary
+
+**标签**: Database Mysql
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/databases/load`
 
 #### POST
@@ -404,6 +482,226 @@
 **摘要**: Load mysql database from remote
 
 **标签**: Database Mysql
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/databases/mongodb`
+
+#### POST
+
+**摘要**: Create mongodb database
+
+**标签**: Database Mongodb
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/databases/mongodb/bind`
+
+#### POST
+
+**摘要**: Bind mongodb database user info
+
+**标签**: Database Mongodb
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/databases/mongodb/del`
+
+#### POST
+
+**摘要**: Delete mongodb database
+
+**标签**: Database Mongodb
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/databases/mongodb/del/check`
+
+#### POST
+
+**摘要**: Check before delete mongodb database
+
+**标签**: Database Mongodb
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/databases/mongodb/description`
+
+#### POST
+
+**摘要**: Update mongodb database description
+
+**标签**: Database Mongodb
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/databases/mongodb/load`
+
+#### POST
+
+**摘要**: Load mongodb database from remote
+
+**标签**: Database Mongodb
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/databases/mongodb/password`
+
+#### POST
+
+**摘要**: Change mongodb database password
+
+**标签**: Database Mongodb
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/databases/mongodb/privileges`
+
+#### POST
+
+**摘要**: Load mongodb privileges
+
+**标签**: Database Mongodb
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/databases/mongodb/privileges/change`
+
+#### POST
+
+**摘要**: Change mongodb privileges
+
+**标签**: Database Mongodb
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/databases/mongodb/root/password`
+
+#### POST
+
+**摘要**: Change mongodb root password
+
+**标签**: Database Mongodb
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/databases/mongodb/search`
+
+#### POST
+
+**摘要**: Page mongodb databases
+
+**标签**: Database Mongodb
 
 **参数**:
 
@@ -450,6 +748,7 @@
 | 名称 | 位置 | 类型 | 必填 | 描述 |
 |------|------|------|------|------|
 | request | body | unknown | 是 | request |
+| database | path | unknown | 是 | database |
 
 **响应**:
 
@@ -597,6 +896,20 @@
 
 ---
 
+### `/databases/redis/check`
+
+#### GET
+
+**摘要**: Check has cli
+
+**标签**: Database Redis
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/databases/redis/conf`
 
 #### POST
@@ -644,6 +957,12 @@
 **摘要**: Install redis-cli
 
 **标签**: Database Redis
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
 
 **响应**:
 
@@ -776,6 +1095,126 @@
 #### POST
 
 **摘要**: Load mysql status info
+
+**标签**: Database Mysql
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/databases/users`
+
+#### POST
+
+**摘要**: Create mysql user
+
+**标签**: Database Mysql
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/databases/users/del`
+
+#### POST
+
+**摘要**: Delete mysql user
+
+**标签**: Database Mysql
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/databases/users/password`
+
+#### POST
+
+**摘要**: Change mysql user password
+
+**标签**: Database Mysql
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/databases/users/password/save`
+
+#### POST
+
+**摘要**: Save mysql user password locally
+
+**标签**: Database Mysql
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/databases/users/search`
+
+#### POST
+
+**摘要**: List mysql users
+
+**标签**: Database Mysql
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/databases/users/update`
+
+#### POST
+
+**摘要**: Update mysql user
 
 **标签**: Database Mysql
 

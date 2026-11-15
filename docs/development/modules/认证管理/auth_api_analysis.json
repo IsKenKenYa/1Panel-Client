@@ -1,11 +1,61 @@
 {
   "module": "auth",
-  "generatedAt": "2026-04-27T15:19:33.228206",
+  "generatedAt": "2026-11-15T12:33:21.946907",
   "summary": {
-    "endpointCount": 11,
-    "methodCount": 11
+    "endpointCount": 23,
+    "methodCount": 23
   },
   "endpoints": [
+    {
+      "path": "/core/auth/api/generate",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "generate api key",
+          "description": "",
+          "tags": [
+            "Auth"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/auth/api/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update api config",
+          "description": "",
+          "tags": [
+            "Auth"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
     {
       "path": "/core/auth/captcha",
       "methods": [
@@ -17,6 +67,85 @@
             "Auth"
           ],
           "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/auth/current",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Load current user info",
+          "description": "",
+          "tags": [
+            "Auth"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/auth/current/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update current user info",
+          "description": "",
+          "tags": [
+            "Auth"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/auth/expired/reset",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Reset system password expired",
+          "description": "",
+          "tags": [
+            "Auth"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
           "requestBody": null,
           "responses": {
             "200": {
@@ -85,6 +214,85 @@
       ]
     },
     {
+      "path": "/core/auth/mfa",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load mfa info",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/auth/mfa/bind",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Bind mfa",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/auth/mfa/close",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Close mfa",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/core/auth/mfalogin",
       "methods": [
         {
@@ -135,11 +343,103 @@
       ]
     },
     {
+      "path": "/core/auth/passkey/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete passkey",
+          "description": "",
+          "tags": [
+            "Auth"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/core/auth/passkey/finish",
       "methods": [
         {
           "method": "POST",
           "summary": "User login with passkey",
+          "description": "",
+          "tags": [
+            "Auth"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/auth/passkey/list",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "List passkeys",
+          "description": "",
+          "tags": [
+            "Auth"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/auth/passkey/register/begin",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Begin passkey registration",
+          "description": "",
+          "tags": [
+            "Auth"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/auth/passkey/register/finish",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Finish passkey registration",
           "description": "",
           "tags": [
             "Auth"

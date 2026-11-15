@@ -1,9 +1,9 @@
 {
   "module": "file",
-  "generatedAt": "2026-04-27T15:19:33.348257",
+  "generatedAt": "2026-11-15T12:33:22.185696",
   "summary": {
-    "endpointCount": 49,
-    "methodCount": 49
+    "endpointCount": 67,
+    "methodCount": 67
   },
   "endpoints": [
     {
@@ -270,6 +270,35 @@
       ]
     },
     {
+      "path": "/files/ai-search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "File search: content grep + optional AI summary",
+          "description": "When file-management AI is enabled, returns mode=ai with summary and hits. When disabled, returns mode=grep with hits only. Scans file contents only. Supports match options, extension/size/time filters, and scan limits.",
+          "tags": [
+            "File"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/files/batch/check",
       "methods": [
         {
@@ -473,6 +502,35 @@
       ]
     },
     {
+      "path": "/files/compress/stop",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Stop compress task",
+          "description": "",
+          "tags": [
+            "File"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/files/content",
       "methods": [
         {
@@ -565,6 +623,35 @@
         {
           "method": "POST",
           "summary": "Decompress file",
+          "description": "",
+          "tags": [
+            "File"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/files/decompress/stop",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Stop decompress task",
           "description": "",
           "tags": [
             "File"
@@ -755,6 +842,122 @@
       ]
     },
     {
+      "path": "/files/history/content",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load file history content",
+          "description": "",
+          "tags": [
+            "File"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/files/history/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete file history record",
+          "description": "",
+          "tags": [
+            "File"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/files/history/restore",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Restore file history record",
+          "description": "",
+          "tags": [
+            "File"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/files/history/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load file history list",
+          "description": "",
+          "tags": [
+            "File"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/files/mode",
       "methods": [
         {
@@ -810,6 +1013,35 @@
         {
           "method": "POST",
           "summary": "Move file",
+          "description": "",
+          "tags": [
+            "File"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/files/move/stop",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Stop file move task",
           "description": "",
           "tags": [
             "File"
@@ -892,7 +1124,7 @@
       ]
     },
     {
-      "path": "/files/read",
+      "path": "/files/read/{type}",
       "methods": [
         {
           "method": "POST",
@@ -902,6 +1134,13 @@
             "File"
           ],
           "parameters": [
+            {
+              "name": "type",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "type"
+            },
             {
               "name": "request",
               "in": "body",
@@ -1166,6 +1405,259 @@
       ]
     },
     {
+      "path": "/files/share/check",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Check file share code (no login)",
+          "description": "",
+          "tags": [
+            "File"
+          ],
+          "parameters": [
+            {
+              "name": "code",
+              "in": "query",
+              "required": true,
+              "type": "unknown",
+              "description": "share code"
+            },
+            {
+              "name": "password",
+              "in": "query",
+              "required": false,
+              "type": "unknown",
+              "description": "optional password"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/files/share/create",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create temporary file share link",
+          "description": "",
+          "tags": [
+            "File"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/files/share/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete file share by path",
+          "description": "",
+          "tags": [
+            "File"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/files/share/detail",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get file share detail by path",
+          "description": "",
+          "tags": [
+            "File"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/files/share/download",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Download file by share code (no login)",
+          "description": "",
+          "tags": [
+            "File"
+          ],
+          "parameters": [
+            {
+              "name": "code",
+              "in": "query",
+              "required": true,
+              "type": "unknown",
+              "description": "share code"
+            },
+            {
+              "name": "password",
+              "in": "query",
+              "required": false,
+              "type": "unknown",
+              "description": "optional password"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/files/share/info",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get file share detail by code (no login)",
+          "description": "",
+          "tags": [
+            "File"
+          ],
+          "parameters": [
+            {
+              "name": "code",
+              "in": "query",
+              "required": true,
+              "type": "unknown",
+              "description": "share code"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/files/share/qrcode",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get file share QR code image",
+          "description": "",
+          "tags": [
+            "File"
+          ],
+          "parameters": [
+            {
+              "name": "code",
+              "in": "query",
+              "required": true,
+              "type": "unknown",
+              "description": "share code"
+            },
+            {
+              "name": "operateNode",
+              "in": "query",
+              "required": false,
+              "type": "unknown",
+              "description": "operate node"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/files/share/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "List file shares",
+          "description": "",
+          "tags": [
+            "File"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/files/size",
       "methods": [
         {
@@ -1321,6 +1813,48 @@
               "description": "request"
             }
           ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/files/wget/process",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Wget process",
+          "description": "",
+          "tags": [
+            "File"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/files/wget/process/keys",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Process keys",
+          "description": "",
+          "tags": [
+            "File"
+          ],
+          "parameters": [],
           "requestBody": null,
           "responses": {
             "200": {

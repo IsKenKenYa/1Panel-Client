@@ -1,9 +1,9 @@
 {
   "module": "group",
-  "generatedAt": "2026-04-27T15:19:33.385008",
+  "generatedAt": "2026-11-15T12:33:22.263481",
   "summary": {
-    "endpointCount": 11,
-    "methodCount": 11
+    "endpointCount": 13,
+    "methodCount": 13
   },
   "endpoints": [
     {
@@ -289,11 +289,69 @@
       ]
     },
     {
+      "path": "/hosts/update/group",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update host group",
+          "description": "",
+          "tags": [
+            "Host"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/websites/batch/group",
       "methods": [
         {
           "method": "POST",
           "summary": "Batch set website group",
+          "description": "",
+          "tags": [
+            "Website"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/websites/group/change",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Change website group",
           "description": "",
           "tags": [
             "Website"

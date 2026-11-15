@@ -1,9 +1,9 @@
 {
   "module": "system_ssl",
-  "generatedAt": "2026-03-23T18:47:56.732868",
+  "generatedAt": "2026-11-15T12:33:22.536745",
   "summary": {
-    "endpointCount": 3,
-    "methodCount": 3
+    "endpointCount": 4,
+    "methodCount": 4
   },
   "endpoints": [
     {
@@ -33,6 +33,27 @@
         {
           "method": "GET",
           "summary": "Load system cert info",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/settings/ssl/reload",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Reload SSL",
           "description": "",
           "tags": [
             "System Setting"

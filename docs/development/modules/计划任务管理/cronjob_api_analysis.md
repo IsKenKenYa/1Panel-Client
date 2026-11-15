@@ -1,19 +1,39 @@
 # CRONJOB 模块API端点详细分析
 
 > 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
-> 生成时间: 2026-03-23 18:47:55
+> 生成时间: 2026-11-15 12:33:22
 
 ## API端点总览
 
-- 端点数量: **16**
-- 方法总数: **16**
+- 端点数量: **17**
+- 方法总数: **17**
 
 | 方法 | 数量 |
 |------|------|
 | GET | 1 |
-| POST | 15 |
+| POST | 16 |
 
 ## API端点详情
+
+### `/alert/cronjob/list`
+
+#### POST
+
+**摘要**: Get cron jobs
+
+**标签**: Alert
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
 
 ### `/cronjobs`
 

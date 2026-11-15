@@ -1,20 +1,53 @@
 # SETTING 模块API端点详细分析
 
 > 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
-> 生成时间: 2026-04-27 15:19:33
+> 生成时间: 2026-11-15 12:33:22
 
 ## API端点总览
 
-- 端点数量: **53**
+- 端点数量: **52**
 - 方法总数: **55**
 
 | 方法 | 数量 |
 |------|------|
 | GET | 15 |
-| POST | 39 |
-| DELETE | 1 |
+| POST | 40 |
 
 ## API端点详情
+
+### `/xpack/model/downloader/settings`
+
+#### GET
+
+**摘要**: Get model downloader settings
+
+**标签**: AI
+
+**响应**:
+
+- `200`: OK
+
+---
+
+#### POST
+
+**摘要**: Update model downloader settings
+
+**描述**: Updates the download directory, source endpoints and tokens. The featuredModelsSync field is ignored; use /xpack/model/downloader/featured/sync/status to update automatic synchronization.
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
 
 ### `/core/auth/setting`
 
@@ -23,40 +56,6 @@
 **摘要**: Get Setting For Login
 
 **标签**: Auth
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/core/settings/api/config/generate/key`
-
-#### POST
-
-**摘要**: generate api key
-
-**标签**: System Setting
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/core/settings/api/config/update`
-
-#### POST
-
-**摘要**: Update api config
-
-**标签**: System Setting
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
 
 **响应**:
 
@@ -103,40 +102,6 @@
 #### POST
 
 **摘要**: Update system bind info
-
-**标签**: System Setting
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/core/settings/by`
-
-#### POST
-
-**摘要**: Load system setting by key
-
-**标签**: System Setting
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/core/settings/expired/handle`
-
-#### POST
-
-**摘要**: Reset system password expired
 
 **标签**: System Setting
 
@@ -232,128 +197,6 @@
 
 ---
 
-### `/core/settings/mfa`
-
-#### POST
-
-**摘要**: Load mfa info
-
-**标签**: System Setting
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/core/settings/mfa/bind`
-
-#### POST
-
-**摘要**: Bind mfa
-
-**标签**: System Setting
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/core/settings/passkey/list`
-
-#### GET
-
-**摘要**: List passkeys
-
-**标签**: System Setting
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/core/settings/passkey/register/begin`
-
-#### POST
-
-**摘要**: Begin passkey registration
-
-**标签**: System Setting
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/core/settings/passkey/register/finish`
-
-#### POST
-
-**摘要**: Finish passkey registration
-
-**标签**: System Setting
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/core/settings/passkey/{id}`
-
-#### DELETE
-
-**摘要**: Delete passkey
-
-**标签**: System Setting
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/core/settings/password/update`
-
-#### POST
-
-**摘要**: Update system password
-
-**标签**: System Setting
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
 ### `/core/settings/port/update`
 
 #### POST
@@ -422,6 +265,20 @@
 
 ---
 
+### `/core/settings/search/base`
+
+#### POST
+
+**摘要**: Load base system setting info
+
+**标签**: System Setting
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/core/settings/ssl/download`
 
 #### POST
@@ -441,6 +298,20 @@
 #### GET
 
 **摘要**: Load system cert info
+
+**标签**: System Setting
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/core/settings/ssl/reload`
+
+#### POST
+
+**摘要**: Reload SSL
 
 **标签**: System Setting
 
@@ -658,11 +529,25 @@
 
 ---
 
-### `/settings/get/{key}`
+### `/settings/file-history/search`
 
-#### GET
+#### POST
 
-**摘要**: Load system setting by key
+**摘要**: Load file history setting info
+
+**标签**: System Setting
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/settings/file-history/update`
+
+#### POST
+
+**摘要**: Update file history setting
 
 **标签**: System Setting
 
@@ -670,7 +555,41 @@
 
 | 名称 | 位置 | 类型 | 必填 | 描述 |
 |------|------|------|------|------|
-| key | path | unknown | 是 | key |
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/settings/files/ai/search`
+
+#### POST
+
+**摘要**: Get file manage AI setting info
+
+**标签**: System Setting
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/settings/files/ai/update`
+
+#### POST
+
+**摘要**: Update file manage AI setting
+
+**标签**: System Setting
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
 
 **响应**:
 
@@ -894,6 +813,20 @@
 
 ---
 
+### `/settings/ssh/check`
+
+#### POST
+
+**摘要**: Check local conn
+
+**标签**: System Setting
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/settings/ssh/check/info`
 
 #### POST
@@ -922,11 +855,45 @@
 
 ---
 
-### `/settings/ssh/conn/default`
+### `/settings/ssh/default`
 
 #### POST
 
 **摘要**: Update local is conn
+
+**标签**: System Setting
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/settings/terminal/ai/search`
+
+#### POST
+
+**摘要**: Get terminal AI setting info
+
+**标签**: System Setting
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/settings/terminal/ai/update`
+
+#### POST
+
+**摘要**: Update terminal AI setting
 
 **标签**: System Setting
 
@@ -955,6 +922,20 @@
 | 名称 | 位置 | 类型 | 必填 | 描述 |
 |------|------|------|------|------|
 | request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/settings/website/dir`
+
+#### GET
+
+**摘要**: Load website dir
+
+**标签**: System Setting
 
 **响应**:
 

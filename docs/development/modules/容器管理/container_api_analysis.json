@@ -1,9 +1,9 @@
 {
   "module": "container",
-  "generatedAt": "2026-04-27T15:19:33.267283",
+  "generatedAt": "2026-11-15T12:33:22.066603",
   "summary": {
-    "endpointCount": 69,
-    "methodCount": 73
+    "endpointCount": 71,
+    "methodCount": 75
   },
   "endpoints": [
     {
@@ -186,6 +186,35 @@
         {
           "method": "POST",
           "summary": "Operate compose",
+          "description": "",
+          "tags": [
+            "Container Compose"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/containers/compose/pin",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Pin compose",
           "description": "",
           "tags": [
             "Container Compose"
@@ -436,6 +465,35 @@
             "Container Docker"
           ],
           "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/containers/download/log",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Download container logs",
+          "description": "",
+          "tags": [
+            "Container"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
           "requestBody": null,
           "responses": {
             "200": {
@@ -998,7 +1056,9 @@
           "method": "POST",
           "summary": "Load container stats size",
           "description": "",
-          "tags": [],
+          "tags": [
+            "Container"
+          ],
           "parameters": [
             {
               "name": "request",
@@ -1025,7 +1085,9 @@
           "method": "GET",
           "summary": "Load container limits",
           "description": "",
-          "tags": [],
+          "tags": [
+            "Container"
+          ],
           "parameters": [],
           "requestBody": null,
           "responses": {
@@ -1086,7 +1148,9 @@
           "method": "GET",
           "summary": "Load container stats",
           "description": "",
-          "tags": [],
+          "tags": [
+            "Container"
+          ],
           "parameters": [],
           "requestBody": null,
           "responses": {

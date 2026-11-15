@@ -1,205 +1,259 @@
 # AI 模块API端点详细分析
 
 > 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
-> 生成时间: 2026-04-12 11:56:13
+> 生成时间: 2026-11-15 12:33:21
 
 ## API端点总览
 
-- 端点数量: **73**
-- 方法总数: **73**
+- 端点数量: **102**
+- 方法总数: **102**
 
 | 方法 | 数量 |
 |------|------|
-| GET | 3 |
-| POST | 70 |
+| GET | 4 |
+| POST | 98 |
 
 ## API端点详情
+
+### `/ai/accounts`
+
+#### POST
+
+**摘要**: Create model service
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/accounts/counts`
+
+#### POST
+
+**摘要**: Count model services by provider
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/accounts/delete`
+
+#### POST
+
+**摘要**: Delete model service
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/accounts/models`
+
+#### POST
+
+**摘要**: List model service models
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/accounts/models/create`
+
+#### POST
+
+**摘要**: Create model service model
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/accounts/models/delete`
+
+#### POST
+
+**摘要**: Delete model service model
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/accounts/models/discover`
+
+#### POST
+
+**摘要**: Discover custom provider models
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/accounts/models/update`
+
+#### POST
+
+**摘要**: Update model service model
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/accounts/providers`
+
+#### GET
+
+**摘要**: Get model service providers
+
+**标签**: AI
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/accounts/search`
+
+#### POST
+
+**摘要**: Page model services
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/accounts/update`
+
+#### POST
+
+**摘要**: Update model service
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/accounts/verify`
+
+#### POST
+
+**摘要**: Verify model service
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
 
 ### `/ai/agents`
 
 #### POST
 
 **摘要**: Create Agent
-
-**标签**: AI
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/ai/agents/accounts`
-
-#### POST
-
-**摘要**: Create Agent account
-
-**标签**: AI
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/ai/agents/accounts/delete`
-
-#### POST
-
-**摘要**: Delete Agent account
-
-**标签**: AI
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/ai/agents/accounts/models`
-
-#### POST
-
-**摘要**: List Agent account models
-
-**标签**: AI
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/ai/agents/accounts/models/create`
-
-#### POST
-
-**摘要**: Create Agent account model
-
-**标签**: AI
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/ai/agents/accounts/models/delete`
-
-#### POST
-
-**摘要**: Delete Agent account model
-
-**标签**: AI
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/ai/agents/accounts/models/update`
-
-#### POST
-
-**摘要**: Update Agent account model
-
-**标签**: AI
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/ai/agents/accounts/search`
-
-#### POST
-
-**摘要**: Page Agent accounts
-
-**标签**: AI
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/ai/agents/accounts/update`
-
-#### POST
-
-**摘要**: Update Agent account
-
-**标签**: AI
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/ai/agents/accounts/verify`
-
-#### POST
-
-**摘要**: Verify Agent account
 
 **标签**: AI
 
@@ -375,6 +429,106 @@
 
 ---
 
+### `/ai/agents/batch/install`
+
+#### POST
+
+**摘要**: Batch install Agent
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/agents/batch/operate`
+
+#### POST
+
+**摘要**: Batch operate Agent
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/agents/batch/skill/install`
+
+#### POST
+
+**摘要**: Batch install Agent Skill
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/agents/batch/upgrade`
+
+#### POST
+
+**摘要**: Batch upgrade Agent
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/agents/channel/delete`
+
+#### POST
+
+**摘要**: Delete Agent channel config
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/ai/agents/channel/dingtalk/get`
 
 #### POST
@@ -460,6 +614,26 @@
 #### POST
 
 **摘要**: Get Agent Feishu channel config
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/agents/channel/feishu/switch`
+
+#### POST
+
+**摘要**: Switch to the bundled OpenClaw Feishu plugin
 
 **标签**: AI
 
@@ -635,6 +809,26 @@
 
 ---
 
+### `/ai/agents/channel/weixin/get`
+
+#### POST
+
+**摘要**: Get Agent Weixin channel config
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/ai/agents/channel/weixin/login`
 
 #### POST
@@ -700,6 +894,86 @@
 #### POST
 
 **摘要**: Delete Agent
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/agents/delete/check`
+
+#### POST
+
+**摘要**: Delete check Agent
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/agents/hermes/chat/sessions`
+
+#### POST
+
+**摘要**: Get Hermes chat sessions
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/agents/hermes/chat/sessions/delete`
+
+#### POST
+
+**摘要**: Delete Hermes chat session
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/agents/hermes/chat/sessions/rename`
+
+#### POST
+
+**摘要**: Rename Hermes chat session
 
 **标签**: AI
 
@@ -895,13 +1169,79 @@
 
 ---
 
-### `/ai/agents/providers`
+### `/ai/agents/plugins/install`
 
-#### GET
+#### POST
 
-**摘要**: Get Providers
+**摘要**: Install an OpenClaw marketplace plugin
 
 **标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/agents/plugins/list`
+
+#### POST
+
+**摘要**: List OpenClaw plugins
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/agents/plugins/operate`
+
+#### POST
+
+**摘要**: Operate an OpenClaw plugin
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/agents/plugins/search`
+
+#### POST
+
+**摘要**: Search OpenClaw plugins
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
 
 **响应**:
 
@@ -1049,6 +1389,26 @@
 
 ---
 
+### `/ai/agents/skills/uninstall`
+
+#### POST
+
+**摘要**: Uninstall Agent skill
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/ai/agents/skills/update`
 
 #### POST
@@ -1109,6 +1469,26 @@
 
 ---
 
+### `/ai/agents/website/unbind`
+
+#### POST
+
+**摘要**: Unbind Agent website
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/ai/domain/bind`
 
 #### POST
@@ -1149,6 +1529,26 @@
 
 ---
 
+### `/ai/domain/update`
+
+#### POST
+
+**摘要**: Update bind domain
+
+**标签**: AI
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/ai/gpu/load`
 
 #### GET
@@ -1156,6 +1556,40 @@
 **摘要**: Load gpu / xpu info
 
 **标签**: AI
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/gpu/options`
+
+#### GET
+
+**摘要**: Get CPU options
+
+**标签**: AI
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/gpu/search`
+
+#### POST
+
+**摘要**: Load monitor data
+
+**标签**: Monitor
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
 
 **响应**:
 
@@ -1257,6 +1691,26 @@
 
 ---
 
+### `/ai/mcp/server/connection/test`
+
+#### POST
+
+**摘要**: Test mcp server connection
+
+**标签**: McpServer
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/ai/mcp/server/del`
 
 #### POST
@@ -1277,11 +1731,51 @@
 
 ---
 
+### `/ai/mcp/server/detail`
+
+#### POST
+
+**摘要**: Load mcp server detail
+
+**标签**: McpServer
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/ai/mcp/server/op`
 
 #### POST
 
 **摘要**: Operate mcp server
+
+**标签**: McpServer
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/ai/mcp/server/status/sync`
+
+#### POST
+
+**摘要**: Sync mcp server status
 
 **标签**: McpServer
 
@@ -1437,13 +1931,89 @@
 
 ---
 
-### `/ai/ollama/model/sync`
+### `/files/ai-search`
 
 #### POST
 
-**摘要**: Sync Ollama model list
+**摘要**: File search: content grep + optional AI summary
 
-**标签**: AI
+**描述**: When file-management AI is enabled, returns mode=ai with summary and hits. When disabled, returns mode=grep with hits only. Scans file contents only. Supports match options, extension/size/time filters, and scan limits.
+
+**标签**: File
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/settings/files/ai/search`
+
+#### POST
+
+**摘要**: Get file manage AI setting info
+
+**标签**: System Setting
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/settings/files/ai/update`
+
+#### POST
+
+**摘要**: Update file manage AI setting
+
+**标签**: System Setting
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/settings/terminal/ai/search`
+
+#### POST
+
+**摘要**: Get terminal AI setting info
+
+**标签**: System Setting
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/settings/terminal/ai/update`
+
+#### POST
+
+**摘要**: Update terminal AI setting
+
+**标签**: System Setting
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
 
 **响应**:
 

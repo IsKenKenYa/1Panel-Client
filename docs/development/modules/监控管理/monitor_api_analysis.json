@@ -1,9 +1,9 @@
 {
   "module": "monitor",
-  "generatedAt": "2026-02-15T15:17:30.931096",
+  "generatedAt": "2026-11-15T12:33:22.340419",
   "summary": {
-    "endpointCount": 5,
-    "methodCount": 5
+    "endpointCount": 6,
+    "methodCount": 6
   },
   "endpoints": [
     {
@@ -28,24 +28,37 @@
       ]
     },
     {
-      "path": "/hosts/monitor/gpu/search",
+      "path": "/hosts/monitor/iooptions",
       "methods": [
         {
-          "method": "POST",
-          "summary": "Load monitor data",
+          "method": "GET",
+          "summary": "Get IO options",
           "description": "",
           "tags": [
             "Monitor"
           ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
             }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/monitor/netoptions",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get network options",
+          "description": "",
+          "tags": [
+            "Monitor"
           ],
+          "parameters": [],
           "requestBody": null,
           "responses": {
             "200": {

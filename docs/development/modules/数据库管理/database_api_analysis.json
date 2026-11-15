@@ -1,9 +1,9 @@
 {
   "module": "database",
-  "generatedAt": "2026-05-04T18:07:54.044536",
+  "generatedAt": "2026-11-15T12:33:22.146526",
   "summary": {
-    "endpointCount": 42,
-    "methodCount": 42
+    "endpointCount": 63,
+    "methodCount": 63
   },
   "endpoints": [
     {
@@ -36,40 +36,11 @@
       ]
     },
     {
-      "path": "/databases/bind",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Bind user of mysql database",
-          "description": "",
-          "tags": [
-            "Database Mysql"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
       "path": "/databases/change/access",
       "methods": [
         {
           "method": "POST",
-          "summary": "Change mysql access",
+          "summary": "Change mysql root access",
           "description": "",
           "tags": [
             "Database Mysql"
@@ -98,7 +69,7 @@
       "methods": [
         {
           "method": "POST",
-          "summary": "Change mysql password",
+          "summary": "Change mysql root password",
           "description": "",
           "tags": [
             "Database Mysql"
@@ -248,7 +219,15 @@
           "tags": [
             "Database"
           ],
-          "parameters": [],
+          "parameters": [
+            {
+              "name": "name",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "name"
+            }
+          ],
           "requestBody": null,
           "responses": {
             "200": {
@@ -356,7 +335,15 @@
           "tags": [
             "Database"
           ],
-          "parameters": [],
+          "parameters": [
+            {
+              "name": "type",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "type"
+            }
+          ],
           "requestBody": null,
           "responses": {
             "200": {
@@ -377,7 +364,15 @@
           "tags": [
             "Database"
           ],
-          "parameters": [],
+          "parameters": [
+            {
+              "name": "type",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "type"
+            }
+          ],
           "requestBody": null,
           "responses": {
             "200": {
@@ -563,6 +558,122 @@
       ]
     },
     {
+      "path": "/databases/grants",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Grant mysql user",
+          "description": "",
+          "tags": [
+            "Database Mysql"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/databases/grants/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Revoke mysql grant",
+          "description": "",
+          "tags": [
+            "Database Mysql"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/databases/grants/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "List mysql grants",
+          "description": "",
+          "tags": [
+            "Database Mysql"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/databases/grants/summary",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "List mysql grant summary",
+          "description": "",
+          "tags": [
+            "Database Mysql"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/databases/load",
       "methods": [
         {
@@ -571,6 +682,325 @@
           "description": "",
           "tags": [
             "Database Mysql"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/databases/mongodb",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create mongodb database",
+          "description": "",
+          "tags": [
+            "Database Mongodb"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/databases/mongodb/bind",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Bind mongodb database user info",
+          "description": "",
+          "tags": [
+            "Database Mongodb"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/databases/mongodb/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete mongodb database",
+          "description": "",
+          "tags": [
+            "Database Mongodb"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/databases/mongodb/del/check",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Check before delete mongodb database",
+          "description": "",
+          "tags": [
+            "Database Mongodb"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/databases/mongodb/description",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update mongodb database description",
+          "description": "",
+          "tags": [
+            "Database Mongodb"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/databases/mongodb/load",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load mongodb database from remote",
+          "description": "",
+          "tags": [
+            "Database Mongodb"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/databases/mongodb/password",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Change mongodb database password",
+          "description": "",
+          "tags": [
+            "Database Mongodb"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/databases/mongodb/privileges",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load mongodb privileges",
+          "description": "",
+          "tags": [
+            "Database Mongodb"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/databases/mongodb/privileges/change",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Change mongodb privileges",
+          "description": "",
+          "tags": [
+            "Database Mongodb"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/databases/mongodb/root/password",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Change mongodb root password",
+          "description": "",
+          "tags": [
+            "Database Mongodb"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/databases/mongodb/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page mongodb databases",
+          "description": "",
+          "tags": [
+            "Database Mongodb"
           ],
           "parameters": [
             {
@@ -637,6 +1067,13 @@
               "required": true,
               "type": "unknown",
               "description": "request"
+            },
+            {
+              "name": "database",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "database"
             }
           ],
           "requestBody": null,
@@ -853,6 +1290,27 @@
       ]
     },
     {
+      "path": "/databases/redis/check",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Check has cli",
+          "description": "",
+          "tags": [
+            "Database Redis"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/databases/redis/conf",
       "methods": [
         {
@@ -920,7 +1378,15 @@
           "tags": [
             "Database Redis"
           ],
-          "parameters": [],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
           "requestBody": null,
           "responses": {
             "200": {
@@ -1111,6 +1577,180 @@
         {
           "method": "POST",
           "summary": "Load mysql status info",
+          "description": "",
+          "tags": [
+            "Database Mysql"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/databases/users",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create mysql user",
+          "description": "",
+          "tags": [
+            "Database Mysql"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/databases/users/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete mysql user",
+          "description": "",
+          "tags": [
+            "Database Mysql"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/databases/users/password",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Change mysql user password",
+          "description": "",
+          "tags": [
+            "Database Mysql"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/databases/users/password/save",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Save mysql user password locally",
+          "description": "",
+          "tags": [
+            "Database Mysql"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/databases/users/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "List mysql users",
+          "description": "",
+          "tags": [
+            "Database Mysql"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/databases/users/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update mysql user",
           "description": "",
           "tags": [
             "Database Mysql"

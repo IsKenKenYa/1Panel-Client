@@ -1,278 +1,357 @@
 {
   "module": "ai",
-  "generatedAt": "2026-04-12T11:56:13.987458",
+  "generatedAt": "2026-11-15T12:33:21.856988",
   "summary": {
-    "endpointCount": 73,
-    "methodCount": 73
+    "endpointCount": 102,
+    "methodCount": 102
   },
   "endpoints": [
+    {
+      "path": "/ai/accounts",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create model service",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/accounts/counts",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Count model services by provider",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/accounts/delete",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete model service",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/accounts/models",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "List model service models",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/accounts/models/create",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create model service model",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/accounts/models/delete",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete model service model",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/accounts/models/discover",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Discover custom provider models",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/accounts/models/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update model service model",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/accounts/providers",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get model service providers",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/accounts/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page model services",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/accounts/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update model service",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/accounts/verify",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Verify model service",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
     {
       "path": "/ai/agents",
       "methods": [
         {
           "method": "POST",
           "summary": "Create Agent",
-          "description": "",
-          "tags": [
-            "AI"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/ai/agents/accounts",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Create Agent account",
-          "description": "",
-          "tags": [
-            "AI"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/ai/agents/accounts/delete",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Delete Agent account",
-          "description": "",
-          "tags": [
-            "AI"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/ai/agents/accounts/models",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "List Agent account models",
-          "description": "",
-          "tags": [
-            "AI"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/ai/agents/accounts/models/create",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Create Agent account model",
-          "description": "",
-          "tags": [
-            "AI"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/ai/agents/accounts/models/delete",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Delete Agent account model",
-          "description": "",
-          "tags": [
-            "AI"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/ai/agents/accounts/models/update",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Update Agent account model",
-          "description": "",
-          "tags": [
-            "AI"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/ai/agents/accounts/search",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Page Agent accounts",
-          "description": "",
-          "tags": [
-            "AI"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/ai/agents/accounts/update",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Update Agent account",
-          "description": "",
-          "tags": [
-            "AI"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/ai/agents/accounts/verify",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Verify Agent account",
           "description": "",
           "tags": [
             "AI"
@@ -529,6 +608,151 @@
       ]
     },
     {
+      "path": "/ai/agents/batch/install",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Batch install Agent",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/batch/operate",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Batch operate Agent",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/batch/skill/install",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Batch install Agent Skill",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/batch/upgrade",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Batch upgrade Agent",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/channel/delete",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete Agent channel config",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/ai/agents/channel/dingtalk/get",
       "methods": [
         {
@@ -650,6 +874,35 @@
         {
           "method": "POST",
           "summary": "Get Agent Feishu channel config",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/channel/feishu/switch",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Switch to the bundled OpenClaw Feishu plugin",
           "description": "",
           "tags": [
             "AI"
@@ -906,6 +1159,35 @@
       ]
     },
     {
+      "path": "/ai/agents/channel/weixin/get",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get Agent Weixin channel config",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/ai/agents/channel/weixin/login",
       "methods": [
         {
@@ -998,6 +1280,122 @@
         {
           "method": "POST",
           "summary": "Delete Agent",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/delete/check",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete check Agent",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/hermes/chat/sessions",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get Hermes chat sessions",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/hermes/chat/sessions/delete",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete Hermes chat session",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/hermes/chat/sessions/rename",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Rename Hermes chat session",
           "description": "",
           "tags": [
             "AI"
@@ -1283,16 +1681,111 @@
       ]
     },
     {
-      "path": "/ai/agents/providers",
+      "path": "/ai/agents/plugins/install",
       "methods": [
         {
-          "method": "GET",
-          "summary": "Get Providers",
+          "method": "POST",
+          "summary": "Install an OpenClaw marketplace plugin",
           "description": "",
           "tags": [
             "AI"
           ],
-          "parameters": [],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/plugins/list",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "List OpenClaw plugins",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/plugins/operate",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Operate an OpenClaw plugin",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/agents/plugins/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Search OpenClaw plugins",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
           "requestBody": null,
           "responses": {
             "200": {
@@ -1507,6 +2000,35 @@
       ]
     },
     {
+      "path": "/ai/agents/skills/uninstall",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Uninstall Agent skill",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/ai/agents/skills/update",
       "methods": [
         {
@@ -1594,6 +2116,35 @@
       ]
     },
     {
+      "path": "/ai/agents/website/unbind",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Unbind Agent website",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/ai/domain/bind",
       "methods": [
         {
@@ -1652,6 +2203,35 @@
       ]
     },
     {
+      "path": "/ai/domain/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update bind domain",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/ai/gpu/load",
       "methods": [
         {
@@ -1662,6 +2242,56 @@
             "AI"
           ],
           "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/gpu/options",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get CPU options",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/gpu/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load monitor data",
+          "description": "",
+          "tags": [
+            "Monitor"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
           "requestBody": null,
           "responses": {
             "200": {
@@ -1810,6 +2440,35 @@
       ]
     },
     {
+      "path": "/ai/mcp/server/connection/test",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Test mcp server connection",
+          "description": "",
+          "tags": [
+            "McpServer"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/ai/mcp/server/del",
       "methods": [
         {
@@ -1839,11 +2498,69 @@
       ]
     },
     {
+      "path": "/ai/mcp/server/detail",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load mcp server detail",
+          "description": "",
+          "tags": [
+            "McpServer"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/ai/mcp/server/op",
       "methods": [
         {
           "method": "POST",
           "summary": "Operate mcp server",
+          "description": "",
+          "tags": [
+            "McpServer"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/ai/mcp/server/status/sync",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Sync mcp server status",
           "description": "",
           "tags": [
             "McpServer"
@@ -2071,16 +2788,124 @@
       ]
     },
     {
-      "path": "/ai/ollama/model/sync",
+      "path": "/files/ai-search",
       "methods": [
         {
           "method": "POST",
-          "summary": "Sync Ollama model list",
+          "summary": "File search: content grep + optional AI summary",
+          "description": "When file-management AI is enabled, returns mode=ai with summary and hits. When disabled, returns mode=grep with hits only. Scans file contents only. Supports match options, extension/size/time filters, and scan limits.",
+          "tags": [
+            "File"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/settings/files/ai/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get file manage AI setting info",
           "description": "",
           "tags": [
-            "AI"
+            "System Setting"
           ],
           "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/settings/files/ai/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update file manage AI setting",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/settings/terminal/ai/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get terminal AI setting info",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/settings/terminal/ai/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update terminal AI setting",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
           "requestBody": null,
           "responses": {
             "200": {

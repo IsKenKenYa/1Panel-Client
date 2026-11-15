@@ -1,17 +1,17 @@
 # CONTAINER 模块API端点详细分析
 
 > 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
-> 生成时间: 2026-04-27 15:19:33
+> 生成时间: 2026-11-15 12:33:22
 
 ## API端点总览
 
-- 端点数量: **69**
-- 方法总数: **73**
+- 端点数量: **71**
+- 方法总数: **75**
 
 | 方法 | 数量 |
 |------|------|
 | GET | 15 |
-| POST | 58 |
+| POST | 60 |
 
 ## API端点详情
 
@@ -140,6 +140,26 @@
 #### POST
 
 **摘要**: Operate compose
+
+**标签**: Container Compose
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/containers/compose/pin`
+
+#### POST
+
+**摘要**: Pin compose
 
 **标签**: Container Compose
 
@@ -310,6 +330,26 @@
 **摘要**: Load docker status
 
 **标签**: Container Docker
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/containers/download/log`
+
+#### POST
+
+**摘要**: Download container logs
+
+**标签**: Container
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
 
 **响应**:
 
@@ -689,6 +729,8 @@
 
 **摘要**: Load container stats size
 
+**标签**: Container
+
 **参数**:
 
 | 名称 | 位置 | 类型 | 必填 | 描述 |
@@ -706,6 +748,8 @@
 #### GET
 
 **摘要**: Load container limits
+
+**标签**: Container
 
 **响应**:
 
@@ -746,6 +790,8 @@
 #### GET
 
 **摘要**: Load container stats
+
+**标签**: Container
 
 **响应**:
 

@@ -1,11 +1,40 @@
 {
   "module": "cronjob",
-  "generatedAt": "2026-03-23T18:47:55.154636",
+  "generatedAt": "2026-11-15T12:33:22.106376",
   "summary": {
-    "endpointCount": 16,
-    "methodCount": 16
+    "endpointCount": 17,
+    "methodCount": 17
   },
   "endpoints": [
+    {
+      "path": "/alert/cronjob/list",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get cron jobs",
+          "description": "",
+          "tags": [
+            "Alert"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
     {
       "path": "/cronjobs",
       "methods": [

@@ -1,19 +1,47 @@
 # PROCESS 模块API端点详细分析
 
 > 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
-> 生成时间: 2026-04-27 15:19:33
+> 生成时间: 2026-11-15 12:33:22
 
 ## API端点总览
 
-- 端点数量: **8**
-- 方法总数: **9**
+- 端点数量: **12**
+- 方法总数: **13**
 
 | 方法 | 数量 |
 |------|------|
-| GET | 3 |
-| POST | 6 |
+| GET | 6 |
+| POST | 7 |
 
 ## API端点详情
+
+### `/files/wget/process`
+
+#### GET
+
+**摘要**: Wget process
+
+**标签**: File
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/files/wget/process/keys`
+
+#### GET
+
+**摘要**: Process keys
+
+**标签**: File
+
+**响应**:
+
+- `200`: OK
+
+---
 
 ### `/hosts/tool/supervisor/process`
 
@@ -48,6 +76,26 @@
 ---
 
 ### `/hosts/tool/supervisor/process/file`
+
+#### POST
+
+**摘要**: Operate Supervisor process config file
+
+**标签**: Host tool
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/hosts/tool/supervisor/process/file/get`
 
 #### POST
 
@@ -94,6 +142,20 @@
 | 名称 | 位置 | 类型 | 必填 | 描述 |
 |------|------|------|------|------|
 | request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/process/ws`
+
+#### GET
+
+**摘要**: Process ws
+
+**标签**: Process
 
 **响应**:
 

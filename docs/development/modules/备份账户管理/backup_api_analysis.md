@@ -1,16 +1,16 @@
 # BACKUP 模块API端点详细分析
 
 > 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
-> 生成时间: 2026-03-23 18:47:54
+> 生成时间: 2026-11-15 12:33:21
 
 ## API端点总览
 
-- 端点数量: **25**
-- 方法总数: **25**
+- 端点数量: **26**
+- 方法总数: **26**
 
 | 方法 | 数量 |
 |------|------|
-| GET | 3 |
+| GET | 4 |
 | POST | 22 |
 
 ## API端点详情
@@ -75,7 +75,27 @@
 
 ---
 
-### `/backups/check`
+### `/backups/check/{name}`
+
+#### GET
+
+**摘要**: Check backup used
+
+**标签**: Backup Account
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| name | path | unknown | 是 | name |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/backups/conn/check`
 
 #### POST
 
@@ -430,6 +450,12 @@
 **摘要**: Load backup account base info
 
 **标签**: Backup Account
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| clientType | path | unknown | 是 | clientType |
 
 **响应**:
 

@@ -1,17 +1,17 @@
 # SSH 模块API端点详细分析
 
 > 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
-> 生成时间: 2026-03-23 18:47:56
+> 生成时间: 2026-11-15 12:33:22
 
 ## API端点总览
 
-- 端点数量: **17**
-- 方法总数: **17**
+- 端点数量: **20**
+- 方法总数: **20**
 
 | 方法 | 数量 |
 |------|------|
-| GET | 1 |
-| POST | 16 |
+| GET | 2 |
+| POST | 18 |
 
 ## API端点详情
 
@@ -169,6 +169,20 @@
 
 ---
 
+### `/hosts/ssh/log/clean`
+
+#### POST
+
+**摘要**: Clean host SSH logs
+
+**标签**: SSH
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/hosts/ssh/log/export`
 
 #### POST
@@ -243,11 +257,46 @@
 
 ---
 
+### `/hosts/terminal/ssh`
+
+#### GET
+
+**摘要**: Ws host SSH
+
+**标签**: Terminal
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| id | query | unknown | 否 | id |
+| command | query | unknown | 否 | command |
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/settings/ssh`
 
 #### POST
 
 **摘要**: Save local conn info
+
+**标签**: System Setting
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/settings/ssh/check`
+
+#### POST
+
+**摘要**: Check local conn
 
 **标签**: System Setting
 
@@ -285,7 +334,7 @@
 
 ---
 
-### `/settings/ssh/conn/default`
+### `/settings/ssh/default`
 
 #### POST
 

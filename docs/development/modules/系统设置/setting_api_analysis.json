@@ -1,11 +1,56 @@
 {
   "module": "setting",
-  "generatedAt": "2026-04-27T15:19:33.531364",
+  "generatedAt": "2026-11-15T12:33:22.420372",
   "summary": {
-    "endpointCount": 53,
+    "endpointCount": 52,
     "methodCount": 55
   },
   "endpoints": [
+    {
+      "path": "/xpack/model/downloader/settings",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get model downloader settings",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        },
+        {
+          "method": "POST",
+          "summary": "Update model downloader settings",
+          "description": "Updates the download directory, source endpoints and tokens. The featuredModelsSync field is ignored; use /xpack/model/downloader/featured/sync/status to update automatic synchronization.",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
     {
       "path": "/core/auth/setting",
       "methods": [
@@ -17,56 +62,6 @@
             "Auth"
           ],
           "parameters": [],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/core/settings/api/config/generate/key",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "generate api key",
-          "description": "",
-          "tags": [
-            "System Setting"
-          ],
-          "parameters": [],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/core/settings/api/config/update",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Update api config",
-          "description": "",
-          "tags": [
-            "System Setting"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
           "requestBody": null,
           "responses": {
             "200": {
@@ -133,56 +128,6 @@
         {
           "method": "POST",
           "summary": "Update system bind info",
-          "description": "",
-          "tags": [
-            "System Setting"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/core/settings/by",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Load system setting by key",
-          "description": "",
-          "tags": [
-            "System Setting"
-          ],
-          "parameters": [],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/core/settings/expired/handle",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Reset system password expired",
           "description": "",
           "tags": [
             "System Setting"
@@ -323,185 +268,6 @@
       ]
     },
     {
-      "path": "/core/settings/mfa",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Load mfa info",
-          "description": "",
-          "tags": [
-            "System Setting"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/core/settings/mfa/bind",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Bind mfa",
-          "description": "",
-          "tags": [
-            "System Setting"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/core/settings/passkey/list",
-      "methods": [
-        {
-          "method": "GET",
-          "summary": "List passkeys",
-          "description": "",
-          "tags": [
-            "System Setting"
-          ],
-          "parameters": [],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/core/settings/passkey/register/begin",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Begin passkey registration",
-          "description": "",
-          "tags": [
-            "System Setting"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/core/settings/passkey/register/finish",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Finish passkey registration",
-          "description": "",
-          "tags": [
-            "System Setting"
-          ],
-          "parameters": [],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/core/settings/passkey/{id}",
-      "methods": [
-        {
-          "method": "DELETE",
-          "summary": "Delete passkey",
-          "description": "",
-          "tags": [
-            "System Setting"
-          ],
-          "parameters": [],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/core/settings/password/update",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Update system password",
-          "description": "",
-          "tags": [
-            "System Setting"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
       "path": "/core/settings/port/update",
       "methods": [
         {
@@ -602,6 +368,27 @@
       ]
     },
     {
+      "path": "/core/settings/search/base",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load base system setting info",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/core/settings/ssl/download",
       "methods": [
         {
@@ -628,6 +415,27 @@
         {
           "method": "GET",
           "summary": "Load system cert info",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/core/settings/ssl/reload",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Reload SSL",
           "description": "",
           "tags": [
             "System Setting"
@@ -947,22 +755,93 @@
       ]
     },
     {
-      "path": "/settings/get/{key}",
+      "path": "/settings/file-history/search",
       "methods": [
         {
-          "method": "GET",
-          "summary": "Load system setting by key",
+          "method": "POST",
+          "summary": "Load file history setting info",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/settings/file-history/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update file history setting",
           "description": "",
           "tags": [
             "System Setting"
           ],
           "parameters": [
             {
-              "name": "key",
-              "in": "path",
+              "name": "request",
+              "in": "body",
               "required": true,
               "type": "unknown",
-              "description": "key"
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/settings/files/ai/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get file manage AI setting info",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/settings/files/ai/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update file manage AI setting",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
             }
           ],
           "requestBody": null,
@@ -1292,6 +1171,27 @@
       ]
     },
     {
+      "path": "/settings/ssh/check",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Check local conn",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/settings/ssh/check/info",
       "methods": [
         {
@@ -1334,11 +1234,61 @@
       ]
     },
     {
-      "path": "/settings/ssh/conn/default",
+      "path": "/settings/ssh/default",
       "methods": [
         {
           "method": "POST",
           "summary": "Update local is conn",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/settings/terminal/ai/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get terminal AI setting info",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/settings/terminal/ai/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update terminal AI setting",
           "description": "",
           "tags": [
             "System Setting"
@@ -1381,6 +1331,27 @@
               "description": "request"
             }
           ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/settings/website/dir",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Load website dir",
+          "description": "",
+          "tags": [
+            "System Setting"
+          ],
+          "parameters": [],
           "requestBody": null,
           "responses": {
             "200": {

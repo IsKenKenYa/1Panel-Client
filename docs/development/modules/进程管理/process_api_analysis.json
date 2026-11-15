@@ -1,11 +1,53 @@
 {
   "module": "process",
-  "generatedAt": "2026-04-27T15:19:33.495675",
+  "generatedAt": "2026-11-15T12:33:22.381855",
   "summary": {
-    "endpointCount": 8,
-    "methodCount": 9
+    "endpointCount": 12,
+    "methodCount": 13
   },
   "endpoints": [
+    {
+      "path": "/files/wget/process",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Wget process",
+          "description": "",
+          "tags": [
+            "File"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/files/wget/process/keys",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Process keys",
+          "description": "",
+          "tags": [
+            "File"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
     {
       "path": "/hosts/tool/supervisor/process",
       "methods": [
@@ -53,6 +95,35 @@
     },
     {
       "path": "/hosts/tool/supervisor/process/file",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Operate Supervisor process config file",
+          "description": "",
+          "tags": [
+            "Host tool"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/tool/supervisor/process/file/get",
       "methods": [
         {
           "method": "POST",
@@ -120,6 +191,27 @@
               "description": "request"
             }
           ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/process/ws",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Process ws",
+          "description": "",
+          "tags": [
+            "Process"
+          ],
+          "parameters": [],
           "requestBody": null,
           "responses": {
             "200": {

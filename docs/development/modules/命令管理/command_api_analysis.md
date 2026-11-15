@@ -1,17 +1,16 @@
 # COMMAND 模块API端点详细分析
 
 > 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
-> 生成时间: 2026-03-30 11:54:29
+> 生成时间: 2026-11-15 12:33:22
 
 ## API端点总览
 
-- 端点数量: **8**
-- 方法总数: **8**
+- 端点数量: **9**
+- 方法总数: **9**
 
 | 方法 | 数量 |
 |------|------|
-| GET | 2 |
-| POST | 6 |
+| POST | 9 |
 
 ## API端点详情
 
@@ -20,26 +19,6 @@
 #### POST
 
 **摘要**: Create command
-
-**标签**: Command
-
-**参数**:
-
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
-
-**响应**:
-
-- `200`: OK
-
----
-
-### `/core/commands/command`
-
-#### GET
-
-**摘要**: List commands
 
 **标签**: Command
 
@@ -103,6 +82,26 @@
 
 ---
 
+### `/core/commands/list`
+
+#### POST
+
+**摘要**: List commands
+
+**标签**: Command
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/core/commands/search`
 
 #### POST
@@ -125,7 +124,7 @@
 
 ### `/core/commands/tree`
 
-#### GET
+#### POST
 
 **摘要**: Tree commands
 
@@ -156,6 +155,20 @@
 | 名称 | 位置 | 类型 | 必填 | 描述 |
 |------|------|------|------|------|
 | request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/core/commands/upload`
+
+#### POST
+
+**摘要**: Upload command csv for list
+
+**标签**: Command
 
 **响应**:
 

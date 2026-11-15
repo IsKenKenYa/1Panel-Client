@@ -1,17 +1,17 @@
 # WEBSITE 模块API端点详细分析
 
 > 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
-> 生成时间: 2026-04-27 15:19:33
+> 生成时间: 2026-11-15 12:33:22
 
 ## API端点总览
 
-- 端点数量: **70**
-- 方法总数: **73**
+- 端点数量: **83**
+- 方法总数: **86**
 
 | 方法 | 数量 |
 |------|------|
 | GET | 13 |
-| POST | 60 |
+| POST | 73 |
 
 ## API端点详情
 
@@ -68,6 +68,7 @@
 | 名称 | 位置 | 类型 | 必填 | 描述 |
 |------|------|------|------|------|
 | id | path | unknown | 是 | request |
+| type | path | unknown | 是 | type |
 
 **响应**:
 
@@ -106,6 +107,7 @@
 | 名称 | 位置 | 类型 | 必填 | 描述 |
 |------|------|------|------|------|
 | request | body | unknown | 是 | request |
+| id | path | unknown | 是 | id |
 
 **响应**:
 
@@ -213,11 +215,11 @@
 
 ---
 
-### `/websites/batch/https`
+### `/websites/batch/operate`
 
 #### POST
 
-**摘要**: Batch set HTTPS for websites
+**摘要**: Batch operate websites
 
 **标签**: Website
 
@@ -233,11 +235,11 @@
 
 ---
 
-### `/websites/batch/operate`
+### `/websites/batch/ssl`
 
 #### POST
 
-**摘要**: Batch operate websites
+**摘要**: Batch set HTTPS for websites
 
 **标签**: Website
 
@@ -553,6 +555,12 @@
 
 **标签**: Website
 
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| type | path | unknown | 是 | type |
+
 **响应**:
 
 - `200`: OK
@@ -779,11 +787,11 @@
 
 ---
 
-### `/websites/lbs`
+### `/websites/group/change`
 
-#### GET
+#### POST
 
-**摘要**: Get website upstreams
+**摘要**: Change website group
 
 **标签**: Website
 
@@ -933,11 +941,31 @@
 
 ---
 
-### `/websites/log`
+### `/websites/log/operate`
 
 #### POST
 
 **摘要**: Operate website log
+
+**标签**: Website
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/websites/log/search`
+
+#### POST
+
+**摘要**: Get website log
 
 **标签**: Website
 
@@ -1166,6 +1194,8 @@
 #### GET
 
 **摘要**: Get website proxy cache config
+
+**标签**: Website
 
 **参数**:
 
@@ -1411,6 +1441,226 @@
 
 ---
 
+### `/websites/templates`
+
+#### POST
+
+**摘要**: Create website template
+
+**标签**: Website Template
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/websites/templates/del`
+
+#### POST
+
+**摘要**: Delete website template
+
+**标签**: Website Template
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/websites/templates/get`
+
+#### POST
+
+**摘要**: Get website template
+
+**标签**: Website Template
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/websites/templates/outputs`
+
+#### POST
+
+**摘要**: Create website template output
+
+**标签**: Website Template
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/websites/templates/outputs/del`
+
+#### POST
+
+**摘要**: Delete website template output
+
+**标签**: Website Template
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/websites/templates/outputs/get`
+
+#### POST
+
+**摘要**: Get website template output
+
+**标签**: Website Template
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/websites/templates/outputs/search`
+
+#### POST
+
+**摘要**: Page website template outputs
+
+**标签**: Website Template
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/websites/templates/preview`
+
+#### POST
+
+**摘要**: Preview website template
+
+**标签**: Website Template
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/websites/templates/search`
+
+#### POST
+
+**摘要**: Page website templates
+
+**标签**: Website Template
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/websites/templates/update`
+
+#### POST
+
+**摘要**: Update website template
+
+**标签**: Website Template
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/websites/templates/upload`
+
+#### POST
+
+**摘要**: Upload website template zip
+
+**标签**: Website Template
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| file | formData | unknown | 是 | file |
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/websites/update`
 
 #### POST
@@ -1424,6 +1674,26 @@
 | 名称 | 位置 | 类型 | 必填 | 描述 |
 |------|------|------|------|------|
 | request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/websites/{id}/lbs`
+
+#### GET
+
+**摘要**: Get website upstreams
+
+**标签**: Website
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| id | path | unknown | 是 | id |
 
 **响应**:
 

@@ -1,11 +1,40 @@
 {
   "module": "host",
-  "generatedAt": "2026-04-27T15:19:33.421624",
+  "generatedAt": "2026-11-15T12:33:22.302188",
   "summary": {
-    "endpointCount": 43,
-    "methodCount": 44
+    "endpointCount": 74,
+    "methodCount": 75
   },
   "endpoints": [
+    {
+      "path": "/hosts",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create host",
+          "description": "",
+          "tags": [
+            "Host"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
     {
       "path": "/hosts/components/{name}",
       "methods": [
@@ -25,6 +54,106 @@
               "description": "Component name to check (e.g., rsync, docker)"
             }
           ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete host",
+          "description": "",
+          "tags": [
+            "Host"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/diagnostics/goroutines",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Load grouped goroutine snapshot",
+          "description": "",
+          "tags": [
+            "RuntimeDiagnostics"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/diagnostics/profiles",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Capture runtime profile",
+          "description": "",
+          "tags": [
+            "RuntimeDiagnostics"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/diagnostics/summary",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Load runtime diagnostics summary",
+          "description": "",
+          "tags": [
+            "RuntimeDiagnostics"
+          ],
+          "parameters": [],
           "requestBody": null,
           "responses": {
             "200": {
@@ -173,11 +302,32 @@
       ]
     },
     {
-      "path": "/hosts/firewall/batch",
+      "path": "/hosts/firewall/docker/endpoints",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "List Docker published ports",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/docker/operate",
       "methods": [
         {
           "method": "POST",
-          "summary": "Batch operate rule",
+          "summary": "Operate Docker port guard",
           "description": "",
           "tags": [
             "Firewall"
@@ -202,11 +352,90 @@
       ]
     },
     {
-      "path": "/hosts/firewall/filter/chain/status",
+      "path": "/hosts/firewall/docker/policies/batch",
       "methods": [
         {
           "method": "POST",
-          "summary": "load chain status with name",
+          "summary": "Batch upsert Docker port guard policies",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/docker/policies/delete/batch",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete Docker port guard policies",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/docker/ports",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "List Docker port guard status and policies",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/family/operate",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Initialize, repair or bind one firewall address family",
           "description": "",
           "tags": [
             "Firewall"
@@ -235,7 +464,7 @@
       "methods": [
         {
           "method": "POST",
-          "summary": "Apply/Unload/Init iptables filter",
+          "summary": "Apply/Unload/Init firewall filter chain",
           "description": "",
           "tags": [
             "Firewall"
@@ -260,11 +489,32 @@
       ]
     },
     {
-      "path": "/hosts/firewall/filter/rule/batch",
+      "path": "/hosts/firewall/forward/base",
       "methods": [
         {
           "method": "POST",
-          "summary": "Batch operate iptables filter rules",
+          "summary": "Load forwarding base info",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/forward/enable",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Enable forwarding",
           "description": "",
           "tags": [
             "Firewall"
@@ -289,11 +539,11 @@
       ]
     },
     {
-      "path": "/hosts/firewall/filter/rule/operate",
+      "path": "/hosts/firewall/forward/operate",
       "methods": [
         {
           "method": "POST",
-          "summary": "Operate iptables filter rule",
+          "summary": "Operate forwarding rules",
           "description": "",
           "tags": [
             "Firewall"
@@ -318,69 +568,11 @@
       ]
     },
     {
-      "path": "/hosts/firewall/filter/search",
+      "path": "/hosts/firewall/forward/search",
       "methods": [
         {
           "method": "POST",
-          "summary": "search iptables filter rules",
-          "description": "",
-          "tags": [
-            "Firewall"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/hosts/firewall/forward",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Operate forward rule",
-          "description": "",
-          "tags": [
-            "Firewall"
-          ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
-            }
-          ],
-          "requestBody": null,
-          "responses": {
-            "200": {
-              "description": "OK"
-            }
-          },
-          "deprecated": false
-        }
-      ]
-    },
-    {
-      "path": "/hosts/firewall/ip",
-      "methods": [
-        {
-          "method": "POST",
-          "summary": "Operate Ip rule",
+          "summary": "Page forwarding rules",
           "description": "",
           "tags": [
             "Firewall"
@@ -434,11 +626,288 @@
       ]
     },
     {
-      "path": "/hosts/firewall/port",
+      "path": "/hosts/firewall/rules",
       "methods": [
         {
           "method": "POST",
-          "summary": "Create group",
+          "summary": "Queue firewall rule creation",
+          "description": "Creation and import return a taskID immediately; validation and execution results are written to the task log.",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            },
+            "400": {
+              "description": "Bad Request"
+            },
+            "409": {
+              "description": "Conflict"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/rules/backups",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "List firewall rule backups",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "subsystem",
+              "in": "query",
+              "required": false,
+              "type": "unknown",
+              "description": "Firewall subsystem"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/rules/delete",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Queue firewall rule deletion",
+          "description": "Deletes non-whitelist rules by scope and instance key. Returns a taskID immediately; results are written to the task log.",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            },
+            "400": {
+              "description": "Bad Request"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/rules/native/detail",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load one provider-native firewall object definition",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            },
+            "400": {
+              "description": "Bad Request"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/rules/reorder",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Reorder a firewall rule",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            },
+            "400": {
+              "description": "Bad Request"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/rules/reset",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Reset firewall rules",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            },
+            "400": {
+              "description": "Bad Request"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/rules/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "List unified firewall v2 rules",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            },
+            "400": {
+              "description": "Bad Request"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/rules/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update a firewall rule",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            },
+            "400": {
+              "description": "Bad Request"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/settings",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Load firewall settings",
+          "description": "",
+          "tags": [
+            "Firewall"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/firewall/settings/ipv6",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update firewall IPv6 support",
           "description": "",
           "tags": [
             "Firewall"
@@ -463,11 +932,11 @@
       ]
     },
     {
-      "path": "/hosts/firewall/search",
+      "path": "/hosts/firewall/settings/operate",
       "methods": [
         {
           "method": "POST",
-          "summary": "Page firewall rules",
+          "summary": "Operate firewall backend",
           "description": "",
           "tags": [
             "Firewall"
@@ -492,12 +961,12 @@
       ]
     },
     {
-      "path": "/hosts/firewall/update/addr",
+      "path": "/hosts/firewall/settings/whitelist",
       "methods": [
         {
           "method": "POST",
-          "summary": "Update Ip rule",
-          "description": "",
+          "summary": "Create firewall port whitelist rules",
+          "description": "Saves whitelist configuration and applies missing allowances; existing rules are not removed.",
           "tags": [
             "Firewall"
           ],
@@ -521,12 +990,12 @@
       ]
     },
     {
-      "path": "/hosts/firewall/update/description",
+      "path": "/hosts/firewall/settings/whitelist/delete",
       "methods": [
         {
           "method": "POST",
-          "summary": "Update rule description",
-          "description": "",
+          "summary": "Delete firewall port whitelist rules",
+          "description": "Removes whitelist configuration; existing firewall rules are not removed.",
           "tags": [
             "Firewall"
           ],
@@ -550,14 +1019,43 @@
       ]
     },
     {
-      "path": "/hosts/firewall/update/port",
+      "path": "/hosts/firewall/settings/whitelist/update",
       "methods": [
         {
           "method": "POST",
-          "summary": "Update port rule",
-          "description": "",
+          "summary": "Update firewall port whitelist rules",
+          "description": "Saves whitelist configuration and applies missing allowances; existing rules are not removed.",
           "tags": [
             "Firewall"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/info",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get host by ID",
+          "description": "",
+          "tags": [
+            "Host"
           ],
           "parameters": [
             {
@@ -600,24 +1098,37 @@
       ]
     },
     {
-      "path": "/hosts/monitor/gpu/search",
+      "path": "/hosts/monitor/iooptions",
       "methods": [
         {
-          "method": "POST",
-          "summary": "Load monitor data",
+          "method": "GET",
+          "summary": "Get IO options",
           "description": "",
           "tags": [
             "Monitor"
           ],
-          "parameters": [
-            {
-              "name": "request",
-              "in": "body",
-              "required": true,
-              "type": "unknown",
-              "description": "request"
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
             }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/monitor/netoptions",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get network options",
+          "description": "",
+          "tags": [
+            "Monitor"
           ],
+          "parameters": [],
           "requestBody": null,
           "responses": {
             "200": {
@@ -687,6 +1198,35 @@
           "description": "",
           "tags": [
             "Monitor"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Search host",
+          "description": "",
+          "tags": [
+            "Host"
           ],
           "parameters": [
             {
@@ -932,6 +1472,27 @@
       ]
     },
     {
+      "path": "/hosts/ssh/log/clean",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Clean host SSH logs",
+          "description": "",
+          "tags": [
+            "SSH"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/hosts/ssh/log/export",
       "methods": [
         {
@@ -1040,11 +1601,170 @@
       ]
     },
     {
-      "path": "/hosts/tool",
+      "path": "/hosts/terminal/container",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Ws container terminal",
+          "description": "",
+          "tags": [
+            "Terminal"
+          ],
+          "parameters": [
+            {
+              "name": "cols",
+              "in": "query",
+              "required": false,
+              "type": "unknown",
+              "description": "cols"
+            },
+            {
+              "name": "rows",
+              "in": "query",
+              "required": false,
+              "type": "unknown",
+              "description": "rows"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/terminal/local",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Ws local terminal",
+          "description": "",
+          "tags": [
+            "Terminal"
+          ],
+          "parameters": [
+            {
+              "name": "command",
+              "in": "query",
+              "required": false,
+              "type": "unknown",
+              "description": "command"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/terminal/ssh",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Ws host SSH",
+          "description": "",
+          "tags": [
+            "Terminal"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "query",
+              "required": false,
+              "type": "unknown",
+              "description": "id"
+            },
+            {
+              "name": "command",
+              "in": "query",
+              "required": false,
+              "type": "unknown",
+              "description": "command"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/test/byid",
       "methods": [
         {
           "method": "POST",
-          "summary": "Get tool status",
+          "summary": "Test by ID",
+          "description": "",
+          "tags": [
+            "Host"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/test/byinfo",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Test by info",
+          "description": "",
+          "tags": [
+            "Host"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/tool/config/get",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get tool config",
           "description": "",
           "tags": [
             "Host tool"
@@ -1069,11 +1789,11 @@
       ]
     },
     {
-      "path": "/hosts/tool/config",
+      "path": "/hosts/tool/config/set",
       "methods": [
         {
           "method": "POST",
-          "summary": "Get tool config",
+          "summary": "Update tool config",
           "description": "",
           "tags": [
             "Host tool"
@@ -1156,6 +1876,35 @@
       ]
     },
     {
+      "path": "/hosts/tool/status",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get tool status",
+          "description": "",
+          "tags": [
+            "Host tool"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/hosts/tool/supervisor/process",
       "methods": [
         {
@@ -1205,10 +1954,126 @@
       "methods": [
         {
           "method": "POST",
+          "summary": "Operate Supervisor process config file",
+          "description": "",
+          "tags": [
+            "Host tool"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/tool/supervisor/process/file/get",
+      "methods": [
+        {
+          "method": "POST",
           "summary": "Get Supervisor process config file",
           "description": "",
           "tags": [
             "Host tool"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/tree",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Host tree",
+          "description": "",
+          "tags": [
+            "Host"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update host",
+          "description": "",
+          "tags": [
+            "Host"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/hosts/update/group",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update host group",
+          "description": "",
+          "tags": [
+            "Host"
           ],
           "parameters": [
             {

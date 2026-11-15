@@ -1,9 +1,9 @@
 {
   "module": "backup",
-  "generatedAt": "2026-03-23T18:47:54.791404",
+  "generatedAt": "2026-11-15T12:33:21.986629",
   "summary": {
-    "endpointCount": 25,
-    "methodCount": 25
+    "endpointCount": 26,
+    "methodCount": 26
   },
   "endpoints": [
     {
@@ -94,7 +94,36 @@
       ]
     },
     {
-      "path": "/backups/check",
+      "path": "/backups/check/{name}",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Check backup used",
+          "description": "",
+          "tags": [
+            "Backup Account"
+          ],
+          "parameters": [
+            {
+              "name": "name",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "name"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/backups/conn/check",
       "methods": [
         {
           "method": "POST",
@@ -609,7 +638,15 @@
           "tags": [
             "Backup Account"
           ],
-          "parameters": [],
+          "parameters": [
+            {
+              "name": "clientType",
+              "in": "path",
+              "required": true,
+              "type": "unknown",
+              "description": "clientType"
+            }
+          ],
           "requestBody": null,
           "responses": {
             "200": {

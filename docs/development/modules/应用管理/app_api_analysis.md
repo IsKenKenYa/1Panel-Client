@@ -1,17 +1,17 @@
 # APP 模块API端点详细分析
 
 > 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
-> 生成时间: 2026-05-02 16:45:14
+> 生成时间: 2026-11-15 12:33:21
 
 ## API端点总览
 
-- 端点数量: **35**
-- 方法总数: **35**
+- 端点数量: **37**
+- 方法总数: **37**
 
 | 方法 | 数量 |
 |------|------|
-| GET | 14 |
-| POST | 21 |
+| GET | 15 |
+| POST | 22 |
 
 ## API端点详情
 
@@ -83,7 +83,7 @@
 |------|------|------|------|------|
 | appId | path | unknown | 是 | app id |
 | version | path | unknown | 是 | app 版本 |
-| version | path | unknown | 是 | app 类型 |
+| type | path | unknown | 是 | app 类型 |
 
 **响应**:
 
@@ -103,7 +103,7 @@
 
 | 名称 | 位置 | 类型 | 必填 | 描述 |
 |------|------|------|------|------|
-| appId | path | unknown | 是 | app key |
+| appKey | path | unknown | 是 | app key |
 | version | path | unknown | 是 | app version |
 
 **响应**:
@@ -124,7 +124,7 @@
 
 | 名称 | 位置 | 类型 | 必填 | 描述 |
 |------|------|------|------|------|
-| appId | path | unknown | 是 | id |
+| id | path | unknown | 是 | id |
 
 **响应**:
 
@@ -144,11 +144,12 @@
 
 | 名称 | 位置 | 类型 | 必填 | 描述 |
 |------|------|------|------|------|
-| appId | path | unknown | 是 | app id |
+| key | path | unknown | 是 | app key |
 
 **响应**:
 
 - `200`: app icon
+- `302`: redirect to the official icon URL
 
 ---
 
@@ -480,6 +481,26 @@
 
 ---
 
+### `/apps/installed/sort/update`
+
+#### POST
+
+**摘要**: Update app install sort
+
+**标签**: App
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/apps/installed/sync`
 
 #### POST
@@ -506,7 +527,7 @@
 
 | 名称 | 位置 | 类型 | 必填 | 描述 |
 |------|------|------|------|------|
-| appInstallId | path | unknown | 是 | request |
+| request | body | unknown | 是 | request |
 
 **响应**:
 
@@ -573,6 +594,20 @@
 #### POST
 
 **摘要**: Sync remote app list
+
+**标签**: App
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/apps/tags`
+
+#### GET
+
+**摘要**: Get app tags
 
 **标签**: App
 

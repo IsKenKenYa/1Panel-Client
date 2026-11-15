@@ -1,9 +1,9 @@
 {
   "module": "app",
-  "generatedAt": "2026-05-02T16:45:14.540010",
+  "generatedAt": "2026-11-15T12:33:21.903883",
   "summary": {
-    "endpointCount": 35,
-    "methodCount": 35
+    "endpointCount": 37,
+    "methodCount": 37
   },
   "endpoints": [
     {
@@ -111,7 +111,7 @@
               "description": "app 版本"
             },
             {
-              "name": "version",
+              "name": "type",
               "in": "path",
               "required": true,
               "type": "unknown",
@@ -140,7 +140,7 @@
           ],
           "parameters": [
             {
-              "name": "appId",
+              "name": "appKey",
               "in": "path",
               "required": true,
               "type": "unknown",
@@ -176,7 +176,7 @@
           ],
           "parameters": [
             {
-              "name": "appId",
+              "name": "id",
               "in": "path",
               "required": true,
               "type": "unknown",
@@ -205,17 +205,20 @@
           ],
           "parameters": [
             {
-              "name": "appId",
+              "name": "key",
               "in": "path",
               "required": true,
               "type": "unknown",
-              "description": "app id"
+              "description": "app key"
             }
           ],
           "requestBody": null,
           "responses": {
             "200": {
               "description": "app icon"
+            },
+            "302": {
+              "description": "redirect to the official icon URL"
             }
           },
           "deprecated": false
@@ -700,6 +703,35 @@
       ]
     },
     {
+      "path": "/apps/installed/sort/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update app install sort",
+          "description": "",
+          "tags": [
+            "App"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
       "path": "/apps/installed/sync",
       "methods": [
         {
@@ -732,8 +764,8 @@
           ],
           "parameters": [
             {
-              "name": "appInstallId",
-              "in": "path",
+              "name": "request",
+              "in": "body",
               "required": true,
               "type": "unknown",
               "description": "request"
@@ -834,6 +866,27 @@
         {
           "method": "POST",
           "summary": "Sync remote app list",
+          "description": "",
+          "tags": [
+            "App"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/apps/tags",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get app tags",
           "description": "",
           "tags": [
             "App"

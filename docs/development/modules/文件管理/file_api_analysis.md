@@ -1,17 +1,17 @@
 # FILE 模块API端点详细分析
 
 > 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
-> 生成时间: 2026-04-27 15:19:33
+> 生成时间: 2026-11-15 12:33:22
 
 ## API端点总览
 
-- 端点数量: **49**
-- 方法总数: **49**
+- 端点数量: **67**
+- 方法总数: **67**
 
 | 方法 | 数量 |
 |------|------|
-| GET | 4 |
-| POST | 45 |
+| GET | 10 |
+| POST | 57 |
 
 ## API端点详情
 
@@ -187,6 +187,28 @@
 
 ---
 
+### `/files/ai-search`
+
+#### POST
+
+**摘要**: File search: content grep + optional AI summary
+
+**描述**: When file-management AI is enabled, returns mode=ai with summary and hits. When disabled, returns mode=grep with hits only. Scans file contents only. Supports match options, extension/size/time filters, and scan limits.
+
+**标签**: File
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/files/batch/check`
 
 #### POST
@@ -327,6 +349,26 @@
 
 ---
 
+### `/files/compress/stop`
+
+#### POST
+
+**摘要**: Stop compress task
+
+**标签**: File
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/files/content`
 
 #### POST
@@ -392,6 +434,26 @@
 #### POST
 
 **摘要**: Decompress file
+
+**标签**: File
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/files/decompress/stop`
+
+#### POST
+
+**摘要**: Stop decompress task
 
 **标签**: File
 
@@ -521,6 +583,86 @@
 
 ---
 
+### `/files/history/content`
+
+#### POST
+
+**摘要**: Load file history content
+
+**标签**: File
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/files/history/del`
+
+#### POST
+
+**摘要**: Delete file history record
+
+**标签**: File
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/files/history/restore`
+
+#### POST
+
+**摘要**: Restore file history record
+
+**标签**: File
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/files/history/search`
+
+#### POST
+
+**摘要**: Load file history list
+
+**标签**: File
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/files/mode`
 
 #### POST
@@ -560,6 +702,26 @@
 #### POST
 
 **摘要**: Move file
+
+**标签**: File
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/files/move/stop`
+
+#### POST
+
+**摘要**: Stop file move task
 
 **标签**: File
 
@@ -615,7 +777,7 @@
 
 ---
 
-### `/files/read`
+### `/files/read/{type}`
 
 #### POST
 
@@ -627,6 +789,7 @@
 
 | 名称 | 位置 | 类型 | 必填 | 描述 |
 |------|------|------|------|------|
+| type | path | unknown | 是 | type |
 | request | body | unknown | 是 | request |
 
 **响应**:
@@ -803,6 +966,169 @@
 
 ---
 
+### `/files/share/check`
+
+#### GET
+
+**摘要**: Check file share code (no login)
+
+**标签**: File
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| code | query | unknown | 是 | share code |
+| password | query | unknown | 否 | optional password |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/files/share/create`
+
+#### POST
+
+**摘要**: Create temporary file share link
+
+**标签**: File
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/files/share/del`
+
+#### POST
+
+**摘要**: Delete file share by path
+
+**标签**: File
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/files/share/detail`
+
+#### POST
+
+**摘要**: Get file share detail by path
+
+**标签**: File
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/files/share/download`
+
+#### GET
+
+**摘要**: Download file by share code (no login)
+
+**标签**: File
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| code | query | unknown | 是 | share code |
+| password | query | unknown | 否 | optional password |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/files/share/info`
+
+#### GET
+
+**摘要**: Get file share detail by code (no login)
+
+**标签**: File
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| code | query | unknown | 是 | share code |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/files/share/qrcode`
+
+#### GET
+
+**摘要**: Get file share QR code image
+
+**标签**: File
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| code | query | unknown | 是 | share code |
+| operateNode | query | unknown | 否 | operate node |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/files/share/search`
+
+#### POST
+
+**摘要**: List file shares
+
+**标签**: File
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/files/size`
 
 #### POST
@@ -910,6 +1236,34 @@
 | 名称 | 位置 | 类型 | 必填 | 描述 |
 |------|------|------|------|------|
 | request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/files/wget/process`
+
+#### GET
+
+**摘要**: Wget process
+
+**标签**: File
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/files/wget/process/keys`
+
+#### GET
+
+**摘要**: Process keys
+
+**标签**: File
 
 **响应**:
 

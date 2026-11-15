@@ -1,17 +1,17 @@
 # MONITOR 模块API端点详细分析
 
 > 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
-> 生成时间: 2026-02-15 15:17:30
+> 生成时间: 2026-11-15 12:33:22
 
 ## API端点总览
 
-- 端点数量: **5**
-- 方法总数: **5**
+- 端点数量: **6**
+- 方法总数: **6**
 
 | 方法 | 数量 |
 |------|------|
-| GET | 1 |
-| POST | 4 |
+| GET | 3 |
+| POST | 3 |
 
 ## API端点详情
 
@@ -29,19 +29,27 @@
 
 ---
 
-### `/hosts/monitor/gpu/search`
+### `/hosts/monitor/iooptions`
 
-#### POST
+#### GET
 
-**摘要**: Load monitor data
+**摘要**: Get IO options
 
 **标签**: Monitor
 
-**参数**:
+**响应**:
 
-| 名称 | 位置 | 类型 | 必填 | 描述 |
-|------|------|------|------|------|
-| request | body | unknown | 是 | request |
+- `200`: OK
+
+---
+
+### `/hosts/monitor/netoptions`
+
+#### GET
+
+**摘要**: Get network options
+
+**标签**: Monitor
 
 **响应**:
 

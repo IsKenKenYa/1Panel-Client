@@ -1,17 +1,17 @@
 # SSL 模块API端点详细分析
 
 > 基于 docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json 自动生成
-> 生成时间: 2026-04-27 15:19:33
+> 生成时间: 2026-11-15 12:33:22
 
 ## API端点总览
 
-- 端点数量: **15**
-- 方法总数: **15**
+- 端点数量: **18**
+- 方法总数: **18**
 
 | 方法 | 数量 |
 |------|------|
 | GET | 3 |
-| POST | 12 |
+| POST | 15 |
 
 ## API端点详情
 
@@ -34,6 +34,20 @@
 #### GET
 
 **摘要**: Load system cert info
+
+**标签**: System Setting
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/core/settings/ssl/reload`
+
+#### POST
+
+**摘要**: Reload SSL
 
 **标签**: System Setting
 
@@ -143,6 +157,26 @@
 
 ---
 
+### `/websites/ssl/import`
+
+#### POST
+
+**摘要**: Import master SSL
+
+**标签**: Website SSL
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
 ### `/websites/ssl/list`
 
 #### POST
@@ -168,6 +202,26 @@
 #### POST
 
 **摘要**: Apply  ssl
+
+**标签**: Website SSL
+
+**参数**:
+
+| 名称 | 位置 | 类型 | 必填 | 描述 |
+|------|------|------|------|------|
+| request | body | unknown | 是 | request |
+
+**响应**:
+
+- `200`: OK
+
+---
+
+### `/websites/ssl/push`
+
+#### POST
+
+**摘要**: Push ssl to nodes
 
 **标签**: Website SSL
 

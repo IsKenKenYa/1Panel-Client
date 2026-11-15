@@ -3,7 +3,8 @@
 > **基线**：`docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json`（只读）
 > **客户端**：`lib/api/v2/*.dart` + `lib/data/repositories/`
 > **生成时间**：2026-07-10
-> **依据**：`AGENTS.md`「V2 契约单一规范源」「模块适配 7 步闭环」「架构与分层」
+> **依据**：`AGENTS.md`「V2 接口定义单一来源」「模块适配 7 步闭环」「架构与分层」
+> **当前快照**：`v2.5.1`（2026-11-15 更新，810 paths）；当前批次状态见 `docs/development/modules/阶段总计划.md` B9，本文保留历史分析背景。
 
 ---
 
