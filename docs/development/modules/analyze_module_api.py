@@ -83,6 +83,8 @@ KEYWORD_MATCHERS = {
 
 KEYWORD_EXCLUDE_MATCHERS = {
     'website': ['^/websites/domains', '^/websites/ssl', '^/websites/auths'],
+    'setting': ['^/hosts/firewall/'],
+    'backup': ['^/hosts/firewall/'],
 }
 
 

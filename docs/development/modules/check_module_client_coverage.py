@@ -168,10 +168,36 @@ EXTRA_ENDPOINT_CLASSIFICATIONS = {
     'file': {
         ('POST', '/files/download'): '保留：客户端文件下载主链路；待下载契约补齐或统一下载服务落地后清理。',
     },
+    'firewall': {
+        ('POST', '/hosts/firewall/batch'): '保留：旧版端口/IP 规则批量操作，防火墙 V1 页面仍在使用；迁移到统一规则 inventory 后清理。',
+        ('POST', '/hosts/firewall/filter/chain/status'): '保留：旧版 filter 链状态读取，防火墙 V1 页面仍在使用；迁移到统一防火墙 V2 后清理。',
+        ('POST', '/hosts/firewall/filter/rule/batch'): '保留：旧版 filter 规则批量操作，防火墙 V1 页面仍在使用；迁移到统一规则 inventory 后清理。',
+        ('POST', '/hosts/firewall/filter/rule/operate'): '保留：旧版 filter 规则操作，防火墙 V1 页面仍在使用；迁移到统一规则 inventory 后清理。',
+        ('POST', '/hosts/firewall/filter/rule/search'): '保留：旧版 filter 规则查询，防火墙 V1 页面仍在使用；迁移到统一规则 inventory 后清理。',
+        ('POST', '/hosts/firewall/forward'): '保留：旧版转发规则操作，防火墙 V1 页面仍在使用；迁移到 /hosts/firewall/forward/operate 后清理。',
+        ('POST', '/hosts/firewall/ip'): '保留：旧版 IP 规则操作，防火墙 V1 页面仍在使用；迁移到统一规则 inventory 后清理。',
+        ('POST', '/hosts/firewall/port'): '保留：旧版端口规则操作，防火墙 V1 页面仍在使用；迁移到统一规则 inventory 后清理。',
+        ('POST', '/hosts/firewall/search'): '保留：旧版规则列表查询，防火墙 V1 页面仍在使用；迁移到 /hosts/firewall/rules/search 后清理。',
+        ('POST', '/hosts/firewall/update/addr'): '保留：旧版规则地址更新，防火墙 V1 页面仍在使用；迁移到统一规则 inventory 后清理。',
+        ('POST', '/hosts/firewall/update/description'): '保留：旧版规则描述更新，防火墙 V1 页面仍在使用；迁移到统一规则 inventory 后清理。',
+        ('POST', '/hosts/firewall/update/port'): '保留：旧版规则端口更新，防火墙 V1 页面仍在使用；迁移到统一规则 inventory 后清理。',
+    },
     'host': {
         ('GET', '/settings/ssh/conn'): '保留：SSH 连接配置读取，当前由主机/SSH 设置共用；归属后续收口到 ssh/setting。',
         ('POST', '/core/hosts/test/byid/{var}'): '保留：真实主机连接测试路由；当前 OpenAPI 归一化结果未命中，客户端以真实 API 为准。',
         ('POST', '/hosts/test/byid'): '保留：旧版主机连接测试兼容回退；真实 core 路径失败时才使用。',
+        ('POST', '/hosts/firewall/batch'): '保留：旧版端口规则批量操作，防火墙 V1 页面仍在使用；迁移到统一规则 inventory 后清理。',
+        ('POST', '/hosts/firewall/filter/chain/status'): '保留：旧版 filter 链状态读取，防火墙 V1 页面仍在使用；迁移到统一防火墙 V2 后清理。',
+        ('POST', '/hosts/firewall/filter/rule/batch'): '保留：旧版 filter 规则批量操作，防火墙 V1 页面仍在使用；迁移到统一规则 inventory 后清理。',
+        ('POST', '/hosts/firewall/filter/rule/operate'): '保留：旧版 filter 规则操作，防火墙 V1 页面仍在使用；迁移到统一规则 inventory 后清理。',
+        ('POST', '/hosts/firewall/filter/rule/search'): '保留：旧版 filter 规则查询，防火墙 V1 页面仍在使用；迁移到统一规则 inventory 后清理。',
+        ('POST', '/hosts/firewall/forward'): '保留：旧版转发规则操作，防火墙 V1 页面仍在使用；迁移到 /hosts/firewall/forward/operate 后清理。',
+        ('POST', '/hosts/firewall/ip'): '保留：旧版 IP 规则操作，防火墙 V1 页面仍在使用；迁移到统一规则 inventory 后清理。',
+        ('POST', '/hosts/firewall/port'): '保留：旧版端口规则操作，防火墙 V1 页面仍在使用；迁移到统一规则 inventory 后清理。',
+        ('POST', '/hosts/firewall/search'): '保留：旧版规则列表查询，防火墙 V1 页面仍在使用；迁移到 /hosts/firewall/rules/search 后清理。',
+        ('POST', '/hosts/firewall/update/addr'): '保留：旧版规则地址更新，防火墙 V1 页面仍在使用；迁移到统一规则 inventory 后清理。',
+        ('POST', '/hosts/firewall/update/description'): '保留：旧版规则描述更新，防火墙 V1 页面仍在使用；迁移到统一规则 inventory 后清理。',
+        ('POST', '/hosts/firewall/update/port'): '保留：旧版规则端口更新，防火墙 V1 页面仍在使用；迁移到统一规则 inventory 后清理。',
         ('POST', '/settings/ssh'): '保留：SSH 设置写入，当前由主机/SSH 设置共用；归属后续收口到 ssh/setting。',
         ('POST', '/settings/ssh/check/info'): '保留：SSH 表单即时校验；归属后续收口到 ssh/setting。',
         ('POST', '/settings/ssh/conn/default'): '保留：SSH 默认连接配置写入；归属后续收口到 ssh/setting。',
@@ -526,15 +552,26 @@ def main():
     else:
         print(_render_markdown(results))
 
-    not_aligned = [
+    blocking = [
         item['module']
         for item in results
-        if item['status'] != 'aligned'
+        if item['missingInClient'] or item['missingClientFiles'] or
+        item['status'] == 'no_client_mapping'
+    ]
+    advisory = [
+        item['module']
+        for item in results
+        if item['extraInClient'] and item['module'] not in blocking
     ]
 
-    if not_aligned:
-        print('\n需要处理的模块:')
-        for module in not_aligned:
+    if advisory:
+        print('\n客户端增强端点（非阻断，保留原因见各模块白名单）:')
+        for module in advisory:
+            print(f'- {module}')
+
+    if blocking:
+        print('\n阻断项（missing_in_client 未清零，禁止进入 API 测试阶段）:')
+        for module in blocking:
             print(f'- {module}')
         sys.exit(2)
 
