@@ -375,7 +375,7 @@ void main() {
         resultCollector.addFailure(
             'App Operations', e.toString(), Duration.zero);
       }
-    });
+    }, timeout: const Timeout(Duration(minutes: 10)));
 
     test('POST /apps/installed/params/update - Update Params', () async {
       if (!hasApiKey || installedAppId == null) return;

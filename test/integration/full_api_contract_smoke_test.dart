@@ -549,11 +549,23 @@ void main() {
 
     test('POST /hosts/firewall/search - 防火墙规则', () async {
       if (skip() != null) return;
-      final raw = await _rawPost(client, '/hosts/firewall/search', data: {
-        'page': 1,
-        'pageSize': 10,
-        'type': 'port',
-      });
+      late final raw;
+      try {
+        raw = await _rawPost(client, '/hosts/firewall/search', data: {
+          'page': 1,
+          'pageSize': 10,
+          'type': 'port',
+        });
+      } catch (e) {
+        // v2.5.1 移除了旧版 V1 端点，统一防火墙 V2 由
+        // /hosts/firewall/rules/search 承载，属于版本差异，软跳过。
+        if (e.toString().contains('404')) {
+          appLogger.wWithPackage(
+              _pkg, 'SKIP: /hosts/firewall/search 已被 v2.5.1 移除，软跳过');
+          return;
+        }
+        rethrow;
+      }
       final data = _unwrap(raw.data, '/hosts/firewall/search');
       _log('Firewall/search', response: data);
       _unwrapPage(data, '/hosts/firewall/search');
