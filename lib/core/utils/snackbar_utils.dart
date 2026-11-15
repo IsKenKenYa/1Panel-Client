@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
 
 import '../theme/app_design_tokens.dart';
 import 'debug_error_dialog.dart';
@@ -29,7 +30,7 @@ class SnackBarUtils {
   static void showError(BuildContext context, String message,
       {SnackBarAction? action}) {
     _show(context,
-        message: ErrorMessageUtils.truncateForToast(message),
+        message: ErrorMessageUtils.localizeForContext(message, context),
         icon: Icons.error_outline,
         backgroundColor: Theme.of(context).colorScheme.error,
         action: action,
@@ -39,7 +40,7 @@ class SnackBarUtils {
   static void showWarning(BuildContext context, String message,
       {SnackBarAction? action}) {
     _show(context,
-        message: ErrorMessageUtils.truncateForToast(message),
+        message: ErrorMessageUtils.localizeForContext(message, context),
         icon: Icons.warning_amber_outlined,
         backgroundColor: AppDesignTokens.warning,
         action: action);
@@ -48,7 +49,7 @@ class SnackBarUtils {
   static void showInfo(BuildContext context, String message,
       {SnackBarAction? action}) {
     _show(context,
-        message: ErrorMessageUtils.truncateForToast(message),
+        message: ErrorMessageUtils.localizeForContext(message, context),
         icon: Icons.info_outline,
         backgroundColor: Theme.of(context).colorScheme.inverseSurface,
         action: action);
@@ -62,8 +63,11 @@ class SnackBarUtils {
     StackTrace? stackTrace,
     String? retryLabel,
   }) {
-    final displayMessage = ErrorMessageUtils.truncateForToast(message);
-    final label = retryLabel ?? '重试';
+    final displayMessage =
+        ErrorMessageUtils.localizeForContext(message, context);
+    final l10n =
+        Localizations.of<AppLocalizations>(context, AppLocalizations);
+    final label = retryLabel ?? l10n?.commonRetry ?? '重试';
 
     if (details != null && kDebugMode) {
       _show(context,
@@ -78,7 +82,11 @@ class SnackBarUtils {
               details,
               stackTrace: stackTrace,
             ),
-            child: const Text('详情', style: TextStyle(color: Colors.white)),
+            child: Text(
+                Localizations.of<AppLocalizations>(context, AppLocalizations)
+                        ?.commonDetails ??
+                    '详情',
+                style: const TextStyle(color: Colors.white)),
           ),
           action: SnackBarAction(label: label, onPressed: onRetry));
       return;
@@ -98,7 +106,8 @@ class SnackBarUtils {
     dynamic error,
     StackTrace? stackTrace,
   }) {
-    final displayMessage = ErrorMessageUtils.truncateForToast(message);
+    final displayMessage =
+        ErrorMessageUtils.localizeForContext(message, context);
     if (!kDebugMode) {
       showError(context, displayMessage);
       return;
@@ -109,7 +118,10 @@ class SnackBarUtils {
         backgroundColor: Theme.of(context).colorScheme.error,
         duration: const Duration(seconds: 5),
         action: SnackBarAction(
-          label: '详情',
+          label: Localizations.of<AppLocalizations>(
+                      context, AppLocalizations)
+                  ?.commonDetails ??
+              '详情',
           onPressed: () =>
               DebugErrorDialog.show(context, displayMessage, error,
                   stackTrace: stackTrace),

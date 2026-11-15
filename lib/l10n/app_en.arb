@@ -3735,6 +3735,16 @@
   "firewallV2DockerPorts": "Published ports",
   "firewallV2Backups": "Rule backups",
   "firewallV2Whitelist": "Port whitelist",
-  "firewallV2Refresh": "Refresh"
+  "firewallV2Refresh": "Refresh",
+  "commonErrorServer": "The server failed to process the request. Try again later.",
+  "commonErrorNetwork": "Network connection failed. Check the server address and your network.",
+  "commonErrorUnauthorized": "The API key is no longer valid. Update the server credentials.",
+  "commonErrorBadRequest": "The request was rejected by the server.",
+  "monitorGpuUnavailable": "No GPU device is available.",
+  "filePreviewUnsupported": "This file type cannot be previewed.",
+  "filesPathLabel": "Path",
+  "filesTypeLabel": "Type",
+  "filesSizeLabel": "Size",
+  "commonDetails": "Details"
 
 }

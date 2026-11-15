@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/utils/error_message_utils.dart';
 
 class ModuleErrorStateWidget extends StatelessWidget {
   const ModuleErrorStateWidget({
@@ -34,7 +35,7 @@ class ModuleErrorStateWidget extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              message?.trim().isNotEmpty == true ? message! : l10n.commonError,
+              _displayMessage(l10n),
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
@@ -50,5 +51,13 @@ class ModuleErrorStateWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _displayMessage(AppLocalizations l10n) {
+    final raw = message?.trim() ?? '';
+    if (raw.isEmpty) {
+      return l10n.commonError;
+    }
+    return ErrorMessageUtils.localizeMessage(raw, l10n);
   }
 }
