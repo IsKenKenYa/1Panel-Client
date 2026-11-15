@@ -8,8 +8,9 @@
 
 ## 开发规范
 
-- 权威规范：`AGENTS.md`（硬性规则）与 `CLAUDE.md`（流程细则）。
-- 提交前基线：`flutter analyze`、`dart run test/scripts/test_runner.dart unit`；涉及 API/网络或 UI 时分别运行 `integration`、`ui`。
+- 权威规范：`AGENTS.md`（硬性规则，其中「最高优先级执行规则」优先于本文）与 `CLAUDE.md`（流程细则）。每次用户消息提到 AGENTS.md 时，重新阅读 `AGENTS.md` 全文。
+- 实时功能批次与验证证据：`docs/development/modules/阶段总计划.md`。
+- 提交前基线：`flutter analyze`、`dart run test/scripts/test_runner.dart unit`；涉及 API/网络或 UI 时分别运行 `integration`、`ui`；跨模块改动运行 `all`。提交消息遵循 Conventional Commits 并填写 `scope`，按模块或类别分组提交。默认直接在当前分支修改，新建分支需要用户明确同意。
 
 ## 原生 UI 适配与强门禁
 
@@ -21,10 +22,21 @@
 ```bash
 flutter analyze
 dart run test/scripts/test_runner.dart unit
-dart run test/scripts/test_runner.dart integration   # 涉及 API/网络/数据写入
+dart run test/scripts/test_runner.dart integration   # 涉及 API/网络/数据写入，需要 RUN_LIVE_API_TESTS=true
 dart run test/scripts/test_runner.dart ui            # 涉及 UI 改动
+dart run test/scripts/test_runner.dart all           # 跨模块改动或回归基线
 dotnet build windows/runner/native_host/OnePanelNativeHost/OnePanelNativeHost.csproj -c Debug   # Windows 原生 UI 改动
+hflutter build hap --release                        # HarmonyOS/OHOS 平台能力或构建配置改动
 ```
+
+上游 1Panel 快照更新后的适配门禁，在 `docs/development/modules/` 目录执行：
+
+```bash
+python3 check_module_api_updates.py --all
+python3 check_module_client_coverage.py --all
+```
+
+`check_module_client_coverage.py` 的 `missing_in_client` 必须清零。客户端保留的增强端点会列入报告并注明原因，属于非阻断项。`check_module_api_updates.py` 显示 `updated` 时，用 `python3 analyze_module_api.py <模块关键词>` 重新生成该模块分析基线，并在 `阶段总计划.md` 回写批次状态与命令结果。
 
 Apple 原生 UI 轨道改动需在 macOS/CI 额外执行：
 
@@ -94,13 +106,9 @@ flutter build ios --release
 flutter build ipa --release
 ```
 
-### Web
+### 生产构建说明
 
-```bash
-flutter build web --release
-```
-
-输出位置：`build/web/`
+当前适配范围为 Android、iOS、iPadOS、macOS、Windows、Linux、HarmonyOS。Web 不在当前适配范围，MDUI3 基线持续作为全平台可用轨道。
 
 ## 部署检查清单
 
@@ -165,4 +173,4 @@ sudo timedatectl set-ntp true
 
 ---
 
-*最后更新：2026-03-30*
+*最后更新：2026-11-15*
