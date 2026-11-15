@@ -177,7 +177,7 @@ class MonitorSettingsPage extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ).whenComplete(controller.dispose);
   }
 
   void _showCleanConfirmDialog(

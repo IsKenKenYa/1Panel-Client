@@ -390,7 +390,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
           ),
         ],
       ),
-    );
+    ).whenComplete(controller.dispose);
   }
 
   void _showDeletePasskeyDialog(
@@ -488,7 +488,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
           ),
         ],
       ),
-    );
+    ).whenComplete(controller.dispose);
   }
 
   void _showPasswordDialog(
@@ -588,7 +588,11 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
           ],
         ),
       ),
-    );
+    ).whenComplete(() {
+      oldPasswordController.dispose();
+      newPasswordController.dispose();
+      confirmPasswordController.dispose();
+    });
   }
 
   void _showMfaToggleDialog(
@@ -658,6 +662,6 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
           ),
         ],
       ),
-    );
+    ).whenComplete(codeController.dispose);
   }
 }

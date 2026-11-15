@@ -309,6 +309,9 @@ class _PanelSslBody extends StatelessWidget {
         ),
       ),
     );
+    domainController.dispose();
+    certController.dispose();
+    keyController.dispose();
   }
 
   Future<void> _downloadSsl(
