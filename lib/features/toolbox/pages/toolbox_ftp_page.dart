@@ -144,7 +144,12 @@ class _ToolboxFtpPageState extends State<ToolboxFtpPage>
                           ),
                           PopupMenuItem<String>(
                             value: 'delete',
-                            child: Text(l10n.commonDelete),
+                            child: Text(
+                              l10n.commonDelete,
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.error,
+                              ),
+                            ),
                           ),
                         ],
                       ),

@@ -8,6 +8,7 @@ import 'package:onepanel_client/data/models/firewall_models.dart';
 import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/shared/state/selection_controller.dart';
 import 'package:onepanel_client/shared/widgets/app_card.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_dialog.dart';
 
 import 'firewall_rule_form_page.dart';
 import 'providers/firewall_rule_list_provider.dart';
@@ -204,11 +205,20 @@ class _FirewallIpTabState extends State<FirewallIpTab> {
     if (!_selection.hasSelection) {
       return;
     }
-    await provider.deleteRules(_selection.toList());
-    if (!mounted) {
-      return;
-    }
-    _selection.clear();
+    final l10n = context.l10n;
+    final selected = _selection.toList();
+    await showAppFormDialog(
+      context,
+      title: l10n.firewallOperationConfirmTitle,
+      destructive: true,
+      content: Text(l10n.firewallDeleteSelectedConfirm(selected.length)),
+      onConfirm: () async {
+        await provider.deleteRules(selected);
+        if (mounted) {
+          _selection.clear();
+        }
+      },
+    );
   }
 
   Future<void> _toggleSelected(
@@ -267,7 +277,13 @@ class _FirewallIpTabState extends State<FirewallIpTab> {
         );
         break;
       case 'delete':
-        await provider.deleteRules([rule]);
+        await showAppFormDialog(
+          context,
+          title: context.l10n.firewallOperationConfirmTitle,
+          destructive: true,
+          content: Text(context.l10n.commonDeleteConfirm),
+          onConfirm: () => provider.deleteRules([rule]),
+        );
         break;
     }
     if (mounted) {

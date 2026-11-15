@@ -7,6 +7,7 @@ import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/shared/state/selection_controller.dart';
 import 'package:onepanel_client/shared/widgets/app_card.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_dialog.dart';
 
 import '../../data/models/firewall_models.dart';
 
@@ -278,19 +279,27 @@ class _FirewallRulesTabState extends State<FirewallRulesTab> {
     if (!_selection.hasSelection) {
       return;
     }
+    final l10n = context.l10n;
     final selected = _selection.toList();
-    final addressRules = selected.where(_isAddressRule).toList();
-    final portRules = selected.where((rule) => !_isAddressRule(rule)).toList();
-    if (addressRules.isNotEmpty) {
-      await provider.deleteRules(addressRules);
-    }
-    if (portRules.isNotEmpty) {
-      await provider.deleteRules(portRules);
-    }
-    if (!mounted) {
-      return;
-    }
-    _selection.clear();
+    await showAppFormDialog(
+      context,
+      title: l10n.firewallOperationConfirmTitle,
+      destructive: true,
+      content: Text(l10n.firewallDeleteSelectedConfirm(selected.length)),
+      onConfirm: () async {
+        final addressRules = selected.where(_isAddressRule).toList();
+        final portRules = selected.where((rule) => !_isAddressRule(rule)).toList();
+        if (addressRules.isNotEmpty) {
+          await provider.deleteRules(addressRules);
+        }
+        if (portRules.isNotEmpty) {
+          await provider.deleteRules(portRules);
+        }
+        if (mounted) {
+          _selection.clear();
+        }
+      },
+    );
   }
 
   Future<void> _toggleSelected(
@@ -355,7 +364,13 @@ class _FirewallRulesTabState extends State<FirewallRulesTab> {
         );
         break;
       case 'delete':
-        await provider.deleteRules([rule]);
+        await showAppFormDialog(
+          context,
+          title: context.l10n.firewallOperationConfirmTitle,
+          destructive: true,
+          content: Text(context.l10n.commonDeleteConfirm),
+          onConfirm: () => provider.deleteRules([rule]),
+        );
         break;
     }
     if (mounted) {

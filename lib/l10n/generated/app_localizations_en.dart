@@ -1616,6 +1616,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String firewallDeleteSelectedConfirm(int count) {
+    return 'Delete $count selected rules?';
+  }
+
+  @override
   String get firewallCreatePortRuleAction => 'Create Port Rule';
 
   @override

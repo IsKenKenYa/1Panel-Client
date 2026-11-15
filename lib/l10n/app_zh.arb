@@ -702,6 +702,14 @@
       }
     }
   },
+  "firewallDeleteSelectedConfirm": "确定删除已选择的 {count} 条规则吗？",
+  "@firewallDeleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "firewallCreatePortRuleAction": "创建端口规则",
   "firewallCreateIpRuleAction": "创建 IP 规则",
   "firewallRuleSectionTitle": "规则配置",

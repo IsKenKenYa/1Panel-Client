@@ -3116,6 +3116,12 @@ abstract class AppLocalizations {
   /// **'{count} selected'**
   String firewallSelectedCount(int count);
 
+  /// No description provided for @firewallDeleteSelectedConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {count} selected rules?'**
+  String firewallDeleteSelectedConfirm(int count);
+
   /// No description provided for @firewallCreatePortRuleAction.
   ///
   /// In en, this message translates to:

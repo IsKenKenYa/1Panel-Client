@@ -702,6 +702,14 @@
       }
     }
   },
+  "firewallDeleteSelectedConfirm": "Delete {count} selected rules?",
+  "@firewallDeleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "firewallCreatePortRuleAction": "Create Port Rule",
   "firewallCreateIpRuleAction": "Create IP Rule",
   "firewallRuleSectionTitle": "Rule Configuration",

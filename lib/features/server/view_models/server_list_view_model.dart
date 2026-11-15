@@ -199,6 +199,10 @@ class ServerListViewModel extends ChangeNotifier with SafeChangeNotifier {
                 child: Text(l10n.commonCancel),
               ),
               FilledButton(
+                style: FilledButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                  foregroundColor: Theme.of(context).colorScheme.onError,
+                ),
                 onPressed: () => Navigator.pop(dialogContext, true),
                 child: Text(l10n.commonDelete),
               ),

@@ -1576,6 +1576,11 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String firewallDeleteSelectedConfirm(int count) {
+    return '确定删除已选择的 $count 条规则吗？';
+  }
+
+  @override
   String get firewallCreatePortRuleAction => '创建端口规则';
 
   @override

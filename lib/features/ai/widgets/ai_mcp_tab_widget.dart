@@ -157,7 +157,12 @@ class _AIMcpTabWidgetState extends State<AIMcpTabWidget> {
                           ),
                           PopupMenuItem<String>(
                             value: 'delete',
-                            child: Text(l10n.commonDelete),
+                            child: Text(
+                              l10n.commonDelete,
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.error,
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -228,6 +233,10 @@ class _AIMcpTabWidgetState extends State<AIMcpTabWidget> {
               child: Text(l10n.commonCancel),
             ),
             FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.error,
+                foregroundColor: Theme.of(context).colorScheme.onError,
+              ),
               onPressed: () => Navigator.of(dialogContext).pop(true),
               child: Text(l10n.commonDelete),
             ),
