@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/api/v2/app_v2.dart';
 import 'package:onepanel_client/core/network/dio_client.dart';
+import 'package:onepanel_client/data/models/app_models.dart';
 import '../core/test_config_manager.dart';
 
 /// 调试脚本：获取应用详情的真实返回体
@@ -14,24 +15,24 @@ void main() {
   late TestConfigManager config;
 
   setUpAll(() async {
-    config = TestConfigManager();
+    config = TestConfigManager.instance;
     await config.initialize();
 
-    if (!config.hasApiKey) {
+    if (config.getString('PANEL_API_KEY').isEmpty) {
       print('⚠️  未配置 API Key，跳过测试');
       return;
     }
 
     final client = DioClient(
-      baseUrl: config.baseUrl,
-      apiKey: config.apiKey,
+      baseUrl: config.getString('PANEL_BASE_URL'),
+      apiKey: config.getString('PANEL_API_KEY'),
       allowInsecureTls: true,
     );
     api = AppV2Api(client);
   });
 
   test('Debug: Get App Detail - 查看真实返回体', () async {
-    if (!config.hasApiKey) {
+    if (config.getString('PANEL_API_KEY').isEmpty) {
       print('⚠️  未配置 API Key，跳过测试');
       return;
     }
@@ -58,7 +59,6 @@ void main() {
       print('   Key: ${detail.key}');
       print('   Type: ${detail.type}');
       print('   Version: ${detail.versions?.join(", ")}');
-      print('   DownloadUrl: ${detail.downloadUrl ?? "(null)"}');
       print('   DockerCompose: ${detail.dockerCompose != null ? "(${detail.dockerCompose!.length} chars)" : "(null)"}');
 
       print('\n📄 完整 JSON:');
@@ -91,7 +91,7 @@ void main() {
   }, timeout: const Timeout(Duration(seconds: 30)));
 
   test('Debug: List Apps - 查看应用列表', () async {
-    if (!config.hasApiKey) {
+    if (config.getString('PANEL_API_KEY').isEmpty) {
       print('⚠️  未配置 API Key，跳过测试');
       return;
     }
