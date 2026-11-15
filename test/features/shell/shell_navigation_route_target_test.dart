@@ -41,6 +41,28 @@ void main() {
       expect(toolboxTarget.embedRouteInShell, isTrue);
     });
 
+    test('website template and firewall v2 routes are embedded in shell', () {
+      final templateTarget =
+          shellRouteTargetForRoute(AppRoutes.websiteTemplates);
+      final outputTarget =
+          shellRouteTargetForRoute(AppRoutes.websiteTemplateOutputs);
+      final firewallV2Target = shellRouteTargetForRoute(AppRoutes.firewallV2);
+      final firewallRulesTarget =
+          shellRouteTargetForRoute(AppRoutes.firewallV2Rules);
+      final firewallSettingsTarget =
+          shellRouteTargetForRoute(AppRoutes.firewallV2Settings);
+
+      expect(templateTarget, isNotNull);
+      expect(templateTarget!.module, ClientModule.websites);
+      expect(templateTarget.embedRouteInShell, isTrue);
+      expect(outputTarget?.embedRouteInShell, isTrue);
+
+      expect(firewallV2Target, isNotNull);
+      expect(firewallV2Target!.embedRouteInShell, isTrue);
+      expect(firewallRulesTarget, isNotNull);
+      expect(firewallSettingsTarget, isNotNull);
+    });
+
     test('unknown routes are not mapped into shell target', () {
       final target = shellRouteTargetForRoute('/unmapped/route');
       expect(target, isNull);

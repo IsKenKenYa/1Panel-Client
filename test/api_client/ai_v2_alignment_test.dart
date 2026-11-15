@@ -308,6 +308,25 @@ void main() {
       );
       expect(requestPath, '/api/v2/ai/agents/website/bind');
       expect(requestBody, <String, dynamic>{'agentId': 11, 'websiteId': 22});
+
+      await api.switchAgentFeishuPlugin(
+        const AgentFeishuSwitchReq(
+          agentId: 11,
+          taskID: 'task-switch-1',
+          groupSessionScope: 'group',
+          requireMention: 'true',
+          streaming: true,
+        ),
+      );
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/ai/agents/channel/feishu/switch');
+      expect(requestBody, <String, dynamic>{
+        'agentId': 11,
+        'taskID': 'task-switch-1',
+        'groupSessionScope': 'group',
+        'requireMention': 'true',
+        'streaming': true,
+      });
     });
   });
 }

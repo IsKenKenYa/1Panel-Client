@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/api/v2/container_v2.dart';
 import 'package:onepanel_client/core/network/dio_client.dart';
 import 'package:onepanel_client/data/models/container_models.dart';
+import 'package:onepanel_client/data/models/container_compose_models.dart';
 import 'package:onepanel_client/data/models/runtime_models.dart';
 
 void main() {
@@ -201,6 +202,21 @@ void main() {
       expect(requestBody, <String, dynamic>{
         'id': 9,
         'containerName': 'php-84',
+      });
+    });
+
+    test('aligns /containers/compose/pin route and payload', () async {
+      final api = ContainerV2Api(client);
+
+      await api.pinComposeProject(
+        const ComposePin(name: 'demo-stack', isPinned: true),
+      );
+
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/containers/compose/pin');
+      expect(requestBody, <String, dynamic>{
+        'name': 'demo-stack',
+        'isPinned': true,
       });
     });
   });

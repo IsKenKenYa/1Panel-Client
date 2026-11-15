@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/api/v2/setting_v2.dart' as api;
 import 'package:onepanel_client/core/network/dio_client.dart';
+import 'package:onepanel_client/data/models/setting_models.dart';
 
 void main() {
   group('SettingV2Api alignment', () {
@@ -142,6 +143,60 @@ void main() {
         '/api/v2/core/settings/search/available',
         '/api/v2/settings/search/available',
       ]);
+    });
+
+    test('aligns /xpack/model/downloader/settings routes', () async {
+      responseBuilder = (HttpRequest request) {
+        if (request.method == 'GET') {
+          return <String, dynamic>{
+            'code': 200,
+            'message': 'success',
+            'data': <String, dynamic>{
+              'featuredModelsSync': 'enabled',
+              'hfEndpoint': 'https://hf-mirror.com',
+              'hfToken': 'hf-xxx',
+              'modelDir': '/opt/1panel/models',
+              'modelScopeEndpoint': 'https://modelscope.cn',
+              'modelScopeToken': 'ms-xxx',
+            },
+          };
+        }
+        return <String, dynamic>{'code': 200, 'message': 'success', 'data': null};
+      };
+
+      final apiClient = api.SettingV2Api(client);
+      final getResponse = await apiClient.getModelDownloaderSettings();
+
+      expect(requestMethods, <String>['GET']);
+      expect(requestPaths, <String>['/api/v2/xpack/model/downloader/settings']);
+      expect(getResponse.data?.modelDir, '/opt/1panel/models');
+      expect(getResponse.data?.hfEndpoint, 'https://hf-mirror.com');
+      expect(getResponse.data?.hfToken, 'hf-xxx');
+      expect(getResponse.data?.modelScopeEndpoint, 'https://modelscope.cn');
+      expect(getResponse.data?.modelScopeToken, 'ms-xxx');
+      expect(getResponse.data?.featuredModelsSync, 'enabled');
+
+      await apiClient.updateModelDownloaderSettings(
+        const ModelDownloaderSetting(
+          featuredModelsSync: 'disabled',
+          hfEndpoint: 'https://huggingface.co',
+          hfToken: 'hf-new',
+          modelDir: '/models',
+          modelScopeEndpoint: 'https://modelscope.cn',
+          modelScopeToken: 'ms-new',
+        ),
+      );
+
+      expect(requestMethods, <String>['GET', 'POST']);
+      expect(requestPaths.last, '/api/v2/xpack/model/downloader/settings');
+      expect(requestBodies.last, <String, dynamic>{
+        'featuredModelsSync': 'disabled',
+        'hfEndpoint': 'https://huggingface.co',
+        'hfToken': 'hf-new',
+        'modelDir': '/models',
+        'modelScopeEndpoint': 'https://modelscope.cn',
+        'modelScopeToken': 'ms-new',
+      });
     });
   });
 }

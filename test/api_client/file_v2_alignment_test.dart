@@ -282,5 +282,17 @@ void main() {
       expect(rawRequestBody, contains('/tmp'));
       expect(rawRequestBody, contains('filename="demo.txt"'));
     });
+
+    test('aligns /files/move/stop route and payload', () async {
+      final api = FileV2Api(client);
+
+      await api.stopFileMoveTask(
+        const FileMoveStopRequest(taskID: 'move-task-1'),
+      );
+
+      expect(requestMethod, 'POST');
+      expect(requestPath, '/api/v2/files/move/stop');
+      expect(requestBody, <String, dynamic>{'taskID': 'move-task-1'});
+    });
   });
 }
