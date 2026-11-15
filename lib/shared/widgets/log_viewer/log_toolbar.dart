@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 import 'log_viewer_controller.dart';
 import 'log_theme_editor.dart';
@@ -91,7 +92,7 @@ class _LogToolbarState extends State<LogToolbar> {
                                     minHeight: 36,
                                   ),
                                   padding: EdgeInsets.zero,
-                                  visualDensity: VisualDensity.compact,
+                                  visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
                                   onPressed: widget.controller.previousMatch,
                                   tooltip: l10n.logPreviousMatch,
                                 ),
@@ -103,7 +104,7 @@ class _LogToolbarState extends State<LogToolbar> {
                                     minHeight: 36,
                                   ),
                                   padding: EdgeInsets.zero,
-                                  visualDensity: VisualDensity.compact,
+                                  visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
                                   onPressed: widget.controller.nextMatch,
                                   tooltip: l10n.logNextMatch,
                                 ),
@@ -114,7 +115,7 @@ class _LogToolbarState extends State<LogToolbar> {
                                     minHeight: 36,
                                   ),
                                   padding: EdgeInsets.zero,
-                                  visualDensity: VisualDensity.compact,
+                                  visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
                                   onPressed: () {
                                     widget.controller.search('');
                                     _searchController.clear();

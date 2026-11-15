@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/data/models/container_models.dart';
 import 'package:onepanel_client/data/models/docker_models.dart';
 import 'package:onepanel_client/features/orchestration/widgets/compose_card_actions.dart';
@@ -59,18 +60,18 @@ class ComposeCard extends StatelessWidget {
                   ),
                   label:
                       Text(compose.status ?? l10n.orchestrationStatusUnknown),
-                  visualDensity: VisualDensity.compact,
+                  visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
                 ),
                 if (compose.createTime != null)
                   Chip(
                     label: Text(compose.createTime!),
-                    visualDensity: VisualDensity.compact,
+                    visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
                   ),
                 ...((compose.services ?? const <String>[])
                     .take(2)
                     .map((service) => Chip(
                           label: Text(service),
-                          visualDensity: VisualDensity.compact,
+                          visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
                         ))),
               ],
             ),

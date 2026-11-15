@@ -66,6 +66,8 @@ class FileListItem extends StatelessWidget {
           ),
         ),
         trailing: PopupMenuButton<String>(
+          // 文件菜单超过 10 项，限制高度避免紧凑窗口下铺满全屏。
+          constraints: const BoxConstraints(minWidth: 200, maxHeight: 420),
           onSelected: onAction,
           itemBuilder: (context) =>
               _buildMenuItems(context, l10n, colorScheme, isDir),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 
 class PathBreadcrumb extends StatelessWidget {
@@ -23,7 +24,7 @@ class PathBreadcrumb extends StatelessWidget {
 
     final buttonStyle = TextButton.styleFrom(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      visualDensity: VisualDensity.compact,
+      visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       foregroundColor: colorScheme.onSurface,
     );

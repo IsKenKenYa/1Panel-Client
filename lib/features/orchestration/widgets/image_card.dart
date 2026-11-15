@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/data/models/docker_models.dart';
 import 'package:onepanel_client/features/orchestration/providers/image_provider.dart';
 import 'package:onepanel_client/features/orchestration/widgets/image_card_dialogs.dart';
@@ -50,7 +51,7 @@ class ImageCard extends StatelessWidget {
                                   l10n.orchestrationImageInUse,
                                   style: const TextStyle(fontSize: 10),
                                 ),
-                                visualDensity: VisualDensity.compact,
+                                visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
                                 padding: EdgeInsets.zero,
                                 materialTapTargetSize:
                                     MaterialTapTargetSize.shrinkWrap,
@@ -144,7 +145,7 @@ class ImageCard extends StatelessWidget {
                             tag,
                             style: const TextStyle(fontSize: 10),
                           ),
-                          visualDensity: VisualDensity.compact,
+                          visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
                         ),
                       )
                       .toList(),

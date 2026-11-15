@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/data/models/runtime_models.dart';
 import 'package:onepanel_client/features/runtimes/models/runtime_manage_args.dart';
 import 'package:onepanel_client/features/runtimes/providers/php_supervisor_provider.dart';
@@ -222,7 +223,7 @@ class _PhpSupervisorPageState extends State<PhpSupervisorPage> {
     }
 
     return Chip(
-      visualDensity: VisualDensity.compact,
+      visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
       backgroundColor: color.withValues(alpha: 0.12),
       side: BorderSide(color: color.withValues(alpha: 0.3)),
       label: Text(
@@ -235,7 +236,7 @@ class _PhpSupervisorPageState extends State<PhpSupervisorPage> {
   Widget _buildInfoChip(BuildContext context, IconData icon, String value) {
     final resolved = value.trim().isEmpty ? '-' : value.trim();
     return Chip(
-      visualDensity: VisualDensity.compact,
+      visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
       avatar: Icon(icon, size: 16),
       label: Text(resolved),
     );

@@ -13,7 +13,7 @@ extension _FilesViewNavigation on _FilesViewState {
     final colorScheme = theme.colorScheme;
     final buttonStyle = TextButton.styleFrom(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      visualDensity: VisualDensity.compact,
+      visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       foregroundColor: colorScheme.onSurface,
     );

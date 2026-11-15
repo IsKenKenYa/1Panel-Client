@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/data/models/container_models.dart';
 import 'package:onepanel_client/data/models/docker_models.dart';
 import 'package:onepanel_client/features/orchestration/providers/compose_provider.dart';
@@ -223,7 +224,7 @@ class ComposeCardDialogs {
                 title: Text(l10n.orchestrationComposeForceDelete),
                 controlAffinity: ListTileControlAffinity.leading,
                 contentPadding: EdgeInsets.zero,
-                visualDensity: VisualDensity.compact,
+                visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
               ),
               CheckboxListTile(
                 value: deleteFile,
@@ -233,7 +234,7 @@ class ComposeCardDialogs {
                 title: Text(l10n.orchestrationComposeDeleteFile),
                 controlAffinity: ListTileControlAffinity.leading,
                 contentPadding: EdgeInsets.zero,
-                visualDensity: VisualDensity.compact,
+                visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
               ),
             ],
           ),

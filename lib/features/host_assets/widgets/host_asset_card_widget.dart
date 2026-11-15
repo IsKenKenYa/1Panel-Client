@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/data/models/host_models.dart';
 import 'package:onepanel_client/features/host_assets/models/host_asset_test_state.dart';
 import 'package:onepanel_client/shared/widgets/app_card.dart';
@@ -113,7 +114,7 @@ class _InfoChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Chip(
       label: Text(label),
-      visualDensity: VisualDensity.compact,
+      visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
     );
   }
 }

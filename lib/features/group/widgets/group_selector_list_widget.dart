@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/data/models/system_group_models.dart';
 import 'package:onepanel_client/features/group/providers/group_options_provider.dart';
 
@@ -98,7 +99,7 @@ class _GroupSelectorGroupTile extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Chip(
                   label: Text(l10n.operationsGroupDefaultLabel),
-                  visualDensity: VisualDensity.compact,
+                  visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
                 ),
               ),
             )

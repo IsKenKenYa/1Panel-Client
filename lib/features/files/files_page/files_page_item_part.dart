@@ -52,6 +52,8 @@ extension _FilesViewItemActions on _FilesViewState {
         trailing: isDesktop
             ? null
             : PopupMenuButton<String>(
+                // 文件菜单超过 10 项，限制高度避免紧凑窗口下铺满全屏。
+                constraints: const BoxConstraints(minWidth: 200, maxHeight: 420),
                 onSelected: (value) =>
                     _handleFileAction(context, provider, file, value, l10n),
                 itemBuilder: (context) =>
@@ -248,6 +250,8 @@ extension _FilesViewItemActions on _FilesViewState {
     final currentContext = context;
     final value = await showMenu<String>(
       context: currentContext,
+      // 与移动端 trailing 菜单一致的长菜单约束。
+      constraints: const BoxConstraints(minWidth: 200, maxHeight: 420),
       position: RelativeRect.fromLTRB(
         position.dx,
         position.dy,

@@ -20,6 +20,10 @@ class AdaptiveLayoutSpec {
   TabletKind get tabletKind => target.tabletKind;
   double get width => size.width;
 
+  /// 触控目标 ≥48dp：紧凑密度仅桌面生效，移动端保持默认密度。
+  VisualDensity get adaptiveDensity =>
+      isDesktop ? VisualDensity.compact : VisualDensity.standard;
+
   static AdaptiveLayoutSpec of(BuildContext context) {
     return AdaptiveLayoutSpec(
       target: UiTargetResolver.resolve(context),

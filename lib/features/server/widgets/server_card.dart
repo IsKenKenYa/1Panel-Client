@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/features/server/server_models.dart';
 
@@ -48,7 +49,7 @@ class ServerCard extends StatelessWidget {
                       if (data.isCurrent) ...[
                         const SizedBox(width: 8),
                         Chip(
-                          visualDensity: VisualDensity.compact,
+                          visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
                           label: Text(l10n.serverCurrent),
                         ),
                       ],

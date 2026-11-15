@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/data/models/docker_models.dart';
 import 'package:onepanel_client/features/orchestration/providers/network_provider.dart';
 import 'package:provider/provider.dart';
@@ -159,13 +160,13 @@ class NetworkCard extends StatelessWidget {
                     runSpacing: 8,
                     children: [
                       Chip(
-                        visualDensity: VisualDensity.compact,
+                        visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
                         label: Text(
                             l10n.containerNetworkDriverChip(_driverDisplay)),
                       ),
                       if (_isSystemNetwork)
                         Chip(
-                          visualDensity: VisualDensity.compact,
+                          visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
                           label: Text(l10n.containerNetworkSystemChip),
                         ),
                     ],

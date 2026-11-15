@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
 import 'package:onepanel_client/features/files/files_provider.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
@@ -116,7 +117,7 @@ class FilePropertiesDialog extends StatelessWidget {
                     SnackBarUtils.showSuccess(context, context.l10n.commonCopySuccess);
                   },
                   tooltip: context.l10n.commonCopy,
-                  visualDensity: VisualDensity.compact,
+                  visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
                 ),
             ],
           ),
