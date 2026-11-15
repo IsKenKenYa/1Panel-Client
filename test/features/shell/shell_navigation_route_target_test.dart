@@ -63,6 +63,29 @@ void main() {
       expect(firewallSettingsTarget, isNotNull);
     });
 
+    test('v2.5.1 sub-pages are embedded in their owning module shell', () {
+      final cases = <String, (ClientModule, AppRoutes)>{
+        'websiteHttps': (ClientModule.websites, AppRoutes.websiteHttps),
+        'websiteLog': (ClientModule.websites, AppRoutes.websiteLog),
+        'fileShare': (ClientModule.files, AppRoutes.fileShare),
+        'fileHistory': (ClientModule.files, AppRoutes.fileHistory),
+        'aiAccounts': (ClientModule.ai, AppRoutes.aiAccounts),
+        'aiAgents': (ClientModule.ai, AppRoutes.aiAgents),
+        'containerInspect': (ClientModule.containers, AppRoutes.containerInspect),
+        'containerFiles': (ClientModule.containers, AppRoutes.containerFiles),
+        'databaseMongodb': (ClientModule.servers, AppRoutes.databaseMongodb),
+        'databaseSlowLog': (ClientModule.servers, AppRoutes.databaseSlowLog),
+      };
+      cases.forEach((name, expected) {
+        final (module, route) = expected;
+        final target = shellRouteTargetForRoute(route);
+        expect(target, isNotNull, reason: '$name should map to a shell target');
+        expect(target!.module, module, reason: '$name module mismatch');
+        expect(target.embedRouteInShell, isTrue,
+            reason: '$name should embed in shell');
+      });
+    });
+
     test('unknown routes are not mapped into shell target', () {
       final target = shellRouteTargetForRoute('/unmapped/route');
       expect(target, isNull);
