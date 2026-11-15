@@ -288,16 +288,18 @@ class ContainerListStats extends Equatable {
   });
 
   factory ContainerListStats.fromJson(Map<String, dynamic> json) {
+    // Docker stats 的数值字段可能以 double 返回（如 cpuTotalUsage 纳秒计数）。
+    int intOf(String key) => (json[key] as num?)?.toInt() ?? 0;
     return ContainerListStats(
       containerID: json['containerID'] as String,
       cpuPercent: (json['cpuPercent'] as num?)?.toDouble() ?? 0.0,
-      cpuTotalUsage: json['cpuTotalUsage'] as int? ?? 0,
-      memoryCache: json['memoryCache'] as int? ?? 0,
-      memoryLimit: json['memoryLimit'] as int? ?? 0,
+      cpuTotalUsage: intOf('cpuTotalUsage'),
+      memoryCache: intOf('memoryCache'),
+      memoryLimit: intOf('memoryLimit'),
       memoryPercent: (json['memoryPercent'] as num?)?.toDouble() ?? 0.0,
-      memoryUsage: json['memoryUsage'] as int? ?? 0,
-      percpuUsage: json['percpuUsage'] as int? ?? 0,
-      systemUsage: json['systemUsage'] as int? ?? 0,
+      memoryUsage: intOf('memoryUsage'),
+      percpuUsage: intOf('percpuUsage'),
+      systemUsage: intOf('systemUsage'),
     );
   }
 
