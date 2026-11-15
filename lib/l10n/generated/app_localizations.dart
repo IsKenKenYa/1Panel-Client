@@ -16808,6 +16808,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Refresh'**
   String get firewallV2Refresh;
+
+  /// No description provided for @commonErrorServer.
+  ///
+  /// In en, this message translates to:
+  /// **'The server failed to process the request. Try again later.'**
+  String get commonErrorServer;
+
+  /// No description provided for @commonErrorNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Network connection failed. Check the server address and your network.'**
+  String get commonErrorNetwork;
+
+  /// No description provided for @commonErrorUnauthorized.
+  ///
+  /// In en, this message translates to:
+  /// **'The API key is no longer valid. Update the server credentials.'**
+  String get commonErrorUnauthorized;
+
+  /// No description provided for @commonErrorBadRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'The request was rejected by the server.'**
+  String get commonErrorBadRequest;
+
+  /// No description provided for @monitorGpuUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No GPU device is available.'**
+  String get monitorGpuUnavailable;
+
+  /// No description provided for @filePreviewUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'This file type cannot be previewed.'**
+  String get filePreviewUnsupported;
+
+  /// No description provided for @filesPathLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Path'**
+  String get filesPathLabel;
+
+  /// No description provided for @filesTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get filesTypeLabel;
+
+  /// No description provided for @filesSizeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get filesSizeLabel;
+
+  /// No description provided for @commonDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get commonDetails;
 }
 
 class _AppLocalizationsDelegate

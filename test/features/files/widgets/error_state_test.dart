@@ -62,7 +62,10 @@ void main() {
       await tester.pumpWidget(createTestWidget(message: longError));
       await tester.pumpAndSettle();
 
-      expect(find.text(longError), findsOneWidget);
+      // 长文案按 Toast 规范截断到 120 字符（完整事实保留在日志与
+      // Debug 详情中），错误页展示截断后的文案。
+      final expected = '${longError.substring(0, 119)}…';
+      expect(find.text(expected), findsOneWidget);
     });
 
     testWidgets('displays retry button when onRetry is provided',

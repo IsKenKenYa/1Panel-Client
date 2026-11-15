@@ -15,7 +15,6 @@ import 'package:onepanel_client/core/services/cache/file_preview_cache_manager.d
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/core/services/app_settings_controller.dart';
 import 'package:onepanel_client/features/files/file_editor_page.dart';
-import 'package:onepanel_client/features/files/files_provider.dart';
 import 'package:onepanel_client/features/files/providers/file_preview_provider.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
 import 'package:onepanel_client/features/files/widgets/dialogs/file_properties_dialog.dart';
@@ -261,10 +260,11 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
             IconButton(
               icon: const Icon(Icons.info_outline),
               onPressed: () {
-                final provider = context.read<FilesProvider>();
+                // 预览页经裸 MaterialPageRoute 打开，不在 FilesProvider
+                // 作用域内；属性对话框与备注编辑走 FilesService 兜底。
                 showFilePropertiesDialog(
                   context,
-                  provider,
+                  null,
                   FileInfo(
                     name: widget.fileName,
                     path: widget.filePath,
@@ -277,7 +277,13 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
             ),
           ],
         ),
-        body: _buildBody(context, l10n, theme),
+        // 订阅 provider 状态：页面 getter 直接读字段，无订阅时加载完成
+        // 也不会重建，预览页会永远停留在初始 loading 帧。ListenableBuilder
+        // 直接监听 State 持有的实例，与 Provider 作用域解耦。
+        body: ListenableBuilder(
+          listenable: _provider,
+          builder: (context, _) => _buildBody(context, l10n, theme),
+        ),
       ),
     );
   }

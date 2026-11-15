@@ -9,12 +9,12 @@ import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/files/widgets/dialogs/file_remark_editor_widget.dart';
 
 class FilePropertiesDialog extends StatelessWidget {
-  final FilesProvider provider;
+  final FilesProvider? provider;
   final FileInfo file;
 
   const FilePropertiesDialog({
     super.key,
-    required this.provider,
+    this.provider,
     required this.file,
   });
 
@@ -137,7 +137,7 @@ class FilePropertiesDialog extends StatelessWidget {
 }
 
 void showFilePropertiesDialog(
-    BuildContext context, FilesProvider provider, FileInfo file) {
+    BuildContext context, FilesProvider? provider, FileInfo file) {
   showDialog(
     context: context,
     builder: (context) => FilePropertiesDialog(

@@ -8907,4 +8907,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get firewallV2Refresh => 'Refresh';
+
+  @override
+  String get commonErrorServer =>
+      'The server failed to process the request. Try again later.';
+
+  @override
+  String get commonErrorNetwork =>
+      'Network connection failed. Check the server address and your network.';
+
+  @override
+  String get commonErrorUnauthorized =>
+      'The API key is no longer valid. Update the server credentials.';
+
+  @override
+  String get commonErrorBadRequest => 'The request was rejected by the server.';
+
+  @override
+  String get monitorGpuUnavailable => 'No GPU device is available.';
+
+  @override
+  String get filePreviewUnsupported => 'This file type cannot be previewed.';
+
+  @override
+  String get filesPathLabel => 'Path';
+
+  @override
+  String get filesTypeLabel => 'Type';
+
+  @override
+  String get filesSizeLabel => 'Size';
+
+  @override
+  String get commonDetails => 'Details';
 }

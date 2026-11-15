@@ -3,15 +3,18 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/files/files_provider.dart';
+import 'package:onepanel_client/features/files/files_service.dart';
 
 class FileRemarkEditorWidget extends StatefulWidget {
   const FileRemarkEditorWidget({
     super.key,
-    required this.provider,
+    this.provider,
     required this.file,
   });
 
-  final FilesProvider provider;
+  /// 文件列表页传入以在保存后刷新列表；预览页等脱离 FilesProvider
+  /// 作用域的入口传 null，备注读写直接走 [FilesService]。
+  final FilesProvider? provider;
   final FileInfo file;
 
   @override
@@ -23,6 +26,7 @@ class _FileRemarkEditorWidgetState extends State<FileRemarkEditorWidget> {
   bool _isRemarkLoading = false;
   bool _isRemarkSaving = false;
   String? _remarkError;
+  FilesService? _standaloneService;
 
   @override
   void initState() {
@@ -36,6 +40,16 @@ class _FileRemarkEditorWidgetState extends State<FileRemarkEditorWidget> {
     super.dispose();
   }
 
+  Future<Map<String, String>> _loadRemarks() async {
+    final provider = widget.provider;
+    if (provider != null) {
+      return provider.loadFileRemarks(<String>[widget.file.path]);
+    }
+    _standaloneService ??= FilesService();
+    await _standaloneService!.getCurrentServer();
+    return _standaloneService!.getFileRemarks(<String>[widget.file.path]);
+  }
+
   Future<void> _loadRemark() async {
     setState(() {
       _isRemarkLoading = true;
@@ -43,8 +57,7 @@ class _FileRemarkEditorWidgetState extends State<FileRemarkEditorWidget> {
     });
 
     try {
-      final remarks =
-          await widget.provider.loadFileRemarks(<String>[widget.file.path]);
+      final remarks = await _loadRemarks();
       _remarkController.text =
           remarks[widget.file.path] ?? widget.file.remark ?? '';
     } catch (e) {
@@ -65,11 +78,19 @@ class _FileRemarkEditorWidgetState extends State<FileRemarkEditorWidget> {
     });
 
     try {
-      await widget.provider.updateFileRemark(
-        widget.file.path,
-        _remarkController.text,
-        refreshAfterSave: false,
-      );
+      final provider = widget.provider;
+      if (provider != null) {
+        await provider.updateFileRemark(
+          widget.file.path,
+          _remarkController.text,
+          refreshAfterSave: false,
+        );
+      } else {
+        _standaloneService ??= FilesService();
+        await _standaloneService!.getCurrentServer();
+        await _standaloneService!
+            .setFileRemark(widget.file.path, _remarkController.text);
+      }
       if (!mounted) return;
       SnackBarUtils.showSuccess(context, context.l10n.commonSaveSuccess);
     } catch (e) {

@@ -237,6 +237,13 @@ class FilePreviewProvider extends ChangeNotifier with SafeChangeNotifier {
     );
     await _service.ensureServer();
 
+    // 未知类型（二进制等）不支持预览，直接呈现空态，避免无效请求。
+    if (_fileType == PreviewFileType.unknown) {
+      _isLoading = false;
+      notifyListeners();
+      return;
+    }
+
     if (_fileType == PreviewFileType.image ||
         _fileType == PreviewFileType.video ||
         _fileType == PreviewFileType.pdf ||

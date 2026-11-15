@@ -8686,4 +8686,34 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get firewallV2Refresh => '刷新';
+
+  @override
+  String get commonErrorServer => '服务器处理请求失败，请稍后重试';
+
+  @override
+  String get commonErrorNetwork => '网络连接失败，请检查服务器地址与网络';
+
+  @override
+  String get commonErrorUnauthorized => '登录凭据已失效，请更新服务器的 API Key';
+
+  @override
+  String get commonErrorBadRequest => '请求被服务器拒绝';
+
+  @override
+  String get monitorGpuUnavailable => '未检测到可用的 GPU 设备';
+
+  @override
+  String get filePreviewUnsupported => '该文件类型不支持预览';
+
+  @override
+  String get filesPathLabel => '路径';
+
+  @override
+  String get filesTypeLabel => '类型';
+
+  @override
+  String get filesSizeLabel => '大小';
+
+  @override
+  String get commonDetails => '详情';
 }
