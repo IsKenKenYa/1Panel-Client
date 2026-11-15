@@ -36,10 +36,15 @@ class ModuleSubnav extends StatelessWidget {
     final orderedItems = ordered
         .map((id) => items.firstWhere((item) => item.id == id))
         .toList(growable: false);
+    // 窄屏自适应：固定 4 个 chip 加溢出按钮在 360dp 手机上会把末位 chip
+    // 挤出滚动区截断（实机走查 B13：411dp 下 4 chip 仍溢出），≤440dp 降为 3 个。
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final effectiveMax =
+        screenWidth < 440 ? controller.maxVisibleItems - 1 : controller.maxVisibleItems;
     final visible =
-        orderedItems.take(controller.maxVisibleItems).toList(growable: false);
+        orderedItems.take(effectiveMax).toList(growable: false);
     final overflow =
-        orderedItems.skip(controller.maxVisibleItems).toList(growable: false);
+        orderedItems.skip(effectiveMax).toList(growable: false);
     final l10n = context.l10n;
 
     return Row(
@@ -66,19 +71,18 @@ class ModuleSubnav extends StatelessWidget {
                       onSelected: (_) => onSelected(item.id),
                     ),
                   ),
-                if (overflow.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: ActionChip(
-                      avatar: const Icon(Icons.more_horiz, size: 18),
-                      label: Text(l10n.commonMore),
-                      onPressed: () => _showOverflow(context, overflow),
-                    ),
-                  ),
               ],
             ),
           ),
         ),
+        // 溢出「更多」固定在滚动区外：chip 形态在窄屏会被可见区挤出屏外
+        // （实机走查 B13：存储卷 chip 截断、更多按钮不可达），改图标按钮。
+        if (overflow.isNotEmpty)
+          IconButton(
+            tooltip: l10n.commonMore,
+            icon: const Icon(Icons.more_horiz),
+            onPressed: () => _showOverflow(context, overflow),
+          ),
         IconButton(
           onPressed: () => _showCustomize(context, orderedItems),
           tooltip: l10n.moduleSubnavCustomize,
