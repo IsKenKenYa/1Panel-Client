@@ -303,6 +303,45 @@ void main() {
       debugPrint(
           '创建响应: code=${createData['code']}, message=${createData['message']}');
       debugPrint('创建成功: ${createData['code'] == 200}');
+
+      // 快照体积约 280MB，创建成功后立即删除，避免磁盘被多轮回归填满。
+      try {
+        final searchResponse = await dio.post(
+          '/api/v2/settings/snapshot/search',
+          data: {
+            'page': 1,
+            'pageSize': 50,
+            'orderBy': 'createdAt',
+            'order': 'descending',
+          },
+        );
+        final searchData = searchResponse.data as Map<String, dynamic>;
+        final items =
+            (searchData['data']?['items'] as List<dynamic>? ?? const []);
+        final ids = <int>[];
+        for (final item in items) {
+          final map = item as Map<String, dynamic>;
+          final description = map['description']?.toString() ?? '';
+          if (description.startsWith('Test snapshot from API test')) {
+            ids.add(map['id'] as int);
+          }
+        }
+        if (ids.isNotEmpty) {
+          final deleteResponse = await dio.post(
+            '/api/v2/settings/snapshot/del',
+            data: {'ids': ids},
+          );
+          debugPrint(
+              '清理测试快照: ids=$ids code=${deleteResponse.data?['code']}');
+        }
+      } catch (e) {
+        if (SkipConditions.isServerUnavailable(e)) {
+          debugPrint('⚠️  清理测试快照时服务器连接中断，下次运行重试');
+        } else {
+          debugPrint('⚠️  清理测试快照失败: $e');
+        }
+      }
+
       debugPrint('========================================\n');
     });
 
