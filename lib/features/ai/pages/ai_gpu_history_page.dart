@@ -52,7 +52,7 @@ class _AiGpuHistoryPageState extends State<AiGpuHistoryPage> {
       appBar: AppBar(
         title:  Text(context.l10n.aiGpuHistoryTitle),
         actions: [
-          IconButton(icon: const Icon(Icons.refresh), onPressed: _loadGpuHistory),
+          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh), onPressed: _loadGpuHistory),
         ],
       ),
       body: _isLoading

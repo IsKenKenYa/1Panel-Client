@@ -16868,6 +16868,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Details'**
   String get commonDetails;
+
+  /// No description provided for @commonShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show'**
+  String get commonShow;
+
+  /// No description provided for @commonHide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide'**
+  String get commonHide;
+
+  /// No description provided for @commonBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get commonBack;
 }
 
 class _AppLocalizationsDelegate

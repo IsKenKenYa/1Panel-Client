@@ -61,7 +61,7 @@ class _WebsiteLoadBalancerPageState extends State<WebsiteLoadBalancerPage> {
       appBar: AppBar(
         title: Text('${widget.displayName} - ${context.l10n.websiteLoadBalancerTitle}'),
         actions: [
-          IconButton(icon: const Icon(Icons.refresh), onPressed: _load),
+          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh), onPressed: _load),
         ],
       ),
       body: _isLoading
@@ -84,6 +84,7 @@ class _WebsiteLoadBalancerPageState extends State<WebsiteLoadBalancerPage> {
                             ),
                             trailing: IconButton(
                               icon: const Icon(Icons.delete_outline),
+                              tooltip: context.l10n.commonDelete,
                               onPressed: () => _deleteBalancer(lb['id'] as int),
                             ),
                           ),

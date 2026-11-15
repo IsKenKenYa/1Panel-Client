@@ -54,6 +54,7 @@ class ApiKeySettingsPage extends StatelessWidget {
                     const SizedBox(width: 8),
                     IconButton(
                       icon: const Icon(Icons.copy_outlined, size: 18),
+                      tooltip: context.l10n.commonCopy,
                       onPressed: () {
                         Clipboard.setData(
                             ClipboardData(text: settings?.apiKey ?? ''));

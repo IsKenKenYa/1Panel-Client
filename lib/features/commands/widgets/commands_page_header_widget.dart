@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
 
 class CommandsPageHeaderWidget extends StatelessWidget {
   const CommandsPageHeaderWidget({
@@ -41,6 +42,7 @@ class CommandsPageHeaderWidget extends StatelessWidget {
             prefixIcon: const Icon(Icons.search),
             hintText: searchHint,
             suffixIcon: IconButton(
+              tooltip: context.l10n.commonSearch,
               onPressed: onSearchTap,
               icon: const Icon(Icons.arrow_forward),
             ),

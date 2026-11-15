@@ -236,6 +236,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
                     )
                   : IconButton(
                       icon: const Icon(Icons.delete_outline),
+                      tooltip: context.l10n.commonDelete,
                       onPressed: item.id == null
                           ? null
                           : () => _showDeletePasskeyDialog(
@@ -517,6 +518,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
                 decoration: InputDecoration(
                   labelText: l10n.securitySettingsOldPassword,
                   suffixIcon: IconButton(
+                    tooltip: context.l10n.commonShow,
                     icon: Icon(obscureOld
                         ? Icons.visibility_outlined
                         : Icons.visibility_off_outlined),
@@ -531,6 +533,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
                 decoration: InputDecoration(
                   labelText: l10n.securitySettingsNewPassword,
                   suffixIcon: IconButton(
+                    tooltip: context.l10n.commonShow,
                     icon: Icon(obscureNew
                         ? Icons.visibility_outlined
                         : Icons.visibility_off_outlined),
@@ -545,6 +548,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
                 decoration: InputDecoration(
                   labelText: l10n.securitySettingsConfirmPassword,
                   suffixIcon: IconButton(
+                    tooltip: context.l10n.commonShow,
                     icon: Icon(obscureConfirm
                         ? Icons.visibility_outlined
                         : Icons.visibility_off_outlined),

@@ -54,6 +54,7 @@ class WebsitesListControls extends StatelessWidget {
               decoration: InputDecoration(
                 labelText: l10n.commonSearch,
                 suffixIcon: IconButton(
+                  tooltip: context.l10n.commonSearch,
                   onPressed: onSearch,
                   icon: const Icon(Icons.search),
                 ),

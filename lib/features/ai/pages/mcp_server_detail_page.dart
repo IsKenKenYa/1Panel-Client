@@ -83,7 +83,7 @@ class _McpServerDetailPageState extends State<McpServerDetailPage> {
             tooltip: context.l10n.commonTestConnection,
             onPressed: _testConnection,
           ),
-          IconButton(icon: const Icon(Icons.refresh), onPressed: _loadDetail),
+          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh), onPressed: _loadDetail),
         ],
       ),
       body: _isLoading

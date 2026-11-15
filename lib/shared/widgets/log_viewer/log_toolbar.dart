@@ -3,6 +3,7 @@ import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 import 'log_viewer_controller.dart';
 import 'log_theme_editor.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
 
 class LogToolbar extends StatefulWidget {
   final LogViewerController controller;
@@ -117,6 +118,7 @@ class _LogToolbarState extends State<LogToolbar> {
                                   ),
                                   padding: EdgeInsets.zero,
                                   visualDensity: VisualDensity.compact,
+                                  tooltip: context.l10n.commonClose,
                                   onPressed: () {
                                     widget.controller.search('');
                                     _searchController.clear();

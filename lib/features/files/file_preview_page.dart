@@ -507,6 +507,7 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
+                  tooltip: '倒退 10 秒',
                   icon: const Icon(Icons.replay_10),
                   iconSize: 32,
                   onPressed: () async {
@@ -531,6 +532,7 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
                 ),
                 const SizedBox(width: 16),
                 IconButton(
+                  tooltip: '前进 10 秒',
                   icon: const Icon(Icons.forward_10),
                   iconSize: 32,
                   onPressed: () async {

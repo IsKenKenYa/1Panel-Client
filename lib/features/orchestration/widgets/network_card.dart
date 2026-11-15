@@ -188,6 +188,7 @@ class NetworkCard extends StatelessWidget {
               tooltip: l10n.commonMore,
             ),
             IconButton(
+              tooltip: context.l10n.commonDelete,
               onPressed: provider.isLoading
                   ? null
                   : () => _confirmDelete(context, provider),

@@ -76,6 +76,7 @@ class _WebsiteRedirectPageState extends State<WebsiteRedirectPage> {
                       subtitle: Text('-> ${rule['target'] ?? ''} (${rule['type'] ?? '301'})'),
                       trailing: IconButton(
                         icon: const Icon(Icons.delete_outline),
+                        tooltip: context.l10n.commonDelete,
                         onPressed: () async {
                           try {
                             await _repo.deleteRedirectRule(

@@ -51,7 +51,7 @@ class _FileSharePageState extends State<FileSharePage> {
       appBar: AppBar(
         title:  Text(context.l10n.fileShareTitle),
         actions: [
-          IconButton(icon: const Icon(Icons.refresh), onPressed: _loadShares),
+          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh), onPressed: _loadShares),
         ],
       ),
       body: _isLoading
@@ -70,6 +70,7 @@ class _FileSharePageState extends State<FileSharePage> {
                             subtitle: Text(share['path']?.toString() ?? ''),
                             trailing: IconButton(
                               icon: const Icon(Icons.delete_outline),
+                              tooltip: context.l10n.commonDelete,
                               onPressed: () => _deleteShare(share['id']?.toString() ?? ''),
                             ),
                           ),

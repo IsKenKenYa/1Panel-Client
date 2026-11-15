@@ -3745,6 +3745,9 @@
   "filesPathLabel": "Path",
   "filesTypeLabel": "Type",
   "filesSizeLabel": "Size",
-  "commonDetails": "Details"
+  "commonDetails": "Details",
+  "commonShow": "Show",
+  "commonHide": "Hide",
+  "commonBack": "Back"
 
 }

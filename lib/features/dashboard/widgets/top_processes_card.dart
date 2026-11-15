@@ -26,6 +26,7 @@ class TopProcessesCard extends StatelessWidget {
       trailing: onRefresh != null
           ? IconButton(
               icon: const Icon(Icons.refresh),
+              tooltip: context.l10n.commonRefresh,
               onPressed: isLoading ? null : onRefresh,
             )
           : null,

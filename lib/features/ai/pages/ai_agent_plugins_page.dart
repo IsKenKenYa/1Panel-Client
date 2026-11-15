@@ -175,7 +175,7 @@ class _AiAgentPluginsPageState extends State<AiAgentPluginsPage> {
       appBar: AppBar(
         title: Text(l10n.aiAgentPluginsTitle),
         actions: [
-          IconButton(icon: const Icon(Icons.refresh), onPressed: _load),
+          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh), onPressed: _load),
         ],
       ),
       body: _isLoading
@@ -255,6 +255,7 @@ class _AiAgentPluginsPageState extends State<AiAgentPluginsPage> {
                         ),
                         IconButton(
                           icon: const Icon(Icons.search),
+                          tooltip: context.l10n.commonSearch,
                           onPressed: _isMutating ? null : _searchMarket,
                         ),
                       ],

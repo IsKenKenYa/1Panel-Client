@@ -54,7 +54,7 @@ class _ContainerInspectPageState extends State<ContainerInspectPage> {
       appBar: AppBar(
         title: Text('${widget.containerName} - ${context.l10n.containerInspectTitle}'),
         actions: [
-          IconButton(icon: const Icon(Icons.refresh), onPressed: _load),
+          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh), onPressed: _load),
         ],
       ),
       body: _isLoading

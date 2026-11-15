@@ -69,6 +69,7 @@ class CronjobFormScheduleSectionWidget extends StatelessWidget {
                 ),
                 if (rawSpecs.length > 1)
                   IconButton(
+                    tooltip: context.l10n.commonDelete,
                     onPressed: () => onRemoveRawSpec(index),
                     icon: const Icon(Icons.remove_circle_outline),
                   ),

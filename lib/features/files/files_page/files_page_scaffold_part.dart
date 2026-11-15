@@ -112,6 +112,7 @@ extension _FilesViewScaffold on _FilesViewState {
                 ),
                 IconButton(
                   icon: const Icon(Icons.more_vert),
+                  tooltip: context.l10n.commonMore,
                   onPressed: () => _showMoreOptions(context),
                 ),
               ],
@@ -206,6 +207,7 @@ extension _FilesViewScaffold on _FilesViewState {
                         _buildDesktopSelectionActions(context, provider, l10n),
                       IconButton(
                         icon: const Icon(Icons.more_vert),
+                        tooltip: context.l10n.commonMore,
                         onPressed: () => _showMoreOptions(context),
                       ),
                     ],
@@ -293,6 +295,7 @@ extension _FilesViewScaffold on _FilesViewState {
                 const SizedBox(width: 12),
                 IconButton(
                   icon: const Icon(Icons.more_vert),
+                  tooltip: context.l10n.commonMore,
                   onPressed: () => _showMoreOptions(context),
                 ),
                 SizedBox(width: spec.pagePadding.right),

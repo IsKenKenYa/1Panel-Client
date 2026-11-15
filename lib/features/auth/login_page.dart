@@ -263,6 +263,8 @@ class _LoginPageState extends State<LoginPage> {
                 ? Icons.visibility_outlined
                 : Icons.visibility_off_outlined,
           ),
+          // 可见性切换 tooltip 随状态变化，与图标语义一致。
+          tooltip: _obscurePassword ? l10n.commonShow : l10n.commonHide,
           onPressed: () {
             setState(() {
               _obscurePassword = !_obscurePassword;

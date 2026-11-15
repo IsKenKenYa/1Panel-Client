@@ -35,6 +35,7 @@ class CronjobFormUrlTargetSectionWidget extends StatelessWidget {
               ),
               if (urlItems.length > 1)
                 IconButton(
+                  tooltip: context.l10n.commonDelete,
                   onPressed: () {
                     final items = List<String>.from(urlItems)..removeAt(index);
                     onChanged(items);

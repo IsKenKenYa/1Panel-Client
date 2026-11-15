@@ -151,7 +151,7 @@ class _DatabaseRemoteConfigPageState extends State<DatabaseRemoteConfigPage> {
       appBar: AppBar(
         title: Text('${widget.databaseName} - ${context.l10n.databaseRemoteTitle}'),
         actions: [
-          IconButton(icon: const Icon(Icons.refresh), onPressed: _load),
+          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh), onPressed: _load),
         ],
       ),
       body: _isLoading

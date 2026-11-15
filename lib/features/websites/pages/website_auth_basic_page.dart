@@ -82,6 +82,7 @@ class _WebsiteAuthBasicPageState extends State<WebsiteAuthBasicPage> {
                       subtitle: Text(user['remark']?.toString() ?? ''),
                       trailing: IconButton(
                         icon: const Icon(Icons.delete_outline),
+                        tooltip: context.l10n.commonDelete,
                         onPressed: () => _deleteUser(user['id'] as int),
                       ),
                     ),

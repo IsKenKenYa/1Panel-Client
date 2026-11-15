@@ -74,7 +74,7 @@ class _DockerConfigPageState extends State<DockerConfigPage> {
             onPressed: _isSaving ? null : _save,
             tooltip: context.l10n.commonSave,
           ),
-          IconButton(icon: const Icon(Icons.refresh), onPressed: _load),
+          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh), onPressed: _load),
         ],
       ),
       body: _isLoading

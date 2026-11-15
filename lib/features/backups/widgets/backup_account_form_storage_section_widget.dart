@@ -97,6 +97,7 @@ class BackupAccountFormStorageSectionWidget extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               IconButton(
+                tooltip: context.l10n.commonRefresh,
                 onPressed: isLoadingBuckets ? null : onLoadBuckets,
                 icon: isLoadingBuckets
                     ? const SizedBox.square(

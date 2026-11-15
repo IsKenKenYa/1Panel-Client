@@ -56,6 +56,7 @@ class _AIMcpTabWidgetState extends State<AIMcpTabWidget> {
                   labelText: l10n.aiMcpSearchHint,
                   border: const OutlineInputBorder(),
                   suffixIcon: IconButton(
+                    tooltip: context.l10n.commonSearch,
                     onPressed: provider.isLoading
                         ? null
                         : () {

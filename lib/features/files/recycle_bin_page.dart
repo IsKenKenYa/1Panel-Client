@@ -74,6 +74,7 @@ class _RecycleBinViewState extends State<_RecycleBinView> {
                     suffixIcon: provider.searchQuery.isNotEmpty
                         ? IconButton(
                             icon: const Icon(Icons.clear),
+                            tooltip: context.l10n.commonCancel,
                             onPressed: () {
                               _searchController.clear();
                               provider.filterFiles('');

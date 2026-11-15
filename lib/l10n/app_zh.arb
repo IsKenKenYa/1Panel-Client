@@ -3628,6 +3628,9 @@
   "filesPathLabel": "路径",
   "filesTypeLabel": "类型",
   "filesSizeLabel": "大小",
-  "commonDetails": "详情"
+  "commonDetails": "详情",
+  "commonShow": "显示",
+  "commonHide": "隐藏",
+  "commonBack": "返回"
 
 }

@@ -103,6 +103,7 @@ class _HostAssetsPageState extends State<HostAssetsPage>
                   prefixIcon: const Icon(Icons.search),
                   hintText: l10n.hostAssetsSearchHint,
                   suffixIcon: IconButton(
+                    tooltip: context.l10n.commonSearch,
                     onPressed: () => provider.load(),
                     icon: const Icon(Icons.arrow_forward),
                   ),

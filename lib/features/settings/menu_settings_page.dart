@@ -59,6 +59,7 @@ class _MenuSettingsPageState extends State<MenuSettingsPage> {
               labelText: l10n.menuSettingsAddLabel,
               border: const OutlineInputBorder(),
               suffixIcon: IconButton(
+                tooltip: context.l10n.commonCreate,
                 onPressed: () {
                   context
                       .read<MenuSettingsProvider>()

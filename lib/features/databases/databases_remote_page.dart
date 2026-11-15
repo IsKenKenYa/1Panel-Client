@@ -27,10 +27,12 @@ class DatabaseRemotePage extends StatelessWidget {
               title: Text(context.l10n.databaseRemoteTab),
               actions: [
                 IconButton(
+                  tooltip: context.l10n.commonRefresh,
                   onPressed: provider.refresh,
                   icon: const Icon(Icons.refresh),
                 ),
                 IconButton(
+                  tooltip: context.l10n.commonCreate,
                   onPressed: () => Navigator.pushNamed(
                     context,
                     AppRoutes.databaseForm,

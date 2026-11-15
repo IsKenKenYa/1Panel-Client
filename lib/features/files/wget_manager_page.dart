@@ -51,7 +51,7 @@ class _WgetManagerPageState extends State<WgetManagerPage> {
       appBar: AppBar(
         title:  Text(context.l10n.wgetTitle),
         actions: [
-          IconButton(icon: const Icon(Icons.refresh), onPressed: _loadProcess),
+          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh), onPressed: _loadProcess),
         ],
       ),
       body: _isLoading
@@ -72,6 +72,7 @@ class _WgetManagerPageState extends State<WgetManagerPage> {
                             trailing: item['status'] == 'running'
                                 ? IconButton(
                                     icon: const Icon(Icons.stop),
+                                    tooltip: context.l10n.commonStop,
                                     onPressed: () => _stopWget(
                                         item['key']?.toString() ?? ''),
                                   )

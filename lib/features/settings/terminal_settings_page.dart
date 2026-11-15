@@ -567,6 +567,7 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
                     Row(
                       children: [
                         IconButton(
+                          tooltip: context.l10n.commonDelete,
                           onPressed: value <= min
                               ? null
                               : () => setSheetState(() {
@@ -577,6 +578,7 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
                         ),
                         const Spacer(),
                         IconButton(
+                          tooltip: context.l10n.commonCreate,
                           onPressed: value >= max
                               ? null
                               : () => setSheetState(() {

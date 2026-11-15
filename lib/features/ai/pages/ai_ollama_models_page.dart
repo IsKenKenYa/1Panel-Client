@@ -75,7 +75,7 @@ class _AiOllamaModelsPageState extends State<AiOllamaModelsPage> {
         title:  Text(context.l10n.aiOllamaTitle),
         actions: [
           IconButton(icon: const Icon(Icons.sync), onPressed: _syncModels, tooltip: context.l10n.aiOllamaSync),
-          IconButton(icon: const Icon(Icons.refresh), onPressed: _load),
+          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh), onPressed: _load),
         ],
       ),
       body: _isLoading

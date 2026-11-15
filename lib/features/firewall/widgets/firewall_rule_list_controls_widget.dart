@@ -48,6 +48,7 @@ class FirewallRuleListControls extends StatelessWidget {
             hintText: l10n.firewallSearchHint,
             suffixIcon: IconButton(
               key: const Key('firewall.searchButton'),
+              tooltip: context.l10n.commonSearch,
               onPressed: isMutating ? null : onSearch,
               icon: const Icon(Icons.search),
             ),

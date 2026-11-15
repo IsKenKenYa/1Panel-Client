@@ -61,7 +61,7 @@ class _AiAccountsPageState extends State<AiAccountsPage> {
       appBar: AppBar(
         title:  Text(context.l10n.aiAccountsTitle),
         actions: [
-          IconButton(icon: const Icon(Icons.refresh), onPressed: _load),
+          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh), onPressed: _load),
         ],
       ),
       body: _isLoading
@@ -92,6 +92,7 @@ class _AiAccountsPageState extends State<AiAccountsPage> {
                             ),
                             trailing: IconButton(
                               icon: const Icon(Icons.delete_outline),
+                              tooltip: context.l10n.commonDelete,
                               onPressed: () =>
                                   _deleteAccount(account['id'] as int),
                             ),

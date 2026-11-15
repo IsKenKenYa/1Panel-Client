@@ -101,6 +101,7 @@ class _RepoCreateDialogState extends State<RepoCreateDialog> {
                   labelText: l10n.commonPassword,
                   border: const OutlineInputBorder(),
                   suffixIcon: IconButton(
+                    tooltip: context.l10n.commonShow,
                     icon: Icon(
                         _isObscure ? Icons.visibility : Icons.visibility_off),
                     onPressed: () {

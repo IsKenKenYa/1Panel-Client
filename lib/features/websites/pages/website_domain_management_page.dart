@@ -150,10 +150,12 @@ class _DomainCard extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.edit_outlined),
+              tooltip: context.l10n.commonEdit,
               onPressed: onEdit,
             ),
             IconButton(
               icon: const Icon(Icons.delete_outline),
+              tooltip: context.l10n.commonDelete,
               onPressed: onDelete,
             ),
           ],

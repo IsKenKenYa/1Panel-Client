@@ -53,6 +53,7 @@ class _AIOllamaTabWidgetState extends State<AIOllamaTabWidget> {
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.search),
                   suffixIcon: IconButton(
+                    tooltip: context.l10n.commonSearch,
                     onPressed: () => provider.searchOllamaModels(
                       info: _searchController.text.trim().isEmpty
                           ? null
@@ -176,6 +177,7 @@ class _AIOllamaTabWidgetState extends State<AIOllamaTabWidget> {
                     title: Text(l10n.aiOperationResult),
                     subtitle: SelectableText(provider.lastOperationMessage!),
                     trailing: IconButton(
+                      tooltip: context.l10n.commonClose,
                       onPressed: provider.clearLastOperationMessage,
                       icon: const Icon(Icons.close),
                     ),

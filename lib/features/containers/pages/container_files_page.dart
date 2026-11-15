@@ -121,6 +121,7 @@ class _ContainerFilesPageState extends State<ContainerFilesPage> {
                     ),
                   ),
                   IconButton(
+                    tooltip: context.l10n.commonBack,
                     icon: const Icon(Icons.arrow_upward, size: 18),
                     onPressed:
                         inSubdirectory ? _navigateUp : null,

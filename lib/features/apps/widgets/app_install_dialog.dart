@@ -7,6 +7,7 @@ import '../app_service.dart';
 
 import '../../../core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/core/layout/adaptive_layout.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
 class AppInstallDialog extends StatefulWidget {
   final AppItem app;
 
@@ -420,6 +421,7 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
                 IconButton(
                   icon: const Icon(Icons.remove_circle_outline),
                   color: Theme.of(context).colorScheme.error,
+                  tooltip: context.l10n.commonDelete,
                   onPressed: () {
                     setState(() {
                       items[index].dispose();

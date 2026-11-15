@@ -4,6 +4,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 import 'log_viewer_controller.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
 
 class LogThemeEditor extends StatefulWidget {
   final LogViewerController controller;
@@ -190,10 +191,12 @@ class _LogThemeEditorState extends State<LogThemeEditor> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.edit),
+                  tooltip: context.l10n.commonEdit,
                   onPressed: () => _editRule(rule),
                 ),
                 IconButton(
                   icon: const Icon(Icons.delete),
+                  tooltip: context.l10n.commonDelete,
                   onPressed: () => _deleteRule(rule),
                 ),
                 const Icon(Icons.drag_handle),

@@ -79,6 +79,7 @@ class ImageCard extends StatelessWidget {
                   tooltip: l10n.commonMore,
                 ),
                 IconButton(
+                  tooltip: context.l10n.commonDelete,
                   onPressed: provider.isLoading
                       ? null
                       : () => ImageCardDialogs.confirmDelete(

@@ -8716,4 +8716,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get commonDetails => '详情';
+
+  @override
+  String get commonShow => '显示';
+
+  @override
+  String get commonHide => '隐藏';
+
+  @override
+  String get commonBack => '返回';
 }

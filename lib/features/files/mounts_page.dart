@@ -54,6 +54,7 @@ class _MountsPageState extends State<MountsPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
+            tooltip: context.l10n.commonRefresh,
             onPressed: () {
               setState(() {
                 _isLoading = true;

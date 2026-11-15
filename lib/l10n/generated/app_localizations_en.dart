@@ -8940,4 +8940,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonDetails => 'Details';
+
+  @override
+  String get commonShow => 'Show';
+
+  @override
+  String get commonHide => 'Hide';
+
+  @override
+  String get commonBack => 'Back';
 }
