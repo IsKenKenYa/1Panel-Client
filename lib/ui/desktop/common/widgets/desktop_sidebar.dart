@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:glass/glass.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
 
@@ -33,11 +34,12 @@ class DesktopSidebar extends StatelessWidget {
       child: Container(
         width: width,
         decoration: BoxDecoration(
-          color: bgColor,
           border: Border(
             right: BorderSide(color: scheme.outlineVariant),
           ),
         ),
+        // 桌面导航浮层液态玻璃：背景色改由玻璃 tint 承担，
+        // 内容窗口在侧栏后方滚动穿透（与移动端导航栏同语义）。
         child: NavigationRail(
           extended: true,
           backgroundColor: Colors.transparent,
@@ -69,6 +71,9 @@ class DesktopSidebar extends StatelessWidget {
               ),
           ],
         ),
+      ).asGlass(
+        tintColor: bgColor,
+        frosted: true,
       ),
     );
   }

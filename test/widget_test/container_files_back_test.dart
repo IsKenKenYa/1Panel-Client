@@ -65,19 +65,23 @@ void main() {
     await tester.tap(find.text('etc'));
     await tester.pumpAndSettle();
 
-    // AppBar leading 应为返回键（进入子路径前是根路径，无路由栈 → 无 leading）
+    // AppBar leading 应为返回键（进入子路径前是根路径，无路由栈 → 无 leading）。
+    // 页内面包屑返回按钮（commonBack）与 AppBar 返回键（backButtonTooltip）
+    // tooltip 文本同为 "Back" 且同屏，这里断言 Tooltip 总数为 2
+    //（leading 返回键 + 面包屑返回按钮），并验证 leading 的 IconButton 可点。
     expect(
       find.byTooltip(MaterialLocalizations.of(
         tester.element(find.byType(ContainerFilesPage).first),
       ).backButtonTooltip),
-      findsOneWidget,
+      findsNWidgets(2),
       reason: '子路径下必须显示返回键（对齐文件模块行为）',
     );
 
-    // 点击返回 → 回到根目录列表
+    // 点击 AppBar leading 返回键（第一个 tooltip）→ 回到根目录列表。
+    // 面包屑返回按钮与 leading 同 tooltip 文本，tap 需限定第一个匹配。
     await tester.tap(find.byTooltip(MaterialLocalizations.of(
       tester.element(find.byType(ContainerFilesPage).first),
-    ).backButtonTooltip));
+    ).backButtonTooltip).first);
     await tester.pumpAndSettle();
     expect(find.text('usr'), findsOneWidget,
         reason: '返回键应回上级目录，而非退出页面');
