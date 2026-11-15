@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
+import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/shared/widgets/app_card.dart';
 import 'package:provider/provider.dart';
 import '../../data/models/monitoring_runtime_models.dart';
@@ -39,25 +40,23 @@ class _MonitoringPageState extends State<MonitoringPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
-        title: Text(l10n.serverModuleMonitoring),
-        actions: [
-          Consumer<MonitoringProvider>(
-            builder: (context, provider, _) => IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: provider.data.isLoading ? null : provider.refresh,
-              tooltip: l10n.commonRefresh,
-            ),
+    return ServerAwarePageScaffold(
+      title: l10n.serverModuleMonitoring,
+      onServerChanged: _reloadForCurrentServer,
+      actions: [
+        Consumer<MonitoringProvider>(
+          builder: (context, provider, _) => IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: provider.data.isLoading ? null : provider.refresh,
+            tooltip: l10n.commonRefresh,
           ),
-          IconButton(
-            icon: const Icon(Icons.tune),
-            tooltip: l10n.monitorSettings,
-            onPressed: () => _showSettingsDialog(context),
-          ),
-        ],
-      ),
+        ),
+        IconButton(
+          icon: const Icon(Icons.tune),
+          tooltip: l10n.monitorSettings,
+          onPressed: () => _showSettingsDialog(context),
+        ),
+      ],
       body: Padding(
         padding: AppDesignTokens.pagePadding,
         child: Consumer<MonitoringProvider>(
@@ -67,6 +66,13 @@ class _MonitoringPageState extends State<MonitoringPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _reloadForCurrentServer() async {
+    if (!mounted) return;
+    final provider = context.read<MonitoringProvider>();
+    provider.load();
+    provider.loadGPUInfo();
   }
 
   Widget _buildBody(

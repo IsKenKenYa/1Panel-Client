@@ -9,6 +9,7 @@ import 'package:onepanel_client/features/openresty/widgets/openresty_center_loca
 import 'package:onepanel_client/features/openresty/widgets/openresty_center_section_widgets.dart';
 import 'package:onepanel_client/features/openresty/widgets/openresty_error_view.dart';
 import 'package:onepanel_client/features/shell/shell_navigation.dart';
+import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/shared/widgets/operations/module_empty_state_widget.dart';
 import 'package:onepanel_client/shared/widgets/section_card.dart';
 import 'package:onepanel_client/shared/security_gateway/widgets/config_diff_preview_card.dart';
@@ -24,9 +25,9 @@ class OpenRestyCenterPage extends StatelessWidget {
       builder: (context, provider, _) {
         final l10n = context.l10n;
         if (provider.notInstalled && !provider.hasData) {
-          return Scaffold(
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            appBar: AppBar(title: Text(l10n.openrestyPageTitle)),
+          return ServerAwarePageScaffold(
+            title: l10n.openrestyPageTitle,
+            onServerChanged: provider.loadAll,
             body: ModuleEmptyStateWidget(
               key: const Key('openresty-not-installed-empty'),
               icon: Icons.route,
@@ -40,9 +41,9 @@ class OpenRestyCenterPage extends StatelessWidget {
         }
 
         if (provider.error != null && !provider.hasData) {
-          return Scaffold(
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            appBar: AppBar(title: Text(l10n.openrestyPageTitle)),
+          return ServerAwarePageScaffold(
+            title: l10n.openrestyPageTitle,
+            onServerChanged: provider.loadAll,
             body: OpenRestyErrorView(
               message: provider.error!,
               onRetry: provider.loadAll,
@@ -56,23 +57,21 @@ class OpenRestyCenterPage extends StatelessWidget {
           );
         }
 
-        return Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          appBar: AppBar(
-            title: Text(l10n.openrestyPageTitle),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.refresh),
-                tooltip: context.l10n.commonRefresh,
-                onPressed: provider.refresh,
-              ),
-              IconButton(
-                icon: const Icon(Icons.code),
-                tooltip: l10n.openrestyAdvancedSourceEditorTooltip,
-                onPressed: () => _openSourceEditor(context, provider),
-              ),
-            ],
-          ),
+        return ServerAwarePageScaffold(
+          title: l10n.openrestyPageTitle,
+          onServerChanged: provider.loadAll,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              tooltip: context.l10n.commonRefresh,
+              onPressed: provider.refresh,
+            ),
+            IconButton(
+              icon: const Icon(Icons.code),
+              tooltip: l10n.openrestyAdvancedSourceEditorTooltip,
+              onPressed: () => _openSourceEditor(context, provider),
+            ),
+          ],
           body: ListView(
             padding: const EdgeInsets.all(AppDesignTokens.spacingLg),
             children: [

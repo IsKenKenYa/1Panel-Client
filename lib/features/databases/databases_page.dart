@@ -270,11 +270,15 @@ class _DatabaseScopeTabView extends StatelessWidget {
                   FilledButton.icon(
                     onPressed: scope == DatabaseScope.redis
                         ? null
-                        : () => openRouteRespectingShell(
+                        : () async {
+                            await openRouteRespectingShell(
                               context,
                               AppRoutes.databaseForm,
                               arguments: {'scope': scope.value},
-                            ),
+                            );
+                            // 新建数据库返回后重载列表，避免 fire-and-forget 导致数据陈旧。
+                            provider.refresh();
+                          },
                     icon: const Icon(Icons.add),
                     label: Text(l10n.commonCreate),
                   ),

@@ -64,13 +64,17 @@ class _RuntimesCenterPageState extends State<RuntimesCenterPage> {
               tooltip: l10n.commonRefresh,
             ),
             IconButton(
-              onPressed: () => openRouteRespectingShell(
-                context,
-                AppRoutes.runtimeForm,
-                arguments: RuntimeFormArgs(
-                  initialType: provider.selectedType,
-                ),
-              ),
+              onPressed: () async {
+                await openRouteRespectingShell(
+                  context,
+                  AppRoutes.runtimeForm,
+                  arguments: RuntimeFormArgs(
+                    initialType: provider.selectedType,
+                  ),
+                );
+                // 新建/编辑返回后重载列表，避免 fire-and-forget 导致数据陈旧。
+                provider.load();
+              },
               icon: const Icon(Icons.add),
               tooltip: l10n.commonCreate,
             ),
