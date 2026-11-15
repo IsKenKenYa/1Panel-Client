@@ -77,6 +77,10 @@ ShellRouteTarget? shellRouteTargetForRoute(String route) {
     case AppRoutes.websiteSiteSsl:
     case AppRoutes.websiteSslCenter:
     case AppRoutes.websiteCertificateDetail:
+    case AppRoutes.websiteTemplates:
+    case AppRoutes.websiteTemplateForm:
+    case AppRoutes.websiteTemplateOutputs:
+    case AppRoutes.websiteTemplateOutputCreate:
     case AppRoutes.securityGatewayCenter:
       return const ShellRouteTarget(
         module: ClientModule.websites,
@@ -122,6 +126,11 @@ ShellRouteTarget? shellRouteTargetForRoute(String route) {
     case AppRoutes.firewallIps:
     case AppRoutes.firewallPorts:
     case AppRoutes.firewallRuleForm:
+    case AppRoutes.firewallV2:
+    case AppRoutes.firewallV2Rules:
+    case AppRoutes.firewallV2Forward:
+    case AppRoutes.firewallV2Docker:
+    case AppRoutes.firewallV2Settings:
     case AppRoutes.terminal:
     case AppRoutes.monitoring:
     case AppRoutes.operations:

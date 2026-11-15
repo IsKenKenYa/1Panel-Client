@@ -24,6 +24,11 @@ class AppRoutes {
   static const String firewallIps = '/firewall-ips';
   static const String firewallPorts = '/firewall-ports';
   static const String firewallRuleForm = '/firewall-rule-form';
+  static const String firewallV2 = '/firewall-v2';
+  static const String firewallV2Rules = '/firewall-v2-rules';
+  static const String firewallV2Forward = '/firewall-v2-forward';
+  static const String firewallV2Docker = '/firewall-v2-docker';
+  static const String firewallV2Settings = '/firewall-v2-settings';
   static const String terminal = '/terminal';
   static const String monitoring = '/monitoring';
   static const String securityVerification = '/security-verification';
@@ -52,6 +57,11 @@ class AppRoutes {
   static const String websiteSiteSsl = '/website-site-ssl';
   static const String websiteSslCenter = '/website-ssl-center';
   static const String websiteCertificateDetail = '/website-certificate-detail';
+  static const String websiteTemplates = '/website-templates';
+  static const String websiteTemplateForm = '/website-template-form';
+  static const String websiteTemplateOutputs = '/website-template-outputs';
+  static const String websiteTemplateOutputCreate =
+      '/website-template-output-create';
   static const String securityGatewayCenter = '/security-gateway';
   static const String openrestyCenter = '/openresty';
   static const String openrestySourceEditor = '/openresty-source-editor';

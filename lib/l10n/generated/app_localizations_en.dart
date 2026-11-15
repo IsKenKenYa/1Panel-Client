@@ -8776,4 +8776,130 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get filePreviewVideoNotInitialized => 'Video player not initialized';
+
+  @override
+  String get websitesTemplateTitle => 'Website Templates';
+
+  @override
+  String get websitesTemplateOutputsTitle => 'Template Outputs';
+
+  @override
+  String get websitesTemplateCreate => 'New Template';
+
+  @override
+  String get websitesTemplateEdit => 'Edit Template';
+
+  @override
+  String get websitesTemplateName => 'Template Name';
+
+  @override
+  String get websitesTemplateType => 'Template Type';
+
+  @override
+  String get websitesTemplateTypeSingle => 'Single File';
+
+  @override
+  String get websitesTemplateTypeMulti => 'Zip Package';
+
+  @override
+  String get websitesTemplateContent => 'Template Content';
+
+  @override
+  String get websitesTemplateRemark => 'Remark';
+
+  @override
+  String get websitesTemplateVariables => 'Variable Definitions';
+
+  @override
+  String get websitesTemplateSearchHint => 'Search by name';
+
+  @override
+  String get websitesTemplateEmpty => 'No website templates';
+
+  @override
+  String get websitesTemplateOutputEmpty => 'No template outputs';
+
+  @override
+  String get websitesTemplateOutputName => 'Output Name';
+
+  @override
+  String get websitesTemplateOutputPath => 'Output Path';
+
+  @override
+  String get websitesTemplateGenerate => 'Generate Output';
+
+  @override
+  String get websitesTemplatePreview => 'Preview';
+
+  @override
+  String get websitesTemplateDeleteConfirm => 'Delete this template?';
+
+  @override
+  String get websitesTemplateOutputDeleteConfirm => 'Delete this output?';
+
+  @override
+  String get websitesTemplateRequired => 'Fill in the required fields';
+
+  @override
+  String get websitesTemplateLoadFailed => 'Failed to load templates';
+
+  @override
+  String get firewallV2Title => 'Firewall Management';
+
+  @override
+  String get firewallV2SectionTitle => 'Unified Firewall';
+
+  @override
+  String get firewallV2SectionDesc =>
+      'Manage system rules, forwarding, Docker protection and settings';
+
+  @override
+  String get firewallV2SystemRules => 'System Firewall Rules';
+
+  @override
+  String get firewallV2SystemRulesDesc =>
+      'Unified inventory, backups and native details';
+
+  @override
+  String get firewallV2Forward => 'Port Forwarding';
+
+  @override
+  String get firewallV2ForwardDesc => 'Forwarding rules and status';
+
+  @override
+  String get firewallV2Docker => 'Docker Port Protection';
+
+  @override
+  String get firewallV2DockerDesc => 'Published ports and guard policies';
+
+  @override
+  String get firewallV2Settings => 'Firewall Settings';
+
+  @override
+  String get firewallV2SettingsDesc =>
+      'Backend, IPv6, whitelist and ping control';
+
+  @override
+  String get firewallV2LoadFailed => 'Failed to load firewall data';
+
+  @override
+  String get firewallV2Empty => 'No records';
+
+  @override
+  String get firewallV2RuleSearch => 'Rule inventory';
+
+  @override
+  String get firewallV2ForwardSearch => 'Forwarding rules';
+
+  @override
+  String get firewallV2DockerPorts => 'Published ports';
+
+  @override
+  String get firewallV2Backups => 'Rule backups';
+
+  @override
+  String get firewallV2Whitelist => 'Port whitelist';
+
+  @override
+  String get firewallV2Refresh => 'Refresh';
 }

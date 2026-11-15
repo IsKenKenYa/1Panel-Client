@@ -15,6 +15,9 @@ import 'package:onepanel_client/features/databases/pages/database_users_page.dar
 import 'package:onepanel_client/data/models/database_models.dart';
 import 'package:onepanel_client/features/firewall/firewall_page.dart';
 import 'package:onepanel_client/features/firewall/firewall_rule_form_page.dart';
+import 'package:onepanel_client/features/firewall/pages/firewall_v2_page.dart';
+import 'package:onepanel_client/features/firewall/pages/firewall_v2_section_page.dart';
+import 'package:onepanel_client/features/firewall/providers/firewall_v2_provider.dart';
 import 'package:onepanel_client/features/ai/pages/ai_agent_plugins_page.dart';
 import 'package:onepanel_client/features/host_assets/pages/host_diagnostics_page.dart';
 import 'package:onepanel_client/features/monitoring/monitoring_page.dart';
@@ -54,9 +57,14 @@ import 'package:onepanel_client/features/websites/pages/website_security_access_
 import 'package:onepanel_client/features/websites/pages/website_site_ssl_page.dart';
 import 'package:onepanel_client/features/websites/pages/website_ssl_center_page.dart';
 import 'package:onepanel_client/features/websites/pages/website_certificate_detail_page.dart';
+import 'package:onepanel_client/features/websites/pages/website_templates_page.dart';
+import 'package:onepanel_client/features/websites/pages/website_template_form_page.dart';
+import 'package:onepanel_client/features/websites/pages/website_template_outputs_page.dart';
+import 'package:onepanel_client/features/websites/pages/website_template_output_create_page.dart';
 import 'package:onepanel_client/features/openresty/openresty_page.dart';
 import 'package:onepanel_client/features/openresty/pages/openresty_source_editor_page.dart';
 import 'package:onepanel_client/features/openresty/providers/openresty_provider.dart';
+import 'package:onepanel_client/features/websites/providers/website_template_provider.dart';
 import 'package:onepanel_client/features/settings/menu_settings_page.dart';
 import 'package:onepanel_client/features/settings/menu_settings_provider.dart';
 import 'package:onepanel_client/features/settings/ssl_settings_page.dart';
@@ -419,6 +427,52 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
           return WebsiteCertificateDetailPage(certificateId: certificateId);
         },
       ),
+      AppRoutes.websiteTemplates: shellAwareModuleEntry(
+        routeName: AppRoutes.websiteTemplates,
+        defaultBuilder: (_, __) =>
+            ChangeNotifierProvider<WebsiteTemplateProvider>(
+          create: (_) => WebsiteTemplateProvider(),
+          child: const WebsiteTemplatesPage(),
+        ),
+      ),
+      AppRoutes.websiteTemplateForm: shellAwareModuleEntry(
+        routeName: AppRoutes.websiteTemplateForm,
+        defaultBuilder: (_, settings) {
+          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          return ChangeNotifierProvider<WebsiteTemplateProvider>(
+            create: (_) => WebsiteTemplateProvider(),
+            child: WebsiteTemplateFormPage(
+              templateId: arg['templateId'] as int?,
+            ),
+          );
+        },
+      ),
+      AppRoutes.websiteTemplateOutputs: shellAwareModuleEntry(
+        routeName: AppRoutes.websiteTemplateOutputs,
+        defaultBuilder: (_, settings) {
+          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          return ChangeNotifierProvider<WebsiteTemplateProvider>(
+            create: (_) => WebsiteTemplateProvider(),
+            child: WebsiteTemplateOutputsPage(
+              templateId: arg['templateId'] as int?,
+            ),
+          );
+        },
+      ),
+      AppRoutes.websiteTemplateOutputCreate: shellAwareModuleEntry(
+        routeName: AppRoutes.websiteTemplateOutputCreate,
+        defaultBuilder: (_, settings) {
+          final arg = settings.arguments as Map<String, dynamic>? ?? const {};
+          final templateId = arg['templateId'] as int?;
+          if (templateId == null) {
+            return const NotFoundPage();
+          }
+          return ChangeNotifierProvider<WebsiteTemplateProvider>(
+            create: (_) => WebsiteTemplateProvider(),
+            child: WebsiteTemplateOutputCreatePage(templateId: templateId),
+          );
+        },
+      ),
       AppRoutes.ai: shellAwareModuleEntry(
         routeName: AppRoutes.ai,
         // Delegate to ModuleRegistry.buildAiModule so provider registration
@@ -548,6 +602,34 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
           }
           return const NotFoundPage();
         },
+      ),
+      AppRoutes.firewallV2: shellAwareModuleEntry(
+        routeName: AppRoutes.firewallV2,
+        defaultBuilder: (_, __) => const FirewallV2Page(),
+      ),
+      AppRoutes.firewallV2Rules: shellAwareModuleEntry(
+        routeName: AppRoutes.firewallV2Rules,
+        defaultBuilder: (_, __) => _firewallV2Section(
+          FirewallV2Section.rules,
+        ),
+      ),
+      AppRoutes.firewallV2Forward: shellAwareModuleEntry(
+        routeName: AppRoutes.firewallV2Forward,
+        defaultBuilder: (_, __) => _firewallV2Section(
+          FirewallV2Section.forward,
+        ),
+      ),
+      AppRoutes.firewallV2Docker: shellAwareModuleEntry(
+        routeName: AppRoutes.firewallV2Docker,
+        defaultBuilder: (_, __) => _firewallV2Section(
+          FirewallV2Section.docker,
+        ),
+      ),
+      AppRoutes.firewallV2Settings: shellAwareModuleEntry(
+        routeName: AppRoutes.firewallV2Settings,
+        defaultBuilder: (_, __) => _firewallV2Section(
+          FirewallV2Section.settings,
+        ),
       ),
       AppRoutes.terminal: shellAwareModuleEntry(
         routeName: AppRoutes.terminal,
@@ -1385,6 +1467,13 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
         UiPlatformKind.desktopMacos: desktopBuilder,
         UiPlatformKind.desktopLinux: desktopBuilder,
       },
+    );
+  }
+
+  Widget _firewallV2Section(FirewallV2Section section) {
+    return ChangeNotifierProvider<FirewallV2Provider>(
+      create: (_) => FirewallV2Provider(),
+      child: FirewallV2SectionPage(section: section),
     );
   }
 

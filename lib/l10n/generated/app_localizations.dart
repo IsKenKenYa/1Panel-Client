@@ -16556,6 +16556,252 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Video player not initialized'**
   String get filePreviewVideoNotInitialized;
+
+  /// No description provided for @websitesTemplateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Website Templates'**
+  String get websitesTemplateTitle;
+
+  /// No description provided for @websitesTemplateOutputsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Template Outputs'**
+  String get websitesTemplateOutputsTitle;
+
+  /// No description provided for @websitesTemplateCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'New Template'**
+  String get websitesTemplateCreate;
+
+  /// No description provided for @websitesTemplateEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Template'**
+  String get websitesTemplateEdit;
+
+  /// No description provided for @websitesTemplateName.
+  ///
+  /// In en, this message translates to:
+  /// **'Template Name'**
+  String get websitesTemplateName;
+
+  /// No description provided for @websitesTemplateType.
+  ///
+  /// In en, this message translates to:
+  /// **'Template Type'**
+  String get websitesTemplateType;
+
+  /// No description provided for @websitesTemplateTypeSingle.
+  ///
+  /// In en, this message translates to:
+  /// **'Single File'**
+  String get websitesTemplateTypeSingle;
+
+  /// No description provided for @websitesTemplateTypeMulti.
+  ///
+  /// In en, this message translates to:
+  /// **'Zip Package'**
+  String get websitesTemplateTypeMulti;
+
+  /// No description provided for @websitesTemplateContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Template Content'**
+  String get websitesTemplateContent;
+
+  /// No description provided for @websitesTemplateRemark.
+  ///
+  /// In en, this message translates to:
+  /// **'Remark'**
+  String get websitesTemplateRemark;
+
+  /// No description provided for @websitesTemplateVariables.
+  ///
+  /// In en, this message translates to:
+  /// **'Variable Definitions'**
+  String get websitesTemplateVariables;
+
+  /// No description provided for @websitesTemplateSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name'**
+  String get websitesTemplateSearchHint;
+
+  /// No description provided for @websitesTemplateEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No website templates'**
+  String get websitesTemplateEmpty;
+
+  /// No description provided for @websitesTemplateOutputEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No template outputs'**
+  String get websitesTemplateOutputEmpty;
+
+  /// No description provided for @websitesTemplateOutputName.
+  ///
+  /// In en, this message translates to:
+  /// **'Output Name'**
+  String get websitesTemplateOutputName;
+
+  /// No description provided for @websitesTemplateOutputPath.
+  ///
+  /// In en, this message translates to:
+  /// **'Output Path'**
+  String get websitesTemplateOutputPath;
+
+  /// No description provided for @websitesTemplateGenerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate Output'**
+  String get websitesTemplateGenerate;
+
+  /// No description provided for @websitesTemplatePreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get websitesTemplatePreview;
+
+  /// No description provided for @websitesTemplateDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this template?'**
+  String get websitesTemplateDeleteConfirm;
+
+  /// No description provided for @websitesTemplateOutputDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this output?'**
+  String get websitesTemplateOutputDeleteConfirm;
+
+  /// No description provided for @websitesTemplateRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill in the required fields'**
+  String get websitesTemplateRequired;
+
+  /// No description provided for @websitesTemplateLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load templates'**
+  String get websitesTemplateLoadFailed;
+
+  /// No description provided for @firewallV2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Firewall Management'**
+  String get firewallV2Title;
+
+  /// No description provided for @firewallV2SectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unified Firewall'**
+  String get firewallV2SectionTitle;
+
+  /// No description provided for @firewallV2SectionDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage system rules, forwarding, Docker protection and settings'**
+  String get firewallV2SectionDesc;
+
+  /// No description provided for @firewallV2SystemRules.
+  ///
+  /// In en, this message translates to:
+  /// **'System Firewall Rules'**
+  String get firewallV2SystemRules;
+
+  /// No description provided for @firewallV2SystemRulesDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Unified inventory, backups and native details'**
+  String get firewallV2SystemRulesDesc;
+
+  /// No description provided for @firewallV2Forward.
+  ///
+  /// In en, this message translates to:
+  /// **'Port Forwarding'**
+  String get firewallV2Forward;
+
+  /// No description provided for @firewallV2ForwardDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Forwarding rules and status'**
+  String get firewallV2ForwardDesc;
+
+  /// No description provided for @firewallV2Docker.
+  ///
+  /// In en, this message translates to:
+  /// **'Docker Port Protection'**
+  String get firewallV2Docker;
+
+  /// No description provided for @firewallV2DockerDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Published ports and guard policies'**
+  String get firewallV2DockerDesc;
+
+  /// No description provided for @firewallV2Settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Firewall Settings'**
+  String get firewallV2Settings;
+
+  /// No description provided for @firewallV2SettingsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Backend, IPv6, whitelist and ping control'**
+  String get firewallV2SettingsDesc;
+
+  /// No description provided for @firewallV2LoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load firewall data'**
+  String get firewallV2LoadFailed;
+
+  /// No description provided for @firewallV2Empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No records'**
+  String get firewallV2Empty;
+
+  /// No description provided for @firewallV2RuleSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule inventory'**
+  String get firewallV2RuleSearch;
+
+  /// No description provided for @firewallV2ForwardSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Forwarding rules'**
+  String get firewallV2ForwardSearch;
+
+  /// No description provided for @firewallV2DockerPorts.
+  ///
+  /// In en, this message translates to:
+  /// **'Published ports'**
+  String get firewallV2DockerPorts;
+
+  /// No description provided for @firewallV2Backups.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule backups'**
+  String get firewallV2Backups;
+
+  /// No description provided for @firewallV2Whitelist.
+  ///
+  /// In en, this message translates to:
+  /// **'Port whitelist'**
+  String get firewallV2Whitelist;
+
+  /// No description provided for @firewallV2Refresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get firewallV2Refresh;
 }
 
 class _AppLocalizationsDelegate

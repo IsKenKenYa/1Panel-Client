@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:onepanel_client/config/app_route_constants.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
+import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 
 import 'providers/firewall_status_provider.dart';
@@ -35,6 +37,16 @@ class FirewallPage extends StatelessWidget {
           initialTab >= 0 && initialTab < tabs.length ? initialTab : 0,
       child: ServerAwarePageScaffold(
         title: l10n.serverModuleFirewall,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.shield_outlined),
+            tooltip: l10n.firewallV2Title,
+            onPressed: () => openRouteRespectingShell(
+              context,
+              AppRoutes.firewallV2,
+            ),
+          ),
+        ],
         bottom: TabBar(tabs: tabs),
         body: KeyedSubtree(
           key: ValueKey('firewall:${serverId ?? 'none'}'),

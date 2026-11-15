@@ -127,6 +127,12 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
           tooltip: l10n.commonRefresh,
         ),
         IconButton(
+          icon: const Icon(Icons.description_outlined),
+          onPressed: () =>
+              openRouteRespectingShell(context, AppRoutes.websiteTemplates),
+          tooltip: l10n.websitesTemplateTitle,
+        ),
+        IconButton(
           icon: const Icon(Icons.tune_outlined),
           onPressed: () =>
               openRouteRespectingShell(context, AppRoutes.openrestyCenter),

@@ -8558,4 +8558,127 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get filePreviewVideoNotInitialized => '视频播放器未初始化';
+
+  @override
+  String get websitesTemplateTitle => '网站模版';
+
+  @override
+  String get websitesTemplateOutputsTitle => '模版输出';
+
+  @override
+  String get websitesTemplateCreate => '新建模版';
+
+  @override
+  String get websitesTemplateEdit => '编辑模版';
+
+  @override
+  String get websitesTemplateName => '模版名称';
+
+  @override
+  String get websitesTemplateType => '模版类型';
+
+  @override
+  String get websitesTemplateTypeSingle => '单文件';
+
+  @override
+  String get websitesTemplateTypeMulti => '压缩包';
+
+  @override
+  String get websitesTemplateContent => '模版内容';
+
+  @override
+  String get websitesTemplateRemark => '备注';
+
+  @override
+  String get websitesTemplateVariables => '变量定义';
+
+  @override
+  String get websitesTemplateSearchHint => '按名称搜索';
+
+  @override
+  String get websitesTemplateEmpty => '暂无网站模版';
+
+  @override
+  String get websitesTemplateOutputEmpty => '暂无模版输出';
+
+  @override
+  String get websitesTemplateOutputName => '输出名称';
+
+  @override
+  String get websitesTemplateOutputPath => '输出路径';
+
+  @override
+  String get websitesTemplateGenerate => '生成输出';
+
+  @override
+  String get websitesTemplatePreview => '预览';
+
+  @override
+  String get websitesTemplateDeleteConfirm => '确定删除此模版吗？';
+
+  @override
+  String get websitesTemplateOutputDeleteConfirm => '确定删除此输出吗？';
+
+  @override
+  String get websitesTemplateRequired => '请填写必填字段';
+
+  @override
+  String get websitesTemplateLoadFailed => '加载模版失败';
+
+  @override
+  String get firewallV2Title => '防火墙管理';
+
+  @override
+  String get firewallV2SectionTitle => '统一防火墙';
+
+  @override
+  String get firewallV2SectionDesc => '按系统防火墙、转发、Docker 保护与设置四类管理';
+
+  @override
+  String get firewallV2SystemRules => '系统防火墙规则';
+
+  @override
+  String get firewallV2SystemRulesDesc => '统一规则清单、备份与原生详情';
+
+  @override
+  String get firewallV2Forward => '端口转发';
+
+  @override
+  String get firewallV2ForwardDesc => '转发规则与启用状态';
+
+  @override
+  String get firewallV2Docker => 'Docker 端口保护';
+
+  @override
+  String get firewallV2DockerDesc => '已发布端口与保护策略';
+
+  @override
+  String get firewallV2Settings => '防火墙设置';
+
+  @override
+  String get firewallV2SettingsDesc => '后端、IPv6、白名单与禁 Ping';
+
+  @override
+  String get firewallV2LoadFailed => '加载防火墙信息失败';
+
+  @override
+  String get firewallV2Empty => '暂无记录';
+
+  @override
+  String get firewallV2RuleSearch => '规则清单';
+
+  @override
+  String get firewallV2ForwardSearch => '转发规则';
+
+  @override
+  String get firewallV2DockerPorts => '监听端口';
+
+  @override
+  String get firewallV2Backups => '规则备份';
+
+  @override
+  String get firewallV2Whitelist => '端口白名单';
+
+  @override
+  String get firewallV2Refresh => '刷新';
 }
