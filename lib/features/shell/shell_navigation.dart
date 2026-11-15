@@ -38,6 +38,15 @@ ShellRouteTarget? shellRouteTargetForRoute(String route) {
         module: ClientModule.files,
         embedRouteInShell: false,
       );
+    case AppRoutes.fileShare:
+    case AppRoutes.wgetManager:
+    case AppRoutes.fileHistory:
+    case AppRoutes.filePermission:
+    case AppRoutes.recycleBinStatus:
+      return const ShellRouteTarget(
+        module: ClientModule.files,
+        embedRouteInShell: true,
+      );
     case AppRoutes.containers:
       return const ShellRouteTarget(
         module: ClientModule.containers,
@@ -45,6 +54,11 @@ ShellRouteTarget? shellRouteTargetForRoute(String route) {
       );
     case '/container-create':
     case AppRoutes.containerDetail:
+    case AppRoutes.containerInspect:
+    case AppRoutes.containerFiles:
+    case AppRoutes.containerMaintenance:
+    case AppRoutes.dockerConfig:
+    case AppRoutes.imageOperations:
     case AppRoutes.orchestration:
       return const ShellRouteTarget(
         module: ClientModule.containers,
@@ -81,6 +95,14 @@ ShellRouteTarget? shellRouteTargetForRoute(String route) {
     case AppRoutes.websiteTemplateForm:
     case AppRoutes.websiteTemplateOutputs:
     case AppRoutes.websiteTemplateOutputCreate:
+    case AppRoutes.websiteHttps:
+    case AppRoutes.websiteRedirect:
+    case AppRoutes.websiteCors:
+    case AppRoutes.websiteLeech:
+    case AppRoutes.websiteLog:
+    case AppRoutes.websiteAuthBasic:
+    case AppRoutes.websiteResource:
+    case AppRoutes.websiteLoadBalancer:
     case AppRoutes.securityGatewayCenter:
       return const ShellRouteTarget(
         module: ClientModule.websites,
@@ -90,6 +112,16 @@ ShellRouteTarget? shellRouteTargetForRoute(String route) {
       return const ShellRouteTarget(
         module: ClientModule.ai,
         embedRouteInShell: false,
+      );
+    case AppRoutes.aiAccounts:
+    case AppRoutes.aiOllamaModels:
+    case AppRoutes.aiAgents:
+    case AppRoutes.aiGpuHistory:
+    case AppRoutes.mcpServerDetail:
+    case AppRoutes.aiAgentPlugins:
+      return const ShellRouteTarget(
+        module: ClientModule.ai,
+        embedRouteInShell: true,
       );
     case AppRoutes.securityVerification:
       return const ShellRouteTarget(
@@ -121,6 +153,12 @@ ShellRouteTarget? shellRouteTargetForRoute(String route) {
     case AppRoutes.databaseRedisConfig:
     case AppRoutes.databaseBackups:
     case AppRoutes.databaseUsers:
+    case AppRoutes.databaseMongodb:
+    case AppRoutes.databaseMysqlVariables:
+    case AppRoutes.databasePgPrivileges:
+    case AppRoutes.databaseRedisPersistence:
+    case AppRoutes.databaseSlowLog:
+    case AppRoutes.databaseRemoteConfig:
     case AppRoutes.firewall:
     case AppRoutes.firewallRules:
     case AppRoutes.firewallIps:
