@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/utils/keyboard_utils.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/features/files/files_service.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
@@ -202,43 +204,64 @@ class _FileEditorPageState extends State<FileEditorPage> {
           navigator.pop();
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.fileName,
-                overflow: TextOverflow.ellipsis,
-              ),
-              if (_hasChanges)
+      child: _buildShortcutWrapper(
+        Scaffold(
+          appBar: AppBar(
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Text(
-                  l10n.filesEditorUnsaved,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.error,
-                  ),
+                  widget.fileName,
+                  overflow: TextOverflow.ellipsis,
                 ),
+                if (_hasChanges)
+                  Text(
+                    l10n.filesEditorUnsaved,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.error,
+                    ),
+                  ),
+              ],
+            ),
+            actions: [
+              _buildEncodingSelector(theme, l10n),
+              _buildMoreActions(theme, l10n),
+              IconButton(
+                icon: _isSaving
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.save_outlined),
+                onPressed: _hasChanges && !_isSaving ? _saveContent : null,
+                tooltip: l10n.filesEditorSave,
+              ),
             ],
           ),
-          actions: [
-            _buildEncodingSelector(theme, l10n),
-            _buildMoreActions(theme, l10n),
-            IconButton(
-              icon: _isSaving
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.save_outlined),
-              onPressed: _hasChanges && !_isSaving ? _saveContent : null,
-              tooltip: l10n.filesEditorSave,
-            ),
-          ],
+          body: _buildBody(context, l10n, theme),
         ),
-        body: _buildBody(context, l10n, theme),
       ),
     );
+  }
+
+  // 桌面端编辑器惯例：Cmd/Ctrl+S 保存；移动端无物理键盘时组合键不会触发。
+  Widget _buildShortcutWrapper(Widget child) {
+    return CallbackShortcuts(
+      bindings: <ShortcutActivator, VoidCallback>{
+        KeyboardUtils.modifierPlus(LogicalKeyboardKey.keyS): _saveShortcut,
+      },
+      child: Focus(
+        autofocus: true,
+        child: child,
+      ),
+    );
+  }
+
+  void _saveShortcut() {
+    if (_hasChanges && !_isSaving) {
+      _saveContent();
+    }
   }
 
   Widget _buildEncodingSelector(ThemeData theme, dynamic l10n) {

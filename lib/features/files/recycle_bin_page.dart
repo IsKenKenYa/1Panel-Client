@@ -179,79 +179,85 @@ class _RecycleBinViewState extends State<_RecycleBinView> {
       metadata.add(deleteTime);
     }
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: AppDesignTokens.spacingXs),
-      color: isSelected ? colorScheme.primaryContainer : null,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: ListTile(
-        leading: Icon(
-          file.isDir ? Icons.folder_outlined : Icons.insert_drive_file_outlined,
-          color:
-              file.isDir ? colorScheme.primary : colorScheme.onSurfaceVariant,
-          size: 32,
-        ),
-        title: Text(file.name),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              metadata.join(' · '),
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
+    return GestureDetector(
+      // 桌面端右键与移动端长按等价：切换选中状态。
+      onSecondaryTapDown: (_) => provider.toggleSelection(file.rName),
+      child: Card(
+        margin: const EdgeInsets.only(bottom: AppDesignTokens.spacingXs),
+        color: isSelected ? colorScheme.primaryContainer : null,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: ListTile(
+          leading: Icon(
+            file.isDir
+                ? Icons.folder_outlined
+                : Icons.insert_drive_file_outlined,
+            color:
+                file.isDir ? colorScheme.primary : colorScheme.onSurfaceVariant,
+            size: 32,
+          ),
+          title: Text(file.name),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                metadata.join(' · '),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
               ),
-            ),
-            Text(
-              '${l10n.recycleBinSourcePath}: ${file.sourcePath}',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
+              Text(
+                '${l10n.recycleBinSourcePath}: ${file.sourcePath}',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
-        trailing: PopupMenuButton<String>(
-          onSelected: (value) async {
-            switch (value) {
-              case 'restore':
-                await _confirmRestoreSingle(context, provider, file);
-              case 'delete':
-                await _confirmDeleteSingle(context, provider, file);
+            ],
+          ),
+          trailing: PopupMenuButton<String>(
+            onSelected: (value) async {
+              switch (value) {
+                case 'restore':
+                  await _confirmRestoreSingle(context, provider, file);
+                case 'delete':
+                  await _confirmDeleteSingle(context, provider, file);
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'restore',
+                child: Row(
+                  children: [
+                    const Icon(Icons.restore_outlined),
+                    const SizedBox(width: 8),
+                    Text(l10n.recycleBinRestore),
+                  ],
+                ),
+              ),
+              const PopupMenuDivider(),
+              PopupMenuItem(
+                value: 'delete',
+                child: Row(
+                  children: [
+                    Icon(Icons.delete_forever_outlined, color: colorScheme.error),
+                    const SizedBox(width: 8),
+                    Text(
+                      l10n.recycleBinDeletePermanently,
+                      style: TextStyle(color: colorScheme.error),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          onLongPress: () => provider.toggleSelection(file.rName),
+          onTap: () {
+            if (provider.selectedIds.isNotEmpty) {
+              provider.toggleSelection(file.rName);
             }
           },
-          itemBuilder: (context) => [
-            PopupMenuItem(
-              value: 'restore',
-              child: Row(
-                children: [
-                  const Icon(Icons.restore_outlined),
-                  const SizedBox(width: 8),
-                  Text(l10n.recycleBinRestore),
-                ],
-              ),
-            ),
-            const PopupMenuDivider(),
-            PopupMenuItem(
-              value: 'delete',
-              child: Row(
-                children: [
-                  Icon(Icons.delete_forever_outlined, color: colorScheme.error),
-                  const SizedBox(width: 8),
-                  Text(
-                    l10n.recycleBinDeletePermanently,
-                    style: TextStyle(color: colorScheme.error),
-                  ),
-                ],
-              ),
-            ),
-          ],
         ),
-        onLongPress: () => provider.toggleSelection(file.rName),
-        onTap: () {
-          if (provider.selectedIds.isNotEmpty) {
-            provider.toggleSelection(file.rName);
-          }
-        },
       ),
     );
   }

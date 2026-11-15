@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -195,6 +196,66 @@ void main() {
     await tester.pumpAndSettle();
 
     verify(() => service.deleteHosts(<int>[1, 2])).called(1);
+  });
+
+  testWidgets('HostAssetsPage secondary tap toggles selection like long press',
+      (tester) async {
+    final service = _MockHostAssetService();
+    when(() => service.loadGroups(forceRefresh: any(named: 'forceRefresh')))
+        .thenAnswer(
+      (_) async => <GroupInfo>[
+        const GroupInfo(id: 1, name: 'Default', type: 'host', isDefault: true),
+      ],
+    );
+    when(() => service.searchHosts(any())).thenAnswer(
+      (_) async => const PageResult<HostInfo>(
+        items: <HostInfo>[
+          HostInfo(
+            id: 1,
+            name: 'edge-01',
+            addr: '10.0.0.7',
+            user: 'root',
+            port: 22,
+            groupID: 1,
+            groupBelong: 'Default',
+            authMode: 'password',
+            status: 'active',
+          ),
+        ],
+        total: 1,
+      ),
+    );
+
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<CurrentServerController>.value(
+            value: _FakeCurrentServerController(),
+          ),
+          ChangeNotifierProvider<HostAssetsProvider>(
+            create: (_) => HostAssetsProvider(service: service),
+          ),
+        ],
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('en'),
+          home: const HostAssetsPage(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // 桌面端右键与移动端长按等价：进入多选模式。
+    final gesture = await tester.startGesture(
+      tester.getCenter(find.text('edge-01')),
+      buttons: kSecondaryMouseButton,
+    );
+    await tester.pump();
+    await gesture.up();
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(Icons.delete_outline), findsWidgets);
   });
 
   testWidgets('HostAssetsPage applies group filter through picker',

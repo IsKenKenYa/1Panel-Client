@@ -141,6 +141,9 @@ class _HostAssetsPageState extends State<HostAssetsPage>
                         final host = provider.hosts[index];
                         return GestureDetector(
                           onLongPress: () => provider.toggleSelection(host.id),
+                          // 桌面端右键与移动端长按等价：切换选中状态。
+                          onSecondaryTapDown:
+                              (_) => provider.toggleSelection(host.id),
                           child: HostAssetCardWidget(
                             host: host,
                             groupLabel: _hostGroupLabel(host, l10n),

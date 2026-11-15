@@ -135,6 +135,10 @@ class _CommandsPageState extends State<CommandsPage>
                           onLongPress: id == null
                               ? null
                               : () => provider.toggleSelection(id),
+                          // 桌面端右键与移动端长按等价：切换选中状态。
+                          onSecondaryTapDown: id == null
+                              ? null
+                              : (_) => provider.toggleSelection(id),
                           child: CommandCardWidget(
                             command: item,
                             groupLabel: _commandGroupLabel(item, l10n),
