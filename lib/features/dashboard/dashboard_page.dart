@@ -118,9 +118,9 @@ class _DashboardPageState extends State<DashboardPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ServerInfoCard(data: provider.data),
+        HealthOverviewGrid(data: provider.data),
         const SizedBox(height: 16),
-        ResourceCard(data: provider.data),
+        ServerInfoCard(data: provider.data),
         const SizedBox(height: 16),
         TopProcessesCard(
           cpuProcesses: provider.data.topCpuProcesses,
@@ -146,9 +146,9 @@ class _DashboardPageState extends State<DashboardPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              ServerInfoCard(data: provider.data),
+              HealthOverviewGrid(data: provider.data),
               const SizedBox(height: 16),
-              ResourceCard(data: provider.data),
+              ServerInfoCard(data: provider.data),
               const SizedBox(height: 16),
               TopProcessesCard(
                 cpuProcesses: provider.data.topCpuProcesses,

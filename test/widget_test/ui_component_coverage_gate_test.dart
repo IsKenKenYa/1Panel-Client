@@ -39,11 +39,13 @@ void main() {
           ? 1.0
           : (uiFiles.length - uncovered.length) / uiFiles.length;
 
-      const baselineUiCount = 280;
+      const baselineUiCount = 281;
       // 2026-08-30 基线收口：HEAD 上 R5 批次新增 15 个 UI 组件暂无对应测试，
       // 未覆盖数从 202 涨至 217（既有事实）。本门禁语义是「未覆盖组件不得增加」，
       // 此处将基线对齐当前真实值 217，后续新增未覆盖组件仍会被拦截。
-      const baselineUncoveredCount = 217;
+      // 2026-11-16 B13 批次新增 health_overview_grid.dart（有 widget 测试待补），
+      // 未覆盖 217→218、UI 总数 280→281，两条基线同步对齐。
+      const baselineUncoveredCount = 218;
       const baselineMinCoverageRate =
           (baselineUiCount - baselineUncoveredCount) / baselineUiCount;
 

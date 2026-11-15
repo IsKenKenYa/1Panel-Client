@@ -98,6 +98,7 @@ class DashboardData {
     this.cpuPercent,
     this.memoryPercent,
     this.diskPercent,
+    this.load,
     this.memoryUsage = '--',
     this.diskUsage = '--',
     this.uptime = '--',
@@ -116,6 +117,9 @@ class DashboardData {
   final double? cpuPercent;
   final double? memoryPercent;
   final double? diskPercent;
+
+  /// 系统 1 分钟负载（load1），健康总览卡展示。
+  final double? load;
   final String memoryUsage;
   final String diskUsage;
   final String uptime;
@@ -134,6 +138,7 @@ class DashboardData {
     double? cpuPercent,
     double? memoryPercent,
     double? diskPercent,
+    double? load,
     String? memoryUsage,
     String? diskUsage,
     String? uptime,
@@ -152,6 +157,7 @@ class DashboardData {
       cpuPercent: cpuPercent ?? this.cpuPercent,
       memoryPercent: memoryPercent ?? this.memoryPercent,
       diskPercent: diskPercent ?? this.diskPercent,
+      load: load ?? this.load,
       memoryUsage: memoryUsage ?? this.memoryUsage,
       diskUsage: diskUsage ?? this.diskUsage,
       uptime: uptime ?? this.uptime,

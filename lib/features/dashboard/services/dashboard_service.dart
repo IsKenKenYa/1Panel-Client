@@ -48,6 +48,7 @@ class DashboardService {
       cpuPercent: (currentInfo?['cpuUsedPercent'] as num?)?.toDouble(),
       memoryPercent: memoryPercent,
       diskPercent: diskPercent,
+      load: (currentInfo?['load1'] as num?)?.toDouble(),
       memoryUsage: memoryPercent != null
           ? '${memoryPercent.toStringAsFixed(1)}%'
           : (memoryUsed != null && memoryTotal != null

@@ -1,22 +1,91 @@
 part of 'monitoring_page.dart';
 
-class _MetricChip extends StatelessWidget {
-  const _MetricChip({
+/// 健康瓦片：与仪表盘 HealthOverviewGrid 同一套 M3 表达
+/// （状态点阈值驱动 + 关键数值 + 趋势条），监控页复用。
+class _HealthTile extends StatelessWidget {
+  const _HealthTile({
     required this.label,
     required this.value,
+    required this.percent,
     required this.icon,
   });
 
   final String label;
   final String value;
+  final double? percent;
   final IconData icon;
 
   @override
   Widget build(BuildContext context) {
-    return Chip(
-      avatar: Icon(icon, size: 18),
-      label: Text('$label: $value'),
+    final scheme = Theme.of(context).colorScheme;
+    final statusColor = _statusColor(scheme);
+
+    return Container(
+      padding: const EdgeInsets.all(AppDesignTokens.spacingMd),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
+        border: Border.all(color: scheme.outlineVariant),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 16, color: scheme.onSurfaceVariant),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  label,
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: statusColor,
+                ),
+              ),
+            ],
+          ),
+          Text(
+            value,
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                ),
+          ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(999),
+            child: LinearProgressIndicator(
+              value: percent != null ? percent! / 100 : 0,
+              backgroundColor: scheme.surfaceContainerHighest,
+              valueColor: AlwaysStoppedAnimation<Color>(statusColor),
+              minHeight: 4,
+            ),
+          ),
+        ],
+      ),
     );
+  }
+
+  Color _statusColor(ColorScheme scheme) {
+    if (percent == null) {
+      return scheme.onSurfaceVariant.withValues(alpha: 0.4);
+    }
+    if (percent! >= 90) {
+      return scheme.error;
+    }
+    if (percent! >= 70) {
+      return const Color(0xFFF59E0B);
+    }
+    return scheme.primary;
   }
 }
 
