@@ -133,6 +133,18 @@ class AppTheme {
         ),
         showDragHandle: true,
       ),
+      // 桌面端滚动条常显（鼠标定位长列表），移动端保持系统默认行为。
+      scrollbarTheme: ScrollbarThemeData(
+        thumbVisibility: WidgetStateProperty.all(isDesktop),
+        thickness: WidgetStateProperty.resolveWith(
+          (states) =>
+              states.contains(WidgetState.hovered) ||
+                      states.contains(WidgetState.dragged)
+                  ? 8.0
+                  : 6.0,
+        ),
+        radius: const Radius.circular(AppDesignTokens.radiusMd),
+      ),
       dialogTheme: DialogThemeData(
         backgroundColor: scheme.surfaceContainerLow,
         surfaceTintColor: Colors.transparent,
