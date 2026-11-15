@@ -55,6 +55,7 @@ app.*.map.json
 /logs/
 /docs/v2_api_analysis.md
 /api_analysis_*
+/.zcode-middle-result/
 
 # Android related
 **/android/**/gradle-wrapper.jar
