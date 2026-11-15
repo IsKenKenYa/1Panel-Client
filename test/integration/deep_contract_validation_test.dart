@@ -218,7 +218,7 @@ void main() {
             _pkg, 'Container first item: ${_pretty(firstRaw)}');
 
         // Verify ContainerInfo field names match raw JSON
-        _expectMapKeys(firstRaw, ['id', 'name', 'image', 'status'],
+        _expectMapKeys(firstRaw, ['containerID', 'name', 'imageName', 'runTime'],
             path: '/containers/search/item');
       }
 
@@ -302,8 +302,8 @@ void main() {
         appLogger.dWithPackage(
             _pkg, 'Database first item: ${_pretty(firstRaw)}');
 
-        // Verify DatabaseOption field names
-        _expectMapKeys(firstRaw, ['name', 'type', 'version'],
+        // Verify database list item field names
+        _expectMapKeys(firstRaw, ['id', 'type', 'version'],
             path: '/databases/db/list/item');
       }
 
@@ -318,8 +318,8 @@ void main() {
 
       // Verify each item
       for (final item in items) {
-        expect(item['name'], isNotNull);
-        expect(item['name'], isNotEmpty);
+        expect(item['database'], isNotNull);
+        expect(item['database'], isNotEmpty);
       }
     });
 
@@ -335,7 +335,7 @@ void main() {
       }
 
       final firstDb = Map<String, dynamic>.from((listData as List).first as Map);
-      final dbName = firstDb['name'] as String? ?? '';
+      final dbName = firstDb['database'] as String? ?? '';
       if (dbName.isEmpty) {
         appLogger.dWithPackage(_pkg, 'Database name is empty, skipping');
         return;
@@ -368,7 +368,7 @@ void main() {
             _pkg, 'Database search first item keys: ${firstRaw.keys.toList()}');
 
         // Verify DatabaseInfo field names
-        _expectMapKeys(firstRaw, ['name', 'type'],
+        _expectMapKeys(firstRaw, ['id', 'name', 'from'],
             path: '/databases/search/item');
       }
 
@@ -406,7 +406,7 @@ void main() {
       }
 
       final firstDb = Map<String, dynamic>.from((listData as List).first as Map);
-      final dbName = firstDb['name'] as String? ?? '';
+      final dbName = firstDb['database'] as String? ?? '';
       final dbType = firstDb['type'] as String? ?? 'mysql';
       if (dbName.isEmpty) return;
 

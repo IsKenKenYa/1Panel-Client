@@ -15,6 +15,7 @@ import 'package:onepanel_client/data/models/database_models.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 
 import '../core/test_config_manager.dart';
+import '../test_helper.dart';
 
 const _pkg = 'test.integration.full_api_contract';
 
@@ -1066,7 +1067,17 @@ void main() {
   group('Update 模块', () {
     test('GET /core/settings/upgrade/releases - 可用版本', () async {
       if (skip() != null) return;
-      final raw = await _rawGet(client, '/core/settings/upgrade/releases');
+      late final Response<dynamic> raw;
+      try {
+        raw = await _rawGet(client, '/core/settings/upgrade/releases');
+      } catch (e) {
+        if (SkipConditions.isServerUnavailable(e)) {
+          appLogger.wWithPackage(
+              _pkg, 'SKIP: 服务器升级版本端点当前不可用，软跳过');
+          return;
+        }
+        rethrow;
+      }
       final data = _unwrap(raw.data, '/core/settings/upgrade/releases');
       _log('Update/releases', response: data);
     });
