@@ -66,6 +66,7 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
     return ChangeNotifierProvider.value(
       value: _provider,
       child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.surface,
         appBar: AppBar(
           title: Text(l10n.systemSettingsTitle),
           actions: [

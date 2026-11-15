@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:onepanel_client/config/app_route_constants.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/shared/widgets/section_card.dart';
 
 import '../providers/website_config_center_provider.dart';
 import '../widgets/website_async_state_view.dart';
 import '../website_config_page.dart';
 import 'website_basic_config_page.dart';
-import 'website_cors_page.dart';
-import 'website_https_page.dart';
-import 'website_leech_page.dart';
-import 'website_log_page.dart';
-import 'website_redirect_page.dart';
-import 'website_routing_rules_page.dart';
-import 'website_security_access_page.dart';
 
 class WebsiteConfigCenterPage extends StatelessWidget {
   const WebsiteConfigCenterPage({
@@ -92,26 +87,26 @@ class _WebsiteConfigCenterBody extends StatelessWidget {
                           '${l10n.websitesTabProxy} / ${l10n.websitesTabRewrite}',
                       subtitle: l10n.websitesConfigScopeTitle,
                       icon: Icons.alt_route,
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => WebsiteRoutingRulesPage(
-                            websiteId: websiteId,
-                            displayName: displayName,
-                          ),
-                        ),
+                      onTap: () => openRouteRespectingShell(
+                        context,
+                        AppRoutes.websiteRoutingRules,
+                        arguments: {
+                          'websiteId': websiteId,
+                          'displayName': displayName,
+                        },
                       ),
                     ),
                     SectionEntryItem(
                       title: l10n.securitySettingsAccessControl,
                       subtitle: l10n.websitesConfigPageSubtitle,
                       icon: Icons.shield_outlined,
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => WebsiteSecurityAccessPage(
-                            websiteId: websiteId,
-                            displayName: displayName,
-                          ),
-                        ),
+                      onTap: () => openRouteRespectingShell(
+                        context,
+                        AppRoutes.websiteSecurityAccess,
+                        arguments: {
+                          'websiteId': websiteId,
+                          'displayName': displayName,
+                        },
                       ),
                     ),
                     SectionEntryItem(
@@ -146,65 +141,65 @@ class _WebsiteConfigCenterBody extends StatelessWidget {
                       title: 'HTTPS',
                       subtitle: 'SSL/TLS configuration',
                       icon: Icons.lock_outline,
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => WebsiteHttpsPage(
-                            websiteId: websiteId,
-                            displayName: displayName ?? '',
-                          ),
-                        ),
+                      onTap: () => openRouteRespectingShell(
+                        context,
+                        AppRoutes.websiteHttps,
+                        arguments: {
+                          'websiteId': websiteId,
+                          'displayName': displayName,
+                        },
                       ),
                     ),
                     SectionEntryItem(
                       title: 'Redirect',
                       subtitle: 'URL redirect rules',
                       icon: Icons.shuffle,
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => WebsiteRedirectPage(
-                            websiteId: websiteId,
-                            displayName: displayName ?? '',
-                          ),
-                        ),
+                      onTap: () => openRouteRespectingShell(
+                        context,
+                        AppRoutes.websiteRedirect,
+                        arguments: {
+                          'websiteId': websiteId,
+                          'displayName': displayName,
+                        },
                       ),
                     ),
                     SectionEntryItem(
                       title: 'CORS',
                       subtitle: 'Cross-origin resource sharing',
                       icon: Icons.sync_alt,
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => WebsiteCorsPage(
-                            websiteId: websiteId,
-                            displayName: displayName ?? '',
-                          ),
-                        ),
+                      onTap: () => openRouteRespectingShell(
+                        context,
+                        AppRoutes.websiteCors,
+                        arguments: {
+                          'websiteId': websiteId,
+                          'displayName': displayName,
+                        },
                       ),
                     ),
                     SectionEntryItem(
                       title: 'Anti-Leech',
                       subtitle: 'Hotlink protection',
                       icon: Icons.block,
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => WebsiteLeechPage(
-                            websiteId: websiteId,
-                            displayName: displayName ?? '',
-                          ),
-                        ),
+                      onTap: () => openRouteRespectingShell(
+                        context,
+                        AppRoutes.websiteLeech,
+                        arguments: {
+                          'websiteId': websiteId,
+                          'displayName': displayName,
+                        },
                       ),
                     ),
                     SectionEntryItem(
                       title: 'Logs',
                       subtitle: 'Access & error logs',
                       icon: Icons.article_outlined,
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => WebsiteLogPage(
-                            websiteId: websiteId,
-                            displayName: displayName ?? '',
-                          ),
-                        ),
+                      onTap: () => openRouteRespectingShell(
+                        context,
+                        AppRoutes.websiteLog,
+                        arguments: {
+                          'websiteId': websiteId,
+                          'displayName': displayName,
+                        },
                       ),
                     ),
                   ],

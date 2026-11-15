@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/config/app_route_constants.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
-import 'package:onepanel_client/features/openresty/openresty_page.dart';
 import 'package:onepanel_client/features/security_gateway/providers/security_gateway_center_provider.dart';
 import 'package:onepanel_client/features/security_gateway/widgets/security_gateway_localizations.dart';
-import 'package:onepanel_client/features/settings/panel_ssl/pages/panel_ssl_page.dart';
-import 'package:onepanel_client/features/websites/pages/website_site_ssl_page.dart';
-import 'package:onepanel_client/features/websites/pages/website_ssl_center_page.dart';
+import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/shared/security_gateway/widgets/risk_notice_banner.dart';
 import 'package:onepanel_client/shared/widgets/section_card.dart';
@@ -121,26 +119,26 @@ class _SecurityGatewayCenterBody extends StatelessWidget {
                   runSpacing: AppDesignTokens.spacingSm,
                   children: [
                     FilledButton.icon(
-                      onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const PanelSslPage()),
+                      onPressed: () => openRouteRespectingShell(
+                        context,
+                        AppRoutes.panelSsl,
                       ),
                       icon: const Icon(Icons.download_outlined),
                       label: Text(l10n.securityGatewayPanelTlsSection),
                     ),
                     OutlinedButton.icon(
-                      onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => WebsiteSslCenterPage(
-                              initialWebsiteId: initialWebsiteId),
-                        ),
+                      onPressed: () => openRouteRespectingShell(
+                        context,
+                        AppRoutes.websiteSslCenter,
+                        arguments: {'websiteId': initialWebsiteId},
                       ),
                       icon: const Icon(Icons.workspace_premium_outlined),
                       label: Text(l10n.securityGatewayCertificateCenterAction),
                     ),
                     OutlinedButton.icon(
-                      onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (_) => const OpenRestyPage()),
+                      onPressed: () => openRouteRespectingShell(
+                        context,
+                        AppRoutes.openrestyCenter,
                       ),
                       icon: const Icon(Icons.hub_outlined),
                       label: Text(l10n.securityGatewayOpenRestyHttpsAction),
@@ -199,8 +197,9 @@ class _SecurityGatewayCenterBody extends StatelessWidget {
                           context, provider, 'panel'),
                     ),
                     TextButton(
-                      onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const PanelSslPage()),
+                      onPressed: () => openRouteRespectingShell(
+                        context,
+                        AppRoutes.panelSsl,
                       ),
                       child: Text(l10n.securityGatewayOpenPanelTlsAction),
                     ),
@@ -228,23 +227,22 @@ class _SecurityGatewayCenterBody extends StatelessWidget {
                           context, provider, 'website_https'),
                     ),
                     TextButton(
-                      onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => WebsiteSslCenterPage(
-                              initialWebsiteId: initialWebsiteId),
-                        ),
+                      onPressed: () => openRouteRespectingShell(
+                        context,
+                        AppRoutes.websiteSslCenter,
+                        arguments: {'websiteId': initialWebsiteId},
                       ),
                       child: Text(l10n.securityGatewayOpenCertCenterAction),
                     ),
                     if (initialWebsiteId != null)
                       TextButton(
-                        onPressed: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => WebsiteSiteSslPage(
-                              websiteId: initialWebsiteId!,
-                              displayName: displayName,
-                            ),
-                          ),
+                        onPressed: () => openRouteRespectingShell(
+                          context,
+                          AppRoutes.websiteSiteSsl,
+                          arguments: {
+                            'websiteId': initialWebsiteId,
+                            'displayName': displayName,
+                          },
                         ),
                         child: Text(
                             l10n.securityGatewayOpenWebsiteStrategyAction),
@@ -276,9 +274,9 @@ class _SecurityGatewayCenterBody extends StatelessWidget {
                           context, provider, 'openresty_'),
                     ),
                     TextButton(
-                      onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (_) => const OpenRestyPage()),
+                      onPressed: () => openRouteRespectingShell(
+                        context,
+                        AppRoutes.openrestyCenter,
                       ),
                       child: Text(l10n.securityGatewayOpenOpenRestyAction),
                     ),

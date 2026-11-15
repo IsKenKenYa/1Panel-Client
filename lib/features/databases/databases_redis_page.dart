@@ -61,8 +61,9 @@ class _DatabaseRedisPageViewState extends State<_DatabaseRedisPageView> {
     final item = provider.item;
 
     if (provider.isLoading && detail == null) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+      return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        body: const Center(child: CircularProgressIndicator()),
       );
     }
 
