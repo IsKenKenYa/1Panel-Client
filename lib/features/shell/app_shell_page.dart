@@ -15,6 +15,7 @@ import 'package:onepanel_client/features/shell/widgets/server_switcher_action.da
 import 'package:onepanel_client/widgets/navigation/app_bottom_navigation_bar.dart';
 
 import '../../core/utils/snackbar_utils.dart';
+import '../../core/theme/ui_render_policy.dart';
 class AppShellPage extends StatefulWidget {
   const AppShellPage({
     super.key,
@@ -164,6 +165,9 @@ class _AppShellPageState extends State<AppShellPage> {
           Scaffold(
             key: _mobileScaffoldKey,
             drawerEnableOpenDragGesture: true,
+            // 玻璃底栏需要内容从栏下穿透可采样，否则玻璃后面是纯色背景，
+            // 视觉上与实色无异（液态玻璃模式的前提条件）。
+            extendBody: UIRenderPolicy.liquidGlassEnabled,
             drawer: MobileMoreModulesDrawer(
               modules: moreModules,
               pinnedModules: pinnedModules.pins,

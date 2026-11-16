@@ -39,38 +39,46 @@ class DesktopSidebar extends StatelessWidget {
             right: BorderSide(color: scheme.outlineVariant),
           ),
         ),
-        // 桌面导航浮层液态玻璃：背景色改由玻璃 tint 承担，
-        // 内容窗口在侧栏后方滚动穿透（与移动端导航栏同语义）。
-        child: NavigationRail(
-          extended: true,
-          backgroundColor: Colors.transparent,
-          selectedIndex: selectedIndex,
-          onDestinationSelected: (index) => onSelect(modules[index]),
-          labelType: NavigationRailLabelType.none,
-          useIndicator: true,
-          indicatorColor: scheme.primaryContainer,
-          minExtendedWidth: width,
-          leading: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-            child: Text(
-              context.l10n.appName,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-          ),
-          destinations: [
-            for (final module in modules)
-              NavigationRailDestination(
-                icon: Icon(
-                  module.icon,
-                  color: !module.requiresServer || hasServer ? null : disabledColor,
-                ),
-                selectedIcon: Icon(
-                  module.selectedIcon,
-                  color: !module.requiresServer || hasServer ? null : disabledColor,
-                ),
-                label: Text(module.label(context.l10n)),
+        // 桌面导航浮层液态玻璃：Container 不设背景色（玻璃 tint 承担底色），
+        // NavigationRail backgroundColor 本就 transparent；md3 模式玻璃禁用
+        // 后由 asGlass(enabled:false) 直通，需还原实色底。
+        child: Container(
+          color: UIRenderPolicy.liquidGlassEnabled ? null : bgColor,
+          child: NavigationRail(
+            extended: true,
+            backgroundColor: Colors.transparent,
+            selectedIndex: selectedIndex,
+            onDestinationSelected: (index) => onSelect(modules[index]),
+            labelType: NavigationRailLabelType.none,
+            useIndicator: true,
+            indicatorColor: scheme.primaryContainer,
+            minExtendedWidth: width,
+            leading: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              child: Text(
+                context.l10n.appName,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
-          ],
+            ),
+            destinations: [
+              for (final module in modules)
+                NavigationRailDestination(
+                  icon: Icon(
+                    module.icon,
+                    color: !module.requiresServer || hasServer
+                        ? null
+                        : disabledColor,
+                  ),
+                  selectedIcon: Icon(
+                    module.selectedIcon,
+                    color: !module.requiresServer || hasServer
+                        ? null
+                        : disabledColor,
+                  ),
+                  label: Text(module.label(context.l10n)),
+                ),
+            ],
+          ),
         ),
       ).asGlass(
         // 仅 liquidGlass 渲染模式启用玻璃；md3 模式保持实色侧栏。

@@ -40,6 +40,11 @@ class AppBottomNavigationBar extends StatelessWidget {
       selectedIndex: safeIndex,
       onDestinationSelected: onTap,
       animationDuration: const Duration(milliseconds: 400),
+      // 玻璃模式下载体必须透明：不透明背景会挡住 BackdropFilter 的场景采样，
+      // 玻璃模糊到的就是这块实色（视觉等于没玻璃）。md3 模式走 theme 默认底色。
+      backgroundColor: UIRenderPolicy.liquidGlassEnabled
+          ? Colors.transparent
+          : null,
       destinations: [
         for (var index = 0; index < items.length; index++)
           NavigationDestination(

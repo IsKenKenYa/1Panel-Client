@@ -46,6 +46,10 @@ class ServerAwarePageScaffold extends StatelessWidget {
               AppBar().preferredSize.height + (bottom?.preferredSize.height ?? 0),
             ),
             child: AppBar(
+              // 玻璃模式下载体透明（同底栏原理），md3 走 theme 默认。
+              backgroundColor: UIRenderPolicy.liquidGlassEnabled
+                  ? Colors.transparent
+                  : null,
               leading: canPop
                   ? IconButton(
                       icon: const Icon(Icons.arrow_back),
@@ -76,17 +80,17 @@ class ServerAwarePageScaffold extends StatelessWidget {
                   color: scheme.surface,
                   child: NoServerSelectedState(moduleName: title),
                 )
-              : ColoredBox(
-                  color: scheme.surface,
-                  child: Padding(
-                    // 内容避开玻璃 AppBar 高度（穿透由滚动产生，布局仍需让位）。
-                    padding: EdgeInsets.only(
-                      top: MediaQuery.paddingOf(context).top +
-                          AppBar().preferredSize.height +
-                          (bottom?.preferredSize.height ?? 0),
-                    ),
-                    child: body,
+              : Padding(
+                  // 首屏让位 AppBar（两种模式下 Scaffold 均不再自动避让：
+                  // extendBodyBehindAppBar 常开 + md3 也走了 PreferredSize appBar）。
+                  // Padding 不裁剪：滚动内容滚出 padding 区后自然穿过玻璃
+                  // AppBar 后方，玻璃采样到内容（ListView 裁剪由自身视口负责）。
+                  padding: EdgeInsets.only(
+                    top: MediaQuery.paddingOf(context).top +
+                        AppBar().preferredSize.height +
+                        (bottom?.preferredSize.height ?? 0),
                   ),
+                  child: body,
                 ),
           floatingActionButton: showMissingServer ? null : floatingActionButton,
           bottomNavigationBar: showMissingServer ? null : bottomNavigationBar,
