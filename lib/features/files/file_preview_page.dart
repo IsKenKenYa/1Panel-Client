@@ -796,10 +796,11 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
           ),
           const SizedBox(height: 8),
           Text(
-            widget.fileName,
+            widget.filePath,
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),
