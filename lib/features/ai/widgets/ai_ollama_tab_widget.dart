@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/ai/ai_provider.dart';
 import 'package:onepanel_client/features/ai/widgets/ai_ollama_tab_actions.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_empty_state_widget.dart';
 import 'package:provider/provider.dart';
 
 class AIOllamaTabWidget extends StatefulWidget {
@@ -96,10 +97,12 @@ class _AIOllamaTabWidgetState extends State<AIOllamaTabWidget> {
               ),
               const SizedBox(height: 12),
               if (provider.ollamaModelList.isEmpty && !provider.isLoading)
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 48),
-                    child: Text(l10n.commonEmpty),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 32),
+                  child: ModuleEmptyStateWidget(
+                    title: l10n.aiOllamaEmpty,
+                    description: l10n.aiOllamaEmptyDesc,
+                    icon: Icons.memory_outlined,
                   ),
                 )
               else

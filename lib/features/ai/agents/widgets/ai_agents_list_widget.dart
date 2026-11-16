@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/ai/agents/agents_provider.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_empty_state_widget.dart';
 import 'package:provider/provider.dart';
 
 import 'ai_agent_create_dialog.dart';
@@ -72,7 +73,11 @@ class _AIAgentsListWidgetState extends State<AIAgentsListWidget> {
                 child: LayoutBuilder(
                   builder: (context, constraints) {
                     if (provider.agents.isEmpty && !provider.isLoading) {
-                      return Center(child: Text(l10n.aiAgentsNoAgents));
+                      return ModuleEmptyStateWidget(
+                        title: l10n.aiAgentsNoAgents,
+                        description: l10n.aiAgentsNoAgentsDesc,
+                        icon: Icons.smart_toy_outlined,
+                      );
                     }
 
                     final list = _buildAgentList(context, provider);

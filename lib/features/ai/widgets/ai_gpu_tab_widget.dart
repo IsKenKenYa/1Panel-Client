@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/ai/ai_provider.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_empty_state_widget.dart';
 import 'package:provider/provider.dart';
 
 class AIGpuTabWidget extends StatefulWidget {
@@ -45,10 +46,12 @@ class _AIGpuTabWidgetState extends State<AIGpuTabWidget> {
               ),
               const SizedBox(height: 12),
               if (provider.gpuInfoList.isEmpty && !provider.isLoading)
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 48),
-                    child: Text(l10n.aiNoGpuData),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 32),
+                  child: ModuleEmptyStateWidget(
+                    title: l10n.aiNoGpuData,
+                    description: l10n.aiNoGpuDataDesc,
+                    icon: Icons.memory_outlined,
                   ),
                 )
               else

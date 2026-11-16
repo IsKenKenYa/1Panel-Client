@@ -62,6 +62,10 @@ class _AIAgentsTabWidgetState extends State<AIAgentsTabWidget>
               const LinearProgressIndicator(minHeight: 2),
             TabBar(
               controller: _tabController,
+              // 次级标签：左对齐滚动，避免与页面级标签形成两条全宽标签栏。
+              isScrollable: true,
+              tabAlignment: TabAlignment.start,
+              dividerColor: Colors.transparent,
               tabs: <Widget>[
                 Tab(text: l10n.aiAgentsSubTabAgent),
                 Tab(text: l10n.aiAgentsSubTabModel),

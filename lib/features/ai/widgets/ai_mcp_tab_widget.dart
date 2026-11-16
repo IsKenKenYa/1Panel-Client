@@ -5,6 +5,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/mcp_models.dart';
 import 'package:onepanel_client/features/ai/mcp_server_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_empty_state_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
 
 class AIMcpTabWidget extends StatefulWidget {
@@ -116,8 +117,12 @@ class _AIMcpTabWidgetState extends State<AIMcpTabWidget> {
               const SizedBox(height: 12),
               if (provider.servers.isEmpty && !provider.isLoading)
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 48),
-                  child: Center(child: Text(l10n.aiMcpNoServers)),
+                  padding: const EdgeInsets.symmetric(vertical: 32),
+                  child: ModuleEmptyStateWidget(
+                    title: l10n.aiMcpNoServers,
+                    description: l10n.aiMcpNoServersDesc,
+                    icon: Icons.dns_outlined,
+                  ),
                 )
               else
                 ...provider.servers.map(
