@@ -4064,6 +4064,12 @@ abstract class AppLocalizations {
   /// **'Theme'**
   String get settingsTheme;
 
+  /// No description provided for @settingsThemeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Light, dark and system-follow themes'**
+  String get settingsThemeSubtitle;
+
   /// No description provided for @settingsAppLock.
   ///
   /// In en, this message translates to:

@@ -932,6 +932,7 @@
   "settingsUIRenderModeMD3": "MDUI3",
   "settingsUIRenderModeRestartHint": "修改 UI 渲染模式后，请重启应用以生效。",
   "settingsTheme": "主题",
+  "settingsThemeSubtitle": "浅色、深色与系统跟随",
   "settingsAppLock": "应用锁",
   "settingsAppLockDesc": "使用生物识别或设备凭据保护敏感模块",
   "settingsServerManagement": "服务器管理",

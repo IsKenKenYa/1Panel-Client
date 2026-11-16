@@ -2071,6 +2071,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsTheme => '主题';
 
   @override
+  String get settingsThemeSubtitle => '浅色、深色与系统跟随';
+
+  @override
   String get settingsAppLock => '应用锁';
 
   @override

@@ -2123,6 +2123,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsTheme => 'Theme';
 
   @override
+  String get settingsThemeSubtitle => 'Light, dark and system-follow themes';
+
+  @override
   String get settingsAppLock => 'App Lock';
 
   @override

@@ -932,6 +932,7 @@
   "settingsUIRenderModeMD3": "MDUI3",
   "settingsUIRenderModeRestartHint": "Please restart the app for the UI render mode changes to take effect.",
   "settingsTheme": "Theme",
+  "settingsThemeSubtitle": "Light, dark and system-follow themes",
   "settingsAppLock": "App Lock",
   "settingsAppLockDesc": "Use biometric/device credentials to protect sensitive modules",
   "settingsServerManagement": "Server management",
