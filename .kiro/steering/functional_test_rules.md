@@ -114,6 +114,13 @@ void main() {
 
 ## 必需测试场景
 
+### Flutter Web 浏览器轨道
+
+- 使用真实浏览器验证 Web Crypto 加密、IndexedDB 重新打开、错误密码、密文完整性与并发保存。
+- 验证本地密码模式与用户主动选择的浏览器密钥模式；解密失败时原数据保持可用。
+- 验证 HTTPS 地址、CORS 预检、浏览器文件上传、下载、预览及手机和电脑宽度的表单交互。
+- 执行 `flutter test --platform chrome test/web/`、`pnpm build:web` 与 `pnpm check:web`。
+
 ### API 层
 - ✅ 成功响应解析
 - ✅ 错误响应处理（400/401/403/404/500）

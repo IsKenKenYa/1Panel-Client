@@ -174,6 +174,35 @@
    flutter run
    ```
 
+### 11.3 Flutter Web
+
+使用 Node.js 22.18 及以上版本和 pnpm 安装固定的发布依赖：
+
+```bash
+pnpm install --frozen-lockfile
+pnpm build:web
+pnpm check:web
+```
+
+`pnpm build:web` 准备本地 PDF.js 资源，并生成 `build/web/` 的 Flutter release 应用。`pnpm check:web` 只执行 Cloudflare 静态发布预演。固定域名与 Worker 名称位于 `cloudflare.config.ts`；部署时在终端执行 `pnpm exec cf auth login`，完成账户登录后执行 `pnpm deploy:web`。发布账户需要拥有目标域名。
+
+浏览器开发使用 localhost 作为安全来源：
+
+```bash
+flutter run -d chrome --web-port 8765
+flutter test --platform chrome test/web/browser_vault_test.dart test/web/browser_file_operations_test.dart
+```
+
+真实浏览器 API 测试通过 `.env` 读取测试凭据，测试面板需要明确允许 localhost 来源的 CORS 请求。仅使用专用测试主机，文件往返测试会创建并删除专用目录：
+
+```bash
+flutter test --platform chrome test/web/browser_api_integration_test.dart --dart-define-from-file=.env
+```
+
+本地密码默认至少 12 个字符；用户也可以主动选择浏览器密钥模式。Safari 分享菜单中的“添加到主屏幕”可以创建 iPhone、iPad 的独立应用入口。浏览器中的数据按来源隔离，固定使用正式域名才能持续访问同一份本地配置。
+
+Cloudflare 使用 `web/_headers` 提供 CSP 与隐私响应头。面板应提供可信 HTTPS，并允许网页来源的 `GET, POST, PUT, PATCH, DELETE, OPTIONS`、实际请求使用的 `1Panel-Token`、`1Panel-Timestamp`、`Content-Type` 等请求头；文件下载需要暴露 `Content-Disposition` 与 `Content-Length`。预检请求在认证之前返回成功，来源应明确限定。开发 localhost 允许 HTTP 测试面板，公开 HTTPS 网页需要 HTTPS 面板。WebSocket 认证能力边界见跨平台治理文档。
+
 ## 12. 开发工具和技巧
 
 ### 12.1 Flutter DevTools

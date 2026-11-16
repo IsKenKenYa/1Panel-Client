@@ -11,6 +11,8 @@ inclusion: auto
 
 ## 实时功能规划（强制）
 
+- Flutter Web 复用 Dart 业务核心与 MDUI3，通过 Cloudflare 分发静态资源，浏览器直连具备可信 HTTPS 与 CORS 授权的用户面板。浏览器凭据使用 Web Crypto AES-GCM 与 IndexedDB；用户选择本地密码或浏览器密钥，解密失败时保留数据并报告错误。Web 专项门禁：`flutter test --platform chrome test/web/`、`pnpm build:web`、`pnpm check:web`。
+
 - 功能批次状态唯一维护在 `docs/development/modules/阶段总计划.md`；不要在模块计划、审计报告或聊天记录中维护第二份“当前状态”。
 - 开始前登记范围、前端行为对照、Swagger 关键字、验收和门禁；完成后回写交付、残留、验证命令与结果日期。
 - 计划状态使用 `planned`、`in_progress`、`blocked`、`verified`、`deferred`。`verified` 必须附可重复命令，`deferred` 必须记录重新评估条件。

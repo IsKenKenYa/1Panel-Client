@@ -210,6 +210,14 @@
 
 本节整合了原 `docs/模块适配专属工作流.md` 与 `docs/原生UI适配专属工作流.md` 的有效内容，作为持续适配 1Panel API 与原生 UI 的活规范。两份独立文档已删除。
 
+### Flutter Web 浏览器轨道
+
+- Web 使用共享 Dart 业务核心与 MDUI3 界面，通过 Cloudflare Workers Static Assets 分发静态应用。
+- 浏览器直接访问用户面板；公开网页要求面板提供可信 HTTPS 与明确授权网页来源的 CORS 配置。
+- 凭据通过 Web Crypto AES-GCM 加密保存在 IndexedDB。本地密码模式使用 PBKDF2-SHA256 派生内存中的密钥；浏览器密钥模式由用户主动选择，保存不可导出的 CryptoKey。
+- 浏览器安全存储读取或解密失败时必须保留原数据并报告错误。普通设置使用浏览器本地持久存储。
+- Web 专项门禁：`flutter test --platform chrome test/web/`、`pnpm build:web`、`pnpm check:web`；应用发布使用固定域名，浏览器数据按来源隔离。
+
 ### V2 接口定义单一来源
 
 - V2 适配一律以 `docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json` 为准（只读）。
@@ -291,9 +299,9 @@ python3 check_module_client_coverage.py --all                # 检查客户端�
 - 业务逻辑禁止写在 Widget `build()` 或原生 UI 控制器内。
 - 状态管理默认 Provider，其他模式需评审通过。
 
-## 跨平台 UI 治理（非 Web，强制）
+## 跨平台 UI 治理（强制）
 
-- 适配范围：Android、iOS、iPadOS、macOS、Windows、Linux、HarmonyOS（目标平台）；Web 不在当前适配范围。
+- 适配范围：Android、iOS、iPadOS、macOS、Windows、Linux、HarmonyOS，以及 Flutter Web 浏览器轨道。
 - MDUI3 是全平台可用基线，必须持续可运行，不得降级为"仅回退方案"。
 - Apple（iOS/iPadOS/macOS）与 Windows 必须建设原生 UI 轨道，同时保留 MDUI3 通用轨道。
 - 允许并鼓励多设计系统与多主题，但必须走统一注册中心与主题控制，禁止页面私自定义独立体系。

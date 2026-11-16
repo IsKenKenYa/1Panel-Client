@@ -4,7 +4,9 @@
 
 ## 项目概述
 
-**1Panel Client** 是一个跨平台 Flutter 应用，提供对 1Panel Linux 服务器管理面板的移动与桌面访问。
+**1Panel Client** 是一个跨平台 Flutter 应用，提供对 1Panel Linux 服务器管理面板的移动、桌面与浏览器访问。
+
+Flutter Web 复用 Dart 业务核心与 MDUI3，通过 Cloudflare 分发静态资源，直接访问提供可信 HTTPS 与 CORS 授权的用户面板。浏览器凭据使用 Web Crypto AES-GCM 加密保存在 IndexedDB；用户选择本地密码解锁或浏览器保存不可导出的 CryptoKey。读取或解密失败时保留数据并报告错误。Web 门禁为 `flutter test --platform chrome test/web/`、`pnpm build:web` 与 `pnpm check:web`，完整规则见 `AGENTS.md`「Flutter Web 浏览器轨道」。
 
 ### 已完成能力
 - AI 管理模块（Ollama 模型、GPU 监控、域名绑定）

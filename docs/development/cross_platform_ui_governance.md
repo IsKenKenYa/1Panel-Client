@@ -2,7 +2,7 @@
 
 ## Summary
 
-This document defines how 1Panel Client should evolve into a governed non-web multi-platform product with platform-specific UI strategies and a shared Dart business core.
+This document defines the platform UI strategies and shared Dart business core for 1Panel Client across native applications and browsers.
 
 The goal is not to encourage arbitrary UI fragmentation. The goal is to enforce one shared non-UI Dart core, allow multiple governed design systems/themes, and apply explicit platform strategies without breaking architecture consistency.
 
@@ -23,7 +23,7 @@ The goal is not to encourage arbitrary UI fragmentation. The goal is to enforce 
 - The project supports multiple design systems and multiple theme profiles under central governance
 - MDUI3 is the mandatory, always-available baseline across target platforms and must not be treated as a backup-only path
 - Apple (iOS/iPadOS/macOS) and Windows must keep a native UI track in parallel with the MDUI3 baseline
-- Web is out of current adaptation scope
+- Flutter Web uses the shared Dart business core and MDUI3, with static distribution and browser-local persistence
 - Shared non-UI layers must remain Dart-first and shared across platforms unless a hard system limitation requires otherwise
 
 ### Why this is the default
@@ -81,6 +81,17 @@ The end-user selectable appearance layer:
 User-facing theme switching is supported conceptually, but theme switching must remain centrally controlled.
 
 The app should not allow individual pages to invent custom theming logic outside the shared theme system.
+
+## Flutter Web
+
+- Web 使用当前 Dart State、Service、Repository、API 与 MDUI3；宽度变化复用既有自适应导航。
+- Cloudflare Workers Static Assets 仅保存公开应用文件。面板请求与凭据直接由浏览器发送到用户面板。
+- 公开来源 `https://1pc.iskenkenya.com` 要求面板使用可信 HTTPS，并在面板或用户控制的反向代理中明确授权该来源。HTTP 面板、自签名证书、浏览器局域网权限与 CORS 均受浏览器策略约束。
+- 浏览器 WebSocket 无法附加 1Panel 的认证请求头。当前终端与依赖此认证的实时接口需要使用面板自身的网页入口；静态分发服务不转发此类通信。
+- IndexedDB 保存 AES-GCM 加密凭据。本地密码模式使用 PBKDF2-SHA256、600000 次迭代、随机 16 字节 salt；密钥在当前页面内存中。每次加密生成随机 12 字节 IV，使用存储键名作为附加认证数据。
+- 用户可以选择浏览器密钥模式；不可导出的 CryptoKey 通过 IndexedDB structured clone 保存，使用当前浏览器的人可以直接打开数据。两种模式都受当前来源脚本的权限约束。
+- 设置和服务器列表保存在当前来源的浏览器存储。普通关闭或刷新保留数据；隐私浏览、清除网站数据、浏览器空间回收会影响保存。`navigator.storage.persist()` 请求持久存储，浏览器可以拒绝授权。密码遗失时无法解密原凭据。
+- 文件选择按文件读取，浏览器保存通过 Blob 下载；预览使用内存中的字节与临时 Blob URL，页面销毁时释放预览 URL。PDF.js 在打开 PDF 时加载，passkeys SDK 与 PDF.js 使用本地发布资源。浏览器日志最多保留当前页面的 2000 行，可通过现有入口导出。
 
 ## Native UI Strategy
 
