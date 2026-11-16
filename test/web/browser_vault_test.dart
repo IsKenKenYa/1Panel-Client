@@ -26,6 +26,20 @@ void main() {
     await Hive.deleteBoxFromDisk(boxName);
   });
 
+  test('单个字符的非空密码可以加密并重新解锁', () async {
+    await vault.unlock('a');
+    await vault.write('api_key', 'short-password-credential');
+    vault.lock();
+    await vault.unlock('a');
+    expect(await vault.read('api_key'), 'short-password-credential');
+  });
+
+  test('空密码不创建本地存储', () async {
+    await expectLater(vault.unlock(''), throwsArgumentError);
+    expect(vault.isConfigured, isFalse);
+    expect(vault.isUnlocked, isFalse);
+  });
+
   test('凭据加密保存在 IndexedDB，重新打开后需要密码', () async {
     await vault.unlock(password);
     await vault.write('api_key', 'private-panel-key');

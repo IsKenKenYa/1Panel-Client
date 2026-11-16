@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:onepanel_client/core/config/api_config_migration.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/core/storage/browser_vault.dart';
 import 'package:onepanel_client/core/platform/services/browser_document_service.dart';
+import 'package:onepanel_client/core/platform/services/browser_password_autofill.dart';
 import 'package:onepanel_client/core/theme/app_theme.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
@@ -20,6 +22,7 @@ class BrowserVaultGate extends StatefulWidget {
 
 class _BrowserVaultGateState extends State<BrowserVaultGate> {
   final _vault = BrowserVault.instance;
+  final _autofillAccount = TextEditingController(text: '1Panel Client');
   final _formKey = GlobalKey<FormState>();
   final _password = TextEditingController();
   final _confirmation = TextEditingController();
@@ -65,7 +68,7 @@ class _BrowserVaultGateState extends State<BrowserVaultGate> {
   Future<void> _unlock() async {
     if (_saving) return;
     if (_usePassword && !_formKey.currentState!.validate()) {
-      if (_password.text.length < (_vault.isConfigured ? 1 : 12)) {
+      if (_password.text.isEmpty) {
         _passwordFocus.requestFocus();
       } else {
         _confirmationFocus.requestFocus();
@@ -84,6 +87,10 @@ class _BrowserVaultGateState extends State<BrowserVaultGate> {
       }
       await _vault.requestPersistence();
       await ApiConfigMigration.runMigrationIfNeeded();
+      if (_usePassword) {
+        if (kIsWeb) BrowserPasswordAutofill.commit();
+        TextInput.finishAutofillContext(shouldSave: true);
+      }
       _password.clear();
       _confirmation.clear();
       if (mounted) setState(() => _ready = true);
@@ -101,6 +108,7 @@ class _BrowserVaultGateState extends State<BrowserVaultGate> {
 
   @override
   void dispose() {
+    _autofillAccount.dispose();
     _password.dispose();
     _confirmation.dispose();
     _passwordFocus.dispose();
@@ -153,6 +161,7 @@ class _BrowserVaultGateState extends State<BrowserVaultGate> {
                   child: Form(
                     key: _formKey,
                     child: AutofillGroup(
+                      onDisposeAction: AutofillContextAction.cancel,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -200,6 +209,13 @@ class _BrowserVaultGateState extends State<BrowserVaultGate> {
                               : l10n.webVaultBrowserModeHelp),
                           const SizedBox(height: 24),
                           if (_usePassword) ...[
+                            Offstage(
+                              child: TextField(
+                                controller: _autofillAccount,
+                                readOnly: true,
+                                autofillHints: const [AutofillHints.username],
+                              ),
+                            ),
                             TextFormField(
                               controller: _password,
                               focusNode: _passwordFocus,
@@ -207,6 +223,9 @@ class _BrowserVaultGateState extends State<BrowserVaultGate> {
                               enableSuggestions: false,
                               autocorrect: false,
                               enabled: !_saving,
+                              keyboardType: TextInputType.visiblePassword,
+                              textInputAction: creating
+                                  ? TextInputAction.next : TextInputAction.done,
                               autofillHints: [
                                 creating
                                     ? AutofillHints.newPassword
@@ -236,10 +255,12 @@ class _BrowserVaultGateState extends State<BrowserVaultGate> {
                                 ),
                               ),
                               validator: (value) =>
-                                  (value ?? '').length < (creating ? 12 : 1)
-                                      ? l10n.webVaultPasswordLength
+                                  (value ?? '').isEmpty
+                                      ? l10n.webVaultPasswordRequired
                                       : null,
-                              onFieldSubmitted: (_) => _unlock(),
+                              onFieldSubmitted: creating
+                                  ? (_) => _confirmationFocus.requestFocus()
+                                  : (_) => _unlock(),
                             ),
                             if (creating) ...[
                               const SizedBox(height: 16),
@@ -250,6 +271,8 @@ class _BrowserVaultGateState extends State<BrowserVaultGate> {
                                 enabled: !_saving,
                                 enableSuggestions: false,
                                 autocorrect: false,
+                                keyboardType: TextInputType.visiblePassword,
+                                textInputAction: TextInputAction.done,
                                 autofillHints: const [AutofillHints.newPassword],
                                 decoration: InputDecoration(
                                   labelText: l10n.webVaultConfirmPassword,

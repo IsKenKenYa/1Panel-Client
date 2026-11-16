@@ -19,7 +19,7 @@ class LoggingInterceptor extends Interceptor {
     if (logBody && options.data != null) {
       appLogger.dWithPackage('network', 'Request Body: ${options.data}');
     }
-    if (options.queryParameters.isNotEmpty) {
+    if (logBody && options.queryParameters.isNotEmpty) {
       appLogger.dWithPackage(
           'network', 'Query Params: ${options.queryParameters}');
     }
@@ -56,7 +56,7 @@ class LoggingInterceptor extends Interceptor {
 
     appLogger.eWithPackage(
         'network', '${err.type} ${err.requestOptions.path}: ${err.message}');
-    if (err.response?.data != null) {
+    if (logBody && err.response?.data != null) {
       appLogger.eWithPackage(
           'network', 'Error Response: ${err.response?.data}');
     }

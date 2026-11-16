@@ -33,6 +33,7 @@ class _ServerFormPageState extends State<ServerFormPage> {
   bool _testing = false;
   bool _allowInsecureTls = false;
   ServerConnectionResult? _testResult;
+  String? _confirmedHttpUrl;
 
   @override
   void dispose() {
@@ -43,6 +44,40 @@ class _ServerFormPageState extends State<ServerFormPage> {
     super.dispose();
   }
 
+  Future<bool> _confirmHttpConnection() async {
+    final address = _urlController.text.trim();
+    if (!kIsWeb || Uri.tryParse(address)?.scheme != 'http' ||
+        _confirmedHttpUrl == address) {
+      return true;
+    }
+    final l10n = context.l10n;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.webHttpConnectionTitle),
+        content: Text(l10n.webHttpConnectionWarning),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(l10n.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(l10n.webHttpConnectionContinue),
+          ),
+        ],
+      ),
+    ) ?? false;
+    if (confirmed) _confirmedHttpUrl = address;
+    return confirmed;
+  }
+
+  String _connectionErrorMessage(ServerConnectionResult result) {
+    return kIsWeb && result.isNetworkError
+        ? context.l10n.webConnectionFailed
+        : result.errorMessage ?? context.l10n.serverTestFailed;
+  }
+
   Future<void> _testConnection() async {
     if (_urlController.text.trim().isEmpty ||
         _apiKeyController.text.trim().isEmpty) {
@@ -50,6 +85,7 @@ class _ServerFormPageState extends State<ServerFormPage> {
       return;
     }
     if (!_formKey.currentState!.validate()) return;
+    if (!await _confirmHttpConnection() || !mounted) return;
 
     setState(() {
       _testing = true;
@@ -74,7 +110,7 @@ class _ServerFormPageState extends State<ServerFormPage> {
             '${context.l10n.serverTestSuccess} (${result.responseTime?.inMilliseconds}ms)');
       } else {
         SnackBarUtils.showError(context,
-            '${context.l10n.serverTestFailed}: ${result.errorMessage}');
+            '${context.l10n.serverTestFailed}: ${_connectionErrorMessage(result)}');
       }
     } finally {
       if (mounted) {
@@ -89,6 +125,7 @@ class _ServerFormPageState extends State<ServerFormPage> {
     if (!_formKey.currentState!.validate()) {
       return;
     }
+    if (!await _confirmHttpConnection() || !mounted) return;
 
     final l10n = context.l10n;
     final currentServerController = context.read<CurrentServerController>();
@@ -181,7 +218,7 @@ class _ServerFormPageState extends State<ServerFormPage> {
                           return l10n.serverFormRequired;
                         }
                         if (kIsWeb && BrowserConnectionPolicy.issue(value) != null) {
-                          return l10n.webConnectionHttpsRequired;
+                          return l10n.webConnectionAddressInvalid;
                         }
                         return null;
                       },
@@ -308,7 +345,7 @@ class _ServerFormPageState extends State<ServerFormPage> {
                             if (_testResult!.errorMessage != null) ...[
                               const SizedBox(height: 4),
                               Text(
-                                _testResult!.errorMessage!,
+                                _connectionErrorMessage(_testResult!),
                                 style: const TextStyle(fontSize: 12),
                               ),
                             ],

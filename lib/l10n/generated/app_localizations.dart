@@ -16932,7 +16932,7 @@ abstract class AppLocalizations {
   /// No description provided for @webVaultPasswordModeHelp.
   ///
   /// In en, this message translates to:
-  /// **'Enter your password again after closing the page. Your password and decryption key stay on this device. Keep your password safe.'**
+  /// **'Enter your password again after closing the page. You can save it with your browser\'s password manager. This app does not upload your local password or decryption key.'**
   String get webVaultPasswordModeHelp;
 
   /// No description provided for @webVaultPassword.
@@ -16947,11 +16947,11 @@ abstract class AppLocalizations {
   /// **'Confirm local password'**
   String get webVaultConfirmPassword;
 
-  /// No description provided for @webVaultPasswordLength.
+  /// No description provided for @webVaultPasswordRequired.
   ///
   /// In en, this message translates to:
-  /// **'Use at least 12 characters'**
-  String get webVaultPasswordLength;
+  /// **'Enter your local password'**
+  String get webVaultPasswordRequired;
 
   /// No description provided for @webVaultPasswordMismatch.
   ///
@@ -16992,14 +16992,32 @@ abstract class AppLocalizations {
   /// No description provided for @webConnectionRequirements.
   ///
   /// In en, this message translates to:
-  /// **'Browser connections need trusted HTTPS and permission from your panel for cross-origin requests (CORS). Local network access also needs browser permission.'**
+  /// **'HTTP and HTTPS addresses are supported. Your panel must allow this site\'s cross-origin requests (CORS). HTTP access from an HTTPS page remains browser-controlled; supported Chrome/Edge versions can request local-network access, while Safari has no equivalent permission.'**
   String get webConnectionRequirements;
 
-  /// No description provided for @webConnectionHttpsRequired.
+  /// No description provided for @webConnectionAddressInvalid.
   ///
   /// In en, this message translates to:
-  /// **'Enter an HTTPS panel address with a trusted certificate'**
-  String get webConnectionHttpsRequired;
+  /// **'Enter a valid HTTP or HTTPS address without a username or password'**
+  String get webConnectionAddressInvalid;
+
+  /// No description provided for @webHttpConnectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm HTTP connection'**
+  String get webHttpConnectionTitle;
+
+  /// No description provided for @webHttpConnectionWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'HTTP does not encrypt traffic. Authentication signatures and panel data may be intercepted or modified, and signatures may be replayed during their validity window. Use a trusted network or an encrypted VPN. Browser CORS, mixed-content, and local-network checks still apply.'**
+  String get webHttpConnectionWarning;
+
+  /// No description provided for @webHttpConnectionContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'I understand, connect'**
+  String get webHttpConnectionContinue;
 
   /// No description provided for @webConnectionTlsUnsupported.
   ///
@@ -17010,7 +17028,7 @@ abstract class AppLocalizations {
   /// No description provided for @webConnectionFailed.
   ///
   /// In en, this message translates to:
-  /// **'The browser could not connect. Check the HTTPS certificate, CORS settings, and local network permission.'**
+  /// **'The browser could not read the panel response. Check the network, CORS, mixed-content rules, and local-network permission. HTTPS also requires a trusted certificate.'**
   String get webConnectionFailed;
 
   /// No description provided for @webVaultInstallHint.

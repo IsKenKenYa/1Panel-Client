@@ -8,12 +8,14 @@ class ServerConnectionResult {
     this.errorMessage,
     this.osInfo,
     this.responseTime,
+    this.isNetworkError = false,
   });
 
   final bool success;
   final String? errorMessage;
   final Map<String, dynamic>? osInfo;
   final Duration? responseTime;
+  final bool isNetworkError;
 }
 
 class ServerConnectionService {
@@ -105,6 +107,10 @@ class ServerConnectionService {
         success: false,
         errorMessage: errorMessage,
         responseTime: stopwatch.elapsed,
+        isNetworkError: e.type == DioExceptionType.connectionError ||
+            e.type == DioExceptionType.connectionTimeout ||
+            e.type == DioExceptionType.sendTimeout ||
+            e.type == DioExceptionType.receiveTimeout,
       );
     } catch (e) {
       stopwatch.stop();

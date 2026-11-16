@@ -8976,7 +8976,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get webVaultPasswordModeHelp =>
-      'Enter your password again after closing the page. Your password and decryption key stay on this device. Keep your password safe.';
+      'Enter your password again after closing the page. You can save it with your browser\'s password manager. This app does not upload your local password or decryption key.';
 
   @override
   String get webVaultPassword => 'Local password';
@@ -8985,7 +8985,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get webVaultConfirmPassword => 'Confirm local password';
 
   @override
-  String get webVaultPasswordLength => 'Use at least 12 characters';
+  String get webVaultPasswordRequired => 'Enter your local password';
 
   @override
   String get webVaultPasswordMismatch =>
@@ -9011,11 +9011,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get webConnectionRequirements =>
-      'Browser connections need trusted HTTPS and permission from your panel for cross-origin requests (CORS). Local network access also needs browser permission.';
+      'HTTP and HTTPS addresses are supported. Your panel must allow this site\'s cross-origin requests (CORS). HTTP access from an HTTPS page remains browser-controlled; supported Chrome/Edge versions can request local-network access, while Safari has no equivalent permission.';
 
   @override
-  String get webConnectionHttpsRequired =>
-      'Enter an HTTPS panel address with a trusted certificate';
+  String get webConnectionAddressInvalid =>
+      'Enter a valid HTTP or HTTPS address without a username or password';
+
+  @override
+  String get webHttpConnectionTitle => 'Confirm HTTP connection';
+
+  @override
+  String get webHttpConnectionWarning =>
+      'HTTP does not encrypt traffic. Authentication signatures and panel data may be intercepted or modified, and signatures may be replayed during their validity window. Use a trusted network or an encrypted VPN. Browser CORS, mixed-content, and local-network checks still apply.';
+
+  @override
+  String get webHttpConnectionContinue => 'I understand, connect';
 
   @override
   String get webConnectionTlsUnsupported =>
@@ -9023,7 +9033,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get webConnectionFailed =>
-      'The browser could not connect. Check the HTTPS certificate, CORS settings, and local network permission.';
+      'The browser could not read the panel response. Check the network, CORS, mixed-content rules, and local-network permission. HTTPS also requires a trusted certificate.';
 
   @override
   String get webVaultInstallHint =>

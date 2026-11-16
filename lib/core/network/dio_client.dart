@@ -29,7 +29,7 @@ class DioClient {
   static BaseOptions _createBaseOptionsStatic(String? baseUrl) {
     if (kIsWeb && baseUrl != null &&
         BrowserConnectionPolicy.issue(baseUrl) != null) {
-      throw ArgumentError('需要有效的 HTTPS 面板地址');
+      throw ArgumentError('需要有效的 HTTP 或 HTTPS 面板地址');
     }
     return BaseOptions(
       baseUrl: baseUrl ?? ApiConstants.defaultBaseUrl,
@@ -51,7 +51,7 @@ class DioClient {
   void _addInterceptors() {
     _dio.interceptors.add(_authInterceptor);
     _dio.interceptors.add(BusinessResponseInterceptor());
-    _dio.interceptors.add(LoggingInterceptor(ApiConstants.isDebugMode));
+    _dio.interceptors.add(LoggingInterceptor(ApiConstants.isDebugMode, !kIsWeb));
     _dio.interceptors.add(RetryInterceptor());
   }
 
@@ -109,12 +109,14 @@ class DioClient {
       return response;
     } on DioException catch (e) {
       _safeLog('e',
-          '[network] DioException: ${e.type}, message: ${e.message}, response: ${e.response?.data}');
+          kIsWeb
+              ? '[network] DioException: ${e.type}, status: ${e.response?.statusCode}'
+              : '[network] DioException: ${e.type}, message: ${e.message}, response: ${e.response?.data}');
       throw _convertException(e);
     } on EndpointNotFoundException {
       rethrow;
     } catch (e) {
-      _safeLog('e', '[network] Unexpected error: $e');
+      _safeLog('e', '[network] Unexpected error: ${kIsWeb ? e.runtimeType : e}');
       throw NetworkConnectionException('请求失败: $e');
     }
   }
@@ -157,7 +159,9 @@ class DioClient {
     final responseData = e.response?.data;
 
     _safeLog('d',
-        '[network] Converting exception: type=${e.type}, statusCode=$statusCode, message=$errorMessage');
+        kIsWeb
+            ? '[network] Converting exception: type=${e.type}, statusCode=$statusCode'
+            : '[network] Converting exception: type=${e.type}, statusCode=$statusCode, message=$errorMessage');
 
     // HTML 回退页 + Map 泛型请求：Dio 在 transform 阶段对 String body 做
     // Map 强转即抛 TypeError（包装为 DioException.unknown 且 response 为

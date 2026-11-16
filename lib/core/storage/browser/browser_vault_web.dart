@@ -59,8 +59,8 @@ class BrowserVault {
 
   Future<void> unlock(String password) async {
     await initialize();
-    if (password.length < 12 && !isConfigured) {
-      throw ArgumentError('本地密码至少需要 12 个字符');
+    if (password.isEmpty) {
+      throw ArgumentError('本地密码不能为空');
     }
     if (usesBrowserKey) {
       throw StateError('当前本地存储使用浏览器密钥');

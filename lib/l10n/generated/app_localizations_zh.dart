@@ -8751,7 +8751,8 @@ class AppLocalizationsZh extends AppLocalizations {
       '浏览器保存解密密钥，打开网页即可使用。能够使用此浏览器的人也能访问已保存的服务器。';
 
   @override
-  String get webVaultPasswordModeHelp => '关闭网页后需要重新输入密码。密码与解密密钥不会上传，请妥善保存密码。';
+  String get webVaultPasswordModeHelp =>
+      '关闭网页后需要重新输入密码。可以让浏览器的密码管理器保存密码。本应用不会上传本地密码与解密密钥。';
 
   @override
   String get webVaultPassword => '本地密码';
@@ -8760,7 +8761,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get webVaultConfirmPassword => '确认本地密码';
 
   @override
-  String get webVaultPasswordLength => '请使用至少 12 个字符';
+  String get webVaultPasswordRequired => '请输入本地密码';
 
   @override
   String get webVaultPasswordMismatch => '两次输入的密码需要相同';
@@ -8783,16 +8784,28 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get webConnectionRequirements =>
-      '浏览器连接需要可信 HTTPS，并由面板允许当前网站的跨域请求（CORS）。局域网访问还需要浏览器授权。';
+      '支持 HTTP 与 HTTPS 地址。面板需要允许当前网站的跨域请求（CORS）。HTTPS 网页访问 HTTP 面板仍受浏览器限制；部分 Chrome/Edge 可授权访问局域网 HTTP 服务，Safari 暂不支持同类授权。';
 
   @override
-  String get webConnectionHttpsRequired => '请输入使用可信证书的 HTTPS 面板地址';
+  String get webConnectionAddressInvalid =>
+      '请输入有效的 HTTP 或 HTTPS 地址，地址中不能包含用户名和密码';
+
+  @override
+  String get webHttpConnectionTitle => '确认使用 HTTP 连接';
+
+  @override
+  String get webHttpConnectionWarning =>
+      'HTTP 不加密通信。认证签名和面板数据可能被截获或篡改；签名在有效期内可能被重放。请确认你信任当前网络，或使用加密的 VPN。浏览器仍会检查跨域、混合内容和局域网访问权限。';
+
+  @override
+  String get webHttpConnectionContinue => '我了解，继续连接';
 
   @override
   String get webConnectionTlsUnsupported => '浏览器需要可信证书，无法忽略 TLS 证书验证';
 
   @override
-  String get webConnectionFailed => '浏览器无法连接面板，请检查 HTTPS 证书、CORS 配置与局域网访问权限。';
+  String get webConnectionFailed =>
+      '浏览器未能读取面板响应，请检查网络、CORS、混合内容与局域网权限；使用 HTTPS 时还需要可信证书。';
 
   @override
   String get webVaultInstallHint =>
