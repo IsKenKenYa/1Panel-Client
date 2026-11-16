@@ -205,4 +205,16 @@ void main() {
     expect(service.gpuInfoCallCount, 0);
     expect(provider.gpuAutoRefreshEnabled, isFalse);
   });
+
+  test('MonitoringProvider静默刷新遇到网络失败且无本地缓存时记录错误', () async {
+    // 回归：静默刷新曾吞掉失败，页面只剩「暂无数据」，用户看不到真实原因。
+    final provider = MonitoringProvider(
+      service: ErrorMonitoringService(),
+      dataSource: MockMonitorLocalDataSource(),
+    );
+
+    await provider.load(silent: true);
+
+    expect(provider.data.error, isNotNull);
+  });
 }

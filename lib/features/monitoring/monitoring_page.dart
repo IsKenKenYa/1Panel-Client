@@ -132,6 +132,7 @@ class _MonitoringPageState extends State<MonitoringPage> {
             '${l10n.serverDiskLabel} IO',
             data.ioTimeSeries,
             'KB/s',
+            emptyHint: l10n.monitorIoEmptyHint,
             selector: _MetricSelector(
               value: data.selectedIO,
               options: data.ioOptions,
@@ -145,6 +146,7 @@ class _MonitoringPageState extends State<MonitoringPage> {
             l10n.monitorNetworkLabel,
             data.networkTimeSeries,
             'KB/s',
+            emptyHint: l10n.monitorNetworkEmptyHint,
             selector: _MetricSelector(
               value: data.selectedNetwork,
               options: data.networkOptions,
@@ -282,12 +284,13 @@ class _MonitoringPageState extends State<MonitoringPage> {
 
   Widget _buildTimeSeriesCard(BuildContext context, String title,
       MonitorTimeSeries? timeSeries, String unit,
-      {Widget? selector}) {
+      {Widget? selector, String? emptyHint}) {
     return _ExpandableChartCard(
       title: title,
       timeSeries: timeSeries,
       unit: unit,
       selector: selector,
+      emptyHint: emptyHint,
     );
   }
 }

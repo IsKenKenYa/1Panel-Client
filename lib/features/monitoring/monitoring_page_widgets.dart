@@ -160,12 +160,14 @@ class _ExpandableChartCard extends StatefulWidget {
   final MonitorTimeSeries? timeSeries;
   final String unit;
   final Widget? selector;
+  final String? emptyHint;
 
   const _ExpandableChartCard({
     required this.title,
     required this.timeSeries,
     required this.unit,
     this.selector,
+    this.emptyHint,
   });
 
   @override
@@ -219,15 +221,16 @@ class _ExpandableChartCardState extends State<_ExpandableChartCard> {
                             ),
                           ),
                           const SizedBox(height: AppDesignTokens.spacingXs),
-                          Text(
-                            currentValue ?? l10n.commonEmpty,
-                            style: theme.textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              color: currentValue != null
-                                  ? colorScheme.onSurface
-                                  : colorScheme.onSurfaceVariant,
+                          // 无数据时由卡片主体的空态承载说明，标题区不再重复
+                          // 渲染 headline 级「暂无数据」。
+                          if (currentValue != null)
+                            Text(
+                              currentValue,
+                              style: theme.textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: colorScheme.onSurface,
+                              ),
                             ),
-                          ),
                         ],
                       ),
                     ),
@@ -257,11 +260,7 @@ class _ExpandableChartCardState extends State<_ExpandableChartCard> {
             secondChild: timeSeries == null || timeSeries.data.isEmpty
                 ? _EmptyView(
                     title: l10n.commonEmpty,
-                    hint: widget.title.contains('IO')
-                        ? '请在设置中配置磁盘IO设备（如 /dev/vda2）'
-                        : widget.title.contains('网络')
-                            ? '请在设置中配置网络接口（如 eth0）'
-                            : null,
+                    hint: widget.emptyHint ?? l10n.monitorSeriesEmptyDesc,
                   )
                 : Padding(
                     padding: const EdgeInsets.fromLTRB(
@@ -723,7 +722,8 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
                         ),
                         DropdownMenuItem(
                           value: 1000,
-                          child: Text(l10n.monitorDataPointsCount(1000, '全部')),
+                          child: Text(l10n.monitorDataPointsCount(
+                              1000, l10n.monitorAll)),
                         ),
                       ],
                       onChanged: (value) {
@@ -810,18 +810,13 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
                     const SizedBox(height: AppDesignTokens.spacingLg),
                     const Divider(),
                     const SizedBox(height: AppDesignTokens.spacingSm),
-                    Text(
-                      '${l10n.serverDiskLabel} IO ${l10n.monitorSettings}',
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                    const SizedBox(height: AppDesignTokens.spacingSm),
                     DropdownButtonFormField<String>(
                       initialValue: _ioOptions.contains(_defaultIO)
                           ? _defaultIO
                           : _ioOptions.first,
                       decoration: InputDecoration(
-                        labelText: '${l10n.serverDiskLabel} IO 设备',
-                        helperText: '优先使用具体设备，避免 all 返回空数据',
+                        labelText: l10n.monitorIoDeviceLabel,
+                        helperText: l10n.monitorIoDeviceHelper,
                         border: const OutlineInputBorder(),
                       ),
                       items: _ioOptions
@@ -842,18 +837,13 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
                     const SizedBox(height: AppDesignTokens.spacingMd),
                     const Divider(),
                     const SizedBox(height: AppDesignTokens.spacingSm),
-                    Text(
-                      '${l10n.monitorNetworkLabel} ${l10n.monitorSettings}',
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                    const SizedBox(height: AppDesignTokens.spacingSm),
                     DropdownButtonFormField<String>(
                       initialValue: _networkOptions.contains(_defaultNetwork)
                           ? _defaultNetwork
                           : _networkOptions.first,
                       decoration: InputDecoration(
-                        labelText: '${l10n.monitorNetworkLabel} 接口',
-                        helperText: '优先使用具体网卡，避免 all 返回空数据',
+                        labelText: l10n.monitorNetworkInterfaceLabel,
+                        helperText: l10n.monitorNetworkInterfaceHelper,
                         border: const OutlineInputBorder(),
                       ),
                       items: _networkOptions

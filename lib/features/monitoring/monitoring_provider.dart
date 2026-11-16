@@ -565,7 +565,9 @@ class MonitoringProvider extends ChangeNotifier with SafeChangeNotifier {
         if (_lastFetchTime == null) {
           _updateDisplayData(now: now);
         }
-        if (!silent && _rawTimeSeries['cpu']!.isEmpty) {
+        // 没有本地缓存时不能静默吞掉失败：空图表没有任何错误提示，
+        // 用户会误以为面板没有数据，需要记录错误并渲染错误态。
+        if (_rawTimeSeries['cpu']!.isEmpty) {
           rethrow;
         }
       }
