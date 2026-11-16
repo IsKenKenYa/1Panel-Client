@@ -7,6 +7,7 @@ import '../../../shared/widgets/app_card.dart';
 import 'app_icon.dart';
 
 import '../../../core/utils/snackbar_utils.dart';
+
 /// 已安装应用卡片
 class InstalledAppCard extends StatelessWidget {
   final AppInstallInfo app;
@@ -106,41 +107,38 @@ class InstalledAppCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
           ],
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+          Wrap(
+            alignment: WrapAlignment.end,
+            spacing: 8,
+            runSpacing: 8,
             children: [
-              if (app.webUI != null && app.webUI!.isNotEmpty) ...[
+              if (app.webUI != null && app.webUI!.isNotEmpty)
                 _ActionButton(
                   icon: Icons.web,
                   label: l10n.appActionWeb,
                   color: colorScheme.secondary,
                   onTap: () => _openWeb(context, app.webUI!),
                 ),
-                const SizedBox(width: 8),
-              ],
               if (isRunning) ...[
                 _ActionButton(
                   icon: Icons.stop,
                   label: l10n.appActionStop,
-                  color: colorScheme.error,
+                  color: colorScheme.secondary,
                   onTap: onStop,
                 ),
-                const SizedBox(width: 8),
                 _ActionButton(
                   icon: Icons.restart_alt,
                   label: l10n.appActionRestart,
                   color: colorScheme.primary,
                   onTap: onRestart,
                 ),
-              ] else ...[
+              ] else
                 _ActionButton(
                   icon: Icons.play_arrow,
                   label: l10n.appActionStart,
-                  color: colorScheme.tertiary,
+                  color: colorScheme.primary,
                   onTap: onStart,
                 ),
-              ],
-              const SizedBox(width: 8),
               _ActionButton(
                 icon: Icons.delete_outline,
                 label: l10n.appActionUninstall,
@@ -161,13 +159,17 @@ class InstalledAppCard extends StatelessWidget {
       try {
         if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
           if (context.mounted) {
-            SnackBarUtils.showError(context, l10n.appOperateFailed(l10n.commonUnknownError),
+            SnackBarUtils.showError(
+              context,
+              l10n.appOperateFailed(l10n.commonUnknownError),
             );
           }
         }
       } catch (e) {
         if (context.mounted) {
-          SnackBarUtils.showError(context, l10n.appOperateFailed(e.toString()),
+          SnackBarUtils.showError(
+            context,
+            l10n.appOperateFailed(e.toString()),
           );
         }
       }
