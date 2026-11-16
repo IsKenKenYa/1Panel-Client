@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:glass/glass.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:onepanel_client/core/theme/ui_render_policy.dart';
 
 class AppNavigationBarItem {
@@ -33,77 +33,95 @@ class AppBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final safeIndex = currentIndex.clamp(0, items.length - 1);
-    final scheme = Theme.of(context).colorScheme;
-    final disabledColor = scheme.onSurfaceVariant.withValues(alpha: 0.42);
-    final isGlass = UIRenderPolicy.liquidGlassEnabled;
 
-    final bar = NavigationBar(
-      selectedIndex: safeIndex,
-      onDestinationSelected: onTap,
-      animationDuration: const Duration(milliseconds: 400),
-      // 玻璃模式下载体必须透明：不透明背景会挡住 BackdropFilter 的场景采样，
-      // 玻璃模糊到的就是这块实色（视觉等于没玻璃）。md3 模式走 theme 默认底色。
-      backgroundColor: isGlass ? Colors.transparent : null,
-      destinations: [
-        for (var index = 0; index < items.length; index++)
-          NavigationDestination(
-            icon: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              transitionBuilder: (child, animation) {
-                return ScaleTransition(
-                  scale: animation,
-                  child: FadeTransition(
-                    opacity: animation,
-                    child: child,
-                  ),
-                );
-              },
-              child: Icon(
-                items[index].icon,
-                key: ValueKey('${index}_unselected'),
-                color: items[index].enabled ? null : disabledColor,
+    if (!UIRenderPolicy.liquidGlassEnabled) {
+      // md3 模式：Material NavigationBar 实色底栏。
+      final disabledColor =
+          Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.42);
+      return NavigationBar(
+        selectedIndex: safeIndex,
+        onDestinationSelected: onTap,
+        animationDuration: const Duration(milliseconds: 400),
+        destinations: [
+          for (var index = 0; index < items.length; index++)
+            NavigationDestination(
+              icon: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                transitionBuilder: (child, animation) {
+                  return ScaleTransition(
+                    scale: animation,
+                    child: FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    ),
+                  );
+                },
+                child: Icon(
+                  items[index].icon,
+                  key: ValueKey('${index}_unselected'),
+                  color: items[index].enabled ? null : disabledColor,
+                ),
               ),
-            ),
-            selectedIcon: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              transitionBuilder: (child, animation) {
-                return ScaleTransition(
-                  scale: animation,
-                  child: FadeTransition(
-                    opacity: animation,
-                    child: child,
-                  ),
-                );
-              },
-              child: Icon(
-                items[index].selectedIcon,
-                key: ValueKey('${index}_selected'),
-                color: items[index].enabled ? null : disabledColor,
+              selectedIcon: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                transitionBuilder: (child, animation) {
+                  return ScaleTransition(
+                    scale: animation,
+                    child: FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    ),
+                  );
+                },
+                child: Icon(
+                  items[index].selectedIcon,
+                  key: ValueKey('${index}_selected'),
+                  color: items[index].enabled ? null : disabledColor,
+                ),
               ),
+              label: items[index].label,
+              enabled: items[index].enabled,
             ),
-            label: items[index].label,
-            enabled: items[index].enabled,
-          ),
-      ],
-    );
-
-    if (!isGlass) {
-      return bar;
+        ],
+      );
     }
 
-    // Apple Liquid Glass 悬浮胶囊形态：四周留边悬浮于内容之上，
-    // StadiumBorder 全圆角与玻璃形状匹配；折射/高光/阴影由
-    // [UIRenderPolicy.glassStyle]（Glass.regular 参数）承担。
-    // 列表末项让位由壳页 body 的 MediaQuery 注入统一处理。
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
-      child: ClipRRect(
-        borderRadius: UIRenderPolicy.floatingPillRadius,
-        child: bar.asGlass(
-          liquid: UIRenderPolicy.glassStyle,
-          clipBorderRadius: UIRenderPolicy.floatingPillRadius,
-        ),
-      ),
+    // 液态玻璃模式：官方 GlassTabBar.bottom 悬浮胶囊——
+    // SDF 圆角边缘折射 + 圆形衰减 + 果冻指示器物理动效，
+    // 圆角 = 胶囊高度一半自动匹配（barBorderRadius 由包内按高度推导）。
+    final scheme = Theme.of(context).colorScheme;
+    final disabledColor = scheme.onSurfaceVariant.withValues(alpha: 0.42);
+    return GlassTabBar.bottom(
+      tabs: [
+        for (final item in items)
+          GlassTab(
+            icon: Icon(
+              item.icon,
+              color: item.enabled ? null : disabledColor,
+            ),
+            activeIcon: Icon(
+              item.selectedIcon,
+              color: item.enabled ? null : disabledColor,
+            ),
+            label: item.label,
+          ),
+      ],
+      selectedIndex: safeIndex,
+      onTabSelected: (index) {
+        if (index >= 0 && index < items.length && items[index].enabled) {
+          onTap(index);
+        }
+      },
+      barHeight: 64,
+      horizontalPadding: 16,
+      verticalPadding: 12,
+      iconSize: 24,
+      selectedIconColor: scheme.primary,
+      unselectedIconColor: scheme.onSurfaceVariant,
+      indicatorColor: scheme.primaryContainer,
+      // GLES 低端设备用轻量单 pass shader；premium 多 pass 会阻塞主线程。
+      quality: GlassQuality.standard,
+      backgroundQuality: GlassQuality.standard,
     );
   }
 }

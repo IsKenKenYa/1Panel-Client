@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:glass/glass.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -77,6 +78,15 @@ void main() async {
   final nativeModeFallback = UIRenderPolicy.isNativeModeFallback(uiRenderMode);
   // 首帧前同步玻璃浮层静态开关（首帧即正确，ThemeController.load 二次兜底）。
   UIRenderPolicy.setLiquidGlassEnabled(uiRenderMode);
+
+  // 液态玻璃模式：预加载轻量 shader（跳过重型多 pass 折射，GLES 低端设备
+  // 上 premium 管线会导致主线程长时间阻塞/GPU 上下文丢失）。
+  if (UIRenderPolicy.liquidGlassEnabled) {
+    await LiquidGlassWidgets.initialize(
+      enablePerformanceMonitor: false,
+      warmUpMode: GlassWarmUpMode.never,
+    );
+  }
 
   // window_manager must be initialized before any window API calls;
   // only needed when Flutter renders its own UI (not in native/headless mode).
@@ -190,7 +200,15 @@ void main() async {
         ],
         child: const AppBootstrap(child: MyApp()),
       );
-    runApp(kIsWeb ? BrowserVaultGate(child: app) : app);
+    runApp(
+      UIRenderPolicy.liquidGlassEnabled
+          ? LiquidGlassWidgets.wrap(
+              // MaterialApp 主题亮度解析：玻璃明暗跟随 ThemeMode 而非系统。
+              brightnessResolver: Theme.maybeBrightnessOf,
+              child: kIsWeb ? BrowserVaultGate(child: app) : app,
+            )
+          : (kIsWeb ? BrowserVaultGate(child: app) : app),
+    );
   } else {
     // Engine-only mode (Headless)
     appLogger.iWithPackage(

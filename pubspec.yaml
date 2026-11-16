@@ -109,6 +109,7 @@ dependencies:
   # 低于 iOS 26 自动回退 tinted）。评估结论：包内无玻璃容器组件，仅按钮/弹出菜单
   # 支持原生玻璃；Apple 轨道接入点为 Apple 风格壳浮层按钮与弹出菜单，暂保留依赖。
   cupertino_native: ^0.1.1
+  liquid_glass_widgets: ^1.17.4
 
 dev_dependencies:
   flutter_test:
