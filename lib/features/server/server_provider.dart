@@ -67,21 +67,21 @@ class ServerProvider extends ChangeNotifier with SafeChangeNotifier {
     notifyListeners();
 
     try {
-      for (final server in _servers) {
-        if (isDisposed) break;
-        final metrics = await _repository.loadServerMetrics(server.config.id);
-        _metrics[server.config.id] = metrics;
+      final targets = List<ServerCardViewModel>.of(_servers);
+      final snapshots = await Future.wait(
+        targets.map((server) => _repository.loadServerMetrics(server.config.id)),
+      );
+      if (isDisposed) return;
+      for (var index = 0; index < targets.length; index++) {
+        _metrics[targets[index].config.id] = snapshots[index];
       }
-
-      if (!isDisposed) {
-        _servers = _servers
-            .map((s) => ServerCardViewModel(
-                  config: s.config,
-                  isCurrent: s.isCurrent,
-                  metrics: _metrics[s.config.id] ?? const ServerMetricsSnapshot(),
-                ))
-            .toList();
-      }
+      _servers = targets
+          .map((s) => ServerCardViewModel(
+                config: s.config,
+                isCurrent: s.isCurrent,
+                metrics: _metrics[s.config.id] ?? const ServerMetricsSnapshot(),
+              ))
+          .toList();
     } finally {
       if (!isDisposed) {
         _isLoadingMetrics = false;

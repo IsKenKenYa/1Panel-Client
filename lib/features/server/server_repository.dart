@@ -1,3 +1,4 @@
+import 'package:onepanel_client/api/v2/dashboard_v2.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/network/api_client_manager.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
@@ -38,17 +39,18 @@ class ServerRepository {
         orElse: () => throw Exception('Server not found'),
       );
 
-      // 确保 API 客户端已初始化
+      // 每台服务器绑定自己的 client：默认 DashboardRepository 读取当前服务器
+      // 配置，会让服务器列表所有卡片显示同一份指标（离线服务器也显示已加载）。
       final manager = ApiClientManager.instance;
-      manager.getClient(
+      final client = manager.getClient(
         serverId,
         config.url,
         config.apiKey,
         allowInsecureTls: config.allowInsecureTls,
       );
 
-      // 使用 DashboardRepository 获取当前服务器指标
-      final dashboardRepo = DashboardRepository();
+      // 使用 DashboardRepository 获取该服务器指标
+      final dashboardRepo = DashboardRepository(api: DashboardV2Api(client));
       final metrics = await dashboardRepo.getCurrentServerMetrics();
 
       return metrics;

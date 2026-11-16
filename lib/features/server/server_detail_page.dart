@@ -99,7 +99,7 @@ class ServerDetailPage extends StatelessWidget {
     await provider.load();
     await provider.loadMetrics();
     if (!context.mounted) return;
-    SnackBarUtils.showSuccess(context, l10n.commonRefresh);
+    SnackBarUtils.showSuccess(context, l10n.commonRefreshSuccess);
   }
 
   SectionEntryItem _buildClientModuleItem(

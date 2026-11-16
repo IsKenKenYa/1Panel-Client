@@ -171,6 +171,9 @@ class ServerListViewModel extends ChangeNotifier with SafeChangeNotifier {
 
   Future<void> openDetail(
       BuildContext context, ServerCardViewModel item) async {
+    // 切换服务器会重建带 serverId key 的模块子树，原卡片 context 随之卸载；
+    // 先取 NavigatorState，切换完成后仍能压入详情页。
+    final navigator = Navigator.of(context);
     if (!item.isCurrent) {
       await context
           .read<CurrentServerController>()
@@ -179,9 +182,8 @@ class ServerListViewModel extends ChangeNotifier with SafeChangeNotifier {
         await _serverProvider.load();
       }
     }
-    if (!context.mounted) return;
 
-    await Navigator.of(context).push(
+    await navigator.push(
       MaterialPageRoute(
         builder: (_) => ServerDetailPage(server: item),
       ),
