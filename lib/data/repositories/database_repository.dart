@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:onepanel_client/data/models/paged_query.dart';
 
 import 'package:onepanel_client/api/v2/database_v2.dart';
@@ -178,7 +179,9 @@ class DatabaseRepository {
   Future<DatabaseDetailData> loadDetail(DatabaseListItem item) async {
     final api = await _getApi();
     final lookupName = item.lookupName;
-    final type = item.engine;
+    // 数据库条目本身不带实例类型（mysql 与 mariadb 共用实例列表），
+    // 详情接口与配置文件接口按实例类型寻址，需要先回查实例列表。
+    final type = await _resolveInstanceType(item);
     final baseInfoResponse = await api.loadDatabaseBaseInfo(
       type: type,
       name: lookupName,
@@ -193,8 +196,11 @@ class DatabaseRepository {
     List<Map<String, dynamic>> formatOptions = const <Map<String, dynamic>>[];
 
     if (item.scope == DatabaseScope.mysql) {
-      rawConfigFile =
-          (await api.loadDatabaseConfigFile(type: type, name: lookupName)).data;
+      rawConfigFile = (await api.loadDatabaseConfigFile(
+        type: confFileType(type),
+        name: lookupName,
+      ))
+          .data;
       status = (await api.loadMysqlStatus(type: type, name: lookupName)).data;
       variables =
           (await api.loadMysqlVariables(type: type, name: lookupName)).data;
@@ -203,8 +209,11 @@ class DatabaseRepository {
       formatOptions =
           (await api.loadFormatCollations(lookupName)).data ?? const [];
     } else if (item.scope == DatabaseScope.postgresql) {
-      rawConfigFile =
-          (await api.loadDatabaseConfigFile(type: type, name: lookupName)).data;
+      rawConfigFile = (await api.loadDatabaseConfigFile(
+        type: confFileType(type),
+        name: lookupName,
+      ))
+          .data;
     } else if (item.scope == DatabaseScope.redis) {
       status = (await api.loadRedisStatus(type: type, name: lookupName)).data;
       redisConf = (await api.loadRedisConf(type: type, name: lookupName)).data;
@@ -229,6 +238,26 @@ class DatabaseRepository {
       rawConfigFile: rawConfigFile,
       formatOptions: formatOptions,
     );
+  }
+
+  /// 配置文件接口的 type 是文件类型（mysql-conf / mariadb-conf /
+  /// postgresql-conf），由实例类型加后缀得到；直接传实例类型会返回 500。
+  @visibleForTesting
+  static String confFileType(String instanceType) => '$instanceType-conf';
+
+  /// 数据库条目不带实例类型：mysql 与 mariadb 共用一个实例列表，
+  /// 详情接口按实例 app key 寻址，需要回查实例列表取真实类型。
+  Future<String> _resolveInstanceType(DatabaseListItem item) async {
+    if (item.scope != DatabaseScope.mysql) {
+      return item.engine;
+    }
+    final targets = await loadDatabaseTargets(DatabaseScope.mysql);
+    for (final target in targets) {
+      if ((target.targetDatabase ?? target.database) == item.lookupName) {
+        return target.engine;
+      }
+    }
+    return item.engine;
   }
 
   Future<void> submitForm(DatabaseFormInput input) async {

@@ -5,8 +5,8 @@ import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/data/models/database_models.dart';
-import 'package:onepanel_client/features/databases/widgets/database_page_feedback_widget.dart';
 import 'package:onepanel_client/shared/widgets/app_card.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_empty_state_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
 
@@ -50,8 +50,10 @@ class DatabaseRemotePage extends StatelessWidget {
                         onRetry: () => provider.refresh(),
                       )
                     : provider.state.items.isEmpty
-                        ? DatabasePageEmptyWidget(
-                            message: context.l10n.commonEmpty,
+                        ? ModuleEmptyStateWidget(
+                            title: context.l10n.commonEmpty,
+                            description: context.l10n.databaseRemoteEmptyDesc,
+                            icon: Icons.cloud_outlined,
                           )
                         : PartialErrorToastListener(
                             errorMessage: provider.state.error,

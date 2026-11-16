@@ -10,6 +10,7 @@ import 'package:onepanel_client/features/shell/controllers/current_server_contro
 import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/shared/widgets/app_card.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_empty_state_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
 
@@ -335,7 +336,13 @@ class _DatabaseScopeTabView extends StatelessWidget {
                 ? ListView(
                     children: [
                       const SizedBox(height: AppDesignTokens.spacingXl),
-                      Center(child: Text(l10n.commonEmpty)),
+                      ModuleEmptyStateWidget(
+                        title: l10n.commonEmpty,
+                        description: provider.scope == DatabaseScope.remote
+                            ? l10n.databaseRemoteEmptyDesc
+                            : l10n.databaseEmptyDesc,
+                        icon: Icons.storage_outlined,
+                      ),
                     ],
                   )
                 : LayoutBuilder(
@@ -511,7 +518,7 @@ class _DatabaseGridCard extends StatelessWidget {
                 icon: const Icon(Icons.content_copy_outlined),
                 label: Text(l10n.commonCopy),
               ),
-              IconButton(
+              IconButton.filledTonal(
                 tooltip: l10n.commonRefresh,
                 onPressed: onRefresh,
                 icon: const Icon(Icons.refresh),
