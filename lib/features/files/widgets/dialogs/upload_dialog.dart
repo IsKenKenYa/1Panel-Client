@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
@@ -37,9 +38,19 @@ void showUploadDialog(BuildContext context, FilesProvider provider) {
             try {
               final result = await FilePicker.platform.pickFiles(
                 allowMultiple: true,
+                withReadStream: kIsWeb,
               );
 
               if (result != null && result.files.isNotEmpty) {
+                if (kIsWeb) {
+                  for (final file in result.files) {
+                    final stream = file.readStream;
+                    if (stream == null) throw StateError('无法读取文件数据流');
+                    await provider.uploadPickedFile(
+                      file.name, stream, file.size, targetPath: targetPath);
+                  }
+                  return;
+                }
                 final filePaths = result.files
                     .where((f) => f.path != null)
                     .map((f) => f.path!)

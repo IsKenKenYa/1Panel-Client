@@ -13,6 +13,7 @@ import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/services/app_settings_controller.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/core/platform/platform_capabilities.dart';
+import 'package:onepanel_client/core/platform/services/browser_document_service.dart';
 import 'package:onepanel_client/core/theme/theme_controller.dart';
 import 'package:onepanel_client/core/services/transfer/transfer_manager.dart';
 import 'package:onepanel_client/core/theme/app_theme.dart';
@@ -276,7 +277,11 @@ class MyApp extends StatelessWidget {
               title: '1Panel Client',
               debugShowCheckedModeBanner: false,
               builder: (context, child) {
-                if (kIsWeb) return child ?? const SizedBox();
+                if (kIsWeb) {
+                  BrowserDocumentService.updateLanguage(
+                      Localizations.localeOf(context).toLanguageTag());
+                  return child ?? const SizedBox();
+                }
                 final l10n = AppLocalizations.of(context);
                 return PlatformMenuBar(
                   menus: [

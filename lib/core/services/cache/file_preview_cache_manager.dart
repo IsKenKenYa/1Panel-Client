@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path_provider/path_provider.dart';
@@ -80,6 +81,7 @@ class FilePreviewCacheManager {
     required Future<Uint8List> Function() downloadFn,
     required CacheStrategy strategy,
   }) async {
+    if (kIsWeb) strategy = CacheStrategy.memoryOnly;
     final cacheKey = _generateCacheKey(filePath);
 
     if (strategy == CacheStrategy.memoryOnly ||

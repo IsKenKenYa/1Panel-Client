@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
@@ -142,7 +143,9 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
         throw Exception('Local file path is null');
       }
 
-      _videoController = VideoPlayerController.file(File(_localFilePath!));
+      _videoController = kIsWeb
+          ? VideoPlayerController.networkUrl(Uri.parse(_localFilePath!))
+          : VideoPlayerController.file(File(_localFilePath!));
       await _videoController!.initialize();
 
       _chewieController = ChewieController(
@@ -182,7 +185,9 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
 
       _audioPlayer = AudioPlayer();
 
-      await _audioPlayer!.setSource(DeviceFileSource(_localFilePath!));
+      await _audioPlayer!.setSource(kIsWeb
+          ? UrlSource(_localFilePath!)
+          : DeviceFileSource(_localFilePath!));
       _audioDuration = (await _audioPlayer!.getDuration()) ?? Duration.zero;
 
       _audioPlayer!.onPositionChanged.listen((position) {
@@ -372,7 +377,7 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
     final isDark = theme.brightness == Brightness.dark;
     final isSvg = widget.fileName.toLowerCase().endsWith('.svg');
 
-    if (_localFilePath == null) {
+    if (_provider.binaryData == null) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -387,8 +392,8 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
 
     if (isSvg) {
       return Center(
-        child: SvgPicture.file(
-          File(_localFilePath!),
+        child: SvgPicture.memory(
+          _provider.binaryData!,
           placeholderBuilder: (context) => const CircularProgressIndicator(),
           errorBuilder: (context, error, stackTrace) {
             return Column(
@@ -406,7 +411,7 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
     }
 
     return PhotoView(
-      imageProvider: FileImage(File(_localFilePath!)),
+      imageProvider: MemoryImage(_provider.binaryData!),
       loadingBuilder: (context, event) => Center(
         child: CircularProgressIndicator(
           value: event?.expectedTotalBytes != null
@@ -598,7 +603,7 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
   }
 
   Widget _buildPdfPreview(BuildContext context, ThemeData theme) {
-    if (_localFilePath == null) {
+    if (_provider.binaryData == null) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -611,8 +616,8 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
       );
     }
 
-    return SfPdfViewer.file(
-      File(_localFilePath!),
+    return SfPdfViewer.memory(
+      _provider.binaryData!,
       onDocumentLoaded: (details) {
         appLogger.iWithPackage('file_preview', 'PDF loaded successfully');
       },

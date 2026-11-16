@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
@@ -56,6 +57,7 @@ class _TerminalPageState extends State<TerminalPage> {
   }
 
   Future<void> _initialize() async {
+    if (kIsWeb) return;
     await _provider.initialize(_initialIntent);
     // On mobile, auto-open the detail page for an explicitly requested session
     // (e.g. from a deep link) so the user lands directly on the terminal.
@@ -130,6 +132,19 @@ class _TerminalPageState extends State<TerminalPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (kIsWeb) {
+      return Scaffold(
+        appBar: AppBar(title: Text(_initialIntent.title(context))),
+        body: SafeArea(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Text(context.l10n.webTerminalUnsupported),
+            ),
+          ),
+        ),
+      );
+    }
     return ChangeNotifierProvider<TerminalWorkbenchProvider>.value(
       value: _provider,
       child: Consumer<TerminalWorkbenchProvider>(

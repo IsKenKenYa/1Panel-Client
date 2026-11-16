@@ -4,6 +4,7 @@ import '../services/logger/logger_service.dart';
 import '../config/api_constants.dart';
 import 'auth_failure_diagnostics.dart';
 import 'network_exceptions.dart';
+import 'browser_connection_policy.dart';
 import 'interceptors/auth_interceptor.dart';
 import 'interceptors/logging_interceptor.dart';
 import 'interceptors/retry_interceptor.dart';
@@ -26,6 +27,10 @@ class DioClient {
 
   /// 创建基础配置（静态方法，用于构造函数）
   static BaseOptions _createBaseOptionsStatic(String? baseUrl) {
+    if (kIsWeb && baseUrl != null &&
+        BrowserConnectionPolicy.issue(baseUrl) != null) {
+      throw ArgumentError('需要有效的 HTTPS 面板地址');
+    }
     return BaseOptions(
       baseUrl: baseUrl ?? ApiConstants.defaultBaseUrl,
       connectTimeout: const Duration(seconds: ApiConstants.connectTimeout),
@@ -34,7 +39,7 @@ class DioClient {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'User-Agent': ApiConstants.userAgent,
+        if (!kIsWeb) 'User-Agent': ApiConstants.userAgent,
       },
       responseType: ResponseType.json,
       validateStatus: (status) =>

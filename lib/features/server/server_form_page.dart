@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/network/browser_connection_policy.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
@@ -47,6 +49,7 @@ class _ServerFormPageState extends State<ServerFormPage> {
       SnackBarUtils.showSuccess(context, context.l10n.serverFormRequired);
       return;
     }
+    if (!_formKey.currentState!.validate()) return;
 
     setState(() {
       _testing = true;
@@ -167,18 +170,28 @@ class _ServerFormPageState extends State<ServerFormPage> {
                     const SizedBox(height: AppDesignTokens.spacingLg),
                     TextFormField(
                       controller: _urlController,
+                      keyboardType: TextInputType.url,
+                      autocorrect: false,
                       decoration: InputDecoration(
                         labelText: l10n.serverFormUrl,
                         hintText: l10n.serverFormUrlHint,
                       ),
-                      validator: (value) =>
-                          (value == null || value.trim().isEmpty)
-                              ? l10n.serverFormRequired
-                              : null,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return l10n.serverFormRequired;
+                        }
+                        if (kIsWeb && BrowserConnectionPolicy.issue(value) != null) {
+                          return l10n.webConnectionHttpsRequired;
+                        }
+                        return null;
+                      },
                     ),
                     const SizedBox(height: AppDesignTokens.spacingLg),
                     TextFormField(
                       controller: _apiKeyController,
+                      obscureText: true,
+                      enableSuggestions: false,
+                      autocorrect: false,
                       decoration: InputDecoration(
                         labelText: l10n.serverFormApiKey,
                         hintText: l10n.serverFormApiKeyHint,
@@ -207,7 +220,8 @@ class _ServerFormPageState extends State<ServerFormPage> {
                       keyboardType: TextInputType.number,
                     ),
                     const SizedBox(height: AppDesignTokens.spacingSm),
-                    SwitchListTile.adaptive(
+                    if (kIsWeb) Text(l10n.webConnectionRequirements),
+                    if (!kIsWeb) SwitchListTile.adaptive(
                       contentPadding: EdgeInsets.zero,
                       value: _allowInsecureTls,
                       onChanged: (value) {

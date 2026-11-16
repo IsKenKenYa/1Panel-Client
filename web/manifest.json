@@ -1,12 +1,16 @@
 {
     "name": "1Panel Client",
     "short_name": "1Panel",
-    "start_url": ".",
+    "id": "/",
+    "start_url": "/",
+    "scope": "/",
     "display": "standalone",
     "background_color": "#0C182A",
     "theme_color": "#095868",
-    "description": "A mobile App based on the 1Panel Open API.",
-    "orientation": "portrait-primary",
+    "description": "在浏览器中管理你的 1Panel，数据保存在当前设备。",
+    "lang": "zh-CN",
+    "categories": ["utilities", "productivity"],
+    "orientation": "any",
     "prefer_related_applications": false,
     "icons": [
         {

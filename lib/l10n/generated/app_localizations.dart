@@ -16898,6 +16898,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back'**
   String get commonBack;
+
+  /// No description provided for @webVaultTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'1Panel Client in your browser'**
+  String get webVaultTitle;
+
+  /// No description provided for @webVaultDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Server settings stay in this browser. API keys and sign-in credentials are encrypted. Your browser connects directly to your 1Panel.'**
+  String get webVaultDescription;
+
+  /// No description provided for @webVaultPasswordMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a local password'**
+  String get webVaultPasswordMode;
+
+  /// No description provided for @webVaultBrowserMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a browser key'**
+  String get webVaultBrowserMode;
+
+  /// No description provided for @webVaultBrowserModeHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'This browser saves the decryption key and opens your data automatically. Anyone using this browser can access your saved servers.'**
+  String get webVaultBrowserModeHelp;
+
+  /// No description provided for @webVaultPasswordModeHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password again after closing the page. Your password and decryption key stay on this device. Keep your password safe.'**
+  String get webVaultPasswordModeHelp;
+
+  /// No description provided for @webVaultPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Local password'**
+  String get webVaultPassword;
+
+  /// No description provided for @webVaultConfirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm local password'**
+  String get webVaultConfirmPassword;
+
+  /// No description provided for @webVaultPasswordLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Use at least 12 characters'**
+  String get webVaultPasswordLength;
+
+  /// No description provided for @webVaultPasswordMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the same password in both fields'**
+  String get webVaultPasswordMismatch;
+
+  /// No description provided for @webVaultCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create local storage'**
+  String get webVaultCreate;
+
+  /// No description provided for @webVaultUnlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock local storage'**
+  String get webVaultUnlock;
+
+  /// No description provided for @webVaultUnlockError.
+  ///
+  /// In en, this message translates to:
+  /// **'The password is incorrect or browser data could not be read. Your stored data has been preserved.'**
+  String get webVaultUnlockError;
+
+  /// No description provided for @webVaultStorageError.
+  ///
+  /// In en, this message translates to:
+  /// **'Browser storage could not be opened. Use HTTPS and allow this site to save data.'**
+  String get webVaultStorageError;
+
+  /// No description provided for @webVaultRetention.
+  ///
+  /// In en, this message translates to:
+  /// **'Data remains after closing your browser. Clearing site data, private browsing, or storage eviction can remove it. Keep a backup of your server settings.'**
+  String get webVaultRetention;
+
+  /// No description provided for @webConnectionRequirements.
+  ///
+  /// In en, this message translates to:
+  /// **'Browser connections need trusted HTTPS and permission from your panel for cross-origin requests (CORS). Local network access also needs browser permission.'**
+  String get webConnectionRequirements;
+
+  /// No description provided for @webConnectionHttpsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an HTTPS panel address with a trusted certificate'**
+  String get webConnectionHttpsRequired;
+
+  /// No description provided for @webConnectionTlsUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Browsers require trusted certificates and cannot bypass TLS verification'**
+  String get webConnectionTlsUnsupported;
+
+  /// No description provided for @webConnectionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The browser could not connect. Check the HTTPS certificate, CORS settings, and local network permission.'**
+  String get webConnectionFailed;
+
+  /// No description provided for @webVaultInstallHint.
+  ///
+  /// In en, this message translates to:
+  /// **'On iPhone or iPad, open Safari\'s Share menu and choose Add to Home Screen.'**
+  String get webVaultInstallHint;
+
+  /// No description provided for @webTerminalUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'This 1Panel terminal requires authentication headers that browser WebSockets cannot send. Open your 1Panel web interface to use its terminal.'**
+  String get webTerminalUnsupported;
 }
 
 class _AppLocalizationsDelegate

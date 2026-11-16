@@ -8956,4 +8956,80 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonBack => 'Back';
+
+  @override
+  String get webVaultTitle => '1Panel Client in your browser';
+
+  @override
+  String get webVaultDescription =>
+      'Server settings stay in this browser. API keys and sign-in credentials are encrypted. Your browser connects directly to your 1Panel.';
+
+  @override
+  String get webVaultPasswordMode => 'Use a local password';
+
+  @override
+  String get webVaultBrowserMode => 'Use a browser key';
+
+  @override
+  String get webVaultBrowserModeHelp =>
+      'This browser saves the decryption key and opens your data automatically. Anyone using this browser can access your saved servers.';
+
+  @override
+  String get webVaultPasswordModeHelp =>
+      'Enter your password again after closing the page. Your password and decryption key stay on this device. Keep your password safe.';
+
+  @override
+  String get webVaultPassword => 'Local password';
+
+  @override
+  String get webVaultConfirmPassword => 'Confirm local password';
+
+  @override
+  String get webVaultPasswordLength => 'Use at least 12 characters';
+
+  @override
+  String get webVaultPasswordMismatch =>
+      'Enter the same password in both fields';
+
+  @override
+  String get webVaultCreate => 'Create local storage';
+
+  @override
+  String get webVaultUnlock => 'Unlock local storage';
+
+  @override
+  String get webVaultUnlockError =>
+      'The password is incorrect or browser data could not be read. Your stored data has been preserved.';
+
+  @override
+  String get webVaultStorageError =>
+      'Browser storage could not be opened. Use HTTPS and allow this site to save data.';
+
+  @override
+  String get webVaultRetention =>
+      'Data remains after closing your browser. Clearing site data, private browsing, or storage eviction can remove it. Keep a backup of your server settings.';
+
+  @override
+  String get webConnectionRequirements =>
+      'Browser connections need trusted HTTPS and permission from your panel for cross-origin requests (CORS). Local network access also needs browser permission.';
+
+  @override
+  String get webConnectionHttpsRequired =>
+      'Enter an HTTPS panel address with a trusted certificate';
+
+  @override
+  String get webConnectionTlsUnsupported =>
+      'Browsers require trusted certificates and cannot bypass TLS verification';
+
+  @override
+  String get webConnectionFailed =>
+      'The browser could not connect. Check the HTTPS certificate, CORS settings, and local network permission.';
+
+  @override
+  String get webVaultInstallHint =>
+      'On iPhone or iPad, open Safari\'s Share menu and choose Add to Home Screen.';
+
+  @override
+  String get webTerminalUnsupported =>
+      'This 1Panel terminal requires authentication headers that browser WebSockets cannot send. Open your 1Panel web interface to use its terminal.';
 }

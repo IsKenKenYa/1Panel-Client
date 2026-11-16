@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 import '../config/api_config.dart';
 import '../config/api_constants.dart';
@@ -12,6 +13,11 @@ class OnePanelWebSocketConnector {
     required String path,
     Map<String, String> queryParameters = const <String, String>{},
   }) async {
+    if (kIsWeb) {
+      throw UnsupportedError(
+        '浏览器 WebSocket 无法发送 1Panel 认证请求头，请在面板网页中使用此功能。',
+      );
+    }
     final headers = <String, dynamic>{
       ...OnePanelAuthHeaders.build(config.apiKey),
       'User-Agent': ApiConstants.userAgent,

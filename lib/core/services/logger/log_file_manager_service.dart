@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'dart:collection';
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import '../../config/logger_config.dart';
 import 'log_format.dart';
@@ -10,6 +12,7 @@ class LogFileManagerService {
   factory LogFileManagerService() => _instance;
   LogFileManagerService._internal();
   Future<void> _writeQueue = Future<void>.value();
+  final _browserLines = ListQueue<String>();
   static final RegExp _levelPattern =
       RegExp(r'\b(TRACE|DEBUG|INFO|WARNING|ERROR|FATAL)\b');
 
@@ -29,6 +32,13 @@ class LogFileManagerService {
 
   Future<void> appendLine(String line) async {
     if (!LoggerConfig.enableFileOutput) return;
+    if (kIsWeb) {
+      _browserLines.addLast(line);
+      while (_browserLines.length > 2000) {
+        _browserLines.removeFirst();
+      }
+      return;
+    }
     _writeQueue = _writeQueue.then((_) => _appendLineInternal(line));
     return _writeQueue;
   }
@@ -73,6 +83,7 @@ class LogFileManagerService {
   }
 
   Future<void> cleanupExpired() async {
+    if (kIsWeb) return;
     final dir = await getLogDirectory();
     final expireAt =
         DateTime.now().subtract(Duration(days: LoggerConfig.logRetentionDays));
@@ -87,6 +98,7 @@ class LogFileManagerService {
   }
 
   Future<List<File>> listLogFiles() async {
+    if (kIsWeb) return [];
     final dir = await getLogDirectory();
     final files = <File>[];
     await for (final entity in dir.list()) {
@@ -111,6 +123,13 @@ class LogFileManagerService {
     AppLogLevel? minLevel,
     LogFormat format = LogFormat.aiAgent,
   }) async {
+    if (kIsWeb) {
+      final raw = _browserLines.join('\n');
+      final filtered = minLevel == null ? raw : _filterLogsByLevel(raw, minLevel);
+      return format == LogFormat.aiAgent
+          ? filtered
+          : reformatAiAgentToHumanReadable(filtered);
+    }
     final files = await listLogFiles();
     final buffer = StringBuffer();
     for (final file in files.reversed) {
@@ -133,6 +152,10 @@ class LogFileManagerService {
   ///
   /// 不读取全部文件，避免大文件（如 43MB）卡 UI。
   Future<String> tailCurrentLog(int maxLines) async {
+    if (kIsWeb) {
+      return _browserLines.skip((_browserLines.length - maxLines).clamp(0,
+          _browserLines.length)).join('\n');
+    }
     final file = await getCurrentLogFile();
     if (!await file.exists()) return '';
     final length = await file.length();
@@ -178,6 +201,10 @@ class LogFileManagerService {
   }
 
   Future<void> clearLogs() async {
+    if (kIsWeb) {
+      _browserLines.clear();
+      return;
+    }
     final files = await listLogFiles();
     for (final f in files) {
       if (await f.exists()) await f.delete();

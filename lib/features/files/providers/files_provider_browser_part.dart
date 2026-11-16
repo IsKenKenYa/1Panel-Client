@@ -1,6 +1,16 @@
 part of '../files_provider.dart';
 
 extension FilesProviderBrowserMixin on FilesProvider {
+  Future<void> uploadPickedFile(
+      String name, Stream<List<int>> stream, int length,
+      {String? targetPath}) async {
+    final resolvedTargetPath = _normalizePath(targetPath ?? _data.currentPath);
+    await _service.uploadFile(resolvedTargetPath,
+        MultipartFile.fromStream(() => stream, length, filename: name));
+    _rememberPathForServer(_data.currentServer?.id, resolvedTargetPath);
+    if (_normalizePath(_data.currentPath) == resolvedTargetPath) await refresh();
+  }
+
   Future<void> createDirectory(String name) async {
     final newPath =
         _data.currentPath == '/' ? '/$name' : '${_data.currentPath}/$name';

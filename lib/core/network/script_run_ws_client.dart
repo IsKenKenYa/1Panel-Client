@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 import '../config/api_config.dart';
 import '../config/api_constants.dart';
@@ -27,6 +28,11 @@ class ScriptRunWsClient {
     int rows = 40,
     String operateNode = 'local',
   }) async {
+    if (kIsWeb) {
+      throw UnsupportedError(
+        '浏览器 WebSocket 无法发送 1Panel 认证请求头，请在面板网页中运行脚本。',
+      );
+    }
     if (_socket != null) return;
     final config = await ApiConfigManager.getCurrentConfig();
     if (config == null) {

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import '../../services/logger/logger_service.dart';
 import '../../config/api_constants.dart';
 import '../onepanel_auth_headers.dart';
@@ -29,9 +30,9 @@ class AuthInterceptor extends Interceptor {
     // 添加1Panel API服务器要求的认证头部
     options.headers.addAll({
       ...authHeaders,
-      'Content-Type': 'application/json',
+      if (options.data is! FormData) 'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'User-Agent': ApiConstants.userAgent,
+      if (!kIsWeb) 'User-Agent': ApiConstants.userAgent,
     });
 
     _logger.d(

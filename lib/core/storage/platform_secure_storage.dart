@@ -4,8 +4,10 @@ import 'package:onepanel_client/core/platform/platform_capabilities.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../services/logger/logger_service.dart';
+import 'browser_vault.dart';
 
 enum PlatformSecureStorageBackend {
+  browserVault,
   flutterSecureStorage,
   ohosMethodChannel,
   sharedPreferencesFallback,
@@ -41,6 +43,17 @@ class PlatformSecureStorage {
     bool probeSecureStorage = true,
   }) async {
     final resolvedCapabilities = capabilities ?? PlatformCapabilities.current();
+
+    if (resolvedCapabilities.isWeb) {
+      await BrowserVault.instance.initialize();
+      if (!BrowserVault.instance.isUnlocked) {
+        throw StateError('浏览器加密存储尚未解锁');
+      }
+      return PlatformSecureStorage._(
+        backend: PlatformSecureStorageBackend.browserVault,
+        isOhos: false,
+      );
+    }
 
     if (resolvedCapabilities.isOhos) {
       final ohosChannel =
@@ -128,6 +141,8 @@ class PlatformSecureStorage {
 
   Future<String?> read({required String key}) async {
     switch (backend) {
+      case PlatformSecureStorageBackend.browserVault:
+        return BrowserVault.instance.read(key);
       case PlatformSecureStorageBackend.flutterSecureStorage:
         return _secureStorage!.read(key: key);
       case PlatformSecureStorageBackend.ohosMethodChannel:
@@ -184,6 +199,8 @@ class PlatformSecureStorage {
 
   Future<void> write({required String key, required String? value}) async {
     switch (backend) {
+      case PlatformSecureStorageBackend.browserVault:
+        return BrowserVault.instance.write(key, value);
       case PlatformSecureStorageBackend.flutterSecureStorage:
         if (value == null) {
           await _secureStorage!.delete(key: key);
@@ -241,6 +258,8 @@ class PlatformSecureStorage {
 
   Future<void> delete({required String key}) async {
     switch (backend) {
+      case PlatformSecureStorageBackend.browserVault:
+        return BrowserVault.instance.delete(key);
       case PlatformSecureStorageBackend.flutterSecureStorage:
         await _secureStorage!.delete(key: key);
         return;
@@ -266,6 +285,8 @@ class PlatformSecureStorage {
 
   Future<void> deleteAll() async {
     switch (backend) {
+      case PlatformSecureStorageBackend.browserVault:
+        return BrowserVault.instance.deleteAll();
       case PlatformSecureStorageBackend.flutterSecureStorage:
         await _secureStorage!.deleteAll();
         return;

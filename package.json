@@ -1,0 +1,14 @@
+{
+  "name": "onepanel-client-web-tools",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:web": "node scripts/web/build.mjs",
+    "check:web": "cf deploy build/web --dry-run",
+    "deploy:web": "cf deploy build/web"
+  },
+  "devDependencies": {
+    "cf": "1.0.0-beta.32",
+    "pdfjs-dist": "5.7.284"
+  }
+}

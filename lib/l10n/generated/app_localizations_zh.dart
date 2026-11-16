@@ -8732,4 +8732,73 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get commonBack => '返回';
+
+  @override
+  String get webVaultTitle => '浏览器中的 1Panel Client';
+
+  @override
+  String get webVaultDescription =>
+      '服务器配置保存在当前浏览器。API Key 与登录凭据经过加密，连接由浏览器直接发送到你的 1Panel。';
+
+  @override
+  String get webVaultPasswordMode => '使用本地密码';
+
+  @override
+  String get webVaultBrowserMode => '使用浏览器密钥';
+
+  @override
+  String get webVaultBrowserModeHelp =>
+      '浏览器保存解密密钥，打开网页即可使用。能够使用此浏览器的人也能访问已保存的服务器。';
+
+  @override
+  String get webVaultPasswordModeHelp => '关闭网页后需要重新输入密码。密码与解密密钥不会上传，请妥善保存密码。';
+
+  @override
+  String get webVaultPassword => '本地密码';
+
+  @override
+  String get webVaultConfirmPassword => '确认本地密码';
+
+  @override
+  String get webVaultPasswordLength => '请使用至少 12 个字符';
+
+  @override
+  String get webVaultPasswordMismatch => '两次输入的密码需要相同';
+
+  @override
+  String get webVaultCreate => '创建本地存储';
+
+  @override
+  String get webVaultUnlock => '解锁本地存储';
+
+  @override
+  String get webVaultUnlockError => '密码错误或浏览器数据无法读取，原有数据已保留。';
+
+  @override
+  String get webVaultStorageError => '无法打开浏览器存储。请使用 HTTPS，并允许此网站保存数据。';
+
+  @override
+  String get webVaultRetention =>
+      '正常关闭浏览器后数据仍会保存。清除网站数据、隐私浏览或浏览器回收存储空间可能删除数据。请保存服务器配置的备份。';
+
+  @override
+  String get webConnectionRequirements =>
+      '浏览器连接需要可信 HTTPS，并由面板允许当前网站的跨域请求（CORS）。局域网访问还需要浏览器授权。';
+
+  @override
+  String get webConnectionHttpsRequired => '请输入使用可信证书的 HTTPS 面板地址';
+
+  @override
+  String get webConnectionTlsUnsupported => '浏览器需要可信证书，无法忽略 TLS 证书验证';
+
+  @override
+  String get webConnectionFailed => '浏览器无法连接面板，请检查 HTTPS 证书、CORS 配置与局域网访问权限。';
+
+  @override
+  String get webVaultInstallHint =>
+      'iPhone 或 iPad：在 Safari 分享菜单中选择“添加到主屏幕”，即可从主屏幕打开。';
+
+  @override
+  String get webTerminalUnsupported =>
+      '当前 1Panel 终端需要浏览器 WebSocket 无法设置的认证请求头。请打开你的 1Panel 网页面板使用终端。';
 }

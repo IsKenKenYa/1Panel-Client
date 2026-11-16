@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN" data-type="software">
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -18,11 +18,16 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A mobile App based on the 1Panel Open API.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="在浏览器中管理你的 1Panel，配置与加密凭据保存在当前设备。">
+  <meta name="theme-color" content="#095868">
+  <meta name="referrer" content="no-referrer">
+  <meta name="page-type" content="software">
+  <meta name="site-kind" content="software">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="1Panel Client">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
@@ -31,8 +36,18 @@
 
   <title>1Panel Client</title>
   <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="bootstrap.css">
 </head>
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+  <div id="loading" role="status" aria-live="polite">
+    <img src="icons/Icon-192.png" width="64" height="64" alt="">
+    <p>正在打开 1Panel Client…</p>
+    <p id="loading-error" hidden>应用无法加载，请检查网络后重新打开网页。</p>
+    <button id="reload" type="button" hidden>重新加载</button>
+  </div>
+  <noscript>1Panel Client 需要启用 JavaScript。配置与凭据保存在你的浏览器中。</noscript>
+  <script src="vendor/passkeys.bundle.js" defer></script>
+  <script src="platform_bootstrap.js" defer></script>
+  <script src="flutter_bootstrap.js" defer></script>
 </body>
 </html>

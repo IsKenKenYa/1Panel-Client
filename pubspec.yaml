@@ -48,6 +48,8 @@ dependencies:
   # Security & Storage
   flutter_secure_storage: ^10.0.0  # Secure storage for sensitive data (Updated from 9.0.0)
   shared_preferences: ^2.5.4  # General preferences storage (Updated from 2.2.2)
+  web: ^1.1.1
+  mime: ^2.0.0
   
   # UI & UX
   material_design_icons_flutter: ^7.0.7296  # Material Design Icons (Latest)

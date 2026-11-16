@@ -124,5 +124,9 @@ test_output.txt
 key/
 graphify-out/
 .codegraph
+node_modules/
+.cloudflare/
+.wrangler/
+web/vendor/pdfjs/
 architecture-review-*
 .zcode/screenshots/

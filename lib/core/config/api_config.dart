@@ -77,6 +77,7 @@ class SecureApiKeyStore implements ApiKeyStore {
 
   @override
   Future<String?> read(String key) async {
+    if (kIsWeb) return (await _ensureStorage()).read(key: key);
     try {
       final storage = await _ensureStorage();
       final value = await storage.read(key: key);
@@ -147,6 +148,10 @@ class SecureApiKeyStore implements ApiKeyStore {
 
   @override
   Future<void> write(String key, String value) async {
+    if (kIsWeb) {
+      await (await _ensureStorage()).write(key: key, value: value);
+      return;
+    }
     try {
       final storage = await _ensureStorage();
       await storage.write(key: key, value: value);
@@ -190,6 +195,10 @@ class SecureApiKeyStore implements ApiKeyStore {
 
   @override
   Future<void> delete(String key) async {
+    if (kIsWeb) {
+      await (await _ensureStorage()).delete(key: key);
+      return;
+    }
     try {
       final storage = await _ensureStorage();
       await storage.delete(key: key);

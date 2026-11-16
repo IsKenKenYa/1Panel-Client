@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
+import 'package:mime/mime.dart';
 import 'package:onepanel_client/core/utils/error_message_utils.dart';
 import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/services/app_preferences_service.dart';
 import 'package:onepanel_client/core/services/cache/file_preview_cache_manager.dart';
 import 'package:onepanel_client/features/files/services/file_preview_service.dart';
+import 'package:onepanel_client/core/platform/services/browser_file_operations.dart';
 
 enum PreviewFileType {
   image,
@@ -59,6 +61,7 @@ class FilePreviewProvider extends ChangeNotifier with SafeChangeNotifier {
   String? _error;
   late final PreviewFileType _fileType = _resolveFileType(fileName);
   String? _localFilePath;
+  Uint8List? _binaryData;
   CacheSource? _cacheSource;
   final List<String> _pagedLines = <String>[];
   bool _usePagedTextPreview = false;
@@ -214,6 +217,7 @@ class FilePreviewProvider extends ChangeNotifier with SafeChangeNotifier {
   String? get error => _error;
   PreviewFileType get fileType => _fileType;
   String? get localFilePath => _localFilePath;
+  Uint8List? get binaryData => _binaryData;
   CacheSource? get cacheSource => _cacheSource;
   List<String> get pagedLines => List<String>.unmodifiable(_pagedLines);
   bool get usePagedTextPreview => _usePagedTextPreview;
@@ -373,8 +377,20 @@ class FilePreviewProvider extends ChangeNotifier with SafeChangeNotifier {
       }
 
       _cacheSource = result.source;
-      _localFilePath = await (_tempSaver?.call(result.data, fileName) ??
-          _cacheManager!.saveToTempFile(result.data, fileName));
+      _binaryData = result.data;
+      if (kIsWeb) {
+        if (_fileType == PreviewFileType.pdf) {
+          await BrowserFileOperations.preparePdfRenderer();
+        }
+        if (_localFilePath != null) {
+          BrowserFileOperations.revokeUrl(_localFilePath!);
+        }
+        _localFilePath = BrowserFileOperations.createUrl(result.data,
+            mimeType: lookupMimeType(fileName, headerBytes: result.data));
+      } else {
+        _localFilePath = await (_tempSaver?.call(result.data, fileName) ??
+            _cacheManager!.saveToTempFile(result.data, fileName));
+      }
       if (_localFilePath == null) {
         throw Exception('保存临时文件失败');
       }
@@ -409,6 +425,14 @@ class FilePreviewProvider extends ChangeNotifier with SafeChangeNotifier {
       return PreviewFileType.text;
     }
     return PreviewFileType.unknown;
+  }
+
+  @override
+  void dispose() {
+    if (kIsWeb && _localFilePath != null) {
+      BrowserFileOperations.revokeUrl(_localFilePath!);
+    }
+    super.dispose();
   }
 
   bool _isTextFileName(String name) {

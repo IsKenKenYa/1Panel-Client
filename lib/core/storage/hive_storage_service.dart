@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../services/logger/logger_service.dart';
 import 'storage_service.dart';
@@ -28,6 +29,19 @@ class HiveStorageService implements StorageService {
     }
 
     await Hive.initFlutter();
+
+    if (kIsWeb && isEncrypted) {
+      final storage = await PlatformSecureStorage.create();
+      final storedKey = await storage.read(key: '${boxName}_key');
+      final key = storedKey == null
+          ? Hive.generateSecureKey()
+          : base64Url.decode(storedKey);
+      if (storedKey == null) {
+        await storage.write(key: '${boxName}_key', value: base64Url.encode(key));
+      }
+      _box = await Hive.openBox(boxName, encryptionCipher: HiveAesCipher(key));
+      return;
+    }
 
     List<int>? encryptionKey;
 

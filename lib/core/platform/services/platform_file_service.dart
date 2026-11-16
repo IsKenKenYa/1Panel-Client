@@ -10,6 +10,7 @@ import 'package:onepanel_client/core/platform/services/ohos_platform_channel.dar
 import 'package:onepanel_client/core/platform/services/platform_system_paths.dart';
 import 'package:onepanel_client/core/services/app_preferences_service.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
+import 'browser_file_operations.dart';
 
 typedef DirectoryResolver = Future<Directory> Function();
 
@@ -43,6 +44,15 @@ class PlatformFileService {
     String? category,
   }) async {
     final safeFileName = _sanitizeFileName(fileName);
+    if (_capabilities.isWeb) {
+      return SaveOutcome(
+        uri: BrowserFileOperations.download(bytes, safeFileName,
+            mimeType: mimeType),
+        displayName: safeFileName,
+        kind: SaveLocationKind.publicDownloadDir,
+        category: category,
+      );
+    }
     final usePicker = await _shouldUsePicker();
     final mimeKind = _classifyMimeKind(mimeType);
     final effectiveCategory = category ?? _defaultCategoryForMime(mimeType);
@@ -199,6 +209,7 @@ class PlatformFileService {
   /// so OHOS launches the system file viewer with a temporary read
   /// grant. For filesystem paths, falls through to [openFile].
   Future<bool> openSaveOutcome(SaveOutcome outcome) async {
+    if (_capabilities.isWeb) return false;
     if (_capabilities.isOhos) {
       if (outcome.kind == SaveLocationKind.pickerUri &&
           (outcome.uri.startsWith('content://') ||
@@ -242,6 +253,7 @@ class PlatformFileService {
   }
 
   Future<String?> getDownloadDirectoryPath() async {
+    if (_capabilities.isWeb) return null;
     try {
       if (_capabilities.supportsAndroidIntent) {
         // Use explicit path instead of getDownloadsDirectory() —
@@ -267,6 +279,7 @@ class PlatformFileService {
   }
 
   Future<bool> openDownloadsDirectory() async {
+    if (_capabilities.isWeb) return false;
     if (_capabilities.supportsAndroidIntent) {
       const data =
           'content://com.android.externalstorage.documents/document/primary%3ADownload';

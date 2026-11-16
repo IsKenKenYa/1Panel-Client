@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:onepanel_client/data/models/paged_query.dart';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
@@ -10,6 +11,7 @@ import 'package:onepanel_client/core/config/api_constants.dart';
 import 'package:onepanel_client/core/platform/services/platform_system_paths.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
 import 'package:onepanel_client/data/repositories/files_repository.dart';
+import 'package:onepanel_client/core/platform/services/platform_file_service.dart';
 
 class FileTransferService {
   FileTransferService({FilesRepository? repository})
@@ -65,6 +67,13 @@ class FileTransferService {
     if (bytes == null || bytes.isEmpty) {
       throw Exception('下载文件失败: 响应为空');
     }
+    if (kIsWeb) {
+      await PlatformFileService().saveBytes(
+        fileName: savePath.split('/').last,
+        bytes: Uint8List.fromList(bytes),
+      );
+      return;
+    }
     final file = await File(savePath).create(recursive: true);
     await file.writeAsBytes(bytes);
   }
@@ -74,6 +83,17 @@ class FileTransferService {
     String fileName, {
     Function(int received, int total)? onProgress,
   }) async {
+    if (kIsWeb) {
+      final api = await _repository.getApi();
+      final response = await api.downloadFile(filePath);
+      final bytes = response.data;
+      if (bytes == null) throw StateError('文件响应为空');
+      onProgress?.call(bytes.length, bytes.length);
+      return PlatformFileService().saveBytes(
+        fileName: fileName,
+        bytes: Uint8List.fromList(bytes),
+      );
+    }
     final savePath = await _getDownloadPath(fileName);
     final config = await _repository.getCurrentServer();
     if (config == null) {
@@ -116,6 +136,7 @@ class FileTransferService {
   }
 
   Future<bool> checkAndRequestStoragePermission() async {
+    if (kIsWeb) return true;
     if (!Platform.isAndroid) {
       return true;
     }
