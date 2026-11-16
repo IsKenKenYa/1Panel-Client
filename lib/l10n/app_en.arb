@@ -925,6 +925,8 @@
   "settingsLanguageHint": "Language updates apply immediately. If not specified, the app follows system settings.",
   "settingsUIRenderMode": "UI Render Mode",
   "settingsUIRenderModeNative": "Native",
+  "settingsUIRenderModeLiquidGlass": "Liquid Glass",
+  "settingsUIRenderModeLiquidGlassDesc": "Frosted navigation floats (Apple Liquid Glass semantics, native standard on iOS 26)",
   "settingsUIRenderModeMD3": "MDUI3",
   "settingsUIRenderModeRestartHint": "Please restart the app for the UI render mode changes to take effect.",
   "settingsTheme": "Theme",

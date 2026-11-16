@@ -925,6 +925,8 @@
   "settingsLanguageHint": "语言修改会立即生效，未指定时将跟随系统。",
   "settingsUIRenderMode": "UI 渲染模式",
   "settingsUIRenderModeNative": "原生模式",
+  "settingsUIRenderModeLiquidGlass": "液态玻璃",
+  "settingsUIRenderModeLiquidGlassDesc": "导航浮层磨砂穿透（Apple Liquid Glass 语义，iOS 26 按官方标准呈现）",
   "settingsUIRenderModeMD3": "MDUI3",
   "settingsUIRenderModeRestartHint": "修改 UI 渲染模式后，请重启应用以生效。",
   "settingsTheme": "主题",

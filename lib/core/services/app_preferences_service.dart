@@ -147,8 +147,12 @@ class AppPreferencesService {
       case 'native':
         configuredMode = UIRenderMode.native;
         break;
+      case 'liquidGlass':
+        configuredMode = UIRenderMode.liquidGlass;
+        break;
       default:
-        configuredMode = UIRenderMode.md3;
+        // 新装机默认展示 Liquid Glass 导航浮层（玻璃此前即默认渲染）。
+        configuredMode = UIRenderMode.liquidGlass;
         break;
     }
 
@@ -161,6 +165,7 @@ class AppPreferencesService {
     final value = switch (resolvedMode) {
       UIRenderMode.md3 => 'md3',
       UIRenderMode.native => 'native',
+      UIRenderMode.liquidGlass => 'liquidGlass',
     };
 
     await prefs.setString(_uiRenderModeKey, value);

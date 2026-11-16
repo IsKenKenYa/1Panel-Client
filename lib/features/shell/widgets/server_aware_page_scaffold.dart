@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:glass/glass.dart';
 import 'package:provider/provider.dart';
+import 'package:onepanel_client/core/theme/ui_render_policy.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/widgets/no_server_selected_state.dart';
 import 'package:onepanel_client/features/shell/widgets/shell_drawer_scope.dart';
@@ -64,6 +65,8 @@ class ServerAwarePageScaffold extends StatelessWidget {
               ],
               bottom: bottom,
             ).asGlass(
+              // 仅 liquidGlass 渲染模式启用玻璃；md3 模式保持实色 AppBar。
+              enabled: UIRenderPolicy.liquidGlassEnabled,
               tintColor: scheme.surface,
               frosted: true,
             ),

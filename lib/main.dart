@@ -69,6 +69,8 @@ void main() async {
 
   final useFlutterUI = UIRenderPolicy.shouldUseFlutterUI(uiRenderMode);
   final nativeModeFallback = UIRenderPolicy.isNativeModeFallback(uiRenderMode);
+  // 首帧前同步玻璃浮层静态开关（首帧即正确，ThemeController.load 二次兜底）。
+  UIRenderPolicy.setLiquidGlassEnabled(uiRenderMode);
 
   // window_manager must be initialized before any window API calls;
   // only needed when Flutter renders its own UI (not in native/headless mode).

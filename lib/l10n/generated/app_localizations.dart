@@ -4022,6 +4022,18 @@ abstract class AppLocalizations {
   /// **'Native'**
   String get settingsUIRenderModeNative;
 
+  /// No description provided for @settingsUIRenderModeLiquidGlass.
+  ///
+  /// In en, this message translates to:
+  /// **'Liquid Glass'**
+  String get settingsUIRenderModeLiquidGlass;
+
+  /// No description provided for @settingsUIRenderModeLiquidGlassDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Frosted navigation floats (Apple Liquid Glass semantics, native standard on iOS 26)'**
+  String get settingsUIRenderModeLiquidGlassDesc;
+
   /// No description provided for @settingsUIRenderModeMD3.
   ///
   /// In en, this message translates to:

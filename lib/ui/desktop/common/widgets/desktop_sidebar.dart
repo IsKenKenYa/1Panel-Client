@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:glass/glass.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/theme/ui_render_policy.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
 
 class DesktopSidebar extends StatelessWidget {
@@ -72,6 +73,8 @@ class DesktopSidebar extends StatelessWidget {
           ],
         ),
       ).asGlass(
+        // 仅 liquidGlass 渲染模式启用玻璃；md3 模式保持实色侧栏。
+        enabled: UIRenderPolicy.liquidGlassEnabled,
         tintColor: bgColor,
         frosted: true,
       ),

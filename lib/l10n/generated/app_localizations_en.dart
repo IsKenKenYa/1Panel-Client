@@ -2100,6 +2100,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsUIRenderModeNative => 'Native';
 
   @override
+  String get settingsUIRenderModeLiquidGlass => 'Liquid Glass';
+
+  @override
+  String get settingsUIRenderModeLiquidGlassDesc =>
+      'Frosted navigation floats (Apple Liquid Glass semantics, native standard on iOS 26)';
+
+  @override
   String get settingsUIRenderModeMD3 => 'MDUI3';
 
   @override

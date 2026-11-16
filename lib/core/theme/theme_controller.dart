@@ -3,6 +3,7 @@ import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/services/app_preferences_service.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/theme/ui_render_mode.dart';
+import 'package:onepanel_client/core/theme/ui_render_policy.dart';
 
 class ThemeController extends ChangeNotifier with SafeChangeNotifier {
   ThemeController({AppPreferencesService? preferencesService})
@@ -26,6 +27,8 @@ class ThemeController extends ChangeNotifier with SafeChangeNotifier {
     _themeMode = await _preferencesService.loadThemeMode();
     _useDynamicColor = await _preferencesService.loadUseDynamicColor();
     _uiRenderMode = await _preferencesService.loadUIRenderMode();
+    // 同步玻璃浮层静态开关（boot-time 选择，重启生效语义）。
+    UIRenderPolicy.setLiquidGlassEnabled(_uiRenderMode);
     final loadedSeedColor = await _preferencesService.loadSeedColor();
     if (loadedSeedColor != null) {
       _seedColor = loadedSeedColor;

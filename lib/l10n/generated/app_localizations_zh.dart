@@ -2049,6 +2049,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsUIRenderModeNative => '原生模式';
 
   @override
+  String get settingsUIRenderModeLiquidGlass => '液态玻璃';
+
+  @override
+  String get settingsUIRenderModeLiquidGlassDesc =>
+      '导航浮层磨砂穿透（Apple Liquid Glass 语义，iOS 26 按官方标准呈现）';
+
+  @override
   String get settingsUIRenderModeMD3 => 'MDUI3';
 
   @override

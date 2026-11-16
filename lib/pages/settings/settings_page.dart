@@ -147,9 +147,12 @@ class _SettingsBody extends StatelessWidget {
                 SectionEntryItem(
                   icon: Icons.design_services_outlined,
                   title: l10n.settingsUIRenderMode,
-                  subtitle: settings.uiRenderMode == UIRenderMode.native
-                      ? l10n.settingsUIRenderModeNative
-                      : l10n.settingsUIRenderModeMD3,
+                  subtitle: switch (settings.uiRenderMode) {
+                    UIRenderMode.native => l10n.settingsUIRenderModeNative,
+                    UIRenderMode.liquidGlass =>
+                      l10n.settingsUIRenderModeLiquidGlass,
+                    UIRenderMode.md3 => l10n.settingsUIRenderModeMD3,
+                  },
                   onTap: () {
                     showDialog(
                       context: context,
@@ -176,6 +179,13 @@ class _SettingsBody extends StatelessWidget {
                                         Text(l10n.settingsUIRenderModeNative),
                                     value: UIRenderMode.native,
                                   ),
+                                RadioListTile<UIRenderMode>(
+                                  title:
+                                      Text(l10n.settingsUIRenderModeLiquidGlass),
+                                  subtitle: Text(
+                                      l10n.settingsUIRenderModeLiquidGlassDesc),
+                                  value: UIRenderMode.liquidGlass,
+                                ),
                                 RadioListTile<UIRenderMode>(
                                   title: Text(l10n.settingsUIRenderModeMD3),
                                   value: UIRenderMode.md3,
