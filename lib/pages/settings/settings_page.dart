@@ -155,9 +155,10 @@ class _SettingsBody extends StatelessWidget {
                     UIRenderMode.md3 => l10n.settingsUIRenderModeMD3,
                   },
                   onTap: () {
+                    final pageContext = context;
                     showDialog(
                       context: context,
-                      builder: (context) {
+                      builder: (dialogContext) {
                         return AlertDialog(
                           title: Text(l10n.settingsUIRenderMode),
                           content: RadioGroup<UIRenderMode>(
@@ -167,9 +168,13 @@ class _SettingsBody extends StatelessWidget {
                                 return;
                               }
                               settings.updateUIRenderMode(value);
-                              Navigator.pop(context);
-                              SnackBarUtils.showSuccess(context, l10n
-                                        .settingsUIRenderModeRestartHint);
+                              Navigator.pop(dialogContext);
+                              // 用设置页 context 展示提示：对话框 context 已随
+                              // 关闭失效，继续使用会触发已停用祖先查找。
+                              SnackBarUtils.showSuccess(
+                                pageContext,
+                                l10n.settingsUIRenderModeRestartHint,
+                              );
                             },
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
@@ -194,6 +199,12 @@ class _SettingsBody extends StatelessWidget {
                               ],
                             ),
                           ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(dialogContext),
+                              child: Text(l10n.commonClose),
+                            ),
+                          ],
                         );
                       },
                     );
