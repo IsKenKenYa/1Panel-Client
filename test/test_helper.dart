@@ -1,7 +1,6 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-import 'package:crypto/crypto.dart';
+import 'package:onepanel_client/core/network/onepanel_auth_headers.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -90,29 +89,19 @@ class TestConfig {
 class TokenGenerator {
   /// 生成1Panel认证Token
   ///
-  /// Token格式: md5('1panel' + API-Key + UnixTimestamp)
+  /// 请求签名格式：hmac_sha256(API-Key, '1panel:' + UnixTimestamp)。
   static String generateToken(String apiKey, int timestamp) {
-    final data = '1panel$apiKey$timestamp';
-    final bytes = utf8.encode(data);
-    final digest = md5.convert(bytes);
-    return digest.toString();
+    return OnePanelAuthHeaders.sign(apiKey, timestamp.toString());
   }
 
   /// 生成当前时间的Token
   static Map<String, String> generateAuthHeaders(String apiKey) {
-    final timestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    final token = generateToken(apiKey, timestamp);
-
-    return {
-      '1Panel-Token': token,
-      '1Panel-Timestamp': timestamp.toString(),
-    };
+    return OnePanelAuthHeaders.build(apiKey);
   }
 
   /// 验证Token格式
   static bool validateTokenFormat(String token) {
-    if (token.isEmpty || token.length != 32) return false;
-    return RegExp(r'^[a-f0-9]{32}$').hasMatch(token);
+    return RegExp(r'^[a-f0-9]{64}$').hasMatch(token);
   }
 }
 

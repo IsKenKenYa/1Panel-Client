@@ -267,9 +267,6 @@ extension FilesProviderSystemMixin on FilesProvider {
   }
 
   String _generate1PanelAuthToken(String apiKey, String timestamp) {
-    final authString = '1panel$apiKey$timestamp';
-    final bytes = utf8.encode(authString);
-    final digest = md5.convert(bytes);
-    return digest.toString();
+    return OnePanelAuthHeaders.sign(apiKey, timestamp);
   }
 }

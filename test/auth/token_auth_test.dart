@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'package:crypto/crypto.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../test_helper.dart';
 
@@ -15,19 +13,16 @@ void main() {
 
     group('Token生成测试', () {
       test('应该正确生成Token格式', () {
-        // 手动计算期望的Token
-        final expectedData = '1panel$testApiKey$testTimestamp';
-        final expectedBytes = utf8.encode(expectedData);
-        final expectedDigest = md5.convert(expectedBytes);
-        final expectedToken = expectedDigest.toString();
+        const expectedToken =
+            'dcd773a7804ba924e58176ddca229b6fcc74a216a36a62e2e92bc14ec5782207';
 
         // 使用TokenGenerator生成
         final generatedToken =
             TokenGenerator.generateToken(testApiKey, testTimestamp);
 
         expect(generatedToken, equals(expectedToken));
-        expect(generatedToken.length, equals(32));
-        expect(RegExp(r'^[a-f0-9]{32}$').hasMatch(generatedToken), isTrue);
+        expect(generatedToken.length, equals(64));
+        expect(RegExp(r'^[a-f0-9]{64}$').hasMatch(generatedToken), isTrue);
       });
 
       test('相同输入应该生成相同Token', () {
@@ -53,11 +48,8 @@ void main() {
         expect(token1, isNot(equals(token2)));
       });
 
-      test('空API密钥应该生成有效Token', () {
-        final token = TokenGenerator.generateToken('', testTimestamp);
-
-        expect(token.length, equals(32));
-        expect(TokenGenerator.validateTokenFormat(token), isTrue);
+      test('空 API Key 拒绝生成认证签名', () {
+        expect(() => TokenGenerator.generateToken('', testTimestamp), throwsArgumentError);
       });
     });
 
@@ -67,7 +59,7 @@ void main() {
 
         expect(headers.containsKey('1Panel-Token'), isTrue);
         expect(headers.containsKey('1Panel-Timestamp'), isTrue);
-        expect(headers['1Panel-Token']?.length, equals(32));
+        expect(headers['1Panel-Token']?.length, equals(64));
         expect(int.tryParse(headers['1Panel-Timestamp']!), isNotNull);
       });
 
@@ -95,44 +87,44 @@ void main() {
     });
 
     group('Token格式验证测试', () {
-      test('有效的32位十六进制字符串应该通过验证', () {
+      test('有效的 64 个十六进制字符通过验证', () {
         expect(
             TokenGenerator.validateTokenFormat(
-                'a1b2c3d4e5f6789012345678abcdef00'),
+                'a' * 64),
             isTrue);
         expect(
             TokenGenerator.validateTokenFormat(
-                '12345678901234567890123456789012'),
+                '0123456789abcdef' * 4),
             isTrue);
         expect(
             TokenGenerator.validateTokenFormat(
-                'abcdefabcdefabcdefabcdefabcdefab'),
+                'dcd773a7804ba924e58176ddca229b6fcc74a216a36a62e2e92bc14ec5782207'),
             isTrue);
       });
 
-      test('非32位字符串应该验证失败', () {
+      test('长度不等于 64 个字符时验证失败', () {
         expect(TokenGenerator.validateTokenFormat(''), isFalse);
         expect(TokenGenerator.validateTokenFormat('short'), isFalse);
-        expect(TokenGenerator.validateTokenFormat('a' * 31), isFalse);
-        expect(TokenGenerator.validateTokenFormat('a' * 33), isFalse);
+        expect(TokenGenerator.validateTokenFormat('a' * 63), isFalse);
+        expect(TokenGenerator.validateTokenFormat('a' * 65), isFalse);
       });
 
       test('包含非十六进制字符应该验证失败', () {
         expect(
             TokenGenerator.validateTokenFormat(
-                'g1b2c3d4e5f6789012345678abcdef00'),
+                'g${'a' * 63}'),
             isFalse);
         expect(
             TokenGenerator.validateTokenFormat(
-                'A1B2C3D4E5F6789012345678ABCDEF00'),
+                'A${'a' * 63}'),
             isFalse); // 大写
         expect(
             TokenGenerator.validateTokenFormat(
-                'a1b2c3d4e5f6789012345678abcde!00'),
+                '!${'a' * 63}'),
             isFalse);
         expect(
             TokenGenerator.validateTokenFormat(
-                'a1b2c3d4e5f6789012345678abcdef 0'),
+                ' ${'a' * 63}'),
             isFalse);
       });
     });
@@ -142,7 +134,7 @@ void main() {
         final longKey = 'a' * 1000;
         final token = TokenGenerator.generateToken(longKey, testTimestamp);
 
-        expect(token.length, equals(32));
+        expect(token.length, equals(64));
         expect(TokenGenerator.validateTokenFormat(token), isTrue);
       });
 
@@ -150,7 +142,7 @@ void main() {
         final specialKey = '!@#\$%^&*()_+-=[]{}|;:,.<>?';
         final token = TokenGenerator.generateToken(specialKey, testTimestamp);
 
-        expect(token.length, equals(32));
+        expect(token.length, equals(64));
         expect(TokenGenerator.validateTokenFormat(token), isTrue);
       });
 
@@ -158,14 +150,14 @@ void main() {
         final unicodeKey = '测试密钥🔐日本語';
         final token = TokenGenerator.generateToken(unicodeKey, testTimestamp);
 
-        expect(token.length, equals(32));
+        expect(token.length, equals(64));
         expect(TokenGenerator.validateTokenFormat(token), isTrue);
       });
 
       test('零时间戳应该生成有效Token', () {
         final token = TokenGenerator.generateToken(testApiKey, 0);
 
-        expect(token.length, equals(32));
+        expect(token.length, equals(64));
         expect(TokenGenerator.validateTokenFormat(token), isTrue);
       });
 
@@ -173,7 +165,7 @@ void main() {
         final futureTimestamp = 4102444800; // 2100-01-01
         final token = TokenGenerator.generateToken(testApiKey, futureTimestamp);
 
-        expect(token.length, equals(32));
+        expect(token.length, equals(64));
         expect(TokenGenerator.validateTokenFormat(token), isTrue);
       });
     });
@@ -204,17 +196,17 @@ void main() {
 
         // 两个Token应该完全不同
         int diffCount = 0;
-        for (int i = 0; i < 32; i++) {
+        for (int i = 0; i < baseToken.length; i++) {
           if (baseToken[i] != modifiedToken[i]) diffCount++;
         }
 
         // 至少有一半的字符不同
-        expect(diffCount, greaterThan(16));
+        expect(diffCount, greaterThan(32));
       });
     });
 
     group('实际验证逻辑测试', () {
-      test('模拟服务器端验证应该通过', () {
+      test('认证请求头与签名函数保持一致', () {
         // 客户端生成Token
         final headers = TokenGenerator.generateAuthHeaders(testApiKey);
         final token = headers['1Panel-Token']!;

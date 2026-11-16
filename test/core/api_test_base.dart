@@ -1,6 +1,5 @@
-import 'dart:convert';
 import 'dart:math';
-import 'package:crypto/crypto.dart';
+import 'package:onepanel_client/core/network/onepanel_auth_headers.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'test_config_manager.dart';
@@ -31,20 +30,7 @@ abstract class ApiTestBase {
   }
 
   Map<String, String> generateAuthHeaders() {
-    final timestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    final token = _generateToken(apiKey, timestamp);
-
-    return {
-      '1Panel-Token': token,
-      '1Panel-Timestamp': timestamp.toString(),
-    };
-  }
-
-  String _generateToken(String apiKey, int timestamp) {
-    final data = '1panel$apiKey$timestamp';
-    final bytes = utf8.encode(data);
-    final digest = md5.convert(bytes);
-    return digest.toString();
+    return OnePanelAuthHeaders.build(apiKey);
   }
 
   Future<Response> authenticatedGet(String path,

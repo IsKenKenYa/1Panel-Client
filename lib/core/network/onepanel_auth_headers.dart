@@ -7,18 +7,20 @@ import '../config/api_constants.dart';
 class OnePanelAuthHeaders {
   const OnePanelAuthHeaders._();
 
-  static Map<String, String> build(String apiKey) {
+  static Map<String, String> build(String apiKey, {DateTime? now}) {
     final timestamp =
-        (DateTime.now().millisecondsSinceEpoch / 1000).floor().toString();
-    final authToken = _generateToken(apiKey, timestamp);
+        ((now ?? DateTime.now()).millisecondsSinceEpoch ~/ 1000).toString();
+    final authToken = sign(apiKey, timestamp);
     return <String, String>{
       ApiConstants.authHeaderToken: authToken,
       ApiConstants.authHeaderTimestamp: timestamp,
     };
   }
 
-  static String _generateToken(String apiKey, String timestamp) {
-    final authString = '${ApiConstants.authPrefix}$apiKey$timestamp';
-    return md5.convert(utf8.encode(authString)).toString();
+  static String sign(String apiKey, String timestamp) {
+    if (apiKey.isEmpty) throw ArgumentError('API Key 不能为空');
+    final message = '${ApiConstants.authPrefix}:$timestamp';
+    return Hmac(sha256, utf8.encode(apiKey))
+        .convert(utf8.encode(message)).toString();
   }
 }

@@ -29,7 +29,7 @@ class ApiConstants {
     return '$apiPrefix$endpoint';
   }
 
-  // 认证相关常量 -- 1Panel uses md5(authPrefix + apiKey + timestamp)
+  // 请求签名使用 HMAC-SHA256，消息为 authPrefix:timestamp。
   static const String authHeaderToken = '1Panel-Token';
   static const String authHeaderTimestamp = '1Panel-Timestamp';
   static const String authPrefix = '1panel';

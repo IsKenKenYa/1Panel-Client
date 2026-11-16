@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:crypto/crypto.dart';
-import 'dart:convert';
+import 'package:onepanel_client/core/network/onepanel_auth_headers.dart';
 
 class ServerConnectionResult {
   const ServerConnectionResult({
@@ -49,22 +48,9 @@ class ServerConnectionService {
         }
       }
 
-      // 1Panel API auth: md5('1panel' + apiKey + unixTimestamp).
-      // The timestamp is sent alongside so the server can verify the hash
-      // and reject requests older than a small time window.
-      final timestamp =
-          (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString();
-      final authString = '1panel$apiKey$timestamp';
-      final bytes = utf8.encode(authString);
-      final digest = md5.convert(bytes);
-      final token = digest.toString();
-
       final response = await dio.get(
         '/api/v2/dashboard/base/os',
-        options: Options(headers: {
-          '1Panel-Token': token,
-          '1Panel-Timestamp': timestamp,
-        }),
+        options: Options(headers: OnePanelAuthHeaders.build(apiKey)),
       );
 
       stopwatch.stop();

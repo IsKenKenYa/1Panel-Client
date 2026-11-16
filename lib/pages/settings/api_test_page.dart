@@ -231,7 +231,7 @@ class _ApiTestPageState extends State<ApiTestPage> {
                           SizedBox(height: 16),
                           Text(
                             '1Panel v2 API使用自定义Token进行身份验证，格式为：\n\n'
-                            'Token = md5(\'1panel\' + API-Key + UnixTimestamp)\n\n'
+                            'Token = hmac_sha256(API-Key, \'1panel:\' + UnixTimestamp)\n\n'
                             '每次请求必须携带以下两个Header：\n\n'
                             '- 1Panel-Token: 自定义的Token值\n'
                             '- 1Panel-Timestamp: 当前时间戳\n\n'

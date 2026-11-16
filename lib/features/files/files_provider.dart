@@ -1,10 +1,9 @@
 import 'package:onepanel_client/data/models/paged_query.dart';
 import 'package:onepanel_client/core/utils/error_message_utils.dart';
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:crypto/crypto.dart';
+import 'package:onepanel_client/core/network/onepanel_auth_headers.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:onepanel_client/core/network/network_exceptions.dart';

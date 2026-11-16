@@ -1,13 +1,12 @@
-import 'dart:convert';
 import 'package:onepanel_client/data/models/paged_query.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 
-import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:onepanel_client/core/config/api_constants.dart';
+import 'package:onepanel_client/core/network/onepanel_auth_headers.dart';
 import 'package:onepanel_client/core/platform/services/platform_system_paths.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
 import 'package:onepanel_client/data/repositories/files_repository.dart';
@@ -159,9 +158,7 @@ class FileTransferService {
   }
 
   String _generate1PanelAuthToken(String apiKey, String timestamp) {
-    final authString = '1panel$apiKey$timestamp';
-    final digest = md5.convert(utf8.encode(authString));
-    return digest.toString();
+    return OnePanelAuthHeaders.sign(apiKey, timestamp);
   }
 
   Future<String> _getDownloadPath(String fileName) async {

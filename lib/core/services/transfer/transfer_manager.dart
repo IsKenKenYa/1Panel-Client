@@ -7,6 +7,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
+import 'package:onepanel_client/core/network/onepanel_auth_headers.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/core/services/transfer/transfer_task.dart';
 import 'package:onepanel_client/api/v2/file_v2.dart';
@@ -99,10 +100,7 @@ class TransferManager extends ChangeNotifier with SafeChangeNotifier {
   }
 
   String _generate1PanelAuthToken(String apiKey, String timestamp) {
-    final authString = '1panel$apiKey$timestamp';
-    final bytes = utf8.encode(authString);
-    final digest = md5.convert(bytes);
-    return digest.toString();
+    return OnePanelAuthHeaders.sign(apiKey, timestamp);
   }
 
   /// 重试下载任务（使用新时间戳）
