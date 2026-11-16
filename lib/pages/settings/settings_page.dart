@@ -256,6 +256,7 @@ class _SettingsBody extends StatelessWidget {
                 SectionEntryItem(
                   icon: Icons.info_outline,
                   title: l10n.settingsAbout,
+                  subtitle: l10n.settingsAboutSubtitle,
                   onTap: () {
                     Navigator.push(
                       context,

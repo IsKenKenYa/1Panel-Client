@@ -76,7 +76,7 @@ class _AboutPageState extends State<AboutPage> {
                       value: channelLabel,
                     ),
                     const Divider(height: 24),
-                    _SelectableInfoRow(
+                    _InfoRow(
                       label: l10n.aboutBranchLabel,
                       value: AppReleaseChannelConfig.branchName.isEmpty
                           ? '-'
@@ -89,7 +89,7 @@ class _AboutPageState extends State<AboutPage> {
                               ),
                     ),
                     const Divider(height: 24),
-                    _SelectableInfoRow(
+                    _InfoRow(
                       label: l10n.aboutCommitLabel,
                       value: BuildMetadataConfig.shortCommit.isEmpty
                           ? '-'
@@ -102,7 +102,7 @@ class _AboutPageState extends State<AboutPage> {
                               ),
                     ),
                     const Divider(height: 24),
-                    _SelectableInfoRow(
+                    _InfoRow(
                       label: l10n.aboutBuildDateLabel,
                       value: BuildMetadataConfig.buildDate.isEmpty
                           ? '-'
@@ -115,10 +115,9 @@ class _AboutPageState extends State<AboutPage> {
                               ),
                     ),
                     const Divider(height: 24),
-                    _LinkRow(
+                    _InfoRow(
                       label: l10n.aboutOfficialDomainLabel,
                       value: AboutPage.officialDomainName,
-                      openActionLabel: l10n.aboutLinkOpenAction,
                       onOpen: () =>
                           _openLink(context, AboutPage.officialDomainUrl),
                       onCopy: () =>
@@ -270,49 +269,54 @@ class _HeroCard extends StatelessWidget {
 }
 
 class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(child: Text(label)),
-        Text(value, style: Theme.of(context).textTheme.titleSmall),
-      ],
-    );
-  }
-}
-
-class _SelectableInfoRow extends StatelessWidget {
-  const _SelectableInfoRow({
+  const _InfoRow({
     required this.label,
     required this.value,
     this.onCopy,
+    this.onOpen,
   });
 
   final String label;
   final String value;
   final VoidCallback? onCopy;
+  final VoidCallback? onOpen;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    final theme = Theme.of(context);
+    final l10n = context.l10n;
+    return Row(
       children: [
-        Text(label, style: Theme.of(context).textTheme.labelLarge),
-        const SizedBox(height: AppDesignTokens.spacingXs),
-        SelectableText(value),
-        if (onCopy != null) ...[
-          const SizedBox(height: AppDesignTokens.spacingSm),
-          OutlinedButton.icon(
-            onPressed: onCopy,
-            icon: const Icon(Icons.copy_outlined),
-            label: Text(context.l10n.commonCopy),
+        Text(
+          label,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
           ),
-        ],
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            value,
+            textAlign: TextAlign.end,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.titleSmall,
+          ),
+        ),
+        if (onOpen != null)
+          IconButton(
+            tooltip: l10n.aboutLinkOpenAction,
+            visualDensity: VisualDensity.compact,
+            icon: const Icon(Icons.open_in_new, size: 18),
+            onPressed: onOpen,
+          ),
+        if (onCopy != null)
+          IconButton(
+            tooltip: l10n.commonCopy,
+            visualDensity: VisualDensity.compact,
+            icon: const Icon(Icons.copy_outlined, size: 18),
+            onPressed: onCopy,
+          ),
       ],
     );
   }
