@@ -18,6 +18,17 @@ class FirewallStatusTab extends StatefulWidget {
 class _FirewallStatusTabState extends State<FirewallStatusTab> {
   bool _initialized = false;
 
+  String _pingStatusLabel(BuildContext context, String? raw) {
+    final value = (raw ?? '').trim().toLowerCase();
+    if (value == 'disable' || value == 'disabled') {
+      return context.l10n.firewallPingDisabled;
+    }
+    if (value == 'enable' || value == 'enabled') {
+      return context.l10n.firewallPingEnabled;
+    }
+    return (raw ?? '').trim().isEmpty ? '-' : raw!;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -71,7 +82,7 @@ class _FirewallStatusTabState extends State<FirewallStatusTab> {
                 ),
                 _StatusRow(
                   label: l10n.firewallPingLabel,
-                  value: status?.pingStatus ?? '-',
+                  value: _pingStatusLabel(context, status?.pingStatus),
                 ),
                 _StatusRow(
                   label: l10n.firewallActiveLabel,
@@ -138,25 +149,32 @@ class _OperationButtons extends StatelessWidget {
     final status = provider.status;
     final isActive = status?.isActive ?? false;
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        ElevatedButton(
-          onPressed: !isActive && !provider.busy
-              ? () => _confirmAndOperate(context, operation: 'start')
-              : null,
-          child: Text(l10n.commonStart),
+        Expanded(
+          child: FilledButton(
+            onPressed: !isActive && !provider.busy
+                ? () => _confirmAndOperate(context, operation: 'start')
+                : null,
+            child: Text(l10n.commonStart),
+          ),
         ),
-        ElevatedButton(
-          onPressed: isActive && !provider.busy
-              ? () => _confirmAndOperate(context, operation: 'stop')
-              : null,
-          child: Text(l10n.commonStop),
+        const SizedBox(width: AppDesignTokens.spacingSm),
+        Expanded(
+          child: OutlinedButton(
+            onPressed: isActive && !provider.busy
+                ? () => _confirmAndOperate(context, operation: 'stop')
+                : null,
+            child: Text(l10n.commonStop),
+          ),
         ),
-        ElevatedButton(
-          onPressed: provider.busy
-              ? null
-              : () => _confirmAndOperate(context, operation: 'restart'),
-          child: Text(l10n.commonRestart),
+        const SizedBox(width: AppDesignTokens.spacingSm),
+        Expanded(
+          child: OutlinedButton(
+            onPressed: provider.busy
+                ? null
+                : () => _confirmAndOperate(context, operation: 'restart'),
+            child: Text(l10n.commonRestart),
+          ),
         ),
       ],
     );
