@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/core/utils/error_message_utils.dart';
 import 'package:onepanel_client/features/security/security_provider.dart';
 import 'package:onepanel_client/features/shell/widgets/server_switcher_action.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 
 import '../../core/utils/snackbar_utils.dart';
 class SecurityVerificationPage extends StatefulWidget {
@@ -55,6 +57,13 @@ class _SecurityVerificationPageState extends State<SecurityVerificationPage> {
           }
 
           final info = _provider.mfaInfo;
+          // 首屏没有 MFA 数据且加载失败：整页错误态，不再渲染空表单。
+          if (info == null && _provider.error != null) {
+            return ModuleErrorStateWidget(
+              message: _provider.error,
+              onRetry: _provider.load,
+            );
+          }
           return ListView(
             padding: AppDesignTokens.pagePadding,
             children: [
@@ -74,17 +83,15 @@ class _SecurityVerificationPageState extends State<SecurityVerificationPage> {
                               : l10n.securityStatusDisabled,
                         ),
                       ),
-                      const SizedBox(height: AppDesignTokens.spacingMd),
-                      Text(
-                          '${l10n.securitySecretLabel}: ${info?.secret ?? '--'}'),
-                      const SizedBox(height: AppDesignTokens.spacingMd),
-                      if ((info?.qrImage ?? '').isNotEmpty)
-                        _MfaQrImage(base64Data: info!.qrImage)
-                      else
+                      if ((info?.secret ?? '').isNotEmpty) ...[
+                        const SizedBox(height: AppDesignTokens.spacingMd),
                         Text(
-                          l10n.commonEmpty,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
+                            '${l10n.securitySecretLabel}: ${info?.secret}'),
+                      ],
+                      if ((info?.qrImage ?? '').isNotEmpty) ...[
+                        const SizedBox(height: AppDesignTokens.spacingMd),
+                        _MfaQrImage(base64Data: info!.qrImage),
+                      ],
                     ],
                   ),
                 ),
@@ -125,8 +132,11 @@ class _SecurityVerificationPageState extends State<SecurityVerificationPage> {
                                 if (!context.mounted) {
                                   return;
                                 }
-                                SnackBarUtils.showSuccess(context, l10n
-                                          .securityBindFailed(e.toString()),
+                                SnackBarUtils.showError(
+                                  context,
+                                  l10n.securityBindFailed(
+                                    ErrorMessageUtils.normalize(e),
+                                  ),
                                 );
                               }
                             },
@@ -136,13 +146,6 @@ class _SecurityVerificationPageState extends State<SecurityVerificationPage> {
                   ),
                 ],
               ),
-              if (_provider.error != null) ...[
-                const SizedBox(height: AppDesignTokens.spacingLg),
-                Text(
-                  _provider.error!,
-                  style: TextStyle(color: Theme.of(context).colorScheme.error),
-                ),
-              ],
             ],
           );
         },
