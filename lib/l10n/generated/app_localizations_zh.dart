@@ -5352,6 +5352,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get toolboxFtpSyncFailed => 'FTP 用户同步失败';
 
   @override
+  String get toolboxFtpUsersEmptyDesc => '创建用户并同步后可在这里管理。';
+
+  @override
   String get toolboxDeviceTitle => '设备管理';
 
   @override

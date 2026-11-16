@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../data/models/monitor_models.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/utils/error_message_utils.dart';
 import 'package:onepanel_client/data/models/disk_management_models.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/features/toolbox/providers/toolbox_disk_provider.dart';
@@ -49,7 +50,10 @@ class _ToolboxDiskPageState extends State<ToolboxDiskPage> {
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: Text(
-                provider.error!,
+                ErrorMessageUtils.localizeForContext(
+                  provider.error!,
+                  context,
+                ),
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
             ),

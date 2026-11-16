@@ -2302,6 +2302,7 @@
   "toolboxFtpSyncAction": "Sync Users",
   "toolboxFtpSyncSuccess": "FTP users synchronized",
   "toolboxFtpSyncFailed": "Failed to synchronize FTP users",
+  "toolboxFtpUsersEmptyDesc": "Create users and synchronize them to manage them here.",
   "toolboxDeviceTitle": "Device Management",
   "toolboxDeviceCardSubtitle": "Hostname, DNS, NTP, and swap configuration",
   "toolboxDeviceOverviewTitle": "Device Overview",

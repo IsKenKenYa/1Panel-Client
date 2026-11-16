@@ -4,6 +4,8 @@ import 'package:onepanel_client/data/models/toolbox_models.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/features/toolbox/providers/toolbox_ftp_provider.dart';
 import 'package:onepanel_client/features/toolbox/widgets/toolbox_sections_widget.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_empty_state_widget.dart';
+import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
 import 'package:onepanel_client/shared/widgets/section_card.dart';
 import 'package:provider/provider.dart';
 
@@ -46,18 +48,14 @@ class _ToolboxFtpPageState extends State<ToolboxFtpPage>
     return ServerAwarePageScaffold(
       title: l10n.toolboxFtpTitle,
       onServerChanged: () => context.read<ToolboxFtpProvider>().load(),
-      body: ListView(
+      body: PartialErrorToastListener(
+        errorMessage: provider.error,
+        hasCachedData: provider.users.isNotEmpty || base.status != null,
+        onRetry: () => context.read<ToolboxFtpProvider>().load(),
+        child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           if (provider.isLoading) const LinearProgressIndicator(),
-          if (provider.error != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 12, bottom: 8),
-              child: Text(
-                provider.error!,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              ),
-            ),
           SectionCard(
             title: l10n.toolboxCommonOverviewTitle,
             padding: const EdgeInsets.all(16),
@@ -114,9 +112,10 @@ class _ToolboxFtpPageState extends State<ToolboxFtpPage>
                 ),
                 const SizedBox(height: 8),
                 if (provider.users.isEmpty)
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(l10n.commonEmpty),
+                  ModuleEmptyStateWidget(
+                    title: l10n.commonEmpty,
+                    description: l10n.toolboxFtpUsersEmptyDesc,
+                    icon: Icons.person_outline,
                   )
                 else
                   ...provider.users.map(
@@ -156,25 +155,26 @@ class _ToolboxFtpPageState extends State<ToolboxFtpPage>
                     ),
                   ),
                 const SizedBox(height: 8),
-                Row(
-                  children: [
-                    OutlinedButton(
-                      onPressed: provider.page > 1 && !provider.isBusy
-                          ? () => provider.previousPage()
-                          : null,
-                      child: const Icon(Icons.chevron_left),
-                    ),
-                    const SizedBox(width: 12),
-                    Text('${provider.page}'),
-                    const SizedBox(width: 12),
-                    OutlinedButton(
-                      onPressed: provider.hasMoreUsers && !provider.isBusy
-                          ? () => provider.nextPage()
-                          : null,
-                      child: const Icon(Icons.chevron_right),
-                    ),
-                  ],
-                ),
+                if (provider.users.isNotEmpty)
+                  Row(
+                    children: [
+                      OutlinedButton(
+                        onPressed: provider.page > 1 && !provider.isBusy
+                            ? () => provider.previousPage()
+                            : null,
+                        child: const Icon(Icons.chevron_left),
+                      ),
+                      const SizedBox(width: 12),
+                      Text('${provider.page}'),
+                      const SizedBox(width: 12),
+                      OutlinedButton(
+                        onPressed: provider.hasMoreUsers && !provider.isBusy
+                            ? () => provider.nextPage()
+                            : null,
+                        child: const Icon(Icons.chevron_right),
+                      ),
+                    ],
+                  ),
               ],
             ),
           ),
@@ -215,7 +215,7 @@ class _ToolboxFtpPageState extends State<ToolboxFtpPage>
                     : () => _operateService(context, provider, 'restart'),
                 child: Text(l10n.commonRestart),
               ),
-              FilledButton.icon(
+              OutlinedButton.icon(
                 onPressed: provider.isSyncing
                     ? null
                     : () async {
@@ -225,12 +225,17 @@ class _ToolboxFtpPageState extends State<ToolboxFtpPage>
                         if (!context.mounted) {
                           return;
                         }
-                        SnackBarUtils.showSuccess(context, 
-                              success
-                                  ? l10n.toolboxFtpSyncSuccess
-                                  : (provider.error ??
-                                      l10n.toolboxFtpSyncFailed),
-                        );
+                        if (success) {
+                          SnackBarUtils.showSuccess(
+                            context,
+                            l10n.toolboxFtpSyncSuccess,
+                          );
+                        } else {
+                          SnackBarUtils.showError(
+                            context,
+                            provider.error ?? l10n.toolboxFtpSyncFailed,
+                          );
+                        }
                       },
                 icon: const Icon(Icons.sync_outlined),
                 label: Text(l10n.toolboxFtpSyncAction),
@@ -238,6 +243,7 @@ class _ToolboxFtpPageState extends State<ToolboxFtpPage>
             ],
           ),
         ],
+      ),
       ),
     );
   }

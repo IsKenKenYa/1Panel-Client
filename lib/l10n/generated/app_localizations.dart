@@ -10400,6 +10400,12 @@ abstract class AppLocalizations {
   /// **'Failed to synchronize FTP users'**
   String get toolboxFtpSyncFailed;
 
+  /// No description provided for @toolboxFtpUsersEmptyDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Create users and synchronize them to manage them here.'**
+  String get toolboxFtpUsersEmptyDesc;
+
   /// No description provided for @toolboxDeviceTitle.
   ///
   /// In en, this message translates to:

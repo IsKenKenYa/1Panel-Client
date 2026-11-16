@@ -5517,6 +5517,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get toolboxFtpSyncFailed => 'Failed to synchronize FTP users';
 
   @override
+  String get toolboxFtpUsersEmptyDesc =>
+      'Create users and synchronize them to manage them here.';
+
+  @override
   String get toolboxDeviceTitle => 'Device Management';
 
   @override

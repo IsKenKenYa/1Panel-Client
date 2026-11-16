@@ -2240,6 +2240,7 @@
   "toolboxFtpSyncAction": "同步用户",
   "toolboxFtpSyncSuccess": "FTP 用户同步成功",
   "toolboxFtpSyncFailed": "FTP 用户同步失败",
+  "toolboxFtpUsersEmptyDesc": "创建用户并同步后可在这里管理。",
   "toolboxDeviceTitle": "设备管理",
   "toolboxDeviceCardSubtitle": "主机名、DNS、NTP 与 Swap 配置",
   "toolboxDeviceOverviewTitle": "设备概览",

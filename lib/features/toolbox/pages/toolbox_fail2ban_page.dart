@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/utils/error_message_utils.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/features/toolbox/providers/toolbox_fail2ban_provider.dart';
@@ -45,7 +46,10 @@ class _ToolboxFail2banPageState extends State<ToolboxFail2banPage>
             Padding(
               padding: const EdgeInsets.only(top: 12, bottom: 8),
               child: Text(
-                provider.error!,
+                ErrorMessageUtils.localizeForContext(
+                  provider.error!,
+                  context,
+                ),
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
             ),
