@@ -19,16 +19,14 @@ class WebsiteLifecycleTextFieldCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: TextFormField(
-          initialValue: initialValue,
-          maxLines: maxLines,
-          decoration: InputDecoration(labelText: label),
-          onChanged: onChanged,
-        ),
+    return TextFormField(
+      initialValue: initialValue,
+      maxLines: maxLines,
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
       ),
+      onChanged: onChanged,
     );
   }
 }
@@ -46,36 +44,33 @@ class WebsiteLifecycleTypeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: DropdownButtonFormField<String>(
-          initialValue: value,
-          decoration:
-              InputDecoration(labelText: l10n.websitesLifecycleTypeLabel),
-          items: [
-            DropdownMenuItem(
-              value: 'runtime',
-              child: Text(l10n.websitesLifecycleTypeRuntime),
-            ),
-            DropdownMenuItem(
-              value: 'proxy',
-              child: Text(l10n.websitesLifecycleTypeProxy),
-            ),
-            DropdownMenuItem(
-              value: 'subsite',
-              child: Text(l10n.websitesLifecycleTypeSubsite),
-            ),
-            DropdownMenuItem(
-              value: 'static',
-              child: Text(l10n.websitesLifecycleTypeStatic),
-            ),
-          ],
-          onChanged: (next) {
-            if (next != null) onChanged(next);
-          },
-        ),
+    return DropdownButtonFormField<String>(
+      initialValue: value,
+      decoration: InputDecoration(
+        labelText: l10n.websitesLifecycleTypeLabel,
+        border: const OutlineInputBorder(),
       ),
+      items: [
+        DropdownMenuItem(
+          value: 'runtime',
+          child: Text(l10n.websitesLifecycleTypeRuntime),
+        ),
+        DropdownMenuItem(
+          value: 'proxy',
+          child: Text(l10n.websitesLifecycleTypeProxy),
+        ),
+        DropdownMenuItem(
+          value: 'subsite',
+          child: Text(l10n.websitesLifecycleTypeSubsite),
+        ),
+        DropdownMenuItem(
+          value: 'static',
+          child: Text(l10n.websitesLifecycleTypeStatic),
+        ),
+      ],
+      onChanged: (next) {
+        if (next != null) onChanged(next);
+      },
     );
   }
 }
@@ -95,22 +90,20 @@ class WebsiteLifecycleGroupCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: DropdownButtonFormField<int>(
-          initialValue: value,
-          decoration: InputDecoration(labelText: l10n.websitesGroupLabel),
-          items: [
-            for (final group in groups)
-              DropdownMenuItem(
-                value: group.id,
-                child: Text(group.name ?? '${group.id}'),
-              ),
-          ],
-          onChanged: onChanged,
-        ),
+    return DropdownButtonFormField<int>(
+      initialValue: value,
+      decoration: InputDecoration(
+        labelText: l10n.websitesGroupLabel,
+        border: const OutlineInputBorder(),
       ),
+      items: [
+        for (final group in groups)
+          DropdownMenuItem(
+            value: group.id,
+            child: Text(group.name ?? '${group.id}'),
+          ),
+      ],
+      onChanged: onChanged,
     );
   }
 }
