@@ -33,18 +33,17 @@ class AppBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final safeIndex = currentIndex.clamp(0, items.length - 1);
-    final disabledColor =
-        Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.42);
+    final scheme = Theme.of(context).colorScheme;
+    final disabledColor = scheme.onSurfaceVariant.withValues(alpha: 0.42);
+    final isGlass = UIRenderPolicy.liquidGlassEnabled;
 
-    return NavigationBar(
+    final bar = NavigationBar(
       selectedIndex: safeIndex,
       onDestinationSelected: onTap,
       animationDuration: const Duration(milliseconds: 400),
       // 玻璃模式下载体必须透明：不透明背景会挡住 BackdropFilter 的场景采样，
       // 玻璃模糊到的就是这块实色（视觉等于没玻璃）。md3 模式走 theme 默认底色。
-      backgroundColor: UIRenderPolicy.liquidGlassEnabled
-          ? Colors.transparent
-          : null,
+      backgroundColor: isGlass ? Colors.transparent : null,
       destinations: [
         for (var index = 0; index < items.length; index++)
           NavigationDestination(
@@ -86,14 +85,25 @@ class AppBottomNavigationBar extends StatelessWidget {
             enabled: items[index].enabled,
           ),
       ],
-    )
-        // 导航浮层液态玻璃：内容从栏下滚动穿透（Apple Liquid Glass 语义）。
-        // 仅 liquidGlass 渲染模式启用；md3 模式保持实色。
-        // Impeller 下 GPU 折射着色器；Web/Skia 与低端设备由包内自动回退纯模糊。
-        .asGlass(
-          enabled: UIRenderPolicy.liquidGlassEnabled,
-          tintColor: Theme.of(context).colorScheme.surface,
-          frosted: true,
-        );
+    );
+
+    if (!isGlass) {
+      return bar;
+    }
+
+    // Apple Liquid Glass 悬浮胶囊形态：四周留边悬浮于内容之上，
+    // StadiumBorder 全圆角与玻璃形状匹配；折射/高光/阴影由
+    // [UIRenderPolicy.glassStyle]（Glass.regular 参数）承担。
+    // 列表末项让位由壳页 body 的 MediaQuery 注入统一处理。
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+      child: ClipRRect(
+        borderRadius: UIRenderPolicy.floatingPillRadius,
+        child: bar.asGlass(
+          liquid: UIRenderPolicy.glassStyle,
+          clipBorderRadius: UIRenderPolicy.floatingPillRadius,
+        ),
+      ),
+    );
   }
 }

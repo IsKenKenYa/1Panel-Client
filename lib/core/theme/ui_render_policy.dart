@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart' show BorderRadius;
+import 'package:glass/glass.dart';
 
 import 'ui_render_mode.dart';
 
@@ -26,6 +28,15 @@ class UIRenderPolicy {
   static void setLiquidGlassEnabled(UIRenderMode mode) {
     liquidGlassEnabled = mode == UIRenderMode.liquidGlass;
   }
+
+  /// 全局统一玻璃配置（Apple `Glass.regular` 参数复刻）：磨砂为主、
+  /// 边缘折射掰弯背景、饱和度提升、柔和阴影——参考 Kyant0/AndroidLiquidGlass
+  /// 效果目录与 Apple 官方玻璃观感。三处浮层共用，保证观感一致。
+  static const LiquidGlass glassStyle = LiquidGlass.regular;
+
+  /// 底部导航栏悬浮胶囊圆角：StadiumBorder 全圆角，四周留边悬浮。
+  static BorderRadius get floatingPillRadius =>
+      BorderRadius.circular(32);
 
   static bool canSelectNativeMode() {
     return supportsNativeHost();

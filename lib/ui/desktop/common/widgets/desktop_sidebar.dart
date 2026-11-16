@@ -82,9 +82,10 @@ class DesktopSidebar extends StatelessWidget {
         ),
       ).asGlass(
         // 仅 liquidGlass 渲染模式启用玻璃；md3 模式保持实色侧栏。
+        // Glass.regular 预设与移动端浮层观感一致。
         enabled: UIRenderPolicy.liquidGlassEnabled,
+        liquid: UIRenderPolicy.glassStyle,
         tintColor: bgColor,
-        frosted: true,
       ),
     );
   }

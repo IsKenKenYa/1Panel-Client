@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:glass/glass.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -30,6 +31,7 @@ import 'features/dashboard/dashboard_provider.dart';
 import 'features/apps/app_service.dart';
 import 'features/websites/websites_provider.dart';
 import 'features/security/app_lock_controller.dart';
+import 'features/security/browser_vault_gate.dart';
 import 'features/server/server_provider.dart';
 import 'features/shell/controllers/current_server_controller.dart';
 import 'features/shell/controllers/pinned_modules_controller.dart';
@@ -37,6 +39,9 @@ import 'features/monitoring/monitoring_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // 预加载液态玻璃折射 shader：未加载时第一帧只有纯模糊+噪声贴图。
+  await LiquidGlass.precache();
 
   // Initialize Native Channel Manager for headless/engine-only communication
   // as early as possible. Uses the instance path via NativeChannelPort so
@@ -99,7 +104,7 @@ void main() async {
 
   // Migrate API keys from SharedPreferences fallback to secure storage
   try {
-    await ApiConfigMigration.runMigrationIfNeeded();
+    if (!kIsWeb) await ApiConfigMigration.runMigrationIfNeeded();
   } catch (error, stackTrace) {
     appLogger.wWithPackage(
       'main',
@@ -140,8 +145,7 @@ void main() async {
       );
     }
 
-    runApp(
-      MultiProvider(
+    final app = MultiProvider(
         providers: [
           // App Settings
           ChangeNotifierProvider(
@@ -184,8 +188,8 @@ void main() async {
           ),
         ],
         child: const AppBootstrap(child: MyApp()),
-      ),
-    );
+      );
+    runApp(kIsWeb ? BrowserVaultGate(child: app) : app);
   } else {
     // Engine-only mode (Headless)
     appLogger.iWithPackage(
@@ -272,6 +276,7 @@ class MyApp extends StatelessWidget {
               title: '1Panel Client',
               debugShowCheckedModeBanner: false,
               builder: (context, child) {
+                if (kIsWeb) return child ?? const SizedBox();
                 final l10n = AppLocalizations.of(context);
                 return PlatformMenuBar(
                   menus: [

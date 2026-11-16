@@ -70,9 +70,10 @@ class ServerAwarePageScaffold extends StatelessWidget {
               bottom: bottom,
             ).asGlass(
               // 仅 liquidGlass 渲染模式启用玻璃；md3 模式保持实色 AppBar。
+              // Glass.regular 预设：折射边缘 + 高光 + 阴影（Apple 官方观感）。
               enabled: UIRenderPolicy.liquidGlassEnabled,
+              liquid: UIRenderPolicy.glassStyle,
               tintColor: scheme.surface,
-              frosted: true,
             ),
           ),
           body: showMissingServer
