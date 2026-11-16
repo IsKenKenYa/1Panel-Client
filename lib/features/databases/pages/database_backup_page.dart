@@ -68,7 +68,7 @@ class _DatabaseBackupPageView extends StatelessWidget {
                       child: RefreshIndicator(
                       onRefresh: provider.refresh,
                       child: ListView(
-                        padding: AppDesignTokens.pagePadding,
+                        padding: AppDesignTokens.scrollPagePadding(context),
                         children: [
                           DatabaseSummaryCardWidget(item: item),
                           const SizedBox(height: AppDesignTokens.spacingMd),

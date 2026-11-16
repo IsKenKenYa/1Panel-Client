@@ -52,7 +52,7 @@ class ServerDetailPage extends StatelessWidget {
       body: ColoredBox(
         color: scheme.surface,
         child: ListView(
-          padding: AppDesignTokens.pagePadding,
+          padding: AppDesignTokens.scrollPagePadding(context),
           children: [
             ServerDetailHeaderCard(
               server: activeServer,

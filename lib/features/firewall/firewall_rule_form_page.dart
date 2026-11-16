@@ -92,7 +92,7 @@ class _FirewallRuleFormViewState extends State<_FirewallRuleFormView> {
       isSaving: provider.isSubmitting,
       onSave: _submit,
       body: ListView(
-        padding: AppDesignTokens.pagePadding,
+        padding: AppDesignTokens.scrollPagePadding(context),
         children: [
           SectionCard(
             padding: const EdgeInsets.all(AppDesignTokens.spacingLg),

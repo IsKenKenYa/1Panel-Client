@@ -63,49 +63,50 @@ class _FirewallStatusTabState extends State<FirewallStatusTab> {
       hasCachedData: status != null,
       onRetry: () => provider.load(),
       child: RefreshIndicator(
-      onRefresh: () => provider.load(),
-      child: ListView(
-        padding: AppDesignTokens.pagePadding,
-        children: [
-          AppCard(
-            title: l10n.serverModuleFirewall,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _StatusRow(
-                  label: l10n.firewallNameLabel,
-                  value: status?.name ?? '-',
-                ),
-                _StatusRow(
-                  label: l10n.firewallVersionLabel,
-                  value: status?.version ?? '-',
-                ),
-                _StatusRow(
-                  label: l10n.firewallPingLabel,
-                  value: _pingStatusLabel(context, status?.pingStatus),
-                ),
-                _StatusRow(
-                  label: l10n.firewallActiveLabel,
-                  value:
-                      status?.isActive == true ? l10n.commonYes : l10n.commonNo,
-                ),
-                _StatusRow(
-                  label: l10n.firewallInitLabel,
-                  value:
-                      status?.isInit == true ? l10n.commonYes : l10n.commonNo,
-                ),
-                _StatusRow(
-                  label: l10n.firewallBoundLabel,
-                  value:
-                      status?.isBind == true ? l10n.commonYes : l10n.commonNo,
-                ),
-                const SizedBox(height: AppDesignTokens.spacingMd),
-                _OperationButtons(provider: provider, l10n: l10n),
-              ],
+        onRefresh: () => provider.load(),
+        child: ListView(
+          padding: AppDesignTokens.scrollPagePadding(context),
+          children: [
+            AppCard(
+              title: l10n.serverModuleFirewall,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _StatusRow(
+                    label: l10n.firewallNameLabel,
+                    value: status?.name ?? '-',
+                  ),
+                  _StatusRow(
+                    label: l10n.firewallVersionLabel,
+                    value: status?.version ?? '-',
+                  ),
+                  _StatusRow(
+                    label: l10n.firewallPingLabel,
+                    value: _pingStatusLabel(context, status?.pingStatus),
+                  ),
+                  _StatusRow(
+                    label: l10n.firewallActiveLabel,
+                    value: status?.isActive == true
+                        ? l10n.commonYes
+                        : l10n.commonNo,
+                  ),
+                  _StatusRow(
+                    label: l10n.firewallInitLabel,
+                    value:
+                        status?.isInit == true ? l10n.commonYes : l10n.commonNo,
+                  ),
+                  _StatusRow(
+                    label: l10n.firewallBoundLabel,
+                    value:
+                        status?.isBind == true ? l10n.commonYes : l10n.commonNo,
+                  ),
+                  const SizedBox(height: AppDesignTokens.spacingMd),
+                  _OperationButtons(provider: provider, l10n: l10n),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }

@@ -77,7 +77,7 @@ class _FirewallPortTabState extends State<FirewallPortTab> {
       child: LayoutBuilder(
         builder: (context, constraints) => ListView.separated(
           physics: const AlwaysScrollableScrollPhysics(),
-          padding: AppDesignTokens.pagePadding,
+          padding: AppDesignTokens.scrollPagePadding(context),
           itemCount: provider.items.length + 1,
           separatorBuilder: (_, __) =>
               const SizedBox(height: AppDesignTokens.spacingSm),

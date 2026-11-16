@@ -60,7 +60,7 @@ class DatabaseRemotePage extends StatelessWidget {
                             hasCachedData: provider.state.items.isNotEmpty,
                             onRetry: () => provider.refresh(),
                             child: ListView.separated(
-                              padding: AppDesignTokens.pagePadding,
+                              padding: AppDesignTokens.scrollPagePadding(context),
                               itemCount: provider.state.items.length,
                               separatorBuilder: (_, __) => const SizedBox(
                                   height: AppDesignTokens.spacingSm),

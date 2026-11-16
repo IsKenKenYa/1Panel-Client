@@ -353,7 +353,8 @@ class _DatabaseScopeTabView extends StatelessWidget {
                         _ => 1,
                       };
                       return GridView.builder(
-                        padding: AppDesignTokens.pagePadding,
+                        padding:
+                            AppDesignTokens.scrollPagePadding(context),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: columns,
                           crossAxisSpacing: AppDesignTokens.spacingSm,

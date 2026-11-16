@@ -42,4 +42,20 @@ class AppDesignTokens {
     horizontal: spacingLg,
     vertical: spacingLg,
   );
+
+  /// 滚动页底部还需让位系统安全区与壳层注入的悬浮底栏高度：
+  /// 固定 padding 的滚动视图会忽略 MediaQuery 的底部内边距，
+  /// 导致末项被悬浮胶囊遮住且无法滚动到可点击位置。
+  static EdgeInsets scrollPagePadding(BuildContext context) {
+    final bottomInset = MediaQuery.paddingOf(context).bottom;
+    if (bottomInset <= 0) {
+      return pagePadding;
+    }
+    return EdgeInsets.only(
+      left: pagePadding.left,
+      right: pagePadding.right,
+      top: pagePadding.top,
+      bottom: pagePadding.bottom + bottomInset,
+    );
+  }
 }

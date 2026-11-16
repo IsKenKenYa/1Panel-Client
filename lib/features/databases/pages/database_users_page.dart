@@ -87,7 +87,7 @@ class _DatabaseUsersPageViewState extends State<_DatabaseUsersPageView> {
                       hasCachedData: userContext != null,
                       onRetry: provider.load,
                       child: ListView(
-                      padding: AppDesignTokens.pagePadding,
+                      padding: AppDesignTokens.scrollPagePadding(context),
                       children: [
                         DatabaseSummaryCardWidget(item: widget.item),
                         const SizedBox(height: AppDesignTokens.spacingMd),
