@@ -6,7 +6,7 @@
 
 **1Panel Client** 是一个跨平台 Flutter 应用，提供对 1Panel Linux 服务器管理面板的移动、桌面与浏览器访问。
 
-Flutter Web 复用 Dart 业务核心与 MDUI3，通过 Cloudflare 分发静态资源，直接访问提供可信 HTTPS 与 CORS 授权的用户面板。浏览器凭据使用 Web Crypto AES-GCM 加密保存在 IndexedDB；用户选择本地密码解锁或浏览器保存不可导出的 CryptoKey。读取或解密失败时保留数据并报告错误。Web 门禁为 `flutter test --platform chrome test/web/`、`pnpm build:web` 与 `pnpm check:web`，完整规则见 `AGENTS.md`「Flutter Web 浏览器轨道」。
+Flutter Web 复用 Dart 业务核心与 MDUI3，通过 Cloudflare 分发静态资源，接受 HTTP/HTTPS 面板地址并要求面板 CORS 授权。HTTP 由用户确认传输风险，仍受浏览器混合内容和局域网权限限制。浏览器凭据使用 Web Crypto AES-GCM 加密保存在 IndexedDB；本地密码仅检查非空与确认一致，成功后提交自动填充上下文并阻止密码表单网络提交；用户也可以选择浏览器密钥。读取或解密失败时保留数据并报告错误。浏览器日志不记录网络正文和查询参数。Web 门禁为 `flutter test --platform chrome test/web/`、`pnpm build:web` 与 `pnpm check:web`，完整规则见 `AGENTS.md`「Flutter Web 浏览器轨道」。
 
 ### 已完成能力
 - AI 管理模块（Ollama 模型、GPU 监控、域名绑定）
@@ -108,7 +108,7 @@ appLogger.eWithPackage('network.api', '请求失败', error: e, stackTrace: stac
 
 ## 认证系统
 
-API 认证使用 MD5 哈希：`md5('1panel' + apiKey + unixTimestamp)`
+API 认证统一使用 HMAC-SHA256：`hmac_sha256(apiKey, '1panel:' + unixTimestamp)`，复用 `OnePanelAuthHeaders`，请求仅携带签名与时间戳。
 
 支持多服务器配置，安全存储，默认服务器选择。
 

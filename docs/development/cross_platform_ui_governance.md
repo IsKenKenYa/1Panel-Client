@@ -86,10 +86,12 @@ The app should not allow individual pages to invent custom theming logic outside
 
 - Web 使用当前 Dart State、Service、Repository、API 与 MDUI3；宽度变化复用既有自适应导航。
 - Cloudflare Workers Static Assets 仅保存公开应用文件。面板请求与凭据直接由浏览器发送到用户面板。
-- 公开来源 `https://1pc.iskenkenya.com` 要求面板使用可信 HTTPS，并在面板或用户控制的反向代理中明确授权该来源。HTTP 面板、自签名证书、浏览器局域网权限与 CORS 均受浏览器策略约束。
+- 公开来源 `https://1pc.iskenkenya.com` 接受 HTTP/HTTPS 面板地址，并在面板或用户控制的反向代理中明确授权该来源。HTTP 需要用户确认传输风险；支持 Local Network Access 的 Chrome/Edge 可授权访问局域网 HTTP，Safari 尚不支持同类豁免。公网 HTTP 仍受混合内容检查，HTTPS 需要浏览器信任的证书。
 - 浏览器 WebSocket 无法附加 1Panel 的认证请求头。当前终端与依赖此认证的实时接口需要使用面板自身的网页入口；静态分发服务不转发此类通信。
 - IndexedDB 保存 AES-GCM 加密凭据。本地密码模式使用 PBKDF2-SHA256、600000 次迭代、随机 16 字节 salt；密钥在当前页面内存中。每次加密生成随机 12 字节 IV，使用存储键名作为附加认证数据。
 - 用户可以选择浏览器密钥模式；不可导出的 CryptoKey 通过 IndexedDB structured clone 保存，使用当前浏览器的人可以直接打开数据。两种模式都受当前来源脚本的权限约束。
+- 本地密码仅检查非空与确认一致。密码管理器通过标准自动填充与表单提交接收保存提示；表单阻止网络提交。是否保存或同步由用户的浏览器及密码管理器设置决定。
+- 请求使用 HMAC-SHA256 签名与秒级时间戳，API Key 保留在本地。HTTP 没有传输加密，签名在服务端有效窗口内仍可能被重放。浏览器网络日志不保存正文、查询参数或签名。
 - 设置和服务器列表保存在当前来源的浏览器存储。普通关闭或刷新保留数据；隐私浏览、清除网站数据、浏览器空间回收会影响保存。`navigator.storage.persist()` 请求持久存储，浏览器可以拒绝授权。密码遗失时无法解密原凭据。
 - 文件选择按文件读取，浏览器保存通过 Blob 下载；预览使用内存中的字节与临时 Blob URL，页面销毁时释放预览 URL。PDF.js 在打开 PDF 时加载，passkeys SDK 与 PDF.js 使用本地发布资源。浏览器日志最多保留当前页面的 2000 行，可通过现有入口导出。
 

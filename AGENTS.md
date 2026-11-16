@@ -213,9 +213,11 @@
 ### Flutter Web 浏览器轨道
 
 - Web 使用共享 Dart 业务核心与 MDUI3 界面，通过 Cloudflare Workers Static Assets 分发静态应用。
-- 浏览器直接访问用户面板；公开网页要求面板提供可信 HTTPS 与明确授权网页来源的 CORS 配置。
+- 浏览器直接访问用户面板，接受 HTTP 与 HTTPS 地址，并要求面板明确授权网页来源的 CORS。HTTP 连接需要用户确认传输风险；混合内容和局域网权限由浏览器执行检查，Safari 的 HTTP 访问限制需要明确说明。
 - 凭据通过 Web Crypto AES-GCM 加密保存在 IndexedDB。本地密码模式使用 PBKDF2-SHA256 派生内存中的密钥；浏览器密钥模式由用户主动选择，保存不可导出的 CryptoKey。
 - 浏览器安全存储读取或解密失败时必须保留原数据并报告错误。普通设置使用浏览器本地持久存储。
+- 本地密码仅检查非空与确认一致；成功保存后提交浏览器自动填充上下文，密码表单必须阻止网络提交。浏览器网络日志不得记录请求或响应正文、查询参数与认证签名。
+- 1Panel 请求签名统一使用 `hmac_sha256(API-Key, '1panel:' + UnixTimestamp)`，HTTP、WebSocket 与后台下载复用 `OnePanelAuthHeaders`。签名不会给 HTTP 加密，API Key 不进入请求 URL 或原始密钥请求头。
 - Web 专项门禁：`flutter test --platform chrome test/web/`、`pnpm build:web`、`pnpm check:web`；应用发布使用固定域名，浏览器数据按来源隔离。
 
 ### V2 接口定义单一来源

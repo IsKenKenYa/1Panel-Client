@@ -199,9 +199,36 @@ flutter test --platform chrome test/web/browser_vault_test.dart test/web/browser
 flutter test --platform chrome test/web/browser_api_integration_test.dart --dart-define-from-file=.env
 ```
 
-本地密码默认至少 12 个字符；用户也可以主动选择浏览器密钥模式。Safari 分享菜单中的“添加到主屏幕”可以创建 iPhone、iPad 的独立应用入口。浏览器中的数据按来源隔离，固定使用正式域名才能持续访问同一份本地配置。
+本地密码仅检查非空与两次输入一致；成功后向浏览器密码管理器提交保存提示，表单不会向网络发送密码。是否保存或同步由浏览器及密码管理器设置决定。用户也可以主动选择浏览器密钥模式。Safari 分享菜单中的“添加到主屏幕”可以创建 iPhone、iPad 的独立应用入口。浏览器中的数据按来源隔离，固定使用正式域名才能持续访问同一份本地配置。
 
-Cloudflare 使用 `web/_headers` 提供 CSP 与隐私响应头。面板应提供可信 HTTPS，并允许网页来源的 `GET, POST, PUT, PATCH, DELETE, OPTIONS`、实际请求使用的 `1Panel-Token`、`1Panel-Timestamp`、`Content-Type` 等请求头；文件下载需要暴露 `Content-Disposition` 与 `Content-Length`。预检请求在认证之前返回成功，来源应明确限定。开发 localhost 允许 HTTP 测试面板，公开 HTTPS 网页需要 HTTPS 面板。WebSocket 认证能力边界见跨平台治理文档。
+Cloudflare 使用 `web/_headers` 提供 CSP 与隐私响应头。客户端接受 HTTP/HTTPS 地址；HTTP 连接需要用户确认风险，仍受浏览器混合内容与局域网权限检查。支持 Local Network Access 的 Chrome/Edge 可授权访问局域网 HTTP；Safari 尚不支持同类豁免。公网 HTTP 不能依靠该权限解除混合内容限制。HTTPS 面板需要可信证书。
+
+认证统一使用 `hmac_sha256(API-Key, '1panel:' + UnixTimestamp)`，HTTP、WebSocket 和后台下载复用 `OnePanelAuthHeaders`。签名不会给 HTTP 加密，认证签名与数据仍可能被截获或篡改，签名在有效窗口内可能被重放。API Key 不进入 URL 或原始密钥请求头；浏览器网络日志不保存正文、查询参数或签名。
+
+面板需要允许网页来源的 `GET, POST, PUT, PATCH, DELETE, OPTIONS`、实际请求使用的 `1Panel-Token`、`1Panel-Timestamp`、`Content-Type` 等请求头；文件下载需要暴露 `Content-Disposition` 与 `Content-Length`。预检请求应在认证之前返回成功，来源应明确限定。网站模块的 CORS 配置作用于该网站；本次测试面板原始管理 API 的 OPTIONS 未返回 CORS 响应头。
+
+用户可在自己控制的面板反向代理中增加以下配置；将 `13802` 替换为实际的本机面板端口。此配置位于用户服务器，Cloudflare 静态应用不转发面板请求。代理入口的 HTTPS 与证书需要单独配置。
+
+```nginx
+location /api/v2/ {
+    add_header Access-Control-Allow-Origin "https://1pc.iskenkenya.com" always;
+    add_header Vary "Origin" always;
+    add_header Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, OPTIONS" always;
+    add_header Access-Control-Allow-Headers "Content-Type, Accept, 1Panel-Token, 1Panel-Timestamp" always;
+    add_header Access-Control-Expose-Headers "Content-Disposition, Content-Length" always;
+
+    if ($request_method = OPTIONS) {
+        return 204;
+    }
+
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_pass http://127.0.0.1:13802;
+}
+```
+
+使用代理时，按 1Panel 的可信代理设置正确识别来源 IP，并保留 API Key 的 IP 白名单。CORS 授权不替代 API 鉴权。WebSocket 认证能力边界见跨平台治理文档。
 
 ## 12. 开发工具和技巧
 

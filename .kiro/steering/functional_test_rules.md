@@ -118,7 +118,9 @@ void main() {
 
 - 使用真实浏览器验证 Web Crypto 加密、IndexedDB 重新打开、错误密码、密文完整性与并发保存。
 - 验证本地密码模式与用户主动选择的浏览器密钥模式；解密失败时原数据保持可用。
-- 验证 HTTPS 地址、CORS 预检、浏览器文件上传、下载、预览及手机和电脑宽度的表单交互。
+- 验证短密码、空密码与错误确认；确认真实自动填充表单提交被阻止向网络发送。
+- 验证 HTTP/HTTPS 地址、HTTP 风险确认、CORS 预检、浏览器文件上传、下载、预览及手机和电脑宽度的表单交互。
+- HTTP、WebSocket 和后台下载签名均复用 HMAC-SHA256，使用独立协议向量与真实 API 验证；浏览器网络日志不包含正文、查询参数或签名。
 - 执行 `flutter test --platform chrome test/web/`、`pnpm build:web` 与 `pnpm check:web`。
 
 ### API 层
