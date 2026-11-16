@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:glass/glass.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/theme/ui_render_policy.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
@@ -38,17 +37,17 @@ class ServerAwarePageScaffold extends StatelessWidget {
         final canPop = Navigator.of(context).canPop();
         return Scaffold(
           backgroundColor: scheme.surface,
-          // extendBodyBehindAppBar + 玻璃 AppBar：内容从标题栏下穿透
-          // （Apple Liquid Glass 导航浮层语义），滚动时上层内容模糊可见。
+          // 内容从标题栏下滚动穿透；标题栏使用不透明 surfaceContainer。
+          // 玻璃标题栏曾在 GLES 上复现 BackdropFilter 采样错位（顶部残影），
+          // 导航浮层的玻璃效果由底栏与桌面侧栏承担。
           extendBodyBehindAppBar: true,
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(
               AppBar().preferredSize.height + (bottom?.preferredSize.height ?? 0),
             ),
             child: AppBar(
-              // 玻璃模式下载体透明（同底栏原理），md3 走 theme 默认。
               backgroundColor: UIRenderPolicy.liquidGlassEnabled
-                  ? Colors.transparent
+                  ? scheme.surfaceContainer
                   : null,
               leading: canPop
                   ? IconButton(
@@ -68,12 +67,6 @@ class ServerAwarePageScaffold extends StatelessWidget {
                   ServerSwitcherAction(onChanged: onServerChanged),
               ],
               bottom: bottom,
-            ).asGlass(
-              // 仅 liquidGlass 渲染模式启用玻璃；md3 模式保持实色 AppBar。
-              // Glass.regular 预设：折射边缘 + 高光 + 阴影（Apple 官方观感）。
-              enabled: UIRenderPolicy.liquidGlassEnabled,
-              liquid: UIRenderPolicy.glassStyle,
-              tintColor: scheme.surface,
             ),
           ),
           body: showMissingServer
@@ -81,17 +74,24 @@ class ServerAwarePageScaffold extends StatelessWidget {
                   color: scheme.surface,
                   child: NoServerSelectedState(moduleName: title),
                 )
-              : Padding(
-                  // 首屏让位 AppBar（两种模式下 Scaffold 均不再自动避让：
-                  // extendBodyBehindAppBar 常开 + md3 也走了 PreferredSize appBar）。
-                  // Padding 不裁剪：滚动内容滚出 padding 区后自然穿过玻璃
-                  // AppBar 后方，玻璃采样到内容（ListView 裁剪由自身视口负责）。
-                  padding: EdgeInsets.only(
-                    top: MediaQuery.paddingOf(context).top +
-                        AppBar().preferredSize.height +
-                        (bottom?.preferredSize.height ?? 0),
+              : MediaQuery.removePadding(
+                  // 让位由下方 Padding 统一负责：Scaffold 在
+                  // extendBodyBehindAppBar 下保留状态栏 padding，页面内的
+                  // ListView 仍会按 MediaQuery 再让位一次（顶部空白翻倍）。
+                  context: context,
+                  removeTop: true,
+                  child: Padding(
+                    // 首屏让位 AppBar（两种模式下 Scaffold 均不再自动避让：
+                    // extendBodyBehindAppBar 常开 + md3 也走了 PreferredSize appBar）。
+                    // Padding 不裁剪：滚动内容滚出 padding 区后自然穿过标题栏
+                    // 后方（标题栏不透明，滚动内容被其覆盖）。
+                    padding: EdgeInsets.only(
+                      top: MediaQuery.paddingOf(context).top +
+                          AppBar().preferredSize.height +
+                          (bottom?.preferredSize.height ?? 0),
+                    ),
+                    child: body,
                   ),
-                  child: body,
                 ),
           floatingActionButton: showMissingServer ? null : floatingActionButton,
           bottomNavigationBar: showMissingServer ? null : bottomNavigationBar,
