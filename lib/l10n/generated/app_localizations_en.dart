@@ -861,7 +861,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get openrestyRunningStatusLabel => 'Running Status';
 
   @override
-  String get openrestyBuildVersionLabel => 'Build / Version';
+  String get openrestyBuildVersionLabel => 'Build mirror';
 
   @override
   String get openrestyCoreSummaryLabel => 'Core Summary';
@@ -923,7 +923,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String openrestyStatusRunningSummary(int active) {
-    return 'Running · active $active';
+    return 'Running · $active active connections';
   }
 
   @override
@@ -1285,7 +1285,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aiDomainHint =>
-      'Configure Ollama domain binding. Enter the appInstallID first, then load or submit binding.';
+      'Configure the Ollama domain binding. Fill in the app install ID first, then load or submit the binding.';
 
   @override
   String get aiAppInstallIdLabel => 'App Install ID';
@@ -1516,6 +1516,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get firewallPingLabel => 'Ping';
+
+  @override
+  String get firewallPingEnabled => 'Enabled';
+
+  @override
+  String get firewallPingDisabled => 'Disabled';
 
   @override
   String get firewallActiveLabel => 'Active';
@@ -2135,6 +2141,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsAbout => 'About';
+
+  @override
+  String get settingsAboutSubtitle =>
+      'Version info, project overview and official links';
 
   @override
   String get settingsFeedback => 'Feedback';
@@ -8931,7 +8941,70 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonErrorBadRequest => 'The request was rejected by the server.';
 
   @override
+  String get commonErrorNotFound => 'The requested resource does not exist.';
+
+  @override
+  String get commonRefreshSuccess => 'Refreshed';
+
+  @override
+  String get aiOllamaEmptyDesc =>
+      'Created or synced Ollama models will appear here.';
+
+  @override
+  String get aiNoGpuDataDesc =>
+      'This server does not report GPU information, or the panel version does not provide GPU data.';
+
+  @override
+  String get aiAgentsNoAgentsDesc =>
+      'Created agents appear here with their status and details.';
+
+  @override
+  String get aiMcpNoServersDesc =>
+      'Created MCP servers can bind a domain here.';
+
+  @override
+  String get databaseEmptyDesc =>
+      'Created databases can be managed with accounts and backups here.';
+
+  @override
+  String get databaseRemoteEmptyDesc =>
+      'Added remote databases will appear here.';
+
+  @override
+  String get databaseContainerNotRunning =>
+      'The database container is not running. Start the matching database app from Apps.';
+
+  @override
   String get monitorGpuUnavailable => 'No GPU device is available.';
+
+  @override
+  String get monitorAll => 'All';
+
+  @override
+  String get monitorIoDeviceLabel => 'Disk IO device';
+
+  @override
+  String get monitorIoDeviceHelper =>
+      'Prefer a specific device; \"all\" often returns no data.';
+
+  @override
+  String get monitorNetworkInterfaceLabel => 'Network interface';
+
+  @override
+  String get monitorNetworkInterfaceHelper =>
+      'Prefer a specific interface; \"all\" often returns no data.';
+
+  @override
+  String get monitorIoEmptyHint =>
+      'Select a disk IO device in monitoring settings (for example /dev/vda2).';
+
+  @override
+  String get monitorNetworkEmptyHint =>
+      'Select a network interface in monitoring settings (for example eth0).';
+
+  @override
+  String get monitorSeriesEmptyDesc =>
+      'The panel returned no time series for this metric.';
 
   @override
   String get filePreviewUnsupported => 'This file type cannot be previewed.';

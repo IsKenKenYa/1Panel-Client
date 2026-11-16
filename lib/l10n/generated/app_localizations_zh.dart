@@ -848,7 +848,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get openrestyRunningStatusLabel => '运行状态';
 
   @override
-  String get openrestyBuildVersionLabel => '构建 / 版本';
+  String get openrestyBuildVersionLabel => '构建镜像';
 
   @override
   String get openrestyCoreSummaryLabel => '核心摘要';
@@ -909,7 +909,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String openrestyStatusRunningSummary(int active) {
-    return '运行中 · active $active';
+    return '运行中 · $active 个活动连接';
   }
 
   @override
@@ -1256,7 +1256,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aiPerformanceState => '性能状态';
 
   @override
-  String get aiDomainHint => '配置 Ollama 域名绑定。请先输入 appInstallID，再加载或提交绑定信息。';
+  String get aiDomainHint => '配置 Ollama 域名绑定。请先填写应用安装 ID，再加载或提交绑定信息。';
 
   @override
   String get aiAppInstallIdLabel => '应用安装 ID';
@@ -1479,6 +1479,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get firewallPingLabel => 'Ping';
+
+  @override
+  String get firewallPingEnabled => '已启用';
+
+  @override
+  String get firewallPingDisabled => '已禁用';
 
   @override
   String get firewallActiveLabel => '启用';
@@ -2084,6 +2090,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsAbout => '关于';
 
   @override
+  String get settingsAboutSubtitle => '版本信息、项目简介与官方链接';
+
+  @override
   String get settingsFeedback => '反馈建议';
 
   @override
@@ -2096,7 +2105,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsFeedbackCenterIntro => '提交问题前建议先导出日志并补充复现步骤，这能显著提升定位效率。';
 
   @override
-  String get settingsFeedbackGuideTitle => '反馈建议';
+  String get settingsFeedbackGuideTitle => '反馈清单';
 
   @override
   String get settingsFeedbackGuideStep1 => '先确认问题可稳定复现，并记录关键操作路径。';
@@ -8707,7 +8716,58 @@ class AppLocalizationsZh extends AppLocalizations {
   String get commonErrorBadRequest => '请求被服务器拒绝';
 
   @override
+  String get commonErrorNotFound => '请求的资源不存在';
+
+  @override
+  String get commonRefreshSuccess => '刷新成功';
+
+  @override
+  String get aiOllamaEmptyDesc => '创建模型或同步 Ollama 模型后会显示在这里。';
+
+  @override
+  String get aiNoGpuDataDesc => '该服务器没有上报 GPU 信息，或面板版本不提供 GPU 数据。';
+
+  @override
+  String get aiAgentsNoAgentsDesc => '创建 Agent 后可以在这里查看状态与详情。';
+
+  @override
+  String get aiMcpNoServersDesc => '创建 MCP 服务器后可以在这里绑定域名。';
+
+  @override
+  String get databaseEmptyDesc => '创建数据库后可以在这里管理账号与备份。';
+
+  @override
+  String get databaseRemoteEmptyDesc => '添加远程数据库后会显示在这里。';
+
+  @override
+  String get databaseContainerNotRunning => '数据库容器未运行，请在应用管理中启动对应的数据库应用。';
+
+  @override
   String get monitorGpuUnavailable => '未检测到可用的 GPU 设备';
+
+  @override
+  String get monitorAll => '全部';
+
+  @override
+  String get monitorIoDeviceLabel => '磁盘 IO 设备';
+
+  @override
+  String get monitorIoDeviceHelper => '优先选择具体设备，all 常返回空数据。';
+
+  @override
+  String get monitorNetworkInterfaceLabel => '网络接口';
+
+  @override
+  String get monitorNetworkInterfaceHelper => '优先选择具体网卡，all 常返回空数据。';
+
+  @override
+  String get monitorIoEmptyHint => '在监控设置中选择磁盘 IO 设备（例如 /dev/vda2）。';
+
+  @override
+  String get monitorNetworkEmptyHint => '在监控设置中选择网络接口（例如 eth0）。';
+
+  @override
+  String get monitorSeriesEmptyDesc => '面板暂未返回该指标的时间序列。';
 
   @override
   String get filePreviewUnsupported => '该文件类型不支持预览';

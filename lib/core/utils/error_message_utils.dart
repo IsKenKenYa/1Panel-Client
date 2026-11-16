@@ -69,7 +69,7 @@ class ErrorMessageUtils {
   /// 位置）在渲染前经本方法翻译。映射按稳定性递减：客户端前缀状态码族 →
   /// 已知上游稳定文案 → 剥离技术前缀后回退原文。
   static String localizeMessage(String message, AppLocalizations l10n) {
-    var core = message.trim();
+    var core = _stripExceptionPrefixes(message.trim());
     if (core.isEmpty) {
       return core;
     }
@@ -91,8 +91,25 @@ class ErrorMessageUtils {
     if (core.startsWith('服务错误: ')) {
       core = core.substring('服务错误: '.length).trim();
     }
+    // Go 模板未取到值的占位符，对用户没有意义。
+    core = core.replaceAll(RegExp(r'\s*<no value>'), '');
 
     return truncateForToast(_translateKnownUpstream(core, l10n));
+  }
+
+  /// 展示层兜底：Provider 保存的错误事实可能带异常类型前缀。
+  static String _stripExceptionPrefixes(String message) {
+    var value = message;
+    for (final prefix in const <String>[
+      'NetworkException: ',
+      'DioException: ',
+      'Exception: ',
+    ]) {
+      if (value.startsWith(prefix)) {
+        value = value.substring(prefix.length).trim();
+      }
+    }
+    return value;
   }
 
   /// 宿主尚未装载 AppLocalizations（测试或极早期启动）时回退原文截断，
@@ -124,6 +141,8 @@ class ErrorMessageUtils {
       'GPU history requires a device': (l10n) => l10n.monitorGpuUnavailable,
       '此文件不支持预览': (l10n) => l10n.filePreviewUnsupported,
       '此文件不支持在线编辑': (l10n) => l10n.filePreviewUnsupported,
+      '无法找到请求的资源': (l10n) => l10n.commonErrorNotFound,
+      'is not running': (l10n) => l10n.databaseContainerNotRunning,
     };
     final direct = known[message];
     if (direct != null) {

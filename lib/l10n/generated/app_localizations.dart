@@ -1703,7 +1703,7 @@ abstract class AppLocalizations {
   /// No description provided for @openrestyBuildVersionLabel.
   ///
   /// In en, this message translates to:
-  /// **'Build / Version'**
+  /// **'Build mirror'**
   String get openrestyBuildVersionLabel;
 
   /// No description provided for @openrestyCoreSummaryLabel.
@@ -1823,7 +1823,7 @@ abstract class AppLocalizations {
   /// No description provided for @openrestyStatusRunningSummary.
   ///
   /// In en, this message translates to:
-  /// **'Running · active {active}'**
+  /// **'Running · {active} active connections'**
   String openrestyStatusRunningSummary(int active);
 
   /// No description provided for @openrestyHttpsEnabledSummary.
@@ -2483,7 +2483,7 @@ abstract class AppLocalizations {
   /// No description provided for @aiDomainHint.
   ///
   /// In en, this message translates to:
-  /// **'Configure Ollama domain binding. Enter the appInstallID first, then load or submit binding.'**
+  /// **'Configure the Ollama domain binding. Fill in the app install ID first, then load or submit the binding.'**
   String get aiDomainHint;
 
   /// No description provided for @aiAppInstallIdLabel.
@@ -2929,6 +2929,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Ping'**
   String get firewallPingLabel;
+
+  /// No description provided for @firewallPingEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get firewallPingEnabled;
+
+  /// No description provided for @firewallPingDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get firewallPingDisabled;
 
   /// No description provided for @firewallActiveLabel.
   ///
@@ -4087,6 +4099,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'About'**
   String get settingsAbout;
+
+  /// No description provided for @settingsAboutSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Version info, project overview and official links'**
+  String get settingsAboutSubtitle;
 
   /// No description provided for @settingsFeedback.
   ///
@@ -16845,11 +16863,113 @@ abstract class AppLocalizations {
   /// **'The request was rejected by the server.'**
   String get commonErrorBadRequest;
 
+  /// No description provided for @commonErrorNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'The requested resource does not exist.'**
+  String get commonErrorNotFound;
+
+  /// No description provided for @commonRefreshSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Refreshed'**
+  String get commonRefreshSuccess;
+
+  /// No description provided for @aiOllamaEmptyDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Created or synced Ollama models will appear here.'**
+  String get aiOllamaEmptyDesc;
+
+  /// No description provided for @aiNoGpuDataDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'This server does not report GPU information, or the panel version does not provide GPU data.'**
+  String get aiNoGpuDataDesc;
+
+  /// No description provided for @aiAgentsNoAgentsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Created agents appear here with their status and details.'**
+  String get aiAgentsNoAgentsDesc;
+
+  /// No description provided for @aiMcpNoServersDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Created MCP servers can bind a domain here.'**
+  String get aiMcpNoServersDesc;
+
+  /// No description provided for @databaseEmptyDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Created databases can be managed with accounts and backups here.'**
+  String get databaseEmptyDesc;
+
+  /// No description provided for @databaseRemoteEmptyDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Added remote databases will appear here.'**
+  String get databaseRemoteEmptyDesc;
+
+  /// No description provided for @databaseContainerNotRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'The database container is not running. Start the matching database app from Apps.'**
+  String get databaseContainerNotRunning;
+
   /// No description provided for @monitorGpuUnavailable.
   ///
   /// In en, this message translates to:
   /// **'No GPU device is available.'**
   String get monitorGpuUnavailable;
+
+  /// No description provided for @monitorAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get monitorAll;
+
+  /// No description provided for @monitorIoDeviceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Disk IO device'**
+  String get monitorIoDeviceLabel;
+
+  /// No description provided for @monitorIoDeviceHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Prefer a specific device; \"all\" often returns no data.'**
+  String get monitorIoDeviceHelper;
+
+  /// No description provided for @monitorNetworkInterfaceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Network interface'**
+  String get monitorNetworkInterfaceLabel;
+
+  /// No description provided for @monitorNetworkInterfaceHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Prefer a specific interface; \"all\" often returns no data.'**
+  String get monitorNetworkInterfaceHelper;
+
+  /// No description provided for @monitorIoEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a disk IO device in monitoring settings (for example /dev/vda2).'**
+  String get monitorIoEmptyHint;
+
+  /// No description provided for @monitorNetworkEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a network interface in monitoring settings (for example eth0).'**
+  String get monitorNetworkEmptyHint;
+
+  /// No description provided for @monitorSeriesEmptyDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'The panel returned no time series for this metric.'**
+  String get monitorSeriesEmptyDesc;
 
   /// No description provided for @filePreviewUnsupported.
   ///
