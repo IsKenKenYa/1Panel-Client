@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/container_models.dart'
     hide Container;
+import 'package:onepanel_client/features/containers/container_status_labels.dart';
 import 'package:onepanel_client/features/containers/providers/container_detail_provider.dart';
 import 'package:onepanel_client/features/containers/widgets/container_logs_view.dart';
 import 'package:onepanel_client/features/containers/widgets/container_stats_view.dart';
@@ -155,7 +156,7 @@ class _InfoTab extends StatelessWidget {
               _InfoRow(
                 icon: Icons.circle_outlined,
                 label: l10n.containerInfoStatus,
-                value: container.status,
+                value: containerStatusLabel(l10n, container.state),
                 valueColor: _stateColor(colorScheme, container.state),
               ),
               _InfoRow(

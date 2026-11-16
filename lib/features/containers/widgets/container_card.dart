@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/container_models.dart'
     hide Container;
+import 'package:onepanel_client/features/containers/container_status_labels.dart';
 
 class ContainerCard extends StatelessWidget {
   final ContainerInfo container;
@@ -55,7 +56,7 @@ class ContainerCard extends StatelessWidget {
     final state = container.state.toLowerCase();
     final isRunning = state == 'running';
     final statusColor = _statusColor(scheme, state);
-    final statusLabel = _statusLabel(l10n, state);
+    final statusLabel = containerStatusLabel(l10n, state);
     final projectName = _projectName();
     final ports = _formatPorts();
 
@@ -203,16 +204,17 @@ class ContainerCard extends StatelessWidget {
           ),
 
           // ── 操作按钮行 ──
-          Row(
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
             children: [
               if (isRunning) ...[
                 _ActionButton(
                   icon: Icons.stop_rounded,
                   label: l10n.containerActionStop,
-                  color: scheme.error,
+                  color: scheme.secondary,
                   onTap: onStop,
                 ),
-                const SizedBox(width: 6),
                 _ActionButton(
                   icon: Icons.restart_alt,
                   label: l10n.containerActionRestart,
@@ -223,19 +225,16 @@ class ContainerCard extends StatelessWidget {
                 _ActionButton(
                   icon: Icons.play_arrow_rounded,
                   label: l10n.containerActionStart,
-                  color: scheme.tertiary,
+                  color: scheme.primary,
                   onTap: onStart,
                 ),
-              if (onTerminal != null) ...[
-                const SizedBox(width: 6),
+              if (onTerminal != null)
                 _ActionButton(
                   icon: Icons.terminal,
                   label: l10n.containerActionTerminal,
                   color: scheme.secondary,
                   onTap: onTerminal,
                 ),
-              ],
-              const SizedBox(width: 6),
               _ActionButton(
                 icon: Icons.receipt_long_outlined,
                 label: l10n.containerActionLogs,
@@ -263,27 +262,6 @@ class ContainerCard extends StatelessWidget {
         return scheme.error;
       default:
         return scheme.onSurfaceVariant.withValues(alpha: 0.5);
-    }
-  }
-
-  String _statusLabel(dynamic l10n, String state) {
-    switch (state) {
-      case 'running':
-        return l10n.containerStatusRunning;
-      case 'paused':
-        return l10n.containerStatusPaused;
-      case 'exited':
-        return l10n.containerStatusExited;
-      case 'restarting':
-        return l10n.containerStatusRestarting;
-      case 'removing':
-        return l10n.containerStatusRemoving;
-      case 'dead':
-        return l10n.containerStatusDead;
-      case 'created':
-        return l10n.containerStatusCreated;
-      default:
-        return l10n.containerStatusStopped;
     }
   }
 
