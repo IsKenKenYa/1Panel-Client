@@ -119,9 +119,13 @@ class AppBottomNavigationBar extends StatelessWidget {
       selectedIconColor: scheme.primary,
       unselectedIconColor: scheme.onSurfaceVariant,
       indicatorColor: scheme.primaryContainer,
-      // GLES 低端设备用轻量单 pass shader；premium 多 pass 会阻塞主线程。
-      quality: GlassQuality.standard,
-      backgroundQuality: GlassQuality.standard,
+      // Apple Metal 走 premium（iOS 官方标准折射）；GLES/Skia 用轻量单 pass。
+      quality: UIRenderPolicy.premiumGlassAllowed
+          ? GlassQuality.premium
+          : GlassQuality.standard,
+      backgroundQuality: UIRenderPolicy.premiumGlassAllowed
+          ? GlassQuality.premium
+          : GlassQuality.standard,
     );
   }
 }

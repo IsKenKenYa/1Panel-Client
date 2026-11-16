@@ -32,6 +32,15 @@ class UIRenderPolicy {
   /// 边缘折射掰弯背景、饱和度提升、柔和阴影——供 AppBar 与桌面侧栏使用。
   static const LiquidGlass glassStyle = LiquidGlass.regular;
 
+  /// 是否允许 premium 多 pass 折射：Apple Metal 平台（iOS/macOS）按官方
+  /// 标准走 premium；Android GLES / Skia / Web 用轻量 standard。
+  /// 实测 GLES 模拟器上 premium 会阻塞主线程并丢失 GPU 上下文。
+  static bool get premiumGlassAllowed {
+    if (kIsWeb) return false;
+    return defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.macOS;
+  }
+
   static bool canSelectNativeMode() {
     return supportsNativeHost();
   }

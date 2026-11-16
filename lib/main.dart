@@ -79,12 +79,14 @@ void main() async {
   // 首帧前同步玻璃浮层静态开关（首帧即正确，ThemeController.load 二次兜底）。
   UIRenderPolicy.setLiquidGlassEnabled(uiRenderMode);
 
-  // 液态玻璃模式：预加载轻量 shader（跳过重型多 pass 折射，GLES 低端设备
-  // 上 premium 管线会导致主线程长时间阻塞/GPU 上下文丢失）。
+  // 液态玻璃模式：仅 Apple Metal 预加载 premium 多 pass 折射 shader；
+  // GLES 低端设备跳过（premium 管线会阻塞主线程并丢失 GPU 上下文）。
   if (UIRenderPolicy.liquidGlassEnabled) {
     await LiquidGlassWidgets.initialize(
       enablePerformanceMonitor: false,
-      warmUpMode: GlassWarmUpMode.never,
+      warmUpMode: UIRenderPolicy.premiumGlassAllowed
+          ? GlassWarmUpMode.auto
+          : GlassWarmUpMode.never,
     );
   }
 
