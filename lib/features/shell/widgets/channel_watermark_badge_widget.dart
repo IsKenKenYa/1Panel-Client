@@ -25,10 +25,12 @@ class ChannelWatermarkBadgeWidget extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
-                  color: colorScheme.errorContainer.withValues(alpha: 0.22),
+                  // error 色随明暗主题切换：浅色下是警示红，深色下是亮粉，
+                  // 低透明度叠加后两边都能保持可读对比。
+                  color: colorScheme.error.withValues(alpha: 0.10),
                   borderRadius: BorderRadius.circular(999),
                   border: Border.all(
-                    color: colorScheme.onErrorContainer.withValues(alpha: 0.12),
+                    color: colorScheme.error.withValues(alpha: 0.25),
                   ),
                 ),
                 child: Text(
@@ -36,7 +38,7 @@ class ChannelWatermarkBadgeWidget extends StatelessWidget {
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.5,
-                        color: colorScheme.onErrorContainer.withValues(alpha: 0.36),
+                        color: colorScheme.error.withValues(alpha: 0.65),
                       ),
                 ),
               ),
