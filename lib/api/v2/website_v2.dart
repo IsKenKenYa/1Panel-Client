@@ -119,10 +119,13 @@ class WebsiteV2Api {
   }
 
   Future<void> deleteWebsite(int id) async {
-    final operation = BatchDelete(ids: [id]);
+    // 上游 request.WebsiteDelete 是单 id 结构（{id, deleteApp, deleteBackup,
+    // forceDelete, deleteDB}），不接受 ids 数组；批量删除走 batchOperate。
+    // 实测 {ids: [...]} 会被服务端以 WebsiteDelete.ID required 拒绝，
+    // 且该失败此前在详情页静默（无提示、页面不动）。
     await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/websites/del'),
-      data: operation.toJson(),
+      data: <String, dynamic>{'id': id},
     );
   }
 
