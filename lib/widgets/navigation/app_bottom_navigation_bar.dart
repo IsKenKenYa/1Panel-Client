@@ -89,8 +89,24 @@ class AppBottomNavigationBar extends StatelessWidget {
     // 液态玻璃模式：官方 GlassTabBar.bottom 悬浮胶囊——
     // SDF 圆角边缘折射 + 圆形衰减 + 果冻指示器物理动效，
     // 圆角 = 胶囊高度一半自动匹配（barBorderRadius 由包内按高度推导）。
+    //
+    // 质量分级：premium 全管线（折射 + 色散 + 果冻形变）只在 Apple Metal
+    // 启用；GLES 模拟器实测 premium 指示器（小面积、静态面）也会卡死
+    // 首帧，安卓保持 standard 轻量 shader。
+    //
+    // 质感增强：在包内 iOS 27 底栏预设上只放开色散。预设的
+    // chromaticAberration 为 0（iOS 27 官方观感靠 rim 高光，不靠 RGB
+    // 分离）；轻量 shader 的边缘集中色散路径（RGB 通道沿法线分离、
+    // 集中在 SDF 边界）在 standard 下同样生效，安卓即可获得 iOS 胶囊
+    // 滚动时的棱镜彩边。必须 copyWith 预设——整包新建 settings 会把
+    // blur 从 0.6 抬到构造默认 5，blur+saturation 的 BackdropFilter
+    // 组合在 Impeller GLES 上会卡死首帧。
     final scheme = Theme.of(context).colorScheme;
     final disabledColor = scheme.onSurfaceVariant.withValues(alpha: 0.42);
+    final barSettings = (Theme.brightnessOf(context) == Brightness.dark
+            ? LiquidGlassSettings.ios27Dark
+            : LiquidGlassSettings.ios27Light)
+        .copyWith(chromaticAberration: 0.18);
     return GlassTabBar.bottom(
       tabs: [
         for (final item in items)
@@ -119,7 +135,8 @@ class AppBottomNavigationBar extends StatelessWidget {
       selectedIconColor: scheme.primary,
       unselectedIconColor: scheme.onSurfaceVariant,
       indicatorColor: scheme.primaryContainer,
-      // Apple Metal 走 premium（iOS 官方标准折射）；GLES/Skia 用轻量单 pass。
+      settings: barSettings,
+      // Apple Metal 走 premium 全管线；GLES/Skia 用轻量单 pass。
       quality: UIRenderPolicy.premiumGlassAllowed
           ? GlassQuality.premium
           : GlassQuality.standard,
