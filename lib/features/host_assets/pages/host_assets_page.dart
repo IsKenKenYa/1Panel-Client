@@ -82,14 +82,14 @@ class _HostAssetsPageState extends State<HostAssetsPage>
               onPressed: provider.isLoading
                   ? null
                   : () => provider.load(forceRefresh: true),
-              icon: const Icon(Icons.refresh),
+              icon: const Icon(Icons.refresh_outlined),
               tooltip: l10n.commonRefresh,
             ),
           ],
           floatingActionButton: FloatingActionButton.extended(
             heroTag: 'host_assets_create_fab',
             onPressed: () => _openForm(),
-            icon: const Icon(Icons.add),
+            icon: const Icon(Icons.add_outlined),
             label: Text(l10n.commonCreate),
           ),
           body: Column(

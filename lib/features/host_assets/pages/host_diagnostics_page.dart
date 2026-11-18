@@ -92,7 +92,7 @@ class _HostDiagnosticsPageState extends State<HostDiagnosticsPage> {
       appBar: AppBar(
         title: Text(l10n.hostDiagnosticsTitle),
         actions: [
-          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh), onPressed: _load),
+          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh_outlined), onPressed: _load),
         ],
       ),
       body: _isLoading
