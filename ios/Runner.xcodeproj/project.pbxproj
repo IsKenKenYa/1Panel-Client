@@ -15,7 +15,6 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
-		EC90BAE2EC33A4635343E2AF /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02BE807C5B40C56FD4C55EBF /* Pods_RunnerTests.framework */; };
 		B10S00010000000000000001 /* ChannelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000001 /* ChannelManager.swift */; };
 		B10S00010000000000000002 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000002 /* ThemeManager.swift */; };
 		B10S00010000000000000003 /* TranslationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000003 /* TranslationsManager.swift */; };
@@ -37,6 +36,27 @@
 		B10S00010000000000000013 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000013 /* SettingsViewModel.swift */; };
 		B10S00010000000000000014 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000014 /* SettingsView.swift */; };
 		B10S00010000000000000015 /* AppShellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000015 /* AppShellView.swift */; };
+		B10S00010000000000000016 /* ServerHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000016 /* ServerHomeViewModel.swift */; };
+		B10S00010000000000000017 /* ServerHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000017 /* ServerHomeView.swift */; };
+		B10S00010000000000000018 /* SecurityViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000018 /* SecurityViewModel.swift */; };
+		B10S00010000000000000019 /* SecurityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000019 /* SecurityView.swift */; };
+		B10S0001000000000000001A /* StatusBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000001A /* StatusBadge.swift */; };
+		B10S0001000000000000001B /* AddServerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000001B /* AddServerSheet.swift */; };
+		B10S0001000000000000001C /* ContainerDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000001C /* ContainerDetailView.swift */; };
+		B10S0001000000000000001D /* CreateWebsiteSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000001D /* CreateWebsiteSheet.swift */; };
+		B10S0001000000000000001E /* InstallAppSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000001E /* InstallAppSheet.swift */; };
+		B10S0001000000000000001F /* ModuleRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000001F /* ModuleRoute.swift */; };
+		B10S00010000000000000020 /* InfoLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000020 /* InfoLineView.swift */; };
+		B10S00010000000000000021 /* WebsiteDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000021 /* WebsiteDetailView.swift */; };
+		B10S00010000000000000022 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000022 /* AboutView.swift */; };
+		B10S00010000000000000023 /* LegalCenterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000023 /* LegalCenterView.swift */; };
+		B10S00010000000000000024 /* DatabasesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000024 /* DatabasesView.swift */; };
+		B10S00010000000000000025 /* CronjobsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000025 /* CronjobsView.swift */; };
+		B10S00010000000000000026 /* FirewallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000026 /* FirewallView.swift */; };
+		B10S00010000000000000027 /* BackupsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000027 /* BackupsView.swift */; };
+		B10S00010000000000000028 /* AIModelsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000028 /* AIModelsView.swift */; };
+		B10S00010000000000000029 /* FirewallAddSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000029 /* FirewallAddSheet.swift */; };
+		EC90BAE2EC33A4635343E2AF /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02BE807C5B40C56FD4C55EBF /* Pods_RunnerTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,7 +105,6 @@
 		CCD8A261108F13644CE1F1AA /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
 		D7B60D11A5FD97BEC67BA98C /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		EA13C6076B2AB20EBC2ED4BC /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		F5FE544562901A893BA47BA5 /* Pods-RunnerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.debug.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F10S00010000000000000001 /* ChannelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelManager.swift; sourceTree = "<group>"; };
 		F10S00010000000000000002 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		F10S00010000000000000003 /* TranslationsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationsManager.swift; sourceTree = "<group>"; };
@@ -107,6 +126,27 @@
 		F10S00010000000000000013 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		F10S00010000000000000014 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		F10S00010000000000000015 /* AppShellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppShellView.swift; sourceTree = "<group>"; };
+		F10S00010000000000000016 /* ServerHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerHomeViewModel.swift; sourceTree = "<group>"; };
+		F10S00010000000000000017 /* ServerHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerHomeView.swift; sourceTree = "<group>"; };
+		F10S00010000000000000018 /* SecurityViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityViewModel.swift; sourceTree = "<group>"; };
+		F10S00010000000000000019 /* SecurityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityView.swift; sourceTree = "<group>"; };
+		F10S0001000000000000001A /* StatusBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBadge.swift; sourceTree = "<group>"; };
+		F10S0001000000000000001B /* AddServerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddServerSheet.swift; sourceTree = "<group>"; };
+		F10S0001000000000000001C /* ContainerDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerDetailView.swift; sourceTree = "<group>"; };
+		F10S0001000000000000001D /* CreateWebsiteSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateWebsiteSheet.swift; sourceTree = "<group>"; };
+		F10S0001000000000000001E /* InstallAppSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallAppSheet.swift; sourceTree = "<group>"; };
+		F10S0001000000000000001F /* ModuleRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleRoute.swift; sourceTree = "<group>"; };
+		F10S00010000000000000020 /* InfoLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoLineView.swift; sourceTree = "<group>"; };
+		F10S00010000000000000021 /* WebsiteDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsiteDetailView.swift; sourceTree = "<group>"; };
+		F10S00010000000000000022 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		F10S00010000000000000023 /* LegalCenterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegalCenterView.swift; sourceTree = "<group>"; };
+		F10S00010000000000000024 /* DatabasesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabasesView.swift; sourceTree = "<group>"; };
+		F10S00010000000000000025 /* CronjobsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CronjobsView.swift; sourceTree = "<group>"; };
+		F10S00010000000000000026 /* FirewallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirewallView.swift; sourceTree = "<group>"; };
+		F10S00010000000000000027 /* BackupsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupsView.swift; sourceTree = "<group>"; };
+		F10S00010000000000000028 /* AIModelsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIModelsView.swift; sourceTree = "<group>"; };
+		F10S00010000000000000029 /* FirewallAddSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirewallAddSheet.swift; sourceTree = "<group>"; };
+		F5FE544562901A893BA47BA5 /* Pods-RunnerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.debug.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,7 +179,6 @@
 				CCD8A261108F13644CE1F1AA /* Pods-RunnerTests.release.xcconfig */,
 				72762E69DE5483B2AF8A3272 /* Pods-RunnerTests.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -199,6 +238,15 @@
 			path = Runner;
 			sourceTree = "<group>";
 		};
+		C26A4CCB4017B88A10622C5D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EA13C6076B2AB20EBC2ED4BC /* Pods_Runner.framework */,
+				02BE807C5B40C56FD4C55EBF /* Pods_RunnerTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		G10S00010000000000000001 /* UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -226,6 +274,8 @@
 				F10S00010000000000000004 /* LoadingView.swift */,
 				F10S00010000000000000005 /* ErrorView.swift */,
 				F10S00010000000000000006 /* EmptyStateView.swift */,
+				F10S0001000000000000001A /* StatusBadge.swift */,
+				F10S00010000000000000020 /* InfoLineView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -240,6 +290,12 @@
 				G10S00010000000000000009 /* Websites */,
 				G10S0001000000000000000A /* Monitoring */,
 				G10S0001000000000000000B /* Settings */,
+				G10S0001000000000000000D /* Security */,
+				G10S0001000000000000000E /* Databases */,
+				G10S0001000000000000000F /* Cronjobs */,
+				G10S00010000000000000010 /* Firewall */,
+				G10S00010000000000000011 /* Backups */,
+				G10S00010000000000000012 /* AI */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -249,6 +305,9 @@
 			children = (
 				F10S00010000000000000007 /* ServersViewModel.swift */,
 				F10S00010000000000000008 /* ServersView.swift */,
+				F10S00010000000000000016 /* ServerHomeViewModel.swift */,
+				F10S00010000000000000017 /* ServerHomeView.swift */,
+				F10S0001000000000000001B /* AddServerSheet.swift */,
 			);
 			path = Servers;
 			sourceTree = "<group>";
@@ -267,6 +326,7 @@
 			children = (
 				F10S0001000000000000000B /* ContainersViewModel.swift */,
 				F10S0001000000000000000C /* ContainersView.swift */,
+				F10S0001000000000000001C /* ContainerDetailView.swift */,
 			);
 			path = Containers;
 			sourceTree = "<group>";
@@ -276,6 +336,7 @@
 			children = (
 				F10S0001000000000000000D /* AppsViewModel.swift */,
 				F10S0001000000000000000E /* AppsView.swift */,
+				F10S0001000000000000001E /* InstallAppSheet.swift */,
 			);
 			path = Apps;
 			sourceTree = "<group>";
@@ -285,6 +346,8 @@
 			children = (
 				F10S0001000000000000000F /* WebsitesViewModel.swift */,
 				F10S00010000000000000010 /* WebsitesView.swift */,
+				F10S0001000000000000001D /* CreateWebsiteSheet.swift */,
+				F10S00010000000000000021 /* WebsiteDetailView.swift */,
 			);
 			path = Websites;
 			sourceTree = "<group>";
@@ -303,6 +366,8 @@
 			children = (
 				F10S00010000000000000013 /* SettingsViewModel.swift */,
 				F10S00010000000000000014 /* SettingsView.swift */,
+				F10S00010000000000000022 /* AboutView.swift */,
+				F10S00010000000000000023 /* LegalCenterView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -311,17 +376,59 @@
 			isa = PBXGroup;
 			children = (
 				F10S00010000000000000015 /* AppShellView.swift */,
+				F10S0001000000000000001F /* ModuleRoute.swift */,
 			);
 			path = Shell;
 			sourceTree = "<group>";
 		};
-		C26A4CCB4017B88A10622C5D /* Frameworks */ = {
+		G10S0001000000000000000D /* Security */ = {
 			isa = PBXGroup;
 			children = (
-				EA13C6076B2AB20EBC2ED4BC /* Pods_Runner.framework */,
-				02BE807C5B40C56FD4C55EBF /* Pods_RunnerTests.framework */,
+				F10S00010000000000000018 /* SecurityViewModel.swift */,
+				F10S00010000000000000019 /* SecurityView.swift */,
 			);
-			name = Frameworks;
+			path = Security;
+			sourceTree = "<group>";
+		};
+		G10S0001000000000000000E /* Databases */ = {
+			isa = PBXGroup;
+			children = (
+				F10S00010000000000000024 /* DatabasesView.swift */,
+			);
+			path = Databases;
+			sourceTree = "<group>";
+		};
+		G10S0001000000000000000F /* Cronjobs */ = {
+			isa = PBXGroup;
+			children = (
+				F10S00010000000000000025 /* CronjobsView.swift */,
+			);
+			path = Cronjobs;
+			sourceTree = "<group>";
+		};
+		G10S00010000000000000010 /* Firewall */ = {
+			isa = PBXGroup;
+			children = (
+				F10S00010000000000000026 /* FirewallView.swift */,
+				F10S00010000000000000029 /* FirewallAddSheet.swift */,
+			);
+			path = Firewall;
+			sourceTree = "<group>";
+		};
+		G10S00010000000000000011 /* Backups */ = {
+			isa = PBXGroup;
+			children = (
+				F10S00010000000000000027 /* BackupsView.swift */,
+			);
+			path = Backups;
+			sourceTree = "<group>";
+		};
+		G10S00010000000000000012 /* AI */ = {
+			isa = PBXGroup;
+			children = (
+				F10S00010000000000000028 /* AIModelsView.swift */,
+			);
+			path = AI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -577,6 +684,26 @@
 				B10S00010000000000000013 /* SettingsViewModel.swift in Sources */,
 				B10S00010000000000000014 /* SettingsView.swift in Sources */,
 				B10S00010000000000000015 /* AppShellView.swift in Sources */,
+				B10S00010000000000000016 /* ServerHomeViewModel.swift in Sources */,
+				B10S00010000000000000017 /* ServerHomeView.swift in Sources */,
+				B10S00010000000000000018 /* SecurityViewModel.swift in Sources */,
+				B10S00010000000000000019 /* SecurityView.swift in Sources */,
+				B10S0001000000000000001A /* StatusBadge.swift in Sources */,
+				B10S0001000000000000001B /* AddServerSheet.swift in Sources */,
+				B10S0001000000000000001C /* ContainerDetailView.swift in Sources */,
+				B10S0001000000000000001D /* CreateWebsiteSheet.swift in Sources */,
+				B10S0001000000000000001E /* InstallAppSheet.swift in Sources */,
+				B10S0001000000000000001F /* ModuleRoute.swift in Sources */,
+				B10S00010000000000000020 /* InfoLineView.swift in Sources */,
+				B10S00010000000000000021 /* WebsiteDetailView.swift in Sources */,
+				B10S00010000000000000022 /* AboutView.swift in Sources */,
+				B10S00010000000000000023 /* LegalCenterView.swift in Sources */,
+				B10S00010000000000000024 /* DatabasesView.swift in Sources */,
+				B10S00010000000000000025 /* CronjobsView.swift in Sources */,
+				B10S00010000000000000026 /* FirewallView.swift in Sources */,
+				B10S00010000000000000027 /* BackupsView.swift in Sources */,
+				B10S00010000000000000028 /* AIModelsView.swift in Sources */,
+				B10S00010000000000000029 /* FirewallAddSheet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -653,7 +780,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
@@ -669,6 +796,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = MH5TSXPRNK;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -782,7 +910,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -833,7 +961,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
@@ -851,6 +979,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = MH5TSXPRNK;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -873,6 +1002,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = MH5TSXPRNK;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

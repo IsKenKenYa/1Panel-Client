@@ -1,2 +1,6 @@
 #include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
 #include "Generated.xcconfig"
+// Xcode 27 的 lipo -verify_arch 只接受单架构，Flutter 3.41 thinFramework 对
+// 多架构模拟器包会误判失败；Apple Silicon 上模拟器固定 arm64 即可。
+// 真机 release 构建本身只有 arm64，不受影响。
+ARCHS = arm64
