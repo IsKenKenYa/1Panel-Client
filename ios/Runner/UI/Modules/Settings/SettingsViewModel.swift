@@ -36,13 +36,13 @@ class SettingsViewModel: ObservableObject {
         let value = lang == "system" ? "" : lang
         UserDefaults.standard.set(value, forKey: "flutter.app_locale")
         UserDefaults.standard.synchronize()
-        showRestartHint = true
+        // 语言切换立即生效：Dart 侧读取该键后重新下发翻译字典。
+        TranslationsManager.shared.load { }
     }
 
     func updateTheme(_ theme: String) {
         selectedTheme = theme
-        UserDefaults.standard.set(theme, forKey: "flutter.app_theme_mode")
-        UserDefaults.standard.synchronize()
+        ThemeManager.shared.setAppearance(theme)
     }
 
     func toggleAppLock(_ enabled: Bool) {
@@ -68,12 +68,6 @@ class SettingsViewModel: ObservableObject {
                     self?.cacheClearMessage = nil
                 }
             }
-        }
-    }
-
-    func openGitHub() {
-        if let url = URL(string: "https://github.com/1Panel-dev/1Panel-Client") {
-            UIApplication.shared.open(url)
         }
     }
 
