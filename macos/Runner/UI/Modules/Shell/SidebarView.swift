@@ -59,8 +59,7 @@ struct SidebarView: View {
                 sidebarRow(settingsItem)
             }
         }
-        .listStyle(SidebarListStyle())
-        .frame(minWidth: 200, idealWidth: 240, maxWidth: 300)
+        .listStyle(.sidebar)
     }
 
     @ViewBuilder
@@ -70,7 +69,6 @@ struct SidebarView: View {
         } icon: {
             Image(systemName: item.symbolName)
         }
-        .padding(.vertical, 4)
         .tag(item.id)
     }
 }

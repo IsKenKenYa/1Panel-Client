@@ -1,9 +1,10 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @StateObject private var viewModel = SettingsViewModel()
-    @EnvironmentObject var theme: ThemeManager
+    @ObservedObject var viewModel: SettingsViewModel
+    @ObservedObject var appLock: MacOSAppLockController
     @EnvironmentObject var translations: TranslationsManager
+    let onOpenServers: () -> Void
 
     @State private var showCacheClearConfirm = false
     @State private var showAbout = false
@@ -36,7 +37,7 @@ struct SettingsView: View {
                 iconColor: .purple,
                 title: translations.get("settingsTheme", fallback: "Theme")
             ) {
-                Picker("", selection: Binding(
+                Picker(translations.get("settingsTheme", fallback: "Theme"), selection: Binding(
                     get: { viewModel.selectedTheme },
                     set: { viewModel.updateTheme($0) }
                 )) {
@@ -45,7 +46,7 @@ struct SettingsView: View {
                     Text(translations.get("themeDark", fallback: "Dark")).tag("dark")
                 }
                 .pickerStyle(.menu)
-                .fixedSize()
+                .labelsHidden()
             }
 
             Divider().padding(.leading, 44)
@@ -56,7 +57,7 @@ struct SettingsView: View {
                 iconColor: .blue,
                 title: translations.get("settingsLanguage", fallback: "Language")
             ) {
-                Picker("", selection: Binding(
+                Picker(translations.get("settingsLanguage", fallback: "Language"), selection: Binding(
                     get: { viewModel.selectedLanguage },
                     set: { viewModel.updateLanguage($0) }
                 )) {
@@ -65,56 +66,85 @@ struct SettingsView: View {
                     Text(translations.get("languageEn", fallback: "English")).tag("en")
                 }
                 .pickerStyle(.menu)
-                .fixedSize()
+                .labelsHidden()
+            }
+
+            if viewModel.showLanguageRestartHint {
+                Text(translations.get("settingsLanguageRestartHint",
+                                      fallback: "Restart the app to apply the language change."))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .padding(.leading, 44)
+                    .padding(.bottom, 8)
             }
 
             Divider().padding(.leading, 44)
 
-            // UI 渲染模式
-            VStack(alignment: .leading, spacing: 6) {
-                settingsRow(
-                    icon: "macwindow.on.rectangle",
-                    iconColor: .orange,
-                    title: translations.get("settingsUIRenderMode", fallback: "UI Render Mode")
-                ) {
-                    Picker("", selection: Binding(
-                        get: { viewModel.renderMode },
-                        set: { viewModel.updateRenderMode($0) }
-                    )) {
-                        Text(translations.get("settingsUIRenderModeNative", fallback: "Native")).tag("native")
-                        Text(translations.get("settingsUIRenderModeMD3", fallback: "MDUI3")).tag("md3")
-                    }
-                    .pickerStyle(.radioGroup)
-                    .horizontalRadioGroupLayout()
-                    .fixedSize()
-                }
-
-                if viewModel.showRestartHint {
-                    Text(translations.get("settingsUIRenderModeRestartHint",
-                                         fallback: "Restart app to apply UI render mode changes."))
-                        .font(.caption)
-                        .foregroundColor(.orange)
-                        .padding(.leading, 44)
-                }
-            }
-
-            Divider().padding(.leading, 44)
-
-            // 应用锁
             settingsRow(
                 icon: "lock.fill",
                 iconColor: .red,
                 title: translations.get("settingsAppLock", fallback: "App Lock"),
-                subtitle: translations.get("settingsAppLockDesc",
-                                           fallback: "Protect sensitive modules with biometrics or device credentials")
+                subtitle: translations.get("appLockEnableDesc",
+                                           fallback: "Prompt for local authentication before opening protected content")
             ) {
-                Toggle("", isOn: Binding(
-                    get: { viewModel.appLockEnabled },
-                    set: { viewModel.toggleAppLock($0) }
+                Toggle(translations.get("settingsAppLock", fallback: "App Lock"), isOn: Binding(
+                    get: { appLock.isEnabled },
+                    set: { appLock.setEnabled($0) }
                 ))
                 .toggleStyle(.switch)
                 .labelsHidden()
+                .disabled(appLock.isAuthenticating)
             }
+
+            if let error = appLock.errorMessage {
+                Label(error, systemImage: "exclamationmark.circle")
+                    .font(.caption)
+                    .foregroundStyle(.red)
+                    .padding(.leading, 44)
+                    .padding(.bottom, 8)
+            }
+        }
+
+        sectionHeader(translations.get("settingsUIRenderMode", fallback: "UI Render Mode"))
+
+        settingsCard {
+            VStack(alignment: .leading, spacing: 8) {
+                Picker(translations.get("settingsUIRenderMode", fallback: "UI Render Mode"), selection: Binding(
+                    get: { viewModel.renderMode },
+                    set: { viewModel.updateRenderMode($0) }
+                )) {
+                    if #available(macOS 26, *) {
+                        Text(translations.get("settingsUIRenderModeAppleGlass", fallback: "Apple UI with Liquid Glass"))
+                            .tag(MacOSRenderMode.native)
+                    } else {
+                        Text(translations.get("settingsUIRenderModeNative", fallback: "Native"))
+                            .tag(MacOSRenderMode.native)
+                    }
+                    Text(translations.get("settingsUIRenderModeMD3", fallback: "MDUI3"))
+                        .tag(MacOSRenderMode.md3)
+                    Text(translations.get("settingsUIRenderModeLiquidGlass", fallback: "MDUI3 with Liquid Glass"))
+                        .tag(MacOSRenderMode.liquidGlass)
+                }
+                .pickerStyle(.menu)
+                .labelsHidden()
+                .accessibilityIdentifier("macos.settings.renderMode")
+
+                if #available(macOS 26, *), viewModel.renderMode == .native {
+                    Text(translations.get("settingsUIRenderModeAppleGlassDesc",
+                                          fallback: "Uses the system Liquid Glass material in navigation and controls."))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                if viewModel.showRenderModeRestartHint {
+                    Text(translations.get("settingsUIRenderModeRestartHint",
+                                          fallback: "Restart the app to apply the UI render mode change."))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 10)
         }
 
         // ── 存储 ────────────────────────────────────────────────────────────
@@ -138,10 +168,15 @@ struct SettingsView: View {
                     }
                 }
 
-                if let msg = viewModel.cacheClearMessage {
-                    Text(msg)
+                if viewModel.cacheCleared {
+                    Label(translations.get("settingsCacheCleared", fallback: "Cache cleared"), systemImage: "checkmark.circle")
                         .font(.caption)
-                        .foregroundColor(msg.hasPrefix("✓") ? .green : .red)
+                        .foregroundStyle(.secondary)
+                        .padding(.leading, 44)
+                } else if let error = viewModel.cacheClearError {
+                    Label(error, systemImage: "exclamationmark.circle")
+                        .font(.caption)
+                        .foregroundStyle(.red)
                         .padding(.leading, 44)
                 }
             }
@@ -211,16 +246,15 @@ struct SettingsView: View {
         sectionHeader(translations.get("settingsAppSectionTitle", fallback: "App"))
 
         settingsCard {
-            // 服务器管理（跳转到服务器模块，通过外部导航）
             settingsNavRow(
                 icon: "server.rack",
                 iconColor: .green,
                 title: translations.get("settingsServerManagement", fallback: "Server Management"),
                 subtitle: translations.get("settingsServerManagementSubtitle",
-                                           fallback: "Manage connected servers")
-            ) {
-                // In native mode, server management is accessible from the sidebar
-            }
+                                           fallback: "Manage connected servers"),
+                indicator: "chevron.right",
+                action: onOpenServers
+            )
 
             Divider().padding(.leading, 44)
 
@@ -244,8 +278,8 @@ struct SettingsView: View {
         Text(title)
             .font(.footnote.weight(.semibold))
             .foregroundColor(.secondary)
-            .textCase(.uppercase)
-            .padding(.top, 20)
+            .accessibilityAddTraits(.isHeader)
+            .padding(.top, 16)
             .padding(.bottom, 6)
             .padding(.leading, 4)
     }
@@ -254,7 +288,10 @@ struct SettingsView: View {
         VStack(alignment: .leading, spacing: 0) {
             content()
         }
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .background(
+            Color(nsColor: .controlBackgroundColor),
+            in: RoundedRectangle(cornerRadius: 10, style: .continuous)
+        )
         .overlay(
             RoundedRectangle(cornerRadius: 10, style: .continuous)
                 .strokeBorder(Color.primary.opacity(0.08), lineWidth: 0.5)
@@ -271,9 +308,9 @@ struct SettingsView: View {
         HStack(spacing: 12) {
             Image(systemName: icon)
                 .font(.system(size: 14))
-                .foregroundColor(.white)
-                .frame(width: 28, height: 28)
-                .background(iconColor, in: RoundedRectangle(cornerRadius: 6, style: .continuous))
+                .foregroundStyle(iconColor)
+                .frame(width: 18)
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(.body)
@@ -286,7 +323,7 @@ struct SettingsView: View {
             trailing()
         }
         .padding(.horizontal, 14)
-        .padding(.vertical, 10)
+        .padding(.vertical, 8)
     }
 
     private func settingsNavRow(
@@ -294,6 +331,7 @@ struct SettingsView: View {
         iconColor: Color,
         title: String,
         subtitle: String? = nil,
+        indicator: String = "arrow.up.right.square",
         action: @escaping () -> Void
     ) -> some View {
         Button(action: action) {
@@ -303,9 +341,10 @@ struct SettingsView: View {
                 title: title,
                 subtitle: subtitle,
                 trailingView: AnyView(
-                    Image(systemName: "arrow.up.right.square")
+                    Image(systemName: indicator)
                         .foregroundColor(.secondary)
                         .font(.caption)
+                        .accessibilityHidden(true)
                 )
             )
         }
@@ -322,9 +361,9 @@ struct SettingsView: View {
         HStack(spacing: 12) {
             Image(systemName: icon)
                 .font(.system(size: 14))
-                .foregroundColor(.white)
-                .frame(width: 28, height: 28)
-                .background(iconColor, in: RoundedRectangle(cornerRadius: 6, style: .continuous))
+                .foregroundStyle(iconColor)
+                .frame(width: 18)
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(.body)
@@ -337,7 +376,8 @@ struct SettingsView: View {
             trailingView
         }
         .padding(.horizontal, 14)
-        .padding(.vertical, 10)
+        .padding(.vertical, 8)
+        .contentShape(Rectangle())
     }
 }
 
@@ -353,13 +393,9 @@ struct SettingsAboutSheet: View {
             // Header
             HStack {
                 Spacer()
-                Button(action: { dismiss() }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.title3)
-                        .foregroundColor(.secondary)
-                }
-                .buttonStyle(.plain)
-                .padding()
+                Button(translations.get("commonClose", fallback: "Close")) { dismiss() }
+                    .keyboardShortcut(.cancelAction)
+                    .padding()
             }
 
             ScrollView {
@@ -431,7 +467,10 @@ struct SettingsAboutSheet: View {
             content()
         }
         .padding(.horizontal, 14)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .background(
+            Color(nsColor: .controlBackgroundColor),
+            in: RoundedRectangle(cornerRadius: 10, style: .continuous)
+        )
     }
 
     private func aboutRow(label: String, value: String) -> some View {

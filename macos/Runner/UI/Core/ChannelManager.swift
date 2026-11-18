@@ -1,5 +1,26 @@
+import CoreFoundation
 import Foundation
 import FlutterMacOS
+
+enum NativeMutationOutcome: Equatable {
+    case succeeded
+    case failed(String?)
+
+    init(_ result: Any?) {
+        if let error = result as? FlutterError {
+            self = .failed(error.message)
+        } else if let response = result as? [String: Any] {
+            if let success = response["success"] as? NSNumber,
+               CFGetTypeID(success) == CFBooleanGetTypeID(), success.boolValue {
+                self = .succeeded
+            } else {
+                self = .failed(response["error"] as? String)
+            }
+        } else {
+            self = .failed(nil)
+        }
+    }
+}
 
 class ChannelManager {
     static let shared = ChannelManager()
@@ -14,6 +35,8 @@ class ChannelManager {
             name: "com.onepanel.client/method",
             binaryMessenger: binaryMessenger
         )
+        // 原生壳可在 Dart 通道就绪前请求导航文案和首屏仪表盘。
+        dataChannel?.resizeBuffer(8)
         shellChannel = FlutterMethodChannel(
             name: "onepanel/macos_shell",
             binaryMessenger: binaryMessenger
@@ -42,6 +65,15 @@ class ChannelManager {
         }
         dataChannel.invokeMethod(method, arguments: arguments) { result in
             completion(result)
+        }
+    }
+
+    @MainActor
+    func invokeMutation(_ method: String, arguments: [String: Any]) async -> NativeMutationOutcome {
+        await withCheckedContinuation { continuation in
+            invokeDataMethod(method, arguments: arguments) { result in
+                continuation.resume(returning: NativeMutationOutcome(result))
+            }
         }
     }
     

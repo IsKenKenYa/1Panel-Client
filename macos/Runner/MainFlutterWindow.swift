@@ -5,6 +5,7 @@ class MainFlutterWindow: NSWindow {
   private var appearanceChannel: FlutterMethodChannel?
 
   override func awakeFromNib() {
+    let mode = MacOSRenderMode.stored
     let project = FlutterDartProject()
     let flutterEngine = FlutterEngine(name: "io.flutter", project: project)
     flutterEngine.run(withEntrypoint: nil)
@@ -12,44 +13,22 @@ class MainFlutterWindow: NSWindow {
     let flutterViewController = FlutterViewController(engine: flutterEngine, nibName: nil, bundle: nil)
     let windowFrame = self.frame
     
-    // Apply base window config before mode is determined
-    configureWindowBase()
-
-    let methodChannel = FlutterMethodChannel(name: "com.onepanel.client/method", binaryMessenger: flutterViewController.engine.binaryMessenger)
-    methodChannel.invokeMethod("getUIRenderMode", arguments: nil) { [weak self] result in
-      guard let self = self else { return }
-      let mode = result as? String ?? "native"
-      if mode == "md3" {
-        // MD3 pages rely on Flutter's AppBar/navigation patterns. Let the
-        // system titlebar keep its own vertical/horizontal space so the traffic
-        // lights never overlap Flutter back buttons or page titles.
-        self.configureWindowForFlutterMD3()
-        self.contentViewController = flutterViewController
-      } else {
-        // Native shell keeps the immersive full-size titlebar treatment.
-        self.configureWindowForNativeShell()
-        let shellViewController = MainShellViewController(flutterViewController: flutterViewController)
-        self.contentViewController = shellViewController
-      }
-      self.setFrame(windowFrame, display: true)
-    }
-
     RegisterGeneratedPlugins(registry: flutterViewController)
     setupAppearanceChannel(with: flutterViewController)
+
+    if mode.usesNativeShell {
+      configureWindowForNativeShell()
+      contentViewController = MainShellViewController(flutterViewController: flutterViewController)
+    } else {
+      configureWindowForFlutter()
+      contentViewController = flutterViewController
+    }
+    setFrame(windowFrame, display: true)
 
     super.awakeFromNib()
   }
 
-  /// Base window chrome config (applies to both native and md3 modes).
-  private func configureWindowBase() {
-    titlebarAppearsTransparent = true
-    titleVisibility = .hidden
-    styleMask.insert(.fullSizeContentView)
-    isOpaque = true
-    backgroundColor = NSColor.windowBackgroundColor
-  }
-
-  private func configureWindowForFlutterMD3() {
+  private func configureWindowForFlutter() {
     titleVisibility = .hidden
     titlebarAppearsTransparent = false
     styleMask.remove(.fullSizeContentView)
@@ -59,10 +38,11 @@ class MainFlutterWindow: NSWindow {
 
   private func configureWindowForNativeShell() {
     titleVisibility = .hidden
-    titlebarAppearsTransparent = true
+    toolbarStyle = .unified
     styleMask.insert(.fullSizeContentView)
     isOpaque = true
     backgroundColor = NSColor.windowBackgroundColor
+    SettingsViewModel.applyTheme(UserDefaults.standard.string(forKey: "flutter.app_theme_mode"))
   }
 
   private func setupAppearanceChannel(with controller: FlutterViewController) {

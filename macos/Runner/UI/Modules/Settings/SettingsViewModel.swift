@@ -1,27 +1,61 @@
 import Foundation
 import AppKit
+import FlutterMacOS
+
+enum MacOSRenderMode: String {
+    static let preferenceKey = "flutter.app_ui_render_mode"
+
+    case native
+    case md3
+    case liquidGlass
+
+    static var stored: Self {
+        Self(storedValue: UserDefaults.standard.string(forKey: preferenceKey))
+    }
+
+    init(storedValue: String?) {
+        self = storedValue.flatMap(Self.init(rawValue:)) ?? .native
+    }
+
+    var usesNativeShell: Bool {
+        self == .native
+    }
+}
 
 class SettingsViewModel: ObservableObject {
     // ── 通用 ──────────────────────────────────────────────────────────────────
-    @Published var renderMode: String
-    @Published var showRestartHint: Bool = false
+    @Published private(set) var renderMode: MacOSRenderMode
     @Published var selectedLanguage: String = "system"   // "system" | "zh" | "en"
     @Published var selectedTheme: String = "system"      // "system" | "light" | "dark"
-    @Published var appLockEnabled: Bool = false
 
     // ── 缓存 ──────────────────────────────────────────────────────────────────
     @Published var isClearingCache: Bool = false
-    @Published var cacheClearMessage: String?
+    @Published private(set) var cacheCleared = false
+    @Published private(set) var cacheClearError: String?
 
     // ── 应用信息 ──────────────────────────────────────────────────────────────
     let appVersion: String
     let buildNumber: String
+    private let initialRenderMode: MacOSRenderMode
+    private let initialLanguage: String
+
+    var showRenderModeRestartHint: Bool {
+        renderMode != initialRenderMode
+    }
+
+    var showLanguageRestartHint: Bool {
+        selectedLanguage != initialLanguage
+    }
 
     init() {
-        self.renderMode = UserDefaults.standard.string(forKey: "flutter.app_ui_render_mode") ?? "native"
-        self.selectedLanguage = UserDefaults.standard.string(forKey: "flutter.app_locale") ?? "system"
+        let mode = MacOSRenderMode.stored
+        self.renderMode = mode
+        self.initialRenderMode = mode
+        let language = UserDefaults.standard.string(forKey: "flutter.app_locale") ?? "system"
+        let selectedLanguage = language.isEmpty ? "system" : language
+        self.selectedLanguage = selectedLanguage
+        self.initialLanguage = selectedLanguage
         self.selectedTheme = UserDefaults.standard.string(forKey: "flutter.app_theme_mode") ?? "system"
-        self.appLockEnabled = UserDefaults.standard.bool(forKey: "flutter.app_lock_enabled")
 
         let info = Bundle.main.infoDictionary
         self.appVersion = info?["CFBundleShortVersionString"] as? String ?? "--"
@@ -30,26 +64,23 @@ class SettingsViewModel: ObservableObject {
 
     // ── 通用操作 ──────────────────────────────────────────────────────────────
 
-    func updateRenderMode(_ mode: String) {
+    func updateRenderMode(_ mode: MacOSRenderMode) {
         renderMode = mode
-        UserDefaults.standard.set(mode, forKey: "flutter.app_ui_render_mode")
-        UserDefaults.standard.synchronize()
-        showRestartHint = true
+        UserDefaults.standard.set(mode.rawValue, forKey: MacOSRenderMode.preferenceKey)
     }
 
     func updateLanguage(_ lang: String) {
         selectedLanguage = lang
-        let value = lang == "system" ? "" : lang
-        UserDefaults.standard.set(value, forKey: "flutter.app_locale")
-        UserDefaults.standard.synchronize()
-        showRestartHint = true
+        UserDefaults.standard.set(lang, forKey: "flutter.app_locale")
     }
 
     func updateTheme(_ theme: String) {
         selectedTheme = theme
         UserDefaults.standard.set(theme, forKey: "flutter.app_theme_mode")
-        UserDefaults.standard.synchronize()
-        // Propagate appearance change immediately
+        Self.applyTheme(theme)
+    }
+
+    static func applyTheme(_ theme: String?) {
         switch theme {
         case "light": NSApp.appearance = NSAppearance(named: .aqua)
         case "dark":  NSApp.appearance = NSAppearance(named: .darkAqua)
@@ -57,30 +88,24 @@ class SettingsViewModel: ObservableObject {
         }
     }
 
-    func toggleAppLock(_ enabled: Bool) {
-        appLockEnabled = enabled
-        UserDefaults.standard.set(enabled, forKey: "flutter.app_lock_enabled")
-        UserDefaults.standard.synchronize()
-    }
-
     // ── 缓存操作 ──────────────────────────────────────────────────────────────
 
     func clearCache() {
         guard !isClearingCache else { return }
         isClearingCache = true
-        cacheClearMessage = nil
+        cacheCleared = false
+        cacheClearError = nil
         ChannelManager.shared.invokeDataMethod("clearCache") { [weak self] result in
             DispatchQueue.main.async {
-                self?.isClearingCache = false
-                if let dict = result as? [String: Any],
-                   let success = dict["success"] as? Bool, !success {
-                    self?.cacheClearMessage = dict["error"] as? String ?? "Failed to clear cache"
+                guard let self else { return }
+                self.isClearingCache = false
+                let response = result as? [String: Any]
+                if response?["success"] as? Bool == true {
+                    self.cacheCleared = true
                 } else {
-                    self?.cacheClearMessage = "✓ Cache cleared"
-                }
-                // Auto-dismiss message after 3 seconds
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                    self?.cacheClearMessage = nil
+                    self.cacheClearError = response?["error"] as? String
+                        ?? (result as? FlutterError)?.message
+                        ?? TranslationsManager.shared.get("commonOperationFailed", fallback: "Operation failed")
                 }
             }
         }
