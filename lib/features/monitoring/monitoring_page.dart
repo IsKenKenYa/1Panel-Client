@@ -4,6 +4,7 @@ import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/shared/widgets/app_card.dart';
+import 'package:onepanel_client/shared/widgets/metric_card.dart';
 import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:provider/provider.dart';
 import '../../data/models/monitoring_runtime_models.dart';
@@ -237,44 +238,35 @@ class _MonitoringPageState extends State<MonitoringPage> {
 
     return AppCard(
       title: l10n.monitorMetricCurrent,
-      child: GridView.count(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        crossAxisCount: 2,
-        mainAxisSpacing: AppDesignTokens.spacingSm,
-        crossAxisSpacing: AppDesignTokens.spacingSm,
-        // 2.15：容纳 labelSmall + headlineSmall + 趋势条在系统大字体下不溢出。
-        childAspectRatio: 2.15,
+      child: MetricOverviewGrid(
         children: [
-          _HealthTile(
+          MetricOverviewTile(
             label: l10n.serverCpuLabel,
             value: metrics.cpuPercent != null
                 ? '${metrics.cpuPercent!.toStringAsFixed(1)}%'
                 : '--',
             percent: metrics.cpuPercent,
-            icon: Icons.memory_outlined,
+            icon: Icons.developer_board_outlined,
           ),
-          _HealthTile(
+          MetricOverviewTile(
             label: l10n.serverMemoryLabel,
             value: metrics.memoryPercent != null
                 ? '${metrics.memoryPercent!.toStringAsFixed(1)}%'
                 : '--',
             percent: metrics.memoryPercent,
-            icon: Icons.storage_outlined,
+            icon: Icons.memory_outlined,
           ),
-          _HealthTile(
+          MetricOverviewTile(
             label: l10n.serverDiskLabel,
             value: metrics.diskPercent != null
                 ? '${metrics.diskPercent!.toStringAsFixed(1)}%'
                 : '--',
             percent: metrics.diskPercent,
-            icon: Icons.folder_outlined,
+            icon: Icons.storage_outlined,
           ),
-          _HealthTile(
+          MetricOverviewTile(
             label: l10n.serverLoadLabel,
-            value: metrics.load1 != null
-                ? metrics.load1!.toStringAsFixed(2)
-                : '--',
+            value: metrics.load1?.toStringAsFixed(2) ?? '--',
             percent: null,
             icon: Icons.speed_outlined,
           ),
