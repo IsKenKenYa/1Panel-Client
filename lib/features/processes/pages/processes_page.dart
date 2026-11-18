@@ -51,7 +51,7 @@ class _ProcessesPageState extends State<ProcessesPage>
             ),
             IconButton(
               onPressed: provider.isLoading ? null : provider.refresh,
-              icon: const Icon(Icons.refresh),
+              icon: const Icon(Icons.refresh_outlined),
               tooltip: l10n.commonRefresh,
             ),
           ],
