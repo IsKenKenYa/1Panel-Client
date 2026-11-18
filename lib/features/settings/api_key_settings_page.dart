@@ -5,6 +5,7 @@ import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/settings/settings_provider.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:onepanel_client/shared/widgets/section_card.dart';
 
 class ApiKeySettingsPage extends StatelessWidget {
@@ -107,25 +108,13 @@ class ApiKeySettingsPage extends StatelessWidget {
 
   void _toggleApiKey(BuildContext context, SettingsProvider provider,
       AppLocalizations l10n, bool enable) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-            enable ? l10n.apiKeySettingsEnable : l10n.apiKeySettingsDisable),
-        content: Text(enable
-            ? l10n.apiKeySettingsEnableConfirm
-            : l10n.apiKeySettingsDisableConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.commonConfirm),
-          ),
-        ],
-      ),
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: enable ? l10n.apiKeySettingsEnable : l10n.apiKeySettingsDisable,
+      message: enable
+          ? l10n.apiKeySettingsEnableConfirm
+          : l10n.apiKeySettingsDisableConfirm,
+      confirmLabel: l10n.commonConfirm,
     );
 
     if (confirmed == true && context.mounted) {
@@ -149,22 +138,12 @@ class ApiKeySettingsPage extends StatelessWidget {
 
   void _regenerateApiKey(BuildContext context, SettingsProvider provider,
       AppLocalizations l10n) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.apiKeySettingsRegenerate),
-        content: Text(l10n.apiKeySettingsRegenerateConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.commonConfirm),
-          ),
-        ],
-      ),
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.apiKeySettingsRegenerate,
+      message: l10n.apiKeySettingsRegenerateConfirm,
+      confirmLabel: l10n.commonConfirm,
+      isDestructive: true,
     );
 
     if (confirmed == true && context.mounted) {

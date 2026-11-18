@@ -96,7 +96,7 @@ class _UpgradePageState extends State<UpgradePage> {
               _buildSectionTitle(context, l10n.upgradeCurrentVersion, theme),
               Card(
                 child: ListTile(
-                  leading: const Icon(Icons.info_outline),
+                  leading: const Icon(Icons.info_outlined),
                   title: Text(l10n.upgradeCurrentVersionLabel),
                   trailing: Text(currentVersion,
                       style: const TextStyle(color: Colors.grey)),

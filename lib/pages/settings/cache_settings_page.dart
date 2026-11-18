@@ -5,6 +5,7 @@ import 'package:onepanel_client/core/services/app_settings_controller.dart';
 import 'package:onepanel_client/core/services/app_preferences_service.dart';
 import 'package:onepanel_client/core/services/cache/file_preview_cache_manager.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 
 import '../../core/utils/snackbar_utils.dart';
 class CacheSettingsPage extends StatelessWidget {
@@ -261,22 +262,12 @@ class _ClearCacheButton extends StatelessWidget {
 
     return ElevatedButton.icon(
       onPressed: () async {
-        final confirmed = await showDialog<bool>(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text(l10n.settingsCacheClearConfirm),
-            content: Text(l10n.settingsCacheClearConfirmMessage),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: Text(l10n.commonCancel),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: Text(l10n.commonConfirm),
-              ),
-            ],
-          ),
+        final confirmed = await ConfirmActionSheetWidget.show(
+          context,
+          title: l10n.settingsCacheClearConfirm,
+          message: l10n.settingsCacheClearConfirmMessage,
+          confirmLabel: l10n.commonConfirm,
+          isDestructive: true,
         );
 
         if (confirmed == true && context.mounted) {

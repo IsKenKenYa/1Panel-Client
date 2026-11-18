@@ -11,6 +11,7 @@ import 'package:onepanel_client/core/services/logger/log_level.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/features/settings/about_page.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:onepanel_client/shared/widgets/section_card.dart';
 
 class FeedbackCenterPage extends StatefulWidget {
@@ -162,24 +163,11 @@ $platformTemplate
 
   Future<void> _exportAppLogs(BuildContext context) async {
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: Text(l10n.settingsFeedbackLogExportWarningTitle),
-          content: Text(l10n.settingsFeedbackLogExportWarningMessage),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(l10n.commonCancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: Text(l10n.settingsFeedbackLogExportConfirm),
-            ),
-          ],
-        );
-      },
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.settingsFeedbackLogExportWarningTitle,
+      message: l10n.settingsFeedbackLogExportWarningMessage,
+      confirmLabel: l10n.settingsFeedbackLogExportConfirm,
     );
 
     if (confirmed != true || !context.mounted) return;
@@ -198,24 +186,13 @@ $platformTemplate
 
   Future<void> _clearAppLogs(BuildContext context) async {
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
-          context: context,
-          builder: (dialogContext) => AlertDialog(
-            title: Text(l10n.systemSettingsAppLogsClearTitle),
-            content: Text(l10n.systemSettingsAppLogsClearConfirm),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(dialogContext).pop(false),
-                child: Text(l10n.commonCancel),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.of(dialogContext).pop(true),
-                child: Text(l10n.commonConfirm),
-              ),
-            ],
-          ),
-        ) ??
-        false;
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.systemSettingsAppLogsClearTitle,
+      message: l10n.systemSettingsAppLogsClearConfirm,
+      confirmLabel: l10n.commonConfirm,
+      isDestructive: true,
+    );
     if (!confirmed) return;
     await LogFileManagerService().clearLogs();
     if (!context.mounted) return;

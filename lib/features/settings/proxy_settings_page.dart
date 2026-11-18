@@ -164,7 +164,7 @@ class _ProxySettingsPageState extends State<ProxySettingsPage> {
                       controller: _passwordController,
                       decoration: InputDecoration(
                         labelText: l10n.proxySettingsPassword,
-                        prefixIcon: const Icon(Icons.lock_outline),
+                        prefixIcon: const Icon(Icons.lock_outlined),
                       ),
                       enabled: _enabled,
                       obscureText: true,

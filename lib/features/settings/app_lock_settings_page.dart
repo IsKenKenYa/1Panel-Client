@@ -49,7 +49,7 @@ class AppLockSettingsPage extends StatelessWidget {
                 child: Column(
                   children: [
                     SwitchListTile.adaptive(
-                      secondary: const Icon(Icons.lock_outline),
+                      secondary: const Icon(Icons.lock_outlined),
                       title: Text(l10n.appLockEnable),
                       subtitle: Text(l10n.appLockEnableDesc),
                       value: settings.enabled,

@@ -32,7 +32,7 @@ class PanelSettingsPage extends StatelessWidget {
                 _buildInfoListTile(
                   title: l10n.panelSettingsVersion,
                   value: settings?.systemVersion ?? '-',
-                  icon: Icons.info_outline,
+                  icon: Icons.info_outlined,
                 ),
                 _buildInfoListTile(
                   title: l10n.panelSettingsPort,

@@ -7,6 +7,7 @@ import 'package:onepanel_client/features/settings/panel_ssl/providers/panel_ssl_
 import 'package:onepanel_client/shared/security_gateway/models/security_gateway_models.dart';
 import 'package:onepanel_client/shared/security_gateway/widgets/risk_notice_banner.dart';
 import 'package:onepanel_client/shared/security_gateway/widgets/security_status_chip.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:onepanel_client/shared/widgets/section_card.dart';
 import 'package:provider/provider.dart';
 
@@ -44,7 +45,7 @@ class _PanelSslBody extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: provider.loadSslInfo,
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh_outlined),
             tooltip: l10n.commonRefresh,
           ),
         ],
@@ -317,24 +318,12 @@ class _PanelSslBody extends StatelessWidget {
   Future<void> _downloadSsl(
       BuildContext context, PanelSslProvider provider) async {
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
-          context: context,
-          builder: (dialogContext) => AlertDialog(
-            title: Text(l10n.panelTlsDownloadDialogTitle),
-            content: Text(l10n.panelTlsDownloadDialogMessage),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext, false),
-                child: Text(l10n.commonCancel),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.pop(dialogContext, true),
-                child: Text(l10n.panelTlsContinueAction),
-              ),
-            ],
-          ),
-        ) ??
-        false;
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.panelTlsDownloadDialogTitle,
+      message: l10n.panelTlsDownloadDialogMessage,
+      confirmLabel: l10n.panelTlsContinueAction,
+    );
     if (!confirmed) {
       return;
     }

@@ -40,7 +40,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
             title: l10n.securitySettingsPasswordSection,
             items: [
               SectionEntryItem(
-                icon: Icons.lock_outline,
+                icon: Icons.lock_outlined,
                 title: l10n.securitySettingsChangePassword,
                 subtitle: l10n.securitySettingsChangePasswordDesc,
                 onTap: () => _showPasswordDialog(context, provider, l10n),
@@ -182,7 +182,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
                   height: 20,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Icon(Icons.add),
+              : const Icon(Icons.add_outlined),
           onTap: data.isPasskeySupported && !data.isPasskeyRegistering
               ? () => _showPasskeyRegisterDialog(context, provider, l10n)
               : null,
@@ -198,7 +198,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
           )
         else if (!data.isPasskeySupported)
           ListTile(
-            leading: const Icon(Icons.info_outline),
+            leading: const Icon(Icons.info_outlined),
             title: Text(l10n.securitySettingsPasskeyUnsupported),
             subtitle: Text(
               data.passkeyUnsupportedReason ??

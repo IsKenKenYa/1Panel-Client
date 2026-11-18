@@ -18,6 +18,7 @@ import 'package:onepanel_client/features/settings/proxy_settings_page.dart';
 import 'package:onepanel_client/features/settings/backup_account_page.dart';
 import 'package:onepanel_client/features/settings/widgets/system_settings_tiles.dart';
 import 'package:onepanel_client/features/shell/shell_navigation.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:onepanel_client/shared/widgets/section_card.dart';
 import 'package:onepanel_client/features/monitoring/monitoring_provider.dart';
 import 'package:onepanel_client/core/services/logger/log_level.dart';
@@ -343,7 +344,7 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
             Row(
               children: [
                 Icon(
-                  Icons.info_outline,
+                  Icons.info_outlined,
                   size: 20,
                   color: theme.colorScheme.primary,
                 ),
@@ -793,24 +794,13 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
 
   Future<void> _clearAppLogs(BuildContext context) async {
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
-          context: context,
-          builder: (dialogContext) => AlertDialog(
-            title: Text(l10n.systemSettingsAppLogsClearTitle),
-            content: Text(l10n.systemSettingsAppLogsClearConfirm),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(dialogContext).pop(false),
-                child: Text(l10n.commonCancel),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.of(dialogContext).pop(true),
-                child: Text(l10n.commonConfirm),
-              ),
-            ],
-          ),
-        ) ??
-        false;
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.systemSettingsAppLogsClearTitle,
+      message: l10n.systemSettingsAppLogsClearConfirm,
+      confirmLabel: l10n.commonConfirm,
+      isDestructive: true,
+    );
     if (!confirmed) return;
     await LogFileManagerService().clearLogs();
     if (!context.mounted) return;

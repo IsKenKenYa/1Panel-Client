@@ -36,11 +36,6 @@ class _SnapshotPageState extends State<SnapshotPage> {
         setState(() {
           _loadError = l10n.snapshotLoadFailedWithError(e.toString());
         });
-        SnackBarUtils.showErrorWithDebugDetails(
-          context,
-          l10n.snapshotLoadFailed,
-          error: e,
-        );
       }
     }
 
@@ -89,7 +84,7 @@ class _SnapshotPageState extends State<SnapshotPage> {
       floatingActionButton: FloatingActionButton.extended(
         heroTag: 'snapshot_create_fab',
         onPressed: () => _showCreateSnapshotDialog(context, l10n),
-        icon: const Icon(Icons.add),
+        icon: const Icon(Icons.add_outlined),
         label: Text(l10n.snapshotCreate),
       ),
     );
@@ -141,7 +136,7 @@ class _SnapshotPageState extends State<SnapshotPage> {
           const SizedBox(height: 8),
           TextButton.icon(
             onPressed: () => _showCreateSnapshotDialog(context, l10n),
-            icon: const Icon(Icons.add),
+            icon: const Icon(Icons.add_outlined),
             label: Text(l10n.snapshotCreate),
           ),
           TextButton.icon(

@@ -39,7 +39,7 @@ class _MenuSettingsPageState extends State<MenuSettingsPage> {
       actions: <Widget>[
         IconButton(
           onPressed: provider.isLoading ? null : provider.load,
-          icon: const Icon(Icons.refresh),
+          icon: const Icon(Icons.refresh_outlined),
           tooltip: l10n.commonRefresh,
         ),
       ],
@@ -66,7 +66,7 @@ class _MenuSettingsPageState extends State<MenuSettingsPage> {
                       .addMenu(_controller.text);
                   _controller.clear();
                 },
-                icon: const Icon(Icons.add),
+                icon: const Icon(Icons.add_outlined),
               ),
             ),
             onSubmitted: (String value) {
