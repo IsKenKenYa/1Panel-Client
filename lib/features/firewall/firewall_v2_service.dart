@@ -1,16 +1,15 @@
-import '../../../api/v2/firewall_v2.dart';
-import '../../../core/network/api_client_manager.dart';
-import '../../../data/models/firewall_v2_models.dart';
+import '../../api/v2/firewall_v2.dart';
+import '../../core/network/api_client_manager.dart';
+import '../../data/models/firewall_models.dart';
+import '../../data/models/firewall_v2_models.dart';
 
 class FirewallV2Service {
   FirewallV2Service({FirewallV2Api? api}) : _api = api;
 
-  FirewallV2Api? _api;
+  final FirewallV2Api? _api;
 
-  Future<FirewallV2Api> _ensureApi() async {
-    _api ??= FirewallV2Api(await ApiClientManager.instance.getCurrentClient());
-    return _api!;
-  }
+  Future<FirewallV2Api> _ensureApi() async =>
+      _api ?? FirewallV2Api(await ApiClientManager.instance.getCurrentClient());
 
   Future<Map<String, dynamic>> loadSettings() async {
     final api = await _ensureApi();
@@ -29,8 +28,17 @@ class FirewallV2Service {
     String? info,
   }) async {
     final api = await _ensureApi();
+    final settings = (await api.loadFirewallV2Settings()).data;
+    final system = settings?['system'];
+    final provider = system is Map ? system['selected'] : null;
+    if (provider is! String || provider.isEmpty) {
+      throw const FormatException('Invalid firewall system provider.');
+    }
     return (await api.searchFirewallRuleInventory(
-      FirewallRuleInventoryRequest(page: page, pageSize: pageSize, info: info),
+      FirewallRuleInventoryRequest.forSearch(
+        FirewallRuleSearch(page: page, pageSize: pageSize, info: info),
+        provider: provider,
+      ),
     )).data ??
         <String, dynamic>{};
   }

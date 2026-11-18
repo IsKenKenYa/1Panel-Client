@@ -17,6 +17,7 @@ class FirewallRuleListControls extends StatelessWidget {
     required this.onDeleteSelected,
     required this.onAcceptSelected,
     required this.onDropSelected,
+    this.supportsLegacyChanges = true,
   });
 
   final TextEditingController searchController;
@@ -31,6 +32,7 @@ class FirewallRuleListControls extends StatelessWidget {
   final VoidCallback onDeleteSelected;
   final VoidCallback onAcceptSelected;
   final VoidCallback onDropSelected;
+  final bool supportsLegacyChanges;
 
   @override
   Widget build(BuildContext context) {
@@ -93,20 +95,22 @@ class FirewallRuleListControls extends StatelessWidget {
               icon: const Icon(Icons.add_outlined),
               label: Text(l10n.commonCreate),
             ),
-            const SizedBox(width: AppDesignTokens.spacingSm),
-            OutlinedButton.icon(
-              key: const Key('firewall.selectionModeButton'),
-              onPressed: isMutating ? null : onToggleSelectionMode,
-              icon: Icon(isSelectionMode ? Icons.close : Icons.checklist),
-              label: Text(
-                isSelectionMode
-                    ? l10n.firewallSelectionModeDisable
-                    : l10n.firewallSelectionModeEnable,
+            if (supportsLegacyChanges) ...[
+              const SizedBox(width: AppDesignTokens.spacingSm),
+              OutlinedButton.icon(
+                key: const Key('firewall.selectionModeButton'),
+                onPressed: isMutating ? null : onToggleSelectionMode,
+                icon: Icon(isSelectionMode ? Icons.close : Icons.checklist),
+                label: Text(
+                  isSelectionMode
+                      ? l10n.firewallSelectionModeDisable
+                      : l10n.firewallSelectionModeEnable,
+                ),
               ),
-            ),
+            ],
           ],
         ),
-        if (isSelectionMode) ...[
+        if (supportsLegacyChanges && isSelectionMode) ...[
           const SizedBox(height: AppDesignTokens.spacingSm),
           Row(
             children: [

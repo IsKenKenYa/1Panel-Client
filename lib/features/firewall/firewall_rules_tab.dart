@@ -4,6 +4,7 @@ import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/utils/platform_utils.dart';
+import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/shared/state/selection_controller.dart';
 import 'package:onepanel_client/shared/widgets/app_card.dart';
@@ -95,7 +96,7 @@ class _FirewallRulesTabState extends State<FirewallRulesTab> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  if (provider.useFilterApi) ...[
+                  if (provider.supportsLegacyFilter) ...[
                     Card(
                       child: Padding(
                         padding:
@@ -155,16 +156,20 @@ class _FirewallRulesTabState extends State<FirewallRulesTab> {
                     onSearch: _loadRules,
                     onStrategyChanged: _onStrategyChanged,
                     onToggleSelectionMode: _toggleSelectionMode,
-                    onCreate: () => openRouteRespectingShell(
-                      context,
-                      AppRoutes.firewallRuleForm,
-                      arguments: const FirewallRuleFormArguments(
-                        kind: FirewallRuleKind.port,
-                      ),
-                    ),
+                    onCreate: () async {
+                      final created = await openRouteRespectingShell<Object?>(
+                        context,
+                        AppRoutes.firewallRuleForm,
+                        arguments: const FirewallRuleFormArguments(
+                          kind: FirewallRuleKind.port,
+                        ),
+                      );
+                      if (mounted && created == true) await _loadRules();
+                    },
                     onDeleteSelected: () => _deleteSelected(provider),
                     onAcceptSelected: () => _toggleSelected(provider, 'accept'),
                     onDropSelected: () => _toggleSelected(provider, 'drop'),
+                    supportsLegacyChanges: provider.supportsLegacyChanges,
                   ),
                   if (provider.items.isEmpty) ...[
                     const SizedBox(height: AppDesignTokens.spacingMd),
@@ -183,7 +188,7 @@ class _FirewallRulesTabState extends State<FirewallRulesTab> {
           final selected = _selection.isSelected(rule);
           return AppCard(
             title: _ruleTitle(rule),
-            leading: _selectionMode
+            leading: _selectionMode && rule.supportsLegacyChanges
                 ? Checkbox(
                     value: selected,
                     onChanged: provider.isMutating
@@ -192,9 +197,12 @@ class _FirewallRulesTabState extends State<FirewallRulesTab> {
                   )
                 : null,
             subtitle: _ruleSubtitle(rule),
-            trailing: _selectionMode
+            trailing: (_selectionMode && provider.supportsLegacyChanges) ||
+                    !rule.canDelete
                 ? null
                 : PopupMenuButton<String>(
+                    enabled: !provider.isMutating &&
+                        (rule.supportsLegacyChanges || !provider.isLoading),
                     onSelected: (value) => _handleAction(
                       context,
                       provider,
@@ -202,22 +210,25 @@ class _FirewallRulesTabState extends State<FirewallRulesTab> {
                       value,
                     ),
                     itemBuilder: (context) => [
-                      if (!provider.useFilterApi)
+                      if (rule.supportsLegacyChanges && !provider.useFilterApi)
                         PopupMenuItem(
                           value: 'edit',
                           child: Text(context.l10n.commonEdit),
                         ),
-                      PopupMenuItem(
-                        value: 'toggle',
-                        child: Text(context.l10n.firewallToggleStrategyAction),
-                      ),
+                      if (rule.supportsLegacyChanges)
+                        PopupMenuItem(
+                          value: 'toggle',
+                          child: Text(context.l10n.firewallToggleStrategyAction),
+                        ),
                       PopupMenuItem(
                         value: 'delete',
                         child: Text(context.l10n.commonDelete),
                       ),
                     ],
                   ),
-            onTap: _selectionMode ? () => _selection.toggle(rule) : null,
+            onTap: _selectionMode && rule.supportsLegacyChanges
+                ? () => _selection.toggle(rule)
+                : null,
             child: _ruleDetail(rule),
           );
             },
@@ -364,13 +375,23 @@ class _FirewallRulesTabState extends State<FirewallRulesTab> {
         );
         break;
       case 'delete':
+        final l10n = context.l10n;
+        String? error;
         await showAppFormDialog(
           context,
-          title: context.l10n.firewallOperationConfirmTitle,
+          title: l10n.firewallOperationConfirmTitle,
           destructive: true,
-          content: Text(context.l10n.commonDeleteConfirm),
-          onConfirm: () => provider.deleteRules([rule]),
+          content: Text(l10n.commonDeleteConfirm),
+          onConfirm: () async {
+            final deleted = await provider.deleteRules([rule]);
+            error =
+                provider.error ?? (deleted ? null : l10n.commonDeleteFailed);
+          },
         );
+        final deleteError = error;
+        if (mounted && deleteError != null) {
+          SnackBarUtils.showError(this.context, deleteError);
+        }
         break;
     }
     if (mounted) {

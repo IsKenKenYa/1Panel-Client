@@ -5,6 +5,7 @@ import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 
 import '../../../data/models/common_models.dart';
 import '../../../data/models/firewall_models.dart';
+import '../../../data/models/firewall_v2_models.dart';
 import '../firewall_service.dart';
 
 const _kForwardStrategyToggleError =
@@ -32,6 +33,7 @@ class FirewallRuleListProvider extends ChangeNotifier with SafeChangeNotifier {
   String? _error;
   int _currentPage = 1;
   int _pageSize = PagedQuery.searchPageSize;
+  int _loadGeneration = 0;
   String? _lastSearch;
   String? _lastStrategy;
   bool _isMutating = false;
@@ -39,6 +41,8 @@ class FirewallRuleListProvider extends ChangeNotifier with SafeChangeNotifier {
   List<FirewallRule> get items => _page?.items ?? const [];
   bool get isLoading => _loading;
   bool get isMutating => _isMutating;
+  bool get supportsLegacyChanges => _page is! FirewallInventoryPageResult;
+  bool get supportsLegacyFilter => useFilterApi && supportsLegacyChanges;
   String? get error => _error;
   int get total => _page?.total ?? 0;
   bool get hasResults => items.isNotEmpty;
@@ -52,6 +56,9 @@ class FirewallRuleListProvider extends ChangeNotifier with SafeChangeNotifier {
     String? search,
     String? strategy,
   }) async {
+    if (isDisposed) return;
+    final generation = ++_loadGeneration;
+    final filterChain = _filterChain;
     _loading = true;
     _error = null;
     notifyListeners();
@@ -61,32 +68,40 @@ class FirewallRuleListProvider extends ChangeNotifier with SafeChangeNotifier {
     _lastStrategy = strategy;
 
     try {
-      if (useFilterApi) {
-        _page = await _service.searchFilterRules(
-          page: page,
-          pageSize: pageSize,
-          type: _filterChain,
-          info: search,
-        );
+      final rules = useFilterApi
+          ? await _service.searchFilterRules(
+              page: page,
+              pageSize: pageSize,
+              type: filterChain,
+              info: search,
+              strategy: strategy,
+            )
+          : await _service.searchRules(
+              page: page,
+              pageSize: pageSize,
+              type: type,
+              info: search,
+              strategy: strategy,
+            );
+      if (generation != _loadGeneration || isDisposed) return;
+      _page = rules;
+      if (supportsLegacyFilter) {
         final chainStatus = await _service.loadFilterChainStatus(
-          name: _filterChain,
+          name: filterChain,
         );
+        if (generation != _loadGeneration || isDisposed) return;
         _filterChainBound = chainStatus.isBind;
         _filterDefaultStrategy = chainStatus.defaultStrategy;
-      } else {
-        _page = await _service.searchRules(
-          page: page,
-          pageSize: pageSize,
-          type: type,
-          info: search,
-          strategy: strategy,
-        );
       }
     } catch (e) {
-      _error = ErrorMessageUtils.userFacingMessage(e);
+      if (generation == _loadGeneration && !isDisposed) {
+        _error = ErrorMessageUtils.userFacingMessage(e);
+      }
     } finally {
-      _loading = false;
-      notifyListeners();
+      if (generation == _loadGeneration && !isDisposed) {
+        _loading = false;
+        notifyListeners();
+      }
     }
   }
 
@@ -100,7 +115,7 @@ class FirewallRuleListProvider extends ChangeNotifier with SafeChangeNotifier {
   }
 
   Future<void> switchFilterChain(String chain) async {
-    if (!useFilterApi || _filterChain == chain) {
+    if (!supportsLegacyFilter || _filterChain == chain) {
       return;
     }
     _filterChain = chain;
@@ -108,7 +123,7 @@ class FirewallRuleListProvider extends ChangeNotifier with SafeChangeNotifier {
   }
 
   Future<bool> toggleFilterChainBinding(bool bind) async {
-    if (!useFilterApi) {
+    if (!supportsLegacyFilter) {
       return false;
     }
     return _runMutation(() async {
@@ -131,6 +146,7 @@ class FirewallRuleListProvider extends ChangeNotifier with SafeChangeNotifier {
     FirewallRule rule,
     String description,
   ) async {
+    if (!rule.supportsLegacyChanges) return false;
     if (useFilterApi) {
       return _runMutation(() async {
         final removeRule = _buildFilterRuleOperation(
@@ -170,6 +186,7 @@ class FirewallRuleListProvider extends ChangeNotifier with SafeChangeNotifier {
     FirewallRule rule,
     String nextStrategy,
   ) async {
+    if (!rule.supportsLegacyChanges) return false;
     if (useFilterApi) {
       return _runMutation(() async {
         final removeRule = _buildFilterRuleOperation(
@@ -245,6 +262,26 @@ class FirewallRuleListProvider extends ChangeNotifier with SafeChangeNotifier {
   }
 
   Future<bool> deleteRules(List<FirewallRule> rules) async {
+    if (isDisposed ||
+        _isMutating ||
+        rules.isEmpty ||
+        rules.any((rule) => !rule.canDelete)) {
+      return false;
+    }
+    if (rules.any((rule) => !rule.supportsLegacyChanges)) {
+      final service = _service;
+      if (_loading ||
+          service is! FirewallService ||
+          rules.any(
+            (rule) => rule.supportsLegacyChanges || !items.contains(rule),
+          )) {
+        return false;
+      }
+      return _runMutation(() async {
+        await service.deleteInventoryRules(rules);
+        if (!isDisposed) await refresh();
+      });
+    }
     if (useFilterApi) {
       return _runMutation(() async {
         await _service.batchOperateFilterRules(
@@ -432,6 +469,7 @@ class FirewallRuleFormProvider extends ChangeNotifier with SafeChangeNotifier {
   }
 
   Future<bool> _run(Future<void> Function() action) async {
+    if (_isSubmitting) return false;
     _isSubmitting = true;
     _error = null;
     notifyListeners();

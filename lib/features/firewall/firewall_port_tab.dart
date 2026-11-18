@@ -4,6 +4,7 @@ import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/utils/platform_utils.dart';
+import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/data/models/firewall_models.dart';
 import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/shared/state/selection_controller.dart';
@@ -92,16 +93,20 @@ class _FirewallPortTabState extends State<FirewallPortTab> {
                 onSearch: _loadRules,
                 onStrategyChanged: _onStrategyChanged,
                 onToggleSelectionMode: _toggleSelectionMode,
-                onCreate: () => openRouteRespectingShell(
-                  context,
-                  AppRoutes.firewallRuleForm,
-                  arguments: const FirewallRuleFormArguments(
-                    kind: FirewallRuleKind.port,
-                  ),
-                ),
+                onCreate: () async {
+                  final created = await openRouteRespectingShell<Object?>(
+                    context,
+                    AppRoutes.firewallRuleForm,
+                    arguments: const FirewallRuleFormArguments(
+                      kind: FirewallRuleKind.port,
+                    ),
+                  );
+                  if (mounted && created == true) await _loadRules();
+                },
                 onDeleteSelected: () => _deleteSelected(provider),
                 onAcceptSelected: () => _toggleSelected(provider, 'accept'),
                 onDropSelected: () => _toggleSelected(provider, 'drop'),
+                supportsLegacyChanges: provider.supportsLegacyChanges,
               );
               if (provider.items.isEmpty) {
                 return Column(
@@ -126,7 +131,7 @@ class _FirewallPortTabState extends State<FirewallPortTab> {
           return AppCard(
             title: rule.description ??
                 '${l10n.firewallPortLabel} ${rule.port ?? '—'}',
-            leading: _selectionMode
+            leading: _selectionMode && rule.supportsLegacyChanges
                 ? Checkbox(
                     value: selected,
                     onChanged: provider.isMutating
@@ -137,9 +142,12 @@ class _FirewallPortTabState extends State<FirewallPortTab> {
             subtitle: Text(
               '${l10n.firewallProtocolLabel}: ${rule.protocol ?? '-'}',
             ),
-            trailing: _selectionMode
+            trailing: (_selectionMode && provider.supportsLegacyChanges) ||
+                    !rule.canDelete
                 ? null
                 : PopupMenuButton<String>(
+                    enabled: !provider.isMutating &&
+                        (rule.supportsLegacyChanges || !provider.isLoading),
                     onSelected: (value) => _handleAction(
                       context,
                       provider,
@@ -147,21 +155,25 @@ class _FirewallPortTabState extends State<FirewallPortTab> {
                       value,
                     ),
                     itemBuilder: (context) => [
-                      PopupMenuItem(
-                        value: 'edit',
-                        child: Text(l10n.commonEdit),
-                      ),
-                      PopupMenuItem(
-                        value: 'toggle',
-                        child: Text(l10n.firewallToggleStrategyAction),
-                      ),
+                      if (rule.supportsLegacyChanges) ...[
+                        PopupMenuItem(
+                          value: 'edit',
+                          child: Text(l10n.commonEdit),
+                        ),
+                        PopupMenuItem(
+                          value: 'toggle',
+                          child: Text(l10n.firewallToggleStrategyAction),
+                        ),
+                      ],
                       PopupMenuItem(
                         value: 'delete',
                         child: Text(l10n.commonDelete),
                       ),
                     ],
                   ),
-            onTap: _selectionMode ? () => _selection.toggle(rule) : null,
+            onTap: _selectionMode && rule.supportsLegacyChanges
+                ? () => _selection.toggle(rule)
+                : null,
             child: Text('${l10n.firewallAddressLabel}: ${rule.address ?? '-'}'),
           );
             },
@@ -279,13 +291,23 @@ class _FirewallPortTabState extends State<FirewallPortTab> {
         );
         break;
       case 'delete':
+        final l10n = context.l10n;
+        String? error;
         await showAppFormDialog(
           context,
-          title: context.l10n.firewallOperationConfirmTitle,
+          title: l10n.firewallOperationConfirmTitle,
           destructive: true,
-          content: Text(context.l10n.commonDeleteConfirm),
-          onConfirm: () => provider.deleteRules([rule]),
+          content: Text(l10n.commonDeleteConfirm),
+          onConfirm: () async {
+            final deleted = await provider.deleteRules([rule]);
+            error =
+                provider.error ?? (deleted ? null : l10n.commonDeleteFailed);
+          },
         );
+        final deleteError = error;
+        if (mounted && deleteError != null) {
+          SnackBarUtils.showError(this.context, deleteError);
+        }
         break;
     }
     if (mounted) {
