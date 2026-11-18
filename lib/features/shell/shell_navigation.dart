@@ -246,7 +246,9 @@ NavigatorState? findShellContentNavigator(BuildContext context) {
   return context.findAncestorStateOfType<ShellContentHostState>()?.innerNavigator;
 }
 
-Future<void> openRouteRespectingShell(
+/// 泛型返回值：桌面 shell 分支可能返回 void（pushReplacement/内嵌路由），
+/// 移动端 pushNamed 会透传 pop 的结果，调用方可据此在返回后刷新列表。
+Future<T?> openRouteRespectingShell<T extends Object?>(
   BuildContext context,
   String route, {
   Object? arguments,
@@ -260,14 +262,14 @@ Future<void> openRouteRespectingShell(
     if (target.embedRouteInShell) {
       final innerNavigator = findShellContentNavigator(context);
       if (innerNavigator != null) {
-        return innerNavigator.push(
-          _buildShellSubPageRoute(context, route, arguments),
+        return innerNavigator.push<T?>(
+          _buildShellSubPageRoute<T>(context, route, arguments),
         );
       }
       // Fall back to the legacy behaviour when the inner navigator
       // has not been mounted yet (e.g. mid-build, or shell not yet
       // visible).
-      return Navigator.of(context).pushReplacementNamed(
+      return Navigator.of(context).pushReplacementNamed<T?, dynamic>(
         AppRoutes.home,
         arguments: _buildShellHomeArguments(
           target: target,
@@ -277,7 +279,7 @@ Future<void> openRouteRespectingShell(
       );
     }
 
-    return Navigator.of(context).pushReplacementNamed(
+    return Navigator.of(context).pushReplacementNamed<T?, dynamic>(
       AppRoutes.home,
       arguments: <String, dynamic>{
         'module': target.module.storageId,
@@ -286,7 +288,7 @@ Future<void> openRouteRespectingShell(
   }
 
   // Mobile uses traditional push navigation; the shell is not involved.
-  return Navigator.of(context).pushNamed(route, arguments: arguments);
+  return Navigator.of(context).pushNamed<T?>(route, arguments: arguments);
 }
 
 Route<T> _buildShellSubPageRoute<T>(

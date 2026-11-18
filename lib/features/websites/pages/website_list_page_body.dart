@@ -122,7 +122,7 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
       title: l10n.websitesPageTitle,
       actions: [
         IconButton(
-          icon: const Icon(Icons.refresh),
+          icon: const Icon(Icons.refresh_outlined),
           onPressed: () => context.read<WebsitesProvider>().refresh(),
           tooltip: l10n.commonRefresh,
         ),
@@ -141,9 +141,16 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
       ],
       floatingActionButton: FloatingActionButton.extended(
         heroTag: 'website_list_create_fab',
-        onPressed: () =>
-            openRouteRespectingShell(context, AppRoutes.websiteCreate),
-        icon: const Icon(Icons.add),
+        // 创建页 pop(true) 表示建站成功；返回后刷新列表，
+        // 否则统计与列表停留在旧数据。
+        onPressed: () async {
+          final created =
+              await openRouteRespectingShell(context, AppRoutes.websiteCreate);
+          if (created == true && context.mounted) {
+            context.read<WebsitesProvider>().refresh();
+          }
+        },
+        icon: const Icon(Icons.add_outlined),
         label: Text(l10n.commonCreate),
       ),
       body: Consumer<WebsitesProvider>(
