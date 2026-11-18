@@ -15,11 +15,11 @@ struct DatabasesView: View {
             } else if viewModel.databases.isEmpty {
                 EmptyStateView(
                     icon: "externaldrive.connected.to.line.below",
-                    message: translations.get("noDatabasesFound", fallback: "No databases found")
+                    message: translations.get("databasesEmptyTitle", fallback: "No databases found")
                 )
             } else {
                 Table(viewModel.databases) {
-                    TableColumn(translations.get("database_name", fallback: "Name")) { db in
+                    TableColumn(translations.get("databaseNameLabel", fallback: "Name")) { db in
                         HStack {
                             Image(systemName: "externaldrive.connected.to.line.below")
                                 .foregroundColor(.blue)
@@ -30,19 +30,19 @@ struct DatabasesView: View {
                                 dbToDelete = db
                                 showDeleteConfirm = true
                             } label: {
-                                Label(translations.get("delete", fallback: "Delete"), systemImage: "trash")
+                                Label(translations.get("commonDelete", fallback: "Delete"), systemImage: "trash")
                             }
                         }
                     }
-                    TableColumn(translations.get("database_type", fallback: "Type")) { db in
+                    TableColumn(translations.get("databaseEngineLabel", fallback: "Type")) { db in
                         Text(db.type.isEmpty ? "--" : db.type)
                             .foregroundColor(.secondary)
                     }
-                    TableColumn(translations.get("database_version", fallback: "Version")) { db in
+                    TableColumn(translations.get("databaseVersionLabel", fallback: "Version")) { db in
                         Text(db.version.isEmpty ? "--" : db.version)
                             .foregroundColor(.secondary)
                     }
-                    TableColumn(translations.get("app_status", fallback: "Status")) { db in
+                    TableColumn(translations.get("appInfoStatus", fallback: "Status")) { db in
                         let isRunning = db.status.lowercased() == "running"
                         Text(db.status.isEmpty ? "--" : db.status)
                             .font(.caption)
@@ -57,7 +57,7 @@ struct DatabasesView: View {
                 .disableAlternatingRowBackgrounds()
             }
         }
-        .navigationTitle(translations.get("nav_databases", fallback: "Databases"))
+        .navigationTitle(translations.get("serverModuleDatabases", fallback: "Databases"))
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 if viewModel.isProcessing {
@@ -66,27 +66,27 @@ struct DatabasesView: View {
                     Button { viewModel.fetchDatabases() } label: {
                         Image(systemName: "arrow.clockwise")
                     }
-                    .help(translations.get("refresh", fallback: "Refresh"))
+                    .help(translations.get("commonRefresh", fallback: "Refresh"))
                 }
             }
         }
         .confirmationDialog(
-            translations.get("deleteConfirm", fallback: "Delete \"\(dbToDelete?.name ?? "")\"?"),
+            translations.get("deleteConfirmTitle", fallback: "Delete \"\(dbToDelete?.name ?? "")\"?"),
             isPresented: $showDeleteConfirm,
             titleVisibility: .visible
         ) {
-            Button(translations.get("delete", fallback: "Delete"), role: .destructive) {
+            Button(translations.get("commonDelete", fallback: "Delete"), role: .destructive) {
                 if let d = dbToDelete { Task { await viewModel.deleteDatabase(id: d.originalId) } }
             }
             Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) {}
         } message: {
-            Text(translations.get("deleteDatabaseCannotUndo", fallback: "This will delete the database and all its data. This action cannot be undone."))
+            Text(translations.get("deleteCannotUndoMessage", fallback: "This will delete the database and all its data. This action cannot be undone."))
         }
-        .alert(translations.get("error", fallback: "Error"), isPresented: Binding(
+        .alert(translations.get("commonError", fallback: "Error"), isPresented: Binding(
             get: { viewModel.errorMessage != nil },
             set: { if !$0 { viewModel.errorMessage = nil } }
         )) {
-            Button(translations.get("ok", fallback: "OK"), role: .cancel) { viewModel.errorMessage = nil }
+            Button(translations.get("commonOk", fallback: "OK"), role: .cancel) { viewModel.errorMessage = nil }
         } message: {
             Text(viewModel.errorMessage ?? "")
         }

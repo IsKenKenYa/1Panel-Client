@@ -12,7 +12,25 @@ struct ContainerModel: Identifiable {
 
 class ContainersViewModel: ObservableObject {
     @Published var containers: [ContainerModel] = []
+    @Published var logs: String = ""
+    @Published var isLoadingLogs = false
     @Published var isLoading = false
+
+    /// 容器日志（getContainerLogs 通道，尾部 500 行）。
+    func fetchLogs(name: String, tail: String = "500") {
+        isLoadingLogs = true
+        ChannelManager.shared.invokeDataMethod(
+            "getContainerLogs",
+            arguments: ["name": name, "tail": tail]
+        ) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isLoadingLogs = false
+                if let text = result as? String {
+                    self?.logs = text
+                }
+            }
+        }
+    }
     @Published var isProcessing = false
     @Published var errorMessage: String?
 

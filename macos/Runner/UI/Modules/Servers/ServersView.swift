@@ -6,6 +6,7 @@ struct ServersView: View {
     @EnvironmentObject var translations: TranslationsManager
 
     @State private var showAddSheet = false
+    @State private var editingServer: ServerModel?
     @State private var serverToDelete: ServerModel?
     @State private var showDeleteConfirm = false
 
@@ -16,11 +17,11 @@ struct ServersView: View {
             } else if viewModel.servers.isEmpty {
                 EmptyStateView(
                     icon: "server.rack",
-                    message: translations.get("noServersFound", fallback: "No servers found")
+                    message: translations.get("serverListEmptyTitle", fallback: "No servers found")
                 )
             } else {
                 Table(viewModel.servers) {
-                    TableColumn(translations.get("server_name", fallback: "Name")) { server in
+                    TableColumn(translations.get("commonName", fallback: "Name")) { server in
                         HStack(spacing: 6) {
                             if server.isCurrent {
                                 Image(systemName: "checkmark.circle.fill")
@@ -36,23 +37,29 @@ struct ServersView: View {
                             } label: {
                                 Label(translations.get("connect", fallback: "Connect"), systemImage: "link")
                             }
+                            Button {
+                                editingServer = server
+                                showAddSheet = true
+                            } label: {
+                                Label(translations.get("commonEdit", fallback: "Edit"), systemImage: "pencil")
+                            }
                             Divider()
                             Button(role: .destructive) {
                                 serverToDelete = server
                                 showDeleteConfirm = true
                             } label: {
-                                Label(translations.get("delete", fallback: "Delete"), systemImage: "trash")
+                                Label(translations.get("commonDelete", fallback: "Delete"), systemImage: "trash")
                             }
                         }
                     }
-                    TableColumn(translations.get("server_url", fallback: "URL")) { server in
+                    TableColumn(translations.get("serverFormUrl", fallback: "URL")) { server in
                         Text(server.url)
                             .foregroundColor(.secondary)
                             .lineLimit(1)
                     }
-                    TableColumn(translations.get("app_status", fallback: "Status")) { server in
+                    TableColumn(translations.get("appInfoStatus", fallback: "Status")) { server in
                         if server.isCurrent {
-                            Text(translations.get("server_status_online", fallback: "Connected"))
+                            Text(translations.get("serverOnline", fallback: "Connected"))
                                 .font(.caption)
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 3)
@@ -66,7 +73,7 @@ struct ServersView: View {
                 .disableAlternatingRowBackgrounds()
             }
         }
-        .navigationTitle(translations.get("nav_servers", fallback: "Servers"))
+        .navigationTitle(translations.get("navServer", fallback: "Servers"))
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 if viewModel.isProcessing {
@@ -75,7 +82,7 @@ struct ServersView: View {
                     Button { viewModel.fetchServers() } label: {
                         Image(systemName: "arrow.clockwise")
                     }
-                    .help(translations.get("refresh", fallback: "Refresh"))
+                    .help(translations.get("commonRefresh", fallback: "Refresh"))
                 }
             }
             ToolbarItem(placement: .automatic) {
@@ -85,32 +92,43 @@ struct ServersView: View {
                 .help(translations.get("addServer", fallback: "Add Server"))
             }
         }
-        .sheet(isPresented: $showAddSheet) {
-            AddServerSheet(isPresented: $showAddSheet) { name, url, token in
+        .sheet(isPresented: $showAddSheet, onDismiss: {
+            editingServer = nil
+        }) {
+            AddServerSheet(isPresented: $showAddSheet, editingServer: editingServer) { name, url, token in
                 Task {
-                    await viewModel.addServer(name: name, url: url, token: token)
+                    if let editing = editingServer {
+                        await viewModel.updateServer(
+                            id: editing.originalId,
+                            name: name,
+                            url: url,
+                            token: token
+                        )
+                    } else {
+                        await viewModel.addServer(name: name, url: url, token: token)
+                    }
                 }
             }
         }
         .confirmationDialog(
-            translations.get("deleteConfirm", fallback: "Delete \"\(serverToDelete?.name ?? "")\"?"),
+            translations.get("deleteConfirmTitle", fallback: "Delete \"\(serverToDelete?.name ?? "")\"?"),
             isPresented: $showDeleteConfirm,
             titleVisibility: .visible
         ) {
-            Button(translations.get("delete", fallback: "Delete"), role: .destructive) {
+            Button(translations.get("commonDelete", fallback: "Delete"), role: .destructive) {
                 if let s = serverToDelete {
                     Task { await viewModel.deleteServer(id: s.originalId) }
                 }
             }
             Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) {}
         } message: {
-            Text(translations.get("deleteCannotUndo", fallback: "This action cannot be undone."))
+            Text(translations.get("deleteCannotUndoMessage", fallback: "This action cannot be undone."))
         }
-        .alert(translations.get("error", fallback: "Error"), isPresented: Binding(
+        .alert(translations.get("commonError", fallback: "Error"), isPresented: Binding(
             get: { viewModel.errorMessage != nil },
             set: { if !$0 { viewModel.errorMessage = nil } }
         )) {
-            Button(translations.get("ok", fallback: "OK"), role: .cancel) { viewModel.errorMessage = nil }
+            Button(translations.get("commonOk", fallback: "OK"), role: .cancel) { viewModel.errorMessage = nil }
         } message: {
             Text(viewModel.errorMessage ?? "")
         }
@@ -124,24 +142,35 @@ struct ServersView: View {
 
 struct AddServerSheet: View {
     @Binding var isPresented: Bool
+    /// 非空表示编辑模式（预填名称/地址，API Key 留空沿用原值）。
+    var editingServer: ServerModel? = nil
     let onAdd: (String, String, String) -> Void
     @EnvironmentObject var translations: TranslationsManager
 
     @State private var name = ""
     @State private var url = ""
     @State private var token = ""
+    @State private var didPrefill = false
+
+    private var isEditing: Bool { editingServer != nil }
+
+    private var canSubmit: Bool {
+        !name.isEmpty && !url.isEmpty && (isEditing || !token.isEmpty)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text(translations.get("addServer", fallback: "Add Server"))
+            Text(isEditing
+                ? translations.get("commonEdit", fallback: "Edit")
+                : translations.get("addServer", fallback: "Add Server"))
                 .font(.title2)
                 .fontWeight(.semibold)
 
             Form {
-                TextField(translations.get("server_name", fallback: "Name"), text: $name)
-                TextField(translations.get("server_url", fallback: "URL (https://host:port)"), text: $url)
+                TextField(translations.get("serverFormName", fallback: "Name"), text: $name)
+                TextField(translations.get("serverFormUrl", fallback: "URL (https://host:port)"), text: $url)
                     .autocorrectionDisabled()
-                SecureField(translations.get("server_api_token", fallback: "API Token"), text: $token)
+                SecureField(translations.get("serverFormApiKey", fallback: "API Token"), text: $token)
             }
             .formStyle(.grouped)
 
@@ -149,16 +178,24 @@ struct AddServerSheet: View {
                 Spacer()
                 Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) { isPresented = false }
                     .keyboardShortcut(.cancelAction)
-                Button(translations.get("add", fallback: "Add")) {
+                Button(isEditing
+                    ? translations.get("commonSave", fallback: "Save")
+                    : translations.get("commonAdd", fallback: "Add")) {
                     onAdd(name, url, token)
                     isPresented = false
                 }
                 .keyboardShortcut(.defaultAction)
-                .disabled(name.isEmpty || url.isEmpty || token.isEmpty)
+                .disabled(!canSubmit)
                 .buttonStyle(.borderedProminent)
             }
         }
         .padding(24)
         .frame(width: 460)
+        .onAppear {
+            guard !didPrefill, let server = editingServer else { return }
+            didPrefill = true
+            name = server.name
+            url = server.url
+        }
     }
 }

@@ -15,11 +15,11 @@ struct WebsitesView: View {
             } else if viewModel.websites.isEmpty {
                 EmptyStateView(
                     icon: "globe",
-                    message: translations.get("noWebsitesFound", fallback: "No websites found")
+                    message: translations.get("websitesListEmptyTitle", fallback: "No websites found")
                 )
             } else {
                 Table(viewModel.websites) {
-                    TableColumn(translations.get("website_domain", fallback: "Domain")) { website in
+                    TableColumn(translations.get("websitesPrimaryDomainLabel", fallback: "Primary Domain")) { website in
                         HStack {
                             Image(systemName: "globe")
                                 .foregroundColor(.blue)
@@ -31,7 +31,7 @@ struct WebsitesView: View {
                                 Task { await viewModel.toggleWebsiteStatus(id: website.originalId, currentStatus: website.status) }
                             } label: {
                                 Label(
-                                    isRunning ? translations.get("stop", fallback: "Stop") : translations.get("start", fallback: "Start"),
+                                    isRunning ? translations.get("commonStop", fallback: "Stop") : translations.get("commonStart", fallback: "Start"),
                                     systemImage: isRunning ? "stop.fill" : "play.fill"
                                 )
                             }
@@ -40,15 +40,15 @@ struct WebsitesView: View {
                                 websiteToDelete = website
                                 showDeleteConfirm = true
                             } label: {
-                                Label(translations.get("delete", fallback: "Delete"), systemImage: "trash")
+                                Label(translations.get("commonDelete", fallback: "Delete"), systemImage: "trash")
                             }
                         }
                     }
-                    TableColumn(translations.get("website_remark", fallback: "Remark")) { website in
+                    TableColumn(translations.get("websitesRemarkLabel", fallback: "Remark")) { website in
                         Text(website.remark.isEmpty ? "-" : website.remark)
                             .foregroundColor(.secondary)
                     }
-                    TableColumn(translations.get("app_status", fallback: "Status")) { website in
+                    TableColumn(translations.get("appInfoStatus", fallback: "Status")) { website in
                         let isRunning = website.status.lowercased() == "running"
                         Text(website.status)
                             .font(.caption)
@@ -63,7 +63,7 @@ struct WebsitesView: View {
                 .disableAlternatingRowBackgrounds()
             }
         }
-        .navigationTitle(translations.get("nav_websites", fallback: "Websites"))
+        .navigationTitle(translations.get("serverModuleWebsites", fallback: "Websites"))
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 if viewModel.isProcessing {
@@ -72,27 +72,27 @@ struct WebsitesView: View {
                     Button { viewModel.fetchWebsites() } label: {
                         Image(systemName: "arrow.clockwise")
                     }
-                    .help(translations.get("refresh", fallback: "Refresh"))
+                    .help(translations.get("commonRefresh", fallback: "Refresh"))
                 }
             }
         }
         .confirmationDialog(
-            translations.get("deleteConfirm", fallback: "Delete \"\(websiteToDelete?.primaryDomain ?? "")\"?"),
+            translations.get("deleteConfirmTitle", fallback: "Delete \"\(websiteToDelete?.primaryDomain ?? "")\"?"),
             isPresented: $showDeleteConfirm,
             titleVisibility: .visible
         ) {
-            Button(translations.get("delete", fallback: "Delete"), role: .destructive) {
+            Button(translations.get("commonDelete", fallback: "Delete"), role: .destructive) {
                 if let w = websiteToDelete { Task { await viewModel.deleteWebsite(id: w.originalId) } }
             }
             Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) {}
         } message: {
-            Text(translations.get("deleteCannotUndo", fallback: "This action cannot be undone."))
+            Text(translations.get("deleteCannotUndoMessage", fallback: "This action cannot be undone."))
         }
-        .alert(translations.get("error", fallback: "Error"), isPresented: Binding(
+        .alert(translations.get("commonError", fallback: "Error"), isPresented: Binding(
             get: { viewModel.errorMessage != nil },
             set: { if !$0 { viewModel.errorMessage = nil } }
         )) {
-            Button(translations.get("ok", fallback: "OK"), role: .cancel) { viewModel.errorMessage = nil }
+            Button(translations.get("commonOk", fallback: "OK"), role: .cancel) { viewModel.errorMessage = nil }
         } message: {
             Text(viewModel.errorMessage ?? "")
         }

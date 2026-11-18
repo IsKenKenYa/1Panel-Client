@@ -13,38 +13,38 @@ struct DashboardView: View {
                 ScrollView {
                     VStack(spacing: 20) {
                         // ── System Info ──────────────────────────────────────
-                        GroupBox(label: Label("System Information", systemImage: "info.circle")) {
+                        GroupBox(label: Label(translations.get("dashboardServerInfoTitle", fallback: "System Information"), systemImage: "info.circle")) {
                             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-                                InfoRow(label: "Hostname", value: viewModel.metrics.hostname)
-                                InfoRow(label: "OS", value: viewModel.metrics.osInfo)
-                                InfoRow(label: "Kernel", value: viewModel.metrics.kernelVersion)
-                                InfoRow(label: "CPU Cores", value: viewModel.metrics.cpuCores > 0 ? "\(viewModel.metrics.cpuCores) cores" : "--")
-                                InfoRow(label: "Uptime", value: viewModel.metrics.uptime)
-                                InfoRow(label: "1Panel", value: viewModel.metrics.panelVersion.isEmpty ? "--" : "v\(viewModel.metrics.panelVersion)")
+                                InfoRow(label: translations.get("dashboardHostNameLabel", fallback: "Hostname"), value: viewModel.metrics.hostname)
+                                InfoRow(label: translations.get("dashboardOsLabel", fallback: "OS"), value: viewModel.metrics.osInfo)
+                                InfoRow(label: translations.get("dashboardKernelVersionLabel", fallback: "Kernel"), value: viewModel.metrics.kernelVersion)
+                                InfoRow(label: translations.get("dashboardCpuCoresLabel", fallback: "CPU Cores"), value: viewModel.metrics.cpuCores > 0 ? "\(viewModel.metrics.cpuCores) cores" : "--")
+                                InfoRow(label: translations.get("dashboardUptimeLabel", fallback: "Uptime"), value: viewModel.metrics.uptime)
+                                InfoRow(label: translations.get("dashboardPanelVersionLabel", fallback: "1Panel"), value: viewModel.metrics.panelVersion.isEmpty ? "--" : "v\(viewModel.metrics.panelVersion)")
                             }
                             .padding(.vertical, 8)
                         }
                         .frame(maxWidth: .infinity)
 
                         // ── Resource Usage ────────────────────────────────────
-                        GroupBox(label: Label("Resource Usage", systemImage: "gauge")) {
+                        GroupBox(label: Label(translations.get("dashboardResourceTitle", fallback: "Resource Usage"), systemImage: "gauge")) {
                             VStack(spacing: 16) {
                                 ResourceRow(
-                                    title: "CPU",
+                                    title: translations.get("dashboardCpuUsage", fallback: "CPU"),
                                     value: viewModel.metrics.cpuUsage / 100,
                                     label: String(format: "%.1f%%", viewModel.metrics.cpuUsage),
                                     icon: "cpu",
                                     color: gaugeColor(viewModel.metrics.cpuUsage)
                                 )
                                 ResourceRow(
-                                    title: "Memory",
+                                    title: translations.get("dashboardMemoryUsage", fallback: "Memory"),
                                     value: viewModel.metrics.memoryUsage / 100,
                                     label: viewModel.metrics.memoryUsageText,
                                     icon: "memorychip",
                                     color: gaugeColor(viewModel.metrics.memoryUsage)
                                 )
                                 ResourceRow(
-                                    title: "Disk",
+                                    title: translations.get("dashboardDiskUsage", fallback: "Disk"),
                                     value: viewModel.metrics.diskUsage / 100,
                                     label: viewModel.metrics.diskUsageText,
                                     icon: "internaldrive",
@@ -61,21 +61,21 @@ struct DashboardView: View {
                 }
             }
         }
-        .navigationTitle(translations.get("nav_dashboard", fallback: "Dashboard"))
+        .navigationTitle(translations.get("serverModuleDashboard", fallback: "Dashboard"))
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 Button { viewModel.fetchDashboardData() } label: {
                     Image(systemName: "arrow.clockwise")
                 }
-                .help(translations.get("refresh", fallback: "Refresh"))
+                .help(translations.get("commonRefresh", fallback: "Refresh"))
                 .disabled(viewModel.isLoading)
             }
         }
-        .alert(translations.get("error", fallback: "Error"), isPresented: Binding(
+        .alert(translations.get("commonError", fallback: "Error"), isPresented: Binding(
             get: { viewModel.errorMessage != nil },
             set: { if !$0 { viewModel.errorMessage = nil } }
         )) {
-            Button(translations.get("ok", fallback: "OK"), role: .cancel) { viewModel.errorMessage = nil }
+            Button(translations.get("commonOk", fallback: "OK"), role: .cancel) { viewModel.errorMessage = nil }
         } message: {
             Text(viewModel.errorMessage ?? "")
         }

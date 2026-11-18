@@ -7,6 +7,7 @@ struct ContainersView: View {
 
     @State private var containerToDelete: ContainerModel?
     @State private var showDeleteConfirm = false
+    @State private var logsContainer: ContainerModel?
 
     var body: some View {
         Group {
@@ -15,11 +16,11 @@ struct ContainersView: View {
             } else if viewModel.containers.isEmpty {
                 EmptyStateView(
                     icon: "cube.box",
-                    message: translations.get("noContainersFound", fallback: "No containers found")
+                    message: translations.get("containerEmptyTitle", fallback: "No containers found")
                 )
             } else {
                 Table(viewModel.containers) {
-                    TableColumn(translations.get("container_name", fallback: "Name")) { container in
+                    TableColumn(translations.get("containerInfoName", fallback: "Name")) { container in
                         HStack {
                             Image(systemName: "square.stack.3d.up")
                                 .foregroundColor(.blue)
@@ -31,36 +32,42 @@ struct ContainersView: View {
                                 Task { await viewModel.toggleContainerState(id: container.originalId, currentState: container.state) }
                             } label: {
                                 Label(
-                                    isRunning ? translations.get("stop", fallback: "Stop") : translations.get("start", fallback: "Start"),
+                                    isRunning ? translations.get("commonStop", fallback: "Stop") : translations.get("commonStart", fallback: "Start"),
                                     systemImage: isRunning ? "stop.fill" : "play.fill"
                                 )
                             }
                             Button {
                                 Task { await viewModel.restartContainer(id: container.originalId) }
                             } label: {
-                                Label(translations.get("restart", fallback: "Restart"), systemImage: "arrow.clockwise")
+                                Label(translations.get("commonRestart", fallback: "Restart"), systemImage: "arrow.clockwise")
+                            }
+                            Button {
+                                viewModel.fetchLogs(name: container.name)
+                                logsContainer = container
+                            } label: {
+                                Label(translations.get("containerActionLogs", fallback: "Logs"), systemImage: "doc.text")
                             }
                             Divider()
                             Button(role: .destructive) {
                                 containerToDelete = container
                                 showDeleteConfirm = true
                             } label: {
-                                Label(translations.get("delete", fallback: "Delete"), systemImage: "trash")
+                                Label(translations.get("commonDelete", fallback: "Delete"), systemImage: "trash")
                             }
                         }
                     }
-                    TableColumn(translations.get("container_image", fallback: "Image")) { container in
+                    TableColumn(translations.get("containerInfoImage", fallback: "Image")) { container in
                         Text(container.image)
                             .foregroundColor(.secondary)
                             .lineLimit(1)
                     }
-                    TableColumn(translations.get("app_status", fallback: "Status")) { container in
+                    TableColumn(translations.get("appInfoStatus", fallback: "Status")) { container in
                         Text(container.status.isEmpty ? container.state : container.status)
                             .font(.caption)
                             .foregroundColor(.secondary)
                             .lineLimit(1)
                     }
-                    TableColumn(translations.get("container_state", fallback: "State")) { container in
+                    TableColumn(translations.get("containerStateLabel", fallback: "State")) { container in
                         let isRunning = container.state.lowercased() == "running"
                         Text(container.state)
                             .font(.caption)
@@ -75,7 +82,7 @@ struct ContainersView: View {
                 .disableAlternatingRowBackgrounds()
             }
         }
-        .navigationTitle(translations.get("nav_containers", fallback: "Containers"))
+        .navigationTitle(translations.get("serverModuleContainers", fallback: "Containers"))
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 if viewModel.isProcessing {
@@ -84,29 +91,68 @@ struct ContainersView: View {
                     Button { viewModel.fetchContainers() } label: {
                         Image(systemName: "arrow.clockwise")
                     }
-                    .help(translations.get("refresh", fallback: "Refresh"))
+                    .help(translations.get("commonRefresh", fallback: "Refresh"))
                 }
             }
         }
         .confirmationDialog(
-            translations.get("deleteConfirm", fallback: "Delete \"\(containerToDelete?.name ?? "")\"?"),
+            translations.get("deleteConfirmTitle", fallback: "Delete \"\(containerToDelete?.name ?? "")\"?"),
             isPresented: $showDeleteConfirm,
             titleVisibility: .visible
         ) {
-            Button(translations.get("delete", fallback: "Delete"), role: .destructive) {
+            Button(translations.get("commonDelete", fallback: "Delete"), role: .destructive) {
                 if let c = containerToDelete { Task { await viewModel.deleteContainer(id: c.originalId) } }
             }
             Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) {}
         } message: {
-            Text(translations.get("deleteCannotUndo", fallback: "This action cannot be undone."))
+            Text(translations.get("deleteCannotUndoMessage", fallback: "This action cannot be undone."))
         }
-        .alert(translations.get("error", fallback: "Error"), isPresented: Binding(
+        .alert(translations.get("commonError", fallback: "Error"), isPresented: Binding(
             get: { viewModel.errorMessage != nil },
             set: { if !$0 { viewModel.errorMessage = nil } }
         )) {
-            Button(translations.get("ok", fallback: "OK"), role: .cancel) { viewModel.errorMessage = nil }
+            Button(translations.get("commonOk", fallback: "OK"), role: .cancel) { viewModel.errorMessage = nil }
         } message: {
             Text(viewModel.errorMessage ?? "")
+        }
+        .sheet(item: $logsContainer) { container in
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Text("\(container.name) - \(translations.get("containerActionLogs", fallback: "Logs"))")
+                        .font(.headline)
+                    Spacer()
+                    if viewModel.isLoadingLogs {
+                        ProgressView().scaleEffect(0.6)
+                    }
+                    Button {
+                        viewModel.fetchLogs(name: container.name)
+                    } label: {
+                        Image(systemName: "arrow.clockwise")
+                    }
+                    .help(translations.get("commonRefresh", fallback: "Refresh"))
+                }
+                if viewModel.logs.isEmpty {
+                    Text(translations.get("containerLogsEmpty", fallback: "No logs"))
+                        .foregroundColor(.secondary)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    ScrollView {
+                        Text(viewModel.logs)
+                            .font(.system(.caption, design: .monospaced))
+                            .textSelection(.enabled)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                }
+                HStack {
+                    Spacer()
+                    Button(translations.get("commonClose", fallback: "Close")) {
+                        logsContainer = nil
+                    }
+                    .keyboardShortcut(.cancelAction)
+                }
+            }
+            .padding(20)
+            .frame(width: 640, height: 480)
         }
         .onAppear { viewModel.fetchContainers() }
     }

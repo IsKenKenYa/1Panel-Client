@@ -34,7 +34,6 @@ struct MainShellView: View {
             }
         }
         .frame(minWidth: 600, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
-        .background(VisualEffectView(material: .contentBackground, blendingMode: .behindWindow))
         .onAppear {
             translations.load {
                 // Done
@@ -76,7 +75,7 @@ struct MainShellView: View {
                 FlutterContentView(flutterViewController: flutterViewController)
             }
         } else {
-            Text("Select a module")
+            Text(translations.get("serverModulesTitle", fallback: "Modules"))
                 .foregroundColor(.secondary)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }

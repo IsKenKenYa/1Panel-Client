@@ -15,11 +15,11 @@ struct AppsView: View {
             } else if viewModel.apps.isEmpty {
                 EmptyStateView(
                     icon: "app.badge",
-                    message: translations.get("noAppsFound", fallback: "No apps found")
+                    message: translations.get("appsListEmptyTitle", fallback: "No apps found")
                 )
             } else {
                 Table(viewModel.apps) {
-                    TableColumn(translations.get("server_name", fallback: "Name")) { app in
+                    TableColumn(translations.get("commonName", fallback: "Name")) { app in
                         HStack {
                             Image(systemName: "app.badge")
                                 .foregroundColor(.blue)
@@ -31,7 +31,7 @@ struct AppsView: View {
                                 Task { await viewModel.toggleAppStatus(id: app.originalId, currentStatus: app.status) }
                             } label: {
                                 Label(
-                                    isRunning ? translations.get("stop", fallback: "Stop") : translations.get("start", fallback: "Start"),
+                                    isRunning ? translations.get("commonStop", fallback: "Stop") : translations.get("commonStart", fallback: "Start"),
                                     systemImage: isRunning ? "stop.fill" : "play.fill"
                                 )
                             }
@@ -40,15 +40,15 @@ struct AppsView: View {
                                 appToUninstall = app
                                 showUninstallConfirm = true
                             } label: {
-                                Label(translations.get("uninstall", fallback: "Uninstall"), systemImage: "trash")
+                                Label(translations.get("appActionUninstall", fallback: "Uninstall"), systemImage: "trash")
                             }
                         }
                     }
-                    TableColumn(translations.get("app_version", fallback: "Version")) { app in
+                    TableColumn(translations.get("appInfoVersion", fallback: "Version")) { app in
                         Text(app.version.isEmpty ? "--" : app.version)
                             .foregroundColor(.secondary)
                     }
-                    TableColumn(translations.get("app_status", fallback: "Status")) { app in
+                    TableColumn(translations.get("appInfoStatus", fallback: "Status")) { app in
                         let isRunning = app.status.lowercased() == "running"
                         Text(app.status)
                             .font(.caption)
@@ -63,7 +63,7 @@ struct AppsView: View {
                 .disableAlternatingRowBackgrounds()
             }
         }
-        .navigationTitle(translations.get("nav_apps", fallback: "Apps"))
+        .navigationTitle(translations.get("serverModuleApps", fallback: "Apps"))
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 if viewModel.isProcessing {
@@ -72,7 +72,7 @@ struct AppsView: View {
                     Button { viewModel.fetchApps() } label: {
                         Image(systemName: "arrow.clockwise")
                     }
-                    .help(translations.get("refresh", fallback: "Refresh"))
+                    .help(translations.get("commonRefresh", fallback: "Refresh"))
                 }
             }
         }
@@ -81,18 +81,18 @@ struct AppsView: View {
             isPresented: $showUninstallConfirm,
             titleVisibility: .visible
         ) {
-            Button(translations.get("uninstall", fallback: "Uninstall"), role: .destructive) {
+            Button(translations.get("appActionUninstall", fallback: "Uninstall"), role: .destructive) {
                 if let a = appToUninstall { Task { await viewModel.uninstallApp(id: a.originalId) } }
             }
             Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) {}
         } message: {
             Text(translations.get("uninstallCannotUndo", fallback: "This will remove the app and its data. This action cannot be undone."))
         }
-        .alert(translations.get("error", fallback: "Error"), isPresented: Binding(
+        .alert(translations.get("commonError", fallback: "Error"), isPresented: Binding(
             get: { viewModel.errorMessage != nil },
             set: { if !$0 { viewModel.errorMessage = nil } }
         )) {
-            Button(translations.get("ok", fallback: "OK"), role: .cancel) { viewModel.errorMessage = nil }
+            Button(translations.get("commonOk", fallback: "OK"), role: .cancel) { viewModel.errorMessage = nil }
         } message: {
             Text(viewModel.errorMessage ?? "")
         }

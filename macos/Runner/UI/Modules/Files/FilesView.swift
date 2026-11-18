@@ -10,6 +10,8 @@ struct FilesView: View {
     
     @State private var showingNewFolderDialog = false
     @State private var newFolderName = ""
+    @State private var renamingFile: FileModel?
+    @State private var renameDraft = ""
     
     var body: some View {
         Group {
@@ -18,11 +20,11 @@ struct FilesView: View {
             } else if viewModel.files.isEmpty {
                 EmptyStateView(
                     icon: "folder",
-                    message: translations.get("noFilesFound", fallback: "No files found")
+                    message: translations.get("filesEmptyTitle", fallback: "No files found")
                 )
             } else {
                 Table(viewModel.files) {
-                    TableColumn(translations.get("server_name", fallback: "Name")) { file in
+                    TableColumn(translations.get("filesNameLabel", fallback: "Name")) { file in
                         HStack {
                             Image(systemName: file.isDir ? "folder.fill" : "doc.fill")
                                 .foregroundColor(file.isDir ? .blue : .secondary)
@@ -33,23 +35,30 @@ struct FilesView: View {
                                 Button(action: {
                                     viewModel.fetchFiles(path: file.path)
                                 }) {
-                                    Text(translations.get("open", fallback: "Open"))
+                                    Text(translations.get("filesActionOpen", fallback: "Open"))
                                     Image(systemName: "folder")
                                 }
                                 Divider()
+                            }
+                            Button(action: {
+                                renameDraft = file.name
+                                renamingFile = file
+                            }) {
+                                Text(translations.get("filesActionRename", fallback: "Rename"))
+                                Image(systemName: "pencil")
                             }
                             Button(action: {
                                 Task {
                                     await viewModel.deleteFile(path: file.path)
                                 }
                             }) {
-                                Text(translations.get("delete", fallback: "Delete"))
+                                Text(translations.get("commonDelete", fallback: "Delete"))
                                 Image(systemName: "trash")
                             }
                         }
                     }
-                    TableColumn(translations.get("file_type", fallback: "Type")) { file in
-                        Text(file.isDir ? translations.get("folder", fallback: "Folder") : translations.get("file", fallback: "File"))
+                    TableColumn(translations.get("filesTypeLabel", fallback: "Type")) { file in
+                        Text(file.isDir ? translations.get("filesTypeFolder", fallback: "Folder") : translations.get("filesTypeFile", fallback: "File"))
                             .foregroundColor(.secondary)
                     }
                 }
@@ -57,7 +66,7 @@ struct FilesView: View {
                 .disableAlternatingRowBackgrounds()
             }
         }
-        .navigationTitle(URL(fileURLWithPath: viewModel.currentPath).lastPathComponent == "/" ? translations.get("nav_files", fallback: "Files") : URL(fileURLWithPath: viewModel.currentPath).lastPathComponent)
+        .navigationTitle(URL(fileURLWithPath: viewModel.currentPath).lastPathComponent == "/" ? translations.get("navFiles", fallback: "Files") : URL(fileURLWithPath: viewModel.currentPath).lastPathComponent)
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 Button(action: {
@@ -67,7 +76,7 @@ struct FilesView: View {
                     Image(systemName: "arrow.up")
                 }
                 .disabled(viewModel.currentPath == "/")
-                .help(translations.get("goUp", fallback: "Up"))
+                .help(translations.get("filesActionUp", fallback: "Up"))
             }
             ToolbarItem(placement: .automatic) {
                 Button(action: {
@@ -75,7 +84,7 @@ struct FilesView: View {
                 }) {
                     Image(systemName: "folder.badge.plus")
                 }
-                .help(translations.get("newFolder", fallback: "New Folder"))
+                .help(translations.get("filesActionNewFolder", fallback: "New Folder"))
             }
             ToolbarItem(placement: .automatic) {
                 Button(action: {
@@ -83,7 +92,7 @@ struct FilesView: View {
                 }) {
                     Image(systemName: "arrow.clockwise")
                 }
-                .help(translations.get("refresh", fallback: "Refresh"))
+                .help(translations.get("commonRefresh", fallback: "Refresh"))
             }
         }
         .onAppear {
@@ -91,16 +100,16 @@ struct FilesView: View {
         }
         .sheet(isPresented: $showingNewFolderDialog) {
             VStack(spacing: 16) {
-                Text(translations.get("create_folder", fallback: "New Folder"))
+                Text(translations.get("filesActionNewFolder", fallback: "New Folder"))
                     .font(.headline)
-                TextField(translations.get("folderName", fallback: "Folder Name"), text: $newFolderName)
+                TextField(translations.get("filesFolderNameLabel", fallback: "Folder Name"), text: $newFolderName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                 HStack {
                     Button(translations.get("commonCancel", fallback: "Cancel")) {
                         showingNewFolderDialog = false
                         newFolderName = ""
                     }
-                    Button(translations.get("create", fallback: "Create")) {
+                    Button(translations.get("commonCreate", fallback: "Create")) {
                         Task {
                             await viewModel.createFolder(name: newFolderName)
                             showingNewFolderDialog = false
@@ -109,6 +118,33 @@ struct FilesView: View {
                     }
                     .keyboardShortcut(.defaultAction)
                     .disabled(newFolderName.isEmpty)
+                }
+            }
+            .padding()
+            .frame(width: 300)
+        }
+        .sheet(item: $renamingFile) { file in
+            VStack(spacing: 16) {
+                Text(translations.get("filesActionRename", fallback: "Rename"))
+                    .font(.headline)
+                TextField(translations.get("commonName", fallback: "Name"), text: $renameDraft)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                HStack {
+                    Button(translations.get("commonCancel", fallback: "Cancel")) {
+                        renamingFile = nil
+                        renameDraft = ""
+                    }
+                    Button(translations.get("commonSave", fallback: "Save")) {
+                        let name = renameDraft
+                        renamingFile = nil
+                        Task {
+                            if !name.isEmpty && name != file.name {
+                                await viewModel.renameFile(oldPath: file.path, newName: name)
+                            }
+                        }
+                    }
+                    .keyboardShortcut(.defaultAction)
+                    .disabled(renameDraft.isEmpty)
                 }
             }
             .padding()

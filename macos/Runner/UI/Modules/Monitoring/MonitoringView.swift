@@ -16,24 +16,24 @@ struct MonitoringView: View {
                 ScrollView {
                     VStack(spacing: 20) {
                         // ── Resource gauges ────────────────────────────────────
-                        GroupBox(label: Label("Resource Usage", systemImage: "gauge")) {
+                        GroupBox(label: Label(translations.get("dashboardResourceTitle", fallback: "Resource Usage"), systemImage: "gauge")) {
                             VStack(spacing: 16) {
                                 ResourceRow(
-                                    title: "CPU",
+                                    title: translations.get("dashboardCpuUsage", fallback: "CPU"),
                                     value: viewModel.metrics.cpu / 100,
                                     label: String(format: "%.1f%%", viewModel.metrics.cpu),
                                     icon: "cpu",
                                     color: gaugeColor(viewModel.metrics.cpu)
                                 )
                                 ResourceRow(
-                                    title: translations.get("monitoring_memory", fallback: "Memory"),
+                                    title: translations.get("dashboardMemoryUsage", fallback: "Memory"),
                                     value: viewModel.metrics.memory / 100,
                                     label: String(format: "%.1f%%", viewModel.metrics.memory),
                                     icon: "memorychip",
                                     color: gaugeColor(viewModel.metrics.memory)
                                 )
                                 ResourceRow(
-                                    title: translations.get("monitoring_disk", fallback: "Disk"),
+                                    title: translations.get("dashboardDiskUsage", fallback: "Disk"),
                                     value: viewModel.metrics.disk / 100,
                                     label: String(format: "%.1f%%", viewModel.metrics.disk),
                                     icon: "internaldrive",
@@ -45,7 +45,7 @@ struct MonitoringView: View {
                         .frame(maxWidth: .infinity)
 
                         // ── System Load ────────────────────────────────────────
-                        GroupBox(label: Label("System Load", systemImage: "waveform.path.ecg")) {
+                        GroupBox(label: Label(translations.get("monitorLoadAverageTitle", fallback: "System Load"), systemImage: "waveform.path.ecg")) {
                             HStack(spacing: 48) {
                                 LoadView(title: "1 min", value: viewModel.metrics.load1)
                                 LoadView(title: "5 min", value: viewModel.metrics.load5)
@@ -62,7 +62,7 @@ struct MonitoringView: View {
                 }
             }
         }
-        .navigationTitle(translations.get("nav_monitoring", fallback: "Monitoring"))
+        .navigationTitle(translations.get("serverModuleMonitoring", fallback: "Monitoring"))
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 HStack(spacing: 4) {
@@ -72,7 +72,7 @@ struct MonitoringView: View {
                     Button { viewModel.fetchMonitoring() } label: {
                         Image(systemName: "arrow.clockwise")
                     }
-                    .help(translations.get("refresh", fallback: "Refresh"))
+                    .help(translations.get("commonRefresh", fallback: "Refresh"))
                 }
             }
         }

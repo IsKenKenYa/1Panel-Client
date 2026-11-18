@@ -16,11 +16,11 @@ struct FirewallView: View {
             } else if viewModel.rules.isEmpty {
                 EmptyStateView(
                     icon: "network.badge.shield.half.filled",
-                    message: translations.get("noFirewallRules", fallback: "No firewall rules")
+                    message: translations.get("firewallRulesEmptyTitle", fallback: "No firewall rules")
                 )
             } else {
                 Table(viewModel.rules) {
-                    TableColumn(translations.get("firewall_port", fallback: "Port")) { rule in
+                    TableColumn(translations.get("firewallPortLabel", fallback: "Port")) { rule in
                         HStack {
                             Image(systemName: "network.badge.shield.half.filled")
                                 .foregroundColor(.blue)
@@ -32,20 +32,20 @@ struct FirewallView: View {
                                 ruleToDelete = rule
                                 showDeleteConfirm = true
                             } label: {
-                                Label(translations.get("delete", fallback: "Delete"), systemImage: "trash")
+                                Label(translations.get("commonDelete", fallback: "Delete"), systemImage: "trash")
                             }
                         }
                     }
-                    TableColumn(translations.get("firewall_protocol", fallback: "Protocol")) { rule in
+                    TableColumn(translations.get("firewallProtocolLabel", fallback: "Protocol")) { rule in
                         Text(rule.protocolType.isEmpty ? "--" : rule.protocolType.uppercased())
                             .foregroundColor(.secondary)
                     }
-                    TableColumn(translations.get("firewall_address", fallback: "Address")) { rule in
+                    TableColumn(translations.get("firewallAddressLabel", fallback: "Address")) { rule in
                         Text(rule.address.isEmpty ? "--" : rule.address)
                             .font(.caption.monospaced())
                             .foregroundColor(.secondary)
                     }
-                    TableColumn(translations.get("firewall_action", fallback: "Action")) { rule in
+                    TableColumn(translations.get("firewallStrategyLabel", fallback: "Action")) { rule in
                         let isAllow = rule.strategy.lowercased() == "allow" || rule.strategy.lowercased() == "accept"
                         Text(rule.strategy.isEmpty ? "--" : rule.strategy)
                             .font(.caption)
@@ -60,7 +60,7 @@ struct FirewallView: View {
                 .disableAlternatingRowBackgrounds()
             }
         }
-        .navigationTitle(translations.get("nav_firewall", fallback: "Firewall"))
+        .navigationTitle(translations.get("serverModuleFirewall", fallback: "Firewall"))
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 if viewModel.isProcessing {
@@ -69,14 +69,14 @@ struct FirewallView: View {
                     Button { viewModel.fetchRules() } label: {
                         Image(systemName: "arrow.clockwise")
                     }
-                    .help(translations.get("refresh", fallback: "Refresh"))
+                    .help(translations.get("commonRefresh", fallback: "Refresh"))
                 }
             }
             ToolbarItem(placement: .automatic) {
                 Button { showAddSheet = true } label: {
                     Image(systemName: "plus")
                 }
-                .help(translations.get("addRule", fallback: "Add Rule"))
+                .help(translations.get("firewallCreatePortRuleAction", fallback: "Add Rule"))
             }
         }
         .sheet(isPresented: $showAddSheet) {
@@ -85,22 +85,22 @@ struct FirewallView: View {
             }
         }
         .confirmationDialog(
-            translations.get("deleteConfirm", fallback: "Delete rule for \"\(ruleToDelete?.port ?? ruleToDelete?.address ?? "")\"?"),
+            translations.get("deleteConfirmTitle", fallback: "Delete rule for \"\(ruleToDelete?.port ?? ruleToDelete?.address ?? "")\"?"),
             isPresented: $showDeleteConfirm,
             titleVisibility: .visible
         ) {
-            Button(translations.get("delete", fallback: "Delete"), role: .destructive) {
+            Button(translations.get("commonDelete", fallback: "Delete"), role: .destructive) {
                 if let r = ruleToDelete { Task { await viewModel.deleteRule(r) } }
             }
             Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) {}
         } message: {
-            Text(translations.get("deleteCannotUndo", fallback: "This action cannot be undone."))
+            Text(translations.get("deleteCannotUndoMessage", fallback: "This action cannot be undone."))
         }
-        .alert(translations.get("error", fallback: "Error"), isPresented: Binding(
+        .alert(translations.get("commonError", fallback: "Error"), isPresented: Binding(
             get: { viewModel.errorMessage != nil },
             set: { if !$0 { viewModel.errorMessage = nil } }
         )) {
-            Button(translations.get("ok", fallback: "OK"), role: .cancel) { viewModel.errorMessage = nil }
+            Button(translations.get("commonOk", fallback: "OK"), role: .cancel) { viewModel.errorMessage = nil }
         } message: {
             Text(viewModel.errorMessage ?? "")
         }
@@ -125,20 +125,20 @@ struct AddFirewallRuleSheet: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text(translations.get("addFirewallRule", fallback: "Add Firewall Rule"))
+            Text(translations.get("firewallCreatePortRuleAction", fallback: "Add Firewall Rule"))
                 .font(.title2)
                 .fontWeight(.semibold)
 
             Form {
-                TextField(translations.get("firewallPortHint", fallback: "Port (e.g. 80, 8080-9090)"), text: $port)
+                TextField(translations.get("firewallPortRequired", fallback: "Port (e.g. 80, 8080-9090)"), text: $port)
                     .autocorrectionDisabled()
-                Picker(translations.get("firewall_protocol", fallback: "Protocol"), selection: $proto) {
+                Picker(translations.get("firewallProtocolLabel", fallback: "Protocol"), selection: $proto) {
                     ForEach(protocols, id: \.self) { Text($0.uppercased()) }
                 }
                 .pickerStyle(.segmented)
-                TextField(translations.get("firewallAddressHint", fallback: "Source Address (optional)"), text: $address)
+                TextField(translations.get("firewallAddressRequired", fallback: "Source Address (optional)"), text: $address)
                     .autocorrectionDisabled()
-                Picker(translations.get("firewall_action", fallback: "Action"), selection: $strategy) {
+                Picker(translations.get("firewallStrategyLabel", fallback: "Action"), selection: $strategy) {
                     Text("Accept").tag("accept")
                     Text("Drop").tag("drop")
                 }
@@ -150,7 +150,7 @@ struct AddFirewallRuleSheet: View {
                 Spacer()
                 Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) { isPresented = false }
                     .keyboardShortcut(.cancelAction)
-                Button(translations.get("add", fallback: "Add")) {
+                Button(translations.get("commonAdd", fallback: "Add")) {
                     onAdd(port, proto, address, strategy)
                     isPresented = false
                 }

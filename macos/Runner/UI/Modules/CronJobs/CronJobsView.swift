@@ -15,11 +15,11 @@ struct CronJobsView: View {
             } else if viewModel.cronJobs.isEmpty {
                 EmptyStateView(
                     icon: "timer",
-                    message: translations.get("noCronJobsFound", fallback: "No cron jobs found")
+                    message: translations.get("cronjobsEmptyTitle", fallback: "No cron jobs found")
                 )
             } else {
                 Table(viewModel.cronJobs) {
-                    TableColumn(translations.get("cronjob_name", fallback: "Name")) { job in
+                    TableColumn(translations.get("cronjobNameLabel", fallback: "Name")) { job in
                         HStack {
                             Image(systemName: "timer")
                                 .foregroundColor(.orange)
@@ -31,7 +31,7 @@ struct CronJobsView: View {
                                 Task { await viewModel.toggleCronJobStatus(id: job.originalId, currentStatus: job.status) }
                             } label: {
                                 Label(
-                                    isActive ? translations.get("stop", fallback: "Stop") : translations.get("start", fallback: "Start"),
+                                    isActive ? translations.get("commonStop", fallback: "Stop") : translations.get("commonStart", fallback: "Start"),
                                     systemImage: isActive ? "stop.fill" : "play.fill"
                                 )
                             }
@@ -40,16 +40,16 @@ struct CronJobsView: View {
                                 jobToDelete = job
                                 showDeleteConfirm = true
                             } label: {
-                                Label(translations.get("delete", fallback: "Delete"), systemImage: "trash")
+                                Label(translations.get("commonDelete", fallback: "Delete"), systemImage: "trash")
                             }
                         }
                     }
-                    TableColumn(translations.get("cronjob_schedule", fallback: "Schedule")) { job in
+                    TableColumn(translations.get("cronjobScheduleLabel", fallback: "Schedule")) { job in
                         Text(job.schedule)
                             .foregroundColor(.secondary)
                             .font(.system(.body, design: .monospaced))
                     }
-                    TableColumn(translations.get("cronjob_last_result", fallback: "Last Result")) { job in
+                    TableColumn(translations.get("cronjobLastResultLabel", fallback: "Last Result")) { job in
                         if !job.lastRecordStatus.isEmpty {
                             let ok = job.lastRecordStatus.lowercased() == "success"
                             Text(job.lastRecordStatus)
@@ -61,7 +61,7 @@ struct CronJobsView: View {
                                 .cornerRadius(4)
                         }
                     }
-                    TableColumn(translations.get("app_status", fallback: "Status")) { job in
+                    TableColumn(translations.get("appInfoStatus", fallback: "Status")) { job in
                         let isActive = job.status.lowercased() == "active" || job.status.lowercased() == "running"
                         Text(job.status)
                             .font(.caption)
@@ -76,7 +76,7 @@ struct CronJobsView: View {
                 .disableAlternatingRowBackgrounds()
             }
         }
-        .navigationTitle(translations.get("nav_cron_jobs", fallback: "Cron Jobs"))
+        .navigationTitle(translations.get("operationsCronjobsTitle", fallback: "Cron Jobs"))
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 if viewModel.isProcessing {
@@ -85,27 +85,27 @@ struct CronJobsView: View {
                     Button { viewModel.fetchCronJobs() } label: {
                         Image(systemName: "arrow.clockwise")
                     }
-                    .help(translations.get("refresh", fallback: "Refresh"))
+                    .help(translations.get("commonRefresh", fallback: "Refresh"))
                 }
             }
         }
         .confirmationDialog(
-            translations.get("deleteConfirm", fallback: "Delete \"\(jobToDelete?.name ?? "")\"?"),
+            translations.get("deleteConfirmTitle", fallback: "Delete \"\(jobToDelete?.name ?? "")\"?"),
             isPresented: $showDeleteConfirm,
             titleVisibility: .visible
         ) {
-            Button(translations.get("delete", fallback: "Delete"), role: .destructive) {
+            Button(translations.get("commonDelete", fallback: "Delete"), role: .destructive) {
                 if let j = jobToDelete { Task { await viewModel.deleteCronJob(id: j.originalId) } }
             }
             Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) {}
         } message: {
-            Text(translations.get("deleteCannotUndo", fallback: "This action cannot be undone."))
+            Text(translations.get("deleteCannotUndoMessage", fallback: "This action cannot be undone."))
         }
-        .alert(translations.get("error", fallback: "Error"), isPresented: Binding(
+        .alert(translations.get("commonError", fallback: "Error"), isPresented: Binding(
             get: { viewModel.errorMessage != nil },
             set: { if !$0 { viewModel.errorMessage = nil } }
         )) {
-            Button(translations.get("ok", fallback: "OK"), role: .cancel) { viewModel.errorMessage = nil }
+            Button(translations.get("commonOk", fallback: "OK"), role: .cancel) { viewModel.errorMessage = nil }
         } message: {
             Text(viewModel.errorMessage ?? "")
         }

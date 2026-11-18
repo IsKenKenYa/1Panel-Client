@@ -53,6 +53,28 @@ class FilesViewModel: ObservableObject {
         }
     }
 
+    /// 重命名（renameFile 通道：原路径同目录 + 新名称）。
+    func renameFile(oldPath: String, newName: String) async {
+        let parent = (oldPath as NSString).deletingLastPathComponent
+        let newPath = parent.isEmpty || parent == "/"
+            ? "/\(newName)"
+            : "\(parent)/\(newName)"
+        await MainActor.run { isProcessing = true; errorMessage = nil }
+        ChannelManager.shared.invokeDataMethod(
+            "renameFile",
+            arguments: ["oldPath": oldPath, "newPath": newPath]
+        ) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isProcessing = false
+                if let dict = result as? [String: Any],
+                   let success = dict["success"] as? Bool, !success {
+                    self?.errorMessage = dict["error"] as? String ?? "Rename failed"
+                }
+                self?.fetchFiles()
+            }
+        }
+    }
+
     func createFolder(name: String) async {
         let newPath = (currentPath as NSString).appendingPathComponent(name)
         await MainActor.run { isProcessing = true; errorMessage = nil }

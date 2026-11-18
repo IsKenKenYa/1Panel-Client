@@ -56,6 +56,27 @@ class ServersViewModel: ObservableObject {
         }
     }
 
+    /// 更新服务器配置（updateServer 通道：apiKey 留空沿用原值）。
+    func updateServer(id: String, name: String, url: String, token: String) async {
+        await MainActor.run { isProcessing = true; errorMessage = nil }
+        let args: [String: Any] = [
+            "id": id,
+            "name": name,
+            "url": url,
+            "apiKey": token,
+        ]
+        ChannelManager.shared.invokeDataMethod("updateServer", arguments: args) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isProcessing = false
+                if let dict = result as? [String: Any],
+                   let success = dict["success"] as? Bool, !success {
+                    self?.errorMessage = dict["error"] as? String ?? "Update failed"
+                }
+                self?.fetchServers()
+            }
+        }
+    }
+
     func deleteServer(id: String) async {
         await MainActor.run { isProcessing = true; errorMessage = nil }
         ChannelManager.shared.invokeDataMethod("deleteServer", arguments: ["id": id]) { [weak self] result in

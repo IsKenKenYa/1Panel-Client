@@ -15,11 +15,11 @@ struct AIView: View {
             } else if viewModel.models.isEmpty {
                 EmptyStateView(
                     icon: "cpu.fill",
-                    message: translations.get("noAIModelsFound", fallback: "No AI models found")
+                    message: translations.get("aiModelsEmptyTitle", fallback: "No AI models found")
                 )
             } else {
                 Table(viewModel.models) {
-                    TableColumn(translations.get("ai_model_name", fallback: "Model")) { model in
+                    TableColumn(translations.get("aiModelName", fallback: "Model")) { model in
                         HStack {
                             Image(systemName: "cpu.fill")
                                 .foregroundColor(.purple)
@@ -31,15 +31,15 @@ struct AIView: View {
                                 modelToDelete = model
                                 showDeleteConfirm = true
                             } label: {
-                                Label(translations.get("delete", fallback: "Delete"), systemImage: "trash")
+                                Label(translations.get("commonDelete", fallback: "Delete"), systemImage: "trash")
                             }
                         }
                     }
-                    TableColumn(translations.get("ai_model_size", fallback: "Size")) { model in
+                    TableColumn(translations.get("aiModelSize", fallback: "Size")) { model in
                         Text(model.size.isEmpty ? "--" : model.size)
                             .foregroundColor(.secondary)
                     }
-                    TableColumn(translations.get("ai_model_modified", fallback: "Modified")) { model in
+                    TableColumn(translations.get("aiModelModified", fallback: "Modified")) { model in
                         Text(model.modified.isEmpty ? "--" : model.modified)
                             .foregroundColor(.secondary)
                     }
@@ -48,7 +48,7 @@ struct AIView: View {
                 .disableAlternatingRowBackgrounds()
             }
         }
-        .navigationTitle(translations.get("nav_ai", fallback: "AI"))
+        .navigationTitle(translations.get("serverModuleAi", fallback: "AI"))
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 if viewModel.isProcessing {
@@ -57,27 +57,27 @@ struct AIView: View {
                     Button { viewModel.fetchModels() } label: {
                         Image(systemName: "arrow.clockwise")
                     }
-                    .help(translations.get("refresh", fallback: "Refresh"))
+                    .help(translations.get("commonRefresh", fallback: "Refresh"))
                 }
             }
         }
         .confirmationDialog(
-            translations.get("deleteConfirm", fallback: "Delete model \"\(modelToDelete?.name ?? "")\"?"),
+            translations.get("deleteConfirmTitle", fallback: "Delete model \"\(modelToDelete?.name ?? "")\"?"),
             isPresented: $showDeleteConfirm,
             titleVisibility: .visible
         ) {
-            Button(translations.get("delete", fallback: "Delete"), role: .destructive) {
+            Button(translations.get("commonDelete", fallback: "Delete"), role: .destructive) {
                 if let m = modelToDelete { Task { await viewModel.deleteModel(id: m.originalId) } }
             }
             Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) {}
         } message: {
-            Text(translations.get("deleteModelCannotUndo", fallback: "The model weights will be permanently deleted."))
+            Text(translations.get("deleteCannotUndoMessage", fallback: "The model weights will be permanently deleted."))
         }
-        .alert(translations.get("error", fallback: "Error"), isPresented: Binding(
+        .alert(translations.get("commonError", fallback: "Error"), isPresented: Binding(
             get: { viewModel.errorMessage != nil },
             set: { if !$0 { viewModel.errorMessage = nil } }
         )) {
-            Button(translations.get("ok", fallback: "OK"), role: .cancel) { viewModel.errorMessage = nil }
+            Button(translations.get("commonOk", fallback: "OK"), role: .cancel) { viewModel.errorMessage = nil }
         } message: {
             Text(viewModel.errorMessage ?? "")
         }
