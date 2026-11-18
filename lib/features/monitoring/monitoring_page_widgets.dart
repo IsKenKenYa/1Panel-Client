@@ -425,7 +425,7 @@ class _ErrorView extends StatelessWidget {
             const SizedBox(height: AppDesignTokens.spacingLg),
             FilledButton.icon(
               onPressed: onRetry,
-              icon: const Icon(Icons.refresh),
+              icon: const Icon(Icons.refresh_outlined),
               label: Text(l10n.commonRetry),
             ),
           ],
@@ -552,22 +552,12 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
 
   Future<void> _cleanData() async {
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.monitorCleanData),
-        content: Text(l10n.monitorCleanConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.commonConfirm),
-          ),
-        ],
-      ),
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.monitorCleanData,
+      message: l10n.monitorCleanConfirm,
+      confirmLabel: l10n.commonConfirm,
+      isDestructive: true,
     );
 
     if (confirmed == true && mounted) {

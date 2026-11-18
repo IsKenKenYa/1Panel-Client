@@ -4,6 +4,7 @@ import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/shared/widgets/app_card.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:provider/provider.dart';
 import '../../data/models/monitoring_runtime_models.dart';
 import '../../data/models/monitor_models.dart';
@@ -46,7 +47,7 @@ class _MonitoringPageState extends State<MonitoringPage> {
       actions: [
         Consumer<MonitoringProvider>(
           builder: (context, provider, _) => IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh_outlined),
             onPressed: provider.data.isLoading ? null : provider.refresh,
             tooltip: l10n.commonRefresh,
           ),
