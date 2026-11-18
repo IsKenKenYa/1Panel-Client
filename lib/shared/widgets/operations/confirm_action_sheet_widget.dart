@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/core/utils/platform_utils.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_dialog.dart';
 
 class ConfirmActionSheetWidget extends StatelessWidget {
   const ConfirmActionSheetWidget({
@@ -25,8 +28,24 @@ class ConfirmActionSheetWidget extends StatelessWidget {
     IconData confirmIcon = Icons.check_circle_outline,
     bool isDestructive = false,
   }) async {
+    if (PlatformUtils.isDesktop(context)) {
+      final result = await showDialog<bool>(
+        context: context,
+        builder: (dialogContext) => AppFormDialog(
+          title: title,
+          content: Text(message),
+          confirmLabel: confirmLabel,
+          confirmIcon: confirmIcon,
+          destructive: isDestructive,
+          onConfirm: () async => Navigator.of(dialogContext).pop(true),
+        ),
+      );
+      return result ?? false;
+    }
+
     final result = await showModalBottomSheet<bool>(
       context: context,
+      isScrollControlled: true,
       useSafeArea: true,
       showDragHandle: true,
       builder: (_) => ConfirmActionSheetWidget(
@@ -46,46 +65,59 @@ class ConfirmActionSheetWidget extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final confirmColor =
         isDestructive ? colorScheme.error : colorScheme.primary;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const SizedBox(height: 12),
-          Text(
-            message,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
+    return SafeArea(
+      top: false,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(
+          AppDesignTokens.spacingXl,
+          AppDesignTokens.spacingSm,
+          AppDesignTokens.spacingXl,
+          AppDesignTokens.spacingLg,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Semantics(
+              header: true,
+              child: Text(title, style: Theme.of(context).textTheme.titleLarge),
+            ),
+            const SizedBox(height: AppDesignTokens.spacingMd),
+            Text(
+              message,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+            ),
+            const SizedBox(height: AppDesignTokens.spacingXl),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                style: FilledButton.styleFrom(
+                  backgroundColor: confirmColor,
+                  foregroundColor: isDestructive
+                      ? colorScheme.onError
+                      : colorScheme.onPrimary,
+                  minimumSize: const Size(0, kMinInteractiveDimension),
                 ),
-          ),
-          const SizedBox(height: 24),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton.icon(
-              style: FilledButton.styleFrom(
-                backgroundColor: confirmColor,
-                foregroundColor:
-                    isDestructive ? colorScheme.onError : colorScheme.onPrimary,
+                onPressed: () => Navigator.of(context).pop(true),
+                icon: Icon(confirmIcon),
+                label: Text(confirmLabel ?? l10n.commonConfirm),
               ),
-              onPressed: () => Navigator.of(context).pop(true),
-              icon: Icon(confirmIcon),
-              label: Text(confirmLabel ?? l10n.commonConfirm),
             ),
-          ),
-          const SizedBox(height: 8),
-          SizedBox(
-            width: double.infinity,
-            child: TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(l10n.commonCancel),
+            const SizedBox(height: AppDesignTokens.spacingSm),
+            SizedBox(
+              width: double.infinity,
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  minimumSize: const Size(0, kMinInteractiveDimension),
+                ),
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(l10n.commonCancel),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

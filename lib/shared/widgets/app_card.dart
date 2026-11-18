@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:onepanel_client/core/utils/platform_utils.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 
-/// 共享信息卡片。
-///
-/// 桌面端可点击卡片带 hover 反馈（M3 桌面规范：hover 时 elevation 提升 +
-/// 边框高亮）；移动端保持静态（无 hover 概念，触摸反馈由 InkWell 水波承载）。
+/// 共享信息卡片，支持鼠标、键盘和触控操作。
 class AppCard extends StatefulWidget {
   final String title;
   final Widget? subtitle;
@@ -36,97 +33,94 @@ class _AppCardState extends State<AppCard> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final hoverEnabled =
-        widget.onTap != null && PlatformUtils.isDesktop(context);
-    final hovered = _hovered && hoverEnabled;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isClickable = widget.onTap != null;
+    final hovered = isClickable && _hovered;
+    final shape = RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
+      side: BorderSide(
+        color: hovered
+            ? colorScheme.primary.withValues(alpha: 0.4)
+            : colorScheme.outlineVariant,
+      ),
+    );
 
-    return MouseRegion(
-      onEnter: hoverEnabled ? (_) => _setHovered(true) : null,
-      onExit: hoverEnabled ? (_) => _setHovered(false) : null,
-      child: Card(
-        color: widget.backgroundColor ?? colorScheme.surfaceContainerLow,
-        elevation: hovered ? 3 : 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: BorderSide(
-            color: hovered
-                ? colorScheme.primary.withValues(alpha: 0.4)
-                : colorScheme.outlineVariant,
-            width: 1,
+    return Card(
+      color: widget.backgroundColor ?? colorScheme.surfaceContainerLow,
+      elevation: hovered ? 3 : 0,
+      shape: shape,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: widget.onTap,
+        onHover: isClickable ? _setHovered : null,
+        customBorder: shape,
+        focusColor: colorScheme.primary.withValues(alpha: 0.16),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: isClickable ? kMinInteractiveDimension : 0,
           ),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: widget.onTap,
-          borderRadius: BorderRadius.circular(16),
           child: Padding(
-            padding: widget.padding ?? const EdgeInsets.all(16),
+            padding: widget.padding ?? AppDesignTokens.listCardPadding,
             child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: widget.child == null
+                  ? MainAxisAlignment.center
+                  : MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (widget.leading != null) ...[
-                      widget.leading!,
-                      const SizedBox(width: 12),
-                    ],
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  widget.title,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium
-                                      ?.copyWith(
-                                        color: colorScheme.onSurface,
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                LayoutBuilder(
+                  builder: (context, constraints) => Row(
+                    children: [
+                      if (widget.leading != null) ...[
+                        widget.leading!,
+                        const SizedBox(width: AppDesignTokens.spacingSm),
+                      ],
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.title,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                color: colorScheme.onSurface,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            if (widget.subtitle != null) ...[
+                              const SizedBox(height: AppDesignTokens.spacingXs),
+                              DefaultTextStyle.merge(
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: colorScheme.onSurfaceVariant,
                                 ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                child: widget.subtitle!,
                               ),
                             ],
-                          ),
-                          if (widget.subtitle != null) ...[
-                            const SizedBox(height: 4),
-                            // Wrap in DefaultTextStyle so callers can pass any
-                            // Widget (e.g. Text, Row) and still get uniform styling.
-                            DefaultTextStyle(
-                              style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
-                                        color: colorScheme.onSurfaceVariant,
-                                      ) ??
-                                  TextStyle(),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              child: widget.subtitle!,
-                            ),
                           ],
-                        ],
+                        ),
                       ),
-                    ),
-                    if (widget.trailing != null) ...[
-                      const SizedBox(width: 8),
-                      widget.trailing!,
+                      if (widget.trailing != null) ...[
+                        const SizedBox(width: AppDesignTokens.spacingSm),
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth: constraints.maxWidth / 2,
+                          ),
+                          child: widget.trailing!,
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
                 if (widget.child != null) ...[
-                  const SizedBox(height: 16),
-                  DefaultTextStyle(
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: colorScheme.onSurface,
-                            ) ??
-                        TextStyle(),
+                  const SizedBox(height: AppDesignTokens.spacingSm),
+                  DefaultTextStyle.merge(
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurface,
+                    ),
                     child: widget.child!,
                   ),
                 ],

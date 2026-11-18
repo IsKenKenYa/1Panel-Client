@@ -40,10 +40,13 @@ class SectionCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(
-                  title!,
-                  key: titleKey,
-                  style: Theme.of(context).textTheme.titleMedium,
+                child: Semantics(
+                  header: true,
+                  child: Text(
+                    title!,
+                    key: titleKey,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                 ),
               ),
               if (action != null) action!,
@@ -60,6 +63,7 @@ class SectionCard extends StatelessWidget {
         ],
         if (title != null) const SizedBox(height: AppDesignTokens.spacingSm),
         Card(
+          clipBehavior: Clip.antiAlias,
           child: padding == null
               ? child
               : Padding(padding: padding!, child: child),
@@ -126,17 +130,18 @@ class SectionEntryList extends StatelessWidget {
       titleKey: titleKey,
       child: Column(
         children: [
-          for (var index = 0; index < items.length; index++) ...[
+          for (final (index, item) in items.indexed) ...[
             ListTile(
-              key: items[index].key,
-              leading: Icon(items[index].icon),
-              title: Text(items[index].title),
-              subtitle: items[index].subtitle == null
-                  ? null
-                  : Text(items[index].subtitle!),
-              trailing: items[index].trailing ??
-                  const Icon(Icons.chevron_right),
-              onTap: items[index].onTap,
+              key: item.key,
+              minTileHeight: kMinInteractiveDimension,
+              leading: Icon(item.icon),
+              title: Text(item.title),
+              subtitle: item.subtitle == null ? null : Text(item.subtitle!),
+              trailing: item.trailing ??
+                  (item.onTap == null
+                      ? null
+                      : const Icon(Icons.chevron_right_rounded, size: 20)),
+              onTap: item.onTap,
             ),
             if (index < items.length - 1) const Divider(height: 1),
           ],

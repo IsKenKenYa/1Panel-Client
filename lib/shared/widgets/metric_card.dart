@@ -119,6 +119,124 @@ class MetricIconValue extends StatelessWidget {
   }
 }
 
+class MetricOverviewGrid extends StatelessWidget {
+  const MetricOverviewGrid({super.key, required this.children});
+
+  final List<MetricOverviewTile> children;
+
+  @override
+  Widget build(BuildContext context) {
+    const gap = AppDesignTokens.spacingSm;
+    final textScaler = MediaQuery.textScalerOf(context);
+    final minTileWidth = 130 * textScaler.scale(12) / 12;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+        final tileWidth =
+            width >= minTileWidth * 2 + gap ? (width - gap) / 2 : width;
+        return Wrap(
+          spacing: gap,
+          runSpacing: gap,
+          children: [
+            for (final tile in children)
+              SizedBox(width: tileWidth, child: tile),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class MetricOverviewTile extends StatelessWidget {
+  const MetricOverviewTile({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.percent,
+    required this.icon,
+  });
+
+  final String label;
+  final String value;
+  final double? percent;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final statusColor = _statusColor(scheme);
+    return MergeSemantics(
+      child: Container(
+        padding: const EdgeInsets.all(AppDesignTokens.spacingMd),
+        decoration: BoxDecoration(
+          color: scheme.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
+          border: Border.all(color: scheme.outlineVariant),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icon, size: 16, color: scheme.onSurfaceVariant),
+                const SizedBox(width: AppDesignTokens.spacingXs),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: AppDesignTokens.spacingXs),
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: statusColor,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppDesignTokens.spacingXs),
+            Text(
+              value,
+              style: theme.textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
+            ),
+            if (percent != null) ...[
+              const SizedBox(height: AppDesignTokens.spacingXs),
+              ExcludeSemantics(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(AppDesignTokens.radiusSm),
+                  child: LinearProgressIndicator(
+                    value: percent! / 100,
+                    backgroundColor: scheme.surfaceContainerHighest,
+                    color: statusColor,
+                    minHeight: 4,
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Color _statusColor(ColorScheme scheme) {
+    final usage = percent;
+    if (usage == null) return scheme.onSurfaceVariant.withValues(alpha: 0.4);
+    if (usage >= 90) return scheme.error;
+    if (usage >= 70) return AppDesignTokens.warning;
+    return scheme.primary;
+  }
+}
+
 class MetricSparklinePainter extends CustomPainter {
   MetricSparklinePainter({
     required this.values,

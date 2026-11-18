@@ -16,6 +16,7 @@ class AppFormDialog extends StatelessWidget {
     required this.onConfirm,
     this.isSaving = false,
     this.confirmLabel,
+    this.confirmIcon,
     this.confirmButtonKey,
     this.destructive = false,
   });
@@ -25,6 +26,7 @@ class AppFormDialog extends StatelessWidget {
   final Future<void> Function() onConfirm;
   final bool isSaving;
   final String? confirmLabel;
+  final IconData? confirmIcon;
   final Key? confirmButtonKey;
 
   /// 破坏性操作（删除等）：确认按钮使用 error 色（M3 语义）。
@@ -33,37 +35,40 @@ class AppFormDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return AlertDialog(
-      title: Text(title),
-      content: content,
-      actions: [
-        TextButton(
-          onPressed: isSaving
-              ? null
-              : () => Navigator.of(context).pop(false),
-          child: Text(l10n.commonCancel),
-        ),
-        FilledButton(
-          key: confirmButtonKey,
-          style: destructive
-              ? FilledButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.error)
-              : null,
-          onPressed: isSaving ? null : () => onConfirm(),
-          child: SizedBox(
-            height: 24,
-            child: Center(
-              child: isSaving
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : Text(confirmLabel ?? l10n.commonConfirm),
-            ),
+    final colorScheme = Theme.of(context).colorScheme;
+    return PopScope<Object?>(
+      canPop: !isSaving,
+      child: AlertDialog(
+        scrollable: true,
+        title: Text(title),
+        content: content,
+        actions: [
+          TextButton(
+            onPressed: isSaving ? null : () => Navigator.of(context).pop(false),
+            child: Text(l10n.commonCancel),
           ),
-        ),
-      ],
+          FilledButton.icon(
+            key: confirmButtonKey,
+            style: destructive
+                ? FilledButton.styleFrom(
+                    backgroundColor: colorScheme.error,
+                    foregroundColor: colorScheme.onError,
+                  )
+                : null,
+            onPressed: isSaving ? null : onConfirm,
+            icon: isSaving || confirmIcon == null ? null : Icon(confirmIcon),
+            label: isSaving
+                ? SizedBox.square(
+                    dimension: 18,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      semanticsLabel: l10n.commonLoading,
+                    ),
+                  )
+                : Text(confirmLabel ?? l10n.commonConfirm),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -81,18 +86,20 @@ Future<bool> showAppFormDialog(
   Key? confirmButtonKey,
   bool destructive = false,
 }) async {
+  var saving = false;
   final result = await showDialog<bool>(
     context: context,
     builder: (dialogContext) => StatefulBuilder(
       builder: (dialogContext, setDialogState) {
-        var saving = false;
         return AppFormDialog(
           title: title,
           content: content,
           isSaving: saving,
           confirmLabel: confirmLabel,
           confirmButtonKey: confirmButtonKey,
+          destructive: destructive,
           onConfirm: () async {
+            if (saving) return;
             setDialogState(() => saving = true);
             try {
               await onConfirm();

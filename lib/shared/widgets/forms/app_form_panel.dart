@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/shared/widgets/forms/app_form_dialog.dart';
 
@@ -7,7 +8,7 @@ import 'package:onepanel_client/shared/widgets/forms/app_form_dialog.dart';
 ///
 /// 多字段表单必须经 [showAdaptiveFormPanel] 打开：
 /// - 桌面端沿用 [AppFormDialog] 居中对话框形态；
-/// - 移动端渲染为底部弹层内容形态（标题行 + 可滚动表单 + 底部按钮行），
+/// - 移动端使用可滚动的底部表单弹层，操作按钮随可用宽度换行，
 ///   满足拇指区可达与键盘适配。
 /// 简单确认对话框继续用 [showAppFormDialog]，无需双轨。
 class AppFormPanel extends StatelessWidget {
@@ -48,70 +49,72 @@ class AppFormPanel extends StatelessWidget {
 
     final l10n = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(24, 8, 12, 0),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleLarge,
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 8, 12, 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Semantics(
+                    header: true,
+                    child: Text(title,
+                        style: Theme.of(context).textTheme.titleLarge),
+                  ),
                 ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.close),
-                tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
-                onPressed: isSaving ? null : () => Navigator.of(context).pop(),
-              ),
-            ],
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+                  onPressed:
+                      isSaving ? null : () => Navigator.of(context).pop(),
+                ),
+              ],
+            ),
           ),
-        ),
-        Flexible(
-          child: SingleChildScrollView(
+          Padding(
             padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
             child: content,
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                onPressed:
-                    isSaving ? null : () => Navigator.of(context).pop(),
-                child: Text(l10n.commonCancel),
-              ),
-              const SizedBox(width: 8),
-              FilledButton(
-                key: confirmButtonKey,
-                style: destructive
-                    ? FilledButton.styleFrom(
-                        backgroundColor: colorScheme.error,
-                      )
-                    : null,
-                onPressed: isSaving ? null : () => onConfirm(),
-                child: SizedBox(
-                  height: 24,
-                  child: Center(
-                    child: isSaving
-                        ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : Text(confirmLabel ?? l10n.commonConfirm),
-                  ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+            child: OverflowBar(
+              alignment: MainAxisAlignment.end,
+              overflowAlignment: OverflowBarAlignment.end,
+              spacing: AppDesignTokens.spacingSm,
+              overflowSpacing: AppDesignTokens.spacingSm,
+              children: [
+                TextButton(
+                  onPressed:
+                      isSaving ? null : () => Navigator.of(context).pop(),
+                  child: Text(l10n.commonCancel),
                 ),
-              ),
-            ],
+                FilledButton(
+                  key: confirmButtonKey,
+                  style: destructive
+                      ? FilledButton.styleFrom(
+                          backgroundColor: colorScheme.error,
+                          foregroundColor: colorScheme.onError,
+                        )
+                      : null,
+                  onPressed: isSaving ? null : onConfirm,
+                  child: isSaving
+                      ? SizedBox.square(
+                          dimension: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            semanticsLabel: l10n.commonLoading,
+                          ),
+                        )
+                      : Text(confirmLabel ?? l10n.commonConfirm),
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -138,7 +141,7 @@ Future<T?> showAdaptiveFormPanel<T>(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
       ),
-      child: builder(sheetContext),
+      child: SafeArea(top: false, child: builder(sheetContext)),
     ),
   );
 }
