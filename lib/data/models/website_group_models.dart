@@ -115,11 +115,14 @@ class WebsiteGroupUpdate extends Equatable {
 
 /// Website group search request model
 class WebsiteGroupSearch extends Equatable {
+  /// 上游 `dto.GroupSearch` 的 type 为必填，取值 host / website 等。
+  final String type;
   final String? name;
   final int? page;
   final int? pageSize;
 
   const WebsiteGroupSearch({
+    this.type = 'website',
     this.name,
     this.page,
     this.pageSize,
@@ -127,6 +130,7 @@ class WebsiteGroupSearch extends Equatable {
 
   factory WebsiteGroupSearch.fromJson(Map<String, dynamic> json) {
     return WebsiteGroupSearch(
+      type: json['type'] as String? ?? 'website',
       name: json['name'] as String?,
       page: json['page'] as int?,
       pageSize: json['pageSize'] as int?,
@@ -135,6 +139,7 @@ class WebsiteGroupSearch extends Equatable {
 
   Map<String, dynamic> toJson() {
     return {
+      'type': type,
       'name': name,
       'page': page,
       'pageSize': pageSize,
@@ -142,5 +147,5 @@ class WebsiteGroupSearch extends Equatable {
   }
 
   @override
-  List<Object?> get props => [name, page, pageSize];
+  List<Object?> get props => [type, name, page, pageSize];
 }

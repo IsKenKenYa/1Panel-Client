@@ -199,22 +199,27 @@ class WebsiteRepository {
   Future<List<WebsiteGroup>> listWebsiteGroups() async {
     final groupApi = await _ensureGroupApi();
     final response = await groupApi.searchGroups(
-      const WebsiteGroupSearch(page: 1, pageSize: 100).toJson(),
+      const WebsiteGroupSearch(type: 'website', page: 1, pageSize: 100).toJson(),
     );
-    final body = response.data;
-    if (body is! Map<String, dynamic>) {
-      return const <WebsiteGroup>[];
-    }
-    final data = body['data'];
-    if (data is! Map<String, dynamic>) {
-      return const <WebsiteGroup>[];
-    }
-    final items = data['items'];
-    if (items is! List) {
+    // 1Panel 该接口返回 data 为分组数组（含 host/website 等类型），
+    // 部分版本再包一层分页对象；两种形状都要兼容，并按 type 过滤网站分组。
+    final dynamic raw = response.data;
+    final dynamic data =
+        (raw is Map && raw.containsKey('data')) ? raw['data'] : raw;
+    final List<dynamic> items;
+    if (data is List) {
+      items = data;
+    } else if (data is Map && data['items'] is List) {
+      items = data['items'] as List;
+    } else {
       return const <WebsiteGroup>[];
     }
     return items
         .whereType<Map<String, dynamic>>()
+        .where((item) {
+          final type = item['type'];
+          return type == null || type == 'website';
+        })
         .map(WebsiteGroup.fromJson)
         .toList();
   }
