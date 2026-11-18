@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 
 import '../../core/config/api_constants.dart';
 import '../../core/network/dio_client.dart';
+import '../../core/network/interceptors/retry_interceptor.dart';
 import '../../data/models/common_models.dart';
 import '../../data/models/firewall_models.dart';
 import '../../data/models/firewall_v2_models.dart';
@@ -89,6 +90,7 @@ class FirewallV2Api {
     return await _client.post<void>(
       ApiConstants.buildApiPath('/hosts/firewall/port'),
       data: payload,
+      options: Options(extra: {RetryInterceptor.disableRetryKey: true}),
     );
   }
 
@@ -96,6 +98,7 @@ class FirewallV2Api {
     return await _client.post<void>(
       ApiConstants.buildApiPath('/hosts/firewall/ip'),
       data: payload,
+      options: Options(extra: {RetryInterceptor.disableRetryKey: true}),
     );
   }
 
@@ -172,7 +175,8 @@ class FirewallV2Api {
     );
   }
 
-  Future<Response<void>> operateFilterRule(FirewallFilterRuleOperation request) {
+  Future<Response<void>> operateFilterRule(
+      FirewallFilterRuleOperation request) {
     return _client.post<void>(
       ApiConstants.buildApiPath('/hosts/firewall/filter/rule/operate'),
       data: request.toJson(),
@@ -205,7 +209,7 @@ class FirewallV2Api {
   }
 
   Future<Response<Map<String, dynamic>>> loadFirewallV2Settings() async {
-    final response = await _client.get(
+    final response = await _client.get<dynamic>(
       ApiConstants.buildApiPath('/hosts/firewall/settings'),
     );
     return Response<Map<String, dynamic>>(
@@ -284,20 +288,31 @@ class FirewallV2Api {
     );
   }
 
-  Future<Response<void>> createFirewallV2Rules(
+  Future<String> createFirewallV2Rules(
       FirewallRuleCreateRequest request) async {
-    return await _client.post<void>(
+    final response = await _client.post<dynamic>(
       ApiConstants.buildApiPath('/hosts/firewall/rules'),
       data: request.toJson(),
+      options: Options(extra: {RetryInterceptor.disableRetryKey: true}),
     );
+    final payload = _unwrapMap(response.data);
+    final taskId = payload['taskID'];
+    if (payload['queued'] != true || taskId is! String || taskId.isEmpty) {
+      throw const FormatException(
+        'The firewall submission could not be confirmed. Check task logs before submitting again.',
+      );
+    }
+    return taskId;
   }
 
-  Future<Response<void>> deleteFirewallV2Rules(
+  Future<Map<String, dynamic>> deleteFirewallV2Rules(
       FirewallRuleDeleteRequest request) async {
-    return await _client.post<void>(
+    final response = await _client.post<dynamic>(
       ApiConstants.buildApiPath('/hosts/firewall/rules/delete'),
       data: request.toJson(),
+      options: Options(extra: {RetryInterceptor.disableRetryKey: true}),
     );
+    return _unwrapMap(response.data);
   }
 
   Future<Response<void>> updateFirewallV2Rule(
@@ -425,8 +440,7 @@ class FirewallV2Api {
   Future<Response<void>> batchDeleteFirewallDockerPolicies(
       FirewallDockerPolicyBatchDelete request) async {
     return await _client.post<void>(
-      ApiConstants.buildApiPath(
-          '/hosts/firewall/docker/policies/delete/batch'),
+      ApiConstants.buildApiPath('/hosts/firewall/docker/policies/delete/batch'),
       data: request.toJson(),
     );
   }

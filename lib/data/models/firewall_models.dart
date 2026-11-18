@@ -55,9 +55,40 @@ class FirewallBaseInfo extends Equatable {
       ];
 }
 
+class FirewallInventoryDeletionTarget extends Equatable {
+  const FirewallInventoryDeletionTarget.observed({
+    required this.instanceKey,
+    required this.scope,
+    required this.observed,
+  }) : uuid = null;
+
+  const FirewallInventoryDeletionTarget.managed(this.uuid)
+      : instanceKey = null,
+        scope = null,
+        observed = null;
+
+  final String? instanceKey;
+  final Map<String, dynamic>? scope;
+  final Map<String, dynamic>? observed;
+  final String? uuid;
+
+  Map<String, dynamic> toJson() => {
+        'instanceKey': instanceKey,
+        'scope': scope,
+        'observed': observed,
+      };
+
+  @override
+  List<Object?> get props => [instanceKey, scope, observed, uuid];
+}
+
 class FirewallRule extends Equatable {
   const FirewallRule({
     this.id,
+    this.inventoryId,
+    this.serverId,
+    this.modernTarget,
+    this.supportsLegacyChanges = true,
     this.chain,
     this.family,
     this.address,
@@ -77,6 +108,11 @@ class FirewallRule extends Equatable {
   });
 
   final int? id;
+  final String? inventoryId;
+  final String? serverId;
+  final FirewallInventoryDeletionTarget? modernTarget;
+  bool get canDelete => supportsLegacyChanges || modernTarget != null;
+  final bool supportsLegacyChanges;
   final String? chain;
   final String? family;
   final String? address;
@@ -143,6 +179,10 @@ class FirewallRule extends Equatable {
   @override
   List<Object?> get props => [
         id,
+        inventoryId,
+        serverId,
+        modernTarget,
+        supportsLegacyChanges,
         chain,
         family,
         address,
