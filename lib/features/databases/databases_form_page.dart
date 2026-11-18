@@ -77,7 +77,7 @@ class _DatabaseFormPageState extends State<DatabaseFormPage> {
           return AppFormScaffold(
             title: context.l10n.commonCreate,
             isSaving: provider.isSubmitting,
-            onSave: _submit,
+            onSave: () => _submit(provider),
             body: Padding(
               padding: AppDesignTokens.pagePadding,
               child: Form(
@@ -383,13 +383,12 @@ class _DatabaseFormPageState extends State<DatabaseFormPage> {
     );
   }
 
-  Future<void> _submit() async {
+  Future<void> _submit(DatabaseFormProvider provider) async {
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) {
       return;
     }
     final navigator = Navigator.of(context);
-    final provider = context.read<DatabaseFormProvider>();
     final ok = await provider.submit(_buildInput());
     if (!mounted || !ok) return;
     navigator.pop(true);

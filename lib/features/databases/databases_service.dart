@@ -9,6 +9,16 @@ class DatabasesService {
 
   final DatabaseRepository _repository;
 
+  Future<List<String>> checkRemoteDatabaseUnbind(int id) {
+    return _repository.checkRemoteDatabaseUnbind(id);
+  }
+
+  Future<List<String>> unbindRemoteDatabase(int id) async {
+    final dependentApps = await checkRemoteDatabaseUnbind(id);
+    if (dependentApps.isEmpty) await _repository.unbindRemoteDatabase(id);
+    return dependentApps;
+  }
+
   Future<PageResult<DatabaseListItem>> loadPage({
     required DatabaseScope scope,
     String? targetDatabase,
