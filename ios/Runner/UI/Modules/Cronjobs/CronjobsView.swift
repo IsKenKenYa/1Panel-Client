@@ -72,7 +72,9 @@ struct CronjobsView: View {
             } else if viewModel.cronjobs.isEmpty {
                 EmptyStateView(
                     icon: "clock.arrow.circlepath",
-                    message: translations.get("cronjobsEmptyTitle", fallback: "No cronjobs")
+                    message: translations.get("cronjobsEmptyTitle", fallback: "No cronjobs"),
+                    description: translations.get("cronjobsEmptyHint",
+                                                  fallback: "Cronjobs created in 1Panel appear here.")
                 )
             } else {
                 List {
@@ -134,7 +136,7 @@ struct CronjobsView: View {
                 Button {
                     viewModel.fetch()
                 } label: {
-                    Image(systemName: "arrow.clockwise")
+                    Label(translations.get("commonRefresh", fallback: "Refresh"), systemImage: "arrow.clockwise")
                 }
                 .disabled(viewModel.isLoading)
             }
@@ -160,16 +162,7 @@ struct CronjobsView: View {
         } message: {
             Text(translations.get("deleteCannotUndoMessage", fallback: "This action cannot be undone."))
         }
-        .overlay(alignment: .bottom) {
-            if let toastText {
-                Text(toastText)
-                    .font(.footnote)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
-                    .background(.regularMaterial, in: Capsule())
-                    .padding(.bottom, 24)
-            }
-        }
+        .operationNotice(toastText)
         .onAppear {
             viewModel.fetch()
         }

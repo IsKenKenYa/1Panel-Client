@@ -68,7 +68,9 @@ struct BackupsView: View {
             } else if viewModel.backups.isEmpty {
                 EmptyStateView(
                     icon: "externaldrive",
-                    message: translations.get("backupRecordsEmptyTitle", fallback: "No backup records")
+                    message: translations.get("backupRecordsEmptyTitle", fallback: "No backup records"),
+                    description: translations.get("backupsEmptyHint",
+                                                  fallback: "Backup records appear here after backups run in 1Panel.")
                 )
             } else {
                 List {
@@ -119,7 +121,7 @@ struct BackupsView: View {
                 Button {
                     viewModel.fetch()
                 } label: {
-                    Image(systemName: "arrow.clockwise")
+                    Label(translations.get("commonRefresh", fallback: "Refresh"), systemImage: "arrow.clockwise")
                 }
                 .disabled(viewModel.isLoading)
             }
@@ -145,16 +147,7 @@ struct BackupsView: View {
         } message: {
             Text(translations.get("deleteCannotUndoMessage", fallback: "This action cannot be undone."))
         }
-        .overlay(alignment: .bottom) {
-            if let toastText {
-                Text(toastText)
-                    .font(.footnote)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
-                    .background(.regularMaterial, in: Capsule())
-                    .padding(.bottom, 24)
-            }
-        }
+        .operationNotice(toastText)
         .onAppear {
             viewModel.fetch()
         }

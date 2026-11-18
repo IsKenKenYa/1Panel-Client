@@ -59,7 +59,9 @@ struct AIModelsView: View {
             } else if viewModel.models.isEmpty {
                 EmptyStateView(
                     icon: "brain",
-                    message: translations.get("aiModelsEmptyTitle", fallback: "No models")
+                    message: translations.get("aiModelsEmptyTitle", fallback: "No models"),
+                    description: translations.get("aiModelsEmptyHint",
+                                                  fallback: "Models added in 1Panel appear here.")
                 )
             } else {
                 List {
@@ -102,7 +104,7 @@ struct AIModelsView: View {
                 Button {
                     viewModel.fetch()
                 } label: {
-                    Image(systemName: "arrow.clockwise")
+                    Label(translations.get("commonRefresh", fallback: "Refresh"), systemImage: "arrow.clockwise")
                 }
                 .disabled(viewModel.isLoading)
             }
@@ -128,16 +130,7 @@ struct AIModelsView: View {
         } message: {
             Text(translations.get("deleteCannotUndoMessage", fallback: "This action cannot be undone."))
         }
-        .overlay(alignment: .bottom) {
-            if let toastText {
-                Text(toastText)
-                    .font(.footnote)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
-                    .background(.regularMaterial, in: Capsule())
-                    .padding(.bottom, 24)
-            }
-        }
+        .operationNotice(toastText)
         .onAppear {
             viewModel.fetch()
         }

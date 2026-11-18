@@ -46,7 +46,9 @@ struct DatabasesView: View {
             } else if viewModel.databases.isEmpty {
                 EmptyStateView(
                     icon: "cylinder.split.1x2",
-                    message: translations.get("databasesEmptyTitle", fallback: "No databases")
+                    message: translations.get("databasesEmptyTitle", fallback: "No databases"),
+                    description: translations.get("databasesEmptyHint",
+                                                  fallback: "Databases created in 1Panel appear here.")
                 )
             } else {
                 List {
@@ -82,7 +84,7 @@ struct DatabasesView: View {
                 Button {
                     viewModel.fetch()
                 } label: {
-                    Image(systemName: "arrow.clockwise")
+                    Label(translations.get("commonRefresh", fallback: "Refresh"), systemImage: "arrow.clockwise")
                 }
                 .disabled(viewModel.isLoading)
             }
