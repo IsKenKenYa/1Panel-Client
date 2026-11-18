@@ -138,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Icon(
-                Icons.lock_outline,
+                Icons.lock_outlined,
                 size: 64,
                 color: colorScheme.primary,
               ),
@@ -255,7 +255,7 @@ class _LoginPageState extends State<LoginPage> {
       autofillHints: const [AutofillHints.password],
       decoration: InputDecoration(
         labelText: l10n.authPassword,
-        prefixIcon: const Icon(Icons.lock_outline),
+        prefixIcon: const Icon(Icons.lock_outlined),
         border: const OutlineInputBorder(),
         suffixIcon: IconButton(
           icon: Icon(
@@ -326,13 +326,13 @@ class _LoginPageState extends State<LoginPage> {
                       _decodeBase64(provider.captcha!.base64!),
                       fit: BoxFit.cover,
                       errorBuilder: (_, __, ___) => Icon(
-                        Icons.refresh,
+                        Icons.refresh_outlined,
                         color: colorScheme.onSurfaceVariant,
                       ),
                     ),
                   )
                 : Icon(
-                    Icons.refresh,
+                    Icons.refresh_outlined,
                     color: colorScheme.onSurfaceVariant,
                   ),
           ),
@@ -426,7 +426,7 @@ class _LoginPageState extends State<LoginPage> {
       ),
       child: Row(
         children: [
-          Icon(Icons.info_outline, color: colorScheme.onTertiaryContainer),
+          Icon(Icons.info_outlined, color: colorScheme.onTertiaryContainer),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
