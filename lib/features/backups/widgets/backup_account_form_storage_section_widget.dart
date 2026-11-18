@@ -104,7 +104,7 @@ class BackupAccountFormStorageSectionWidget extends StatelessWidget {
                         dimension: 16,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : const Icon(Icons.refresh),
+                    : const Icon(Icons.refresh_outlined),
               ),
             ],
           ),

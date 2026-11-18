@@ -76,14 +76,14 @@ class _BackupAccountsPageState extends State<BackupAccountsPage> {
             ),
             IconButton(
               onPressed: provider.isLoading ? null : provider.load,
-              icon: const Icon(Icons.refresh),
+              icon: const Icon(Icons.refresh_outlined),
               tooltip: l10n.commonRefresh,
             ),
           ],
           floatingActionButton: FloatingActionButton.extended(
             heroTag: 'backup_accounts_create_fab',
             onPressed: _openCreate,
-            icon: const Icon(Icons.add),
+            icon: const Icon(Icons.add_outlined),
             label: Text(l10n.commonCreate),
           ),
           body: Column(
