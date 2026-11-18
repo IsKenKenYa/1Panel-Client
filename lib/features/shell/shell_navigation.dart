@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/config/app_router.dart';
-import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
+import 'package:onepanel_client/features/shell/widgets/desktop_module_navigation.dart';
 import 'package:onepanel_client/ui/desktop/common/widgets/shell_content_host.dart';
 import 'package:onepanel_client/ui/desktop/common/widgets/shell_fade_through_route.dart';
+import 'package:onepanel_client/ui/routing/ui_target_resolver.dart';
 
 class ShellRouteTarget {
   const ShellRouteTarget({
@@ -257,7 +258,7 @@ Future<T?> openRouteRespectingShell<T extends Object?>(
   Object? arguments,
 }) {
   final target = shellRouteTargetForRoute(route);
-  if (target != null && PlatformUtils.isDesktop(context)) {
+  if (target != null && UiTargetResolver.resolve(context).isDesktop) {
     // When the route is a sub-page of a module (e.g. container detail
     // inside the containers module) push it into the shell's inner
     // navigator so only the content area animates; the surrounding
@@ -272,7 +273,7 @@ Future<T?> openRouteRespectingShell<T extends Object?>(
       // Fall back to the legacy behaviour when the inner navigator
       // has not been mounted yet (e.g. mid-build, or shell not yet
       // visible).
-      return Navigator.of(context).pushReplacementNamed(
+      return Navigator.of(context, rootNavigator: true).pushReplacementNamed(
         AppRoutes.home,
         arguments: _buildShellHomeArguments(
           target: target,
@@ -282,7 +283,13 @@ Future<T?> openRouteRespectingShell<T extends Object?>(
       );
     }
 
-    return Navigator.of(context).pushReplacementNamed(
+    final navigation = DesktopModuleNavigation.maybeOf(context);
+    if (navigation != null) {
+      navigation.onOpenModuleRoot(target.module);
+      return Future<T?>.value();
+    }
+
+    return Navigator.of(context, rootNavigator: true).pushReplacementNamed(
       AppRoutes.home,
       arguments: <String, dynamic>{
         'module': target.module.storageId,

@@ -5,6 +5,7 @@ import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/controllers/pinned_modules_controller.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
+import 'package:onepanel_client/features/shell/widgets/desktop_module_navigation.dart';
 import 'package:onepanel_client/features/shell/widgets/server_switcher_action.dart';
 import 'package:onepanel_client/ui/desktop/common/widgets/desktop_content_host.dart';
 import 'package:onepanel_client/ui/desktop/common/widgets/desktop_sidebar.dart';
@@ -33,6 +34,7 @@ class WindowsShellContentPage extends StatefulWidget {
 }
 
 class _WindowsShellContentPageState extends State<WindowsShellContentPage> {
+  final _contentKey = GlobalKey<DesktopContentHostState>();
   late ClientModule _selectedModule;
   String? _embeddedRouteName;
   Object? _embeddedRouteArguments;
@@ -78,9 +80,17 @@ class _WindowsShellContentPageState extends State<WindowsShellContentPage> {
     return slots;
   }
 
+  void _selectModule(ClientModule module) {
+    setState(() {
+      _selectedModule = module;
+      _embeddedRouteName = null;
+      _embeddedRouteArguments = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Consumer2<CurrentServerController, PinnedModulesController>(
+    final content = Consumer2<CurrentServerController, PinnedModulesController>(
       builder: (context, currentServer, pinnedModules, _) {
         final scheme = Theme.of(context).colorScheme;
         final modules = _desktopModules(pinnedModules);
@@ -117,11 +127,7 @@ class _WindowsShellContentPageState extends State<WindowsShellContentPage> {
                             ServerSwitcherAction.showServerPicker(context);
                             return;
                           }
-                          setState(() {
-                            _selectedModule = module;
-                            _embeddedRouteName = null;
-                            _embeddedRouteArguments = null;
-                          });
+                          _selectModule(module);
                         },
                       ),
                     ),
@@ -131,13 +137,8 @@ class _WindowsShellContentPageState extends State<WindowsShellContentPage> {
                           DesktopTopToolArea(
                             selectedModule: selectedModule,
                             backgroundColor: scheme.surface,
-                            onOpenSettings: () {
-                              setState(() {
-                                _selectedModule = ClientModule.settings;
-                                _embeddedRouteName = null;
-                                _embeddedRouteArguments = null;
-                              });
-                            },
+                            onOpenSettings: () =>
+                                _selectModule(ClientModule.settings),
                           ),
                           if (hasEmbeddedRoute)
                             Container(
@@ -195,6 +196,7 @@ class _WindowsShellContentPageState extends State<WindowsShellContentPage> {
                               child: Container(
                                 color: scheme.surface,
                                 child: DesktopContentHost(
+                                  key: _contentKey,
                                   module: selectedModule,
                                   serverId: currentServer.currentServerId,
                                   embeddedRoute: _embeddedRouteName,
@@ -224,11 +226,7 @@ class _WindowsShellContentPageState extends State<WindowsShellContentPage> {
                   ServerSwitcherAction.showServerPicker(context);
                   return;
                 }
-                setState(() {
-                  _selectedModule = module;
-                  _embeddedRouteName = null;
-                  _embeddedRouteArguments = null;
-                });
+                _selectModule(module);
               },
           },
           child: Focus(
@@ -237,6 +235,13 @@ class _WindowsShellContentPageState extends State<WindowsShellContentPage> {
           ),
         );
       },
+    );
+    return DesktopModuleNavigation(
+      onOpenModuleRoot: (module) {
+        _contentKey.currentState?.openModuleRoot(module);
+        _selectModule(module);
+      },
+      child: content,
     );
   }
 }

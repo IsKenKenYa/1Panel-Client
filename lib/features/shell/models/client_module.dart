@@ -92,7 +92,7 @@ extension ClientModuleX on ClientModule {
       case ClientModule.files:
         return Icons.folder_open_outlined;
       case ClientModule.containers:
-        return Icons.widgets_outlined;
+        return Icons.inventory_2_outlined;
       case ClientModule.apps:
         return Icons.grid_view_outlined;
       case ClientModule.websites:
@@ -113,7 +113,7 @@ extension ClientModuleX on ClientModule {
       case ClientModule.files:
         return Icons.folder_open;
       case ClientModule.containers:
-        return Icons.widgets;
+        return Icons.inventory_2;
       case ClientModule.apps:
         return Icons.grid_view;
       case ClientModule.websites:

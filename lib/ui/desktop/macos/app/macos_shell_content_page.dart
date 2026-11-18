@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:onepanel_client/core/utils/intents.dart';
 import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/controllers/pinned_modules_controller.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
+import 'package:onepanel_client/features/shell/widgets/desktop_module_navigation.dart';
 import 'package:onepanel_client/features/shell/widgets/server_switcher_action.dart';
 import 'package:onepanel_client/ui/desktop/common/widgets/desktop_content_host.dart';
 import 'package:onepanel_client/ui/desktop/common/widgets/desktop_sidebar.dart';
@@ -32,6 +34,7 @@ class MacosShellContentPage extends StatefulWidget {
 }
 
 class _MacosShellContentPageState extends State<MacosShellContentPage> {
+  final _contentKey = GlobalKey<DesktopContentHostState>();
   late ClientModule _selectedModule;
   String? _embeddedRouteName;
   Object? _embeddedRouteArguments;
@@ -84,9 +87,23 @@ class _MacosShellContentPageState extends State<MacosShellContentPage> {
     return slots;
   }
 
+  void _selectModule(ClientModule module, {bool closeSidebar = false}) {
+    setState(() {
+      _selectedModule = module;
+      _embeddedRouteName = null;
+      _embeddedRouteArguments = null;
+      if (closeSidebar) _isTouchSidebarVisible = false;
+    });
+  }
+
+  void _openModuleRoot(ClientModule module) {
+    _contentKey.currentState?.openModuleRoot(module);
+    _selectModule(module);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Consumer2<CurrentServerController, PinnedModulesController>(
+    final content = Consumer2<CurrentServerController, PinnedModulesController>(
       builder: (context, currentServer, pinnedModules, _) {
         final scheme = Theme.of(context).colorScheme;
         final modules = _desktopModules(pinnedModules);
@@ -135,13 +152,7 @@ class _MacosShellContentPageState extends State<MacosShellContentPage> {
                       ServerSwitcherAction.showServerPicker(context);
                       return;
                     }
-                    setState(() {
-                      _selectedModule = module;
-                      _embeddedRouteName = null;
-                      _embeddedRouteArguments = null;
-                      // Auto-close the touch overlay after a selection.
-                      _isTouchSidebarVisible = false;
-                    });
+                    _selectModule(module, closeSidebar: true);
                   },
                 ),
               ),
@@ -152,13 +163,7 @@ class _MacosShellContentPageState extends State<MacosShellContentPage> {
                     DesktopTopToolArea(
                       selectedModule: selectedModule,
                       backgroundColor: scheme.surface,
-                      onOpenSettings: () {
-                        setState(() {
-                          _selectedModule = ClientModule.settings;
-                          _embeddedRouteName = null;
-                          _embeddedRouteArguments = null;
-                        });
-                      },
+                      onOpenSettings: () => _selectModule(ClientModule.settings),
                     ),
                     Expanded(
                       child: ClipRRect(
@@ -168,6 +173,7 @@ class _MacosShellContentPageState extends State<MacosShellContentPage> {
                         child: Container(
                           color: scheme.surface,
                           child: DesktopContentHost(
+                            key: _contentKey,
                             module: selectedModule,
                             serverId: currentServer.currentServerId,
                             embeddedRoute: _embeddedRouteName,
@@ -193,11 +199,7 @@ class _MacosShellContentPageState extends State<MacosShellContentPage> {
                   ServerSwitcherAction.showServerPicker(context);
                   return;
                 }
-                setState(() {
-                  _selectedModule = module;
-                  _embeddedRouteName = null;
-                  _embeddedRouteArguments = null;
-                });
+                _selectModule(module);
               },
           },
           child: Focus(
@@ -206,6 +208,17 @@ class _MacosShellContentPageState extends State<MacosShellContentPage> {
           ),
         );
       },
+    );
+    return DesktopModuleNavigation(
+      onOpenModuleRoot: _openModuleRoot,
+      child: Actions(
+        actions: {
+          OpenSettingsIntent: CallbackAction<OpenSettingsIntent>(
+            onInvoke: (_) => _openModuleRoot(ClientModule.settings),
+          ),
+        },
+        child: content,
+      ),
     );
   }
 }

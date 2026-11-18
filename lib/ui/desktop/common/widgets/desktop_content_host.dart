@@ -35,40 +35,26 @@ class DesktopContentHost extends StatefulWidget {
   final Object? embeddedRouteArguments;
 
   @override
-  State<DesktopContentHost> createState() => _DesktopContentHostState();
+  State<DesktopContentHost> createState() => DesktopContentHostState();
 }
 
-class _DesktopContentHostState extends State<DesktopContentHost> {
-  final Map<ClientModule, Widget> _moduleCache = <ClientModule, Widget>{};
+class DesktopContentHostState extends State<DesktopContentHost> {
+  final _visitedModules = <ClientModule, GlobalKey<ShellContentHostState>>{};
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _ensureModuleInCache(widget.module);
+  void openModuleRoot(ClientModule module) {
+    _visitedModules[module]
+        ?.currentState
+        ?.innerNavigator
+        ?.popUntil((route) => route.isFirst);
   }
 
   @override
-  void didUpdateWidget(covariant DesktopContentHost oldWidget) {
+  void didUpdateWidget(DesktopContentHost oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.module != widget.module || oldWidget.serverId != widget.serverId) {
-      _ensureModuleInCache(widget.module);
+    if (oldWidget.serverId != widget.serverId) {
+      _visitedModules.updateAll((module, key) =>
+          module.requiresServer ? GlobalKey<ShellContentHostState>() : key);
     }
-  }
-
-  void _ensureModuleInCache(ClientModule module) {
-    if (_moduleCache.containsKey(module)) {
-      return;
-    }
-    if (module.requiresServer && widget.serverId == null) {
-      return;
-    }
-    _moduleCache[module] = KeyedSubtree(
-      key: ValueKey('desktop-shell-content-host:${module.storageId}'),
-      child: ShellContentHost(
-        module: module,
-        serverId: widget.serverId,
-      ),
-    );
   }
 
   @override
@@ -84,20 +70,29 @@ class _DesktopContentHostState extends State<DesktopContentHost> {
     }
 
     if (widget.module.requiresServer && widget.serverId == null) {
-      return NoServerSelectedState(moduleName: widget.module.label(context.l10n));
+      return NoServerSelectedState(
+          moduleName: widget.module.label(context.l10n));
     }
 
-    _ensureModuleInCache(widget.module);
-    final modules = _moduleCache.keys.toList(growable: false);
-    final selectedIndex = modules.indexOf(widget.module);
+    _visitedModules.putIfAbsent(
+        widget.module, GlobalKey<ShellContentHostState>.new);
+    final modules = _visitedModules.keys.toList(growable: false);
 
     return IndexedStack(
-      index: selectedIndex < 0 ? 0 : selectedIndex,
+      index: modules.indexOf(widget.module),
       children: [
         for (final module in modules)
           HeroMode(
             enabled: module == widget.module,
-            child: _moduleCache[module]!,
+            child: ExcludeFocus(
+              excluding: module != widget.module,
+              child: ShellContentHost(
+                key: _visitedModules[module],
+                module: module,
+                serverId: widget.serverId,
+                active: module == widget.module,
+              ),
+            ),
           ),
       ],
     );

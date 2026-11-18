@@ -151,12 +151,18 @@ class _AppShellPageState extends State<AppShellPage> {
           );
         }
 
+        final l10n = context.l10n;
         final items = [
           for (final module in modules)
             AppNavigationBarItem(
               icon: module.icon,
               selectedIcon: module.selectedIcon,
-              label: module.label(context.l10n),
+              label: module.label(l10n),
+              glassLabel: switch (module) {
+                ClientModule.containers => l10n.serverModuleContainers,
+                ClientModule.apps => l10n.serverModuleApps,
+                _ => null,
+              },
               enabled: !module.requiresServer || currentServer.hasServer,
             ),
         ];

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/shell/module_page_factory.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
@@ -26,30 +27,20 @@ import 'package:onepanel_client/ui/desktop/common/widgets/desktop_routed_module_
 /// the same `key` through from the parent's state. That way each
 /// module's inner stack survives the switch.
 class ShellContentHost extends StatefulWidget {
-  ShellContentHost({
+  const ShellContentHost({
     super.key,
     required this.module,
     required this.serverId,
+    this.active = true,
     this.embeddedRoute,
     this.embeddedRouteArguments,
   });
 
   final ClientModule module;
   final String? serverId;
+  final bool active;
   final String? embeddedRoute;
   final Object? embeddedRouteArguments;
-
-  /// Per-instance key for the inner `Navigator`. We deliberately keep
-  /// it as a per-instance `GlobalKey` (rather than a single static
-  /// shared by every `ShellContentHost` in the tree) because the
-  /// outer `DesktopContentHost` mounts *all* module hosts at once via
-  /// `IndexedStack`. Sharing a `GlobalKey` across multiple mounted
-  /// widgets triggers Flutter's key-uniqueness assertion and — in
-  /// release mode — silently corrupts the inner `Navigator` state,
-  /// which is what was causing "page content lost" when the user
-  /// switched between several top-level modules.
-  final GlobalKey<NavigatorState> _innerNavigatorKey =
-      GlobalKey<NavigatorState>(debugLabel: 'ShellContentHostNavigator');
 
   @override
   State<ShellContentHost> createState() => ShellContentHostState();
@@ -60,9 +51,12 @@ class ShellContentHost extends StatefulWidget {
 /// `ShellContentHost` wraps the caller's `BuildContext`) without
 /// relying on a globally-shared `GlobalKey`.
 class ShellContentHostState extends State<ShellContentHost> {
+  final GlobalKey<NavigatorState> _innerNavigatorKey =
+      GlobalKey<NavigatorState>(debugLabel: 'ShellContentHostNavigator');
+
   /// The inner `Navigator`'s state, or `null` if the host has not
   /// finished its first frame yet.
-  NavigatorState? get innerNavigator => widget._innerNavigatorKey.currentState;
+  NavigatorState? get innerNavigator => _innerNavigatorKey.currentState;
 
   @override
   Widget build(BuildContext context) {
@@ -82,22 +76,10 @@ class ShellContentHostState extends State<ShellContentHost> {
       );
     }
 
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, _) {
-        if (didPop) {
-          return;
-        }
-        final navigator = widget._innerNavigatorKey.currentState;
-        if (navigator == null) {
-          return;
-        }
-        if (navigator.canPop()) {
-          navigator.pop();
-        }
-        // When the inner stack is at its initial route the pop is left
-        // to the outer shell (or system) so the navigation back gesture
-        // is not consumed.
+    return NavigatorPopHandler<Object?>(
+      enabled: widget.active,
+      onPopWithResult: (result) {
+        if (widget.active) innerNavigator?.maybePop(result);
       },
       child: _buildInnerNavigator(),
     );
@@ -107,7 +89,8 @@ class ShellContentHostState extends State<ShellContentHost> {
     return KeyedSubtree(
       key: ValueKey('shell-content-host:${widget.module.storageId}'),
       child: Navigator(
-        key: widget._innerNavigatorKey,
+        key: _innerNavigatorKey,
+        onGenerateRoute: AppRouter.generateEmbeddedRoute,
         pages: <Page<dynamic>>[
           MaterialPage<void>(
             key: ValueKey('shell-content-host-init:${widget.module.storageId}'),

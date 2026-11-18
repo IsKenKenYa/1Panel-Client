@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/features/shell/controllers/module_subnav_controller.dart';
 
 class ModuleSubnavItem {
@@ -36,16 +38,26 @@ class ModuleSubnav extends StatelessWidget {
     final orderedItems = ordered
         .map((id) => items.firstWhere((item) => item.id == id))
         .toList(growable: false);
-    // 窄屏自适应：固定 4 个 chip 加溢出按钮在 360dp 手机上会把末位 chip
-    // 挤出滚动区截断（实机走查 B13：411dp 下 4 chip 仍溢出），≤440dp 降为 3 个。
-    final screenWidth = MediaQuery.sizeOf(context).width;
-    final effectiveMax =
-        screenWidth < 440 ? controller.maxVisibleItems - 1 : controller.maxVisibleItems;
-    final visible =
-        orderedItems.take(effectiveMax).toList(growable: false);
-    final overflow =
-        orderedItems.skip(effectiveMax).toList(growable: false);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final maxVisible = controller.maxVisibleItems;
+        final visibleCount = constraints.maxWidth < 440 && maxVisible > 1
+            ? maxVisible - 1
+            : maxVisible;
+        return _buildNavigation(context, orderedItems, visibleCount);
+      },
+    );
+  }
+
+  Widget _buildNavigation(
+    BuildContext context,
+    List<ModuleSubnavItem> orderedItems,
+    int visibleCount,
+  ) {
+    final visible = orderedItems.take(visibleCount);
+    final overflow = orderedItems.skip(visibleCount).toList(growable: false);
     final l10n = context.l10n;
+    final scheme = Theme.of(context).colorScheme;
 
     return Row(
       children: [
@@ -56,7 +68,9 @@ class ModuleSubnav extends StatelessWidget {
               children: [
                 for (final item in visible)
                   Padding(
-                    padding: const EdgeInsets.only(right: 8),
+                    padding: const EdgeInsetsDirectional.only(
+                      end: AppDesignTokens.spacingSm,
+                    ),
                     child: ChoiceChip(
                       selected: selectedId == item.id,
                       showCheckmark: false,
@@ -64,7 +78,7 @@ class ModuleSubnav extends StatelessWidget {
                         item.icon,
                         size: 18,
                         color: selectedId == item.id
-                            ? Theme.of(context).colorScheme.onSecondaryContainer
+                            ? scheme.onSecondaryContainer
                             : null,
                       ),
                       label: Text(item.label),
@@ -75,20 +89,56 @@ class ModuleSubnav extends StatelessWidget {
             ),
           ),
         ),
-        // 溢出「更多」固定在滚动区外：chip 形态在窄屏会被可见区挤出屏外
-        // （实机走查 B13：存储卷 chip 截断、更多按钮不可达），改图标按钮。
-        if (overflow.isNotEmpty)
-          IconButton(
-            tooltip: l10n.commonMore,
-            icon: const Icon(Icons.more_horiz),
-            onPressed: () => _showOverflow(context, overflow),
-          ),
+        if (overflow.isNotEmpty) _buildOverflow(context, overflow),
         IconButton(
-          onPressed: () => _showCustomize(context, orderedItems),
+          onPressed: () => _showCustomize(context, orderedItems, visibleCount),
           tooltip: l10n.moduleSubnavCustomize,
-          icon: const Icon(Icons.tune),
+          icon: const Icon(Icons.tune_rounded),
         ),
       ],
+    );
+  }
+
+  Widget _buildOverflow(
+    BuildContext context,
+    List<ModuleSubnavItem> overflow,
+  ) {
+    final l10n = context.l10n;
+    final scheme = Theme.of(context).colorScheme;
+    final selected = overflow.any((item) => item.id == selectedId);
+    final style = selected
+        ? IconButton.styleFrom(
+            backgroundColor: scheme.secondaryContainer,
+            foregroundColor: scheme.onSecondaryContainer,
+          )
+        : null;
+    const icon = Icon(Icons.more_horiz_rounded);
+
+    if (PlatformUtils.inputDeviceKinds(context) == InputDeviceKind.pointer) {
+      return PopupMenuButton<String>(
+        tooltip: l10n.commonMore,
+        icon: icon,
+        style: style,
+        requestFocus: true,
+        position: PopupMenuPosition.under,
+        onSelected: onSelected,
+        itemBuilder: (context) => [
+          for (final item in overflow)
+            CheckedPopupMenuItem<String>(
+              value: item.id,
+              checked: item.id == selectedId,
+              child: Text(item.label),
+            ),
+        ],
+      );
+    }
+
+    return IconButton(
+      tooltip: l10n.commonMore,
+      icon: icon,
+      style: style,
+      isSelected: selected,
+      onPressed: () => _showOverflow(context, overflow),
     );
   }
 
@@ -96,7 +146,7 @@ class ModuleSubnav extends StatelessWidget {
     BuildContext context,
     List<ModuleSubnavItem> overflow,
   ) async {
-    await showModalBottomSheet<void>(
+    final selection = await showModalBottomSheet<String>(
       context: context,
       showDragHandle: true,
       builder: (sheetContext) {
@@ -108,21 +158,23 @@ class ModuleSubnav extends StatelessWidget {
                 ListTile(
                   leading: Icon(item.icon),
                   title: Text(item.label),
-                  onTap: () {
-                    Navigator.pop(sheetContext);
-                    onSelected(item.id);
-                  },
+                  selected: item.id == selectedId,
+                  trailing:
+                      item.id == selectedId ? const Icon(Icons.check) : null,
+                  onTap: () => Navigator.pop(sheetContext, item.id),
                 ),
             ],
           ),
         );
       },
     );
+    if (context.mounted && selection != null) onSelected(selection);
   }
 
   Future<void> _showCustomize(
     BuildContext context,
     List<ModuleSubnavItem> orderedItems,
+    int visibleCount,
   ) async {
     final l10n = context.l10n;
     final mutable = orderedItems.map((item) => item.id).toList(growable: true);
@@ -147,7 +199,7 @@ class ModuleSubnav extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      l10n.moduleSubnavHint(controller.maxVisibleItems),
+                      l10n.moduleSubnavHint(visibleCount),
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                     const SizedBox(height: 12),
@@ -170,7 +222,7 @@ class ModuleSubnav extends StatelessWidget {
                             leading: Icon(item.icon),
                             title: Text(item.label),
                             subtitle: Text(
-                              index < controller.maxVisibleItems
+                              index < visibleCount
                                   ? l10n.moduleSubnavVisible
                                   : l10n.moduleSubnavHidden,
                             ),
@@ -180,8 +232,9 @@ class ModuleSubnav extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                    OverflowBar(
+                      alignment: MainAxisAlignment.end,
+                      spacing: AppDesignTokens.spacingSm,
                       children: [
                         TextButton(
                           onPressed: () async {
@@ -192,7 +245,6 @@ class ModuleSubnav extends StatelessWidget {
                           },
                           child: Text(l10n.commonReset),
                         ),
-                        const SizedBox(width: 8),
                         FilledButton(
                           onPressed: () async {
                             await controller.reorder(mutable);

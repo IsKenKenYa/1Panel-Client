@@ -50,12 +50,7 @@ class ServerAwarePageScaffold extends StatelessWidget {
                   ? scheme.surfaceContainer
                   : null,
               leading: canPop
-                  ? IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      onPressed: () => Navigator.of(context).maybePop(),
-                      tooltip:
-                          MaterialLocalizations.of(context).backButtonTooltip,
-                    )
+                  ? const BackButton()
                   : buildShellDrawerLeading(
                       context,
                       key: const Key('shell-drawer-menu-button'),
