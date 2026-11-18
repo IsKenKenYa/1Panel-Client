@@ -22,10 +22,11 @@ void applyWebsiteFilters(
   );
 }
 
-void openWebsiteDetail(BuildContext context, WebsiteInfo website) {
+/// 打开站点详情；详情页删除成功 pop(true)，调用方可据此刷新列表。
+Future<dynamic> openWebsiteDetail(BuildContext context, WebsiteInfo website) {
   final id = website.id;
-  if (id == null) return;
-  Navigator.pushNamed(
+  if (id == null) return Future.value();
+  return Navigator.pushNamed(
     context,
     AppRoutes.websiteDetail,
     arguments: {'websiteId': id},

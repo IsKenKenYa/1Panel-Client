@@ -286,7 +286,7 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
                               _selection.select(id);
                             }
                           })
-                        : openWebsiteDetail(context, website);
+                        : _openDetailAndRefresh(context, provider, website);
                     }
                   },
                   onSelectedChanged: (value) {
@@ -381,6 +381,18 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
         _handleAction(currentContext, provider, website, value);
       }
     });
+  }
+
+  /// 打开站点详情并在返回后刷新：详情页删除成功会 pop(true)。
+  Future<void> _openDetailAndRefresh(
+    BuildContext context,
+    WebsitesProvider provider,
+    WebsiteInfo website,
+  ) async {
+    final changed = await openWebsiteDetail(context, website);
+    if (changed == true && context.mounted) {
+      provider.refresh();
+    }
   }
 
   Future<void> _handleAction(
