@@ -9122,4 +9122,91 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get webTerminalUnsupported =>
       'This 1Panel terminal requires authentication headers that browser WebSockets cannot send. Open your 1Panel web interface to use its terminal.';
+
+  @override
+  String get appsListEmptyTitle => 'No apps installed';
+
+  @override
+  String get websitesListEmptyTitle => 'No websites';
+
+  @override
+  String get monitorSystemUsageTitle => 'System Usage';
+
+  @override
+  String get monitorLoadAverageTitle => 'Load Average';
+
+  @override
+  String get containerStateLabel => 'State';
+
+  @override
+  String get deleteConfirmTitle => 'Confirm Deletion';
+
+  @override
+  String get deleteCannotUndoMessage => 'This action cannot be undone.';
+
+  @override
+  String get cronjobNameLabel => 'Name';
+
+  @override
+  String get cronjobScheduleLabel => 'Schedule';
+
+  @override
+  String get cronjobLastResultLabel => 'Last Result';
+
+  @override
+  String get databaseNameLabel => 'Name';
+
+  @override
+  String get databaseVersionLabel => 'Version';
+
+  @override
+  String get backupRecordsDateLabel => 'Date';
+
+  @override
+  String get dashboardCpuCoresLabel => 'CPU Cores';
+
+  @override
+  String get dashboardPanelVersionLabel => 'Panel Version';
+
+  @override
+  String get databasesEmptyTitle => 'No databases';
+
+  @override
+  String get aiModelsEmptyTitle => 'No models';
+
+  @override
+  String get aiModelName => 'Model';
+
+  @override
+  String get aiModelSize => 'Size';
+
+  @override
+  String get aiModelModified => 'Modified';
+
+  @override
+  String get connect => 'Connect';
+
+  @override
+  String get addServer => 'Add Server';
+
+  @override
+  String get uninstallConfirm => 'Confirm Uninstall';
+
+  @override
+  String get uninstallCannotUndo => 'This action cannot be undone.';
+
+  @override
+  String get filesTypeFolder => 'Folder';
+
+  @override
+  String get filesTypeFile => 'File';
+
+  @override
+  String get filesFolderNameLabel => 'Folder Name';
+
+  @override
+  String get dashboardKernelVersionLabel => 'Kernel';
+
+  @override
+  String get containerLogsEmpty => 'No logs';
 }

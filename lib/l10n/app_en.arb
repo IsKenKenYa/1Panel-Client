@@ -3796,6 +3796,39 @@
   "webConnectionTlsUnsupported": "Browsers require trusted certificates and cannot bypass TLS verification",
   "webConnectionFailed": "The browser could not read the panel response. Check the network, CORS, mixed-content rules, and local-network permission. HTTPS also requires a trusted certificate.",
   "webVaultInstallHint": "On iPhone or iPad, open Safari's Share menu and choose Add to Home Screen.",
-  "webTerminalUnsupported": "This 1Panel terminal requires authentication headers that browser WebSockets cannot send. Open your 1Panel web interface to use its terminal."
+  "webTerminalUnsupported": "This 1Panel terminal requires authentication headers that browser WebSockets cannot send. Open your 1Panel web interface to use its terminal.",
 
+  "appsListEmptyTitle": "No apps installed",
+  "websitesListEmptyTitle": "No websites",
+  "monitorSystemUsageTitle": "System Usage",
+  "monitorLoadAverageTitle": "Load Average",
+  "containerStateLabel": "State",
+  "deleteConfirmTitle": "Confirm Deletion",
+  "deleteCannotUndoMessage": "This action cannot be undone.",
+  "cronjobNameLabel": "Name",
+  "cronjobScheduleLabel": "Schedule",
+  "cronjobLastResultLabel": "Last Result",
+  "databaseNameLabel": "Name",
+  "databaseVersionLabel": "Version",
+  "backupRecordsDateLabel": "Date",
+  "dashboardCpuCoresLabel": "CPU Cores",
+  "dashboardPanelVersionLabel": "Panel Version",
+
+  "databasesEmptyTitle": "No databases",
+  "aiModelsEmptyTitle": "No models",
+  "aiModelName": "Model",
+  "aiModelSize": "Size",
+  "aiModelModified": "Modified",
+  "connect": "Connect",
+  "addServer": "Add Server",
+  "uninstallConfirm": "Confirm Uninstall",
+  "uninstallCannotUndo": "This action cannot be undone.",
+
+  "filesTypeFolder": "Folder",
+  "filesTypeFile": "File",
+  "filesFolderNameLabel": "Folder Name",
+
+  "dashboardKernelVersionLabel": "Kernel",
+
+  "containerLogsEmpty": "No logs"
 }

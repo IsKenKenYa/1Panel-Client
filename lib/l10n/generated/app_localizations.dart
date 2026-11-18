@@ -17174,6 +17174,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This 1Panel terminal requires authentication headers that browser WebSockets cannot send. Open your 1Panel web interface to use its terminal.'**
   String get webTerminalUnsupported;
+
+  /// No description provided for @appsListEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No apps installed'**
+  String get appsListEmptyTitle;
+
+  /// No description provided for @websitesListEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No websites'**
+  String get websitesListEmptyTitle;
+
+  /// No description provided for @monitorSystemUsageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'System Usage'**
+  String get monitorSystemUsageTitle;
+
+  /// No description provided for @monitorLoadAverageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Load Average'**
+  String get monitorLoadAverageTitle;
+
+  /// No description provided for @containerStateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'State'**
+  String get containerStateLabel;
+
+  /// No description provided for @deleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Deletion'**
+  String get deleteConfirmTitle;
+
+  /// No description provided for @deleteCannotUndoMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone.'**
+  String get deleteCannotUndoMessage;
+
+  /// No description provided for @cronjobNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get cronjobNameLabel;
+
+  /// No description provided for @cronjobScheduleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule'**
+  String get cronjobScheduleLabel;
+
+  /// No description provided for @cronjobLastResultLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Result'**
+  String get cronjobLastResultLabel;
+
+  /// No description provided for @databaseNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get databaseNameLabel;
+
+  /// No description provided for @databaseVersionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get databaseVersionLabel;
+
+  /// No description provided for @backupRecordsDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get backupRecordsDateLabel;
+
+  /// No description provided for @dashboardCpuCoresLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'CPU Cores'**
+  String get dashboardCpuCoresLabel;
+
+  /// No description provided for @dashboardPanelVersionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel Version'**
+  String get dashboardPanelVersionLabel;
+
+  /// No description provided for @databasesEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No databases'**
+  String get databasesEmptyTitle;
+
+  /// No description provided for @aiModelsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No models'**
+  String get aiModelsEmptyTitle;
+
+  /// No description provided for @aiModelName.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get aiModelName;
+
+  /// No description provided for @aiModelSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get aiModelSize;
+
+  /// No description provided for @aiModelModified.
+  ///
+  /// In en, this message translates to:
+  /// **'Modified'**
+  String get aiModelModified;
+
+  /// No description provided for @connect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get connect;
+
+  /// No description provided for @addServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Server'**
+  String get addServer;
+
+  /// No description provided for @uninstallConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Uninstall'**
+  String get uninstallConfirm;
+
+  /// No description provided for @uninstallCannotUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone.'**
+  String get uninstallCannotUndo;
+
+  /// No description provided for @filesTypeFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder'**
+  String get filesTypeFolder;
+
+  /// No description provided for @filesTypeFile.
+  ///
+  /// In en, this message translates to:
+  /// **'File'**
+  String get filesTypeFile;
+
+  /// No description provided for @filesFolderNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder Name'**
+  String get filesFolderNameLabel;
+
+  /// No description provided for @dashboardKernelVersionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Kernel'**
+  String get dashboardKernelVersionLabel;
+
+  /// No description provided for @containerLogsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No logs'**
+  String get containerLogsEmpty;
 }
 
 class _AppLocalizationsDelegate

@@ -8880,4 +8880,91 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get webTerminalUnsupported =>
       '当前 1Panel 终端需要浏览器 WebSocket 无法设置的认证请求头。请打开你的 1Panel 网页面板使用终端。';
+
+  @override
+  String get appsListEmptyTitle => '暂无应用';
+
+  @override
+  String get websitesListEmptyTitle => '暂无网站';
+
+  @override
+  String get monitorSystemUsageTitle => '系统占用';
+
+  @override
+  String get monitorLoadAverageTitle => '系统负载';
+
+  @override
+  String get containerStateLabel => '状态';
+
+  @override
+  String get deleteConfirmTitle => '确认删除';
+
+  @override
+  String get deleteCannotUndoMessage => '删除后无法恢复';
+
+  @override
+  String get cronjobNameLabel => '名称';
+
+  @override
+  String get cronjobScheduleLabel => '执行周期';
+
+  @override
+  String get cronjobLastResultLabel => '最近结果';
+
+  @override
+  String get databaseNameLabel => '名称';
+
+  @override
+  String get databaseVersionLabel => '版本';
+
+  @override
+  String get backupRecordsDateLabel => '日期';
+
+  @override
+  String get dashboardCpuCoresLabel => 'CPU 核心数';
+
+  @override
+  String get dashboardPanelVersionLabel => '面板版本';
+
+  @override
+  String get databasesEmptyTitle => '暂无数据库';
+
+  @override
+  String get aiModelsEmptyTitle => '暂无模型';
+
+  @override
+  String get aiModelName => '模型名称';
+
+  @override
+  String get aiModelSize => '大小';
+
+  @override
+  String get aiModelModified => '修改时间';
+
+  @override
+  String get connect => '连接';
+
+  @override
+  String get addServer => '添加服务器';
+
+  @override
+  String get uninstallConfirm => '确认卸载';
+
+  @override
+  String get uninstallCannotUndo => '卸载后无法恢复';
+
+  @override
+  String get filesTypeFolder => '文件夹';
+
+  @override
+  String get filesTypeFile => '文件';
+
+  @override
+  String get filesFolderNameLabel => '文件夹名称';
+
+  @override
+  String get dashboardKernelVersionLabel => '内核版本';
+
+  @override
+  String get containerLogsEmpty => '暂无日志';
 }

@@ -3679,6 +3679,39 @@
   "webConnectionTlsUnsupported": "浏览器需要可信证书，无法忽略 TLS 证书验证",
   "webConnectionFailed": "浏览器未能读取面板响应，请检查网络、CORS、混合内容与局域网权限；使用 HTTPS 时还需要可信证书。",
   "webVaultInstallHint": "iPhone 或 iPad：在 Safari 分享菜单中选择“添加到主屏幕”，即可从主屏幕打开。",
-  "webTerminalUnsupported": "当前 1Panel 终端需要浏览器 WebSocket 无法设置的认证请求头。请打开你的 1Panel 网页面板使用终端。"
+  "webTerminalUnsupported": "当前 1Panel 终端需要浏览器 WebSocket 无法设置的认证请求头。请打开你的 1Panel 网页面板使用终端。",
 
+  "appsListEmptyTitle": "暂无应用",
+  "websitesListEmptyTitle": "暂无网站",
+  "monitorSystemUsageTitle": "系统占用",
+  "monitorLoadAverageTitle": "系统负载",
+  "containerStateLabel": "状态",
+  "deleteConfirmTitle": "确认删除",
+  "deleteCannotUndoMessage": "删除后无法恢复",
+  "cronjobNameLabel": "名称",
+  "cronjobScheduleLabel": "执行周期",
+  "cronjobLastResultLabel": "最近结果",
+  "databaseNameLabel": "名称",
+  "databaseVersionLabel": "版本",
+  "backupRecordsDateLabel": "日期",
+  "dashboardCpuCoresLabel": "CPU 核心数",
+  "dashboardPanelVersionLabel": "面板版本",
+
+  "databasesEmptyTitle": "暂无数据库",
+  "aiModelsEmptyTitle": "暂无模型",
+  "aiModelName": "模型名称",
+  "aiModelSize": "大小",
+  "aiModelModified": "修改时间",
+  "connect": "连接",
+  "addServer": "添加服务器",
+  "uninstallConfirm": "确认卸载",
+  "uninstallCannotUndo": "卸载后无法恢复",
+
+  "filesTypeFolder": "文件夹",
+  "filesTypeFile": "文件",
+  "filesFolderNameLabel": "文件夹名称",
+
+  "dashboardKernelVersionLabel": "内核版本",
+
+  "containerLogsEmpty": "暂无日志"
 }
