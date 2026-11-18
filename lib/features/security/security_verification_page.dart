@@ -111,7 +111,7 @@ class _SecurityVerificationPageState extends State<SecurityVerificationPage> {
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: _provider.loading ? null : _provider.load,
-                      icon: const Icon(Icons.refresh),
+                      icon: const Icon(Icons.refresh_outlined),
                       label: Text(l10n.securityLoadInfo),
                     ),
                   ),
