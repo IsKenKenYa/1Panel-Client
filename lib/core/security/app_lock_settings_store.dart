@@ -51,7 +51,7 @@ class AppLockSettings {
 }
 
 class AppLockSettingsStore {
-  static const String _enabledKey = 'app_lock_enabled';
+  static const String enabledPreferenceKey = 'app_lock_enabled';
   static const String _lockOnAppOpenKey = 'app_lock_on_open';
   static const String _lockOnProtectedModuleKey =
       'app_lock_on_protected_module';
@@ -62,7 +62,7 @@ class AppLockSettingsStore {
     final prefs = await SharedPreferences.getInstance();
 
     final enabled =
-        prefs.getBool(_enabledKey) ?? AppLockSettings.defaults.enabled;
+        prefs.getBool(enabledPreferenceKey) ?? AppLockSettings.defaults.enabled;
     final lockOnAppOpen = prefs.getBool(_lockOnAppOpenKey) ??
         AppLockSettings.defaults.lockOnAppOpen;
     final lockOnProtectedModule = prefs.getBool(_lockOnProtectedModuleKey) ??
@@ -83,7 +83,7 @@ class AppLockSettingsStore {
 
   Future<void> save(AppLockSettings settings) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_enabledKey, settings.enabled);
+    await prefs.setBool(enabledPreferenceKey, settings.enabled);
     await prefs.setBool(_lockOnAppOpenKey, settings.lockOnAppOpen);
     await prefs.setBool(
       _lockOnProtectedModuleKey,

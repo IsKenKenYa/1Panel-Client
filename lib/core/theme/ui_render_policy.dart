@@ -5,15 +5,7 @@ import 'package:glass/glass.dart';
 
 import 'ui_render_mode.dart';
 
-/// Runtime policy for choosing native host UI vs Flutter-rendered MDUI3.
-///
-/// Current strategy:
-/// - Non-web platforms default to native mode.
-/// - If a platform native host is unavailable, fallback to Flutter MDUI3.
-/// - Web always uses Flutter UI.
-/// - liquidGlass renders Flutter UI with Liquid Glass navigation floats
-///   (glass package works on iOS/macOS/Android via Impeller; Skia falls
-///   back to plain blur automatically).
+/// 原生宿主与 Flutter 界面的启动策略。
 class UIRenderPolicy {
   const UIRenderPolicy._();
 
@@ -36,9 +28,19 @@ class UIRenderPolicy {
   /// 标准走 premium；Android GLES / Skia / Web 用轻量 standard。
   /// 实测 GLES 模拟器上 premium 会阻塞主线程并丢失 GPU 上下文。
   static bool get premiumGlassAllowed {
-    if (kIsWeb) return false;
-    return defaultTargetPlatform == TargetPlatform.iOS ||
-        defaultTargetPlatform == TargetPlatform.macOS;
+    return isAppleHost;
+  }
+
+  static bool get isAppleHost =>
+      !kIsWeb && (Platform.isIOS || Platform.isMacOS);
+
+  static UIRenderMode defaultMode({required bool appLockEnabled}) {
+    if (!kIsWeb && Platform.isIOS && appLockEnabled) {
+      return UIRenderMode.liquidGlass;
+    }
+    if (isAppleHost) return UIRenderMode.native;
+    if (!kIsWeb && Platform.isAndroid) return UIRenderMode.md3;
+    return UIRenderMode.liquidGlass;
   }
 
   static bool canSelectNativeMode() {
@@ -50,19 +52,11 @@ class UIRenderPolicy {
       return false;
     }
 
-    // Native shell strategy: macOS (SwiftUI) and Windows (WinUI3).
-    return Platform.isMacOS || Platform.isWindows;
+    return isAppleHost || Platform.isWindows;
   }
 
   static bool shouldUseFlutterUI(UIRenderMode configuredMode) {
-    if (kIsWeb) {
-      return true;
-    }
-    if (configuredMode == UIRenderMode.md3 ||
-        configuredMode == UIRenderMode.liquidGlass) {
-      return true;
-    }
-    return !supportsNativeHost();
+    return configuredMode != UIRenderMode.native || !supportsNativeHost();
   }
 
   static bool isNativeModeFallback(UIRenderMode configuredMode) {

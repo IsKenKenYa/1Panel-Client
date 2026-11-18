@@ -58,8 +58,8 @@ class AppSettingsController extends ChangeNotifier with SafeChangeNotifier {
   }
 
   Future<void> updateUIRenderMode(UIRenderMode mode) async {
-    _uiRenderMode = mode;
     await _preferencesService.saveUIRenderMode(mode);
+    _uiRenderMode = mode;
     notifyListeners();
   }
 }

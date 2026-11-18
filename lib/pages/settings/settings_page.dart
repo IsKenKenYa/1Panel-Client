@@ -17,6 +17,7 @@ import 'package:onepanel_client/pages/settings/cache_settings_page.dart';
 import 'package:onepanel_client/shared/widgets/section_card.dart';
 
 import '../../core/utils/snackbar_utils.dart';
+
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
@@ -154,61 +155,7 @@ class _SettingsBody extends StatelessWidget {
                       l10n.settingsUIRenderModeLiquidGlass,
                     UIRenderMode.md3 => l10n.settingsUIRenderModeMD3,
                   },
-                  onTap: () {
-                    final pageContext = context;
-                    showDialog(
-                      context: context,
-                      builder: (dialogContext) {
-                        return AlertDialog(
-                          title: Text(l10n.settingsUIRenderMode),
-                          content: RadioGroup<UIRenderMode>(
-                            groupValue: settings.uiRenderMode,
-                            onChanged: (value) {
-                              if (value == null) {
-                                return;
-                              }
-                              settings.updateUIRenderMode(value);
-                              Navigator.pop(dialogContext);
-                              // 用设置页 context 展示提示：对话框 context 已随
-                              // 关闭失效，继续使用会触发已停用祖先查找。
-                              SnackBarUtils.showSuccess(
-                                pageContext,
-                                l10n.settingsUIRenderModeRestartHint,
-                              );
-                            },
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                if (UIRenderPolicy.canSelectNativeMode())
-                                  RadioListTile<UIRenderMode>(
-                                    title:
-                                        Text(l10n.settingsUIRenderModeNative),
-                                    value: UIRenderMode.native,
-                                  ),
-                                RadioListTile<UIRenderMode>(
-                                  title:
-                                      Text(l10n.settingsUIRenderModeLiquidGlass),
-                                  subtitle: Text(
-                                      l10n.settingsUIRenderModeLiquidGlassDesc),
-                                  value: UIRenderMode.liquidGlass,
-                                ),
-                                RadioListTile<UIRenderMode>(
-                                  title: Text(l10n.settingsUIRenderModeMD3),
-                                  value: UIRenderMode.md3,
-                                ),
-                              ],
-                            ),
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(dialogContext),
-                              child: Text(l10n.commonClose),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
+                  onTap: () => _chooseRenderMode(context, settings),
                 ),
                 SectionEntryItem(
                   icon: Icons.lock_person_outlined,
@@ -308,6 +255,61 @@ class _SettingsBody extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+Future<void> _chooseRenderMode(
+  BuildContext context,
+  AppSettingsController settings,
+) async {
+  final l10n = context.l10n;
+  final selectedMode = await showDialog<UIRenderMode>(
+    context: context,
+    builder: (dialogContext) => AlertDialog(
+      title: Text(l10n.settingsUIRenderMode),
+      scrollable: true,
+      content: RadioGroup<UIRenderMode>(
+        groupValue: settings.uiRenderMode,
+        onChanged: (mode) => Navigator.pop(dialogContext, mode),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (UIRenderPolicy.canSelectNativeMode())
+              RadioListTile<UIRenderMode>(
+                title: Text(l10n.settingsUIRenderModeNative),
+                subtitle: UIRenderPolicy.isAppleHost
+                    ? Text(l10n.settingsUIRenderModeAppleGlassDesc)
+                    : null,
+                value: UIRenderMode.native,
+              ),
+            RadioListTile<UIRenderMode>(
+              title: Text(l10n.settingsUIRenderModeMD3),
+              value: UIRenderMode.md3,
+            ),
+            RadioListTile<UIRenderMode>(
+              title: Text(l10n.settingsUIRenderModeLiquidGlass),
+              subtitle: Text(l10n.settingsUIRenderModeLiquidGlassDesc),
+              value: UIRenderMode.liquidGlass,
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(dialogContext),
+          child: Text(l10n.commonClose),
+        ),
+      ],
+    ),
+  );
+  if (selectedMode == null ||
+      selectedMode == settings.uiRenderMode ||
+      !context.mounted) {
+    return;
+  }
+  await settings.updateUIRenderMode(selectedMode);
+  if (context.mounted) {
+    SnackBarUtils.showSuccess(context, l10n.settingsUIRenderModeRestartHint);
   }
 }
 

@@ -1,12 +1,10 @@
 enum UIRenderMode {
-  /// Native host shell (macOS SwiftUI / Windows WinUI3).
+  /// SwiftUI 宿主（iOS、macOS）或 WinUI3 宿主（Windows）。
   native,
 
-  /// Flutter-rendered MDUI3, solid surfaces (glass floats disabled).
+  /// 使用标准导航组件的 Flutter MDUI3 界面。
   md3,
 
-  /// Flutter-rendered MDUI3 with Liquid Glass navigation floats
-  /// (AppBar / bottom nav / desktop sidebar rendered via glass package,
-  /// following Apple Liquid Glass layering semantics).
-  liquidGlass
+  /// 使用玻璃效果导航组件的 Flutter MDUI3 界面。
+  liquidGlass,
 }

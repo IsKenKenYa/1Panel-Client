@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:onepanel_client/core/security/app_lock_settings_store.dart';
 import 'package:onepanel_client/core/theme/ui_render_mode.dart';
 import 'package:onepanel_client/core/theme/ui_render_policy.dart';
 
@@ -57,8 +58,9 @@ class AppPreferencesService {
     await prefs.setString(_themeModeKey, value);
   }
 
-  Future<Locale?> loadLocale() async {
+  Future<Locale?> loadLocale({bool refresh = false}) async {
     final prefs = await SharedPreferences.getInstance();
+    if (refresh) await prefs.reload();
     final value = prefs.getString(_localeKey);
     if (value == null || value.isEmpty || value == 'system') {
       return null;
@@ -135,40 +137,26 @@ class AppPreferencesService {
     await prefs.setInt(_seedColorKey, color.toARGB32());
   }
 
-  Future<UIRenderMode> loadUIRenderMode() async {
+  Future<UIRenderMode> loadUIRenderMode({bool refresh = false}) async {
     final prefs = await SharedPreferences.getInstance();
+    if (refresh) await prefs.reload();
     final value = prefs.getString(_uiRenderModeKey);
 
-    UIRenderMode configuredMode;
-    switch (value) {
-      case 'md3':
-        configuredMode = UIRenderMode.md3;
-        break;
-      case 'native':
-        configuredMode = UIRenderMode.native;
-        break;
-      case 'liquidGlass':
-        configuredMode = UIRenderMode.liquidGlass;
-        break;
-      default:
-        // 新装机默认展示 Liquid Glass 导航浮层（玻璃此前即默认渲染）。
-        configuredMode = UIRenderMode.liquidGlass;
-        break;
-    }
-
+    final configuredMode = UIRenderMode.values.asNameMap()[value] ??
+        UIRenderPolicy.defaultMode(
+          appLockEnabled:
+              prefs.getBool(AppLockSettingsStore.enabledPreferenceKey) ?? false,
+        );
     return UIRenderPolicy.resolveSupportedMode(configuredMode);
   }
 
   Future<void> saveUIRenderMode(UIRenderMode mode) async {
     final prefs = await SharedPreferences.getInstance();
     final resolvedMode = UIRenderPolicy.resolveSupportedMode(mode);
-    final value = switch (resolvedMode) {
-      UIRenderMode.md3 => 'md3',
-      UIRenderMode.native => 'native',
-      UIRenderMode.liquidGlass => 'liquidGlass',
-    };
-
-    await prefs.setString(_uiRenderModeKey, value);
+    final saved = await prefs.setString(_uiRenderModeKey, resolvedMode.name);
+    if (!saved) {
+      throw StateError('Failed to save $_uiRenderModeKey');
+    }
   }
 
   // Controls whether OHOS picker dialogs (DocumentViewPicker /
