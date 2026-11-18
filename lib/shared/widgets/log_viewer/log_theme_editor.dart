@@ -208,7 +208,7 @@ class _LogThemeEditorState extends State<LogThemeEditor> {
       floatingActionButton: FloatingActionButton(
         heroTag: 'log_theme_editor_add_fab',
         onPressed: _addRule,
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add_outlined),
       ),
     );
   }

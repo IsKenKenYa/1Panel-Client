@@ -145,7 +145,7 @@ class _LogToolbarState extends State<LogToolbar> {
               ),
               const SizedBox(width: 8),
               IconButton(
-                icon: const Icon(Icons.refresh),
+                icon: const Icon(Icons.refresh_outlined),
                 tooltip: l10n.logRefresh,
                 onPressed: widget.onRefresh,
               ),
@@ -171,6 +171,8 @@ class _LogToolbarState extends State<LogToolbar> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
       builder: (context) => _LogSettingsSheet(controller: widget.controller),
     );
   }

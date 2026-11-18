@@ -43,7 +43,7 @@ class ModuleErrorStateWidget extends StatelessWidget {
               const SizedBox(height: 16),
               FilledButton.icon(
                 onPressed: onRetry,
-                icon: const Icon(Icons.refresh),
+                icon: const Icon(Icons.refresh_outlined),
                 label: Text(l10n.commonRetry),
               ),
             ],

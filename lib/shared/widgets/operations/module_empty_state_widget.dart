@@ -48,7 +48,7 @@ class ModuleEmptyStateWidget extends StatelessWidget {
               const SizedBox(height: 16),
               FilledButton.icon(
                 onPressed: onAction,
-                icon: const Icon(Icons.add),
+                icon: const Icon(Icons.add_outlined),
                 label: Text(actionLabel!),
               ),
             ],
