@@ -27,15 +27,21 @@ struct ContainersView: View {
         Group {
             if viewModel.isLoading && viewModel.containers.isEmpty {
                 LoadingView()
+            } else if viewModel.loadFailed && viewModel.containers.isEmpty {
+                ErrorView(message: translations.get("commonLoadFailedTitle", fallback: "Failed to load")) {
+                    viewModel.fetchContainers()
+                }
             } else if viewModel.containers.isEmpty {
                 EmptyStateView(
                     icon: "cube.box",
-                    message: translations.get("containerEmptyTitle", fallback: "No containers found")
+                    message: translations.get("containerEmptyTitle", fallback: "No containers found"),
+                    description: translations.get("containerEmptyDesc",
+                                                  fallback: "Tap the button below to create a container")
                 )
             } else {
                 List {
                     ForEach(viewModel.containers) { container in
-                        NavigationLink(value: container) {
+                        NavigationLink(value: ServerRoute.container(name: container.name)) {
                             VStack(alignment: .leading, spacing: 8) {
                                 HStack {
                                     Text(container.name)
@@ -67,9 +73,6 @@ struct ContainersView: View {
                             .padding(.vertical, 4)
                         }
                         .tint(.primary)
-                        .navigationDestination(for: ContainerModel.self) { target in
-                            ContainerDetailView(containerName: target.name)
-                        }
                         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                             Button(role: .destructive) {
                                 containerToDelete = container
@@ -114,7 +117,7 @@ struct ContainersView: View {
                 Button {
                     viewModel.fetchContainers()
                 } label: {
-                    Image(systemName: "arrow.clockwise")
+                    Label(translations.get("commonRefresh", fallback: "Refresh"), systemImage: "arrow.clockwise")
                 }
                 .disabled(viewModel.isLoading)
             }
@@ -140,14 +143,10 @@ struct ContainersView: View {
         } message: {
             Text(translations.get("deleteCannotUndoMessage", fallback: "This action cannot be undone."))
         }
-        .overlay(alignment: .bottom) {
-            if let toastText {
-                Text(toastText)
-                    .font(.footnote)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
-                    .background(.regularMaterial, in: Capsule())
-                    .padding(.bottom, 24)
+        .operationNotice(toastText)
+        .onChange(of: viewModel.loadFailed) { failed in
+            if failed && !viewModel.containers.isEmpty {
+                showToast(translations.get("commonLoadFailedTitle", fallback: "Failed to load"))
             }
         }
         .onAppear {

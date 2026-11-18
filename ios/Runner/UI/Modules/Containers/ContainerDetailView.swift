@@ -12,7 +12,7 @@ struct ContainerDetailView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Picker("", selection: $tab) {
+            Picker(translations.get("containerDetailTitle", fallback: "Container details"), selection: $tab) {
                 Text(translations.get("containerTabInfo", fallback: "Info")).tag("info")
                 Text(translations.get("containerTabLogs", fallback: "Logs")).tag("logs")
             }
@@ -28,6 +28,9 @@ struct ContainerDetailView: View {
         }
         .navigationTitle(containerName)
         .navigationBarTitleDisplayMode(.inline)
+        .operationNotice(refreshFailed
+            ? translations.get("commonLoadFailedTitle", fallback: "Failed to load")
+            : nil)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
@@ -37,7 +40,7 @@ struct ContainerDetailView: View {
                         viewModel.fetchLogs(name: containerName)
                     }
                 } label: {
-                    Image(systemName: "arrow.clockwise")
+                    Label(translations.get("commonRefresh", fallback: "Refresh"), systemImage: "arrow.clockwise")
                 }
                 .disabled(viewModel.isLoadingInspect || viewModel.isLoadingLogs)
             }
@@ -59,14 +62,25 @@ struct ContainerDetailView: View {
         }
     }
 
+    private var refreshFailed: Bool {
+        if tab == "logs" {
+            return viewModel.logsFailed && !viewModel.logs.isEmpty
+        }
+        return viewModel.inspectFailed && !viewModel.inspectText.isEmpty
+    }
+
     @ViewBuilder
     private var inspectContent: some View {
         if viewModel.isLoadingInspect && viewModel.inspectText.isEmpty {
             LoadingView()
+        } else if viewModel.inspectFailed && viewModel.inspectText.isEmpty {
+            ErrorView(message: translations.get("commonLoadFailedTitle", fallback: "Failed to load")) {
+                viewModel.fetchInspect(name: containerName)
+            }
         } else if viewModel.inspectText.isEmpty {
             EmptyStateView(
                 icon: "doc.text.magnifyingglass",
-                message: translations.get("containerLogsEmpty", fallback: "No logs")
+                message: translations.get("commonEmpty", fallback: "No data available")
             )
         } else {
             ScrollView {
@@ -83,6 +97,10 @@ struct ContainerDetailView: View {
     private var logsContent: some View {
         if viewModel.isLoadingLogs && viewModel.logs.isEmpty {
             LoadingView()
+        } else if viewModel.logsFailed && viewModel.logs.isEmpty {
+            ErrorView(message: translations.get("commonLoadFailedTitle", fallback: "Failed to load")) {
+                viewModel.fetchLogs(name: containerName)
+            }
         } else if viewModel.logs.isEmpty {
             EmptyStateView(
                 icon: "doc.text",
