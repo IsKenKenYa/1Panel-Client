@@ -2582,6 +2582,30 @@ abstract class AppLocalizations {
   /// **'Remote'**
   String get databaseRemoteTab;
 
+  /// No description provided for @databaseRemoteUnbindAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Unbind'**
+  String get databaseRemoteUnbindAction;
+
+  /// No description provided for @databaseRemoteUnbindMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this connection from the panel. The database and its backups are preserved.'**
+  String get databaseRemoteUnbindMessage;
+
+  /// No description provided for @databaseRemoteUnbindInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Applications still use this connection:'**
+  String get databaseRemoteUnbindInUse;
+
+  /// No description provided for @databaseRemoteUnbindServerChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'The active server changed. Refresh the database list and try again.'**
+  String get databaseRemoteUnbindServerChanged;
+
   /// No description provided for @databaseMongodbTab.
   ///
   /// In en, this message translates to:
@@ -4022,28 +4046,52 @@ abstract class AppLocalizations {
   /// **'Language updates apply immediately. If not specified, the app follows system settings.'**
   String get settingsLanguageHint;
 
+  /// No description provided for @settingsLanguageRestartHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart the app to apply the language change.'**
+  String get settingsLanguageRestartHint;
+
+  /// No description provided for @settingsAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get settingsAppearance;
+
   /// No description provided for @settingsUIRenderMode.
   ///
   /// In en, this message translates to:
-  /// **'UI Render Mode'**
+  /// **'Interface style'**
   String get settingsUIRenderMode;
 
   /// No description provided for @settingsUIRenderModeNative.
   ///
   /// In en, this message translates to:
-  /// **'Native'**
+  /// **'Native interface'**
   String get settingsUIRenderModeNative;
+
+  /// No description provided for @settingsUIRenderModeAppleGlass.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple UI with Liquid Glass'**
+  String get settingsUIRenderModeAppleGlass;
+
+  /// No description provided for @settingsUIRenderModeAppleGlassDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Navigation and controls use Apple’s Liquid Glass on iOS and macOS 26 or later.'**
+  String get settingsUIRenderModeAppleGlassDesc;
 
   /// No description provided for @settingsUIRenderModeLiquidGlass.
   ///
   /// In en, this message translates to:
-  /// **'Liquid Glass'**
+  /// **'MDUI3 with Liquid Glass'**
   String get settingsUIRenderModeLiquidGlass;
 
   /// No description provided for @settingsUIRenderModeLiquidGlassDesc.
   ///
   /// In en, this message translates to:
-  /// **'Frosted navigation floats (Apple Liquid Glass semantics, native standard on iOS 26)'**
+  /// **'Translucent navigation with a glass effect.'**
   String get settingsUIRenderModeLiquidGlassDesc;
 
   /// No description provided for @settingsUIRenderModeMD3.
@@ -5300,11 +5348,23 @@ abstract class AppLocalizations {
   /// **'Verify your identity to enable app lock'**
   String get appLockUnlockReasonEnable;
 
+  /// No description provided for @appLockUnlockReasonDisable.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify your identity to turn off App Lock'**
+  String get appLockUnlockReasonDisable;
+
   /// No description provided for @appLockUnlockReasonAppOpen.
   ///
   /// In en, this message translates to:
   /// **'Verify your identity to open 1Panel Client'**
   String get appLockUnlockReasonAppOpen;
+
+  /// No description provided for @appLockUnlockAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock App'**
+  String get appLockUnlockAction;
 
   /// No description provided for @appLockUnlockReasonModule.
   ///
@@ -7759,6 +7819,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unsaved'**
   String get filesEditorUnsaved;
+
+  /// No description provided for @filesEditorDiscardChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard Changes'**
+  String get filesEditorDiscardChanges;
 
   /// No description provided for @filesEditorSaving.
   ///
@@ -17271,11 +17337,47 @@ abstract class AppLocalizations {
   /// **'No databases'**
   String get databasesEmptyTitle;
 
+  /// No description provided for @databasesEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Databases created in 1Panel appear here.'**
+  String get databasesEmptyHint;
+
   /// No description provided for @aiModelsEmptyTitle.
   ///
   /// In en, this message translates to:
   /// **'No models'**
   String get aiModelsEmptyTitle;
+
+  /// No description provided for @aiModelsEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Models added in 1Panel appear here.'**
+  String get aiModelsEmptyHint;
+
+  /// No description provided for @backupsEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup records appear here after backups run in 1Panel.'**
+  String get backupsEmptyHint;
+
+  /// No description provided for @cronjobsEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Cronjobs created in 1Panel appear here.'**
+  String get cronjobsEmptyHint;
+
+  /// No description provided for @appsEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps installed from the App Store appear here.'**
+  String get appsEmptyHint;
+
+  /// No description provided for @websitesEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Add in the top toolbar to create your first website.'**
+  String get websitesEmptyHint;
 
   /// No description provided for @aiModelName.
   ///

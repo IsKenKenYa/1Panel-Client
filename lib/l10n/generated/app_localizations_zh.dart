@@ -1307,6 +1307,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get databaseRemoteTab => '远程';
 
   @override
+  String get databaseRemoteUnbindAction => '解除绑定';
+
+  @override
+  String get databaseRemoteUnbindMessage => '从面板移除此连接，保留数据库和备份。';
+
+  @override
+  String get databaseRemoteUnbindInUse => '以下应用仍在使用此连接。';
+
+  @override
+  String get databaseRemoteUnbindServerChanged => '当前服务器已切换，请刷新数据库列表后重试。';
+
+  @override
   String get databaseMongodbTab => 'MongoDB';
 
   @override
@@ -2049,17 +2061,29 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsLanguageHint => '语言修改会立即生效，未指定时将跟随系统。';
 
   @override
-  String get settingsUIRenderMode => 'UI 渲染模式';
+  String get settingsLanguageRestartHint => '重启应用后生效。';
 
   @override
-  String get settingsUIRenderModeNative => '原生模式';
+  String get settingsAppearance => '外观';
 
   @override
-  String get settingsUIRenderModeLiquidGlass => '液态玻璃';
+  String get settingsUIRenderMode => '界面风格';
 
   @override
-  String get settingsUIRenderModeLiquidGlassDesc =>
-      '导航浮层磨砂穿透（Apple Liquid Glass 语义，iOS 26 按官方标准呈现）';
+  String get settingsUIRenderModeNative => '原生界面';
+
+  @override
+  String get settingsUIRenderModeAppleGlass => 'Apple 原生界面 · 液态玻璃';
+
+  @override
+  String get settingsUIRenderModeAppleGlassDesc =>
+      'iOS 和 macOS 26 或更新版本的导航与控件使用 Apple 液态玻璃。';
+
+  @override
+  String get settingsUIRenderModeLiquidGlass => 'MDUI3 液态玻璃';
+
+  @override
+  String get settingsUIRenderModeLiquidGlassDesc => '半透明导航栏带有玻璃效果。';
 
   @override
   String get settingsUIRenderModeMD3 => 'MDUI3';
@@ -2715,7 +2739,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appLockUnlockReasonEnable => '请验证身份以启用应用锁';
 
   @override
+  String get appLockUnlockReasonDisable => '验证身份以关闭应用锁';
+
+  @override
   String get appLockUnlockReasonAppOpen => '请验证身份以打开 1Panel Client';
+
+  @override
+  String get appLockUnlockAction => '解锁应用';
 
   @override
   String appLockUnlockReasonModule(String module) {
@@ -3990,6 +4020,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get filesEditorUnsaved => '未保存';
+
+  @override
+  String get filesEditorDiscardChanges => '放弃修改';
 
   @override
   String get filesEditorSaving => '保存中...';
@@ -8930,7 +8963,25 @@ class AppLocalizationsZh extends AppLocalizations {
   String get databasesEmptyTitle => '暂无数据库';
 
   @override
+  String get databasesEmptyHint => '在 1Panel 中创建数据库后，会在这里展示。';
+
+  @override
   String get aiModelsEmptyTitle => '暂无模型';
+
+  @override
+  String get aiModelsEmptyHint => '在 1Panel 中添加模型后，会在这里展示。';
+
+  @override
+  String get backupsEmptyHint => '在 1Panel 中执行备份后，会在这里展示记录。';
+
+  @override
+  String get cronjobsEmptyHint => '在 1Panel 中创建计划任务后，会在这里展示。';
+
+  @override
+  String get appsEmptyHint => '前往应用商店安装应用后，会在这里展示。';
+
+  @override
+  String get websitesEmptyHint => '点击右上角添加按钮，创建第一个网站。';
 
   @override
   String get aiModelName => '模型名称';

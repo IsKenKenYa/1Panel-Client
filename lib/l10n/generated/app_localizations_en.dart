@@ -1337,6 +1337,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get databaseRemoteTab => 'Remote';
 
   @override
+  String get databaseRemoteUnbindAction => 'Unbind';
+
+  @override
+  String get databaseRemoteUnbindMessage =>
+      'Remove this connection from the panel. The database and its backups are preserved.';
+
+  @override
+  String get databaseRemoteUnbindInUse =>
+      'Applications still use this connection:';
+
+  @override
+  String get databaseRemoteUnbindServerChanged =>
+      'The active server changed. Refresh the database list and try again.';
+
+  @override
   String get databaseMongodbTab => 'MongoDB';
 
   @override
@@ -2100,17 +2115,31 @@ class AppLocalizationsEn extends AppLocalizations {
       'Language updates apply immediately. If not specified, the app follows system settings.';
 
   @override
-  String get settingsUIRenderMode => 'UI Render Mode';
+  String get settingsLanguageRestartHint =>
+      'Restart the app to apply the language change.';
 
   @override
-  String get settingsUIRenderModeNative => 'Native';
+  String get settingsAppearance => 'Appearance';
 
   @override
-  String get settingsUIRenderModeLiquidGlass => 'Liquid Glass';
+  String get settingsUIRenderMode => 'Interface style';
+
+  @override
+  String get settingsUIRenderModeNative => 'Native interface';
+
+  @override
+  String get settingsUIRenderModeAppleGlass => 'Apple UI with Liquid Glass';
+
+  @override
+  String get settingsUIRenderModeAppleGlassDesc =>
+      'Navigation and controls use Apple’s Liquid Glass on iOS and macOS 26 or later.';
+
+  @override
+  String get settingsUIRenderModeLiquidGlass => 'MDUI3 with Liquid Glass';
 
   @override
   String get settingsUIRenderModeLiquidGlassDesc =>
-      'Frosted navigation floats (Apple Liquid Glass semantics, native standard on iOS 26)';
+      'Translucent navigation with a glass effect.';
 
   @override
   String get settingsUIRenderModeMD3 => 'MDUI3';
@@ -2815,8 +2844,15 @@ class AppLocalizationsEn extends AppLocalizations {
       'Verify your identity to enable app lock';
 
   @override
+  String get appLockUnlockReasonDisable =>
+      'Verify your identity to turn off App Lock';
+
+  @override
   String get appLockUnlockReasonAppOpen =>
       'Verify your identity to open 1Panel Client';
+
+  @override
+  String get appLockUnlockAction => 'Unlock App';
 
   @override
   String appLockUnlockReasonModule(String module) {
@@ -4135,6 +4171,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get filesEditorUnsaved => 'Unsaved';
+
+  @override
+  String get filesEditorDiscardChanges => 'Discard Changes';
 
   @override
   String get filesEditorSaving => 'Saving...';
@@ -9172,7 +9211,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get databasesEmptyTitle => 'No databases';
 
   @override
+  String get databasesEmptyHint => 'Databases created in 1Panel appear here.';
+
+  @override
   String get aiModelsEmptyTitle => 'No models';
+
+  @override
+  String get aiModelsEmptyHint => 'Models added in 1Panel appear here.';
+
+  @override
+  String get backupsEmptyHint =>
+      'Backup records appear here after backups run in 1Panel.';
+
+  @override
+  String get cronjobsEmptyHint => 'Cronjobs created in 1Panel appear here.';
+
+  @override
+  String get appsEmptyHint => 'Apps installed from the App Store appear here.';
+
+  @override
+  String get websitesEmptyHint =>
+      'Tap Add in the top toolbar to create your first website.';
 
   @override
   String get aiModelName => 'Model';
