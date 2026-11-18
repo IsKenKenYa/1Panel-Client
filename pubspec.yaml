@@ -105,9 +105,9 @@ dependencies:
   local_auth: ^2.3.0
   xterm: ^4.0.0
   glass: ^3.0.1
-  # iOS 26 / macOS 原生玻璃控件包（CNButtonStyle.glass → UIButton.Configuration.glass，
-  # 低于 iOS 26 自动回退 tinted）。评估结论：包内无玻璃容器组件，仅按钮/弹出菜单
-  # 支持原生玻璃；Apple 轨道接入点为 Apple 风格壳浮层按钮与弹出菜单，暂保留依赖。
+  # CNButtonStyle.glass 在 iOS 26 及以上使用 UIButton.Configuration.glass，旧版使用 tinted；
+  # macOS 使用 texturedRounded bezel。包提供按钮、弹出菜单和 TabBar，没有通用玻璃容器。
+  # 保留此依赖供 Apple 风格 Flutter 浮层控件使用。SwiftUI 宿主使用系统组件和材质。
   cupertino_native: ^0.1.1
   liquid_glass_widgets: ^1.17.4
 
