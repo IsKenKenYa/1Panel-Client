@@ -83,11 +83,14 @@ class AppLogger {
   AppLogger._internal();
 
   late final Logger _logger;
+  bool _initialized = false;
   AppLogLevel _minLogLevel = AppLogLevel.trace;
   final LogPreferencesService _preferencesService = LogPreferencesService();
 
   /// 初始化日志服务
   void init() {
+    if (_initialized) return;
+
     final filter = kReleaseMode ? ProductionFilter() : DevelopmentFilter();
     _logger = Logger(
       printer: AppLogPrinter(
@@ -98,6 +101,7 @@ class AppLogger {
       filter: _AppLoggerFilter(filter),
       output: _AppLogOutput(),
     );
+    _initialized = true;
     unawaited(
       LogFileManagerService()
           .cleanupExpired()
@@ -138,11 +142,7 @@ class AppLogger {
   }
 
   void _ensureInitialized() {
-    try {
-      _logger.log(Level.trace, '');
-    } catch (_) {
-      init();
-    }
+    if (!_initialized) init();
   }
 
   /// 将 `category` 与 `packageName` 拼成内部前缀。

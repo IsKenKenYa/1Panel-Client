@@ -5,6 +5,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import '../theme/app_design_tokens.dart';
 import 'debug_error_dialog.dart';
 import 'error_message_utils.dart';
+import 'platform_utils.dart';
 
 class SnackBarUtils {
   const SnackBarUtils._();
@@ -24,15 +25,18 @@ class SnackBarUtils {
         message: message,
         icon: Icons.check_circle_outline,
         backgroundColor: AppDesignTokens.success,
+        foregroundColor: Colors.black,
         action: action);
   }
 
   static void showError(BuildContext context, String message,
       {SnackBarAction? action}) {
+    final colorScheme = Theme.of(context).colorScheme;
     _show(context,
         message: ErrorMessageUtils.localizeForContext(message, context),
         icon: Icons.error_outline,
-        backgroundColor: Theme.of(context).colorScheme.error,
+        backgroundColor: colorScheme.error,
+        foregroundColor: colorScheme.onError,
         action: action,
         duration: const Duration(seconds: 5));
   }
@@ -43,15 +47,18 @@ class SnackBarUtils {
         message: ErrorMessageUtils.localizeForContext(message, context),
         icon: Icons.warning_amber_outlined,
         backgroundColor: AppDesignTokens.warning,
+        foregroundColor: Colors.black,
         action: action);
   }
 
   static void showInfo(BuildContext context, String message,
       {SnackBarAction? action}) {
+    final colorScheme = Theme.of(context).colorScheme;
     _show(context,
         message: ErrorMessageUtils.localizeForContext(message, context),
         icon: Icons.info_outlined,
-        backgroundColor: Theme.of(context).colorScheme.inverseSurface,
+        backgroundColor: colorScheme.inverseSurface,
+        foregroundColor: colorScheme.onInverseSurface,
         action: action);
   }
 
@@ -65,38 +72,29 @@ class SnackBarUtils {
   }) {
     final displayMessage =
         ErrorMessageUtils.localizeForContext(message, context);
-    final l10n =
-        Localizations.of<AppLocalizations>(context, AppLocalizations);
+    final l10n = Localizations.of<AppLocalizations>(context, AppLocalizations);
     final label = retryLabel ?? l10n?.commonRetry ?? '重试';
-
-    if (details != null && kDebugMode) {
-      _show(context,
-          message: displayMessage,
-          icon: Icons.error_outline,
-          backgroundColor: Theme.of(context).colorScheme.error,
-          duration: const Duration(seconds: 5),
-          trailing: TextButton(
-            onPressed: () => DebugErrorDialog.show(
-              context,
-              displayMessage,
-              details,
-              stackTrace: stackTrace,
-            ),
-            child: Text(
-                Localizations.of<AppLocalizations>(context, AppLocalizations)
-                        ?.commonDetails ??
-                    '详情',
-                style: const TextStyle(color: Colors.white)),
-          ),
-          action: SnackBarAction(label: label, onPressed: onRetry));
-      return;
-    }
+    final colorScheme = Theme.of(context).colorScheme;
 
     _show(context,
         message: displayMessage,
         icon: Icons.error_outline,
-        backgroundColor: Theme.of(context).colorScheme.error,
+        backgroundColor: colorScheme.error,
+        foregroundColor: colorScheme.onError,
         duration: const Duration(seconds: 5),
+        detailsButton: details != null && kDebugMode
+            ? TextButton(
+                style:
+                    TextButton.styleFrom(foregroundColor: colorScheme.onError),
+                onPressed: () => DebugErrorDialog.show(
+                  context,
+                  displayMessage,
+                  details,
+                  stackTrace: stackTrace,
+                ),
+                child: Text(l10n?.commonDetails ?? '详情'),
+              )
+            : null,
         action: SnackBarAction(label: label, onPressed: onRetry));
   }
 
@@ -112,19 +110,19 @@ class SnackBarUtils {
       showError(context, displayMessage);
       return;
     }
+    final colorScheme = Theme.of(context).colorScheme;
     _show(context,
         message: displayMessage,
         icon: Icons.error_outline,
-        backgroundColor: Theme.of(context).colorScheme.error,
+        backgroundColor: colorScheme.error,
+        foregroundColor: colorScheme.onError,
         duration: const Duration(seconds: 5),
         action: SnackBarAction(
-          label: Localizations.of<AppLocalizations>(
-                      context, AppLocalizations)
+          label: Localizations.of<AppLocalizations>(context, AppLocalizations)
                   ?.commonDetails ??
               '详情',
-          onPressed: () =>
-              DebugErrorDialog.show(context, displayMessage, error,
-                  stackTrace: stackTrace),
+          onPressed: () => DebugErrorDialog.show(context, displayMessage, error,
+              stackTrace: stackTrace),
         ));
   }
 
@@ -133,8 +131,9 @@ class SnackBarUtils {
     required String message,
     required IconData icon,
     required Color backgroundColor,
+    required Color foregroundColor,
     SnackBarAction? action,
-    Widget? trailing,
+    Widget? detailsButton,
     Duration? duration,
   }) {
     final effectiveDuration = duration ?? const Duration(seconds: 4);
@@ -149,16 +148,46 @@ class SnackBarUtils {
     _currentContentKey = contentKey;
     _currentContentExpiresAt = now.add(effectiveDuration);
 
+    final messageText = Text(message, style: TextStyle(color: foregroundColor));
+    final theme = Theme.of(context);
+    final actionFontSize = theme.textTheme.labelLarge?.fontSize ?? 14.0;
+    final scaledActionFontSize =
+        MediaQuery.textScalerOf(context).scale(actionFontSize);
+    // SnackBar 的默认横排操作按钮无法按照放大后的字号换行。
+    final moveCloseButton = action != null &&
+        scaledActionFontSize > actionFontSize &&
+        MediaQuery.sizeOf(context).width < PlatformUtils.mobileWidthBreakpoint;
+    final inlineActions = [
+      if (detailsButton != null) detailsButton,
+      if (moveCloseButton)
+        Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.close),
+            color: foregroundColor,
+            tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+            onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(
+              reason: SnackBarClosedReason.dismiss,
+            ),
+          ),
+        ),
+    ];
     // Clear before showing to prevent multiple toasts stacking
     ScaffoldMessenger.of(context)
       ..clearSnackBars()
       ..showSnackBar(SnackBar(
         content: Row(
           children: [
-            Icon(icon, color: Colors.white, size: 18),
+            Icon(icon, color: foregroundColor, size: 18),
             const SizedBox(width: 12),
-            Expanded(child: Text(message)),
-            if (trailing != null) trailing,
+            Expanded(
+              child: inlineActions.isEmpty
+                  ? messageText
+                  : Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [messageText, Wrap(children: inlineActions)],
+                    ),
+            ),
           ],
         ),
         backgroundColor: backgroundColor,
@@ -169,8 +198,20 @@ class SnackBarUtils {
         ),
         margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         // Explicit close button so users can dismiss long-duration error toasts immediately
-        showCloseIcon: true,
-        action: action,
+        showCloseIcon: !moveCloseButton,
+        closeIconColor: foregroundColor,
+        actionOverflowThreshold: moveCloseButton ? 0 : null,
+        action: action == null
+            ? null
+            : SnackBarAction(
+                key: action.key,
+                label: action.label,
+                onPressed: action.onPressed,
+                textColor: action.textColor ?? foregroundColor,
+                disabledTextColor: action.disabledTextColor,
+                backgroundColor: action.backgroundColor,
+                disabledBackgroundColor: action.disabledBackgroundColor,
+              ),
         // Default 4s for info/success; callers override to 5s for errors (more read time)
         duration: effectiveDuration,
       ));
