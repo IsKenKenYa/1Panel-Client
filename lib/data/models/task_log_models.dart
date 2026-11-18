@@ -80,12 +80,14 @@ class TaskLog extends Equatable {
 class TaskLogSearch extends Equatable {
   final String? type;
   final String? status;
+  final String? taskId;
   final int page;
   final int pageSize;
 
   const TaskLogSearch({
     this.type,
     this.status,
+    this.taskId,
     this.page = 1,
     this.pageSize = 20,
   });
@@ -94,6 +96,7 @@ class TaskLogSearch extends Equatable {
     return TaskLogSearch(
       type: json['type'] as String? ?? json['taskType'] as String?,
       status: json['status'] as String?,
+      taskId: json['taskID'] as String?,
       page: json['page'] as int? ?? 1,
       pageSize: json['pageSize'] as int? ?? 20,
     );
@@ -103,11 +106,12 @@ class TaskLogSearch extends Equatable {
     return {
       'type': type ?? '',
       'status': status ?? '',
+      if (taskId != null) 'taskID': taskId,
       'page': page,
       'pageSize': pageSize,
     };
   }
 
   @override
-  List<Object?> get props => [type, status, page, pageSize];
+  List<Object?> get props => [type, status, taskId, page, pageSize];
 }
