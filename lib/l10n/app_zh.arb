@@ -517,6 +517,14 @@
   "navFiles": "文件",
   "navSecurity": "安全",
   "navSettings": "设置",
+  "hostNavScriptLibrary": "脚本库",
+  "hostNavDatabases": "数据库",
+  "hostNavCronJobs": "计划任务",
+  "hostNavBackups": "备份",
+  "hostNavHost": "主机",
+  "hostNavCommands": "命令库",
+  "hostNavLogs": "日志",
+  "hostNavGateway": "网关",
   "noServerSelectedTitle": "{module} 需要先选择服务器",
   "@noServerSelectedTitle": {
     "placeholders": {
@@ -792,7 +800,6 @@
   "serverTestFailed": "连接失败",
   "serverTestTesting": "正在测试连接...",
   "serverMetricsAvailable": "监控数据已加载",
-  "serverMetricsUnavailable": "监控数据暂不可用",
   "serverTokenValidity": "接口密钥有效期",
   "serverTokenValidityHint": "设置为0时不校验时间戳",
   "serverFormAllowInsecureTls": "忽略 TLS 证书校验",
@@ -882,7 +889,6 @@
   "filesCompressType": "类型",
   "filesUploadDeveloping": "上传功能需要进一步开发",
   "commonCreate": "创建",
-  "commonEdit": "编辑",
   "commonName": "名称",
   "commonUsername": "用户名",
   "commonPassword": "密码",
@@ -939,6 +945,8 @@
   "settingsUIRenderModeLiquidGlassDesc": "半透明导航栏带有玻璃效果。",
   "settingsUIRenderModeMD3": "MDUI3",
   "settingsUIRenderModeRestartHint": "修改 UI 渲染模式后，请重启应用以生效。",
+  "settingsUIRenderModeHostMissing": "未找到原生宿主。请先执行构建：dotnet build windows/runner/native_host/OnePanelNativeHost/OnePanelNativeHost.csproj -c Debug",
+  "settingsUIRenderModeHostMissingStatus": "原生宿主未就绪（未找到 OnePanelNativeHost.exe），本次启动已回退为 MDUI3。",
   "settingsTheme": "主题",
   "settingsThemeSubtitle": "浅色、深色与系统跟随",
   "settingsAppLock": "应用锁",
@@ -1630,7 +1638,13 @@
   "snapshotDeleteFailed": "快照删除失败",
   "snapshotLoadFailed": "加载快照列表失败",
   "snapshotLoadFailedWithError": "加载快照列表失败: {error}",
-  "@snapshotLoadFailedWithError": { "placeholders": { "error": { "type": "String" } } },
+  "@snapshotLoadFailedWithError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "snapshotBackupAccountLoadFailed": "加载备份账户失败",
   "snapshotNoBackupAccountHint": "没有可用的备份账户，请先在备份账户管理中添加备份账户",
   "snapshotBackupAccountLabel": "备份账户",
@@ -1726,7 +1740,6 @@
   "filesEncodingConvertFailed": "编码转换失败",
   "filesEncodingLog": "转换日志",
   "filesEncodingLogEmpty": "暂无日志",
-  "commonUnknownError": "未知错误",
   "filesPreviewImage": "图片预览",
   "filesPreviewCode": "代码预览",
   "filesPreviewText": "文本预览",
@@ -1747,7 +1760,6 @@
     }
   },
   "filesWgetFailed": "下载失败",
-  "filesActionDownload": "下载",
   "recycleBinRestore": "恢复",
   "recycleBinRestoreConfirm": "确定要恢复选中的 {count} 个文件吗？",
   "@recycleBinRestoreConfirm": {
@@ -1890,7 +1902,9 @@
   "appIgnoreUpdateFailed": "忽略更新失败：{error}",
   "@appIgnoreUpdateFailed": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "appIgnoreUpdateCancel": "取消忽略",
@@ -1922,7 +1936,9 @@
   "appReadmeImageUnsupported": "图片不支持：{url}",
   "@appReadmeImageUnsupported": {
     "placeholders": {
-      "url": { "type": "String" }
+      "url": {
+        "type": "String"
+      }
     }
   },
   "appOperateSuccess": "操作成功",
@@ -1933,15 +1949,21 @@
   "appUpdateConfirm": "确定要将 {app} 更新到 {version} 吗？",
   "@appUpdateConfirm": {
     "placeholders": {
-      "app": { "type": "String" },
-      "version": { "type": "String" }
+      "app": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      }
     }
   },
   "appUpdateSuccess": "更新任务已启动",
   "appUpdateFailed": "更新失败: {error}",
   "@appUpdateFailed": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "appOperateFailed": "操作失败：{error}",
@@ -2033,7 +2055,9 @@
   "containerCleanLogConfirm": "确定清理 {name} 的日志吗？",
   "@containerCleanLogConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "containerPruneType": "清理类型",
@@ -2078,14 +2102,18 @@
   "orchestrationComposeCleanLogConfirm": "确定清理 {name} 的日志吗？",
   "@orchestrationComposeCleanLogConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "orchestrationComposeDelete": "删除编排",
   "orchestrationComposeDeleteConfirm": "停止并删除 {name} 中的所有容器？",
   "@orchestrationComposeDeleteConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "orchestrationComposeForceDelete": "强制删除",
@@ -2295,20 +2323,28 @@
   "cronjobsUpdateStatusConfirm": "确认将计划任务 {name} 更新为 {status} 吗？",
   "@cronjobsUpdateStatusConfirm": {
     "placeholders": {
-      "name": { "type": "String" },
-      "status": { "type": "String" }
+      "name": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
     }
   },
   "cronjobsHandleOnceConfirm": "确认立即执行一次计划任务 {name} 吗？",
   "@cronjobsHandleOnceConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "cronjobsStopConfirm": "确认停止正在执行的计划任务 {name} 吗？",
   "@cronjobsStopConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "cronjobRecordsEmptyTitle": "暂无执行记录",
@@ -2326,7 +2362,9 @@
   "cronjobsDeleteConfirm": "确认删除计划任务 {name} 吗？",
   "@cronjobsDeleteConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "cronjobFormCreateTitle": "创建计划任务",
@@ -2400,7 +2438,9 @@
   "scriptLibraryDeleteConfirm": "确认删除脚本 {name} 吗？",
   "@scriptLibraryDeleteConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "scriptLibraryCodeTitle": "脚本代码",
@@ -2424,7 +2464,9 @@
   "backupAccountsDeleteConfirm": "确认删除备份账户 {name} 吗？",
   "@backupAccountsDeleteConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "backupFilesSheetTitle": "备份文件",
@@ -2469,7 +2511,9 @@
   "backupRecordsDeleteConfirm": "确认删除备份记录 {name} 吗？",
   "@backupRecordsDeleteConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "backupRecordsTypeLabel": "类型",
@@ -2501,19 +2545,25 @@
   "backupRecoverUnsupportedTypeHint": "当前主链先保留 {type} 记录的恢复上下文，直接恢复操作暂未开放。",
   "@backupRecoverUnsupportedTypeHint": {
     "placeholders": {
-      "type": { "type": "String" }
+      "type": {
+        "type": "String"
+      }
     }
   },
   "backupRecoverUnsupportedTypeSubmitHint": "当前暂不支持对 {type} 记录直接提交恢复。",
   "@backupRecoverUnsupportedTypeSubmitHint": {
     "placeholders": {
-      "type": { "type": "String" }
+      "type": {
+        "type": "String"
+      }
     }
   },
   "backupResourceTypeUnknownLabel": "未知类型：{type}",
   "@backupResourceTypeUnknownLabel": {
     "placeholders": {
-      "type": { "type": "String" }
+      "type": {
+        "type": "String"
+      }
     }
   },
   "backupErrorOauthOpenFailed": "无法打开授权页面",
@@ -2561,7 +2611,9 @@
   "cronjobFormUrlItemLabel": "URL {index}",
   "@cronjobFormUrlItemLabel": {
     "placeholders": {
-      "index": { "type": "int" }
+      "index": {
+        "type": "int"
+      }
     }
   },
   "cronjobFormAddUrlAction": "添加 URL",
@@ -2571,7 +2623,9 @@
   "cronjobFormCustomSpecItemLabel": "自定义表达式 {index}",
   "@cronjobFormCustomSpecItemLabel": {
     "placeholders": {
-      "index": { "type": "int" }
+      "index": {
+        "type": "int"
+      }
     }
   },
   "cronjobFormImportInvalidJson": "导入的计划任务文件必须是 JSON 数组",
@@ -2581,25 +2635,33 @@
   "cronjobFormUnknownBackupType": "未知备份类型：{type}",
   "@cronjobFormUnknownBackupType": {
     "placeholders": {
-      "type": { "type": "String" }
+      "type": {
+        "type": "String"
+      }
     }
   },
   "cronjobFormUnknownDatabaseType": "未知数据库类型：{type}",
   "@cronjobFormUnknownDatabaseType": {
     "placeholders": {
-      "type": { "type": "String" }
+      "type": {
+        "type": "String"
+      }
     }
   },
   "cronjobFormUnknownAlertMethod": "未知告警方式：{method}",
   "@cronjobFormUnknownAlertMethod": {
     "placeholders": {
-      "method": { "type": "String" }
+      "method": {
+        "type": "String"
+      }
     }
   },
   "cronjobFormUnknownError": "计划任务表单出现未预期错误：{message}",
   "@cronjobFormUnknownError": {
     "placeholders": {
-      "message": { "type": "String" }
+      "message": {
+        "type": "String"
+      }
     }
   },
   "operationsLogsTitle": "日志中心",
@@ -2620,7 +2682,9 @@
   "logsTaskExecutingCountLabel": "执行中：{count}",
   "@logsTaskExecutingCountLabel": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "logsTaskOpenDetailAction": "查看日志",
@@ -2671,7 +2735,9 @@
   "runtimeActionUnknown": "未知操作：{action}",
   "@runtimeActionUnknown": {
     "placeholders": {
-      "action": { "type": "String" }
+      "action": {
+        "type": "String"
+      }
     }
   },
   "runtimeTypePhp": "PHP",
@@ -2683,7 +2749,9 @@
   "runtimeTypeUnknown": "未知运行时：{type}",
   "@runtimeTypeUnknown": {
     "placeholders": {
-      "type": { "type": "String" }
+      "type": {
+        "type": "String"
+      }
     }
   },
   "runtimeResourceLocal": "本地",
@@ -2691,7 +2759,9 @@
   "runtimeResourceUnknown": "未知来源：{resource}",
   "@runtimeResourceUnknown": {
     "placeholders": {
-      "resource": { "type": "String" }
+      "resource": {
+        "type": "String"
+      }
     }
   },
   "runtimeStatusAll": "全部",
@@ -2705,7 +2775,9 @@
   "runtimeStatusUnknown": "未知状态：{status}",
   "@runtimeStatusUnknown": {
     "placeholders": {
-      "status": { "type": "String" }
+      "status": {
+        "type": "String"
+      }
     }
   },
   "runtimeFieldType": "类型",
@@ -2742,23 +2814,37 @@
   "runtimeAdvancedSummary": "高级配置统计：{ports} 个端口、{environments} 个环境变量、{volumes} 个挂载、{hosts} 个额外主机。",
   "@runtimeAdvancedSummary": {
     "placeholders": {
-      "ports": { "type": "int" },
-      "environments": { "type": "int" },
-      "volumes": { "type": "int" },
-      "hosts": { "type": "int" }
+      "ports": {
+        "type": "int"
+      },
+      "environments": {
+        "type": "int"
+      },
+      "volumes": {
+        "type": "int"
+      },
+      "hosts": {
+        "type": "int"
+      }
     }
   },
   "runtimeDeleteConfirm": "确认删除运行时 {name} 吗？",
   "@runtimeDeleteConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "runtimeOperateConfirm": "确认对运行时 {name} 执行 {action} 吗？",
   "@runtimeOperateConfirm": {
     "placeholders": {
-      "action": { "type": "String" },
-      "name": { "type": "String" }
+      "action": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
     }
   },
   "runtimeListLoadFailed": "加载运行时列表失败。",
@@ -2773,7 +2859,9 @@
   "runtimeNodeScriptExecuting": "正在执行脚本 {name}，并回读运行时状态...",
   "@runtimeNodeScriptExecuting": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "runtimeNodeScriptCompleted": "脚本执行完成",
@@ -2781,31 +2869,41 @@
   "runtimeNodeScriptRuntimeStatus": "运行时状态：{status}",
   "@runtimeNodeScriptRuntimeStatus": {
     "placeholders": {
-      "status": { "type": "String" }
+      "status": {
+        "type": "String"
+      }
     }
   },
   "runtimeNodeScriptRuntimeMessage": "运行时消息：{message}",
   "@runtimeNodeScriptRuntimeMessage": {
     "placeholders": {
-      "message": { "type": "String" }
+      "message": {
+        "type": "String"
+      }
     }
   },
   "runtimeNodeScriptPollAttempts": "状态轮询次数：{count}",
   "@runtimeNodeScriptPollAttempts": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "runtimeNodeScriptCompletedWithStatus": "脚本执行完成，运行时状态：{status}",
   "@runtimeNodeScriptCompletedWithStatus": {
     "placeholders": {
-      "status": { "type": "String" }
+      "status": {
+        "type": "String"
+      }
     }
   },
   "runtimeNodeScriptFailedWithStatus": "脚本执行失败，运行时状态：{status}",
   "@runtimeNodeScriptFailedWithStatus": {
     "placeholders": {
-      "status": { "type": "String" }
+      "status": {
+        "type": "String"
+      }
     }
   },
   "runtimeNodeScriptWaitTimeout": "脚本已触发，但状态确认超时，请稍后手动刷新确认。",
@@ -3251,7 +3349,9 @@
   "containerNetworkDriverChip": "驱动: {driver}",
   "@containerNetworkDriverChip": {
     "placeholders": {
-      "driver": { "type": "String" }
+      "driver": {
+        "type": "String"
+      }
     }
   },
   "containerNetworkSystemChip": "系统",
@@ -3276,7 +3376,9 @@
   "securityGatewayCertificateCount": "{count} 个证书",
   "@securityGatewayCertificateCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "securityGatewayLatestApplyLabel": "最近操作",
@@ -3298,13 +3400,17 @@
   "securityGatewayCertsLoadedCount": "已加载 {count} 个证书",
   "@securityGatewayCertsLoadedCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "securityGatewayExpiringSoonCount": "{count} 个即将过期",
   "@securityGatewayExpiringSoonCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "securityGatewayOpenCertCenterAction": "打开证书中心",
@@ -3325,7 +3431,9 @@
   "securityGatewayRiskWebsiteCertsExpiringMessage": "{count} 个网站证书将在 30 天内过期。",
   "@securityGatewayRiskWebsiteCertsExpiringMessage": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "securityGatewayRiskOpenRestyUnavailableTitle": "OpenResty 状态不可用",
@@ -3335,7 +3443,9 @@
   "websiteSiteSslPageTitleWithDomain": "HTTPS 策略 · {domain}",
   "@websiteSiteSslPageTitleWithDomain": {
     "placeholders": {
-      "domain": { "type": "String" }
+      "domain": {
+        "type": "String"
+      }
     }
   },
   "websiteSiteSslRiskNoticesTitle": "风险提示",
@@ -3378,7 +3488,9 @@
   "phpExtensionsRecordsTitle": "{title} 记录",
   "@phpExtensionsRecordsTitle": {
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "phpExtensionsLabel": "扩展",
@@ -3730,5 +3842,508 @@
 
   "dashboardKernelVersionLabel": "内核版本",
 
-  "containerLogsEmpty": "暂无日志"
+  "containerLogsEmpty": "暂无日志",
+"settingsAppearance": "外观",
+  "settingsSystemBackdrop": "系统背景效果",
+  "settingsRestartRequired": "重启后生效",
+  "commonNone": "无",
+  "hostServersRefreshFailed": "刷新服务器列表失败。",
+  "hostServersActions": "服务器操作",
+  "hostServersSwitch": "切换",
+  "hostServersDeleteCurrentBlocked": "当前服务器无法删除，请先切换到其他服务器",
+  "hostServersNamePlaceholder": "我的服务器",
+  "hostServersUrlRequired": "URL 不能为空。",
+  "hostServersUrlHttpRequired": "URL 必须以 http:// 或 https:// 开头。",
+  "hostServersApiKeyRequired": "API 密钥不能为空。",
+  "hostFilesPathPlaceholder": "输入路径并按回车",
+  "hostFilesFolderNamePlaceholder": "文件夹名称",
+  "hostFilesFolderNameEmpty": "文件夹名称不能为空。",
+  "hostContainersRefreshFailed": "刷新容器列表失败。",
+  "hostContainersStopContainer": "停止容器",
+  "hostContainersStartContainer": "启动容器",
+  "hostContainersRestartContainer": "重启容器",
+  "hostContainersDeleteContainer": "删除容器",
+  "hostContainersDeleteConfirm": "删除容器",
+  "hostAppsRefreshFailed": "刷新应用列表失败。",
+  "hostAppsInstallOpenresty": "安装 OpenResty",
+  "hostAppsStopApp": "停止应用",
+  "hostAppsStartApp": "启动应用",
+  "hostAppsUninstallApp": "卸载应用",
+  "hostAppsUninstallConfirm": "卸载应用",
+  "hostAppsOpenrestyInstallConfirm": "OpenResty 将从应用商店下载并安装，可能需要几分钟，是否继续？",
+  "hostAppsOpenrestyInstallSubmitted": "OpenResty 安装任务已提交。",
+  "hostWebsitesRefreshFailed": "刷新网站失败",
+  "hostWebsitesStopWebsite": "停止网站",
+  "hostWebsitesStartWebsite": "启动网站",
+  "hostWebsitesPrimaryDomainHint": "例如：example.com",
+  "hostWebsitesAliasHint": "留空时根据域名自动生成",
+  "hostWebsitesAddFailed": "添加网站失败",
+  "hostCommonOptional": "可选",
+  "hostCommonPortNumeric": "端口必须为数字。",
+  "hostOpenrestyRefreshFailed": "刷新 OpenResty 信息失败",
+  "hostOpenrestyConfigEmptyHint": "# OpenResty 配置源码为空或不可用（/etc/nginx/nginx.conf）",
+  "hostOpenrestyConfigSource": "配置源码（/etc/nginx/nginx.conf）",
+  "hostOpenrestySaveConfig": "保存 OpenResty 配置",
+  "hostOpenrestySaveConfigConfirm": "将使用编辑后的内容覆盖 /etc/nginx/nginx.conf。\n无效的配置可能导致托管的网站不可用。是否继续？",
+  "hostOpenrestySaveConfigFailed": "保存 OpenResty 配置失败",
+  "hostDatabaseCreate": "创建数据库",
+  "hostDatabaseRefreshFailed": "刷新数据库失败",
+  "hostDatabaseActions": "数据库操作",
+  "hostDatabasePasswordRequired": "请输入新密码。",
+  "hostDatabaseDeleteTitle": "删除数据库",
+  "hostDatabaseNameHint": "例如：app_db",
+  "hostDatabaseAddressHint": "例如：192.168.1.10",
+  "hostDatabasePortHint": "例如：3306",
+  "hostDatabaseCreateFailed": "创建数据库失败",
+  "hostDatabaseCreateRetryHint": "创建失败，请调整输入后重试。",
+  "hostDatabaseRemoteAddressRequired": "远程数据库必须填写地址。",
+  "hostDatabaseRemotePortRequired": "远程数据库必须填写端口。",
+  "hostDatabaseRemoteUsernameRequired": "远程数据库必须填写用户名。",
+  "hostDatabaseRemotePasswordRequired": "远程数据库必须填写密码。",
+  "hostOrchestrationRefreshFailed": "刷新编排失败",
+  "hostOrchestrationActions": "编排操作",
+  "hostOrchestrationUp": "启动",
+  "hostOrchestrationDown": "停止",
+  "hostOrchestrationDownTitle": "停止编排",
+  "hostOrchestrationNamePlaceholder": "例如 my-app",
+  "hostOrchestrationCreateFrom": "创建方式",
+  "hostOrchestrationFromPath": "从路径创建",
+  "hostOrchestrationFromContent": "从内容创建",
+  "hostOrchestrationFromTemplate": "从模板创建",
+  "hostOrchestrationComposeFilePath": "编排文件路径",
+  "hostOrchestrationPathPlaceholder": "例如 /opt/1panel/docker/compose/my-app/docker-compose.yml",
+  "hostOrchestrationNewComposeContent": "新编排内容 (YAML)",
+  "hostOrchestrationFullReplacementHint": "完整替换：粘贴完整的新配置；内容为空将被拒绝",
+  "hostOrchestrationTemplateId": "模板 ID",
+  "hostOrchestrationTemplateIdPlaceholder": "例如 1",
+  "hostOrchestrationCreateFailed": "创建编排失败",
+  "hostOrchestrationContentRequired": "编排内容不能为空",
+  "hostOrchestrationEditTitle": "编辑编排",
+  "hostOrchestrationReplace": "替换",
+  "hostOrchestrationSaveFailedReopen": "保存失败，编辑器将保留内容重新打开，请重试",
+  "hostOrchestrationPathRequired": "编排文件路径不能为空",
+  "hostOrchestrationTemplateIdRequired": "模板 ID 不能为空",
+  "hostOrchestrationTemplateIdInteger": "模板 ID 必须为整数",
+  "hostCommonCreateFailed": "创建失败，请调整输入后重试",
+  "hostCommonSaveFailed": "保存失败，请调整输入后重试",
+  "hostCronJobsCreateTask": "创建任务",
+  "hostCronJobsRefreshFailed": "刷新计划任务失败",
+  "hostCronJobsLastRun": "上次执行",
+  "hostCronJobsTaskActions": "任务操作",
+  "hostCronJobsDeleteTaskTitle": "删除任务",
+  "hostCronJobsNamePlaceholder": "例如 清理日志",
+  "hostCronJobsScriptReplaceHint": "可选；提交后将替换已保存的脚本",
+  "hostCronJobsScriptPlaceholder": "可选 Shell 脚本",
+  "hostCronJobsEditTask": "编辑任务",
+  "hostCronJobsSaveFailed": "保存任务失败",
+  "hostCronJobsCreateFailed": "创建任务失败",
+  "hostBackupsRefreshFailed": "刷新备份记录失败",
+  "hostBackupsActions": "备份操作",
+  "hostBackupsRestoreUnavailableFailed": "备份记录失败时不可恢复",
+  "hostBackupsRestoreUnavailableSize": "文件大小未知时不可恢复",
+  "hostBackupsDeleteUnavailableWaiting": "备份仍在等待时不可删除",
+  "hostBackupsRestoreOverwriteWarning": "此操作将覆盖当前数据且无法撤销",
+  "hostBackupsDeleteRecordTitle": "删除备份记录",
+  "hostHostSshTitle": "SSH",
+  "hostHostSshRefreshFailed": "刷新 SSH 信息失败。",
+  "hostHostSshNotInstalled": "此服务器未安装 SSH 服务。",
+  "hostHostSshConfigLoadFailed": "配置文件加载失败。",
+  "hostHostSshConfigEmptyPlaceholder": "# SSH 配置文件不存在或为空 (/etc/ssh/sshd_config)",
+  "hostHostSshConfigFileTitle": "配置文件 (/etc/ssh/sshd_config)",
+  "hostHostSshSaveTitle": "保存 SSH 配置",
+  "hostHostSshSaveMessage": "将使用编辑后的内容覆盖 /etc/ssh/sshd_config。\n无效的配置可能导致 SSH 服务不可用。是否继续？",
+  "hostHostSshSaveFailed": "保存 SSH 配置失败。",
+  "hostToolboxSnapshotRefreshFailed": "刷新设备快照失败。",
+  "hostToolboxKernelLabel": "内核",
+  "hostToolboxProductLabel": "产品",
+  "hostToolboxTimeZoneLabel": "时区",
+  "hostToolboxNtpServerLabel": "NTP 服务器",
+  "hostToolboxSwapOff": "已关闭",
+  "hostToolboxSwapOffHint": "此主机未启用 Swap。",
+  "hostToolboxSwapTotalHint": "Swap 总大小。",
+  "hostToolboxDnsPlaceholder": "例如 8.8.8.8",
+  "hostToolboxDnsVerifyAction": "检测",
+  "hostToolboxDnsReachable": "DNS 可达",
+  "hostToolboxDnsEmptyError": "请输入要检测的 DNS 服务器。",
+  "hostToolboxUsersTitle": "用户",
+  "hostAiModelsRefreshFailed": "刷新 AI 模型失败。",
+  "hostAiModelUnknownName": "未知",
+  "hostAiConnectionTitle": "连接",
+  "hostAiOllamaNotDetected": "未在此服务器上检测到 Ollama。",
+  "hostAiDomainBoundHint": "域名绑定成功，刷新后可查看连接详情。",
+  "hostAiIpAllowlistLabel": "IP 白名单（可选，逗号分隔）",
+  "hostAiBindDomainFailed": "绑定域名失败。",
+  "hostAiBindFailedRetry": "绑定失败，请调整输入后重试。",
+  "hostAiModelActions": "模型操作",
+  "hostAiModelRecreateAction": "重新创建",
+  "hostAiModelDeleteTitle": "删除 AI 模型",
+  "hostAiModelCreateFailed": "创建模型失败。",
+  "hostAiCreateFailedRetry": "创建失败，请调整输入后重试。",
+  "hostCommandsRefreshFailed": "刷新命令失败。",
+  "hostCommandsRowActions": "命令操作",
+  "hostCommandsDeleteTitle": "删除命令",
+  "hostCommandsNameHint": "例如：清理日志",
+  "hostCommandsCommandHint": "例如：docker ps -a",
+  "hostCommandsDefaultGroup": "默认分组",
+  "hostCommandsCreateFailed": "创建命令失败。",
+  "hostCommandsCreateFormError": "创建失败，请调整输入后重试。",
+  "hostCommandsCommandRequired": "命令不能为空。",
+  "hostScriptLibraryRefreshFailed": "刷新脚本失败。",
+  "hostScriptLibraryDeleteSelected": "删除选中",
+  "hostScriptLibraryRowActions": "脚本操作",
+  "hostScriptLibraryDeleteTitle": "删除脚本",
+  "hostScriptLibraryDeleteSelectedTitle": "批量删除脚本",
+  "hostLogsRefreshOperationFailed": "刷新操作日志失败。",
+  "hostLogsRefreshLoginFailed": "刷新登录日志失败。",
+  "hostLogsFileNameRequired": "请输入文件名。",
+  "hostLogsRefreshTab": "刷新当前页签",
+  "hostLogsFileNameLabel": "文件名",
+  "hostLogsCoreToggle": "核心日志",
+  "hostLogsSystemHint": "输入日志文件名并点击“加载”查看内容。",
+  "hostSecurityRefreshFailed": "刷新防火墙规则失败。",
+  "hostSecurityAddRule": "添加规则",
+  "hostSecurityDeleteRule": "删除规则",
+  "hostSecurityPortHint": "例如：8080",
+  "hostSecurityAddressHint": "留空表示所有地址",
+  "hostSecurityAddRuleTitle": "添加规则",
+  "hostSecurityPortNumeric": "端口必须为数字。",
+  "hostSecurityDeleteRuleTitle": "删除规则",
+  "hostGatewayRefreshFailed": "刷新安全网关快照失败。",
+  "hostGatewayOpenrestyStatus": "OpenResty 状态",
+  "hostGatewayHttpsRedirectTitle": "默认 HTTPS 重定向",
+  "hostGatewayHttpsRedirectDescription": "将所有网站的 HTTP 重定向到 HTTPS",
+  "hostGatewayStateUnknown": "当前状态未知",
+  "hostGatewayDisable": "禁用",
+  "hostGatewayHttpsRedirectEnableTitle": "启用默认 HTTPS 重定向",
+  "hostGatewayHttpsRedirectDisableTitle": "禁用默认 HTTPS 重定向",
+  "hostGatewayHttpsRedirectEnableMessage": "为所有网站启用 HTTP→HTTPS 重定向？",
+  "hostGatewayHttpsRedirectDisableMessage": "禁用 HTTP→HTTPS 重定向？",
+  "hostGatewayHttpsRedirectEnableFailed": "启用默认 HTTPS 重定向失败。",
+  "hostGatewayHttpsRedirectDisableFailed": "禁用默认 HTTPS 重定向失败。",
+  "hostGatewayCertificatePlaceholder": "粘贴完整 PEM 证书链",
+  "hostGatewayPrivateKeyPlaceholder": "粘贴对应的 PEM 私钥",
+  "hostGatewayDescriptionOptional": "描述（可选）",
+  "hostGatewayDescriptionPlaceholder": "例如：*.example.com 签发于 2026-09",
+  "hostGatewayCertificateRequired": "证书不能为空。",
+  "hostGatewayUploadConfirmMessage": "证书将导入面板并可供网站使用，是否继续？",
+  "hostGatewayUploadFailed": "证书上传失败。",
+  "hostGatewayUploadFormError": "上传失败，表单将保留已填内容重新打开，请重试。",
+  "hostGatewayRenewNoId": "该证书缺少 ID，无法续期。",
+  "hostGatewayRenew": "续期",
+  "hostGatewayRenewalRequested": "已请求续期。",
+  "hostGatewayExpiresToday": "今天到期",
+  "hostGatewayValid": "有效",
+  "hostDashboardRefreshFailed": "刷新仪表盘失败。",
+  "hostDashboardKernelLabel": "内核",
+  "hostDashboardCpuCoresLabel": "CPU 核心数",
+  "hostDashboardPanelVersionLabel": "面板版本",
+  "hostMonitoringRefreshFailed": "刷新监控数据失败。",
+  "hostMonitoringLoadAverage": "平均负载",
+  "hostMonitoringLoad1": "1 分钟负载",
+  "hostMonitoringLoad5": "5 分钟负载",
+  "hostMonitoringLoad15": "15 分钟负载",
+  "hostMonitoringLoadWindows": "1/5/15 分钟",
+  "hostAuthDeleteConfirm": "删除该密码访问用户？该操作无法撤销。",
+  "hostAuthDeleteFailed": "删除密码访问用户失败。",
+  "hostAuthDisableConfirm": "停用该网站的密码访问？",
+  "hostAuthEditHelper": "密码为非对称加密，无法回显，编辑需要重新设置密码",
+  "hostAuthEnableConfirm": "为 '{0}' 开启密码访问？",
+  "hostAuthEnableFailed": "更新密码访问开关失败。",
+  "hostAuthEnableSwitch": "开启密码访问",
+  "hostAuthLoadFailed": "加载密码访问配置失败。",
+  "hostAuthNameRequired": "名称不能为空。",
+  "hostAuthPasswordInvalid": "密码仅支持字母、数字和 _-.@$!%*?&（最长 72 位）。",
+  "hostAuthPasswordRequired": "请输入密码。",
+  "hostAuthPathDeleteConfirm": "删除路径认证规则 '{0}'？该操作无法撤销。",
+  "hostAuthPathEmpty": "暂无路径认证规则",
+  "hostAuthPathRequired": "请输入路径。",
+  "hostAuthRandom": "随机密码",
+  "hostAuthRemark": "备注",
+  "hostAuthSaveFailed": "更新密码访问失败。",
+  "hostAuthSaved": "密码访问已更新。",
+  "hostAuthScopeGlobal": "全局",
+  "hostAuthUsernameRequired": "请输入用户名。",
+  "hostCorsAllowCredentials": "允许携带cookies",
+  "hostCorsAllowHeaders": "允许的请求头",
+  "hostCorsAllowMethods": "允许的请求方法",
+  "hostCorsAllowOrigins": "允许访问的域名",
+  "hostCorsEnable": "开启跨域",
+  "hostCorsLoadFailed": "加载跨域配置失败。",
+  "hostCorsOriginsRequired": "开启跨域后，允许访问的域名不能为空。",
+  "hostCorsPreflight": "预检请求快速响应",
+  "hostCorsPreflightHelper": "开启后，当浏览器发送跨域预检请求（OPTIONS 请求）时，系统会自动返回 204 状态码并设置必要的跨域响应头",
+  "hostCorsSaveConfirm": "保存 '{0}' 的跨域配置？",
+  "hostCorsSaveFailed": "保存跨域配置失败。",
+  "hostCorsSaved": "跨域配置已保存。",
+  "hostDomainsActionsLabel": "操作",
+  "hostDomainsAddFailed": "添加域名失败。",
+  "hostDomainsAddSuccess": "域名添加成功。",
+  "hostDomainsDeleteConfirm": "删除域名 '{0}'？该操作无法撤销。",
+  "hostDomainsDeleteFailed": "删除域名失败。",
+  "hostDomainsDeleteSuccess": "域名已删除。",
+  "hostDomainsDeleteTitle": "删除域名",
+  "hostDomainsInputHint": "一行一个域名，所有域名共用下方的端口和 SSL 选项。",
+  "hostDomainsInputRequired": "请至少输入一个域名。",
+  "hostDomainsLastDeleteDisabled": "至少需要保留一个域名。",
+  "hostDomainsLoadFailed": "加载域名列表失败。",
+  "hostHttpsAlgorithmLabel": "加密算法",
+  "hostHttpsAlgorithmRequired": "请选择加密算法。",
+  "hostHttpsCertEmpty": "暂无可用证书，请先在 SSL 证书页面导入。",
+  "hostHttpsCertLoadFailed": "加载证书失败。",
+  "hostHttpsCertRequired": "请输入证书和私钥。",
+  "hostHttpsCertSelectPlaceholder": "选择证书",
+  "hostHttpsCertificateLabel": "证书",
+  "hostHttpsDisableConfirm": "禁用 HTTPS会删除证书相关配置，是否继续？",
+  "hostHttpsDisableTitle": "禁用 HTTPS",
+  "hostHttpsHelper": "注意：请勿将SSL证书用于非法网站 \n 如开启后无法使用HTTPS访问，请检查安全组是否正确放行443端口",
+  "hostHttpsHstsHelper": "开启 HSTS 可以增加网站安全性",
+  "hostHttpsHstsSubDomainsLabel": "HSTS 包含子域名",
+  "hostHttpsHttp3Helper": "HTTP/3 是 HTTP/2 的升级版本，提供更快的连接速度和更好的性能，但是不是所有浏览器都支持 HTTP/3，开启后可能会导致部分浏览器无法访问",
+  "hostHttpsHttp3Label": "HTTP3",
+  "hostHttpsHttpConfigAlso": "HTTP可直接访问",
+  "hostHttpsHttpConfigLabel": "HTTP 选项",
+  "hostHttpsHttpConfigOnly": "禁止 HTTP",
+  "hostHttpsHttpConfigToHttps": "访问HTTP自动跳转到HTTPS",
+  "hostHttpsInsecureSuffix": "（不安全）",
+  "hostHttpsIpWarn": "IP 为域名的网站，需要设置为默认站点才能正常访问",
+  "hostHttpsLoadFailed": "加载 HTTPS 配置失败。",
+  "hostHttpsPortLabel": "HTTPS 端口",
+  "hostHttpsPrivateKeyLabel": "私钥",
+  "hostHttpsProtocolLabel": "支持的协议版本",
+  "hostHttpsProtocolRequired": "请至少选择一个 TLS 协议版本。",
+  "hostHttpsSaveConfirm": "将 HTTPS 配置应用到 '{0}'？",
+  "hostHttpsSaveConfirmTitle": "保存 HTTPS 设置",
+  "hostHttpsSectionAdvanced": "SSL 协议设置",
+  "hostHttpsSectionBasic": "基本",
+  "hostHttpsSectionCert": "证书设置",
+  "hostHttpsSelectCertRequired": "请选择证书。",
+  "hostHttpsTypeExisted": "选择已有证书",
+  "hostHttpsTypeLabel": "SSL 选项",
+  "hostHttpsTypeManual": "手动导入证书",
+  "hostLeechAccessDomains": "允许的域名",
+  "hostLeechBlockedHelper": "允许 Referer 为空启用时，不会阻止无 Referer 的请求（直接访问等），启用非标准 Referer 时会放行任何不以 http/https 开头的 Referer 请求（客户端请求等）",
+  "hostLeechBlockedRef": "允许非标准 Referer",
+  "hostLeechBrowserCache": "浏览器缓存",
+  "hostLeechCacheControl": "缓存控制",
+  "hostLeechCacheTime": "浏览器缓存时间",
+  "hostLeechCacheTimeHelper": "静态资源在浏览器本地缓存的时间，减少重复请求。到期前用户刷新页面会直接使用本地缓存。",
+  "hostLeechCacheTimeInvalid": "缓存时间必须是 1-65535 之间的整数。",
+  "hostLeechDomainsHelper": "一行一个域名",
+  "hostLeechDomainsRequired": "开启后，允许的域名不能为空。",
+  "hostLeechEnable": "开启",
+  "hostLeechExtends": "文件扩展名",
+  "hostLeechLoadFailed": "加载防盗链配置失败。",
+  "hostLeechLogEnable": "记录请求日志",
+  "hostLeechLogHelper": "记录静态资源的请求，生产环境通常可以关闭避免过多无意义的日志",
+  "hostLeechNoneRef": "允许 Referer 为空",
+  "hostLeechReturn": "响应资源",
+  "hostLeechReturnHelper": "拦截盗链请求后，返回的 HTTP 状态码",
+  "hostLeechSaveConfirm": "保存 '{0}' 的防盗链配置？",
+  "hostLeechSaveFailed": "保存防盗链配置失败。",
+  "hostLeechSaved": "防盗链配置已保存。",
+  "hostLogsAccessLog": "网站日志",
+  "hostLogsErrorLog": "错误日志",
+  "hostLogsLoadFailed": "加载网站日志失败。",
+  "hostLogsRefreshFailed": "刷新网站日志失败。",
+  "hostLogsStateHint": "日志开关状态（当前版本只读）",
+  "hostProxyAdd": "添加反向代理",
+  "hostProxyAddressPlaceholder": "例: 127.0.0.1:8080",
+  "hostProxyAddressRequired": "请输入代理地址。",
+  "hostProxyAllowCredentials": "允许携带cookies",
+  "hostProxyAllowHeaders": "允许的请求头",
+  "hostProxyAllowMethods": "允许的请求方法",
+  "hostProxyAllowOrigins": "允许访问的域名",
+  "hostProxyBrowserCache": "浏览器缓存",
+  "hostProxyBrowserCacheNoModify": "不修改",
+  "hostProxyBrowserCacheTime": "浏览器缓存时间",
+  "hostProxyBrowserCacheTimeHelper": "静态资源在浏览器本地缓存的时间，减少重复请求。到期前用户刷新页面会直接使用本地缓存。",
+  "hostProxyCacheSection": "缓存",
+  "hostProxyCacheTimeInvalid": "缓存时间必须是 1-65535 之间的数字。",
+  "hostProxyCancelEdit": "取消编辑",
+  "hostProxyCors": "开启跨域",
+  "hostProxyCorsSection": "跨域访问",
+  "hostProxyDeleteConfirmMessage": "删除反向代理 '{0}'？对应的配置文件将被移除。",
+  "hostProxyDeleteConfirmTitle": "删除反向代理",
+  "hostProxyDeleteFailed": "删除反向代理失败。",
+  "hostProxyDeleted": "反向代理已删除。",
+  "hostProxyDisable": "禁用",
+  "hostProxyDisabled": "已停止",
+  "hostProxyEditTitle": "编辑反向代理",
+  "hostProxyEmpty": "暂无反向代理规则。",
+  "hostProxyHost": "后端域名",
+  "hostProxyHostHelper": "将域名添加到请求头传递到代理服务器",
+  "hostProxyHostRequired": "请输入后端域名。",
+  "hostProxyListTitle": "反向代理规则",
+  "hostProxyLoadFailed": "加载反向代理列表失败。",
+  "hostProxyMatch": "前端请求路径",
+  "hostProxyMatchRequired": "请输入前端请求路径。",
+  "hostProxyNameRequired": "名称不能为空。",
+  "hostProxyOriginsRequired": "开启跨域后，允许访问的域名不能为空。",
+  "hostProxyPass": "后端代理地址",
+  "hostProxyPassHelper": "代理的站点，必须为可正常访问的URL",
+  "hostProxyPreflight": "预检请求快速响应",
+  "hostProxySaveFailed": "保存反向代理失败。",
+  "hostProxyServerCache": "服务器缓存",
+  "hostProxyServerCacheTime": "服务器缓存时间",
+  "hostProxyServerCacheTimeHelper": "请求在服务器端缓存的时间，到期前相同请求会直接返回缓存结果，不再请求源站。",
+  "hostProxySni": "回源 SNI",
+  "hostProxySniHelper": "反代后端为 https 的时候可能需要设置回源 SNI，具体需要看 CDN 服务商文档",
+  "hostProxySslVerify": "校验后端 SSL 证书",
+  "hostProxySslVerifyHelper": "开启后，反向代理 HTTPS 后端时将严格校验服务器证书（默认不校验）",
+  "hostProxyStatusFailed": "更新反向代理状态失败。",
+  "hostProxyStatusUpdated": "反向代理状态已更新。",
+  "hostRedirectAdd": "添加重定向",
+  "hostRedirectCancelEdit": "取消编辑",
+  "hostRedirectDeleteConfirmMessage": "删除重定向 '{0}'？",
+  "hostRedirectDeleteConfirmTitle": "删除重定向",
+  "hostRedirectDeleteFailed": "删除重定向失败。",
+  "hostRedirectDeleted": "重定向已删除。",
+  "hostRedirectDisable": "禁用",
+  "hostRedirectDomains": "域名",
+  "hostRedirectDomainsHelper": "一行一个域名。",
+  "hostRedirectDomainsPlaceholder": "一行一个域名，例如 old.example.com",
+  "hostRedirectDomainsRequired": "请至少输入一个域名。",
+  "hostRedirectEditTitle": "编辑重定向",
+  "hostRedirectEmpty": "暂无重定向规则。",
+  "hostRedirectKeep": "保留路径",
+  "hostRedirectKeepPath": "保留路径",
+  "hostRedirectKeepPathHelper": "将原始请求路径附加到目标 URL 之后。",
+  "hostRedirectListTitle": "重定向规则",
+  "hostRedirectLoadFailed": "加载重定向列表失败。",
+  "hostRedirectNameRequired": "名称不能为空。",
+  "hostRedirectNotKeep": "不保留路径",
+  "hostRedirectPathRequired": "请输入路径。",
+  "hostRedirectSaveFailed": "保存重定向失败。",
+  "hostRedirectStatusFailed": "更新重定向状态失败。",
+  "hostRedirectStatusUpdated": "重定向状态已更新。",
+  "hostRedirectTarget": "目标URL地址",
+  "hostRedirectTargetRequired": "请输入目标URL地址。",
+  "hostRedirectTypeDomain": "域名",
+  "hostRedirectTypePath": "路径",
+  "hostRedirectWay": "方式",
+  "hostRedirectWayHelper": "301永久重定向，302临时重定向",
+  "hostRewriteCardTitle": "伪静态规则",
+  "hostRewriteContentPlaceholder": "# nginx 伪静态规则",
+  "hostRewriteCurrent": "当前",
+  "hostRewriteHelper": "保存后 nginx 将自动重载并使规则生效。",
+  "hostRewriteHelper2": "修改伪静态规则可能影响网站的访问解析。",
+  "hostRewriteLoadFailed": "加载伪静态内容失败。",
+  "hostRewriteMode": "方案",
+  "hostRewriteSaveAndReload": "保存并重载",
+  "hostRewriteSaveConfirmMessage": "保存 '{0}' 的伪静态规则并重载 nginx？",
+  "hostRewriteSaveFailed": "保存伪静态规则失败。",
+  "hostRewriteSaved": "伪静态规则已保存，nginx 已重载。",
+  "hostWebsiteConfigBack": "返回网站列表",
+  "hostWebsiteTabPlaceholder": "该模块将在后续批次提供。",
+  "hostWebsitesConfig": "配置",
+  "hostWebsitesConfigHint": "网站设置",
+  "hostHttpsTabTitle": "HTTPS",
+  "hostDomainsTabTitle": "域名",
+  "hostWebsiteTabProxy": "反向代理",
+  "hostWebsiteTabRedirect": "重定向",
+  "hostWebsiteTabRewrite": "伪静态",
+  "hostWebsiteTabCors": "跨域共享（CORS）",
+  "hostWebsiteTabAntiLeech": "防盗链",
+  "hostWebsiteTabBasicAuth": "密码访问",
+  "hostWebsiteTabLogs": "日志",
+  "hostFilesEditorBack": "返回文件列表",
+  "hostFilesEditorLoadFailed": "加载文件内容失败。",
+  "hostFilesEditorSaveConfirm": "保存对 '{0}' 的更改？",
+  "hostFilesSearchNoMatch": "没有匹配的文件。",
+  "hostFilesPasteAction": "粘贴",
+  "hostFilesCutAction": "剪切",
+  "hostFilesPermissionLabel": "权限",
+  "hostFilesFileNamePlaceholder": "文件名",
+  "hostFilesFileNameEmpty": "文件名不能为空。",
+  "hostFilesCreateFileFailed": "创建文件 '{0}' 失败。",
+  "hostFilesRenameFailed": "重命名 '{0}' 失败。",
+  "hostFilesCutToast": "已剪切。请到目标目录粘贴。",
+  "hostFilesCopyToast": "已复制。请到目标目录粘贴。",
+  "hostFilesPasteFailed": "粘贴失败。",
+  "hostFilesDestinationLabel": "目标目录",
+  "hostFilesCompressFailed": "压缩 '{0}' 失败。",
+  "hostFilesModePlaceholder": "如 755",
+  "hostFilesModeInvalid": "请输入 3 位八进制权限（如 755）。",
+  "hostFilesModeFailed": "修改 '{0}' 的权限失败。",
+  "hostFilesFavoriteFailed": "添加收藏失败。",
+  "hostAiAccountsAddAction": "添加账号",
+  "hostAiAccountsTitle": "智能体账号",
+  "hostAiAccountProviderLabel": "供应商",
+  "hostAiAccountApiTypeLabel": "API 类型",
+  "hostAiAccountBaseUrlLabel": "Base URL",
+  "hostAiAccountApiKeyLabel": "API Key",
+  "hostAiAccountRemarkLabel": "备注",
+  "hostAiAccountsRefreshFailed": "刷新智能体账号失败。",
+  "hostAiAccountsEmpty": "暂无智能体账号。",
+  "hostAiAccountProviderRequired": "请选择供应商。",
+  "hostAiAccountNameRequired": "请输入名称。",
+  "hostAiAccountApiTypeRequired": "请选择 API 类型。",
+  "hostAiAccountBaseUrlRequired": "请输入 Base URL。",
+  "hostAiAccountApiKeyRequired": "请输入 API Key。",
+  "hostAiAccountsSaved": "智能体账号已保存。",
+  "hostAiAccountsUpdateFailed": "更新智能体账号失败。",
+  "hostAiAccountsCreateFailed": "创建智能体账号失败。",
+  "hostAiAccountsSaveFailedRetry": "保存失败，请调整输入后重试。",
+  "hostAiAccountDeleteConfirm": "删除智能体账号 '{0}'？该操作无法撤销。",
+  "hostAiAccountsDeleted": "智能体账号已删除。",
+  "hostAiAccountsDeleteFailed": "删除智能体账号失败。",
+  "hostAiAccountsLoadFailed": "加载智能体账号失败。",
+  "hostAiGpuEmpty": "未在此服务器上检测到 GPU。",
+  "hostAiGpuRefreshFailed": "刷新 GPU 状态失败。",
+  "hostAiGpuDriverVersion": "驱动版本",
+  "hostAiGpuCudaVersion": "CUDA 版本",
+  "hostAiGpuTitle": "GPU",
+  "hostAiGpuUnknownDevice": "未知设备",
+  "hostAiGpuUtilization": "GPU 使用率",
+  "hostAiGpuTemperature": "温度",
+  "hostAiGpuPerformanceState": "性能状态",
+  "hostAiGpuPowerUsage": "功耗",
+  "hostAiGpuMemoryUsage": "显存使用",
+  "hostAiGpuFanSpeed": "风扇转速",
+  "hostAiGpuBusId": "总线地址",
+  "hostAiGpuPersistenceMode": "持续模式",
+  "hostAiGpuDisplayActive": "显卡初始化",
+  "hostAiGpuEcc": "不可纠正 ECC",
+  "hostAiGpuComputeMode": "计算模式",
+  "hostAiGpuMigMode": "MIG 模式",
+  "hostAiGpuMemoryUtilization": "显存使用率",
+  "hostAiGpuFrequency": "频率",
+  "hostAiGpuProcesses": "进程信息",
+  "hostAiGpuShr": "共享显存",
+  "hostAiGpuProcessName": "进程名称",
+  "hostAiGpuProcessMemory": "显存使用",
+  "hostAiGpuProcessTypeC": "计算",
+  "hostAiGpuProcessTypeG": "图形",
+  "hostAiGpuProcessTypeCG": "计算+图形",
+  "hostAiGpuLoadFailed": "加载 GPU 状态失败。",
+  "hostAiMcpLoadFailed": "加载 MCP 服务器失败。",
+  "hostAiMcpTestConnection": "测试连接",
+  "hostAiMcpOperateConfirm": "确认对 MCP 服务器 '{1}' 执行 '{0}' 操作？",
+  "hostAiMcpOperationSuccess": "操作成功。",
+  "hostAiMcpOperationFailed": "MCP 服务器操作失败。",
+  "hostAiMcpTestSuccess": "连接测试成功。",
+  "hostAiMcpTestFailed": "连接测试失败。",
+  "hostAiMcpDeleteFailed": "删除 MCP 服务器失败。",
+  "hostAiMcpUrlRequired": "请输入 Base URL。",
+  "hostAiMcpPathRequired": "请输入传输路径。",
+  "hostAiMcpContainerRequired": "请输入容器名称。",
+  "hostAiMcpImageRequired": "请输入网关镜像。",
+  "hostAiMcpCreateFailed": "创建 MCP 服务器失败。",
+  "hostAiMcpStatusError": "错误",
+  "hostAiAgentTypeHermes": "Hermes 智能体",
+  "hostAiAgentCreateFailed": "智能体创建失败或超时。安装可能仍在服务器上进行，请耐心等待或查看服务器任务列表。",
+  "hostAiAgentLoadFailed": "加载智能体失败。",
+  "hostAiAgentOverviewFailed": "加载智能体概览失败。",
+  "hostAiAgentDefaultModelLabel": "默认模型",
+  "hostAiAgentJobCountLabel": "定时任务数量",
+  "hostAiAgentSessionCountLabel": "会话数量",
+  "hostAiAgentDeleteConfirm": "删除智能体 '{0}'？该操作无法撤销。",
+  "hostAiAgentOperationSuccess": "操作成功。",
+  "hostAiAgentDeleteFailed": "删除智能体失败。",
+  "hostAiAgentStatusError": "错误",
+  "hostAiTabModels": "本地模型",
+  "hostAiTabAccounts": "账号",
+  "hostAiTabMcp": "MCP",
+  "hostAiTabAgents": "智能体",
+  "hostAiTabGpu": "GPU"
 }

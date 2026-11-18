@@ -69,8 +69,8 @@ class ToolboxDeviceService {
     return _repository.updateDeviceSwap(swap);
   }
 
-  Future<void> verifyDns(String dns) async {
-    await _repository.checkDns(dns);
+  Future<void> verifyDns(String key, String value) async {
+    await _repository.checkDns(key, value);
   }
 
   String readConfigValue(Map<String, dynamic> conf, List<String> keys) {

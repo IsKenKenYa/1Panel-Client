@@ -4,3 +4,8 @@ output-localization-file: app_localizations.dart
 output-class: AppLocalizations
 output-dir: lib/l10n/generated
 nullable-getter: false
+# WinUI3 宿主（L10n.T + string.Format）复用 arb 原始值，11 个 host* 确认消息键
+# 使用 {0} 位置占位符，ICU 数字占位符名不合法；值中以 '{0}' 单引号转义为字面量，
+# 故启用 use-escaping（仅影响含 ' 的词元解析，既有词条输出不变，唯一奇数 '
+# 词条 fileSavePrivateFallback 已按 '' 转义改写，Dart 渲染结果不变）。
+use-escaping: true

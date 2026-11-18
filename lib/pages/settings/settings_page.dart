@@ -1,13 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/core/services/app_settings_controller.dart';
+import 'package:onepanel_client/core/services/native_host_launcher.dart';
 import 'package:onepanel_client/core/services/onboarding_service.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/theme/ui_render_mode.dart';
 import 'package:onepanel_client/core/theme/ui_render_policy.dart';
+import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/features/settings/about_page.dart';
 import 'package:onepanel_client/features/settings/app_lock_settings_page.dart';
 import 'package:onepanel_client/features/settings/screens/theme_settings_page.dart';
@@ -19,23 +23,48 @@ import 'package:onepanel_client/shared/widgets/section_card.dart';
 import '../../core/utils/snackbar_utils.dart';
 
 class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
+  const SettingsPage({
+    super.key,
+    this.nativeHostLauncher,
+    this.onNativeHostLaunched,
+  });
+
+  /// 注入点（测试用）：默认按 C++ bootstrap 同规则探测宿主 exe。
+  final NativeHostLauncher? nativeHostLauncher;
+
+  /// 宿主拉起成功后的交接回调（测试用）；默认等待片刻后退出当前进程。
+  final VoidCallback? onNativeHostLaunched;
 
   @override
   Widget build(BuildContext context) {
     final spec = AdaptiveLayoutSpec.of(context);
     if (spec.isDesktop) {
-      return const _SettingsPageDesktop();
+      return _SettingsPageDesktop(
+        nativeHostLauncher: nativeHostLauncher,
+        onNativeHostLaunched: onNativeHostLaunched,
+      );
     }
     if (spec.isTablet) {
-      return const _SettingsPageTablet();
+      return _SettingsPageTablet(
+        nativeHostLauncher: nativeHostLauncher,
+        onNativeHostLaunched: onNativeHostLaunched,
+      );
     }
-    return const _SettingsPageMobile();
+    return _SettingsPageMobile(
+      nativeHostLauncher: nativeHostLauncher,
+      onNativeHostLaunched: onNativeHostLaunched,
+    );
   }
 }
 
 class _SettingsPageMobile extends StatelessWidget {
-  const _SettingsPageMobile();
+  const _SettingsPageMobile({
+    this.nativeHostLauncher,
+    this.onNativeHostLaunched,
+  });
+
+  final NativeHostLauncher? nativeHostLauncher;
+  final VoidCallback? onNativeHostLaunched;
 
   @override
   Widget build(BuildContext context) {
@@ -59,13 +88,22 @@ class _SettingsPageMobile extends StatelessWidget {
               ),
         title: Text(l10n.settingsPageTitle),
       ),
-      body: const _SettingsBody(),
+      body: _SettingsBody(
+        nativeHostLauncher: nativeHostLauncher,
+        onNativeHostLaunched: onNativeHostLaunched,
+      ),
     );
   }
 }
 
 class _SettingsPageDesktop extends StatelessWidget {
-  const _SettingsPageDesktop();
+  const _SettingsPageDesktop({
+    this.nativeHostLauncher,
+    this.onNativeHostLaunched,
+  });
+
+  final NativeHostLauncher? nativeHostLauncher;
+  final VoidCallback? onNativeHostLaunched;
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +117,10 @@ class _SettingsPageDesktop extends StatelessWidget {
           ),
           child: ColoredBox(
             color: scheme.surface,
-            child: const _SettingsBody(),
+            child: _SettingsBody(
+              nativeHostLauncher: nativeHostLauncher,
+              onNativeHostLaunched: onNativeHostLaunched,
+            ),
           ),
         ),
       ),
@@ -88,7 +129,13 @@ class _SettingsPageDesktop extends StatelessWidget {
 }
 
 class _SettingsPageTablet extends StatelessWidget {
-  const _SettingsPageTablet();
+  const _SettingsPageTablet({
+    this.nativeHostLauncher,
+    this.onNativeHostLaunched,
+  });
+
+  final NativeHostLauncher? nativeHostLauncher;
+  final VoidCallback? onNativeHostLaunched;
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +147,10 @@ class _SettingsPageTablet extends StatelessWidget {
         maxWidth: spec.settingsBodyMaxWidth,
         child: ColoredBox(
           color: scheme.surface,
-          child: const _SettingsBody(),
+          child: _SettingsBody(
+            nativeHostLauncher: nativeHostLauncher,
+            onNativeHostLaunched: onNativeHostLaunched,
+          ),
         ),
       ),
     );
@@ -108,7 +158,117 @@ class _SettingsPageTablet extends StatelessWidget {
 }
 
 class _SettingsBody extends StatelessWidget {
-  const _SettingsBody();
+  const _SettingsBody({
+    this.nativeHostLauncher,
+    this.onNativeHostLaunched,
+  });
+
+  final NativeHostLauncher? nativeHostLauncher;
+  final VoidCallback? onNativeHostLaunched;
+
+  /// 选「原生模式」= 立即拉起 WinUI3 宿主并交接（退出当前进程）；
+  /// 宿主 exe 缺失时保留偏好并给出 dotnet build 指引；
+  /// 选「MDUI3」维持既有「重启生效」语义。
+  Future<void> _handleRenderModeSelected(
+    BuildContext context,
+    AppSettingsController settings,
+    UIRenderMode value,
+  ) async {
+    final l10n = context.l10n;
+    await settings.updateUIRenderMode(value);
+    if (!context.mounted) {
+      return;
+    }
+    Navigator.pop(context);
+    if (value != UIRenderMode.native) {
+      SnackBarUtils.showSuccess(context, l10n.settingsUIRenderModeRestartHint);
+      return;
+    }
+    final launched =
+        await (nativeHostLauncher ?? NativeHostLauncher()).launch();
+    if (launched) {
+      final handOver = onNativeHostLaunched;
+      if (handOver != null) {
+        handOver();
+      } else {
+        // 留出宿主窗口拉起的时间，再交出当前 Flutter runner 会话。
+        await Future<void>.delayed(const Duration(milliseconds: 600));
+        exit(0);
+      }
+      return;
+    }
+    if (context.mounted) {
+      SnackBarUtils.showError(context, l10n.settingsUIRenderModeHostMissing);
+    }
+  }
+
+  /// 渲染模式三选弹窗（native / liquidGlass / md3）。
+  /// Windows 桌面选「原生模式」走宿主交接；其余模式更新偏好并提示重启。
+  Future<void> _chooseRenderMode(
+    BuildContext context,
+    AppSettingsController settings,
+  ) async {
+    final l10n = context.l10n;
+    final selectedMode = await showDialog<UIRenderMode>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.settingsUIRenderMode),
+        scrollable: true,
+        content: RadioGroup<UIRenderMode>(
+          groupValue: settings.uiRenderMode,
+          onChanged: (mode) {
+            if (mode == null) {
+              return;
+            }
+            if (mode == UIRenderMode.native &&
+                UIRenderPolicy.canSelectNativeMode() &&
+                PlatformUtils.isWindows) {
+              _handleRenderModeSelected(context, settings, mode);
+              return;
+            }
+            Navigator.pop(dialogContext, mode);
+          },
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (UIRenderPolicy.canSelectNativeMode())
+                RadioListTile<UIRenderMode>(
+                  title: Text(l10n.settingsUIRenderModeNative),
+                  subtitle: UIRenderPolicy.isAppleHost
+                      ? Text(l10n.settingsUIRenderModeAppleGlassDesc)
+                      : null,
+                  value: UIRenderMode.native,
+                ),
+              RadioListTile<UIRenderMode>(
+                title: Text(l10n.settingsUIRenderModeLiquidGlass),
+                subtitle: Text(l10n.settingsUIRenderModeLiquidGlassDesc),
+                value: UIRenderMode.liquidGlass,
+              ),
+              RadioListTile<UIRenderMode>(
+                title: Text(l10n.settingsUIRenderModeMD3),
+                value: UIRenderMode.md3,
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(l10n.commonClose),
+          ),
+        ],
+      ),
+    );
+    if (selectedMode == null ||
+        selectedMode == settings.uiRenderMode ||
+        !context.mounted) {
+      return;
+    }
+    await settings.updateUIRenderMode(selectedMode);
+    if (context.mounted) {
+      SnackBarUtils.showSuccess(context, l10n.settingsUIRenderModeRestartHint);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -246,7 +406,8 @@ class _SettingsBody extends StatelessWidget {
                     if (!context.mounted) {
                       return;
                     }
-                    SnackBarUtils.showSuccess(context, l10n.settingsResetOnboardingDone);
+                    SnackBarUtils.showSuccess(
+                        context, l10n.settingsResetOnboardingDone);
                   },
                 ),
               ],
@@ -255,61 +416,6 @@ class _SettingsBody extends StatelessWidget {
         );
       },
     );
-  }
-}
-
-Future<void> _chooseRenderMode(
-  BuildContext context,
-  AppSettingsController settings,
-) async {
-  final l10n = context.l10n;
-  final selectedMode = await showDialog<UIRenderMode>(
-    context: context,
-    builder: (dialogContext) => AlertDialog(
-      title: Text(l10n.settingsUIRenderMode),
-      scrollable: true,
-      content: RadioGroup<UIRenderMode>(
-        groupValue: settings.uiRenderMode,
-        onChanged: (mode) => Navigator.pop(dialogContext, mode),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (UIRenderPolicy.canSelectNativeMode())
-              RadioListTile<UIRenderMode>(
-                title: Text(l10n.settingsUIRenderModeNative),
-                subtitle: UIRenderPolicy.isAppleHost
-                    ? Text(l10n.settingsUIRenderModeAppleGlassDesc)
-                    : null,
-                value: UIRenderMode.native,
-              ),
-            RadioListTile<UIRenderMode>(
-              title: Text(l10n.settingsUIRenderModeMD3),
-              value: UIRenderMode.md3,
-            ),
-            RadioListTile<UIRenderMode>(
-              title: Text(l10n.settingsUIRenderModeLiquidGlass),
-              subtitle: Text(l10n.settingsUIRenderModeLiquidGlassDesc),
-              value: UIRenderMode.liquidGlass,
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(dialogContext),
-          child: Text(l10n.commonClose),
-        ),
-      ],
-    ),
-  );
-  if (selectedMode == null ||
-      selectedMode == settings.uiRenderMode ||
-      !context.mounted) {
-    return;
-  }
-  await settings.updateUIRenderMode(selectedMode);
-  if (context.mounted) {
-    SnackBarUtils.showSuccess(context, l10n.settingsUIRenderModeRestartHint);
   }
 }
 

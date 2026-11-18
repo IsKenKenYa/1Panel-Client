@@ -111,9 +111,14 @@ class SSLV2Api {
       ApiConstants.buildApiPath('/websites/ssl/search'),
       data: search.toJson(),
     );
+    // 解业务信封 {code,message,data}：response.data 是信封本体，
+    // 分页字段在 data 子对象里（与 listWebsiteSSL/getInstalledApps 同规则）。
+    final envelope = response.data as Map<String, dynamic>? ?? {};
+    final payload = envelope['data'] as Map<String, dynamic>? ??
+        const <String, dynamic>{};
     return Response(
       data: PageResult.fromJson(
-        response.data as Map<String, dynamic>,
+        payload,
         (json) => WebsiteSSL.fromJson(json as Map<String, dynamic>),
       ),
       statusCode: response.statusCode,

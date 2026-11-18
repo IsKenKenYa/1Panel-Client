@@ -1097,6 +1097,30 @@ class AppLocalizationsZh extends AppLocalizations {
   String get navSettings => '设置';
 
   @override
+  String get hostNavScriptLibrary => '脚本库';
+
+  @override
+  String get hostNavDatabases => '数据库';
+
+  @override
+  String get hostNavCronJobs => '计划任务';
+
+  @override
+  String get hostNavBackups => '备份';
+
+  @override
+  String get hostNavHost => '主机';
+
+  @override
+  String get hostNavCommands => '命令库';
+
+  @override
+  String get hostNavLogs => '日志';
+
+  @override
+  String get hostNavGateway => '网关';
+
+  @override
   String noServerSelectedTitle(String module) {
     return '$module 需要先选择服务器';
   }
@@ -2090,6 +2114,14 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsUIRenderModeRestartHint => '修改 UI 渲染模式后，请重启应用以生效。';
+
+  @override
+  String get settingsUIRenderModeHostMissing =>
+      '未找到原生宿主。请先执行构建：dotnet build windows/runner/native_host/OnePanelNativeHost/OnePanelNativeHost.csproj -c Debug';
+
+  @override
+  String get settingsUIRenderModeHostMissingStatus =>
+      '原生宿主未就绪（未找到 OnePanelNativeHost.exe），本次启动已回退为 MDUI3。';
 
   @override
   String get settingsTheme => '主题';
@@ -9018,4 +9050,1526 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get containerLogsEmpty => '暂无日志';
+
+  @override
+  String get settingsSystemBackdrop => '系统背景效果';
+
+  @override
+  String get settingsRestartRequired => '重启后生效';
+
+  @override
+  String get commonNone => '无';
+
+  @override
+  String get hostServersRefreshFailed => '刷新服务器列表失败。';
+
+  @override
+  String get hostServersActions => '服务器操作';
+
+  @override
+  String get hostServersSwitch => '切换';
+
+  @override
+  String get hostServersDeleteCurrentBlocked => '当前服务器无法删除，请先切换到其他服务器';
+
+  @override
+  String get hostServersNamePlaceholder => '我的服务器';
+
+  @override
+  String get hostServersUrlRequired => 'URL 不能为空。';
+
+  @override
+  String get hostServersUrlHttpRequired => 'URL 必须以 http:// 或 https:// 开头。';
+
+  @override
+  String get hostServersApiKeyRequired => 'API 密钥不能为空。';
+
+  @override
+  String get hostFilesPathPlaceholder => '输入路径并按回车';
+
+  @override
+  String get hostFilesFolderNamePlaceholder => '文件夹名称';
+
+  @override
+  String get hostFilesFolderNameEmpty => '文件夹名称不能为空。';
+
+  @override
+  String get hostContainersRefreshFailed => '刷新容器列表失败。';
+
+  @override
+  String get hostContainersStopContainer => '停止容器';
+
+  @override
+  String get hostContainersStartContainer => '启动容器';
+
+  @override
+  String get hostContainersRestartContainer => '重启容器';
+
+  @override
+  String get hostContainersDeleteContainer => '删除容器';
+
+  @override
+  String get hostContainersDeleteConfirm => '删除容器';
+
+  @override
+  String get hostAppsRefreshFailed => '刷新应用列表失败。';
+
+  @override
+  String get hostAppsInstallOpenresty => '安装 OpenResty';
+
+  @override
+  String get hostAppsStopApp => '停止应用';
+
+  @override
+  String get hostAppsStartApp => '启动应用';
+
+  @override
+  String get hostAppsUninstallApp => '卸载应用';
+
+  @override
+  String get hostAppsUninstallConfirm => '卸载应用';
+
+  @override
+  String get hostAppsOpenrestyInstallConfirm =>
+      'OpenResty 将从应用商店下载并安装，可能需要几分钟，是否继续？';
+
+  @override
+  String get hostAppsOpenrestyInstallSubmitted => 'OpenResty 安装任务已提交。';
+
+  @override
+  String get hostWebsitesRefreshFailed => '刷新网站失败';
+
+  @override
+  String get hostWebsitesStopWebsite => '停止网站';
+
+  @override
+  String get hostWebsitesStartWebsite => '启动网站';
+
+  @override
+  String get hostWebsitesPrimaryDomainHint => '例如：example.com';
+
+  @override
+  String get hostWebsitesAliasHint => '留空时根据域名自动生成';
+
+  @override
+  String get hostWebsitesAddFailed => '添加网站失败';
+
+  @override
+  String get hostCommonOptional => '可选';
+
+  @override
+  String get hostCommonPortNumeric => '端口必须为数字。';
+
+  @override
+  String get hostOpenrestyRefreshFailed => '刷新 OpenResty 信息失败';
+
+  @override
+  String get hostOpenrestyConfigEmptyHint =>
+      '# OpenResty 配置源码为空或不可用（/etc/nginx/nginx.conf）';
+
+  @override
+  String get hostOpenrestyConfigSource => '配置源码（/etc/nginx/nginx.conf）';
+
+  @override
+  String get hostOpenrestySaveConfig => '保存 OpenResty 配置';
+
+  @override
+  String get hostOpenrestySaveConfigConfirm =>
+      '将使用编辑后的内容覆盖 /etc/nginx/nginx.conf。\n无效的配置可能导致托管的网站不可用。是否继续？';
+
+  @override
+  String get hostOpenrestySaveConfigFailed => '保存 OpenResty 配置失败';
+
+  @override
+  String get hostDatabaseCreate => '创建数据库';
+
+  @override
+  String get hostDatabaseRefreshFailed => '刷新数据库失败';
+
+  @override
+  String get hostDatabaseActions => '数据库操作';
+
+  @override
+  String get hostDatabasePasswordRequired => '请输入新密码。';
+
+  @override
+  String get hostDatabaseDeleteTitle => '删除数据库';
+
+  @override
+  String get hostDatabaseNameHint => '例如：app_db';
+
+  @override
+  String get hostDatabaseAddressHint => '例如：192.168.1.10';
+
+  @override
+  String get hostDatabasePortHint => '例如：3306';
+
+  @override
+  String get hostDatabaseCreateFailed => '创建数据库失败';
+
+  @override
+  String get hostDatabaseCreateRetryHint => '创建失败，请调整输入后重试。';
+
+  @override
+  String get hostDatabaseRemoteAddressRequired => '远程数据库必须填写地址。';
+
+  @override
+  String get hostDatabaseRemotePortRequired => '远程数据库必须填写端口。';
+
+  @override
+  String get hostDatabaseRemoteUsernameRequired => '远程数据库必须填写用户名。';
+
+  @override
+  String get hostDatabaseRemotePasswordRequired => '远程数据库必须填写密码。';
+
+  @override
+  String get hostOrchestrationRefreshFailed => '刷新编排失败';
+
+  @override
+  String get hostOrchestrationActions => '编排操作';
+
+  @override
+  String get hostOrchestrationUp => '启动';
+
+  @override
+  String get hostOrchestrationDown => '停止';
+
+  @override
+  String get hostOrchestrationDownTitle => '停止编排';
+
+  @override
+  String get hostOrchestrationNamePlaceholder => '例如 my-app';
+
+  @override
+  String get hostOrchestrationCreateFrom => '创建方式';
+
+  @override
+  String get hostOrchestrationFromPath => '从路径创建';
+
+  @override
+  String get hostOrchestrationFromContent => '从内容创建';
+
+  @override
+  String get hostOrchestrationFromTemplate => '从模板创建';
+
+  @override
+  String get hostOrchestrationComposeFilePath => '编排文件路径';
+
+  @override
+  String get hostOrchestrationPathPlaceholder =>
+      '例如 /opt/1panel/docker/compose/my-app/docker-compose.yml';
+
+  @override
+  String get hostOrchestrationNewComposeContent => '新编排内容 (YAML)';
+
+  @override
+  String get hostOrchestrationFullReplacementHint => '完整替换：粘贴完整的新配置；内容为空将被拒绝';
+
+  @override
+  String get hostOrchestrationTemplateId => '模板 ID';
+
+  @override
+  String get hostOrchestrationTemplateIdPlaceholder => '例如 1';
+
+  @override
+  String get hostOrchestrationCreateFailed => '创建编排失败';
+
+  @override
+  String get hostOrchestrationContentRequired => '编排内容不能为空';
+
+  @override
+  String get hostOrchestrationEditTitle => '编辑编排';
+
+  @override
+  String get hostOrchestrationReplace => '替换';
+
+  @override
+  String get hostOrchestrationSaveFailedReopen => '保存失败，编辑器将保留内容重新打开，请重试';
+
+  @override
+  String get hostOrchestrationPathRequired => '编排文件路径不能为空';
+
+  @override
+  String get hostOrchestrationTemplateIdRequired => '模板 ID 不能为空';
+
+  @override
+  String get hostOrchestrationTemplateIdInteger => '模板 ID 必须为整数';
+
+  @override
+  String get hostCommonCreateFailed => '创建失败，请调整输入后重试';
+
+  @override
+  String get hostCommonSaveFailed => '保存失败，请调整输入后重试';
+
+  @override
+  String get hostCronJobsCreateTask => '创建任务';
+
+  @override
+  String get hostCronJobsRefreshFailed => '刷新计划任务失败';
+
+  @override
+  String get hostCronJobsLastRun => '上次执行';
+
+  @override
+  String get hostCronJobsTaskActions => '任务操作';
+
+  @override
+  String get hostCronJobsDeleteTaskTitle => '删除任务';
+
+  @override
+  String get hostCronJobsNamePlaceholder => '例如 清理日志';
+
+  @override
+  String get hostCronJobsScriptReplaceHint => '可选；提交后将替换已保存的脚本';
+
+  @override
+  String get hostCronJobsScriptPlaceholder => '可选 Shell 脚本';
+
+  @override
+  String get hostCronJobsEditTask => '编辑任务';
+
+  @override
+  String get hostCronJobsSaveFailed => '保存任务失败';
+
+  @override
+  String get hostCronJobsCreateFailed => '创建任务失败';
+
+  @override
+  String get hostBackupsRefreshFailed => '刷新备份记录失败';
+
+  @override
+  String get hostBackupsActions => '备份操作';
+
+  @override
+  String get hostBackupsRestoreUnavailableFailed => '备份记录失败时不可恢复';
+
+  @override
+  String get hostBackupsRestoreUnavailableSize => '文件大小未知时不可恢复';
+
+  @override
+  String get hostBackupsDeleteUnavailableWaiting => '备份仍在等待时不可删除';
+
+  @override
+  String get hostBackupsRestoreOverwriteWarning => '此操作将覆盖当前数据且无法撤销';
+
+  @override
+  String get hostBackupsDeleteRecordTitle => '删除备份记录';
+
+  @override
+  String get hostHostSshTitle => 'SSH';
+
+  @override
+  String get hostHostSshRefreshFailed => '刷新 SSH 信息失败。';
+
+  @override
+  String get hostHostSshNotInstalled => '此服务器未安装 SSH 服务。';
+
+  @override
+  String get hostHostSshConfigLoadFailed => '配置文件加载失败。';
+
+  @override
+  String get hostHostSshConfigEmptyPlaceholder =>
+      '# SSH 配置文件不存在或为空 (/etc/ssh/sshd_config)';
+
+  @override
+  String get hostHostSshConfigFileTitle => '配置文件 (/etc/ssh/sshd_config)';
+
+  @override
+  String get hostHostSshSaveTitle => '保存 SSH 配置';
+
+  @override
+  String get hostHostSshSaveMessage =>
+      '将使用编辑后的内容覆盖 /etc/ssh/sshd_config。\n无效的配置可能导致 SSH 服务不可用。是否继续？';
+
+  @override
+  String get hostHostSshSaveFailed => '保存 SSH 配置失败。';
+
+  @override
+  String get hostToolboxSnapshotRefreshFailed => '刷新设备快照失败。';
+
+  @override
+  String get hostToolboxKernelLabel => '内核';
+
+  @override
+  String get hostToolboxProductLabel => '产品';
+
+  @override
+  String get hostToolboxTimeZoneLabel => '时区';
+
+  @override
+  String get hostToolboxNtpServerLabel => 'NTP 服务器';
+
+  @override
+  String get hostToolboxSwapOff => '已关闭';
+
+  @override
+  String get hostToolboxSwapOffHint => '此主机未启用 Swap。';
+
+  @override
+  String get hostToolboxSwapTotalHint => 'Swap 总大小。';
+
+  @override
+  String get hostToolboxDnsPlaceholder => '例如 8.8.8.8';
+
+  @override
+  String get hostToolboxDnsVerifyAction => '检测';
+
+  @override
+  String get hostToolboxDnsReachable => 'DNS 可达';
+
+  @override
+  String get hostToolboxDnsEmptyError => '请输入要检测的 DNS 服务器。';
+
+  @override
+  String get hostToolboxUsersTitle => '用户';
+
+  @override
+  String get hostAiModelsRefreshFailed => '刷新 AI 模型失败。';
+
+  @override
+  String get hostAiModelUnknownName => '未知';
+
+  @override
+  String get hostAiConnectionTitle => '连接';
+
+  @override
+  String get hostAiOllamaNotDetected => '未在此服务器上检测到 Ollama。';
+
+  @override
+  String get hostAiDomainBoundHint => '域名绑定成功，刷新后可查看连接详情。';
+
+  @override
+  String get hostAiIpAllowlistLabel => 'IP 白名单（可选，逗号分隔）';
+
+  @override
+  String get hostAiBindDomainFailed => '绑定域名失败。';
+
+  @override
+  String get hostAiBindFailedRetry => '绑定失败，请调整输入后重试。';
+
+  @override
+  String get hostAiModelActions => '模型操作';
+
+  @override
+  String get hostAiModelRecreateAction => '重新创建';
+
+  @override
+  String get hostAiModelDeleteTitle => '删除 AI 模型';
+
+  @override
+  String get hostAiModelCreateFailed => '创建模型失败。';
+
+  @override
+  String get hostAiCreateFailedRetry => '创建失败，请调整输入后重试。';
+
+  @override
+  String get hostCommandsRefreshFailed => '刷新命令失败。';
+
+  @override
+  String get hostCommandsRowActions => '命令操作';
+
+  @override
+  String get hostCommandsDeleteTitle => '删除命令';
+
+  @override
+  String get hostCommandsNameHint => '例如：清理日志';
+
+  @override
+  String get hostCommandsCommandHint => '例如：docker ps -a';
+
+  @override
+  String get hostCommandsDefaultGroup => '默认分组';
+
+  @override
+  String get hostCommandsCreateFailed => '创建命令失败。';
+
+  @override
+  String get hostCommandsCreateFormError => '创建失败，请调整输入后重试。';
+
+  @override
+  String get hostCommandsCommandRequired => '命令不能为空。';
+
+  @override
+  String get hostScriptLibraryRefreshFailed => '刷新脚本失败。';
+
+  @override
+  String get hostScriptLibraryDeleteSelected => '删除选中';
+
+  @override
+  String get hostScriptLibraryRowActions => '脚本操作';
+
+  @override
+  String get hostScriptLibraryDeleteTitle => '删除脚本';
+
+  @override
+  String get hostScriptLibraryDeleteSelectedTitle => '批量删除脚本';
+
+  @override
+  String get hostLogsRefreshOperationFailed => '刷新操作日志失败。';
+
+  @override
+  String get hostLogsRefreshLoginFailed => '刷新登录日志失败。';
+
+  @override
+  String get hostLogsFileNameRequired => '请输入文件名。';
+
+  @override
+  String get hostLogsRefreshTab => '刷新当前页签';
+
+  @override
+  String get hostLogsFileNameLabel => '文件名';
+
+  @override
+  String get hostLogsCoreToggle => '核心日志';
+
+  @override
+  String get hostLogsSystemHint => '输入日志文件名并点击“加载”查看内容。';
+
+  @override
+  String get hostSecurityRefreshFailed => '刷新防火墙规则失败。';
+
+  @override
+  String get hostSecurityAddRule => '添加规则';
+
+  @override
+  String get hostSecurityDeleteRule => '删除规则';
+
+  @override
+  String get hostSecurityPortHint => '例如：8080';
+
+  @override
+  String get hostSecurityAddressHint => '留空表示所有地址';
+
+  @override
+  String get hostSecurityAddRuleTitle => '添加规则';
+
+  @override
+  String get hostSecurityPortNumeric => '端口必须为数字。';
+
+  @override
+  String get hostSecurityDeleteRuleTitle => '删除规则';
+
+  @override
+  String get hostGatewayRefreshFailed => '刷新安全网关快照失败。';
+
+  @override
+  String get hostGatewayOpenrestyStatus => 'OpenResty 状态';
+
+  @override
+  String get hostGatewayHttpsRedirectTitle => '默认 HTTPS 重定向';
+
+  @override
+  String get hostGatewayHttpsRedirectDescription => '将所有网站的 HTTP 重定向到 HTTPS';
+
+  @override
+  String get hostGatewayStateUnknown => '当前状态未知';
+
+  @override
+  String get hostGatewayDisable => '禁用';
+
+  @override
+  String get hostGatewayHttpsRedirectEnableTitle => '启用默认 HTTPS 重定向';
+
+  @override
+  String get hostGatewayHttpsRedirectDisableTitle => '禁用默认 HTTPS 重定向';
+
+  @override
+  String get hostGatewayHttpsRedirectEnableMessage => '为所有网站启用 HTTP→HTTPS 重定向？';
+
+  @override
+  String get hostGatewayHttpsRedirectDisableMessage => '禁用 HTTP→HTTPS 重定向？';
+
+  @override
+  String get hostGatewayHttpsRedirectEnableFailed => '启用默认 HTTPS 重定向失败。';
+
+  @override
+  String get hostGatewayHttpsRedirectDisableFailed => '禁用默认 HTTPS 重定向失败。';
+
+  @override
+  String get hostGatewayCertificatePlaceholder => '粘贴完整 PEM 证书链';
+
+  @override
+  String get hostGatewayPrivateKeyPlaceholder => '粘贴对应的 PEM 私钥';
+
+  @override
+  String get hostGatewayDescriptionOptional => '描述（可选）';
+
+  @override
+  String get hostGatewayDescriptionPlaceholder =>
+      '例如：*.example.com 签发于 2026-09';
+
+  @override
+  String get hostGatewayCertificateRequired => '证书不能为空。';
+
+  @override
+  String get hostGatewayUploadConfirmMessage => '证书将导入面板并可供网站使用，是否继续？';
+
+  @override
+  String get hostGatewayUploadFailed => '证书上传失败。';
+
+  @override
+  String get hostGatewayUploadFormError => '上传失败，表单将保留已填内容重新打开，请重试。';
+
+  @override
+  String get hostGatewayRenewNoId => '该证书缺少 ID，无法续期。';
+
+  @override
+  String get hostGatewayRenew => '续期';
+
+  @override
+  String get hostGatewayRenewalRequested => '已请求续期。';
+
+  @override
+  String get hostGatewayExpiresToday => '今天到期';
+
+  @override
+  String get hostGatewayValid => '有效';
+
+  @override
+  String get hostDashboardRefreshFailed => '刷新仪表盘失败。';
+
+  @override
+  String get hostDashboardKernelLabel => '内核';
+
+  @override
+  String get hostDashboardCpuCoresLabel => 'CPU 核心数';
+
+  @override
+  String get hostDashboardPanelVersionLabel => '面板版本';
+
+  @override
+  String get hostMonitoringRefreshFailed => '刷新监控数据失败。';
+
+  @override
+  String get hostMonitoringLoadAverage => '平均负载';
+
+  @override
+  String get hostMonitoringLoad1 => '1 分钟负载';
+
+  @override
+  String get hostMonitoringLoad5 => '5 分钟负载';
+
+  @override
+  String get hostMonitoringLoad15 => '15 分钟负载';
+
+  @override
+  String get hostMonitoringLoadWindows => '1/5/15 分钟';
+
+  @override
+  String get hostAuthDeleteConfirm => '删除该密码访问用户？该操作无法撤销。';
+
+  @override
+  String get hostAuthDeleteFailed => '删除密码访问用户失败。';
+
+  @override
+  String get hostAuthDisableConfirm => '停用该网站的密码访问？';
+
+  @override
+  String get hostAuthEditHelper => '密码为非对称加密，无法回显，编辑需要重新设置密码';
+
+  @override
+  String get hostAuthEnableConfirm => '为 {0} 开启密码访问？';
+
+  @override
+  String get hostAuthEnableFailed => '更新密码访问开关失败。';
+
+  @override
+  String get hostAuthEnableSwitch => '开启密码访问';
+
+  @override
+  String get hostAuthLoadFailed => '加载密码访问配置失败。';
+
+  @override
+  String get hostAuthNameRequired => '名称不能为空。';
+
+  @override
+  String get hostAuthPasswordInvalid => '密码仅支持字母、数字和 _-.@\$!%*?&（最长 72 位）。';
+
+  @override
+  String get hostAuthPasswordRequired => '请输入密码。';
+
+  @override
+  String get hostAuthPathDeleteConfirm => '删除路径认证规则 {0}？该操作无法撤销。';
+
+  @override
+  String get hostAuthPathEmpty => '暂无路径认证规则';
+
+  @override
+  String get hostAuthPathRequired => '请输入路径。';
+
+  @override
+  String get hostAuthRandom => '随机密码';
+
+  @override
+  String get hostAuthRemark => '备注';
+
+  @override
+  String get hostAuthSaveFailed => '更新密码访问失败。';
+
+  @override
+  String get hostAuthSaved => '密码访问已更新。';
+
+  @override
+  String get hostAuthScopeGlobal => '全局';
+
+  @override
+  String get hostAuthUsernameRequired => '请输入用户名。';
+
+  @override
+  String get hostCorsAllowCredentials => '允许携带cookies';
+
+  @override
+  String get hostCorsAllowHeaders => '允许的请求头';
+
+  @override
+  String get hostCorsAllowMethods => '允许的请求方法';
+
+  @override
+  String get hostCorsAllowOrigins => '允许访问的域名';
+
+  @override
+  String get hostCorsEnable => '开启跨域';
+
+  @override
+  String get hostCorsLoadFailed => '加载跨域配置失败。';
+
+  @override
+  String get hostCorsOriginsRequired => '开启跨域后，允许访问的域名不能为空。';
+
+  @override
+  String get hostCorsPreflight => '预检请求快速响应';
+
+  @override
+  String get hostCorsPreflightHelper =>
+      '开启后，当浏览器发送跨域预检请求（OPTIONS 请求）时，系统会自动返回 204 状态码并设置必要的跨域响应头';
+
+  @override
+  String get hostCorsSaveConfirm => '保存 {0} 的跨域配置？';
+
+  @override
+  String get hostCorsSaveFailed => '保存跨域配置失败。';
+
+  @override
+  String get hostCorsSaved => '跨域配置已保存。';
+
+  @override
+  String get hostDomainsActionsLabel => '操作';
+
+  @override
+  String get hostDomainsAddFailed => '添加域名失败。';
+
+  @override
+  String get hostDomainsAddSuccess => '域名添加成功。';
+
+  @override
+  String get hostDomainsDeleteConfirm => '删除域名 {0}？该操作无法撤销。';
+
+  @override
+  String get hostDomainsDeleteFailed => '删除域名失败。';
+
+  @override
+  String get hostDomainsDeleteSuccess => '域名已删除。';
+
+  @override
+  String get hostDomainsDeleteTitle => '删除域名';
+
+  @override
+  String get hostDomainsInputHint => '一行一个域名，所有域名共用下方的端口和 SSL 选项。';
+
+  @override
+  String get hostDomainsInputRequired => '请至少输入一个域名。';
+
+  @override
+  String get hostDomainsLastDeleteDisabled => '至少需要保留一个域名。';
+
+  @override
+  String get hostDomainsLoadFailed => '加载域名列表失败。';
+
+  @override
+  String get hostHttpsAlgorithmLabel => '加密算法';
+
+  @override
+  String get hostHttpsAlgorithmRequired => '请选择加密算法。';
+
+  @override
+  String get hostHttpsCertEmpty => '暂无可用证书，请先在 SSL 证书页面导入。';
+
+  @override
+  String get hostHttpsCertLoadFailed => '加载证书失败。';
+
+  @override
+  String get hostHttpsCertRequired => '请输入证书和私钥。';
+
+  @override
+  String get hostHttpsCertSelectPlaceholder => '选择证书';
+
+  @override
+  String get hostHttpsCertificateLabel => '证书';
+
+  @override
+  String get hostHttpsDisableConfirm => '禁用 HTTPS会删除证书相关配置，是否继续？';
+
+  @override
+  String get hostHttpsDisableTitle => '禁用 HTTPS';
+
+  @override
+  String get hostHttpsHelper =>
+      '注意：请勿将SSL证书用于非法网站 \n 如开启后无法使用HTTPS访问，请检查安全组是否正确放行443端口';
+
+  @override
+  String get hostHttpsHstsHelper => '开启 HSTS 可以增加网站安全性';
+
+  @override
+  String get hostHttpsHstsSubDomainsLabel => 'HSTS 包含子域名';
+
+  @override
+  String get hostHttpsHttp3Helper =>
+      'HTTP/3 是 HTTP/2 的升级版本，提供更快的连接速度和更好的性能，但是不是所有浏览器都支持 HTTP/3，开启后可能会导致部分浏览器无法访问';
+
+  @override
+  String get hostHttpsHttp3Label => 'HTTP3';
+
+  @override
+  String get hostHttpsHttpConfigAlso => 'HTTP可直接访问';
+
+  @override
+  String get hostHttpsHttpConfigLabel => 'HTTP 选项';
+
+  @override
+  String get hostHttpsHttpConfigOnly => '禁止 HTTP';
+
+  @override
+  String get hostHttpsHttpConfigToHttps => '访问HTTP自动跳转到HTTPS';
+
+  @override
+  String get hostHttpsInsecureSuffix => '（不安全）';
+
+  @override
+  String get hostHttpsIpWarn => 'IP 为域名的网站，需要设置为默认站点才能正常访问';
+
+  @override
+  String get hostHttpsLoadFailed => '加载 HTTPS 配置失败。';
+
+  @override
+  String get hostHttpsPortLabel => 'HTTPS 端口';
+
+  @override
+  String get hostHttpsPrivateKeyLabel => '私钥';
+
+  @override
+  String get hostHttpsProtocolLabel => '支持的协议版本';
+
+  @override
+  String get hostHttpsProtocolRequired => '请至少选择一个 TLS 协议版本。';
+
+  @override
+  String get hostHttpsSaveConfirm => '将 HTTPS 配置应用到 {0}？';
+
+  @override
+  String get hostHttpsSaveConfirmTitle => '保存 HTTPS 设置';
+
+  @override
+  String get hostHttpsSectionAdvanced => 'SSL 协议设置';
+
+  @override
+  String get hostHttpsSectionBasic => '基本';
+
+  @override
+  String get hostHttpsSectionCert => '证书设置';
+
+  @override
+  String get hostHttpsSelectCertRequired => '请选择证书。';
+
+  @override
+  String get hostHttpsTypeExisted => '选择已有证书';
+
+  @override
+  String get hostHttpsTypeLabel => 'SSL 选项';
+
+  @override
+  String get hostHttpsTypeManual => '手动导入证书';
+
+  @override
+  String get hostLeechAccessDomains => '允许的域名';
+
+  @override
+  String get hostLeechBlockedHelper =>
+      '允许 Referer 为空启用时，不会阻止无 Referer 的请求（直接访问等），启用非标准 Referer 时会放行任何不以 http/https 开头的 Referer 请求（客户端请求等）';
+
+  @override
+  String get hostLeechBlockedRef => '允许非标准 Referer';
+
+  @override
+  String get hostLeechBrowserCache => '浏览器缓存';
+
+  @override
+  String get hostLeechCacheControl => '缓存控制';
+
+  @override
+  String get hostLeechCacheTime => '浏览器缓存时间';
+
+  @override
+  String get hostLeechCacheTimeHelper =>
+      '静态资源在浏览器本地缓存的时间，减少重复请求。到期前用户刷新页面会直接使用本地缓存。';
+
+  @override
+  String get hostLeechCacheTimeInvalid => '缓存时间必须是 1-65535 之间的整数。';
+
+  @override
+  String get hostLeechDomainsHelper => '一行一个域名';
+
+  @override
+  String get hostLeechDomainsRequired => '开启后，允许的域名不能为空。';
+
+  @override
+  String get hostLeechEnable => '开启';
+
+  @override
+  String get hostLeechExtends => '文件扩展名';
+
+  @override
+  String get hostLeechLoadFailed => '加载防盗链配置失败。';
+
+  @override
+  String get hostLeechLogEnable => '记录请求日志';
+
+  @override
+  String get hostLeechLogHelper => '记录静态资源的请求，生产环境通常可以关闭避免过多无意义的日志';
+
+  @override
+  String get hostLeechNoneRef => '允许 Referer 为空';
+
+  @override
+  String get hostLeechReturn => '响应资源';
+
+  @override
+  String get hostLeechReturnHelper => '拦截盗链请求后，返回的 HTTP 状态码';
+
+  @override
+  String get hostLeechSaveConfirm => '保存 {0} 的防盗链配置？';
+
+  @override
+  String get hostLeechSaveFailed => '保存防盗链配置失败。';
+
+  @override
+  String get hostLeechSaved => '防盗链配置已保存。';
+
+  @override
+  String get hostLogsAccessLog => '网站日志';
+
+  @override
+  String get hostLogsErrorLog => '错误日志';
+
+  @override
+  String get hostLogsLoadFailed => '加载网站日志失败。';
+
+  @override
+  String get hostLogsRefreshFailed => '刷新网站日志失败。';
+
+  @override
+  String get hostLogsStateHint => '日志开关状态（当前版本只读）';
+
+  @override
+  String get hostProxyAdd => '添加反向代理';
+
+  @override
+  String get hostProxyAddressPlaceholder => '例: 127.0.0.1:8080';
+
+  @override
+  String get hostProxyAddressRequired => '请输入代理地址。';
+
+  @override
+  String get hostProxyAllowCredentials => '允许携带cookies';
+
+  @override
+  String get hostProxyAllowHeaders => '允许的请求头';
+
+  @override
+  String get hostProxyAllowMethods => '允许的请求方法';
+
+  @override
+  String get hostProxyAllowOrigins => '允许访问的域名';
+
+  @override
+  String get hostProxyBrowserCache => '浏览器缓存';
+
+  @override
+  String get hostProxyBrowserCacheNoModify => '不修改';
+
+  @override
+  String get hostProxyBrowserCacheTime => '浏览器缓存时间';
+
+  @override
+  String get hostProxyBrowserCacheTimeHelper =>
+      '静态资源在浏览器本地缓存的时间，减少重复请求。到期前用户刷新页面会直接使用本地缓存。';
+
+  @override
+  String get hostProxyCacheSection => '缓存';
+
+  @override
+  String get hostProxyCacheTimeInvalid => '缓存时间必须是 1-65535 之间的数字。';
+
+  @override
+  String get hostProxyCancelEdit => '取消编辑';
+
+  @override
+  String get hostProxyCors => '开启跨域';
+
+  @override
+  String get hostProxyCorsSection => '跨域访问';
+
+  @override
+  String get hostProxyDeleteConfirmMessage => '删除反向代理 {0}？对应的配置文件将被移除。';
+
+  @override
+  String get hostProxyDeleteConfirmTitle => '删除反向代理';
+
+  @override
+  String get hostProxyDeleteFailed => '删除反向代理失败。';
+
+  @override
+  String get hostProxyDeleted => '反向代理已删除。';
+
+  @override
+  String get hostProxyDisable => '禁用';
+
+  @override
+  String get hostProxyDisabled => '已停止';
+
+  @override
+  String get hostProxyEditTitle => '编辑反向代理';
+
+  @override
+  String get hostProxyEmpty => '暂无反向代理规则。';
+
+  @override
+  String get hostProxyHost => '后端域名';
+
+  @override
+  String get hostProxyHostHelper => '将域名添加到请求头传递到代理服务器';
+
+  @override
+  String get hostProxyHostRequired => '请输入后端域名。';
+
+  @override
+  String get hostProxyListTitle => '反向代理规则';
+
+  @override
+  String get hostProxyLoadFailed => '加载反向代理列表失败。';
+
+  @override
+  String get hostProxyMatch => '前端请求路径';
+
+  @override
+  String get hostProxyMatchRequired => '请输入前端请求路径。';
+
+  @override
+  String get hostProxyNameRequired => '名称不能为空。';
+
+  @override
+  String get hostProxyOriginsRequired => '开启跨域后，允许访问的域名不能为空。';
+
+  @override
+  String get hostProxyPass => '后端代理地址';
+
+  @override
+  String get hostProxyPassHelper => '代理的站点，必须为可正常访问的URL';
+
+  @override
+  String get hostProxyPreflight => '预检请求快速响应';
+
+  @override
+  String get hostProxySaveFailed => '保存反向代理失败。';
+
+  @override
+  String get hostProxyServerCache => '服务器缓存';
+
+  @override
+  String get hostProxyServerCacheTime => '服务器缓存时间';
+
+  @override
+  String get hostProxyServerCacheTimeHelper =>
+      '请求在服务器端缓存的时间，到期前相同请求会直接返回缓存结果，不再请求源站。';
+
+  @override
+  String get hostProxySni => '回源 SNI';
+
+  @override
+  String get hostProxySniHelper =>
+      '反代后端为 https 的时候可能需要设置回源 SNI，具体需要看 CDN 服务商文档';
+
+  @override
+  String get hostProxySslVerify => '校验后端 SSL 证书';
+
+  @override
+  String get hostProxySslVerifyHelper => '开启后，反向代理 HTTPS 后端时将严格校验服务器证书（默认不校验）';
+
+  @override
+  String get hostProxyStatusFailed => '更新反向代理状态失败。';
+
+  @override
+  String get hostProxyStatusUpdated => '反向代理状态已更新。';
+
+  @override
+  String get hostRedirectAdd => '添加重定向';
+
+  @override
+  String get hostRedirectCancelEdit => '取消编辑';
+
+  @override
+  String get hostRedirectDeleteConfirmMessage => '删除重定向 {0}？';
+
+  @override
+  String get hostRedirectDeleteConfirmTitle => '删除重定向';
+
+  @override
+  String get hostRedirectDeleteFailed => '删除重定向失败。';
+
+  @override
+  String get hostRedirectDeleted => '重定向已删除。';
+
+  @override
+  String get hostRedirectDisable => '禁用';
+
+  @override
+  String get hostRedirectDomains => '域名';
+
+  @override
+  String get hostRedirectDomainsHelper => '一行一个域名。';
+
+  @override
+  String get hostRedirectDomainsPlaceholder => '一行一个域名，例如 old.example.com';
+
+  @override
+  String get hostRedirectDomainsRequired => '请至少输入一个域名。';
+
+  @override
+  String get hostRedirectEditTitle => '编辑重定向';
+
+  @override
+  String get hostRedirectEmpty => '暂无重定向规则。';
+
+  @override
+  String get hostRedirectKeep => '保留路径';
+
+  @override
+  String get hostRedirectKeepPath => '保留路径';
+
+  @override
+  String get hostRedirectKeepPathHelper => '将原始请求路径附加到目标 URL 之后。';
+
+  @override
+  String get hostRedirectListTitle => '重定向规则';
+
+  @override
+  String get hostRedirectLoadFailed => '加载重定向列表失败。';
+
+  @override
+  String get hostRedirectNameRequired => '名称不能为空。';
+
+  @override
+  String get hostRedirectNotKeep => '不保留路径';
+
+  @override
+  String get hostRedirectPathRequired => '请输入路径。';
+
+  @override
+  String get hostRedirectSaveFailed => '保存重定向失败。';
+
+  @override
+  String get hostRedirectStatusFailed => '更新重定向状态失败。';
+
+  @override
+  String get hostRedirectStatusUpdated => '重定向状态已更新。';
+
+  @override
+  String get hostRedirectTarget => '目标URL地址';
+
+  @override
+  String get hostRedirectTargetRequired => '请输入目标URL地址。';
+
+  @override
+  String get hostRedirectTypeDomain => '域名';
+
+  @override
+  String get hostRedirectTypePath => '路径';
+
+  @override
+  String get hostRedirectWay => '方式';
+
+  @override
+  String get hostRedirectWayHelper => '301永久重定向，302临时重定向';
+
+  @override
+  String get hostRewriteCardTitle => '伪静态规则';
+
+  @override
+  String get hostRewriteContentPlaceholder => '# nginx 伪静态规则';
+
+  @override
+  String get hostRewriteCurrent => '当前';
+
+  @override
+  String get hostRewriteHelper => '保存后 nginx 将自动重载并使规则生效。';
+
+  @override
+  String get hostRewriteHelper2 => '修改伪静态规则可能影响网站的访问解析。';
+
+  @override
+  String get hostRewriteLoadFailed => '加载伪静态内容失败。';
+
+  @override
+  String get hostRewriteMode => '方案';
+
+  @override
+  String get hostRewriteSaveAndReload => '保存并重载';
+
+  @override
+  String get hostRewriteSaveConfirmMessage => '保存 {0} 的伪静态规则并重载 nginx？';
+
+  @override
+  String get hostRewriteSaveFailed => '保存伪静态规则失败。';
+
+  @override
+  String get hostRewriteSaved => '伪静态规则已保存，nginx 已重载。';
+
+  @override
+  String get hostWebsiteConfigBack => '返回网站列表';
+
+  @override
+  String get hostWebsiteTabPlaceholder => '该模块将在后续批次提供。';
+
+  @override
+  String get hostWebsitesConfig => '配置';
+
+  @override
+  String get hostWebsitesConfigHint => '网站设置';
+
+  @override
+  String get hostHttpsTabTitle => 'HTTPS';
+
+  @override
+  String get hostDomainsTabTitle => '域名';
+
+  @override
+  String get hostWebsiteTabProxy => '反向代理';
+
+  @override
+  String get hostWebsiteTabRedirect => '重定向';
+
+  @override
+  String get hostWebsiteTabRewrite => '伪静态';
+
+  @override
+  String get hostWebsiteTabCors => '跨域共享（CORS）';
+
+  @override
+  String get hostWebsiteTabAntiLeech => '防盗链';
+
+  @override
+  String get hostWebsiteTabBasicAuth => '密码访问';
+
+  @override
+  String get hostWebsiteTabLogs => '日志';
+
+  @override
+  String get hostFilesEditorBack => '返回文件列表';
+
+  @override
+  String get hostFilesEditorLoadFailed => '加载文件内容失败。';
+
+  @override
+  String get hostFilesEditorSaveConfirm => '保存对 {0} 的更改？';
+
+  @override
+  String get hostFilesSearchNoMatch => '没有匹配的文件。';
+
+  @override
+  String get hostFilesPasteAction => '粘贴';
+
+  @override
+  String get hostFilesCutAction => '剪切';
+
+  @override
+  String get hostFilesPermissionLabel => '权限';
+
+  @override
+  String get hostFilesFileNamePlaceholder => '文件名';
+
+  @override
+  String get hostFilesFileNameEmpty => '文件名不能为空。';
+
+  @override
+  String get hostFilesCreateFileFailed => '创建文件 {0} 失败。';
+
+  @override
+  String get hostFilesRenameFailed => '重命名 {0} 失败。';
+
+  @override
+  String get hostFilesCutToast => '已剪切。请到目标目录粘贴。';
+
+  @override
+  String get hostFilesCopyToast => '已复制。请到目标目录粘贴。';
+
+  @override
+  String get hostFilesPasteFailed => '粘贴失败。';
+
+  @override
+  String get hostFilesDestinationLabel => '目标目录';
+
+  @override
+  String get hostFilesCompressFailed => '压缩 {0} 失败。';
+
+  @override
+  String get hostFilesModePlaceholder => '如 755';
+
+  @override
+  String get hostFilesModeInvalid => '请输入 3 位八进制权限（如 755）。';
+
+  @override
+  String get hostFilesModeFailed => '修改 {0} 的权限失败。';
+
+  @override
+  String get hostFilesFavoriteFailed => '添加收藏失败。';
+
+  @override
+  String get hostAiAccountsAddAction => '添加账号';
+
+  @override
+  String get hostAiAccountsTitle => '智能体账号';
+
+  @override
+  String get hostAiAccountProviderLabel => '供应商';
+
+  @override
+  String get hostAiAccountApiTypeLabel => 'API 类型';
+
+  @override
+  String get hostAiAccountBaseUrlLabel => 'Base URL';
+
+  @override
+  String get hostAiAccountApiKeyLabel => 'API Key';
+
+  @override
+  String get hostAiAccountRemarkLabel => '备注';
+
+  @override
+  String get hostAiAccountsRefreshFailed => '刷新智能体账号失败。';
+
+  @override
+  String get hostAiAccountsEmpty => '暂无智能体账号。';
+
+  @override
+  String get hostAiAccountProviderRequired => '请选择供应商。';
+
+  @override
+  String get hostAiAccountNameRequired => '请输入名称。';
+
+  @override
+  String get hostAiAccountApiTypeRequired => '请选择 API 类型。';
+
+  @override
+  String get hostAiAccountBaseUrlRequired => '请输入 Base URL。';
+
+  @override
+  String get hostAiAccountApiKeyRequired => '请输入 API Key。';
+
+  @override
+  String get hostAiAccountsSaved => '智能体账号已保存。';
+
+  @override
+  String get hostAiAccountsUpdateFailed => '更新智能体账号失败。';
+
+  @override
+  String get hostAiAccountsCreateFailed => '创建智能体账号失败。';
+
+  @override
+  String get hostAiAccountsSaveFailedRetry => '保存失败，请调整输入后重试。';
+
+  @override
+  String get hostAiAccountDeleteConfirm => '删除智能体账号 {0}？该操作无法撤销。';
+
+  @override
+  String get hostAiAccountsDeleted => '智能体账号已删除。';
+
+  @override
+  String get hostAiAccountsDeleteFailed => '删除智能体账号失败。';
+
+  @override
+  String get hostAiAccountsLoadFailed => '加载智能体账号失败。';
+
+  @override
+  String get hostAiGpuEmpty => '未在此服务器上检测到 GPU。';
+
+  @override
+  String get hostAiGpuRefreshFailed => '刷新 GPU 状态失败。';
+
+  @override
+  String get hostAiGpuDriverVersion => '驱动版本';
+
+  @override
+  String get hostAiGpuCudaVersion => 'CUDA 版本';
+
+  @override
+  String get hostAiGpuTitle => 'GPU';
+
+  @override
+  String get hostAiGpuUnknownDevice => '未知设备';
+
+  @override
+  String get hostAiGpuUtilization => 'GPU 使用率';
+
+  @override
+  String get hostAiGpuTemperature => '温度';
+
+  @override
+  String get hostAiGpuPerformanceState => '性能状态';
+
+  @override
+  String get hostAiGpuPowerUsage => '功耗';
+
+  @override
+  String get hostAiGpuMemoryUsage => '显存使用';
+
+  @override
+  String get hostAiGpuFanSpeed => '风扇转速';
+
+  @override
+  String get hostAiGpuBusId => '总线地址';
+
+  @override
+  String get hostAiGpuPersistenceMode => '持续模式';
+
+  @override
+  String get hostAiGpuDisplayActive => '显卡初始化';
+
+  @override
+  String get hostAiGpuEcc => '不可纠正 ECC';
+
+  @override
+  String get hostAiGpuComputeMode => '计算模式';
+
+  @override
+  String get hostAiGpuMigMode => 'MIG 模式';
+
+  @override
+  String get hostAiGpuMemoryUtilization => '显存使用率';
+
+  @override
+  String get hostAiGpuFrequency => '频率';
+
+  @override
+  String get hostAiGpuProcesses => '进程信息';
+
+  @override
+  String get hostAiGpuShr => '共享显存';
+
+  @override
+  String get hostAiGpuProcessName => '进程名称';
+
+  @override
+  String get hostAiGpuProcessMemory => '显存使用';
+
+  @override
+  String get hostAiGpuProcessTypeC => '计算';
+
+  @override
+  String get hostAiGpuProcessTypeG => '图形';
+
+  @override
+  String get hostAiGpuProcessTypeCG => '计算+图形';
+
+  @override
+  String get hostAiGpuLoadFailed => '加载 GPU 状态失败。';
+
+  @override
+  String get hostAiMcpLoadFailed => '加载 MCP 服务器失败。';
+
+  @override
+  String get hostAiMcpTestConnection => '测试连接';
+
+  @override
+  String get hostAiMcpOperateConfirm => '确认对 MCP 服务器 {1} 执行 {0} 操作？';
+
+  @override
+  String get hostAiMcpOperationSuccess => '操作成功。';
+
+  @override
+  String get hostAiMcpOperationFailed => 'MCP 服务器操作失败。';
+
+  @override
+  String get hostAiMcpTestSuccess => '连接测试成功。';
+
+  @override
+  String get hostAiMcpTestFailed => '连接测试失败。';
+
+  @override
+  String get hostAiMcpDeleteFailed => '删除 MCP 服务器失败。';
+
+  @override
+  String get hostAiMcpUrlRequired => '请输入 Base URL。';
+
+  @override
+  String get hostAiMcpPathRequired => '请输入传输路径。';
+
+  @override
+  String get hostAiMcpContainerRequired => '请输入容器名称。';
+
+  @override
+  String get hostAiMcpImageRequired => '请输入网关镜像。';
+
+  @override
+  String get hostAiMcpCreateFailed => '创建 MCP 服务器失败。';
+
+  @override
+  String get hostAiMcpStatusError => '错误';
+
+  @override
+  String get hostAiAgentTypeHermes => 'Hermes 智能体';
+
+  @override
+  String get hostAiAgentCreateFailed =>
+      '智能体创建失败或超时。安装可能仍在服务器上进行，请耐心等待或查看服务器任务列表。';
+
+  @override
+  String get hostAiAgentLoadFailed => '加载智能体失败。';
+
+  @override
+  String get hostAiAgentOverviewFailed => '加载智能体概览失败。';
+
+  @override
+  String get hostAiAgentDefaultModelLabel => '默认模型';
+
+  @override
+  String get hostAiAgentJobCountLabel => '定时任务数量';
+
+  @override
+  String get hostAiAgentSessionCountLabel => '会话数量';
+
+  @override
+  String get hostAiAgentDeleteConfirm => '删除智能体 {0}？该操作无法撤销。';
+
+  @override
+  String get hostAiAgentOperationSuccess => '操作成功。';
+
+  @override
+  String get hostAiAgentDeleteFailed => '删除智能体失败。';
+
+  @override
+  String get hostAiAgentStatusError => '错误';
+
+  @override
+  String get hostAiTabModels => '本地模型';
+
+  @override
+  String get hostAiTabAccounts => '账号';
+
+  @override
+  String get hostAiTabMcp => 'MCP';
+
+  @override
+  String get hostAiTabAgents => '智能体';
+
+  @override
+  String get hostAiTabGpu => 'GPU';
 }

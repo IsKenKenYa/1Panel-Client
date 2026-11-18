@@ -32,6 +32,10 @@ set(CMAKE_CXX_FLAGS_PROFILE "${CMAKE_CXX_FLAGS_RELEASE}")
 # Use Unicode for all projects.
 add_definitions(-DUNICODE -D_UNICODE)
 
+# 部分插件(audioplayers/local_auth/permission_handler)仍使用 experimental/coroutine，
+# 新版 MSVC(14.51+) 默认硬错误，按官方建议静默弃用告警。
+add_definitions(-D_SILENCE_EXPERIMENTAL_COROUTINE_DEPRECATION_WARNINGS)
+
 # Compilation settings that should be applied to most targets.
 #
 # Be cautious about adding new options here, as plugins use this function by
@@ -56,6 +60,11 @@ add_subdirectory("runner")
 # Generated plugin build rules, which manage building the plugins and adding
 # them to the application.
 include(flutter/generated_plugins.cmake)
+
+# flutter_headless_host(winUI3 原生宿主用)与 runner 复用同一套插件注册器。
+foreach(plugin ${FLUTTER_PLUGIN_LIST})
+  target_link_libraries(flutter_headless_host PRIVATE ${plugin}_plugin)
+endforeach()
 
 
 # === Installation ===

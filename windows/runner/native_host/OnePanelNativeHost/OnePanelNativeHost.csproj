@@ -4,19 +4,42 @@
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
     <WindowsPackageType>None</WindowsPackageType>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWinUI>true</UseWinUI>
-    <EnableCoreMrtTooling>false</EnableCoreMrtTooling>
-    <EnableMsixTooling>false</EnableMsixTooling>
+    <EnableMsixTooling>true</EnableMsixTooling>
     <RootNamespace>OnePanelNativeHost</RootNamespace>
     <AssemblyName>OnePanelNativeHost</AssemblyName>
-    <AppxGeneratePriEnabled>false</AppxGeneratePriEnabled>
-    <AppxGeneratePrisForPortableLibrariesEnabled>false</AppxGeneratePrisForPortableLibrariesEnabled>
-    <EnableDefaultWindowsAppSdkPRIResourceItems>false</EnableDefaultWindowsAppSdkPRIResourceItems>
+    <!-- 与 Flutter runner 的 VERSIONINFO 一致：path_provider 按此派生
+         %APPDATA%\IsKenKenYa\1Panel Client，保证双进程共享同一数据目录。 -->
+    <Company>IsKenKenYa</Company>
+    <Product>1Panel Client</Product>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.250108002" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.4.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="OnePanelNativeHost.Tests" />
+  </ItemGroup>
+
+  <!-- 引擎资源固定布局：宿主输出目录 = Flutter runner 构建输出的全部 DLL
+       + data\icudtl.dat + data\flutter_assets。 -->
+  <Target Name="CopyFlutterEngineBundle" AfterTargets="Build">
+    <PropertyGroup>
+      <FlutterRunnerOutputDir>$(MSBuildThisFileDirectory)..\..\..\..\build\windows\x64\runner\$(Configuration)\</FlutterRunnerOutputDir>
+    </PropertyGroup>
+    <ItemGroup>
+      <FlutterEngineFiles Include="$(FlutterRunnerOutputDir)*.dll" />
+      <FlutterEngineAssets Include="$(FlutterRunnerOutputDir)data\flutter_assets\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(FlutterEngineFiles)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(FlutterEngineAssets)"
+          DestinationFiles="@(FlutterEngineAssets->'$(OutDir)data\flutter_assets\%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(FlutterRunnerOutputDir)data\icudtl.dat" DestinationFolder="$(OutDir)data" SkipUnchangedFiles="true" />
+  </Target>
 </Project>

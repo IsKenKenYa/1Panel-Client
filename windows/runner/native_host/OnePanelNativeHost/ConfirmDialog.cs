@@ -29,8 +29,8 @@ public sealed class ConfirmDialog : ContentDialog
 
     public ConfirmDialog()
     {
-        PrimaryButtonText = "Confirm";
-        SecondaryButtonText = "Cancel";
+        PrimaryButtonText = L10n.T("commonConfirm", "Confirm");
+        SecondaryButtonText = L10n.T("commonCancel", "Cancel");
         DefaultButton = ContentDialogButton.Secondary;
 
         _messageBlock = new TextBlock
@@ -44,19 +44,22 @@ public sealed class ConfirmDialog : ContentDialog
         ApplyStyle();
     }
 
+    // Optional button texts default to null so the localized common labels
+    // (L10n.T) apply when the caller does not override them; C# optional
+    // parameters must be compile-time constants and cannot call L10n.T.
     public ConfirmDialog(string title, string message,
-        string primaryText = "Confirm", string secondaryText = "Cancel",
+        string? primaryText = null, string? secondaryText = null,
         bool isDestructive = false) : this()
     {
         Title = title;
         Message = message;
-        PrimaryButtonText = primaryText;
-        SecondaryButtonText = secondaryText;
+        PrimaryButtonText = primaryText ?? L10n.T("commonConfirm", "Confirm");
+        SecondaryButtonText = secondaryText ?? L10n.T("commonCancel", "Cancel");
         IsDestructive = isDestructive;
     }
 
     public static async Task<bool> ShowAsync(XamlRoot xamlRoot, string title, string message,
-        string primaryText = "Confirm", string secondaryText = "Cancel",
+        string? primaryText = null, string? secondaryText = null,
         bool isDestructive = false)
     {
         var dialog = new ConfirmDialog(title, message, primaryText, secondaryText, isDestructive)

@@ -114,7 +114,8 @@ class ToolboxDeviceProvider extends ChangeNotifier with SafeChangeNotifier {
     notifyListeners();
 
     try {
-      await _service.verifyDns(dns.trim());
+      // 上游契约：key='form'（表单形态），value 为逗号分隔 DNS 列表。
+      await _service.verifyDns('form', dns.trim());
       return true;
     } catch (error, stackTrace) {
       appLogger.eWithPackage(

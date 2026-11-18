@@ -25,7 +25,7 @@ public sealed class LoadingStateControl : UserControl
 
         var text = new TextBlock
         {
-            Text = "Loading...",
+            Text = L10n.T("commonLoading", "Loading..."),
             FontSize = 14,
             HorizontalAlignment = HorizontalAlignment.Center,
         };
@@ -59,14 +59,14 @@ public sealed class EmptyStateControl : UserControl
 
         var text = new TextBlock
         {
-            Text = "No data available",
+            Text = L10n.T("commonEmpty", "No data available"),
             FontSize = 16,
             HorizontalAlignment = HorizontalAlignment.Center,
         };
 
         var button = new Button
         {
-            Content = "Refresh",
+            Content = L10n.T("commonRefresh", "Refresh"),
             HorizontalAlignment = HorizontalAlignment.Center,
         };
         button.Click += (s, e) => RefreshClicked?.Invoke(this, e);
@@ -101,14 +101,14 @@ public sealed class ErrorStateControl : UserControl
 
         var text = new TextBlock
         {
-            Text = "Failed to load data",
+            Text = L10n.T("commonLoadFailedTitle", "Failed to load data"),
             FontSize = 16,
             HorizontalAlignment = HorizontalAlignment.Center,
         };
 
         var button = new Button
         {
-            Content = "Retry",
+            Content = L10n.T("commonRetry", "Retry"),
             HorizontalAlignment = HorizontalAlignment.Center,
         };
         button.Click += (s, e) => RetryClicked?.Invoke(this, e);

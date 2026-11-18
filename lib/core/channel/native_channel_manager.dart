@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 
+import 'native_channel_database_deep_handlers.dart';
 import 'native_channel_port.dart';
 import 'native_channel_read_handlers.dart';
 import 'native_channel_write_handlers.dart';
@@ -78,6 +79,40 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelReadHandlers.getUIRenderMode();
 
       // ── Read: 新增 ─────────────────────────────────────────────────────
+      case 'getCommands':
+        return NativeChannelWriteHandlers.getCommands(arguments);
+      case 'createCommand':
+        return NativeChannelWriteHandlers.createCommand(arguments);
+      case 'deleteCommand':
+        return NativeChannelWriteHandlers.deleteCommand(arguments);
+      case 'getGroups':
+        return NativeChannelWriteHandlers.getGroups(arguments);
+      case 'bindAIDomain':
+        return NativeChannelWriteHandlers.bindAIDomain(arguments);
+      case 'getOllamaContext':
+        return NativeChannelWriteHandlers.getOllamaContext(arguments);
+      case 'getComposes':
+        return NativeChannelReadHandlers.getComposes(arguments);
+      case 'getPanelSslInfo':
+        return NativeChannelReadHandlers.getPanelSslInfo(arguments);
+      case 'getWebsiteCertificates':
+        return NativeChannelReadHandlers.getWebsiteCertificates(arguments);
+      case 'getScripts':
+        return NativeChannelReadHandlers.getScripts(arguments);
+      case 'getOperationLogs':
+        return NativeChannelReadHandlers.getOperationLogs(arguments);
+      case 'getLoginLogs':
+        return NativeChannelReadHandlers.getLoginLogs(arguments);
+      case 'getSystemLogContent':
+        return NativeChannelReadHandlers.getSystemLogContent(arguments);
+      case 'getOpenrestySnapshot':
+        return NativeChannelReadHandlers.getOpenrestySnapshot(arguments);
+      case 'getSshInfo':
+        return NativeChannelReadHandlers.getSshInfo(arguments);
+      case 'getSshConfig':
+        return NativeChannelReadHandlers.getSshConfig(arguments);
+      case 'getDeviceSnapshot':
+        return NativeChannelReadHandlers.getDeviceSnapshot(arguments);
       case 'getDashboard':
         return NativeChannelReadHandlers.getDashboard(arguments);
       case 'getDatabases':
@@ -92,6 +127,52 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelReadHandlers.getAIModels(arguments);
       case 'getWebsiteCreateOptions':
         return NativeChannelReadHandlers.getWebsiteCreateOptions(arguments);
+      case 'getWebsiteHttpsConfig':
+        return NativeChannelReadHandlers.getWebsiteHttpsConfig(arguments);
+      case 'getWebsiteProxies':
+        return NativeChannelReadHandlers.getWebsiteProxies(arguments);
+      case 'getWebsiteRedirects':
+        return NativeChannelReadHandlers.getWebsiteRedirects(arguments);
+      case 'getWebsiteRewrite':
+        return NativeChannelReadHandlers.getWebsiteRewrite(arguments);
+      case 'getWebsiteCors':
+        return NativeChannelReadHandlers.getWebsiteCors(arguments);
+      case 'getWebsiteLeech':
+        return NativeChannelReadHandlers.getWebsiteLeech(arguments);
+      case 'getWebsiteAuths':
+        return NativeChannelReadHandlers.getWebsiteAuths(arguments);
+      case 'getWebsitePathAuths':
+        return NativeChannelReadHandlers.getWebsitePathAuths(arguments);
+      case 'getWebsiteDomains':
+        return NativeChannelReadHandlers.getWebsiteDomains(arguments);
+      case 'getWebsiteLogs':
+        return NativeChannelReadHandlers.getWebsiteLogs(arguments);
+      case 'getFileContentHandler':
+        return NativeChannelReadHandlers.getFileContentHandler(arguments);
+      case 'getFavoritesHandler':
+        return NativeChannelReadHandlers.getFavoritesHandler(arguments);
+
+      // ── Read: AI 管理深度（B3）─────────────────────────────────────────
+      case 'getGpuLoad':
+        return NativeChannelReadHandlers.getGpuLoad(arguments);
+      case 'getGpuOptions':
+        return NativeChannelReadHandlers.getGpuOptions(arguments);
+      case 'searchGpuHistory':
+        return NativeChannelReadHandlers.searchGpuHistory(arguments);
+      case 'getAgentAccounts':
+        return NativeChannelReadHandlers.getAgentAccounts(arguments);
+      case 'getAgentAccountModels':
+        return NativeChannelReadHandlers.getAgentAccountModels(arguments);
+      case 'getMcpServers':
+        return NativeChannelReadHandlers.getMcpServers(arguments);
+      case 'getMcpServerDetail':
+        return NativeChannelReadHandlers.getMcpServerDetail(arguments);
+      case 'pageAgentsNative':
+        return NativeChannelReadHandlers.pageAgentsNative(arguments);
+      case 'getAgentOverviewNative':
+        return NativeChannelReadHandlers.getAgentOverviewNative(arguments);
+      case 'getAIBindDomain':
+        return NativeChannelReadHandlers.getAIBindDomain(arguments);
 
       // ── Write: 服务器 ───────────────────────────────────────────────────
       case 'seedDebugConfig':
@@ -113,6 +194,30 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.toggleWebsiteStatus(arguments);
       case 'deleteWebsite':
         return NativeChannelWriteHandlers.deleteWebsite(arguments);
+      case 'updateWebsiteHttpsConfig':
+        return NativeChannelWriteHandlers.updateWebsiteHttpsConfig(arguments);
+      case 'updateWebsiteProxy':
+        return NativeChannelWriteHandlers.updateWebsiteProxy(arguments);
+      case 'deleteWebsiteProxy':
+        return NativeChannelWriteHandlers.deleteWebsiteProxy(arguments);
+      case 'updateWebsiteProxyStatus':
+        return NativeChannelWriteHandlers.updateWebsiteProxyStatus(arguments);
+      case 'updateWebsiteRedirect':
+        return NativeChannelWriteHandlers.updateWebsiteRedirect(arguments);
+      case 'updateWebsiteRewrite':
+        return NativeChannelWriteHandlers.updateWebsiteRewrite(arguments);
+      case 'updateWebsiteCors':
+        return NativeChannelWriteHandlers.updateWebsiteCors(arguments);
+      case 'updateWebsiteLeech':
+        return NativeChannelWriteHandlers.updateWebsiteLeech(arguments);
+      case 'updateWebsiteAuth':
+        return NativeChannelWriteHandlers.updateWebsiteAuth(arguments);
+      case 'updateWebsitePathAuth':
+        return NativeChannelWriteHandlers.updateWebsitePathAuth(arguments);
+      case 'addWebsiteDomains':
+        return NativeChannelWriteHandlers.addWebsiteDomains(arguments);
+      case 'deleteWebsiteDomain':
+        return NativeChannelWriteHandlers.deleteWebsiteDomain(arguments);
 
       // ── 数据库 ────────────────────────────────────────────────────────────
       case 'checkRemoteDatabaseUnbind':
@@ -149,20 +254,118 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.createFolder(arguments);
       case 'renameFile':
         return NativeChannelWriteHandlers.renameFile(arguments);
+      case 'createFileHandler':
+        return NativeChannelWriteHandlers.createFileHandler(arguments);
+      case 'renameFileHandler':
+        return NativeChannelWriteHandlers.renameFileHandler(arguments);
+      case 'moveFilesHandler':
+        return NativeChannelWriteHandlers.moveFilesHandler(arguments);
+      case 'compressFilesHandler':
+        return NativeChannelWriteHandlers.compressFilesHandler(arguments);
+      case 'decompressFileHandler':
+        return NativeChannelWriteHandlers.decompressFileHandler(arguments);
+      case 'changeFileModeHandler':
+        return NativeChannelWriteHandlers.changeFileModeHandler(arguments);
+      case 'changeFileOwnerHandler':
+        return NativeChannelWriteHandlers.changeFileOwnerHandler(arguments);
+      case 'saveFileContentHandler':
+        return NativeChannelWriteHandlers.saveFileContentHandler(arguments);
+      case 'addFavoriteHandler':
+        return NativeChannelWriteHandlers.addFavoriteHandler(arguments);
+      case 'removeFavoriteHandler':
+        return NativeChannelWriteHandlers.removeFavoriteHandler(arguments);
+      case 'wgetDownloadHandler':
+        return NativeChannelWriteHandlers.wgetDownloadHandler(arguments);
+
+      // ── Write: 主机/工具箱 ──────────────────────────────────────────────
+      case 'createCompose':
+        return NativeChannelWriteHandlers.createCompose(arguments);
+      case 'updateCompose':
+        return NativeChannelWriteHandlers.updateCompose(arguments);
+      case 'updateOpenrestyHttps':
+        return NativeChannelWriteHandlers.updateOpenrestyHttps(arguments);
+      case 'updateOpenrestyConfig':
+        return NativeChannelWriteHandlers.updateOpenrestyConfig(arguments);
+      case 'uploadCertificate':
+        return NativeChannelWriteHandlers.uploadCertificate(arguments);
+      case 'applyCertificate':
+        return NativeChannelWriteHandlers.applyCertificate(arguments);
+      case 'deleteScripts':
+        return NativeChannelWriteHandlers.deleteScripts(arguments);
+      case 'composeOperate':
+        return NativeChannelWriteHandlers.composeOperate(arguments);
+      case 'operateSsh':
+        return NativeChannelWriteHandlers.operateSsh(arguments);
+      case 'saveSshConfig':
+        return NativeChannelWriteHandlers.saveSshConfig(arguments);
+      case 'verifyToolboxDns':
+        return NativeChannelWriteHandlers.verifyToolboxDns(arguments);
+
+      // ── Write: 数据库 ───────────────────────────────────────────────────
+      case 'createDatabase':
+        return NativeChannelWriteHandlers.createDatabase(arguments);
+      case 'deleteDatabase':
+        return NativeChannelWriteHandlers.deleteDatabase(arguments);
+      case 'updateDatabaseDescription':
+        return NativeChannelWriteHandlers.updateDatabaseDescription(arguments);
+      case 'changeDatabasePassword':
+        return NativeChannelWriteHandlers.changeDatabasePassword(arguments);
 
       // ── Write: 定时任务 ─────────────────────────────────────────────────
       case 'toggleCronJobStatus':
         return NativeChannelWriteHandlers.toggleCronJobStatus(arguments);
+      case 'createCronJob':
+        return NativeChannelWriteHandlers.createCronJob(arguments);
+      case 'updateCronJob':
+        return NativeChannelWriteHandlers.updateCronJob(arguments);
+      case 'handleCronJobOnce':
+        return NativeChannelWriteHandlers.handleCronJobOnce(arguments);
       case 'deleteCronJob':
         return NativeChannelWriteHandlers.deleteCronJob(arguments);
 
       // ── Write: 备份 ─────────────────────────────────────────────────────
+      case 'restoreBackup':
+        return NativeChannelWriteHandlers.restoreBackup(arguments);
       case 'deleteBackup':
         return NativeChannelWriteHandlers.deleteBackup(arguments);
 
       // ── Write: AI ───────────────────────────────────────────────────────
+      case 'createAIModel':
+        return NativeChannelWriteHandlers.createAIModel(arguments);
+      case 'recreateAIModel':
+        return NativeChannelWriteHandlers.recreateAIModel(arguments);
       case 'deleteAIModel':
         return NativeChannelWriteHandlers.deleteAIModel(arguments);
+
+      // ── Write: AI 管理深度（B3）────────────────────────────────────────
+      case 'createAgentAccountNative':
+        return NativeChannelWriteHandlers.createAgentAccountNative(arguments);
+      case 'updateAgentAccountNative':
+        return NativeChannelWriteHandlers.updateAgentAccountNative(arguments);
+      case 'deleteAgentAccountNative':
+        return NativeChannelWriteHandlers.deleteAgentAccountNative(arguments);
+      case 'discoverAgentModels':
+        return NativeChannelWriteHandlers.discoverAgentModels(arguments);
+      case 'createMcpServerNative':
+        return NativeChannelWriteHandlers.createMcpServerNative(arguments);
+      case 'deleteMcpServerNative':
+        return NativeChannelWriteHandlers.deleteMcpServerNative(arguments);
+      case 'operateMcpServerNative':
+        return NativeChannelWriteHandlers.operateMcpServerNative(arguments);
+      case 'testMcpConnection':
+        return NativeChannelWriteHandlers.testMcpConnection(arguments);
+      case 'syncMcpStatus':
+        return NativeChannelWriteHandlers.syncMcpStatus(arguments);
+      case 'createAgentNative':
+        return NativeChannelWriteHandlers.createAgentNative(arguments);
+      case 'deleteAgentNative':
+        return NativeChannelWriteHandlers.deleteAgentNative(arguments);
+      case 'loadOllamaModelNative':
+        return NativeChannelWriteHandlers.loadOllamaModelNative(arguments);
+      case 'closeOllamaModelNative':
+        return NativeChannelWriteHandlers.closeOllamaModelNative(arguments);
+      case 'syncOllamaModelsNative':
+        return NativeChannelWriteHandlers.syncOllamaModelsNative(arguments);
 
       // ── Write: 防火墙 ───────────────────────────────────────────────────
       case 'addFirewallRule':
@@ -171,9 +374,67 @@ class NativeChannelManager implements NativeChannelPort {
       case 'deleteFirewallRule':
         return NativeChannelWriteHandlers.deleteFirewallRule(arguments);
 
+      // ── Write: 设置 ─────────────────────────────────────────────────────
+      case 'updateSetting':
+        return NativeChannelWriteHandlers.updateSetting(arguments);
+
       // ── Write: 缓存 ─────────────────────────────────────────────────────
       case 'clearCache':
         return NativeChannelWriteHandlers.clearCache(arguments);
+
+      // ── Read: 数据库深度（B4）─────────────────────────────────────────
+      case 'getDatabaseBaseInfo':
+        return NativeChannelDatabaseDeepHandlers.getDatabaseBaseInfo(arguments);
+      case 'getDatabaseConfFile':
+        return NativeChannelDatabaseDeepHandlers.getDatabaseConfFile(arguments);
+      case 'getMysqlVariables':
+        return NativeChannelDatabaseDeepHandlers.getMysqlVariables(arguments);
+      case 'getMysqlStatus':
+        return NativeChannelDatabaseDeepHandlers.getMysqlStatus(arguments);
+      case 'getRedisConf':
+        return NativeChannelDatabaseDeepHandlers.getRedisConf(arguments);
+      case 'getRedisStatus':
+        return NativeChannelDatabaseDeepHandlers.getRedisStatus(arguments);
+      case 'getRedisPersistence':
+        return NativeChannelDatabaseDeepHandlers.getRedisPersistence(arguments);
+      case 'getDatabaseRemoteAccess':
+        return NativeChannelDatabaseDeepHandlers.getDatabaseRemoteAccess(
+            arguments);
+      case 'getDatabaseUsers':
+        return NativeChannelDatabaseDeepHandlers.getDatabaseUsers(arguments);
+      case 'getDatabaseGrants':
+        return NativeChannelDatabaseDeepHandlers.getDatabaseGrants(arguments);
+      case 'getDatabaseBackups':
+        return NativeChannelDatabaseDeepHandlers.getDatabaseBackups(arguments);
+
+      // ── Write: 数据库深度（B4）────────────────────────────────────────
+      case 'updateDatabaseConfFile':
+        return NativeChannelDatabaseDeepHandlers.updateDatabaseConfFile(
+            arguments);
+      case 'updateMysqlVariables':
+        return NativeChannelDatabaseDeepHandlers.updateMysqlVariables(arguments);
+      case 'updateRedisConf':
+        return NativeChannelDatabaseDeepHandlers.updateRedisConf(arguments);
+      case 'updateRedisPersistence':
+        return NativeChannelDatabaseDeepHandlers.updateRedisPersistence(
+            arguments);
+      case 'changeRedisPassword':
+        return NativeChannelDatabaseDeepHandlers.changeRedisPassword(arguments);
+      case 'updateDatabaseAccess':
+        return NativeChannelDatabaseDeepHandlers.updateDatabaseAccess(arguments);
+      case 'updateDatabaseUserPassword':
+        return NativeChannelDatabaseDeepHandlers.updateDatabaseUserPassword(
+            arguments);
+      case 'createDatabaseUser':
+        return NativeChannelDatabaseDeepHandlers.createDatabaseUser(arguments);
+      case 'deleteDatabaseUser':
+        return NativeChannelDatabaseDeepHandlers.deleteDatabaseUser(arguments);
+      case 'updateDatabaseUser':
+        return NativeChannelDatabaseDeepHandlers.updateDatabaseUser(arguments);
+      case 'grantDatabaseUser':
+        return NativeChannelDatabaseDeepHandlers.grantDatabaseUser(arguments);
+      case 'revokeDatabaseGrant':
+        return NativeChannelDatabaseDeepHandlers.revokeDatabaseGrant(arguments);
 
       default:
         throw MissingPluginException();

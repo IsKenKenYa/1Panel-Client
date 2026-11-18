@@ -40,3 +40,13 @@ target_include_directories(${BINARY_NAME} PRIVATE "${CMAKE_SOURCE_DIR}")
 
 # Run the Flutter tool portions of the build. This must not be removed.
 add_dependencies(${BINARY_NAME} flutter_assemble)
+
+# Headless Flutter 引擎宿主 DLL：供 WinUI3 原生宿主(OnePanelNativeHost)在本进程内
+# 运行 Dart 业务核心。插件链接在顶层 CMakeLists 的 generated_plugins.cmake 之后补齐。
+add_library(flutter_headless_host SHARED
+  "headless_engine_host.cpp"
+  "${FLUTTER_MANAGED_DIR}/generated_plugin_registrant.cc"
+)
+apply_standard_settings(flutter_headless_host)
+target_link_libraries(flutter_headless_host PRIVATE flutter_wrapper_app)
+target_include_directories(flutter_headless_host PRIVATE "${CMAKE_SOURCE_DIR}/flutter")
