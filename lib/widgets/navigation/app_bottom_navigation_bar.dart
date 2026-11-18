@@ -7,12 +7,14 @@ class AppNavigationBarItem {
     required this.icon,
     required this.selectedIcon,
     required this.label,
+    this.glassLabel,
     this.enabled = true,
   });
 
   final IconData icon;
   final IconData selectedIcon;
   final String label;
+  final String? glassLabel;
   final bool enabled;
 }
 
@@ -30,119 +32,161 @@ class AppBottomNavigationBar extends StatelessWidget {
   final List<AppNavigationBarItem> items;
   final List<GlobalKey>? destinationKeys;
 
+  static const _glassBarHeight = 64.0;
+  static const _glassBarPadding = EdgeInsets.symmetric(
+    horizontal: 16,
+    vertical: 12,
+  );
+
   @override
   Widget build(BuildContext context) {
     final safeIndex = currentIndex.clamp(0, items.length - 1);
+    final scheme = Theme.of(context).colorScheme;
 
     if (!UIRenderPolicy.liquidGlassEnabled) {
-      // md3 模式：Material NavigationBar 实色底栏。
-      final disabledColor =
-          Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.42);
-      return NavigationBar(
-        selectedIndex: safeIndex,
-        onDestinationSelected: onTap,
-        animationDuration: const Duration(milliseconds: 400),
-        destinations: [
-          for (var index = 0; index < items.length; index++)
-            NavigationDestination(
-              icon: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
-                transitionBuilder: (child, animation) {
-                  return ScaleTransition(
-                    scale: animation,
-                    child: FadeTransition(
-                      opacity: animation,
-                      child: child,
-                    ),
-                  );
-                },
-                child: Icon(
-                  items[index].icon,
-                  key: ValueKey('${index}_unselected'),
-                  color: items[index].enabled ? null : disabledColor,
-                ),
-              ),
-              selectedIcon: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
-                transitionBuilder: (child, animation) {
-                  return ScaleTransition(
-                    scale: animation,
-                    child: FadeTransition(
-                      opacity: animation,
-                      child: child,
-                    ),
-                  );
-                },
-                child: Icon(
-                  items[index].selectedIcon,
-                  key: ValueKey('${index}_selected'),
-                  color: items[index].enabled ? null : disabledColor,
-                ),
-              ),
-              label: items[index].label,
-              enabled: items[index].enabled,
-            ),
-        ],
-      );
+      return _buildMaterialBar(context, safeIndex, scheme);
     }
 
-    // 液态玻璃模式：官方 GlassTabBar.bottom 悬浮胶囊——
-    // SDF 圆角边缘折射 + 圆形衰减 + 果冻指示器物理动效，
-    // 圆角 = 胶囊高度一半自动匹配（barBorderRadius 由包内按高度推导）。
-    //
-    // 质量分级：premium 全管线（折射 + 色散 + 果冻形变）只在 Apple Metal
-    // 启用；GLES 模拟器实测 premium 指示器（小面积、静态面）也会卡死
-    // 首帧，安卓保持 standard 轻量 shader。
-    //
-    // 质感增强：在包内 iOS 27 底栏预设上只放开色散。预设的
-    // chromaticAberration 为 0（iOS 27 官方观感靠 rim 高光，不靠 RGB
-    // 分离）；轻量 shader 的边缘集中色散路径（RGB 通道沿法线分离、
-    // 集中在 SDF 边界）在 standard 下同样生效，安卓即可获得 iOS 胶囊
-    // 滚动时的棱镜彩边。必须 copyWith 预设——整包新建 settings 会把
-    // blur 从 0.6 抬到构造默认 5，blur+saturation 的 BackdropFilter
-    // 组合在 Impeller GLES 上会卡死首帧。
-    final scheme = Theme.of(context).colorScheme;
-    final disabledColor = scheme.onSurfaceVariant.withValues(alpha: 0.42);
+    // 主题表面色直接混合，降低滚动内容的对比度，保留预设的模糊和折射。
     final barSettings = (Theme.brightnessOf(context) == Brightness.dark
             ? LiquidGlassSettings.ios27Dark
             : LiquidGlassSettings.ios27Light)
-        .copyWith(chromaticAberration: 0.18);
-    return GlassTabBar.bottom(
-      tabs: [
-        for (final item in items)
-          GlassTab(
-            icon: Icon(
-              item.icon,
-              color: item.enabled ? null : disabledColor,
+        .copyWith(
+      bodyMode: GlassBodyMode.clear,
+      glassColor: scheme.surfaceContainer.withValues(alpha: 0.90),
+      chromaticAberration: 0.18,
+    );
+    final quality = UIRenderPolicy.premiumGlassAllowed
+        ? GlassQuality.premium
+        : GlassQuality.standard;
+
+    final Widget bar;
+    // GlassTab 不接收禁用状态。Material 目的地统一处理点击、焦点与无障碍状态。
+    if (items.any((item) => !item.enabled)) {
+      bar = GlassContainer(
+        shape:
+            const LiquidRoundedSuperellipse(borderRadius: _glassBarHeight / 2),
+        settings: barSettings,
+        useOwnLayer: true,
+        quality: quality,
+        child: _buildMaterialBar(context, safeIndex, scheme, overGlass: true),
+      );
+    } else {
+      bar = GlassTabBar.bottom(
+        tabs: [
+          for (final item in items)
+            GlassTab(
+              icon: Icon(item.icon),
+              activeIcon: Icon(item.selectedIcon),
+              label: item.glassLabel ?? item.label,
+              semanticLabel: item.label,
             ),
-            activeIcon: Icon(
-              item.selectedIcon,
-              color: item.enabled ? null : disabledColor,
-            ),
-            label: item.label,
-          ),
+        ],
+        selectedIndex: safeIndex,
+        onTabSelected: onTap,
+        barHeight: _glassBarHeight,
+        horizontalPadding: 0,
+        verticalPadding: 0,
+        iconSize: 24,
+        selectedIconColor: scheme.primary,
+        unselectedIconColor: scheme.onSurfaceVariant,
+        selectedLabelColor: scheme.onSurface,
+        unselectedLabelColor: scheme.onSurfaceVariant,
+        indicatorColor: scheme.primaryContainer,
+        settings: barSettings,
+        quality: quality,
+        backgroundQuality: quality,
+      );
+    }
+
+    return SafeArea(
+      top: false,
+      minimum: _glassBarPadding,
+      child: bar,
+    );
+  }
+
+  NavigationBar _buildMaterialBar(
+    BuildContext context,
+    int selectedIndex,
+    ColorScheme scheme, {
+    bool overGlass = false,
+  }) {
+    final disabledColor = scheme.onSurfaceVariant.withValues(
+      alpha: overGlass ? 0.70 : 0.42,
+    );
+    return NavigationBar(
+      selectedIndex: selectedIndex,
+      onDestinationSelected: onTap,
+      animationDuration: const Duration(milliseconds: 400),
+      height: overGlass ? _glassBarHeight : null,
+      backgroundColor: overGlass ? Colors.transparent : null,
+      elevation: overGlass ? 0 : null,
+      indicatorColor: overGlass ? scheme.primaryContainer : null,
+      labelTextStyle: overGlass
+          ? WidgetStateProperty.resolveWith((states) {
+              final color = switch (states) {
+                _ when states.contains(WidgetState.disabled) => disabledColor,
+                _ when states.contains(WidgetState.selected) =>
+                  scheme.onSurface,
+                _ => scheme.onSurfaceVariant,
+              };
+              return Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: color,
+                  );
+            })
+          : null,
+      destinations: [
+        for (var index = 0; index < items.length; index++)
+          _buildMaterialDestination(index, disabledColor, overGlass: overGlass),
       ],
-      selectedIndex: safeIndex,
-      onTabSelected: (index) {
-        if (index >= 0 && index < items.length && items[index].enabled) {
-          onTap(index);
-        }
-      },
-      barHeight: 64,
-      horizontalPadding: 16,
-      verticalPadding: 12,
-      iconSize: 24,
-      selectedIconColor: scheme.primary,
-      unselectedIconColor: scheme.onSurfaceVariant,
-      indicatorColor: scheme.primaryContainer,
-      settings: barSettings,
-      // Apple Metal 走 premium 全管线；GLES/Skia 用轻量单 pass。
-      quality: UIRenderPolicy.premiumGlassAllowed
-          ? GlassQuality.premium
-          : GlassQuality.standard,
-      backgroundQuality: UIRenderPolicy.premiumGlassAllowed
-          ? GlassQuality.premium
-          : GlassQuality.standard,
+    );
+  }
+
+  Widget _buildMaterialDestination(
+    int index,
+    Color disabledColor, {
+    required bool overGlass,
+  }) {
+    final item = items[index];
+    final iconColor = item.enabled ? null : disabledColor;
+    final destination = NavigationDestination(
+      icon: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 200),
+        transitionBuilder: _animateIcon,
+        child: Icon(
+          item.icon,
+          key: ValueKey('${index}_unselected'),
+          color: iconColor,
+        ),
+      ),
+      selectedIcon: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 200),
+        transitionBuilder: _animateIcon,
+        child: Icon(
+          item.selectedIcon,
+          key: ValueKey('${index}_selected'),
+          color: iconColor,
+        ),
+      ),
+      label: overGlass ? item.glassLabel ?? item.label : item.label,
+      tooltip: overGlass ? item.label : null,
+      enabled: item.enabled,
+    );
+
+    return overGlass
+        ? DefaultTextStyle.merge(
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            child: destination,
+          )
+        : destination;
+  }
+
+  static Widget _animateIcon(Widget child, Animation<double> animation) {
+    return ScaleTransition(
+      scale: animation,
+      child: FadeTransition(opacity: animation, child: child),
     );
   }
 }
