@@ -70,6 +70,10 @@ class AppTheme {
       useMaterial3: true,
       colorScheme: scheme,
       scaffoldBackgroundColor: scheme.surface,
+      // M3 Expressive 信息密度：桌面鼠标精准定位走 compact，
+      // 移动端保持 standard（触控目标高度由按钮 minSize 与 ListTile 下探共同保障）。
+      visualDensity:
+          isDesktop ? VisualDensity.compact : VisualDensity.standard,
       appBarTheme: AppBarTheme(
         centerTitle: false,
         elevation: 0,
@@ -201,11 +205,19 @@ class AppTheme {
           ),
         ),
       ),
-      // 列表项统一圆角按压反馈（M3E state layer 形状）。
+      // 列表项统一圆角按压反馈（M3E state layer 形状）+ 密度收紧：
+      // 水平内边距 16→12、负向 visualDensity 下探行高（桌面 -4 / 移动 -2），
+      // leading 图标降为次级色（M3 列表规范）。
       listTileTheme: ListTileThemeData(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
         ),
+        visualDensity:
+            VisualDensity(horizontal: -2, vertical: isDesktop ? -4 : -2),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppDesignTokens.spacingMd,
+        ),
+        iconColor: scheme.onSurfaceVariant,
       ),
       // 进度指示统一圆头与主色。
       progressIndicatorTheme: ProgressIndicatorThemeData(

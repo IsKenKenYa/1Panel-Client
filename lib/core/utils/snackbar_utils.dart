@@ -50,7 +50,7 @@ class SnackBarUtils {
       {SnackBarAction? action}) {
     _show(context,
         message: ErrorMessageUtils.localizeForContext(message, context),
-        icon: Icons.info_outline,
+        icon: Icons.info_outlined,
         backgroundColor: Theme.of(context).colorScheme.inverseSurface,
         action: action);
   }

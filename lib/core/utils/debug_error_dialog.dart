@@ -57,9 +57,7 @@ class DebugErrorDialog {
             onPressed: () {
               Clipboard.setData(
                   ClipboardData(text: '$errorMessage\n\n$stackTraceStr'));
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('错误信息已复制到剪贴板')),
-              );
+              SnackBarUtils.showSuccess(context, '错误信息已复制到剪贴板');
             },
             child: const Text('复制'),
           ),

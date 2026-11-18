@@ -27,6 +27,7 @@ import 'package:onepanel_client/core/services/app_preferences_service.dart';
 import 'package:onepanel_client/core/theme/ui_render_policy.dart';
 import 'package:onepanel_client/core/theme/ui_render_mode.dart';
 import 'package:onepanel_client/core/config/api_config_migration.dart';
+import 'package:onepanel_client/core/config/debug_seed_config.dart';
 
 // Feature Providers
 import 'features/dashboard/dashboard_provider.dart';
@@ -41,6 +42,8 @@ import 'features/monitoring/monitoring_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await applyDebugSeedConfig();
+  applyDebugSemanticsIfRequested();
 
   // 预加载液态玻璃折射 shader：未加载时第一帧只有纯模糊+噪声贴图。
   await LiquidGlass.precache();

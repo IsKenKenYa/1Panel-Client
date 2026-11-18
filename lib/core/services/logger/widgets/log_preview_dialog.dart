@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/services/logger/log_export_service.dart';
 import 'package:onepanel_client/core/services/logger/log_format.dart';
+import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 
 /// 导出日志预览对话框。
 ///
@@ -58,8 +59,9 @@ class _LogPreviewDialogState extends State<LogPreviewDialog>
     } else if (result.success) {
       Navigator.of(context).pop();
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${l10n.commonSaveFailed}: ${result.errorMessage ?? ''}')),
+      SnackBarUtils.showError(
+        context,
+        '${l10n.commonSaveFailed}: ${result.errorMessage ?? ''}',
       );
     }
   }
