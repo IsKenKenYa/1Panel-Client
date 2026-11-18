@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
@@ -56,6 +57,21 @@ void main() {
       ));
 
       expect(find.text('test.txt'), findsOneWidget);
+    });
+
+    testWidgets('keyboard focus can open and dismiss file actions',
+        (tester) async {
+      await tester.pumpWidget(createTestWidget(FileListItem(file: testFile)));
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(PopupMenuItem<String>), findsWidgets);
+      expect(find.text('Delete'), findsOneWidget);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      await tester.pumpAndSettle();
+      expect(find.byType(PopupMenuItem<String>), findsNothing);
     });
 
     testWidgets('renders directory name correctly',

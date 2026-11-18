@@ -39,12 +39,14 @@ void main() {
       expect(find.byIcon(Icons.error_outline), findsOneWidget);
     });
 
-    testWidgets('displays correct icon size', (WidgetTester tester) async {
+    testWidgets('uses the error container color for the status icon',
+        (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(message: 'Test error message'));
       await tester.pumpAndSettle();
 
-      final icon = tester.widget<Icon>(find.byIcon(Icons.error_outline));
-      expect(icon.size, equals(56));
+      final iconFinder = find.byIcon(Icons.error_outline);
+      final scheme = Theme.of(tester.element(iconFinder)).colorScheme;
+      expect(tester.widget<Icon>(iconFinder).color, scheme.onErrorContainer);
     });
 
     testWidgets('displays error message', (WidgetTester tester) async {
