@@ -91,7 +91,7 @@ class _SystemLogViewerPageState extends State<SystemLogViewerPage> {
               onPressed: provider.hasSelectedFile
                   ? () => provider.loadSelectedFile(latest: true)
                   : null,
-              icon: const Icon(Icons.refresh),
+              icon: const Icon(Icons.refresh_outlined),
               tooltip: l10n.commonRefresh,
             ),
           ],
@@ -164,7 +164,7 @@ class _SystemLogViewerPageState extends State<SystemLogViewerPage> {
       return Center(
         child: FilledButton.icon(
           onPressed: () => provider.initialize(widget.args),
-          icon: const Icon(Icons.refresh),
+          icon: const Icon(Icons.refresh_outlined),
           label: Text(localizeLogsError(l10n, provider.filesError)!),
         ),
       );
@@ -190,7 +190,7 @@ class _SystemLogViewerPageState extends State<SystemLogViewerPage> {
       return Center(
         child: FilledButton.icon(
           onPressed: () => provider.loadSelectedFile(latest: true),
-          icon: const Icon(Icons.refresh),
+          icon: const Icon(Icons.refresh_outlined),
           label: Text(localizeLogsError(l10n, provider.contentError)!),
         ),
       );

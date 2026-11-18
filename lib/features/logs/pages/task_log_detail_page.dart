@@ -73,7 +73,7 @@ class _TaskLogDetailPageState extends State<TaskLogDetailPage> {
             ),
             IconButton(
               onPressed: provider.detailLoading ? null : provider.loadDetail,
-              icon: const Icon(Icons.refresh),
+              icon: const Icon(Icons.refresh_outlined),
               tooltip: l10n.commonRefresh,
             ),
           ],
@@ -101,7 +101,7 @@ class _TaskLogDetailPageState extends State<TaskLogDetailPage> {
       return Center(
         child: FilledButton.icon(
           onPressed: provider.loadDetail,
-          icon: const Icon(Icons.refresh),
+          icon: const Icon(Icons.refresh_outlined),
           label: Text(message),
         ),
       );
