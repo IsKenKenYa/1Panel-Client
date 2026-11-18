@@ -157,7 +157,7 @@ class _TerminalPageState extends State<TerminalPage> {
               actions: <Widget>[
                 IconButton(
                   onPressed: provider.isLoading ? null : provider.refreshCatalogs,
-                  icon: const Icon(Icons.refresh),
+                  icon: const Icon(Icons.refresh_outlined),
                   tooltip: l10n.commonRefresh,
                 ),
                 IconButton(
@@ -461,7 +461,7 @@ class _TerminalSessionDetailPageState extends State<_TerminalSessionDetailPage> 
               IconButton(
                 onPressed: () =>
                     provider.reconnectSession(session.descriptor.sessionKey),
-                icon: const Icon(Icons.refresh),
+                icon: const Icon(Icons.refresh_outlined),
                 tooltip: context.l10n.commonRefresh,
               ),
             ],
