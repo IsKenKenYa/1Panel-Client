@@ -67,7 +67,7 @@ class _OpenRestySourceEditorPageState extends State<OpenRestySourceEditorPage> {
         actions: [
           IconButton(
             onPressed: isSaving ? null : _save,
-            icon: const Icon(Icons.save),
+            icon: const Icon(Icons.save_outlined),
             tooltip: l10n.commonSave,
           ),
         ],

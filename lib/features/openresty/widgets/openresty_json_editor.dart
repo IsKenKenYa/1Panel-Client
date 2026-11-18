@@ -61,7 +61,7 @@ class _OpenRestyJsonEditorState extends State<OpenRestyJsonEditor> {
             children: [
               FilledButton.icon(
                 onPressed: widget.isSaving ? null : _save,
-                icon: const Icon(Icons.save),
+                icon: const Icon(Icons.save_outlined),
                 label: Text(widget.saveLabel),
               ),
             ],

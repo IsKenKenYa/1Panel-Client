@@ -7,10 +7,10 @@ import 'package:onepanel_client/features/openresty/providers/openresty_provider.
 import 'package:onepanel_client/features/openresty/widgets/openresty_center_dialogs.dart';
 import 'package:onepanel_client/features/openresty/widgets/openresty_center_localizations.dart';
 import 'package:onepanel_client/features/openresty/widgets/openresty_center_section_widgets.dart';
-import 'package:onepanel_client/features/openresty/widgets/openresty_error_view.dart';
 import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/shared/widgets/operations/module_empty_state_widget.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 import 'package:onepanel_client/shared/widgets/section_card.dart';
 import 'package:onepanel_client/shared/security_gateway/widgets/config_diff_preview_card.dart';
 import 'package:onepanel_client/shared/security_gateway/widgets/risk_notice_banner.dart';
@@ -44,7 +44,7 @@ class OpenRestyCenterPage extends StatelessWidget {
           return ServerAwarePageScaffold(
             title: l10n.openrestyPageTitle,
             onServerChanged: provider.loadAll,
-            body: OpenRestyErrorView(
+            body: ModuleErrorStateWidget(
               message: provider.error!,
               onRetry: provider.loadAll,
             ),
@@ -62,7 +62,7 @@ class OpenRestyCenterPage extends StatelessWidget {
           onServerChanged: provider.loadAll,
           actions: [
             IconButton(
-              icon: const Icon(Icons.refresh),
+              icon: const Icon(Icons.refresh_outlined),
               tooltip: context.l10n.commonRefresh,
               onPressed: provider.refresh,
             ),
@@ -135,7 +135,7 @@ class OpenRestyCenterPage extends StatelessWidget {
                             context,
                             provider,
                           ),
-                          icon: const Icon(Icons.lock_outline),
+                          icon: const Icon(Icons.lock_outlined),
                           label: Text(l10n.openrestyEditHttpsAction),
                         ),
                         OutlinedButton.icon(
@@ -304,7 +304,7 @@ class OpenRestyCenterPage extends StatelessWidget {
                         context,
                         provider,
                       ),
-                      icon: const Icon(Icons.play_arrow),
+                      icon: const Icon(Icons.play_arrow_outlined),
                       label: Text(l10n.openrestyBuildStartAction),
                     ),
                   ],
