@@ -51,7 +51,7 @@ class _GroupCenterPageState extends State<GroupCenterPage> {
                 onPressed: provider.isLoading
                     ? null
                     : () => provider.load(forceRefresh: true),
-                icon: const Icon(Icons.refresh),
+                icon: const Icon(Icons.refresh_outlined),
                 tooltip: l10n.commonRefresh,
               ),
             ],
@@ -60,7 +60,7 @@ class _GroupCenterPageState extends State<GroupCenterPage> {
               onPressed: provider.isMutating
                   ? null
                   : () => _openEditor(context, provider),
-              icon: const Icon(Icons.add),
+              icon: const Icon(Icons.add_outlined),
               label: Text(l10n.commonCreate),
             ),
             body: ListView(

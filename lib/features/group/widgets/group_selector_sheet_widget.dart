@@ -85,7 +85,7 @@ class GroupSelectorSheetWidget extends StatelessWidget {
                     onPressed: provider.isMutating
                         ? null
                         : () => _openEditor(context, provider),
-                    icon: const Icon(Icons.add),
+                    icon: const Icon(Icons.add_outlined),
                     tooltip: l10n.commonAdd,
                   ),
                 ],
