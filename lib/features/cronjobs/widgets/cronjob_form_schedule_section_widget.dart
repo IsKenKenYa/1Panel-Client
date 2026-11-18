@@ -81,7 +81,7 @@ class CronjobFormScheduleSectionWidget extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: TextButton.icon(
               onPressed: onAddRawSpec,
-              icon: const Icon(Icons.add),
+              icon: const Icon(Icons.add_outlined),
               label: Text(customSpecLabel),
             ),
           ),

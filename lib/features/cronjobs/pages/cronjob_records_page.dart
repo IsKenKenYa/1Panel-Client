@@ -54,7 +54,7 @@ class _CronjobRecordsPageState extends State<CronjobRecordsPage> {
               onPressed: provider.isLoading
                   ? null
                   : () => provider.load(widget.args.cronjobId),
-              icon: const Icon(Icons.refresh),
+              icon: const Icon(Icons.refresh_outlined),
               tooltip: l10n.commonRefresh,
             ),
           ],

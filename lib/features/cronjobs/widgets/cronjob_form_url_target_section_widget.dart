@@ -50,7 +50,7 @@ class CronjobFormUrlTargetSectionWidget extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: TextButton.icon(
             onPressed: () => onChanged(<String>[...urlItems, '']),
-            icon: const Icon(Icons.add),
+            icon: const Icon(Icons.add_outlined),
             label: Text(l10n.cronjobFormAddUrlAction),
           ),
         ),
