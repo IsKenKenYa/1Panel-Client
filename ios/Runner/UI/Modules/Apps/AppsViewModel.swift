@@ -1,13 +1,23 @@
 import Foundation
 
 struct AppModel: Identifiable {
-    let originalId: String
-    let installId: Int?
+    let installId: Int
     let name: String
     let status: String
     let version: String
 
-    var id: String { originalId }
+    var id: Int { installId }
+
+    init?(payload: [String: Any]) {
+        guard let installId = payload["installId"] as? Int, installId > 0,
+              let name = payload["name"] as? String,
+              let status = payload["status"] as? String,
+              let version = payload["version"] as? String else { return nil }
+        self.installId = installId
+        self.name = name
+        self.status = status
+        self.version = version
+    }
 }
 
 /// 应用商店条目。
@@ -23,13 +33,18 @@ struct StoreApp: Identifiable, Hashable {
 
 /// 安装表单动态字段。
 struct AppInstallField: Identifiable, Hashable {
+    struct Option: Hashable {
+        let label: String
+        let value: String
+    }
+
     let envKey: String
     let labelZh: String
     let labelEn: String
     let type: String
     let required: Bool
     let defaultValue: String?
-    let values: [String]
+    let values: [Option]
 
     var id: String { envKey }
 }
@@ -111,14 +126,21 @@ class AppsViewModel: ObservableObject {
                 }
                 let rawFields = dict["fields"] as? [[String: Any]] ?? []
                 let fields = rawFields.map { field in
-                    AppInstallField(
+                    let options = (field["values"] as? [[String: Any]] ?? []).compactMap { item -> AppInstallField.Option? in
+                        guard let value = item["value"] as? String, !value.isEmpty else { return nil }
+                        return AppInstallField.Option(
+                            label: item["label"] as? String ?? value,
+                            value: value
+                        )
+                    }
+                    return AppInstallField(
                         envKey: field["envKey"] as? String ?? "",
                         labelZh: field["labelZh"] as? String ?? "",
                         labelEn: field["labelEn"] as? String ?? "",
                         type: field["type"] as? String ?? "text",
                         required: field["required"] as? Bool ?? false,
                         defaultValue: field["defaultValue"] as? String,
-                        values: (field["values"] as? [Any])?.compactMap { $0 as? String } ?? []
+                        values: options
                     )
                 }
                 self?.installForm = AppInstallForm(appDetailId: appDetailId, fields: fields)
@@ -211,14 +233,7 @@ class AppsViewModel: ObservableObject {
             DispatchQueue.main.async {
                 self?.isLoading = false
                 guard let dictArray = result as? [[String: Any]] else { return }
-                self?.apps = dictArray.compactMap { dict in
-                    guard let name = dict["name"] as? String,
-                          let status = dict["status"] as? String,
-                          let version = dict["version"] as? String else { return nil }
-                    let originalId = dict["appId"] as? String ?? ""
-                    let installId = dict["installId"] as? Int
-                    return AppModel(originalId: originalId, installId: installId, name: name, status: status, version: version)
-                }
+                self?.apps = dictArray.compactMap(AppModel.init(payload:))
             }
         }
     }

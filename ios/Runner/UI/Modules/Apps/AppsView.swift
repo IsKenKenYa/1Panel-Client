@@ -12,6 +12,7 @@ struct AppsView: View {
     @State private var showUninstallConfirm = false
     @State private var installTarget: StoreApp?
     @State private var toastText: String?
+    @State private var installHookApplied = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -36,7 +37,7 @@ struct AppsView: View {
                 Button {
                     refreshCurrentSection()
                 } label: {
-                    Image(systemName: "arrow.clockwise")
+                    Label(translations.get("commonRefresh", fallback: "Refresh"), systemImage: "arrow.clockwise")
                 }
                 .disabled(viewModel.isLoading || viewModel.isStoreLoading)
             }
@@ -47,9 +48,9 @@ struct AppsView: View {
             titleVisibility: .visible
         ) {
             Button(translations.get("appActionUninstall", fallback: "Uninstall"), role: .destructive) {
-                guard let app = appToUninstall, let installId = app.installId else { return }
+                guard let app = appToUninstall else { return }
                 appToUninstall = nil
-                viewModel.uninstallApp(installId: installId) { success in
+                viewModel.uninstallApp(installId: app.installId) { success in
                     showToast(success
                         ? translations.get("commonDeleted", fallback: "Deleted")
                         : translations.get("commonDeleteFailed", fallback: "Delete failed"))
@@ -66,22 +67,14 @@ struct AppsView: View {
             InstallAppSheet(viewModel: viewModel, app: app)
                 .environmentObject(translations)
         }
-        .overlay(alignment: .bottom) {
-            if let toastText {
-                Text(toastText)
-                    .font(.footnote)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
-                    .background(.regularMaterial, in: Capsule())
-                    .padding(.bottom, 24)
-            }
-        }
+        .operationNotice(toastText)
         .onAppear {
             viewModel.fetchApps()
             if ProcessInfo.processInfo.environment["ONEPANEL_APPS_SECTION"] == "store" {
                 section = "store"
                 viewModel.fetchStore()
             }
+            applyInstallHook()
         }
     }
 
@@ -92,7 +85,9 @@ struct AppsView: View {
         } else if viewModel.apps.isEmpty {
             EmptyStateView(
                 icon: "app.badge",
-                message: translations.get("appsListEmptyTitle", fallback: "No apps found")
+                message: translations.get("appsListEmptyTitle", fallback: "No apps found"),
+                description: translations.get("appsEmptyHint",
+                                              fallback: "Apps installed from the App Store appear here.")
             )
         } else {
             List {
@@ -128,25 +123,23 @@ struct AppsView: View {
                     }
                     .swipeActions(edge: .leading, allowsFullSwipe: false) {
                         let isRunning = app.status.lowercased() == "running"
-                        if let installId = app.installId {
-                            Button {
-                                operate(app, installId: installId, running: isRunning)
-                            } label: {
-                                Label(
-                                    translations.get(isRunning ? "commonStop" : "commonStart",
-                                                     fallback: isRunning ? "Stop" : "Start"),
-                                    systemImage: isRunning ? "stop.fill" : "play.fill"
-                                )
-                            }
-                            .tint(isRunning ? .orange : .green)
-                            Button {
-                                update(app, installId: installId)
-                            } label: {
-                                Label(translations.get("appUpdate", fallback: "Update"),
-                                      systemImage: "arrow.triangle.2.circlepath")
-                            }
-                            .tint(.blue)
+                        Button {
+                            operate(installId: app.installId, running: isRunning)
+                        } label: {
+                            Label(
+                                translations.get(isRunning ? "commonStop" : "commonStart",
+                                                 fallback: isRunning ? "Stop" : "Start"),
+                                systemImage: isRunning ? "stop.fill" : "play.fill"
+                            )
                         }
+                        .tint(isRunning ? .orange : .green)
+                        Button {
+                            update(installId: app.installId)
+                        } label: {
+                            Label(translations.get("appUpdate", fallback: "Update"),
+                                  systemImage: "arrow.triangle.2.circlepath")
+                        }
+                        .tint(.blue)
                     }
                 }
             }
@@ -236,7 +229,27 @@ struct AppsView: View {
         }
     }
 
-    private func update(_ app: AppModel, installId: Int) {
+    /// 走查钩子：`ONEPANEL_OPEN_INSTALL_APP=<应用 key>` 从商店列表打开安装表单。
+    private func applyInstallHook() {
+        guard !installHookApplied,
+              let key = ProcessInfo.processInfo.environment["ONEPANEL_OPEN_INSTALL_APP"],
+              !key.isEmpty else { return }
+        installHookApplied = true
+        section = "store"
+        viewModel.fetchStore()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+            if let target = viewModel.storeApps.first(where: { $0.key == key }) {
+                installTarget = target
+            } else {
+                viewModel.fetchStore(search: key)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                    installTarget = viewModel.storeApps.first(where: { $0.key == key })
+                }
+            }
+        }
+    }
+
+    private func update(installId: Int) {
         viewModel.updateApp(installId: installId) { success in
             showToast(success
                 ? translations.get("commonSaveSuccess", fallback: "Saved")
@@ -245,7 +258,7 @@ struct AppsView: View {
         }
     }
 
-    private func operate(_ app: AppModel, installId: Int, running: Bool) {
+    private func operate(installId: Int, running: Bool) {
         viewModel.operateApp(
             installId: installId,
             operate: running ? "stopApp" : "startApp"

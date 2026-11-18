@@ -136,17 +136,23 @@ struct InstallAppSheet: View {
     @ViewBuilder
     private func fieldView(_ field: AppInstallField) -> some View {
         let labelText = label(for: field)
-        if field.type == "select", !field.values.isEmpty {
+        if (field.type == "select" || field.type == "apps" || field.type == "service"),
+           !field.values.isEmpty {
             Picker(labelText, selection: binding(for: field)) {
-                ForEach(field.values, id: \.self) { value in
-                    Text(value).tag(value)
+                ForEach(field.values, id: \.value) { option in
+                    Text(option.label).tag(option.value)
                 }
             }
         } else {
-            TextField(labelText, text: binding(for: field))
-                .keyboardType(field.type == "number" ? .decimalPad : .default)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
+            HStack {
+                Text(labelText)
+                Spacer(minLength: 12)
+                TextField("", text: binding(for: field))
+                    .keyboardType(field.type == "number" ? .decimalPad : .default)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .multilineTextAlignment(.trailing)
+            }
         }
     }
 
@@ -175,7 +181,11 @@ struct InstallAppSheet: View {
 
     private func binding(for field: AppInstallField) -> Binding<String> {
         Binding(
-            get: { fieldValues[field.envKey] ?? field.defaultValue ?? "" },
+            get: {
+                fieldValues[field.envKey]
+                    ?? field.defaultValue
+                    ?? (field.values.first?.value ?? "")
+            },
             set: { fieldValues[field.envKey] = $0 }
         )
     }
@@ -205,6 +215,15 @@ struct InstallAppSheet: View {
         viewModel.fetchInstallForm(appId: app.id, version: version, type: app.type) { success in
             if !success {
                 errorText = translations.get("appOperateFailed", fallback: "Operation failed")
+                return
+            }
+            // 把默认值写进待提交参数，未改动的字段也能按上游默认配置安装。
+            fieldValues = [:]
+            for field in viewModel.installForm?.fields ?? [] {
+                let initial = field.defaultValue ?? field.values.first?.value
+                if let initial, !initial.isEmpty {
+                    fieldValues[field.envKey] = initial
+                }
             }
         }
     }
