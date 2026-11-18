@@ -18,22 +18,47 @@ import 'package:onepanel_client/shared/widgets/operations/module_error_state_wid
 import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
 
 import '../../core/utils/snackbar_utils.dart';
+
+class InstalledAppDetailArgs {
+  const InstalledAppDetailArgs({
+    required this.appInfo,
+    this.installedAppsProvider,
+  });
+
+  final AppInstallInfo appInfo;
+  final InstalledAppsProvider? installedAppsProvider;
+}
+
 class InstalledAppDetailPage extends StatelessWidget {
   final AppInstallInfo? appInfo;
   final String? appId;
+  final InstalledAppsProvider? installedAppsProvider;
 
   const InstalledAppDetailPage({
     super.key,
     this.appInfo,
     this.appId,
+    this.installedAppsProvider,
   }) : assert(appInfo != null || appId != null);
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => InstalledAppDetailProvider(
-        appService: context.read<AppService>(),
-      )..initialize(appInfo: appInfo, appId: appId),
+    final appService = context.read<AppService>();
+    final installedApps =
+        installedAppsProvider ?? context.read<InstalledAppsProvider?>();
+    return MultiProvider(
+      providers: [
+        if (installedApps == null)
+          ChangeNotifierProvider(
+            create: (_) => InstalledAppsProvider(appService: appService),
+          )
+        else
+          ChangeNotifierProvider.value(value: installedApps),
+        ChangeNotifierProvider(
+          create: (_) => InstalledAppDetailProvider(appService: appService)
+            ..initialize(appInfo: appInfo, appId: appId),
+        ),
+      ],
       child: const _InstalledAppDetailView(),
     );
   }
@@ -65,26 +90,27 @@ class _InstalledAppDetailViewState extends State<_InstalledAppDetailView> {
 
     final action = await showDialog<String>(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: Text(l10n.appUpdateTitle),
         content: Text(l10n.appUpdateConfirm(app?.name ?? '', targetVersion)),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, 'ignore'),
+            onPressed: () => Navigator.pop(dialogContext, 'ignore'),
             child: Text(l10n.appIgnoreUpdate),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(context, 'cancel'),
+            onPressed: () => Navigator.pop(dialogContext, 'cancel'),
             child: Text(l10n.commonCancel),
           ),
           FilledButton(
-            onPressed: () => Navigator.pop(context, 'upgrade'),
+            onPressed: () => Navigator.pop(dialogContext, 'upgrade'),
             child: Text(l10n.appUpdate),
           ),
         ],
       ),
     );
 
+    if (!mounted) return;
     if (action == 'ignore') {
       await _handleIgnoreUpdate();
       return;
@@ -115,7 +141,7 @@ class _InstalledAppDetailViewState extends State<_InstalledAppDetailView> {
     final controller = TextEditingController();
     final reason = await showDialog<String>(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: Text(l10n.appIgnoreUpdate),
         content: TextField(
           controller: controller,
@@ -126,18 +152,18 @@ class _InstalledAppDetailViewState extends State<_InstalledAppDetailView> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: Text(l10n.commonCancel),
           ),
           FilledButton(
-            onPressed: () => Navigator.pop(context, controller.text),
+            onPressed: () => Navigator.pop(dialogContext, controller.text),
             child: Text(l10n.commonConfirm),
           ),
         ],
       ),
     );
 
-    if (reason == null || reason.isEmpty) return;
+    if (!mounted || reason == null || reason.isEmpty) return;
 
     try {
       await installedProvider.ignoreUpdate(app!.id!, reason);
@@ -155,19 +181,23 @@ class _InstalledAppDetailViewState extends State<_InstalledAppDetailView> {
 
   Future<void> _handleEditConfig(
       AppConfig config, AppInstallInfo appInfo) async {
+    final installedApps = context.read<InstalledAppsProvider>();
     final changed = await showAdaptiveFormPanel<bool>(
       context,
-      builder: (_) => EditAppConfigDialog(
-        appInstallId: appInfo.id!,
-        appConfig: config,
-        appKey: appInfo.appKey ?? '',
-        appName: appInfo.name ?? appInfo.appName ?? '',
-        httpPort: appInfo.httpPort,
-        httpsPort: appInfo.httpsPort,
+      builder: (_) => ChangeNotifierProvider.value(
+        value: installedApps,
+        child: EditAppConfigDialog(
+          appInstallId: appInfo.id!,
+          appConfig: config,
+          appKey: appInfo.appKey ?? '',
+          appName: appInfo.name ?? appInfo.appName ?? '',
+          httpPort: appInfo.httpPort,
+          httpsPort: appInfo.httpsPort,
+        ),
       ),
     );
 
-    if (changed == true) {
+    if (changed == true && mounted) {
       await _refresh();
     }
   }
@@ -181,7 +211,7 @@ class _InstalledAppDetailViewState extends State<_InstalledAppDetailView> {
       final jsonText = const JsonEncoder.withIndent('  ').convert(info);
       await showDialog(
         context: context,
-        builder: (_) => AlertDialog(
+        builder: (dialogContext) => AlertDialog(
           title: Text(l10n.appConnInfo),
           content: SizedBox(
             width: double.maxFinite,
@@ -189,7 +219,7 @@ class _InstalledAppDetailViewState extends State<_InstalledAppDetailView> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.pop(dialogContext),
               child: Text(l10n.commonClose),
             ),
           ],
@@ -223,18 +253,22 @@ class _InstalledAppDetailViewState extends State<_InstalledAppDetailView> {
 
   Future<void> _openContainer() async {
     final l10n = context.l10n;
-    showDialog(
+    final rootNavigator = Navigator.of(context, rootNavigator: true);
+    final progress = DialogRoute<void>(
       context: context,
       barrierDismissible: false,
-      builder: (_) => const Center(child: CircularProgressIndicator()),
+      builder: (_) => const PopScope(
+        canPop: false,
+        child: Center(child: CircularProgressIndicator()),
+      ),
     );
+    rootNavigator.push(progress);
 
     try {
       final container = await context
           .read<InstalledAppDetailProvider>()
           .findInstalledContainer();
       if (!mounted) return;
-      Navigator.pop(context);
       if (container == null) {
         SnackBarUtils.showError(context, l10n.notFoundDesc);
         return;
@@ -247,8 +281,9 @@ class _InstalledAppDetailViewState extends State<_InstalledAppDetailView> {
       );
     } catch (e) {
       if (!mounted) return;
-      Navigator.pop(context);
       SnackBarUtils.showError(context, '${l10n.commonLoadFailedTitle}: $e');
+    } finally {
+      if (progress.isActive) rootNavigator.removeRoute(progress);
     }
   }
 
@@ -295,25 +330,25 @@ class _InstalledAppDetailViewState extends State<_InstalledAppDetailView> {
     if (!mounted) return;
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: Text(l10n.appActionUninstall),
         content: SingleChildScrollView(
           child: SelectableText('${l10n.appUninstallConfirm}$checkText'),
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false),
+            onPressed: () => Navigator.pop(dialogContext, false),
             child: Text(l10n.commonCancel),
           ),
           FilledButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => Navigator.pop(dialogContext, true),
             child: Text(l10n.commonConfirm),
           ),
         ],
       ),
     );
 
-    if (confirmed != true) return;
+    if (!mounted || confirmed != true) return;
 
     try {
       await installedProvider.uninstallApp(app!.id.toString());

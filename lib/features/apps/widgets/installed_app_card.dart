@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/features/apps/installed_app_detail_page.dart';
+import 'package:onepanel_client/features/apps/providers/installed_apps_provider.dart';
 import '../../../data/models/app_models.dart';
 import '../../../shared/widgets/app_card.dart';
 import 'app_icon.dart';
@@ -84,7 +87,10 @@ class InstalledAppCard extends StatelessWidget {
         Navigator.pushNamed(
           context,
           AppRoutes.installedAppDetail,
-          arguments: app,
+          arguments: InstalledAppDetailArgs(
+            appInfo: app,
+            installedAppsProvider: context.read<InstalledAppsProvider?>(),
+          ),
         );
       },
       child: Column(

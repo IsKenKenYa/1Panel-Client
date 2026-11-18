@@ -288,6 +288,12 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
         routeName: AppRoutes.installedAppDetail,
         defaultBuilder: (_, settings) {
           final arg = settings.arguments;
+          if (arg is InstalledAppDetailArgs) {
+            return InstalledAppDetailPage(
+              appInfo: arg.appInfo,
+              installedAppsProvider: arg.installedAppsProvider,
+            );
+          }
           if (arg is AppInstallInfo) {
             return InstalledAppDetailPage(appInfo: arg);
           }
