@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../config/api_config.dart';
 import '../../features/ai/ai_repository.dart';
 import '../../features/apps/app_service.dart';
 import '../../features/backups/services/backup_record_service.dart';
@@ -19,18 +20,14 @@ import '../../features/websites/services/websites_service.dart';
 import '../../data/models/app_models.dart';
 import '../../data/models/cronjob_list_models.dart';
 import '../../data/models/database_models.dart';
+import '../../data/repositories/database_repository.dart';
 import '../../data/repositories/website_repository.dart';
 import '../services/app_preferences_service.dart';
 import '../services/logger/logger_service.dart';
-import '../theme/ui_render_mode.dart';
 
 /// 所有 Native Channel 读操作 handlers 的集中实现。
 /// 被 [NativeChannelManager] 的 dispatch switch 调用。
 class NativeChannelReadHandlers {
-  static String _serializeRenderMode(UIRenderMode mode) {
-    return mode == UIRenderMode.native ? 'native' : 'md3';
-  }
-
   // ── 原有 handlers ────────────────────────────────────────────────────────
 
   static Future<dynamic> getServers(dynamic arguments) async {
@@ -65,12 +62,16 @@ class NativeChannelReadHandlers {
 
   static Future<dynamic> getApps(dynamic arguments) async {
     final service = AppService();
-    final apps = await service.getInstalledApps();
-    return apps
+    // `/apps/installed/list` 只返回 {id, key, name}，没有状态与版本；
+    // 列表页需要完整信息，走 `/apps/installed/search`。
+    final page = await service.searchInstalledApps(
+      AppInstalledSearchRequest(page: 1, pageSize: 100),
+    );
+    return page.items
         .map((a) => {
-              'name': a.name,
-              'status': a.status,
-              'version': a.version,
+              'name': a.appName ?? a.name ?? '',
+              'status': a.status ?? '',
+              'version': a.version ?? '',
               'appId': a.appId,
               'installId': a.id,
             })
@@ -128,6 +129,9 @@ class NativeChannelReadHandlers {
 
   /// 安装表单：按应用与版本返回 appDetailId 与动态字段。
   /// 参数：`{appId, version, type?}`。
+  ///
+  /// 字段取值统一成 `{label, value}`：上游 `select` 的 values 是字符串，
+  /// `apps`（依赖应用，如 WordPress 的数据库服务）的 values 是对象。
   static Future<dynamic> getAppInstallForm(dynamic arguments) async {
     final service = AppService();
     final appId = arguments['appId'].toString();
@@ -137,17 +141,36 @@ class NativeChannelReadHandlers {
     final fields = detail.params?.formFields ?? const <AppFormField>[];
     return {
       'appDetailId': detail.id,
-      'fields': fields
-          .map((field) => {
-                'envKey': field.envKey,
-                'labelZh': field.labelZh,
-                'labelEn': field.labelEn,
-                'type': field.type,
-                'required': field.required,
-                'defaultValue': field.defaultValue?.toString(),
-                'values': field.values,
-              })
+      'fields': fields.map(_formFieldPayload).toList(),
+    };
+  }
+
+  static Map<String, dynamic> _formFieldPayload(AppFormField field) {
+    return {
+      'envKey': field.envKey,
+      'key': field.key,
+      'labelZh': field.labelZh,
+      'labelEn': field.labelEn,
+      'type': field.type,
+      'required': field.required,
+      'defaultValue': field.defaultValue?.toString(),
+      'values': (field.values ?? const <dynamic>[])
+          .map((value) {
+            if (value is Map) {
+              return {
+                'label': value['label']?.toString() ?? '',
+                'value': value['value']?.toString() ?? '',
+              };
+            }
+            return {'label': value.toString(), 'value': value.toString()};
+          })
           .toList(),
+      'child': field.child == null
+          ? null
+          : {
+              'envKey': field.child!.envKey,
+              'type': field.child!.type,
+            },
     };
   }
 
@@ -217,38 +240,26 @@ class NativeChannelReadHandlers {
   }
 
   static Future<dynamic> getContainers(dynamic arguments) async {
-    try {
-      final service = ContainerService();
-      final containers = await service.listContainers();
-      return containers
-          .map((c) => {
-                'id': c.id,
-                'name': c.name,
-                'image': c.image,
-                'status': c.status,
-                'state': c.state,
-                'createTime': c.createTime,
-                'cpuUsage': c.cpuUsage,
-                'memoryUsage': c.memoryUsage,
-              })
-          .toList();
-    } catch (e) {
-      appLogger.e('Failed to get containers for native: $e');
-      return [];
-    }
+    final containers = await ContainerService().listContainers();
+    return containers
+        .map((c) => {
+              'id': c.id,
+              'name': c.name,
+              'image': c.image,
+              'status': c.status,
+              'state': c.state,
+              'createTime': c.createTime,
+              'cpuUsage': c.cpuUsage,
+              'memoryUsage': c.memoryUsage,
+            })
+        .toList();
   }
 
   /// 容器日志（SSE 帧已由服务层剥离）。参数：`{name: String, tail?: String}`
   static Future<dynamic> getContainerLogs(dynamic arguments) async {
-    final name = arguments?['name'] as String? ?? '';
-    final tail = arguments?['tail'] as String?;
-    try {
-      final service = ContainerService();
-      return await service.getContainerLogs(name, tail: tail);
-    } catch (e) {
-      appLogger.e('getContainerLogs failed: $e');
-      return '';
-    }
+    final name = arguments['name'] as String;
+    final tail = arguments['tail'] as String?;
+    return ContainerService().getContainerLogs(name, tail: tail);
   }
 
   /// 容器 inspect（格式化 JSON）。参数：`{name}`。
@@ -260,16 +271,16 @@ class NativeChannelReadHandlers {
 
   static Future<String> getUIRenderMode() async {
     final prefs = AppPreferencesService();
-    final mode = await prefs.loadUIRenderMode();
-    return _serializeRenderMode(mode);
+    final mode = await prefs.loadUIRenderMode(refresh: true);
+    return mode.name;
   }
 
   static Future<dynamic> getSettings(dynamic arguments) async {
     final prefs = AppPreferencesService();
-    final mode = await prefs.loadUIRenderMode();
+    final mode = await prefs.loadUIRenderMode(refresh: true);
     final locale = await prefs.loadLocale();
     return {
-      'renderMode': _serializeRenderMode(mode),
+      'renderMode': mode.name,
       'language': locale?.languageCode ?? 'system',
       'version': '0.5.0-alpha.1',
     };
@@ -277,7 +288,7 @@ class NativeChannelReadHandlers {
 
   static Future<dynamic> getTranslations() async {
     final prefs = AppPreferencesService();
-    var locale = await prefs.loadLocale();
+    var locale = await prefs.loadLocale(refresh: true);
     if (locale == null) {
       final sysLocale = Platform.localeName;
       if (sysLocale.startsWith('zh')) {
@@ -337,7 +348,11 @@ class NativeChannelReadHandlers {
 
   /// 数据库：遍历所有 scope，合并返回数据库列表。
   static Future<dynamic> getDatabases(dynamic arguments) async {
-    final service = DatabasesService();
+    final config = await ApiConfigManager.getCurrentConfig();
+    if (config == null) return <Map<String, dynamic>>[];
+    final service = DatabasesService(
+      repository: DatabaseRepository(config: config),
+    );
     final result = <Map<String, dynamic>>[];
     for (final scope in DatabaseScope.values) {
       try {
@@ -347,6 +362,8 @@ class NativeChannelReadHandlers {
             'id': item.id,
             'name': item.name,
             'type': scope.value,
+            'engine': item.engine,
+            'serverId': config.id,
             'version': item.version ?? '',
             'status': item.status ?? '',
             'username': item.username ?? '',
@@ -366,23 +383,42 @@ class NativeChannelReadHandlers {
 
   /// 防火墙：返回端口规则列表。
   static Future<dynamic> getFirewallRules(dynamic arguments) async {
-    try {
-      final service = FirewallService();
-      final page = await service.searchRules(page: 1, pageSize: 200);
-      return page.items
-          .map((r) => {
-                'id': r.id ?? 0,
-                'protocol': r.protocol ?? '',
-                'port': r.port ?? '',
-                'address': r.address ?? '',
-                'strategy': r.strategy ?? '',
-                'description': r.description ?? '',
-              })
-          .toList();
-    } catch (e) {
-      appLogger.e('Failed to get firewall rules for native: $e');
-      return [];
+    final config = await ApiConfigManager.getCurrentConfig();
+    if (config == null) return [];
+    final page = await FirewallService().searchRules(
+      page: 1,
+      pageSize: 200,
+      type: 'port',
+      expectedServerId: config.id,
+    );
+    final inventoryCounts = <String, int>{};
+    for (final rule in page.items) {
+      final id = rule.inventoryId;
+      if (id != null) {
+        inventoryCounts.update(id, (count) => count + 1, ifAbsent: () => 1);
+      }
     }
+    final usedIds = <String>{};
+    return page.items.indexed.map((entry) {
+      final (index, rule) = entry;
+      final Object? id = rule.inventoryId ?? (rule.id == 0 ? null : rule.id);
+      return {
+        'id': id != null && usedIds.add(id.toString()) ? id : 'row-$index',
+        'inventoryId': rule.inventoryId,
+        'serverId': config.id,
+        'canDelete': rule.canDelete &&
+            (rule.supportsLegacyChanges ||
+                inventoryCounts[rule.inventoryId] == 1),
+        'family': rule.family ?? '',
+        'chain': rule.chain ?? '',
+        'protocol': rule.protocol ?? '',
+        'port': rule.port ?? '',
+        'address': rule.address ?? '',
+        'strategy': rule.strategy ?? '',
+        'description': rule.description ?? '',
+        'supportsLegacyChanges': rule.supportsLegacyChanges,
+      };
+    }).toList();
   }
 
   /// 定时任务：返回任务列表（含下次执行时间预览）。

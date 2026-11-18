@@ -2,8 +2,10 @@ import '../../features/ai/ai_repository.dart';
 import '../../features/apps/app_service.dart';
 import '../../features/backups/services/backup_record_service.dart';
 import '../../features/containers/container_service.dart';
+import '../../features/databases/databases_service.dart';
 import '../../data/models/cronjob_list_models.dart';
 import '../../data/repositories/cronjob_repository.dart';
+import '../../data/repositories/database_repository.dart';
 import '../../features/files/services/file_browser_service.dart';
 import '../../features/firewall/firewall_service.dart';
 import '../../features/server/server_repository.dart';
@@ -16,8 +18,8 @@ import '../../data/models/backup_account_models.dart';
 import '../../data/models/firewall_models.dart';
 import '../../data/models/website_models.dart';
 import '../../data/repositories/website_repository.dart';
+import '../services/cache/file_preview_cache_manager.dart';
 import '../services/logger/logger_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 /// 统一返回结构：成功 `{success: true}`，失败 `{success: false, error: String}`。
 Map<String, dynamic> _ok() => {'success': true};
@@ -26,6 +28,37 @@ Map<String, dynamic> _err(Object e) => {'success': false, 'error': e.toString()}
 /// 所有 Native Channel 写操作 handlers 的集中实现。
 /// 被 [NativeChannelManager] 的 dispatch switch 调用。
 class NativeChannelWriteHandlers {
+  static Future<Map<String, dynamic>> remoteDatabaseUnbind(
+    dynamic arguments, {
+    required bool confirm,
+  }) async {
+    final id = arguments?['id'];
+    final serverId = arguments?['serverId'];
+    if (id is! int || id < 1 || serverId is! String || serverId.isEmpty) {
+      return _err(ArgumentError('Invalid remote database identity'));
+    }
+    try {
+      final config = await ApiConfigManager.getCurrentConfig();
+      if (config == null || config.id != serverId) {
+        return {'success': false, 'serverChanged': true};
+      }
+      final service = DatabasesService(
+        repository: DatabaseRepository(config: config),
+      );
+      final dependentApps = confirm
+          ? await service.unbindRemoteDatabase(id)
+          : await service.checkRemoteDatabaseUnbind(id);
+      return {
+        'success': !confirm || dependentApps.isEmpty,
+        'dependentApps': dependentApps,
+      };
+    } catch (error, stackTrace) {
+      appLogger.eWithPackage('core.channel.remote_database', 'Unbind failed',
+          error: error, stackTrace: stackTrace);
+      return _err(error);
+    }
+  }
+
   // ── 服务器 ────────────────────────────────────────────────────────────────
 
   /// 调试走查种子：原生壳把 `ONEPANEL_SEED_*` 环境变量经通道转发到这里，
@@ -460,9 +493,9 @@ class NativeChannelWriteHandlers {
   /// 添加防火墙端口规则。参数：`{port: String, protocol: String, address: String, strategy: String}`
   static Future<Map<String, dynamic>> addFirewallRule(dynamic arguments) async {
     try {
-      final port = arguments['port'] as String? ?? '';
+      final port = (arguments['port'] as String? ?? '').trim();
       final protocol = arguments['protocol'] as String? ?? 'tcp';
-      final address = arguments['address'] as String? ?? '';
+      final address = (arguments['address'] as String? ?? '').trim();
       final strategy = arguments['strategy'] as String? ?? 'accept';
       final service = FirewallService();
       if (port.isNotEmpty) {
@@ -470,7 +503,7 @@ class NativeChannelWriteHandlers {
           operation: 'add',
           address: address,
           port: port,
-          source: address,
+          source: address.isEmpty ? 'anyWhere' : 'address',
           protocol: protocol,
           strategy: strategy,
         ));
@@ -480,6 +513,8 @@ class NativeChannelWriteHandlers {
           address: address,
           strategy: strategy,
         ));
+      } else {
+        throw const FormatException('Enter a port or source address.');
       }
       return _ok();
     } catch (e) {
@@ -488,10 +523,20 @@ class NativeChannelWriteHandlers {
     }
   }
 
-  /// 删除防火墙规则。参数：`{port: String, protocol: String, address: String, strategy: String}`
+  /// 使用列表标识或旧版规则字段删除防火墙规则。
   static Future<Map<String, dynamic>> deleteFirewallRule(
       dynamic arguments) async {
     try {
+      final service = FirewallService();
+      final serverId = arguments['serverId'] as String?;
+      if (arguments.containsKey('inventoryId')) {
+        final id = arguments['inventoryId'] as String?;
+        if (id == null || id.isEmpty || serverId == null || serverId.isEmpty) {
+          throw const FormatException('Invalid firewall inventory identity.');
+        }
+        await service.deleteInventoryRulesById([id], serverId: serverId);
+        return _ok();
+      }
       final port = arguments['port'] as String? ?? '';
       final protocol = arguments['protocol'] as String? ?? '';
       final strategy = arguments['strategy'] as String? ?? '';
@@ -508,8 +553,7 @@ class NativeChannelWriteHandlers {
           }
         ],
       );
-      final service = FirewallService();
-      await service.deleteRules(request);
+      await service.deleteRules(request, expectedServerId: serverId);
       return _ok();
     } catch (e) {
       appLogger.e('deleteFirewallRule failed: $e');
@@ -519,18 +563,10 @@ class NativeChannelWriteHandlers {
 
   // ── 缓存 ──────────────────────────────────────────────────────────────────
 
-  /// 清除 SharedPreferences 缓存（保留服务器配置等核心数据）。无参数。
+  /// 清除文件预览的内存和磁盘缓存。无参数。
   static Future<Map<String, dynamic>> clearCache(dynamic arguments) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      // 只清除非核心缓存 key（保留 app_ui_render_mode、app_locale 等设置）
-      final keysToRemove = prefs.getKeys().where((k) =>
-          !k.startsWith('flutter.server_') &&
-          !k.startsWith('flutter.app_ui_render_mode') &&
-          !k.startsWith('flutter.app_locale'));
-      for (final k in keysToRemove) {
-        await prefs.remove(k);
-      }
+      await FilePreviewCacheManager().clearAllCache();
       return _ok();
     } catch (e) {
       appLogger.e('clearCache failed: $e');

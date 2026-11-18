@@ -114,6 +114,14 @@ class NativeChannelManager implements NativeChannelPort {
       case 'deleteWebsite':
         return NativeChannelWriteHandlers.deleteWebsite(arguments);
 
+      // ── 数据库 ────────────────────────────────────────────────────────────
+      case 'checkRemoteDatabaseUnbind':
+        return NativeChannelWriteHandlers.remoteDatabaseUnbind(arguments,
+            confirm: false);
+      case 'unbindRemoteDatabase':
+        return NativeChannelWriteHandlers.remoteDatabaseUnbind(arguments,
+            confirm: true);
+
       // ── Write: 容器 ─────────────────────────────────────────────────────
       case 'toggleContainerState':
         return NativeChannelWriteHandlers.toggleContainerState(arguments);
