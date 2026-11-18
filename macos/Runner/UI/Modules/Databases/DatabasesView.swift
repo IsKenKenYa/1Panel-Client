@@ -5,8 +5,11 @@ struct DatabasesView: View {
     @EnvironmentObject var theme: ThemeManager
     @EnvironmentObject var translations: TranslationsManager
 
-    @State private var dbToDelete: DatabaseModel?
-    @State private var showDeleteConfirm = false
+    @State private var selection: DatabaseModel.ID?
+
+    private var selectedDatabase: DatabaseModel? {
+        viewModel.databases.first { $0.id == selection }
+    }
 
     var body: some View {
         Group {
@@ -18,7 +21,7 @@ struct DatabasesView: View {
                     message: translations.get("databasesEmptyTitle", fallback: "No databases found")
                 )
             } else {
-                Table(viewModel.databases) {
+                Table(viewModel.databases, selection: $selection) {
                     TableColumn(translations.get("databaseNameLabel", fallback: "Name")) { db in
                         HStack {
                             Image(systemName: "externaldrive.connected.to.line.below")
@@ -26,11 +29,13 @@ struct DatabasesView: View {
                             Text(db.name)
                         }
                         .contextMenu {
-                            Button(role: .destructive) {
-                                dbToDelete = db
-                                showDeleteConfirm = true
-                            } label: {
-                                Label(translations.get("commonDelete", fallback: "Delete"), systemImage: "trash")
+                            if db.unbindArguments != nil {
+                                Button(role: .destructive) {
+                                    Task { await viewModel.unbind(db, confirmed: false) }
+                                } label: {
+                                    Label(translations.get("databaseRemoteUnbindAction", fallback: "Unbind"), systemImage: "link.badge.minus")
+                                }
+                                .disabled(viewModel.isProcessing)
                             }
                         }
                     }
@@ -59,10 +64,17 @@ struct DatabasesView: View {
         }
         .navigationTitle(translations.get("serverModuleDatabases", fallback: "Databases"))
         .toolbar {
-            ToolbarItem(placement: .automatic) {
+            ToolbarItemGroup(placement: .automatic) {
                 if viewModel.isProcessing {
                     ProgressView().scaleEffect(0.6)
                 } else {
+                    if let database = selectedDatabase, database.unbindArguments != nil {
+                        Button(role: .destructive) {
+                            Task { await viewModel.unbind(database, confirmed: false) }
+                        } label: {
+                            Label(translations.get("databaseRemoteUnbindAction", fallback: "Unbind"), systemImage: "link.badge.minus")
+                        }
+                    }
                     Button { viewModel.fetchDatabases() } label: {
                         Image(systemName: "arrow.clockwise")
                     }
@@ -70,17 +82,20 @@ struct DatabasesView: View {
                 }
             }
         }
-        .confirmationDialog(
-            translations.get("deleteConfirmTitle", fallback: "Delete \"\(dbToDelete?.name ?? "")\"?"),
-            isPresented: $showDeleteConfirm,
-            titleVisibility: .visible
-        ) {
-            Button(translations.get("commonDelete", fallback: "Delete"), role: .destructive) {
-                if let d = dbToDelete { Task { await viewModel.deleteDatabase(id: d.originalId) } }
+        .alert(
+            translations.get("databaseRemoteUnbindAction", fallback: "Unbind"),
+            isPresented: Binding(
+                get: { viewModel.databaseToUnbind != nil },
+                set: { if !$0 { viewModel.databaseToUnbind = nil } }
+            ),
+            presenting: viewModel.databaseToUnbind
+        ) { database in
+            Button(translations.get("databaseRemoteUnbindAction", fallback: "Unbind"), role: .destructive) {
+                Task { await viewModel.unbind(database, confirmed: true) }
             }
             Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) {}
-        } message: {
-            Text(translations.get("deleteCannotUndoMessage", fallback: "This will delete the database and all its data. This action cannot be undone."))
+        } message: { database in
+            Text(database.name + "\n" + translations.get("databaseRemoteUnbindMessage", fallback: "Remove this connection from the panel. The database and its backups are preserved."))
         }
         .alert(translations.get("commonError", fallback: "Error"), isPresented: Binding(
             get: { viewModel.errorMessage != nil },

@@ -26,15 +26,15 @@ struct AppsView: View {
                             Text(app.name)
                         }
                         .contextMenu {
-                            let isRunning = app.status.lowercased() == "running"
                             Button {
-                                Task { await viewModel.toggleAppStatus(id: app.originalId, currentStatus: app.status) }
+                                Task { await viewModel.toggleAppStatus(app) }
                             } label: {
                                 Label(
-                                    isRunning ? translations.get("commonStop", fallback: "Stop") : translations.get("commonStart", fallback: "Start"),
-                                    systemImage: isRunning ? "stop.fill" : "play.fill"
+                                    app.isRunning ? translations.get("commonStop", fallback: "Stop") : translations.get("commonStart", fallback: "Start"),
+                                    systemImage: app.isRunning ? "stop.fill" : "play.fill"
                                 )
                             }
+                            .disabled(viewModel.isProcessing)
                             Divider()
                             Button(role: .destructive) {
                                 appToUninstall = app
@@ -42,6 +42,7 @@ struct AppsView: View {
                             } label: {
                                 Label(translations.get("appActionUninstall", fallback: "Uninstall"), systemImage: "trash")
                             }
+                            .disabled(viewModel.isProcessing)
                         }
                     }
                     TableColumn(translations.get("appInfoVersion", fallback: "Version")) { app in
@@ -49,13 +50,12 @@ struct AppsView: View {
                             .foregroundColor(.secondary)
                     }
                     TableColumn(translations.get("appInfoStatus", fallback: "Status")) { app in
-                        let isRunning = app.status.lowercased() == "running"
                         Text(app.status)
                             .font(.caption)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 3)
-                            .background(isRunning ? Color.green.opacity(0.12) : Color.gray.opacity(0.12))
-                            .foregroundColor(isRunning ? .green : .gray)
+                            .background(app.isRunning ? Color.green.opacity(0.12) : Color.gray.opacity(0.12))
+                            .foregroundColor(app.isRunning ? .green : .gray)
                             .cornerRadius(4)
                     }
                 }
@@ -69,7 +69,7 @@ struct AppsView: View {
                 if viewModel.isProcessing {
                     ProgressView().scaleEffect(0.6)
                 } else {
-                    Button { viewModel.fetchApps() } label: {
+                    Button { Task { await viewModel.fetchApps() } } label: {
                         Image(systemName: "arrow.clockwise")
                     }
                     .help(translations.get("commonRefresh", fallback: "Refresh"))
@@ -77,16 +77,17 @@ struct AppsView: View {
             }
         }
         .confirmationDialog(
-            translations.get("uninstallConfirm", fallback: "Uninstall \"\(appToUninstall?.name ?? "")\"?"),
+            translations.get("uninstallConfirm", fallback: "Confirm Uninstall"),
             isPresented: $showUninstallConfirm,
-            titleVisibility: .visible
-        ) {
+            titleVisibility: .visible,
+            presenting: appToUninstall
+        ) { app in
             Button(translations.get("appActionUninstall", fallback: "Uninstall"), role: .destructive) {
-                if let a = appToUninstall { Task { await viewModel.uninstallApp(id: a.originalId) } }
+                Task { await viewModel.uninstallApp(installId: app.installId) }
             }
             Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) {}
-        } message: {
-            Text(translations.get("uninstallCannotUndo", fallback: "This will remove the app and its data. This action cannot be undone."))
+        } message: { app in
+            Text("\(app.name)\n\(translations.get("uninstallCannotUndo", fallback: "This action cannot be undone."))")
         }
         .alert(translations.get("commonError", fallback: "Error"), isPresented: Binding(
             get: { viewModel.errorMessage != nil },
@@ -96,6 +97,6 @@ struct AppsView: View {
         } message: {
             Text(viewModel.errorMessage ?? "")
         }
-        .onAppear { viewModel.fetchApps() }
+        .task { await viewModel.fetchApps() }
     }
 }

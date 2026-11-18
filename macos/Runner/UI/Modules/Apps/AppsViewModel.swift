@@ -1,64 +1,92 @@
+import CoreFoundation
 import Foundation
 
 struct AppModel: Identifiable {
-    let originalId: String
+    let installId: Int
     let name: String
     let status: String
     let version: String
 
-    var id: String { originalId }
+    var id: Int { installId }
+    var isRunning: Bool { status.lowercased() == "running" }
+
+    private init?(row: [String: Any]) {
+        guard let number = row["installId"] as? NSNumber,
+              CFGetTypeID(number) != CFBooleanGetTypeID(),
+              !["d", "f"].contains(String(cString: number.objCType)),
+              let installId = number as? Int, installId > 0,
+              let name = row["name"] as? String, !name.isEmpty,
+              let status = row["status"] as? String else { return nil }
+        self.installId = installId
+        self.name = name
+        self.status = status
+        version = row["version"] as? String ?? ""
+    }
+
+    static func readInstalledApps(_ response: Any?) -> [AppModel]? {
+        guard let rows = response as? [[String: Any]] else { return nil }
+        var apps: [AppModel] = []
+        var ids: Set<Int> = []
+        for row in rows {
+            guard let app = AppModel(row: row), ids.insert(app.id).inserted else { return nil }
+            apps.append(app)
+        }
+        return apps
+    }
 }
 
-class AppsViewModel: ObservableObject {
-    @Published var apps: [AppModel] = []
-    @Published var isLoading = false
-    @Published var isProcessing = false
+@MainActor
+final class AppsViewModel: ObservableObject {
+    @Published private(set) var apps: [AppModel] = []
+    @Published private(set) var isLoading = false
+    @Published private(set) var isProcessing = false
     @Published var errorMessage: String?
 
-    func fetchApps() {
+    func fetchApps() async {
+        guard !isLoading, !isProcessing else { return }
         isLoading = true
         errorMessage = nil
-        ChannelManager.shared.invokeDataMethod("getApps") { [weak self] result in
-            DispatchQueue.main.async {
-                self?.isLoading = false
-                guard let dictArray = result as? [[String: Any]] else { return }
-                self?.apps = dictArray.compactMap { dict in
-                    guard let name = dict["name"] as? String,
-                          let status = dict["status"] as? String,
-                          let version = dict["version"] as? String else { return nil }
-                    let originalId = dict["appId"] as? String ?? ""
-                    return AppModel(originalId: originalId, name: name, status: status, version: version)
-                }
+        defer { isLoading = false }
+        do {
+            let result = try await ChannelManager.shared.invokeDataMethodAsync("getApps")
+            guard let apps = AppModel.readInstalledApps(result) else {
+                errorMessage = TranslationsManager.shared.get("commonLoadFailedTitle", fallback: "Failed to load")
+                return
             }
+            self.apps = apps
+        } catch {
+            errorMessage = error.localizedDescription
         }
     }
 
-    func toggleAppStatus(id: String, currentStatus: String) async {
-        await MainActor.run { isProcessing = true; errorMessage = nil }
-        let method = currentStatus == "running" ? "stopApp" : "startApp"
-        ChannelManager.shared.invokeDataMethod(method, arguments: ["installId": id]) { [weak self] result in
-            DispatchQueue.main.async {
-                self?.isProcessing = false
-                if let dict = result as? [String: Any],
-                   let success = dict["success"] as? Bool, !success {
-                    self?.errorMessage = dict["error"] as? String ?? "Operation failed"
-                }
-                self?.fetchApps()
-            }
-        }
+    func toggleAppStatus(_ app: AppModel) async {
+        await performMutation(app.isRunning ? "stopApp" : "startApp", installId: app.installId)
     }
 
-    func uninstallApp(id: String) async {
-        await MainActor.run { isProcessing = true; errorMessage = nil }
-        ChannelManager.shared.invokeDataMethod("uninstallApp", arguments: ["installId": id]) { [weak self] result in
-            DispatchQueue.main.async {
-                self?.isProcessing = false
-                if let dict = result as? [String: Any],
-                   let success = dict["success"] as? Bool, !success {
-                    self?.errorMessage = dict["error"] as? String ?? "Uninstall failed"
-                }
-                self?.fetchApps()
-            }
+    func uninstallApp(installId: Int) async {
+        await performMutation("uninstallApp", installId: installId)
+    }
+
+    private func performMutation(_ method: String, installId: Int) async {
+        guard !isLoading, !isProcessing else { return }
+        isProcessing = true
+        errorMessage = nil
+        let outcome: NativeMutationOutcome
+        do {
+            let response = try await ChannelManager.shared.invokeDataMethodAsync(
+                method, arguments: ["installId": installId]
+            )
+            outcome = NativeMutationOutcome(response)
+        } catch {
+            outcome = .failed(error.localizedDescription)
+        }
+        isProcessing = false
+        switch outcome {
+        case .succeeded:
+            await fetchApps()
+        case let .failed(message):
+            errorMessage = message
+                ?? TranslationsManager.shared.get("commonOperationFailed", fallback: "Operation failed")
         }
     }
 }

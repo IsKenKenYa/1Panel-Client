@@ -2,16 +2,14 @@ import SwiftUI
 
 struct ContainersView: View {
     @StateObject private var viewModel = ContainersViewModel()
-    @EnvironmentObject var theme: ThemeManager
-    @EnvironmentObject var translations: TranslationsManager
+    @EnvironmentObject private var translations: TranslationsManager
 
     @State private var containerToDelete: ContainerModel?
-    @State private var showDeleteConfirm = false
     @State private var logsContainer: ContainerModel?
 
     var body: some View {
         Group {
-            if viewModel.isLoading {
+            if viewModel.isLoading && viewModel.containers.isEmpty {
                 LoadingView()
             } else if viewModel.containers.isEmpty {
                 EmptyStateView(
@@ -36,13 +34,14 @@ struct ContainersView: View {
                                     systemImage: isRunning ? "stop.fill" : "play.fill"
                                 )
                             }
+                            .disabled(viewModel.isBusy)
                             Button {
                                 Task { await viewModel.restartContainer(id: container.originalId) }
                             } label: {
                                 Label(translations.get("commonRestart", fallback: "Restart"), systemImage: "arrow.clockwise")
                             }
+                            .disabled(viewModel.isBusy)
                             Button {
-                                viewModel.fetchLogs(name: container.name)
                                 logsContainer = container
                             } label: {
                                 Label(translations.get("containerActionLogs", fallback: "Logs"), systemImage: "doc.text")
@@ -50,10 +49,10 @@ struct ContainersView: View {
                             Divider()
                             Button(role: .destructive) {
                                 containerToDelete = container
-                                showDeleteConfirm = true
                             } label: {
                                 Label(translations.get("commonDelete", fallback: "Delete"), systemImage: "trash")
                             }
+                            .disabled(viewModel.isBusy)
                         }
                     }
                     TableColumn(translations.get("containerInfoImage", fallback: "Image")) { container in
@@ -85,27 +84,33 @@ struct ContainersView: View {
         .navigationTitle(translations.get("serverModuleContainers", fallback: "Containers"))
         .toolbar {
             ToolbarItem(placement: .automatic) {
-                if viewModel.isProcessing {
-                    ProgressView().scaleEffect(0.6)
+                if viewModel.isBusy {
+                    ProgressView().controlSize(.small)
                 } else {
-                    Button { viewModel.fetchContainers() } label: {
-                        Image(systemName: "arrow.clockwise")
+                    Button {
+                        Task { await viewModel.fetchContainers() }
+                    } label: {
+                        Label(translations.get("commonRefresh", fallback: "Refresh"), systemImage: "arrow.clockwise")
                     }
                     .help(translations.get("commonRefresh", fallback: "Refresh"))
                 }
             }
         }
         .confirmationDialog(
-            translations.get("deleteConfirmTitle", fallback: "Delete \"\(containerToDelete?.name ?? "")\"?"),
-            isPresented: $showDeleteConfirm,
-            titleVisibility: .visible
-        ) {
+            translations.get("deleteConfirmTitle", fallback: "Confirm Deletion"),
+            isPresented: Binding(
+                get: { containerToDelete != nil },
+                set: { if !$0 { containerToDelete = nil } }
+            ),
+            titleVisibility: .visible,
+            presenting: containerToDelete
+        ) { container in
             Button(translations.get("commonDelete", fallback: "Delete"), role: .destructive) {
-                if let c = containerToDelete { Task { await viewModel.deleteContainer(id: c.originalId) } }
+                Task { await viewModel.deleteContainer(id: container.originalId) }
             }
             Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) {}
-        } message: {
-            Text(translations.get("deleteCannotUndoMessage", fallback: "This action cannot be undone."))
+        } message: { container in
+            Text("\(container.name)\n\(translations.get("deleteCannotUndoMessage", fallback: "This action cannot be undone."))")
         }
         .alert(translations.get("commonError", fallback: "Error"), isPresented: Binding(
             get: { viewModel.errorMessage != nil },
@@ -116,44 +121,88 @@ struct ContainersView: View {
             Text(viewModel.errorMessage ?? "")
         }
         .sheet(item: $logsContainer) { container in
-            VStack(alignment: .leading, spacing: 12) {
-                HStack {
-                    Text("\(container.name) - \(translations.get("containerActionLogs", fallback: "Logs"))")
-                        .font(.headline)
-                    Spacer()
-                    if viewModel.isLoadingLogs {
-                        ProgressView().scaleEffect(0.6)
-                    }
-                    Button {
-                        viewModel.fetchLogs(name: container.name)
-                    } label: {
-                        Image(systemName: "arrow.clockwise")
-                    }
-                    .help(translations.get("commonRefresh", fallback: "Refresh"))
+            ContainerLogsSheet(containerName: container.name) {
+                try await viewModel.fetchLogs(name: container.name)
+            }
+            .id(container.id)
+        }
+        .task { await viewModel.fetchContainers() }
+    }
+}
+
+private struct ContainerLogsSheet: View {
+    let containerName: String
+    let fetchLogs: @MainActor () async throws -> String
+
+    @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var translations: TranslationsManager
+    @State private var logs: String?
+    @State private var loadError: String?
+    @State private var isLoading = true
+    @State private var refreshCount = 0
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text(translations.get("containerActionLogs", fallback: "Logs"))
+                    .font(.headline)
+                Text(containerName)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                Spacer()
+                if isLoading && logs != nil {
+                    ProgressView().controlSize(.small)
                 }
-                if viewModel.logs.isEmpty {
-                    Text(translations.get("containerLogsEmpty", fallback: "No logs"))
-                        .foregroundColor(.secondary)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                Button {
+                    refreshCount += 1
+                } label: {
+                    Label(translations.get("commonRefresh", fallback: "Refresh"), systemImage: "arrow.clockwise")
+                        .labelStyle(.iconOnly)
+                }
+                .disabled(isLoading)
+                .help(translations.get("commonRefresh", fallback: "Refresh"))
+            }
+            if let logs {
+                if let loadError {
+                    Label(loadError, systemImage: "exclamationmark.triangle")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                }
+                if logs.isEmpty {
+                    EmptyStateView(icon: "doc.text", message: translations.get("containerLogsEmpty", fallback: "No logs"))
                 } else {
                     ScrollView {
-                        Text(viewModel.logs)
+                        Text(verbatim: logs)
                             .font(.system(.caption, design: .monospaced))
                             .textSelection(.enabled)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
-                HStack {
-                    Spacer()
-                    Button(translations.get("commonClose", fallback: "Close")) {
-                        logsContainer = nil
-                    }
-                    .keyboardShortcut(.cancelAction)
-                }
+            } else if let loadError {
+                ErrorView(message: loadError) { refreshCount += 1 }
+            } else {
+                LoadingView()
             }
-            .padding(20)
-            .frame(width: 640, height: 480)
+            HStack {
+                Spacer()
+                Button(translations.get("commonClose", fallback: "Close")) { dismiss() }
+                    .keyboardShortcut(.cancelAction)
+            }
         }
-        .onAppear { viewModel.fetchContainers() }
+        .padding(20)
+        .frame(width: 640, height: 480)
+        .task(id: refreshCount) {
+            isLoading = true
+            loadError = nil
+            do {
+                let received = try await fetchLogs()
+                try Task.checkCancellation()
+                logs = received
+            } catch {
+                guard !Task.isCancelled else { return }
+                loadError = error.localizedDescription
+            }
+            isLoading = false
+        }
     }
 }

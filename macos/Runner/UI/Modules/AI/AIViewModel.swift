@@ -46,11 +46,12 @@ class AIViewModel: ObservableObject {
         ChannelManager.shared.invokeDataMethod("deleteAIModel", arguments: ["id": id]) { [weak self] result in
             DispatchQueue.main.async {
                 self?.isProcessing = false
-                if let dict = result as? [String: Any],
-                   let success = dict["success"] as? Bool, !success {
-                    self?.errorMessage = dict["error"] as? String ?? "Delete failed"
+                switch NativeMutationOutcome(result) {
+                case .succeeded:
+                    self?.fetchModels()
+                case .failed(let message):
+                    self?.errorMessage = message ?? "Delete failed"
                 }
-                self?.fetchModels()
             }
         }
     }

@@ -49,11 +49,12 @@ class WebsitesViewModel: ObservableObject {
         ) { [weak self] result in
             DispatchQueue.main.async {
                 self?.isProcessing = false
-                if let dict = result as? [String: Any],
-                   let success = dict["success"] as? Bool, !success {
-                    self?.errorMessage = dict["error"] as? String ?? "Toggle failed"
+                switch NativeMutationOutcome(result) {
+                case .succeeded:
+                    self?.fetchWebsites()
+                case .failed(let message):
+                    self?.errorMessage = message ?? "Toggle failed"
                 }
-                self?.fetchWebsites()
             }
         }
     }
@@ -63,11 +64,12 @@ class WebsitesViewModel: ObservableObject {
         ChannelManager.shared.invokeDataMethod("deleteWebsite", arguments: ["id": id]) { [weak self] result in
             DispatchQueue.main.async {
                 self?.isProcessing = false
-                if let dict = result as? [String: Any],
-                   let success = dict["success"] as? Bool, !success {
-                    self?.errorMessage = dict["error"] as? String ?? "Delete failed"
+                switch NativeMutationOutcome(result) {
+                case .succeeded:
+                    self?.fetchWebsites()
+                case .failed(let message):
+                    self?.errorMessage = message ?? "Delete failed"
                 }
-                self?.fetchWebsites()
             }
         }
     }

@@ -40,41 +40,30 @@ class ServersViewModel: ObservableObject {
         }
     }
 
-    func addServer(name: String, url: String, token: String) async {
-        await MainActor.run { isProcessing = true; errorMessage = nil }
+    @MainActor
+    func addServer(name: String, url: String, token: String) async -> NativeMutationOutcome {
         let args: [String: Any] = ["name": name, "url": url, "apiKey": token]
-        ChannelManager.shared.invokeDataMethod("addServer", arguments: args) { [weak self] result in
-            DispatchQueue.main.async {
-                self?.isProcessing = false
-                if let dict = result as? [String: Any],
-                   let success = dict["success"] as? Bool, !success {
-                    self?.errorMessage = dict["error"] as? String ?? "Add failed"
-                } else {
-                    self?.fetchServers()
-                }
-            }
+        let outcome = await ChannelManager.shared.invokeMutation("addServer", arguments: args)
+        if outcome == .succeeded {
+            fetchServers()
         }
+        return outcome
     }
 
     /// 更新服务器配置（updateServer 通道：apiKey 留空沿用原值）。
-    func updateServer(id: String, name: String, url: String, token: String) async {
-        await MainActor.run { isProcessing = true; errorMessage = nil }
+    @MainActor
+    func updateServer(id: String, name: String, url: String, token: String) async -> NativeMutationOutcome {
         let args: [String: Any] = [
             "id": id,
             "name": name,
             "url": url,
             "apiKey": token,
         ]
-        ChannelManager.shared.invokeDataMethod("updateServer", arguments: args) { [weak self] result in
-            DispatchQueue.main.async {
-                self?.isProcessing = false
-                if let dict = result as? [String: Any],
-                   let success = dict["success"] as? Bool, !success {
-                    self?.errorMessage = dict["error"] as? String ?? "Update failed"
-                }
-                self?.fetchServers()
-            }
+        let outcome = await ChannelManager.shared.invokeMutation("updateServer", arguments: args)
+        if outcome == .succeeded {
+            fetchServers()
         }
+        return outcome
     }
 
     func deleteServer(id: String) async {
@@ -82,11 +71,12 @@ class ServersViewModel: ObservableObject {
         ChannelManager.shared.invokeDataMethod("deleteServer", arguments: ["id": id]) { [weak self] result in
             DispatchQueue.main.async {
                 self?.isProcessing = false
-                if let dict = result as? [String: Any],
-                   let success = dict["success"] as? Bool, !success {
-                    self?.errorMessage = dict["error"] as? String ?? "Delete failed"
+                switch NativeMutationOutcome(result) {
+                case .succeeded:
+                    self?.fetchServers()
+                case .failed(let message):
+                    self?.errorMessage = message ?? "Delete failed"
                 }
-                self?.fetchServers()
             }
         }
     }
@@ -96,11 +86,11 @@ class ServersViewModel: ObservableObject {
         ChannelManager.shared.invokeDataMethod("connectServer", arguments: ["id": id]) { [weak self] result in
             DispatchQueue.main.async {
                 self?.isProcessing = false
-                if let dict = result as? [String: Any],
-                   let success = dict["success"] as? Bool, !success {
-                    self?.errorMessage = dict["error"] as? String ?? "Connect failed"
-                } else {
+                switch NativeMutationOutcome(result) {
+                case .succeeded:
                     self?.fetchServers()
+                case .failed(let message):
+                    self?.errorMessage = message ?? "Connect failed"
                 }
             }
         }

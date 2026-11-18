@@ -11,7 +11,7 @@ struct ServersView: View {
     @State private var showDeleteConfirm = false
 
     var body: some View {
-        Group {
+        ZStack {
             if viewModel.isLoading {
                 LoadingView()
             } else if viewModel.servers.isEmpty {
@@ -95,20 +95,7 @@ struct ServersView: View {
         .sheet(isPresented: $showAddSheet, onDismiss: {
             editingServer = nil
         }) {
-            AddServerSheet(isPresented: $showAddSheet, editingServer: editingServer) { name, url, token in
-                Task {
-                    if let editing = editingServer {
-                        await viewModel.updateServer(
-                            id: editing.originalId,
-                            name: name,
-                            url: url,
-                            token: token
-                        )
-                    } else {
-                        await viewModel.addServer(name: name, url: url, token: token)
-                    }
-                }
-            }
+            AddServerSheet(viewModel: viewModel, editingServer: editingServer)
         }
         .confirmationDialog(
             translations.get("deleteConfirmTitle", fallback: "Delete \"\(serverToDelete?.name ?? "")\"?"),
@@ -141,21 +128,32 @@ struct ServersView: View {
 // ── Add Server Sheet ──────────────────────────────────────────────────────────
 
 struct AddServerSheet: View {
-    @Binding var isPresented: Bool
+    let viewModel: ServersViewModel
     /// 非空表示编辑模式（预填名称/地址，API Key 留空沿用原值）。
-    var editingServer: ServerModel? = nil
-    let onAdd: (String, String, String) -> Void
-    @EnvironmentObject var translations: TranslationsManager
+    let editingServer: ServerModel?
+    @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var translations: TranslationsManager
 
-    @State private var name = ""
-    @State private var url = ""
+    @State private var name: String
+    @State private var url: String
     @State private var token = ""
-    @State private var didPrefill = false
+    @State private var submission = NativeFormSubmission.idle
+
+    init(viewModel: ServersViewModel, editingServer: ServerModel?) {
+        self.viewModel = viewModel
+        self.editingServer = editingServer
+        // 仅在打开表单时预填，后续输入由表单管理。
+        _name = State(initialValue: editingServer?.name ?? "")
+        _url = State(initialValue: editingServer?.url ?? "")
+    }
 
     private var isEditing: Bool { editingServer != nil }
+    private var trimmedName: String { name.trimmingCharacters(in: .whitespacesAndNewlines) }
+    private var trimmedURL: String { url.trimmingCharacters(in: .whitespacesAndNewlines) }
+    private var trimmedToken: String { token.trimmingCharacters(in: .whitespacesAndNewlines) }
 
     private var canSubmit: Bool {
-        !name.isEmpty && !url.isEmpty && (isEditing || !token.isEmpty)
+        !trimmedName.isEmpty && !trimmedURL.isEmpty && (isEditing || !trimmedToken.isEmpty)
     }
 
     var body: some View {
@@ -173,29 +171,46 @@ struct AddServerSheet: View {
                 SecureField(translations.get("serverFormApiKey", fallback: "API Token"), text: $token)
             }
             .formStyle(.grouped)
+            .disabled(submission.isSubmitting)
+
+            NativeFormSubmissionFeedback(
+                submission: submission,
+                errorFallback: translations.get("commonSaveFailed", fallback: "Failed to save")
+            )
 
             HStack {
                 Spacer()
-                Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) { isPresented = false }
+                Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) { dismiss() }
                     .keyboardShortcut(.cancelAction)
+                    .disabled(submission.isSubmitting)
                 Button(isEditing
                     ? translations.get("commonSave", fallback: "Save")
-                    : translations.get("commonAdd", fallback: "Add")) {
-                    onAdd(name, url, token)
-                    isPresented = false
-                }
+                    : translations.get("commonAdd", fallback: "Add"), action: submit)
                 .keyboardShortcut(.defaultAction)
-                .disabled(!canSubmit)
+                .disabled(!canSubmit || submission.isSubmitting)
                 .buttonStyle(.borderedProminent)
             }
         }
         .padding(24)
         .frame(width: 460)
-        .onAppear {
-            guard !didPrefill, let server = editingServer else { return }
-            didPrefill = true
-            name = server.name
-            url = server.url
+        .interactiveDismissDisabled(submission.isSubmitting)
+    }
+
+    private func submit() {
+        guard canSubmit, submission.begin() else { return }
+        let name = trimmedName
+        let url = trimmedURL
+        let token = trimmedToken
+        Task {
+            let outcome: NativeMutationOutcome
+            if let editingServer {
+                outcome = await viewModel.updateServer(id: editingServer.originalId, name: name, url: url, token: token)
+            } else {
+                outcome = await viewModel.addServer(name: name, url: url, token: token)
+            }
+            if submission.finish(outcome) {
+                dismiss()
+            }
         }
     }
 }
