@@ -60,7 +60,7 @@ class _RuntimesCenterPageState extends State<RuntimesCenterPage> {
             ),
             IconButton(
               onPressed: provider.isLoading ? null : provider.load,
-              icon: const Icon(Icons.refresh),
+              icon: const Icon(Icons.refresh_outlined),
               tooltip: l10n.commonRefresh,
             ),
             IconButton(
@@ -75,7 +75,7 @@ class _RuntimesCenterPageState extends State<RuntimesCenterPage> {
                 // 新建/编辑返回后重载列表，避免 fire-and-forget 导致数据陈旧。
                 provider.load();
               },
-              icon: const Icon(Icons.add),
+              icon: const Icon(Icons.add_outlined),
               tooltip: l10n.commonCreate,
             ),
           ],

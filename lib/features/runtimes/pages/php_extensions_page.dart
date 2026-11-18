@@ -6,6 +6,7 @@ import 'package:onepanel_client/features/runtimes/providers/php_extensions_provi
 import 'package:onepanel_client/features/runtimes/utils/runtime_l10n_helper.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_dialog.dart';
 import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:provider/provider.dart';
@@ -59,12 +60,12 @@ class _PhpExtensionsPageState extends State<PhpExtensionsPage> {
           actions: <Widget>[
             IconButton(
               onPressed: provider.isLoading ? null : provider.load,
-              icon: const Icon(Icons.refresh),
+              icon: const Icon(Icons.refresh_outlined),
               tooltip: l10n.commonRefresh,
             ),
             IconButton(
               onPressed: provider.isOperating ? null : () => _showRecordDialog(),
-              icon: const Icon(Icons.add),
+              icon: const Icon(Icons.add_outlined),
               tooltip: l10n.commonCreate,
             ),
           ],
@@ -110,7 +111,7 @@ class _PhpExtensionsPageState extends State<PhpExtensionsPage> {
                             onPressed: provider.isOperating
                                 ? null
                                 : () => _showRecordDialog(),
-                            icon: const Icon(Icons.add),
+                            icon: const Icon(Icons.add_outlined),
                             label: Text(l10n.commonCreate),
                           ),
                         ],
@@ -238,66 +239,48 @@ class _PhpExtensionsPageState extends State<PhpExtensionsPage> {
     final nameController = TextEditingController(text: record?.name ?? '');
     final extensionsController =
         TextEditingController(text: record?.extensions ?? '');
-
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(record == null ? l10n.commonCreate : l10n.commonEdit),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              TextField(
-                controller: nameController,
-                enabled: record == null,
-                decoration: InputDecoration(labelText: l10n.commonName),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: extensionsController,
-                minLines: 2,
-                maxLines: 6,
-                decoration: InputDecoration(labelText: l10n.phpExtensionsLabel),
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(l10n.commonCancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(l10n.commonConfirm),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (confirmed != true || !mounted) {
-      return;
-    }
-
     final provider = context.read<PhpExtensionsProvider>();
-    final ok = record == null
-        ? await provider.createExtensionRecord(
-            nameController.text,
-            extensionsController.text,
-          )
-        : await provider.updateExtensionRecord(
-            record,
-            extensionsController.text,
-          );
 
-    if (!mounted) {
-      return;
-    }
-    if (ok) {
-      SnackBarUtils.showSuccess(context, l10n.commonSaveSuccess);
-    } else {
-      SnackBarUtils.showError(context, l10n.commonSaveFailed);
-    }
+    await showAppFormDialog(
+      context,
+      title: record == null ? l10n.commonCreate : l10n.commonEdit,
+      confirmLabel: l10n.commonConfirm,
+      onConfirm: () async {
+        final ok = record == null
+            ? await provider.createExtensionRecord(
+                nameController.text,
+                extensionsController.text,
+              )
+            : await provider.updateExtensionRecord(
+                record,
+                extensionsController.text,
+              );
+        if (!ok) {
+          throw Exception(l10n.commonSaveFailed);
+        }
+        if (!mounted) {
+          return;
+        }
+        SnackBarUtils.showSuccess(context, l10n.commonSaveSuccess);
+      },
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          TextField(
+            controller: nameController,
+            enabled: record == null,
+            decoration: InputDecoration(labelText: l10n.commonName),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: extensionsController,
+            minLines: 2,
+            maxLines: 6,
+            decoration: InputDecoration(labelText: l10n.phpExtensionsLabel),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _deleteRecord(PHPExtensionRecord record) async {

@@ -22,7 +22,7 @@ class PhpContainerSectionHeaderWidget extends StatelessWidget {
         ),
         TextButton.icon(
           onPressed: onAdd,
-          icon: const Icon(Icons.add),
+          icon: const Icon(Icons.add_outlined),
           label: Text(context.l10n.commonAdd),
         ),
       ],

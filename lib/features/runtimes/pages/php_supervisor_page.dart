@@ -61,14 +61,14 @@ class _PhpSupervisorPageState extends State<PhpSupervisorPage> {
           actions: <Widget>[
             IconButton(
               onPressed: provider.isLoading ? null : provider.load,
-              icon: const Icon(Icons.refresh),
+              icon: const Icon(Icons.refresh_outlined),
               tooltip: l10n.commonRefresh,
             ),
             IconButton(
               onPressed: provider.isLoading || provider.isOperating
                   ? null
                   : () => _openProcessEditor(),
-              icon: const Icon(Icons.add),
+              icon: const Icon(Icons.add_outlined),
               tooltip: l10n.commonAdd,
             ),
           ],
@@ -333,7 +333,7 @@ class _PhpSupervisorPageState extends State<PhpSupervisorPage> {
                             onPressed: fileProvider.isFileLoading
                                 ? null
                                 : fileProvider.refreshActiveFile,
-                            icon: const Icon(Icons.refresh),
+                            icon: const Icon(Icons.refresh_outlined),
                             tooltip: l10n.commonRefresh,
                           ),
                         ],
