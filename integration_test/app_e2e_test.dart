@@ -4,20 +4,25 @@
 //   flutter test integration_test/app_e2e_test.dart -d emulator-5556 --timeout 900s
 //
 // 说明：
-// - 单条 testWidgets 内串行执行全部 8 条旅程，避免跨 test 状态问题。
-// - 硬断言旅程（J1/J3/J8-硬部分）失败即 FAIL；依赖动态数据的旅程为软断言，
+// - 单条 testWidgets 内串行执行旅程，共用应用启动及服务器连接。
+// - 硬断言旅程失败即 FAIL；依赖动态数据的旅程为软断言，
 //   条件不满足时打印 SKIP 并继续，最终输出结果摘要。
-// - 全程不触碰任何会修改面板基础配置（端口/安全入口/SSL 等）的操作；
-//   文件模块仅新建/删除 onepanel-e2e-ui-* 前缀夹具；容器旅程绝不点击
-//   启动/停止/重启按钮。
+// - 默认只读走查。E2E_ENABLE_FILE_MUTATIONS=true 允许文件旅程创建和删除
+//   onepanel-e2e-ui-* 测试目录。
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
+import 'package:onepanel_client/config/app_route_constants.dart';
 import 'package:onepanel_client/features/containers/widgets/container_card.dart';
+import 'package:onepanel_client/features/server/server_detail_page.dart';
+import 'package:onepanel_client/features/server/widgets/server_card.dart';
+import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 import 'package:onepanel_client/main.dart' as app;
+import 'package:onepanel_client/shared/widgets/section_card.dart';
+import 'package:onepanel_client/widgets/navigation/app_bottom_navigation_bar.dart';
 
 // 底部导航/通用文案（中文优先，英文兜底）。
 const kNavServers = ['服务器', 'Servers'];
@@ -29,7 +34,6 @@ const kServerSearchHints = ['请输入服务器名称或 IP', 'Enter server name
 const kRootDirs = ['etc', 'home', 'usr', 'opt', 'var', 'tmp', 'root', 'srv'];
 const kContinueLabels = ['继续', 'Continue'];
 const kAgreeLabels = ['同意并继续', 'Agree and continue'];
-const kConsentLabels = ['我已了解以上风险，并同意继续使用测试版本。'];
 const kSkipLabels = ['跳过', 'Skip'];
 
 // 服务器自助配置（数据被清空时通过 UI 恢复）。凭据经 --dart-define 注入，
@@ -38,6 +42,7 @@ const kE2eServerName =
     String.fromEnvironment('E2E_SERVER_NAME', defaultValue: 'US');
 const kE2eServerUrl = String.fromEnvironment('E2E_SERVER_URL');
 const kE2eServerApiKey = String.fromEnvironment('E2E_SERVER_API_KEY');
+const kEnableFileMutations = bool.fromEnvironment('E2E_ENABLE_FILE_MUTATIONS');
 
 final Map<String, String> journeyResults = <String, String>{};
 
@@ -60,8 +65,12 @@ void main() {
         // ---- 旅程 3：文件浏览（硬） ----
         await _journey3BrowseFiles(tester);
 
-        // ---- 旅程 4：文件新建与删除（软） ----
-        await _softJourney('4.文件新建与删除', () => _journey4CreateDelete(tester));
+        // ---- 旅程 4：文件操作的确认及取消 ----
+        await _checkFileDeleteCancel(tester);
+        journeyResults['4.文件删除确认与取消'] = 'PASS';
+        if (kEnableFileMutations) {
+          await _softJourney('4.文件新建与删除', () => _journey4CreateDelete(tester));
+        }
 
         // ---- 旅程 5：容器列表与详情（软） ----
         await _softJourney('5.容器列表与详情', () => _journey5Containers(tester));
@@ -74,6 +83,9 @@ void main() {
 
         // ---- 旅程 8：设置只读校验（硬+软） ----
         await _journey8SettingsReadOnly(tester);
+
+        // ---- 旅程 9：服务器详情和运维中心的功能入口与逐层返回 ----
+        await _journey9ModuleNavigation(tester);
 
         print('\n========== E2E 旅程结果摘要 ==========');
         for (final entry in journeyResults.entries) {
@@ -223,10 +235,9 @@ Future<void> _goBack(WidgetTester tester) async {
     find.byIcon(Icons.arrow_back),
   ]);
   if (back != null) {
-    await tester.tap(back, warnIfMissed: false);
+    await tester.tap(back);
   } else {
-    final nav = tester.state<NavigatorState>(find.byType(Navigator).first);
-    nav.pop();
+    await tester.binding.handlePopRoute();
   }
   await _settle(tester);
 }
@@ -239,7 +250,7 @@ Future<bool> _tapBottomNav(
   for (final label in labels) {
     final tab = find
         .descendant(
-          of: find.byType(NavigationBar),
+          of: find.byType(AppBottomNavigationBar),
           matching: find.text(label),
         )
         .hitTestable();
@@ -255,7 +266,7 @@ Future<bool> _tapBottomNav(
 /// 确保回到 shell 根（底部导航可见），并停留在「服务器」标签。
 Future<void> _ensureShellRoot(WidgetTester tester) async {
   for (var i = 0; i < 6; i++) {
-    if (_exists(find.byType(NavigationBar).hitTestable())) {
+    if (_exists(find.byType(AppBottomNavigationBar).hitTestable())) {
       break;
     }
     await _goBack(tester);
@@ -285,11 +296,10 @@ Future<bool> _openDrawerModule(WidgetTester tester, List<String> labels) async {
     return false;
   }
   for (final label in labels) {
-    final tile = find
-        .descendant(of: find.byType(Drawer), matching: find.text(label))
-        .hitTestable();
-    if (tile.evaluate().isNotEmpty) {
-      await tester.tap(tile.first, warnIfMissed: false);
+    final tile =
+        find.descendant(of: find.byType(Drawer), matching: find.text(label));
+    if (await _scrollUntilVisible(tester, tile, maxDrags: 4)) {
+      await tester.tap(tile.hitTestable().first);
       await _settle(tester, seconds: 10);
       await _dismissOverlays(tester);
       return true;
@@ -305,13 +315,17 @@ Future<bool> _scrollUntilVisible(
   WidgetTester tester,
   Finder finder, {
   int maxDrags = 8,
+  bool reverse = false,
 }) async {
   for (var i = 0; i <= maxDrags; i++) {
     if (_exists(finder.hitTestable())) {
       return true;
     }
     if (i == maxDrags) break;
-    await tester.dragFrom(const Offset(130, 430), const Offset(0, -320));
+    await tester.dragFrom(
+      const Offset(130, 430),
+      Offset(0, reverse ? 320 : -320),
+    );
     await _settle(tester, seconds: 3);
   }
   return false;
@@ -332,13 +346,13 @@ Future<void> _softJourney(String name, Future<void> Function() body) async {
 
 Future<void> _dismissColdStartDialogs(WidgetTester tester) async {
   for (var i = 0; i < 4; i++) {
-    if (!_exists(find.byKey(const Key('testing-warning-dialog')))) {
+    final dialog = find.byKey(const Key('testing-warning-dialog'));
+    if (!_exists(dialog)) {
       return;
     }
     // 需要勾选同意时先勾选（Alpha 渠道可能要求 consent）。
-    final consent = _firstVisible(
-      kConsentLabels.map((t) => find.text(t)).toList(),
-    );
+    final l10n = AppLocalizations.of(tester.element(dialog));
+    final consent = _firstVisible([find.text(l10n.testingWarningConsentText)]);
     if (consent != null) {
       await tester.tap(consent, warnIfMissed: false);
       await _settle(tester, seconds: 2);
@@ -359,15 +373,14 @@ Future<void> _dismissColdStartDialogs(WidgetTester tester) async {
 // 旅程实现
 // ---------------------------------------------------------------------------
 
-/// 旅程 1（硬）：启动 → 关闭 Alpha 弹窗 → 服务器列表可见（'US' 或搜索框）。
+/// 旅程 1：启动 → 关闭 Alpha 弹窗 → 服务器列表可见。
 Future<void> _journey1Servers(WidgetTester tester) async {
   final name = '1.启动与服务器列表';
   final navOrTitle =
       _firstVisible(kNavServers.map((t) => find.text(t)).toList());
   expect(navOrTitle != null, isTrue, reason: '启动后未找到「服务器」标签/标题');
 
-  final hasServerCard = _exists(find.text('US').hitTestable()) ||
-      _exists(find.textContaining('154.9.228.190'));
+  final hasServerCard = _exists(find.byType(ServerCard).hitTestable());
   final hasSearch = kServerSearchHints.any(
         (hint) => _exists(find.text(hint).hitTestable()),
       ) ||
@@ -375,7 +388,7 @@ Future<void> _journey1Servers(WidgetTester tester) async {
   expect(
     hasServerCard || hasSearch,
     isTrue,
-    reason: '服务器列表页既没有服务器卡片（US）也没有搜索框',
+    reason: '服务器列表页应显示服务器卡片或搜索框',
   );
 
   journeyResults[name] = 'PASS';
@@ -414,8 +427,9 @@ Future<void> _journey2Metrics(WidgetTester tester) async {
 /// 旅程 3（硬）：底部导航 → 文件 → 根目录出现任意目录条目。
 Future<void> _journey3BrowseFiles(WidgetTester tester) async {
   final name = '3.文件浏览';
-  final opened = await _tapBottomNav(tester, kNavFiles, seconds: 12);
-  expect(opened, isTrue, reason: '底部导航未找到「文件」标签');
+  final opened = await _tapBottomNav(tester, kNavFiles, seconds: 12) ||
+      await _openDrawerModule(tester, kNavFiles);
+  expect(opened, isTrue, reason: '底栏或抽屉应提供文件入口');
 
   var found = false;
   for (final dir in kRootDirs) {
@@ -440,6 +454,51 @@ Future<void> _journey3BrowseFiles(WidgetTester tester) async {
 
   journeyResults[name] = 'PASS';
   print('\n=== [$name] PASS ===');
+}
+
+Future<void> _checkFileDeleteCancel(WidgetTester tester) async {
+  final names =
+      kRootDirs.where((name) => _exists(find.text(name).hitTestable()));
+  final visibleNames = names.take(2).toList();
+  expect(visibleNames, hasLength(2), reason: '文件页应显示两个可操作的目录');
+
+  final selectedName = visibleNames.first;
+  final otherName = visibleNames.last;
+  final selected = find.text(selectedName).hitTestable().first;
+  final l10n = AppLocalizations.of(tester.element(selected));
+  final selectionTitle = find.text(l10n.filesSelectedCount(1));
+  await tester.longPress(selected);
+  await _settle(tester);
+  expect(selectionTitle, findsOneWidget);
+
+  final targetRow = find.ancestor(
+    of: find.text(otherName).hitTestable().first,
+    matching: find.byType(ListTile),
+  );
+  final menu = find.descendant(
+    of: targetRow,
+    matching: find.byType(PopupMenuButton<String>),
+  );
+  await _tapVisible(tester, menu);
+  final delete = find.widgetWithText(
+    PopupMenuItem<String>,
+    l10n.filesActionDelete,
+  );
+  await tester.ensureVisible(delete);
+  await _tapVisible(tester, delete);
+  final dialog = find.byType(AlertDialog);
+  expect(find.descendant(of: dialog, matching: find.text('/$otherName')),
+      findsOneWidget);
+  expect(find.descendant(of: dialog, matching: find.text('/$selectedName')),
+      findsNothing);
+  await _tapVisible(
+    tester,
+    find.descendant(of: dialog, matching: find.text(l10n.commonCancel)),
+  );
+  expect(selectionTitle, findsOneWidget);
+  expect(find.text(otherName).hitTestable(), findsOneWidget);
+  await _tapVisible(tester, find.text(selectedName));
+  expect(selectionTitle, findsNothing);
 }
 
 /// 旅程 4（软）：FAB 新建文件夹 → 输入夹具名 → 创建 → 断言出现 → 菜单删除 →
@@ -561,9 +620,10 @@ Future<void> _journey4CreateDelete(WidgetTester tester) async {
 /// 旅程 5（软）：容器管理页 → 列表/空态断言 →（有容器时）点入详情 → 返回。
 /// 注意：绝不点击 启动/停止/重启 按钮（容器操作由 API 集成层覆盖）。
 Future<void> _journey5Containers(WidgetTester tester) async {
-  final opened = await _tapBottomNav(tester, kNavContainers, seconds: 12);
+  final opened = await _tapBottomNav(tester, kNavContainers, seconds: 12) ||
+      await _openDrawerModule(tester, kNavContainers);
   if (!opened) {
-    throw StateError('底部导航未找到「容器管理」标签');
+    throw StateError('底栏或抽屉应提供容器管理入口');
   }
 
   final pageOk = _exists(find.text('容器管理')) ||
@@ -637,7 +697,31 @@ Future<void> _journey8SettingsReadOnly(WidgetTester tester) async {
   final hardName = '8.设置只读校验（硬）';
   final opened = await _tapBottomNav(tester, kNavSettings, seconds: 12);
   expect(opened, isTrue, reason: '底部导航未找到「设置」标签');
-  expect(_exists(find.text('通用')), isTrue, reason: '设置页未找到「通用」分组');
+  final settings = _firstVisible(kNavSettings.map(find.text).toList())!;
+  final l10n = AppLocalizations.of(tester.element(settings));
+  final appearance = find.text(l10n.settingsUIRenderMode);
+  expect(await _scrollUntilVisible(tester, appearance), isTrue,
+      reason: '设置页应提供界面风格入口');
+  await _tapVisible(tester, appearance);
+  final dialog = find.byType(AlertDialog);
+  expect(
+    find.descendant(
+        of: dialog, matching: find.text(l10n.settingsUIRenderModeMD3)),
+    findsOneWidget,
+  );
+  expect(
+    find.descendant(
+      of: dialog,
+      matching: find.text(l10n.settingsUIRenderModeLiquidGlass),
+    ),
+    findsOneWidget,
+  );
+  await _tapVisible(
+    tester,
+    find.descendant(of: dialog, matching: find.text(l10n.commonClose)),
+  );
+  await tester.dragFrom(const Offset(130, 430), const Offset(0, 600));
+  await _settle(tester);
   journeyResults[hardName] = 'PASS';
   print('\n=== [$hardName] PASS ===');
 
@@ -654,23 +738,18 @@ Future<void> _journey8SettingsReadOnly(WidgetTester tester) async {
     await _settle(tester, seconds: 12);
     await _dismissOverlays(tester);
 
-    // 进入服务器列表（读校验），点击 US 卡片进入详情。
-    final listOk = _exists(find.text('US').hitTestable()) ||
-        kServerSearchHints.any((h) => _exists(find.text(h)));
-    if (!listOk) {
-      throw StateError('服务器管理页未找到服务器卡片/搜索框');
-    }
-    final serverCard = _firstVisible([find.text('US')]);
+    // 从服务器列表进入已配置服务器的详情页。
+    final serverCard = _firstVisible([find.byType(ServerCard)]);
     if (serverCard == null) {
-      print('SKIP-NOTE: 仅确认服务器列表可见，未点击卡片（未找到 US 文本）');
+      print('SKIP-NOTE: 服务器列表没有可打开的服务器卡片');
       await _goBack(tester);
       return;
     }
     await tester.tap(serverCard, warnIfMissed: false);
     await _settle(tester, seconds: 12);
     await _dismissOverlays(tester);
-    if (_firstVisible([find.text('服务器详情')]) == null) {
-      throw StateError('点击 US 卡片后未进入「服务器详情」');
+    if (_firstVisible([find.text(l10n.serverDetailTitle)]) == null) {
+      throw StateError('点击服务器卡片后应进入服务器详情');
     }
 
     // 详情 → 更多区「系统设置」。
@@ -702,4 +781,118 @@ Future<void> _journey8SettingsReadOnly(WidgetTester tester) async {
     await _goBack(tester);
     await _goBack(tester);
   });
+}
+
+Future<void> _journey9ModuleNavigation(WidgetTester tester) async {
+  await _ensureShellRoot(tester);
+  final card = find.byType(ServerCard).hitTestable().first;
+  final l10n = AppLocalizations.of(tester.element(card));
+  final details = find.descendant(
+    of: card,
+    matching: find.text(l10n.serverOpenDetail),
+  );
+  await _tapVisible(tester, details);
+  _expectPageRoute(AppRoutes.serverDetail);
+
+  await _checkStandaloneFilesBack(tester, l10n);
+  journeyResults['9.文件目录与页面逐层返回'] = 'PASS';
+
+  final moduleEntries = <(String, String)>[
+    (l10n.appsPageTitle, AppRoutes.apps),
+    (l10n.serverActionSecurity, AppRoutes.securityVerification),
+    (l10n.serverModuleDatabases, AppRoutes.databases),
+    (l10n.serverModuleFirewall, AppRoutes.firewall),
+    (l10n.serverModuleTerminal, AppRoutes.terminal),
+    (l10n.serverModuleMonitoring, AppRoutes.monitoring),
+    (l10n.openrestyPageTitle, AppRoutes.openrestyCenter),
+    (l10n.serverModuleSystemSettings, AppRoutes.systemSettings),
+  ];
+  for (final (label, route) in moduleEntries) {
+    await _checkModuleRoute(tester, label, route, AppRoutes.serverDetail);
+  }
+
+  await _openEntry(tester, l10n.operationsCenterServerEntryTitle);
+  _expectPageRoute(AppRoutes.operations);
+  final operationEntries = <(String, String)>[
+    (l10n.operationsCronjobsTitle, AppRoutes.cronjobs),
+    (l10n.operationsScriptsTitle, AppRoutes.scripts),
+    (l10n.operationsCommandsTitle, AppRoutes.commands),
+    (l10n.operationsBackupsTitle, AppRoutes.backups),
+    (l10n.operationsRuntimesTitle, AppRoutes.runtimes),
+    (l10n.operationsGroupCenterTitle, AppRoutes.groupCenter),
+    (l10n.operationsHostAssetsTitle, AppRoutes.hostAssets),
+    (l10n.operationsSshTitle, AppRoutes.ssh),
+    (l10n.operationsProcessesTitle, AppRoutes.processes),
+    (l10n.operationsLogsTitle, AppRoutes.logs),
+    (l10n.operationsToolboxTitle, AppRoutes.toolbox),
+  ];
+  for (final (label, route) in operationEntries) {
+    await _checkModuleRoute(tester, label, route, AppRoutes.operations);
+  }
+  await _goBack(tester);
+  _expectPageRoute(AppRoutes.serverDetail);
+  await _goBack(tester);
+  expect(find.byType(AppBottomNavigationBar).hitTestable(), findsOneWidget);
+}
+
+Future<void> _checkStandaloneFilesBack(
+  WidgetTester tester,
+  AppLocalizations l10n,
+) async {
+  await _openEntry(tester, l10n.navFiles);
+  final directoryRow = find.widgetWithText(ListTile, 'etc');
+  final breadcrumb = find.widgetWithText(TextButton, 'etc');
+  expect(await _scrollUntilVisible(tester, directoryRow), isTrue);
+  await _tapVisible(tester, directoryRow);
+  expect(breadcrumb, findsOneWidget);
+  await _goBack(tester);
+  expect(find.text(l10n.filesPageTitle).hitTestable(), findsOneWidget);
+  expect(breadcrumb, findsNothing);
+  expect(await _scrollUntilVisible(tester, directoryRow), isTrue);
+  await _tapVisible(tester, directoryRow);
+  expect(breadcrumb, findsOneWidget);
+  await tester.binding.handlePopRoute();
+  await _settle(tester);
+  expect(find.text(l10n.filesPageTitle).hitTestable(), findsOneWidget);
+  expect(breadcrumb, findsNothing);
+  await _goBack(tester);
+  _expectPageRoute(AppRoutes.serverDetail);
+}
+
+Future<void> _checkModuleRoute(
+  WidgetTester tester,
+  String label,
+  String route,
+  String parentRoute,
+) async {
+  await _openEntry(tester, label);
+  try {
+    _expectPageRoute(route);
+  } finally {
+    await _goBack(tester);
+  }
+  _expectPageRoute(parentRoute);
+  journeyResults['9.$label'] = 'PASS';
+}
+
+Future<void> _openEntry(WidgetTester tester, String label) async {
+  final entry = find.descendant(
+    of: find.byType(SectionEntryList),
+    matching: find.widgetWithText(ListTile, label),
+  );
+  final visible = await _scrollUntilVisible(tester, entry) ||
+      await _scrollUntilVisible(tester, entry, reverse: true);
+  expect(visible, isTrue, reason: '应显示功能入口 $label');
+  await _tapVisible(tester, entry);
+}
+
+void _expectPageRoute(String route) {
+  if (route == AppRoutes.serverDetail) {
+    expect(find.byType(ServerDetailPage), findsOneWidget);
+    return;
+  }
+  final visiblePageRoutes = find.byType(AppBar).hitTestable().evaluate().map(
+        (appBar) => ModalRoute.of(appBar)?.settings.name,
+      );
+  expect(visiblePageRoutes, contains(route));
 }
