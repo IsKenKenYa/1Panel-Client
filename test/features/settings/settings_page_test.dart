@@ -91,6 +91,9 @@ void main() {
           supportedLocales: AppLocalizations.supportedLocales,
           locale: const Locale('en'),
           home: SettingsPage(
+            // 测试宿主是 macOS，注入 isWindowsHost 才能覆盖
+            // 「Windows 选原生模式 → 宿主交接」分支。
+            isWindowsHost: true,
             nativeHostLauncher: NativeHostLauncher(
               exists: (_) => false,
               startProcess: (_) async {},
@@ -103,7 +106,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('UI Render Mode'));
+    await tester.tap(find.text('Interface style'));
     await tester.pumpAndSettle();
     await tester.tap(find.byType(RadioListTile<UIRenderMode>).first);
     await tester.pumpAndSettle();

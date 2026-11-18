@@ -27,6 +27,7 @@ class SettingsPage extends StatelessWidget {
     super.key,
     this.nativeHostLauncher,
     this.onNativeHostLaunched,
+    this.isWindowsHost,
   });
 
   /// 注入点（测试用）：默认按 C++ bootstrap 同规则探测宿主 exe。
@@ -35,6 +36,10 @@ class SettingsPage extends StatelessWidget {
   /// 宿主拉起成功后的交接回调（测试用）；默认等待片刻后退出当前进程。
   final VoidCallback? onNativeHostLaunched;
 
+  /// 注入点（测试用）：Windows 宿主才会在选「原生模式」时立即拉起宿主交接；
+  /// 为 null 时按当前平台判定。
+  final bool? isWindowsHost;
+
   @override
   Widget build(BuildContext context) {
     final spec = AdaptiveLayoutSpec.of(context);
@@ -42,17 +47,20 @@ class SettingsPage extends StatelessWidget {
       return _SettingsPageDesktop(
         nativeHostLauncher: nativeHostLauncher,
         onNativeHostLaunched: onNativeHostLaunched,
+        isWindowsHost: isWindowsHost,
       );
     }
     if (spec.isTablet) {
       return _SettingsPageTablet(
         nativeHostLauncher: nativeHostLauncher,
         onNativeHostLaunched: onNativeHostLaunched,
+        isWindowsHost: isWindowsHost,
       );
     }
     return _SettingsPageMobile(
       nativeHostLauncher: nativeHostLauncher,
       onNativeHostLaunched: onNativeHostLaunched,
+      isWindowsHost: isWindowsHost,
     );
   }
 }
@@ -61,10 +69,12 @@ class _SettingsPageMobile extends StatelessWidget {
   const _SettingsPageMobile({
     this.nativeHostLauncher,
     this.onNativeHostLaunched,
+    this.isWindowsHost,
   });
 
   final NativeHostLauncher? nativeHostLauncher;
   final VoidCallback? onNativeHostLaunched;
+  final bool? isWindowsHost;
 
   @override
   Widget build(BuildContext context) {
@@ -100,10 +110,12 @@ class _SettingsPageDesktop extends StatelessWidget {
   const _SettingsPageDesktop({
     this.nativeHostLauncher,
     this.onNativeHostLaunched,
+    this.isWindowsHost,
   });
 
   final NativeHostLauncher? nativeHostLauncher;
   final VoidCallback? onNativeHostLaunched;
+  final bool? isWindowsHost;
 
   @override
   Widget build(BuildContext context) {
@@ -120,6 +132,7 @@ class _SettingsPageDesktop extends StatelessWidget {
             child: _SettingsBody(
               nativeHostLauncher: nativeHostLauncher,
               onNativeHostLaunched: onNativeHostLaunched,
+              isWindowsHost: isWindowsHost,
             ),
           ),
         ),
@@ -132,10 +145,12 @@ class _SettingsPageTablet extends StatelessWidget {
   const _SettingsPageTablet({
     this.nativeHostLauncher,
     this.onNativeHostLaunched,
+    this.isWindowsHost,
   });
 
   final NativeHostLauncher? nativeHostLauncher;
   final VoidCallback? onNativeHostLaunched;
+  final bool? isWindowsHost;
 
   @override
   Widget build(BuildContext context) {
@@ -150,6 +165,7 @@ class _SettingsPageTablet extends StatelessWidget {
           child: _SettingsBody(
             nativeHostLauncher: nativeHostLauncher,
             onNativeHostLaunched: onNativeHostLaunched,
+            isWindowsHost: isWindowsHost,
           ),
         ),
       ),
@@ -161,10 +177,12 @@ class _SettingsBody extends StatelessWidget {
   const _SettingsBody({
     this.nativeHostLauncher,
     this.onNativeHostLaunched,
+    this.isWindowsHost,
   });
 
   final NativeHostLauncher? nativeHostLauncher;
   final VoidCallback? onNativeHostLaunched;
+  final bool? isWindowsHost;
 
   /// 选「原生模式」= 立即拉起 WinUI3 宿主并交接（退出当前进程）；
   /// 宿主 exe 缺失时保留偏好并给出 dotnet build 指引；
@@ -222,7 +240,7 @@ class _SettingsBody extends StatelessWidget {
             }
             if (mode == UIRenderMode.native &&
                 UIRenderPolicy.canSelectNativeMode() &&
-                PlatformUtils.isWindows) {
+                (isWindowsHost ?? PlatformUtils.isWindows)) {
               _handleRenderModeSelected(context, settings, mode);
               return;
             }
@@ -309,12 +327,15 @@ class _SettingsBody extends StatelessWidget {
                 SectionEntryItem(
                   icon: Icons.design_services_outlined,
                   title: l10n.settingsUIRenderMode,
-                  subtitle: switch (settings.uiRenderMode) {
-                    UIRenderMode.native => l10n.settingsUIRenderModeNative,
-                    UIRenderMode.liquidGlass =>
-                      l10n.settingsUIRenderModeLiquidGlass,
-                    UIRenderMode.md3 => l10n.settingsUIRenderModeMD3,
-                  },
+                  subtitle: settings.nativeHostMissing
+                      ? l10n.settingsUIRenderModeHostMissingStatus
+                      : switch (settings.uiRenderMode) {
+                          UIRenderMode.native =>
+                            l10n.settingsUIRenderModeNative,
+                          UIRenderMode.liquidGlass =>
+                            l10n.settingsUIRenderModeLiquidGlass,
+                          UIRenderMode.md3 => l10n.settingsUIRenderModeMD3,
+                        },
                   onTap: () => _chooseRenderMode(context, settings),
                 ),
                 SectionEntryItem(
