@@ -158,9 +158,9 @@ Map<String, dynamic> _$AppFormFieldToJson(AppFormField instance) =>
 AppFormFieldChild _$AppFormFieldChildFromJson(Map<String, dynamic> json) =>
     AppFormFieldChild(
       type: json['type'] as String,
-      labelZh: json['labelZh'] as String,
-      labelEn: json['labelEn'] as String,
-      required: json['required'] as bool,
+      labelZh: json['labelZh'] as String? ?? '',
+      labelEn: json['labelEn'] as String? ?? '',
+      required: json['required'] as bool? ?? false,
       envKey: json['envKey'] as String,
       services: json['services'] as List<dynamic>?,
     );

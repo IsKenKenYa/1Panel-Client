@@ -180,20 +180,26 @@ class AppFormField {
 }
 
 /// 应用表单字段子项（用于级联选择）
+///
+/// 上游 `child` 只提供 `{type, envKey, required, default}`，标签字段可能缺失，
+/// 这里用默认值兼容缺少标签的响应。
 @JsonSerializable()
 class AppFormFieldChild {
   final String type;
+  @JsonKey(defaultValue: '')
   final String labelZh;
+  @JsonKey(defaultValue: '')
   final String labelEn;
+  @JsonKey(defaultValue: false)
   final bool required;
   final String envKey;
   final List<dynamic>? services;
 
   AppFormFieldChild({
     required this.type,
-    required this.labelZh,
-    required this.labelEn,
-    required this.required,
+    this.labelZh = '',
+    this.labelEn = '',
+    this.required = false,
     required this.envKey,
     this.services,
   });
