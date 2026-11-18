@@ -15,7 +15,7 @@ struct ErrorView: View {
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
-            Button(translations.get("retry", fallback: "Retry"), action: onRetry)
+            Button(translations.get("commonRetry", fallback: "Retry"), action: onRetry)
                 .buttonStyle(.borderedProminent)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

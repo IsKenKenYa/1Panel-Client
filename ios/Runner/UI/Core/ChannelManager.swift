@@ -66,4 +66,21 @@ class ChannelManager {
             completion(result)
         }
     }
+
+    /// 调试走查种子：把 `ONEPANEL_SEED_*` 环境变量转发给 Dart 侧写入配置。
+    /// Dart 侧仅在调试构建处理该调用。
+    func seedDebugConfigIfNeeded() {
+        let env = ProcessInfo.processInfo.environment
+        guard let url = env["ONEPANEL_SEED_SERVER_URL"], !url.isEmpty,
+              let apiKey = env["ONEPANEL_SEED_API_KEY"], !apiKey.isEmpty else {
+            return
+        }
+        var args: [String: Any] = ["url": url, "apiKey": apiKey]
+        if let name = env["ONEPANEL_SEED_SERVER_NAME"], !name.isEmpty {
+            args["name"] = name
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.invokeDataMethod("seedDebugConfig", arguments: args) { _ in }
+        }
+    }
 }

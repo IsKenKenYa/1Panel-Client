@@ -7,11 +7,30 @@ class ThemeManager: ObservableObject {
     @Published var primaryColor: Color = .blue
     @Published var backgroundColor: Color = Color(UIColor.systemBackground)
     @Published var surfaceColor: Color = Color(UIColor.secondarySystemBackground)
+    /// 外观偏好：system / light / dark，与 MDUI3 设置页共用同一个键。
+    @Published var appearance: String
 
     let cardCornerRadius: CGFloat = 16.0
     let buttonCornerRadius: CGFloat = 20.0
 
-    private init() {}
+    private init() {
+        appearance = UserDefaults.standard.string(forKey: "flutter.app_theme_mode") ?? "system"
+    }
+
+    var preferredColorScheme: ColorScheme? {
+        switch appearance {
+        case "light": return .light
+        case "dark": return .dark
+        default: return nil
+        }
+    }
+
+    func setAppearance(_ value: String) {
+        appearance = value
+        UserDefaults.standard.set(value, forKey: "flutter.app_theme_mode")
+        UserDefaults.standard.synchronize()
+        isDarkMode = value == "dark"
+    }
 
     func updateTheme(from dict: [String: Any]) {
         if let dark = dict["isDarkMode"] as? Bool {
