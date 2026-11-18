@@ -17,6 +17,50 @@ class FilesViewModel: ObservableObject {
     @Published var currentPath: String = "/"
     @Published var errorMessage: String?
 
+    /// 删除文件或目录（deleteFile 通道）。
+    func deleteFile(path: String, isDir: Bool, completion: @escaping (Bool) -> Void) {
+        ChannelManager.shared.invokeDataMethod(
+            "deleteFile",
+            arguments: ["path": path, "isDir": isDir]
+        ) { result in
+            DispatchQueue.main.async {
+                let success = (result as? [String: Any])?["success"] as? Bool ?? false
+                completion(success)
+            }
+        }
+    }
+
+    /// 在指定目录创建文件夹（createFolder 通道）。
+    func createFolder(in directory: String, name: String, completion: @escaping (Bool) -> Void) {
+        let folderPath = directory == "/" ? "/\(name)" : "\(directory)/\(name)"
+        ChannelManager.shared.invokeDataMethod(
+            "createFolder",
+            arguments: ["path": folderPath]
+        ) { result in
+            DispatchQueue.main.async {
+                let success = (result as? [String: Any])?["success"] as? Bool ?? false
+                completion(success)
+            }
+        }
+    }
+
+    /// 重命名（renameFile 通道：原路径同目录 + 新名称）。
+    func rename(oldPath: String, newName: String, completion: @escaping (Bool) -> Void) {
+        let parent = (oldPath as NSString).deletingLastPathComponent
+        let newPath = parent == "/" || parent.isEmpty
+            ? "/\(newName)"
+            : "\(parent)/\(newName)"
+        ChannelManager.shared.invokeDataMethod(
+            "renameFile",
+            arguments: ["oldPath": oldPath, "newPath": newPath]
+        ) { result in
+            DispatchQueue.main.async {
+                let success = (result as? [String: Any])?["success"] as? Bool ?? false
+                completion(success)
+            }
+        }
+    }
+
     func fetchFiles(path: String? = nil) {
         let targetPath = path ?? currentPath
         isLoading = true

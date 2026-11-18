@@ -11,27 +11,24 @@ struct MonitoringView: View {
                 LoadingView()
             } else {
                 List {
-                    Section(header: Text(translations.get("monitoring_system_usage", fallback: "System Usage"))) {
-                        MetricRow(
-                            title: translations.get("dashboard_cpu_usage", fallback: "CPU"),
-                            value: String(format: "%.1f%%", viewModel.metrics.cpu),
-                            icon: "cpu",
-                            color: .blue
+                    Section(translations.get("monitorSystemUsageTitle", fallback: "System Usage")) {
+                        ResourceGaugeRow(
+                            title: translations.get("dashboardCpuUsage", fallback: "CPU"),
+                            value: viewModel.metrics.cpu,
+                            icon: "cpu"
                         )
-                        MetricRow(
-                            title: translations.get("dashboard_memory_usage", fallback: "Memory"),
-                            value: String(format: "%.1f%%", viewModel.metrics.memory),
-                            icon: "memorychip",
-                            color: .purple
+                        ResourceGaugeRow(
+                            title: translations.get("dashboardMemoryUsage", fallback: "Memory"),
+                            value: viewModel.metrics.memory,
+                            icon: "memorychip"
                         )
-                        MetricRow(
-                            title: translations.get("dashboard_disk_usage", fallback: "Disk"),
-                            value: String(format: "%.1f%%", viewModel.metrics.disk),
-                            icon: "internaldrive",
-                            color: .orange
+                        ResourceGaugeRow(
+                            title: translations.get("dashboardDiskUsage", fallback: "Disk"),
+                            value: viewModel.metrics.disk,
+                            icon: "internaldrive"
                         )
                     }
-                    Section(header: Text(translations.get("monitoring_load_average", fallback: "Load Average"))) {
+                    Section(translations.get("monitorLoadAverageTitle", fallback: "Load Average")) {
                         MetricRow(
                             title: "1 Min",
                             value: String(format: "%.2f", viewModel.metrics.load1),
@@ -52,10 +49,18 @@ struct MonitoringView: View {
                         )
                     }
                 }
-                .listStyle(InsetGroupedListStyle())
+                .listStyle(.insetGrouped)
+                .refreshable {
+                    viewModel.startAutoRefresh()
+                }
             }
         }
-        .navigationTitle(translations.get("nav_monitoring", fallback: "Monitoring"))
+        .navigationTitle(translations.get("serverModuleMonitoring", fallback: "Monitoring"))
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                ModuleSwitcherMenu(current: .monitoring)
+            }
+        }
         .onAppear {
             viewModel.startAutoRefresh()
         }
@@ -74,13 +79,15 @@ struct MetricRow: View {
     var body: some View {
         HStack {
             Image(systemName: icon)
-                .foregroundColor(color)
+                .foregroundStyle(color)
                 .frame(width: 30)
             Text(title)
             Spacer()
             Text(value)
-                .bold()
+                .fontWeight(.semibold)
+                .monospacedDigit()
         }
-        .padding(.vertical, 4)
+        .font(.subheadline)
+        .padding(.vertical, 2)
     }
 }
