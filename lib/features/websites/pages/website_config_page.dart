@@ -87,7 +87,7 @@ class _WebsiteConfigBodyState extends State<_WebsiteConfigBody> {
             title: Text(title),
             actions: [
               IconButton(
-                icon: const Icon(Icons.refresh),
+                icon: const Icon(Icons.refresh_outlined),
                 onPressed: provider.loadAll,
                 tooltip: l10n.commonRefresh,
               ),
@@ -160,13 +160,13 @@ class _ConfigEditorCard extends StatelessWidget {
               children: [
                 FilledButton.icon(
                   onPressed: onReload,
-                  icon: const Icon(Icons.refresh),
+                  icon: const Icon(Icons.refresh_outlined),
                   label: Text(l10n.commonRefresh),
                 ),
                 const SizedBox(width: 12),
                 FilledButton.icon(
                   onPressed: onSave,
-                  icon: const Icon(Icons.save),
+                  icon: const Icon(Icons.save_outlined),
                   label: Text(l10n.commonSave),
                 ),
               ],
@@ -378,7 +378,7 @@ class _PhpVersionCard extends StatelessWidget {
             const SizedBox(height: 12),
             FilledButton.icon(
               onPressed: isUpdating ? null : onUpdate,
-              icon: const Icon(Icons.save),
+              icon: const Icon(Icons.save_outlined),
               label: isUpdating
                   ? const SizedBox(
                       width: 16,

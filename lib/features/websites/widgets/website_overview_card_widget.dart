@@ -167,7 +167,7 @@ class WebsiteActionCard extends StatelessWidget {
               children: [
                 FilledButton.icon(
                   onPressed: isRunning ? null : () => onOperate('start'),
-                  icon: const Icon(Icons.play_arrow),
+                  icon: const Icon(Icons.play_arrow_outlined),
                   label: Text(l10n.websitesActionStart),
                 ),
                 FilledButton.icon(
@@ -177,7 +177,7 @@ class WebsiteActionCard extends StatelessWidget {
                 ),
                 OutlinedButton.icon(
                   onPressed: isRunning ? () => onOperate('restart') : null,
-                  icon: const Icon(Icons.refresh),
+                  icon: const Icon(Icons.refresh_outlined),
                   label: Text(l10n.websitesActionRestart),
                 ),
                 OutlinedButton.icon(

@@ -140,7 +140,7 @@ class _WebsiteConfigCenterBody extends StatelessWidget {
                     SectionEntryItem(
                       title: 'HTTPS',
                       subtitle: 'SSL/TLS configuration',
-                      icon: Icons.lock_outline,
+                      icon: Icons.lock_outlined,
                       onTap: () => openRouteRespectingShell(
                         context,
                         AppRoutes.websiteHttps,

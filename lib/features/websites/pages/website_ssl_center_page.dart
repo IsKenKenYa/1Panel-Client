@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import '../../../data/models/ssl_models.dart';
 import 'package:onepanel_client/shared/security_gateway/models/security_gateway_models.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:onepanel_client/shared/security_gateway/utils/security_gateway_utils.dart';
 import 'package:onepanel_client/shared/security_gateway/widgets/security_status_chip.dart';
 
@@ -44,12 +45,12 @@ class _WebsiteSslCenterBody extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () => context.read<WebsiteSslCenterProvider>().load(),
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh_outlined),
             tooltip: l10n.commonRefresh,
           ),
           IconButton(
             onPressed: () => _showCreateDialog(context),
-            icon: const Icon(Icons.add),
+            icon: const Icon(Icons.add_outlined),
             tooltip: l10n.websitesSslCreateAction,
           ),
           IconButton(
@@ -208,7 +209,7 @@ class _WebsiteSslCenterBody extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         heroTag: 'website_ssl_center_create_fab',
         onPressed: () => _showCreateDialog(context),
-        icon: const Icon(Icons.add),
+        icon: const Icon(Icons.add_outlined),
         label: Text(initialWebsiteId == null
             ? l10n.websitesSslCreateAction
             : l10n.websitesSslApplyAction),
@@ -421,28 +422,16 @@ class _WebsiteSslCenterBody extends StatelessWidget {
 
     final affectedCount = provider.affectedWebsiteCount(cert);
     final affectedDomains = provider.affectedWebsiteDomains(cert);
-    final confirmed = await showDialog<bool>(
-          context: context,
-          builder: (dialogContext) => AlertDialog(
-            title: Text(l10n.websitesSslDeleteTitle),
-            content: Text(
-              '${l10n.websitesSslDeleteMessage(cert.primaryDomain ?? '-')}\n'
-              '${l10n.websitesSslAffectedWebsitesCount(affectedCount)}\n'
-              '${_affectedDomainsText(context, affectedDomains)}',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext, false),
-                child: Text(l10n.commonCancel),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.pop(dialogContext, true),
-                child: Text(l10n.commonDelete),
-              ),
-            ],
-          ),
-        ) ??
-        false;
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.websitesSslDeleteTitle,
+      message:
+          '${l10n.websitesSslDeleteMessage(cert.primaryDomain ?? '-')}\n'
+          '${l10n.websitesSslAffectedWebsitesCount(affectedCount)}\n'
+          '${_affectedDomainsText(context, affectedDomains)}',
+      confirmLabel: l10n.commonDelete,
+      isDestructive: true,
+    );
     if (!confirmed) {
       return;
     }
@@ -463,29 +452,16 @@ class _WebsiteSslCenterBody extends StatelessWidget {
     final affectedCount = provider.affectedWebsiteCount(cert);
     final affectedDomains = provider.affectedWebsiteDomains(cert);
 
-    final confirmed = await showDialog<bool>(
-          context: context,
-          builder: (dialogContext) => AlertDialog(
-            title: Text(l10n.websitesSslApplyAction),
-            content: Text(
-              '${l10n.websitesSslImpactHintApply}\n'
-              '${l10n.websitesSslAffectedWebsitesCount(affectedCount)}\n'
-              '${_affectedDomainsText(context, affectedDomains)}'
-              '${provider.hasHighImpact(cert) ? '\n${l10n.websitesSslImpactWarningHigh}' : ''}',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext, false),
-                child: Text(l10n.commonCancel),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.pop(dialogContext, true),
-                child: Text(l10n.commonConfirm),
-              ),
-            ],
-          ),
-        ) ??
-        false;
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.websitesSslApplyAction,
+      message:
+          '${l10n.websitesSslImpactHintApply}\n'
+          '${l10n.websitesSslAffectedWebsitesCount(affectedCount)}\n'
+          '${_affectedDomainsText(context, affectedDomains)}'
+          '${provider.hasHighImpact(cert) ? '\n${l10n.websitesSslImpactWarningHigh}' : ''}',
+      confirmLabel: l10n.commonConfirm,
+    );
 
     if (!confirmed) {
       return;
@@ -575,29 +551,15 @@ class _WebsiteSslCenterBody extends StatelessWidget {
                     : l10n.websitesSslAffectedWebsitesDomains(
                         affectedDomains.join(', '),
                       );
-                final confirmed = await showDialog<bool>(
-                      context: ctx,
-                      builder: (dialogContext) => AlertDialog(
-                        title: Text(l10n.websitesSslUpdateAction),
-                        content: Text(
-                          '${l10n.websitesSslAffectedWebsitesCount(affectedCount)}\n'
-                          '$affectedDomainsText'
-                          '${centerProvider.hasHighImpact(cert) ? '\n${l10n.websitesSslImpactWarningHigh}' : ''}',
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () =>
-                                Navigator.pop(dialogContext, false),
-                            child: Text(l10n.commonCancel),
-                          ),
-                          FilledButton(
-                            onPressed: () => Navigator.pop(dialogContext, true),
-                            child: Text(l10n.commonSave),
-                          ),
-                        ],
-                      ),
-                    ) ??
-                    false;
+                final confirmed = await ConfirmActionSheetWidget.show(
+                  ctx,
+                  title: l10n.websitesSslUpdateAction,
+                  message:
+                      '${l10n.websitesSslAffectedWebsitesCount(affectedCount)}\n'
+                      '$affectedDomainsText'
+                      '${centerProvider.hasHighImpact(cert) ? '\n${l10n.websitesSslImpactWarningHigh}' : ''}',
+                  confirmLabel: l10n.commonSave,
+                );
                 if (!confirmed) {
                   return;
                 }

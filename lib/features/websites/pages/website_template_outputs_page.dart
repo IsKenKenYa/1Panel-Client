@@ -60,7 +60,7 @@ class _WebsiteTemplateOutputsPageState
       title: l10n.websitesTemplateOutputsTitle,
       actions: [
         IconButton(
-          icon: const Icon(Icons.refresh),
+          icon: const Icon(Icons.refresh_outlined),
           tooltip: l10n.commonRefresh,
           onPressed: () => context
               .read<WebsiteTemplateProvider>()

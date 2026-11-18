@@ -68,7 +68,7 @@ class _WebsiteTemplatesPageState extends State<WebsiteTemplatesPage> {
           ),
         ),
         IconButton(
-          icon: const Icon(Icons.refresh),
+          icon: const Icon(Icons.refresh_outlined),
           tooltip: l10n.commonRefresh,
           onPressed: () =>
               context.read<WebsiteTemplateProvider>().loadTemplates(),
@@ -77,7 +77,7 @@ class _WebsiteTemplatesPageState extends State<WebsiteTemplatesPage> {
       floatingActionButton: FloatingActionButton.extended(
         heroTag: 'website_template_create_fab',
         onPressed: () => _openForm(),
-        icon: const Icon(Icons.add),
+        icon: const Icon(Icons.add_outlined),
         label: Text(l10n.websitesTemplateCreate),
       ),
       body: Consumer<WebsiteTemplateProvider>(

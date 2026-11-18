@@ -90,7 +90,7 @@ class _WebsiteBasicConfigBody extends StatelessWidget {
                     SectionEntryItem(
                       title: l10n.websitesHttpsConfigTitle,
                       subtitle: provider.httpsSummary?.toString() ?? '-',
-                      icon: Icons.lock_outline,
+                      icon: Icons.lock_outlined,
                       trailing: null,
                     ),
                     SectionEntryItem(

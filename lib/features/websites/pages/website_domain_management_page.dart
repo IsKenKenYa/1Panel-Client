@@ -6,6 +6,7 @@ import '../../../data/models/website_models.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import '../providers/website_domain_provider.dart';
 import '../widgets/website_common_widgets.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 
 part 'website_domain_management_actions_part.dart';
 
@@ -71,7 +72,7 @@ class _WebsiteDomainBody extends StatelessWidget {
                 tooltip: l10n.websitesDomainBatchAddTitle,
               ),
               IconButton(
-                icon: const Icon(Icons.refresh),
+                icon: const Icon(Icons.refresh_outlined),
                 onPressed: provider.loadDomains,
                 tooltip: l10n.commonRefresh,
               ),
@@ -80,7 +81,7 @@ class _WebsiteDomainBody extends StatelessWidget {
           floatingActionButton: FloatingActionButton.extended(
             heroTag: 'website_domain_create_fab',
             onPressed: () => _showDomainDialog(context, provider),
-            icon: const Icon(Icons.add),
+            icon: const Icon(Icons.add_outlined),
             label: Text(l10n.commonAdd),
           ),
           body: ListView(

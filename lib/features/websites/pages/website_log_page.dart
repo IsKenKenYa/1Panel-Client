@@ -63,7 +63,7 @@ class _WebsiteLogPageState extends State<WebsiteLogPage> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh_outlined),
             tooltip: context.l10n.commonRefresh,
             onPressed: _load,
           ),

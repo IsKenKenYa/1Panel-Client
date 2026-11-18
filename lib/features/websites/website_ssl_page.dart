@@ -58,12 +58,12 @@ class _WebsiteSslBody extends StatelessWidget {
             title: Text(l10n.websitesSslPageTitle),
             actions: [
               IconButton(
-                icon: const Icon(Icons.refresh),
+                icon: const Icon(Icons.refresh_outlined),
                 onPressed: provider.loadAll,
                 tooltip: l10n.commonRefresh,
               ),
               IconButton(
-                icon: const Icon(Icons.add),
+                icon: const Icon(Icons.add_outlined),
                 onPressed: () => _showCreateDialog(context, provider),
                 tooltip: l10n.websitesSslCreateAction,
               ),

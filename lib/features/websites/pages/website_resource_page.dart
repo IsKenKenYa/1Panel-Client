@@ -48,7 +48,7 @@ class _WebsiteResourcePageState extends State<WebsiteResourcePage> {
       appBar: AppBar(
         title: Text('${widget.displayName} - ${context.l10n.websiteResourceTitle}'),
         actions: [
-          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh), onPressed: _load),
+          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh_outlined), onPressed: _load),
         ],
       ),
       body: WebsiteAsyncStateView(

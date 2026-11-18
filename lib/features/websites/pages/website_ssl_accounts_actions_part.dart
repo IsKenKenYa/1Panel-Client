@@ -734,24 +734,12 @@ extension _WebsiteSslAccountsActions on _WebsiteSslAccountsBody {
       return;
     }
 
-    final confirmed = await showDialog<bool>(
-          context: context,
-          builder: (dialogContext) => AlertDialog(
-            title: Text(l10n.websitesSslAccountsRenewAction),
-            content: Text(l10n.websitesSslAccountsRenewConfirmMessage),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext, false),
-                child: Text(l10n.commonCancel),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.pop(dialogContext, true),
-                child: Text(l10n.commonConfirm),
-              ),
-            ],
-          ),
-        ) ??
-        false;
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.websitesSslAccountsRenewAction,
+      message: l10n.websitesSslAccountsRenewConfirmMessage,
+      confirmLabel: l10n.commonConfirm,
+    );
     if (!confirmed) {
       return;
     }
@@ -804,24 +792,13 @@ extension _WebsiteSslAccountsActions on _WebsiteSslAccountsBody {
     }
 
     final name = _readString(item, const ['name']);
-    final confirmed = await showDialog<bool>(
-          context: context,
-          builder: (dialogContext) => AlertDialog(
-            title: Text(l10n.commonDelete),
-            content: Text(l10n.websitesSslAccountsDeleteDnsMessage(name)),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext, false),
-                child: Text(l10n.commonCancel),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.pop(dialogContext, true),
-                child: Text(l10n.commonDelete),
-              ),
-            ],
-          ),
-        ) ??
-        false;
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.commonDelete,
+      message: l10n.websitesSslAccountsDeleteDnsMessage(name),
+      confirmLabel: l10n.commonDelete,
+      isDestructive: true,
+    );
     if (!confirmed) {
       return;
     }
@@ -850,24 +827,13 @@ extension _WebsiteSslAccountsActions on _WebsiteSslAccountsBody {
     }
 
     final email = _readString(item, const ['email']);
-    final confirmed = await showDialog<bool>(
-          context: context,
-          builder: (dialogContext) => AlertDialog(
-            title: Text(l10n.commonDelete),
-            content: Text(l10n.websitesSslAccountsDeleteAcmeMessage(email)),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext, false),
-                child: Text(l10n.commonCancel),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.pop(dialogContext, true),
-                child: Text(l10n.commonDelete),
-              ),
-            ],
-          ),
-        ) ??
-        false;
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.commonDelete,
+      message: l10n.websitesSslAccountsDeleteAcmeMessage(email),
+      confirmLabel: l10n.commonDelete,
+      isDestructive: true,
+    );
     if (!confirmed) {
       return;
     }
@@ -896,24 +862,13 @@ extension _WebsiteSslAccountsActions on _WebsiteSslAccountsBody {
     }
 
     final name = _readString(item, const ['name']);
-    final confirmed = await showDialog<bool>(
-          context: context,
-          builder: (dialogContext) => AlertDialog(
-            title: Text(l10n.commonDelete),
-            content: Text(l10n.websitesSslAccountsDeleteCaMessage(name)),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext, false),
-                child: Text(l10n.commonCancel),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.pop(dialogContext, true),
-                child: Text(l10n.commonDelete),
-              ),
-            ],
-          ),
-        ) ??
-        false;
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.commonDelete,
+      message: l10n.websitesSslAccountsDeleteCaMessage(name),
+      confirmLabel: l10n.commonDelete,
+      isDestructive: true,
+    );
     if (!confirmed) {
       return;
     }

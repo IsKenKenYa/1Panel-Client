@@ -3,6 +3,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/data/repositories/website_config_repository.dart';
 import 'package:onepanel_client/features/websites/widgets/website_async_state_view.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 
 /// Website redirect rules configuration page.
 /// Mirrors frontend's website redirect tab.
@@ -78,6 +79,17 @@ class _WebsiteRedirectPageState extends State<WebsiteRedirectPage> {
                         icon: const Icon(Icons.delete_outline),
                         tooltip: context.l10n.commonDelete,
                         onPressed: () async {
+                          final confirmed =
+                              await ConfirmActionSheetWidget.show(
+                            context,
+                            title: context.l10n.deleteConfirmTitle,
+                            message: context.l10n.deleteCannotUndoMessage,
+                            confirmLabel: context.l10n.commonDelete,
+                            isDestructive: true,
+                          );
+                          if (!confirmed) {
+                            return;
+                          }
                           try {
                             await _repo.deleteRedirectRule(
                               websiteId: widget.websiteId,

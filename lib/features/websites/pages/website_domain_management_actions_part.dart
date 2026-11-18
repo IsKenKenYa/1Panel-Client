@@ -284,24 +284,12 @@ extension _WebsiteDomainActions on _WebsiteDomainBody {
     WebsiteDomainProvider provider,
     WebsiteDomain domain,
   ) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(context.l10n.websitesDeleteTitle),
-        content: Text(
-          context.l10n.websitesDomainDeleteMessage(domain.domain ?? '-'),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, false),
-            child: Text(context.l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(dialogContext, true),
-            child: Text(context.l10n.commonDelete),
-          ),
-        ],
-      ),
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: context.l10n.websitesDeleteTitle,
+      message: context.l10n.websitesDomainDeleteMessage(domain.domain ?? '-'),
+      confirmLabel: context.l10n.commonDelete,
+      isDestructive: true,
     );
     if (confirmed == true && domain.id != null) {
       await provider.deleteDomain(domain.id!);

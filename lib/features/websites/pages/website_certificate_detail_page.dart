@@ -44,7 +44,7 @@ class _WebsiteCertificateDetailBody extends StatelessWidget {
             actions: [
               IconButton(
                 onPressed: provider.load,
-                icon: const Icon(Icons.refresh),
+                icon: const Icon(Icons.refresh_outlined),
                 tooltip: l10n.commonRefresh,
               ),
             ],

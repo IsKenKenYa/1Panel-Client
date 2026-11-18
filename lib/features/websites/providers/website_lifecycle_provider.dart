@@ -269,6 +269,8 @@ class WebsiteLifecycleProvider extends ChangeNotifier with SafeChangeNotifier {
       remark: _state.remark.trim().isEmpty ? null : _state.remark.trim(),
       type: _state.type,
       webSiteGroupId: _state.groupId ?? 0,
+      // 服务端校验 appType 必须是 new 或 installed；建站流程默认复用已安装应用。
+      appType: 'installed',
       runtimeId: _state.type == 'runtime' ? _state.runtimeId : null,
       siteDir: _state.siteDir.trim().isEmpty ? null : _state.siteDir.trim(),
       proxyType: _state.type == 'proxy' ? _state.proxyType : null,

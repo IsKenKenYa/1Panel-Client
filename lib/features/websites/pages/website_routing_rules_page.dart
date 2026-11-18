@@ -62,7 +62,7 @@ class _WebsiteRoutingRulesBody extends StatelessWidget {
               IconButton(
                 tooltip: l10n.commonRefresh,
                 onPressed: provider.loadAll,
-                icon: const Icon(Icons.refresh),
+                icon: const Icon(Icons.refresh_outlined),
               ),
               IconButton(
                 tooltip: l10n.routingRulesBatchActions,

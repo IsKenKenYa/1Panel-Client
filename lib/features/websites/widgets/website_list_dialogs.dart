@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/website_group_models.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 
 class WebsiteListDialogs {
   static Future<bool> confirmDelete(
@@ -10,34 +11,16 @@ class WebsiteListDialogs {
     String? domain,
   }) async {
     final l10n = context.l10n;
-    final colorScheme = Theme.of(context).colorScheme;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        icon: Icon(Icons.delete_outline, color: colorScheme.error),
-        title: Text(l10n.websitesDeleteTitle),
-        content: Text(
-          domain == null
-              ? l10n.websitesBatchDeleteMessage(ids.length)
-              : l10n.websitesDeleteMessage(
-                  domain.isEmpty ? l10n.websitesUnknownDomain : domain,
-                ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(dialogContext, true),
-            style: FilledButton.styleFrom(
-              backgroundColor: colorScheme.error,
-              foregroundColor: colorScheme.onError,
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.websitesDeleteTitle,
+      message: domain == null
+          ? l10n.websitesBatchDeleteMessage(ids.length)
+          : l10n.websitesDeleteMessage(
+              domain.isEmpty ? l10n.websitesUnknownDomain : domain,
             ),
-            child: Text(l10n.commonDelete),
-          ),
-        ],
-      ),
+      confirmLabel: l10n.commonDelete,
+      isDestructive: true,
     );
     return confirmed == true;
   }

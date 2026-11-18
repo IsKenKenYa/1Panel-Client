@@ -7,6 +7,7 @@ import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 
 import '../providers/website_ssl_accounts_provider.dart';
 import '../widgets/website_async_state_view.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
 import 'website_dns_template_form.dart';
 
@@ -46,7 +47,7 @@ class _WebsiteSslAccountsBody extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () => context.read<WebsiteSslAccountsProvider>().load(),
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh_outlined),
             tooltip: l10n.commonRefresh,
           ),
         ],
@@ -166,7 +167,7 @@ class _CertificateAuthorityTab extends StatelessWidget {
         children: [
           FilledButton.icon(
             onPressed: provider.isOperating ? null : onCreate,
-            icon: const Icon(Icons.add),
+            icon: const Icon(Icons.add_outlined),
             label: Text(l10n.websitesSslAccountsCreateCaAction),
           ),
           const SizedBox(height: 12),
@@ -201,7 +202,7 @@ class _CertificateAuthorityTab extends StatelessWidget {
                                 onPressed: provider.isOperating || id == null
                                     ? null
                                     : () => onRenew(item),
-                                icon: const Icon(Icons.refresh),
+                                icon: const Icon(Icons.refresh_outlined),
                                 tooltip: l10n.websitesSslAccountsRenewAction,
                               ),
                               IconButton(
@@ -254,7 +255,7 @@ class _AcmeAccountTab extends StatelessWidget {
         children: [
           FilledButton.icon(
             onPressed: provider.isOperating ? null : onCreate,
-            icon: const Icon(Icons.add),
+            icon: const Icon(Icons.add_outlined),
             label: Text(l10n.websitesSslAccountsCreateAcmeAction),
           ),
           const SizedBox(height: 12),
@@ -328,7 +329,7 @@ class _DnsAccountTab extends StatelessWidget {
         children: [
           FilledButton.icon(
             onPressed: provider.isOperating ? null : onCreate,
-            icon: const Icon(Icons.add),
+            icon: const Icon(Icons.add_outlined),
             label: Text(l10n.websitesSslAccountsCreateDnsAction),
           ),
           const SizedBox(height: 12),
