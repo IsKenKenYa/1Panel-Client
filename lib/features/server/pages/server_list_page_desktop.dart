@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/features/onboarding/coach_mark_overlay.dart';
+import 'package:onepanel_client/features/server/server_list_interactions.dart';
 import 'package:onepanel_client/features/server/view_models/server_list_view_model.dart';
 import 'package:onepanel_client/features/server/widgets/server_card.dart';
 import 'package:provider/provider.dart';
@@ -55,8 +56,8 @@ class ServerListPageDesktop extends StatelessWidget {
                         const SizedBox(width: 16),
                         FilledButton.icon(
                           key: viewModel.addKey,
-                          onPressed: () => viewModel.openAddServer(context),
-                          icon: const Icon(Icons.add),
+                          onPressed: () => openServerForm(context, viewModel),
+                          icon: const Icon(Icons.add_outlined),
                           label: Text(l10n.serverAdd),
                         ),
                       ],
@@ -104,7 +105,7 @@ class ServerListPageDesktop extends StatelessWidget {
                             key: index == 0 ? viewModel.firstCardKey : null,
                             data: item,
                             onTap: () => viewModel.openDetail(context, item),
-                            onDelete: () => viewModel.deleteServer(context, item),
+                            onDelete: () => confirmAndDeleteServer(context, viewModel, item),
                           );
                         },
                         childCount: data.length,

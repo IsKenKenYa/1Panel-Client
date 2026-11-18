@@ -3,15 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/services/onboarding_service.dart';
-import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/features/onboarding/coach_mark_overlay.dart';
 import 'package:onepanel_client/features/server/server_detail_page.dart';
-import 'package:onepanel_client/features/server/server_form_page.dart';
 import 'package:onepanel_client/features/server/server_models.dart';
 import 'package:onepanel_client/features/server/server_provider.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 
-import '../../../core/utils/snackbar_utils.dart';
 class ServerListViewModel extends ChangeNotifier with SafeChangeNotifier {
   ServerListViewModel({
     this.enableCoach = true,
@@ -136,39 +133,6 @@ class ServerListViewModel extends ChangeNotifier with SafeChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> openAddServer(BuildContext context) async {
-    final currentServer = context.read<CurrentServerController>();
-    final bool? result;
-    if (PlatformUtils.isDesktop(context)) {
-      result = await showDialog<bool>(
-        context: context,
-        builder: (dialogContext) => Dialog(
-          insetPadding: const EdgeInsets.all(24),
-          clipBehavior: Clip.antiAlias,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: 720,
-              maxHeight: 820,
-            ),
-            child: const ServerFormPage(),
-          ),
-        ),
-      );
-    } else {
-      result = await Navigator.push<bool>(
-        context,
-        MaterialPageRoute(builder: (_) => const ServerFormPage()),
-      );
-    }
-
-    if (result == true) {
-      await _serverProvider.load();
-      if (context.mounted) {
-        await currentServer.refresh();
-      }
-    }
-  }
-
   Future<void> openDetail(
       BuildContext context, ServerCardViewModel item) async {
     // 切换服务器会重建带 serverId key 的模块子树，原卡片 context 随之卸载；
@@ -190,46 +154,13 @@ class ServerListViewModel extends ChangeNotifier with SafeChangeNotifier {
     );
   }
 
-  Future<void> deleteServer(
-      BuildContext context, ServerCardViewModel item) async {
-    final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
-          context: context,
-          builder: (dialogContext) => AlertDialog(
-            title: Text(l10n.serverDeleteConfirmTitle),
-            content: Text(l10n.serverDeleteConfirmMessage(item.config.name)),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext, false),
-                child: Text(l10n.commonCancel),
-              ),
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.error,
-                  foregroundColor: Theme.of(context).colorScheme.onError,
-                ),
-                onPressed: () => Navigator.pop(dialogContext, true),
-                child: Text(l10n.commonDelete),
-              ),
-            ],
-          ),
-        ) ??
-        false;
+  /// 删除服务器配置（纯数据操作）：确认弹窗与结果反馈由 UI 层负责。
+  Future<void> deleteServer(ServerCardViewModel item) async {
+    await _serverProvider.delete(item.config.id);
+  }
 
-    if (!confirmed || !context.mounted) return;
-
-    final currentServerController = context.read<CurrentServerController>();
-    final successMessage = l10n.serverDeleteSuccess(item.config.name);
-
-    try {
-      await _serverProvider.delete(item.config.id);
-      await currentServerController.refresh();
-      if (!context.mounted) return;
-      SnackBarUtils.showSuccess(context, successMessage);
-    } catch (error) {
-      if (!context.mounted) return;
-      SnackBarUtils.showError(context, l10n.serverDeleteFailed(error.toString()),
-      );
-    }
+  /// 服务器新增/删除/切换后的统一列表刷新。
+  Future<void> refreshAfterServerChange() async {
+    await _serverProvider.load();
   }
 }

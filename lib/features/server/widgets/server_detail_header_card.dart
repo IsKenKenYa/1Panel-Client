@@ -82,7 +82,7 @@ class ServerDetailHeaderCard extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: FilledButton.tonalIcon(
                 onPressed: onRefresh,
-                icon: const Icon(Icons.refresh),
+                icon: const Icon(Icons.refresh_outlined),
                 label: Text(l10n.serverActionRefresh),
               ),
             ),

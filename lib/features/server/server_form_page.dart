@@ -7,6 +7,7 @@ import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/server/server_repository.dart';
 import 'package:onepanel_client/shared/widgets/forms/app_form_scaffold.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:onepanel_client/shared/widgets/section_card.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/config/app_router.dart';
@@ -51,23 +52,12 @@ class _ServerFormPageState extends State<ServerFormPage> {
       return true;
     }
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.webHttpConnectionTitle),
-        content: Text(l10n.webHttpConnectionWarning),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(dialogContext, true),
-            child: Text(l10n.webHttpConnectionContinue),
-          ),
-        ],
-      ),
-    ) ?? false;
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.webHttpConnectionTitle,
+      message: l10n.webHttpConnectionWarning,
+      confirmLabel: l10n.webHttpConnectionContinue,
+    );
     if (confirmed) _confirmedHttpUrl = address;
     return confirmed;
   }

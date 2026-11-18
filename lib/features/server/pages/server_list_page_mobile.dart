@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/features/onboarding/coach_mark_overlay.dart';
+import 'package:onepanel_client/features/server/server_list_interactions.dart';
 import 'package:onepanel_client/features/server/view_models/server_list_view_model.dart';
 import 'package:onepanel_client/features/server/widgets/server_card.dart';
 import 'package:onepanel_client/features/shell/widgets/shell_drawer_scope.dart';
@@ -33,7 +34,7 @@ class ServerListPageMobile extends StatelessWidget {
         actions: [
           IconButton(
             key: viewModel.addKey,
-            onPressed: () => viewModel.openAddServer(context),
+            onPressed: () => openServerForm(context, viewModel),
             icon: const Icon(Icons.add_circle_outline),
             tooltip: l10n.serverAdd,
           ),
@@ -90,7 +91,7 @@ class ServerListPageMobile extends StatelessWidget {
                               textAlign: TextAlign.center),
                           const SizedBox(height: AppDesignTokens.spacingLg),
                           FilledButton(
-                            onPressed: () => viewModel.openAddServer(context),
+                            onPressed: () => openServerForm(context, viewModel),
                             child: Text(l10n.serverAdd),
                           ),
                         ],
@@ -111,7 +112,7 @@ class ServerListPageMobile extends StatelessWidget {
                             key: index == 0 ? viewModel.firstCardKey : null,
                             data: item,
                             onTap: () => viewModel.openDetail(context, item),
-                            onDelete: () => viewModel.deleteServer(context, item),
+                            onDelete: () => confirmAndDeleteServer(context, viewModel, item),
                           ),
                         );
                       },

@@ -12,6 +12,7 @@ import 'package:onepanel_client/features/shell/controllers/pinned_modules_contro
 import 'package:onepanel_client/features/shell/models/client_module.dart';
 import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/features/shell/widgets/mobile_pinned_modules_customizer_sheet.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:onepanel_client/features/shell/widgets/server_switcher_action.dart';
 
 import '../../core/utils/snackbar_utils.dart';
@@ -185,24 +186,13 @@ class ServerDetailPage extends StatelessWidget {
     ServerCardViewModel target,
   ) async {
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
-          context: context,
-          builder: (dialogContext) => AlertDialog(
-            title: Text(l10n.serverDeleteConfirmTitle),
-            content: Text(l10n.serverDeleteConfirmMessage(target.config.name)),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext, false),
-                child: Text(l10n.commonCancel),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.pop(dialogContext, true),
-                child: Text(l10n.commonDelete),
-              ),
-            ],
-          ),
-        ) ??
-        false;
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.serverDeleteConfirmTitle,
+      message: l10n.serverDeleteConfirmMessage(target.config.name),
+      confirmLabel: l10n.commonDelete,
+      isDestructive: true,
+    );
     if (!confirmed || !context.mounted) {
       return;
     }
