@@ -1,9 +1,31 @@
 import Foundation
 import UIKit
 
+enum UIRenderMode: String {
+    case native
+    case md3
+    case liquidGlass
+
+    static let preferenceKey = "flutter.app_ui_render_mode"
+
+    static var stored: Self {
+        let defaults = UserDefaults.standard
+        return resolve(defaults.string(forKey: preferenceKey),
+                       appLockEnabled: defaults.bool(forKey: SecurityViewModel.appLockDefaultsKey))
+    }
+
+    static func resolve(_ storedValue: String?, appLockEnabled: Bool) -> Self {
+        if let storedValue, let mode = Self(rawValue: storedValue) {
+            return mode
+        }
+        return appLockEnabled ? .liquidGlass : .native
+    }
+}
+
 class SettingsViewModel: ObservableObject {
-    @Published var renderMode: String
-    @Published var showRestartHint: Bool = false
+    private static let localePreferenceKey = "flutter.app_locale"
+
+    @Published private(set) var renderMode: UIRenderMode
     @Published var selectedLanguage: String = "system"
     @Published var selectedTheme: String = "system"
     @Published var appLockEnabled: Bool = false
@@ -12,10 +34,16 @@ class SettingsViewModel: ObservableObject {
 
     let appVersion: String
     let buildNumber: String
+    private let initialRenderMode: UIRenderMode
+
+    var showRestartHint: Bool { renderMode != initialRenderMode }
 
     init() {
-        self.renderMode = UserDefaults.standard.string(forKey: "flutter.app_ui_render_mode") ?? "native"
-        self.selectedLanguage = UserDefaults.standard.string(forKey: "flutter.app_locale") ?? "system"
+        let mode = UIRenderMode.stored
+        self.renderMode = mode
+        self.initialRenderMode = mode
+        let locale = UserDefaults.standard.string(forKey: Self.localePreferenceKey)
+        self.selectedLanguage = locale.flatMap { $0.isEmpty ? nil : $0 } ?? "system"
         self.selectedTheme = UserDefaults.standard.string(forKey: "flutter.app_theme_mode") ?? "system"
         self.appLockEnabled = UserDefaults.standard.bool(forKey: "flutter.app_lock_enabled")
 
@@ -24,17 +52,19 @@ class SettingsViewModel: ObservableObject {
         self.buildNumber = info?["CFBundleVersion"] as? String ?? "--"
     }
 
-    func updateRenderMode(_ mode: String) {
+    func updateRenderMode(_ mode: UIRenderMode) {
+        guard renderMode != mode else { return }
         renderMode = mode
-        UserDefaults.standard.set(mode, forKey: "flutter.app_ui_render_mode")
-        UserDefaults.standard.synchronize()
-        showRestartHint = true
+        UserDefaults.standard.set(mode.rawValue, forKey: UIRenderMode.preferenceKey)
     }
 
     func updateLanguage(_ lang: String) {
         selectedLanguage = lang
-        let value = lang == "system" ? "" : lang
-        UserDefaults.standard.set(value, forKey: "flutter.app_locale")
+        if lang == "system" {
+            UserDefaults.standard.removeObject(forKey: Self.localePreferenceKey)
+        } else {
+            UserDefaults.standard.set(lang, forKey: Self.localePreferenceKey)
+        }
         UserDefaults.standard.synchronize()
         // 语言切换立即生效：Dart 侧读取该键后重新下发翻译字典。
         TranslationsManager.shared.load { }
