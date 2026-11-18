@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/ai/agents/agents_provider.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/module_empty_state_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -53,7 +54,7 @@ class _AIAgentsListWidgetState extends State<AIAgentsListWidget> {
                     onPressed: provider.isMutating
                         ? null
                         : () => _showCreateDialog(context),
-                    icon: const Icon(Icons.add),
+                    icon: const Icon(Icons.add_outlined),
                     label: Text(l10n.commonCreate),
                   ),
                   const SizedBox(width: 8),
@@ -63,7 +64,7 @@ class _AIAgentsListWidgetState extends State<AIAgentsListWidget> {
                         : () => provider.searchAgents(
                               _searchController.text.trim(),
                             ),
-                    icon: const Icon(Icons.refresh),
+                    icon: const Icon(Icons.refresh_outlined),
                     label: Text(l10n.commonRefresh),
                   ),
                 ],
@@ -154,22 +155,12 @@ class _AIAgentsListWidgetState extends State<AIAgentsListWidget> {
 
   Future<void> _confirmDelete(BuildContext context, int id) async {
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.commonDelete),
-        content: Text(l10n.aiAgentsDeleteConfirm),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(l10n.commonDelete),
-          ),
-        ],
-      ),
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.commonDelete,
+      message: l10n.aiAgentsDeleteConfirm,
+      confirmLabel: l10n.commonDelete,
+      isDestructive: true,
     );
     if (confirmed == true && context.mounted) {
       await context.read<AgentsProvider>().deleteAgent(id);

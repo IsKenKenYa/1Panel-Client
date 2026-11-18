@@ -40,7 +40,7 @@ class _AIGpuTabWidgetState extends State<AIGpuTabWidget> {
                 alignment: Alignment.centerLeft,
                 child: OutlinedButton.icon(
                   onPressed: provider.isLoading ? null : provider.loadGpuInfo,
-                  icon: const Icon(Icons.refresh),
+                  icon: const Icon(Icons.refresh_outlined),
                   label: Text(l10n.commonRefresh),
                 ),
               ),

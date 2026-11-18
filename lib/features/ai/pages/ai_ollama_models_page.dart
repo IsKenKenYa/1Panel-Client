@@ -3,6 +3,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/ai/ai_repository.dart';
 import 'package:onepanel_client/data/models/ai_models.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 
 /// Ollama model management page (deep).
 /// Mirrors frontend's ai/model/ollama page: list/load/delete/sync models.
@@ -75,13 +76,13 @@ class _AiOllamaModelsPageState extends State<AiOllamaModelsPage> {
         title:  Text(context.l10n.aiOllamaTitle),
         actions: [
           IconButton(icon: const Icon(Icons.sync), onPressed: _syncModels, tooltip: context.l10n.aiOllamaSync),
-          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh), onPressed: _load),
+          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh_outlined), onPressed: _load),
         ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
-              ? Center(child: Text(_error!))
+              ? ModuleErrorStateWidget(message: _error, onRetry: _load)
               : _models.isEmpty
                   ?  Center(child: Text(context.l10n.aiOllamaEmpty))
                   : ListView.builder(

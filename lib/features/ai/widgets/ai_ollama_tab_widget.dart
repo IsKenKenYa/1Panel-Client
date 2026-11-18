@@ -79,7 +79,7 @@ class _AIOllamaTabWidgetState extends State<AIOllamaTabWidget> {
                         ? null
                         : () =>
                             AIOllamaTabActions.handleCreate(context, provider),
-                    icon: const Icon(Icons.add),
+                    icon: const Icon(Icons.add_outlined),
                     label: Text(l10n.aiModelCreate),
                   ),
                   OutlinedButton.icon(
@@ -176,7 +176,7 @@ class _AIOllamaTabWidgetState extends State<AIOllamaTabWidget> {
                 const SizedBox(height: 8),
                 Card(
                   child: ListTile(
-                    leading: const Icon(Icons.info_outline),
+                    leading: const Icon(Icons.info_outlined),
                     title: Text(l10n.aiOperationResult),
                     subtitle: SelectableText(provider.lastOperationMessage!),
                     trailing: IconButton(

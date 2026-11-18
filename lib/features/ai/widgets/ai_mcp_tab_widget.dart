@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/mcp_models.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:onepanel_client/features/ai/mcp_server_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/shared/widgets/operations/module_empty_state_widget.dart';
@@ -82,7 +83,7 @@ class _AIMcpTabWidgetState extends State<AIMcpTabWidget> {
                     onPressed: provider.isMutating
                         ? null
                         : () => _showServerDialog(context),
-                    icon: const Icon(Icons.add),
+                    icon: const Icon(Icons.add_outlined),
                     label: Text(l10n.aiMcpCreate),
                   ),
                   OutlinedButton.icon(
@@ -94,7 +95,7 @@ class _AIMcpTabWidgetState extends State<AIMcpTabWidget> {
                   ),
                   OutlinedButton.icon(
                     onPressed: provider.isLoading ? null : provider.load,
-                    icon: const Icon(Icons.refresh),
+                    icon: const Icon(Icons.refresh_outlined),
                     label: Text(l10n.commonRefresh),
                   ),
                 ],
@@ -228,26 +229,12 @@ class _AIMcpTabWidgetState extends State<AIMcpTabWidget> {
       return;
     }
     if (action == 'delete') {
-      final confirmed = await showDialog<bool>(
-        context: context,
-        builder: (BuildContext dialogContext) => AlertDialog(
-          title: Text(l10n.commonDelete),
-          content: Text(l10n.aiMcpDeleteConfirm(server.name ?? '-')),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(l10n.commonCancel),
-            ),
-            FilledButton(
-              style: FilledButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.error,
-                foregroundColor: Theme.of(context).colorScheme.onError,
-              ),
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: Text(l10n.commonDelete),
-            ),
-          ],
-        ),
+      final confirmed = await ConfirmActionSheetWidget.show(
+        context,
+        title: l10n.commonDelete,
+        message: l10n.aiMcpDeleteConfirm(server.name ?? '-'),
+        confirmLabel: l10n.commonDelete,
+        isDestructive: true,
       );
       if (confirmed == true) {
         await provider.deleteServer(server.id ?? 0);
