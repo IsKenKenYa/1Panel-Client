@@ -5,11 +5,13 @@ struct WebsitesView: View {
     @StateObject private var viewModel = WebsitesViewModel()
     @EnvironmentObject var theme: ThemeManager
     @EnvironmentObject var translations: TranslationsManager
+    @EnvironmentObject private var navigation: ServerNavigation
 
     @State private var websiteToDelete: WebsiteModel?
     @State private var showDeleteConfirm = false
     @State private var toastText: String?
     @State private var showCreateSheet = false
+    @State private var launchDetailHookApplied = false
 
     var body: some View {
         Group {
@@ -18,7 +20,9 @@ struct WebsitesView: View {
             } else if viewModel.websites.isEmpty {
                 EmptyStateView(
                     icon: "globe",
-                    message: translations.get("websitesListEmptyTitle", fallback: "No websites found")
+                    message: translations.get("websitesListEmptyTitle", fallback: "No websites found"),
+                    description: translations.get("websitesEmptyHint",
+                                                  fallback: "Tap Add in the top toolbar to create your first website.")
                 )
             } else {
                 List {
@@ -36,9 +40,6 @@ struct WebsitesView: View {
                     }
                 }
                 .listStyle(.insetGrouped)
-                .navigationDestination(for: WebsiteModel.self) { website in
-                    WebsiteDetailView(websiteId: Int(website.originalId) ?? 0)
-                }
                 .refreshable {
                     viewModel.fetchWebsites()
                 }
@@ -51,12 +52,12 @@ struct WebsitesView: View {
                 Button {
                     showCreateSheet = true
                 } label: {
-                    Image(systemName: "plus")
+                    Label(translations.get("websitesLifecycleCreateTitle", fallback: "Create Website"), systemImage: "plus")
                 }
                 Button {
                     viewModel.fetchWebsites()
                 } label: {
-                    Image(systemName: "arrow.clockwise")
+                    Label(translations.get("commonRefresh", fallback: "Refresh"), systemImage: "arrow.clockwise")
                 }
                 .disabled(viewModel.isLoading)
             }
@@ -86,22 +87,23 @@ struct WebsitesView: View {
         } message: {
             Text(translations.get("deleteCannotUndoMessage", fallback: "This action cannot be undone."))
         }
-        .overlay(alignment: .bottom) {
-            if let toastText {
-                Text(toastText)
-                    .font(.footnote)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
-                    .background(.regularMaterial, in: Capsule())
-                    .padding(.bottom, 24)
-            }
-        }
+        .operationNotice(toastText)
         .onAppear {
             viewModel.fetchWebsites()
             if ProcessInfo.processInfo.environment["ONEPANEL_OPEN_ADD_WEBSITE"] == "1" {
                 showCreateSheet = true
             }
+            applyDetailHook()
         }
+    }
+
+    /// 走查钩子：`ONEPANEL_OPEN_WEBSITE_DETAIL=<网站 id>` 进列表后打开详情页。
+    private func applyDetailHook() {
+        guard !launchDetailHookApplied,
+              let raw = ProcessInfo.processInfo.environment["ONEPANEL_OPEN_WEBSITE_DETAIL"],
+              let id = Int(raw) else { return }
+        launchDetailHookApplied = true
+        navigation.path.append(ServerRoute.website(id: id))
     }
 
     private func toggle(_ website: WebsiteModel, id: Int, running: Bool) {
@@ -156,8 +158,14 @@ private struct WebsiteListRow: View {
     @EnvironmentObject var translations: TranslationsManager
 
     var body: some View {
-        NavigationLink(value: website) {
-            WebsiteRow(website: website)
+        Group {
+            if let id = Int(website.originalId) {
+                NavigationLink(value: ServerRoute.website(id: id)) {
+                    WebsiteRow(website: website)
+                }
+            } else {
+                WebsiteRow(website: website)
+            }
         }
         .tint(.primary)
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {

@@ -89,12 +89,18 @@ struct WebsiteDetailView: View {
                                 Text(domain.domain)
                                 Spacer()
                                 if let port = domain.port {
-                                    Text("\(port)")
+                                    // 直接插值 Int 会被当成富文本按本地化处理并插入千位分隔符（8090 → 8,090）。
+                                    Text(String(port))
                                         .foregroundColor(.secondary)
                                 }
                                 Text(translations.get("websitesDomainSslLabel", fallback: "SSL"))
                                     .font(.caption)
-                                    .foregroundColor(domain.ssl ? .green : .secondary)
+                                    .foregroundStyle(.secondary)
+                                Image(systemName: domain.ssl ? "checkmark.circle" : "minus.circle")
+                                    .foregroundStyle(domain.ssl ? Color.green : Color.secondary)
+                                    .accessibilityLabel(domain.ssl
+                                        ? translations.get("systemSettingsEnabled", fallback: "Enabled")
+                                        : translations.get("systemSettingsDisabled", fallback: "Disabled"))
                             }
                         }
                     }
@@ -118,7 +124,7 @@ struct WebsiteDetailView: View {
                 Button {
                     viewModel.fetch(id: websiteId)
                 } label: {
-                    Image(systemName: "arrow.clockwise")
+                    Label(translations.get("commonRefresh", fallback: "Refresh"), systemImage: "arrow.clockwise")
                 }
                 .disabled(viewModel.isLoading)
             }
