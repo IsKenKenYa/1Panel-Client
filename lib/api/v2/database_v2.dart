@@ -235,14 +235,18 @@ class DatabaseV2Api {
     );
   }
 
-  Future<Response<List<Map<String, dynamic>>>> deleteRemoteDatabaseCheck(
+  Future<Response<List<String>>> deleteRemoteDatabaseCheck(
     int id,
   ) async {
     final response = await _client.post<dynamic>(
       ApiConstants.buildApiPath('/databases/db/del/check'),
       data: {'id': id},
     );
-    return _mapListResponse(response);
+    final data = ApiResponseParser.unwrap(response.data);
+    final names = data == null
+        ? const <String>[]
+        : List<String>.from(data as List, growable: false);
+    return ApiResponseParser.withData(response, names);
   }
 
   Future<Response<void>> deleteRemoteDatabase(Map<String, dynamic> request) {

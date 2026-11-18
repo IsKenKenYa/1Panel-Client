@@ -3,20 +3,47 @@ import 'package:flutter/foundation.dart';
 import 'package:onepanel_client/data/models/paged_query.dart';
 
 import 'package:onepanel_client/api/v2/database_v2.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/network/api_client_manager.dart';
 import 'package:onepanel_client/data/models/common_models.dart';
 import 'package:onepanel_client/data/models/database_models.dart';
 import 'package:onepanel_client/data/models/database_option_models.dart';
 
 class DatabaseRepository {
-  DatabaseRepository({ApiClientManager? clientManager})
-      : _clientManager = clientManager ?? ApiClientManager.instance;
+  DatabaseRepository({ApiClientManager? clientManager, ApiConfig? config})
+      : _clientManager = clientManager ?? ApiClientManager.instance,
+        _config = config;
 
   final ApiClientManager _clientManager;
+  final ApiConfig? _config;
   static const String _remoteDatabaseTypes =
       'mysql,mariadb,postgresql,redis,redis-cluster';
 
-  Future<DatabaseV2Api> _getApi() => _clientManager.getDatabaseApi();
+  Future<DatabaseV2Api> _getApi() async {
+    final config = _config;
+    if (config == null) return _clientManager.getDatabaseApi();
+    return DatabaseV2Api(_clientManager.getClient(
+      config.id,
+      config.url,
+      config.apiKey,
+      allowInsecureTls: config.allowInsecureTls,
+    ));
+  }
+
+  Future<List<String>> checkRemoteDatabaseUnbind(int id) async {
+    final api = await _getApi();
+    final response = await api.deleteRemoteDatabaseCheck(id);
+    return response.data!;
+  }
+
+  Future<void> unbindRemoteDatabase(int id) async {
+    final api = await _getApi();
+    await api.deleteRemoteDatabase({
+      'id': id,
+      'deleteBackup': false,
+      'forceDelete': false,
+    });
+  }
 
   Future<List<DatabaseItemOption>> loadDatabaseItems(String type) async {
     final api = await _getApi();
