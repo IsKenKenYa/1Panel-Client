@@ -16,8 +16,10 @@ import '../../features/firewall/firewall_service.dart';
 import '../../features/monitoring/monitoring_service.dart';
 import '../../features/server/server_repository.dart';
 import '../../features/websites/services/websites_service.dart';
+import '../../data/models/app_models.dart';
 import '../../data/models/cronjob_list_models.dart';
 import '../../data/models/database_models.dart';
+import '../../data/repositories/website_repository.dart';
 import '../services/app_preferences_service.dart';
 import '../services/logger/logger_service.dart';
 import '../theme/ui_render_mode.dart';
@@ -70,6 +72,7 @@ class NativeChannelReadHandlers {
               'status': a.status,
               'version': a.version,
               'appId': a.appId,
+              'installId': a.id,
             })
         .toList();
   }
@@ -86,6 +89,118 @@ class NativeChannelReadHandlers {
               'createdAt': w.createdAt,
             })
         .toList();
+  }
+
+  /// 建站表单预载数据：分组、PHP 运行环境、可作父站点的网站。
+  /// 应用商店列表。参数：`{search?}`。
+  static Future<dynamic> getAppStore(dynamic arguments) async {
+    final service = AppService();
+    final search = (arguments['search'] as String?)?.trim() ?? '';
+    final response = await service.searchApps(AppSearchRequest(
+      page: 1,
+      pageSize: 100,
+      name: search.isEmpty ? null : search,
+      showCurrentArch: true,
+    ));
+    return response.items
+        .map((item) => {
+              'id': item.id,
+              'name': item.name,
+              'key': item.key,
+              'type': item.type,
+              'versions': item.versions,
+              'installed': item.installed,
+              'description': item.description,
+            })
+        .toList();
+  }
+
+  /// 应用版本列表。参数：`{key}`。
+  static Future<dynamic> getAppVersions(dynamic arguments) async {
+    final service = AppService();
+    final key = arguments['key'] as String;
+    final app = await service.getAppByKey(key);
+    return {
+      'versions': app.versions ?? const <String>[],
+      'type': app.type,
+    };
+  }
+
+  /// 安装表单：按应用与版本返回 appDetailId 与动态字段。
+  /// 参数：`{appId, version, type?}`。
+  static Future<dynamic> getAppInstallForm(dynamic arguments) async {
+    final service = AppService();
+    final appId = arguments['appId'].toString();
+    final version = arguments['version'] as String;
+    final type = arguments['type'] as String? ?? 'app';
+    final detail = await service.getAppDetail(appId, version, type);
+    final fields = detail.params?.formFields ?? const <AppFormField>[];
+    return {
+      'appDetailId': detail.id,
+      'fields': fields
+          .map((field) => {
+                'envKey': field.envKey,
+                'labelZh': field.labelZh,
+                'labelEn': field.labelEn,
+                'type': field.type,
+                'required': field.required,
+                'defaultValue': field.defaultValue?.toString(),
+                'values': field.values,
+              })
+          .toList(),
+    };
+  }
+
+  static Future<dynamic> getWebsiteCreateOptions(dynamic arguments) async {
+    final repository = WebsiteRepository();
+    final groups = await repository.listWebsiteGroups();
+    final runtimes = await repository.listPhpRuntimes();
+    final parents = await repository.listParentWebsites();
+    appLogger.d(
+      'website create options: groups=${groups.length} '
+      'runtimes=${runtimes.length} parents=${parents.length}',
+    );
+    return {
+      'groups': groups
+          .where((group) => group.id != null)
+          .map((group) => {'id': group.id, 'name': group.name ?? ''})
+          .toList(),
+      'runtimes': runtimes
+          .where((runtime) => runtime.id != null)
+          .map((runtime) => {'id': runtime.id, 'name': runtime.name ?? ''})
+          .toList(),
+      'parentWebsites': parents
+          .where((website) => website.id != null)
+          .map((website) => {
+                'id': website.id,
+                'primaryDomain': website.primaryDomain ?? '',
+              })
+          .toList(),
+    };
+  }
+
+  /// 网站详情。参数：`{id: int}`。
+  static Future<dynamic> getWebsiteDetail(dynamic arguments) async {
+    final rawId = arguments['id'];
+    final id = rawId is int ? rawId : int.parse(rawId.toString());
+    final repository = WebsiteRepository();
+    final website = await repository.getWebsiteDetail(id);
+    return {
+      'id': website.id,
+      'alias': website.alias,
+      'primaryDomain': website.primaryDomain,
+      'type': website.type,
+      'status': website.status,
+      'remark': website.remark,
+      'group': website.group,
+      'domains': website.domains
+          .map((domain) => {
+                'domain': domain.domain,
+                'port': domain.port,
+                'ssl': domain.ssl,
+              })
+          .toList(),
+    };
   }
 
   static Future<dynamic> getMonitoring(dynamic arguments) async {
@@ -123,6 +238,26 @@ class NativeChannelReadHandlers {
     }
   }
 
+  /// 容器日志（SSE 帧已由服务层剥离）。参数：`{name: String, tail?: String}`
+  static Future<dynamic> getContainerLogs(dynamic arguments) async {
+    final name = arguments?['name'] as String? ?? '';
+    final tail = arguments?['tail'] as String?;
+    try {
+      final service = ContainerService();
+      return await service.getContainerLogs(name, tail: tail);
+    } catch (e) {
+      appLogger.e('getContainerLogs failed: $e');
+      return '';
+    }
+  }
+
+  /// 容器 inspect（格式化 JSON）。参数：`{name}`。
+  static Future<dynamic> getContainerInspect(dynamic arguments) async {
+    final name = arguments['name'] as String;
+    final service = ContainerService();
+    return service.inspectContainerFormatted(name);
+  }
+
   static Future<String> getUIRenderMode() async {
     final prefs = AppPreferencesService();
     final mode = await prefs.loadUIRenderMode();
@@ -155,6 +290,7 @@ class NativeChannelReadHandlers {
     if (locale.languageCode == 'zh') {
       arbPath = 'lib/l10n/app_zh.arb';
     }
+    appLogger.d('translations served for locale ${locale.languageCode}');
     try {
       final jsonString = await rootBundle.loadString(arbPath);
       final Map<String, dynamic> translations = jsonDecode(jsonString);

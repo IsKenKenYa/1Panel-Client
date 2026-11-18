@@ -52,12 +52,24 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelReadHandlers.getFiles(arguments);
       case 'getApps':
         return NativeChannelReadHandlers.getApps(arguments);
+      case 'getAppStore':
+        return NativeChannelReadHandlers.getAppStore(arguments);
+      case 'getAppVersions':
+        return NativeChannelReadHandlers.getAppVersions(arguments);
+      case 'getAppInstallForm':
+        return NativeChannelReadHandlers.getAppInstallForm(arguments);
       case 'getWebsites':
         return NativeChannelReadHandlers.getWebsites(arguments);
+      case 'getWebsiteDetail':
+        return NativeChannelReadHandlers.getWebsiteDetail(arguments);
       case 'getMonitoring':
         return NativeChannelReadHandlers.getMonitoring(arguments);
       case 'getContainers':
         return NativeChannelReadHandlers.getContainers(arguments);
+      case 'getContainerLogs':
+        return NativeChannelReadHandlers.getContainerLogs(arguments);
+      case 'getContainerInspect':
+        return NativeChannelReadHandlers.getContainerInspect(arguments);
       case 'getSettings':
         return NativeChannelReadHandlers.getSettings(arguments);
       case 'getTranslations':
@@ -78,9 +90,12 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelReadHandlers.getBackups(arguments);
       case 'getAIModels':
         return NativeChannelReadHandlers.getAIModels(arguments);
+      case 'getWebsiteCreateOptions':
+        return NativeChannelReadHandlers.getWebsiteCreateOptions(arguments);
 
       // ── Write: 服务器 ───────────────────────────────────────────────────
-      // ── Write: 服务器 ───────────────────────────────────────────────────
+      case 'seedDebugConfig':
+        return NativeChannelWriteHandlers.seedDebugConfig(arguments);
       case 'addServer':
         return NativeChannelWriteHandlers.addServer(arguments);
 
@@ -88,8 +103,12 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.connectServer(arguments);
       case 'deleteServer':
         return NativeChannelWriteHandlers.deleteServer(arguments);
+      case 'updateServer':
+        return NativeChannelWriteHandlers.updateServer(arguments);
 
       // ── Write: 网站 ─────────────────────────────────────────────────────
+      case 'createWebsite':
+        return NativeChannelWriteHandlers.createWebsite(arguments);
       case 'toggleWebsiteStatus':
         return NativeChannelWriteHandlers.toggleWebsiteStatus(arguments);
       case 'deleteWebsite':
@@ -110,12 +129,18 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.stopApp(arguments);
       case 'uninstallApp':
         return NativeChannelWriteHandlers.uninstallApp(arguments);
+      case 'updateApp':
+        return NativeChannelWriteHandlers.updateApp(arguments);
+      case 'installApp':
+        return NativeChannelWriteHandlers.installApp(arguments);
 
       // ── Write: 文件 ─────────────────────────────────────────────────────
       case 'deleteFile':
         return NativeChannelWriteHandlers.deleteFile(arguments);
       case 'createFolder':
         return NativeChannelWriteHandlers.createFolder(arguments);
+      case 'renameFile':
+        return NativeChannelWriteHandlers.renameFile(arguments);
 
       // ── Write: 定时任务 ─────────────────────────────────────────────────
       case 'toggleCronJobStatus':

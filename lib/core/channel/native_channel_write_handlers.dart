@@ -9,8 +9,13 @@ import '../../features/firewall/firewall_service.dart';
 import '../../features/server/server_repository.dart';
 import '../../features/websites/services/websites_service.dart';
 import '../../core/config/api_config.dart';
+import '../../core/config/debug_seed_config.dart';
+import 'package:flutter/foundation.dart';
+import '../../data/models/app_models.dart';
 import '../../data/models/backup_account_models.dart';
 import '../../data/models/firewall_models.dart';
+import '../../data/models/website_models.dart';
+import '../../data/repositories/website_repository.dart';
 import '../services/logger/logger_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,6 +27,25 @@ Map<String, dynamic> _err(Object e) => {'success': false, 'error': e.toString()}
 /// 被 [NativeChannelManager] 的 dispatch switch 调用。
 class NativeChannelWriteHandlers {
   // ── 服务器 ────────────────────────────────────────────────────────────────
+
+  /// 调试走查种子：原生壳把 `ONEPANEL_SEED_*` 环境变量经通道转发到这里，
+  /// 通过正式配置存储写入服务器与 API Key。参数：`{url, apiKey, name?}`。
+  static Future<Map<String, dynamic>> seedDebugConfig(dynamic arguments) async {
+    if (!kDebugMode) {
+      return _err(StateError('seedDebugConfig 仅调试构建可用'));
+    }
+    try {
+      await applySeedConfig(
+        url: arguments['url'] as String,
+        apiKey: arguments['apiKey'] as String,
+        name: arguments['name'] as String?,
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('seedDebugConfig failed: $e');
+      return _err(e);
+    }
+  }
 
   /// 新增服务器配置。参数：`{name: String, url: String, apiKey: String}`
   static Future<Map<String, dynamic>> addServer(dynamic arguments) async {
@@ -71,7 +95,82 @@ class NativeChannelWriteHandlers {
     }
   }
 
+  /// 更新服务器配置（名称/地址/API 密钥）。参数：`{id, name, url, apiKey}`
+  static Future<Map<String, dynamic>> updateServer(dynamic arguments) async {
+    try {
+      final id = arguments['id'] as String;
+      final name = arguments['name'] as String;
+      final url = arguments['url'] as String;
+      final apiKey = (arguments['apiKey'] as String?) ?? '';
+      final configs = await ApiConfigManager.getConfigs();
+      final existing = configs.firstWhere((c) => c.id == id);
+      final updated = ApiConfig(
+        id: existing.id,
+        name: name,
+        url: url,
+        // 编辑时 API Key 留空表示沿用原值。
+        apiKey: apiKey.isEmpty ? existing.apiKey : apiKey,
+        tokenValidity: existing.tokenValidity,
+        allowInsecureTls: existing.allowInsecureTls,
+        isDefault: existing.isDefault,
+        lastUsed: existing.lastUsed,
+      );
+      await ApiConfigManager.saveConfig(updated);
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateServer failed: $e');
+      return _err(e);
+    }
+  }
+
   // ── 网站 ────────────────────────────────────────────────────────────────
+
+  /// 创建网站。参数：
+  /// `{alias, type, primaryDomain, groupId, remark?}`
+  /// type=runtime 追加 `{runtimeId, siteDir?}`；
+  /// type=proxy 追加 `{proxyType, proxy, port?}`；
+  /// type=subsite 追加 `{parentWebsiteId}`。
+  static Future<Map<String, dynamic>> createWebsite(dynamic arguments) async {
+    try {
+      final alias = (arguments['alias'] as String).trim();
+      final type = arguments['type'] as String;
+      final primaryDomain = (arguments['primaryDomain'] as String).trim();
+      final groupId = _toInt(arguments['groupId']);
+      final remark = (arguments['remark'] as String?)?.trim() ?? '';
+      final portRaw = arguments['port'];
+      final port =
+          portRaw == null ? null : int.tryParse(portRaw.toString());
+      final siteDir = (arguments['siteDir'] as String?)?.trim() ?? '';
+      final proxy = (arguments['proxy'] as String?)?.trim() ?? '';
+      final repository = WebsiteRepository();
+      await repository.preCheckWebsite({});
+      await repository.createWebsite(WebsiteCreate(
+        alias: alias,
+        name: primaryDomain,
+        remark: remark.isEmpty ? null : remark,
+        type: type,
+        webSiteGroupId: groupId,
+        // 服务端校验 appType 必须是 new 或 installed；建站流程默认复用已安装应用。
+        appType: 'installed',
+        runtimeId: type == 'runtime' ? _toInt(arguments['runtimeId']) : null,
+        siteDir: siteDir.isEmpty ? null : siteDir,
+        proxyType:
+            type == 'proxy' ? (arguments['proxyType'] as String? ?? 'http') : null,
+        proxy: type == 'proxy' ? proxy : null,
+        port: port,
+        parentWebsiteId:
+            type == 'subsite' ? _toInt(arguments['parentWebsiteId']) : null,
+        domains: [
+          WebsiteDomain(domain: primaryDomain, port: port, ssl: false),
+        ],
+        taskId: DateTime.now().millisecondsSinceEpoch.toString(),
+      ));
+      return _ok();
+    } catch (e) {
+      appLogger.e('createWebsite failed: $e');
+      return _err(e);
+    }
+  }
 
   /// 切换网站运行状态。参数：`{id: int, currentStatus: String}`
   static Future<Map<String, dynamic>> toggleWebsiteStatus(
@@ -182,6 +281,19 @@ class NativeChannelWriteHandlers {
     }
   }
 
+  /// 更新应用。参数：`{installId: String}`
+  static Future<Map<String, dynamic>> updateApp(dynamic arguments) async {
+    try {
+      final installId = arguments['installId'].toString();
+      final service = AppService();
+      await service.updateApp(installId);
+      return _ok();
+    } catch (e) {
+      appLogger.e('updateApp failed: $e');
+      return _err(e);
+    }
+  }
+
   /// 卸载应用。参数：`{installId: String}`
   static Future<Map<String, dynamic>> uninstallApp(dynamic arguments) async {
     try {
@@ -191,6 +303,44 @@ class NativeChannelWriteHandlers {
       return _ok();
     } catch (e) {
       appLogger.e('uninstallApp failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 安装应用。参数：`{appDetailId, name, type, params?}`，
+  /// 高级选项追加 `{containerName?, cpuQuota?, memoryLimit?, memoryUnit?, services?}`。
+  static Future<Map<String, dynamic>> installApp(dynamic arguments) async {
+    try {
+      final appDetailId = _toInt(arguments['appDetailId']);
+      final name = (arguments['name'] as String).trim();
+      final type = arguments['type'] as String?;
+      final params = (arguments['params'] as Map?)?.cast<String, dynamic>();
+      final containerName = arguments['containerName'] as String?;
+      final cpuQuotaRaw = arguments['cpuQuota'];
+      final memoryLimitRaw = arguments['memoryLimit'];
+      final memoryUnit = arguments['memoryUnit'] as String?;
+      final services = (arguments['services'] as Map?)?.cast<String, String>();
+      final service = AppService();
+      await service.installApp(AppInstallCreateRequest(
+        appDetailId: appDetailId,
+        name: name,
+        type: type,
+        advanced: arguments['advanced'] as bool? ?? false,
+        containerName: containerName,
+        cpuQuota:
+            cpuQuotaRaw == null ? null : double.tryParse(cpuQuotaRaw.toString()),
+        memoryLimit: memoryLimitRaw == null
+            ? null
+            : double.tryParse(memoryLimitRaw.toString()),
+        memoryUnit: memoryUnit,
+        services: services,
+        params: params,
+        hostMode: false,
+        allowPort: true,
+      ));
+      return _ok();
+    } catch (e) {
+      appLogger.e('installApp failed: $e');
       return _err(e);
     }
   }
@@ -220,6 +370,20 @@ class NativeChannelWriteHandlers {
       return _ok();
     } catch (e) {
       appLogger.e('createFolder failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 重命名文件或目录。参数：`{oldPath: String, newPath: String}`
+  static Future<Map<String, dynamic>> renameFile(dynamic arguments) async {
+    try {
+      final oldPath = arguments['oldPath'] as String;
+      final newPath = arguments['newPath'] as String;
+      final service = FileBrowserService();
+      await service.renameFile(oldPath, newPath);
+      return _ok();
+    } catch (e) {
+      appLogger.e('renameFile failed: $e');
       return _err(e);
     }
   }
