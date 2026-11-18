@@ -17,7 +17,7 @@ void main() {
       expect(result, isA<Map<dynamic, dynamic>>());
       final map = result as Map<dynamic, dynamic>;
       // golden：手抄自 app_zh.arb。
-      expect(map['settingsUIRenderMode'], 'UI 渲染模式');
+      expect(map['settingsUIRenderMode'], '界面风格');
       expect(map['settingsPageTitle'], '设置');
       expect(map.keys.any((k) => k.toString().startsWith('@')), isFalse);
     });
@@ -28,7 +28,7 @@ void main() {
       final result = await NativeChannelReadHandlers.getTranslations();
 
       final map = result as Map<dynamic, dynamic>;
-      expect(map['settingsUIRenderMode'], 'UI Render Mode');
+      expect(map['settingsUIRenderMode'], 'Interface style');
     });
 
     test('system locale (null pref) falls back by platform language',

@@ -62,13 +62,13 @@ class _FakeToolboxDeviceService extends ToolboxDeviceService {
   }
 
   @override
-  Future<void> verifyDns(String dns) async {
+  Future<void> verifyDns(String key, String value) async {
     if (failNextDns) {
       failNextDns = false;
       throw Exception('mock dns verify failure');
     }
     verifyDnsCallCount += 1;
-    lastDns = dns;
+    lastDns = value;
   }
 
   @override

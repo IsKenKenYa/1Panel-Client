@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/core/platform/runner_data_path.dart';
 import 'package:shared_preferences_windows/shared_preferences_windows.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
+import 'package:path/path.dart' as p;
 
 void main() {
   group('RunnerDataPath.resolveRunnerSupportDirectory', () {
@@ -10,7 +11,15 @@ void main() {
         appDataDir: r'C:\Users\u\AppData\Roaming',
       );
 
-      expect(result, r'C:\Users\u\AppData\Roaming\IsKenKenYa\1Panel Client');
+      // 实现按当前平台 pathSeparator 拼接，断言与平台无关地核对 segment 序列。
+      expect(
+        result,
+        [
+          r'C:\Users\u\AppData\Roaming',
+          'IsKenKenYa',
+          '1Panel Client',
+        ].join(p.context.separator),
+      );
     });
 
     test('APPDATA 缺失时返回 null', () {
