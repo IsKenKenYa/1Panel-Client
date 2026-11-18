@@ -21,6 +21,7 @@ import 'package:onepanel_client/features/files/mounts_page.dart';
 import 'package:onepanel_client/features/files/recycle_bin_page.dart';
 import 'package:onepanel_client/features/files/upload_history_page.dart';
 import 'package:onepanel_client/features/files/transfer_manager_page.dart';
+import 'package:onepanel_client/features/files/widgets/file_list_item.dart';
 import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 import 'package:onepanel_client/features/files/widgets/dialogs/batch_copy_dialog.dart';
 import 'package:onepanel_client/features/files/widgets/dialogs/batch_move_dialog.dart';

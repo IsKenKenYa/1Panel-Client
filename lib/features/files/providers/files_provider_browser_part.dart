@@ -84,10 +84,10 @@ extension FilesProviderBrowserMixin on FilesProvider {
     }
   }
 
-  Future<void> deleteFile(String path) async {
+  Future<void> deleteFile(String path, {bool? isDir}) async {
     appLogger.dWithPackage('files_provider', 'deleteFile: path=$path');
     try {
-      await _service.deleteFiles(<String>[path]);
+      await _service.deleteFiles(<String>[path], isDir: isDir);
       appLogger.iWithPackage('files_provider', 'deleteFile: 成功');
       await refresh();
     } catch (e, stackTrace) {

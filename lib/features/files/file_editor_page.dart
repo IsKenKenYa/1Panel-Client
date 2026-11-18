@@ -8,6 +8,8 @@ import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 
+enum _EditorExitAction { discard, save }
+
 class FileEditorPage extends StatefulWidget {
   final String filePath;
   final String fileName;
@@ -29,10 +31,11 @@ class _FileEditorPageState extends State<FileEditorPage> {
   bool _isLoading = true;
   bool _isSaving = false;
   bool _hasChanges = false;
+  bool _confirmingExit = false;
   String? _error;
   String _encoding = 'utf-8';
   String _originalContent = '';
-  FilesService? _service;
+  final _service = FilesService();
 
   static const List<String> _availableEncodings = [
     'utf-8',
@@ -46,22 +49,11 @@ class _FileEditorPageState extends State<FileEditorPage> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
+    _originalContent = widget.initialContent ?? '';
+    _controller = TextEditingController(text: _originalContent);
     _controller.addListener(_onTextChanged);
-    _initService();
-  }
-
-  Future<void> _initService() async {
-    _service = FilesService();
-    await _service!.getCurrentServer();
-
-    if (widget.initialContent != null) {
-      _originalContent = widget.initialContent!;
-      _controller.text = _originalContent;
-      setState(() {
-        _isLoading = false;
-      });
-    } else {
+    _isLoading = widget.initialContent == null;
+    if (_isLoading) {
       _loadContent();
     }
   }
@@ -91,12 +83,8 @@ class _FileEditorPageState extends State<FileEditorPage> {
     });
 
     try {
-      if (_service == null) {
-        _service = FilesService();
-        await _service!.getCurrentServer();
-      }
       final content =
-          await _service!.readFile(widget.filePath, encoding: _encoding);
+          await _service.readFile(widget.filePath, encoding: _encoding);
       appLogger.iWithPackage(
           'file_editor', '_loadContent: 成功加载, 长度=${content.length}');
       if (mounted) {
@@ -119,31 +107,31 @@ class _FileEditorPageState extends State<FileEditorPage> {
     }
   }
 
-  Future<void> _saveContent() async {
-    if (_isSaving) return;
+  Future<bool> _saveContent() async {
+    if (_isSaving || !_hasChanges) return false;
 
     appLogger.dWithPackage(
         'file_editor', '_saveContent: path=${widget.filePath}');
+    final savedContent = _controller.text;
     setState(() {
       _isSaving = true;
     });
 
     try {
-      if (_service == null) {
-        _service = FilesService();
-        await _service!.getCurrentServer();
-      }
-      await _service!
-          .saveFile(widget.filePath, _controller.text, encoding: _encoding);
+      await _service.saveFile(
+        widget.filePath,
+        savedContent,
+        encoding: _encoding,
+      );
       appLogger.iWithPackage('file_editor', '_saveContent: 保存成功');
-      if (mounted) {
-        setState(() {
-          _isSaving = false;
-          _hasChanges = false;
-          _originalContent = _controller.text;
-        });
-        SnackBarUtils.showSuccess(context, context.l10n.commonSaveSuccess);
-      }
+      if (!mounted) return false;
+      setState(() {
+        _isSaving = false;
+        _originalContent = savedContent;
+        _hasChanges = _controller.text != savedContent;
+      });
+      SnackBarUtils.showSuccess(context, context.l10n.commonSaveSuccess);
+      return !_hasChanges;
     } catch (e, stackTrace) {
       appLogger.eWithPackage('file_editor', '_saveContent: 保存失败',
           error: e, stackTrace: stackTrace);
@@ -151,43 +139,55 @@ class _FileEditorPageState extends State<FileEditorPage> {
         setState(() {
           _isSaving = false;
         });
-        SnackBarUtils.showErrorWithDebugDetails(context, context.l10n.commonSaveFailed, error: e, stackTrace: stackTrace);
+        SnackBarUtils.showErrorWithDebugDetails(
+          context,
+          context.l10n.commonSaveFailed,
+          error: e,
+          stackTrace: stackTrace,
+        );
       }
+      return false;
     }
   }
 
-  // Shows a save/discard/cancel dialog when there are unsaved changes.
-  // Returns true only if the user explicitly chose to leave (discard or save+leave).
-  Future<bool> _onWillPop() async {
-    if (!_hasChanges) return true;
+  Future<void> _handlePop(bool didPop, Object? _) async {
+    if (didPop || _isSaving || _confirmingExit) return;
 
-    final l10n = context.l10n;
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.commonSave),
-        content: Text(l10n.filesEditorUnsaved),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.commonCancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.commonDelete),
-          ),
-          FilledButton(
-            onPressed: () async {
-              Navigator.pop(context, true);
-              await _saveContent();
-            },
-            child: Text(l10n.commonSave),
-          ),
-        ],
-      ),
-    );
+    _confirmingExit = true;
+    try {
+      final l10n = context.l10n;
+      final action = await showDialog<_EditorExitAction>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(l10n.filesEditorUnsaved),
+          content: Text(widget.fileName),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(l10n.commonCancel),
+            ),
+            TextButton(
+              onPressed: () =>
+                  Navigator.pop(context, _EditorExitAction.discard),
+              child: Text(l10n.filesEditorDiscardChanges),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, _EditorExitAction.save),
+              child: Text(l10n.commonSave),
+            ),
+          ],
+        ),
+      );
 
-    return result ?? false;
+      if (!mounted) return;
+      final shouldPop = action == _EditorExitAction.discard ||
+          (action == _EditorExitAction.save && await _saveContent());
+      if (shouldPop && mounted && ModalRoute.of(context)?.isCurrent == true) {
+        Navigator.of(context).pop();
+      }
+    } finally {
+      _confirmingExit = false;
+    }
   }
 
   @override
@@ -195,16 +195,9 @@ class _FileEditorPageState extends State<FileEditorPage> {
     final l10n = context.l10n;
     final theme = Theme.of(context);
 
-    return PopScope(
-      canPop: !_hasChanges,
-      onPopInvokedWithResult: (didPop, result) async {
-        if (didPop) return;
-        final navigator = Navigator.of(context);
-        final shouldPop = await _onWillPop();
-        if (shouldPop && mounted) {
-          navigator.pop();
-        }
-      },
+    return PopScope<Object?>(
+      canPop: !_hasChanges && !_isSaving,
+      onPopInvokedWithResult: _handlePop,
       child: _buildShortcutWrapper(
         Scaffold(
           appBar: AppBar(
@@ -267,6 +260,7 @@ class _FileEditorPageState extends State<FileEditorPage> {
 
   Widget _buildEncodingSelector(ThemeData theme, dynamic l10n) {
     return PopupMenuButton<String>(
+      enabled: !_isLoading && !_isSaving,
       tooltip: l10n.filesEditorEncoding,
       icon: const Icon(Icons.text_fields),
       onSelected: (value) {
@@ -409,7 +403,7 @@ class _FileEditorPageState extends State<FileEditorPage> {
   Widget _buildMoreActions(ThemeData theme, dynamic l10n) {
     return IconButton(
       icon: const Icon(Icons.refresh_outlined),
-      onPressed: _loadContent,
+      onPressed: _isLoading || _isSaving ? null : _loadContent,
       tooltip: l10n.filesReload,
     );
   }

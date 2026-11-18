@@ -52,8 +52,7 @@ extension _FilesViewItemOpeners on _FilesViewState {
         showCreateLinkDialog(context, provider, file.path);
         break;
       case 'delete':
-        provider.toggleSelection(file.path);
-        showDeleteConfirmDialog(context, provider, l10n);
+        showDeleteConfirmDialog(context, provider, l10n, file: file);
         break;
     }
   }

@@ -32,15 +32,16 @@ extension _FilesViewContent on _FilesViewState {
           const SizedBox(height: 8),
           Text(l10n.filesEmptyDesc, textAlign: TextAlign.center),
           const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 8,
+            runSpacing: 8,
             children: [
               FilledButton.icon(
                 onPressed: () => showCreateDirectoryDialog(context, provider),
                 icon: const Icon(Icons.create_new_folder_outlined),
                 label: Text(l10n.filesActionNewFolder),
               ),
-              const SizedBox(width: 8),
               OutlinedButton.icon(
                 onPressed: () => showCreateFileDialog(context, provider),
                 icon: const Icon(Icons.note_add_outlined),

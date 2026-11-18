@@ -93,7 +93,7 @@ extension _FilesViewNavigation on _FilesViewState {
       ),
       child: Row(
         children: [
-          Text('${provider.data.selectionCount} ${l10n.filesSelected}'),
+          Text(l10n.filesSelectedCount(provider.data.selectionCount)),
           const Spacer(),
           IconButton(
             icon: const Icon(Icons.folder_zip_outlined),

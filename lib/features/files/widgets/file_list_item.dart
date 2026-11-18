@@ -22,6 +22,19 @@ class FileListItem extends StatelessWidget {
   final VoidCallback? onLongPress;
   final void Function(String action)? onAction;
 
+  static const menuConstraints = BoxConstraints(minWidth: 200, maxHeight: 420);
+
+  static Widget actionMenu({
+    required PopupMenuItemBuilder<String> itemBuilder,
+    PopupMenuItemSelected<String>? onSelected,
+  }) {
+    return PopupMenuButton<String>(
+      constraints: menuConstraints,
+      itemBuilder: itemBuilder,
+      onSelected: onSelected,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -81,9 +94,7 @@ class FileListItem extends StatelessWidget {
             color: colorScheme.onSurfaceVariant,
           ),
         ),
-        trailing: PopupMenuButton<String>(
-          // 文件菜单超过 10 项，限制高度避免紧凑窗口下铺满全屏。
-          constraints: const BoxConstraints(minWidth: 200, maxHeight: 420),
+        trailing: actionMenu(
           onSelected: onAction,
           itemBuilder: (context) =>
               _buildMenuItems(context, l10n, colorScheme, isDir),

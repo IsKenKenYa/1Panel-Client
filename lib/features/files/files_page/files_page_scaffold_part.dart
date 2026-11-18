@@ -6,22 +6,36 @@ extension _FilesViewScaffold on _FilesViewState {
     if (spec.isDesktop) {
       return _buildDesktopScaffold(context);
     }
-    if (spec.isTablet) {
-      return _buildTabletScaffold(context);
-    }
-    return _buildMobileScaffold(context);
+    final provider = context.watch<FilesProvider>();
+    final path = provider.data.currentPath;
+    final inSubdirectory = path.isNotEmpty && path != '/';
+    final canPopRoute = Navigator.canPop(context);
+
+    return PopScope(
+      canPop: !inSubdirectory && (canPopRoute || spec.isTablet),
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && inSubdirectory) {
+          provider.navigateUp();
+        }
+      },
+      child: spec.isTablet
+          ? _buildTabletScaffold(context, showDirectoryBack: inSubdirectory)
+          : _buildMobileScaffold(
+              context,
+              showBack: canPopRoute || inSubdirectory,
+              showSearch: canPopRoute,
+            ),
+    );
   }
 
-  Widget _buildMobileScaffold(BuildContext context) {
+  Widget _buildMobileScaffold(
+    BuildContext context, {
+    required bool showBack,
+    required bool showSearch,
+  }) {
     final l10n = context.l10n;
     final theme = Theme.of(context);
-    final canPop = Navigator.of(context).canPop();
-    final provider = context.watch<FilesProvider>();
-    // 目录导航走 provider 内部状态而非 Navigator，子目录层级也要显示返回键。
-    final inSubdirectory =
-        provider.data.currentPath.isNotEmpty &&
-            provider.data.currentPath != '/';
-    final showBack = canPop || inSubdirectory;
+    final provider = context.read<FilesProvider>();
 
     return Shortcuts(
       shortcuts: {
@@ -53,29 +67,10 @@ extension _FilesViewScaffold on _FilesViewState {
         },
         child: Focus(
           autofocus: true,
-          child: PopScope(
-          canPop: canPop || false,
-          onPopInvokedWithResult: (didPop, _) {
-            if (didPop) return;
-            if (!canPop && inSubdirectory) {
-              provider.navigateUp();
-            }
-          },
           child: Scaffold(
             appBar: AppBar(
               leading: showBack
-                  ? IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      onPressed: () {
-                        if (canPop) {
-                          Navigator.of(context).maybePop();
-                        } else if (inSubdirectory) {
-                          provider.navigateUp();
-                        }
-                      },
-                      tooltip:
-                          MaterialLocalizations.of(context).backButtonTooltip,
-                    )
+                  ? const BackButton()
                   : buildShellDrawerLeading(
                       context,
                       key: const Key('shell-drawer-menu-button'),
@@ -98,7 +93,7 @@ extension _FilesViewScaffold on _FilesViewState {
                 ],
               ),
               actions: [
-                if (canPop)
+                if (showSearch)
                   IconButton(
                     icon: const Icon(Icons.search),
                     onPressed: () => showSearchDialog(context),
@@ -127,7 +122,6 @@ extension _FilesViewScaffold on _FilesViewState {
             bottomNavigationBar: !provider.data.hasSelection
                 ? const SizedBox.shrink()
                 : _buildSelectionBar(context, provider, l10n),
-          ),
           ),
         ),
       ),
@@ -224,10 +218,13 @@ extension _FilesViewScaffold on _FilesViewState {
     );
   }
 
-  Widget _buildTabletScaffold(BuildContext context) {
+  Widget _buildTabletScaffold(
+    BuildContext context, {
+    required bool showDirectoryBack,
+  }) {
     final l10n = context.l10n;
     final theme = Theme.of(context);
-    final provider = context.watch<FilesProvider>();
+    final provider = context.read<FilesProvider>();
     final spec = AdaptiveLayoutSpec.of(context);
 
     return Shortcuts(
@@ -262,6 +259,7 @@ extension _FilesViewScaffold on _FilesViewState {
           autofocus: true,
           child: Scaffold(
             appBar: AppBar(
+              leading: showDirectoryBack ? const BackButton() : null,
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
