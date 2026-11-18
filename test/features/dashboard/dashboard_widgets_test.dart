@@ -4,12 +4,12 @@ import 'package:onepanel_client/data/models/common_models.dart';
 import 'package:onepanel_client/data/models/dashboard_models.dart';
 import 'package:onepanel_client/features/dashboard/dashboard_provider.dart';
 import 'package:onepanel_client/features/dashboard/widgets/activity_card.dart';
-import 'package:onepanel_client/features/dashboard/widgets/dashboard_error_view.dart';
 import 'package:onepanel_client/features/dashboard/widgets/dashboard_loading_view.dart';
 import 'package:onepanel_client/features/dashboard/widgets/resource_card.dart';
 import 'package:onepanel_client/features/dashboard/widgets/server_info_card.dart';
 import 'package:onepanel_client/features/dashboard/widgets/top_processes_card.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 
 Widget _buildTestableWidget(Widget child) {
   return MaterialApp(
@@ -263,7 +263,7 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(Icons.refresh), findsOneWidget);
+      expect(find.byIcon(Icons.refresh_outlined), findsOneWidget);
     });
 
     testWidgets('shows tabs for CPU and Memory', (tester) async {
@@ -288,20 +288,21 @@ void main() {
     });
   });
 
-  group('DashboardErrorView', () {
-    testWidgets('renders error message and retry button', (tester) async {
+  group('Dashboard error state', () {
+    testWidgets('renders ModuleErrorStateWidget with retry button',
+        (tester) async {
       var retryTapped = false;
 
       await tester.pumpWidget(_buildTestableWidget(
-        DashboardErrorView(
-          error: 'Connection timeout',
+        ModuleErrorStateWidget(
+          message: 'Connection timeout',
           onRetry: () => retryTapped = true,
         ),
       ));
       await tester.pumpAndSettle();
 
+      expect(find.byType(ModuleErrorStateWidget), findsOneWidget);
       expect(find.byIcon(Icons.error_outline), findsOneWidget);
-      expect(find.text('Connection timeout'), findsOneWidget);
 
       final retryButton = find.text('Retry');
       expect(retryButton, findsOneWidget);

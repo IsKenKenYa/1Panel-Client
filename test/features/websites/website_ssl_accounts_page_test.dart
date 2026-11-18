@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/features/websites/pages/website_ssl_accounts_page.dart';
 import 'package:onepanel_client/features/websites/providers/website_ssl_accounts_provider.dart';
 import 'package:onepanel_client/features/websites/services/website_account_service.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 
 class _FakeWebsiteAccountService extends WebsiteAccountService {
@@ -194,7 +195,7 @@ void main() {
 
     // CA tab is default; check action icons are present
     expect(find.byIcon(Icons.vpn_key_outlined), findsOneWidget);
-    expect(find.byIcon(Icons.refresh), findsAtLeastNWidgets(1));
+    expect(find.byIcon(Icons.refresh_outlined), findsAtLeastNWidgets(1));
     expect(find.byIcon(Icons.download_outlined), findsOneWidget);
     expect(find.byIcon(Icons.delete_outline), findsOneWidget);
   });
@@ -294,11 +295,11 @@ void main() {
     await tester.tap(find.byIcon(Icons.delete_outline));
     await tester.pumpAndSettle();
 
-    expect(find.byType(AlertDialog), findsOneWidget);
+    expect(find.byType(ConfirmActionSheetWidget), findsOneWidget);
 
     await tester.tap(
       find.descendant(
-        of: find.byType(AlertDialog),
+        of: find.byType(ConfirmActionSheetWidget),
         matching: find.widgetWithText(FilledButton, 'Delete'),
       ),
     );
@@ -319,11 +320,11 @@ void main() {
     await tester.tap(find.byIcon(Icons.delete_outline));
     await tester.pumpAndSettle();
 
-    expect(find.byType(AlertDialog), findsOneWidget);
+    expect(find.byType(ConfirmActionSheetWidget), findsOneWidget);
 
     await tester.tap(
       find.descendant(
-        of: find.byType(AlertDialog),
+        of: find.byType(ConfirmActionSheetWidget),
         matching: find.widgetWithText(FilledButton, 'Delete'),
       ),
     );

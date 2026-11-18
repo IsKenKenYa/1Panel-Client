@@ -134,7 +134,7 @@ void main() {
     await tester.tap(find.text('php-8.3').last);
     await tester.pumpAndSettle();
 
-    final saveButtons = find.byIcon(Icons.save);
+    final saveButtons = find.byIcon(Icons.save_outlined);
     await tester.ensureVisible(saveButtons.last);
     await tester.tap(saveButtons.last);
     await tester.pumpAndSettle();

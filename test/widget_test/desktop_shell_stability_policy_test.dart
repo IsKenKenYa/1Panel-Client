@@ -70,8 +70,8 @@ void main() {
     final toolboxCenter = await File(
       'lib/features/toolbox/pages/toolbox_center_page.dart',
     ).readAsString();
-    final appDrawer = await File(
-      'lib/widgets/navigation/app_drawer.dart',
+    final shellHost = await File(
+      'lib/features/shell/app_shell_page.dart',
     ).readAsString();
     final quickActions = await File(
       'lib/features/dashboard/widgets/quick_actions_card.dart',
@@ -152,8 +152,9 @@ void main() {
         isTrue);
     expect(toolboxCenter.contains('openRouteRespectingShell(context, AppRoutes.toolboxClam)'),
         isTrue);
-    expect(appDrawer.contains('openRouteRespectingShell(context, AppRoutes.server)'),
-        isTrue);
+    expect(shellHost.contains('MobileMoreModulesDrawer('), isTrue);
+    expect(shellHost.contains('_handleModuleSelection('), isTrue);
+    expect(shellHost.contains('_openStandaloneModule('), isTrue);
     expect(
       quickActions.contains('openRouteRespectingShell(context, AppRoutes.backups)'),
       isTrue,

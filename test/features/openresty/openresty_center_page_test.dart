@@ -3,9 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/features/openresty/pages/openresty_center_page.dart';
 import 'package:onepanel_client/features/openresty/providers/openresty_provider.dart';
 import 'package:onepanel_client/features/openresty/services/openresty_service.dart';
-import 'package:onepanel_client/features/openresty/widgets/openresty_error_view.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 import 'package:onepanel_client/shared/security_gateway/security_gateway_snapshot_store.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -111,7 +111,7 @@ void main() {
 
     expect(find.byKey(const Key('openresty-not-installed-empty')),
         findsOneWidget);
-    expect(find.byType(OpenRestyErrorView), findsNothing);
+    expect(find.byType(ModuleErrorStateWidget), findsNothing);
     expect(find.text('Go to App Store'), findsOneWidget);
   });
 }
