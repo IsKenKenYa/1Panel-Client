@@ -144,8 +144,8 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
         // 创建页 pop(true) 表示建站成功；返回后刷新列表，
         // 否则统计与列表停留在旧数据。
         onPressed: () async {
-          final created =
-              await openRouteRespectingShell(context, AppRoutes.websiteCreate);
+          // 保持单行：desktop_shell_stability_policy_test 以完整调用串做守卫。
+          final created = await openRouteRespectingShell(context, AppRoutes.websiteCreate);
           if (created == true && context.mounted) {
             context.read<WebsitesProvider>().refresh();
           }

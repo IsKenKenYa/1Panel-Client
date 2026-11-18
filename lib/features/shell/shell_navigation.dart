@@ -248,6 +248,9 @@ NavigatorState? findShellContentNavigator(BuildContext context) {
 
 /// 泛型返回值：桌面 shell 分支可能返回 void（pushReplacement/内嵌路由），
 /// 移动端 pushNamed 会透传 pop 的结果，调用方可据此在返回后刷新列表。
+///
+/// pushReplacementNamed 不带类型参数书写：desktop_shell_stability_policy_test
+/// 以 `pushReplacementNamed(` 字面串做结构守卫。
 Future<T?> openRouteRespectingShell<T extends Object?>(
   BuildContext context,
   String route, {
@@ -269,7 +272,7 @@ Future<T?> openRouteRespectingShell<T extends Object?>(
       // Fall back to the legacy behaviour when the inner navigator
       // has not been mounted yet (e.g. mid-build, or shell not yet
       // visible).
-      return Navigator.of(context).pushReplacementNamed<T?, dynamic>(
+      return Navigator.of(context).pushReplacementNamed(
         AppRoutes.home,
         arguments: _buildShellHomeArguments(
           target: target,
@@ -279,7 +282,7 @@ Future<T?> openRouteRespectingShell<T extends Object?>(
       );
     }
 
-    return Navigator.of(context).pushReplacementNamed<T?, dynamic>(
+    return Navigator.of(context).pushReplacementNamed(
       AppRoutes.home,
       arguments: <String, dynamic>{
         'module': target.module.storageId,
