@@ -375,7 +375,7 @@ class _AppInstallDialogState extends State<AppInstallDialog> {
                   items.add(_MapEntryController());
                 });
               },
-              icon: const Icon(Icons.add, size: 18),
+              icon: const Icon(Icons.add_outlined, size: 18),
               label: Text(AppLocalizations.of(context).serverAdd),
             ),
           ],

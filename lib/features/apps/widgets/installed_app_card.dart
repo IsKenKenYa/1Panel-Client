@@ -69,7 +69,7 @@ class InstalledAppCard extends StatelessWidget {
             children: [
               _InfoTag(
                 label: app.version ?? unknownLabel,
-                icon: Icons.info_outline,
+                icon: Icons.info_outlined,
                 colorScheme: colorScheme,
               ),
             ],
@@ -134,7 +134,7 @@ class InstalledAppCard extends StatelessWidget {
                 ),
               ] else
                 _ActionButton(
-                  icon: Icons.play_arrow,
+                  icon: Icons.play_arrow_outlined,
                   label: l10n.appActionStart,
                   color: colorScheme.primary,
                   onTap: onStart,

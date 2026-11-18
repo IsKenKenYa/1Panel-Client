@@ -180,13 +180,13 @@ class _InstalledAppsViewState extends State<InstalledAppsView> {
           FilledButton.icon(
             onPressed: () =>
                 openRouteRespectingShell(context, AppRoutes.appStore),
-            icon: const Icon(Icons.add),
+            icon: const Icon(Icons.add_outlined),
             label: Text(l10n.appStoreInstall),
           ),
           const SizedBox(height: 16),
           TextButton.icon(
             onPressed: _handleRefresh,
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh_outlined),
             label: Text(l10n.commonRefresh),
           ),
         ],

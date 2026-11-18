@@ -351,7 +351,7 @@ class _InstalledAppDetailViewState extends State<_InstalledAppDetailView> {
               actions: [
                 IconButton(
                   onPressed: _refresh,
-                  icon: const Icon(Icons.refresh),
+                  icon: const Icon(Icons.refresh_outlined),
                   tooltip: l10n.commonRefresh,
                 ),
               ],
@@ -658,7 +658,7 @@ class _BottomBar extends StatelessWidget {
                         )
                       : FilledButton.icon(
                           onPressed: onStart,
-                          icon: const Icon(Icons.play_arrow),
+                          icon: const Icon(Icons.play_arrow_outlined),
                           label: Text(l10n.appActionStart),
                         ),
                 ),
@@ -666,7 +666,7 @@ class _BottomBar extends StatelessWidget {
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: onRestart,
-                    icon: const Icon(Icons.refresh),
+                    icon: const Icon(Icons.refresh_outlined),
                     label: Text(l10n.appActionRestart),
                   ),
                 ),
