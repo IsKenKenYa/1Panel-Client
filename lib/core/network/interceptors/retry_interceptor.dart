@@ -4,6 +4,7 @@ import '../../services/logger/logger_service.dart';
 
 /// 简化的重试拦截器
 class RetryInterceptor extends Interceptor {
+  static const disableRetryKey = 'disableRetry';
   final int maxRetries;
   final List<Duration> retryDelays;
   final AppLogger _logger = AppLogger();
@@ -20,6 +21,10 @@ class RetryInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
+    if (err.requestOptions.extra[disableRetryKey] == true) {
+      handler.next(err);
+      return;
+    }
     final currentRetry = err.requestOptions.extra['retryCount'] as int? ?? 0;
 
     if (_shouldRetry(err) && currentRetry < maxRetries) {

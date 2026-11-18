@@ -87,6 +87,10 @@ class ApiClientManager {
       'core.network.api_client_manager',
       'getCurrentClient: serverId=${config.id}, url=${config.url}, apiKeyPresent=${config.apiKey.isNotEmpty}, allowInsecureTls=${config.allowInsecureTls}',
     );
+    return getClientForConfig(config);
+  }
+
+  DioClient getClientForConfig(ApiConfig config) {
     return getClient(
       config.id,
       config.url,
