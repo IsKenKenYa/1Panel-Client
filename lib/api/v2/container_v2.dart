@@ -328,29 +328,33 @@ class ContainerV2Api {
     );
   }
 
-  /// 获取容器日志
+  /// 获取容器日志。
+  ///
+  /// 上游 `/containers/search/log` 仅在 `Accept: text/event-stream` 时返回
+  /// base64 编码的 SSE 帧，声明 JSON 时固定返回 `data: null`。这里改走
+  /// `/containers/download/log`：一次取回纯文本日志，`tail` 控制行数，
+  /// 匹配原生详情页的一次性只读展示。
   Future<Response<dynamic>> getContainerLogs({
     required String container,
     String? since,
-    bool? follow,
     String? tail,
   }) async {
-    final queryParams = <String, dynamic>{
+    final request = <String, dynamic>{
       'container': container,
+      'since': since ?? 'all',
+      'containerType': 'container',
+      'timestamp': false,
     };
-    if (since != null) queryParams['since'] = since;
-    if (follow != null) queryParams['follow'] = follow.toString();
-    if (tail != null) queryParams['tail'] = tail;
+    final parsedTail = int.tryParse(tail ?? '');
+    if (parsedTail != null) {
+      request['tail'] = parsedTail;
+    }
 
-    // Use ResponseType.plain to handle SSE/text response without JSON parsing error
-    final response = await _client.get<dynamic>(
-      ApiConstants.buildApiPath('/containers/search/log'),
-      queryParameters: queryParams,
+    final response = await _client.post<dynamic>(
+      ApiConstants.buildApiPath('/containers/download/log'),
+      data: request,
       options: Options(responseType: ResponseType.plain),
     );
-
-    // Return the raw 'data' field which might be String, List, or Map
-    // For SSE/plain text, response.data will be the string content
     return response;
   }
 

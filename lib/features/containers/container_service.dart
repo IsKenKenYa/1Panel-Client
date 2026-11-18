@@ -321,6 +321,9 @@ class ContainerService extends BaseComponent {
     });
   }
 
+  /// 容器日志（纯文本）。
+  ///
+  /// 上游日志下载接口直接返回 text/plain，空响应表示容器没有 stdout 输出。
   Future<String> getContainerLogs(String containerName,
       {String? since, String? tail}) {
     return runGuarded(() async {
@@ -330,54 +333,7 @@ class ContainerService extends BaseComponent {
         since: since,
         tail: tail,
       );
-
-      final data = response.data;
-      if (data == null) return '';
-
-      if (data is String) {
-        // ResponseType.plain 会把 JSON envelope 当纯文本返回：
-        // 先行解包 {"code":...,"data":...}，data 为 null 表示容器无 stdout 日志。
-        final trimmed = data.trim();
-        if (trimmed.startsWith('{')) {
-          try {
-            final decoded = jsonDecode(trimmed);
-            if (decoded is Map && decoded.containsKey('data')) {
-              final inner = decoded['data'];
-              return inner == null ? '' : inner.toString();
-            }
-          } on FormatException {
-            // 非 JSON 文本按原始日志处理。
-          }
-        }
-        // Server streams logs via SSE; strip the "data: " prefix from each frame.
-        if (data.contains('data:')) {
-          final lines = data.split('\n');
-          final logs = <String>[];
-          for (final line in lines) {
-            if (line.trim().isEmpty) continue;
-            if (line.startsWith('data:')) {
-              var content = line.substring(5);
-              if (content.startsWith(' ')) {
-                content = content.substring(1);
-              }
-              logs.add(content);
-            } else {
-              logs.add(line);
-            }
-          }
-          return logs.join('\n');
-        }
-        return data;
-      }
-
-      if (data is Map) {
-        // If it's a map, try to find 'data' or return toString
-        if (data.containsKey('data')) return data['data'].toString();
-        return data.toString();
-      }
-      if (data is List) return data.join('\n');
-
-      return data.toString();
+      return (response.data as String?)?.trimRight() ?? '';
     });
   }
 
