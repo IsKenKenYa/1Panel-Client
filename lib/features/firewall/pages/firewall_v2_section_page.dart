@@ -72,7 +72,7 @@ class _FirewallV2SectionPageState extends State<FirewallV2SectionPage> {
       title: _title(context),
       actions: [
         IconButton(
-          icon: const Icon(Icons.refresh),
+          icon: const Icon(Icons.refresh_outlined),
           tooltip: l10n.firewallV2Refresh,
           onPressed: _load,
         ),

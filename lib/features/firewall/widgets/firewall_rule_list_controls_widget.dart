@@ -90,7 +90,7 @@ class FirewallRuleListControls extends StatelessWidget {
             const SizedBox(width: AppDesignTokens.spacingSm),
             OutlinedButton.icon(
               onPressed: isMutating ? null : onCreate,
-              icon: const Icon(Icons.add),
+              icon: const Icon(Icons.add_outlined),
               label: Text(l10n.commonCreate),
             ),
             const SizedBox(width: AppDesignTokens.spacingSm),

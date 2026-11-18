@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/shared/widgets/app_card.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 
 import 'providers/firewall_status_provider.dart';
 import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
@@ -185,22 +186,11 @@ class _OperationButtons extends StatelessWidget {
     BuildContext context, {
     required String operation,
   }) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.l10n.firewallOperationConfirmTitle),
-        content: Text(_messageFor(context, operation)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(context.l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(context.l10n.commonConfirm),
-          ),
-        ],
-      ),
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: context.l10n.firewallOperationConfirmTitle,
+      message: _messageFor(context, operation),
+      confirmLabel: context.l10n.commonConfirm,
     );
     if (confirmed == true && context.mounted) {
       await provider.operate(operation: operation);
