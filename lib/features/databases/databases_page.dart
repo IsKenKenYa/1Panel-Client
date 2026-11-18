@@ -263,7 +263,7 @@ class _DatabaseScopeTabView extends StatelessWidget {
                 children: [
                   OutlinedButton.icon(
                     onPressed: provider.refresh,
-                    icon: const Icon(Icons.refresh),
+                    icon: const Icon(Icons.refresh_outlined),
                     label: Text(l10n.commonRefresh),
                   ),
                   // Redis doesn't support creation through the form (it's managed
@@ -280,7 +280,7 @@ class _DatabaseScopeTabView extends StatelessWidget {
                             // 新建数据库返回后重载列表，避免 fire-and-forget 导致数据陈旧。
                             provider.refresh();
                           },
-                    icon: const Icon(Icons.add),
+                    icon: const Icon(Icons.add_outlined),
                     label: Text(l10n.commonCreate),
                   ),
                 ],
@@ -522,7 +522,7 @@ class _DatabaseGridCard extends StatelessWidget {
               IconButton.filledTonal(
                 tooltip: l10n.commonRefresh,
                 onPressed: onRefresh,
-                icon: const Icon(Icons.refresh),
+                icon: const Icon(Icons.refresh_outlined),
               ),
             ],
           ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
@@ -202,22 +203,12 @@ class _DatabaseBackupPageView extends StatelessWidget {
     DatabaseBackupProvider provider,
     backup.BackupRecord record,
   ) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.l10n.databaseBackupDeleteAction),
-        content: Text(context.l10n.databaseBackupDeleteConfirmMessage),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(context.l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(context.l10n.commonDelete),
-          ),
-        ],
-      ),
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: context.l10n.databaseBackupDeleteAction,
+      message: context.l10n.databaseBackupDeleteConfirmMessage,
+      confirmLabel: context.l10n.commonDelete,
+      isDestructive: true,
     );
     if (confirmed == true) {
       await provider.deleteBackupRecord(record);

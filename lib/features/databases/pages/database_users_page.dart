@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
@@ -198,22 +199,12 @@ class _DatabaseUsersPageViewState extends State<_DatabaseUsersPageView> {
     Map<String, dynamic> user,
   ) async {
     final name = user['username']?.toString() ?? '';
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(context.l10n.commonDelete),
-        content: Text(context.l10n.databaseUserDeleteConfirm(name)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(context.l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(context.l10n.commonConfirm),
-          ),
-        ],
-      ),
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: context.l10n.commonDelete,
+      message: context.l10n.databaseUserDeleteConfirm(name),
+      confirmLabel: context.l10n.commonDelete,
+      isDestructive: true,
     );
     if (confirmed != true) return;
     await provider.deleteMysqlUser(user);

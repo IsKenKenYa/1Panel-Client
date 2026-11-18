@@ -29,7 +29,7 @@ class DatabaseRemotePage extends StatelessWidget {
                 IconButton(
                   tooltip: context.l10n.commonRefresh,
                   onPressed: provider.refresh,
-                  icon: const Icon(Icons.refresh),
+                  icon: const Icon(Icons.refresh_outlined),
                 ),
                 IconButton(
                   tooltip: context.l10n.commonCreate,
@@ -38,7 +38,7 @@ class DatabaseRemotePage extends StatelessWidget {
                     AppRoutes.databaseForm,
                     arguments: {'scope': DatabaseScope.remote.value},
                   ),
-                  icon: const Icon(Icons.add),
+                  icon: const Icon(Icons.add_outlined),
                 ),
               ],
             ),

@@ -72,7 +72,7 @@ class _DatabaseRedisPersistencePageState
       appBar: AppBar(
         title:  Text(context.l10n.databaseRedisPersistenceTitle),
         actions: [
-          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh), onPressed: _load),
+          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh_outlined), onPressed: _load),
         ],
       ),
       body: _isLoading
