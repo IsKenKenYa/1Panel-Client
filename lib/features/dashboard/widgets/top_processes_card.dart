@@ -25,7 +25,7 @@ class TopProcessesCard extends StatelessWidget {
       title: l10n.dashboardTopProcessesTitle,
       trailing: onRefresh != null
           ? IconButton(
-              icon: const Icon(Icons.refresh),
+              icon: const Icon(Icons.refresh_outlined),
               tooltip: context.l10n.commonRefresh,
               onPressed: isLoading ? null : onRefresh,
             )

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import '../../core/i18n/l10n_x.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 import 'widgets/widgets.dart';
 import 'dashboard_provider.dart';
 
@@ -64,7 +65,7 @@ class _DashboardPageState extends State<DashboardPage> {
             ],
           ),
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh_outlined),
             tooltip: l10n.commonRefresh,
             onPressed: () => context.read<DashboardProvider>().refresh(),
           ),
@@ -78,8 +79,8 @@ class _DashboardPageState extends State<DashboardPage> {
               return const DashboardLoadingView();
 
             case DashboardStatus.error:
-              return DashboardErrorView(
-                error: provider.errorMessage,
+              return ModuleErrorStateWidget(
+                message: provider.errorMessage,
                 onRetry: () => provider.loadData(),
               );
 
