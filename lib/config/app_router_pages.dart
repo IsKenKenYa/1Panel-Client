@@ -7,6 +7,7 @@ import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/config/release_channel_config.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/layout/adaptive_layout.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:onepanel_client/core/services/onboarding_service.dart';
 import 'package:onepanel_client/core/services/startup/testing_channel_consent_service.dart';
 import 'package:onepanel_client/features/security/app_lock_controller.dart';
@@ -80,27 +81,11 @@ class _SplashPageState extends State<SplashPage> {
           break;
         }
 
-        final retry = await showDialog<bool>(
-          context: context,
-          builder: (dialogContext) {
-            final l10n = dialogContext.l10n;
-            return AlertDialog(
-              title: Text(l10n.appLockTitle),
-              content: Text(
-                appLockController.lastError ?? l10n.appLockAuthFailed,
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(false),
-                  child: Text(l10n.commonCancel),
-                ),
-                FilledButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(true),
-                  child: Text(l10n.commonRetry),
-                ),
-              ],
-            );
-          },
+        final retry = await ConfirmActionSheetWidget.show(
+          context,
+          title: context.l10n.appLockTitle,
+          message: appLockController.lastError ?? context.l10n.appLockAuthFailed,
+          confirmLabel: context.l10n.commonRetry,
         );
 
         if (retry != true) {

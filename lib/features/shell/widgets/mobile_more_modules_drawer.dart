@@ -170,7 +170,7 @@ class _ModuleTile extends StatelessWidget {
     return ListTile(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       leading: Icon(
-        enabled ? module.icon : Icons.lock_outline,
+        enabled ? module.icon : Icons.lock_outlined,
         color: enabled ? null : disabledColor,
       ),
       title: Text(module.label(l10n)),
