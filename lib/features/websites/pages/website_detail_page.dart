@@ -4,7 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/utils/error_message_utils.dart';
+import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/security_gateway/providers/security_gateway_center_provider.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 
 import '../providers/website_detail_provider.dart';
 import '../widgets/website_common_widgets.dart';
@@ -65,7 +68,7 @@ class _WebsiteDetailBody extends StatelessWidget {
             title: Text(title),
             actions: [
               IconButton(
-                icon: const Icon(Icons.refresh),
+                icon: const Icon(Icons.refresh_outlined),
                 onPressed: provider.loadDetail,
                 tooltip: l10n.commonRefresh,
               ),
@@ -157,37 +160,33 @@ class _WebsiteDetailBody extends StatelessWidget {
   ) async {
     final website = provider.website;
     final l10n = context.l10n;
-    final colorScheme = Theme.of(context).colorScheme;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        icon: Icon(Icons.delete_outline, color: colorScheme.error),
-        title: Text(l10n.websitesDeleteTitle),
-        content: Text(
-          l10n.websitesDeleteMessage(
-            website?.displayDomain ?? l10n.websitesUnknownDomain,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(dialogContext, true),
-            style: FilledButton.styleFrom(
-              backgroundColor: colorScheme.error,
-              foregroundColor: colorScheme.onError,
-            ),
-            child: Text(l10n.commonDelete),
-          ),
-        ],
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.websitesDeleteTitle,
+      message: l10n.websitesDeleteMessage(
+        website?.displayDomain ?? l10n.websitesUnknownDomain,
       ),
+      confirmLabel: l10n.commonDelete,
+      isDestructive: true,
     );
     if (confirmed == true && context.mounted) {
-      await provider.deleteWebsite();
+      try {
+        await provider.deleteWebsite();
+      } catch (error) {
+        if (context.mounted) {
+          SnackBarUtils.showError(
+            context,
+            ErrorMessageUtils.localizeForContext(
+              ErrorMessageUtils.normalize(error),
+              context,
+            ),
+          );
+        }
+        return;
+      }
+      // pop(true) 通知列表页刷新：删除已成功，列表统计不能停留旧值。
       if (context.mounted) {
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(true);
       }
     }
   }
