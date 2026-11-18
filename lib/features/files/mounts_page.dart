@@ -53,7 +53,7 @@ class _MountsPageState extends State<MountsPage> {
         title: Text(l10n.filesMounts),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh_outlined),
             tooltip: context.l10n.commonRefresh,
             onPressed: () {
               setState(() {

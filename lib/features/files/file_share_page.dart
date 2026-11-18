@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/files/services/file_transfer_service.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 
 /// File share management page.
 /// Mirrors frontend's file share list: create/delete/search shared links.
@@ -51,13 +52,13 @@ class _FileSharePageState extends State<FileSharePage> {
       appBar: AppBar(
         title:  Text(context.l10n.fileShareTitle),
         actions: [
-          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh), onPressed: _loadShares),
+          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh_outlined), onPressed: _loadShares),
         ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
-              ? Center(child: Text(_error!))
+              ? ModuleErrorStateWidget(message: _error, onRetry: _loadShares)
               : _shares.isEmpty
                   ?  Center(child: Text(context.l10n.fileShareEmpty))
                   : ListView.builder(

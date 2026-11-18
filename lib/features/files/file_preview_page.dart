@@ -263,7 +263,7 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
                 tooltip: l10n.filesEditFile,
               ),
             IconButton(
-              icon: const Icon(Icons.info_outline),
+              icon: const Icon(Icons.info_outlined),
               onPressed: () {
                 // 预览页经裸 MaterialPageRoute 打开，不在 FilesProvider
                 // 作用域内；属性对话框与备注编辑走 FilesService 兜底。
@@ -532,7 +532,7 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
                       await _audioPlayer?.resume();
                     }
                   },
-                  child: Icon(_isAudioPlaying ? Icons.pause : Icons.play_arrow,
+                  child: Icon(_isAudioPlaying ? Icons.pause : Icons.play_arrow_outlined,
                       size: 48),
                 ),
                 const SizedBox(width: 16),

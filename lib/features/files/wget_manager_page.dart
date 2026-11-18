@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/files/services/file_transfer_service.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 
 /// WGET download manager page.
 /// Mirrors frontend's wget process list: shows active/completed downloads.
@@ -51,13 +52,13 @@ class _WgetManagerPageState extends State<WgetManagerPage> {
       appBar: AppBar(
         title:  Text(context.l10n.wgetTitle),
         actions: [
-          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh), onPressed: _loadProcess),
+          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh_outlined), onPressed: _loadProcess),
         ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
-              ? Center(child: Text(_error!))
+              ? ModuleErrorStateWidget(message: _error, onRetry: _loadProcess)
               : _processData == null || _processData!.isEmpty
                   ?  Center(child: Text(context.l10n.wgetEmpty))
                   : ListView.builder(

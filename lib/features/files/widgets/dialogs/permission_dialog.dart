@@ -173,7 +173,7 @@ class _PermissionDialogState extends State<_PermissionDialog> {
     return AlertDialog(
       title: Row(
         children: [
-          Icon(Icons.lock_outline, color: colorScheme.primary),
+          Icon(Icons.lock_outlined, color: colorScheme.primary),
           const SizedBox(width: 8),
           Expanded(
             child: Text(

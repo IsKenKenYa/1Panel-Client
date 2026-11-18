@@ -13,6 +13,7 @@ import 'package:onepanel_client/core/services/file_save_service.dart';
 import 'package:onepanel_client/features/files/files_provider.dart';
 import 'package:onepanel_client/features/files/providers/transfer_manager_provider.dart';
 import 'package:onepanel_client/features/files/upload_history_page.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 
 class TransferManagerPage extends StatefulWidget {
   const TransferManagerPage({super.key});
@@ -60,7 +61,7 @@ class _TransferManagerPageState extends State<TransferManagerPage> {
                   tooltip: l10n.filesUploadHistory,
                 ),
                 IconButton(
-                  icon: const Icon(Icons.refresh),
+                  icon: const Icon(Icons.refresh_outlined),
                   onPressed: provider.isDownloadSupported
                       ? provider.loadTasks
                       : null,
@@ -446,7 +447,7 @@ class _DownloadTaskTile extends StatelessWidget {
       case DownloadTaskStatus.paused:
         buttons.addAll([
           FilledButton.icon(
-            icon: const Icon(Icons.play_arrow),
+            icon: const Icon(Icons.play_arrow_outlined),
             label: Text(l10n.transferResume),
             onPressed: () async {
               await provider.resumeTask(task.taskId);
@@ -467,7 +468,7 @@ class _DownloadTaskTile extends StatelessWidget {
       case DownloadTaskStatus.failed:
         buttons.addAll([
           FilledButton.icon(
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh_outlined),
             label: Text(l10n.commonRetry),
             onPressed: () async {
               final result = await provider.retryTaskWithNewAuth(task);
@@ -493,6 +494,16 @@ class _DownloadTaskTile extends StatelessWidget {
             icon: const Icon(Icons.delete),
             label: Text(l10n.commonDelete),
             onPressed: () async {
+              final confirmed = await ConfirmActionSheetWidget.show(
+                context,
+                title: l10n.deleteConfirmTitle,
+                message: l10n.deleteCannotUndoMessage,
+                confirmLabel: l10n.commonDelete,
+                isDestructive: true,
+              );
+              if (!confirmed) {
+                return;
+              }
               await provider.deleteTask(task.taskId);
               onRefresh();
             },
@@ -521,6 +532,16 @@ class _DownloadTaskTile extends StatelessWidget {
             icon: const Icon(Icons.delete),
             label: Text(l10n.commonDelete),
             onPressed: () async {
+              final confirmed = await ConfirmActionSheetWidget.show(
+                context,
+                title: l10n.deleteConfirmTitle,
+                message: l10n.deleteCannotUndoMessage,
+                confirmLabel: l10n.commonDelete,
+                isDestructive: true,
+              );
+              if (!confirmed) {
+                return;
+              }
               await provider.deleteTask(task.taskId);
               onRefresh();
             },
@@ -894,7 +915,7 @@ class _UploadTaskTile extends StatelessWidget {
       case TransferStatus.failed:
         buttons.addAll([
           FilledButton.icon(
-            icon: const Icon(Icons.play_arrow),
+            icon: const Icon(Icons.play_arrow_outlined),
             label: Text(l10n.transferResume),
             onPressed: () => manager.resumeTask(task.id),
           ),

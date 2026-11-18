@@ -5,6 +5,7 @@ import 'package:onepanel_client/core/utils/keyboard_utils.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/features/files/files_service.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 
 class FileEditorPage extends StatefulWidget {
@@ -389,22 +390,11 @@ class _FileEditorPageState extends State<FileEditorPage> {
     if (value == _encoding) return;
     if (_hasChanges) {
       final l10n = context.l10n;
-      final proceed = await showDialog<bool>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text(l10n.filesEditorEncoding),
-          content: Text(l10n.filesEditorReloadConfirm),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text(l10n.commonCancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(l10n.commonConfirm),
-            ),
-          ],
-        ),
+      final proceed = await ConfirmActionSheetWidget.show(
+        context,
+        title: l10n.filesEditorEncoding,
+        message: l10n.filesEditorReloadConfirm,
+        confirmLabel: l10n.commonConfirm,
       );
       if (proceed != true) return;
     }
@@ -418,7 +408,7 @@ class _FileEditorPageState extends State<FileEditorPage> {
 
   Widget _buildMoreActions(ThemeData theme, dynamic l10n) {
     return IconButton(
-      icon: const Icon(Icons.refresh),
+      icon: const Icon(Icons.refresh_outlined),
       onPressed: _loadContent,
       tooltip: l10n.filesReload,
     );

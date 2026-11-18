@@ -4,6 +4,7 @@ import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
 import 'package:onepanel_client/features/files/providers/recycle_bin_provider.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -315,23 +316,11 @@ class _RecycleBinViewState extends State<_RecycleBinView> {
     RecycleBinProvider provider,
   ) async {
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.recycleBinRestore),
-        content:
-            Text(l10n.recycleBinRestoreConfirm(provider.selectedFiles.length)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.commonConfirm),
-          ),
-        ],
-      ),
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.recycleBinRestore,
+      message: l10n.recycleBinRestoreConfirm(provider.selectedFiles.length),
+      confirmLabel: l10n.commonConfirm,
     );
 
     if (confirmed == true && context.mounted) {
@@ -351,28 +340,13 @@ class _RecycleBinViewState extends State<_RecycleBinView> {
     RecycleBinProvider provider,
   ) async {
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.recycleBinDeletePermanently),
-        content: Text(
-          l10n.recycleBinDeletePermanentlyConfirm(
-              provider.selectedFiles.length),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
-            ),
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.commonDelete),
-          ),
-        ],
-      ),
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.recycleBinDeletePermanently,
+      message: l10n.recycleBinDeletePermanentlyConfirm(
+          provider.selectedFiles.length),
+      confirmLabel: l10n.commonDelete,
+      isDestructive: true,
     );
 
     if (confirmed == true && context.mounted) {
@@ -393,22 +367,11 @@ class _RecycleBinViewState extends State<_RecycleBinView> {
     RecycleBinItem file,
   ) async {
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.recycleBinRestore),
-        content: Text(l10n.recycleBinRestoreSingleConfirm(file.name)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.commonConfirm),
-          ),
-        ],
-      ),
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.recycleBinRestore,
+      message: l10n.recycleBinRestoreSingleConfirm(file.name),
+      confirmLabel: l10n.commonConfirm,
     );
 
     if (confirmed == true && context.mounted) {
@@ -429,27 +392,12 @@ class _RecycleBinViewState extends State<_RecycleBinView> {
     RecycleBinItem file,
   ) async {
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.recycleBinDeletePermanently),
-        content: Text(
-          l10n.recycleBinDeletePermanentlySingleConfirm(file.name),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
-            ),
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.commonDelete),
-          ),
-        ],
-      ),
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.recycleBinDeletePermanently,
+      message: l10n.recycleBinDeletePermanentlySingleConfirm(file.name),
+      confirmLabel: l10n.commonDelete,
+      isDestructive: true,
     );
 
     if (confirmed == true && context.mounted) {
@@ -469,25 +417,12 @@ class _RecycleBinViewState extends State<_RecycleBinView> {
     RecycleBinProvider provider,
   ) async {
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.recycleBinClear),
-        content: Text(l10n.recycleBinClearConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
-            ),
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.commonConfirm),
-          ),
-        ],
-      ),
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.recycleBinClear,
+      message: l10n.recycleBinClearConfirm,
+      confirmLabel: l10n.commonConfirm,
+      isDestructive: true,
     );
 
     if (confirmed == true && context.mounted) {

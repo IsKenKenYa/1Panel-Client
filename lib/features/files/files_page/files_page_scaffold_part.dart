@@ -121,7 +121,7 @@ extension _FilesViewScaffold on _FilesViewState {
             floatingActionButton: FloatingActionButton.extended(
               heroTag: 'files_page_create_fab',
               onPressed: () => _showCreateOptions(context),
-              icon: const Icon(Icons.add),
+              icon: const Icon(Icons.add_outlined),
               label: Text(l10n.filesActionNew),
             ),
             bottomNavigationBar: !provider.data.hasSelection
@@ -188,7 +188,7 @@ extension _FilesViewScaffold on _FilesViewState {
                     children: [
                       FilledButton.icon(
                         onPressed: () => _showCreateOptions(context),
-                        icon: const Icon(Icons.add),
+                        icon: const Icon(Icons.add_outlined),
                         label: Text(l10n.filesActionNew),
                       ),
                       const SizedBox(width: 8),
@@ -289,7 +289,7 @@ extension _FilesViewScaffold on _FilesViewState {
                 ),
                 FilledButton.icon(
                   onPressed: () => _showCreateOptions(context),
-                  icon: const Icon(Icons.add),
+                  icon: const Icon(Icons.add_outlined),
                   label: Text(l10n.filesActionNew),
                 ),
                 const SizedBox(width: 12),
