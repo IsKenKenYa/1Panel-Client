@@ -64,9 +64,11 @@ void main() {
         // (it owns its own Navigator) and NOT the module-root Navigator
         // owned by the ShellContentHost's per-instance key.
         expect(find.byType(DesktopRoutedModuleHost), findsOneWidget);
-        expect(findShellContentNavigator(
-          tester.element(find.byType(ShellContentHost)),
-        ), isNull);
+        expect(
+            findShellContentNavigator(
+              tester.element(find.byType(ShellContentHost)),
+            ),
+            isNull);
       },
     );
   });
@@ -141,19 +143,13 @@ void main() {
 
         // The fallback path is taken when the inner navigator returns null
         // (e.g. mid-build, or no ShellContentHost mounted yet).
-        expect(source.contains('Navigator.of(context).pushReplacementNamed('),
-            isTrue);
-        expect(source.contains("AppRoutes.home,"), isTrue);
-        // The fallback must reference the shell's home route, not a
-        // generic push that would lose the user's navigation history.
         expect(
-          source.contains(
-            "return Navigator.of(context).pushReplacementNamed(\n        AppRoutes.home,",
+          source,
+          matches(
+            r'Navigator\.of\(context, rootNavigator: true\)\s*'
+            r'\.pushReplacementNamed\(\s*AppRoutes\.home,',
           ),
-          isTrue,
-          reason:
-              'openRouteRespectingShell must fall back to a home-route '
-              'pushReplacementNamed when the inner navigator is null',
+          reason: 'The home route must open in the root Navigator',
         );
       },
     );

@@ -20,8 +20,8 @@ void main() {
           label: '文件',
         ),
         const AppNavigationBarItem(
-          icon: Icons.widgets_outlined,
-          selectedIcon: Icons.widgets,
+          icon: Icons.inventory_2_outlined,
+          selectedIcon: Icons.inventory_2,
           label: '容器',
         ),
         const AppNavigationBarItem(
@@ -64,8 +64,8 @@ void main() {
       expect(ClientModule.files.icon, Icons.folder_open_outlined);
       expect(ClientModule.files.selectedIcon, Icons.folder_open);
       
-      expect(ClientModule.containers.icon, Icons.widgets_outlined);
-      expect(ClientModule.containers.selectedIcon, Icons.widgets);
+      expect(ClientModule.containers.icon, Icons.inventory_2_outlined);
+      expect(ClientModule.containers.selectedIcon, Icons.inventory_2);
       
       expect(ClientModule.apps.icon, Icons.grid_view_outlined);
       expect(ClientModule.apps.selectedIcon, Icons.grid_view);

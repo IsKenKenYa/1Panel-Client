@@ -4,6 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/services/app_settings_controller.dart';
+import 'package:onepanel_client/config/app_router.dart';
+import 'package:onepanel_client/features/settings/language_settings_page.dart';
 import 'package:onepanel_client/features/server/server_models.dart';
 import 'package:onepanel_client/features/server/server_provider.dart';
 import 'package:onepanel_client/features/server/server_repository.dart';
@@ -24,8 +26,7 @@ void main() {
           ),
         );
 
-        final BuildContext context =
-            tester.element(find.byType(SizedBox));
+        final BuildContext context = tester.element(find.byType(SizedBox));
         expect(findShellContentNavigator(context), isNull);
       },
     );
@@ -165,6 +166,111 @@ void main() {
             reason: 'Two mounted hosts must not share a single Navigator');
       },
     );
+
+    testWidgets(
+      'named details and system back stay inside the visible module',
+      (tester) async {
+        final outerNavigator = GlobalKey<NavigatorState>();
+        final visibleHost = GlobalKey<ShellContentHostState>();
+        final hiddenHost = GlobalKey<ShellContentHostState>();
+        await tester.pumpWidget(
+          ChangeNotifierProvider(
+            create: (_) => AppSettingsController(),
+            child: MaterialApp(
+              navigatorKey: outerNavigator,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              home: const Scaffold(body: Text('Home')),
+            ),
+          ),
+        );
+        outerNavigator.currentState!.push<void>(
+          MaterialPageRoute(
+            builder: (_) => Scaffold(
+              body: IndexedStack(
+                index: 0,
+                children: [
+                  ShellContentHost(
+                    key: visibleHost,
+                    module: ClientModule.settings,
+                    serverId: null,
+                  ),
+                  ShellContentHost(
+                    key: hiddenHost,
+                    module: ClientModule.settings,
+                    serverId: null,
+                    active: false,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        final visibleNavigator = visibleHost.currentState!.innerNavigator!;
+        final hiddenNavigator = hiddenHost.currentState!.innerNavigator!;
+        visibleNavigator.pushNamed<void>(
+          AppRoutes.settingsLanguage,
+          arguments: 'settings-locale',
+        );
+        hiddenNavigator.pushNamed<void>(AppRoutes.settingsLanguage);
+        await tester.pumpAndSettle();
+        final detail = find.byType(LanguageSettingsPage).hitTestable();
+        expect(detail, findsOneWidget);
+        expect(ModalRoute.of(tester.element(detail))?.settings.arguments,
+            'settings-locale');
+
+        await tester.binding.handlePopRoute();
+        await tester.pumpAndSettle();
+        expect(visibleNavigator.canPop(), isFalse);
+        expect(hiddenNavigator.canPop(), isTrue);
+        expect(outerNavigator.currentState!.canPop(), isTrue);
+
+        await tester.binding.handlePopRoute();
+        await tester.pumpAndSettle();
+        expect(find.text('Home'), findsOneWidget);
+      },
+    );
+
+    testWidgets('wide iPad pushes the detail and can return to the caller',
+        (tester) async {
+      tester.view.physicalSize = const Size(1366, 1024);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      await tester.pumpWidget(
+        ChangeNotifierProvider(
+          create: (_) => AppSettingsController(),
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            onGenerateRoute: AppRouter.generateRoute,
+            home: Scaffold(
+              body: Builder(
+                builder: (context) => TextButton(
+                  onPressed: () => openRouteRespectingShell<void>(
+                    context,
+                    AppRoutes.settingsLanguage,
+                  ),
+                  child: const Text('Open language settings'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Open language settings'));
+      await tester.pumpAndSettle();
+      expect(find.byType(LanguageSettingsPage), findsOneWidget);
+      await tester.tap(find.byType(BackButton));
+      await tester.pumpAndSettle();
+      expect(find.text('Open language settings'), findsOneWidget);
+    }, variant: TargetPlatformVariant.only(TargetPlatform.iOS));
   });
 }
 
