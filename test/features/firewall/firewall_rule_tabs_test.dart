@@ -67,6 +67,7 @@ class _FakeRuleTabService implements FirewallServiceInterface {
     required int pageSize,
     required String type,
     String? info,
+    String? strategy,
   }) async {
     lastType = type;
     lastInfo = info;

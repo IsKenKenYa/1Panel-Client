@@ -29,6 +29,7 @@ class _FakeFirewallService implements FirewallServiceInterface {
     required int pageSize,
     required String type,
     String? info,
+    String? strategy,
   }) async {
     return const PageResult(items: [], total: 0);
   }

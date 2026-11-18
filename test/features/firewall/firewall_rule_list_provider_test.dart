@@ -53,6 +53,7 @@ class _FakeFirewallRuleService implements FirewallServiceInterface {
     required int pageSize,
     required String type,
     String? info,
+    String? strategy,
   }) async {
     lastPage = page;
     lastPageSize = pageSize;
@@ -130,6 +131,7 @@ class _ThrowingRuleService extends _FakeFirewallRuleService {
     required int pageSize,
     required String type,
     String? info,
+    String? strategy,
   }) async {
     throw Exception('search fail');
   }
@@ -427,6 +429,7 @@ class _ThrowingFormService implements FirewallServiceInterface {
     required int pageSize,
     required String type,
     String? info,
+    String? strategy,
   }) async =>
       const PageResult(items: [], total: 0);
 
