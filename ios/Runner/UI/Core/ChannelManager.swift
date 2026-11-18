@@ -14,6 +14,8 @@ class ChannelManager {
             name: "com.onepanel.client/method",
             binaryMessenger: binaryMessenger
         )
+        // 启动时首个页面的数据请求与翻译请求共用通道。
+        dataChannel?.resizeBuffer(8)
         shellChannel = FlutterMethodChannel(
             name: "onepanel/ios_channel",
             binaryMessenger: binaryMessenger

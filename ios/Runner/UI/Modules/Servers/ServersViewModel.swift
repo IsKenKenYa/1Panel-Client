@@ -14,8 +14,21 @@ struct ServerModel: Identifiable, Hashable {
 class ServersViewModel: ObservableObject {
     @Published var servers: [ServerModel] = []
     @Published var isLoading = false
-    @Published var isProcessing = false
+    @Published private(set) var isProcessing = false
     @Published var errorMessage: String?
+
+    func selectServer(id: String, completion: @escaping (Bool) -> Void) {
+        guard !isProcessing else { return }
+        isProcessing = true
+        ChannelManager.shared.invokeDataMethod("connectServer", arguments: ["id": id]) { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self else { return }
+                self.isProcessing = false
+                let success = (result as? [String: Any])?["success"] as? Bool == true
+                completion(success)
+            }
+        }
+    }
 
     /// 新增服务器配置（addServer 通道），成功后由调用方刷新列表。
     func addServer(

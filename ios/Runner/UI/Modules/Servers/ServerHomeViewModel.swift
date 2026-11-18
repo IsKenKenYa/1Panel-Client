@@ -16,8 +16,8 @@ struct ServerDashboardMetrics {
 class ServerHomeViewModel: ObservableObject {
     @Published var metrics = ServerDashboardMetrics()
     @Published var isLoading = false
-
     func fetchDashboard() {
+        guard !isLoading else { return }
         isLoading = true
         ChannelManager.shared.invokeDataMethod("getDashboard", arguments: nil) { [weak self] result in
             DispatchQueue.main.async {
@@ -38,8 +38,4 @@ class ServerHomeViewModel: ObservableObject {
         }
     }
 
-    /// 切换当前服务器（connectServer 通道），首页指标随当前服务器上下文加载。
-    func connectServer(id: String) {
-        ChannelManager.shared.invokeDataMethod("connectServer", arguments: ["id": id]) { _ in }
-    }
 }

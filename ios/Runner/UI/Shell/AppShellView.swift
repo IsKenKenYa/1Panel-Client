@@ -23,11 +23,10 @@ struct FlutterViewControllerRepresentable: UIViewControllerRepresentable {
 /// 选择初始 tab；`ONEPANEL_OPEN_MODULE`（containers/websites/apps/monitoring）
 /// 在服务器 tab 内以入栈方式打开对应模块，保留返回层级；`files` 直接切到文件 tab。
 struct AppShellView: View {
-    let engine: FlutterEngine
     @StateObject private var theme = ThemeManager.shared
     @StateObject private var translations = TranslationsManager.shared
     @State private var selection = 0
-    @State private var serversPath = NavigationPath()
+    @StateObject private var serverNavigation = ServerNavigation()
     @State private var settingsPath = NavigationPath()
     @State private var moduleOverrideApplied = false
 
@@ -36,22 +35,57 @@ struct AppShellView: View {
     }
 
     var body: some View {
-        TabView(selection: $selection) {
-            NavigationStack(path: $serversPath) {
-                ServersView(path: $serversPath)
-                    .navigationDestination(for: ModuleRoute.self) { route in
-                        route.content
+        Group {
+            if #available(iOS 18.0, *) {
+                TabView(selection: $selection) {
+                    Tab(translations.get("navServer", fallback: "Servers"),
+                        systemImage: "server.rack", value: 0) {
+                        serversTab
                     }
+                    Tab(translations.get("navFiles", fallback: "Files"),
+                        systemImage: "folder", value: 1) {
+                        filesTab
+                    }
+                    Tab(translations.get("navSecurity", fallback: "Security"),
+                        systemImage: "shield", value: 2) {
+                        NavigationStack { SecurityView() }
+                    }
+                    Tab(translations.get("navSettings", fallback: "Settings"),
+                        systemImage: "gearshape", value: 3) {
+                        settingsTab
+                    }
+                }
+                .tabViewStyle(.sidebarAdaptable)
+            } else {
+                legacyTabs
             }
+        }
+        .environmentObject(serverNavigation)
+        .environmentObject(theme)
+        .environmentObject(translations)
+        .preferredColorScheme(theme.preferredColorScheme)
+        .onAppear {
+            switch ProcessInfo.processInfo.environment["ONEPANEL_INITIAL_TAB"] {
+            case "files": selection = 1
+            case "security": selection = 2
+            case "settings": selection = 3
+            default: break
+            }
+            applyModuleOverride()
+            translations.load { }
+        }
+    }
+
+    private var legacyTabs: some View {
+        TabView(selection: $selection) {
+            serversTab
             .tabItem {
                 Label(translations.get("navServer", fallback: "Servers"),
-                      systemImage: "desktopcomputer")
+                      systemImage: "server.rack")
             }
             .tag(0)
 
-            NavigationStack {
-                FilesView()
-            }
+            filesTab
             .tabItem {
                 Label(translations.get("navFiles", fallback: "Files"),
                       systemImage: "folder")
@@ -67,35 +101,43 @@ struct AppShellView: View {
             }
             .tag(2)
 
-            NavigationStack(path: $settingsPath) {
-                SettingsView(path: $settingsPath)
-                    .navigationDestination(for: SettingsPageRoute.self) { route in
-                        switch route {
-                        case .about: AboutView()
-                        case .legal: LegalCenterView()
-                        }
-                    }
-            }
+            settingsTab
             .tabItem {
                 Label(translations.get("navSettings", fallback: "Settings"),
                       systemImage: "gearshape")
             }
             .tag(3)
         }
-        .onAppear {
-            switch ProcessInfo.processInfo.environment["ONEPANEL_INITIAL_TAB"] {
-            case "files": selection = 1
-            case "security": selection = 2
-            case "settings": selection = 3
-            default: break
-            }
-            applyModuleOverride()
+    }
+
+    private var serversTab: some View {
+        NavigationStack(path: $serverNavigation.path) {
+            ServersView()
+                .navigationDestination(for: ServerRoute.self) { route in
+                    switch route {
+                    case .server(let server): ServerHomeView(server: server)
+                    case .module(let module): module.content
+                    case .container(let name): ContainerDetailView(containerName: name)
+                    case .website(let id): WebsiteDetailView(websiteId: id)
+                    }
+                }
         }
-        .environmentObject(theme)
-        .environmentObject(translations)
-        .preferredColorScheme(theme.preferredColorScheme)
-        .onAppear {
-            translations.load { }
+    }
+
+    private var filesTab: some View {
+        NavigationStack { FilesView() }
+            .id(serverNavigation.activeServerID)
+    }
+
+    private var settingsTab: some View {
+        NavigationStack(path: $settingsPath) {
+            SettingsView(path: $settingsPath)
+                .navigationDestination(for: SettingsPageRoute.self) { route in
+                    switch route {
+                    case .about: AboutView()
+                    case .legal: LegalCenterView()
+                    }
+                }
         }
     }
 

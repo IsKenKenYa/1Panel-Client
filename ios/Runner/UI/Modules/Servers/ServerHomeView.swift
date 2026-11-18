@@ -8,7 +8,34 @@ struct ServerHomeView: View {
     let server: ServerModel
 
     var body: some View {
+        dashboard
+        .navigationTitle(server.name)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    viewModel.fetchDashboard()
+                } label: {
+                    Label(translations.get("commonRefresh", fallback: "Refresh"), systemImage: "arrow.clockwise")
+                }
+                .disabled(viewModel.isLoading)
+            }
+        }
+        .onAppear {
+            viewModel.fetchDashboard()
+        }
+    }
+
+    private var dashboard: some View {
         List {
+            Section(translations.get("serverModulesTitle", fallback: "Modules")) {
+                ForEach(ModuleRoute.allCases) { module in
+                    NavigationLink(value: ServerRoute.module(module)) {
+                        Label(module.title(translations), systemImage: module.icon)
+                    }
+                }
+            }
+
             Section(translations.get("dashboardResourceTitle", fallback: "System Resources")) {
                 ResourceGaugeRow(
                     title: translations.get("dashboardCpuUsage", fallback: "CPU"),
@@ -40,79 +67,11 @@ struct ServerHomeView: View {
                          value: viewModel.metrics.panelVersion.isEmpty ? "--" : "v\(viewModel.metrics.panelVersion)")
             }
 
-            Section(translations.get("serverModulesTitle", fallback: "Modules")) {
-                NavigationLink(value: ModuleRoute.containers) {
-                    ModuleEntryRow(title: translations.get("serverModuleContainers", fallback: "Containers"),
-                                   icon: "square.stack.3d.up", color: .blue)
-                }
-                NavigationLink(value: ModuleRoute.websites) {
-                    ModuleEntryRow(title: translations.get("serverModuleWebsites", fallback: "Websites"),
-                                   icon: "globe", color: .teal)
-                }
-                NavigationLink(value: ModuleRoute.apps) {
-                    ModuleEntryRow(title: translations.get("serverModuleApps", fallback: "Apps"),
-                                   icon: "app.badge", color: .indigo)
-                }
-                NavigationLink(value: ModuleRoute.monitoring) {
-                    ModuleEntryRow(title: translations.get("serverModuleMonitoring", fallback: "Monitoring"),
-                                   icon: "chart.xyaxis.line", color: .orange)
-                }
-                NavigationLink(value: ModuleRoute.databases) {
-                    ModuleEntryRow(title: translations.get("serverModuleDatabases", fallback: "Databases"),
-                                   icon: "cylinder.split.1x2", color: .purple)
-                }
-                NavigationLink(value: ModuleRoute.cronjobs) {
-                    ModuleEntryRow(title: translations.get("operationsCronjobsTitle", fallback: "Cronjobs"),
-                                   icon: "clock.arrow.circlepath", color: .brown)
-                }
-                NavigationLink(value: ModuleRoute.firewall) {
-                    ModuleEntryRow(title: translations.get("serverModuleFirewall", fallback: "Firewall"),
-                                   icon: "shield.lefthalf.filled", color: .red)
-                }
-                NavigationLink(value: ModuleRoute.backups) {
-                    ModuleEntryRow(title: translations.get("operationsBackupsTitle", fallback: "Backups"),
-                                   icon: "externaldrive", color: .indigo)
-                }
-                NavigationLink(value: ModuleRoute.ai) {
-                    ModuleEntryRow(title: translations.get("serverModuleAi", fallback: "AI"),
-                                   icon: "brain", color: .pink)
-                }
-            }
         }
         .listStyle(.insetGrouped)
-        .navigationTitle(server.name)
-        .navigationBarTitleDisplayMode(.inline)
         .refreshable {
             viewModel.fetchDashboard()
         }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    viewModel.fetchDashboard()
-                } label: {
-                    Image(systemName: "arrow.clockwise")
-                }
-                .disabled(viewModel.isLoading)
-            }
-        }
-        .onAppear {
-            if !server.isCurrent {
-                viewModel.connectServer(id: server.originalId)
-            }
-            viewModel.fetchDashboard()
-        }
-    }
-}
-
-private struct ModuleEntryRow: View {
-    let title: String
-    let icon: String
-    let color: Color
-
-    var body: some View {
-        Label(title, systemImage: icon)
-            .foregroundStyle(color)
-            .font(.body)
     }
 }
 

@@ -5,40 +5,25 @@ import SwiftUI
 @main
 struct RunnerApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @State private var uiRenderMode: String = "native"
-    @State private var modeLoaded: Bool = false
+    private let uiRenderMode = UIRenderMode.stored
     @State private var isUnlocked: Bool = false
     @StateObject private var security = SecurityViewModel()
 
     var body: some Scene {
         WindowGroup {
-            if !modeLoaded {
-                Color(UIColor.systemBackground).ignoresSafeArea().onAppear {
-                    loadRenderMode()
-                }
-            } else if uiRenderMode == "md3" {
+            if uiRenderMode != .native {
                 FlutterViewControllerRepresentable(engine: appDelegate.flutterEngine)
                     .ignoresSafeArea()
             } else if security.appLockEnabled && !isUnlocked {
                 AppLockGateView {
                     isUnlocked = true
                 }
+                .environmentObject(TranslationsManager.shared)
+                .onAppear { TranslationsManager.shared.load { } }
             } else {
-                AppShellView(engine: appDelegate.flutterEngine)
+                AppShellView()
             }
         }
-    }
-
-    private func loadRenderMode() {
-        ChannelManager.shared.invokeDataMethod("getUIRenderMode") { result in
-            let mode = result as? String ?? "native"
-            DispatchQueue.main.async {
-                self.uiRenderMode = mode
-                self.modeLoaded = true
-            }
-        }
-        // 启动门禁位于 AppShellView 之前，翻译字典需要提前加载。
-        TranslationsManager.shared.load { }
     }
 }
 

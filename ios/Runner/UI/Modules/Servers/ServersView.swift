@@ -3,9 +3,8 @@ import SwiftUI
 /// 服务器列表：点击行连接并切换当前服务器，进入服务器首页。
 /// 支持添加（工具栏 + 与空态按钮）、滑动删除（二次确认）。
 struct ServersView: View {
-    @Binding var path: NavigationPath
     @StateObject private var viewModel = ServersViewModel()
-    @EnvironmentObject var theme: ThemeManager
+    @EnvironmentObject private var navigation: ServerNavigation
     @EnvironmentObject var translations: TranslationsManager
 
     @State private var showAddSheet = false
@@ -20,32 +19,15 @@ struct ServersView: View {
             if viewModel.isLoading && viewModel.servers.isEmpty {
                 LoadingView()
             } else if viewModel.servers.isEmpty {
-                VStack(spacing: 12) {
-                    Image(systemName: "server.rack")
-                        .font(.system(size: 48))
-                        .foregroundColor(.secondary)
-                    Text(translations.get("serverListEmptyTitle", fallback: "No servers found"))
-                        .font(.headline)
-                        .foregroundColor(.secondary)
-                    Text(translations.get("serverListEmptyDesc", fallback: "Add a 1Panel server to get started."))
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 32)
-                    Button {
-                        showAddSheet = true
-                    } label: {
-                        Label(translations.get("addServer", fallback: "Add Server"),
-                              systemImage: "plus")
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .padding(.top, 8)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                emptyState
             } else {
                 List {
                     ForEach(viewModel.servers) { server in
-                        ServerRow(server: server, viewModel: viewModel)
+                        Button {
+                            openServer(server)
+                        } label: {
+                            ServerRow(server: server)
+                        }
                             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                                 Button(role: .destructive) {
                                     serverToDelete = server
@@ -68,9 +50,7 @@ struct ServersView: View {
                     }
                 }
                 .listStyle(.insetGrouped)
-                .navigationDestination(for: ServerModel.self) { server in
-                    ServerHomeView(server: server)
-                }
+                .disabled(viewModel.isProcessing)
                 .refreshable {
                     viewModel.fetchServers()
                 }
@@ -79,15 +59,17 @@ struct ServersView: View {
         .navigationTitle(translations.get("navServer", fallback: "Servers"))
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                Button {
-                    showAddSheet = true
-                } label: {
-                    Image(systemName: "plus")
+                if !viewModel.servers.isEmpty {
+                    Button {
+                        showAddSheet = true
+                    } label: {
+                        Label(translations.get("addServer", fallback: "Add Server"), systemImage: "plus")
+                    }
                 }
                 Button {
                     viewModel.fetchServers()
                 } label: {
-                    Image(systemName: "arrow.clockwise")
+                    Label(translations.get("commonRefresh", fallback: "Refresh"), systemImage: "arrow.clockwise")
                 }
                 .disabled(viewModel.isLoading)
             }
@@ -110,16 +92,7 @@ struct ServersView: View {
         } message: {
             Text(deleteConfirmMessage)
         }
-        .overlay(alignment: .bottom) {
-            if let toastText {
-                Text(toastText)
-                    .font(.footnote)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
-                    .background(.regularMaterial, in: Capsule())
-                    .padding(.bottom, 24)
-            }
-        }
+        .operationNotice(toastText)
         .onAppear {
             viewModel.fetchServers {
                 applyLaunchHooks()
@@ -128,6 +101,43 @@ struct ServersView: View {
                 showAddSheet = true
             }
         }
+    }
+
+    @ViewBuilder
+    private var emptyState: some View {
+        let title = translations.get("serverListEmptyTitle", fallback: "No servers found")
+        let description = translations.get("serverListEmptyDesc", fallback: "Add a 1Panel server to get started.")
+        if #available(iOS 17.0, *) {
+            ContentUnavailableView {
+                Label(title, systemImage: "server.rack")
+            } description: {
+                Text(description)
+            } actions: {
+                if #available(iOS 26.0, *) {
+                    addServerButton.buttonStyle(.glassProminent)
+                } else {
+                    addServerButton.buttonStyle(.borderedProminent)
+                }
+            }
+        } else {
+            VStack(spacing: 12) {
+                Label(title, systemImage: "server.rack").font(.headline)
+                Text(description)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                addServerButton.buttonStyle(.borderedProminent)
+            }
+            .padding()
+        }
+    }
+
+    private var addServerButton: some View {
+        Button {
+            showAddSheet = true
+        } label: {
+            Label(translations.get("addServer", fallback: "Add Server"), systemImage: "plus")
+        }
+        .controlSize(.large)
     }
 
     /// 走查钩子：按真实层级依次入栈服务器首页与模块页。
@@ -142,10 +152,15 @@ struct ServersView: View {
               let server = viewModel.servers.first(where: { $0.isCurrent })
                 ?? viewModel.servers.first else { return }
         launchHookApplied = true
-        path.append(server)
-        if let module {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                path.append(module)
+        openServer(server, module: module)
+    }
+
+    private func openServer(_ server: ServerModel, module: ModuleRoute? = nil) {
+        viewModel.selectServer(id: server.id) { success in
+            if success {
+                navigation.openServer(server, module: module)
+            } else {
+                showToast(translations.get("serverTestFailed", fallback: "Connection failed"))
             }
         }
     }
@@ -163,7 +178,8 @@ struct ServersView: View {
         viewModel.deleteServer(id: server.originalId) { success, error in
             if success {
                 viewModel.fetchServers()
-                showToast(String(format: translations.get("serverDeleteSuccess", fallback: "Deleted {name}"), server.name))
+                let template = translations.get("serverDeleteSuccess", fallback: "Deleted {name}")
+                showToast(template.replacingOccurrences(of: "{name}", with: server.name))
             } else {
                 let template = translations.get("serverDeleteFailed", fallback: "Failed to delete: {error}")
                 showToast(template.replacingOccurrences(of: "{error}", with: error ?? ""))
@@ -184,11 +200,10 @@ struct ServersView: View {
 
 private struct ServerRow: View {
     let server: ServerModel
-    @ObservedObject var viewModel: ServersViewModel
     @EnvironmentObject var translations: TranslationsManager
 
     var body: some View {
-        NavigationLink(value: server) {
+        HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
                     Text(server.name)
@@ -213,8 +228,13 @@ private struct ServerRow: View {
                         .foregroundStyle(.purple)
                 }
             }
-            .padding(.vertical, 4)
+            Image(systemName: "chevron.forward")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.tertiary)
+                .accessibilityHidden(true)
         }
-        .tint(.primary)
+        .foregroundStyle(.primary)
+        .padding(.vertical, 4)
+        .contentShape(Rectangle())
     }
 }
