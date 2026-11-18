@@ -55,7 +55,7 @@ class _SshLogsPageState extends State<SshLogsPage> {
             ),
             IconButton(
               onPressed: provider.isLoading ? null : provider.load,
-              icon: const Icon(Icons.refresh),
+              icon: const Icon(Icons.refresh_outlined),
               tooltip: l10n.commonRefresh,
             ),
           ],
