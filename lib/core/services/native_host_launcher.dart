@@ -7,13 +7,16 @@ import 'package:path/path.dart' as p;
 /// ResolveNativeHostExecutablePath 保持一致。
 class NativeHostLauncher {
   NativeHostLauncher({
+    bool? isWindows,
     bool Function(String path)? exists,
     Future<void> Function(String executablePath)? startProcess,
     String? runnerExeDir,
-  })  : _exists = exists ?? ((path) => File(path).existsSync()),
+  })  : _isWindows = isWindows ?? Platform.isWindows,
+        _exists = exists ?? ((path) => File(path).existsSync()),
         _startProcess = startProcess ?? _defaultStartProcess,
         _runnerExeDir = runnerExeDir;
 
+  final bool _isWindows;
   final bool Function(String path) _exists;
   final Future<void> Function(String executablePath) _startProcess;
   final String? _runnerExeDir;
@@ -58,7 +61,7 @@ class NativeHostLauncher {
 
   /// 拉起宿主进程；未找到 exe 或非 Windows 平台返回 false。
   Future<bool> launch() async {
-    if (!Platform.isWindows) {
+    if (!_isWindows) {
       return false;
     }
     final runnerExeDir =

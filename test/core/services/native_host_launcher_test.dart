@@ -95,6 +95,8 @@ void main() {
         () {
       var started = <String>[];
       final launcher = NativeHostLauncher(
+        // 测试宿主是 macOS/Linux，注入 isWindows 以覆盖 exe 探测分支。
+        isWindows: true,
         exists: (_) => false,
         startProcess: (path) async => started.add(path),
         runnerExeDir: r'C:\repo\build\windows\x64\runner\Debug',
@@ -111,6 +113,8 @@ void main() {
         r'C:\repo\build\windows\x64\runner\Debug',
       );
       final launcher = NativeHostLauncher(
+        // 测试宿主是 macOS/Linux，注入 isWindows 以覆盖 exe 探测分支。
+        isWindows: true,
         exists: (path) => path == candidates[existingCandidateIndex],
         startProcess: (path) async => started.add(path),
         runnerExeDir: r'C:\repo\build\windows\x64\runner\Debug',
