@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/core/services/app_preferences_service.dart';
 import 'package:onepanel_client/core/theme/ui_render_mode.dart';
@@ -17,6 +19,17 @@ void main() {
         UIRenderPolicy.shouldUseFlutterUI(UIRenderMode.liquidGlass),
         isTrue,
       );
+    });
+
+    test('keeps profiles with no saved mode and an iOS app lock on Flutter',
+        () {
+      final expected = switch (Platform.operatingSystem) {
+        'ios' => UIRenderMode.liquidGlass,
+        'macos' => UIRenderMode.native,
+        'android' => UIRenderMode.md3,
+        _ => UIRenderMode.liquidGlass,
+      };
+      expect(UIRenderPolicy.defaultMode(appLockEnabled: true), expected);
     });
 
     test('resolveSupportedMode keeps liquidGlass on hosts without native shell',
@@ -48,11 +61,16 @@ void main() {
       expect(await service.loadUIRenderMode(), UIRenderMode.liquidGlass);
     });
 
-    test('defaults to liquidGlass for fresh installs', () async {
+    test('loads the platform default when no render mode is saved', () async {
       SharedPreferences.setMockInitialValues({});
       final service = AppPreferencesService();
+      final expected = switch (Platform.operatingSystem) {
+        'ios' || 'macos' => UIRenderMode.native,
+        'android' => UIRenderMode.md3,
+        _ => UIRenderMode.liquidGlass,
+      };
 
-      expect(await service.loadUIRenderMode(), UIRenderMode.liquidGlass);
+      expect(await service.loadUIRenderMode(), expected);
     });
 
     test('md3 persists and loads as md3 (solid surfaces)', () async {
