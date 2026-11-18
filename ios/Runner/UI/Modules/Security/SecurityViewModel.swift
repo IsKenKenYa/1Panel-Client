@@ -55,6 +55,8 @@ class SecurityViewModel: ObservableObject {
     private func authenticate(reasonKey: String,
                               fallback: String,
                               completion: @escaping (Bool) -> Void) {
+        guard !isAuthenticating else { return }
+        authErrorMessage = nil
         var error: NSError?
         let context = LAContext()
         guard context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) else {

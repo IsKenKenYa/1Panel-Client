@@ -35,10 +35,19 @@ struct FilesListPage: View {
         Group {
             if viewModel.isLoading && viewModel.files.isEmpty {
                 LoadingView()
+            } else if viewModel.loadFailed && viewModel.files.isEmpty {
+                ErrorView(message: translations.get("commonLoadFailedTitle", fallback: "Failed to load")) {
+                    viewModel.fetchFiles(path: path)
+                }
             } else if viewModel.files.isEmpty {
                 EmptyStateView(
                     icon: "folder",
                     message: translations.get("filesEmptyTitle", fallback: "No files found")
+                )
+            } else if filteredFiles.isEmpty {
+                EmptyStateView(
+                    icon: "magnifyingglass",
+                    message: translations.get("logNoMatches", fallback: "No matches found")
                 )
             } else {
                 List {
@@ -86,12 +95,13 @@ struct FilesListPage: View {
                     newFolderName = ""
                     showNewFolderAlert = true
                 } label: {
-                    Image(systemName: "folder.badge.plus")
+                    Label(translations.get("filesActionNewFolder", fallback: "New Folder"),
+                          systemImage: "folder.badge.plus")
                 }
                 Button {
                     viewModel.fetchFiles(path: path)
                 } label: {
-                    Image(systemName: "arrow.clockwise")
+                    Label(translations.get("commonRefresh", fallback: "Refresh"), systemImage: "arrow.clockwise")
                 }
                 .disabled(viewModel.isLoading)
             }
@@ -155,14 +165,10 @@ struct FilesListPage: View {
         } message: {
             Text(translations.get("deleteCannotUndoMessage", fallback: "This action cannot be undone."))
         }
-        .overlay(alignment: .bottom) {
-            if let toastText {
-                Text(toastText)
-                    .font(.footnote)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
-                    .background(.regularMaterial, in: Capsule())
-                    .padding(.bottom, 24)
+        .operationNotice(toastText)
+        .onChange(of: viewModel.loadFailed) { failed in
+            if failed && !viewModel.files.isEmpty {
+                showToast(translations.get("commonLoadFailedTitle", fallback: "Failed to load"))
             }
         }
         .onAppear {

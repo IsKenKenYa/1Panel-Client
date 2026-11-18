@@ -56,12 +56,11 @@ struct AppLockGateView: View {
                 .font(.headline)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
-            if !SecurityViewModel.deviceAuthSupported() {
-                Button {
-                    onUnlock()
-                } label: {
-                    Label(translations.get("appLockUnlockReasonAppOpen", fallback: "Unlock"),
-                          systemImage: "faceid")
+            if viewModel.isAuthenticating {
+                ProgressView()
+            } else {
+                Button(translations.get("commonRetry", fallback: "Retry")) {
+                    viewModel.unlockApp(onSuccess: onUnlock)
                 }
                 .buttonStyle(.borderedProminent)
             }
@@ -75,10 +74,7 @@ struct AppLockGateView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(UIColor.systemBackground).ignoresSafeArea())
         .onAppear {
-            guard SecurityViewModel.deviceAuthSupported() else { return }
-            viewModel.unlockApp {
-                onUnlock()
-            }
+            viewModel.unlockApp(onSuccess: onUnlock)
         }
     }
 }
