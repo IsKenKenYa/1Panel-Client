@@ -11,3 +11,7 @@ class DeleteSelectedIntent extends Intent {
 class ClearSelectionIntent extends Intent {
   const ClearSelectionIntent();
 }
+
+class OpenSettingsIntent extends Intent {
+  const OpenSettingsIntent();
+}

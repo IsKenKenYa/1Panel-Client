@@ -18,11 +18,13 @@ import 'package:onepanel_client/core/platform/services/browser_document_service.
 import 'package:onepanel_client/core/theme/theme_controller.dart';
 import 'package:onepanel_client/core/services/transfer/transfer_manager.dart';
 import 'package:onepanel_client/core/theme/app_theme.dart';
+import 'package:onepanel_client/core/utils/intents.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 import 'package:onepanel_client/features/settings/about_page.dart';
 
 import 'package:onepanel_client/core/channel/native_channel_manager.dart';
 import 'package:onepanel_client/core/channel/native_channel_port.dart';
+import 'package:onepanel_client/core/channel/native_terminal_bridge.dart';
 import 'package:onepanel_client/core/services/app_preferences_service.dart';
 import 'package:onepanel_client/core/theme/ui_render_policy.dart';
 import 'package:onepanel_client/core/theme/ui_render_mode.dart';
@@ -45,14 +47,12 @@ void main() async {
   await applyDebugSeedConfig();
   applyDebugSemanticsIfRequested();
 
-  // 预加载液态玻璃折射 shader：未加载时第一帧只有纯模糊+噪声贴图。
-  await LiquidGlass.precache();
-
   // Initialize Native Channel Manager for headless/engine-only communication
   // as early as possible. Uses the instance path via NativeChannelPort so
   // the dispatch can be substituted in tests (architecture review R5 ⑬).
   final NativeChannelPort nativeChannel = NativeChannelManager.instance;
   nativeChannel.initInstance();
+  NativeTerminalBridge.init();
 
   final capabilities = PlatformCapabilities.current();
   final isAndroid = capabilities.supportsBackgroundDownloader;
@@ -85,6 +85,7 @@ void main() async {
   // 液态玻璃模式：仅 Apple Metal 预加载 premium 多 pass 折射 shader；
   // GLES 低端设备跳过（premium 管线会阻塞主线程并丢失 GPU 上下文）。
   if (UIRenderPolicy.liquidGlassEnabled) {
+    await LiquidGlass.precache();
     await LiquidGlassWidgets.initialize(
       enablePerformanceMonitor: false,
       warmUpMode: UIRenderPolicy.premiumGlassAllowed
@@ -321,6 +322,15 @@ class MyApp extends StatelessWidget {
                             );
                           },
                         ),
+                        if (Platform.isMacOS)
+                          PlatformMenuItem(
+                            label: '${l10n.settingsPageTitle}…',
+                            shortcut: const SingleActivator(
+                              LogicalKeyboardKey.comma,
+                              meta: true,
+                            ),
+                            onSelectedIntent: const OpenSettingsIntent(),
+                          ),
                         PlatformMenuItem(
                           label: l10n.commonClose,
                           onSelected: () => SystemNavigator.pop(),
