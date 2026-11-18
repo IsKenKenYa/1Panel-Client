@@ -100,7 +100,7 @@ class ContainerStatsView extends StatelessWidget {
                     child: CircularProgressIndicator(
                         strokeWidth: 2, color: Colors.white),
                   )
-                : const Icon(Icons.refresh),
+                : const Icon(Icons.refresh_outlined),
             label: Text(l10n.commonRefresh),
           ),
         ],

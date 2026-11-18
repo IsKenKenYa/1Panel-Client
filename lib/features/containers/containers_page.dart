@@ -29,6 +29,7 @@ import 'package:onepanel_client/features/shell/controllers/module_subnav_control
 import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/features/shell/widgets/module_subnav.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 
 part 'containers_page/containers_page_sections_part.dart';
 part 'containers_page/containers_page_actions_part.dart';

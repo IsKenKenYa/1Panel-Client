@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import '../../api/v2/compose_v2.dart';
 import '../../api/v2/container_v2.dart';
@@ -333,6 +335,20 @@ class ContainerService extends BaseComponent {
       if (data == null) return '';
 
       if (data is String) {
+        // ResponseType.plain 会把 JSON envelope 当纯文本返回：
+        // 先行解包 {"code":...,"data":...}，data 为 null 表示容器无 stdout 日志。
+        final trimmed = data.trim();
+        if (trimmed.startsWith('{')) {
+          try {
+            final decoded = jsonDecode(trimmed);
+            if (decoded is Map && decoded.containsKey('data')) {
+              final inner = decoded['data'];
+              return inner == null ? '' : inner.toString();
+            }
+          } on FormatException {
+            // 非 JSON 文本按原始日志处理。
+          }
+        }
         // Server streams logs via SSE; strip the "data: " prefix from each frame.
         if (data.contains('data:')) {
           final lines = data.split('\n');
@@ -373,6 +389,37 @@ class ContainerService extends BaseComponent {
         type: 'container',
       ));
       return response.data ?? '';
+    });
+  }
+
+  /// 容器 inspect：解包 ResponseType.plain 的 JSON envelope 并按缩进格式化，
+  /// 供原生详情页直接展示。
+  Future<String> inspectContainerFormatted(String containerId) {
+    return runGuarded(() async {
+      final api = await _ensureApi();
+      final response = await api.inspectContainer(InspectReq(
+        id: containerId,
+        type: 'container',
+      ));
+      final raw = (response.data ?? '').trim();
+      var text = raw;
+      if (raw.startsWith('{')) {
+        try {
+          final decoded = jsonDecode(raw);
+          if (decoded is Map && decoded.containsKey('data')) {
+            final inner = decoded['data'];
+            if (inner == null) return '';
+            text = inner is String ? inner : jsonEncode(inner);
+          }
+        } on FormatException {
+          // 非 envelope 文本按原始内容处理。
+        }
+      }
+      try {
+        return const JsonEncoder.withIndent('  ').convert(jsonDecode(text));
+      } on FormatException {
+        return text;
+      }
     });
   }
 

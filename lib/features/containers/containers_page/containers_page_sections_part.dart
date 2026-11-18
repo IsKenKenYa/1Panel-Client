@@ -150,26 +150,12 @@ extension _ContainersPageSections on _ContainersPageViewState {
   }) async {
     final l10n = context.l10n;
     final actionLabel = _actionLabel(l10n, action);
-    final shouldContinue = await showDialog<bool>(
-          context: context,
-          builder: (dialogContext) {
-            return AlertDialog(
-              title: Text(actionLabel),
-              content: Text('${l10n.containerInfoName}: $containerName'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(false),
-                  child: Text(l10n.commonCancel),
-                ),
-                FilledButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(true),
-                  child: Text(l10n.commonConfirm),
-                ),
-              ],
-            );
-          },
-        ) ??
-        false;
+    final shouldContinue = await ConfirmActionSheetWidget.show(
+      context,
+      title: actionLabel,
+      message: '${l10n.containerInfoName}: $containerName',
+      confirmLabel: l10n.commonConfirm,
+    );
 
     if (!shouldContinue) {
       return;

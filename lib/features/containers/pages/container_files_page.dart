@@ -99,14 +99,10 @@ class _ContainerFilesPageState extends State<ContainerFilesPage> {
         appBar: AppBar(
           title: Text(
               '${widget.containerName} - ${context.l10n.containerFilesTitle}'),
-          leading: inSubdirectory
-              ? IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: _navigateUp,
-                  tooltip:
-                      MaterialLocalizations.of(context).backButtonTooltip,
-                )
-              : (navigatorCanPop ? const BackButton() : null),
+          // BackButton 走 maybePop → PopScope：子目录时拦截为回上级，
+          // 路由栈可弹时直接退出页面，与系统返回手势语义一致。
+          leading:
+              (inSubdirectory || navigatorCanPop) ? const BackButton() : null,
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(40),
             child: Padding(

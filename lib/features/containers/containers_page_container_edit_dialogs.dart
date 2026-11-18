@@ -4,6 +4,8 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/data/models/container_models.dart';
 import 'package:onepanel_client/features/containers/containers_provider.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_dialog.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 
 class ContainersPageContainerEditDialogs {
   static Future<void> showRenameContainerDialog(
@@ -62,67 +64,55 @@ class ContainersPageContainerEditDialogs {
     final cpuController = TextEditingController();
     final memoryController = TextEditingController();
 
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.containerActionEdit),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: cpuController,
-                decoration: InputDecoration(
-                  labelText: l10n.containerCpuShares,
-                  border: const OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.number,
+    await showAppFormDialog(
+      context,
+      title: l10n.containerActionEdit,
+      confirmLabel: l10n.commonConfirm,
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: cpuController,
+              decoration: InputDecoration(
+                labelText: l10n.containerCpuShares,
+                border: const OutlineInputBorder(),
               ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: memoryController,
-                decoration: InputDecoration(
-                  labelText: l10n.containerMemory,
-                  border: const OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.number,
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: memoryController,
+              decoration: InputDecoration(
+                labelText: l10n.containerMemory,
+                border: const OutlineInputBorder(),
               ),
-            ],
-          ),
+              keyboardType: TextInputType.number,
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.commonConfirm),
-          ),
-        ],
       ),
-    );
-
-    if (result == true && context.mounted) {
-      final provider = context.read<ContainersProvider>();
-      final cpuShares = int.tryParse(cpuController.text);
-      final memory = int.tryParse(memoryController.text);
-      final request = ContainerOperate(
-        name: container.name,
-        image: container.image,
-        cpuShares: cpuShares,
-        memory: memory,
-      );
-      final success = await provider.updateContainer(request);
-      if (context.mounted) {
-        if (success) {
-          SnackBarUtils.showSuccess(context, l10n.containerOperateSuccess);
-        } else {
-          SnackBarUtils.showError(context,
+      onConfirm: () async {
+        final provider = context.read<ContainersProvider>();
+        final cpuShares = int.tryParse(cpuController.text);
+        final memory = int.tryParse(memoryController.text);
+        final request = ContainerOperate(
+          name: container.name,
+          image: container.image,
+          cpuShares: cpuShares,
+          memory: memory,
+        );
+        final success = await provider.updateContainer(request);
+        if (!success) {
+          throw Exception(
               l10n.containerOperateFailed(provider.data.error ?? l10n.commonUnknownError));
         }
-      }
-    }
+        if (!context.mounted) {
+          return;
+        }
+        SnackBarUtils.showSuccess(context, l10n.containerOperateSuccess);
+      },
+    );
   }
 
   static Future<void> showCleanLogDialog(
@@ -130,22 +120,12 @@ class ContainersPageContainerEditDialogs {
     String name,
   ) async {
     final l10n = context.l10n;
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.containerActionCleanLog),
-        content: Text(l10n.containerCleanLogConfirm(name)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.commonConfirm),
-          ),
-        ],
-      ),
+    final confirm = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.containerActionCleanLog,
+      message: l10n.containerCleanLogConfirm(name),
+      confirmLabel: l10n.commonConfirm,
+      isDestructive: true,
     );
 
     if (confirm == true && context.mounted) {

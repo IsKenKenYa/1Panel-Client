@@ -4,88 +4,78 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/data/models/container_models.dart';
 import 'package:onepanel_client/features/containers/containers_provider.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_dialog.dart';
 
 class ContainersPageContainerMaintenanceDialogs {
   static Future<void> showPruneDialog(BuildContext context) async {
     final l10n = context.l10n;
     ContainerPruneType type = ContainerPruneType.container;
     bool withTagAll = false;
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Text(l10n.containerActionPrune),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              DropdownButtonFormField<ContainerPruneType>(
-                initialValue: type,
-                decoration: InputDecoration(
-                  labelText: l10n.containerPruneType,
-                  border: const OutlineInputBorder(),
+
+    await showAppFormDialog(
+      context,
+      title: l10n.containerActionPrune,
+      confirmLabel: l10n.commonConfirm,
+      content: StatefulBuilder(
+        builder: (context, setSheetState) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DropdownButtonFormField<ContainerPruneType>(
+              initialValue: type,
+              decoration: InputDecoration(
+                labelText: l10n.containerPruneType,
+                border: const OutlineInputBorder(),
+              ),
+              items: [
+                DropdownMenuItem(
+                  value: ContainerPruneType.container,
+                  child: Text(l10n.containerPruneTypeContainer),
                 ),
-                items: [
-                  DropdownMenuItem(
-                    value: ContainerPruneType.container,
-                    child: Text(l10n.containerPruneTypeContainer),
-                  ),
-                  DropdownMenuItem(
-                    value: ContainerPruneType.image,
-                    child: Text(l10n.containerPruneTypeImage),
-                  ),
-                  DropdownMenuItem(
-                    value: ContainerPruneType.volume,
-                    child: Text(l10n.containerPruneTypeVolume),
-                  ),
-                  DropdownMenuItem(
-                    value: ContainerPruneType.network,
-                    child: Text(l10n.containerPruneTypeNetwork),
-                  ),
-                  DropdownMenuItem(
-                    value: ContainerPruneType.buildcache,
-                    child: Text(l10n.containerPruneTypeBuildCache),
-                  ),
-                ],
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() => type = value);
-                  }
-                },
-              ),
-              const SizedBox(height: 12),
-              SwitchListTile(
-                value: withTagAll,
-                onChanged: (value) => setState(() => withTagAll = value),
-                title: Text(l10n.containerPruneWithTagAll),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text(l10n.commonCancel),
+                DropdownMenuItem(
+                  value: ContainerPruneType.image,
+                  child: Text(l10n.containerPruneTypeImage),
+                ),
+                DropdownMenuItem(
+                  value: ContainerPruneType.volume,
+                  child: Text(l10n.containerPruneTypeVolume),
+                ),
+                DropdownMenuItem(
+                  value: ContainerPruneType.network,
+                  child: Text(l10n.containerPruneTypeNetwork),
+                ),
+                DropdownMenuItem(
+                  value: ContainerPruneType.buildcache,
+                  child: Text(l10n.containerPruneTypeBuildCache),
+                ),
+              ],
+              onChanged: (value) {
+                if (value != null) {
+                  setSheetState(() => type = value);
+                }
+              },
             ),
-            FilledButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(l10n.commonConfirm),
+            const SizedBox(height: 12),
+            SwitchListTile(
+              value: withTagAll,
+              onChanged: (value) => setSheetState(() => withTagAll = value),
+              title: Text(l10n.containerPruneWithTagAll),
             ),
           ],
         ),
       ),
+      onConfirm: () async {
+        final provider = context.read<ContainersProvider>();
+        final report = await provider.pruneContainers(
+          ContainerPrune(
+            pruneType: type.value,
+            withTagAll: withTagAll,
+          ),
+        );
+        if (!context.mounted) return;
+        final message = report?.message ?? l10n.containerOperateSuccess;
+        SnackBarUtils.showSuccess(context, message);
+      },
     );
-
-    if (result == true && context.mounted) {
-      final provider = context.read<ContainersProvider>();
-      final report = await provider.pruneContainers(
-        ContainerPrune(
-          pruneType: type.value,
-          withTagAll: withTagAll,
-        ),
-      );
-      if (!context.mounted) return;
-      final message = report?.message ?? l10n.containerOperateSuccess;
-      SnackBarUtils.showSuccess(context, message);
-    }
   }
 
   static void showDeleteContainerDialog(

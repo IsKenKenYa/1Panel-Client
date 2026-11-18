@@ -86,7 +86,7 @@ class _ConfigTabState extends State<ConfigTab> {
                     SnackBarUtils.showSuccess(context, l10n.commonSaveSuccess);
                   }
                 },
-                icon: const Icon(Icons.save),
+                icon: const Icon(Icons.save_outlined),
                 label: Text(l10n.commonSave),
               ),
             ],

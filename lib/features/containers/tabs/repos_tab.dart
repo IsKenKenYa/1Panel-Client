@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
 import 'package:onepanel_client/features/containers/dialogs/repo_create_dialog.dart';
@@ -58,22 +59,12 @@ class ReposTab extends StatelessWidget {
                           builder: (context) => RepoCreateDialog(repo: repo),
                         );
                       } else if (value == 'delete') {
-                        final confirm = await showDialog<bool>(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text(l10n.commonDelete),
-                            content: Text(l10n.commonDeleteRepoConfirm),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context, false),
-                                child: Text(l10n.commonCancel),
-                              ),
-                              FilledButton(
-                                onPressed: () => Navigator.pop(context, true),
-                                child: Text(l10n.commonConfirm),
-                              ),
-                            ],
-                          ),
+                        final confirm = await ConfirmActionSheetWidget.show(
+                          context,
+                          title: l10n.commonDelete,
+                          message: l10n.commonDeleteRepoConfirm,
+                          confirmLabel: l10n.commonDelete,
+                          isDestructive: true,
                         );
 
                         if (confirm == true) {

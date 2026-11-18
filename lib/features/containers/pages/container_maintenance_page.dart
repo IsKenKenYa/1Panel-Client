@@ -118,7 +118,7 @@ class _ContainerMaintenancePageState extends State<ContainerMaintenancePage> {
                             width: 16,
                             height: 16,
                             child: CircularProgressIndicator(strokeWidth: 2))
-                        : const Icon(Icons.save),
+                        : const Icon(Icons.save_outlined),
                     label:  Text(context.l10n.containerMaintenanceCommit),
                   ),
                 ],

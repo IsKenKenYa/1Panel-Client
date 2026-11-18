@@ -65,7 +65,7 @@ extension _ContainersPageActions on _ContainersPageViewState {
               await context.read<ContainersProvider>().loadContainers();
             }
           },
-          icon: const Icon(Icons.add),
+          icon: const Icon(Icons.add_outlined),
           label: Text(l10n.containerCreate),
         );
       case 'compose':
@@ -73,7 +73,7 @@ extension _ContainersPageActions on _ContainersPageViewState {
           heroTag: 'containers_compose_fab',
           onPressed: () =>
               ContainersPageCreateDialogs.showCreateComposeDialog(context),
-          icon: const Icon(Icons.add),
+          icon: const Icon(Icons.add_outlined),
           label: Text(l10n.orchestrationCreateProject),
         );
       case 'images':
@@ -88,7 +88,7 @@ extension _ContainersPageActions on _ContainersPageViewState {
           heroTag: 'containers_networks_fab',
           onPressed: () =>
               ContainersPageCreateDialogs.showCreateNetworkDialog(context),
-          icon: const Icon(Icons.add),
+          icon: const Icon(Icons.add_outlined),
           label: Text(l10n.orchestrationCreateNetwork),
         );
       case 'volumes':
@@ -96,7 +96,7 @@ extension _ContainersPageActions on _ContainersPageViewState {
           heroTag: 'containers_volumes_fab',
           onPressed: () =>
               ContainersPageCreateDialogs.showCreateVolumeDialog(context),
-          icon: const Icon(Icons.add),
+          icon: const Icon(Icons.add_outlined),
           label: Text(l10n.orchestrationCreateVolume),
         );
       case 'repositories':
@@ -104,7 +104,7 @@ extension _ContainersPageActions on _ContainersPageViewState {
           heroTag: 'containers_repositories_fab',
           onPressed: () =>
               ContainersPageCreateDialogs.showCreateRepoDialog(context),
-          icon: const Icon(Icons.add),
+          icon: const Icon(Icons.add_outlined),
           label: Text(l10n.orchestrationCreateRepo),
         );
       case 'templates':
@@ -112,7 +112,7 @@ extension _ContainersPageActions on _ContainersPageViewState {
           heroTag: 'containers_templates_fab',
           onPressed: () =>
               ContainersPageCreateDialogs.showCreateTemplateDialog(context),
-          icon: const Icon(Icons.add),
+          icon: const Icon(Icons.add_outlined),
           label: Text(l10n.orchestrationCreateTemplate),
         );
       default:
