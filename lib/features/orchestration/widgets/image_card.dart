@@ -75,7 +75,7 @@ class ImageCard extends StatelessWidget {
                 IconButton(
                   onPressed: () =>
                       ImageCardDialogs.showDetailsSheet(context, image: image),
-                  icon: const Icon(Icons.info_outline),
+                  icon: const Icon(Icons.info_outlined),
                   tooltip: l10n.commonMore,
                 ),
                 IconButton(

@@ -6,6 +6,7 @@ import 'package:onepanel_client/data/models/docker_models.dart';
 import 'package:onepanel_client/features/orchestration/providers/compose_provider.dart';
 import 'package:onepanel_client/features/orchestration/widgets/compose_card_actions.dart';
 import 'package:onepanel_client/features/orchestration/widgets/orchestration_detail_line_widget.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 
 class ComposeCardDialogs {
   static Future<void> showComposeFormDialog(
@@ -165,22 +166,12 @@ class ComposeCardDialogs {
     required ComposeProject compose,
   }) async {
     final l10n = context.l10n;
-    final shouldClean = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.orchestrationComposeCleanLog),
-        content: Text(l10n.orchestrationComposeCleanLogConfirm(compose.name)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.commonConfirm),
-          ),
-        ],
-      ),
+    final shouldClean = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.orchestrationComposeCleanLog,
+      message: l10n.orchestrationComposeCleanLogConfirm(compose.name),
+      confirmLabel: l10n.commonConfirm,
+      isDestructive: true,
     );
 
     if (shouldClean != true || !context.mounted) return;

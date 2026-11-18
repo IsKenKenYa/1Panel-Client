@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/orchestration/providers/compose_provider.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 
 import '../../../core/utils/snackbar_utils.dart';
 class ComposeCardActions {
@@ -32,22 +33,12 @@ class ComposeCardActions {
     Future<bool> Function() action,
   ) async {
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.commonConfirm),
-        content: Text(l10n.commonDeleteConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.commonConfirm),
-          ),
-        ],
-      ),
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.commonConfirm,
+      message: l10n.commonDeleteConfirm,
+      confirmLabel: l10n.commonConfirm,
+      isDestructive: true,
     );
     if (confirmed == true && context.mounted) {
       await runAction(context, provider, action);

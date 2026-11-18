@@ -88,7 +88,7 @@ class _OrchestrationPageState extends State<OrchestrationPage>
           heroTag: 'orchestration_compose_fab',
           onPressed: () =>
               ContainersPageCreateDialogs.showCreateComposeDialog(context),
-          icon: const Icon(Icons.add),
+          icon: const Icon(Icons.add_outlined),
           label: Text(l10n.orchestrationCreateProject),
         );
       case 1:
@@ -103,7 +103,7 @@ class _OrchestrationPageState extends State<OrchestrationPage>
           heroTag: 'orchestration_network_fab',
           onPressed: () =>
               ContainersPageCreateDialogs.showCreateNetworkDialog(context),
-          icon: const Icon(Icons.add),
+          icon: const Icon(Icons.add_outlined),
           label: Text(l10n.orchestrationCreateNetwork),
         );
       case 3:
@@ -111,14 +111,14 @@ class _OrchestrationPageState extends State<OrchestrationPage>
           heroTag: 'orchestration_volume_fab',
           onPressed: () =>
               ContainersPageCreateDialogs.showCreateVolumeDialog(context),
-          icon: const Icon(Icons.add),
+          icon: const Icon(Icons.add_outlined),
           label: Text(l10n.orchestrationCreateVolume),
         );
       case 4:
         return FloatingActionButton.extended(
           heroTag: 'orchestration_template_fab',
           onPressed: () => _createTemplate(context),
-          icon: const Icon(Icons.add),
+          icon: const Icon(Icons.add_outlined),
           label: Text(l10n.orchestrationCreateTemplate),
         );
       default:

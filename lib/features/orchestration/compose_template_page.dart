@@ -5,6 +5,7 @@ import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/data/models/container_models.dart';
 import 'package:onepanel_client/features/orchestration/providers/compose_template_provider.dart';
 import 'package:onepanel_client/features/orchestration/widgets/compose_template_dialog.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:provider/provider.dart';
 
 /// 编排模版管理页。
@@ -46,22 +47,12 @@ class _ComposeTemplatePageState extends State<ComposeTemplatePage> {
 
   Future<void> _deleteTemplate(ContainerTemplate template) async {
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.commonDelete),
-        content: Text(l10n.composeTemplateDeleteConfirm(template.name)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(l10n.commonConfirm),
-          ),
-        ],
-      ),
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.commonDelete,
+      message: l10n.composeTemplateDeleteConfirm(template.name),
+      confirmLabel: l10n.commonDelete,
+      isDestructive: true,
     );
     if (confirmed != true || !mounted) return;
     final provider = context.read<ComposeTemplateProvider>();

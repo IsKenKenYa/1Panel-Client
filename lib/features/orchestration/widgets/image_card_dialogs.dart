@@ -7,6 +7,7 @@ import 'package:onepanel_client/features/orchestration/providers/image_provider.
 import 'package:onepanel_client/features/orchestration/widgets/image_card_actions.dart';
 import 'package:onepanel_client/features/orchestration/widgets/image_card_prompts.dart';
 import 'package:onepanel_client/features/orchestration/widgets/orchestration_detail_line_widget.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 
 class ImageCardDialogs {
   /// 创建时间本地化短格式；无法解析时回退原始串（created 可能为空）。
@@ -106,22 +107,11 @@ class ImageCardDialogs {
     required DockerImage image,
   }) async {
     final l10n = context.l10n;
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.containerActionPush),
-        content: Text(l10n.containerPushConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.commonConfirm),
-          ),
-        ],
-      ),
+    final confirm = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.containerActionPush,
+      message: l10n.containerPushConfirm,
+      confirmLabel: l10n.commonConfirm,
     );
 
     if (confirm != true || !context.mounted) return;

@@ -3,6 +3,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/data/models/docker_models.dart';
 import 'package:onepanel_client/features/orchestration/providers/network_provider.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/utils/snackbar_utils.dart';
@@ -107,26 +108,12 @@ class NetworkCard extends StatelessWidget {
       return;
     }
 
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.commonDelete),
-        content: Text(l10n.commonDeleteConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
-              foregroundColor: Theme.of(context).colorScheme.onError,
-            ),
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.commonDelete),
-          ),
-        ],
-      ),
+    final confirm = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.commonDelete,
+      message: l10n.commonDeleteConfirm,
+      confirmLabel: l10n.commonDelete,
+      isDestructive: true,
     );
 
     if (confirm != true || !context.mounted) return;
@@ -184,7 +171,7 @@ class NetworkCard extends StatelessWidget {
             ),
             IconButton(
               onPressed: () => _showDetailsSheet(context),
-              icon: const Icon(Icons.info_outline),
+              icon: const Icon(Icons.info_outlined),
               tooltip: l10n.commonMore,
             ),
             IconButton(

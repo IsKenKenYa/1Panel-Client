@@ -40,7 +40,7 @@ class ComposeCard extends StatelessWidget {
                     context,
                     compose: compose,
                   ),
-                  icon: const Icon(Icons.info_outline),
+                  icon: const Icon(Icons.info_outlined),
                 ),
               ],
             ),
@@ -94,7 +94,7 @@ class ComposeCard extends StatelessWidget {
                             provider,
                             () => provider.upCompose(compose),
                           ),
-                  icon: const Icon(Icons.play_arrow, size: 18),
+                  icon: const Icon(Icons.play_arrow_outlined, size: 18),
                   label: Text(l10n.commonStart),
                 ),
                 TextButton.icon(
@@ -116,7 +116,7 @@ class ComposeCard extends StatelessWidget {
                             provider,
                             () => provider.restartCompose(compose),
                           ),
-                  icon: const Icon(Icons.refresh, size: 18),
+                  icon: const Icon(Icons.refresh_outlined, size: 18),
                   label: Text(l10n.commonRestart),
                 ),
                 PopupMenuButton<String>(
