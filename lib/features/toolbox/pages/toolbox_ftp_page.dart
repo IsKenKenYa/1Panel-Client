@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/toolbox_models.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/features/toolbox/providers/toolbox_ftp_provider.dart';
 import 'package:onepanel_client/features/toolbox/widgets/toolbox_sections_widget.dart';
@@ -187,7 +188,7 @@ class _ToolboxFtpPageState extends State<ToolboxFtpPage>
                 onPressed: provider.isBusy
                     ? null
                     : () => _showUserDialog(context, provider),
-                icon: const Icon(Icons.add),
+                icon: const Icon(Icons.add_outlined),
                 label: Text(l10n.commonCreate),
               ),
               OutlinedButton.icon(

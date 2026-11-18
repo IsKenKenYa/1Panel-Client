@@ -5,6 +5,7 @@ import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/data/models/toolbox_models.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/features/toolbox/providers/toolbox_clam_provider.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:onepanel_client/shared/widgets/section_card.dart';
 import 'package:provider/provider.dart';
 
@@ -78,7 +79,7 @@ class _ToolboxClamPageState extends State<ToolboxClamPage>
                       onPressed: provider.isMutating
                           ? null
                           : () => _showTaskDialog(context, provider),
-                      icon: const Icon(Icons.add),
+                      icon: const Icon(Icons.add_outlined),
                       label: Text(l10n.commonCreate),
                     ),
                     PopupMenuButton<String>(

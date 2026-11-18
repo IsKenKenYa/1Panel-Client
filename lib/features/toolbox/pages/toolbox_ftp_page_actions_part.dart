@@ -133,24 +133,13 @@ mixin _ToolboxFtpPageActionsPart on State<ToolboxFtpPage> {
     FtpInfo user,
   ) async {
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
-          context: context,
-          builder: (dialogContext) => AlertDialog(
-            title: Text(l10n.commonDelete),
-            content: Text(l10n.commonDeleteConfirm),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext, false),
-                child: Text(l10n.commonCancel),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.pop(dialogContext, true),
-                child: Text(l10n.commonDelete),
-              ),
-            ],
-          ),
-        ) ??
-        false;
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.commonDelete,
+      message: l10n.commonDeleteConfirm,
+      confirmLabel: l10n.commonDelete,
+      isDestructive: true,
+    );
 
     if (!confirmed || user.id == null) {
       return;

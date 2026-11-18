@@ -77,7 +77,7 @@ class _ToolboxSupervisorPageState extends State<ToolboxSupervisorPage> {
       appBar: AppBar(
         title:  Text(context.l10n.toolboxSupervisorTitle),
         actions: [
-          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh), onPressed: _load),
+          IconButton(tooltip: context.l10n.commonRefresh, icon: const Icon(Icons.refresh_outlined), onPressed: _load),
         ],
       ),
       body: _isLoading
@@ -115,7 +115,7 @@ class _ToolboxSupervisorPageState extends State<ToolboxSupervisorPage> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         IconButton(tooltip: context.l10n.commonStop, 
-                                          icon: Icon(isRunning ? Icons.pause : Icons.play_arrow),
+                                          icon: Icon(isRunning ? Icons.pause : Icons.play_arrow_outlined),
                                           onPressed: () => _operateProcess(
                                             p['name']?.toString() ?? '',
                                             isRunning ? 'stop' : 'start',

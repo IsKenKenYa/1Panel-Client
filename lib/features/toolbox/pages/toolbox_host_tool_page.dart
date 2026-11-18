@@ -37,7 +37,7 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
       actions: <Widget>[
         IconButton(
           onPressed: provider.isLoading ? null : provider.load,
-          icon: const Icon(Icons.refresh),
+          icon: const Icon(Icons.refresh_outlined),
           tooltip: l10n.commonRefresh,
         ),
       ],
@@ -162,7 +162,7 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
                     onPressed: provider.isMutating
                         ? null
                         : () => _showProcessDialog(context, provider),
-                    icon: const Icon(Icons.add),
+                    icon: const Icon(Icons.add_outlined),
                     label: Text(l10n.commonCreate),
                   ),
                 ),
