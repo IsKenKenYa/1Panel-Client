@@ -1,51 +1,84 @@
 import SwiftUI
 
 struct FirewallRuleModel: Identifiable {
-    let id: Int
+    let id: String
     let protocolName: String
     let port: String
     let address: String
     let strategy: String
     let description: String
+    let family: String
+    let chain: String
+    private let supportsLegacyChanges: Bool
+    private let serverId: String?
+    private let inventoryId: String?
+    private let canDelete: Bool?
+
+    init?(payload: [String: Any]) {
+        let rawId = payload["id"]
+        guard let id = rawId as? String ?? (rawId as? Int).map(String.init) else { return nil }
+        self.id = id
+        protocolName = payload["protocol"] as? String ?? ""
+        port = payload["port"] as? String ?? ""
+        address = payload["address"] as? String ?? ""
+        strategy = payload["strategy"] as? String ?? ""
+        description = payload["description"] as? String ?? ""
+        family = payload["family"] as? String ?? ""
+        chain = payload["chain"] as? String ?? ""
+        supportsLegacyChanges = payload["supportsLegacyChanges"] as? Bool == true
+        serverId = payload["serverId"] as? String
+        inventoryId = payload["inventoryId"] as? String
+        canDelete = payload["canDelete"] as? Bool
+    }
+
+    var deletionArguments: [String: String]? {
+        if let inventoryId {
+            guard canDelete == true, !inventoryId.isEmpty, let serverId, !serverId.isEmpty else { return nil }
+            return ["inventoryId": inventoryId, "serverId": serverId]
+        }
+        guard supportsLegacyChanges, canDelete != false else { return nil }
+        var args = ["port": port, "protocol": protocolName, "strategy": strategy, "address": address]
+        if let serverId { args["serverId"] = serverId }
+        return args
+    }
 }
 
 class FirewallViewModel: ObservableObject {
     @Published var rules: [FirewallRuleModel] = []
     @Published var isLoading = false
+    @Published var hasLoadError = false
+    @Published private(set) var isDeleting = false
 
     func fetch() {
+        guard !isLoading, !isDeleting else { return }
         isLoading = true
+        hasLoadError = false
         ChannelManager.shared.invokeDataMethod("getFirewallRules") { [weak self] result in
             DispatchQueue.main.async {
                 self?.isLoading = false
-                guard let items = result as? [[String: Any]] else { return }
-                self?.rules = items.compactMap { item in
-                    guard let id = item["id"] as? Int else { return nil }
-                    return FirewallRuleModel(
-                        id: id,
-                        protocolName: item["protocol"] as? String ?? "",
-                        port: item["port"] as? String ?? "",
-                        address: item["address"] as? String ?? "",
-                        strategy: item["strategy"] as? String ?? "",
-                        description: item["description"] as? String ?? ""
-                    )
+                guard let items = result as? [[String: Any]] else {
+                    self?.hasLoadError = true
+                    return
                 }
+                self?.rules = items.compactMap(FirewallRuleModel.init(payload:))
             }
         }
     }
 
-    func delete(rule: FirewallRuleModel, completion: @escaping (Bool) -> Void) {
+    func delete(rule: FirewallRuleModel, completion: @escaping (Bool, String?) -> Void) {
+        guard !isLoading, !isDeleting, let args = rule.deletionArguments else { return }
+        isDeleting = true
         ChannelManager.shared.invokeDataMethod(
             "deleteFirewallRule",
-            arguments: [
-                "port": rule.port,
-                "protocol": rule.protocolName,
-                "strategy": rule.strategy,
-                "address": rule.address,
-            ]
-        ) { result in
+            arguments: args
+        ) { [weak self] result in
             DispatchQueue.main.async {
-                completion((result as? [String: Any])?["success"] as? Bool ?? false)
+                guard let self else { return }
+                self.isDeleting = false
+                let dict = result as? [String: Any]
+                let success = dict?["success"] as? Bool == true
+                if success { self.fetch() }
+                completion(success, dict?["error"] as? String)
             }
         }
     }
@@ -80,7 +113,6 @@ struct FirewallView: View {
     @EnvironmentObject var translations: TranslationsManager
 
     @State private var pendingDelete: FirewallRuleModel?
-    @State private var showDeleteConfirm = false
     @State private var showAddSheet = false
     @State private var toastText: String?
 
@@ -88,10 +120,14 @@ struct FirewallView: View {
         Group {
             if viewModel.isLoading && viewModel.rules.isEmpty {
                 LoadingView()
+            } else if viewModel.hasLoadError && viewModel.rules.isEmpty {
+                ErrorView(message: loadFailureMessage, onRetry: viewModel.fetch)
             } else if viewModel.rules.isEmpty {
                 EmptyStateView(
                     icon: "shield.lefthalf.filled",
-                    message: translations.get("firewallPortsEmptyTitle", fallback: "No port rules")
+                    message: translations.get("firewallPortsEmptyTitle", fallback: "No port rules"),
+                    description: translations.get("firewallPortsEmptyHint",
+                                                  fallback: "Tap Add in the top toolbar to open a port.")
                 )
             } else {
                 List {
@@ -117,11 +153,12 @@ struct FirewallView: View {
                         }
                         .padding(.vertical, 4)
                         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                            Button(role: .destructive) {
-                                pendingDelete = rule
-                                showDeleteConfirm = true
-                            } label: {
-                                Label(translations.get("commonDelete", fallback: "Delete"), systemImage: "trash")
+                            if rule.deletionArguments != nil && !viewModel.isLoading && !viewModel.isDeleting {
+                                Button(role: .destructive) {
+                                    pendingDelete = rule
+                                } label: {
+                                    Label(translations.get("commonDelete", fallback: "Delete"), systemImage: "trash")
+                                }
                             }
                         }
                     }
@@ -139,14 +176,16 @@ struct FirewallView: View {
                 Button {
                     showAddSheet = true
                 } label: {
-                    Image(systemName: "plus")
+                    Label(translations.get("firewallCreatePortRuleAction", fallback: "Create Port Rule"),
+                          systemImage: "plus")
                 }
+                .disabled(viewModel.isDeleting)
                 Button {
                     viewModel.fetch()
                 } label: {
-                    Image(systemName: "arrow.clockwise")
+                    Label(translations.get("commonRefresh", fallback: "Refresh"), systemImage: "arrow.clockwise")
                 }
-                .disabled(viewModel.isLoading)
+                .disabled(viewModel.isLoading || viewModel.isDeleting)
             }
         }
         .sheet(isPresented: $showAddSheet) {
@@ -155,33 +194,34 @@ struct FirewallView: View {
         }
         .confirmationDialog(
             translations.get("deleteConfirmTitle", fallback: "Confirm Deletion"),
-            isPresented: $showDeleteConfirm,
-            titleVisibility: .visible
-        ) {
+            isPresented: Binding(
+                get: { pendingDelete != nil },
+                set: { if !$0 { pendingDelete = nil } }
+            ),
+            titleVisibility: .visible,
+            presenting: pendingDelete
+        ) { rule in
             Button(translations.get("commonDelete", fallback: "Delete"), role: .destructive) {
-                guard let rule = pendingDelete else { return }
-                pendingDelete = nil
-                viewModel.delete(rule: rule) { success in
+                viewModel.delete(rule: rule) { success, message in
                     showToast(success
                         ? translations.get("commonDeleted", fallback: "Deleted")
-                        : translations.get("commonDeleteFailed", fallback: "Delete failed"))
-                    viewModel.fetch()
+                        : message ?? translations.get("commonDeleteFailed", fallback: "Delete failed"))
                 }
             }
-            Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) {
-                pendingDelete = nil
-            }
-        } message: {
-            Text(translations.get("deleteCannotUndoMessage", fallback: "This action cannot be undone."))
+            Button(translations.get("commonCancel", fallback: "Cancel"), role: .cancel) {}
+        } message: { rule in
+            let source = rule.address.isEmpty
+                ? translations.get("firewallSourceAnywhere", fallback: "Anywhere") : rule.address
+            let target = [rule.port.isEmpty ? rule.protocolName : portLine(rule), source, rule.family,
+                          rule.chain, rule.strategy, rule.description]
+                .filter { !$0.isEmpty }
+                .joined(separator: " · ")
+            Text("\(target)\n\(translations.get("deleteCannotUndoMessage", fallback: "This action cannot be undone."))")
         }
-        .overlay(alignment: .bottom) {
-            if let toastText {
-                Text(toastText)
-                    .font(.footnote)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
-                    .background(.regularMaterial, in: Capsule())
-                    .padding(.bottom, 24)
+        .operationNotice(toastText)
+        .onChange(of: viewModel.hasLoadError) { hasError in
+            if hasError && !viewModel.rules.isEmpty {
+                showToast(loadFailureMessage)
             }
         }
         .onAppear {
@@ -190,6 +230,10 @@ struct FirewallView: View {
                 showAddSheet = true
             }
         }
+    }
+
+    private var loadFailureMessage: String {
+        translations.get("commonLoadFailedTitle", fallback: "Failed to load firewall rules")
     }
 
     private func portLine(_ rule: FirewallRuleModel) -> String {

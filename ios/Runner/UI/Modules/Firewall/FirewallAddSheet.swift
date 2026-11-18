@@ -21,18 +21,24 @@ struct FirewallAddSheet: View {
         NavigationStack {
             Form {
                 Section {
-                    TextField(translations.get("firewallPortLabel", fallback: "Port"), text: $port)
-                        .keyboardType(.numbersAndPunctuation)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
+                    LabeledContent(translations.get("firewallPortLabel", fallback: "Port")) {
+                        TextField("", text: $port)
+                            .keyboardType(.numbersAndPunctuation)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled()
+                            .multilineTextAlignment(.trailing)
+                    }
                     Picker(translations.get("firewallProtocolLabel", fallback: "Protocol"), selection: $protocolName) {
                         Text("TCP").tag("tcp")
                         Text("UDP").tag("udp")
                     }
-                    TextField(translations.get("firewallAddressLabel", fallback: "Address"), text: $address)
-                        .keyboardType(.numbersAndPunctuation)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
+                    LabeledContent(translations.get("firewallAddressLabel", fallback: "Address")) {
+                        TextField("", text: $address)
+                            .keyboardType(.numbersAndPunctuation)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled()
+                            .multilineTextAlignment(.trailing)
+                    }
                     Picker(translations.get("firewallStrategyLabel", fallback: "Strategy"), selection: $strategy) {
                         Text(translations.get("firewallStrategyAccept", fallback: "Accept")).tag("accept")
                         Text(translations.get("firewallStrategyDrop", fallback: "Drop")).tag("drop")
