@@ -37,9 +37,12 @@ class ServerAwarePageScaffold extends StatelessWidget {
         final canPop = Navigator.of(context).canPop();
         return Scaffold(
           backgroundColor: scheme.surface,
-          // 内容从标题栏下滚动穿透；标题栏使用不透明 surfaceContainer。
-          // 玻璃标题栏曾在 GLES 上复现 BackdropFilter 采样错位（顶部残影），
-          // 导航浮层的玻璃效果由底栏与桌面侧栏承担。
+          // 内容从标题栏下滚动穿透；标题栏在液态玻璃模式使用不透明
+          // surfaceContainer。顶栏玻璃化在 GLES 上两条管线均不成立：
+          // GlassContainer 走轻量静态快照（几何不变不再重捕获，滚动
+          // 内容冻结残影），AdaptiveLiquidGlassLayer 触发 GPU 每帧
+          // 数秒的渲染停滞；glass 包 BackdropFilter 路径有采样错位。
+          // chrome 玻璃由底栏（GlassTabBar 管线）承担。
           extendBodyBehindAppBar: true,
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(
