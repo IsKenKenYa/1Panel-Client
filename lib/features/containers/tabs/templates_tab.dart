@@ -5,6 +5,7 @@ import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_w
 import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
 import 'package:onepanel_client/features/containers/dialogs/template_create_dialog.dart';
+import 'package:onepanel_client/features/shell/widgets/shell_list_bottom_padding.dart';
 import 'package:onepanel_client/shared/widgets/app_card.dart';
 import '../containers_provider.dart';
 
@@ -40,7 +41,8 @@ class TemplatesTab extends StatelessWidget {
           child: RefreshIndicator(
           onRefresh: provider.loadTemplates,
           child: ListView.separated(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16) +
+                shellListBottomPadding(context),
             itemCount: templates.length,
             separatorBuilder: (context, index) => const SizedBox(height: 12),
             itemBuilder: (context, index) {

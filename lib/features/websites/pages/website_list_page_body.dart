@@ -11,6 +11,7 @@ import 'package:onepanel_client/data/models/website_models.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
+import 'package:onepanel_client/features/shell/widgets/shell_list_bottom_padding.dart';
 
 import '../providers/websites_provider.dart';
 import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
@@ -175,7 +176,8 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
             child: RefreshIndicator(
             onRefresh: provider.refresh,
             child: ListView.separated(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16) +
+                  shellListBottomPadding(context),
               itemCount: data.websites.isEmpty ? 3 : data.websites.length + 2,
               separatorBuilder: (_, __) => const SizedBox(height: 12),
               itemBuilder: (context, index) {

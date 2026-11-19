@@ -68,7 +68,8 @@ extension _FilesViewContent on _FilesViewState {
       child: RefreshIndicator(
         onRefresh: () => provider.refresh(),
         child: ListView.builder(
-          padding: AppDesignTokens.pagePadding,
+          padding: AppDesignTokens.pagePadding +
+              shellListBottomPadding(context),
           itemCount: provider.data.files.length,
           itemBuilder: (context, index) {
             final file = provider.data.files[index];

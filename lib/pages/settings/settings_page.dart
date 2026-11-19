@@ -17,6 +17,7 @@ import 'package:onepanel_client/features/settings/app_lock_settings_page.dart';
 import 'package:onepanel_client/features/settings/screens/theme_settings_page.dart';
 import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/features/shell/widgets/shell_drawer_scope.dart';
+import 'package:onepanel_client/features/shell/widgets/shell_list_bottom_padding.dart';
 import 'package:onepanel_client/pages/settings/cache_settings_page.dart';
 import 'package:onepanel_client/shared/widgets/section_card.dart';
 
@@ -295,7 +296,8 @@ class _SettingsBody extends StatelessWidget {
     return Consumer<AppSettingsController>(
       builder: (context, settings, _) {
         return ListView(
-          padding: AdaptiveLayoutSpec.of(context).pagePadding,
+          padding: AdaptiveLayoutSpec.of(context).pagePadding +
+              shellListBottomPadding(context),
           children: [
             SectionEntryList(
               title: l10n.settingsGeneral,

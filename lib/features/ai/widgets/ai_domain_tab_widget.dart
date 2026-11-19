@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/ai/ai_provider.dart';
 import 'package:onepanel_client/features/ai/widgets/ai_domain_tab_actions.dart';
+import 'package:onepanel_client/features/shell/widgets/shell_list_bottom_padding.dart';
 import 'package:provider/provider.dart';
 
 class AIDomainTabWidget extends StatefulWidget {
@@ -38,7 +39,8 @@ class _AIDomainTabWidgetState extends State<AIDomainTabWidget> {
         return Form(
           key: _formKey,
           child: ListView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16) +
+                shellListBottomPadding(context),
             children: [
               Text(
                 l10n.aiDomainHint,

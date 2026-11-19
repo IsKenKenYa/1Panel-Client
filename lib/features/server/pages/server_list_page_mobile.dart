@@ -6,6 +6,7 @@ import 'package:onepanel_client/features/server/server_list_interactions.dart';
 import 'package:onepanel_client/features/server/view_models/server_list_view_model.dart';
 import 'package:onepanel_client/features/server/widgets/server_card.dart';
 import 'package:onepanel_client/features/shell/widgets/shell_drawer_scope.dart';
+import 'package:onepanel_client/features/shell/widgets/shell_list_bottom_padding.dart';
 import 'package:provider/provider.dart';
 
 class ServerListPageMobile extends StatelessWidget {
@@ -101,7 +102,8 @@ class ServerListPageMobile extends StatelessWidget {
                 )
               else
                 SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 24) +
+                      shellListBottomPadding(context),
                   sliver: SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
