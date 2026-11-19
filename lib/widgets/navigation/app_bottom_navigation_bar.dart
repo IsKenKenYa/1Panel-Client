@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:onepanel_client/core/theme/ui_render_policy.dart';
+import 'package:onepanel_client/widgets/navigation/glass_chrome_settings.dart';
 
 class AppNavigationBarItem {
   const AppNavigationBarItem({
@@ -48,13 +49,10 @@ class AppBottomNavigationBar extends StatelessWidget {
     }
 
     // 主题表面色直接混合，降低滚动内容的对比度，保留预设的模糊和折射。
-    final barSettings = (Theme.brightnessOf(context) == Brightness.dark
-            ? LiquidGlassSettings.ios27Dark
-            : LiquidGlassSettings.ios27Light)
-        .copyWith(
-      bodyMode: GlassBodyMode.clear,
-      glassColor: scheme.surfaceContainer.withValues(alpha: 0.90),
-      chromaticAberration: 0.18,
+    // 方向光/菲涅尔等质感参数由 chromeGlassSettings 统一给出。
+    final barSettings = chromeGlassSettings(
+      Theme.brightnessOf(context),
+      scheme.surfaceContainer.withValues(alpha: 0.90),
     );
     final quality = UIRenderPolicy.premiumGlassAllowed
         ? GlassQuality.premium
