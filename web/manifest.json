@@ -5,7 +5,7 @@
     "start_url": "/",
     "scope": "/",
     "display": "standalone",
-    "background_color": "#0C182A",
+    "background_color": "#FFFFFF",
     "theme_color": "#095868",
     "description": "在浏览器中管理你的 1Panel，数据保存在当前设备。",
     "lang": "zh-CN",

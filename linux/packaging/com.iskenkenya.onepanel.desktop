@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=1Panel Client
+Exec=onepanel_client
+Icon=com.iskenkenya.onepanel
+Terminal=false
+Categories=System;Utility;
+StartupWMClass=com.iskenkenya.onepanel

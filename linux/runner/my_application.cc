@@ -249,6 +249,14 @@ static void my_application_activate(GApplication* application) {
   GtkWindow* window =
       GTK_WINDOW(gtk_application_window_new(GTK_APPLICATION(application)));
 
+  // 图标随应用目录分发，同时支持桌面环境安装的 hicolor 资源。
+  g_autofree gchar* executable_path = g_file_read_link("/proc/self/exe", nullptr);
+  g_assert(executable_path != nullptr);
+  g_autofree gchar* executable_dir = g_path_get_dirname(executable_path);
+  g_autofree gchar* icon_dir = g_build_filename(executable_dir, "data", "icons", nullptr);
+  gtk_icon_theme_append_search_path(gtk_icon_theme_get_default(), icon_dir);
+  gtk_window_set_icon_name(window, APPLICATION_ID);
+
   // Use a header bar when running in GNOME as this is the common style used
   // by applications and is the setup most users will be using (e.g. Ubuntu
   // desktop).

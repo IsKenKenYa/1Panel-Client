@@ -1,196 +1,137 @@
-from __future__ import annotations
-
 import json
 from pathlib import Path
-from PIL import Image, ImageDraw, ImageFilter
+
+from PIL import Image, ImageDraw, ImageFilter, ImageOps
+
 
 ROOT = Path(__file__).resolve().parents[1]
-MASTER = ROOT / 'assets' / 'branding' / 'app_icon_master.png'
-PREVIEW = ROOT / 'assets' / 'branding' / 'app_icon_preview.png'
-
-BG_TOP = (12, 24, 42)
-BG_BOTTOM = (9, 88, 104)
-PANEL = (245, 248, 252)
-ACCENT = (104, 226, 197)
-ACCENT_2 = (118, 196, 255)
-SHADOW = (6, 15, 24, 140)
+BRANDING = ROOT / 'assets/branding'
+SRGB = (BRANDING / 'sources/sRGB.icc').read_bytes()
 
 
-def rounded_rect_mask(size: int, radius: int) -> Image.Image:
-    mask = Image.new('L', (size, size), 0)
-    draw = ImageDraw.Draw(mask)
-    draw.rounded_rectangle((0, 0, size, size), radius=radius, fill=255)
-    return mask
+def load_mark(name):
+    with Image.open(BRANDING / 'sources' / f'{name}.png') as source:
+        image = source.convert('RGBA')
+    alpha = image.getchannel('A')
+    if image.size != (2880, 2880) or alpha.getextrema() != (0, 255):
+        raise ValueError(f'需要 2880×2880 透明原图：{name}')
+    # 使用有效 Alpha 范围消除原图留白，保留边缘的抗锯齿像素。
+    bounds = alpha.point(lambda value: 255 if value > 8 else 0).getbbox()
+    if bounds is None:
+        raise ValueError(f'图形内容为空：{name}')
+    return image.crop(bounds)
 
 
-def vertical_gradient(size: int) -> Image.Image:
-    base = Image.new('RGBA', (size, size))
-    pixels = base.load()
-    for y in range(size):
-        t = y / (size - 1)
-        r = int(BG_TOP[0] * (1 - t) + BG_BOTTOM[0] * t)
-        g = int(BG_TOP[1] * (1 - t) + BG_BOTTOM[1] * t)
-        b = int(BG_TOP[2] * (1 - t) + BG_BOTTOM[2] * t)
-        for x in range(size):
-            pixels[x, y] = (r, g, b, 255)
-    return base
+def foreground(mark, size, extent):
+    image = Image.new('RGBA', (size, size))
+    fitted = ImageOps.contain(mark, (round(size * extent), round(size * extent)), Image.Resampling.LANCZOS)
+    image.alpha_composite(fitted, ((size - fitted.width) // 2, (size - fitted.height) // 2))
+    return image
 
 
-def make_master(size: int = 1024) -> Image.Image:
-    image = vertical_gradient(size)
-    image.putalpha(255)
-
-    draw = ImageDraw.Draw(image)
-    radius = int(size * 0.23)
-    margin = int(size * 0.06)
-
-    shadow = Image.new('RGBA', (size, size), (0, 0, 0, 0))
-    shadow_draw = ImageDraw.Draw(shadow)
-    shadow_draw.rounded_rectangle(
-        (margin, margin + int(size * 0.02), size - margin, size - margin),
-        radius=radius,
-        fill=SHADOW,
-    )
-    shadow = shadow.filter(ImageFilter.GaussianBlur(int(size * 0.025)))
-    image.alpha_composite(shadow)
-
-    card = Image.new('RGBA', (size, size), (0, 0, 0, 0))
-    card_draw = ImageDraw.Draw(card)
-    card_draw.rounded_rectangle(
-        (margin, margin, size - margin, size - margin),
-        radius=radius,
-        fill=(16, 33, 52, 230),
-        outline=(220, 236, 248, 36),
-        width=max(2, size // 128),
-    )
-    image.alpha_composite(card)
-
-    glow = Image.new('RGBA', (size, size), (0, 0, 0, 0))
-    glow_draw = ImageDraw.Draw(glow)
-    glow_draw.ellipse(
-        (int(size * 0.16), int(size * 0.12), int(size * 0.84), int(size * 0.82)),
-        fill=(90, 220, 200, 28),
-    )
-    glow = glow.filter(ImageFilter.GaussianBlur(int(size * 0.08)))
-    image.alpha_composite(glow)
-
-    pillar_x0 = int(size * 0.27)
-    pillar_x1 = int(size * 0.41)
-    pillar_y0 = int(size * 0.24)
-    pillar_y1 = int(size * 0.76)
-    draw.rounded_rectangle(
-        (pillar_x0, pillar_y0, pillar_x1, pillar_y1),
-        radius=int(size * 0.08),
-        fill=ACCENT,
-    )
-    draw.rounded_rectangle(
-        (pillar_x0 + int(size * 0.015), pillar_y0 + int(size * 0.02), pillar_x1 - int(size * 0.03), pillar_y1 - int(size * 0.02)),
-        radius=int(size * 0.065),
-        fill=ACCENT_2,
-    )
-
-    tile_size = int(size * 0.16)
-    gap = int(size * 0.035)
-    start_x = int(size * 0.48)
-    start_y = int(size * 0.31)
-    tile_radius = int(size * 0.04)
-
-    for row in range(2):
-        for col in range(2):
-            x0 = start_x + col * (tile_size + gap)
-            y0 = start_y + row * (tile_size + gap)
-            x1 = x0 + tile_size
-            y1 = y0 + tile_size
-            fill = PANEL
-            if row == 0 and col == 1:
-                fill = (200, 255, 240)
-            draw.rounded_rectangle((x0, y0, x1, y1), radius=tile_radius, fill=fill)
-
-    dot_r = int(size * 0.03)
-    dot_cx = pillar_x0 + int(size * 0.02)
-    dot_cy = int(size * 0.19)
-    draw.ellipse((dot_cx - dot_r, dot_cy - dot_r, dot_cx + dot_r, dot_cy + dot_r), fill=PANEL)
-    draw.line((dot_cx, dot_cy + dot_r, dot_cx, pillar_y0 - int(size * 0.015)), fill=PANEL, width=max(4, size // 96))
-
-    shine = Image.new('RGBA', (size, size), (0, 0, 0, 0))
-    shine_draw = ImageDraw.Draw(shine)
-    shine_draw.rounded_rectangle(
-        (margin + int(size * 0.05), margin + int(size * 0.04), size - margin - int(size * 0.18), margin + int(size * 0.16)),
-        radius=int(size * 0.08),
-        fill=(255, 255, 255, 22),
-    )
-    shine = shine.filter(ImageFilter.GaussianBlur(int(size * 0.02)))
-    image.alpha_composite(shine)
-
-    final = Image.new('RGBA', (size, size), (0, 0, 0, 0))
-    mask = rounded_rect_mask(size, radius=int(size * 0.24))
-    final.paste(image, (0, 0), mask)
-    return final
+def opaque_icon(mark, size, extent=0.68, background='white'):
+    image = Image.new('RGBA', (size, size), background)
+    image.alpha_composite(foreground(mark, size, extent))
+    return image.convert('RGB')
 
 
-def save_png(img: Image.Image, path: Path, size: int):
-    out = img.resize((size, size), Image.Resampling.LANCZOS)
-    out.save(path)
+def desktop_card(mark, size):
+    # macOS 传统 AppIcon 保留透明边距，卡片与 Dock 中的其他图标大小接近。
+    canvas = Image.new('RGBA', (1024, 1024))
+    mask = Image.new('L', canvas.size)
+    ImageDraw.Draw(mask).rounded_rectangle((100, 100, 924, 924), radius=184, fill=255)
+    shadow = Image.new('RGBA', canvas.size, (20, 45, 65, 42))
+    shadow.putalpha(mask.filter(ImageFilter.GaussianBlur(16)).point(lambda value: round(value * 0.16)))
+    canvas.alpha_composite(shadow, (0, 12))
+    card = Image.new('RGBA', canvas.size, 'white')
+    card.putalpha(mask)
+    card.alpha_composite(foreground(mark, 1024, 0.59))
+    canvas.alpha_composite(card)
+    return canvas.resize((size, size), Image.Resampling.LANCZOS)
+
+
+def save_png(image, relative):
+    path = ROOT / relative
+    path.parent.mkdir(parents=True, exist_ok=True)
+    image.save(path, icc_profile=SRGB, optimize=True)
+
+
+def apple_icons(flat, gradient, glass):
+    for platform in ['ios', 'macos']:
+        folder = Path(platform) / 'Runner/Assets.xcassets/AppIcon.appiconset'
+        catalog = json.loads((ROOT / folder / 'Contents.json').read_text())
+        for entry in catalog['images']:
+            size = round(float(entry['size'].split('x')[0]) * float(entry.get('scale', '1x')[:-1]))
+            mark = glass if size >= 60 else flat
+            if platform == 'macos':
+                image = desktop_card(mark, size)
+            elif entry.get('appearances', [{}])[0].get('value') == 'tinted':
+                image = ImageOps.grayscale(opaque_icon(flat, size)).convert('RGB')
+            else:
+                image = opaque_icon(mark, size)
+            save_png(image, folder / entry['filename'])
+    save_png(foreground(flat, 1024, 0.68),
+             'assets/branding/1Panel-Client-Apple.icon/Assets/app_icon_foreground.png')
+
+
+def android_icons(flat):
+    folder = Path('android/app/src/main/res')
+    for density, scale in [('mdpi', 1), ('hdpi', 1.5), ('xhdpi', 2), ('xxhdpi', 3), ('xxxhdpi', 4)]:
+        target = folder / f'mipmap-{density}'
+        save_png(opaque_icon(flat, round(48 * scale)), target / 'ic_launcher.png')
+        # 图形宽度为 48dp，全部内容位于 66dp 安全圆内。
+        layer = foreground(flat, round(108 * scale), 48 / 108)
+        save_png(layer, target / 'ic_launcher_foreground.png')
+        mono = Image.new('RGBA', layer.size, 'black')
+        mono.putalpha(layer.getchannel('A'))
+        save_png(mono, target / 'ic_launcher_monochrome.png')
+    save_png(opaque_icon(flat, 512), 'assets/branding/android_store_icon.png')
+
+
+def desktop_web_icons(flat, gradient, glass):
+    windows = foreground(gradient, 256, 0.84)
+    windows.save(ROOT / 'windows/runner/resources/app_icon.ico',
+                 sizes=[(n, n) for n in [16, 20, 24, 32, 40, 48, 64, 96, 128, 256]])
+    for size in [16, 24, 32, 48, 64, 128, 256, 512]:
+        mark = flat if size <= 32 else gradient
+        save_png(foreground(mark, size, 0.84),
+                 f'linux/runner/resources/hicolor/{size}x{size}/apps/com.iskenkenya.onepanel.png')
+    for size in [192, 512]:
+        save_png(opaque_icon(gradient, size), f'web/icons/Icon-{size}.png')
+        save_png(opaque_icon(gradient, size, 0.54), f'web/icons/Icon-maskable-{size}.png')
+    save_png(foreground(flat, 32, 0.88), 'web/favicon.png')
+    save_png(opaque_icon(glass, 180), 'web/icons/apple-touch-icon.png')
+    for relative in ['ohos/AppScope/resources/base/media/app_icon.png',
+                     'ohos/entry/src/main/resources/base/media/icon.png']:
+        save_png(opaque_icon(glass, 1024, 0.54), relative)
+
+
+def preview(flat, gradient, glass):
+    sheet = Image.new('RGB', (1200, 650), '#EEF2F6')
+    draw = ImageDraw.Draw(sheet)
+    samples = [('iOS / iPadOS', opaque_icon(glass, 256)),
+               ('macOS', desktop_card(glass, 256)),
+               ('Android', opaque_icon(flat, 256)),
+               ('Windows', foreground(gradient, 256, 0.84)),
+               ('Linux', foreground(gradient, 256, 0.84)),
+               ('HarmonyOS', opaque_icon(glass, 256, 0.54))]
+    for index, (name, image) in enumerate(samples):
+        x = 20 + index % 3 * 400
+        y = 10 + index // 3 * 320
+        sheet.paste(image, (x + 62, y), image if image.mode == 'RGBA' else None)
+        draw.text((x + 120, y + 270), name, fill='#17394F')
+    save_png(sheet, 'assets/branding/platform_icons_preview.png')
 
 
 def main():
-    master = make_master(1024)
-    MASTER.parent.mkdir(parents=True, exist_ok=True)
-    master.save(MASTER)
-    save_png(master, PREVIEW, 512)
-
-    android = {
-        'android/app/src/main/res/mipmap-mdpi/ic_launcher.png': 48,
-        'android/app/src/main/res/mipmap-hdpi/ic_launcher.png': 72,
-        'android/app/src/main/res/mipmap-xhdpi/ic_launcher.png': 96,
-        'android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png': 144,
-        'android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png': 192,
-    }
-    ios = {
-        'ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png': 20,
-        'ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png': 40,
-        'ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png': 60,
-        'ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png': 29,
-        'ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png': 58,
-        'ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png': 87,
-        'ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png': 40,
-        'ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png': 80,
-        'ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png': 120,
-        'ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png': 120,
-        'ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png': 180,
-        'ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png': 76,
-        'ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png': 152,
-        'ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png': 167,
-        'ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png': 1024,
-    }
-    mac = {
-        'macos/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_16.png': 16,
-        'macos/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_32.png': 32,
-        'macos/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_64.png': 64,
-        'macos/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_128.png': 128,
-        'macos/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_256.png': 256,
-        'macos/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_512.png': 512,
-        'macos/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_1024.png': 1024,
-    }
-    web = {
-        'web/favicon.png': 32,
-        'web/icons/Icon-192.png': 192,
-        'web/icons/Icon-512.png': 512,
-        'web/icons/Icon-maskable-192.png': 192,
-        'web/icons/Icon-maskable-512.png': 512,
-    }
-
-    for mapping in (android, ios, mac, web):
-        for rel, size in mapping.items():
-            path = ROOT / rel
-            path.parent.mkdir(parents=True, exist_ok=True)
-            save_png(master, path, size)
-
-    ico_sizes = [(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)]
-    ico = master.resize((256, 256), Image.Resampling.LANCZOS)
-    ico.save(ROOT / 'windows/runner/resources/app_icon.ico', sizes=ico_sizes)
-
-    print('generated icons at', MASTER)
+    flat, gradient, glass = [load_mark(name) for name in ['flat', 'gradient', 'glass']]
+    save_png(opaque_icon(gradient, 1024), 'assets/branding/app_icon_master.png')
+    save_png(opaque_icon(gradient, 512), 'assets/branding/app_icon_preview.png')
+    apple_icons(flat, gradient, glass)
+    android_icons(flat)
+    desktop_web_icons(flat, gradient, glass)
+    preview(flat, gradient, glass)
+    print('已使用选定的蓝青色 1P 原图生成全部平台图标')
 
 
 if __name__ == '__main__':

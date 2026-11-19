@@ -1,16 +1,16 @@
 {
   "fill" : {
-    "automatic-gradient" : "extended-srgb:0.00000,0.47843,1.00000,1.00000"
+    "automatic-gradient" : "extended-srgb:1.00000,1.00000,1.00000,1.00000"
   },
   "groups" : [
     {
       "layers" : [
         {
           "fill" : "automatic",
-          "image-name" : "1Panel Client LOGO（Community）.svg",
-          "name" : "1Panel Client LOGO（Community）",
+          "image-name" : "app_icon_foreground.png",
+          "name" : "1Panel 1P",
           "position" : {
-            "scale" : 0.5,
+            "scale" : 1,
             "translation-in-points" : [
               0,
               0

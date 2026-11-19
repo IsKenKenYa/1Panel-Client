@@ -72,6 +72,7 @@ public sealed partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        AppWindow.SetIcon(System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "app_icon.ico"));
         WindowBackdrop.Apply(this, WindowBackdrop.LoadPreferred());
 
         // Extend content into the title bar: AppTitleBar becomes the system drag

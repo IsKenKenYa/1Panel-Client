@@ -1,0 +1,26 @@
+{
+  "projectId": "project_d4276189-cbeb-4b41-b810-bc6ff4f0be69",
+  "canvasId": "canvas_ea93e753-1d91-4876-871d-0cc07499208c",
+  "referenceAssetId": "b2d01d75-a6cf-49db-b8c1-af932c2dbb85",
+  "generationBatchId": "media_batch_fcfebf1e-f0ee-4e6b-81a0-e40d5bc4d915",
+  "sources": [
+    {
+      "file": "flat.png",
+      "style": "A 扁平双色",
+      "assetId": "bc6241ac-71df-47eb-801b-982c74830cda",
+      "toolRunId": "tool_run_741ee62b-2188-4028-82a6-1581498f79af"
+    },
+    {
+      "file": "gradient.png",
+      "style": "B 柔和渐变",
+      "assetId": "19c77efc-6b1a-41b1-a208-aea443e3a710",
+      "toolRunId": "tool_run_1acc8962-8616-411b-b7bc-d7b06d4812a2"
+    },
+    {
+      "file": "glass.png",
+      "style": "C 玻璃质感",
+      "assetId": "7911cb21-4f05-4994-b31d-9c660a6b8116",
+      "toolRunId": "tool_run_13575100-811d-4605-9338-df68dc911fcc"
+    }
+  ]
+}
