@@ -47,9 +47,9 @@
 		748F837E12ACAD9E14E30D31 /* DatabasesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94F2D1A9936C5BA321B7E1E6 /* DatabasesView.swift */; };
 		78C38F1754782C125F082254 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EA651BE7A119BC2C44C711 /* SettingsView.swift */; };
 		80EB86CFD7699A888885EB04 /* VisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0108EE28A3CEF5C75F7574F /* VisualEffectView.swift */; };
-		1A2B3C4D5E6F7081A2B3C4D5 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7081A2B3C4D6 /* LoadingView.swift */; };
-		1A2B3C4D5E6F7081A2B3C4D7 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7081A2B3C4D8 /* EmptyStateView.swift */; };
-		1A2B3C4D5E6F7081A2B3C4D9 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7081A2B3C4DA /* ErrorView.swift */; };
+		1A2B3C4D5E6F7081A2B3C4D63 /* NativeFormSubmission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7081A2B3C4D62 /* NativeFormSubmission.swift */; };
+		1A2B3C4D5E6F7081A2B3C4D65 /* DataChannelAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7081A2B3C4D64 /* DataChannelAdapter.swift */; };
+		D10S00010000000000000011 /* AppleSharedUI in Frameworks */ = {isa = PBXBuildFile; productRef = E10S00010000000000000011 /* AppleSharedUI */; };
 		85B643A248A96F71A6868F7A /* MainShellViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B643A248A96F71A6868F7B /* MainShellViewController.swift */; };
 		8B8E0C9576AFF5C032017D87 /* AppsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6A87537D32DB529B5D3D70F /* AppsViewModel.swift */; };
 		8C79D92CB068BB656DB1C9A1 /* ContainersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106BB078AA6F1C5B39F3EF0E /* ContainersViewModel.swift */; };
@@ -163,9 +163,8 @@
 		EAF568DDFC4334EA2C19376B /* FilesViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FilesViewModel.swift; sourceTree = "<group>"; };
 		ED28EFBA32961CBCB8FCA361 /* BackupsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BackupsView.swift; sourceTree = "<group>"; };
 		F0108EE28A3CEF5C75F7574F /* VisualEffectView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VisualEffectView.swift; sourceTree = "<group>"; };
-		1A2B3C4D5E6F7081A2B3C4D6 /* LoadingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
-		1A2B3C4D5E6F7081A2B3C4D8 /* EmptyStateView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
-		1A2B3C4D5E6F7081A2B3C4DA /* ErrorView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F7081A2B3C4D62 /* NativeFormSubmission.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NativeFormSubmission.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F7081A2B3C4D64 /* DataChannelAdapter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DataChannelAdapter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,6 +180,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D10S00010000000000000011 /* AppleSharedUI in Frameworks */,
 				AD9C34BDC7AC590E90D4E987 /* Pods_Runner.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -381,6 +381,7 @@
 			isa = PBXGroup;
 			children = (
 				489FCD7EAEB41D2B634D8711 /* ChannelManager.swift */,
+				1A2B3C4D5E6F7081A2B3C4D64 /* DataChannelAdapter.swift */,
 				13C6BF85241F60E51282F495 /* TranslationsManager.swift */,
 				A1B2C3D4E5F6A7B8 /* ViewExtensions.swift */,
 				B06A7AA990C66B443341AF71 /* ThemeManager.swift */,
@@ -441,9 +442,7 @@
 			isa = PBXGroup;
 			children = (
 				F0108EE28A3CEF5C75F7574F /* VisualEffectView.swift */,
-				1A2B3C4D5E6F7081A2B3C4D6 /* LoadingView.swift */,
-				1A2B3C4D5E6F7081A2B3C4D8 /* EmptyStateView.swift */,
-				1A2B3C4D5E6F7081A2B3C4DA /* ErrorView.swift */,
+				1A2B3C4D5E6F7081A2B3C4D62 /* NativeFormSubmission.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -508,6 +507,9 @@
 				33CC11202044C79F0003C045 /* PBXTargetDependency */,
 			);
 			name = Runner;
+			packageProductDependencies = (
+				E10S00010000000000000011 /* AppleSharedUI */,
+			);
 			productName = Runner;
 			productReference = 33CC10ED2044A3C60003C045 /* onepanel_client.app */;
 			productType = "com.apple.product-type.application";
@@ -552,6 +554,9 @@
 				Base,
 			);
 			mainGroup = 33CC10E42044A3C60003C045;
+			packageReferences = (
+				A10S00010000000000000011 /* XCLocalSwiftPackageReference "shared/apple_ui" */,
+			);
 			productRefGroup = 33CC10EE2044A3C60003C045 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -724,9 +729,8 @@
 				17D0872E901FDA10BCF5F543 /* SettingsViewModel.swift in Sources */,
 				78C38F1754782C125F082254 /* SettingsView.swift in Sources */,
 				80EB86CFD7699A888885EB04 /* VisualEffectView.swift in Sources */,
-				1A2B3C4D5E6F7081A2B3C4D5 /* LoadingView.swift in Sources */,
-				1A2B3C4D5E6F7081A2B3C4D7 /* EmptyStateView.swift in Sources */,
-				1A2B3C4D5E6F7081A2B3C4D9 /* ErrorView.swift in Sources */,
+				1A2B3C4D5E6F7081A2B3C4D63 /* NativeFormSubmission.swift in Sources */,
+				1A2B3C4D5E6F7081A2B3C4D65 /* DataChannelAdapter.swift in Sources */,
 				51A8DEBE4E6F6011AA18F13B /* DashboardViewModel.swift in Sources */,
 				D96E61CA3F80F0DCC40FEDC7 /* DashboardView.swift in Sources */,
 				29DBEFEDE85B9675B83BDAFB /* DatabasesViewModel.swift in Sources */,
@@ -1099,6 +1103,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+/* Begin XCLocalSwiftPackageReference section */
+		A10S00010000000000000011 /* XCLocalSwiftPackageReference "shared/apple_ui" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../shared/apple_ui";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E10S00010000000000000011 /* AppleSharedUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AppleSharedUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 33CC10E52044A3C60003C045 /* Project object */;
 }

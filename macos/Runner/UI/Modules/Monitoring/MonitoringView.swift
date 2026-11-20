@@ -1,4 +1,5 @@
 import SwiftUI
+import AppleSharedUI
 
 // `LoadingView` lives in `UI/Components/LoadingView.swift` and is
 // wired into the Xcode project — no need to redeclare it here.

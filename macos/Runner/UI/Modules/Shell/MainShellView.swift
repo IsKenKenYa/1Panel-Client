@@ -1,4 +1,5 @@
 import AppKit
+import AppleSharedUI
 import FlutterMacOS
 import SwiftUI
 
@@ -19,6 +20,7 @@ struct MainShellView: View {
         gatedContent
             .environmentObject(theme)
             .environmentObject(translations)
+            .environment(\.translationsProvider, translations)
             .frame(minWidth: 600, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
             .onAppear {
                 translations.load {}

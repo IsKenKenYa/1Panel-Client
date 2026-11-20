@@ -1,4 +1,5 @@
 import SwiftUI
+import AppleSharedUI
 
 struct FirewallView: View {
     @StateObject private var viewModel = FirewallViewModel()

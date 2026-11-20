@@ -1,4 +1,5 @@
 import SwiftUI
+import AppleSharedUI
 
 struct AIView: View {
     @StateObject private var viewModel = AIViewModel()

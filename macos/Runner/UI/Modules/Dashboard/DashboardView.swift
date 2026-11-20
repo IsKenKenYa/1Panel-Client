@@ -1,4 +1,5 @@
 import SwiftUI
+import AppleSharedUI
 
 struct DashboardView: View {
     @StateObject private var viewModel = DashboardViewModel()
