@@ -1,0 +1,482 @@
+{
+  "module": "xpack",
+  "generatedAt": "2026-11-20T08:33:57.703133",
+  "summary": {
+    "endpointCount": 16,
+    "methodCount": 17
+  },
+  "endpoints": [
+    {
+      "path": "/xpack/model/downloader/featured/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page featured models",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/xpack/model/downloader/featured/sync",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Synchronize featured models",
+          "description": "Synchronizes the featured model catalog immediately, independently of the automatic synchronization setting. Does nothing in offline mode.",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/xpack/model/downloader/featured/sync/status",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update featured model automatic synchronization",
+          "description": "Set value to Enable or Disable. This updates the automatic synchronization setting without triggering an immediate synchronization.",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/xpack/model/downloader/hf/download",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Download Hugging Face model",
+          "description": "Creates an asynchronous download task. Query /xpack/model/downloader/tasks/search for progress.",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/xpack/model/downloader/hf/info",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get Hugging Face model details",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/xpack/model/downloader/hf/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Search Hugging Face models",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/xpack/model/downloader/local/delete",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete locally downloaded model",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/xpack/model/downloader/local/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page locally downloaded models",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/xpack/model/downloader/modelscope/download",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Download ModelScope model",
+          "description": "Creates an asynchronous download task. Query /xpack/model/downloader/tasks/search for progress.",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/xpack/model/downloader/modelscope/info",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get ModelScope model details",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/xpack/model/downloader/modelscope/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Search ModelScope models",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/xpack/model/downloader/settings",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get model downloader settings",
+          "description": "",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        },
+        {
+          "method": "POST",
+          "summary": "Update model downloader settings",
+          "description": "Updates the download directory, source endpoints and tokens. The featuredModelsSync field is ignored; use /xpack/model/downloader/featured/sync/status to update automatic synchronization.",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/xpack/model/downloader/tasks/cancel",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Cancel model download task",
+          "description": "Only waiting or downloading tasks can be canceled. The withFile field is ignored.",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/xpack/model/downloader/tasks/remove",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Remove model download task",
+          "description": "Waiting or downloading tasks cannot be removed. Set withFile to true to also delete downloaded files.",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/xpack/model/downloader/tasks/retry",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Retry model download task",
+          "description": "Only failed or canceled tasks can be retried. Returns the task while the download runs asynchronously.",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/xpack/model/downloader/tasks/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page model download tasks",
+          "description": "Set includeLocal to true to include locally downloaded models.",
+          "tags": [
+            "AI"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    }
+  ]
+}

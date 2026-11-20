@@ -1,0 +1,1119 @@
+{
+  "module": "vm",
+  "generatedAt": "2026-11-20T08:33:57.623598",
+  "summary": {
+    "endpointCount": 41,
+    "methodCount": 41
+  },
+  "endpoints": [
+    {
+      "path": "/vms",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create virtual machine",
+          "description": "Creates a VM from ISO images or a template. The target node allows 1 VM in Community, 5 in Professional, and unlimited VMs in Enterprise. All VM records count toward the quota, regardless of state; creation fails with ErrVMCountLimit when the quota is reached.\nReturns taskID for tracking the asynchronous operation.",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/console",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load virtual machine console information",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/console/ws",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Connect virtual machine VNC console over WebSocket",
+          "description": "Upgrades the connection to WebSocket and forwards VNC traffic.",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "name",
+              "in": "query",
+              "required": true,
+              "type": "unknown",
+              "description": "virtual machine name"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "101": {
+              "description": "Switching Protocols"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete virtual machine",
+          "description": "Returns taskID for tracking the asynchronous operation.",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/disks/resize",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Expand virtual machine disk",
+          "description": "Returns taskID for tracking the asynchronous operation.",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/environment",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Check virtual machine environment",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/environment/enable",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Enable virtual machine environment",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/health/check",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Check virtual machine health",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/info",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load virtual machine details",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/iso",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create virtual machine ISO image record",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/iso/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete virtual machine ISO image",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/iso/import/start",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Start virtual machine ISO image import",
+          "description": "Creates an import record and returns its id.",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/iso/import/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update virtual machine ISO image import status",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/iso/list",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "List virtual machine ISO images",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/iso/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page virtual machine ISO images",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/iso/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update virtual machine ISO image record",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/networks",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create virtual machine network",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/networks/bridges",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "List host network bridges for virtual machines",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/networks/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete virtual machine network",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/networks/interfaces",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "List host network interfaces for virtual machines",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/networks/list",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "List virtual machine networks",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/networks/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update virtual machine network",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/operate",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Operate virtual machine",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/orphans/clean",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Clean orphaned virtual machine data",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/orphans/scan",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Scan orphaned virtual machine data",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/rename",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Rename virtual machine",
+          "description": "Returns taskID for tracking the asynchronous operation.",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page virtual machines",
+          "description": "Returns the VM list and the target node quota: 1 for Community, 5 for Professional, and 0 for unlimited Enterprise.",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/snapshots",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create virtual machine snapshot",
+          "description": "Returns taskID for tracking the asynchronous operation.",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/snapshots/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete virtual machine snapshot",
+          "description": "Returns taskID for tracking the asynchronous operation.",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/snapshots/list",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "List virtual machine snapshots",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/snapshots/recover",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Recover virtual machine snapshot",
+          "description": "Returns taskID for tracking the asynchronous operation.",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/stats",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Load virtual machine statistics",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/storages",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create virtual machine storage pool",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/storages/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete virtual machine storage pool",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/storages/list",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "List virtual machine storage pools",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/storages/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update virtual machine storage pool",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/sync",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Sync virtual machines",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/templates",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create virtual machine template",
+          "description": "Returns taskID for tracking the asynchronous operation.",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/templates/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete virtual machine template",
+          "description": "Returns taskID for tracking the asynchronous operation.",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/templates/list",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "List virtual machine templates",
+          "description": "",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/vms/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update virtual machine",
+          "description": "Returns taskID for tracking the asynchronous operation.",
+          "tags": [
+            "VirtualMachine"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    }
+  ]
+}

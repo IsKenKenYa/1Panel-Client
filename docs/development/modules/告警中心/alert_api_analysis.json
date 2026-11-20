@@ -1,0 +1,413 @@
+{
+  "module": "alert",
+  "generatedAt": "2026-11-20T08:33:57.663724",
+  "summary": {
+    "endpointCount": 15,
+    "methodCount": 15
+  },
+  "endpoints": [
+    {
+      "path": "/alert",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Create alert",
+          "description": "",
+          "tags": [
+            "Alert"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/alert/clams/list",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get clams",
+          "description": "",
+          "tags": [
+            "Alert"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/alert/config/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete alert config",
+          "description": "",
+          "tags": [
+            "Alert"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/alert/config/info",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get alert config",
+          "description": "",
+          "tags": [
+            "Alert"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/alert/config/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page alert config",
+          "description": "",
+          "tags": [
+            "Alert"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/alert/config/test",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Test alert config",
+          "description": "",
+          "tags": [
+            "Alert"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/alert/config/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update alert config",
+          "description": "",
+          "tags": [
+            "Alert"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/alert/cronjob/list",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Get cron jobs",
+          "description": "",
+          "tags": [
+            "Alert"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/alert/del",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Delete alert",
+          "description": "",
+          "tags": [
+            "Alert"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/alert/disks/list",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Get disks",
+          "description": "",
+          "tags": [
+            "Alert"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/alert/logs/clean",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Clean alert logs",
+          "description": "",
+          "tags": [
+            "Alert"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/alert/logs/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page alert logs",
+          "description": "",
+          "tags": [
+            "Alert"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/alert/search",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Page alert",
+          "description": "",
+          "tags": [
+            "Alert"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/alert/status",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update alert status",
+          "description": "",
+          "tags": [
+            "Alert"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "path": "/alert/update",
+      "methods": [
+        {
+          "method": "POST",
+          "summary": "Update alert",
+          "description": "",
+          "tags": [
+            "Alert"
+          ],
+          "parameters": [
+            {
+              "name": "request",
+              "in": "body",
+              "required": true,
+              "type": "unknown",
+              "description": "request"
+            }
+          ],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    }
+  ]
+}

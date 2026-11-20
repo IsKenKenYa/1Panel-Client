@@ -59,7 +59,7 @@ CLIENT_ROUTE_PATTERNS = [
 
 MODULE_CLIENT_FILES = {
     'dashboard': ['dashboard_v2.dart'],
-    'container': ['container_v2.dart'],
+    'container': ['container_v2.dart', 'container_log_stream_v2.dart'],
     'website': ['website_v2.dart', 'ssl_v2.dart'],
     'openresty': ['openresty_v2.dart'],
     'domains': ['website_v2.dart'],
@@ -92,6 +92,10 @@ MODULE_CLIENT_FILES = {
     'device': ['toolbox_v2.dart'],
     'toolbox': ['toolbox_v2.dart', 'host_tool_v2.dart', 'disk_management_v2.dart'],
     'group': ['system_group_v2.dart', 'host_v2.dart', 'website_v2.dart'],
+    'vm': ['vm_v2.dart'],
+    'alert': ['alert_v2.dart'],
+    'xpack': ['xpack_model_downloader_v2.dart', 'setting_v2.dart'],
+    'health': ['health_v2.dart'],
 }
 
 MODULE_CLIENT_PATH_FILTERS = {
@@ -127,6 +131,18 @@ MODULE_CLIENT_PATH_FILTERS = {
     },
     'backup': {
         'include': ['/backups', '/core/backups'],
+    },
+    'vm': {
+        'include': ['/vms'],
+    },
+    'alert': {
+        'include': ['/alert'],
+    },
+    'xpack': {
+        'include': ['/xpack'],
+    },
+    'health': {
+        'include': ['/health'],
     },
 }
 
@@ -260,6 +276,9 @@ MISSING_ENDPOINT_CLASSIFICATIONS = {
     },
     'ssh': {
         ('GET', '/hosts/terminal/ssh'): '保留：SSH 终端 WS 升级端点，客户端经 WebSocket connector 接入；非 REST。',
+    },
+    'vm': {
+        ('GET', '/vms/console/ws'): '保留：虚拟机 VNC 控制台 WS 升级端点；REST 客户端已覆盖 /vms/console，WS 传输在 VNC 控制台 UI 批次经 WebSocket connector 接入。',
     },
 }
 

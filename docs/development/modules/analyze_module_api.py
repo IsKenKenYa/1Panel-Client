@@ -51,6 +51,10 @@ MODULE_PATH_MAPPING = {
     'device': '设备管理',
     'toolbox': '工具箱',
     'group': '系统分组',
+    'vm': '虚拟机管理',
+    'alert': '告警中心',
+    'xpack': '模型下载器',
+    'health': '健康检查',
 }
 
 KEYWORD_MATCHERS = {
@@ -79,6 +83,10 @@ KEYWORD_MATCHERS = {
     ],
     'host': ['^/hosts'],
     'database': ['^/databases'],
+    'vm': ['^/vms'],
+    'alert': ['^/alert'],
+    'xpack': ['^/xpack'],
+    'health': ['^/health'],
 }
 
 KEYWORD_EXCLUDE_MATCHERS = {

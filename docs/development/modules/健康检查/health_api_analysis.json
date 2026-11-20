@@ -1,0 +1,31 @@
+{
+  "module": "health",
+  "generatedAt": "2026-11-20T08:33:57.745965",
+  "summary": {
+    "endpointCount": 1,
+    "methodCount": 1
+  },
+  "endpoints": [
+    {
+      "path": "/health/check",
+      "methods": [
+        {
+          "method": "GET",
+          "summary": "Check health",
+          "description": "",
+          "tags": [
+            "Health"
+          ],
+          "parameters": [],
+          "requestBody": null,
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "deprecated": false
+        }
+      ]
+    }
+  ]
+}
