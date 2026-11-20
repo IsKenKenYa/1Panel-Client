@@ -1,3 +1,4 @@
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/container_models.dart'
@@ -64,7 +65,7 @@ class ContainerCard extends StatelessWidget {
       elevation: 0,
       color: scheme.surfaceContainerLow,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
         side: BorderSide(
           color: scheme.outlineVariant.withValues(alpha: 0.4),
         ),

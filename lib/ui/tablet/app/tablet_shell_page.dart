@@ -95,6 +95,9 @@ class _TabletShellPageState extends State<TabletShellPage> {
                     8,
                     16,
                   ),
+                  // 可固定模块增加后导航项数量会超出竖屏高度。NavigationRail
+                  // 内部依赖有界高度与 Expanded 布局，放进滚动视图会与无界
+                  // 高度冲突，因此超阈值时只显示图标，收起文字标签。
                   child: NavigationRail(
                     extended: false,
                     minWidth: widget.tabletKind == TabletKind.ipad ? 88 : 96,
@@ -112,7 +115,9 @@ class _TabletShellPageState extends State<TabletShellPage> {
                         _selectedModule = module;
                       });
                     },
-                    labelType: NavigationRailLabelType.all,
+                    labelType: modules.length > 8
+                        ? NavigationRailLabelType.none
+                        : NavigationRailLabelType.all,
                     useIndicator: true,
                     indicatorColor: railTheme.colorScheme.primaryContainer,
                     destinations: [

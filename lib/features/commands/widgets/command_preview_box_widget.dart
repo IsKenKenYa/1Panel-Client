@@ -1,3 +1,4 @@
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:flutter/material.dart';
 
 class CommandPreviewBoxWidget extends StatelessWidget {
@@ -16,7 +17,7 @@ class CommandPreviewBoxWidget extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
       ),
       child: SelectableText(
         content.trim().isEmpty ? '-' : content,

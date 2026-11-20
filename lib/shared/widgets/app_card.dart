@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 
-/// 共享信息卡片，支持鼠标、键盘和触控操作。
+/// 共享信息卡片（M3 Expressive 轨道），支持鼠标、键盘和触控操作。
+///
+/// 圆角沿用全局 `radiusLg`，底色 `surfaceContainerLow`，悬停时描边转主色
+/// 并抬升一级阴影；标题使用 `titleMedium/w600`，副标题与正文降为次级色。
 class AppCard extends StatefulWidget {
   final String title;
   final Widget? subtitle;
@@ -38,16 +41,17 @@ class _AppCardState extends State<AppCard> {
     final isClickable = widget.onTap != null;
     final hovered = isClickable && _hovered;
     final shape = RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
+      borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
       side: BorderSide(
         color: hovered
             ? colorScheme.primary.withValues(alpha: 0.4)
-            : colorScheme.outlineVariant,
+            : colorScheme.outlineVariant.withValues(alpha: 0.6),
       ),
     );
 
     return Card(
       color: widget.backgroundColor ?? colorScheme.surfaceContainerLow,
+      margin: EdgeInsets.zero,
       elevation: hovered ? 3 : 0,
       shape: shape,
       clipBehavior: Clip.antiAlias,
@@ -61,7 +65,7 @@ class _AppCardState extends State<AppCard> {
             minHeight: isClickable ? kMinInteractiveDimension : 0,
           ),
           child: Padding(
-            padding: widget.padding ?? AppDesignTokens.listCardPadding,
+            padding: widget.padding ?? AppDesignTokens.cardPadding,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: widget.child == null

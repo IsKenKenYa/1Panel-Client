@@ -1,3 +1,4 @@
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -323,7 +324,7 @@ class _DownloadTaskTile extends StatelessWidget {
 
     return Card.filled(
       margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -789,7 +790,7 @@ class _UploadTaskTile extends StatelessWidget {
 
     return Card.filled(
       margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

@@ -53,7 +53,7 @@ class FileListItem extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: AppDesignTokens.listCardGap),
       color: isSelected ? colorScheme.secondaryContainer : null,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg)),
       child: ListTile(
         visualDensity: AdaptiveLayoutSpec.of(context).adaptiveDensity,
         // 文件图标放进 tonal 容器：M3 图标承载惯例，识别度高于裸图标。

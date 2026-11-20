@@ -207,6 +207,26 @@ class LogViewerController extends ChangeNotifier with SafeChangeNotifier {
     _applyFilters();
   }
 
+  /// 追加一段日志文本，用于跟随流持续到达的事件。
+  ///
+  /// 解析结果并入已有行，不重建时间戳索引起点，避免跟随过程中
+  /// 时间列跳动。
+  Future<void> appendLogs(String rawLogs) async {
+    if (rawLogs.isEmpty) return;
+    final parsed = await LogParser.parse(rawLogs);
+    if (parsed.isEmpty) return;
+    _logs = <LogLine>[..._logs, ...parsed];
+    if (_firstLogTimestamp == null) {
+      for (final log in _logs) {
+        if (log.timestamp != null) {
+          _firstLogTimestamp = log.timestamp;
+          break;
+        }
+      }
+    }
+    _applyFilters();
+  }
+
   void search(String query) {
     _searchQuery = query;
     _applyFilters();

@@ -1,3 +1,4 @@
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -223,7 +224,7 @@ class _InfoCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: scheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
         border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.4)),
       ),
       child: Column(
@@ -349,7 +350,7 @@ class _InspectJsonCardState extends State<_InspectJsonCard> {
     return Container(
       decoration: BoxDecoration(
         color: scheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
         border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.4)),
       ),
       child: Column(
@@ -358,7 +359,7 @@ class _InspectJsonCardState extends State<_InspectJsonCard> {
           // 可折叠标题行
           InkWell(
             onTap: () => setState(() => _expanded = !_expanded),
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 12, 12),
               child: Row(

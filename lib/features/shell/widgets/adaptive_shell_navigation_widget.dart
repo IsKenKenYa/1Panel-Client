@@ -1,3 +1,4 @@
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
@@ -108,7 +109,7 @@ class ShellSidebarNavigation extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 8),
                   child: ListTile(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
                     ),
                     leading: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 200),

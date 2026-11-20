@@ -23,6 +23,15 @@ class AppDesignTokens {
     vertical: spacingSm + 2,
   );
 
+  /// M3 Expressive 内容卡内边距：16dp 四周，与分区标题行的 44dp 高度配合。
+  static const EdgeInsets cardPadding = EdgeInsets.all(spacingLg);
+
+  /// 分区卡片内单条数据的垂直内边距，保证触控行不低于 72dp。
+  static const EdgeInsets dataRowPadding = EdgeInsets.symmetric(
+    horizontal: spacingLg,
+    vertical: spacingMd + 2,
+  );
+
   /// 列表项垂直间距：高密度列表相邻卡片间 6px（原 4px 保持呼吸感）。
   static const double listCardGap = spacingXs + 2;
 

@@ -80,16 +80,22 @@ class AppTheme {
         backgroundColor: scheme.surface,
         foregroundColor: scheme.onSurface,
       ),
+      // M3 Expressive：卡片走 surfaceContainerLow 底色 + 低层级描边，
+      // 与页面 surface 形成一层可辨识的抬升，而不是靠阴影区分。
       cardTheme: CardThemeData(
-        elevation: isDesktop ? 0 : 1,
+        elevation: 0,
+        margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
           side: BorderSide(
-              color: isMacOS
-                  ? scheme.outlineVariant.withValues(alpha: 0.5)
-                  : scheme.outlineVariant),
+            color: isMacOS
+                ? scheme.outlineVariant.withValues(alpha: 0.5)
+                : scheme.outlineVariant.withValues(alpha: 0.6),
+          ),
         ),
-        color: isMacOS ? scheme.surface.withValues(alpha: 0.8) : scheme.surface,
+        color: isMacOS
+            ? scheme.surfaceContainerLow.withValues(alpha: 0.9)
+            : scheme.surfaceContainerLow,
       ),
       navigationBarTheme: NavigationBarThemeData(
         elevation: isDesktop ? 0 : 1,
@@ -156,10 +162,14 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppDesignTokens.radiusXl),
         ),
       ),
+      // M3E filter chip：完整胶囊外形，选中态填充主色。
       chipTheme: ChipThemeData(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppDesignTokens.radiusSm),
-        ),
+        shape: const StadiumBorder(),
+        side: BorderSide(color: scheme.outlineVariant),
+        backgroundColor: scheme.surfaceContainerHighest,
+        selectedColor: scheme.primary,
+        labelStyle: TextStyle(color: scheme.onSurface, fontSize: 13),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
       ),
       // ── M3 Expressive 强化批：形状/层级/动效统一 ──
       // FAB：M3E 使用 rounded-square 大圆角（20dp），与 pill 按钮区分层级。
@@ -179,11 +189,22 @@ class AppTheme {
         ),
       ),
       // TabBar：胶囊形主色指示器（M3E rounded indicator）。
+      // M3 Expressive：等宽胶囊指示器 + 选中态主色、未选中次级色。
       tabBarTheme: TabBarThemeData(
         indicatorSize: TabBarIndicatorSize.tab,
+        indicator: BoxDecoration(
+          borderRadius: BorderRadius.circular(AppDesignTokens.radiusSm),
+          color: scheme.primary,
+        ),
+        indicatorAnimation: TabIndicatorAnimation.elastic,
         dividerColor: scheme.outlineVariant.withValues(alpha: 0.5),
-        labelColor: scheme.primary,
+        labelColor: scheme.onPrimary,
         unselectedLabelColor: scheme.onSurfaceVariant,
+        labelStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+        unselectedLabelStyle:
+            const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
+        splashBorderRadius:
+            BorderRadius.circular(AppDesignTokens.radiusSm),
       ),
       // 菜单/弹出层统一 16dp 圆角。
       popupMenuTheme: PopupMenuThemeData(
@@ -213,9 +234,11 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
         ),
         visualDensity:
-            VisualDensity(horizontal: -2, vertical: isDesktop ? -4 : -2),
+            VisualDensity(horizontal: -2, vertical: isDesktop ? -2 : 0),
+        minVerticalPadding: AppDesignTokens.spacingSm,
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: AppDesignTokens.spacingMd,
+          horizontal: AppDesignTokens.spacingSm,
+          vertical: AppDesignTokens.spacingXs,
         ),
         iconColor: scheme.onSurfaceVariant,
       ),
@@ -228,11 +251,7 @@ class AppTheme {
       // 分段按钮：M3E selected 层级增强。
       segmentedButtonTheme: SegmentedButtonThemeData(
         style: ButtonStyle(
-          shape: WidgetStatePropertyAll(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppDesignTokens.radiusSm),
-            ),
-          ),
+          shape: const WidgetStatePropertyAll(StadiumBorder()),
           side: WidgetStateProperty.resolveWith((states) => BorderSide(
                 color: states.contains(WidgetState.selected)
                     ? scheme.primary

@@ -190,7 +190,7 @@ class _FavoritesViewState extends State<FavoritesView> {
 
     return Card(
       margin: const EdgeInsets.only(bottom: AppDesignTokens.spacingXs),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg)),
       child: ListTile(
         leading: Icon(
           isDir ? Icons.folder_outlined : _getFileIcon(file.name),

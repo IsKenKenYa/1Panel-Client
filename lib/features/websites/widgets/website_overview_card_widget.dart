@@ -1,3 +1,4 @@
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:flutter/material.dart';
 
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
@@ -41,7 +42,7 @@ class WebsiteOverviewCard extends StatelessWidget {
                     color: isRunning
                         ? colorScheme.tertiaryContainer
                         : colorScheme.errorContainer,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
                   ),
                   child: Text(
                     isRunning

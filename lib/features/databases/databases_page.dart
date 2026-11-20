@@ -550,7 +550,7 @@ class _DatabaseEngineBadge extends StatelessWidget {
       height: 48,
       decoration: BoxDecoration(
         color: scheme.secondaryContainer,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
       ),
       child: Icon(
         switch (item.scope) {

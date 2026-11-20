@@ -1,3 +1,4 @@
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'dart:ui';
 import 'dart:math' as math;
 
@@ -444,7 +445,7 @@ class _AndroidPadShellScaffold extends StatelessWidget {
             extended: true,
             minExtendedWidth: 220,
             indicatorShape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
             ),
             backgroundColor: scheme.surfaceContainerLowest,
             destinations: _destinations(context),

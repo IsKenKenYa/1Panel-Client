@@ -1,3 +1,4 @@
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 
@@ -37,7 +38,7 @@ class HostAssetFormConnectionSectionWidget extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         border: Border.all(color: borderColor),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

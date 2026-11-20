@@ -12,6 +12,7 @@ import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/services/cache/file_preview_cache_manager.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/core/services/app_settings_controller.dart';
@@ -473,7 +474,7 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
               height: 120,
               decoration: BoxDecoration(
                 color: theme.colorScheme.primaryContainer,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
               ),
               child: Icon(
                 Icons.music_note,

@@ -187,7 +187,7 @@ class _RecycleBinViewState extends State<_RecycleBinView> {
       child: Card(
         margin: const EdgeInsets.only(bottom: AppDesignTokens.spacingXs),
         color: isSelected ? colorScheme.primaryContainer : null,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg)),
         child: ListTile(
           leading: Icon(
             file.isDir

@@ -1,3 +1,4 @@
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -168,7 +169,7 @@ class _ModuleTile extends StatelessWidget {
     final l10n = context.l10n;
 
     return ListTile(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg)),
       leading: Icon(
         enabled ? module.icon : Icons.lock_outlined,
         color: enabled ? null : disabledColor,

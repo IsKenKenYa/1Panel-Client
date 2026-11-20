@@ -124,11 +124,9 @@ class ServerCard extends StatelessWidget {
                     alignment: WrapAlignment.spaceBetween,
                     children: [
                       Text(
-                        _hasMetrics(data.metrics)
-                            ? l10n.serverMetricsAvailable
-                            : l10n.serverMetricsUnavailable,
+                        _statusText(l10n, data.metrics),
                         style: TextStyle(
-                          color: scheme.onSurfaceVariant,
+                          color: _statusColor(data.metrics, scheme),
                           fontSize: 12,
                         ),
                       ),
@@ -170,6 +168,27 @@ class ServerCard extends StatelessWidget {
     return value.toStringAsFixed(2);
   }
 
+  /// 卡片底部状态：优先反映健康探测结果，其次反映监控数据是否到位。
+  String _statusText(AppLocalizations l10n, ServerMetricsSnapshot metrics) {
+    final reachable = metrics.isReachable;
+    if (reachable == false) {
+      return l10n.serverUnreachable;
+    }
+    if (reachable == true && metrics.hasLatency) {
+      return l10n.serverLatencyLabel(metrics.latencyMs!);
+    }
+    return _hasMetrics(metrics)
+        ? l10n.serverMetricsAvailable
+        : l10n.serverMetricsUnavailable;
+  }
+
+  Color _statusColor(ServerMetricsSnapshot metrics, ColorScheme scheme) {
+    if (metrics.isReachable == false) {
+      return scheme.error;
+    }
+    return scheme.onSurfaceVariant;
+  }
+
   bool _hasMetrics(ServerMetricsSnapshot metrics) {
     return metrics.cpuPercent != null ||
         metrics.memoryPercent != null ||
@@ -189,16 +208,26 @@ class _MetricPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppDesignTokens.spacingSm + 2,
+        vertical: 4,
+      ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(999),
-        color: scheme.surfaceContainerHighest.withValues(alpha: 0.6),
+        borderRadius: BorderRadius.circular(AppDesignTokens.radiusXl),
+        color: scheme.surfaceContainerHighest,
+        border: Border.all(
+          color: scheme.outlineVariant.withValues(alpha: 0.5),
+        ),
       ),
       child: Text(
         '$label $value',
-        style: Theme.of(context).textTheme.labelSmall,
+        style: theme.textTheme.labelSmall?.copyWith(
+          color: scheme.onSurfaceVariant,
+          fontFeatures: const <FontFeature>[FontFeature.tabularFigures()],
+        ),
       ),
     );
   }

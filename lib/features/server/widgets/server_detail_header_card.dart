@@ -116,14 +116,33 @@ class _MetricChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Chip(
-      avatar: Icon(
-        icon,
-        size: 18,
-        color: scheme.onSurfaceVariant,
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    // Chip 的 avatar 槽会额外插入左右不对称的间距；自绘容器保证
+    // 图标与文字两侧内边距一致。
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppDesignTokens.spacingMd,
+        vertical: 6,
       ),
-      label: Text('$label: $value'),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(AppDesignTokens.radiusXl),
+        border: Border.all(
+          color: scheme.outlineVariant.withValues(alpha: 0.6),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Icon(icon, size: 16, color: scheme.onSurfaceVariant),
+          const SizedBox(width: AppDesignTokens.spacingSm),
+          Text(
+            '$label: $value',
+            style: theme.textTheme.labelMedium,
+          ),
+        ],
+      ),
     );
   }
 }
