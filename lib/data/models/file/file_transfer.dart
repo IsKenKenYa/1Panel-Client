@@ -156,42 +156,40 @@ class FileChunkData extends Equatable {
 }
 
 class FileChunkUpload extends Equatable {
+  final String uploadID;
+  final String filename;
   final String path;
-  final String data;
-  final int chunkNumber;
-  final bool isLastChunk;
-  final String? checksum;
+  final List<int> chunkBytes;
+  final int chunkIndex;
+  final int chunkCount;
+  final int offset;
+  final int fileSize;
+  final bool overwrite;
 
   const FileChunkUpload({
+    required this.uploadID,
+    required this.filename,
     required this.path,
-    required this.data,
-    required this.chunkNumber,
-    required this.isLastChunk,
-    this.checksum,
+    required this.chunkBytes,
+    required this.chunkIndex,
+    required this.chunkCount,
+    required this.offset,
+    required this.fileSize,
+    this.overwrite = true,
   });
 
-  factory FileChunkUpload.fromJson(Map<String, dynamic> json) {
-    return FileChunkUpload(
-      path: json['path'] as String,
-      data: json['data'] as String,
-      chunkNumber: json['chunkNumber'] as int,
-      isLastChunk: json['isLastChunk'] as bool? ?? false,
-      checksum: json['checksum'] as String?,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'path': path,
-      'data': data,
-      'chunkNumber': chunkNumber,
-      'isLastChunk': isLastChunk,
-      'checksum': checksum,
-    };
-  }
-
   @override
-  List<Object?> get props => [path, data, chunkNumber, isLastChunk, checksum];
+  List<Object?> get props => [
+        uploadID,
+        filename,
+        path,
+        chunkBytes,
+        chunkIndex,
+        chunkCount,
+        offset,
+        fileSize,
+        overwrite,
+      ];
 }
 
 class FileChunkResult extends Equatable {

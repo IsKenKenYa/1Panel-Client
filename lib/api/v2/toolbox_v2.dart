@@ -416,6 +416,8 @@ class ToolboxV2Api {
   Future<Response<FtpBaseInfo>> getFtpBaseInfo() async {
     final response = await _client.get(
       ApiConstants.buildApiPath('/toolbox/ftp/base'),
+      // FTP 状态探测在低配或远端主机上可能超过全局 8 秒接收超时。
+      options: Options(receiveTimeout: const Duration(minutes: 2)),
     );
     return Response(
       data: FtpBaseInfo.fromJson(

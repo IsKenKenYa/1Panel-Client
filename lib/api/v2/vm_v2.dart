@@ -23,12 +23,19 @@ class VMV2Api {
     sendTimeout: const Duration(minutes: 1),
   );
 
+  /// 环境探测会检查 KVM、libvirt 与存储目录，未安装依赖的主机上
+  /// 需要遍历多个系统路径；全局 8 秒接收超时不足，单独放宽到 2 分钟。
+  static final Options _environmentProbeOptions = Options(
+    receiveTimeout: const Duration(minutes: 2),
+  );
+
   // ==================== 环境 ====================
 
   /// 检查虚拟机运行环境（KVM/libvirt/存储）。
   Future<Response<VMEnvironment>> getVMEnvironment() async {
     final response = await _client.get<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/vms/environment'),
+      options: _environmentProbeOptions,
     );
     return ApiResponseParser.withData(
       response,

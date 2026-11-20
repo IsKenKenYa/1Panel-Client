@@ -662,6 +662,7 @@ class SettingV2Api {
   Future<Response<List<dynamic>>> getUpgradeReleases() async {
     final response = await _client.get(
       ApiConstants.buildApiPath('/core/settings/upgrade/releases'),
+      options: Options(receiveTimeout: const Duration(minutes: 2)),
     );
     return Response(
       data: ApiResponseParser.asListOrNull(response.data),

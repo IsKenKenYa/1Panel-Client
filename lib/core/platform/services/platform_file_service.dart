@@ -35,6 +35,13 @@ class PlatformFileService {
     return result?.files.single.path;
   }
 
+  /// 选择多个文件，返回本地路径列表。
+  Future<List<String>> pickFiles() async {
+    final result = await FilePicker.platform.pickFiles(allowMultiple: true);
+    if (result == null) return const <String>[];
+    return result.files.map((f) => f.path).whereType<String>().toList();
+  }
+
   /// Save bytes using a structured save pipeline. Replaces the previous
   /// silent-fallback flow that always returned a string path.
   Future<SaveOutcome> saveBytesStructured({

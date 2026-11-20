@@ -33,6 +33,8 @@ class UpdateV2Api {
   Future<Response<List<Map<String, dynamic>>>> getUpgradeReleases() async {
     final response = await _client.get<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/core/settings/upgrade/releases'),
+      // 升级版本列表需要远端查询，慢主机上可能超过全局 8 秒接收超时。
+      options: Options(receiveTimeout: const Duration(minutes: 2)),
     );
     final data = response.data?['data'] as List?;
     return Response(

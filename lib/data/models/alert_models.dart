@@ -325,7 +325,8 @@ class AlertCronJob extends Equatable {
 
 /// 告警规则搜索请求（dto.AlertSearch）。
 ///
-/// orderBy 当前仅 created_at；order 取值 ascending / descending。
+/// 服务端把 `orderBy` 声明为必填，缺失时返回参数错误；`orderBy` 当前仅
+/// `created_at`，`order` 取值 `ascending` / `descending`。
 class AlertSearch extends Equatable {
   final int page;
   final int pageSize;

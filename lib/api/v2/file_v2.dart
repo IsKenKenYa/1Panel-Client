@@ -5,6 +5,7 @@ import '../../core/network/dio_client.dart';
 import '../../data/models/common_models.dart';
 import '../../data/models/container_models.dart';
 import '../../data/models/file_models.dart';
+import 'api_response_parser.dart';
 
 class FileV2Api {
   final DioClient _client;
@@ -328,19 +329,44 @@ class FileV2Api {
 
   /// 分块上传文件
   ///
-  /// 分块上传大文件
-  /// @param request 分块上传请求
-  /// @return 上传结果
+  /// 服务端接收 multipart 表单：`uploadID`、`filename`、`path`、
+  /// `chunk`（分片内容）、`chunkIndex`、`chunkCount`、`offset`、
+  /// `fileSize`、`overwrite`。`uploadID` 与 `offset`/`fileSize` 同时给出
+  /// 时走可断点续传路径，缺失时按一次性分片累加合并。
   Future<Response<FileChunkResult>> chunkUpload(FileChunkUpload request) async {
+    final formData = FormData.fromMap(<String, dynamic>{
+      'uploadID': request.uploadID,
+      'filename': request.filename,
+      'path': request.path,
+      'chunk': MultipartFile.fromBytes(
+        request.chunkBytes,
+        filename: request.filename,
+      ),
+      'chunkIndex': request.chunkIndex.toString(),
+      'chunkCount': request.chunkCount.toString(),
+      'offset': request.offset.toString(),
+      'fileSize': request.fileSize.toString(),
+      'overwrite': request.overwrite.toString(),
+    });
     final response = await _client.post(
       ApiConstants.buildApiPath('/files/chunkupload'),
-      data: request.toJson(),
+      data: formData,
+      options: Options(contentType: 'multipart/form-data'),
     );
-    return Response(
-      data: FileChunkResult.fromJson(response.data as Map<String, dynamic>),
+    return Response<FileChunkResult>(
+      data: FileChunkResult.fromJson(
+          ApiResponseParser.asMap(response.data)),
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
+    );
+  }
+
+  /// 停止分片上传并清理服务端临时分片。
+  Future<Response<void>> stopChunkUpload(String uploadID) async {
+    return await _client.post<void>(
+      ApiConstants.buildApiPath('/files/chunkupload/stop'),
+      data: <String, dynamic>{'key': uploadID},
     );
   }
 

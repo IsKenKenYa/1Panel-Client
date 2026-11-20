@@ -300,6 +300,10 @@ class TransferManager extends ChangeNotifier with SafeChangeNotifier {
 
     final totalChunks = task.totalChunks;
     final uploadedChunks = Set<int>.from(task.uploadedChunks);
+    final fileName = task.fileName ?? task.path.split('/').last;
+    // uploadID 是服务端临时分片的目录名；同一次任务复用同一个值，
+    // 服务端据此在收到重复分片时按 offset 覆盖写入。
+    final uploadID = task.id;
 
     for (var i = 0; i < totalChunks; i++) {
       if (uploadedChunks.contains(i)) continue;
@@ -320,14 +324,15 @@ class TransferManager extends ChangeNotifier with SafeChangeNotifier {
       final bytes = await randomAccessFile.read(end - start);
       await randomAccessFile.close();
 
-      final base64Data = base64Encode(bytes);
-      final isLastChunk = i == totalChunks - 1;
-
       final response = await _api!.chunkUpload(FileChunkUpload(
+        uploadID: uploadID,
+        filename: fileName,
         path: task.path,
-        data: base64Data,
-        chunkNumber: i + 1,
-        isLastChunk: isLastChunk,
+        chunkBytes: bytes,
+        chunkIndex: i,
+        chunkCount: totalChunks,
+        offset: start,
+        fileSize: task.totalSize,
       ));
 
       if (response.data?.success == true) {

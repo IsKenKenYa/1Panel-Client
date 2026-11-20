@@ -1,8 +1,10 @@
+import '../../api/v2/alert_v2.dart';
 import '../../api/v2/app_v2.dart';
 import '../../api/v2/auth_v2.dart';
 import '../../api/v2/backup_account_v2.dart';
 import '../../api/v2/command_v2.dart';
 import '../../api/v2/compose_v2.dart';
+import '../../api/v2/container_log_stream_v2.dart';
 import '../../api/v2/container_v2.dart';
 import '../../api/v2/cronjob_v2.dart';
 import '../../api/v2/dashboard_v2.dart';
@@ -27,8 +29,11 @@ import '../../api/v2/task_log_v2.dart';
 import '../../api/v2/terminal_v2.dart';
 import '../../api/v2/toolbox_v2.dart';
 import '../../api/v2/update_v2.dart';
+import '../../api/v2/vm_v2.dart';
 import '../../api/v2/website_v2.dart';
+import '../../api/v2/xpack_model_downloader_v2.dart';
 import '../../api/v2/ai_v2.dart';
+import '../../api/v2/health_v2.dart';
 import '../config/api_config.dart';
 import '../services/logger/logger_service.dart';
 import 'dio_client.dart';
@@ -114,6 +119,20 @@ class ApiClientManager {
 
   Future<ContainerV2Api> getContainerApi() async =>
       ContainerV2Api(await getCurrentClient());
+
+  Future<ContainerLogStreamV2Api> getContainerLogStreamApi() async =>
+      ContainerLogStreamV2Api(await getCurrentClient());
+
+  Future<AlertV2Api> getAlertApi() async =>
+      AlertV2Api(await getCurrentClient());
+
+  Future<VMV2Api> getVMApi() async => VMV2Api(await getCurrentClient());
+
+  Future<XpackModelDownloaderV2Api> getXpackModelDownloaderApi() async =>
+      XpackModelDownloaderV2Api(await getCurrentClient());
+
+  Future<HealthV2Api> getHealthApi() async =>
+      HealthV2Api(await getCurrentClient());
 
   Future<CronjobV2Api> getCronjobApi() async =>
       CronjobV2Api(await getCurrentClient());
