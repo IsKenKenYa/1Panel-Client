@@ -93,6 +93,22 @@ class TestRunner {
     return raw == 'true' || raw == '1' || raw == 'yes';
   }
 
+  /// 面板配置写入类套件（设置、快照、SSH、终端）只在破坏性模式下运行，
+  /// 避免默认真服务器门禁修改测试主机的面板配置或生成快照。
+  static bool get destructiveEnabled {
+    final raw = Platform.environment['RUN_DESTRUCTIVE_TESTS']?.toLowerCase();
+    return raw == 'true' || raw == '1' || raw == 'yes';
+  }
+
+  static bool _isPanelConfigLiveSuite(String path) {
+    final name = path.split('/').last.toLowerCase();
+    return name.startsWith('setting') ||
+        name.startsWith('snapshot') ||
+        name.startsWith('panel_snapshot') ||
+        name.startsWith('ssh_api_client') ||
+        name.startsWith('terminal_api_client');
+  }
+
   static Future<bool> runLiveTestWithRetry(
     String testPath, {
     String? description,
@@ -376,13 +392,17 @@ class TestRunner {
           .whereType<File>()
           .where((f) =>
               f.path.endsWith('_test.dart') &&
-              !f.path.contains('_alignment_test.dart'))
+              !f.path.contains('_alignment_test.dart') &&
+              (destructiveEnabled || !_isPanelConfigLiveSuite(f.path)))
           .where((f) => _matchesModuleFilter(f.path, normalizedFilter))
           .map((f) => f.path)
           .toList();
 
       printInfo(
           '发现 ${testFiles.length} 个 api_client 集成测试，超时时间: $liveTestTimeout，重试次数: $liveTestRetries');
+      if (!destructiveEnabled) {
+        printWarning('未开启 RUN_DESTRUCTIVE_TESTS，已跳过面板设置/快照/SSH/终端写入套件');
+      }
 
       for (final testFile in testFiles) {
         final name = testFile.split('/').last;

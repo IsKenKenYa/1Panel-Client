@@ -123,10 +123,13 @@ void main() {
         );
         await api.pullImage(request);
 
-        verify(mockClient.post<void>(
+        final captured = verify(mockClient.post<void>(
           any,
-          data: anyNamed('data'),
-        )).called(1);
+          data: captureAnyNamed('data'),
+        )).captured;
+        final body = captured.single as Map<String, dynamic>;
+        expect(body['imageName'], <String>['nginx:latest']);
+        expect(body['taskID'], isA<String>());
       });
     });
 

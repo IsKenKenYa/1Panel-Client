@@ -200,21 +200,23 @@ void main() {
           options: anyNamed('options'),
           queryParameters: anyNamed('queryParameters'),
         )).thenAnswer((_) async => _successMapResponse({
-              'items': [
-                {
-                  'id': 1,
-                  'primaryDomain': 'example.com',
-                  'status': 'valid',
-                },
-                {
-                  'id': 2,
-                  'primaryDomain': 'test.com',
-                  'status': 'expired',
-                },
-              ],
-              'total': 2,
-              'page': 1,
-              'pageSize': 10,
+              'data': {
+                'items': [
+                  {
+                    'id': 1,
+                    'primaryDomain': 'example.com',
+                    'status': 'valid',
+                  },
+                  {
+                    'id': 2,
+                    'primaryDomain': 'test.com',
+                    'status': 'expired',
+                  },
+                ],
+                'total': 2,
+                'page': 1,
+                'pageSize': 10,
+              },
             }, path: '/websites/ssl/search'));
 
         final request = WebsiteSSLSearch(page: 1, pageSize: 10);

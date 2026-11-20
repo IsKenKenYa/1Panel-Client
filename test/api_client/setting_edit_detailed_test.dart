@@ -24,7 +24,8 @@ void main() {
   });
 
   group('1Panel设置编辑能力详细测试', () {
-    test('1. 终端设置更新 - 使用正确参数', () async {
+    test('1. 终端设置更新 - 使用正确参数',
+        skip: TestEnvironment.skipDestructive(), () async {
       if (!hasApiKey) {
         debugPrint('⚠️  跳过测试: API密钥未配置');
         return;
@@ -74,7 +75,8 @@ void main() {
       debugPrint('========================================\n');
     });
 
-    test('2. 通用设置更新 - 使用正确参数格式', () async {
+    test('2. 通用设置更新 - 使用正确参数格式',
+        skip: TestEnvironment.skipDestructive(), () async {
       if (!hasApiKey) {
         debugPrint('⚠️  跳过测试: API密钥未配置');
         return;
@@ -133,7 +135,8 @@ void main() {
       debugPrint('========================================\n');
     });
 
-    test('3. 绑定地址更新 - 使用正确参数', () async {
+    test('3. 绑定地址更新 - 使用正确参数',
+        skip: TestEnvironment.skipDestructive(), () async {
       if (!hasApiKey) {
         debugPrint('⚠️  跳过测试: API密钥未配置');
         return;
@@ -269,7 +272,8 @@ void main() {
       debugPrint('========================================\n');
     });
 
-    test('7. 快照创建 - 使用正确参数', () async {
+    test('7. 快照创建 - 使用正确参数',
+        skip: TestEnvironment.skipDestructive(), () async {
       if (!hasApiKey) {
         debugPrint('⚠️  跳过测试: API密钥未配置');
         return;

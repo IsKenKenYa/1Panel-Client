@@ -41,6 +41,19 @@ void main() {
       expect(toolboxTarget.embedRouteInShell, isTrue);
     });
 
+    test('vm is a first-class shell module and alert embeds in servers', () {
+      final vmTarget = shellRouteTargetForRoute(AppRoutes.vm);
+      final alertTarget = shellRouteTargetForRoute(AppRoutes.alert);
+
+      expect(vmTarget, isNotNull);
+      expect(vmTarget!.module, ClientModule.vm);
+      expect(vmTarget.embedRouteInShell, isFalse);
+
+      expect(alertTarget, isNotNull);
+      expect(alertTarget!.module, ClientModule.servers);
+      expect(alertTarget.embedRouteInShell, isTrue);
+    });
+
     test('website template and firewall v2 routes are embedded in shell', () {
       final templateTarget =
           shellRouteTargetForRoute(AppRoutes.websiteTemplates);

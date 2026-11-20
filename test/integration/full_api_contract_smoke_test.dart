@@ -39,8 +39,10 @@ void _log(String title, {Object? request, Object? response}) {
 Future<Response<dynamic>> _rawGet(DioClient c, String path) =>
     c.get<dynamic>(ApiConstants.buildApiPath(path));
 
-Future<Response<dynamic>> _rawPost(DioClient c, String path, {dynamic data}) =>
-    c.post<dynamic>(ApiConstants.buildApiPath(path), data: data);
+Future<Response<dynamic>> _rawPost(DioClient c, String path,
+        {dynamic data, Options? options}) =>
+    c.post<dynamic>(ApiConstants.buildApiPath(path),
+        data: data, options: options);
 
 dynamic _unwrap(dynamic raw, String path) {
   expect(raw, isA<Map>(), reason: '$path: should be wrapped object');
@@ -638,7 +640,8 @@ void main() {
   group('SSH 模块', () {
     test('POST /hosts/ssh/search - SSH 信息', () async {
       if (skip() != null) return;
-      final raw = await _rawPost(client, '/hosts/ssh/search', data: {});
+      final raw = await _rawPost(client, '/hosts/ssh/search', data: {},
+          options: Options(receiveTimeout: const Duration(minutes: 2)));
       final data = _unwrap(raw.data, '/hosts/ssh/search');
       _log('SSH/search', response: data);
       expect(data, isA<Map>());

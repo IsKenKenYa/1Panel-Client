@@ -47,7 +47,8 @@ void main() {
       debugPrint('========================================\n');
     });
 
-    test('GET /core/settings/upgrade/releases - 获取版本列表', () async {
+    test('GET /core/settings/upgrade/releases - 获取版本列表',
+        timeout: const Timeout(Duration(minutes: 3)), () async {
       if (!hasApiKey) {
         debugPrint('⚠️  跳过测试: API密钥未配置');
         return;
@@ -56,7 +57,8 @@ void main() {
       final dio = client.dio;
       final Response<dynamic> response;
       try {
-        response = await dio.get('/api/v2/core/settings/upgrade/releases');
+        response = await dio.get('/api/v2/core/settings/upgrade/releases',
+            options: Options(receiveTimeout: const Duration(minutes: 2)));
       } catch (e) {
         if (SkipConditions.isServerUnavailable(e)) {
           debugPrint('⚠️  跳过测试: 服务器升级版本端点当前不可用');

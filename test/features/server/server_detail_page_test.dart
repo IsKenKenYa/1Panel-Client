@@ -206,11 +206,10 @@ void main() {
       ListTile,
       l10n.serverModuleSystemSettings,
     );
-    await tester.scrollUntilVisible(
-      target,
-      240,
-      scrollable: find.byType(Scrollable).first,
-    );
+    // ensureVisible 按目标实际位置滚动；固定增量的 scrollUntilVisible
+    // 在入口列表超出一屏时会越过目标导致点击落空。
+    await tester.ensureVisible(target);
+    await tester.pumpAndSettle();
     await tester.tap(
       target,
     );

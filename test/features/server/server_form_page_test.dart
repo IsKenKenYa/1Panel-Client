@@ -4,6 +4,13 @@ import 'package:onepanel_client/features/server/server_form_page.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 
 Future<void> pumpServerFormPage(WidgetTester tester) async {
+  // 表单为纵向长页，默认 800x600 视口装不下全部字段与底部操作；
+  // 固定一个更高的视口，避免滚动后点击坐标漂移。
+  tester.view.physicalSize = const Size(800, 1600);
+  tester.view.devicePixelRatio = 1.0;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
+
   await tester.pumpWidget(
     MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -81,6 +88,10 @@ void main() {
         isFalse,
       );
 
+      // 分区卡片标题行固定 44dp 后整页内容高度变化，目标可能落在视口外，
+      // 点击前必须先确保可见。
+      await tester.ensureVisible(switchTileFinder);
+      await tester.pumpAndSettle();
       await tester.tap(switchTileFinder);
       await tester.pumpAndSettle();
 
@@ -89,6 +100,8 @@ void main() {
         isTrue,
       );
 
+      await tester.ensureVisible(switchTileFinder);
+      await tester.pumpAndSettle();
       await tester.tap(switchTileFinder);
       await tester.pumpAndSettle();
 

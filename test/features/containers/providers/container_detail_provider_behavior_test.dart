@@ -22,6 +22,10 @@ void main() {
       state: 'running',
     );
 
+    setUpAll(() {
+      registerFallbackValue(<String>[]);
+    });
+
     setUp(() {
       service = MockContainerService();
       provider = ContainerDetailProvider(
@@ -30,31 +34,56 @@ void main() {
       );
     });
 
-    test('loadLogs passes custom tail to service', () async {
-      when(() => service.getContainerLogs('mysql-demo', tail: '50'))
-          .thenAnswer((_) async => 'short log');
-
-      await provider.loadLogs(tail: '50');
-
-      expect(provider.logs, 'short log');
-      verify(() => service.getContainerLogs('mysql-demo', tail: '50'))
-          .called(1);
+    tearDown(() {
+      provider.dispose();
     });
 
-    test('logs loading flag toggles during fetch', () async {
-      final completer = Completer<String>();
-      when(() => service.getContainerLogs('mysql-demo', tail: '1000'))
-          .thenAnswer((_) => completer.future);
+    test('loadLogs passes custom tail to the log stream', () async {
+      when(() => service.streamContainerLogs(
+            'mysql-demo',
+            since: any(named: 'since'),
+            tail: '50',
+            follow: any(named: 'follow'),
+            timestamps: any(named: 'timestamps'),
+          )).thenAnswer(
+        (_) => Stream<String>.fromIterable(<String>['short log']),
+      );
 
-      final pending = provider.loadLogs();
+      await provider.loadLogs(tail: '50', follow: false);
+      await Future<void>.delayed(Duration.zero);
+
+      expect(provider.logs, 'short log');
+      verify(() => service.streamContainerLogs(
+            'mysql-demo',
+            since: any(named: 'since'),
+            tail: '50',
+            follow: false,
+            timestamps: any(named: 'timestamps'),
+          )).called(1);
+    });
+
+    test('logs loading flag clears once the first frame arrives', () async {
+      final controller = StreamController<String>();
+      when(() => service.streamContainerLogs(
+            'mysql-demo',
+            since: any(named: 'since'),
+            tail: any(named: 'tail'),
+            follow: any(named: 'follow'),
+            timestamps: any(named: 'timestamps'),
+          )).thenAnswer((_) => controller.stream);
+
+      unawaited(provider.loadLogs());
+      await Future<void>.delayed(Duration.zero);
       expect(provider.logsLoading, isTrue);
       expect(provider.logsError, isNull);
 
-      completer.complete('done');
-      await pending;
+      controller.add('done');
+      await Future<void>.delayed(Duration.zero);
 
       expect(provider.logsLoading, isFalse);
       expect(provider.logs, 'done');
+
+      await controller.close();
     });
 
     test('failed inspect recovers on retry', () async {
@@ -126,20 +155,31 @@ void main() {
     test('loadAll recovers every section after a full failure', () async {
       when(() => service.inspectContainer('c-1'))
           .thenThrow(Exception('inspect failed'));
-      when(() => service.getContainerLogs('mysql-demo', tail: '1000'))
-          .thenThrow(Exception('logs failed'));
+      when(() => service.streamContainerLogs(
+            'mysql-demo',
+            since: any(named: 'since'),
+            tail: any(named: 'tail'),
+            follow: any(named: 'follow'),
+            timestamps: any(named: 'timestamps'),
+          )).thenAnswer((_) => Stream<String>.error(Exception('logs failed')));
       when(() => service.getContainerStats('c-1'))
           .thenThrow(Exception('stats failed'));
 
       await provider.loadAll();
+      await Future<void>.delayed(Duration.zero);
       expect(provider.inspectError, isNotNull);
       expect(provider.logsError, isNotNull);
       expect(provider.statsError, isNotNull);
 
       when(() => service.inspectContainer('c-1'))
           .thenAnswer((_) async => '{}');
-      when(() => service.getContainerLogs('mysql-demo', tail: '1000'))
-          .thenAnswer((_) async => 'line-1');
+      when(() => service.streamContainerLogs(
+            'mysql-demo',
+            since: any(named: 'since'),
+            tail: any(named: 'tail'),
+            follow: any(named: 'follow'),
+            timestamps: any(named: 'timestamps'),
+          )).thenAnswer((_) => Stream<String>.fromIterable(<String>['line-1']));
       when(() => service.getContainerStats('c-1')).thenAnswer(
         (_) async => const ContainerStats(
           cache: 0,
@@ -153,6 +193,7 @@ void main() {
       );
 
       await provider.loadAll();
+      await Future<void>.delayed(Duration.zero);
 
       expect(provider.inspectError, isNull);
       expect(provider.logsError, isNull);

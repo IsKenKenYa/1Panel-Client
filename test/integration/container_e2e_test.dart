@@ -6,8 +6,8 @@
 // 危险面边界：
 // - 列表与状态为纯读操作。
 // - 重启操作只针对列表中第一个"安全容器"：名称含 `3xui` 或 `hysteria`
-//   （大小写不敏感）的容器一律排除；仅当该容器原本处于 running 状态时才重启，
-//   并轮询确认其回到 running；否则只做读断言、不重启。
+//   （大小写不敏感）、以及由应用商店或编排管理的容器一律排除；仅当该容器原本
+//   处于 running 状态时才重启，并轮询确认其回到 running；否则只做读断言、不重启。
 // - 网络夹具仅创建/删除名称带 `onepanel-e2e-net-` 前缀 + 6位随机后缀的自有网络，
 //   不触碰任何现有网络/容器/卷，不调用任何面板基础配置修改接口。
 import 'package:flutter_test/flutter_test.dart';
@@ -90,8 +90,12 @@ Future<void> main() async {
         expect(listResponse.statusCode, 200);
         final containers = listResponse.data ?? [];
 
-        final safeContainers =
-            containers.where((c) => !isProtectedContainer(c.name)).toList();
+        final safeContainers = containers
+            .where((c) =>
+                !isProtectedContainer(c.name) &&
+                !c.isFromApp &&
+                !c.isFromCompose)
+            .toList();
         if (safeContainers.isEmpty) {
           // ignore: avoid_print
           print('[soft-skip] 未发现可安全操作的容器，跳过容器操作测试');

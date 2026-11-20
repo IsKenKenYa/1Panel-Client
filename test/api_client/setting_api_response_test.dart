@@ -122,7 +122,8 @@ void main() {
       debugPrint('========================================\n');
     });
 
-    test('loadMfaInfo - 打印完整响应数据', () async {
+    test('loadMfaInfo - 打印完整响应数据',
+        skip: TestEnvironment.skipDestructive(), () async {
       if (!hasApiKey) {
         debugPrint('⚠️  跳过测试: API密钥未配置');
         return;
@@ -173,7 +174,8 @@ void main() {
       debugPrint('========================================\n');
     });
 
-    test('generateApiKey - 打印完整响应数据', () async {
+    test('generateApiKey - 打印完整响应数据',
+        skip: TestEnvironment.skipDestructive(), () async {
       if (!hasApiKey) {
         debugPrint('⚠️  跳过测试: API密钥未配置');
         return;

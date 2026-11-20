@@ -111,7 +111,8 @@ void main() {
       expect(parsed.data, isNotNull);
     });
 
-    test('POST /hosts/ssh/update 应支持安全更新', () async {
+    test('POST /hosts/ssh/update 应支持安全更新',
+        skip: TestEnvironment.skipDestructive(), () async {
       if (!canRun) return;
       final info = (await api.getSshInfo()).data!;
       final request = {
@@ -158,7 +159,8 @@ void main() {
       await api.operateSsh(const SshOperateRequest(operation: 'restart'));
     });
 
-    test('POST /hosts/ssh/file 与 /file/update 应成功', () async {
+    test('POST /hosts/ssh/file 与 /file/update 应成功',
+        skip: TestEnvironment.skipDestructive(), () async {
       if (!canRun) return;
       const request = {'name': 'sshdConf'};
       final raw = await _rawPost(client, '/hosts/ssh/file', data: request);
@@ -189,7 +191,8 @@ void main() {
       await api.updateSshFile(SshFileUpdateRequest(value: file.data ?? ''));
     });
 
-    test('SSH cert search 与 sync 应成功', () async {
+    test('SSH cert search 与 sync 应成功',
+        skip: TestEnvironment.skipDestructive(), () async {
       if (!canRun) return;
       final rawSearch = await _rawPost(
         client,

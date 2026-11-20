@@ -22,7 +22,8 @@ void main() {
   });
 
   group('快照创建API测试', () {
-    test('POST /settings/snapshot - 使用正确格式创建快照', () async {
+    test('POST /settings/snapshot - 使用正确格式创建快照',
+        skip: TestEnvironment.skipDestructive(), () async {
       if (!hasApiKey) {
         debugPrint('⚠️  跳过测试: API密钥未配置');
         return;
