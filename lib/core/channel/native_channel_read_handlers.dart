@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -13,6 +14,7 @@ import '../../data/models/ai/agent_account_model_pool_models.dart';
 import '../../data/models/ai/agent_account_models.dart';
 import '../../data/models/ai/agent_core_models.dart';
 import '../../data/models/common_models.dart';
+import '../../data/models/container_models.dart';
 import '../../data/models/mcp_models.dart';
 import '../../features/ai/ai_repository.dart';
 import '../../features/apps/app_service.dart';
@@ -25,6 +27,8 @@ import '../../features/files/services/file_browser_service.dart';
 import '../../features/firewall/firewall_service.dart';
 import '../../features/logs/services/logs_service.dart';
 import '../../data/models/logs_models.dart';
+import '../../data/models/process_models.dart';
+import '../../data/models/task_log_models.dart';
 import '../../features/openresty/services/openresty_service.dart';
 import '../../features/orchestration/services/orchestration_service.dart';
 import '../../features/script_library/services/script_library_service.dart';
@@ -38,6 +42,7 @@ import '../../features/server/server_repository.dart';
 import '../../features/websites/services/websites_service.dart';
 import '../../data/models/app_models.dart';
 import '../../data/models/cronjob_list_models.dart';
+import '../../data/models/cronjob_record_models.dart';
 import '../../data/models/database_models.dart';
 import '../../data/repositories/database_repository.dart';
 import '../../data/repositories/website_repository.dart';
@@ -95,10 +100,110 @@ class NativeChannelReadHandlers {
               'name': a.appName ?? a.name ?? '',
               'status': a.status ?? '',
               'version': a.version ?? '',
+              'icon': a.icon ?? '',
               'appId': a.appId,
               'installId': a.id,
             })
         .toList();
+  }
+
+  /// 已安装应用详情。参数：`{installId: int}`。
+  /// 上游返回 `HttpPort`（首字母大写），这里同时回传规范化后的 `httpPort`。
+  static Future<dynamic> getAppInstallInfo(dynamic arguments) async {
+    final installId = arguments['installId']?.toString() ?? '';
+    if (installId.isEmpty) {
+      throw ArgumentError('installId is required');
+    }
+    final info = await AppService().getAppInstallInfo(installId);
+    // 详情接口不带图标与目录名，按 appKey 取目录条目补齐。
+    var icon = info.icon ?? '';
+    var catalogName = info.appName ?? '';
+    final appKey = info.appKey ?? '';
+    if (appKey.isNotEmpty && (icon.isEmpty || catalogName.isEmpty)) {
+      try {
+        final catalog = await AppService().getAppByKey(appKey);
+        if (icon.isEmpty) icon = catalog.icon ?? '';
+        if (catalogName.isEmpty) catalogName = catalog.name ?? '';
+      } catch (e) {
+        appLogger.w('getAppInstallInfo: catalog lookup for $appKey failed: $e');
+      }
+    }
+    return {
+      'id': info.id,
+      'name': info.name,
+      'appName': catalogName,
+      'appKey': appKey,
+      'version': info.version ?? '',
+      'status': info.status ?? '',
+      'message': info.message ?? '',
+      'httpPort': info.httpPort,
+      'httpsPort': info.httpsPort,
+      'container': info.container ?? '',
+      'appType': info.appType ?? '',
+      'createdAt': info.createdAt ?? '',
+      'icon': icon,
+    };
+  }
+
+  /// 已安装应用参数。参数：`{installId: int}`。
+  static Future<dynamic> getAppInstallParams(dynamic arguments) async {
+    final installId = arguments['installId']?.toString() ?? '';
+    if (installId.isEmpty) {
+      throw ArgumentError('installId is required');
+    }
+    final config = await AppService().getAppInstallParams(installId);
+    return {
+      'containerName': config.containerName,
+      'cpuQuota': config.cpuQuota,
+      'memoryLimit': config.memoryLimit,
+      'memoryUnit': config.memoryUnit,
+      'webUI': config.webUI,
+      'type': config.type,
+      'specifyIP': config.specifyIP ?? '',
+      'restartPolicy': config.restartPolicy ?? '',
+      'allowPort': config.allowPort,
+      'hostMode': config.hostMode ?? false,
+      'params': config.params
+          .map((param) => {
+                'key': param.key,
+                'labelZh': param.labelZh,
+                'labelEn': param.labelEn,
+                'type': param.type,
+                'value': param.value?.toString() ?? '',
+                'showValue': param.showValue ?? '',
+                'edit': param.edit,
+                'required': param.required ?? false,
+                'multiple': param.multiple ?? false,
+              })
+          .toList(),
+    };
+  }
+
+  /// 应用目录条目。参数：`{key: String}`。
+  static Future<dynamic> getAppDetailByKey(dynamic arguments) async {
+    final key = arguments['key'] as String? ?? '';
+    if (key.isEmpty) {
+      throw ArgumentError('key is required');
+    }
+    final app = await AppService().getAppByKey(key);
+    return {
+      'id': app.id,
+      'name': app.name ?? '',
+      'key': app.key ?? key,
+      'type': app.type ?? '',
+      'icon': app.icon ?? '',
+      'shortDescZh': app.shortDescZh ?? '',
+      'shortDescEn': app.shortDescEn ?? '',
+      'description': app.description ?? '',
+      'readMe': app.readMe ?? '',
+      'website': app.website ?? '',
+      'github': app.github ?? '',
+      'versions': app.versions ?? const <String>[],
+      'installed': app.installed ?? false,
+      'gpuSupport': app.gpuSupport ?? false,
+      'memoryRequired': app.memoryRequired ?? 0,
+      'architectures': app.architectures ?? '',
+    };
   }
 
   static Future<dynamic> getWebsites(dynamic arguments) async {
@@ -135,6 +240,7 @@ class NativeChannelReadHandlers {
               'versions': item.versions,
               'installed': item.installed,
               'description': item.description,
+              'icon': item.icon ?? '',
             })
         .toList();
   }
@@ -241,6 +347,7 @@ class NativeChannelReadHandlers {
       'group': website.group,
       'domains': website.domains
           .map((domain) => {
+                'id': domain.id,
                 'domain': domain.domain,
                 'port': domain.port,
                 'ssl': domain.ssl,
@@ -283,6 +390,178 @@ class NativeChannelReadHandlers {
     final name = arguments['name'] as String;
     final tail = arguments['tail'] as String?;
     return ContainerService().getContainerLogs(name, tail: tail);
+  }
+
+  /// 容器镜像列表（`/containers/image/all`）。字段与上游真实返回一致。
+  static Future<dynamic> getContainerImages(dynamic arguments) async {
+    final client = await ApiClientManager.instance.getCurrentClient();
+    final response = await client.get<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/image/all'),
+    );
+    final items = ApiResponseParser.asList(response.data);
+    return items
+        .whereType<Map>()
+        .map((item) => {
+              'id': item['id']?.toString() ?? '',
+              'tags': (item['tags'] as List?)?.map((e) => '$e').toList() ?? const [],
+              'size': item['size'] ?? 0,
+              'createdAt': item['createdAt']?.toString() ?? '',
+              'isUsed': item['isUsed'] ?? false,
+              'description': item['description']?.toString() ?? '',
+            })
+        .toList();
+  }
+
+  /// 容器网络列表（`/containers/network/search`）。参数：`{page?, pageSize?}`。
+  static Future<dynamic> getContainerNetworks(dynamic arguments) async {
+    final client = await ApiClientManager.instance.getCurrentClient();
+    final response = await client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/network/search'),
+      data: <String, dynamic>{
+        'page': int.tryParse('${arguments?['page'] ?? 1}') ?? 1,
+        'pageSize': int.tryParse('${arguments?['pageSize'] ?? 50}') ?? 50,
+      },
+    );
+    final items = ApiResponseParser.asList(
+      response.data,
+      nestedItemsKey: 'items',
+    );
+    return items
+        .whereType<Map>()
+        .map((item) => {
+              'id': item['id']?.toString() ?? '',
+              'name': item['name']?.toString() ?? '',
+              'driver': item['driver']?.toString() ?? '',
+              'subnet': item['subnet']?.toString() ?? '',
+              'gateway': item['gateway']?.toString() ?? '',
+              'createdAt': item['createdAt']?.toString() ?? '',
+              'attachable': item['attachable'] ?? false,
+            })
+        .toList();
+  }
+
+  /// 容器存储卷列表（`/containers/volume/search`）。参数：`{page?, pageSize?}`。
+  static Future<dynamic> getContainerVolumes(dynamic arguments) async {
+    final client = await ApiClientManager.instance.getCurrentClient();
+    final response = await client.post<Map<String, dynamic>>(
+      ApiConstants.buildApiPath('/containers/volume/search'),
+      data: <String, dynamic>{
+        'page': int.tryParse('${arguments?['page'] ?? 1}') ?? 1,
+        'pageSize': int.tryParse('${arguments?['pageSize'] ?? 50}') ?? 50,
+      },
+    );
+    final items = ApiResponseParser.asList(
+      response.data,
+      nestedItemsKey: 'items',
+    );
+    return items
+        .whereType<Map>()
+        .map((item) => {
+              'name': item['name']?.toString() ?? '',
+              'driver': item['driver']?.toString() ?? '',
+              'mountpoint': item['mountpoint']?.toString() ?? '',
+              'createdAt': item['createdAt']?.toString() ?? '',
+            })
+        .toList();
+  }
+
+  /// 监听端口进程列表。参数：无。POST /process/listening。
+  static Future<dynamic> getListeningProcesses(dynamic arguments) async {
+    try {
+      final processes = (await (await ApiClientManager.instance.getProcessApi())
+                  .getListeningProcesses())
+              .data ??
+          const <ListeningProcess>[];
+      return processes
+          .map((process) => {
+                'pid': process.pid,
+                'protocol': process.protocol,
+                'name': process.name,
+                'ports': process.ports,
+              })
+          .toList();
+    } catch (e) {
+      appLogger.e('Failed to get listening processes for native: $e');
+      return [];
+    }
+  }
+
+  /// 容器镜像仓库列表。参数：无。GET /containers/repo。
+  static Future<dynamic> getContainerRepos(dynamic arguments) async {
+    try {
+      final response = await (await ApiClientManager.instance.getContainerApi())
+          .getRepos();
+      return (response.data ?? const <ContainerRepo>[])
+          .map((repo) => repo.toJson())
+          .toList();
+    } catch (e) {
+      appLogger.e('Failed to get container repos for native: $e');
+      return [];
+    }
+  }
+
+  /// 容器编排模版列表。参数：无。GET /containers/template。
+  static Future<dynamic> getContainerTemplates(dynamic arguments) async {
+    try {
+      final response =
+          await (await ApiClientManager.instance.getContainerApi()).getTemplates();
+      return (response.data ?? const <ContainerTemplate>[])
+          .map((template) => template.toJson())
+          .toList();
+    } catch (e) {
+      appLogger.e('Failed to get container templates for native: $e');
+      return [];
+    }
+  }
+
+  /// 容器内文件列表。参数：`{containerId: String, path: String}`。
+  static Future<dynamic> getContainerFiles(dynamic arguments) async {
+    try {
+      final containerId = (arguments?['containerId'] as String? ?? '').trim();
+      final path = (arguments?['path'] as String? ?? '/').trim();
+      if (containerId.isEmpty) {
+        return [];
+      }
+      final response =
+          await (await ApiClientManager.instance.getFileApi()).searchContainerFiles(
+        ContainerFileRequest(containerId: containerId, path: path),
+      );
+      return (response.data ?? const <ContainerFileInfo>[])
+          .map((file) => file.toJson())
+          .toList();
+    } catch (e) {
+      appLogger.e('Failed to get container files for native: $e');
+      return [];
+    }
+  }
+
+  /// 容器内文件内容。参数：`{containerId: String, path: String}`。
+  static Future<dynamic> getContainerFileContent(dynamic arguments) async {
+    try {
+      final containerId = (arguments?['containerId'] as String? ?? '').trim();
+      final path = (arguments?['path'] as String? ?? '').trim();
+      if (containerId.isEmpty || path.isEmpty) {
+        return <String, dynamic>{};
+      }
+      final response =
+          await (await ApiClientManager.instance.getFileApi()).getContainerFileContent(
+        ContainerFileRequest(containerId: containerId, path: path),
+      );
+      return response.data?.toJson() ?? <String, dynamic>{};
+    } catch (e) {
+      appLogger.e('Failed to get container file content for native: $e');
+      return <String, dynamic>{};
+    }
+  }
+
+  /// 系统日志文件列表（B15 日志模块的只读入口）。
+  static Future<dynamic> getSystemLogFiles(dynamic arguments) async {
+    try {
+      return await LogsService().loadSystemLogFiles();
+    } catch (e) {
+      appLogger.e('Failed to get system log files for native: $e');
+      return <String>[];
+    }
   }
 
   /// 容器 inspect（格式化 JSON）。参数：`{name}`。
@@ -384,6 +663,8 @@ class NativeChannelReadHandlers {
           result.add({
             'id': item.id,
             'name': item.name,
+            'lookupName': item.lookupName,
+            'source': item.source,
             'type': scope.value,
             'engine': item.engine,
             'serverId': config.id,
@@ -406,25 +687,20 @@ class NativeChannelReadHandlers {
 
 
   /// SSH 服务信息（B15）。
+  /// 上游该端点需要读取 sshd 状态，部分主机需要 20 秒以上；
+  /// 客户端默认 8 秒超时会被中断，这里按单次请求放宽到 6 分钟。
   static Future<dynamic> getSshInfo(dynamic arguments) async {
     try {
-      final info = await SSHService().loadInfo();
-      return {
-        'autoStart': info.autoStart,
-        'isExist': info.isExist,
-        'isActive': info.isActive,
-        'message': info.message,
-        'port': info.port,
-        'listenAddress': info.listenAddress,
-        'passwordAuthentication': info.passwordAuthentication,
-        'pubkeyAuthentication': info.pubkeyAuthentication,
-        'permitRootLogin': info.permitRootLogin,
-        'useDNS': info.useDNS,
-        'currentUser': info.currentUser,
-      };
+      final client = await ApiClientManager.instance.getCurrentClient();
+      final response = await client.post<Map<String, dynamic>>(
+        ApiConstants.buildApiPath('/hosts/ssh/search'),
+        data: const <String, dynamic>{},
+        options: Options(receiveTimeout: const Duration(minutes: 6)),
+      );
+      return ApiResponseParser.asMap(response.data);
     } catch (e) {
       appLogger.e('Failed to get ssh info for native: $e');
-      return <String, dynamic>{};
+      return <String, dynamic>{'loadFailed': true};
     }
   }
 
@@ -536,6 +812,68 @@ class NativeChannelReadHandlers {
     }
   }
 
+  /// 任务日志分页列表。参数：`{page?: int, pageSize?: int, type?: String, status?: String}`
+  static Future<dynamic> getTaskLogs(dynamic arguments) async {
+    try {
+      final page = await LogsService().searchTaskLogs(TaskLogSearch(
+        page: int.tryParse('${arguments?['page'] ?? 1}') ?? 1,
+        pageSize: int.tryParse('${arguments?['pageSize'] ?? 20}') ?? 20,
+        type: (arguments?['type'] as String?)?.trim().isEmpty == true
+            ? null
+            : arguments?['type'] as String?,
+        status: (arguments?['status'] as String?)?.trim().isEmpty == true
+            ? null
+            : arguments?['status'] as String?,
+      ));
+      return page.items
+          .map((e) => {
+                'id': e.id ?? '',
+                'name': e.name ?? '',
+                'type': e.type ?? '',
+                'status': e.status ?? '',
+                'errorMsg': e.errorMsg ?? '',
+                'currentStep': e.currentStep ?? '',
+                'logFile': e.logFile ?? '',
+                'resourceId': e.resourceId ?? 0,
+                'operationLogId': e.operationLogId ?? 0,
+                'createdAt': e.createdAt ?? '',
+                'endAt': e.endAt ?? '',
+              })
+          .toList();
+    } catch (e) {
+      appLogger.e('Failed to get task logs for native: $e');
+      return [];
+    }
+  }
+
+  /// 任务日志内容。参数：
+  /// `{taskId: String 必填, taskType?, taskOperate?, resourceId?: int, page?, pageSize?}`
+  static Future<dynamic> getTaskLogContent(dynamic arguments) async {
+    try {
+      final taskId = (arguments?['taskId'] as String? ?? '').trim();
+      if (taskId.isEmpty) {
+        return {'lines': <String>[], 'taskStatus': ''};
+      }
+      final response = await LogsService().loadTaskLogContent(
+        taskId: taskId,
+        taskType: arguments?['taskType'] as String?,
+        taskOperate: arguments?['taskOperate'] as String?,
+        resourceId: int.tryParse('${arguments?['resourceId'] ?? ''}'),
+        page: int.tryParse('${arguments?['page'] ?? 1}') ?? 1,
+        pageSize: int.tryParse('${arguments?['pageSize'] ?? 200}') ?? 200,
+      );
+      return {
+        'lines': response.lines,
+        'taskStatus': response.taskStatus ?? '',
+        'totalLines': response.totalLines,
+        'end': response.end,
+      };
+    } catch (e) {
+      appLogger.e('Failed to get task log content for native: $e');
+      return {'lines': <String>[], 'taskStatus': ''};
+    }
+  }
+
   // ── OpenResty（B16）─────────────────────────────────────────────────────
 
   /// OpenResty 快照（状态/模块/HTTPS/配置源文本）。
@@ -566,12 +904,14 @@ class NativeChannelReadHandlers {
       final composes = await service.loadComposes(pageSize: 100);
       return composes
           .map((c) => {
-                'id': c.id,
+                'id': c.id.isEmpty ? c.name : c.id,
                 'name': c.name,
                 'path': c.path ?? '',
                 'version': c.version ?? '',
                 'status': c.status ?? '',
                 'createTime': c.createTime ?? '',
+                'containerCount': c.containerCount ?? 0,
+                'runningCount': c.runningCount ?? 0,
               })
           .toList();
     } catch (e) {
@@ -612,9 +952,14 @@ class NativeChannelReadHandlers {
           .map((c) => {
                 'id': c.id ?? 0,
                 'primaryDomain': c.primaryDomain ?? '',
+                'domains': c.domains ?? const <String>[],
                 'provider': c.provider ?? '',
+                'type': c.type ?? '',
+                'status': c.status ?? '',
+                'autoRenew': c.autoRenew ?? false,
                 'startDate': c.startDate ?? '',
                 'expireDate': c.expireDate ?? '',
+                'createdAt': c.createdAt ?? '',
               })
           .toList();
     } catch (e) {
@@ -722,6 +1067,58 @@ class NativeChannelReadHandlers {
       appLogger.e('Failed to get cronjobs for native: $e');
       return [];
     }
+  }
+
+  /// 计划任务详情。参数：`{id: int}`。POST /cronjobs/load/info。
+  static Future<dynamic> getCronJobInfo(dynamic arguments) async {
+    final id = int.tryParse('${arguments['id'] ?? ''}');
+    if (id == null) {
+      throw ArgumentError('id is required');
+    }
+    final api = await ApiClientManager.instance.getCronjobApi();
+    final response = await api.loadCronjobInfo(id);
+    final info = response.data;
+    if (info == null) {
+      return <String, dynamic>{};
+    }
+    return {
+      'id': info.id,
+      'name': info.name,
+      'type': info.type,
+      'groupID': info.groupID,
+      'spec': info.spec,
+      'specCustom': info.specCustom,
+      'script': info.script,
+      'command': info.command,
+      'scriptMode': info.scriptMode,
+      'status': info.status,
+    };
+  }
+
+  /// 计划任务执行记录。参数：`{id: int, page?: int, pageSize?: int}`。
+  static Future<dynamic> getCronJobRecords(dynamic arguments) async {
+    final id = int.tryParse('${arguments['id'] ?? ''}');
+    if (id == null) {
+      throw ArgumentError('id is required');
+    }
+    final page = int.tryParse('${arguments['page'] ?? 1}') ?? 1;
+    final pageSize = int.tryParse('${arguments['pageSize'] ?? 50}') ?? 50;
+    final result = await CronjobRepository().searchRecords(
+      CronjobRecordQuery(cronjobId: id, page: page, pageSize: pageSize),
+    );
+    return {
+      'total': result.total,
+      'items': result.items
+          .map((record) => {
+                'id': record.id,
+                'taskId': record.taskId,
+                'startTime': record.startTime,
+                'status': record.status,
+                'message': record.message,
+                'file': record.file,
+              })
+          .toList(),
+    };
   }
 
   /// 备份：返回备份记录列表。
@@ -1061,6 +1458,28 @@ class NativeChannelReadHandlers {
     } catch (e) {
       appLogger.e('Failed to get agent accounts for native: $e');
       return <String, dynamic>{};
+    }
+  }
+
+  /// 渠道账号可选 provider 列表。参数：无。GET /ai/accounts/providers。
+  static Future<dynamic> getAgentProviders(dynamic arguments) async {
+    try {
+      final providers = (await (await AIRepository().getApi())
+                  .getAgentProviders())
+              .data ??
+          const <ProviderInfo>[];
+      return providers
+          .map((p) => {
+                'provider': p.provider,
+                'displayName': p.displayName,
+                'baseUrl': p.baseUrl,
+                'defaultApiType': p.defaultApiType,
+                'apiTypes': p.apiTypes,
+              })
+          .toList();
+    } catch (e) {
+      appLogger.e('Failed to get agent providers for native: $e');
+      return [];
     }
   }
 

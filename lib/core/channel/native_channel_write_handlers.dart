@@ -1,3 +1,6 @@
+import 'package:mime/mime.dart';
+import 'package:onepanel_client/core/platform/services/platform_file_service.dart';
+
 import '../../features/ai/ai_repository.dart';
 import '../../api/v2/file_v2.dart';
 import '../../api/v2/website_v2.dart';
@@ -25,7 +28,9 @@ import '../../features/websites/services/website_certificate_service.dart';
 import '../../features/toolbox/services/toolbox_device_service.dart';
 import '../../data/models/app_models.dart';
 import '../../data/models/common_models.dart';
+import '../../data/models/container_models.dart';
 import '../../data/models/file_models.dart';
+import '../../data/models/process_models.dart';
 import '../../features/files/services/file_browser_service.dart';
 import '../../features/firewall/firewall_service.dart';
 import '../../features/server/server_repository.dart';
@@ -39,7 +44,6 @@ import 'package:flutter/foundation.dart';
 import '../../data/models/backup_account_models.dart';
 import '../../data/models/backup_request_models.dart';
 import '../../data/models/database_models.dart';
-import '../../data/models/container_compose_models.dart';
 import '../../data/models/firewall_models.dart';
 import '../../core/services/app_preferences_service.dart';
 import '../../core/theme/ui_render_mode.dart';
@@ -422,6 +426,8 @@ class NativeChannelWriteHandlers {
         if (arguments['keepPath'] != null) 'keepPath': arguments['keepPath'],
         'type': arguments['type'] as String? ?? '',
         'redirect': arguments['redirect'] as String? ?? '',
+        if (arguments['redirectRoot'] != null)
+          'redirectRoot': arguments['redirectRoot'],
         if (arguments['path'] != null) 'path': arguments['path'],
         if (arguments['target'] != null) 'target': arguments['target'],
         if (arguments['domains'] is List)
@@ -582,6 +588,7 @@ class NativeChannelWriteHandlers {
         'username': arguments['username'] as String? ?? '',
         'password': arguments['password'] as String? ?? '',
         'name': arguments['name'] as String? ?? '',
+        'remark': arguments['remark'] as String? ?? '',
       });
       return _ok();
     } catch (e) {
@@ -669,6 +676,286 @@ class NativeChannelWriteHandlers {
     }
   }
 
+  /// 启动容器。参数：`{id: String}`
+  static Future<Map<String, dynamic>> startContainer(dynamic arguments) async {
+    try {
+      final id = arguments['id'] as String;
+      await ContainerService().startContainer(id);
+      return _ok();
+    } catch (e) {
+      appLogger.e('startContainer failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 停止容器。参数：`{id: String}`
+  static Future<Map<String, dynamic>> stopContainer(dynamic arguments) async {
+    try {
+      final id = arguments['id'] as String;
+      await ContainerService().stopContainer(id);
+      return _ok();
+    } catch (e) {
+      appLogger.e('stopContainer failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 新建容器。参数：
+/// `{image: String, name: String, env?: [String], exposedPorts?: [{containerPort, hostPort?, hostIP?, protocol?}],
+///   volumes?: [{sourceDir, containerDir, mode?, type?}], networks?: [String],
+///   restartPolicy?: String, autoRemove?, privileged?, publishAllPorts?, tty?, openStdin?, forcePull?}`
+  static Future<Map<String, dynamic>> createContainer(dynamic arguments) async {
+    try {
+      final image = (arguments['image'] as String? ?? '').trim();
+      final name = (arguments['name'] as String? ?? '').trim();
+      if (image.isEmpty || name.isEmpty) {
+        return {'success': false, 'error': 'image and name are required'};
+      }
+      final taskID = DateTime.now().millisecondsSinceEpoch.toString();
+      final body = <String, dynamic>{
+        'image': image,
+        'name': name,
+        'taskID': taskID,
+      };
+      if (arguments['env'] is List) {
+        body['env'] = (arguments['env'] as List).map((e) => '$e').toList();
+      }
+      if (arguments['exposedPorts'] is List) {
+        body['exposedPorts'] = (arguments['exposedPorts'] as List)
+            .whereType<Map>()
+            .map((e) => e.cast<String, dynamic>())
+            .toList();
+      }
+      if (arguments['volumes'] is List) {
+        body['volumes'] = (arguments['volumes'] as List)
+            .whereType<Map>()
+            .map((e) => e.cast<String, dynamic>())
+            .toList();
+      }
+      if (arguments['networks'] is List &&
+          (arguments['networks'] as List).isNotEmpty) {
+        body['networks'] = (arguments['networks'] as List)
+            .map((e) => e is Map ? {'network': '${e['network'] ?? ''}'} : {'network': '$e'})
+            .toList();
+      } else {
+        // 服务端创建容器要求显式网络，缺省使用 bridge。
+        body['networks'] = [
+          {'network': 'bridge'},
+        ];
+      }
+      if (arguments['cmd'] is List) {
+        body['cmd'] = (arguments['cmd'] as List).map((e) => '$e').toList();
+      }
+      for (final key in <String>[
+        'restartPolicy',
+        'autoRemove',
+        'privileged',
+        'publishAllPorts',
+        'tty',
+        'openStdin',
+        'forcePull',
+        'hostname',
+      ]) {
+        if (arguments[key] != null) {
+          body[key] = arguments[key];
+        }
+      }
+      final client = await ApiClientManager.instance.getCurrentClient();
+      await client.post<Map<String, dynamic>>(
+        ApiConstants.buildApiPath('/containers'),
+        data: body,
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('createContainer failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 构建镜像。参数：
+/// `{name: String, from: 'path'|'edit', dockerfile: String, tags?: [String], args?: [String]}`
+  /// 服务端 dto.ImageBuild 要求 from/name/dockerfile，返回任务编号供任务日志查看。
+  static Future<Map<String, dynamic>> buildContainerImage(
+      dynamic arguments) async {
+    try {
+      final name = (arguments['name'] as String? ?? '').trim();
+      final from = (arguments['from'] as String? ?? 'path').trim();
+      final dockerfile = arguments['dockerfile'] as String? ?? '';
+      if (name.isEmpty || from.isEmpty || dockerfile.trim().isEmpty) {
+        return {
+          'success': false,
+          'error': 'name, from and dockerfile are required',
+        };
+      }
+      final taskID = DateTime.now().millisecondsSinceEpoch.toString();
+      final body = <String, dynamic>{
+        'from': from,
+        'name': name,
+        'dockerfile': dockerfile,
+        'taskID': taskID,
+      };
+      if (arguments['tags'] is List) {
+        body['tags'] = (arguments['tags'] as List).map((e) => '$e').toList();
+      }
+      if (arguments['args'] is List) {
+        body['args'] = (arguments['args'] as List).map((e) => '$e').toList();
+      }
+      final client = await ApiClientManager.instance.getCurrentClient();
+      await client.post<Map<String, dynamic>>(
+        ApiConstants.buildApiPath('/containers/image/build'),
+        data: body,
+      );
+      return {'success': true, 'taskId': taskID};
+    } catch (e) {
+      appLogger.e('buildContainerImage failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 推送镜像到仓库。参数：`{image: String, name: String, repository: String}`。
+  /// 服务端 dto.ImagePush 以 tagName 作为本地源镜像引用，以 name 作为仓库内目标名。
+  static Future<Map<String, dynamic>> pushContainerImage(
+      dynamic arguments) async {
+    try {
+      final image = (arguments['image'] as String? ?? '').trim();
+      final name = (arguments['name'] as String? ?? '').trim();
+      final repository = (arguments['repository'] as String? ?? '').trim();
+      if (image.isEmpty || name.isEmpty || repository.isEmpty) {
+        return {
+          'success': false,
+          'error': 'image, name and repository are required',
+        };
+      }
+      final api = await ApiClientManager.instance.getContainerApi();
+      final repos = (await api.getRepos()).data ?? const <ContainerRepo>[];
+      final repo = repos.firstWhere(
+        (item) => '${item.id}' == repository || item.name == repository,
+        orElse: () => throw StateError('repository not found: $repository'),
+      );
+      final taskID = DateTime.now().millisecondsSinceEpoch.toString();
+      final client = await ApiClientManager.instance.getCurrentClient();
+      await client.post<Map<String, dynamic>>(
+        ApiConstants.buildApiPath('/containers/image/push'),
+        data: {
+          'name': name,
+          'repoID': repo.id,
+          'tagName': image,
+          'taskID': taskID,
+        },
+      );
+      return {'success': true, 'taskId': taskID};
+    } catch (e) {
+      appLogger.e('pushContainerImage failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 新建镜像仓库。参数：`{name, downloadUrl, username?, password?}`
+  static Future<Map<String, dynamic>> createContainerRepo(
+      dynamic arguments) async {
+    try {
+      final name = (arguments['name'] as String? ?? '').trim();
+      final downloadUrl = (arguments['downloadUrl'] as String? ?? '').trim();
+      if (name.isEmpty || downloadUrl.isEmpty) {
+        return {'success': false, 'error': 'name and downloadUrl are required'};
+      }
+      await (await ApiClientManager.instance.getContainerApi()).createRepo(
+        ContainerRepoOperate(
+          name: name,
+          downloadUrl: downloadUrl,
+          username: arguments['username'] as String?,
+          password: arguments['password'] as String?,
+        ),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('createContainerRepo failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 删除镜像仓库。参数：`{id: int}`。
+  static Future<Map<String, dynamic>> deleteContainerRepo(
+      dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments['id'] ?? ''}');
+      if (id == null) {
+        return {'success': false, 'error': 'id is required'};
+      }
+      final client = await ApiClientManager.instance.getCurrentClient();
+      await client.post<Map<String, dynamic>>(
+        ApiConstants.buildApiPath('/containers/repo/del'),
+        data: {'id': id},
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('deleteContainerRepo failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 新建编排模版。参数：`{name, description?, content}`。
+  static Future<Map<String, dynamic>> createContainerTemplate(
+      dynamic arguments) async {
+    try {
+      final name = (arguments['name'] as String? ?? '').trim();
+      final content = arguments['content'] as String? ?? '';
+      if (name.isEmpty || content.trim().isEmpty) {
+        return {'success': false, 'error': 'name and content are required'};
+      }
+      await (await ApiClientManager.instance.getContainerApi()).createTemplate(
+        ContainerTemplateOperate(
+          name: name,
+          description: arguments['description'] as String? ?? '',
+          content: content,
+        ),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('createContainerTemplate failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 删除编排模版。参数：`{id: int}`。
+  static Future<Map<String, dynamic>> deleteContainerTemplate(
+      dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments['id'] ?? ''}');
+      if (id == null) {
+        return {'success': false, 'error': 'id is required'};
+      }
+      final client = await ApiClientManager.instance.getCurrentClient();
+      await client.post<Map<String, dynamic>>(
+        ApiConstants.buildApiPath('/containers/template/del'),
+        data: {
+          'ids': [id],
+        },
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('deleteContainerTemplate failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 停止监听端口进程。参数：`{pid: int}`。POST /process/stop。
+  static Future<Map<String, dynamic>> stopListeningProcess(
+      dynamic arguments) async {
+    try {
+      final pid = int.tryParse('${arguments['pid'] ?? ''}');
+      if (pid == null) {
+        return {'success': false, 'error': 'pid is required'};
+      }
+      await (await ApiClientManager.instance.getProcessApi())
+          .stopProcess(ProcessStopRequest(pid: pid));
+      return _ok();
+    } catch (e) {
+      appLogger.e('stopListeningProcess failed: $e');
+      return _err(e);
+    }
+  }
+
   /// 删除容器。参数：`{id: String}`
   static Future<Map<String, dynamic>> deleteContainer(
       dynamic arguments) async {
@@ -679,6 +966,150 @@ class NativeChannelWriteHandlers {
       return _ok();
     } catch (e) {
       appLogger.e('deleteContainer failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 删除镜像。参数：`{id: String}`。上游按 `names` 数组 + taskID 定位。
+  static Future<Map<String, dynamic>> deleteContainerImage(
+      dynamic arguments) async {
+    try {
+      final id = (arguments['id'] as String? ?? '').trim();
+      if (id.isEmpty) {
+        return {'success': false, 'error': 'id is required'};
+      }
+      final client = await ApiClientManager.instance.getCurrentClient();
+      await client.post<Map<String, dynamic>>(
+        ApiConstants.buildApiPath('/containers/image/remove'),
+        data: {
+          'names': [id],
+          'taskID': DateTime.now().millisecondsSinceEpoch.toString(),
+        },
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('deleteContainerImage failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 拉取镜像。参数：`{image: String, tag?: String}`。
+  /// POST /containers/image/pull。
+  static Future<Map<String, dynamic>> pullContainerImage(
+      dynamic arguments) async {
+    try {
+      final image = (arguments['image'] as String? ?? '').trim();
+      if (image.isEmpty) {
+        return {'success': false, 'error': 'image is required'};
+      }
+      await OrchestrationService().pullImage(
+        ImagePull(
+          image: image,
+          tag: (arguments['tag'] as String? ?? '').trim().isEmpty
+              ? null
+              : (arguments['tag'] as String).trim(),
+        ),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('pullContainerImage failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 删除网络。参数：`{name: String}`。
+  static Future<Map<String, dynamic>> deleteContainerNetwork(
+      dynamic arguments) async {
+    try {
+      final name = (arguments['name'] as String? ?? '').trim();
+      if (name.isEmpty) {
+        return {'success': false, 'error': 'name is required'};
+      }
+      final client = await ApiClientManager.instance.getCurrentClient();
+      await client.post<Map<String, dynamic>>(
+        ApiConstants.buildApiPath('/containers/network/del'),
+        data: {
+          'names': [name],
+          'taskID': DateTime.now().millisecondsSinceEpoch.toString(),
+        },
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('deleteContainerNetwork failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 创建网络。参数：`{name: String, driver?: String, subnet?: String, gateway?: String}`。
+  static Future<Map<String, dynamic>> createContainerNetwork(
+      dynamic arguments) async {
+    try {
+      final name = (arguments['name'] as String? ?? '').trim();
+      if (name.isEmpty) {
+        return {'success': false, 'error': 'name is required'};
+      }
+      final payload = <String, dynamic>{
+        'name': name,
+        'driver': arguments['driver'] as String? ?? 'bridge',
+      };
+      final subnet = (arguments['subnet'] as String? ?? '').trim();
+      if (subnet.isNotEmpty) payload['subnet'] = subnet;
+      final gateway = (arguments['gateway'] as String? ?? '').trim();
+      if (gateway.isNotEmpty) payload['gateway'] = gateway;
+      final client = await ApiClientManager.instance.getCurrentClient();
+      await client.post<Map<String, dynamic>>(
+        ApiConstants.buildApiPath('/containers/network'),
+        data: payload,
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('createContainerNetwork failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 删除存储卷。参数：`{name: String}`。
+  static Future<Map<String, dynamic>> deleteContainerVolume(
+      dynamic arguments) async {
+    try {
+      final name = (arguments['name'] as String? ?? '').trim();
+      if (name.isEmpty) {
+        return {'success': false, 'error': 'name is required'};
+      }
+      final client = await ApiClientManager.instance.getCurrentClient();
+      await client.post<Map<String, dynamic>>(
+        ApiConstants.buildApiPath('/containers/volume/del'),
+        data: {
+          'names': [name],
+          'taskID': DateTime.now().millisecondsSinceEpoch.toString(),
+        },
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('deleteContainerVolume failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 创建存储卷。参数：`{name: String, driver?: String}`。
+  static Future<Map<String, dynamic>> createContainerVolume(
+      dynamic arguments) async {
+    try {
+      final name = (arguments['name'] as String? ?? '').trim();
+      if (name.isEmpty) {
+        return {'success': false, 'error': 'name is required'};
+      }
+      final client = await ApiClientManager.instance.getCurrentClient();
+      await client.post<Map<String, dynamic>>(
+        ApiConstants.buildApiPath('/containers/volume'),
+        data: {
+          'name': name,
+          'driver': arguments['driver'] as String? ?? 'local',
+        },
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('createContainerVolume failed: $e');
       return _err(e);
     }
   }
@@ -707,6 +1138,19 @@ class NativeChannelWriteHandlers {
       return _ok();
     } catch (e) {
       appLogger.e('stopApp failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 重启应用。参数：`{installId: int}`
+  static Future<Map<String, dynamic>> restartApp(dynamic arguments) async {
+    try {
+      final installId = _toInt(arguments['installId']);
+      final service = AppService();
+      await service.operateApp(installId, 'restart');
+      return _ok();
+    } catch (e) {
+      appLogger.e('restartApp failed: $e');
       return _err(e);
     }
   }
@@ -875,6 +1319,62 @@ class NativeChannelWriteHandlers {
   // 契约单一事实源：docs/development/modules/b2_files_channel_contract.md。
   // 写语义：成功 `{success: true}`，失败 `{success: false, error}`；
   // 必填参数缺失时快速失败，不发出请求。
+
+  /// 从设备选择文件并上传到服务器目录。参数：`{dir: String 目标目录必填}`
+  static Future<Map<String, dynamic>> uploadFilesFromDevice(
+      dynamic arguments) async {
+    try {
+      final dir = (arguments['dir'] as String? ?? '').trim();
+      if (dir.isEmpty) {
+        return {'success': false, 'error': 'dir is required'};
+      }
+      final paths = await PlatformFileService().pickFiles();
+      if (paths.isEmpty) {
+        return {'success': false, 'cancelled': true};
+      }
+      final service = FileBrowserService();
+      for (final localPath in paths) {
+        await service.uploadLocalFile(dir: dir, localPath: localPath);
+      }
+      return {'success': true, 'count': paths.length};
+    } catch (e) {
+      appLogger.e('uploadFilesFromDevice failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 下载服务器文件到设备。参数：`{path: String 文件全路径必填}`
+  static Future<Map<String, dynamic>> downloadFileToDevice(
+      dynamic arguments) async {
+    try {
+      final path = (arguments['path'] as String? ?? '').trim();
+      if (path.isEmpty) {
+        return {'success': false, 'error': 'path is required'};
+      }
+      final bytes = await FileBrowserService().downloadFile(path);
+      if (bytes.isEmpty) {
+        return {'success': false, 'error': 'empty file content'};
+      }
+      final fileName = path.split('/').last;
+      final outcome = await PlatformFileService().saveBytesStructured(
+        fileName: fileName,
+        bytes: Uint8List.fromList(bytes),
+        mimeType: lookupMimeType(fileName),
+      );
+      if (outcome.isCancelled) {
+        return {'success': false, 'cancelled': true};
+      }
+      return {
+        'success': true,
+        'uri': outcome.uri,
+        'fileName': outcome.displayName,
+        'privateFallbackUsed': outcome.privateFallbackUsed,
+      };
+    } catch (e) {
+      appLogger.e('downloadFileToDevice failed: $e');
+      return _err(e);
+    }
+  }
 
   /// 创建空文件（isDir=false 固定）。参数：`{path: String 全路径必填}`。
   /// POST /files。
@@ -1519,7 +2019,11 @@ class NativeChannelWriteHandlers {
         case 'restart':
           await service.restartCompose(compose);
         case 'delete':
-          await service.deleteCompose(compose);
+          await service.deleteCompose(
+            compose,
+            force: arguments['force'] == true,
+            withFile: arguments['withFile'] == true,
+          );
       }
       return _ok();
     } catch (e) {
@@ -1724,6 +2228,22 @@ class NativeChannelWriteHandlers {
       return _ok();
     } catch (e) {
       appLogger.e('applyCertificate failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 删除证书。参数：`{id: int 必填}`
+  static Future<Map<String, dynamic>> deleteWebsiteCertificate(
+      dynamic arguments) async {
+    try {
+      final id = int.tryParse('${arguments['id'] ?? ''}');
+      if (id == null) {
+        return {'success': false, 'error': 'id is required'};
+      }
+      await WebsiteCertificateService().deleteCertificate(id);
+      return _ok();
+    } catch (e) {
+      appLogger.e('deleteWebsiteCertificate failed: $e');
       return _err(e);
     }
   }

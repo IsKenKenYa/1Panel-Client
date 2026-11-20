@@ -69,6 +69,7 @@ class NativeTerminalBridge {
     }
     final sessionId =
         'term-${DateTime.now().microsecondsSinceEpoch}-$containerName';
+    // 会话标识用容器名：1Panel 的容器操作与终端都以容器名为定位键。
     final intent = TerminalLaunchIntent.containerExec(
       containerId: containerName,
       containerName: containerName,

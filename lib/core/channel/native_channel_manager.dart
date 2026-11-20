@@ -59,6 +59,12 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelReadHandlers.getAppVersions(arguments);
       case 'getAppInstallForm':
         return NativeChannelReadHandlers.getAppInstallForm(arguments);
+      case 'getAppInstallInfo':
+        return NativeChannelReadHandlers.getAppInstallInfo(arguments);
+      case 'getAppInstallParams':
+        return NativeChannelReadHandlers.getAppInstallParams(arguments);
+      case 'getAppDetailByKey':
+        return NativeChannelReadHandlers.getAppDetailByKey(arguments);
       case 'getWebsites':
         return NativeChannelReadHandlers.getWebsites(arguments);
       case 'getWebsiteDetail':
@@ -71,6 +77,24 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelReadHandlers.getContainerLogs(arguments);
       case 'getContainerInspect':
         return NativeChannelReadHandlers.getContainerInspect(arguments);
+      case 'getContainerImages':
+        return NativeChannelReadHandlers.getContainerImages(arguments);
+      case 'getContainerNetworks':
+        return NativeChannelReadHandlers.getContainerNetworks(arguments);
+      case 'getContainerVolumes':
+        return NativeChannelReadHandlers.getContainerVolumes(arguments);
+      case 'getContainerRepos':
+        return NativeChannelReadHandlers.getContainerRepos(arguments);
+      case 'getContainerTemplates':
+        return NativeChannelReadHandlers.getContainerTemplates(arguments);
+      case 'getContainerFiles':
+        return NativeChannelReadHandlers.getContainerFiles(arguments);
+      case 'getContainerFileContent':
+        return NativeChannelReadHandlers.getContainerFileContent(arguments);
+      case 'getSystemLogFiles':
+        return NativeChannelReadHandlers.getSystemLogFiles(arguments);
+      case 'getListeningProcesses':
+        return NativeChannelReadHandlers.getListeningProcesses(arguments);
       case 'getSettings':
         return NativeChannelReadHandlers.getSettings(arguments);
       case 'getTranslations':
@@ -105,6 +129,10 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelReadHandlers.getLoginLogs(arguments);
       case 'getSystemLogContent':
         return NativeChannelReadHandlers.getSystemLogContent(arguments);
+      case 'getTaskLogs':
+        return NativeChannelReadHandlers.getTaskLogs(arguments);
+      case 'getTaskLogContent':
+        return NativeChannelReadHandlers.getTaskLogContent(arguments);
       case 'getOpenrestySnapshot':
         return NativeChannelReadHandlers.getOpenrestySnapshot(arguments);
       case 'getSshInfo':
@@ -121,6 +149,10 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelReadHandlers.getFirewallRules(arguments);
       case 'getCronJobs':
         return NativeChannelReadHandlers.getCronJobs(arguments);
+      case 'getCronJobInfo':
+        return NativeChannelReadHandlers.getCronJobInfo(arguments);
+      case 'getCronJobRecords':
+        return NativeChannelReadHandlers.getCronJobRecords(arguments);
       case 'getBackups':
         return NativeChannelReadHandlers.getBackups(arguments);
       case 'getAIModels':
@@ -161,6 +193,8 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelReadHandlers.searchGpuHistory(arguments);
       case 'getAgentAccounts':
         return NativeChannelReadHandlers.getAgentAccounts(arguments);
+      case 'getAgentProviders':
+        return NativeChannelReadHandlers.getAgentProviders(arguments);
       case 'getAgentAccountModels':
         return NativeChannelReadHandlers.getAgentAccountModels(arguments);
       case 'getMcpServers':
@@ -232,14 +266,48 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.toggleContainerState(arguments);
       case 'restartContainer':
         return NativeChannelWriteHandlers.restartContainer(arguments);
+      case 'startContainer':
+        return NativeChannelWriteHandlers.startContainer(arguments);
+      case 'stopContainer':
+        return NativeChannelWriteHandlers.stopContainer(arguments);
       case 'deleteContainer':
         return NativeChannelWriteHandlers.deleteContainer(arguments);
+      case 'stopListeningProcess':
+        return NativeChannelWriteHandlers.stopListeningProcess(arguments);
+      case 'createContainer':
+        return NativeChannelWriteHandlers.createContainer(arguments);
+      case 'deleteContainerImage':
+        return NativeChannelWriteHandlers.deleteContainerImage(arguments);
+      case 'deleteContainerNetwork':
+        return NativeChannelWriteHandlers.deleteContainerNetwork(arguments);
+      case 'createContainerNetwork':
+        return NativeChannelWriteHandlers.createContainerNetwork(arguments);
+      case 'deleteContainerVolume':
+        return NativeChannelWriteHandlers.deleteContainerVolume(arguments);
+      case 'createContainerVolume':
+        return NativeChannelWriteHandlers.createContainerVolume(arguments);
+      case 'pullContainerImage':
+        return NativeChannelWriteHandlers.pullContainerImage(arguments);
+      case 'buildContainerImage':
+        return NativeChannelWriteHandlers.buildContainerImage(arguments);
+      case 'pushContainerImage':
+        return NativeChannelWriteHandlers.pushContainerImage(arguments);
+      case 'createContainerRepo':
+        return NativeChannelWriteHandlers.createContainerRepo(arguments);
+      case 'deleteContainerRepo':
+        return NativeChannelWriteHandlers.deleteContainerRepo(arguments);
+      case 'createContainerTemplate':
+        return NativeChannelWriteHandlers.createContainerTemplate(arguments);
+      case 'deleteContainerTemplate':
+        return NativeChannelWriteHandlers.deleteContainerTemplate(arguments);
 
       // ── Write: 应用 ─────────────────────────────────────────────────────
       case 'startApp':
         return NativeChannelWriteHandlers.startApp(arguments);
       case 'stopApp':
         return NativeChannelWriteHandlers.stopApp(arguments);
+      case 'restartApp':
+        return NativeChannelWriteHandlers.restartApp(arguments);
       case 'uninstallApp':
         return NativeChannelWriteHandlers.uninstallApp(arguments);
       case 'updateApp':
@@ -260,6 +328,10 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.renameFileHandler(arguments);
       case 'moveFilesHandler':
         return NativeChannelWriteHandlers.moveFilesHandler(arguments);
+      case 'uploadFilesFromDevice':
+        return NativeChannelWriteHandlers.uploadFilesFromDevice(arguments);
+      case 'downloadFileToDevice':
+        return NativeChannelWriteHandlers.downloadFileToDevice(arguments);
       case 'compressFilesHandler':
         return NativeChannelWriteHandlers.compressFilesHandler(arguments);
       case 'decompressFileHandler':
@@ -290,6 +362,8 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.uploadCertificate(arguments);
       case 'applyCertificate':
         return NativeChannelWriteHandlers.applyCertificate(arguments);
+      case 'deleteWebsiteCertificate':
+        return NativeChannelWriteHandlers.deleteWebsiteCertificate(arguments);
       case 'deleteScripts':
         return NativeChannelWriteHandlers.deleteScripts(arguments);
       case 'composeOperate':
