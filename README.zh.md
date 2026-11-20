@@ -1,19 +1,22 @@
 <p align="center">
-  <img src="assets/branding/app_icon_master.png" alt="1Panel Client Logo" width="120" />
+  <img src="assets/branding/app_icon_master.png" alt="KenPanel Logo" width="120" />
 </p>
 
-<h1 align="center">1Panel Client</h1>
+<h1 align="center">KenPanel</h1>
 
 <p align="center">
   <a href="https://github.com/IsKenKenYa/1Panel-Client/releases"><img src="https://img.shields.io/badge/版本-0.6.0%2B1-blue.svg" alt="版本" /></a>
-  <a href="https://github.com/IsKenKenYa/1Panel-Client/blob/master/LICENSE"><img src="https://img.shields.io/badge/许可-GPL--3.0-green.svg" alt="许可" /></a>
+  <a href="https://github.com/IsKenKenYa/1Panel-Client/blob/dev-v2/LICENSE"><img src="https://img.shields.io/badge/许可-GPL--3.0-green.svg" alt="许可" /></a>
 </p>
 
-<p align="center">用于连接和管理一台或多台 1Panel 服务器的跨平台客户端。</p>
+<p align="center">用于连接和管理一台或多台 1Panel 服务器的第三方跨平台客户端。</p>
 
 <p align="center">
   <strong>中文</strong> | <a href="README.md">English</a>
 </p>
+
+> KenPanel 是独立的第三方客户端，不是 1Panel 官方产品，不隶属于、不代表杭州飞致云信息科技有限公司，
+> 也未获得其认可或赞助。「1Panel」仅用于说明与 1Panel 服务器软件的兼容性。
 
 ---
 
@@ -68,11 +71,11 @@
 
 ## 第一次使用（重要：开启 API 配置）
 
-在使用 1Panel Client 之前，您**必须**在 1Panel 服务器面板中开启 API 访问权限：
+在使用 KenPanel 之前，您**必须**在 1Panel 服务器面板中开启 API 访问权限：
 
 1. **开启 API 及获取密钥**：登录 1Panel Web 面板。进入左侧菜单 **面板设置** -> **API 接口**。打开“API 接口”开关并确认，复制下方的 **API Key**。
 2. **配置 IP 白名单**：在同一个 API 接口设置页面，必须配置“允许的 IP”。如果您使用手机等移动网络（IP 会频繁变动），请填写 `0.0.0.0/0` 以允许所有 IP 访问。如果您有固定公网 IP 或 VPN，请填写具体的固定 IP 地址。
-3. **安装客户端**：在您的设备上安装 1Panel Client。
+3. **安装客户端**：在您的设备上安装 KenPanel。
 4. **添加服务器**：打开客户端，点击添加服务器。输入您的 1Panel 服务器地址（例如 `https://panel.example.com:port`）以及您刚才复制的 **API Key**。
 5. **连接**：测试连接并保存。现在您可以直接在客户端内管理服务器了！
 

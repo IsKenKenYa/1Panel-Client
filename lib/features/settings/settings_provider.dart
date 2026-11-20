@@ -364,7 +364,7 @@ class SettingsProvider extends ChangeNotifier with SafeChangeNotifier {
   Future<MfaOtp?> loadMfaOtp() async {
     try {
       final mfaInfo = await _service.loadMfaInfo(const MfaLoadRequest(
-        title: '1Panel Client',
+        title: 'KenPanel',
         interval: 30,
       ));
       _data = _data.copyWith(mfaInfo: mfaInfo);

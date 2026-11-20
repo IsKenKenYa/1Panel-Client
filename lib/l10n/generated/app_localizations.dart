@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
-  /// **'1Panel Client'**
+  /// **'KenPanel'**
   String get appName;
 
   /// No description provided for @commonLoading.
@@ -4811,7 +4811,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingDesc4.
   ///
   /// In en, this message translates to:
-  /// **'Prepare your server address and API Key, then connect your first machine to start using 1Panel Client.'**
+  /// **'Prepare your server address and API Key, then connect your first machine to start using KenPanel.'**
   String get onboardingDesc4;
 
   /// No description provided for @coachServerAddTitle.
@@ -4841,7 +4841,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutPageTitle.
   ///
   /// In en, this message translates to:
-  /// **'About 1Panel Client'**
+  /// **'About KenPanel'**
   String get aboutPageTitle;
 
   /// No description provided for @aboutBuildSectionTitle.
@@ -4907,7 +4907,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutProjectSummary.
   ///
   /// In en, this message translates to:
-  /// **'1Panel Client is a mobile app for managing 1Panel servers across multiple environments.'**
+  /// **'KenPanel is a third-party client for managing 1Panel servers across multiple environments.'**
   String get aboutProjectSummary;
 
   /// No description provided for @aboutProjectFeatureList.
@@ -5465,7 +5465,7 @@ abstract class AppLocalizations {
   /// No description provided for @appLockUnlockReasonAppOpen.
   ///
   /// In en, this message translates to:
-  /// **'Verify your identity to open 1Panel Client'**
+  /// **'Verify your identity to open KenPanel'**
   String get appLockUnlockReasonAppOpen;
 
   /// No description provided for @appLockUnlockAction.
@@ -5765,7 +5765,7 @@ abstract class AppLocalizations {
   /// No description provided for @systemSettingsFileExportSubDirHelper.
   ///
   /// In en, this message translates to:
-  /// **'Used when the picker is off. Leave empty to skip the parent folder. Default: 1Panel-Client'**
+  /// **'Used when the picker is off. Leave empty to skip the parent folder. Default: KenPanel'**
   String get systemSettingsFileExportSubDirHelper;
 
   /// No description provided for @fileSaveSuccessPicker.
@@ -17352,7 +17352,7 @@ abstract class AppLocalizations {
   /// No description provided for @webVaultTitle.
   ///
   /// In en, this message translates to:
-  /// **'1Panel Client in your browser'**
+  /// **'KenPanel in your browser'**
   String get webVaultTitle;
 
   /// No description provided for @webVaultDescription.

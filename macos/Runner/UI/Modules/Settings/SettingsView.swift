@@ -233,7 +233,7 @@ struct SettingsView: View {
                     icon: "info.circle",
                     iconColor: .blue,
                     title: translations.get("settingsAbout", fallback: "About"),
-                    subtitle: "1Panel Client v\(viewModel.appVersion)",
+                    subtitle: "KenPanel v\(viewModel.appVersion)",
                     trailingView: AnyView(
                         Image(systemName: "chevron.right").foregroundColor(.secondary).font(.caption)
                     )
@@ -405,7 +405,7 @@ struct SettingsAboutSheet: View {
                         Image(systemName: "server.rack")
                             .font(.system(size: 48))
                             .foregroundColor(.accentColor)
-                        Text("1Panel Client")
+                        Text("KenPanel")
                             .font(.title.bold())
                         Text("v\(viewModel.appVersion) (\(viewModel.buildNumber))")
                             .font(.subheadline)
@@ -450,7 +450,7 @@ struct SettingsAboutSheet: View {
                         .buttonStyle(.plain)
                     }
 
-                    Text("1Panel Client is open source under GPL-3.0")
+                    Text("KenPanel is open source under GPL-3.0")
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)

@@ -13,9 +13,9 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleDisplayName</key>
-	<string>1Panel Client</string>
+	<string>KenPanel</string>
 	<key>CFBundleName</key>
-	<string>1Panel Client</string>
+	<string>KenPanel</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

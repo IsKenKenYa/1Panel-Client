@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Title="1Panel Client">
+    Title="KenPanel">
 
     <!-- Window-level shortcuts: F5 refreshes the hosted page, Ctrl+1..8 selects the Nth nav item. -->
     <Grid>
@@ -29,7 +29,7 @@
 
         <!-- Title bar drawn into the client area; system caption buttons overlay its right edge. -->
         <Grid x:Name="AppTitleBar" Background="Transparent">
-            <TextBlock Text="1Panel Client"
+            <TextBlock Text="KenPanel"
                        Style="{ThemeResource CaptionTextBlockStyle}"
                        VerticalAlignment="Center"
                        Margin="16,0,0,0" />
@@ -198,7 +198,7 @@
             </NavigationView.FooterMenuItems>
             <NavigationView.PaneFooter>
                 <StackPanel Margin="16,4,8,12" Spacing="2">
-                    <TextBlock Text="1Panel Client"
+                    <TextBlock Text="KenPanel"
                                Style="{ThemeResource BodyStrongTextBlockStyle}"
                                TextTrimming="CharacterEllipsis" />
                     <TextBlock Text="WinUI3 Native"

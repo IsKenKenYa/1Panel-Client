@@ -15,7 +15,7 @@ class BrowserPasswordAutofill {
           ..type = 'text'
           ..name = 'username'
           ..autocomplete = 'username'
-          ..value = '1Panel Client'
+          ..value = 'KenPanel'
           ..readOnly = true
           ..tabIndex = -1;
         account.style

@@ -14,9 +14,9 @@
     <AssemblyName>OnePanelNativeHost</AssemblyName>
     <ApplicationIcon>..\..\resources\app_icon.ico</ApplicationIcon>
     <!-- 与 Flutter runner 的 VERSIONINFO 一致：path_provider 按此派生
-         %APPDATA%\IsKenKenYa\1Panel Client，保证双进程共享同一数据目录。 -->
+         %APPDATA%\IsKenKenYa\KenPanel，保证双进程共享同一数据目录。 -->
     <Company>IsKenKenYa</Company>
-    <Product>1Panel Client</Product>
+    <Product>KenPanel</Product>
   </PropertyGroup>
 
   <ItemGroup>

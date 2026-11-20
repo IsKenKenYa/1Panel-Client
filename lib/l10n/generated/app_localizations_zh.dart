@@ -9,7 +9,7 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
-  String get appName => '1Panel Client';
+  String get appName => 'KenPanel';
 
   @override
   String get commonLoading => '加载中...';
@@ -2451,7 +2451,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboardingTitle4 => '先连接第一台服务器';
 
   @override
-  String get onboardingDesc4 => '准备好服务器地址和 API Key，连接后就可以开始使用 1Panel Client。';
+  String get onboardingDesc4 => '准备好服务器地址和 API Key，连接后就可以开始使用 KenPanel。';
 
   @override
   String get coachServerAddTitle => '先添加第一台服务器';
@@ -2466,7 +2466,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get coachServerCardDesc => '添加完成后，点击服务器卡片查看详情，并进入文件、容器、网站等功能。';
 
   @override
-  String get aboutPageTitle => '关于 1Panel Client';
+  String get aboutPageTitle => '关于 KenPanel';
 
   @override
   String get aboutBuildSectionTitle => '版本信息';
@@ -2500,7 +2500,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get aboutProjectSummary =>
-      '1Panel Client 是用于管理 1Panel 服务器的移动客户端，支持多环境统一管理。';
+      'KenPanel 是用于管理 1Panel 服务器的第三方客户端，支持多环境统一管理。';
 
   @override
   String get aboutProjectFeatureList => '核心能力：多服务器管理、文件与网站操作、终端访问、运行状态监控。';
@@ -2509,7 +2509,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutFeedbackAction => '打开 GitHub Issues';
 
   @override
-  String get aboutFeedbackHint => '欢迎反馈 bug、交互问题和建议，帮助我们继续打磨 1Panel Client。';
+  String get aboutFeedbackHint => '欢迎反馈 bug、交互问题和建议，帮助我们继续打磨 KenPanel。';
 
   @override
   String get aboutReleaseNotesSectionTitle => '版本更新';
@@ -2800,7 +2800,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appLockUnlockReasonDisable => '验证身份以关闭应用锁';
 
   @override
-  String get appLockUnlockReasonAppOpen => '请验证身份以打开 1Panel Client';
+  String get appLockUnlockReasonAppOpen => '请验证身份以打开 KenPanel';
 
   @override
   String get appLockUnlockAction => '解锁应用';
@@ -2967,7 +2967,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get systemSettingsFileExportSubDirHelper =>
-      '关闭选择器时使用，留空则直接保存到下载目录。默认 1Panel-Client';
+      '关闭选择器时使用，留空则直接保存到下载目录。默认 KenPanel';
 
   @override
   String fileSaveSuccessPicker(String displayName) {
@@ -8963,7 +8963,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get commonBack => '返回';
 
   @override
-  String get webVaultTitle => '浏览器中的 1Panel Client';
+  String get webVaultTitle => '浏览器中的 KenPanel';
 
   @override
   String get webVaultDescription =>

@@ -76,7 +76,7 @@ final class MacOSAppLockController: ObservableObject {
         let appGate = isLocked
         authenticate(
             reasonKey: appGate ? "appLockUnlockReasonAppOpen" : "appLockLockOnProtectedModule",
-            fallback: appGate ? "Verify your identity to open 1Panel Client" : "Verify your identity to open this module"
+            fallback: appGate ? "Verify your identity to open KenPanel" : "Verify your identity to open this module"
         ) { [weak self] in
             self?.sessionUnlocked = true
         }
@@ -144,7 +144,7 @@ struct AppLockGateView: View {
                 .accessibilityAddTraits(.isHeader)
             if moduleId == nil {
                 Text(translations.get("appLockUnlockReasonAppOpen",
-                                      fallback: "Verify your identity to open 1Panel Client"))
+                                      fallback: "Verify your identity to open KenPanel"))
                     .foregroundStyle(.secondary)
             } else {
                 Text(translations.get("appLockLockOnProtectedModule",

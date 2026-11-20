@@ -37,7 +37,7 @@ class LogExportService {
       final suffix = format == LogFormat.aiAgent ? '_ai' : '';
       final fileName = 'app_logs_$stamp$suffix.txt';
       final header = '''
-# 1Panel Client Debug Logs
+# KenPanel Debug Logs
 exported_at: ${now.toIso8601String()}
 app_name: ${packageInfo.appName}
 package_name: ${packageInfo.packageName}

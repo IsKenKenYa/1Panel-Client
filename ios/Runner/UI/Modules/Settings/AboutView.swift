@@ -48,7 +48,7 @@ struct AboutView: View {
 
             Section(translations.get("aboutProjectSectionTitle", fallback: "About")) {
                 Text(translations.get("aboutProjectSummary",
-                                      fallback: "1Panel Client is a mobile client for managing 1Panel servers."))
+                                      fallback: "KenPanel is a third-party client for managing 1Panel servers."))
                     .font(.footnote)
                     .foregroundColor(.secondary)
             }

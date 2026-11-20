@@ -2,15 +2,15 @@
   "string": [
     {
       "name": "module_desc",
-      "value": "1Panel 客户端模块"
+      "value": "KenPanel 模块"
     },
     {
       "name": "EntryAbility_desc",
-      "value": "1Panel 客户端 - 服务器管理"
+      "value": "KenPanel - 服务器管理"
     },
     {
       "name": "EntryAbility_label",
-      "value": "1Panel 客户端"
+      "value": "KenPanel"
     },
     {
       "name": "permission_write_imagevideo_reason",

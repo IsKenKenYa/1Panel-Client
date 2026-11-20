@@ -25,7 +25,7 @@ void main() {
       expect(password.value, 'a');
       final account = form.querySelector('input[autocomplete="username"]')
           as web.HTMLInputElement;
-      expect(account.value, '1Panel Client');
+      expect(account.value, 'KenPanel');
     }).toJS);
     try {
       BrowserPasswordAutofill.commit();

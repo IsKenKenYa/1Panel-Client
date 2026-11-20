@@ -12,7 +12,7 @@ import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 void main() {
   setUp(() {
     PackageInfo.setMockInitialValues(
-      appName: '1Panel Client',
+      appName: 'KenPanel',
       packageName: 'com.iskenkenya.onepanel',
       version: '0.5.0-alpha.1',
       buildNumber: '42',
@@ -49,7 +49,7 @@ void main() {
     await tester.tap(find.text('About'));
     await tester.pumpAndSettle();
 
-    expect(find.text('About 1Panel Client'), findsOneWidget);
+    expect(find.text('About KenPanel'), findsOneWidget);
   });
 
   testWidgets('settings page keeps tablet layout bounded', (tester) async {

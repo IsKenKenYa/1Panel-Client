@@ -59,11 +59,11 @@ void main() {
       SharedPreferences.setMockInitialValues(<String, Object>{});
     });
 
-    test('default sub directory is "1Panel-Client" when unset', () async {
+    test('default sub directory is "KenPanel" when unset', () async {
       SharedPreferences.setMockInitialValues(<String, Object>{});
       final value = await service.loadFileSaveSubDirectoryName();
       expect(value, AppPreferencesService.defaultFileSaveSubDirectoryName);
-      expect(value, '1Panel-Client');
+      expect(value, 'KenPanel');
     });
 
     test('saving and reading custom name works', () async {

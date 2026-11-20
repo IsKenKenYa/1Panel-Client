@@ -40,7 +40,7 @@ class SecurityViewModel: ObservableObject {
     /// 启动门禁：本机认证通过才解锁应用。
     func unlockApp(onSuccess: @escaping () -> Void) {
         authenticate(reasonKey: "appLockUnlockReasonAppOpen",
-                     fallback: "Authenticate to open 1Panel Client") { success in
+                     fallback: "Authenticate to open KenPanel") { success in
             if success {
                 onSuccess()
             }

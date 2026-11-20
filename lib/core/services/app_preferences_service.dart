@@ -27,11 +27,11 @@ class AppPreferencesService {
   // downloads so the experience is consistent.
   static const String _useFilePickerForFileOperationsKey =
       'app_use_file_picker_for_file_operations';
-  // Sub-folder used when the picker is off. Default is "1Panel-Client"
+  // Sub-folder used when the picker is off. Default is "KenPanel"
   // so files are easy to find across platforms.
   static const String _fileSaveSubDirectoryNameKey =
       'app_file_save_sub_directory_name';
-  static const String defaultFileSaveSubDirectoryName = '1Panel-Client';
+  static const String defaultFileSaveSubDirectoryName = 'KenPanel';
 
   Future<ThemeMode> loadThemeMode() async {
     final prefs = await SharedPreferences.getInstance();

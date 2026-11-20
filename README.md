@@ -1,19 +1,23 @@
 <p align="center">
-  <img src="assets/branding/app_icon_master.png" alt="1Panel Client Logo" width="120" />
+  <img src="assets/branding/app_icon_master.png" alt="KenPanel Logo" width="120" />
 </p>
 
-<h1 align="center">1Panel Client</h1>
+<h1 align="center">KenPanel</h1>
 
 <p align="center">
   <a href="https://github.com/IsKenKenYa/1Panel-Client/releases"><img src="https://img.shields.io/badge/version-0.6.0%2B1-blue.svg" alt="Version" /></a>
-  <a href="https://github.com/IsKenKenYa/1Panel-Client/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-green.svg" alt="License" /></a>
+  <a href="https://github.com/IsKenKenYa/1Panel-Client/blob/dev-v2/LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-green.svg" alt="License" /></a>
 </p>
 
-<p align="center">A cross-platform client for connecting to and managing one or more 1Panel servers.</p>
+<p align="center">A cross-platform third-party client for connecting to and managing one or more 1Panel servers.</p>
 
 <p align="center">
   <a href="README.zh.md">中文文档</a> | <strong>English</strong>
 </p>
+
+> KenPanel is an independent third-party client. It is not a 1Panel official product, is not affiliated with,
+> does not represent, and is not endorsed or sponsored by Hangzhou FIT2CLOUD Information Technology Co., Ltd.
+> "1Panel" is used only to describe compatibility with the 1Panel server software.
 
 ---
 
@@ -68,11 +72,11 @@ This client provides comprehensive management capabilities for 1Panel servers wi
 
 ## First-Time Setup (Important: API Configuration)
 
-To use 1Panel Client, you **must enable API access** on your 1Panel server:
+To use KenPanel, you **must enable API access** on your 1Panel server:
 
 1. **Enable API & Get Key**: Log into your 1Panel Web dashboard. Go to **Panel Settings** -> **API Interface** (面板设置 -> API 接口). Toggle the API switch to **Enable**. Copy your API Key.
 2. **Configure IP Whitelist**: In the same API settings section, you must add allowed IPs. If you are using a mobile device where your IP changes frequently, add `0.0.0.0/0` to allow all IP addresses. If you have a static IP or VPN, add that specific IP.
-3. **Install the Client**: Install the 1Panel Client app on your device.
+3. **Install the Client**: Install the KenPanel app on your device.
 4. **Add Server**: Open the app, add a new server by entering your 1Panel server URL (e.g., `https://panel.example.com:port`) and the **API Key** you copied.
 5. **Connect**: Test the connection and save. You can now manage your server natively!
 

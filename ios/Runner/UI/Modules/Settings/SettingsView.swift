@@ -98,7 +98,7 @@ struct SettingsView: View {
                 }
                 NavigationLink(value: SettingsPageRoute.about) {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(translations.get("aboutPageTitle", fallback: "About 1Panel Client"))
+                        Text(translations.get("aboutPageTitle", fallback: "About KenPanel"))
                         Text(translations.get("settingsAboutSubtitle",
                                               fallback: "Version, project info and official links"))
                             .font(.caption)

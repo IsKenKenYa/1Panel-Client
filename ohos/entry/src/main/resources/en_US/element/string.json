@@ -2,15 +2,15 @@
   "string": [
     {
       "name": "module_desc",
-      "value": "1Panel Client Module"
+      "value": "KenPanel Module"
     },
     {
       "name": "EntryAbility_desc",
-      "value": "1Panel Client - Server Management"
+      "value": "KenPanel - Server Management"
     },
     {
       "name": "EntryAbility_label",
-      "value": "1Panel Client"
+      "value": "KenPanel"
     },
     {
       "name": "permission_write_imagevideo_reason",

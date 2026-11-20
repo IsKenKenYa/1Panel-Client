@@ -17,7 +17,7 @@ import 'package:shared_preferences_windows/shared_preferences_windows.dart';
 ///
 /// 数据落点与持久化保证（全部位于当前用户 profile 下，卸载/重装均不丢）：
 /// - SharedPreferences（服务器配置 shared_preferences.json）：对齐后落在
-///   `%APPDATA%\IsKenKenYa\1Panel Client`。
+///   `%APPDATA%\IsKenKenYa\KenPanel`。
 /// - flutter_secure_storage（API Key，flutter_secure_storage_windows 4.x 的
 ///   DpapiJsonFileMapStorage 主存储）：经 getApplicationSupportDirectory() →
 ///   PathProviderPlatform.instance，同样被本对齐覆盖，落同上目录的
@@ -38,7 +38,7 @@ class RunnerDataPath {
   const RunnerDataPath._();
 
   static const String _companyName = 'IsKenKenYa';
-  static const String _productName = '1Panel Client';
+  static const String _productName = 'KenPanel';
 
   /// 解析 Flutter runner 的应用支持目录；[appDataDir] 缺失时返回 null。
   static String? resolveRunnerSupportDirectory({String? appDataDir}) {

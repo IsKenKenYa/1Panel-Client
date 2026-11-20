@@ -501,7 +501,7 @@ bool FlutterWindow::EnsureTrayIcon() {
         LoadImage(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0,
                   LR_DEFAULTSIZE | LR_SHARED));
   }
-  CopyToBuffer(L"1Panel Client", tray_icon_data_.szTip,
+  CopyToBuffer(L"KenPanel", tray_icon_data_.szTip,
                ARRAYSIZE(tray_icon_data_.szTip));
 
   if (Shell_NotifyIconW(NIM_ADD, &tray_icon_data_) != TRUE) {

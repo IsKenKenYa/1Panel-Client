@@ -201,7 +201,7 @@ struct AppLockGateView: View {
                 .font(.system(size: 56))
                 .foregroundStyle(.secondary)
             Text(translations.get("appLockUnlockReasonAppOpen",
-                                  fallback: "Authenticate to open 1Panel Client"))
+                                  fallback: "Authenticate to open KenPanel"))
                 .font(.headline)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)

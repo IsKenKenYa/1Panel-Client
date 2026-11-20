@@ -22,7 +22,7 @@ class BrowserVaultGate extends StatefulWidget {
 
 class _BrowserVaultGateState extends State<BrowserVaultGate> {
   final _vault = BrowserVault.instance;
-  final _autofillAccount = TextEditingController(text: '1Panel Client');
+  final _autofillAccount = TextEditingController(text: 'KenPanel');
   final _formKey = GlobalKey<FormState>();
   final _password = TextEditingController();
   final _confirmation = TextEditingController();
@@ -120,7 +120,7 @@ class _BrowserVaultGateState extends State<BrowserVaultGate> {
   Widget build(BuildContext context) {
     if (_ready) return widget.child;
     return MaterialApp(
-      title: '1Panel Client',
+      title: 'KenPanel',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.getLightTheme(),
       darkTheme: AppTheme.getDarkTheme(),

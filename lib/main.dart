@@ -320,7 +320,7 @@ class MyApp extends StatelessWidget {
                 : null;
 
             return MaterialApp(
-              title: '1Panel Client',
+              title: 'KenPanel',
               debugShowCheckedModeBanner: false,
               builder: (context, child) {
                 if (kIsWeb) {
@@ -332,7 +332,7 @@ class MyApp extends StatelessWidget {
                 return PlatformMenuBar(
                   menus: [
                     PlatformMenu(
-                      label: '1Panel Client',
+                      label: 'KenPanel',
                       menus: [
                         PlatformMenuItem(
                           label: l10n.aboutPageTitle,

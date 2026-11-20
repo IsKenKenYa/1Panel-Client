@@ -7,7 +7,7 @@ import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 void main() {
   setUp(() {
     PackageInfo.setMockInitialValues(
-      appName: '1Panel Client',
+      appName: 'KenPanel',
       packageName: 'com.iskenkenya.onepanel',
       version: '0.5.0-alpha.1',
       buildNumber: '42',
@@ -27,7 +27,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('About 1Panel Client'), findsOneWidget);
+    expect(find.text('About KenPanel'), findsOneWidget);
     expect(find.text('Build information'), findsOneWidget);
     expect(find.text('Channel'), findsOneWidget);
     expect(find.text('Dev (Alpha)'), findsOneWidget);

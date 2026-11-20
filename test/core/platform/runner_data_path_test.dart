@@ -17,7 +17,7 @@ void main() {
         [
           r'C:\Users\u\AppData\Roaming',
           'IsKenKenYa',
-          '1Panel Client',
+          'KenPanel',
         ].join(p.context.separator),
       );
     });

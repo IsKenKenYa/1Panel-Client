@@ -1,6 +1,6 @@
 [Icon Theme]
-Name=1Panel Client
-Comment=1Panel Client application icons
+Name=KenPanel
+Comment=KenPanel application icons
 Directories=16x16/apps,24x24/apps,32x32/apps,48x48/apps,64x64/apps,128x128/apps,256x256/apps,512x512/apps
 
 [16x16/apps]

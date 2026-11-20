@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => '1Panel Client';
+  String get appName => 'KenPanel';
 
   @override
   String get commonLoading => 'Loading...';
@@ -2539,7 +2539,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingDesc4 =>
-      'Prepare your server address and API Key, then connect your first machine to start using 1Panel Client.';
+      'Prepare your server address and API Key, then connect your first machine to start using KenPanel.';
 
   @override
   String get coachServerAddTitle => 'Add your first server';
@@ -2556,7 +2556,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'After connecting, tap a server card to open details and jump into files, containers, websites, and more.';
 
   @override
-  String get aboutPageTitle => 'About 1Panel Client';
+  String get aboutPageTitle => 'About KenPanel';
 
   @override
   String get aboutBuildSectionTitle => 'Build information';
@@ -2590,7 +2590,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutProjectSummary =>
-      '1Panel Client is a mobile app for managing 1Panel servers across multiple environments.';
+      'KenPanel is a third-party client for managing 1Panel servers across multiple environments.';
 
   @override
   String get aboutProjectFeatureList =>
@@ -2907,7 +2907,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appLockUnlockReasonAppOpen =>
-      'Verify your identity to open 1Panel Client';
+      'Verify your identity to open KenPanel';
 
   @override
   String get appLockUnlockAction => 'Unlock App';
@@ -3077,7 +3077,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get systemSettingsFileExportSubDirHelper =>
-      'Used when the picker is off. Leave empty to skip the parent folder. Default: 1Panel-Client';
+      'Used when the picker is off. Leave empty to skip the parent folder. Default: KenPanel';
 
   @override
   String fileSaveSuccessPicker(String displayName) {
@@ -9209,7 +9209,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonBack => 'Back';
 
   @override
-  String get webVaultTitle => '1Panel Client in your browser';
+  String get webVaultTitle => 'KenPanel in your browser';
 
   @override
   String get webVaultDescription =>

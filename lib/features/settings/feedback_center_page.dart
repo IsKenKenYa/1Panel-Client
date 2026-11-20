@@ -151,7 +151,7 @@ ${l10n.settingsFeedbackTemplateLogs}
 
 ${l10n.settingsFeedbackTemplateEnvironment}
 - channel: ${_channelLabel(l10n)}
-- app: 1Panel Client
+- app: KenPanel
 
 ---
 $platformTemplate

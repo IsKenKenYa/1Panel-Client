@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=1Panel Client
+Name=KenPanel
 Exec=onepanel_client
 Icon=com.iskenkenya.onepanel
 Terminal=false

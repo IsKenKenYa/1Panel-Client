@@ -14,7 +14,7 @@
 namespace {
 
 constexpr wchar_t kCompanyName[] = L"IsKenKenYa";
-constexpr wchar_t kProductName[] = L"1Panel Client";
+constexpr wchar_t kProductName[] = L"KenPanel";
 constexpr wchar_t kPreferencesFileName[] = L"shared_preferences.json";
 constexpr wchar_t kNativeHostRelativePath[] = L"native\\OnePanelNativeHost.exe";
 // The csproj pins RuntimeIdentifier win-x64, so the built host lands under a
