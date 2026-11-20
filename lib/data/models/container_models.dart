@@ -592,6 +592,8 @@ class ContainerInfo extends Equatable {
   final List<String>? labels;
   final List<PortHelper>? portBindings;
   final List<VolumeHelper>? volumeBindings;
+  final bool isFromApp;
+  final bool isFromCompose;
 
   const ContainerInfo({
     required this.id,
@@ -608,6 +610,8 @@ class ContainerInfo extends Equatable {
     this.labels,
     this.portBindings,
     this.volumeBindings,
+    this.isFromApp = false,
+    this.isFromCompose = false,
   });
 
   factory ContainerInfo.fromJson(Map<String, dynamic> json) {
@@ -636,6 +640,8 @@ class ContainerInfo extends Equatable {
       volumeBindings: (json['volumeBindings'] as List?)
           ?.map((item) => VolumeHelper.fromJson(item as Map<String, dynamic>))
           .toList(),
+      isFromApp: json['isFromApp'] as bool? ?? false,
+      isFromCompose: json['isFromCompose'] as bool? ?? false,
     );
   }
 
@@ -655,6 +661,8 @@ class ContainerInfo extends Equatable {
       'labels': labels,
       'portBindings': portBindings?.map((item) => item.toJson()).toList(),
       'volumeBindings': volumeBindings?.map((item) => item.toJson()).toList(),
+      'isFromApp': isFromApp,
+      'isFromCompose': isFromCompose,
     };
   }
 

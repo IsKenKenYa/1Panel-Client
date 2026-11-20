@@ -182,12 +182,16 @@ class ProviderInfo {
   final String provider;
   final String displayName;
   final String baseUrl;
+  final String defaultApiType;
+  final List<String> apiTypes;
   final List<ProviderModelInfo> models;
 
   const ProviderInfo({
     this.provider = '',
     this.displayName = '',
     this.baseUrl = '',
+    this.defaultApiType = '',
+    this.apiTypes = const <String>[],
     this.models = const <ProviderModelInfo>[],
   });
 
@@ -196,6 +200,13 @@ class ProviderInfo {
       provider: json['provider'] as String? ?? '',
       displayName: json['displayName'] as String? ?? '',
       baseUrl: json['baseUrl'] as String? ?? '',
+      defaultApiType: json['defaultApiType'] as String? ?? '',
+      apiTypes: (json['apiTypes'] as List<dynamic>?)
+              ?.whereType<Map<String, dynamic>>()
+              .map((item) => item['apiType']?.toString() ?? '')
+              .where((item) => item.isNotEmpty)
+              .toList() ??
+          const <String>[],
       models: (json['models'] as List<dynamic>?)
               ?.whereType<Map<String, dynamic>>()
               .map(ProviderModelInfo.fromJson)
@@ -209,6 +220,8 @@ class ProviderInfo {
       'provider': provider,
       'displayName': displayName,
       'baseUrl': baseUrl,
+      'defaultApiType': defaultApiType,
+      'apiTypes': apiTypes,
       'models': models.map((ProviderModelInfo item) => item.toJson()).toList(),
     };
   }

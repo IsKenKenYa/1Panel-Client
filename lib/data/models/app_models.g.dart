@@ -71,6 +71,8 @@ AppItem _$AppItemFromJson(Map<String, dynamic> json) => AppItem(
       hostMode: json['hostMode'] as bool?,
       memoryRequired: (json['memoryRequired'] as num?)?.toInt(),
       architectures: json['architectures'] as String?,
+      shortDescZh: json['shortDescZh'] as String?,
+      shortDescEn: json['shortDescEn'] as String?,
     );
 
 Map<String, dynamic> _$AppItemToJson(AppItem instance) => <String, dynamic>{
@@ -96,6 +98,8 @@ Map<String, dynamic> _$AppItemToJson(AppItem instance) => <String, dynamic>{
       'hostMode': instance.hostMode,
       'memoryRequired': instance.memoryRequired,
       'architectures': instance.architectures,
+      'shortDescZh': instance.shortDescZh,
+      'shortDescEn': instance.shortDescEn,
     };
 
 AppParams _$AppParamsFromJson(Map<String, dynamic> json) => AppParams(

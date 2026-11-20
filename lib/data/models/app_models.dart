@@ -73,6 +73,8 @@ class AppItem {
   final bool? hostMode; // 主机模式（仅在 getAppDetail 时返回）
   final int? memoryRequired; // 所需内存（仅在 getAppDetail 时返回）
   final String? architectures; // 支持的架构（仅在 getAppDetail 时返回）
+  final String? shortDescZh; // 一句话简介（中文）
+  final String? shortDescEn; // 一句话简介（英文）
 
   AppItem({
     this.description,
@@ -97,6 +99,8 @@ class AppItem {
     this.hostMode,
     this.memoryRequired,
     this.architectures,
+    this.shortDescZh,
+    this.shortDescEn,
   });
 
   factory AppItem.fromJson(Map<String, dynamic> json) =>
@@ -814,8 +818,9 @@ class AppInstallInfo {
       appId: json['appId'] as int?,
       appDetailId: json['appDetailId'] as int?,
       message: json['message'] as String?,
-      httpPort: json['httpPort'] as int?,
-      httpsPort: json['httpsPort'] as int?,
+      // 详情接口（/apps/installed/info/:id）返回首字母大写的端口字段。
+      httpPort: json['httpPort'] as int? ?? json['HttpPort'] as int?,
+      httpsPort: json['httpsPort'] as int? ?? json['HttpsPort'] as int?,
       path: json['path'] as String?,
       canUpdate: json['canUpdate'] as bool?,
       ready: json['ready'] as int?,

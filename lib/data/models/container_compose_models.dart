@@ -34,6 +34,8 @@ class ContainerCompose extends Equatable {
   final List<String>? networks;
   final List<String>? volumes;
   final List<String>? services;
+  final int? containerCount;
+  final int? runningCount;
 
   const ContainerCompose({
     required this.id,
@@ -46,6 +48,8 @@ class ContainerCompose extends Equatable {
     this.networks,
     this.volumes,
     this.services,
+    this.containerCount,
+    this.runningCount,
   });
 
   factory ContainerCompose.fromJson(Map<String, dynamic> json) {
@@ -71,6 +75,8 @@ class ContainerCompose extends Equatable {
       networks: parseStringList(json['networks']),
       volumes: parseStringList(json['volumes']),
       services: parseStringList(json['services']),
+      containerCount: (json['containerCount'] as num?)?.toInt(),
+      runningCount: (json['runningCount'] as num?)?.toInt(),
     );
   }
 
@@ -86,6 +92,8 @@ class ContainerCompose extends Equatable {
       'networks': networks,
       'volumes': volumes,
       'services': services,
+      'containerCount': containerCount,
+      'runningCount': runningCount,
     };
   }
 
@@ -101,6 +109,8 @@ class ContainerCompose extends Equatable {
         networks,
         volumes,
         services,
+        containerCount,
+        runningCount,
       ];
 }
 

@@ -103,8 +103,12 @@ class ImagePull extends Equatable {
   });
 
   factory ImagePull.fromJson(Map<String, dynamic> json) {
+    final imageNames = json['imageName'];
     return ImagePull(
-      image: json['image'] as String,
+      image: json['image'] as String? ??
+          (imageNames is List && imageNames.isNotEmpty
+              ? imageNames.first.toString()
+              : ''),
       tag: json['tag'] as String?,
       allTags: json['allTags'] as bool?,
       platform: json['platform'] as String?,
@@ -112,11 +116,12 @@ class ImagePull extends Equatable {
   }
 
   Map<String, dynamic> toJson() {
+    final reference = (tag == null || tag!.isEmpty || image.endsWith(':$tag'))
+        ? image
+        : '$image:$tag';
     return {
-      'image': image,
-      'tag': tag,
-      'allTags': allTags,
-      'platform': platform,
+      'imageName': <String>[reference],
+      'taskID': DateTime.now().millisecondsSinceEpoch.toString(),
     };
   }
 
