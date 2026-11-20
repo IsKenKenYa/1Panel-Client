@@ -1,4 +1,5 @@
 import SwiftUI
+import AppleSharedUI
 import Flutter
 
 struct FlutterViewControllerRepresentable: UIViewControllerRepresentable {
@@ -63,6 +64,7 @@ struct AppShellView: View {
         .environmentObject(serverNavigation)
         .environmentObject(theme)
         .environmentObject(translations)
+        .environment(\.translationsProvider, translations)
         .preferredColorScheme(theme.preferredColorScheme)
         .onAppear {
             switch ProcessInfo.processInfo.environment["ONEPANEL_INITIAL_TAB"] {
@@ -119,6 +121,9 @@ struct AppShellView: View {
                     case .module(let module): module.content
                     case .container(let name): ContainerDetailView(containerName: name)
                     case .website(let id): WebsiteDetailView(websiteId: id)
+                    case .appInstall(let id): AppInstallDetailView(installId: id)
+                    case .appCatalog(let key): AppCatalogDetailView(appKey: key)
+                    case .database(let ref): DatabaseDetailView(reference: ref)
                     }
                 }
         }

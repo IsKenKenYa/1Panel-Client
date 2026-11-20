@@ -1,4 +1,5 @@
 import SwiftUI
+import AppleSharedUI
 
 struct AIModelRow: Identifiable {
     let id: Int
@@ -41,6 +42,31 @@ class AIModelsViewModel: ObservableObject {
             }
         }
     }
+
+    /// 拉取模型（createAIModel 通道）。参数：`{name: String}`。
+    func create(name: String, completion: @escaping (Bool, String?) -> Void) {
+        ChannelManager.shared.invokeDataMethod(
+            "createAIModel",
+            arguments: ["name": name]
+        ) { result in
+            DispatchQueue.main.async {
+                let dict = result as? [String: Any]
+                completion(dict?["success"] as? Bool ?? false, dict?["error"] as? String)
+            }
+        }
+    }
+
+    /// 重建模型（recreateAIModel 通道）。参数：`{name: String}`。
+    func recreate(name: String, completion: @escaping (Bool) -> Void) {
+        ChannelManager.shared.invokeDataMethod(
+            "recreateAIModel",
+            arguments: ["name": name]
+        ) { result in
+            DispatchQueue.main.async {
+                completion((result as? [String: Any])?["success"] as? Bool ?? false)
+            }
+        }
+    }
 }
 
 /// AI 模型列表：Ollama 模型的名称、大小与更新时间，支持删除。
@@ -50,6 +76,8 @@ struct AIModelsView: View {
 
     @State private var pendingDelete: AIModelRow?
     @State private var showDeleteConfirm = false
+    @State private var showCreateSheet = false
+    @State private var newModelName = ""
     @State private var toastText: String?
 
     var body: some View {
@@ -89,6 +117,15 @@ struct AIModelsView: View {
                                 Label(translations.get("commonDelete", fallback: "Delete"), systemImage: "trash")
                             }
                         }
+                        .swipeActions(edge: .leading, allowsFullSwipe: false) {
+                            Button {
+                                recreate(model)
+                            } label: {
+                                Label(translations.get("commonRestart", fallback: "Restart"),
+                                      systemImage: "arrow.clockwise")
+                            }
+                            .tint(.blue)
+                        }
                     }
                 }
                 .listStyle(.insetGrouped)
@@ -97,10 +134,13 @@ struct AIModelsView: View {
                 }
             }
         }
-        .navigationTitle(translations.get("serverModuleAi", fallback: "AI"))
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                ModuleSwitcherMenu(current: .ai)
+                Button {
+                    showCreateSheet = true
+                } label: {
+                    Label(translations.get("aiModelCreate", fallback: "Create Model"), systemImage: "plus")
+                }
                 Button {
                     viewModel.fetch()
                 } label: {
@@ -108,6 +148,9 @@ struct AIModelsView: View {
                 }
                 .disabled(viewModel.isLoading)
             }
+        }
+        .sheet(isPresented: $showCreateSheet) {
+            createSheet
         }
         .confirmationDialog(
             translations.get("deleteConfirmTitle", fallback: "Confirm Deletion"),
@@ -141,6 +184,57 @@ struct AIModelsView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
             if toastText == text {
                 toastText = nil
+            }
+        }
+    }
+
+    private func recreate(_ model: AIModelRow) {
+        viewModel.recreate(name: model.name) { success in
+            showToast(success
+                ? translations.get("commonSaveSuccess", fallback: "Saved")
+                : translations.get("commonSaveFailed", fallback: "Save failed"))
+            viewModel.fetch()
+        }
+    }
+
+    private var createSheet: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    TextField(translations.get("aiModelName", fallback: "Model Name"),
+                              text: $newModelName)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                } footer: {
+                    Text(translations.get("aiModelName", fallback: "Model Name") + ": llama3, qwen2.5 ...")
+                        .font(.footnote)
+                }
+            }
+            .navigationTitle(translations.get("aiModelCreate", fallback: "Create Model"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(translations.get("commonCancel", fallback: "Cancel")) {
+                        showCreateSheet = false
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(translations.get("aiModelCreate", fallback: "Create Model")) {
+                        let name = newModelName.trimmingCharacters(in: .whitespaces)
+                        viewModel.create(name: name) { success, error in
+                            if success {
+                                showCreateSheet = false
+                                newModelName = ""
+                                viewModel.fetch()
+                                showToast(translations.get("commonSaveSuccess", fallback: "Saved"))
+                            } else {
+                                let template = translations.get("appOperateFailed", fallback: "Operation failed: {error}")
+                                showToast(template.replacingOccurrences(of: "{error}", with: error ?? ""))
+                            }
+                        }
+                    }
+                    .disabled(newModelName.trimmingCharacters(in: .whitespaces).isEmpty)
+                }
             }
         }
     }

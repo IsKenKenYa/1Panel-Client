@@ -1,4 +1,5 @@
 import SwiftUI
+import AppleSharedUI
 
 struct FirewallRuleModel: Identifiable {
     let id: String

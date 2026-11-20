@@ -85,4 +85,31 @@ class RunnerTests: XCTestCase {
         navigation.path.removeLast()
         XCTAssertEqual(navigation.path, [.server(server)])
     }
+
+    @MainActor
+    func testSwitchingModulesFromDetailDropsDetailPage() {
+        let server = ServerModel(originalId: "1", name: "1Panel", url: "https://panel.example",
+                                 isCurrent: true, cpu: 0, memory: 0)
+        let navigation = ServerNavigation()
+        navigation.openServer(server, module: .apps)
+        navigation.path.append(.appInstall(id: 16))
+
+        navigation.switchModule(to: .containers)
+
+        // 模块切换退回到服务器首页下的目标模块，详情页不留在新的模块层级里。
+        XCTAssertEqual(navigation.path, [.server(server), .module(.containers)])
+    }
+
+    func testAppModelKeepsIconFromListPayload() throws {
+        let model = try XCTUnwrap(AppModel(payload: [
+            "installId": 16, "name": "OpenResty", "status": "Running",
+            "version": "1.31.1", "icon": "https://example.test/logo.png",
+        ]))
+        let withoutIcon = try XCTUnwrap(AppModel(payload: [
+            "installId": 18, "name": "MySQL", "status": "Running", "version": "8.4.11",
+        ]))
+
+        XCTAssertEqual(model.icon, "https://example.test/logo.png")
+        XCTAssertEqual(withoutIcon.icon, "")
+    }
 }

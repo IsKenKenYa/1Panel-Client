@@ -5,6 +5,22 @@ enum ServerRoute: Hashable {
     case module(ModuleRoute)
     case container(name: String)
     case website(id: Int)
+    case appInstall(id: Int)
+    case appCatalog(key: String)
+    case database(DatabaseRef)
+}
+
+/// 数据库详情路由载荷：列表行已持有全部字段，详情页无需再次搜索。
+struct DatabaseRef: Hashable {
+    let scope: String
+    let id: Int?
+    let name: String
+    let lookupName: String
+    let source: String
+    let engine: String
+    let version: String
+    let status: String
+    let description: String
 }
 
 @MainActor
@@ -20,9 +36,15 @@ final class ServerNavigation: ObservableObject {
         }
     }
 
+    /// 切换模块：把模块层替换为目标模块，模块内的详情页随模块一起退出，
+    /// 服务器首页仍留在层级根部，返回语义与底部导航一致。
     func switchModule(to route: ModuleRoute) {
-        guard case .module? = path.last else { return }
-        path[path.count - 1] = .module(route)
+        let moduleIndex = path.firstIndex { element in
+            if case .module = element { return true }
+            return false
+        }
+        guard let moduleIndex else { return }
+        path = Array(path.prefix(moduleIndex)) + [.module(route)]
     }
 }
 
@@ -37,6 +59,7 @@ enum ModuleRoute: String, CaseIterable, Identifiable {
     case firewall
     case backups
     case ai
+    case logs
 
     var id: String { rawValue }
 
@@ -65,6 +88,8 @@ enum ModuleRoute: String, CaseIterable, Identifiable {
             return translations.get("operationsBackupsTitle", fallback: "Backups")
         case .ai:
             return translations.get("serverModuleAi", fallback: "AI")
+        case .logs:
+            return translations.get("operationsLogsTitle", fallback: "Logs")
         }
     }
 
@@ -79,21 +104,23 @@ enum ModuleRoute: String, CaseIterable, Identifiable {
         case .firewall: return "shield.lefthalf.filled"
         case .backups: return "externaldrive"
         case .ai: return "brain"
+        case .logs: return "doc.text.magnifyingglass"
         }
     }
 
     @ViewBuilder
     var content: some View {
         switch self {
-        case .containers: ContainersView()
-        case .websites: WebsitesView()
+        case .containers: ContainersModuleView()
+        case .websites: WebsitesModuleView()
         case .apps: AppsView()
         case .monitoring: MonitoringView()
         case .databases: DatabasesView()
         case .cronjobs: CronjobsView()
         case .firewall: FirewallView()
         case .backups: BackupsView()
-        case .ai: AIModelsView()
+        case .ai: AIModuleView()
+        case .logs: LogsModuleView()
         }
     }
 }
@@ -104,7 +131,8 @@ enum SettingsPageRoute: String, Hashable, CaseIterable {
     case legal
 }
 
-/// 模块切换菜单：在模块页右上角提供其他模块的入口，保持服务器首页为层级根。
+/// 模块切换菜单：在模块任一页面右上角提供全部模块入口与回服务器首页，
+/// 切换任意模块时详情页随之退出，服务器首页保持为层级根。
 struct ModuleSwitcherMenu: View {
     @EnvironmentObject private var translations: TranslationsManager
     @EnvironmentObject private var navigation: ServerNavigation
@@ -112,16 +140,39 @@ struct ModuleSwitcherMenu: View {
 
     var body: some View {
         Menu {
-            ForEach(ModuleRoute.allCases.filter { $0 != current }) { route in
-                Button {
-                    navigation.switchModule(to: route)
-                } label: {
-                    Label(route.title(translations), systemImage: route.icon)
+            Section {
+                if let server = serverRoute {
+                    Button {
+                        navigation.path = [server]
+                    } label: {
+                        Label(translations.get("serverHomeTitle", fallback: "Server Home"),
+                              systemImage: "house")
+                    }
+                }
+            }
+            Section(translations.get("serverModulesTitle", fallback: "Modules")) {
+                ForEach(ModuleRoute.allCases) { route in
+                    Button {
+                        navigation.switchModule(to: route)
+                    } label: {
+                        if route == current {
+                            Label(route.title(translations), systemImage: "checkmark")
+                        } else {
+                            Label(route.title(translations), systemImage: route.icon)
+                        }
+                    }
                 }
             }
         } label: {
             Label(translations.get("serverModulesTitle", fallback: "Modules"), systemImage: "square.grid.2x2")
         }
         .accessibilityIdentifier("server-switch-module")
+    }
+
+    private var serverRoute: ServerRoute? {
+        navigation.path.first { element in
+            if case .server = element { return true }
+            return false
+        }
     }
 }

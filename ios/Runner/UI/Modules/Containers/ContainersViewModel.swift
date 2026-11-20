@@ -79,6 +79,28 @@ class ContainersViewModel: ObservableObject {
         }
     }
 
+    /// 启动容器（startContainer 通道）。
+    func start(id: String, completion: @escaping (Bool) -> Void) {
+        performWrite("startContainer", id: id, completion: completion)
+    }
+
+    /// 停止容器（stopContainer 通道）。
+    func stop(id: String, completion: @escaping (Bool) -> Void) {
+        performWrite("stopContainer", id: id, completion: completion)
+    }
+
+    private func performWrite(_ method: String, id: String, completion: @escaping (Bool) -> Void) {
+        ChannelManager.shared.invokeDataMethod(
+            method,
+            arguments: ["id": id]
+        ) { result in
+            DispatchQueue.main.async {
+                let success = (result as? [String: Any])?["success"] as? Bool ?? false
+                completion(success)
+            }
+        }
+    }
+
     /// 重启容器（restartContainer 通道）。
     func restart(id: String, completion: @escaping (Bool) -> Void) {
         ChannelManager.shared.invokeDataMethod(

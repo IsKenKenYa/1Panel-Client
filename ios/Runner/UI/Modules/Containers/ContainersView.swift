@@ -1,4 +1,5 @@
 import SwiftUI
+import AppleSharedUI
 
 /// 容器列表：行级操作——启动/停止、重启、删除（二次确认）。
 struct ContainersView: View {
@@ -8,6 +9,7 @@ struct ContainersView: View {
 
     @State private var containerToDelete: ContainerModel?
     @State private var showDeleteConfirm = false
+    @State private var showCreateSheet = false
     @State private var toastText: String?
 
     /// 走查钩子：`ONEPANEL_OPEN_CONTAINER_LOGS=<容器名>` 直接呈现日志页。
@@ -110,10 +112,14 @@ struct ContainersView: View {
                 }
             }
         }
-        .navigationTitle(translations.get("serverModuleContainers", fallback: "Containers"))
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                ModuleSwitcherMenu(current: .containers)
+                Button {
+                    showCreateSheet = true
+                } label: {
+                    Label(translations.get("containerCreate", fallback: "Create Container"),
+                          systemImage: "plus")
+                }
                 Button {
                     viewModel.fetchContainers()
                 } label: {
@@ -121,6 +127,11 @@ struct ContainersView: View {
                 }
                 .disabled(viewModel.isLoading)
             }
+        }
+        .sheet(isPresented: $showCreateSheet) {
+            ContainerCreateSheet(onCreated: {
+                viewModel.fetchContainers()
+            })
         }
         .confirmationDialog(
             translations.get("deleteConfirmTitle", fallback: "Confirm Deletion"),

@@ -18,9 +18,8 @@
 		B10S00010000000000000001 /* ChannelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000001 /* ChannelManager.swift */; };
 		B10S00010000000000000002 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000002 /* ThemeManager.swift */; };
 		B10S00010000000000000003 /* TranslationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000003 /* TranslationsManager.swift */; };
-		B10S00010000000000000004 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000004 /* LoadingView.swift */; };
-		B10S00010000000000000005 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000005 /* ErrorView.swift */; };
-		B10S00010000000000000006 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000006 /* EmptyStateView.swift */; };
+		B10S00010000000000000045 /* OperationNotice.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000045 /* OperationNotice.swift */; };
+		B10S00010000000000000046 /* DataChannelAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000046 /* DataChannelAdapter.swift */; };
 		B10S00010000000000000007 /* ServersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000007 /* ServersViewModel.swift */; };
 		B10S00010000000000000008 /* ServersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000008 /* ServersView.swift */; };
 		B10S00010000000000000009 /* FilesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000009 /* FilesViewModel.swift */; };
@@ -40,13 +39,11 @@
 		B10S00010000000000000017 /* ServerHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000017 /* ServerHomeView.swift */; };
 		B10S00010000000000000018 /* SecurityViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000018 /* SecurityViewModel.swift */; };
 		B10S00010000000000000019 /* SecurityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000019 /* SecurityView.swift */; };
-		B10S0001000000000000001A /* StatusBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000001A /* StatusBadge.swift */; };
 		B10S0001000000000000001B /* AddServerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000001B /* AddServerSheet.swift */; };
 		B10S0001000000000000001C /* ContainerDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000001C /* ContainerDetailView.swift */; };
 		B10S0001000000000000001D /* CreateWebsiteSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000001D /* CreateWebsiteSheet.swift */; };
 		B10S0001000000000000001E /* InstallAppSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000001E /* InstallAppSheet.swift */; };
 		B10S0001000000000000001F /* ModuleRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000001F /* ModuleRoute.swift */; };
-		B10S00010000000000000020 /* InfoLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000020 /* InfoLineView.swift */; };
 		B10S00010000000000000021 /* WebsiteDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000021 /* WebsiteDetailView.swift */; };
 		B10S00010000000000000022 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000022 /* AboutView.swift */; };
 		B10S00010000000000000023 /* LegalCenterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000023 /* LegalCenterView.swift */; };
@@ -56,6 +53,28 @@
 		B10S00010000000000000027 /* BackupsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000027 /* BackupsView.swift */; };
 		B10S00010000000000000028 /* AIModelsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000028 /* AIModelsView.swift */; };
 		B10S00010000000000000029 /* FirewallAddSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000029 /* FirewallAddSheet.swift */; };
+		B10S0001000000000000002A /* AppIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000002A /* AppIconView.swift */; };
+		B10S0001000000000000002B /* TerminalSessionBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000002B /* TerminalSessionBridge.swift */; };
+		B10S0001000000000000002C /* AppCatalogDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000002C /* AppCatalogDetailView.swift */; };
+		B10S0001000000000000002D /* AppInstallDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000002D /* AppInstallDetailView.swift */; };
+		B10S0001000000000000002E /* TerminalSessionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000002E /* TerminalSessionModel.swift */; };
+		B10S0001000000000000002F /* ContainerTerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S0001000000000000002F /* ContainerTerminalView.swift */; };
+		B10S00010000000000000030 /* DatabaseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000030 /* DatabaseDetailView.swift */; };
+		B10S00010000000000000031 /* FileContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000031 /* FileContentView.swift */; };
+		B10S00010000000000000032 /* ContainersSubTabsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000032 /* ContainersSubTabsView.swift */; };
+		B10S00010000000000000033 /* LogsModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000033 /* LogsModuleView.swift */; };
+		B10S00010000000000000035 /* AIModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000035 /* AIModuleView.swift */; };
+		B10S00010000000000000040 /* AICreateSheets.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000040 /* AICreateSheets.swift */; };
+		B10S00010000000000000036 /* ContainerComposeListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000036 /* ContainerComposeListView.swift */; };
+		B10S00010000000000000041 /* ContainerCreateSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000041 /* ContainerCreateSheet.swift */; };
+		B10S00010000000000000042 /* ContainerImageOpsSheets.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000042 /* ContainerImageOpsSheets.swift */; };
+		B10S00010000000000000043 /* ContainerRepoViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000043 /* ContainerRepoViews.swift */; };
+		B10S00010000000000000044 /* ContainerFilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000044 /* ContainerFilesView.swift */; };
+		B10S00010000000000000037 /* WebsiteConfigViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000037 /* WebsiteConfigViews.swift */; };
+		B10S00010000000000000038 /* WebsiteSecurityViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000038 /* WebsiteSecurityViews.swift */; };
+		B10S00010000000000000039 /* WebsiteCertificatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10S00010000000000000039 /* WebsiteCertificatesView.swift */; };
+		D10S00010000000000000001 /* AppleSharedUI in Frameworks */ = {isa = PBXBuildFile; productRef = E10S00010000000000000001 /* AppleSharedUI */; };
+		D10S00010000000000000002 /* AppleSharedUI in Frameworks */ = {isa = PBXBuildFile; productRef = E10S00010000000000000002 /* AppleSharedUI */; };
 		EC90BAE2EC33A4635343E2AF /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02BE807C5B40C56FD4C55EBF /* Pods_RunnerTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -108,9 +127,6 @@
 		F10S00010000000000000001 /* ChannelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelManager.swift; sourceTree = "<group>"; };
 		F10S00010000000000000002 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		F10S00010000000000000003 /* TranslationsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationsManager.swift; sourceTree = "<group>"; };
-		F10S00010000000000000004 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
-		F10S00010000000000000005 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
-		F10S00010000000000000006 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		F10S00010000000000000007 /* ServersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersViewModel.swift; sourceTree = "<group>"; };
 		F10S00010000000000000008 /* ServersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersView.swift; sourceTree = "<group>"; };
 		F10S00010000000000000009 /* FilesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesViewModel.swift; sourceTree = "<group>"; };
@@ -130,13 +146,11 @@
 		F10S00010000000000000017 /* ServerHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerHomeView.swift; sourceTree = "<group>"; };
 		F10S00010000000000000018 /* SecurityViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityViewModel.swift; sourceTree = "<group>"; };
 		F10S00010000000000000019 /* SecurityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityView.swift; sourceTree = "<group>"; };
-		F10S0001000000000000001A /* StatusBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBadge.swift; sourceTree = "<group>"; };
 		F10S0001000000000000001B /* AddServerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddServerSheet.swift; sourceTree = "<group>"; };
 		F10S0001000000000000001C /* ContainerDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerDetailView.swift; sourceTree = "<group>"; };
 		F10S0001000000000000001D /* CreateWebsiteSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateWebsiteSheet.swift; sourceTree = "<group>"; };
 		F10S0001000000000000001E /* InstallAppSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallAppSheet.swift; sourceTree = "<group>"; };
 		F10S0001000000000000001F /* ModuleRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleRoute.swift; sourceTree = "<group>"; };
-		F10S00010000000000000020 /* InfoLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoLineView.swift; sourceTree = "<group>"; };
 		F10S00010000000000000021 /* WebsiteDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsiteDetailView.swift; sourceTree = "<group>"; };
 		F10S00010000000000000022 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		F10S00010000000000000023 /* LegalCenterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegalCenterView.swift; sourceTree = "<group>"; };
@@ -146,6 +160,28 @@
 		F10S00010000000000000027 /* BackupsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupsView.swift; sourceTree = "<group>"; };
 		F10S00010000000000000028 /* AIModelsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIModelsView.swift; sourceTree = "<group>"; };
 		F10S00010000000000000029 /* FirewallAddSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirewallAddSheet.swift; sourceTree = "<group>"; };
+		F10S0001000000000000002A /* AppIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconView.swift; sourceTree = "<group>"; };
+		F10S0001000000000000002B /* TerminalSessionBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalSessionBridge.swift; sourceTree = "<group>"; };
+		F10S0001000000000000002C /* AppCatalogDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCatalogDetailView.swift; sourceTree = "<group>"; };
+		F10S0001000000000000002D /* AppInstallDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInstallDetailView.swift; sourceTree = "<group>"; };
+		F10S0001000000000000002E /* TerminalSessionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalSessionModel.swift; sourceTree = "<group>"; };
+		F10S0001000000000000002F /* ContainerTerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerTerminalView.swift; sourceTree = "<group>"; };
+		F10S00010000000000000030 /* DatabaseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseDetailView.swift; sourceTree = "<group>"; };
+		F10S00010000000000000031 /* FileContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileContentView.swift; sourceTree = "<group>"; };
+		F10S00010000000000000032 /* ContainersSubTabsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainersSubTabsView.swift; sourceTree = "<group>"; };
+		F10S00010000000000000033 /* LogsModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsModuleView.swift; sourceTree = "<group>"; };
+		F10S00010000000000000035 /* AIModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIModuleView.swift; sourceTree = "<group>"; };
+		F10S00010000000000000040 /* AICreateSheets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICreateSheets.swift; sourceTree = "<group>"; };
+		F10S00010000000000000036 /* ContainerComposeListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerComposeListView.swift; sourceTree = "<group>"; };
+		F10S00010000000000000041 /* ContainerCreateSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerCreateSheet.swift; sourceTree = "<group>"; };
+		F10S00010000000000000042 /* ContainerImageOpsSheets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerImageOpsSheets.swift; sourceTree = "<group>"; };
+		F10S00010000000000000043 /* ContainerRepoViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerRepoViews.swift; sourceTree = "<group>"; };
+		F10S00010000000000000044 /* ContainerFilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerFilesView.swift; sourceTree = "<group>"; };
+		F10S00010000000000000037 /* WebsiteConfigViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsiteConfigViews.swift; sourceTree = "<group>"; };
+		F10S00010000000000000038 /* WebsiteSecurityViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsiteSecurityViews.swift; sourceTree = "<group>"; };
+		F10S00010000000000000039 /* WebsiteCertificatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsiteCertificatesView.swift; sourceTree = "<group>"; };
+		F10S00010000000000000045 /* OperationNotice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationNotice.swift; sourceTree = "<group>"; };
+		F10S00010000000000000046 /* DataChannelAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataChannelAdapter.swift; sourceTree = "<group>"; };
 		F5FE544562901A893BA47BA5 /* Pods-RunnerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.debug.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -154,6 +190,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D10S00010000000000000001 /* AppleSharedUI in Frameworks */,
 				6F0B0BF2FE563274608BDFEA /* Pods_Runner.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -162,6 +199,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D10S00010000000000000002 /* AppleSharedUI in Frameworks */,
 				EC90BAE2EC33A4635343E2AF /* Pods_RunnerTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -262,8 +300,10 @@
 			isa = PBXGroup;
 			children = (
 				F10S00010000000000000001 /* ChannelManager.swift */,
+				F10S00010000000000000046 /* DataChannelAdapter.swift */,
 				F10S00010000000000000002 /* ThemeManager.swift */,
 				F10S00010000000000000003 /* TranslationsManager.swift */,
+				F10S0001000000000000002B /* TerminalSessionBridge.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -271,11 +311,8 @@
 		G10S00010000000000000003 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				F10S00010000000000000004 /* LoadingView.swift */,
-				F10S00010000000000000005 /* ErrorView.swift */,
-				F10S00010000000000000006 /* EmptyStateView.swift */,
-				F10S0001000000000000001A /* StatusBadge.swift */,
-				F10S00010000000000000020 /* InfoLineView.swift */,
+				F10S00010000000000000045 /* OperationNotice.swift */,
+				F10S0001000000000000002A /* AppIconView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -296,6 +333,7 @@
 				G10S00010000000000000010 /* Firewall */,
 				G10S00010000000000000011 /* Backups */,
 				G10S00010000000000000012 /* AI */,
+				G10S00010000000000000013 /* Logs */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -317,6 +355,7 @@
 			children = (
 				F10S00010000000000000009 /* FilesViewModel.swift */,
 				F10S0001000000000000000A /* FilesView.swift */,
+				F10S00010000000000000031 /* FileContentView.swift */,
 			);
 			path = Files;
 			sourceTree = "<group>";
@@ -327,6 +366,14 @@
 				F10S0001000000000000000B /* ContainersViewModel.swift */,
 				F10S0001000000000000000C /* ContainersView.swift */,
 				F10S0001000000000000001C /* ContainerDetailView.swift */,
+				F10S0001000000000000002E /* TerminalSessionModel.swift */,
+				F10S0001000000000000002F /* ContainerTerminalView.swift */,
+				F10S00010000000000000032 /* ContainersSubTabsView.swift */,
+				F10S00010000000000000036 /* ContainerComposeListView.swift */,
+				F10S00010000000000000041 /* ContainerCreateSheet.swift */,
+				F10S00010000000000000042 /* ContainerImageOpsSheets.swift */,
+				F10S00010000000000000043 /* ContainerRepoViews.swift */,
+				F10S00010000000000000044 /* ContainerFilesView.swift */,
 			);
 			path = Containers;
 			sourceTree = "<group>";
@@ -337,6 +384,8 @@
 				F10S0001000000000000000D /* AppsViewModel.swift */,
 				F10S0001000000000000000E /* AppsView.swift */,
 				F10S0001000000000000001E /* InstallAppSheet.swift */,
+				F10S0001000000000000002C /* AppCatalogDetailView.swift */,
+				F10S0001000000000000002D /* AppInstallDetailView.swift */,
 			);
 			path = Apps;
 			sourceTree = "<group>";
@@ -346,6 +395,9 @@
 			children = (
 				F10S0001000000000000000F /* WebsitesViewModel.swift */,
 				F10S00010000000000000010 /* WebsitesView.swift */,
+				F10S00010000000000000037 /* WebsiteConfigViews.swift */,
+				F10S00010000000000000038 /* WebsiteSecurityViews.swift */,
+				F10S00010000000000000039 /* WebsiteCertificatesView.swift */,
 				F10S0001000000000000001D /* CreateWebsiteSheet.swift */,
 				F10S00010000000000000021 /* WebsiteDetailView.swift */,
 			);
@@ -394,6 +446,7 @@
 			isa = PBXGroup;
 			children = (
 				F10S00010000000000000024 /* DatabasesView.swift */,
+				F10S00010000000000000030 /* DatabaseDetailView.swift */,
 			);
 			path = Databases;
 			sourceTree = "<group>";
@@ -423,10 +476,20 @@
 			path = Backups;
 			sourceTree = "<group>";
 		};
+		G10S00010000000000000013 /* Logs */ = {
+			isa = PBXGroup;
+			children = (
+				F10S00010000000000000033 /* LogsModuleView.swift */,
+			);
+			path = Logs;
+			sourceTree = "<group>";
+		};
 		G10S00010000000000000012 /* AI */ = {
 			isa = PBXGroup;
 			children = (
 				F10S00010000000000000028 /* AIModelsView.swift */,
+				F10S00010000000000000035 /* AIModuleView.swift */,
+				F10S00010000000000000040 /* AICreateSheets.swift */,
 			);
 			path = AI;
 			sourceTree = "<group>";
@@ -449,6 +512,9 @@
 				331C8086294A63A400263BE5 /* PBXTargetDependency */,
 			);
 			name = RunnerTests;
+			packageProductDependencies = (
+				E10S00010000000000000002 /* AppleSharedUI */,
+			);
 			productName = RunnerTests;
 			productReference = 331C8081294A63A400263BE5 /* RunnerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -472,6 +538,9 @@
 			dependencies = (
 			);
 			name = Runner;
+			packageProductDependencies = (
+				E10S00010000000000000001 /* AppleSharedUI */,
+			);
 			productName = Runner;
 			productReference = 97C146EE1CF9000F007C117D /* Runner.app */;
 			productType = "com.apple.product-type.application";
@@ -505,6 +574,9 @@
 				Base,
 			);
 			mainGroup = 97C146E51CF9000F007C117D;
+			packageReferences = (
+				A10S00010000000000000001 /* XCLocalSwiftPackageReference "shared/apple_ui" */,
+			);
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -666,9 +738,8 @@
 				B10S00010000000000000001 /* ChannelManager.swift in Sources */,
 				B10S00010000000000000002 /* ThemeManager.swift in Sources */,
 				B10S00010000000000000003 /* TranslationsManager.swift in Sources */,
-				B10S00010000000000000004 /* LoadingView.swift in Sources */,
-				B10S00010000000000000005 /* ErrorView.swift in Sources */,
-				B10S00010000000000000006 /* EmptyStateView.swift in Sources */,
+				B10S00010000000000000045 /* OperationNotice.swift in Sources */,
+				B10S00010000000000000046 /* DataChannelAdapter.swift in Sources */,
 				B10S00010000000000000007 /* ServersViewModel.swift in Sources */,
 				B10S00010000000000000008 /* ServersView.swift in Sources */,
 				B10S00010000000000000009 /* FilesViewModel.swift in Sources */,
@@ -679,6 +750,9 @@
 				B10S0001000000000000000E /* AppsView.swift in Sources */,
 				B10S0001000000000000000F /* WebsitesViewModel.swift in Sources */,
 				B10S00010000000000000010 /* WebsitesView.swift in Sources */,
+				B10S00010000000000000037 /* WebsiteConfigViews.swift in Sources */,
+				B10S00010000000000000038 /* WebsiteSecurityViews.swift in Sources */,
+				B10S00010000000000000039 /* WebsiteCertificatesView.swift in Sources */,
 				B10S00010000000000000011 /* MonitoringViewModel.swift in Sources */,
 				B10S00010000000000000012 /* MonitoringView.swift in Sources */,
 				B10S00010000000000000013 /* SettingsViewModel.swift in Sources */,
@@ -688,13 +762,11 @@
 				B10S00010000000000000017 /* ServerHomeView.swift in Sources */,
 				B10S00010000000000000018 /* SecurityViewModel.swift in Sources */,
 				B10S00010000000000000019 /* SecurityView.swift in Sources */,
-				B10S0001000000000000001A /* StatusBadge.swift in Sources */,
 				B10S0001000000000000001B /* AddServerSheet.swift in Sources */,
 				B10S0001000000000000001C /* ContainerDetailView.swift in Sources */,
 				B10S0001000000000000001D /* CreateWebsiteSheet.swift in Sources */,
 				B10S0001000000000000001E /* InstallAppSheet.swift in Sources */,
 				B10S0001000000000000001F /* ModuleRoute.swift in Sources */,
-				B10S00010000000000000020 /* InfoLineView.swift in Sources */,
 				B10S00010000000000000021 /* WebsiteDetailView.swift in Sources */,
 				B10S00010000000000000022 /* AboutView.swift in Sources */,
 				B10S00010000000000000023 /* LegalCenterView.swift in Sources */,
@@ -704,6 +776,23 @@
 				B10S00010000000000000027 /* BackupsView.swift in Sources */,
 				B10S00010000000000000028 /* AIModelsView.swift in Sources */,
 				B10S00010000000000000029 /* FirewallAddSheet.swift in Sources */,
+				B10S0001000000000000002A /* AppIconView.swift in Sources */,
+				B10S0001000000000000002B /* TerminalSessionBridge.swift in Sources */,
+				B10S0001000000000000002C /* AppCatalogDetailView.swift in Sources */,
+				B10S0001000000000000002D /* AppInstallDetailView.swift in Sources */,
+				B10S0001000000000000002E /* TerminalSessionModel.swift in Sources */,
+				B10S0001000000000000002F /* ContainerTerminalView.swift in Sources */,
+				B10S00010000000000000030 /* DatabaseDetailView.swift in Sources */,
+				B10S00010000000000000031 /* FileContentView.swift in Sources */,
+				B10S00010000000000000032 /* ContainersSubTabsView.swift in Sources */,
+				B10S00010000000000000033 /* LogsModuleView.swift in Sources */,
+				B10S00010000000000000035 /* AIModuleView.swift in Sources */,
+				B10S00010000000000000040 /* AICreateSheets.swift in Sources */,
+				B10S00010000000000000036 /* ContainerComposeListView.swift in Sources */,
+				B10S00010000000000000041 /* ContainerCreateSheet.swift in Sources */,
+				B10S00010000000000000042 /* ContainerImageOpsSheets.swift in Sources */,
+				B10S00010000000000000043 /* ContainerRepoViews.swift in Sources */,
+				B10S00010000000000000044 /* ContainerFilesView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1051,6 +1140,23 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+/* Begin XCLocalSwiftPackageReference section */
+		A10S00010000000000000001 /* XCLocalSwiftPackageReference "shared/apple_ui" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../shared/apple_ui";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E10S00010000000000000001 /* AppleSharedUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AppleSharedUI;
+		};
+		E10S00010000000000000002 /* AppleSharedUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AppleSharedUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 97C146E61CF9000F007C117D /* Project object */;
 }

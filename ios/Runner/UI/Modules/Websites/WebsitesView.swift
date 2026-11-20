@@ -1,4 +1,5 @@
 import SwiftUI
+import AppleSharedUI
 
 /// 网站列表：行级操作——启动/停止、删除（二次确认）。
 struct WebsitesView: View {
@@ -45,10 +46,8 @@ struct WebsitesView: View {
                 }
             }
         }
-        .navigationTitle(translations.get("serverModuleWebsites", fallback: "Websites"))
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                ModuleSwitcherMenu(current: .websites)
                 Button {
                     showCreateSheet = true
                 } label: {

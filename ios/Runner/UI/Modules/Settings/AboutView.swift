@@ -1,4 +1,5 @@
 import SwiftUI
+import AppleSharedUI
 import UIKit
 
 /// 关于页：版本信息、项目简介与仓库入口。

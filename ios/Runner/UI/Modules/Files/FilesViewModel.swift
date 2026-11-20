@@ -61,6 +61,79 @@ class FilesViewModel: ObservableObject {
         }
     }
 
+    /// 新建空文件（createFileHandler 通道）。
+    func createFile(in directory: String, name: String, completion: @escaping (Bool) -> Void) {
+        let filePath = directory == "/" ? "/\(name)" : "\(directory)/\(name)"
+        ChannelManager.shared.invokeDataMethod(
+            "createFileHandler",
+            arguments: ["path": filePath]
+        ) { result in
+            DispatchQueue.main.async {
+                let success = (result as? [String: Any])?["success"] as? Bool ?? false
+                completion(success)
+            }
+        }
+    }
+
+    /// 压缩文件（compressFilesHandler 通道：files + dst + name + type）。
+    func compress(paths: [String], destination: String, name: String, type: String,
+                  completion: @escaping (Bool) -> Void) {
+        ChannelManager.shared.invokeDataMethod(
+            "compressFilesHandler",
+            arguments: ["files": paths, "dst": destination, "name": name, "type": type]
+        ) { result in
+            DispatchQueue.main.async {
+                let success = (result as? [String: Any])?["success"] as? Bool ?? false
+                completion(success)
+            }
+        }
+    }
+
+    /// 解压文件（decompressFileHandler 通道：path + dst + type）。
+    func extract(path: String, destination: String, type: String,
+                 completion: @escaping (Bool) -> Void) {
+        ChannelManager.shared.invokeDataMethod(
+            "decompressFileHandler",
+            arguments: ["path": path, "dst": destination, "type": type]
+        ) { result in
+            DispatchQueue.main.async {
+                let success = (result as? [String: Any])?["success"] as? Bool ?? false
+                completion(success)
+            }
+        }
+    }
+
+    /// 修改权限（changeFileModeHandler 通道：path + mode，八进制文本转十进制）。
+    func changeMode(path: String, octalMode: String, completion: @escaping (Bool) -> Void) {
+        guard let mode = Int(octalMode, radix: 8) else {
+            completion(false)
+            return
+        }
+        ChannelManager.shared.invokeDataMethod(
+            "changeFileModeHandler",
+            arguments: ["path": path, "mode": mode]
+        ) { result in
+            DispatchQueue.main.async {
+                let success = (result as? [String: Any])?["success"] as? Bool ?? false
+                completion(success)
+            }
+        }
+    }
+
+    /// 修改所有者（changeFileOwnerHandler 通道：path + user + group）。
+    func changeOwner(path: String, user: String, group: String,
+                     completion: @escaping (Bool) -> Void) {
+        ChannelManager.shared.invokeDataMethod(
+            "changeFileOwnerHandler",
+            arguments: ["path": path, "user": user, "group": group]
+        ) { result in
+            DispatchQueue.main.async {
+                let success = (result as? [String: Any])?["success"] as? Bool ?? false
+                completion(success)
+            }
+        }
+    }
+
     func fetchFiles(path: String? = nil) {
         let targetPath = path ?? currentPath
         isLoading = true

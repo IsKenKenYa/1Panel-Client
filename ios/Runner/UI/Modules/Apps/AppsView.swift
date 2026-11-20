@@ -1,18 +1,19 @@
 import SwiftUI
+import AppleSharedUI
 
-/// 应用模块：已安装列表（启停/更新/卸载）与应用商店（搜索/安装）两个分栏。
+/// 应用模块：已安装列表（启停/重启/更新/卸载与详情）与应用商店（搜索/详情/安装）两个分栏。
 struct AppsView: View {
     @StateObject private var viewModel = AppsViewModel()
     @EnvironmentObject var theme: ThemeManager
     @EnvironmentObject var translations: TranslationsManager
+    @EnvironmentObject private var navigation: ServerNavigation
 
     @State private var section = "installed"
     @State private var storeSearch = ""
     @State private var appToUninstall: AppModel?
     @State private var showUninstallConfirm = false
-    @State private var installTarget: StoreApp?
     @State private var toastText: String?
-    @State private var installHookApplied = false
+    @State private var launchHookApplied = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -63,10 +64,6 @@ struct AppsView: View {
         } message: {
             Text(translations.get("uninstallCannotUndo", fallback: "This action cannot be undone."))
         }
-        .sheet(item: $installTarget) { app in
-            InstallAppSheet(viewModel: viewModel, app: app)
-                .environmentObject(translations)
-        }
         .operationNotice(toastText)
         .onAppear {
             viewModel.fetchApps()
@@ -74,7 +71,7 @@ struct AppsView: View {
                 section = "store"
                 viewModel.fetchStore()
             }
-            applyInstallHook()
+            applyDetailHook()
         }
     }
 
@@ -92,26 +89,25 @@ struct AppsView: View {
         } else {
             List {
                 ForEach(viewModel.apps) { app in
-                    HStack(spacing: 14) {
-                        Image(systemName: "app.fill")
-                            .font(.title2)
-                            .foregroundStyle(.white)
-                            .frame(width: 40, height: 40)
-                            .background(Color.blue, in: RoundedRectangle(cornerRadius: 9, style: .continuous))
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(app.name)
-                                .font(.headline)
-                            Text(app.version)
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
+                    NavigationLink(value: ServerRoute.appInstall(id: app.installId)) {
+                        HStack(spacing: 14) {
+                            AppIconView(url: app.icon, size: 40)
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(app.name)
+                                    .font(.headline)
+                                Text(app.version)
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                            }
+                            Spacer()
+                            StatusBadge(
+                                text: app.status,
+                                color: StatusPalette.appStatus(app.status)
+                            )
                         }
-                        Spacer()
-                        StatusBadge(
-                            text: app.status,
-                            color: StatusPalette.appStatus(app.status)
-                        )
+                        .padding(.vertical, 4)
                     }
-                    .padding(.vertical, 4)
+                    .tint(.primary)
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         Button(role: .destructive) {
                             appToUninstall = app
@@ -134,12 +130,19 @@ struct AppsView: View {
                         }
                         .tint(isRunning ? .orange : .green)
                         Button {
+                            restart(installId: app.installId)
+                        } label: {
+                            Label(translations.get("appActionRestart", fallback: "Restart"),
+                                  systemImage: "arrow.clockwise")
+                        }
+                        .tint(.blue)
+                        Button {
                             update(installId: app.installId)
                         } label: {
                             Label(translations.get("appUpdate", fallback: "Update"),
                                   systemImage: "arrow.triangle.2.circlepath")
                         }
-                        .tint(.blue)
+                        .tint(.indigo)
                     }
                 }
             }
@@ -169,17 +172,14 @@ struct AppsView: View {
         } else {
             List {
                 ForEach(viewModel.storeApps) { item in
-                    Button {
-                        if !item.installed {
-                            installTarget = item
-                        }
-                    } label: {
+                    NavigationLink(value: ServerRoute.appCatalog(key: item.key)) {
                         HStack(spacing: 14) {
-                            Image(systemName: "shippingbox.fill")
-                                .font(.title2)
-                                .foregroundStyle(.white)
-                                .frame(width: 40, height: 40)
-                                .background(Color.indigo, in: RoundedRectangle(cornerRadius: 9, style: .continuous))
+                            AppIconView(
+                                url: item.icon,
+                                size: 40,
+                                fallbackSymbol: "shippingbox.fill",
+                                fallbackColor: .indigo
+                            )
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(item.name)
                                     .font(.headline)
@@ -196,15 +196,11 @@ struct AppsView: View {
                                 Text(translations.get("appStoreInstalled", fallback: "Installed"))
                                     .font(.caption)
                                     .foregroundColor(.secondary)
-                            } else {
-                                Image(systemName: "chevron.right")
-                                    .font(.footnote)
-                                    .foregroundColor(.secondary)
                             }
                         }
                         .padding(.vertical, 4)
                     }
-                    .buttonStyle(.plain)
+                    .tint(.primary)
                 }
             }
             .listStyle(.insetGrouped)
@@ -229,28 +225,40 @@ struct AppsView: View {
         }
     }
 
-    /// 走查钩子：`ONEPANEL_OPEN_INSTALL_APP=<应用 key>` 从商店列表打开安装表单。
-    private func applyInstallHook() {
-        guard !installHookApplied,
-              let key = ProcessInfo.processInfo.environment["ONEPANEL_OPEN_INSTALL_APP"],
-              !key.isEmpty else { return }
-        installHookApplied = true
-        section = "store"
-        viewModel.fetchStore()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-            if let target = viewModel.storeApps.first(where: { $0.key == key }) {
-                installTarget = target
-            } else {
-                viewModel.fetchStore(search: key)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                    installTarget = viewModel.storeApps.first(where: { $0.key == key })
-                }
+    /// 走查钩子：`ONEPANEL_APPS_SECTION=store` 切到商店；
+    /// `ONEPANEL_OPEN_APP_DETAIL=<应用 key>` 进商店后打开详情页；
+    /// `ONEPANEL_OPEN_INSTALL_DETAIL=<安装 id>` 进已安装列表后打开安装详情页。
+    private func applyDetailHook() {
+        guard !launchHookApplied else { return }
+        let env = ProcessInfo.processInfo.environment
+        if let key = env["ONEPANEL_OPEN_APP_DETAIL"], !key.isEmpty {
+            launchHookApplied = true
+            section = "store"
+            viewModel.fetchStore()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                navigation.path.append(ServerRoute.appCatalog(key: key))
+            }
+            return
+        }
+        if let raw = env["ONEPANEL_OPEN_INSTALL_DETAIL"], let id = Int(raw) {
+            launchHookApplied = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                navigation.path.append(ServerRoute.appInstall(id: id))
             }
         }
     }
 
     private func update(installId: Int) {
         viewModel.updateApp(installId: installId) { success in
+            showToast(success
+                ? translations.get("commonSaveSuccess", fallback: "Saved")
+                : translations.get("commonSaveFailed", fallback: "Save failed"))
+            viewModel.fetchApps()
+        }
+    }
+
+    private func restart(installId: Int) {
+        viewModel.operateApp(installId: installId, operate: "restartApp") { success in
             showToast(success
                 ? translations.get("commonSaveSuccess", fallback: "Saved")
                 : translations.get("commonSaveFailed", fallback: "Save failed"))

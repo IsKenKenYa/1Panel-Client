@@ -1,4 +1,5 @@
 import SwiftUI
+import AppleSharedUI
 
 /// 服务器首页：当前服务器的系统信息、资源占用与功能模块入口。
 /// 业务模块入口语义与 MDUI3 服务器首页一致。
@@ -6,6 +7,8 @@ struct ServerHomeView: View {
     @StateObject private var viewModel = ServerHomeViewModel()
     @EnvironmentObject var translations: TranslationsManager
     let server: ServerModel
+
+    @State private var snapshot: DeviceSnapshotData?
 
     var body: some View {
         dashboard
@@ -15,6 +18,7 @@ struct ServerHomeView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
                     viewModel.fetchDashboard()
+                    fetchSnapshot()
                 } label: {
                     Label(translations.get("commonRefresh", fallback: "Refresh"), systemImage: "arrow.clockwise")
                 }
@@ -23,6 +27,31 @@ struct ServerHomeView: View {
         }
         .onAppear {
             viewModel.fetchDashboard()
+            fetchSnapshot()
+        }
+    }
+
+    private func fetchSnapshot() {
+        ChannelManager.shared.invokeDataMethod("getDeviceSnapshot") { result in
+            DispatchQueue.main.async {
+                guard let dict = result as? [String: Any], !dict.isEmpty else { return }
+                snapshot = DeviceSnapshotData(
+                    hostname: dict["hostname"] as? String ?? "",
+                    product: [dict["productName"] as? String ?? "",
+                              dict["productVersion"] as? String ?? ""]
+                        .filter { !$0.isEmpty }
+                        .joined(separator: " "),
+                    system: [dict["systemName"] as? String ?? "",
+                             dict["systemVersion"] as? String ?? ""]
+                        .filter { !$0.isEmpty }
+                        .joined(separator: " "),
+                    timeZone: dict["timeZone"] as? String ?? "",
+                    localTime: dict["localTime"] as? String ?? "",
+                    ntp: dict["ntp"] as? String ?? "",
+                    dns: dict["dns"] as? String ?? "",
+                    userCount: (dict["users"] as? [Any])?.count ?? 0
+                )
+            }
         }
     }
 
@@ -67,12 +96,58 @@ struct ServerHomeView: View {
                          value: viewModel.metrics.panelVersion.isEmpty ? "--" : "v\(viewModel.metrics.panelVersion)")
             }
 
+            if let snapshot {
+                Section(translations.get("serverDeviceSnapshotTitle", fallback: "Device Info")) {
+                    if !snapshot.product.isEmpty {
+                        InfoLine(label: translations.get("hostToolboxProductLabel", fallback: "Product"),
+                                 value: snapshot.product)
+                    }
+                    if !snapshot.system.isEmpty {
+                        InfoLine(label: translations.get("dashboardOsLabel", fallback: "OS"),
+                                 value: snapshot.system)
+                    }
+                    if !snapshot.timeZone.isEmpty {
+                        InfoLine(label: translations.get("hostToolboxTimeZoneLabel", fallback: "Time Zone"),
+                                 value: snapshot.timeZone)
+                    }
+                    if !snapshot.localTime.isEmpty {
+                        InfoLine(label: translations.get("serverLocalTimeLabel", fallback: "Local Time"),
+                                 value: snapshot.localTime)
+                    }
+                    if !snapshot.ntp.isEmpty {
+                        InfoLine(label: translations.get("hostToolboxNtpServerLabel", fallback: "NTP Server"),
+                                 value: snapshot.ntp)
+                    }
+                    if !snapshot.dns.isEmpty {
+                        InfoLine(label: translations.get("serverDnsLabel", fallback: "DNS"),
+                                 value: snapshot.dns)
+                    }
+                    if snapshot.userCount > 0 {
+                        InfoLine(label: translations.get("hostToolboxUsersTitle", fallback: "Users"),
+                                 value: "\(snapshot.userCount)")
+                    }
+                }
+            }
+
         }
         .listStyle(.insetGrouped)
         .refreshable {
             viewModel.fetchDashboard()
+            fetchSnapshot()
         }
     }
+}
+
+/// 设备快照展示数据。
+struct DeviceSnapshotData {
+    let hostname: String
+    let product: String
+    let system: String
+    let timeZone: String
+    let localTime: String
+    let ntp: String
+    let dns: String
+    let userCount: Int
 }
 
 /// 资源占用行：数值 + 阈值色进度条（60% 橙色、85% 红色）。

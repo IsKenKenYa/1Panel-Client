@@ -37,6 +37,7 @@ struct RunnerApp: App {
         flutterEngine.run()
         GeneratedPluginRegistrant.register(with: flutterEngine)
         ChannelManager.shared.setup(binaryMessenger: flutterEngine.binaryMessenger)
+        TerminalSessionBridge.shared.setup(binaryMessenger: flutterEngine.binaryMessenger)
         ChannelManager.shared.seedDebugConfigIfNeeded()
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }

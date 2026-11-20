@@ -1,10 +1,12 @@
 import Foundation
 
+/// 已安装应用列表行。
 struct AppModel: Identifiable {
     let installId: Int
     let name: String
     let status: String
     let version: String
+    let icon: String
 
     var id: Int { installId }
 
@@ -17,7 +19,53 @@ struct AppModel: Identifiable {
         self.name = name
         self.status = status
         self.version = version
+        self.icon = payload["icon"] as? String ?? ""
     }
+}
+
+/// 已安装应用详情（/apps/installed/info/:id）。
+struct AppInstallInfoModel {
+    let installId: Int
+    let name: String
+    let appName: String
+    let appKey: String
+    let version: String
+    let status: String
+    let message: String
+    let httpPort: Int?
+    let httpsPort: Int?
+    let container: String
+    let appType: String
+    let createdAt: String
+    let icon: String
+}
+
+/// 已安装应用参数行（/apps/installed/params/:id 的 params 数组）。
+struct AppInstallParam: Identifiable {
+    let key: String
+    let labelZh: String
+    let labelEn: String
+    let type: String
+    let value: String
+    let isEditable: Bool
+
+    var id: String { key }
+
+    func label(chinese: Bool) -> String {
+        let text = chinese ? labelZh : labelEn
+        return text.isEmpty ? key : text
+    }
+}
+
+/// 已安装应用参数完整载荷。
+struct AppInstallConfig {
+    let containerName: String
+    let cpuQuota: Double
+    let memoryLimit: Double
+    let memoryUnit: String
+    let webUI: String
+    let type: String
+    let params: [AppInstallParam]
 }
 
 /// 应用商店条目。
@@ -29,6 +77,26 @@ struct StoreApp: Identifiable, Hashable {
     let versions: [String]
     let installed: Bool
     let summary: String
+    let icon: String
+}
+
+/// 应用目录详情（/apps/:key），用于商店详情页。
+struct AppCatalogDetail {
+    let id: Int
+    let name: String
+    let key: String
+    let type: String
+    let icon: String
+    let summaryZh: String
+    let summaryEn: String
+    let readMe: String
+    let website: String
+    let github: String
+    let versions: [String]
+    let installed: Bool
+    let gpuSupport: Bool
+    let memoryRequired: Int
+    let architectures: String
 }
 
 /// 安装表单动态字段。
@@ -66,6 +134,125 @@ class AppsViewModel: ObservableObject {
     @Published var installForm: AppInstallForm?
     @Published var isFormLoading = false
 
+    @Published var installInfo: AppInstallInfoModel?
+    @Published var installConfig: AppInstallConfig?
+    @Published var detailLoading = false
+    @Published var catalogDetail: AppCatalogDetail?
+    @Published var catalogLoading = false
+
+    /// 已安装应用列表（getApps 通道）。
+    func fetchApps() {
+        isLoading = true
+        errorMessage = nil
+        ChannelManager.shared.invokeDataMethod("getApps") { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isLoading = false
+                guard let dictArray = result as? [[String: Any]] else { return }
+                self?.apps = dictArray.compactMap(AppModel.init(payload:))
+            }
+        }
+    }
+
+    /// 已安装应用详情与参数（getAppInstallInfo + getAppInstallParams）。
+    func fetchInstallDetail(installId: Int) {
+        detailLoading = true
+        installInfo = nil
+        installConfig = nil
+        let group = DispatchGroup()
+        group.enter()
+        ChannelManager.shared.invokeDataMethod(
+            "getAppInstallInfo",
+            arguments: ["installId": installId]
+        ) { [weak self] result in
+            DispatchQueue.main.async {
+                if let dict = result as? [String: Any] {
+                    self?.installInfo = AppInstallInfoModel(
+                        installId: dict["id"] as? Int ?? installId,
+                        name: dict["name"] as? String ?? "",
+                        appName: dict["appName"] as? String ?? "",
+                        appKey: dict["appKey"] as? String ?? "",
+                        version: dict["version"] as? String ?? "",
+                        status: dict["status"] as? String ?? "",
+                        message: dict["message"] as? String ?? "",
+                        httpPort: dict["httpPort"] as? Int,
+                        httpsPort: dict["httpsPort"] as? Int,
+                        container: dict["container"] as? String ?? "",
+                        appType: dict["appType"] as? String ?? "",
+                        createdAt: dict["createdAt"] as? String ?? "",
+                        icon: dict["icon"] as? String ?? ""
+                    )
+                }
+                group.leave()
+            }
+        }
+        group.enter()
+        ChannelManager.shared.invokeDataMethod(
+            "getAppInstallParams",
+            arguments: ["installId": installId]
+        ) { [weak self] result in
+            DispatchQueue.main.async {
+                if let dict = result as? [String: Any] {
+                    let params = (dict["params"] as? [[String: Any]] ?? []).compactMap { item -> AppInstallParam? in
+                        guard let key = item["key"] as? String, !key.isEmpty else { return nil }
+                        return AppInstallParam(
+                            key: key,
+                            labelZh: item["labelZh"] as? String ?? "",
+                            labelEn: item["labelEn"] as? String ?? "",
+                            type: item["type"] as? String ?? "text",
+                            value: item["value"] as? String ?? "",
+                            isEditable: item["edit"] as? Bool ?? false
+                        )
+                    }
+                    self?.installConfig = AppInstallConfig(
+                        containerName: dict["containerName"] as? String ?? "",
+                        cpuQuota: dict["cpuQuota"] as? Double ?? 0,
+                        memoryLimit: dict["memoryLimit"] as? Double ?? 0,
+                        memoryUnit: dict["memoryUnit"] as? String ?? "",
+                        webUI: dict["webUI"] as? String ?? "",
+                        type: dict["type"] as? String ?? "",
+                        params: params
+                    )
+                }
+                group.leave()
+            }
+        }
+        group.notify(queue: .main) { [weak self] in
+            self?.detailLoading = false
+        }
+    }
+
+    /// 应用目录详情（getAppDetailByKey 通道）。
+    func fetchCatalogDetail(key: String) {
+        catalogLoading = true
+        catalogDetail = nil
+        ChannelManager.shared.invokeDataMethod(
+            "getAppDetailByKey",
+            arguments: ["key": key]
+        ) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.catalogLoading = false
+                guard let dict = result as? [String: Any] else { return }
+                self?.catalogDetail = AppCatalogDetail(
+                    id: dict["id"] as? Int ?? 0,
+                    name: dict["name"] as? String ?? "",
+                    key: dict["key"] as? String ?? key,
+                    type: dict["type"] as? String ?? "",
+                    icon: dict["icon"] as? String ?? "",
+                    summaryZh: dict["shortDescZh"] as? String ?? "",
+                    summaryEn: dict["shortDescEn"] as? String ?? "",
+                    readMe: dict["readMe"] as? String ?? "",
+                    website: dict["website"] as? String ?? "",
+                    github: dict["github"] as? String ?? "",
+                    versions: (dict["versions"] as? [Any])?.compactMap { $0 as? String } ?? [],
+                    installed: dict["installed"] as? Bool ?? false,
+                    gpuSupport: dict["gpuSupport"] as? Bool ?? false,
+                    memoryRequired: dict["memoryRequired"] as? Int ?? 0,
+                    architectures: dict["architectures"] as? String ?? ""
+                )
+            }
+        }
+    }
+
     /// 应用商店列表（getAppStore 通道）。
     func fetchStore(search: String = "") {
         isStoreLoading = true
@@ -86,7 +273,8 @@ class AppsViewModel: ObservableObject {
                         type: item["type"] as? String ?? "app",
                         versions: versions,
                         installed: item["installed"] as? Bool ?? false,
-                        summary: item["description"] as? String ?? ""
+                        summary: item["description"] as? String ?? "",
+                        icon: item["icon"] as? String ?? ""
                     )
                 }
             }
@@ -187,7 +375,7 @@ class AppsViewModel: ObservableObject {
         }
     }
 
-    /// 启动/停止应用（startApp / stopApp 通道，installId 为键）。
+    /// 启动/停止/重启应用（startApp / stopApp / restartApp 通道）。
     func operateApp(installId: Int, operate: String, completion: @escaping (Bool) -> Void) {
         ChannelManager.shared.invokeDataMethod(
             operate,
@@ -222,18 +410,6 @@ class AppsViewModel: ObservableObject {
             DispatchQueue.main.async {
                 let success = (result as? [String: Any])?["success"] as? Bool ?? false
                 completion(success)
-            }
-        }
-    }
-
-    func fetchApps() {
-        isLoading = true
-        errorMessage = nil
-        ChannelManager.shared.invokeDataMethod("getApps") { [weak self] result in
-            DispatchQueue.main.async {
-                self?.isLoading = false
-                guard let dictArray = result as? [[String: Any]] else { return }
-                self?.apps = dictArray.compactMap(AppModel.init(payload:))
             }
         }
     }
