@@ -266,6 +266,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get websitesTabSsl => 'SSL';
 
   @override
+  String get websitesTabCertificates => '证书';
+
+  @override
   String get websitesTabRewrite => '伪静态';
 
   @override
@@ -1203,6 +1206,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get serverMetricsUnavailable => '监控数据暂不可用';
 
   @override
+  String get serverUnreachable => '无法连接面板';
+
+  @override
+  String serverLatencyLabel(int ms) {
+    return '响应 $ms 毫秒';
+  }
+
+  @override
   String get serverOpenDetail => '查看详情';
 
   @override
@@ -1231,6 +1242,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get aiTabGpu => 'GPU';
+
+  @override
+  String get aiTabModelDownloader => '模型下载';
 
   @override
   String get aiTabDomain => '域名';
@@ -1947,6 +1961,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get filesDownloadCancelled => '下载已取消';
+
+  @override
+  String get filesMoveSuccess => '移动成功';
+
+  @override
+  String get filesMoveDestination => '目标目录';
+
+  @override
+  String get filesUploadSuccess => '上传成功';
+
+  @override
+  String get filesUploadFailed => '上传失败';
 
   @override
   String filesDownloadSaving(String path) {
@@ -4669,6 +4695,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get containerTabTerminal => '终端';
 
   @override
+  String get containerTabFiles => '文件';
+
+  @override
+  String get containerFileBinaryHint => '二进制文件不支持预览';
+
+  @override
   String get containerDetailTitle => '容器详情';
 
   @override
@@ -4720,6 +4752,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get containerLogsDownload => '下载日志';
 
   @override
+  String get containerLogsFollowing => '正在跟随实时日志';
+
+  @override
+  String get containerLogsFollowPaused => '已停止跟随，显示已加载的日志';
+
+  @override
+  String get containerLogsStopFollow => '停止跟随';
+
+  @override
+  String get containerLogsResumeFollow => '恢复跟随';
+
+  @override
   String containerDeleteConfirm(Object name) {
     return '确定要删除容器 $name 吗？此操作不可恢复。';
   }
@@ -4758,6 +4802,21 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get containerActionPush => '推送';
+
+  @override
+  String get containerActionPushHelper => '镜像将推送到所选仓库';
+
+  @override
+  String get containerRepoLabel => '仓库';
+
+  @override
+  String get containerReposEmpty => '暂无仓库';
+
+  @override
+  String get containerImageNameHelper => '镜像名称，例如 myapp';
+
+  @override
+  String get containerBuildTagsHelper => '每行一个值';
 
   @override
   String get containerActionSave => '保存';
@@ -4894,6 +4953,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get orchestrationComposeCreateTitle => '创建 Compose 项目';
 
   @override
+  String get orchestrationComposeSourcePath => '已有文件';
+
+  @override
+  String get orchestrationComposePathHint => '编排文件路径';
+
+  @override
   String get orchestrationComposeContentLabel => 'Compose 内容';
 
   @override
@@ -4953,6 +5018,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get orchestrationImageTags => '标签';
+
+  @override
+  String get orchestrationImageTagHint => '标签';
 
   @override
   String get orchestrationImageSizeLabel => '大小';
@@ -5200,10 +5268,37 @@ class AppLocalizationsZh extends AppLocalizations {
   String get containerTemplateContentHint => 'YAML 内容';
 
   @override
+  String get containerTemplateCreateTitle => '新建编排模版';
+
+  @override
   String get containerCreate => '创建容器';
 
   @override
   String get containerCreateBasicSectionTitle => '基本配置';
+
+  @override
+  String get containerCreateRestartLabel => '重启策略';
+
+  @override
+  String get containerCreatePortsHint => '每行一条，例如 8080:80';
+
+  @override
+  String get containerCreateEnvHint => '每行一条 KEY=VALUE';
+
+  @override
+  String get containerCreateVolumesHint => '每行一条，例如 /host:/container';
+
+  @override
+  String get containerCreateAdvancedSectionTitle => '高级选项';
+
+  @override
+  String get containerCreateAutoRemove => '退出后自动删除';
+
+  @override
+  String get containerCreatePrivileged => '特权模式';
+
+  @override
+  String get containerCreatePublishAllPorts => '发布所有端口';
 
   @override
   String get containerEmptyTitle => '暂无容器';
@@ -8044,6 +8139,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get commonOperationFailed => '操作失败';
 
   @override
+  String get commonOperationSuccess => '操作成功';
+
+  @override
   String get commonDeleted => '删除成功';
 
   @override
@@ -9388,6 +9486,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get hostToolboxSnapshotRefreshFailed => '刷新设备快照失败。';
 
   @override
+  String get serverDeviceSnapshotTitle => '设备信息';
+
+  @override
+  String get serverLocalTimeLabel => '本地时间';
+
+  @override
+  String get serverDnsLabel => 'DNS';
+
+  @override
   String get hostToolboxKernelLabel => '内核';
 
   @override
@@ -9713,6 +9820,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get hostAuthScopeGlobal => '全局';
 
   @override
+  String get hostAuthPathSectionTitle => '路径认证';
+
+  @override
   String get hostAuthUsernameRequired => '请输入用户名。';
 
   @override
@@ -9914,6 +10024,21 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get hostLeechCacheTimeInvalid => '缓存时间必须是 1-65535 之间的整数。';
+
+  @override
+  String get hostLeechUnitSeconds => '秒';
+
+  @override
+  String get hostLeechUnitMinutes => '分钟';
+
+  @override
+  String get hostLeechUnitHours => '小时';
+
+  @override
+  String get hostLeechUnitDays => '天';
+
+  @override
+  String get hostLeechUnitWeeks => '周';
 
   @override
   String get hostLeechDomainsHelper => '一行一个域名';
@@ -10172,6 +10297,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get hostRedirectPathRequired => '请输入路径。';
+
+  @override
+  String get hostRedirectRoot => '重定向站点根路径';
 
   @override
   String get hostRedirectSaveFailed => '保存重定向失败。';
@@ -10572,4 +10700,1462 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get hostAiTabGpu => 'GPU';
+
+  @override
+  String get appCatalogSummaryLabel => '简介';
+
+  @override
+  String get appCatalogArchLabel => '架构';
+
+  @override
+  String get appCatalogMemoryLabel => '内存需求';
+
+  @override
+  String get appCatalogGpuLabel => 'GPU 支持';
+
+  @override
+  String get appCatalogVersionsLabel => '可选版本';
+
+  @override
+  String get appCatalogHomepageLabel => '项目主页';
+
+  @override
+  String get appCatalogSourceLabel => '源码仓库';
+
+  @override
+  String get appCatalogReadmeTitle => '说明文档';
+
+  @override
+  String get appCatalogReadmeEmpty => '该应用未提供说明文档。';
+
+  @override
+  String get appInstallParamsTitle => '安装参数';
+
+  @override
+  String get appTerminalTitle => '容器终端';
+
+  @override
+  String get cronjobRecordsTitle => '执行记录';
+
+  @override
+  String get cronjobRecordEmpty => '暂无执行记录。';
+
+  @override
+  String get cronjobRecordTaskIdLabel => '任务 ID';
+
+  @override
+  String get commonOpenAction => '打开';
+
+  @override
+  String get databaseChangePasswordHint => '保存后数据库密码立即更新。';
+
+  @override
+  String get serverHomeTitle => '服务器首页';
+
+  @override
+  String get fileContentTitle => '文件内容';
+
+  @override
+  String get fileContentEmpty => '文件为空';
+
+  @override
+  String get fileActionPermissions => '权限';
+
+  @override
+  String get fileCompressTypeLabel => '压缩格式';
+
+  @override
+  String get fileCompressNameLabel => '压缩包名称';
+
+  @override
+  String get filePermissionTitle => '权限设置';
+
+  @override
+  String get databaseUserCreateAction => '新建用户';
+
+  @override
+  String get databaseUserHostLabel => '主机';
+
+  @override
+  String get cronjobsNameLabel => '任务名称';
+
+  @override
+  String get panelSslSectionTitle => '面板 SSL';
+
+  @override
+  String get logsOperationTabLabel => '操作日志';
+
+  @override
+  String get logsLoginTabLabel => '登录日志';
+
+  @override
+  String get logsSystemTabLabel => '系统日志';
+
+  @override
+  String get fileCompressTypeZip => 'ZIP';
+
+  @override
+  String get containerImageInUse => '使用中';
+
+  @override
+  String get serverModuleVm => '虚拟机';
+
+  @override
+  String get vmPageTitle => '虚拟机';
+
+  @override
+  String get vmTabOverview => '概览';
+
+  @override
+  String get vmTabInstances => '虚拟机';
+
+  @override
+  String get vmInstanceCountUnit => '台';
+
+  @override
+  String get vmTabIso => 'ISO';
+
+  @override
+  String get vmTabTemplates => '模板';
+
+  @override
+  String get vmTabNetworks => '网络';
+
+  @override
+  String get vmTabStorages => '存储池';
+
+  @override
+  String get vmEnvironmentSectionTitle => '运行环境';
+
+  @override
+  String get vmEnvironmentReady => '运行环境就绪';
+
+  @override
+  String get vmEnvironmentNotReady => '运行环境未就绪';
+
+  @override
+  String get vmEnvironmentEnableAction => '启用运行环境';
+
+  @override
+  String get vmEnvironmentArchLabel => '系统架构';
+
+  @override
+  String get vmEnvironmentHelperLabel => '辅助程序';
+
+  @override
+  String get vmEnvironmentKvmLabel => 'KVM 硬件加速';
+
+  @override
+  String get vmEnvironmentLibvirtLabel => 'Libvirt 服务';
+
+  @override
+  String get vmEnvironmentStorageLabel => '存储目录';
+
+  @override
+  String get vmEnvironmentLibvirtInactive => '已安装但未运行';
+
+  @override
+  String get vmEnvironmentEnableConfirm =>
+      '启用运行环境会安装 KVM、libvirt 与存储依赖，耗时较长。确认继续吗？';
+
+  @override
+  String get vmOverviewRunningLabel => '运行中';
+
+  @override
+  String get vmOverviewStoppedLabel => '已停止';
+
+  @override
+  String get vmOverviewCreatingLabel => '创建中';
+
+  @override
+  String get vmOverviewAbnormalLabel => '异常';
+
+  @override
+  String get vmOverviewCpuAllocation => 'CPU 分配';
+
+  @override
+  String get vmOverviewMemoryAllocation => '内存分配';
+
+  @override
+  String get vmOverviewStorageUsage => '存储使用';
+
+  @override
+  String get vmOverviewRiskSectionTitle => '风险提醒';
+
+  @override
+  String get vmOverviewRiskEnvironment => '运行环境未就绪，虚拟机功能不可用';
+
+  @override
+  String vmOverviewRiskStorageHigh(String name, String percent) {
+    return '存储池 $name 使用率达到 $percent';
+  }
+
+  @override
+  String vmOverviewRiskStorageCritical(String name) {
+    return '存储池 $name 使用率已超过 90%，请及时清理';
+  }
+
+  @override
+  String vmOverviewRiskAbnormalVm(int count) {
+    return '存在 $count 台异常虚拟机';
+  }
+
+  @override
+  String vmOverviewRiskPausedVm(int count) {
+    return '存在 $count 台暂停虚拟机';
+  }
+
+  @override
+  String vmOverviewRiskMemoryHigh(String percent) {
+    return '已分配内存达到宿主机的 $percent';
+  }
+
+  @override
+  String get vmOverviewNoRisk => '当前没有需要处理的风险项';
+
+  @override
+  String get vmOverviewOrphanAction => '孤儿文件清理';
+
+  @override
+  String get vmOverviewStorageSectionTitle => '存储池概况';
+
+  @override
+  String get vmOverviewCoresUnit => '核';
+
+  @override
+  String get vmOverviewUnlimited => '不限制';
+
+  @override
+  String get vmOrphanDialogTitle => '孤儿文件清理';
+
+  @override
+  String get vmOrphanWarning => '以下文件不属于任何虚拟机记录，可安全清理。清理后不可恢复。';
+
+  @override
+  String get vmOrphanScanAction => '扫描';
+
+  @override
+  String get vmOrphanCleanAction => '清理选中';
+
+  @override
+  String get vmOrphanEmptyMessage => '没有发现孤儿文件';
+
+  @override
+  String get vmOrphanPathColumn => '路径';
+
+  @override
+  String get vmOrphanTypeColumn => '类型';
+
+  @override
+  String get vmOrphanSizeColumn => '大小';
+
+  @override
+  String get vmOrphanModifiedColumn => '修改时间';
+
+  @override
+  String vmOrphanSelectedSummary(int count, String size) {
+    return '已选 $count 项，共 $size';
+  }
+
+  @override
+  String get vmInstanceSearchHint => '搜索虚拟机名称';
+
+  @override
+  String get vmInstanceCreateAction => '创建虚拟机';
+
+  @override
+  String get vmInstanceSyncAction => '同步';
+
+  @override
+  String get vmInstanceEmptyTitle => '还没有虚拟机';
+
+  @override
+  String get vmInstanceEmptyDescription => '创建虚拟机或从 ISO、模板开始。';
+
+  @override
+  String get vmInstanceQuotaLabel => '配额';
+
+  @override
+  String get vmInstanceQuotaReached => '已达到虚拟机数量上限，无法继续创建';
+
+  @override
+  String get vmInstanceCreateDisabledHint => '运行环境未就绪，暂时无法创建虚拟机';
+
+  @override
+  String get vmInstanceStatusFilterAll => '全部状态';
+
+  @override
+  String get vmInstanceCardViewLabel => '卡片视图';
+
+  @override
+  String get vmInstanceTableViewLabel => '列表视图';
+
+  @override
+  String get vmInstanceCpuColumn => 'CPU';
+
+  @override
+  String get vmInstanceMemoryColumn => '内存';
+
+  @override
+  String get vmInstanceDiskColumn => '磁盘';
+
+  @override
+  String get vmInstanceNetworkColumn => '网络';
+
+  @override
+  String get vmInstanceStorageColumn => '存储池';
+
+  @override
+  String get vmInstanceDiskPathColumn => '磁盘路径';
+
+  @override
+  String get vmInstanceDescriptionColumn => '描述';
+
+  @override
+  String get vmInstanceNameColumn => '名称';
+
+  @override
+  String get vmInstanceStatusColumn => '状态';
+
+  @override
+  String get vmInstanceUuidLabel => 'UUID';
+
+  @override
+  String get vmInstanceBootOrderLabel => '启动顺序';
+
+  @override
+  String get vmInstanceIsoPathsLabel => 'ISO 路径';
+
+  @override
+  String get vmInstanceGraphicsLabel => 'VNC 图形';
+
+  @override
+  String get vmInstanceDisksSectionTitle => '磁盘';
+
+  @override
+  String get vmInstanceInterfacesSectionTitle => '网卡';
+
+  @override
+  String get vmInstanceDiskDeviceColumn => '设备';
+
+  @override
+  String get vmInstanceDiskTargetColumn => 'Target';
+
+  @override
+  String get vmInstanceDiskBusColumn => 'Bus';
+
+  @override
+  String get vmInstanceDiskSourceColumn => '源路径';
+
+  @override
+  String get vmInstanceNicTypeColumn => '类型';
+
+  @override
+  String get vmInstanceNicNetworkColumn => '网络';
+
+  @override
+  String get vmInstanceNicModelColumn => 'Model';
+
+  @override
+  String get vmInstanceNicMacColumn => 'MAC';
+
+  @override
+  String get vmInstanceNicIpColumn => 'IP';
+
+  @override
+  String get vmInstanceAutoStartLabel => '自动启动';
+
+  @override
+  String get vmInstanceActionStart => '启动';
+
+  @override
+  String get vmInstanceActionShutdown => '关机';
+
+  @override
+  String get vmInstanceActionReboot => '重启';
+
+  @override
+  String get vmInstanceActionSuspend => '挂起';
+
+  @override
+  String get vmInstanceActionResume => '恢复';
+
+  @override
+  String get vmInstanceActionDestroy => '强制停止';
+
+  @override
+  String get vmInstanceActionRename => '重命名';
+
+  @override
+  String get vmInstanceActionEdit => '编辑配置';
+
+  @override
+  String get vmInstanceActionDisk => '磁盘扩容';
+
+  @override
+  String get vmInstanceActionSnapshot => '快照';
+
+  @override
+  String get vmInstanceActionTemplate => '转为模板';
+
+  @override
+  String get vmInstanceActionHealthCheck => '健康检查';
+
+  @override
+  String get vmInstanceActionMonitor => '监控';
+
+  @override
+  String get vmInstanceActionConsole => 'VNC 控制台';
+
+  @override
+  String get vmInstanceActionDetail => '详情';
+
+  @override
+  String get vmInstanceActionDelete => '删除';
+
+  @override
+  String vmInstanceOperateConfirm(String name, String operation) {
+    return '确认对 $name 执行$operation吗？';
+  }
+
+  @override
+  String vmInstanceOperateCompleted(String operation) {
+    return '已提交$operation请求';
+  }
+
+  @override
+  String get vmInstanceConsoleUnavailable => '虚拟机的图形控制台未就绪，需要运行中且图形类型为 VNC';
+
+  @override
+  String get vmInstanceConsoleOpenHint => 'VNC 控制台在面板网页中打开，已复制地址';
+
+  @override
+  String get vmInstanceConsoleOpenAction => '在浏览器打开';
+
+  @override
+  String get vmInstanceConsoleAddressLabel => '控制台地址';
+
+  @override
+  String get vmInstanceCreateTitle => '创建虚拟机';
+
+  @override
+  String get vmInstanceEditTitle => '编辑虚拟机';
+
+  @override
+  String get vmInstanceNameLabel => '名称';
+
+  @override
+  String get vmInstanceCpuLabel => 'CPU 核数';
+
+  @override
+  String get vmInstanceMemoryLabel => '内存';
+
+  @override
+  String get vmInstanceDiskSizeLabel => '磁盘大小';
+
+  @override
+  String get vmInstanceStoragePoolLabel => '存储池';
+
+  @override
+  String get vmInstanceNetworkLabel => '网络';
+
+  @override
+  String get vmInstanceTemplateLabel => '从模板创建';
+
+  @override
+  String get vmInstanceTemplateNone => '不使用模板';
+
+  @override
+  String get vmInstanceIsoLabel => 'ISO 镜像';
+
+  @override
+  String get vmInstanceIsoNone => '不使用 ISO';
+
+  @override
+  String get vmInstanceOsTypeLabel => '操作系统类型';
+
+  @override
+  String get vmInstanceDiskBusLabel => '磁盘总线';
+
+  @override
+  String get vmInstanceBootOrderLabelCreate => '启动顺序';
+
+  @override
+  String get vmInstanceBootDiskFirst => '硬盘优先';
+
+  @override
+  String get vmInstanceBootCdFirst => '光驱优先';
+
+  @override
+  String get vmInstanceStartAfterCreateLabel => '创建后启动';
+
+  @override
+  String vmInstanceMemoryHint(String value) {
+    return '可分配 $value';
+  }
+
+  @override
+  String vmInstanceCpuHint(int value) {
+    return '宿主机共 $value 核';
+  }
+
+  @override
+  String get vmInstanceDeleteTitle => '删除虚拟机';
+
+  @override
+  String vmInstanceDeleteConfirmHint(String name) {
+    return '删除后不可恢复。输入虚拟机名称 $name 以确认。';
+  }
+
+  @override
+  String get vmInstanceDeleteForceLabel => '强制删除';
+
+  @override
+  String get vmInstanceDeleteNameMismatch => '名称不匹配，无法删除';
+
+  @override
+  String get vmInstanceRenameTitle => '重命名虚拟机';
+
+  @override
+  String get vmInstanceRenameNewNameLabel => '新名称';
+
+  @override
+  String get vmInstanceRenameSameName => '新名称与当前名称相同';
+
+  @override
+  String get vmInstanceTemplateDialogTitle => '转为模板';
+
+  @override
+  String get vmInstanceTemplateNameLabel => '模板名称';
+
+  @override
+  String get vmInstanceSnapshotTitle => '快照';
+
+  @override
+  String get vmInstanceSnapshotCreateAction => '创建快照';
+
+  @override
+  String get vmInstanceSnapshotEmptyMessage => '还没有快照';
+
+  @override
+  String get vmInstanceSnapshotNameLabel => '快照名称';
+
+  @override
+  String get vmInstanceSnapshotCurrentLabel => '当前';
+
+  @override
+  String get vmInstanceSnapshotRecoverAction => '恢复';
+
+  @override
+  String get vmInstanceSnapshotDeleteAction => '删除';
+
+  @override
+  String vmInstanceSnapshotRecoverConfirm(String name) {
+    return '确认恢复到快照 $name 吗？当前状态将丢失。';
+  }
+
+  @override
+  String get vmInstanceSnapshotNeedShutOff => '恢复快照需要先关机';
+
+  @override
+  String get vmInstanceDiskResizeTitle => '磁盘扩容';
+
+  @override
+  String get vmInstanceDiskCapacityLabel => '当前容量';
+
+  @override
+  String get vmInstanceDiskNewCapacityLabel => '扩容后容量（GiB）';
+
+  @override
+  String get vmInstanceDiskResizeHint => '最小值为当前容量加 1 GiB';
+
+  @override
+  String get vmInstanceDiskResizeBlockedLabel => '不可扩容原因';
+
+  @override
+  String get vmInstanceDiskResizeUnavailable => '可扩容';
+
+  @override
+  String get vmHealthCheckTitle => '健康检查';
+
+  @override
+  String vmHealthCheckSummary(int pass, int warn, int fail) {
+    return '通过 $pass 项，警告 $warn 项，失败 $fail 项';
+  }
+
+  @override
+  String get vmHealthCheckAllPassed => '全部检查通过';
+
+  @override
+  String get vmHealthCheckNeedAttention => '存在需要处理的问题';
+
+  @override
+  String get vmHealthCheckFixCommandLabel => '修复命令';
+
+  @override
+  String get vmHealthCheckDetailLabel => '技术详情';
+
+  @override
+  String get vmMonitorTitle => '实时监控';
+
+  @override
+  String get vmMonitorCpuChart => 'CPU 使用率';
+
+  @override
+  String get vmMonitorMemoryChart => '内存使用率';
+
+  @override
+  String get vmMonitorDiskChart => '磁盘读写速率';
+
+  @override
+  String get vmMonitorNetworkChart => '网络收发速率';
+
+  @override
+  String get vmMonitorStopped => '虚拟机未运行，监控已停止';
+
+  @override
+  String get vmMonitorWaitingSamples => '正在采集数据';
+
+  @override
+  String get vmMonitorCurrentLabel => '当前值';
+
+  @override
+  String get vmIsoStatusReady => '可用';
+
+  @override
+  String get vmIsoStatusUploading => '上传中';
+
+  @override
+  String get vmIsoStatusDownloading => '下载中';
+
+  @override
+  String get vmIsoStatusFailed => '失败';
+
+  @override
+  String get vmIsoStatusFileMissing => '文件不存在';
+
+  @override
+  String get vmIsoCreateAction => '添加 ISO';
+
+  @override
+  String get vmIsoEditAction => '编辑';
+
+  @override
+  String get vmIsoDeleteAction => '删除';
+
+  @override
+  String get vmIsoDeleteFileLabel => '同时删除源文件';
+
+  @override
+  String get vmIsoEmptyTitle => '还没有 ISO 镜像';
+
+  @override
+  String get vmIsoEmptyDescription => '添加 ISO 后可创建虚拟机。';
+
+  @override
+  String get vmIsoNameLabel => '名称';
+
+  @override
+  String get vmIsoTypeLabel => '系统类型';
+
+  @override
+  String get vmIsoSourceSectionTitle => '来源';
+
+  @override
+  String get vmIsoSourceServerFile => '服务器文件';
+
+  @override
+  String get vmIsoSourceUpload => '本地上传';
+
+  @override
+  String get vmIsoSourceDownload => '服务器下载';
+
+  @override
+  String get vmIsoServerPathLabel => '服务器路径';
+
+  @override
+  String get vmIsoDownloadUrlLabel => '下载地址';
+
+  @override
+  String get vmIsoTargetDirLabel => '目标目录';
+
+  @override
+  String get vmIsoImportStartAction => '开始导入';
+
+  @override
+  String get vmIsoImportProgressLabel => '导入进度';
+
+  @override
+  String get vmIsoImportCancelAction => '取消导入';
+
+  @override
+  String get vmIsoImportCancelled => '导入已取消';
+
+  @override
+  String get vmIsoPathColumn => '路径';
+
+  @override
+  String get vmIsoSizeColumn => '大小';
+
+  @override
+  String get vmIsoCreatedAtColumn => '创建时间';
+
+  @override
+  String get vmTemplateEmptyTitle => '还没有模板';
+
+  @override
+  String get vmTemplateEmptyDescription => '从关机状态的虚拟机创建模板后可重复部署。';
+
+  @override
+  String get vmTemplateSourceVmLabel => '来源虚拟机';
+
+  @override
+  String get vmTemplateSizeLabel => '模板大小';
+
+  @override
+  String get vmTemplateDeleteDiskLabel => '同时删除模板磁盘';
+
+  @override
+  String get vmTemplateDeleteAction => '删除';
+
+  @override
+  String get vmNetworkTypeNat => 'NAT';
+
+  @override
+  String get vmNetworkTypeBridge => 'Bridge';
+
+  @override
+  String get vmNetworkTypeMacvtap => 'Macvtap';
+
+  @override
+  String get vmNetworkCreateAction => '创建网络';
+
+  @override
+  String get vmNetworkEmptyTitle => '还没有虚拟机网络';
+
+  @override
+  String get vmNetworkEmptyDescription => '创建 NAT 或桥接网络供虚拟机使用。';
+
+  @override
+  String get vmNetworkNameLabel => '网络名称';
+
+  @override
+  String get vmNetworkTypeLabel => '类型';
+
+  @override
+  String get vmNetworkBridgeLabel => '网桥';
+
+  @override
+  String get vmNetworkBridgeHint => '只显示标记为推荐的网桥';
+
+  @override
+  String get vmNetworkSourceInterfaceLabel => '源网卡';
+
+  @override
+  String get vmNetworkCidrLabel => '网段';
+
+  @override
+  String get vmNetworkGatewayLabel => '网关';
+
+  @override
+  String get vmNetworkDhcpStartLabel => 'DHCP 起始地址';
+
+  @override
+  String get vmNetworkDhcpEndLabel => 'DHCP 结束地址';
+
+  @override
+  String get vmNetworkAutoStartLabel => '开机自启';
+
+  @override
+  String get vmNetworkUsedIpAction => '已用 IP';
+
+  @override
+  String get vmNetworkUsedIpTitle => '已用 IP 地址';
+
+  @override
+  String get vmNetworkUsedIpEmpty => '该网络下没有已分配地址';
+
+  @override
+  String get vmNetworkVmCountLabel => '虚拟机数量';
+
+  @override
+  String get vmNetworkNotRegistered => '未注册到 libvirt';
+
+  @override
+  String get vmNetworkIpColumn => 'IP';
+
+  @override
+  String get vmNetworkVmColumn => '虚拟机';
+
+  @override
+  String get vmNetworkMacColumn => 'MAC';
+
+  @override
+  String get vmNetworkSourceColumn => '来源';
+
+  @override
+  String get vmStorageTypeLabel => '类型';
+
+  @override
+  String get vmStorageCreateAction => '创建存储池';
+
+  @override
+  String get vmStorageEmptyTitle => '还没有存储池';
+
+  @override
+  String get vmStorageEmptyDescription => '创建存储池用于存放虚拟机磁盘。';
+
+  @override
+  String get vmStorageNameLabel => '存储池名称';
+
+  @override
+  String get vmStoragePathLabel => '目录路径';
+
+  @override
+  String get vmStorageCapacityLabel => '容量';
+
+  @override
+  String get vmStorageAvailableLabel => '可用';
+
+  @override
+  String get vmStorageUsedPercentLabel => '使用率';
+
+  @override
+  String get vmStorageStatusStart => '启动';
+
+  @override
+  String get vmStorageStatusStop => '停止';
+
+  @override
+  String get vmStorageAutoStartLabel => '开机自启';
+
+  @override
+  String get vmStorageDescriptionEdit => '编辑描述';
+
+  @override
+  String get alertPageTitle => '告警中心';
+
+  @override
+  String get alertTabRules => '告警任务';
+
+  @override
+  String get alertTabLogs => '告警日志';
+
+  @override
+  String get alertTabChannels => '通知渠道';
+
+  @override
+  String get alertRuleTitleColumn => '标题';
+
+  @override
+  String get alertRuleTypeColumn => '类型';
+
+  @override
+  String get alertRuleStatusColumn => '状态';
+
+  @override
+  String get alertRuleMethodColumn => '告警方式';
+
+  @override
+  String get alertRuleCycleColumn => '告警规则';
+
+  @override
+  String get alertRuleActionColumn => '操作';
+
+  @override
+  String get alertRuleStatusEnable => '启用';
+
+  @override
+  String get alertRuleStatusDisable => '停用';
+
+  @override
+  String alertRuleToggleConfirm(String action, String title) {
+    return '确认$action告警任务 $title 吗？';
+  }
+
+  @override
+  String alertRuleDeleteConfirm(String title) {
+    return '确认删除告警任务 $title 吗？';
+  }
+
+  @override
+  String get alertRuleCreateAction => '创建告警任务';
+
+  @override
+  String get alertRuleEmptyTitle => '还没有告警任务';
+
+  @override
+  String get alertRuleEmptyDescription => '创建告警任务后，达到阈值时会推送通知。';
+
+  @override
+  String get alertRuleFilterAllTypes => '全部类型';
+
+  @override
+  String get alertRuleFilterAllStatuses => '全部状态';
+
+  @override
+  String get alertRuleTypePasswordExpiry => '面板密码到期';
+
+  @override
+  String get alertRuleTypePanelLogin => '面板登录';
+
+  @override
+  String get alertRuleTypeLicenseException => '许可证异常';
+
+  @override
+  String get alertRuleTypeNodeException => '节点异常';
+
+  @override
+  String get alertRuleTypePanelUpdate => '面板更新';
+
+  @override
+  String get alertRuleTypeSshLogin => 'SSH 登录';
+
+  @override
+  String get alertRuleTypeSsl => '证书到期';
+
+  @override
+  String get alertRuleTypeSiteExpiry => '网站到期';
+
+  @override
+  String get alertRuleTypeCpu => 'CPU 占用';
+
+  @override
+  String get alertRuleTypeMemory => '内存占用';
+
+  @override
+  String get alertRuleTypeDisk => '磁盘占用';
+
+  @override
+  String get alertRuleTypeLoad => '负载';
+
+  @override
+  String get alertRuleTypeClams => '病毒扫描';
+
+  @override
+  String get alertRuleTypeCronJob => '计划任务';
+
+  @override
+  String get alertRuleTitleLabel => '标题';
+
+  @override
+  String get alertRuleTypeLabel => '任务类型';
+
+  @override
+  String get alertRuleCronjobSubTypeLabel => '计划任务类型';
+
+  @override
+  String get alertRuleCronjobTaskLabel => '计划任务';
+
+  @override
+  String get alertRuleCronjobTaskNone => '全部计划任务';
+
+  @override
+  String get alertRuleCronjobTriggerModeLabel => '触发模式';
+
+  @override
+  String get alertRuleCronjobTriggerFailed => '失败时';
+
+  @override
+  String get alertRuleCronjobTriggerSuccess => '成功时';
+
+  @override
+  String get alertRuleCronjobTriggerBoth => '成功或失败';
+
+  @override
+  String get alertRuleCycleDaysLabel => '剩余天数阈值';
+
+  @override
+  String get alertRuleThresholdLabel => '超限阈值';
+
+  @override
+  String get alertRuleThresholdUnitPercent => '百分比';
+
+  @override
+  String get alertRuleThresholdUnitGb => '容量（GB）';
+
+  @override
+  String get alertRuleDiskTargetsLabel => '监控磁盘';
+
+  @override
+  String get alertRuleDiskAll => '全部磁盘';
+
+  @override
+  String get alertRuleCertificateTargetsLabel => '监控证书';
+
+  @override
+  String get alertRuleCertificateAll => '全部证书';
+
+  @override
+  String get alertRuleWebsiteTargetsLabel => '监控网站';
+
+  @override
+  String get alertRuleWebsiteAll => '全部网站';
+
+  @override
+  String get alertRuleClamTargetLabel => '病毒扫描任务';
+
+  @override
+  String get alertRuleSendCountLabel => '每日发送次数';
+
+  @override
+  String get alertRuleMethodsLabel => '告警方式';
+
+  @override
+  String get alertRuleMethodsEmpty => '请先在通知渠道中创建发送方式';
+
+  @override
+  String get alertRuleIntervalLabel => '均值统计时长';
+
+  @override
+  String get alertRuleIntervalMinute1 => '1 分钟';
+
+  @override
+  String get alertRuleIntervalMinute5 => '5 分钟';
+
+  @override
+  String get alertRuleIntervalMinute15 => '15 分钟';
+
+  @override
+  String get alertRuleAdvancedParamsLabel => '高级参数';
+
+  @override
+  String get alertRuleAdvancedParamsHint => '按服务端约定的 JSON 结构填写，例如登录失败次数与白名单';
+
+  @override
+  String get alertLogStatusSuccess => '推送成功';
+
+  @override
+  String get alertLogStatusPushing => '推送中';
+
+  @override
+  String get alertLogStatusSendSuccess => '发送成功';
+
+  @override
+  String get alertLogStatusError => '推送失败';
+
+  @override
+  String get alertLogStatusSyncError => '同步失败';
+
+  @override
+  String get alertLogMessageColumn => '告警消息';
+
+  @override
+  String get alertLogMethodColumn => '告警方式';
+
+  @override
+  String get alertLogStatusColumn => '状态';
+
+  @override
+  String get alertLogCreatedAtColumn => '创建时间';
+
+  @override
+  String get alertLogCountColumn => '发送次数';
+
+  @override
+  String get alertLogCleanAction => '清空日志';
+
+  @override
+  String get alertLogCleanConfirm => '确认清空全部告警日志吗？';
+
+  @override
+  String get alertLogEmptyTitle => '还没有告警日志';
+
+  @override
+  String get alertLogEmptyDescription => '告警任务触发后会在这里记录推送结果。';
+
+  @override
+  String get alertLogFilterAllStatuses => '全部状态';
+
+  @override
+  String get alertLogFailureReasonLabel => '失败原因';
+
+  @override
+  String get alertLogSyncUnsupported => '社区版不提供告警日志同步端点';
+
+  @override
+  String get alertChannelCreateAction => '新建通知渠道';
+
+  @override
+  String get alertChannelEmptyTitle => '还没有通知渠道';
+
+  @override
+  String get alertChannelEmptyDescription => '创建通知渠道后，告警任务可以推送到邮箱或 Webhook。';
+
+  @override
+  String get alertChannelTypeEmail => '邮箱';
+
+  @override
+  String get alertChannelTypeBark => 'Bark';
+
+  @override
+  String get alertChannelTypeWeCom => '企业微信';
+
+  @override
+  String get alertChannelTypeDingTalk => '钉钉';
+
+  @override
+  String get alertChannelTypeFeiShu => '飞书';
+
+  @override
+  String get alertChannelTypeCustom => 'Webhook';
+
+  @override
+  String get alertChannelDisplayNameLabel => '显示名称';
+
+  @override
+  String get alertChannelSenderLabel => '发件人';
+
+  @override
+  String get alertChannelUsernameLabel => '用户名';
+
+  @override
+  String get alertChannelPasswordLabel => '密码';
+
+  @override
+  String get alertChannelHostLabel => 'SMTP 主机';
+
+  @override
+  String get alertChannelPortLabel => '端口';
+
+  @override
+  String get alertChannelEncryptionLabel => '加密方式';
+
+  @override
+  String get alertChannelEncryptionNone => '不加密';
+
+  @override
+  String get alertChannelEncryptionSsl => 'SSL';
+
+  @override
+  String get alertChannelEncryptionTls => 'TLS';
+
+  @override
+  String get alertChannelRecipientLabel => '收件人';
+
+  @override
+  String get alertChannelRecipientHint => '多个收件人用逗号分隔';
+
+  @override
+  String get alertChannelWebhookUrlLabel => 'Webhook 地址';
+
+  @override
+  String get alertChannelPasswordKeep => '保持不变';
+
+  @override
+  String get alertChannelPasswordReplace => '替换';
+
+  @override
+  String get alertChannelPasswordClear => '清除';
+
+  @override
+  String get alertChannelTestAction => '测试';
+
+  @override
+  String get alertChannelTestPassedHint => '测试通过后才能保存';
+
+  @override
+  String get alertChannelTestRequired => '请先测试渠道并等待通过';
+
+  @override
+  String alertChannelDeleteConfirm(String title) {
+    return '确认删除通知渠道 $title 吗？';
+  }
+
+  @override
+  String get alertChannelEnabledLabel => '启用';
+
+  @override
+  String get alertChannelDisabledLabel => '停用';
+
+  @override
+  String get alertChannelCustomPresetLabel => '预设';
+
+  @override
+  String get alertChannelCustomPresetGeneric => '通用 JSON';
+
+  @override
+  String get alertChannelCustomPresetSlack => 'Slack';
+
+  @override
+  String get alertChannelCustomPresetDiscord => 'Discord';
+
+  @override
+  String get alertChannelCustomPresetTeams => 'Teams Workflows';
+
+  @override
+  String get alertChannelCustomPresetCustom => '自定义';
+
+  @override
+  String get alertChannelCustomBodyTypeLabel => 'Body 类型';
+
+  @override
+  String get alertChannelCustomBodyJson => 'JSON';
+
+  @override
+  String get alertChannelCustomBodyForm => 'Form';
+
+  @override
+  String get alertChannelCustomBodyText => 'Text';
+
+  @override
+  String get alertChannelCustomTemplateLabel => 'Body 模板';
+
+  @override
+  String get alertChannelCustomFormatAction => '格式化';
+
+  @override
+  String get alertChannelCustomFormPairLabel => '键值对';
+
+  @override
+  String get alertChannelCustomHeadersLabel => '自定义 Headers';
+
+  @override
+  String get alertChannelCustomHeaderKeyLabel => 'Header 名称';
+
+  @override
+  String get alertChannelCustomHeaderValueLabel => 'Header 值';
+
+  @override
+  String get alertChannelCustomAddHeaderAction => '添加 Header';
+
+  @override
+  String get alertChannelCustomAddPairAction => '添加键值对';
+
+  @override
+  String get alertChannelCustomVariableHint => '点击插入模板变量';
+
+  @override
+  String get alertChannelCustomVariableTitle => '标题';
+
+  @override
+  String get alertChannelCustomVariableMessage => '消息';
+
+  @override
+  String get alertChannelCustomVariableType => 'id';
+
+  @override
+  String get alertChannelCustomVariableNode => '节点';
+
+  @override
+  String get alertChannelCustomVariableTimestamp => '时间戳';
+
+  @override
+  String get alertChannelTestResultTitle => '测试结果';
+
+  @override
+  String get alertChannelTestSuccess => '渠道测试通过';
+
+  @override
+  String get alertChannelTestFailed => '渠道测试失败';
+
+  @override
+  String get modelDownloaderTabLabel => '模型下载';
+
+  @override
+  String get modelDownloaderFeaturedSectionTitle => '推荐模型';
+
+  @override
+  String get modelDownloaderSearchSectionTitle => '模型市场';
+
+  @override
+  String get modelDownloaderTasksSectionTitle => '下载任务';
+
+  @override
+  String get modelDownloaderLocalSectionTitle => '本地模型';
+
+  @override
+  String get modelDownloaderFeaturedEmptyTitle => '暂无推荐模型';
+
+  @override
+  String get modelDownloaderFeaturedEmptyDescription => '同步推荐目录后即可浏览。';
+
+  @override
+  String get modelDownloaderFeaturedSyncAction => '同步目录';
+
+  @override
+  String get modelDownloaderFeaturedSyncEnabled => '自动同步已开启';
+
+  @override
+  String get modelDownloaderFeaturedSyncDisabled => '自动同步已关闭';
+
+  @override
+  String get modelDownloaderFeaturedAutoSyncLabel => '自动同步';
+
+  @override
+  String get modelDownloaderSearchHint => '输入模型名称或仓库 ID';
+
+  @override
+  String get modelDownloaderSearchSourceLabel => '来源';
+
+  @override
+  String get modelDownloaderSearchSourceHf => 'Hugging Face';
+
+  @override
+  String get modelDownloaderSearchSourceModelScope => 'ModelScope';
+
+  @override
+  String get modelDownloaderSearchSortLabel => '排序';
+
+  @override
+  String get modelDownloaderSortTrending => '热门';
+
+  @override
+  String get modelDownloaderSortDownloads => '下载量';
+
+  @override
+  String get modelDownloaderSortLikes => '点赞数';
+
+  @override
+  String get modelDownloaderSortUpdated => '最近更新';
+
+  @override
+  String get modelDownloaderSearchAction => '搜索';
+
+  @override
+  String get modelDownloaderDownloadAction => '下载';
+
+  @override
+  String get modelDownloaderDownloadStarted => '已提交下载任务';
+
+  @override
+  String get modelDownloaderDownloadTypeLabel => '下载内容';
+
+  @override
+  String get modelDownloaderDownloadTypeAll => '完整模型';
+
+  @override
+  String get modelDownloaderDownloadTypeTokenizer => '仅分词器';
+
+  @override
+  String get modelDownloaderRevisionLabel => '版本';
+
+  @override
+  String get modelDownloaderModelInfoTitle => '模型详情';
+
+  @override
+  String get modelDownloaderModelCardLabel => '模型说明';
+
+  @override
+  String get modelDownloaderModelFilesLabel => '文件';
+
+  @override
+  String get modelDownloaderDownloadCountLabel => '下载量';
+
+  @override
+  String get modelDownloaderLikeCountLabel => '点赞数';
+
+  @override
+  String get modelDownloaderTaskStatusLabel => '状态';
+
+  @override
+  String get modelDownloaderTaskProgressLabel => '进度';
+
+  @override
+  String get modelDownloaderTaskCancelAction => '取消';
+
+  @override
+  String get modelDownloaderTaskRetryAction => '重试';
+
+  @override
+  String get modelDownloaderTaskRemoveAction => '移除记录';
+
+  @override
+  String get modelDownloaderTaskRemoveWithFileLabel => '同时删除已下载文件';
+
+  @override
+  String modelDownloaderTaskCancelConfirm(String name) {
+    return '确认取消下载任务 $name 吗？';
+  }
+
+  @override
+  String modelDownloaderTaskRemoveConfirm(String name) {
+    return '确认移除下载任务 $name 的记录吗？';
+  }
+
+  @override
+  String modelDownloaderTaskRetryConfirm(String name) {
+    return '确认重试下载任务 $name 吗？';
+  }
+
+  @override
+  String get modelDownloaderTaskEmptyTitle => '暂无下载任务';
+
+  @override
+  String get modelDownloaderTaskEmptyDescription => '在模型市场中选择模型开始下载。';
+
+  @override
+  String get modelDownloaderTaskStatusRunning => '下载中';
+
+  @override
+  String get modelDownloaderTaskStatusCompleted => '已完成';
+
+  @override
+  String get modelDownloaderTaskStatusFailed => '失败';
+
+  @override
+  String get modelDownloaderTaskStatusCancelled => '已取消';
+
+  @override
+  String get modelDownloaderTaskStatusWaiting => '等待中';
+
+  @override
+  String get modelDownloaderLocalEmptyTitle => '暂无本地模型';
+
+  @override
+  String get modelDownloaderLocalEmptyDescription => '下载完成的模型会出现在这里。';
+
+  @override
+  String get modelDownloaderLocalDeleteAction => '删除';
+
+  @override
+  String get modelDownloaderLocalDeleteFileLabel => '同时删除模型文件';
+
+  @override
+  String modelDownloaderLocalDeleteConfirm(String name) {
+    return '确认删除本地模型 $name 吗？';
+  }
+
+  @override
+  String get modelDownloaderLocalPathLabel => '路径';
+
+  @override
+  String get modelDownloaderLocalSizeLabel => '大小';
+
+  @override
+  String get modelDownloaderLocalSourceLabel => '来源';
+
+  @override
+  String get modelDownloaderLocalCreatedAtLabel => '下载时间';
+
+  @override
+  String get modelDownloaderSettingsAction => '下载设置';
+
+  @override
+  String get modelDownloaderSettingsTitle => '模型下载设置';
+
+  @override
+  String get modelDownloaderSettingsModelDirLabel => '模型目录';
+
+  @override
+  String get modelDownloaderSettingsHfEndpointLabel => 'Hugging Face 地址';
+
+  @override
+  String get modelDownloaderSettingsHfTokenLabel => 'Hugging Face 令牌';
+
+  @override
+  String get modelDownloaderSettingsModelScopeEndpointLabel => 'ModelScope 地址';
+
+  @override
+  String get modelDownloaderSettingsModelScopeTokenLabel => 'ModelScope 令牌';
+
+  @override
+  String get modelDownloaderSettingsFeaturedSyncLabel => '推荐目录自动同步';
+
+  @override
+  String get modelDownloaderSettingsSaveSuccess => '下载设置已保存';
+
+  @override
+  String get modelDownloaderRequiresProHint =>
+      '模型下载器在社区版面板上可能不可用，保存失败时以服务端返回为准';
 }

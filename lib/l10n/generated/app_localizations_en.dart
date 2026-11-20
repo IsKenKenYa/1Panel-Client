@@ -267,6 +267,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get websitesTabSsl => 'SSL';
 
   @override
+  String get websitesTabCertificates => 'Certificates';
+
+  @override
   String get websitesTabRewrite => 'Rewrite';
 
   @override
@@ -1231,6 +1234,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get serverMetricsUnavailable => 'Metrics unavailable';
 
   @override
+  String get serverUnreachable => 'Panel unreachable';
+
+  @override
+  String serverLatencyLabel(int ms) {
+    return 'Responded in $ms ms';
+  }
+
+  @override
   String get serverOpenDetail => 'Open details';
 
   @override
@@ -1259,6 +1270,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aiTabGpu => 'GPU';
+
+  @override
+  String get aiTabModelDownloader => 'Model Download';
 
   @override
   String get aiTabDomain => 'Domain';
@@ -1997,6 +2011,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get filesDownloadCancelled => 'Download cancelled';
+
+  @override
+  String get filesMoveSuccess => 'Moved';
+
+  @override
+  String get filesMoveDestination => 'Destination directory';
+
+  @override
+  String get filesUploadSuccess => 'Uploaded';
+
+  @override
+  String get filesUploadFailed => 'Upload failed';
 
   @override
   String filesDownloadSaving(String path) {
@@ -4830,6 +4856,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get containerTabTerminal => 'Terminal';
 
   @override
+  String get containerTabFiles => 'Files';
+
+  @override
+  String get containerFileBinaryHint => 'Binary file preview is not supported';
+
+  @override
   String get containerDetailTitle => 'Container Details';
 
   @override
@@ -4881,6 +4913,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get containerLogsDownload => 'Download Logs';
 
   @override
+  String get containerLogsFollowing => 'Following live logs';
+
+  @override
+  String get containerLogsFollowPaused => 'Follow stopped, showing loaded logs';
+
+  @override
+  String get containerLogsStopFollow => 'Stop following';
+
+  @override
+  String get containerLogsResumeFollow => 'Resume following';
+
+  @override
   String containerDeleteConfirm(Object name) {
     return 'Are you sure you want to delete container $name? This action cannot be undone.';
   }
@@ -4919,6 +4963,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get containerActionPush => 'Push';
+
+  @override
+  String get containerActionPushHelper =>
+      'The image is pushed to the selected registry.';
+
+  @override
+  String get containerRepoLabel => 'Repository';
+
+  @override
+  String get containerReposEmpty => 'No repositories';
+
+  @override
+  String get containerImageNameHelper => 'Image name, e.g. myapp';
+
+  @override
+  String get containerBuildTagsHelper => 'One value per line';
 
   @override
   String get containerActionSave => 'Save';
@@ -5057,6 +5117,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get orchestrationComposeCreateTitle => 'Create Compose Project';
 
   @override
+  String get orchestrationComposeSourcePath => 'Existing File';
+
+  @override
+  String get orchestrationComposePathHint => 'Compose file path';
+
+  @override
   String get orchestrationComposeContentLabel => 'Compose Content';
 
   @override
@@ -5117,6 +5183,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get orchestrationImageTags => 'Tags';
+
+  @override
+  String get orchestrationImageTagHint => 'Tag';
 
   @override
   String get orchestrationImageSizeLabel => 'Size';
@@ -5365,10 +5434,38 @@ class AppLocalizationsEn extends AppLocalizations {
   String get containerTemplateContentHint => 'YAML content';
 
   @override
+  String get containerTemplateCreateTitle => 'New Compose Template';
+
+  @override
   String get containerCreate => 'Create Container';
 
   @override
   String get containerCreateBasicSectionTitle => 'Basic Configuration';
+
+  @override
+  String get containerCreateRestartLabel => 'Restart policy';
+
+  @override
+  String get containerCreatePortsHint => 'One per line, e.g. 8080:80';
+
+  @override
+  String get containerCreateEnvHint => 'One KEY=VALUE per line';
+
+  @override
+  String get containerCreateVolumesHint =>
+      'One per line, e.g. /host:/container';
+
+  @override
+  String get containerCreateAdvancedSectionTitle => 'Advanced';
+
+  @override
+  String get containerCreateAutoRemove => 'Auto remove on exit';
+
+  @override
+  String get containerCreatePrivileged => 'Privileged';
+
+  @override
+  String get containerCreatePublishAllPorts => 'Publish all ports';
 
   @override
   String get containerEmptyTitle => 'No containers';
@@ -8269,6 +8366,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonOperationFailed => 'Operation failed';
 
   @override
+  String get commonOperationSuccess => 'Operation succeeded';
+
+  @override
   String get commonDeleted => 'Deleted';
 
   @override
@@ -9664,6 +9764,15 @@ class AppLocalizationsEn extends AppLocalizations {
       'Failed to refresh device snapshot.';
 
   @override
+  String get serverDeviceSnapshotTitle => 'Device Info';
+
+  @override
+  String get serverLocalTimeLabel => 'Local Time';
+
+  @override
+  String get serverDnsLabel => 'DNS';
+
+  @override
   String get hostToolboxKernelLabel => 'Kernel';
 
   @override
@@ -10018,6 +10127,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hostAuthScopeGlobal => 'Global';
 
   @override
+  String get hostAuthPathSectionTitle => 'Path authentication';
+
+  @override
   String get hostAuthUsernameRequired => 'Username is required.';
 
   @override
@@ -10230,6 +10342,21 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get hostLeechCacheTimeInvalid =>
       'Cache time must be an integer between 1 and 65535.';
+
+  @override
+  String get hostLeechUnitSeconds => 's';
+
+  @override
+  String get hostLeechUnitMinutes => 'm';
+
+  @override
+  String get hostLeechUnitHours => 'h';
+
+  @override
+  String get hostLeechUnitDays => 'd';
+
+  @override
+  String get hostLeechUnitWeeks => 'w';
 
   @override
   String get hostLeechDomainsHelper => 'One domain per line';
@@ -10503,6 +10630,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hostRedirectPathRequired => 'Path is required.';
+
+  @override
+  String get hostRedirectRoot => 'Redirect site root to this rule';
 
   @override
   String get hostRedirectSaveFailed => 'Failed to save the redirect.';
@@ -10916,4 +11046,1492 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hostAiTabGpu => 'GPU';
+
+  @override
+  String get appCatalogSummaryLabel => 'Summary';
+
+  @override
+  String get appCatalogArchLabel => 'Architectures';
+
+  @override
+  String get appCatalogMemoryLabel => 'Memory Required';
+
+  @override
+  String get appCatalogGpuLabel => 'GPU Support';
+
+  @override
+  String get appCatalogVersionsLabel => 'Versions';
+
+  @override
+  String get appCatalogHomepageLabel => 'Homepage';
+
+  @override
+  String get appCatalogSourceLabel => 'Source';
+
+  @override
+  String get appCatalogReadmeTitle => 'Readme';
+
+  @override
+  String get appCatalogReadmeEmpty => 'This app does not provide a readme.';
+
+  @override
+  String get appInstallParamsTitle => 'Install Parameters';
+
+  @override
+  String get appTerminalTitle => 'Container Terminal';
+
+  @override
+  String get cronjobRecordsTitle => 'Run Records';
+
+  @override
+  String get cronjobRecordEmpty => 'No run records yet.';
+
+  @override
+  String get cronjobRecordTaskIdLabel => 'Task ID';
+
+  @override
+  String get commonOpenAction => 'Open';
+
+  @override
+  String get databaseChangePasswordHint =>
+      'The database password updates immediately after saving.';
+
+  @override
+  String get serverHomeTitle => 'Server Home';
+
+  @override
+  String get fileContentTitle => 'File Content';
+
+  @override
+  String get fileContentEmpty => 'File is empty';
+
+  @override
+  String get fileActionPermissions => 'Permissions';
+
+  @override
+  String get fileCompressTypeLabel => 'Archive Format';
+
+  @override
+  String get fileCompressNameLabel => 'Archive Name';
+
+  @override
+  String get filePermissionTitle => 'Permissions';
+
+  @override
+  String get databaseUserCreateAction => 'New User';
+
+  @override
+  String get databaseUserHostLabel => 'Host';
+
+  @override
+  String get cronjobsNameLabel => 'Task Name';
+
+  @override
+  String get panelSslSectionTitle => 'Panel SSL';
+
+  @override
+  String get logsOperationTabLabel => 'Operation';
+
+  @override
+  String get logsLoginTabLabel => 'Login';
+
+  @override
+  String get logsSystemTabLabel => 'System';
+
+  @override
+  String get fileCompressTypeZip => 'ZIP';
+
+  @override
+  String get containerImageInUse => 'In Use';
+
+  @override
+  String get serverModuleVm => 'Virtual Machines';
+
+  @override
+  String get vmPageTitle => 'Virtual Machines';
+
+  @override
+  String get vmTabOverview => 'Overview';
+
+  @override
+  String get vmTabInstances => 'Virtual Machines';
+
+  @override
+  String get vmInstanceCountUnit => 'instances';
+
+  @override
+  String get vmTabIso => 'ISO';
+
+  @override
+  String get vmTabTemplates => 'Templates';
+
+  @override
+  String get vmTabNetworks => 'Networks';
+
+  @override
+  String get vmTabStorages => 'Storage Pools';
+
+  @override
+  String get vmEnvironmentSectionTitle => 'Runtime Environment';
+
+  @override
+  String get vmEnvironmentReady => 'Runtime environment ready';
+
+  @override
+  String get vmEnvironmentNotReady => 'Runtime environment not ready';
+
+  @override
+  String get vmEnvironmentEnableAction => 'Enable environment';
+
+  @override
+  String get vmEnvironmentArchLabel => 'Architecture';
+
+  @override
+  String get vmEnvironmentHelperLabel => 'Helper';
+
+  @override
+  String get vmEnvironmentKvmLabel => 'KVM acceleration';
+
+  @override
+  String get vmEnvironmentLibvirtLabel => 'Libvirt service';
+
+  @override
+  String get vmEnvironmentStorageLabel => 'Storage directory';
+
+  @override
+  String get vmEnvironmentLibvirtInactive => 'Installed but not running';
+
+  @override
+  String get vmEnvironmentEnableConfirm =>
+      'Enabling the runtime environment installs KVM, libvirt and storage dependencies and takes a while. Continue?';
+
+  @override
+  String get vmOverviewRunningLabel => 'Running';
+
+  @override
+  String get vmOverviewStoppedLabel => 'Stopped';
+
+  @override
+  String get vmOverviewCreatingLabel => 'Creating';
+
+  @override
+  String get vmOverviewAbnormalLabel => 'Abnormal';
+
+  @override
+  String get vmOverviewCpuAllocation => 'CPU allocation';
+
+  @override
+  String get vmOverviewMemoryAllocation => 'Memory allocation';
+
+  @override
+  String get vmOverviewStorageUsage => 'Storage usage';
+
+  @override
+  String get vmOverviewRiskSectionTitle => 'Risks';
+
+  @override
+  String get vmOverviewRiskEnvironment =>
+      'Runtime environment is not ready; virtual machines are unavailable';
+
+  @override
+  String vmOverviewRiskStorageHigh(String name, String percent) {
+    return 'Storage pool $name reached $percent';
+  }
+
+  @override
+  String vmOverviewRiskStorageCritical(String name) {
+    return 'Storage pool $name exceeded 90%, clean it up soon';
+  }
+
+  @override
+  String vmOverviewRiskAbnormalVm(int count) {
+    return '$count abnormal virtual machines';
+  }
+
+  @override
+  String vmOverviewRiskPausedVm(int count) {
+    return '$count paused virtual machines';
+  }
+
+  @override
+  String vmOverviewRiskMemoryHigh(String percent) {
+    return 'Allocated memory reached $percent of the host';
+  }
+
+  @override
+  String get vmOverviewNoRisk => 'No risks need attention';
+
+  @override
+  String get vmOverviewOrphanAction => 'Clean orphan files';
+
+  @override
+  String get vmOverviewStorageSectionTitle => 'Storage pools';
+
+  @override
+  String get vmOverviewCoresUnit => 'cores';
+
+  @override
+  String get vmOverviewUnlimited => 'Unlimited';
+
+  @override
+  String get vmOrphanDialogTitle => 'Clean orphan files';
+
+  @override
+  String get vmOrphanWarning =>
+      'These files belong to no virtual machine record and can be cleaned safely. Cleaning cannot be undone.';
+
+  @override
+  String get vmOrphanScanAction => 'Scan';
+
+  @override
+  String get vmOrphanCleanAction => 'Clean selected';
+
+  @override
+  String get vmOrphanEmptyMessage => 'No orphan files found';
+
+  @override
+  String get vmOrphanPathColumn => 'Path';
+
+  @override
+  String get vmOrphanTypeColumn => 'Type';
+
+  @override
+  String get vmOrphanSizeColumn => 'Size';
+
+  @override
+  String get vmOrphanModifiedColumn => 'Modified';
+
+  @override
+  String vmOrphanSelectedSummary(int count, String size) {
+    return '$count selected, $size in total';
+  }
+
+  @override
+  String get vmInstanceSearchHint => 'Search virtual machine name';
+
+  @override
+  String get vmInstanceCreateAction => 'Create virtual machine';
+
+  @override
+  String get vmInstanceSyncAction => 'Sync';
+
+  @override
+  String get vmInstanceEmptyTitle => 'No virtual machines yet';
+
+  @override
+  String get vmInstanceEmptyDescription =>
+      'Create one from an ISO image or a template.';
+
+  @override
+  String get vmInstanceQuotaLabel => 'Quota';
+
+  @override
+  String get vmInstanceQuotaReached => 'Virtual machine quota reached';
+
+  @override
+  String get vmInstanceCreateDisabledHint =>
+      'Runtime environment is not ready; creation is unavailable';
+
+  @override
+  String get vmInstanceStatusFilterAll => 'All states';
+
+  @override
+  String get vmInstanceCardViewLabel => 'Card view';
+
+  @override
+  String get vmInstanceTableViewLabel => 'List view';
+
+  @override
+  String get vmInstanceCpuColumn => 'CPU';
+
+  @override
+  String get vmInstanceMemoryColumn => 'Memory';
+
+  @override
+  String get vmInstanceDiskColumn => 'Disk';
+
+  @override
+  String get vmInstanceNetworkColumn => 'Network';
+
+  @override
+  String get vmInstanceStorageColumn => 'Storage pool';
+
+  @override
+  String get vmInstanceDiskPathColumn => 'Disk path';
+
+  @override
+  String get vmInstanceDescriptionColumn => 'Description';
+
+  @override
+  String get vmInstanceNameColumn => 'Name';
+
+  @override
+  String get vmInstanceStatusColumn => 'State';
+
+  @override
+  String get vmInstanceUuidLabel => 'UUID';
+
+  @override
+  String get vmInstanceBootOrderLabel => 'Boot order';
+
+  @override
+  String get vmInstanceIsoPathsLabel => 'ISO paths';
+
+  @override
+  String get vmInstanceGraphicsLabel => 'VNC graphics';
+
+  @override
+  String get vmInstanceDisksSectionTitle => 'Disks';
+
+  @override
+  String get vmInstanceInterfacesSectionTitle => 'Interfaces';
+
+  @override
+  String get vmInstanceDiskDeviceColumn => 'Device';
+
+  @override
+  String get vmInstanceDiskTargetColumn => 'Target';
+
+  @override
+  String get vmInstanceDiskBusColumn => 'Bus';
+
+  @override
+  String get vmInstanceDiskSourceColumn => 'Source';
+
+  @override
+  String get vmInstanceNicTypeColumn => 'Type';
+
+  @override
+  String get vmInstanceNicNetworkColumn => 'Network';
+
+  @override
+  String get vmInstanceNicModelColumn => 'Model';
+
+  @override
+  String get vmInstanceNicMacColumn => 'MAC';
+
+  @override
+  String get vmInstanceNicIpColumn => 'IP';
+
+  @override
+  String get vmInstanceAutoStartLabel => 'Start on boot';
+
+  @override
+  String get vmInstanceActionStart => 'Start';
+
+  @override
+  String get vmInstanceActionShutdown => 'Shut down';
+
+  @override
+  String get vmInstanceActionReboot => 'Reboot';
+
+  @override
+  String get vmInstanceActionSuspend => 'Suspend';
+
+  @override
+  String get vmInstanceActionResume => 'Resume';
+
+  @override
+  String get vmInstanceActionDestroy => 'Force stop';
+
+  @override
+  String get vmInstanceActionRename => 'Rename';
+
+  @override
+  String get vmInstanceActionEdit => 'Edit config';
+
+  @override
+  String get vmInstanceActionDisk => 'Resize disk';
+
+  @override
+  String get vmInstanceActionSnapshot => 'Snapshots';
+
+  @override
+  String get vmInstanceActionTemplate => 'Convert to template';
+
+  @override
+  String get vmInstanceActionHealthCheck => 'Health check';
+
+  @override
+  String get vmInstanceActionMonitor => 'Monitor';
+
+  @override
+  String get vmInstanceActionConsole => 'VNC console';
+
+  @override
+  String get vmInstanceActionDetail => 'Details';
+
+  @override
+  String get vmInstanceActionDelete => 'Delete';
+
+  @override
+  String vmInstanceOperateConfirm(String name, String operation) {
+    return 'Run $operation on $name?';
+  }
+
+  @override
+  String vmInstanceOperateCompleted(String operation) {
+    return '$operation request submitted';
+  }
+
+  @override
+  String get vmInstanceConsoleUnavailable =>
+      'The graphics console is not ready; the machine must be running with VNC graphics';
+
+  @override
+  String get vmInstanceConsoleOpenHint =>
+      'The VNC console opens in the panel web UI; the address was copied';
+
+  @override
+  String get vmInstanceConsoleOpenAction => 'Open in browser';
+
+  @override
+  String get vmInstanceConsoleAddressLabel => 'Console address';
+
+  @override
+  String get vmInstanceCreateTitle => 'Create virtual machine';
+
+  @override
+  String get vmInstanceEditTitle => 'Edit virtual machine';
+
+  @override
+  String get vmInstanceNameLabel => 'Name';
+
+  @override
+  String get vmInstanceCpuLabel => 'CPU cores';
+
+  @override
+  String get vmInstanceMemoryLabel => 'Memory';
+
+  @override
+  String get vmInstanceDiskSizeLabel => 'Disk size';
+
+  @override
+  String get vmInstanceStoragePoolLabel => 'Storage pool';
+
+  @override
+  String get vmInstanceNetworkLabel => 'Network';
+
+  @override
+  String get vmInstanceTemplateLabel => 'Create from template';
+
+  @override
+  String get vmInstanceTemplateNone => 'No template';
+
+  @override
+  String get vmInstanceIsoLabel => 'ISO image';
+
+  @override
+  String get vmInstanceIsoNone => 'No ISO';
+
+  @override
+  String get vmInstanceOsTypeLabel => 'OS type';
+
+  @override
+  String get vmInstanceDiskBusLabel => 'Disk bus';
+
+  @override
+  String get vmInstanceBootOrderLabelCreate => 'Boot order';
+
+  @override
+  String get vmInstanceBootDiskFirst => 'Disk first';
+
+  @override
+  String get vmInstanceBootCdFirst => 'CD first';
+
+  @override
+  String get vmInstanceStartAfterCreateLabel => 'Start after creation';
+
+  @override
+  String vmInstanceMemoryHint(String value) {
+    return '$value available';
+  }
+
+  @override
+  String vmInstanceCpuHint(int value) {
+    return '$value cores on the host';
+  }
+
+  @override
+  String get vmInstanceDeleteTitle => 'Delete virtual machine';
+
+  @override
+  String vmInstanceDeleteConfirmHint(String name) {
+    return 'Deletion cannot be undone. Type $name to confirm.';
+  }
+
+  @override
+  String get vmInstanceDeleteForceLabel => 'Force delete';
+
+  @override
+  String get vmInstanceDeleteNameMismatch =>
+      'Name does not match; deletion is blocked';
+
+  @override
+  String get vmInstanceRenameTitle => 'Rename virtual machine';
+
+  @override
+  String get vmInstanceRenameNewNameLabel => 'New name';
+
+  @override
+  String get vmInstanceRenameSameName => 'New name equals the current name';
+
+  @override
+  String get vmInstanceTemplateDialogTitle => 'Convert to template';
+
+  @override
+  String get vmInstanceTemplateNameLabel => 'Template name';
+
+  @override
+  String get vmInstanceSnapshotTitle => 'Snapshots';
+
+  @override
+  String get vmInstanceSnapshotCreateAction => 'Create snapshot';
+
+  @override
+  String get vmInstanceSnapshotEmptyMessage => 'No snapshots yet';
+
+  @override
+  String get vmInstanceSnapshotNameLabel => 'Snapshot name';
+
+  @override
+  String get vmInstanceSnapshotCurrentLabel => 'Current';
+
+  @override
+  String get vmInstanceSnapshotRecoverAction => 'Recover';
+
+  @override
+  String get vmInstanceSnapshotDeleteAction => 'Delete';
+
+  @override
+  String vmInstanceSnapshotRecoverConfirm(String name) {
+    return 'Recover to snapshot $name? Current state will be lost.';
+  }
+
+  @override
+  String get vmInstanceSnapshotNeedShutOff =>
+      'Shut down the machine before recovering a snapshot';
+
+  @override
+  String get vmInstanceDiskResizeTitle => 'Resize disk';
+
+  @override
+  String get vmInstanceDiskCapacityLabel => 'Current capacity';
+
+  @override
+  String get vmInstanceDiskNewCapacityLabel => 'New capacity (GiB)';
+
+  @override
+  String get vmInstanceDiskResizeHint => 'At least current capacity plus 1 GiB';
+
+  @override
+  String get vmInstanceDiskResizeBlockedLabel => 'Not resizable';
+
+  @override
+  String get vmInstanceDiskResizeUnavailable => 'Resizable';
+
+  @override
+  String get vmHealthCheckTitle => 'Health check';
+
+  @override
+  String vmHealthCheckSummary(int pass, int warn, int fail) {
+    return '$pass passed, $warn warnings, $fail failures';
+  }
+
+  @override
+  String get vmHealthCheckAllPassed => 'All checks passed';
+
+  @override
+  String get vmHealthCheckNeedAttention => 'Some checks need attention';
+
+  @override
+  String get vmHealthCheckFixCommandLabel => 'Fix command';
+
+  @override
+  String get vmHealthCheckDetailLabel => 'Technical detail';
+
+  @override
+  String get vmMonitorTitle => 'Live monitoring';
+
+  @override
+  String get vmMonitorCpuChart => 'CPU usage';
+
+  @override
+  String get vmMonitorMemoryChart => 'Memory usage';
+
+  @override
+  String get vmMonitorDiskChart => 'Disk throughput';
+
+  @override
+  String get vmMonitorNetworkChart => 'Network throughput';
+
+  @override
+  String get vmMonitorStopped =>
+      'Virtual machine is not running; monitoring stopped';
+
+  @override
+  String get vmMonitorWaitingSamples => 'Collecting samples';
+
+  @override
+  String get vmMonitorCurrentLabel => 'Current';
+
+  @override
+  String get vmIsoStatusReady => 'Ready';
+
+  @override
+  String get vmIsoStatusUploading => 'Uploading';
+
+  @override
+  String get vmIsoStatusDownloading => 'Downloading';
+
+  @override
+  String get vmIsoStatusFailed => 'Failed';
+
+  @override
+  String get vmIsoStatusFileMissing => 'File missing';
+
+  @override
+  String get vmIsoCreateAction => 'Add ISO';
+
+  @override
+  String get vmIsoEditAction => 'Edit';
+
+  @override
+  String get vmIsoDeleteAction => 'Delete';
+
+  @override
+  String get vmIsoDeleteFileLabel => 'Delete the source file too';
+
+  @override
+  String get vmIsoEmptyTitle => 'No ISO images yet';
+
+  @override
+  String get vmIsoEmptyDescription =>
+      'Add an ISO image to create virtual machines.';
+
+  @override
+  String get vmIsoNameLabel => 'Name';
+
+  @override
+  String get vmIsoTypeLabel => 'OS type';
+
+  @override
+  String get vmIsoSourceSectionTitle => 'Source';
+
+  @override
+  String get vmIsoSourceServerFile => 'Server file';
+
+  @override
+  String get vmIsoSourceUpload => 'Local upload';
+
+  @override
+  String get vmIsoSourceDownload => 'Server download';
+
+  @override
+  String get vmIsoServerPathLabel => 'Server path';
+
+  @override
+  String get vmIsoDownloadUrlLabel => 'Download URL';
+
+  @override
+  String get vmIsoTargetDirLabel => 'Target directory';
+
+  @override
+  String get vmIsoImportStartAction => 'Start import';
+
+  @override
+  String get vmIsoImportProgressLabel => 'Import progress';
+
+  @override
+  String get vmIsoImportCancelAction => 'Cancel import';
+
+  @override
+  String get vmIsoImportCancelled => 'Import cancelled';
+
+  @override
+  String get vmIsoPathColumn => 'Path';
+
+  @override
+  String get vmIsoSizeColumn => 'Size';
+
+  @override
+  String get vmIsoCreatedAtColumn => 'Created';
+
+  @override
+  String get vmTemplateEmptyTitle => 'No templates yet';
+
+  @override
+  String get vmTemplateEmptyDescription =>
+      'Create a template from a powered-off machine to deploy repeatedly.';
+
+  @override
+  String get vmTemplateSourceVmLabel => 'Source machine';
+
+  @override
+  String get vmTemplateSizeLabel => 'Template size';
+
+  @override
+  String get vmTemplateDeleteDiskLabel => 'Delete the template disk too';
+
+  @override
+  String get vmTemplateDeleteAction => 'Delete';
+
+  @override
+  String get vmNetworkTypeNat => 'NAT';
+
+  @override
+  String get vmNetworkTypeBridge => 'Bridge';
+
+  @override
+  String get vmNetworkTypeMacvtap => 'Macvtap';
+
+  @override
+  String get vmNetworkCreateAction => 'Create network';
+
+  @override
+  String get vmNetworkEmptyTitle => 'No virtual machine networks yet';
+
+  @override
+  String get vmNetworkEmptyDescription =>
+      'Create a NAT or bridge network for virtual machines.';
+
+  @override
+  String get vmNetworkNameLabel => 'Network name';
+
+  @override
+  String get vmNetworkTypeLabel => 'Type';
+
+  @override
+  String get vmNetworkBridgeLabel => 'Bridge';
+
+  @override
+  String get vmNetworkBridgeHint => 'Only recommended bridges are listed';
+
+  @override
+  String get vmNetworkSourceInterfaceLabel => 'Source interface';
+
+  @override
+  String get vmNetworkCidrLabel => 'CIDR';
+
+  @override
+  String get vmNetworkGatewayLabel => 'Gateway';
+
+  @override
+  String get vmNetworkDhcpStartLabel => 'DHCP start';
+
+  @override
+  String get vmNetworkDhcpEndLabel => 'DHCP end';
+
+  @override
+  String get vmNetworkAutoStartLabel => 'Start on boot';
+
+  @override
+  String get vmNetworkUsedIpAction => 'Used IPs';
+
+  @override
+  String get vmNetworkUsedIpTitle => 'Used IP addresses';
+
+  @override
+  String get vmNetworkUsedIpEmpty => 'No address assigned in this network';
+
+  @override
+  String get vmNetworkVmCountLabel => 'Virtual machines';
+
+  @override
+  String get vmNetworkNotRegistered => 'Not registered with libvirt';
+
+  @override
+  String get vmNetworkIpColumn => 'IP';
+
+  @override
+  String get vmNetworkVmColumn => 'Machine';
+
+  @override
+  String get vmNetworkMacColumn => 'MAC';
+
+  @override
+  String get vmNetworkSourceColumn => 'Source';
+
+  @override
+  String get vmStorageTypeLabel => 'Type';
+
+  @override
+  String get vmStorageCreateAction => 'Create storage pool';
+
+  @override
+  String get vmStorageEmptyTitle => 'No storage pools yet';
+
+  @override
+  String get vmStorageEmptyDescription =>
+      'Create a storage pool to hold virtual machine disks.';
+
+  @override
+  String get vmStorageNameLabel => 'Storage pool name';
+
+  @override
+  String get vmStoragePathLabel => 'Directory path';
+
+  @override
+  String get vmStorageCapacityLabel => 'Capacity';
+
+  @override
+  String get vmStorageAvailableLabel => 'Available';
+
+  @override
+  String get vmStorageUsedPercentLabel => 'Used';
+
+  @override
+  String get vmStorageStatusStart => 'Start';
+
+  @override
+  String get vmStorageStatusStop => 'Stop';
+
+  @override
+  String get vmStorageAutoStartLabel => 'Start on boot';
+
+  @override
+  String get vmStorageDescriptionEdit => 'Edit description';
+
+  @override
+  String get alertPageTitle => 'Alert Center';
+
+  @override
+  String get alertTabRules => 'Alert rules';
+
+  @override
+  String get alertTabLogs => 'Alert logs';
+
+  @override
+  String get alertTabChannels => 'Channels';
+
+  @override
+  String get alertRuleTitleColumn => 'Title';
+
+  @override
+  String get alertRuleTypeColumn => 'Type';
+
+  @override
+  String get alertRuleStatusColumn => 'Status';
+
+  @override
+  String get alertRuleMethodColumn => 'Methods';
+
+  @override
+  String get alertRuleCycleColumn => 'Rule';
+
+  @override
+  String get alertRuleActionColumn => 'Actions';
+
+  @override
+  String get alertRuleStatusEnable => 'Enabled';
+
+  @override
+  String get alertRuleStatusDisable => 'Disabled';
+
+  @override
+  String alertRuleToggleConfirm(String action, String title) {
+    return '$action alert rule $title?';
+  }
+
+  @override
+  String alertRuleDeleteConfirm(String title) {
+    return 'Delete alert rule $title?';
+  }
+
+  @override
+  String get alertRuleCreateAction => 'Create alert rule';
+
+  @override
+  String get alertRuleEmptyTitle => 'No alert rules yet';
+
+  @override
+  String get alertRuleEmptyDescription =>
+      'Create a rule to receive notifications when a threshold is reached.';
+
+  @override
+  String get alertRuleFilterAllTypes => 'All types';
+
+  @override
+  String get alertRuleFilterAllStatuses => 'All statuses';
+
+  @override
+  String get alertRuleTypePasswordExpiry => 'Panel password expiry';
+
+  @override
+  String get alertRuleTypePanelLogin => 'Panel login';
+
+  @override
+  String get alertRuleTypeLicenseException => 'License exception';
+
+  @override
+  String get alertRuleTypeNodeException => 'Node exception';
+
+  @override
+  String get alertRuleTypePanelUpdate => 'Panel update';
+
+  @override
+  String get alertRuleTypeSshLogin => 'SSH login';
+
+  @override
+  String get alertRuleTypeSsl => 'Certificate expiry';
+
+  @override
+  String get alertRuleTypeSiteExpiry => 'Website expiry';
+
+  @override
+  String get alertRuleTypeCpu => 'CPU usage';
+
+  @override
+  String get alertRuleTypeMemory => 'Memory usage';
+
+  @override
+  String get alertRuleTypeDisk => 'Disk usage';
+
+  @override
+  String get alertRuleTypeLoad => 'Load';
+
+  @override
+  String get alertRuleTypeClams => 'Virus scan';
+
+  @override
+  String get alertRuleTypeCronJob => 'Task execution';
+
+  @override
+  String get alertRuleTitleLabel => 'Title';
+
+  @override
+  String get alertRuleTypeLabel => 'Task type';
+
+  @override
+  String get alertRuleCronjobSubTypeLabel => 'Task category';
+
+  @override
+  String get alertRuleCronjobTaskLabel => 'Task';
+
+  @override
+  String get alertRuleCronjobTaskNone => 'All tasks';
+
+  @override
+  String get alertRuleCronjobTriggerModeLabel => 'Trigger mode';
+
+  @override
+  String get alertRuleCronjobTriggerFailed => 'On failure';
+
+  @override
+  String get alertRuleCronjobTriggerSuccess => 'On success';
+
+  @override
+  String get alertRuleCronjobTriggerBoth => 'Success or failure';
+
+  @override
+  String get alertRuleCycleDaysLabel => 'Days remaining threshold';
+
+  @override
+  String get alertRuleThresholdLabel => 'Threshold';
+
+  @override
+  String get alertRuleThresholdUnitPercent => 'Percent';
+
+  @override
+  String get alertRuleThresholdUnitGb => 'Capacity (GB)';
+
+  @override
+  String get alertRuleDiskTargetsLabel => 'Monitored disks';
+
+  @override
+  String get alertRuleDiskAll => 'All disks';
+
+  @override
+  String get alertRuleCertificateTargetsLabel => 'Monitored certificates';
+
+  @override
+  String get alertRuleCertificateAll => 'All certificates';
+
+  @override
+  String get alertRuleWebsiteTargetsLabel => 'Monitored websites';
+
+  @override
+  String get alertRuleWebsiteAll => 'All websites';
+
+  @override
+  String get alertRuleClamTargetLabel => 'Virus scan task';
+
+  @override
+  String get alertRuleSendCountLabel => 'Notifications per day';
+
+  @override
+  String get alertRuleMethodsLabel => 'Notify via';
+
+  @override
+  String get alertRuleMethodsEmpty => 'Create a channel first';
+
+  @override
+  String get alertRuleIntervalLabel => 'Averaging window';
+
+  @override
+  String get alertRuleIntervalMinute1 => '1 minute';
+
+  @override
+  String get alertRuleIntervalMinute5 => '5 minutes';
+
+  @override
+  String get alertRuleIntervalMinute15 => '15 minutes';
+
+  @override
+  String get alertRuleAdvancedParamsLabel => 'Advanced parameters';
+
+  @override
+  String get alertRuleAdvancedParamsHint =>
+      'JSON structure defined by the server, for example login failures and allow list';
+
+  @override
+  String get alertLogStatusSuccess => 'Push succeeded';
+
+  @override
+  String get alertLogStatusPushing => 'Pushing';
+
+  @override
+  String get alertLogStatusSendSuccess => 'Sent';
+
+  @override
+  String get alertLogStatusError => 'Push failed';
+
+  @override
+  String get alertLogStatusSyncError => 'Sync failed';
+
+  @override
+  String get alertLogMessageColumn => 'Message';
+
+  @override
+  String get alertLogMethodColumn => 'Channel';
+
+  @override
+  String get alertLogStatusColumn => 'Status';
+
+  @override
+  String get alertLogCreatedAtColumn => 'Created';
+
+  @override
+  String get alertLogCountColumn => 'Sent count';
+
+  @override
+  String get alertLogCleanAction => 'Clear logs';
+
+  @override
+  String get alertLogCleanConfirm => 'Clear all alert logs?';
+
+  @override
+  String get alertLogEmptyTitle => 'No alert logs yet';
+
+  @override
+  String get alertLogEmptyDescription =>
+      'Push results appear here after a rule triggers.';
+
+  @override
+  String get alertLogFilterAllStatuses => 'All statuses';
+
+  @override
+  String get alertLogFailureReasonLabel => 'Failure reason';
+
+  @override
+  String get alertLogSyncUnsupported =>
+      'Community edition does not provide the alert log sync endpoint';
+
+  @override
+  String get alertChannelCreateAction => 'New channel';
+
+  @override
+  String get alertChannelEmptyTitle => 'No channels yet';
+
+  @override
+  String get alertChannelEmptyDescription =>
+      'Create a channel so alert rules can push to email or a webhook.';
+
+  @override
+  String get alertChannelTypeEmail => 'Email';
+
+  @override
+  String get alertChannelTypeBark => 'Bark';
+
+  @override
+  String get alertChannelTypeWeCom => 'WeCom';
+
+  @override
+  String get alertChannelTypeDingTalk => 'DingTalk';
+
+  @override
+  String get alertChannelTypeFeiShu => 'Feishu';
+
+  @override
+  String get alertChannelTypeCustom => 'Webhook';
+
+  @override
+  String get alertChannelDisplayNameLabel => 'Display name';
+
+  @override
+  String get alertChannelSenderLabel => 'Sender';
+
+  @override
+  String get alertChannelUsernameLabel => 'Username';
+
+  @override
+  String get alertChannelPasswordLabel => 'Password';
+
+  @override
+  String get alertChannelHostLabel => 'SMTP host';
+
+  @override
+  String get alertChannelPortLabel => 'Port';
+
+  @override
+  String get alertChannelEncryptionLabel => 'Encryption';
+
+  @override
+  String get alertChannelEncryptionNone => 'None';
+
+  @override
+  String get alertChannelEncryptionSsl => 'SSL';
+
+  @override
+  String get alertChannelEncryptionTls => 'TLS';
+
+  @override
+  String get alertChannelRecipientLabel => 'Recipients';
+
+  @override
+  String get alertChannelRecipientHint =>
+      'Separate multiple recipients with commas';
+
+  @override
+  String get alertChannelWebhookUrlLabel => 'Webhook URL';
+
+  @override
+  String get alertChannelPasswordKeep => 'Keep';
+
+  @override
+  String get alertChannelPasswordReplace => 'Replace';
+
+  @override
+  String get alertChannelPasswordClear => 'Clear';
+
+  @override
+  String get alertChannelTestAction => 'Test';
+
+  @override
+  String get alertChannelTestPassedHint =>
+      'A passing test is required before saving';
+
+  @override
+  String get alertChannelTestRequired =>
+      'Test the channel and wait for it to pass';
+
+  @override
+  String alertChannelDeleteConfirm(String title) {
+    return 'Delete channel $title?';
+  }
+
+  @override
+  String get alertChannelEnabledLabel => 'Enabled';
+
+  @override
+  String get alertChannelDisabledLabel => 'Disabled';
+
+  @override
+  String get alertChannelCustomPresetLabel => 'Preset';
+
+  @override
+  String get alertChannelCustomPresetGeneric => 'Generic JSON';
+
+  @override
+  String get alertChannelCustomPresetSlack => 'Slack';
+
+  @override
+  String get alertChannelCustomPresetDiscord => 'Discord';
+
+  @override
+  String get alertChannelCustomPresetTeams => 'Teams Workflows';
+
+  @override
+  String get alertChannelCustomPresetCustom => 'Custom';
+
+  @override
+  String get alertChannelCustomBodyTypeLabel => 'Body type';
+
+  @override
+  String get alertChannelCustomBodyJson => 'JSON';
+
+  @override
+  String get alertChannelCustomBodyForm => 'Form';
+
+  @override
+  String get alertChannelCustomBodyText => 'Text';
+
+  @override
+  String get alertChannelCustomTemplateLabel => 'Body template';
+
+  @override
+  String get alertChannelCustomFormatAction => 'Format';
+
+  @override
+  String get alertChannelCustomFormPairLabel => 'Key-value pairs';
+
+  @override
+  String get alertChannelCustomHeadersLabel => 'Custom headers';
+
+  @override
+  String get alertChannelCustomHeaderKeyLabel => 'Header name';
+
+  @override
+  String get alertChannelCustomHeaderValueLabel => 'Header value';
+
+  @override
+  String get alertChannelCustomAddHeaderAction => 'Add header';
+
+  @override
+  String get alertChannelCustomAddPairAction => 'Add pair';
+
+  @override
+  String get alertChannelCustomVariableHint =>
+      'Tap to insert a template variable';
+
+  @override
+  String get alertChannelCustomVariableTitle => 'Title';
+
+  @override
+  String get alertChannelCustomVariableMessage => 'Message';
+
+  @override
+  String get alertChannelCustomVariableType => 'id';
+
+  @override
+  String get alertChannelCustomVariableNode => 'Node';
+
+  @override
+  String get alertChannelCustomVariableTimestamp => 'Timestamp';
+
+  @override
+  String get alertChannelTestResultTitle => 'Test result';
+
+  @override
+  String get alertChannelTestSuccess => 'Channel test passed';
+
+  @override
+  String get alertChannelTestFailed => 'Channel test failed';
+
+  @override
+  String get modelDownloaderTabLabel => 'Model download';
+
+  @override
+  String get modelDownloaderFeaturedSectionTitle => 'Featured models';
+
+  @override
+  String get modelDownloaderSearchSectionTitle => 'Model market';
+
+  @override
+  String get modelDownloaderTasksSectionTitle => 'Download tasks';
+
+  @override
+  String get modelDownloaderLocalSectionTitle => 'Local models';
+
+  @override
+  String get modelDownloaderFeaturedEmptyTitle => 'No featured models';
+
+  @override
+  String get modelDownloaderFeaturedEmptyDescription =>
+      'Sync the featured catalog to browse it.';
+
+  @override
+  String get modelDownloaderFeaturedSyncAction => 'Sync catalog';
+
+  @override
+  String get modelDownloaderFeaturedSyncEnabled => 'Auto sync enabled';
+
+  @override
+  String get modelDownloaderFeaturedSyncDisabled => 'Auto sync disabled';
+
+  @override
+  String get modelDownloaderFeaturedAutoSyncLabel => 'Auto sync';
+
+  @override
+  String get modelDownloaderSearchHint => 'Enter a model name or repository ID';
+
+  @override
+  String get modelDownloaderSearchSourceLabel => 'Source';
+
+  @override
+  String get modelDownloaderSearchSourceHf => 'Hugging Face';
+
+  @override
+  String get modelDownloaderSearchSourceModelScope => 'ModelScope';
+
+  @override
+  String get modelDownloaderSearchSortLabel => 'Sort';
+
+  @override
+  String get modelDownloaderSortTrending => 'Trending';
+
+  @override
+  String get modelDownloaderSortDownloads => 'Downloads';
+
+  @override
+  String get modelDownloaderSortLikes => 'Likes';
+
+  @override
+  String get modelDownloaderSortUpdated => 'Recently updated';
+
+  @override
+  String get modelDownloaderSearchAction => 'Search';
+
+  @override
+  String get modelDownloaderDownloadAction => 'Download';
+
+  @override
+  String get modelDownloaderDownloadStarted => 'Download task submitted';
+
+  @override
+  String get modelDownloaderDownloadTypeLabel => 'Download content';
+
+  @override
+  String get modelDownloaderDownloadTypeAll => 'Full model';
+
+  @override
+  String get modelDownloaderDownloadTypeTokenizer => 'Tokenizer only';
+
+  @override
+  String get modelDownloaderRevisionLabel => 'Revision';
+
+  @override
+  String get modelDownloaderModelInfoTitle => 'Model details';
+
+  @override
+  String get modelDownloaderModelCardLabel => 'Model card';
+
+  @override
+  String get modelDownloaderModelFilesLabel => 'Files';
+
+  @override
+  String get modelDownloaderDownloadCountLabel => 'Downloads';
+
+  @override
+  String get modelDownloaderLikeCountLabel => 'Likes';
+
+  @override
+  String get modelDownloaderTaskStatusLabel => 'Status';
+
+  @override
+  String get modelDownloaderTaskProgressLabel => 'Progress';
+
+  @override
+  String get modelDownloaderTaskCancelAction => 'Cancel';
+
+  @override
+  String get modelDownloaderTaskRetryAction => 'Retry';
+
+  @override
+  String get modelDownloaderTaskRemoveAction => 'Remove record';
+
+  @override
+  String get modelDownloaderTaskRemoveWithFileLabel =>
+      'Delete the downloaded files too';
+
+  @override
+  String modelDownloaderTaskCancelConfirm(String name) {
+    return 'Cancel download task $name?';
+  }
+
+  @override
+  String modelDownloaderTaskRemoveConfirm(String name) {
+    return 'Remove the record of download task $name?';
+  }
+
+  @override
+  String modelDownloaderTaskRetryConfirm(String name) {
+    return 'Retry download task $name?';
+  }
+
+  @override
+  String get modelDownloaderTaskEmptyTitle => 'No download tasks';
+
+  @override
+  String get modelDownloaderTaskEmptyDescription =>
+      'Pick a model in the market to start downloading.';
+
+  @override
+  String get modelDownloaderTaskStatusRunning => 'Downloading';
+
+  @override
+  String get modelDownloaderTaskStatusCompleted => 'Completed';
+
+  @override
+  String get modelDownloaderTaskStatusFailed => 'Failed';
+
+  @override
+  String get modelDownloaderTaskStatusCancelled => 'Cancelled';
+
+  @override
+  String get modelDownloaderTaskStatusWaiting => 'Waiting';
+
+  @override
+  String get modelDownloaderLocalEmptyTitle => 'No local models';
+
+  @override
+  String get modelDownloaderLocalEmptyDescription =>
+      'Downloaded models appear here.';
+
+  @override
+  String get modelDownloaderLocalDeleteAction => 'Delete';
+
+  @override
+  String get modelDownloaderLocalDeleteFileLabel =>
+      'Delete the model files too';
+
+  @override
+  String modelDownloaderLocalDeleteConfirm(String name) {
+    return 'Delete local model $name?';
+  }
+
+  @override
+  String get modelDownloaderLocalPathLabel => 'Path';
+
+  @override
+  String get modelDownloaderLocalSizeLabel => 'Size';
+
+  @override
+  String get modelDownloaderLocalSourceLabel => 'Source';
+
+  @override
+  String get modelDownloaderLocalCreatedAtLabel => 'Downloaded';
+
+  @override
+  String get modelDownloaderSettingsAction => 'Download settings';
+
+  @override
+  String get modelDownloaderSettingsTitle => 'Model download settings';
+
+  @override
+  String get modelDownloaderSettingsModelDirLabel => 'Model directory';
+
+  @override
+  String get modelDownloaderSettingsHfEndpointLabel => 'Hugging Face endpoint';
+
+  @override
+  String get modelDownloaderSettingsHfTokenLabel => 'Hugging Face token';
+
+  @override
+  String get modelDownloaderSettingsModelScopeEndpointLabel =>
+      'ModelScope endpoint';
+
+  @override
+  String get modelDownloaderSettingsModelScopeTokenLabel => 'ModelScope token';
+
+  @override
+  String get modelDownloaderSettingsFeaturedSyncLabel =>
+      'Featured catalog auto sync';
+
+  @override
+  String get modelDownloaderSettingsSaveSuccess => 'Download settings saved';
+
+  @override
+  String get modelDownloaderRequiresProHint =>
+      'The model downloader may be unavailable on community panels; server responses decide the outcome';
 }

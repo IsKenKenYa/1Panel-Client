@@ -111,6 +111,7 @@
   "websitesTabConfig": "Config",
   "websitesTabDomains": "Domains",
   "websitesTabSsl": "SSL",
+  "websitesTabCertificates": "Certificates",
   "websitesTabRewrite": "Rewrite",
   "websitesTabProxy": "Proxy",
   "websitesSslInfoTitle": "Certificate",
@@ -565,6 +566,15 @@
   "serverLoadLabel": "Load",
   "serverDiskLabel": "Disk",
   "serverMetricsUnavailable": "Metrics unavailable",
+  "serverUnreachable": "Panel unreachable",
+  "serverLatencyLabel": "Responded in {ms} ms",
+  "@serverLatencyLabel": {
+    "placeholders": {
+      "ms": {
+        "type": "int"
+      }
+    }
+  },
   "serverOpenDetail": "Open details",
   "serverDetailTitle": "Server Details",
   "serverModulesTitle": "Modules",
@@ -575,6 +585,7 @@
   "serverModuleAi": "AI",
   "aiTabModels": "Models",
   "aiTabGpu": "GPU",
+  "aiTabModelDownloader": "Model Download",
   "aiTabDomain": "Domain",
   "aiModelCreate": "Create Model",
   "aiModelSync": "Sync Models",
@@ -877,6 +888,10 @@
     }
   },
   "filesDownloadCancelled": "Download cancelled",
+  "filesMoveSuccess": "Moved",
+  "filesMoveDestination": "Destination directory",
+  "filesUploadSuccess": "Uploaded",
+  "filesUploadFailed": "Upload failed",
   "filesDownloadSaving": "Saving to: {path}",
   "@filesDownloadSaving": {
     "placeholders": {
@@ -2059,6 +2074,8 @@
   "containerTabLogs": "Logs",
   "containerTabStats": "Stats",
   "containerTabTerminal": "Terminal",
+  "containerTabFiles": "Files",
+  "containerFileBinaryHint": "Binary file preview is not supported",
   "containerDetailTitle": "Container Details",
   "containerInfoId": "Container ID",
   "containerInfoName": "Name",
@@ -2076,6 +2093,10 @@
   "containerStatsBlock": "Block I/O",
   "containerLogsAutoRefresh": "Auto Refresh",
   "containerLogsDownload": "Download Logs",
+  "containerLogsFollowing": "Following live logs",
+  "containerLogsFollowPaused": "Follow stopped, showing loaded logs",
+  "containerLogsStopFollow": "Stop following",
+  "containerLogsResumeFollow": "Resume following",
   "containerDeleteConfirm": "Are you sure you want to delete container {name}? This action cannot be undone.",
   "containerOperateSuccess": "Operation successful",
   "containerOperateFailed": "Operation failed: {error}",
@@ -2095,6 +2116,11 @@
   "containerActionPrune": "Prune",
   "containerActionTag": "Tag",
   "containerActionPush": "Push",
+  "containerActionPushHelper": "The image is pushed to the selected registry.",
+  "containerRepoLabel": "Repository",
+  "containerReposEmpty": "No repositories",
+  "containerImageNameHelper": "Image name, e.g. myapp",
+  "containerBuildTagsHelper": "One value per line",
   "containerActionSave": "Save",
   "containerImage": "Image",
   "containerUpgradeForcePull": "Force Pull",
@@ -2146,6 +2172,8 @@
   "orchestrationPullSuccess": "Image pull started",
   "orchestrationPullFailed": "Failed to pull image",
   "orchestrationComposeCreateTitle": "Create Compose Project",
+  "orchestrationComposeSourcePath": "Existing File",
+  "orchestrationComposePathHint": "Compose file path",
   "orchestrationComposeContentLabel": "Compose Content",
   "orchestrationComposeContentHint": "Paste docker-compose.yml content",
   "orchestrationComposeUpdate": "Update Compose",
@@ -2179,6 +2207,7 @@
   "orchestrationImageId": "ID",
   "orchestrationImageDigest": "Digest",
   "orchestrationImageTags": "Tags",
+  "orchestrationImageTagHint": "Tag",
   "orchestrationImageSizeLabel": "Size",
   "orchestrationImageCreatedLabel": "Created",
   "orchestrationImageInUse": "In Use",
@@ -2270,8 +2299,17 @@
   "containerNetworkGatewayHint": "e.g. 172.20.0.1",
   "containerRepoUrlExample": "e.g. https://github.com/user/repo",
   "containerTemplateContentHint": "YAML content",
+  "containerTemplateCreateTitle": "New Compose Template",
   "containerCreate": "Create Container",
   "containerCreateBasicSectionTitle": "Basic Configuration",
+  "containerCreateRestartLabel": "Restart policy",
+  "containerCreatePortsHint": "One per line, e.g. 8080:80",
+  "containerCreateEnvHint": "One KEY=VALUE per line",
+  "containerCreateVolumesHint": "One per line, e.g. /host:/container",
+  "containerCreateAdvancedSectionTitle": "Advanced",
+  "containerCreateAutoRemove": "Auto remove on exit",
+  "containerCreatePrivileged": "Privileged",
+  "containerCreatePublishAllPorts": "Publish all ports",
   "containerEmptyTitle": "No containers",
   "containerEmptyDesc": "Tap the button below to create a container",
   "containerStatsTitle": "Container Stats",
@@ -3559,6 +3597,7 @@
   "commonUpdated": "Updated",
   "commonUpdateFailed": "Update failed",
   "commonOperationFailed": "Operation failed",
+  "commonOperationSuccess": "Operation succeeded",
   "commonDeleted": "Deleted",
   "commonDeleteFailed": "Delete failed",
   "commonTestConnection": "Test Connection",
@@ -4093,6 +4132,9 @@
   "hostHostSshSaveMessage": "This will overwrite /etc/ssh/sshd_config with the edited content.\nAn invalid configuration may make the SSH service unavailable. Continue?",
   "hostHostSshSaveFailed": "Failed to save the SSH configuration.",
   "hostToolboxSnapshotRefreshFailed": "Failed to refresh device snapshot.",
+  "serverDeviceSnapshotTitle": "Device Info",
+  "serverLocalTimeLabel": "Local Time",
+  "serverDnsLabel": "DNS",
   "hostToolboxKernelLabel": "Kernel",
   "hostToolboxProductLabel": "Product",
   "hostToolboxTimeZoneLabel": "Time Zone",
@@ -4201,6 +4243,7 @@
   "hostAuthSaveFailed": "Failed to update the basic authentication.",
   "hostAuthSaved": "Basic authentication updated.",
   "hostAuthScopeGlobal": "Global",
+  "hostAuthPathSectionTitle": "Path authentication",
   "hostAuthUsernameRequired": "Username is required.",
   "hostCorsAllowCredentials": "Allow cookies to be sent",
   "hostCorsAllowHeaders": "Allowed request headers",
@@ -4267,6 +4310,11 @@
   "hostLeechCacheTime": "Browser Cache Time",
   "hostLeechCacheTimeHelper": "The time static resources are cached locally in the browser, reducing redundant requests",
   "hostLeechCacheTimeInvalid": "Cache time must be an integer between 1 and 65535.",
+  "hostLeechUnitSeconds": "s",
+  "hostLeechUnitMinutes": "m",
+  "hostLeechUnitHours": "h",
+  "hostLeechUnitDays": "d",
+  "hostLeechUnitWeeks": "w",
   "hostLeechDomainsHelper": "One domain per line",
   "hostLeechDomainsRequired": "At least one allowed domain is required when enabled.",
   "hostLeechEnable": "Enable",
@@ -4352,6 +4400,7 @@
   "hostRedirectNameRequired": "Name is required.",
   "hostRedirectNotKeep": "drop path",
   "hostRedirectPathRequired": "Path is required.",
+  "hostRedirectRoot": "Redirect site root to this rule",
   "hostRedirectSaveFailed": "Failed to save the redirect.",
   "hostRedirectStatusFailed": "Failed to update the redirect status.",
   "hostRedirectStatusUpdated": "Redirect status updated.",
@@ -4484,5 +4533,635 @@
   "hostAiTabAccounts": "Accounts",
   "hostAiTabMcp": "MCP",
   "hostAiTabAgents": "Agents",
-  "hostAiTabGpu": "GPU"
+  "hostAiTabGpu": "GPU",
+  "appCatalogSummaryLabel": "Summary",
+  "appCatalogArchLabel": "Architectures",
+  "appCatalogMemoryLabel": "Memory Required",
+  "appCatalogGpuLabel": "GPU Support",
+  "appCatalogVersionsLabel": "Versions",
+  "appCatalogHomepageLabel": "Homepage",
+  "appCatalogSourceLabel": "Source",
+  "appCatalogReadmeTitle": "Readme",
+  "appCatalogReadmeEmpty": "This app does not provide a readme.",
+  "appInstallParamsTitle": "Install Parameters",
+  "appTerminalTitle": "Container Terminal",
+  "cronjobRecordsTitle": "Run Records",
+  "cronjobRecordEmpty": "No run records yet.",
+  "cronjobRecordTaskIdLabel": "Task ID",
+  "commonOpenAction": "Open",
+  "databaseChangePasswordHint": "The database password updates immediately after saving.",
+  "serverHomeTitle": "Server Home",
+  "fileContentTitle": "File Content",
+  "fileContentEmpty": "File is empty",
+  "fileActionPermissions": "Permissions",
+  "fileCompressTypeLabel": "Archive Format",
+  "fileCompressNameLabel": "Archive Name",
+  "filePermissionTitle": "Permissions",
+  "databaseUserCreateAction": "New User",
+  "databaseUserHostLabel": "Host",
+  "cronjobsNameLabel": "Task Name",
+  "panelSslSectionTitle": "Panel SSL",
+  "logsOperationTabLabel": "Operation",
+  "logsLoginTabLabel": "Login",
+  "logsSystemTabLabel": "System",
+  "fileCompressTypeZip": "ZIP",
+  "containerImageInUse": "In Use",
+  "serverModuleVm": "Virtual Machines",
+  "vmPageTitle": "Virtual Machines",
+  "vmTabOverview": "Overview",
+  "vmTabInstances": "Virtual Machines",
+  "vmInstanceCountUnit": "instances",
+  "vmTabIso": "ISO",
+  "vmTabTemplates": "Templates",
+  "vmTabNetworks": "Networks",
+  "vmTabStorages": "Storage Pools",
+  "vmEnvironmentSectionTitle": "Runtime Environment",
+  "vmEnvironmentReady": "Runtime environment ready",
+  "vmEnvironmentNotReady": "Runtime environment not ready",
+  "vmEnvironmentEnableAction": "Enable environment",
+  "vmEnvironmentArchLabel": "Architecture",
+  "vmEnvironmentHelperLabel": "Helper",
+  "vmEnvironmentKvmLabel": "KVM acceleration",
+  "vmEnvironmentLibvirtLabel": "Libvirt service",
+  "vmEnvironmentStorageLabel": "Storage directory",
+  "vmEnvironmentLibvirtInactive": "Installed but not running",
+  "vmEnvironmentEnableConfirm": "Enabling the runtime environment installs KVM, libvirt and storage dependencies and takes a while. Continue?",
+  "vmOverviewRunningLabel": "Running",
+  "vmOverviewStoppedLabel": "Stopped",
+  "vmOverviewCreatingLabel": "Creating",
+  "vmOverviewAbnormalLabel": "Abnormal",
+  "vmOverviewCpuAllocation": "CPU allocation",
+  "vmOverviewMemoryAllocation": "Memory allocation",
+  "vmOverviewStorageUsage": "Storage usage",
+  "vmOverviewRiskSectionTitle": "Risks",
+  "vmOverviewRiskEnvironment": "Runtime environment is not ready; virtual machines are unavailable",
+  "vmOverviewRiskStorageHigh": "Storage pool {name} reached {percent}",
+  "@vmOverviewRiskStorageHigh": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "vmOverviewRiskStorageCritical": "Storage pool {name} exceeded 90%, clean it up soon",
+  "@vmOverviewRiskStorageCritical": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vmOverviewRiskAbnormalVm": "{count} abnormal virtual machines",
+  "@vmOverviewRiskAbnormalVm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "vmOverviewRiskPausedVm": "{count} paused virtual machines",
+  "@vmOverviewRiskPausedVm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "vmOverviewRiskMemoryHigh": "Allocated memory reached {percent} of the host",
+  "@vmOverviewRiskMemoryHigh": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "vmOverviewNoRisk": "No risks need attention",
+  "vmOverviewOrphanAction": "Clean orphan files",
+  "vmOverviewStorageSectionTitle": "Storage pools",
+  "vmOverviewCoresUnit": "cores",
+  "vmOverviewUnlimited": "Unlimited",
+  "vmOrphanDialogTitle": "Clean orphan files",
+  "vmOrphanWarning": "These files belong to no virtual machine record and can be cleaned safely. Cleaning cannot be undone.",
+  "vmOrphanScanAction": "Scan",
+  "vmOrphanCleanAction": "Clean selected",
+  "vmOrphanEmptyMessage": "No orphan files found",
+  "vmOrphanPathColumn": "Path",
+  "vmOrphanTypeColumn": "Type",
+  "vmOrphanSizeColumn": "Size",
+  "vmOrphanModifiedColumn": "Modified",
+  "vmOrphanSelectedSummary": "{count} selected, {size} in total",
+  "@vmOrphanSelectedSummary": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "vmInstanceSearchHint": "Search virtual machine name",
+  "vmInstanceCreateAction": "Create virtual machine",
+  "vmInstanceSyncAction": "Sync",
+  "vmInstanceEmptyTitle": "No virtual machines yet",
+  "vmInstanceEmptyDescription": "Create one from an ISO image or a template.",
+  "vmInstanceQuotaLabel": "Quota",
+  "vmInstanceQuotaReached": "Virtual machine quota reached",
+  "vmInstanceCreateDisabledHint": "Runtime environment is not ready; creation is unavailable",
+  "vmInstanceStatusFilterAll": "All states",
+  "vmInstanceCardViewLabel": "Card view",
+  "vmInstanceTableViewLabel": "List view",
+  "vmInstanceCpuColumn": "CPU",
+  "vmInstanceMemoryColumn": "Memory",
+  "vmInstanceDiskColumn": "Disk",
+  "vmInstanceNetworkColumn": "Network",
+  "vmInstanceStorageColumn": "Storage pool",
+  "vmInstanceDiskPathColumn": "Disk path",
+  "vmInstanceDescriptionColumn": "Description",
+  "vmInstanceNameColumn": "Name",
+  "vmInstanceStatusColumn": "State",
+  "vmInstanceUuidLabel": "UUID",
+  "vmInstanceBootOrderLabel": "Boot order",
+  "vmInstanceIsoPathsLabel": "ISO paths",
+  "vmInstanceGraphicsLabel": "VNC graphics",
+  "vmInstanceDisksSectionTitle": "Disks",
+  "vmInstanceInterfacesSectionTitle": "Interfaces",
+  "vmInstanceDiskDeviceColumn": "Device",
+  "vmInstanceDiskTargetColumn": "Target",
+  "vmInstanceDiskBusColumn": "Bus",
+  "vmInstanceDiskSourceColumn": "Source",
+  "vmInstanceNicTypeColumn": "Type",
+  "vmInstanceNicNetworkColumn": "Network",
+  "vmInstanceNicModelColumn": "Model",
+  "vmInstanceNicMacColumn": "MAC",
+  "vmInstanceNicIpColumn": "IP",
+  "vmInstanceAutoStartLabel": "Start on boot",
+  "vmInstanceActionStart": "Start",
+  "vmInstanceActionShutdown": "Shut down",
+  "vmInstanceActionReboot": "Reboot",
+  "vmInstanceActionSuspend": "Suspend",
+  "vmInstanceActionResume": "Resume",
+  "vmInstanceActionDestroy": "Force stop",
+  "vmInstanceActionRename": "Rename",
+  "vmInstanceActionEdit": "Edit config",
+  "vmInstanceActionDisk": "Resize disk",
+  "vmInstanceActionSnapshot": "Snapshots",
+  "vmInstanceActionTemplate": "Convert to template",
+  "vmInstanceActionHealthCheck": "Health check",
+  "vmInstanceActionMonitor": "Monitor",
+  "vmInstanceActionConsole": "VNC console",
+  "vmInstanceActionDetail": "Details",
+  "vmInstanceActionDelete": "Delete",
+  "vmInstanceOperateConfirm": "Run {operation} on {name}?",
+  "@vmInstanceOperateConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "operation": {
+        "type": "String"
+      }
+    }
+  },
+  "vmInstanceOperateCompleted": "{operation} request submitted",
+  "@vmInstanceOperateCompleted": {
+    "placeholders": {
+      "operation": {
+        "type": "String"
+      }
+    }
+  },
+  "vmInstanceConsoleUnavailable": "The graphics console is not ready; the machine must be running with VNC graphics",
+  "vmInstanceConsoleOpenHint": "The VNC console opens in the panel web UI; the address was copied",
+  "vmInstanceConsoleOpenAction": "Open in browser",
+  "vmInstanceConsoleAddressLabel": "Console address",
+  "vmInstanceCreateTitle": "Create virtual machine",
+  "vmInstanceEditTitle": "Edit virtual machine",
+  "vmInstanceNameLabel": "Name",
+  "vmInstanceCpuLabel": "CPU cores",
+  "vmInstanceMemoryLabel": "Memory",
+  "vmInstanceDiskSizeLabel": "Disk size",
+  "vmInstanceStoragePoolLabel": "Storage pool",
+  "vmInstanceNetworkLabel": "Network",
+  "vmInstanceTemplateLabel": "Create from template",
+  "vmInstanceTemplateNone": "No template",
+  "vmInstanceIsoLabel": "ISO image",
+  "vmInstanceIsoNone": "No ISO",
+  "vmInstanceOsTypeLabel": "OS type",
+  "vmInstanceDiskBusLabel": "Disk bus",
+  "vmInstanceBootOrderLabelCreate": "Boot order",
+  "vmInstanceBootDiskFirst": "Disk first",
+  "vmInstanceBootCdFirst": "CD first",
+  "vmInstanceStartAfterCreateLabel": "Start after creation",
+  "vmInstanceMemoryHint": "{value} available",
+  "@vmInstanceMemoryHint": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "vmInstanceCpuHint": "{value} cores on the host",
+  "@vmInstanceCpuHint": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "vmInstanceDeleteTitle": "Delete virtual machine",
+  "vmInstanceDeleteConfirmHint": "Deletion cannot be undone. Type {name} to confirm.",
+  "@vmInstanceDeleteConfirmHint": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vmInstanceDeleteForceLabel": "Force delete",
+  "vmInstanceDeleteNameMismatch": "Name does not match; deletion is blocked",
+  "vmInstanceRenameTitle": "Rename virtual machine",
+  "vmInstanceRenameNewNameLabel": "New name",
+  "vmInstanceRenameSameName": "New name equals the current name",
+  "vmInstanceTemplateDialogTitle": "Convert to template",
+  "vmInstanceTemplateNameLabel": "Template name",
+  "vmInstanceSnapshotTitle": "Snapshots",
+  "vmInstanceSnapshotCreateAction": "Create snapshot",
+  "vmInstanceSnapshotEmptyMessage": "No snapshots yet",
+  "vmInstanceSnapshotNameLabel": "Snapshot name",
+  "vmInstanceSnapshotCurrentLabel": "Current",
+  "vmInstanceSnapshotRecoverAction": "Recover",
+  "vmInstanceSnapshotDeleteAction": "Delete",
+  "vmInstanceSnapshotRecoverConfirm": "Recover to snapshot {name}? Current state will be lost.",
+  "@vmInstanceSnapshotRecoverConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vmInstanceSnapshotNeedShutOff": "Shut down the machine before recovering a snapshot",
+  "vmInstanceDiskResizeTitle": "Resize disk",
+  "vmInstanceDiskCapacityLabel": "Current capacity",
+  "vmInstanceDiskNewCapacityLabel": "New capacity (GiB)",
+  "vmInstanceDiskResizeHint": "At least current capacity plus 1 GiB",
+  "vmInstanceDiskResizeBlockedLabel": "Not resizable",
+  "vmInstanceDiskResizeUnavailable": "Resizable",
+  "vmHealthCheckTitle": "Health check",
+  "vmHealthCheckSummary": "{pass} passed, {warn} warnings, {fail} failures",
+  "@vmHealthCheckSummary": {
+    "placeholders": {
+      "pass": {
+        "type": "int"
+      },
+      "warn": {
+        "type": "int"
+      },
+      "fail": {
+        "type": "int"
+      }
+    }
+  },
+  "vmHealthCheckAllPassed": "All checks passed",
+  "vmHealthCheckNeedAttention": "Some checks need attention",
+  "vmHealthCheckFixCommandLabel": "Fix command",
+  "vmHealthCheckDetailLabel": "Technical detail",
+  "vmMonitorTitle": "Live monitoring",
+  "vmMonitorCpuChart": "CPU usage",
+  "vmMonitorMemoryChart": "Memory usage",
+  "vmMonitorDiskChart": "Disk throughput",
+  "vmMonitorNetworkChart": "Network throughput",
+  "vmMonitorStopped": "Virtual machine is not running; monitoring stopped",
+  "vmMonitorWaitingSamples": "Collecting samples",
+  "vmMonitorCurrentLabel": "Current",
+  "vmIsoStatusReady": "Ready",
+  "vmIsoStatusUploading": "Uploading",
+  "vmIsoStatusDownloading": "Downloading",
+  "vmIsoStatusFailed": "Failed",
+  "vmIsoStatusFileMissing": "File missing",
+  "vmIsoCreateAction": "Add ISO",
+  "vmIsoEditAction": "Edit",
+  "vmIsoDeleteAction": "Delete",
+  "vmIsoDeleteFileLabel": "Delete the source file too",
+  "vmIsoEmptyTitle": "No ISO images yet",
+  "vmIsoEmptyDescription": "Add an ISO image to create virtual machines.",
+  "vmIsoNameLabel": "Name",
+  "vmIsoTypeLabel": "OS type",
+  "vmIsoSourceSectionTitle": "Source",
+  "vmIsoSourceServerFile": "Server file",
+  "vmIsoSourceUpload": "Local upload",
+  "vmIsoSourceDownload": "Server download",
+  "vmIsoServerPathLabel": "Server path",
+  "vmIsoDownloadUrlLabel": "Download URL",
+  "vmIsoTargetDirLabel": "Target directory",
+  "vmIsoImportStartAction": "Start import",
+  "vmIsoImportProgressLabel": "Import progress",
+  "vmIsoImportCancelAction": "Cancel import",
+  "vmIsoImportCancelled": "Import cancelled",
+  "vmIsoPathColumn": "Path",
+  "vmIsoSizeColumn": "Size",
+  "vmIsoCreatedAtColumn": "Created",
+  "vmTemplateEmptyTitle": "No templates yet",
+  "vmTemplateEmptyDescription": "Create a template from a powered-off machine to deploy repeatedly.",
+  "vmTemplateSourceVmLabel": "Source machine",
+  "vmTemplateSizeLabel": "Template size",
+  "vmTemplateDeleteDiskLabel": "Delete the template disk too",
+  "vmTemplateDeleteAction": "Delete",
+  "vmNetworkTypeNat": "NAT",
+  "vmNetworkTypeBridge": "Bridge",
+  "vmNetworkTypeMacvtap": "Macvtap",
+  "vmNetworkCreateAction": "Create network",
+  "vmNetworkEmptyTitle": "No virtual machine networks yet",
+  "vmNetworkEmptyDescription": "Create a NAT or bridge network for virtual machines.",
+  "vmNetworkNameLabel": "Network name",
+  "vmNetworkTypeLabel": "Type",
+  "vmNetworkBridgeLabel": "Bridge",
+  "vmNetworkBridgeHint": "Only recommended bridges are listed",
+  "vmNetworkSourceInterfaceLabel": "Source interface",
+  "vmNetworkCidrLabel": "CIDR",
+  "vmNetworkGatewayLabel": "Gateway",
+  "vmNetworkDhcpStartLabel": "DHCP start",
+  "vmNetworkDhcpEndLabel": "DHCP end",
+  "vmNetworkAutoStartLabel": "Start on boot",
+  "vmNetworkUsedIpAction": "Used IPs",
+  "vmNetworkUsedIpTitle": "Used IP addresses",
+  "vmNetworkUsedIpEmpty": "No address assigned in this network",
+  "vmNetworkVmCountLabel": "Virtual machines",
+  "vmNetworkNotRegistered": "Not registered with libvirt",
+  "vmNetworkIpColumn": "IP",
+  "vmNetworkVmColumn": "Machine",
+  "vmNetworkMacColumn": "MAC",
+  "vmNetworkSourceColumn": "Source",
+  "vmStorageTypeLabel": "Type",
+  "vmStorageCreateAction": "Create storage pool",
+  "vmStorageEmptyTitle": "No storage pools yet",
+  "vmStorageEmptyDescription": "Create a storage pool to hold virtual machine disks.",
+  "vmStorageNameLabel": "Storage pool name",
+  "vmStoragePathLabel": "Directory path",
+  "vmStorageCapacityLabel": "Capacity",
+  "vmStorageAvailableLabel": "Available",
+  "vmStorageUsedPercentLabel": "Used",
+  "vmStorageStatusStart": "Start",
+  "vmStorageStatusStop": "Stop",
+  "vmStorageAutoStartLabel": "Start on boot",
+  "vmStorageDescriptionEdit": "Edit description",
+  "alertPageTitle": "Alert Center",
+  "alertTabRules": "Alert rules",
+  "alertTabLogs": "Alert logs",
+  "alertTabChannels": "Channels",
+  "alertRuleTitleColumn": "Title",
+  "alertRuleTypeColumn": "Type",
+  "alertRuleStatusColumn": "Status",
+  "alertRuleMethodColumn": "Methods",
+  "alertRuleCycleColumn": "Rule",
+  "alertRuleActionColumn": "Actions",
+  "alertRuleStatusEnable": "Enabled",
+  "alertRuleStatusDisable": "Disabled",
+  "alertRuleToggleConfirm": "{action} alert rule {title}?",
+  "@alertRuleToggleConfirm": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "alertRuleDeleteConfirm": "Delete alert rule {title}?",
+  "@alertRuleDeleteConfirm": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "alertRuleCreateAction": "Create alert rule",
+  "alertRuleEmptyTitle": "No alert rules yet",
+  "alertRuleEmptyDescription": "Create a rule to receive notifications when a threshold is reached.",
+  "alertRuleFilterAllTypes": "All types",
+  "alertRuleFilterAllStatuses": "All statuses",
+  "alertRuleTypePasswordExpiry": "Panel password expiry",
+  "alertRuleTypePanelLogin": "Panel login",
+  "alertRuleTypeLicenseException": "License exception",
+  "alertRuleTypeNodeException": "Node exception",
+  "alertRuleTypePanelUpdate": "Panel update",
+  "alertRuleTypeSshLogin": "SSH login",
+  "alertRuleTypeSsl": "Certificate expiry",
+  "alertRuleTypeSiteExpiry": "Website expiry",
+  "alertRuleTypeCpu": "CPU usage",
+  "alertRuleTypeMemory": "Memory usage",
+  "alertRuleTypeDisk": "Disk usage",
+  "alertRuleTypeLoad": "Load",
+  "alertRuleTypeClams": "Virus scan",
+  "alertRuleTypeCronJob": "Task execution",
+  "alertRuleTitleLabel": "Title",
+  "alertRuleTypeLabel": "Task type",
+  "alertRuleCronjobSubTypeLabel": "Task category",
+  "alertRuleCronjobTaskLabel": "Task",
+  "alertRuleCronjobTaskNone": "All tasks",
+  "alertRuleCronjobTriggerModeLabel": "Trigger mode",
+  "alertRuleCronjobTriggerFailed": "On failure",
+  "alertRuleCronjobTriggerSuccess": "On success",
+  "alertRuleCronjobTriggerBoth": "Success or failure",
+  "alertRuleCycleDaysLabel": "Days remaining threshold",
+  "alertRuleThresholdLabel": "Threshold",
+  "alertRuleThresholdUnitPercent": "Percent",
+  "alertRuleThresholdUnitGb": "Capacity (GB)",
+  "alertRuleDiskTargetsLabel": "Monitored disks",
+  "alertRuleDiskAll": "All disks",
+  "alertRuleCertificateTargetsLabel": "Monitored certificates",
+  "alertRuleCertificateAll": "All certificates",
+  "alertRuleWebsiteTargetsLabel": "Monitored websites",
+  "alertRuleWebsiteAll": "All websites",
+  "alertRuleClamTargetLabel": "Virus scan task",
+  "alertRuleSendCountLabel": "Notifications per day",
+  "alertRuleMethodsLabel": "Notify via",
+  "alertRuleMethodsEmpty": "Create a channel first",
+  "alertRuleIntervalLabel": "Averaging window",
+  "alertRuleIntervalMinute1": "1 minute",
+  "alertRuleIntervalMinute5": "5 minutes",
+  "alertRuleIntervalMinute15": "15 minutes",
+  "alertRuleAdvancedParamsLabel": "Advanced parameters",
+  "alertRuleAdvancedParamsHint": "JSON structure defined by the server, for example login failures and allow list",
+  "alertLogStatusSuccess": "Push succeeded",
+  "alertLogStatusPushing": "Pushing",
+  "alertLogStatusSendSuccess": "Sent",
+  "alertLogStatusError": "Push failed",
+  "alertLogStatusSyncError": "Sync failed",
+  "alertLogMessageColumn": "Message",
+  "alertLogMethodColumn": "Channel",
+  "alertLogStatusColumn": "Status",
+  "alertLogCreatedAtColumn": "Created",
+  "alertLogCountColumn": "Sent count",
+  "alertLogCleanAction": "Clear logs",
+  "alertLogCleanConfirm": "Clear all alert logs?",
+  "alertLogEmptyTitle": "No alert logs yet",
+  "alertLogEmptyDescription": "Push results appear here after a rule triggers.",
+  "alertLogFilterAllStatuses": "All statuses",
+  "alertLogFailureReasonLabel": "Failure reason",
+  "alertLogSyncUnsupported": "Community edition does not provide the alert log sync endpoint",
+  "alertChannelCreateAction": "New channel",
+  "alertChannelEmptyTitle": "No channels yet",
+  "alertChannelEmptyDescription": "Create a channel so alert rules can push to email or a webhook.",
+  "alertChannelTypeEmail": "Email",
+  "alertChannelTypeBark": "Bark",
+  "alertChannelTypeWeCom": "WeCom",
+  "alertChannelTypeDingTalk": "DingTalk",
+  "alertChannelTypeFeiShu": "Feishu",
+  "alertChannelTypeCustom": "Webhook",
+  "alertChannelDisplayNameLabel": "Display name",
+  "alertChannelSenderLabel": "Sender",
+  "alertChannelUsernameLabel": "Username",
+  "alertChannelPasswordLabel": "Password",
+  "alertChannelHostLabel": "SMTP host",
+  "alertChannelPortLabel": "Port",
+  "alertChannelEncryptionLabel": "Encryption",
+  "alertChannelEncryptionNone": "None",
+  "alertChannelEncryptionSsl": "SSL",
+  "alertChannelEncryptionTls": "TLS",
+  "alertChannelRecipientLabel": "Recipients",
+  "alertChannelRecipientHint": "Separate multiple recipients with commas",
+  "alertChannelWebhookUrlLabel": "Webhook URL",
+  "alertChannelPasswordKeep": "Keep",
+  "alertChannelPasswordReplace": "Replace",
+  "alertChannelPasswordClear": "Clear",
+  "alertChannelTestAction": "Test",
+  "alertChannelTestPassedHint": "A passing test is required before saving",
+  "alertChannelTestRequired": "Test the channel and wait for it to pass",
+  "alertChannelDeleteConfirm": "Delete channel {title}?",
+  "@alertChannelDeleteConfirm": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "alertChannelEnabledLabel": "Enabled",
+  "alertChannelDisabledLabel": "Disabled",
+  "alertChannelCustomPresetLabel": "Preset",
+  "alertChannelCustomPresetGeneric": "Generic JSON",
+  "alertChannelCustomPresetSlack": "Slack",
+  "alertChannelCustomPresetDiscord": "Discord",
+  "alertChannelCustomPresetTeams": "Teams Workflows",
+  "alertChannelCustomPresetCustom": "Custom",
+  "alertChannelCustomBodyTypeLabel": "Body type",
+  "alertChannelCustomBodyJson": "JSON",
+  "alertChannelCustomBodyForm": "Form",
+  "alertChannelCustomBodyText": "Text",
+  "alertChannelCustomTemplateLabel": "Body template",
+  "alertChannelCustomFormatAction": "Format",
+  "alertChannelCustomFormPairLabel": "Key-value pairs",
+  "alertChannelCustomHeadersLabel": "Custom headers",
+  "alertChannelCustomHeaderKeyLabel": "Header name",
+  "alertChannelCustomHeaderValueLabel": "Header value",
+  "alertChannelCustomAddHeaderAction": "Add header",
+  "alertChannelCustomAddPairAction": "Add pair",
+  "alertChannelCustomVariableHint": "Tap to insert a template variable",
+  "alertChannelCustomVariableTitle": "Title",
+  "alertChannelCustomVariableMessage": "Message",
+  "alertChannelCustomVariableType": "id",
+  "alertChannelCustomVariableNode": "Node",
+  "alertChannelCustomVariableTimestamp": "Timestamp",
+  "alertChannelTestResultTitle": "Test result",
+  "alertChannelTestSuccess": "Channel test passed",
+  "alertChannelTestFailed": "Channel test failed",
+  "modelDownloaderTabLabel": "Model download",
+  "modelDownloaderFeaturedSectionTitle": "Featured models",
+  "modelDownloaderSearchSectionTitle": "Model market",
+  "modelDownloaderTasksSectionTitle": "Download tasks",
+  "modelDownloaderLocalSectionTitle": "Local models",
+  "modelDownloaderFeaturedEmptyTitle": "No featured models",
+  "modelDownloaderFeaturedEmptyDescription": "Sync the featured catalog to browse it.",
+  "modelDownloaderFeaturedSyncAction": "Sync catalog",
+  "modelDownloaderFeaturedSyncEnabled": "Auto sync enabled",
+  "modelDownloaderFeaturedSyncDisabled": "Auto sync disabled",
+  "modelDownloaderFeaturedAutoSyncLabel": "Auto sync",
+  "modelDownloaderSearchHint": "Enter a model name or repository ID",
+  "modelDownloaderSearchSourceLabel": "Source",
+  "modelDownloaderSearchSourceHf": "Hugging Face",
+  "modelDownloaderSearchSourceModelScope": "ModelScope",
+  "modelDownloaderSearchSortLabel": "Sort",
+  "modelDownloaderSortTrending": "Trending",
+  "modelDownloaderSortDownloads": "Downloads",
+  "modelDownloaderSortLikes": "Likes",
+  "modelDownloaderSortUpdated": "Recently updated",
+  "modelDownloaderSearchAction": "Search",
+  "modelDownloaderDownloadAction": "Download",
+  "modelDownloaderDownloadStarted": "Download task submitted",
+  "modelDownloaderDownloadTypeLabel": "Download content",
+  "modelDownloaderDownloadTypeAll": "Full model",
+  "modelDownloaderDownloadTypeTokenizer": "Tokenizer only",
+  "modelDownloaderRevisionLabel": "Revision",
+  "modelDownloaderModelInfoTitle": "Model details",
+  "modelDownloaderModelCardLabel": "Model card",
+  "modelDownloaderModelFilesLabel": "Files",
+  "modelDownloaderDownloadCountLabel": "Downloads",
+  "modelDownloaderLikeCountLabel": "Likes",
+  "modelDownloaderTaskStatusLabel": "Status",
+  "modelDownloaderTaskProgressLabel": "Progress",
+  "modelDownloaderTaskCancelAction": "Cancel",
+  "modelDownloaderTaskRetryAction": "Retry",
+  "modelDownloaderTaskRemoveAction": "Remove record",
+  "modelDownloaderTaskRemoveWithFileLabel": "Delete the downloaded files too",
+  "modelDownloaderTaskCancelConfirm": "Cancel download task {name}?",
+  "@modelDownloaderTaskCancelConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "modelDownloaderTaskRemoveConfirm": "Remove the record of download task {name}?",
+  "@modelDownloaderTaskRemoveConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "modelDownloaderTaskRetryConfirm": "Retry download task {name}?",
+  "@modelDownloaderTaskRetryConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "modelDownloaderTaskEmptyTitle": "No download tasks",
+  "modelDownloaderTaskEmptyDescription": "Pick a model in the market to start downloading.",
+  "modelDownloaderTaskStatusRunning": "Downloading",
+  "modelDownloaderTaskStatusCompleted": "Completed",
+  "modelDownloaderTaskStatusFailed": "Failed",
+  "modelDownloaderTaskStatusCancelled": "Cancelled",
+  "modelDownloaderTaskStatusWaiting": "Waiting",
+  "modelDownloaderLocalEmptyTitle": "No local models",
+  "modelDownloaderLocalEmptyDescription": "Downloaded models appear here.",
+  "modelDownloaderLocalDeleteAction": "Delete",
+  "modelDownloaderLocalDeleteFileLabel": "Delete the model files too",
+  "modelDownloaderLocalDeleteConfirm": "Delete local model {name}?",
+  "@modelDownloaderLocalDeleteConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "modelDownloaderLocalPathLabel": "Path",
+  "modelDownloaderLocalSizeLabel": "Size",
+  "modelDownloaderLocalSourceLabel": "Source",
+  "modelDownloaderLocalCreatedAtLabel": "Downloaded",
+  "modelDownloaderSettingsAction": "Download settings",
+  "modelDownloaderSettingsTitle": "Model download settings",
+  "modelDownloaderSettingsModelDirLabel": "Model directory",
+  "modelDownloaderSettingsHfEndpointLabel": "Hugging Face endpoint",
+  "modelDownloaderSettingsHfTokenLabel": "Hugging Face token",
+  "modelDownloaderSettingsModelScopeEndpointLabel": "ModelScope endpoint",
+  "modelDownloaderSettingsModelScopeTokenLabel": "ModelScope token",
+  "modelDownloaderSettingsFeaturedSyncLabel": "Featured catalog auto sync",
+  "modelDownloaderSettingsSaveSuccess": "Download settings saved",
+  "modelDownloaderRequiresProHint": "The model downloader may be unavailable on community panels; server responses decide the outcome"
 }

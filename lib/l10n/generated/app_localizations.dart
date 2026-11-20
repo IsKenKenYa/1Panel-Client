@@ -596,6 +596,12 @@ abstract class AppLocalizations {
   /// **'SSL'**
   String get websitesTabSsl;
 
+  /// No description provided for @websitesTabCertificates.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificates'**
+  String get websitesTabCertificates;
+
   /// No description provided for @websitesTabRewrite.
   ///
   /// In en, this message translates to:
@@ -2378,6 +2384,18 @@ abstract class AppLocalizations {
   /// **'Metrics unavailable'**
   String get serverMetricsUnavailable;
 
+  /// No description provided for @serverUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel unreachable'**
+  String get serverUnreachable;
+
+  /// No description provided for @serverLatencyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Responded in {ms} ms'**
+  String serverLatencyLabel(int ms);
+
   /// No description provided for @serverOpenDetail.
   ///
   /// In en, this message translates to:
@@ -2437,6 +2455,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'GPU'**
   String get aiTabGpu;
+
+  /// No description provided for @aiTabModelDownloader.
+  ///
+  /// In en, this message translates to:
+  /// **'Model Download'**
+  String get aiTabModelDownloader;
 
   /// No description provided for @aiTabDomain.
   ///
@@ -3829,6 +3853,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Download cancelled'**
   String get filesDownloadCancelled;
+
+  /// No description provided for @filesMoveSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Moved'**
+  String get filesMoveSuccess;
+
+  /// No description provided for @filesMoveDestination.
+  ///
+  /// In en, this message translates to:
+  /// **'Destination directory'**
+  String get filesMoveDestination;
+
+  /// No description provided for @filesUploadSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploaded'**
+  String get filesUploadSuccess;
+
+  /// No description provided for @filesUploadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload failed'**
+  String get filesUploadFailed;
 
   /// No description provided for @filesDownloadSaving.
   ///
@@ -9062,6 +9110,18 @@ abstract class AppLocalizations {
   /// **'Terminal'**
   String get containerTabTerminal;
 
+  /// No description provided for @containerTabFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Files'**
+  String get containerTabFiles;
+
+  /// No description provided for @containerFileBinaryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Binary file preview is not supported'**
+  String get containerFileBinaryHint;
+
   /// No description provided for @containerDetailTitle.
   ///
   /// In en, this message translates to:
@@ -9164,6 +9224,30 @@ abstract class AppLocalizations {
   /// **'Download Logs'**
   String get containerLogsDownload;
 
+  /// No description provided for @containerLogsFollowing.
+  ///
+  /// In en, this message translates to:
+  /// **'Following live logs'**
+  String get containerLogsFollowing;
+
+  /// No description provided for @containerLogsFollowPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow stopped, showing loaded logs'**
+  String get containerLogsFollowPaused;
+
+  /// No description provided for @containerLogsStopFollow.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop following'**
+  String get containerLogsStopFollow;
+
+  /// No description provided for @containerLogsResumeFollow.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume following'**
+  String get containerLogsResumeFollow;
+
   /// No description provided for @containerDeleteConfirm.
   ///
   /// In en, this message translates to:
@@ -9235,6 +9319,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Push'**
   String get containerActionPush;
+
+  /// No description provided for @containerActionPushHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'The image is pushed to the selected registry.'**
+  String get containerActionPushHelper;
+
+  /// No description provided for @containerRepoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Repository'**
+  String get containerRepoLabel;
+
+  /// No description provided for @containerReposEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No repositories'**
+  String get containerReposEmpty;
+
+  /// No description provided for @containerImageNameHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Image name, e.g. myapp'**
+  String get containerImageNameHelper;
+
+  /// No description provided for @containerBuildTagsHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'One value per line'**
+  String get containerBuildTagsHelper;
 
   /// No description provided for @containerActionSave.
   ///
@@ -9500,6 +9614,18 @@ abstract class AppLocalizations {
   /// **'Create Compose Project'**
   String get orchestrationComposeCreateTitle;
 
+  /// No description provided for @orchestrationComposeSourcePath.
+  ///
+  /// In en, this message translates to:
+  /// **'Existing File'**
+  String get orchestrationComposeSourcePath;
+
+  /// No description provided for @orchestrationComposePathHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Compose file path'**
+  String get orchestrationComposePathHint;
+
   /// No description provided for @orchestrationComposeContentLabel.
   ///
   /// In en, this message translates to:
@@ -9613,6 +9739,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tags'**
   String get orchestrationImageTags;
+
+  /// No description provided for @orchestrationImageTagHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tag'**
+  String get orchestrationImageTagHint;
 
   /// No description provided for @orchestrationImageSizeLabel.
   ///
@@ -10100,6 +10232,12 @@ abstract class AppLocalizations {
   /// **'YAML content'**
   String get containerTemplateContentHint;
 
+  /// No description provided for @containerTemplateCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New Compose Template'**
+  String get containerTemplateCreateTitle;
+
   /// No description provided for @containerCreate.
   ///
   /// In en, this message translates to:
@@ -10111,6 +10249,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Basic Configuration'**
   String get containerCreateBasicSectionTitle;
+
+  /// No description provided for @containerCreateRestartLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart policy'**
+  String get containerCreateRestartLabel;
+
+  /// No description provided for @containerCreatePortsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'One per line, e.g. 8080:80'**
+  String get containerCreatePortsHint;
+
+  /// No description provided for @containerCreateEnvHint.
+  ///
+  /// In en, this message translates to:
+  /// **'One KEY=VALUE per line'**
+  String get containerCreateEnvHint;
+
+  /// No description provided for @containerCreateVolumesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'One per line, e.g. /host:/container'**
+  String get containerCreateVolumesHint;
+
+  /// No description provided for @containerCreateAdvancedSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get containerCreateAdvancedSectionTitle;
+
+  /// No description provided for @containerCreateAutoRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto remove on exit'**
+  String get containerCreateAutoRemove;
+
+  /// No description provided for @containerCreatePrivileged.
+  ///
+  /// In en, this message translates to:
+  /// **'Privileged'**
+  String get containerCreatePrivileged;
+
+  /// No description provided for @containerCreatePublishAllPorts.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish all ports'**
+  String get containerCreatePublishAllPorts;
 
   /// No description provided for @containerEmptyTitle.
   ///
@@ -15567,6 +15753,12 @@ abstract class AppLocalizations {
   /// **'Operation failed'**
   String get commonOperationFailed;
 
+  /// No description provided for @commonOperationSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Operation succeeded'**
+  String get commonOperationSuccess;
+
   /// No description provided for @commonDeleted.
   ///
   /// In en, this message translates to:
@@ -18171,6 +18363,24 @@ abstract class AppLocalizations {
   /// **'Failed to refresh device snapshot.'**
   String get hostToolboxSnapshotRefreshFailed;
 
+  /// No description provided for @serverDeviceSnapshotTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Device Info'**
+  String get serverDeviceSnapshotTitle;
+
+  /// No description provided for @serverLocalTimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Local Time'**
+  String get serverLocalTimeLabel;
+
+  /// No description provided for @serverDnsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'DNS'**
+  String get serverDnsLabel;
+
   /// No description provided for @hostToolboxKernelLabel.
   ///
   /// In en, this message translates to:
@@ -18819,6 +19029,12 @@ abstract class AppLocalizations {
   /// **'Global'**
   String get hostAuthScopeGlobal;
 
+  /// No description provided for @hostAuthPathSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Path authentication'**
+  String get hostAuthPathSectionTitle;
+
   /// No description provided for @hostAuthUsernameRequired.
   ///
   /// In en, this message translates to:
@@ -19214,6 +19430,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cache time must be an integer between 1 and 65535.'**
   String get hostLeechCacheTimeInvalid;
+
+  /// No description provided for @hostLeechUnitSeconds.
+  ///
+  /// In en, this message translates to:
+  /// **'s'**
+  String get hostLeechUnitSeconds;
+
+  /// No description provided for @hostLeechUnitMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'m'**
+  String get hostLeechUnitMinutes;
+
+  /// No description provided for @hostLeechUnitHours.
+  ///
+  /// In en, this message translates to:
+  /// **'h'**
+  String get hostLeechUnitHours;
+
+  /// No description provided for @hostLeechUnitDays.
+  ///
+  /// In en, this message translates to:
+  /// **'d'**
+  String get hostLeechUnitDays;
+
+  /// No description provided for @hostLeechUnitWeeks.
+  ///
+  /// In en, this message translates to:
+  /// **'w'**
+  String get hostLeechUnitWeeks;
 
   /// No description provided for @hostLeechDomainsHelper.
   ///
@@ -19724,6 +19970,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Path is required.'**
   String get hostRedirectPathRequired;
+
+  /// No description provided for @hostRedirectRoot.
+  ///
+  /// In en, this message translates to:
+  /// **'Redirect site root to this rule'**
+  String get hostRedirectRoot;
 
   /// No description provided for @hostRedirectSaveFailed.
   ///
@@ -20522,6 +20774,2838 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'GPU'**
   String get hostAiTabGpu;
+
+  /// No description provided for @appCatalogSummaryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Summary'**
+  String get appCatalogSummaryLabel;
+
+  /// No description provided for @appCatalogArchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Architectures'**
+  String get appCatalogArchLabel;
+
+  /// No description provided for @appCatalogMemoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory Required'**
+  String get appCatalogMemoryLabel;
+
+  /// No description provided for @appCatalogGpuLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'GPU Support'**
+  String get appCatalogGpuLabel;
+
+  /// No description provided for @appCatalogVersionsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Versions'**
+  String get appCatalogVersionsLabel;
+
+  /// No description provided for @appCatalogHomepageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Homepage'**
+  String get appCatalogHomepageLabel;
+
+  /// No description provided for @appCatalogSourceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get appCatalogSourceLabel;
+
+  /// No description provided for @appCatalogReadmeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Readme'**
+  String get appCatalogReadmeTitle;
+
+  /// No description provided for @appCatalogReadmeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'This app does not provide a readme.'**
+  String get appCatalogReadmeEmpty;
+
+  /// No description provided for @appInstallParamsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Install Parameters'**
+  String get appInstallParamsTitle;
+
+  /// No description provided for @appTerminalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Container Terminal'**
+  String get appTerminalTitle;
+
+  /// No description provided for @cronjobRecordsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Run Records'**
+  String get cronjobRecordsTitle;
+
+  /// No description provided for @cronjobRecordEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No run records yet.'**
+  String get cronjobRecordEmpty;
+
+  /// No description provided for @cronjobRecordTaskIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Task ID'**
+  String get cronjobRecordTaskIdLabel;
+
+  /// No description provided for @commonOpenAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get commonOpenAction;
+
+  /// No description provided for @databaseChangePasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The database password updates immediately after saving.'**
+  String get databaseChangePasswordHint;
+
+  /// No description provided for @serverHomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Server Home'**
+  String get serverHomeTitle;
+
+  /// No description provided for @fileContentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'File Content'**
+  String get fileContentTitle;
+
+  /// No description provided for @fileContentEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'File is empty'**
+  String get fileContentEmpty;
+
+  /// No description provided for @fileActionPermissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions'**
+  String get fileActionPermissions;
+
+  /// No description provided for @fileCompressTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive Format'**
+  String get fileCompressTypeLabel;
+
+  /// No description provided for @fileCompressNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive Name'**
+  String get fileCompressNameLabel;
+
+  /// No description provided for @filePermissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions'**
+  String get filePermissionTitle;
+
+  /// No description provided for @databaseUserCreateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'New User'**
+  String get databaseUserCreateAction;
+
+  /// No description provided for @databaseUserHostLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Host'**
+  String get databaseUserHostLabel;
+
+  /// No description provided for @cronjobsNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Task Name'**
+  String get cronjobsNameLabel;
+
+  /// No description provided for @panelSslSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel SSL'**
+  String get panelSslSectionTitle;
+
+  /// No description provided for @logsOperationTabLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Operation'**
+  String get logsOperationTabLabel;
+
+  /// No description provided for @logsLoginTabLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get logsLoginTabLabel;
+
+  /// No description provided for @logsSystemTabLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get logsSystemTabLabel;
+
+  /// No description provided for @fileCompressTypeZip.
+  ///
+  /// In en, this message translates to:
+  /// **'ZIP'**
+  String get fileCompressTypeZip;
+
+  /// No description provided for @containerImageInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'In Use'**
+  String get containerImageInUse;
+
+  /// No description provided for @serverModuleVm.
+  ///
+  /// In en, this message translates to:
+  /// **'Virtual Machines'**
+  String get serverModuleVm;
+
+  /// No description provided for @vmPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Virtual Machines'**
+  String get vmPageTitle;
+
+  /// No description provided for @vmTabOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get vmTabOverview;
+
+  /// No description provided for @vmTabInstances.
+  ///
+  /// In en, this message translates to:
+  /// **'Virtual Machines'**
+  String get vmTabInstances;
+
+  /// No description provided for @vmInstanceCountUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'instances'**
+  String get vmInstanceCountUnit;
+
+  /// No description provided for @vmTabIso.
+  ///
+  /// In en, this message translates to:
+  /// **'ISO'**
+  String get vmTabIso;
+
+  /// No description provided for @vmTabTemplates.
+  ///
+  /// In en, this message translates to:
+  /// **'Templates'**
+  String get vmTabTemplates;
+
+  /// No description provided for @vmTabNetworks.
+  ///
+  /// In en, this message translates to:
+  /// **'Networks'**
+  String get vmTabNetworks;
+
+  /// No description provided for @vmTabStorages.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage Pools'**
+  String get vmTabStorages;
+
+  /// No description provided for @vmEnvironmentSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Runtime Environment'**
+  String get vmEnvironmentSectionTitle;
+
+  /// No description provided for @vmEnvironmentReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Runtime environment ready'**
+  String get vmEnvironmentReady;
+
+  /// No description provided for @vmEnvironmentNotReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Runtime environment not ready'**
+  String get vmEnvironmentNotReady;
+
+  /// No description provided for @vmEnvironmentEnableAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable environment'**
+  String get vmEnvironmentEnableAction;
+
+  /// No description provided for @vmEnvironmentArchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Architecture'**
+  String get vmEnvironmentArchLabel;
+
+  /// No description provided for @vmEnvironmentHelperLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Helper'**
+  String get vmEnvironmentHelperLabel;
+
+  /// No description provided for @vmEnvironmentKvmLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'KVM acceleration'**
+  String get vmEnvironmentKvmLabel;
+
+  /// No description provided for @vmEnvironmentLibvirtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Libvirt service'**
+  String get vmEnvironmentLibvirtLabel;
+
+  /// No description provided for @vmEnvironmentStorageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage directory'**
+  String get vmEnvironmentStorageLabel;
+
+  /// No description provided for @vmEnvironmentLibvirtInactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Installed but not running'**
+  String get vmEnvironmentLibvirtInactive;
+
+  /// No description provided for @vmEnvironmentEnableConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabling the runtime environment installs KVM, libvirt and storage dependencies and takes a while. Continue?'**
+  String get vmEnvironmentEnableConfirm;
+
+  /// No description provided for @vmOverviewRunningLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Running'**
+  String get vmOverviewRunningLabel;
+
+  /// No description provided for @vmOverviewStoppedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped'**
+  String get vmOverviewStoppedLabel;
+
+  /// No description provided for @vmOverviewCreatingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating'**
+  String get vmOverviewCreatingLabel;
+
+  /// No description provided for @vmOverviewAbnormalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Abnormal'**
+  String get vmOverviewAbnormalLabel;
+
+  /// No description provided for @vmOverviewCpuAllocation.
+  ///
+  /// In en, this message translates to:
+  /// **'CPU allocation'**
+  String get vmOverviewCpuAllocation;
+
+  /// No description provided for @vmOverviewMemoryAllocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory allocation'**
+  String get vmOverviewMemoryAllocation;
+
+  /// No description provided for @vmOverviewStorageUsage.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage usage'**
+  String get vmOverviewStorageUsage;
+
+  /// No description provided for @vmOverviewRiskSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Risks'**
+  String get vmOverviewRiskSectionTitle;
+
+  /// No description provided for @vmOverviewRiskEnvironment.
+  ///
+  /// In en, this message translates to:
+  /// **'Runtime environment is not ready; virtual machines are unavailable'**
+  String get vmOverviewRiskEnvironment;
+
+  /// No description provided for @vmOverviewRiskStorageHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage pool {name} reached {percent}'**
+  String vmOverviewRiskStorageHigh(String name, String percent);
+
+  /// No description provided for @vmOverviewRiskStorageCritical.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage pool {name} exceeded 90%, clean it up soon'**
+  String vmOverviewRiskStorageCritical(String name);
+
+  /// No description provided for @vmOverviewRiskAbnormalVm.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} abnormal virtual machines'**
+  String vmOverviewRiskAbnormalVm(int count);
+
+  /// No description provided for @vmOverviewRiskPausedVm.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} paused virtual machines'**
+  String vmOverviewRiskPausedVm(int count);
+
+  /// No description provided for @vmOverviewRiskMemoryHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'Allocated memory reached {percent} of the host'**
+  String vmOverviewRiskMemoryHigh(String percent);
+
+  /// No description provided for @vmOverviewNoRisk.
+  ///
+  /// In en, this message translates to:
+  /// **'No risks need attention'**
+  String get vmOverviewNoRisk;
+
+  /// No description provided for @vmOverviewOrphanAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean orphan files'**
+  String get vmOverviewOrphanAction;
+
+  /// No description provided for @vmOverviewStorageSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage pools'**
+  String get vmOverviewStorageSectionTitle;
+
+  /// No description provided for @vmOverviewCoresUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'cores'**
+  String get vmOverviewCoresUnit;
+
+  /// No description provided for @vmOverviewUnlimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited'**
+  String get vmOverviewUnlimited;
+
+  /// No description provided for @vmOrphanDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean orphan files'**
+  String get vmOrphanDialogTitle;
+
+  /// No description provided for @vmOrphanWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'These files belong to no virtual machine record and can be cleaned safely. Cleaning cannot be undone.'**
+  String get vmOrphanWarning;
+
+  /// No description provided for @vmOrphanScanAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan'**
+  String get vmOrphanScanAction;
+
+  /// No description provided for @vmOrphanCleanAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean selected'**
+  String get vmOrphanCleanAction;
+
+  /// No description provided for @vmOrphanEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'No orphan files found'**
+  String get vmOrphanEmptyMessage;
+
+  /// No description provided for @vmOrphanPathColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Path'**
+  String get vmOrphanPathColumn;
+
+  /// No description provided for @vmOrphanTypeColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get vmOrphanTypeColumn;
+
+  /// No description provided for @vmOrphanSizeColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get vmOrphanSizeColumn;
+
+  /// No description provided for @vmOrphanModifiedColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Modified'**
+  String get vmOrphanModifiedColumn;
+
+  /// No description provided for @vmOrphanSelectedSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} selected, {size} in total'**
+  String vmOrphanSelectedSummary(int count, String size);
+
+  /// No description provided for @vmInstanceSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search virtual machine name'**
+  String get vmInstanceSearchHint;
+
+  /// No description provided for @vmInstanceCreateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create virtual machine'**
+  String get vmInstanceCreateAction;
+
+  /// No description provided for @vmInstanceSyncAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync'**
+  String get vmInstanceSyncAction;
+
+  /// No description provided for @vmInstanceEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No virtual machines yet'**
+  String get vmInstanceEmptyTitle;
+
+  /// No description provided for @vmInstanceEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Create one from an ISO image or a template.'**
+  String get vmInstanceEmptyDescription;
+
+  /// No description provided for @vmInstanceQuotaLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Quota'**
+  String get vmInstanceQuotaLabel;
+
+  /// No description provided for @vmInstanceQuotaReached.
+  ///
+  /// In en, this message translates to:
+  /// **'Virtual machine quota reached'**
+  String get vmInstanceQuotaReached;
+
+  /// No description provided for @vmInstanceCreateDisabledHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Runtime environment is not ready; creation is unavailable'**
+  String get vmInstanceCreateDisabledHint;
+
+  /// No description provided for @vmInstanceStatusFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All states'**
+  String get vmInstanceStatusFilterAll;
+
+  /// No description provided for @vmInstanceCardViewLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Card view'**
+  String get vmInstanceCardViewLabel;
+
+  /// No description provided for @vmInstanceTableViewLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'List view'**
+  String get vmInstanceTableViewLabel;
+
+  /// No description provided for @vmInstanceCpuColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'CPU'**
+  String get vmInstanceCpuColumn;
+
+  /// No description provided for @vmInstanceMemoryColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory'**
+  String get vmInstanceMemoryColumn;
+
+  /// No description provided for @vmInstanceDiskColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Disk'**
+  String get vmInstanceDiskColumn;
+
+  /// No description provided for @vmInstanceNetworkColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Network'**
+  String get vmInstanceNetworkColumn;
+
+  /// No description provided for @vmInstanceStorageColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage pool'**
+  String get vmInstanceStorageColumn;
+
+  /// No description provided for @vmInstanceDiskPathColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Disk path'**
+  String get vmInstanceDiskPathColumn;
+
+  /// No description provided for @vmInstanceDescriptionColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get vmInstanceDescriptionColumn;
+
+  /// No description provided for @vmInstanceNameColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get vmInstanceNameColumn;
+
+  /// No description provided for @vmInstanceStatusColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'State'**
+  String get vmInstanceStatusColumn;
+
+  /// No description provided for @vmInstanceUuidLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'UUID'**
+  String get vmInstanceUuidLabel;
+
+  /// No description provided for @vmInstanceBootOrderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Boot order'**
+  String get vmInstanceBootOrderLabel;
+
+  /// No description provided for @vmInstanceIsoPathsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ISO paths'**
+  String get vmInstanceIsoPathsLabel;
+
+  /// No description provided for @vmInstanceGraphicsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'VNC graphics'**
+  String get vmInstanceGraphicsLabel;
+
+  /// No description provided for @vmInstanceDisksSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Disks'**
+  String get vmInstanceDisksSectionTitle;
+
+  /// No description provided for @vmInstanceInterfacesSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Interfaces'**
+  String get vmInstanceInterfacesSectionTitle;
+
+  /// No description provided for @vmInstanceDiskDeviceColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Device'**
+  String get vmInstanceDiskDeviceColumn;
+
+  /// No description provided for @vmInstanceDiskTargetColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Target'**
+  String get vmInstanceDiskTargetColumn;
+
+  /// No description provided for @vmInstanceDiskBusColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Bus'**
+  String get vmInstanceDiskBusColumn;
+
+  /// No description provided for @vmInstanceDiskSourceColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get vmInstanceDiskSourceColumn;
+
+  /// No description provided for @vmInstanceNicTypeColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get vmInstanceNicTypeColumn;
+
+  /// No description provided for @vmInstanceNicNetworkColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Network'**
+  String get vmInstanceNicNetworkColumn;
+
+  /// No description provided for @vmInstanceNicModelColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get vmInstanceNicModelColumn;
+
+  /// No description provided for @vmInstanceNicMacColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'MAC'**
+  String get vmInstanceNicMacColumn;
+
+  /// No description provided for @vmInstanceNicIpColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'IP'**
+  String get vmInstanceNicIpColumn;
+
+  /// No description provided for @vmInstanceAutoStartLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Start on boot'**
+  String get vmInstanceAutoStartLabel;
+
+  /// No description provided for @vmInstanceActionStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get vmInstanceActionStart;
+
+  /// No description provided for @vmInstanceActionShutdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Shut down'**
+  String get vmInstanceActionShutdown;
+
+  /// No description provided for @vmInstanceActionReboot.
+  ///
+  /// In en, this message translates to:
+  /// **'Reboot'**
+  String get vmInstanceActionReboot;
+
+  /// No description provided for @vmInstanceActionSuspend.
+  ///
+  /// In en, this message translates to:
+  /// **'Suspend'**
+  String get vmInstanceActionSuspend;
+
+  /// No description provided for @vmInstanceActionResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get vmInstanceActionResume;
+
+  /// No description provided for @vmInstanceActionDestroy.
+  ///
+  /// In en, this message translates to:
+  /// **'Force stop'**
+  String get vmInstanceActionDestroy;
+
+  /// No description provided for @vmInstanceActionRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get vmInstanceActionRename;
+
+  /// No description provided for @vmInstanceActionEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit config'**
+  String get vmInstanceActionEdit;
+
+  /// No description provided for @vmInstanceActionDisk.
+  ///
+  /// In en, this message translates to:
+  /// **'Resize disk'**
+  String get vmInstanceActionDisk;
+
+  /// No description provided for @vmInstanceActionSnapshot.
+  ///
+  /// In en, this message translates to:
+  /// **'Snapshots'**
+  String get vmInstanceActionSnapshot;
+
+  /// No description provided for @vmInstanceActionTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert to template'**
+  String get vmInstanceActionTemplate;
+
+  /// No description provided for @vmInstanceActionHealthCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Health check'**
+  String get vmInstanceActionHealthCheck;
+
+  /// No description provided for @vmInstanceActionMonitor.
+  ///
+  /// In en, this message translates to:
+  /// **'Monitor'**
+  String get vmInstanceActionMonitor;
+
+  /// No description provided for @vmInstanceActionConsole.
+  ///
+  /// In en, this message translates to:
+  /// **'VNC console'**
+  String get vmInstanceActionConsole;
+
+  /// No description provided for @vmInstanceActionDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get vmInstanceActionDetail;
+
+  /// No description provided for @vmInstanceActionDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get vmInstanceActionDelete;
+
+  /// No description provided for @vmInstanceOperateConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Run {operation} on {name}?'**
+  String vmInstanceOperateConfirm(String name, String operation);
+
+  /// No description provided for @vmInstanceOperateCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'{operation} request submitted'**
+  String vmInstanceOperateCompleted(String operation);
+
+  /// No description provided for @vmInstanceConsoleUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The graphics console is not ready; the machine must be running with VNC graphics'**
+  String get vmInstanceConsoleUnavailable;
+
+  /// No description provided for @vmInstanceConsoleOpenHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The VNC console opens in the panel web UI; the address was copied'**
+  String get vmInstanceConsoleOpenHint;
+
+  /// No description provided for @vmInstanceConsoleOpenAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in browser'**
+  String get vmInstanceConsoleOpenAction;
+
+  /// No description provided for @vmInstanceConsoleAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Console address'**
+  String get vmInstanceConsoleAddressLabel;
+
+  /// No description provided for @vmInstanceCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create virtual machine'**
+  String get vmInstanceCreateTitle;
+
+  /// No description provided for @vmInstanceEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit virtual machine'**
+  String get vmInstanceEditTitle;
+
+  /// No description provided for @vmInstanceNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get vmInstanceNameLabel;
+
+  /// No description provided for @vmInstanceCpuLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'CPU cores'**
+  String get vmInstanceCpuLabel;
+
+  /// No description provided for @vmInstanceMemoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory'**
+  String get vmInstanceMemoryLabel;
+
+  /// No description provided for @vmInstanceDiskSizeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Disk size'**
+  String get vmInstanceDiskSizeLabel;
+
+  /// No description provided for @vmInstanceStoragePoolLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage pool'**
+  String get vmInstanceStoragePoolLabel;
+
+  /// No description provided for @vmInstanceNetworkLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Network'**
+  String get vmInstanceNetworkLabel;
+
+  /// No description provided for @vmInstanceTemplateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Create from template'**
+  String get vmInstanceTemplateLabel;
+
+  /// No description provided for @vmInstanceTemplateNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No template'**
+  String get vmInstanceTemplateNone;
+
+  /// No description provided for @vmInstanceIsoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ISO image'**
+  String get vmInstanceIsoLabel;
+
+  /// No description provided for @vmInstanceIsoNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No ISO'**
+  String get vmInstanceIsoNone;
+
+  /// No description provided for @vmInstanceOsTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'OS type'**
+  String get vmInstanceOsTypeLabel;
+
+  /// No description provided for @vmInstanceDiskBusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Disk bus'**
+  String get vmInstanceDiskBusLabel;
+
+  /// No description provided for @vmInstanceBootOrderLabelCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Boot order'**
+  String get vmInstanceBootOrderLabelCreate;
+
+  /// No description provided for @vmInstanceBootDiskFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Disk first'**
+  String get vmInstanceBootDiskFirst;
+
+  /// No description provided for @vmInstanceBootCdFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'CD first'**
+  String get vmInstanceBootCdFirst;
+
+  /// No description provided for @vmInstanceStartAfterCreateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Start after creation'**
+  String get vmInstanceStartAfterCreateLabel;
+
+  /// No description provided for @vmInstanceMemoryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} available'**
+  String vmInstanceMemoryHint(String value);
+
+  /// No description provided for @vmInstanceCpuHint.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} cores on the host'**
+  String vmInstanceCpuHint(int value);
+
+  /// No description provided for @vmInstanceDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete virtual machine'**
+  String get vmInstanceDeleteTitle;
+
+  /// No description provided for @vmInstanceDeleteConfirmHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Deletion cannot be undone. Type {name} to confirm.'**
+  String vmInstanceDeleteConfirmHint(String name);
+
+  /// No description provided for @vmInstanceDeleteForceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Force delete'**
+  String get vmInstanceDeleteForceLabel;
+
+  /// No description provided for @vmInstanceDeleteNameMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Name does not match; deletion is blocked'**
+  String get vmInstanceDeleteNameMismatch;
+
+  /// No description provided for @vmInstanceRenameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename virtual machine'**
+  String get vmInstanceRenameTitle;
+
+  /// No description provided for @vmInstanceRenameNewNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'New name'**
+  String get vmInstanceRenameNewNameLabel;
+
+  /// No description provided for @vmInstanceRenameSameName.
+  ///
+  /// In en, this message translates to:
+  /// **'New name equals the current name'**
+  String get vmInstanceRenameSameName;
+
+  /// No description provided for @vmInstanceTemplateDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert to template'**
+  String get vmInstanceTemplateDialogTitle;
+
+  /// No description provided for @vmInstanceTemplateNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Template name'**
+  String get vmInstanceTemplateNameLabel;
+
+  /// No description provided for @vmInstanceSnapshotTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Snapshots'**
+  String get vmInstanceSnapshotTitle;
+
+  /// No description provided for @vmInstanceSnapshotCreateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create snapshot'**
+  String get vmInstanceSnapshotCreateAction;
+
+  /// No description provided for @vmInstanceSnapshotEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'No snapshots yet'**
+  String get vmInstanceSnapshotEmptyMessage;
+
+  /// No description provided for @vmInstanceSnapshotNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Snapshot name'**
+  String get vmInstanceSnapshotNameLabel;
+
+  /// No description provided for @vmInstanceSnapshotCurrentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get vmInstanceSnapshotCurrentLabel;
+
+  /// No description provided for @vmInstanceSnapshotRecoverAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Recover'**
+  String get vmInstanceSnapshotRecoverAction;
+
+  /// No description provided for @vmInstanceSnapshotDeleteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get vmInstanceSnapshotDeleteAction;
+
+  /// No description provided for @vmInstanceSnapshotRecoverConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Recover to snapshot {name}? Current state will be lost.'**
+  String vmInstanceSnapshotRecoverConfirm(String name);
+
+  /// No description provided for @vmInstanceSnapshotNeedShutOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Shut down the machine before recovering a snapshot'**
+  String get vmInstanceSnapshotNeedShutOff;
+
+  /// No description provided for @vmInstanceDiskResizeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Resize disk'**
+  String get vmInstanceDiskResizeTitle;
+
+  /// No description provided for @vmInstanceDiskCapacityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current capacity'**
+  String get vmInstanceDiskCapacityLabel;
+
+  /// No description provided for @vmInstanceDiskNewCapacityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'New capacity (GiB)'**
+  String get vmInstanceDiskNewCapacityLabel;
+
+  /// No description provided for @vmInstanceDiskResizeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'At least current capacity plus 1 GiB'**
+  String get vmInstanceDiskResizeHint;
+
+  /// No description provided for @vmInstanceDiskResizeBlockedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Not resizable'**
+  String get vmInstanceDiskResizeBlockedLabel;
+
+  /// No description provided for @vmInstanceDiskResizeUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Resizable'**
+  String get vmInstanceDiskResizeUnavailable;
+
+  /// No description provided for @vmHealthCheckTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Health check'**
+  String get vmHealthCheckTitle;
+
+  /// No description provided for @vmHealthCheckSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{pass} passed, {warn} warnings, {fail} failures'**
+  String vmHealthCheckSummary(int pass, int warn, int fail);
+
+  /// No description provided for @vmHealthCheckAllPassed.
+  ///
+  /// In en, this message translates to:
+  /// **'All checks passed'**
+  String get vmHealthCheckAllPassed;
+
+  /// No description provided for @vmHealthCheckNeedAttention.
+  ///
+  /// In en, this message translates to:
+  /// **'Some checks need attention'**
+  String get vmHealthCheckNeedAttention;
+
+  /// No description provided for @vmHealthCheckFixCommandLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fix command'**
+  String get vmHealthCheckFixCommandLabel;
+
+  /// No description provided for @vmHealthCheckDetailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Technical detail'**
+  String get vmHealthCheckDetailLabel;
+
+  /// No description provided for @vmMonitorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live monitoring'**
+  String get vmMonitorTitle;
+
+  /// No description provided for @vmMonitorCpuChart.
+  ///
+  /// In en, this message translates to:
+  /// **'CPU usage'**
+  String get vmMonitorCpuChart;
+
+  /// No description provided for @vmMonitorMemoryChart.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory usage'**
+  String get vmMonitorMemoryChart;
+
+  /// No description provided for @vmMonitorDiskChart.
+  ///
+  /// In en, this message translates to:
+  /// **'Disk throughput'**
+  String get vmMonitorDiskChart;
+
+  /// No description provided for @vmMonitorNetworkChart.
+  ///
+  /// In en, this message translates to:
+  /// **'Network throughput'**
+  String get vmMonitorNetworkChart;
+
+  /// No description provided for @vmMonitorStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'Virtual machine is not running; monitoring stopped'**
+  String get vmMonitorStopped;
+
+  /// No description provided for @vmMonitorWaitingSamples.
+  ///
+  /// In en, this message translates to:
+  /// **'Collecting samples'**
+  String get vmMonitorWaitingSamples;
+
+  /// No description provided for @vmMonitorCurrentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get vmMonitorCurrentLabel;
+
+  /// No description provided for @vmIsoStatusReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get vmIsoStatusReady;
+
+  /// No description provided for @vmIsoStatusUploading.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading'**
+  String get vmIsoStatusUploading;
+
+  /// No description provided for @vmIsoStatusDownloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading'**
+  String get vmIsoStatusDownloading;
+
+  /// No description provided for @vmIsoStatusFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get vmIsoStatusFailed;
+
+  /// No description provided for @vmIsoStatusFileMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'File missing'**
+  String get vmIsoStatusFileMissing;
+
+  /// No description provided for @vmIsoCreateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add ISO'**
+  String get vmIsoCreateAction;
+
+  /// No description provided for @vmIsoEditAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get vmIsoEditAction;
+
+  /// No description provided for @vmIsoDeleteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get vmIsoDeleteAction;
+
+  /// No description provided for @vmIsoDeleteFileLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete the source file too'**
+  String get vmIsoDeleteFileLabel;
+
+  /// No description provided for @vmIsoEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No ISO images yet'**
+  String get vmIsoEmptyTitle;
+
+  /// No description provided for @vmIsoEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an ISO image to create virtual machines.'**
+  String get vmIsoEmptyDescription;
+
+  /// No description provided for @vmIsoNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get vmIsoNameLabel;
+
+  /// No description provided for @vmIsoTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'OS type'**
+  String get vmIsoTypeLabel;
+
+  /// No description provided for @vmIsoSourceSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get vmIsoSourceSectionTitle;
+
+  /// No description provided for @vmIsoSourceServerFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Server file'**
+  String get vmIsoSourceServerFile;
+
+  /// No description provided for @vmIsoSourceUpload.
+  ///
+  /// In en, this message translates to:
+  /// **'Local upload'**
+  String get vmIsoSourceUpload;
+
+  /// No description provided for @vmIsoSourceDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Server download'**
+  String get vmIsoSourceDownload;
+
+  /// No description provided for @vmIsoServerPathLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Server path'**
+  String get vmIsoServerPathLabel;
+
+  /// No description provided for @vmIsoDownloadUrlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Download URL'**
+  String get vmIsoDownloadUrlLabel;
+
+  /// No description provided for @vmIsoTargetDirLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Target directory'**
+  String get vmIsoTargetDirLabel;
+
+  /// No description provided for @vmIsoImportStartAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Start import'**
+  String get vmIsoImportStartAction;
+
+  /// No description provided for @vmIsoImportProgressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Import progress'**
+  String get vmIsoImportProgressLabel;
+
+  /// No description provided for @vmIsoImportCancelAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel import'**
+  String get vmIsoImportCancelAction;
+
+  /// No description provided for @vmIsoImportCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Import cancelled'**
+  String get vmIsoImportCancelled;
+
+  /// No description provided for @vmIsoPathColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Path'**
+  String get vmIsoPathColumn;
+
+  /// No description provided for @vmIsoSizeColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get vmIsoSizeColumn;
+
+  /// No description provided for @vmIsoCreatedAtColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Created'**
+  String get vmIsoCreatedAtColumn;
+
+  /// No description provided for @vmTemplateEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No templates yet'**
+  String get vmTemplateEmptyTitle;
+
+  /// No description provided for @vmTemplateEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a template from a powered-off machine to deploy repeatedly.'**
+  String get vmTemplateEmptyDescription;
+
+  /// No description provided for @vmTemplateSourceVmLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Source machine'**
+  String get vmTemplateSourceVmLabel;
+
+  /// No description provided for @vmTemplateSizeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Template size'**
+  String get vmTemplateSizeLabel;
+
+  /// No description provided for @vmTemplateDeleteDiskLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete the template disk too'**
+  String get vmTemplateDeleteDiskLabel;
+
+  /// No description provided for @vmTemplateDeleteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get vmTemplateDeleteAction;
+
+  /// No description provided for @vmNetworkTypeNat.
+  ///
+  /// In en, this message translates to:
+  /// **'NAT'**
+  String get vmNetworkTypeNat;
+
+  /// No description provided for @vmNetworkTypeBridge.
+  ///
+  /// In en, this message translates to:
+  /// **'Bridge'**
+  String get vmNetworkTypeBridge;
+
+  /// No description provided for @vmNetworkTypeMacvtap.
+  ///
+  /// In en, this message translates to:
+  /// **'Macvtap'**
+  String get vmNetworkTypeMacvtap;
+
+  /// No description provided for @vmNetworkCreateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create network'**
+  String get vmNetworkCreateAction;
+
+  /// No description provided for @vmNetworkEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No virtual machine networks yet'**
+  String get vmNetworkEmptyTitle;
+
+  /// No description provided for @vmNetworkEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a NAT or bridge network for virtual machines.'**
+  String get vmNetworkEmptyDescription;
+
+  /// No description provided for @vmNetworkNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Network name'**
+  String get vmNetworkNameLabel;
+
+  /// No description provided for @vmNetworkTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get vmNetworkTypeLabel;
+
+  /// No description provided for @vmNetworkBridgeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Bridge'**
+  String get vmNetworkBridgeLabel;
+
+  /// No description provided for @vmNetworkBridgeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Only recommended bridges are listed'**
+  String get vmNetworkBridgeHint;
+
+  /// No description provided for @vmNetworkSourceInterfaceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Source interface'**
+  String get vmNetworkSourceInterfaceLabel;
+
+  /// No description provided for @vmNetworkCidrLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'CIDR'**
+  String get vmNetworkCidrLabel;
+
+  /// No description provided for @vmNetworkGatewayLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Gateway'**
+  String get vmNetworkGatewayLabel;
+
+  /// No description provided for @vmNetworkDhcpStartLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'DHCP start'**
+  String get vmNetworkDhcpStartLabel;
+
+  /// No description provided for @vmNetworkDhcpEndLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'DHCP end'**
+  String get vmNetworkDhcpEndLabel;
+
+  /// No description provided for @vmNetworkAutoStartLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Start on boot'**
+  String get vmNetworkAutoStartLabel;
+
+  /// No description provided for @vmNetworkUsedIpAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Used IPs'**
+  String get vmNetworkUsedIpAction;
+
+  /// No description provided for @vmNetworkUsedIpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Used IP addresses'**
+  String get vmNetworkUsedIpTitle;
+
+  /// No description provided for @vmNetworkUsedIpEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No address assigned in this network'**
+  String get vmNetworkUsedIpEmpty;
+
+  /// No description provided for @vmNetworkVmCountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Virtual machines'**
+  String get vmNetworkVmCountLabel;
+
+  /// No description provided for @vmNetworkNotRegistered.
+  ///
+  /// In en, this message translates to:
+  /// **'Not registered with libvirt'**
+  String get vmNetworkNotRegistered;
+
+  /// No description provided for @vmNetworkIpColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'IP'**
+  String get vmNetworkIpColumn;
+
+  /// No description provided for @vmNetworkVmColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Machine'**
+  String get vmNetworkVmColumn;
+
+  /// No description provided for @vmNetworkMacColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'MAC'**
+  String get vmNetworkMacColumn;
+
+  /// No description provided for @vmNetworkSourceColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get vmNetworkSourceColumn;
+
+  /// No description provided for @vmStorageTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get vmStorageTypeLabel;
+
+  /// No description provided for @vmStorageCreateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create storage pool'**
+  String get vmStorageCreateAction;
+
+  /// No description provided for @vmStorageEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No storage pools yet'**
+  String get vmStorageEmptyTitle;
+
+  /// No description provided for @vmStorageEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a storage pool to hold virtual machine disks.'**
+  String get vmStorageEmptyDescription;
+
+  /// No description provided for @vmStorageNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage pool name'**
+  String get vmStorageNameLabel;
+
+  /// No description provided for @vmStoragePathLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Directory path'**
+  String get vmStoragePathLabel;
+
+  /// No description provided for @vmStorageCapacityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Capacity'**
+  String get vmStorageCapacityLabel;
+
+  /// No description provided for @vmStorageAvailableLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Available'**
+  String get vmStorageAvailableLabel;
+
+  /// No description provided for @vmStorageUsedPercentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Used'**
+  String get vmStorageUsedPercentLabel;
+
+  /// No description provided for @vmStorageStatusStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get vmStorageStatusStart;
+
+  /// No description provided for @vmStorageStatusStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get vmStorageStatusStop;
+
+  /// No description provided for @vmStorageAutoStartLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Start on boot'**
+  String get vmStorageAutoStartLabel;
+
+  /// No description provided for @vmStorageDescriptionEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit description'**
+  String get vmStorageDescriptionEdit;
+
+  /// No description provided for @alertPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert Center'**
+  String get alertPageTitle;
+
+  /// No description provided for @alertTabRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert rules'**
+  String get alertTabRules;
+
+  /// No description provided for @alertTabLogs.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert logs'**
+  String get alertTabLogs;
+
+  /// No description provided for @alertTabChannels.
+  ///
+  /// In en, this message translates to:
+  /// **'Channels'**
+  String get alertTabChannels;
+
+  /// No description provided for @alertRuleTitleColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get alertRuleTitleColumn;
+
+  /// No description provided for @alertRuleTypeColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get alertRuleTypeColumn;
+
+  /// No description provided for @alertRuleStatusColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get alertRuleStatusColumn;
+
+  /// No description provided for @alertRuleMethodColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Methods'**
+  String get alertRuleMethodColumn;
+
+  /// No description provided for @alertRuleCycleColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule'**
+  String get alertRuleCycleColumn;
+
+  /// No description provided for @alertRuleActionColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Actions'**
+  String get alertRuleActionColumn;
+
+  /// No description provided for @alertRuleStatusEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get alertRuleStatusEnable;
+
+  /// No description provided for @alertRuleStatusDisable.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get alertRuleStatusDisable;
+
+  /// No description provided for @alertRuleToggleConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'{action} alert rule {title}?'**
+  String alertRuleToggleConfirm(String action, String title);
+
+  /// No description provided for @alertRuleDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete alert rule {title}?'**
+  String alertRuleDeleteConfirm(String title);
+
+  /// No description provided for @alertRuleCreateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create alert rule'**
+  String get alertRuleCreateAction;
+
+  /// No description provided for @alertRuleEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No alert rules yet'**
+  String get alertRuleEmptyTitle;
+
+  /// No description provided for @alertRuleEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a rule to receive notifications when a threshold is reached.'**
+  String get alertRuleEmptyDescription;
+
+  /// No description provided for @alertRuleFilterAllTypes.
+  ///
+  /// In en, this message translates to:
+  /// **'All types'**
+  String get alertRuleFilterAllTypes;
+
+  /// No description provided for @alertRuleFilterAllStatuses.
+  ///
+  /// In en, this message translates to:
+  /// **'All statuses'**
+  String get alertRuleFilterAllStatuses;
+
+  /// No description provided for @alertRuleTypePasswordExpiry.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel password expiry'**
+  String get alertRuleTypePasswordExpiry;
+
+  /// No description provided for @alertRuleTypePanelLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel login'**
+  String get alertRuleTypePanelLogin;
+
+  /// No description provided for @alertRuleTypeLicenseException.
+  ///
+  /// In en, this message translates to:
+  /// **'License exception'**
+  String get alertRuleTypeLicenseException;
+
+  /// No description provided for @alertRuleTypeNodeException.
+  ///
+  /// In en, this message translates to:
+  /// **'Node exception'**
+  String get alertRuleTypeNodeException;
+
+  /// No description provided for @alertRuleTypePanelUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel update'**
+  String get alertRuleTypePanelUpdate;
+
+  /// No description provided for @alertRuleTypeSshLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'SSH login'**
+  String get alertRuleTypeSshLogin;
+
+  /// No description provided for @alertRuleTypeSsl.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate expiry'**
+  String get alertRuleTypeSsl;
+
+  /// No description provided for @alertRuleTypeSiteExpiry.
+  ///
+  /// In en, this message translates to:
+  /// **'Website expiry'**
+  String get alertRuleTypeSiteExpiry;
+
+  /// No description provided for @alertRuleTypeCpu.
+  ///
+  /// In en, this message translates to:
+  /// **'CPU usage'**
+  String get alertRuleTypeCpu;
+
+  /// No description provided for @alertRuleTypeMemory.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory usage'**
+  String get alertRuleTypeMemory;
+
+  /// No description provided for @alertRuleTypeDisk.
+  ///
+  /// In en, this message translates to:
+  /// **'Disk usage'**
+  String get alertRuleTypeDisk;
+
+  /// No description provided for @alertRuleTypeLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Load'**
+  String get alertRuleTypeLoad;
+
+  /// No description provided for @alertRuleTypeClams.
+  ///
+  /// In en, this message translates to:
+  /// **'Virus scan'**
+  String get alertRuleTypeClams;
+
+  /// No description provided for @alertRuleTypeCronJob.
+  ///
+  /// In en, this message translates to:
+  /// **'Task execution'**
+  String get alertRuleTypeCronJob;
+
+  /// No description provided for @alertRuleTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get alertRuleTitleLabel;
+
+  /// No description provided for @alertRuleTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Task type'**
+  String get alertRuleTypeLabel;
+
+  /// No description provided for @alertRuleCronjobSubTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Task category'**
+  String get alertRuleCronjobSubTypeLabel;
+
+  /// No description provided for @alertRuleCronjobTaskLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Task'**
+  String get alertRuleCronjobTaskLabel;
+
+  /// No description provided for @alertRuleCronjobTaskNone.
+  ///
+  /// In en, this message translates to:
+  /// **'All tasks'**
+  String get alertRuleCronjobTaskNone;
+
+  /// No description provided for @alertRuleCronjobTriggerModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Trigger mode'**
+  String get alertRuleCronjobTriggerModeLabel;
+
+  /// No description provided for @alertRuleCronjobTriggerFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'On failure'**
+  String get alertRuleCronjobTriggerFailed;
+
+  /// No description provided for @alertRuleCronjobTriggerSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'On success'**
+  String get alertRuleCronjobTriggerSuccess;
+
+  /// No description provided for @alertRuleCronjobTriggerBoth.
+  ///
+  /// In en, this message translates to:
+  /// **'Success or failure'**
+  String get alertRuleCronjobTriggerBoth;
+
+  /// No description provided for @alertRuleCycleDaysLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Days remaining threshold'**
+  String get alertRuleCycleDaysLabel;
+
+  /// No description provided for @alertRuleThresholdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Threshold'**
+  String get alertRuleThresholdLabel;
+
+  /// No description provided for @alertRuleThresholdUnitPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Percent'**
+  String get alertRuleThresholdUnitPercent;
+
+  /// No description provided for @alertRuleThresholdUnitGb.
+  ///
+  /// In en, this message translates to:
+  /// **'Capacity (GB)'**
+  String get alertRuleThresholdUnitGb;
+
+  /// No description provided for @alertRuleDiskTargetsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Monitored disks'**
+  String get alertRuleDiskTargetsLabel;
+
+  /// No description provided for @alertRuleDiskAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All disks'**
+  String get alertRuleDiskAll;
+
+  /// No description provided for @alertRuleCertificateTargetsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Monitored certificates'**
+  String get alertRuleCertificateTargetsLabel;
+
+  /// No description provided for @alertRuleCertificateAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All certificates'**
+  String get alertRuleCertificateAll;
+
+  /// No description provided for @alertRuleWebsiteTargetsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Monitored websites'**
+  String get alertRuleWebsiteTargetsLabel;
+
+  /// No description provided for @alertRuleWebsiteAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All websites'**
+  String get alertRuleWebsiteAll;
+
+  /// No description provided for @alertRuleClamTargetLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Virus scan task'**
+  String get alertRuleClamTargetLabel;
+
+  /// No description provided for @alertRuleSendCountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications per day'**
+  String get alertRuleSendCountLabel;
+
+  /// No description provided for @alertRuleMethodsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notify via'**
+  String get alertRuleMethodsLabel;
+
+  /// No description provided for @alertRuleMethodsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a channel first'**
+  String get alertRuleMethodsEmpty;
+
+  /// No description provided for @alertRuleIntervalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Averaging window'**
+  String get alertRuleIntervalLabel;
+
+  /// No description provided for @alertRuleIntervalMinute1.
+  ///
+  /// In en, this message translates to:
+  /// **'1 minute'**
+  String get alertRuleIntervalMinute1;
+
+  /// No description provided for @alertRuleIntervalMinute5.
+  ///
+  /// In en, this message translates to:
+  /// **'5 minutes'**
+  String get alertRuleIntervalMinute5;
+
+  /// No description provided for @alertRuleIntervalMinute15.
+  ///
+  /// In en, this message translates to:
+  /// **'15 minutes'**
+  String get alertRuleIntervalMinute15;
+
+  /// No description provided for @alertRuleAdvancedParamsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced parameters'**
+  String get alertRuleAdvancedParamsLabel;
+
+  /// No description provided for @alertRuleAdvancedParamsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'JSON structure defined by the server, for example login failures and allow list'**
+  String get alertRuleAdvancedParamsHint;
+
+  /// No description provided for @alertLogStatusSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Push succeeded'**
+  String get alertLogStatusSuccess;
+
+  /// No description provided for @alertLogStatusPushing.
+  ///
+  /// In en, this message translates to:
+  /// **'Pushing'**
+  String get alertLogStatusPushing;
+
+  /// No description provided for @alertLogStatusSendSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get alertLogStatusSendSuccess;
+
+  /// No description provided for @alertLogStatusError.
+  ///
+  /// In en, this message translates to:
+  /// **'Push failed'**
+  String get alertLogStatusError;
+
+  /// No description provided for @alertLogStatusSyncError.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync failed'**
+  String get alertLogStatusSyncError;
+
+  /// No description provided for @alertLogMessageColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get alertLogMessageColumn;
+
+  /// No description provided for @alertLogMethodColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel'**
+  String get alertLogMethodColumn;
+
+  /// No description provided for @alertLogStatusColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get alertLogStatusColumn;
+
+  /// No description provided for @alertLogCreatedAtColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Created'**
+  String get alertLogCreatedAtColumn;
+
+  /// No description provided for @alertLogCountColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent count'**
+  String get alertLogCountColumn;
+
+  /// No description provided for @alertLogCleanAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear logs'**
+  String get alertLogCleanAction;
+
+  /// No description provided for @alertLogCleanConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all alert logs?'**
+  String get alertLogCleanConfirm;
+
+  /// No description provided for @alertLogEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No alert logs yet'**
+  String get alertLogEmptyTitle;
+
+  /// No description provided for @alertLogEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Push results appear here after a rule triggers.'**
+  String get alertLogEmptyDescription;
+
+  /// No description provided for @alertLogFilterAllStatuses.
+  ///
+  /// In en, this message translates to:
+  /// **'All statuses'**
+  String get alertLogFilterAllStatuses;
+
+  /// No description provided for @alertLogFailureReasonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Failure reason'**
+  String get alertLogFailureReasonLabel;
+
+  /// No description provided for @alertLogSyncUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Community edition does not provide the alert log sync endpoint'**
+  String get alertLogSyncUnsupported;
+
+  /// No description provided for @alertChannelCreateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'New channel'**
+  String get alertChannelCreateAction;
+
+  /// No description provided for @alertChannelEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No channels yet'**
+  String get alertChannelEmptyTitle;
+
+  /// No description provided for @alertChannelEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a channel so alert rules can push to email or a webhook.'**
+  String get alertChannelEmptyDescription;
+
+  /// No description provided for @alertChannelTypeEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get alertChannelTypeEmail;
+
+  /// No description provided for @alertChannelTypeBark.
+  ///
+  /// In en, this message translates to:
+  /// **'Bark'**
+  String get alertChannelTypeBark;
+
+  /// No description provided for @alertChannelTypeWeCom.
+  ///
+  /// In en, this message translates to:
+  /// **'WeCom'**
+  String get alertChannelTypeWeCom;
+
+  /// No description provided for @alertChannelTypeDingTalk.
+  ///
+  /// In en, this message translates to:
+  /// **'DingTalk'**
+  String get alertChannelTypeDingTalk;
+
+  /// No description provided for @alertChannelTypeFeiShu.
+  ///
+  /// In en, this message translates to:
+  /// **'Feishu'**
+  String get alertChannelTypeFeiShu;
+
+  /// No description provided for @alertChannelTypeCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Webhook'**
+  String get alertChannelTypeCustom;
+
+  /// No description provided for @alertChannelDisplayNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Display name'**
+  String get alertChannelDisplayNameLabel;
+
+  /// No description provided for @alertChannelSenderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sender'**
+  String get alertChannelSenderLabel;
+
+  /// No description provided for @alertChannelUsernameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get alertChannelUsernameLabel;
+
+  /// No description provided for @alertChannelPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get alertChannelPasswordLabel;
+
+  /// No description provided for @alertChannelHostLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'SMTP host'**
+  String get alertChannelHostLabel;
+
+  /// No description provided for @alertChannelPortLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Port'**
+  String get alertChannelPortLabel;
+
+  /// No description provided for @alertChannelEncryptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Encryption'**
+  String get alertChannelEncryptionLabel;
+
+  /// No description provided for @alertChannelEncryptionNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get alertChannelEncryptionNone;
+
+  /// No description provided for @alertChannelEncryptionSsl.
+  ///
+  /// In en, this message translates to:
+  /// **'SSL'**
+  String get alertChannelEncryptionSsl;
+
+  /// No description provided for @alertChannelEncryptionTls.
+  ///
+  /// In en, this message translates to:
+  /// **'TLS'**
+  String get alertChannelEncryptionTls;
+
+  /// No description provided for @alertChannelRecipientLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipients'**
+  String get alertChannelRecipientLabel;
+
+  /// No description provided for @alertChannelRecipientHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Separate multiple recipients with commas'**
+  String get alertChannelRecipientHint;
+
+  /// No description provided for @alertChannelWebhookUrlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Webhook URL'**
+  String get alertChannelWebhookUrlLabel;
+
+  /// No description provided for @alertChannelPasswordKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep'**
+  String get alertChannelPasswordKeep;
+
+  /// No description provided for @alertChannelPasswordReplace.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace'**
+  String get alertChannelPasswordReplace;
+
+  /// No description provided for @alertChannelPasswordClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get alertChannelPasswordClear;
+
+  /// No description provided for @alertChannelTestAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Test'**
+  String get alertChannelTestAction;
+
+  /// No description provided for @alertChannelTestPassedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A passing test is required before saving'**
+  String get alertChannelTestPassedHint;
+
+  /// No description provided for @alertChannelTestRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Test the channel and wait for it to pass'**
+  String get alertChannelTestRequired;
+
+  /// No description provided for @alertChannelDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete channel {title}?'**
+  String alertChannelDeleteConfirm(String title);
+
+  /// No description provided for @alertChannelEnabledLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get alertChannelEnabledLabel;
+
+  /// No description provided for @alertChannelDisabledLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get alertChannelDisabledLabel;
+
+  /// No description provided for @alertChannelCustomPresetLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Preset'**
+  String get alertChannelCustomPresetLabel;
+
+  /// No description provided for @alertChannelCustomPresetGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Generic JSON'**
+  String get alertChannelCustomPresetGeneric;
+
+  /// No description provided for @alertChannelCustomPresetSlack.
+  ///
+  /// In en, this message translates to:
+  /// **'Slack'**
+  String get alertChannelCustomPresetSlack;
+
+  /// No description provided for @alertChannelCustomPresetDiscord.
+  ///
+  /// In en, this message translates to:
+  /// **'Discord'**
+  String get alertChannelCustomPresetDiscord;
+
+  /// No description provided for @alertChannelCustomPresetTeams.
+  ///
+  /// In en, this message translates to:
+  /// **'Teams Workflows'**
+  String get alertChannelCustomPresetTeams;
+
+  /// No description provided for @alertChannelCustomPresetCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get alertChannelCustomPresetCustom;
+
+  /// No description provided for @alertChannelCustomBodyTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Body type'**
+  String get alertChannelCustomBodyTypeLabel;
+
+  /// No description provided for @alertChannelCustomBodyJson.
+  ///
+  /// In en, this message translates to:
+  /// **'JSON'**
+  String get alertChannelCustomBodyJson;
+
+  /// No description provided for @alertChannelCustomBodyForm.
+  ///
+  /// In en, this message translates to:
+  /// **'Form'**
+  String get alertChannelCustomBodyForm;
+
+  /// No description provided for @alertChannelCustomBodyText.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get alertChannelCustomBodyText;
+
+  /// No description provided for @alertChannelCustomTemplateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Body template'**
+  String get alertChannelCustomTemplateLabel;
+
+  /// No description provided for @alertChannelCustomFormatAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Format'**
+  String get alertChannelCustomFormatAction;
+
+  /// No description provided for @alertChannelCustomFormPairLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Key-value pairs'**
+  String get alertChannelCustomFormPairLabel;
+
+  /// No description provided for @alertChannelCustomHeadersLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom headers'**
+  String get alertChannelCustomHeadersLabel;
+
+  /// No description provided for @alertChannelCustomHeaderKeyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Header name'**
+  String get alertChannelCustomHeaderKeyLabel;
+
+  /// No description provided for @alertChannelCustomHeaderValueLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Header value'**
+  String get alertChannelCustomHeaderValueLabel;
+
+  /// No description provided for @alertChannelCustomAddHeaderAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add header'**
+  String get alertChannelCustomAddHeaderAction;
+
+  /// No description provided for @alertChannelCustomAddPairAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add pair'**
+  String get alertChannelCustomAddPairAction;
+
+  /// No description provided for @alertChannelCustomVariableHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to insert a template variable'**
+  String get alertChannelCustomVariableHint;
+
+  /// No description provided for @alertChannelCustomVariableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get alertChannelCustomVariableTitle;
+
+  /// No description provided for @alertChannelCustomVariableMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get alertChannelCustomVariableMessage;
+
+  /// No description provided for @alertChannelCustomVariableType.
+  ///
+  /// In en, this message translates to:
+  /// **'id'**
+  String get alertChannelCustomVariableType;
+
+  /// No description provided for @alertChannelCustomVariableNode.
+  ///
+  /// In en, this message translates to:
+  /// **'Node'**
+  String get alertChannelCustomVariableNode;
+
+  /// No description provided for @alertChannelCustomVariableTimestamp.
+  ///
+  /// In en, this message translates to:
+  /// **'Timestamp'**
+  String get alertChannelCustomVariableTimestamp;
+
+  /// No description provided for @alertChannelTestResultTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Test result'**
+  String get alertChannelTestResultTitle;
+
+  /// No description provided for @alertChannelTestSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel test passed'**
+  String get alertChannelTestSuccess;
+
+  /// No description provided for @alertChannelTestFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel test failed'**
+  String get alertChannelTestFailed;
+
+  /// No description provided for @modelDownloaderTabLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Model download'**
+  String get modelDownloaderTabLabel;
+
+  /// No description provided for @modelDownloaderFeaturedSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Featured models'**
+  String get modelDownloaderFeaturedSectionTitle;
+
+  /// No description provided for @modelDownloaderSearchSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Model market'**
+  String get modelDownloaderSearchSectionTitle;
+
+  /// No description provided for @modelDownloaderTasksSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Download tasks'**
+  String get modelDownloaderTasksSectionTitle;
+
+  /// No description provided for @modelDownloaderLocalSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Local models'**
+  String get modelDownloaderLocalSectionTitle;
+
+  /// No description provided for @modelDownloaderFeaturedEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No featured models'**
+  String get modelDownloaderFeaturedEmptyTitle;
+
+  /// No description provided for @modelDownloaderFeaturedEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync the featured catalog to browse it.'**
+  String get modelDownloaderFeaturedEmptyDescription;
+
+  /// No description provided for @modelDownloaderFeaturedSyncAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync catalog'**
+  String get modelDownloaderFeaturedSyncAction;
+
+  /// No description provided for @modelDownloaderFeaturedSyncEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto sync enabled'**
+  String get modelDownloaderFeaturedSyncEnabled;
+
+  /// No description provided for @modelDownloaderFeaturedSyncDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto sync disabled'**
+  String get modelDownloaderFeaturedSyncDisabled;
+
+  /// No description provided for @modelDownloaderFeaturedAutoSyncLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto sync'**
+  String get modelDownloaderFeaturedAutoSyncLabel;
+
+  /// No description provided for @modelDownloaderSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a model name or repository ID'**
+  String get modelDownloaderSearchHint;
+
+  /// No description provided for @modelDownloaderSearchSourceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get modelDownloaderSearchSourceLabel;
+
+  /// No description provided for @modelDownloaderSearchSourceHf.
+  ///
+  /// In en, this message translates to:
+  /// **'Hugging Face'**
+  String get modelDownloaderSearchSourceHf;
+
+  /// No description provided for @modelDownloaderSearchSourceModelScope.
+  ///
+  /// In en, this message translates to:
+  /// **'ModelScope'**
+  String get modelDownloaderSearchSourceModelScope;
+
+  /// No description provided for @modelDownloaderSearchSortLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort'**
+  String get modelDownloaderSearchSortLabel;
+
+  /// No description provided for @modelDownloaderSortTrending.
+  ///
+  /// In en, this message translates to:
+  /// **'Trending'**
+  String get modelDownloaderSortTrending;
+
+  /// No description provided for @modelDownloaderSortDownloads.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloads'**
+  String get modelDownloaderSortDownloads;
+
+  /// No description provided for @modelDownloaderSortLikes.
+  ///
+  /// In en, this message translates to:
+  /// **'Likes'**
+  String get modelDownloaderSortLikes;
+
+  /// No description provided for @modelDownloaderSortUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently updated'**
+  String get modelDownloaderSortUpdated;
+
+  /// No description provided for @modelDownloaderSearchAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get modelDownloaderSearchAction;
+
+  /// No description provided for @modelDownloaderDownloadAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get modelDownloaderDownloadAction;
+
+  /// No description provided for @modelDownloaderDownloadStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Download task submitted'**
+  String get modelDownloaderDownloadStarted;
+
+  /// No description provided for @modelDownloaderDownloadTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Download content'**
+  String get modelDownloaderDownloadTypeLabel;
+
+  /// No description provided for @modelDownloaderDownloadTypeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Full model'**
+  String get modelDownloaderDownloadTypeAll;
+
+  /// No description provided for @modelDownloaderDownloadTypeTokenizer.
+  ///
+  /// In en, this message translates to:
+  /// **'Tokenizer only'**
+  String get modelDownloaderDownloadTypeTokenizer;
+
+  /// No description provided for @modelDownloaderRevisionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Revision'**
+  String get modelDownloaderRevisionLabel;
+
+  /// No description provided for @modelDownloaderModelInfoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Model details'**
+  String get modelDownloaderModelInfoTitle;
+
+  /// No description provided for @modelDownloaderModelCardLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Model card'**
+  String get modelDownloaderModelCardLabel;
+
+  /// No description provided for @modelDownloaderModelFilesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Files'**
+  String get modelDownloaderModelFilesLabel;
+
+  /// No description provided for @modelDownloaderDownloadCountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloads'**
+  String get modelDownloaderDownloadCountLabel;
+
+  /// No description provided for @modelDownloaderLikeCountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Likes'**
+  String get modelDownloaderLikeCountLabel;
+
+  /// No description provided for @modelDownloaderTaskStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get modelDownloaderTaskStatusLabel;
+
+  /// No description provided for @modelDownloaderTaskProgressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress'**
+  String get modelDownloaderTaskProgressLabel;
+
+  /// No description provided for @modelDownloaderTaskCancelAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get modelDownloaderTaskCancelAction;
+
+  /// No description provided for @modelDownloaderTaskRetryAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get modelDownloaderTaskRetryAction;
+
+  /// No description provided for @modelDownloaderTaskRemoveAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove record'**
+  String get modelDownloaderTaskRemoveAction;
+
+  /// No description provided for @modelDownloaderTaskRemoveWithFileLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete the downloaded files too'**
+  String get modelDownloaderTaskRemoveWithFileLabel;
+
+  /// No description provided for @modelDownloaderTaskCancelConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel download task {name}?'**
+  String modelDownloaderTaskCancelConfirm(String name);
+
+  /// No description provided for @modelDownloaderTaskRemoveConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the record of download task {name}?'**
+  String modelDownloaderTaskRemoveConfirm(String name);
+
+  /// No description provided for @modelDownloaderTaskRetryConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry download task {name}?'**
+  String modelDownloaderTaskRetryConfirm(String name);
+
+  /// No description provided for @modelDownloaderTaskEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No download tasks'**
+  String get modelDownloaderTaskEmptyTitle;
+
+  /// No description provided for @modelDownloaderTaskEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a model in the market to start downloading.'**
+  String get modelDownloaderTaskEmptyDescription;
+
+  /// No description provided for @modelDownloaderTaskStatusRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading'**
+  String get modelDownloaderTaskStatusRunning;
+
+  /// No description provided for @modelDownloaderTaskStatusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get modelDownloaderTaskStatusCompleted;
+
+  /// No description provided for @modelDownloaderTaskStatusFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get modelDownloaderTaskStatusFailed;
+
+  /// No description provided for @modelDownloaderTaskStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get modelDownloaderTaskStatusCancelled;
+
+  /// No description provided for @modelDownloaderTaskStatusWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting'**
+  String get modelDownloaderTaskStatusWaiting;
+
+  /// No description provided for @modelDownloaderLocalEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No local models'**
+  String get modelDownloaderLocalEmptyTitle;
+
+  /// No description provided for @modelDownloaderLocalEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloaded models appear here.'**
+  String get modelDownloaderLocalEmptyDescription;
+
+  /// No description provided for @modelDownloaderLocalDeleteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get modelDownloaderLocalDeleteAction;
+
+  /// No description provided for @modelDownloaderLocalDeleteFileLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete the model files too'**
+  String get modelDownloaderLocalDeleteFileLabel;
+
+  /// No description provided for @modelDownloaderLocalDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete local model {name}?'**
+  String modelDownloaderLocalDeleteConfirm(String name);
+
+  /// No description provided for @modelDownloaderLocalPathLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Path'**
+  String get modelDownloaderLocalPathLabel;
+
+  /// No description provided for @modelDownloaderLocalSizeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get modelDownloaderLocalSizeLabel;
+
+  /// No description provided for @modelDownloaderLocalSourceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get modelDownloaderLocalSourceLabel;
+
+  /// No description provided for @modelDownloaderLocalCreatedAtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloaded'**
+  String get modelDownloaderLocalCreatedAtLabel;
+
+  /// No description provided for @modelDownloaderSettingsAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Download settings'**
+  String get modelDownloaderSettingsAction;
+
+  /// No description provided for @modelDownloaderSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Model download settings'**
+  String get modelDownloaderSettingsTitle;
+
+  /// No description provided for @modelDownloaderSettingsModelDirLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Model directory'**
+  String get modelDownloaderSettingsModelDirLabel;
+
+  /// No description provided for @modelDownloaderSettingsHfEndpointLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Hugging Face endpoint'**
+  String get modelDownloaderSettingsHfEndpointLabel;
+
+  /// No description provided for @modelDownloaderSettingsHfTokenLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Hugging Face token'**
+  String get modelDownloaderSettingsHfTokenLabel;
+
+  /// No description provided for @modelDownloaderSettingsModelScopeEndpointLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ModelScope endpoint'**
+  String get modelDownloaderSettingsModelScopeEndpointLabel;
+
+  /// No description provided for @modelDownloaderSettingsModelScopeTokenLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ModelScope token'**
+  String get modelDownloaderSettingsModelScopeTokenLabel;
+
+  /// No description provided for @modelDownloaderSettingsFeaturedSyncLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Featured catalog auto sync'**
+  String get modelDownloaderSettingsFeaturedSyncLabel;
+
+  /// No description provided for @modelDownloaderSettingsSaveSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Download settings saved'**
+  String get modelDownloaderSettingsSaveSuccess;
+
+  /// No description provided for @modelDownloaderRequiresProHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The model downloader may be unavailable on community panels; server responses decide the outcome'**
+  String get modelDownloaderRequiresProHint;
 }
 
 class _AppLocalizationsDelegate
