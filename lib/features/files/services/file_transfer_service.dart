@@ -238,4 +238,88 @@ class FileTransferService {
     final api = await _repository.getApi();
     await api.stopWgetDownload(FileWgetStopRequest(key: key));
   }
+
+  // ==================== 分片上传 ====================
+
+  /// 分片大小：与服务端临时分片目录的单片上限保持一致。
+  static const int chunkSize = 1024 * 1024;
+
+  /// 上传本地文件到面板目标目录（分片路径）。
+  ///
+  /// 小于 [chunkSize] 的文件走单次上传；大文件按 [chunkSize] 分片，
+  /// 每片完成后回调 [onProgress]（0~1）。[cancelled] 返回 true 时
+  /// 终止后续分片并通知服务端清理临时目录。
+  ///
+  /// [uploadID] 用于服务端把同一文件的分片放入同一临时目录；调用方
+  /// 需要为每次上传生成稳定且唯一的标识，缺省时由路径与时间戳派生。
+  Future<void> uploadChunkedLocalFile({
+    required String localPath,
+    required String targetPath,
+    String? fileName,
+    String? uploadID,
+    bool overwrite = true,
+    void Function(double progress)? onProgress,
+    bool Function()? cancelled,
+  }) async {
+    final file = File(localPath);
+    if (!await file.exists()) {
+      throw FileSystemException('文件不存在', localPath);
+    }
+    final resolvedName = fileName ?? localPath.split(Platform.pathSeparator).last;
+    final api = await _repository.getApi();
+    final size = await file.length();
+    final resolvedUploadID = uploadID ??
+        '${DateTime.now().microsecondsSinceEpoch}-${file.uri.pathSegments.last}';
+
+    if (size <= chunkSize) {
+      await api.uploadFile(
+        targetPath,
+        await MultipartFile.fromFile(localPath, filename: resolvedName),
+      );
+      onProgress?.call(1);
+      return;
+    }
+
+    final totalChunks = (size / chunkSize).ceil();
+    final randomAccessFile = await file.open();
+    try {
+      for (var index = 0; index < totalChunks; index++) {
+        if (cancelled?.call() ?? false) {
+          await api.stopChunkUpload(resolvedUploadID);
+          throw const _UploadCancelled();
+        }
+        final start = index * chunkSize;
+        final end = (start + chunkSize > size) ? size : start + chunkSize;
+        await randomAccessFile.setPosition(start);
+        final bytes = await randomAccessFile.read(end - start);
+        await api.chunkUpload(FileChunkUpload(
+          uploadID: resolvedUploadID,
+          filename: resolvedName,
+          path: targetPath,
+          chunkBytes: bytes,
+          chunkIndex: index,
+          chunkCount: totalChunks,
+          offset: start,
+          fileSize: size,
+          overwrite: overwrite,
+        ));
+        onProgress?.call((index + 1) / totalChunks);
+      }
+    } finally {
+      await randomAccessFile.close();
+    }
+  }
+
+  /// 通知服务端放弃一次分片上传并清理临时分片。
+  Future<void> cancelChunkedUpload(String uploadID) async {
+    final api = await _repository.getApi();
+    await api.stopChunkUpload(uploadID);
+  }
+}
+
+class _UploadCancelled implements Exception {
+  const _UploadCancelled();
+
+  @override
+  String toString() => '上传已取消';
 }

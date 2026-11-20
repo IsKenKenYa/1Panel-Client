@@ -101,6 +101,12 @@ class OperationsCenterPage extends StatelessWidget {
             icon: Icons.article_outlined,
           ),
           _OperationEntry(
+            routeId: 'alert',
+            title: l10n.alertPageTitle,
+            route: AppRoutes.alert,
+            icon: Icons.notifications_active_outlined,
+          ),
+          _OperationEntry(
             routeId: 'toolbox',
             title: l10n.operationsToolboxTitle,
             route: AppRoutes.toolbox,

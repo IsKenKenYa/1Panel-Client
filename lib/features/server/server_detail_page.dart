@@ -129,6 +129,11 @@ class ServerDetailPage extends StatelessWidget {
         onTap: () => _openRoute(context, AppRoutes.databases),
       ),
       SectionEntryItem(
+        title: l10n.alertPageTitle,
+        icon: Icons.notifications_active_outlined,
+        onTap: () => _openRoute(context, AppRoutes.alert),
+      ),
+      SectionEntryItem(
         title: l10n.serverModuleFirewall,
         icon: Icons.shield_outlined,
         onTap: () => _openRoute(context, AppRoutes.firewall),
@@ -168,6 +173,8 @@ class ServerDetailPage extends StatelessWidget {
         return AppRoutes.websites;
       case ClientModule.ai:
         return AppRoutes.ai;
+      case ClientModule.vm:
+        return AppRoutes.vm;
       case ClientModule.verification:
         return AppRoutes.securityVerification;
       case ClientModule.servers:

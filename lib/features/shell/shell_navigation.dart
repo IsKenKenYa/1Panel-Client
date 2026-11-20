@@ -114,6 +114,17 @@ ShellRouteTarget? shellRouteTargetForRoute(String route) {
         module: ClientModule.ai,
         embedRouteInShell: false,
       );
+    case AppRoutes.vm:
+      return const ShellRouteTarget(
+        module: ClientModule.vm,
+        embedRouteInShell: false,
+      );
+    case AppRoutes.alert:
+      // 告警中心从服务器详情页「更多」进入，桌面壳内嵌在服务器模块内。
+      return const ShellRouteTarget(
+        module: ClientModule.servers,
+        embedRouteInShell: true,
+      );
     case AppRoutes.aiAccounts:
     case AppRoutes.aiOllamaModels:
     case AppRoutes.aiAgents:

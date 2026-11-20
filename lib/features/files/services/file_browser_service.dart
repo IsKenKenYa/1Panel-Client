@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import '../../../core/config/api_config.dart';
+import 'package:dio/dio.dart' show MultipartFile;
 import 'package:onepanel_client/data/models/paged_query.dart';
 import '../../../data/models/file_models.dart';
 import '../../../data/repositories/files_repository.dart';
+import 'file_transfer_service.dart';
 
 class FileBrowserService {
   FileBrowserService({FilesRepository? repository})
@@ -409,6 +413,47 @@ class FileBrowserService {
   Future<void> uploadFile(String path, dynamic file) async {
     final api = await _repository.getApi();
     await api.uploadFile(path, file);
+  }
+
+  /// 上传设备本地文件到指定目录。
+  ///
+  /// 大文件按分片上传，见 [FileTransferService.uploadChunkedLocalFile]。
+  Future<void> uploadLocalFile({
+    required String dir,
+    required String localPath,
+    String? fileName,
+    void Function(double progress)? onProgress,
+    bool Function()? cancelled,
+  }) async {
+    final api = await _repository.getApi();
+    final file = File(localPath);
+    if (!await file.exists()) {
+      throw FileSystemException('文件不存在', localPath);
+    }
+    final size = await file.length();
+    final resolvedName = fileName ?? localPath.split('/').last;
+    if (size <= FileTransferService.chunkSize) {
+      await api.uploadFile(
+        dir,
+        await MultipartFile.fromFile(localPath, filename: resolvedName),
+      );
+      onProgress?.call(1);
+      return;
+    }
+    await FileTransferService(repository: _repository).uploadChunkedLocalFile(
+      localPath: localPath,
+      targetPath: dir,
+      fileName: resolvedName,
+      onProgress: onProgress,
+      cancelled: cancelled,
+    );
+  }
+
+  /// 下载服务器文件内容。
+  Future<List<int>> downloadFile(String path) async {
+    final api = await _repository.getApi();
+    final response = await api.downloadFile(path);
+    return response.data ?? const <int>[];
   }
 
   String _generateCopyName(String originalName) {

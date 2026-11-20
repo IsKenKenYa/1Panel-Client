@@ -52,10 +52,64 @@ class _ContainerLogsViewState extends State<ContainerLogsView> {
           : null,
       hasCachedData: _controller.logs.isNotEmpty,
       onRetry: provider.loadLogs,
-      child: LogViewer(
-        controller: _controller,
-        onRefresh: provider.loadLogs,
-        emptyMessage: l10n.containerNoLogs,
+      child: Column(
+        children: [
+          _FollowBar(provider: provider),
+          Expanded(
+            child: LogViewer(
+              controller: _controller,
+              onRefresh: provider.loadLogs,
+              emptyMessage: l10n.containerNoLogs,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 跟随状态条：显示当前是否持续接收日志，并提供停止跟随与恢复跟随。
+class _FollowBar extends StatelessWidget {
+  const _FollowBar({required this.provider});
+
+  final ContainerDetailProvider provider;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      color: scheme.surfaceContainerHighest,
+      child: Row(
+        children: [
+          Icon(
+            provider.followLogs ? Icons.podcasts : Icons.pause_circle_outline,
+            size: 18,
+            color:
+                provider.followLogs ? scheme.primary : scheme.onSurfaceVariant,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              provider.followLogs
+                  ? l10n.containerLogsFollowing
+                  : l10n.containerLogsFollowPaused,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+          TextButton.icon(
+            onPressed: provider.followLogs
+                ? provider.stopFollowing
+                : () => provider.loadLogs(follow: true),
+            icon: Icon(provider.followLogs ? Icons.stop : Icons.play_arrow),
+            label: Text(
+              provider.followLogs
+                  ? l10n.containerLogsStopFollow
+                  : l10n.containerLogsResumeFollow,
+            ),
+          ),
+        ],
       ),
     );
   }

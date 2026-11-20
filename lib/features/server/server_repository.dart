@@ -1,10 +1,19 @@
 import 'package:onepanel_client/api/v2/dashboard_v2.dart';
+import 'package:onepanel_client/api/v2/health_v2.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/network/api_client_manager.dart';
+import 'package:onepanel_client/core/network/dio_client.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/repositories/dashboard_repository.dart';
 import 'package:onepanel_client/core/network/network_exceptions.dart';
 import 'server_models.dart';
+
+/// 健康探测结果的占位句柄：`ping` 尚未完成时也可继续加载监控指标。
+class _HealthProbe {
+  const _HealthProbe(this.ping);
+
+  final Future<int?> ping;
+}
 
 /// 服务器仓库
 ///
@@ -30,7 +39,9 @@ class ServerRepository {
 
   /// 加载服务器监控指标
   ///
-  /// 使用 DashboardRepository 获取当前服务器快照数据
+  /// 使用 DashboardRepository 获取当前服务器快照数据；同时用
+  /// `GET /health/check` 探测连通性与往返延迟，探测失败时仍返回已有指标，
+  /// 由界面区分"不可达"与"监控数据缺失"。
   Future<ServerMetricsSnapshot> loadServerMetrics(String serverId) async {
     try {
       final configs = await ApiConfigManager.getConfigs();
@@ -49,11 +60,15 @@ class ServerRepository {
         allowInsecureTls: config.allowInsecureTls,
       );
 
-      // 使用 DashboardRepository 获取该服务器指标
+      final probe = _probeReachability(client);
       final dashboardRepo = DashboardRepository(api: DashboardV2Api(client));
       final metrics = await dashboardRepo.getCurrentServerMetrics();
+      final latency = await probe.ping;
 
-      return metrics;
+      if (latency == null) {
+        return metrics.copyWith(isReachable: false);
+      }
+      return metrics.copyWith(isReachable: true, latencyMs: latency);
     } catch (e, stack) {
       if (e is NetworkException) {
         appLogger.wWithPackage(
@@ -68,8 +83,21 @@ class ServerRepository {
           stackTrace: stack,
         );
       }
-      return const ServerMetricsSnapshot();
+      return const ServerMetricsSnapshot(isReachable: false);
     }
+  }
+
+  /// 健康探测：返回往返毫秒数，失败返回 null。
+  _HealthProbe _probeReachability(DioClient client) {
+    final stopwatch = Stopwatch()..start();
+    final ping = HealthV2Api(client).checkHealth().then<int?>((_) {
+      stopwatch.stop();
+      return stopwatch.elapsedMilliseconds;
+    }).catchError((Object error) {
+      stopwatch.stop();
+      return null;
+    });
+    return _HealthProbe(ping);
   }
 
   /// 设置当前服务器

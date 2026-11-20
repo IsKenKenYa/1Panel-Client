@@ -45,6 +45,8 @@ class AppRoutes {
   static const String installedAppDetail = '/installed-app-detail';
   static const String containerDetail = '/container-detail';
   static const String ai = '/ai';
+  static const String vm = '/vm';
+  static const String alert = '/alert';
   static const String orchestration = '/orchestration';
   static const String websites = '/websites';
   static const String websiteDetail = '/website-detail';

@@ -19,6 +19,8 @@ import 'package:onepanel_client/features/firewall/pages/firewall_v2_page.dart';
 import 'package:onepanel_client/features/firewall/pages/firewall_v2_section_page.dart';
 import 'package:onepanel_client/features/firewall/providers/firewall_v2_provider.dart';
 import 'package:onepanel_client/features/ai/pages/ai_agent_plugins_page.dart';
+import 'package:onepanel_client/features/alert/alert_page.dart';
+import 'package:onepanel_client/features/alert/providers/alert_provider.dart';
 import 'package:onepanel_client/features/host_assets/pages/host_diagnostics_page.dart';
 import 'package:onepanel_client/features/monitoring/monitoring_page.dart';
 import 'package:onepanel_client/features/server/server_detail_page.dart';
@@ -485,6 +487,18 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
         // has a single source of truth (architecture review candidate ⑧).
         defaultBuilder: (context, _) =>
             ModuleRegistry.buildAiModule(context),
+      ),
+      AppRoutes.vm: shellAwareModuleEntry(
+        routeName: AppRoutes.vm,
+        // 虚拟机模块与壳内嵌共用 ModuleRegistry 的注册点。
+        defaultBuilder: (context, _) => ModuleRegistry.vmBuilder(context),
+      ),
+      AppRoutes.alert: shellAwareModuleEntry(
+        routeName: AppRoutes.alert,
+        defaultBuilder: (_, __) => ChangeNotifierProvider<AlertProvider>(
+          create: (_) => AlertProvider(),
+          child: const AlertPage(),
+        ),
       ),
       AppRoutes.securityVerification: shellAwareModuleEntry(
         routeName: AppRoutes.securityVerification,

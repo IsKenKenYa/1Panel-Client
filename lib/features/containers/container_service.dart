@@ -337,6 +337,27 @@ class ContainerService extends BaseComponent {
     });
   }
 
+  /// 容器日志跟随流。
+  ///
+  /// 服务端以 base64 SSE 帧持续推送；[follow] 为 false 时只回放
+  /// [tail] 行随后结束。
+  Stream<String> streamContainerLogs(
+    String containerName, {
+    String? since,
+    String? tail,
+    bool follow = true,
+    bool timestamps = false,
+  }) async* {
+    final api = await ApiClientManager.instance.getContainerLogStreamApi();
+    yield* api.streamContainerLogs(
+      container: containerName,
+      since: since,
+      tail: tail,
+      follow: follow,
+      timestamps: timestamps,
+    );
+  }
+
   Future<String> inspectContainer(String containerId) {
     return runGuarded(() async {
       final api = await _ensureApi();

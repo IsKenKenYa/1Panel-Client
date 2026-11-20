@@ -5,6 +5,7 @@ import 'package:onepanel_client/features/ai/ai_page.dart';
 import 'package:onepanel_client/features/ai/ai_provider.dart';
 import 'package:onepanel_client/features/ai/agents/agents_provider.dart';
 import 'package:onepanel_client/features/ai/mcp_server_provider.dart';
+import 'package:onepanel_client/features/ai/providers/model_downloader_provider.dart';
 import 'package:onepanel_client/features/apps/apps_page.dart';
 import 'package:onepanel_client/features/containers/containers_page.dart';
 import 'package:onepanel_client/features/files/files_page.dart';
@@ -12,6 +13,8 @@ import 'package:onepanel_client/features/security/security_verification_page.dar
 import 'package:onepanel_client/features/server/server_list_page.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
 import 'package:onepanel_client/features/shell/widgets/no_server_selected_state.dart';
+import 'package:onepanel_client/features/vm/providers/vm_provider.dart';
+import 'package:onepanel_client/features/vm/vm_page.dart';
 import 'package:onepanel_client/features/websites/websites_page.dart';
 import 'package:onepanel_client/pages/settings/settings_page.dart';
 
@@ -67,6 +70,7 @@ class ModuleRegistry {
           ChangeNotifierProvider(create: (_) => AIProvider()),
           ChangeNotifierProvider(create: (_) => AgentsProvider()),
           ChangeNotifierProvider(create: (_) => McpServerProvider()),
+          ChangeNotifierProvider(create: (_) => ModelDownloaderProvider()),
         ],
         child: const AIPage(),
       );
@@ -131,6 +135,11 @@ class ModuleRegistry {
       standaloneBuilder: _aiStandalone,
     ),
     ModuleRegistration(
+      module: ClientModule.vm,
+      builder: _vmBuilder,
+      standaloneBuilder: _vmStandalone,
+    ),
+    ModuleRegistration(
       module: ClientModule.verification,
       builder: _verificationBuilder,
       standaloneBuilder: _verificationStandalone,
@@ -155,6 +164,14 @@ class ModuleRegistry {
   /// AI module delegates to [buildAiModule] (single registration point).
   static Widget _aiBuilder(BuildContext ctx) => buildAiModule(ctx);
 
+  /// 虚拟机模块自带 Provider，壳内嵌与独立推送共用同一构造。
+  static Widget vmBuilder(BuildContext context) => ChangeNotifierProvider(
+        create: (_) => VmProvider(),
+        child: const VmPage(),
+      );
+
+  static Widget _vmBuilder(BuildContext ctx) => vmBuilder(ctx);
+
   // Standalone builders reuse the same widget construction as the shell
   // builders since the page content is identical; only the navigation
   // strategy (push vs in-shell swap) differs.
@@ -164,4 +181,5 @@ class ModuleRegistry {
       const SecurityVerificationPage();
   // _aiStandalone delegates to buildAiModule (single registration point).
   static Widget _aiStandalone(BuildContext ctx) => buildAiModule(ctx);
+  static Widget _vmStandalone(BuildContext ctx) => vmBuilder(ctx);
 }
