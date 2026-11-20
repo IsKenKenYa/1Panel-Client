@@ -27,11 +27,14 @@ class AuthInterceptor extends Interceptor {
     // 1Panel服务器要求使用秒级时间戳
     final authHeaders = OnePanelAuthHeaders.build(_apiKey!);
 
-    // 添加1Panel API服务器要求的认证头部
+    // 添加1Panel API服务器要求的认证头部。
+    // Accept 允许调用方覆盖：SSE 端点（如 /containers/search/log）必须
+    // 声明 text/event-stream，覆盖为 application/json 会导致服务端固定
+    // 返回 data: null。
     options.headers.addAll({
       ...authHeaders,
       if (options.data is! FormData) 'Content-Type': 'application/json',
-      'Accept': 'application/json',
+      if (!options.headers.containsKey('Accept')) 'Accept': 'application/json',
       if (!kIsWeb) 'User-Agent': ApiConstants.userAgent,
     });
 
