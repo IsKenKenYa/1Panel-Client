@@ -106,6 +106,17 @@ Visual direction should align with Liquid-Glass-like system aesthetics where app
 
 Examples may include settings, onboarding, or system-integration-heavy flows.
 
+#### Shared Swift Package
+
+iOS and macOS share presentation-layer building blocks through the local package `shared/apple_ui` (`AppleSharedUI`), declared with `platforms: [.iOS(.v16), .macOS(.v13)]`.
+
+- Package contents: semantic colors (`Tokens/SemanticColors.swift`), shared components (`LoadingView`, `InfoLine`, `StatusBadge`/`StatusPalette`, `TimestampFormat`, `ErrorView`, `EmptyStateView`), and shared state (`DataChannel`, `TranslationsProviding`, `ContainerSummary`, `ContainerListLoader`).
+- The package must not import Flutter. Each app target keeps its own `ChannelManager` and `TranslationsManager` and bridges them through `IOSDataChannel` / `MacOSDataChannel` and a `TranslationsProviding` conformance.
+- Localization reaches shared components through `EnvironmentValues.translationsProvider`, injected once by the shell root view on each platform.
+- Platform shells that genuinely differ stay in the app targets: list containers (`List` versus `Table`), navigation containers (`NavigationStack`/`TabView` versus `NavigationSplitView`), presentation idioms (`sheet`, `swipeActions`) and platform-only modules.
+- Screen-level source files live in each app target; the shared package only holds code used by both platforms.
+- Gate commands: `xcodebuild -scheme AppleSharedUI -destination 'generic/platform=iOS Simulator' build`, `xcodebuild -scheme AppleSharedUI -destination 'generic/platform=macOS' build`, plus `flutter build ios --simulator --debug --no-pub`, `flutter build macos --debug --no-pub` and the two `xcodebuild test` runs for `RunnerTests`.
+
 ### Windows
 
 Native WinUI3 / Fluent pages are mandatory on Windows track construction.
