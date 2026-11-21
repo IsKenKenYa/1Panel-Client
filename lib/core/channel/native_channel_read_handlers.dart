@@ -48,6 +48,7 @@ import '../../data/repositories/database_repository.dart';
 import '../../data/repositories/website_repository.dart';
 import '../services/app_preferences_service.dart';
 import '../services/logger/logger_service.dart';
+import 'native_server_config.dart';
 
 /// B1 网站配置中心读通道使用的网站 V2 API（按需构造）。
 Future<WebsiteV2Api> _websiteApi() async =>
@@ -63,14 +64,16 @@ class NativeChannelReadHandlers {
     final servers = await repository.loadServerCards();
     return servers
         .map((s) => {
-              'id': s.config.id,
-              'name': s.config.name,
-              'url': s.config.url,
-              'isCurrent': s.isCurrent,
+              ...describeNativeServer(s.config, isCurrent: s.isCurrent),
               'cpu': s.metrics.cpuPercent,
               'memory': s.metrics.memoryPercent,
             })
         .toList();
+  }
+
+  static Future<Map<String, Object?>?> getCurrentServer() async {
+    final config = await ApiConfigManager.getCurrentServerMetadata();
+    return config == null ? null : describeNativeServer(config, isCurrent: true);
   }
 
   static Future<dynamic> getFiles(dynamic arguments) async {
@@ -584,7 +587,6 @@ class NativeChannelReadHandlers {
     return {
       'renderMode': mode.name,
       'language': locale?.languageCode ?? 'system',
-      'version': '0.5.0-alpha.1',
     };
   }
 
@@ -927,14 +929,15 @@ class NativeChannelReadHandlers {
   /// 面板 SSL 信息（B18）。
   static Future<dynamic> getPanelSslInfo(dynamic arguments) async {
     try {
-      return await PanelSslService().getSslInfo();
+      final info = await PanelSslService().getSslInfo();
+      return {'enabled': info.isNotEmpty, ...info};
     } catch (e) {
       if (e.toString().contains('No API config available')) {
         appLogger.i('getPanelSslInfo skipped: No active server configured.');
-      } else {
-        appLogger.e('Failed to get panel ssl info for native: $e');
+        return <String, dynamic>{};
       }
-      return <String, dynamic>{};
+      appLogger.e('Failed to get panel ssl info for native: $e');
+      return null;
     }
   }
 

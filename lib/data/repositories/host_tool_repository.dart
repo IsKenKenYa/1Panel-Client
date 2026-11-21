@@ -4,16 +4,18 @@ import 'package:onepanel_client/data/models/host_tool_models.dart';
 
 class HostToolRepository {
   HostToolRepository({
+    this.serverId,
     ApiClientManager? clientManager,
     HostToolV2Api? api,
   })  : _clientManager = clientManager ?? ApiClientManager.instance,
         _api = api;
 
   final ApiClientManager _clientManager;
-  HostToolV2Api? _api;
+  final String? serverId;
+  final HostToolV2Api? _api;
 
   Future<HostToolV2Api> _ensureApi() async {
-    return _api ??= await _clientManager.getHostToolApi();
+    return _api ?? await _clientManager.getHostToolApi(serverId: serverId);
   }
 
   Future<HostToolStatusResponse> getToolStatus(HostToolRequest request) async {

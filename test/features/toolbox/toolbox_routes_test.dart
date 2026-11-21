@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
+import 'package:onepanel_client/features/shell/widgets/no_server_selected_state.dart';
 import 'package:onepanel_client/features/toolbox/pages/toolbox_disk_page.dart';
 import 'package:onepanel_client/features/toolbox/pages/toolbox_host_tool_page.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
@@ -27,7 +28,7 @@ void main() {
     );
   }
 
-  testWidgets('toolbox disk route builds page', (tester) async {
+  testWidgets('磁盘管理路由在选择服务器前显示服务器选择提示', (tester) async {
     final navigatorKey = GlobalKey<NavigatorState>();
     await pumpApp(tester, navigatorKey);
 
@@ -35,11 +36,12 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
 
-    expect(find.byType(ToolboxDiskPage), findsOneWidget);
+    expect(find.byType(NoServerSelectedState), findsOneWidget);
+    expect(find.byType(ToolboxDiskPage), findsNothing);
     expect(find.text('Disk Management'), findsOneWidget);
   });
 
-  testWidgets('toolbox host tool route builds page', (tester) async {
+  testWidgets('主机工具路由在选择服务器前显示服务器选择提示', (tester) async {
     final navigatorKey = GlobalKey<NavigatorState>();
     await pumpApp(tester, navigatorKey);
 
@@ -47,7 +49,8 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
 
-    expect(find.byType(ToolboxHostToolPage), findsOneWidget);
+    expect(find.byType(NoServerSelectedState), findsOneWidget);
+    expect(find.byType(ToolboxHostToolPage), findsNothing);
     expect(find.text('Host Tool'), findsOneWidget);
   });
 }

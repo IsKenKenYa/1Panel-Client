@@ -124,6 +124,7 @@ extension FilesProviderSystemMixin on FilesProvider {
       if (config == null) {
         throw StateError('No server configured');
       }
+      final target = OnePanelDownloadSource.urlFor(config, file.path);
 
       // Use PlatformSystemPaths so OHOS doesn't crash on the missing
       // path_provider.getDownloadsDirectory() implementation. The native
@@ -133,21 +134,14 @@ extension FilesProviderSystemMixin on FilesProvider {
           await getApplicationDocumentsDirectory();
       final downloadPath = directory.path;
 
-      final timestamp =
-          (DateTime.now().millisecondsSinceEpoch / 1000).floor().toString();
-      final authToken = _generate1PanelAuthToken(config.apiKey, timestamp);
-
       final ohosChannel = const OhosPlatformChannel();
       final taskId = await ohosChannel.downloadFile(
-        url:
-            '${config.url}${ApiConstants.buildApiPath('/files/download')}?path=${Uri.encodeComponent(file.path)}',
+        url: target.toString(),
         savedDir: downloadPath,
         fileName: file.name,
-        headers: <String, String>{
-          '1Panel-Token': authToken,
-          '1Panel-Timestamp': timestamp,
-        },
+        headers: OnePanelAuthHeaders.build(config.apiKey),
       );
+      if (taskId != null) await OnePanelDownloadSource.remember(taskId, config.id);
       return taskId;
     } catch (e, stackTrace) {
       appLogger.eWithPackage(
@@ -166,6 +160,7 @@ extension FilesProviderSystemMixin on FilesProvider {
       if (config == null) {
         throw StateError('No server configured');
       }
+      final target = OnePanelDownloadSource.urlFor(config, file.path);
 
       // path_provider doesn't expose the public Downloads directory on Android,
     // so we hardcode the well-known path. Fall back to app-private storage
@@ -206,18 +201,11 @@ extension FilesProviderSystemMixin on FilesProvider {
         }
       }
 
-      final timestamp =
-          (DateTime.now().millisecondsSinceEpoch / 1000).floor().toString();
-      final authToken = _generate1PanelAuthToken(config.apiKey, timestamp);
       final taskId = await FlutterDownloader.enqueue(
-        url:
-            '${config.url}${ApiConstants.buildApiPath('/files/download')}?path=${Uri.encodeComponent(file.path)}',
+        url: target.toString(),
         savedDir: downloadPath,
         fileName: file.name,
-        headers: <String, String>{
-          '1Panel-Token': authToken,
-          '1Panel-Timestamp': timestamp,
-        },
+        headers: OnePanelAuthHeaders.build(config.apiKey),
         showNotification: true,
         openFileFromNotification: true,
       );
@@ -229,6 +217,7 @@ extension FilesProviderSystemMixin on FilesProvider {
         );
         return null;
       }
+      await OnePanelDownloadSource.remember(taskId, config.id);
       return taskId;
     } catch (e, stackTrace) {
       appLogger.eWithPackage(
@@ -266,7 +255,4 @@ extension FilesProviderSystemMixin on FilesProvider {
     _service.cancelDownload();
   }
 
-  String _generate1PanelAuthToken(String apiKey, String timestamp) {
-    return OnePanelAuthHeaders.sign(apiKey, timestamp);
-  }
 }

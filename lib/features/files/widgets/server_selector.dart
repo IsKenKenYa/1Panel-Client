@@ -18,7 +18,7 @@ class ServerSelector extends StatelessWidget {
     final l10n = context.l10n;
 
     return FutureBuilder<List<ApiConfig>>(
-      future: ApiConfigManager.getConfigs(),
+      future: ApiConfigManager.getServerMetadata(),
       builder: (context, snapshot) {
         final servers = snapshot.data ?? [];
         return PopupMenuButton<String>(

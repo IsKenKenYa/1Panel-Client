@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
-import 'package:onepanel_client/core/utils/error_message_utils.dart';
+import 'package:onepanel_client/features/toolbox/widgets/toolbox_snapshot_list.dart';
 import 'package:onepanel_client/data/models/host_tool_models.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/features/toolbox/providers/toolbox_host_tool_provider.dart';
@@ -33,7 +33,6 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
 
     return ServerAwarePageScaffold(
       title: l10n.toolboxHostToolTitle,
-      onServerChanged: () => context.read<ToolboxHostToolProvider>().load(),
       actions: <Widget>[
         IconButton(
           onPressed: provider.isLoading ? null : provider.load,
@@ -41,21 +40,12 @@ class _ToolboxHostToolPageState extends State<ToolboxHostToolPage> {
           tooltip: l10n.commonRefresh,
         ),
       ],
-      body: ListView(
-        padding: const EdgeInsets.all(16),
+      body: ToolboxSnapshotList(
+        hasSnapshot: provider.hasSnapshot,
+        isLoading: provider.isLoading,
+        loadError: provider.loadError,
+        onRetry: provider.load,
         children: <Widget>[
-          if (provider.isLoading) const LinearProgressIndicator(),
-          if (provider.error != null)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Text(
-                ErrorMessageUtils.localizeForContext(
-                  provider.error!,
-                  context,
-                ),
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              ),
-            ),
           SectionCard(
             title: l10n.toolboxHostToolServiceSectionTitle,
             padding: const EdgeInsets.all(16),

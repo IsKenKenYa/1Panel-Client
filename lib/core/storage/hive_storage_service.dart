@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
+
 import 'package:hive_flutter/hive_flutter.dart';
-import '../services/logger/logger_service.dart';
-import 'storage_service.dart';
+import 'package:synchronized/synchronized.dart';
+
 import 'platform_secure_storage.dart';
+import 'storage_service.dart';
 
 /// 基于Hive的存储服务实现
 ///
@@ -14,7 +15,8 @@ class HiveStorageService implements StorageService {
   final bool isEncrypted;
 
   late Box _box;
-  PlatformSecureStorage? _secureStorage;
+  static final _openLock = Lock();
+  static final _openKeys = Expando<String>();
 
   HiveStorageService({
     required this.boxName,
@@ -22,84 +24,39 @@ class HiveStorageService implements StorageService {
   });
 
   @override
-  Future<void> init() async {
-    if (Hive.isBoxOpen(boxName)) {
-      _box = Hive.box(boxName);
-      return;
-    }
-
-    await Hive.initFlutter();
-
-    if (kIsWeb && isEncrypted) {
-      final storage = await PlatformSecureStorage.create();
-      final storedKey = await storage.read(key: '${boxName}_key');
-      final key = storedKey == null
-          ? Hive.generateSecureKey()
-          : base64Url.decode(storedKey);
-      if (storedKey == null) {
-        await storage.write(key: '${boxName}_key', value: base64Url.encode(key));
-      }
-      _box = await Hive.openBox(boxName, encryptionCipher: HiveAesCipher(key));
-      return;
-    }
-
-    List<int>? encryptionKey;
-
-    if (isEncrypted) {
-      _secureStorage = await PlatformSecureStorage.create();
-      try {
-        // 尝试获取现有密钥
-        String? keyStr = await _secureStorage!.read(key: '${boxName}_key');
-
-        if (keyStr == null) {
-          // 生成新密钥
-          final key = Hive.generateSecureKey();
-          await _secureStorage!
-              .write(key: '${boxName}_key', value: base64Url.encode(key));
-          encryptionKey = key;
-        } else {
-          encryptionKey = base64Url.decode(keyStr);
+  Future<void> init() => _openLock.synchronized(() async {
+        await Hive.initFlutter();
+        final key = isEncrypted ? await _encryptionKey() : null;
+        if (Hive.isBoxOpen(boxName)) {
+          // Hive 复用已打开的 box 时会忽略传入的加密参数。
+          final box = Hive.box(boxName);
+          if (_openKeys[box] != key) {
+            throw StateError('已打开的 Hive 数据库 $boxName 使用了不同的加密设置');
+          }
+          _box = box;
+          return;
         }
-      } catch (e, s) {
-        // Degrade to unencrypted Hive rather than crash -- the app remains
-        // usable and data is not lost, just less protected at rest.
-        appLogger.wWithPackage(
-          'core.storage.hive_storage',
-          'Secure storage unavailable, degraded to non-encrypted Hive',
-          error: e,
-          stackTrace: s,
+        _box = await Hive.openBox(
+          boxName,
+          encryptionCipher:
+              key == null ? null : HiveAesCipher(base64Url.decode(key)),
+          // Hive 默认会截去校验失败的记录，密钥错误时须保留原文件。
+          crashRecovery: !isEncrypted,
         );
-        encryptionKey = null;
-      }
-    }
+        _openKeys[_box] = key;
+      });
 
-    try {
-      if (isEncrypted && encryptionKey != null) {
-        _box = await Hive.openBox(
-          boxName,
-          encryptionCipher: HiveAesCipher(encryptionKey),
-        );
-      } else {
-        _box = await Hive.openBox(boxName);
-      }
-    } catch (e) {
-      appLogger.eWithPackage(
-        'core.storage.hive_storage',
-        'Error opening box $boxName',
-        error: e,
-      );
-      // Encryption key rotation or data corruption makes the box unreadable;
-      // wipe and recreate so the app remains usable.
-      await Hive.deleteBoxFromDisk(boxName);
-      if (isEncrypted && encryptionKey != null) {
-        _box = await Hive.openBox(
-          boxName,
-          encryptionCipher: HiveAesCipher(encryptionKey),
-        );
-      } else {
-        _box = await Hive.openBox(boxName);
-      }
+  Future<String> _encryptionKey() async {
+    final storage = await PlatformSecureStorage.create();
+    final keyName = '${boxName}_key';
+    final stored = await storage.read(key: keyName);
+    if (stored != null) return stored;
+    if (Hive.isBoxOpen(boxName) || await Hive.boxExists(boxName)) {
+      throw StateError('已有 Hive 数据库 $boxName 缺少加密密钥');
     }
+    final key = base64Url.encode(Hive.generateSecureKey());
+    await storage.write(key: keyName, value: key);
+    return key;
   }
 
   @override

@@ -37,6 +37,8 @@ dependencies:
   
   # Network & API
   dio: ^5.9.1  # Powerful HTTP client for Dart (Updated from 5.4.3+1)
+  http: ^1.6.0
+  pool: ^1.5.2
   retrofit: ^4.9.2  # Type-safe HTTP client (Updated from 4.1.0)
   json_annotation: ^4.10.0  # JSON serialization (Updated from 4.8.1)
   freezed_annotation: ^3.0.6  # Immutable model annotations (architecture review ⑮)
@@ -48,6 +50,8 @@ dependencies:
   # Security & Storage
   flutter_secure_storage: ^10.0.0  # Secure storage for sensitive data (Updated from 9.0.0)
   shared_preferences: ^2.5.4  # General preferences storage (Updated from 2.2.2)
+  synchronized: ^3.4.0
+  uuid: ^4.5.2
   web: ^1.1.1
   mime: ^2.0.0
   

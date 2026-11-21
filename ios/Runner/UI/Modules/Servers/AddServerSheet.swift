@@ -21,8 +21,8 @@ struct AddServerSheet: View {
     private var canSave: Bool {
         !name.trimmingCharacters(in: .whitespaces).isEmpty &&
             !url.trimmingCharacters(in: .whitespaces).isEmpty &&
-            // 编辑模式下 API Key 允许留空表示保持不变。
-            (isEditing || !apiKey.trimmingCharacters(in: .whitespaces).isEmpty)
+            (editingServer?.url == url.trimmingCharacters(in: .whitespaces) ||
+             !apiKey.trimmingCharacters(in: .whitespaces).isEmpty)
     }
 
     var body: some View {
@@ -97,12 +97,11 @@ struct AddServerSheet: View {
         }
 
         if let server = editingServer {
-            // 编辑时 API Key 留空表示沿用原值。
             viewModel.updateServer(
-                id: server.originalId,
+                server: server,
                 name: trimmedName,
                 url: trimmedUrl,
-                apiKey: trimmedKey.isEmpty ? "" : trimmedKey,
+                apiKey: trimmedKey,
                 completion: finish
             )
         } else {

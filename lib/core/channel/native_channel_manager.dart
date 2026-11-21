@@ -49,6 +49,8 @@ class NativeChannelManager implements NativeChannelPort {
       // ── Read: 已有 ─────────────────────────────────────────────────────
       case 'getServers':
         return NativeChannelReadHandlers.getServers(arguments);
+      case 'getCurrentServer':
+        return NativeChannelReadHandlers.getCurrentServer();
       case 'getFiles':
         return NativeChannelReadHandlers.getFiles(arguments);
       case 'getApps':

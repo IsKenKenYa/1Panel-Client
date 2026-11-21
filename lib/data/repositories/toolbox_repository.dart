@@ -8,13 +8,13 @@ import 'package:onepanel_client/data/models/toolbox_models.dart';
 const String _toolboxRepoPackage = 'data.repositories.toolbox_repository';
 
 class ToolboxRepository {
-  ToolboxRepository({ToolboxV2Api? apiClient}) : _api = apiClient;
+  ToolboxRepository({this.serverId, ToolboxV2Api? apiClient}) : _api = apiClient;
 
-  ToolboxV2Api? _api;
+  final String? serverId;
+  final ToolboxV2Api? _api;
 
   Future<ToolboxV2Api> _ensureApi() async {
-    _api ??= await ApiClientManager.instance.getToolboxApi();
-    return _api!;
+    return _api ?? await ApiClientManager.instance.getToolboxApi(serverId: serverId);
   }
 
   Future<DeviceBaseInfo> getDeviceBaseInfo() async {

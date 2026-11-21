@@ -73,7 +73,7 @@ class RunnerTests: XCTestCase {
 
     @MainActor
     func testSwitchingModulesKeepsServerAsPreviousPage() {
-        let server = ServerModel(originalId: "1", name: "1Panel", url: "https://panel.example",
+        let server = ServerModel(originalId: "1", revision: "first", name: "1Panel", url: "https://panel.example",
                                  isCurrent: true, cpu: 0, memory: 0)
         let navigation = ServerNavigation()
         navigation.openServer(server, module: .containers)
@@ -88,7 +88,7 @@ class RunnerTests: XCTestCase {
 
     @MainActor
     func testSwitchingModulesFromDetailDropsDetailPage() {
-        let server = ServerModel(originalId: "1", name: "1Panel", url: "https://panel.example",
+        let server = ServerModel(originalId: "1", revision: "first", name: "1Panel", url: "https://panel.example",
                                  isCurrent: true, cpu: 0, memory: 0)
         let navigation = ServerNavigation()
         navigation.openServer(server, module: .apps)

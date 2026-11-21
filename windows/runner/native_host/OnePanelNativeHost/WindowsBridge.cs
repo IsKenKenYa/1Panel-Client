@@ -1378,6 +1378,7 @@ public static partial class WindowsBridge
     {
         var result = await InvokeAsync("addServer", new Dictionary<string, object?>
         {
+            ["panelType"] = "1panel",
             ["name"] = name,
             ["url"] = url,
             ["apiKey"] = apiKey,

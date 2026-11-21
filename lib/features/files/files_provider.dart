@@ -9,7 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:onepanel_client/core/network/network_exceptions.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
-import 'package:onepanel_client/core/config/api_constants.dart';
+import 'package:onepanel_client/core/services/transfer/one_panel_download_source.dart';
 import 'package:onepanel_client/core/platform/platform_capabilities.dart';
 import 'package:onepanel_client/core/platform/services/ohos_platform_channel.dart';
 import 'package:onepanel_client/core/platform/services/platform_system_paths.dart';

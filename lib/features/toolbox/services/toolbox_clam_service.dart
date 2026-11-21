@@ -15,8 +15,8 @@ class ToolboxClamSnapshot {
 }
 
 class ToolboxClamService {
-  ToolboxClamService({ToolboxRepository? repository})
-      : _repository = repository ?? ToolboxRepository();
+  ToolboxClamService({String? serverId, ToolboxRepository? repository})
+      : _repository = repository ?? ToolboxRepository(serverId: serverId);
 
   final ToolboxRepository _repository;
 

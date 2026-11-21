@@ -22,12 +22,7 @@ class DatabaseRepository {
   Future<DatabaseV2Api> _getApi() async {
     final config = _config;
     if (config == null) return _clientManager.getDatabaseApi();
-    return DatabaseV2Api(_clientManager.getClient(
-      config.id,
-      config.url,
-      config.apiKey,
-      allowInsecureTls: config.allowInsecureTls,
-    ));
+    return DatabaseV2Api(_clientManager.getClientForConfig(config));
   }
 
   Future<List<String>> checkRemoteDatabaseUnbind(int id) async {

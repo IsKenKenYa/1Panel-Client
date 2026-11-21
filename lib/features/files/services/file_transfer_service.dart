@@ -5,8 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:onepanel_client/core/config/api_constants.dart';
 import 'package:onepanel_client/core/network/onepanel_auth_headers.dart';
+import 'package:onepanel_client/core/services/transfer/one_panel_download_source.dart';
 import 'package:onepanel_client/core/platform/services/platform_system_paths.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
 import 'package:onepanel_client/data/repositories/files_repository.dart';
@@ -99,21 +99,15 @@ class FileTransferService {
       throw StateError('No server configured');
     }
 
-    final downloadUrl =
-        '${config.url}${ApiConstants.buildApiPath('/files/download')}?path=${Uri.encodeComponent(filePath)}';
-
-    final timestamp =
-        (DateTime.now().millisecondsSinceEpoch / 1000).floor().toString();
-    final authToken = _generate1PanelAuthToken(config.apiKey, timestamp);
+    final downloadUrl = OnePanelDownloadSource.urlFor(config, filePath);
 
     _downloadCancelToken = CancelToken();
     final dio = Dio();
-    dio.options.headers['1Panel-Token'] = authToken;
-    dio.options.headers['1Panel-Timestamp'] = timestamp;
+    dio.options.headers.addAll(OnePanelAuthHeaders.build(config.apiKey));
 
     try {
       await dio.download(
-        downloadUrl,
+        downloadUrl.toString(),
         savePath,
         cancelToken: _downloadCancelToken,
         onReceiveProgress: (received, total) {
@@ -155,10 +149,6 @@ class FileTransferService {
     } catch (_) {
       return true;
     }
-  }
-
-  String _generate1PanelAuthToken(String apiKey, String timestamp) {
-    return OnePanelAuthHeaders.sign(apiKey, timestamp);
   }
 
   Future<String> _getDownloadPath(String fileName) async {

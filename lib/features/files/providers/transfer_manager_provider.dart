@@ -7,6 +7,8 @@ import 'package:onepanel_client/core/platform/services/ohos_download_service.dar
 import 'package:onepanel_client/core/platform/services/platform_download_service.dart';
 import 'package:onepanel_client/core/platform/services/platform_file_service.dart';
 import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
+import 'package:onepanel_client/core/network/onepanel_auth_headers.dart';
+import 'package:onepanel_client/core/services/transfer/one_panel_download_source.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/core/services/transfer/transfer_manager.dart';
 
@@ -189,6 +191,9 @@ class TransferManagerProvider extends ChangeNotifier with SafeChangeNotifier {
   Future<void> resumeTask(String taskId) async {
     try {
       if (_useOhosDownloader) {
+        final tasks = await _ohosDownloadService!.listTasks();
+        final task = tasks.firstWhere((item) => item.id == taskId);
+        await OnePanelDownloadSource.owner(taskId, Uri.parse(task.url));
         await _ohosDownloadService!.resume(taskId);
       } else {
         await _transferManager.resumeDownloadTask(taskId);
@@ -218,6 +223,7 @@ class TransferManagerProvider extends ChangeNotifier with SafeChangeNotifier {
     try {
       if (_useOhosDownloader) {
         await _ohosDownloadService!.delete(taskId);
+        await OnePanelDownloadSource.forget(taskId);
       } else {
         await _transferManager.deleteDownloadTask(taskId);
       }
@@ -233,6 +239,7 @@ class TransferManagerProvider extends ChangeNotifier with SafeChangeNotifier {
   ) async {
     try {
       if (_useOhosDownloader) {
+        final config = await OnePanelDownloadSource.owner(task.taskId, Uri.parse(task.url));
         final newTaskId = await _ohosDownloadService!.retryWithFreshAuth(
           task: PlatformDownloadTask(
             id: task.taskId,
@@ -240,9 +247,10 @@ class TransferManagerProvider extends ChangeNotifier with SafeChangeNotifier {
             savedDir: task.savedDir,
             fileName: task.filename,
           ),
-          headers: {},
+          headers: OnePanelAuthHeaders.build(config.apiKey),
         );
         if (newTaskId != null) {
+          await OnePanelDownloadSource.remember(newTaskId, config.id);
           await loadTasks();
           return RetryDownloadTaskWithNewAuthResult.recreated;
         }
@@ -263,6 +271,7 @@ class TransferManagerProvider extends ChangeNotifier with SafeChangeNotifier {
         final tasks = getCompletedDownloads();
         for (final task in tasks) {
           await _ohosDownloadService!.delete(task.taskId);
+          await OnePanelDownloadSource.forget(task.taskId);
         }
       } else if (_clearCompletedOverride != null) {
         await _clearCompletedOverride.call();

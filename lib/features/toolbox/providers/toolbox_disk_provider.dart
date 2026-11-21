@@ -1,48 +1,33 @@
-import 'package:flutter/foundation.dart';
 import 'package:onepanel_client/core/utils/error_message_utils.dart';
-import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
+import 'toolbox_snapshot_provider.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/models/disk_management_models.dart';
 import 'package:onepanel_client/features/toolbox/services/toolbox_disk_service.dart';
 
-class ToolboxDiskProvider extends ChangeNotifier with SafeChangeNotifier {
-  ToolboxDiskProvider({ToolboxDiskService? service})
-      : _service = service ?? ToolboxDiskService();
+class ToolboxDiskProvider extends ToolboxSnapshotProvider {
+  ToolboxDiskProvider({ToolboxDiskService? service, String? serverId})
+      : _service = service ?? ToolboxDiskService(serverId: serverId);
 
   final ToolboxDiskService _service;
 
-  bool _isLoading = false;
   bool _isMutating = false;
   String? _error;
   CompleteDiskInfo _diskInfo = const CompleteDiskInfo();
 
-  bool get isLoading => _isLoading;
   bool get isMutating => _isMutating;
-  String? get error => _error;
+  String? get error => _error ?? loadError;
   CompleteDiskInfo get diskInfo => _diskInfo;
   List<DiskInfo> get dataDisks => _diskInfo.disks
       .where((DiskInfo item) => !item.isSystem)
       .toList(growable: false);
 
-  Future<void> load() async {
-    _isLoading = true;
+  Future<void> load() {
     _error = null;
-    notifyListeners();
-
-    try {
-      _diskInfo = await _service.loadSnapshot();
-    } catch (error, stackTrace) {
-      appLogger.eWithPackage(
-        'features.toolbox.providers.toolbox_disk',
-        'load disk info failed',
-        error: error,
-        stackTrace: stackTrace,
-      );
-      _error = ErrorMessageUtils.userFacingMessage(error);
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
+    return loadSnapshot(
+      fetch: _service.loadSnapshot,
+      apply: (snapshot) => _diskInfo = snapshot,
+      logPackage: 'features.toolbox.providers.toolbox_disk',
+    );
   }
 
   Future<bool> mountDisk(DiskMountRequest request) async {
@@ -58,6 +43,7 @@ class ToolboxDiskProvider extends ChangeNotifier with SafeChangeNotifier {
   }
 
   Future<bool> _runMutation(Future<void> Function() action) async {
+    if (isDisposed) return false;
     _isMutating = true;
     _error = null;
     notifyListeners();

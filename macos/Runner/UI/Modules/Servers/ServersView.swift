@@ -154,7 +154,8 @@ struct AddServerSheet: View {
     private var trimmedToken: String { token.trimmingCharacters(in: .whitespacesAndNewlines) }
 
     private var canSubmit: Bool {
-        !trimmedName.isEmpty && !trimmedURL.isEmpty && (isEditing || !trimmedToken.isEmpty)
+        !trimmedName.isEmpty && !trimmedURL.isEmpty &&
+            (editingServer?.url == trimmedURL || !trimmedToken.isEmpty)
     }
 
     var body: some View {
@@ -205,7 +206,7 @@ struct AddServerSheet: View {
         Task {
             let outcome: NativeMutationOutcome
             if let editingServer {
-                outcome = await viewModel.updateServer(id: editingServer.originalId, name: name, url: url, token: token)
+                outcome = await viewModel.updateServer(server: editingServer, name: name, url: url, token: token)
             } else {
                 outcome = await viewModel.addServer(name: name, url: url, token: token)
             }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
-import 'package:onepanel_client/core/utils/error_message_utils.dart';
+import 'package:onepanel_client/features/toolbox/widgets/toolbox_snapshot_list.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/features/toolbox/providers/toolbox_fail2ban_provider.dart';
@@ -37,22 +37,12 @@ class _ToolboxFail2banPageState extends State<ToolboxFail2banPage>
 
     return ServerAwarePageScaffold(
       title: l10n.toolboxFail2banTitle,
-      onServerChanged: () => context.read<ToolboxFail2banProvider>().load(),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
+      body: ToolboxSnapshotList(
+        hasSnapshot: provider.hasSnapshot,
+        isLoading: provider.isLoading,
+        loadError: provider.loadError,
+        onRetry: provider.load,
         children: [
-          if (provider.isLoading) const LinearProgressIndicator(),
-          if (provider.error != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 12, bottom: 8),
-              child: Text(
-                ErrorMessageUtils.localizeForContext(
-                  provider.error!,
-                  context,
-                ),
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              ),
-            ),
           SectionCard(
             title: l10n.toolboxCommonOverviewTitle,
             padding: const EdgeInsets.all(16),

@@ -19,7 +19,8 @@ class _RecordingServerRepository extends ServerRepository {
   Future<List<ServerCardViewModel>> loadServerCards() async => cards;
 
   @override
-  Future<ServerMetricsSnapshot> loadServerMetrics(String serverId) async {
+  Future<ServerMetricsSnapshot> loadMetricsForConfig(ApiConfig config) async {
+    final serverId = config.id;
     requestedIds.add(serverId);
     return metricsByServer[serverId] ?? const ServerMetricsSnapshot();
   }
@@ -40,6 +41,47 @@ ServerCardViewModel _card(String id, String name) {
 
 void main() {
   group('ServerProvider 服务器列表指标', () {
+    test('切换选择只替换相关卡片，目录顺序和其余卡片可复用', () {
+      final provider = ServerProvider();
+      addTearDown(provider.dispose);
+      final configs = [
+        for (final id in ['a', 'b', 'c']) _card(id, id).config
+      ];
+      provider.syncDirectory(configs, 'a');
+      final previous = provider.configs;
+      final unaffected = provider.cardFor('c');
+
+      provider.syncDirectory(configs, 'b');
+      expect(provider.configs, same(previous));
+      expect(provider.cardFor('a')!.isCurrent, isFalse);
+      expect(provider.cardFor('b')!.isCurrent, isTrue);
+      expect(provider.cardFor('c'), same(unaffected));
+    });
+
+    test('同一配置共用进行中的刷新，旧配置的排队工作不会更新新卡片', () async {
+      final provider = ServerProvider();
+      addTearDown(provider.dispose);
+      final old = ApiConfig(
+          id: 'a',
+          name: 'A',
+          url: '',
+          apiKey: '',
+          panelType: 'unregistered',
+          revision: '1');
+      final next = ApiConfig.fromJson({...old.toJson(), 'revision': '2'});
+      provider.syncDirectory([old], 'a');
+      final batch = provider.loadMetrics();
+      expect(provider.loadMetrics(), same(batch));
+      final first = provider.loadMetricsFor('a');
+      expect(provider.loadMetricsFor('a'), same(first));
+      provider.syncDirectory([next], 'a');
+      final second = provider.loadMetricsFor('a');
+      expect(second, isNot(same(first)));
+      await Future.wait([batch, first, second]);
+      expect(provider.cardFor('a')!.config, same(next));
+      expect(provider.isLoadingMetrics, isFalse);
+    });
+
     test('每张卡片绑定自己服务器的指标，离线服务器保持未加载', () async {
       // 回归：loadServerMetrics 曾用当前服务器 client 取数，
       // 列表全部卡片显示同一份指标，离线服务器也显示「已加载」。

@@ -6,7 +6,7 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:onepanel_client/core/config/api_config.dart';
+import 'package:onepanel_client/core/services/transfer/one_panel_download_source.dart';
 import 'package:onepanel_client/core/network/onepanel_auth_headers.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/core/services/transfer/transfer_task.dart';
@@ -92,15 +92,19 @@ class TransferManager extends ChangeNotifier with SafeChangeNotifier {
   /// 恢复下载任务
   Future<void> resumeDownloadTask(String taskId) async {
     try {
-      await FlutterDownloader.resume(taskId: taskId);
+      final tasks = await getAllDownloadTasks();
+      final task = tasks.firstWhere((item) => item.taskId == taskId);
+      final config = await OnePanelDownloadSource.owner(taskId, Uri.parse(task.url));
+      final nextId = await FlutterDownloader.resume(taskId: taskId);
+      if (nextId == null) throw StateError('无法恢复下载任务');
+      if (nextId != taskId) {
+        await OnePanelDownloadSource.remember(nextId, config.id);
+        await OnePanelDownloadSource.forget(taskId);
+      }
       appLogger.iWithPackage('transfer', 'resumeDownloadTask: 已恢复任务 $taskId');
     } catch (e) {
       appLogger.wWithPackage('transfer', 'resumeDownloadTask: 恢复任务失败 $e');
     }
-  }
-
-  String _generate1PanelAuthToken(String apiKey, String timestamp) {
-    return OnePanelAuthHeaders.sign(apiKey, timestamp);
   }
 
   /// 重试下载任务（使用新时间戳）
@@ -142,42 +146,21 @@ class TransferManager extends ChangeNotifier with SafeChangeNotifier {
         }
       }
 
-      // 3. 从 URL 提取文件路径
-      final filePath = uri.queryParameters['path'];
-      if (filePath == null) {
-        appLogger.eWithPackage(
-            'transfer', 'retryDownloadTaskWithNewAuth: 无法从 URL 提取文件路径');
-        return RetryDownloadTaskWithNewAuthResult.failed;
-      }
-
-      // 4. 获取服务器配置并生成新的认证
-      final config = await ApiConfigManager.getCurrentConfig();
-      if (config == null) {
-        appLogger.eWithPackage(
-            'transfer', 'retryDownloadTaskWithNewAuth: 未找到服务器配置');
-        return RetryDownloadTaskWithNewAuthResult.failed;
-      }
-
-      final timestamp =
-          (DateTime.now().millisecondsSinceEpoch / 1000).floor().toString();
-      final authToken = _generate1PanelAuthToken(config.apiKey, timestamp);
-
-      // 5. 创建新任务（不删除部分文件，支持断点续传）
+      final config = await OnePanelDownloadSource.owner(task.taskId, uri);
       final newTaskId = await FlutterDownloader.enqueue(
         url: task.url,
         savedDir: task.savedDir,
         fileName: fileName,
-        headers: {
-          '1Panel-Token': authToken,
-          '1Panel-Timestamp': timestamp,
-        },
+        headers: OnePanelAuthHeaders.build(config.apiKey),
         showNotification: true,
         openFileFromNotification: true,
       );
 
       if (newTaskId != null) {
+        await OnePanelDownloadSource.remember(newTaskId, config.id);
         try {
           await FlutterDownloader.remove(taskId: task.taskId);
+          await OnePanelDownloadSource.forget(task.taskId);
           appLogger.iWithPackage(
             'transfer',
             'retryDownloadTaskWithNewAuth: 已创建新任务 $newTaskId，并删除旧任务 ${task.taskId}',
@@ -203,6 +186,7 @@ class TransferManager extends ChangeNotifier with SafeChangeNotifier {
   Future<void> deleteDownloadTask(String taskId) async {
     try {
       await FlutterDownloader.remove(taskId: taskId);
+      await OnePanelDownloadSource.forget(taskId);
       appLogger.iWithPackage('transfer', 'deleteDownloadTask: 已删除任务 $taskId');
     } catch (e) {
       appLogger.wWithPackage('transfer', 'deleteDownloadTask: 删除任务失败 $e');
@@ -216,6 +200,7 @@ class TransferManager extends ChangeNotifier with SafeChangeNotifier {
       if (completedTasks != null) {
         for (final task in completedTasks) {
           await FlutterDownloader.remove(taskId: task.taskId);
+          await OnePanelDownloadSource.forget(task.taskId);
         }
       }
       appLogger.iWithPackage('transfer', 'clearCompletedDownloads: 已清除已完成任务');

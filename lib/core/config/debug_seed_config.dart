@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/widgets.dart';
+import 'package:onepanel_client/features/server/server_repository.dart';
 
 import '../services/logger/logger_service.dart';
 import 'api_config.dart';
@@ -55,16 +56,24 @@ Future<void> applySeedConfig({
   String? name,
 }) async {
   final seedName = name == null || name.isEmpty ? 'Seed Server' : name;
-  final configs = await ApiConfigManager.getConfigs();
-  final matched = configs.where((config) => config.url == url).toList();
+  final configs = await ApiConfigManager.getServerMetadata();
+  final metadata = configs.where((config) =>
+      config.panelType == ApiConfig.onePanelType && config.url == url).firstOrNull;
+  final matched = metadata == null ? null : await ApiConfigManager.getConfig(metadata.id);
   final config = ApiConfig(
-    id: matched.isNotEmpty
-        ? matched.first.id
-        : 'server_seed_${DateTime.now().millisecondsSinceEpoch}',
-    name: matched.isNotEmpty ? matched.first.name : seedName,
+    id: matched?.id ?? 'server_seed_${DateTime.now().millisecondsSinceEpoch}',
+    name: matched?.name ?? seedName,
+    panelType: ApiConfig.onePanelType,
+    tokenValidity: matched?.tokenValidity ?? 0,
+    allowInsecureTls: matched?.allowInsecureTls ?? false,
+    isDefault: matched?.isDefault ?? false,
+    lastUsed: matched?.lastUsed,
+    additionalCredentials: matched?.additionalCredentials ?? const {},
     url: url,
     apiKey: apiKey,
   );
-  await ApiConfigManager.saveConfig(config);
-  appLogger.i('seed config applied for $url');
+  const repository = ServerRepository();
+  await repository.saveConfig(config);
+  await repository.setCurrent(config.id);
+  appLogger.i('seed config applied');
 }

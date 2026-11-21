@@ -4,16 +4,18 @@ import 'package:onepanel_client/data/models/disk_management_models.dart';
 
 class DiskManagementRepository {
   DiskManagementRepository({
+    this.serverId,
     ApiClientManager? clientManager,
     DiskManagementV2Api? api,
   })  : _clientManager = clientManager ?? ApiClientManager.instance,
         _api = api;
 
   final ApiClientManager _clientManager;
-  DiskManagementV2Api? _api;
+  final String? serverId;
+  final DiskManagementV2Api? _api;
 
   Future<DiskManagementV2Api> _ensureApi() async {
-    return _api ??= await _clientManager.getDiskManagementApi();
+    return _api ?? await _clientManager.getDiskManagementApi(serverId: serverId);
   }
 
   Future<CompleteDiskInfo> getCompleteDiskInfo() async {

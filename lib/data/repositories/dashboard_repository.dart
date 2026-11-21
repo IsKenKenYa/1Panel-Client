@@ -1,19 +1,37 @@
 import 'package:onepanel_client/api/v2/dashboard_v2.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/network/api_client_manager.dart';
 import 'package:onepanel_client/core/network/network_exceptions.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/models/dashboard_models.dart';
-import 'package:onepanel_client/features/server/server_models.dart';
+import 'package:onepanel_client/data/models/monitor_models.dart';
+import 'package:onepanel_client/data/models/server_metrics_snapshot.dart';
 
 class DashboardRepository {
-  DashboardRepository({DashboardV2Api? api}) : _api = api;
+  DashboardRepository({DashboardV2Api? api})
+      : _api = api,
+        _server = null;
+  DashboardRepository.forServer(ApiConfig server) : _server = server;
 
+  final ApiConfig? _server;
   DashboardV2Api? _api;
+  Future<DashboardV2Api>? _opening;
 
-  Future<DashboardV2Api> _ensureApi() async {
+  Future<DashboardV2Api> _ensureApi() {
+    final api = _api;
+    if (api != null) return Future.value(api);
+    return _opening ??= _openApi().whenComplete(() {
+      _opening = null;
+    });
+  }
+
+  Future<DashboardV2Api> _openApi() async {
     try {
-      _api ??= await ApiClientManager.instance.getDashboardApi();
-      return _api!;
+      final server = _server;
+      return _api = server == null
+          ? await ApiClientManager.instance.getDashboardApi()
+          : DashboardV2Api(
+              await ApiClientManager.instance.getClientForServer(server));
     } catch (e) {
       if (e is StateError && e.message == 'No API config available') {
         throw const NetworkConnectionException('未配置服务器连接');
@@ -80,82 +98,28 @@ class DashboardRepository {
     await api.systemRestart(operation);
   }
 
-  /// 获取当前服务器指标
-  ///
-  /// 从 Dashboard API 获取服务器的当前快照数据，包括 CPU、内存、磁盘、负载等指标。
-  /// 这个方法专门用于服务器详情页面显示当前状态。
-  ///
-  /// 返回 [ServerMetricsSnapshot] 包含：
-  /// - cpuPercent: CPU 使用百分比
-  /// - memoryPercent: 内存使用百分比
-  /// - diskPercent: 磁盘使用百分比（从 diskData 数组的第一个磁盘提取）
-  /// - load: 系统负载（load1）
-  ///
-  /// 如果 API 调用失败或数据格式异常，返回空的 ServerMetricsSnapshot。
+  Future<MonitorMetricsSnapshot> getCurrentSnapshot() async {
+    return (await _ensureApi()).getCurrentSnapshot();
+  }
+
   Future<ServerMetricsSnapshot> getCurrentServerMetrics() async {
     try {
-      appLogger.dWithPackage(
-        'data.repositories.dashboard_repository',
-        'getCurrentServerMetrics',
-      );
-
-      // 调用 Dashboard API 获取基础数据
-      final baseData = await getDashboardBase();
-
-      // 从 currentInfo 中提取指标数据
-      final currentInfo = baseData['currentInfo'] as Map<String, dynamic>?;
-
-      if (currentInfo == null) {
-        appLogger.wWithPackage(
-          'data.repositories.dashboard_repository',
-          'currentInfo is null in Dashboard API response',
-        );
-        return const ServerMetricsSnapshot();
-      }
-
-      // 提取 CPU 使用率
-      final cpuPercent = (currentInfo['cpuUsedPercent'] as num?)?.toDouble();
-
-      // 提取内存使用率
-      final memoryPercent =
-          (currentInfo['memoryUsedPercent'] as num?)?.toDouble();
-
-      // 提取磁盘使用率（从 diskData 数组的第一个磁盘）
-      double? diskPercent;
-      final diskDataList = currentInfo['diskData'] as List?;
-      if (diskDataList != null && diskDataList.isNotEmpty) {
-        final mainDisk = diskDataList.first as Map<String, dynamic>;
-        diskPercent = (mainDisk['usedPercent'] as num?)?.toDouble();
-      }
-
-      // 提取系统负载
-      final load = (currentInfo['load1'] as num?)?.toDouble();
-
-      appLogger.dWithPackage(
-        'data.repositories.dashboard_repository',
-        'Extracted metrics: cpu=$cpuPercent%, memory=$memoryPercent%, disk=$diskPercent%, load=$load',
-      );
-
+      final snapshot = await getCurrentSnapshot();
       return ServerMetricsSnapshot(
-        cpuPercent: cpuPercent,
-        memoryPercent: memoryPercent,
-        diskPercent: diskPercent,
-        load: load,
+        cpuPercent: snapshot.cpuPercent,
+        memoryPercent: snapshot.memoryPercent,
+        diskPercent: snapshot.diskPercent,
+        load: snapshot.load1,
       );
+    } on NetworkException {
+      return const ServerMetricsSnapshot();
     } catch (e, stack) {
-      if (e is NetworkException) {
-        appLogger.wWithPackage(
-          'data.repositories.dashboard_repository',
-          'Network error getting current server metrics: ${e.message}',
-        );
-      } else {
-        appLogger.eWithPackage(
-          'data.repositories.dashboard_repository',
-          'Error getting current server metrics',
-          error: e,
-          stackTrace: stack,
-        );
-      }
+      appLogger.eWithPackage(
+        'data.repositories.dashboard_repository',
+        'Error getting current server metrics',
+        error: e,
+        stackTrace: stack,
+      );
       return const ServerMetricsSnapshot();
     }
   }

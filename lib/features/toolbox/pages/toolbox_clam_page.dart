@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
-import 'package:onepanel_client/core/utils/error_message_utils.dart';
+import 'package:onepanel_client/features/toolbox/widgets/toolbox_snapshot_list.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/data/models/toolbox_models.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
@@ -38,6 +38,7 @@ class _ToolboxClamPageState extends State<ToolboxClamPage>
       final provider = context.read<ToolboxClamProvider>();
       provider.load();
       await provider.loadClamFile();
+      if (!mounted) return;
       _fileController.text = provider.clamFileContent;
     });
   }
@@ -49,22 +50,12 @@ class _ToolboxClamPageState extends State<ToolboxClamPage>
 
     return ServerAwarePageScaffold(
       title: l10n.toolboxClamTitle,
-      onServerChanged: () => context.read<ToolboxClamProvider>().load(),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
+      body: ToolboxSnapshotList(
+        hasSnapshot: provider.hasSnapshot,
+        isLoading: provider.isLoading,
+        loadError: provider.loadError,
+        onRetry: provider.load,
         children: [
-          if (provider.isLoading) const LinearProgressIndicator(),
-          if (provider.error != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 12, bottom: 8),
-              child: Text(
-                ErrorMessageUtils.localizeForContext(
-                  provider.error!,
-                  context,
-                ),
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              ),
-            ),
           SectionCard(
             title: l10n.toolboxClamTasksTitle,
             padding: const EdgeInsets.all(16),
@@ -279,6 +270,7 @@ class _ToolboxClamPageState extends State<ToolboxClamPage>
                             ? null
                             : (_) async {
                                 await provider.selectClamFile(name);
+                                if (!mounted) return;
                                 _fileController.text =
                                     provider.clamFileContent;
                               },

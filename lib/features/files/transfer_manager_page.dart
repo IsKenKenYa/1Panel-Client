@@ -1,6 +1,7 @@
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/status_label_widget.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:open_filex/open_filex.dart';
@@ -15,6 +16,7 @@ import 'package:onepanel_client/features/files/files_provider.dart';
 import 'package:onepanel_client/features/files/providers/transfer_manager_provider.dart';
 import 'package:onepanel_client/features/files/upload_history_page.dart';
 import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_empty_state_widget.dart';
 
 class TransferManagerPage extends StatefulWidget {
   const TransferManagerPage({super.key});
@@ -80,8 +82,8 @@ class _TransferManagerPageState extends State<TransferManagerPage> {
             body: provider.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : !provider.isDownloadSupported
-                    ? _EmptyState(
-                        text: provider.unsupportedReason ==
+                    ? ModuleEmptyStateWidget(
+                        title: provider.unsupportedReason ==
                                 'transferBackgroundDownloadUnsupported'
                             ? l10n.transferBackgroundDownloadUnsupported
                             : (provider.unsupportedReason ??
@@ -168,7 +170,7 @@ class _TransferManagerPageState extends State<TransferManagerPage> {
     final completed = provider.getCompletedDownloads();
 
     if (active.isEmpty && completed.isEmpty) {
-      return _EmptyState(text: l10n.transferEmpty);
+      return ModuleEmptyStateWidget(title: l10n.transferEmpty);
     }
 
     return ListView(
@@ -205,7 +207,7 @@ class _TransferManagerPageState extends State<TransferManagerPage> {
         final pending = manager.pendingTasks;
 
         if (active.isEmpty && pending.isEmpty) {
-          return _EmptyState(text: l10n.transferEmpty);
+          return ModuleEmptyStateWidget(title: l10n.transferEmpty);
         }
 
         return ListView(
@@ -273,40 +275,6 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
-class _EmptyState extends StatelessWidget {
-  final String text;
-
-  const _EmptyState({required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.inbox_outlined,
-              size: 64,
-              color: theme.colorScheme.outline,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              text,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.outline,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _DownloadTaskTile extends StatelessWidget {
   final DownloadTask task;
   final VoidCallback onRefresh;
@@ -356,7 +324,10 @@ class _DownloadTaskTile extends StatelessWidget {
                     ],
                   ),
                 ),
-                _buildStatusChip(context, theme),
+                StatusLabelWidget(
+                  label: _getStatusText(displayStatus, l10n),
+                  color: _getStatusColor(displayStatus, theme),
+                ),
               ],
             ),
             const SizedBox(height: 12),
@@ -393,23 +364,6 @@ class _DownloadTaskTile extends StatelessWidget {
               children: _buildActionButtons(context, displayStatus),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatusChip(BuildContext context, ThemeData theme) {
-    final displayStatus = _getDisplayStatus(task);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: _getStatusColor(displayStatus, theme).withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        _getStatusText(displayStatus, context.l10n),
-        style: theme.textTheme.labelSmall?.copyWith(
-          color: _getStatusColor(displayStatus, theme),
         ),
       ),
     );
@@ -822,7 +776,10 @@ class _UploadTaskTile extends StatelessWidget {
                     ],
                   ),
                 ),
-                _buildStatusChip(context, theme),
+                StatusLabelWidget(
+                  label: _getStatusText(task.status, l10n),
+                  color: _getStatusColor(task.status, theme),
+                ),
               ],
             ),
             const SizedBox(height: 12),
@@ -870,22 +827,6 @@ class _UploadTaskTile extends StatelessWidget {
               children: _buildActionButtons(context),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatusChip(BuildContext context, ThemeData theme) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: _getStatusColor(task.status, theme).withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        _getStatusText(task.status, context.l10n),
-        style: theme.textTheme.labelSmall?.copyWith(
-          color: _getStatusColor(task.status, theme),
         ),
       ),
     );

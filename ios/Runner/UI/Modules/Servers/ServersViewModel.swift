@@ -2,6 +2,7 @@ import Foundation
 
 struct ServerModel: Identifiable, Hashable {
     let originalId: String
+    let revision: String
     let name: String
     let url: String
     let isCurrent: Bool
@@ -39,7 +40,7 @@ class ServersViewModel: ObservableObject {
     ) {
         ChannelManager.shared.invokeDataMethod(
             "addServer",
-            arguments: ["name": name, "url": url, "apiKey": apiKey]
+            arguments: ["panelType": "1panel", "name": name, "url": url, "apiKey": apiKey]
         ) { result in
             DispatchQueue.main.async {
                 let dict = result as? [String: Any]
@@ -68,7 +69,7 @@ class ServersViewModel: ObservableObject {
 
     /// 更新服务器配置（updateServer 通道）。
     func updateServer(
-        id: String,
+        server: ServerModel,
         name: String,
         url: String,
         apiKey: String,
@@ -76,7 +77,8 @@ class ServersViewModel: ObservableObject {
     ) {
         ChannelManager.shared.invokeDataMethod(
             "updateServer",
-            arguments: ["id": id, "name": name, "url": url, "apiKey": apiKey]
+            arguments: ["id": server.originalId, "revision": server.revision,
+                        "name": name, "url": url, "apiKey": apiKey]
         ) { result in
             DispatchQueue.main.async {
                 let dict = result as? [String: Any]
@@ -97,16 +99,15 @@ class ServersViewModel: ObservableObject {
                     return
                 }
                 self?.servers = dictArray.compactMap { dict in
-                    guard let name = dict["name"] as? String,
+                    guard let originalId = dict["id"] as? String,
+                          let revision = dict["revision"] as? String,
+                          let name = dict["name"] as? String,
                           let url = dict["url"] as? String else { return nil }
-                    let rawId = dict["id"]
-                    let originalId: String
-                    if let intId = rawId as? Int { originalId = String(intId) }
-                    else { originalId = rawId as? String ?? "" }
                     let isCurrent = dict["isCurrent"] as? Bool ?? false
                     let cpu = dict["cpu"] as? Double ?? 0
                     let memory = dict["memory"] as? Double ?? 0
-                    return ServerModel(originalId: originalId, name: name, url: url, isCurrent: isCurrent, cpu: cpu, memory: memory)
+                    return ServerModel(originalId: originalId, revision: revision, name: name,
+                                       url: url, isCurrent: isCurrent, cpu: cpu, memory: memory)
                 }
                 completion?()
             }

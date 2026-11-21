@@ -14,8 +14,8 @@ class ToolboxFail2banSnapshot {
 }
 
 class ToolboxFail2banService {
-  ToolboxFail2banService({ToolboxRepository? repository})
-      : _repository = repository ?? ToolboxRepository();
+  ToolboxFail2banService({String? serverId, ToolboxRepository? repository})
+      : _repository = repository ?? ToolboxRepository(serverId: serverId);
 
   final ToolboxRepository _repository;
 

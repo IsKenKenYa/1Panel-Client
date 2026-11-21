@@ -2,6 +2,7 @@ import Foundation
 
 struct ServerModel: Identifiable {
     let originalId: String
+    let revision: String
     let name: String
     let url: String
     let isCurrent: Bool
@@ -25,16 +26,15 @@ class ServersViewModel: ObservableObject {
                 self?.isLoading = false
                 guard let dictArray = result as? [[String: Any]] else { return }
                 self?.servers = dictArray.compactMap { dict in
-                    guard let name = dict["name"] as? String,
+                    guard let originalId = dict["id"] as? String,
+                          let revision = dict["revision"] as? String,
+                          let name = dict["name"] as? String,
                           let url = dict["url"] as? String else { return nil }
-                    let rawId = dict["id"]
-                    let originalId: String
-                    if let intId = rawId as? Int { originalId = String(intId) }
-                    else { originalId = rawId as? String ?? "" }
                     let isCurrent = dict["isCurrent"] as? Bool ?? false
                     let cpu = dict["cpu"] as? Double ?? 0
                     let memory = dict["memory"] as? Double ?? 0
-                    return ServerModel(originalId: originalId, name: name, url: url, isCurrent: isCurrent, cpu: cpu, memory: memory)
+                    return ServerModel(originalId: originalId, revision: revision, name: name,
+                                       url: url, isCurrent: isCurrent, cpu: cpu, memory: memory)
                 }
             }
         }
@@ -42,7 +42,7 @@ class ServersViewModel: ObservableObject {
 
     @MainActor
     func addServer(name: String, url: String, token: String) async -> NativeMutationOutcome {
-        let args: [String: Any] = ["name": name, "url": url, "apiKey": token]
+        let args: [String: Any] = ["panelType": "1panel", "name": name, "url": url, "apiKey": token]
         let outcome = await ChannelManager.shared.invokeMutation("addServer", arguments: args)
         if outcome == .succeeded {
             fetchServers()
@@ -52,9 +52,10 @@ class ServersViewModel: ObservableObject {
 
     /// 更新服务器配置（updateServer 通道：apiKey 留空沿用原值）。
     @MainActor
-    func updateServer(id: String, name: String, url: String, token: String) async -> NativeMutationOutcome {
+    func updateServer(server: ServerModel, name: String, url: String, token: String) async -> NativeMutationOutcome {
         let args: [String: Any] = [
-            "id": id,
+            "id": server.originalId,
+            "revision": server.revision,
             "name": name,
             "url": url,
             "apiKey": token,

@@ -14,8 +14,8 @@ class ToolboxHostToolSnapshot {
 }
 
 class ToolboxHostToolService {
-  ToolboxHostToolService({HostToolRepository? repository})
-      : _repository = repository ?? HostToolRepository();
+  ToolboxHostToolService({String? serverId, HostToolRepository? repository})
+      : _repository = repository ?? HostToolRepository(serverId: serverId);
 
   final HostToolRepository _repository;
 

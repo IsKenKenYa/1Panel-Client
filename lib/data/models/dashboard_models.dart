@@ -15,21 +15,21 @@ class ProcessInfo extends Equatable {
     this.user,
   });
 
-  factory ProcessInfo.fromJson(Map<String, dynamic> json) {
+  factory ProcessInfo.fromJson(Map<String, dynamic> json,
+      {bool byMemory = false}) {
+    final percent = json['percent'] as num?;
+    final cpu = (byMemory ? null : percent) ??
+        json['cpuPercent'] as num? ??
+        json['cpu'] as num?;
+    final memory = (byMemory ? percent : null) ??
+        json['memoryPercent'] as num? ??
+        json['mem'] as num?;
     return ProcessInfo(
       pid: json['pid'] as int? ?? 0,
       // API field names differ between top-process and monitor endpoints
       name: json['name'] as String? ?? json['cmd'] as String? ?? '',
-      cpuPercent: (json['percent'] as num? ??
-                  json['cpuPercent'] as num? ??
-                  json['cpu'] as num?)
-              ?.toDouble() ??
-          0.0,
-      memoryPercent: (json['memoryPercent'] as num? ??
-                  json['mem'] as num? ??
-                  json['memory'] as num?)
-              ?.toDouble() ??
-          0.0,
+      cpuPercent: cpu?.toDouble() ?? 0.0,
+      memoryPercent: memory?.toDouble() ?? 0.0,
       user: json['user'] as String?,
     );
   }

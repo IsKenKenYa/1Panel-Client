@@ -1,42 +1,94 @@
 import 'package:flutter/foundation.dart';
 import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
-import 'package:onepanel_client/core/network/api_client_manager.dart';
 
 class CurrentServerController extends ChangeNotifier with SafeChangeNotifier {
-  bool _isLoading = false;
+  bool _hasLoaded = false;
+  ({String? selection, Future<void> done})? _pending;
+  ServerDirectory? _confirmed;
   List<ApiConfig> _servers = const [];
   ApiConfig? _currentServer;
 
-  bool get isLoading => _isLoading;
+  bool get hasLoaded => _hasLoaded;
+  bool get isLoading => !_hasLoaded && _pending != null;
   List<ApiConfig> get servers => _servers;
   ApiConfig? get currentServer => _currentServer;
   String? get currentServerId => _currentServer?.id;
   bool get hasServer => _currentServer != null;
   bool get hasAvailableServers => _servers.isNotEmpty;
 
-  Future<void> load() async {
-    _isLoading = true;
-    notifyListeners();
+  Future<void> ensureLoaded() =>
+      _pending?.done ?? (_hasLoaded ? Future<void>.value() : load());
 
-    try {
-      _servers = await ApiConfigManager.getConfigs();
-      _currentServer = await ApiConfigManager.getCurrentConfig();
-    } finally {
-      _isLoading = false;
-      notifyListeners();
+  Future<void> load() => _update();
+
+  Future<void> refresh() => load();
+
+  Future<void> selectServer(String id) {
+    if (_pending == null && _hasLoaded && currentServerId == id) {
+      return Future<void>.value();
     }
+    return _update(selection: id);
   }
 
-  Future<void> selectServer(String id) async {
-    await ApiConfigManager.setCurrentConfig(id);
-    // Clear all HTTP clients so the next API call uses the new server's
-    // base URL and API key — otherwise stale connections would be reused.
-    ApiClientManager.instance.clearAllClients();
-    await load();
+  Future<void> _update({String? selection}) {
+    final active = _pending;
+    if (active != null && active.selection == selection) return active.done;
+    final read = selection == null
+        ? ApiConfigManager.getServerDirectory()
+        : ApiConfigManager.setCurrentConfig(selection);
+    // 存储操作按调用顺序完成。连续切换时，发布最后确认的目录。
+    late final Future<void> done;
+    done = read.then<void>((directory) {
+      _confirmed = directory;
+    }).onError<ConfigStorageException>((error, trace) async {
+      if (error.changeCommitted != false &&
+          !isDisposed &&
+          _pending?.done == done) {
+        try {
+          final stored = await ApiConfigManager.getServerDirectory();
+          if (_pending?.done == done) _confirmed = stored;
+        } catch (readError) {
+          Error.throwWithStackTrace(
+            ConfigStorageException(error.changeCommitted, error.cause,
+                [...error.recoveryErrors, readError]),
+            trace,
+          );
+        }
+      }
+      Error.throwWithStackTrace(error, trace);
+    }).whenComplete(() {
+      if (isDisposed || _pending?.done != done) return;
+      _pending = null;
+      final directory = _confirmed;
+      _confirmed = null;
+      if (directory == null) {
+        if (!_hasLoaded) notifyListeners();
+        return;
+      }
+      _publish(directory);
+    });
+    _pending = (selection: selection, done: done);
+    if (!_hasLoaded && active == null) notifyListeners();
+    return done;
   }
 
-  Future<void> refresh() async {
-    await load();
+  void _publish(ServerDirectory directory) {
+    final previous = {for (final config in _servers) config.id: config};
+    final next = <ApiConfig>[];
+    for (final config in directory.servers) {
+      final saved = previous[config.id];
+      next.add(
+          saved != null && saved.revision == config.revision ? saved : config);
+    }
+    final changed = !listEquals(_servers, next);
+    if (changed) _servers = List.unmodifiable(next);
+    final selected =
+        _servers.where((s) => s.id == directory.selectedId).firstOrNull;
+    final notify =
+        !_hasLoaded || changed || !identical(selected, _currentServer);
+    _currentServer = selected;
+    _hasLoaded = true;
+    if (notify) notifyListeners();
   }
 }

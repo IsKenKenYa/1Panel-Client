@@ -1,17 +1,15 @@
-import 'package:flutter/foundation.dart';
 import 'package:onepanel_client/core/utils/error_message_utils.dart';
-import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
+import 'toolbox_snapshot_provider.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/models/toolbox_models.dart';
 import 'package:onepanel_client/features/toolbox/services/toolbox_fail2ban_service.dart';
 
-class ToolboxFail2banProvider extends ChangeNotifier with SafeChangeNotifier {
-  ToolboxFail2banProvider({ToolboxFail2banService? service})
-      : _service = service ?? ToolboxFail2banService();
+class ToolboxFail2banProvider extends ToolboxSnapshotProvider {
+  ToolboxFail2banProvider({ToolboxFail2banService? service, String? serverId})
+      : _service = service ?? ToolboxFail2banService(serverId: serverId);
 
   final ToolboxFail2banService _service;
 
-  bool _isLoading = false;
   bool _isSaving = false;
   bool _isOperating = false;
   String? _error;
@@ -19,40 +17,26 @@ class ToolboxFail2banProvider extends ChangeNotifier with SafeChangeNotifier {
   String _configText = '';
   List<Fail2banRecord> _records = const <Fail2banRecord>[];
 
-  bool get isLoading => _isLoading;
   bool get isSaving => _isSaving;
   bool get isOperating => _isOperating;
   bool get isBusy => _isSaving || _isOperating;
-  String? get error => _error;
+  String? get error => _error ?? loadError;
   Fail2banBaseInfo get baseInfo => _baseInfo;
   String get configText => _configText;
   List<Fail2banRecord> get records => _records;
 
-  Future<void> load({bool silent = false}) async {
-    if (!silent) {
-      _isLoading = true;
-      _error = null;
-      notifyListeners();
-    }
-
-    try {
-      final snapshot = await _service.loadSnapshot();
-      _baseInfo = snapshot.baseInfo;
-      _configText = snapshot.configText;
-      _records = snapshot.records;
-      _error = null;
-    } catch (error, stackTrace) {
-      appLogger.eWithPackage(
-        'features.toolbox.providers.toolbox_fail2ban',
-        'load fail2ban failed',
-        error: error,
-        stackTrace: stackTrace,
-      );
-      _error = ErrorMessageUtils.userFacingMessage(error);
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
+  Future<void> load({bool silent = false}) {
+    _error = null;
+    return loadSnapshot(
+      fetch: _service.loadSnapshot,
+      apply: (snapshot) {
+        _baseInfo = snapshot.baseInfo;
+        _configText = snapshot.configText;
+        _records = snapshot.records;
+      },
+      logPackage: 'features.toolbox.providers.toolbox_fail2ban',
+      silent: silent,
+    );
   }
 
   Future<bool> saveConfig({
@@ -62,6 +46,7 @@ class ToolboxFail2banProvider extends ChangeNotifier with SafeChangeNotifier {
     required String port,
     required bool isEnable,
   }) async {
+    if (isDisposed) return false;
     _isSaving = true;
     _error = null;
     notifyListeners();
@@ -113,6 +98,7 @@ class ToolboxFail2banProvider extends ChangeNotifier with SafeChangeNotifier {
     required String operate,
     List<String> ips = const <String>[],
   }) async {
+    if (isDisposed) return false;
     _isOperating = true;
     _error = null;
     notifyListeners();
@@ -137,6 +123,7 @@ class ToolboxFail2banProvider extends ChangeNotifier with SafeChangeNotifier {
   }
 
   Future<bool> _operate(String operation) async {
+    if (isDisposed) return false;
     _isOperating = true;
     _error = null;
     notifyListeners();

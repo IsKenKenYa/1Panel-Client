@@ -1,8 +1,6 @@
 import 'dart:io';
 
 class TestRunner {
-  static const String flutterFallbackPath =
-      '/Volumes/FanXiangMac/DevTools/Flutter/flutter/bin/flutter';
   static const String reset = '\x1B[0m';
   static const String red = '\x1B[31m';
   static const String green = '\x1B[32m';
@@ -45,26 +43,23 @@ class TestRunner {
     return result.exitCode;
   }
 
-  static Future<String> resolveFlutterCommand() async {
+  static String get flutterCommand {
     final configured = Platform.environment['FLUTTER_BIN'];
     if (configured != null && configured.isNotEmpty) {
       return configured;
     }
-    final fallback = File(flutterFallbackPath);
-    if (await fallback.exists()) {
-      return fallback.path;
-    }
-    return 'flutter';
+    return Platform.isWindows ? 'flutter.bat' : 'flutter';
   }
+
+  static String _fileName(String path) => path.replaceAll('\\', '/').split('/').last;
 
   static Future<bool> runTests(String testPath, {String? description}) async {
     if (description != null) {
       printHeader(description);
     }
 
-    final flutter = await resolveFlutterCommand();
     final exitCode =
-        await runCommand(flutter, ['test', testPath, '--reporter=expanded']);
+        await runCommand(flutterCommand, ['test', testPath, '--reporter=expanded']);
 
     if (exitCode == 0) {
       printSuccess('测试通过');
@@ -101,7 +96,7 @@ class TestRunner {
   }
 
   static bool _isPanelConfigLiveSuite(String path) {
-    final name = path.split('/').last.toLowerCase();
+    final name = _fileName(path).toLowerCase();
     return name.startsWith('setting') ||
         name.startsWith('snapshot') ||
         name.startsWith('panel_snapshot') ||
@@ -117,7 +112,6 @@ class TestRunner {
       printHeader(description);
     }
 
-    final flutter = await resolveFlutterCommand();
     var attempt = 0;
     var success = false;
 
@@ -127,7 +121,7 @@ class TestRunner {
         printWarning('重试 $attempt/$liveTestRetries: $testPath');
       }
 
-      final exitCode = await runCommand(flutter, [
+      final exitCode = await runCommand(flutterCommand, [
         'test',
         testPath,
         '--reporter=expanded',
@@ -199,7 +193,7 @@ class TestRunner {
       if (normalizedFilter == null || normalizedFilter.isEmpty) {
         return true;
       }
-      final name = path.split('/').last.toLowerCase();
+      final name = _fileName(path).toLowerCase();
       return name.contains(normalizedFilter);
     }).toList()
       ..sort();
@@ -273,14 +267,18 @@ class TestRunner {
     return uiTests;
   }
 
-  /// widget_test 目录下不含 testWidgets 的纯 Dart 测试文件（UI 档扫不到）。
-  static Future<List<String>> _discoverPureDartTests(String dirPath) async {
+  /// 查找由单元测试命令负责的纯 Dart 测试。
+  static Future<List<String>> _discoverPureDartTests(
+    String dirPath, {
+    bool recursive = true,
+  }) async {
     final dir = Directory(dirPath);
     if (!await dir.exists()) {
       return const <String>[];
     }
     final pure = <String>[];
-    await for (final entity in dir.list(recursive: true, followLinks: false)) {
+    await for (final entity
+        in dir.list(recursive: recursive, followLinks: false)) {
       if (entity is! File || !entity.path.endsWith('_test.dart')) {
         continue;
       }
@@ -325,12 +323,28 @@ class TestRunner {
       }
       final pureDartTests = await _discoverPureDartTests('test/widget_test');
       for (final file in pureDartTests) {
-        final name = file.split('/').last;
+        final name = _fileName(file);
         final ok = await runTests(file, description: '单元测试: $name');
         if (!ok) failures++;
       }
     } else {
       printInfo('已启用模块过滤: $normalizedFilter');
+    }
+
+    for (final (module, dir) in const [
+      ('panels', 'test/data/panels'),
+      ('server', 'test/features/server'),
+      ('shell', 'test/features/shell'),
+    ]) {
+      if (normalizedFilter != null &&
+          normalizedFilter.isNotEmpty &&
+          normalizedFilter != module) {
+        continue;
+      }
+      for (final file in await _discoverPureDartTests(dir, recursive: false)) {
+        final ok = await runTests(file, description: '单元测试: $file');
+        if (!ok) failures++;
+      }
     }
 
     final alignmentTests =
@@ -339,7 +353,7 @@ class TestRunner {
       printInfo('未发现匹配的 API 对齐测试');
     } else {
       for (final file in alignmentTests) {
-        final name = file.split('/').last;
+        final name = _fileName(file);
         final ok = await runTests(file, description: 'API对齐测试: $name');
         if (!ok) failures++;
       }
@@ -405,7 +419,7 @@ class TestRunner {
       }
 
       for (final testFile in testFiles) {
-        final name = testFile.split('/').last;
+        final name = _fileName(testFile);
         final ok =
             await runLiveTestWithRetry(testFile, description: '集成测试: $name');
         if (!ok) failures++;
@@ -427,7 +441,7 @@ class TestRunner {
       printInfo('发现 ${testFiles.length} 个 integration 目录测试');
 
       for (final testFile in testFiles) {
-        final name = testFile.split('/').last;
+        final name = _fileName(testFile);
         final ok =
             await runLiveTestWithRetry(testFile, description: '集成测试: $name');
         if (!ok) failures++;
@@ -441,7 +455,7 @@ class TestRunner {
     if (normalizedFilter == null || normalizedFilter.isEmpty) {
       return true;
     }
-    return path.split('/').last.toLowerCase().contains(normalizedFilter);
+    return _fileName(path).toLowerCase().contains(normalizedFilter);
   }
 
   static Future<bool> runUiTests() async {
@@ -455,7 +469,7 @@ class TestRunner {
     printInfo('发现 ${uiTests.length} 个 UI/Widget 测试文件');
     var failures = 0;
     for (final testFile in uiTests) {
-      final name = testFile.split('/').last;
+      final name = _fileName(testFile);
       final ok = await runTests(testFile, description: 'UI测试: $name');
       if (!ok) failures++;
     }

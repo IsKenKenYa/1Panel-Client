@@ -1,109 +1,124 @@
-import 'package:flutter/foundation.dart';
+import 'dart:async';
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:onepanel_client/features/server/server_repository.dart';
+import 'package:logger/logger.dart';
+import 'package:onepanel_client/data/panels/one_panel_adapter.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
+import 'package:onepanel_client/data/panels/panel_registry.dart';
+import 'package:onepanel_client/features/server/server_provider.dart';
+import 'package:onepanel_client/features/server/server_repository.dart';
 
-void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
-  // 测试环境无 SharedPreferences 插件，注入 mock 避免 MissingPluginException；
-  // 空初始值使 ApiConfigManager.getConfigs() 返回空配置，测试走跳过分支。
-  SharedPreferences.setMockInitialValues({});
+import '../core/test_config_manager.dart';
 
-  group('Bug Condition - Server Disk Display', () {
-    test('Property 1: diskPercent should not be null when server has disk data', () async {
-      final repository = const ServerRepository();
+Future<void> main() async {
+  await TestEnvironment.initialize();
+  final hasPanelUrl =
+      TestEnvironment.config.getString('PANEL_BASE_URL').trim().isNotEmpty;
+  final skipReason = TestEnvironment.skipLiveApi() ??
+      TestEnvironment.skipNoApiKey() ??
+      (hasPanelUrl ? null : '请配置 PANEL_BASE_URL');
 
-      try {
-        final configs = await ApiConfigManager.getConfigs();
-        if (configs.isEmpty) {
-          debugPrint('⚠️  跳过测试: 没有配置的服务器');
-          return;
-        }
+  test(
+    '列表和详情共用 1Panel 指标与健康请求，较早的配置结果不会更新新卡片',
+    () async {
+      final previousLevel = Logger.level;
+      Logger.level = Level.off;
+      addTearDown(() => Logger.level = previousLevel);
 
-        final testServerId = configs.first.id;
-        debugPrint('📊 测试服务器: $testServerId');
+      final source = TestEnvironment.apiConfig;
+      final saved = ApiConfig.fromJson({...source.toJson(), 'revision': '1'},
+          apiKey: source.apiKey);
+      final metadata = ApiConfig.fromJson(saved.toJson());
+      final registry = PanelRegistry([const OnePanelAdapter()]);
+      addTearDown(registry.clear);
+      final session = registry.sessionFor(saved) as OnePanelSession;
+      final requests = <String>[];
+      final nextRead = Completer<void>();
+      session.client.dio.interceptors
+          .add(InterceptorsWrapper(onRequest: (options, handler) {
+        requests.add(options.path);
+        if (requests.length == 3) nextRead.complete();
+        handler.next(options);
+      }));
+      final provider =
+          ServerProvider(repository: ServerRepository(registry: registry));
+      addTearDown(provider.dispose);
+      provider.syncDirectory([metadata], metadata.id);
+      await Future.wait(
+          [provider.loadMetrics(), provider.loadMetricsFor(metadata.id)]);
+      expect(
+          requests,
+          unorderedEquals([
+            '/api/v2/health/check',
+            '/api/v2/dashboard/current/default/default'
+          ]));
+      final metrics = provider.cardFor(metadata.id)!.metrics;
+      expect(metrics.isReachable, isTrue, reason: '面板健康检查应当成功');
+      expect(metrics.latencyMs, allOf(isNotNull, greaterThanOrEqualTo(0)));
+      expect(metrics.diskPercent, allOf(isNotNull, inInclusiveRange(0, 100)));
+      final oldRead = provider.loadMetricsFor(metadata.id);
+      await nextRead.future.timeout(const Duration(seconds: 10));
+      final edited =
+          ApiConfig.fromJson({...metadata.toJson(), 'revision': '2'});
+      provider.syncDirectory([edited], edited.id);
+      await oldRead;
+      expect(provider.cardFor(edited.id)!.metrics.isReachable, isNull);
+    },
+    skip: skipReason,
+  );
 
-        final metrics = await repository.loadServerMetrics(testServerId);
-
-        debugPrint('📈 返回的指标:');
-        debugPrint('  - cpuPercent: ${metrics.cpuPercent}');
-        debugPrint('  - memoryPercent: ${metrics.memoryPercent}');
-        debugPrint('  - diskPercent: ${metrics.diskPercent}');
-        debugPrint('  - load: ${metrics.load}');
-
-        if (metrics.diskPercent == null) {
-          debugPrint('❌ Bug 确认: diskPercent 为 null');
-          debugPrint('   这证明了 bug 存在 - 磁盘信息无法显示');
-          debugPrint('   UI 将显示 "--" 而不是实际的磁盘使用率');
-        }
-
-        expect(
-          metrics.diskPercent,
-          isNotNull,
-          reason: 'diskPercent 不应该为 null - 服务器应该有磁盘数据',
-        );
-
-        expect(
-          metrics.diskPercent! >= 0 && metrics.diskPercent! <= 100,
-          isTrue,
-          reason: 'diskPercent 应该在 0-100 之间',
-        );
-
-        debugPrint('✅ 测试通过: diskPercent = ${metrics.diskPercent}%');
-      } catch (e, stackTrace) {
-        debugPrint('❌ 测试执行失败: $e');
-        debugPrint('堆栈跟踪: $stackTrace');
-        rethrow;
-      }
+  test('多连接刷新最多同时读取四台，列表隐藏后只启动可见详情的等待请求', () async {
+    final source = TestEnvironment.apiConfig;
+    final registry = PanelRegistry([const OnePanelAdapter()]);
+    addTearDown(registry.clear);
+    final provider =
+        ServerProvider(repository: ServerRepository(registry: registry));
+    addTearDown(provider.dispose);
+    final started = <String>{};
+    final active = <String>{};
+    final firstFour = Completer<void>();
+    var peak = 0;
+    final configs = <ApiConfig>[];
+    for (var i = 0; i < 6; i++) {
+      // 使用独立连接访问已配置的测试面板，计数器只观察真实请求。
+      final saved = ApiConfig.fromJson(
+        {...source.toJson(), 'id': 'refresh-$i', 'revision': '1'},
+        apiKey: source.apiKey,
+      );
+      final session = registry.sessionFor(saved) as OnePanelSession;
+      var responses = 0;
+      session.client.dio.interceptors.add(InterceptorsWrapper(
+        onRequest: (options, handler) {
+          started.add(saved.id);
+          active.add(saved.id);
+          if (active.length > peak) peak = active.length;
+          if (started.length == 4 && !firstFour.isCompleted) {
+            firstFour.complete();
+          }
+          handler.next(options);
+        },
+        onResponse: (response, handler) {
+          if (++responses == 2) active.remove(saved.id);
+          handler.next(response);
+        },
+      ));
+      configs.add(ApiConfig.fromJson(saved.toJson()));
+    }
+    provider.syncDirectory(configs, configs.first.id);
+    final list = Object();
+    final detail = Object();
+    provider.setPageVisible(list, true);
+    await firstFour.future.timeout(const Duration(seconds: 10));
+    provider.setPageVisible(detail, true, serverId: configs.last.id);
+    provider.setPageVisible(list, false);
+    await Future.wait([
+      for (final config in [...configs.take(4), configs.last])
+        provider.loadMetricsFor(config.id),
+    ]);
+    provider.setPageVisible(detail, false);
+    expect(peak, 4);
+    expect(started, {
+      for (final config in [...configs.take(4), configs.last]) config.id
     });
-
-    test('Bug Condition: Monitor API returns null diskPercent', () async {
-      final repository = const ServerRepository();
-
-      try {
-        final configs = await ApiConfigManager.getConfigs();
-        if (configs.isEmpty) {
-          debugPrint('⚠️  跳过测试: 没有配置的服务器');
-          return;
-        }
-
-        final testServerId = configs.first.id;
-        final metrics = await repository.loadServerMetrics(testServerId);
-
-        if (metrics.diskPercent == null) {
-          debugPrint('');
-          debugPrint('========================================');
-          debugPrint('反例 (Counterexample) 记录:');
-          debugPrint('========================================');
-          debugPrint('服务器ID: $testServerId');
-          debugPrint('Bug Condition: diskPercent = null');
-          debugPrint('');
-          debugPrint('其他指标状态:');
-          debugPrint('  - cpuPercent: ${metrics.cpuPercent ?? "null"}');
-          debugPrint('  - memoryPercent: ${metrics.memoryPercent ?? "null"}');
-          debugPrint('  - load: ${metrics.load ?? "null"}');
-          debugPrint('');
-          debugPrint('根本原因分析:');
-          debugPrint('  当前实现使用 Monitor API (/api/v2/hosts/monitor/search)');
-          debugPrint('  Monitor API 可能未返回 diskData 字段');
-          debugPrint('  或者 diskData 为空数组');
-          debugPrint('');
-          debugPrint('推荐修复方案:');
-          debugPrint('  使用 Dashboard API (/api/v2/dashboard/base)');
-          debugPrint('  Dashboard API 已验证返回正确的磁盘数据');
-          debugPrint('========================================');
-        }
-
-        expect(
-          metrics.diskPercent,
-          isNotNull,
-          reason: 'Bug Condition: Monitor API 未返回有效的 diskPercent',
-        );
-      } catch (e) {
-        debugPrint('测试执行异常: $e');
-        rethrow;
-      }
-    });
-  });
+  }, skip: skipReason);
 }

@@ -35,7 +35,6 @@ import '../../api/v2/xpack_model_downloader_v2.dart';
 import '../../api/v2/ai_v2.dart';
 import '../../api/v2/health_v2.dart';
 import '../config/api_config.dart';
-import '../services/logger/logger_service.dart';
 import 'dio_client.dart';
 
 class ApiClientManager {
@@ -47,9 +46,7 @@ class ApiClientManager {
 
   static ApiClientManager get instance => _instance;
 
-  final Map<String, DioClient> _clients = <String, DioClient>{};
-  final Map<String, _ClientConfigMeta> _clientMeta =
-      <String, _ClientConfigMeta>{};
+  final _clients = <String, ({ApiConfig config, DioClient client})>{};
 
   Future<ApiConfig> _getCurrentConfig() async {
     final config = await ApiConfigManager.getCurrentConfig();
@@ -59,49 +56,38 @@ class ApiClientManager {
     return config;
   }
 
-  DioClient getClient(
-    String serverId,
-    String serverUrl,
-    String apiKey, {
-    bool allowInsecureTls = false,
-  }) {
-    final nextMeta = _ClientConfigMeta(
-      url: serverUrl,
-      apiKey: apiKey,
-      allowInsecureTls: allowInsecureTls,
-    );
-    final currentMeta = _clientMeta[serverId];
-
-    if (currentMeta == nextMeta && _clients.containsKey(serverId)) {
-      return _clients[serverId]!;
-    }
-
-    final client = DioClient(
-      baseUrl: serverUrl,
-      apiKey: apiKey,
-      allowInsecureTls: allowInsecureTls,
-    );
-    _clients[serverId] = client;
-    _clientMeta[serverId] = nextMeta;
-    return client;
-  }
-
   Future<DioClient> getCurrentClient() async {
     final config = await _getCurrentConfig();
-    appLogger.dWithPackage(
-      'core.network.api_client_manager',
-      'getCurrentClient: serverId=${config.id}, url=${config.url}, apiKeyPresent=${config.apiKey.isNotEmpty}, allowInsecureTls=${config.allowInsecureTls}',
-    );
     return getClientForConfig(config);
   }
 
   DioClient getClientForConfig(ApiConfig config) {
-    return getClient(
-      config.id,
-      config.url,
-      config.apiKey,
+    config.requireOnePanel();
+    final existing = _clients[config.id];
+    if (existing != null && existing.config.sameConnectionAs(config)) {
+      return existing.client;
+    }
+    removeClient(config.id);
+    final client = DioClient(
+      baseUrl: config.url,
+      apiKey: config.apiKey,
       allowInsecureTls: config.allowInsecureTls,
     );
+    _clients[config.id] = (config: config, client: client);
+    return client;
+  }
+
+  Future<DioClient> _resolveClient(String? serverId) async {
+    if (serverId == null) return getCurrentClient();
+    return getClientForConfig(await ApiConfigManager.getConfig(serverId));
+  }
+
+  Future<DioClient> getClientForServer(ApiConfig expected) async {
+    final config = await ApiConfigManager.getConfig(expected.id);
+    if (config.revision != expected.revision) {
+      throw StateError('服务器配置已更改，请重新打开设置页面');
+    }
+    return getClientForConfig(config);
   }
 
   Future<AppV2Api> getAppApi() async => AppV2Api(await getCurrentClient());
@@ -143,8 +129,8 @@ class ApiClientManager {
   Future<DatabaseV2Api> getDatabaseApi() async =>
       DatabaseV2Api(await getCurrentClient());
 
-  Future<DiskManagementV2Api> getDiskManagementApi() async =>
-      DiskManagementV2Api(await getCurrentClient());
+  Future<DiskManagementV2Api> getDiskManagementApi({String? serverId}) async =>
+      DiskManagementV2Api(await _resolveClient(serverId));
 
   Future<DockerV2Api> getDockerApi() async =>
       DockerV2Api(await getCurrentClient());
@@ -156,8 +142,8 @@ class ApiClientManager {
 
   Future<HostV2Api> getHostApi() async => HostV2Api(await getCurrentClient());
 
-  Future<HostToolV2Api> getHostToolApi() async =>
-      HostToolV2Api(await getCurrentClient());
+  Future<HostToolV2Api> getHostToolApi({String? serverId}) async =>
+      HostToolV2Api(await _resolveClient(serverId));
 
   Future<LogsV2Api> getLogsApi() async => LogsV2Api(await getCurrentClient());
 
@@ -192,8 +178,8 @@ class ApiClientManager {
   Future<TerminalV2Api> getTerminalApi() async =>
       TerminalV2Api(await getCurrentClient());
 
-  Future<ToolboxV2Api> getToolboxApi() async =>
-      ToolboxV2Api(await getCurrentClient());
+  Future<ToolboxV2Api> getToolboxApi({String? serverId}) async =>
+      ToolboxV2Api(await _resolveClient(serverId));
 
   Future<UpdateV2Api> getUpdateApi() async =>
       UpdateV2Api(await getCurrentClient());
@@ -206,39 +192,23 @@ class ApiClientManager {
     return AIV2Api(client);
   }
 
-  void removeClient(String serverId) {
-    _clients.remove(serverId);
-    _clientMeta.remove(serverId);
+  void removeClient(String serverId, {DioClient? expected}) {
+    if (expected != null && !identical(_clients[serverId]?.client, expected)) {
+      return;
+    }
+    _clients.remove(serverId)?.client.dio.close(force: true);
+  }
+
+  void invalidateIfChanged(ApiConfig config) {
+    final existing = _clients[config.id];
+    if (existing != null && !existing.config.sameConnectionAs(config)) {
+      removeClient(config.id);
+    }
   }
 
   void clearAllClients() {
-    _clients.clear();
-    _clientMeta.clear();
-  }
-}
-
-class _ClientConfigMeta {
-  const _ClientConfigMeta({
-    required this.url,
-    required this.apiKey,
-    required this.allowInsecureTls,
-  });
-
-  final String url;
-  final String apiKey;
-  final bool allowInsecureTls;
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) {
-      return true;
+    for (final id in _clients.keys.toList()) {
+      removeClient(id);
     }
-    return other is _ClientConfigMeta &&
-        other.url == url &&
-        other.apiKey == apiKey &&
-        other.allowInsecureTls == allowInsecureTls;
   }
-
-  @override
-  int get hashCode => Object.hash(url, apiKey, allowInsecureTls);
 }

@@ -1,52 +1,38 @@
-import 'package:flutter/foundation.dart';
 import 'package:onepanel_client/core/utils/error_message_utils.dart';
-import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
+import 'toolbox_snapshot_provider.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/models/host_tool_models.dart';
 import 'package:onepanel_client/features/toolbox/services/toolbox_host_tool_service.dart';
 
-class ToolboxHostToolProvider extends ChangeNotifier with SafeChangeNotifier {
-  ToolboxHostToolProvider({ToolboxHostToolService? service})
-      : _service = service ?? ToolboxHostToolService();
+class ToolboxHostToolProvider extends ToolboxSnapshotProvider {
+  ToolboxHostToolProvider({ToolboxHostToolService? service, String? serverId})
+      : _service = service ?? ToolboxHostToolService(serverId: serverId);
 
   final ToolboxHostToolService _service;
 
-  bool _isLoading = false;
   bool _isMutating = false;
   String? _error;
   SupervisorServiceInfo _serviceInfo = const SupervisorServiceInfo();
   String _configContent = '';
   List<HostToolProcessConfig> _processes = const <HostToolProcessConfig>[];
 
-  bool get isLoading => _isLoading;
   bool get isMutating => _isMutating;
-  String? get error => _error;
+  String? get error => _error ?? loadError;
   SupervisorServiceInfo get serviceInfo => _serviceInfo;
   String get configContent => _configContent;
   List<HostToolProcessConfig> get processes => _processes;
 
-  Future<void> load() async {
-    _isLoading = true;
+  Future<void> load() {
     _error = null;
-    notifyListeners();
-
-    try {
-      final snapshot = await _service.loadSnapshot();
-      _serviceInfo = snapshot.serviceInfo;
-      _configContent = snapshot.configContent;
-      _processes = snapshot.processes;
-    } catch (error, stackTrace) {
-      appLogger.eWithPackage(
-        'features.toolbox.providers.toolbox_host_tool',
-        'load host tool failed',
-        error: error,
-        stackTrace: stackTrace,
-      );
-      _error = ErrorMessageUtils.userFacingMessage(error);
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
+    return loadSnapshot(
+      fetch: _service.loadSnapshot,
+      apply: (snapshot) {
+        _serviceInfo = snapshot.serviceInfo;
+        _configContent = snapshot.configContent;
+        _processes = snapshot.processes;
+      },
+      logPackage: 'features.toolbox.providers.toolbox_host_tool',
+    );
   }
 
   Future<bool> initSupervisor({
@@ -86,6 +72,7 @@ class ToolboxHostToolProvider extends ChangeNotifier with SafeChangeNotifier {
     required String name,
     required String file,
   }) async {
+    if (isDisposed) return null;
     try {
       _error = null;
       notifyListeners();
@@ -123,6 +110,7 @@ class ToolboxHostToolProvider extends ChangeNotifier with SafeChangeNotifier {
   }
 
   Future<bool> _runMutation(Future<void> Function() action) async {
+    if (isDisposed) return false;
     _isMutating = true;
     _error = null;
     notifyListeners();

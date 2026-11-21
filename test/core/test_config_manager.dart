@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
 
 class TestConfigManager {
   static final TestConfigManager _instance = TestConfigManager._internal();
@@ -138,6 +139,12 @@ class TestEnvironment {
   static String get baseUrl =>
       config.getString('PANEL_BASE_URL', defaultValue: 'http://localhost:9999');
   static String get apiKey => config.getString('PANEL_API_KEY');
+  static ApiConfig get apiConfig => ApiConfig(
+        id: 'integration',
+        name: 'Integration',
+        url: baseUrl,
+        apiKey: apiKey,
+      );
   static String get apiVersion =>
       config.getString('API_VERSION', defaultValue: 'v2');
   static int get tokenValidityMinutes =>

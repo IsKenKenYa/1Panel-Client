@@ -17,7 +17,7 @@ void main() {
       // Default to picker-on so OHOS routes through the kind-aware picker
       // channel, matching the post-fix behavior.
       SharedPreferences.setMockInitialValues(<String, Object>{
-        'app_use_file_picker_for_export': true,
+        'app_use_file_picker_for_file_operations': true,
       });
     });
 

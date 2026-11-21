@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/label_value_row.dart';
 
 class ToolboxDeviceInfoRowWidget extends StatelessWidget {
   const ToolboxDeviceInfoRowWidget({
@@ -12,28 +13,16 @@ class ToolboxDeviceInfoRowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-            ),
-          ),
-        ],
+    final theme = Theme.of(context);
+    return LabelValueRow(
+      label: label,
+      value: value,
+      labelWidth: 120,
+      labelStyle: theme.textTheme.bodyMedium,
+      valueStyle: theme.textTheme.bodyMedium?.copyWith(
+        color: theme.colorScheme.onSurfaceVariant,
       ),
+      padding: const EdgeInsets.only(bottom: 8),
     );
   }
 }

@@ -2,8 +2,8 @@ import 'package:onepanel_client/data/models/disk_management_models.dart';
 import 'package:onepanel_client/data/repositories/disk_management_repository.dart';
 
 class ToolboxDiskService {
-  ToolboxDiskService({DiskManagementRepository? repository})
-      : _repository = repository ?? DiskManagementRepository();
+  ToolboxDiskService({String? serverId, DiskManagementRepository? repository})
+      : _repository = repository ?? DiskManagementRepository(serverId: serverId);
 
   final DiskManagementRepository _repository;
 

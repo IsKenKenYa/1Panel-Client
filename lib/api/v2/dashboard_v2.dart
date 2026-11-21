@@ -4,6 +4,7 @@ import '../../core/config/api_constants.dart';
 import '../../core/network/dio_client.dart';
 import '../../data/models/common_models.dart';
 import '../../data/models/dashboard_models.dart';
+import '../../data/models/monitor_models.dart';
 import '../../data/models/monitoring_models.dart';
 import 'api_response_parser.dart';
 /// Dashboard V2 API客户端
@@ -14,6 +15,9 @@ class DashboardV2Api {
   final DioClient _client;
 
   DashboardV2Api(this._client);
+
+  static final _currentRequests =
+      Expando<Map<(String, String), Future<MonitorMetricsSnapshot>>>();
 
   List<Map<String, dynamic>> _extractObjectList(
     Response<Map<String, dynamic>> response,
@@ -86,10 +90,22 @@ class DashboardV2Api {
     );
   }
 
-  /// 获取实时指标 (不带基础信息，仅更新)
-  Future<Response<void>> getCurrentMetricsBase(String ioOption, String netOption) async {
-    return await _client.get<void>(
-      ApiConstants.buildApiPath('/dashboard/current/$ioOption/$netOption'),
+  Future<MonitorMetricsSnapshot> getCurrentSnapshot({
+    String ioOption = 'default',
+    String netOption = 'default',
+  }) {
+    final requests = _currentRequests[_client] ??= {};
+    final key = (ioOption, netOption);
+    return requests.putIfAbsent(
+      key,
+      () => _client
+          .get<Map<String, dynamic>>(ApiConstants.buildApiPath(
+            '/dashboard/current/${Uri.encodeComponent(ioOption)}/${Uri.encodeComponent(netOption)}',
+          ))
+          .then((response) => MonitorMetricsSnapshot.fromDashboard(
+                ApiResponseParser.unwrap(response.data) as Map<String, dynamic>,
+              ))
+          .whenComplete(() { requests.remove(key); }),
     );
   }
 
@@ -143,7 +159,9 @@ class DashboardV2Api {
       ApiConstants.buildApiPath('/dashboard/current/top/mem'),
     );
     final rawData = ApiResponseParser.extractDynamicData(response);
-    final list = (rawData as List?)?.map((e) => ProcessInfo.fromJson(e as Map<String, dynamic>)).toList() ?? [];
+    final list = (rawData as List?)
+        ?.map((item) => ProcessInfo.fromJson(item as Map<String, dynamic>, byMemory: true))
+        .toList(growable: false) ?? const <ProcessInfo>[];
     return Response(
       data: list,
       statusCode: response.statusCode,
@@ -250,10 +268,10 @@ class DashboardV2Api {
 
   // ==================== 系统操作模块 (1个端点) ====================
 
-  /// 系统重启/关机操作
+  /// 重启主机或指定的面板服务
   ///
   /// POST /dashboard/system/restart/:operation
-  /// @param operation 操作类型 (restart/shutdown)
+  /// @param operation 操作类型 (system/1panel/1panel-agent)
   /// @return 操作结果
   Future<Response<Map<String, dynamic>>> systemRestart(String operation) async {
     final response = await _client.post<Map<String, dynamic>>(

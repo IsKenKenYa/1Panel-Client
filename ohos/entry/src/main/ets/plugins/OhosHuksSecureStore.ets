@@ -1,12 +1,9 @@
-import { Log } from '@ohos/flutter_ohos';
 import common from '@ohos.app.ability.common';
 import cryptoFramework from '@ohos.security.cryptoFramework';
 import huks from '@ohos.security.huks';
 import util from '@ohos.util';
 
 import OhosPreferenceStore from './OhosPreferenceStore';
-
-const TAG = 'OhosHuksSecureStore';
 
 class SecureStoragePayload {
   v: number = 0;
@@ -43,48 +40,17 @@ export default class OhosHuksSecureStore {
   }
 
   async read(key: string): Promise<string | null> {
-    const all = (await this.store.getAll()) as Record<string, string | null>;
+    const all = (await this.store.getAll()) as Record<string, string>;
     const rawValue = all[key];
-    if (rawValue == null || rawValue.length === 0) {
-      Log.w(TAG, `read: key=${key} not found in preferences store`);
-      return null;
-    }
-
-    // Backward compat: if value isn't valid encrypted JSON, return it as-is.
-    // This handles data written before HUKS encryption was enabled.
-    const payload = this.tryParsePayload(rawValue);
-    if (payload == null) {
-      Log.d(TAG, `read: key=${key} returned raw (non-encrypted) value`);
-      return rawValue;
-    }
-
-    try {
-      const decrypted = await this.decrypt(payload);
-      Log.d(TAG, `read: key=${key} decrypted successfully`);
-      return decrypted;
-    } catch (error) {
-      Log.e(TAG, `read: key=${key} HUKS decryption failed, error=${error}`, error);
-      return null;
-    }
+    if (rawValue === undefined) return null;
+    return this.decrypt(this.parsePayload(rawValue));
   }
 
   async readAll(): Promise<Record<string, string>> {
-    const all = (await this.store.getAll()) as Record<string, string | null>;
+    const all = (await this.store.getAll()) as Record<string, string>;
     const decrypted: Record<string, string> = {};
     for (const key of Object.keys(all)) {
-      const rawValue = all[key];
-      if (rawValue == null || rawValue.length === 0) {
-        continue;
-      }
-
-      // Same backward-compat logic as read(): non-JSON values pass through as plaintext.
-      const payload = this.tryParsePayload(rawValue);
-      if (payload == null) {
-        decrypted[key] = rawValue;
-        continue;
-      }
-
-      decrypted[key] = await this.decrypt(payload);
+      decrypted[key] = await this.decrypt(this.parsePayload(all[key]));
     }
     return decrypted;
   }
@@ -223,31 +189,27 @@ export default class OhosHuksSecureStore {
     ];
   }
 
-  // Returns null for non-JSON or non-matching version — signals caller to treat value as plaintext.
-  private tryParsePayload(value: string): SecureStoragePayload | null {
+  private parsePayload(value: string): SecureStoragePayload {
+    let parsed: SecureStoragePayload;
     try {
-      const parsed = JSON.parse(value) as SecureStoragePayload;
-      if (
-        parsed != null &&
-        parsed.v === STORE_VERSION &&
-        typeof parsed.iv === 'string' &&
-        typeof parsed.data === 'string'
-      ) {
-        return new SecureStoragePayload(parsed.v, parsed.iv, parsed.data);
-      }
+      parsed = JSON.parse(value) as SecureStoragePayload;
     } catch (_) {
-      return null;
+      throw new Error('Invalid encrypted storage record');
     }
-    return null;
+    if (
+      parsed == null || parsed.v !== STORE_VERSION ||
+      typeof parsed.iv !== 'string' || parsed.iv.length === 0 ||
+      typeof parsed.data !== 'string' || parsed.data.length === 0
+    ) {
+      throw new Error('Invalid encrypted storage record');
+    }
+    return parsed;
   }
 
   private async deleteMasterKey(): Promise<void> {
-    try {
-      await huks.deleteKeyItem(MASTER_KEY_ALIAS, {
-        properties: [],
-      });
-    } catch (_) {
-      // Swallowed: key may already be absent after a partial cleanup or app reinstall.
+    const options: huks.HuksOptions = { properties: [] };
+    if (await huks.isKeyItemExist(MASTER_KEY_ALIAS, options)) {
+      await huks.deleteKeyItem(MASTER_KEY_ALIAS, options);
     }
   }
 }

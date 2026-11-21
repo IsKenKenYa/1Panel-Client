@@ -47,8 +47,10 @@ import '../../data/models/database_models.dart';
 import '../../data/models/firewall_models.dart';
 import '../../core/services/app_preferences_service.dart';
 import '../../core/theme/ui_render_mode.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../features/backups/services/backup_recover_service.dart';
 import '../config/api_constants.dart';
+import 'native_server_config.dart';
 import '../network/api_client_manager.dart';
 import '../services/cache/file_preview_cache_manager.dart';
 import '../services/logger/logger_service.dart';
@@ -121,22 +123,14 @@ class NativeChannelWriteHandlers {
     }
   }
 
-  /// 新增服务器配置。参数：`{name: String, url: String, apiKey: String}`
+  /// 新增指定面板类型的服务器配置。
   static Future<Map<String, dynamic>> addServer(dynamic arguments) async {
     try {
-      final name = arguments['name'] as String;
-      final url = arguments['url'] as String;
-      final apiKey = arguments['apiKey'] as String;
       final id = 'server_${DateTime.now().microsecondsSinceEpoch}';
-      final config = ApiConfig(
-        id: id,
-        name: name,
-        url: url,
-        apiKey: apiKey,
-      );
+      final config = readNativeServerConfig(arguments as Map, id: id);
       final repository = const ServerRepository();
       await repository.saveConfig(config);
-      return _ok();
+      return {'success': true, 'id': id};
     } catch (e) {
       appLogger.e('addServer failed: $e');
       return _err(e);
@@ -169,27 +163,17 @@ class NativeChannelWriteHandlers {
     }
   }
 
-  /// 更新服务器配置（名称/地址/API 密钥）。参数：`{id, name, url, apiKey}`
+  /// 使用编辑表单打开时的 revision 更新服务器配置。
   static Future<Map<String, dynamic>> updateServer(dynamic arguments) async {
     try {
       final id = arguments['id'] as String;
-      final name = arguments['name'] as String;
-      final url = arguments['url'] as String;
-      final apiKey = (arguments['apiKey'] as String?) ?? '';
-      final configs = await ApiConfigManager.getConfigs();
-      final existing = configs.firstWhere((c) => c.id == id);
-      final updated = ApiConfig(
-        id: existing.id,
-        name: name,
-        url: url,
-        // 编辑时 API Key 留空表示沿用原值。
-        apiKey: apiKey.isEmpty ? existing.apiKey : apiKey,
-        tokenValidity: existing.tokenValidity,
-        allowInsecureTls: existing.allowInsecureTls,
-        isDefault: existing.isDefault,
-        lastUsed: existing.lastUsed,
+      final existing = await ApiConfigManager.getConfig(id);
+      final updated = readNativeServerConfig(
+        arguments as Map,
+        id: id,
+        existing: existing,
       );
-      await ApiConfigManager.saveConfig(updated);
+      await const ServerRepository().updateConfig(updated, expected: existing);
       return _ok();
     } catch (e) {
       appLogger.e('updateServer failed: $e');
@@ -2381,14 +2365,18 @@ class NativeChannelWriteHandlers {
       final prefs = AppPreferencesService();
       switch (key) {
         case 'renderMode':
-          await prefs.saveUIRenderMode(
-            value == 'native' ? UIRenderMode.native : UIRenderMode.md3,
-          );
+          final mode = UIRenderMode.values.asNameMap()[value];
+          if (mode == null) throw ArgumentError.value(value, key);
+          await prefs.saveUIRenderMode(mode);
           return _ok();
         case 'language':
-          await prefs.saveLocale(
-            value == null || value == 'system' ? null : Locale(value),
-          );
+          final locale =
+              value == null || value == 'system' ? null : Locale(value);
+          if (locale != null &&
+              !AppLocalizations.supportedLocales.contains(locale)) {
+            throw ArgumentError.value(value, key);
+          }
+          await prefs.saveLocale(locale);
           return _ok();
         default:
           return {'success': false, 'error': 'Unknown setting key: $key'};
