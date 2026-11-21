@@ -15,11 +15,17 @@ class ServerRepository {
   final PanelRegistry? _registry;
   PanelRegistry get _panels => _registry ?? PanelRegistry.instance;
 
-  /// 加载服务器卡片列表
-  Future<List<ServerCardViewModel>> loadServerCards() async {
+  /// 加载服务器卡片列表。
+  ///
+  /// [withMetrics] 为 true 时并发拉取每台服务器的指标与可达状态，
+  /// 供原生轨道的服务器列表使用；MDUI3 轨道由 ServerProvider 自行
+  /// 按可见性刷新，不重复拉取。
+  Future<List<ServerCardViewModel>> loadServerCards({
+    bool withMetrics = false,
+  }) async {
     final directory = await ApiConfigManager.getServerDirectory();
 
-    return directory.servers
+    final cards = directory.servers
         .map(
           (config) => ServerCardViewModel(
             config: config,
@@ -28,6 +34,16 @@ class ServerRepository {
           ),
         )
         .toList();
+
+    if (!withMetrics || cards.isEmpty) return cards;
+
+    final metrics = await Future.wait(
+      cards.map((card) => loadMetricsForConfig(card.config)),
+    );
+    return [
+      for (var i = 0; i < cards.length; i++)
+        cards[i].copyWith(metrics: metrics[i]),
+    ];
   }
 
   Future<ServerMetricsSnapshot> loadMetricsForConfig(ApiConfig metadata) async {

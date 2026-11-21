@@ -207,32 +207,56 @@ abstract final class ApiConfigManager {
     final vault = await _vault();
     final raw = await vault.read(key: _secretKey(config));
     if (raw != null) {
-      try {
-        final secrets = jsonDecode(raw) as Map<String, dynamic>;
+      final secrets = _decodeSecrets(raw);
+      if (secrets != null) {
         return ApiConfig.fromJson(
           config.toJson(),
-          apiKey: secrets['apiKey'] as String,
-          additionalCredentials:
-              Map<String, String>.from(secrets['fields'] as Map),
+          apiKey: secrets.apiKey,
+          additionalCredentials: secrets.fields,
         );
-      } catch (error) {
-        if (error is! FormatException && error is! TypeError) rethrow;
-        // JSON 解码异常可能包含凭据原文。
-        throw const FormatException('已保存的面板凭据格式无效');
       }
+      // 键存在但内容不是新格式时，先按旧明文凭据处理，再尝试迁移。
+      final migrated = await _tryMigrateLegacy(config, vault);
+      if (migrated != null) return migrated;
+      // 内容无法识别，可能是截断或读到了错误条目；交给调用方按未配置处理。
+      throw const FormatException('已保存的面板凭据格式无效');
     }
-    return _migrateLegacyCredentials(config, vault);
+    final migrated = await _tryMigrateLegacy(config, vault);
+    if (migrated != null) return migrated;
+    throw StateError('无法读取已保存的面板凭据');
+  }
+
+  /// 解析新格式凭据；内容不是 JSON 对象或有缺失字段时返回 null。
+  static ({String apiKey, Map<String, String> fields})? _decodeSecrets(
+    String raw,
+  ) {
+    final Object? decoded;
+    try {
+      decoded = jsonDecode(raw);
+    } on FormatException {
+      return null;
+    }
+    if (decoded is! Map) return null;
+    final apiKey = decoded['apiKey'];
+    if (apiKey is! String) return null;
+    final rawFields = decoded['fields'];
+    return (
+      apiKey: apiKey,
+      fields: rawFields is Map
+          ? Map<String, String>.from(rawFields)
+          : const <String, String>{},
+    );
   }
 
   /// 旧版本把明文 API Key 存在 `api_config_api_key_<serverId>`。
-  /// 升级后首次读取时搬到新键，读取成功后再清理旧键，避免中途失败丢凭据。
-  static Future<ApiConfig> _migrateLegacyCredentials(
+  /// 升级后首次读取时搬到新键，写入成功后才清理旧键；旧键不存在返回 null。
+  static Future<ApiConfig?> _tryMigrateLegacy(
     ApiConfig config,
     PlatformSecureStorage vault,
   ) async {
     final legacyKey = '$_legacyCredentialPrefix${config.id}';
     final legacy = await vault.read(key: legacyKey);
-    if (legacy == null) throw StateError('无法读取已保存的面板凭据');
+    if (legacy == null || legacy.isEmpty) return null;
     final migrated = ApiConfig.fromJson(config.toJson(), apiKey: legacy);
     await vault.write(
       key: _secretKey(migrated),
@@ -245,6 +269,24 @@ abstract final class ApiConfigManager {
   static Future<ApiConfig> getConfig(String id) => _lock.synchronized(() async {
         final entries = _read(await _preferences()).servers;
         return _withCredentials(entries.firstWhere((c) => c.id == id));
+      });
+
+  /// 读取服务器元数据而不要求凭据可读。
+  ///
+  /// 供种子配置等需要覆盖写入的场景使用：凭据损坏时仍能拿到标识与
+  /// 地址，随后由调用方写入新凭据。
+  static Future<ApiConfig?> getConfigAllowMissingCredential(String id) =>
+      _lock.synchronized(() async {
+        final entries = _read(await _preferences()).servers;
+        final metadata = entries.where((c) => c.id == id).firstOrNull;
+        if (metadata == null) return null;
+        try {
+          return await _withCredentials(metadata);
+        } on FormatException {
+          return metadata;
+        } on StateError {
+          return metadata;
+        }
       });
 
   static Future<ConfigStorageException?> _writeDirectory(

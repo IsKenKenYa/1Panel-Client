@@ -59,7 +59,11 @@ Future<void> applySeedConfig({
   final configs = await ApiConfigManager.getServerMetadata();
   final metadata = configs.where((config) =>
       config.panelType == ApiConfig.onePanelType && config.url == url).firstOrNull;
-  final matched = metadata == null ? null : await ApiConfigManager.getConfig(metadata.id);
+  // 种子注入的目的就是用传入的凭据覆盖现有配置，因此凭据读不出来
+  // 也要继续，才能修复历史上损坏的条目。
+  final matched = metadata == null
+      ? null
+      : await ApiConfigManager.getConfigAllowMissingCredential(metadata.id);
   final config = ApiConfig(
     id: matched?.id ?? 'server_seed_${DateTime.now().millisecondsSinceEpoch}',
     name: matched?.name ?? seedName,

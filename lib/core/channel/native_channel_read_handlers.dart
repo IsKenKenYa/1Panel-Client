@@ -61,12 +61,15 @@ class NativeChannelReadHandlers {
 
   static Future<dynamic> getServers(dynamic arguments) async {
     final repository = ServerRepository();
-    final servers = await repository.loadServerCards();
+    // 原生轨道的服务器列表直接展示 CPU 与内存，必须带指标返回。
+    final servers = await repository.loadServerCards(withMetrics: true);
     return servers
         .map((s) => {
               ...describeNativeServer(s.config, isCurrent: s.isCurrent),
               'cpu': s.metrics.cpuPercent,
               'memory': s.metrics.memoryPercent,
+              'reachable': s.metrics.isReachable,
+              'latencyMs': s.metrics.latencyMs,
             })
         .toList();
   }
