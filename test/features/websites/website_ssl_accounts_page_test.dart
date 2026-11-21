@@ -292,17 +292,22 @@ void main() {
     await tester.tap(find.text('ACME'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byIcon(Icons.delete_outline));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(ConfirmActionSheetWidget), findsOneWidget);
-
+    // TabBarView 同时构建相邻页，删除图标会命中多个；限定到含 ACME 邮箱的那一行。
     await tester.tap(
       find.descendant(
-        of: find.byType(ConfirmActionSheetWidget),
-        matching: find.widgetWithText(FilledButton, 'Delete'),
+        of: find.ancestor(
+          of: find.text('ops@example.com'),
+          matching: find.byType(ListTile),
+        ),
+        matching: find.byIcon(Icons.delete_outline),
       ),
     );
+    await tester.pumpAndSettle();
+
+    // 确认入口在手机视口用底部面板、宽视口用对话框，因此按确认按钮定位。
+    expect(find.widgetWithText(FilledButton, 'Delete'), findsOneWidget);
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Delete'));
     await tester.pumpAndSettle();
 
     expect(service.deleteAcmeCallCount, 1);
@@ -317,17 +322,22 @@ void main() {
     await tester.pumpWidget(buildPage(provider));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byIcon(Icons.delete_outline));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(ConfirmActionSheetWidget), findsOneWidget);
-
+    // 限定到含 CA 名称的那一行，避免命中相邻页的删除图标。
     await tester.tap(
       find.descendant(
-        of: find.byType(ConfirmActionSheetWidget),
-        matching: find.widgetWithText(FilledButton, 'Delete'),
+        of: find.ancestor(
+          of: find.text('internal-ca'),
+          matching: find.byType(ListTile),
+        ),
+        matching: find.byIcon(Icons.delete_outline),
       ),
     );
+    await tester.pumpAndSettle();
+
+    // 确认入口在手机视口用底部面板、宽视口用对话框，因此按确认按钮定位。
+    expect(find.widgetWithText(FilledButton, 'Delete'), findsOneWidget);
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Delete'));
     await tester.pumpAndSettle();
 
     expect(service.deleteCaCallCount, 1);

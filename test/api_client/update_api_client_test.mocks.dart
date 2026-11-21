@@ -66,6 +66,7 @@ class MockDioClient extends _i1.Mock implements _i3.DioClient {
     String? path, {
     Map<String, dynamic>? queryParameters,
     _i2.Options? options,
+    _i2.CancelToken? cancelToken,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -74,6 +75,7 @@ class MockDioClient extends _i1.Mock implements _i3.DioClient {
           {
             #queryParameters: queryParameters,
             #options: options,
+            #cancelToken: cancelToken,
           },
         ),
         returnValue: _i4.Future<_i2.Response<T>>.value(_FakeResponse_1<T>(
@@ -84,6 +86,7 @@ class MockDioClient extends _i1.Mock implements _i3.DioClient {
             {
               #queryParameters: queryParameters,
               #options: options,
+              #cancelToken: cancelToken,
             },
           ),
         )),
@@ -95,6 +98,7 @@ class MockDioClient extends _i1.Mock implements _i3.DioClient {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     _i2.Options? options,
+    _i2.CancelToken? cancelToken,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -104,6 +108,7 @@ class MockDioClient extends _i1.Mock implements _i3.DioClient {
             #data: data,
             #queryParameters: queryParameters,
             #options: options,
+            #cancelToken: cancelToken,
           },
         ),
         returnValue: _i4.Future<_i2.Response<T>>.value(_FakeResponse_1<T>(
@@ -115,6 +120,7 @@ class MockDioClient extends _i1.Mock implements _i3.DioClient {
               #data: data,
               #queryParameters: queryParameters,
               #options: options,
+              #cancelToken: cancelToken,
             },
           ),
         )),
@@ -126,6 +132,7 @@ class MockDioClient extends _i1.Mock implements _i3.DioClient {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     _i2.Options? options,
+    _i2.CancelToken? cancelToken,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -135,6 +142,7 @@ class MockDioClient extends _i1.Mock implements _i3.DioClient {
             #data: data,
             #queryParameters: queryParameters,
             #options: options,
+            #cancelToken: cancelToken,
           },
         ),
         returnValue: _i4.Future<_i2.Response<T>>.value(_FakeResponse_1<T>(
@@ -146,6 +154,7 @@ class MockDioClient extends _i1.Mock implements _i3.DioClient {
               #data: data,
               #queryParameters: queryParameters,
               #options: options,
+              #cancelToken: cancelToken,
             },
           ),
         )),
@@ -157,6 +166,7 @@ class MockDioClient extends _i1.Mock implements _i3.DioClient {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     _i2.Options? options,
+    _i2.CancelToken? cancelToken,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -166,6 +176,7 @@ class MockDioClient extends _i1.Mock implements _i3.DioClient {
             #data: data,
             #queryParameters: queryParameters,
             #options: options,
+            #cancelToken: cancelToken,
           },
         ),
         returnValue: _i4.Future<_i2.Response<T>>.value(_FakeResponse_1<T>(
@@ -177,6 +188,7 @@ class MockDioClient extends _i1.Mock implements _i3.DioClient {
               #data: data,
               #queryParameters: queryParameters,
               #options: options,
+              #cancelToken: cancelToken,
             },
           ),
         )),
@@ -188,6 +200,7 @@ class MockDioClient extends _i1.Mock implements _i3.DioClient {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     _i2.Options? options,
+    _i2.CancelToken? cancelToken,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -197,6 +210,7 @@ class MockDioClient extends _i1.Mock implements _i3.DioClient {
             #data: data,
             #queryParameters: queryParameters,
             #options: options,
+            #cancelToken: cancelToken,
           },
         ),
         returnValue: _i4.Future<_i2.Response<T>>.value(_FakeResponse_1<T>(
@@ -208,6 +222,7 @@ class MockDioClient extends _i1.Mock implements _i3.DioClient {
               #data: data,
               #queryParameters: queryParameters,
               #options: options,
+              #cancelToken: cancelToken,
             },
           ),
         )),
@@ -219,6 +234,7 @@ class MockDioClient extends _i1.Mock implements _i3.DioClient {
     _i2.FormData? formData, {
     _i2.ProgressCallback? onSendProgress,
     _i2.Options? options,
+    _i2.CancelToken? cancelToken,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -230,6 +246,7 @@ class MockDioClient extends _i1.Mock implements _i3.DioClient {
           {
             #onSendProgress: onSendProgress,
             #options: options,
+            #cancelToken: cancelToken,
           },
         ),
         returnValue: _i4.Future<_i2.Response<T>>.value(_FakeResponse_1<T>(
@@ -243,6 +260,7 @@ class MockDioClient extends _i1.Mock implements _i3.DioClient {
             {
               #onSendProgress: onSendProgress,
               #options: options,
+              #cancelToken: cancelToken,
             },
           ),
         )),
@@ -254,6 +272,7 @@ class MockDioClient extends _i1.Mock implements _i3.DioClient {
     String? savePath, {
     _i2.ProgressCallback? onReceiveProgress,
     _i2.Options? options,
+    _i2.CancelToken? cancelToken,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -265,6 +284,7 @@ class MockDioClient extends _i1.Mock implements _i3.DioClient {
           {
             #onReceiveProgress: onReceiveProgress,
             #options: options,
+            #cancelToken: cancelToken,
           },
         ),
         returnValue:
@@ -279,6 +299,7 @@ class MockDioClient extends _i1.Mock implements _i3.DioClient {
             {
               #onReceiveProgress: onReceiveProgress,
               #options: options,
+              #cancelToken: cancelToken,
             },
           ),
         )),

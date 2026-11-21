@@ -110,11 +110,17 @@ void main() {
         ),
       );
       final firstRow = find.byKey(ValueKey(servers.first.id));
-      expect(tester.widget<ListTile>(firstRow).selected, isTrue);
+      // 150px 高的横向视口里标题区占满首屏，首行不一定已构建；
+      // 该变体只验证按需构建与滚动选择，纵向视口再校验选中态。
+      if (!short) {
+        expect(tester.widget<ListTile>(firstRow).selected, isTrue);
+      }
       expect(find.byKey(ValueKey(servers.last.id)), findsNothing);
       final next = find.byKey(ValueKey(servers[35].id));
       await tester.scrollUntilVisible(next, 140, maxScrolls: 120);
-      await tester.tap(next);
+      await tester.pumpAndSettle();
+      await tester.tap(next.hitTestable());
+      await tester.pump();
       expect(selectedId, servers[35].id);
       final manage = find.byIcon(Icons.settings_outlined);
       if (short) {

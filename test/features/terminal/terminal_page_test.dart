@@ -150,7 +150,10 @@ void main() {
     expect(find.text('root'), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.tune_outlined));
-    await tester.pumpAndSettle();
+    // 设置页在无当前服务器时展示加载态进度指示，属持续动画，
+    // pumpAndSettle 会超时；这里等页面切换完成后验证标题。
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
     expect(find.text('Terminal Settings'), findsOneWidget);
 
     await tester.pumpWidget(const SizedBox.shrink());

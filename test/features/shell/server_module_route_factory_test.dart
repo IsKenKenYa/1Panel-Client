@@ -21,6 +21,7 @@ import 'package:onepanel_client/features/runtimes/providers/runtimes_provider.da
 import 'package:onepanel_client/features/script_library/providers/script_library_provider.dart';
 import 'package:onepanel_client/features/security/security_verification_page.dart';
 import 'package:onepanel_client/features/server/server_detail_page.dart';
+import 'package:onepanel_client/features/security/app_lock_gate.dart';
 import 'package:onepanel_client/features/settings/about_page.dart';
 import 'package:onepanel_client/features/settings/app_lock_settings_page.dart';
 import 'package:onepanel_client/features/settings/screens/theme_settings_page.dart';
@@ -183,7 +184,10 @@ Future<void> _verifyRoute(
 
   final route = AppRouter.generateRoute(settings) as MaterialPageRoute<dynamic>;
   expect(route.settings, same(settings));
-  expect(await _buildPage(tester, route), destination);
+  expect(
+    _unwrapPinnableLockGate(await _buildPage(tester, route)),
+    destination,
+  );
 
   try {
     for (final platform in [
@@ -192,7 +196,7 @@ Future<void> _verifyRoute(
       TargetPlatform.linux,
     ]) {
       debugDefaultTargetPlatformOverride = platform;
-      final child = await _buildPage(tester, route);
+      final child = _unwrapPinnableLockGate(await _buildPage(tester, route));
       expect(child, isA<UiRouteHost>(), reason: platform.name);
       final host = child as UiRouteHost;
       expect(host.settings.name, AppRoutes.home);
@@ -239,3 +243,7 @@ Future<Widget> _buildPage(
   );
   return page;
 }
+
+/// 可固定的模块会被应用锁包装层包住，断言页面类型前先剥开。
+Widget _unwrapPinnableLockGate(Widget page) =>
+    page is AppLockGate ? page.child : page;

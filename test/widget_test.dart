@@ -43,7 +43,8 @@ void main() {
       final aboutItem =
           menu.menus.singleWhere((item) => item.label == l10n.aboutPageTitle);
       aboutItem.onSelected!();
-      await tester.pump();
+      // 路由 push 带页面切换动画，需要等动画结束页面才进入树中。
+      await tester.pumpAndSettle();
       final about = tester.element(find.byType(AboutPage));
       expect(ModalRoute.of(about)?.settings.name, AppRoutes.settingsAbout);
     }

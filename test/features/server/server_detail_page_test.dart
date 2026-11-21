@@ -139,7 +139,8 @@ void main() {
     final l10n = AppLocalizations.of(
       tester.element(find.byType(ServerDetailPage)),
     );
-    expect(find.text('Lab'), findsOneWidget);
+    // 服务器名同时出现在 AppBar 标题与路由宿主标题中。
+    expect(find.text('Lab'), findsWidgets);
     expect(
       find.text(l10n.serverPanelUnavailable('unregistered')),
       findsOneWidget,

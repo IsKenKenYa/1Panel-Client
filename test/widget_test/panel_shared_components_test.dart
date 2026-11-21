@@ -251,7 +251,9 @@ void main() {
       greaterThanOrEqualTo(tester.getBottomLeft(find.text('Certificate settings')).dy),
     );
     await tester.ensureVisible(find.text('Ready'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Ready'));
+    await tester.pump();
     expect(selected, 'ready');
     await expectNoFlutterExceptions(tester);
   });
