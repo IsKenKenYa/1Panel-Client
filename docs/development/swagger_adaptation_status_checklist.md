@@ -1,12 +1,39 @@
 # Swagger 适配状态清单
 
-更新日期: 2026-03-29  
-规范源: `docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json`
+更新日期为 2026-11-21。仓库使用 `docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json` 作为 V2 接口定义。
+
+## v2.5.1 设置与监控
+
+截至 2026-11-21，1Panel 最新正式版为 `v2.5.1`。该版本与客户端固定的上游提交 `806de6307bd56b11883e04059ad9f1e41ecd06e8` 的 Swagger 文件逐字节一致，SHA-256 为 `21bd9885b0b6fc6e579f58597359f8cfabe503147a0663054550b56900d864a4`。其 `basePath` 为 `/api/v2`，810 条路径共定义 822 项 HTTP 操作，涉及 58 个具名 tag，每项操作均有 tag。[正式版发布记录](https://github.com/1Panel-dev/1Panel/releases/tag/v2.5.1) · [正式版 Swagger](https://github.com/1Panel-dev/1Panel/blob/v2.5.1/core/cmd/server/docs/swagger.json)
+
+| Swagger tag | HTTP 操作数 | 本轮核对范围 |
+| --- | ---: | --- |
+| System Setting | 50 | 账号 MFA、面板管理设置 |
+| Monitor | 7 | 6 项主机监控操作及 `POST /ai/gpu/search` |
+| Dashboard | 12 | 仪表盘数据读取与设置 |
+| Menu Setting | 1 | 面板菜单设置 |
+
+模块覆盖脚本按路径归类，与 Swagger tag 的统计范围不同。针对 `setting`、`monitor`、`dashboard` 分别匹配到 55、6、12 项 Swagger 操作，本次扫描三组均为 `missing_in_client = 0`。该结果仅验证路径与方法。MFA 状态由 `GET /core/auth/current` 返回。官网前端生成密钥时向 `POST /core/auth/mfa` 提交 `title` 和整数 `interval`，绑定时向 `POST /core/auth/mfa/bind` 提交生成的 `secret`、验证码和同一整数间隔。确认关闭后调用 `POST /core/auth/mfa/close`，请求体为空。[上游前端调用](https://github.com/1Panel-dev/1Panel/blob/v2.5.1/frontend/src/api/modules/auth.ts)
+
+`POST /core/auth/mfa` 的 Swagger 请求标注为 `dto.MfaCredential`，服务端处理函数实际读取 `dto.MfaRequest`。返回的 `qrImage` 为 PNG data URI。[服务端处理函数](https://github.com/1Panel-dev/1Panel/blob/v2.5.1/core/app/api/v2/auth.go) · [二维码生成](https://github.com/1Panel-dev/1Panel/blob/v2.5.1/core/utils/mfa/mfa.go)
+
+**账号管理需要面板登录会话。** v2.5.1 的 `APIAuthMiddleware` 对 `/api/v2/core/auth` 下的账号操作跳过 API Key 鉴权，另有六项独立 API 密钥管理操作例外。`SessionAuth` 对当前账号、修改密码、MFA 和 Passkey 管理执行会话检查。客户端的账号安全页面和独立验证入口共用面板链接，使用所选连接的地址和安全入口。验证 API Key 能读取面板设置、访问账号与 MFA 时返回业务码 401 的用例为 `test/api_client/mfa_api_contract_test.dart`。本轮仅核对源码与接口文件。[鉴权中间件](https://github.com/1Panel-dev/1Panel/blob/v2.5.1/core/app/auth/api_auth.go) · [账号路由](https://github.com/1Panel-dev/1Panel/blob/v2.5.1/core/router/ro_base.go) · [会话检查](https://github.com/1Panel-dev/1Panel/blob/v2.5.1/core/middleware/session.go)
+
+可在已初始化上游子模块的检出目录执行以下命令复核。
+
+```bash
+git ls-tree HEAD docs/OpenSource/1Panel
+git -C docs/OpenSource/1Panel rev-parse 'v2.5.1^{commit}'
+python3 -c "import hashlib, pathlib; print(hashlib.sha256(pathlib.Path('docs/OpenSource/1Panel/core/cmd/server/docs/swagger.json').read_bytes()).hexdigest())"
+python3 docs/development/modules/check_module_client_coverage.py setting
+python3 docs/development/modules/check_module_client_coverage.py monitor
+python3 docs/development/modules/check_module_client_coverage.py dashboard
+python3 scripts/validate_swagger_adaptation_docs.py
+```
 
 ## 口径
 
-- 本清单是当前唯一的 Swagger tag 级适配状态真值。
-- 统计单位为 `51` 个具名 tag 加 `1` 个 `untagged` 行，共 `52` 行。
+- 下方汇总和清单记录 2026-03-29 的适配审查，保留当时的 51 个具名 tag 和 1 个 `untagged` 行，共 52 行。v2.5.1 的操作数量与本轮核对范围见上表。
 - 主状态定义:
   - `已适配`: 当前代码具备 route 或页面入口，以及 `Provider + Service/Repository + API` 主链路闭环。
   - `部分适配`: 已有部分实现，但 UI、写操作、范围边界能力或顶级入口仍不完整。
