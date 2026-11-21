@@ -5,14 +5,14 @@ import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/shared/widgets/app_card.dart';
 import 'package:onepanel_client/shared/widgets/metric_card.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
+import 'package:onepanel_client/features/settings/monitor_settings_page.dart';
+import 'package:onepanel_client/shared/widgets/operations/page_visibility_listener.dart';
+import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
 import 'package:provider/provider.dart';
 import '../../data/models/monitoring_runtime_models.dart';
 import '../../data/models/monitor_models.dart';
-import '../../data/repositories/monitor_repository.dart';
 import 'monitoring_provider.dart';
 import 'widgets/monitor_chart.dart';
-import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
 import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 
@@ -27,154 +27,174 @@ class MonitoringPage extends StatefulWidget {
 
 class _MonitoringPageState extends State<MonitoringPage> {
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final provider = context.read<MonitoringProvider>();
-      provider.load();
-      provider.loadGPUInfo();
-      // 默认启用自动刷新
-      provider.toggleAutoRefresh(true);
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final provider = context.select((MonitoringProvider p) => p);
     return ServerAwarePageScaffold(
       title: l10n.serverModuleMonitoring,
-      onServerChanged: _reloadForCurrentServer,
       actions: [
-        Consumer<MonitoringProvider>(
-          builder: (context, provider, _) => IconButton(
+        Selector<MonitoringProvider, bool>(
+          selector: (_, p) => p.data.isLoading,
+          builder: (context, loading, _) => IconButton(
             icon: const Icon(Icons.refresh_outlined),
-            onPressed: provider.data.isLoading ? null : provider.refresh,
+            onPressed: loading ? null : provider.refresh,
             tooltip: l10n.commonRefresh,
           ),
         ),
         IconButton(
           icon: const Icon(Icons.tune),
-          tooltip: l10n.monitorSettings,
+          tooltip: l10n.monitorChartSettings,
           onPressed: () => _showSettingsDialog(context),
         ),
-      ],
-      body: Padding(
-        padding: AppDesignTokens.pagePadding,
-        child: Consumer<MonitoringProvider>(
-          builder: (context, provider, _) {
-            return _buildBody(context, provider.data, provider.refresh);
-          },
+        IconButton(
+          icon: const Icon(Icons.settings_outlined),
+          tooltip: l10n.monitorSettingsTitle,
+          onPressed: () => MonitorSettingsPage.open(context),
         ),
-      ),
-    );
-  }
-
-  Future<void> _reloadForCurrentServer() async {
-    if (!mounted) return;
-    final provider = context.read<MonitoringProvider>();
-    provider.load();
-    provider.loadGPUInfo();
-  }
-
-  Widget _buildBody(
-    BuildContext context,
-    MonitoringData data,
-    Future<void> Function() onRefresh,
-  ) {
-    final l10n = context.l10n;
-    final hasData = data.currentMetrics != null ||
-        data.cpuTimeSeries != null ||
-        data.memoryTimeSeries != null;
-
-    if (data.error != null && !hasData) {
-      return ModuleErrorStateWidget(
-        message: data.error,
-        onRetry: onRefresh,
-      );
-    }
-
-    if (data.isLoading && !hasData) {
-      return const _LoadingView();
-    }
-
-    return PartialErrorToastListener(
-      errorMessage: data.error,
-      hasCachedData: hasData,
-      onRetry: onRefresh,
-      child: RefreshIndicator(
-      onRefresh: onRefresh,
-      child: ListView(
-        children: [
-          _buildCurrentMetrics(context, data.currentMetrics),
-          const SizedBox(height: AppDesignTokens.spacingMd),
-          _buildTimeSeriesCard(
-            context,
-            l10n.serverCpuLabel,
-            data.cpuTimeSeries,
-            '%',
-          ),
-          const SizedBox(height: AppDesignTokens.spacingSm),
-          _buildTimeSeriesCard(
-            context,
-            l10n.serverMemoryLabel,
-            data.memoryTimeSeries,
-            '%',
-          ),
-          const SizedBox(height: AppDesignTokens.spacingSm),
-          _buildTimeSeriesCard(
-            context,
-            l10n.serverLoadLabel,
-            data.loadTimeSeries,
-            '',
-          ),
-          const SizedBox(height: AppDesignTokens.spacingSm),
-          _buildTimeSeriesCard(
-            context,
-            '${l10n.serverDiskLabel} IO',
-            data.ioTimeSeries,
-            'KB/s',
-            emptyHint: l10n.monitorIoEmptyHint,
-            selector: _MetricSelector(
-              value: data.selectedIO,
-              options: data.ioOptions,
-              onChanged: (value) =>
-                  context.read<MonitoringProvider>().selectIOOption(value),
-            ),
-          ),
-          const SizedBox(height: AppDesignTokens.spacingSm),
-          _buildTimeSeriesCard(
-            context,
-            l10n.monitorNetworkLabel,
-            data.networkTimeSeries,
-            'KB/s',
-            emptyHint: l10n.monitorNetworkEmptyHint,
-            selector: _MetricSelector(
-              value: data.selectedNetwork,
-              options: data.networkOptions,
-              onChanged: (value) =>
-                  context.read<MonitoringProvider>().selectNetworkOption(value),
-            ),
-          ),
-          // GPU监控卡片（如果有GPU）
-          if (data.gpuInfo.isNotEmpty) ...[
-            const SizedBox(height: AppDesignTokens.spacingSm),
-            _buildGPUCard(context, data.gpuInfo),
-          ],
-        ],
-      ),
+      ],
+      body: PageVisibilityListener(
+        key: ObjectKey(provider),
+        onChanged: (visible) => provider.setPageVisible(this, visible),
+        child: const _MonitoringBody(),
       ),
     );
   }
 
   void _showSettingsDialog(BuildContext context) {
+    final provider = context.read<MonitoringProvider>();
     showDialog(
       context: context,
-      builder: (context) => const _MonitorSettingsDialog(),
+      useRootNavigator: false,
+      builder: (_) => ChangeNotifierProvider.value(
+        value: provider,
+        child: const _MonitorSettingsDialog(),
+      ),
     );
   }
+}
 
-  Widget _buildGPUCard(BuildContext context, List<MonitorGpuInfo> gpuInfo) {
+class _MonitoringBody extends StatelessWidget {
+  const _MonitoringBody();
+
+  @override
+  Widget build(BuildContext context) {
+    final (loading, hasData, error) = context.select((MonitoringProvider p) {
+      final data = p.data;
+      final hasData = data.hasData;
+      return (data.isLoading && !hasData, hasData, data.error);
+    });
+    final refresh = context.read<MonitoringProvider>().refresh;
+    final spec = AdaptiveLayoutSpec.of(context);
+    return PartialErrorToastListener(
+      errorMessage: error,
+      hasCachedData: hasData,
+      onRetry: refresh,
+      child: AsyncStatePageBodyWidget(
+        isLoading: loading,
+        errorMessage: hasData ? null : error,
+        onRetry: refresh,
+        child: AdaptiveWidthContainer(
+          maxWidth: spec.dashboardMaxWidth,
+          child: RefreshIndicator(
+            onRefresh: refresh,
+            child: LayoutBuilder(builder: (context, constraints) {
+              const metrics = _HistoryMetric.values;
+              const gap = AppDesignTokens.spacingMd;
+              final columns =
+                  constraints.maxWidth - spec.pagePadding.horizontal >= 800
+                      ? 2
+                      : 1;
+              return ListView(
+                padding: spec.pagePadding,
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: [
+                  const _CurrentMetrics(),
+                  for (var i = 0; i < metrics.length; i += columns)
+                    Padding(
+                      padding: const EdgeInsets.only(top: gap),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(child: _HistoryCard(metrics[i])),
+                          if (columns == 2) ...[
+                            const SizedBox(width: gap),
+                            Expanded(
+                                child: i + 1 < metrics.length
+                                    ? _HistoryCard(metrics[i + 1])
+                                    : const SizedBox.shrink()),
+                          ],
+                        ],
+                      ),
+                    ),
+                  const _GpuCard(),
+                ],
+              );
+            }),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+enum _HistoryMetric { cpu, memory, load, disk, network }
+
+class _HistoryCard extends StatelessWidget {
+  const _HistoryCard(this.metric);
+
+  final _HistoryMetric metric;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final series = context.select((MonitoringProvider p) => switch (metric) {
+          _HistoryMetric.cpu => p.data.cpuTimeSeries,
+          _HistoryMetric.memory => p.data.memoryTimeSeries,
+          _HistoryMetric.load => p.data.loadTimeSeries,
+          _HistoryMetric.disk => p.data.ioTimeSeries,
+          _HistoryMetric.network => p.data.networkTimeSeries,
+        });
+    final (title, unit) = switch (metric) {
+      _HistoryMetric.cpu => (l10n.serverCpuLabel, '%'),
+      _HistoryMetric.memory => (l10n.serverMemoryLabel, '%'),
+      _HistoryMetric.load => (l10n.serverLoadLabel, ''),
+      _HistoryMetric.disk => ('${l10n.serverDiskLabel} IO', 'KB/s'),
+      _HistoryMetric.network => (l10n.monitorNetworkLabel, 'KB/s'),
+    };
+    final disk = metric == _HistoryMetric.disk;
+    Widget? deviceSelector;
+    if (disk || metric == _HistoryMetric.network) {
+      final (value, options) = context.select((MonitoringProvider p) => disk
+          ? (p.data.selectedIO, p.data.ioOptions)
+          : (p.data.selectedNetwork, p.data.networkOptions));
+      final provider = context.read<MonitoringProvider>();
+      deviceSelector = _MetricSelector(
+        value: value,
+        options: options,
+        onChanged:
+            disk ? provider.selectIOOption : provider.selectNetworkOption,
+      );
+    }
+    return _ExpandableChartCard(
+      key: PageStorageKey(metric),
+      title: title,
+      unit: unit,
+      timeSeries: series,
+      selector: deviceSelector,
+      emptyHint: deviceSelector == null
+          ? null
+          : (disk ? l10n.monitorIoEmptyHint : l10n.monitorNetworkEmptyHint),
+    );
+  }
+}
+
+class _GpuCard extends StatelessWidget {
+  const _GpuCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final gpuInfo = context.select((MonitoringProvider p) => p.data.gpuInfo);
+    if (gpuInfo.isEmpty) return const SizedBox.shrink();
     final l10n = context.l10n;
 
     return AppCard(
@@ -230,61 +250,35 @@ class _MonitoringPageState extends State<MonitoringPage> {
       ),
     );
   }
+}
 
-  Widget _buildCurrentMetrics(
-      BuildContext context, MonitorMetricsSnapshot? metrics) {
+class _CurrentMetrics extends StatelessWidget {
+  const _CurrentMetrics();
+
+  @override
+  Widget build(BuildContext context) {
+    final metrics = context.select((MonitoringProvider p) {
+      final data = p.data.currentMetrics;
+      return data == null
+          ? null
+          : (
+              cpuPercent: data.cpuPercent,
+              memoryPercent: data.memoryPercent,
+              diskPercent: data.diskPercent,
+              load1: data.load1,
+            );
+    });
     final l10n = context.l10n;
     if (metrics == null) return const SizedBox.shrink();
 
     return AppCard(
       title: l10n.monitorMetricCurrent,
       child: MetricOverviewGrid(
-        children: [
-          MetricOverviewTile(
-            label: l10n.serverCpuLabel,
-            value: metrics.cpuPercent != null
-                ? '${metrics.cpuPercent!.toStringAsFixed(1)}%'
-                : '--',
-            percent: metrics.cpuPercent,
-            icon: Icons.developer_board_outlined,
-          ),
-          MetricOverviewTile(
-            label: l10n.serverMemoryLabel,
-            value: metrics.memoryPercent != null
-                ? '${metrics.memoryPercent!.toStringAsFixed(1)}%'
-                : '--',
-            percent: metrics.memoryPercent,
-            icon: Icons.memory_outlined,
-          ),
-          MetricOverviewTile(
-            label: l10n.serverDiskLabel,
-            value: metrics.diskPercent != null
-                ? '${metrics.diskPercent!.toStringAsFixed(1)}%'
-                : '--',
-            percent: metrics.diskPercent,
-            icon: Icons.storage_outlined,
-          ),
-          MetricOverviewTile(
-            label: l10n.serverLoadLabel,
-            value: metrics.load1?.toStringAsFixed(2) ?? '--',
-            percent: null,
-            icon: Icons.speed_outlined,
-          ),
-        ],
+        cpuPercent: metrics.cpuPercent,
+        memoryPercent: metrics.memoryPercent,
+        diskPercent: metrics.diskPercent,
+        load: metrics.load1,
       ),
     );
   }
-
-  Widget _buildTimeSeriesCard(BuildContext context, String title,
-      MonitorTimeSeries? timeSeries, String unit,
-      {Widget? selector, String? emptyHint}) {
-    return _ExpandableChartCard(
-      title: title,
-      timeSeries: timeSeries,
-      unit: unit,
-      selector: selector,
-      emptyHint: emptyHint,
-    );
-  }
 }
-

@@ -2,8 +2,7 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../../../data/repositories/monitor_repository.dart';
-import '../../../../data/models/monitor_models.dart';
+import '../../../data/models/monitor_models.dart';
 
 /// 监控折线图组件
 ///
@@ -15,6 +14,7 @@ class MonitorChart extends StatefulWidget {
   final Color? color;
   final double? minY;
   final double? maxY;
+  final double? meanValue;
   final bool showReferenceLines;
   final String label;
   final bool useLogScale; // 是否使用对数刻度
@@ -30,6 +30,7 @@ class MonitorChart extends StatefulWidget {
     this.color,
     this.minY,
     this.maxY,
+    this.meanValue,
     this.showReferenceLines = true,
     this.useLogScale = false,
     this.onLongPressStart,
@@ -78,7 +79,7 @@ class _MonitorChartState extends State<MonitorChart>
     final chartWidth = size.width - 50; // paddingLeft=40, paddingRight=10
     final x = localPosition.dx - 40;
 
-    if (x < 0 || x > chartWidth) return;
+    if (chartWidth <= 0 || x < 0 || x > chartWidth) return;
 
     // 考虑缩放后的索引计算
     // 简单的线性映射：x / chartWidth 对应当前可视窗口的时间范围
@@ -124,141 +125,155 @@ class _MonitorChartState extends State<MonitorChart>
 
     // 计算均值
     double? meanValue;
-    if (widget.data.isNotEmpty) {
+    if (widget.showReferenceLines && widget.meanValue != null) {
+      meanValue = widget.meanValue;
+    } else if (widget.showReferenceLines && widget.data.isNotEmpty) {
       meanValue = widget.data.map((e) => e.value).reduce((a, b) => a + b) /
           widget.data.length;
     }
 
-    return GestureDetector(
-      onTapUp: _handleTapUp,
-      onScaleStart: _handleScaleStart,
-      onScaleUpdate: _handleScaleUpdate,
-      onLongPress: () {
-        widget.onLongPressStart?.call();
-        // 长按也触发选择
-        if (_tapPosition != null) {
-          _updateSelection(_tapPosition!);
-        }
-      },
-      onLongPressEnd: (_) {
-        widget.onLongPressEnd?.call();
-      },
-      onDoubleTap: () {
-        setState(() {
-          _scale = 1.0;
-          _selectedPoint = null;
-        });
-      },
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          CustomPaint(
-            size: Size.infinite,
-            painter: _MonitorChartPainter(
-              data: widget.data,
-              previousData: widget.previousData,
-              unit: widget.unit,
-              primaryColor: primaryColor,
-              gridColor: colorScheme.outlineVariant,
-              textColor: colorScheme.onSurfaceVariant,
-              paddingLeft: 40,
-              paddingRight: 10,
-              paddingTop: 20,
-              paddingBottom: 30,
-              selectedPoint: _selectedPoint,
-              meanValue: widget.showReferenceLines ? meanValue : null,
-              scale: _scale,
-              useLogScale: widget.useLogScale,
-              referenceColor1: Colors.indigo.withValues(alpha: 0.4), // 同比
-              referenceColor2: Colors.teal.withValues(alpha: 0.4), // 环比均值
-            ),
-          ),
-          // Tooltip
-          if (_selectedPoint != null && _tapPosition != null)
-            Positioned(
-              left: (_tapPosition!.dx - 70)
-                  .clamp(0.0, MediaQuery.of(context).size.width - 150),
-              top: _tapPosition!.dy - 80, // 上方显示
-              child: FadeTransition(
-                opacity: _tooltipController,
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerHighest,
-                    borderRadius:
-                        BorderRadius.circular(12), // MDUI3 Card Radius
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4), // Elevation 2
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        DateFormat('MM-dd HH:mm').format(_selectedPoint!.time),
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: colorScheme.onSurfaceVariant,
-                            ),
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                              width: 8,
-                              height: 8,
-                              decoration: BoxDecoration(
-                                  color: primaryColor, shape: BoxShape.circle)),
-                          const SizedBox(width: 4),
-                          Text(
-                            '${_selectedPoint!.value.toStringAsFixed(1)}${widget.unit}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: colorScheme.onSurface,
-                                ),
+    return LayoutBuilder(
+        builder: (context, constraints) => GestureDetector(
+              onTapUp: _handleTapUp,
+              onScaleStart: _handleScaleStart,
+              onScaleUpdate: _handleScaleUpdate,
+              onLongPress: () {
+                widget.onLongPressStart?.call();
+                // 长按也触发选择
+                if (_tapPosition != null) {
+                  _updateSelection(_tapPosition!);
+                }
+              },
+              onLongPressEnd: (_) {
+                widget.onLongPressEnd?.call();
+              },
+              onDoubleTap: () {
+                setState(() {
+                  _scale = 1.0;
+                  _selectedPoint = null;
+                });
+              },
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  RepaintBoundary(
+                      child: CustomPaint(
+                    size: Size.infinite,
+                    painter: _MonitorChartPainter(
+                      data: widget.data,
+                      previousData: widget.previousData,
+                      unit: widget.unit,
+                      primaryColor: primaryColor,
+                      gridColor: colorScheme.outlineVariant,
+                      textColor: colorScheme.onSurfaceVariant,
+                      paddingLeft: 40,
+                      paddingRight: 10,
+                      paddingTop: 20,
+                      paddingBottom: 30,
+                      selectedPoint: _selectedPoint,
+                      minY: widget.minY,
+                      maxY: widget.maxY,
+                      meanValue: widget.showReferenceLines ? meanValue : null,
+                      scale: _scale,
+                      useLogScale: widget.useLogScale,
+                      referenceColor1:
+                          Colors.indigo.withValues(alpha: 0.4), // 同比
+                      referenceColor2:
+                          Colors.teal.withValues(alpha: 0.4), // 环比均值
+                    ),
+                  )),
+                  // Tooltip
+                  if (_selectedPoint != null && _tapPosition != null)
+                    Positioned(
+                      left: (_tapPosition!.dx - 70).clamp(
+                          0.0, math.max(0.0, constraints.maxWidth - 150)),
+                      top: _tapPosition!.dy - 80, // 上方显示
+                      child: FadeTransition(
+                        opacity: _tooltipController,
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: colorScheme.surfaceContainerHighest,
+                            borderRadius:
+                                BorderRadius.circular(12), // MDUI3 Card Radius
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.1),
+                                blurRadius: 8,
+                                offset: const Offset(0, 4), // Elevation 2
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      if (_selectedPrevPoint != null) ...[
-                        const SizedBox(height: 2),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                                width: 8,
-                                height: 8,
-                                decoration: BoxDecoration(
-                                    color: Colors.indigo.withValues(alpha: 0.4),
-                                    shape: BoxShape.circle)),
-                            const SizedBox(width: 4),
-                            Text(
-                              '同比: ${_selectedPrevPoint!.value.toStringAsFixed(1)}${widget.unit}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(
-                                    color: colorScheme.onSurfaceVariant,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                DateFormat('MM-dd HH:mm')
+                                    .format(_selectedPoint!.time),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      color: colorScheme.onSurfaceVariant,
+                                    ),
+                              ),
+                              const SizedBox(height: 4),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                      width: 8,
+                                      height: 8,
+                                      decoration: BoxDecoration(
+                                          color: primaryColor,
+                                          shape: BoxShape.circle)),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '${_selectedPoint!.value.toStringAsFixed(1)}${widget.unit}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: colorScheme.onSurface,
+                                        ),
                                   ),
-                            ),
-                          ],
+                                ],
+                              ),
+                              if (_selectedPrevPoint != null) ...[
+                                const SizedBox(height: 2),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                        width: 8,
+                                        height: 8,
+                                        decoration: BoxDecoration(
+                                            color: Colors.indigo
+                                                .withValues(alpha: 0.4),
+                                            shape: BoxShape.circle)),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      '同比: ${_selectedPrevPoint!.value.toStringAsFixed(1)}${widget.unit}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: colorScheme.onSurfaceVariant,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ],
+                          ),
                         ),
-                      ],
-                    ],
-                  ),
-                ),
+                      ),
+                    ),
+                ],
               ),
-            ),
-        ],
-      ),
-    );
+            ));
   }
 }
 
@@ -275,6 +290,8 @@ class _MonitorChartPainter extends CustomPainter {
   final double paddingBottom;
   final MonitorDataPoint? selectedPoint;
   final double? meanValue;
+  final double? minY;
+  final double? maxY;
   final double scale;
   final bool useLogScale;
   final Color referenceColor1;
@@ -293,6 +310,8 @@ class _MonitorChartPainter extends CustomPainter {
     required this.paddingBottom,
     this.selectedPoint,
     this.meanValue,
+    this.minY,
+    this.maxY,
     this.scale = 1.0,
     this.useLogScale = false,
     required this.referenceColor1,
@@ -305,14 +324,18 @@ class _MonitorChartPainter extends CustomPainter {
 
     final chartWidth = size.width - paddingLeft - paddingRight;
     final chartHeight = size.height - paddingTop - paddingBottom;
+    if (chartWidth <= 0 || chartHeight <= 0) return;
 
     // 1. Calculate min/max
-    double minVal = double.infinity;
-    double maxVal = double.negativeInfinity;
-
-    // Include previous data in range calculation
-    final allPoints = [...data, ...(previousData ?? [])];
-    for (var p in allPoints) {
+    double minVal = minY ?? double.infinity;
+    double maxVal = maxY ?? double.negativeInfinity;
+    if (minY == null || maxY == null) {
+      for (final p in data) {
+        if (p.value < minVal) minVal = p.value;
+        if (p.value > maxVal) maxVal = p.value;
+      }
+    }
+    for (final p in previousData ?? const <MonitorDataPoint>[]) {
       if (p.value < minVal) minVal = p.value;
       if (p.value > maxVal) maxVal = p.value;
     }
@@ -411,16 +434,18 @@ class _MonitorChartPainter extends CustomPainter {
     if (data.isNotEmpty) {
       // Visible range logic could be here, but for now we just skip points
       final step = (data.length / (5 * scale)).ceil().clamp(1, data.length);
+      final timeFormat = DateFormat('HH:mm');
+      final dateFormat = DateFormat('MM-dd HH:mm');
 
       for (var i = 0; i < data.length; i += step) {
-        final x = paddingLeft + (i / (data.length - 1)) * width;
+        final x = _pointX(i, data.length, width);
         // Don't draw if out of bounds (though current scaling doesn't move x out of bounds, just sparsifies it)
 
         final time = data[i].time.toLocal();
-        String timeLabel = DateFormat('HH:mm').format(time);
-        if (i == 0 || data[i].time.day != data[i - 1].time.day) {
-          timeLabel = DateFormat('MM-dd HH:mm').format(time);
-        }
+        final format = i == 0 || data[i].time.day != data[i - 1].time.day
+            ? dateFormat
+            : timeFormat;
+        final timeLabel = format.format(time);
 
         textPainter.text = TextSpan(
             text: timeLabel, style: TextStyle(color: textColor, fontSize: 10));
@@ -429,7 +454,11 @@ class _MonitorChartPainter extends CustomPainter {
             canvas, Offset(x - textPainter.width / 2, paddingTop + height + 6));
       }
     }
+    textPainter.dispose();
   }
+
+  double _pointX(int index, int count, double width) =>
+      paddingLeft + (count == 1 ? width / 2 : index * width / (count - 1));
 
   void _drawLine(Canvas canvas, List<MonitorDataPoint> points, double width,
       double height, double min, double max, Color color,
@@ -444,7 +473,7 @@ class _MonitorChartPainter extends CustomPainter {
     bool first = true;
 
     for (var i = 0; i < points.length; i++) {
-      final x = paddingLeft + (i / (points.length - 1)) * width;
+      final x = _pointX(i, points.length, width);
       final y = _normalizeY(points[i].value, min, max, height) + paddingTop;
 
       if (first) {
@@ -464,6 +493,12 @@ class _MonitorChartPainter extends CustomPainter {
 
   void _drawDataLine(
       Canvas canvas, double width, double height, double min, double max) {
+    if (data.length == 1) {
+      final x = _pointX(0, 1, width);
+      final y = _normalizeY(data.first.value, min, max, height) + paddingTop;
+      canvas.drawCircle(Offset(x, y), 2, Paint()..color = primaryColor);
+      return;
+    }
     final paint = Paint()
       ..color = primaryColor
       ..strokeWidth = 2
@@ -487,7 +522,7 @@ class _MonitorChartPainter extends CustomPainter {
     bool first = true;
 
     for (var i = 0; i < data.length; i++) {
-      final x = paddingLeft + (i / (data.length - 1)) * width;
+      final x = _pointX(i, data.length, width);
       final y = _normalizeY(data[i].value, min, max, height) + paddingTop;
 
       if (first) {
@@ -514,7 +549,7 @@ class _MonitorChartPainter extends CustomPainter {
     final index = data.indexOf(selectedPoint!);
     if (index == -1) return;
 
-    final x = paddingLeft + (index / (data.length - 1)) * width;
+    final x = _pointX(index, data.length, width);
     final y = _normalizeY(selectedPoint!.value, min, max, height) + paddingTop;
 
     final linePaint = Paint()
@@ -593,6 +628,15 @@ class _MonitorChartPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _MonitorChartPainter oldDelegate) {
     return oldDelegate.data != data ||
+        oldDelegate.previousData != previousData ||
+        oldDelegate.primaryColor != primaryColor ||
+        oldDelegate.gridColor != gridColor ||
+        oldDelegate.textColor != textColor ||
+        oldDelegate.meanValue != meanValue ||
+        oldDelegate.minY != minY ||
+        oldDelegate.maxY != maxY ||
+        oldDelegate.unit != unit ||
+        oldDelegate.useLogScale != useLogScale ||
         oldDelegate.scale != scale ||
         oldDelegate.selectedPoint != selectedPoint;
   }

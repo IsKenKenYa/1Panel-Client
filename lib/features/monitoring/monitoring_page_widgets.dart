@@ -47,25 +47,6 @@ class _StatItem extends StatelessWidget {
   }
 }
 
-class _LoadingView extends StatelessWidget {
-  const _LoadingView();
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const CircularProgressIndicator(),
-          const SizedBox(height: AppDesignTokens.spacingMd),
-          Text(l10n.commonLoading),
-        ],
-      ),
-    );
-  }
-}
-
 class _ExpandableChartCard extends StatefulWidget {
   final String title;
   final MonitorTimeSeries? timeSeries;
@@ -74,6 +55,7 @@ class _ExpandableChartCard extends StatefulWidget {
   final String? emptyHint;
 
   const _ExpandableChartCard({
+    super.key,
     required this.title,
     required this.timeSeries,
     required this.unit,
@@ -87,6 +69,13 @@ class _ExpandableChartCard extends StatefulWidget {
 
 class _ExpandableChartCardState extends State<_ExpandableChartCard> {
   bool _isExpanded = true;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _isExpanded =
+        PageStorage.maybeOf(context)?.readState(context) as bool? ?? true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -149,6 +138,8 @@ class _ExpandableChartCardState extends State<_ExpandableChartCard> {
                       onPressed: () {
                         setState(() {
                           _isExpanded = !_isExpanded;
+                          PageStorage.maybeOf(context)
+                              ?.writeState(context, _isExpanded);
                         });
                       },
                       icon: AnimatedRotation(
@@ -166,33 +157,32 @@ class _ExpandableChartCardState extends State<_ExpandableChartCard> {
               ],
             ),
           ),
-          AnimatedCrossFade(
-            firstChild: const SizedBox.shrink(),
-            secondChild: timeSeries == null || timeSeries.data.isEmpty
-                ? _EmptyView(
-                    title: l10n.commonEmpty,
-                    hint: widget.emptyHint ?? l10n.monitorSeriesEmptyDesc,
-                  )
-                : Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                      AppDesignTokens.spacingMd,
-                      AppDesignTokens.spacingSm,
-                      AppDesignTokens.spacingMd,
-                      AppDesignTokens.spacingMd,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildStatsRow(context, timeSeries, widget.unit),
-                        const SizedBox(height: AppDesignTokens.spacingMd),
-                        _buildSimpleChart(context, timeSeries, widget.unit),
-                      ],
-                    ),
-                  ),
-            crossFadeState: _isExpanded
-                ? CrossFadeState.showSecond
-                : CrossFadeState.showFirst,
+          AnimatedSize(
+            alignment: Alignment.topCenter,
             duration: const Duration(milliseconds: 200),
+            child: !_isExpanded
+                ? const SizedBox.shrink()
+                : timeSeries == null || timeSeries.data.isEmpty
+                    ? _EmptyView(
+                        title: l10n.commonEmpty,
+                        hint: widget.emptyHint ?? l10n.monitorSeriesEmptyDesc,
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.fromLTRB(
+                          AppDesignTokens.spacingMd,
+                          AppDesignTokens.spacingSm,
+                          AppDesignTokens.spacingMd,
+                          AppDesignTokens.spacingMd,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildStatsRow(context, timeSeries, widget.unit),
+                            const SizedBox(height: AppDesignTokens.spacingMd),
+                            _buildSimpleChart(context, timeSeries, widget.unit),
+                          ],
+                        ),
+                      ),
           ),
         ],
       ),
@@ -260,6 +250,9 @@ class _ExpandableChartCardState extends State<_ExpandableChartCard> {
         height: 220,
         child: MonitorChart(
           data: timeSeries.data,
+          meanValue: timeSeries.avg,
+          minY: timeSeries.min,
+          maxY: timeSeries.max,
           unit: unit,
           label: timeSeries.name,
           color: Theme.of(context).colorScheme.primary,
@@ -295,50 +288,6 @@ class _EmptyView extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
             ],
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ErrorView extends StatelessWidget {
-  const _ErrorView({
-    required this.title,
-    required this.error,
-    required this.onRetry,
-  });
-
-  final String title;
-  final String error;
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppDesignTokens.spacingXl),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, size: 64),
-            const SizedBox(height: AppDesignTokens.spacingMd),
-            Text(
-              title,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: AppDesignTokens.spacingSm),
-            Text(
-              error,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppDesignTokens.spacingLg),
-            FilledButton.icon(
-              onPressed: onRetry,
-              icon: const Icon(Icons.refresh_outlined),
-              label: Text(l10n.commonRetry),
-            ),
           ],
         ),
       ),
@@ -382,108 +331,41 @@ class _MonitorSettingsDialog extends StatefulWidget {
 }
 
 class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
-  bool _isLoading = true;
-  bool _isSaving = false;
-  bool _enabled = true;
-  int _retention = 30;
-  bool _gpuAutoRefreshEnabled = true;
-  Duration _gpuRefreshInterval = const Duration(seconds: 30);
-  Duration _refreshInterval = const Duration(seconds: 5);
-  Duration _timeRange = const Duration(hours: 1);
-  int _maxDataPoints = 1000;
-  String _defaultIO = 'all';
-  String _defaultNetwork = 'all';
-  List<String> _ioOptions = const ['all'];
-  List<String> _networkOptions = const ['all'];
+  late bool _gpuAutoRefreshEnabled;
+  late Duration _gpuRefreshInterval;
+  late Duration _refreshInterval;
+  late Duration _timeRange;
+  late int _maxDataPoints;
 
   @override
   void initState() {
     super.initState();
-    _loadSettings();
-  }
-
-  Future<void> _loadSettings() async {
     final provider = context.read<MonitoringProvider>();
-    await provider.loadSettings();
-    final settings = provider.data.settings;
-    if (mounted) {
-      setState(() {
-        _enabled = settings?.enabled ?? true;
-        _retention = settings?.retention ?? 30;
-        _gpuAutoRefreshEnabled = provider.gpuAutoRefreshEnabled;
-        _gpuRefreshInterval = provider.gpuRefreshInterval;
-        _refreshInterval = provider.refreshInterval;
-        _timeRange = provider.timeRange;
-        _maxDataPoints = provider.maxDataPoints;
-        _defaultIO = settings?.defaultIO ?? 'all';
-        _defaultNetwork = settings?.defaultNetwork ?? 'all';
-        _ioOptions = provider.data.ioOptions;
-        _networkOptions = provider.data.networkOptions;
-        _isLoading = false;
-      });
-    }
+    _gpuAutoRefreshEnabled = provider.gpuAutoRefreshEnabled;
+    _gpuRefreshInterval = provider.gpuRefreshInterval;
+    _refreshInterval = provider.refreshInterval;
+    _timeRange = provider.timeRange;
+    _maxDataPoints = provider.maxDataPoints;
   }
 
-  Future<void> _saveSettings() async {
-    setState(() {
-      _isSaving = true;
-    });
-
+  void _saveSettings() {
     final provider = context.read<MonitoringProvider>();
-
-    // 应用所有设置
-    provider.setRefreshInterval(_refreshInterval);
-    provider.setTimeRange(_timeRange);
-    provider.setMaxDataPoints(_maxDataPoints);
-    provider.updateGpuRefreshPolicy(
-      enabled: _gpuAutoRefreshEnabled,
-      interval: _gpuRefreshInterval,
-    );
-
-    final success = await provider.updateSettings(
-      enabled: _enabled,
-      retention: _retention,
-      defaultIO: _defaultIO,
-      defaultNetwork: _defaultNetwork,
-    );
-
-    if (mounted) {
-      setState(() {
-        _isSaving = false;
-      });
-
-      if (success) {
-        SnackBarUtils.showSuccess(context, context.l10n.monitorSettingsSaved);
-        Navigator.of(context).pop();
-      } else {
-        SnackBarUtils.showError(context, context.l10n.monitorSettingsFailed);
-      }
+    if (_refreshInterval != provider.refreshInterval) {
+      provider.setRefreshInterval(_refreshInterval);
     }
-  }
-
-  Future<void> _cleanData() async {
-    final l10n = context.l10n;
-    final confirmed = await ConfirmActionSheetWidget.show(
-      context,
-      title: l10n.monitorCleanData,
-      message: l10n.monitorCleanConfirm,
-      confirmLabel: l10n.commonConfirm,
-      isDestructive: true,
-    );
-
-    if (confirmed == true && mounted) {
-      final provider = context.read<MonitoringProvider>();
-      final success = await provider.cleanData();
-
-      if (mounted) {
-        SnackBarUtils.showSuccess(context, 
-                success ? l10n.monitorCleanSuccess : l10n.monitorCleanFailed);
-        // 清理后重新加载数据
-        if (success) {
-          provider.load();
-        }
-      }
+    if (_timeRange != provider.timeRange) provider.setTimeRange(_timeRange);
+    if (_maxDataPoints != provider.maxDataPoints) {
+      provider.setMaxDataPoints(_maxDataPoints);
     }
+    if (_gpuAutoRefreshEnabled != provider.gpuAutoRefreshEnabled ||
+        _gpuRefreshInterval != provider.gpuRefreshInterval) {
+      provider.updateGpuRefreshPolicy(
+        enabled: _gpuAutoRefreshEnabled,
+        interval: _gpuRefreshInterval,
+      );
+    }
+    SnackBarUtils.showSuccess(context, context.l10n.monitorSettingsSaved);
+    Navigator.of(context).pop();
   }
 
   @override
@@ -491,301 +373,191 @@ class _MonitorSettingsDialogState extends State<_MonitorSettingsDialog> {
     final l10n = context.l10n;
 
     return AlertDialog(
-      title: Text(l10n.monitorSettings),
-      content: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SizedBox(width: AdaptiveLayoutSpec.of(context).dialogConstraints.maxWidth, 
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.monitorEnable,
-                      style: Theme.of(context).textTheme.titleSmall,
+      title: Text(l10n.monitorChartSettings),
+      content: SizedBox(
+        width: AdaptiveLayoutSpec.of(context).dialogConstraints.maxWidth,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              DropdownButtonFormField<Duration>(
+                initialValue: _refreshInterval,
+                decoration: InputDecoration(
+                  labelText: l10n.monitorRefreshInterval,
+                  border: const OutlineInputBorder(),
+                ),
+                items: [
+                  DropdownMenuItem(
+                    value: const Duration(seconds: 3),
+                    child: Text(l10n.monitorSeconds(3)),
+                  ),
+                  DropdownMenuItem(
+                    value: const Duration(seconds: 5),
+                    child: Text(l10n.monitorSecondsDefault(5)),
+                  ),
+                  DropdownMenuItem(
+                    value: const Duration(seconds: 10),
+                    child: Text(l10n.monitorSeconds(10)),
+                  ),
+                  DropdownMenuItem(
+                    value: const Duration(seconds: 30),
+                    child: Text(l10n.monitorSeconds(30)),
+                  ),
+                  DropdownMenuItem(
+                    value: const Duration(minutes: 1),
+                    child: Text(l10n.monitorMinute(1)),
+                  ),
+                ],
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      _refreshInterval = value;
+                    });
+                  }
+                },
+              ),
+              const SizedBox(height: AppDesignTokens.spacingMd),
+              const Divider(),
+              const SizedBox(height: AppDesignTokens.spacingSm),
+              DropdownButtonFormField<Duration>(
+                initialValue: _timeRange,
+                decoration: InputDecoration(
+                  labelText: l10n.monitorTimeRange,
+                  border: const OutlineInputBorder(),
+                ),
+                items: [
+                  if (_timeRange != const Duration(hours: 1) &&
+                      _timeRange != const Duration(hours: 6) &&
+                      _timeRange != const Duration(hours: 24) &&
+                      _timeRange != const Duration(days: 7))
+                    DropdownMenuItem(
+                      value: _timeRange,
+                      child: Text(l10n.monitorTimeRangeCustom),
                     ),
-                    SwitchListTile(
-                      title: Text(l10n.monitorEnable),
-                      value: _enabled,
-                      onChanged: (value) {
-                        setState(() {
-                          _enabled = value;
-                        });
-                      },
+                  DropdownMenuItem(
+                    value: const Duration(hours: 1),
+                    child: Text(l10n.monitorTimeRangeLast1h),
+                  ),
+                  DropdownMenuItem(
+                    value: const Duration(hours: 6),
+                    child: Text(l10n.monitorTimeRangeLast6h),
+                  ),
+                  DropdownMenuItem(
+                    value: const Duration(hours: 24),
+                    child: Text(l10n.monitorTimeRangeLast24h),
+                  ),
+                  DropdownMenuItem(
+                    value: const Duration(days: 7),
+                    child: Text(l10n.monitorTimeRangeLast7d),
+                  ),
+                ],
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      _timeRange = value;
+                    });
+                  }
+                },
+              ),
+              const SizedBox(height: AppDesignTokens.spacingMd),
+              const Divider(),
+              const SizedBox(height: AppDesignTokens.spacingSm),
+              DropdownButtonFormField<int>(
+                initialValue: _maxDataPoints,
+                decoration: InputDecoration(
+                  labelText: l10n.monitorDataPoints,
+                  border: const OutlineInputBorder(),
+                ),
+                items: [
+                  DropdownMenuItem(
+                    value: 6,
+                    child: Text(l10n.monitorDataPointsCount(
+                        6, l10n.monitorTimeMinutes(30))),
+                  ),
+                  DropdownMenuItem(
+                    value: 12,
+                    child: Text(l10n.monitorDataPointsCount(
+                        12, l10n.monitorTimeHours(1))),
+                  ),
+                  DropdownMenuItem(
+                    value: 1000,
+                    child: Text(
+                        l10n.monitorDataPointsCount(1000, l10n.monitorAll)),
+                  ),
+                ],
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      _maxDataPoints = value;
+                    });
+                  }
+                },
+              ),
+              const SizedBox(height: AppDesignTokens.spacingMd),
+              const Divider(),
+              const SizedBox(height: AppDesignTokens.spacingSm),
+              Text(
+                '${l10n.monitorGPU} ${l10n.monitorSettings}',
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              SwitchListTile(
+                title: Text('${l10n.monitorGPU} ${l10n.monitorEnable}'),
+                value: _gpuAutoRefreshEnabled,
+                onChanged: (value) {
+                  setState(() {
+                    _gpuAutoRefreshEnabled = value;
+                  });
+                },
+              ),
+              if (_gpuAutoRefreshEnabled) ...[
+                const SizedBox(height: AppDesignTokens.spacingSm),
+                DropdownButtonFormField<Duration>(
+                  initialValue: _gpuRefreshInterval,
+                  decoration: InputDecoration(
+                    labelText:
+                        '${l10n.monitorGPU} ${l10n.monitorRefreshInterval}',
+                    border: const OutlineInputBorder(),
+                  ),
+                  items: [
+                    DropdownMenuItem(
+                      value: const Duration(seconds: 5),
+                      child: Text(l10n.monitorSeconds(5)),
                     ),
-                    const Divider(),
-                    const SizedBox(height: AppDesignTokens.spacingSm),
-                    Text(
-                      l10n.monitorRefreshInterval,
-                      style: Theme.of(context).textTheme.titleSmall,
+                    DropdownMenuItem(
+                      value: const Duration(seconds: 10),
+                      child: Text(l10n.monitorSeconds(10)),
                     ),
-                    const SizedBox(height: AppDesignTokens.spacingSm),
-                    DropdownButtonFormField<Duration>(
-                      initialValue: _refreshInterval,
-                      decoration: InputDecoration(
-                        labelText: l10n.monitorRefreshInterval,
-                        border: const OutlineInputBorder(),
-                      ),
-                      items: [
-                        DropdownMenuItem(
-                          value: const Duration(seconds: 3),
-                          child: Text(l10n.monitorSeconds(3)),
-                        ),
-                        DropdownMenuItem(
-                          value: const Duration(seconds: 5),
-                          child: Text(l10n.monitorSecondsDefault(5)),
-                        ),
-                        DropdownMenuItem(
-                          value: const Duration(seconds: 10),
-                          child: Text(l10n.monitorSeconds(10)),
-                        ),
-                        DropdownMenuItem(
-                          value: const Duration(seconds: 30),
-                          child: Text(l10n.monitorSeconds(30)),
-                        ),
-                        DropdownMenuItem(
-                          value: const Duration(minutes: 1),
-                          child: Text(l10n.monitorMinute(1)),
-                        ),
-                      ],
-                      onChanged: (value) {
-                        if (value != null) {
-                          setState(() {
-                            _refreshInterval = value;
-                          });
-                        }
-                      },
+                    DropdownMenuItem(
+                      value: const Duration(seconds: 30),
+                      child: Text(l10n.monitorSeconds(30)),
                     ),
-                    const SizedBox(height: AppDesignTokens.spacingMd),
-                    const Divider(),
-                    const SizedBox(height: AppDesignTokens.spacingSm),
-                    Text(
-                      l10n.monitorTimeRange,
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                    const SizedBox(height: AppDesignTokens.spacingSm),
-                    DropdownButtonFormField<Duration>(
-                      initialValue: _timeRange,
-                      decoration: InputDecoration(
-                        labelText: l10n.monitorTimeRange,
-                        border: const OutlineInputBorder(),
-                      ),
-                      items: [
-                        DropdownMenuItem(
-                          value: const Duration(hours: 1),
-                          child: Text(l10n.monitorTimeRangeLast1h),
-                        ),
-                        DropdownMenuItem(
-                          value: const Duration(hours: 6),
-                          child: Text(l10n.monitorTimeRangeLast6h),
-                        ),
-                        DropdownMenuItem(
-                          value: const Duration(hours: 24),
-                          child: Text(l10n.monitorTimeRangeLast24h),
-                        ),
-                        DropdownMenuItem(
-                          value: const Duration(days: 7),
-                          child: Text(l10n.monitorTimeRangeLast7d),
-                        ),
-                      ],
-                      onChanged: (value) {
-                        if (value != null) {
-                          setState(() {
-                            _timeRange = value;
-                          });
-                        }
-                      },
-                    ),
-                    const SizedBox(height: AppDesignTokens.spacingMd),
-                    const Divider(),
-                    const SizedBox(height: AppDesignTokens.spacingSm),
-                    Text(
-                      l10n.monitorDataPoints,
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                    const SizedBox(height: AppDesignTokens.spacingSm),
-                    DropdownButtonFormField<int>(
-                      initialValue: _maxDataPoints,
-                      decoration: InputDecoration(
-                        labelText: l10n.monitorDataPoints,
-                        border: const OutlineInputBorder(),
-                      ),
-                      items: [
-                        DropdownMenuItem(
-                          value: 6,
-                          child: Text(l10n.monitorDataPointsCount(
-                              6, l10n.monitorTimeMinutes(30))),
-                        ),
-                        DropdownMenuItem(
-                          value: 12,
-                          child: Text(l10n.monitorDataPointsCount(
-                              12, l10n.monitorTimeHours(1))),
-                        ),
-                        DropdownMenuItem(
-                          value: 1000,
-                          child: Text(l10n.monitorDataPointsCount(
-                              1000, l10n.monitorAll)),
-                        ),
-                      ],
-                      onChanged: (value) {
-                        if (value != null) {
-                          setState(() {
-                            _maxDataPoints = value;
-                          });
-                        }
-                      },
-                    ),
-                    const SizedBox(height: AppDesignTokens.spacingMd),
-                    const Divider(),
-                    const SizedBox(height: AppDesignTokens.spacingSm),
-                    Text(
-                      '${l10n.monitorGPU} ${l10n.monitorSettings}',
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                    SwitchListTile(
-                      title: Text('${l10n.monitorGPU} ${l10n.monitorEnable}'),
-                      value: _gpuAutoRefreshEnabled,
-                      onChanged: (value) {
-                        setState(() {
-                          _gpuAutoRefreshEnabled = value;
-                        });
-                      },
-                    ),
-                    if (_gpuAutoRefreshEnabled) ...[
-                      const SizedBox(height: AppDesignTokens.spacingSm),
-                      DropdownButtonFormField<Duration>(
-                        initialValue: _gpuRefreshInterval,
-                        decoration: InputDecoration(
-                          labelText:
-                              '${l10n.monitorGPU} ${l10n.monitorRefreshInterval}',
-                          border: const OutlineInputBorder(),
-                        ),
-                        items: [
-                          DropdownMenuItem(
-                            value: const Duration(seconds: 5),
-                            child: Text(l10n.monitorSeconds(5)),
-                          ),
-                          DropdownMenuItem(
-                            value: const Duration(seconds: 10),
-                            child: Text(l10n.monitorSeconds(10)),
-                          ),
-                          DropdownMenuItem(
-                            value: const Duration(seconds: 30),
-                            child: Text(l10n.monitorSeconds(30)),
-                          ),
-                          DropdownMenuItem(
-                            value: const Duration(minutes: 1),
-                            child: Text(l10n.monitorMinute(1)),
-                          ),
-                        ],
-                        onChanged: (value) {
-                          if (value != null) {
-                            setState(() {
-                              _gpuRefreshInterval = value;
-                            });
-                          }
-                        },
-                      ),
-                    ],
-                    const SizedBox(height: AppDesignTokens.spacingMd),
-                    const Divider(),
-                    const SizedBox(height: AppDesignTokens.spacingSm),
-                    Text(
-                      l10n.monitorRetention,
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                    const SizedBox(height: AppDesignTokens.spacingSm),
-                    Slider(
-                      value: _retention.toDouble(),
-                      min: 1,
-                      max: 365,
-                      divisions: 364,
-                      label: '$_retention ${l10n.monitorRetentionUnit}',
-                      onChanged: (value) {
-                        setState(() {
-                          _retention = value.round();
-                        });
-                      },
-                    ),
-                    Text('$_retention ${l10n.monitorRetentionUnit}'),
-                    const SizedBox(height: AppDesignTokens.spacingLg),
-                    const Divider(),
-                    const SizedBox(height: AppDesignTokens.spacingSm),
-                    DropdownButtonFormField<String>(
-                      initialValue: _ioOptions.contains(_defaultIO)
-                          ? _defaultIO
-                          : _ioOptions.first,
-                      decoration: InputDecoration(
-                        labelText: l10n.monitorIoDeviceLabel,
-                        helperText: l10n.monitorIoDeviceHelper,
-                        border: const OutlineInputBorder(),
-                      ),
-                      items: _ioOptions
-                          .map(
-                            (item) => DropdownMenuItem<String>(
-                              value: item,
-                              child: Text(item),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: (value) {
-                        if (value == null) return;
-                        setState(() {
-                          _defaultIO = value;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: AppDesignTokens.spacingMd),
-                    const Divider(),
-                    const SizedBox(height: AppDesignTokens.spacingSm),
-                    DropdownButtonFormField<String>(
-                      initialValue: _networkOptions.contains(_defaultNetwork)
-                          ? _defaultNetwork
-                          : _networkOptions.first,
-                      decoration: InputDecoration(
-                        labelText: l10n.monitorNetworkInterfaceLabel,
-                        helperText: l10n.monitorNetworkInterfaceHelper,
-                        border: const OutlineInputBorder(),
-                      ),
-                      items: _networkOptions
-                          .map(
-                            (item) => DropdownMenuItem<String>(
-                              value: item,
-                              child: Text(item),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: (value) {
-                        if (value == null) return;
-                        setState(() {
-                          _defaultNetwork = value;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: AppDesignTokens.spacingLg),
-                    OutlinedButton.icon(
-                      onPressed: _cleanData,
-                      icon: const Icon(Icons.delete_outline),
-                      label: Text(l10n.monitorCleanData),
+                    DropdownMenuItem(
+                      value: const Duration(minutes: 1),
+                      child: Text(l10n.monitorMinute(1)),
                     ),
                   ],
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        _gpuRefreshInterval = value;
+                      });
+                    }
+                  },
                 ),
-              ),
-            ),
+              ],
+            ],
+          ),
+        ),
+      ),
       actions: [
         TextButton(
-          onPressed: _isSaving ? null : () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).pop(),
           child: Text(l10n.commonCancel),
         ),
         FilledButton(
-          onPressed: _isSaving ? null : _saveSettings,
-          child: _isSaving
-              ? const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : Text(l10n.commonSave),
+          onPressed: _saveSettings,
+          child: Text(l10n.commonSave),
         ),
       ],
     );

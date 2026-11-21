@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../core/i18n/l10n_x.dart';
 import '../../../data/models/common_models.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/label_value_row.dart';
 import '../dashboard_provider.dart';
 
 class ServerInfoCard extends StatelessWidget {
@@ -36,22 +37,19 @@ class ServerInfoCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _InfoRow(
+          LabelValueRow(
             label: l10n.dashboardHostNameLabel,
             value: systemInfo?.hostname ?? '--',
           ),
-          const SizedBox(height: 8),
-          _InfoRow(
+          LabelValueRow(
             label: l10n.dashboardOsLabel,
             value: _formatOsInfo(systemInfo),
           ),
-          const SizedBox(height: 8),
-          _InfoRow(
+          LabelValueRow(
             label: l10n.dashboardUptimeLabel,
             value: _formatUptime(context, data),
           ),
           if (data.lastUpdated != null) ...[
-            const SizedBox(height: 8),
             Text(
               l10n.dashboardUpdatedAt(_formatTime(data.lastUpdated!)),
               style: TextStyle(
@@ -100,40 +98,5 @@ class ServerInfoCard extends StatelessWidget {
       return l10n.dashboardUptimeMinutes(minutes);
     }
     return data.uptime;
-  }
-}
-
-class _InfoRow extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _InfoRow({
-    required this.label,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Row(
-      children: [
-        Text(
-          '$label: ',
-          style: TextStyle(
-            color: colorScheme.onSurfaceVariant,
-          ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: const TextStyle(
-              fontWeight: FontWeight.w500,
-            ),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
-    );
   }
 }

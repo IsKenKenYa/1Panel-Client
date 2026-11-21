@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/data/models/monitoring_runtime_models.dart';
@@ -30,10 +31,12 @@ class FakeMonitoringService extends MonitoringService {
 
   @override
   Future<MonitorDataPackage> getMonitorData({
+    CancelToken? cancelToken,
     Duration duration = const Duration(hours: 1),
     String? io,
     String? network,
     DateTime? startTime,
+    DateTime? endTime,
   }) async {
     final now = DateTime.now();
     return MonitorDataPackage(
@@ -97,10 +100,12 @@ class FakeMonitoringService extends MonitoringService {
 class ErrorMonitoringService extends MonitoringService {
   @override
   Future<MonitorDataPackage> getMonitorData({
+    CancelToken? cancelToken,
     Duration duration = const Duration(hours: 1),
     String? io,
     String? network,
     DateTime? startTime,
+    DateTime? endTime,
   }) async {
     throw Exception('加载失败');
   }
@@ -185,7 +190,14 @@ void main() {
       interval: const Duration(hours: 1),
     );
 
-    await provider.refreshByPolicy();
+    final first = provider.refreshByPolicy();
+    expect(provider.refresh(), same(first));
+    provider.setTimeRange(const Duration(hours: 6));
+    final second = provider.refreshByPolicy();
+    expect(second, isNot(same(first)));
+    await first;
+    expect(provider.refresh(), same(second));
+    await second;
     await provider.refreshByPolicy();
 
     expect(service.gpuInfoCallCount, 1);

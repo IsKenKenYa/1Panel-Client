@@ -58,13 +58,4 @@ extension DashboardProviderActions on DashboardProvider {
       type: ActivityType.warning,
     );
   }
-
-  Future<void> upgradeSystem() async {
-    await _service.upgradeSystem();
-    _addActivity(
-      title: 'System Upgrade',
-      description: 'System upgrade initiated',
-      type: ActivityType.info,
-    );
-  }
 }

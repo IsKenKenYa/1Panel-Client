@@ -1,5 +1,12 @@
+import 'dart:async';
+
+import 'package:dio/dio.dart';
+
+import '../../api/v2/dashboard_v2.dart';
 import '../../core/services/base_component.dart';
-import '../../core/services/logger/logger_service.dart';
+import '../../core/config/api_config.dart';
+import '../../core/network/dio_client.dart';
+import '../../core/network/network_exceptions.dart';
 import '../../data/repositories/monitor_repository.dart';
 import '../../data/models/monitoring_runtime_models.dart';
 import '../../data/models/monitor_models.dart';
@@ -12,7 +19,27 @@ class MonitoringService extends BaseComponent {
   MonitoringService({
     super.clientManager,
     super.permissionResolver,
-  });
+  })  : _server = null,
+        _requireSettings = false;
+
+  MonitoringService.forServer(ApiConfig server, {bool requireSettings = false})
+      : _server = server,
+        _requireSettings = requireSettings;
+
+  final ApiConfig? _server;
+  final bool _requireSettings;
+  Future<DioClient>? _monitorClient;
+  Future<DioClient> _getClient() {
+    final server = _server;
+    if (server == null) return clientManager.getCurrentClient();
+    if (_requireSettings) return clientManager.getClientForServer(server);
+    return _monitorClient ??= clientManager.getClientForServer(server).onError(
+      (Object error, StackTrace trace) {
+        _monitorClient = null;
+        Error.throwWithStackTrace(error, trace);
+      },
+    );
+  }
 
   final MonitorRepository _monitorRepo = const MonitorRepository();
 
@@ -21,52 +48,9 @@ class MonitoringService extends BaseComponent {
   /// 返回最新的CPU、内存、磁盘、负载数据
   Future<MonitorMetricsSnapshot> getCurrentMetrics() async {
     return runGuarded(() async {
-      final client = await clientManager.getCurrentClient();
-
-      // 优先使用dashboard API获取当前指标，因为它更可靠
-      try {
-        final response = await client.get(
-          '/api/v2/dashboard/current/default/default',
-        );
-
-        if (response.data != null && response.data is Map) {
-          final data = response.data as Map<String, dynamic>;
-          final payload = data['data'] as Map<String, dynamic>?;
-
-          if (payload != null) {
-            // 解析磁盘数据
-            double? diskPercent;
-            final diskDataList = payload['diskData'] as List?;
-            if (diskDataList != null && diskDataList.isNotEmpty) {
-              final firstDisk = diskDataList.first as Map<String, dynamic>?;
-              diskPercent = (firstDisk?['usedPercent'] as num?)?.toDouble();
-            }
-
-            return MonitorMetricsSnapshot(
-              cpuPercent: (payload['cpuUsedPercent'] as num?)?.toDouble(),
-              memoryPercent: (payload['memoryUsedPercent'] as num?)?.toDouble(),
-              diskPercent: diskPercent,
-              load1: (payload['load1'] as num?)?.toDouble(),
-              load5: (payload['load5'] as num?)?.toDouble(),
-              load15: (payload['load15'] as num?)?.toDouble(),
-              memoryUsed: payload['memoryUsed'] as int?,
-              memoryTotal: payload['memoryTotal'] as int?,
-              uptime: payload['uptime'] as int?,
-              timestamp: DateTime.now(),
-            );
-          }
-        }
-      } catch (e) {
-        // 如果dashboard API失败，降级使用monitor API
-        appLogger.wWithPackage(
-          'monitoring.service',
-          'Dashboard API failed, fallback to monitor API',
-          error: e,
-        );
-      }
-
-      // 降级方案：使用monitor API
-      return _monitorRepo.getCurrentMetrics(client);
+      final client = await _getClient();
+      return await _dashboardMetrics(client) ??
+          await _monitorRepo.getCurrentMetrics(client);
     });
   }
 
@@ -75,7 +59,7 @@ class MonitoringService extends BaseComponent {
     Duration duration = const Duration(hours: 1),
   }) async {
     return runGuarded(() async {
-      final client = await clientManager.getCurrentClient();
+      final client = await _getClient();
       // API返回的是base数据，包含cpu字段
       return _monitorRepo.getTimeSeries(client, 'base', 'cpu',
           duration: duration);
@@ -87,7 +71,7 @@ class MonitoringService extends BaseComponent {
     Duration duration = const Duration(hours: 1),
   }) async {
     return runGuarded(() async {
-      final client = await clientManager.getCurrentClient();
+      final client = await _getClient();
       // API返回的是base数据，包含memory字段
       return _monitorRepo.getTimeSeries(client, 'base', 'memory',
           duration: duration);
@@ -99,7 +83,7 @@ class MonitoringService extends BaseComponent {
     Duration duration = const Duration(hours: 1),
   }) async {
     return runGuarded(() async {
-      final client = await clientManager.getCurrentClient();
+      final client = await _getClient();
       // API返回的是base数据，包含cpuLoad1字段
       return _monitorRepo.getTimeSeries(client, 'base', 'cpuLoad1',
           duration: duration);
@@ -112,7 +96,7 @@ class MonitoringService extends BaseComponent {
     Duration duration = const Duration(hours: 1),
   }) async {
     return runGuarded(() async {
-      final client = await clientManager.getCurrentClient();
+      final client = await _getClient();
       return _monitorRepo.getTimeSeries(
         client,
         'io',
@@ -129,7 +113,7 @@ class MonitoringService extends BaseComponent {
     Duration duration = const Duration(hours: 1),
   }) async {
     return runGuarded(() async {
-      final client = await clientManager.getCurrentClient();
+      final client = await _getClient();
       return _monitorRepo.getTimeSeries(
         client,
         'network',
@@ -143,8 +127,8 @@ class MonitoringService extends BaseComponent {
   /// 获取监控设置
   Future<MonitorSetting?> getSetting() async {
     return runGuarded(() async {
-      final client = await clientManager.getCurrentClient();
-      return _monitorRepo.getSetting(client);
+      final client = await _getClient();
+      return _monitorRepo.getSetting(client, requireResponse: _requireSettings);
     });
   }
 
@@ -157,7 +141,7 @@ class MonitoringService extends BaseComponent {
     String? defaultNetwork,
   }) async {
     return runGuarded(() async {
-      final client = await clientManager.getCurrentClient();
+      final client = await _getClient();
       return _monitorRepo.updateSetting(
         client,
         interval: interval,
@@ -172,7 +156,7 @@ class MonitoringService extends BaseComponent {
   /// 清理监控数据
   Future<bool> cleanData() async {
     return runGuarded(() async {
-      final client = await clientManager.getCurrentClient();
+      final client = await _getClient();
       return _monitorRepo.cleanData(client);
     });
   }
@@ -180,94 +164,73 @@ class MonitoringService extends BaseComponent {
   /// 获取GPU监控数据
   Future<List<MonitorGpuInfo>> getGPUInfo() async {
     return runGuarded(() async {
-      final client = await clientManager.getCurrentClient();
+      final client = await _getClient();
       return _monitorRepo.getGPUInfo(client);
     });
   }
 
   /// 批量获取监控数据（含当前指标与趋势图）
   Future<MonitorDataPackage> getMonitorData({
+    CancelToken? cancelToken,
     String? io,
     String? network,
     Duration duration = const Duration(hours: 1),
     DateTime? startTime,
+    DateTime? endTime,
   }) async {
     return runGuarded(() async {
-      final client = await clientManager.getCurrentClient();
-
-      // 获取时间序列数据
-      final package = await _monitorRepo.getMonitorData(
-        client,
-        io: io,
-        network: network,
-        duration: duration,
-        startTime: startTime,
+      final client = await _getClient();
+      final results = (
+        _monitorRepo.getMonitorData(
+          client,
+          cancelToken: cancelToken,
+          io: io,
+          network: network,
+          duration: duration,
+          startTime: startTime,
+          endTime: endTime,
+        ),
+        _dashboardMetrics(client),
       );
-
-      // 优先使用dashboard API获取当前指标
-      MonitorMetricsSnapshot? currentMetrics;
       try {
-        final response = await client.get(
-          '/api/v2/dashboard/current/default/default',
+        final (package, current) = await results.wait;
+        return MonitorDataPackage(
+          current: current ?? package.current,
+          timeSeries: package.timeSeries,
         );
-
-        if (response.data != null && response.data is Map) {
-          final data = response.data as Map<String, dynamic>;
-          final payload = data['data'] as Map<String, dynamic>?;
-
-          if (payload != null) {
-            // 解析磁盘数据
-            double? diskPercent;
-            final diskDataList = payload['diskData'] as List?;
-            if (diskDataList != null && diskDataList.isNotEmpty) {
-              final firstDisk = diskDataList.first as Map<String, dynamic>?;
-              diskPercent = (firstDisk?['usedPercent'] as num?)?.toDouble();
-            }
-
-            currentMetrics = MonitorMetricsSnapshot(
-              cpuPercent: (payload['cpuUsedPercent'] as num?)?.toDouble(),
-              memoryPercent: (payload['memoryUsedPercent'] as num?)?.toDouble(),
-              diskPercent: diskPercent,
-              load1: (payload['load1'] as num?)?.toDouble(),
-              load5: (payload['load5'] as num?)?.toDouble(),
-              load15: (payload['load15'] as num?)?.toDouble(),
-              memoryUsed: payload['memoryUsed'] as int?,
-              memoryTotal: payload['memoryTotal'] as int?,
-              uptime: payload['uptime'] as int?,
-              timestamp: DateTime.now(),
-            );
-          }
-        }
-      } catch (e) {
-        // 如果dashboard API失败，使用monitor API的结果
-        appLogger.wWithPackage(
-          'monitoring.service',
-          'Dashboard API failed in getMonitorData, using monitor API result',
-          error: e,
-        );
+      } on ParallelWaitError<(MonitorDataPackage?, MonitorMetricsSnapshot?),
+          (AsyncError?, AsyncError?)> catch (error) {
+        final cause = error.errors.$1 ?? error.errors.$2!;
+        Error.throwWithStackTrace(cause.error, cause.stackTrace);
       }
-
-      // 如果dashboard API成功，使用它的结果；否则使用monitor API的结果
-      return MonitorDataPackage(
-        current: currentMetrics ?? package.current,
-        timeSeries: package.timeSeries,
-      );
     });
+  }
+
+  Future<MonitorMetricsSnapshot?> _dashboardMetrics(DioClient client) async {
+    try {
+      final snapshot = await DashboardV2Api(client).getCurrentSnapshot();
+      return snapshot.hasData ? snapshot : null;
+    } on NetworkException {
+      // 历史查询同时包含最近一次采样，连接错误由 HTTP 客户端记录。
+      return null;
+    }
   }
 
   /// 获取网络接口列表
   Future<List<String>> getNetworkOptions() async {
     return runGuarded(() async {
-      final client = await clientManager.getCurrentClient();
-      return _monitorRepo.getNetworkOptions(client);
+      final client = await _getClient();
+      return _monitorRepo.getNetworkOptions(client,
+          requireResponse: _requireSettings);
     });
   }
 
   /// 获取IO设备列表
   Future<List<String>> getIOOptions() async {
     return runGuarded(() async {
-      final client = await clientManager.getCurrentClient();
-      return _monitorRepo.getIOOptions(client);
+      final client = await _getClient();
+      return _monitorRepo.getIOOptions(client,
+          requireResponse: _requireSettings);
     });
   }
 }

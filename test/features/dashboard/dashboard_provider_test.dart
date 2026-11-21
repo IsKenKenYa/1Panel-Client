@@ -3,6 +3,7 @@ import 'package:onepanel_client/features/dashboard/dashboard_provider.dart';
 import 'package:onepanel_client/features/dashboard/services/dashboard_service.dart';
 import 'package:onepanel_client/data/models/common_models.dart';
 import 'package:onepanel_client/data/models/dashboard_models.dart';
+import 'package:onepanel_client/data/models/monitor_models.dart';
 
 class _FakeDashboardService extends DashboardService {
   _FakeDashboardService({
@@ -36,6 +37,22 @@ class _FakeDashboardService extends DashboardService {
 }
 
 void main() {
+  test('仪表盘保留服务器采样时间和主磁盘使用率', () {
+    final snapshot = MonitorMetricsSnapshot.fromDashboard({
+      'cpuUsedPercent': 23.5,
+      'memoryUsedPercent': 61,
+      'load1': 1.25,
+      'uptime': 86401,
+      'shotTime': '2026-11-21T10:12:22+08:00',
+      'diskData': [
+        {'path': '/', 'usedPercent': 20},
+      ],
+    });
+    expect(snapshot.timestamp!.toUtc(), DateTime.utc(2026, 11, 21, 2, 12, 22));
+    expect((snapshot.cpuPercent, snapshot.memoryPercent, snapshot.load1), (23.5, 61, 1.25));
+    expect((snapshot.diskPercent, snapshot.uptime), (20, 86401));
+  });
+
   group('DashboardProvider - 状态管理测试', () {
     test('初始状态应该为initial', () {
       final provider = DashboardProvider();
@@ -138,6 +155,15 @@ void main() {
   });
 
   group('ProcessInfo - 进程信息模型测试', () {
+    test('内存排行使用 percent 字段显示占用率', () {
+      final process = ProcessInfo.fromJson(
+        {'pid': 123, 'name': 'app', 'percent': 2.5, 'memory': 10485760},
+        byMemory: true,
+      );
+      expect(process.memoryPercent, 2.5);
+      expect(process.cpuPercent, 0);
+    });
+
     test('应该正确从JSON创建ProcessInfo', () {
       final json = {
         'pid': 1234,

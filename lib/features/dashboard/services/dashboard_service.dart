@@ -1,6 +1,6 @@
-import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/models/common_models.dart';
 import 'package:onepanel_client/data/models/dashboard_models.dart';
+import 'package:onepanel_client/data/models/monitor_models.dart';
 import 'package:onepanel_client/data/repositories/dashboard_repository.dart';
 import 'package:onepanel_client/features/dashboard/models/dashboard_view_models.dart';
 
@@ -11,31 +11,11 @@ class DashboardService {
   final DashboardRepository _repository;
 
   Future<DashboardData> loadDashboardData() async {
-    appLogger.dWithPackage(
-        'features.dashboard.dashboard_service', 'loadDashboardData');
     final baseData = await _repository.getDashboardBase();
-    final currentInfo = baseData['currentInfo'] as Map<String, dynamic>?;
-    final diskDataList = currentInfo?['diskData'] as List?;
-
-    double? diskPercent;
-    String? diskUsage;
-    if (diskDataList != null && diskDataList.isNotEmpty) {
-      final mainDisk = diskDataList.first as Map<String, dynamic>;
-      diskPercent = (mainDisk['usedPercent'] as num?)?.toDouble();
-      final used = mainDisk['used'] as int?;
-      final total = mainDisk['total'] as int?;
-      if (used != null && total != null) {
-        diskUsage = '${_formatBytes(used)} / ${_formatBytes(total)}';
-      }
-    }
-
-    final uptime = currentInfo?['uptime'] as int?;
-    final memoryPercent =
-        (currentInfo?['memoryUsedPercent'] as num?)?.toDouble();
-    final memoryUsed = currentInfo?['memoryUsed'] as int?;
-    final memoryTotal = currentInfo?['memoryTotal'] as int?;
-
-    return DashboardData(
+    return _snapshotData(
+      MonitorMetricsSnapshot.fromDashboard(
+        baseData['currentInfo'] as Map<String, dynamic>? ?? const {},
+      ),
       systemInfo: SystemInfo(
         hostname: baseData['hostname'] as String?,
         os: baseData['os'] as String?,
@@ -45,35 +25,55 @@ class DashboardService {
         cpuCores: baseData['cpuCores'] as int?,
       ),
       metrics: DashboardMetrics.fromJson(baseData),
-      cpuPercent: (currentInfo?['cpuUsedPercent'] as num?)?.toDouble(),
+    );
+  }
+
+  Future<DashboardData> loadLiveData(DashboardData previous) async {
+    return _snapshotData(
+      await _repository.getCurrentSnapshot(),
+      systemInfo: previous.systemInfo,
+      metrics: previous.metrics,
+    );
+  }
+
+  DashboardData _snapshotData(
+    MonitorMetricsSnapshot snapshot, {
+    required SystemInfo? systemInfo,
+    required DashboardMetrics? metrics,
+  }) {
+    final memoryPercent = snapshot.memoryPercent;
+    final memoryUsed = snapshot.memoryUsed;
+    final memoryTotal = snapshot.memoryTotal;
+    final disk = snapshot.diskData.firstOrNull;
+    final uptime = snapshot.uptime;
+    return DashboardData(
+      systemInfo: systemInfo,
+      metrics: metrics,
+      cpuPercent: snapshot.cpuPercent,
       memoryPercent: memoryPercent,
-      diskPercent: diskPercent,
-      load: (currentInfo?['load1'] as num?)?.toDouble(),
+      diskPercent: snapshot.diskPercent,
+      load: snapshot.load1,
       memoryUsage: memoryPercent != null
           ? '${memoryPercent.toStringAsFixed(1)}%'
           : (memoryUsed != null && memoryTotal != null
               ? '${_formatBytes(memoryUsed)} / ${_formatBytes(memoryTotal)}'
               : '--'),
-      diskUsage: diskUsage ??
-          (diskPercent != null ? '${diskPercent.toStringAsFixed(1)}%' : '--'),
+      diskUsage: disk == null
+          ? '--'
+          : '${_formatBytes(disk.used)} / ${_formatBytes(disk.total)}',
       uptime: uptime != null ? _formatUptime(uptime) : '--',
       uptimeSeconds: uptime,
-      lastUpdated: DateTime.now(),
+      lastUpdated: snapshot.timestamp,
     );
   }
 
   Future<({List<ProcessInfo> cpu, List<ProcessInfo> memory})>
       loadTopProcesses() async {
-    appLogger.dWithPackage(
-        'features.dashboard.dashboard_service', 'loadTopProcesses');
-    final responses = await Future.wait<dynamic>([
+    final responses = await Future.wait([
       _repository.getTopCpuProcesses(),
       _repository.getTopMemoryProcesses(),
     ]);
-    return (
-      cpu: _parseProcessList(responses[0]),
-      memory: _parseProcessList(responses[1]),
-    );
+    return (cpu: responses[0], memory: responses[1]);
   }
 
   Future<List<AppLauncherItem>> loadAppLaunchers() async {
@@ -117,39 +117,9 @@ class DashboardService {
     return _repository.updateQuickChange(enabledKeys);
   }
 
-  Future<void> restartSystem() => _repository.runSystemCommand('restart');
+  Future<void> restartSystem() => _repository.runSystemCommand('system');
 
   Future<void> shutdownSystem() => _repository.runSystemCommand('shutdown');
-
-  Future<void> upgradeSystem() => _repository.runSystemCommand('restart');
-
-  List<ProcessInfo> _parseProcessList(dynamic data) {
-    if (data == null) return const <ProcessInfo>[];
-
-    if (data is List<ProcessInfo>) {
-      return data;
-    }
-
-    if (data is List) {
-      return data
-          .whereType<Map<String, dynamic>>()
-          .map(ProcessInfo.fromJson)
-          .toList(growable: false);
-    }
-
-    if (data is Map<String, dynamic>) {
-      final list = data['list'] as List<dynamic>? ??
-          data['processes'] as List<dynamic>? ??
-          data['items'] as List<dynamic>?;
-      if (list == null) return const <ProcessInfo>[];
-      return list
-          .whereType<Map<String, dynamic>>()
-          .map(ProcessInfo.fromJson)
-          .toList(growable: false);
-    }
-
-    return const <ProcessInfo>[];
-  }
 
   String _formatUptime(int seconds) {
     final days = seconds ~/ 86400;

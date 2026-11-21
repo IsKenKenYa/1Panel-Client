@@ -301,6 +301,7 @@ class MonitorV2Api {
   Future<Response<void>> clean() async {
     return await _client.post<void>(
       ApiConstants.buildApiPath('/hosts/monitor/clean'),
+      data: {'type': 'host'},
     );
   }
 

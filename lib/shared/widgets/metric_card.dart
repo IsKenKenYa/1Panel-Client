@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../core/i18n/l10n_x.dart';
 import '../../core/theme/app_design_tokens.dart';
 import '../../data/models/monitoring_models.dart';
 import 'app_card.dart';
@@ -28,7 +30,8 @@ class MetricCard extends StatelessWidget {
     final minValue = _formatMetricValue(metrics?.min, unit);
     final avgValue = _formatMetricValue(metrics?.avg, unit);
     final maxValue = _formatMetricValue(metrics?.max, unit);
-    final values = metrics?.dataPoints
+    final values =
+        metrics?.dataPoints
             ?.map((point) => point.value)
             .whereType<double>()
             .toList() ??
@@ -38,10 +41,7 @@ class MetricCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            current,
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
+          Text(current, style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: AppDesignTokens.spacingSm),
           if (values.length > 1) ...[
             SizedBox(
@@ -83,63 +83,67 @@ class MetricCard extends StatelessWidget {
 }
 
 class MetricStatChip extends StatelessWidget {
-  const MetricStatChip({
-    super.key,
-    required this.label,
-    required this.value,
-  });
+  const MetricStatChip({super.key, required this.label, required this.value});
 
   final String label;
   final String value;
 
   @override
   Widget build(BuildContext context) {
-    return Chip(
-      label: Text('$label: $value'),
-    );
-  }
-}
-
-class MetricIconValue extends StatelessWidget {
-  const MetricIconValue({
-    super.key,
-    required this.icon,
-    required this.value,
-  });
-
-  final IconData icon;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Chip(
-      avatar: Icon(icon, size: 16),
-      label: Text(value),
-    );
+    return Chip(label: Text('$label: $value'));
   }
 }
 
 class MetricOverviewGrid extends StatelessWidget {
-  const MetricOverviewGrid({super.key, required this.children});
+  const MetricOverviewGrid({
+    super.key,
+    required this.cpuPercent,
+    required this.memoryPercent,
+    required this.diskPercent,
+    required this.load,
+  });
 
-  final List<MetricOverviewTile> children;
+  final double? cpuPercent;
+  final double? memoryPercent;
+  final double? diskPercent;
+  final double? load;
 
   @override
   Widget build(BuildContext context) {
     const gap = AppDesignTokens.spacingSm;
+    final l10n = context.l10n;
+    final tiles = [
+      for (final (label, percent, icon) in [
+        (l10n.dashboardCpuUsage, cpuPercent, Icons.developer_board_outlined),
+        (l10n.dashboardMemoryUsage, memoryPercent, Icons.memory_outlined),
+        (l10n.dashboardDiskUsage, diskPercent, Icons.storage_outlined),
+      ])
+        MetricOverviewTile(
+          label: label,
+          percent: percent,
+          icon: icon,
+          value: percent == null ? '--' : '${percent.toStringAsFixed(1)}%',
+        ),
+      MetricOverviewTile(
+        label: l10n.serverLoadLabel,
+        percent: null,
+        icon: Icons.speed_outlined,
+        value: load?.toStringAsFixed(2) ?? '--',
+      ),
+    ];
     final textScaler = MediaQuery.textScalerOf(context);
     final minTileWidth = 130 * textScaler.scale(12) / 12;
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
-        final tileWidth =
-            width >= minTileWidth * 2 + gap ? (width - gap) / 2 : width;
+        final tileWidth = width >= minTileWidth * 2 + gap
+            ? (width - gap) / 2
+            : width;
         return Wrap(
           spacing: gap,
           runSpacing: gap,
           children: [
-            for (final tile in children)
-              SizedBox(width: tileWidth, child: tile),
+            for (final tile in tiles) SizedBox(width: tileWidth, child: tile),
           ],
         );
       },
@@ -238,10 +242,7 @@ class MetricOverviewTile extends StatelessWidget {
 }
 
 class MetricSparklinePainter extends CustomPainter {
-  MetricSparklinePainter({
-    required this.values,
-    required this.color,
-  });
+  MetricSparklinePainter({required this.values, required this.color});
 
   final List<double> values;
   final Color color;

@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/config/app_router.dart';
+import 'package:onepanel_client/features/settings/settings_provider.dart';
+import 'package:onepanel_client/features/settings/upgrade_page.dart';
+import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/shell_navigation.dart';
+import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import '../../../core/i18n/l10n_x.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../dashboard_provider.dart';
 
 import '../../../core/utils/snackbar_utils.dart';
+
 class QuickActionsCard extends StatelessWidget {
   const QuickActionsCard({super.key});
 
@@ -30,7 +35,7 @@ class QuickActionsCard extends StatelessWidget {
             icon: Icons.update,
             label: l10n.dashboardActionUpdate,
             color: Theme.of(context).colorScheme.primary,
-            onTap: () => _showUpdateDialog(context),
+            onTap: () => _openUpgrade(context),
           ),
           _QuickActionItem(
             icon: Icons.backup,
@@ -52,73 +57,39 @@ class QuickActionsCard extends StatelessWidget {
     );
   }
 
-  void _showRestartDialog(BuildContext context) {
+  Future<void> _showRestartDialog(BuildContext context) async {
     final l10n = context.l10n;
-    final colorScheme = Theme.of(context).colorScheme;
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.dashboardRestartTitle),
-        content: Text(l10n.dashboardRestartDesc),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: colorScheme.error,
-            ),
-            onPressed: () async {
-              Navigator.pop(context);
-              try {
-                await context.read<DashboardProvider>().restartSystem();
-                if (!context.mounted) return;
-                SnackBarUtils.showSuccess(context, l10n.dashboardRestartSuccess);
-              } catch (e) {
-                if (!context.mounted) return;
-                SnackBarUtils.showError(context, l10n.dashboardRestartFailed(e.toString()));
-              }
-            },
-            child: Text(l10n.commonConfirm),
-          ),
-        ],
-      ),
+    final provider = context.read<DashboardProvider>();
+    final confirmed = await ConfirmActionSheetWidget.show(
+      context,
+      title: l10n.dashboardRestartTitle,
+      message: l10n.dashboardRestartDesc,
+      confirmIcon: Icons.restart_alt,
+      isDestructive: true,
     );
+    if (!confirmed || !context.mounted || provider.isDisposed) return;
+    try {
+      await provider.restartSystem();
+      if (context.mounted && !provider.isDisposed) {
+        SnackBarUtils.showSuccess(context, l10n.dashboardRestartSuccess);
+      }
+    } catch (error) {
+      if (context.mounted && !provider.isDisposed) {
+        SnackBarUtils.showError(
+            context, l10n.dashboardRestartFailed(error.toString()));
+      }
+    }
   }
 
-  void _showUpdateDialog(BuildContext context) {
-    final l10n = context.l10n;
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.dashboardUpdateTitle),
-        content: Text(l10n.dashboardUpdateDesc),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              try {
-                await context.read<DashboardProvider>().upgradeSystem();
-                if (!context.mounted) return;
-                SnackBarUtils.showSuccess(context, l10n.dashboardUpdateSuccess);
-              } catch (e) {
-                if (!context.mounted) return;
-                SnackBarUtils.showError(context, l10n.dashboardUpdateFailed(e.toString()),
-                );
-              }
-            },
-            child: Text(l10n.commonConfirm),
-          ),
-        ],
+  void _openUpgrade(BuildContext context) {
+    final server = context.read<CurrentServerController>().currentServer;
+    if (server == null) return;
+    Navigator.of(context).push(MaterialPageRoute<void>(
+      builder: (_) => ChangeNotifierProvider(
+        create: (_) => SettingsProvider.forServer(server)..loadSystemSettings(),
+        child: const UpgradePage(),
       ),
-    );
+    ));
   }
 }
 

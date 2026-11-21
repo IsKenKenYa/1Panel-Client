@@ -1,9 +1,11 @@
 import 'dart:async';
-import 'dart:ui';
+import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
-import '../../data/repositories/monitor_repository.dart';
+import 'package:onepanel_client/core/utils/error_message_utils.dart';
 import '../../data/models/monitoring_runtime_models.dart';
 import '../../data/models/monitor_models.dart';
 import 'monitoring_service.dart';
@@ -20,15 +22,10 @@ class MonitoringData {
   final String? error;
   final MonitorMetricsSnapshot? currentMetrics;
   final MonitorTimeSeries? cpuTimeSeries;
-  final MonitorTimeSeries? cpuPreviousSeries;
   final MonitorTimeSeries? memoryTimeSeries;
-  final MonitorTimeSeries? memoryPreviousSeries;
   final MonitorTimeSeries? loadTimeSeries;
-  final MonitorTimeSeries? loadPreviousSeries;
   final MonitorTimeSeries? ioTimeSeries;
-  final MonitorTimeSeries? ioPreviousSeries;
   final MonitorTimeSeries? networkTimeSeries;
-  final MonitorTimeSeries? networkPreviousSeries;
   final List<MonitorGpuInfo> gpuInfo;
   final MonitorSetting? settings;
   final List<String> ioOptions;
@@ -37,21 +34,25 @@ class MonitoringData {
   final String selectedNetwork;
   final DateTime? lastUpdated;
 
+  bool get hasData =>
+      currentMetrics?.hasData == true ||
+      cpuTimeSeries?.data.isNotEmpty == true ||
+      memoryTimeSeries?.data.isNotEmpty == true ||
+      loadTimeSeries?.data.isNotEmpty == true ||
+      ioTimeSeries?.data.isNotEmpty == true ||
+      networkTimeSeries?.data.isNotEmpty == true ||
+      gpuInfo.isNotEmpty;
+
   const MonitoringData({
     this.isLoading = false,
     this.isRefreshing = false,
     this.error,
     this.currentMetrics,
     this.cpuTimeSeries,
-    this.cpuPreviousSeries,
     this.memoryTimeSeries,
-    this.memoryPreviousSeries,
     this.loadTimeSeries,
-    this.loadPreviousSeries,
     this.ioTimeSeries,
-    this.ioPreviousSeries,
     this.networkTimeSeries,
-    this.networkPreviousSeries,
     this.gpuInfo = const [],
     this.settings,
     this.ioOptions = const ['all'],
@@ -67,15 +68,10 @@ class MonitoringData {
     String? error,
     MonitorMetricsSnapshot? currentMetrics,
     MonitorTimeSeries? cpuTimeSeries,
-    MonitorTimeSeries? cpuPreviousSeries,
     MonitorTimeSeries? memoryTimeSeries,
-    MonitorTimeSeries? memoryPreviousSeries,
     MonitorTimeSeries? loadTimeSeries,
-    MonitorTimeSeries? loadPreviousSeries,
     MonitorTimeSeries? ioTimeSeries,
-    MonitorTimeSeries? ioPreviousSeries,
     MonitorTimeSeries? networkTimeSeries,
-    MonitorTimeSeries? networkPreviousSeries,
     List<MonitorGpuInfo>? gpuInfo,
     MonitorSetting? settings,
     List<String>? ioOptions,
@@ -90,16 +86,10 @@ class MonitoringData {
       error: error,
       currentMetrics: currentMetrics ?? this.currentMetrics,
       cpuTimeSeries: cpuTimeSeries ?? this.cpuTimeSeries,
-      cpuPreviousSeries: cpuPreviousSeries ?? this.cpuPreviousSeries,
       memoryTimeSeries: memoryTimeSeries ?? this.memoryTimeSeries,
-      memoryPreviousSeries: memoryPreviousSeries ?? this.memoryPreviousSeries,
       loadTimeSeries: loadTimeSeries ?? this.loadTimeSeries,
-      loadPreviousSeries: loadPreviousSeries ?? this.loadPreviousSeries,
       ioTimeSeries: ioTimeSeries ?? this.ioTimeSeries,
-      ioPreviousSeries: ioPreviousSeries ?? this.ioPreviousSeries,
       networkTimeSeries: networkTimeSeries ?? this.networkTimeSeries,
-      networkPreviousSeries:
-          networkPreviousSeries ?? this.networkPreviousSeries,
       gpuInfo: gpuInfo ?? this.gpuInfo,
       settings: settings ?? this.settings,
       ioOptions: ioOptions ?? this.ioOptions,
@@ -117,14 +107,20 @@ class MonitoringData {
 /// 实现了增量拉取和生命周期感知
 class MonitoringProvider extends ChangeNotifier with SafeChangeNotifier {
   MonitoringProvider({
+    ApiConfig? server,
     MonitoringService? service,
     MonitorLocalDataSource? dataSource,
-  })  : _service = service,
-        _dataSource = dataSource ?? MonitorLocalDataSource() {
-    _initConnectivity();
-  }
+  })  : _service = service ??
+            (server == null
+                ? MonitoringService()
+                : MonitoringService.forServer(server)),
+        _dataSource = dataSource ?? MonitorLocalDataSource(server: server);
 
-  MonitoringService? _service;
+  MonitoringProvider.forSettings(ApiConfig server)
+      : _service = MonitoringService.forServer(server, requireSettings: true),
+        _dataSource = MonitorLocalDataSource(server: server);
+
+  final MonitoringService _service;
   final MonitorLocalDataSource _dataSource;
   Timer? _refreshTimer;
   StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
@@ -138,7 +134,16 @@ class MonitoringProvider extends ChangeNotifier with SafeChangeNotifier {
   bool _gpuAutoRefreshEnabled = true;
   DateTime? _lastGpuRefreshAt;
   int _maxDataPoints = 1000; // 默认增加点数，支持更平滑的曲线
-  bool _isPolling = false;
+  int _queryRevision = 0;
+  CancelToken _historyCancellation = CancelToken();
+  ({int revision, Future<void> completion})? _polling;
+  final _visiblePages = <Object>{};
+  bool get _pageVisible => _visiblePages.isNotEmpty;
+  bool? _online;
+  bool _opened = false;
+  bool _optionsLoaded = false;
+  String? _selectedIO;
+  String? _selectedNetwork;
 
   // 时间范围设置
   Duration _timeRange = const Duration(hours: 1);
@@ -147,16 +152,11 @@ class MonitoringProvider extends ChangeNotifier with SafeChangeNotifier {
 
   // 增量更新状态
   DateTime? _lastFetchTime;
+  bool _cacheLoaded = false;
+  final _reportedErrors = <String, String>{};
+  String? get _pollError =>
+      _reportedErrors['加载监控数据'] ?? _reportedErrors['加载GPU信息'];
   final Map<String, List<MonitorDataPoint>> _rawTimeSeries = {
-    'cpu': [],
-    'memory': [],
-    'load': [],
-    'io': [],
-    'network': [],
-  };
-
-  // 上一周期（同比）数据缓存
-  final Map<String, List<MonitorDataPoint>> _previousRawTimeSeries = {
     'cpu': [],
     'memory': [],
     'load': [],
@@ -190,21 +190,23 @@ class MonitoringProvider extends ChangeNotifier with SafeChangeNotifier {
     return options.first;
   }
 
-  Future<void> _loadMonitorOptionsIfNeeded() async {
-    final needsOptions =
-        _data.ioOptions.length <= 1 || _data.networkOptions.length <= 1;
-    final needsSettings = _data.settings == null;
-    if (!needsOptions && !needsSettings) {
-      return;
-    }
+  bool _isCurrent(int revision) => !isDisposed && revision == _queryRevision;
 
-    final settings =
-        needsSettings ? await _service!.getSetting() : _data.settings;
-    final ioOptions =
-        needsOptions ? await _service!.getIOOptions() : _data.ioOptions;
-    final networkOptions = needsOptions
-        ? await _service!.getNetworkOptions()
-        : _data.networkOptions;
+  void _invalidateQuery() {
+    _queryRevision++;
+    _historyCancellation.cancel();
+    _historyCancellation = CancelToken();
+  }
+
+  Future<void> _loadMonitorOptionsIfNeeded(int revision) async {
+    if (_optionsLoaded) return;
+    final (settings, ioOptions, networkOptions) = await (
+      _service.getSetting(),
+      _service.getIOOptions(),
+      _service.getNetworkOptions(),
+    ).wait;
+    if (!_isCurrent(revision)) return;
+    _optionsLoaded = settings != null;
     final safeIoOptions = ioOptions.isEmpty ? const ['all'] : ioOptions;
     final safeNetworkOptions =
         networkOptions.isEmpty ? const ['all'] : networkOptions;
@@ -214,13 +216,11 @@ class MonitoringProvider extends ChangeNotifier with SafeChangeNotifier {
       ioOptions: safeIoOptions,
       networkOptions: safeNetworkOptions,
       selectedIO: _normalizeMonitorOption(
-        _data.selectedIO != 'all' ? _data.selectedIO : settings?.defaultIO,
+        _selectedIO ?? settings?.defaultIO,
         safeIoOptions,
       ),
       selectedNetwork: _normalizeMonitorOption(
-        _data.selectedNetwork != 'all'
-            ? _data.selectedNetwork
-            : settings?.defaultNetwork,
+        _selectedNetwork ?? settings?.defaultNetwork,
         safeNetworkOptions,
       ),
     );
@@ -231,11 +231,14 @@ class MonitoringProvider extends ChangeNotifier with SafeChangeNotifier {
       return;
     }
     _rawTimeSeries['io']!.clear();
-    _previousRawTimeSeries['io']!.clear();
+    _selectedIO = value;
+    _invalidateQuery();
     _lastFetchTime = null;
-    _data = _data.copyWith(selectedIO: value);
+    _cacheLoaded = false;
+    _data = _data.copyWith(
+        selectedIO: value, ioTimeSeries: MonitorTimeSeries.empty('disk'));
     notifyListeners();
-    await load(silent: true);
+    await refreshByPolicy();
   }
 
   Future<void> selectNetworkOption(String value) async {
@@ -243,11 +246,15 @@ class MonitoringProvider extends ChangeNotifier with SafeChangeNotifier {
       return;
     }
     _rawTimeSeries['network']!.clear();
-    _previousRawTimeSeries['network']!.clear();
+    _selectedNetwork = value;
+    _invalidateQuery();
     _lastFetchTime = null;
-    _data = _data.copyWith(selectedNetwork: value);
+    _cacheLoaded = false;
+    _data = _data.copyWith(
+        selectedNetwork: value,
+        networkTimeSeries: MonitorTimeSeries.empty('networkIn'));
     notifyListeners();
-    await load(silent: true);
+    await refreshByPolicy();
   }
 
   void _recordError(
@@ -255,31 +262,28 @@ class MonitoringProvider extends ChangeNotifier with SafeChangeNotifier {
     Object error, {
     StackTrace? stackTrace,
   }) {
-    appLogger.eWithPackage(
-      _monitoringProviderPackage,
-      '$action failed',
-      error: error,
-      stackTrace: stackTrace,
-    );
+    final message = ErrorMessageUtils.normalize(error);
+    if (_reportedErrors[action] != message) {
+      _reportedErrors[action] = message;
+      appLogger.eWithPackage(_monitoringProviderPackage, '$action failed',
+          error: error, stackTrace: stackTrace);
+    }
     _data = _data.copyWith(
       isLoading: false,
       isRefreshing: false,
-      error: '$action失败: $error',
+      error: _pollError ?? message,
     );
     notifyListeners();
-  }
-
-  Future<void> _ensureService() async {
-    _service ??= MonitoringService();
-    await _dataSource.init();
   }
 
   void _initConnectivity() {
     _connectivitySubscription =
         Connectivity().onConnectivityChanged.listen((results) {
-      if (results.contains(ConnectivityResult.mobile) ||
-          results.contains(ConnectivityResult.wifi) ||
-          results.contains(ConnectivityResult.ethernet)) {
+      final connected =
+          results.any((result) => result != ConnectivityResult.none);
+      final restored = connected && _online == false;
+      _online = connected;
+      if (restored && _pageVisible && _autoRefreshEnabled) {
         appLogger.iWithPackage(
           _monitoringProviderPackage,
           'Network restored, reloading monitoring data',
@@ -290,34 +294,59 @@ class MonitoringProvider extends ChangeNotifier with SafeChangeNotifier {
     });
   }
 
-  /// Lifecycle-aware refresh: throttle to 5-minute intervals when backgrounded
-  /// to conserve battery, and restore the user-configured interval on resume.
-  void onAppLifecycleChanged(AppLifecycleState state) {
-    if (!_autoRefreshEnabled) return;
-
-    if (state == AppLifecycleState.paused) {
-      appLogger.dWithPackage(
-        _monitoringProviderPackage,
-        'App paused, switching to background refresh (5 min)',
-      );
-      _stopTimer();
-      _refreshTimer = Timer.periodic(const Duration(minutes: 5), (_) {
-        unawaited(refreshByPolicy(silent: true));
-      });
-    } else if (state == AppLifecycleState.resumed) {
-      appLogger.dWithPackage(
-        _monitoringProviderPackage,
-        'App resumed, foreground refresh=${_refreshInterval.inSeconds}s',
-      );
-      _stopTimer();
-      _startTimer();
+  void setPageVisible(Object page, bool visible) {
+    if (isDisposed) return;
+    final wasVisible = _pageVisible;
+    if (visible) {
+      _visiblePages.add(page);
+    } else {
+      _visiblePages.remove(page);
     }
+    if (_pageVisible == wasVisible) return;
+    _stopTimer();
+    if (!_pageVisible) {
+      _connectivitySubscription?.cancel();
+      _online = null;
+      _invalidateQuery();
+      _data = _data.copyWith(
+        isLoading: false,
+        isRefreshing: false,
+        error: _data.error,
+      );
+      return;
+    }
+    if (!_opened) {
+      _opened = true;
+      _autoRefreshEnabled = true;
+    }
+    _initConnectivity();
+    if (_autoRefreshEnabled) _startTimer();
+    final lastFetch = _lastFetchTime;
+    if (lastFetch == null ||
+        (_autoRefreshEnabled &&
+            _customEndTime == null &&
+            DateTime.now().difference(lastFetch) >= _refreshInterval)) {
+      unawaited(refreshByPolicy(silent: _data.lastUpdated != null));
+    } else if (_autoRefreshEnabled &&
+        _online == true &&
+        _lastGpuRefreshAt == null) {
+      unawaited(_refreshGpuInfoByPolicy());
+    }
+  }
+
+  void invalidateMonitorSettings() {
+    if (isDisposed) return;
+    _invalidateQuery();
+    _optionsLoaded = false;
+    _lastFetchTime = null;
+    _cacheLoaded = false;
+    if (_pageVisible) unawaited(refreshByPolicy());
   }
 
   /// 设置刷新间隔
   void setRefreshInterval(Duration interval) {
     _refreshInterval = interval;
-    if (_autoRefreshEnabled) {
+    if (_autoRefreshEnabled && _pageVisible) {
       _startTimer();
     }
     notifyListeners();
@@ -328,7 +357,7 @@ class MonitoringProvider extends ChangeNotifier with SafeChangeNotifier {
     _gpuAutoRefreshEnabled = enabled;
     if (enabled) {
       _lastGpuRefreshAt = null;
-      unawaited(_refreshGpuInfoByPolicy());
+      if (_pageVisible) unawaited(_refreshGpuInfoByPolicy());
     }
     notifyListeners();
   }
@@ -353,46 +382,53 @@ class MonitoringProvider extends ChangeNotifier with SafeChangeNotifier {
     _gpuAutoRefreshEnabled = enabled;
     if (enabled) {
       _lastGpuRefreshAt = null;
-      unawaited(_refreshGpuInfoByPolicy());
+      if (_pageVisible) unawaited(_refreshGpuInfoByPolicy());
     }
     notifyListeners();
   }
 
   /// 设置最大数据点数量
   void setMaxDataPoints(int count) {
+    if (count < 2) throw RangeError.range(count, 2, null);
+    if (_maxDataPoints == count) return;
     _maxDataPoints = count;
-    notifyListeners();
     // 触发UI刷新，使用新的点数限制重新过滤数据
     _updateDisplayData();
   }
 
   /// 设置时间范围
   void setTimeRange(Duration range) {
+    _invalidateQuery();
     _timeRange = range;
     _customStartTime = null;
     _customEndTime = null;
     // 时间范围变更，重置增量状态，重新全量拉取
     _lastFetchTime = null;
+    _cacheLoaded = false;
     _clearRawData();
-    load();
+    if (_pageVisible && _autoRefreshEnabled) _startTimer();
+    if (_pageVisible) unawaited(refreshByPolicy(silent: false));
     notifyListeners();
   }
 
   /// 设置自定义时间范围
   void setCustomTimeRange(DateTime startTime, DateTime endTime) {
+    _invalidateQuery();
+    _stopTimer();
     _customStartTime = startTime;
     _customEndTime = endTime;
     _timeRange = endTime.difference(startTime);
     _lastFetchTime = null;
+    _cacheLoaded = false;
     _clearRawData();
-    load();
+    if (_pageVisible) unawaited(refreshByPolicy(silent: false));
     notifyListeners();
   }
 
   /// 启用/禁用自动刷新
   void toggleAutoRefresh(bool enabled) {
     _autoRefreshEnabled = enabled;
-    if (enabled) {
+    if (enabled && _pageVisible) {
       _startTimer();
       unawaited(refreshByPolicy(silent: true));
     } else {
@@ -403,6 +439,7 @@ class MonitoringProvider extends ChangeNotifier with SafeChangeNotifier {
 
   void _startTimer() {
     _stopTimer();
+    if (_customEndTime != null) return;
     appLogger.dWithPackage(
       _monitoringProviderPackage,
       'Auto refresh started: ${_refreshInterval.inSeconds}s',
@@ -413,7 +450,7 @@ class MonitoringProvider extends ChangeNotifier with SafeChangeNotifier {
   }
 
   Future<void> _refreshGpuInfoByPolicy() async {
-    if (!_gpuAutoRefreshEnabled) {
+    if (!_gpuAutoRefreshEnabled || _online != true) {
       return;
     }
     final now = DateTime.now();
@@ -422,6 +459,7 @@ class MonitoringProvider extends ChangeNotifier with SafeChangeNotifier {
         now.difference(lastRefreshAt) < _gpuRefreshInterval) {
       return;
     }
+    _lastGpuRefreshAt = now;
     await loadGPUInfo();
   }
 
@@ -433,6 +471,7 @@ class MonitoringProvider extends ChangeNotifier with SafeChangeNotifier {
   @override
   void dispose() {
     _stopTimer();
+    _historyCancellation.cancel();
     _connectivitySubscription?.cancel();
     super.dispose();
   }
@@ -441,291 +480,188 @@ class MonitoringProvider extends ChangeNotifier with SafeChangeNotifier {
     for (var key in _rawTimeSeries.keys) {
       _rawTimeSeries[key]!.clear();
     }
-    for (var key in _previousRawTimeSeries.keys) {
-      _previousRawTimeSeries[key]!.clear();
-    }
   }
 
-  Future<void> _saveToStorage(Map<String, MonitorTimeSeries> data) async {
+  Future<void> _saveToStorage(
+    Map<String, MonitorTimeSeries> data,
+    int revision,
+  ) async {
     for (var entry in data.entries) {
-      // 转换 metric key 为存储 key
-      // API 返回的 key 可能是 'cpu', 'memory' 等
-      // MonitorLocalDataSource 需要这些 key
-      await _dataSource.savePoints(entry.key, entry.value.data);
+      if (!_isCurrent(revision)) return;
+      if (entry.value.data.isEmpty) continue;
+      await _dataSource.savePoints(_storageKey(entry.key), entry.value.data);
     }
   }
 
-  Future<void> _loadFromStorage(DateTime now) async {
+  String _storageKey(String metric) {
+    final device = switch (metric) {
+      'io' => _data.selectedIO,
+      'network' => _data.selectedNetwork,
+      _ => null,
+    };
+    return device == null
+        ? metric
+        : '$metric-${base64.encode(utf8.encode(device))}';
+  }
+
+  Future<void> _loadFromStorage(DateTime now, int revision) async {
     final start = _customStartTime ?? now.subtract(_timeRange);
     final end = _customEndTime ?? now;
 
     for (var key in _rawTimeSeries.keys) {
-      final points = await _dataSource.getPoints(key, start, end);
+      final points = await _dataSource.getPoints(_storageKey(key), start, end);
+      if (!_isCurrent(revision)) return;
       if (points.isNotEmpty) {
         _rawTimeSeries[key] = points;
       }
     }
   }
 
-  Future<void> _loadPreviousData(DateTime now) async {
-    // "Previous period" = same time window shifted 24 hours back (day-over-day comparison).
-    // If viewing a historical range, the comparison range shifts accordingly.
-    final currentStart = _customStartTime ?? now.subtract(_timeRange);
-    final start = currentStart.subtract(const Duration(days: 1));
-    final end = (_customEndTime ?? now).subtract(const Duration(days: 1));
-
-    for (var key in _previousRawTimeSeries.keys) {
-      // 尝试从本地存储加载
-      final points = await _dataSource.getPoints(key, start, end);
-      if (points.isNotEmpty) {
-        _previousRawTimeSeries[key] = points;
-      }
-    }
-  }
-
   /// 加载所有监控数据
   Future<void> load({bool silent = false}) async {
+    final revision = _queryRevision;
     if (!silent) {
       _data = _data.copyWith(isLoading: true, error: null);
       notifyListeners();
     } else {
-      _data = _data.copyWith(isRefreshing: true, error: null);
+      _data = _data.copyWith(isRefreshing: true, error: _data.error);
     }
 
     try {
-      await _ensureService();
-      await _loadMonitorOptionsIfNeeded();
+      var online = _pageVisible ? _online : null;
+      if (online == null) {
+        final connectivity = await Connectivity().checkConnectivity();
+        if (!_isCurrent(revision)) return;
+        online = (_pageVisible ? _online : null) ??
+            connectivity.any((value) => value != ConnectivityResult.none);
+        _online = online;
+      }
+      if (!_isCurrent(revision)) return;
+      if (online) await _loadMonitorOptionsIfNeeded(revision);
+      if (!_isCurrent(revision)) return;
 
       final now = DateTime.now();
-      DateTime fetchStartTime;
-
-      // Incremental fetch: only request data newer than the last fetch to
-      // reduce bandwidth on mobile. Falls back to full fetch on first load
-      // or when the user changes the time range.
-      if (_lastFetchTime != null && _customStartTime == null) {
-        fetchStartTime = _lastFetchTime!;
-      } else {
-        fetchStartTime = _customStartTime ?? now.subtract(_timeRange);
-        if (_lastFetchTime == null) {
-          _clearRawData();
-          // Seed from local storage so the chart isn't empty while fetching.
-          await _loadFromStorage(now);
-          await _loadPreviousData(now);
-        }
+      final start =
+          _customStartTime ?? _lastFetchTime ?? now.subtract(_timeRange);
+      final initial = !_cacheLoaded;
+      if (initial) {
+        _clearRawData();
+        await _loadFromStorage(now, revision);
+        if (!_isCurrent(revision)) return;
+        _cacheLoaded = true;
       }
 
-      // 检查网络状态
-      final connectivity = await Connectivity().checkConnectivity();
-      if (connectivity.contains(ConnectivityResult.none)) {
-        appLogger.wWithPackage(
-          _monitoringProviderPackage,
-          'Offline mode detected, fallback to local data',
-        );
-        _updateDisplayData(now: now);
+      if (!online) {
+        _updateDisplayData(now: now, changed: initial ? null : const {});
         return;
       }
 
-      // 在线模式：获取数据
-      try {
-        final result = await _service!.getMonitorData(
-          io: _data.selectedIO,
-          network: _data.selectedNetwork,
-          duration: _timeRange,
-          startTime: fetchStartTime,
-        );
-
-        // 合并增量数据
-        _mergeData('cpu', result.timeSeries['cpu']);
-        _mergeData('memory', result.timeSeries['memory']);
-        _mergeData('load', result.timeSeries['load']);
-        _mergeData('io', result.timeSeries['io']);
-        _mergeData('network', result.timeSeries['network']);
-
-        _lastFetchTime = now;
-
-        // 保存到本地存储
-        await _saveToStorage(result.timeSeries);
-
-        // 如果是全量拉取，尝试重新加载上一周期数据
-        if (fetchStartTime == _customStartTime ||
-            fetchStartTime == now.subtract(_timeRange)) {
-          await _loadPreviousData(now);
-        }
-
-        // 更新展示数据
-        _updateDisplayData(currentMetrics: result.current, now: now);
-      } catch (e, stackTrace) {
-        appLogger.wWithPackage(
-          _monitoringProviderPackage,
-          'Network fetch failed, fallback to local cache',
-          error: e,
-          stackTrace: stackTrace,
-        );
-        // 网络请求失败，降级使用本地数据
-        if (_lastFetchTime == null) {
-          _updateDisplayData(now: now);
-        }
-        // 没有本地缓存时不能静默吞掉失败：空图表没有任何错误提示，
-        // 用户会误以为面板没有数据，需要记录错误并渲染错误态。
-        if (_rawTimeSeries['cpu']!.isEmpty) {
-          rethrow;
+      final result = await _service.getMonitorData(
+        cancelToken: _historyCancellation,
+        io: _data.selectedIO,
+        network: _data.selectedNetwork,
+        duration: _timeRange,
+        startTime: start,
+        endTime: _customEndTime ?? now,
+      );
+      if (!_isCurrent(revision)) return;
+      await _saveToStorage(result.timeSeries, revision);
+      if (!_isCurrent(revision)) return;
+      final changed = <String>{};
+      for (final entry in _rawTimeSeries.entries) {
+        final points = result.timeSeries[entry.key]?.data;
+        if (points != null && mergeMonitorPoints(entry.value, points)) {
+          changed.add(entry.key);
         }
       }
+      _reportedErrors.remove('加载监控数据');
+      _lastFetchTime = now;
+      _updateDisplayData(
+          currentMetrics: result.current, changed: initial ? null : changed);
     } catch (e, stackTrace) {
+      if (!_isCurrent(revision)) return;
+      if (!_data.hasData &&
+          _lastFetchTime == null &&
+          _rawTimeSeries.values.any((points) => points.isNotEmpty)) {
+        _updateDisplayData();
+      }
       _recordError('加载监控数据', e, stackTrace: stackTrace);
     }
   }
 
-  void _mergeData(String key, MonitorTimeSeries? newSeries) {
-    if (newSeries == null || newSeries.data.isEmpty) return;
-    final list = _rawTimeSeries[key]!;
-
-    if (list.isNotEmpty) {
-      final lastTime = list.last.time;
-      // 仅添加比本地最新数据更新的数据点
-      final newPoints = newSeries.data.where((p) => p.time.isAfter(lastTime));
-      list.addAll(newPoints);
-    } else {
-      list.addAll(newSeries.data);
-    }
-
-    // 简单的内存保护：如果数据点过多（例如超过24小时的秒级数据），可以清理旧数据
-    // 这里暂不实现复杂清理，假设内存足够
-  }
-
   void _updateDisplayData(
-      {MonitorMetricsSnapshot? currentMetrics, DateTime? now}) {
+      {MonitorMetricsSnapshot? currentMetrics,
+      DateTime? now,
+      Set<String>? changed}) {
     now ??= DateTime.now();
-
-    final displayCpu = _getDisplaySeries('cpu', 'cpu', now);
-    final displayMemory = _getDisplaySeries('memory', 'memory', now);
-    final displayLoad = _getDisplaySeries('load', 'load', now);
-    final displayIo = _getDisplaySeries('io', 'disk', now);
-    final displayNetwork = _getDisplaySeries('network', 'networkIn', now);
-
-    final prevCpu = _getPreviousDisplaySeries('cpu', 'cpu', now);
-    final prevMemory = _getPreviousDisplaySeries('memory', 'memory', now);
-    final prevLoad = _getPreviousDisplaySeries('load', 'load', now);
-    final prevIo = _getPreviousDisplaySeries('io', 'disk', now);
-    final prevNetwork = _getPreviousDisplaySeries('network', 'networkIn', now);
+    final start = _customStartTime ?? now.subtract(_timeRange);
+    final end = _customEndTime ?? now;
+    MonitorTimeSeries project(
+        String key, String name, MonitorTimeSeries? previous) {
+      final points = _rawTimeSeries[key]!;
+      final expired = points.isNotEmpty && points.first.time.isBefore(start);
+      final previousEnd = _customEndTime ?? _data.lastUpdated;
+      final hadFutureSamples = points.isNotEmpty &&
+          previousEnd != null &&
+          points.last.time.isAfter(previousEnd);
+      if (previous != null &&
+          changed != null &&
+          !changed.contains(key) &&
+          !expired &&
+          !hadFutureSamples) {
+        return previous;
+      }
+      if (expired) {
+        final first = points.indexWhere((point) => !point.time.isBefore(start));
+        points.removeRange(0, first < 0 ? points.length : first);
+      }
+      final visible = points.isEmpty || !points.last.time.isAfter(end)
+          ? points
+          : points.takeWhile((point) => !point.time.isAfter(end)).toList();
+      return MonitorTimeSeries.fromPoints(name, visible,
+          limit: _maxDataPoints == 1000 ? null : _maxDataPoints);
+    }
 
     _data = _data.copyWith(
       currentMetrics: currentMetrics,
-      cpuTimeSeries: displayCpu,
-      cpuPreviousSeries: prevCpu,
-      memoryTimeSeries: displayMemory,
-      memoryPreviousSeries: prevMemory,
-      loadTimeSeries: displayLoad,
-      loadPreviousSeries: prevLoad,
-      ioTimeSeries: displayIo,
-      ioPreviousSeries: prevIo,
-      networkTimeSeries: displayNetwork,
-      networkPreviousSeries: prevNetwork,
+      cpuTimeSeries: project('cpu', 'cpu', _data.cpuTimeSeries),
+      memoryTimeSeries: project('memory', 'memory', _data.memoryTimeSeries),
+      loadTimeSeries: project('load', 'load', _data.loadTimeSeries),
+      ioTimeSeries: project('io', 'disk', _data.ioTimeSeries),
+      networkTimeSeries:
+          project('network', 'networkIn', _data.networkTimeSeries),
       isLoading: false,
       isRefreshing: false,
+      error: _pollError,
       lastUpdated: now,
     );
-
-    if (currentMetrics != null) {
-      _data = _data.copyWith(currentMetrics: currentMetrics);
-    }
 
     notifyListeners();
   }
 
-  MonitorTimeSeries _getDisplaySeries(String key, String name, DateTime now) {
-    final list = _rawTimeSeries[key]!;
-    final start = _customStartTime ?? now.subtract(_timeRange);
-    final end = _customEndTime ?? now;
-
-    // 过滤时间范围
-    var filtered = list
-        .where((p) =>
-            p.time.isAfter(start) &&
-            p.time.isBefore(end.add(const Duration(seconds: 1))))
-        .toList();
-
-    // 如果数据点太多，且设置了 maxDataPoints，则进行采样
-    if (_maxDataPoints < 100 && filtered.length > _maxDataPoints) {
-      final step = (filtered.length / _maxDataPoints).ceil();
-      final sampled = <MonitorDataPoint>[];
-      for (var i = 0; i < filtered.length; i += step) {
-        sampled.add(filtered[i]);
-      }
-      filtered = sampled;
-    }
-
-    // 计算统计信息
-    double? min, max;
-    double sum = 0;
-    for (var p in filtered) {
-      if (min == null || p.value < min) min = p.value;
-      if (max == null || p.value > max) max = p.value;
-      sum += p.value;
-    }
-
-    return MonitorTimeSeries(
-      name: name,
-      data: filtered,
-      min: min,
-      max: max,
-      avg: filtered.isNotEmpty ? sum / filtered.length : null,
-    );
-  }
-
-  MonitorTimeSeries _getPreviousDisplaySeries(
-      String key, String name, DateTime now) {
-    final list = _previousRawTimeSeries[key]!;
-    final start = _customStartTime ?? now.subtract(_timeRange);
-    final end = _customEndTime ?? now;
-
-    // 平移时间戳：+1天（假设上一周期是昨天同一时间）
-    final shift = const Duration(days: 1);
-    final shifted = <MonitorDataPoint>[];
-
-    for (var p in list) {
-      final newTime = p.time.add(shift);
-      if (newTime.isAfter(start) &&
-          newTime.isBefore(end.add(const Duration(seconds: 1)))) {
-        shifted.add(MonitorDataPoint(time: newTime, value: p.value));
-      }
-    }
-
-    // 计算统计信息
-    double? min, max;
-    double sum = 0;
-    for (var p in shifted) {
-      if (min == null || p.value < min) min = p.value;
-      if (max == null || p.value > max) max = p.value;
-      sum += p.value;
-    }
-
-    return MonitorTimeSeries(
-      name: name,
-      data: shifted,
-      min: min,
-      max: max,
-      avg: shifted.isNotEmpty ? sum / shifted.length : null,
-    );
-  }
-
   /// 刷新数据
-  Future<void> refresh() async {
-    await load(silent: true);
-  }
+  Future<void> refresh() => refreshByPolicy();
 
   /// 按策略刷新（主监控 + 可选GPU）
-  Future<void> refreshByPolicy({bool silent = true}) async {
-    if (_isPolling) {
-      return;
-    }
-    _isPolling = true;
-    try {
-      await load(silent: silent);
-      await _refreshGpuInfoByPolicy();
-    } finally {
-      _isPolling = false;
-    }
+  Future<void> refreshByPolicy({bool silent = true}) {
+    if (isDisposed) return Future.value();
+    final revision = _queryRevision;
+    final active = _polling;
+    if (active != null && active.revision == revision) return active.completion;
+
+    final completion = Future<void>.microtask(() async {
+      try {
+        if (!_isCurrent(revision)) return;
+        await load(silent: silent);
+        if (_isCurrent(revision) && (!_opened || _pageVisible)) {
+          await _refreshGpuInfoByPolicy();
+        }
+      } finally {
+        if (_polling?.revision == revision) _polling = null;
+      }
+    });
+    _polling = (revision: revision, completion: completion);
+    return completion;
   }
 
   /// 清除错误
@@ -735,28 +671,33 @@ class MonitoringProvider extends ChangeNotifier with SafeChangeNotifier {
   }
 
   /// 加载监控设置
-  Future<void> loadSettings() async {
+  Future<bool> loadSettings({bool reloadDevices = true}) async {
     try {
-      await _ensureService();
-      final settings = await _service!.getSetting();
-      final ioOptions = await _service!.getIOOptions();
-      final networkOptions = await _service!.getNetworkOptions();
-      final safeIoOptions = ioOptions.isEmpty ? const ['all'] : ioOptions;
-      final safeNetworkOptions =
-          networkOptions.isEmpty ? const ['all'] : networkOptions;
+      final (settings, ioOptions, networkOptions) = await (
+        _service.getSetting(),
+        reloadDevices ? _service.getIOOptions() : Future.value(_data.ioOptions),
+        reloadDevices
+            ? _service.getNetworkOptions()
+            : Future.value(_data.networkOptions),
+      ).wait;
+      if (settings == null || settings.enabled == null) {
+        throw const FormatException('Missing monitor settings');
+      }
       _data = _data.copyWith(
         settings: settings,
-        ioOptions: safeIoOptions,
-        networkOptions: safeNetworkOptions,
-        selectedIO: _normalizeMonitorOption(settings?.defaultIO, safeIoOptions),
+        ioOptions: ioOptions,
+        networkOptions: networkOptions,
+        selectedIO: _normalizeMonitorOption(settings.defaultIO, ioOptions),
         selectedNetwork: _normalizeMonitorOption(
-          settings?.defaultNetwork,
-          safeNetworkOptions,
+          settings.defaultNetwork,
+          networkOptions,
         ),
       );
       notifyListeners();
+      return true;
     } catch (e, stackTrace) {
       _recordError('加载监控设置', e, stackTrace: stackTrace);
+      return false;
     }
   }
 
@@ -769,20 +710,13 @@ class MonitoringProvider extends ChangeNotifier with SafeChangeNotifier {
     String? defaultNetwork,
   }) async {
     try {
-      await _ensureService();
-      final success = await _service!.updateSetting(
+      return await _service.updateSetting(
         interval: interval,
         retention: retention,
         enabled: enabled,
         defaultIO: defaultIO,
         defaultNetwork: defaultNetwork,
       );
-      if (success) {
-        await loadSettings();
-        _lastFetchTime = null;
-        await load(silent: true);
-      }
-      return success;
     } catch (e, stackTrace) {
       _recordError('更新监控设置', e, stackTrace: stackTrace);
       return false;
@@ -792,8 +726,7 @@ class MonitoringProvider extends ChangeNotifier with SafeChangeNotifier {
   /// 清理监控数据
   Future<bool> cleanData() async {
     try {
-      await _ensureService();
-      return await _service!.cleanData();
+      return await _service.cleanData();
     } catch (e, stackTrace) {
       _recordError('清理监控数据', e, stackTrace: stackTrace);
       return false;
@@ -802,14 +735,24 @@ class MonitoringProvider extends ChangeNotifier with SafeChangeNotifier {
 
   /// 加载GPU信息
   Future<void> loadGPUInfo() async {
+    final revision = _queryRevision;
     try {
-      await _ensureService();
-      final gpuInfo = await _service!.getGPUInfo();
-      _lastGpuRefreshAt = DateTime.now();
-      _data = _data.copyWith(gpuInfo: gpuInfo);
+      final gpuInfo = await _service.getGPUInfo();
+      if (!_isCurrent(revision) ||
+          !_gpuAutoRefreshEnabled ||
+          (_opened && !_pageVisible)) {
+        return;
+      }
+      _reportedErrors.remove('加载GPU信息');
+      if (listEquals(gpuInfo, _data.gpuInfo) && _data.error == _pollError) {
+        return;
+      }
+      _data = _data.copyWith(gpuInfo: gpuInfo, error: _pollError);
       notifyListeners();
     } catch (e, stackTrace) {
-      _recordError('加载GPU信息', e, stackTrace: stackTrace);
+      if (_isCurrent(revision) && _gpuAutoRefreshEnabled) {
+        _recordError('加载GPU信息', e, stackTrace: stackTrace);
+      }
     }
   }
 }

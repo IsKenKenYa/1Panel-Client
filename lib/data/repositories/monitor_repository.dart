@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import '../models/monitor_models.dart';
 import '../models/monitoring_runtime_models.dart';
@@ -20,8 +21,6 @@ class MonitorRepository {
       final now = DateTime.now();
       final startTime = now.subtract(const Duration(hours: 1));
 
-      appLogger.dWithPackage(
-          _monitorRepoPackage, 'Calling monitor metrics API');
       final response = await client.post(
         '/api/v2/hosts/monitor/search',
         data: {
@@ -82,42 +81,42 @@ class MonitorRepository {
   /// Batch-fetches all monitoring data (current metrics + time series).
   Future<MonitorDataPackage> getMonitorData(
     dynamic client, {
+    CancelToken? cancelToken,
     String? io,
     String? network,
     Duration duration = const Duration(hours: 1),
     DateTime? startTime,
+    DateTime? endTime,
   }) async {
-    try {
-      final now = DateTime.now();
-      final start = startTime ?? now.subtract(duration);
+    final now = endTime ?? DateTime.now();
+    final start = startTime ?? now.subtract(duration);
 
-      final response = await client.post(
-        '/api/v2/hosts/monitor/search',
-        data: {
-          'param': 'all',
-          if (io != null) 'io': io,
-          if (network != null) 'network': network,
-          'startTime': start.toUtc().toIso8601String(),
-          'endTime': now.toUtc().toIso8601String(),
-        },
-      );
+    final response = await client.post(
+      '/api/v2/hosts/monitor/search',
+      cancelToken: cancelToken,
+      data: {
+        'param': 'all',
+        if (io != null) 'io': io,
+        if (network != null) 'network': network,
+        'startTime': start.toUtc().toIso8601String(),
+        'endTime': now.toUtc().toIso8601String(),
+      },
+    );
 
-      return await compute(
-        parseMonitorDataPackage,
-        MonitorDataParseArgs(response.data, now),
-      );
-    } catch (e, stack) {
-      appLogger.eWithPackage(
-        _monitorRepoPackage,
-        'getMonitorData failed',
-        error: e,
-        stackTrace: stack,
-      );
-      return MonitorDataPackage(
-        current: const MonitorMetricsSnapshot(),
-        timeSeries: {},
-      );
+    final body = response.data;
+    if (body is! Map<String, dynamic> ||
+        !body.containsKey('data') ||
+        (body['data'] != null && body['data'] is! List)) {
+      throw const FormatException('Invalid monitor history response');
     }
+    final args = MonitorDataParseArgs(body, now);
+    final groups = body['data'] as List?;
+    if (groups == null ||
+        groups.every((group) =>
+            group is Map && ((group['value'] as List?)?.length ?? 0) <= 16)) {
+      return parseMonitorDataPackage(args);
+    }
+    return compute(parseMonitorDataPackage, args);
   }
 
   /// Fetches GPU information.
@@ -131,66 +130,56 @@ class MonitorRepository {
   /// GET /ai/gpu/options 取设备列表；无 GPU 设备时直接返回空，不再发起
   /// 必然 500 的历史查询。
   Future<List<MonitorGpuInfo>> getGPUInfo(dynamic client) async {
-    try {
-      String? deviceId;
-      String? productName;
-      bool legacy = false;
-      final optionsResponse = await client.get('/api/v2/ai/gpu/options');
-      if (optionsResponse.data is Map) {
-        final body = Map<String, dynamic>.from(optionsResponse.data as Map);
-        final payload = body['data'] is Map
-            ? Map<String, dynamic>.from(body['data'] as Map)
-            : body;
-        final chartHide = payload['chartHide'];
-        if (chartHide is List && chartHide.isNotEmpty) {
-          final first =
-              Map<String, dynamic>.from(chartHide.first as Map);
-          deviceId = (first['deviceID'] as String?)?.trim();
-          productName = (first['productName'] as String?)?.trim();
-          legacy = first['legacy'] == true;
-        }
+    String? deviceId;
+    String? productName;
+    bool legacy = false;
+    final optionsResponse = await client.get('/api/v2/ai/gpu/options');
+    if (optionsResponse.data is Map) {
+      final body = Map<String, dynamic>.from(optionsResponse.data as Map);
+      final payload = body['data'] is Map
+          ? Map<String, dynamic>.from(body['data'] as Map)
+          : body;
+      final chartHide = payload['chartHide'];
+      if (chartHide is List && chartHide.isNotEmpty) {
+        final first = Map<String, dynamic>.from(chartHide.first as Map);
+        deviceId = (first['deviceID'] as String?)?.trim();
+        productName = (first['productName'] as String?)?.trim();
+        legacy = first['legacy'] == true;
       }
-      if ((deviceId == null || deviceId.isEmpty) &&
-          (productName == null || productName.isEmpty)) {
-        return [];
-      }
-
-      final now = DateTime.now();
-      final startTime = now.subtract(const Duration(hours: 1));
-
-      final response = await client.post(
-        '/api/v2/ai/gpu/search',
-        data: {
-          'startTime': startTime.toUtc().toIso8601String(),
-          'endTime': now.toUtc().toIso8601String(),
-          'deviceID': deviceId ?? '',
-          'productName': productName ?? '',
-          'legacy': legacy,
-        },
-      );
-
-      if (response.data is Map) {
-        final body = Map<String, dynamic>.from(response.data as Map);
-        // 兼容信封 {code, message, data} 与已解包的 MonitorGPUData 两种形态。
-        final payload = body['data'] is Map
-            ? Map<String, dynamic>.from(body['data'] as Map)
-            : body;
-        return MonitorGpuInfo.listFromGpuSearchData(payload);
-      }
-      return [];
-    } catch (e, stack) {
-      appLogger.eWithPackage(
-        _monitorRepoPackage,
-        'getGPUInfo failed',
-        error: e,
-        stackTrace: stack,
-      );
+    }
+    if ((deviceId == null || deviceId.isEmpty) &&
+        (productName == null || productName.isEmpty)) {
       return [];
     }
+
+    final now = DateTime.now();
+    final startTime = now.subtract(const Duration(hours: 1));
+
+    final response = await client.post(
+      '/api/v2/ai/gpu/search',
+      data: {
+        'startTime': startTime.toUtc().toIso8601String(),
+        'endTime': now.toUtc().toIso8601String(),
+        'deviceID': deviceId ?? '',
+        'productName': productName ?? '',
+        'legacy': legacy,
+      },
+    );
+
+    if (response.data is Map) {
+      final body = Map<String, dynamic>.from(response.data as Map);
+      // 兼容信封 {code, message, data} 与已解包的 MonitorGPUData 两种形态。
+      final payload = body['data'] is Map
+          ? Map<String, dynamic>.from(body['data'] as Map)
+          : body;
+      return MonitorGpuInfo.listFromGpuSearchData(payload);
+    }
+    throw const FormatException('Invalid GPU history response');
   }
 
   /// Fetches monitoring settings.
-  Future<MonitorSetting?> getSetting(dynamic client) async {
+  Future<MonitorSetting?> getSetting(dynamic client,
+      {bool requireResponse = false}) async {
     try {
       final response = await client.get('/api/v2/hosts/monitor/setting');
       if (response.data != null && response.data is Map) {
@@ -201,6 +190,9 @@ class MonitorRepository {
         }
         return MonitorSetting.fromJson(body);
       }
+      if (requireResponse) {
+        throw const FormatException('Invalid monitor settings response');
+      }
       return null;
     } catch (e, stack) {
       appLogger.eWithPackage(
@@ -209,6 +201,7 @@ class MonitorRepository {
         error: e,
         stackTrace: stack,
       );
+      if (requireResponse) rethrow;
       return null;
     }
   }
@@ -257,14 +250,14 @@ class MonitorRepository {
         error: e,
         stackTrace: stack,
       );
-      return false;
+      rethrow;
     }
   }
 
   /// Cleans monitoring data.
   Future<bool> cleanData(dynamic client) async {
     try {
-      await client.post('/api/v2/hosts/monitor/clean');
+      await client.post('/api/v2/hosts/monitor/clean', data: {'type': 'host'});
       return true;
     } catch (e, stack) {
       appLogger.eWithPackage(
@@ -273,53 +266,38 @@ class MonitorRepository {
         error: e,
         stackTrace: stack,
       );
-      return false;
+      rethrow;
     }
   }
 
   /// Fetches the list of network interfaces.
-  Future<List<String>> getNetworkOptions(dynamic client) async {
-    try {
-      final response = await client.get('/api/v2/hosts/monitor/netoptions');
-      if (response.data != null && response.data is Map) {
-        final body = response.data as Map<String, dynamic>;
-        final dataList = body['data'] as List?;
-        if (dataList != null) {
-          return dataList.map((e) => e.toString()).toList();
-        }
-      }
-      return ['all'];
-    } catch (e, stack) {
-      appLogger.eWithPackage(
-        _monitorRepoPackage,
-        'getNetworkOptions failed',
-        error: e,
-        stackTrace: stack,
-      );
-      return ['all'];
-    }
-  }
+  Future<List<String>> getNetworkOptions(dynamic client,
+          {bool requireResponse = false}) =>
+      _getOptions(client, '/api/v2/hosts/monitor/netoptions', requireResponse);
 
   /// Fetches the list of IO devices.
-  Future<List<String>> getIOOptions(dynamic client) async {
+  Future<List<String>> getIOOptions(dynamic client,
+          {bool requireResponse = false}) =>
+      _getOptions(client, '/api/v2/hosts/monitor/iooptions', requireResponse);
+
+  Future<List<String>> _getOptions(
+      dynamic client, String path, bool requireResponse) async {
     try {
-      final response = await client.get('/api/v2/hosts/monitor/iooptions');
-      if (response.data != null && response.data is Map) {
-        final body = response.data as Map<String, dynamic>;
-        final dataList = body['data'] as List?;
-        if (dataList != null) {
-          return dataList.map((e) => e.toString()).toList();
-        }
+      final response = await client.get(path);
+      final body = response.data;
+      if (body is Map && body['data'] is List) {
+        return List<String>.from(body['data'] as List);
       }
-      return ['all'];
+      throw const FormatException('Invalid monitor device list');
     } catch (e, stack) {
       appLogger.eWithPackage(
         _monitorRepoPackage,
-        'getIOOptions failed',
+        'Failed to load monitor options from $path',
         error: e,
         stackTrace: stack,
       );
-      return ['all'];
+      if (requireResponse) rethrow;
+      return const ['all'];
     }
   }
 }

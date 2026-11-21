@@ -51,8 +51,6 @@ class _FakeDashboardService extends DashboardService {
   @override
   Future<void> shutdownSystem() async {}
 
-  @override
-  Future<void> upgradeSystem() async {}
 }
 
 void main() {

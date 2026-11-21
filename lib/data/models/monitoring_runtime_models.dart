@@ -11,6 +11,17 @@ class MonitorGpuInfo {
     this.temperature,
   });
 
+  @override
+  bool operator ==(Object other) =>
+      other is MonitorGpuInfo &&
+      other.name == name &&
+      other.utilization == utilization &&
+      other.memory == memory &&
+      other.temperature == temperature;
+
+  @override
+  int get hashCode => Object.hash(name, utilization, memory, temperature);
+
   factory MonitorGpuInfo.fromJson(Map<String, dynamic> json) {
     return MonitorGpuInfo(
       name: json['name'] as String?,

@@ -81,7 +81,7 @@ class _ProcessList extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
 
-    if (isLoading) {
+    if (isLoading && processes.isEmpty) {
       return Center(
         child: CircularProgressIndicator(color: colorScheme.primary),
       );
@@ -97,7 +97,7 @@ class _ProcessList extends StatelessWidget {
     }
 
     return ListView.separated(
-      shrinkWrap: true,
+      primary: false,
       itemCount: processes.length > 5 ? 5 : processes.length,
       separatorBuilder: (context, index) => const Divider(height: 1),
       itemBuilder: (context, index) {

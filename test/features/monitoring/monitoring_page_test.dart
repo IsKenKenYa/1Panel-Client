@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -43,10 +44,12 @@ class _FakeMonitoringService extends MonitoringService {
 
   @override
   Future<MonitorDataPackage> getMonitorData({
+    CancelToken? cancelToken,
     Duration duration = const Duration(hours: 1),
     String? io,
     String? network,
     DateTime? startTime,
+    DateTime? endTime,
   }) async {
     return MonitorDataPackage(
       current: const MonitorMetricsSnapshot(
@@ -107,7 +110,10 @@ class _FakeMonitoringService extends MonitoringService {
 }
 
 Future<void> _tapGpuRefreshSwitch(WidgetTester tester) async {
-  final gpuSwitch = find.byType(SwitchListTile).at(1);
+  final gpuSwitch = find.descendant(
+    of: find.byType(AlertDialog),
+    matching: find.byType(SwitchListTile),
+  );
   await tester.scrollUntilVisible(
     gpuSwitch,
     160,
@@ -175,7 +181,11 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(AlertDialog), findsOneWidget);
-    expect(find.byType(SwitchListTile), findsNWidgets(2));
+    expect(
+        find.descendant(
+            of: find.byType(AlertDialog),
+            matching: find.byType(SwitchListTile)),
+        findsOneWidget);
     expect(find.byType(DropdownButtonFormField<Duration>), findsNWidgets(3));
 
     await _tapGpuRefreshSwitch(tester);
@@ -233,7 +243,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(provider.gpuAutoRefreshEnabled, isFalse);
-    expect(service.updateSettingsCallCount, 1);
+    expect(service.updateSettingsCallCount, 0);
 
     provider.toggleAutoRefresh(false);
     await tester.pumpWidget(const MaterialApp(home: SizedBox.shrink()));

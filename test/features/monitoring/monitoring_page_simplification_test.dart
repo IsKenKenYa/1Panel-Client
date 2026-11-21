@@ -38,5 +38,16 @@ void main() {
 
       provider.dispose();
     });
+
+    testWidgets('页面隐藏时更改刷新选项不会触发采集', (tester) async {
+      final provider = MonitoringProvider();
+      addTearDown(provider.dispose);
+      provider.setPageVisible(Object(), false);
+      provider.setGpuAutoRefreshEnabled(true);
+      provider.toggleAutoRefresh(true);
+      await tester.pump(const Duration(minutes: 1));
+      expect(provider.data.lastUpdated, isNull);
+      expect(provider.data.error, isNull);
+    });
   });
 }

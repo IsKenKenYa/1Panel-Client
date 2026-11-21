@@ -66,6 +66,27 @@ class MonitorMetricsSnapshot {
       load1 != null;
 
   factory MonitorMetricsSnapshot.empty() => const MonitorMetricsSnapshot();
+
+  factory MonitorMetricsSnapshot.fromDashboard(Map<String, dynamic> data) {
+    final disks = (data['diskData'] as List<dynamic>? ?? const [])
+        .map((item) => DiskData.fromJson(item as Map<String, dynamic>))
+        .toList(growable: false);
+    return MonitorMetricsSnapshot(
+      cpuPercent: (data['cpuUsedPercent'] as num?)?.toDouble(),
+      memoryPercent: (data['memoryUsedPercent'] as num?)?.toDouble(),
+      diskPercent: disks.firstOrNull?.usedPercent,
+      load1: (data['load1'] as num?)?.toDouble(),
+      load5: (data['load5'] as num?)?.toDouble(),
+      load15: (data['load15'] as num?)?.toDouble(),
+      memoryUsed: data['memoryUsed'] as int?,
+      memoryTotal: data['memoryTotal'] as int?,
+      diskData: disks,
+      uptime: data['uptime'] as int?,
+      timestamp: data['shotTime'] == null
+          ? DateTime.now()
+          : DateTime.parse(data['shotTime'] as String).toLocal(),
+    );
+  }
 }
 
 /// A single monitoring data point (timestamp + value).
@@ -77,6 +98,33 @@ class MonitorDataPoint {
     required this.time,
     required this.value,
   });
+}
+
+/// 合并新增采样，保留时间顺序并补齐历史查询覆盖的空缺。
+bool mergeMonitorPoints(
+  List<MonitorDataPoint> points,
+  List<MonitorDataPoint> incoming,
+) {
+  if (incoming.isEmpty) return false;
+  final size = points.length;
+  var latest = points.isEmpty ? null : points.last.time.millisecondsSinceEpoch;
+  Set<int>? timestamps;
+  var needsSort = false;
+  for (final point in incoming) {
+    final time = point.time.millisecondsSinceEpoch;
+    if (time == latest) continue;
+    if (latest != null && time < latest) {
+      timestamps ??= points.map((p) => p.time.millisecondsSinceEpoch).toSet();
+      if (!timestamps.add(time)) continue;
+      needsSort = true;
+    } else {
+      latest = time;
+      timestamps?.add(time);
+    }
+    points.add(point);
+  }
+  if (needsSort) points.sort((a, b) => a.time.compareTo(b.time));
+  return points.length != size;
 }
 
 /// A named time series of monitoring data points with aggregate stats.
@@ -97,6 +145,32 @@ class MonitorTimeSeries {
 
   factory MonitorTimeSeries.empty(String name) =>
       MonitorTimeSeries(name: name, data: []);
+
+  factory MonitorTimeSeries.fromPoints(
+      String name, List<MonitorDataPoint> points,
+      {int? limit}) {
+    if (limit != null && limit < 2) throw RangeError.range(limit, 2, null);
+    if (points.isEmpty) return MonitorTimeSeries.empty(name);
+    var min = points.first.value;
+    var max = min;
+    var sum = 0.0;
+    for (final point in points) {
+      if (point.value < min) min = point.value;
+      if (point.value > max) max = point.value;
+      sum += point.value;
+    }
+    final samples = limit == null || points.length <= limit
+        ? List<MonitorDataPoint>.of(points, growable: false)
+        : List.generate(limit,
+            (i) => points[(i * (points.length - 1) / (limit - 1)).round()],
+            growable: false);
+    return MonitorTimeSeries(
+        name: name,
+        data: samples,
+        min: min,
+        max: max,
+        avg: sum / points.length);
+  }
 }
 
 /// A complete monitoring data package: current snapshot + time series.
@@ -243,30 +317,21 @@ MonitorTimeSeries parseTimeSeriesResponse(
   }
 
   Map<String, dynamic>? item;
-  try {
-    item = dataList.firstWhere(
-      (e) => (e as Map)['param'] == param,
-    ) as Map<String, dynamic>?;
-  } catch (_) {
-    item = null;
-  }
-
-  if (item == null && param != 'base') {
-    try {
-      item = dataList.firstWhere(
-        (e) => (e as Map)['param'] == 'base',
-      ) as Map<String, dynamic>?;
-    } catch (_) {
-      item = null;
+  Map<String, dynamic>? base;
+  for (final group in dataList.whereType<Map<String, dynamic>>()) {
+    if (group['param'] == param) {
+      item = group;
+      break;
     }
+    if (group['param'] == 'base') base ??= group;
   }
-
+  item ??= base;
   if (item == null) {
     return MonitorTimeSeries.empty(param);
   }
 
   final itemMap = item;
-  final dates = (itemMap['date'] as List?)?.map((e) => e.toString()).toList();
+  final dates = itemMap['date'] as List?;
   final values = itemMap['value'] as List?;
 
   if (values == null || values.isEmpty) {
@@ -294,7 +359,7 @@ MonitorTimeSeries parseTimeSeriesResponse(
     if (createdAt != null) {
       time = DateTime.tryParse(createdAt) ?? now;
     } else if (dates != null && i < dates.length) {
-      time = DateTime.tryParse(dates[i]) ?? now;
+      time = DateTime.tryParse(dates[i].toString()) ?? now;
     } else {
       time = now;
     }

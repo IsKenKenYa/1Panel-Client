@@ -171,10 +171,13 @@ void main() {
 
     test('GET /dashboard/current/default/default - 实时指标', () async {
       if (skip() != null) return;
-      final raw = await _rawGet(client, '/dashboard/current/default/default');
-      final data = _unwrap(raw.data, '/dashboard/current/default/default');
-      _log('Dashboard/current', response: data);
-      expect(data, isA<Map>());
+      final api = DashboardV2Api(client);
+      final first = api.getCurrentSnapshot();
+      expect(DashboardV2Api(client).getCurrentSnapshot(), same(first));
+      expect((await first).hasData, isTrue);
+      final next = api.getCurrentSnapshot();
+      expect(next, isNot(same(first)));
+      expect((await next).hasData, isTrue);
     });
 
     test('GET /dashboard/current/node - 节点信息', () async {

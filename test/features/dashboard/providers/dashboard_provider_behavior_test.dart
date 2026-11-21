@@ -80,8 +80,6 @@ class _FakeDashboardService extends DashboardService {
   @override
   Future<void> shutdownSystem() async {}
 
-  @override
-  Future<void> upgradeSystem() async {}
 }
 
 void main() {
@@ -125,7 +123,7 @@ void main() {
       expect(provider.data.cpuPercent, 7.5);
     });
 
-    test('loadData success also refreshes top processes in background',
+    test('overlapping refreshes share work and publish metrics before processes',
         () async {
       final service = _FakeDashboardService();
       final provider = DashboardProvider(service: service);
@@ -137,11 +135,13 @@ void main() {
       service.loadTopProcessesOverride = () => processesCompleter.future;
 
       final pending = provider.loadData();
+      expect(provider.refresh(), same(pending));
       dataCompleter.complete(const DashboardData(cpuPercent: 1.0));
-      await pending;
+      await Future<void>.delayed(Duration.zero);
 
       expect(provider.status, DashboardStatus.loaded);
       expect(provider.isLoadingTopProcesses, isTrue);
+      expect(provider.loadTopProcesses(), same(provider.loadTopProcesses()));
 
       processesCompleter.complete((
         cpu: const [
@@ -149,10 +149,24 @@ void main() {
         ],
         memory: const <ProcessInfo>[],
       ));
-      await Future<void>.delayed(Duration.zero);
+      await pending;
 
       expect(provider.isLoadingTopProcesses, isFalse);
       expect(provider.data.topCpuProcesses.first.name, 'nginx');
+      final nextDashboard = Completer<DashboardData>();
+      service.loadDashboardDataOverride = () => nextDashboard.future;
+      var processReads = 0;
+      service.loadTopProcessesOverride = () {
+        processReads++;
+        return processesCompleter.future;
+      };
+      final refreshing = provider.refresh();
+      await provider.loadTopProcesses();
+      nextDashboard.complete(const DashboardData(cpuPercent: 2));
+      await refreshing;
+      expect(processReads, 1);
+      expect(provider.data.topCpuProcesses.first.name, 'nginx');
+      expect(provider.data.cpuPercent, 2);
     });
 
     test('non silent failure then success recovers to loaded state',
@@ -269,7 +283,7 @@ void main() {
       );
     });
 
-    test('system restart shutdown and upgrade record activities', () async {
+    test('system restart and shutdown record activities', () async {
       final provider = DashboardProvider(service: _FakeDashboardService());
 
       await provider.restartSystem();
@@ -280,23 +294,19 @@ void main() {
       expect(provider.activities.first.title, 'System Shutdown');
       expect(provider.activities.first.type, ActivityType.warning);
 
-      await provider.upgradeSystem();
-      expect(provider.activities.first.title, 'System Upgrade');
-      expect(provider.activities.first.type, ActivityType.info);
-
-      expect(provider.activities, hasLength(3));
+      expect(provider.activities, hasLength(2));
     });
 
     test('activities are capped at ten with newest first', () async {
       final provider = DashboardProvider(service: _FakeDashboardService());
 
       for (var i = 0; i < 12; i++) {
-        await provider.upgradeSystem();
+        await provider.shutdownSystem();
       }
 
       expect(provider.activities, hasLength(10));
-      expect(provider.activities.first.title, 'System Upgrade');
-      expect(provider.activities.last.title, 'System Upgrade');
+      expect(provider.activities.first.title, 'System Shutdown');
+      expect(provider.activities.last.title, 'System Shutdown');
     });
   });
 }
