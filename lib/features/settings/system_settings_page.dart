@@ -37,11 +37,18 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
   void initState() {
     super.initState();
     _ownsProvider = widget.provider == null;
-    _provider = widget.provider ??
-        SettingsProvider.forServer(context.read<CurrentServerController>().currentServer!);
+    _provider = widget.provider ?? _buildStandaloneProvider();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _provider.load();
     });
+  }
+
+  /// 单独打开系统设置时自行装配；没有当前服务器就退回通用服务。
+  SettingsProvider _buildStandaloneProvider() {
+    final server = context.read<CurrentServerController?>()?.currentServer;
+    return server == null
+        ? SettingsProvider()
+        : SettingsProvider.forServer(server);
   }
 
   @override

@@ -27,6 +27,9 @@ class ServerRouteObserver extends NavigatorObserver {
   bool _targetUpdateScheduled = false;
   Route<dynamic>? _parent;
   (String?, String?)? _connection;
+  // NavigatorObserver.navigator 在 post-frame 回调里可能尚未就绪，
+  // 因此在入栈时记录每个路由所属的导航器。
+  final _owners = <Route<dynamic>, NavigatorState>{};
 
   static void setActiveModule(
     BuildContext context, {
@@ -69,8 +72,11 @@ class ServerRouteObserver extends NavigatorObserver {
     if (stale.isEmpty) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       for (final route in stale.reversed) {
-        final owner = route.navigator;
-        if (owner == null || !route.isActive) continue;
+        if (!_routes.containsKey(route)) continue;
+        // 优先用入栈时记录的导航器；观察者自身的 navigator
+        // 在此回调时机可能尚未就绪。
+        final owner = _owners[route] ?? navigator;
+        if (owner == null) continue;
         if (!route.isFirst) {
           owner.removeRoute(route);
         } else if (isAppNavigator) {
@@ -150,7 +156,10 @@ class ServerRouteObserver extends NavigatorObserver {
 
   @override
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
-    final controller = navigator?.context.read<CurrentServerController?>();
+    // 首次入栈时观察者可能尚未拿到 navigator，退回用前一条路由的导航器。
+    final owner = navigator ?? previousRoute?.navigator;
+    if (owner != null) _owners[route] = owner;
+    final controller = owner?.context.read<CurrentServerController?>();
     if (controller != null) {
       updateConnection(
         controller.currentServerId,
@@ -164,20 +173,25 @@ class ServerRouteObserver extends NavigatorObserver {
   @override
   void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
     if (newRoute != null) {
+      final owner = navigator;
+      if (owner != null) _owners[newRoute] = owner;
       _routes[newRoute] = _dependsOnServer(newRoute, oldRoute);
       _recordTarget(newRoute, oldRoute);
     }
     _routes.remove(oldRoute);
+    _owners.remove(oldRoute);
   }
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
     _routes.remove(route);
+    _owners.remove(route);
   }
 
   @override
   void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
     _routes.remove(route);
+    _owners.remove(route);
   }
 }
 

@@ -80,7 +80,7 @@ class OnePanelSession implements PanelSession {
     final stopwatch = Stopwatch()..start();
     try {
       final response = await client.dio.get<dynamic>(
-        ApiConstants.buildApiPath(ApiConstants.dashboardBaseOs),
+        ApiConstants.buildApiPath(ApiPaths.dashboardBaseOs),
         options: Options(extra: {RetryInterceptor.disableRetryKey: true}),
       );
 

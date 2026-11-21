@@ -35,8 +35,12 @@ class AppSettingsController extends ChangeNotifier with SafeChangeNotifier {
   }
 
   Future<void> load() async {
-    (_locale, _cacheStrategy, _cacheMaxSizeMB, _uiRenderMode) =
+    final (locale, cacheStrategy, cacheMaxSizeMB, uiRenderMode) =
         await _preferencesService.loadAppSettings();
+    _locale = locale;
+    _cacheStrategy = cacheStrategy;
+    _cacheMaxSizeMB = cacheMaxSizeMB;
+    _uiRenderMode = uiRenderMode;
     _applyCacheSettings();
     _loaded = true;
     notifyListeners();

@@ -46,9 +46,16 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
   @override
   void initState() {
     super.initState();
-    _provider = widget.provider ??
-        SettingsProvider.forServer(context.read<CurrentServerController>().currentServer!);
+    _provider = widget.provider ?? _buildStandaloneProvider();
     _initialLoad = _load();
+  }
+
+  /// 单独打开终端设置时自行装配；没有当前服务器就退回通用服务。
+  SettingsProvider _buildStandaloneProvider() {
+    final server = context.read<CurrentServerController?>()?.currentServer;
+    return server == null
+        ? SettingsProvider()
+        : SettingsProvider.forServer(server);
   }
 
   Future<bool> _load() async {
