@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:onepanel_client/core/i18n/l10n_x.dart';
-import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
+import 'app_form_save_button.dart';
 
 /// 统一表单页骨架（M3 Expressive / MDUI3 轨道标准件）。
 ///
@@ -41,39 +41,21 @@ class AppFormScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
         actions: actions,
       ),
       floatingActionButton: null,
-      body: body,
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppDesignTokens.spacingLg,
-            AppDesignTokens.spacingSm,
-            AppDesignTokens.spacingLg,
-            AppDesignTokens.spacingLg,
-          ),
-          child: FilledButton(
-            key: saveButtonKey,
-            onPressed: isSaving ? null : () => onSave(),
-            child: SizedBox(
-              height: 24,
-              child: Center(
-                child: isSaving
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : Text(saveLabel ?? l10n.commonSave),
-              ),
-            ),
-          ),
-        ),
+      body: AdaptiveWidthContainer(
+        maxWidth: AdaptiveLayoutSpec.of(context).settingsBodyMaxWidth,
+        child: SizedBox.expand(child: body),
+      ),
+      bottomNavigationBar: AppFormSaveBar(
+        onSave: onSave,
+        isSaving: isSaving,
+        label: saveLabel,
+        buttonKey: saveButtonKey,
       ),
     );
   }

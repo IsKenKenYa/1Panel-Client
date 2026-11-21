@@ -1,5 +1,24 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+
+/// 详情字段共用可滚动的底部弹层，标题和关闭按钮始终可见。
+Future<void> showAppDetailsSheet(
+  BuildContext context, {
+  required String title,
+  required List<Widget> children,
+}) =>
+    showAppFormSheet<void>(
+      context,
+      title: title,
+      builder: (_) => ListView(
+        shrinkWrap: true,
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
+        children: children,
+      ),
+    );
 
 /// 统一弹层表单壳（M3 Expressive / MDUI3 轨道标准件）。
 ///
@@ -20,6 +39,7 @@ Future<T?> showAppFormSheet<T>(
     isScrollControlled: true,
     // maxHeightFactor 为屏高比例（0-1]，换算为像素约束。
     constraints: BoxConstraints(
+      maxWidth: math.min(640, AdaptiveLayoutSpec.of(context).width),
       maxHeight: MediaQuery.of(context).size.height * maxHeightFactor,
     ),
     builder: (sheetContext) {
@@ -43,6 +63,8 @@ Future<T?> showAppFormSheet<T>(
                     Expanded(
                       child: Text(
                         title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: Theme.of(sheetContext).textTheme.titleLarge,
                       ),
                     ),

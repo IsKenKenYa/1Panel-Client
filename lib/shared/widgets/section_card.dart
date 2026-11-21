@@ -1,6 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 
+/// 位于卡片上方的分区标题。
+class SectionTitle extends StatelessWidget {
+  const SectionTitle(this.title, {super.key});
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppDesignTokens.spacingSm),
+      child: Text(
+        title,
+        style: theme.textTheme.titleMedium?.copyWith(
+          fontWeight: FontWeight.bold,
+          color: theme.colorScheme.primary,
+        ),
+      ),
+    );
+  }
+}
+
 /// 统一的「内容分组」标准组件（M3 Expressive 轨道）。
 ///
 /// 结构遵循 M3E 数据分区：标题与辅助说明位于卡片外侧，卡片只承载内容；
@@ -64,22 +86,21 @@ class SectionCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         if (title != null)
-          SizedBox(
-            // 标题行与操作按钮共用一个受控高度，避免窄屏下标题与
-            // 图标按钮的基线错位。
-            height: 44,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+          ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 44),
+            child: OverflowBar(
+              alignment: MainAxisAlignment.spaceBetween,
+              overflowAlignment: OverflowBarAlignment.start,
+              spacing: AppDesignTokens.spacingSm,
+              overflowSpacing: AppDesignTokens.spacingXs,
               children: <Widget>[
-                Expanded(
-                  child: Semantics(
-                    header: true,
-                    child: Text(
-                      title!,
-                      key: titleKey,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                Semantics(
+                  header: true,
+                  child: Text(
+                    title!,
+                    key: titleKey,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -410,31 +431,28 @@ class ExpressiveFilterBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return SizedBox(
-      height: 40,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.zero,
-        itemCount: options.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
-        itemBuilder: (context, index) {
-          final (value, label) = options[index];
-          final isSelected = selected == value;
-          return ChoiceChip(
-            label: Text(label),
-            selected: isSelected,
-            showCheckmark: false,
-            labelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: isSelected ? scheme.onPrimary : scheme.onSurface,
-                ),
-            selectedColor: scheme.primary,
-            backgroundColor: scheme.surfaceContainerHighest,
-            side: BorderSide(
-              color: isSelected ? Colors.transparent : scheme.outlineVariant,
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          for (final (index, (value, label)) in options.indexed) ...[
+            if (index > 0) const SizedBox(width: AppDesignTokens.spacingSm),
+            ChoiceChip(
+              label: Text(label),
+              selected: selected == value,
+              showCheckmark: false,
+              labelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: selected == value ? scheme.onPrimary : scheme.onSurface,
+                  ),
+              selectedColor: scheme.primary,
+              backgroundColor: scheme.surfaceContainerHighest,
+              side: BorderSide(
+                color: selected == value ? Colors.transparent : scheme.outlineVariant,
+              ),
+              onSelected: (_) => onSelected(value),
             ),
-            onSelected: (_) => onSelected(value),
-          );
-        },
+          ],
+        ],
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 import 'package:onepanel_client/shared/widgets/forms/app_form_dialog.dart';
 import 'package:onepanel_client/shared/widgets/forms/app_form_panel.dart';
@@ -28,6 +29,45 @@ Future<BuildContext> _pumpPage(
 }
 
 void main() {
+  testWidgets('分栏内打开表单采用栏宽，取消返回空结果', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1200, 700));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: const Scaffold(
+        body: Row(children: [
+          SizedBox(
+            width: 400,
+            child: AdaptiveLayoutViewport(child: Text('Narrow')),
+          ),
+          Expanded(child: AdaptiveLayoutViewport(child: Text('Wide'))),
+        ]),
+      ),
+    ));
+    Future<String?> open(String pane) => showAdaptiveFormPanel<String>(
+          tester.element(find.text(pane)),
+          builder: (context) => AppFormPanel(
+            title: 'Edit',
+            content: const TextField(),
+            onConfirm: () async => Navigator.of(context).pop('saved'),
+          ),
+        );
+    final narrowResult = open('Narrow');
+    await tester.pumpAndSettle();
+    expect(find.byType(BottomSheet), findsOneWidget);
+    expect(find.byType(AlertDialog), findsNothing);
+    await tester.tap(find.widgetWithText(TextButton, 'Cancel'));
+    await tester.pumpAndSettle();
+    expect(await narrowResult, isNull);
+    final wideResult = open('Wide');
+    await tester.pumpAndSettle();
+    expect(find.byType(AlertDialog), findsOneWidget);
+    await tester.tap(find.widgetWithText(TextButton, 'Cancel'));
+    await tester.pumpAndSettle();
+    expect(await wideResult, isNull);
+  });
+
   testWidgets('确认提交期间忽略重复点击和关闭操作', (tester) async {
     final context = await _pumpPage(tester);
     final submission = Completer<void>();

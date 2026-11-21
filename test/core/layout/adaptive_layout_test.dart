@@ -37,5 +37,33 @@ void main() {
       expect(spec.dialogInsetPadding,
           const EdgeInsets.symmetric(horizontal: 16, vertical: 24));
     });
+
+    testWidgets('constrained content uses its own width inside a wide window',
+        (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(1280, 720);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.view.resetPhysicalSize);
+      late AdaptiveLayoutSpec spec;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: AdaptiveWidthContainer(
+            maxWidth: 480,
+            child: Builder(builder: (context) {
+              spec = AdaptiveLayoutSpec.of(context);
+              expect(MediaQuery.sizeOf(context).width, 1280);
+              return const SizedBox.expand();
+            }),
+          ),
+        ),
+      );
+      expect(spec.width, 480);
+      expect(spec.isPhone, isTrue);
+      expect(spec.dialogConstraints.maxWidth, 448);
+      expect(spec.target.usesDesktopShell, isTrue);
+    }, variant: const TargetPlatformVariant({
+      TargetPlatform.windows,
+      TargetPlatform.macOS,
+    }));
   });
 }

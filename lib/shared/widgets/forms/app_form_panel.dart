@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
-import 'package:onepanel_client/core/utils/platform_utils.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/shared/widgets/forms/app_form_dialog.dart';
 
 /// 统一双轨弹层表单壳（M3 Expressive / MDUI3 轨道标准件）。
 ///
 /// 多字段表单必须经 [showAdaptiveFormPanel] 打开：
-/// - 桌面端沿用 [AppFormDialog] 居中对话框形态；
-/// - 移动端使用可滚动的底部表单弹层，操作按钮随可用宽度换行，
-///   满足拇指区可达与键盘适配。
+/// - 中等和宽内容区使用 [AppFormDialog] 居中展示。
+/// - 窄内容区使用可滚动的底部弹层，操作随可用宽度换行。
 /// 简单确认对话框继续用 [showAppFormDialog]，无需双轨。
 class AppFormPanel extends StatelessWidget {
   const AppFormPanel({
@@ -35,7 +34,7 @@ class AppFormPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (PlatformUtils.isDesktop(context)) {
+    if (ModalRoute.of(context) is DialogRoute<Object?>) {
       return AppFormDialog(
         title: title,
         content: content,
@@ -119,7 +118,7 @@ class AppFormPanel extends StatelessWidget {
   }
 }
 
-/// 多字段表单双轨入口：桌面居中对话框，移动端底部弹层。
+/// 根据打开表单时可用的内容宽度选择对话框或底部弹层。
 ///
 /// [builder] 返回 [AppFormPanel]；取消/关闭 pop(null)，确认由表单
 /// 内容 pop 结果对象，两条轨道行为一致。
@@ -127,7 +126,7 @@ Future<T?> showAdaptiveFormPanel<T>(
   BuildContext context, {
   required WidgetBuilder builder,
 }) {
-  if (PlatformUtils.isDesktop(context)) {
+  if (!AdaptiveLayoutSpec.of(context).isPhone) {
     return showDialog<T>(context: context, builder: builder);
   }
   return showModalBottomSheet<T>(

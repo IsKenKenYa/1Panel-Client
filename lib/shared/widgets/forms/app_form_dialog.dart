@@ -44,7 +44,7 @@ class AppFormDialog extends StatelessWidget {
         content: content,
         actions: [
           TextButton(
-            onPressed: isSaving ? null : () => Navigator.of(context).pop(false),
+            onPressed: isSaving ? null : () => Navigator.of(context).pop(),
             child: Text(l10n.commonCancel),
           ),
           FilledButton.icon(

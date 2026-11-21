@@ -63,7 +63,7 @@ import 'app_localizations_zh.dart';
 /// property.
 abstract class AppLocalizations {
   AppLocalizations(String locale)
-      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -86,16 +86,16 @@ abstract class AppLocalizations {
   /// of delegates is preferred or required.
   static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
       <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('zh')
+    Locale('zh'),
   ];
 
   /// No description provided for @appName.
@@ -3386,6 +3386,36 @@ abstract class AppLocalizations {
   /// **'Add Server'**
   String get serverFormTitle;
 
+  /// No description provided for @serverFormEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit server'**
+  String get serverFormEditTitle;
+
+  /// No description provided for @serverFormKeepCredential.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave blank to keep the saved value'**
+  String get serverFormKeepCredential;
+
+  /// No description provided for @serverFormStorageError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to access the saved server configuration.'**
+  String get serverFormStorageError;
+
+  /// No description provided for @serverPanelType.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel type'**
+  String get serverPanelType;
+
+  /// No description provided for @serverPanelUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The {type} adapter is unavailable.'**
+  String serverPanelUnavailable(String type);
+
   /// No description provided for @serverFormName.
   ///
   /// In en, this message translates to:
@@ -4247,13 +4277,55 @@ abstract class AppLocalizations {
   /// No description provided for @settingsServerManagementSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Manage multiple connected servers. Server system settings are only available from each server detail page.'**
+  /// **'Add, edit and switch server connections.'**
   String get settingsServerManagementSubtitle;
+
+  /// No description provided for @settingsAppearanceLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance and language'**
+  String get settingsAppearanceLanguage;
+
+  /// No description provided for @settingsSecurityStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'Security and storage'**
+  String get settingsSecurityStorage;
+
+  /// No description provided for @settingsConnections.
+  ///
+  /// In en, this message translates to:
+  /// **'Servers'**
+  String get settingsConnections;
+
+  /// No description provided for @settingsHelpAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'Help and about'**
+  String get settingsHelpAbout;
+
+  /// No description provided for @settingsPreviewCache.
+  ///
+  /// In en, this message translates to:
+  /// **'File preview cache'**
+  String get settingsPreviewCache;
+
+  /// No description provided for @systemSettingsConnectionsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Network and terminal'**
+  String get systemSettingsConnectionsSection;
+
+  /// No description provided for @settingsInvalidFolderName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid folder name'**
+  String get settingsInvalidFolderName;
 
   /// No description provided for @settingsResetOnboarding.
   ///
   /// In en, this message translates to:
-  /// **'Replay welcome guide'**
+  /// **'Show welcome guide on next launch'**
   String get settingsResetOnboarding;
 
   /// No description provided for @settingsAbout.
@@ -4499,13 +4571,13 @@ abstract class AppLocalizations {
   /// No description provided for @settingsResetOnboardingDone.
   ///
   /// In en, this message translates to:
-  /// **'Welcome guide has been reset'**
+  /// **'The welcome guide will appear next time you open the app'**
   String get settingsResetOnboardingDone;
 
   /// No description provided for @settingsCacheTitle.
   ///
   /// In en, this message translates to:
-  /// **'Cache Settings'**
+  /// **'Files and storage'**
   String get settingsCacheTitle;
 
   /// No description provided for @settingsCacheStrategy.
@@ -4535,7 +4607,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsCacheMaxSize.
   ///
   /// In en, this message translates to:
-  /// **'Cache Limit'**
+  /// **'Memory limit'**
   String get settingsCacheMaxSize;
 
   /// No description provided for @settingsCacheStats.
@@ -4559,25 +4631,25 @@ abstract class AppLocalizations {
   /// No description provided for @settingsCacheClear.
   ///
   /// In en, this message translates to:
-  /// **'Clear Cache'**
+  /// **'Clear file preview cache'**
   String get settingsCacheClear;
 
   /// No description provided for @settingsCacheClearConfirm.
   ///
   /// In en, this message translates to:
-  /// **'Confirm Clear Cache'**
+  /// **'Clear file preview cache?'**
   String get settingsCacheClearConfirm;
 
   /// No description provided for @settingsCacheClearConfirmMessage.
   ///
   /// In en, this message translates to:
-  /// **'Are you sure you want to clear all cache? This will delete both memory and disk cache.'**
+  /// **'Cached previews on this device will be removed. Opening a file again will download its contents.'**
   String get settingsCacheClearConfirmMessage;
 
   /// No description provided for @settingsCacheCleared.
   ///
   /// In en, this message translates to:
-  /// **'Cache cleared'**
+  /// **'File preview cache cleared'**
   String get settingsCacheCleared;
 
   /// No description provided for @settingsCacheLimit.
@@ -4589,7 +4661,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsCacheStatus.
   ///
   /// In en, this message translates to:
-  /// **'Cache Status'**
+  /// **'Memory usage'**
   String get settingsCacheStatus;
 
   /// No description provided for @settingsCacheStrategyHybridDesc.
@@ -5564,6 +5636,24 @@ abstract class AppLocalizations {
   /// **'Monitor Settings'**
   String get monitorSettings;
 
+  /// No description provided for @monitorChartSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Chart display'**
+  String get monitorChartSettings;
+
+  /// No description provided for @monitorIntervalValidation.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a whole number from 10 to 43200'**
+  String get monitorIntervalValidation;
+
+  /// No description provided for @monitorRetentionValidation.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a whole number greater than zero'**
+  String get monitorRetentionValidation;
+
   /// No description provided for @monitorEnable.
   ///
   /// In en, this message translates to:
@@ -5597,13 +5687,13 @@ abstract class AppLocalizations {
   /// No description provided for @monitorCleanData.
   ///
   /// In en, this message translates to:
-  /// **'Clean Monitor Data'**
+  /// **'Clear host monitoring history'**
   String get monitorCleanData;
 
   /// No description provided for @monitorCleanConfirm.
   ///
   /// In en, this message translates to:
-  /// **'Are you sure you want to clean all monitor data? This action cannot be undone.'**
+  /// **'Permanently delete host monitoring history on this server?'**
   String get monitorCleanConfirm;
 
   /// No description provided for @monitorCleanSuccess.
@@ -5771,7 +5861,7 @@ abstract class AppLocalizations {
   /// No description provided for @fileSaveSuccessPicker.
   ///
   /// In en, this message translates to:
-  /// **'Saved to {displayName} Downloads'**
+  /// **'Saved as {displayName}'**
   String fileSaveSuccessPicker(String displayName);
 
   /// No description provided for @fileSaveSuccessDownloads.
@@ -6074,6 +6164,18 @@ abstract class AppLocalizations {
   /// **'API Key Management'**
   String get systemSettingsApiKeyManage;
 
+  /// No description provided for @settingsPanelAccountSecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel account security'**
+  String get settingsPanelAccountSecurity;
+
+  /// No description provided for @settingsPanelAccountSecurityDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your password, MFA, passkeys, and API keys in the panel.'**
+  String get settingsPanelAccountSecurityDescription;
+
   /// No description provided for @systemSettingsCurrentStatus.
   ///
   /// In en, this message translates to:
@@ -6341,7 +6443,7 @@ abstract class AppLocalizations {
   /// No description provided for @panelTlsUploadHint.
   ///
   /// In en, this message translates to:
-  /// **'Uploading a new certificate replaces the current panel TLS bundle immediately.'**
+  /// **'A new certificate takes effect when you apply it.'**
   String get panelTlsUploadHint;
 
   /// No description provided for @panelTlsIssuerLabel.
@@ -6407,19 +6509,19 @@ abstract class AppLocalizations {
   /// No description provided for @panelTlsApplyUpdateMessage.
   ///
   /// In en, this message translates to:
-  /// **'This replaces the current panel TLS certificate and may interrupt active browser sessions until the gateway reload finishes.'**
+  /// **'Apply the certificate and private key and enable panel HTTPS. Mixed access stays enabled if already in use.'**
   String get panelTlsApplyUpdateMessage;
 
   /// No description provided for @panelTlsDownloadDialogTitle.
   ///
   /// In en, this message translates to:
-  /// **'Download certificate bundle'**
+  /// **'Download panel certificate'**
   String get panelTlsDownloadDialogTitle;
 
   /// No description provided for @panelTlsDownloadDialogMessage.
   ///
   /// In en, this message translates to:
-  /// **'Use downloads for backup or external validation only. Handle private keys carefully after export.'**
+  /// **'Save the panel’s public certificate as server.crt.'**
   String get panelTlsDownloadDialogMessage;
 
   /// No description provided for @panelTlsContinueAction.
@@ -6431,7 +6533,7 @@ abstract class AppLocalizations {
   /// No description provided for @panelTlsDownloadSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Downloaded certificate bundle ({bytes} bytes)'**
+  /// **'Saved panel certificate ({bytes} bytes)'**
   String panelTlsDownloadSuccess(int bytes);
 
   /// No description provided for @panelTlsHealthHealthy.
@@ -6551,7 +6653,7 @@ abstract class AppLocalizations {
   /// No description provided for @panelTlsHistoryDownloaded.
   ///
   /// In en, this message translates to:
-  /// **'Downloaded panel TLS certificate bundle ({bytes} bytes)'**
+  /// **'Downloaded panel certificate ({bytes} bytes)'**
   String panelTlsHistoryDownloaded(int bytes);
 
   /// No description provided for @upgradeTitle.
@@ -10115,7 +10217,7 @@ abstract class AppLocalizations {
   /// No description provided for @themeDynamicColorDesc.
   ///
   /// In en, this message translates to:
-  /// **'Use wallpaper color as theme color'**
+  /// **'Use the system color palette'**
   String get themeDynamicColorDesc;
 
   /// No description provided for @themeSeedColor.
@@ -13009,7 +13111,11 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Advanced config counts: {ports} ports, {environments} environments, {volumes} volumes, {hosts} extra hosts.'**
   String runtimeAdvancedSummary(
-      int ports, int environments, int volumes, int hosts);
+    int ports,
+    int environments,
+    int volumes,
+    int hosts,
+  );
 
   /// No description provided for @runtimeDeleteConfirm.
   ///
@@ -23635,8 +23741,9 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   }
 
   throw FlutterError(
-      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-      'an issue with the localizations generation tool. Please file an issue '
-      'on GitHub with a reproducible sample app and the gen-l10n configuration '
-      'that was used.');
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.',
+  );
 }

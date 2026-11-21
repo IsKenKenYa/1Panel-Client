@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1762,6 +1763,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get serverFormTitle => 'Add Server';
 
   @override
+  String get serverFormEditTitle => 'Edit server';
+
+  @override
+  String get serverFormKeepCredential => 'Leave blank to keep the saved value';
+
+  @override
+  String get serverFormStorageError =>
+      'Unable to access the saved server configuration.';
+
+  @override
+  String get serverPanelType => 'Panel type';
+
+  @override
+  String serverPanelUnavailable(String type) {
+    return 'The $type adapter is unavailable.';
+  }
+
+  @override
   String get serverFormName => 'Server name';
 
   @override
@@ -2224,10 +2243,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsServerManagementSubtitle =>
-      'Manage multiple connected servers. Server system settings are only available from each server detail page.';
+      'Add, edit and switch server connections.';
 
   @override
-  String get settingsResetOnboarding => 'Replay welcome guide';
+  String get settingsAppearanceLanguage => 'Appearance and language';
+
+  @override
+  String get settingsSecurityStorage => 'Security and storage';
+
+  @override
+  String get settingsConnections => 'Servers';
+
+  @override
+  String get settingsHelpAbout => 'Help and about';
+
+  @override
+  String get settingsPreviewCache => 'File preview cache';
+
+  @override
+  String get systemSettingsConnectionsSection => 'Network and terminal';
+
+  @override
+  String get settingsInvalidFolderName => 'Enter a valid folder name';
+
+  @override
+  String get settingsResetOnboarding => 'Show welcome guide on next launch';
 
   @override
   String get settingsAbout => 'About';
@@ -2368,10 +2408,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsFeedbackOpenFailed => 'Could not open the feedback page.';
 
   @override
-  String get settingsResetOnboardingDone => 'Welcome guide has been reset';
+  String get settingsResetOnboardingDone =>
+      'The welcome guide will appear next time you open the app';
 
   @override
-  String get settingsCacheTitle => 'Cache Settings';
+  String get settingsCacheTitle => 'Files and storage';
 
   @override
   String get settingsCacheStrategy => 'Cache Strategy';
@@ -2386,7 +2427,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsCacheStrategyDiskOnly => 'Disk Only';
 
   @override
-  String get settingsCacheMaxSize => 'Cache Limit';
+  String get settingsCacheMaxSize => 'Memory limit';
 
   @override
   String get settingsCacheStats => 'Cache Status';
@@ -2398,23 +2439,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsCacheCurrentSize => 'Current Size';
 
   @override
-  String get settingsCacheClear => 'Clear Cache';
+  String get settingsCacheClear => 'Clear file preview cache';
 
   @override
-  String get settingsCacheClearConfirm => 'Confirm Clear Cache';
+  String get settingsCacheClearConfirm => 'Clear file preview cache?';
 
   @override
   String get settingsCacheClearConfirmMessage =>
-      'Are you sure you want to clear all cache? This will delete both memory and disk cache.';
+      'Cached previews on this device will be removed. Opening a file again will download its contents.';
 
   @override
-  String get settingsCacheCleared => 'Cache cleared';
+  String get settingsCacheCleared => 'File preview cache cleared';
 
   @override
   String get settingsCacheLimit => 'Cache Limit';
 
   @override
-  String get settingsCacheStatus => 'Cache Status';
+  String get settingsCacheStatus => 'Memory usage';
 
   @override
   String get settingsCacheStrategyHybridDesc =>
@@ -2975,6 +3016,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get monitorSettings => 'Monitor Settings';
 
   @override
+  String get monitorChartSettings => 'Chart display';
+
+  @override
+  String get monitorIntervalValidation =>
+      'Enter a whole number from 10 to 43200';
+
+  @override
+  String get monitorRetentionValidation =>
+      'Enter a whole number greater than zero';
+
+  @override
   String get monitorEnable => 'Enable Monitoring';
 
   @override
@@ -2990,11 +3042,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get monitorRetentionUnit => 'days';
 
   @override
-  String get monitorCleanData => 'Clean Monitor Data';
+  String get monitorCleanData => 'Clear host monitoring history';
 
   @override
   String get monitorCleanConfirm =>
-      'Are you sure you want to clean all monitor data? This action cannot be undone.';
+      'Permanently delete host monitoring history on this server?';
 
   @override
   String get monitorCleanSuccess => 'Monitor data cleaned successfully';
@@ -3081,7 +3133,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String fileSaveSuccessPicker(String displayName) {
-    return 'Saved to $displayName Downloads';
+    return 'Saved as $displayName';
   }
 
   @override
@@ -3249,6 +3301,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get systemSettingsApiKeyManage => 'API Key Management';
 
   @override
+  String get settingsPanelAccountSecurity => 'Panel account security';
+
+  @override
+  String get settingsPanelAccountSecurityDescription =>
+      'Manage your password, MFA, passkeys, and API keys in the panel.';
+
+  @override
   String get systemSettingsCurrentStatus => 'Current Status';
 
   @override
@@ -3386,7 +3445,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get panelTlsUploadHint =>
-      'Uploading a new certificate replaces the current panel TLS bundle immediately.';
+      'A new certificate takes effect when you apply it.';
 
   @override
   String get panelTlsIssuerLabel => 'Issuer';
@@ -3420,21 +3479,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get panelTlsApplyUpdateMessage =>
-      'This replaces the current panel TLS certificate and may interrupt active browser sessions until the gateway reload finishes.';
+      'Apply the certificate and private key and enable panel HTTPS. Mixed access stays enabled if already in use.';
 
   @override
-  String get panelTlsDownloadDialogTitle => 'Download certificate bundle';
+  String get panelTlsDownloadDialogTitle => 'Download panel certificate';
 
   @override
   String get panelTlsDownloadDialogMessage =>
-      'Use downloads for backup or external validation only. Handle private keys carefully after export.';
+      'Save the panel’s public certificate as server.crt.';
 
   @override
   String get panelTlsContinueAction => 'Continue';
 
   @override
   String panelTlsDownloadSuccess(int bytes) {
-    return 'Downloaded certificate bundle ($bytes bytes)';
+    return 'Saved panel certificate ($bytes bytes)';
   }
 
   @override
@@ -3509,7 +3568,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String panelTlsHistoryDownloaded(int bytes) {
-    return 'Downloaded panel TLS certificate bundle ($bytes bytes)';
+    return 'Downloaded panel certificate ($bytes bytes)';
   }
 
   @override
@@ -5373,7 +5432,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeDynamicColor => 'Dynamic Color';
 
   @override
-  String get themeDynamicColorDesc => 'Use wallpaper color as theme color';
+  String get themeDynamicColorDesc => 'Use the system color palette';
 
   @override
   String get themeSeedColor => 'Custom Color';
@@ -6902,7 +6961,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String runtimeAdvancedSummary(
-      int ports, int environments, int volumes, int hosts) {
+    int ports,
+    int environments,
+    int volumes,
+    int hosts,
+  ) {
     return 'Advanced config counts: $ports ports, $environments environments, $volumes volumes, $hosts extra hosts.';
   }
 

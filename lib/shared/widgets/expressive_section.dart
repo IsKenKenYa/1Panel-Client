@@ -35,7 +35,7 @@ class ExpressiveSection extends StatelessWidget {
       isBusy: isBusy,
       action: actions.isEmpty
           ? null
-          : Row(mainAxisSize: MainAxisSize.min, children: actions),
+          : Wrap(alignment: WrapAlignment.end, children: actions),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[

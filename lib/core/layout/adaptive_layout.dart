@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/ui/routing/ui_target.dart';
@@ -25,9 +23,10 @@ class AdaptiveLayoutSpec {
       isDesktop ? VisualDensity.compact : VisualDensity.standard;
 
   static AdaptiveLayoutSpec of(BuildContext context) {
+    final size = _WorkspaceSize.of(context);
     return AdaptiveLayoutSpec(
-      target: UiTargetResolver.resolve(context),
-      size: MediaQuery.sizeOf(context),
+      target: UiTargetResolver.resolve(context, width: size.width),
+      size: size,
     );
   }
 
@@ -68,7 +67,7 @@ class AdaptiveLayoutSpec {
     if (isTablet) {
       return const BoxConstraints(maxWidth: 720);
     }
-    return BoxConstraints(maxWidth: math.min(width - 32, 560));
+    return BoxConstraints(maxWidth: (width - 32).clamp(0.0, 560.0).toDouble());
   }
 
   EdgeInsets get dialogInsetPadding {
@@ -79,16 +78,6 @@ class AdaptiveLayoutSpec {
       return const EdgeInsets.symmetric(horizontal: 32, vertical: 24);
     }
     return const EdgeInsets.symmetric(horizontal: 16, vertical: 24);
-  }
-
-  double get serverGridMaxCrossAxisExtent {
-    if (isDesktop) {
-      return 400;
-    }
-    if (isTablet) {
-      return 460;
-    }
-    return width;
   }
 
   double get filesBodyMaxWidth {
@@ -124,6 +113,41 @@ class AdaptiveLayoutSpec {
   bool get useTabletSplitScaffold => isTablet && width >= 900;
 }
 
+/// 为导航内容区或分栏提供其自身的可用尺寸。
+class AdaptiveLayoutViewport extends StatelessWidget {
+  const AdaptiveLayoutViewport({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (context, constraints) {
+      final outer = _WorkspaceSize.of(context);
+      return _WorkspaceSize(
+        size: Size(
+          constraints.hasBoundedWidth ? constraints.maxWidth : outer.width,
+          constraints.hasBoundedHeight ? constraints.maxHeight : outer.height,
+        ),
+        child: child,
+      );
+    });
+  }
+}
+
+class _WorkspaceSize extends InheritedWidget {
+  const _WorkspaceSize({required this.size, required super.child});
+
+  final Size size;
+
+  static Size of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<_WorkspaceSize>()?.size ??
+        MediaQuery.sizeOf(context);
+  }
+
+  @override
+  bool updateShouldNotify(_WorkspaceSize oldWidget) => size != oldWidget.size;
+}
+
 class AdaptiveWidthContainer extends StatelessWidget {
   const AdaptiveWidthContainer({
     super.key,
@@ -142,7 +166,7 @@ class AdaptiveWidthContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget content = ConstrainedBox(
       constraints: BoxConstraints(maxWidth: maxWidth),
-      child: child,
+      child: AdaptiveLayoutViewport(child: child),
     );
 
     if (padding != null) {

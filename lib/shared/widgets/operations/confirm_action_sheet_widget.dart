@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
-import 'package:onepanel_client/core/utils/platform_utils.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/shared/widgets/forms/app_form_dialog.dart';
 
 class ConfirmActionSheetWidget extends StatelessWidget {
@@ -28,7 +28,7 @@ class ConfirmActionSheetWidget extends StatelessWidget {
     IconData confirmIcon = Icons.check_circle_outline,
     bool isDestructive = false,
   }) async {
-    if (PlatformUtils.isDesktop(context)) {
+    if (!AdaptiveLayoutSpec.of(context).isPhone) {
       final result = await showDialog<bool>(
         context: context,
         builder: (dialogContext) => AppFormDialog(

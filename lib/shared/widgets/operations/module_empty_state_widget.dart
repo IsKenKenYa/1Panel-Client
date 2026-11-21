@@ -5,17 +5,19 @@ class ModuleEmptyStateWidget extends StatelessWidget {
   const ModuleEmptyStateWidget({
     super.key,
     required this.title,
-    required this.description,
+    this.description,
     this.icon = Icons.inbox_outlined,
     this.actionLabel,
     this.onAction,
+    this.actions = const [],
   });
 
   final String title;
-  final String description;
+  final String? description;
   final IconData icon;
   final String? actionLabel;
   final VoidCallback? onAction;
+  final List<Widget> actions;
 
   @override
   Widget build(BuildContext context) {
@@ -53,20 +55,32 @@ class ModuleEmptyStateWidget extends StatelessWidget {
                   style: theme.textTheme.titleMedium,
                 ),
               ),
-              const SizedBox(height: AppDesignTokens.spacingXs),
-              Text(
-                description,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
+              if (description != null) ...[
+                const SizedBox(height: AppDesignTokens.spacingXs),
+                Text(
+                  description!,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
                 ),
-              ),
-              if (actionLabel != null && onAction != null) ...[
+              ],
+              if (actions.isNotEmpty ||
+                  (actionLabel != null && onAction != null)) ...[
                 const SizedBox(height: AppDesignTokens.spacingMd),
-                FilledButton.icon(
-                  onPressed: onAction,
-                  icon: const Icon(Icons.add_outlined),
-                  label: Text(actionLabel!),
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: AppDesignTokens.spacingSm,
+                  runSpacing: AppDesignTokens.spacingSm,
+                  children: [
+                    if (actionLabel != null && onAction != null)
+                      FilledButton.icon(
+                        onPressed: onAction,
+                        icon: const Icon(Icons.add_outlined),
+                        label: Text(actionLabel!),
+                      ),
+                    ...actions,
+                  ],
                 ),
               ],
             ],

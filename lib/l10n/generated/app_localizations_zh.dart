@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1715,6 +1716,23 @@ class AppLocalizationsZh extends AppLocalizations {
   String get serverFormTitle => '添加服务器';
 
   @override
+  String get serverFormEditTitle => '编辑服务器';
+
+  @override
+  String get serverFormKeepCredential => '留空可保留已保存的凭据';
+
+  @override
+  String get serverFormStorageError => '无法访问已保存的服务器配置。';
+
+  @override
+  String get serverPanelType => '面板类型';
+
+  @override
+  String serverPanelUnavailable(String type) {
+    return '当前未安装 $type 面板适配器。';
+  }
+
+  @override
   String get serverFormName => '服务器名称';
 
   @override
@@ -2165,11 +2183,31 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsServerManagement => '服务器管理';
 
   @override
-  String get settingsServerManagementSubtitle =>
-      '管理多台已连接服务器；服务端系统设置仅在对应服务器详情页中提供。';
+  String get settingsServerManagementSubtitle => '添加、编辑和切换服务器连接。';
 
   @override
-  String get settingsResetOnboarding => '重新体验新手引导';
+  String get settingsAppearanceLanguage => '外观与语言';
+
+  @override
+  String get settingsSecurityStorage => '安全与存储';
+
+  @override
+  String get settingsConnections => '服务器';
+
+  @override
+  String get settingsHelpAbout => '帮助与关于';
+
+  @override
+  String get settingsPreviewCache => '文件预览缓存';
+
+  @override
+  String get systemSettingsConnectionsSection => '网络与终端';
+
+  @override
+  String get settingsInvalidFolderName => '请输入有效的文件夹名称';
+
+  @override
+  String get settingsResetOnboarding => '下次启动时显示新手引导';
 
   @override
   String get settingsAbout => '关于';
@@ -2293,10 +2331,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsFeedbackOpenFailed => '无法打开反馈页面。';
 
   @override
-  String get settingsResetOnboardingDone => '已重置新手引导';
+  String get settingsResetOnboardingDone => '下次启动时将显示新手引导';
 
   @override
-  String get settingsCacheTitle => '缓存设置';
+  String get settingsCacheTitle => '文件与存储';
 
   @override
   String get settingsCacheStrategy => '缓存策略';
@@ -2311,7 +2349,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsCacheStrategyDiskOnly => '仅硬盘';
 
   @override
-  String get settingsCacheMaxSize => '缓存上限';
+  String get settingsCacheMaxSize => '内存上限';
 
   @override
   String get settingsCacheStats => '缓存状态';
@@ -2323,22 +2361,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsCacheCurrentSize => '当前大小';
 
   @override
-  String get settingsCacheClear => '清除缓存';
+  String get settingsCacheClear => '清除文件预览缓存';
 
   @override
-  String get settingsCacheClearConfirm => '确认清除缓存';
+  String get settingsCacheClearConfirm => '清除文件预览缓存？';
 
   @override
-  String get settingsCacheClearConfirmMessage => '确定要清除所有缓存吗？这将删除内存缓存和硬盘缓存。';
+  String get settingsCacheClearConfirmMessage => '将清除本机缓存的文件预览。下次打开文件时将重新下载内容。';
 
   @override
-  String get settingsCacheCleared => '缓存已清除';
+  String get settingsCacheCleared => '文件预览缓存已清除';
 
   @override
   String get settingsCacheLimit => '缓存限制';
 
   @override
-  String get settingsCacheStatus => '缓存状态';
+  String get settingsCacheStatus => '内存使用情况';
 
   @override
   String get settingsCacheStrategyHybridDesc => '内存+硬盘双缓存，体验最佳';
@@ -2867,6 +2905,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get monitorSettings => '监控设置';
 
   @override
+  String get monitorChartSettings => '图表显示';
+
+  @override
+  String get monitorIntervalValidation => '请输入 10 到 43200 之间的整数';
+
+  @override
+  String get monitorRetentionValidation => '请输入大于零的整数';
+
+  @override
   String get monitorEnable => '启用监控';
 
   @override
@@ -2882,10 +2929,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get monitorRetentionUnit => '天';
 
   @override
-  String get monitorCleanData => '清理监控数据';
+  String get monitorCleanData => '清除主机监控记录';
 
   @override
-  String get monitorCleanConfirm => '确定要清理所有监控数据吗？此操作无法撤销。';
+  String get monitorCleanConfirm => '确定永久删除这台服务器的主机监控记录吗？';
 
   @override
   String get monitorCleanSuccess => '监控数据清理成功';
@@ -2971,7 +3018,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String fileSaveSuccessPicker(String displayName) {
-    return '已保存到 $displayName 的下载';
+    return '已保存为 $displayName';
   }
 
   @override
@@ -3128,6 +3175,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get systemSettingsApiKeyManage => 'API密钥管理';
 
   @override
+  String get settingsPanelAccountSecurity => '面板账号安全';
+
+  @override
+  String get settingsPanelAccountSecurityDescription =>
+      '在面板中管理密码、MFA、Passkey 和 API 密钥。';
+
+  @override
   String get systemSettingsCurrentStatus => '当前状态';
 
   @override
@@ -3260,7 +3314,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get panelTlsHistoryTitle => '历史';
 
   @override
-  String get panelTlsUploadHint => '上传新证书会立即替换当前面板 TLS 证书包。';
+  String get panelTlsUploadHint => '新证书在确认应用后生效。';
 
   @override
   String get panelTlsIssuerLabel => '签发者';
@@ -3294,20 +3348,20 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get panelTlsApplyUpdateMessage =>
-      '该操作会替换当前面板 TLS 证书，并可能在网关重载前短暂影响已连接会话。';
+      '应用所填证书和私钥，并启用面板 HTTPS。当前为混合访问模式时会保留该模式。';
 
   @override
-  String get panelTlsDownloadDialogTitle => '下载证书包';
+  String get panelTlsDownloadDialogTitle => '下载面板证书';
 
   @override
-  String get panelTlsDownloadDialogMessage => '下载仅用于备份或外部校验，请妥善保管导出的私钥。';
+  String get panelTlsDownloadDialogMessage => '将当前面板的公开证书保存为 server.crt。';
 
   @override
   String get panelTlsContinueAction => '继续';
 
   @override
   String panelTlsDownloadSuccess(int bytes) {
-    return '证书包已下载（$bytes 字节）';
+    return '已保存面板证书（$bytes 字节）';
   }
 
   @override
@@ -3375,7 +3429,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String panelTlsHistoryDownloaded(int bytes) {
-    return '已下载面板 TLS 证书包（$bytes 字节）';
+    return '已下载面板证书（$bytes 字节）';
   }
 
   @override
@@ -5208,7 +5262,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get themeDynamicColor => '动态取色';
 
   @override
-  String get themeDynamicColorDesc => '使用壁纸颜色作为主题色';
+  String get themeDynamicColorDesc => '使用系统提供的主题色';
 
   @override
   String get themeSeedColor => '自定义颜色';
@@ -6702,7 +6756,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String runtimeAdvancedSummary(
-      int ports, int environments, int volumes, int hosts) {
+    int ports,
+    int environments,
+    int volumes,
+    int hosts,
+  ) {
     return '高级配置统计：$ports 个端口、$environments 个环境变量、$volumes 个挂载、$hosts 个额外主机。';
   }
 
