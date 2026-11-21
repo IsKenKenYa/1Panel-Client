@@ -13,99 +13,100 @@ class ContainerStatsView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final scheme = Theme.of(context).colorScheme;
-    final provider = context.watch<ContainerDetailProvider>();
+    final provider = context.read<ContainerDetailProvider>();
+    final (loading, stats, error) = context.select(
+      (ContainerDetailProvider state) =>
+          (state.statsLoading, state.stats, state.statsError),
+    );
 
-    if (provider.statsLoading && provider.stats == null) {
+    if (loading && stats == null) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (provider.statsError != null && provider.stats == null) {
+    if (error != null && stats == null) {
       return ModuleErrorStateWidget(
-        message: l10n.containerOperateFailed(provider.statsError!),
+        message: l10n.containerOperateFailed(error),
         onRetry: provider.loadStats,
       );
     }
 
-    if (provider.stats == null) {
+    if (stats == null) {
       return Center(child: Text(l10n.commonEmpty));
     }
 
-    final stats = provider.stats!;
-
     return PartialErrorToastListener(
-      errorMessage: provider.statsError != null
-          ? l10n.containerOperateFailed(provider.statsError!)
-          : null,
+      errorMessage: error != null ? l10n.containerOperateFailed(error) : null,
       hasCachedData: true,
       onRetry: provider.loadStats,
       child: SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // ── 2x2 网格 ──
-          _StatsGrid(
-            children: [
-              // CPU
-              _MetricCard(
-                icon: Icons.developer_board_outlined,
-                iconColor: scheme.primary,
-                iconBg: scheme.primaryContainer,
-                title: l10n.containerStatsCpu,
-                mainValue: '${stats.cpuPercent.toStringAsFixed(2)}%',
-                progress: (stats.cpuPercent / 100).clamp(0.0, 1.0),
-                progressColor: scheme.primary,
-              ),
-              // 内存
-              _MetricCard(
-                icon: Icons.memory_outlined,
-                iconColor: scheme.tertiary,
-                iconBg: scheme.tertiaryContainer,
-                title: l10n.containerStatsMemory,
-                mainValue: _fmt(stats.memory),
-                subtitle: '${l10n.monitorMetricCurrent}: ${_fmt(stats.memory)}',
-                progressColor: scheme.tertiary,
-              ),
-              // 网络 I/O
-              _MetricCard(
-                icon: Icons.swap_vert_outlined,
-                iconColor: scheme.secondary,
-                iconBg: scheme.secondaryContainer,
-                title: l10n.containerStatsNetwork,
-                mainValue: 'RX: ${_fmt(stats.networkRX)}',
-                subtitle: 'TX: ${_fmt(stats.networkTX)}',
-                progressColor: scheme.secondary,
-              ),
-              // 磁盘 I/O
-              _MetricCard(
-                icon: Icons.storage_outlined,
-                iconColor: scheme.error,
-                iconBg: scheme.errorContainer,
-                title: l10n.containerStatsBlock,
-                mainValue: 'Read: ${_fmt(stats.ioRead)}',
-                subtitle: 'Write: ${_fmt(stats.ioWrite)}',
-                progressColor: scheme.error,
-              ),
-            ],
-          ),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // ── 2x2 网格 ──
+            _StatsGrid(
+              children: [
+                // CPU
+                _MetricCard(
+                  icon: Icons.developer_board_outlined,
+                  iconColor: scheme.primary,
+                  iconBg: scheme.primaryContainer,
+                  title: l10n.containerStatsCpu,
+                  mainValue: '${stats.cpuPercent.toStringAsFixed(2)}%',
+                  progress: (stats.cpuPercent / 100).clamp(0.0, 1.0),
+                  progressColor: scheme.primary,
+                ),
+                // 内存
+                _MetricCard(
+                  icon: Icons.memory_outlined,
+                  iconColor: scheme.tertiary,
+                  iconBg: scheme.tertiaryContainer,
+                  title: l10n.containerStatsMemory,
+                  mainValue: _fmt(stats.memory),
+                  subtitle:
+                      '${l10n.monitorMetricCurrent}: ${_fmt(stats.memory)}',
+                  progressColor: scheme.tertiary,
+                ),
+                // 网络 I/O
+                _MetricCard(
+                  icon: Icons.swap_vert_outlined,
+                  iconColor: scheme.secondary,
+                  iconBg: scheme.secondaryContainer,
+                  title: l10n.containerStatsNetwork,
+                  mainValue: 'RX: ${_fmt(stats.networkRX)}',
+                  subtitle: 'TX: ${_fmt(stats.networkTX)}',
+                  progressColor: scheme.secondary,
+                ),
+                // 磁盘 I/O
+                _MetricCard(
+                  icon: Icons.storage_outlined,
+                  iconColor: scheme.error,
+                  iconBg: scheme.errorContainer,
+                  title: l10n.containerStatsBlock,
+                  mainValue: 'Read: ${_fmt(stats.ioRead)}',
+                  subtitle: 'Write: ${_fmt(stats.ioWrite)}',
+                  progressColor: scheme.error,
+                ),
+              ],
+            ),
 
-          const SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-          // ── 刷新按钮 ──
-          FilledButton.icon(
-            onPressed: provider.loadStats,
-            icon: provider.statsLoading
-                ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(
-                        strokeWidth: 2, color: Colors.white),
-                  )
-                : const Icon(Icons.refresh_outlined),
-            label: Text(l10n.commonRefresh),
-          ),
-        ],
-      ),
+            // ── 刷新按钮 ──
+            FilledButton.icon(
+              onPressed: provider.loadStats,
+              icon: loading
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2, color: Colors.white),
+                    )
+                  : const Icon(Icons.refresh_outlined),
+              label: Text(l10n.commonRefresh),
+            ),
+          ],
+        ),
       ),
     );
   }

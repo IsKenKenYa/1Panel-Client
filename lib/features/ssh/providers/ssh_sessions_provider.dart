@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:onepanel_client/core/network/session_poller.dart';
 import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 
 import 'package:flutter/foundation.dart';
@@ -7,7 +8,8 @@ import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/models/ssh_session_models.dart';
 import 'package:onepanel_client/features/ssh/services/ssh_service.dart';
 
-class SshSessionsProvider extends ChangeNotifier with SafeChangeNotifier, AsyncStateNotifier {
+class SshSessionsProvider extends ChangeNotifier
+    with SafeChangeNotifier, AsyncStateNotifier {
   SshSessionsProvider({
     SSHService? service,
   }) : _service = service ?? SSHService();
@@ -18,19 +20,39 @@ class SshSessionsProvider extends ChangeNotifier with SafeChangeNotifier, AsyncS
   SshSessionQuery _query = const SshSessionQuery();
   bool _isMutating = false;
   StreamSubscription<List<SshSessionInfo>>? _subscription;
-  Timer? _pollTimer;
+  final _poller = SessionPoller();
+  bool _visible = true;
+  int _generation = 0;
 
   List<SshSessionInfo> get items => _items;
   SshSessionQuery get query => _query;
   bool get isMutating => _isMutating;
 
+  void setPageVisible(bool visible) {
+    if (isDisposed) return;
+    _visible = visible;
+    if (visible) {
+      unawaited(load());
+    } else {
+      _generation++;
+      _poller.cancel();
+      unawaited(_service.closeSessions());
+    }
+  }
+
   Future<void> load() async {
+    if (isDisposed || !_visible) return;
+    final generation = ++_generation;
+    _poller.cancel();
     setLoading();
     await _bindStreamIfNeeded();
     try {
+      if (isDisposed || generation != _generation) return;
       await _service.connectSessions(_query);
+      if (isDisposed || generation != _generation) return;
       _startPolling();
     } catch (error, stackTrace) {
+      if (isDisposed || generation != _generation) return;
       appLogger.eWithPackage(
         'features.ssh.providers.sessions',
         'load failed',
@@ -91,17 +113,16 @@ class SshSessionsProvider extends ChangeNotifier with SafeChangeNotifier, AsyncS
   }
 
   void _startPolling() {
-    // 3-second poll keeps the session list current because SSH sessions
-    // can be terminated externally (e.g. server-side timeout).
-    _pollTimer?.cancel();
-    _pollTimer = Timer.periodic(const Duration(seconds: 3), (_) {
-      _service.connectSessions(_query);
+    _poller.start(() => _service.connectSessions(_query), (error, trace) {
+      appLogger.eWithPackage('features.ssh.providers.sessions', 'poll failed',
+          error: error, stackTrace: trace);
+      setError(error);
     });
   }
 
   @override
   void dispose() {
-    _pollTimer?.cancel();
+    _poller.cancel();
     _subscription?.cancel();
     _service.closeSessions();
     super.dispose();

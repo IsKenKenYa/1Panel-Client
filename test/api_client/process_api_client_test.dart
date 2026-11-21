@@ -3,13 +3,11 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/api/v2/process_v2.dart';
-import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/config/api_constants.dart';
 import 'package:onepanel_client/core/network/dio_client.dart';
 import 'package:onepanel_client/core/network/process_ws_client.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/models/process_models.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/test_config_manager.dart';
 
@@ -64,19 +62,6 @@ Future<Response<Map<String, dynamic>>> _rawGet(
   return client.get<Map<String, dynamic>>(ApiConstants.buildApiPath(path));
 }
 
-Future<void> _prepareWsConfig() async {
-  SharedPreferences.setMockInitialValues(<String, Object>{});
-  final config = ApiConfig(
-    id: 'test-server',
-    name: 'Test',
-    url: TestEnvironment.baseUrl,
-    apiKey: TestEnvironment.config.getString('PANEL_API_KEY'),
-    isDefault: true,
-  );
-  await ApiConfigManager.saveConfig(config);
-  await ApiConfigManager.setCurrentConfig(config.id);
-}
-
 void main() {
   // 注意：真服务器集成测试禁止 TestWidgetsFlutterBinding（会劫持 HttpClient，
   // 所有请求返回假 400）。TestEnvironment.initialize() 仅读取 .env，无需绑定层。
@@ -94,7 +79,6 @@ void main() {
         apiKey: apiKey,
       );
       api = ProcessV2Api(client);
-      await _prepareWsConfig();
     }
   });
 
@@ -120,7 +104,7 @@ void main() {
 
     test('GET /process/ws 应支持进程 websocket 查询', () async {
       if (!canRun) return;
-      final wsClient = ProcessWsClient();
+      final wsClient = ProcessWsClient(config: TestEnvironment.apiConfig);
       try {
         await wsClient.connect();
         final future =
@@ -131,11 +115,6 @@ void main() {
         final result = await future;
         _logSection('✅ Parsed /process/ws ps', response: result);
         expect(result, isA<List<dynamic>>());
-      } catch (e) {
-        appLogger.wWithPackage(
-          'test.api_client.process',
-          '跳过 websocket smoke: $e',
-        );
       } finally {
         await wsClient.close();
       }
@@ -143,7 +122,7 @@ void main() {
 
     test('GET /process/{pid} 应成功', () async {
       if (!canRun) return;
-      final wsClient = ProcessWsClient();
+      final wsClient = ProcessWsClient(config: TestEnvironment.apiConfig);
       try {
         await wsClient.connect();
         final future =
@@ -169,11 +148,6 @@ void main() {
           response: {'pid': result.data?.pid, 'name': result.data?.name},
         );
         expect(result.data?.pid, pid);
-      } catch (e) {
-        appLogger.wWithPackage(
-          'test.api_client.process',
-          '跳过 process detail smoke: $e',
-        );
       } finally {
         await wsClient.close();
       }
@@ -186,7 +160,7 @@ void main() {
         appLogger.wWithPackage('test.api_client.process', '跳过测试: $skipReason');
         return;
       }
-      final wsClient = ProcessWsClient();
+      final wsClient = ProcessWsClient(config: TestEnvironment.apiConfig);
       await wsClient.connect();
       final future =
           wsClient.messages.first.timeout(const Duration(seconds: 10));

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:onepanel_client/core/network/session_poller.dart';
 import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 
 import 'package:flutter/foundation.dart';
@@ -13,7 +14,8 @@ import 'package:onepanel_client/features/terminal/models/terminal_runtime_models
 import 'package:onepanel_client/features/terminal/services/terminal_runtime_session.dart';
 import 'package:onepanel_client/features/terminal/services/terminal_workbench_service.dart';
 
-class TerminalWorkbenchProvider extends ChangeNotifier with SafeChangeNotifier, AsyncStateNotifier {
+class TerminalWorkbenchProvider extends ChangeNotifier
+    with SafeChangeNotifier, AsyncStateNotifier {
   TerminalWorkbenchProvider({
     TerminalWorkbenchService? service,
   }) : _service = service ?? TerminalWorkbenchService();
@@ -32,7 +34,9 @@ class TerminalWorkbenchProvider extends ChangeNotifier with SafeChangeNotifier, 
   bool _didAutoStartDefaultLocal = false;
 
   StreamSubscription<List<SshSessionInfo>>? _activeSshSessionsSubscription;
-  Timer? _activeSshSessionsPollTimer;
+  final _activeSshSessionsPoller = SessionPoller();
+  bool _sessionListVisible = true;
+  bool _sessionListReady = false;
 
   TerminalInfo? get terminalSettings => _terminalSettings;
   SshLocalConnectionInfo get localConnection => _localConnection;
@@ -66,6 +70,7 @@ class TerminalWorkbenchProvider extends ChangeNotifier with SafeChangeNotifier, 
   }
 
   Future<void> initialize(TerminalLaunchIntent initialIntent) async {
+    if (isDisposed) return;
     setLoading();
     await _bindActiveSshSessions();
 
@@ -77,13 +82,18 @@ class TerminalWorkbenchProvider extends ChangeNotifier with SafeChangeNotifier, 
         _service.loadQuickCommands(),
       ]);
 
+      if (isDisposed) return;
       _terminalSettings = results[0] as TerminalInfo?;
       _localConnection = results[1] as SshLocalConnectionInfo;
       _hostTree = results[2] as List<HostTreeNode>;
       _commandTree = results[3] as List<CommandTree>;
 
-      await _service.connectActiveSshSessions(const SshSessionQuery());
-      _startActiveSshSessionPolling();
+      if (_sessionListVisible) {
+        await _service.connectActiveSshSessions(const SshSessionQuery());
+      }
+      if (isDisposed) return;
+      _sessionListReady = true;
+      if (_sessionListVisible) _startActiveSshSessionPolling();
 
       if (initialIntent.isExplicitSession) {
         await openSession(initialIntent);
@@ -130,14 +140,18 @@ class TerminalWorkbenchProvider extends ChangeNotifier with SafeChangeNotifier, 
     }
   }
 
-  Future<TerminalRuntimeSession?> openSession(TerminalLaunchIntent intent) async {
-    final existing = _sessions.where((item) => item.descriptor.intent == intent);
+  Future<TerminalRuntimeSession?> openSession(
+      TerminalLaunchIntent intent) async {
+    if (isDisposed) return null;
+    final existing =
+        _sessions.where((item) => item.descriptor.intent == intent);
     if (existing.isNotEmpty) {
       final session = existing.first;
       _activeSessionKey = session.descriptor.sessionKey;
       notifyListeners();
       if (!session.isConnected &&
-          session.connectionState != TerminalSessionConnectionState.connecting) {
+          session.connectionState !=
+              TerminalSessionConnectionState.connecting) {
         await reconnectSession(session.descriptor.sessionKey);
         return sessionByKey(session.descriptor.sessionKey);
       }
@@ -149,7 +163,12 @@ class TerminalWorkbenchProvider extends ChangeNotifier with SafeChangeNotifier, 
     notifyListeners();
 
     try {
-      final settings = _terminalSettings ?? await _service.loadTerminalSettings();
+      final settings =
+          _terminalSettings ?? await _service.loadTerminalSettings();
+      if (isDisposed) return null;
+      final opening =
+          _sessions.where((item) => item.descriptor.intent == intent).firstOrNull;
+      if (opening != null) return opening;
       _terminalSettings = settings;
 
       // Use microseconds for the session key to avoid collisions when
@@ -231,8 +250,8 @@ class TerminalWorkbenchProvider extends ChangeNotifier with SafeChangeNotifier, 
   }
 
   Future<void> closeSession(String sessionKey) async {
-    final index =
-        _sessions.indexWhere((item) => item.descriptor.sessionKey == sessionKey);
+    final index = _sessions
+        .indexWhere((item) => item.descriptor.sessionKey == sessionKey);
     if (index < 0) {
       return;
     }
@@ -242,14 +261,15 @@ class TerminalWorkbenchProvider extends ChangeNotifier with SafeChangeNotifier, 
       ..removeAt(index);
     _sessions = updated;
     if (_activeSessionKey == sessionKey) {
-      _activeSessionKey = updated.isEmpty ? null : updated.last.descriptor.sessionKey;
+      _activeSessionKey =
+          updated.isEmpty ? null : updated.last.descriptor.sessionKey;
     }
     notifyListeners();
   }
 
   Future<void> reconnectSession(String sessionKey) async {
-    final index =
-        _sessions.indexWhere((item) => item.descriptor.sessionKey == sessionKey);
+    final index = _sessions
+        .indexWhere((item) => item.descriptor.sessionKey == sessionKey);
     if (index < 0) {
       return;
     }
@@ -289,7 +309,9 @@ class TerminalWorkbenchProvider extends ChangeNotifier with SafeChangeNotifier, 
     notifyListeners();
     try {
       await _service.disconnectActiveSshSession(pid);
-      await _service.connectActiveSshSessions(const SshSessionQuery());
+      if (!isDisposed && _sessionListVisible) {
+        await _service.connectActiveSshSessions(const SshSessionQuery());
+      }
     } finally {
       _isDisconnectingSshSession = false;
       notifyListeners();
@@ -303,7 +325,8 @@ class TerminalWorkbenchProvider extends ChangeNotifier with SafeChangeNotifier, 
       return;
     }
     _didAutoStartDefaultLocal = true;
-    if (!_localConnection.isVisibleByDefault || !_localConnection.isConfigured) {
+    if (!_localConnection.isVisibleByDefault ||
+        !_localConnection.isConfigured) {
       return;
     }
     await openLocalSession();
@@ -325,18 +348,31 @@ class TerminalWorkbenchProvider extends ChangeNotifier with SafeChangeNotifier, 
   }
 
   void _startActiveSshSessionPolling() {
-    // 3-second poll keeps the SSH session list current because the server-side
-    // session state can change externally (e.g. another client disconnects).
-    _activeSshSessionsPollTimer?.cancel();
-    _activeSshSessionsPollTimer =
-        Timer.periodic(const Duration(seconds: 3), (_) {
-      _service.connectActiveSshSessions(const SshSessionQuery());
-    });
+    _activeSshSessionsPoller.start(
+      () => _service.connectActiveSshSessions(const SshSessionQuery()),
+      (error, trace) => appLogger.eWithPackage(
+        'features.terminal.providers.workbench',
+        'poll SSH sessions failed',
+        error: error,
+        stackTrace: trace,
+      ),
+    );
+  }
+
+  void setSessionListVisible(bool visible) {
+    if (isDisposed || visible == _sessionListVisible) return;
+    _sessionListVisible = visible;
+    if (visible) {
+      if (_sessionListReady) _startActiveSshSessionPolling();
+    } else {
+      _activeSshSessionsPoller.cancel();
+      unawaited(_service.closeActiveSshSessions());
+    }
   }
 
   @override
   void dispose() {
-    _activeSshSessionsPollTimer?.cancel();
+    _activeSshSessionsPoller.cancel();
     _activeSshSessionsSubscription?.cancel();
     for (final session in _sessions) {
       unawaited(session.dispose());

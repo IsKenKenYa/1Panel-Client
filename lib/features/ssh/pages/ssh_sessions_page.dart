@@ -9,6 +9,7 @@ import 'package:onepanel_client/features/ssh/widgets/ssh_session_card_widget.dar
 import 'package:onepanel_client/features/ssh/widgets/ssh_session_filter_sheet_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
+import 'package:onepanel_client/shared/widgets/operations/page_visibility_listener.dart';
 import 'package:provider/provider.dart';
 
 class SshSessionsPage extends StatefulWidget {
@@ -20,24 +21,14 @@ class SshSessionsPage extends StatefulWidget {
 
 class _SshSessionsPageState extends State<SshSessionsPage> {
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !context.read<CurrentServerController>().hasServer) {
-        return;
-      }
-      context.read<SshSessionsProvider>().load();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final connection = context.select((CurrentServerController state) =>
+        (state.currentServerId, state.currentServer?.revision));
     return Consumer<SshSessionsProvider>(
       builder: (context, provider, _) {
         return ServerAwarePageScaffold(
           title: l10n.operationsSshSessionsTitle,
-          onServerChanged: () => context.read<SshSessionsProvider>().load(),
           actions: <Widget>[
             IconButton(
               onPressed: _openFilterSheet,
@@ -50,38 +41,42 @@ class _SshSessionsPageState extends State<SshSessionsPage> {
               tooltip: l10n.commonRefresh,
             ),
           ],
-          body: Column(
-            children: <Widget>[
-              const Padding(
-                padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-                child: SshSectionNavWidget(currentRoute: '/ssh/sessions'),
-              ),
-              Expanded(
-                child: AsyncStatePageBodyWidget(
-                  isLoading: provider.isLoading,
-                  isEmpty: provider.isEmpty,
-                  errorMessage: provider.errorMessage,
-                  onRetry: provider.load,
-                  emptyTitle: l10n.sshSessionsEmptyTitle,
-                  emptyDescription: l10n.sshSessionsEmptyDescription,
-                  child: RefreshIndicator(
-                    onRefresh: provider.refresh,
-                    child: ListView.separated(
-                      padding: const EdgeInsets.all(16),
-                      itemCount: provider.items.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 12),
-                      itemBuilder: (context, index) {
-                        final item = provider.items[index];
-                        return SshSessionCardWidget(
-                          item: item,
-                          onDisconnect: () => _disconnect(item),
-                        );
-                      },
+          body: PageVisibilityListener(
+            key: ValueKey(connection),
+            onChanged: provider.setPageVisible,
+            child: Column(
+              children: <Widget>[
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                  child: SshSectionNavWidget(currentRoute: '/ssh/sessions'),
+                ),
+                Expanded(
+                  child: AsyncStatePageBodyWidget(
+                    isLoading: provider.isLoading,
+                    isEmpty: provider.isEmpty,
+                    errorMessage: provider.errorMessage,
+                    onRetry: provider.load,
+                    emptyTitle: l10n.sshSessionsEmptyTitle,
+                    emptyDescription: l10n.sshSessionsEmptyDescription,
+                    child: RefreshIndicator(
+                      onRefresh: provider.refresh,
+                      child: ListView.separated(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: provider.items.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 12),
+                        itemBuilder: (context, index) {
+                          final item = provider.items[index];
+                          return SshSessionCardWidget(
+                            item: item,
+                            onDisconnect: () => _disconnect(item),
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },

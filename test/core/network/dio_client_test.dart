@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
+import 'dart:io' hide HttpException;
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -171,6 +171,19 @@ void main() {
     });
 
     group('exception conversion', () {
+      test('主动取消保持 Dio 取消类型', () async {
+        final client = DioClient(baseUrl: 'http://localhost:1');
+        addTearDown(() => client.dio.close(force: true));
+        final cancel = CancelToken()..cancel();
+        await expectLater(
+          client.get<dynamic>('/unused', cancelToken: cancel),
+          throwsA(isA<DioException>().having(
+            (error) => CancelToken.isCancel(error),
+            'cancelled',
+            isTrue,
+          )),
+        );
+      });
       test('get throws NetworkConnectionException on connection error', () async {
         final client = DioClient(baseUrl: 'http://localhost:1');
         expect(
@@ -186,6 +199,32 @@ void main() {
           throwsA(isA<NetworkConnectionException>()),
         );
       }, timeout: Timeout(Duration(seconds: 10)));
+
+      test('业务失败保留 HTTP 状态，敏感请求仅显示业务码', () async {
+        final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+        addTearDown(() => server.close(force: true));
+        final client = DioClient(baseUrl: 'http://127.0.0.1:${server.port}');
+        addTearDown(() => client.dio.close(force: true));
+        server.listen((request) async {
+          request.response.headers.contentType = ContentType.json;
+          request.response.write(jsonEncode({
+            'code': 401,
+            'message': 'session required',
+            'data': {'detail': 'private detail'},
+          }));
+          await request.response.close();
+        });
+        final failure =
+            isA<HttpException>().having((e) => e.statusCode, 'status', 200);
+        await expectLater(
+          client.get<dynamic>('/api/v2/panel'),
+          throwsA(failure.having((e) => e.message, 'message', 'session required')),
+        );
+        await expectLater(
+          client.get<dynamic>('/api/v2/panel', options: DioClient.sensitiveOptions),
+          throwsA(failure.having((e) => e.message, 'message', '面板拒绝请求 (401)')),
+        );
+      });
     });
 
     group('SPA fallback page detection (EndpointNotFoundException)', () {

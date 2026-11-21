@@ -114,7 +114,10 @@ class _LogViewerState extends State<LogViewer> {
                 seedColor: seedColor,
                 brightness: targetBrightness,
               );
-              effectiveTheme = AppTheme.create(scheme);
+              effectiveTheme = AppTheme.create(
+                scheme,
+                visualDensity: appTheme.visualDensity,
+              );
             }
           }
 

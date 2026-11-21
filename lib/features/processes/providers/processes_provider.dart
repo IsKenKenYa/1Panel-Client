@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:onepanel_client/core/network/session_poller.dart';
 import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 
 import 'package:flutter/foundation.dart';
@@ -7,7 +8,8 @@ import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/models/process_models.dart';
 import 'package:onepanel_client/features/processes/services/process_service.dart';
 
-class ProcessesProvider extends ChangeNotifier with SafeChangeNotifier, AsyncStateNotifier {
+class ProcessesProvider extends ChangeNotifier
+    with SafeChangeNotifier, AsyncStateNotifier {
   ProcessesProvider({
     ProcessService? service,
   }) : _service = service ?? ProcessService();
@@ -21,7 +23,9 @@ class ProcessesProvider extends ChangeNotifier with SafeChangeNotifier, AsyncSta
   String _sortField = 'cpu';
   bool _descending = true;
   StreamSubscription<List<ProcessSummary>>? _subscription;
-  Timer? _pollTimer;
+  final _poller = SessionPoller();
+  bool _visible = true;
+  int _generation = 0;
   bool _isMutating = false;
 
   List<ProcessSummary> get items => _items;
@@ -30,14 +34,33 @@ class ProcessesProvider extends ChangeNotifier with SafeChangeNotifier, AsyncSta
   bool get descending => _descending;
   bool get isMutating => _isMutating;
 
+  void setPageVisible(bool visible) {
+    if (isDisposed) return;
+    _visible = visible;
+    if (visible) {
+      unawaited(load());
+    } else {
+      _generation++;
+      _poller.cancel();
+      unawaited(_service.closeProcesses());
+    }
+  }
+
   Future<void> load() async {
+    if (isDisposed || !_visible) return;
+    final generation = ++_generation;
+    _poller.cancel();
     setLoading();
     await _bindStreamIfNeeded();
     try {
-      await _refreshListening();
+      final listening = await _service.loadListening();
+      if (isDisposed || generation != _generation) return;
+      _listening = listening;
       await _service.connectProcesses(_query);
-      _startPolling();
+      if (isDisposed || generation != _generation) return;
+      _startPolling(generation);
     } catch (error, stackTrace) {
+      if (isDisposed || generation != _generation) return;
       appLogger.eWithPackage(
         'features.processes.providers.list',
         'load failed',
@@ -111,16 +134,16 @@ class ProcessesProvider extends ChangeNotifier with SafeChangeNotifier, AsyncSta
     });
   }
 
-  Future<void> _refreshListening() async {
-    _listening = await _service.loadListening();
-    _rebuildItems();
-  }
-
-  void _startPolling() {
-    _pollTimer?.cancel();
-    _pollTimer = Timer.periodic(const Duration(seconds: 3), (_) async {
-      await _refreshListening();
+  void _startPolling(int generation) {
+    _poller.start(() async {
+      final listening = await _service.loadListening();
+      if (isDisposed || generation != _generation) return;
+      _listening = listening;
       await _service.connectProcesses(_query);
+    }, (error, trace) {
+      appLogger.eWithPackage('features.processes.providers.list', 'poll failed',
+          error: error, stackTrace: trace);
+      setError(error);
     });
   }
 
@@ -163,7 +186,7 @@ class ProcessesProvider extends ChangeNotifier with SafeChangeNotifier, AsyncSta
 
   @override
   void dispose() {
-    _pollTimer?.cancel();
+    _poller.cancel();
     _subscription?.cancel();
     _service.closeProcesses();
     super.dispose();

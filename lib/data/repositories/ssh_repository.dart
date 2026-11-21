@@ -132,14 +132,12 @@ class SSHRepository {
   Stream<List<SshSessionInfo>> watchSessions() => _sessionController.stream;
 
   Future<void> connectSessions(SshSessionQuery query) async {
-    _sessionSubscription ??= _wsClient.messages.listen((dynamic event) {
-      final rawItems = (event as List<dynamic>? ?? const <dynamic>[])
+    _sessionSubscription ??= _wsClient.messages.map((dynamic event) {
+      return (event as List<dynamic>? ?? const <dynamic>[])
           .whereType<Map<String, dynamic>>()
           .map(SshSessionInfo.fromJson)
           .toList(growable: false);
-      _sessionController.add(rawItems);
-    }, onError: _sessionController.addError);
-    await _wsClient.connect();
+    }).listen(_sessionController.add, onError: _sessionController.addError);
     await _wsClient.send(query.toJson());
   }
 
@@ -149,9 +147,10 @@ class SSHRepository {
   }
 
   Future<void> closeSessions() async {
-    await _sessionSubscription?.cancel();
+    final subscription = _sessionSubscription;
     _sessionSubscription = null;
-    await _wsClient.close();
+    await Future.wait<void>(
+        [if (subscription != null) subscription.cancel(), _wsClient.close()]);
   }
 
   SshCertOperate _encodeCert(SshCertOperate request) {

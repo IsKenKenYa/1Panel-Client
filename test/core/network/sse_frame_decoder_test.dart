@@ -35,6 +35,17 @@ void main() {
       expect(events, isEmpty);
     });
 
+    test('keeps UTF-8 characters split between Docker log chunks', () async {
+      final bytes = utf8.encode('中\n');
+      final events = decode([
+        'data:${base64Encode(bytes.sublist(0, 1))}',
+        '',
+        'data:${base64Encode(bytes.sublist(1))}',
+        '',
+      ]);
+      expect(await events.join(), '中\n');
+    });
+
     test('drops frames with invalid base64 payloads', () async {
       final events = await decode(<String>['data:not-base64!!', '']).toList();
       expect(events, isEmpty);
@@ -51,8 +62,8 @@ void main() {
     });
 
     test('keeps whitespace inside the decoded log text', () async {
-      final events = await decode(<String>[frame('  indented line\n'), ''])
-          .toList();
+      final events =
+          await decode(<String>[frame('  indented line\n'), '']).toList();
       expect(events.single, '  indented line\n');
     });
   });

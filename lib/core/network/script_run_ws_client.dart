@@ -1,26 +1,24 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
-import 'package:flutter/foundation.dart';
 
 import '../config/api_config.dart';
 import '../config/api_constants.dart';
-import 'onepanel_auth_headers.dart';
+import 'onepanel_websocket_connector.dart';
 
 class ScriptRunWsClient {
-  ScriptRunWsClient();
+  ScriptRunWsClient({ApiConfig? config}) : _config = config;
+  final ApiConfig? _config;
 
   final StreamController<String> _outputController =
       StreamController<String>.broadcast();
   final StreamController<bool> _runningController =
       StreamController<bool>.broadcast();
 
-  WebSocket? _socket;
-  StreamSubscription<dynamic>? _subscription;
+  final _connection = OnePanelWebSocketConnector();
 
   Stream<String> get output => _outputController.stream;
   Stream<bool> get runningState => _runningController.stream;
-  bool get isConnected => _socket != null;
+  bool get isConnected => _connection.socket != null;
 
   Future<void> connect({
     required int scriptId,
@@ -28,36 +26,22 @@ class ScriptRunWsClient {
     int rows = 40,
     String operateNode = 'local',
   }) async {
-    if (kIsWeb) {
-      throw UnsupportedError(
-        '浏览器 WebSocket 无法发送 1Panel 认证请求头，请在面板网页中运行脚本。',
-      );
-    }
-    if (_socket != null) return;
-    final config = await ApiConfigManager.getCurrentConfig();
-    if (config == null) {
-      throw StateError('No API config available');
-    }
-
-    final socket = await WebSocket.connect(
-      _buildWsUri(
-        baseUrl: config.url,
-        scriptId: scriptId,
-        cols: cols,
-        rows: rows,
-        operateNode: operateNode,
-      ).toString(),
-      headers: <String, dynamic>{
-        ...OnePanelAuthHeaders.build(config.apiKey),
-        'User-Agent': ApiConstants.userAgent,
+    await _connection.connect(
+      config: _config,
+      path: ApiConstants.buildApiPath('/core/script/run'),
+      queryParameters: {
+        'cols': '$cols',
+        'rows': '$rows',
+        'script_id': '$scriptId',
+        'operateNode': operateNode,
       },
-    );
-    _socket = socket;
-    _runningController.add(true);
-    _subscription = socket.listen(
-      (dynamic event) {
+      onConnected: () => _runningController.add(true),
+      onData: (event) {
         if (event is! String) return;
-        final payload = jsonDecode(event) as Map<String, dynamic>;
+        final payload = jsonDecode(event);
+        if (payload is! Map<String, dynamic>) {
+          throw const FormatException('脚本输出格式无效');
+        }
         if (payload['type'] == 'cmd' && payload['data'] is String) {
           final data = payload['data'] as String;
           if (data.isNotEmpty) {
@@ -68,49 +52,16 @@ class ScriptRunWsClient {
       },
       onError: (Object error, StackTrace stackTrace) {
         _outputController.addError(error, stackTrace);
-        _resetConnection();
+        _runningController.add(false);
       },
-      onDone: () {
-        _resetConnection();
-      },
-      cancelOnError: false,
+      onDone: () => _runningController.add(false),
     );
   }
 
   Future<void> close() async {
-    await _subscription?.cancel();
-    await _socket?.close();
-    _resetConnection();
-  }
-
-  void _resetConnection() {
-    _subscription = null;
-    _socket = null;
-    _runningController.add(false);
-  }
-
-  Uri _buildWsUri({
-    required String baseUrl,
-    required int scriptId,
-    required int cols,
-    required int rows,
-    required String operateNode,
-  }) {
-    final baseUri = Uri.parse(baseUrl);
-    final normalizedBasePath = baseUri.path.endsWith('/')
-        ? baseUri.path.substring(0, baseUri.path.length - 1)
-        : baseUri.path;
-    final wsPath =
-        '$normalizedBasePath${ApiConstants.buildApiPath('/core/script/run')}';
-    return baseUri.replace(
-      scheme: baseUri.scheme == 'https' ? 'wss' : 'ws',
-      path: wsPath,
-      queryParameters: <String, String>{
-        'cols': '$cols',
-        'rows': '$rows',
-        'script_id': '$scriptId',
-        'operateNode': operateNode,
-      },
-    );
+    final wasRunning = isConnected;
+    final closing = _connection.close();
+    if (wasRunning) _runningController.add(false);
+    await closing;
   }
 }

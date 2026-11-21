@@ -139,6 +139,9 @@ class LogViewerController extends ChangeNotifier with SafeChangeNotifier {
   int _currentMatchIndex = -1;
   final List<int> _matchIndices = [];
   DateTime? _firstLogTimestamp;
+  String _parsedText = '';
+  String _requestedText = '';
+  Future<void>? _parsing;
 
   LogViewerController() {
     _loadSettings();
@@ -185,46 +188,49 @@ class LogViewerController extends ChangeNotifier with SafeChangeNotifier {
   int get currentMatchCount => _currentMatchIndex + 1;
   DateTime? get firstLogTimestamp => _firstLogTimestamp;
 
-  Future<void> setLogs(String rawLogs) async {
-    if (rawLogs.isEmpty) {
-      _logs = [];
-      _filteredLogs = [];
-      _firstLogTimestamp = null;
-      notifyListeners();
-      return;
-    }
-    _logs = await LogParser.parse(rawLogs);
-
-    // Find first timestamp
-    _firstLogTimestamp = null;
-    for (final log in _logs) {
-      if (log.timestamp != null) {
-        _firstLogTimestamp = log.timestamp;
-        break;
-      }
-    }
-
-    _applyFilters();
+  Future<void> setLogs(String rawLogs) {
+    _requestedText = rawLogs;
+    if (_parsing != null) return _parsing!;
+    if (_parsedText == rawLogs) return Future.value();
+    return _parsing = _parsePending();
   }
 
-  /// 追加一段日志文本，用于跟随流持续到达的事件。
-  ///
-  /// 解析结果并入已有行，不重建时间戳索引起点，避免跟随过程中
-  /// 时间列跳动。
+  Future<void> _parsePending() async {
+    try {
+      while (!isDisposed && _parsedText != _requestedText) {
+        final text = _requestedText;
+        final append = _logs.length > 1 && text.startsWith(_parsedText);
+        // 最后一行可能跨帧到达，完整的前序行复用已解析结果。
+        final start = append
+            ? _parsedText.lastIndexOf(
+                    '\n', _parsedText.trimRight().length - 1) +
+                1
+            : 0;
+        final parsed = await LogParser.parse(text.substring(start));
+        if (isDisposed) return;
+        if (!_requestedText.startsWith(text)) continue;
+        _logs = append ? [..._logs.take(_logs.length - 1), ...parsed] : parsed;
+        _parsedText = text;
+        _firstLogTimestamp = null;
+        for (final log in _logs) {
+          if (log.timestamp != null) {
+            _firstLogTimestamp = log.timestamp;
+            break;
+          }
+        }
+        _applyFilters();
+      }
+    } finally {
+      _parsing = null;
+    }
+  }
+
+  /// 以独立行追加日志文本。
   Future<void> appendLogs(String rawLogs) async {
     if (rawLogs.isEmpty) return;
-    final parsed = await LogParser.parse(rawLogs);
-    if (parsed.isEmpty) return;
-    _logs = <LogLine>[..._logs, ...parsed];
-    if (_firstLogTimestamp == null) {
-      for (final log in _logs) {
-        if (log.timestamp != null) {
-          _firstLogTimestamp = log.timestamp;
-          break;
-        }
-      }
-    }
-    _applyFilters();
+    final separator =
+        _requestedText.isEmpty || _requestedText.endsWith('\n') ? '' : '\n';
+    await setLogs('$_requestedText$separator$rawLogs');
   }
 
   void search(String query) {
@@ -243,7 +249,7 @@ class LogViewerController extends ChangeNotifier with SafeChangeNotifier {
     _currentMatchIndex = -1;
 
     if (_searchQuery.isEmpty) {
-      _filteredLogs = List.from(_logs);
+      _filteredLogs = _logs;
     } else {
       _filteredLogs = _logs.map((log) {
         final isMatch = log.originalContent

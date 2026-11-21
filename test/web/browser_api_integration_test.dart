@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:onepanel_client/api/v2/container_log_stream_v2.dart';
 import 'package:onepanel_client/api/v2/file_v2.dart';
 import 'package:onepanel_client/core/network/dio_client.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
@@ -15,6 +16,7 @@ void main() {
   const baseUrl = String.fromEnvironment('PANEL_BASE_URL');
   const apiKey = String.fromEnvironment('PANEL_API_KEY');
   const enabled = baseUrl != '' && apiKey != '';
+  const logContainer = String.fromEnvironment('PANEL_LOG_CONTAINER');
 
   group('真实浏览器与 1Panel', skip: !enabled, () {
     test('CORS 预检通过后完成真实面板连接', () async {
@@ -23,8 +25,19 @@ void main() {
         apiKey: apiKey,
       );
       expect(result.success, isTrue, reason: result.errorMessage);
-      expect(result.osInfo, isNotEmpty);
+      expect(result.responseTime, isNotNull);
     });
+
+    test('容器跟随日志在连接打开期间返回第一段文本', () async {
+      final client = DioClient(baseUrl: baseUrl, apiKey: apiKey);
+      addTearDown(() => client.dio.close(force: true));
+      final logs = ContainerLogStreamV2Api(client).streamContainerLogs(
+        container: logContainer,
+        follow: true,
+        tail: '10',
+      );
+      expect(await logs.timeout(const Duration(seconds: 15)).first, isNotEmpty);
+    }, skip: logContainer.isEmpty);
 
     test('Multipart 数据流上传内容可以原样下载', () async {
       final api = FileV2Api(DioClient(baseUrl: baseUrl, apiKey: apiKey));

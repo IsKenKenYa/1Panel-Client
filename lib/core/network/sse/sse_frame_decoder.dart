@@ -9,7 +9,10 @@ class SseFrameDecoder extends StreamTransformerBase<String, String> {
   const SseFrameDecoder();
 
   @override
-  Stream<String> bind(Stream<String> stream) async* {
+  Stream<String> bind(Stream<String> stream) =>
+      _frames(stream).transform(const Utf8Decoder(allowMalformed: true));
+
+  Stream<List<int>> _frames(Stream<String> stream) async* {
     final buffer = StringBuffer();
     await for (final line in stream) {
       if (line.isEmpty) {
@@ -34,14 +37,13 @@ class SseFrameDecoder extends StreamTransformerBase<String, String> {
   }
 
   /// 单帧为 base64 编码的日志文本；空帧或解码失败时返回 null。
-  String? _decodeFrame(String frame) {
+  List<int>? _decodeFrame(String frame) {
     final payload = frame.trim();
     if (payload.isEmpty || payload == 'null') {
       return null;
     }
     try {
-      final bytes = base64Decode(payload);
-      return utf8.decode(bytes, allowMalformed: true);
+      return base64Decode(payload);
     } on FormatException {
       return null;
     }

@@ -2,13 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:onepanel_client/api/v2/auth_v2.dart';
 import 'package:onepanel_client/api/v2/host_v2.dart';
-import 'package:onepanel_client/api/v2/setting_v2.dart';
 import 'package:onepanel_client/api/v2/toolbox_v2.dart';
 import 'package:onepanel_client/core/network/dio_client.dart';
 import 'package:onepanel_client/core/network/network_exceptions.dart';
 import 'package:onepanel_client/data/models/host_models.dart';
-import 'package:onepanel_client/data/models/setting_models.dart';
 import 'package:onepanel_client/data/models/toolbox_models.dart';
 
 /// 回归测试：SPA 回退页识别 + legacy 端点回退 + Toolbox 信封解包修复
@@ -21,8 +20,6 @@ import 'package:onepanel_client/data/models/toolbox_models.dart';
 ///    404/405。而 DioClient 已把 DioException 统一转换为 NetworkException
 ///    子类抛出（404 → HttpException），导致 catch 永不匹配；同时 200+HTML
 ///    回退页被当作成功响应，Map 泛型强转抛 TypeError，主机资产整页加载失败。
-/// 2. SettingV2Api.loadMfaInfo / listPasskeys 把 200+HTML 当成功 → 空
-///    MfaOtp / 空列表，MFA 页与 Passkey 列表静默失效。
 /// 3. ToolboxV2Api 多个方法把 {code,message,data} 信封直接喂给
 ///    fromJson/PageResult.fromJson，信封字段被当业务字段解析。
 ///
@@ -31,9 +28,6 @@ import 'package:onepanel_client/data/models/toolbox_models.dart';
 ///    抛出 EndpointNotFoundException（「当前面板版本不支持该功能」）。
 /// 2. HostV2Api 回退条件改为同时识别 EndpointNotFoundException 与
 ///    NetworkException.statusCode 404/405。
-/// 3. SettingV2Api MFA/Passkey 方法捕获 EndpointNotFoundException 后抛出
-///    带「当前面板版本不支持 MFA/Passkey」语义的异常，走既有 provider
-///    错误展示链路。
 /// 4. ToolboxV2Api 全部改用 ApiResponseParser（asMap/asList）解包信封。
 void main() {
   const htmlFallbackPage =
@@ -68,8 +62,8 @@ void main() {
             'total': 1,
           },
         }));
-      } else if (path == '/api/v2/core/settings/passkey/list' ||
-          path == '/api/v2/core/settings/mfa') {
+      } else if (path == '/api/v2/core/auth/passkey/list' ||
+          path == '/api/v2/core/auth/mfa') {
         response.headers.contentType = ContentType.html;
         response.write(htmlFallbackPage);
       } else if (path == '/api/v2/toolbox/clam/base') {
@@ -131,32 +125,19 @@ void main() {
     });
   });
 
-  group('SettingV2Api MFA/Passkey 优雅降级', () {
-    test('listPasskeys 端点缺失时抛出「当前面板版本不支持 Passkey」', () async {
-      final api = SettingV2Api(client);
+  group('AuthV2Api 检查账号接口响应', () {
+    test('Passkey 列表返回 HTML 时报告错误', () async {
       await expectLater(
-        api.listPasskeys(),
-        throwsA(
-          isA<EndpointNotFoundException>().having(
-            (e) => e.message,
-            'message',
-            '当前面板版本不支持 Passkey',
-          ),
-        ),
+        AuthV2Api(client).listPasskeysAuth(),
+        throwsA(isA<EndpointNotFoundException>()),
       );
     });
 
-    test('loadMfaInfo 端点缺失时抛出「当前面板版本不支持 MFA」', () async {
-      final api = SettingV2Api(client);
+    test('loadMfaInfo 拒绝 HTML 响应', () async {
+      final api = AuthV2Api(client);
       await expectLater(
-        api.loadMfaInfo(const MfaLoadRequest(title: '1Panel Client')),
-        throwsA(
-          isA<EndpointNotFoundException>().having(
-            (e) => e.message,
-            'message',
-            '当前面板版本不支持 MFA',
-          ),
-        ),
+        api.loadMfaInfo({'title': 'KenPanel', 'interval': 30}),
+        throwsA(isA<EndpointNotFoundException>()),
       );
     });
   });

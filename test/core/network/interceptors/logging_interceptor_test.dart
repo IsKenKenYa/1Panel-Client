@@ -1,161 +1,37 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/core/network/interceptors/logging_interceptor.dart';
+import 'package:onepanel_client/core/network/interceptors/retry_interceptor.dart';
 
 void main() {
-  group('LoggingInterceptor', () {
-    group('enabled=false', () {
-      test('onRequest passes through without error', () {
-        final interceptor = LoggingInterceptor(false);
-        final handler = _TestRequestHandler();
-        final options = RequestOptions(path: '/test');
-        interceptor.onRequest(options, handler);
-        expect(handler.nextCalled, isTrue);
-      });
-
-      test('onResponse passes through without error', () {
-        final interceptor = LoggingInterceptor(false);
-        final handler = _TestResponseHandler();
-        final response = Response(
-          data: 'test',
-          requestOptions: RequestOptions(path: '/test'),
-        );
-        interceptor.onResponse(response, handler);
-        expect(handler.nextCalled, isTrue);
-      });
-
-      test('onError passes through without error', () {
-        final interceptor = LoggingInterceptor(false);
-        final handler = _TestErrorHandler();
-        final err = DioException(
-          requestOptions: RequestOptions(path: '/test'),
-          type: DioExceptionType.connectionTimeout,
-        );
-        interceptor.onError(err, handler);
-        expect(handler.nextCalled, isTrue);
-      });
-    });
-
-    group('enabled=true', () {
-      test('onRequest passes through', () {
-        final interceptor = LoggingInterceptor(true);
-        final handler = _TestRequestHandler();
-        final options = RequestOptions(path: '/test');
-        interceptor.onRequest(options, handler);
-        expect(handler.nextCalled, isTrue);
-      });
-
-      test('onRequest logs body when logBody=true and data present', () {
-        final interceptor = LoggingInterceptor(true, true);
-        final handler = _TestRequestHandler();
-        final options = RequestOptions(
-          path: '/test',
-          data: {'key': 'value'},
-        );
-        interceptor.onRequest(options, handler);
-        expect(handler.nextCalled, isTrue);
-      });
-
-      test('onRequest does not log body when logBody=false', () {
-        final interceptor = LoggingInterceptor(true, false);
-        final handler = _TestRequestHandler();
-        final options = RequestOptions(
-          path: '/test',
-          data: {'key': 'value'},
-        );
-        interceptor.onRequest(options, handler);
-        expect(handler.nextCalled, isTrue);
-      });
-
-      test('onRequest logs query parameters when present', () {
-        final interceptor = LoggingInterceptor(true);
-        final handler = _TestRequestHandler();
-        final options = RequestOptions(
-          path: '/test',
-          queryParameters: {'page': 1},
-        );
-        interceptor.onRequest(options, handler);
-        expect(handler.nextCalled, isTrue);
-      });
-
-      test('onResponse passes through', () {
-        final interceptor = LoggingInterceptor(true);
-        final handler = _TestResponseHandler();
-        final response = Response(
-          data: 'test',
-          statusCode: 200,
-          requestOptions: RequestOptions(path: '/test'),
-        );
-        interceptor.onResponse(response, handler);
-        expect(handler.nextCalled, isTrue);
-      });
-
-      test('onResponse truncates long response data', () {
-        final interceptor = LoggingInterceptor(true, true);
-        final handler = _TestResponseHandler();
-        final longData = 'x' * 600;
-        final response = Response(
-          data: longData,
-          statusCode: 200,
-          requestOptions: RequestOptions(path: '/test'),
-        );
-        interceptor.onResponse(response, handler);
-        expect(handler.nextCalled, isTrue);
-      });
-
-      test('onError passes through', () {
-        final interceptor = LoggingInterceptor(true);
-        final handler = _TestErrorHandler();
-        final err = DioException(
-          requestOptions: RequestOptions(path: '/test'),
-          type: DioExceptionType.badResponse,
-          message: 'error',
-        );
-        interceptor.onError(err, handler);
-        expect(handler.nextCalled, isTrue);
-      });
-    });
-
-    group('constructor defaults', () {
-      test('default enabled is true', () {
-        final interceptor = LoggingInterceptor();
-        expect(interceptor.enabled, isTrue);
-      });
-
-      test('default logBody is true', () {
-        final interceptor = LoggingInterceptor();
-        expect(interceptor.logBody, isTrue);
-      });
-    });
+  test('HTTP 诊断省略外部 URL、请求内容和认证字段', () {
+    final request = RequestOptions(
+      method: 'POST',
+      path:
+          'https://user:password@host.example/api/v2/test?token=secret#fragment',
+      queryParameters: {'filter': 'private'},
+      headers: {'Cookie': 'session', 'Authorization': 'credential'},
+      data: {'key': 'secret'},
+      extra: {RetryInterceptor.retriedKey: true},
+    );
+    expect(
+        LoggingInterceptor.describe(request,
+            status: 200,
+            businessCode: 401,
+            error: DioExceptionType.badResponse),
+        'POST HTTP 200 code=401 badResponse retry=1');
   });
-}
 
-class _TestRequestHandler extends RequestInterceptorHandler {
-  bool nextCalled = false;
-  @override
-  void next(RequestOptions options) => nextCalled = true;
-  @override
-  void resolve(Response response, [bool callFollowing = false]) {}
-  @override
-  void reject(DioException e, [bool callFollowing = false]) {}
-}
-
-class _TestResponseHandler extends ResponseInterceptorHandler {
-  bool nextCalled = false;
-  @override
-  void next(Response response) => nextCalled = true;
-  @override
-  void resolve(Response response, [bool callFollowing = false]) {}
-  @override
-  void reject(DioException e, [bool callFollowing = false]) {}
-}
-
-class _TestErrorHandler extends ErrorInterceptorHandler {
-  bool nextCalled = false;
-  @override
-  void next(DioException err) => nextCalled = true;
-  @override
-  void resolve(Response response, [bool callFollowing = false]) {}
-  @override
-  void reject(DioException e, [bool callFollowing = false]) {}
+  test('面板日志保留模块名称，省略终端会话、数据库名和服务器配置路径参数', () {
+    for (final entry in {
+      '/api/v2/terminal/sessions/private-session/resize': '/api/v2/terminal',
+      '/api/v2/databases/db/private-name': '/api/v2/databases',
+      '/api/v2/core/settings/custom-key?token=secret': '/api/v2/core/settings',
+    }.entries) {
+      expect(
+        LoggingInterceptor.describe(RequestOptions(path: entry.key)),
+        'GET ${entry.value}',
+      );
+    }
+  });
 }

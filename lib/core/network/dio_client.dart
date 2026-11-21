@@ -9,9 +9,15 @@ import 'interceptors/auth_interceptor.dart';
 import 'interceptors/logging_interceptor.dart';
 import 'interceptors/retry_interceptor.dart';
 import 'interceptors/business_response_interceptor.dart';
+import 'sse/event_stream_adapter.dart';
 
 /// 基于Dio的HTTP客户端 - 支持1Panel API认证
 class DioClient {
+  static Options get sensitiveOptions => Options(extra: const {
+        LoggingInterceptor.sensitiveBody: true,
+        RetryInterceptor.disableRetryKey: true,
+      });
+
   final Dio _dio;
   late AuthInterceptor _authInterceptor;
 
@@ -21,13 +27,15 @@ class DioClient {
     bool allowInsecureTls = false,
   }) : _dio = Dio(_createBaseOptionsStatic(baseUrl)) {
     _authInterceptor = AuthInterceptor(apiKey);
+    configureEventStreamAdapter(_dio);
     _configureTls(allowInsecureTls);
     _addInterceptors();
   }
 
   /// 创建基础配置（静态方法，用于构造函数）
   static BaseOptions _createBaseOptionsStatic(String? baseUrl) {
-    if (kIsWeb && baseUrl != null &&
+    if (kIsWeb &&
+        baseUrl != null &&
         BrowserConnectionPolicy.issue(baseUrl) != null) {
       throw ArgumentError('需要有效的 HTTP 或 HTTPS 面板地址');
     }
@@ -51,8 +59,8 @@ class DioClient {
   void _addInterceptors() {
     _dio.interceptors.add(_authInterceptor);
     _dio.interceptors.add(BusinessResponseInterceptor());
-    _dio.interceptors.add(LoggingInterceptor(ApiConstants.isDebugMode, !kIsWeb));
-    _dio.interceptors.add(RetryInterceptor());
+    _dio.interceptors.add(RetryInterceptor(_dio));
+    _dio.interceptors.add(LoggingInterceptor());
   }
 
   void _configureTls(bool allowInsecureTls) {
@@ -67,35 +75,12 @@ class DioClient {
             (dynamic cert, String host, int port) => true;
         return httpClient;
       };
-      _safeLog('w', '[network] Insecure TLS certificate validation enabled');
+      appLogger.wWithPackage('core.network.http', '当前连接允许未受信任的 TLS 证书');
     } catch (_) {
-      _safeLog(
-        'w',
-        '[network] Failed to enable insecure TLS mode for current adapter',
+      appLogger.wWithPackage(
+        'core.network.http',
+        '当前 HTTP 适配器无法应用所选的 TLS 证书设置',
       );
-    }
-  }
-
-  /// 安全日志输出
-  void _safeLog(String level, String message) {
-    try {
-      final logger = AppLogger();
-      switch (level) {
-        case 'd':
-          logger.d(message);
-          break;
-        case 'e':
-          logger.e(message);
-          break;
-        case 'w':
-          logger.w(message);
-          break;
-        default:
-          logger.i(message);
-      }
-    } catch (_) {
-      // 忽略日志错误
-      return;
     }
   }
 
@@ -108,16 +93,8 @@ class DioClient {
       _throwIfHtmlFallbackPage(response);
       return response;
     } on DioException catch (e) {
-      _safeLog('e',
-          kIsWeb
-              ? '[network] DioException: ${e.type}, status: ${e.response?.statusCode}'
-              : '[network] DioException: ${e.type}, message: ${e.message}, response: ${e.response?.data}');
+      if (CancelToken.isCancel(e)) rethrow;
       throw _convertException(e);
-    } on EndpointNotFoundException {
-      rethrow;
-    } catch (e) {
-      _safeLog('e', '[network] Unexpected error: ${kIsWeb ? e.runtimeType : e}');
-      throw NetworkConnectionException('请求失败: $e');
     }
   }
 
@@ -128,23 +105,25 @@ class DioClient {
   /// 此处仅对 /api/ 前缀、期望 JSON 的请求生效；download() 走独立路径
   /// （文件下载/预览可能合法返回 HTML），不受影响。
   void _throwIfHtmlFallbackPage<T>(Response<T> response) {
-    final path = response.requestOptions.uri.path;
-    if (!path.contains('/api/')) {
-      return;
-    }
     final data = response.data;
     if (data is! String) {
       return;
     }
-    final contentType =
-        response.headers.value(Headers.contentTypeHeader) ?? '';
-    final normalized = data.trimLeft().toLowerCase();
+    final path = response.requestOptions.uri.path;
+    if (!path.contains('/api/')) return;
+    final contentType = response.headers.value(Headers.contentTypeHeader) ?? '';
+    final trimmed = data.trimLeft();
+    final normalized =
+        trimmed.substring(0, trimmed.length.clamp(0, 15)).toLowerCase();
     final looksLikeHtml = normalized.startsWith('<!doctype html') ||
         normalized.startsWith('<html');
     if (!looksLikeHtml && !contentType.contains('text/html')) {
       return;
     }
-    _safeLog('e', '[network] SPA fallback page detected for $path');
+    appLogger.wWithPackage(
+      'core.network.http',
+      '${LoggingInterceptor.describe(response.requestOptions, status: response.statusCode)} 返回 HTML',
+    );
     throw EndpointNotFoundException(
       '当前面板版本不支持该功能',
       requestOptions: response.requestOptions,
@@ -155,13 +134,14 @@ class DioClient {
   /// 转换DioException为自定义异常
   Exception _convertException(DioException e) {
     final statusCode = e.response?.statusCode;
-    final errorMessage = e.message ?? e.toString();
-    final responseData = e.response?.data;
-
-    _safeLog('d',
-        kIsWeb
-            ? '[network] Converting exception: type=${e.type}, statusCode=$statusCode'
-            : '[network] Converting exception: type=${e.type}, statusCode=$statusCode, message=$errorMessage');
+    final sensitive = LoggingInterceptor.isSensitive(e.requestOptions);
+    final data = e.response?.data;
+    final code = data is Map ? data['code'] : null;
+    final serverMessage = data is Map ? data['message'] : null;
+    final errorMessage =
+        !sensitive && serverMessage is String && serverMessage.isNotEmpty
+            ? serverMessage
+            : e.type.name;
 
     // HTML 回退页 + Map 泛型请求：Dio 在 transform 阶段对 String body 做
     // Map 强转即抛 TypeError（包装为 DioException.unknown 且 response 为
@@ -175,13 +155,28 @@ class DioClient {
       );
     }
 
-    if (e.type == DioExceptionType.connectionError ||
-        e.type == DioExceptionType.connectionTimeout ||
-        e.type == DioExceptionType.sendTimeout ||
-        e.type == DioExceptionType.receiveTimeout) {
+    final connectionFailure = switch (e.type) {
+      DioExceptionType.connectionError => '无法连接服务器',
+      DioExceptionType.connectionTimeout => '连接服务器超时',
+      DioExceptionType.sendTimeout => '发送请求超时',
+      DioExceptionType.receiveTimeout => '接收响应超时',
+      DioExceptionType.badCertificate => '服务器 TLS 证书验证失败',
+      _ => null,
+    };
+    if (connectionFailure != null) {
       return NetworkConnectionException(
-        '网络连接失败: $errorMessage',
+        '网络连接失败: $connectionFailure',
         requestOptions: e.requestOptions,
+      );
+    }
+
+    if (code is int && code != 200 && statusCode == 200) {
+      return HttpException(
+        !sensitive && serverMessage is String && serverMessage.trim().isNotEmpty
+            ? serverMessage.trim()
+            : '面板拒绝请求 ($code)',
+        requestOptions: e.requestOptions,
+        statusCode: statusCode,
       );
     }
 
@@ -203,7 +198,7 @@ class DioClient {
 
     if (statusCode != null && statusCode >= 400) {
       return HttpException(
-        'HTTP错误($statusCode): ${responseData ?? errorMessage}',
+        'HTTP错误($statusCode): $errorMessage',
         requestOptions: e.requestOptions,
         statusCode: statusCode,
       );
@@ -221,11 +216,13 @@ class DioClient {
     String path, {
     Map<String, dynamic>? queryParameters,
     Options? options,
+    CancelToken? cancelToken,
   }) {
     return _executeRequest(() => _dio.get<T>(
           path,
           queryParameters: queryParameters,
           options: options,
+          cancelToken: cancelToken,
         ));
   }
 
@@ -235,12 +232,14 @@ class DioClient {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     Options? options,
+    CancelToken? cancelToken,
   }) {
     return _executeRequest(() => _dio.post<T>(
           path,
           data: data,
           queryParameters: queryParameters,
           options: options,
+          cancelToken: cancelToken,
         ));
   }
 
@@ -250,12 +249,14 @@ class DioClient {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     Options? options,
+    CancelToken? cancelToken,
   }) {
     return _executeRequest(() => _dio.put<T>(
           path,
           data: data,
           queryParameters: queryParameters,
           options: options,
+          cancelToken: cancelToken,
         ));
   }
 
@@ -265,12 +266,14 @@ class DioClient {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     Options? options,
+    CancelToken? cancelToken,
   }) {
     return _executeRequest(() => _dio.delete<T>(
           path,
           data: data,
           queryParameters: queryParameters,
           options: options,
+          cancelToken: cancelToken,
         ));
   }
 
@@ -280,12 +283,14 @@ class DioClient {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     Options? options,
+    CancelToken? cancelToken,
   }) {
     return _executeRequest(() => _dio.patch<T>(
           path,
           data: data,
           queryParameters: queryParameters,
           options: options,
+          cancelToken: cancelToken,
         ));
   }
 
@@ -295,11 +300,13 @@ class DioClient {
     FormData formData, {
     ProgressCallback? onSendProgress,
     Options? options,
+    CancelToken? cancelToken,
   }) {
     return _executeRequest(() => _dio.post<T>(
           path,
           data: formData,
           options: options,
+          cancelToken: cancelToken,
           onSendProgress: onSendProgress,
         ));
   }
@@ -310,6 +317,7 @@ class DioClient {
     String savePath, {
     ProgressCallback? onReceiveProgress,
     Options? options,
+    CancelToken? cancelToken,
   }) async {
     try {
       return await _dio.download(
@@ -317,8 +325,10 @@ class DioClient {
         savePath,
         onReceiveProgress: onReceiveProgress,
         options: options,
+        cancelToken: cancelToken,
       );
     } on DioException catch (e) {
+      if (CancelToken.isCancel(e)) rethrow;
       throw _convertException(e);
     }
   }
@@ -326,7 +336,6 @@ class DioClient {
   /// 更新认证信息
   void updateAuth(String? apiKey) {
     _authInterceptor.updateApiKey(apiKey);
-    _safeLog('d', '[network] Auth updated with new API key');
   }
 
   /// 获取Dio实例（用于高级用法）

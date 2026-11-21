@@ -1,166 +1,109 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/core/network/interceptors/retry_interceptor.dart';
 
 void main() {
-  group('RetryInterceptor', () {
-    group('_shouldRetry logic', () {
-      test('retries on connectionTimeout', () {
-        final interceptor = RetryInterceptor(maxRetries: 1, retryDelays: [Duration.zero]);
-        final err = _makeDioException(DioExceptionType.connectionTimeout);
-        expect(_callShouldRetry(interceptor, err), isTrue);
-      });
+  late HttpServer server;
+  late Dio dio;
+  late int requests;
+  late Completer<void> firstResponse;
 
-      test('retries on sendTimeout', () {
-        final interceptor = RetryInterceptor(maxRetries: 1, retryDelays: [Duration.zero]);
-        final err = _makeDioException(DioExceptionType.sendTimeout);
-        expect(_callShouldRetry(interceptor, err), isTrue);
-      });
-
-      test('retries on receiveTimeout', () {
-        final interceptor = RetryInterceptor(maxRetries: 1, retryDelays: [Duration.zero]);
-        final err = _makeDioException(DioExceptionType.receiveTimeout);
-        expect(_callShouldRetry(interceptor, err), isTrue);
-      });
-
-      test('retries on connectionError', () {
-        final interceptor = RetryInterceptor(maxRetries: 1, retryDelays: [Duration.zero]);
-        final err = _makeDioException(DioExceptionType.connectionError);
-        expect(_callShouldRetry(interceptor, err), isTrue);
-      });
-
-      test('retries on 500 status code', () {
-        final interceptor = RetryInterceptor(maxRetries: 1, retryDelays: [Duration.zero]);
-        final err = _makeDioException(DioExceptionType.badResponse, statusCode: 500);
-        expect(_callShouldRetry(interceptor, err), isTrue);
-      });
-
-      test('retries on 502 status code', () {
-        final interceptor = RetryInterceptor(maxRetries: 1, retryDelays: [Duration.zero]);
-        final err = _makeDioException(DioExceptionType.badResponse, statusCode: 502);
-        expect(_callShouldRetry(interceptor, err), isTrue);
-      });
-
-      test('retries on 503 status code', () {
-        final interceptor = RetryInterceptor(maxRetries: 1, retryDelays: [Duration.zero]);
-        final err = _makeDioException(DioExceptionType.badResponse, statusCode: 503);
-        expect(_callShouldRetry(interceptor, err), isTrue);
-      });
-
-      test('retries on 429 status code', () {
-        final interceptor = RetryInterceptor(maxRetries: 1, retryDelays: [Duration.zero]);
-        final err = _makeDioException(DioExceptionType.badResponse, statusCode: 429);
-        expect(_callShouldRetry(interceptor, err), isTrue);
-      });
-
-      test('does not retry on 400 status code', () {
-        final interceptor = RetryInterceptor(maxRetries: 1, retryDelays: [Duration.zero]);
-        final err = _makeDioException(DioExceptionType.badResponse, statusCode: 400);
-        expect(_callShouldRetry(interceptor, err), isFalse);
-      });
-
-      test('does not retry on 401 status code', () {
-        final interceptor = RetryInterceptor(maxRetries: 1, retryDelays: [Duration.zero]);
-        final err = _makeDioException(DioExceptionType.badResponse, statusCode: 401);
-        expect(_callShouldRetry(interceptor, err), isFalse);
-      });
-
-      test('does not retry on 404 status code', () {
-        final interceptor = RetryInterceptor(maxRetries: 1, retryDelays: [Duration.zero]);
-        final err = _makeDioException(DioExceptionType.badResponse, statusCode: 404);
-        expect(_callShouldRetry(interceptor, err), isFalse);
-      });
-
-      test('does not retry on cancel', () {
-        final interceptor = RetryInterceptor(maxRetries: 1, retryDelays: [Duration.zero]);
-        final err = _makeDioException(DioExceptionType.cancel);
-        expect(_callShouldRetry(interceptor, err), isFalse);
-      });
-
-      test('does not retry on badResponse without status code', () {
-        final interceptor = RetryInterceptor(maxRetries: 1, retryDelays: [Duration.zero]);
-        final err = _makeDioException(DioExceptionType.badResponse);
-        expect(_callShouldRetry(interceptor, err), isFalse);
-      });
-
-      test('does not retry on unknown error type', () {
-        final interceptor = RetryInterceptor(maxRetries: 1, retryDelays: [Duration.zero]);
-        final err = _makeDioException(DioExceptionType.unknown);
-        expect(_callShouldRetry(interceptor, err), isFalse);
-      });
-    });
-
-    group('constructor defaults', () {
-      test('default maxRetries is 4', () {
-        final interceptor = RetryInterceptor();
-        expect(interceptor.maxRetries, 4);
-      });
-
-      test('default retryDelays has 4 durations', () {
-        final interceptor = RetryInterceptor();
-        expect(interceptor.retryDelays.length, 4);
-      });
-
-      test('custom maxRetries', () {
-        final interceptor = RetryInterceptor(maxRetries: 2);
-        expect(interceptor.maxRetries, 2);
-      });
-
-      test('custom retryDelays', () {
-        final delays = [Duration(seconds: 10), Duration(seconds: 20)];
-        final interceptor = RetryInterceptor(retryDelays: delays);
-        expect(interceptor.retryDelays, delays);
-      });
+  setUp(() async {
+    server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+    dio = Dio(BaseOptions(baseUrl: 'http://127.0.0.1:${server.port}'));
+    dio.interceptors.add(RetryInterceptor(dio, delay: Duration.zero));
+    requests = 0;
+    firstResponse = Completer<void>();
+    server.listen((request) async {
+      requests++;
+      await request.drain<void>();
+      final response = request.response;
+      if (request.uri.path == '/retry-after') {
+        response.headers.set('Retry-After', '60');
+      }
+      response.statusCode = request.uri.path == '/recover' && requests == 2
+          ? HttpStatus.ok
+          : HttpStatus.serviceUnavailable;
+      await response.close();
+      if (!firstResponse.isCompleted) firstResponse.complete();
     });
   });
-}
 
-DioException _makeDioException(
-  DioExceptionType type, {
-  int? statusCode,
-  String path = '/test',
-}) {
-  return DioException(
-    requestOptions: RequestOptions(path: path),
-    type: type,
-    response: statusCode != null
-        ? Response(
-            statusCode: statusCode,
-            requestOptions: RequestOptions(path: path),
-          )
-        : null,
-  );
-}
+  tearDown(() async {
+    dio.close(force: true);
+    await server.close(force: true);
+  });
 
-/// 通过反射或直接调用测试私有方法
-/// 由于 _shouldRetry 是私有的，我们通过 onError 行为间接测试
-/// 这里使用一个技巧：通过 onError 的行为来验证
-bool _callShouldRetry(RetryInterceptor interceptor, DioException err) {
-  // RetryInterceptor 的 onError 会检查 _shouldRetry
-  // 如果 shouldRetry 为 true 且 currentRetry < maxRetries，会尝试重试
-  // 我们通过检查 handler 是否被调用来判断
+  test('同一客户端重新处理 GET 请求的拦截器与响应', () async {
+    var intercepted = 0;
+    var completed = 0;
+    dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (request, handler) {
+        intercepted++;
+        handler.next(request);
+      },
+      onResponse: (response, handler) {
+        completed++;
+        handler.next(response);
+      },
+    ));
+    final response = await dio.get<dynamic>('/recover');
+    expect(response.statusCode, HttpStatus.ok);
+    expect(response.requestOptions.extra[RetryInterceptor.retriedKey], true);
+    expect(requests, 2);
+    expect(intercepted, 2);
+    expect(completed, 1);
+  });
 
-  // 由于 _shouldRetry 是私有的，我们只能通过 onError 的行为来推断
-  // 但为了直接测试，我们使用一个变通方法：
-  // 创建一个 maxRetries=0 的 interceptor，这样 onError 永远不会重试
-  // 然后检查 super.onError 是否被调用
+  test('连续失败的读取最多重试一次', () async {
+    var failures = 0;
+    dio.interceptors.add(InterceptorsWrapper(onError: (error, handler) {
+      failures++;
+      handler.next(error);
+    }));
+    await expectLater(
+        dio.get<dynamic>('/unavailable'), throwsA(isA<DioException>()));
+    expect(requests, 2);
+    expect(failures, 1);
+  });
 
-  // 实际上，对于这个测试，我们直接测试行为：
-  // 如果 err 类型是我们期望重试的，且 maxRetries > 0，
-  // onError 会尝试重试（可能失败），但不会调用 super.onError
+  test('写入、带请求体的读取、流响应和服务端指定等待时间的读取只发送一次', () async {
+    final calls = <Future<dynamic> Function()>[
+      () => dio.post<dynamic>('/action', data: {'value': 1}),
+      () => dio.put<dynamic>('/action'),
+      () => dio.patch<dynamic>('/action'),
+      () => dio.delete<dynamic>('/action'),
+      () => dio.get<dynamic>('/read', data: 'body'),
+      () => dio.get<ResponseBody>('/events',
+          options: Options(responseType: ResponseType.stream)),
+      () => dio.get<dynamic>('/retry-after'),
+      () => dio.get<dynamic>('/private',
+          options: Options(extra: {RetryInterceptor.disableRetryKey: true})),
+    ];
+    for (final call in calls) {
+      final before = requests;
+      await expectLater(call(), throwsA(isA<DioException>()));
+      expect(requests, before + 1);
+    }
+  });
 
-  // 更简单的方法：使用 maxRetries=0 来测试 _shouldRetry 的行为
-  // 当 maxRetries=0 时，onError 总是调用 super.onError（不重试）
-  // 我们无法直接访问 _shouldRetry，所以通过公开行为测试
-
-  // 这个辅助函数实际上通过检查异常类型和状态码来推断
-  // _shouldRetry 的逻辑（根据源码）
-  if (err.type == DioExceptionType.connectionTimeout ||
-      err.type == DioExceptionType.sendTimeout ||
-      err.type == DioExceptionType.receiveTimeout ||
-      err.type == DioExceptionType.connectionError) {
-    return true;
-  }
-  final statusCode = err.response?.statusCode;
-  return statusCode != null && (statusCode >= 500 || statusCode == 429);
+  test('等待重试时取消请求会释放等待者并阻止下一次请求', () async {
+    dio.interceptors.clear();
+    const delay = Duration(milliseconds: 100);
+    dio.interceptors.add(RetryInterceptor(dio, delay: delay));
+    final token = CancelToken();
+    final result = expectLater(
+      dio.get<dynamic>('/cancel', cancelToken: token),
+      throwsA(isA<DioException>()
+          .having((error) => error.type, 'type', DioExceptionType.cancel)),
+    );
+    await firstResponse.future;
+    token.cancel();
+    await result;
+    await Future<void>.delayed(delay * 2);
+    expect(requests, 1);
+  });
 }

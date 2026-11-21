@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import '../../services/logger/logger_service.dart';
+import 'logging_interceptor.dart';
 
 /// 业务响应拦截器
 /// 检查响应体中的code字段，如果不是200则抛出异常
@@ -11,16 +11,19 @@ class BusinessResponseInterceptor extends Interceptor {
       final code = data['code'];
 
       if (code != null && code != 200) {
-        final message = data['message'] ?? '未知错误';
-        appLogger.eWithPackage('network', '业务错误: code=$code, message=$message');
-
+        final serverMessage = data['message'];
+        final message = LoggingInterceptor.isSensitive(response.requestOptions)
+            ? '服务器拒绝请求 ($code)'
+            : serverMessage is String && serverMessage.isNotEmpty
+                ? serverMessage
+                : '未知错误';
         final exception = DioException(
           requestOptions: response.requestOptions,
           response: response,
           type: DioExceptionType.badResponse,
           message: message,
         );
-        handler.reject(exception);
+        handler.reject(exception, true);
         return;
       }
     }

@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/network/script_run_ws_client.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   test(
@@ -28,7 +27,6 @@ void main() {
       );
     });
 
-    SharedPreferences.setMockInitialValues(<String, Object>{});
     final config = ApiConfig(
       id: 'test-server',
       name: 'Test',
@@ -36,13 +34,10 @@ void main() {
       apiKey: 'test-key',
       isDefault: true,
     );
-    await ApiConfigManager.saveConfig(config);
-    await ApiConfigManager.setCurrentConfig(config.id);
-
-    final client = ScriptRunWsClient();
+    final client = ScriptRunWsClient(config: config);
+    final firstOutput = client.output.first;
     await client.connect(scriptId: 9, cols: 100, rows: 30);
-    final output =
-        await client.output.first.timeout(const Duration(seconds: 5));
+    final output = await firstOutput.timeout(const Duration(seconds: 5));
 
     expect(requestPath, '/api/v2/core/script/run');
     expect(queryParameters['script_id'], '9');
@@ -55,5 +50,18 @@ void main() {
 
     await client.close();
     await server.close(force: true);
+  });
+
+  test('script WebSocket requires a 1Panel configuration', () async {
+    final client = ScriptRunWsClient(
+      config: ApiConfig(
+        id: 'other',
+        name: 'Other',
+        url: 'https://panel.invalid',
+        panelType: 'other',
+        apiKey: '',
+      ),
+    );
+    await expectLater(client.connect(scriptId: 1), throwsUnsupportedError);
   });
 }

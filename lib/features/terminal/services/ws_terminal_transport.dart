@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/network/onepanel_websocket_connector.dart';
@@ -24,8 +23,7 @@ class WebSocketTerminalTransport implements TerminalTransport {
   final StreamController<TerminalTransportEvent> _events =
       StreamController<TerminalTransportEvent>.broadcast();
 
-  WebSocket? _socket;
-  StreamSubscription<dynamic>? _subscription;
+  final _connection = OnePanelWebSocketConnector();
   int _columns;
   int _rows;
 
@@ -34,34 +32,18 @@ class WebSocketTerminalTransport implements TerminalTransport {
 
   @override
   Future<void> connect() async {
-    await dispose();
-    _events.add(const TerminalStatusEvent('connecting'));
-
-    try {
-      final socket = await OnePanelWebSocketConnector.connect(
-        config: _config,
-        path: _intent.endpointPath(),
-        queryParameters: _intent.queryParameters(
-          columns: _columns,
-          rows: _rows,
-        ),
-      );
-      _socket = socket;
-      _subscription = socket.listen(
-        _handleFrame,
-        onError: (Object error) {
-          _events.add(TerminalErrorEvent(error.toString()));
-        },
-        onDone: () {
-          _events.add(const TerminalClosedEvent());
-        },
-        cancelOnError: false,
-      );
-      _events.add(const TerminalStatusEvent('connected'));
-    } catch (error) {
-      _events.add(TerminalErrorEvent(error.toString()));
-      rethrow;
-    }
+    await _connection.connect(
+      config: _config,
+      path: _intent.endpointPath(),
+      queryParameters: _intent.queryParameters(
+        columns: _columns,
+        rows: _rows,
+      ),
+      onConnected: () => _events.add(const TerminalStatusEvent('connected')),
+      onData: _handleFrame,
+      onError: (error, _) => _events.add(TerminalErrorEvent(error.toString())),
+      onDone: () => _events.add(const TerminalClosedEvent()),
+    );
   }
 
   void _handleFrame(dynamic frame) {
@@ -73,7 +55,7 @@ class WebSocketTerminalTransport implements TerminalTransport {
 
   @override
   Future<void> sendInput(String data) async {
-    _socket?.add(TerminalFrameCodec.encodeInput(data));
+    _connection.socket?.add(TerminalFrameCodec.encodeInput(data));
   }
 
   @override
@@ -83,7 +65,7 @@ class WebSocketTerminalTransport implements TerminalTransport {
   }) async {
     _columns = columns;
     _rows = rows;
-    _socket?.add(TerminalFrameCodec.encodeResize(
+    _connection.socket?.add(TerminalFrameCodec.encodeResize(
       columns: columns,
       rows: rows,
     ));
@@ -91,7 +73,7 @@ class WebSocketTerminalTransport implements TerminalTransport {
 
   @override
   Future<void> heartbeat() async {
-    _socket?.add(
+    _connection.socket?.add(
       TerminalFrameCodec.encodeHeartbeat(
         timestamp: DateTime.now().millisecondsSinceEpoch,
       ),
@@ -100,9 +82,7 @@ class WebSocketTerminalTransport implements TerminalTransport {
 
   @override
   Future<void> dispose() async {
-    await _subscription?.cancel();
-    await _socket?.close();
-    _subscription = null;
-    _socket = null;
+    await _connection.close();
+    await _events.close();
   }
 }

@@ -32,14 +32,17 @@ class _ContainerLogsViewState extends State<ContainerLogsView> {
     // provider may notify without new data (e.g., loading state toggles).
     if (provider.logs != _lastLogs) {
       _lastLogs = provider.logs;
-      _controller.setLogs(provider.logs);
+      final logs = _lastLogs;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && identical(_lastLogs, logs)) _controller.setLogs(logs);
+      });
     }
 
-    if (provider.logsLoading && _controller.logs.isEmpty) {
+    if (provider.logsLoading && _lastLogs.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (provider.logsError != null && _controller.logs.isEmpty) {
+    if (provider.logsError != null && _lastLogs.isEmpty) {
       return ModuleErrorStateWidget(
         message: l10n.containerOperateFailed(provider.logsError!),
         onRetry: provider.loadLogs,
@@ -50,7 +53,7 @@ class _ContainerLogsViewState extends State<ContainerLogsView> {
       errorMessage: provider.logsError != null
           ? l10n.containerOperateFailed(provider.logsError!)
           : null,
-      hasCachedData: _controller.logs.isNotEmpty,
+      hasCachedData: _lastLogs.isNotEmpty,
       onRetry: provider.loadLogs,
       child: Column(
         children: [

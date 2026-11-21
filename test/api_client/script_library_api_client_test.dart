@@ -3,13 +3,11 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/api/v2/script_library_v2.dart';
-import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/config/api_constants.dart';
 import 'package:onepanel_client/core/network/dio_client.dart';
 import 'package:onepanel_client/core/network/script_run_ws_client.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/models/script_library_models.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/test_config_manager.dart';
 
@@ -62,19 +60,6 @@ Future<Response<Map<String, dynamic>>> _rawPost(
   );
 }
 
-Future<void> _prepareWsConfig() async {
-  SharedPreferences.setMockInitialValues(<String, Object>{});
-  final config = ApiConfig(
-    id: 'test-server',
-    name: 'Test',
-    url: TestEnvironment.baseUrl,
-    apiKey: TestEnvironment.config.getString('PANEL_API_KEY'),
-    isDefault: true,
-  );
-  await ApiConfigManager.saveConfig(config);
-  await ApiConfigManager.setCurrentConfig(config.id);
-}
-
 void main() {
   // 注意：真服务器集成测试禁止 TestWidgetsFlutterBinding（会劫持 HttpClient，
   // 所有请求返回假 400）。TestEnvironment.initialize() 仅读取 .env，无需绑定层。
@@ -92,7 +77,6 @@ void main() {
         apiKey: apiKey,
       );
       api = ScriptLibraryV2Api(client);
-      await _prepareWsConfig();
     }
   });
 
@@ -191,10 +175,10 @@ void main() {
         return;
       }
 
-      final wsClient = ScriptRunWsClient();
+      final wsClient = ScriptRunWsClient(config: TestEnvironment.apiConfig);
+      final firstOutput = wsClient.output.first;
       await wsClient.connect(scriptId: candidate.id);
-      final output =
-          await wsClient.output.first.timeout(const Duration(seconds: 10));
+      final output = await firstOutput.timeout(const Duration(seconds: 10));
       _logSection(
         '✅ Parsed /core/script/run',
         response: {'scriptId': candidate.id, 'output': output},

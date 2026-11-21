@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:onepanel_client/api/v2/auth_v2.dart';
 import 'package:onepanel_client/api/v2/command_v2.dart';
 import 'package:onepanel_client/api/v2/container_v2.dart';
 import 'package:onepanel_client/api/v2/database_v2.dart';
@@ -224,13 +225,12 @@ void main() {
         expect(requestBody, <String, dynamic>{'id': 42});
       });
 
-      test('unbindMfa aligns POST /core/settings/mfa/unbind', () async {
-        final api = SettingV2Api(client);
-        await api.unbindMfa(<String, dynamic>{'code': '123456'});
+      test('closeMfa sends no request body', () async {
+        await AuthV2Api(client).closeMfa();
 
         expect(requestMethod, 'POST');
-        expect(requestPath, '/api/v2/core/settings/mfa/unbind');
-        expect(requestBody, <String, dynamic>{'code': '123456'});
+        expect(requestPath, '/api/v2/core/auth/mfa/close');
+        expect(requestBody, isNull);
       });
 
       test('resetSystemSetting aligns POST /core/settings/reset', () async {

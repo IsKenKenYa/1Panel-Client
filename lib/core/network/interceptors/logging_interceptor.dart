@@ -1,65 +1,69 @@
 import 'package:dio/dio.dart';
+
+import '../../services/logger/log_level.dart';
 import '../../services/logger/logger_service.dart';
+import 'retry_interceptor.dart';
 
-/// 简化的日志拦截器
 class LoggingInterceptor extends Interceptor {
-  final bool enabled;
-  final bool logBody;
+  static const sensitiveBody = 'sensitiveBody';
+  static const _timerKey = 'networkElapsed';
+  static final _apiModule = RegExp(r'^/api/v2/(?:core/)?[a-z]+(?=[/?#]|$)');
 
-  LoggingInterceptor([this.enabled = true, this.logBody = true]);
+  static bool isSensitive(RequestOptions options) =>
+      options.extra[sensitiveBody] == true;
+
+  /// 路径只保留面板模块名称，流请求的耗时截至收到响应头。
+  static String describe(
+    RequestOptions request, {
+    int? status,
+    int? businessCode,
+    DioExceptionType? error,
+  }) {
+    final timer = request.extra[_timerKey] as Stopwatch?;
+    final module = _apiModule.firstMatch(request.path)?.group(0);
+    return [
+      request.method,
+      if (module != null) module,
+      if (status != null) 'HTTP $status',
+      if (businessCode != null) 'code=$businessCode',
+      if (error != null) error.name,
+      if (timer != null) '${timer.elapsedMilliseconds}ms',
+      if (request.extra[RetryInterceptor.retriedKey] == true) 'retry=1',
+    ].join(' ');
+  }
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    if (!enabled) {
-      super.onRequest(options, handler);
-      return;
-    }
-
-    appLogger.dWithPackage('network', '${options.method} ${options.path}');
-    if (logBody && options.data != null) {
-      appLogger.dWithPackage('network', 'Request Body: ${options.data}');
-    }
-    if (logBody && options.queryParameters.isNotEmpty) {
-      appLogger.dWithPackage(
-          'network', 'Query Params: ${options.queryParameters}');
-    }
-    super.onRequest(options, handler);
+    options.extra.putIfAbsent(_timerKey, () => Stopwatch()..start());
+    handler.next(options);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    if (!enabled) {
-      super.onResponse(response, handler);
-      return;
+    if (appLogger.minLogLevel.weight <= AppLogLevel.debug.weight) {
+      appLogger.dWithPackage(
+        'core.network.http',
+        describe(response.requestOptions, status: response.statusCode),
+      );
     }
-
-    appLogger.iWithPackage(
-        'network', '${response.statusCode} ${response.requestOptions.path}');
-    if (logBody && response.data != null) {
-      final dataStr = response.data.toString();
-      if (dataStr.length > 500) {
-        appLogger.iWithPackage(
-            'network', 'Response: ${dataStr.substring(0, 500)}...');
-      } else {
-        appLogger.iWithPackage('network', 'Response: $dataStr');
-      }
-    }
-    super.onResponse(response, handler);
+    handler.next(response);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    if (!enabled) {
-      super.onError(err, handler);
-      return;
+    if (!CancelToken.isCancel(err)) {
+      final data = err.response?.data;
+      final code = data is Map ? data['code'] : null;
+      appLogger.wWithPackage(
+        'core.network.http',
+        describe(
+          err.requestOptions,
+          status: err.response?.statusCode,
+          businessCode: code is int ? code : null,
+          error: err.type,
+        ),
+      );
     }
-
-    appLogger.eWithPackage(
-        'network', '${err.type} ${err.requestOptions.path}: ${err.message}');
-    if (logBody && err.response?.data != null) {
-      appLogger.eWithPackage(
-          'network', 'Error Response: ${err.response?.data}');
-    }
-    super.onError(err, handler);
+    handler.next(err);
   }
 }

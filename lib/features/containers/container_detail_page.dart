@@ -2,6 +2,7 @@ import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/operations/page_visibility_listener.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/container_models.dart'
     hide Container;
@@ -25,7 +26,8 @@ class ContainerDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => ContainerDetailProvider(container: container)..loadAll(),
+      create: (_) =>
+          ContainerDetailProvider(container: container)..loadInspect(),
       child: _ContainerDetailView(container: container),
     );
   }
@@ -45,11 +47,44 @@ class _ContainerDetailView extends StatefulWidget {
 class _ContainerDetailViewState extends State<_ContainerDetailView>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late ContainerDetailProvider _provider;
+  bool _visible = false;
+  bool _logsVisible = false;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 3, vsync: this)
+      ..addListener(_updateTab);
+  }
+
+  void _updateTab() {
+    if (!mounted) return;
+    final provider = _provider;
+    final showLogs = _visible && _tabController.index == 1;
+    if (showLogs != _logsVisible) {
+      _logsVisible = showLogs;
+      if (showLogs) {
+        if (provider.followLogs || !provider.hasLogSnapshot) {
+          provider.loadLogs();
+        }
+      } else {
+        provider.pauseLogStream();
+      }
+    }
+    if (_visible &&
+        _tabController.index == 2 &&
+        provider.stats == null &&
+        !provider.statsLoading &&
+        provider.statsError == null) {
+      provider.loadStats();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _provider = context.read<ContainerDetailProvider>();
   }
 
   @override
@@ -93,13 +128,20 @@ class _ContainerDetailViewState extends State<_ContainerDetailView>
           ],
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          _InfoTab(container: widget.container),
-          const ContainerLogsView(),
-          const ContainerStatsView(),
-        ],
+      body: PageVisibilityListener(
+        onChanged: (visible) {
+          if (!mounted) return;
+          _visible = visible;
+          _updateTab();
+        },
+        child: TabBarView(
+          controller: _tabController,
+          children: [
+            _InfoTab(container: widget.container),
+            const ContainerLogsView(),
+            const ContainerStatsView(),
+          ],
+        ),
       ),
     );
   }
@@ -116,15 +158,19 @@ class _InfoTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
-    final provider = context.watch<ContainerDetailProvider>();
+    final provider = context.read<ContainerDetailProvider>();
+    final (loading, content, error) = context.select(
+      (ContainerDetailProvider state) =>
+          (state.inspectLoading, state.inspectData, state.inspectError),
+    );
 
-    if (provider.inspectLoading && provider.inspectData == null) {
+    if (loading && content == null) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (provider.inspectError != null && provider.inspectData == null) {
+    if (error != null && content == null) {
       return ModuleErrorStateWidget(
-        message: l10n.containerOperateFailed(provider.inspectError!),
+        message: l10n.containerOperateFailed(error),
         onRetry: provider.loadInspect,
       );
     }
@@ -174,10 +220,10 @@ class _InfoTab extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           // ── Inspect JSON ──
-          if (provider.inspectData != null)
+          if (content != null)
             _InspectJsonCard(
               title: l10n.containerInspectJson,
-              jsonString: _formatJson(provider.inspectData!),
+              jsonString: _formatJson(content),
               scheme: colorScheme,
             ),
         ],
@@ -387,8 +433,7 @@ class _InspectJsonCardState extends State<_InspectJsonCard> {
           // 折叠内容
           if (_expanded) ...[
             Divider(
-                height: 1,
-                color: scheme.outlineVariant.withValues(alpha: 0.4)),
+                height: 1, color: scheme.outlineVariant.withValues(alpha: 0.4)),
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(12),

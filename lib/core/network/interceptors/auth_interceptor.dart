@@ -1,12 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import '../../services/logger/logger_service.dart';
 import '../../config/api_constants.dart';
 import '../onepanel_auth_headers.dart';
 
 /// 1Panel API认证拦截器 - 严格按照服务器端认证要求实现
 class AuthInterceptor extends Interceptor {
-  final AppLogger _logger = AppLogger();
   String? _apiKey;
 
   AuthInterceptor([String? apiKey]) : _apiKey = apiKey;
@@ -19,7 +17,6 @@ class AuthInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     if (_apiKey == null || _apiKey!.isEmpty) {
-      _logger.w('[network] No API key provided for authentication');
       super.onRequest(options, handler);
       return;
     }
@@ -33,24 +30,12 @@ class AuthInterceptor extends Interceptor {
     // 返回 data: null。
     options.headers.addAll({
       ...authHeaders,
-      if (options.data is! FormData) 'Content-Type': 'application/json',
+      if (options.data is! FormData && options.contentType == null)
+        'Content-Type': 'application/json',
       if (!options.headers.containsKey('Accept')) 'Accept': 'application/json',
       if (!kIsWeb) 'User-Agent': ApiConstants.userAgent,
     });
 
-    _logger.d(
-      '[network] 1Panel auth headers added for ${options.path} (apiKeyLength=${_apiKey!.length})',
-    );
     super.onRequest(options, handler);
-  }
-
-  @override
-  void onError(DioException err, ErrorInterceptorHandler handler) {
-    if (err.response?.statusCode == 401) {
-      _logger.w(
-          '[network] 1Panel authentication failed for ${err.requestOptions.path}');
-      _logger.w('[network] Response: ${err.response?.data}');
-    }
-    super.onError(err, handler);
   }
 }

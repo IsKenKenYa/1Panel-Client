@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/api/v2/ssh_v2.dart';
-import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/config/api_constants.dart';
 import 'package:onepanel_client/core/network/dio_client.dart';
 import 'package:onepanel_client/core/network/process_ws_client.dart';
@@ -12,7 +11,6 @@ import 'package:onepanel_client/data/models/ssh_cert_models.dart';
 import 'package:onepanel_client/data/models/ssh_log_models.dart';
 import 'package:onepanel_client/data/models/ssh_session_models.dart';
 import 'package:onepanel_client/data/models/ssh_settings_models.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/test_config_manager.dart';
 
@@ -62,19 +60,6 @@ Future<Response<Map<String, dynamic>>> _rawPost(
   );
 }
 
-Future<void> _prepareWsConfig() async {
-  SharedPreferences.setMockInitialValues(<String, Object>{});
-  final config = ApiConfig(
-    id: 'test-server',
-    name: 'Test',
-    url: TestEnvironment.baseUrl,
-    apiKey: TestEnvironment.config.getString('PANEL_API_KEY'),
-    isDefault: true,
-  );
-  await ApiConfigManager.saveConfig(config);
-  await ApiConfigManager.setCurrentConfig(config.id);
-}
-
 void main() {
   // 注意：真服务器集成测试禁止 TestWidgetsFlutterBinding（会劫持 HttpClient，
   // 所有请求返回假 400）。TestEnvironment.initialize() 仅读取 .env，无需绑定层。
@@ -92,7 +77,6 @@ void main() {
         apiKey: apiKey,
       );
       api = SshV2Api(client);
-      await _prepareWsConfig();
     }
   });
 
@@ -322,7 +306,7 @@ void main() {
 
     test('GET /process/ws 应支持 SSH session websocket 查询', () async {
       if (!canRun) return;
-      final wsClient = ProcessWsClient();
+      final wsClient = ProcessWsClient(config: TestEnvironment.apiConfig);
       try {
         await wsClient.connect();
         final future =
@@ -331,11 +315,6 @@ void main() {
         final result = await future;
         _logSection('✅ Parsed /process/ws ssh', response: result);
         expect(result == null || result is List<dynamic>, isTrue);
-      } catch (e) {
-        appLogger.wWithPackage(
-          'test.api_client.ssh',
-          '跳过 SSH websocket smoke: $e',
-        );
       } finally {
         await wsClient.close();
       }

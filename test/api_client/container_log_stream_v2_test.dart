@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -13,22 +14,29 @@ void main() {
     late Map<String, String> queryParameters;
     late String? acceptHeader;
     late String sseBody;
+    late ContentType contentType;
+    Completer<void>? requestReceived;
 
     setUp(() async {
       requestPath = '';
       queryParameters = <String, String>{};
       acceptHeader = null;
       sseBody = '';
+      contentType = ContentType('text', 'event-stream');
+      requestReceived = null;
 
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
       server.listen((HttpRequest request) async {
         requestPath = request.uri.path;
         queryParameters = request.uri.queryParameters;
         acceptHeader = request.headers.value('accept');
+        if (requestReceived != null) {
+          requestReceived!.complete();
+          return;
+        }
 
         request.response.statusCode = 200;
-        request.response.headers.contentType =
-            ContentType('text', 'event-stream');
+        request.response.headers.contentType = contentType;
         request.response.write(sseBody);
         await request.response.close();
       });
@@ -51,15 +59,13 @@ void main() {
           '${sseFrame('second log line\n')}';
 
       final api = ContainerLogStreamV2Api(client);
-      final chunks =
-          await api.streamContainerLogs(container: 'web-1').toList();
+      final chunks = await api.streamContainerLogs(container: 'web-1').toList();
 
       expect(requestPath, '/api/v2/containers/search/log');
       expect(chunks, <String>['first log line\n', 'second log line\n']);
     });
 
-    test('sends follow/tail/timestamp query and SSE accept header',
-        () async {
+    test('sends follow/tail/timestamp query and SSE accept header', () async {
       sseBody = sseFrame('tail line\n');
 
       final api = ContainerLogStreamV2Api(client);
@@ -87,10 +93,26 @@ void main() {
           '${sseFrame('valid chunk\n')}';
 
       final api = ContainerLogStreamV2Api(client);
-      final chunks =
-          await api.streamContainerLogs(container: 'web-1').toList();
+      final chunks = await api.streamContainerLogs(container: 'web-1').toList();
 
       expect(chunks, <String>['valid chunk\n']);
+    });
+
+    test('cancels a subscription before the server sends headers', () async {
+      requestReceived = Completer<void>();
+      final events = ContainerLogStreamV2Api(client)
+          .streamContainerLogs(container: 'web-1', follow: true);
+      final subscription = events.listen((_) => fail('unexpected log'));
+      await requestReceived!.future.timeout(const Duration(seconds: 3));
+      await subscription.cancel().timeout(const Duration(seconds: 2));
+    });
+
+    test('rejects an HTML response to a log request', () async {
+      contentType = ContentType.html;
+      sseBody = '<html>login</html>';
+      final events = ContainerLogStreamV2Api(client)
+          .streamContainerLogs(container: 'web-1');
+      await expectLater(events, emitsError(isA<FormatException>()));
     });
   });
 }

@@ -7,7 +7,7 @@ import 'package:onepanel_client/features/processes/widgets/process_filter_sheet_
 import 'package:onepanel_client/features/processes/widgets/process_sort_bar_widget.dart';
 import 'package:onepanel_client/features/processes/widgets/process_summary_card_widget.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
-import 'package:onepanel_client/shared/mixins/server_aware_page_mixin.dart';
+import 'package:onepanel_client/shared/widgets/operations/page_visibility_listener.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
@@ -20,29 +20,16 @@ class ProcessesPage extends StatefulWidget {
   State<ProcessesPage> createState() => _ProcessesPageState();
 }
 
-class _ProcessesPageState extends State<ProcessesPage>
-    with ServerAwarePageMixin {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      checkServerAndLoad();
-    });
-  }
-
-  @override
-  void onServerReady() {
-    context.read<ProcessesProvider>().load();
-  }
-
+class _ProcessesPageState extends State<ProcessesPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final connection = context.select((CurrentServerController state) =>
+        (state.currentServerId, state.currentServer?.revision));
     return Consumer<ProcessesProvider>(
       builder: (context, provider, _) {
         return ServerAwarePageScaffold(
           title: l10n.operationsProcessesTitle,
-          onServerChanged: () => context.read<ProcessesProvider>().load(),
           actions: <Widget>[
             IconButton(
               onPressed: _openFilterSheet,
@@ -55,51 +42,55 @@ class _ProcessesPageState extends State<ProcessesPage>
               tooltip: l10n.commonRefresh,
             ),
           ],
-          body: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: ProcessSortBarWidget(
-                  currentField: provider.sortField,
-                  onSelected: provider.updateSort,
-                  cpuLabel: l10n.processesSortCpu,
-                  memoryLabel: l10n.processesSortMemory,
-                  nameLabel: l10n.processesSortName,
-                  pidLabel: l10n.processesSortPid,
+          body: PageVisibilityListener(
+            key: ValueKey(connection),
+            onChanged: provider.setPageVisible,
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: ProcessSortBarWidget(
+                    currentField: provider.sortField,
+                    onSelected: provider.updateSort,
+                    cpuLabel: l10n.processesSortCpu,
+                    memoryLabel: l10n.processesSortMemory,
+                    nameLabel: l10n.processesSortName,
+                    pidLabel: l10n.processesSortPid,
+                  ),
                 ),
-              ),
-              Expanded(
-                child: AsyncStatePageBodyWidget(
-                  isLoading: provider.isLoading,
-                  isEmpty: provider.isEmpty,
-                  errorMessage: provider.errorMessage,
-                  onRetry: provider.load,
-                  emptyTitle: l10n.processesEmptyTitle,
-                  emptyDescription: l10n.processesEmptyDescription,
-                  child: RefreshIndicator(
-                    onRefresh: provider.refresh,
-                    child: ListView.separated(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                      itemCount: provider.items.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 12),
-                      itemBuilder: (context, index) {
-                        final item = provider.items[index];
-                        return ProcessSummaryCardWidget(
-                          item: item,
-                          statusLabel: _statusLabel(context, item.status),
-                          onOpenDetail: () => Navigator.pushNamed(
-                            context,
-                            AppRoutes.processDetail,
-                            arguments: item.pid,
-                          ),
-                          onStop: () => _stopProcess(item),
-                        );
-                      },
+                Expanded(
+                  child: AsyncStatePageBodyWidget(
+                    isLoading: provider.isLoading,
+                    isEmpty: provider.isEmpty,
+                    errorMessage: provider.errorMessage,
+                    onRetry: provider.load,
+                    emptyTitle: l10n.processesEmptyTitle,
+                    emptyDescription: l10n.processesEmptyDescription,
+                    child: RefreshIndicator(
+                      onRefresh: provider.refresh,
+                      child: ListView.separated(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                        itemCount: provider.items.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 12),
+                        itemBuilder: (context, index) {
+                          final item = provider.items[index];
+                          return ProcessSummaryCardWidget(
+                            item: item,
+                            statusLabel: _statusLabel(context, item.status),
+                            onOpenDetail: () => Navigator.pushNamed(
+                              context,
+                              AppRoutes.processDetail,
+                              arguments: item.pid,
+                            ),
+                            onStop: () => _stopProcess(item),
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },

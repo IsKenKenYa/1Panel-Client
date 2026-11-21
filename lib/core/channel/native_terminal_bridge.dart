@@ -7,7 +7,6 @@ import '../../features/terminal/models/terminal_runtime_models.dart';
 import '../../features/terminal/services/terminal_transport.dart';
 import '../../features/terminal/services/ws_terminal_transport.dart';
 import '../config/api_config.dart';
-import '../services/logger/logger_service.dart';
 
 /// 原生容器终端会话桥。
 ///
@@ -33,7 +32,9 @@ class NativeTerminalBridge {
       case 'openTerminal':
         return _open(args);
       case 'sendTerminalInput':
-        await _session(args)?.transport.sendInput(args['data'] as String? ?? '');
+        await _session(args)
+            ?.transport
+            .sendInput(args['data'] as String? ?? '');
         return true;
       case 'resizeTerminal':
         final session = _session(args);
@@ -67,6 +68,7 @@ class NativeTerminalBridge {
     if (config == null) {
       throw StateError('No API config available');
     }
+    config.requireOnePanel();
     final sessionId =
         'term-${DateTime.now().microsecondsSinceEpoch}-$containerName';
     // 会话标识用容器名：1Panel 的容器操作与终端都以容器名为定位键。
@@ -85,8 +87,12 @@ class NativeTerminalBridge {
     session.subscription = transport.events.listen(
       (event) => _forward(session, event),
     );
-    appLogger.i('terminal session opened for container $containerName');
-    await transport.connect();
+    try {
+      await transport.connect();
+    } catch (_) {
+      await _close(sessionId);
+      rethrow;
+    }
     return sessionId;
   }
 
@@ -125,7 +131,6 @@ class NativeTerminalBridge {
     if (session == null) return false;
     await session.subscription?.cancel();
     await session.transport.dispose();
-    appLogger.i('terminal session closed: $sessionId');
     return true;
   }
 

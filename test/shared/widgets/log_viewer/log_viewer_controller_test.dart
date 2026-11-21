@@ -108,6 +108,22 @@ Log line 3
       expect(controller.filteredLogs[0].isMatch, true);
     });
 
+    test('keeps complete lines when a later frame finishes the last line',
+        () async {
+      await controller.setLogs('first\nsec');
+      final first = controller.logs.first;
+      await Future.wait([
+        controller.setLogs('first\nsecon'),
+        controller.setLogs('first\nsecond\nthird'),
+      ]);
+      expect(controller.logs.first, same(first));
+      expect(controller.logs.map((line) => line.originalContent),
+          ['first', 'second', 'third']);
+      await controller.setLogs('  ');
+      await controller.setLogs('  next');
+      expect(controller.logs.single.originalContent, '  next');
+    });
+
     test('updateSettings updates settings', () {
       final newSettings =
           LogSettings(fontSize: 16.0, viewMode: LogViewMode.wrap);

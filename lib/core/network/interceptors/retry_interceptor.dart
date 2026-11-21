@@ -1,68 +1,58 @@
-import 'dart:async';
 import 'package:dio/dio.dart';
-import '../../services/logger/logger_service.dart';
 
-/// 简化的重试拦截器
 class RetryInterceptor extends Interceptor {
-  static const disableRetryKey = 'disableRetry';
-  final int maxRetries;
-  final List<Duration> retryDelays;
-  final AppLogger _logger = AppLogger();
+  RetryInterceptor(this._dio, {this.delay = const Duration(seconds: 1)});
 
-  RetryInterceptor({
-    this.maxRetries = 4,
-    this.retryDelays = const [
-      Duration(seconds: 1),
-      Duration(seconds: 2),
-      Duration(seconds: 5),
-      Duration(seconds: 30),
-    ],
-  });
+  static const disableRetryKey = 'disableRetry';
+  static const retriedKey = 'networkRetried';
+  final Dio _dio;
+  final Duration delay;
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    if (err.requestOptions.extra[disableRetryKey] == true) {
+    final request = err.requestOptions;
+    if (!_shouldRetry(err)) {
       handler.next(err);
       return;
     }
-    final currentRetry = err.requestOptions.extra['retryCount'] as int? ?? 0;
 
-    if (_shouldRetry(err) && currentRetry < maxRetries) {
-      final delay = retryDelays[currentRetry.clamp(0, retryDelays.length - 1)];
-
-      _logger.w(
-          '[network] Retrying ${err.requestOptions.path} (attempt ${currentRetry + 1}/$maxRetries)');
-
-      await Future.delayed(delay);
-
-      final newOptions = err.requestOptions.copyWith(
-        extra: {...err.requestOptions.extra, 'retryCount': currentRetry + 1},
-      );
-
-      try {
-        final response = await Dio().fetch(newOptions);
-        handler.resolve(response);
-        return;
-      } on DioException catch (e) {
-        handler.next(e);
-        return;
-      }
+    await Future<void>.delayed(delay);
+    final cancelled = request.cancelToken?.cancelError;
+    if (cancelled != null) {
+      handler.reject(cancelled);
+      return;
     }
 
-    super.onError(err, handler);
+    final next = request.copyWith(extra: {...request.extra, retriedKey: true});
+    try {
+      handler.resolve(await _dio.fetch<dynamic>(next));
+    } on DioException catch (error) {
+      // 同一客户端已处理第二次请求的错误。
+      handler.reject(error);
+    }
   }
 
   bool _shouldRetry(DioException err) {
-    // 网络相关错误
-    if (err.type == DioExceptionType.connectionTimeout ||
-        err.type == DioExceptionType.sendTimeout ||
-        err.type == DioExceptionType.receiveTimeout ||
-        err.type == DioExceptionType.connectionError) {
-      return true;
+    final request = err.requestOptions;
+    if (request.extra[disableRetryKey] == true ||
+        request.extra[retriedKey] == true ||
+        request.cancelToken?.isCancelled == true ||
+        (request.method != 'GET' && request.method != 'HEAD') ||
+        request.data != null ||
+        request.responseType == ResponseType.stream) {
+      return false;
     }
-
-    // HTTP状态码错误
-    final statusCode = err.response?.statusCode;
-    return (statusCode != null && (statusCode >= 500 || statusCode == 429));
+    // 有 Retry-After 时把本次结果交给调用方，保留服务端的等待窗口。
+    if (err.response?.headers['retry-after'] != null) return false;
+    return switch (err.type) {
+      DioExceptionType.connectionTimeout ||
+      DioExceptionType.sendTimeout ||
+      DioExceptionType.receiveTimeout ||
+      DioExceptionType.connectionError =>
+        true,
+      DioExceptionType.badResponse =>
+        const {408, 429, 500, 502, 503, 504}.contains(err.response?.statusCode),
+      _ => false,
+    };
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/module_search_field.dart';
+import 'package:onepanel_client/shared/widgets/operations/page_visibility_listener.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
@@ -6,7 +8,6 @@ import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/data/models/common_models.dart';
 import 'package:onepanel_client/data/models/host_tree_models.dart';
-import 'package:onepanel_client/features/settings/settings_provider.dart';
 import 'package:onepanel_client/features/settings/terminal_settings_page.dart';
 import 'package:onepanel_client/features/terminal/models/terminal_runtime_models.dart';
 import 'package:onepanel_client/features/terminal/providers/terminal_workbench_provider.dart';
@@ -33,6 +34,7 @@ class TerminalPage extends StatefulWidget {
 class _TerminalPageState extends State<TerminalPage> {
   late final TerminalWorkbenchProvider _provider;
   bool _bootstrapped = false;
+  bool _started = false;
   bool _didOpenExplicitMobileDetail = false;
   late TerminalLaunchIntent _initialIntent;
 
@@ -53,7 +55,6 @@ class _TerminalPageState extends State<TerminalPage> {
         TerminalLaunchIntent.fromRouteArgs(
           ModalRoute.of(context)?.settings.arguments,
         );
-    _initialize();
   }
 
   Future<void> _initialize() async {
@@ -145,6 +146,19 @@ class _TerminalPageState extends State<TerminalPage> {
         ),
       );
     }
+    return PageVisibilityListener(
+      onChanged: (visible) {
+        _provider.setSessionListVisible(visible);
+        if (visible && !_started) {
+          _started = true;
+          _initialize();
+        }
+      },
+      child: _buildWorkbench(),
+    );
+  }
+
+  Widget _buildWorkbench() {
     return ChangeNotifierProvider<TerminalWorkbenchProvider>.value(
       value: _provider,
       child: Consumer<TerminalWorkbenchProvider>(
@@ -164,9 +178,7 @@ class _TerminalPageState extends State<TerminalPage> {
                   onPressed: () async {
                     await Navigator.of(context).push(
                       MaterialPageRoute<void>(
-                        builder: (_) => TerminalSettingsPage(
-                          provider: SettingsProvider(),
-                        ),
+                        builder: (_) => const TerminalSettingsPage(),
                       ),
                     );
                     if (context.mounted) {
@@ -758,13 +770,10 @@ class _HostPickerSheetState extends State<_HostPickerSheet> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            TextField(
+            ModuleSearchField(
               controller: _searchController,
               onChanged: (value) => setState(() => _query = value.trim()),
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.search),
-                hintText: context.l10n.terminalWorkbenchSearchHost,
-              ),
+              hintText: context.l10n.terminalWorkbenchSearchHost,
             ),
             const SizedBox(height: 12),
             Flexible(
@@ -837,13 +846,10 @@ class _QuickCommandSheetState extends State<_QuickCommandSheet> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            TextField(
+            ModuleSearchField(
               controller: _searchController,
               onChanged: (value) => setState(() => _query = value.trim()),
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.search),
-                hintText: context.l10n.terminalWorkbenchQuickCommand,
-              ),
+              hintText: context.l10n.terminalWorkbenchQuickCommand,
             ),
             const SizedBox(height: 12),
             Flexible(

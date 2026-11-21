@@ -9,7 +9,8 @@ import 'package:onepanel_client/data/models/script_library_models.dart';
 import 'package:onepanel_client/data/models/system_group_models.dart';
 import 'package:onepanel_client/features/script_library/services/script_library_service.dart';
 
-class ScriptLibraryProvider extends ChangeNotifier with SafeChangeNotifier, AsyncStateNotifier {
+class ScriptLibraryProvider extends ChangeNotifier
+    with SafeChangeNotifier, AsyncStateNotifier {
   ScriptLibraryProvider({
     ScriptLibraryService? service,
   }) : _service = service ?? ScriptLibraryService();
@@ -25,6 +26,7 @@ class ScriptLibraryProvider extends ChangeNotifier with SafeChangeNotifier, Asyn
   bool _isRunning = false;
   String _runOutput = '';
   String? _runError;
+  int _runGeneration = 0;
   StreamSubscription<String>? _runSubscription;
   StreamSubscription<bool>? _runStateSubscription;
 
@@ -119,14 +121,20 @@ class ScriptLibraryProvider extends ChangeNotifier with SafeChangeNotifier, Asyn
   }
 
   Future<void> startRun(ScriptLibraryInfo item) async {
+    if (isDisposed || _isRunning) return;
+    final generation = ++_runGeneration;
     _runOutput = '';
     _runError = null;
     _isRunning = true;
     notifyListeners();
     try {
-      await _runSubscription?.cancel();
-      await _runStateSubscription?.cancel();
+      await Future.wait<void>([
+        if (_runSubscription != null) _runSubscription!.cancel(),
+        if (_runStateSubscription != null) _runStateSubscription!.cancel(),
+      ]);
+      if (generation != _runGeneration) return;
       _runStateSubscription = _service.watchRunState().listen((bool isRunning) {
+        if (_isRunning == isRunning) return;
         _isRunning = isRunning;
         notifyListeners();
       });
@@ -149,6 +157,7 @@ class ScriptLibraryProvider extends ChangeNotifier with SafeChangeNotifier, Asyn
       );
       await _service.startRun(item.id);
     } catch (error, stackTrace) {
+      if (generation != _runGeneration) return;
       appLogger.eWithPackage(
         'features.script_library.providers.list',
         'startRun failed',
@@ -162,17 +171,24 @@ class ScriptLibraryProvider extends ChangeNotifier with SafeChangeNotifier, Asyn
   }
 
   Future<void> stopRun() async {
-    await _runSubscription?.cancel();
-    await _runStateSubscription?.cancel();
+    final generation = ++_runGeneration;
+    final output = _runSubscription;
+    final state = _runStateSubscription;
     _runSubscription = null;
     _runStateSubscription = null;
-    await _service.stopRun();
+    await Future.wait<void>([
+      if (output != null) output.cancel(),
+      if (state != null) state.cancel(),
+      _service.stopRun(),
+    ]);
+    if (generation != _runGeneration) return;
     _isRunning = false;
     notifyListeners();
   }
 
   @override
   void dispose() {
+    _runGeneration++;
     _runSubscription?.cancel();
     _runStateSubscription?.cancel();
     _service.stopRun();

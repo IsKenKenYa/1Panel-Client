@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:onepanel_client/core/utils/error_message_utils.dart';
 import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
+import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/models/container_models.dart'
     hide Container;
 import 'package:onepanel_client/features/containers/container_service.dart';
@@ -10,6 +11,8 @@ import 'package:onepanel_client/features/containers/container_service.dart';
 import 'package:onepanel_client/core/network/network_exceptions.dart';
 
 class ContainerDetailProvider extends ChangeNotifier with SafeChangeNotifier {
+  static const _maxFollowLength = 1024 * 1024;
+  static const _retainedFollowLength = 768 * 1024;
   ContainerDetailProvider({
     required this.container,
     ContainerService? service,
@@ -27,11 +30,14 @@ class ContainerDetailProvider extends ChangeNotifier with SafeChangeNotifier {
   String? _statsError;
 
   String? _inspectData;
-  String _logs = '';
+  final StringBuffer _logs = StringBuffer();
+  String? _logText;
   ContainerStats? _stats;
 
   bool _followLogs = true;
+  bool _hasLogSnapshot = false;
   StreamSubscription<String>? _logsSubscription;
+  int _logGeneration = 0;
 
   bool get inspectLoading => _inspectLoading;
   bool get logsLoading => _logsLoading;
@@ -42,14 +48,16 @@ class ContainerDetailProvider extends ChangeNotifier with SafeChangeNotifier {
   String? get statsError => _statsError;
 
   String? get inspectData => _inspectData;
-  String get logs => _logs;
+  String get logs => _logText ??= _logs.toString();
   ContainerStats? get stats => _stats;
 
   /// 当前是否处于日志跟随状态。
   bool get followLogs => _followLogs;
+  bool get hasLogSnapshot => _hasLogSnapshot;
 
   @override
   void dispose() {
+    _logGeneration++;
     _logsSubscription?.cancel();
     super.dispose();
   }
@@ -98,45 +106,77 @@ class ContainerDetailProvider extends ChangeNotifier with SafeChangeNotifier {
     final nextFollow = follow ?? _followLogs;
     _followLogs = nextFollow;
 
-    await _logsSubscription?.cancel();
+    final generation = ++_logGeneration;
+    final previous = _logsSubscription;
     _logsSubscription = null;
+    await previous?.cancel();
+    if (isDisposed || generation != _logGeneration) return;
 
     _logsLoading = true;
+    _hasLogSnapshot = false;
     _logsError = null;
-    _logs = '';
+    _logs.clear();
+    _logText = null;
     notifyListeners();
 
-    final buffer = StringBuffer();
     _logsSubscription = _service
         .streamContainerLogs(
-          container.name,
-          tail: tail,
-          follow: nextFollow,
-        )
+      container.name,
+      tail: tail,
+      follow: nextFollow,
+    )
         .listen(
       (chunk) {
-        if (isDisposed) return;
-        buffer.write(chunk);
-        _logs = buffer.toString();
+        if (generation != _logGeneration) return;
+        _logs.write(chunk);
+        if (nextFollow && _logs.length > _maxFollowLength) {
+          final text = _logs.toString();
+          var start = text.length - _retainedFollowLength;
+          final lineEnd = text.indexOf('\n', start);
+          if (lineEnd >= 0 && lineEnd < text.length - 1) {
+            start = lineEnd + 1;
+          } else if ((text.codeUnitAt(start) & 0xfc00) == 0xdc00) {
+            start++;
+          }
+          _logs
+            ..clear()
+            ..write(text.substring(start));
+        }
+        _logText = null;
         // 首帧到达即视为加载完成，后续帧持续追加。
         if (_logsLoading) {
           _logsLoading = false;
         }
         notifyListeners();
       },
-      onError: (Object error) {
-        if (isDisposed) return;
+      onError: (Object error, StackTrace trace) {
+        if (generation != _logGeneration) return;
+        if (error is! NetworkException) {
+          appLogger.wWithPackage(
+            'features.containers.logs',
+            '容器日志流中断 (${error.runtimeType})',
+            stackTrace: trace,
+          );
+        }
         _logsError = ErrorMessageUtils.userFacingMessage(error);
         _logsLoading = false;
         notifyListeners();
       },
       onDone: () {
-        if (isDisposed) return;
+        if (generation != _logGeneration) return;
+        _hasLogSnapshot = !nextFollow;
         _logsLoading = false;
         notifyListeners();
       },
       cancelOnError: true,
     );
+  }
+
+  void pauseLogStream() {
+    _logGeneration++;
+    unawaited(_logsSubscription?.cancel());
+    _logsSubscription = null;
+    _logsLoading = false;
   }
 
   /// 停止跟随，改为一次性回放最近 [tail] 行。
@@ -145,7 +185,7 @@ class ContainerDetailProvider extends ChangeNotifier with SafeChangeNotifier {
   }
 
   Future<void> loadStats() async {
-    if (isDisposed) return;
+    if (isDisposed || _statsLoading) return;
 
     _statsLoading = true;
     _statsError = null;

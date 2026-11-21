@@ -17,7 +17,7 @@ class ProcessRepository {
         _wsClient = wsClient ?? ProcessWsClient();
 
   final ApiClientManager _clientManager;
-  ProcessV2Api? _api;
+  final ProcessV2Api? _api;
   final ProcessWsClient _wsClient;
   final StreamController<List<ProcessSummary>> _processController =
       StreamController<List<ProcessSummary>>.broadcast();
@@ -25,7 +25,7 @@ class ProcessRepository {
   StreamSubscription<dynamic>? _processSubscription;
 
   Future<ProcessV2Api> _ensureApi() async {
-    return _api ??= await _clientManager.getProcessApi();
+    return _api ?? await _clientManager.getProcessApi();
   }
 
   Future<ProcessDetail> getProcessDetail(int pid) async {
@@ -51,20 +51,19 @@ class ProcessRepository {
   Stream<List<ProcessSummary>> watchProcesses() => _processController.stream;
 
   Future<void> connectProcesses(ProcessWsMessage message) async {
-    _processSubscription ??= _wsClient.messages.listen((dynamic event) {
-      final rawItems = (event as List<dynamic>? ?? const <dynamic>[])
+    _processSubscription ??= _wsClient.messages.map((dynamic event) {
+      return (event as List<dynamic>? ?? const <dynamic>[])
           .whereType<Map<String, dynamic>>()
           .map(ProcessSummary.fromJson)
           .toList(growable: false);
-      _processController.add(rawItems);
-    }, onError: _processController.addError);
-    await _wsClient.connect();
+    }).listen(_processController.add, onError: _processController.addError);
     await _wsClient.send(message.toJson());
   }
 
   Future<void> closeProcesses() async {
-    await _processSubscription?.cancel();
+    final subscription = _processSubscription;
     _processSubscription = null;
-    await _wsClient.close();
+    await Future.wait<void>(
+        [if (subscription != null) subscription.cancel(), _wsClient.close()]);
   }
 }

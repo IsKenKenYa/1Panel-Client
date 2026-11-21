@@ -30,6 +30,8 @@ class TerminalRuntimeSession {
   TerminalTransport? _transport;
   StreamSubscription<TerminalTransportEvent>? _subscription;
   Timer? _heartbeatTimer;
+  bool _disposed = false;
+  int _generation = 0;
 
   TerminalSessionConnectionState connectionState =
       TerminalSessionConnectionState.idle;
@@ -41,7 +43,12 @@ class TerminalRuntimeSession {
       connectionState == TerminalSessionConnectionState.connected;
 
   Future<void> attachTransport(TerminalTransport transport) async {
+    final generation = ++_generation;
     await disposeTransport();
+    if (_disposed || generation != _generation) {
+      await transport.dispose();
+      return;
+    }
     _transport = transport;
     _subscription = transport.events.listen(_handleEvent);
     terminal.onOutput = (data) {
@@ -57,8 +64,8 @@ class TerminalRuntimeSession {
 
     try {
       await transport.connect();
-      _startHeartbeat();
     } catch (error) {
+      if (_transport != transport) return;
       connectionState = TerminalSessionConnectionState.error;
       errorMessage = error.toString();
       _onChanged();
@@ -86,7 +93,9 @@ class TerminalRuntimeSession {
     switch (event) {
       case TerminalOutputEvent():
         terminal.write(event.output);
+        return;
       case TerminalHeartbeatEvent():
+        if (latencyMs == event.latencyMs) return;
         latencyMs = event.latencyMs;
       case TerminalStatusEvent():
         connectionState = switch (event.status) {
@@ -99,11 +108,16 @@ class TerminalRuntimeSession {
         if (event.status == 'connected') {
           lastConnectedAt = DateTime.now();
           errorMessage = null;
+          _startHeartbeat();
+        } else if (!isConnected) {
+          _heartbeatTimer?.cancel();
         }
       case TerminalClosedEvent():
+        _heartbeatTimer?.cancel();
         connectionState = TerminalSessionConnectionState.closed;
         errorMessage = event.reason;
       case TerminalErrorEvent():
+        _heartbeatTimer?.cancel();
         connectionState = TerminalSessionConnectionState.error;
         errorMessage = event.message;
     }
@@ -122,14 +136,23 @@ class TerminalRuntimeSession {
   Future<void> disposeTransport() async {
     _heartbeatTimer?.cancel();
     _heartbeatTimer = null;
-    await _subscription?.cancel();
+    final subscription = _subscription;
+    final transport = _transport;
     _subscription = null;
-    await _transport?.dispose();
     _transport = null;
+    await Future.wait<void>([
+      if (subscription != null) subscription.cancel(),
+      if (transport != null) transport.dispose(),
+    ]);
   }
 
   Future<void> dispose() async {
+    if (_disposed) return;
+    _disposed = true;
     await disposeTransport();
+    terminal.onOutput = null;
+    terminal.onResize = null;
+    controller.dispose();
     focusNode.dispose();
   }
 }

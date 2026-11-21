@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 
 import '../../core/config/api_constants.dart';
 import '../../core/network/dio_client.dart';
-import '../../core/network/interceptors/retry_interceptor.dart';
 import '../../core/network/sse/sse_frame_decoder.dart';
 
 /// 1Panel container log SSE stream client.
@@ -29,32 +28,80 @@ class ContainerLogStreamV2Api {
     String? tail,
     bool follow = false,
     bool timestamps = false,
-  }) async* {
-    final response = await _client.get<ResponseBody>(
-      ApiConstants.buildApiPath('/containers/search/log'),
-      queryParameters: <String, dynamic>{
-        'container': container,
-        'since': since ?? 'all',
-        'follow': follow.toString(),
-        'timestamp': timestamps.toString(),
-        if (tail != null) 'tail': tail,
-      },
-      options: Options(
-        responseType: ResponseType.stream,
-        headers: <String, dynamic>{'Accept': 'text/event-stream'},
-        extra: <String, dynamic>{RetryInterceptor.disableRetryKey: true},
-      ),
-    );
+  }) {
+    final cancelToken = CancelToken();
+    bool cancelled = false;
+    StreamSubscription<String>? subscription;
+    late final StreamController<String> events;
+    Future<void> listen() async {
+      try {
+        final opening = _client.get<ResponseBody>(
+          ApiConstants.buildApiPath('/containers/search/log'),
+          cancelToken: cancelToken,
+          queryParameters: <String, dynamic>{
+            'container': container,
+            'since': since ?? 'all',
+            'follow': follow.toString(),
+            'timestamp': timestamps.toString(),
+            if (tail != null) 'tail': tail,
+          },
+          options: Options(
+            responseType: ResponseType.stream,
+            receiveTimeout: follow ? Duration.zero : null,
+            followRedirects: false,
+            receiveDataWhenStatusError: false,
+            headers: <String, dynamic>{'Accept': 'text/event-stream'},
+            extra: DioClient.sensitiveOptions.extra,
+          ),
+        );
+        final response = await opening.timeout(
+          const Duration(seconds: ApiConstants.receiveTimeout),
+          onTimeout: () {
+            cancelToken.cancel();
+            throw TimeoutException('等待面板返回日志响应超时');
+          },
+        );
 
-    final body = response.data;
-    if (body == null) {
-      return;
+        final body = response.data;
+        if (cancelled) return;
+        final mediaType = response.headers
+            .value(Headers.contentTypeHeader)
+            ?.split(';')
+            .first
+            .trim()
+            .toLowerCase();
+        if (body == null || mediaType != 'text/event-stream') {
+          if (body != null) {
+            final discarded = body.stream.listen(null, onError: (Object _) {});
+            cancelToken.cancel();
+            await discarded.cancel();
+          }
+          throw const FormatException('面板未返回容器日志事件流');
+        }
+        subscription = body.stream
+            .cast<List<int>>()
+            .transform(const Utf8Decoder())
+            .transform(const LineSplitter())
+            .transform(const SseFrameDecoder())
+            .listen(events.add, onError: events.addError, onDone: events.close);
+        if (events.isPaused) subscription!.pause();
+      } catch (error, trace) {
+        if (cancelled) return;
+        events.addError(error, trace);
+        unawaited(events.close());
+      }
     }
 
-    yield* body.stream
-        .cast<List<int>>()
-        .transform(const Utf8Decoder())
-        .transform(const LineSplitter())
-        .transform(const SseFrameDecoder());
+    events = StreamController<String>(
+      onListen: listen,
+      onPause: () => subscription?.pause(),
+      onResume: () => subscription?.resume(),
+      onCancel: () {
+        cancelled = true;
+        cancelToken.cancel();
+        return subscription?.cancel();
+      },
+    );
+    return events.stream;
   }
 }

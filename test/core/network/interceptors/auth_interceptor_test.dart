@@ -30,6 +30,17 @@ void main() {
       expect(options.headers.containsKey('1Panel-Timestamp'), isFalse);
     });
 
+    test('保留调用方声明的请求和响应类型', () {
+      final request = RequestOptions(
+        path: '/api/v2/test',
+        contentType: 'application/octet-stream',
+        headers: {'Accept': 'text/event-stream'},
+      );
+      AuthInterceptor('key').onRequest(request, RequestInterceptorHandler());
+      expect(request.contentType, 'application/octet-stream');
+      expect(request.headers['Accept'], 'text/event-stream');
+    });
+
     test('onRequest does not add auth headers when apiKey is empty', () {
       final interceptor = AuthInterceptor('');
       final handler = _TestRequestInterceptorHandler();
