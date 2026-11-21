@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """
-Skill Packager - Creates a distributable .skill file of a skill folder
+Modified for the AAS catalog: corrected bundled workflow, validation and packaging safeguards (2026-10-23).
+
+Skill Packager - Creates a .skill ZIP; host compatibility is not guaranteed
 
 Usage:
     python utils/package_skill.py <path/to/skill-folder> [output-directory]
@@ -12,8 +14,37 @@ Example:
 
 import sys
 import zipfile
+import tempfile
 from pathlib import Path
+
+
+def safe_user_path(path_value, base_dir="."):
+    """Resolve a CLI path under the current workspace."""
+    if base_dir != ".":
+        raise ValueError("Custom base directories are not supported for CLI paths")
+    base_path = Path.cwd().resolve()
+    resolved_path = Path(path_value).expanduser().resolve()
+    try:
+        resolved_path.relative_to(base_path)
+    except ValueError as exc:
+        raise ValueError(f"Path escapes allowed directory: {path_value}") from exc
+    return resolved_path
 from quick_validate import validate_skill
+
+
+def should_include(file_path: Path, skill_path: Path) -> bool:
+    relative = file_path.relative_to(skill_path)
+    if any(part in {".git", ".venv", "venv", "node_modules", "__pycache__", ".pytest_cache"} for part in relative.parts):
+        return False
+    if file_path.name == ".env" or file_path.name.startswith(".env.") or file_path.suffix.lower() in {".pem", ".key", ".pyc", ".skill"}:
+        return False
+    if file_path.is_symlink():
+        return False
+    try:
+        file_path.resolve(strict=True).relative_to(skill_path.resolve(strict=True))
+    except (OSError, ValueError):
+        return False
+    return file_path.is_file()
 
 
 def package_skill(skill_path, output_dir=None):
@@ -27,7 +58,7 @@ def package_skill(skill_path, output_dir=None):
     Returns:
         Path to the created .skill file, or None if error
     """
-    skill_path = Path(skill_path).resolve()
+    skill_path = safe_user_path(skill_path).resolve()
 
     # Validate skill folder exists
     if not skill_path.exists():
@@ -56,23 +87,32 @@ def package_skill(skill_path, output_dir=None):
     # Determine output location
     skill_name = skill_path.name
     if output_dir:
-        output_path = Path(output_dir).resolve()
+        output_path = safe_user_path(output_dir).resolve()
         output_path.mkdir(parents=True, exist_ok=True)
     else:
         output_path = Path.cwd()
 
+    if output_path == skill_path or skill_path in output_path.parents:
+        raise ValueError("Archive output must be outside the skill directory")
     skill_filename = output_path / f"{skill_name}.skill"
+    if skill_filename.exists() or skill_filename.is_symlink():
+        raise FileExistsError(f"Refusing to overwrite archive: {skill_filename}")
 
     # Create the .skill file (zip format)
     try:
-        with zipfile.ZipFile(skill_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
-            # Walk through the skill directory
-            for file_path in skill_path.rglob('*'):
-                if file_path.is_file():
-                    # Calculate the relative path within the zip
-                    arcname = file_path.relative_to(skill_path.parent)
-                    zipf.write(file_path, arcname)
-                    print(f"  Added: {arcname}")
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_zip_path = Path(temp_dir) / "skill.zip"
+            with zipfile.ZipFile(temp_zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+                # Walk through the skill directory
+                for file_path in skill_path.rglob('*'):
+                    if should_include(file_path, skill_path):
+                        # Calculate the relative path within the zip
+                        arcname = file_path.relative_to(skill_path.parent)
+                        zipf.write(file_path, arcname)
+                        print(f"  Added: {arcname}")
+            with skill_filename.open("xb") as output, temp_zip_path.open("rb") as source:
+                import shutil
+                shutil.copyfileobj(source, output)
 
         print(f"\n✅ Successfully packaged skill to: {skill_filename}")
         return skill_filename
@@ -90,8 +130,8 @@ def main():
         print("  python utils/package_skill.py skills/public/my-skill ./dist")
         sys.exit(1)
 
-    skill_path = sys.argv[1]
-    output_dir = sys.argv[2] if len(sys.argv) > 2 else None
+    skill_path = safe_user_path(sys.argv[1])
+    output_dir = safe_user_path(sys.argv[2]) if len(sys.argv) > 2 else None
 
     print(f"📦 Packaging skill: {skill_path}")
     if output_dir:

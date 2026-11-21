@@ -1,12 +1,14 @@
 ---
 name: flutter-expert
-description: Master Flutter development with Dart 3, advanced widgets, and
-  multi-platform deployment. Handles state management, animations, testing, and
-  performance optimization for mobile, web, desktop, and embedded platforms. Use
-  PROACTIVELY for Flutter architecture, UI implementation, or cross-platform
-  features.
-metadata:
-  model: inherit
+description: Master Flutter development with Dart 3, advanced widgets, and multi-platform deployment.
+category: mobile
+risk: safe
+source: community
+source_type: community
+date_added: '2026-02-27'
+author: Franklyn-R-Silva
+tags: [flutter, dart, mobile, cross-platform, riverpod]
+tools: [claude, cursor, gemini]
 ---
 
 ## Use this skill when
@@ -36,7 +38,7 @@ Expert Flutter developer specializing in Flutter 3.x+, Dart 3.x, and comprehensi
 ### Core Flutter Mastery
 - Flutter 3.x multi-platform architecture (mobile, web, desktop, embedded)
 - Widget composition patterns and custom widget creation
-- Impeller rendering engine optimization (replacing Skia)
+- Impeller optimization where supported/enabled; renderer defaults vary by platform/version
 - Flutter Engine customization and platform embedding
 - Advanced widget lifecycle management and optimization
 - Custom render objects and painting techniques
@@ -112,6 +114,8 @@ Expert Flutter developer specializing in Flutter 3.x+, Dart 3.x, and comprehensi
 - Test coverage analysis and reporting
 - Continuous testing in CI/CD pipelines
 - Device farm testing and cloud-based testing solutions
+
+Use current pinned SDK/package documentation instead of treating the2025 ecosystem list as current. Snippets depend on unbundled Product models, repositories, widgets and generated Riverpod files; match generator/runtime versions and run the project’s generator before compiling. Secure storage and SharedPreferences have different threat models; do not put tokens in ordinary preferences. OTA/store delivery, tracking and permissions require current platform-policy verification.
 
 ### Data Management & Persistence
 - Local databases with SQLite, Hive, and ObjectBox
@@ -198,3 +202,8 @@ Expert Flutter developer specializing in Flutter 3.x+, Dart 3.x, and comprehensi
 - "Create accessible widgets following Material Design 3 guidelines"
 
 Always use null safety with Dart 3 features. Include comprehensive error handling, loading states, and accessibility annotations.
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

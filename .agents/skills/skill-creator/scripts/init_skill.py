@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """
+Modified for the AAS catalog: corrected bundled workflow, validation and packaging safeguards (2026-10-23).
+
 Skill Initializer - Creates a new skill from template
 
 Usage:
@@ -12,12 +14,26 @@ Examples:
 """
 
 import sys
+import re
 from pathlib import Path
+
+
+def safe_user_path(path_value, base_dir="."):
+    """Resolve a CLI path under the current workspace."""
+    if base_dir != ".":
+        raise ValueError("Custom base directories are not supported for CLI paths")
+    base_path = Path.cwd().resolve()
+    resolved_path = Path(path_value).expanduser().resolve()
+    try:
+        resolved_path.relative_to(base_path)
+    except ValueError as exc:
+        raise ValueError(f"Path escapes allowed directory: {path_value}") from exc
+    return resolved_path
 
 
 SKILL_TEMPLATE = """---
 name: {skill_name}
-description: [TODO: Complete and informative explanation of what the skill does and when to use it. Include WHEN to use this skill - specific scenarios, file types, or tasks that trigger it.]
+description: "TODO: Explain what this skill does and when to use it."
 ---
 
 # {skill_title}
@@ -75,7 +91,7 @@ Executable code (Python/Bash/etc.) that can be run directly to perform specific 
 
 **Appropriate for:** Python scripts, shell scripts, or any executable code that performs automation, data processing, or specific operations.
 
-**Note:** Scripts may be executed without loading into context, but can still be read by Claude for patching or environment adjustments.
+**Note:** Review scripts and their side effects before execution; do not assume bundled code is trusted.
 
 ### references/
 Documentation and reference material intended to be loaded into context to inform Claude's process and thinking.
@@ -191,6 +207,16 @@ def title_case_skill_name(skill_name):
     return ' '.join(word.capitalize() for word in skill_name.split('-'))
 
 
+SKILL_NAME_RE = re.compile(r"\A[a-z0-9]+(?:-[a-z0-9]+)*\Z")
+
+
+def validate_skill_name(skill_name):
+    """Accept only one portable directory component."""
+    if not SKILL_NAME_RE.fullmatch(skill_name) or len(skill_name) > 64:
+        raise ValueError("skill name must be 1-64 lowercase letters, digits, or hyphen-separated words")
+    return skill_name
+
+
 def init_skill(skill_name, path):
     """
     Initialize a new skill directory with template SKILL.md.
@@ -202,8 +228,13 @@ def init_skill(skill_name, path):
     Returns:
         Path to created skill directory, or None if error
     """
-    # Determine skill directory path
-    skill_dir = Path(path).resolve() / skill_name
+    # Determine skill directory path. Validation prevents absolute paths,
+    # separators, dot segments, and traversal from becoming filesystem names.
+    skill_name = validate_skill_name(skill_name)
+    parent_dir = safe_user_path(path).resolve()
+    if parent_dir.is_symlink():
+        raise ValueError("skill parent must not be a symbolic link")
+    skill_dir = parent_dir / skill_name
 
     # Check if directory already exists
     if skill_dir.exists():
@@ -240,7 +271,7 @@ def init_skill(skill_name, path):
         scripts_dir.mkdir(exist_ok=True)
         example_script = scripts_dir / 'example.py'
         example_script.write_text(EXAMPLE_SCRIPT.format(skill_name=skill_name))
-        example_script.chmod(0o755)
+        example_script.chmod(0o644)
         print("✅ Created scripts/example.py")
 
         # Create references/ directory with example reference doc
@@ -271,12 +302,12 @@ def init_skill(skill_name, path):
 
 
 def main():
-    if len(sys.argv) < 4 or sys.argv[2] != '--path':
+    if len(sys.argv) != 4 or sys.argv[2] != '--path':
         print("Usage: init_skill.py <skill-name> --path <path>")
         print("\nSkill name requirements:")
         print("  - Hyphen-case identifier (e.g., 'data-analyzer')")
         print("  - Lowercase letters, digits, and hyphens only")
-        print("  - Max 40 characters")
+        print("  - Max 64 characters")
         print("  - Must match directory name exactly")
         print("\nExamples:")
         print("  init_skill.py my-new-skill --path skills/public")
@@ -285,7 +316,7 @@ def main():
         sys.exit(1)
 
     skill_name = sys.argv[1]
-    path = sys.argv[3]
+    path = safe_user_path(sys.argv[3])
 
     print(f"🚀 Initializing skill: {skill_name}")
     print(f"   Location: {path}")

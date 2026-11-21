@@ -1,67 +1,39 @@
 ---
 name: agent-memory-systems
-description: "Memory is the cornerstone of intelligent agents. Without it, every interaction starts from zero. This skill covers the architecture of agent memory: short-term (context window), long-term (vector stores), and the cognitive architectures that organize them.  Key insight: Memory isn't just storage - it's retrieval. A million stored facts mean nothing if you can't find the right one. Chunking, embedding, and retrieval strategies determine whether your agent remembers or forgets.  The field is fragm"
+description: "Design tenant-scoped memory, retrieval and retention for agents. Use when planning RAG, conversation history, vector stores or remembering across sessions."
+risk: safe
 source: vibeship-spawner-skills (Apache 2.0)
+date_added: 2026-02-27
 ---
 
 # Agent Memory Systems
 
-You are a cognitive architect who understands that memory makes agents intelligent.
-You've built memory systems for agents handling millions of interactions. You know
-that the hard part isn't storing - it's retrieving the right memory at the right time.
+Choose semantic records for facts/preferences, episodic records for events, and procedural records for reusable methods. Keep retrieval quality separate from storage volume and bind persistent access to verified identity.
 
-Your core insight: Memory failures look like intelligence failures. When an agent
-"forgets" or gives inconsistent answers, it's almost always a retrieval problem,
-not a storage problem. You obsess over chunking strategies, embedding quality,
-and
+## Procedure
 
-## Capabilities
+1. Establish the actual task, authenticated tenant/user, permission to retain content, retention limits and existing store/model versions.
+2. Read the guide's tenant-scoped contract and relevant storage/chunking sections. Select an adapter supported by the installed SDK; the guide's historical sketches are not deployable integrations.
+3. Specify record IDs, source evidence, timestamps, namespace, retrieval limits and conflict/version policy. Preserve originals and propose consolidation without deletion.
+4. Test cross-identity rejection, stale/conflicting records, bounded retrieval and failed writes with isolated fixtures. Benchmark retrieval against held-out questions before expanding storage.
+5. Deliver the architecture and evidence-backed change plan, listing unresolved adapters and hosted cost/data destinations. Apply only the persistence or provider operations actually authorized.
 
-- agent-memory
-- long-term-memory
-- short-term-memory
-- working-memory
-- episodic-memory
-- semantic-memory
-- procedural-memory
-- memory-retrieval
-- memory-formation
-- memory-decay
+## Detailed Guide
 
-## Patterns
+Read [the detailed guide](references/detailed-guide.md) before executing this skill. It retains the complete procedure and reference material. Treat its safety, prerequisites, and validation requirements as mandatory. For focused work, load the relevant sections; for end-to-end work, read the guide completely.
 
-### Memory Type Architecture
+## When to Use
+- Design memory namespaces and retention for an agent serving distinct tenants or users.
+- Diagnose retrieval of stale, conflicting or unauthorized conversation records.
+- Plan an embedding/store migration while preserving source records and verifying isolation.
 
-Choosing the right memory type for different information
+## Example
 
-### Vector Store Selection Pattern
+**Request:** “Our support agent forgets preferences between sessions. Design memory for two customer tenants without sharing their history.”
 
-Choosing the right vector database for your use case
+**Output:** Load the tenant-scoped contract and background-extraction sections. Propose a semantic namespace per verified tenant/user, records with source IDs and revisions, and bounded retrieval. Retain conflicting preferences until the owner resolves them; include tests that tenant B cannot retrieve or consolidate tenant A records. Identify the existing persistent adapter and consent/retention evidence before any write.
 
-### Chunking Strategy Pattern
-
-Breaking documents into retrievable chunks
-
-## Anti-Patterns
-
-### ❌ Store Everything Forever
-
-### ❌ Chunk Without Testing Retrieval
-
-### ❌ Single Memory Type for All Data
-
-## ⚠️ Sharp Edges
-
-| Issue | Severity | Solution |
-|-------|----------|----------|
-| Issue | critical | ## Contextual Chunking (Anthropic's approach) |
-| Issue | high | ## Test different sizes |
-| Issue | high | ## Always filter by metadata first |
-| Issue | high | ## Add temporal scoring |
-| Issue | medium | ## Detect conflicts on storage |
-| Issue | medium | ## Budget tokens for different memory types |
-| Issue | medium | ## Track embedding model in metadata |
-
-## Related Skills
-
-Works well with: `autonomous-agents`, `multi-agent-orchestration`, `llm-architect`, `agent-tool-builder`
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.
