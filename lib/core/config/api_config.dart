@@ -75,15 +75,18 @@ class ApiConfig {
         id: json['id'] as String,
         name: json['name'] as String,
         url: json['url'] as String,
-        panelType: json['panelType'] as String,
-        revision: json['revision'] as String,
-        credentialId: json['credentialId'] as String,
+        // 旧版本存档没有面板类型与凭据版本字段，一律视为 1Panel 连接。
+        panelType: json['panelType'] as String? ?? onePanelType,
+        revision: json['revision'] as String? ?? '',
+        credentialId: json['credentialId'] as String? ?? '',
         apiKey: apiKey,
         additionalCredentials: additionalCredentials,
-        tokenValidity: json['tokenValidity'] as int,
-        allowInsecureTls: json['allowInsecureTls'] as bool,
-        isDefault: json['isDefault'] as bool,
-        lastUsed: DateTime.parse(json['lastUsed'] as String),
+        tokenValidity: json['tokenValidity'] as int? ?? 0,
+        allowInsecureTls: json['allowInsecureTls'] as bool? ?? false,
+        isDefault: json['isDefault'] as bool? ?? false,
+        lastUsed: json['lastUsed'] == null
+            ? DateTime.now()
+            : DateTime.parse(json['lastUsed'] as String),
       );
 }
 
@@ -115,6 +118,10 @@ typedef ServerDirectory = ({List<ApiConfig> servers, String? selectedId});
 
 abstract final class ApiConfigManager {
   static const _serversKey = 'kenpanel_servers';
+  // 旧版本的服务器列表、当前选中与凭据键；仅用于升级迁移。
+  static const _legacyConfigsKey = 'api_configs';
+  static const _legacySelectedIdKey = 'current_api_config_id';
+  static const _legacyCredentialPrefix = 'api_config_api_key_';
   static final _lock = Lock();
   static PlatformSecureStorage? _storage;
   static bool _requiresReload = false;
@@ -139,38 +146,100 @@ abstract final class ApiConfigManager {
 
   static ServerDirectory _read(SharedPreferences prefs) {
     final raw = prefs.getString(_serversKey);
-    if (raw == null) return (servers: <ApiConfig>[], selectedId: null);
-    final data = jsonDecode(raw) as Map<String, dynamic>;
+    if (raw != null) {
+      final data = jsonDecode(raw) as Map<String, dynamic>;
+      return (
+        servers: [
+          for (final item in data['servers'] as List)
+            ApiConfig.fromJson(item as Map<String, dynamic>),
+        ],
+        selectedId: data['selectedId'] as String?,
+      );
+    }
+    return _readLegacy(prefs);
+  }
+
+  /// 旧版本把服务器列表存成数组并使用独立的凭据键。
+  /// 这里按原样读出，凭据在首次读取详情时迁移到新键。
+  static ServerDirectory _readLegacy(SharedPreferences prefs) {
+    final legacy = prefs.getString(_legacyConfigsKey);
+    if (legacy == null) return (servers: <ApiConfig>[], selectedId: null);
+    final decoded = jsonDecode(legacy);
+    if (decoded is! List) return (servers: <ApiConfig>[], selectedId: null);
     return (
       servers: [
-        for (final item in data['servers'] as List)
-          ApiConfig.fromJson(item as Map<String, dynamic>),
+        for (final item in decoded)
+          if (item is Map<String, dynamic>) ApiConfig.fromJson(item),
       ],
-      selectedId: data['selectedId'] as String?,
+      selectedId: prefs.getString(_legacySelectedIdKey),
     );
   }
 
   static Future<ServerDirectory> getServerDirectory() =>
-      _lock.synchronized(() async => _read(await _preferences()));
+      _lock.synchronized(() async {
+        final prefs = await _preferences();
+        final directory = _read(prefs);
+        await _migrateLegacyDirectory(prefs, directory);
+        return directory;
+      });
+
+  /// 首次读到旧版本列表时写入新键并移除旧键。
+  /// 写入失败不阻断读取，旧键留到下次再试。
+  static Future<void> _migrateLegacyDirectory(
+    SharedPreferences prefs,
+    ServerDirectory directory,
+  ) async {
+    if (prefs.getString(_serversKey) != null) return;
+    if (prefs.getString(_legacyConfigsKey) == null) return;
+    final value = jsonEncode({
+      'servers': directory.servers,
+      'selectedId': directory.selectedId,
+    });
+    if (!await prefs.setString(_serversKey, value)) return;
+    await prefs.remove(_legacyConfigsKey);
+    await prefs.remove(_legacySelectedIdKey);
+  }
 
   static Future<List<ApiConfig>> getServerMetadata() async =>
       (await getServerDirectory()).servers;
 
   static Future<ApiConfig> _withCredentials(ApiConfig config) async {
-    final raw = await (await _vault()).read(key: _secretKey(config));
-    if (raw == null) throw StateError('无法读取已保存的面板凭据');
-    try {
-      final secrets = jsonDecode(raw) as Map<String, dynamic>;
-      return ApiConfig.fromJson(
-        config.toJson(),
-        apiKey: secrets['apiKey'] as String,
-        additionalCredentials: Map<String, String>.from(secrets['fields'] as Map),
-      );
-    } catch (error) {
-      if (error is! FormatException && error is! TypeError) rethrow;
-      // JSON 解码异常可能包含凭据原文。
-      throw const FormatException('已保存的面板凭据格式无效');
+    final vault = await _vault();
+    final raw = await vault.read(key: _secretKey(config));
+    if (raw != null) {
+      try {
+        final secrets = jsonDecode(raw) as Map<String, dynamic>;
+        return ApiConfig.fromJson(
+          config.toJson(),
+          apiKey: secrets['apiKey'] as String,
+          additionalCredentials:
+              Map<String, String>.from(secrets['fields'] as Map),
+        );
+      } catch (error) {
+        if (error is! FormatException && error is! TypeError) rethrow;
+        // JSON 解码异常可能包含凭据原文。
+        throw const FormatException('已保存的面板凭据格式无效');
+      }
     }
+    return _migrateLegacyCredentials(config, vault);
+  }
+
+  /// 旧版本把明文 API Key 存在 `api_config_api_key_<serverId>`。
+  /// 升级后首次读取时搬到新键，读取成功后再清理旧键，避免中途失败丢凭据。
+  static Future<ApiConfig> _migrateLegacyCredentials(
+    ApiConfig config,
+    PlatformSecureStorage vault,
+  ) async {
+    final legacyKey = '$_legacyCredentialPrefix${config.id}';
+    final legacy = await vault.read(key: legacyKey);
+    if (legacy == null) throw StateError('无法读取已保存的面板凭据');
+    final migrated = ApiConfig.fromJson(config.toJson(), apiKey: legacy);
+    await vault.write(
+      key: _secretKey(migrated),
+      value: jsonEncode({'apiKey': legacy}),
+    );
+    await vault.delete(key: legacyKey);
+    return migrated;
   }
 
   static Future<ApiConfig> getConfig(String id) => _lock.synchronized(() async {
