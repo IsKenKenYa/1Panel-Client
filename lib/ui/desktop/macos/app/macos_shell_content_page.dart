@@ -6,6 +6,7 @@ import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/controllers/pinned_modules_controller.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
+import 'package:onepanel_client/features/shell/server_route_observer.dart';
 import 'package:onepanel_client/features/shell/widgets/desktop_module_navigation.dart';
 import 'package:onepanel_client/features/shell/widgets/server_switcher_action.dart';
 import 'package:onepanel_client/ui/desktop/common/widgets/desktop_content_host.dart';
@@ -36,63 +37,21 @@ class MacosShellContentPage extends StatefulWidget {
 class _MacosShellContentPageState extends State<MacosShellContentPage> {
   final _contentKey = GlobalKey<DesktopContentHostState>();
   late ClientModule _selectedModule;
-  String? _embeddedRouteName;
-  Object? _embeddedRouteArguments;
-
-  /// Whether the touch-mode sidebar overlay is currently visible.
-  ///
-  /// Only relevant when [PlatformUtils.inputDeviceKinds] reports
-  /// [InputDeviceKind.touch] — the pointer (desktop) layout always
-  /// shows the sidebar permanently.
-  bool _isTouchSidebarVisible = false;
+  late final _embeddedRoute = ShellEmbeddedRoute(
+    widget.initialEmbeddedRouteName, widget.initialEmbeddedRouteArguments,
+  );
 
   @override
   void initState() {
     super.initState();
-    _selectedModule = clientModuleFromId(widget.initialModuleId) ??
-        _moduleFromIndex(widget.initialIndex);
-    _embeddedRouteName = widget.initialEmbeddedRouteName;
-    _embeddedRouteArguments = widget.initialEmbeddedRouteArguments;
+    _selectedModule =
+        initialShellModule(widget.initialIndex, widget.initialModuleId);
   }
 
-  ClientModule _moduleFromIndex(int index) {
-    switch (index.clamp(0, 3)) {
-      case 0:
-        return ClientModule.servers;
-      case 1:
-        return ClientModule.files;
-      case 2:
-        return ClientModule.containers;
-      case 3:
-        return ClientModule.settings;
-      default:
-        return ClientModule.servers;
-    }
-  }
-
-  List<ClientModule> _desktopModules(PinnedModulesController pinnedModules) {
-    final slots = <ClientModule>[
-      ClientModule.servers,
-      pinnedModules.primaryPin,
-      pinnedModules.secondaryPin,
-    ];
-
-    for (final module in kPinnableClientModules) {
-      if (!slots.contains(module)) {
-        slots.add(module);
-      }
-    }
-
-    slots.add(ClientModule.settings);
-    return slots;
-  }
-
-  void _selectModule(ClientModule module, {bool closeSidebar = false}) {
+  void _selectModule(ClientModule module) {
     setState(() {
       _selectedModule = module;
-      _embeddedRouteName = null;
-      _embeddedRouteArguments = null;
-      if (closeSidebar) _isTouchSidebarVisible = false;
+      _embeddedRoute.clear();
     });
   }
 
@@ -106,61 +65,55 @@ class _MacosShellContentPageState extends State<MacosShellContentPage> {
     final content = Consumer2<CurrentServerController, PinnedModulesController>(
       builder: (context, currentServer, pinnedModules, _) {
         final scheme = Theme.of(context).colorScheme;
-        final modules = _desktopModules(pinnedModules);
+        final panelType = currentServer.currentServer?.panelType;
+        final modules = shellModulesForPanel(panelType, pinnedModules.pins);
         final selectedModule =
-            (!currentServer.hasServer && _selectedModule.requiresServer)
-                ? ClientModule.servers
-                : _selectedModule;
+            _selectedModule.forServer(currentServer.currentServer);
+        final revision = currentServer.currentServer?.revision;
+        _embeddedRoute.updateConnection(currentServer.currentServerId, revision);
+        ServerRouteObserver.setActiveModule(context,
+            module: selectedModule,
+            needsServer: selectedModule.requiresServer ||
+                routeNeedsServerConnection(_embeddedRoute.name));
         final inputKind = PlatformUtils.inputDeviceKinds(context);
-        // In touch mode the sidebar is collapsed by default; the user
-        // opens it via the FloatingActionButton. In pointer mode the
-        // sidebar is always visible.
-        final sidebarVisible = inputKind == InputDeviceKind.pointer ||
-            _isTouchSidebarVisible;
+        final placement = DesktopNavigationPlacement.of(context);
+        final useDrawer = placement == DesktopNavigationPlacement.drawer;
+        final sidebar = DesktopSidebar(
+          width: 250,
+          extended: placement != DesktopNavigationPlacement.rail,
+          backgroundColor: scheme.surfaceContainerLow,
+          modules: modules,
+          selectedModule: selectedModule,
+          hasServer: currentServer.hasServer,
+          onSelect: (module) =>
+              ServerSwitcherAction.openModule(context, module, _selectModule),
+        );
 
         final child = Scaffold(
           backgroundColor: scheme.surface,
+          drawer: useDrawer ? Drawer(child: sidebar) : null,
           floatingActionButton: inputKind == InputDeviceKind.touch
-              ? FloatingActionButton(
-                  heroTag: 'macos_touch_sidebar_toggle_fab',
-                  key: const Key('macos-touch-sidebar-toggle'),
-                  onPressed: () {
-                    setState(() {
-                      _isTouchSidebarVisible = !_isTouchSidebarVisible;
-                    });
-                  },
-                  child: Icon(
-                    _isTouchSidebarVisible
-                        ? Icons.menu_open
-                        : Icons.menu,
+              ? Builder(
+                  builder: (context) => FloatingActionButton(
+                    heroTag: 'macos_touch_sidebar_toggle_fab',
+                    key: const Key('macos-touch-sidebar-toggle'),
+                    tooltip:
+                        MaterialLocalizations.of(context).openAppDrawerTooltip,
+                    onPressed: Scaffold.of(context).openDrawer,
+                    child: const Icon(Icons.menu),
                   ),
                 )
               : null,
           body: Row(
             children: [
-              // macOS style Sidebar
-              Offstage(
-                offstage: !sidebarVisible,
-                child: DesktopSidebar(
-                  width: 250,
-                  backgroundColor: scheme.surfaceContainerLow,
-                  modules: modules,
-                  selectedModule: selectedModule,
-                  hasServer: currentServer.hasServer,
-                  onSelect: (module) {
-                    if (!currentServer.hasServer && module.requiresServer) {
-                      ServerSwitcherAction.showServerPicker(context);
-                      return;
-                    }
-                    _selectModule(module, closeSidebar: true);
-                  },
-                ),
-              ),
+              if (!useDrawer) sidebar,
               Expanded(
                 child: Column(
                   children: [
                     // macOS style Top Toolbar
                     DesktopTopToolArea(
+                      showMenuButton:
+                          useDrawer && inputKind == InputDeviceKind.pointer,
                       selectedModule: selectedModule,
                       backgroundColor: scheme.surface,
                       onOpenSettings: () => _selectModule(ClientModule.settings),
@@ -176,8 +129,10 @@ class _MacosShellContentPageState extends State<MacosShellContentPage> {
                             key: _contentKey,
                             module: selectedModule,
                             serverId: currentServer.currentServerId,
-                            embeddedRoute: _embeddedRouteName,
-                            embeddedRouteArguments: _embeddedRouteArguments,
+                            serverRevision: revision,
+                            panelType: panelType,
+                            embeddedRoute: _embeddedRoute.name,
+                            embeddedRouteArguments: _embeddedRoute.arguments,
                           ),
                         ),
                       ),
@@ -189,23 +144,13 @@ class _MacosShellContentPageState extends State<MacosShellContentPage> {
           ),
         );
 
-        return CallbackShortcuts(
-          bindings: {
-            for (int i = 0; i < modules.length && i < 9; i++)
-              LogicalKeySet(
-                  LogicalKeyboardKey.meta, LogicalKeyboardKey(49 + i)): () {
-                final module = modules[i];
-                if (!currentServer.hasServer && module.requiresServer) {
-                  ServerSwitcherAction.showServerPicker(context);
-                  return;
-                }
-                _selectModule(module);
-              },
-          },
-          child: Focus(
-            autofocus: true,
-            child: child,
+        return DesktopModuleShortcuts(
+          modifier: LogicalKeyboardKey.meta,
+          modules: modules,
+          onSelect: (module) => ServerSwitcherAction.openModule(
+            context, module, _selectModule,
           ),
+          child: child,
         );
       },
     );

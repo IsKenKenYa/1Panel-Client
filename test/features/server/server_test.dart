@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:onepanel_client/data/panels/one_panel_adapter.dart';
 import 'package:onepanel_client/features/server/server_connection_service.dart';
 import 'package:onepanel_client/features/server/server_models.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
@@ -16,7 +17,7 @@ void main() {
 
       expect(result.success, isFalse);
       expect(result.errorMessage, contains('调用 API 接口 IP 不在白名单'));
-      expect(result.errorMessage, contains('0.0.0.0/0'));
+      expect(result.errorMessage, contains('添加当前出口 IP'));
       expect(result.responseTime, isNotNull);
     });
 
@@ -53,13 +54,12 @@ void main() {
     test('ServerConnectionResult should be created correctly', () {
       const result = ServerConnectionResult(
         success: true,
-        osInfo: {'os': 'Linux'},
+        operatingSystem: 'Linux',
         responseTime: Duration(milliseconds: 100),
       );
 
       expect(result.success, isTrue);
-      expect(result.osInfo, isNotNull);
-      expect(result.osInfo!['os'], equals('Linux'));
+      expect(result.operatingSystem, equals('Linux'));
       expect(result.responseTime, equals(const Duration(milliseconds: 100)));
     });
 
@@ -71,7 +71,7 @@ void main() {
 
       expect(result.success, isFalse);
       expect(result.errorMessage, equals('Connection timeout'));
-      expect(result.osInfo, isNull);
+      expect(result.operatingSystem, isNull);
     });
   });
 
@@ -135,7 +135,8 @@ void main() {
       expect(json['id'], equals('test-id'));
       expect(json['name'], equals('Test Server'));
       expect(json['url'], equals('http://localhost:9999'));
-      expect(json['apiKey'], equals('test-api-key'));
+      expect(json['panelType'], ApiConfig.onePanelType);
+      expect(json.containsKey('apiKey'), isFalse);
       expect(json['isDefault'], isTrue);
     });
 
@@ -144,12 +145,16 @@ void main() {
         'id': 'test-id',
         'name': 'Test Server',
         'url': 'http://localhost:9999',
-        'apiKey': 'test-api-key',
+        'panelType': ApiConfig.onePanelType,
+        'revision': '96777808-5c89-47d2-90da-f96f55a05b1f',
+        'credentialId': 'ce3f7514-5911-49bd-8744-f30ad8ec76fa',
+        'tokenValidity': 0,
+        'allowInsecureTls': false,
         'isDefault': true,
         'lastUsed': '2026-01-01T00:00:00.000',
       };
 
-      final config = ApiConfig.fromJson(json);
+      final config = ApiConfig.fromJson(json, apiKey: 'test-api-key');
 
       expect(config.id, equals('test-id'));
       expect(config.name, equals('Test Server'));

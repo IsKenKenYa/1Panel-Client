@@ -1,234 +1,102 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
-import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/features/server/server_models.dart';
+import 'package:onepanel_client/features/server/panels/panel_presentation.dart';
+import 'package:onepanel_client/features/server/widgets/server_actions_menu.dart';
+import 'package:onepanel_client/features/server/widgets/server_metric_badges.dart';
 
 class ServerCard extends StatelessWidget {
   const ServerCard({
     super.key,
     required this.data,
     required this.onTap,
+    required this.onEdit,
     required this.onDelete,
   });
 
   final ServerCardViewModel data;
   final VoidCallback onTap;
+  final VoidCallback onEdit;
   final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final scheme = Theme.of(context).colorScheme;
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final hasBoundedHeight = constraints.maxHeight.isFinite;
-
-        return Card(
-          clipBehavior: Clip.antiAlias,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
-          ),
-          child: InkWell(
-            onTap: onTap,
-            child: Padding(
-              padding: const EdgeInsets.all(AppDesignTokens.spacingMd),
-              child: Column(
-                mainAxisSize:
-                    hasBoundedHeight ? MainAxisSize.max : MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final panelType = data.config.panelType;
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      color: scheme.surfaceContainerLow,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: AppDesignTokens.cardPadding,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
                 children: [
-                  Row(
-                    children: [
-                      // 服务器标识容器：M3 avatar 惯例，与文件列表图标体系一致。
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          borderRadius:
-                              BorderRadius.circular(AppDesignTokens.radiusSm),
-                          color: data.isCurrent
-                              ? scheme.primaryContainer
-                              : scheme.surfaceContainerHighest,
-                        ),
-                        alignment: Alignment.center,
-                        child: Icon(
-                          Icons.dns_outlined,
-                          color: data.isCurrent
-                              ? scheme.onPrimaryContainer
-                              : scheme.onSurfaceVariant,
-                          size: 22,
-                        ),
-                      ),
-                      const SizedBox(width: AppDesignTokens.spacingMd),
-                      Expanded(
-                        child: Text(
-                          data.config.name,
-                          style: Theme.of(context).textTheme.titleMedium,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      if (data.isCurrent) ...[
-                        const SizedBox(width: 8),
-                        Chip(
-                          visualDensity:
-                              AdaptiveLayoutSpec.of(context).adaptiveDensity,
-                          label: Text(l10n.serverCurrent),
-                        ),
-                      ],
-                      IconButton(
-                        tooltip: l10n.commonDelete,
-                        icon: const Icon(Icons.delete_outline),
-                        onPressed: onDelete,
-                      ),
-                    ],
+                  CircleAvatar(
+                    backgroundColor: data.isCurrent
+                        ? scheme.primaryContainer
+                        : scheme.surfaceContainerHighest,
+                    foregroundColor: data.isCurrent
+                        ? scheme.onPrimaryContainer
+                        : scheme.onSurfaceVariant,
+                    child: const Icon(Icons.dns_outlined),
                   ),
-                  const SizedBox(height: AppDesignTokens.spacingSm),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 52), // 40 容器 + 12 间距对齐
-                    child: Text(
-                      '${l10n.serverIpLabel}: ${_extractHost(data.config.url)}',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: scheme.onSurfaceVariant,
-                          ),
-                    ),
+                  const SizedBox(width: AppDesignTokens.spacingMd),
+                  Expanded(
+                    child: Text(data.config.name,
+                        style: theme.textTheme.titleMedium),
                   ),
-                  const SizedBox(height: AppDesignTokens.spacingSm),
-                  Wrap(
-                    spacing: 6,
-                    runSpacing: 6,
-                    children: [
-                      _MetricPill(
-                          label: l10n.serverCpuLabel,
-                          value: _percent(data.metrics.cpuPercent)),
-                      _MetricPill(
-                          label: l10n.serverMemoryLabel,
-                          value: _percent(data.metrics.memoryPercent)),
-                      _MetricPill(
-                          label: l10n.serverLoadLabel,
-                          value: _decimal(data.metrics.load)),
-                      _MetricPill(
-                          label: l10n.serverDiskLabel,
-                          value: _percent(data.metrics.diskPercent)),
-                    ],
-                  ),
-                  if (hasBoundedHeight) const Spacer(),
-                  if (!hasBoundedHeight)
-                    const SizedBox(height: AppDesignTokens.spacingMd),
-                  Wrap(
-                    spacing: 12,
-                    runSpacing: 6,
-                    alignment: WrapAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        _statusText(l10n, data.metrics),
-                        style: TextStyle(
-                          color: _statusColor(data.metrics, scheme),
-                          fontSize: 12,
-                        ),
-                      ),
-                      Text(
-                        l10n.serverOpenDetail,
-                        style: TextStyle(
-                          color: scheme.primary,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
+                  ServerActionsMenu(
+                    onEdit: PanelPresentations.entries.containsKey(panelType)
+                        ? onEdit
+                        : null,
+                    onDelete: onDelete,
                   ),
                 ],
               ),
-            ),
+              Wrap(
+                spacing: AppDesignTokens.spacingSm,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  if (data.isCurrent) Chip(label: Text(l10n.serverCurrent)),
+                  Text(
+                    '${PanelPresentations.displayName(panelType)} · ${l10n.serverIpLabel}: ${_extractHost(data.config.url)}',
+                    style: theme.textTheme.bodySmall
+                        ?.copyWith(color: scheme.onSurfaceVariant),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppDesignTokens.spacingSm),
+              ServerMetricBadges(metrics: data.metrics),
+              const SizedBox(height: AppDesignTokens.spacingMd),
+              Wrap(
+                spacing: AppDesignTokens.spacingMd,
+                runSpacing: AppDesignTokens.spacingXs,
+                alignment: WrapAlignment.spaceBetween,
+                children: [
+                  ServerConnectionStatus(metrics: data.metrics),
+                  Text(
+                    l10n.serverOpenDetail,
+                    style: theme.textTheme.labelMedium
+                        ?.copyWith(color: scheme.primary),
+                  ),
+                ],
+              ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
   String _extractHost(String url) {
     final uri = Uri.tryParse(url);
     return uri?.host.isNotEmpty == true ? uri!.host : url;
-  }
-
-  String _percent(double? value) {
-    if (value == null) {
-      return '--';
-    }
-    return '${value.toStringAsFixed(1)}%';
-  }
-
-  String _decimal(double? value) {
-    if (value == null) {
-      return '--';
-    }
-    return value.toStringAsFixed(2);
-  }
-
-  /// 卡片底部状态：优先反映健康探测结果，其次反映监控数据是否到位。
-  String _statusText(AppLocalizations l10n, ServerMetricsSnapshot metrics) {
-    final reachable = metrics.isReachable;
-    if (reachable == false) {
-      return l10n.serverUnreachable;
-    }
-    if (reachable == true && metrics.hasLatency) {
-      return l10n.serverLatencyLabel(metrics.latencyMs!);
-    }
-    return _hasMetrics(metrics)
-        ? l10n.serverMetricsAvailable
-        : l10n.serverMetricsUnavailable;
-  }
-
-  Color _statusColor(ServerMetricsSnapshot metrics, ColorScheme scheme) {
-    if (metrics.isReachable == false) {
-      return scheme.error;
-    }
-    return scheme.onSurfaceVariant;
-  }
-
-  bool _hasMetrics(ServerMetricsSnapshot metrics) {
-    return metrics.cpuPercent != null ||
-        metrics.memoryPercent != null ||
-        metrics.diskPercent != null ||
-        metrics.load != null;
-  }
-}
-
-class _MetricPill extends StatelessWidget {
-  const _MetricPill({
-    required this.label,
-    required this.value,
-  });
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppDesignTokens.spacingSm + 2,
-        vertical: 4,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppDesignTokens.radiusXl),
-        color: scheme.surfaceContainerHighest,
-        border: Border.all(
-          color: scheme.outlineVariant.withValues(alpha: 0.5),
-        ),
-      ),
-      child: Text(
-        '$label $value',
-        style: theme.textTheme.labelSmall?.copyWith(
-          color: scheme.onSurfaceVariant,
-          fontFeatures: const <FontFeature>[FontFeature.tabularFigures()],
-        ),
-      ),
-    );
   }
 }

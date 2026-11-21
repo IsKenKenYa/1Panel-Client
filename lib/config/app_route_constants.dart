@@ -1,5 +1,31 @@
 /// 路由常量定义，独立于路由构建逻辑，供全项目引用。
 class AppRoutes {
+  static const localSettings = <String>{
+    settings,
+    settingsTheme,
+    settingsAppLock,
+    settingsStorage,
+    settingsAbout,
+    settingsLanguage,
+    settingsFeedbackCenter,
+    settingsLegalCenter,
+    settingsMainlandSdkDisclosure,
+  };
+
+  static const shared = <String>{
+    splash,
+    onboarding,
+    home,
+    server,
+    serverSelection,
+    serverConfig,
+    serverDetail,
+    ...localSettings,
+    '/help',
+  };
+
+  static const panelSettings = <String>{systemSettings, menuSettings, panelSsl};
+
   // Must be '/' because it's used as MaterialApp.initialRoute
   static const String splash = '/';
   static const String onboarding = '/onboarding';
@@ -33,6 +59,10 @@ class AppRoutes {
   static const String monitoring = '/monitoring';
   static const String securityVerification = '/security-verification';
   static const String settings = '/settings';
+  static const String settingsTheme = '/settings/theme';
+  static const String settingsAppLock = '/settings/app-lock';
+  static const String settingsStorage = '/settings/storage';
+  static const String settingsAbout = '/settings/about';
   static const String settingsLanguage = '/settings/language';
   static const String settingsFeedbackCenter = '/settings/feedback-center';
   static const String settingsLegalCenter = '/settings/legal-center';

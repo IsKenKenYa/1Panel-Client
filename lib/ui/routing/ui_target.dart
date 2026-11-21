@@ -42,5 +42,13 @@ class UiTarget {
   bool get isDesktop => formFactor == UiFormFactor.desktop;
   bool get isTablet => formFactor == UiFormFactor.tablet;
   bool get isPhone => formFactor == UiFormFactor.phone;
+
+  bool get usesDesktopShell => switch (platformKind) {
+        UiPlatformKind.desktopMacos ||
+        UiPlatformKind.desktopWindows ||
+        UiPlatformKind.desktopLinux ||
+        UiPlatformKind.web => true,
+        _ => false,
+      };
 }
 

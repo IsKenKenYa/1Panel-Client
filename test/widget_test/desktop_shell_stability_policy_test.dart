@@ -41,12 +41,9 @@ void main() {
     expect(macosShell.contains('this.initialModuleId,'), isTrue);
     expect(windowsShell.contains('this.initialModuleId,'), isTrue);
     expect(desktopShell.contains('this.initialModuleId,'), isTrue);
-    expect(macosShell.contains('clientModuleFromId(widget.initialModuleId)'),
-        isTrue);
-    expect(
-      windowsShell.contains('clientModuleFromId(widget.initialModuleId)'),
-      isTrue,
-    );
+    for (final source in [desktopShell, macosShell, windowsShell]) {
+      expect(source.contains('initialShellModule('), isTrue);
+    }
     expect(macosShell.contains('this.initialEmbeddedRouteName,'), isTrue);
     expect(desktopShell.contains('this.initialEmbeddedRouteName,'), isTrue);
   });
@@ -57,6 +54,12 @@ void main() {
     ).readAsString();
     final serverDetail = await File(
       'lib/features/server/server_detail_page.dart',
+    ).readAsString();
+    final serverPanels = await File(
+      'lib/features/server/panels/panel_presentation.dart',
+    ).readAsString();
+    final onePanelModules = await File(
+      'lib/features/server/panels/one_panel_module_sections.dart',
     ).readAsString();
     final serverSwitcher = await File(
       'lib/features/shell/widgets/server_switcher_action.dart',
@@ -139,7 +142,9 @@ void main() {
                 shellNavigation.contains("'route': route,"),
         isTrue);
     expect(shellNavigation.contains('embedRouteInShell: true'), isTrue);
-    expect(serverDetail.contains('openRouteRespectingShell(context, route);'),
+    expect(serverDetail.contains('panel.buildModules('), isTrue);
+    expect(serverPanels.contains('OnePanelModuleSections('), isTrue);
+    expect(onePanelModules.contains('openRouteRespectingShell(context, route);'),
         isTrue);
     expect(serverSwitcher.contains('openRouteRespectingShell('), isTrue);
     expect(
@@ -160,7 +165,7 @@ void main() {
       isTrue,
     );
     expect(
-      settingsPage.contains('openRouteRespectingShell(context, AppRoutes.server)'),
+      settingsPage.contains('openRouteRespectingShell(context, route)'),
       isTrue,
     );
     expect(
@@ -234,8 +239,8 @@ void main() {
     expect(appRouter.contains('RouteRegistry.registerAll('), isTrue);
     expect(appRouter.contains('UiTargetResolver.resolve(context)'), isTrue);
     expect(uiRouteHost.contains('initialEmbeddedRouteName:'), isTrue);
-    expect(macosShell.contains('embeddedRoute: _embeddedRouteName,'), isTrue);
-    expect(desktopShell.contains('embeddedRoute: _embeddedRouteName,'), isTrue);
+    expect(macosShell.contains('embeddedRoute: _embeddedRoute.name,'), isTrue);
+    expect(desktopShell.contains('embeddedRoute: _embeddedRoute.name,'), isTrue);
     expect(windowsShell.contains('this.initialEmbeddedRouteName,'), isTrue);
     expect(desktopContentHost.contains('DesktopRoutedModuleHost('), isTrue);
   });

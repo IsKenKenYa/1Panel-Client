@@ -1,30 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
+import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/features/security/app_lock_controller.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/controllers/pinned_modules_controller.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
 import 'package:onepanel_client/features/shell/module_page_factory.dart';
 import 'package:onepanel_client/features/shell/module_registry.dart';
+import 'package:onepanel_client/features/shell/server_route_observer.dart';
 import 'package:onepanel_client/features/shell/widgets/adaptive_shell_navigation_widget.dart';
 import 'package:onepanel_client/features/shell/widgets/channel_watermark_badge_widget.dart';
 import 'package:onepanel_client/features/shell/widgets/mobile_more_modules_drawer.dart';
 import 'package:onepanel_client/features/shell/widgets/shell_drawer_scope.dart';
 import 'package:onepanel_client/features/shell/widgets/server_switcher_action.dart';
 import 'package:onepanel_client/widgets/navigation/app_bottom_navigation_bar.dart';
+import 'package:onepanel_client/ui/routing/ui_target.dart';
+import 'package:onepanel_client/ui/tablet/app/tablet_shell_page.dart';
 
 import '../../core/utils/snackbar_utils.dart';
 import '../../core/theme/ui_render_policy.dart';
+
 class AppShellPage extends StatefulWidget {
   const AppShellPage({
     super.key,
     this.initialIndex = 0,
     this.initialModuleId,
-  });
+    this.tabletKind = TabletKind.none,
+    this.selectedModule,
+    this.onSelectModule,
+    this.body,
+  }) : assert((selectedModule == null) == (onSelectModule == null));
 
   final int initialIndex;
   final String? initialModuleId;
+  final TabletKind tabletKind;
+  final ClientModule? selectedModule;
+  final ValueChanged<ClientModule>? onSelectModule;
+  final Widget? body;
 
   @override
   State<AppShellPage> createState() => _AppShellPageState();
@@ -38,80 +52,59 @@ class _AppShellPageState extends State<AppShellPage> {
   @override
   void initState() {
     super.initState();
-    _selectedModule = clientModuleFromId(widget.initialModuleId) ??
-        _moduleFromIndex(widget.initialIndex);
-  }
-
-  ClientModule _moduleFromIndex(int index) {
-    switch (index.clamp(0, 3)) {
-      case 0:
-        return ClientModule.servers;
-      case 1:
-        return ClientModule.files;
-      case 2:
-        return ClientModule.containers;
-      case 3:
-        return ClientModule.settings;
-      default:
-        return ClientModule.servers;
-    }
-  }
-
-  List<ClientModule> _mobileSlots(PinnedModulesController pinnedModules) {
-    return <ClientModule>[
-      ClientModule.servers,
-      pinnedModules.primaryPin,
-      pinnedModules.secondaryPin,
-      ClientModule.settings,
-    ];
-  }
-
-  List<ClientModule> _wideSlots(PinnedModulesController pinnedModules) {
-    final slots = <ClientModule>[
-      ClientModule.servers,
-      pinnedModules.primaryPin,
-      pinnedModules.secondaryPin,
-    ];
-
-    for (final module in kPinnableClientModules) {
-      if (!slots.contains(module)) {
-        slots.add(module);
-      }
-    }
-
-    slots.add(ClientModule.settings);
-    return slots;
+    _selectedModule =
+        initialShellModule(widget.initialIndex, widget.initialModuleId);
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer2<CurrentServerController, PinnedModulesController>(
       builder: (context, currentServer, pinnedModules, _) {
-        final width = MediaQuery.sizeOf(context).width;
-        final isCompact = width < 600;
-        final modules =
-            isCompact ? _mobileSlots(pinnedModules) : _wideSlots(pinnedModules);
+        final spec = AdaptiveLayoutSpec.of(context);
+        final isCompact = spec.isPhone;
+        final panelType = currentServer.currentServer?.panelType;
+        final selectedModule = (widget.selectedModule ?? _selectedModule)
+            .forServer(currentServer.currentServer);
+        if (widget.body == null) {
+          ServerRouteObserver.setActiveModule(context,
+              module: selectedModule,
+              needsServer: selectedModule.requiresServer);
+        }
+        final modules = shellModulesForPanel(
+          panelType,
+          pinnedModules.pins,
+          compact: isCompact,
+          activeModule: selectedModule,
+        );
         final moreModules = isCompact
             ? kPinnableClientModules
-                .where((module) => !modules.contains(module))
+                .where((module) =>
+                    module.supportsPanel(panelType) && !modules.contains(module))
                 .toList(growable: false)
             : const <ClientModule>[];
-        final selectedModule =
-            (!currentServer.hasServer && _selectedModule.requiresServer)
-                ? ClientModule.servers
-                : _selectedModule;
         final selectedIndex = modules.contains(selectedModule)
             ? modules.indexOf(selectedModule)
             : 0;
 
-        final body =
+        final body = widget.body ??
             buildShellModulePage(
-          context,
-          module: selectedModule,
-          serverId: currentServer.currentServerId,
-        );
+              context,
+              module: selectedModule,
+              serverId: currentServer.currentServerId,
+              serverRevision: currentServer.currentServer?.revision,
+            );
 
-        if (width >= 1024) {
+        if (!isCompact && widget.tabletKind != TabletKind.none) {
+          return TabletShellPage(
+            tabletKind: widget.tabletKind,
+            modules: modules,
+            selectedIndex: selectedIndex,
+            hasServer: currentServer.hasServer,
+            onSelect: _handleModuleSelection,
+            body: body,
+          );
+        }
+        if (spec.width >= PlatformUtils.tabletWidthBreakpoint) {
           return _wrapWithChannelWatermark(
             Scaffold(
               body: Row(
@@ -120,18 +113,17 @@ class _AppShellPageState extends State<AppShellPage> {
                     modules: modules,
                     selectedModule: selectedModule,
                     hasServer: currentServer.hasServer,
-                    onSelect: (module) =>
-                        _handleModuleSelection(module, currentServer.hasServer),
+                    onSelect: _handleModuleSelection,
                   ),
                   const VerticalDivider(width: 1),
-                  Expanded(child: body),
+                  Expanded(child: AdaptiveLayoutViewport(child: body)),
                 ],
               ),
             ),
           );
         }
 
-        if (width >= 600) {
+        if (!isCompact) {
           return _wrapWithChannelWatermark(
             Scaffold(
               body: Row(
@@ -140,11 +132,10 @@ class _AppShellPageState extends State<AppShellPage> {
                     modules: modules,
                     selectedModule: selectedModule,
                     hasServer: currentServer.hasServer,
-                    onSelect: (module) =>
-                        _handleModuleSelection(module, currentServer.hasServer),
+                    onSelect: _handleModuleSelection,
                   ),
                   const VerticalDivider(width: 1),
-                  Expanded(child: body),
+                  Expanded(child: AdaptiveLayoutViewport(child: body)),
                 ],
               ),
             ),
@@ -174,7 +165,7 @@ class _AppShellPageState extends State<AppShellPage> {
             // 玻璃底栏需要内容从栏下穿透可采样，否则玻璃后面是纯色背景，
             // 视觉上与实色无异（液态玻璃模式的前提条件）。
             extendBody: UIRenderPolicy.liquidGlassEnabled,
-            drawer: MobileMoreModulesDrawer(
+            drawer: moreModules.isEmpty ? null : MobileMoreModulesDrawer(
               modules: moreModules,
               pinnedModules: pinnedModules.pins,
               selectedModule: selectedModule,
@@ -182,12 +173,13 @@ class _AppShellPageState extends State<AppShellPage> {
               onClose: () => Navigator.of(context).maybePop(),
               onManageServers: () {
                 Navigator.of(context).maybePop();
-                _handleModuleSelection(
-                    ClientModule.servers, currentServer.hasServer);
+                _handleModuleSelection(ClientModule.servers);
               },
               onModuleTap: (module) {
                 Navigator.of(context).maybePop();
-                _openStandaloneModule(module, currentServer.hasServer);
+                ServerSwitcherAction.openModule(
+                  context, module, _openStandaloneModule,
+                );
               },
             ),
             body: Builder(
@@ -195,12 +187,15 @@ class _AppShellPageState extends State<AppShellPage> {
               // 到胶囊后方，末项遮挡由页面 ListView 消费 MediaQuery.padding
               // 解决（固定 padding 的列表由下方 removePadding 方案兜底）。
               builder: (context) {
+                final content = moreModules.isEmpty
+                    ? body
+                    : ShellDrawerScope(
+                        openDrawer: () =>
+                            _mobileScaffoldKey.currentState?.openDrawer(),
+                        child: body,
+                      );
                 if (!UIRenderPolicy.liquidGlassEnabled) {
-                  return ShellDrawerScope(
-                    openDrawer: () =>
-                        _mobileScaffoldKey.currentState?.openDrawer(),
-                    child: body,
-                  );
+                  return content;
                 }
                 // 胶囊占高：NavigationBar 80 + 下留白 10 + 左右留边 0。
                 const floatHeight = 90.0;
@@ -215,20 +210,13 @@ class _AppShellPageState extends State<AppShellPage> {
                               floatHeight,
                         ),
                   ),
-                  child: ShellDrawerScope(
-                    openDrawer: () =>
-                        _mobileScaffoldKey.currentState?.openDrawer(),
-                    child: body,
-                  ),
+                  child: content,
                 );
               },
             ),
             bottomNavigationBar: AppBottomNavigationBar(
               currentIndex: selectedIndex,
-              onTap: (index) => _handleModuleSelection(
-                modules[index],
-                currentServer.hasServer,
-              ),
+              onTap: (index) => _handleModuleSelection(modules[index]),
               items: items,
             ),
           ),
@@ -248,6 +236,11 @@ class _AppShellPageState extends State<AppShellPage> {
 
   void _handleModuleOpen(ClientModule module) {
     if (!mounted) return;
+    final onSelect = widget.onSelectModule;
+    if (onSelect != null) {
+      onSelect(module);
+      return;
+    }
     setState(() {
       _selectedModule = module;
     });
@@ -257,6 +250,14 @@ class _AppShellPageState extends State<AppShellPage> {
     final appLockController = context.read<AppLockController?>();
     if (appLockController == null) {
       return true;
+    }
+    if (!appLockController.isLoaded) {
+      await appLockController.load();
+      if (!mounted) return false;
+      if (!appLockController.isLoaded) {
+        SnackBarUtils.showError(context, appLockController.lastError ?? context.l10n.appLockAuthFailed);
+        return false;
+      }
     }
     if (!appLockController.shouldRequireUnlockForModuleId(module.storageId)) {
       return true;
@@ -270,48 +271,45 @@ class _AppShellPageState extends State<AppShellPage> {
       return false;
     }
     if (!success) {
-      SnackBarUtils.showSuccess(context, 
+      SnackBarUtils.showError(context,
             appLockController.lastError ?? context.l10n.appLockAuthFailed,
           );
     }
     return success;
   }
 
-  Future<void> _handleModuleSelection(
-      ClientModule module, bool hasServer) async {
-    // If no server is selected and the module needs one, prompt the user
-    // to pick a server first rather than showing an empty/broken page.
-    if (!hasServer && module.requiresServer) {
-      await ServerSwitcherAction.showServerPicker(context);
-      return;
-    }
-    if (!await _ensureModuleUnlocked(module)) {
-      return;
-    }
-    _handleModuleOpen(module);
+  Future<void> _handleModuleSelection(ClientModule module) {
+    return ServerSwitcherAction.openModule(context, module, (module) async {
+      if (await _ensureModuleUnlocked(module)) _handleModuleOpen(module);
+    });
   }
 
-  Future<void> _openStandaloneModule(
-      ClientModule module, bool hasServer) async {
-    if (!hasServer && module.requiresServer) {
-      await ServerSwitcherAction.showServerPicker(context);
-      return;
-    }
+  Future<void> _openStandaloneModule(ClientModule module) async {
     if (!await _ensureModuleUnlocked(module)) {
       return;
     }
 
     if (!mounted) return;
 
-    final Widget? page = ModuleRegistry.buildStandalonePage(module, context);
-
-    if (page == null) {
+    final route = ModuleRegistry.registrationFor(module)?.standaloneRoute;
+    if (route == null) {
       _handleModuleOpen(module);
       return;
     }
 
     await Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => page),
+      MaterialPageRoute(
+        settings: RouteSettings(name: route),
+        builder: (routeContext) {
+          final server =
+              routeContext.watch<CurrentServerController>().currentServer;
+          if (!module.supportsPanel(server?.panelType)) {
+            return buildShellModulePage(routeContext,
+                module: ClientModule.servers, serverId: server?.id);
+          }
+          return ModuleRegistry.buildStandalonePage(module, routeContext)!;
+        },
+      ),
     );
   }
 }

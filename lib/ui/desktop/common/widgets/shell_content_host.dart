@@ -1,8 +1,11 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/shell/module_page_factory.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
+import 'package:onepanel_client/features/shell/server_route_observer.dart';
 import 'package:onepanel_client/features/shell/widgets/no_server_selected_state.dart';
 import 'package:onepanel_client/ui/desktop/common/widgets/desktop_routed_module_host.dart';
 
@@ -31,6 +34,7 @@ class ShellContentHost extends StatefulWidget {
     super.key,
     required this.module,
     required this.serverId,
+    this.serverRevision,
     this.active = true,
     this.embeddedRoute,
     this.embeddedRouteArguments,
@@ -38,6 +42,7 @@ class ShellContentHost extends StatefulWidget {
 
   final ClientModule module;
   final String? serverId;
+  final String? serverRevision;
   final bool active;
   final String? embeddedRoute;
   final Object? embeddedRouteArguments;
@@ -51,6 +56,7 @@ class ShellContentHost extends StatefulWidget {
 /// `ShellContentHost` wraps the caller's `BuildContext`) without
 /// relying on a globally-shared `GlobalKey`.
 class ShellContentHostState extends State<ShellContentHost> {
+  final _routes = ServerRouteObserver();
   final GlobalKey<NavigatorState> _innerNavigatorKey =
       GlobalKey<NavigatorState>(debugLabel: 'ShellContentHostNavigator');
 
@@ -59,14 +65,33 @@ class ShellContentHostState extends State<ShellContentHost> {
   NavigatorState? get innerNavigator => _innerNavigatorKey.currentState;
 
   @override
+  void didUpdateWidget(ShellContentHost oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (kIsWeb &&
+        widget.module == ClientModule.settings &&
+        oldWidget.active != widget.active) {
+      final name = widget.active
+          ? _routes.currentRouteName ?? AppRoutes.settings
+          : AppRoutes.home;
+      SystemNavigator.routeInformationUpdated(uri: Uri.parse(name));
+    }
+  }
+
+  @override
+  void dispose() {
+    _routes.detachParent();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (widget.embeddedRoute != null) {
-      return KeyedSubtree(
-        key: ValueKey('desktop-embedded-route:${widget.embeddedRoute}'),
-        child: DesktopRoutedModuleHost(
-          routeName: widget.embeddedRoute!,
-          routeArguments: widget.embeddedRouteArguments,
-        ),
+    _routes.setParent(context, active: widget.active);
+    _routes.updateConnection(widget.serverId, widget.serverRevision);
+    final route = widget.embeddedRoute;
+    if (route != null && !AppRoutes.localSettings.contains(route)) {
+      return DesktopRoutedModuleHost(
+        routeName: route,
+        routeArguments: widget.embeddedRouteArguments,
       );
     }
 
@@ -86,10 +111,31 @@ class ShellContentHostState extends State<ShellContentHost> {
   }
 
   Widget _buildInnerNavigator() {
+    if (widget.module == ClientModule.settings) {
+      final destination = widget.embeddedRoute;
+      return Navigator(
+        key: _innerNavigatorKey,
+        observers: [_routes],
+        reportsRouteUpdateToEngine: kIsWeb && widget.active,
+        onGenerateRoute: AppRouter.generateEmbeddedRoute,
+        onGenerateInitialRoutes: (_, __) => [
+          AppRouter.generateEmbeddedRoute(
+            const RouteSettings(name: AppRoutes.settings),
+          ),
+          if (destination == AppRoutes.settingsMainlandSdkDisclosure)
+            AppRouter.generateEmbeddedRoute(
+              const RouteSettings(name: AppRoutes.settingsLegalCenter),
+            ),
+          if (destination != null && destination != AppRoutes.settings)
+            AppRouter.generateEmbeddedRoute(RouteSettings(name: destination)),
+        ],
+      );
+    }
     return KeyedSubtree(
       key: ValueKey('shell-content-host:${widget.module.storageId}'),
       child: Navigator(
         key: _innerNavigatorKey,
+        observers: [_routes],
         onGenerateRoute: AppRouter.generateEmbeddedRoute,
         pages: <Page<dynamic>>[
           MaterialPage<void>(

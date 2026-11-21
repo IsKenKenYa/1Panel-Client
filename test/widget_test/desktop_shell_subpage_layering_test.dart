@@ -4,20 +4,73 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
+import 'package:onepanel_client/config/app_route_constants.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/services/app_settings_controller.dart';
 import 'package:onepanel_client/features/server/server_models.dart';
 import 'package:onepanel_client/features/server/server_provider.dart';
 import 'package:onepanel_client/features/server/server_repository.dart';
+import 'package:onepanel_client/features/settings/language_settings_page.dart';
+import 'package:onepanel_client/features/settings/legal_center_page.dart';
+import 'package:onepanel_client/features/settings/mainland_sdk_disclosure_page.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
 import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
+import 'package:onepanel_client/pages/settings/settings_page.dart';
 import 'package:onepanel_client/ui/desktop/common/widgets/desktop_content_host.dart';
 import 'package:onepanel_client/ui/desktop/common/widgets/desktop_routed_module_host.dart';
 import 'package:onepanel_client/ui/desktop/common/widgets/shell_content_host.dart';
 
 void main() {
+  testWidgets('设置深层链接在同一内容区域逐级返回', (tester) async {
+    await tester.pumpWidget(ChangeNotifierProvider(
+      create: (_) => AppSettingsController(),
+      child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const DesktopContentHost(
+          module: ClientModule.settings,
+          serverId: null,
+          embeddedRoute: AppRoutes.settingsMainlandSdkDisclosure,
+        ),
+      ),
+    ));
+    await tester.pumpAndSettle();
+    expect(find.byType(MainlandSdkDisclosurePage), findsOneWidget);
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(find.byType(LegalCenterPage), findsOneWidget);
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(find.byType(SettingsPage), findsOneWidget);
+  });
+
+  testWidgets('embedded route changes replace only the inner navigator',
+      (tester) async {
+    Future<NavigatorState> showRoute(String route) async {
+      await tester.pumpWidget(ChangeNotifierProvider(
+        create: (_) => AppSettingsController(),
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: DesktopRoutedModuleHost(routeName: route),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      return tester.state<NavigatorState>(find.descendant(
+        of: find.byType(DesktopRoutedModuleHost),
+        matching: find.byType(Navigator),
+      ));
+    }
+
+    final initial = await showRoute(AppRoutes.settingsLegalCenter);
+    expect(find.byType(LegalCenterPage), findsOneWidget);
+    expect(await showRoute(AppRoutes.settingsLegalCenter), same(initial));
+    expect(await showRoute(AppRoutes.settingsLanguage), isNot(same(initial)));
+    expect(find.byType(LanguageSettingsPage), findsOneWidget);
+  });
+
   group('ShellContentHost.embeddedRoute branches', () {
     testWidgets(
       'returns DesktopRoutedModuleHost when embeddedRoute is non-null',
@@ -166,7 +219,7 @@ class _NoopServerRepository extends ServerRepository {
       const <ServerCardViewModel>[];
 
   @override
-  Future<ServerMetricsSnapshot> loadServerMetrics(String serverId) async =>
+  Future<ServerMetricsSnapshot> loadMetricsForConfig(ApiConfig config) async =>
       const ServerMetricsSnapshot();
 
   @override

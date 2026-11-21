@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/config/app_route_constants.dart';
 import 'package:onepanel_client/config/app_route_entries.dart';
 import 'package:onepanel_client/config/app_router_pages.dart';
@@ -22,9 +23,11 @@ import 'package:onepanel_client/features/server/server_form_page.dart';
 import 'package:onepanel_client/features/server/server_list_page.dart';
 import 'package:onepanel_client/features/server/server_models.dart';
 import 'package:onepanel_client/features/security/security_verification_page.dart';
+import 'package:onepanel_client/features/security/app_lock_gate.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
 import 'package:onepanel_client/features/shell/module_registry.dart';
 import 'package:onepanel_client/features/shell/shell_navigation.dart';
+import 'package:onepanel_client/features/shell/widgets/no_server_selected_state.dart';
 import 'package:onepanel_client/ui/routing/ui_route_host.dart';
 import 'package:onepanel_client/ui/routing/route_registry.dart';
 import 'package:onepanel_client/ui/routing/ui_target.dart';
@@ -56,7 +59,6 @@ import 'package:onepanel_client/features/openresty/pages/openresty_source_editor
 import 'package:onepanel_client/features/openresty/providers/openresty_provider.dart';
 import 'package:onepanel_client/features/settings/menu_settings_page.dart';
 import 'package:onepanel_client/features/settings/menu_settings_provider.dart';
-import 'package:onepanel_client/features/settings/ssl_settings_page.dart';
 import 'package:onepanel_client/features/commands/models/command_form_args.dart';
 import 'package:onepanel_client/features/commands/pages/command_form_page.dart';
 import 'package:onepanel_client/features/commands/pages/commands_page.dart';
@@ -226,8 +228,30 @@ class AppRouter {
       settings: settings,
       builder: (context) {
         final target = UiTargetResolver.resolve(context);
+        if (!AppRoutes.shared.contains(settings.name)) {
+          final panelType =
+              context.watch<CurrentServerController?>()?.currentServer?.panelType;
+          if (!supportsOnePanelModules(panelType)) {
+            return const ServerListPage(enableCoach: false);
+          }
+          if (panelType == null &&
+              AppRoutes.panelSettings.contains(settings.name) &&
+              (useDefaultBuilder || !target.usesDesktopShell)) {
+            final title = context.l10n.systemSettingsPanelSection;
+            return Scaffold(
+              appBar: AppBar(title: Text(title)),
+              body: NoServerSelectedState(moduleName: title),
+            );
+          }
+        }
         final builder = entry.resolve(target, useDefault: useDefaultBuilder);
-        return builder(context, settings);
+        final page = builder(context, settings);
+        final module = shellModuleForRoute(settings.name!);
+        if (module != null && module.pinnable &&
+            (useDefaultBuilder || !target.usesDesktopShell)) {
+          return AppLockGate(target: module.storageId, child: page);
+        }
+        return page;
       },
     );
   }

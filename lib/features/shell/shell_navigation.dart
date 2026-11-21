@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/config/app_router.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
 import 'package:onepanel_client/features/shell/widgets/desktop_module_navigation.dart';
 import 'package:onepanel_client/ui/desktop/common/widgets/shell_content_host.dart';
@@ -146,14 +147,22 @@ ShellRouteTarget? shellRouteTargetForRoute(String route) {
         embedRouteInShell: false,
       );
     case AppRoutes.settingsLanguage:
+    case AppRoutes.settingsTheme:
+    case AppRoutes.settingsAppLock:
+    case AppRoutes.settingsStorage:
+    case AppRoutes.settingsAbout:
     case AppRoutes.settingsFeedbackCenter:
     case AppRoutes.settingsLegalCenter:
     case AppRoutes.settingsMainlandSdkDisclosure:
+      return const ShellRouteTarget(
+        module: ClientModule.settings,
+        embedRouteInShell: true,
+      );
     case AppRoutes.systemSettings:
     case AppRoutes.menuSettings:
     case AppRoutes.panelSsl:
       return const ShellRouteTarget(
-        module: ClientModule.settings,
+        module: ClientModule.servers,
         embedRouteInShell: true,
       );
 
@@ -269,7 +278,7 @@ Future<T?> openRouteRespectingShell<T extends Object?>(
   Object? arguments,
 }) {
   final target = shellRouteTargetForRoute(route);
-  if (target != null && UiTargetResolver.resolve(context).isDesktop) {
+  if (target != null && UiTargetResolver.resolve(context).usesDesktopShell) {
     // When the route is a sub-page of a module (e.g. container detail
     // inside the containers module) push it into the shell's inner
     // navigator so only the content area animates; the surrounding
@@ -318,6 +327,9 @@ Route<T> _buildShellSubPageRoute<T>(
   Object? arguments,
 ) {
   return ShellFadeThroughPageRoute<T>(
+    duration: MediaQuery.disableAnimationsOf(context)
+        ? Duration.zero
+        : AppDesignTokens.motionNormal,
     settings: RouteSettings(name: route, arguments: arguments),
     builder: (context) {
       // `generateEmbeddedRoute` always resolves via the route's

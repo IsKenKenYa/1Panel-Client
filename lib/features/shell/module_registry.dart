@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:onepanel_client/config/app_route_constants.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/ai/ai_page.dart';
 import 'package:onepanel_client/features/ai/ai_provider.dart';
@@ -29,7 +30,8 @@ class ModuleRegistration {
     required this.module,
     required this.builder,
     this.standaloneBuilder,
-  });
+    this.standaloneRoute,
+  }) : assert((standaloneBuilder == null) == (standaloneRoute == null));
 
   final ClientModule module;
 
@@ -42,6 +44,7 @@ class ModuleRegistration {
   /// the shell). When `null`, the module is not openable standalone and
   /// the shell handles it internally.
   final WidgetBuilder? standaloneBuilder;
+  final String? standaloneRoute;
 }
 
 /// Central registry of module page builders.
@@ -81,6 +84,7 @@ class ModuleRegistry {
     BuildContext context,
     ClientModule module, {
     required String? serverId,
+    String? serverRevision,
     bool useStableModuleKey = false,
   }) {
     final reg = _entries[module];
@@ -95,7 +99,9 @@ class ModuleRegistry {
     final page = reg.builder(context);
     if (useStableModuleKey) return page;
     return KeyedSubtree(
-      key: ValueKey('${module.storageId}:$serverId'),
+      key: ValueKey(
+        module.requiresServer ? (module, serverId, serverRevision) : module,
+      ),
       child: page,
     );
   }
@@ -123,26 +129,31 @@ class ModuleRegistry {
       module: ClientModule.apps,
       builder: _appsBuilder,
       standaloneBuilder: _appsStandalone,
+      standaloneRoute: AppRoutes.apps,
     ),
     ModuleRegistration(
       module: ClientModule.websites,
       builder: _websitesBuilder,
       standaloneBuilder: _websitesStandalone,
+      standaloneRoute: AppRoutes.websites,
     ),
     ModuleRegistration(
       module: ClientModule.ai,
       builder: _aiBuilder,
       standaloneBuilder: _aiStandalone,
+      standaloneRoute: AppRoutes.ai,
     ),
     ModuleRegistration(
       module: ClientModule.vm,
       builder: _vmBuilder,
       standaloneBuilder: _vmStandalone,
+      standaloneRoute: AppRoutes.vm,
     ),
     ModuleRegistration(
       module: ClientModule.verification,
       builder: _verificationBuilder,
       standaloneBuilder: _verificationStandalone,
+      standaloneRoute: AppRoutes.securityVerification,
     ),
     ModuleRegistration(
       module: ClientModule.settings,

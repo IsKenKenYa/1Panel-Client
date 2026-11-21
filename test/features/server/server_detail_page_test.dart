@@ -2,35 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
+import 'package:onepanel_client/features/server/panels/one_panel_module_sections.dart';
 import 'package:onepanel_client/features/server/server_detail_page.dart';
-import 'package:onepanel_client/features/server/server_models.dart';
 import 'package:onepanel_client/features/server/server_provider.dart';
+import 'package:onepanel_client/features/server/widgets/server_detail_header_card.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/controllers/pinned_modules_controller.dart';
-import 'package:onepanel_client/features/shell/models/client_module.dart';
+import 'package:onepanel_client/features/shell/widgets/server_switcher_action.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 import 'package:provider/provider.dart';
-
-class TestServerProvider extends ServerProvider {
-  TestServerProvider(this._items);
-
-  final List<ServerCardViewModel> _items;
-  int loadCallCount = 0;
-  int loadMetricsCallCount = 0;
-
-  @override
-  List<ServerCardViewModel> get servers => _items;
-
-  @override
-  Future<void> load() async {
-    loadCallCount += 1;
-  }
-
-  @override
-  Future<void> loadMetrics() async {
-    loadMetricsCallCount += 1;
-  }
-}
 
 class _FakeCurrentServerController extends CurrentServerController {
   final ApiConfig _config = ApiConfig(
@@ -50,127 +30,219 @@ class _FakeCurrentServerController extends CurrentServerController {
   bool get hasServer => true;
 }
 
-class _FakePinnedModulesController extends PinnedModulesController {
-  final List<ClientModule> _pins = const <ClientModule>[
-    ClientModule.files,
-    ClientModule.containers,
-  ];
-
-  @override
-  bool get isLoaded => true;
-
-  @override
-  List<ClientModule> get pins => List<ClientModule>.unmodifiable(_pins);
-
-  @override
-  ClientModule get primaryPin => _pins.first;
-
-  @override
-  ClientModule get secondaryPin => _pins.last;
-
-  @override
-  List<ClientModule> get options =>
-      List<ClientModule>.unmodifiable(kPinnableClientModules);
-}
-
 ({
   CurrentServerController currentServer,
   PinnedModulesController pinned,
-  TestServerProvider provider,
-  ServerCardViewModel server,
-}) _prepareState() {
-  final server = ServerCardViewModel(
-    config: ApiConfig(
-      id: 's1',
-      name: 'Demo',
-      url: 'https://demo.test',
-      apiKey: 'key',
-    ),
-    isCurrent: true,
-    metrics: const ServerMetricsSnapshot(cpuPercent: 12.3),
+  ServerProvider provider,
+  ApiConfig server,
+})
+_prepareState() {
+  final server = ApiConfig(
+    id: 's1',
+    name: 'Demo',
+    url: 'https://demo.test',
+    apiKey: 'key',
   );
 
   return (
-    currentServer: _FakeCurrentServerController(),
-    pinned: _FakePinnedModulesController(),
-    provider: TestServerProvider([server]),
+    currentServer: CurrentServerController(),
+    pinned: PinnedModulesController(),
+    provider: ServerProvider()..syncDirectory([server], server.id),
     server: server,
   );
 }
 
 void main() {
+  testWidgets('server actions are accessible in a narrow detail pane', (
+    tester,
+  ) async {
+    final server = ApiConfig(
+      id: 'local',
+      name: 'Lab',
+      url: 'https://lab.example',
+      apiKey: '',
+    );
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (_) => ServerProvider()..syncDirectory([server], server.id),
+          ),
+          ChangeNotifierProvider(create: (_) => CurrentServerController()),
+          ChangeNotifierProvider(create: (_) => PinnedModulesController()),
+        ],
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (context) => Align(
+              alignment: Alignment.topLeft,
+              child: SizedBox(
+                width: 320,
+                child: MediaQuery(
+                  data: MediaQuery.of(context)
+                      .copyWith(textScaler: TextScaler.linear(2)),
+                  child: TickerMode(
+                    enabled: false,
+                    child: ServerDetailPage(server: server),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final l10n = AppLocalizations.of(
+      tester.element(find.byType(ServerDetailPage)),
+    );
+    expect(
+      find
+          .descendant(
+            of: find.byType(ServerSwitcherAction),
+            matching: find.byType(IconButton),
+          )
+          .hitTestable(),
+      findsOneWidget,
+    );
+    await tester.tap(find.byTooltip(l10n.commonMore).hitTestable());
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.commonEdit).hitTestable(), findsOneWidget);
+    expect(find.text(l10n.commonDelete).hitTestable(), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('未注册的面板保留服务器信息并显示类型提示', (tester) async {
+    final server = ApiConfig(
+      id: 'other',
+      name: 'Lab',
+      url: 'https://example.org',
+      panelType: 'unregistered',
+      apiKey: '',
+    );
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (_) => ServerProvider()..syncDirectory([server], server.id),
+          ),
+          ChangeNotifierProvider(create: (_) => CurrentServerController()),
+        ],
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: ServerDetailPage(server: server),
+        ),
+      ),
+    );
+    final l10n = AppLocalizations.of(
+      tester.element(find.byType(ServerDetailPage)),
+    );
+    expect(find.text('Lab'), findsOneWidget);
+    expect(
+      find.text(l10n.serverPanelUnavailable('unregistered')),
+      findsOneWidget,
+    );
+    expect(find.byType(OnePanelModuleSections), findsNothing);
+  });
+
   testWidgets(
-      'ServerDetailPage uses launcher sections instead of old grid cards',
-      (tester) async {
+    'ServerDetailPage uses launcher sections instead of old grid cards',
+    (tester) async {
+      final state = _prepareState();
+
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<CurrentServerController>.value(
+              value: state.currentServer,
+            ),
+            ChangeNotifierProvider<PinnedModulesController>.value(
+              value: state.pinned,
+            ),
+            ChangeNotifierProvider<ServerProvider>.value(value: state.provider),
+          ],
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: TickerMode(
+              enabled: false,
+              child: ServerDetailPage(server: state.server),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(ServerDetailPage)),
+      );
+
+      expect(find.byType(GridView), findsNothing);
+      expect(find.text('Bottom Tabs'), findsOneWidget);
+      expect(find.text('Edit Tabs'), findsOneWidget);
+      expect(find.text('Files', skipOffstage: false), findsWidgets);
+      expect(
+        find.text(l10n.serverModuleWebsites, skipOffstage: false),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.serverModuleAi, skipOffstage: false),
+        findsOneWidget,
+      );
+    },
+  );
+
+  testWidgets('其他服务器的目录更新保留当前详情头卡和模块', (tester) async {
     final state = _prepareState();
 
     await tester.pumpWidget(
       MultiProvider(
         providers: [
           ChangeNotifierProvider<CurrentServerController>.value(
-              value: state.currentServer),
+            value: state.currentServer,
+          ),
           ChangeNotifierProvider<PinnedModulesController>.value(
-              value: state.pinned),
+            value: state.pinned,
+          ),
           ChangeNotifierProvider<ServerProvider>.value(value: state.provider),
         ],
         child: MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: ServerDetailPage(server: state.server),
+          home: TickerMode(
+            enabled: false,
+            child: ServerDetailPage(server: state.server),
+          ),
         ),
       ),
     );
     await tester.pump();
 
-    final l10n =
-        AppLocalizations.of(tester.element(find.byType(ServerDetailPage)));
-
-    expect(find.byType(GridView), findsNothing);
-    expect(find.text('Bottom Tabs'), findsOneWidget);
-    expect(find.text('Edit Tabs'), findsOneWidget);
-    expect(find.text('Files', skipOffstage: false), findsWidgets);
-    expect(find.text(l10n.serverModuleWebsites, skipOffstage: false),
-        findsOneWidget);
-    expect(find.text(l10n.serverModuleAi, skipOffstage: false), findsOneWidget);
-  });
-
-  testWidgets(
-      'ServerDetailPage refresh action reloads provider and shows feedback',
-      (tester) async {
-    final state = _prepareState();
-
-    await tester.pumpWidget(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider<CurrentServerController>.value(
-              value: state.currentServer),
-          ChangeNotifierProvider<PinnedModulesController>.value(
-              value: state.pinned),
-          ChangeNotifierProvider<ServerProvider>.value(value: state.provider),
-        ],
-        child: MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: ServerDetailPage(server: state.server),
-        ),
-      ),
+    final header = tester.widget<ServerDetailHeaderCard>(
+      find.byType(ServerDetailHeaderCard),
     );
+    final modules = tester.widget<OnePanelModuleSections>(
+      find.byType(OnePanelModuleSections),
+    );
+    state.provider.syncDirectory([
+      state.server,
+      ApiConfig(
+        id: 'other',
+        name: 'Other',
+        url: 'https://other.example',
+        apiKey: '',
+      ),
+    ], state.server.id);
     await tester.pump();
-
-    final l10n =
-        AppLocalizations.of(tester.element(find.byType(ServerDetailPage)));
-    await tester
-        .tap(find.widgetWithText(FilledButton, l10n.serverActionRefresh));
-    await tester.pump();
-
-    expect(state.provider.loadCallCount, 1);
-    expect(state.provider.loadMetricsCallCount, 1);
-    expect(find.byType(SnackBar), findsOneWidget);
-    expect(find.text(l10n.commonRefresh), findsWidgets);
+    expect(tester.widget(find.byType(ServerDetailHeaderCard)), same(header));
+    expect(tester.widget(find.byType(OnePanelModuleSections)), same(modules));
   });
 
-  testWidgets('ServerDetailPage opens system settings entry route',
-      (tester) async {
+  testWidgets('ServerDetailPage opens system settings entry route', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(800, 1400);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -181,10 +253,12 @@ void main() {
     await tester.pumpWidget(
       MultiProvider(
         providers: [
-          ChangeNotifierProvider<CurrentServerController>.value(
-              value: state.currentServer),
+          ChangeNotifierProvider<CurrentServerController>(
+            create: (_) => _FakeCurrentServerController(),
+          ),
           ChangeNotifierProvider<PinnedModulesController>.value(
-              value: state.pinned),
+            value: state.pinned,
+          ),
           ChangeNotifierProvider<ServerProvider>.value(value: state.provider),
         ],
         child: MaterialApp(
@@ -194,14 +268,18 @@ void main() {
             AppRoutes.systemSettings: (_) =>
                 const Scaffold(body: Text('system-settings-target')),
           },
-          home: ServerDetailPage(server: state.server),
+          home: TickerMode(
+            enabled: false,
+            child: ServerDetailPage(server: state.server),
+          ),
         ),
       ),
     );
     await tester.pump();
 
-    final l10n =
-        AppLocalizations.of(tester.element(find.byType(ServerDetailPage)));
+    final l10n = AppLocalizations.of(
+      tester.element(find.byType(ServerDetailPage)),
+    );
     final target = find.widgetWithText(
       ListTile,
       l10n.serverModuleSystemSettings,
@@ -210,9 +288,7 @@ void main() {
     // 在入口列表超出一屏时会越过目标导致点击落空。
     await tester.ensureVisible(target);
     await tester.pumpAndSettle();
-    await tester.tap(
-      target,
-    );
+    await tester.tap(target);
     await tester.pumpAndSettle();
 
     expect(find.text('system-settings-target'), findsOneWidget);

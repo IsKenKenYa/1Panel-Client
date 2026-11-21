@@ -1,13 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:onepanel_client/config/app_route_constants.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/services/onboarding_service.dart';
+import 'package:onepanel_client/core/utils/error_message_utils.dart';
+import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/onboarding/coach_mark_overlay.dart';
-import 'package:onepanel_client/features/server/server_detail_page.dart';
-import 'package:onepanel_client/features/server/server_models.dart';
 import 'package:onepanel_client/features/server/server_provider.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
+import 'package:onepanel_client/features/shell/shell_navigation.dart';
 
 class ServerListViewModel extends ChangeNotifier with SafeChangeNotifier {
   ServerListViewModel({
@@ -21,6 +26,11 @@ class ServerListViewModel extends ChangeNotifier with SafeChangeNotifier {
   final ServerProvider _serverProvider;
   final TextEditingController _searchController = TextEditingController();
   final OnboardingService _onboardingService = OnboardingService();
+  String _query = '';
+  bool _visible = false;
+  bool _checkingCoach = false;
+  bool _checkedCoach = false;
+  bool _openingDetail = false;
 
   final GlobalKey addKey = GlobalKey();
   final GlobalKey firstCardKey = GlobalKey();
@@ -28,101 +38,71 @@ class ServerListViewModel extends ChangeNotifier with SafeChangeNotifier {
   List<CoachMarkStep> coachSteps = const [];
 
   TextEditingController get searchController => _searchController;
-  ServerProvider get serverProvider => _serverProvider;
+  String get query => _query;
 
-  void init(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _serverProvider.load().then((_) {
-        if (_serverProvider.servers.isNotEmpty) {
-          _serverProvider.loadMetrics();
-        }
-        if (!context.mounted) {
-          return;
-        }
-        // Check coach marks after initial load
-        checkAndShowCoachMarks(context);
-      });
-    });
-    // Add listener but prevent recursive updates
-    _serverProvider.addListener(_onProviderChanged);
-  }
-
-  void _onProviderChanged() {
-    // Just notify listeners without triggering coach marks
-    // Coach marks will be shown only on initial load
-    notifyListeners();
+  void setVisible(BuildContext context, bool visible) {
+    _visible = visible;
+    _serverProvider.setPageVisible(this, visible);
+    if (visible && enableCoach && !_checkedCoach && !_checkingCoach) {
+      unawaited(_checkCoach(context));
+    }
   }
 
   @override
   void dispose() {
-    _serverProvider.removeListener(_onProviderChanged);
     _searchController.dispose();
     super.dispose();
   }
 
   void _onSearchChanged() {
+    final query = _searchController.text.trim().toLowerCase();
+    if (_query == query) return;
+    _query = query;
     notifyListeners();
   }
 
-  List<ServerCardViewModel> get filteredServers {
-    final query = _searchController.text.trim().toLowerCase();
-    if (query.isEmpty) {
-      return _serverProvider.servers;
-    }
-    return _serverProvider.servers.where((item) {
-      return item.config.name.toLowerCase().contains(query) ||
-          item.config.url.toLowerCase().contains(query);
-    }).toList();
-  }
-
   Future<void> refresh() async {
-    await _serverProvider.load();
-    if (_serverProvider.servers.isNotEmpty) {
-      await _serverProvider.loadMetrics();
+    try {
+      if (!_serverProvider.hasDirectory ||
+          _serverProvider.directoryError != null) {
+        await _serverProvider.load();
+      } else {
+        await _serverProvider.loadMetrics();
+      }
+    } catch (_) {
+      // 目录读取错误由列表的错误状态和重试按钮展示。
+      if (_serverProvider.directoryError == null) rethrow;
     }
   }
 
-  Future<void> checkAndShowCoachMarks(BuildContext context) async {
-    if (!enableCoach) return;
-    if (coachSteps.isNotEmpty) return;
-
-    final showAdd = await _onboardingService
-        .shouldShowCoach(OnboardingService.coachServerAddKey);
-    final showCard = await _onboardingService
-        .shouldShowCoach(OnboardingService.coachServerCardKey);
-
-    if (!context.mounted || (!showAdd && !showCard)) return;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!context.mounted) return;
-
+  Future<void> _checkCoach(BuildContext context) async {
+    _checkingCoach = true;
+    try {
+      if (!_serverProvider.hasDirectory) await refresh();
+      if (!_visible || !context.mounted || !_serverProvider.hasDirectory) {
+        return;
+      }
+      final hasServers = _serverProvider.configs.isNotEmpty;
+      final show = await _onboardingService.shouldShowCoach(hasServers
+          ? OnboardingService.coachServerCardKey
+          : OnboardingService.coachServerAddKey);
+      if (!_visible || !context.mounted) return;
+      _checkedCoach = true;
+      if (!show) return;
       final l10n = context.l10n;
-      final hasServers = _serverProvider.servers.isNotEmpty;
-      final steps = <CoachMarkStep>[];
-      // 「先添加第一台服务器」仅在确实没有服务器时展示；
-      // 已有服务器时引导卡片操作，文案与场景保持一致。
-      if (showAdd && !hasServers) {
-        steps.add(
-          CoachMarkStep(
-            targetKey: addKey,
-            title: l10n.coachServerAddTitle,
-            description: l10n.coachServerAddDesc,
-          ),
-        );
-      }
-      if (showCard && hasServers) {
-        steps.add(
-          CoachMarkStep(
-            targetKey: firstCardKey,
-            title: l10n.coachServerCardTitle,
-            description: l10n.coachServerCardDesc,
-          ),
-        );
-      }
-
-      coachSteps = steps;
+      coachSteps = [
+        CoachMarkStep(
+          targetKey: hasServers ? firstCardKey : addKey,
+          title:
+              hasServers ? l10n.coachServerCardTitle : l10n.coachServerAddTitle,
+          description:
+              hasServers ? l10n.coachServerCardDesc : l10n.coachServerAddDesc,
+        ),
+      ];
       notifyListeners();
-    });
+    } finally {
+      _checkingCoach = false;
+    }
   }
 
   Future<void> completeCoach() async {
@@ -133,34 +113,34 @@ class ServerListViewModel extends ChangeNotifier with SafeChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> openDetail(
-      BuildContext context, ServerCardViewModel item) async {
-    // 切换服务器会重建带 serverId key 的模块子树，原卡片 context 随之卸载；
-    // 先取 NavigatorState，切换完成后仍能压入详情页。
-    final navigator = Navigator.of(context);
-    if (!item.isCurrent) {
-      await context
-          .read<CurrentServerController>()
-          .selectServer(item.config.id);
-      if (context.mounted) {
-        await _serverProvider.load();
+  Future<void> openDetail(BuildContext context, ApiConfig config) async {
+    if (_openingDetail) return;
+    _openingDetail = true;
+    try {
+      final controller = context.read<CurrentServerController>();
+      if (controller.currentServerId != config.id) {
+        try {
+          await controller.selectServer(config.id);
+        } catch (error) {
+          if (context.mounted && _visible) {
+            SnackBarUtils.showError(
+                context, ErrorMessageUtils.userFacingMessage(error));
+          }
+          return;
+        }
       }
+      if (!context.mounted ||
+          !_visible ||
+          controller.currentServerId != config.id) {
+        return;
+      }
+      await openRouteRespectingShell<void>(
+        context,
+        AppRoutes.serverDetail,
+        arguments: config,
+      );
+    } finally {
+      _openingDetail = false;
     }
-
-    await navigator.push(
-      MaterialPageRoute(
-        builder: (_) => ServerDetailPage(server: item),
-      ),
-    );
-  }
-
-  /// 删除服务器配置（纯数据操作）：确认弹窗与结果反馈由 UI 层负责。
-  Future<void> deleteServer(ServerCardViewModel item) async {
-    await _serverProvider.delete(item.config.id);
-  }
-
-  /// 服务器新增/删除/切换后的统一列表刷新。
-  Future<void> refreshAfterServerChange() async {
-    await _serverProvider.load();
   }
 }

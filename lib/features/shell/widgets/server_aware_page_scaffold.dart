@@ -30,10 +30,10 @@ class ServerAwarePageScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CurrentServerController>(
-      builder: (context, currentServer, _) {
+    return Selector<CurrentServerController, bool>(
+      selector: (_, controller) => requireServer && !controller.hasServer,
+      builder: (context, showMissingServer, _) {
         final scheme = Theme.of(context).colorScheme;
-        final showMissingServer = requireServer && !currentServer.hasServer;
         final canPop = Navigator.of(context).canPop();
         return Scaffold(
           backgroundColor: scheme.surface,

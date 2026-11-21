@@ -11,10 +11,12 @@ typedef UiRouteBuilder = Widget Function(
 class RouteEntry {
   const RouteEntry({
     required this.defaultBuilder,
+    this.desktopShellBuilder,
     this.platformOverrides = const <UiPlatformKind, UiRouteBuilder>{},
   });
 
   final UiRouteBuilder defaultBuilder;
+  final UiRouteBuilder? desktopShellBuilder;
   final Map<UiPlatformKind, UiRouteBuilder> platformOverrides;
 
   /// Resolves the builder to use for the given [target].
@@ -38,7 +40,9 @@ class RouteEntry {
     if (useDefault) {
       return defaultBuilder;
     }
-    return platformOverrides[target.platformKind] ?? defaultBuilder;
+    return platformOverrides[target.platformKind] ??
+        (target.usesDesktopShell ? desktopShellBuilder : null) ??
+        defaultBuilder;
   }
 }
 

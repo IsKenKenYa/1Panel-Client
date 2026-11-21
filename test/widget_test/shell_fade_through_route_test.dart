@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/ui/desktop/common/widgets/shell_fade_through_route.dart';
 
 void main() {
   group('ShellFadeThroughPageRoute', () {
-    test('has opaque:true, barrierDismissible:false, 200ms duration', () {
+    test('uses the shared navigation duration and an opaque route', () {
       final route = ShellFadeThroughPageRoute<void>(
         builder: (_) => const SizedBox.shrink(),
       );
 
       expect(route.opaque, isTrue);
       expect(route.barrierDismissible, isFalse);
-      expect(route.transitionDuration, const Duration(milliseconds: 200));
-      expect(route.reverseTransitionDuration, const Duration(milliseconds: 200));
+      expect(route.transitionDuration, AppDesignTokens.motionNormal);
+      expect(route.reverseTransitionDuration, AppDesignTokens.motionNormal);
       // Opaque routes must not have a barrier.
       expect(route.barrierColor, isNull);
       expect(route.barrierLabel, isNull);

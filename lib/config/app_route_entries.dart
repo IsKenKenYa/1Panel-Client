@@ -2,6 +2,7 @@
 // the 1000 LOC hard limit (architecture review R5 candidate 2).
 // This is a declarative route registry -- essentially data, not logic.
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/config/app_route_constants.dart';
 import 'package:onepanel_client/config/app_router_pages.dart';
 import 'package:onepanel_client/features/onboarding/onboarding_page.dart';
@@ -23,10 +24,11 @@ import 'package:onepanel_client/features/alert/alert_page.dart';
 import 'package:onepanel_client/features/alert/providers/alert_provider.dart';
 import 'package:onepanel_client/features/host_assets/pages/host_diagnostics_page.dart';
 import 'package:onepanel_client/features/monitoring/monitoring_page.dart';
+import 'package:onepanel_client/features/dashboard/dashboard_page.dart';
 import 'package:onepanel_client/features/server/server_detail_page.dart';
 import 'package:onepanel_client/features/server/server_form_page.dart';
 import 'package:onepanel_client/features/server/server_list_page.dart';
-import 'package:onepanel_client/features/server/server_models.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/features/security/security_verification_page.dart';
 import 'package:onepanel_client/features/security_gateway/pages/security_gateway_center_page.dart';
 import 'package:onepanel_client/features/security_gateway/providers/security_gateway_center_provider.dart';
@@ -35,10 +37,12 @@ import 'package:onepanel_client/features/shell/module_registry.dart';
 import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/ui/routing/ui_route_host.dart';
 import 'package:onepanel_client/ui/routing/route_registry.dart';
-import 'package:onepanel_client/ui/routing/ui_target.dart';
-import 'package:onepanel_client/ui/routing/ui_target_resolver.dart';
 import 'package:onepanel_client/features/terminal/terminal_page.dart';
 import 'package:onepanel_client/pages/settings/settings_page.dart';
+import 'package:onepanel_client/pages/settings/cache_settings_page.dart';
+import 'package:onepanel_client/features/settings/about_page.dart';
+import 'package:onepanel_client/features/settings/app_lock_settings_page.dart';
+import 'package:onepanel_client/features/settings/screens/theme_settings_page.dart';
 import 'package:onepanel_client/features/settings/system_settings_page.dart';
 import 'package:onepanel_client/features/settings/feedback_center_page.dart';
 import 'package:onepanel_client/features/settings/language_settings_page.dart';
@@ -69,7 +73,7 @@ import 'package:onepanel_client/features/openresty/providers/openresty_provider.
 import 'package:onepanel_client/features/websites/providers/website_template_provider.dart';
 import 'package:onepanel_client/features/settings/menu_settings_page.dart';
 import 'package:onepanel_client/features/settings/menu_settings_provider.dart';
-import 'package:onepanel_client/features/settings/ssl_settings_page.dart';
+import 'package:onepanel_client/features/settings/panel_ssl/pages/panel_ssl_page.dart';
 import 'package:onepanel_client/features/commands/models/command_form_args.dart';
 import 'package:onepanel_client/features/commands/pages/command_form_page.dart';
 import 'package:onepanel_client/features/commands/pages/commands_page.dart';
@@ -157,6 +161,7 @@ import 'package:onepanel_client/features/toolbox/providers/toolbox_disk_provider
 import 'package:onepanel_client/features/toolbox/providers/toolbox_fail2ban_provider.dart';
 import 'package:onepanel_client/features/toolbox/providers/toolbox_ftp_provider.dart';
 import 'package:onepanel_client/features/toolbox/providers/toolbox_host_tool_provider.dart';
+import 'package:onepanel_client/features/toolbox/widgets/toolbox_server_scope.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/features/containers/container_detail_page.dart';
 import 'package:onepanel_client/features/containers/container_create_page.dart';
@@ -221,7 +226,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
         routeName: AppRoutes.serverDetail,
         defaultBuilder: (_, settings) {
           final arg = settings.arguments;
-          if (arg is ServerCardViewModel) {
+          if (arg is ApiConfig) {
             return ServerDetailPage(server: arg);
           }
           return const NotFoundPage();
@@ -229,12 +234,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       ),
       AppRoutes.dashboard: shellAwareModuleEntry(
         routeName: AppRoutes.dashboard,
-        defaultBuilder: (_, __) => const UiRouteHost(
-          settings: RouteSettings(
-            name: AppRoutes.home,
-            arguments: {'tab': 0, 'module': 'servers'},
-          ),
-        ),
+        defaultBuilder: (_, __) => const DashboardPage(),
       ),
       AppRoutes.files: shellAwareModuleEntry(
         routeName: AppRoutes.files,
@@ -504,26 +504,21 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
         routeName: AppRoutes.securityVerification,
         defaultBuilder: (_, __) => const SecurityVerificationPage(),
       ),
-      AppRoutes.settings: shellAwareModuleEntry(
-        routeName: AppRoutes.settings,
-        defaultBuilder: (_, __) => const SettingsPage(),
-      ),
-      AppRoutes.settingsLanguage: shellAwareModuleEntry(
-        routeName: AppRoutes.settingsLanguage,
-        defaultBuilder: (_, __) => const LanguageSettingsPage(),
-      ),
-      AppRoutes.settingsFeedbackCenter: shellAwareModuleEntry(
-        routeName: AppRoutes.settingsFeedbackCenter,
-        defaultBuilder: (_, __) => const FeedbackCenterPage(),
-      ),
-      AppRoutes.settingsLegalCenter: shellAwareModuleEntry(
-        routeName: AppRoutes.settingsLegalCenter,
-        defaultBuilder: (_, __) => const LegalCenterPage(),
-      ),
-      AppRoutes.settingsMainlandSdkDisclosure: shellAwareModuleEntry(
-        routeName: AppRoutes.settingsMainlandSdkDisclosure,
-        defaultBuilder: (_, __) => const MainlandSdkDisclosurePage(),
-      ),
+      for (final (name, page) in const <(String, Widget)>[
+        (AppRoutes.settings, SettingsPage()),
+        (AppRoutes.settingsTheme, ThemeSettingsPage()),
+        (AppRoutes.settingsLanguage, LanguageSettingsPage()),
+        (AppRoutes.settingsAppLock, AppLockSettingsPage()),
+        (AppRoutes.settingsStorage, CacheSettingsPage()),
+        (AppRoutes.settingsFeedbackCenter, FeedbackCenterPage()),
+        (AppRoutes.settingsLegalCenter, LegalCenterPage()),
+        (AppRoutes.settingsMainlandSdkDisclosure, MainlandSdkDisclosurePage()),
+        (AppRoutes.settingsAbout, AboutPage()),
+      ])
+        name: shellAwareModuleEntry(
+          routeName: name,
+          defaultBuilder: (_, __) => page,
+        ),
       AppRoutes.systemSettings: shellAwareModuleEntry(
         routeName: AppRoutes.systemSettings,
         defaultBuilder: (_, __) => const SystemSettingsPage(),
@@ -537,7 +532,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       ),
       AppRoutes.panelSsl: shellAwareModuleEntry(
         routeName: AppRoutes.panelSsl,
-        defaultBuilder: (_, __) => const SslSettingsPage(),
+        defaultBuilder: (_, __) => const PanelSslPage(),
       ),
       AppRoutes.databases: shellAwareModuleEntry(
         routeName: AppRoutes.databases,
@@ -684,23 +679,26 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       ),
       AppRoutes.toolboxDisk: shellAwareModuleEntry(
         routeName: AppRoutes.toolboxDisk,
-        defaultBuilder: (_, __) => ChangeNotifierProvider<ToolboxDiskProvider>(
-          create: (_) => ToolboxDiskProvider(),
+        defaultBuilder: (context, _) => ToolboxServerScope<ToolboxDiskProvider>(
+          title: context.l10n.toolboxDiskTitle,
+          create: (id) => ToolboxDiskProvider(serverId: id),
           child: const ToolboxDiskPage(),
         ),
       ),
       AppRoutes.toolboxClam: shellAwareModuleEntry(
         routeName: AppRoutes.toolboxClam,
-        defaultBuilder: (_, __) => ChangeNotifierProvider<ToolboxClamProvider>(
-          create: (_) => ToolboxClamProvider(),
+        defaultBuilder: (context, _) => ToolboxServerScope<ToolboxClamProvider>(
+          title: context.l10n.toolboxClamTitle,
+          create: (id) => ToolboxClamProvider(serverId: id),
           child: const ToolboxClamPage(),
         ),
       ),
       AppRoutes.toolboxFail2ban: shellAwareModuleEntry(
         routeName: AppRoutes.toolboxFail2ban,
-        defaultBuilder: (_, __) =>
-            ChangeNotifierProvider<ToolboxFail2banProvider>(
-          create: (_) => ToolboxFail2banProvider(),
+        defaultBuilder: (context, _) =>
+            ToolboxServerScope<ToolboxFail2banProvider>(
+          title: context.l10n.toolboxFail2banTitle,
+          create: (id) => ToolboxFail2banProvider(serverId: id),
           child: const ToolboxFail2banPage(),
         ),
       ),
@@ -713,9 +711,10 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
       ),
       AppRoutes.toolboxHostTool: shellAwareModuleEntry(
         routeName: AppRoutes.toolboxHostTool,
-        defaultBuilder: (_, __) =>
-            ChangeNotifierProvider<ToolboxHostToolProvider>(
-          create: (_) => ToolboxHostToolProvider(),
+        defaultBuilder: (context, _) =>
+            ToolboxServerScope<ToolboxHostToolProvider>(
+          title: context.l10n.toolboxHostToolTitle,
+          create: (id) => ToolboxHostToolProvider(serverId: id),
           child: const ToolboxHostToolPage(),
         ),
       ),
@@ -1482,11 +1481,7 @@ import 'package:onepanel_client/features/toolbox/pages/toolbox_supervisor_page.d
 
     return RouteEntry(
       defaultBuilder: defaultBuilder,
-      platformOverrides: {
-        UiPlatformKind.desktopWindows: desktopBuilder,
-        UiPlatformKind.desktopMacos: desktopBuilder,
-        UiPlatformKind.desktopLinux: desktopBuilder,
-      },
+      desktopShellBuilder: desktopBuilder,
     );
   }
 

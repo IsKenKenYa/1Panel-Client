@@ -18,11 +18,11 @@ import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/core/platform/platform_capabilities.dart';
 import 'package:onepanel_client/core/platform/services/browser_document_service.dart';
 import 'package:onepanel_client/core/theme/theme_controller.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/core/services/transfer/transfer_manager.dart';
 import 'package:onepanel_client/core/theme/app_theme.dart';
 import 'package:onepanel_client/core/utils/intents.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
-import 'package:onepanel_client/features/settings/about_page.dart';
 
 import 'package:onepanel_client/core/channel/native_channel_manager.dart';
 import 'package:onepanel_client/core/channel/native_channel_port.dart';
@@ -30,22 +30,24 @@ import 'package:onepanel_client/core/channel/native_terminal_bridge.dart';
 import 'package:onepanel_client/core/services/app_preferences_service.dart';
 import 'package:onepanel_client/core/theme/ui_render_policy.dart';
 import 'package:onepanel_client/core/theme/ui_render_mode.dart';
-import 'package:onepanel_client/core/config/api_config_migration.dart';
 import 'package:onepanel_client/core/config/debug_seed_config.dart';
 
 // Feature Providers
-import 'features/dashboard/dashboard_provider.dart';
-import 'features/apps/app_service.dart';
-import 'features/websites/websites_provider.dart';
 import 'features/security/app_lock_controller.dart';
+import 'features/security/app_lock_gate.dart';
 import 'features/security/browser_vault_gate.dart';
 import 'features/server/server_provider.dart';
 import 'features/shell/controllers/current_server_controller.dart';
+import 'features/shell/connection_service_providers.dart';
+import 'features/shell/server_route_observer.dart';
 import 'features/shell/controllers/pinned_modules_controller.dart';
-import 'features/monitoring/monitoring_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final launchPath = WidgetsBinding.instance.platformDispatcher.defaultRouteName;
+  final initialSettings = kIsWeb && AppRoutes.localSettings.contains(launchPath)
+      ? launchPath
+      : null;
   await applyDebugSeedConfig();
   applyDebugSemanticsIfRequested();
 
@@ -88,16 +90,16 @@ void main() async {
   final prefs = AppPreferencesService();
   var uiRenderMode = await prefs.loadUIRenderMode();
 
-  if (!kIsWeb &&
+  final nativeHostMissing = !kIsWeb &&
       Platform.isWindows &&
       uiRenderMode == UIRenderMode.native &&
-      (!windowsNativeHostActive || forceMd3ByBootstrap)) {
+      (!windowsNativeHostActive || forceMd3ByBootstrap);
+  if (nativeHostMissing) {
     uiRenderMode = UIRenderMode.md3;
   }
 
   final useFlutterUI = UIRenderPolicy.shouldUseFlutterUI(uiRenderMode);
   final nativeModeFallback = UIRenderPolicy.isNativeModeFallback(uiRenderMode);
-  // 首帧前同步玻璃浮层静态开关（首帧即正确，ThemeController.load 二次兜底）。
   UIRenderPolicy.setLiquidGlassEnabled(uiRenderMode);
 
   // 液态玻璃模式：仅 Apple Metal 预加载 premium 多 pass 折射 shader；
@@ -139,18 +141,6 @@ void main() async {
     );
   }
 
-  // Migrate API keys from SharedPreferences fallback to secure storage
-  try {
-    if (!kIsWeb) await ApiConfigMigration.runMigrationIfNeeded();
-  } catch (error, stackTrace) {
-    appLogger.wWithPackage(
-      'main',
-      'Failed to run API config migration',
-      error: error,
-      stackTrace: stackTrace,
-    );
-  }
-
   FlutterError.onError = (details) {
     appLogger.eWithPackage(
       'main',
@@ -182,60 +172,51 @@ void main() async {
       );
     }
 
+    final settings = AppSettingsController(preferencesService: prefs)
+      ..markNativeHostMissing(value: nativeHostMissing);
+    final appearance = ThemeController(preferencesService: prefs);
+    await Future.wait([settings.load(), appearance.load()]);
+    final appShell = AppBootstrap(child: MyApp(initialSettings: initialSettings));
     final app = MultiProvider(
         providers: [
           // App Settings
-          ChangeNotifierProvider(
-            create: (_) => AppSettingsController()
-              // 冷启动宿主缺失（bootstrap 强制 MD3）标记，设置页可见化。
-              ..markNativeHostMissing(value: forceMd3ByBootstrap),
-          ),
-          ChangeNotifierProvider(
-            create: (_) => ThemeController(),
-          ),
+          ChangeNotifierProvider(create: (_) => settings),
+          ChangeNotifierProvider(create: (_) => appearance),
           ChangeNotifierProvider(
             create: (_) => AppLockController(),
           ),
           // Server Management
           ChangeNotifierProvider(
-            create: (_) => ServerProvider(),
+            create: (_) => CurrentServerController(),
           ),
           ChangeNotifierProvider(
-            create: (_) => CurrentServerController(),
+            create: (context) => ServerProvider(
+              directory: context.read<CurrentServerController>(),
+            ),
           ),
           ChangeNotifierProvider(
             create: (_) => PinnedModulesController(),
           ),
-          // Dashboard
-          ChangeNotifierProvider(
-            create: (_) => DashboardProvider(),
+          ProxyProvider<CurrentServerController, (String?, String?)>(
+            update: (_, controller, __) =>
+                (controller.currentServerId, controller.currentServer?.revision),
           ),
-          // Apps
-          Provider<AppService>(
-            create: (_) => AppService(),
-          ),
-          // Websites
-          ChangeNotifierProvider(
-            create: (_) => WebsitesProvider(),
-          ),
-          ChangeNotifierProvider(
-            create: (_) => MonitoringProvider(),
-          ),
+          ...connectionServiceProviders(),
           // Transfer Manager
           ChangeNotifierProvider(
             create: (_) => TransferManager(),
           ),
         ],
-        child: const AppBootstrap(child: MyApp()),
+        child: kIsWeb ? BrowserVaultGate(child: appShell) : appShell,
       );
     runApp(
       UIRenderPolicy.liquidGlassEnabled
           ? LiquidGlassWidgets.wrap(
               // MaterialApp 主题亮度解析：玻璃明暗跟随 ThemeMode 而非系统。
               brightnessResolver: Theme.maybeBrightnessOf,
-              child: kIsWeb ? BrowserVaultGate(child: app) : app,
+              child: app,
             )
-          : (kIsWeb ? BrowserVaultGate(child: app) : app),
+          : app,
     );
   } else {
     // Engine-only mode (Headless)
@@ -265,18 +246,11 @@ class _AppBootstrapState extends State<AppBootstrap>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    // Load sequentially: each controller may depend on the previous one
-    // (e.g. ThemeController needs AppSettingsController for locale context).
-    // mounted checks after every await guard against disposal during async gaps.
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (!mounted) return;
-      await context.read<AppSettingsController>().load();
-      if (!mounted) return;
-      await context.read<ThemeController>().load();
       if (!mounted) return;
       await context.read<AppLockController>().load();
       if (!mounted) return;
-      await context.read<CurrentServerController>().load();
+      await context.read<CurrentServerController>().ensureLoaded();
       if (!mounted) return;
       await context.read<PinnedModulesController>().load();
       if (!mounted) return;
@@ -290,7 +264,6 @@ class _AppBootstrapState extends State<AppBootstrap>
       return;
     }
     context.read<AppLockController>().onAppLifecycleChanged(state);
-    context.read<MonitoringProvider>().onAppLifecycleChanged(state);
   }
 
   @override
@@ -303,13 +276,38 @@ class _AppBootstrapState extends State<AppBootstrap>
   Widget build(BuildContext context) => widget.child;
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  const MyApp({super.key, this.initialSettings});
+
+  final String? initialSettings;
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final _navigator = GlobalKey<NavigatorState>();
+  final _lockTarget = ValueNotifier<String?>(null);
+  late final _routes = ServerRouteObserver(
+    isAppNavigator: true,
+    lockTarget: _lockTarget,
+  );
+
+  @override
+  void dispose() {
+    _lockTarget.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<AppSettingsController, ThemeController>(
-      builder: (context, settings, themeController, _) {
+    final connection = context.select((CurrentServerController? controller) =>
+        (controller?.currentServerId, controller?.currentServer?.revision));
+    _routes.updateConnection(connection.$1, connection.$2);
+    final locale = context.select((AppSettingsController settings) => settings.locale);
+    return Consumer<ThemeController>(
+      builder: (context, themeController, _) {
+        final density = AdaptiveLayoutSpec.of(context).adaptiveDensity;
         return DynamicColorBuilder(
           builder: (lightDynamic, darkDynamic) {
             final lightScheme = themeController.useDynamicColor
@@ -320,13 +318,24 @@ class MyApp extends StatelessWidget {
                 : null;
 
             return MaterialApp(
+              navigatorKey: _navigator,
+              navigatorObservers: [_routes],
               title: 'KenPanel',
               debugShowCheckedModeBanner: false,
               builder: (context, child) {
+                final content = Provider<ColorScheme?>.value(
+                  value: lightDynamic,
+                  child: ValueListenableBuilder<String?>(
+                    valueListenable: _lockTarget,
+                    child: child ?? const SizedBox(),
+                    builder: (_, target, navigator) =>
+                        AppLockGate(target: target, child: navigator!),
+                  ),
+                );
                 if (kIsWeb) {
                   BrowserDocumentService.updateLanguage(
                       Localizations.localeOf(context).toLanguageTag());
-                  return child ?? const SizedBox();
+                  return content;
                 }
                 final l10n = AppLocalizations.of(context);
                 return PlatformMenuBar(
@@ -337,9 +346,11 @@ class MyApp extends StatelessWidget {
                         PlatformMenuItem(
                           label: l10n.aboutPageTitle,
                           onSelected: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => const AboutPage(),
+                            _navigator.currentState?.push(
+                              AppRouter.generateEmbeddedRoute(
+                                const RouteSettings(
+                                  name: AppRoutes.settingsAbout,
+                                ),
                               ),
                             );
                           },
@@ -399,30 +410,39 @@ class MyApp extends StatelessWidget {
                       ],
                     ),
                   ],
-                  child: child ?? const SizedBox(),
+                  child: content,
                 );
               },
               theme: AppTheme.getLightTheme(
+                visualDensity: density,
                 dynamicScheme: lightScheme,
                 seedColor: themeController.seedColor,
               ),
               darkTheme: AppTheme.getDarkTheme(
+                visualDensity: density,
                 dynamicScheme: darkScheme,
                 seedColor: themeController.seedColor,
               ),
               themeMode: themeController.themeMode,
-              locale: settings.locale,
+              locale: locale,
               localizationsDelegates: const [
                 AppLocalizations.delegate,
                 GlobalMaterialLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,
               ],
-              supportedLocales: const [
-                Locale('en'),
-                Locale('zh'),
-              ],
+              supportedLocales: AppLocalizations.supportedLocales,
               onGenerateRoute: AppRouter.generateRoute,
+              onGenerateInitialRoutes: widget.initialSettings == null
+                  ? null
+                  : (_) => [
+                        MaterialPageRoute<void>(
+                          settings: RouteSettings(name: widget.initialSettings),
+                          builder: (_) => SplashPage(
+                            settingsDestination: widget.initialSettings,
+                          ),
+                        ),
+                      ],
               initialRoute: AppRoutes.splash,
             );
           },

@@ -1,232 +1,273 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanel_client/config/app_router.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
-import 'package:onepanel_client/features/server/server_models.dart';
-import 'package:onepanel_client/features/server/server_provider.dart';
-import 'package:onepanel_client/features/server/widgets/server_detail_header_card.dart';
-import 'package:onepanel_client/shared/widgets/section_card.dart';
+import 'package:onepanel_client/core/utils/error_message_utils.dart';
+import 'package:onepanel_client/core/utils/snackbar_utils.dart';
+import 'package:onepanel_client/data/panels/panel_adapter.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
-import 'package:onepanel_client/features/shell/controllers/pinned_modules_controller.dart';
-import 'package:onepanel_client/features/shell/models/client_module.dart';
-import 'package:onepanel_client/features/shell/shell_navigation.dart';
-import 'package:onepanel_client/features/shell/widgets/mobile_pinned_modules_customizer_sheet.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
+import 'package:onepanel_client/features/shell/widgets/no_server_selected_state.dart';
 import 'package:onepanel_client/features/shell/widgets/server_switcher_action.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
+import 'package:onepanel_client/shared/widgets/operations/page_visibility_listener.dart';
 
-import '../../core/utils/snackbar_utils.dart';
-class ServerDetailPage extends StatelessWidget {
-  const ServerDetailPage({
-    super.key,
-    required this.server,
-  });
+import 'panels/panel_presentation.dart';
+import 'server_list_interactions.dart';
+import 'server_models.dart';
+import 'server_provider.dart';
+import 'widgets/server_actions_menu.dart';
+import 'widgets/server_detail_header_card.dart';
 
-  final ServerCardViewModel server;
+class ServerDetailPage extends StatefulWidget {
+  const ServerDetailPage({super.key, required this.server});
+
+  final ApiConfig server;
+
+  @override
+  State<ServerDetailPage> createState() => _ServerDetailPageState();
+}
+
+class _ServerDetailPageState extends State<ServerDetailPage> {
+  late bool _followCurrent =
+      context.read<CurrentServerController>().currentServerId ==
+      widget.server.id;
+
+  @override
+  void didUpdateWidget(ServerDetailPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.server.id != widget.server.id) {
+      _followCurrent =
+          context.read<CurrentServerController>().currentServerId ==
+          widget.server.id;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final scheme = Theme.of(context).colorScheme;
-    final currentServerId =
-        context.watch<CurrentServerController>().currentServerId;
-    final serverProvider = context.watch<ServerProvider>();
-    final pinnedController = context.watch<PinnedModulesController>();
-    final activeServer = serverProvider.servers.firstWhere(
-      (item) => item.config.id == currentServerId,
-      orElse: () => server,
+    final current = context.select(
+      (CurrentServerController c) => c.currentServerId,
     );
-
-    return Scaffold(
-      backgroundColor: scheme.surface,
-      appBar: AppBar(
-        title: Text(l10n.serverDetailTitle),
-        actions: [
-          ServerSwitcherAction(onChanged: () => serverProvider.load()),
-          IconButton(
-            tooltip: l10n.commonDelete,
-            icon: const Icon(Icons.delete_outline),
-            onPressed: () => _deleteServer(context, activeServer),
-          ),
-        ],
-      ),
-      body: ColoredBox(
-        color: scheme.surface,
-        child: ListView(
-          padding: AppDesignTokens.scrollPagePadding(context),
-          children: [
-            ServerDetailHeaderCard(
-              server: activeServer,
-              onRefresh: () => _refreshServer(context),
+    final config = _followCurrent
+        ? context.select((CurrentServerController c) => c.currentServer)
+        : context.select(
+            (ServerProvider p) =>
+                p.cardFor(widget.server.id)?.config ??
+                (p.hasDirectory ? null : widget.server),
+          );
+    final panel = PanelPresentations.entries[config?.panelType];
+    final title = context.l10n.serverDetailTitle;
+    return AdaptiveLayoutViewport(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(title),
+          actions: [
+            ServerSwitcherAction(
+              displayedServer: config,
+              onChanged: () async {
+                if (!_followCurrent) setState(() => _followCurrent = true);
+              },
             ),
-            const SizedBox(height: AppDesignTokens.spacingLg),
-            SectionEntryList(
-              title: l10n.shellPinnedModulesTitle,
-              description: l10n.shellPinnedModulesDescription,
-              action: TextButton.icon(
-                onPressed: () =>
-                    showMobilePinnedModulesCustomizerSheet(context),
-                icon: const Icon(Icons.tune),
-                label: Text(l10n.shellPinnedModulesCustomize),
+            if (config != null)
+              ServerActionsMenu(
+                onEdit: panel == null
+                    ? null
+                    : () => openServerForm(context, serverId: config.id),
+                onDelete: () async {
+                  final deleted = await confirmAndDeleteServer(context, config);
+                  if (deleted &&
+                      context.mounted &&
+                      ModalRoute.isCurrentOf(context) != false) {
+                    Navigator.pop(context);
+                  }
+                },
               ),
-              items: [
-                for (final module in pinnedController.pins)
-                  _buildClientModuleItem(context, module),
-              ],
-            ),
-            const SizedBox(height: AppDesignTokens.spacingLg),
-            SectionEntryList(
-              title: l10n.serverModulesTitle,
-              items: [
-                for (final module in kPinnableClientModules)
-                  if (!pinnedController.pins.contains(module))
-                    _buildClientModuleItem(context, module),
-              ],
-            ),
-            const SizedBox(height: AppDesignTokens.spacingLg),
-            SectionEntryList(
-              title: l10n.commonMore,
-              items: _buildServerModuleItems(context),
-            ),
           ],
         ),
+        body: config == null
+            ? NoServerSelectedState(moduleName: title)
+            : _ServerDetailBody(
+                key: ValueKey((config.id, config.revision)),
+                config: config,
+                isCurrent: config.id == current,
+                panel: panel,
+              ),
       ),
     );
   }
+}
 
-  Future<void> _refreshServer(BuildContext context) async {
-    final l10n = context.l10n;
+class _ServerDetailBody extends StatefulWidget {
+  const _ServerDetailBody({
+    super.key,
+    required this.config,
+    required this.isCurrent,
+    required this.panel,
+  });
+
+  final ApiConfig config;
+  final bool isCurrent;
+  final PanelPresentation? panel;
+
+  @override
+  State<_ServerDetailBody> createState() => _ServerDetailBodyState();
+}
+
+class _ServerDetailBodyState extends State<_ServerDetailBody> {
+  bool _visible = false;
+  final _refreshing = ValueNotifier(false);
+  Future<Map<String, PanelAccess>>? _access;
+
+  Future<Map<String, PanelAccess>>? _readCapabilities() =>
+      widget.panel?.needsCapabilities == true
+      ? context.read<ServerProvider>().capabilitiesFor(widget.config.id)
+      : null;
+
+  bool get _canShowFeedback {
+    if (!_visible || ModalRoute.isCurrentOf(context) == false) {
+      return false;
+    }
+    if (widget.isCurrent &&
+        context.read<CurrentServerController>().currentServerId !=
+            widget.config.id) {
+      return false;
+    }
+    final card = context.read<ServerProvider>().cardFor(widget.config.id);
+    return card != null && card.config.revision == widget.config.revision;
+  }
+
+  @override
+  void dispose() {
+    _refreshing.dispose();
+    super.dispose();
+  }
+
+  Future<void> _refresh() async {
+    if (_refreshing.value) return;
     final provider = context.read<ServerProvider>();
-    await provider.load();
-    await provider.loadMetrics();
-    if (!context.mounted) return;
-    SnackBarUtils.showSuccess(context, l10n.commonRefreshSuccess);
-  }
-
-  SectionEntryItem _buildClientModuleItem(
-    BuildContext context,
-    ClientModule module,
-  ) {
-    return SectionEntryItem(
-      title: module.label(context.l10n),
-      icon: module.icon,
-      onTap: () => _openRoute(context, _routeForClientModule(module)),
-    );
-  }
-
-  List<SectionEntryItem> _buildServerModuleItems(BuildContext context) {
-    final l10n = context.l10n;
-    return [
-      SectionEntryItem(
-        title: l10n.operationsCenterServerEntryTitle,
-        icon: Icons.space_dashboard_outlined,
-        subtitle: l10n.operationsCenterServerEntrySubtitle,
-        onTap: () => _openRoute(context, AppRoutes.operations),
-      ),
-      SectionEntryItem(
-        title: l10n.serverModuleDatabases,
-        icon: Icons.storage_outlined,
-        onTap: () => _openRoute(context, AppRoutes.databases),
-      ),
-      SectionEntryItem(
-        title: l10n.alertPageTitle,
-        icon: Icons.notifications_active_outlined,
-        onTap: () => _openRoute(context, AppRoutes.alert),
-      ),
-      SectionEntryItem(
-        title: l10n.serverModuleFirewall,
-        icon: Icons.shield_outlined,
-        onTap: () => _openRoute(context, AppRoutes.firewall),
-      ),
-      SectionEntryItem(
-        title: l10n.serverModuleTerminal,
-        icon: Icons.terminal_outlined,
-        onTap: () => _openRoute(context, AppRoutes.terminal),
-      ),
-      SectionEntryItem(
-        title: l10n.serverModuleMonitoring,
-        icon: Icons.monitor_heart_outlined,
-        onTap: () => _openRoute(context, AppRoutes.monitoring),
-      ),
-      SectionEntryItem(
-        title: l10n.openrestyPageTitle,
-        icon: Icons.tune_outlined,
-        onTap: () => _openRoute(context, AppRoutes.openrestyCenter),
-      ),
-      SectionEntryItem(
-        title: l10n.serverModuleSystemSettings,
-        icon: Icons.settings_applications_outlined,
-        onTap: () => _openRoute(context, AppRoutes.systemSettings),
-      ),
-    ];
-  }
-
-  String _routeForClientModule(ClientModule module) {
-    switch (module) {
-      case ClientModule.files:
-        return AppRoutes.files;
-      case ClientModule.containers:
-        return AppRoutes.containers;
-      case ClientModule.apps:
-        return AppRoutes.apps;
-      case ClientModule.websites:
-        return AppRoutes.websites;
-      case ClientModule.ai:
-        return AppRoutes.ai;
-      case ClientModule.vm:
-        return AppRoutes.vm;
-      case ClientModule.verification:
-        return AppRoutes.securityVerification;
-      case ClientModule.servers:
-        return AppRoutes.server;
-      case ClientModule.settings:
-        return AppRoutes.settings;
-    }
-  }
-
-  void _openRoute(BuildContext context, String route) {
-    openRouteRespectingShell(context, route);
-  }
-
-  Future<void> _deleteServer(
-    BuildContext context,
-    ServerCardViewModel target,
-  ) async {
-    final l10n = context.l10n;
-    final confirmed = await ConfirmActionSheetWidget.show(
-      context,
-      title: l10n.serverDeleteConfirmTitle,
-      message: l10n.serverDeleteConfirmMessage(target.config.name),
-      confirmLabel: l10n.commonDelete,
-      isDestructive: true,
-    );
-    if (!confirmed || !context.mounted) {
-      return;
-    }
-
-    final serverProvider = context.read<ServerProvider>();
-    final currentServerController = context.read<CurrentServerController>();
-    final navigator = Navigator.of(context);
-    final successMessage = l10n.serverDeleteSuccess(target.config.name);
-
+    final target = widget.config;
+    _refreshing.value = true;
     try {
-      // Close the page first to avoid widget tree issues during deletion
-      navigator.pop();
-
-      await serverProvider.delete(target.config.id);
-      await currentServerController.refresh();
-
-      if (!context.mounted) {
-        return;
+      final access = _readCapabilities();
+      if (access != null) setState(() => _access = access);
+      await Future.wait([
+        provider.loadMetricsFor(target.id),
+        if (access != null) access.then<void>((_) {}),
+      ]);
+      if (!mounted || !_canShowFeedback) return;
+      final card = provider.cardFor(target.id);
+      if (card?.metrics.isReachable == false) {
+        SnackBarUtils.showError(context, context.l10n.serverUnreachable);
+      } else {
+        SnackBarUtils.showSuccess(context, context.l10n.commonRefreshSuccess);
       }
-      SnackBarUtils.showSuccess(context, successMessage);
     } catch (error) {
-      if (!context.mounted) {
-        return;
+      if (mounted && _canShowFeedback) {
+        SnackBarUtils.showError(
+          context,
+          ErrorMessageUtils.userFacingMessage(error),
+        );
       }
-      SnackBarUtils.showError(context, l10n.serverDeleteFailed(error.toString(),
+    } finally {
+      if (mounted) _refreshing.value = false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final config = widget.config;
+    final provider = context.select((ServerProvider p) => p);
+    final header = Selector<ServerProvider, ServerCardViewModel?>(
+      selector: (_, state) => state.cardFor(config.id),
+      builder: (context, card, _) => ValueListenableBuilder<bool>(
+        valueListenable: _refreshing,
+        builder: (context, busy, _) => ServerDetailHeaderCard(
+          server: card != null && card.config.revision == config.revision
+              ? card
+              : ServerCardViewModel(
+                  config: config,
+                  isCurrent: widget.isCurrent,
+                  metrics: const ServerMetricsSnapshot(),
+                ),
+          onRefresh: busy || widget.panel == null ? null : _refresh,
         ),
+      ),
+    );
+    final modules = _buildModules(context);
+    final spec = AdaptiveLayoutSpec.of(context);
+    return PageVisibilityListener(
+      key: ObjectKey(provider),
+      onChanged: (visible) {
+        _visible = visible;
+        if (widget.panel != null) {
+          provider.setPageVisible(this, visible, serverId: config.id);
+        }
+        if (visible &&
+            widget.panel?.needsCapabilities == true &&
+            _access == null) {
+          setState(() => _access = _readCapabilities());
+        }
+      },
+      child: SingleChildScrollView(
+        padding: spec.pagePadding.copyWith(
+          bottom:
+              spec.pagePadding.bottom + MediaQuery.paddingOf(context).bottom,
+        ),
+        child: AdaptiveWidthContainer(
+          maxWidth: spec.contentMaxWidth,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              const gap = AppDesignTokens.spacingLg;
+              if (constraints.maxWidth >= 840) {
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(flex: 2, child: header),
+                    const SizedBox(width: gap),
+                    Expanded(flex: 3, child: modules),
+                  ],
+                );
+              }
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  header,
+                  const SizedBox(height: gap),
+                  modules,
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModules(BuildContext context) {
+    final panel = widget.panel;
+    if (panel == null) {
+      return ModuleErrorStateWidget(
+        message: context.l10n.serverPanelUnavailable(widget.config.panelType),
       );
     }
+    if (!panel.needsCapabilities) {
+      return panel.buildModules(context, widget.config, const {});
+    }
+    return FutureBuilder<Map<String, PanelAccess>>(
+      future: _access,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return ModuleErrorStateWidget(
+            message: ErrorMessageUtils.userFacingMessage(snapshot.error!),
+            onRetry: () => setState(() => _access = _readCapabilities()),
+          );
+        }
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return panel.buildModules(context, widget.config, snapshot.requireData);
+      },
+    );
   }
 }

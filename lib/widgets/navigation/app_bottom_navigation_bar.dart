@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
+import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/theme/ui_render_policy.dart';
+import 'package:onepanel_client/widgets/navigation/app_navigation_icon.dart';
 import 'package:onepanel_client/widgets/navigation/glass_chrome_settings.dart';
 
 class AppNavigationBarItem {
@@ -116,7 +118,9 @@ class AppBottomNavigationBar extends StatelessWidget {
     return NavigationBar(
       selectedIndex: selectedIndex,
       onDestinationSelected: onTap,
-      animationDuration: const Duration(milliseconds: 400),
+      animationDuration: MediaQuery.disableAnimationsOf(context)
+          ? Duration.zero
+          : AppDesignTokens.motionNormal,
       height: overGlass ? _glassBarHeight : null,
       backgroundColor: overGlass ? Colors.transparent : null,
       elevation: overGlass ? 0 : null,
@@ -149,18 +153,14 @@ class AppBottomNavigationBar extends StatelessWidget {
     final item = items[index];
     final iconColor = item.enabled ? null : disabledColor;
     final destination = NavigationDestination(
-      icon: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
-        transitionBuilder: _animateIcon,
+      icon: AppNavigationIcon(
         child: Icon(
           item.icon,
           key: ValueKey('${index}_unselected'),
           color: iconColor,
         ),
       ),
-      selectedIcon: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
-        transitionBuilder: _animateIcon,
+      selectedIcon: AppNavigationIcon(
         child: Icon(
           item.selectedIcon,
           key: ValueKey('${index}_selected'),
@@ -179,12 +179,5 @@ class AppBottomNavigationBar extends StatelessWidget {
             child: destination,
           )
         : destination;
-  }
-
-  static Widget _animateIcon(Widget child, Animation<double> animation) {
-    return ScaleTransition(
-      scale: animation,
-      child: FadeTransition(opacity: animation, child: child),
-    );
   }
 }

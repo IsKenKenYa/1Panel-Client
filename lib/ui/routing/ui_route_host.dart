@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
+import 'package:onepanel_client/features/shell/app_shell_page.dart';
 
 import '../desktop/common/app/desktop_shell_page.dart';
 import '../desktop/macos/app/macos_shell_content_page.dart';
 import '../desktop/windows/app/windows_shell_content_page.dart';
-import '../mobile/app/mobile_shell_page.dart';
 import 'ui_target.dart';
-import 'ui_target_resolver.dart';
 
 /// Route host that resolves the current UI target (platform + form factor)
 /// and builds the correct page implementation for a semantic route name.
@@ -29,14 +29,14 @@ class UiRouteHost extends StatelessWidget {
 
     // Start with a minimal mapping: shell routes only.
     if (routeName == '/home') {
-      return _buildHome(context);
+      return AdaptiveLayoutViewport(child: Builder(builder: _buildHome));
     }
 
     return _UiNotFoundPage(routeName: routeName);
   }
 
   Widget _buildHome(BuildContext context) {
-    final target = debugTargetOverride ?? UiTargetResolver.resolve(context);
+    final target = debugTargetOverride ?? AdaptiveLayoutSpec.of(context).target;
     final initialIndex = _readInitialIndex(settings.arguments);
     final initialModuleId = _readInitialModuleId(settings.arguments);
     final initialEmbeddedRouteName =
@@ -44,7 +44,7 @@ class UiRouteHost extends StatelessWidget {
     final initialEmbeddedRouteArguments =
         _readInitialEmbeddedRouteArguments(settings.arguments);
 
-    if (target.isDesktop) {
+    if (target.usesDesktopShell) {
       if (target.platformKind == UiPlatformKind.desktopMacos) {
         return MacosShellContentPage(
           initialIndex: initialIndex,
@@ -61,6 +61,7 @@ class UiRouteHost extends StatelessWidget {
         );
       }
       return DesktopShellPage(
+        useWebNavigation: target.platformKind == UiPlatformKind.web,
         initialIndex: initialIndex,
         initialModuleId: initialModuleId,
         initialEmbeddedRouteName: initialEmbeddedRouteName,
@@ -68,7 +69,7 @@ class UiRouteHost extends StatelessWidget {
       );
     }
 
-    return MobileShellPage(
+    return AppShellPage(
       initialIndex: initialIndex,
       initialModuleId: initialModuleId,
       tabletKind: target.tabletKind,

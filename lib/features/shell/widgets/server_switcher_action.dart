@@ -1,149 +1,122 @@
+import 'dart:async';
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/config/app_router.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
+import 'package:onepanel_client/core/utils/error_message_utils.dart';
+import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
+import 'package:onepanel_client/features/shell/models/client_module.dart';
 
 class ServerSwitcherAction extends StatelessWidget {
   const ServerSwitcherAction({
     super.key,
     this.onChanged,
+    this.displayedServer,
   });
 
   final Future<void> Function()? onChanged;
+  final ApiConfig? displayedServer;
+
+  static Future<void> openModule(
+    BuildContext context,
+    ClientModule module,
+    FutureOr<void> Function(ClientModule) onOpen,
+  ) async {
+    final server = context.read<CurrentServerController>().currentServer;
+    if (module.requiresServer && server == null) {
+      await showServerPicker(context);
+      return;
+    }
+    if (module.supportsPanel(server?.panelType)) await onOpen(module);
+  }
 
   static Future<void> showServerPicker(
     BuildContext context, {
     Future<void> Function()? onChanged,
+    String? displayedServerId,
   }) async {
-    final controller = context.read<CurrentServerController>();
-    if (!controller.isLoading) {
-      await controller.refresh();
-    }
-    if (!context.mounted) return;
-
-    final width = MediaQuery.sizeOf(context).width;
-    if (width >= 600) {
-      await _showServerSheet(context, onChanged: onChanged);
+    try {
+      if (!await _selectServer(context, displayedServerId)) return;
+    } catch (error) {
+      if (context.mounted) {
+        SnackBarUtils.showError(
+            context, ErrorMessageUtils.userFacingMessage(error));
+      }
       return;
     }
-    await _showServerSheet(context, onChanged: onChanged);
+    if (context.mounted) await onChanged?.call();
   }
 
-  static Future<void> _showServerSheet(
-    BuildContext context, {
-    Future<void> Function()? onChanged,
-  }) async {
+  static Future<bool> _selectServer(
+      BuildContext context, String? displayedServerId) async {
     final controller = context.read<CurrentServerController>();
-    final l10n = context.l10n;
+    final route = ModalRoute.of(context);
+    await controller.refresh();
+    if (!context.mounted || route?.isCurrent == false) return false;
 
-    await showModalBottomSheet<void>(
+    final paneWidth = AdaptiveLayoutSpec.of(context).width;
+    final anchor = context.findRenderObject();
+    final selectedId = await showModalBottomSheet<String>(
       context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
       showDragHandle: true,
-      builder: (sheetContext) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.serverActionSwitch,
-                  style: Theme.of(sheetContext).textTheme.titleLarge,
-                ),
-                const SizedBox(height: 8),
-                if (controller.servers.isEmpty)
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(l10n.serverListEmptyTitle),
-                    subtitle: Text(l10n.serverListEmptyDesc),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () {
-                      Navigator.pop(sheetContext);
-                      openRouteRespectingShell(
-                        context,
-                        AppRoutes.server,
-                      );
-                    },
-                  )
-                else
-                  Flexible(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: controller.servers.length,
-                      itemBuilder: (itemContext, index) {
-                        final server = controller.servers[index];
-                        final selected =
-                            server.id == controller.currentServerId;
-                        return ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: const Icon(Icons.dns_outlined),
-                          title: Text(server.name),
-                          subtitle: Text(server.url,
-                              maxLines: 1, overflow: TextOverflow.ellipsis),
-                          trailing: selected
-                              ? Icon(
-                                  Icons.check,
-                                  color:
-                                      Theme.of(itemContext).colorScheme.primary,
-                                )
-                              : null,
-                          selected: selected,
-                          onTap: () async {
-                            Navigator.pop(sheetContext);
-                            await controller.selectServer(server.id);
-                            if (onChanged != null) {
-                              await onChanged();
-                            }
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                const SizedBox(height: 8),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton.icon(
-                    onPressed: () {
-                      Navigator.pop(sheetContext);
-                      openRouteRespectingShell(
-                        context,
-                        AppRoutes.server,
-                      );
-                    },
-                    icon: const Icon(Icons.settings_outlined),
-                    label: Text(l10n.serverPageTitle),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+      constraints: BoxConstraints(maxWidth: math.min(640.0, paneWidth)),
+      anchorPoint: anchor is RenderBox && anchor.hasSize
+          ? anchor.localToGlobal(anchor.size.center(Offset.zero))
+          : null,
+      builder: (sheetContext) => ListenableBuilder(
+        listenable: controller,
+        builder: (_, child) => ServerPickerSheet(
+          servers: controller.servers,
+          selectedId: displayedServerId ?? controller.currentServerId,
+          isLoading: controller.isLoading,
+          onSelect: (id) => Navigator.pop(sheetContext, id),
+          onManage: () {
+            Navigator.pop(sheetContext);
+            if (context.mounted) {
+              openRouteRespectingShell(context, AppRoutes.server);
+            }
+          },
+        ),
+      ),
     );
+    if (selectedId == null) return false;
+    final selectionChanged = selectedId != controller.currentServerId ||
+        (displayedServerId != null && displayedServerId != selectedId);
+    await controller.selectServer(selectedId);
+    return selectionChanged && controller.currentServerId == selectedId;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CurrentServerController>(
-      builder: (context, controller, _) {
+    void open() => showServerPicker(context,
+        onChanged: onChanged, displayedServerId: displayedServer?.id);
+    return Selector<CurrentServerController, String?>(
+      selector: (_, controller) =>
+          displayedServer?.name ?? controller.currentServer?.name,
+      builder: (context, name, _) {
         final l10n = context.l10n;
-        final server = controller.currentServer;
-        final width = MediaQuery.sizeOf(context).width;
-        final color = server == null
+        final width = AdaptiveLayoutSpec.of(context).width;
+        final color = name == null
             ? Theme.of(context).colorScheme.error
             : Theme.of(context).colorScheme.onSurfaceVariant;
 
         if (width >= 768) {
           return TextButton.icon(
-            onPressed: () => showServerPicker(context, onChanged: onChanged),
+            onPressed: open,
             icon: Icon(Icons.dns_outlined, color: color),
             label: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 160),
               child: Text(
-                server?.name ?? l10n.serverActionSwitch,
+                name ?? l10n.serverActionSwitch,
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -151,11 +124,114 @@ class ServerSwitcherAction extends StatelessWidget {
         }
 
         return IconButton(
-          onPressed: () => showServerPicker(context, onChanged: onChanged),
-          tooltip: server?.name ?? l10n.serverActionSwitch,
+          onPressed: open,
+          tooltip: name ?? l10n.serverActionSwitch,
           icon: Icon(Icons.dns_outlined, color: color),
         );
       },
+    );
+  }
+}
+
+/// 展示当前服务器、可选择的连接和服务器管理入口。
+class ServerPickerSheet extends StatelessWidget {
+  const ServerPickerSheet({
+    super.key,
+    required this.servers,
+    required this.selectedId,
+    required this.isLoading,
+    required this.onSelect,
+    required this.onManage,
+  });
+
+  final List<ApiConfig> servers;
+  final String? selectedId;
+  final bool isLoading;
+  final ValueChanged<String> onSelect;
+  final VoidCallback onManage;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final titleStyle = Theme.of(context).textTheme.titleLarge;
+    final manage = Align(
+      alignment: AlignmentDirectional.centerEnd,
+      child: TextButton.icon(
+        onPressed: onManage,
+        icon: const Icon(Icons.settings_outlined),
+        label: Text(l10n.serverPageTitle),
+      ),
+    );
+    return SafeArea(
+      top: false,
+      child: LayoutBuilder(builder: (context, constraints) {
+        final titleSize =
+            MediaQuery.textScalerOf(context).scale(titleStyle?.fontSize ?? 22);
+        final pinManage = constraints.maxHeight >=
+            3 * kMinInteractiveDimension + 2 * titleSize;
+        final list = ListView.builder(
+          primary: false,
+          shrinkWrap: true,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          itemCount: 1 + (servers.isEmpty ? 1 : servers.length),
+          itemBuilder: (context, index) {
+            if (index == 0) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n.serverActionSwitch, style: titleStyle),
+                  const SizedBox(height: 8),
+                  if (!pinManage) manage,
+                ],
+              );
+            }
+            if (servers.isEmpty) {
+              if (isLoading) return const LinearProgressIndicator();
+              return ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(l10n.serverListEmptyTitle),
+                subtitle: Text(l10n.serverListEmptyDesc),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: onManage,
+              );
+            }
+            final server = servers[index - 1];
+            final selected = server.id == selectedId;
+            return ListTile(
+              key: ValueKey(server.id),
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.dns_outlined),
+              title: Text(
+                server.name,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              subtitle: Text(
+                server.url,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              trailing: selected
+                  ? Icon(Icons.check,
+                      color: Theme.of(context).colorScheme.primary)
+                  : null,
+              selected: selected,
+              onTap: () => onSelect(server.id),
+            );
+          },
+        );
+        if (!pinManage) return list;
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(child: list),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: manage,
+            ),
+          ],
+        );
+      }),
     );
   }
 }

@@ -98,6 +98,36 @@ void main() {
     final detail = find.byType(LanguageSettingsPage);
     expect(detail, findsOneWidget);
 
+    tester.view.physicalSize = const Size(760, 420);
+    await tester.pumpAndSettle();
+    expect(tester.widget<NavigationRail>(find.byType(NavigationRail)).extended,
+        isFalse);
+    expect(detail, findsOneWidget);
+
+    tester.view.physicalSize = const Size(390, 520);
+    await tester.pumpAndSettle();
+    final toolbar = find.byType(DesktopTopToolArea);
+    final menu = find.descendant(of: toolbar, matching: find.byIcon(Icons.menu));
+    await tester.tap(menu);
+    await tester.pumpAndSettle();
+    expect(find.byType(Drawer), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(Drawer),
+        matching: find.byType(DesktopSidebar),
+      ),
+      findsOneWidget,
+    );
+    final drawerSettings = find.descendant(
+      of: find.byType(Drawer),
+      matching: find.text(settings.settingsPageTitle),
+    );
+    await tester.ensureVisible(drawerSettings);
+    await tester.tap(drawerSettings);
+    await tester.pumpAndSettle();
+    expect(tester.state(shell), same(originalShell));
+    expect(detail, findsOneWidget);
+
     openRouteRespectingShell<void>(tester.element(detail), AppRoutes.settings);
     await tester.pumpAndSettle();
 

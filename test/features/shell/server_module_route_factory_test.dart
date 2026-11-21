@@ -9,6 +9,7 @@ import 'package:onepanel_client/features/backups/providers/backup_accounts_provi
 import 'package:onepanel_client/features/commands/providers/commands_provider.dart';
 import 'package:onepanel_client/features/cronjobs/providers/cronjobs_provider.dart';
 import 'package:onepanel_client/features/databases/databases_page.dart';
+import 'package:onepanel_client/features/dashboard/dashboard_page.dart';
 import 'package:onepanel_client/features/firewall/firewall_page.dart';
 import 'package:onepanel_client/features/group/providers/group_center_provider.dart';
 import 'package:onepanel_client/features/host_assets/providers/host_assets_provider.dart';
@@ -20,14 +21,18 @@ import 'package:onepanel_client/features/runtimes/providers/runtimes_provider.da
 import 'package:onepanel_client/features/script_library/providers/script_library_provider.dart';
 import 'package:onepanel_client/features/security/security_verification_page.dart';
 import 'package:onepanel_client/features/server/server_detail_page.dart';
-import 'package:onepanel_client/features/server/server_models.dart';
-import 'package:onepanel_client/features/settings/system_settings_page.dart';
+import 'package:onepanel_client/features/settings/about_page.dart';
+import 'package:onepanel_client/features/settings/app_lock_settings_page.dart';
+import 'package:onepanel_client/features/settings/screens/theme_settings_page.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
 import 'package:onepanel_client/features/shell/shell_navigation.dart';
+import 'package:onepanel_client/features/shell/widgets/no_server_selected_state.dart';
 import 'package:onepanel_client/features/ssh/providers/ssh_settings_provider.dart';
 import 'package:onepanel_client/features/terminal/terminal_page.dart';
 import 'package:onepanel_client/features/toolbox/pages/toolbox_center_page.dart';
 import 'package:onepanel_client/features/websites/websites_page.dart';
+import 'package:onepanel_client/l10n/generated/app_localizations.dart';
+import 'package:onepanel_client/pages/settings/cache_settings_page.dart';
 import 'package:onepanel_client/ui/routing/ui_route_host.dart';
 import 'package:provider/provider.dart';
 
@@ -62,6 +67,7 @@ void main() {
     }
 
     _verifyServerSubpages({
+      AppRoutes.dashboard: isA<DashboardPage>(),
       AppRoutes.operations: isA<OperationsCenterPage>(),
       AppRoutes.databases: isA<DatabasesPage>(),
       AppRoutes.firewall: isA<FirewallPage>(),
@@ -70,28 +76,46 @@ void main() {
       AppRoutes.openrestyCenter: isA<OpenRestyPage>(),
     });
 
-    testWidgets('System settings belongs to the settings module',
-        (tester) async {
-      await _verifyRoute(
-        tester,
-        name: AppRoutes.systemSettings,
-        module: ClientModule.settings,
-        embedded: true,
-        destination: isA<SystemSettingsPage>(),
-      );
-    });
+    for (final route in AppRoutes.panelSettings) {
+      testWidgets('$route requires a connection in the servers module',
+          (tester) async {
+        expect(AppRoutes.shared, isNot(contains(route)));
+        await _verifyRoute(
+          tester,
+          name: route,
+          module: ClientModule.servers,
+          embedded: true,
+          destination: isA<Scaffold>()
+              .having((page) => page.body, 'body', isA<NoServerSelectedState>()),
+        );
+      });
+    }
+
+    for (final (route, page) in [
+      (AppRoutes.settingsTheme, isA<ThemeSettingsPage>()),
+      (AppRoutes.settingsAppLock, isA<AppLockSettingsPage>()),
+      (AppRoutes.settingsStorage, isA<CacheSettingsPage>()),
+      (AppRoutes.settingsAbout, isA<AboutPage>()),
+    ]) {
+      testWidgets('$route opens in settings without a server', (tester) async {
+        expect(AppRoutes.shared, contains(route));
+        await _verifyRoute(
+          tester,
+          name: route,
+          module: ClientModule.settings,
+          embedded: true,
+          destination: page,
+        );
+      });
+    }
 
     testWidgets('ServerDetailPage receives the selected server',
         (tester) async {
-      final server = ServerCardViewModel(
-        config: ApiConfig(
-          id: 'test-server',
-          name: 'Panel',
-          url: 'https://panel.example.invalid',
-          apiKey: '',
-        ),
-        isCurrent: true,
-        metrics: const ServerMetricsSnapshot(),
+      final server = ApiConfig(
+        id: 'test-server',
+        name: 'Panel',
+        url: 'https://panel.example.invalid',
+        apiKey: '',
       );
 
       await _verifyRoute(
@@ -106,11 +130,10 @@ void main() {
     });
 
     testWidgets('ServerDetailPage requires a server argument', (tester) async {
-      final context = await _routeContext(tester);
       final route = AppRouter.generateEmbeddedRoute(
         const RouteSettings(name: AppRoutes.serverDetail),
       ) as MaterialPageRoute<dynamic>;
-      expect(route.builder(context), isA<NotFoundPage>());
+      expect(await _buildPage(tester, route), isA<NotFoundPage>());
     });
   });
 
@@ -153,7 +176,6 @@ Future<void> _verifyRoute(
   required Matcher destination,
   Object? arguments,
 }) async {
-  final context = await _routeContext(tester);
   final settings = RouteSettings(name: name, arguments: arguments);
   final target = shellRouteTargetForRoute(name);
   expect(target?.module, module);
@@ -161,7 +183,7 @@ Future<void> _verifyRoute(
 
   final route = AppRouter.generateRoute(settings) as MaterialPageRoute<dynamic>;
   expect(route.settings, same(settings));
-  expect(route.builder(context), destination);
+  expect(await _buildPage(tester, route), destination);
 
   try {
     for (final platform in [
@@ -170,7 +192,7 @@ Future<void> _verifyRoute(
       TargetPlatform.linux,
     ]) {
       debugDefaultTargetPlatformOverride = platform;
-      final child = route.builder(context);
+      final child = await _buildPage(tester, route);
       expect(child, isA<UiRouteHost>(), reason: platform.name);
       final host = child as UiRouteHost;
       expect(host.settings.name, AppRoutes.home);
@@ -185,7 +207,7 @@ Future<void> _verifyRoute(
       final innerRoute = AppRouter.generateEmbeddedRoute(settings)
           as MaterialPageRoute<dynamic>;
       expect(innerRoute.settings, same(settings));
-      expect(innerRoute.builder(context), destination);
+      expect(await _buildPage(tester, innerRoute), destination);
     }
   } finally {
     debugDefaultTargetPlatformOverride = null;
@@ -200,10 +222,20 @@ Matcher _mobileShell(ClientModule module) => isA<UiRouteHost>()
       module.storageId,
     );
 
-Future<BuildContext> _routeContext(WidgetTester tester) async {
-  const routeContextKey = Key('route-context');
+Future<Widget> _buildPage(
+  WidgetTester tester,
+  MaterialPageRoute<dynamic> route,
+) async {
+  late Widget page;
   await tester.pumpWidget(
-    const MaterialApp(home: SizedBox.shrink(key: routeContextKey)),
+    MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Builder(builder: (context) {
+        page = route.builder(context);
+        return const SizedBox.shrink();
+      }),
+    ),
   );
-  return tester.element(find.byKey(routeContextKey));
+  return page;
 }

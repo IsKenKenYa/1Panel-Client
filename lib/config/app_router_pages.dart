@@ -8,18 +8,24 @@ import 'package:onepanel_client/core/config/release_channel_config.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 import 'package:onepanel_client/core/services/onboarding_service.dart';
 import 'package:onepanel_client/core/services/startup/testing_channel_consent_service.dart';
+import 'package:onepanel_client/features/onboarding/onboarding_page.dart';
 import 'package:onepanel_client/features/security/app_lock_controller.dart';
 
 class SplashPage extends StatefulWidget {
-  const SplashPage({super.key});
+  const SplashPage({super.key, this.settingsDestination});
+
+  final String? settingsDestination;
 
   @override
   State<SplashPage> createState() => _SplashPageState();
 }
 
 class _SplashPageState extends State<SplashPage> {
+  String? _lockError;
+  bool _showOnboarding = false;
   final TestingChannelConsentService _consentService =
       TestingChannelConsentService();
 
@@ -38,34 +44,16 @@ class _SplashPageState extends State<SplashPage> {
       return;
     }
 
-    final onboardingService = OnboardingService();
-    final shouldShowOnboarding = await onboardingService.shouldShowOnboarding();
-
-    if (!mounted) {
-      return;
-    }
-
-    if (shouldShowOnboarding) {
-      Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
-      return;
-    }
-
-    final configs = await ApiConfigManager.getConfigs();
-    if (!mounted) {
-      return;
-    }
-
-    if (configs.isEmpty) {
-      Navigator.pushReplacementNamed(context, AppRoutes.serverConfig);
-      return;
-    }
-
     final appLockController = context.read<AppLockController?>();
     final appOpenUnlockReason = context.l10n.appLockUnlockReasonAppOpen;
     if (appLockController != null) {
       if (!appLockController.isLoaded) {
         await appLockController.load();
         if (!mounted) {
+          return;
+        }
+        if (!appLockController.isLoaded) {
+          setState(() => _lockError = appLockController.lastError);
           return;
         }
       }
@@ -89,6 +77,7 @@ class _SplashPageState extends State<SplashPage> {
         );
 
         if (retry != true) {
+          if (mounted) setState(() => _lockError = appLockController.lastError ?? appOpenUnlockReason);
           return;
         }
       }
@@ -98,7 +87,25 @@ class _SplashPageState extends State<SplashPage> {
       return;
     }
 
-    Navigator.pushReplacementNamed(context, AppRoutes.home);
+    final destination = widget.settingsDestination;
+    if (await OnboardingService().shouldShowOnboarding()) {
+      if (!mounted) return;
+      if (destination == null) {
+        Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
+      } else {
+        setState(() => _showOnboarding = true);
+      }
+      return;
+    }
+    if (!mounted) return;
+    if (destination != null) {
+      Navigator.pushReplacementNamed(context, destination);
+      return;
+    }
+    final configs = await ApiConfigManager.getServerMetadata();
+    if (mounted) {
+      Navigator.pushReplacementNamed(context, configs.isEmpty ? AppRoutes.serverConfig : AppRoutes.home);
+    }
   }
 
   Future<bool> _handleTestingChannelGate() async {
@@ -224,7 +231,18 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_showOnboarding) {
+      return OnboardingPage(settingsDestination: widget.settingsDestination);
+    }
     final l10n = context.l10n;
+    if (_lockError != null) {
+      return Scaffold(
+        body: ModuleErrorStateWidget(message: _lockError, onRetry: () {
+          setState(() => _lockError = null);
+          _bootstrap();
+        }),
+      );
+    }
     return Scaffold(
       body: Center(
         child: Column(

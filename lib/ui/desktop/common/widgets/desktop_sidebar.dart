@@ -1,8 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:glass/glass.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/core/theme/ui_render_policy.dart';
+import 'package:onepanel_client/core/utils/platform_utils.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
+import 'package:onepanel_client/features/shell/widgets/adaptive_shell_navigation_widget.dart';
+
+enum DesktopNavigationPlacement {
+  drawer,
+  rail,
+  sidebar;
+
+  static DesktopNavigationPlacement of(BuildContext context) {
+    final spec = AdaptiveLayoutSpec.of(context);
+    if (spec.isPhone ||
+        PlatformUtils.inputDeviceKinds(context) == InputDeviceKind.touch) {
+      return drawer;
+    }
+    return spec.width < PlatformUtils.tabletWidthBreakpoint ? rail : sidebar;
+  }
+}
 
 class DesktopSidebar extends StatelessWidget {
   const DesktopSidebar({
@@ -11,6 +29,7 @@ class DesktopSidebar extends StatelessWidget {
     required this.selectedModule,
     required this.hasServer,
     required this.onSelect,
+    this.extended = true,
     this.width = 300,
     this.backgroundColor,
   });
@@ -19,6 +38,7 @@ class DesktopSidebar extends StatelessWidget {
   final ClientModule selectedModule;
   final bool hasServer;
   final ValueChanged<ClientModule> onSelect;
+  final bool extended;
   final double width;
   final Color? backgroundColor;
 
@@ -27,13 +47,12 @@ class DesktopSidebar extends StatelessWidget {
     final selectedIndex =
         modules.indexOf(selectedModule).clamp(0, modules.length - 1);
     final scheme = Theme.of(context).colorScheme;
-    final disabledColor = scheme.onSurfaceVariant.withValues(alpha: 0.42);
     final bgColor = backgroundColor ?? scheme.surface;
 
     return SafeArea(
       right: false,
       child: Container(
-        width: width,
+        width: extended ? width : null,
         decoration: BoxDecoration(
           border: Border(
             right: BorderSide(color: scheme.outlineVariant),
@@ -45,39 +64,30 @@ class DesktopSidebar extends StatelessWidget {
         child: Container(
           color: UIRenderPolicy.liquidGlassEnabled ? null : bgColor,
           child: NavigationRail(
-            extended: true,
+            extended: extended,
+            scrollable: true,
             backgroundColor: Colors.transparent,
             selectedIndex: selectedIndex,
-            onDestinationSelected: (index) => onSelect(modules[index]),
+            onDestinationSelected: (index) {
+              Scaffold.maybeOf(context)?.closeDrawer();
+              onSelect(modules[index]);
+            },
             labelType: NavigationRailLabelType.none,
             useIndicator: true,
             indicatorColor: scheme.primaryContainer,
             minExtendedWidth: width,
-            leading: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-              child: Text(
-                context.l10n.appName,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
+            leading: extended
+                ? Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                    child: Text(
+                      context.l10n.appName,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  )
+                : null,
+            destinations: shellRailDestinations(
+              context, modules, hasServer: hasServer,
             ),
-            destinations: [
-              for (final module in modules)
-                NavigationRailDestination(
-                  icon: Icon(
-                    module.icon,
-                    color: !module.requiresServer || hasServer
-                        ? null
-                        : disabledColor,
-                  ),
-                  selectedIcon: Icon(
-                    module.selectedIcon,
-                    color: !module.requiresServer || hasServer
-                        ? null
-                        : disabledColor,
-                  ),
-                  label: Text(module.label(context.l10n)),
-                ),
-            ],
           ),
         ),
       ).asGlass(

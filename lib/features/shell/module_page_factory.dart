@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/features/security/app_lock_gate.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
 import 'package:onepanel_client/features/shell/module_registry.dart';
 
@@ -11,12 +12,17 @@ Widget buildShellModulePage(
   BuildContext context, {
   required ClientModule module,
   required String? serverId,
+  String? serverRevision,
   bool useStableModuleKey = false,
 }) {
-  return ModuleRegistry.buildShellPage(
+  final page = ModuleRegistry.buildShellPage(
     context,
     module,
     serverId: serverId,
+    serverRevision: serverRevision,
     useStableModuleKey: useStableModuleKey,
   );
+  return module.pinnable
+      ? AppLockGate(target: module.storageId, child: page)
+      : page;
 }

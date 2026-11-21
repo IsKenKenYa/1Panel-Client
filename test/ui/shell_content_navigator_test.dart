@@ -311,7 +311,7 @@ class _NoopServerRepository extends ServerRepository {
       const <ServerCardViewModel>[];
 
   @override
-  Future<ServerMetricsSnapshot> loadServerMetrics(String serverId) async =>
+  Future<ServerMetricsSnapshot> loadMetricsForConfig(ApiConfig config) async =>
       const ServerMetricsSnapshot();
 
   @override

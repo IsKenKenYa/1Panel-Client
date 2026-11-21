@@ -3,12 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/features/server/server_models.dart';
 import 'package:onepanel_client/features/server/widgets/server_detail_header_card.dart';
+import 'package:onepanel_client/shared/widgets/metric_card.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 
 void main() {
   group('Server UI Optimization Tests', () {
-    testWidgets('ServerDetailHeaderCard displays metric icons',
-        (tester) async {
+    testWidgets('ServerDetailHeaderCard displays metric icons', (tester) async {
       final testServer = ServerCardViewModel(
         config: ApiConfig(
           id: 'test-1',
@@ -42,10 +42,11 @@ void main() {
       await tester.pumpAndSettle();
 
       // 验证指标图标存在
+      expect(find.byType(MetricOverviewGrid), findsOneWidget);
+      expect(find.byIcon(Icons.developer_board_outlined), findsOneWidget);
       expect(find.byIcon(Icons.memory_outlined), findsOneWidget);
       expect(find.byIcon(Icons.storage_outlined), findsOneWidget);
       expect(find.byIcon(Icons.speed_outlined), findsOneWidget);
-      expect(find.byIcon(Icons.sd_card_outlined), findsOneWidget);
 
       // 验证指标值显示
       expect(find.textContaining('10.5%'), findsOneWidget);

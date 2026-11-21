@@ -1,27 +1,19 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/platform/platform_capabilities.dart';
+import 'package:onepanel_client/core/utils/platform_utils.dart';
 
 import 'ui_target.dart';
 
 class UiTargetResolver {
   const UiTargetResolver._();
 
-  static const double _kTabletShortestSide = 600;
-  static const double _kDesktopMinWidth = 1024;
-
-  static UiTarget resolve(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
-    final shortestSide = size.shortestSide;
-    final width = size.width;
-    final capabilities = PlatformCapabilities.current();
-
+  static UiTarget resolve(BuildContext context, {double? width}) {
     return resolveForTest(
       isWeb: kIsWeb,
       platform: defaultTargetPlatform,
-      shortestSide: shortestSide,
-      width: width,
-      isOhos: capabilities.isOhos,
+      width: width ?? MediaQuery.sizeOf(context).width,
+      isOhos: PlatformCapabilities.current().isOhos,
     );
   }
 
@@ -29,105 +21,32 @@ class UiTargetResolver {
   static UiTarget resolveForTest({
     required bool isWeb,
     required TargetPlatform platform,
-    required double shortestSide,
     required double width,
     bool isOhos = false,
   }) {
-    if (isWeb) {
-      final formFactor = _resolveWebFormFactor(
-        shortestSide: shortestSide,
-        width: width,
-      );
-      return UiTarget(
-        platformKind: UiPlatformKind.web,
-        formFactor: formFactor,
-        tabletKind: formFactor == UiFormFactor.tablet
-            ? TabletKind.webTablet
-            : TabletKind.none,
-      );
-    }
-
-    switch (platform.name) {
-      case 'macOS':
-        return const UiTarget(
-          platformKind: UiPlatformKind.desktopMacos,
-          formFactor: UiFormFactor.desktop,
-        );
-      case 'windows':
-        return const UiTarget(
-          platformKind: UiPlatformKind.desktopWindows,
-          formFactor: UiFormFactor.desktop,
-        );
-      case 'linux':
-        return const UiTarget(
-          platformKind: UiPlatformKind.desktopLinux,
-          formFactor: UiFormFactor.desktop,
-        );
-      case 'iOS':
-        if (shortestSide >= _kTabletShortestSide) {
-          return const UiTarget(
-            platformKind: UiPlatformKind.mobile,
-            formFactor: UiFormFactor.tablet,
-            tabletKind: TabletKind.ipad,
-          );
-        }
-        return const UiTarget(
-          platformKind: UiPlatformKind.mobile,
-          formFactor: UiFormFactor.phone,
-        );
-      case 'android':
-        if (isOhos) {
-          if (shortestSide >= _kTabletShortestSide) {
-            return const UiTarget(
-              platformKind: UiPlatformKind.harmony,
-              formFactor: UiFormFactor.tablet,
-              tabletKind: TabletKind.harmonyPad,
-            );
-          }
-          return const UiTarget(
-            platformKind: UiPlatformKind.harmony,
-            formFactor: UiFormFactor.phone,
-          );
-        }
-        if (shortestSide >= _kTabletShortestSide) {
-          return const UiTarget(
-            platformKind: UiPlatformKind.mobile,
-            formFactor: UiFormFactor.tablet,
-            tabletKind: TabletKind.androidPad,
-          );
-        }
-        return const UiTarget(
-          platformKind: UiPlatformKind.mobile,
-          formFactor: UiFormFactor.phone,
-        );
-      case 'fuchsia':
-      case 'ohos':
-      default:
-        // Placeholder mapping for future HarmonyOS family support.
-        if (shortestSide >= _kTabletShortestSide) {
-          return const UiTarget(
-            platformKind: UiPlatformKind.harmony,
-            formFactor: UiFormFactor.tablet,
-            tabletKind: TabletKind.harmonyPad,
-          );
-        }
-        return const UiTarget(
-          platformKind: UiPlatformKind.harmony,
-          formFactor: UiFormFactor.phone,
-        );
-    }
-  }
-
-  static UiFormFactor _resolveWebFormFactor({
-    required double shortestSide,
-    required double width,
-  }) {
-    if (width >= _kDesktopMinWidth) {
-      return UiFormFactor.desktop;
-    }
-    if (shortestSide >= _kTabletShortestSide) {
-      return UiFormFactor.tablet;
-    }
-    return UiFormFactor.phone;
+    final (platformKind, tabletKind) = isWeb
+        ? (UiPlatformKind.web, TabletKind.webTablet)
+        : switch (platform.name) {
+            'macOS' => (UiPlatformKind.desktopMacos, TabletKind.none),
+            'windows' => (UiPlatformKind.desktopWindows, TabletKind.none),
+            'linux' => (UiPlatformKind.desktopLinux, TabletKind.none),
+            'iOS' => (UiPlatformKind.mobile, TabletKind.ipad),
+            'android' when !isOhos =>
+              (UiPlatformKind.mobile, TabletKind.androidPad),
+            _ => (UiPlatformKind.harmony, TabletKind.harmonyPad),
+          };
+    final formFactor = switch (width) {
+      < PlatformUtils.mobileWidthBreakpoint => UiFormFactor.phone,
+      >= PlatformUtils.tabletWidthBreakpoint
+          when platformKind != UiPlatformKind.mobile &&
+              platformKind != UiPlatformKind.harmony => UiFormFactor.desktop,
+      _ => UiFormFactor.tablet,
+    };
+    return UiTarget(
+      platformKind: platformKind,
+      formFactor: formFactor,
+      tabletKind:
+          formFactor == UiFormFactor.tablet ? tabletKind : TabletKind.none,
+    );
   }
 }

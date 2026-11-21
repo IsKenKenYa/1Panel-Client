@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/config/app_route_constants.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
 import 'package:onepanel_client/features/shell/widgets/no_server_selected_state.dart';
 import 'package:onepanel_client/ui/desktop/common/widgets/desktop_routed_module_host.dart';
@@ -25,12 +27,16 @@ class DesktopContentHost extends StatefulWidget {
     super.key,
     required this.module,
     required this.serverId,
+    this.serverRevision,
+    this.panelType,
     this.embeddedRoute,
     this.embeddedRouteArguments,
   });
 
   final ClientModule module;
   final String? serverId;
+  final String? serverRevision;
+  final String? panelType;
   final String? embeddedRoute;
   final Object? embeddedRouteArguments;
 
@@ -51,21 +57,24 @@ class DesktopContentHostState extends State<DesktopContentHost> {
   @override
   void didUpdateWidget(DesktopContentHost oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.serverId != widget.serverId) {
-      _visitedModules.updateAll((module, key) =>
-          module.requiresServer ? GlobalKey<ShellContentHostState>() : key);
+    _visitedModules.removeWhere((module, _) => !module.supportsPanel(widget.panelType));
+    if (oldWidget.serverId != widget.serverId ||
+        oldWidget.serverRevision != widget.serverRevision) {
+      _visitedModules.removeWhere((module, _) => module.requiresServer);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.embeddedRoute != null) {
-      return KeyedSubtree(
-        key: ValueKey('desktop-embedded-route:${widget.embeddedRoute}'),
-        child: DesktopRoutedModuleHost(
-          routeName: widget.embeddedRoute!,
-          routeArguments: widget.embeddedRouteArguments,
-        ),
+    return AdaptiveLayoutViewport(child: _buildContent(context));
+  }
+
+  Widget _buildContent(BuildContext context) {
+    final route = widget.embeddedRoute;
+    if (route != null && !AppRoutes.localSettings.contains(route)) {
+      return DesktopRoutedModuleHost(
+        routeName: route,
+        routeArguments: widget.embeddedRouteArguments,
       );
     }
 
@@ -84,13 +93,18 @@ class DesktopContentHostState extends State<DesktopContentHost> {
         for (final module in modules)
           HeroMode(
             enabled: module == widget.module,
-            child: ExcludeFocus(
-              excluding: module != widget.module,
-              child: ShellContentHost(
-                key: _visitedModules[module],
-                module: module,
-                serverId: widget.serverId,
-                active: module == widget.module,
+            child: TickerMode(
+              enabled: module == widget.module,
+              child: ExcludeFocus(
+                excluding: module != widget.module,
+                child: ShellContentHost(
+                  key: _visitedModules[module],
+                  module: module,
+                  serverId: widget.serverId,
+                  serverRevision: widget.serverRevision,
+                  active: module == widget.module,
+                  embeddedRoute: module == widget.module ? route : null,
+                ),
               ),
             ),
           ),

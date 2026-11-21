@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 
 const List<ClientModule> kPinnableClientModules = [
@@ -33,7 +34,29 @@ ClientModule? clientModuleFromId(String? id) {
   return null;
 }
 
+bool supportsOnePanelModules(String? panelType) =>
+    panelType == null || panelType == ApiConfig.onePanelType;
+
+ClientModule initialShellModule(int tabIndex, String? moduleId) {
+  const tabs = [
+    ClientModule.servers,
+    ClientModule.files,
+    ClientModule.containers,
+    ClientModule.settings,
+  ];
+  return clientModuleFromId(moduleId) ??
+      tabs[tabIndex.clamp(0, tabs.length - 1)];
+}
+
 extension ClientModuleX on ClientModule {
+  bool supportsPanel(String? panelType) =>
+      !requiresServer || supportsOnePanelModules(panelType);
+
+  ClientModule forServer(ApiConfig? server) =>
+      !requiresServer || server != null && supportsPanel(server.panelType)
+          ? this
+          : ClientModule.servers;
+
   String get storageId {
     switch (this) {
       case ClientModule.servers:
@@ -159,4 +182,21 @@ extension ClientModuleX on ClientModule {
         return l10n.serverActionSecurity;
     }
   }
+}
+
+List<ClientModule> shellModulesForPanel(
+  String? panelType,
+  Iterable<ClientModule> pins, {
+  bool compact = false,
+  ClientModule? activeModule,
+}) {
+  return [
+    ClientModule.servers,
+    ...{
+      ...pins,
+      if (!compact) ...kPinnableClientModules,
+      if (compact && activeModule != null && activeModule.pinnable) activeModule,
+    }.where((module) => module.supportsPanel(panelType)),
+    ClientModule.settings,
+  ];
 }

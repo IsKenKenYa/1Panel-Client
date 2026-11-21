@@ -1,21 +1,25 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:onepanel_client/core/network/browser_connection_policy.dart';
+import 'package:flutter/material.dart';
+import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/network/browser_connection_policy.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
-import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
-import 'package:onepanel_client/features/server/server_repository.dart';
+import 'package:onepanel_client/core/utils/snackbar_utils.dart';
+import 'package:onepanel_client/features/server/server_provider.dart';
 import 'package:onepanel_client/shared/widgets/forms/app_form_scaffold.dart';
 import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 import 'package:onepanel_client/shared/widgets/section_card.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanel_client/config/app_router.dart';
+import 'panels/panel_credential_fields.dart';
+import 'panels/panel_presentation.dart';
 import 'server_connection_service.dart';
 
-import '../../core/utils/snackbar_utils.dart';
 class ServerFormPage extends StatefulWidget {
-  const ServerFormPage({super.key});
+  const ServerFormPage({super.key, this.existing});
+
+  final ApiConfig? existing;
 
   @override
   State<ServerFormPage> createState() => _ServerFormPageState();
@@ -27,14 +31,62 @@ class _ServerFormPageState extends State<ServerFormPage> {
   final _urlController = TextEditingController();
   final _apiKeyController = TextEditingController();
   final _tokenValidityController = TextEditingController(text: '0');
-  final _repository = const ServerRepository();
   final _connectionService = ServerConnectionService();
+  late final _serverId =
+      widget.existing?.id ?? DateTime.now().microsecondsSinceEpoch.toString();
 
   bool _saving = false;
   bool _testing = false;
   bool _allowInsecureTls = false;
-  ServerConnectionResult? _testResult;
+  int _formVersion = 0;
   String? _confirmedHttpUrl;
+  String _panelType = ApiConfig.onePanelType;
+  final _additionalCredentials = <String, String>{};
+
+  @override
+  void initState() {
+    super.initState();
+    final original = widget.existing;
+    if (original == null) return;
+    _panelType = original.panelType;
+    _nameController.text = original.name;
+    _urlController.text = original.url;
+    _tokenValidityController.text = original.tokenValidity.toString();
+    _allowInsecureTls = original.allowInsecureTls;
+  }
+
+  ApiConfig? get _credentialSource {
+    final original = widget.existing;
+    return original != null &&
+            original.panelType == _panelType &&
+            original.url == _urlController.text.trim()
+        ? original
+        : null;
+  }
+
+  ApiConfig _readConfig() {
+    final original = widget.existing;
+    final source = _credentialSource;
+    final typedKey = _apiKeyController.text.trim();
+    return ApiConfig(
+      id: _serverId,
+      name: _nameController.text.trim(),
+      url: _urlController.text.trim(),
+      panelType: _panelType,
+      apiKey: typedKey.isNotEmpty ? typedKey : source?.apiKey ?? '',
+      additionalCredentials: {
+        ...?source?.additionalCredentials,
+        for (final field in _additionalCredentials.entries)
+          if (field.value.isNotEmpty) field.key: field.value,
+      },
+      tokenValidity: _panelType == ApiConfig.onePanelType
+          ? int.tryParse(_tokenValidityController.text.trim()) ?? 0
+          : original?.tokenValidity ?? 0,
+      allowInsecureTls: _allowInsecureTls,
+      isDefault: original?.isDefault ?? false,
+      lastUsed: original?.lastUsed,
+    );
+  }
 
   @override
   void dispose() {
@@ -47,7 +99,8 @@ class _ServerFormPageState extends State<ServerFormPage> {
 
   Future<bool> _confirmHttpConnection() async {
     final address = _urlController.text.trim();
-    if (!kIsWeb || Uri.tryParse(address)?.scheme != 'http' ||
+    if (!kIsWeb ||
+        Uri.tryParse(address)?.scheme != 'http' ||
         _confirmedHttpUrl == address) {
       return true;
     }
@@ -69,38 +122,32 @@ class _ServerFormPageState extends State<ServerFormPage> {
   }
 
   Future<void> _testConnection() async {
-    if (_urlController.text.trim().isEmpty ||
-        _apiKeyController.text.trim().isEmpty) {
-      SnackBarUtils.showSuccess(context, context.l10n.serverFormRequired);
-      return;
-    }
-    if (!_formKey.currentState!.validate()) return;
-    if (!await _confirmHttpConnection() || !mounted) return;
-
-    setState(() {
-      _testing = true;
-      _testResult = null;
-    });
+    if (_testing || _saving || !_formKey.currentState!.validate()) return;
+    final version = _formVersion;
+    final config = _readConfig();
+    setState(() => _testing = true);
 
     try {
-      final result = await _connectionService.testConnection(
-        serverUrl: _urlController.text.trim(),
-        apiKey: _apiKeyController.text.trim(),
-        allowInsecureTls: _allowInsecureTls,
-      );
+      if (!await _confirmHttpConnection() || !mounted || version != _formVersion) {
+        return;
+      }
+      final result = await _connectionService.testConfig(config);
 
-      if (!mounted) return;
-
-      setState(() {
-        _testResult = result;
-      });
+      if (!mounted || version != _formVersion) return;
 
       if (result.success) {
-        SnackBarUtils.showSuccess(context,
-            '${context.l10n.serverTestSuccess} (${result.responseTime?.inMilliseconds}ms)');
+        SnackBarUtils.showSuccess(context, [
+          context.l10n.serverTestSuccess,
+          if (result.operatingSystem != null) result.operatingSystem!,
+          if (result.responseTime != null) '${result.responseTime!.inMilliseconds} ms',
+        ].join(' · '));
       } else {
         SnackBarUtils.showError(context,
             '${context.l10n.serverTestFailed}: ${_connectionErrorMessage(result)}');
+      }
+    } catch (_) {
+      if (mounted && version == _formVersion) {
+        SnackBarUtils.showError(context, context.l10n.serverTestFailed);
       }
     } finally {
       if (mounted) {
@@ -112,30 +159,25 @@ class _ServerFormPageState extends State<ServerFormPage> {
   }
 
   Future<void> _save() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-    if (!await _confirmHttpConnection() || !mounted) return;
-
+    if (_saving || !_formKey.currentState!.validate()) return;
+    final version = ++_formVersion;
+    final config = _readConfig();
     final l10n = context.l10n;
-    final currentServerController = context.read<CurrentServerController>();
+    final servers = context.read<ServerProvider>();
     setState(() {
       _saving = true;
     });
 
     try {
-      final config = ApiConfig(
-        id: DateTime.now().microsecondsSinceEpoch.toString(),
-        name: _nameController.text.trim(),
-        url: _urlController.text.trim(),
-        apiKey: _apiKeyController.text.trim(),
-        tokenValidity: int.tryParse(_tokenValidityController.text.trim()) ?? 0,
-        allowInsecureTls: _allowInsecureTls,
-        isDefault: true,
-      );
-
-      await _repository.saveConfig(config);
-      await currentServerController.refresh();
+      if (!await _confirmHttpConnection() || !mounted || version != _formVersion) {
+        return;
+      }
+      final original = widget.existing;
+      if (original == null) {
+        await servers.save(config);
+      } else {
+        await servers.updateConfig(config, expected: original);
+      }
       if (!mounted) {
         return;
       }
@@ -151,7 +193,11 @@ class _ServerFormPageState extends State<ServerFormPage> {
         return;
       }
 
-      SnackBarUtils.showError(context, l10n.serverFormSaveFailed(e.toString()),
+      SnackBarUtils.showError(
+        context,
+        l10n.serverFormSaveFailed(
+          e is StateError ? e.message : l10n.serverFormStorageError,
+        ),
       );
     } finally {
       if (mounted) {
@@ -165,16 +211,25 @@ class _ServerFormPageState extends State<ServerFormPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final panels = PanelPresentations.entries;
+    final panel = panels[_panelType];
+    if (panel == null) {
+      return Scaffold(
+        appBar: AppBar(title: Text(l10n.serverFormEditTitle)),
+        body: ModuleErrorStateWidget(message: l10n.serverPanelUnavailable(_panelType)),
+      );
+    }
 
     return AppFormScaffold(
-      title: l10n.serverFormTitle,
+      title: widget.existing == null ? l10n.serverFormTitle : l10n.serverFormEditTitle,
       isSaving: _saving,
-      saveLabel: l10n.serverFormSaveConnect,
       onSave: _save,
       body: SingleChildScrollView(
         padding: AppDesignTokens.pagePadding,
         child: Form(
+          canPop: !_saving,
           key: _formKey,
+          onChanged: () => _formVersion++,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -183,7 +238,34 @@ class _ServerFormPageState extends State<ServerFormPage> {
                 title: l10n.serverFormBasicSectionTitle,
                 child: Column(
                   children: [
+                    if (panels.length > 1) ...[
+                      DropdownButtonFormField<String>(
+                        initialValue: _panelType,
+                        isExpanded: true,
+                        decoration: InputDecoration(labelText: l10n.serverPanelType),
+                        items: [
+                          for (final entry in panels.entries)
+                            DropdownMenuItem(
+                              value: entry.key,
+                              child: Text(entry.value.name, overflow: TextOverflow.ellipsis),
+                            ),
+                        ],
+                        onChanged: widget.existing != null || _saving ? null : (type) {
+                          if (type == null || type == _panelType) return;
+                          setState(() {
+                            _panelType = type;
+                            _formVersion++;
+                            _allowInsecureTls = false;
+                            _tokenValidityController.text = '0';
+                            _apiKeyController.clear();
+                            _additionalCredentials.clear();
+                          });
+                        },
+                      ),
+                      const SizedBox(height: AppDesignTokens.spacingLg),
+                    ],
                     TextFormField(
+                      enabled: !_saving,
                       controller: _nameController,
                       decoration: InputDecoration(
                         labelText: l10n.serverFormName,
@@ -196,8 +278,10 @@ class _ServerFormPageState extends State<ServerFormPage> {
                     ),
                     const SizedBox(height: AppDesignTokens.spacingLg),
                     TextFormField(
+                      enabled: !_saving,
                       controller: _urlController,
                       keyboardType: TextInputType.url,
+                      onChanged: widget.existing == null ? null : (_) => setState(() {}),
                       autocorrect: false,
                       decoration: InputDecoration(
                         labelText: l10n.serverFormUrl,
@@ -214,19 +298,18 @@ class _ServerFormPageState extends State<ServerFormPage> {
                       },
                     ),
                     const SizedBox(height: AppDesignTokens.spacingLg),
-                    TextFormField(
-                      controller: _apiKeyController,
-                      obscureText: true,
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      decoration: InputDecoration(
-                        labelText: l10n.serverFormApiKey,
-                        hintText: l10n.serverFormApiKeyHint,
-                      ),
-                      validator: (value) =>
-                          (value == null || value.trim().isEmpty)
-                              ? l10n.serverFormRequired
-                              : null,
+                    PanelCredentialFields(
+                      key: ValueKey(_panelType),
+                      panel: panel,
+                      apiKeyController: _apiKeyController,
+                      enabled: !_saving,
+                      hasStoredApiKey: _credentialSource?.apiKey.isNotEmpty == true,
+                      storedFields: {
+                        for (final entry in _credentialSource?.additionalCredentials.entries ??
+                            const <MapEntry<String, String>>[])
+                          if (entry.value.isNotEmpty) entry.key,
+                      },
+                      onFieldChanged: (id, value) => _additionalCredentials[id] = value,
                     ),
                   ],
                 ),
@@ -237,7 +320,8 @@ class _ServerFormPageState extends State<ServerFormPage> {
                 title: l10n.serverFormConnectionSectionTitle,
                 child: Column(
                   children: [
-                    TextFormField(
+                    if (_panelType == ApiConfig.onePanelType) TextFormField(
+                      enabled: !_saving,
                       controller: _tokenValidityController,
                       decoration: InputDecoration(
                         labelText: l10n.serverTokenValidity,
@@ -251,9 +335,10 @@ class _ServerFormPageState extends State<ServerFormPage> {
                     if (!kIsWeb) SwitchListTile.adaptive(
                       contentPadding: EdgeInsets.zero,
                       value: _allowInsecureTls,
-                      onChanged: (value) {
+                      onChanged: _saving ? null : (value) {
                         setState(() {
                           _allowInsecureTls = value;
+                          _formVersion++;
                         });
                       },
                       title: Text(l10n.serverFormAllowInsecureTls),
@@ -263,10 +348,12 @@ class _ServerFormPageState extends State<ServerFormPage> {
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton(
-                        onPressed: _testing ? null : _testConnection,
+                        onPressed: _testing || _saving ? null : _testConnection,
                         child: _testing
-                            ? Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                            ? Wrap(
+                                alignment: WrapAlignment.center,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                spacing: AppDesignTokens.spacingSm,
                                 children: [
                                   const SizedBox(
                                     height: 16,
@@ -274,75 +361,12 @@ class _ServerFormPageState extends State<ServerFormPage> {
                                     child: CircularProgressIndicator(
                                         strokeWidth: 2),
                                   ),
-                                  const SizedBox(width: 8),
                                   Text(l10n.serverTestTesting),
                                 ],
                               )
                             : Text(l10n.serverFormTest),
                       ),
                     ),
-                    if (_testResult != null) ...[
-                      const SizedBox(height: AppDesignTokens.spacingMd),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: _testResult!.success
-                              ? Colors.green.withValues(alpha: 0.1)
-                              : Colors.red.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: _testResult!.success
-                                ? Colors.green.withValues(alpha: 0.3)
-                                : Colors.red.withValues(alpha: 0.3),
-                          ),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  _testResult!.success
-                                      ? Icons.check_circle
-                                      : Icons.error,
-                                  color: _testResult!.success
-                                      ? Colors.green
-                                      : Colors.red,
-                                  size: 18,
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  _testResult!.success
-                                      ? l10n.serverTestSuccess
-                                      : l10n.serverTestFailed,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: _testResult!.success
-                                        ? Colors.green
-                                        : Colors.red,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            if (_testResult!.osInfo != null) ...[
-                              const SizedBox(height: 8),
-                              Text(
-                                'OS: ${_testResult!.osInfo!['os'] ?? 'Unknown'}',
-                                style: const TextStyle(fontSize: 12),
-                              ),
-                            ],
-                            if (_testResult!.errorMessage != null) ...[
-                              const SizedBox(height: 4),
-                              Text(
-                                _connectionErrorMessage(_testResult!),
-                                style: const TextStyle(fontSize: 12),
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                    ],
                   ],
                 ),
               ),
