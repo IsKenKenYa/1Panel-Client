@@ -675,6 +675,9 @@ class VMStorageItem extends Equatable {
     this.vms = const <VMResourceRef>[],
   });
 
+  double get usagePercent =>
+      usedPercent ?? (capacity > 0 ? (capacity - available) / capacity * 100 : 0.0);
+
   factory VMStorageItem.fromJson(Map<String, dynamic> json) {
     return VMStorageItem(
       id: json['id'] as int? ?? 0,

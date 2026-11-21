@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/module_search_field.dart';
 import 'package:flutter/services.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/ssh_log_models.dart';
@@ -69,14 +70,11 @@ class _SshLogsPageState extends State<SshLogsPage> {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: <Widget>[
-                    TextField(
+                    ModuleSearchField(
                       controller: _searchController,
                       onChanged: provider.updateKeyword,
                       onSubmitted: (_) => provider.load(),
-                      decoration: InputDecoration(
-                        hintText: l10n.sshLogsSearchHint,
-                        prefixIcon: const Icon(Icons.search),
-                      ),
+                      hintText: l10n.sshLogsSearchHint,
                     ),
                     const SizedBox(height: 12),
                     Wrap(

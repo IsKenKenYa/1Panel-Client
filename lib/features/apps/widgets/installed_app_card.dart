@@ -1,5 +1,7 @@
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/label_value_row.dart';
+import 'package:onepanel_client/shared/widgets/status_label_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:onepanel_client/config/app_router.dart';
@@ -80,9 +82,13 @@ class InstalledAppCard extends StatelessWidget {
           ),
         ],
       ),
-      trailing: _StatusChip(
-        status: isRunning ? l10n.appStatusRunning : l10n.appStatusStopped,
+      trailing: StatusLabelWidget(
+        label: isRunning ? l10n.appStatusRunning : l10n.appStatusStopped,
         color: statusColor,
+        borderColor: statusColor.withValues(alpha: 0.5),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        radius: AppDesignTokens.radiusLg,
+        textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
       ),
       onTap: () {
         Navigator.pushNamed(
@@ -222,37 +228,6 @@ class _InfoTag extends StatelessWidget {
   }
 }
 
-/// 状态标签
-class _StatusChip extends StatelessWidget {
-  final String status;
-  final Color color;
-
-  const _StatusChip({
-    required this.status,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(AppDesignTokens.radiusLg),
-        border: Border.all(color: color.withValues(alpha: 0.5)),
-      ),
-      child: Text(
-        status,
-        style: TextStyle(
-          color: color,
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-}
-
 /// 信息行
 class _InfoRow extends StatelessWidget {
   final String label;
@@ -267,30 +242,15 @@ class _InfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 80,
-          child: Text(
-            label,
-            style: TextStyle(
-              color: colorScheme.onSurfaceVariant,
-              fontSize: 13,
-            ),
-          ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: TextStyle(
-              color: colorScheme.onSurface,
-              fontSize: 13,
-              fontFamily: 'monospace',
-            ),
-          ),
-        ),
-      ],
+    return LabelValueRow(
+      label: label,
+      value: value,
+      labelWidth: 80,
+      padding: EdgeInsets.zero,
+      labelStyle: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 13),
+      valueStyle: TextStyle(
+        color: colorScheme.onSurface, fontSize: 13, fontFamily: 'monospace',
+      ),
     );
   }
 }

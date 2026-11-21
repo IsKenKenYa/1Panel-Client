@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/module_search_field.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/ai/agents/agents_provider.dart';
 import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
@@ -38,14 +39,11 @@ class _AIAgentsListWidgetState extends State<AIAgentsListWidget> {
               Row(
                 children: <Widget>[
                   Expanded(
-                    child: TextField(
+                    child: ModuleSearchField(
                       controller: _searchController,
                       textInputAction: TextInputAction.search,
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.search),
-                        labelText: l10n.aiAgentsSearchHint,
-                        border: const OutlineInputBorder(),
-                      ),
+                      labelText: l10n.aiAgentsSearchHint,
+                      border: const OutlineInputBorder(),
                       onSubmitted: provider.searchAgents,
                     ),
                   ),

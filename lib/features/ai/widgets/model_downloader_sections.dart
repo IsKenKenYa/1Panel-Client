@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/module_search_field.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
@@ -175,24 +176,20 @@ class _ModelSearchSectionState extends State<ModelSearchSection> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              TextField(
+              ModuleSearchField(
                 controller: _queryController,
                 textInputAction: TextInputAction.search,
                 onSubmitted: (_) => _submit(),
-                decoration: InputDecoration(
-                  hintText: l10n.modelDownloaderSearchHint,
-                  prefixIcon: const Icon(Icons.search),
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.arrow_forward),
-                    tooltip: l10n.modelDownloaderSearchAction,
-                    onPressed: _submit,
-                  ),
-                  filled: true,
-                  border: OutlineInputBorder(
-                    borderRadius:
-                        BorderRadius.circular(AppDesignTokens.radiusXl),
-                    borderSide: BorderSide.none,
-                  ),
+                hintText: l10n.modelDownloaderSearchHint,
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.arrow_forward),
+                  tooltip: l10n.modelDownloaderSearchAction,
+                  onPressed: _submit,
+                ),
+                filled: true,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppDesignTokens.radiusXl),
+                  borderSide: BorderSide.none,
                 ),
               ),
               const SizedBox(height: AppDesignTokens.spacingMd),

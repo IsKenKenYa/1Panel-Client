@@ -7,6 +7,7 @@ import 'package:onepanel_client/data/models/alert_models.dart';
 import 'package:onepanel_client/features/alert/alert_types.dart';
 import 'package:onepanel_client/features/alert/providers/alert_provider.dart';
 import 'package:onepanel_client/features/alert/widgets/alert_rule_form.dart';
+import 'package:onepanel_client/features/alert/widgets/alert_configuration_row.dart';
 import 'package:onepanel_client/shared/widgets/expressive_section.dart';
 import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
@@ -141,99 +142,15 @@ class _RuleRow extends StatelessWidget {
       if (rule.sendMethod.isNotEmpty) rule.sendMethod.join(' / '),
     ];
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppDesignTokens.spacingLg,
-        vertical: AppDesignTokens.spacingMd + 2,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: enabled
-                      ? Theme.of(context).colorScheme.secondaryContainer
-                      : Theme.of(context).colorScheme.surfaceContainerHighest,
-                  borderRadius:
-                      BorderRadius.circular(AppDesignTokens.radiusSm),
-                ),
-                alignment: Alignment.center,
-                child: Icon(
-                  Icons.notifications_active_outlined,
-                  size: 20,
-                  color: enabled
-                      ? Theme.of(context).colorScheme.onSecondaryContainer
-                      : Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(width: AppDesignTokens.spacingMd),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                    ),
-                    if (meta.isNotEmpty) ...[
-                      const SizedBox(height: AppDesignTokens.spacingXs),
-                      Text(
-                        meta.join(' · '),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
-                            ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              Switch(
-                value: enabled,
-                onChanged: provider.isMutating
-                    ? null
-                    : (value) => _toggle(context, value),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppDesignTokens.spacingXs),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              TextButton.icon(
-                onPressed: provider.isMutating
-                    ? null
-                    : () => showAlertRuleForm(context, editing: rule),
-                icon: const Icon(Icons.edit_outlined, size: 18),
-                label: Text(l10n.commonEdit),
-              ),
-              TextButton.icon(
-                onPressed:
-                    provider.isMutating ? null : () => _delete(context),
-                icon: Icon(Icons.delete_outline,
-                    size: 18, color: Theme.of(context).colorScheme.error),
-                label: Text(
-                  l10n.commonDelete,
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.error),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+    return AlertConfigurationRow(
+      icon: Icons.notifications_active_outlined,
+      title: title,
+      subtitle: meta.join(' · '),
+      enabled: enabled,
+      isMutating: provider.isMutating,
+      onToggle: (value) => _toggle(context, value),
+      onEdit: () => showAlertRuleForm(context, editing: rule),
+      onDelete: () => _delete(context),
     );
   }
 

@@ -6,6 +6,7 @@ import '../../core/utils/snackbar_utils.dart';
 import '../../data/models/ssl_models.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'providers/website_ssl_provider.dart';
+import 'widgets/website_ssl_upload_dialog.dart';
 
 class WebsiteSslPage extends StatelessWidget {
   final int websiteId;
@@ -449,109 +450,13 @@ class _WebsiteSslBody extends StatelessWidget {
 
   Future<void> _showUploadDialog(
       BuildContext context, WebsiteSslProvider provider) async {
-    final l10n = context.l10n;
-    String type = 'paste';
-    final certController = TextEditingController();
-    final keyController = TextEditingController();
-    final certPathController = TextEditingController();
-    final keyPathController = TextEditingController();
-    final descriptionController = TextEditingController();
-
-    await showDialog<void>(
+    await showDialog<bool>(
       context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Text(l10n.websitesSslUploadAction),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                DropdownButtonFormField<String>(
-                  initialValue: type,
-                  decoration: InputDecoration(
-                      labelText: l10n.websitesSslUploadTypeLabel),
-                  items: [
-                    DropdownMenuItem(
-                        value: 'paste',
-                        child: Text(l10n.websitesSslUploadTypePaste)),
-                    DropdownMenuItem(
-                        value: 'local',
-                        child: Text(l10n.websitesSslUploadTypeLocal)),
-                  ],
-                  onChanged: (value) => setState(() => type = value ?? 'paste'),
-                ),
-                const SizedBox(height: 12),
-                if (type == 'paste') ...[
-                  TextField(
-                    controller: certController,
-                    maxLines: 3,
-                    decoration: InputDecoration(
-                        labelText: l10n.websitesSslCertificateLabel),
-                  ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: keyController,
-                    maxLines: 3,
-                    decoration: InputDecoration(
-                        labelText: l10n.websitesSslPrivateKeyLabel),
-                  ),
-                ] else ...[
-                  TextField(
-                    controller: certPathController,
-                    decoration: InputDecoration(
-                        labelText: l10n.websitesSslCertificatePathLabel),
-                  ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: keyPathController,
-                    decoration: InputDecoration(
-                        labelText: l10n.websitesSslPrivateKeyPathLabel),
-                  ),
-                ],
-                const SizedBox(height: 12),
-                TextField(
-                  controller: descriptionController,
-                  decoration: InputDecoration(
-                      labelText: l10n.websitesSslDescriptionLabel),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-                onPressed: () => Navigator.of(ctx).pop(),
-                child: Text(l10n.commonCancel)),
-            FilledButton(
-              onPressed: () async {
-                Navigator.of(ctx).pop();
-                await provider.uploadCertificate(
-                  WebsiteSSLUpload(
-                    type: type,
-                    certificate:
-                        type == 'paste' ? certController.text.trim() : null,
-                    privateKey:
-                        type == 'paste' ? keyController.text.trim() : null,
-                    certificatePath:
-                        type == 'local' ? certPathController.text.trim() : null,
-                    privateKeyPath:
-                        type == 'local' ? keyPathController.text.trim() : null,
-                    description: descriptionController.text.trim().isEmpty
-                        ? null
-                        : descriptionController.text.trim(),
-                  ),
-                );
-              },
-              child: Text(l10n.commonUpload),
-            ),
-          ],
-        ),
+      builder: (_) => WebsiteSslUploadDialog(
+        onUpload: provider.uploadCertificate,
+        includeDescription: true,
       ),
     );
-
-    certController.dispose();
-    keyController.dispose();
-    certPathController.dispose();
-    keyPathController.dispose();
-    descriptionController.dispose();
   }
 
   Future<void> _showHttpsDialog(

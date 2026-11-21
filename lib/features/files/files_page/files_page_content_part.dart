@@ -12,48 +12,6 @@ extension _FilesViewContent on _FilesViewState {
     );
   }
 
-  Widget _buildEmptyState(
-    BuildContext context,
-    AppLocalizations l10n,
-    ThemeData theme,
-  ) {
-    final provider = context.read<FilesProvider>();
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.folder_open_outlined,
-            size: 64,
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-          const SizedBox(height: 16),
-          Text(l10n.filesEmptyTitle),
-          const SizedBox(height: 8),
-          Text(l10n.filesEmptyDesc, textAlign: TextAlign.center),
-          const SizedBox(height: 16),
-          Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              FilledButton.icon(
-                onPressed: () => showCreateDirectoryDialog(context, provider),
-                icon: const Icon(Icons.create_new_folder_outlined),
-                label: Text(l10n.filesActionNewFolder),
-              ),
-              OutlinedButton.icon(
-                onPressed: () => showCreateFileDialog(context, provider),
-                icon: const Icon(Icons.note_add_outlined),
-                label: Text(l10n.filesActionNewFile),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildFileList(
     BuildContext context,
     FilesProvider provider,

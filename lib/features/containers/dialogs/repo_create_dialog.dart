@@ -4,6 +4,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/container_models.dart';
 import 'package:onepanel_client/features/containers/containers_provider.dart';
 import 'package:onepanel_client/shared/widgets/forms/app_form_panel.dart';
+import 'container_form_fields.dart';
 
 class RepoCreateDialog extends StatefulWidget {
   final ContainerRepo? repo;
@@ -57,19 +58,7 @@ class _RepoCreateDialogState extends State<RepoCreateDialog> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  labelText: l10n.commonName,
-                  border: const OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return l10n.serverFormRequired;
-                  }
-                  return null;
-                },
-              ),
+              ContainerNameField(controller: _nameController),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _urlController,

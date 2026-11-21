@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_sheet.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/docker_models.dart';
 import 'package:onepanel_client/features/orchestration/providers/volume_provider.dart';
@@ -6,6 +7,8 @@ import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_w
 import 'package:provider/provider.dart';
 
 import '../../../core/utils/snackbar_utils.dart';
+import 'orchestration_detail_line_widget.dart';
+
 class VolumeCard extends StatelessWidget {
   const VolumeCard({super.key, required this.volume});
 
@@ -38,38 +41,29 @@ class VolumeCard extends StatelessWidget {
     final labels = volume.labels ?? const <String, String>{};
     final options = volume.options ?? const <String, String>{};
 
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(volume.name, style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: 12),
-              _DetailLine(label: l10n.volumeDetailDriver, value: volume.driver),
-              _DetailLine(label: l10n.volumeDetailMountpoint, value: volume.mountpoint),
-              if (labels.isNotEmpty)
-                _DetailLine(
-                  label: l10n.volumeDetailLabels,
-                  value: labels.entries
-                      .map((entry) => '${entry.key}=${entry.value}')
-                      .join(', '),
-                ),
-              if (options.isNotEmpty)
-                _DetailLine(
-                  label: l10n.volumeDetailOptions,
-                  value: options.entries
-                      .map((entry) => '${entry.key}=${entry.value}')
-                      .join(', '),
-                ),
-            ],
-          ),
+    await showAppDetailsSheet(
+      context,
+      title: volume.name,
+      children: [
+        OrchestrationDetailLineWidget(
+          label: l10n.volumeDetailDriver,
+          value: volume.driver,
         ),
-      ),
+        OrchestrationDetailLineWidget(
+          label: l10n.volumeDetailMountpoint,
+          value: volume.mountpoint,
+        ),
+        if (labels.isNotEmpty)
+          OrchestrationDetailLineWidget(
+            label: l10n.volumeDetailLabels,
+            value: labels.entries.map((entry) => '${entry.key}=${entry.value}').join(', '),
+          ),
+        if (options.isNotEmpty)
+          OrchestrationDetailLineWidget(
+            label: l10n.volumeDetailOptions,
+            value: options.entries.map((entry) => '${entry.key}=${entry.value}').join(', '),
+          ),
+      ],
     );
   }
 
@@ -139,28 +133,6 @@ class VolumeCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _DetailLine extends StatelessWidget {
-  const _DetailLine({required this.label, required this.value});
-
-  final String label;
-  final String? value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(width: 95, child: Text(label)),
-          Expanded(
-              child: Text((value == null || value!.isEmpty) ? '-' : value!)),
-        ],
       ),
     );
   }

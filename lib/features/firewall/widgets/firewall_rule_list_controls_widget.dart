@@ -2,6 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 
+class FirewallRuleActionMenu extends StatelessWidget {
+  const FirewallRuleActionMenu({
+    super.key,
+    required this.enabled,
+    required this.canEdit,
+    required this.canToggle,
+    required this.onSelected,
+  });
+
+  final bool enabled;
+  final bool canEdit;
+  final bool canToggle;
+  final ValueChanged<String> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return PopupMenuButton<String>(
+      enabled: enabled,
+      onSelected: onSelected,
+      itemBuilder: (_) => [
+        if (canEdit)
+          PopupMenuItem(value: 'edit', child: Text(l10n.commonEdit)),
+        if (canToggle)
+          PopupMenuItem(value: 'toggle', child: Text(l10n.firewallToggleStrategyAction)),
+        PopupMenuItem(value: 'delete', child: Text(l10n.commonDelete)),
+      ],
+    );
+  }
+}
+
 class FirewallRuleListControls extends StatelessWidget {
   const FirewallRuleListControls({
     super.key,

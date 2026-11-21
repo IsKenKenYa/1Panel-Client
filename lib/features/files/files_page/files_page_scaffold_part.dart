@@ -325,12 +325,14 @@ extension _FilesViewScaffold on _FilesViewState {
         IconButton(
           icon: const Icon(Icons.copy_outlined),
           tooltip: l10n.filesActionCopy,
-          onPressed: () => showBatchCopyDialog(context, provider, l10n),
+          onPressed: () =>
+              showFileOperationDialog(context, provider, FileOperation.copy),
         ),
         IconButton(
           icon: const Icon(Icons.cut_outlined),
           tooltip: l10n.filesActionMove,
-          onPressed: () => showBatchMoveDialog(context, provider, l10n),
+          onPressed: () =>
+              showFileOperationDialog(context, provider, FileOperation.move),
         ),
         IconButton(
           icon: const Icon(Icons.delete_outline),
@@ -373,7 +375,14 @@ extension _FilesViewScaffold on _FilesViewState {
             provider,
             theme,
             l10n,
-            child: _buildEmptyState(context, l10n, theme),
+            child: EmptyState(
+              onCreateFolder: () => showFileOperationDialog(
+                context, provider, FileOperation.createDirectory,
+              ),
+              onCreateFile: () => showFileOperationDialog(
+                context, provider, FileOperation.createFile,
+              ),
+            ),
           );
         }
 

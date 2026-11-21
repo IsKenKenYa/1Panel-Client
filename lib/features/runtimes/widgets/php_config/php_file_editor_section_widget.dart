@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_save_button.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 
 class PhpFileEditorSectionWidget extends StatelessWidget {
@@ -37,15 +38,7 @@ class PhpFileEditorSectionWidget extends StatelessWidget {
           decoration: InputDecoration(labelText: l10n.commonContent),
         ),
         const SizedBox(height: 24),
-        FilledButton(
-          onPressed: isSaving ? null : onSave,
-          child: isSaving
-              ? const SizedBox.square(
-                  dimension: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : Text(l10n.commonSave),
-        ),
+        AppFormSaveButton(onSave: onSave, isSaving: isSaving),
       ],
     );
   }

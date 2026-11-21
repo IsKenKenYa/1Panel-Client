@@ -5,6 +5,7 @@ import 'package:onepanel_client/data/models/container_models.dart';
 import 'package:onepanel_client/features/containers/containers_provider.dart';
 import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/shared/widgets/forms/app_form_panel.dart';
+import 'container_form_fields.dart';
 
 class TemplateCreateDialog extends StatefulWidget {
   final ContainerTemplate? template;
@@ -58,19 +59,7 @@ class _TemplateCreateDialogState extends State<TemplateCreateDialog> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                TextFormField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    labelText: l10n.commonName,
-                    border: const OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return l10n.serverFormRequired;
-                    }
-                    return null;
-                  },
-                ),
+                ContainerNameField(controller: _nameController),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _descriptionController,

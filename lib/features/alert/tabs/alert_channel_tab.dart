@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/features/alert/widgets/alert_configuration_row.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
@@ -97,106 +98,17 @@ class _ChannelRow extends StatelessWidget {
     final enabled = channel.status != 'Disable';
     final title = channel.title.isEmpty ? channel.type : channel.title;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppDesignTokens.spacingLg,
-        vertical: AppDesignTokens.spacingMd + 2,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: enabled
-                      ? Theme.of(context).colorScheme.secondaryContainer
-                      : Theme.of(context).colorScheme.surfaceContainerHighest,
-                  borderRadius:
-                      BorderRadius.circular(AppDesignTokens.radiusSm),
-                ),
-                alignment: Alignment.center,
-                child: Icon(
-                  AlertChannelTypes.icon(channel.type),
-                  size: 20,
-                  color: enabled
-                      ? Theme.of(context).colorScheme.onSecondaryContainer
-                      : Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(width: AppDesignTokens.spacingMd),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                    ),
-                    const SizedBox(height: AppDesignTokens.spacingXs),
-                    Text(
-                      AlertChannelTypes.label(l10n, channel.type),
-                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSurfaceVariant,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-              Switch(
-                value: enabled,
-                onChanged: provider.isMutating
-                    ? null
-                    : (value) => _toggle(context, value),
-              ),
-            ],
-          ),
-          if (channel.config.isNotEmpty) ...[
-            const SizedBox(height: AppDesignTokens.spacingXs + 2),
-            Text(
-              _summary(channel.config),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-            ),
-          ],
-          const SizedBox(height: AppDesignTokens.spacingXs),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              TextButton.icon(
-                onPressed: provider.isMutating
-                    ? null
-                    : () => showAlertChannelForm(context, editing: channel),
-                icon: const Icon(Icons.edit_outlined, size: 18),
-                label: Text(l10n.commonEdit),
-              ),
-              TextButton.icon(
-                onPressed:
-                    provider.isMutating ? null : () => _delete(context),
-                icon: Icon(Icons.delete_outline,
-                    size: 18, color: Theme.of(context).colorScheme.error),
-                label: Text(
-                  l10n.commonDelete,
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.error),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+    return AlertConfigurationRow(
+      icon: AlertChannelTypes.icon(channel.type),
+      title: title,
+      titleLines: 1,
+      subtitle: AlertChannelTypes.label(l10n, channel.type),
+      description: channel.config.isEmpty ? null : _summary(channel.config),
+      enabled: enabled,
+      isMutating: provider.isMutating,
+      onToggle: (value) => _toggle(context, value),
+      onEdit: () => showAlertChannelForm(context, editing: channel),
+      onDelete: () => _delete(context),
     );
   }
 

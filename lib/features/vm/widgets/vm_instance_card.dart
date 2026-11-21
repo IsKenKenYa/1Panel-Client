@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/status_label_widget.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/data/models/vm/vm_models.dart';
@@ -156,19 +157,15 @@ class VmStatusChip extends StatelessWidget {
       default:
         foreground = scheme.error;
     }
-    return Container(
+    return StatusLabelWidget(
+      label: status,
+      color: foreground,
+      backgroundColor: foreground.withValues(alpha: 0.12),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      decoration: BoxDecoration(
-        color: foreground.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(AppDesignTokens.radiusSm),
-      ),
-      child: Text(
-        status,
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: foreground,
-              fontWeight: FontWeight.w500,
-            ),
-      ),
+      radius: AppDesignTokens.radiusSm,
+      textStyle: Theme.of(context).textTheme.labelSmall?.copyWith(
+            fontWeight: FontWeight.w500,
+          ),
     );
   }
 }

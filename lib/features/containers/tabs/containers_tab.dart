@@ -5,8 +5,8 @@ import 'package:onepanel_client/data/models/container_models.dart'
     hide ContainerStats;
 import 'package:onepanel_client/features/containers/containers_provider.dart';
 import 'package:onepanel_client/features/containers/widgets/container_card.dart';
-import 'package:onepanel_client/features/containers/widgets/containers_empty_widget.dart';
 import 'package:onepanel_client/features/containers/widgets/containers_stats_card_widget.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_empty_state_widget.dart';
 
 class ContainersTab extends StatelessWidget {
   final List<ContainerInfo> containers;
@@ -90,10 +90,10 @@ class ContainersTab extends StatelessWidget {
           }
 
           if (showEmpty) {
-            return ContainersEmptyView(
+            return ModuleEmptyStateWidget(
               icon: Icons.inventory_2_outlined,
               title: l10n.containerEmptyTitle,
-              subtitle: l10n.containerEmptyDesc,
+              description: l10n.containerEmptyDesc,
             );
           }
 

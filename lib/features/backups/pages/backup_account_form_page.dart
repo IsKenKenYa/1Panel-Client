@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_save_button.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/backups/models/backup_account_form_args.dart';
 import 'package:onepanel_client/features/backups/providers/backup_account_form_provider.dart';
@@ -115,17 +116,9 @@ class _BackupAccountFormPageState extends State<BackupAccountFormPage> {
             ),
           ),
           floatingActionButton: null,
-          bottomNavigationBar: SafeArea(
-            minimum: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: FilledButton(
-              onPressed: provider.canSave ? _save : null,
-              child: provider.isSaving
-                  ? const SizedBox.square(
-                      dimension: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : Text(l10n.commonSave),
-            ),
+          bottomNavigationBar: AppFormSaveBar(
+            onSave: provider.canSave ? _save : null,
+            isSaving: provider.isSaving,
           ),
         );
       },

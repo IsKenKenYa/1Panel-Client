@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_sheet.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/data/models/docker_models.dart';
@@ -7,6 +8,8 @@ import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_w
 import 'package:provider/provider.dart';
 
 import '../../../core/utils/snackbar_utils.dart';
+import 'orchestration_detail_line_widget.dart';
+
 class NetworkCard extends StatelessWidget {
   const NetworkCard({super.key, required this.network});
 
@@ -46,54 +49,27 @@ class NetworkCard extends StatelessWidget {
   }
 
   Future<void> _showDetailsSheet(BuildContext context) async {
-    await showModalBottomSheet<void>(
-      context: context,
-      builder: (context) {
-        final l10n = context.l10n;
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(network.name,
-                    style: Theme.of(context).textTheme.titleLarge),
-                const SizedBox(height: 12),
-                _DetailLine(label: l10n.containerNetworkIdLabel, value: network.id),
-                _DetailLine(
-                    label: l10n.containerNetworkDriverLabel,
-                    value: network.driver),
-                _DetailLine(
-                    label: l10n.containerNetworkScopeLabel,
-                    value: network.scope),
-                _DetailLine(
-                  label: l10n.containerNetworkInternalLabel,
-                  value: network.internal == null
-                      ? null
-                      : (network.internal!
-                          ? l10n.commonYes
-                          : l10n.commonNo),
-                ),
-                _DetailLine(
-                  label: l10n.containerNetworkAttachableLabel,
-                  value: network.attachable == null
-                      ? null
-                      : (network.attachable!
-                          ? l10n.commonYes
-                          : l10n.commonNo),
-                ),
-                _DetailLine(
-                    label: l10n.containerNetworkSubnetLabel,
-                    value: network.subnet),
-                _DetailLine(
-                    label: l10n.containerNetworkGatewayLabel,
-                    value: network.gateway),
-              ],
-            ),
-          ),
-        );
-      },
+    final l10n = context.l10n;
+    String? yesNo(bool? value) =>
+        value == null ? null : (value ? l10n.commonYes : l10n.commonNo);
+    await showAppDetailsSheet(
+      context,
+      title: network.name,
+      children: [
+        OrchestrationDetailLineWidget(label: l10n.containerNetworkIdLabel, value: network.id),
+        OrchestrationDetailLineWidget(label: l10n.containerNetworkDriverLabel, value: network.driver),
+        OrchestrationDetailLineWidget(label: l10n.containerNetworkScopeLabel, value: network.scope),
+        OrchestrationDetailLineWidget(
+          label: l10n.containerNetworkInternalLabel,
+          value: yesNo(network.internal),
+        ),
+        OrchestrationDetailLineWidget(
+          label: l10n.containerNetworkAttachableLabel,
+          value: yesNo(network.attachable),
+        ),
+        OrchestrationDetailLineWidget(label: l10n.containerNetworkSubnetLabel, value: network.subnet),
+        OrchestrationDetailLineWidget(label: l10n.containerNetworkGatewayLabel, value: network.gateway),
+      ],
     );
   }
 
@@ -186,27 +162,6 @@ class NetworkCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _DetailLine extends StatelessWidget {
-  const _DetailLine({required this.label, required this.value});
-
-  final String label;
-  final String? value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3),
-      child: Row(
-        children: [
-          SizedBox(width: 90, child: Text(label)),
-          Expanded(
-              child: Text((value == null || value!.isEmpty) ? '-' : value!)),
-        ],
       ),
     );
   }

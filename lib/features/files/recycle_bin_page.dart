@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/module_search_field.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
 import 'package:onepanel_client/features/files/providers/recycle_bin_provider.dart';
+import 'package:onepanel_client/features/files/widgets/selection_bar.dart';
 import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 import 'package:provider/provider.dart';
@@ -67,22 +69,19 @@ class _RecycleBinViewState extends State<_RecycleBinView> {
             children: [
               Padding(
                 padding: AppDesignTokens.pagePadding,
-                child: TextField(
+                child: ModuleSearchField(
                   controller: _searchController,
-                  decoration: InputDecoration(
-                    labelText: l10n.recycleBinSearch,
-                    prefixIcon: const Icon(Icons.search),
-                    suffixIcon: provider.searchQuery.isNotEmpty
-                        ? IconButton(
-                            icon: const Icon(Icons.clear),
-                            tooltip: context.l10n.commonCancel,
-                            onPressed: () {
-                              _searchController.clear();
-                              provider.filterFiles('');
-                            },
-                          )
-                        : null,
-                  ),
+                  labelText: l10n.recycleBinSearch,
+                  suffixIcon: provider.searchQuery.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(Icons.clear),
+                          tooltip: context.l10n.commonCancel,
+                          onPressed: () {
+                            _searchController.clear();
+                            provider.filterFiles('');
+                          },
+                        )
+                      : null,
                   onChanged: provider.filterFiles,
                 ),
               ),
@@ -98,7 +97,13 @@ class _RecycleBinViewState extends State<_RecycleBinView> {
             ],
           ),
           bottomNavigationBar: provider.selectedIds.isNotEmpty
-              ? _buildSelectionBar(context, provider, l10n, theme)
+              ? SelectionBar.recycleBin(
+                  selectionCount: provider.selectedIds.length,
+                  onRestore: () => _confirmRestoreSelected(context, provider),
+                  onDeletePermanently: () => _confirmDeleteSelected(context, provider),
+                  onSelectAll: provider.selectAll,
+                  onDeselect: provider.clearSelection,
+                )
               : null,
         );
       },
@@ -260,53 +265,6 @@ class _RecycleBinViewState extends State<_RecycleBinView> {
             }
           },
         ),
-      ),
-    );
-  }
-
-  Widget _buildSelectionBar(
-    BuildContext context,
-    RecycleBinProvider provider,
-    AppLocalizations l10n,
-    ThemeData theme,
-  ) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
-        boxShadow: [
-          BoxShadow(
-            color: theme.colorScheme.shadow.withValues(alpha: 0.15),
-            blurRadius: 4,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Text('${provider.selectedIds.length} ${l10n.filesSelected}'),
-          const Spacer(),
-          IconButton(
-            icon: const Icon(Icons.restore_outlined),
-            onPressed: () => _confirmRestoreSelected(context, provider),
-            tooltip: l10n.recycleBinRestore,
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete_forever_outlined),
-            onPressed: () => _confirmDeleteSelected(context, provider),
-            tooltip: l10n.recycleBinDeletePermanently,
-          ),
-          IconButton(
-            icon: const Icon(Icons.select_all),
-            onPressed: provider.selectAll,
-            tooltip: l10n.filesActionSelectAll,
-          ),
-          IconButton(
-            icon: const Icon(Icons.deselect),
-            onPressed: provider.clearSelection,
-            tooltip: l10n.filesActionDeselect,
-          ),
-        ],
       ),
     );
   }

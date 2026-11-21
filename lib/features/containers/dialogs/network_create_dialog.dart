@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/shared/widgets/forms/app_form_panel.dart';
+import 'container_form_fields.dart';
 
 class NetworkCreateDialog extends StatefulWidget {
   const NetworkCreateDialog({super.key});
@@ -47,37 +48,12 @@ class _NetworkCreateDialogState extends State<NetworkCreateDialog> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  labelText: l10n.commonName,
-                  border: const OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return l10n.serverFormRequired;
-                  }
-                  return null;
-                },
-              ),
+              ContainerNameField(controller: _nameController),
               const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                initialValue: _selectedDriver,
-                decoration: InputDecoration(
-                  labelText: l10n.commonDriver,
-                  border: const OutlineInputBorder(),
-                ),
-                items: _drivers.map((driver) {
-                  return DropdownMenuItem(
-                    value: driver,
-                    child: Text(driver),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedDriver = value!;
-                  });
-                },
+              ContainerDriverField(
+                selected: _selectedDriver,
+                drivers: _drivers,
+                onChanged: (driver) => setState(() => _selectedDriver = driver),
               ),
               const SizedBox(height: 16),
               TextFormField(

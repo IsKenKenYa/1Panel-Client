@@ -5,6 +5,7 @@ import 'package:onepanel_client/features/logs/models/system_log_viewer_args.dart
 import 'package:onepanel_client/features/logs/providers/system_logs_provider.dart';
 import 'package:onepanel_client/features/logs/utils/logs_l10n_helper.dart';
 import 'package:onepanel_client/features/logs/widgets/system_log_file_card_widget.dart';
+import 'package:onepanel_client/features/logs/widgets/system_log_source_filter.dart';
 import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
 
 class LogsSystemTabWidget extends StatelessWidget {
@@ -22,20 +23,9 @@ class LogsSystemTabWidget extends StatelessWidget {
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.all(16),
-          child: Wrap(
-            spacing: 8,
-            children: <Widget>[
-              ChoiceChip(
-                label: Text(l10n.logsSystemSourceAgent),
-                selected: provider.source == SystemLogSource.agent,
-                onSelected: (_) => provider.updateSource(SystemLogSource.agent),
-              ),
-              ChoiceChip(
-                label: Text(l10n.logsSystemSourceCore),
-                selected: provider.source == SystemLogSource.core,
-                onSelected: (_) => provider.updateSource(SystemLogSource.core),
-              ),
-            ],
+          child: SystemLogSourceFilter(
+            value: provider.source,
+            onChanged: provider.updateSource,
           ),
         ),
         Expanded(

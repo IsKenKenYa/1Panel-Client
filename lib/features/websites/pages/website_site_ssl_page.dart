@@ -13,7 +13,7 @@ import 'package:onepanel_client/shared/security_gateway/utils/security_gateway_u
 import 'package:onepanel_client/shared/security_gateway/widgets/config_diff_preview_card.dart';
 import 'package:onepanel_client/shared/security_gateway/widgets/risk_notice_banner.dart';
 import 'package:onepanel_client/shared/security_gateway/widgets/security_status_chip.dart';
-import 'package:onepanel_client/shared/widgets/section_card.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
 import 'package:provider/provider.dart';
 
 class WebsiteSiteSslPage extends StatelessWidget {
@@ -127,13 +127,13 @@ class _WebsiteSiteSslBody extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: AppDesignTokens.spacingMd),
-                      _InfoRow(
+                      LabelValueRow(
                           label: l10n.websiteSiteSslProviderRow,
                           value: boundCertificate?.provider ?? '-'),
-                      _InfoRow(
+                      LabelValueRow(
                           label: l10n.websiteSiteSslExpirationRow,
                           value: boundCertificate?.expireDate ?? '-'),
-                      _InfoRow(
+                      LabelValueRow(
                           label: l10n.websiteSiteSslCurrentModeRow,
                           value: currentConfig?.httpConfig ?? '-'),
                     ],
@@ -146,16 +146,16 @@ class _WebsiteSiteSslBody extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _InfoRow(
+                      LabelValueRow(
                         label: l10n.openrestyTabHttps,
                         value: (currentConfig?.enable ?? false)
                             ? l10n.systemSettingsEnabled
                             : l10n.systemSettingsDisabled,
                       ),
-                      _InfoRow(
+                      LabelValueRow(
                           label: l10n.websiteSiteSslHttpModeRow,
                           value: currentConfig?.httpConfig ?? '-'),
-                      _InfoRow(
+                      LabelValueRow(
                         label: l10n.websiteSiteSslCertTypeRow,
                         value: currentConfig?.ssl?.type ?? 'existed',
                       ),
@@ -213,7 +213,7 @@ class _WebsiteSiteSslBody extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _InfoRow(
+                      LabelValueRow(
                         label: l10n.websiteSiteSslSelectedCertRow,
                         value: provider.selectedCertificate?.primaryDomain ??
                             boundCertificate?.primaryDomain ??
@@ -417,37 +417,5 @@ class _WebsiteSiteSslBody extends StatelessWidget {
       case CertificateHealthStatus.unknown:
         return l10n.websitesSslHealthUnknown;
     }
-  }
-}
-
-class _InfoRow extends StatelessWidget {
-  const _InfoRow({
-    required this.label,
-    required this.value,
-  });
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppDesignTokens.spacingSm),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 128,
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-            ),
-          ),
-          Expanded(child: Text(value)),
-        ],
-      ),
-    );
   }
 }

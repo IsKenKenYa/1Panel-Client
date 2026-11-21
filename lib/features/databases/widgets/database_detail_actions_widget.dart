@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'database_tile_content.dart';
 import 'package:provider/provider.dart';
 
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
@@ -219,35 +220,10 @@ class _ActionTile extends StatelessWidget {
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(AppDesignTokens.spacingMd),
-          child: Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: scheme.secondaryContainer,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(icon, color: scheme.onSecondaryContainer, size: 20),
-              ),
-              const SizedBox(width: AppDesignTokens.spacingSm),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title),
-                    const SizedBox(height: 2),
-                    Text(
-                      subtitle,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: scheme.onSurfaceVariant,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-              const Icon(Icons.chevron_right),
-            ],
+          child: DatabaseTileContent.action(
+            icon: icon,
+            title: title,
+            subtitle: subtitle,
           ),
         ),
       ),

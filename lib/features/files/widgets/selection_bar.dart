@@ -11,9 +11,25 @@ class SelectionBar extends StatelessWidget {
     this.onSelectAll,
     this.onDeselect,
     this.onDelete,
-  });
+  })  : _isRecycleBin = false,
+        onRestore = null;
+
+  const SelectionBar.recycleBin({
+    super.key,
+    required this.selectionCount,
+    required this.onRestore,
+    required VoidCallback onDeletePermanently,
+    required this.onSelectAll,
+    required this.onDeselect,
+  })  : _isRecycleBin = true,
+        onDelete = onDeletePermanently,
+        onCompress = null,
+        onCopy = null,
+        onMove = null;
 
   final int selectionCount;
+  final bool _isRecycleBin;
+  final VoidCallback? onRestore;
   final VoidCallback? onCompress;
   final VoidCallback? onCopy;
   final VoidCallback? onMove;
@@ -38,41 +54,65 @@ class SelectionBar extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
-        children: [
-          Text('$selectionCount ${l10n.filesSelected}'),
-          const Spacer(),
-          IconButton(
-            icon: const Icon(Icons.folder_zip_outlined),
-            onPressed: onCompress,
-            tooltip: l10n.filesActionCompress,
-          ),
-          IconButton(
-            icon: const Icon(Icons.content_copy),
-            onPressed: onCopy,
-            tooltip: l10n.filesActionCopy,
-          ),
-          IconButton(
-            icon: const Icon(Icons.drive_file_move_outline),
-            onPressed: onMove,
-            tooltip: l10n.filesActionMove,
-          ),
-          IconButton(
-            icon: const Icon(Icons.select_all),
-            onPressed: onSelectAll,
-            tooltip: l10n.filesActionSelectAll,
-          ),
-          IconButton(
-            icon: const Icon(Icons.deselect),
-            onPressed: onDeselect,
-            tooltip: l10n.filesActionDeselect,
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete_outline),
-            onPressed: onDelete,
-            tooltip: l10n.filesActionDelete,
-          ),
-        ],
+      child: SafeArea(
+        top: false,
+        child: Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Text(_isRecycleBin
+                ? '$selectionCount ${l10n.filesSelected}'
+                : l10n.filesSelectedCount(selectionCount)),
+            Wrap(
+              children: [
+                if (_isRecycleBin) ...[
+                  IconButton(
+                    icon: const Icon(Icons.restore_outlined),
+                    onPressed: onRestore,
+                    tooltip: l10n.recycleBinRestore,
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.delete_forever_outlined),
+                    onPressed: onDelete,
+                    tooltip: l10n.recycleBinDeletePermanently,
+                  ),
+                ] else ...[
+                  IconButton(
+                    icon: const Icon(Icons.folder_zip_outlined),
+                    onPressed: onCompress,
+                    tooltip: l10n.filesActionCompress,
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.content_copy),
+                    onPressed: onCopy,
+                    tooltip: l10n.filesActionCopy,
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.drive_file_move_outline),
+                    onPressed: onMove,
+                    tooltip: l10n.filesActionMove,
+                  ),
+                ],
+                IconButton(
+                  icon: const Icon(Icons.select_all),
+                  onPressed: onSelectAll,
+                  tooltip: l10n.filesActionSelectAll,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.deselect),
+                  onPressed: onDeselect,
+                  tooltip: l10n.filesActionDeselect,
+                ),
+                if (!_isRecycleBin)
+                  IconButton(
+                    icon: const Icon(Icons.delete_outline),
+                    onPressed: onDelete,
+                    tooltip: l10n.filesActionDelete,
+                  ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

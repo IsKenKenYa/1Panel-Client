@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/module_search_field.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 
 class CommandsPageHeaderWidget extends StatelessWidget {
@@ -33,19 +34,16 @@ class CommandsPageHeaderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        TextField(
+        ModuleSearchField(
           controller: controller,
           onChanged: onSearchChanged,
           onSubmitted: (_) => onSearchSubmitted(),
           textInputAction: TextInputAction.search,
-          decoration: InputDecoration(
-            prefixIcon: const Icon(Icons.search),
-            hintText: searchHint,
-            suffixIcon: IconButton(
-              tooltip: context.l10n.commonSearch,
-              onPressed: onSearchTap,
-              icon: const Icon(Icons.arrow_forward),
-            ),
+          hintText: searchHint,
+          suffixIcon: IconButton(
+            tooltip: context.l10n.commonSearch,
+            onPressed: onSearchTap,
+            icon: const Icon(Icons.arrow_forward),
           ),
         ),
         const SizedBox(height: 12),

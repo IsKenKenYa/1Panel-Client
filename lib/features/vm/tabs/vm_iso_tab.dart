@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/status_label_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
@@ -309,16 +310,12 @@ class _IsoStatusChip extends StatelessWidget {
           foreground = scheme.onSurfaceVariant;
       }
     }
-    return Container(
+    return StatusLabelWidget(
+      label: label,
+      color: foreground,
+      backgroundColor: background,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Text(
-        label,
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(color: foreground),
-      ),
+      radius: 6,
     );
   }
 }

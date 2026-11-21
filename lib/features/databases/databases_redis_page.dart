@@ -10,6 +10,7 @@ import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_li
 
 import 'databases_provider.dart';
 import 'databases_service.dart';
+import 'widgets/database_tile_content.dart';
 
 import '../../core/utils/snackbar_utils.dart';
 class DatabaseRedisPage extends StatelessWidget {
@@ -463,38 +464,7 @@ class _RedisMetricTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
         border: Border.all(color: scheme.outlineVariant),
       ),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: scheme.secondaryContainer,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, color: scheme.onSecondaryContainer, size: 20),
-          ),
-          const SizedBox(width: AppDesignTokens.spacingSm),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        color: scheme.onSurfaceVariant,
-                      ),
-                ),
-                const SizedBox(height: AppDesignTokens.spacingXs),
-                Text(
-                  value,
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+      child: DatabaseTileContent.metric(icon: icon, title: label, subtitle: value),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_sheet.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/data/models/container_models.dart';
@@ -103,60 +104,32 @@ class ComposeCardDialogs {
     required ComposeProject compose,
   }) async {
     final l10n = context.l10n;
-    final textTheme = Theme.of(context).textTheme;
-
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(compose.name, style: textTheme.titleLarge),
-              const SizedBox(height: 12),
-              OrchestrationDetailLineWidget(label: 'ID', value: compose.id),
-              OrchestrationDetailLineWidget(
-                label: l10n.commonPath,
-                value: compose.path,
-              ),
-              OrchestrationDetailLineWidget(
-                label: 'Status',
-                value: compose.status,
-              ),
-              OrchestrationDetailLineWidget(
-                label: 'Version',
-                value: compose.version,
-              ),
-              OrchestrationDetailLineWidget(
-                label: 'Created',
-                value: compose.createTime,
-              ),
-              OrchestrationDetailLineWidget(
-                label: 'Updated',
-                value: compose.updateTime,
-              ),
-              if ((compose.services ?? const <String>[]).isNotEmpty)
-                OrchestrationDetailLineWidget(
-                  label: l10n.orchestrationServicesLabel,
-                  value: (compose.services ?? const <String>[]).join(', '),
-                ),
-              if ((compose.networks ?? const <String>[]).isNotEmpty)
-                OrchestrationDetailLineWidget(
-                  label: l10n.orchestrationNetworks,
-                  value: (compose.networks ?? const <String>[]).join(', '),
-                ),
-              if ((compose.volumes ?? const <String>[]).isNotEmpty)
-                OrchestrationDetailLineWidget(
-                  label: l10n.orchestrationVolumes,
-                  value: (compose.volumes ?? const <String>[]).join(', '),
-                ),
-            ],
+    await showAppDetailsSheet(
+      context,
+      title: compose.name,
+      children: [
+        OrchestrationDetailLineWidget(label: 'ID', value: compose.id),
+        OrchestrationDetailLineWidget(label: l10n.commonPath, value: compose.path),
+        OrchestrationDetailLineWidget(label: l10n.commonStatus, value: compose.status),
+        OrchestrationDetailLineWidget(label: l10n.commonVersion, value: compose.version),
+        OrchestrationDetailLineWidget(label: l10n.containerInfoCreated, value: compose.createTime),
+        OrchestrationDetailLineWidget(label: l10n.commonUpdated, value: compose.updateTime),
+        if (compose.services case final services? when services.isNotEmpty)
+          OrchestrationDetailLineWidget(
+            label: l10n.orchestrationServicesLabel,
+            value: services.join(', '),
           ),
-        ),
-      ),
+        if (compose.networks case final networks? when networks.isNotEmpty)
+          OrchestrationDetailLineWidget(
+            label: l10n.orchestrationNetworks,
+            value: networks.join(', '),
+          ),
+        if (compose.volumes case final volumes? when volumes.isNotEmpty)
+          OrchestrationDetailLineWidget(
+            label: l10n.orchestrationVolumes,
+            value: volumes.join(', '),
+          ),
+      ],
     );
   }
 

@@ -37,11 +37,13 @@ void main() {
       expect(find.byIcon(Icons.folder_open_outlined), findsOneWidget);
     });
 
-    testWidgets('displays correct icon size', (WidgetTester tester) async {
+    testWidgets('displays localized title and description', (tester) async {
       await tester.pumpWidget(createTestWidget());
 
-      final icon = tester.widget<Icon>(find.byIcon(Icons.folder_open_outlined));
-      expect(icon.size, equals(64));
+      final strings =
+          AppLocalizations.of(tester.element(find.byType(EmptyState)));
+      expect(find.text(strings.filesEmptyTitle), findsOneWidget);
+      expect(find.text(strings.filesEmptyDesc), findsOneWidget);
     });
 
     testWidgets('displays create folder button', (WidgetTester tester) async {
@@ -100,44 +102,28 @@ void main() {
       expect(outlinedButton.onPressed, isNull);
     });
 
-    testWidgets('centers content vertically and horizontally',
+    testWidgets('keeps actions reachable in a narrow file pane',
         (WidgetTester tester) async {
-      await tester.pumpWidget(createTestWidget());
+      tester.view.physicalSize = const Size(200, 240);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
 
-      final centers = tester.widgetList<Center>(find.byType(Center));
-      expect(
-        centers.any((center) => center.child is Column),
-        isTrue,
-      );
-    });
-
-    testWidgets('uses Column for vertical layout', (WidgetTester tester) async {
-      await tester.pumpWidget(createTestWidget());
-
-      final column = tester.widget<Column>(find.byType(Column));
-      expect(column.mainAxisAlignment, equals(MainAxisAlignment.center));
-    });
-
-    testWidgets('uses Row for button layout', (WidgetTester tester) async {
-      await tester.pumpWidget(createTestWidget());
-
-      final rowFinder = find.descendant(
-        of: find.byType(EmptyState),
-        matching: find.byType(Row),
-      );
-      final rows = tester.widgetList<Row>(rowFinder);
-      expect(
-        rows.any((row) => row.mainAxisAlignment == MainAxisAlignment.center),
-        isTrue,
-      );
-    });
-
-    testWidgets('has proper spacing between elements',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(createTestWidget());
-
-      final sizedBoxes = tester.widgetList<SizedBox>(find.byType(SizedBox));
-      expect(sizedBoxes.length, greaterThanOrEqualTo(2));
+      final actions = <String>[];
+      await tester.pumpWidget(createTestWidget(
+        onCreateFolder: () => actions.add('folder'),
+        onCreateFile: () => actions.add('file'),
+      ));
+      for (final button in [
+        find.byType(FilledButton),
+        find.byType(OutlinedButton),
+      ]) {
+        await tester.ensureVisible(button);
+        await tester.pumpAndSettle();
+        await tester.tap(button);
+      }
+      expect(tester.takeException(), isNull);
+      expect(actions, ['folder', 'file']);
     });
 
     testWidgets('applies theme colors correctly', (WidgetTester tester) async {

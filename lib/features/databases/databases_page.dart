@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/status_label_widget.dart';
+import 'package:onepanel_client/shared/widgets/module_search_field.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
@@ -247,11 +249,8 @@ class _DatabaseScopeTabView extends StatelessWidget {
                   minWidth: isWideToolbar ? 240 : 0,
                   maxWidth: isWideToolbar ? 360 : double.infinity,
                 ),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: l10n.commonSearch,
-                    prefixIcon: const Icon(Icons.search),
-                  ),
+                child: ModuleSearchField(
+                  hintText: l10n.commonSearch,
                   onSubmitted: (value) => provider.load(query: value),
                 ),
               );
@@ -622,16 +621,13 @@ class _StatusChip extends StatelessWidget {
     final bg =
         isPositive ? scheme.primaryContainer : scheme.surfaceContainerHighest;
     final fg = isPositive ? scheme.onPrimaryContainer : scheme.onSurfaceVariant;
-    return Container(
+    return StatusLabelWidget(
+      label: statusText,
+      color: fg,
+      backgroundColor: bg,
+      textStyle: Theme.of(context).textTheme.labelMedium,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        statusText,
-        style: Theme.of(context).textTheme.labelMedium?.copyWith(color: fg),
-      ),
+      radius: 999,
     );
   }
 }

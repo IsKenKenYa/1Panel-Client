@@ -31,10 +31,14 @@ extension _FilesViewItemOpeners on _FilesViewState {
         showRenameDialog(context, provider, file, l10n);
         break;
       case 'copy':
-        showCopyDialog(context, provider, file, l10n);
+        showFileOperationDialog(
+          context, provider, FileOperation.copy, file: file,
+        );
         break;
       case 'move':
-        showMoveDialog(context, provider, file, l10n);
+        showFileOperationDialog(
+          context, provider, FileOperation.move, file: file,
+        );
         break;
       case 'extract':
         showExtractDialog(context, provider, file, l10n);

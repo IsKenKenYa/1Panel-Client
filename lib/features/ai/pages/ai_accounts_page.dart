@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/data/models/ai/agent_account_models.dart';
@@ -67,16 +68,7 @@ class _AiAccountsPageState extends State<AiAccountsPage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(_error!),
-                      const SizedBox(height: 16),
-                      ElevatedButton(onPressed: _load, child:  Text(context.l10n.commonRetry)),
-                    ],
-                  ),
-                )
+              ? ModuleErrorStateWidget(message: _error, onRetry: _load)
               : _accounts.isEmpty
                   ?  Center(child: Text(context.l10n.aiAccountsEmpty))
                   : ListView.builder(

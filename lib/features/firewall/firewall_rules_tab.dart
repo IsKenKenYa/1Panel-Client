@@ -200,31 +200,17 @@ class _FirewallRulesTabState extends State<FirewallRulesTab> {
             trailing: (_selectionMode && provider.supportsLegacyChanges) ||
                     !rule.canDelete
                 ? null
-                : PopupMenuButton<String>(
+                : FirewallRuleActionMenu(
                     enabled: !provider.isMutating &&
                         (rule.supportsLegacyChanges || !provider.isLoading),
+                    canEdit: rule.supportsLegacyChanges && !provider.useFilterApi,
+                    canToggle: rule.supportsLegacyChanges,
                     onSelected: (value) => _handleAction(
                       context,
                       provider,
                       rule,
                       value,
                     ),
-                    itemBuilder: (context) => [
-                      if (rule.supportsLegacyChanges && !provider.useFilterApi)
-                        PopupMenuItem(
-                          value: 'edit',
-                          child: Text(context.l10n.commonEdit),
-                        ),
-                      if (rule.supportsLegacyChanges)
-                        PopupMenuItem(
-                          value: 'toggle',
-                          child: Text(context.l10n.firewallToggleStrategyAction),
-                        ),
-                      PopupMenuItem(
-                        value: 'delete',
-                        child: Text(context.l10n.commonDelete),
-                      ),
-                    ],
                   ),
             onTap: _selectionMode && rule.supportsLegacyChanges
                 ? () => _selection.toggle(rule)

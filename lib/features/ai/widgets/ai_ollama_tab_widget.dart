@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/module_search_field.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/ai/ai_provider.dart';
 import 'package:onepanel_client/features/ai/widgets/ai_ollama_tab_actions.dart';
@@ -48,23 +49,20 @@ class _AIOllamaTabWidgetState extends State<AIOllamaTabWidget> {
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              TextField(
+              ModuleSearchField(
                 controller: _searchController,
                 textInputAction: TextInputAction.search,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.search),
-                  suffixIcon: IconButton(
-                    tooltip: context.l10n.commonSearch,
-                    onPressed: () => provider.searchOllamaModels(
-                      info: _searchController.text.trim().isEmpty
-                          ? null
-                          : _searchController.text.trim(),
-                    ),
-                    icon: const Icon(Icons.search),
+                suffixIcon: IconButton(
+                  tooltip: context.l10n.commonSearch,
+                  onPressed: () => provider.searchOllamaModels(
+                    info: _searchController.text.trim().isEmpty
+                        ? null
+                        : _searchController.text.trim(),
                   ),
-                  labelText: l10n.commonSearch,
-                  border: const OutlineInputBorder(),
+                  icon: const Icon(Icons.search),
                 ),
+                labelText: l10n.commonSearch,
+                border: const OutlineInputBorder(),
                 onSubmitted: (value) => provider.searchOllamaModels(
                   info: value.trim().isEmpty ? null : value.trim(),
                 ),

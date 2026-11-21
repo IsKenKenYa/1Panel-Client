@@ -7,6 +7,8 @@ void main() {
   group('SelectionBar Widget Tests', () {
     Widget createTestWidget({
       required int selectionCount,
+      SelectionBar? bar,
+      double textScale = 1,
       VoidCallback? onCompress,
       VoidCallback? onCopy,
       VoidCallback? onMove,
@@ -18,6 +20,12 @@ void main() {
         locale: const Locale('zh', 'CN'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            textScaler: TextScaler.linear(textScale),
+          ),
+          child: child!,
+        ),
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
@@ -26,7 +34,7 @@ void main() {
           body: Column(
             children: [
               const Spacer(),
-              SelectionBar(
+              bar ?? SelectionBar(
                 selectionCount: selectionCount,
                 onCompress: onCompress,
                 onCopy: onCopy,
@@ -46,7 +54,62 @@ void main() {
       await tester.pumpWidget(createTestWidget(selectionCount: 5));
       await tester.pumpAndSettle();
 
-      expect(find.textContaining('5'), findsOneWidget);
+      expect(find.text('已选择 5 项'), findsOneWidget);
+    });
+
+    testWidgets('file actions remain available on narrow screens with large text',
+        (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(280, 640);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      var taps = 0;
+      void selectAction() => taps++;
+      await tester.pumpWidget(createTestWidget(
+        selectionCount: 120,
+        textScale: 2,
+        onCompress: selectAction,
+        onCopy: selectAction,
+        onMove: selectAction,
+        onSelectAll: selectAction,
+        onDeselect: selectAction,
+        onDelete: selectAction,
+      ));
+      await tester.pumpAndSettle();
+      expect(find.text('已选择 120 项'), findsOneWidget);
+      final buttons = find.byType(IconButton);
+      expect(buttons, findsNWidgets(6));
+      for (var index = 0; index < 6; index++) {
+        await tester.tap(buttons.at(index));
+      }
+      expect(taps, 6);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('recycle bin keeps its own actions and selection callbacks', (tester) async {
+      final actions = <String>[];
+      await tester.pumpWidget(createTestWidget(
+        selectionCount: 2,
+        bar: SelectionBar.recycleBin(
+          selectionCount: 2,
+          onRestore: () => actions.add('restore'),
+          onDeletePermanently: () => actions.add('delete'),
+          onSelectAll: () => actions.add('all'),
+          onDeselect: () => actions.add('none'),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.text('2 已选择'), findsOneWidget);
+      expect(find.byType(IconButton), findsNWidgets(4));
+      for (final icon in [
+        Icons.restore_outlined,
+        Icons.delete_forever_outlined,
+        Icons.select_all,
+        Icons.deselect,
+      ]) {
+        await tester.tap(find.byIcon(icon));
+      }
+      expect(actions, ['restore', 'delete', 'all', 'none']);
     });
 
     testWidgets('displays zero selection count', (WidgetTester tester) async {

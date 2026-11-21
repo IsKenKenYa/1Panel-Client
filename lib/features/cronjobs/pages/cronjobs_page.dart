@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/module_search_field.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/cronjob_list_models.dart';
@@ -77,14 +78,11 @@ class _CronjobsPageState extends State<CronjobsPage>
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: <Widget>[
-                    TextField(
+                    ModuleSearchField(
                       controller: _searchController,
                       onChanged: provider.updateSearchQuery,
                       onSubmitted: (_) => provider.load(),
-                      decoration: InputDecoration(
-                        hintText: l10n.cronjobsSearchHint,
-                        prefixIcon: const Icon(Icons.search),
-                      ),
+                      hintText: l10n.cronjobsSearchHint,
                     ),
                     const SizedBox(height: 12),
                     Align(

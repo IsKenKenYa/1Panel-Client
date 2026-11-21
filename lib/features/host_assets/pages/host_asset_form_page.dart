@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_save_button.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/group/widgets/group_selector_sheet_widget.dart';
 import 'package:onepanel_client/features/host_assets/models/host_asset_form_args.dart';
@@ -151,17 +152,9 @@ class _HostAssetFormPageState extends State<HostAssetFormPage> {
             ),
           ),
           floatingActionButton: null,
-          bottomNavigationBar: SafeArea(
-            minimum: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: FilledButton(
-              onPressed: provider.canSave ? _save : null,
-              child: provider.isSaving
-                  ? const SizedBox.square(
-                      dimension: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : Text(l10n.commonSave),
-            ),
+          bottomNavigationBar: AppFormSaveBar(
+            onSave: provider.canSave ? _save : null,
+            isSaving: provider.isSaving,
           ),
         );
       },

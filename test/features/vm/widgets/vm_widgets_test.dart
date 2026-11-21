@@ -9,6 +9,7 @@ import 'package:onepanel_client/features/vm/vm_service.dart';
 import 'package:onepanel_client/features/vm/widgets/vm_environment_banner.dart';
 import 'package:onepanel_client/features/vm/widgets/vm_instance_card.dart';
 import 'package:onepanel_client/features/vm/widgets/vm_sparkline.dart';
+import 'package:onepanel_client/features/vm/widgets/vm_storage_usage.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 import 'package:provider/provider.dart';
 
@@ -34,6 +35,26 @@ Widget wrap(Widget child, {VmProvider? provider}) {
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  testWidgets('storage usage presents the same capacity in both views', (tester) async {
+    const storage = VMStorageItem(
+      name: 'pool',
+      path: '/vm/pool',
+      capacity: 4 * 1024 * 1024,
+      available: 1024 * 1024,
+      vmCount: 2,
+    );
+    for (final detailed in [false, true]) {
+      await tester.pumpWidget(wrap(VmStorageUsage(storage: storage, detailed: detailed)));
+      expect(find.text('75.0%'), findsOneWidget);
+      expect(find.textContaining('1.0 MiB'), findsOneWidget);
+      expect(find.text(storage.path), detailed ? findsOneWidget : findsNothing);
+      final bar = tester.widget<LinearProgressIndicator>(find.byType(LinearProgressIndicator));
+      expect(bar.value, 0.75);
+    }
+    expect(const VMStorageItem().usagePercent, 0.0);
+    expect(const VMStorageItem(usedPercent: 88.5).usagePercent, 88.5);
+  });
 
   group('Vm instance card', () {
     testWidgets('renders name, status chip and resource facts', (tester) async {

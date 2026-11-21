@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/services/logger/log_export_service.dart';
 import 'package:onepanel_client/core/services/logger/log_format.dart';
-import 'package:onepanel_client/core/utils/snackbar_utils.dart';
+import 'package:onepanel_client/core/services/logger/logger_service.dart';
+import 'package:onepanel_client/core/utils/error_message_utils.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 
 /// 导出日志预览对话框。
 ///
 /// 两个 Tab：「人读格式」「AI Agent 格式」。
 /// - 默认显示 AI Agent 格式
 /// - 仅读取日志文件**最后 200 行**（不读取全部）
-/// - 「保存此格式」触发 `LogExportService.exportLogs(format: ...)` 走 picker
+/// - 「保存此格式」返回所选格式，由反馈中心执行导出
 class LogPreviewDialog extends StatefulWidget {
   const LogPreviewDialog({super.key});
 
@@ -21,6 +23,7 @@ class _LogPreviewDialogState extends State<LogPreviewDialog>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
   bool _loading = true;
+  String? _error;
   String _aiPreview = '';
   String _humanPreview = '';
 
@@ -38,31 +41,27 @@ class _LogPreviewDialogState extends State<LogPreviewDialog>
   }
 
   Future<void> _loadPreviews() async {
-    final export = LogExportService();
-    final ai = await export.tailRecentLogs(200, format: LogFormat.aiAgent);
-    final human = await export.tailRecentLogs(200, format: LogFormat.humanReadable);
-    if (!mounted) return;
-    setState(() {
-      _aiPreview = ai;
-      _humanPreview = human;
-      _loading = false;
-    });
-  }
-
-  Future<void> _saveFormat(LogFormat format) async {
-    final result = await LogExportService()
-        .exportLogs(minLevel: null, format: format);
-    if (!mounted) return;
-    final l10n = context.l10n;
-    if (result.wasCancelled) {
-      Navigator.of(context).pop();
-    } else if (result.success) {
-      Navigator.of(context).pop();
-    } else {
-      SnackBarUtils.showError(
-        context,
-        '${l10n.commonSaveFailed}: ${result.errorMessage ?? ''}',
+    try {
+      final ai = await LogExportService().tailRecentLogs(200);
+      if (!mounted) return;
+      setState(() {
+        _aiPreview = ai;
+        _humanPreview = reformatAiAgentToHumanReadable(ai);
+        _loading = false;
+        _error = null;
+      });
+    } catch (error, stackTrace) {
+      appLogger.eWithPackage(
+        'core.services.logger',
+        'Failed to preview application logs',
+        error: error,
+        stackTrace: stackTrace,
       );
+      if (!mounted) return;
+      setState(() {
+        _error = ErrorMessageUtils.userFacingMessage(error);
+        _loading = false;
+      });
     }
   }
 
@@ -90,7 +89,9 @@ class _LogPreviewDialogState extends State<LogPreviewDialog>
                   ? Center(
                       child: Text(l10n.systemSettingsAppLogsPreviewLoading),
                     )
-                  : TabBarView(
+                  : _error != null
+                      ? ModuleErrorStateWidget(message: _error, onRetry: _loadPreviews)
+                      : TabBarView(
                       controller: _tabController,
                       children: [
                         _PreviewContent(text: _humanPreview),
@@ -107,9 +108,9 @@ class _LogPreviewDialogState extends State<LogPreviewDialog>
           child: Text(l10n.commonCancel),
         ),
         FilledButton(
-          onPressed: _loading
+          onPressed: _loading || _error != null
               ? null
-              : () => _saveFormat(
+              : () => Navigator.of(context).pop(
                     _tabController.index == 0
                         ? LogFormat.humanReadable
                         : LogFormat.aiAgent,

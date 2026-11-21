@@ -7,6 +7,7 @@ import 'package:onepanel_client/data/models/vm/vm_resource_models.dart';
 import 'package:onepanel_client/features/vm/providers/vm_provider.dart';
 import 'package:onepanel_client/features/vm/vm_status.dart';
 import 'package:onepanel_client/features/vm/widgets/vm_orphan_dialog.dart';
+import 'package:onepanel_client/features/vm/widgets/vm_storage_usage.dart';
 import 'package:onepanel_client/shared/widgets/expressive_section.dart';
 import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 
@@ -78,7 +79,13 @@ class VmOverviewTab extends StatelessWidget {
               )
             else
               for (final storage in provider.storages)
-                _StorageRow(storage: storage),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDesignTokens.spacingLg,
+                    vertical: AppDesignTokens.spacingMd + 2,
+                  ),
+                  child: VmStorageUsage(storage: storage),
+                ),
           ],
         ),
         const SizedBox(height: AppDesignTokens.spacingXl),
@@ -403,10 +410,7 @@ class _RisksSection extends StatelessWidget {
       risks.add(_VmRisk(l10n.vmOverviewRiskEnvironment, critical: true));
     }
     for (final storage in storages) {
-      final percent = storage.usedPercent ??
-          (storage.capacity > 0
-              ? (storage.capacity - storage.available) / storage.capacity * 100
-              : 0);
+      final percent = storage.usagePercent;
       if (percent >= 90) {
         risks.add(_VmRisk(
           l10n.vmOverviewRiskStorageCritical(storage.name),
@@ -437,89 +441,6 @@ class _RisksSection extends StatelessWidget {
       risks.add(_VmRisk(l10n.vmOverviewRiskPausedVm(paused)));
     }
     return risks;
-  }
-}
-
-class _StorageRow extends StatelessWidget {
-  const _StorageRow({required this.storage});
-
-  final VMStorageItem storage;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    final percent = storage.usedPercent ??
-        (storage.capacity > 0
-            ? (storage.capacity - storage.available) / storage.capacity * 100
-            : 0);
-    final barColor = percent >= 90
-        ? scheme.error
-        : (percent >= 80 ? scheme.tertiary : scheme.primary);
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppDesignTokens.spacingLg,
-        vertical: AppDesignTokens.spacingMd + 2,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Text(
-                  storage.name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              Text(
-                '${percent.toStringAsFixed(1)}%',
-                style: theme.textTheme.titleSmall?.copyWith(
-                  color: barColor,
-                  fontWeight: FontWeight.w600,
-                  fontFeatures: const <FontFeature>[
-                    FontFeature.tabularFigures(),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppDesignTokens.spacingSm),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(AppDesignTokens.radiusXl),
-            child: LinearProgressIndicator(
-              value: (percent / 100).clamp(0.0, 1.0),
-              minHeight: 8,
-              color: barColor,
-              backgroundColor: scheme.surfaceContainerHighest,
-            ),
-          ),
-          const SizedBox(height: AppDesignTokens.spacingSm),
-          Text(
-            '${l10n.vmStorageAvailableLabel} ${_formatBytes(storage.available)}'
-            ' · ${l10n.vmNetworkVmCountLabel} ${storage.vmCount}',
-            style: theme.textTheme.labelSmall
-                ?.copyWith(color: scheme.onSurfaceVariant),
-          ),
-        ],
-      ),
-    );
-  }
-
-  static String _formatBytes(int bytes) {
-    if (bytes >= 1024 * 1024 * 1024) {
-      return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(1)} GiB';
-    }
-    if (bytes >= 1024 * 1024) {
-      return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MiB';
-    }
-    return '$bytes B';
   }
 }
 

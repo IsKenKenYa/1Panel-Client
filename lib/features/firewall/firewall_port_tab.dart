@@ -145,31 +145,17 @@ class _FirewallPortTabState extends State<FirewallPortTab> {
             trailing: (_selectionMode && provider.supportsLegacyChanges) ||
                     !rule.canDelete
                 ? null
-                : PopupMenuButton<String>(
+                : FirewallRuleActionMenu(
                     enabled: !provider.isMutating &&
                         (rule.supportsLegacyChanges || !provider.isLoading),
+                    canEdit: rule.supportsLegacyChanges,
+                    canToggle: rule.supportsLegacyChanges,
                     onSelected: (value) => _handleAction(
                       context,
                       provider,
                       rule,
                       value,
                     ),
-                    itemBuilder: (context) => [
-                      if (rule.supportsLegacyChanges) ...[
-                        PopupMenuItem(
-                          value: 'edit',
-                          child: Text(l10n.commonEdit),
-                        ),
-                        PopupMenuItem(
-                          value: 'toggle',
-                          child: Text(l10n.firewallToggleStrategyAction),
-                        ),
-                      ],
-                      PopupMenuItem(
-                        value: 'delete',
-                        child: Text(l10n.commonDelete),
-                      ),
-                    ],
                   ),
             onTap: _selectionMode && rule.supportsLegacyChanges
                 ? () => _selection.toggle(rule)

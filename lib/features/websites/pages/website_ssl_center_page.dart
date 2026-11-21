@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/module_search_field.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import '../../../data/models/ssl_models.dart';
@@ -9,6 +10,7 @@ import 'package:onepanel_client/shared/security_gateway/widgets/security_status_
 
 import '../providers/website_ssl_center_provider.dart';
 import '../widgets/website_async_state_view.dart';
+import '../widgets/website_ssl_upload_dialog.dart';
 import 'website_certificate_detail_page.dart';
 import 'website_site_ssl_page.dart';
 import 'website_ssl_accounts_page.dart';
@@ -130,12 +132,9 @@ class _WebsiteSslCenterBody extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 12),
-                        TextField(
+                        ModuleSearchField(
                           onChanged: provider.setSearchQuery,
-                          decoration: InputDecoration(
-                            labelText: l10n.commonSearch,
-                            prefixIcon: const Icon(Icons.search),
-                          ),
+                          labelText: l10n.commonSearch,
                         ),
                         const SizedBox(height: 12),
                         DropdownButtonFormField<String>(
@@ -298,103 +297,11 @@ class _WebsiteSslCenterBody extends StatelessWidget {
   }
 
   Future<void> _showUploadDialog(BuildContext context) async {
-    final l10n = context.l10n;
-    var type = 'paste';
-    final certController = TextEditingController();
-    final keyController = TextEditingController();
-    final certPathController = TextEditingController();
-    final keyPathController = TextEditingController();
-
-    await showDialog<void>(
+    final provider = context.read<WebsiteSslCenterProvider>();
+    await showDialog<bool>(
       context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Text(l10n.websitesSslUploadAction),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                DropdownButtonFormField<String>(
-                  initialValue: type,
-                  decoration: InputDecoration(
-                      labelText: l10n.websitesSslUploadTypeLabel),
-                  items: [
-                    DropdownMenuItem(
-                        value: 'paste',
-                        child: Text(l10n.websitesSslUploadTypePaste)),
-                    DropdownMenuItem(
-                        value: 'local',
-                        child: Text(l10n.websitesSslUploadTypeLocal)),
-                  ],
-                  onChanged: (value) => setState(() => type = value ?? 'paste'),
-                ),
-                const SizedBox(height: 12),
-                if (type == 'paste') ...[
-                  TextField(
-                    controller: certController,
-                    maxLines: 3,
-                    decoration: InputDecoration(
-                        labelText: l10n.websitesSslCertificateLabel),
-                  ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: keyController,
-                    maxLines: 3,
-                    decoration: InputDecoration(
-                        labelText: l10n.websitesSslPrivateKeyLabel),
-                  ),
-                ] else ...[
-                  TextField(
-                    controller: certPathController,
-                    decoration: InputDecoration(
-                        labelText: l10n.websitesSslCertificatePathLabel),
-                  ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: keyPathController,
-                    decoration: InputDecoration(
-                        labelText: l10n.websitesSslPrivateKeyPathLabel),
-                  ),
-                ],
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-                onPressed: () => Navigator.of(ctx).pop(),
-                child: Text(l10n.commonCancel)),
-            FilledButton(
-              onPressed: () async {
-                Navigator.of(ctx).pop();
-                await context
-                    .read<WebsiteSslCenterProvider>()
-                    .uploadCertificate(
-                      WebsiteSSLUpload(
-                        type: type,
-                        certificate:
-                            type == 'paste' ? certController.text.trim() : null,
-                        privateKey:
-                            type == 'paste' ? keyController.text.trim() : null,
-                        certificatePath: type == 'local'
-                            ? certPathController.text.trim()
-                            : null,
-                        privateKeyPath: type == 'local'
-                            ? keyPathController.text.trim()
-                            : null,
-                      ),
-                    );
-              },
-              child: Text(l10n.commonUpload),
-            ),
-          ],
-        ),
-      ),
+      builder: (_) => WebsiteSslUploadDialog(onUpload: provider.uploadCertificate),
     );
-
-    // Dispose after dialog closes; the controllers are no longer referenced.
-    certController.dispose();
-    keyController.dispose();
-    certPathController.dispose();
-    keyPathController.dispose();
   }
 
   void _openCertificateDetail(BuildContext context, WebsiteSSL cert) {

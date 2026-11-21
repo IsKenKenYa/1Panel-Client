@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/module_search_field.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/mcp_models.dart';
 import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
@@ -51,23 +52,20 @@ class _AIMcpTabWidgetState extends State<AIMcpTabWidget> {
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: <Widget>[
-              TextField(
+              ModuleSearchField(
                 controller: _searchController,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.search),
-                  labelText: l10n.aiMcpSearchHint,
-                  border: const OutlineInputBorder(),
-                  suffixIcon: IconButton(
-                    tooltip: context.l10n.commonSearch,
-                    onPressed: provider.isLoading
-                        ? null
-                        : () {
-                            provider.updateSearchQuery(
-                                _searchController.text.trim());
-                            provider.load();
-                          },
-                    icon: const Icon(Icons.search),
-                  ),
+                labelText: l10n.aiMcpSearchHint,
+                border: const OutlineInputBorder(),
+                suffixIcon: IconButton(
+                  tooltip: context.l10n.commonSearch,
+                  onPressed: provider.isLoading
+                      ? null
+                      : () {
+                          provider.updateSearchQuery(
+                              _searchController.text.trim());
+                          provider.load();
+                        },
+                  icon: const Icon(Icons.search),
                 ),
                 onSubmitted: (String value) {
                   provider.updateSearchQuery(value.trim());

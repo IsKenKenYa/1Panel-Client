@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/label_value_row.dart';
 
 class OrchestrationDetailLineWidget extends StatelessWidget {
   const OrchestrationDetailLineWidget({
@@ -14,26 +15,13 @@ class OrchestrationDetailLineWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return LabelValueRow(
+      label: label,
+      value: (value == null || value!.isEmpty) ? '-' : value!,
+      labelWidth: labelWidth,
+      labelStyle: Theme.of(context).textTheme.bodyMedium,
+      valueStyle: Theme.of(context).textTheme.bodySmall,
       padding: const EdgeInsets.symmetric(vertical: 3),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: labelWidth,
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ),
-          Expanded(
-            child: Text(
-              (value == null || value!.isEmpty) ? '-' : value!,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

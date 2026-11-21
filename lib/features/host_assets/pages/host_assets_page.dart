@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/module_search_field.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/host_models.dart';
@@ -94,19 +95,16 @@ class _HostAssetsPageState extends State<HostAssetsPage>
           ),
           body: Column(
             children: <Widget>[
-              TextField(
+              ModuleSearchField(
                 controller: _searchController,
                 onChanged: provider.updateSearchQuery,
                 onSubmitted: (_) => provider.load(),
                 textInputAction: TextInputAction.search,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.search),
-                  hintText: l10n.hostAssetsSearchHint,
-                  suffixIcon: IconButton(
-                    tooltip: context.l10n.commonSearch,
-                    onPressed: () => provider.load(),
-                    icon: const Icon(Icons.arrow_forward),
-                  ),
+                hintText: l10n.hostAssetsSearchHint,
+                suffixIcon: IconButton(
+                  tooltip: context.l10n.commonSearch,
+                  onPressed: () => provider.load(),
+                  icon: const Icon(Icons.arrow_forward),
                 ),
               ),
               const SizedBox(height: 12),

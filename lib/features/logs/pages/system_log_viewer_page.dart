@@ -6,6 +6,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/logs/models/system_log_viewer_args.dart';
 import 'package:onepanel_client/features/logs/providers/system_logs_provider.dart';
 import 'package:onepanel_client/features/logs/utils/logs_l10n_helper.dart';
+import 'package:onepanel_client/features/logs/widgets/system_log_source_filter.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/shared/widgets/log_viewer/log_viewer.dart';
@@ -101,22 +102,9 @@ class _SystemLogViewerPageState extends State<SystemLogViewerPage> {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: <Widget>[
-                    Wrap(
-                      spacing: 8,
-                      children: <Widget>[
-                        ChoiceChip(
-                          label: Text(l10n.logsSystemSourceAgent),
-                          selected: provider.source == SystemLogSource.agent,
-                          onSelected: (_) =>
-                              provider.updateSource(SystemLogSource.agent),
-                        ),
-                        ChoiceChip(
-                          label: Text(l10n.logsSystemSourceCore),
-                          selected: provider.source == SystemLogSource.core,
-                          onSelected: (_) =>
-                              provider.updateSource(SystemLogSource.core),
-                        ),
-                      ],
+                    SystemLogSourceFilter(
+                      value: provider.source,
+                      onChanged: provider.updateSource,
                     ),
                     const SizedBox(height: 12),
                     DropdownButtonFormField<String>(

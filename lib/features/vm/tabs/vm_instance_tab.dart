@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/module_search_field.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
@@ -97,18 +98,14 @@ class _InstanceToolbar extends StatelessWidget {
           Row(
             children: <Widget>[
               Expanded(
-                child: TextField(
+                child: ModuleSearchField(
                   textInputAction: TextInputAction.search,
                   onSubmitted: provider.setVmSearch,
-                  decoration: InputDecoration(
-                    hintText: l10n.vmInstanceSearchHint,
-                    prefixIcon: const Icon(Icons.search),
-                    filled: true,
-                    border: OutlineInputBorder(
-                      borderRadius:
-                          BorderRadius.circular(AppDesignTokens.radiusXl),
-                      borderSide: BorderSide.none,
-                    ),
+                  hintText: l10n.vmInstanceSearchHint,
+                  filled: true,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppDesignTokens.radiusXl),
+                    borderSide: BorderSide.none,
                   ),
                 ),
               ),

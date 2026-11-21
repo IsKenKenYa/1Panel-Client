@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/shared/widgets/forms/app_form_panel.dart';
 import '../../../data/models/container_models.dart';
+import 'container_form_fields.dart';
 
 class ComposeCreateDialog extends StatefulWidget {
   const ComposeCreateDialog({super.key});
@@ -37,19 +38,7 @@ class _ComposeCreateDialogState extends State<ComposeCreateDialog> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  labelText: l10n.commonName,
-                  border: const OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return l10n.serverFormRequired;
-                  }
-                  return null;
-                },
-              ),
+              ContainerNameField(controller: _nameController),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _pathController,

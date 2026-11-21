@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/module_search_field.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/logs/providers/logs_provider.dart';
 import 'package:onepanel_client/features/logs/utils/logs_l10n_helper.dart';
 import 'package:onepanel_client/features/logs/widgets/operation_log_card_widget.dart';
+import 'package:onepanel_client/features/logs/widgets/log_status_filter.dart';
 import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
 
 class LogsOperationTabWidget extends StatelessWidget {
@@ -28,14 +30,11 @@ class LogsOperationTabWidget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: <Widget>[
-              TextField(
+              ModuleSearchField(
                 controller: operationController,
                 onChanged: provider.updateOperationKeyword,
                 onSubmitted: (_) => provider.loadOperationLogs(),
-                decoration: InputDecoration(
-                  labelText: l10n.logsOperationActionLabel,
-                  prefixIcon: const Icon(Icons.search),
-                ),
+                labelText: l10n.logsOperationActionLabel,
               ),
               const SizedBox(height: 12),
               TextField(
@@ -48,34 +47,12 @@ class LogsOperationTabWidget extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                children: <Widget>[
-                  _StatusChip(
-                    label: l10n.logsStatusAll,
-                    selected: provider.operationStatus.isEmpty,
-                    onTap: () async {
-                      provider.updateOperationStatus('');
-                      await provider.loadOperationLogs();
-                    },
-                  ),
-                  _StatusChip(
-                    label: l10n.logsStatusSuccess,
-                    selected: provider.operationStatus == 'Success',
-                    onTap: () async {
-                      provider.updateOperationStatus('Success');
-                      await provider.loadOperationLogs();
-                    },
-                  ),
-                  _StatusChip(
-                    label: l10n.logsStatusFailed,
-                    selected: provider.operationStatus == 'Failed',
-                    onTap: () async {
-                      provider.updateOperationStatus('Failed');
-                      await provider.loadOperationLogs();
-                    },
-                  ),
-                ],
+              LogStatusFilter(
+                value: provider.operationStatus,
+                onChanged: (status) async {
+                  provider.updateOperationStatus(status);
+                  await provider.loadOperationLogs();
+                },
               ),
             ],
           ),
@@ -111,27 +88,6 @@ class LogsOperationTabWidget extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _StatusChip extends StatelessWidget {
-  const _StatusChip({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final String label;
-  final bool selected;
-  final Future<void> Function() onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return ChoiceChip(
-      label: Text(label),
-      selected: selected,
-      onSelected: (_) => onTap(),
     );
   }
 }

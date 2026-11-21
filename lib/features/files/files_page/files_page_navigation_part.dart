@@ -78,60 +78,19 @@ extension _FilesViewNavigation on _FilesViewState {
     FilesProvider provider,
     AppLocalizations l10n,
   ) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
-        boxShadow: [
-          BoxShadow(
-            color: theme.colorScheme.shadow.withValues(alpha: 0.15),
-            blurRadius: 4,
-            offset: const Offset(0, -2),
-          ),
-        ],
+    return SelectionBar(
+      selectionCount: provider.data.selectionCount,
+      onCompress: () => showCompressDialog(
+        context,
+        provider,
+        provider.data.selectedFiles.toList(),
+        l10n,
       ),
-      child: Row(
-        children: [
-          Text(l10n.filesSelectedCount(provider.data.selectionCount)),
-          const Spacer(),
-          IconButton(
-            icon: const Icon(Icons.folder_zip_outlined),
-            onPressed: () => showCompressDialog(
-              context,
-              provider,
-              provider.data.selectedFiles.toList(),
-              l10n,
-            ),
-            tooltip: l10n.filesActionCompress,
-          ),
-          IconButton(
-            icon: const Icon(Icons.content_copy),
-            onPressed: () => showBatchCopyDialog(context, provider, l10n),
-            tooltip: l10n.filesActionCopy,
-          ),
-          IconButton(
-            icon: const Icon(Icons.drive_file_move_outline),
-            onPressed: () => showBatchMoveDialog(context, provider, l10n),
-            tooltip: l10n.filesActionMove,
-          ),
-          IconButton(
-            icon: const Icon(Icons.select_all),
-            onPressed: () => provider.selectAll(),
-            tooltip: l10n.filesActionSelectAll,
-          ),
-          IconButton(
-            icon: const Icon(Icons.deselect),
-            onPressed: () => provider.clearSelection(),
-            tooltip: l10n.filesActionDeselect,
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete_outline),
-            onPressed: () => showDeleteConfirmDialog(context, provider, l10n),
-            tooltip: l10n.filesActionDelete,
-          ),
-        ],
-      ),
+      onCopy: () => showFileOperationDialog(context, provider, FileOperation.copy),
+      onMove: () => showFileOperationDialog(context, provider, FileOperation.move),
+      onSelectAll: provider.selectAll,
+      onDeselect: provider.clearSelection,
+      onDelete: () => showDeleteConfirmDialog(context, provider, l10n),
     );
   }
 }

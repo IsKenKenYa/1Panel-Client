@@ -15,6 +15,7 @@ import 'package:onepanel_client/features/shell/widgets/shell_list_bottom_padding
 
 import '../providers/websites_provider.dart';
 import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_empty_state_widget.dart';
 import '../../../shared/state/selection_controller.dart';
 import '../widgets/website_async_state_view.dart';
 import '../widgets/website_list_controls_widget.dart';
@@ -241,9 +242,10 @@ class _WebsiteListPageBodyState extends State<WebsiteListPageBody> {
                   );
                 }
                 if (data.websites.isEmpty) {
-                  return WebsitesEmptyView(
+                  return ModuleEmptyStateWidget(
+                    icon: Icons.language_outlined,
                     title: l10n.websitesEmptyTitle,
-                    subtitle: l10n.websitesEmptySubtitle,
+                    description: l10n.websitesEmptySubtitle,
                   );
                 }
                 final website = data.websites[index - 2];

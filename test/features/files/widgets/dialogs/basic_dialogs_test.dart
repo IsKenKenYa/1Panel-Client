@@ -2,76 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/file_models.dart';
-import 'package:onepanel_client/features/files/widgets/dialogs/create_directory_dialog.dart';
-import 'package:onepanel_client/features/files/widgets/dialogs/create_file_dialog.dart';
+import 'package:onepanel_client/features/files/widgets/dialogs/file_operation_dialog.dart';
 import 'package:onepanel_client/features/files/widgets/dialogs/rename_dialog.dart';
-import 'package:onepanel_client/features/files/widgets/dialogs/move_dialog.dart';
-import 'package:onepanel_client/features/files/widgets/dialogs/copy_dialog.dart';
 import 'package:onepanel_client/features/files/widgets/dialogs/extract_dialog.dart';
 import 'package:onepanel_client/features/files/widgets/dialogs/compress_dialog.dart';
 import 'package:onepanel_client/features/files/widgets/dialogs/delete_confirm_dialog.dart';
-import 'package:onepanel_client/features/files/widgets/dialogs/batch_move_dialog.dart';
-import 'package:onepanel_client/features/files/widgets/dialogs/batch_copy_dialog.dart';
 import 'package:onepanel_client/features/files/widgets/dialogs/search_dialog.dart';
 import 'package:onepanel_client/features/files/widgets/dialogs/sort_options_dialog.dart';
-import 'package:onepanel_client/features/files/models/models.dart';
 import 'package:onepanel_client/features/files/files_provider.dart';
-import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 import 'package:provider/provider.dart';
 
-class _MockFilesProvider extends FilesProvider {
-  FilesData _mockData = const FilesData(
-    currentPath: '/home',
-    selectedFiles: {'/home/test.txt', '/home/test2.txt'},
-  );
-
-  @override
-  FilesData get data => _mockData;
-
-  void setMockData(FilesData data) {
-    _mockData = data;
-    notifyListeners();
-  }
-
-  Future<void> createDirectory(String name) async {}
-
-  Future<void> createFile(String name, {String? content}) async {}
-
-  Future<void> renameFile(String oldPath, String newName) async {}
-
-  Future<void> moveFile(String sourcePath, String targetPath) async {}
-
-  Future<void> copyFile(String sourcePath, String targetPath) async {}
-
-  Future<void> extractFile(String path, String dst, String type,
-      {String? secret}) async {}
-
-  Future<void> compressFiles(
-      List<String> files, String dst, String name, String type,
-      {String? secret}) async {}
-
-  Future<void> deleteSelected() async {}
-
-  Future<void> moveSelected(String targetPath) async {}
-
-  Future<void> copySelected(String targetPath) async {}
-
-  void setSearchQuery(String? query) {
-    _mockData = _mockData.copyWith(searchQuery: query);
-    notifyListeners();
-  }
-
-  void setSorting(String? sortBy, String? sortOrder) {
-    _mockData = _mockData.copyWith(sortBy: sortBy, sortOrder: sortOrder);
-    notifyListeners();
-  }
-
-  Future<void> loadFiles({String? path}) async {}
-
-  Future<void> refresh() async {}
-}
-
 void main() {
+  late FilesProvider provider;
+  setUp(() {
+    provider = FilesProvider()
+      ..toggleSelection('/home/test.txt')
+      ..toggleSelection('/home/test2.txt');
+  });
+  tearDown(() => provider.dispose());
+
+  void expectDestinationField(WidgetTester tester, {FileInfo? file}) {
+    final l10n = tester.element(find.byType(AlertDialog)).l10n;
+    final input = tester.widget<TextField>(find.byType(TextField));
+    expect(input.controller!.text, provider.data.currentPath);
+    if (file == null) {
+      expect(find.text('${l10n.filesSelected}: 2'), findsOneWidget);
+      expect(find.byTooltip(l10n.filesSelectPath), findsNothing);
+    } else {
+      expect(find.text('${l10n.filesNameLabel}: ${file.name}'), findsOneWidget);
+      expect(find.byTooltip(l10n.filesSelectPath), findsOneWidget);
+    }
+  }
+
   group('Create Directory Dialog Tests', () {
     testWidgets('shows dialog with title', (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
@@ -81,13 +43,13 @@ void main() {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         ),
-        home: ChangeNotifierProvider<_MockFilesProvider>(
-          create: (_) => _MockFilesProvider(),
+        home: ChangeNotifierProvider.value(
+          value: provider,
           child: Scaffold(
             body: Builder(
               builder: (context) => TextButton(
-                onPressed: () => showCreateDirectoryDialog(
-                    context, context.read<_MockFilesProvider>()),
+                onPressed: () => showFileOperationDialog(
+                    context, provider, FileOperation.createDirectory),
                 child: const Text('Show Dialog'),
               ),
             ),
@@ -100,6 +62,11 @@ void main() {
 
       expect(find.byType(AlertDialog), findsOneWidget);
       expect(find.byType(TextField), findsOneWidget);
+      final l10n = tester.element(find.byType(AlertDialog)).l10n;
+      await tester.enterText(find.byType(TextField), '   ');
+      await tester.tap(find.text(l10n.commonCreate).last);
+      await tester.pumpAndSettle();
+      expect(find.byType(AlertDialog), findsOneWidget);
     });
   });
 
@@ -112,13 +79,13 @@ void main() {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         ),
-        home: ChangeNotifierProvider<_MockFilesProvider>(
-          create: (_) => _MockFilesProvider(),
+        home: ChangeNotifierProvider.value(
+          value: provider,
           child: Scaffold(
             body: Builder(
               builder: (context) => TextButton(
-                onPressed: () => showCreateFileDialog(
-                    context, context.read<_MockFilesProvider>()),
+                onPressed: () => showFileOperationDialog(
+                    context, provider, FileOperation.createFile),
                 child: const Text('Show Dialog'),
               ),
             ),
@@ -154,7 +121,7 @@ void main() {
             builder: (context) => TextButton(
               onPressed: () => showRenameDialog(
                 context,
-                _MockFilesProvider(),
+                provider,
                 file,
                 AppLocalizations.of(context),
               ),
@@ -190,11 +157,11 @@ void main() {
         home: Scaffold(
           body: Builder(
             builder: (context) => TextButton(
-              onPressed: () => showMoveDialog(
+              onPressed: () => showFileOperationDialog(
                 context,
-                _MockFilesProvider(),
-                file,
-                AppLocalizations.of(context),
+                provider,
+                FileOperation.move,
+                file: file,
               ),
               child: const Text('Show Dialog'),
             ),
@@ -205,7 +172,7 @@ void main() {
       await tester.tap(find.text('Show Dialog'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(AlertDialog), findsOneWidget);
+      expectDestinationField(tester, file: file);
     });
   });
 
@@ -228,11 +195,11 @@ void main() {
         home: Scaffold(
           body: Builder(
             builder: (context) => TextButton(
-              onPressed: () => showCopyDialog(
+              onPressed: () => showFileOperationDialog(
                 context,
-                _MockFilesProvider(),
-                file,
-                AppLocalizations.of(context),
+                provider,
+                FileOperation.copy,
+                file: file,
               ),
               child: const Text('Show Dialog'),
             ),
@@ -243,7 +210,7 @@ void main() {
       await tester.tap(find.text('Show Dialog'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(AlertDialog), findsOneWidget);
+      expectDestinationField(tester, file: file);
     });
   });
 
@@ -268,7 +235,7 @@ void main() {
             builder: (context) => TextButton(
               onPressed: () => showExtractDialog(
                 context,
-                _MockFilesProvider(),
+                provider,
                 file,
                 AppLocalizations.of(context),
               ),
@@ -300,7 +267,7 @@ void main() {
             builder: (context) => TextButton(
               onPressed: () => showCompressDialog(
                 context,
-                _MockFilesProvider(),
+                provider,
                 ['/home/test.txt'],
                 AppLocalizations.of(context),
               ),
@@ -332,7 +299,7 @@ void main() {
             builder: (context) => TextButton(
               onPressed: () => showDeleteConfirmDialog(
                 context,
-                _MockFilesProvider(),
+                provider,
                 AppLocalizations.of(context),
               ),
               child: const Text('Show Dialog'),
@@ -361,10 +328,10 @@ void main() {
         home: Scaffold(
           body: Builder(
             builder: (context) => TextButton(
-              onPressed: () => showBatchMoveDialog(
+              onPressed: () => showFileOperationDialog(
                 context,
-                _MockFilesProvider(),
-                AppLocalizations.of(context),
+                provider,
+                FileOperation.move,
               ),
               child: const Text('Show Dialog'),
             ),
@@ -375,7 +342,7 @@ void main() {
       await tester.tap(find.text('Show Dialog'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(AlertDialog), findsOneWidget);
+      expectDestinationField(tester);
     });
   });
 
@@ -392,10 +359,10 @@ void main() {
         home: Scaffold(
           body: Builder(
             builder: (context) => TextButton(
-              onPressed: () => showBatchCopyDialog(
+              onPressed: () => showFileOperationDialog(
                 context,
-                _MockFilesProvider(),
-                AppLocalizations.of(context),
+                provider,
+                FileOperation.copy,
               ),
               child: const Text('Show Dialog'),
             ),
@@ -406,7 +373,7 @@ void main() {
       await tester.tap(find.text('Show Dialog'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(AlertDialog), findsOneWidget);
+      expectDestinationField(tester);
     });
   });
 
@@ -419,8 +386,8 @@ void main() {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         ),
-        home: ChangeNotifierProvider<_MockFilesProvider>(
-          create: (_) => _MockFilesProvider(),
+        home: ChangeNotifierProvider.value(
+          value: provider,
           child: Scaffold(
             body: Builder(
               builder: (context) => TextButton(
@@ -448,8 +415,8 @@ void main() {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         ),
-        home: ChangeNotifierProvider<_MockFilesProvider>(
-          create: (_) => _MockFilesProvider(),
+        home: ChangeNotifierProvider.value(
+          value: provider,
           child: Scaffold(
             body: Builder(
               builder: (context) => TextButton(

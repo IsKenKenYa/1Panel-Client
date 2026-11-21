@@ -15,7 +15,9 @@ extension _FilesViewSheets on _FilesViewState {
             title: Text(context.l10n.filesActionNewFolder),
             onTap: () {
               Navigator.pop(sheetContext);
-              showCreateDirectoryDialog(context, provider);
+              showFileOperationDialog(
+                context, provider, FileOperation.createDirectory,
+              );
             },
           ),
           ListTile(
@@ -23,7 +25,7 @@ extension _FilesViewSheets on _FilesViewState {
             title: Text(context.l10n.filesActionNewFile),
             onTap: () {
               Navigator.pop(sheetContext);
-              showCreateFileDialog(context, provider);
+              showFileOperationDialog(context, provider, FileOperation.createFile);
             },
           ),
           ListTile(

@@ -5,6 +5,7 @@ import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/data/models/vm/vm_resource_models.dart';
 import 'package:onepanel_client/features/vm/providers/vm_provider.dart';
+import 'package:onepanel_client/features/vm/widgets/vm_storage_usage.dart';
 import 'package:onepanel_client/shared/widgets/forms/app_form_panel.dart';
 import 'package:onepanel_client/shared/widgets/expressive_section.dart';
 import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
@@ -98,23 +99,8 @@ class _StorageCard extends StatelessWidget {
     final l10n = context.l10n;
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    final percent = storage.usedPercent ??
-        (storage.capacity > 0
-            ? (storage.capacity - storage.available) / storage.capacity * 100
-            : 0);
     final running =
         storage.status == 'running' || storage.status == 'Running';
-    final barColor = percent >= 90
-        ? scheme.error
-        : (percent >= 80 ? scheme.tertiary : scheme.primary);
-
-    final meta = <String>[
-      if (storage.type.isNotEmpty) storage.type,
-      '${l10n.vmStorageCapacityLabel} ${_formatBytes(storage.capacity)}',
-      '${l10n.vmStorageAvailableLabel} ${_formatBytes(storage.available)}',
-      '${l10n.vmNetworkVmCountLabel} ${storage.vmCount}',
-      if (storage.autoStart) l10n.vmStorageAutoStartLabel,
-    ];
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -151,57 +137,7 @@ class _StorageCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Text(
-                            storage.name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.titleSmall?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          '${percent.toStringAsFixed(1)}%',
-                          style: theme.textTheme.titleSmall?.copyWith(
-                            color: barColor,
-                            fontWeight: FontWeight.w600,
-                            fontFeatures: const <FontFeature>[
-                              FontFeature.tabularFigures(),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppDesignTokens.spacingXs),
-                    Text(
-                      storage.path,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodySmall
-                          ?.copyWith(color: scheme.onSurfaceVariant),
-                    ),
-                    const SizedBox(height: AppDesignTokens.spacingSm),
-                    ClipRRect(
-                      borderRadius:
-                          BorderRadius.circular(AppDesignTokens.radiusXl),
-                      child: LinearProgressIndicator(
-                        value: (percent / 100).clamp(0.0, 1.0),
-                        minHeight: 8,
-                        color: barColor,
-                        backgroundColor: scheme.surfaceContainerHighest,
-                      ),
-                    ),
-                    const SizedBox(height: AppDesignTokens.spacingSm),
-                    Text(
-                      meta.join(' · '),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.labelSmall
-                          ?.copyWith(color: scheme.onSurfaceVariant),
-                    ),
+                    VmStorageUsage(storage: storage, detailed: true),
                     if (storage.error != null &&
                         storage.error!.isNotEmpty) ...[
                       const SizedBox(height: AppDesignTokens.spacingXs),
@@ -286,16 +222,6 @@ class _StorageCard extends StatelessWidget {
       if (!context.mounted) return;
       SnackBarUtils.showError(context, error.toString());
     }
-  }
-
-  static String _formatBytes(int bytes) {
-    if (bytes >= 1024 * 1024 * 1024) {
-      return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(1)} GiB';
-    }
-    if (bytes >= 1024 * 1024) {
-      return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MiB';
-    }
-    return '$bytes B';
   }
 }
 

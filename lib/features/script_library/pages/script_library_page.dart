@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/module_search_field.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/script_library_models.dart';
 import 'package:onepanel_client/features/group/widgets/group_selector_sheet_widget.dart';
 import 'package:onepanel_client/features/script_library/providers/script_library_provider.dart';
-import 'package:onepanel_client/features/script_library/widgets/script_code_preview_sheet_widget.dart';
+import 'package:onepanel_client/shared/widgets/text_preview_sheet.dart';
 import 'package:onepanel_client/features/script_library/widgets/script_library_card_widget.dart';
 import 'package:onepanel_client/features/script_library/widgets/script_run_output_sheet_widget.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
@@ -71,14 +72,11 @@ class _ScriptLibraryPageState extends State<ScriptLibraryPage> {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: <Widget>[
-                    TextField(
+                    ModuleSearchField(
                       controller: _searchController,
                       onChanged: provider.updateSearchQuery,
                       onSubmitted: (_) => provider.load(),
-                      decoration: InputDecoration(
-                        hintText: l10n.scriptLibrarySearchHint,
-                        prefixIcon: const Icon(Icons.search),
-                      ),
+                      hintText: l10n.scriptLibrarySearchHint,
                     ),
                     const SizedBox(height: 12),
                     Align(
@@ -163,15 +161,10 @@ class _ScriptLibraryPageState extends State<ScriptLibraryPage> {
   }
 
   Future<void> _viewCode(ScriptLibraryInfo item) async {
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      showDragHandle: true,
-      builder: (_) => ScriptCodePreviewSheetWidget(
-        title: context.l10n.scriptLibraryCodeTitle,
-        content: item.script,
-      ),
+    await TextPreviewSheet.show(
+      context,
+      title: context.l10n.scriptLibraryCodeTitle,
+      content: item.script,
     );
   }
 

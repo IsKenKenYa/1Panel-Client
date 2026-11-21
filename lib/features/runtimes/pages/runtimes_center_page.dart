@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/module_search_field.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/runtime_models.dart';
@@ -93,14 +94,11 @@ class _RuntimesCenterPageState extends State<RuntimesCenterPage> {
                       },
                     ),
                     const SizedBox(height: 12),
-                    TextField(
+                    ModuleSearchField(
                       controller: _searchController,
                       onChanged: provider.updateKeyword,
                       onSubmitted: (_) => provider.load(),
-                      decoration: InputDecoration(
-                        hintText: l10n.runtimeSearchHint,
-                        prefixIcon: const Icon(Icons.search),
-                      ),
+                      hintText: l10n.runtimeSearchHint,
                     ),
                     const SizedBox(height: 12),
                     Wrap(

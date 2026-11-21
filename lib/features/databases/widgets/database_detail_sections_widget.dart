@@ -4,6 +4,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/data/models/database_models.dart';
 import 'package:onepanel_client/shared/widgets/app_card.dart';
+import 'database_tile_content.dart';
 
 class DatabaseDetailSectionsWidget extends StatelessWidget {
   const DatabaseDetailSectionsWidget({
@@ -274,38 +275,7 @@ class _InfoTile extends StatelessWidget {
         color: scheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
       ),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: scheme.secondaryContainer,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, color: scheme.onSecondaryContainer, size: 20),
-          ),
-          const SizedBox(width: AppDesignTokens.spacingSm),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        color: scheme.onSurfaceVariant,
-                      ),
-                ),
-                const SizedBox(height: AppDesignTokens.spacingXs),
-                Text(
-                  value,
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+      child: DatabaseTileContent.metric(icon: icon, title: label, subtitle: value),
     );
   }
 }

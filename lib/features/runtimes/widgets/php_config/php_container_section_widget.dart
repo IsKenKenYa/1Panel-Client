@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_save_button.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/runtime_models.dart';
 import 'package:onepanel_client/features/runtimes/widgets/php_config/php_container_shared_widgets.dart';
@@ -166,15 +167,7 @@ class PhpContainerSectionWidget extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 24),
-        FilledButton(
-          onPressed: isSaving ? null : onSave,
-          child: isSaving
-              ? const SizedBox.square(
-                  dimension: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : Text(l10n.commonSave),
-        ),
+        AppFormSaveButton(onSave: onSave, isSaving: isSaving),
       ],
     );
   }

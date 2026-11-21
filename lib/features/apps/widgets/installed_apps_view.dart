@@ -9,6 +9,7 @@ import '../../../data/models/app_models.dart';
 import '../providers/installed_apps_provider.dart';
 import 'installed_app_card.dart';
 import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_empty_state_widget.dart';
 import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
 
 import '../../../core/utils/snackbar_utils.dart';
@@ -153,44 +154,19 @@ class _InstalledAppsViewState extends State<InstalledAppsView> {
 
   Widget _buildEmptyState() {
     final l10n = context.l10n;
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.apps_outlined,
-            size: 64,
-            color: Theme.of(context).colorScheme.outline,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            l10n.commonEmpty,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            l10n.appsInstalledEmptyDescription,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.outline,
-                ),
-          ),
-          const SizedBox(height: 24),
-          FilledButton.icon(
-            onPressed: () =>
-                openRouteRespectingShell(context, AppRoutes.appStore),
-            icon: const Icon(Icons.add_outlined),
-            label: Text(l10n.appStoreInstall),
-          ),
-          const SizedBox(height: 16),
-          TextButton.icon(
-            onPressed: _handleRefresh,
-            icon: const Icon(Icons.refresh_outlined),
-            label: Text(l10n.commonRefresh),
-          ),
-        ],
-      ),
+    return ModuleEmptyStateWidget(
+      title: l10n.commonEmpty,
+      description: l10n.appsInstalledEmptyDescription,
+      icon: Icons.apps_outlined,
+      actionLabel: l10n.appStoreInstall,
+      onAction: () => openRouteRespectingShell(context, AppRoutes.appStore),
+      actions: [
+        TextButton.icon(
+          onPressed: _handleRefresh,
+          icon: const Icon(Icons.refresh_outlined),
+          label: Text(l10n.commonRefresh),
+        ),
+      ],
     );
   }
 }

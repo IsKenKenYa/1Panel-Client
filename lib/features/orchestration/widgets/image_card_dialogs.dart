@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_sheet.dart';
 import 'package:intl/intl.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/container_models.dart';
@@ -24,51 +25,27 @@ class ImageCardDialogs {
     required DockerImage image,
   }) async {
     final l10n = context.l10n;
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                ImageCardActions.imageReference(image),
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: 12),
-              OrchestrationDetailLineWidget(
-                label: l10n.orchestrationImageId,
-                value: image.id,
-                labelWidth: 90,
-              ),
-              OrchestrationDetailLineWidget(
-                label: l10n.orchestrationImageDigest,
-                value: image.digest,
-                labelWidth: 90,
-              ),
-              OrchestrationDetailLineWidget(
-                label: l10n.orchestrationImageCreatedLabel,
-                value: createdLabel(image),
-                labelWidth: 90,
-              ),
-              OrchestrationDetailLineWidget(
-                label: l10n.orchestrationImageSizeLabel,
-                value: '${image.size} B',
-                labelWidth: 90,
-              ),
-              if (image.tags.isNotEmpty)
-                OrchestrationDetailLineWidget(
-                  label: l10n.orchestrationImageTags,
-                  value: image.tags.join(', '),
-                  labelWidth: 90,
-                ),
-            ],
-          ),
+    await showAppDetailsSheet(
+      context,
+      title: ImageCardActions.imageReference(image),
+      children: [
+        OrchestrationDetailLineWidget(
+          label: l10n.orchestrationImageId, value: image.id, labelWidth: 90,
         ),
-      ),
+        OrchestrationDetailLineWidget(
+          label: l10n.orchestrationImageDigest, value: image.digest, labelWidth: 90,
+        ),
+        OrchestrationDetailLineWidget(
+          label: l10n.orchestrationImageCreatedLabel, value: createdLabel(image), labelWidth: 90,
+        ),
+        OrchestrationDetailLineWidget(
+          label: l10n.orchestrationImageSizeLabel, value: '${image.size} B', labelWidth: 90,
+        ),
+        if (image.tags.isNotEmpty)
+          OrchestrationDetailLineWidget(
+            label: l10n.orchestrationImageTags, value: image.tags.join(', '), labelWidth: 90,
+          ),
+      ],
     );
   }
 

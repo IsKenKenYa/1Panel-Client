@@ -4,9 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('redis detail does not request generic config file endpoint', () async {
-    final source = await File(
+    final source = (await File(
       'lib/data/repositories/database_repository.dart',
-    ).readAsString();
+    ).readAsString()).replaceAll('\r\n', '\n');
 
     expect(
       source.contains(

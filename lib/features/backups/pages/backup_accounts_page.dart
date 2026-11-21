@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/module_search_field.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/data/models/backup_account_models.dart';
@@ -92,14 +93,11 @@ class _BackupAccountsPageState extends State<BackupAccountsPage> {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: <Widget>[
-                    TextField(
+                    ModuleSearchField(
                       controller: _searchController,
                       onChanged: provider.updateSearchQuery,
                       onSubmitted: (_) => provider.load(),
-                      decoration: InputDecoration(
-                        hintText: l10n.backupAccountsSearchHint,
-                        prefixIcon: const Icon(Icons.search),
-                      ),
+                      hintText: l10n.backupAccountsSearchHint,
                     ),
                     const SizedBox(height: 12),
                     Row(

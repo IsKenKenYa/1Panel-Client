@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/module_search_field.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/logs/models/task_log_detail_args.dart';
 import 'package:onepanel_client/features/logs/providers/task_logs_provider.dart';
 import 'package:onepanel_client/features/logs/utils/logs_l10n_helper.dart';
 import 'package:onepanel_client/features/logs/widgets/task_log_card_widget.dart';
+import 'package:onepanel_client/features/logs/widgets/log_status_filter.dart';
 import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
 
 class LogsTaskTabWidget extends StatelessWidget {
@@ -28,56 +30,20 @@ class LogsTaskTabWidget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: <Widget>[
-              TextField(
+              ModuleSearchField(
                 controller: typeController,
                 onChanged: provider.updateTypeFilter,
                 onSubmitted: (_) => provider.load(),
-                decoration: InputDecoration(
-                  labelText: l10n.logsTaskTypeLabel,
-                  prefixIcon: const Icon(Icons.search),
-                ),
+                labelText: l10n.logsTaskTypeLabel,
               ),
               const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: <Widget>[
-                  Chip(
-                      label: Text(l10n.logsTaskExecutingCountLabel(
-                          provider.executingCount))),
-                  _StatusChip(
-                    label: l10n.logsStatusAll,
-                    selected: provider.statusFilter.isEmpty,
-                    onTap: () async {
-                      provider.updateStatusFilter('');
-                      await provider.load();
-                    },
-                  ),
-                  _StatusChip(
-                    label: l10n.logsStatusSuccess,
-                    selected: provider.statusFilter == 'Success',
-                    onTap: () async {
-                      provider.updateStatusFilter('Success');
-                      await provider.load();
-                    },
-                  ),
-                  _StatusChip(
-                    label: l10n.logsStatusFailed,
-                    selected: provider.statusFilter == 'Failed',
-                    onTap: () async {
-                      provider.updateStatusFilter('Failed');
-                      await provider.load();
-                    },
-                  ),
-                  _StatusChip(
-                    label: l10n.logsStatusExecuting,
-                    selected: provider.statusFilter == 'Executing',
-                    onTap: () async {
-                      provider.updateStatusFilter('Executing');
-                      await provider.load();
-                    },
-                  ),
-                ],
+              LogStatusFilter(
+                value: provider.statusFilter,
+                executingCount: provider.executingCount,
+                onChanged: (status) async {
+                  provider.updateStatusFilter(status);
+                  await provider.load();
+                },
               ),
             ],
           ),
@@ -127,27 +93,6 @@ class LogsTaskTabWidget extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _StatusChip extends StatelessWidget {
-  const _StatusChip({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final String label;
-  final bool selected;
-  final Future<void> Function() onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return ChoiceChip(
-      label: Text(label),
-      selected: selected,
-      onSelected: (_) => onTap(),
     );
   }
 }

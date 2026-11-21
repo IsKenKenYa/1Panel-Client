@@ -3,7 +3,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/cronjobs/models/cronjob_records_args.dart';
 import 'package:onepanel_client/features/cronjobs/providers/cronjob_records_provider.dart';
 import 'package:onepanel_client/features/cronjobs/widgets/cronjob_record_card_widget.dart';
-import 'package:onepanel_client/features/cronjobs/widgets/cronjob_record_log_sheet_widget.dart';
+import 'package:onepanel_client/shared/widgets/text_preview_sheet.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/shell/widgets/server_aware_page_scaffold.dart';
 import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
@@ -141,15 +141,10 @@ class _CronjobRecordsPageState extends State<CronjobRecordsPage> {
     final provider = context.read<CronjobRecordsProvider>();
     await provider.loadRecordLog(id);
     if (!mounted) return;
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      showDragHandle: true,
-      builder: (_) => CronjobRecordLogSheetWidget(
-        title: context.l10n.cronjobRecordsViewLogTitle,
-        content: provider.selectedLog,
-      ),
+    await TextPreviewSheet.show(
+      context,
+      title: context.l10n.cronjobRecordsViewLogTitle,
+      content: provider.selectedLog,
     );
   }
 

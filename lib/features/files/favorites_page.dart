@@ -6,6 +6,7 @@ import 'package:onepanel_client/features/files/files_service.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_empty_state_widget.dart';
 
 class FavoritesPage extends StatelessWidget {
   const FavoritesPage({super.key});
@@ -134,7 +135,11 @@ class _FavoritesViewState extends State<FavoritesView> {
     }
 
     if (_favorites.isEmpty) {
-      return _buildEmptyState(context, l10n, theme);
+      return ModuleEmptyStateWidget(
+        icon: Icons.star_outline,
+        title: l10n.filesFavoritesEmpty,
+        description: l10n.filesFavoritesEmptyDesc,
+      );
     }
 
     return RefreshIndicator(
@@ -146,35 +151,6 @@ class _FavoritesViewState extends State<FavoritesView> {
           final file = _favorites[index];
           return _buildFavoriteItem(context, file, theme, l10n);
         },
-      ),
-    );
-  }
-
-  Widget _buildEmptyState(
-      BuildContext context, AppLocalizations l10n, ThemeData theme) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.star_outline,
-            size: 64,
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            l10n.filesFavoritesEmpty,
-            style: theme.textTheme.titleMedium,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            l10n.filesFavoritesEmptyDesc,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
       ),
     );
   }
