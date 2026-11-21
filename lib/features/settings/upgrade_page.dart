@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/section_card.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
@@ -53,7 +54,6 @@ class _UpgradePageState extends State<UpgradePage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final l10n = context.l10n;
     final provider = context.watch<SettingsProvider>();
     final currentVersion = provider.data.systemSettings?.systemVersion ?? '-';
@@ -93,7 +93,7 @@ class _UpgradePageState extends State<UpgradePage> {
           return ListView(
             padding: AppDesignTokens.pagePadding,
             children: [
-              _buildSectionTitle(context, l10n.upgradeCurrentVersion, theme),
+              SectionTitle(l10n.upgradeCurrentVersion),
               Card(
                 child: ListTile(
                   leading: const Icon(Icons.info_outlined),
@@ -103,7 +103,7 @@ class _UpgradePageState extends State<UpgradePage> {
                 ),
               ),
               const SizedBox(height: AppDesignTokens.spacingMd),
-              _buildSectionTitle(context, l10n.upgradeAvailableVersions, theme),
+              SectionTitle(l10n.upgradeAvailableVersions),
               Card(
                 child: FutureBuilder<List<dynamic>?>(
                   future: _releasesFuture,
@@ -229,20 +229,6 @@ class _UpgradePageState extends State<UpgradePage> {
             ],
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(
-      BuildContext context, String title, ThemeData theme) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppDesignTokens.spacingSm),
-      child: Text(
-        title,
-        style: theme.textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.bold,
-          color: theme.colorScheme.primary,
-        ),
       ),
     );
   }

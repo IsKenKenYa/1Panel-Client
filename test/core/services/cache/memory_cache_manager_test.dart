@@ -82,6 +82,26 @@ void main() {
     });
 
     group('容量管理', () {
+      test('降低上限后立即保留最近使用的数据', () {
+        cacheManager.put('older', Uint8List(6));
+        cacheManager.put('recent', Uint8List(4));
+        cacheManager.configure(maxSizeBytes: 5);
+
+        expect(cacheManager.contains('older'), isFalse);
+        expect(cacheManager.currentSizeBytes, 4);
+      });
+
+      test('超限的新内容移除同名旧内容并保留其他文件', () {
+        cacheManager.configure(maxSizeBytes: 8);
+        cacheManager.put('other', Uint8List(2));
+        cacheManager.put('edited', Uint8List(3));
+        cacheManager.put('edited', Uint8List(9));
+
+        expect(cacheManager.contains('edited'), isFalse);
+        expect(cacheManager.contains('other'), isTrue);
+        expect(cacheManager.currentSizeBytes, 2);
+      });
+
       test('应该正确统计缓存大小', () {
         final data1 = Uint8List.fromList(List.filled(100, 1));
         final data2 = Uint8List.fromList(List.filled(200, 2));

@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:onepanel_client/core/config/api_config.dart';
@@ -16,7 +13,6 @@ import 'package:onepanel_client/features/logs/services/logs_service.dart';
 import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/pages/settings/api_test_page.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'ui_overflow_test_utils.dart';
 
@@ -40,16 +36,6 @@ class _FakeCurrentServerController extends CurrentServerController {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  setUpAll(() {
-    // ApiTestPage 读取 secure storage（getConfigs 迁移路径），mock 通道兜底。
-    const secureChannel =
-        MethodChannel('plugins.it_nomads.com/flutter_secure_storage');
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(secureChannel, (call) async {
-      if (call.method == 'read') return 'key';
-      return null;
-    });
-  });
   group('Golden baseline - settings & logs', () {
     setUpAll(() {
       registerFallbackValue(const OperationLogSearchRequest());
@@ -65,32 +51,24 @@ void main() {
             'https://${List.filled(8, 'very-long-host-segment').join('.')}.example.com/${List.filled(8, 'api-path-segment').join('/')}';
         final apiKey = List.filled(40, 'a').join();
 
-        SharedPreferences.setMockInitialValues({
-          'api_configs': jsonEncode([
-            {
-              'id': 'server-1',
-              'name': longName,
-              'url': longUrl,
-              'apiKey': apiKey,
-              'tokenValidity': 0,
-              'allowInsecureTls': false,
-              'isDefault': true,
-              'lastUsed': DateTime(2026, 3, 30).toIso8601String(),
-            }
-          ]),
-          'current_api_config_id': 'server-1',
-        });
-
-        // ApiTestPage 有常驻动画，不能 pumpAndSettle；固定 pump 等异步配置加载。
+        final config = ApiConfig(
+          id: 'server-1',
+          name: longName,
+          url: longUrl,
+          apiKey: apiKey,
+        );
         await pumpOverflowHarness(
           tester,
           variant: variant,
           wrapWithScaffold: false,
-          settle: false,
-          child: const ApiTestPage(),
+          child: ApiTestView(
+            config: config,
+            selectedEndpoint: '/api/v2/dashboard/base/os',
+            onEndpointChanged: (_) => fail('Unexpected endpoint change'),
+            onRefresh: () => fail('Unexpected refresh'),
+            onTest: () => fail('Unexpected request'),
+          ),
         );
-        await tester.pump(const Duration(milliseconds: 200));
-        await tester.pump();
 
         await expectNoFlutterExceptions(
           tester,

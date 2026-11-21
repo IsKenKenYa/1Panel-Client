@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepanel_client/shared/widgets/section_card.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
@@ -9,7 +10,6 @@ class PanelSettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final l10n = context.l10n;
     final provider = context.watch<SettingsProvider>();
     final settings = provider.data.systemSettings;
@@ -20,7 +20,7 @@ class PanelSettingsPage extends StatelessWidget {
       body: ListView(
         padding: AppDesignTokens.pagePadding,
         children: [
-          _buildSectionTitle(context, l10n.panelSettingsBasicInfo, theme),
+          SectionTitle(l10n.panelSettingsBasicInfo),
           Card(
             child: Column(
               children: [
@@ -48,7 +48,7 @@ class PanelSettingsPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppDesignTokens.spacingMd),
-          _buildSectionTitle(context, l10n.panelSettingsAdvanced, theme),
+          SectionTitle(l10n.panelSettingsAdvanced),
           Card(
             child: Column(
               children: [
@@ -76,20 +76,6 @@ class PanelSettingsPage extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(
-      BuildContext context, String title, ThemeData theme) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppDesignTokens.spacingSm),
-      child: Text(
-        title,
-        style: theme.textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.bold,
-          color: theme.colorScheme.primary,
-        ),
       ),
     );
   }

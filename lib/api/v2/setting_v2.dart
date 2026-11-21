@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:dio/dio.dart'
     show Response, Options, ResponseType, DioException;
 import '../../core/network/dio_client.dart';
@@ -50,6 +49,7 @@ class SettingV2Api {
   Future<Response<SystemSettingInfo>> getSystemSettings() async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/core/settings/search'),
+      options: DioClient.sensitiveOptions,
     );
     final data = ApiResponseParser.asMapOrNull(response.data);
     return Response(
@@ -170,81 +170,6 @@ class SettingV2Api {
     );
   }
 
-  Future<Response<List<PasskeyInfo>>> listPasskeys() async {
-    Response<Map<String, dynamic>> response;
-    try {
-      response = await _client.get<Map<String, dynamic>>(
-        ApiConstants.buildApiPath('/core/settings/passkey/list'),
-      );
-    } on EndpointNotFoundException {
-      throw const EndpointNotFoundException('当前面板版本不支持 Passkey');
-    }
-    final items = ApiResponseParser.asListOrNull(response.data) ?? const <dynamic>[];
-    return Response<List<PasskeyInfo>>(
-      data: items
-          .whereType<Map<String, dynamic>>()
-          .map(PasskeyInfo.fromJson)
-          .toList(growable: false),
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
-      headers: response.headers,
-      extra: response.extra,
-      redirects: response.redirects,
-      isRedirect: response.isRedirect,
-    );
-  }
-
-  Future<Response<PasskeyBeginResponse?>> beginPasskeyRegister(
-    PasskeyRegisterRequest request,
-  ) async {
-    final response = await _client.post<Map<String, dynamic>>(
-      ApiConstants.buildApiPath('/core/settings/passkey/register/begin'),
-      data: request.toJson(),
-    );
-    final data = ApiResponseParser.asMapOrNull(response.data);
-    return Response<PasskeyBeginResponse?>(
-      data: data == null ? null : PasskeyBeginResponse.fromJson(data),
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
-      headers: response.headers,
-      extra: response.extra,
-      redirects: response.redirects,
-      isRedirect: response.isRedirect,
-    );
-  }
-
-  Future<Response<void>> finishPasskeyRegister({
-    required String sessionId,
-    required Map<String, dynamic> credential,
-  }) {
-    return _client.post<void>(
-      ApiConstants.buildApiPath('/core/settings/passkey/register/finish'),
-      data: credential,
-      options:
-          Options(headers: <String, dynamic>{'Passkey-Session': sessionId}),
-    );
-  }
-
-  Future<Response<void>> deletePasskey(String id) {
-    return _client.delete<void>(
-      ApiConstants.buildApiPath('/core/settings/passkey/$id'),
-    );
-  }
-
-  /// 更新密码设置
-  ///
-  /// 更新系统密码设置
-  /// @param request 密码更新请求
-  /// @return 更新结果
-  Future<Response<void>> updatePasswordSettings(PasswordUpdate request) async {
-    return await _client.post(
-      ApiConstants.buildApiPath('/core/settings/password/update'),
-      data: request.toJson(),
-    );
-  }
-
   /// 更新端口设置
   ///
   /// 更新系统端口设置
@@ -307,50 +232,6 @@ class SettingV2Api {
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
     );
-  }
-
-  /// 处理过期
-  ///
-
-  /// 生成API密钥
-  ///
-  /// 生成新的API密钥
-  /// @return API密钥生成结果
-  Future<Response<dynamic>> generateApiKey() async {
-    // V2 契约迁移：/core/settings/api/config/generate/key 已删除。
-    // 新版 API 密钥存储于设置键 ApiKey，客户端生成随机密钥后经 settings/update 保存。
-    final key = _generateRandomApiKey();
-    return updateSystemSetting(
-      SettingUpdate(key: 'ApiKey', value: key),
-    );
-  }
-
-  static String _generateRandomApiKey() {
-    final random = Random.secure();
-    const chars =
-        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    return List.generate(32, (_) => chars[random.nextInt(chars.length)]).join();
-  }
-
-  /// 更新API配置
-  ///
-  /// 更新API配置
-  /// @param request API配置更新请求
-  /// @return 更新结果
-  Future<void> updateApiConfig(ApiConfigUpdate request) async {
-    // V2 契约迁移：/core/settings/api/config/update 已删除，
-    // API 配置项保存为设置键（ApiInterfaceStatus/IPWhiteList/ApiKeyValidityTime）。
-    final updates = <String, String>{
-      if (request.status != null) 'ApiInterfaceStatus': request.status!,
-      if (request.ipWhiteList != null) 'IPWhiteList': request.ipWhiteList!,
-      if (request.validityTime != null)
-        'ApiKeyValidityTime': request.validityTime.toString(),
-    };
-    for (final entry in updates.entries) {
-      await updateSystemSetting(
-        SettingUpdate(key: entry.key, value: entry.value),
-      );
-    }
   }
 
   /// 获取应用商店配置
@@ -471,107 +352,28 @@ class SettingV2Api {
     );
   }
 
-  // ==================== MFA相关API ====================
-
-  /// 加载MFA信息
-  ///
-  /// 加载MFA密钥和二维码
-  /// @param request MFA凭证请求
-  /// @return MFA OTP信息
-  Future<Response<MfaOtp>> loadMfaInfo(MfaLoadRequest request) async {
-    Response<dynamic> response;
-    try {
-      response = await _client.post<dynamic>(
-        ApiConstants.buildApiPath('/core/settings/mfa'),
-        data: request.toJson(),
-      );
-    } on EndpointNotFoundException {
-      throw const EndpointNotFoundException('当前面板版本不支持 MFA');
-    }
-    final data = response.data;
-    Map<String, dynamic>? payload;
-    if (data is Map<String, dynamic>) {
-      final inner = data['data'];
-      if (inner is Map<String, dynamic>) {
-        payload = inner;
-      } else {
-        payload = data;
-      }
-    }
-    return Response(
-      data: payload == null ? const MfaOtp() : MfaOtp.fromJson(payload),
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
-    );
-  }
-
-  /// 绑定MFA
-  ///
-  /// 绑定MFA认证
-  /// @param request MFA绑定请求
-  /// @return 绑定结果
-  Future<Response<void>> bindMfa(MfaBindRequest request) async {
-    final response = await _client.post<Map<String, dynamic>>(
-      ApiConstants.buildApiPath('/core/settings/mfa/bind'),
-      data: request.toJson(),
-    );
-    return Response(
-      data: null,
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
-    );
-  }
-
-  /// 获取MFA状态
-  ///
-  /// 获取当前用户的MFA启用状态
-  /// @return MFA状态
-  Future<Response<MfaStatus>> getMfaStatus() async {
-    final response = await _client.get(
-      ApiConstants.buildApiPath('/core/settings/mfa/status'),
-    );
-    final data = ApiResponseParser.asMapOrNull(response.data);
-    return Response(
-      data: data != null ? MfaStatus.fromJson(data) : null,
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
-    );
-  }
-
-  /// 解绑MFA
-  ///
-  /// 解绑MFA认证
-  /// @param request 解绑请求（包含验证码）
-  /// @return 解绑结果
-  Future<Response<void>> unbindMfa(Map<String, dynamic> request) async {
-    final response = await _client.post<Map<String, dynamic>>(
-      ApiConstants.buildApiPath('/core/settings/mfa/unbind'),
-      data: request,
-    );
-    return Response(
-      data: null,
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
-    );
-  }
-
   // ==================== SSL相关API ====================
 
   /// 获取SSL证书信息
   ///
   /// 获取系统SSL证书信息
   /// @return SSL证书信息
-  Future<Response<dynamic>> getSSLInfo() async {
+  Future<Response<Map<String, dynamic>>> getSSLInfo() async {
     final response = await _client.get(
       ApiConstants.buildApiPath('/core/settings/ssl/info'),
+      options: DioClient.sensitiveOptions,
     );
-    final data = _extractDataRaw(response.data);
+    final data = ApiResponseParser.unwrap(response.data);
+    if (data is! Map<String, dynamic>) {
+      throw const FormatException('面板证书信息格式无效');
+    }
     return Response(
-      data: data,
+      data: {
+        for (final field in ['domain', 'timeout', 'rootPath'])
+          if (data[field] is String && (data[field] as String).isNotEmpty)
+            field: data[field],
+        if (data['sslID'] is int && data['sslID'] != 0) 'sslID': data['sslID'],
+      },
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
       requestOptions: response.requestOptions,
@@ -587,6 +389,7 @@ class SettingV2Api {
     return await _client.post(
       ApiConstants.buildApiPath('/core/settings/ssl/update'),
       data: request.toJson(),
+      options: DioClient.sensitiveOptions,
     );
   }
 
@@ -597,7 +400,7 @@ class SettingV2Api {
   Future<Response<List<int>>> downloadSSL() async {
     final response = await _client.post(
       ApiConstants.buildApiPath('/core/settings/ssl/download'),
-      options: Options(responseType: ResponseType.bytes),
+      options: DioClient.sensitiveOptions.copyWith(responseType: ResponseType.bytes),
     );
     return Response(
       data: response.data as List<int>,
@@ -1129,16 +932,6 @@ class TerminalUpdate {
       };
 }
 
-class PasswordUpdate {
-  final String oldPassword;
-  final String newPassword;
-
-  const PasswordUpdate({required this.oldPassword, required this.newPassword});
-
-  Map<String, dynamic> toJson() =>
-      {'oldPassword': oldPassword, 'newPassword': newPassword};
-}
-
 class PortUpdate {
   final int port;
 
@@ -1185,27 +978,6 @@ class ExpiredHandle {
   Map<String, dynamic> toJson() => {if (method != null) 'method': method};
 }
 
-class ApiConfigUpdate {
-  final String? apiKey;
-  final String? status;
-  final String? ipWhiteList;
-  final int? validityTime;
-
-  const ApiConfigUpdate({
-    this.apiKey,
-    this.status,
-    this.ipWhiteList,
-    this.validityTime,
-  });
-
-  Map<String, dynamic> toJson() => {
-        if (apiKey != null) 'apiKey': apiKey,
-        if (status != null) 'status': status,
-        if (ipWhiteList != null) 'ipWhiteList': ipWhiteList,
-        if (validityTime != null) 'validityTime': validityTime,
-      };
-}
-
 class AppStoreConfigUpdate {
   final String? storeUrl;
 
@@ -1225,20 +997,25 @@ class DescriptionSave {
 // ==================== SSL请求模型 ====================
 
 class SSLUpdate {
-  final String? sslType;
-  final String? domain;
-  final int? port;
-  final String? cert;
-  final String? key;
+  final String ssl;
+  final String cert;
+  final String key;
 
-  const SSLUpdate({this.sslType, this.domain, this.port, this.cert, this.key});
+  SSLUpdate.importPem({
+    required String? currentMode,
+    required this.cert,
+    required this.key,
+  }) : ssl = switch (currentMode) {
+          'Enable' || 'Disable' => 'Enable',
+          'Mux' => 'Mux',
+          _ => throw const FormatException('无法识别面板 HTTPS 设置'),
+        };
 
   Map<String, dynamic> toJson() => {
-        if (sslType != null) 'sslType': sslType,
-        if (domain != null) 'domain': domain,
-        if (port != null) 'port': port,
-        if (cert != null) 'cert': cert,
-        if (key != null) 'key': key,
+        'ssl': ssl,
+        'sslType': 'import-paste',
+        'cert': cert,
+        'key': key,
       };
 }
 

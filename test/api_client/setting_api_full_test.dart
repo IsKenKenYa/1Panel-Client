@@ -53,7 +53,6 @@ void main() {
         debugPrint('language: ${data.language}');
         debugPrint('port: ${data.port}');
         debugPrint('ssl: ${data.ssl}');
-        debugPrint('mfaStatus: ${data.mfaStatus}');
         debugPrint('apiInterfaceStatus: ${data.apiInterfaceStatus}');
 
         expect(response.statusCode, equals(200));
@@ -110,116 +109,6 @@ void main() {
           debugPrint('前3个IP: ${response.data!.take(3).join(", ")}');
         }
         expect(response.statusCode, equals(200));
-      }
-      debugPrint('========================================\n');
-    });
-
-    test('loadMfaInfo - 加载MFA信息', () async {
-      if (!hasApiKey) {
-        debugPrint('⚠️  跳过测试: API密钥未配置');
-        return;
-      }
-
-      const request = MfaLoadRequest(
-        title: '1Panel Client',
-        interval: 30,
-      );
-
-      dynamic response;
-
-      try {
-
-        // 能力探测：社区版无 MFA，软跳过
-
-        response = await api.loadMfaInfo(request);
-
-        return;
-
-       } catch (e) {
-
-        if (e.toString().contains('不支持')) {
-
-          debugPrint('⚠️  跳过 loadMfaInfo: 当前面板版本不支持 MFA');
-
-          return;
-
-        }
-
-        rethrow;
-
-       }
-
-      response = await api.loadMfaInfo(request);
-
-      debugPrint('\n========================================');
-      debugPrint('loadMfaInfo 响应');
-      debugPrint('========================================');
-      debugPrint('状态码: ${response.statusCode}');
-      debugPrint('数据是否为null: ${response.data == null}');
-
-      if (response.data != null) {
-        final data = response.data!;
-        expect(data, isA<MfaOtp>());
-
-        debugPrint('secret: ${data.secret}');
-        debugPrint(
-            'qrImage: ${data.qrImage != null ? "${data.qrImage!.length} chars" : "null"}');
-
-        expect(response.statusCode, equals(200));
-      }
-      debugPrint('========================================\n');
-    });
-
-    test('getMfaStatus - 获取MFA状态', () async {
-      if (!hasApiKey) {
-        debugPrint('⚠️  跳过测试: API密钥未配置');
-        return;
-      }
-
-      try {
-        final response = await api.getMfaStatus();
-
-        debugPrint('\n========================================');
-        debugPrint('getMfaStatus 响应');
-        debugPrint('========================================');
-        debugPrint('状态码: ${response.statusCode}');
-        debugPrint('数据是否为null: ${response.data == null}');
-
-        if (response.data != null) {
-          final data = response.data!;
-          expect(data, isA<MfaStatus>());
-
-          debugPrint('enabled: ${data.enabled}');
-          debugPrint('secret: ${data.secret}');
-        }
-        expect(response.statusCode, equals(200));
-        debugPrint('========================================\n');
-      } catch (e) {
-        debugPrint('⚠️  getMfaStatus 测试失败: $e');
-      }
-    });
-
-    test('generateApiKey - 生成API密钥', () async {
-      if (!hasApiKey) {
-        debugPrint('⚠️  跳过测试: API密钥未配置');
-        return;
-      }
-
-      try {
-        final response = await api.generateApiKey();
-
-        debugPrint('\n========================================');
-        debugPrint('generateApiKey 响应');
-        debugPrint('========================================');
-        debugPrint('状态码: ${response.statusCode}');
-        debugPrint('数据是否为null: ${response.data == null}');
-
-        if (response.data != null) {
-          debugPrint('返回数据: $response.data');
-        }
-        expect(response.statusCode, equals(200));
-      } catch (e) {
-        debugPrint('⚠️  generateApiKey 探测结果: $e');
       }
       debugPrint('========================================\n');
     });

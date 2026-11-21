@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/api/v2/setting_v2.dart';
+import 'package:onepanel_client/api/v2/auth_v2.dart';
 import 'package:onepanel_client/core/config/api_constants.dart';
 import 'package:onepanel_client/core/network/dio_client.dart';
+import 'package:onepanel_client/core/network/network_exceptions.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/data/models/setting_models.dart';
 
@@ -114,58 +116,27 @@ void main() {
         }
       });
 
-      test('listPasskeys 应匹配真实数组返回体', () async {
+      test('账号 Passkey 列表要求网页登录会话', () async {
         if (!canRun) {
           appLogger.wWithPackage(_pkg, '跳过测试: ${_integrationSkipReason()}');
           return;
         }
 
-        try {
-          final raw = await _rawGet(client, '/core/settings/passkey/list');
-          _logSection('Raw /core/settings/passkey/list',
-              method: 'GET',
-              path: '/core/settings/passkey/list',
-              response: raw.data);
-
-          expect(raw.statusCode, equals(200));
-          final response = await api.listPasskeys();
-          expect(response.statusCode, equals(200));
-          expect(response.data, isNotNull);
-          if (_isSecureLoginHtml(raw.data)) {
-            expect(response.data, isEmpty);
-          } else {
-            expect(raw.data, isA<Map<String, dynamic>>());
-            expect(raw.data, containsPair('code', 200));
-            expect(raw.data, contains('data'));
-
-            final rawItems = (raw.data as Map<String, dynamic>)['data'];
-            expect(rawItems, isA<List<dynamic>>());
-            expect(
-                response.data, hasLength((rawItems as List<dynamic>).length));
-
-            for (var i = 0; i < rawItems.length; i++) {
-              final item = Map<String, dynamic>.from(rawItems[i] as Map);
-              final parsed = response.data![i];
-
-              expect(item, containsPair('id', item['id']));
-              expect(item, containsPair('name', item['name']));
-              expect(parsed.id, equals(item['id']));
-              expect(parsed.name, equals(item['name']));
-              expect(parsed.createdAt, equals(item['createdAt']));
-              expect(parsed.lastUsedAt, equals(item['lastUsedAt']));
-            }
-          }
-        } catch (e) {
-          if (e.toString().contains('is not a subtype of type') ||
-              e.toString().contains('不支持')) {
-            // 服务器对该端点可能返回 "Access Temporarily Unavailable" HTML 拦截页
-            // （响应体为 String 导致 Map 泛型 cast 失败），属于服务器状态差异，软跳过
-            appLogger.wWithPackage(
-                _pkg, 'SKIP: /core/settings/passkey/list 被服务器拦截页拦截，软跳过');
-            return;
-          }
-          rethrow;
-        }
+        await expectLater(
+          client.dio.get<dynamic>(
+            ApiConstants.buildApiPath('/core/auth/passkey/list'),
+            options: DioClient.sensitiveOptions,
+          ),
+          throwsA(isA<DioException>().having(
+            (error) => error.response?.data['code'],
+            '1Panel response code',
+            401,
+          )),
+        );
+        await expectLater(
+          AuthV2Api(client).listPasskeysAuth(),
+          throwsA(isA<NetworkException>()),
+        );
       });
 
       test('getAppStoreConfig 应匹配真实对象返回体', () async {
@@ -328,36 +299,6 @@ void main() {
         final response = await api.getNetworkInterfaces();
 
         expect(response.statusCode, equals(200));
-      });
-    });
-
-    group('MFA相关API', () {
-      test('loadMfaInfo - 应该成功加载MFA信息', () async {
-        if (!canRun) {
-          appLogger.wWithPackage(_pkg, '跳过测试: ${_integrationSkipReason()}');
-          return;
-        }
-
-        const request = MfaLoadRequest(
-          title: '1Panel Client',
-          interval: 30,
-        );
-
-        dynamic response;
-        try {
-          response = await api.loadMfaInfo(request);
-        } catch (e) {
-          if (e.toString().contains('不支持')) {
-            appLogger.wWithPackage(
-                _pkg, 'SKIP: 当前面板版本不支持 MFA');
-            return;
-          }
-          rethrow;
-        }
-
-        expect(response.statusCode, equals(200));
-        expect(response.data, isNotNull);
-        expect(response.data, isA<MfaOtp>());
       });
     });
 

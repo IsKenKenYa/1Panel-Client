@@ -1,4 +1,5 @@
 import 'package:onepanel_client/api/v2/setting_v2.dart' as api;
+import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/data/models/setting_models.dart';
 import 'package:onepanel_client/data/models/ssh_settings_models.dart';
 import 'package:onepanel_client/data/repositories/setting_repository.dart';
@@ -12,6 +13,9 @@ import 'package:onepanel_client/data/repositories/setting_repository.dart';
 class SettingsService {
   SettingsService({SettingRepository? repository})
       : _repository = repository ?? SettingRepository();
+
+  SettingsService.forServer(ApiConfig server)
+      : _repository = SettingRepository.forServer(server);
 
   final SettingRepository _repository;
 
@@ -50,84 +54,6 @@ class SettingsService {
   Future<void> updateDashboardMemo(String content) async {
     final apiClient = await _getApi();
     await apiClient.updateDashboardMemo(MemoUpdate(content: content));
-  }
-
-  Future<List<PasskeyInfo>> listPasskeys() async {
-    final apiClient = await _getApi();
-    final response = await apiClient.listPasskeys();
-    return response.data ?? const <PasskeyInfo>[];
-  }
-
-  Future<PasskeyBeginResponse?> beginPasskeyRegister(String name) async {
-    final apiClient = await _getApi();
-    final response = await apiClient.beginPasskeyRegister(
-      PasskeyRegisterRequest(name: name),
-    );
-    return response.data;
-  }
-
-  Future<void> finishPasskeyRegister({
-    required String sessionId,
-    required Map<String, dynamic> credential,
-  }) async {
-    final apiClient = await _getApi();
-    await apiClient.finishPasskeyRegister(
-      sessionId: sessionId,
-      credential: credential,
-    );
-  }
-
-  Future<void> deletePasskey(String id) async {
-    final apiClient = await _getApi();
-    await apiClient.deletePasskey(id);
-  }
-
-  Future<MfaOtp?> loadMfaInfo(MfaLoadRequest request) async {
-    final apiClient = await _getApi();
-    final response = await apiClient.loadMfaInfo(request);
-    return response.data;
-  }
-
-  Future<MfaStatus?> getMfaStatus() async {
-    final apiClient = await _getApi();
-    final response = await apiClient.getMfaStatus();
-    return response.data;
-  }
-
-  Future<void> bindMfa(MfaBindRequest request) async {
-    final apiClient = await _getApi();
-    await apiClient.bindMfa(request);
-  }
-
-  Future<void> unbindMfa(Map<String, dynamic> request) async {
-    final apiClient = await _getApi();
-    await apiClient.unbindMfa(request);
-  }
-
-  Future<dynamic> getSSLInfo() async {
-    final apiClient = await _getApi();
-    final response = await apiClient.getSSLInfo();
-    return response.data;
-  }
-
-  Future<void> updateSSL({
-    required String domain,
-    required String sslType,
-    required String cert,
-    required String key,
-  }) async {
-    final apiClient = await _getApi();
-    await apiClient.updateSSL(api.SSLUpdate(
-      domain: domain,
-      sslType: sslType,
-      cert: cert,
-      key: key,
-    ));
-  }
-
-  Future<void> downloadSSL() async {
-    final apiClient = await _getApi();
-    await apiClient.downloadSSL();
   }
 
   Future<dynamic> getUpgradeInfo() async {
@@ -281,12 +207,6 @@ class SettingsService {
     await apiClient.updateMenuSettings(api.MenuUpdate(menus: menus));
   }
 
-  Future<dynamic> generateApiKey() async {
-    final apiClient = await _getApi();
-    final response = await apiClient.generateApiKey();
-    return response.data;
-  }
-
   Future<dynamic> getAppStoreConfig() async {
     final apiClient = await _getApi();
     final response = await apiClient.getAppStoreConfig();
@@ -367,25 +287,4 @@ class SettingsService {
     ));
   }
 
-  Future<void> updatePasswordSettings(
-      String oldPassword, String newPassword) async {
-    final apiClient = await _getApi();
-    await apiClient.updatePasswordSettings(api.PasswordUpdate(
-      oldPassword: oldPassword,
-      newPassword: newPassword,
-    ));
-  }
-
-  Future<void> updateApiConfig({
-    required String status,
-    required String ipWhiteList,
-    required int validityTime,
-  }) async {
-    final apiClient = await _getApi();
-    await apiClient.updateApiConfig(api.ApiConfigUpdate(
-      status: status,
-      ipWhiteList: ipWhiteList,
-      validityTime: validityTime,
-    ));
-  }
 }

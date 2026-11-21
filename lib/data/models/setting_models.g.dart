@@ -454,52 +454,6 @@ Map<String, dynamic> _$SettingsImportToJson(SettingsImport instance) =>
       'overwrite': instance.overwrite,
     };
 
-MfaLoadRequest _$MfaLoadRequestFromJson(Map<String, dynamic> json) =>
-    MfaLoadRequest(
-      title: json['title'] as String,
-      interval: (json['interval'] as num?)?.toInt() ?? 30,
-    );
-
-Map<String, dynamic> _$MfaLoadRequestToJson(MfaLoadRequest instance) =>
-    <String, dynamic>{
-      'title': instance.title,
-      'interval': instance.interval,
-    };
-
-MfaOtp _$MfaOtpFromJson(Map<String, dynamic> json) => MfaOtp(
-      qrImage: json['qrImage'] as String?,
-      secret: json['secret'] as String?,
-    );
-
-Map<String, dynamic> _$MfaOtpToJson(MfaOtp instance) => <String, dynamic>{
-      'qrImage': instance.qrImage,
-      'secret': instance.secret,
-    };
-
-MfaBindRequest _$MfaBindRequestFromJson(Map<String, dynamic> json) =>
-    MfaBindRequest(
-      code: json['code'] as String,
-      interval: json['interval'] as String? ?? '30',
-      secret: json['secret'] as String,
-    );
-
-Map<String, dynamic> _$MfaBindRequestToJson(MfaBindRequest instance) =>
-    <String, dynamic>{
-      'code': instance.code,
-      'interval': instance.interval,
-      'secret': instance.secret,
-    };
-
-MfaStatus _$MfaStatusFromJson(Map<String, dynamic> json) => MfaStatus(
-      enabled: json['enabled'] as bool,
-      secret: json['secret'] as String?,
-    );
-
-Map<String, dynamic> _$MfaStatusToJson(MfaStatus instance) => <String, dynamic>{
-      'enabled': instance.enabled,
-      'secret': instance.secret,
-    };
-
 TerminalInfo _$TerminalInfoFromJson(Map<String, dynamic> json) => TerminalInfo(
       cursorBlink: json['cursorBlink'] as String?,
       cursorStyle: json['cursorStyle'] as String?,
@@ -568,9 +522,6 @@ SystemSettingInfo _$SystemSettingInfoFromJson(Map<String, dynamic> json) =>
       expirationDays: json['expirationDays'] as String?,
       expirationTime: json['expirationTime'] as String?,
       complexityVerification: json['complexityVerification'] as String?,
-      mfaStatus: json['mfaStatus'] as String?,
-      mfaSecret: json['mfaSecret'] as String?,
-      mfaInterval: json['mfaInterval'] as String?,
       appStoreVersion: json['appStoreVersion'] as String?,
       appStoreLastModified: json['appStoreLastModified'] as String?,
       appStoreSyncStatus: json['appStoreSyncStatus'] as String?,
@@ -613,9 +564,6 @@ Map<String, dynamic> _$SystemSettingInfoToJson(SystemSettingInfo instance) =>
       'expirationDays': instance.expirationDays,
       'expirationTime': instance.expirationTime,
       'complexityVerification': instance.complexityVerification,
-      'mfaStatus': instance.mfaStatus,
-      'mfaSecret': instance.mfaSecret,
-      'mfaInterval': instance.mfaInterval,
       'appStoreVersion': instance.appStoreVersion,
       'appStoreLastModified': instance.appStoreLastModified,
       'appStoreSyncStatus': instance.appStoreSyncStatus,

@@ -48,7 +48,7 @@ void main() {
       debugPrint('========================================\n');
     });
 
-    test('2. 测试所有可能的key值', () async {
+    test('2. 测试所有可能的key值', skip: TestEnvironment.skipDestructive(), () async {
       if (!hasApiKey) {
         debugPrint('⚠️  跳过测试: API密钥未配置');
         return;
@@ -109,7 +109,7 @@ void main() {
       debugPrint('========================================\n');
     });
 
-    test('3. 测试不同的请求格式', () async {
+    test('3. 测试不同的请求格式', skip: TestEnvironment.skipDestructive(), () async {
       if (!hasApiKey) {
         debugPrint('⚠️  跳过测试: API密钥未配置');
         return;
@@ -166,7 +166,7 @@ void main() {
       debugPrint('========================================\n');
     });
 
-    test('4. 检查是否有其他更新接口', () async {
+    test('4. 检查是否有其他更新接口', skip: TestEnvironment.skipDestructive(), () async {
       if (!hasApiKey) {
         debugPrint('⚠️  跳过测试: API密钥未配置');
         return;
@@ -207,39 +207,5 @@ void main() {
       debugPrint('========================================\n');
     });
 
-    test('5. 总结', () async {
-      debugPrint('\n========================================');
-      debugPrint('总结');
-      debugPrint('========================================');
-
-      debugPrint('''
-根据测试结果：
-
-1. /core/settings/update 接口返回 "record not found" 错误
-   - 这可能意味着该接口需要在数据库中有对应的设置记录
-   - 或者需要特定的初始化流程
-
-2. 可用的专门更新接口：
-   - /core/settings/bind/update - 更新绑定地址
-   - /core/settings/terminal/update - 更新终端设置
-   - /core/settings/ssl/update - 更新SSL设置
-   - /core/settings/proxy/update - 更新代理设置
-   - /core/settings/menu/update - 更新菜单设置
-   - /core/settings/password/update - 更新密码
-   - /core/settings/api/config/update - 更新API配置
-
-3. 无法通过API编辑的设置：
-   - panelName (面板名称)
-   - developerMode (开发者模式)
-   - sessionTimeout (会话超时)
-   - theme (主题)
-   - language (语言)
-
-结论：大部分面板设置只能读取，无法通过API修改。
-这可能是1Panel的设计限制，需要通过Web界面进行修改。
-''');
-
-      debugPrint('========================================\n');
-    });
   });
 }

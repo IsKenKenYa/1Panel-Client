@@ -5,8 +5,10 @@ import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/data/models/setting_models.dart';
 import 'package:onepanel_client/features/settings/settings_provider.dart';
+import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/features/terminal/services/terminal_appearance.dart';
 import 'package:onepanel_client/shared/widgets/section_card.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 import 'package:provider/provider.dart';
 
 class TerminalSettingsPage extends StatefulWidget {
@@ -23,6 +25,7 @@ class TerminalSettingsPage extends StatefulWidget {
 
 class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
   late final SettingsProvider _provider;
+  late Future<bool> _initialLoad;
 
   static const List<String> _fontFamilyOptions = <String>[
     'Monaco',
@@ -43,14 +46,14 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
   @override
   void initState() {
     super.initState();
-    _provider = widget.provider ?? SettingsProvider();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) {
-        return;
-      }
-      _provider.loadTerminalSettings();
-      _provider.loadSSHConnection();
-    });
+    _provider = widget.provider ??
+        SettingsProvider.forServer(context.read<CurrentServerController>().currentServer!);
+    _initialLoad = _load();
+  }
+
+  Future<bool> _load() async {
+    if (!await _provider.loadTerminalSettings() || !mounted) return false;
+    return _provider.loadSSHConnection();
   }
 
   @override
@@ -63,13 +66,32 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+      future: _initialLoad,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done && snapshot.data == true) {
+          return _buildSettings(context);
+        }
+        return Scaffold(
+          appBar: AppBar(title: Text(context.l10n.terminalSettingsTitle)),
+          body: snapshot.connectionState == ConnectionState.done
+              ? ModuleErrorStateWidget(
+                  message: _provider.data.error,
+                  onRetry: () => setState(() => _initialLoad = _load()),
+                )
+              : const Center(child: CircularProgressIndicator()),
+        );
+      },
+    );
+  }
+
+  Widget _buildSettings(BuildContext context) {
     return ChangeNotifierProvider<SettingsProvider>.value(
       value: _provider,
       child: Consumer<SettingsProvider>(
         builder: (context, provider, _) {
           final l10n = context.l10n;
-          final theme = Theme.of(context);
-          final terminal = provider.data.terminalSettings ?? const TerminalInfo();
+          final terminal = provider.data.terminalSettings!;
           final connection = provider.data.sshConnection;
 
           Widget? colorSwatchTrailing(Color? swatch) => swatch == null
@@ -97,7 +119,7 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
             body: ListView(
               padding: AppDesignTokens.pagePadding,
               children: [
-                _buildSectionTitle(context, l10n.terminalSettingsPreview, theme),
+                SectionTitle(l10n.terminalSettingsPreview),
                 _PreviewCard(settings: terminal),
                 const SizedBox(height: AppDesignTokens.spacingMd),
                 SectionEntryList(
@@ -301,7 +323,7 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
                         subtitle: Text(connection?.summary ?? '-'),
                         trailing: FilledButton.tonal(
                           onPressed: () =>
-                              _showLocalConnectionDialog(context, provider),
+                              showTerminalConnectionDialog(context, provider),
                           child: Text(l10n.commonSave),
                         ),
                       ),
@@ -312,23 +334,6 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(
-    BuildContext context,
-    String title,
-    ThemeData theme,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppDesignTokens.spacingSm),
-      child: Text(
-        title,
-        style: theme.textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.bold,
-          color: theme.colorScheme.primary,
-        ),
       ),
     );
   }
@@ -670,11 +675,19 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
     );
   }
 
-  Future<void> _showLocalConnectionDialog(
-    BuildContext context,
-    SettingsProvider provider,
-  ) async {
+}
+
+Future<void> showTerminalConnectionDialog(
+  BuildContext context,
+  SettingsProvider provider,
+) async {
     final l10n = context.l10n;
+    final loaded = await provider.loadSSHConnection();
+    if (!context.mounted) return;
+    if (!loaded) {
+      SnackBarUtils.showError(context, provider.data.error ?? l10n.systemSettingsLoadFailed);
+      return;
+    }
     final current = provider.data.sshConnection;
     final hostController = TextEditingController(text: current?.addr ?? '');
     final portController =
@@ -687,6 +700,7 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
     final passPhraseController =
         TextEditingController(text: current?.passPhrase ?? '');
     var authMode = current?.authMode ?? 'password';
+    final form = GlobalKey<FormState>();
 
     await showDialog<void>(
       context: context,
@@ -696,23 +710,33 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
             return AlertDialog(
               title: Text(l10n.terminalSettingsConnectionSetup),
               content: SingleChildScrollView(
-                child: Column(
+                child: Form(
+                  key: form,
+                  child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    TextField(
+                    TextFormField(
                       controller: hostController,
-                      decoration: const InputDecoration(labelText: 'Host'),
+                      decoration: InputDecoration(labelText: l10n.sshSessionsHostLabel),
+                      validator: (value) => value == null || value.trim().isEmpty ? l10n.serverFormRequired : null,
                     ),
                     const SizedBox(height: 8),
-                    TextField(
+                    TextFormField(
                       controller: portController,
                       keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(labelText: 'Port'),
+                      decoration: InputDecoration(labelText: l10n.sshPortLabel),
+                      validator: (value) {
+                        final port = int.tryParse(value?.trim() ?? '');
+                        return port == null || port < 1 || port > 65535
+                            ? l10n.websitesDomainValidationPort
+                            : null;
+                      },
                     ),
                     const SizedBox(height: 8),
-                    TextField(
+                    TextFormField(
                       controller: userController,
-                      decoration: const InputDecoration(labelText: 'User'),
+                      decoration: InputDecoration(labelText: l10n.sshSessionsLoginUserLabel),
+                      validator: (value) => value == null || value.trim().isEmpty ? l10n.serverFormRequired : null,
                     ),
                     const SizedBox(height: 12),
                     Align(
@@ -748,10 +772,11 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
                         ),
                       )
                     else ...[
-                      TextField(
+                      TextFormField(
                         controller: privateKeyController,
                         minLines: 3,
                         maxLines: 6,
+                        validator: (value) => value == null || value.trim().isEmpty ? l10n.panelTlsValidationPrivateKeyRequired : null,
                         decoration: InputDecoration(
                           labelText:
                               l10n.terminalSettingsConnectionPrivateKey,
@@ -768,6 +793,7 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
                       ),
                     ],
                   ],
+                  ),
                 ),
               ),
               actions: [
@@ -777,6 +803,7 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
                 ),
                 TextButton(
                   onPressed: () async {
+                    if (!form.currentState!.validate()) return;
                     final ok = await provider.checkSSHConnection(
                       host: hostController.text.trim(),
                       port: int.tryParse(portController.text.trim()),
@@ -802,6 +829,7 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
                 ),
                 FilledButton(
                   onPressed: () async {
+                    if (!form.currentState!.validate()) return;
                     final ok = await provider.saveSSHConnection(
                       host: hostController.text.trim().isEmpty
                           ? null
@@ -882,8 +910,6 @@ class _TerminalSettingsPageState extends State<TerminalSettingsPage> {
   String _toHex(Color color) {
     return '#${color.toARGB32().toRadixString(16).substring(2).toUpperCase()}';
   }
-
-}
 
 class _PreviewCard extends StatelessWidget {
   const _PreviewCard({

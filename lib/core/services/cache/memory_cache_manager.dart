@@ -53,9 +53,16 @@ class MemoryCacheManager {
     int? maxSizeBytes,
     Duration? expirationDuration,
   }) {
+    if (maxItems != null) RangeError.checkNotNegative(maxItems, 'maxItems');
+    if (maxSizeBytes != null) {
+      RangeError.checkNotNegative(maxSizeBytes, 'maxSizeBytes');
+    }
     if (maxItems != null) _maxItems = maxItems;
     if (maxSizeBytes != null) _maxSizeBytes = maxSizeBytes;
     if (expirationDuration != null) _expirationDuration = expirationDuration;
+    while (_cache.length > _maxItems || _currentSizeBytes > _maxSizeBytes) {
+      _evictOldest();
+    }
   }
 
   void startCleanupTimer() {
@@ -79,9 +86,17 @@ class MemoryCacheManager {
     _isAppInBackground = false;
   }
 
-  void put(String key, Uint8List data,
-      {String? fileName, String? mimeType, String? hash}) {
+  void put(
+    String key,
+    Uint8List data, {
+    String? fileName,
+    String? mimeType,
+    String? hash,
+  }) {
     if (_isAppInBackground) return;
+
+    remove(key);
+    if (_maxItems == 0 || data.length > _maxSizeBytes) return;
 
     final entry = CacheEntry(
       data: data,
@@ -91,12 +106,6 @@ class MemoryCacheManager {
       lastAccessedAt: DateTime.now(),
       hash: hash,
     );
-
-    if (_cache.containsKey(key)) {
-      final oldEntry = _cache[key]!;
-      _currentSizeBytes -= oldEntry.data.length;
-      _cache.remove(key);
-    }
 
     while ((_cache.length >= _maxItems ||
             _currentSizeBytes + data.length > _maxSizeBytes) &&

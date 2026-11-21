@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/services/app_settings_controller.dart';
-import 'package:onepanel_client/core/services/passkey_service.dart';
 import 'package:onepanel_client/data/models/setting_models.dart';
 import 'package:onepanel_client/data/models/ssh_settings_models.dart';
-import 'package:onepanel_client/features/settings/api_key_settings_page.dart';
 import 'package:onepanel_client/features/settings/language_settings_page.dart';
 import 'package:onepanel_client/features/settings/legal_center_page.dart';
 import 'package:onepanel_client/features/settings/panel_settings_page.dart';
@@ -27,7 +24,6 @@ class _FakeSettingsService extends SettingsService {
       proxyUrl: '',
       apiInterfaceStatus: 'Enable',
       ssl: 'Disable',
-      mfaStatus: 'Disable',
     );
   }
 
@@ -63,23 +59,11 @@ class _FakeSettingsService extends SettingsService {
   @override
   Future<String?> getDashboardMemo() async => null;
 
-  @override
-  Future<List<PasskeyInfo>> listPasskeys() async => const <PasskeyInfo>[];
 }
 
-class _MockPasskeyService extends Mock implements PasskeyService {}
-
 Widget _buildTestableWidget(Widget child, {SettingsProvider? provider}) {
-  final passkeyService = _MockPasskeyService();
-  when(() => passkeyService.getAvailability()).thenAnswer(
-    (_) async => const PasskeyAvailabilityResult.unsupported('test'),
-  );
-
   final settingsProvider = provider ??
-      SettingsProvider(
-        service: _FakeSettingsService(),
-        passkeyService: passkeyService,
-      );
+      SettingsProvider(service: _FakeSettingsService());
 
   return ChangeNotifierProvider<SettingsProvider>.value(
     value: settingsProvider,
@@ -95,15 +79,7 @@ Widget _buildTestableWidget(Widget child, {SettingsProvider? provider}) {
 void main() {
   group('PanelSettingsPage smoke test', () {
     testWidgets('renders without error', (tester) async {
-      final passkeyService = _MockPasskeyService();
-      when(() => passkeyService.getAvailability()).thenAnswer(
-        (_) async => const PasskeyAvailabilityResult.unsupported('test'),
-      );
-
-      final provider = SettingsProvider(
-        service: _FakeSettingsService(),
-        passkeyService: passkeyService,
-      );
+      final provider = SettingsProvider(service: _FakeSettingsService());
       await provider.load();
 
       await tester.pumpWidget(_buildTestableWidget(
@@ -117,39 +93,11 @@ void main() {
     });
   });
 
-  group('ApiKeySettingsPage smoke test', () {
-    testWidgets('renders without error', (tester) async {
-      final passkeyService = _MockPasskeyService();
-      when(() => passkeyService.getAvailability()).thenAnswer(
-        (_) async => const PasskeyAvailabilityResult.unsupported('test'),
-      );
-
-      final provider = SettingsProvider(
-        service: _FakeSettingsService(),
-        passkeyService: passkeyService,
-      );
-      await provider.load();
-
-      await tester.pumpWidget(_buildTestableWidget(
-        const ApiKeySettingsPage(),
-        provider: provider,
-      ));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(ApiKeySettingsPage), findsOneWidget);
-    });
-  });
-
   group('SecuritySettingsPage smoke test', () {
-    testWidgets('renders without error', (tester) async {
-      final passkeyService = _MockPasskeyService();
-      when(() => passkeyService.getAvailability()).thenAnswer(
-        (_) async => const PasskeyAvailabilityResult.unsupported('test'),
-      );
-
+    testWidgets('shows one account link for the selected panel', (tester) async {
       final provider = SettingsProvider(
         service: _FakeSettingsService(),
-        passkeyService: passkeyService,
+        serverUrl: 'https://panel.example.com',
       );
       await provider.load();
 
@@ -159,21 +107,15 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      expect(find.byType(SecuritySettingsPage), findsOneWidget);
+      final accountLink = find.widgetWithText(ListTile, 'Panel account security');
+      expect(accountLink, findsOneWidget);
+      expect(tester.widget<ListTile>(accountLink).onTap, isNotNull);
     });
   });
 
   group('ProxySettingsPage smoke test', () {
     testWidgets('renders without error', (tester) async {
-      final passkeyService = _MockPasskeyService();
-      when(() => passkeyService.getAvailability()).thenAnswer(
-        (_) async => const PasskeyAvailabilityResult.unsupported('test'),
-      );
-
-      final provider = SettingsProvider(
-        service: _FakeSettingsService(),
-        passkeyService: passkeyService,
-      );
+      final provider = SettingsProvider(service: _FakeSettingsService());
       await provider.load();
 
       await tester.pumpWidget(_buildTestableWidget(
@@ -223,15 +165,7 @@ void main() {
 
   group('TerminalSettingsPage smoke test', () {
     testWidgets('renders without error', (tester) async {
-      final passkeyService = _MockPasskeyService();
-      when(() => passkeyService.getAvailability()).thenAnswer(
-        (_) async => const PasskeyAvailabilityResult.unsupported('test'),
-      );
-
-      final provider = SettingsProvider(
-        service: _FakeSettingsService(),
-        passkeyService: passkeyService,
-      );
+      final provider = SettingsProvider(service: _FakeSettingsService());
       await provider.load();
 
       await tester.pumpWidget(

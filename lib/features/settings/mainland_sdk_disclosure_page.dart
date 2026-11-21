@@ -1,7 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/core/utils/error_message_utils.dart';
+import 'package:onepanel_client/features/settings/widgets/settings_scaffold.dart';
+import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
+import 'package:onepanel_client/shared/widgets/section_card.dart';
 
 class MainlandSdkDisclosurePage extends StatefulWidget {
   const MainlandSdkDisclosurePage({super.key});
@@ -12,109 +17,87 @@ class MainlandSdkDisclosurePage extends StatefulWidget {
 }
 
 class _MainlandSdkDisclosurePageState extends State<MainlandSdkDisclosurePage> {
-  late Future<List<String>> _packagesFuture;
+  static Future<List<String>> _packagesFuture = _collectPackages();
 
-  @override
-  void initState() {
-    super.initState();
-    _packagesFuture = _collectPackages();
-  }
-
-  Future<List<String>> _collectPackages() async {
+  static Future<List<String>> _collectPackages() async {
     final packages = <String>{};
-
-    await for (final license in LicenseRegistry.licenses) {
-      packages.addAll(license.packages.where((pkg) => pkg.trim().isNotEmpty));
+    try {
+      await for (final license in LicenseRegistry.licenses) {
+        packages.addAll(license.packages.where((pkg) => pkg.trim().isNotEmpty));
+      }
+    } catch (error, stackTrace) {
+      appLogger.eWithPackage('settings.licenses', '读取依赖清单失败',
+          error: error, stackTrace: stackTrace);
+      rethrow;
     }
 
     packages.remove('onepanel_client');
 
-    final sorted = packages.toList()
+    return packages.toList()
       ..sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
-    return sorted;
+  }
+
+  void _refresh() {
+    setState(() {
+      _packagesFuture = _collectPackages();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
-        title: Text(l10n.settingsMainlandSdkDisclosureTitle),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh_outlined),
-            tooltip: l10n.commonRefresh,
-            onPressed: () {
-              setState(() {
-                _packagesFuture = _collectPackages();
-              });
-            },
-          ),
-        ],
-      ),
-      body: FutureBuilder<List<String>>(
-        future: _packagesFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          final packages = snapshot.data ?? const <String>[];
-
-          return ListView(
-            padding: AppDesignTokens.pagePadding,
-            children: [
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
+    return FutureBuilder<List<String>>(
+      future: _packagesFuture,
+      builder: (context, snapshot) {
+        final loading = snapshot.connectionState != ConnectionState.done;
+        final packages = snapshot.data ?? const <String>[];
+        return SettingsScaffold(
+          title: l10n.settingsMainlandSdkDisclosureTitle,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.refresh_outlined),
+              tooltip: l10n.commonRefresh,
+              onPressed: loading ? null : _refresh,
+            ),
+          ],
+          body: AsyncStatePageBodyWidget(
+            isLoading: loading && !snapshot.hasData,
+            errorMessage: !loading && snapshot.hasError
+                ? ErrorMessageUtils.userFacingMessage(snapshot.error!)
+                : null,
+            onRetry: _refresh,
+            child: ListView.builder(
+              padding: AppDesignTokens.scrollPagePadding(context),
+              itemCount: packages.isEmpty ? 2 : packages.length + 1,
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        l10n.settingsMainlandSdkDisclaimer,
-                        style: Theme.of(context).textTheme.bodyMedium,
+                      SectionCard(
+                        padding: AppDesignTokens.pagePadding,
+                        child: Text(l10n.settingsMainlandSdkNone),
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        l10n.settingsMainlandSdkNone,
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
+                      const SizedBox(height: AppDesignTokens.spacingLg),
+                      SectionTitle(l10n.settingsMainlandSdkAutoScanTitle),
                     ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppDesignTokens.spacingMd),
-              Text(
-                l10n.settingsMainlandSdkAutoScanTitle,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: AppDesignTokens.spacingSm),
-              Card(
-                child: packages.isEmpty
-                    ? ListTile(
-                        title: Text(l10n.settingsMainlandSdkAutoScanEmpty),
-                      )
-                    : ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: packages.length,
-                        separatorBuilder: (_, __) => const Divider(height: 1),
-                        itemBuilder: (context, index) {
-                          final packageName = packages[index];
-                          return ListTile(
-                            dense: true,
-                            leading: const Icon(Icons.extension_outlined),
-                            title: Text(packageName),
-                          );
-                        },
-                      ),
-              ),
-            ],
-          );
-        },
-      ),
+                  );
+                }
+                if (packages.isEmpty) {
+                  return ListTile(
+                      title: Text(l10n.settingsMainlandSdkAutoScanEmpty));
+                }
+                return ListTile(
+                  dense: true,
+                  leading: const Icon(Icons.extension_outlined),
+                  title: Text(packages[index - 1]),
+                );
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 }

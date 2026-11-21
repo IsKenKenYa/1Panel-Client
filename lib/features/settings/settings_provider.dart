@@ -1,11 +1,10 @@
 import 'package:flutter/foundation.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
 import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/utils/error_message_utils.dart';
 import 'settings_data.dart';
 import 'settings_service.dart';
 import '../../data/models/setting_models.dart';
-import '../../data/models/ssh_settings_models.dart';
-import '../../core/services/passkey_service.dart';
 import '../../core/services/logger/logger_service.dart';
 
 const String _settingsProviderPackage = 'features.settings.settings_provider';
@@ -13,15 +12,20 @@ const String _settingsProviderPackage = 'features.settings.settings_provider';
 class SettingsProvider extends ChangeNotifier with SafeChangeNotifier {
   SettingsProvider({
     SettingsService? service,
-    PasskeyService? passkeyService,
-  })  : _service = service ?? SettingsService(),
-        _passkeyService = passkeyService ?? PasskeyService();
+    this.serverUrl,
+  }) : _service = service ?? SettingsService();
 
+  SettingsProvider.forServer(ApiConfig server)
+      : this(service: SettingsService.forServer(server), serverUrl: server.url);
+
+  final String? serverUrl;
   SettingsData _data = const SettingsData();
   final SettingsService _service;
-  final PasskeyService _passkeyService;
 
   SettingsData get data => _data;
+  String? _loadError;
+  String? get loadError => _loadError;
+  int _loadGeneration = 0;
 
   void _setError(
     String action,
@@ -99,46 +103,57 @@ class SettingsProvider extends ChangeNotifier with SafeChangeNotifier {
   }
 
   Future<void> loadSystemSettings() async {
-    _data = _data.copyWith(isLoading: true, error: null);
+    final generation = ++_loadGeneration;
+    final hasData = _data.systemSettings != null;
+    _loadError = null;
+    _data = _data.copyWith(isLoading: !hasData, isRefreshing: hasData);
     notifyListeners();
 
     try {
       final settings = await _service.getSystemSettings();
-
+      if (generation != _loadGeneration || isDisposed) return;
+      if (settings == null) throw const FormatException('Missing panel settings');
       _data = _data.copyWith(
         systemSettings: settings,
         isLoading: false,
+        isRefreshing: false,
         lastUpdated: DateTime.now(),
       );
       notifyListeners();
     } catch (e, stackTrace) {
+      if (generation != _loadGeneration || isDisposed) return;
+      _loadError = ErrorMessageUtils.userFacingMessage(e);
       _setError('加载系统设置', e, stackTrace: stackTrace);
     }
   }
 
-  Future<void> loadTerminalSettings() async {
+  Future<bool> loadTerminalSettings() async {
     try {
       final settings = await _service.getTerminalSettings();
-
+      if (settings == null) throw const FormatException('Missing terminal settings');
       _data = _data.copyWith(terminalSettings: settings);
       notifyListeners();
+      return true;
     } catch (e, stackTrace) {
       _setError('加载终端设置', e, stackTrace: stackTrace);
+      return false;
     }
   }
 
-  Future<void> loadNetworkInterfaces() async {
+  Future<bool> loadNetworkInterfaces() async {
     try {
       final interfaces = await _service.getNetworkInterfaces();
 
       _data = _data.copyWith(networkInterfaces: interfaces);
       notifyListeners();
+      return true;
     } catch (e, stackTrace) {
       _setError('加载网络接口', e, stackTrace: stackTrace);
+      return false;
     }
   }
 
-  Future<void> loadDashboardMemo() async {
+  Future<bool> loadDashboardMemo() async {
     _data = _data.copyWith(isMemoLoading: true);
     notifyListeners();
 
@@ -149,6 +164,7 @@ class SettingsProvider extends ChangeNotifier with SafeChangeNotifier {
         isMemoLoading: false,
       );
       notifyListeners();
+      return true;
     } catch (e, stackTrace) {
       appLogger.eWithPackage(
         _settingsProviderPackage,
@@ -161,6 +177,7 @@ class SettingsProvider extends ChangeNotifier with SafeChangeNotifier {
         error: '加载仪表盘备忘录失败: ${ErrorMessageUtils.userFacingMessage(e)}',
       );
       notifyListeners();
+      return false;
     }
   }
 
@@ -192,141 +209,15 @@ class SettingsProvider extends ChangeNotifier with SafeChangeNotifier {
     }
   }
 
-  Future<void> loadPasskeys() async {
-    _data = _data.copyWith(isPasskeysLoading: true, error: null);
-    notifyListeners();
-
-    try {
-      final availability = await _passkeyService.getAvailability();
-      if (!availability.isSupported) {
-        _data = _data.copyWith(
-          passkeys: const <PasskeyInfo>[],
-          isPasskeysLoading: false,
-          isPasskeySupported: false,
-          passkeyUnsupportedReason: availability.reason,
-        );
-        notifyListeners();
-        return;
-      }
-
-      final items = await _service.listPasskeys();
-      _data = _data.copyWith(
-        passkeys: items,
-        isPasskeysLoading: false,
-        isPasskeySupported: true,
-        passkeyUnsupportedReason: null,
-      );
-      notifyListeners();
-    } catch (e, stackTrace) {
-      appLogger.eWithPackage(
-        _settingsProviderPackage,
-        'loadPasskeys failed',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      _data = _data.copyWith(
-        isPasskeysLoading: false,
-        error: '加载 Passkey 列表失败: ${ErrorMessageUtils.userFacingMessage(e)}',
-      );
-      notifyListeners();
-    }
-  }
-
-  Future<bool> registerPasskey(String name) async {
-    final normalizedName = name.trim();
-    if (normalizedName.isEmpty) {
-      _data = _data.copyWith(error: 'Passkey 名称不能为空');
-      notifyListeners();
-      return false;
-    }
-
-    _data = _data.copyWith(isPasskeyRegistering: true, error: null);
-    notifyListeners();
-
-    try {
-      final availability = await _passkeyService.getAvailability();
-      if (!availability.isSupported) {
-        _data = _data.copyWith(
-          isPasskeyRegistering: false,
-          isPasskeySupported: false,
-          passkeyUnsupportedReason: availability.reason,
-          error: availability.reason ?? '当前平台不支持 Passkey',
-        );
-        notifyListeners();
-        return false;
-      }
-
-      final begin = await _service.beginPasskeyRegister(normalizedName);
-      final sessionId = begin?.sessionId;
-      final publicKey = begin?.publicKey;
-      if (sessionId == null || sessionId.isEmpty || publicKey is! Map<String, dynamic>) {
-        _data = _data.copyWith(
-          isPasskeyRegistering: false,
-          error: 'Passkey 注册初始化失败',
-        );
-        notifyListeners();
-        return false;
-      }
-
-      final credential = await _passkeyService.registerCredential(publicKey);
-      await _service.finishPasskeyRegister(
-        sessionId: sessionId,
-        credential: credential,
-      );
-      await loadPasskeys();
-
-      _data = _data.copyWith(isPasskeyRegistering: false);
-      notifyListeners();
-      return true;
-    } catch (e, stackTrace) {
-      appLogger.eWithPackage(
-        _settingsProviderPackage,
-        'registerPasskey failed',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      _data = _data.copyWith(
-        isPasskeyRegistering: false,
-        error: _passkeyService.toUserMessage(e),
-      );
-      notifyListeners();
-      return false;
-    }
-  }
-
-  Future<bool> deletePasskey(String id) async {
-    _data = _data.copyWith(passkeyDeletingId: id, error: null);
-    notifyListeners();
-
-    try {
-      await _service.deletePasskey(id);
-      await loadPasskeys();
-      _data = _data.copyWith(passkeyDeletingId: null);
-      notifyListeners();
-      return true;
-    } catch (e, stackTrace) {
-      appLogger.eWithPackage(
-        _settingsProviderPackage,
-        'deletePasskey failed',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      _data = _data.copyWith(
-        passkeyDeletingId: null,
-        error: '删除 Passkey 失败: ${ErrorMessageUtils.userFacingMessage(e)}',
-      );
-      notifyListeners();
-      return false;
-    }
-  }
-
-  Future<void> loadAppStoreConfig() async {
+  Future<bool> loadAppStoreConfig() async {
     try {
       final config = await _service.getAppStoreConfig();
       _data = _data.copyWith(appStoreConfig: config);
       notifyListeners();
+      return true;
     } catch (e, stackTrace) {
       _setError('加载应用商店配置', e, stackTrace: stackTrace);
+      return false;
     }
   }
 
@@ -340,61 +231,15 @@ class SettingsProvider extends ChangeNotifier with SafeChangeNotifier {
     }
   }
 
-  Future<void> loadSSHConnection() async {
+  Future<bool> loadSSHConnection() async {
     try {
       final connection = await _service.getSSHConnection();
       _data = _data.copyWith(sshConnection: connection);
       notifyListeners();
+      return true;
     } catch (e, stackTrace) {
       _setError('加载SSH连接', e, stackTrace: stackTrace);
-    }
-  }
-
-  Future<void> loadMfaInfo(MfaLoadRequest request) async {
-    try {
-      final mfaInfo = await _service.loadMfaInfo(request);
-
-      _data = _data.copyWith(mfaInfo: mfaInfo);
-      notifyListeners();
-    } catch (e, stackTrace) {
-      _setError('加载MFA信息', e, stackTrace: stackTrace);
-    }
-  }
-
-  Future<MfaOtp?> loadMfaOtp() async {
-    try {
-      final mfaInfo = await _service.loadMfaInfo(const MfaLoadRequest(
-        title: 'KenPanel',
-        interval: 30,
-      ));
-      _data = _data.copyWith(mfaInfo: mfaInfo);
-      notifyListeners();
-      return mfaInfo;
-    } catch (e, stackTrace) {
-      _setError('加载MFA OTP', e, stackTrace: stackTrace);
-      return null;
-    }
-  }
-
-  Future<void> loadMfaStatus() async {
-    try {
-      final status = await _service.getMfaStatus();
-
-      _data = _data.copyWith(mfaStatus: status);
-      notifyListeners();
-    } catch (e, stackTrace) {
-      _setError('加载MFA状态', e, stackTrace: stackTrace);
-    }
-  }
-
-  Future<void> loadSSLInfo() async {
-    try {
-      final sslInfo = await _service.getSSLInfo();
-
-      _data = _data.copyWith(sslInfo: sslInfo);
-      notifyListeners();
-    } catch (e, stackTrace) {
-      _setError('加载SSL信息', e, stackTrace: stackTrace);
+      return false;
     }
   }
 
@@ -569,118 +414,6 @@ class SettingsProvider extends ChangeNotifier with SafeChangeNotifier {
     }
   }
 
-  Future<bool> bindMfa(MfaBindRequest request) async {
-    try {
-      await _service.bindMfa(request);
-      await loadMfaStatus();
-      return true;
-    } catch (e, stackTrace) {
-      _setError('绑定MFA', e, stackTrace: stackTrace);
-      return false;
-    }
-  }
-
-  Future<bool> bindMfaWithCode(
-      String code, String secret, String interval) async {
-    try {
-      await _service.bindMfa(MfaBindRequest(
-        code: code,
-        secret: secret,
-        interval: interval,
-      ));
-      await loadMfaStatus();
-      return true;
-    } catch (e, stackTrace) {
-      _setError('使用验证码绑定MFA', e, stackTrace: stackTrace);
-      return false;
-    }
-  }
-
-  Future<bool> unbindMfa(String code) async {
-    try {
-      await _service.unbindMfa({'code': code});
-      await loadMfaStatus();
-      return true;
-    } catch (e, stackTrace) {
-      _setError('解绑MFA', e, stackTrace: stackTrace);
-      return false;
-    }
-  }
-
-  Future<bool> updatePassword(String oldPassword, String newPassword) async {
-    try {
-      await _service.updatePasswordSettings(oldPassword, newPassword);
-      return true;
-    } catch (e, stackTrace) {
-      _setError('更新密码', e, stackTrace: stackTrace);
-      return false;
-    }
-  }
-
-  Future<bool> generateApiKey() async {
-    try {
-      final result = await _service.generateApiKey();
-      if (result != null) {
-        await loadSystemSettings();
-        return true;
-      }
-      return false;
-    } catch (e, stackTrace) {
-      _setError('生成API Key', e, stackTrace: stackTrace);
-      return false;
-    }
-  }
-
-  Future<bool> updateApiConfig({
-    required String status,
-    required String ipWhiteList,
-    required int validityTime,
-  }) async {
-    try {
-      await _service.updateApiConfig(
-        status: status,
-        ipWhiteList: ipWhiteList,
-        validityTime: validityTime,
-      );
-      await loadSystemSettings();
-      return true;
-    } catch (e, stackTrace) {
-      _setError('更新API配置', e, stackTrace: stackTrace);
-      return false;
-    }
-  }
-
-  Future<bool> updateSSL({
-    required String domain,
-    required String sslType,
-    required String cert,
-    required String key,
-  }) async {
-    try {
-      await _service.updateSSL(
-        domain: domain,
-        sslType: sslType,
-        cert: cert,
-        key: key,
-      );
-      await loadSSLInfo();
-      return true;
-    } catch (e, stackTrace) {
-      _setError('更新SSL配置', e, stackTrace: stackTrace);
-      return false;
-    }
-  }
-
-  Future<bool> downloadSSL() async {
-    try {
-      await _service.downloadSSL();
-      return true;
-    } catch (e, stackTrace) {
-      _setError('下载SSL', e, stackTrace: stackTrace);
-      return false;
-    }
-  }
-
   Future<bool> createSnapshot({
     String? description,
     required String sourceAccountIDs,
@@ -802,123 +535,11 @@ class SettingsProvider extends ChangeNotifier with SafeChangeNotifier {
   }
 
   Future<void> load() async {
-    _data = _data.copyWith(isLoading: true, error: null);
-    notifyListeners();
-
-    try {
-      // Core settings loaded in parallel; non-critical loads below use
-      // individual try-catch so a single failure doesn't block the others.
-      final results = await Future.wait([
-        _service.getSystemSettings(),
-        _service.getTerminalSettings(),
-        _service.getNetworkInterfaces(),
-      ]);
-
-      dynamic appStoreConfig;
-      dynamic authSetting;
-      SshLocalConnectionInfo? sshConnection;
-      String? dashboardMemo;
-      var passkeys = const <PasskeyInfo>[];
-      var isPasskeySupported = false;
-      String? passkeyUnsupportedReason;
-
-      try {
-        appStoreConfig = await _service.getAppStoreConfig();
-      } catch (e, stackTrace) {
-        appLogger.wWithPackage(
-          _settingsProviderPackage,
-          '加载应用商店配置失败，继续主链路',
-          error: e,
-          stackTrace: stackTrace,
-        );
-      }
-
-      try {
-        authSetting = await _service.getAuthSetting();
-      } catch (e, stackTrace) {
-        appLogger.wWithPackage(
-          _settingsProviderPackage,
-          '加载认证设置失败，继续主链路',
-          error: e,
-          stackTrace: stackTrace,
-        );
-      }
-
-      try {
-        sshConnection = await _service.getSSHConnection();
-      } catch (e, stackTrace) {
-        appLogger.wWithPackage(
-          _settingsProviderPackage,
-          '加载SSH连接失败，继续主链路',
-          error: e,
-          stackTrace: stackTrace,
-        );
-      }
-
-      try {
-        dashboardMemo = await _service.getDashboardMemo();
-      } catch (e, stackTrace) {
-        appLogger.wWithPackage(
-          _settingsProviderPackage,
-          '加载仪表盘备忘录失败，继续主链路',
-          error: e,
-          stackTrace: stackTrace,
-        );
-      }
-
-      try {
-        final availability = await _passkeyService.getAvailability();
-        isPasskeySupported = availability.isSupported;
-        passkeyUnsupportedReason = availability.reason;
-        if (availability.isSupported) {
-          passkeys = await _service.listPasskeys();
-        }
-      } catch (e, stackTrace) {
-        appLogger.wWithPackage(
-          _settingsProviderPackage,
-          '加载 Passkey 列表失败，继续主链路',
-          error: e,
-          stackTrace: stackTrace,
-        );
-      }
-
-      _data = _data.copyWith(
-        systemSettings: results[0] as SystemSettingInfo?,
-        terminalSettings: results[1] as TerminalInfo?,
-        networkInterfaces: results[2] as List<String>?,
-        appStoreConfig: appStoreConfig,
-        authSetting: authSetting,
-        sshConnection: sshConnection,
-        dashboardMemo: dashboardMemo,
-        passkeys: passkeys,
-        isPasskeySupported: isPasskeySupported,
-        passkeyUnsupportedReason: passkeyUnsupportedReason,
-        isPasskeysLoading: false,
-        isPasskeyRegistering: false,
-        passkeyDeletingId: null,
-        isMemoLoading: false,
-        isMemoSaving: false,
-        isLoading: false,
-        lastUpdated: DateTime.now(),
-      );
-      notifyListeners();
-    } catch (e, stackTrace) {
-      _setError('加载设置数据', e, stackTrace: stackTrace);
-    }
+    if (_data.isLoading || _data.isRefreshing) return;
+    await loadSystemSettings();
   }
 
-  Future<void> refresh() async {
-    _data = _data.copyWith(isRefreshing: true, error: null);
-    notifyListeners();
-
-    try {
-      await load();
-      _data = _data.copyWith(isRefreshing: false);
-      notifyListeners();
-    } catch (e, stackTrace) {
-      _setError('刷新设置数据', e, stackTrace: stackTrace);
-    }
-  }
+  Future<void> refresh() => load();
 
   void clearError() {
     _data = _data.copyWith(error: null);

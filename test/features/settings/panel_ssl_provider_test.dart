@@ -1,96 +1,59 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepanel_client/features/settings/panel_ssl/providers/panel_ssl_provider.dart';
-import 'package:onepanel_client/features/settings/panel_ssl/services/panel_ssl_service.dart';
-import 'package:onepanel_client/shared/security_gateway/models/security_gateway_models.dart';
-
-class _FakePanelSslService extends PanelSslService {
-  _FakePanelSslService({
-    required this.info,
-  });
-
-  Map<String, dynamic> info;
-  final List<int> downloadPayload = const <int>[1, 2, 3];
-  Map<String, dynamic>? lastUpdateRequest;
-
-  @override
-  Future<Map<String, dynamic>> getSslInfo() async => info;
-
-  @override
-  Future<void> updateSsl({
-    required String domain,
-    required String sslType,
-    required String cert,
-    required String key,
-  }) async {
-    lastUpdateRequest = <String, dynamic>{
-      'domain': domain,
-      'sslType': sslType,
-      'cert': cert,
-      'key': key,
-    };
-    info = <String, dynamic>{
-      ...info,
-      'domain': domain,
-      'sslType': sslType,
-    };
-  }
-
-  @override
-  Future<List<int>> downloadSsl() async => downloadPayload;
-}
+import 'package:onepanel_client/api/v2/setting_v2.dart';
+import 'package:onepanel_client/config/app_route_constants.dart';
+import 'package:onepanel_client/config/app_route_entries.dart';
+import 'package:onepanel_client/core/network/dio_client.dart';
+import 'package:onepanel_client/core/network/interceptors/logging_interceptor.dart';
+import 'package:onepanel_client/core/network/interceptors/retry_interceptor.dart';
+import 'package:onepanel_client/features/settings/panel_ssl/pages/panel_ssl_page.dart';
+import 'package:onepanel_client/shared/security_gateway/utils/security_gateway_utils.dart';
 
 void main() {
-  test('PanelSslProvider loads upload/download state and computes risk',
-      () async {
-    final service = _FakePanelSslService(
-      info: <String, dynamic>{
-        'domain': 'panel.example.com',
-        'status': 'enabled',
-        'sslType': 'selfSigned',
-        'provider': 'local',
-        'expirationDate':
-            DateTime.now().add(const Duration(days: 5)).toIso8601String(),
-      },
+  testWidgets('面板 TLS 入口使用专属证书页面', (tester) async {
+    await tester.pumpWidget(const SizedBox());
+    final entry = buildRouteRegistryEntries()[AppRoutes.panelSsl]!;
+    final page = entry.defaultBuilder(
+      tester.element(find.byType(SizedBox)),
+      const RouteSettings(name: AppRoutes.panelSsl),
     );
-    final provider = PanelSslProvider(service: service);
-
-    await provider.loadSslInfo();
-
-    expect(provider.domain, 'panel.example.com');
-    expect(provider.healthStatus, CertificateHealthStatus.expiringSoon);
-    expect(provider.riskNotices, isNotEmpty);
-
-    final uploadSuccess = await provider.uploadSsl(
-      domain: 'panel.example.com',
-      sslType: 'selfSigned',
-      cert: '-----BEGIN CERTIFICATE-----\nabc\n-----END CERTIFICATE-----',
-      key: '-----BEGIN PRIVATE KEY-----\nxyz\n-----END PRIVATE KEY-----',
-    );
-
-    expect(uploadSuccess, isTrue);
-    expect(service.lastUpdateRequest?['domain'], 'panel.example.com');
-    expect(provider.history.first.action, PanelSslHistoryAction.uploaded);
-
-    final downloadSuccess = await provider.downloadSsl();
-
-    expect(downloadSuccess, isTrue);
-    expect(provider.lastDownloadedBytes, 3);
-    expect(provider.history.first.action, PanelSslHistoryAction.downloaded);
+    expect(page, isA<PanelSslPage>());
   });
 
-  test('PanelSslProvider rejects invalid upload payload', () async {
-    final provider = PanelSslProvider(
-      service: _FakePanelSslService(info: <String, dynamic>{}),
+  test('导入 PEM 开启 HTTPS 并保留已有混合访问模式', () {
+    for (final mode in ['Enable', 'Disable', 'Mux']) {
+      final request = SSLUpdate.importPem(
+        currentMode: mode,
+        cert: 'cert',
+        key: 'key',
+      );
+      expect(request.toJson(), {
+        'ssl': mode == 'Mux' ? 'Mux' : 'Enable',
+        'sslType': 'import-paste',
+        'cert': 'cert',
+        'key': 'key',
+      });
+    }
+    expect(
+      () => SSLUpdate.importPem(currentMode: null, cert: '', key: ''),
+      throwsFormatException,
     );
+  });
 
-    final success = await provider.uploadSsl(
-      domain: '',
-      sslType: 'selfSigned',
-      cert: 'invalid',
-      key: '',
-    );
+  test('不允许将私钥、空响应或网页保存为公开证书', () {
+    for (final text in [
+      '',
+      '<html></html>',
+      '-----BEGIN PRIVATE KEY-----',
+      '-----BEGIN CERTIFICATE-----\n-----BEGIN PRIVATE KEY-----\n-----END CERTIFICATE-----',
+    ]) {
+      expect(isPublicCertificatePem(text), isFalse);
+    }
+  });
 
-    expect(success, isFalse);
-    expect(provider.error, contains('Domain is required'));
+  test('认证和证书请求禁止记录正文及自动重试', () {
+    final extra = DioClient.sensitiveOptions.extra!;
+    expect(extra[LoggingInterceptor.sensitiveBody], isTrue);
+    expect(extra[RetryInterceptor.disableRetryKey], isTrue);
   });
 }

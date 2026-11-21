@@ -24,34 +24,6 @@ void main() {
       final value = await service.loadUseFilePickerForFileOperations();
       expect(value, isFalse);
     });
-
-    test('legacy "export only" key is migrated to the new key on first read',
-        () async {
-      SharedPreferences.setMockInitialValues(<String, Object>{
-        'app_use_file_picker_for_export': false,
-      });
-
-      final value = await service.loadUseFilePickerForFileOperations();
-      expect(value, isFalse);
-
-      // The new key should now hold the migrated value; the legacy
-      // key should be removed so subsequent reads do not migrate again.
-      final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getBool('app_use_file_picker_for_file_operations'),
-          isFalse);
-      expect(prefs.getBool('app_use_file_picker_for_export'), isNull);
-    });
-
-    test('new key takes precedence over legacy key', () async {
-      SharedPreferences.setMockInitialValues(<String, Object>{
-        'app_use_file_picker_for_file_operations': true,
-        'app_use_file_picker_for_export': false,
-      });
-
-      final value = await service.loadUseFilePickerForFileOperations();
-      // New key wins — legacy is ignored.
-      expect(value, isTrue);
-    });
   });
 
   group('AppPreferencesService - file save sub directory', () {

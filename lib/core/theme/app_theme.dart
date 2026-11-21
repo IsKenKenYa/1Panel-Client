@@ -5,14 +5,17 @@ import 'app_design_tokens.dart';
 class AppTheme {
   const AppTheme._();
 
-  /// Backward-compatible helper used across the app.
-  static ThemeData create(ColorScheme scheme) {
-    return _buildTheme(scheme);
+  static ThemeData create(
+    ColorScheme scheme, {
+    VisualDensity visualDensity = VisualDensity.standard,
+  }) {
+    return _buildTheme(scheme, visualDensity);
   }
 
   static ThemeData getLightTheme({
     ColorScheme? dynamicScheme,
     Color? seedColor,
+    VisualDensity visualDensity = VisualDensity.standard,
   }) {
     final scheme = _resolveScheme(
       brightness: Brightness.light,
@@ -20,12 +23,13 @@ class AppTheme {
       seedColor: seedColor,
     );
 
-    return _buildTheme(scheme);
+    return _buildTheme(scheme, visualDensity);
   }
 
   static ThemeData getDarkTheme({
     ColorScheme? dynamicScheme,
     Color? seedColor,
+    VisualDensity visualDensity = VisualDensity.standard,
   }) {
     final scheme = _resolveScheme(
       brightness: Brightness.dark,
@@ -33,7 +37,7 @@ class AppTheme {
       seedColor: seedColor,
     );
 
-    return _buildTheme(scheme);
+    return _buildTheme(scheme, visualDensity);
   }
 
   static ColorScheme _resolveScheme({
@@ -41,7 +45,7 @@ class AppTheme {
     ColorScheme? dynamicScheme,
     Color? seedColor,
   }) {
-    if (dynamicScheme != null && _supportsMaterialYouPlatform) {
+    if (dynamicScheme != null) {
       return dynamicScheme;
     }
 
@@ -51,29 +55,22 @@ class AppTheme {
     );
   }
 
-  static bool get _supportsMaterialYouPlatform {
-    // Gate used by theme resolution to apply dynamic colors only on Android.
-    if (kIsWeb) {
-      return false;
-    }
-    return defaultTargetPlatform == TargetPlatform.android;
-  }
-
-  static ThemeData _buildTheme(ColorScheme scheme) {
+  static ThemeData _buildTheme(ColorScheme scheme, VisualDensity density) {
     final isDesktop = defaultTargetPlatform == TargetPlatform.macOS ||
         defaultTargetPlatform == TargetPlatform.windows ||
         defaultTargetPlatform == TargetPlatform.linux;
 
     final isMacOS = defaultTargetPlatform == TargetPlatform.macOS;
+    final compact = density == VisualDensity.compact;
+    final buttonSize = Size(0, compact ? 44 : kMinInteractiveDimension);
 
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
       scaffoldBackgroundColor: scheme.surface,
-      // M3 Expressive 信息密度：桌面鼠标精准定位走 compact，
-      // 移动端保持 standard（触控目标高度由按钮 minSize 与 ListTile 下探共同保障）。
-      visualDensity:
-          isDesktop ? VisualDensity.compact : VisualDensity.standard,
+      visualDensity: density,
+      materialTapTargetSize:
+          compact ? MaterialTapTargetSize.shrinkWrap : MaterialTapTargetSize.padded,
       appBarTheme: AppBarTheme(
         centerTitle: false,
         elevation: 0,
@@ -121,14 +118,14 @@ class AppTheme {
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           shape: const StadiumBorder(),
-          minimumSize: const Size(0, 44),
+          minimumSize: buttonSize,
           elevation: isDesktop ? 0 : null,
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           shape: const StadiumBorder(),
-          minimumSize: const Size(0, 44),
+          minimumSize: buttonSize,
         ),
       ),
       // M3 Expressive：弹层统一大圆角（28dp）与低层级表面色。
@@ -168,7 +165,19 @@ class AppTheme {
         side: BorderSide(color: scheme.outlineVariant),
         backgroundColor: scheme.surfaceContainerHighest,
         selectedColor: scheme.primary,
-        labelStyle: TextStyle(color: scheme.onSurface, fontSize: 13),
+        secondarySelectedColor: scheme.primary,
+        checkmarkColor: scheme.onPrimary,
+        labelStyle: TextStyle(
+          fontSize: 13,
+          color: WidgetStateColor.resolveWith((states) {
+            if (states.contains(WidgetState.disabled)) {
+              return scheme.onSurface.withValues(alpha: 0.38);
+            }
+            return states.contains(WidgetState.selected)
+                ? scheme.onPrimary
+                : scheme.onSurface;
+          }),
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
       ),
       // ── M3 Expressive 强化批：形状/层级/动效统一 ──
@@ -226,15 +235,11 @@ class AppTheme {
           ),
         ),
       ),
-      // 列表项统一圆角按压反馈（M3E state layer 形状）+ 密度收紧：
-      // 水平内边距 16→12、负向 visualDensity 下探行高（桌面 -4 / 移动 -2），
-      // leading 图标降为次级色（M3 列表规范）。
       listTileTheme: ListTileThemeData(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppDesignTokens.radiusMd),
         ),
-        visualDensity:
-            VisualDensity(horizontal: -2, vertical: isDesktop ? -2 : 0),
+        visualDensity: density,
         minVerticalPadding: AppDesignTokens.spacingSm,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppDesignTokens.spacingSm,

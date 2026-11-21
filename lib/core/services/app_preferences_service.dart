@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:synchronized/synchronized.dart';
 
 import 'package:onepanel_client/core/security/app_lock_settings_store.dart';
 import 'package:onepanel_client/core/theme/ui_render_mode.dart';
@@ -12,6 +15,7 @@ enum CacheStrategy {
 }
 
 class AppPreferencesService {
+  static final _writes = Lock();
   static const String _themeModeKey = 'app_theme_mode';
   static const String _localeKey = 'app_locale';
   static const String _cacheStrategyKey = 'cache_strategy';
@@ -19,19 +23,41 @@ class AppPreferencesService {
   static const String _useDynamicColorKey = 'app_use_dynamic_color';
   static const String _seedColorKey = 'app_seed_color';
   static const String _uiRenderModeKey = 'app_ui_render_mode';
-  // Default `true` so the picker is always available; users can opt
-  // out to fall back to the public Downloads directory.
-  static const String _useFilePickerForExportKey =
-      'app_use_file_picker_for_export';
-  // Replaces the older "export only" key; covers both exports and
-  // downloads so the experience is consistent.
   static const String _useFilePickerForFileOperationsKey =
       'app_use_file_picker_for_file_operations';
-  // Sub-folder used when the picker is off. Default is "KenPanel"
-  // so files are easy to find across platforms.
   static const String _fileSaveSubDirectoryNameKey =
       'app_file_save_sub_directory_name';
   static const String defaultFileSaveSubDirectoryName = 'KenPanel';
+
+  Future<void> _write(
+    String key,
+    Future<bool> Function(SharedPreferences) persist,
+  ) =>
+      _writes.synchronized(() async {
+        final prefs = await SharedPreferences.getInstance();
+        try {
+          if (!await persist(prefs)) throw StateError('无法保存设置 $key');
+        } catch (_) {
+          // SharedPreferences 在平台确认写入之前会修改内存中的值。
+          await prefs.reload();
+          rethrow;
+        }
+      });
+
+  Future<(ThemeMode, bool, Color?)> loadAppearance() =>
+      _writes.synchronized(() => (
+            loadThemeMode(),
+            loadUseDynamicColor(),
+            loadSeedColor(),
+          ).wait);
+
+  Future<(Locale?, CacheStrategy, int, UIRenderMode)> loadAppSettings() =>
+      _writes.synchronized(() => (
+            loadLocale(),
+            loadCacheStrategy(),
+            loadCacheMaxSizeMB(),
+            loadUIRenderMode(),
+          ).wait);
 
   Future<ThemeMode> loadThemeMode() async {
     final prefs = await SharedPreferences.getInstance();
@@ -47,16 +73,10 @@ class AppPreferencesService {
     }
   }
 
-  Future<void> saveThemeMode(ThemeMode mode) async {
-    final prefs = await SharedPreferences.getInstance();
-    final value = switch (mode) {
-      ThemeMode.light => 'light',
-      ThemeMode.dark => 'dark',
-      ThemeMode.system => 'system',
-    };
-
-    await prefs.setString(_themeModeKey, value);
-  }
+  Future<void> saveThemeMode(ThemeMode mode) => _write(
+        _themeModeKey,
+        (prefs) => prefs.setString(_themeModeKey, mode.name),
+      );
 
   Future<Locale?> loadLocale({bool refresh = false}) async {
     final prefs = await SharedPreferences.getInstance();
@@ -69,15 +89,10 @@ class AppPreferencesService {
     return Locale(value);
   }
 
-  Future<void> saveLocale(Locale? locale) async {
-    final prefs = await SharedPreferences.getInstance();
-    if (locale == null) {
-      await prefs.setString(_localeKey, 'system');
-      return;
-    }
-
-    await prefs.setString(_localeKey, locale.languageCode);
-  }
+  Future<void> saveLocale(Locale? locale) => _write(
+        _localeKey,
+        (prefs) => prefs.setString(_localeKey, locale?.languageCode ?? 'system'),
+      );
 
   Future<CacheStrategy> loadCacheStrategy() async {
     final prefs = await SharedPreferences.getInstance();
@@ -95,25 +110,22 @@ class AppPreferencesService {
     }
   }
 
-  Future<void> saveCacheStrategy(CacheStrategy strategy) async {
-    final prefs = await SharedPreferences.getInstance();
-    final value = switch (strategy) {
-      CacheStrategy.memoryOnly => 'memoryOnly',
-      CacheStrategy.diskOnly => 'diskOnly',
-      CacheStrategy.hybrid => 'hybrid',
-    };
-
-    await prefs.setString(_cacheStrategyKey, value);
-  }
+  Future<void> saveCacheStrategy(CacheStrategy strategy) => _write(
+        _cacheStrategyKey,
+        (prefs) => prefs.setString(_cacheStrategyKey, strategy.name),
+      );
 
   Future<int> loadCacheMaxSizeMB() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getInt(_cacheMaxSizeKey) ?? 100;
   }
 
-  Future<void> saveCacheMaxSizeMB(int sizeMB) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_cacheMaxSizeKey, sizeMB);
+  Future<void> saveCacheMaxSizeMB(int sizeMB) {
+    if (sizeMB <= 0) throw ArgumentError.value(sizeMB, 'sizeMB');
+    return _write(
+      _cacheMaxSizeKey,
+      (prefs) => prefs.setInt(_cacheMaxSizeKey, sizeMB),
+    );
   }
 
   Future<bool> loadUseDynamicColor() async {
@@ -121,10 +133,10 @@ class AppPreferencesService {
     return prefs.getBool(_useDynamicColorKey) ?? true;
   }
 
-  Future<void> saveUseDynamicColor(bool useDynamicColor) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_useDynamicColorKey, useDynamicColor);
-  }
+  Future<void> saveUseDynamicColor(bool useDynamicColor) => _write(
+        _useDynamicColorKey,
+        (prefs) => prefs.setBool(_useDynamicColorKey, useDynamicColor),
+      );
 
   Future<Color?> loadSeedColor() async {
     final prefs = await SharedPreferences.getInstance();
@@ -132,10 +144,10 @@ class AppPreferencesService {
     return value != null ? Color(value) : null;
   }
 
-  Future<void> saveSeedColor(Color color) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_seedColorKey, color.toARGB32());
-  }
+  Future<void> saveSeedColor(Color color) => _write(
+        _seedColorKey,
+        (prefs) => prefs.setInt(_seedColorKey, color.toARGB32()),
+      );
 
   Future<UIRenderMode> loadUIRenderMode({bool refresh = false}) async {
     final prefs = await SharedPreferences.getInstance();
@@ -150,60 +162,24 @@ class AppPreferencesService {
     return UIRenderPolicy.resolveSupportedMode(configuredMode);
   }
 
-  Future<void> saveUIRenderMode(UIRenderMode mode) async {
-    final prefs = await SharedPreferences.getInstance();
+  Future<UIRenderMode> saveUIRenderMode(UIRenderMode mode) async {
     final resolvedMode = UIRenderPolicy.resolveSupportedMode(mode);
-    final saved = await prefs.setString(_uiRenderModeKey, resolvedMode.name);
-    if (!saved) {
-      throw StateError('Failed to save $_uiRenderModeKey');
-    }
+    await _write(
+      _uiRenderModeKey,
+      (prefs) => prefs.setString(_uiRenderModeKey, resolvedMode.name),
+    );
+    return resolvedMode;
   }
 
-  // Controls whether OHOS picker dialogs (DocumentViewPicker /
-  // AudioViewPicker / PhotoAccessHelper) are shown for exports and
-  // downloads. When false, files are written silently to the public
-  // Downloads directory under Open1Panel/<category>/.
-  //
-  // The legacy key `app_use_file_picker_for_export` is consulted on
-  // first read for migration. New code should use the
-  // `*FilePickerForFileOperations` pair so both export and download
-  // share the same toggle.
-  @Deprecated('Use loadUseFilePickerForFileOperations / saveUseFilePickerForFileOperations')
-  Future<bool> loadUseFilePickerForExport() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_useFilePickerForExportKey) ?? true;
-  }
-
-  @Deprecated('Use loadUseFilePickerForFileOperations / saveUseFilePickerForFileOperations')
-  Future<void> saveUseFilePickerForExport(bool usePicker) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_useFilePickerForExportKey, usePicker);
-  }
-
-  // Unified toggle covering both exports and downloads. The legacy
-  // "export only" key is migrated on first read so existing users
-  // keep their setting. Defaults to `true` (picker shown).
   Future<bool> loadUseFilePickerForFileOperations() async {
     final prefs = await SharedPreferences.getInstance();
-    final direct = prefs.getBool(_useFilePickerForFileOperationsKey);
-    if (direct != null) {
-      return direct;
-    }
-    // Migrate from the old key. Reading it once is enough — future
-    // calls will hit the new key (or default) directly.
-    final legacy = prefs.getBool(_useFilePickerForExportKey);
-    if (legacy != null) {
-      await prefs.setBool(_useFilePickerForFileOperationsKey, legacy);
-      await prefs.remove(_useFilePickerForExportKey);
-      return legacy;
-    }
-    return true;
+    return prefs.getBool(_useFilePickerForFileOperationsKey) ?? true;
   }
 
-  Future<void> saveUseFilePickerForFileOperations(bool usePicker) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_useFilePickerForFileOperationsKey, usePicker);
-  }
+  Future<void> saveUseFilePickerForFileOperations(bool usePicker) => _write(
+        _useFilePickerForFileOperationsKey,
+        (prefs) => prefs.setBool(_useFilePickerForFileOperationsKey, usePicker),
+      );
 
   // Sub-folder used when the picker is off. Empty string is allowed
   // and means "no parent folder" — files land directly under
@@ -214,8 +190,8 @@ class AppPreferencesService {
         defaultFileSaveSubDirectoryName;
   }
 
-  Future<void> saveFileSaveSubDirectoryName(String name) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_fileSaveSubDirectoryNameKey, name);
-  }
+  Future<void> saveFileSaveSubDirectoryName(String name) => _write(
+        _fileSaveSubDirectoryNameKey,
+        (prefs) => prefs.setString(_fileSaveSubDirectoryNameKey, name),
+      );
 }

@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:onepanel_client/config/app_router.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/core/services/app_settings_controller.dart';
 import 'package:onepanel_client/core/services/native_host_launcher.dart';
 import 'package:onepanel_client/core/theme/ui_render_mode.dart';
@@ -26,6 +28,7 @@ void main() {
       ChangeNotifierProvider(
         create: (_) => AppSettingsController(),
         child: MaterialApp(
+          onGenerateRoute: AppRouter.generateRoute,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           locale: const Locale('en'),
@@ -35,21 +38,22 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Feedback Center'), findsOneWidget);
-    expect(find.text('About'), findsOneWidget);
-    expect(find.text('App Lock'), findsOneWidget);
+    final l10n = AppLocalizations.of(tester.element(find.byType(SettingsPage)));
+    expect(find.text(l10n.settingsAppLock), findsOneWidget);
+    expect(find.text(l10n.systemSettingsPanelSection), findsNothing);
 
     await tester.scrollUntilVisible(
-      find.text('About'),
+      find.text(l10n.settingsAbout),
       300,
       scrollable: find.byType(Scrollable).first,
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('About'));
+    expect(find.text(l10n.settingsFeedbackCenterTitle), findsOneWidget);
+    await tester.tap(find.text(l10n.settingsAbout));
     await tester.pumpAndSettle();
 
-    expect(find.text('About KenPanel'), findsOneWidget);
+    expect(find.text(l10n.aboutPageTitle), findsOneWidget);
   });
 
   testWidgets('settings page keeps tablet layout bounded', (tester) async {
@@ -71,8 +75,12 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Feedback Center'), findsOneWidget);
-    expect(find.text('About'), findsOneWidget);
+    final context = tester.element(find.byType(SettingsPage));
+    final l10n = AppLocalizations.of(context);
+    final bodyWidth = tester.getSize(find.byType(ListView)).width;
+    expect(bodyWidth, AdaptiveLayoutSpec.of(context).settingsBodyMaxWidth);
+    expect(find.text(l10n.settingsFeedbackCenterTitle), findsOneWidget);
+    expect(find.text(l10n.settingsAbout), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -80,7 +88,6 @@ void main() {
       (tester) async {
     SharedPreferences.setMockInitialValues({});
     final settings = AppSettingsController();
-    // 默认即 native；radio 需要发生「变化」才触发 onChanged，先落到 md3。
     await settings.updateUIRenderMode(UIRenderMode.md3);
     var hostHandoverCount = 0;
     await tester.pumpWidget(
@@ -91,10 +98,9 @@ void main() {
           supportedLocales: AppLocalizations.supportedLocales,
           locale: const Locale('en'),
           home: SettingsPage(
-            // 测试宿主是 macOS，注入 isWindowsHost 才能覆盖
-            // 「Windows 选原生模式 → 宿主交接」分支。
             isWindowsHost: true,
             nativeHostLauncher: NativeHostLauncher(
+              isWindows: true,
               exists: (_) => false,
               startProcess: (_) async {},
               runnerExeDir: r'C:\repo\build\windows\x64\runner\Debug',
@@ -111,7 +117,7 @@ void main() {
     await tester.tap(find.byType(RadioListTile<UIRenderMode>).first);
     await tester.pumpAndSettle();
 
-    // 宿主 exe 缺失：SnackBar 给出 dotnet build 指引，不发生宿主交接。
+    expect(find.byType(AlertDialog), findsNothing);
     expect(find.textContaining('dotnet build'), findsOneWidget);
     expect(hostHandoverCount, 0);
   });

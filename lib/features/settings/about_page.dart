@@ -8,6 +8,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/shared/widgets/section_card.dart';
+import 'package:onepanel_client/features/settings/widgets/settings_scaffold.dart';
 
 class AboutPage extends StatefulWidget {
   const AboutPage({super.key});
@@ -37,17 +38,14 @@ class _AboutPageState extends State<AboutPage> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final channelLabel = _channelLabel(context);
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
-        title: Text(l10n.aboutPageTitle),
-      ),
+    return SettingsScaffold(
+      title: l10n.aboutPageTitle,
       body: FutureBuilder<PackageInfo>(
         future: _packageInfoFuture,
         builder: (context, snapshot) {
           final packageInfo = snapshot.data;
           return ListView(
-            padding: AppDesignTokens.pagePadding,
+            padding: AppDesignTokens.scrollPagePadding(context),
             children: [
               _HeroCard(packageInfo: packageInfo),
               const SizedBox(height: AppDesignTokens.spacingLg),

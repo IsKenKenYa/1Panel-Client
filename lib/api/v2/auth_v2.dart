@@ -3,6 +3,7 @@ import '../../core/network/dio_client.dart';
 import '../../core/config/api_constants.dart';
 import '../../core/services/logger/logger_service.dart';
 import '../../data/models/auth_models.dart';
+import '../../data/models/setting_models.dart' show PasskeyInfo;
 import 'api_response_parser.dart';
 
 class AuthV2Api {
@@ -342,6 +343,7 @@ class AuthV2Api {
   Future<Response<Map<String, dynamic>>> getCurrentUser() async {
     final response = await _client.get<dynamic>(
       ApiConstants.buildApiPath('/core/auth/current'),
+      options: DioClient.sensitiveOptions,
     );
     return Response<Map<String, dynamic>>(
       data: _extractDataMap(response.data) ?? const <String, dynamic>{},
@@ -361,6 +363,7 @@ class AuthV2Api {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/core/auth/current/update'),
       data: request,
+      options: DioClient.sensitiveOptions,
     );
     return Response<Map<String, dynamic>>(
       data: _extractDataMap(response.data) ?? const <String, dynamic>{},
@@ -377,9 +380,10 @@ class AuthV2Api {
   /// Load MFA info (auth-scoped endpoint).
   Future<Response<Map<String, dynamic>>> loadMfaInfo(
       Map<String, dynamic> request) async {
-    final response = await _client.post<Map<String, dynamic>>(
+    final response = await _client.post<dynamic>(
       ApiConstants.buildApiPath('/core/auth/mfa'),
       data: request,
+      options: DioClient.sensitiveOptions,
     );
     return Response<Map<String, dynamic>>(
       data: _extractDataMap(response.data) ?? const <String, dynamic>{},
@@ -396,9 +400,10 @@ class AuthV2Api {
   /// Bind MFA.
   Future<Response<Map<String, dynamic>>> bindMfa(
       Map<String, dynamic> request) async {
-    final response = await _client.post<Map<String, dynamic>>(
+    final response = await _client.post<dynamic>(
       ApiConstants.buildApiPath('/core/auth/mfa/bind'),
       data: request,
+      options: DioClient.sensitiveOptions,
     );
     return Response<Map<String, dynamic>>(
       data: _extractDataMap(response.data) ?? const <String, dynamic>{},
@@ -413,11 +418,10 @@ class AuthV2Api {
   }
 
   /// Close/unbind MFA.
-  Future<Response<Map<String, dynamic>>> closeMfa(
-      Map<String, dynamic> request) async {
-    final response = await _client.post<Map<String, dynamic>>(
+  Future<Response<Map<String, dynamic>>> closeMfa() async {
+    final response = await _client.post<dynamic>(
       ApiConstants.buildApiPath('/core/auth/mfa/close'),
-      data: request,
+      options: DioClient.sensitiveOptions,
     );
     return Response<Map<String, dynamic>>(
       data: _extractDataMap(response.data) ?? const <String, dynamic>{},
@@ -432,20 +436,16 @@ class AuthV2Api {
   }
 
   /// Generate API key.
-  Future<Response<Map<String, dynamic>>> generateApiKey() async {
+  Future<Response<String>> generateApiKey() async {
     final response = await _client.post<dynamic>(
       ApiConstants.buildApiPath('/core/auth/api/generate'),
+      options: DioClient.sensitiveOptions,
     );
-    return Response<Map<String, dynamic>>(
-      data: _extractDataMap(response.data) ?? const <String, dynamic>{},
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
-      headers: response.headers,
-      extra: response.extra,
-      redirects: response.redirects,
-      isRedirect: response.isRedirect,
-    );
+    final key = _extractDataRaw(response.data);
+    if (key is! String || key.isEmpty) {
+      throw const FormatException('面板未返回 API 密钥');
+    }
+    return ApiResponseParser.withData(response, key);
   }
 
   /// Update API config.
@@ -454,6 +454,7 @@ class AuthV2Api {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/core/auth/api/update'),
       data: request,
+      options: DioClient.sensitiveOptions,
     );
     return Response<Map<String, dynamic>>(
       data: _extractDataMap(response.data) ?? const <String, dynamic>{},
@@ -487,44 +488,33 @@ class AuthV2Api {
   }
 
   /// List passkeys (auth-scoped endpoint).
-  Future<Response<List<Map<String, dynamic>>>> listPasskeysAuth() async {
+  Future<List<PasskeyInfo>> listPasskeysAuth() async {
     final response = await _client.get<dynamic>(
       ApiConstants.buildApiPath('/core/auth/passkey/list'),
+      options: DioClient.sensitiveOptions,
     );
     final raw = _extractDataRaw(response.data);
-    List<Map<String, dynamic>> items = [];
-    if (raw is List) {
-      items = raw
-          .whereType<Map>()
-          .map((e) => Map<String, dynamic>.from(e))
-          .toList();
+    if (raw is! List) {
+      throw const FormatException('Passkey 列表格式无效');
     }
-    return Response<List<Map<String, dynamic>>>(
-      data: items,
-      statusCode: response.statusCode,
-      statusMessage: response.statusMessage,
-      requestOptions: response.requestOptions,
-      headers: response.headers,
-      extra: response.extra,
-      redirects: response.redirects,
-      isRedirect: response.isRedirect,
-    );
+    return raw.cast<Map<String, dynamic>>().map(PasskeyInfo.fromJson).toList();
   }
 
   /// Delete passkey (auth-scoped endpoint).
-  Future<void> deletePasskeyAuth(Map<String, dynamic> request) async {
+  Future<void> deletePasskeyAuth(String id) async {
     await _client.post<dynamic>(
       ApiConstants.buildApiPath('/core/auth/passkey/del'),
-      data: request,
+      data: {'id': id},
+      options: DioClient.sensitiveOptions,
     );
   }
 
   /// Begin passkey registration (auth-scoped endpoint).
-  Future<Response<PasskeyBeginResponse?>> beginPasskeyRegisterAuth(
-      Map<String, dynamic> request) async {
+  Future<Response<PasskeyBeginResponse?>> beginPasskeyRegisterAuth(String name) async {
     final response = await _client.post<Map<String, dynamic>>(
       ApiConstants.buildApiPath('/core/auth/passkey/register/begin'),
-      data: request,
+      data: {'name': name},
+      options: DioClient.sensitiveOptions,
     );
     final data = _extractDataMap(response.data);
     return Response<PasskeyBeginResponse?>(
@@ -547,7 +537,7 @@ class AuthV2Api {
     await _client.post<dynamic>(
       ApiConstants.buildApiPath('/core/auth/passkey/register/finish'),
       data: credential,
-      options: Options(headers: <String, dynamic>{
+      options: DioClient.sensitiveOptions.copyWith(headers: <String, dynamic>{
         'Passkey-Session': sessionId,
       }),
     );

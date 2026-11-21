@@ -5,6 +5,7 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/features/settings/settings_provider.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_empty_state_widget.dart';
 const String _snapshotPagePackage = 'features.settings.snapshot_page';
 
 class SnapshotPage extends StatefulWidget {
@@ -125,27 +126,21 @@ class _SnapshotPageState extends State<SnapshotPage> {
   }
 
   Widget _buildEmptyState(BuildContext context, AppLocalizations l10n) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.photo_library_outlined,
-              size: 64, color: Colors.grey),
-          const SizedBox(height: 16),
-          Text(l10n.snapshotEmpty),
-          const SizedBox(height: 8),
-          TextButton.icon(
-            onPressed: () => _showCreateSnapshotDialog(context, l10n),
-            icon: const Icon(Icons.add_outlined),
-            label: Text(l10n.snapshotCreate),
-          ),
-          TextButton.icon(
-            onPressed: () => _showImportSnapshotDialog(context, l10n),
-            icon: const Icon(Icons.file_upload_outlined),
-            label: Text(l10n.snapshotImport),
-          ),
-        ],
-      ),
+    return ModuleEmptyStateWidget(
+      icon: Icons.photo_library_outlined,
+      title: l10n.snapshotEmpty,
+      actions: [
+        TextButton.icon(
+          onPressed: () => _showCreateSnapshotDialog(context, l10n),
+          icon: const Icon(Icons.add_outlined),
+          label: Text(l10n.snapshotCreate),
+        ),
+        TextButton.icon(
+          onPressed: () => _showImportSnapshotDialog(context, l10n),
+          icon: const Icon(Icons.file_upload_outlined),
+          label: Text(l10n.snapshotImport),
+        ),
+      ],
     );
   }
 

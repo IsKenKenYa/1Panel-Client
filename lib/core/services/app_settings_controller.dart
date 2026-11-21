@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/services/app_preferences_service.dart';
+import 'package:onepanel_client/core/services/cache/file_preview_cache_manager.dart';
 import 'package:onepanel_client/core/theme/ui_render_mode.dart';
 
 class AppSettingsController extends ChangeNotifier with SafeChangeNotifier {
@@ -9,7 +10,6 @@ class AppSettingsController extends ChangeNotifier with SafeChangeNotifier {
 
   final AppPreferencesService _preferencesService;
 
-  ThemeMode _themeMode = ThemeMode.system;
   Locale? _locale;
   bool _loaded = false;
   CacheStrategy _cacheStrategy = CacheStrategy.hybrid;
@@ -17,7 +17,6 @@ class AppSettingsController extends ChangeNotifier with SafeChangeNotifier {
   UIRenderMode _uiRenderMode = UIRenderMode.native;
   bool _nativeHostMissing = false;
 
-  ThemeMode get themeMode => _themeMode;
   Locale? get locale => _locale;
   bool get loaded => _loaded;
   CacheStrategy get cacheStrategy => _cacheStrategy;
@@ -36,42 +35,41 @@ class AppSettingsController extends ChangeNotifier with SafeChangeNotifier {
   }
 
   Future<void> load() async {
-    _themeMode = await _preferencesService.loadThemeMode();
-    _locale = await _preferencesService.loadLocale();
-    _cacheStrategy = await _preferencesService.loadCacheStrategy();
-    _cacheMaxSizeMB = await _preferencesService.loadCacheMaxSizeMB();
-    _uiRenderMode = await _preferencesService.loadUIRenderMode();
+    (_locale, _cacheStrategy, _cacheMaxSizeMB, _uiRenderMode) =
+        await _preferencesService.loadAppSettings();
+    _applyCacheSettings();
     _loaded = true;
     notifyListeners();
   }
 
-  Future<void> updateThemeMode(ThemeMode mode) async {
-    _themeMode = mode;
-    await _preferencesService.saveThemeMode(mode);
-    notifyListeners();
-  }
-
   Future<void> updateLocale(Locale? locale) async {
-    _locale = locale;
     await _preferencesService.saveLocale(locale);
+    _locale = locale;
     notifyListeners();
   }
 
   Future<void> updateCacheStrategy(CacheStrategy strategy) async {
-    _cacheStrategy = strategy;
     await _preferencesService.saveCacheStrategy(strategy);
+    _cacheStrategy = strategy;
+    _applyCacheSettings();
     notifyListeners();
   }
 
   Future<void> updateCacheMaxSizeMB(int sizeMB) async {
-    _cacheMaxSizeMB = sizeMB;
     await _preferencesService.saveCacheMaxSizeMB(sizeMB);
+    _cacheMaxSizeMB = sizeMB;
+    _applyCacheSettings();
     notifyListeners();
   }
 
+  void _applyCacheSettings() => FilePreviewCacheManager().configure(
+        strategy: _cacheStrategy,
+        maxSizeMB: _cacheMaxSizeMB,
+      );
+
   Future<void> updateUIRenderMode(UIRenderMode mode) async {
-    await _preferencesService.saveUIRenderMode(mode);
-    _uiRenderMode = mode;
+    _uiRenderMode = await _preferencesService.saveUIRenderMode(mode);
+    if (_uiRenderMode != UIRenderMode.native) _nativeHostMissing = false;
     notifyListeners();
   }
 }

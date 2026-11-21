@@ -97,13 +97,21 @@ class _FakeSettingsService extends SettingsService {
 
 void main() {
   group('SettingsProvider', () {
-    test('load also hydrates app store, auth and ssh summary data', () async {
+    test('loads panel settings and reads each detail on demand', () async {
       final service = _FakeSettingsService();
       final provider = SettingsProvider(service: service);
 
       await provider.load();
 
       expect(provider.data.systemSettings?.panelName, 'Demo Panel');
+      expect(provider.data.appStoreConfig, isNull);
+      expect(provider.data.authSetting, isNull);
+      expect(provider.data.sshConnection, isNull);
+      expect(provider.data.networkInterfaces, isNull);
+      await provider.loadNetworkInterfaces();
+      await provider.loadAppStoreConfig();
+      await provider.loadAuthSetting();
+      await provider.loadSSHConnection();
       expect(provider.data.networkInterfaces, contains('eth0'));
       expect((provider.data.appStoreConfig as Map)['storeUrl'],
           'https://store.old');

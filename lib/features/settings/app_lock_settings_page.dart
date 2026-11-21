@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/features/settings/widgets/settings_scaffold.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/security/app_lock_controller.dart';
+import 'package:onepanel_client/features/security/app_lock_gate.dart';
+import 'package:onepanel_client/features/settings/widgets/settings_save_action.dart';
 import 'package:onepanel_client/features/shell/models/client_module.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 import 'package:provider/provider.dart';
 
 class AppLockSettingsPage extends StatelessWidget {
@@ -14,23 +18,36 @@ class AppLockSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(title: Text(l10n.appLockTitle)),
+    return SettingsScaffold(
+      title: l10n.appLockTitle,
       body: Consumer<AppLockController>(
         builder: (context, controller, child) {
           if (!controller.isLoaded) {
+            if (controller.lastError != null) {
+              return ModuleErrorStateWidget(
+                message: controller.lastError,
+                onRetry: controller.load,
+              );
+            }
             return const Center(child: CircularProgressIndicator());
           }
 
           final settings = controller.settings;
+          if (settings.enabled && !controller.isSessionUnlocked) {
+            return const AppLockUnlockView();
+          }
+          final relockOptions = {
+            ..._relockOptions,
+            settings.relockAfterMinutes,
+          }.toList()
+            ..sort();
           final protectedModuleIds = settings.protectedModuleIds.toSet();
           final moduleOptions = kPinnableClientModules
               .where((module) => module.requiresServer)
               .toList(growable: false);
 
           return ListView(
-            padding: AppDesignTokens.pagePadding,
+            padding: AppDesignTokens.scrollPagePadding(context),
             children: [
               Card(
                 child: ListTile(
@@ -55,27 +72,27 @@ class AppLockSettingsPage extends StatelessWidget {
                       value: settings.enabled,
                       onChanged: controller.isUnlocking
                           ? null
-                          : (value) async {
-                              if (value) {
-                                final success =
-                                    await controller.enableWithVerification(
-                                  reason: l10n.appLockUnlockReasonEnable,
-                                );
-                                if (!context.mounted) {
+                          : (value) => saveAppPreference(context, () async {
+                                if (value) {
+                                  final success =
+                                      await controller.enableWithVerification(
+                                    reason: l10n.appLockUnlockReasonEnable,
+                                  );
+                                  if (!context.mounted) {
+                                    return;
+                                  }
+                                  if (!success) {
+                                    SnackBarUtils.showError(
+                                      context,
+                                      controller.lastError ??
+                                          l10n.appLockAuthFailed,
+                                    );
+                                  }
                                   return;
                                 }
-                                if (!success) {
-                                  SnackBarUtils.showError(
-                                    context,
-                                    controller.lastError ??
-                                        l10n.appLockAuthFailed,
-                                  );
-                                }
-                                return;
-                              }
 
-                              await controller.disable();
-                            },
+                                await controller.disable();
+                              }),
                     ),
                     SwitchListTile.adaptive(
                       secondary: const Icon(Icons.home_outlined),
@@ -83,7 +100,10 @@ class AppLockSettingsPage extends StatelessWidget {
                       subtitle: Text(l10n.appLockLockOnAppOpenDesc),
                       value: settings.lockOnAppOpen,
                       onChanged: settings.enabled
-                          ? (value) => controller.updateLockOnAppOpen(value)
+                          ? (value) => saveAppPreference(
+                                context,
+                                () => controller.updateLockOnAppOpen(value),
+                              )
                           : null,
                     ),
                     SwitchListTile.adaptive(
@@ -92,29 +112,41 @@ class AppLockSettingsPage extends StatelessWidget {
                       subtitle: Text(l10n.appLockLockOnProtectedModuleDesc),
                       value: settings.lockOnProtectedModule,
                       onChanged: settings.enabled
-                          ? (value) =>
-                              controller.updateLockOnProtectedModule(value)
+                          ? (value) => saveAppPreference(
+                                context,
+                                () => controller.updateLockOnProtectedModule(
+                                  value,
+                                ),
+                              )
                           : null,
                     ),
                     ListTile(
                       leading: const Icon(Icons.timer_outlined),
                       title: Text(l10n.appLockRelockAfterMinutes),
-                      trailing: DropdownButton<int>(
+                      subtitle: DropdownButton<int>(
+                        isExpanded: true,
                         value: settings.relockAfterMinutes,
                         onChanged: settings.enabled
                             ? (value) {
                                 if (value == null) {
                                   return;
                                 }
-                                controller.updateRelockAfterMinutes(value);
+                                saveAppPreference(
+                                  context,
+                                  () => controller.updateRelockAfterMinutes(
+                                    value,
+                                  ),
+                                );
                               }
                             : null,
-                        items: _relockOptions
+                        items: relockOptions
                             .map(
                               (minutes) => DropdownMenuItem<int>(
                                 value: minutes,
                                 child: Text(
-                                  l10n.appLockRelockAfterMinutesOption(minutes),
+                                  l10n.appLockRelockAfterMinutesOption(
+                                    minutes,
+                                  ),
                                 ),
                               ),
                             )
@@ -131,22 +163,27 @@ class AppLockSettingsPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
+                      Wrap(
+                        spacing: AppDesignTokens.spacingSm,
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          Expanded(
-                            child: Text(
-                              l10n.appLockProtectedModules,
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
+                          Text(
+                            l10n.appLockProtectedModules,
+                            style: Theme.of(context).textTheme.titleMedium,
                           ),
                           TextButton(
                             onPressed: settings.enabled &&
                                     settings.lockOnProtectedModule
                                 ? () {
-                                    controller.updateProtectedModuleIds(
-                                      moduleOptions
-                                          .map((module) => module.storageId)
-                                          .toList(growable: false),
+                                    saveAppPreference(
+                                      context,
+                                      () => controller.updateProtectedModuleIds(
+                                        moduleOptions
+                                            .map(
+                                              (module) => module.storageId,
+                                            )
+                                            .toList(growable: false),
+                                      ),
                                     );
                                   }
                                 : null,
@@ -156,8 +193,12 @@ class AppLockSettingsPage extends StatelessWidget {
                             onPressed: settings.enabled &&
                                     settings.lockOnProtectedModule
                                 ? () {
-                                    controller.updateProtectedModuleIds(
-                                        const <String>[]);
+                                    saveAppPreference(
+                                      context,
+                                      () => controller.updateProtectedModuleIds(
+                                        const <String>[],
+                                      ),
+                                    );
                                   }
                                 : null,
                             child: Text(l10n.appLockClearAll),
@@ -167,7 +208,8 @@ class AppLockSettingsPage extends StatelessWidget {
                       if (!settings.lockOnProtectedModule)
                         Padding(
                           padding: const EdgeInsets.only(
-                              top: AppDesignTokens.spacingSm),
+                            top: AppDesignTokens.spacingSm,
+                          ),
                           child: Text(
                             l10n.appLockNoProtectedModules,
                             style: Theme.of(context).textTheme.bodySmall,
@@ -179,20 +221,17 @@ class AppLockSettingsPage extends StatelessWidget {
                             dense: true,
                             contentPadding: EdgeInsets.zero,
                             title: Text(module.label(l10n)),
-                            value:
-                                protectedModuleIds.contains(module.storageId),
+                            value: protectedModuleIds.contains(
+                              module.storageId,
+                            ),
                             onChanged: settings.enabled
                                 ? (checked) {
-                                    final next = Set<String>.from(
-                                      protectedModuleIds,
-                                    );
-                                    if (checked == true) {
-                                      next.add(module.storageId);
-                                    } else {
-                                      next.remove(module.storageId);
-                                    }
-                                    controller.updateProtectedModuleIds(
-                                      next.toList(growable: false),
+                                    saveAppPreference(
+                                      context,
+                                      () => controller.setModuleProtected(
+                                        module.storageId,
+                                        checked == true,
+                                      ),
                                     );
                                   }
                                 : null,

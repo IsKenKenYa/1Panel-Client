@@ -56,9 +56,7 @@ class SecurityGatewayCenterProvider extends ChangeNotifier with SafeChangeNotifi
 
   List<RiskNotice> get riskNotices {
     final notices = <RiskNotice>[];
-    final panelExpiry = panelSslInfo['expirationDate']?.toString() ??
-        panelSslInfo['expiration']?.toString() ??
-        panelSslInfo['expiresAt']?.toString();
+    final panelExpiry = panelSslInfo['timeout'] as String?;
     if (resolveCertificateHealthStatus(panelExpiry) ==
         CertificateHealthStatus.expired) {
       notices.add(

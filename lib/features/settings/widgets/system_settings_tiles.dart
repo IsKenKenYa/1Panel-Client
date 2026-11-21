@@ -2,24 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/services/app_preferences_service.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
+import 'package:onepanel_client/core/utils/error_message_utils.dart';
+import 'package:onepanel_client/core/utils/snackbar_utils.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_dialog.dart';
+import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
+import 'package:onepanel_client/shared/widgets/section_card.dart';
 
-/// Toggle tile for the "use system file picker for file operations"
-/// preference. Extracted from system_settings_page.dart to reduce file
-/// size below the 1000 LOC hard limit (architecture review R5 candidate 2).
-class FilePickerToggleTile extends StatefulWidget {
-  const FilePickerToggleTile({super.key, required this.onChanged});
-
-  final VoidCallback onChanged;
+class FileExportSettingsSection extends StatefulWidget {
+  const FileExportSettingsSection({super.key});
 
   @override
-  State<FilePickerToggleTile> createState() => _FilePickerToggleTileState();
+  State<FileExportSettingsSection> createState() => _FileExportSettingsSectionState();
 }
 
-class _FilePickerToggleTileState extends State<FilePickerToggleTile> {
-  static final AppPreferencesService _prefs = AppPreferencesService();
-
+class _FileExportSettingsSectionState extends State<FileExportSettingsSection> {
+  final _preferences = AppPreferencesService();
   bool? _usePicker;
-  bool _busy = false;
+  String _folder = '';
+  String? _loadError;
+  bool _saving = false;
 
   @override
   void initState() {
@@ -28,154 +29,117 @@ class _FilePickerToggleTileState extends State<FilePickerToggleTile> {
   }
 
   Future<void> _load() async {
-    final value = await _prefs.loadUseFilePickerForFileOperations();
-    if (!mounted) return;
-    setState(() {
-      _usePicker = value;
-    });
-  }
-
-  Future<void> _onChanged(bool value) async {
-    if (_busy) return;
-    setState(() {
-      _busy = true;
-    });
     try {
-      await _prefs.saveUseFilePickerForFileOperations(value);
+      final usePicker = await _preferences.loadUseFilePickerForFileOperations();
+      final folder = await _preferences.loadFileSaveSubDirectoryName();
       if (!mounted) return;
       setState(() {
-        _usePicker = value;
+        _usePicker = usePicker;
+        _folder = folder;
+        _loadError = null;
       });
-      widget.onChanged();
     } catch (error, stackTrace) {
-      appLogger.eWithPackage(
-        'features.settings.system_settings',
-        'Failed to persist useFilePickerForFileOperations',
-        error: error,
-        stackTrace: stackTrace,
-      );
-    } finally {
+      _logError(error, stackTrace);
       if (mounted) {
-        setState(() {
-          _busy = false;
-        });
+        setState(() => _loadError = ErrorMessageUtils.userFacingMessage(error));
       }
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final value = _usePicker;
-    return SwitchListTile(
-      secondary: const Icon(Icons.folder_open_outlined),
-      title: Text(l10n.systemSettingsFileExportUsePicker),
-      subtitle: Text(l10n.systemSettingsFileExportUsePickerDesc),
-      value: value ?? true,
-      onChanged: value == null || _busy ? null : _onChanged,
+  void _logError(Object error, StackTrace stackTrace) {
+    appLogger.eWithPackage(
+      'features.settings.file_export',
+      'File preferences failed',
+      error: error,
+      stackTrace: stackTrace,
     );
   }
-}
 
-/// State tile for the "default sub-folder name" preference.
-class FileSaveSubDirectoryTile extends StatefulWidget {
-  const FileSaveSubDirectoryTile({super.key, required this.onChanged});
-
-  final VoidCallback onChanged;
-
-  @override
-  State<FileSaveSubDirectoryTile> createState() =>
-      _FileSaveSubDirectoryTileState();
-}
-
-class _FileSaveSubDirectoryTileState extends State<FileSaveSubDirectoryTile> {
-  static final AppPreferencesService _prefs = AppPreferencesService();
-
-  late final TextEditingController _controller;
-  bool _busy = false;
-
-  static final RegExp _illegalChars = RegExp(r'[<>:"/\\|?*\x00-\x1F]');
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController();
-    _load();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  Future<void> _load() async {
-    final value = await _prefs.loadFileSaveSubDirectoryName();
-    if (!mounted) return;
-    if (_controller.text != value) {
-      _controller.value = TextEditingValue(
-        text: value,
-        selection: TextSelection.collapsed(offset: value.length),
-      );
-    }
-  }
-
-  Future<void> _commit(String raw) async {
-    if (_busy) return;
-    final sanitized = raw.replaceAll(_illegalChars, '_');
-    setState(() {
-      _busy = true;
-    });
+  Future<void> _save(Future<void> Function() persist, VoidCallback apply) async {
+    if (_saving) return;
+    setState(() => _saving = true);
     try {
-      await _prefs.saveFileSaveSubDirectoryName(sanitized);
-      if (!mounted) return;
-      if (sanitized != raw) {
-        _controller.value = TextEditingValue(
-          text: sanitized,
-          selection: TextSelection.collapsed(offset: sanitized.length),
-        );
-      }
-      widget.onChanged();
+      await persist();
+      if (mounted) setState(apply);
     } catch (error, stackTrace) {
-      appLogger.eWithPackage(
-        'features.settings.system_settings',
-        'Failed to persist fileSaveSubDirectoryName',
-        error: error,
-        stackTrace: stackTrace,
-      );
-    } finally {
+      _logError(error, stackTrace);
       if (mounted) {
-        setState(() {
-          _busy = false;
-        });
+        SnackBarUtils.showError(context, ErrorMessageUtils.userFacingMessage(error));
       }
+    } finally {
+      if (mounted) setState(() => _saving = false);
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Future<void> _editFolder() async {
     final l10n = context.l10n;
-    return ListTile(
-      leading: const Icon(Icons.create_new_folder_outlined),
-      title: SizedBox(
-        height: 72,
-        child: TextField(
-          controller: _controller,
-          decoration: InputDecoration(
-            labelText: l10n.systemSettingsFileExportSubDirTitle,
-            helperText: l10n.systemSettingsFileExportSubDirHelper,
-            border: const OutlineInputBorder(),
-            isDense: true,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 8,
-            ),
+    final form = GlobalKey<FormState>();
+    var name = _folder;
+    final result = await showDialog<String>(
+      context: context,
+      builder: (context) => AppFormDialog(
+        title: l10n.systemSettingsFileExportSubDirTitle,
+        confirmLabel: l10n.commonSave,
+        content: Form(
+          key: form,
+          child: TextFormField(
+            initialValue: name,
+            autofocus: true,
+            decoration: InputDecoration(helperText: l10n.systemSettingsFileExportSubDirHelper, helperMaxLines: 3),
+            onChanged: (value) => name = value.trim(),
+            validator: (_) => isValidExportFolderName(name) ? null : l10n.settingsInvalidFolderName,
           ),
-          textInputAction: TextInputAction.done,
-          onSubmitted: _commit,
-          onEditingComplete: () => _commit(_controller.text),
         ),
+        onConfirm: () async {
+          if (form.currentState!.validate()) Navigator.pop(context, name);
+        },
       ),
     );
+    if (!mounted || result == null || result == _folder) return;
+    await _save(() => _preferences.saveFileSaveSubDirectoryName(result), () => _folder = result);
   }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final usePicker = _usePicker;
+    return SectionCard(
+      title: l10n.systemSettingsFileExportSection,
+      child: _loadError != null
+          ? ModuleErrorStateWidget(message: _loadError, onRetry: _load)
+          : usePicker == null
+              ? const LinearProgressIndicator()
+              : Column(
+                  children: [
+                    SwitchListTile(
+                      secondary: const Icon(Icons.folder_open_outlined),
+                      title: Text(l10n.systemSettingsFileExportUsePicker),
+                      subtitle: Text(l10n.systemSettingsFileExportUsePickerDesc),
+                      value: usePicker,
+                      onChanged: _saving ? null : (value) => _save(
+                        () => _preferences.saveUseFilePickerForFileOperations(value),
+                        () => _usePicker = value,
+                      ),
+                    ),
+                    if (!usePicker) ...[
+                      const Divider(height: 1),
+                      ListTile(
+                        leading: const Icon(Icons.create_new_folder_outlined),
+                        title: Text(l10n.systemSettingsFileExportSubDirTitle),
+                        subtitle: Text(_folder.isEmpty ? l10n.systemSettingsFileExportSubDirHelper : _folder),
+                        trailing: const Icon(Icons.edit_outlined),
+                        onTap: _saving ? null : _editFolder,
+                      ),
+                    ],
+                  ],
+                ),
+    );
+  }
+}
+
+bool isValidExportFolderName(String name) {
+  if (name.isEmpty) return true;
+  return !name.endsWith('.') &&
+      !RegExp(r'[<>:"/\\|?*\x00-\x1f]').hasMatch(name) &&
+      !RegExp(r'^(con|prn|aux|nul|com[1-9]|lpt[1-9])(\.|$)', caseSensitive: false).hasMatch(name);
 }

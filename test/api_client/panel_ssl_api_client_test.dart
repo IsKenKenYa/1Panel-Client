@@ -33,6 +33,10 @@ void main() {
 
       final info = await api.getSSLInfo();
       expect(info.data, isNotNull);
+      expect(
+        info.data!.keys,
+        everyElement(isIn(['domain', 'timeout', 'rootPath', 'sslID'])),
+      );
     });
 
     test('POST /core/settings/ssl/download 应该成功', () async {
@@ -58,25 +62,22 @@ void main() {
         return;
       }
 
-      final domain = Platform.environment['TEST_PANEL_SSL_DOMAIN'] ??
-          TestEnvironment.config.getString('TEST_PANEL_SSL_DOMAIN');
       final cert = Platform.environment['TEST_PANEL_SSL_CERT'] ??
           TestEnvironment.config.getString('TEST_PANEL_SSL_CERT');
       final key = Platform.environment['TEST_PANEL_SSL_KEY'] ??
           TestEnvironment.config.getString('TEST_PANEL_SSL_KEY');
 
-      if (domain.isEmpty || cert.isEmpty || key.isEmpty) {
+      if (cert.isEmpty || key.isEmpty) {
         appLogger.wWithPackage(
           'test.api_client.panel_ssl',
-          '未配置 TEST_PANEL_SSL_DOMAIN / CERT / KEY，跳过 destructive update',
+          '未配置 TEST_PANEL_SSL_CERT / TEST_PANEL_SSL_KEY，跳过证书更新',
         );
         return;
       }
 
       await api.updateSSL(
-        SSLUpdate(
-          domain: domain,
-          sslType: 'selfSigned',
+        SSLUpdate.importPem(
+          currentMode: (await api.getSystemSettings()).data?.ssl,
           cert: cert,
           key: key,
         ),

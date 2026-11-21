@@ -12,9 +12,6 @@ class SettingsData {
   final SystemSettingInfo? systemSettings;
   final TerminalInfo? terminalSettings;
   final List<String>? networkInterfaces;
-  final MfaOtp? mfaInfo;
-  final MfaStatus? mfaStatus;
-  final dynamic sslInfo;
   final dynamic upgradeInfo;
   final dynamic appStoreConfig;
   final dynamic authSetting;
@@ -22,12 +19,6 @@ class SettingsData {
   final String? dashboardMemo;
   final bool isMemoLoading;
   final bool isMemoSaving;
-  final List<PasskeyInfo> passkeys;
-  final bool isPasskeysLoading;
-  final bool isPasskeyRegistering;
-  final String? passkeyDeletingId;
-  final bool isPasskeySupported;
-  final String? passkeyUnsupportedReason;
   final List<dynamic>? snapshots;
   final DateTime? lastUpdated;
 
@@ -38,9 +29,6 @@ class SettingsData {
     this.systemSettings,
     this.terminalSettings,
     this.networkInterfaces,
-    this.mfaInfo,
-    this.mfaStatus,
-    this.sslInfo,
     this.upgradeInfo,
     this.appStoreConfig,
     this.authSetting,
@@ -48,12 +36,6 @@ class SettingsData {
     this.dashboardMemo,
     this.isMemoLoading = false,
     this.isMemoSaving = false,
-    this.passkeys = const <PasskeyInfo>[],
-    this.isPasskeysLoading = false,
-    this.isPasskeyRegistering = false,
-    this.passkeyDeletingId,
-    this.isPasskeySupported = false,
-    this.passkeyUnsupportedReason,
     this.snapshots,
     this.lastUpdated,
   });
@@ -65,9 +47,6 @@ class SettingsData {
     SystemSettingInfo? systemSettings,
     TerminalInfo? terminalSettings,
     List<String>? networkInterfaces,
-    MfaOtp? mfaInfo,
-    MfaStatus? mfaStatus,
-    dynamic sslInfo,
     dynamic upgradeInfo,
     dynamic appStoreConfig,
     dynamic authSetting,
@@ -75,12 +54,6 @@ class SettingsData {
     String? dashboardMemo,
     bool? isMemoLoading,
     bool? isMemoSaving,
-    List<PasskeyInfo>? passkeys,
-    bool? isPasskeysLoading,
-    bool? isPasskeyRegistering,
-    String? passkeyDeletingId,
-    bool? isPasskeySupported,
-    String? passkeyUnsupportedReason,
     List<dynamic>? snapshots,
     DateTime? lastUpdated,
   }) {
@@ -91,9 +64,6 @@ class SettingsData {
       systemSettings: systemSettings ?? this.systemSettings,
       terminalSettings: terminalSettings ?? this.terminalSettings,
       networkInterfaces: networkInterfaces ?? this.networkInterfaces,
-      mfaInfo: mfaInfo ?? this.mfaInfo,
-      mfaStatus: mfaStatus ?? this.mfaStatus,
-      sslInfo: sslInfo ?? this.sslInfo,
       upgradeInfo: upgradeInfo ?? this.upgradeInfo,
       appStoreConfig: appStoreConfig ?? this.appStoreConfig,
       authSetting: authSetting ?? this.authSetting,
@@ -101,13 +71,6 @@ class SettingsData {
       dashboardMemo: dashboardMemo ?? this.dashboardMemo,
       isMemoLoading: isMemoLoading ?? this.isMemoLoading,
       isMemoSaving: isMemoSaving ?? this.isMemoSaving,
-      passkeys: passkeys ?? this.passkeys,
-      isPasskeysLoading: isPasskeysLoading ?? this.isPasskeysLoading,
-      isPasskeyRegistering:
-          isPasskeyRegistering ?? this.isPasskeyRegistering,
-      passkeyDeletingId: passkeyDeletingId,
-      isPasskeySupported: isPasskeySupported ?? this.isPasskeySupported,
-      passkeyUnsupportedReason: passkeyUnsupportedReason,
       snapshots: snapshots ?? this.snapshots,
       lastUpdated: lastUpdated ?? this.lastUpdated,
     );

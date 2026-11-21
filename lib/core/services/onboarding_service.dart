@@ -33,11 +33,16 @@ class OnboardingService {
 
   Future<void> resetAll() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(onboardingCompletedKey);
-    await prefs.remove(coachServerAddKey);
-    await prefs.remove(coachServerCardKey);
-    for (final legacyKey in _legacyKeys) {
-      await prefs.remove(legacyKey);
+    const keys = [coachServerAddKey, coachServerCardKey, ..._legacyKeys, onboardingCompletedKey];
+    try {
+      for (final key in keys) {
+        if (prefs.containsKey(key) && !await prefs.remove(key)) {
+          throw StateError('无法保存引导设置');
+        }
+      }
+    } catch (_) {
+      await prefs.reload();
+      rethrow;
     }
   }
 }

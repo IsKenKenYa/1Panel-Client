@@ -854,85 +854,6 @@ class SettingsImport extends Equatable {
   List<Object?> get props => [data, overwrite];
 }
 
-// ==================== MFA相关模型 ====================
-
-/// MFA加载请求
-@JsonSerializable()
-class MfaLoadRequest extends Equatable {
-  final String title;
-  final int interval;
-
-  const MfaLoadRequest({
-    required this.title,
-    this.interval = 30,
-  });
-
-  factory MfaLoadRequest.fromJson(Map<String, dynamic> json) =>
-      _$MfaLoadRequestFromJson(json);
-  Map<String, dynamic> toJson() => _$MfaLoadRequestToJson(this);
-
-  @override
-  List<Object?> get props => [title, interval];
-}
-
-/// MFA OTP响应
-@JsonSerializable()
-class MfaOtp extends Equatable {
-  final String? qrImage;
-  final String? secret;
-
-  const MfaOtp({
-    this.qrImage,
-    this.secret,
-  });
-
-  factory MfaOtp.fromJson(Map<String, dynamic> json) => _$MfaOtpFromJson(json);
-  Map<String, dynamic> toJson() => _$MfaOtpToJson(this);
-
-  @override
-  List<Object?> get props => [qrImage, secret];
-}
-
-/// MFA绑定请求
-@JsonSerializable()
-class MfaBindRequest extends Equatable {
-  final String code;
-  final String interval;
-  final String secret;
-
-  const MfaBindRequest({
-    required this.code,
-    this.interval = '30',
-    required this.secret,
-  });
-
-  factory MfaBindRequest.fromJson(Map<String, dynamic> json) =>
-      _$MfaBindRequestFromJson(json);
-  Map<String, dynamic> toJson() => _$MfaBindRequestToJson(this);
-
-  @override
-  List<Object?> get props => [code, interval, secret];
-}
-
-/// MFA状态
-@JsonSerializable()
-class MfaStatus extends Equatable {
-  final bool enabled;
-  final String? secret;
-
-  const MfaStatus({
-    required this.enabled,
-    this.secret,
-  });
-
-  factory MfaStatus.fromJson(Map<String, dynamic> json) =>
-      _$MfaStatusFromJson(json);
-  Map<String, dynamic> toJson() => _$MfaStatusToJson(this);
-
-  @override
-  List<Object?> get props => [enabled, secret];
-}
-
 /// 终端设置信息
 @JsonSerializable()
 class TerminalInfo extends Equatable {
@@ -1028,9 +949,6 @@ class SystemSettingInfo extends Equatable {
   final String? expirationDays;
   final String? expirationTime;
   final String? complexityVerification;
-  final String? mfaStatus;
-  final String? mfaSecret;
-  final String? mfaInterval;
   final String? appStoreVersion;
   final String? appStoreLastModified;
   final String? appStoreSyncStatus;
@@ -1071,9 +989,6 @@ class SystemSettingInfo extends Equatable {
     this.expirationDays,
     this.expirationTime,
     this.complexityVerification,
-    this.mfaStatus,
-    this.mfaSecret,
-    this.mfaInterval,
     this.appStoreVersion,
     this.appStoreLastModified,
     this.appStoreSyncStatus,
@@ -1120,9 +1035,6 @@ class SystemSettingInfo extends Equatable {
         expirationDays,
         expirationTime,
         complexityVerification,
-        mfaStatus,
-        mfaSecret,
-        mfaInterval,
         appStoreVersion,
         appStoreLastModified,
         appStoreSyncStatus,
@@ -1178,17 +1090,6 @@ class PasskeyInfo extends Equatable {
   List<Object?> get props => [id, name, createdAt, lastUsedAt];
 }
 
-class PasskeyRegisterRequest extends Equatable {
-  final String name;
-
-  const PasskeyRegisterRequest({required this.name});
-
-  Map<String, dynamic> toJson() => <String, dynamic>{'name': name};
-
-  @override
-  List<Object?> get props => [name];
-}
-
 class ModelDownloaderSetting extends Equatable {
   final String modelDir;
   final String? featuredModelsSync;
@@ -1240,24 +1141,4 @@ class ModelDownloaderSetting extends Equatable {
         modelScopeEndpoint,
         modelScopeToken,
       ];
-}
-
-class PasskeyBeginResponse extends Equatable {
-  final String? sessionId;
-  final dynamic publicKey;
-
-  const PasskeyBeginResponse({
-    this.sessionId,
-    this.publicKey,
-  });
-
-  factory PasskeyBeginResponse.fromJson(Map<String, dynamic> json) {
-    return PasskeyBeginResponse(
-      sessionId: json['sessionId'] as String?,
-      publicKey: json['publicKey'],
-    );
-  }
-
-  @override
-  List<Object?> get props => [sessionId, publicKey];
 }

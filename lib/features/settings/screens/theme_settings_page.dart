@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
+import 'package:onepanel_client/features/settings/widgets/settings_scaffold.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/theme/theme_controller.dart';
+import 'package:onepanel_client/features/settings/widgets/settings_save_action.dart';
+import 'package:onepanel_client/shared/widgets/section_card.dart';
 
 class ThemeSettingsPage extends StatelessWidget {
   const ThemeSettingsPage({super.key});
@@ -34,135 +37,113 @@ class ThemeSettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final themeController = context.watch<ThemeController>();
-    final theme = Theme.of(context);
+    final hasSystemPalette = context.watch<ColorScheme?>() != null;
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
-        title: Text(l10n.settingsTheme),
-      ),
+    return SettingsScaffold(
+      title: l10n.settingsTheme,
       body: ListView(
+        padding: AppDesignTokens.scrollPagePadding(context),
         children: [
-          _buildSectionHeader(context, l10n.settingsTheme),
-          RadioGroup<ThemeMode>(
-            groupValue: themeController.themeMode,
-            onChanged: (value) {
-              if (value != null) {
-                themeController.updateThemeMode(value);
-              }
-            },
-            child: Column(
-              children: [
-                RadioListTile<ThemeMode>(
-                  title: Text(l10n.themeSystem),
-                  value: ThemeMode.system,
-                ),
-                RadioListTile<ThemeMode>(
-                  title: Text(l10n.themeLight),
-                  value: ThemeMode.light,
-                ),
-                RadioListTile<ThemeMode>(
-                  title: Text(l10n.themeDark),
-                  value: ThemeMode.dark,
-                ),
-              ],
-            ),
-          ),
-          const Divider(),
-          SwitchListTile(
-            title: Text(l10n.themeDynamicColor),
-            subtitle: Text(l10n.themeDynamicColorDesc),
-            value: themeController.useDynamicColor,
-            onChanged: (value) {
-              themeController.updateUseDynamicColor(value);
-            },
-          ),
-          const Divider(),
-          _buildSectionHeader(context, l10n.themeSeedColor),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppDesignTokens.spacingLg,
-              vertical: AppDesignTokens.spacingSm,
-            ),
-            child: Text(
-              l10n.themeSeedColorFallbackDesc,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+          SectionCard(
+            child: RadioGroup<ThemeMode>(
+              groupValue: themeController.themeMode,
+              onChanged: (value) {
+                if (value != null) {
+                  saveAppPreference(
+                    context,
+                    () => themeController.updateThemeMode(value),
+                  );
+                }
+              },
+              child: Column(
+                children: [
+                  RadioListTile(
+                    value: ThemeMode.system,
+                    title: Text(l10n.themeSystem),
                   ),
+                  RadioListTile(
+                    value: ThemeMode.light,
+                    title: Text(l10n.themeLight),
+                  ),
+                  RadioListTile(
+                    value: ThemeMode.dark,
+                    title: Text(l10n.themeDark),
+                  ),
+                ],
+              ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppDesignTokens.spacingLg,
-              vertical: AppDesignTokens.spacingSm,
+          if (hasSystemPalette) ...[
+            const SizedBox(height: AppDesignTokens.spacingMd),
+            SectionCard(
+              child: SwitchListTile(
+                title: Text(l10n.themeDynamicColor),
+                subtitle: Text(l10n.themeDynamicColorDesc),
+                value: themeController.useDynamicColor,
+                onChanged: (value) => saveAppPreference(
+                  context,
+                  () => themeController.updateUseDynamicColor(value),
+                ),
+              ),
             ),
-            child: Wrap(
-              spacing: AppDesignTokens.spacingMd,
-              runSpacing: AppDesignTokens.spacingMd,
-              children: _presetColors.map((color) {
-                final isSelected =
-                    themeController.seedColor.toARGB32() == color.toARGB32();
-                return GestureDetector(
-                  onTap: () {
-                    themeController.updateSeedColor(color);
-                  },
-                  child: Container(
-                    width: 48,
-                    height: 48,
-                    decoration: BoxDecoration(
+          ],
+          if (!hasSystemPalette || !themeController.useDynamicColor) ...[
+            const SizedBox(height: AppDesignTokens.spacingMd),
+            SectionCard(
+              title: l10n.themeSeedColor,
+              padding: const EdgeInsets.all(AppDesignTokens.spacingMd),
+              child: Wrap(
+                spacing: AppDesignTokens.spacingSm,
+                runSpacing: AppDesignTokens.spacingSm,
+                children: [
+                  for (final color in _presetColors)
+                    _SeedColorButton(
                       color: color,
-                      shape: BoxShape.circle,
-                      border: isSelected
-                          ? Border.all(
-                              color: theme.colorScheme.onSurface,
-                              width: 3,
-                            )
-                          : null,
-                      boxShadow: [
-                        if (isSelected)
-                          BoxShadow(
-                            color: theme.colorScheme.shadow.withValues(
-                              alpha: 0.2,
-                            ),
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
-                          ),
-                      ],
+                      selected: themeController.seedColor.toARGB32() ==
+                          color.toARGB32(),
+                      onPressed: () => saveAppPreference(
+                        context,
+                        () => themeController.updateSeedColor(color),
+                      ),
                     ),
-                    child: isSelected
-                        ? Icon(
-                            Icons.check,
-                            color:
-                                ThemeData.estimateBrightnessForColor(color) ==
-                                        Brightness.dark
-                                    ? Colors.white
-                                    : Colors.black,
-                          )
-                        : null,
-                  ),
-                );
-              }).toList(),
+                ],
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );
   }
+}
 
-  Widget _buildSectionHeader(BuildContext context, String title) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppDesignTokens.spacingLg,
-        AppDesignTokens.spacingLg,
-        AppDesignTokens.spacingLg,
-        AppDesignTokens.spacingSm,
-      ),
-      child: Text(
-        title,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.bold,
-            ),
+class _SeedColorButton extends StatelessWidget {
+  const _SeedColorButton({
+    required this.color,
+    required this.selected,
+    required this.onPressed,
+  });
+
+  final Color color;
+  final bool selected;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final rgb = color.toARGB32() & 0xffffff;
+    return Semantics(
+      selected: selected,
+      child: IconButton(
+        tooltip: '#${rgb.toRadixString(16).padLeft(6, '0').toUpperCase()}',
+        onPressed: onPressed,
+        style: IconButton.styleFrom(
+          backgroundColor: color,
+          foregroundColor:
+              ThemeData.estimateBrightnessForColor(color) == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
+          minimumSize: const Size.square(kMinInteractiveDimension),
+        ),
+        icon: selected ? const Icon(Icons.check) : const SizedBox.shrink(),
       ),
     );
   }

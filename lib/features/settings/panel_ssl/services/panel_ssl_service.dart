@@ -1,60 +1,51 @@
-import 'package:onepanel_client/api/v2/setting_v2.dart' as api;
-import 'package:onepanel_client/data/repositories/panel_ssl_repository.dart';
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:onepanel_client/api/v2/setting_v2.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
+import 'package:onepanel_client/core/platform/services/platform_file_service.dart';
+import 'package:onepanel_client/data/repositories/setting_repository.dart';
+import 'package:onepanel_client/shared/security_gateway/utils/security_gateway_utils.dart';
 
 class PanelSslService {
-  PanelSslService({
-    api.SettingV2Api? apiClient,
-    PanelSslRepository? repository,
-  }) : _repository = repository ?? PanelSslRepository(apiClient: apiClient);
+  PanelSslService() : _repository = SettingRepository();
 
-  final PanelSslRepository _repository;
+  PanelSslService.forServer(ApiConfig server)
+      : _repository = SettingRepository.forServer(server);
+
+  final SettingRepository _repository;
 
   Future<Map<String, dynamic>> getSslInfo() async {
-    return _normalizeToMap(await _repository.getSslInfo());
+    final api = await _repository.ensureApi();
+    return (await api.getSSLInfo()).data!;
   }
 
-  Future<void> updateSsl({
-    required String domain,
-    required String sslType,
-    required String cert,
-    required String key,
-  }) async {
-    await _repository.updateSsl(
-      api.SSLUpdate(
-        domain: domain,
-        sslType: sslType,
-        cert: cert,
-        key: key,
-      ),
+  Future<void> updateSsl({required String cert, required String key}) async {
+    if (!isPublicCertificatePem(cert) || !isPrivateKeyPem(key)) {
+      throw const FormatException('需要 PEM 证书和私钥');
+    }
+    final api = await _repository.ensureApi();
+    final settings = await api.getSystemSettings();
+    await api.updateSSL(SSLUpdate.importPem(
+      currentMode: settings.data?.ssl,
+      cert: cert,
+      key: key,
+    ));
+  }
+
+  Future<({SaveOutcome file, int size})> downloadSsl() async {
+    final api = await _repository.ensureApi();
+    final bytes = (await api.downloadSSL()).data!;
+    if (!isPublicCertificatePem(ascii.decode(bytes, allowInvalid: true))) {
+      throw const FormatException('服务器未返回公开的 PEM 证书');
+    }
+    final file = await PlatformFileService().saveBytesStructured(
+      fileName: 'server.crt',
+      bytes: Uint8List.fromList(bytes),
+      mimeType: 'application/x-pem-file',
+      category: 'certificates',
     );
+    return (file: file, size: bytes.length);
   }
 
-  Future<List<int>> downloadSsl() async {
-    return _repository.downloadSsl();
-  }
-
-  Map<String, dynamic> _normalizeToMap(dynamic value) {
-    if (value is Map<String, dynamic>) {
-      return value;
-    }
-    if (value is Map) {
-      return Map<String, dynamic>.from(value);
-    }
-
-    if (value != null) {
-      try {
-        final dynamic data = value;
-        final json = data.toJson();
-        if (json is Map<String, dynamic>) {
-          return json;
-        }
-        if (json is Map) {
-          return Map<String, dynamic>.from(json);
-        }
-      } catch (_) {
-        // fallthrough: unknown response shape
-      }
-    }
-    return const <String, dynamic>{};
-  }
 }

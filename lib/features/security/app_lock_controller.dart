@@ -3,6 +3,7 @@ import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
 import 'package:onepanel_client/core/security/app_local_auth_service.dart';
 import 'package:onepanel_client/core/security/app_lock_settings_store.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
+import 'package:synchronized/synchronized.dart';
 
 const String _appLockControllerPackage =
     'features.security.app_lock_controller';
@@ -19,10 +20,12 @@ class AppLockController extends ChangeNotifier with SafeChangeNotifier {
   final AppLockSettingsStore _settingsStore;
   final AppLocalAuthService _localAuthService;
   final DateTime Function() _now;
+  final Lock _settingsLock = Lock();
 
   bool _isLoaded = false;
   bool _isUnlocking = false;
   bool _sessionUnlocked = false;
+  bool _expiredInBackground = false;
   DateTime? _backgroundAt;
   DateTime? _lastUnlockedAt;
   String? _lastError;
@@ -33,6 +36,8 @@ class AppLockController extends ChangeNotifier with SafeChangeNotifier {
   bool get isLoaded => _isLoaded;
   bool get isUnlocking => _isUnlocking;
   bool get isSessionUnlocked => _sessionUnlocked;
+  bool get requiresResumeUnlock =>
+      _expiredInBackground && shouldRequireUnlockForAppOpen();
   DateTime? get lastUnlockedAt => _lastUnlockedAt;
   String? get lastError => _lastError;
   AppLockSettings get settings => _settings;
@@ -41,27 +46,27 @@ class AppLockController extends ChangeNotifier with SafeChangeNotifier {
   bool get isEnabled => _settings.enabled;
   bool get canUseLocalAuth => _availability.isSupported;
 
-  Future<void> load() async {
-    try {
-      _settings = await _settingsStore.load();
-      _availability = await _localAuthService.checkAvailability();
-      _sessionUnlocked = !_settings.enabled;
-    } catch (e, stackTrace) {
-      appLogger.eWithPackage(
-        _appLockControllerPackage,
-        'load failed',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      _lastError = e.toString();
-      _settings = AppLockSettings.defaults;
-      _availability = const LocalAuthAvailability.unknown();
-      _sessionUnlocked = true;
-    }
+  Future<void> load() => _settingsLock.synchronized(() async {
+        if (_isLoaded) return;
+        try {
+          _settings = await _settingsStore.load();
+          _availability = await _localAuthService.checkAvailability();
+          _sessionUnlocked = !_settings.enabled;
+          _lastError = null;
+          _isLoaded = true;
+        } catch (e, stackTrace) {
+          appLogger.eWithPackage(
+            _appLockControllerPackage,
+            'load failed',
+            error: e,
+            stackTrace: stackTrace,
+          );
+          _lastError = e.toString();
+          _sessionUnlocked = false;
+        }
 
-    _isLoaded = true;
-    notifyListeners();
-  }
+        notifyListeners();
+      });
 
   Future<void> refreshAvailability() async {
     _availability = await _localAuthService.checkAvailability();
@@ -85,10 +90,7 @@ class AppLockController extends ChangeNotifier with SafeChangeNotifier {
       return false;
     }
 
-    _settings = _settings.copyWith(enabled: true);
-    await _settingsStore.save(_settings);
-    _sessionUnlocked = true;
-    notifyListeners();
+    await _changeSettings((current) => current.copyWith(enabled: true));
     return true;
   }
 
@@ -97,39 +99,64 @@ class AppLockController extends ChangeNotifier with SafeChangeNotifier {
       return;
     }
 
-    _settings = _settings.copyWith(enabled: false);
-    await _settingsStore.save(_settings);
-    _sessionUnlocked = true;
-    _lastError = null;
-    notifyListeners();
+    await _changeSettings((current) => current.copyWith(enabled: false));
   }
 
   Future<void> updateLockOnAppOpen(bool enabled) async {
-    _settings = _settings.copyWith(lockOnAppOpen: enabled);
-    await _settingsStore.save(_settings);
-    notifyListeners();
+    await _changeSettings(
+      (current) => current.copyWith(lockOnAppOpen: enabled),
+    );
   }
 
   Future<void> updateLockOnProtectedModule(bool enabled) async {
-    _settings = _settings.copyWith(lockOnProtectedModule: enabled);
-    await _settingsStore.save(_settings);
-    notifyListeners();
+    await _changeSettings(
+      (current) => current.copyWith(lockOnProtectedModule: enabled),
+    );
   }
 
   Future<void> updateRelockAfterMinutes(int minutes) async {
     if (minutes <= 0) {
       return;
     }
-    _settings = _settings.copyWith(relockAfterMinutes: minutes);
-    await _settingsStore.save(_settings);
-    notifyListeners();
+    await _changeSettings(
+      (current) => current.copyWith(relockAfterMinutes: minutes),
+    );
   }
 
   Future<void> updateProtectedModuleIds(List<String> moduleIds) async {
-    _settings = _settings.copyWith(protectedModuleIds: moduleIds);
-    await _settingsStore.save(_settings);
-    notifyListeners();
+    await _changeSettings(
+      (current) =>
+          current.copyWith(protectedModuleIds: List.unmodifiable(moduleIds)),
+    );
   }
+
+  Future<void> setModuleProtected(String moduleId, bool enabled) =>
+      _changeSettings((current) {
+        final ids = current.protectedModuleIds.toSet();
+        if (enabled) {
+          ids.add(moduleId);
+        } else {
+          ids.remove(moduleId);
+        }
+        return current.copyWith(
+          protectedModuleIds: ids.toList(growable: false),
+        );
+      });
+
+  Future<void> _changeSettings(
+    AppLockSettings Function(AppLockSettings) change,
+  ) =>
+      _settingsLock.synchronized(() async {
+        if (_settings.enabled && !_sessionUnlocked) {
+          throw StateError('修改应用锁设置前需要验证身份');
+        }
+        final next = change(_settings);
+        await _settingsStore.save(next);
+        _settings = next;
+        if (!next.enabled) _sessionUnlocked = true;
+        _lastError = null;
+        notifyListeners();
+      });
 
   bool shouldRequireUnlockForAppOpen() {
     return _settings.enabled && _settings.lockOnAppOpen && !_sessionUnlocked;
@@ -164,6 +191,7 @@ class AppLockController extends ChangeNotifier with SafeChangeNotifier {
     }
 
     _isUnlocking = true;
+    _backgroundAt = null;
     _lastError = null;
     notifyListeners();
 
@@ -175,6 +203,7 @@ class AppLockController extends ChangeNotifier with SafeChangeNotifier {
     _isUnlocking = false;
     if (result.success) {
       _sessionUnlocked = true;
+      _expiredInBackground = false;
       _lastUnlockedAt = _now();
       _lastError = null;
     } else {
@@ -185,7 +214,7 @@ class AppLockController extends ChangeNotifier with SafeChangeNotifier {
   }
 
   void onAppLifecycleChanged(AppLifecycleState state) {
-    if (!_settings.enabled) {
+    if (!_settings.enabled || _isUnlocking) {
       return;
     }
 
@@ -194,7 +223,7 @@ class AppLockController extends ChangeNotifier with SafeChangeNotifier {
     if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.inactive ||
         state == AppLifecycleState.hidden) {
-      _backgroundAt = _now();
+      _backgroundAt ??= _now();
       return;
     }
 
@@ -203,6 +232,7 @@ class AppLockController extends ChangeNotifier with SafeChangeNotifier {
       _backgroundAt = null;
       if (elapsed.inMinutes >= _settings.relockAfterMinutes) {
         _sessionUnlocked = false;
+        _expiredInBackground = true;
         notifyListeners();
       }
     }

@@ -24,7 +24,7 @@ void main() {
       'picker-on path routes through pickAndSaveBytesByKind (document kind)',
       () async {
         SharedPreferences.setMockInitialValues(<String, Object>{
-          'app_use_file_picker_for_export': true,
+          'app_use_file_picker_for_file_operations': true,
         });
 
         final calls = <MethodCall>[];
@@ -67,7 +67,7 @@ void main() {
 
     test('picker cancel returns a cancelled outcome, not an error', () async {
       SharedPreferences.setMockInitialValues(<String, Object>{
-        'app_use_file_picker_for_export': true,
+        'app_use_file_picker_for_file_operations': true,
       });
 
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
@@ -99,7 +99,7 @@ void main() {
 
     test('picker-off path writes to public Downloads category', () async {
       SharedPreferences.setMockInitialValues(<String, Object>{
-        'app_use_file_picker_for_export': false,
+        'app_use_file_picker_for_file_operations': false,
       });
 
       final calls = <MethodCall>[];
@@ -142,7 +142,7 @@ void main() {
 
     test('image MIME routes to image_video picker kind', () async {
       SharedPreferences.setMockInitialValues(<String, Object>{
-        'app_use_file_picker_for_export': true,
+        'app_use_file_picker_for_file_operations': true,
       });
 
       final calls = <MethodCall>[];
@@ -179,7 +179,7 @@ void main() {
 
     test('audio MIME routes to audio picker kind', () async {
       SharedPreferences.setMockInitialValues(<String, Object>{
-        'app_use_file_picker_for_export': true,
+        'app_use_file_picker_for_file_operations': true,
       });
 
       final calls = <MethodCall>[];
@@ -218,7 +218,7 @@ void main() {
       'native picker failure surfaces private fallback (no silent success)',
       () async {
         SharedPreferences.setMockInitialValues(<String, Object>{
-          'app_use_file_picker_for_export': true,
+          'app_use_file_picker_for_file_operations': true,
         });
 
         final tempDir = await Directory.systemTemp.createTemp(
@@ -263,16 +263,16 @@ void main() {
     test('AppPreferencesService defaults to picker-on when unset', () async {
       SharedPreferences.setMockInitialValues(<String, Object>{});
       final prefs = AppPreferencesService();
-      final value = await prefs.loadUseFilePickerForExport();
+      final value = await prefs.loadUseFilePickerForFileOperations();
       expect(value, isTrue);
     });
 
     test('AppPreferencesService persists picker toggle off', () async {
       SharedPreferences.setMockInitialValues(<String, Object>{});
       final prefs = AppPreferencesService();
-      await prefs.saveUseFilePickerForExport(false);
+      await prefs.saveUseFilePickerForFileOperations(false);
       // Re-read to verify the write went through.
-      final value = await prefs.loadUseFilePickerForExport();
+      final value = await prefs.loadUseFilePickerForFileOperations();
       expect(value, isFalse);
     });
 

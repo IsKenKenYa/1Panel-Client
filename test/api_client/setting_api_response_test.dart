@@ -67,7 +67,6 @@ void main() {
         debugPrint('language: ${data.language}');
         debugPrint('port: ${data.port}');
         debugPrint('ssl: ${data.ssl}');
-        debugPrint('mfaStatus: ${data.mfaStatus}');
         debugPrint('apiKey: ${data.apiKey}');
         debugPrint('apiInterfaceStatus: ${data.apiInterfaceStatus}');
 
@@ -118,85 +117,6 @@ void main() {
         final jsonStr =
             const JsonEncoder.withIndent('  ').convert(response.data);
         debugPrint('数据内容:\n$jsonStr');
-      }
-      debugPrint('========================================\n');
-    });
-
-    test('loadMfaInfo - 打印完整响应数据',
-        skip: TestEnvironment.skipDestructive(), () async {
-      if (!hasApiKey) {
-        debugPrint('⚠️  跳过测试: API密钥未配置');
-        return;
-      }
-
-      final request = const MfaLoadRequest(
-        title: '1Panel Client',
-        interval: 30,
-      );
-
-      dynamic response;
-
-      try {
-
-        // 能力探测：社区版无 MFA，软跳过
-
-        response = await api.loadMfaInfo(request);
-
-        return;
-
-       } catch (e) {
-
-        if (e.toString().contains('不支持')) {
-
-          debugPrint('⚠️  跳过 loadMfaInfo: 当前面板版本不支持 MFA');
-
-          return;
-
-        }
-
-        rethrow;
-
-       }
-
-      response = await api.loadMfaInfo(request);
-
-      debugPrint('\n========================================');
-      debugPrint('loadMfaInfo 响应数据');
-      debugPrint('========================================');
-      debugPrint('状态码: ${response.statusCode}');
-      debugPrint('数据类型: ${response.data.runtimeType}');
-
-      if (response.data != null) {
-        final jsonStr =
-            const JsonEncoder.withIndent('  ').convert(response.data);
-        debugPrint('数据内容:\n$jsonStr');
-      }
-      debugPrint('========================================\n');
-    });
-
-    test('generateApiKey - 打印完整响应数据',
-        skip: TestEnvironment.skipDestructive(), () async {
-      if (!hasApiKey) {
-        debugPrint('⚠️  跳过测试: API密钥未配置');
-        return;
-      }
-
-      try {
-        final response = await api.generateApiKey();
-
-        debugPrint('\n========================================');
-        debugPrint('generateApiKey 响应数据');
-        debugPrint('========================================');
-        debugPrint('状态码: ${response.statusCode}');
-        debugPrint('数据类型: ${response.data.runtimeType}');
-
-        if (response.data != null) {
-          final jsonStr =
-              const JsonEncoder.withIndent('  ').convert(response.data);
-          debugPrint('数据内容:\n$jsonStr');
-        }
-      } catch (e) {
-        debugPrint('⚠️  generateApiKey 探测结果: $e');
       }
       debugPrint('========================================\n');
     });

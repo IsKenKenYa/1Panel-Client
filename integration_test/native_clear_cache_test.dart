@@ -1,3 +1,7 @@
+import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -27,28 +31,55 @@ void main() {
       const asset = 'lib/l10n/app_en.arb';
       final assetData = await rootBundle.load(asset);
       final filePath = '/native_clear_cache_test/$runId/$asset';
+      const connectionId = 'first';
       final cache = FilePreviewCacheManager();
+      final contents = assetData.buffer.asUint8List(
+        assetData.offsetInBytes,
+        assetData.lengthInBytes,
+      );
+      final viewerPath = (await cache.saveToTempFile(contents, 'preview.arb'))!;
+      expect(await File(viewerPath).readAsBytes(), contents);
+      await cache.releaseViewerFile(viewerPath);
+      expect(await File(viewerPath).exists(), isFalse);
       await cache.loadFile(
+        connectionId: connectionId,
         filePath: filePath,
         fileName: 'app_en.arb',
-        downloadFn: () async => assetData.buffer.asUint8List(
-          assetData.offsetInBytes,
-          assetData.lengthInBytes,
-        ),
+        downloadFn: () async => contents,
         strategy: CacheStrategy.hybrid,
       );
-      addTearDown(() => cache.removeFile(filePath));
-      expect(cache.isInMemoryCache(filePath), isTrue);
-      expect(await cache.isInDiskCache(filePath), isTrue);
+      addTearDown(() => cache.removeFile(connectionId, filePath));
+      expect(cache.isInMemoryCache(connectionId, filePath), isTrue);
+      expect(await cache.isInDiskCache(connectionId, filePath), isTrue);
+      expect(cache.isInMemoryCache('second', filePath), isFalse);
+      expect(await cache.isInDiskCache('second', filePath), isFalse);
 
+      final download = Completer<Uint8List>();
+      final started = Completer<void>();
+      final inFlightPath = '$filePath.pending';
+      final inFlight = cache.loadFile(
+        connectionId: connectionId,
+        filePath: inFlightPath,
+        fileName: 'pending.arb',
+        strategy: CacheStrategy.hybrid,
+        downloadFn: () {
+          started.complete();
+          return download.future;
+        },
+      );
+      await started.future;
       final response = await NativeChannelManager.instance.handleMethodCall(
         'clearCache',
         null,
       );
 
       expect(response, containsPair('success', true));
-      expect(cache.isInMemoryCache(filePath), isFalse);
-      expect(await cache.isInDiskCache(filePath), isFalse);
+      download.complete(contents);
+      expect((await inFlight)?.data.length, assetData.lengthInBytes);
+      expect(cache.isInMemoryCache(connectionId, inFlightPath), isFalse);
+      expect(await cache.isInDiskCache(connectionId, inFlightPath), isFalse);
+      expect(cache.isInMemoryCache(connectionId, filePath), isFalse);
+      expect(await cache.isInDiskCache(connectionId, filePath), isFalse);
       await preferences.reload();
       expect(preferences.getString('app_ui_render_mode'), 'native');
       expect(preferences.getString('app_theme_mode'), 'dark');

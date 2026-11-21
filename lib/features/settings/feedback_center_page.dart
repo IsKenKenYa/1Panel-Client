@@ -6,9 +6,13 @@ import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/core/platform/services/platform_diagnostics_service.dart';
 import 'package:onepanel_client/core/services/logger/log_export_service.dart';
+import 'package:onepanel_client/core/services/logger/log_format.dart';
+import 'package:onepanel_client/features/settings/widgets/settings_scaffold.dart';
 import 'package:onepanel_client/core/services/logger/log_file_manager_service.dart';
-import 'package:onepanel_client/core/services/logger/log_level.dart';
+import 'package:onepanel_client/features/settings/widgets/app_log_level_dialog.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
+import 'package:onepanel_client/core/services/logger/widgets/log_preview_dialog.dart';
+import 'package:onepanel_client/core/utils/error_message_utils.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/features/settings/about_page.dart';
 import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
@@ -27,45 +31,14 @@ class _FeedbackCenterPageState extends State<FeedbackCenterPage> {
     final l10n = context.l10n;
     final isLogLevelLocked = AppReleaseChannelConfig.forceDebugLogLevel;
     final logLevelSubtitle = isLogLevelLocked
-        ? '${_logLevelLabel(l10n, appLogger.minLogLevel)} · ${l10n.systemSettingsAppLogsLevelLocked}'
-        : _logLevelLabel(l10n, appLogger.minLogLevel);
+        ? '${appLogLevelLabel(l10n, appLogger.minLogLevel)} · ${l10n.systemSettingsAppLogsLevelLocked}'
+        : appLogLevelLabel(l10n, appLogger.minLogLevel);
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
-        title: Text(l10n.settingsFeedbackCenterTitle),
-      ),
+    return SettingsScaffold(
+      title: l10n.settingsFeedbackCenterTitle,
       body: ListView(
-        padding: AppDesignTokens.pagePadding,
+        padding: AppDesignTokens.scrollPagePadding(context),
         children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(l10n.settingsFeedbackCenterIntro),
-            ),
-          ),
-          const SizedBox(height: AppDesignTokens.spacingMd),
-          Text(
-            l10n.settingsFeedbackGuideTitle,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          const SizedBox(height: AppDesignTokens.spacingSm),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('1. ${l10n.settingsFeedbackGuideStep1}'),
-                  const SizedBox(height: 8),
-                  Text('2. ${l10n.settingsFeedbackGuideStep2}'),
-                  const SizedBox(height: 8),
-                  Text('3. ${l10n.settingsFeedbackGuideStep3}'),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: AppDesignTokens.spacingMd),
           SectionEntryList(
             title: l10n.settingsFeedback,
             items: [
@@ -89,12 +62,17 @@ class _FeedbackCenterPageState extends State<FeedbackCenterPage> {
             title: l10n.settingsFeedbackLogsTitle,
             items: [
               SectionEntryItem(
+                icon: Icons.preview_outlined,
+                title: l10n.systemSettingsAppLogsPreviewButton,
+                subtitle: l10n.systemSettingsAppLogsPreviewSubtitle,
+                onTap: () => _previewLogs(context),
+              ),
+              SectionEntryItem(
                 icon: Icons.filter_alt_outlined,
                 title: l10n.systemSettingsAppLogsLevelTitle,
                 subtitle: logLevelSubtitle,
-                onTap: () => isLogLevelLocked
-                    ? _showLogLevelLockedHint(context)
-                    : _selectAppLogLevel(context),
+                onTap:
+                    isLogLevelLocked ? null : () => _selectAppLogLevel(context),
               ),
               SectionEntryItem(
                 icon: Icons.download_outlined,
@@ -161,7 +139,20 @@ $platformTemplate
     SnackBarUtils.showSuccess(context, l10n.commonCopied);
   }
 
-  Future<void> _exportAppLogs(BuildContext context) async {
+  Future<void> _previewLogs(BuildContext context) async {
+    final format = await showDialog<LogFormat>(
+      context: context,
+      builder: (_) => const LogPreviewDialog(),
+    );
+    if (context.mounted && format != null) {
+      await _exportAppLogs(context, format: format);
+    }
+  }
+
+  Future<void> _exportAppLogs(
+    BuildContext context, {
+    LogFormat format = LogFormat.humanReadable,
+  }) async {
     final l10n = context.l10n;
     final confirmed = await ConfirmActionSheetWidget.show(
       context,
@@ -172,16 +163,34 @@ $platformTemplate
 
     if (confirmed != true || !context.mounted) return;
 
-    final result =
-        await LogExportService().exportLogs(minLevel: appLogger.minLogLevel);
+    final result = await LogExportService().exportLogs(
+      minLevel: appLogger.minLogLevel,
+      format: format,
+    );
     if (!context.mounted) return;
 
+    if (result.wasCancelled) return;
     if (!result.success) {
-      SnackBarUtils.showError(context, '${l10n.commonSaveFailed}: ${result.errorMessage ?? ''}');
+      SnackBarUtils.showError(
+        context,
+        ErrorMessageUtils.truncateForToast(
+          result.errorMessage ?? l10n.commonSaveFailed,
+        ),
+      );
       return;
     }
 
-    SnackBarUtils.showSuccess(context, '${l10n.commonSaveSuccess}: ${result.filePath ?? ''}');
+    final displayName = result.displayName ?? result.filePath;
+    if (result.privateFallbackUsed) {
+      SnackBarUtils.showWarning(context, l10n.fileSavePrivateFallback);
+    } else {
+      SnackBarUtils.showSuccess(
+        context,
+        displayName == null || displayName.isEmpty
+            ? l10n.fileSaveSuccessDownloads
+            : l10n.fileSaveSuccessPicker(displayName),
+      );
+    }
   }
 
   Future<void> _clearAppLogs(BuildContext context) async {
@@ -194,62 +203,29 @@ $platformTemplate
       isDestructive: true,
     );
     if (!confirmed) return;
-    await LogFileManagerService().clearLogs();
+    try {
+      await LogFileManagerService().clearLogs();
+    } catch (error, stackTrace) {
+      appLogger.eWithPackage(
+        'features.settings.feedback',
+        'Failed to clear application logs',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      if (context.mounted) {
+        SnackBarUtils.showError(
+            context, ErrorMessageUtils.userFacingMessage(error));
+      }
+      return;
+    }
     if (!context.mounted) return;
     SnackBarUtils.showSuccess(context, l10n.systemSettingsAppLogsCleared);
   }
 
-  String _logLevelLabel(AppLocalizations l10n, AppLogLevel level) {
-    switch (level) {
-      case AppLogLevel.trace:
-        return l10n.systemSettingsLogLevelTrace;
-      case AppLogLevel.debug:
-        return l10n.systemSettingsLogLevelDebug;
-      case AppLogLevel.info:
-        return l10n.systemSettingsLogLevelInfo;
-      case AppLogLevel.warning:
-        return l10n.systemSettingsLogLevelWarning;
-      case AppLogLevel.error:
-        return l10n.systemSettingsLogLevelError;
-      case AppLogLevel.fatal:
-        return l10n.systemSettingsLogLevelFatal;
-    }
-  }
-
   Future<void> _selectAppLogLevel(BuildContext context) async {
     final l10n = context.l10n;
-    final channelFloor = _channelMinLogLevelFloor();
-    final selectableLevels = AppLogLevel.values
-        .where((level) => level.weight >= channelFloor.weight)
-        .toList();
-
-    final selected = await showDialog<AppLogLevel>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.systemSettingsAppLogsLevelTitle),
-        content: RadioGroup<AppLogLevel>(
-          groupValue: appLogger.minLogLevel,
-          onChanged: (value) => Navigator.of(dialogContext).pop(value),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: selectableLevels
-                .map(
-                  (level) => RadioListTile<AppLogLevel>(
-                    value: level,
-                    title: Text(_logLevelLabel(l10n, level)),
-                  ),
-                )
-                .toList(),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(l10n.commonCancel),
-          ),
-        ],
-      ),
-    );
+    final selected =
+        await showAppLogLevelDialog(context, appLogger.minLogLevel);
     if (selected == null) return;
 
     await appLogger.setMinLogLevel(selected);
@@ -258,24 +234,7 @@ $platformTemplate
     if (!context.mounted) return;
     setState(() {});
     SnackBarUtils.showSuccess(context,
-        '${l10n.commonSaveSuccess}: ${_logLevelLabel(l10n, appLogger.minLogLevel)}');
-  }
-
-  AppLogLevel _channelMinLogLevelFloor() {
-    switch (AppReleaseChannelConfig.current) {
-      case AppReleaseChannel.preview:
-      case AppReleaseChannel.alpha:
-      case AppReleaseChannel.beta:
-        return AppLogLevel.debug;
-      case AppReleaseChannel.preRelease:
-        return AppLogLevel.info;
-      case AppReleaseChannel.release:
-        return AppLogLevel.warning;
-    }
-  }
-
-  void _showLogLevelLockedHint(BuildContext context) {
-    SnackBarUtils.showSuccess(context, context.l10n.systemSettingsAppLogsLevelLocked);
+        '${l10n.commonSaveSuccess}: ${appLogLevelLabel(l10n, appLogger.minLogLevel)}');
   }
 
   String _channelLabel(AppLocalizations l10n) {

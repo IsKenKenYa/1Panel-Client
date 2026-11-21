@@ -23,7 +23,7 @@ void main() {
         serverUrl: baseUrl, apiKey: apiKey,
       );
       expect(result.success, isTrue, reason: result.errorMessage);
-      expect(result.osInfo, isNotEmpty);
+      expect(result.responseTime, isNotNull);
     });
 
     test('共享 DioClient 完成数据流上传、下载与删除', () async {

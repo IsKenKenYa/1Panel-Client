@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:onepanel_client/config/app_router.dart';
 import 'package:provider/provider.dart';
-import 'package:onepanel_client/core/config/release_channel_config.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/settings/panel_settings_page.dart';
@@ -10,23 +10,15 @@ import 'package:onepanel_client/features/settings/security_settings_page.dart';
 import 'package:onepanel_client/features/settings/settings_provider.dart';
 import 'package:onepanel_client/features/settings/snapshot_page.dart';
 import 'package:onepanel_client/features/settings/terminal_settings_page.dart';
-import 'package:onepanel_client/features/settings/api_key_settings_page.dart';
-import 'package:onepanel_client/features/settings/ssl_settings_page.dart';
 import 'package:onepanel_client/features/settings/upgrade_page.dart';
 import 'package:onepanel_client/features/settings/monitor_settings_page.dart';
 import 'package:onepanel_client/features/settings/proxy_settings_page.dart';
-import 'package:onepanel_client/features/settings/backup_account_page.dart';
-import 'package:onepanel_client/features/settings/widgets/system_settings_tiles.dart';
 import 'package:onepanel_client/features/shell/shell_navigation.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
+import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
+import 'package:onepanel_client/shared/widgets/operations/async_state_page_body_widget.dart';
+import 'package:onepanel_client/shared/widgets/operations/partial_error_toast_listener.dart';
 import 'package:onepanel_client/shared/widgets/section_card.dart';
-import 'package:onepanel_client/features/monitoring/monitoring_provider.dart';
-import 'package:onepanel_client/core/services/logger/log_level.dart';
-import 'package:onepanel_client/core/services/logger/log_export_service.dart';
-import 'package:onepanel_client/core/services/logger/log_file_manager_service.dart';
-import 'package:onepanel_client/core/services/logger/logger_service.dart';
-import 'package:onepanel_client/core/services/logger/widgets/log_preview_dialog.dart';
-import 'package:onepanel_client/data/models/ssh_settings_models.dart';
+import 'package:onepanel_client/data/models/setting_models.dart';
 
 class SystemSettingsPage extends StatefulWidget {
   const SystemSettingsPage({super.key, this.provider});
@@ -45,9 +37,10 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
   void initState() {
     super.initState();
     _ownsProvider = widget.provider == null;
-    _provider = widget.provider ?? SettingsProvider();
+    _provider = widget.provider ??
+        SettingsProvider.forServer(context.read<CurrentServerController>().currentServer!);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _provider.load();
+      if (mounted) _provider.load();
     });
   }
 
@@ -80,36 +73,23 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
         ),
         body: Consumer<SettingsProvider>(
           builder: (context, provider, child) {
-            if (provider.data.isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            if (provider.data.error != null) {
-              return _buildErrorView(context, provider, l10n);
-            }
-
-            return _buildSettingsList(context, provider, theme, l10n);
+            final loaded = provider.data.lastUpdated != null;
+            return PartialErrorToastListener(
+              errorMessage: provider.loadError,
+              hasCachedData: loaded,
+              onRetry: provider.refresh,
+              child: AsyncStatePageBodyWidget(
+                isLoading: !loaded && provider.loadError == null,
+                errorMessage: loaded ? null : provider.loadError,
+                onRetry: provider.refresh,
+                child: AdaptiveWidthContainer(
+                  maxWidth: AdaptiveLayoutSpec.of(context).settingsBodyMaxWidth,
+                  child: _buildSettingsList(context, provider, theme, l10n),
+                ),
+              ),
+            );
           },
         ),
-      ),
-    );
-  }
-
-  Widget _buildErrorView(
-      BuildContext context, SettingsProvider provider, AppLocalizations l10n) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.error_outline, size: 48, color: Colors.red),
-          const SizedBox(height: 16),
-          Text(l10n.systemSettingsLoadFailed),
-          const SizedBox(height: 8),
-          TextButton(
-            onPressed: () => provider.load(),
-            child: Text(l10n.commonRetry),
-          ),
-        ],
       ),
     );
   }
@@ -122,10 +102,6 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
   ) {
     final settings = provider.data.systemSettings;
     final lastUpdated = provider.data.lastUpdated;
-    final isLogLevelLocked = AppReleaseChannelConfig.forceDebugLogLevel;
-    final logLevelSubtitle = isLogLevelLocked
-        ? '${_logLevelLabel(l10n, appLogger.minLogLevel)} · ${l10n.systemSettingsAppLogsLevelLocked}'
-        : _logLevelLabel(l10n, appLogger.minLogLevel);
 
     return ListView(
       padding: AppDesignTokens.pagePadding,
@@ -144,43 +120,10 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
               onTap: () => _navigateTo(context, const PanelSettingsPage()),
             ),
             SectionEntryItem(
-              icon: Icons.terminal_outlined,
-              title: l10n.systemSettingsTerminal,
-              subtitle: l10n.systemSettingsTerminalDesc,
-              onTap: () => _navigateTo(context, const TerminalSettingsPage()),
-            ),
-            SectionEntryItem(
-              icon: Icons.vpn_lock_outlined,
-              title: l10n.proxySettingsTitle,
-              subtitle:
-                  settings?.proxyUrl != null && settings!.proxyUrl!.isNotEmpty
-                      ? l10n.systemSettingsEnabled
-                      : l10n.systemSettingsDisabled,
-              onTap: () => _navigateTo(context, const ProxySettingsPage()),
-            ),
-            SectionEntryItem(
               icon: Icons.storefront_outlined,
               title: l10n.appStoreTitle,
-              subtitle: _extractAppStoreUrl(provider.data.appStoreConfig) ??
-                  l10n.systemSettingsNotSet,
+              subtitle: _extractAppStoreUrl(provider.data.appStoreConfig),
               onTap: () => _showAppStoreConfigDialog(context, provider, l10n),
-            ),
-            SectionEntryItem(
-              icon: Icons.settings_ethernet_outlined,
-              title: l10n.operationsSshTitle,
-              subtitle: _formatSshConnectionSummary(
-                provider.data.sshConnection,
-                l10n,
-              ),
-              onTap: () => _showSshConnectionDialog(context, provider, l10n),
-            ),
-            SectionEntryItem(
-              icon: Icons.device_hub_outlined,
-              title: l10n.sshSettingsNetworkSectionTitle,
-              subtitle: _formatNetworkInterfacesSummary(
-                  provider.data.networkInterfaces, l10n),
-              onTap: () =>
-                  _showNetworkInterfacesDialog(context, provider, l10n),
             ),
             SectionEntryItem(
               icon: Icons.view_sidebar_outlined,
@@ -192,59 +135,47 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
             SectionEntryItem(
               icon: Icons.sticky_note_2_outlined,
               title: l10n.systemSettingsDashboardMemo,
-              subtitle: _formatMemoSummary(provider.data.dashboardMemo, l10n),
+              subtitle: provider.data.dashboardMemo == null
+                  ? null : _formatMemoSummary(provider.data.dashboardMemo, l10n),
               onTap: () => _showDashboardMemoDialog(context, provider, l10n),
-            ),
-            SectionEntryItem(
-              icon: Icons.preview_outlined,
-              title: l10n.systemSettingsAppLogsPreviewButton,
-              subtitle: l10n.systemSettingsAppLogsPreviewSubtitle,
-              onTap: () => _previewAppLogs(context),
-            ),
-            SectionEntryItem(
-              icon: Icons.download_outlined,
-              title: l10n.commonExport,
-              subtitle: l10n.systemSettingsAppLogsExportSubtitle,
-              onTap: () => _exportAppLogs(context),
-            ),
-            SectionEntryItem(
-              icon: Icons.filter_alt_outlined,
-              title: l10n.systemSettingsAppLogsLevelTitle,
-              subtitle: logLevelSubtitle,
-              onTap: () => isLogLevelLocked
-                  ? _showLogLevelLockedHint(context)
-                  : _selectAppLogLevel(context),
-            ),
-            SectionEntryItem(
-              icon: Icons.delete_sweep_outlined,
-              title: l10n.commonClear,
-              subtitle: l10n.systemSettingsAppLogsClearSubtitle,
-              onTap: () => _clearAppLogs(context),
             ),
           ],
         ),
         const SizedBox(height: AppDesignTokens.spacingMd),
-        SectionCard(
-          title: l10n.systemSettingsFileExportSection,
-          child: Column(
-            children: [
-              FilePickerToggleTile(
-                onChanged: () {
-                  if (context.mounted) {
-                    setState(() {});
-                  }
-                },
-              ),
-              const Divider(height: 1),
-              FileSaveSubDirectoryTile(
-                onChanged: () {
-                  if (context.mounted) {
-                    setState(() {});
-                  }
-                },
-              ),
-            ],
-          ),
+        SectionEntryList(
+          title: l10n.systemSettingsConnectionsSection,
+          items: [
+            SectionEntryItem(
+              icon: Icons.terminal_outlined,
+              title: l10n.systemSettingsTerminal,
+              subtitle: l10n.systemSettingsTerminalDesc,
+              onTap: () =>
+                  _navigateTo(context, TerminalSettingsPage(provider: provider)),
+            ),
+            SectionEntryItem(
+              icon: Icons.vpn_lock_outlined,
+              title: l10n.proxySettingsTitle,
+              subtitle:
+                  settings?.proxyUrl != null && settings!.proxyUrl!.isNotEmpty
+                      ? l10n.systemSettingsEnabled
+                      : l10n.systemSettingsDisabled,
+              onTap: () => _navigateTo(context, const ProxySettingsPage()),
+            ),
+            SectionEntryItem(
+              icon: Icons.settings_ethernet_outlined,
+              title: l10n.operationsSshTitle,
+              subtitle: provider.data.sshConnection?.summary,
+              onTap: () => showTerminalConnectionDialog(context, provider),
+            ),
+            SectionEntryItem(
+              icon: Icons.device_hub_outlined,
+              title: l10n.sshSettingsNetworkSectionTitle,
+              subtitle: provider.data.networkInterfaces == null
+                  ? null : _formatNetworkInterfacesSummary(provider.data.networkInterfaces, l10n),
+              onTap: () =>
+                  _showNetworkInterfacesDialog(context, provider, l10n),
+            ),
+          ],
         ),
         const SizedBox(height: AppDesignTokens.spacingMd),
         SectionEntryList(
@@ -257,20 +188,12 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
               onTap: () => _navigateTo(context, const SecuritySettingsPage()),
             ),
             SectionEntryItem(
-              icon: Icons.key_outlined,
-              title: l10n.systemSettingsApiKey,
-              subtitle: _isEnabled(settings?.apiInterfaceStatus)
-                  ? l10n.systemSettingsEnabled
-                  : l10n.systemSettingsDisabled,
-              onTap: () => _navigateTo(context, const ApiKeySettingsPage()),
-            ),
-            SectionEntryItem(
               icon: Icons.lock_outlined,
               title: l10n.sslSettingsTitle,
-              subtitle: _isEnabled(settings?.ssl)
+              subtitle: settings?.ssl == 'Mux' || _isEnabled(settings?.ssl)
                   ? l10n.systemSettingsEnabled
                   : l10n.systemSettingsDisabled,
-              onTap: () => _navigateTo(context, const SslSettingsPage()),
+              onTap: () => openRouteRespectingShell(context, AppRoutes.panelSsl),
             ),
           ],
         ),
@@ -287,11 +210,7 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
             SectionEntryItem(
               icon: Icons.monitor_heart_outlined,
               title: l10n.monitorSettingsTitle,
-              subtitle: l10n.monitorSettings,
-              onTap: () => _navigateToWithProvider<MonitoringProvider>(
-                context,
-                const MonitorSettingsPage(),
-              ),
+              onTap: () => MonitorSettingsPage.open(context),
             ),
           ],
         ),
@@ -309,7 +228,7 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
               icon: Icons.cloud_outlined,
               title: l10n.systemSettingsBackupAccountTitle,
               subtitle: l10n.systemSettingsBackupAccountDesc,
-              onTap: () => _navigateTo(context, const BackupAccountPage()),
+              onTap: () => openRouteRespectingShell(context, AppRoutes.backups),
             ),
           ],
         ),
@@ -330,7 +249,7 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
 
   Widget _buildInfoCard(
     BuildContext context,
-    dynamic settings,
+    SystemSettingInfo settings,
     ThemeData theme,
     AppLocalizations l10n,
   ) {
@@ -349,10 +268,12 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
                   color: theme.colorScheme.primary,
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  settings.panelName ?? l10n.systemSettingsPanelName,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Text(
+                    settings.panelName ?? l10n.systemSettingsPanelName,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],
@@ -362,43 +283,7 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
               '${l10n.systemSettingsSystemVersion}: ${settings.systemVersion ?? "-"}',
               style: theme.textTheme.bodyMedium,
             ),
-            if (settings.mfaStatus != null) ...[
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  Text(
-                    '${l10n.systemSettingsMfaStatus}: ',
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                  _buildStatusChip(
-                    context,
-                    _isEnabled(settings.mfaStatus),
-                    l10n,
-                  ),
-                ],
-              ),
-            ],
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatusChip(
-      BuildContext context, bool isEnabled, AppLocalizations l10n) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      decoration: BoxDecoration(
-        color: isEnabled
-            ? Colors.green.withValues(alpha: 0.2)
-            : Colors.grey.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        isEnabled ? l10n.systemSettingsEnabled : l10n.systemSettingsDisabled,
-        style: TextStyle(
-          fontSize: 12,
-          color: isEnabled ? Colors.green : Colors.grey,
         ),
       ),
     );
@@ -415,16 +300,6 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
       return value.trim();
     }
     return null;
-  }
-
-  String _formatSshConnectionSummary(
-    SshLocalConnectionInfo? connection,
-    AppLocalizations l10n,
-  ) {
-    if (connection == null || !connection.isConfigured) {
-      return l10n.systemSettingsNotSet;
-    }
-    return connection.summary;
   }
 
   String _formatNetworkInterfacesSummary(
@@ -458,8 +333,12 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
     SettingsProvider provider,
     AppLocalizations l10n,
   ) async {
-    await provider.loadDashboardMemo();
+    final loaded = await provider.loadDashboardMemo();
     if (!context.mounted) {
+      return;
+    }
+    if (!loaded) {
+      SnackBarUtils.showError(context, provider.data.error ?? l10n.systemSettingsLoadFailed);
       return;
     }
 
@@ -512,11 +391,15 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
     SettingsProvider provider,
     AppLocalizations l10n,
   ) async {
-    await provider.loadAppStoreConfig();
+    final loaded = await provider.loadAppStoreConfig();
     if (!context.mounted) {
       return;
     }
 
+    if (!loaded) {
+      SnackBarUtils.showError(context, provider.data.error ?? l10n.systemSettingsLoadFailed);
+      return;
+    }
     final initialUrl = _extractAppStoreUrl(provider.data.appStoreConfig) ?? '';
     final controller = TextEditingController(text: initialUrl);
 
@@ -526,8 +409,8 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
         title: Text(l10n.appStoreTitle),
         content: TextField(
           controller: controller,
-          decoration: const InputDecoration(
-            labelText: 'Store URL',
+          decoration: InputDecoration(
+            labelText: l10n.appStoreTitle,
             hintText: 'https://',
           ),
         ),
@@ -562,130 +445,17 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
     controller.dispose();
   }
 
-  Future<void> _showSshConnectionDialog(
-    BuildContext context,
-    SettingsProvider provider,
-    AppLocalizations l10n,
-  ) async {
-    await provider.loadSSHConnection();
-    if (!context.mounted) {
-      return;
-    }
-
-    final connection = provider.data.sshConnection;
-
-    final hostController =
-        TextEditingController(text: connection?.addr ?? '');
-    final portController =
-        TextEditingController(text: (connection?.port ?? 22).toString());
-    final userController =
-        TextEditingController(text: connection?.user ?? '');
-    final passwordController =
-        TextEditingController(text: connection?.password ?? '');
-    final privateKeyController =
-        TextEditingController(text: connection?.privateKey ?? '');
-
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.operationsSshTitle),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: hostController,
-                decoration: const InputDecoration(
-                  labelText: 'Host',
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: portController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Port',
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: userController,
-                decoration: const InputDecoration(
-                  labelText: 'User',
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: passwordController,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: privateKeyController,
-                minLines: 2,
-                maxLines: 5,
-                decoration: const InputDecoration(
-                  labelText: 'Private Key',
-                ),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () async {
-              final ok = await provider.saveSSHConnection(
-                host: hostController.text.trim().isEmpty
-                    ? null
-                    : hostController.text.trim(),
-                port: int.tryParse(portController.text.trim()),
-                user: userController.text.trim().isEmpty
-                    ? null
-                    : userController.text.trim(),
-                password: passwordController.text,
-                privateKey: privateKeyController.text.trim().isEmpty
-                    ? null
-                    : privateKeyController.text.trim(),
-              );
-              if (!dialogContext.mounted) {
-                return;
-              }
-              if (ok) {
-                SnackBarUtils.showSuccess(
-                    dialogContext, l10n.commonSaveSuccess);
-                Navigator.of(dialogContext).pop();
-              } else {
-                SnackBarUtils.showError(
-                    dialogContext, l10n.commonSaveFailed);
-              }
-            },
-            child: Text(l10n.commonSave),
-          ),
-        ],
-      ),
-    );
-
-    hostController.dispose();
-    portController.dispose();
-    userController.dispose();
-    passwordController.dispose();
-    privateKeyController.dispose();
-  }
-
   Future<void> _showNetworkInterfacesDialog(
     BuildContext context,
     SettingsProvider provider,
     AppLocalizations l10n,
   ) async {
-    await provider.loadNetworkInterfaces();
+    final loaded = await provider.loadNetworkInterfaces();
     if (!context.mounted) {
+      return;
+    }
+    if (!loaded) {
+      SnackBarUtils.showError(context, provider.data.error ?? l10n.systemSettingsLoadFailed);
       return;
     }
     final interfaces = provider.data.networkInterfaces ?? const <String>[];
@@ -734,155 +504,9 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
     );
   }
 
-  void _navigateToWithProvider<T extends ChangeNotifier>(
-      BuildContext context, Widget page) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => ChangeNotifierProvider<T>.value(
-          value: context.read<T>(),
-          child: page,
-        ),
-      ),
-    );
-  }
-
   String _formatTime(DateTime time) {
     return '${time.year}-${time.month.toString().padLeft(2, '0')}-${time.day.toString().padLeft(2, '0')} '
         '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
   }
 
-  Future<void> _exportAppLogs(BuildContext context) async {
-    final l10n = context.l10n;
-    final result =
-        await LogExportService().exportLogs(minLevel: appLogger.minLogLevel);
-    if (!context.mounted) return;
-    if (result.wasCancelled) {
-      SnackBarUtils.showInfo(context, l10n.fileSaveCancelled);
-    } else if (result.success) {
-      final message = _buildSaveSuccessMessage(context, result);
-      SnackBarUtils.showSuccess(context, message);
-      if (result.privateFallbackUsed) {
-        SnackBarUtils.showWarning(context, l10n.fileSavePrivateFallback);
-      }
-    } else {
-      SnackBarUtils.showError(
-          context, '${l10n.commonSaveFailed}: ${result.errorMessage ?? ''}');
-    }
-  }
-
-  Future<void> _previewAppLogs(BuildContext context) async {
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) => const LogPreviewDialog(),
-    );
-  }
-
-  String _buildSaveSuccessMessage(BuildContext context, dynamic result) {
-    final l10n = context.l10n;
-    final displayName = (result.displayName as String?) ?? '';
-    if (displayName.isNotEmpty) {
-      try {
-        return l10n.fileSaveSuccessPicker(displayName);
-      } catch (_) {
-        // Fall back to plain concatenation if the l10n entry is missing.
-        return '${l10n.commonSaveSuccess}: $displayName';
-      }
-    }
-    return l10n.fileSaveSuccessDownloads;
-  }
-
-  Future<void> _clearAppLogs(BuildContext context) async {
-    final l10n = context.l10n;
-    final confirmed = await ConfirmActionSheetWidget.show(
-      context,
-      title: l10n.systemSettingsAppLogsClearTitle,
-      message: l10n.systemSettingsAppLogsClearConfirm,
-      confirmLabel: l10n.commonConfirm,
-      isDestructive: true,
-    );
-    if (!confirmed) return;
-    await LogFileManagerService().clearLogs();
-    if (!context.mounted) return;
-    SnackBarUtils.showSuccess(context, l10n.systemSettingsAppLogsCleared);
-  }
-
-  String _logLevelLabel(AppLocalizations l10n, AppLogLevel level) {
-    switch (level) {
-      case AppLogLevel.trace:
-        return l10n.systemSettingsLogLevelTrace;
-      case AppLogLevel.debug:
-        return l10n.systemSettingsLogLevelDebug;
-      case AppLogLevel.info:
-        return l10n.systemSettingsLogLevelInfo;
-      case AppLogLevel.warning:
-        return l10n.systemSettingsLogLevelWarning;
-      case AppLogLevel.error:
-        return l10n.systemSettingsLogLevelError;
-      case AppLogLevel.fatal:
-        return l10n.systemSettingsLogLevelFatal;
-    }
-  }
-
-  Future<void> _selectAppLogLevel(BuildContext context) async {
-    final l10n = context.l10n;
-    final channelFloor = _channelMinLogLevelFloor();
-    final selectableLevels = AppLogLevel.values
-        .where((level) => level.weight >= channelFloor.weight)
-        .toList();
-
-    final selected = await showDialog<AppLogLevel>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.systemSettingsAppLogsLevelTitle),
-        content: RadioGroup<AppLogLevel>(
-          groupValue: appLogger.minLogLevel,
-          onChanged: (value) => Navigator.of(dialogContext).pop(value),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: selectableLevels
-                .map(
-                  (level) => RadioListTile<AppLogLevel>(
-                    value: level,
-                    title: Text(_logLevelLabel(l10n, level)),
-                  ),
-                )
-                .toList(),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(l10n.commonCancel),
-          ),
-        ],
-      ),
-    );
-    if (selected == null) return;
-    await appLogger.setMinLogLevel(selected);
-    await appLogger.applyReleaseChannelPolicy();
-    if (!context.mounted) return;
-    setState(() {});
-    SnackBarUtils.showSuccess(
-        context,
-        '${l10n.commonSaveSuccess}: ${_logLevelLabel(l10n, appLogger.minLogLevel)}');
-  }
-
-  AppLogLevel _channelMinLogLevelFloor() {
-    switch (AppReleaseChannelConfig.current) {
-      case AppReleaseChannel.preview:
-      case AppReleaseChannel.alpha:
-      case AppReleaseChannel.beta:
-        return AppLogLevel.debug;
-      case AppReleaseChannel.preRelease:
-        return AppLogLevel.info;
-      case AppReleaseChannel.release:
-        return AppLogLevel.warning;
-    }
-  }
-
-  void _showLogLevelLockedHint(BuildContext context) {
-    final l10n = context.l10n;
-    SnackBarUtils.showInfo(context, l10n.systemSettingsAppLogsLevelLocked);
-  }
 }

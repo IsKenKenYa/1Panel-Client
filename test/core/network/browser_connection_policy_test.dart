@@ -15,9 +15,30 @@ void main() {
   });
 
   test('拒绝无主机、其他协议与 URL 中的凭据', () {
-    for (final url in ['panel', 'file:///panel', 'https://user:pass@panel.example']) {
+    for (final url in [
+      'panel',
+      'file:///panel',
+      'https://user:pass@panel.example'
+    ]) {
       expect(BrowserConnectionPolicy.issue(url),
           BrowserConnectionIssue.invalidAddress);
     }
+  });
+
+  test('面板安全入口保留服务器来源并移除查询参数', () {
+    const address = 'https://[::1]:8443/panel?tab=settings#current';
+    expect(BrowserConnectionPolicy.panelWebEntrance(address, null).toString(),
+        'https://[::1]:8443/panel');
+    expect(
+        BrowserConnectionPolicy.panelWebEntrance(address, '/entry').toString(),
+        'https://[::1]:8443/entry');
+    final entry = BrowserConnectionPolicy.panelWebEntrance(
+        address, '//other.example/path');
+    expect(entry.origin, 'https://[::1]:8443');
+    expect(entry.path, '/other.example/path');
+    expect(
+        () =>
+            BrowserConnectionPolicy.panelWebEntrance('file:///panel', 'entry'),
+        throwsArgumentError);
   });
 }

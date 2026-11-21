@@ -105,13 +105,21 @@ void main() {
       await controller.authenticateForUnlock(reason: 'unlock');
       expect(controller.isSessionUnlocked, isTrue);
 
+      controller.onAppLifecycleChanged(AppLifecycleState.inactive);
+      controller.onAppLifecycleChanged(AppLifecycleState.hidden);
       controller.onAppLifecycleChanged(AppLifecycleState.paused);
       now = now.add(const Duration(minutes: 6));
+      controller.onAppLifecycleChanged(AppLifecycleState.hidden);
+      controller.onAppLifecycleChanged(AppLifecycleState.inactive);
       controller.onAppLifecycleChanged(AppLifecycleState.resumed);
 
       expect(controller.isSessionUnlocked, isFalse);
+      expect(controller.requiresResumeUnlock, isTrue);
       expect(controller.shouldRequireUnlockForModuleId('files'), isTrue);
       expect(controller.shouldRequireUnlockForModuleId('containers'), isFalse);
+      await expectLater(controller.disable(), throwsStateError);
+      await controller.authenticateForUnlock(reason: 'unlock');
+      expect(controller.requiresResumeUnlock, isFalse);
     });
 
     test('reports auth failure message when platform throws', () async {

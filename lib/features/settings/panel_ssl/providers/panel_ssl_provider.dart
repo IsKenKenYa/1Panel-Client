@@ -1,263 +1,110 @@
 import 'package:flutter/foundation.dart';
-import 'package:onepanel_client/core/utils/error_message_utils.dart';
+import 'package:onepanel_client/core/config/api_config.dart';
+import 'package:onepanel_client/core/platform/services/platform_file_service.dart';
 import 'package:onepanel_client/core/presentation/safe_change_notifier.dart';
+import 'package:onepanel_client/core/services/logger/logger_service.dart';
+import 'package:onepanel_client/core/utils/error_message_utils.dart';
 import 'package:onepanel_client/features/settings/panel_ssl/services/panel_ssl_service.dart';
 import 'package:onepanel_client/shared/security_gateway/models/security_gateway_models.dart';
 import 'package:onepanel_client/shared/security_gateway/utils/security_gateway_utils.dart';
 
-enum PanelSslHistoryAction {
-  loaded,
-  uploaded,
-  downloaded,
-}
+enum PanelSslHistoryAction { loaded, uploaded, downloaded }
 
-class PanelSslHistoryEntry {
-  const PanelSslHistoryEntry({
-    required this.action,
-    required this.createdAt,
-    this.domain,
-    this.bytes,
-  });
-
-  final PanelSslHistoryAction action;
-  final DateTime createdAt;
-  final String? domain;
-  final int? bytes;
-}
+typedef PanelSslHistoryEntry = ({
+  PanelSslHistoryAction action,
+  DateTime createdAt,
+  String? domain,
+  int? bytes,
+});
 
 class PanelSslProvider extends ChangeNotifier with SafeChangeNotifier {
+  PanelSslProvider.forServer(ApiConfig server)
+      : _service = PanelSslService.forServer(server);
+
   final PanelSslService _service;
-
-  PanelSslProvider({PanelSslService? service})
-      : _service = service ?? PanelSslService();
-
+  Map<String, dynamic>? _info;
   bool _isLoading = false;
   bool _isSubmitting = false;
-  String? _error;
-  Map<String, dynamic> _sslInfo = const <String, dynamic>{};
-  List<PanelSslHistoryEntry> _history = const <PanelSslHistoryEntry>[];
-  int? _lastDownloadedBytes;
+  String? _loadError;
+  final List<PanelSslHistoryEntry> _history = [];
 
-  bool get isLoading => _isLoading;
-  bool get isSubmitting => _isSubmitting;
-  String? get error => _error;
-  Map<String, dynamic> get sslInfo => _sslInfo;
-  bool get hasData => _sslInfo.isNotEmpty;
-  List<PanelSslHistoryEntry> get history => _history;
-  int? get lastDownloadedBytes => _lastDownloadedBytes;
-
-  String get domain => _readValue(const ['domain', 'bindDomain']);
-  String get status => _readValue(const ['status', 'ssl']);
-  String get sslType => _readValue(const ['sslType', 'type']);
-  String get provider => _readValue(const ['provider', 'issuer']);
-  String get expiration =>
-      _readValue(const ['expirationDate', 'expiration', 'expiresAt']);
-  String get updatedAt =>
-      _readValue(const ['updatedAt', 'updateTime', 'updated_at']);
-  String get certificatePath =>
-      _readValue(const ['certPath', 'pemPath', 'certificatePath']);
-  String get keyPath => _readValue(const ['keyPath', 'privateKeyPath']);
-  String get issuer => _readValue(const ['issuer', 'provider']);
-  String get serialNumber => _readValue(const ['serialNumber', 'serial']);
-
-  CertificateHealthStatus get healthStatus =>
+  bool get busy => _isLoading || _isSubmitting;
+  bool get hasData => _info != null;
+  bool get hasCertificate => _info?.isNotEmpty ?? false;
+  String? get loadError => _loadError;
+  String? get domain => _info?['domain'] as String?;
+  String? get expiration => _info?['timeout'] as String?;
+  String? get certificatePath => _info?['rootPath'] as String?;
+  CertificateHealthStatus get health =>
       resolveCertificateHealthStatus(expiration);
+  int? get daysRemaining => daysUntilExpiration(expiration);
+  List<PanelSslHistoryEntry> get history => List.unmodifiable(_history);
 
-  List<RiskNotice> get riskNotices {
-    final notices = <RiskNotice>[];
-    final expiryDays = daysUntilExpiration(expiration);
-
-    if (expiryDays == null) {
-      notices.add(
-        const RiskNotice(
-          level: RiskLevel.medium,
-          title: 'Certificate expiry unknown',
-          message: 'The panel certificate expiration time could not be parsed.',
-        ),
-      );
-    } else if (expiryDays < 0) {
-      notices.add(
-        const RiskNotice(
-          level: RiskLevel.high,
-          title: 'Certificate expired',
-          message:
-              'The panel TLS certificate has already expired and should be replaced immediately.',
-        ),
-      );
-    } else if (expiryDays <= 30) {
-      notices.add(
-        RiskNotice(
-          level: expiryDays <= 7 ? RiskLevel.high : RiskLevel.medium,
-          title: 'Certificate expiring soon',
-          message: 'The panel TLS certificate expires in $expiryDays day(s).',
-        ),
-      );
-    }
-
-    if (sslType.toLowerCase().contains('self')) {
-      notices.add(
-        const RiskNotice(
-          level: RiskLevel.low,
-          title: 'Self-signed certificate',
-          message:
-              'Self-signed certificates can trigger browser trust warnings.',
-        ),
-      );
-    }
-
-    return notices;
+  Future<void> loadSslInfo() async {
+    if (busy) return;
+    await _readSslInfo();
   }
 
-  List<String> validateUploadFields({
-    required String domain,
-    required String cert,
-    required String key,
-  }) {
-    final errors = <String>[];
-    if (domain.trim().isEmpty) {
-      errors.add('Domain is required.');
-    }
-    if (cert.trim().isEmpty) {
-      errors.add('Certificate content is required.');
-    } else if (!cert.contains('BEGIN CERTIFICATE')) {
-      errors.add('Certificate must contain a PEM certificate block.');
-    }
-    if (key.trim().isEmpty) {
-      errors.add('Private key content is required.');
-    } else if (!key.contains('BEGIN')) {
-      errors.add('Private key must contain a PEM key block.');
-    }
-    return errors;
-  }
-
-  String buildCertificateSummary() {
-    return [
-      'Domain: $domain',
-      'Status: $status',
-      'Type: $sslType',
-      'Provider: $provider',
-      'Issuer: $issuer',
-      'Serial: $serialNumber',
-      'Expiration: $expiration',
-    ].join('\n');
-  }
-
-  Future<void> loadSslInfo({bool silent = false}) async {
-    if (!silent) {
-      _isLoading = true;
-      _error = null;
-      notifyListeners();
-    }
-
+  Future<void> _readSslInfo() async {
+    _isLoading = true;
+    _loadError = null;
+    notifyListeners();
     try {
-      _sslInfo = await _service.getSslInfo();
-      _error = null;
-      if (_history.isEmpty && hasData) {
-        _appendHistory(
-          PanelSslHistoryEntry(
-            action: PanelSslHistoryAction.loaded,
-            createdAt: DateTime.now(),
-            domain: domain,
-          ),
-        );
+      _info = await _service.getSslInfo();
+      if (_history.isEmpty && hasCertificate) {
+        _record(PanelSslHistoryAction.loaded);
       }
-    } catch (e) {
-      _error = ErrorMessageUtils.userFacingMessage(e);
+    } catch (error, trace) {
+      _loadError = ErrorMessageUtils.normalize(error);
+      appLogger.eWithPackage(
+        'panel_ssl',
+        '加载面板证书失败',
+        error: error,
+        stackTrace: trace,
+      );
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  Future<bool> uploadSsl({
-    required String domain,
-    required String sslType,
-    required String cert,
-    required String key,
-  }) async {
-    final validationErrors = validateUploadFields(
-      domain: domain,
-      cert: cert,
-      key: key,
-    );
-    if (validationErrors.isNotEmpty) {
-      _error = validationErrors.join('\n');
-      notifyListeners();
-      return false;
-    }
-
+  Future<void> uploadSsl({required String cert, required String key}) async {
+    if (busy) throw StateError('面板证书操作正在进行');
     _isSubmitting = true;
-    _error = null;
     notifyListeners();
-
     try {
-      await _service.updateSsl(
-        domain: domain,
-        sslType: sslType,
-        cert: cert,
-        key: key,
-      );
-      // Silent refresh avoids a second loading spinner after a successful upload.
-      await loadSslInfo(silent: true);
-      _appendHistory(
-        PanelSslHistoryEntry(
-          action: PanelSslHistoryAction.uploaded,
-          createdAt: DateTime.now(),
-          domain: domain,
-        ),
-      );
-      return true;
-    } catch (e) {
-      _error = ErrorMessageUtils.userFacingMessage(e);
-      return false;
+      await _service.updateSsl(cert: cert, key: key);
+      await _readSslInfo();
+      _record(PanelSslHistoryAction.uploaded);
     } finally {
       _isSubmitting = false;
       notifyListeners();
     }
   }
 
-  Future<bool> downloadSsl() async {
+  Future<SaveOutcome> downloadSsl() async {
+    if (busy) throw StateError('面板证书操作正在进行');
+    _isSubmitting = true;
+    notifyListeners();
     try {
-      final bytes = await _service.downloadSsl();
-      _lastDownloadedBytes = bytes.length;
-      _error = null;
-      _appendHistory(
-        PanelSslHistoryEntry(
-          action: PanelSslHistoryAction.downloaded,
-          createdAt: DateTime.now(),
-          domain: domain,
-          bytes: bytes.length,
-        ),
-      );
+      final result = await _service.downloadSsl();
+      if (!result.file.isCancelled) {
+        _record(PanelSslHistoryAction.downloaded, bytes: result.size);
+      }
+      return result.file;
+    } finally {
+      _isSubmitting = false;
       notifyListeners();
-      return true;
-    } catch (e) {
-      _error = ErrorMessageUtils.userFacingMessage(e);
-      notifyListeners();
-      return false;
     }
   }
 
-  // Server API uses inconsistent field names across versions (e.g. 'domain'
-  // vs 'bindDomain'), so we try multiple keys and return the first match.
-  String _readValue(List<String> keys) {
-    for (final key in keys) {
-      final value = _sslInfo[key];
-      if (value == null) {
-        continue;
-      }
-      final text = value.toString().trim();
-      if (text.isNotEmpty) {
-        return text;
-      }
-    }
-    return '-';
-  }
-
-  void _appendHistory(PanelSslHistoryEntry entry) {
-    _history = <PanelSslHistoryEntry>[
-      entry,
-      ..._history,
-    ].take(5).toList(growable: false);
+  void _record(PanelSslHistoryAction action, {int? bytes}) {
+    _history.insert(0, (
+      action: action,
+      domain: domain,
+      bytes: bytes,
+      createdAt: DateTime.now(),
+    ));
+    if (_history.length > 5) _history.removeLast();
   }
 }

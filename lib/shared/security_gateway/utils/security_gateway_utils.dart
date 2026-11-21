@@ -1,5 +1,19 @@
 import 'package:onepanel_client/shared/security_gateway/models/security_gateway_models.dart';
 
+bool isPublicCertificatePem(String pem) {
+  final text = pem.trim();
+  return text.startsWith('-----BEGIN CERTIFICATE-----') &&
+      text.endsWith('-----END CERTIFICATE-----') &&
+      !text.contains('PRIVATE KEY');
+}
+
+bool isPrivateKeyPem(String pem) {
+  final text = pem.trim();
+  return text.startsWith(RegExp(r'-----BEGIN (?:[A-Z0-9]+ )*PRIVATE KEY-----')) &&
+      text.contains('-----END ') &&
+      text.endsWith('PRIVATE KEY-----');
+}
+
 CertificateHealthStatus resolveCertificateHealthStatus(String? expiration) {
   final days = daysUntilExpiration(expiration);
   if (days == null) {

@@ -276,11 +276,12 @@ class SecurityServerViewModel: ObservableObject {
         ChannelManager.shared.invokeDataMethod("getPanelSslInfo") { [weak self] result in
             DispatchQueue.main.async {
                 if let dict = result as? [String: Any] {
-                    let cert = dict["cert"] as? String ?? ""
                     self?.panelSsl = PanelSslModel(
                         domain: dict["domain"] as? String ?? "",
-                        hasCertificate: !cert.isEmpty
+                        hasCertificate: dict["enabled"] as? Bool ?? false
                     )
+                } else {
+                    self?.panelSsl = nil
                 }
                 group.leave()
             }

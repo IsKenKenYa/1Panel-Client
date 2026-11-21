@@ -37,11 +37,8 @@ void main() {
           (widget) =>
               widget is Text && (widget.data?.contains('MB /') ?? false),
         );
-        expect(valueFinder, findsOneWidget);
-
-        final valueWidget = tester.widget<Text>(valueFinder);
-        expect(valueWidget.maxLines, 1);
-        expect(valueWidget.overflow, TextOverflow.ellipsis);
+        await tester.ensureVisible(valueFinder);
+        expect(valueFinder.hitTestable(), findsOneWidget);
       });
     }
   });

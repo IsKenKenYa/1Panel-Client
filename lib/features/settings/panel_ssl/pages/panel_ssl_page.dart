@@ -2,25 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
+import 'package:onepanel_client/core/utils/error_message_utils.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/settings/panel_ssl/providers/panel_ssl_provider.dart';
+import 'package:onepanel_client/features/settings/widgets/settings_scaffold.dart';
+import 'package:onepanel_client/features/shell/controllers/current_server_controller.dart';
 import 'package:onepanel_client/shared/security_gateway/models/security_gateway_models.dart';
-import 'package:onepanel_client/shared/security_gateway/widgets/risk_notice_banner.dart';
-import 'package:onepanel_client/shared/security_gateway/widgets/security_status_chip.dart';
-import 'package:onepanel_client/shared/widgets/operations/confirm_action_sheet_widget.dart';
-import 'package:onepanel_client/shared/widgets/section_card.dart';
+import 'package:onepanel_client/shared/security_gateway/utils/security_gateway_utils.dart';
+import 'package:onepanel_client/shared/widgets/app_widgets.dart';
+import 'package:onepanel_client/shared/widgets/forms/app_form_dialog.dart';
 import 'package:provider/provider.dart';
 
 class PanelSslPage extends StatelessWidget {
-  const PanelSslPage({super.key, this.provider});
-
-  final PanelSslProvider? provider;
+  const PanelSslPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<PanelSslProvider>(
-      create: (_) => provider ?? PanelSslProvider()
-        ..loadSslInfo(),
+    final server = context.watch<CurrentServerController>().currentServer!;
+    return ChangeNotifierProvider(
+      key: ValueKey((server.id, server.revision)),
+      create: (_) => PanelSslProvider.forServer(server)..loadSslInfo(),
       child: const _PanelSslBody(),
     );
   }
@@ -33,465 +34,267 @@ class _PanelSslBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final provider = context.watch<PanelSslProvider>();
+    final fields = {
+      if (!provider.hasCertificate)
+        l10n.sslSettingsStatus: l10n.systemSettingsNotSet,
+      if (provider.domain case final String domain)
+        l10n.sslSettingsDomain: domain,
+      if (provider.expiration case final String expiration)
+        l10n.sslSettingsExpiration: expiration,
+      if (provider.certificatePath case final String path)
+        l10n.panelTlsCertificatePathLabel: path,
+    };
+    final notice = switch (provider.health) {
+      CertificateHealthStatus.healthy => null,
+      CertificateHealthStatus.unknown => l10n.panelTlsRiskUnknownMessage,
+      CertificateHealthStatus.expired => l10n.panelTlsRiskExpiredMessage,
+      CertificateHealthStatus.expiringSoon =>
+        l10n.panelTlsRiskExpiringSoonMessage(provider.daysRemaining!),
+    };
 
-    if (provider.isLoading && !provider.hasData) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
-
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
-        title: Text(l10n.panelTlsTitle),
-        actions: [
-          IconButton(
-            onPressed: provider.loadSslInfo,
-            icon: const Icon(Icons.refresh_outlined),
-            tooltip: l10n.commonRefresh,
-          ),
-        ],
-      ),
-      body: ListView(
-        padding: AppDesignTokens.pagePadding,
-        children: [
-          if (provider.isLoading) const LinearProgressIndicator(),
-          if (provider.error != null && provider.hasData)
-            Padding(
-              padding: const EdgeInsets.only(top: AppDesignTokens.spacingSm),
-              child: Text(
-                provider.error!,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              ),
-            ),
-          SectionCard(
-            title: l10n.panelTlsOverviewTitle,
-            padding: const EdgeInsets.all(AppDesignTokens.spacingLg),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+    return SettingsScaffold(
+      title: l10n.panelTlsTitle,
+      actions: [
+        IconButton(
+          onPressed: provider.busy ? null : provider.loadSslInfo,
+          icon: const Icon(Icons.refresh_outlined),
+          tooltip: l10n.commonRefresh,
+        ),
+      ],
+      body: PartialErrorToastListener(
+        errorMessage: provider.loadError,
+        hasCachedData: provider.hasData,
+        onRetry: provider.loadSslInfo,
+        child: AsyncStatePageBodyWidget(
+          isLoading: !provider.hasData && provider.busy,
+          errorMessage: provider.hasData ? null : provider.loadError,
+          onRetry: provider.loadSslInfo,
+          child: ListView(
+            padding: AppDesignTokens.pagePadding,
+            children: [
+              SectionCard(
+                title: l10n.panelTlsCertificateTitle,
+                padding: const EdgeInsets.all(AppDesignTokens.spacingLg),
+                isBusy: provider.busy,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      provider.domain,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.w700,
+                    for (final field in fields.entries)
+                      LabelValueRow(label: field.key, value: field.value),
+                    if (provider.hasCertificate && notice != null)
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: AppDesignTokens.spacingMd,
+                        ),
+                        child: Text(
+                          notice,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
                           ),
-                    ),
-                    const Spacer(),
-                    SecurityStatusChip(
-                      label:
-                          _localizedHealthLabel(context, provider.healthStatus),
-                      color: _healthColor(context, provider.healthStatus),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppDesignTokens.spacingMd),
-                _InfoRow(label: l10n.sslSettingsStatus, value: provider.status),
-                _InfoRow(label: l10n.sslSettingsType, value: provider.sslType),
-                _InfoRow(
-                    label: l10n.sslSettingsProvider, value: provider.provider),
-                _InfoRow(
-                    label: l10n.sslSettingsExpiration,
-                    value: provider.expiration),
-              ],
-            ),
-          ),
-          const SizedBox(height: AppDesignTokens.spacingMd),
-          SectionCard(
-            title: l10n.panelTlsCertificateTitle,
-            padding: const EdgeInsets.all(AppDesignTokens.spacingLg),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.panelTlsUploadHint,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                const SizedBox(height: AppDesignTokens.spacingMd),
-                Wrap(
-                  spacing: AppDesignTokens.spacingSm,
-                  runSpacing: AppDesignTokens.spacingSm,
-                  children: [
-                    FilledButton.icon(
-                      onPressed: provider.isSubmitting
-                          ? null
-                          : () => _showUploadDialog(context, provider),
-                      icon: const Icon(Icons.upload_outlined),
-                      label: Text(l10n.commonUpload),
-                    ),
-                    OutlinedButton.icon(
-                      onPressed: () => _downloadSsl(context, provider),
-                      icon: const Icon(Icons.download_outlined),
-                      label: Text(l10n.sslSettingsDownload),
-                    ),
-                    OutlinedButton.icon(
-                      onPressed: () => _copySummary(context, provider),
-                      icon: const Icon(Icons.copy_outlined),
-                      label: Text(l10n.commonCopy),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppDesignTokens.spacingMd),
-                _InfoRow(
-                    label: l10n.panelTlsIssuerLabel, value: provider.issuer),
-                _InfoRow(
-                    label: l10n.panelTlsCertificatePathLabel,
-                    value: provider.certificatePath),
-                _InfoRow(
-                    label: l10n.panelTlsKeyPathLabel, value: provider.keyPath),
-                _InfoRow(
-                    label: l10n.panelTlsSerialNumberLabel,
-                    value: provider.serialNumber),
-              ],
-            ),
-          ),
-          const SizedBox(height: AppDesignTokens.spacingMd),
-          RiskNoticeBanner(
-            notices: _localizedRiskNotices(context, provider.riskNotices),
-            title: l10n.panelTlsRiskTitle,
-          ),
-          const SizedBox(height: AppDesignTokens.spacingMd),
-          SectionCard(
-            title: l10n.panelTlsHistoryTitle,
-            padding: const EdgeInsets.all(AppDesignTokens.spacingLg),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _InfoRow(
-                  label: l10n.panelTlsLastUpdatedLabel,
-                  value: provider.updatedAt,
-                ),
-                const SizedBox(height: AppDesignTokens.spacingSm),
-                if (provider.history.isEmpty)
-                  Text(l10n.panelTlsNoRecentActions)
-                else
-                  for (final entry in provider.history)
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          bottom: AppDesignTokens.spacingSm),
-                      child: Text('• ${_historyEntryText(context, entry)}'),
-                    ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _showUploadDialog(
-    BuildContext context,
-    PanelSslProvider provider,
-  ) async {
-    final l10n = context.l10n;
-    final domainController = TextEditingController(
-        text: provider.domain == '-' ? '' : provider.domain);
-    final certController = TextEditingController();
-    final keyController = TextEditingController();
-    final errors = <String>[];
-
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Text(l10n.panelTlsUploadDialogTitle),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (errors.isNotEmpty) ...[
-                  for (final error in errors)
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          bottom: AppDesignTokens.spacingXs),
-                      child: Text(
-                        _localizedValidationError(context, error),
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.error),
+                        ),
                       ),
-                    ),
-                  const SizedBox(height: AppDesignTokens.spacingSm),
-                ],
-                TextField(
-                  controller: domainController,
-                  decoration:
-                      InputDecoration(labelText: l10n.sslSettingsDomain),
-                ),
-                const SizedBox(height: AppDesignTokens.spacingMd),
-                TextField(
-                  controller: certController,
-                  maxLines: 5,
-                  decoration: InputDecoration(
-                    labelText: l10n.panelTlsCertificatePemLabel,
-                    alignLabelWithHint: true,
-                  ),
-                ),
-                const SizedBox(height: AppDesignTokens.spacingMd),
-                TextField(
-                  controller: keyController,
-                  maxLines: 5,
-                  decoration: InputDecoration(
-                    labelText: l10n.panelTlsPrivateKeyPemLabel,
-                    alignLabelWithHint: true,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: Text(l10n.commonCancel),
-            ),
-            FilledButton(
-              onPressed: () async {
-                errors
-                  ..clear()
-                  ..addAll(
-                    provider.validateUploadFields(
-                      domain: domainController.text.trim(),
-                      cert: certController.text,
-                      key: keyController.text,
-                    ),
-                  );
-                setState(() {});
-                if (errors.isNotEmpty) {
-                  return;
-                }
-
-                final confirmed = await showDialog<bool>(
-                      context: dialogContext,
-                      builder: (confirmContext) => AlertDialog(
-                        title: Text(l10n.panelTlsApplyUpdateTitle),
-                        content: Text(l10n.panelTlsApplyUpdateMessage),
-                        actions: [
-                          TextButton(
-                            onPressed: () =>
-                                Navigator.pop(confirmContext, false),
-                            child: Text(l10n.commonCancel),
+                    Wrap(
+                      spacing: AppDesignTokens.spacingSm,
+                      runSpacing: AppDesignTokens.spacingSm,
+                      children: [
+                        FilledButton.icon(
+                          onPressed: provider.busy
+                              ? null
+                              : () => _upload(context, provider),
+                          icon: const Icon(Icons.upload_outlined),
+                          label: Text(l10n.commonUpload),
+                        ),
+                        if (provider.hasCertificate) ...[
+                          OutlinedButton.icon(
+                            onPressed: provider.busy
+                                ? null
+                                : () => _download(context, provider),
+                            icon: const Icon(Icons.download_outlined),
+                            label: Text(l10n.sslSettingsDownload),
                           ),
-                          FilledButton(
-                            onPressed: () =>
-                                Navigator.pop(confirmContext, true),
-                            child: Text(l10n.commonConfirm),
+                          IconButton(
+                            onPressed: () async {
+                              final summary = fields.entries
+                                  .map((field) => '${field.key}: ${field.value}')
+                                  .join('\n');
+                              try {
+                                await Clipboard.setData(ClipboardData(text: summary));
+                                if (context.mounted) {
+                                  SnackBarUtils.showSuccess(context, l10n.commonCopySuccess);
+                                }
+                              } catch (error) {
+                                if (context.mounted) _showError(context, error);
+                              }
+                            },
+                            icon: const Icon(Icons.copy_outlined),
+                            tooltip: l10n.commonCopy,
                           ),
                         ],
-                      ),
-                    ) ??
-                    false;
-                if (!confirmed) {
-                  return;
-                }
-
-                if (!dialogContext.mounted) {
-                  return;
-                }
-                Navigator.pop(dialogContext);
-                final success = await provider.uploadSsl(
-                  domain: domainController.text.trim(),
-                  sslType: 'selfSigned',
-                  cert: certController.text,
-                  key: keyController.text,
-                );
-                if (!context.mounted) {
-                  return;
-                }
-                if (success) {
-                  SnackBarUtils.showSuccess(
-                      context, l10n.commonSaveSuccess);
-                } else {
-                  SnackBarUtils.showError(
-                      context, provider.error ?? l10n.commonSaveFailed);
-                }
-              },
-              child: Text(l10n.commonSave),
-            ),
-          ],
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              if (provider.history.isNotEmpty) ...[
+                const SizedBox(height: AppDesignTokens.spacingMd),
+                SectionCard(
+                  title: l10n.panelTlsHistoryTitle,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDesignTokens.spacingLg,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (final entry in provider.history)
+                        ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(switch (entry.action) {
+                            PanelSslHistoryAction.loaded =>
+                              l10n.panelTlsHistoryLoaded(entry.domain ?? '—'),
+                            PanelSslHistoryAction.uploaded =>
+                              l10n.panelTlsHistoryUploaded(entry.domain ?? '—'),
+                            PanelSslHistoryAction.downloaded =>
+                              l10n.panelTlsHistoryDownloaded(entry.bytes!),
+                          }),
+                          subtitle: Text(
+                            MaterialLocalizations.of(context).formatTimeOfDay(
+                              TimeOfDay.fromDateTime(entry.createdAt),
+                              alwaysUse24HourFormat:
+                                  MediaQuery.alwaysUse24HourFormatOf(context),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ],
+          ),
         ),
       ),
     );
-    domainController.dispose();
-    certController.dispose();
-    keyController.dispose();
   }
 
-  Future<void> _downloadSsl(
-      BuildContext context, PanelSslProvider provider) async {
+  Future<void> _upload(BuildContext context, PanelSslProvider provider) async {
+    final l10n = context.l10n;
+    final form = GlobalKey<FormState>();
+    var cert = '';
+    var key = '';
+    final accepted = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AppFormDialog(
+        title: l10n.panelTlsUploadDialogTitle,
+        confirmLabel: l10n.commonSave,
+        onConfirm: () async {
+          if (form.currentState!.validate()) {
+            Navigator.of(dialogContext).pop(true);
+          }
+        },
+        content: Form(
+          key: form,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextFormField(
+                minLines: 3,
+                maxLines: 5,
+                autocorrect: false,
+                enableSuggestions: false,
+                decoration: InputDecoration(
+                  labelText: l10n.panelTlsCertificatePemLabel,
+                ),
+                onChanged: (value) => cert = value.trim(),
+                validator: (_) {
+                  if (cert.isEmpty) {
+                    return l10n.panelTlsValidationCertificateRequired;
+                  }
+                  return isPublicCertificatePem(cert)
+                      ? null
+                      : l10n.panelTlsValidationCertificatePemRequired;
+                },
+              ),
+              const SizedBox(height: AppDesignTokens.spacingMd),
+              FormField<String>(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return l10n.panelTlsValidationPrivateKeyRequired;
+                  }
+                  return isPrivateKeyPem(value)
+                      ? null
+                      : l10n.panelTlsValidationPrivateKeyPemRequired;
+                },
+                builder: (field) => InputDecorator(
+                  decoration: InputDecoration(
+                    labelText: l10n.panelTlsPrivateKeyPemLabel,
+                    errorText: field.errorText,
+                  ),
+                  child: TextButton.icon(
+                    icon: Icon(key.isEmpty
+                        ? Icons.content_paste_outlined
+                        : Icons.check_circle_outline),
+                    label: Text(
+                      MaterialLocalizations.of(dialogContext).pasteButtonLabel,
+                    ),
+                    onPressed: () async {
+                      try {
+                        final data =
+                            await Clipboard.getData(Clipboard.kTextPlain);
+                        if (!field.mounted) return;
+                        key = data?.text?.trim() ?? '';
+                        field.didChange(key);
+                        field.validate();
+                      } catch (error) {
+                        if (dialogContext.mounted) _showError(dialogContext, error);
+                      }
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppDesignTokens.spacingMd),
+              Text(l10n.panelTlsApplyUpdateMessage),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (accepted != true || !context.mounted) return;
+    try {
+      await provider.uploadSsl(cert: cert, key: key);
+      if (context.mounted) {
+        SnackBarUtils.showSuccess(context, l10n.commonSaveSuccess);
+      }
+    } catch (error) {
+      if (context.mounted) _showError(context, error);
+    }
+  }
+
+  Future<void> _download(BuildContext context, PanelSslProvider provider) async {
     final l10n = context.l10n;
     final confirmed = await ConfirmActionSheetWidget.show(
       context,
       title: l10n.panelTlsDownloadDialogTitle,
       message: l10n.panelTlsDownloadDialogMessage,
-      confirmLabel: l10n.panelTlsContinueAction,
+      confirmLabel: l10n.sslSettingsDownload,
     );
-    if (!confirmed) {
-      return;
-    }
-
-    final success = await provider.downloadSsl();
-    if (!context.mounted) {
-      return;
-    }
-    final bytes = provider.lastDownloadedBytes;
-    if (success) {
-      SnackBarUtils.showSuccess(
-          context, l10n.panelTlsDownloadSuccess(bytes ?? 0));
-    } else {
-      SnackBarUtils.showError(
-          context, provider.error ?? l10n.commonSaveFailed);
-    }
-  }
-
-  Future<void> _copySummary(
-      BuildContext context, PanelSslProvider provider) async {
-    final l10n = context.l10n;
-    await Clipboard.setData(
-        ClipboardData(text: provider.buildCertificateSummary()));
-    if (!context.mounted) {
-      return;
-    }
-    SnackBarUtils.showSuccess(context, l10n.commonCopySuccess);
-  }
-
-  String _localizedHealthLabel(
-    BuildContext context,
-    CertificateHealthStatus status,
-  ) {
-    final l10n = context.l10n;
-    switch (status) {
-      case CertificateHealthStatus.healthy:
-        return l10n.panelTlsHealthHealthy;
-      case CertificateHealthStatus.expiringSoon:
-        return l10n.panelTlsHealthExpiringSoon;
-      case CertificateHealthStatus.expired:
-        return l10n.panelTlsHealthExpired;
-      case CertificateHealthStatus.unknown:
-        return l10n.panelTlsHealthUnknown;
-    }
-  }
-
-  List<RiskNotice> _localizedRiskNotices(
-    BuildContext context,
-    List<RiskNotice> notices,
-  ) {
-    final l10n = context.l10n;
-    return notices.map((notice) {
-      switch (notice.title) {
-        case 'Certificate expiry unknown':
-          return RiskNotice(
-            level: notice.level,
-            title: l10n.panelTlsRiskUnknownTitle,
-            message: l10n.panelTlsRiskUnknownMessage,
-          );
-        case 'Certificate expired':
-          return RiskNotice(
-            level: notice.level,
-            title: l10n.panelTlsRiskExpiredTitle,
-            message: l10n.panelTlsRiskExpiredMessage,
-          );
-        case 'Certificate expiring soon':
-          final match = RegExp(r'(\d+)').firstMatch(notice.message);
-          final days = int.tryParse(match?.group(1) ?? '') ?? 0;
-          return RiskNotice(
-            level: notice.level,
-            title: l10n.panelTlsRiskExpiringSoonTitle,
-            message: l10n.panelTlsRiskExpiringSoonMessage(days),
-          );
-        case 'Self-signed certificate':
-          return RiskNotice(
-            level: notice.level,
-            title: l10n.panelTlsRiskSelfSignedTitle,
-            message: l10n.panelTlsRiskSelfSignedMessage,
-          );
-        default:
-          return notice;
+    if (!confirmed || !context.mounted) return;
+    try {
+      final file = await provider.downloadSsl();
+      if (!context.mounted || file.isCancelled) return;
+      if (file.privateFallbackUsed) {
+        SnackBarUtils.showWarning(context, l10n.fileSavePrivateFallback);
+      } else {
+        SnackBarUtils.showSuccess(
+          context,
+          l10n.fileSaveSuccessPicker(file.displayName),
+        );
       }
-    }).toList(growable: false);
-  }
-
-  String _localizedValidationError(BuildContext context, String error) {
-    final l10n = context.l10n;
-    switch (error) {
-      case 'Domain is required.':
-        return l10n.panelTlsValidationDomainRequired;
-      case 'Certificate content is required.':
-        return l10n.panelTlsValidationCertificateRequired;
-      case 'Certificate must contain a PEM certificate block.':
-        return l10n.panelTlsValidationCertificatePemRequired;
-      case 'Private key content is required.':
-        return l10n.panelTlsValidationPrivateKeyRequired;
-      case 'Private key must contain a PEM key block.':
-        return l10n.panelTlsValidationPrivateKeyPemRequired;
-      default:
-        return error;
+    } catch (error) {
+      if (context.mounted) _showError(context, error);
     }
   }
 
-  String _historyEntryText(
-    BuildContext context,
-    PanelSslHistoryEntry entry,
-  ) {
-    final l10n = context.l10n;
-    final timeText = _formatTimestamp(entry.createdAt);
-    switch (entry.action) {
-      case PanelSslHistoryAction.loaded:
-        return '$timeText · ${l10n.panelTlsHistoryLoaded(entry.domain ?? '-')}';
-      case PanelSslHistoryAction.uploaded:
-        return '$timeText · ${l10n.panelTlsHistoryUploaded(entry.domain ?? '-')}';
-      case PanelSslHistoryAction.downloaded:
-        return '$timeText · ${l10n.panelTlsHistoryDownloaded(entry.bytes ?? 0)}';
-    }
-  }
-
-  String _formatTimestamp(DateTime value) {
-    final local = value.toLocal();
-    String two(int n) => n.toString().padLeft(2, '0');
-    return '${local.year}-${two(local.month)}-${two(local.day)} '
-        '${two(local.hour)}:${two(local.minute)}:${two(local.second)}';
-  }
-
-  Color _healthColor(BuildContext context, CertificateHealthStatus status) {
-    switch (status) {
-      case CertificateHealthStatus.healthy:
-        return AppDesignTokens.success;
-      case CertificateHealthStatus.expiringSoon:
-        return AppDesignTokens.warning;
-      case CertificateHealthStatus.expired:
-        return Theme.of(context).colorScheme.error;
-      case CertificateHealthStatus.unknown:
-        return Theme.of(context).colorScheme.secondary;
-    }
-  }
-}
-
-class _InfoRow extends StatelessWidget {
-  const _InfoRow({
-    required this.label,
-    required this.value,
-  });
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppDesignTokens.spacingSm),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 128,
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-            ),
-          ),
-          Expanded(child: Text(value)),
-        ],
-      ),
-    );
+  void _showError(BuildContext context, Object error) {
+    SnackBarUtils.showError(context, ErrorMessageUtils.userFacingMessage(error));
   }
 }

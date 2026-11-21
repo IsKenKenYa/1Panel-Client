@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -71,11 +72,19 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
   void dispose() {
     _provider.removeListener(_handlePreviewChanged);
     _textScrollController.dispose();
-    _videoController?.dispose();
     _chewieController?.dispose();
-    _audioPlayer?.dispose();
+    unawaited(_releasePlayers());
     _provider.dispose();
     super.dispose();
+  }
+
+  Future<void> _releasePlayers() async {
+    try {
+      await _videoController?.dispose();
+      await _audioPlayer?.dispose();
+    } finally {
+      await _provider.releaseViewerFile();
+    }
   }
 
   String? get _content => _provider.content;
@@ -98,6 +107,7 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
       cacheStrategy: settingsController.cacheStrategy,
       cacheMaxSizeMB: settingsController.cacheMaxSizeMB,
     );
+    if (!mounted) return;
     if (_provider.usePagedTextPreview && !_scrollListenerAttached) {
       _textScrollController.addListener(_onTextScroll);
       _scrollListenerAttached = true;
@@ -211,10 +221,6 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
           error: e, stackTrace: stackTrace);
       rethrow;
     }
-  }
-
-  Future<void> _loadContent() async {
-    await _provider.loadContent();
   }
 
   Future<void> _loadPreviewWindow({required int initialLine}) async {
@@ -350,7 +356,7 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
     if (_error != null) {
       return ModuleErrorStateWidget(
         message: _error,
-        onRetry: _loadContent,
+          onRetry: _bootstrapPreview,
       );
     }
 

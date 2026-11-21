@@ -61,6 +61,7 @@ class FilePreviewProvider extends ChangeNotifier with SafeChangeNotifier {
   String? _error;
   late final PreviewFileType _fileType = _resolveFileType(fileName);
   String? _localFilePath;
+  String? _viewerFile;
   Uint8List? _binaryData;
   CacheSource? _cacheSource;
   final List<String> _pagedLines = <String>[];
@@ -239,10 +240,17 @@ class FilePreviewProvider extends ChangeNotifier with SafeChangeNotifier {
       strategy: cacheStrategy,
       maxSizeMB: cacheMaxSizeMB,
     );
-    await _service.ensureServer();
-
     // 未知类型（二进制等）不支持预览，直接呈现空态，避免无效请求。
     if (_fileType == PreviewFileType.unknown) {
+      _isLoading = false;
+      notifyListeners();
+      return;
+    }
+
+    try {
+      await _service.ensureServer();
+    } catch (error) {
+      _error = ErrorMessageUtils.userFacingMessage(error);
       _isLoading = false;
       notifyListeners();
       return;
@@ -363,6 +371,7 @@ class FilePreviewProvider extends ChangeNotifier with SafeChangeNotifier {
             },
           ) ??
           _cacheManager!.loadFile(
+            connectionId: _service.cacheConnectionId,
             filePath: filePath,
             fileName: fileName,
             strategy: strategy,
@@ -375,21 +384,34 @@ class FilePreviewProvider extends ChangeNotifier with SafeChangeNotifier {
       if (result == null) {
         throw Exception('加载文件失败');
       }
+      if (isDisposed) return;
 
       _cacheSource = result.source;
       _binaryData = result.data;
+      if (_fileType == PreviewFileType.pdf && kIsWeb) {
+        await BrowserFileOperations.preparePdfRenderer();
+      }
+      if (_fileType != PreviewFileType.video &&
+          _fileType != PreviewFileType.audio) {
+        return;
+      }
       if (kIsWeb) {
-        if (_fileType == PreviewFileType.pdf) {
-          await BrowserFileOperations.preparePdfRenderer();
-        }
         if (_localFilePath != null) {
           BrowserFileOperations.revokeUrl(_localFilePath!);
         }
         _localFilePath = BrowserFileOperations.createUrl(result.data,
             mimeType: lookupMimeType(fileName, headerBytes: result.data));
+      } else if (result.localPath != null) {
+        _localFilePath = result.localPath;
+      } else if (_tempSaver != null) {
+        _localFilePath = await _tempSaver(result.data, fileName);
       } else {
-        _localFilePath = await (_tempSaver?.call(result.data, fileName) ??
-            _cacheManager!.saveToTempFile(result.data, fileName));
+        _viewerFile = await _cacheManager!.saveToTempFile(result.data, fileName);
+        _localFilePath = _viewerFile;
+        if (isDisposed) {
+          await releaseViewerFile();
+          return;
+        }
       }
       if (_localFilePath == null) {
         throw Exception('保存临时文件失败');
@@ -398,12 +420,8 @@ class FilePreviewProvider extends ChangeNotifier with SafeChangeNotifier {
       // Video/audio players must be initialized on the widget side (they need
       // a BuildContext for platform views). Set flag and wait for the page
       // to call completeMediaInitialization() after setting up controllers.
-      if (_fileType == PreviewFileType.video ||
-          _fileType == PreviewFileType.audio) {
-        _awaitingMediaInitialization = true;
-        notifyListeners();
-        return;
-      }
+      _awaitingMediaInitialization = true;
+      notifyListeners();
     } catch (e) {
       _error = ErrorMessageUtils.userFacingMessage(e);
     } finally {
@@ -425,6 +443,12 @@ class FilePreviewProvider extends ChangeNotifier with SafeChangeNotifier {
       return PreviewFileType.text;
     }
     return PreviewFileType.unknown;
+  }
+
+  Future<void> releaseViewerFile() async {
+    final file = _viewerFile;
+    _viewerFile = null;
+    if (file != null) await _cacheManager!.releaseViewerFile(file);
   }
 
   @override

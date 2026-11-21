@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:onepanel_client/core/services/passkey_service.dart';
 import 'package:onepanel_client/data/models/setting_models.dart';
 import 'package:onepanel_client/data/models/ssh_settings_models.dart';
 import 'package:onepanel_client/features/settings/settings_provider.dart';
@@ -56,12 +54,9 @@ class _FakeSettingsService extends SettingsService {
   }
 }
 
-class _MockPasskeyService extends Mock implements PasskeyService {}
-
 class _OneShotSettingsProvider extends SettingsProvider {
   _OneShotSettingsProvider({
     required super.service,
-    required super.passkeyService,
   });
 
   bool _loaded = false;
@@ -92,14 +87,8 @@ Future<void> _pumpWithFrameCap(
 void main() {
   testWidgets('SystemSettingsPage shows new setting entries and network dialog',
       (tester) async {
-    final passkeyService = _MockPasskeyService();
-    when(() => passkeyService.getAvailability()).thenAnswer(
-      (_) async => const PasskeyAvailabilityResult.unsupported('test'),
-    );
-
     final provider = _OneShotSettingsProvider(
       service: _FakeSettingsService(),
-      passkeyService: passkeyService,
     );
     await provider.load();
 

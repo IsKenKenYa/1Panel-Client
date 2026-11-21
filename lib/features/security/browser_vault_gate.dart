@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:onepanel_client/core/config/api_config_migration.dart';
+import 'package:provider/provider.dart';
+import 'package:onepanel_client/core/services/app_settings_controller.dart';
 import 'package:onepanel_client/core/services/logger/logger_service.dart';
 import 'package:onepanel_client/core/storage/browser_vault.dart';
 import 'package:onepanel_client/core/platform/services/browser_document_service.dart';
 import 'package:onepanel_client/core/platform/services/browser_password_autofill.dart';
 import 'package:onepanel_client/core/theme/app_theme.dart';
+import 'package:onepanel_client/core/theme/theme_controller.dart';
+import 'package:onepanel_client/core/layout/adaptive_layout.dart';
 import 'package:onepanel_client/l10n/generated/app_localizations.dart';
 import 'package:onepanel_client/shared/widgets/operations/module_error_state_widget.dart';
 
@@ -51,7 +54,6 @@ class _BrowserVaultGateState extends State<BrowserVaultGate> {
       await _vault.initialize();
       if (_vault.usesBrowserKey) {
         await _vault.unlockWithBrowserKey();
-        await ApiConfigMigration.runMigrationIfNeeded();
         if (!mounted) return;
         setState(() => _ready = true);
       }
@@ -86,7 +88,6 @@ class _BrowserVaultGateState extends State<BrowserVaultGate> {
         await _vault.unlockWithBrowserKey();
       }
       await _vault.requestPersistence();
-      await ApiConfigMigration.runMigrationIfNeeded();
       if (_usePassword) {
         if (kIsWeb) BrowserPasswordAutofill.commit();
         TextInput.finishAutofillContext(shouldSave: true);
@@ -119,19 +120,36 @@ class _BrowserVaultGateState extends State<BrowserVaultGate> {
   @override
   Widget build(BuildContext context) {
     if (_ready) return widget.child;
+    final density = AdaptiveLayoutSpec.of(context).adaptiveDensity;
+    final appearance = context.watch<ThemeController>();
     return MaterialApp(
       title: 'KenPanel',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.getLightTheme(),
-      darkTheme: AppTheme.getDarkTheme(),
+      theme: AppTheme.getLightTheme(
+        visualDensity: density,
+        seedColor: appearance.seedColor,
+      ),
+      darkTheme: AppTheme.getDarkTheme(
+        visualDensity: density,
+        seedColor: appearance.seedColor,
+      ),
+      themeMode: appearance.themeMode,
+      locale: context.select((AppSettingsController settings) => settings.locale),
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [Locale('zh'), Locale('en')],
-      home: Builder(builder: (context) {
+      supportedLocales: AppLocalizations.supportedLocales,
+      onGenerateRoute: _gateRoute,
+      onGenerateInitialRoutes: (name) => [_gateRoute(RouteSettings(name: name))],
+    );
+  }
+
+  Route<void> _gateRoute(RouteSettings settings) => MaterialPageRoute<void>(
+      settings: settings,
+      builder: (context) {
         if (kIsWeb) {
           BrowserDocumentService.updateLanguage(
               Localizations.localeOf(context).toLanguageTag());
@@ -319,7 +337,6 @@ class _BrowserVaultGateState extends State<BrowserVaultGate> {
             ),
           ),
         );
-      }),
+      },
     );
-  }
 }

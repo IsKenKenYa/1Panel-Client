@@ -6,6 +6,7 @@ import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 import 'package:onepanel_client/core/utils/snackbar_utils.dart';
 import 'package:onepanel_client/features/shell/shell_navigation.dart';
 import 'package:onepanel_client/shared/widgets/section_card.dart';
+import 'package:onepanel_client/features/settings/widgets/settings_scaffold.dart';
 
 class LegalCenterPage extends StatelessWidget {
   const LegalCenterPage({super.key});
@@ -27,21 +28,11 @@ class LegalCenterPage extends StatelessWidget {
     final privacyUrl =
         locale.languageCode == 'zh' ? _privacyPolicyZhUrl : _privacyPolicyEnUrl;
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
-        title: Text(l10n.settingsLegalCenterTitle),
-      ),
+    return SettingsScaffold(
+      title: l10n.settingsLegalCenterTitle,
       body: ListView(
-        padding: AppDesignTokens.pagePadding,
+        padding: AppDesignTokens.scrollPagePadding(context),
         children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(l10n.settingsLegalCenterIntro),
-            ),
-          ),
-          const SizedBox(height: AppDesignTokens.spacingMd),
           SectionEntryList(
             title: l10n.settingsLegalDocumentsTitle,
             items: [
@@ -81,7 +72,6 @@ class LegalCenterPage extends StatelessWidget {
           ),
           const SizedBox(height: AppDesignTokens.spacingMd),
           SectionEntryList(
-            title: l10n.settingsMainlandSdkDisclosureTitle,
             items: [
               SectionEntryItem(
                 icon: Icons.developer_board_outlined,

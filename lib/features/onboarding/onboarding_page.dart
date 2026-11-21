@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:onepanel_client/config/app_router.dart';
+import 'package:onepanel_client/config/app_route_constants.dart';
 import 'package:onepanel_client/core/i18n/l10n_x.dart';
 import 'package:onepanel_client/core/services/onboarding_service.dart';
 import 'package:onepanel_client/core/theme/app_design_tokens.dart';
 
 class OnboardingPage extends StatefulWidget {
-  const OnboardingPage({super.key});
+  const OnboardingPage({super.key, this.settingsDestination});
+
+  final String? settingsDestination;
 
   @override
   State<OnboardingPage> createState() => _OnboardingPageState();
@@ -16,26 +18,21 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final OnboardingService _service = OnboardingService();
   int _index = 0;
 
-  Future<void> _skip() async {
+  Future<void> _complete(String nextRoute) async {
     await _service.completeOnboarding();
     if (!mounted) {
       return;
     }
-    Navigator.pushReplacementNamed(context, AppRoutes.home);
+    Navigator.pushReplacementNamed(
+      context,
+      widget.settingsDestination ?? nextRoute,
+    );
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
-  }
-
-  Future<void> _start() async {
-    await _service.completeOnboarding();
-    if (!mounted) {
-      return;
-    }
-    Navigator.pushReplacementNamed(context, AppRoutes.serverConfig);
   }
 
   @override
@@ -66,7 +63,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed: _skip,
+                    onPressed: () => _complete(AppRoutes.home),
                     child: Text(l10n.onboardingSkip),
                   ),
                 ],
@@ -127,7 +124,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 child: FilledButton(
                   onPressed: () async {
                     if (_index == pages.length - 1) {
-                      await _start();
+                      await _complete(AppRoutes.serverConfig);
                       return;
                     }
 

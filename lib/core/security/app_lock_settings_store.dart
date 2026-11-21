@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppLockSettings {
@@ -67,10 +68,12 @@ class AppLockSettingsStore {
         AppLockSettings.defaults.lockOnAppOpen;
     final lockOnProtectedModule = prefs.getBool(_lockOnProtectedModuleKey) ??
         AppLockSettings.defaults.lockOnProtectedModule;
-    final relockAfterMinutes =
-        _normalizeRelockMinutes(prefs.getInt(_relockAfterMinutesKey));
-    final protectedModules =
-        _normalizeModuleIds(prefs.getStringList(_protectedModuleIdsKey));
+    final relockAfterMinutes = _normalizeRelockMinutes(
+      prefs.getInt(_relockAfterMinutesKey),
+    );
+    final protectedModules = _normalizeModuleIds(
+      prefs.getStringList(_protectedModuleIdsKey),
+    );
 
     return AppLockSettings(
       enabled: enabled,
@@ -83,20 +86,42 @@ class AppLockSettingsStore {
 
   Future<void> save(AppLockSettings settings) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(enabledPreferenceKey, settings.enabled);
-    await prefs.setBool(_lockOnAppOpenKey, settings.lockOnAppOpen);
-    await prefs.setBool(
-      _lockOnProtectedModuleKey,
-      settings.lockOnProtectedModule,
-    );
-    await prefs.setInt(
-      _relockAfterMinutesKey,
-      _normalizeRelockMinutes(settings.relockAfterMinutes),
-    );
-    await prefs.setStringList(
-      _protectedModuleIdsKey,
-      _normalizeModuleIds(settings.protectedModuleIds),
-    );
+    final current = await load();
+    Future<void> write(Future<bool> operation) async {
+      try {
+        if (!await operation) throw StateError('无法保存应用锁设置');
+      } catch (_) {
+        await prefs.reload();
+        rethrow;
+      }
+    }
+
+    if (settings.enabled != current.enabled) {
+      await write(prefs.setBool(enabledPreferenceKey, settings.enabled));
+    }
+    if (settings.lockOnAppOpen != current.lockOnAppOpen) {
+      await write(prefs.setBool(_lockOnAppOpenKey, settings.lockOnAppOpen));
+    }
+    if (settings.lockOnProtectedModule != current.lockOnProtectedModule) {
+      await write(
+        prefs.setBool(
+          _lockOnProtectedModuleKey,
+          settings.lockOnProtectedModule,
+        ),
+      );
+    }
+    if (settings.relockAfterMinutes != current.relockAfterMinutes) {
+      await write(
+        prefs.setInt(
+          _relockAfterMinutesKey,
+          _normalizeRelockMinutes(settings.relockAfterMinutes),
+        ),
+      );
+    }
+    final ids = _normalizeModuleIds(settings.protectedModuleIds);
+    if (!listEquals(ids, current.protectedModuleIds)) {
+      await write(prefs.setStringList(_protectedModuleIdsKey, ids));
+    }
   }
 
   Future<void> reset() async {
@@ -116,10 +141,6 @@ class AppLockSettingsStore {
         continue;
       }
       normalized.add(value);
-    }
-
-    if (normalized.isEmpty) {
-      return List<String>.from(AppLockSettings.defaultProtectedModuleIds);
     }
 
     return normalized;
