@@ -144,19 +144,18 @@ abstract final class ApiConfigManager {
     return 'kenpanel_credentials_${sha256.convert(utf8.encode(identity))}';
   }
 
+  /// 读取服务器目录。旧格式（数组）在首次读取时按原样使用。
   static ServerDirectory _read(SharedPreferences prefs) {
     final raw = prefs.getString(_serversKey);
-    if (raw != null) {
-      final data = jsonDecode(raw) as Map<String, dynamic>;
-      return (
-        servers: [
-          for (final item in data['servers'] as List)
-            ApiConfig.fromJson(item as Map<String, dynamic>),
-        ],
-        selectedId: data['selectedId'] as String?,
-      );
-    }
-    return _readLegacy(prefs);
+    if (raw == null) return _readLegacy(prefs);
+    final data = jsonDecode(raw) as Map<String, dynamic>;
+    return (
+      servers: [
+        for (final item in data['servers'] as List)
+          ApiConfig.fromJson(item as Map<String, dynamic>),
+      ],
+      selectedId: data['selectedId'] as String?,
+    );
   }
 
   /// 旧版本把服务器列表存成数组并使用独立的凭据键。
@@ -179,26 +178,21 @@ abstract final class ApiConfigManager {
       _lock.synchronized(() async {
         final prefs = await _preferences();
         final directory = _read(prefs);
-        await _migrateLegacyDirectory(prefs, directory);
+        // _read 命中旧格式时补写新键并移除旧键；写入失败不阻断读取。
+        if (prefs.getString(_serversKey) != null ||
+            prefs.getString(_legacyConfigsKey) == null) {
+          return directory;
+        }
+        final value = jsonEncode({
+          'servers': directory.servers,
+          'selectedId': directory.selectedId,
+        });
+        if (await prefs.setString(_serversKey, value)) {
+          await prefs.remove(_legacyConfigsKey);
+          await prefs.remove(_legacySelectedIdKey);
+        }
         return directory;
       });
-
-  /// 首次读到旧版本列表时写入新键并移除旧键。
-  /// 写入失败不阻断读取，旧键留到下次再试。
-  static Future<void> _migrateLegacyDirectory(
-    SharedPreferences prefs,
-    ServerDirectory directory,
-  ) async {
-    if (prefs.getString(_serversKey) != null) return;
-    if (prefs.getString(_legacyConfigsKey) == null) return;
-    final value = jsonEncode({
-      'servers': directory.servers,
-      'selectedId': directory.selectedId,
-    });
-    if (!await prefs.setString(_serversKey, value)) return;
-    await prefs.remove(_legacyConfigsKey);
-    await prefs.remove(_legacySelectedIdKey);
-  }
 
   static Future<List<ApiConfig>> getServerMetadata() async =>
       (await getServerDirectory()).servers;
@@ -207,7 +201,7 @@ abstract final class ApiConfigManager {
     final vault = await _vault();
     final raw = await vault.read(key: _secretKey(config));
     if (raw != null) {
-      final secrets = _decodeSecrets(raw);
+      final secrets = decodeStoredCredential(raw);
       if (secrets != null) {
         return ApiConfig.fromJson(
           config.toJson(),
@@ -215,22 +209,13 @@ abstract final class ApiConfigManager {
           additionalCredentials: secrets.fields,
         );
       }
-      // 键存在但内容不是新格式时，先按旧明文凭据处理，再尝试迁移。
-      final migrated = await _tryMigrateLegacy(config, vault);
-      if (migrated != null) return migrated;
-      // 内容无法识别，可能是截断或读到了错误条目；交给调用方按未配置处理。
-      throw const FormatException('已保存的面板凭据格式无效');
     }
+    // 新键缺失或内容无法识别时，尝试从旧明文键迁移。
     final migrated = await _tryMigrateLegacy(config, vault);
     if (migrated != null) return migrated;
-    throw StateError('无法读取已保存的面板凭据');
+    if (raw == null) throw StateError('无法读取已保存的面板凭据');
+    throw const FormatException('已保存的面板凭据格式无效');
   }
-
-  /// 解析新格式凭据；内容不是 JSON 对象或有缺失字段时返回 null。
-  static ({String apiKey, Map<String, String> fields})? _decodeSecrets(
-    String raw,
-  ) =>
-      decodeStoredCredential(raw);
 
   /// 旧版本把明文 API Key 存在 `api_config_api_key_<serverId>`。
   /// 升级后首次读取时搬到新键，写入成功后才清理旧键；旧键不存在返回 null。
@@ -257,24 +242,6 @@ abstract final class ApiConfigManager {
   static Future<ApiConfig> getConfig(String id) => _lock.synchronized(() async {
         final entries = _read(await _preferences()).servers;
         return _withCredentials(entries.firstWhere((c) => c.id == id));
-      });
-
-  /// 读取服务器元数据而不要求凭据可读。
-  ///
-  /// 供种子配置等需要覆盖写入的场景使用：凭据损坏时仍能拿到标识与
-  /// 地址，随后由调用方写入新凭据。
-  static Future<ApiConfig?> getConfigAllowMissingCredential(String id) =>
-      _lock.synchronized(() async {
-        final entries = _read(await _preferences()).servers;
-        final metadata = entries.where((c) => c.id == id).firstOrNull;
-        if (metadata == null) return null;
-        try {
-          return await _withCredentials(metadata);
-        } on FormatException {
-          return metadata;
-        } on StateError {
-          return metadata;
-        }
       });
 
   static Future<ConfigStorageException?> _writeDirectory(

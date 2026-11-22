@@ -57,13 +57,10 @@ Future<void> applySeedConfig({
 }) async {
   final seedName = name == null || name.isEmpty ? 'Seed Server' : name;
   final configs = await ApiConfigManager.getServerMetadata();
-  final metadata = configs.where((config) =>
+  // 同地址的既有条目沿用标识与名称；凭据由本次传入的 apiKey 覆盖，
+  // 因此不读取旧凭据，历史上损坏的条目也能修复。
+  final matched = configs.where((config) =>
       config.panelType == ApiConfig.onePanelType && config.url == url).firstOrNull;
-  // 种子注入的目的就是用传入的凭据覆盖现有配置，因此凭据读不出来
-  // 也要继续，才能修复历史上损坏的条目。
-  final matched = metadata == null
-      ? null
-      : await ApiConfigManager.getConfigAllowMissingCredential(metadata.id);
   final config = ApiConfig(
     id: matched?.id ?? 'server_seed_${DateTime.now().millisecondsSinceEpoch}',
     name: matched?.name ?? seedName,
@@ -72,7 +69,6 @@ Future<void> applySeedConfig({
     allowInsecureTls: matched?.allowInsecureTls ?? false,
     isDefault: matched?.isDefault ?? false,
     lastUsed: matched?.lastUsed,
-    additionalCredentials: matched?.additionalCredentials ?? const {},
     url: url,
     apiKey: apiKey,
   );
