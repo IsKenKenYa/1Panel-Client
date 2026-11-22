@@ -11183,6 +11183,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get vmInstanceActionDelete => '删除';
 
   @override
+  String get vmInstanceResourcesTitle => '资源';
+
+  @override
+  String get vmInstancePowerSectionTitle => '电源操作';
+
+  @override
   String vmInstanceOperateConfirm(String name, String operation) {
     return '确认对 $name 执行$operation吗？';
   }

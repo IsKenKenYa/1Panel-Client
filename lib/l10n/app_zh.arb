@@ -4549,6 +4549,8 @@
   "vmInstanceActionConsole": "VNC 控制台",
   "vmInstanceActionDetail": "详情",
   "vmInstanceActionDelete": "删除",
+  "vmInstanceResourcesTitle": "资源",
+  "vmInstancePowerSectionTitle": "电源操作",
   "vmInstanceOperateConfirm": "确认对 {name} 执行{operation}吗？",
   "vmInstanceOperateCompleted": "已提交{operation}请求",
   "vmInstanceConsoleUnavailable": "虚拟机的图形控制台未就绪，需要运行中且图形类型为 VNC",

@@ -21703,6 +21703,18 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get vmInstanceActionDelete;
 
+  /// No description provided for @vmInstanceResourcesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Resources'**
+  String get vmInstanceResourcesTitle;
+
+  /// No description provided for @vmInstancePowerSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Power'**
+  String get vmInstancePowerSectionTitle;
+
   /// No description provided for @vmInstanceOperateConfirm.
   ///
   /// In en, this message translates to:

@@ -26,6 +26,8 @@ import '../../features/settings/panel_ssl/services/panel_ssl_service.dart';
 import '../../features/websites/services/website_certificate_service.dart';
 
 import '../../features/toolbox/services/toolbox_device_service.dart';
+import '../../features/vm/vm_service.dart';
+import '../../data/models/vm/vm_resource_models.dart';
 import '../../data/models/app_models.dart';
 import '../../data/models/common_models.dart';
 import '../../data/models/container_models.dart';
@@ -3016,6 +3018,128 @@ class NativeChannelWriteHandlers {
       return _ok();
     } catch (e) {
       appLogger.e('syncOllamaModelsNative failed: $e');
+      return _err(e);
+    }
+  }
+
+  // ── 虚拟机 ──────────────────────────────────────────────────────────────
+
+  /// 启用虚拟机运行环境。参数：`{}`。
+  static Future<Map<String, dynamic>> enableVmEnvironment(
+      dynamic arguments) async {
+    try {
+      await VMService().enableEnvironment();
+      return _ok();
+    } catch (e) {
+      appLogger.e('enableVmEnvironment failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 同步虚拟机列表。参数：`{}`。POST /vms/sync。
+  static Future<Map<String, dynamic>> syncVms(dynamic arguments) async {
+    try {
+      await VMService().syncVMs();
+      return _ok();
+    } catch (e) {
+      appLogger.e('syncVms failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 虚拟机电源操作。参数：`{name: String, operate: start|shutdown|reboot|suspend|resume|destroy}`
+  static Future<Map<String, dynamic>> operateVm(dynamic arguments) async {
+    try {
+      final name = (arguments?['name'] as String? ?? '').trim();
+      final operate = (arguments?['operate'] as String? ?? '').trim();
+      const allowed = <String>{
+        'start',
+        'shutdown',
+        'reboot',
+        'suspend',
+        'resume',
+        'destroy',
+      };
+      if (name.isEmpty || !allowed.contains(operate)) {
+        return <String, dynamic>{
+          'success': false,
+          'error': 'name and a supported operate value are required',
+        };
+      }
+      await VMService().operateVM(name, operate);
+      return _ok();
+    } catch (e) {
+      appLogger.e('operateVm failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 创建虚拟机快照。参数：`{name: String, snapshotName: String, description?: String}`
+  static Future<Map<String, dynamic>> createVmSnapshot(
+      dynamic arguments) async {
+    try {
+      final name = (arguments?['name'] as String? ?? '').trim();
+      final snapshotName = (arguments?['snapshotName'] as String? ?? '').trim();
+      if (name.isEmpty || snapshotName.isEmpty) {
+        return <String, dynamic>{
+          'success': false,
+          'error': 'name and snapshotName are required',
+        };
+      }
+      await VMService().createSnapshot(
+        VMSnapshotReq(
+          name: name,
+          snapshotName: snapshotName,
+          description: (arguments?['description'] as String? ?? '').trim(),
+        ),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('createVmSnapshot failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 恢复虚拟机快照。参数：`{name: String, snapshotName: String}`
+  static Future<Map<String, dynamic>> recoverVmSnapshot(
+      dynamic arguments) async {
+    try {
+      final name = (arguments?['name'] as String? ?? '').trim();
+      final snapshotName = (arguments?['snapshotName'] as String? ?? '').trim();
+      if (name.isEmpty || snapshotName.isEmpty) {
+        return <String, dynamic>{
+          'success': false,
+          'error': 'name and snapshotName are required',
+        };
+      }
+      await VMService().recoverSnapshot(
+        VMSnapshotReq(name: name, snapshotName: snapshotName),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('recoverVmSnapshot failed: $e');
+      return _err(e);
+    }
+  }
+
+  /// 删除虚拟机快照。参数：`{name: String, snapshotName: String}`
+  static Future<Map<String, dynamic>> deleteVmSnapshot(
+      dynamic arguments) async {
+    try {
+      final name = (arguments?['name'] as String? ?? '').trim();
+      final snapshotName = (arguments?['snapshotName'] as String? ?? '').trim();
+      if (name.isEmpty || snapshotName.isEmpty) {
+        return <String, dynamic>{
+          'success': false,
+          'error': 'name and snapshotName are required',
+        };
+      }
+      await VMService().deleteSnapshot(
+        VMSnapshotReq(name: name, snapshotName: snapshotName),
+      );
+      return _ok();
+    } catch (e) {
+      appLogger.e('deleteVmSnapshot failed: $e');
       return _err(e);
     }
   }

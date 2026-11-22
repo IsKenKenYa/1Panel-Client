@@ -4737,6 +4737,8 @@
   "vmInstanceActionConsole": "VNC console",
   "vmInstanceActionDetail": "Details",
   "vmInstanceActionDelete": "Delete",
+  "vmInstanceResourcesTitle": "Resources",
+  "vmInstancePowerSectionTitle": "Power",
   "vmInstanceOperateConfirm": "Run {operation} on {name}?",
   "@vmInstanceOperateConfirm": {
     "placeholders": {

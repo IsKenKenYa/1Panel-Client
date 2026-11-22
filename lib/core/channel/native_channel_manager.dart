@@ -159,6 +159,30 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelReadHandlers.getBackups(arguments);
       case 'getAIModels':
         return NativeChannelReadHandlers.getAIModels(arguments);
+
+      // ── Read: 虚拟机 ────────────────────────────────────────────────────
+      case 'getVmEnvironment':
+        return NativeChannelReadHandlers.getVmEnvironment(arguments);
+      case 'getVms':
+        return NativeChannelReadHandlers.getVms(arguments);
+      case 'getVmInfo':
+        return NativeChannelReadHandlers.getVmInfo(arguments);
+      case 'getVmSnapshots':
+        return NativeChannelReadHandlers.getVmSnapshots(arguments);
+      case 'getVmHealth':
+        return NativeChannelReadHandlers.getVmHealth(arguments);
+      case 'getVmStats':
+        return NativeChannelReadHandlers.getVmStats(arguments);
+      case 'getVmIsos':
+        return NativeChannelReadHandlers.getVmIsos(arguments);
+      case 'getVmTemplates':
+        return NativeChannelReadHandlers.getVmTemplates(arguments);
+      case 'getVmNetworks':
+        return NativeChannelReadHandlers.getVmNetworks(arguments);
+      case 'getVmNetworkOptions':
+        return NativeChannelReadHandlers.getVmNetworkOptions(arguments);
+      case 'getVmStorages':
+        return NativeChannelReadHandlers.getVmStorages(arguments);
       case 'getWebsiteCreateOptions':
         return NativeChannelReadHandlers.getWebsiteCreateOptions(arguments);
       case 'getWebsiteHttpsConfig':
@@ -442,6 +466,20 @@ class NativeChannelManager implements NativeChannelPort {
         return NativeChannelWriteHandlers.closeOllamaModelNative(arguments);
       case 'syncOllamaModelsNative':
         return NativeChannelWriteHandlers.syncOllamaModelsNative(arguments);
+
+      // ── Write: 虚拟机 ──────────────────────────────────────────────────
+      case 'enableVmEnvironment':
+        return NativeChannelWriteHandlers.enableVmEnvironment(arguments);
+      case 'syncVms':
+        return NativeChannelWriteHandlers.syncVms(arguments);
+      case 'operateVm':
+        return NativeChannelWriteHandlers.operateVm(arguments);
+      case 'createVmSnapshot':
+        return NativeChannelWriteHandlers.createVmSnapshot(arguments);
+      case 'recoverVmSnapshot':
+        return NativeChannelWriteHandlers.recoverVmSnapshot(arguments);
+      case 'deleteVmSnapshot':
+        return NativeChannelWriteHandlers.deleteVmSnapshot(arguments);
 
       // ── Write: 防火墙 ───────────────────────────────────────────────────
       case 'addFirewallRule':

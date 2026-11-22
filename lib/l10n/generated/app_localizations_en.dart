@@ -11539,6 +11539,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get vmInstanceActionDelete => 'Delete';
 
   @override
+  String get vmInstanceResourcesTitle => 'Resources';
+
+  @override
+  String get vmInstancePowerSectionTitle => 'Power';
+
+  @override
   String vmInstanceOperateConfirm(String name, String operation) {
     return 'Run $operation on $name?';
   }
