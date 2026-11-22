@@ -3,12 +3,15 @@ import AppleSharedUI
 
 struct MonitoringView: View {
     @StateObject private var viewModel = MonitoringViewModel()
+    @StateObject private var historyModel = MonitorHistoryViewModel()
     @EnvironmentObject var theme: ThemeManager
     @EnvironmentObject var translations: TranslationsManager
 
     @State private var processes: [ListeningProcessRow] = []
     @State private var pendingStop: ListeningProcessRow?
     @State private var toastText: String?
+    @State private var historyHours = 1
+    @State private var showSettings = false
 
     var body: some View {
         Group {
@@ -16,6 +19,15 @@ struct MonitoringView: View {
                 LoadingView()
             } else {
                 List {
+                    MonitorHistorySection(
+                        history: historyModel.history,
+                        isLoading: historyModel.isLoading
+                    )
+                    if let error = historyModel.errorMessage {
+                        Section {
+                            Text(error).font(.caption).foregroundStyle(.red)
+                        }
+                    }
                     Section(translations.get("monitorSystemUsageTitle", fallback: "System Usage")) {
                         ResourceGaugeRow(
                             title: translations.get("dashboardCpuUsage", fallback: "CPU"),
@@ -95,14 +107,38 @@ struct MonitoringView: View {
                 .refreshable {
                     viewModel.startAutoRefresh()
                     fetchProcesses()
+                    await historyModel.fetch(hours: historyHours)
                 }
             }
         }
         .navigationTitle(translations.get("serverModuleMonitoring", fallback: "Monitoring"))
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
+                Menu {
+                    ForEach([1, 6, 24, 168], id: \.self) { hours in
+                        Button(historyLabel(hours)) {
+                            historyHours = hours
+                            Task { await historyModel.fetch(hours: hours) }
+                        }
+                    }
+                } label: {
+                    Label(historyLabel(historyHours), systemImage: "clock.arrow.circlepath")
+                }
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    showSettings = true
+                } label: {
+                    Label(translations.get("monitorSettingTitle", fallback: "Monitoring Settings"),
+                          systemImage: "gearshape")
+                }
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
                 ModuleSwitcherMenu(current: .monitoring)
             }
+        }
+        .sheet(isPresented: $showSettings) {
+            MonitoringSettingsSheet()
         }
         .confirmationDialog(
             stopConfirmMessage,
@@ -123,6 +159,7 @@ struct MonitoringView: View {
         .onAppear {
             viewModel.startAutoRefresh()
             fetchProcesses()
+            Task { await historyModel.fetch(hours: historyHours) }
         }
         .onDisappear {
             viewModel.stopAutoRefresh()
@@ -137,6 +174,16 @@ struct MonitoringView: View {
         return template
             .replacingOccurrences(of: "{name}", with: name.isEmpty ? pid : name)
             .replacingOccurrences(of: "{0}", with: name.isEmpty ? pid : name)
+    }
+
+    private func historyLabel(_ hours: Int) -> String {
+        switch hours {
+        case 1: return translations.get("monitorHistoryHour1", fallback: "1 hour")
+        case 6: return translations.get("monitorHistoryHour6", fallback: "6 hours")
+        case 24: return translations.get("monitorHistoryHour24", fallback: "24 hours")
+        case 168: return translations.get("monitorHistoryHour168", fallback: "7 days")
+        default: return "\(hours)h"
+        }
     }
 
     private func fetchProcesses() {

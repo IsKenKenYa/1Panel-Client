@@ -384,3 +384,53 @@ class ModelDownloaderModelTests: XCTestCase {
         XCTAssertEqual(ModuleRoute(rawValue: "modelDownloader"), .modelDownloader)
     }
 }
+
+class MonitorHistoryModelTests: XCTestCase {
+    func testSeriesPayloadDecodesPointsAndAggregates() {
+        let series = MonitorSeries(payload: [
+            "name": "cpu",
+            "min": 10.0,
+            "max": 30.0,
+            "avg": 20.0,
+            "count": 2,
+            "points": [
+                ["time": 1000, "value": 10.0],
+                ["time": 2000, "value": 30.0],
+            ],
+        ])
+
+        XCTAssertEqual(series.points.count, 2)
+        XCTAssertEqual(series.points.first?.timeMillis, 1000)
+        XCTAssertEqual(series.points.last?.value, 30)
+        XCTAssertEqual(series.min, 10)
+        XCTAssertEqual(series.avg, 20)
+    }
+
+    func testHistoryPayloadDecodesThreeSeries() {
+        let empty: [String: Any] = ["points": [[String: Any]()], "min": 0, "max": 0, "avg": 0]
+        let history = MonitorHistory(payload: [
+            "cpu": empty,
+            "memory": empty,
+            "load": empty,
+        ])
+
+        XCTAssertEqual(history.cpu.points.count, 1)
+        XCTAssertEqual(history.memory.points.count, 1)
+        XCTAssertEqual(history.load.points.count, 1)
+    }
+
+    func testSettingsPayloadDecodesFields() {
+        let settings = MonitorSettingsModel(payload: [
+            "enabled": true,
+            "interval": 30,
+            "retention": 7,
+            "defaultNetwork": "eth0",
+            "defaultIO": "sda",
+        ])
+
+        XCTAssertTrue(settings.enabled)
+        XCTAssertEqual(settings.interval, 30)
+        XCTAssertEqual(settings.retention, 7)
+        XCTAssertEqual(settings.defaultNetwork, "eth0")
+    }
+}

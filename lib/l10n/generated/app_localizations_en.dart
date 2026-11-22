@@ -9384,6 +9384,70 @@ class AppLocalizationsEn extends AppLocalizations {
   String get monitorLoadAverageTitle => 'Load Average';
 
   @override
+  String get monitorHistoryTitle => 'History';
+
+  @override
+  String get monitorHistoryEmpty => 'No history samples';
+
+  @override
+  String get monitorHistoryMinLabel => 'Min';
+
+  @override
+  String get monitorHistoryAvgLabel => 'Avg';
+
+  @override
+  String get monitorHistoryMaxLabel => 'Max';
+
+  @override
+  String get monitorHistoryHour1 => '1 hour';
+
+  @override
+  String get monitorHistoryHour6 => '6 hours';
+
+  @override
+  String get monitorHistoryHour24 => '24 hours';
+
+  @override
+  String get monitorHistoryHour168 => '7 days';
+
+  @override
+  String get monitorSettingTitle => 'Monitoring Settings';
+
+  @override
+  String get monitorSettingEnabledLabel => 'Enable monitoring';
+
+  @override
+  String get monitorSettingIntervalLabel => 'Interval (seconds)';
+
+  @override
+  String get monitorSettingRetentionLabel => 'Retention (days)';
+
+  @override
+  String get monitorSettingDefaultsTitle => 'Defaults';
+
+  @override
+  String get monitorSettingNetworkLabel => 'Default network';
+
+  @override
+  String get monitorSettingIOLabel => 'Default disk';
+
+  @override
+  String get monitorSettingNone => 'None';
+
+  @override
+  String get monitorSettingCleanAction => 'Clean monitoring data';
+
+  @override
+  String get monitorSettingCleanConfirmTitle => 'Clean monitoring data?';
+
+  @override
+  String get monitorSettingCleanConfirmMessage =>
+      'Historical monitoring samples will be removed.';
+
+  @override
+  String get monitorSettingCleaned => 'Monitoring data cleaned';
+
+  @override
   String get containerStateLabel => 'State';
 
   @override

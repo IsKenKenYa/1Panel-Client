@@ -9129,6 +9129,69 @@ class AppLocalizationsZh extends AppLocalizations {
   String get monitorLoadAverageTitle => '系统负载';
 
   @override
+  String get monitorHistoryTitle => '历史曲线';
+
+  @override
+  String get monitorHistoryEmpty => '暂无历史采样';
+
+  @override
+  String get monitorHistoryMinLabel => '最小';
+
+  @override
+  String get monitorHistoryAvgLabel => '平均';
+
+  @override
+  String get monitorHistoryMaxLabel => '最大';
+
+  @override
+  String get monitorHistoryHour1 => '1 小时';
+
+  @override
+  String get monitorHistoryHour6 => '6 小时';
+
+  @override
+  String get monitorHistoryHour24 => '24 小时';
+
+  @override
+  String get monitorHistoryHour168 => '7 天';
+
+  @override
+  String get monitorSettingTitle => '监控设置';
+
+  @override
+  String get monitorSettingEnabledLabel => '启用监控';
+
+  @override
+  String get monitorSettingIntervalLabel => '采样间隔（秒）';
+
+  @override
+  String get monitorSettingRetentionLabel => '保留天数';
+
+  @override
+  String get monitorSettingDefaultsTitle => '默认设备';
+
+  @override
+  String get monitorSettingNetworkLabel => '默认网卡';
+
+  @override
+  String get monitorSettingIOLabel => '默认磁盘';
+
+  @override
+  String get monitorSettingNone => '无';
+
+  @override
+  String get monitorSettingCleanAction => '清理监控数据';
+
+  @override
+  String get monitorSettingCleanConfirmTitle => '清理监控数据？';
+
+  @override
+  String get monitorSettingCleanConfirmMessage => '历史监控采样将被删除。';
+
+  @override
+  String get monitorSettingCleaned => '监控数据已清理';
+
+  @override
   String get containerStateLabel => '状态';
 
   @override

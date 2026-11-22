@@ -17653,6 +17653,132 @@ abstract class AppLocalizations {
   /// **'Load Average'**
   String get monitorLoadAverageTitle;
 
+  /// No description provided for @monitorHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get monitorHistoryTitle;
+
+  /// No description provided for @monitorHistoryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No history samples'**
+  String get monitorHistoryEmpty;
+
+  /// No description provided for @monitorHistoryMinLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Min'**
+  String get monitorHistoryMinLabel;
+
+  /// No description provided for @monitorHistoryAvgLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg'**
+  String get monitorHistoryAvgLabel;
+
+  /// No description provided for @monitorHistoryMaxLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Max'**
+  String get monitorHistoryMaxLabel;
+
+  /// No description provided for @monitorHistoryHour1.
+  ///
+  /// In en, this message translates to:
+  /// **'1 hour'**
+  String get monitorHistoryHour1;
+
+  /// No description provided for @monitorHistoryHour6.
+  ///
+  /// In en, this message translates to:
+  /// **'6 hours'**
+  String get monitorHistoryHour6;
+
+  /// No description provided for @monitorHistoryHour24.
+  ///
+  /// In en, this message translates to:
+  /// **'24 hours'**
+  String get monitorHistoryHour24;
+
+  /// No description provided for @monitorHistoryHour168.
+  ///
+  /// In en, this message translates to:
+  /// **'7 days'**
+  String get monitorHistoryHour168;
+
+  /// No description provided for @monitorSettingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Monitoring Settings'**
+  String get monitorSettingTitle;
+
+  /// No description provided for @monitorSettingEnabledLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable monitoring'**
+  String get monitorSettingEnabledLabel;
+
+  /// No description provided for @monitorSettingIntervalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Interval (seconds)'**
+  String get monitorSettingIntervalLabel;
+
+  /// No description provided for @monitorSettingRetentionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Retention (days)'**
+  String get monitorSettingRetentionLabel;
+
+  /// No description provided for @monitorSettingDefaultsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Defaults'**
+  String get monitorSettingDefaultsTitle;
+
+  /// No description provided for @monitorSettingNetworkLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Default network'**
+  String get monitorSettingNetworkLabel;
+
+  /// No description provided for @monitorSettingIOLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Default disk'**
+  String get monitorSettingIOLabel;
+
+  /// No description provided for @monitorSettingNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get monitorSettingNone;
+
+  /// No description provided for @monitorSettingCleanAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean monitoring data'**
+  String get monitorSettingCleanAction;
+
+  /// No description provided for @monitorSettingCleanConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean monitoring data?'**
+  String get monitorSettingCleanConfirmTitle;
+
+  /// No description provided for @monitorSettingCleanConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Historical monitoring samples will be removed.'**
+  String get monitorSettingCleanConfirmMessage;
+
+  /// No description provided for @monitorSettingCleaned.
+  ///
+  /// In en, this message translates to:
+  /// **'Monitoring data cleaned'**
+  String get monitorSettingCleaned;
+
   /// No description provided for @containerStateLabel.
   ///
   /// In en, this message translates to:
