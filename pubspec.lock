@@ -260,11 +260,18 @@ packages:
   chewie:
     dependency: "direct main"
     description:
-      name: chewie
-      sha256: "44bcfc5f0dfd1de290c87c9d86a61308b3282a70b63435d5557cfd60f54a69ca"
+      path: "third_party/patched_packages/chewie"
+      relative: true
+    source: path
+    version: "1.13.0"
+  cli_util:
+    dependency: transitive
+    description:
+      name: cli_util
+      sha256: da2a2b22f919995eb427edab07725e2be0b1281ef26770f6ce3a213355565262
       url: "https://pub.dev"
     source: hosted
-    version: "1.13.0"
+    version: "0.6.1"
   clock:
     dependency: transitive
     description:
@@ -365,18 +372,17 @@ packages:
     dependency: transitive
     description:
       name: dbus
-      sha256: d0c98dcd4f5169878b6cf8f6e0a52403a9dff371a3e2f019697accbf6f44a270
+      sha256: a48d5da28e89bd02196e80d81ed8d7954923d00a0f4a68cc20b575038f023383
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.12"
+    version: "0.7.15"
   device_info_plus:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: device_info_plus
-      sha256: "98f28b42168cc509abc92f88518882fd58061ea372d7999aecc424345c7bff6a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "11.5.0"
+      path: "third_party/patched_packages/device_info_plus"
+      relative: true
+    source: path
+    version: "12.3.0"
   device_info_plus_platform_interface:
     dependency: transitive
     description:
@@ -912,10 +918,10 @@ packages:
     dependency: transitive
     description:
       name: matcher
-      sha256: "12956d0ad8390bbcc63ca2e1469c0619946ccb52809807067a7020d57e647aa6"
+      sha256: dc0b7dc7651697ea4ff3e69ef44b0407ea32c487a39fff6a4004fa585e901861
       url: "https://pub.dev"
     source: hosted
-    version: "0.12.18"
+    version: "0.12.19"
   material_color_utilities:
     dependency: transitive
     description:
@@ -944,10 +950,10 @@ packages:
     dependency: transitive
     description:
       name: meta
-      sha256: "23f08335362185a5ea2ad3a4e597f1375e78bce8a040df5c600c8d3552ef2394"
+      sha256: "1741988757a65eb6b36abe716829688cf01910bbf91c34354ff7ec1c3de2b349"
       url: "https://pub.dev"
     source: hosted
-    version: "1.17.0"
+    version: "1.18.0"
   mime:
     dependency: "direct main"
     description:
@@ -1565,66 +1571,67 @@ packages:
     dependency: transitive
     description:
       name: syncfusion_flutter_core
-      sha256: f1d2b52697543e13bdefdc62d15868124a265987577f53224a7dbe176c8448f0
+      sha256: "8134debe4523ef329e4e62f9167d1853b2af4779219e7bb1dc03cf3a26ac571f"
       url: "https://pub.dev"
     source: hosted
-    version: "28.2.12"
+    version: "35.1.43"
   syncfusion_flutter_pdf:
     dependency: transitive
     description:
       name: syncfusion_flutter_pdf
-      sha256: f5e02ac4264bc69eeffa3ec54c9c0ad6e8a9f9161b105451b4a83dd1a317eaf9
+      sha256: a18e757b2cbeb0de01f35cde2f22a9c89032919123f243c3e5c5757c2ee4b5da
       url: "https://pub.dev"
     source: hosted
-    version: "28.2.12"
+    version: "35.1.43"
   syncfusion_flutter_pdfviewer:
     dependency: "direct main"
     description:
-      name: syncfusion_flutter_pdfviewer
-      sha256: "95e678444ff9571c4d33b8443037cdcc9e34faf1c53af7724043266b2d2df5df"
-      url: "https://pub.dev"
-    source: hosted
-    version: "28.2.12"
+      path: "packages/syncfusion_flutter_pdfviewer"
+      ref: "2185e4139ca047998f74823435086f2ee2e6c869"
+      resolved-ref: "2185e4139ca047998f74823435086f2ee2e6c869"
+      url: "https://gitcode.com/CPF-Flutter/fluttertpc_syncfusion_flutter_charts.git"
+    source: git
+    version: "35.1.37"
   syncfusion_flutter_signaturepad:
     dependency: transitive
     description:
       name: syncfusion_flutter_signaturepad
-      sha256: "30de4c9f77d1b75850697262bf9ce30b46a8d4401cec91dae95c4ee4e589d857"
+      sha256: d8eed9d387917b3c948f29fb8585d1587b6e0da117173f57629f29f2fcff2230
       url: "https://pub.dev"
     source: hosted
-    version: "28.2.12"
+    version: "35.1.43"
   syncfusion_pdfviewer_macos:
     dependency: transitive
     description:
       name: syncfusion_pdfviewer_macos
-      sha256: c76af8dc3e8df38be3f5d7a78f4bae5ff9f5d73706da997d8428e087af418102
+      sha256: "5fcd9ffa2855c4292a377cd11df36fc5c9e16fd15b5eaf5f7810a206d245068c"
       url: "https://pub.dev"
     source: hosted
-    version: "28.2.12"
+    version: "35.2.12"
   syncfusion_pdfviewer_platform_interface:
     dependency: transitive
     description:
       name: syncfusion_pdfviewer_platform_interface
-      sha256: a9c102d1edd68fbe449e37021f5b82a8e32339023112807a828fb4e585e077cc
+      sha256: ce1f1edfd6d1f02a4b3e8f112d7f9424bf4ac4173e33fa83bded31ae219c1d2f
       url: "https://pub.dev"
     source: hosted
-    version: "28.2.12"
+    version: "35.2.12"
   syncfusion_pdfviewer_web:
     dependency: transitive
     description:
       name: syncfusion_pdfviewer_web
-      sha256: "6f2bf5c385e003e8f7312c445240c8648045400de9d7050df9d9a4b191c02568"
+      sha256: "33f98f65f289bf75a2618d6462b248c31252a904c7ec87bea4dac56101ed0a07"
       url: "https://pub.dev"
     source: hosted
-    version: "28.2.12"
+    version: "35.2.12"
   syncfusion_pdfviewer_windows:
     dependency: transitive
     description:
       name: syncfusion_pdfviewer_windows
-      sha256: cf638a7d64bdd4120a8e27d944cb966a05a409ee3d0c24fa63e83341a535d6fb
+      sha256: a845c80d0f2a4040ba847295f132491ca0fdd4305fec0d0d5bc520838824caa7
       url: "https://pub.dev"
     source: hosted
-    version: "28.2.12"
+    version: "35.2.12"
   synchronized:
     dependency: "direct main"
     description:
@@ -1645,10 +1652,10 @@ packages:
     dependency: transitive
     description:
       name: test_api
-      sha256: "19a78f63e83d3a61f00826d09bc2f60e191bf3504183c001262be6ac75589fb8"
+      sha256: "949a932224383300f01be9221c39180316445ecb8e7547f70a41a35bf421fb9e"
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.8"
+    version: "0.7.11"
   tray_manager:
     dependency: "direct main"
     description:
@@ -1729,6 +1736,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.5"
+  url_launcher_ohos:
+    dependency: "direct overridden"
+    description:
+      path: "third_party/patched_packages/url_launcher_ohos"
+      relative: true
+    source: path
+    version: "6.3.2"
   url_launcher_platform_interface:
     dependency: transitive
     description:
@@ -1781,10 +1795,10 @@ packages:
     dependency: transitive
     description:
       name: vector_graphics_compiler
-      sha256: "201e876b5d52753626af64b6359cd13ac6011b80728731428fd34bc840f71c9b"
+      sha256: "7471171f129768c2e0398e91d39022cf47f03e1a541bb1737760bd1b9aed6c63"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.20"
+    version: "1.3.5"
   vector_math:
     dependency: transitive
     description:
@@ -1933,17 +1947,16 @@ packages:
     dependency: transitive
     description:
       name: xml
-      sha256: "971043b3a0d3da28727e40ed3e0b5d18b742fa5a68665cca88e74b7876d5e025"
+      sha256: "67f0aff7be013d107995e9b75bf4e7f2c3ef2dfdb2c8e68024bba0a7fd5756a4"
       url: "https://pub.dev"
     source: hosted
-    version: "6.6.1"
+    version: "7.0.1"
   xterm:
     dependency: "direct main"
     description:
-      name: xterm
-      sha256: "168dfedca77cba33fdb6f52e2cd001e9fde216e398e89335c19b524bb22da3a2"
-      url: "https://pub.dev"
-    source: hosted
+      path: "third_party/patched_packages/xterm"
+      relative: true
+    source: path
     version: "4.0.0"
   xxh3:
     dependency: transitive
@@ -1970,5 +1983,5 @@ packages:
     source: hosted
     version: "0.0.6"
 sdks:
-  dart: ">=3.9.2 <4.0.0"
+  dart: ">=3.11.0 <4.0.0"
   flutter: ">=3.41.0"

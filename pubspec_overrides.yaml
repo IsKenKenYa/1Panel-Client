@@ -2,3 +2,14 @@ dependency_overrides:
   flutter_lints: 5.0.0
   path: 1.9.0
   wakelock_plus: 1.4.0
+  # Flutter-OH 适配的 device_info_plus 12.3.0，满足 passkeys 与 win32 5 约束。
+  device_info_plus:
+    path: third_party/patched_packages/device_info_plus
+  # 补充 TargetPlatform.ohos 默认分支，兼容 Flutter-OH 与官方 Flutter。
+  chewie:
+    path: third_party/patched_packages/chewie
+  xterm:
+    path: third_party/patched_packages/xterm
+  # Flutter 3.44 的 flutter_ohos 只导出公开入口，改从根入口导入。
+  url_launcher_ohos:
+    path: third_party/patched_packages/url_launcher_ohos

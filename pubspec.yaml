@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 0.6.0+1
 
 environment:
-  sdk: ^3.6.2
+  sdk: ^3.11.0  # 3.44.9 SDK 线的最低 Dart 版本
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -90,7 +90,12 @@ dependencies:
   video_player: ^2.9.3  # Video playback
   chewie: ^1.8.5  # Video player UI
   flutter_markdown: ^0.7.4+3  # Markdown rendering
-  syncfusion_flutter_pdfviewer: ^28.1.36  # PDF viewer
+  # PDF 查看，使用 Flutter-OH 适配分支，同时兼容官方 Flutter 与 Flutter-OH。
+  syncfusion_flutter_pdfviewer:
+    git:
+      url: https://gitcode.com/CPF-Flutter/fluttertpc_syncfusion_flutter_charts.git
+      ref: 2185e4139ca047998f74823435086f2ee2e6c869
+      path: packages/syncfusion_flutter_pdfviewer
   audioplayers: ^6.1.0  # Audio playback
   
   # Testing

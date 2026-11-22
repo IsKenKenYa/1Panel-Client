@@ -137,3 +137,10 @@ test/widget_test/failures/
 
 # ZCode session plan artifacts
 .zcode/
+
+# 项目内三方兼容件（third_party/patched_packages）的生成目录
+/third_party/patched_packages/*/ohos/oh_modules/
+/third_party/patched_packages/*/ohos/build/
+/third_party/patched_packages/*/ohos/.hvigor/
+/third_party/patched_packages/*/ohos/oh-package-lock.json5
+/third_party/patched_packages/*/ohos/BuildProfile.ets
