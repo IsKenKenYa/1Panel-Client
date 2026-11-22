@@ -207,9 +207,8 @@ class ModuleSubnav extends StatelessWidget {
                       child: ReorderableListView.builder(
                         shrinkWrap: true,
                         itemCount: mutable.length,
-                        onReorder: (oldIndex, newIndex) {
+                        onReorderItem: (oldIndex, newIndex) {
                           setModalState(() {
-                            if (newIndex > oldIndex) newIndex -= 1;
                             final item = mutable.removeAt(oldIndex);
                             mutable.insert(newIndex, item);
                           });

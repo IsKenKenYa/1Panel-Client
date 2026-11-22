@@ -94,7 +94,7 @@ class _MenuSettingsPageState extends State<MenuSettingsPage> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: provider.menus.length,
-              onReorder: context.read<MenuSettingsProvider>().reorderMenu,
+              onReorderItem: context.read<MenuSettingsProvider>().reorderMenu,
               itemBuilder: (BuildContext context, int index) {
                 final item = provider.menus[index];
                 return ListTile(

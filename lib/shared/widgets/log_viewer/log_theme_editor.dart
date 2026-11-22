@@ -67,10 +67,8 @@ class _LogThemeEditorState extends State<LogThemeEditor> {
     _updateTheme(_theme.copyWith(rules: newRules));
   }
 
+  /// 接收 onReorderItem 的索引：newIndex 已按移除后的位置调整。
   void _reorderRules(int oldIndex, int newIndex) {
-    if (oldIndex < newIndex) {
-      newIndex -= 1;
-    }
     final newRules = List<LogHighlightRule>.from(_theme.rules);
     final rule = newRules.removeAt(oldIndex);
     newRules.insert(newIndex, rule);
@@ -163,7 +161,7 @@ class _LogThemeEditorState extends State<LogThemeEditor> {
       ),
       body: ReorderableListView.builder(
         itemCount: _theme.rules.length,
-        onReorder: _reorderRules,
+        onReorderItem: _reorderRules,
         itemBuilder: (context, index) {
           final rule = _theme.rules[index];
           return ListTile(

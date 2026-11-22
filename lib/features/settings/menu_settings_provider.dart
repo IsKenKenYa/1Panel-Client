@@ -66,11 +66,9 @@ class MenuSettingsProvider extends ChangeNotifier with SafeChangeNotifier {
     notifyListeners();
   }
 
+  /// 接收 onReorderItem 的索引：newIndex 已按移除后的位置调整。
   void reorderMenu(int oldIndex, int newIndex) {
     final next = List<String>.from(_menus);
-    if (oldIndex < newIndex) {
-      newIndex -= 1;
-    }
     final item = next.removeAt(oldIndex);
     next.insert(newIndex, item);
     _menus = next;
