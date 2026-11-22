@@ -2051,6 +2051,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get commonPath => '路径';
 
   @override
+  String get commonSelectDirectory => '选择目录';
+
+  @override
+  String get commonBrowseServerDirectory => '浏览服务器目录';
+
+  @override
+  String get commonParentDirectory => '上一级目录';
+
+  @override
+  String get commonNoSubdirectory => '该目录下没有子目录';
+
+  @override
   String get commonDriver => '驱动';
 
   @override

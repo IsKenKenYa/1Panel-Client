@@ -2104,6 +2104,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonPath => 'Path';
 
   @override
+  String get commonSelectDirectory => 'Select directory';
+
+  @override
+  String get commonBrowseServerDirectory => 'Browse server directories';
+
+  @override
+  String get commonParentDirectory => 'Parent directory';
+
+  @override
+  String get commonNoSubdirectory => 'No subdirectories here';
+
+  @override
   String get commonDriver => 'Driver';
 
   @override

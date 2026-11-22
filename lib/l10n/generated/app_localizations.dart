@@ -4022,6 +4022,30 @@ abstract class AppLocalizations {
   /// **'Path'**
   String get commonPath;
 
+  /// No description provided for @commonSelectDirectory.
+  ///
+  /// In en, this message translates to:
+  /// **'Select directory'**
+  String get commonSelectDirectory;
+
+  /// No description provided for @commonBrowseServerDirectory.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse server directories'**
+  String get commonBrowseServerDirectory;
+
+  /// No description provided for @commonParentDirectory.
+  ///
+  /// In en, this message translates to:
+  /// **'Parent directory'**
+  String get commonParentDirectory;
+
+  /// No description provided for @commonNoSubdirectory.
+  ///
+  /// In en, this message translates to:
+  /// **'No subdirectories here'**
+  String get commonNoSubdirectory;
+
   /// No description provided for @commonDriver.
   ///
   /// In en, this message translates to:
