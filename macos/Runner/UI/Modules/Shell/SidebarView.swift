@@ -25,6 +25,7 @@ struct SidebarView: View {
         SidebarItem(id: "apps", titleKey: "serverModuleApps", symbolName: "app.badge"),
         SidebarItem(id: "virtualMachines", titleKey: "serverModuleVm", symbolName: "desktopcomputer"),
         SidebarItem(id: "alerts", titleKey: "alertPageTitle", symbolName: "bell.badge"),
+        SidebarItem(id: "modelDownloader", titleKey: "modelDownloaderTabLabel", symbolName: "arrow.down.circle"),
         SidebarItem(id: "files", titleKey: "navFiles", symbolName: "folder"),
     ]
 

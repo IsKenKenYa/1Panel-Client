@@ -74,6 +74,8 @@ struct MainShellView: View {
                 VirtualMachinesView()
             case "alerts":
                 AlertModuleView()
+            case "modelDownloader":
+                ModelDownloaderView()
             case "files":
                 FilesView()
             case "monitoring":

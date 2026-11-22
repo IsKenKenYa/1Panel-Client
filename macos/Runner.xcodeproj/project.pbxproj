@@ -75,6 +75,7 @@
 		AA11BB22CC33DD44EE55FF04 /* VMHealthSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660004 /* VMHealthSheet.swift */; };
 		AA11BB22CC33DD44EE55FF05 /* VMInstanceMonitorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660005 /* VMInstanceMonitorView.swift */; };
 		AA11BB22CC33DD44EE55FF06 /* AlertModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660006 /* AlertModuleView.swift */; };
+		AA11BB22CC33DD44EE55FF07 /* ModelDownloaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF660007 /* ModelDownloaderView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -179,6 +180,7 @@
 		BB22CC33DD44EE55FF660004 /* VMHealthSheet.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VMHealthSheet.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF660005 /* VMInstanceMonitorView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VMInstanceMonitorView.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF660006 /* AlertModuleView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AlertModuleView.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF660007 /* ModelDownloaderView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ModelDownloaderView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -372,6 +374,7 @@
 				5829D420822819963EF13FFF /* AI */,
 				CC33DD44EE55FF6600770001 /* VirtualMachines */,
 				CC33DD44EE55FF6600770002 /* Alerts */,
+				CC33DD44EE55FF6600770003 /* ModelDownloader */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -483,6 +486,14 @@
 				BB22CC33DD44EE55FF660006 /* AlertModuleView.swift */,
 			);
 			path = Alerts;
+			sourceTree = "<group>";
+		};
+		CC33DD44EE55FF6600770003 /* ModelDownloader */ = {
+			isa = PBXGroup;
+			children = (
+				BB22CC33DD44EE55FF660007 /* ModelDownloaderView.swift */,
+			);
+			path = ModelDownloader;
 			sourceTree = "<group>";
 		};
 		D892C033D9AEA8AC158ACF26 /* Files */ = {
@@ -789,6 +800,7 @@
 				AA11BB22CC33DD44EE55FF04 /* VMHealthSheet.swift in Sources */,
 				AA11BB22CC33DD44EE55FF05 /* VMInstanceMonitorView.swift in Sources */,
 				AA11BB22CC33DD44EE55FF06 /* AlertModuleView.swift in Sources */,
+				AA11BB22CC33DD44EE55FF07 /* ModelDownloaderView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
