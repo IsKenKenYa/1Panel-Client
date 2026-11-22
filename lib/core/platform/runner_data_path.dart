@@ -39,17 +39,27 @@ class RunnerDataPath {
 
   static const String _companyName = 'IsKenKenYa';
   static const String _productName = 'KenPanel';
+  // 改名前产品名。已装用户的配置与凭据都在旧目录下，升级后继续读它。
+  static const String _legacyProductName = '1Panel Client';
 
   /// 解析 Flutter runner 的应用支持目录；[appDataDir] 缺失时返回 null。
+  ///
+  /// 新目录不存在而旧目录存在时返回旧目录，避免升级用户看到空服务器列表。
   static String? resolveRunnerSupportDirectory({String? appDataDir}) {
     if (appDataDir == null || appDataDir.isEmpty) {
       return null;
     }
-    return [
-      appDataDir,
-      _companyName,
-      _productName,
-    ].join(Platform.pathSeparator);
+    final separator = Platform.pathSeparator;
+    final current = [appDataDir, _companyName, _productName].join(separator);
+    if (Directory(current).existsSync()) {
+      return current;
+    }
+    final legacy =
+        [appDataDir, _companyName, _legacyProductName].join(separator);
+    if (Directory(legacy).existsSync()) {
+      return legacy;
+    }
+    return current;
   }
 
   /// 把所有已知的路径提供方对齐到 [supportPath]：

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepanel_client/core/platform/runner_data_path.dart';
 import 'package:shared_preferences_windows/shared_preferences_windows.dart';
@@ -6,19 +8,55 @@ import 'package:path/path.dart' as p;
 
 void main() {
   group('RunnerDataPath.resolveRunnerSupportDirectory', () {
-    test('拼接 APPDATA 与 runner 公司/产品目录', () {
+    test('新目录不存在时返回新路径（首次安装）', () {
+      final sandbox = Directory.systemTemp.createTempSync('runner_data_path_');
+      addTearDown(() => sandbox.deleteSync(recursive: true));
+
       final result = RunnerDataPath.resolveRunnerSupportDirectory(
-        appDataDir: r'C:\Users\u\AppData\Roaming',
+        appDataDir: sandbox.path,
       );
 
-      // 实现按当前平台 pathSeparator 拼接，断言与平台无关地核对 segment 序列。
       expect(
         result,
-        [
-          r'C:\Users\u\AppData\Roaming',
-          'IsKenKenYa',
-          'KenPanel',
-        ].join(p.context.separator),
+        [sandbox.path, 'IsKenKenYa', 'KenPanel'].join(p.context.separator),
+      );
+    });
+
+    test('仅旧目录存在时返回旧目录（升级用户继续读原数据）', () {
+      final sandbox = Directory.systemTemp.createTempSync('runner_data_path_');
+      addTearDown(() => sandbox.deleteSync(recursive: true));
+      Directory(
+        [sandbox.path, 'IsKenKenYa', '1Panel Client'].join(p.context.separator),
+      ).createSync(recursive: true);
+
+      final result = RunnerDataPath.resolveRunnerSupportDirectory(
+        appDataDir: sandbox.path,
+      );
+
+      expect(
+        result,
+        [sandbox.path, 'IsKenKenYa', '1Panel Client']
+            .join(p.context.separator),
+      );
+    });
+
+    test('新目录存在时优先使用新目录', () {
+      final sandbox = Directory.systemTemp.createTempSync('runner_data_path_');
+      addTearDown(() => sandbox.deleteSync(recursive: true));
+      Directory([sandbox.path, 'IsKenKenYa', 'KenPanel']
+          .join(p.context.separator))
+          .createSync(recursive: true);
+      Directory([sandbox.path, 'IsKenKenYa', '1Panel Client']
+          .join(p.context.separator))
+          .createSync(recursive: true);
+
+      final result = RunnerDataPath.resolveRunnerSupportDirectory(
+        appDataDir: sandbox.path,
+      );
+
+      expect(
+        result,
+        [sandbox.path, 'IsKenKenYa', 'KenPanel'].join(p.context.separator),
       );
     });
 
